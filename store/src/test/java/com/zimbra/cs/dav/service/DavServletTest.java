@@ -8,23 +8,13 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zextras.mailbox.util.MailboxTestUtil;
-import com.zimbra.common.account.ZAttrProvisioning;
-import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.calendar.ZCalendar.ScheduleAgent;
 import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
-import com.zimbra.cs.account.AuthTokenException;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.dav.DavProtocol;
-import com.zimbra.cs.mailclient.smtp.SmtpConfig;
+import com.zimbra.cs.dav.CalDavCreateAppointmentRequestBuilder;
+import com.zimbra.cs.dav.CalDavFreeBusyRequestBuilder;
 import com.zimbra.cs.service.AuthProvider;
-import com.zimbra.cs.service.AuthProviderException;
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -33,66 +23,43 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.UUID;
+
+import static com.icegreen.greenmail.util.ServerSetup.PROTOCOL_SMTP;
+import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
+import static com.zextras.mailbox.util.MailboxTestUtil.createRandomAccountForDefaultDomain;
+import static com.zimbra.cs.mailclient.smtp.SmtpConfig.DEFAULT_HOST;
+import static com.zimbra.cs.mailclient.smtp.SmtpConfig.DEFAULT_PORT;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("api")
 class DavServletTest {
 
-  private static Provisioning provisioning;
-  private static Account organizer;
-  private static Account attendee;
-  public String testName;
   private static Server server;
   private static final int PORT = 8090;
-  private static final String CALENDAR_UID = "95a5527e-df0a-4df2-b64a-7eee8e647efe";
-  private static final String FREE_BUSY_UID = "bb7bc421-bdde-4da6-987b-b17c5d343307";
   private static final String DAV_BASE_PATH = "/dav";
+  private static final String DAV_BASE_URL = "http://localhost:" + PORT + DAV_BASE_PATH;
   private static GreenMail greenMail;
 
   @BeforeAll
   public static void setUp() throws Exception {
     MailboxTestUtil.setUp();
-    greenMail =
-        new GreenMail(
-            new ServerSetup[] {
-              new ServerSetup(
-                  SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
-            });
+    greenMail = new GreenMail(new ServerSetup[]{ new ServerSetup(DEFAULT_PORT, DEFAULT_HOST, PROTOCOL_SMTP) });
     greenMail.start();
-    provisioning = Provisioning.getInstance();
-    server =
-        JettyServerFactory.create(
-            PORT, Map.of(DAV_BASE_PATH + "/*", new ServletHolder(DavServlet.class)));
+    server = JettyServerFactory.create(PORT, Map.of(DAV_BASE_PATH + "/*", new ServletHolder(DavServlet.class)));
     server.start();
-    organizer =
-        provisioning.createAccount(
-            "organizer@" + MailboxTestUtil.DEFAULT_DOMAIN,
-            "password",
-            new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
-    attendee = provisioning.createAccount("attendee@test.com", "password", new HashMap<>());
-    organizer.addAlias("alias@" + MailboxTestUtil.DEFAULT_DOMAIN);
-    provisioning.createAccount(
-        "attendee1@" + MailboxTestUtil.DEFAULT_DOMAIN,
-        "password",
-        new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
-    provisioning.createAccount(
-        "attendee2@" + MailboxTestUtil.DEFAULT_DOMAIN,
-        "password",
-        new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
-    provisioning.createAccount(
-        "attendee3@" + MailboxTestUtil.DEFAULT_DOMAIN,
-        "password",
-        new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
   }
 
   @AfterAll
@@ -102,108 +69,163 @@ class DavServletTest {
     MailboxTestUtil.tearDown();
   }
 
-  private HttpResponse createInviteWithDavRequest(Account organizer)
-      throws AuthProviderException, AuthTokenException, IOException {
-    final AuthToken authToken = AuthProvider.getAuthToken(organizer);
-    String url =
-        "http://localhost:"
-            + PORT
-            + DAV_BASE_PATH
-            + "/home/"
-            + URLEncoder.encode(organizer.getName(), StandardCharsets.UTF_8)
-            + "/Calendar/95a5527e-df0a-4df2-b64a-7eee8e647efe.ics";
-    BasicCookieStore cookieStore = new BasicCookieStore();
-    BasicClientCookie cookie =
-        new BasicClientCookie(ZimbraCookie.authTokenCookieName(false), authToken.getEncoded());
-    cookie.setDomain("localhost");
-    cookie.setPath("/");
-    cookieStore.addCookie(cookie);
-    HttpClient client = HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build();
-    HttpPut request = new HttpPut(url);
-    request.setEntity(
-        new InputStreamEntity(
-            Objects.requireNonNull(
-                this.getClass().getResourceAsStream("Invite_ScheduleAgent_Client.ics"))));
-    request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
-    return client.execute(request);
+  @BeforeEach
+  void beforeEach() {
+    greenMail.reset();
   }
 
   @Test
-  void shouldNotSendNotificationWhenScheduleAgentClient()
-      throws IOException, ServiceException, AuthTokenException {
-    final Account organizer = provisioning.getAccount("alias@test.com");
-    final HttpResponse response = createInviteWithDavRequest(organizer);
+  void shouldNotSendNotificationWhenScheduleAgentClient() throws Exception {
+    Account organizer = createRandomAccountForDefaultDomain();
+    organizer.addAlias("alias@" + DEFAULT_DOMAIN);
 
-    Assertions.assertEquals(HttpStatus.SC_CREATED, response.getStatusLine().getStatusCode());
-    Assertions.assertEquals(0, greenMail.getReceivedMessages().length);
+    final HttpPut request = new CalDavCreateAppointmentRequestBuilder(DAV_BASE_URL)
+        .organizer("alias@" + DEFAULT_DOMAIN)
+        .scheduleAgent(ScheduleAgent.CLIENT)
+        .addAttendee(createRandomAccountForDefaultDomain())
+        .addAttendee(createRandomAccountForDefaultDomain())
+        .addAttendee(createRandomAccountForDefaultDomain())
+        .build();
+    HttpResponse response = createHttpClientWith(organizer).execute(request);
+
+    assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(response));
+    assertEquals(0, greenMail.getReceivedMessages().length);
   }
 
-  private HttpResponse createAppointmentWithCalDAV() throws Exception {
-    HttpClient client = createHttpClient();
-    HttpPut request = new HttpPut(getCalDavResourceUrl());
-    request.setEntity(
-        new InputStreamEntity(
-            Objects.requireNonNull(
-                this.getClass().getResourceAsStream(DavServletTest.CALENDAR_UID + ".ics"))));
+  @Test
+  void shouldSendNotificationsForEachAttendeeWhenScheduleAgentIsServer() throws Exception {
+    Account organizer = createRandomAccountForDefaultDomain();
+
+    final HttpPut request = new CalDavCreateAppointmentRequestBuilder(DAV_BASE_URL)
+        .organizer(organizer)
+        .scheduleAgent(ScheduleAgent.SERVER)
+        .addAttendee(createRandomAccountForDefaultDomain())
+        .addAttendee(createRandomAccountForDefaultDomain())
+        .addAttendee(createRandomAccountForDefaultDomain())
+        .build();
+    HttpResponse response = createHttpClientWith(organizer).execute(request);
+
+    assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(response));
+    assertEquals(3, greenMail.getReceivedMessages().length);
+  }
+
+  @Test
+  void shouldCreateAppointment() throws Exception {
+    Account organizer = createRandomAccountForDefaultDomain();
+    UUID calendarUUID = UUID.randomUUID();
+    HttpPut createAppointmentRequest = new CalDavCreateAppointmentRequestBuilder(DAV_BASE_URL)
+        .uuid(calendarUUID)
+        .organizer(organizer)
+        .build();
+
+    HttpResponse createAppointmentResponse = createHttpClientWith(organizer).execute(createAppointmentRequest);
+
+    assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(createAppointmentResponse));
+  }
+
+  @Test
+  void shouldGetACreatedAppointment() throws Exception {
+    Account organizer = createRandomAccountForDefaultDomain();
+    UUID calendarUUID = UUID.randomUUID();
+    createAppointment(organizer, calendarUUID);
+
+    HttpResponse getAppointmentResponse = getAppointment(organizer, calendarUUID);
+
+    assertEquals(HttpStatus.SC_OK, statusCodeFrom(getAppointmentResponse));
+    assertTrue(readContentFrom(getAppointmentResponse).contains("UID:" + calendarUUID));
+  }
+
+  @Test
+  void shouldDeleteAppointment() throws Exception {
+    Account organizer = createRandomAccountForDefaultDomain();
+    UUID calendarUUID = UUID.randomUUID();
+    createAppointment(organizer, calendarUUID);
+
+    HttpResponse deleteAppointmentResponse = deleteAppointment(organizer, calendarUUID);
+
+    assertEquals(HttpStatus.SC_NO_CONTENT, statusCodeFrom(deleteAppointmentResponse));
+    assertEquals(HttpStatus.SC_NOT_FOUND, statusCodeFrom(getAppointment(organizer, calendarUUID)));
+  }
+
+  @Test
+  void createAnAppointmentAndFindThatSlotAsBusyStatus() throws Exception {
+    Account busyPerson = createRandomAccountForDefaultDomain();
+    HttpPut createAppointmentRequest = new CalDavCreateAppointmentRequestBuilder(DAV_BASE_URL)
+        .organizer(busyPerson)
+        .addAttendee(busyPerson)
+        .timeslot("20231207T124500", "20231207T144500")
+        .build();
+    createHttpClientWith(busyPerson).execute(createAppointmentRequest);
+
+    UUID calendarId = UUID.randomUUID();
+    Account calendarViewer = createRandomAccountForDefaultDomain();
+    HttpPost freeBusyRequest = new CalDavFreeBusyRequestBuilder(DAV_BASE_URL)
+        .asThunderbird()
+        .uuid(calendarId)
+        .originator(calendarViewer)
+        .recipient(busyPerson)
+        .timeslot("20231206T114500", "20231208T154500")
+        .build();
+    HttpResponse freeBusyResponse = createHttpClientWith(calendarViewer).execute(freeBusyRequest);
+
+    assertEquals(HttpStatus.SC_OK, statusCodeFrom(freeBusyResponse));
+    String content = readContentFrom(freeBusyResponse);
+    assertTrue(content.contains("UID:" + calendarId));
+    assertTrue(content.contains("FREEBUSY;FBTYPE=BUSY:20231207T124500Z/20231207T144500Z"));
+  }
+
+  @Test
+  void createAnAppointmentAndFindThatSlotAsBusyStatusUsingICalendar() throws Exception {
+    Account busyPerson = createRandomAccountForDefaultDomain();
+    HttpPut createAppointmentRequest = new CalDavCreateAppointmentRequestBuilder(DAV_BASE_URL)
+        .organizer(busyPerson)
+        .addAttendee(busyPerson)
+        .timeslot("20231207T124500", "20231207T144500")
+        .build();
+    createHttpClientWith(busyPerson).execute(createAppointmentRequest);
+
+    Account calendarViewer = createRandomAccountForDefaultDomain();
+    HttpPost freeBusyRequest = new CalDavFreeBusyRequestBuilder(DAV_BASE_URL)
+        .asICalendar()
+        .originator(calendarViewer)
+        .recipient(busyPerson)
+        .timeslot("20231206T114500", "20231208T154500")
+        .build();
+    HttpResponse freeBusyResponse = createHttpClientWith(calendarViewer).execute(freeBusyRequest);
+
+    assertEquals(HttpStatus.SC_OK, statusCodeFrom(freeBusyResponse));
+    assertTrue(readContentFrom(freeBusyResponse).contains("FREEBUSY;FBTYPE=BUSY:20231207T124500Z/20231207T144500Z"));
+  }
+
+  private void createAppointment(Account organizer, UUID calendarUUID) throws Exception {
+    HttpPut request = new CalDavCreateAppointmentRequestBuilder(DAV_BASE_URL)
+        .uuid(calendarUUID)
+        .organizer(organizer)
+        .build();
+    HttpResponse response = createHttpClientWith(organizer).execute(request);
+    assertEquals(HttpStatus.SC_CREATED, statusCodeFrom(response));
+  }
+
+  private HttpResponse deleteAppointment(Account organizer, UUID calendarUUID) throws Exception {
+    HttpClient client = createHttpClientWith(organizer);
+    HttpDelete request = new HttpDelete(getAccountCalendarUrl(organizer, calendarUUID));
     request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
     return client.execute(request);
   }
 
-  private HttpResponse requestAttendeeFreeBusy() throws Exception {
-    HttpClient client = createHttpClient();
-    HttpPost request = new HttpPost(getSentResourceUrl());
-    request.setEntity(
-        new InputStreamEntity(
-            Objects.requireNonNull(
-                this.getClass().getResourceAsStream("FreeBusyRequest_" + FREE_BUSY_UID + ".ics"))));
+  private HttpResponse getAppointment(Account organizer, UUID calendarUUID) throws Exception {
+    HttpGet request = new HttpGet(getAccountCalendarUrl(organizer, calendarUUID));
     request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
-    request.setHeader(DavProtocol.HEADER_RECIPIENT, "mailto:" + attendee.getName());
-    request.setHeader(DavProtocol.HEADER_ORIGINATOR, "mailto:" + organizer.getName());
-    return client.execute(request);
+    return createHttpClientWith(organizer).execute(request);
   }
 
-  private HttpResponse deleteAppointmentWithCalDAV() throws Exception {
-    HttpClient client = createHttpClient();
-    HttpDelete request = new HttpDelete(getCalDavResourceUrl());
-    request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
-    return client.execute(request);
+  private String getAccountCalendarUrl(Account account, UUID calendarUUID) {
+    String accountEmail = URLEncoder.encode(account.getName(), StandardCharsets.UTF_8);
+    return DAV_BASE_URL + "/home/" + accountEmail + "/Calendar/" + calendarUUID + ".ics";
   }
 
-  private HttpResponse getAppointmentWithCalDAV() throws Exception {
-    HttpClient client = createHttpClient();
-    HttpGet request = new HttpGet(getCalDavResourceUrl());
-    request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
-    return client.execute(request);
-  }
-
-  /**
-   * Returns CalDav Resource URL for this test suite {@link #organizer} and calendar {@link
-   * #CALENDAR_UID}
-   *
-   * @return url endpoint to make the request
-   */
-  private String getCalDavResourceUrl() {
-    return "http://localhost:"
-        + PORT
-        + DAV_BASE_PATH
-        + "/home/"
-        + URLEncoder.encode(organizer.getName(), StandardCharsets.UTF_8)
-        + "/Calendar/"
-        + DavServletTest.CALENDAR_UID
-        + ".ics";
-  }
-
-  private String getSentResourceUrl() {
-    return "http://localhost:"
-        + PORT
-        + DAV_BASE_PATH
-        + "/home/"
-        + URLEncoder.encode(organizer.getName(), StandardCharsets.UTF_8)
-        + "/Sent";
-  }
-
-  private HttpClient createHttpClient() throws Exception {
-    final AuthToken authToken = AuthProvider.getAuthToken(organizer);
+  private HttpClient createHttpClientWith(Account account) throws Exception {
+    AuthToken authToken = AuthProvider.getAuthToken(account);
     BasicCookieStore cookieStore = new BasicCookieStore();
     BasicClientCookie cookie =
         new BasicClientCookie(ZimbraCookie.authTokenCookieName(false), authToken.getEncoded());
@@ -213,54 +235,11 @@ class DavServletTest {
     return HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build();
   }
 
-  /**
-   * Added for bug CO-839 (create appointment with CalDAV)
-   *
-   * @throws Exception
-   */
-  @Test
-  void shouldCreateAppointmentUsingCalDAV() throws Exception {
-    final HttpResponse createResponse = createAppointmentWithCalDAV();
-    Assertions.assertEquals(HttpStatus.SC_CREATED, createResponse.getStatusLine().getStatusCode());
-    final HttpResponse appointmentWithCalDAV = getAppointmentWithCalDAV();
-    Assertions.assertEquals(
-        HttpStatus.SC_OK, appointmentWithCalDAV.getStatusLine().getStatusCode());
-    final String createdAppointment =
-        new String(getAppointmentWithCalDAV().getEntity().getContent().readAllBytes());
-    Assertions.assertTrue(createdAppointment.contains(CALENDAR_UID));
+  private static int statusCodeFrom(HttpResponse response) {
+    return response.getStatusLine().getStatusCode();
   }
 
-  /**
-   * Added for bug CO-840 (delete appointment with CalDAV)
-   *
-   * @throws Exception
-   */
-  @Test
-  void shouldDeleteAppointmentUsingCalDAV() throws Exception {
-    Assertions.assertEquals(
-        HttpStatus.SC_CREATED, createAppointmentWithCalDAV().getStatusLine().getStatusCode());
-    Assertions.assertEquals(
-        HttpStatus.SC_OK, getAppointmentWithCalDAV().getStatusLine().getStatusCode());
-    Assertions.assertEquals(
-        HttpStatus.SC_NO_CONTENT, deleteAppointmentWithCalDAV().getStatusLine().getStatusCode());
-    Assertions.assertEquals(
-        HttpStatus.SC_NOT_FOUND, getAppointmentWithCalDAV().getStatusLine().getStatusCode());
-  }
-
-  /**
-   * Added for bug CO-823: request freebusy of attendee
-   *
-   * @throws Exception
-   */
-  @Test
-  void shouldReturnUIDWhenRequestingFreeBusyOfAttendee() throws Exception {
-    Assertions.assertEquals(
-        HttpStatus.SC_CREATED, createAppointmentWithCalDAV().getStatusLine().getStatusCode());
-    final HttpResponse response = requestAttendeeFreeBusy();
-    Assertions.assertEquals(
-        HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-    final String freeBusyResponse = new String(response.getEntity().getContent().readAllBytes());
-    System.out.println(freeBusyResponse);
-    Assertions.assertTrue(freeBusyResponse.contains("UID:" + FREE_BUSY_UID));
+  private static String readContentFrom(HttpResponse response) throws IOException {
+    return new String(response.getEntity().getContent().readAllBytes());
   }
 }

@@ -1,0 +1,55 @@
+services:
+  build:
+    build:
+      context: ./../../
+      dockerfile: ./docker/jetty-run/Dockerfile-build
+    profiles: [ "do-not-start" ]
+    volumes:
+      - "./../../:/app"
+      - "~/.m2:/root/.m2"
+
+  app:
+    build:
+      context: ./../../
+      dockerfile: ./docker/jetty-run/Dockerfile
+    depends_on:
+      ldap:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    hostname: docker.app.local
+    ports:
+      - "7070:7070"
+      - "7071:7071"
+      - "5005:5005"
+    volumes:
+      - "./../../:/app"
+      - "~/.m2:/root/.m2"
+
+  ldap:
+    image: carbonio/ce-ldap-u20
+    hostname: ldap.mail.local
+    healthcheck:
+      test: nc -z localhost 2812 || exit 1 # check monit up and running
+      retries: 20
+    ports:
+      - "389:389"
+    volumes:
+      - "./../../store/build/ldap:/opt/zextras/common/etc/openldap/zimbra"
+      - "./entrypoint-ldap.sh:/entrypoint-ldap.sh"
+    entrypoint: ["/entrypoint-ldap.sh"]
+
+  db:
+    image: mariadb:10.4.31-focal
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized" ]
+      retries: 20
+    environment:
+      MARIADB_USER: zextras
+      MARIADB_PASSWORD: zextras
+      MARIADB_ROOT_PASSWORD: zimbra
+    volumes:
+      - "../../store/db/db.sql:/docker-entrypoint-initdb.d/01-db.sql"
+      - "../../store/target/versions-init.sql:/docker-entrypoint-initdb.d/02-versions-init.sql"
+    ports:
+      - "3306:3306"

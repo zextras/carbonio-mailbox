@@ -844,11 +844,9 @@ public class MailSender {
       }
 
       // save new contacts and update rankings
-      // skip this step if this is a delegate request (bug 44329)
-      if (!isDelegatedRequest && !sentAddresses.isEmpty() && octxt != null) {
-        assert (authMailbox == mbox);
+      if (!sentAddresses.isEmpty() && octxt != null) {
         try {
-          ContactRankings.increment(octxt.getAuthenticatedUser().getId(), sentAddresses);
+          ContactRankings.increment(mbox.getAccountId(), sentAddresses);
         } catch (Exception e) {
           ZimbraLog.smtp.error("Failed to update contact rankings", e);
         }

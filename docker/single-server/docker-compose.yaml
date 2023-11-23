@@ -1,0 +1,55 @@
+version: "3.9"
+
+services:
+  carbonio-ce-ubuntu-focal:
+    profiles:
+      - ubuntu-focal
+    build:
+      context: ./../../
+      dockerfile: docker/single-server/Dockerfile
+    entrypoint: "/opt/zextras/entrypoint.sh"
+    extra_hosts:
+      - "carbonio-system.svc.cluster.local:127.0.0.1"
+    healthcheck:
+      interval: 60s
+      retries: 10
+      start_period: 20s
+      test: nc -z localhost 443 || exit 1
+      timeout: 10s
+    hostname: carbonio.carbonio-system.svc.cluster.local
+    ports:
+      - "25:25"
+      - "110:110"
+      - "443:443"
+      - "465:465"
+      - "587:587"
+      - "6071:6071"
+      - "7071:7071"
+      - "8080:8080"
+    user: zextras
+  carbonio-ce-rocky-8:
+    profiles:
+      - rocky-8
+    build:
+      context: ./../../
+      dockerfile: docker/single-server/Dockerfile-rocky-8
+    entrypoint: "/opt/zextras/entrypoint.sh"
+    extra_hosts:
+      - "carbonio-system.svc.cluster.local:127.0.0.1"
+    healthcheck:
+      interval: 60s
+      retries: 10
+      start_period: 20s
+      test: nc -z localhost 443 || exit 1
+      timeout: 10s
+    hostname: carbonio.carbonio-system.svc.cluster.local
+    ports:
+      - "25:25"
+      - "110:110"
+      - "443:443"
+      - "465:465"
+      - "587:587"
+      - "6071:6071"
+      - "7071:7071"
+      - "8080:8080"
+    user: zextras

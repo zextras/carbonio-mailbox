@@ -1,7 +1,8 @@
 pkgname="carbonio-common-appserver-db"
-pkgver="4.10.1"
+pkgver="4.11.0"
 pkgrel="1"
 pkgdesc="Carbonio Core Mailbox DB Files"
+pkgdesclong="Transactional package - replaced by carbonio-appserver-db - will be removed in next Carbonio release 24.1.0"
 arch=('x86_64')
 maintainer="Zextras <packages@zextras.com>"
 copyright=(
@@ -17,8 +18,5 @@ section="mail"
 priority="optional"
 
 package() {
-  cd "${srcdir}"/../../staging
-
-  install -D "store/target/versions-init.sql" \
-    "${pkgdir}/opt/zextras/db/versions-init.sql"
+    cd "${srcdir}"
 }

@@ -94,6 +94,11 @@ public class ContactSpec implements SpecifyContact<NewContactAttr,NewContactGrou
         this.attrs.add(attr);
     }
 
+    public ContactSpec addEmail(String value) {
+        this.attrs.add(NewContactAttr.fromNameAndValue("email", value));
+        return this;
+    }
+
     @Override
     public NewContactAttr addAttrWithName(String name) {
         final NewContactAttr nca = new NewContactAttr(name);

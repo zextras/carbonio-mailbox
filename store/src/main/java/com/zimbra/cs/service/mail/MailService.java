@@ -188,6 +188,7 @@ public final class MailService implements DocumentService {
         MailConstants.GET_EFFECTIVE_FOLDER_PERMS_REQUEST, new GetEffectiveFolderPerms());
 
     dispatcher.registerHandler(MailConstants.AUTO_COMPLETE_REQUEST, new AutoComplete());
+    dispatcher.registerHandler(MailConstants.FULL_AUTO_COMPLETE_REQUEST, new FullAutoComplete());
     dispatcher.registerHandler(MailConstants.RANKING_ACTION_REQUEST, new RankingAction());
 
     // share

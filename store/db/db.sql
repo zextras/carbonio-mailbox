@@ -207,6 +207,7 @@ CREATE TABLE scheduled_task (
    INDEX i_mailbox_id (mailbox_id)
 ) ENGINE = InnoDB;
 
+
 -- Tracks ACLs to be pushed to LDAP
 CREATE TABLE pending_acl_push (
    mailbox_id  INTEGER UNSIGNED NOT NULL,

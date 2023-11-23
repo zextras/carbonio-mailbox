@@ -5,24 +5,13 @@
 
 package com.zimbra.cs.mailbox;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.regex.Pattern;
-
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.zextras.mailbox.account.usecase.FolderUtil;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.common.service.ServiceException;
@@ -50,6 +39,17 @@ import com.zimbra.cs.mailbox.Contact.Attachment;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.type.GalSearchType;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
 
 public class ContactAutoComplete {
     public static final class AutoCompleteResult {
@@ -544,7 +544,6 @@ public class ContactAutoComplete {
 
     /**
      *  Add contact entry to result
-     *  @see com.zimbra.cs.mailbox.OfflineGalContactAutoComplete
      */
     protected void addEntry(ContactEntry entry, AutoCompleteResult result) {
         result.addEntry(entry);
@@ -746,16 +745,31 @@ public class ContactAutoComplete {
         }
     }
 
+    /**
+     * Returns Folders of type {@link com.zimbra.cs.mailbox.MailItem.Type#CONTACT} and Mountpoints.
+     * In case of delegated request mountpoints are skipped.
+     * If a list of folderIds is provided it will search directly on them, else starting from root folder recursively.
+     *
+     * @param folderIDs list of folder ids where to search on
+     * @return list of local folders and mountpoints where to search for contacts
+     *
+     * @throws ServiceException
+     */
     private Pair<List<Folder>, Map<ItemId, Mountpoint>> getLocalRemoteContactFolders(Collection<Integer> folderIDs) throws ServiceException {
         List<Folder> folders = new ArrayList<Folder>();
         Map<ItemId, Mountpoint> mountpoints = new HashMap<ItemId, Mountpoint>();
         Pair<List<Folder>, Map<ItemId, Mountpoint>> pair = new Pair<List<Folder>, Map<ItemId,Mountpoint>>(folders, mountpoints);
         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(getRequestedAcctId());
         if (folderIDs == null) {
-            for (Folder folder : mbox.getFolderList(octxt, SortBy.NONE)) {
+            if (!mbox.canAccessFolder(octxt, Mailbox.ID_FOLDER_USER_ROOT)) {
+                throw ServiceException.FAILURE("Permission denied: cannot access requested folder", null);
+            }
+            final ItemId rootItemId = new ItemId(mbox, Mailbox.ID_FOLDER_USER_ROOT);
+            final Set<Folder> allFolders = FolderUtil.flattenAndSortFolderTree(mbox.getFolderTree(octxt, rootItemId, true));
+            for (Folder folder : allFolders) {
                 if (folder.getDefaultView() != MailItem.Type.CONTACT || folder.inTrash()) {
                     continue;
-                } else if (folder instanceof Mountpoint) {
+                } else if (folder instanceof Mountpoint && !(octxt.isDelegatedRequest(mbox))) {
                     Mountpoint mp = (Mountpoint) folder;
                     mountpoints.put(mp.getTarget(), mp);
                     if (mIncludeSharedFolders) {

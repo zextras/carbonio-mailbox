@@ -13,6 +13,7 @@ import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.AdminExtConstants;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.ZimbraNamespace;
+import com.zimbra.doc.soap.DocExcludedServices;
 import com.zimbra.soap.JaxbUtil;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -312,7 +313,11 @@ public class WsdlGenerator {
     Map<String, List<String>> packageToRequestListsMap = Maps.newHashMap();
     for (Class<?> currClass : JaxbUtil.getJaxbRequestAndResponseClasses()) {
       String requestName = currClass.getSimpleName();
-      if (!requestName.endsWith("Request")) continue;
+
+      if (!requestName .endsWith("Request") || DocExcludedServices.isExcludeRequest(requestName)) {
+        continue;
+      }
+
       String pkgName = currClass.getPackage().getName();
       List<String> reqList;
       if (packageToRequestListsMap.containsKey(pkgName)) {
@@ -418,16 +423,22 @@ public class WsdlGenerator {
       List<WsdlInfoForNamespace> nsInfoList,
       WsdlServiceInfo zcsAdminService,
       Map<String, List<String>> packageToRequestListMap) {
-    nsInfoList.add(
-        WsdlInfoForNamespace.create(
-            AdminConstants.NAMESPACE_STR,
-            zcsAdminService,
-            packageToRequestListMap.get("com.zimbra.soap.admin.message")));
-    nsInfoList.add(
-        WsdlInfoForNamespace.create(
-            AdminExtConstants.NAMESPACE_STR,
-            zcsAdminService,
-            packageToRequestListMap.get("com.zimbra.soap.adminext.message")));
+    List<String> requestsMessage = packageToRequestListMap.get("com.zimbra.soap.admin.message");
+    if (requestsMessage != null) {
+      nsInfoList.add(
+              WsdlInfoForNamespace.create(
+                      AdminConstants.NAMESPACE_STR,
+                      zcsAdminService,
+                      requestsMessage));
+    }
+    List<String> requests = packageToRequestListMap.get("com.zimbra.soap.adminext.message");
+    if (requests != null) {
+      nsInfoList.add(
+              WsdlInfoForNamespace.create(
+                      AdminExtConstants.NAMESPACE_STR,
+                      zcsAdminService,
+                      requests));
+    }
   }
 
   private static void addUserNamespaceInfo(
