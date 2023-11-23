@@ -1,5 +1,5 @@
 pkgname="carbonio-common-appserver-docs"
-pkgver="4.10.1"
+pkgver="4.11.0"
 pkgrel="1"
 pkgdesc="Carbonio Core Mailbox Docs"
 arch=('x86_64')

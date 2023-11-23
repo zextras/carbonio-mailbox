@@ -1,5 +1,5 @@
 pkgname="carbonio-common-appserver-db"
-pkgver="4.10.1"
+pkgver="4.11.0"
 pkgrel="1"
 pkgdesc="Carbonio Core Mailbox DB Files"
 pkgdesclong="Transactional package - replaced by carbonio-appserver-db - will be removed in next Carbonio release 24.1.0"
