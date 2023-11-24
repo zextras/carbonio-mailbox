@@ -1,5 +1,23 @@
 
 
+# [4.11.0](https://github.com/Zextras/carbonio-mailbox/compare/4.10.1...4.11.0) (2023-11-23)
+
+
+### Bug Fixes
+
+* [CO-851] search contacts also in shared accounts ([#384](https://github.com/Zextras/carbonio-mailbox/issues/384)) ([fa228b2](https://github.com/Zextras/carbonio-mailbox/commit/fa228b263bfbff320f6372e4d616c0494aaa1574))
+* [CO-851] use USER_ROOT for Autocomplete by default ([#385](https://github.com/Zextras/carbonio-mailbox/issues/385)) ([5080f5d](https://github.com/Zextras/carbonio-mailbox/commit/5080f5d72e0b8ed48ab35cf524de6820720c4a2c))
+* [CO-860] handle missing header in FB request made with iCalendar ([#376](https://github.com/Zextras/carbonio-mailbox/issues/376)) ([e9a53bb](https://github.com/Zextras/carbonio-mailbox/commit/e9a53bbae57d94f8dd5460c89c777260395e8ed6))
+* [CO-862] Autoprovisioning try to create account with domain ([#381](https://github.com/Zextras/carbonio-mailbox/issues/381)) ([140765a](https://github.com/Zextras/carbonio-mailbox/commit/140765ad354ba6d7f2e758f58f1ff365245816f3))
+* [CO-869] [MariaDB] Upgrade to 10.4.31 - max index length 3072 bytes ([#380](https://github.com/Zextras/carbonio-mailbox/issues/380)) ([a7bce3a](https://github.com/Zextras/carbonio-mailbox/commit/a7bce3a9c721c13c4efd92377784694a23926520))
+* [COR-1012] handle zero domain account quota ([#365](https://github.com/Zextras/carbonio-mailbox/issues/365)) ([de25ade](https://github.com/Zextras/carbonio-mailbox/commit/de25aded93ef1e704c29994294e48d62905ec023))
+
+
+### Features
+
+* [CO-851] add contact to shared account contact list ([#368](https://github.com/Zextras/carbonio-mailbox/issues/368)) ([23f7bd3](https://github.com/Zextras/carbonio-mailbox/commit/23f7bd3b78903315fd14f567b060d952ca9fbe6b))
+* [CO-867]  Custom timestamp format support for Autoprovisioning using external Directory server ([#383](https://github.com/Zextras/carbonio-mailbox/issues/383)) ([774192e](https://github.com/Zextras/carbonio-mailbox/commit/774192e251ac1411d8dc58bbe39a6f49dfe61a63))
+
 ## [4.10.1](https://github.com/Zextras/carbonio-mailbox/compare/4.10.0...4.10.1) (2023-11-09)
 
 # [4.10.0](https://github.com/Zextras/carbonio-mailbox/compare/4.9.1...4.10.0) (2023-10-20)
