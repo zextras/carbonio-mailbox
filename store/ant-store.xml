@@ -97,10 +97,6 @@
       <param name="getter.output" value="ZAttrCalendarResource.java"/>
     </antcall>
     <antcall target="generate-getter">
-      <param name="getter.class" value="cos"/>
-      <param name="getter.output" value="ZAttrCos.java"/>
-    </antcall>
-    <antcall target="generate-getter">
       <param name="getter.class" value="domain"/>
       <param name="getter.output" value="ZAttrDomain.java"/>
     </antcall>
