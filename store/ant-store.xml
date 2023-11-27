@@ -92,10 +92,6 @@
       <param name="getter.class" value="calendarResource"/>
       <param name="getter.output" value="ZAttrCalendarResource.java"/>
     </antcall>
-    <antcall target="generate-getter">
-      <param name="getter.class" value="distributionList"/>
-      <param name="getter.output" value="ZAttrDistributionList.java"/>
-    </antcall>
     <antcall target="generate-provisioning"/>
   </target>
 
