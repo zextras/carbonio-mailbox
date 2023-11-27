@@ -89,10 +89,6 @@
 
   <target name="generate-getters" description="generate methods for attributes in attrs.xml">
     <antcall target="generate-getter">
-      <param name="getter.class" value="account"/>
-      <param name="getter.output" value="ZAttrAccount.java"/>
-    </antcall>
-    <antcall target="generate-getter">
       <param name="getter.class" value="calendarResource"/>
       <param name="getter.output" value="ZAttrCalendarResource.java"/>
     </antcall>
