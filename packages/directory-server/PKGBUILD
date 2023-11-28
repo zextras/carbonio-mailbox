@@ -1,0 +1,101 @@
+pkgname="carbonio-directory-server"
+pkgver="4.11.0"
+pkgrel="1"
+pkgdesc="An open-source, community-driven email server"
+maintainer="Zextras <packages@zextras.com>"
+copyright=(
+  "2022, Zextras <https://www.zextras.com>"
+  "2022, Synacor, Inc."
+)
+license=(
+  "AGPL-3.0-only"
+  "GPL-2.0-only"
+)
+url="https://github.com/zextras"
+section="mail"
+priority="optional"
+arch=('x86_64')
+depends=(
+  "carbonio-core"
+  "carbonio-prometheus-openldap-exporter"
+)
+makedepends=(
+  "rsync"
+)
+
+package() {
+  cd "${srcdir}"/../../staging
+
+  install -D store/ldap/conf/externaldirsync/Exchange2000.xml \
+    "${pkgdir}/opt/zextras/conf/externaldirsync/Exchange2000.xml"
+  install -D store/ldap/conf/externaldirsync/Exchange2003.xml \
+    "${pkgdir}/opt/zextras/conf/externaldirsync/Exchange2003.xml"
+  install -D store/ldap/conf/externaldirsync/Exchange5.5.xml \
+    "${pkgdir}/opt/zextras/conf/externaldirsync/Exchange5.5.xml"
+  install -D store/ldap/conf/externaldirsync/domino.xml \
+    "${pkgdir}/opt/zextras/conf/externaldirsync/domino.xml"
+  install -D store/ldap/conf/externaldirsync/novellGroupWise.xml \
+    "${pkgdir}/opt/zextras/conf/externaldirsync/novellGroupWise.xml"
+  install -D store/ldap/conf/externaldirsync/openldap.xml \
+    "${pkgdir}/opt/zextras/conf/externaldirsync/openldap.xml"
+  install -D store/ldap/src/migrations/migrate20110615-AddDynlist.pl \
+    "${pkgdir}/opt/zextras/libexec/scripts/migrate20110615-AddDynlist.pl"
+  install -D store/ldap/src/migrations/migrate20110721-AddUnique.pl \
+    "${pkgdir}/opt/zextras/libexec/scripts/migrate20110721-AddUnique.pl"
+  install -D store/ldap/src/migrations/migrate20111019-UniqueZimbraId.pl \
+    "${pkgdir}/opt/zextras/libexec/scripts/migrate20111019-UniqueZimbraId.pl"
+  install -D store/ldap/src/migrations/migrate20120210-AddSearchNoOp.pl \
+    "${pkgdir}/opt/zextras/libexec/scripts/migrate20120210-AddSearchNoOp.pl"
+  install -D store/ldap/src/migrations/migrate20120507-UniqueDKIMSelector.pl \
+    "${pkgdir}/opt/zextras/libexec/scripts/migrate20120507-UniqueDKIMSelector.pl"
+  install -D store/ldap/src/migrations/migrate20140728-AddSSHA512.pl \
+    "${pkgdir}/opt/zextras/libexec/scripts/migrate20140728-AddSSHA512.pl"
+  install -D store/ldap/src/migrations/migrate20141022-AddTLSBits.pl \
+    "${pkgdir}/opt/zextras/libexec/scripts/migrate20141022-AddTLSBits.pl"
+  install -D store/ldap/src/migrations/migrate20150930-AddSyncpovSessionlog.pl \
+    "${pkgdir}/opt/zextras/libexec/scripts/migrate20150930-AddSyncpovSessionlog.pl"
+  install -D store/ldap/src/migrations/migrate20230217-AddArgon2.pl \
+    "${pkgdir}/opt/zextras/libexec/scripts/migrate20230217-AddArgon2.pl"
+  install -D store/ldap/src/migrations/migrate-23.5.0-01-COS-AddFeatures.pl \
+    "${pkgdir}/opt/zextras/libexec/scripts/migrate-23.5.0-01-COS-AddFeatures.pl"
+
+  install -Ddm755 store/build/ldap \
+    "${pkgdir}/opt/zextras/common/etc/openldap/zimbra"
+  rsync -a store/build/ldap "${pkgdir}/opt/zextras/common/etc/openldap/zimbra"
+}
+
+postinst__apt() {
+  mkdir -p /opt/zextras/data/ldap/state/run
+  mkdir -p /opt/zextras/data/ldap/config
+  mkdir -p /opt/zextras/data/ldap/mdb/db
+  chown -R zextras:zextras /opt/zextras/data/ldap
+
+  chown -R root:root /opt/zextras/common/etc/openldap
+
+  if [ "$1" = "configure" ] && [ ! -z "$2" ]; then
+    echo "*Starting LDAP upgrade..."
+    su - zextras -c "/opt/zextras/bin/ldap stop"
+    su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
+    su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
+    su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
+    su - zextras -c "/opt/zextras/bin/ldap restart"
+  fi
+}
+
+postinst__yum() {
+  mkdir -p /opt/zextras/data/ldap/state/run
+  mkdir -p /opt/zextras/data/ldap/config
+  mkdir -p /opt/zextras/data/ldap/mdb/db
+  chown -R zextras:zextras /opt/zextras/data/ldap
+
+  chown -R root:root /opt/zextras/common/etc/openldap
+
+  if [ "$1" -eq 2 ]; then
+    echo "*Starting LDAP upgrade..."
+    su - zextras -c "/opt/zextras/bin/ldap stop"
+    su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
+    su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
+    su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
+    su - zextras -c "/opt/zextras/bin/ldap restart"
+  fi
+}
