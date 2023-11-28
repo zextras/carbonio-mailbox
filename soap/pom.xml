@@ -157,7 +157,7 @@
                 <taskdef classpathref="maven.plugin.classpath"
                   resource="net/sf/antcontrib/antlib.xml"/>
                 <ant antfile="${basedir}/ant-generate-soap-docs.xml">
-                  <target name="generate-soap-api-doc"/>
+                  <target name="wsdl-file"/>
                 </ant>
               </target>
             </configuration>
