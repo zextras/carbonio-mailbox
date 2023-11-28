@@ -517,22 +517,9 @@
   </parent>
 
   <build>
+
+
     <plugins>
-      <!-- This is a hack: some code is generated from same module, so we compile, generate code,
-        compile again, run tests, etc. TODO: find a way to move generator classes on another module -->
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>pre-compile</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- Generate build-info, getters and rights -->
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <dependencies>
@@ -554,7 +541,7 @@
           </dependency>
         </dependencies>
         <executions>
-          <!-- generate sources -->
+          <!-- generate buildinfo -->
           <execution>
             <configuration>
               <target>
@@ -562,7 +549,7 @@
                 <taskdef classpathref="maven.plugin.classpath"
                   resource="net/sf/antcontrib/antlib.xml"/>
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-sources"/>
+                  <target name="generate-buildinfo"/>
                 </ant>
               </target>
             </configuration>
@@ -572,32 +559,17 @@
             <id>generate-buildinfo</id>
             <phase>generate-sources</phase>
           </execution>
-          <!-- LDAP Config gen before packaging -->
+          <!-- Generate rights, LDAP schema and  -->
           <execution>
+            <id>generate-resources</id>
+            <phase>generate-test-sources</phase>
             <configuration>
               <target>
                 <property name="maven_compile_classpath" refid="maven.compile.classpath"/>
                 <taskdef classpathref="maven.plugin.classpath"
                   resource="net/sf/antcontrib/antlib.xml"/>
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-ldap-config"/>
-                </ant>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <id>generate-ldap-config</id>
-            <phase>prepare-package</phase>
-          </execution>
-          <!-- Prepare required files for testing -->
-          <execution>
-            <id>test</id>
-            <phase>generate-test-sources</phase>
-            <configuration>
-              <target>
-                <ant antfile="${basedir}/ant-store.xml">
-                  <target name="copy-msgs-bundle"/>
+                  <target name="generate-resources"/>
                 </ant>
               </target>
             </configuration>
@@ -605,6 +577,7 @@
               <goal>run</goal>
             </goals>
           </execution>
+          <!-- Clean ant resources -->
           <execution>
             <id>clean</id>
             <phase>clean</phase>

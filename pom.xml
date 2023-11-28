@@ -952,6 +952,14 @@
 
   <!-- Define common plugins used by each project -->
   <build>
+
+    <extensions>
+      <extension>
+        <groupId>co.leantechniques</groupId>
+        <artifactId>maven-buildtime-extension</artifactId>
+        <version>2.0.2</version>
+      </extension>
+    </extensions>
     <pluginManagement>
       <plugins>
         <plugin>
