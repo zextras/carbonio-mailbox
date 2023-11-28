@@ -8,9 +8,9 @@ url="https://zextras.com"
 section="mail"
 priority="optional"
 
-depends=(
-  "carbonio-core"
-)
+provides=('carbonio-common-appserver-db')
+
+conflicts=('carbonio-common-appserver-db')
 
 makedepends=(
   "rsync"
