@@ -518,21 +518,6 @@
 
   <build>
     <plugins>
-      <!-- This is a hack: some code is generated from same module, so we compile, generate code,
-        compile again, run tests, etc. TODO: find a way to move generator classes on another module -->
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>pre-compile</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- Generate build-info, getters and rights -->
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <dependencies>
@@ -554,7 +539,7 @@
           </dependency>
         </dependencies>
         <executions>
-          <!-- generate sources -->
+          <!-- Generate Build Info -->
           <execution>
             <configuration>
               <target>
@@ -562,15 +547,32 @@
                 <taskdef classpathref="maven.plugin.classpath"
                   resource="net/sf/antcontrib/antlib.xml"/>
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-sources"/>
+                  <target name="generate-buildinfo"/>
                 </ant>
               </target>
             </configuration>
             <goals>
               <goal>run</goal>
             </goals>
-            <id>generate-buildinfo</id>
             <phase>generate-sources</phase>
+            <id>generate-buildinfo</id>
+          </execution>
+          <!-- Generate ZAttr* and Rights -->
+          <execution>
+            <configuration>
+              <target>
+                <property name="maven_compile_classpath" refid="maven.compile.classpath"/>
+                <taskdef classpathref="maven.plugin.classpath"
+                  resource="net/sf/antcontrib/antlib.xml"/>
+                <ant antfile="${basedir}/ant-store.xml">
+                  <target name="generate-zattr-rights"/>
+                </ant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <id>generate-zattr-rights</id>
           </execution>
           <!-- LDAP Config gen before packaging -->
           <execution>
