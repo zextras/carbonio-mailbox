@@ -45,8 +45,8 @@
   </target>
 
   <target name="generate-buildinfo" depends="build-init, set-dev-version">
-    <mkdir dir="${maven.build.dir}/buildinfo/com/zimbra/cs/util"/>
-    <echo file="${maven.build.dir}/buildinfo/com/zimbra/cs/util/BuildInfoGenerated.java">
+    <mkdir dir="${maven.build.dir}/generated-sources/buildinfo/com/zimbra/cs/util"/>
+    <echo file="${maven.build.dir}/generated-sources/buildinfo/com/zimbra/cs/util/BuildInfoGenerated.java">
       package com.zimbra.cs.util;
 
       class BuildInfoGenerated {
