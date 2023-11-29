@@ -7,10 +7,8 @@ maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 section="mail"
 priority="optional"
-
-provides=('carbonio-common-appserver-db')
-
 conflicts=('carbonio-common-appserver-db')
+replaces=('carbonio-common-appserver-db')
 
 makedepends=(
   "rsync"
@@ -22,11 +20,11 @@ package() {
   install -D "store/target/versions-init.sql" \
     "${pkgdir}/opt/zextras/db/versions-init.sql"
   install -D "store/db/db.sql" \
-      "${pkgdir}/opt/zextras/db/db.sql"
+    "${pkgdir}/opt/zextras/db/db.sql"
   install -D "store/db/create_database.sql" \
-        "${pkgdir}/opt/zextras/db/create_database.sql"
+    "${pkgdir}/opt/zextras/db/create_database.sql"
 
   mkdir -p "${pkgdir}/opt/zextras/libexec/scripts/migrations"
   rsync -a "store/db/migration/" \
-      "${pkgdir}/opt/zextras/libexec/scripts/migrations"
+    "${pkgdir}/opt/zextras/libexec/scripts/migrations"
 }
