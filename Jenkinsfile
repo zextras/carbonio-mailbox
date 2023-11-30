@@ -18,7 +18,7 @@ def buildDebPackages(String flavor) {
 def getPackages() {
     return ["carbonio-appserver-conf","carbonio-appserver-db", "carbonio-appserver-service",
             "carbonio-appserver-store-libs", "carbonio-appserver-war", "carbonio-common-appserver-conf",
-            "carbonio-common-appserver-db", "carbonio-common-appserver-docs",
+            "carbonio-common-appserver-docs",
             "carbonio-common-appserver-native-lib", "carbonio-common-core-jar",
             "carbonio-common-core-libs"]
 }

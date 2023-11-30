@@ -23,9 +23,6 @@
       "name": "common-appserver-conf"
     },
     {
-      "name": "common-appserver-db"
-    },
-    {
       "name": "common-appserver-docs"
     },
     {
