@@ -2,7 +2,6 @@ package com.zimbra.cs.service.admin;
 
 import com.zextras.mailbox.soap.SoapExtension;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
-import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.admin.message.RenameAccountRequest;
@@ -15,17 +14,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 @Tag("api")
-class RenameAccountTest {
+class RenameAccountTest  {
   private static AccountCreator.Factory accountCreatorFactory;
-
-  @RegisterExtension
-  static SoapExtension soapExtension = new SoapExtension(8080, "com.zimbra.cs.service.admin.AdminService",
-      AdminConstants.ADMIN_SERVICE_URI);
 
   @BeforeAll
   static void setUp() throws Exception {
     accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance());
   }
+
+  @RegisterExtension
+  static SoapExtension soapExtension = new SoapExtension.Builder("com.zimbra.cs.service.admin.AdminService").create();
 
 
   @Test

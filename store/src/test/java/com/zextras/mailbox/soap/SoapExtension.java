@@ -32,15 +32,40 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
   private static Server server;
 
   private final int port;
+  private final String basePath;
+  private final String engineHandler;
 
-  public SoapExtension(int port, String engineHandler, String basePath) {
+  private SoapExtension(int port, String basePath, String engineHandler) {
     this.port = port;
     this.engineHandler = engineHandler;
     this.basePath = basePath;
   }
 
-  private final String engineHandler;
-  private final String basePath;
+  public static class Builder {
+
+    public Builder withPort(int port) {
+      this.port = port;
+      return this;
+    }
+
+    public Builder withBasePath(String basePath) {
+      this.basePath = basePath;
+      return this;
+    }
+
+    private int port = 8080;
+    private String basePath = "/";
+    private final String engineHandler;
+
+    public Builder(String engineHandler) {
+      this.engineHandler = engineHandler;
+    }
+
+    public SoapExtension create() {
+      return new SoapExtension(port, basePath, engineHandler);
+    }
+  }
+
 
   @Override
   public void beforeAll(ExtensionContext context) throws Exception {
