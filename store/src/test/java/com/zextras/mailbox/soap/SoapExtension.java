@@ -13,7 +13,9 @@ import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.servlet.FirstServlet;
 import com.zimbra.soap.SoapServlet;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -33,11 +35,11 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
 
   private final int port;
   private final String basePath;
-  private final String engineHandler;
+  private final List<String> engineHandlers;
 
-  private SoapExtension(int port, String basePath, String engineHandler) {
+  private SoapExtension(int port, String basePath, List<String> engineHandlers) {
     this.port = port;
-    this.engineHandler = engineHandler;
+    this.engineHandlers = engineHandlers;
     this.basePath = basePath;
   }
 
@@ -53,16 +55,17 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
       return this;
     }
 
-    private int port = 8080;
-    private String basePath = "/";
-    private final String engineHandler;
-
-    public Builder(String engineHandler) {
-      this.engineHandler = engineHandler;
+    public Builder addEngineHandler(String engineHandler) {
+      this.engineHandlers.add(engineHandler);
+      return this;
     }
 
+    private int port = 8080;
+    private String basePath = "/";
+    private final List<String> engineHandlers = new ArrayList<>();
+
     public SoapExtension create() {
-      return new SoapExtension(port, basePath, engineHandler);
+      return new SoapExtension(port, basePath, engineHandlers);
     }
   }
 
@@ -82,7 +85,11 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
     final ServletHolder firstServlet = new ServletHolder(FirstServlet.class);
     firstServlet.setInitOrder(1);
     final ServletHolder soapServlet = new ServletHolder(SoapServlet.class);
-    soapServlet.setInitParameter("engine.handler.0", engineHandler);
+    int i = 0;
+    for (String engineHandler: engineHandlers) {
+      soapServlet.setInitParameter("engine.handler." + i, engineHandler);
+      i++;
+    }
     soapServlet.setInitOrder(2);
     server =
         new JettyServerFactory()
