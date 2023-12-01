@@ -10,7 +10,6 @@ import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
-import com.zimbra.cs.httpclient.URLUtil;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.soap.JaxbUtil;
 import java.net.URI;
@@ -29,6 +28,15 @@ import org.apache.http.impl.cookie.BasicClientCookie;
  */
 public class SoapClient {
 
+  /**
+   * Endpoint in form of http://<host>:<port>/<basePath>
+   */
+  private String endpoint;
+
+  public SoapClient(String endpoint) {
+    this.endpoint = endpoint;
+  }
+
   public static class Request {
 
     public Request setSoapBody(Element soapBody) {
@@ -46,6 +54,11 @@ public class SoapClient {
       return this;
     }
 
+    private Request setBaseURL(String baseURL) {
+      this.url = baseURL;
+      return this;
+    }
+
     public Request setRequestedAccount(Account requestedAccount) {
       this.requestedAccount = requestedAccount;
       return this;
@@ -54,10 +67,11 @@ public class SoapClient {
     private Element soapBody;
     private Account caller;
     private Account requestedAccount;
+    private String url = "/";
 
     public HttpResponse execute() throws Exception {
-      AuthToken authToken = AuthProvider.getAuthToken(caller);
-      final String soapUrl = URLUtil.getSoapURL(caller.getServer(), true);
+      AuthToken authToken = AuthProvider.getAuthToken(caller, caller.isIsAdminAccount());
+      final String soapUrl = this.url;
       BasicCookieStore cookieStore = new BasicCookieStore();
       BasicClientCookie cookie =
           new BasicClientCookie(ZimbraCookie.authTokenCookieName(false), authToken.getEncoded());
@@ -84,7 +98,7 @@ public class SoapClient {
   }
 
   public Request newRequest() {
-    return new Request();
+    return new Request().setBaseURL(this.endpoint);
   }
 
   /**

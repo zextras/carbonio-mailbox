@@ -4,6 +4,13 @@
 
 package com.zimbra.cs.dav.service;
 
+import static com.icegreen.greenmail.util.ServerSetup.PROTOCOL_SMTP;
+import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
+import static com.zextras.mailbox.util.MailboxTestUtil.createRandomAccountForDefaultDomain;
+import static com.zimbra.cs.mailclient.smtp.SmtpConfig.DEFAULT_HOST;
+import static com.zimbra.cs.mailclient.smtp.SmtpConfig.DEFAULT_PORT;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.util.JettyServerFactory;
@@ -15,6 +22,10 @@ import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.dav.CalDavCreateAppointmentRequestBuilder;
 import com.zimbra.cs.dav.CalDavFreeBusyRequestBuilder;
 import com.zimbra.cs.service.AuthProvider;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -28,21 +39,11 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.junit.jupiter.api.*;
-
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.UUID;
-
-import static com.icegreen.greenmail.util.ServerSetup.PROTOCOL_SMTP;
-import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
-import static com.zextras.mailbox.util.MailboxTestUtil.createRandomAccountForDefaultDomain;
-import static com.zimbra.cs.mailclient.smtp.SmtpConfig.DEFAULT_HOST;
-import static com.zimbra.cs.mailclient.smtp.SmtpConfig.DEFAULT_PORT;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("api")
 class DavServletTest {
@@ -58,7 +59,10 @@ class DavServletTest {
     MailboxTestUtil.setUp();
     greenMail = new GreenMail(new ServerSetup[]{ new ServerSetup(DEFAULT_PORT, DEFAULT_HOST, PROTOCOL_SMTP) });
     greenMail.start();
-    server = JettyServerFactory.create(PORT, Map.of(DAV_BASE_PATH + "/*", new ServletHolder(DavServlet.class)));
+    server = new JettyServerFactory()
+        .withPort(PORT)
+        .addServlet(DAV_BASE_PATH + "/*", new ServletHolder(DavServlet.class))
+        .create();
     server.start();
   }
 

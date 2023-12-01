@@ -17,6 +17,7 @@ public class JettyServerFactory {
 
   private Map<String, ServletHolder> servlets = new HashMap<>();
   private int port = 7070;
+  private String host = "localhost";
 
   public JettyServerFactory withPort(int port) {
     this.port = port;
@@ -32,24 +33,18 @@ public class JettyServerFactory {
   /**
    * Creates a server instance (not yet started).
    *
-   * @param port listening port of the server
-   * @param servlets {@link Map} of servlets with key path of servlet, value {@link ServletHolder}
    * @return {@link Server}
-   * @deprecated use {@link #create()} instance method
    * @throws Exception
    */
-  public static Server create(int port, Map<String, ServletHolder> servlets) throws Exception {
+  public Server create() throws Exception {
     final Server server = new Server();
     ServerConnector connector = new ServerConnector(server);
     connector.setPort(port);
+    connector.setHost(host);
     ServletContextHandler servletHandler = new ServletContextHandler();
     servlets.forEach((path, servlet) -> servletHandler.addServlet(servlet, path));
     server.setHandler(servletHandler);
     server.setConnectors(new Connector[] {connector});
     return server;
-  }
-
-  public Server create() throws Exception {
-    return create(this.port, this.servlets);
   }
 }

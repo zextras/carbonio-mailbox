@@ -46,10 +46,11 @@ import org.junit.jupiter.api.Test;
 class FullAutoCompleteTest {
 
   private static Server server;
-  private static SoapClient soapClient;
+  private static SoapClient mailSoapClient;
   private static AccountAction.Factory accountActionFactory;
   private static AccountCreator.Factory accountCreatorFactory;
   private static final int PORT = 8090;
+  private static final String BASE_PATH = AccountConstants.USER_SERVICE_URI;
 
   @BeforeAll
   static void beforeAll() throws Exception {
@@ -57,7 +58,6 @@ class FullAutoCompleteTest {
     Provisioning provisioning = Provisioning.getInstance();
     accountActionFactory = new AccountAction.Factory(
         MailboxManager.getInstance(), RightManager.getInstance());
-    soapClient = new SoapClient();
     accountCreatorFactory = new AccountCreator.Factory(provisioning);
     provisioning.getServerByName(SERVER_NAME).modify(
         new HashMap<>(
@@ -78,10 +78,12 @@ class FullAutoCompleteTest {
     final ServletHolder soapServlet = new ServletHolder(SoapServlet.class);
     soapServlet.setInitParameter("engine.handler.0", "com.zimbra.cs.service.mail.MailService");
     soapServlet.setInitOrder(2);
-    server = JettyServerFactory.create(PORT,
-        Map.of( "/firstServlet", firstServlet,
-            AccountConstants.USER_SERVICE_URI + "*", soapServlet));
+    server = new JettyServerFactory().withPort(PORT)
+        .addServlet("/firstServlet", firstServlet)
+        .addServlet(BASE_PATH + "*", soapServlet)
+        .create();
     server.start();
+    mailSoapClient = new SoapClient(server.getURI().toString() + BASE_PATH);
   }
 
   @AfterAll
@@ -96,13 +98,13 @@ class FullAutoCompleteTest {
     final String domain = "abc.com";
     final String prefix = "test-";
     final Account account = MailboxTestUtil.createRandomAccountForDefaultDomain();
-    soapClient.executeSoap(account, new CreateContactRequest(new ContactSpec().addEmail(prefix + UUID.randomUUID() + "@" + domain)));
-    soapClient.executeSoap(account, new CreateContactRequest(new ContactSpec().addEmail(prefix + UUID.randomUUID() + "@" + domain)));
+    mailSoapClient.executeSoap(account, new CreateContactRequest(new ContactSpec().addEmail(prefix + UUID.randomUUID() + "@" + domain)));
+    mailSoapClient.executeSoap(account, new CreateContactRequest(new ContactSpec().addEmail(prefix + UUID.randomUUID() + "@" + domain)));
     final AutoCompleteRequest autoCompleteRequest = new AutoCompleteRequest(prefix);
     final FullAutocompleteRequest fullAutocompleteRequest = new FullAutocompleteRequest(autoCompleteRequest);
 
     final Element request = JaxbUtil.jaxbToElement(fullAutocompleteRequest);
-    final HttpResponse execute = soapClient.newRequest().setCaller(account).setSoapBody(request).execute();
+    final HttpResponse execute = mailSoapClient.newRequest().setCaller(account).setSoapBody(request).execute();
     Assertions.assertEquals(HttpStatus.SC_OK, execute.getStatusLine().getStatusCode());
     final String responseBody = new String(execute.getEntity().getContent().readAllBytes(),
         StandardCharsets.UTF_8);
@@ -123,17 +125,17 @@ class FullAutoCompleteTest {
     final String prefix = "test-";
     final String commonMail = prefix + UUID.randomUUID() + "something.com";
     final Account account = accountCreatorFactory.get().withUsername(prefix + "user1-" + UUID.randomUUID()).create();
-    soapClient.executeSoap(account, new CreateContactRequest(new ContactSpec().addEmail(commonMail)));
+    mailSoapClient.executeSoap(account, new CreateContactRequest(new ContactSpec().addEmail(commonMail)));
 
     final Account account2 = accountCreatorFactory.get().withUsername(prefix + "user2-" + UUID.randomUUID()).create();
     accountActionFactory.forAccount(account2).shareWith(account);
-    soapClient.executeSoap(account2, new CreateContactRequest(new ContactSpec().addEmail(commonMail)));
-    soapClient.executeSoap(account2, new CreateContactRequest(new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com")));
+    mailSoapClient.executeSoap(account2, new CreateContactRequest(new ContactSpec().addEmail(commonMail)));
+    mailSoapClient.executeSoap(account2, new CreateContactRequest(new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com")));
 
     final Account account3 = accountCreatorFactory.get().withUsername(prefix + "user3-" + UUID.randomUUID()).create();
     accountActionFactory.forAccount(account3).shareWith(account);
-    soapClient.executeSoap(account3, new CreateContactRequest(new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com")));
-    soapClient.executeSoap(account3, new CreateContactRequest(new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com")));
+    mailSoapClient.executeSoap(account3, new CreateContactRequest(new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com")));
+    mailSoapClient.executeSoap(account3, new CreateContactRequest(new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com")));
 
     final AutoCompleteRequest autoCompleteRequest = new AutoCompleteRequest(prefix);
 
@@ -143,7 +145,7 @@ class FullAutoCompleteTest {
 
     // make the call
     final Element request = JaxbUtil.jaxbToElement(fullAutocompleteRequest);
-    final HttpResponse execute = soapClient.newRequest().setCaller(account).setSoapBody(request).execute();
+    final HttpResponse execute = mailSoapClient.newRequest().setCaller(account).setSoapBody(request).execute();
     final String responseBody = new String(execute.getEntity().getContent().readAllBytes(),
         StandardCharsets.UTF_8);
     System.out.println("Received: " + responseBody);

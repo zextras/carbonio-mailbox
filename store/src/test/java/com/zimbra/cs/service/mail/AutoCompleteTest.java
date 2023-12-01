@@ -57,7 +57,6 @@ public class AutoCompleteTest {
   static void beforeAll() throws Exception {
     com.zextras.mailbox.util.MailboxTestUtil.setUp();
     Provisioning provisioning = Provisioning.getInstance();
-    soapClient = new SoapClient();
     accountCreatorFactory = new AccountCreator.Factory(provisioning);
     accountActionFactory = new AccountAction.Factory(
         MailboxManager.getInstance(), RightManager.getInstance());
@@ -81,6 +80,7 @@ public class AutoCompleteTest {
         .addServlet("/firstServlet", firstServlet)
         .addServlet(AccountConstants.USER_SERVICE_URI + "*", soapServlet).create();
     server.start();
+    soapClient = new SoapClient(server.getURI().toString() + AccountConstants.USER_SERVICE_URI);
   }
 
   @AfterAll

@@ -22,21 +22,22 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("api")
 class RenameAccountTest {
   private static final int PORT = 7070;
-  private static Provisioning provisioning;
   private static AccountCreator.Factory accountCreatorFactory;
   private static SoapClient soapClient;
   private static Server server;
+  private static String BASE_PATH = AdminConstants.ADMIN_SERVICE_URI;
 
   @BeforeEach
   void setUp() throws Exception {
     MailboxTestUtil.setUp();
-    provisioning = Provisioning.getInstance();
+    Provisioning provisioning = Provisioning.getInstance();
     accountCreatorFactory = new AccountCreator.Factory(provisioning);
-    soapClient = new SoapClient();
     provisioning
         .getServerByName(SERVER_NAME)
         .modify(
@@ -55,9 +56,10 @@ class RenameAccountTest {
         new JettyServerFactory()
             .withPort(PORT)
             .addServlet("/firstServlet", firstServlet)
-            .addServlet(AdminConstants.ADMIN_SERVICE_URI + "*", soapServlet)
+            .addServlet( BASE_PATH + "*", soapServlet)
             .create();
     server.start();
+    soapClient = new SoapClient(server.getURI().toString() + BASE_PATH);
   }
 
   @AfterEach
@@ -76,7 +78,6 @@ class RenameAccountTest {
 
     final HttpResponse response =
         soapClient.newRequest().setCaller(adminAccount).setSoapBody(request).execute();
-    System.out.println(new String(response.getEntity().getContent().readAllBytes()));
     Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
   }
 }
