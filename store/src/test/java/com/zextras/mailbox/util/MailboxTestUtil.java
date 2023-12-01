@@ -201,7 +201,6 @@ public class MailboxTestUtil {
     private String domain = DEFAULT_DOMAIN;
     private Map<String, Object> attributes =
         new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME));
-    private Map<String, Object> extraAttributes = Collections.emptyMap();
 
     private AccountCreator(Provisioning provisioning) {
       this.provisioning = provisioning;
