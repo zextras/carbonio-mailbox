@@ -165,7 +165,25 @@
               <goal>run</goal>
             </goals>
             <id>generate-soap-docs</id>
+          </execution>
+          <execution>
+            <configuration>
+              <target>
+                <property name="compile_classpath" refid="maven.compile.classpath"/>
+                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
+                <property name="test_classpath" refid="maven.test.classpath"/>
+                <taskdef classpathref="maven.plugin.classpath"
+                  resource="net/sf/antcontrib/antlib.xml"/>
+                <ant antfile="${basedir}/ant-generate-soap-docs.xml">
+                  <target name="generate-wsdl"/>
+                </ant>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
             <phase>prepare-package</phase>
+            <id>generate-wsdl</id>
           </execution>
         </executions>
         <groupId>org.apache.maven.plugins</groupId>
