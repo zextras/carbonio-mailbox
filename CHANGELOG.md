@@ -1,5 +1,12 @@
 
 
+## [4.11.1](https://github.com/Zextras/carbonio-mailbox/compare/4.11.0...4.11.1) (2023-11-28)
+
+
+### Bug Fixes
+
+* carbonio-appserver-db conflicts common-appserver-db ([c2c445f](https://github.com/Zextras/carbonio-mailbox/commit/c2c445f465e1336d7b7cd27bb7042a1144676c39))
+
 # [4.11.0](https://github.com/Zextras/carbonio-mailbox/compare/4.10.1...4.11.0) (2023-11-23)
 
 
