@@ -123,7 +123,6 @@ public class MailboxTestUtil {
      * Saves a message in current Account mailbox. It is useful when you want to "simulate"
      * receiving of a message.
      *
-     * @param mailbox mailbox where to save the message
      * @param message message to save
      * @return saved {@link javax.mail.Message}
      * @throws ServiceException
@@ -235,13 +234,8 @@ public class MailboxTestUtil {
       return this;
     }
 
-    public AccountCreator withExtraAttributes(Map<String, Object> extraAttributes) {
-      this.extraAttributes = extraAttributes;
-      return this;
-    }
-
-    public AccountCreator withDefaultAttributes(Map<String, Object> defaultAttributes) {
-      this.attributes = defaultAttributes;
+    public AccountCreator withAttribute(String name, Object value) {
+      this.attributes.put(name, value);
       return this;
     }
 
@@ -251,8 +245,6 @@ public class MailboxTestUtil {
     }
 
     public Account create() throws ServiceException {
-      final Map<String, Object> attributes = new HashMap<String, Object>(this.attributes);
-      attributes.putAll(extraAttributes);
       return provisioning.createAccount(this.username + "@" + this.domain, password, attributes);
     }
   }
