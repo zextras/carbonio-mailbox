@@ -42,14 +42,14 @@
     </java>
   </target>
 
-  <target name="wsdl-file" depends="generate-schema" description="Generates WSDL file">
+  <target name="generate-wsdl" depends="generate-schema" description="Generates WSDL file">
     <mkdir dir="${xml.schema.dir}" />
     <java classname="com.zimbra.soap.util.WsdlGenerator" classpathref="class.path" fork="true" failonerror="true">
       <arg line="-output.dir ${xml.schema.dir}" />
     </java>
   </target>
 
-  <target name="generate-soap-api-doc" depends="wsdl-file">
+  <target name="generate-soap-api-doc" depends="generate-wsdl">
 
     <path id="soapdocs.doclet.class.path">
       <pathelement location="${build.classes.dir}"/>
