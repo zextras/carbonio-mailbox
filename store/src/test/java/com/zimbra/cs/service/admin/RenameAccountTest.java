@@ -31,7 +31,7 @@ class RenameAccountTest extends SoapTestSuite {
         new RenameAccountRequest(userAccount.getId(), "newName@" + userAccount.getDomainName());
 
     final HttpResponse response =
-        soapExtension.getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
+        getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
     Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
   }
 }
