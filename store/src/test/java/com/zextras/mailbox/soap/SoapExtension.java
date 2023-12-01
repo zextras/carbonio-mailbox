@@ -23,6 +23,9 @@ import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+/**
+ * A Junit 5 extension to start a SOAP server and corresponding SOAP client.
+ */
 public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
 
 

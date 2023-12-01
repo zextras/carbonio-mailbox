@@ -7,6 +7,10 @@ package com.zextras.mailbox.soap;
 import com.zextras.mailbox.util.SoapClient;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+/**
+ * Test class that starts a SOAP server and client using all mailbox SOAP APIs:
+ * Admin, Account, Mail
+ */
 public class SoapTestSuite {
 
   @RegisterExtension
