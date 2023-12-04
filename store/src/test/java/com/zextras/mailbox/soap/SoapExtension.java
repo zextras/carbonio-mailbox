@@ -101,7 +101,6 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
                       ZAttrProvisioning.A_zimbraImapSSLServerEnabled, "FALSE")));
 
       server.start();
-      server.getURI();
     }
   }
 

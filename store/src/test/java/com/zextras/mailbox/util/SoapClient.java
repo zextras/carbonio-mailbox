@@ -70,8 +70,7 @@ public class SoapClient {
     private String url = "/";
 
     public HttpResponse execute() throws Exception {
-      AuthToken authToken = AuthProvider.getAuthToken(caller, caller.isIsAdminAccount());
-      final String soapUrl = this.url;
+      AuthToken authToken = AuthProvider.getAuthToken(caller, caller.isIsAdminAccount());;
       BasicCookieStore cookieStore = new BasicCookieStore();
       BasicClientCookie cookie =
           new BasicClientCookie(ZimbraCookie.authTokenCookieName(false), authToken.getEncoded());
@@ -90,7 +89,7 @@ public class SoapClient {
               requestedAccount.getId()));
           envelope = SoapProtocol.Soap12.soapEnvelope(soapBody, headerXml);
         }
-        httpPost.setURI(URI.create(soapUrl));
+        httpPost.setURI(URI.create(this.url));
         httpPost.setEntity(new StringEntity(envelope.toString()));
         return client.execute(httpPost);
       }
