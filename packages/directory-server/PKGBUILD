@@ -1,5 +1,5 @@
 pkgname="carbonio-directory-server"
-pkgver="4.11.0"
+pkgver="4.11.1"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 maintainer="Zextras <packages@zextras.com>"
@@ -59,9 +59,9 @@ package() {
   install -D store/ldap/src/migrations/migrate-23.5.0-01-COS-AddFeatures.pl \
     "${pkgdir}/opt/zextras/libexec/scripts/migrate-23.5.0-01-COS-AddFeatures.pl"
 
-  install -Ddm755 store/build/ldap \
-    "${pkgdir}/opt/zextras/common/etc/openldap/zimbra"
-  rsync -a store/build/ldap "${pkgdir}/opt/zextras/common/etc/openldap/zimbra"
+  install -Ddm755 store/build/ldap/ \
+    "${pkgdir}/opt/zextras/common/etc/openldap/zimbra/"
+  rsync -a store/build/ldap/ "${pkgdir}/opt/zextras/common/etc/openldap/zimbra/"
 }
 
 postinst__apt() {
