@@ -268,26 +268,22 @@ public class Auth extends AccountDocumentHandler {
       }
     }
 
-    AuthToken at = null;
-    if (recoveryCode != null) {
-      at = AuthProvider.getAuthToken(acct, Usage.RESET_PASSWORD, tokenType);
-    } else {
-      at =
-          expires == 0
-              ? AuthProvider.getAuthToken(acct, tokenType)
-              : AuthProvider.getAuthToken(acct, expires, tokenType);
-    }
+    final AuthToken authToken =
+        expires == 0
+            ? AuthProvider.getAuthToken(acct, tokenType)
+            : AuthProvider.getAuthToken(acct, expires, tokenType);
+
     ServletRequest httpReq = (ServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
     // For CSRF filter so that token generation can happen
-    if (csrfSupport && !at.isCsrfTokenEnabled()) {
+    if (csrfSupport && !authToken.isCsrfTokenEnabled()) {
       // handle case where auth token was originally generated with csrf support
       // and now client sends the same auth token but saying csrfSupport is turned off
       // in that case do not disable CSRF check for this authToken.
-      at.setCsrfTokenEnabled(csrfSupport);
+      authToken.setCsrfTokenEnabled(csrfSupport);
     }
-    httpReq.setAttribute(CsrfFilter.AUTH_TOKEN, at);
+    httpReq.setAttribute(CsrfFilter.AUTH_TOKEN, authToken);
     AuthListener.invokeOnSuccess(acct);
-    return doResponse(request, at, zsc, context, acct, csrfSupport);
+    return doResponse(request, authToken, zsc, context, acct, csrfSupport);
   }
 
   private boolean tokenTypeAndElementValidation(
