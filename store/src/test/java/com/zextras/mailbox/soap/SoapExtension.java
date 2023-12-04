@@ -33,17 +33,14 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
     return soapClient;
   }
 
-  private static SoapClient soapClient;
-  private static Server server;
-
+  private final SoapClient soapClient;
+  private final Server server;
   private final int port;
-  private final String basePath;
-  private final List<String> engineHandlers;
 
-  private SoapExtension(int port, String basePath, List<String> engineHandlers) {
+  private SoapExtension(int port, Server server, SoapClient soapClient) {
+    this.server = server;
     this.port = port;
-    this.engineHandlers = engineHandlers;
-    this.basePath = basePath;
+    this.soapClient = soapClient;
   }
 
   public static class Builder {
@@ -68,40 +65,44 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
     private final List<String> engineHandlers = new ArrayList<>();
 
     public SoapExtension create() {
-      return new SoapExtension(port, basePath, engineHandlers);
+      final ServletHolder firstServlet = new ServletHolder(FirstServlet.class);
+      firstServlet.setInitOrder(1);
+      final ServletHolder soapServlet = new ServletHolder(SoapServlet.class);
+      int i = 0;
+      for (String engineHandler : engineHandlers) {
+        soapServlet.setInitParameter("engine.handler." + i, engineHandler);
+        i++;
+      }
+      soapServlet.setInitOrder(2);
+      final Server server =
+          new JettyServerFactory()
+              .withPort(port)
+              .addServlet("/firstServlet", firstServlet)
+              .addServlet(basePath + "*", soapServlet)
+              .create();
+      final SoapClient soapClient = new SoapClient("http://localhost:" + port + basePath);
+      return new SoapExtension(port, server, soapClient);
     }
   }
 
 
   @Override
   public void beforeAll(ExtensionContext context) throws Exception {
-    MailboxTestUtil.setUp();
-    Provisioning.getInstance()
-        .getServerByName(SERVER_NAME)
-        .modify(
-            new HashMap<>(
-                Map.of(
-                    Provisioning.A_zimbraMailPort, String.valueOf(port),
-                    ZAttrProvisioning.A_zimbraMailMode, "http",
-                    ZAttrProvisioning.A_zimbraPop3SSLServerEnabled, "FALSE",
-                    ZAttrProvisioning.A_zimbraImapSSLServerEnabled, "FALSE")));
-    final ServletHolder firstServlet = new ServletHolder(FirstServlet.class);
-    firstServlet.setInitOrder(1);
-    final ServletHolder soapServlet = new ServletHolder(SoapServlet.class);
-    int i = 0;
-    for (String engineHandler: engineHandlers) {
-      soapServlet.setInitParameter("engine.handler." + i, engineHandler);
-      i++;
+    if (!server.isRunning()) {
+      MailboxTestUtil.setUp();
+      Provisioning.getInstance()
+          .getServerByName(SERVER_NAME)
+          .modify(
+              new HashMap<>(
+                  Map.of(
+                      Provisioning.A_zimbraMailPort, String.valueOf(port),
+                      ZAttrProvisioning.A_zimbraMailMode, "http",
+                      ZAttrProvisioning.A_zimbraPop3SSLServerEnabled, "FALSE",
+                      ZAttrProvisioning.A_zimbraImapSSLServerEnabled, "FALSE")));
+
+      server.start();
+      server.getURI();
     }
-    soapServlet.setInitOrder(2);
-    server =
-        new JettyServerFactory()
-            .withPort(port)
-            .addServlet("/firstServlet", firstServlet)
-            .addServlet( basePath + "*", soapServlet)
-            .create();
-    server.start();
-    soapClient = new SoapClient(server.getURI().toString() + basePath);
   }
 
   @Override

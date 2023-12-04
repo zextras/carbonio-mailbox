@@ -34,9 +34,8 @@ public class JettyServerFactory {
    * Creates a server instance (not yet started).
    *
    * @return {@link Server}
-   * @throws Exception
    */
-  public Server create() throws Exception {
+  public Server create() {
     final Server server = new Server();
     ServerConnector connector = new ServerConnector(server);
     connector.setPort(port);
