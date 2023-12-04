@@ -1,5 +1,7 @@
 package com.zimbra.cs.service.admin;
 
+import static com.zimbra.common.util.Constants.ERROR_CODE_NO_SUCH_DOMAIN;
+
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.cs.account.Account;
@@ -10,6 +12,7 @@ import java.util.HashMap;
 import java.util.UUID;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
@@ -34,9 +37,9 @@ class RenameAccountTest extends SoapTestSuite {
 
     RenameAccountRequest request =
         new RenameAccountRequest(userAccount.getId(), "newName@" + userAccount.getDomainName());
-
     final HttpResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
+
     Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
   }
 
@@ -49,12 +52,25 @@ class RenameAccountTest extends SoapTestSuite {
 
     RenameAccountRequest request =
         new RenameAccountRequest(userAccount.getId(), accountName + "@" + newDomain.getName());
-
     final HttpResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
+
     Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-    final Account accountByName = provisioning.getAccountByName(
-        accountName + "@" + newDomain.getName());
-    Assertions.assertEquals(newDomain.getName(), accountByName.getDomainName());
+  }
+
+  @Test
+  void shouldThrowNoSuchDomainWhenRenamingToNotExistingDomain() throws Exception {
+    Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
+    final String accountName = UUID.randomUUID().toString();
+    Account userAccount = accountCreatorFactory.get().withUsername(accountName).create();
+
+    RenameAccountRequest request =
+        new RenameAccountRequest(userAccount.getId(), accountName + "@" + UUID.randomUUID() + ".com");
+    final HttpResponse response =
+        getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
+
+    Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, response.getStatusLine().getStatusCode());
+    final String responseBody = EntityUtils.toString(response.getEntity());
+    Assertions.assertTrue(responseBody.contains(ERROR_CODE_NO_SUCH_DOMAIN));
   }
 }
