@@ -5,14 +5,9 @@
 
 package com.zimbra.cs.service.mail;
 
-import static com.zextras.mailbox.util.MailboxTestUtil.SERVER_NAME;
-
-import com.zextras.mailbox.util.JettyServerFactory;
+import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
-import com.zextras.mailbox.util.SoapClient;
-import com.zimbra.common.account.ZAttrProvisioning;
-import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.Account;
@@ -20,22 +15,15 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.servlet.FirstServlet;
 import com.zimbra.soap.JaxbUtil;
-import com.zimbra.soap.SoapServlet;
 import com.zimbra.soap.mail.message.AutoCompleteRequest;
 import com.zimbra.soap.mail.message.AutoCompleteResponse;
 import com.zimbra.soap.mail.message.CreateContactRequest;
 import com.zimbra.soap.mail.type.ContactSpec;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -44,57 +32,26 @@ import org.junit.jupiter.api.Test;
 
 
 @Tag("api")
-public class AutoCompleteTest {
+public class AutoCompleteTest extends SoapTestSuite {
 
-  private static final int PORT = 8090;
-  private static Server server;
-  private static SoapClient soapClient;
   private static AccountCreator.Factory accountCreatorFactory;
   private static AccountAction.Factory accountActionFactory;
   public String testName;
 
   @BeforeAll
   static void beforeAll() throws Exception {
-    com.zextras.mailbox.util.MailboxTestUtil.setUp();
     Provisioning provisioning = Provisioning.getInstance();
-    soapClient = new SoapClient();
     accountCreatorFactory = new AccountCreator.Factory(provisioning);
     accountActionFactory = new AccountAction.Factory(
         MailboxManager.getInstance(), RightManager.getInstance());
-    provisioning.getServerByName(SERVER_NAME).modify(
-        new HashMap<>(
-            Map.of(
-                Provisioning.A_zimbraMailPort, String.valueOf(PORT),
-                ZAttrProvisioning.A_zimbraMailMode, "http",
-                ZAttrProvisioning.A_zimbraPop3SSLServerEnabled, "FALSE",
-                ZAttrProvisioning.A_zimbraImapSSLServerEnabled, "FALSE"
-            )
-        )
-    );
-
-    final ServletHolder firstServlet = new ServletHolder(FirstServlet.class);
-    firstServlet.setInitOrder(1);
-    final ServletHolder soapServlet = new ServletHolder(SoapServlet.class);
-    soapServlet.setInitParameter("engine.handler.0", "com.zimbra.cs.service.mail.MailService");
-    soapServlet.setInitOrder(2);
-    server = new JettyServerFactory().withPort(PORT)
-        .addServlet("/firstServlet", firstServlet)
-        .addServlet(AccountConstants.USER_SERVICE_URI + "*", soapServlet).create();
-    server.start();
   }
-
-  @AfterAll
-  static void afterAll() throws Exception {
-    server.stop();
-    com.zextras.mailbox.util.MailboxTestUtil.tearDown();
-  }
-
+  
   @Test
   void test3951() throws Exception {
     Account account = accountCreatorFactory.get().create();
     Element request = new Element.XMLElement(MailConstants.AUTO_COMPLETE_REQUEST);
     request.addAttribute("name", " ");
-    final HttpResponse response = soapClient.newRequest().setCaller(account).setSoapBody(request)
+    final HttpResponse response = getSoapClient().newRequest().setCaller(account).setSoapBody(request)
         .execute();
     Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR,
         response.getStatusLine().getStatusCode());
@@ -110,12 +67,12 @@ public class AutoCompleteTest {
     final Account account2 = accountCreatorFactory.get().create();
     accountActionFactory.forAccount(account2).grantFolderRightTo(account1, "r",
         Mailbox.ID_FOLDER_CALENDAR);
-    soapClient.executeSoap(account2, new CreateContactRequest(
+    getSoapClient().executeSoap(account2, new CreateContactRequest(
         new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com")));
-    soapClient.executeSoap(account2, new CreateContactRequest(
+    getSoapClient().executeSoap(account2, new CreateContactRequest(
         new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com")));
     final Element request = JaxbUtil.jaxbToElement(new AutoCompleteRequest(prefix));
-    final HttpResponse execute = soapClient.newRequest()
+    final HttpResponse execute = getSoapClient().newRequest()
         .setCaller(account1).setRequestedAccount(account2).setSoapBody(request).execute();
     final String responseBody = new String(execute.getEntity().getContent().readAllBytes(),
         StandardCharsets.UTF_8);
@@ -131,13 +88,13 @@ public class AutoCompleteTest {
     final String prefix = "test-";
     final Account account1 = accountCreatorFactory.get().create();
     final Account account2 = accountCreatorFactory.get().create();
-    soapClient.newRequest()
+    getSoapClient().newRequest()
         .setCaller(account2).setSoapBody(new CreateContactRequest(
             new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com"))).execute();
-    soapClient.newRequest()
+    getSoapClient().newRequest()
         .setCaller(account2).setSoapBody(new CreateContactRequest(
             new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com"))).execute();
-    final HttpResponse execute = soapClient.newRequest().setCaller(account1)
+    final HttpResponse execute = getSoapClient().newRequest().setCaller(account1)
         .setRequestedAccount(account2).setSoapBody(new AutoCompleteRequest(prefix)).execute();
     final String responseBody = new String(execute.getEntity().getContent().readAllBytes(),
         StandardCharsets.UTF_8);
@@ -155,13 +112,13 @@ public class AutoCompleteTest {
     final Account account2 = accountCreatorFactory.get().create();
     accountActionFactory.forAccount(account2)
         .grantFolderRightTo(account1, "r", Mailbox.ID_FOLDER_ROOT);
-    soapClient.newRequest()
+    getSoapClient().newRequest()
         .setCaller(account2).setSoapBody(new CreateContactRequest(
             new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com"))).execute();
-    soapClient.newRequest()
+    getSoapClient().newRequest()
         .setCaller(account2).setSoapBody(new CreateContactRequest(
             new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com"))).execute();
-    final HttpResponse execute = soapClient.newRequest().setCaller(account1)
+    final HttpResponse execute = getSoapClient().newRequest().setCaller(account1)
         .setRequestedAccount(account2).setSoapBody(new AutoCompleteRequest(prefix)).execute();
     final String responseBody = new String(execute.getEntity().getContent().readAllBytes(),
         StandardCharsets.UTF_8);
@@ -180,20 +137,20 @@ public class AutoCompleteTest {
     final Account account2 = accountCreatorFactory.get().create();
     accountActionFactory.forAccount(account2)
         .grantFolderRightTo(account1, "r", Mailbox.ID_FOLDER_ROOT);
-    soapClient.newRequest()
+    getSoapClient().newRequest()
         .setCaller(account2).setSoapBody(new CreateContactRequest(
             new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com"))).execute();
-    soapClient.newRequest()
+    getSoapClient().newRequest()
         .setCaller(account2).setSoapBody(new CreateContactRequest(
             new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com"))).execute();
-    soapClient.newRequest()
+    getSoapClient().newRequest()
         .setCaller(account2).setSoapBody(new CreateContactRequest(
             new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com"))).execute();
 
     final AutoCompleteRequest autoCompleteRequest = new AutoCompleteRequest(prefix);
     autoCompleteRequest.setFolderList(
         Mailbox.ID_FOLDER_AUTO_CONTACTS + "," + Mailbox.ID_FOLDER_CONTACTS);
-    final HttpResponse execute = soapClient.newRequest().setCaller(account1)
+    final HttpResponse execute = getSoapClient().newRequest().setCaller(account1)
         .setRequestedAccount(account2).setSoapBody(autoCompleteRequest).execute();
     final String responseBody = new String(execute.getEntity().getContent().readAllBytes(),
         StandardCharsets.UTF_8);
