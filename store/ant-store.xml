@@ -24,7 +24,7 @@
     </not>
   </condition>
 
-  <target name="generate-resources"
+  <target name="generate-sql-ldap-versions"
     depends="create-version-sql, create-version-ldap ">
   </target>
 
