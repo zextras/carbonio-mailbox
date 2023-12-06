@@ -51,7 +51,7 @@ Ensure you have JDK version 11 installed. Confirm by running:
 
 ### 2. Build the source code inside a docker container
 ```shell
-$ docker compose -f './docker/jetty-run/docker-compose.yml' run --rm build
+$ UID=${UID} GID=${GID} docker compose -f './docker/jetty-run/docker-compose.yml' run --rm build
 ```
 
 ## Run Carbonio Mailbox locally (for Development)
