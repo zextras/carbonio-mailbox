@@ -15,9 +15,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.MariaDBContainer;
@@ -39,13 +39,12 @@ class HealthServletTest {
       .withPassword(DB_PASSWORD)
       .withDatabaseName("zimbra");
 
-  @BeforeAll
-  static void beforeAll() throws Exception {
+  @BeforeEach
+  void beforeEach() throws Exception {
     LC.zimbra_mysql_password.setDefault(mariaDBContainer.getUsername());
     LC.zimbra_mysql_user.setDefault(mariaDBContainer.getPassword());
     LC.mysql_bind_address.setDefault("127.0.0.1");
     LC.mysql_port.setDefault(mariaDBContainer.getFirstMappedPort());
-    DbPool.startup();
     server = new JettyServerFactory()
         .withPort(PORT)
         .addFilter("/*", new FilterHolder(GuiceFilter.class))
@@ -54,50 +53,57 @@ class HealthServletTest {
     server.start();
   }
 
-  @AfterAll
-  static void afterAll() throws Exception {
+  @AfterEach
+  void afterEach() throws Exception {
     server.stop();
+  }
+
+  @Test
+  void liveShouldReturn200WhenDBConnectionOk() throws Exception {
+    DbPool.startup();
+    try (CloseableHttpClient client = HttpClientBuilder.create()
+        .build()) {
+      final HttpGet httpGet = new HttpGet(server.getURI() + "/health/live");
+
+      final CloseableHttpResponse response = client.execute(httpGet);
+
+      Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    }
     DbPool.shutdown();
   }
 
   @Test
-  void liveShouldReturn200WhenDbPoolStarted() throws Exception {
+  void liveShouldReturn500WhenDBConnectionFailing() throws Exception {
     try (CloseableHttpClient client = HttpClientBuilder.create()
         .build()) {
       final HttpGet httpGet = new HttpGet(server.getURI() + "/health/live");
-      final CloseableHttpResponse response = client.execute(httpGet);
-      Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-    }
-  }
 
-  @Test
-  void liveShouldReturn500WhenDbPoolNotStarted() throws Exception {
-    try (CloseableHttpClient client = HttpClientBuilder.create()
-        .build()) {
-      final HttpGet httpGet = new HttpGet(server.getURI() + "/health/live");
       final CloseableHttpResponse response = client.execute(httpGet);
+
       Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR,
           response.getStatusLine().getStatusCode());
     }
   }
 
   @Test
-  void readyShouldReturnTrueWhenDBConnectionOk() throws Exception {
+  void readyShouldReturn200WhenDBConnectionOk() throws Exception {
+    DbPool.startup();
     try (CloseableHttpClient client = HttpClientBuilder.create()
         .build()) {
       final HttpGet httpGet = new HttpGet(server.getURI() + "/health/ready");
       final CloseableHttpResponse response = client.execute(httpGet);
       Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
     }
+    DbPool.shutdown();
   }
 
   @Test
-  void readyShouldReturnFalseWhenDatabaseConnectionFailing() throws Exception {
+  void readyShouldReturn500WhenDBConnectionFailing() throws Exception {
     try (CloseableHttpClient client = HttpClientBuilder.create()
         .build()) {
       final HttpGet httpGet = new HttpGet(server.getURI() + "/health/ready");
       final CloseableHttpResponse response = client.execute(httpGet);
-      Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+      Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, response.getStatusLine().getStatusCode());
     }
   }
 
