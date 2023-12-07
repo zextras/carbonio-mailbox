@@ -341,8 +341,6 @@ public final class ToXML {
   private static Element encodeRetentionPolicy(Element parent, RetentionPolicy policy) {
     Element retPol = parent.addNonUniqueElement(MailConstants.E_RETENTION_POLICY);
     if (policy.isSet()) {
-      Element keepEl = retPol.addNonUniqueElement(MailConstants.E_KEEP);
-      encodePolicyList(keepEl, policy.getKeepPolicy());
       Element purgeEl = retPol.addNonUniqueElement(MailConstants.E_PURGE);
       encodePolicyList(purgeEl, policy.getPurgePolicy());
     }
@@ -1843,7 +1841,8 @@ public final class ToXML {
           m,
           Mime.parseAddressHeader(mm.getHeader("Resent-From", null), false),
           EmailType.RESENT_FROM);
-      addEmails(m, Mime.parseAddressHeader(mm, "Disposition-Notification-To"), EmailType.READ_RECEIPT);
+      addEmails(
+          m, Mime.parseAddressHeader(mm, "Disposition-Notification-To"), EmailType.READ_RECEIPT);
 
       String calIntendedFor = msg.getCalendarIntendedFor();
       m.addAttribute(MailConstants.A_CAL_INTENDED_FOR, calIntendedFor);
