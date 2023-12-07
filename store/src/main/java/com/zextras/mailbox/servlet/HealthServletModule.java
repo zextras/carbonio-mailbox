@@ -7,7 +7,7 @@ package com.zextras.mailbox.servlet;
 import com.google.inject.Provides;
 import com.google.inject.servlet.ServletModule;
 import com.zextras.mailbox.health.DatabaseService;
-import com.zextras.mailbox.health.HealthService;
+import com.zextras.mailbox.health.HealthUseCase;
 import com.zimbra.cs.db.DbPool;
 import java.util.List;
 
@@ -19,8 +19,8 @@ public class HealthServletModule extends ServletModule {
   }
 
   @Provides
-  HealthService provideHealthService() {
-    return new HealthService(
+  HealthUseCase provideHealthService() {
+    return new HealthUseCase(
         List.of(new DatabaseService(new DbPool())));
   }
 

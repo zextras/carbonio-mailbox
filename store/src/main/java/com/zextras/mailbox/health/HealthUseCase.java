@@ -7,13 +7,13 @@ package com.zextras.mailbox.health;
 import java.util.List;
 import javax.inject.Inject;
 
-public class HealthService {
+public class HealthUseCase {
 
 
   private final List<ServiceDependency> serviceDependencies;
 
   @Inject
-  public HealthService(List<ServiceDependency> serviceDependencies) {
+  public HealthUseCase(List<ServiceDependency> serviceDependencies) {
     this.serviceDependencies = serviceDependencies;
   }
 

@@ -5,7 +5,7 @@
 package com.zextras.mailbox.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zextras.mailbox.health.HealthService;
+import com.zextras.mailbox.health.HealthUseCase;
 import com.zextras.mailbox.servlet.HealthResponse.Builder;
 import java.io.IOException;
 import java.util.Objects;
@@ -20,11 +20,11 @@ import org.apache.http.HttpStatus;
 @Singleton
 public class HealthServlet extends HttpServlet {
 
-  private final HealthService healthService;
+  private final HealthUseCase healthUseCase;
 
   @Inject
-  public HealthServlet(HealthService healthService) {
-    this.healthService = healthService;
+  public HealthServlet(HealthUseCase healthUseCase) {
+    this.healthUseCase = healthUseCase;
   }
 
   @Override
@@ -35,13 +35,13 @@ public class HealthServlet extends HttpServlet {
     if (Objects.isNull(requestedPath)) {
       requestedPath = "/";
     }
-    final boolean isReady = healthService.isReady();
+    final boolean isReady = healthUseCase.isReady();
     switch (requestedPath) {
       case "/":
         httpServletResponse.setStatus(isReady ? HttpStatus.SC_OK : HttpStatus.SC_INTERNAL_SERVER_ERROR);
         final ObjectMapper objectMapper = new ObjectMapper();
         final Builder builder = new Builder().withReadiness(isReady);
-        healthService.getDependencies().forEach(
+        healthUseCase.getDependencies().forEach(
             builder::withDependency
         );
         final String jsonResponse = objectMapper.writeValueAsString(builder.build());
@@ -51,7 +51,7 @@ public class HealthServlet extends HttpServlet {
         httpServletResponse.setStatus(isReady ? HttpStatus.SC_OK : HttpStatus.SC_INTERNAL_SERVER_ERROR);
         break;
       case "/live":
-        httpServletResponse.setStatus(healthService.isLive() ? HttpStatus.SC_OK : HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        httpServletResponse.setStatus(healthUseCase.isLive() ? HttpStatus.SC_OK : HttpStatus.SC_INTERNAL_SERVER_ERROR);
         break;
       default:
         break;

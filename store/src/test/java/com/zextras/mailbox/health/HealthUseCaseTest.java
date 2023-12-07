@@ -9,12 +9,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-class HealthServiceTest {
+class HealthUseCaseTest {
 
   private final ServiceDependency serviceDependency = Mockito.mock(ServiceDependency.class);
   private final ServiceDependency serviceDependency2 = Mockito.mock(ServiceDependency.class);
 
-  private final HealthService healthService = new HealthService(
+  private final HealthUseCase healthService = new HealthUseCase(
       List.of(serviceDependency, serviceDependency2));
 
   @Test
