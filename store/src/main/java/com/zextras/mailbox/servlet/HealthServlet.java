@@ -28,10 +28,17 @@ public class HealthServlet extends HttpServlet {
   protected void doGet(HttpServletRequest httpServletRequest,
       HttpServletResponse httpServletResponse)
       throws ServletException, IOException {
-    final boolean ready = healthService.isReady();
-    httpServletResponse.setStatus(ready ? HttpStatus.SC_OK : HttpStatus.SC_INTERNAL_SERVER_ERROR);
-
-    httpServletResponse.getWriter().write(String.format("{\"ready\": %s}", ready));
+    final String path = httpServletRequest.getPathInfo();
+    switch (path) {
+      case "/ready":
+        httpServletResponse.setStatus(healthService.isReady() ? HttpStatus.SC_OK : HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        break;
+      case "/live":
+        httpServletResponse.setStatus(healthService.isLive() ? HttpStatus.SC_OK : HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        break;
+      default:
+        break;
+    }
   }
 
 }

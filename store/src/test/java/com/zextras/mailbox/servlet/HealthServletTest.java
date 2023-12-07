@@ -7,6 +7,7 @@ package com.zextras.mailbox.servlet;
 import com.google.inject.servlet.GuiceFilter;
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zimbra.common.localconfig.LC;
+import com.zimbra.cs.db.DbPool;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -42,6 +43,9 @@ class HealthServletTest {
   static void beforeAll() throws Exception {
     LC.zimbra_mysql_password.setDefault(mariaDBContainer.getUsername());
     LC.zimbra_mysql_user.setDefault(mariaDBContainer.getPassword());
+    LC.mysql_bind_address.setDefault("127.0.0.1");
+    LC.mysql_port.setDefault(mariaDBContainer.getFirstMappedPort());
+    DbPool.startup();
     server = new JettyServerFactory()
         .withPort(PORT)
         .addFilter("/*", new FilterHolder(GuiceFilter.class))
@@ -53,10 +57,11 @@ class HealthServletTest {
   @AfterAll
   static void afterAll() throws Exception {
     server.stop();
+    DbPool.shutdown();
   }
 
   @Test
-  void liveShouldReturn200WhenHealthy() throws Exception {
+  void liveShouldReturn200WhenDbPoolStarted() throws Exception {
     try (CloseableHttpClient client = HttpClientBuilder.create()
         .build()) {
       final HttpGet httpGet = new HttpGet(server.getURI() + "/health/live");
@@ -66,7 +71,7 @@ class HealthServletTest {
   }
 
   @Test
-  void liveShouldReturn500WhenDBConnectionFailing() throws Exception {
+  void liveShouldReturn500WhenDbPoolNotStarted() throws Exception {
     try (CloseableHttpClient client = HttpClientBuilder.create()
         .build()) {
       final HttpGet httpGet = new HttpGet(server.getURI() + "/health/live");
