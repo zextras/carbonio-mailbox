@@ -4,7 +4,7 @@
 
 package com.zextras.mailbox.health;
 
-public interface HealthCheck {
+public interface HealthStatus {
 
   /**
    * A readiness signal indicates that an application is ready to process requests.

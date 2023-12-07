@@ -4,27 +4,27 @@
 
 package com.zextras.mailbox.health;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 public class HealthService {
 
-  private final List<HealthCheck> healthChecks;
+
+  private final List<ServiceDependency> serviceDependencies;
 
   @Inject
-  public HealthService(List<HealthCheck> healthChecks) {
-    this.healthChecks = healthChecks;
+  public HealthService(List<ServiceDependency> serviceDependencies) {
+    this.serviceDependencies = serviceDependencies;
   }
 
   public boolean isReady() {
-    return healthChecks.stream().map(HealthCheck::isReady).reduce(
-        true, (totalReadiness, isReady) -> totalReadiness && isReady
-    );
+    return serviceDependencies.stream().allMatch(ServiceDependency::isReady);
   }
 
   public List<Object> dependencies() {
-    return new ArrayList<>();
+    return serviceDependencies.stream().map(ServiceDependency::getName)
+        .collect(Collectors.toList());
   }
 
 }

@@ -11,21 +11,33 @@ import org.mockito.Mockito;
 
 class HealthServiceTest {
 
-  private final HealthCheck healthCheck1 = Mockito.mock(HealthCheck.class);
-  private final HealthCheck healthCheck2 = Mockito.mock(HealthCheck.class);
-  private final HealthService healthService = new HealthService(List.of(healthCheck1, healthCheck2));
+  private final ServiceDependency serviceDependency = Mockito.mock(ServiceDependency.class);
+  private final ServiceDependency serviceDependency2 = Mockito.mock(ServiceDependency.class);
+
+  private final HealthService healthService = new HealthService(
+      List.of(serviceDependency, serviceDependency2));
 
   @Test
   void shouldReturnFalseWhenOneHealthCheckFailing() {
-    Mockito.when(healthCheck1.isReady()).thenReturn(true);
-    Mockito.when(healthCheck2.isReady()).thenReturn(false);
+    Mockito.when(serviceDependency.isReady()).thenReturn(true);
+    Mockito.when(serviceDependency2.isReady()).thenReturn(false);
+
+    Assertions.assertFalse(healthService.isReady());
+  }
+
+  @Test
+  void shouldReturnFalseWhenAllHealthCheckFailing() {
+    Mockito.when(serviceDependency.isReady()).thenReturn(false);
+    Mockito.when(serviceDependency2.isReady()).thenReturn(false);
+
     Assertions.assertFalse(healthService.isReady());
   }
 
   @Test
   void shouldReturnTrueWhenAllOk() {
-    Mockito.when(healthCheck1.isReady()).thenReturn(true);
-    Mockito.when(healthCheck2.isReady()).thenReturn(true);
+    Mockito.when(serviceDependency.isReady()).thenReturn(true);
+    Mockito.when(serviceDependency2.isReady()).thenReturn(true);
+
     Assertions.assertTrue(healthService.isReady());
   }
 

@@ -4,6 +4,7 @@
 
 package com.zextras.mailbox.health;
 
+import com.zextras.mailbox.health.ServiceDependency.ServiceType;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
@@ -14,19 +15,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-class DatabaseHealthCheckTest {
+class DatabaseServiceTest {
 
   @Test
-  void shouldBeReadyIfDbPoolInitialized() {
-    final DbPool dbPool = Mockito.mock(DbPool.class);
-
-    final DatabaseHealthCheck databaseHealthCheck = new DatabaseHealthCheck(dbPool);
-
-    Assertions.assertTrue(databaseHealthCheck.isReady());
-  }
-
-  @Test
-  void shouldBeLiveIfDbPoolConnectionOk() throws ServiceException, SQLException {
+  void shouldBeReadyIfDbPoolConnectionOk() throws ServiceException, SQLException {
     final DbPool dbPool = Mockito.mock(DbPool.class);
     final DbConnection dbConnection = Mockito.mock(DbConnection.class);
     final PreparedStatement preparedStatement = Mockito.mock(PreparedStatement.class);
@@ -38,35 +30,39 @@ class DatabaseHealthCheckTest {
     Mockito.when(preparedStatement.executeQuery())
         .thenReturn(resultSet);
 
-    final DatabaseHealthCheck databaseHealthCheck = new DatabaseHealthCheck(dbPool);
+    final DatabaseService databaseService = new DatabaseService("MariaDB", ServiceType.REQUIRED,
+        dbPool);
 
-    Assertions.assertTrue(databaseHealthCheck.isLive());
+    Assertions.assertTrue(databaseService.isReady());
   }
 
 
   @Test
-  void shouldNotBeLiveIfDbPoolConnectionCannotBeTaken() throws ServiceException, SQLException {
+  void shouldNotBeReadyIfDbPoolConnectionCannotBeTaken() throws ServiceException, SQLException {
     final DbPool dbPool = Mockito.mock(DbPool.class);
     final ServiceException dbConnectionException = Mockito.mock(ServiceException.class);
     Mockito.when(dbPool.getDatabaseConnection())
         .thenThrow(dbConnectionException);
 
-    final DatabaseHealthCheck databaseHealthCheck = new DatabaseHealthCheck(dbPool);
+    final DatabaseService databaseService = new DatabaseService("MariaDB", ServiceType.REQUIRED,
+        dbPool);
 
-    Assertions.assertFalse(databaseHealthCheck.isLive());
+    Assertions.assertFalse(databaseService.isReady());
   }
 
   @Test
-  void shouldNotBeLiveIfPrepareStatementThrowsSqlException() throws ServiceException, SQLException {
+  void shouldNotBeReadyIfPrepareStatementThrowsSqlException()
+      throws ServiceException, SQLException {
     final DbPool dbPool = Mockito.mock(DbPool.class);
     final DbConnection dbConnection = Mockito.mock(DbConnection.class);
     Mockito.when(dbPool.getDatabaseConnection())
         .thenReturn(dbConnection);
     Mockito.when(dbConnection.prepareStatement("SELECT 1")).thenThrow(new SQLException());
 
-    final DatabaseHealthCheck databaseHealthCheck = new DatabaseHealthCheck(dbPool);
+    final DatabaseService databaseService = new DatabaseService("MariaDB", ServiceType.REQUIRED,
+        dbPool);
 
-    Assertions.assertFalse(databaseHealthCheck.isLive());
+    Assertions.assertFalse(databaseService.isReady());
   }
 
 }

@@ -1,7 +1,3 @@
-// SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
-//
-// SPDX-License-Identifier: AGPL-3.0-only
-
 package com.zextras.mailbox.health;
 
 import com.zimbra.common.service.ServiceException;
@@ -11,17 +7,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DatabaseHealthCheck implements HealthCheck {
-
+public class DatabaseService extends ServiceDependency {
 
   private final DbPool dbPool;
 
-  public DatabaseHealthCheck(DbPool dbPool) {
+  public DatabaseService(String name, ServiceType type, DbPool dbPool) {
+    super(name, type);
+
     this.dbPool = dbPool;
-  }
+   }
+
 
   @Override
-  public boolean isLive() {
+  public boolean isReady() {
     try (DbConnection connection = dbPool.getDatabaseConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT 1");
         ResultSet resultSet = preparedStatement.executeQuery()
@@ -34,8 +32,7 @@ public class DatabaseHealthCheck implements HealthCheck {
   }
 
   @Override
-  public boolean isReady() {
-    //FIXME: maybe have a method that says: dbPool is Configured?
-    return true;
+  public boolean isLive() {
+    return false;
   }
 }
