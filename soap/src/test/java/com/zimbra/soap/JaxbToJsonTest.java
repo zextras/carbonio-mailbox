@@ -109,7 +109,6 @@ public class JaxbToJsonTest {
   private static String jsonEmptyGetSystemRetentionPolicyResponse =
       "{\n"
           + "  \"retentionPolicy\": [{\n"
-          + "      \"keep\": [{}],\n"
           + "      \"purge\": [{}]\n"
           + "    }],\n"
           + "  \"_jsns\": \"urn:zimbraMail\"\n"
@@ -118,12 +117,6 @@ public class JaxbToJsonTest {
   private static String jsonGetSystemRetentionPolicyResponse =
       "{\n"
           + "  \"retentionPolicy\": [{\n"
-          + "      \"keep\": [{\n"
-          + "          \"policy\": [{\n"
-          + "              \"type\": \"user\",\n"
-          + "              \"lifetime\": \"200\"\n"
-          + "            }]\n"
-          + "        }],\n"
           + "      \"purge\": [{\n"
           + "          \"policy\": [{\n"
           + "              \"type\": \"user\",\n"
@@ -1875,7 +1868,7 @@ public class JaxbToJsonTest {
 
   @Test
   void systemRetentionPolicyResponse() throws Exception {
-    RetentionPolicy rp = new RetentionPolicy((Iterable<Policy>) null, (Iterable<Policy>) null);
+    RetentionPolicy rp = new RetentionPolicy((Iterable<Policy>) null);
     GetSystemRetentionPolicyResponse jaxb = new GetSystemRetentionPolicyResponse(rp);
     Element jsonJaxbElem = JacksonUtil.jaxbToJSONElement(jaxb);
     logDebug("JSONElement from JAXB ---> prettyPrint\n%1$s", jsonJaxbElem.prettyPrint());
@@ -1890,10 +1883,7 @@ public class JaxbToJsonTest {
         roundtripped.getRetentionPolicy().toString(),
         "roundtripped retention policy");
 
-    rp =
-        new RetentionPolicy(
-            Collections.singleton(Policy.newUserPolicy("200")),
-            Collections.singleton(Policy.newUserPolicy("400")));
+    rp = new RetentionPolicy(Collections.singleton(Policy.newUserPolicy("400")));
     jaxb = new GetSystemRetentionPolicyResponse(rp);
     jsonJaxbElem = JacksonUtil.jaxbToJSONElement(jaxb);
     logDebug("JSONElement from JAXB ---> prettyPrint\n%1$s", jsonJaxbElem.prettyPrint());
