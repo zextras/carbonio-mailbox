@@ -6,6 +6,7 @@ package com.zextras.mailbox.servlet;
 
 import com.google.inject.servlet.GuiceFilter;
 import com.zextras.mailbox.util.JettyServerFactory;
+import com.zimbra.common.localconfig.LC;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -18,15 +19,29 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.MariaDBContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Tag("api")
+@Testcontainers
 class HealthServletTest {
 
   private static final int PORT = 8080;
   private static Server server;
+  private static final String DB_USER = "test";
+  private static final String DB_PASSWORD = "test";
+
+  @Container
+  static MariaDBContainer mariaDBContainer = new MariaDBContainer()
+      .withUsername(DB_USER)
+      .withPassword(DB_PASSWORD)
+      .withDatabaseName("zimbra");
 
   @BeforeAll
   static void beforeAll() throws Exception {
+    LC.zimbra_mysql_password.setDefault(DB_PASSWORD);
+    LC.zimbra_mysql_user.setDefault(DB_USER);
     server = new JettyServerFactory()
         .withPort(PORT)
         .addFilter("/*", new FilterHolder(GuiceFilter.class))
