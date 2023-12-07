@@ -40,8 +40,8 @@ class HealthServletTest {
 
   @BeforeAll
   static void beforeAll() throws Exception {
-    LC.zimbra_mysql_password.setDefault(DB_PASSWORD);
-    LC.zimbra_mysql_user.setDefault(DB_USER);
+    LC.zimbra_mysql_password.setDefault(mariaDBContainer.getUsername());
+    LC.zimbra_mysql_user.setDefault(mariaDBContainer.getPassword());
     server = new JettyServerFactory()
         .withPort(PORT)
         .addFilter("/*", new FilterHolder(GuiceFilter.class))
@@ -77,7 +77,7 @@ class HealthServletTest {
   }
 
   @Test
-  void readyShouldReturnTrueWhenReady() throws Exception {
+  void readyShouldReturnTrueWhenDBConnectionOk() throws Exception {
     try (CloseableHttpClient client = HttpClientBuilder.create()
         .build()) {
       final HttpGet httpGet = new HttpGet(server.getURI() + "/health/ready");
