@@ -4,7 +4,6 @@
 
 package com.zextras.mailbox.health;
 
-import com.zextras.mailbox.health.ServiceDependency.ServiceType;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
@@ -30,8 +29,7 @@ class DatabaseServiceTest {
     Mockito.when(preparedStatement.executeQuery())
         .thenReturn(resultSet);
 
-    final DatabaseService databaseService = new DatabaseService("MariaDB", ServiceType.REQUIRED,
-        dbPool);
+    final DatabaseService databaseService = new DatabaseService(dbPool);
 
     Assertions.assertTrue(databaseService.isReady());
     Assertions.assertTrue(databaseService.isLive());
@@ -45,8 +43,7 @@ class DatabaseServiceTest {
     Mockito.when(dbPool.getDatabaseConnection())
         .thenThrow(dbConnectionException);
 
-    final DatabaseService databaseService = new DatabaseService("MariaDB", ServiceType.REQUIRED,
-        dbPool);
+    final DatabaseService databaseService = new DatabaseService(dbPool);
 
     Assertions.assertFalse(databaseService.isReady());
     Assertions.assertFalse(databaseService.isLive());
@@ -61,8 +58,7 @@ class DatabaseServiceTest {
         .thenReturn(dbConnection);
     Mockito.when(dbConnection.prepareStatement("SELECT 1")).thenThrow(new SQLException());
 
-    final DatabaseService databaseService = new DatabaseService("MariaDB", ServiceType.REQUIRED,
-        dbPool);
+    final DatabaseService databaseService = new DatabaseService(dbPool);
 
     Assertions.assertFalse(databaseService.isReady());
     Assertions.assertFalse(databaseService.isLive());

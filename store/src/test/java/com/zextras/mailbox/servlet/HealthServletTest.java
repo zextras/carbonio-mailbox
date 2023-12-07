@@ -5,9 +5,12 @@
 package com.zextras.mailbox.servlet;
 
 import com.google.inject.servlet.GuiceFilter;
+import com.zextras.mailbox.health.ServiceDependency.ServiceType;
+import com.zextras.mailbox.servlet.HealthResponse.Dependency;
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.db.DbPool;
+import java.util.List;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -18,11 +21,13 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.MariaDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 @Tag("api")
 @Testcontainers
@@ -105,6 +110,25 @@ class HealthServletTest {
       final CloseableHttpResponse response = client.execute(httpGet);
       Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, response.getStatusLine().getStatusCode());
     }
+  }
+
+  @Test
+  @DisplayName("/health should return 200 when DB Connection OK")
+  void healthRootPathShouldReturn200WhenDBConnectionOk() throws Exception {
+    DbPool.startup();
+    try (CloseableHttpClient client = HttpClientBuilder.create()
+        .build()) {
+      final HttpGet httpGet = new HttpGet(server.getURI() + "/health");
+      final CloseableHttpResponse response = client.execute(httpGet);
+      Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+      final String healthResponseBody  = new String(response.getEntity().getContent().readAllBytes());
+      final HealthResponse expected = new HealthResponse(true,
+          List.of(
+              new Dependency("MariaDb", ServiceType.REQUIRED, true, true)
+          ));
+      Assertions.assertEquals(new ObjectMapper().writeValueAsString(expected), healthResponseBody);
+    }
+    DbPool.shutdown();
   }
 
 

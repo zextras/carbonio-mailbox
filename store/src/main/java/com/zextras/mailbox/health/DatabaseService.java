@@ -11,8 +11,8 @@ public class DatabaseService extends ServiceDependency {
 
   private final DbPool dbPool;
 
-  public DatabaseService(String name, ServiceType type, DbPool dbPool) {
-    super(name, type);
+  public DatabaseService(DbPool dbPool) {
+    super("MariaDb", ServiceType.REQUIRED);
 
     this.dbPool = dbPool;
    }

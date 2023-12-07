@@ -5,7 +5,6 @@
 package com.zextras.mailbox.health;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 public class HealthService {
@@ -22,9 +21,8 @@ public class HealthService {
     return serviceDependencies.stream().allMatch(ServiceDependency::isReady);
   }
 
-  public List<Object> dependencies() {
-    return serviceDependencies.stream().map(ServiceDependency::getName)
-        .collect(Collectors.toList());
+  public List<ServiceDependency> getDependencies() {
+    return serviceDependencies;
   }
 
   public boolean isLive() {

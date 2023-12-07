@@ -312,8 +312,17 @@ public class DbPool {
         return getConnection(null);
     }
 
+    /**
+     * Gets a database connection from the pool.
+     * This method was introduced to move from static {@link #getConnection()}
+     * and slowly move to instance-level methods.
+     *
+     * @return a {@link DbConnection}
+     *
+     * @throws ServiceException
+     */
     public DbConnection getDatabaseConnection() throws ServiceException {
-        return getConnection(null);
+        return getConnection();
     }
 
     public static DbConnection getConnection(Mailbox mbox) throws ServiceException {

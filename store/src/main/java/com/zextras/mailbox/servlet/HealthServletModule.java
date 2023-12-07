@@ -8,7 +8,6 @@ import com.google.inject.Provides;
 import com.google.inject.servlet.ServletModule;
 import com.zextras.mailbox.health.DatabaseService;
 import com.zextras.mailbox.health.HealthService;
-import com.zextras.mailbox.health.ServiceDependency.ServiceType;
 import com.zimbra.cs.db.DbPool;
 import java.util.List;
 
@@ -16,13 +15,13 @@ public class HealthServletModule extends ServletModule {
 
   @Override
   protected void configureServlets() {
-    serve("/health/*").with(HealthServlet.class);
+    serve("/health", "/health/*").with(HealthServlet.class);
   }
 
   @Provides
   HealthService provideHealthService() {
     return new HealthService(
-        List.of(new DatabaseService("MariaDb", ServiceType.REQUIRED, new DbPool())));
+        List.of(new DatabaseService(new DbPool())));
   }
 
 }
