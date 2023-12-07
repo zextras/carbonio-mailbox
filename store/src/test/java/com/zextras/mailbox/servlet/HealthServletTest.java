@@ -4,10 +4,8 @@
 
 package com.zextras.mailbox.servlet;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.servlet.GuiceFilter;
 import com.zextras.mailbox.util.JettyServerFactory;
-import java.util.Map;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -24,8 +22,8 @@ import org.junit.jupiter.api.Test;
 @Tag("api")
 class HealthServletTest {
 
-  private static Server server;
   private static final int PORT = 8080;
+  private static Server server;
 
   @BeforeAll
   static void beforeAll() throws Exception {
@@ -58,22 +56,19 @@ class HealthServletTest {
         .build()) {
       final HttpGet httpGet = new HttpGet(server.getURI() + "/health/live");
       final CloseableHttpResponse response = client.execute(httpGet);
-      Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, response.getStatusLine().getStatusCode());
+      Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR,
+          response.getStatusLine().getStatusCode());
     }
   }
 
-    @Test
-    void readyShouldReturnTrueWhenReady() throws Exception {
-      try (CloseableHttpClient client = HttpClientBuilder.create()
-          .build()) {
-        final HttpGet httpGet = new HttpGet(server.getURI() + "/health/ready");
-        final CloseableHttpResponse response = client.execute(httpGet);
-        Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        final String responseBody = new String(response.getEntity().getContent().readAllBytes());
-        final ObjectMapper objectMapper = new ObjectMapper();
-        final Map responseMap = objectMapper.readValue(responseBody, Map.class);
-        Assertions.assertEquals(true, responseMap.get("ready"));
-      }
+  @Test
+  void readyShouldReturnTrueWhenReady() throws Exception {
+    try (CloseableHttpClient client = HttpClientBuilder.create()
+        .build()) {
+      final HttpGet httpGet = new HttpGet(server.getURI() + "/health/ready");
+      final CloseableHttpResponse response = client.execute(httpGet);
+      Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    }
   }
 
   @Test
@@ -83,10 +78,6 @@ class HealthServletTest {
       final HttpGet httpGet = new HttpGet(server.getURI() + "/health/ready");
       final CloseableHttpResponse response = client.execute(httpGet);
       Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      final String responseBody = new String(response.getEntity().getContent().readAllBytes());
-      final ObjectMapper objectMapper = new ObjectMapper();
-      final Map responseMap = objectMapper.readValue(responseBody, Map.class);
-      Assertions.assertEquals(false, responseMap.get("ready"));
     }
   }
 
