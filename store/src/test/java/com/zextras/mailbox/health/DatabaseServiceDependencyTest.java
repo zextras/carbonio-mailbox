@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-class DatabaseServiceTest {
+class DatabaseServiceDependencyTest {
 
   @Test
   void shouldBeLiveAndReadyIfDbPoolConnectionOk() throws ServiceException, SQLException {
@@ -29,7 +29,7 @@ class DatabaseServiceTest {
     Mockito.when(preparedStatement.executeQuery())
         .thenReturn(resultSet);
 
-    final DatabaseService databaseService = new DatabaseService(dbPool);
+    final DatabaseServiceDependency databaseService = new DatabaseServiceDependency(dbPool);
 
     Assertions.assertTrue(databaseService.isReady());
     Assertions.assertTrue(databaseService.isLive());
@@ -43,7 +43,7 @@ class DatabaseServiceTest {
     Mockito.when(dbPool.getDatabaseConnection())
         .thenThrow(dbConnectionException);
 
-    final DatabaseService databaseService = new DatabaseService(dbPool);
+    final DatabaseServiceDependency databaseService = new DatabaseServiceDependency(dbPool);
 
     Assertions.assertFalse(databaseService.isReady());
     Assertions.assertFalse(databaseService.isLive());
@@ -58,7 +58,7 @@ class DatabaseServiceTest {
         .thenReturn(dbConnection);
     Mockito.when(dbConnection.prepareStatement("SELECT 1")).thenThrow(new SQLException());
 
-    final DatabaseService databaseService = new DatabaseService(dbPool);
+    final DatabaseServiceDependency databaseService = new DatabaseServiceDependency(dbPool);
 
     Assertions.assertFalse(databaseService.isReady());
     Assertions.assertFalse(databaseService.isLive());

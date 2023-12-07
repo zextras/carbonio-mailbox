@@ -7,11 +7,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DatabaseService extends ServiceDependency {
+public class DatabaseServiceDependency extends ServiceDependency {
 
   private final DbPool dbPool;
 
-  public DatabaseService(DbPool dbPool) {
+  public DatabaseServiceDependency(DbPool dbPool) {
     super("MariaDb", ServiceType.REQUIRED);
 
     this.dbPool = dbPool;
