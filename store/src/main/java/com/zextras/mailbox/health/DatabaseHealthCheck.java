@@ -10,7 +10,6 @@ import com.zimbra.cs.db.DbPool.DbConnection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Objects;
 
 public class DatabaseHealthCheck implements HealthCheck {
 
@@ -23,34 +22,15 @@ public class DatabaseHealthCheck implements HealthCheck {
 
   @Override
   public boolean isLive() {
-    PreparedStatement stmt = null;
-    ResultSet resultSet = null;
-    DbConnection connection = null;
-    try {
-      connection = dbPool.getDatabaseConnection();
-      stmt = connection.prepareStatement("SELECT 1");
-      resultSet = stmt.executeQuery();
+    try (DbConnection connection = dbPool.getDatabaseConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT 1");
+        ResultSet resultSet = stmt.executeQuery()
+    ) {
+      resultSet.next();
       return true;
     } catch (ServiceException | SQLException e) {
-      e.printStackTrace();
-    } finally {
-      try {
-        if (!Objects.isNull(resultSet)) resultSet.close();
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
-        try {
-          if (!Objects.isNull(stmt)) stmt.close();
-        } catch (SQLException e) {
-          e.printStackTrace();
-        }
-        try {
-          if (!Objects.isNull(connection)) connection.close();
-        } catch (ServiceException e) {
-          e.printStackTrace();
-        }
+      return false;
     }
-    return false;
   }
 
   @Override
