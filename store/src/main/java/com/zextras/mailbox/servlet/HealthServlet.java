@@ -25,11 +25,13 @@ public class HealthServlet extends HttpServlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+  protected void doGet(HttpServletRequest httpServletRequest,
+      HttpServletResponse httpServletResponse)
       throws ServletException, IOException {
+    final boolean ready = healthService.isReady();
+    httpServletResponse.setStatus(ready ? HttpStatus.SC_OK : HttpStatus.SC_INTERNAL_SERVER_ERROR);
 
-    resp.setStatus(HttpStatus.SC_OK);
-    resp.getWriter().write("{\"ready\": true}");
+    httpServletResponse.getWriter().write(String.format("{\"ready\": %s}", ready));
   }
 
 }

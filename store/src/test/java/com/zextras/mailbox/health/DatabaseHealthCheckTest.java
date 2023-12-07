@@ -60,7 +60,6 @@ class DatabaseHealthCheckTest {
   void shouldNotBeLiveIfPrepareStatementThrowsSqlException() throws ServiceException, SQLException {
     final DbPool dbPool = Mockito.mock(DbPool.class);
     final DbConnection dbConnection = Mockito.mock(DbConnection.class);
-
     Mockito.when(dbPool.getDatabaseConnection())
         .thenReturn(dbConnection);
     Mockito.when(dbConnection.prepareStatement("SELECT 1")).thenThrow(new SQLException());

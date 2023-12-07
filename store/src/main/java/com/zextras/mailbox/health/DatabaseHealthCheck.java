@@ -23,8 +23,8 @@ public class DatabaseHealthCheck implements HealthCheck {
   @Override
   public boolean isLive() {
     try (DbConnection connection = dbPool.getDatabaseConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT 1");
-        ResultSet resultSet = stmt.executeQuery()
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT 1");
+        ResultSet resultSet = preparedStatement.executeQuery()
     ) {
       resultSet.next();
       return true;
