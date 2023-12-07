@@ -20,6 +20,10 @@ public class DatabaseService extends ServiceDependency {
 
   @Override
   public boolean isReady() {
+    return this.canConnectToDatabase();
+  }
+
+  private boolean canConnectToDatabase() {
     try (DbConnection connection = dbPool.getDatabaseConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT 1");
         ResultSet resultSet = preparedStatement.executeQuery()
@@ -33,6 +37,6 @@ public class DatabaseService extends ServiceDependency {
 
   @Override
   public boolean isLive() {
-    return false;
+    return this.canConnectToDatabase();
   }
 }

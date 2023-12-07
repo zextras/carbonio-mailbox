@@ -18,7 +18,7 @@ import org.mockito.Mockito;
 class DatabaseServiceTest {
 
   @Test
-  void shouldBeReadyIfDbPoolConnectionOk() throws ServiceException, SQLException {
+  void shouldBeLiveAndReadyIfDbPoolConnectionOk() throws ServiceException, SQLException {
     final DbPool dbPool = Mockito.mock(DbPool.class);
     final DbConnection dbConnection = Mockito.mock(DbConnection.class);
     final PreparedStatement preparedStatement = Mockito.mock(PreparedStatement.class);
@@ -34,11 +34,12 @@ class DatabaseServiceTest {
         dbPool);
 
     Assertions.assertTrue(databaseService.isReady());
+    Assertions.assertTrue(databaseService.isLive());
   }
 
 
   @Test
-  void shouldNotBeReadyIfDbPoolConnectionCannotBeTaken() throws ServiceException, SQLException {
+  void shouldNotBeLiveAndReadyIfDbPoolConnectionCannotBeTaken() throws ServiceException, SQLException {
     final DbPool dbPool = Mockito.mock(DbPool.class);
     final ServiceException dbConnectionException = Mockito.mock(ServiceException.class);
     Mockito.when(dbPool.getDatabaseConnection())
@@ -48,10 +49,11 @@ class DatabaseServiceTest {
         dbPool);
 
     Assertions.assertFalse(databaseService.isReady());
+    Assertions.assertFalse(databaseService.isLive());
   }
 
   @Test
-  void shouldNotBeReadyIfPrepareStatementThrowsSqlException()
+  void shouldNotBeLiveAndReadyIfPrepareStatementThrowsSqlException()
       throws ServiceException, SQLException {
     final DbPool dbPool = Mockito.mock(DbPool.class);
     final DbConnection dbConnection = Mockito.mock(DbConnection.class);
@@ -63,6 +65,7 @@ class DatabaseServiceTest {
         dbPool);
 
     Assertions.assertFalse(databaseService.isReady());
+    Assertions.assertFalse(databaseService.isLive());
   }
 
 }
