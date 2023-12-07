@@ -312,6 +312,10 @@ public class DbPool {
         return getConnection(null);
     }
 
+    public DbConnection getDatabaseConnection() throws ServiceException {
+        return getConnection(null);
+    }
+
     public static DbConnection getConnection(Mailbox mbox) throws ServiceException {
         if (!isInitialized()) {
             throw ServiceException.FAILURE("Database connection pool not initialized.", null);

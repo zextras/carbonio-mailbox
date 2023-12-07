@@ -4,7 +4,9 @@
 
 package com.zextras.mailbox.servlet;
 
+import com.zextras.mailbox.health.HealthService;
 import java.io.IOException;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,12 +15,21 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpStatus;
 
 @Singleton
-public class HealthLiveServlet extends HttpServlet {
+public class HealthServlet extends HttpServlet {
+
+  private final HealthService healthService;
+
+  @Inject
+  public HealthServlet(HealthService healthService) {
+    this.healthService = healthService;
+  }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
+
     resp.setStatus(HttpStatus.SC_OK);
+    resp.getWriter().write("{\"ready\": true}");
   }
 
 }
