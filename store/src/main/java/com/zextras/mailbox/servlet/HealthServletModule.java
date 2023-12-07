@@ -21,7 +21,7 @@ public class HealthServletModule extends ServletModule {
   @Provides
   HealthUseCase provideHealthService() {
     return new HealthUseCase(
-        List.of(new DatabaseServiceDependency(new DbPool())));
+        List.of(new DatabaseServiceDependency(new DbPool(), System::currentTimeMillis)));
   }
 
 }

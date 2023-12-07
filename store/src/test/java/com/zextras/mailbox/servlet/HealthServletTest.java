@@ -28,6 +28,7 @@ import org.testcontainers.containers.MariaDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import org.testcontainers.utility.DockerImageName;
 
 @Tag("api")
 @Testcontainers
@@ -39,7 +40,7 @@ class HealthServletTest {
   private static final String DB_PASSWORD = "test";
 
   @Container
-  static MariaDBContainer mariaDBContainer = new MariaDBContainer()
+  static MariaDBContainer mariaDBContainer = new MariaDBContainer(DockerImageName.parse("mariadb:10.4.31-focal"))
       .withUsername(DB_USER)
       .withPassword(DB_PASSWORD)
       .withDatabaseName("zimbra");
