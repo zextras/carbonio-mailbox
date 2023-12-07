@@ -18,7 +18,7 @@ class HealthServiceTest {
       List.of(serviceDependency, serviceDependency2));
 
   @Test
-  void shouldReturnFalseWhenOneHealthCheckFailing() {
+  void readyShouldReturnFalseWhenOneHealthCheckFailing() {
     Mockito.when(serviceDependency.isReady()).thenReturn(true);
     Mockito.when(serviceDependency2.isReady()).thenReturn(false);
 
@@ -26,7 +26,7 @@ class HealthServiceTest {
   }
 
   @Test
-  void shouldReturnFalseWhenAllHealthCheckFailing() {
+  void readyShouldReturnFalseWhenAllHealthCheckFailing() {
     Mockito.when(serviceDependency.isReady()).thenReturn(false);
     Mockito.when(serviceDependency2.isReady()).thenReturn(false);
 
@@ -34,11 +34,35 @@ class HealthServiceTest {
   }
 
   @Test
-  void shouldReturnTrueWhenAllOk() {
+  void readyShouldReturnTrueWhenAllOk() {
     Mockito.when(serviceDependency.isReady()).thenReturn(true);
     Mockito.when(serviceDependency2.isReady()).thenReturn(true);
 
     Assertions.assertTrue(healthService.isReady());
+  }
+
+  @Test
+  void liveShouldReturnFalseWhenOneHealthCheckFailing() {
+    Mockito.when(serviceDependency.isLive()).thenReturn(true);
+    Mockito.when(serviceDependency2.isLive()).thenReturn(false);
+
+    Assertions.assertFalse(healthService.isLive());
+  }
+
+  @Test
+  void liveShouldReturnFalseWhenAllHealthCheckFailing() {
+    Mockito.when(serviceDependency.isLive()).thenReturn(false);
+    Mockito.when(serviceDependency2.isLive()).thenReturn(false);
+
+    Assertions.assertFalse(healthService.isLive());
+  }
+
+  @Test
+  void liveShouldReturnTrueWhenAllOk() {
+    Mockito.when(serviceDependency.isLive()).thenReturn(true);
+    Mockito.when(serviceDependency2.isLive()).thenReturn(true);
+
+    Assertions.assertTrue(healthService.isLive());
   }
 
 }

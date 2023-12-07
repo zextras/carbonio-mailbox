@@ -27,4 +27,7 @@ public class HealthService {
         .collect(Collectors.toList());
   }
 
+  public boolean isLive() {
+    return serviceDependencies.stream().allMatch(ServiceDependency::isLive);
+  }
 }
