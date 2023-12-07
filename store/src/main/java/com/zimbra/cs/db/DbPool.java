@@ -42,7 +42,7 @@ public class DbPool {
 
     static ValueCounter<String> sConnectionStackCounter = new ValueCounter<String>();
 
-    public static class DbConnection {
+    public static class DbConnection implements AutoCloseable {
         private final Connection connection;
         private Throwable mStackTrace;
         Integer mboxId;
