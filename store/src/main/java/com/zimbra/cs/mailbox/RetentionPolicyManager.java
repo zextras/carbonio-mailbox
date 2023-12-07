@@ -170,8 +170,7 @@ public class RetentionPolicyManager {
    * Returns a new {@code RetentionPolicy} that has the latest system policy data for any elements
    * in {@code rp} of type {@link Policy.Type#SYSTEM}.
    */
-  private RetentionPolicy getCompleteRetentionPolicy(RetentionPolicy master, RetentionPolicy rp)
-      throws ServiceException {
+  private RetentionPolicy getCompleteRetentionPolicy(RetentionPolicy master, RetentionPolicy rp) {
     return new RetentionPolicy(getLatestList(master, rp.getPurgePolicy()));
   }
 
@@ -185,8 +184,7 @@ public class RetentionPolicyManager {
     return retentionPolicy;
   }
 
-  private List<Policy> getLatestList(RetentionPolicy master, Iterable<Policy> list)
-      throws ServiceException {
+  private List<Policy> getLatestList(RetentionPolicy master, Iterable<Policy> list) {
     List<Policy> latestList = Lists.newArrayList();
     for (Policy policy : list) {
       if (policy.getType() == Policy.Type.USER) {
@@ -203,8 +201,7 @@ public class RetentionPolicyManager {
 
   public Policy getPolicyById(Entry entry, String id) throws ServiceException {
     SystemPolicy sp = getCachedSystemPolicy(entry);
-    Policy p = sp.purge.get(id);
-    return p;
+    return sp.purge.get(id);
   }
 
   /**
