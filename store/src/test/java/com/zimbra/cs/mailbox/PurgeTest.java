@@ -43,12 +43,6 @@ public class PurgeTest {
         Config config = Provisioning.getInstance().getConfig();
         RetentionPolicyManager mgr = RetentionPolicyManager.getInstance();
         RetentionPolicy rp = mgr.getSystemRetentionPolicy(config);
-        List<Policy> keep = rp.getKeepPolicy();
-        if (keep != null) {
-            for (Policy policy : keep) {
-                mgr.deleteSystemPolicy(config, policy.getId());
-            }
-        }
 
         List<Policy> purge = rp.getPurgePolicy();
         if (purge != null) {
@@ -56,7 +50,6 @@ public class PurgeTest {
                 mgr.deleteSystemPolicy(config, policy.getId());
             }
         }
-
     }
 
  @Test
@@ -76,7 +69,7 @@ public class PurgeTest {
 
   // Add retention policy.
   Policy p = Policy.newUserPolicy("45m");
-  RetentionPolicy purgePolicy = new RetentionPolicy(null, Arrays.asList(p));
+  RetentionPolicy purgePolicy = new RetentionPolicy(Arrays.asList(p));
   mbox.setRetentionPolicy(null, folder.getId(), MailItem.Type.FOLDER, purgePolicy);
 
   // Purge the folder cache and make sure that purge policy is reloaded from metadata.
@@ -101,7 +94,6 @@ public class PurgeTest {
   mbox.setRetentionPolicy(null, folder.getId(), MailItem.Type.FOLDER, null);
   mbox.purge(MailItem.Type.FOLDER);
   folder = mbox.getFolderById(null, folder.getId());
-  assertEquals(0, folder.getRetentionPolicy().getKeepPolicy().size());
   assertEquals(0, folder.getRetentionPolicy().getPurgePolicy().size());
  }
 
@@ -124,7 +116,7 @@ public class PurgeTest {
 
   // Add retention policy.
   Policy p = Policy.newUserPolicy("45m");
-  RetentionPolicy purgePolicy = new RetentionPolicy(null, Arrays.asList(p));
+  RetentionPolicy purgePolicy = new RetentionPolicy(Arrays.asList(p));
   mbox.setRetentionPolicy(null, tag.getId(), MailItem.Type.TAG, purgePolicy);
 
   // Purge the tag cache and make sure that purge policy is reloaded from metadata.
@@ -150,7 +142,6 @@ public class PurgeTest {
   mbox.setRetentionPolicy(null, tag.getId(), MailItem.Type.TAG, null);
   mbox.purge(MailItem.Type.TAG);
   tag = mbox.getTagById(null, tag.getId());
-  assertEquals(0, tag.getRetentionPolicy().getKeepPolicy().size());
   assertEquals(0, tag.getRetentionPolicy().getPurgePolicy().size());
  }
 
@@ -547,7 +538,7 @@ public class PurgeTest {
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
   Folder folder = mbox.createFolder(null, "/invalidFolderMessageLifetime", new Folder.FolderOptions().setDefaultView(MailItem.Type.MESSAGE));
   Policy p = Policy.newUserPolicy("45x");
-  RetentionPolicy purgePolicy = new RetentionPolicy(null, Arrays.asList(p));
+  RetentionPolicy purgePolicy = new RetentionPolicy(Arrays.asList(p));
   try {
    mbox.setRetentionPolicy(null, folder.getId(), MailItem.Type.FOLDER, purgePolicy);
    fail("Invalid time interval should not have been accepted.");
@@ -563,14 +554,14 @@ public class PurgeTest {
   List<Policy> list = Arrays.asList(
     Policy.newUserPolicy("45d"),
     Policy.newUserPolicy("60d"));
-  RetentionPolicy purgePolicy = new RetentionPolicy(null, list);
+  RetentionPolicy purgePolicy = new RetentionPolicy(list);
   try {
    mbox.setRetentionPolicy(null, folder.getId(), MailItem.Type.FOLDER, purgePolicy);
    fail("Multiple purge policies.");
   } catch (ServiceException e) {
   }
 
-  purgePolicy = new RetentionPolicy(list, null);
+  purgePolicy = new RetentionPolicy(list);
   try {
    mbox.setRetentionPolicy(null, folder.getId(), MailItem.Type.FOLDER, purgePolicy);
    fail("Multiple keep policies.");
@@ -582,29 +573,24 @@ public class PurgeTest {
  void modifySystemPolicy() throws Exception {
   Config config = Provisioning.getInstance().getConfig();
   RetentionPolicyManager mgr = RetentionPolicyManager.getInstance();
-  Policy keep1 = mgr.createSystemKeepPolicy(config, "keep1", "300d");
-  Policy keep2 = mgr.createSystemKeepPolicy(config, "keep2", "400d");
   Policy purge1 = mgr.createSystemPurgePolicy(config, "purge1", "500d");
   Policy purge2 = mgr.createSystemPurgePolicy(config, "purge2", "500d");
 
-  assertEquals(keep1, mgr.getPolicyById(config, keep1.getId()));
-  assertEquals(keep2, mgr.getPolicyById(config, keep2.getId()));
   assertEquals(purge1, mgr.getPolicyById(config, purge1.getId()));
   assertEquals(purge2, mgr.getPolicyById(config, purge2.getId()));
 
   // Test modify.
-  mgr.modifySystemPolicy(config, keep1.getId(), "new keep1", "301d");
-  Policy newKeep1 = mgr.getPolicyById(config, keep1.getId());
-  assertNotEquals(keep1, newKeep1);
-  assertEquals(keep1.getId(), newKeep1.getId());
-  assertEquals("new keep1", newKeep1.getName());
-  assertEquals("301d", newKeep1.getLifetime());
+  mgr.modifySystemPolicy(config, purge1.getId(), "new purge1", "501d");
+  Policy newPurge1 = mgr.getPolicyById(config, purge1.getId());
+  assertNotEquals(purge1, newPurge1);
+  assertEquals(purge1.getId(), newPurge1.getId());
+  assertEquals("new purge1", newPurge1.getName());
+  assertEquals("501d", newPurge1.getLifetime());
 
   // Test delete.
   assertTrue(mgr.deleteSystemPolicy(config, purge2.getId()));
   assertNull(mgr.getPolicyById(config, purge2.getId()));
   RetentionPolicy rp = mgr.getSystemRetentionPolicy(config);
-  assertEquals(2, rp.getKeepPolicy().size());
   assertEquals(1, rp.getPurgePolicy().size());
  }
 
@@ -613,29 +599,25 @@ public class PurgeTest {
   Map<String, Object> attrs = new HashMap<String, Object>();
   Cos cos = Provisioning.getInstance().createCos("testcos", attrs);
   RetentionPolicyManager mgr = RetentionPolicyManager.getInstance();
-  Policy keep1 = mgr.createSystemKeepPolicy(cos, "keep1", "300d");
-  Policy keep2 = mgr.createSystemKeepPolicy(cos, "keep2", "400d");
+
   Policy purge1 = mgr.createSystemPurgePolicy(cos, "purge1", "500d");
   Policy purge2 = mgr.createSystemPurgePolicy(cos, "purge2", "500d");
 
-  assertEquals(keep1, mgr.getPolicyById(cos, keep1.getId()));
-  assertEquals(keep2, mgr.getPolicyById(cos, keep2.getId()));
   assertEquals(purge1, mgr.getPolicyById(cos, purge1.getId()));
   assertEquals(purge2, mgr.getPolicyById(cos, purge2.getId()));
 
   // Test modify.
-  mgr.modifySystemPolicy(cos, keep1.getId(), "new keep1", "301d");
-  Policy newKeep1 = mgr.getPolicyById(cos, keep1.getId());
-  assertNotEquals(keep1, newKeep1);
-  assertEquals(keep1.getId(), newKeep1.getId());
-  assertEquals("new keep1", newKeep1.getName());
+  mgr.modifySystemPolicy(cos, purge1.getId(), "new purge1", "301d");
+  Policy newKeep1 = mgr.getPolicyById(cos, purge1.getId());
+  assertNotEquals(purge1, newKeep1);
+  assertEquals(purge1.getId(), newKeep1.getId());
+  assertEquals("new purge1", newKeep1.getName());
   assertEquals("301d", newKeep1.getLifetime());
 
   // Test delete.
   assertTrue(mgr.deleteSystemPolicy(cos, purge2.getId()));
   assertNull(mgr.getPolicyById(cos, purge2.getId()));
   RetentionPolicy rp = mgr.getSystemRetentionPolicy(cos);
-  assertEquals(2, rp.getKeepPolicy().size());
   assertEquals(1, rp.getPurgePolicy().size());
  }
 
@@ -647,22 +629,22 @@ public class PurgeTest {
  void completeRetentionPolicy() throws Exception {
   RetentionPolicyManager mgr = RetentionPolicyManager.getInstance();
   Config config = Provisioning.getInstance().getConfig();
-  Policy keep1 = mgr.createSystemKeepPolicy(config, "keep1", "300d");
+  Policy purge1 = mgr.createSystemPurgePolicy(config, "purge1", "300d");
 
   // Create mailbox policy that references the system policy, and confirm that
   // lookup returns the latest values.
-  RetentionPolicy mboxRP = new RetentionPolicy(Arrays.asList(Policy.newSystemPolicy(keep1.getId())), null);
+  RetentionPolicy mboxRP = new RetentionPolicy(Arrays.asList(Policy.newSystemPolicy(purge1.getId())));
   RetentionPolicy completeRP = mgr.getCompleteRetentionPolicy(getAccount(), mboxRP);
-  Policy latest = completeRP.getKeepPolicy().get(0);
-  assertEquals(keep1, latest);
+  Policy latest = completeRP.getPurgePolicy().get(0);
+  assertEquals(purge1, latest);
 
   // Modify system policy and confirm that the accessor returns the latest values.
-  mgr.modifySystemPolicy(config, keep1.getId(), "new keep1", "301d");
+  mgr.modifySystemPolicy(config, purge1.getId(), "new purge1", "301d");
   completeRP = mgr.getCompleteRetentionPolicy(getAccount(), mboxRP);
-  latest = completeRP.getKeepPolicy().get(0);
-  assertNotEquals(keep1, latest);
-  assertEquals(keep1.getId(), latest.getId());
-  assertEquals("new keep1", latest.getName());
+  latest = completeRP.getPurgePolicy().get(0);
+  assertNotEquals(purge1, latest);
+  assertEquals(purge1.getId(), latest.getId());
+  assertEquals("new purge1", latest.getName());
   assertEquals("301d", latest.getLifetime());
  }
 
@@ -670,50 +652,50 @@ public class PurgeTest {
  void completeCosRetentionPolicy() throws Exception {
   RetentionPolicyManager mgr = RetentionPolicyManager.getInstance();
   Config config = Provisioning.getInstance().getConfig();
-  Policy keep1 = mgr.createSystemKeepPolicy(config, "keep1", "300d");
+  Policy purge1 = mgr.createSystemPurgePolicy(config, "purge1", "300d");
 
 
   Map<String, Object> attrs = new HashMap<String, Object>();
   Cos cos = Provisioning.getInstance().createCos("testcos2", attrs);
-  Policy keep2 = mgr.createSystemKeepPolicy(cos, "keep2", "600d");
+  Policy purge2 = mgr.createSystemPurgePolicy(cos, "purge2", "600d");
 
   // Assign cos to the account
   getAccount().setCOSId(cos.getId());
 
   // Create mailbox policy that references the system policy, and confirm that
   // lookup returns the latest values.
-  RetentionPolicy mboxRP1 = new RetentionPolicy(Arrays.asList(Policy.newSystemPolicy(keep2.getId())), null);
+  RetentionPolicy mboxRP1 = new RetentionPolicy(Arrays.asList(Policy.newSystemPolicy(purge2.getId())));
   RetentionPolicy completeRP = mgr.getCompleteRetentionPolicy(getAccount(), mboxRP1);
-  Policy latest = completeRP.getKeepPolicy().get(0);
-  assertEquals(keep2, latest);
+  Policy latest = completeRP.getPurgePolicy().get(0);
+  assertEquals(purge2, latest);
 
   // Modify cos policy and confirm that the accessor returns the latest values.
-  mgr.modifySystemPolicy(cos, keep2.getId(), "new keep2", "301d");
+  mgr.modifySystemPolicy(cos, purge2.getId(), "new purge2", "301d");
   completeRP = mgr.getCompleteRetentionPolicy(getAccount(), mboxRP1);
-  latest = completeRP.getKeepPolicy().get(0);
-  assertNotEquals(keep2, latest);
-  assertEquals(keep2.getId(), latest.getId());
-  assertEquals("new keep2", latest.getName());
+  latest = completeRP.getPurgePolicy().get(0);
+  assertNotEquals(purge2, latest);
+  assertEquals(purge2.getId(), latest.getId());
+  assertEquals("new purge2", latest.getName());
   assertEquals("301d", latest.getLifetime());
 
   // Make sure system policy does not apply to this user.
-  RetentionPolicy mboxRP2 = new RetentionPolicy(Arrays.asList(Policy.newSystemPolicy(keep1.getId())), null);
+  RetentionPolicy mboxRP2 = new RetentionPolicy(Arrays.asList(Policy.newSystemPolicy(purge1.getId())));
   completeRP = mgr.getCompleteRetentionPolicy(getAccount(), mboxRP2);
-  assertTrue(completeRP.getKeepPolicy().isEmpty());
+  assertTrue(completeRP.getPurgePolicy().isEmpty());
 
   // remove cos retention policy
-  mgr.deleteSystemPolicy(cos, keep2.getId());
+  mgr.deleteSystemPolicy(cos, purge2.getId());
 
   // make sure account retention policy is empty
   completeRP = mgr.getCompleteRetentionPolicy(getAccount(), mboxRP1);
-  assertTrue(completeRP.getKeepPolicy().isEmpty());
+  assertTrue(completeRP.getPurgePolicy().isEmpty());
 
   // make sure system policy is applicable now
   completeRP = mgr.getCompleteRetentionPolicy(getAccount(), mboxRP2);
-  latest = completeRP.getKeepPolicy().get(0);
-  assertEquals(keep1, latest);
-  assertEquals(keep1.getId(), latest.getId());
-  assertEquals("keep1", latest.getName());
+  latest = completeRP.getPurgePolicy().get(0);
+  assertEquals(purge1, latest);
+  assertEquals(purge1.getId(), latest.getId());
+  assertEquals("purge1", latest.getName());
   assertEquals("300d", latest.getLifetime());
  }
 
@@ -733,7 +715,7 @@ public class PurgeTest {
 
   Policy p1 = Policy.newUserPolicy("90m");
   Policy p2 = Policy.newSystemPolicy(system.getId());
-  RetentionPolicy purgePolicy = new RetentionPolicy(null, Arrays.asList(p1, p2));
+  RetentionPolicy purgePolicy = new RetentionPolicy(Arrays.asList(p1, p2));
   mbox.setRetentionPolicy(null, folder.getId(), MailItem.Type.FOLDER, purgePolicy);
 
   // Run purge and make sure one of the messages was deleted.
