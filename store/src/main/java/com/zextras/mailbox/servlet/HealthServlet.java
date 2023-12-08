@@ -6,7 +6,9 @@ package com.zextras.mailbox.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.mailbox.health.HealthUseCase;
-import com.zextras.mailbox.servlet.HealthResponse.Builder;
+import com.zextras.mailbox.servlet.HealthResponse.HealthResponseBuilder;
+import com.zimbra.common.util.Log;
+import com.zimbra.common.util.LogFactory;
 import java.io.IOException;
 import java.util.Objects;
 import javax.inject.Inject;
@@ -20,6 +22,7 @@ import org.apache.http.HttpStatus;
 @Singleton
 public class HealthServlet extends HttpServlet {
 
+  private static final Log LOG = LogFactory.getLog(HealthServlet.class);
   private final HealthUseCase healthUseCase;
 
   @Inject
@@ -38,22 +41,31 @@ public class HealthServlet extends HttpServlet {
     final boolean isReady = healthUseCase.isReady();
     switch (requestedPath) {
       case "/":
-        httpServletResponse.setStatus(isReady ? HttpStatus.SC_OK : HttpStatus.SC_INTERNAL_SERVER_ERROR);
-        final ObjectMapper objectMapper = new ObjectMapper();
-        final Builder builder = new Builder().withReadiness(isReady);
-        healthUseCase.getDependencies().forEach(
-            builder::withDependency
-        );
-        final String jsonResponse = objectMapper.writeValueAsString(builder.build());
-        httpServletResponse.getWriter().write(jsonResponse);
+        try {
+          httpServletResponse.setStatus(
+              isReady ? HttpStatus.SC_OK : HttpStatus.SC_INTERNAL_SERVER_ERROR);
+
+          final HealthResponse healthResponse = HealthResponseBuilder.newInstance()
+              .withReadiness(isReady)
+              .withDependencies(healthUseCase.getDependencies())
+              .build();
+
+          httpServletResponse.getWriter()
+              .write(new ObjectMapper().writeValueAsString(healthResponse));
+        } catch (IOException e) {
+          LOG.warn(e.getMessage(), e);
+        }
         break;
       case "/ready":
-        httpServletResponse.setStatus(isReady ? HttpStatus.SC_OK : HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        httpServletResponse.setStatus(
+            isReady ? HttpStatus.SC_OK : HttpStatus.SC_INTERNAL_SERVER_ERROR);
         break;
       case "/live":
-        httpServletResponse.setStatus(healthUseCase.isLive() ? HttpStatus.SC_OK : HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        httpServletResponse.setStatus(
+            healthUseCase.isLive() ? HttpStatus.SC_OK : HttpStatus.SC_INTERNAL_SERVER_ERROR);
         break;
       default:
+        httpServletResponse.setStatus(HttpStatus.SC_NOT_FOUND);
         break;
     }
   }

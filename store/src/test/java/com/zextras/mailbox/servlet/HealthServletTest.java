@@ -35,15 +35,15 @@ import org.testcontainers.utility.DockerImageName;
 class HealthServletTest {
 
   private static final int PORT = 8080;
-  private static Server server;
   private static final String DB_USER = "test";
   private static final String DB_PASSWORD = "test";
-
   @Container
-  static MariaDBContainer mariaDBContainer = new MariaDBContainer(DockerImageName.parse("mariadb:10.4.31-focal"))
+  static MariaDBContainer<?> mariaDBContainer = new MariaDBContainer<>(
+      DockerImageName.parse("mariadb:10.4.31-focal"))
       .withUsername(DB_USER)
       .withPassword(DB_PASSWORD)
       .withDatabaseName("zimbra");
+  private static Server server;
 
   @BeforeEach
   void beforeEach() throws Exception {
@@ -97,7 +97,9 @@ class HealthServletTest {
     try (CloseableHttpClient client = HttpClientBuilder.create()
         .build()) {
       final HttpGet httpGet = new HttpGet(server.getURI() + "/health/ready");
+
       final CloseableHttpResponse response = client.execute(httpGet);
+
       Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
     }
     DbPool.shutdown();
@@ -108,8 +110,11 @@ class HealthServletTest {
     try (CloseableHttpClient client = HttpClientBuilder.create()
         .build()) {
       final HttpGet httpGet = new HttpGet(server.getURI() + "/health/ready");
+
       final CloseableHttpResponse response = client.execute(httpGet);
-      Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, response.getStatusLine().getStatusCode());
+
+      Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR,
+          response.getStatusLine().getStatusCode());
     }
   }
 
@@ -121,16 +126,18 @@ class HealthServletTest {
         .build()) {
       final HttpGet httpGet = new HttpGet(server.getURI() + "/health");
       final CloseableHttpResponse response = client.execute(httpGet);
+
       Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      final String healthResponseBody  = new String(response.getEntity().getContent().readAllBytes());
+
+      final String healthResponseBody = new String(
+          response.getEntity().getContent().readAllBytes());
       final HealthResponse expected = new HealthResponse(true,
           List.of(
               new Dependency("MariaDb", ServiceType.REQUIRED, true, true)
           ));
+
       Assertions.assertEquals(new ObjectMapper().writeValueAsString(expected), healthResponseBody);
     }
     DbPool.shutdown();
   }
-
-
 }
