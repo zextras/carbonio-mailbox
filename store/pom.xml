@@ -5,6 +5,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <artifactId>zm-store</artifactId>
 
+  <parent>
+    <artifactId>zm-mailbox</artifactId>
+    <groupId>zextras</groupId>
+    <version>${revision}</version>
+  </parent>
+
   <!-- To sort out dependencies take a look at: https://wiki.eclipse.org/Jetty/Reference/Dependencies -->
   <dependencies>
     <!-- Must be provided to avoid collision -->
@@ -64,19 +70,11 @@
       <scope>test</scope>
     </dependency>
 
-
     <dependency>
       <artifactId>zm-ews-stub</artifactId>
       <groupId>zimbra</groupId>
     </dependency>
 
-    <!--    TODO: figure out if we require this as well, since zimbra already have one-->
-    <!--    <dependency>-->
-    <!--      <artifactId>ews_2010</artifactId>-->
-    <!--      <groupId>ews_2010</groupId>-->
-    <!--      <version>1.0</version>-->
-    <!--    </dependency>
--->
     <dependency>
       <artifactId>jjwt</artifactId>
       <groupId>io.jsonwebtoken</groupId>
@@ -118,18 +116,6 @@
     <dependency>
       <groupId>org.mariadb.jdbc</groupId>
       <artifactId>mariadb-java-client</artifactId>
-      <version>2.7.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>testcontainers</artifactId>
-      <version>1.17.6</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <version>1.17.6</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -546,17 +532,10 @@
       <version>1.19.0</version>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <modelVersion>4.0.0</modelVersion>
   <packaging>war</packaging>
-
-  <parent>
-    <artifactId>zm-mailbox</artifactId>
-    <groupId>zextras</groupId>
-    <version>${revision}</version>
-  </parent>
 
   <build>
     <plugins>
@@ -801,7 +780,7 @@
           <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
-            <version>2.7.3</version>
+            <version>${mariadb-java-client.version}</version>
           </dependency>
           <dependency>
             <groupId>log4j</groupId>
@@ -809,8 +788,8 @@
             <version>1.0</version>
           </dependency>
         </dependencies>
-
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>

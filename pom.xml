@@ -836,6 +836,11 @@
         <artifactId>mockserver-client-java</artifactId>
         <version>${mockserver.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.mariadb.jdbc</groupId>
+        <artifactId>mariadb-java-client</artifactId>
+        <version>${mariadb-java-client.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -878,6 +883,7 @@
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <revision>24.1.0-SNAPSHOT</revision>
     <mockserver.version>5.13.0</mockserver.version>
+    <mariadb-java-client.version>2.7.3</mariadb-java-client.version>
   </properties>
   <version>${revision}</version>
   <profiles>
