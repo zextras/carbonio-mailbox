@@ -12,13 +12,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.function.Supplier;
 
+/**
+ * Class represents MariaDB service dependency of mailbox
+ */
 public class DatabaseServiceDependency extends ServiceDependency {
 
   private final DbPool dbPool;
-  private final int pollingIntervalMillis;
-  private final Supplier<Long> currentTimeProvider;
-  private Long lastExecMillis;
-  private boolean lastHealthCheckedValue;
 
   public DatabaseServiceDependency(DbPool dbPool, Supplier<Long> currentTimeProvider) {
     this(dbPool, 5000, currentTimeProvider);
@@ -26,24 +25,22 @@ public class DatabaseServiceDependency extends ServiceDependency {
 
   public DatabaseServiceDependency(DbPool dbPool, int pollingIntervalMillis,
       Supplier<Long> currentTimeProvider) {
-    super("MariaDb", ServiceType.REQUIRED);
+    super("MariaDb", ServiceType.REQUIRED, pollingIntervalMillis, currentTimeProvider);
     this.dbPool = dbPool;
-    this.pollingIntervalMillis = pollingIntervalMillis;
-    this.currentTimeProvider = currentTimeProvider;
-    this.lastHealthCheckedValue = false;
   }
 
   @Override
   public boolean isReady() {
-    return canConnectToDatabase();
+    return canConnectToService();
   }
 
   @Override
   public boolean isLive() {
-    return this.canConnectToDatabase();
+    return canConnectToService();
   }
 
-  private boolean doCheckStatus() {
+  @Override
+  protected boolean doCheckStatus() {
     try (DbConnection connection = dbPool.getDatabaseConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT 1");
         ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -51,16 +48,5 @@ public class DatabaseServiceDependency extends ServiceDependency {
     } catch (ServiceException | SQLException e) {
       return false;
     }
-  }
-
-  private boolean canConnectToDatabase() {
-    final long currentTime = currentTimeProvider.get();
-
-    if (lastExecMillis == null || currentTime > lastExecMillis + pollingIntervalMillis) {
-      lastHealthCheckedValue = doCheckStatus();
-      lastExecMillis = currentTime;
-    }
-
-    return lastHealthCheckedValue;
   }
 }
