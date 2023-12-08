@@ -4,23 +4,24 @@
 
 package com.zextras.mailbox.health;
 
+/**
+ * Contract for checking the health status of a service.
+ */
 public interface HealthStatus {
 
   /**
-   * A readiness signal indicates that an application is ready to process requests.
+   * Checks if the service is ready to process requests.
    *
-   * @return true if the application is ready to receive requests otherwise false
+   * @return {@code true} if the service is ready to receive requests, otherwise {@code false}
    */
   boolean isReady();
 
-
   /**
-   * The liveliness endpoint is used to check if an application is running and responsive If the
-   * liveliness check fails, it means that the application is unhealthy or dead and should be
-   * restarted.
+   * Checks if the service is live and responsive. If the liveliness check fails, it indicates that
+   * the service is unhealthy or dead and should be restarted.
    *
-   * @return true if the application is healthy and responsive otherwise false
+   * @return {@code true} if the service is healthy and responsive, otherwise {@code false}
    */
   boolean isLive();
-
 }
+
