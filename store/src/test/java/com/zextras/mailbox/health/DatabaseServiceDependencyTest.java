@@ -30,7 +30,9 @@ class DatabaseServiceDependencyTest {
         .thenReturn(preparedStatement);
     Mockito.when(preparedStatement.executeQuery())
         .thenReturn(resultSet);
-    final DatabaseServiceDependency databaseService = new DatabaseServiceDependency(dbPool, System::currentTimeMillis);
+    Mockito.when(resultSet.next()).thenReturn(true);
+    final DatabaseServiceDependency databaseService = new DatabaseServiceDependency(dbPool,
+        System::currentTimeMillis);
 
     Assertions.assertTrue(databaseService.isReady());
     Assertions.assertTrue(databaseService.isLive());
@@ -39,7 +41,8 @@ class DatabaseServiceDependencyTest {
   @Test
   @DisplayName("First time DB connection is OK. Check ready/live is true. "
       + "Second time, after polling interval elapsed, db connection fails. Check ready/live is false.")
-  void shouldBeNotLiveAndReadyIfDbPoolConnectionOkOnSecondEvaluation() throws ServiceException, SQLException {
+  void shouldBeNotLiveAndReadyIfDbPoolConnectionOkOnSecondEvaluation()
+      throws ServiceException, SQLException {
     final DbPool dbPool = Mockito.mock(DbPool.class);
     final DbConnection dbConnection = Mockito.mock(DbConnection.class);
     final PreparedStatement preparedStatement = Mockito.mock(PreparedStatement.class);
@@ -50,17 +53,19 @@ class DatabaseServiceDependencyTest {
         .thenReturn(preparedStatement);
     Mockito.when(preparedStatement.executeQuery())
         .thenReturn(resultSet);
+    Mockito.when(resultSet.next()).thenReturn(true);
     Supplier<Long> currentTimeSupplier = Mockito.mock(Supplier.class);
 
     final int pollingIntervalMillis = 1000;
-    final DatabaseServiceDependency databaseService = new DatabaseServiceDependency(dbPool, pollingIntervalMillis, currentTimeSupplier);
+    final DatabaseServiceDependency databaseService = new DatabaseServiceDependency(dbPool,
+        pollingIntervalMillis, currentTimeSupplier);
 
     Mockito.when(currentTimeSupplier.get()).thenReturn(0L);
     Assertions.assertTrue(databaseService.isReady());
     Assertions.assertTrue(databaseService.isLive());
 
     Mockito.when(dbPool.getDatabaseConnection())
-        .thenThrow(ServiceException.FAILURE("Ooops, query failed"));
+        .thenThrow(ServiceException.FAILURE("Oops, cannot open connection to database"));
     Mockito.when(currentTimeSupplier.get()).thenReturn(1500L);
 
     Assertions.assertFalse(databaseService.isReady());
@@ -70,7 +75,8 @@ class DatabaseServiceDependencyTest {
   @Test
   @DisplayName("First time DB connection is OK. Check ready/live is true. "
       + "Second time, within polling interval elapsed, check ready/live is still true.")
-  void shouldBeLiveAndReadyIfDbPoolConnectionOkOnSecondTryWithinPoolingInterval() throws ServiceException, SQLException {
+  void shouldBeLiveAndReadyIfDbPoolConnectionOkOnSecondTryWithinPoolingInterval()
+      throws ServiceException, SQLException {
     final DbPool dbPool = Mockito.mock(DbPool.class);
     final DbConnection dbConnection = Mockito.mock(DbConnection.class);
     final PreparedStatement preparedStatement = Mockito.mock(PreparedStatement.class);
@@ -81,10 +87,12 @@ class DatabaseServiceDependencyTest {
         .thenReturn(preparedStatement);
     Mockito.when(preparedStatement.executeQuery())
         .thenReturn(resultSet);
+    Mockito.when(resultSet.next()).thenReturn(true);
     Supplier<Long> currentTimeSupplier = Mockito.mock(Supplier.class);
 
     final int pollingIntervalMillis = 1000;
-    final DatabaseServiceDependency databaseService = new DatabaseServiceDependency(dbPool, pollingIntervalMillis, currentTimeSupplier);
+    final DatabaseServiceDependency databaseService = new DatabaseServiceDependency(dbPool,
+        pollingIntervalMillis, currentTimeSupplier);
 
     Mockito.when(currentTimeSupplier.get()).thenReturn(0L);
     Assertions.assertTrue(databaseService.isReady());
@@ -99,13 +107,15 @@ class DatabaseServiceDependencyTest {
 
 
   @Test
-  void shouldNotBeLiveAndReadyIfDbPoolConnectionCannotBeTaken() throws ServiceException, SQLException {
+  void shouldNotBeLiveAndReadyIfDbPoolConnectionCannotBeTaken()
+      throws ServiceException, SQLException {
     final DbPool dbPool = Mockito.mock(DbPool.class);
     final ServiceException dbConnectionException = Mockito.mock(ServiceException.class);
     Mockito.when(dbPool.getDatabaseConnection())
         .thenThrow(dbConnectionException);
 
-    final DatabaseServiceDependency databaseService = new DatabaseServiceDependency(dbPool, System::currentTimeMillis);
+    final DatabaseServiceDependency databaseService = new DatabaseServiceDependency(dbPool,
+        System::currentTimeMillis);
 
     Assertions.assertFalse(databaseService.isReady());
     Assertions.assertFalse(databaseService.isLive());
@@ -120,7 +130,8 @@ class DatabaseServiceDependencyTest {
         .thenReturn(dbConnection);
     Mockito.when(dbConnection.prepareStatement("SELECT 1")).thenThrow(new SQLException());
 
-    final DatabaseServiceDependency databaseService = new DatabaseServiceDependency(dbPool, System::currentTimeMillis);
+    final DatabaseServiceDependency databaseService = new DatabaseServiceDependency(dbPool,
+        System::currentTimeMillis);
 
     Assertions.assertFalse(databaseService.isReady());
     Assertions.assertFalse(databaseService.isLive());
