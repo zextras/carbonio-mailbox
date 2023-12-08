@@ -4,6 +4,8 @@
 
 package com.zextras.mailbox.servlet;
 
+import static com.zimbra.common.mime.MimeConstants.CT_APPLICATION_JSON;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.mailbox.health.HealthUseCase;
 import com.zextras.mailbox.servlet.HealthResponse.HealthResponseBuilder;
@@ -50,6 +52,7 @@ public class HealthServlet extends HttpServlet {
               .withDependencies(healthUseCase.getDependencies())
               .build();
 
+          httpServletResponse.setContentType(CT_APPLICATION_JSON);
           httpServletResponse.getWriter()
               .write(new ObjectMapper().writeValueAsString(healthResponse));
         } catch (IOException e) {
