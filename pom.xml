@@ -996,7 +996,6 @@
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>3.0.0-M7</version>
           <configuration>
-            <forkMode>always</forkMode>
             <!-- argline preserves other plugin args, like JaCoCo -->
             <argLine>@{argLine} -Dserver.dir=${project.basedir}
               -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
