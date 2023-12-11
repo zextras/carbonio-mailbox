@@ -373,9 +373,11 @@
       <artifactId>eddsa</artifactId>
       <version>0.3.0</version>
     </dependency>
+    <!-- Needed by jython -->
     <dependency>
       <groupId>net.java.dev.jna</groupId>
       <artifactId>jna</artifactId>
+      <version>3.4.0</version>
     </dependency>
     <dependency>
       <groupId>net.sf.ehcache</groupId>

@@ -362,11 +362,6 @@
         <version>${jetty.version}</version>
       </dependency>
       <dependency>
-        <groupId>net.java.dev.jna</groupId>
-        <artifactId>jna</artifactId>
-        <version>5.5.0</version>
-      </dependency>
-      <dependency>
         <groupId>org.dom4j</groupId>
         <artifactId>dom4j</artifactId>
         <version>${dom4j.version}</version>
