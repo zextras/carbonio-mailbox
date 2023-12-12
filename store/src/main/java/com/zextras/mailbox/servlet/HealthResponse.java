@@ -19,9 +19,9 @@ public class HealthResponse {
 
   @SuppressWarnings("unused")
   @JsonProperty("dependencies")
-  private final List<Dependency> dependencies;
+  private final List<DependencyResponse> dependencies;
 
-  public HealthResponse(boolean ready, List<Dependency> dependencies) {
+  public HealthResponse(boolean ready, List<DependencyResponse> dependencies) {
     this.ready = ready;
     this.dependencies = dependencies;
   }
@@ -40,7 +40,7 @@ public class HealthResponse {
    */
   static class HealthResponseBuilder {
 
-    private final List<Dependency> dependencies = new ArrayList<>();
+    private final List<DependencyResponse> dependencies = new ArrayList<>();
     private boolean ready = false;
 
     private HealthResponseBuilder() {
@@ -63,7 +63,10 @@ public class HealthResponse {
     public HealthResponseBuilder withDependencies(List<DependencyHealthResult> dependenciesHealth) {
       dependencies.clear();
       dependenciesHealth.stream()
-          .map(x -> new Dependency(x.getName(), x.getType().toString(), x.isReady(), x.isLive()))
+          .map(
+              x ->
+                  new DependencyResponse(
+                      x.getName(), x.getType().toString(), x.isReady(), x.isLive()))
           .forEach(dependencies::add);
       return this;
     }
@@ -71,7 +74,7 @@ public class HealthResponse {
 
   /** Mapper class for {@link ServiceDependency} implementations */
   @SuppressWarnings("unused")
-  public static class Dependency {
+  public static class DependencyResponse {
 
     @JsonProperty("name")
     private final String name;
@@ -85,7 +88,7 @@ public class HealthResponse {
     @JsonProperty("live")
     private final boolean live;
 
-    public Dependency(String name, String type, boolean ready, boolean live) {
+    public DependencyResponse(String name, String type, boolean ready, boolean live) {
       this.name = name;
       this.type = type;
       this.ready = ready;
