@@ -21,9 +21,9 @@ import org.eclipse.jetty.servlet.ServletHolder;
 /** Test utility class to create a {@link Server} instance with custom port and servlets. */
 public class JettyServerFactory {
 
-  private Map<String, ServletHolder> servlets = new HashMap<>();
-  private Map<String, FilterHolder> filters = new HashMap<>();
-  private List<EventListener> listeners = new ArrayList<>();
+  private final Map<String, ServletHolder> servlets = new HashMap<>();
+  private final Map<String, FilterHolder> filters = new HashMap<>();
+  private final List<EventListener> listeners = new ArrayList<>();
   private int port = 7070;
   private String host = "localhost";
 
