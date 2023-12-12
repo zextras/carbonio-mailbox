@@ -14,8 +14,14 @@ class HealthUseCaseTest {
   private final ServiceDependency serviceDependency = Mockito.mock(ServiceDependency.class);
   private final ServiceDependency serviceDependency2 = Mockito.mock(ServiceDependency.class);
 
-  private final HealthUseCase healthService = new HealthUseCase(
-      List.of(serviceDependency, serviceDependency2));
+  private final HealthUseCase healthService =
+      new HealthUseCase(List.of(serviceDependency, serviceDependency2));
+
+  @Test
+  void readyShouldReturnTrueWithoutDependencies() {
+    HealthUseCase healthService = new HealthUseCase(List.of());
+    Assertions.assertTrue(healthService.isReady());
+  }
 
   @Test
   void readyShouldReturnFalseWhenOneHealthCheckFailing() {
@@ -64,5 +70,4 @@ class HealthUseCaseTest {
 
     Assertions.assertTrue(healthService.isLive());
   }
-
 }
