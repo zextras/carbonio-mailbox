@@ -70,4 +70,31 @@ class HealthUseCaseTest {
 
     Assertions.assertTrue(healthService.isLive());
   }
+
+  @Test
+  void produceDependencyHealthSummary() {
+    Mockito.when(serviceDependency.getName()).thenReturn("service1");
+    Mockito.when(serviceDependency.getType()).thenReturn(ServiceDependency.ServiceType.REQUIRED);
+    Mockito.when(serviceDependency.isReady()).thenReturn(true);
+    Mockito.when(serviceDependency.isLive()).thenReturn(true);
+
+    Mockito.when(serviceDependency2.getName()).thenReturn("service2");
+    Mockito.when(serviceDependency2.getType()).thenReturn(ServiceDependency.ServiceType.OPTIONAL);
+    Mockito.when(serviceDependency2.isReady()).thenReturn(false);
+    Mockito.when(serviceDependency2.isLive()).thenReturn(false);
+
+    final var summary = healthService.dependenciesHealthSummary();
+
+    Assertions.assertEquals(2, summary.size());
+    assertDependencyHealthResult(serviceDependency, summary.get(0));
+    assertDependencyHealthResult(serviceDependency2, summary.get(1));
+  }
+
+  private static void assertDependencyHealthResult(
+      ServiceDependency expected, DependencyHealthResult actual) {
+    Assertions.assertEquals(expected.getName(), actual.getName());
+    Assertions.assertEquals(expected.getType(), actual.getType());
+    Assertions.assertEquals(expected.isReady(), actual.isReady());
+    Assertions.assertEquals(expected.isLive(), actual.isLive());
+  }
 }

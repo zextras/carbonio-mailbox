@@ -5,6 +5,7 @@
 package com.zextras.mailbox.servlet;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.zextras.mailbox.health.DependencyHealthResult;
 import com.zextras.mailbox.health.ServiceDependency;
 import com.zextras.mailbox.health.ServiceDependency.ServiceType;
 import java.util.ArrayList;
@@ -60,30 +61,12 @@ public class HealthResponse {
       return this;
     }
 
-    public HealthResponseBuilder withDependencies(List<ServiceDependency> serviceDependencies) {
-      this.dependencies.clear();
-      serviceDependencies.forEach(this::addServiceDependency);
+    public HealthResponseBuilder withDependencies(List<DependencyHealthResult> dependenciesHealth) {
+      dependencies.clear();
+      dependenciesHealth.stream()
+          .map(x -> new Dependency(x.getName(), x.getType(), x.isReady(), x.isLive()))
+          .forEach(dependencies::add);
       return this;
-    }
-
-    public HealthResponseBuilder withDependency(Dependency dependency) {
-      this.dependencies.add(dependency);
-      return this;
-    }
-
-    public HealthResponseBuilder withDependency(ServiceDependency serviceDependency) {
-      this.addServiceDependency(serviceDependency);
-      return this;
-    }
-
-    private void addServiceDependency(ServiceDependency serviceDependency) {
-      final Dependency dependency =
-          new Dependency(
-              serviceDependency.getName(),
-              serviceDependency.getType(),
-              serviceDependency.isReady(),
-              serviceDependency.isLive());
-      this.dependencies.add(dependency);
     }
   }
 

@@ -67,7 +67,7 @@ public class HealthServlet extends HttpServlet {
     final HealthResponse healthResponse =
         HealthResponseBuilder.newInstance()
             .withReadiness(ready)
-            .withDependencies(healthUseCase.getDependencies())
+            .withDependencies(healthUseCase.dependenciesHealthSummary())
             .build();
 
     try {
