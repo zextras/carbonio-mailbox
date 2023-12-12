@@ -60,20 +60,21 @@ class HealthServletTest {
 
   @AfterEach
   void afterEach() throws Exception {
-    server.stop();
+    if (server != null) server.stop();
   }
 
   @Test
   void liveShouldReturn200WhenDBConnectionOk() throws Exception {
-    DbPool.startup();
-    try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
-      final HttpGet httpGet = new HttpGet(server.getURI() + "/health/live");
+    withDb(
+        () -> {
+          try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            final HttpGet httpGet = new HttpGet(server.getURI() + "/health/live");
 
-      final CloseableHttpResponse response = client.execute(httpGet);
+            final CloseableHttpResponse response = client.execute(httpGet);
 
-      Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-    }
-    DbPool.shutdown();
+            Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+          }
+        });
   }
 
   @Test
@@ -90,15 +91,16 @@ class HealthServletTest {
 
   @Test
   void readyShouldReturn200WhenDBConnectionOk() throws Exception {
-    DbPool.startup();
-    try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
-      final HttpGet httpGet = new HttpGet(server.getURI() + "/health/ready");
+    withDb(
+        () -> {
+          try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            final HttpGet httpGet = new HttpGet(server.getURI() + "/health/ready");
 
-      final CloseableHttpResponse response = client.execute(httpGet);
+            final CloseableHttpResponse response = client.execute(httpGet);
 
-      Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-    }
-    DbPool.shutdown();
+            Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+          }
+        });
   }
 
   @Test
@@ -116,20 +118,36 @@ class HealthServletTest {
   @Test
   @DisplayName("/health should return 200 when DB Connection OK")
   void healthRootPathShouldReturn200WhenDBConnectionOk() throws Exception {
+    withDb(
+        () -> {
+          try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            final HttpGet httpGet = new HttpGet(server.getURI() + "/health");
+            final CloseableHttpResponse response = client.execute(httpGet);
+
+            Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+
+            final String healthResponseBody =
+                new String(response.getEntity().getContent().readAllBytes());
+
+            Assertions.assertEquals(
+                "{\"ready\":true,\"dependencies\":[{\"name\":\"MariaDb\",\"type\":\"REQUIRED\",\"ready\":true,\"live\":true}]}",
+                healthResponseBody);
+          }
+        });
+  }
+
+  private void withDb(ThrowingRunnable runnable) throws Exception {
     DbPool.startup();
-    try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
-      final HttpGet httpGet = new HttpGet(server.getURI() + "/health");
-      final CloseableHttpResponse response = client.execute(httpGet);
-
-      Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-
-      final String healthResponseBody =
-          new String(response.getEntity().getContent().readAllBytes());
-
-      Assertions.assertEquals(
-          "{\"ready\":true,\"dependencies\":[{\"name\":\"MariaDb\",\"type\":\"REQUIRED\",\"ready\":true,\"live\":true}]}",
-          healthResponseBody);
+    try {
+      runnable.run();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    } finally {
+      DbPool.shutdown();
     }
-    DbPool.shutdown();
+  }
+
+  private interface ThrowingRunnable {
+    void run() throws Exception;
   }
 }
