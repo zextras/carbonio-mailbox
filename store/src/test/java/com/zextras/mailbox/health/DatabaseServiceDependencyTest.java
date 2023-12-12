@@ -108,7 +108,7 @@ class DatabaseServiceDependencyTest {
 
   @Test
   void shouldNotBeLiveAndReadyIfDbPoolConnectionCannotBeTaken()
-      throws ServiceException, SQLException {
+      throws ServiceException {
     final DbPool dbPool = Mockito.mock(DbPool.class);
     final ServiceException dbConnectionException = Mockito.mock(ServiceException.class);
     Mockito.when(dbPool.getDatabaseConnection())
