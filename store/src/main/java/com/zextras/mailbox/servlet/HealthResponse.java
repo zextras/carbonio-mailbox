@@ -10,10 +10,7 @@ import com.zextras.mailbox.health.ServiceDependency.ServiceType;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/**
- * Represents response body of {@link HealthServlet}
- */
+/** Represents response body of {@link HealthServlet} */
 public class HealthResponse {
 
   @SuppressWarnings("unused")
@@ -30,17 +27,16 @@ public class HealthResponse {
   }
 
   /**
-   * <p>Fluent Builder for {@link HealthResponse} class</p>
-   * <p>
-   * Usage:
-   * <pre>
-   * {@code
-   *   HealthResponse response = new HealthResponseBuilder.newInstance().
-   *   ...
-   *   ...
-   *   .build();
-   * }
-   * </pre>
+   * Fluent Builder for {@link HealthResponse} class
+   *
+   * <p>Usage:
+   *
+   * <pre>{@code
+   * HealthResponse response = new HealthResponseBuilder.newInstance().
+   * ...
+   * ...
+   * .build();
+   * }</pre>
    */
   static class HealthResponseBuilder {
 
@@ -59,40 +55,41 @@ public class HealthResponse {
       return new HealthResponse(this.ready, this.dependencies);
     }
 
-    HealthResponseBuilder withReadiness(boolean isReady) {
+    public HealthResponseBuilder withReadiness(boolean isReady) {
       this.ready = isReady;
       return this;
     }
 
-    HealthResponseBuilder withDependencies(List<ServiceDependency> serviceDependencies) {
+    public HealthResponseBuilder withDependencies(List<ServiceDependency> serviceDependencies) {
       this.dependencies.clear();
       serviceDependencies.forEach(this::addServiceDependency);
       return this;
     }
 
-    HealthResponseBuilder withDependency(Dependency dependency) {
+    public HealthResponseBuilder withDependency(Dependency dependency) {
       this.dependencies.add(dependency);
       return this;
     }
 
-    HealthResponseBuilder withDependency(ServiceDependency serviceDependency) {
+    public HealthResponseBuilder withDependency(ServiceDependency serviceDependency) {
       this.addServiceDependency(serviceDependency);
       return this;
     }
 
     private void addServiceDependency(ServiceDependency serviceDependency) {
-      final Dependency dependency = new Dependency(serviceDependency.getName(),
-          serviceDependency.getType(), serviceDependency.isReady(), serviceDependency.isLive());
+      final Dependency dependency =
+          new Dependency(
+              serviceDependency.getName(),
+              serviceDependency.getType(),
+              serviceDependency.isReady(),
+              serviceDependency.isLive());
       this.dependencies.add(dependency);
     }
-
   }
 
-  /**
-   * Mapper class for {@link ServiceDependency} implementations
-   */
+  /** Mapper class for {@link ServiceDependency} implementations */
   @SuppressWarnings("unused")
-  static class Dependency {
+  public static class Dependency {
 
     @JsonProperty("name")
     private final String name;
