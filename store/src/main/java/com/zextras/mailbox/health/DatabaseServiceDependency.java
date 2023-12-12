@@ -12,9 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.function.Supplier;
 
-/**
- * Class represents MariaDB service dependency of mailbox
- */
+/** Class represents MariaDB service dependency of mailbox */
 public class DatabaseServiceDependency extends ServiceDependency {
 
   private final DbPool dbPool;
@@ -27,8 +25,8 @@ public class DatabaseServiceDependency extends ServiceDependency {
     this(dbPool, 5000, currentTimeProvider);
   }
 
-  public DatabaseServiceDependency(DbPool dbPool, int cacheIntervalMillis,
-      Supplier<Long> currentTimeProvider) {
+  public DatabaseServiceDependency(
+      DbPool dbPool, int cacheIntervalMillis, Supplier<Long> currentTimeProvider) {
     super("MariaDb", ServiceType.REQUIRED);
     this.dbPool = dbPool;
     this.cacheIntervalMillis = cacheIntervalMillis;
@@ -49,14 +47,15 @@ public class DatabaseServiceDependency extends ServiceDependency {
     try (DbConnection connection = dbPool.getDatabaseConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT 1");
         ResultSet resultSet = preparedStatement.executeQuery()) {
-      return resultSet.next();
+      resultSet.next();
+      return true;
     } catch (ServiceException | SQLException e) {
       return false;
     }
   }
 
   private boolean canConnectToDatabase() {
-    final long currentTime = currentTimeProvider.get();  //0
+    final long currentTime = currentTimeProvider.get();
 
     if (lastExecMillis == null || currentTime > lastExecMillis + cacheIntervalMillis) {
       lastHealthCheckedValue = doCheckStatus();
