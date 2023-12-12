@@ -25,7 +25,6 @@ public class JettyServerFactory {
   private final Map<String, FilterHolder> filters = new HashMap<>();
   private final List<EventListener> listeners = new ArrayList<>();
   private int port = 7070;
-  private String host = "localhost";
 
   public JettyServerFactory withPort(int port) {
     this.port = port;
@@ -56,7 +55,7 @@ public class JettyServerFactory {
     final Server server = new Server();
     ServerConnector connector = new ServerConnector(server);
     connector.setPort(port);
-    connector.setHost(host);
+    connector.setHost("localhost");
     ServletContextHandler servletContextHandler = new ServletContextHandler();
     listeners.forEach(servletContextHandler::addEventListener);
     filters.forEach((path, filterHolder) -> servletContextHandler.addFilter(filterHolder, path, EnumSet.of(DispatcherType.REQUEST)));
