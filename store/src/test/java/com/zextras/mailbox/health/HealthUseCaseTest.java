@@ -18,13 +18,13 @@ class HealthUseCaseTest {
       new HealthUseCase(List.of(serviceDependency, serviceDependency2));
 
   @Test
-  void readyShouldReturnTrueWithoutDependencies() {
+  void shouldBeReadyWithoutDependencies() {
     HealthUseCase healthService = new HealthUseCase(List.of());
     Assertions.assertTrue(healthService.isReady());
   }
 
   @Test
-  void readyShouldReturnFalseWhenOneHealthCheckFailing() {
+  void shouldNotBeReadyWhenOneHealthCheckFailing() {
     Mockito.when(serviceDependency.isReady()).thenReturn(true);
     Mockito.when(serviceDependency2.isReady()).thenReturn(false);
 
@@ -32,7 +32,7 @@ class HealthUseCaseTest {
   }
 
   @Test
-  void readyShouldReturnFalseWhenAllHealthCheckFailing() {
+  void shouldNotBeReadyWhenAllHealthCheckFailing() {
     Mockito.when(serviceDependency.isReady()).thenReturn(false);
     Mockito.when(serviceDependency2.isReady()).thenReturn(false);
 
@@ -40,7 +40,7 @@ class HealthUseCaseTest {
   }
 
   @Test
-  void readyShouldReturnTrueWhenAllOk() {
+  void shouldBeReadyWhenAllOk() {
     Mockito.when(serviceDependency.isReady()).thenReturn(true);
     Mockito.when(serviceDependency2.isReady()).thenReturn(true);
 
@@ -48,7 +48,7 @@ class HealthUseCaseTest {
   }
 
   @Test
-  void liveShouldReturnFalseWhenOneHealthCheckFailing() {
+  void shouldNotBeLiveWhenOneHealthCheckFailing() {
     Mockito.when(serviceDependency.isLive()).thenReturn(true);
     Mockito.when(serviceDependency2.isLive()).thenReturn(false);
 
@@ -56,7 +56,7 @@ class HealthUseCaseTest {
   }
 
   @Test
-  void liveShouldReturnFalseWhenAllHealthCheckFailing() {
+  void shouldNotBeLiveWhenAllHealthCheckFailing() {
     Mockito.when(serviceDependency.isLive()).thenReturn(false);
     Mockito.when(serviceDependency2.isLive()).thenReturn(false);
 
@@ -64,7 +64,7 @@ class HealthUseCaseTest {
   }
 
   @Test
-  void liveShouldReturnTrueWhenAllOk() {
+  void shouldBeLiveWhenAllOk() {
     Mockito.when(serviceDependency.isLive()).thenReturn(true);
     Mockito.when(serviceDependency2.isLive()).thenReturn(true);
 
