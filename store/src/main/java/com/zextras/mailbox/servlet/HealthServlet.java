@@ -26,51 +26,71 @@ public class HealthServlet extends HttpServlet {
 
   private static final Log LOG = LogFactory.getLog(HealthServlet.class);
   private final HealthUseCase healthUseCase;
+  private final ObjectMapper objectMapper;
 
   @Inject
   public HealthServlet(HealthUseCase healthUseCase) {
     this.healthUseCase = healthUseCase;
+    objectMapper = new ObjectMapper();
   }
 
   @Override
-  protected void doGet(HttpServletRequest httpServletRequest,
-      HttpServletResponse httpServletResponse)
+  protected void doGet(
+      HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
       throws ServletException, IOException {
     String requestedPath = httpServletRequest.getPathInfo();
     if (Objects.isNull(requestedPath)) {
       requestedPath = "/";
     }
-    final boolean isReady = healthUseCase.isReady();
+
     switch (requestedPath) {
       case "/":
-        try {
-          httpServletResponse.setStatus(
-              isReady ? HttpStatus.SC_OK : HttpStatus.SC_INTERNAL_SERVER_ERROR);
-
-          final HealthResponse healthResponse = HealthResponseBuilder.newInstance()
-              .withReadiness(isReady)
-              .withDependencies(healthUseCase.getDependencies())
-              .build();
-
-          httpServletResponse.setContentType(CT_APPLICATION_JSON);
-          httpServletResponse.getWriter()
-              .write(new ObjectMapper().writeValueAsString(healthResponse));
-        } catch (IOException e) {
-          LOG.warn(e.getMessage(), e);
-        }
+        handleRoot(httpServletResponse);
         break;
       case "/ready":
-        httpServletResponse.setStatus(
-            isReady ? HttpStatus.SC_OK : HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        handleReady(httpServletResponse);
         break;
       case "/live":
-        httpServletResponse.setStatus(
-            healthUseCase.isLive() ? HttpStatus.SC_OK : HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        handleLive(httpServletResponse);
         break;
       default:
-        httpServletResponse.setStatus(HttpStatus.SC_NOT_FOUND);
+        handleDefault(httpServletResponse);
         break;
     }
   }
 
+  private void handleRoot(HttpServletResponse httpServletResponse) {
+    final var ready = healthUseCase.isReady();
+    final var status = ready ? HttpStatus.SC_OK : HttpStatus.SC_INTERNAL_SERVER_ERROR;
+    httpServletResponse.setStatus(status);
+
+    final HealthResponse healthResponse =
+        HealthResponseBuilder.newInstance()
+            .withReadiness(ready)
+            .withDependencies(healthUseCase.getDependencies())
+            .build();
+
+    try {
+      httpServletResponse.setContentType(CT_APPLICATION_JSON);
+      httpServletResponse.getWriter().write(objectMapper.writeValueAsString(healthResponse));
+    } catch (IOException e) {
+      LOG.warn(e.getMessage(), e);
+    }
+  }
+
+  private void handleLive(HttpServletResponse httpServletResponse) {
+    final var status =
+        healthUseCase.isLive() ? HttpStatus.SC_OK : HttpStatus.SC_INTERNAL_SERVER_ERROR;
+    httpServletResponse.setStatus(status);
+  }
+
+  private void handleReady(HttpServletResponse httpServletResponse) {
+    final var status =
+        healthUseCase.isReady() ? HttpStatus.SC_OK : HttpStatus.SC_INTERNAL_SERVER_ERROR;
+    httpServletResponse.setStatus(status);
+  }
+
+  private static void handleDefault(HttpServletResponse httpServletResponse) {
+    httpServletResponse.setStatus(HttpStatus.SC_NOT_FOUND);
+  }
 }

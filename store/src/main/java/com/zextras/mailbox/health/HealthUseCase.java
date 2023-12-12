@@ -9,7 +9,6 @@ import javax.inject.Inject;
 
 public class HealthUseCase {
 
-
   private final List<ServiceDependency> serviceDependencies;
 
   @Inject
