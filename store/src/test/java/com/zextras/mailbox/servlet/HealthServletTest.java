@@ -49,7 +49,7 @@ class HealthServletTest {
   void beforeEach() throws Exception {
     LC.zimbra_mysql_password.setDefault(mariaDBContainer.getUsername());
     LC.zimbra_mysql_user.setDefault(mariaDBContainer.getPassword());
-    LC.mysql_bind_address.setDefault("127.0.0.1");
+    LC.mysql_bind_address.setDefault(mariaDBContainer.getHost());
     LC.mysql_port.setDefault(mariaDBContainer.getFirstMappedPort());
     server = new JettyServerFactory()
         .withPort(PORT)
