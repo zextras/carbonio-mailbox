@@ -10,8 +10,6 @@ import com.zextras.mailbox.health.DatabaseServiceDependency;
 import com.zextras.mailbox.health.HealthUseCase;
 import com.zimbra.cs.db.DbPool;
 import java.util.List;
-import java.util.function.Supplier;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 public class HealthServletModule extends ServletModule {
@@ -21,24 +19,16 @@ public class HealthServletModule extends ServletModule {
     serve("/health", "/health/*").with(HealthServlet.class);
   }
 
-
+  @Provides
   @Singleton
   DbPool provideDatabasePool() {
     return new DbPool();
   }
 
   @Provides
-  @Named("currentTimeSupplier")
-  Supplier<Long> provideCurrentTimeSupplier() {
-    return System::currentTimeMillis;
-  }
-
-
-  @Provides
   @Singleton
-  HealthUseCase provideHealthService(DbPool dbPool, @Named("currentTimeSupplier") Supplier<Long> currentTimeSupplier) {
+  HealthUseCase provideHealthService(DbPool dbPool) {
     return new HealthUseCase(
-        List.of(new DatabaseServiceDependency(dbPool, currentTimeSupplier)));
+        List.of(new DatabaseServiceDependency(dbPool, System::currentTimeMillis)));
   }
-
 }
