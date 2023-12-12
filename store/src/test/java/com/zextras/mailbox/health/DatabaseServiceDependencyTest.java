@@ -40,7 +40,7 @@ class DatabaseServiceDependencyTest {
 
   @Test
   @DisplayName("First time DB connection is OK. Check ready/live is true. "
-      + "Second time, after polling interval elapsed, db connection fails. Check ready/live is false.")
+      + "Second time, after cache interval elapsed, db connection fails. Check ready/live is false.")
   void shouldBeNotLiveAndReadyIfDbPoolConnectionOkOnSecondEvaluation()
       throws ServiceException, SQLException {
     final DbPool dbPool = Mockito.mock(DbPool.class);

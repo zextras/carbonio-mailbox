@@ -18,29 +18,34 @@ import java.util.function.Supplier;
 public class DatabaseServiceDependency extends ServiceDependency {
 
   private final DbPool dbPool;
+  private final int cacheIntervalMillis;
+  private final Supplier<Long> currentTimeProvider;
+  private Long lastExecMillis;
+  private boolean lastHealthCheckedValue = false;
 
   public DatabaseServiceDependency(DbPool dbPool, Supplier<Long> currentTimeProvider) {
     this(dbPool, 5000, currentTimeProvider);
   }
 
-  public DatabaseServiceDependency(DbPool dbPool, int pollingIntervalMillis,
+  public DatabaseServiceDependency(DbPool dbPool, int cacheIntervalMillis,
       Supplier<Long> currentTimeProvider) {
-    super("MariaDb", ServiceType.REQUIRED, pollingIntervalMillis, currentTimeProvider);
+    super("MariaDb", ServiceType.REQUIRED);
     this.dbPool = dbPool;
+    this.cacheIntervalMillis = cacheIntervalMillis;
+    this.currentTimeProvider = currentTimeProvider;
   }
 
   @Override
   public boolean isReady() {
-    return canConnectToService();
+    return canConnectToDatabase();
   }
 
   @Override
   public boolean isLive() {
-    return canConnectToService();
+    return this.canConnectToDatabase();
   }
 
-  @Override
-  protected boolean doCheckStatus() {
+  private boolean doCheckStatus() {
     try (DbConnection connection = dbPool.getDatabaseConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT 1");
         ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -48,5 +53,16 @@ public class DatabaseServiceDependency extends ServiceDependency {
     } catch (ServiceException | SQLException e) {
       return false;
     }
+  }
+
+  private boolean canConnectToDatabase() {
+    final long currentTime = currentTimeProvider.get();  //0
+
+    if (lastExecMillis == null || currentTime > lastExecMillis + cacheIntervalMillis) {
+      lastHealthCheckedValue = doCheckStatus();
+      lastExecMillis = currentTime;
+    }
+
+    return lastHealthCheckedValue;
   }
 }
