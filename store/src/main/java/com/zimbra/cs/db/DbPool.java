@@ -42,7 +42,7 @@ public class DbPool {
 
     static ValueCounter<String> sConnectionStackCounter = new ValueCounter<String>();
 
-    public static class DbConnection {
+    public static class DbConnection implements AutoCloseable {
         private final Connection connection;
         private Throwable mStackTrace;
         Integer mboxId;
@@ -310,6 +310,19 @@ public class DbPool {
      */
     public static DbConnection getConnection() throws ServiceException {
         return getConnection(null);
+    }
+
+    /**
+     * Gets a database connection from the pool.
+     * This method was introduced to move from static {@link #getConnection()}
+     * and slowly move to instance-level methods.
+     *
+     * @return a {@link DbConnection}
+     *
+     * @throws ServiceException
+     */
+    public DbConnection getDatabaseConnection() throws ServiceException {
+        return getConnection();
     }
 
     public static DbConnection getConnection(Mailbox mbox) throws ServiceException {

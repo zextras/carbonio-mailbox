@@ -373,9 +373,11 @@
       <artifactId>eddsa</artifactId>
       <version>0.3.0</version>
     </dependency>
+    <!-- Needed by jython -->
     <dependency>
       <groupId>net.java.dev.jna</groupId>
       <artifactId>jna</artifactId>
+      <version>3.4.0</version>
     </dependency>
     <dependency>
       <groupId>net.sf.ehcache</groupId>
@@ -664,7 +666,6 @@
     <dependency>
       <groupId>org.mariadb.jdbc</groupId>
       <artifactId>mariadb-java-client</artifactId>
-      <version>2.7.3</version>
     </dependency>
     <dependency>
       <groupId>org.owasp.antisamy</groupId>
