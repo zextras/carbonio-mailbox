@@ -40,7 +40,7 @@ public class PurgeTest {
     MailboxTestUtil.clearData();
     Provisioning prov = Provisioning.getInstance();
     prov.deleteAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-    prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+    prov.createAccount("test@zimbra.com", "secret", new HashMap<>());
     Config config = Provisioning.getInstance().getConfig();
     RetentionPolicyManager mgr = RetentionPolicyManager.getInstance();
     RetentionPolicy rp = mgr.getSystemRetentionPolicy(config);
@@ -85,7 +85,7 @@ public class PurgeTest {
 
     // Add retention policy.
     Policy p = Policy.newUserPolicy("45m");
-    RetentionPolicy purgePolicy = new RetentionPolicy(Arrays.asList(p));
+    RetentionPolicy purgePolicy = new RetentionPolicy(List.of(p));
     mbox.setRetentionPolicy(null, folder.getId(), MailItem.Type.FOLDER, purgePolicy);
 
     // Purge the folder cache and make sure that purge policy is reloaded from metadata.
@@ -143,7 +143,7 @@ public class PurgeTest {
 
     // Add retention policy.
     Policy p = Policy.newUserPolicy("45m");
-    RetentionPolicy purgePolicy = new RetentionPolicy(Arrays.asList(p));
+    RetentionPolicy purgePolicy = new RetentionPolicy(List.of(p));
     mbox.setRetentionPolicy(null, tag.getId(), MailItem.Type.TAG, purgePolicy);
 
     // Purge the tag cache and make sure that purge policy is reloaded from metadata.
@@ -550,23 +550,13 @@ public class PurgeTest {
     mbox.purgeMessages(null);
 
     // Make sure both the message and folder were deleted.
-    try {
-      mbox.getMessageById(null, msg.getId());
-      fail("Message " + msg.getId() + " was not deleted.");
-    } catch (NoSuchItemException e) {
-    }
-
-    try {
-      mbox.getFolderById(null, f.getId());
-      fail("Folder " + f.getId() + " was not deleted.");
-    } catch (NoSuchItemException e) {
-    }
+   assertThrows(NoSuchItemException.class, ()-> mbox.getMessageById(null, msg.getId()));
+   assertThrows(NoSuchItemException.class, ()-> mbox.getFolderById(null, f.getId()));
   }
 
   /** Confirms that recently moved trash folders do not get purged when ChangeDate is true. */
   @Test
   void testRecentFolderInTrashChangeDate() throws Exception {
-
     Account account = getAccount();
     account.setPrefTrashLifetime("12h");
     account.setMailPurgeUseChangeDateForTrash(true);
@@ -593,7 +583,6 @@ public class PurgeTest {
   /** Confirms that recently moved trash folders does get purged when ChangeDate is false. */
   @Test
   void testRecentFolderInTrashNoChangeDate() throws Exception {
-
     Account account = getAccount();
     account.setPrefTrashLifetime("12h");
     account.setMailPurgeUseChangeDateForTrash(false);
@@ -618,7 +607,7 @@ public class PurgeTest {
   }
 
   @Test
-  void invalidFolderMessageLifetime() throws Exception {
+  void shouldDenyWhenInvalidFolderLifetimeFormat() throws Exception {
     Mailbox mbox =
         MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
     Folder folder =
@@ -627,12 +616,11 @@ public class PurgeTest {
             "/invalidFolderMessageLifetime",
             new Folder.FolderOptions().setDefaultView(MailItem.Type.MESSAGE));
     Policy p = Policy.newUserPolicy("45x");
-    RetentionPolicy purgePolicy = new RetentionPolicy(Arrays.asList(p));
-    try {
-      mbox.setRetentionPolicy(null, folder.getId(), MailItem.Type.FOLDER, purgePolicy);
-      fail("Invalid time interval should not have been accepted.");
-    } catch (ServiceException e) {
-    }
+    RetentionPolicy purgePolicy = new RetentionPolicy(List.of(p));
+
+    final ServiceException serviceException = assertThrows(ServiceException.class,
+        () -> mbox.setRetentionPolicy(null, folder.getId(), Type.FOLDER, purgePolicy));
+    assertEquals("invalid request: Invalid duration: 45x", serviceException.getMessage());
   }
 
   @Test
@@ -684,7 +672,7 @@ public class PurgeTest {
 
   @Test
   void modifyCosSystemPolicy() throws Exception {
-    Map<String, Object> attrs = new HashMap<String, Object>();
+    Map<String, Object> attrs = new HashMap<>();
     Cos cos = Provisioning.getInstance().createCos("testcos", attrs);
     RetentionPolicyManager mgr = RetentionPolicyManager.getInstance();
 
@@ -710,8 +698,8 @@ public class PurgeTest {
   }
 
   /**
-   * Tests {@link RetentionPolicyManager#getCompleteRetentionPolicy(Account, RetentionPolicy).  Confirms
-   * that system policy elements are updated with the latest values in LDAP.
+   * Tests {@link RetentionPolicyManager#getCompleteRetentionPolicy(Account, RetentionPolicy).
+   * Confirms that system policy elements are updated with the latest values in LDAP.
    */
   @Test
   void completeRetentionPolicy() throws Exception {
@@ -722,7 +710,7 @@ public class PurgeTest {
     // Create mailbox policy that references the system policy, and confirm that
     // lookup returns the latest values.
     RetentionPolicy mboxRP =
-        new RetentionPolicy(Arrays.asList(Policy.newSystemPolicy(purge1.getId())));
+        new RetentionPolicy(List.of(Policy.newSystemPolicy(purge1.getId())));
     RetentionPolicy completeRP = mgr.getCompleteRetentionPolicy(getAccount(), mboxRP);
     Policy latest = completeRP.getPurgePolicy().get(0);
     assertEquals(purge1, latest);
@@ -743,7 +731,7 @@ public class PurgeTest {
     Config config = Provisioning.getInstance().getConfig();
     Policy purge1 = mgr.createSystemPurgePolicy(config, "purge1", "300d");
 
-    Map<String, Object> attrs = new HashMap<String, Object>();
+    Map<String, Object> attrs = new HashMap<>();
     Cos cos = Provisioning.getInstance().createCos("testcos2", attrs);
     Policy purge2 = mgr.createSystemPurgePolicy(cos, "purge2", "600d");
 
@@ -753,7 +741,7 @@ public class PurgeTest {
     // Create mailbox policy that references the system policy, and confirm that
     // lookup returns the latest values.
     RetentionPolicy mboxRP1 =
-        new RetentionPolicy(Arrays.asList(Policy.newSystemPolicy(purge2.getId())));
+        new RetentionPolicy(List.of(Policy.newSystemPolicy(purge2.getId())));
     RetentionPolicy completeRP = mgr.getCompleteRetentionPolicy(getAccount(), mboxRP1);
     Policy latest = completeRP.getPurgePolicy().get(0);
     assertEquals(purge2, latest);
@@ -769,7 +757,7 @@ public class PurgeTest {
 
     // Make sure system policy does not apply to this user.
     RetentionPolicy mboxRP2 =
-        new RetentionPolicy(Arrays.asList(Policy.newSystemPolicy(purge1.getId())));
+        new RetentionPolicy(List.of(Policy.newSystemPolicy(purge1.getId())));
     completeRP = mgr.getCompleteRetentionPolicy(getAccount(), mboxRP2);
     assertTrue(completeRP.getPurgePolicy().isEmpty());
 
@@ -829,11 +817,8 @@ public class PurgeTest {
     folder = mbox.getFolderById(folder.getId());
     assertEquals(1, folder.getSize());
     mbox.getMessageById(null, newer.getId());
-    try {
-      mbox.getMessageById(null, older.getId());
-      fail("Older message was not purged.");
-    } catch (NoSuchItemException e) {
-    }
+
+    assertThrows(NoSuchItemException.class, ()-> mbox.getMessageById(null, older.getId()));
 
     // Update system policy, rerun purge, and make sure the older message was deleted.
     RetentionPolicyManager.getInstance()
@@ -841,11 +826,8 @@ public class PurgeTest {
     mbox.purgeMessages(null);
     folder = mbox.getFolderById(folder.getId());
     assertEquals(0, folder.getSize());
-    try {
-      mbox.getMessageById(null, newer.getId());
-      fail("Newer message was not purged.");
-    } catch (NoSuchItemException e) {
-    }
+
+    assertThrows(NoSuchItemException.class, ()-> mbox.getMessageById(null, newer.getId()));
   }
 
   private Message alterUnread(Message msg, boolean unread) throws Exception {
