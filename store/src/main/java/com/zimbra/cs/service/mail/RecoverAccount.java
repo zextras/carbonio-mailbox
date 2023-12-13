@@ -6,6 +6,7 @@
 package com.zimbra.cs.service.mail;
 
 import com.zimbra.common.account.ForgetPasswordEnums.CodeConstants;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.account.ZAttrProvisioning.FeatureResetPasswordStatus;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -119,7 +120,7 @@ public final class RecoverAccount extends MailDocumentHandler {
           && !recoveryCodeMap.isEmpty()
           && !StringUtil.isNullOrEmpty(
               recoveryCodeMap.get(CodeConstants.RESEND_COUNT.toString()))) {
-        resendCount = Integer.valueOf(recoveryCodeMap.get(CodeConstants.RESEND_COUNT.toString()));
+        resendCount = Integer.parseInt(recoveryCodeMap.get(CodeConstants.RESEND_COUNT.toString()));
         if (resendCount >= maxAttempts) {
           account.setFeatureResetPasswordStatus(FeatureResetPasswordStatus.suspended);
           long suspension = account.getFeatureResetPasswordSuspensionTime();
@@ -127,9 +128,9 @@ public final class RecoverAccount extends MailDocumentHandler {
           long suspensionTime = now.getTime() + suspension;
           recoveryCodeMap.put(
               CodeConstants.SUSPENSION_TIME.toString(), String.valueOf(suspensionTime));
-          HashMap<String, Object> prefs = new HashMap<String, Object>();
+          HashMap<String, Object> prefs = new HashMap<>();
           prefs.put(
-              Provisioning.A_zimbraResetPasswordRecoveryCode, JWEUtil.getJWE(recoveryCodeMap));
+              ZAttrProvisioning.A_zimbraResetPasswordRecoveryCode, JWEUtil.getJWE(recoveryCodeMap));
           Provisioning.getInstance().modifyAttrs(account, prefs, true, zsc.getAuthToken());
           throw ForgetPasswordException.MAX_ATTEMPTS_REACHED_SUSPEND_FEATURE(
               "Max re-send attempts reached, feature is suspended.");
