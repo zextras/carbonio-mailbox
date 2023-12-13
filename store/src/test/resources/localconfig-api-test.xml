@@ -40,4 +40,7 @@
   <key name="ldap_noop_search_supported">
     <value>false</value>
   </key>
+  <key name="localized_msgs_directory">
+    <value>../store-conf/conf/msgs</value>
+  </key>
 </localconfig>
