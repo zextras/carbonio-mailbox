@@ -17,8 +17,8 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Tag;
 import com.zimbra.soap.mail.type.Policy;
 import com.zimbra.soap.mail.type.RetentionPolicy;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ public class SetRetentionPolicyTest {
   public static void init() throws Exception {
     MailboxTestUtil.initServer();
     Provisioning prov = Provisioning.getInstance();
-    prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+    prov.createAccount("test@zimbra.com", "secret", new HashMap<>());
   }
 
   @BeforeEach
@@ -50,7 +50,7 @@ public class SetRetentionPolicyTest {
     assertEquals(0, folder.getRetentionPolicy().getPurgePolicy().size());
 
     // Create RedoableOp.
-    RetentionPolicy rp = new RetentionPolicy(Arrays.asList(Policy.newUserPolicy("45m")));
+    RetentionPolicy rp = new RetentionPolicy(List.of(Policy.newUserPolicy("45m")));
     SetRetentionPolicy redoPlayer =
         new SetRetentionPolicy(mbox.getId(), MailItem.Type.FOLDER, folder.getId(), rp);
 
@@ -76,7 +76,7 @@ public class SetRetentionPolicyTest {
     assertEquals(0, tag.getRetentionPolicy().getPurgePolicy().size());
 
     // Create RedoableOp.
-    RetentionPolicy rp = new RetentionPolicy(Arrays.asList(Policy.newUserPolicy("45m")));
+    RetentionPolicy rp = new RetentionPolicy(List.of(Policy.newUserPolicy("45m")));
     SetRetentionPolicy redoPlayer =
         new SetRetentionPolicy(mbox.getId(), MailItem.Type.TAG, tag.getId(), rp);
 
