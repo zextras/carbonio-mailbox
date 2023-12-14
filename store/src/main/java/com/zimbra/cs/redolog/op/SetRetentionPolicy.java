@@ -74,13 +74,13 @@ public class SetRetentionPolicy extends RedoableOp {
     for (int i = 1; i <= size; i++) {
       String id = in.readUTF();
       String lifetime = in.readUTF();
-      Policy p;
+      Policy policy;
       if (id != null) {
-        p = Policy.newSystemPolicy(id);
+        policy = Policy.newSystemPolicy(id);
       } else {
-        p = Policy.newUserPolicy(lifetime);
+        policy = Policy.newUserPolicy(lifetime);
       }
-      list.add(p);
+      list.add(policy);
     }
     return list;
   }

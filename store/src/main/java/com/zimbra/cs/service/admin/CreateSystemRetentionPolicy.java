@@ -31,17 +31,20 @@ public class CreateSystemRetentionPolicy extends AdminDocumentHandler {
 
     CreateSystemRetentionPolicyRequest req = zsc.elementToJaxb(request);
 
-    Provisioning prov = Provisioning.getInstance();
+    final Provisioning provisioning = Provisioning.getInstance();
 
     // assume default retention policy to be set in globalConfig (for backward compatibility)
-    Entry entry = prov.getConfig();
+    Entry entry = provisioning.getConfig();
 
     // check if cos is specified
     CosSelector cosSelector = req.getCos();
 
     if (cosSelector != null) {
-      entry = prov.get(Key.CosBy.fromString(cosSelector.getBy().name()), cosSelector.getKey());
-      if (entry == null) throw AccountServiceException.NO_SUCH_COS(cosSelector.getKey());
+      entry =
+          provisioning.get(Key.CosBy.fromString(cosSelector.getBy().name()), cosSelector.getKey());
+      if (entry == null) {
+        throw AccountServiceException.NO_SUCH_COS(cosSelector.getKey());
+      }
     }
 
     // check right
@@ -63,9 +66,9 @@ public class CreateSystemRetentionPolicy extends AdminDocumentHandler {
   static void checkSetRight(
       Entry entry, ZimbraSoapContext zsc, Map<String, Object> context, AdminDocumentHandler handler)
       throws ServiceException {
-    AdminAccessControl.SetAttrsRight sar = new AdminAccessControl.SetAttrsRight();
-    sar.addAttr(CreateSystemRetentionPolicy.SYSTEM_RETENTION_POLICY_ATTR);
-    handler.checkRight(zsc, context, entry, sar);
+    AdminAccessControl.SetAttrsRight setAttrsRight = new AdminAccessControl.SetAttrsRight();
+    setAttrsRight.addAttr(CreateSystemRetentionPolicy.SYSTEM_RETENTION_POLICY_ATTR);
+    handler.checkRight(zsc, context, entry, setAttrsRight);
   }
 
   @Override
