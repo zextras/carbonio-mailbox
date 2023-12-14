@@ -272,9 +272,10 @@ class DeleteAccountTest {
                 })
             .get(),
         Arguments.of(
-            MailboxTestUtil.createRandomAccountForDefaultDomain(
-                Map.of(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")),
-            MailboxTestUtil.createRandomAccountForDefaultDomain()));
+            accountCreatorFactory.get()
+                .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
+                .create(),
+            accountCreatorFactory.get().create()));
   }
 
   @ParameterizedTest
