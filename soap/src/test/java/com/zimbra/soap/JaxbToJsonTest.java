@@ -96,10 +96,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dom4j.QName;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.*;
 
 public class JaxbToJsonTest {
   public String testName;
@@ -150,13 +147,10 @@ public class JaxbToJsonTest {
   void bug61264AttributeDispositionContentHandling() throws Exception {
     final String uid = "uidString";
     final String frag = "Fragment text";
-    final String name = "name Attribute";
 
     CalendaringDataInterface calData = new AppointmentData(uid, uid);
     InstanceDataInfo instance = new InstanceDataInfo();
     calData.addCalendaringInstance(instance);
-    instance.setIsException(true);
-    instance.setName(name);
     instance.setFragment(frag);
 
     final Element calDataAsJsonElement = JaxbUtil.jaxbToNamedElement(
