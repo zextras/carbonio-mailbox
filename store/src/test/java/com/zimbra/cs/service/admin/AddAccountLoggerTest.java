@@ -41,7 +41,7 @@ class AddAccountLoggerTest {
   }
 
   @AfterEach
-  void tearDown() throws ServiceException {
+  void tearDown() throws Exception {
     MailboxTestUtil.tearDown();
   }
 

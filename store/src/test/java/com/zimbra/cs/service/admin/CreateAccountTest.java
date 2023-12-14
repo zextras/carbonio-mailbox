@@ -1,5 +1,7 @@
 package com.zimbra.cs.service.admin;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -11,6 +13,8 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.admin.message.CreateAccountRequest;
 import com.zimbra.soap.admin.message.CreateAccountResponse;
 import com.zimbra.soap.admin.type.AccountInfo;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,11 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class CreateAccountTest {
 
@@ -35,7 +34,7 @@ class CreateAccountTest {
     }
 
     @AfterEach
-    void tearDown() throws ServiceException {
+    void tearDown() throws Exception {
         MailboxTestUtil.tearDown();
     }
 

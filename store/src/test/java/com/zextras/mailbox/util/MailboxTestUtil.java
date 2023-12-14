@@ -34,6 +34,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import javax.mail.internet.MimeMessage;
+import org.apache.commons.io.FileUtils;
 
 /**
  * This utility class allows easy setup for the Mailbox environment using {@link #setUp()} method.
@@ -90,10 +91,12 @@ public class MailboxTestUtil {
    * Stops the {@link #inMemoryDirectoryServer} and {@link RedoLogProvider} The goal is to cleanup
    * the system before starting another one. If some clean task is missing consider adding it.
    */
-  public static void tearDown() throws ServiceException {
+  public static void tearDown() throws Exception {
     inMemoryDirectoryServer.clear();
     RedoLogProvider.getInstance().shutdown();
     inMemoryDirectoryServer.shutDown(true);
+    HSQLDB.clearDatabase();
+    FileUtils.cleanDirectory(FileUtils.getFile(LC.zimbra_home.value() + "/build/test/"));
   }
 
   /**

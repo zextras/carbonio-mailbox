@@ -106,8 +106,8 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
 
   @Override
   public void afterAll(ExtensionContext context) throws Exception {
-    server.stop();
     MailboxTestUtil.tearDown();
+    server.stop();
   }
 
 }
