@@ -89,6 +89,10 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
   @Override
   public void beforeAll(ExtensionContext context) throws Exception {
     if (!server.isRunning()) {
+      //FIXME: the SoapServer calls Zimbra#startup (Zimbra "DI") and
+      // shouldn't need start/stop of databases,redolog, etc.
+      // We just need to disable native libraries, set the localconfig and start external dependencies (LDAP, MariaDB),
+      // not internal!
       MailboxTestUtil.setUp();
       Provisioning.getInstance()
           .getServerByName(SERVER_NAME)
