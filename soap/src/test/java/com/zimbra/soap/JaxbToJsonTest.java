@@ -166,94 +166,6 @@ public class JaxbToJsonTest {
             ",\"uid\":\"" + uid + "\"" +
             "," +
             "\"_jsns\":\"urn:zimbraMail\"}", calDataAsJsonElement.toString());
-//
-//    Element xmlElement = XMLElement.mFactory.createElement(MailConstants.E_APPOINTMENT);
-//    // JSON Element
-//    Element jsonCalItemElem = JSONElement.mFactory.createElement(MailConstants.E_APPOINTMENT);
-//    jsonCalItemElem.addAttribute(MailConstants.A_UID, uid);
-//    jsonCalItemElem.addAttribute("x_uid", uid);
-//
-//    Element instElt = jsonCalItemElem.addNonUniqueElement(MailConstants.E_INSTANCE);
-//    instElt.addAttribute(MailConstants.E_FRAG, frag, Element.Disposition.CONTENT);
-//    instElt.addAttribute(MailConstants.A_CAL_IS_EXCEPTION, true);
-//    instElt.addAttribute(MailConstants.A_NAME, name);
-//
-//    // XML Element
-//    Element xmlCalItemElem = XMLElement.mFactory.createElement(MailConstants.E_APPOINTMENT);
-//    xmlCalItemElem.addAttribute(MailConstants.A_UID, uid);
-//    xmlCalItemElem.addAttribute("x_uid", uid);
-//
-//    Element xmlInstElt = xmlCalItemElem.addNonUniqueElement(MailConstants.E_INSTANCE);
-//    xmlInstElt.addAttribute(MailConstants.E_FRAG, frag, Element.Disposition.CONTENT);
-//    xmlInstElt.addAttribute(MailConstants.A_CAL_IS_EXCEPTION, true);
-//    xmlInstElt.addAttribute(MailConstants.A_NAME, name);
-//
-//    // POJO
-//    CalendaringDataInterface calData = new AppointmentData(uid, uid);
-//    InstanceDataInfo instance = new InstanceDataInfo();
-//    calData.addCalendaringInstance(instance);
-//    instance.setIsException(true);
-//    instance.setName(name);
-//    instance.setFragment(frag);
-//
-//    //
-//    Element jsonJaxbElem =
-//        JaxbUtil.jaxbToNamedElement(
-//            MailConstants.E_APPOINTMENT,
-//            MailConstants.NAMESPACE_STR,
-//            calData,
-//            JSONElement.mFactory);
-//
-//    Element xmlJaxbElem =
-//        JaxbUtil.jaxbToNamedElement(
-//            MailConstants.E_APPOINTMENT, MailConstants.NAMESPACE_STR, calData, XMLElement.mFactory);
-//
-//    Element jacksonJaxbElem =
-//        JacksonUtil.jaxbToJSONElement(
-//            calData, new QName(MailConstants.E_APPOINTMENT, MailConstants.NAMESPACE));
-//
-//    Element parent4legacyJson =
-//        JSONElement.mFactory.createElement(new QName("legacy-json", MailConstants.NAMESPACE));
-//    Element parent4jackson =
-//        JSONElement.mFactory.createElement(new QName("jacksonjson", MailConstants.NAMESPACE));
-//    parent4legacyJson.addNonUniqueElement(jsonCalItemElem);
-//    parent4jackson.addNonUniqueElement(jacksonJaxbElem);
-//
-//    sb = new StringBuilder();
-//    xmlCalItemElem.output(sb);
-//    logDebug("bug61264 - XML from XMLElement\n%1$s", sb.toString());
-//
-//    sb = new StringBuilder();
-//    xmlJaxbElem.output(sb);
-//    logDebug("bug61264 - XML from JAXB\n%1$s", sb.toString());
-//
-//    sb = new StringBuilder();
-//    jsonCalItemElem.output(sb);
-//    String jsonFromElement = sb.toString();
-//    logDebug("bug61264 - JSON from JSONElement\n%1$s", jsonFromElement);
-//
-//    sb = new StringBuilder();
-//    jsonJaxbElem.output(sb);
-//    logDebug("bug61264 - JSON from JAXB\n%1$s", sb.toString());
-//
-//    sb = new StringBuilder();
-//    jacksonJaxbElem.output(sb);
-//    logDebug("bug61264 - JSON from JAXB using Jackson\n%1$s", sb.toString());
-//    sb = new StringBuilder();
-//    parent4legacyJson.output(sb);
-//    logDebug("bug61264 - JSON from JAXB child using Jackson\n%1$s", sb.toString());
-//    sb = new StringBuilder();
-//    parent4jackson.output(sb);
-//    logDebug("bug61264 - JSON from JSONElement child\n%1$s", sb.toString());
-//
-//    assertEquals(uid, jacksonJaxbElem.getAttribute(MailConstants.A_UID), "UID");
-//    assertEquals(uid, jacksonJaxbElem.getAttribute("x_uid"), "x_uid");
-//
-//    Element instE = jacksonJaxbElem.getElement(MailConstants.E_INSTANCE);
-//    assertNotNull(instE, "instance elem");
-//    assertEquals(frag, instE.getAttribute(MailConstants.E_FRAG), "fragment");
-//    assertTrue(instE.getAttributeBool(MailConstants.A_CAL_IS_EXCEPTION), "is exception");
-//    assertEquals(name, instE.getAttribute(MailConstants.A_NAME), "name");
   }
 
   /**
@@ -261,25 +173,31 @@ public class JaxbToJsonTest {
    * "message": [{ "_content": "ver ndx message" }], "_jsns": "urn:zimbraAdmin" }
    */
   @Test
-  void zmBooleanAntStringXmlElements() throws Exception {
+  void shouldRepresentABooleanStringAsBooleanJSON() throws Exception {
     final String msg = "ver ndx message";
-    // ---------------------------------  For Comparison - Element handling
-    Element legacyElem = JSONElement.mFactory.createElement(AdminConstants.VERIFY_INDEX_RESPONSE);
-    legacyElem.addNonUniqueElement(AdminConstants.E_STATUS).addText(String.valueOf(true));
-    legacyElem.addNonUniqueElement(AdminConstants.E_MESSAGE).addText(msg);
-    logDebug("VerifyIndexResponse JSONElement ---> prettyPrint\n%1$s", legacyElem.prettyPrint());
 
-    VerifyIndexResponse viResp = new VerifyIndexResponse(true, msg);
-    Element jsonJaxbElem = JacksonUtil.jaxbToJSONElement(viResp);
-    logDebug(
-        "VerifyIndexResponse JSONElement from JAXB ---> prettyPrint\n%1$s",
-        jsonJaxbElem.prettyPrint());
-    assertEquals(true, jsonJaxbElem.getAttributeBool(AdminConstants.E_STATUS), "status");
-    assertEquals(msg, jsonJaxbElem.getAttribute(AdminConstants.E_MESSAGE), "message");
-    VerifyIndexResponse roundtripped =
-        JaxbUtil.elementToJaxb(jsonJaxbElem, VerifyIndexResponse.class);
-    assertEquals(true, roundtripped.isStatus(), "roundtripped status");
-    assertEquals(msg, roundtripped.getMessage(), "roundtripped message");
+    VerifyIndexResponse verifyIndexResponse1 = new VerifyIndexResponse(true, msg);
+    Element jsonJaxbElem = JacksonUtil.jaxbToJSONElement(verifyIndexResponse1);
+
+    assertTrue(jsonJaxbElem.getAttributeBool(AdminConstants.E_STATUS));
+    assertEquals(msg, jsonJaxbElem.getAttribute(AdminConstants.E_MESSAGE));
+    assertEquals("{\"status\":[{\"_content\":true}]" +
+            ",\"message\":[{\"_content\":\"" + msg + "\"}]," +
+            "\"_jsns\":\"urn:zimbraAdmin\"}", jsonJaxbElem.toString());
+  }
+
+  @Test
+  void shouldConvertAJSONBooleanAsABoolean() throws Exception {
+    final String msg = "ver ndx message";
+    final Element jsonJaxbElem = Element.parseJSON("{\"status\":[{\"_content\":true}]" +
+            ",\"message\":[{\"_content\":\""+ msg +"\"}]," +
+            "\"_jsns\":\"urn:zimbraAdmin\"}");
+
+    VerifyIndexResponse verifyIndexResponse =
+            JaxbUtil.elementToJaxb(jsonJaxbElem, VerifyIndexResponse.class);
+
+    assertTrue(verifyIndexResponse.isStatus());
+    assertEquals(msg, verifyIndexResponse.getMessage());
   }
 
   /**
