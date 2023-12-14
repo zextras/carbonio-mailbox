@@ -109,7 +109,11 @@ public class MailboxTestUtil {
   @Deprecated
   public static Account createRandomAccountForDefaultDomain(Map<String, Object> extraAttrs)
       throws ServiceException {
-    return createAccountWithDefaultDomain(UUID.randomUUID().toString(), extraAttrs);
+    final HashMap<String, Object> attrs =
+        new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME));
+    attrs.putAll(extraAttrs);
+    return Provisioning.getInstance()
+        .createAccount(UUID.randomUUID() + "@" + MailboxTestUtil.DEFAULT_DOMAIN, "password", attrs);
   }
 
   /** Performs actions on an account. Start with {@link #shareWith(Account)} */
@@ -246,21 +250,6 @@ public class MailboxTestUtil {
     public Account create() throws ServiceException {
       return provisioning.createAccount(this.username + "@" + this.domain, password, attributes);
     }
-  }
-
-  /**
-   * @return {@link Account}
-   * @deprecated should use {@link AccountCreator}
-   * @throws ServiceException
-   */
-  @Deprecated()
-  public static Account createAccountWithDefaultDomain(
-      String username, Map<String, Object> extraAttrs) throws ServiceException {
-    final HashMap<String, Object> attrs =
-        new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME));
-    attrs.putAll(extraAttrs);
-    return Provisioning.getInstance()
-        .createAccount(username + "@" + MailboxTestUtil.DEFAULT_DOMAIN, "password", attrs);
   }
 
   /**
