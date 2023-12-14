@@ -3,7 +3,7 @@ package com.zimbra.cs.service.mail;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
-import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.account.ZAttrProvisioning.FeatureResetPasswordStatus;
 import com.zimbra.common.account.ZAttrProvisioning.PrefPasswordRecoveryAddressStatus;
@@ -30,12 +30,13 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.org.awaitility.Awaitility;
 
 @Tag("api")
-class RecoverAccountTest extends SoapTestSuite {
+class RecoverAccountTest {
 
   private static AccountCreator.Factory accountCreatorFactory;
 
   @BeforeAll
   static void setUp() throws Exception {
+    MailboxTestUtil.setUp();
     accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance());
   }
 
