@@ -26,7 +26,6 @@ import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.store.StoreManager;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -49,10 +48,12 @@ public class MailboxTestUtil {
   private MailboxTestUtil() {}
 
   /**
-   * Sets up all possible environment variables to make the mailbox operate. - loads native library
-   * - Uses localconfig-api-test.xml as source for {@link LC} - creates a server with name {@link
-   * #SERVER_NAME} - creates a domain with name {@link #DEFAULT_DOMAIN} Starts LDAP and the database
-   * and all possible dependencies. If you find some are missing add them.
+   * Sets up all possible environment variables to make the mailbox work:
+   * - loads native library
+   * - Uses localconfig-api-test.xml as source for {@link LC}
+   * - creates a server with name {@link #SERVER_NAME}
+   * - creates a domain with name {@link #DEFAULT_DOMAIN}
+   * - Starts LDAP and the database and all possible dependencies. If you find some are missing add them.
    *
    * @throws Exception
    */
@@ -94,26 +95,6 @@ public class MailboxTestUtil {
     inMemoryDirectoryServer.clear();
     RedoLogProvider.getInstance().shutdown();
     inMemoryDirectoryServer.shutDown(true);
-  }
-
-  /**
-   * Creates a basic account with domain {@link #DEFAULT_DOMAIN} and {@link #SERVER_NAME}. You can
-   * pass extra attributes if needed, for example to make the user an admin. If you pass a {@link
-   * ZAttrProvisioning#A_zimbraMailHost} you will override the default server of the user.
-   *
-   * @param extraAttrs attributes to add on top of default one
-   * @return created account
-   * @throws ServiceException
-   * @deprecated use {@link AccountCreator} class
-   */
-  @Deprecated
-  public static Account createRandomAccountForDefaultDomain(Map<String, Object> extraAttrs)
-      throws ServiceException {
-    final HashMap<String, Object> attrs =
-        new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME));
-    attrs.putAll(extraAttrs);
-    return Provisioning.getInstance()
-        .createAccount(UUID.randomUUID() + "@" + MailboxTestUtil.DEFAULT_DOMAIN, "password", attrs);
   }
 
   /** Performs actions on an account. Start with {@link #shareWith(Account)} */
@@ -203,7 +184,7 @@ public class MailboxTestUtil {
     private String username = UUID.randomUUID().toString();
     private String password = "password";
     private String domain = DEFAULT_DOMAIN;
-    private Map<String, Object> attributes =
+    private final Map<String, Object> attributes =
         new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME));
 
     private AccountCreator(Provisioning provisioning) {
@@ -252,13 +233,4 @@ public class MailboxTestUtil {
     }
   }
 
-  /**
-   * @return {@link Account}
-   * @deprecated should use {@link AccountCreator}
-   * @throws ServiceException
-   */
-  @Deprecated()
-  public static Account createRandomAccountForDefaultDomain() throws ServiceException {
-    return createRandomAccountForDefaultDomain(Collections.emptyMap());
-  }
 }
