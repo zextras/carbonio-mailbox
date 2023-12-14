@@ -1,23 +1,21 @@
 package com.zimbra.cs.dav;
 
+import static java.lang.String.format;
+
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
-import org.apache.http.HttpHeaders;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
-
-import static com.zextras.mailbox.util.MailboxTestUtil.createRandomAccountForDefaultDomain;
-import static java.lang.String.format;
+import org.apache.http.HttpHeaders;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 
 public class CalDavFreeBusyRequestBuilder {
   private UUID uuid = UUID.randomUUID();
-  private Account originator = createRandomAccountForDefaultDomain();
-  private Account recipient = createRandomAccountForDefaultDomain();
+  private Account originator = null;
+  private Account recipient = null;
   private String start = "20231206T114500";
   private String end = "20231208T154500";
   private Mode mode = Mode.THUNDERBIRD;
