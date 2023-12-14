@@ -60,9 +60,6 @@ public final class MailboxTest {
       if (mbox != null) {
         // Keeping these for exercising this code, even though deleting the account
         MailboxTestUtil.clearData();
-        MailboxTestUtil.cleanupIndexStore(
-            MailboxManager.getInstance()
-                .getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID));
         Provisioning prov = Provisioning.getInstance();
         prov.deleteAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
       }

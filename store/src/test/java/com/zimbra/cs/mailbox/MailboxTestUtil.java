@@ -115,7 +115,7 @@ public final class MailboxTestUtil {
 
   /** Initializes the provisioning, database, index and store manager. */
   public static void initServer() throws Exception {
-    initServer(MockStoreManager.class);
+    initServer("");
   }
 
   /**
@@ -125,15 +125,6 @@ public final class MailboxTestUtil {
    * @throws Exception
    */
   public static void initServer(String zimbraServerDir) throws Exception {
-    initServer(MockStoreManager.class, zimbraServerDir);
-  }
-
-  public static void initServer(Class<? extends StoreManager> storeManagerClass) throws Exception {
-    initServer(storeManagerClass, "");
-  }
-
-  public static void initServer(
-      Class<? extends StoreManager> storeManagerClass, String zimbraServerDir) throws Exception {
     MigrationInfo.setFactory(InMemoryMigrationInfo.Factory.class);
     EphemeralStore.setFactory(InMemoryEphemeralStore.Factory.class);
     initProvisioning(zimbraServerDir);
@@ -145,7 +136,7 @@ public final class MailboxTestUtil {
     MailboxManager.setInstance(null);
     IndexStore.setFactory(LC.zimbra_class_index_store_factory.value());
 
-    LC.zimbra_class_store.setDefault(storeManagerClass.getName());
+    LC.zimbra_class_store.setDefault(MockStoreManager.class.getName());
     StoreManager.getInstance().startup();
   }
 
