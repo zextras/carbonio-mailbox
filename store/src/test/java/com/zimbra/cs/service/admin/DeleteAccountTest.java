@@ -246,8 +246,8 @@ class DeleteAccountTest {
             accountCreatorFactory.get().create()),
         Try.of(
                 () -> {
-                  final Account standardUser = MailboxTestUtil.createRandomAccountForDefaultDomain();
-                  final Account toDelete = MailboxTestUtil.createRandomAccountForDefaultDomain();
+                  final Account standardUser = accountCreatorFactory.get().create();
+                  final Account toDelete = accountCreatorFactory.get().create();
                   ACLUtil.grantRight(
                       Provisioning.getInstance(),
                       provisioning.getDomainByName(MailboxTestUtil.DEFAULT_DOMAIN),
