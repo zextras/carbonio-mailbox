@@ -59,8 +59,8 @@ package() {
   install -D carbonio-jetty-libs/target/dependencies/concurrentlinkedhashmap-lru-1.3.1.jar \
     "${pkgdir}/opt/zextras/lib/jars/concurrentlinkedhashmap-lru-1.3.1.jar"
 
-  install -D carbonio-jetty-libs/target/dependencies/curator-recipes-2.0.1-incubating.jar \
-    "${pkgdir}/opt/zextras/lib/jars/curator-recipes-2.0.1-incubating.jar"
+  install -D carbonio-jetty-libs/target/dependencies/curator-recipes-5.5.0.jar \
+    "${pkgdir}/opt/zextras/lib/jars/curator-recipes-5.5.0.jar"
 
   install -D carbonio-jetty-libs/target/dependencies/cxf-core-3.3.4.jar \
     "${pkgdir}/opt/zextras/lib/jars/cxf-core-3.3.4.jar"
