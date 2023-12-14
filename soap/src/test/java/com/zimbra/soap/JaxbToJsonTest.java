@@ -168,10 +168,6 @@ public class JaxbToJsonTest {
             "\"_jsns\":\"urn:zimbraMail\"}", calDataAsJsonElement.toString());
   }
 
-  /**
-   * { "status": [{ "_content": "true" # Actually get true not "true" but should be ok }],
-   * "message": [{ "_content": "ver ndx message" }], "_jsns": "urn:zimbraAdmin" }
-   */
   @Test
   void shouldRepresentABooleanStringAsBooleanJSON() throws Exception {
     final String msg = "ver ndx message";
