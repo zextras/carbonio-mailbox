@@ -174,8 +174,8 @@ class DavServletTest {
     HttpPost freeBusyRequest = new CalDavFreeBusyRequestBuilder(DAV_BASE_URL)
         .asThunderbird()
         .uuid(calendarId)
-        .originator(calendarViewer)
-        .recipient(busyPerson)
+        .originatorEmail(calendarViewer.getName())
+        .recipientEmail(busyPerson.getName())
         .timeslot("20231206T114500", "20231208T154500")
         .build();
     HttpResponse freeBusyResponse = createHttpClientWith(calendarViewer).execute(freeBusyRequest);
@@ -199,8 +199,8 @@ class DavServletTest {
     Account calendarViewer = getRandomAccountForDefaultDomain();
     HttpPost freeBusyRequest = new CalDavFreeBusyRequestBuilder(DAV_BASE_URL)
         .asICalendar()
-        .originator(calendarViewer)
-        .recipient(busyPerson)
+        .originatorEmail(calendarViewer.getName())
+        .recipientEmail(busyPerson.getName())
         .timeslot("20231206T114500", "20231208T154500")
         .build();
     HttpResponse freeBusyResponse = createHttpClientWith(calendarViewer).execute(freeBusyRequest);
