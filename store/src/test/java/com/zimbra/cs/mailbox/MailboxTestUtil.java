@@ -13,7 +13,6 @@ import com.zimbra.common.mime.ContentDisposition;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.StringUtil;
-import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.common.zmime.ZMimeBodyPart;
 import com.zimbra.common.zmime.ZMimeMultipart;
 import com.zimbra.cs.account.Account;
@@ -26,8 +25,6 @@ import com.zimbra.cs.ephemeral.InMemoryEphemeralStore;
 import com.zimbra.cs.ephemeral.migrate.InMemoryMigrationInfo;
 import com.zimbra.cs.ephemeral.migrate.MigrationInfo;
 import com.zimbra.cs.index.IndexStore;
-import com.zimbra.cs.index.elasticsearch.ElasticSearchConnector;
-import com.zimbra.cs.index.elasticsearch.ElasticSearchIndex;
 import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.mime.ParsedMessage;
@@ -49,9 +46,6 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpRequestBase;
 import org.mockito.Mockito;
 
 public final class MailboxTestUtil {
@@ -172,7 +166,7 @@ public final class MailboxTestUtil {
     MailboxIndex.shutdown();
     File index = new File("build/test/index");
     if (index.isDirectory()) {
-      deleteDirContents(index);
+      FileUtils.cleanDirectory(index);
     }
     StoreManager sm = StoreManager.getInstance();
     if (sm instanceof MockStoreManager) {
@@ -184,71 +178,9 @@ public final class MailboxTestUtil {
     EphemeralStore.getFactory().shutdown();
   }
 
-  private static void deleteDirContents(File dir) throws IOException {
-    deleteDirContents(dir, 0);
-  }
-
-  private static void deleteDirContents(File dir, int recurCount) throws IOException {
-    try {
-      FileUtils.deleteDirectory(dir);
-    } catch (IOException ioe) {
-      if (recurCount > 10) {
-        throw new IOException("Gave up after multiple IOExceptions", ioe);
-      }
-      ZimbraLog.test.info(
-          "delete dir='%s' failed due to IOException '%s' (probably files still in use)."
-              + "Waiting a moment and trying again",
-          dir, ioe.getMessage());
-      // wait a moment and try again; this can bomb if files still being written by some thread
-      try {
-        Thread.sleep(2500);
-      } catch (InterruptedException ie) {
-
-      }
-      deleteDirContents(dir, recurCount + 1);
-    }
-  }
-
-  public static void cleanupIndexStore(Mailbox mbox) {
-    IndexStore index = mbox.index.getIndexStore();
-    if (index instanceof ElasticSearchIndex) {
-      String key = mbox.getAccountId();
-      String indexUrl = String.format("%s%s/", LC.zimbra_index_elasticsearch_url_base.value(), key);
-      HttpRequestBase method = new HttpDelete(indexUrl);
-      try {
-        ElasticSearchConnector connector = new ElasticSearchConnector();
-        int statusCode = connector.executeMethod(method);
-        if (statusCode == HttpStatus.SC_OK) {
-          boolean ok = connector.getBooleanAtJsonPath(new String[] {"ok"}, false);
-          boolean acknowledged =
-              connector.getBooleanAtJsonPath(new String[] {"acknowledged"}, false);
-          if (!ok || !acknowledged) {
-            ZimbraLog.index.debug("Delete index status ok=%b acknowledged=%b", ok, acknowledged);
-          }
-        } else {
-          String error = connector.getStringAtJsonPath(new String[] {"error"});
-          if (error != null && error.startsWith("IndexMissingException")) {
-            ZimbraLog.index.debug("Unable to delete index for key=%s.  Index is missing", key);
-          } else {
-            ZimbraLog.index.error("Problem deleting index for key=%s error=%s", key, error);
-          }
-        }
-      } catch (IOException e) {
-        ZimbraLog.index.error("Problem Deleting index with key=" + key, e);
-      }
-    }
-  }
-
   public static void setFlag(Mailbox mbox, int itemId, Flag.FlagInfo flag) throws ServiceException {
     MailItem item = mbox.getItemById(null, itemId, MailItem.Type.UNKNOWN);
     int flags = item.getFlagBitmask() | flag.toBitmask();
-    mbox.setTags(null, itemId, item.getType(), flags, null, null);
-  }
-
-  public static void unsetFlag(Mailbox mbox, int itemId, Flag.FlagInfo flag)
-      throws ServiceException {
-    MailItem item = mbox.getItemById(null, itemId, MailItem.Type.UNKNOWN);
-    int flags = item.getFlagBitmask() & ~flag.toBitmask();
     mbox.setTags(null, itemId, item.getType(), flags, null, null);
   }
 

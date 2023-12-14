@@ -58,8 +58,6 @@ public class TestContentTransferEncoding {
     @BeforeEach
     public void setUp() throws Exception {
         MailboxTestUtil.clearData();
-        MailboxTestUtil.cleanupIndexStore(
-                MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID));
         mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
     }
 
