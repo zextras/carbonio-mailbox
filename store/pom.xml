@@ -207,6 +207,12 @@
     </dependency>
 
     <dependency>
+      <artifactId>zm-charset</artifactId>
+      <groupId>zimbra</groupId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <artifactId>commons-compress</artifactId>
       <groupId>org.apache.commons</groupId>
     </dependency>
