@@ -7,6 +7,7 @@ package com.zimbra.cs.service.admin;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
 import com.zextras.mailbox.util.MailboxTestUtil;
+import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -43,6 +44,7 @@ class DeleteAccountTest {
   private static final String OTHER_DOMAIN = "other.com";
   private static Provisioning provisioning;
   private static DeleteAccount deleteAccount;
+  private static AccountCreator.Factory accountCreatorFactory;
 
   /**
    * Sets up the environment using {@link MailboxTestUtil}. Note: unfortunately it is not possible
@@ -56,6 +58,7 @@ class DeleteAccountTest {
     MailboxTestUtil.setUp();
     final MailboxManager mailboxManager = MailboxManager.getInstance();
     provisioning = Provisioning.getInstance();
+    accountCreatorFactory = new AccountCreator.Factory(provisioning);
     deleteAccount =
         new DeleteAccount(
             new DeleteUserUseCase(
@@ -73,15 +76,14 @@ class DeleteAccountTest {
 
   private static Stream<Arguments> getHappyPathCases() throws ServiceException {
     return Stream.of(
-        Arguments.of(
-            MailboxTestUtil.createRandomAccountForDefaultDomain(
-                Map.of(ZAttrProvisioning.A_zimbraIsAdminAccount, "TRUE")),
-            MailboxTestUtil.createRandomAccountForDefaultDomain()),
+        Arguments.of(accountCreatorFactory.get().asGlobalAdmin().create(),
+            accountCreatorFactory.get().create()),
         Try.of(
                 () -> {
                   final Account delegatedAdminWithDomainAdminRight =
-                      MailboxTestUtil.createRandomAccountForDefaultDomain(
-                          Map.of(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE"));
+                      accountCreatorFactory.get()
+                          .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
+                          .create();
                   ACLUtil.grantRight(
                       Provisioning.getInstance(),
                       provisioning.getDomainByName(MailboxTestUtil.DEFAULT_DOMAIN),
@@ -94,15 +96,15 @@ class DeleteAccountTest {
                               null)));
                   return Arguments.of(
                       delegatedAdminWithDomainAdminRight,
-                      MailboxTestUtil.createRandomAccountForDefaultDomain());
+                      accountCreatorFactory.get().create());
                 })
             .get(),
         Try.of(
                 () -> {
-                  final Account toDelete = MailboxTestUtil.createRandomAccountForDefaultDomain();
-                  final Account admin =
-                      MailboxTestUtil.createRandomAccountForDefaultDomain(
-                          Map.of(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE"));
+                  final Account toDelete = accountCreatorFactory.get().create();
+                  final Account admin = accountCreatorFactory.get()
+                      .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
+                      .create();
                   ACLUtil.grantRight(
                       Provisioning.getInstance(),
                       provisioning.getDomainByName(MailboxTestUtil.DEFAULT_DOMAIN),
@@ -118,10 +120,10 @@ class DeleteAccountTest {
             .get(),
         Try.of(
                 () -> {
-                  final Account toDelete = MailboxTestUtil.createRandomAccountForDefaultDomain();
-                  final Account admin =
-                      MailboxTestUtil.createRandomAccountForDefaultDomain(
-                          Map.of(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE"));
+                  final Account toDelete = accountCreatorFactory.get().create();
+                  final Account admin = accountCreatorFactory.get()
+                      .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
+                      .create();
                   ACLUtil.grantRight(
                       Provisioning.getInstance(),
                       toDelete,
@@ -157,12 +159,12 @@ class DeleteAccountTest {
                               AdminRights.R_domainAdminRights,
                               RightModifier.RM_CAN_DELEGATE,
                               null)));
-                  return Arguments.of(admin, MailboxTestUtil.createRandomAccountForDefaultDomain());
+                  return Arguments.of(admin, accountCreatorFactory.get().create());
                 })
             .get(),
         Try.of(
                 () -> {
-                  final Account toDelete = MailboxTestUtil.createRandomAccountForDefaultDomain();
+                  final Account toDelete = accountCreatorFactory.get().create();
                   final Account admin =
                       provisioning.createAccount(
                           UUID.randomUUID() + "@" + OTHER_DOMAIN,
@@ -188,7 +190,7 @@ class DeleteAccountTest {
             .get(),
         Try.of(
                 () -> {
-                  final Account toDelete = MailboxTestUtil.createRandomAccountForDefaultDomain();
+                  final Account toDelete = accountCreatorFactory.get().create();
                   final Account admin =
                       provisioning.createAccount(
                           UUID.randomUUID() + "@" + OTHER_DOMAIN,
@@ -238,13 +240,14 @@ class DeleteAccountTest {
   private static Stream<Arguments> getPermissionDeniedCases() throws ServiceException {
     return Stream.of(
         Arguments.of(
-            MailboxTestUtil.createRandomAccountForDefaultDomain(
-                Map.of(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")),
-            MailboxTestUtil.createRandomAccountForDefaultDomain()),
+            accountCreatorFactory.get()
+                .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
+                .create(),
+            accountCreatorFactory.get().create()),
         Try.of(
                 () -> {
-                  final Account standardUser = MailboxTestUtil.createRandomAccountForDefaultDomain();
-                  final Account toDelete = MailboxTestUtil.createRandomAccountForDefaultDomain();
+                  final Account standardUser = accountCreatorFactory.get().create();
+                  final Account toDelete = accountCreatorFactory.get().create();
                   ACLUtil.grantRight(
                       Provisioning.getInstance(),
                       provisioning.getDomainByName(MailboxTestUtil.DEFAULT_DOMAIN),
@@ -269,9 +272,10 @@ class DeleteAccountTest {
                 })
             .get(),
         Arguments.of(
-            MailboxTestUtil.createRandomAccountForDefaultDomain(
-                Map.of(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")),
-            MailboxTestUtil.createRandomAccountForDefaultDomain()));
+            accountCreatorFactory.get()
+                .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
+                .create(),
+            accountCreatorFactory.get().create()));
   }
 
   @ParameterizedTest

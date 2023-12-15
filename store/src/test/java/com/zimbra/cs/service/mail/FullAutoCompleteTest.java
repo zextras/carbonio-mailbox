@@ -5,7 +5,6 @@
 package com.zimbra.cs.service.mail;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.soap.Element;
@@ -50,7 +49,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
   void shouldReturnContactsOfAuthenticatedUserOnly() throws Exception {
     final String domain = "abc.com";
     final String prefix = "test-";
-    final Account account = MailboxTestUtil.createRandomAccountForDefaultDomain();
+    final Account account = accountCreatorFactory.get().create();
     getSoapClient().executeSoap(account, new CreateContactRequest(new ContactSpec().addEmail(prefix + UUID.randomUUID() + "@" + domain)));
     getSoapClient().executeSoap(account, new CreateContactRequest(new ContactSpec().addEmail(prefix + UUID.randomUUID() + "@" + domain)));
     final AutoCompleteRequest autoCompleteRequest = new AutoCompleteRequest(prefix);

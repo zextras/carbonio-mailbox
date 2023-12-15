@@ -1,12 +1,9 @@
 package com.zimbra.cs.dav;
 
-import com.zimbra.common.calendar.ZCalendar;
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.Account;
-import org.apache.http.HttpHeaders;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.StringEntity;
+import static java.lang.String.format;
 
+import com.zimbra.common.calendar.ZCalendar;
+import com.zimbra.cs.account.Account;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -14,20 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static com.zextras.mailbox.util.MailboxTestUtil.createRandomAccountForDefaultDomain;
-import static java.lang.String.format;
+import org.apache.http.HttpHeaders;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 
 public class CalDavCreateAppointmentRequestBuilder {
   private UUID uuid = UUID.randomUUID();
-  private String organizer = createRandomAccountForDefaultDomain().getName();
+  private String organizer = "test@test.com";
   private ZCalendar.ScheduleAgent scheduleAgent;
   private List<Account> attendees = new ArrayList<>();
   private String start = "20231207T124500";
   private String end = "20231207T144500";
   private final String baseUrl;
 
-  public CalDavCreateAppointmentRequestBuilder(String baseUrl) throws ServiceException {
+  public CalDavCreateAppointmentRequestBuilder(String baseUrl) {
     this.baseUrl = baseUrl;
   }
 
