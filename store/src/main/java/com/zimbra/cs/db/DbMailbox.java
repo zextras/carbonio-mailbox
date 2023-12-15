@@ -1345,18 +1345,6 @@ public final class DbMailbox {
     return results;
   }
 
-  public static void optimize(DbConnection conn, Mailbox mbox, int level) throws ServiceException {
-    assert (mbox.lock.isWriteLockedByCurrentThread());
-
-    String name = getDatabaseName(mbox);
-
-    try {
-      Db.getInstance().optimize(conn, name, level);
-    } catch (Exception e) {
-      throw ServiceException.FAILURE("optimizing mailbox db " + name, e);
-    }
-  }
-
   private static void readMailboxRawData(List<Mailbox.MailboxData> results, ResultSet rs)
       throws SQLException {
     while (rs.next()) {

@@ -98,14 +98,6 @@ public abstract class Db {
      * @see DbPool#getPool() */
     abstract DbPool.PoolConfig getPoolConfig();
 
-    /** optimize and optionally compact a database
-     * level 0: analysis tuning only
-     * level 1: quick file optimization and analysis
-     * level 2: full file optimization and analysis
-     */
-    @SuppressWarnings("unused")
-    public void optimize(DbConnection conn, String name, int level) throws ServiceException {}
-
 
     /** Returns <tt>true</tt> if the database with the given name exists. */
     public abstract boolean databaseExists(DbConnection conn, String dbname)

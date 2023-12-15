@@ -10343,21 +10343,6 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  /** Optimize the underlying database. */
-  public void optimize(int level) {
-    lock.lock();
-    try {
-      DbConnection conn = DbPool.getConnection(this);
-
-      DbMailbox.optimize(conn, this, level);
-      DbPool.quietClose(conn);
-    } catch (Exception e) {
-      ZimbraLog.mailbox.warn("db optimize failed for mailbox " + getId() + ": " + e);
-    } finally {
-      lock.release();
-    }
-  }
-
   // Coordinate other conflicting operations (such as backup) and shared delivery, delivery of a
   // message to
   // multiple recipients.  Such operation on a mailbox and shared delivery
