@@ -174,14 +174,6 @@ public abstract class Db {
 
 
     /**
-     * Give DB implementations a chance to preemptively check if param limit will be exceeded
-     * If exceeded, a ServiceException which wraps a SQLException corresponding to Error.TOO_MANY_SQL_PARAMS must be thrown
-     * @param numParams
-     */
-    public void checkParamLimit(int numParams) throws ServiceException {
-    }
-
-    /**
      * @return limit for param checking
      */
     public int getParamLimit() {
