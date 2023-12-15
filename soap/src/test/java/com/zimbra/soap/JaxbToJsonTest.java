@@ -96,10 +96,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dom4j.QName;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.*;
 
 public class JaxbToJsonTest {
   public String testName;
@@ -109,7 +106,6 @@ public class JaxbToJsonTest {
   private static String jsonEmptyGetSystemRetentionPolicyResponse =
       "{\n"
           + "  \"retentionPolicy\": [{\n"
-          + "      \"keep\": [{}],\n"
           + "      \"purge\": [{}]\n"
           + "    }],\n"
           + "  \"_jsns\": \"urn:zimbraMail\"\n"
@@ -118,12 +114,6 @@ public class JaxbToJsonTest {
   private static String jsonGetSystemRetentionPolicyResponse =
       "{\n"
           + "  \"retentionPolicy\": [{\n"
-          + "      \"keep\": [{\n"
-          + "          \"policy\": [{\n"
-          + "              \"type\": \"user\",\n"
-          + "              \"lifetime\": \"200\"\n"
-          + "            }]\n"
-          + "        }],\n"
           + "      \"purge\": [{\n"
           + "          \"policy\": [{\n"
           + "              \"type\": \"user\",\n"
@@ -138,155 +128,72 @@ public class JaxbToJsonTest {
     com.zimbra.common.util.LogManager.setThisLogAndRootToLevel(LOG, Level.INFO);
   }
 
-  private void logDebug(String format, Object... objects) {
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(testName + ":" + String.format(format, objects));
-    }
-  }
-
-  public static String streamToString(InputStream stream, Charset cs) throws IOException {
-    try {
-      Reader reader = new BufferedReader(new InputStreamReader(stream, cs));
-      StringBuilder builder = new StringBuilder();
-      char[] buffer = new char[8192];
-      int read;
-      while ((read = reader.read(buffer, 0, buffer.length)) > 0) {
-        builder.append(buffer, 0, read);
-      }
-      return builder.toString();
-    } finally {
-      stream.close();
-    }
+  @BeforeEach
+  public void setup(TestInfo testInfo) {
+    Optional<Method> testMethod = testInfo.getTestMethod();
+    testMethod.ifPresent(method -> this.testName = method.getName());
   }
 
   /**
-   * the element referenced MailConstants.E_FRAG is treated in XML as an element with content but no
-   * attributes. However in JSON, it is just treated like an ordinary attribute. So, in JSON we DO
-   * want: "fr": "Here is some wonderful text and some more", We do NOT want it to be treated as if
-   * it was an element which would look like: "fr": [{ "_content": "Here is some wonderful text and
-   * some more" }],
+   * The element referenced {@link MailConstants#E_FRAG} is treated in XML as an element with content but no
+   * attributes.
+   *
+   * However in JSON, it is just treated like an ordinary attribute.
+   *
+   * In JSON we do want: "fr": "Here is some wonderful text and some more"
+   * We do not want: "fr": [{ "_content": "Here is some wonderful text and some more" }],
    */
   @Test
-  void bug61264AttributeDispositionCONTENThandling() throws Exception {
-    StringBuilder sb;
+  void bug61264AttributeDispositionContentHandling() throws Exception {
     final String uid = "uidString";
     final String frag = "Fragment text";
-    final String name = "name Attribute";
 
-    // For comparison purposes, create an JSONElement tree and a XMLElement tree
-    Element jsoncalItemElem = JSONElement.mFactory.createElement(MailConstants.E_APPOINTMENT);
-    jsoncalItemElem.addAttribute(MailConstants.A_UID, uid);
-    jsoncalItemElem.addAttribute("x_uid", uid);
-    Element instElt = jsoncalItemElem.addNonUniqueElement(MailConstants.E_INSTANCE);
-    instElt.addAttribute(MailConstants.E_FRAG, frag, Element.Disposition.CONTENT);
-    instElt.addAttribute(MailConstants.A_CAL_IS_EXCEPTION, true);
-    instElt.addAttribute(MailConstants.A_NAME, name);
-
-    Element xmlcalItemElem = XMLElement.mFactory.createElement(MailConstants.E_APPOINTMENT);
-    xmlcalItemElem.addAttribute(MailConstants.A_UID, uid);
-    xmlcalItemElem.addAttribute("x_uid", uid);
-    Element xmlinstElt = xmlcalItemElem.addNonUniqueElement(MailConstants.E_INSTANCE);
-    xmlinstElt.addAttribute(MailConstants.E_FRAG, frag, Element.Disposition.CONTENT);
-    xmlinstElt.addAttribute(MailConstants.A_CAL_IS_EXCEPTION, true);
-    xmlinstElt.addAttribute(MailConstants.A_NAME, name);
-
-    CalendaringDataInterface calData = null;
-    calData = new AppointmentData(uid, uid);
+    CalendaringDataInterface calData = new AppointmentData(uid, uid);
     InstanceDataInfo instance = new InstanceDataInfo();
     calData.addCalendaringInstance(instance);
-    instance.setIsException(true);
-    instance.setName(name);
     instance.setFragment(frag);
 
-    Element jsonJaxbElem =
-        JaxbUtil.jaxbToNamedElement(
+    final Element calDataAsJsonElement = JaxbUtil.jaxbToNamedElement(
             MailConstants.E_APPOINTMENT,
             MailConstants.NAMESPACE_STR,
             calData,
             JSONElement.mFactory);
 
-    Element xmlJaxbElem =
-        JaxbUtil.jaxbToNamedElement(
-            MailConstants.E_APPOINTMENT, MailConstants.NAMESPACE_STR, calData, XMLElement.mFactory);
-
-    // As AppointmentData doesn't have an XmlRootElement, this gives a poor choice for the root
-    // name.
-    //     Element jacksonJaxbElem = JacksonUtil.jaxbToJSONElement(calData);
-    // This is probably a closer analog to
-    // JSONElement.mFactory.createElement(MailConstants.E_APPOINTMENT);
-    //     Element jacksonJaxbElem = JacksonUtil.jaxbToJSONElement(calData, new QName("appt",
-    // null));
-    Element jacksonJaxbElem =
-        JacksonUtil.jaxbToJSONElement(
-            calData, new QName(MailConstants.E_APPOINTMENT, MailConstants.NAMESPACE));
-
-    Element parent4legacyJson =
-        JSONElement.mFactory.createElement(new QName("legacy-json", MailConstants.NAMESPACE));
-    Element parent4jackson =
-        JSONElement.mFactory.createElement(new QName("jacksonjson", MailConstants.NAMESPACE));
-    parent4legacyJson.addNonUniqueElement(jsoncalItemElem);
-    parent4jackson.addNonUniqueElement(jacksonJaxbElem);
-
-    sb = new StringBuilder();
-    xmlcalItemElem.output(sb);
-    logDebug("bug61264 - XML from XMLElement\n%1$s", sb.toString());
-
-    sb = new StringBuilder();
-    xmlJaxbElem.output(sb);
-    logDebug("bug61264 - XML from JAXB\n%1$s", sb.toString());
-
-    sb = new StringBuilder(); // something that is appendable for Element.out(Appendable) to play
-    // with
-    jsoncalItemElem.output(sb);
-    String jsonFromElement = sb.toString();
-    logDebug("bug61264 - JSON from JSONElement\n%1$s", jsonFromElement);
-
-    sb = new StringBuilder();
-    jsonJaxbElem.output(sb);
-    logDebug("bug61264 - JSON from JAXB\n%1$s", sb.toString());
-
-    sb = new StringBuilder();
-    jacksonJaxbElem.output(sb);
-    logDebug("bug61264 - JSON from JAXB using Jackson\n%1$s", sb.toString());
-    sb = new StringBuilder();
-    parent4legacyJson.output(sb);
-    logDebug("bug61264 - JSON from JAXB child using Jackson\n%1$s", sb.toString());
-    sb = new StringBuilder();
-    parent4jackson.output(sb);
-    logDebug("bug61264 - JSON from JSONElement child\n%1$s", sb.toString());
-    assertEquals(uid, jacksonJaxbElem.getAttribute(MailConstants.A_UID), "UID");
-    assertEquals(uid, jacksonJaxbElem.getAttribute("x_uid"), "x_uid");
-    Element instE = jacksonJaxbElem.getElement(MailConstants.E_INSTANCE);
-    assertNotNull(instE, "instance elem");
-    assertEquals(frag, instE.getAttribute(MailConstants.E_FRAG), "fragment");
-    assertTrue(instE.getAttributeBool(MailConstants.A_CAL_IS_EXCEPTION), "is exception");
-    assertEquals(name, instE.getAttribute(MailConstants.A_NAME), "name");
+    Assertions.assertEquals("{\"inst\":" +
+            "[{\"fr\":\"" + frag + "\"}]" +
+            "," +
+            "\"x_uid\":\"" + uid + "\"" +
+            ",\"uid\":\"" + uid + "\"" +
+            "," +
+            "\"_jsns\":\"urn:zimbraMail\"}", calDataAsJsonElement.toString());
   }
 
-  /**
-   * { "status": [{ "_content": "true" # Actually get true not "true" but should be ok }],
-   * "message": [{ "_content": "ver ndx message" }], "_jsns": "urn:zimbraAdmin" }
-   */
   @Test
-  void zmBooleanAntStringXmlElements() throws Exception {
+  void shouldRepresentABooleanStringAsBooleanJSON() throws Exception {
     final String msg = "ver ndx message";
-    // ---------------------------------  For Comparison - Element handling
-    Element legacyElem = JSONElement.mFactory.createElement(AdminConstants.VERIFY_INDEX_RESPONSE);
-    legacyElem.addNonUniqueElement(AdminConstants.E_STATUS).addText(String.valueOf(true));
-    legacyElem.addNonUniqueElement(AdminConstants.E_MESSAGE).addText(msg);
-    logDebug("VerifyIndexResponse JSONElement ---> prettyPrint\n%1$s", legacyElem.prettyPrint());
 
-    VerifyIndexResponse viResp = new VerifyIndexResponse(true, msg);
-    Element jsonJaxbElem = JacksonUtil.jaxbToJSONElement(viResp);
-    logDebug(
-        "VerifyIndexResponse JSONElement from JAXB ---> prettyPrint\n%1$s",
-        jsonJaxbElem.prettyPrint());
-    assertEquals(true, jsonJaxbElem.getAttributeBool(AdminConstants.E_STATUS), "status");
-    assertEquals(msg, jsonJaxbElem.getAttribute(AdminConstants.E_MESSAGE), "message");
-    VerifyIndexResponse roundtripped =
-        JaxbUtil.elementToJaxb(jsonJaxbElem, VerifyIndexResponse.class);
-    assertEquals(true, roundtripped.isStatus(), "roundtripped status");
-    assertEquals(msg, roundtripped.getMessage(), "roundtripped message");
+    VerifyIndexResponse verifyIndexResponse1 = new VerifyIndexResponse(true, msg);
+    Element jsonJaxbElem = JacksonUtil.jaxbToJSONElement(verifyIndexResponse1);
+
+    assertTrue(jsonJaxbElem.getAttributeBool(AdminConstants.E_STATUS));
+    assertEquals(msg, jsonJaxbElem.getAttribute(AdminConstants.E_MESSAGE));
+    assertEquals("{\"status\":[{\"_content\":true}]" +
+            ",\"message\":[{\"_content\":\"" + msg + "\"}]," +
+            "\"_jsns\":\"urn:zimbraAdmin\"}", jsonJaxbElem.toString());
+  }
+
+  @Test
+  void shouldConvertAJSONBooleanAsABoolean() throws Exception {
+    final String msg = "ver ndx message";
+    final Element jsonJaxbElem = Element.parseJSON("{\"status\":[{\"_content\":true}]" +
+            ",\"message\":[{\"_content\":\""+ msg +"\"}]," +
+            "\"_jsns\":\"urn:zimbraAdmin\"}");
+
+    VerifyIndexResponse verifyIndexResponse =
+            JaxbUtil.elementToJaxb(jsonJaxbElem, VerifyIndexResponse.class);
+
+    assertTrue(verifyIndexResponse.isStatus());
+    assertEquals(msg, verifyIndexResponse.getMessage());
   }
 
   /**
@@ -1875,7 +1782,7 @@ public class JaxbToJsonTest {
 
   @Test
   void systemRetentionPolicyResponse() throws Exception {
-    RetentionPolicy rp = new RetentionPolicy((Iterable<Policy>) null, (Iterable<Policy>) null);
+    RetentionPolicy rp = new RetentionPolicy((Iterable<Policy>) null);
     GetSystemRetentionPolicyResponse jaxb = new GetSystemRetentionPolicyResponse(rp);
     Element jsonJaxbElem = JacksonUtil.jaxbToJSONElement(jaxb);
     logDebug("JSONElement from JAXB ---> prettyPrint\n%1$s", jsonJaxbElem.prettyPrint());
@@ -1890,10 +1797,7 @@ public class JaxbToJsonTest {
         roundtripped.getRetentionPolicy().toString(),
         "roundtripped retention policy");
 
-    rp =
-        new RetentionPolicy(
-            Collections.singleton(Policy.newUserPolicy("200")),
-            Collections.singleton(Policy.newUserPolicy("400")));
+    rp = new RetentionPolicy(Collections.singleton(Policy.newUserPolicy("400")));
     jaxb = new GetSystemRetentionPolicyResponse(rp);
     jsonJaxbElem = JacksonUtil.jaxbToJSONElement(jaxb);
     logDebug("JSONElement from JAXB ---> prettyPrint\n%1$s", jsonJaxbElem.prettyPrint());
@@ -1933,11 +1837,9 @@ public class JaxbToJsonTest {
     return mapper;
   }
 
-  @BeforeEach
-  public void setup(TestInfo testInfo) {
-    Optional<Method> testMethod = testInfo.getTestMethod();
-    if (testMethod.isPresent()) {
-      this.testName = testMethod.get().getName();
+  private void logDebug(String format, Object... objects) {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug(testName + ":" + String.format(format, objects));
     }
   }
 }

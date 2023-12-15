@@ -9170,7 +9170,6 @@ public class Mailbox implements MailboxStore {
     if (rp == null) {
       rp = new RetentionPolicy();
     } else {
-      validateRetentionPolicy(rp.getKeepPolicy());
       validateRetentionPolicy(rp.getPurgePolicy());
     }
 

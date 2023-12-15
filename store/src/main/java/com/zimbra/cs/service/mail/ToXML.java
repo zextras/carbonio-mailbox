@@ -341,8 +341,6 @@ public final class ToXML {
   private static Element encodeRetentionPolicy(Element parent, RetentionPolicy policy) {
     Element retPol = parent.addNonUniqueElement(MailConstants.E_RETENTION_POLICY);
     if (policy.isSet()) {
-      Element keepEl = retPol.addNonUniqueElement(MailConstants.E_KEEP);
-      encodePolicyList(keepEl, policy.getKeepPolicy());
       Element purgeEl = retPol.addNonUniqueElement(MailConstants.E_PURGE);
       encodePolicyList(purgeEl, policy.getPurgePolicy());
     }
@@ -1765,12 +1763,13 @@ public final class ToXML {
       MsgContent wantContent,
       int fields)
       throws ServiceException {
-    Element m = null;
+    Element messageElement = null;
     boolean success = false;
     try {
       boolean wholeMessage = part == null || part.trim().isEmpty();
-      m = encodeMsgCommonAndIdInfo(parent, ifmt, octxt, msg, part, serializeType, fields);
-      MimeMessage mm = null;
+      messageElement =
+          encodeMsgCommonAndIdInfo(parent, ifmt, octxt, msg, part, serializeType, fields);
+      MimeMessage mimeMessage;
       try {
         String requestedAccountId = octxt.getmRequestedAccountId();
         String authtokenAccountId = octxt.getmAuthTokenAccountId();
@@ -1779,20 +1778,20 @@ public final class ToXML {
                 && !authtokenAccountId.equalsIgnoreCase(requestedAccountId);
         if (isDecryptionNotAllowed
             && Mime.isEncrypted(msg.getMimeMessage(false).getContentType())) {
-          mm = msg.getMimeMessage(false);
+          mimeMessage = msg.getMimeMessage(false);
         } else {
-          mm = msg.getMimeMessage();
+          mimeMessage = msg.getMimeMessage();
         }
       } catch (MailServiceException e) {
         if (encodeMissingBlobs && MailServiceException.NO_SUCH_BLOB.equals(e.getCode())) {
           ZimbraLog.mailbox.error("Unable to get blob while encoding message", e);
-          encodeEmail(m, msg.getSender(), EmailType.FROM);
-          encodeEmail(m, msg.getSender(), EmailType.SENDER);
+          encodeEmail(messageElement, msg.getSender(), EmailType.FROM);
+          encodeEmail(messageElement, msg.getSender(), EmailType.SENDER);
           if (msg.getRecipients() != null) {
-            addEmails(m, Mime.parseAddressHeader(msg.getRecipients()), EmailType.TO);
+            addEmails(messageElement, Mime.parseAddressHeader(msg.getRecipients()), EmailType.TO);
           }
-          m.addAttribute(MailConstants.A_SUBJECT, msg.getSubject());
-          Element mimePart = m.addNonUniqueElement(MailConstants.E_MIMEPART);
+          messageElement.addAttribute(MailConstants.A_SUBJECT, msg.getSubject());
+          Element mimePart = messageElement.addNonUniqueElement(MailConstants.E_MIMEPART);
           mimePart.addAttribute(MailConstants.A_PART, 1);
           mimePart.addAttribute(MailConstants.A_BODY, true);
           mimePart.addAttribute(MailConstants.A_CONTENT_TYPE, MimeConstants.CT_TEXT_PLAIN);
@@ -1802,24 +1801,24 @@ public final class ToXML {
                   L10nUtil.MsgKey.errMissingBlob,
                   msg.getAccount().getLocale(),
                   ifmt.formatItemId(msg));
-          m.addAttribute(MailConstants.E_FRAG, errMsg, Element.Disposition.CONTENT);
+          messageElement.addAttribute(MailConstants.E_FRAG, errMsg, Element.Disposition.CONTENT);
           mimePart.addAttribute(MailConstants.E_CONTENT, errMsg, Element.Disposition.CONTENT);
           success =
               true; // not really success, but mark as such so the element is appended correctly
-          return m;
+          return messageElement;
         }
         throw e;
       }
       if (!wholeMessage) {
-        MimePart mp = Mime.getMimePart(mm, part);
-        if (mp == null) {
+        MimePart mimePart = Mime.getMimePart(mimeMessage, part);
+        if (mimePart == null) {
           throw MailServiceException.NO_SUCH_PART(part);
         }
-        Object content = Mime.getMessageContent(mp);
+        Object content = Mime.getMessageContent(mimePart);
         if (!(content instanceof MimeMessage)) {
           throw MailServiceException.NO_SUCH_PART(part);
         }
-        mm = (MimeMessage) content;
+        mimeMessage = (MimeMessage) content;
       } else {
         part = "";
       }
@@ -1830,35 +1829,39 @@ public final class ToXML {
 
       String fragment = msg.getFragment();
       if (fragment != null && !fragment.isEmpty()) {
-        m.addAttribute(MailConstants.E_FRAG, fragment, Element.Disposition.CONTENT);
+        messageElement.addAttribute(MailConstants.E_FRAG, fragment, Element.Disposition.CONTENT);
       }
 
-      addEmails(m, Mime.parseAddressHeader(mm, "From"), EmailType.FROM);
-      addEmails(m, Mime.parseAddressHeader(mm, "Sender"), EmailType.SENDER);
-      addEmails(m, Mime.parseAddressHeader(mm, "Reply-To"), EmailType.REPLY_TO);
-      addEmails(m, Mime.parseAddressHeader(mm, "To"), EmailType.TO);
-      addEmails(m, Mime.parseAddressHeader(mm, "Cc"), EmailType.CC);
-      addEmails(m, Mime.parseAddressHeader(mm, "Bcc"), EmailType.BCC);
+      addEmails(messageElement, Mime.parseAddressHeader(mimeMessage, "From"), EmailType.FROM);
+      addEmails(messageElement, Mime.parseAddressHeader(mimeMessage, "Sender"), EmailType.SENDER);
       addEmails(
-          m,
-          Mime.parseAddressHeader(mm.getHeader("Resent-From", null), false),
+          messageElement, Mime.parseAddressHeader(mimeMessage, "Reply-To"), EmailType.REPLY_TO);
+      addEmails(messageElement, Mime.parseAddressHeader(mimeMessage, "To"), EmailType.TO);
+      addEmails(messageElement, Mime.parseAddressHeader(mimeMessage, "Cc"), EmailType.CC);
+      addEmails(messageElement, Mime.parseAddressHeader(mimeMessage, "Bcc"), EmailType.BCC);
+      addEmails(
+          messageElement,
+          Mime.parseAddressHeader(mimeMessage.getHeader("Resent-From", null), false),
           EmailType.RESENT_FROM);
-      addEmails(m, Mime.parseAddressHeader(mm, "Disposition-Notification-To"), EmailType.READ_RECEIPT);
+      addEmails(
+          messageElement,
+          Mime.parseAddressHeader(mimeMessage, "Disposition-Notification-To"),
+          EmailType.READ_RECEIPT);
 
       String calIntendedFor = msg.getCalendarIntendedFor();
-      m.addAttribute(MailConstants.A_CAL_INTENDED_FOR, calIntendedFor);
+      messageElement.addAttribute(MailConstants.A_CAL_INTENDED_FOR, calIntendedFor);
 
-      String subject = Mime.getSubject(mm);
+      String subject = Mime.getSubject(mimeMessage);
       if (subject != null) {
-        m.addAttribute(
+        messageElement.addAttribute(
             MailConstants.E_SUBJECT,
             StringUtil.stripControlCharacters(subject),
             Element.Disposition.CONTENT);
       }
 
-      String messageID = mm.getMessageID();
+      String messageID = mimeMessage.getMessageID();
       if (messageID != null && !messageID.trim().isEmpty()) {
-        m.addAttribute(
+        messageElement.addAttribute(
             MailConstants.E_MSG_ID_HDR,
             StringUtil.stripControlCharacters(messageID),
             Element.Disposition.CONTENT);
@@ -1867,64 +1870,65 @@ public final class ToXML {
       if (wholeMessage && msg.isDraft()) {
         if (!msg.getDraftOrigId().isEmpty()) {
           ItemId origId = new ItemId(msg.getDraftOrigId(), msg.getMailbox().getAccountId());
-          m.addAttribute(MailConstants.A_ORIG_ID, ifmt.formatItemId(origId));
+          messageElement.addAttribute(MailConstants.A_ORIG_ID, ifmt.formatItemId(origId));
         }
         if (!msg.getDraftReplyType().isEmpty()) {
-          m.addAttribute(MailConstants.A_REPLY_TYPE, msg.getDraftReplyType());
+          messageElement.addAttribute(MailConstants.A_REPLY_TYPE, msg.getDraftReplyType());
         }
         if (!msg.getDraftIdentityId().isEmpty()) {
-          m.addAttribute(MailConstants.A_IDENTITY_ID, msg.getDraftIdentityId());
+          messageElement.addAttribute(MailConstants.A_IDENTITY_ID, msg.getDraftIdentityId());
         }
         if (!msg.getDraftAccountId().isEmpty()) {
-          m.addAttribute(MailConstants.A_FOR_ACCOUNT, msg.getDraftAccountId());
+          messageElement.addAttribute(MailConstants.A_FOR_ACCOUNT, msg.getDraftAccountId());
         }
-        String inReplyTo = mm.getHeader("In-Reply-To", null);
+        String inReplyTo = mimeMessage.getHeader("In-Reply-To", null);
         if (inReplyTo != null && !inReplyTo.isEmpty()) {
-          m.addAttribute(
+          messageElement.addAttribute(
               MailConstants.E_IN_REPLY_TO,
               StringUtil.stripControlCharacters(inReplyTo),
               Element.Disposition.CONTENT);
         }
         if (msg.getDraftAutoSendTime() != 0) {
-          m.addAttribute(MailConstants.A_AUTO_SEND_TIME, msg.getDraftAutoSendTime());
+          messageElement.addAttribute(MailConstants.A_AUTO_SEND_TIME, msg.getDraftAutoSendTime());
         }
       }
 
       if (!wholeMessage) {
-        m.addAttribute(MailConstants.A_SIZE, mm.getSize());
+        messageElement.addAttribute(MailConstants.A_SIZE, mimeMessage.getSize());
       }
 
-      Date sent = mm.getSentDate();
+      Date sent = mimeMessage.getSentDate();
       if (sent != null) {
-        m.addAttribute(MailConstants.A_SENT_DATE, sent.getTime());
+        messageElement.addAttribute(MailConstants.A_SENT_DATE, sent.getTime());
       }
 
-      Calendar resent = DateUtil.parseRFC2822DateAsCalendar(mm.getHeader("Resent-Date", null));
+      Calendar resent =
+          DateUtil.parseRFC2822DateAsCalendar(mimeMessage.getHeader("Resent-Date", null));
       if (resent != null) {
-        m.addAttribute(MailConstants.A_RESENT_DATE, resent.getTimeInMillis());
+        messageElement.addAttribute(MailConstants.A_RESENT_DATE, resent.getTimeInMillis());
       }
 
       if (msg.isInvite() && msg.hasCalendarItemInfos()) {
-        encodeInvitesForMessage(m, ifmt, octxt, msg, NOTIFY_FIELDS, neuter);
+        encodeInvitesForMessage(messageElement, ifmt, octxt, msg, NOTIFY_FIELDS, neuter);
       }
 
       if (headers != null) {
         for (String name : headers) {
-          String[] values = mm.getHeader(name);
+          String[] values = mimeMessage.getHeader(name);
           if (values != null) {
             for (int i = 0; i < values.length; i++) {
-              m.addKeyValuePair(
+              messageElement.addKeyValuePair(
                   name, values[i], MailConstants.A_HEADER, MailConstants.A_ATTRIBUTE_NAME);
             }
           }
         }
       }
 
-      List<MPartInfo> parts = Mime.getParts(mm, getDefaultCharset(msg));
+      List<MPartInfo> parts = Mime.getParts(mimeMessage, getDefaultCharset(msg));
       if (parts != null && !parts.isEmpty()) {
         Set<MPartInfo> bodies = Mime.getBody(parts, wantHTML);
         addParts(
-            m,
+            messageElement,
             parts.get(0),
             bodies,
             part,
@@ -1940,7 +1944,7 @@ public final class ToXML {
         ZimbraLog.gal.trace("want expand group info");
         Account authedAcct = octxt.getAuthenticatedUser();
         Account requestedAcct = msg.getMailbox().getAccount();
-        encodeAddrsWithGroupInfo(m, requestedAcct, authedAcct);
+        encodeAddrsWithGroupInfo(messageElement, requestedAcct, authedAcct);
       } else {
         ZimbraLog.gal.trace("do not want expand group info");
       }
@@ -1950,40 +1954,45 @@ public final class ToXML {
       if (SmimeHandler.getHandler() != null) {
         if (!wholeMessage) {
           // check content type of attachment message for encryption flag
-          SmimeHandler.getHandler().updateCryptoFlags(msg, m, mm, mm);
+          SmimeHandler.getHandler()
+              .updateCryptoFlags(msg, messageElement, mimeMessage, mimeMessage);
         } else {
           MimeMessage originalMimeMessage = msg.getMimeMessage(false);
-          SmimeHandler.getHandler().updateCryptoFlags(msg, m, originalMimeMessage, mm);
+          SmimeHandler.getHandler()
+              .updateCryptoFlags(msg, messageElement, originalMimeMessage, mimeMessage);
         }
       }
 
       // if the mime it is signed
-      if (Mime.isMultipartSigned(mm.getContentType()) || Mime.isPKCS7Signed(mm.getContentType())) {
+      if (Mime.isMultipartSigned(mimeMessage.getContentType())
+          || Mime.isPKCS7Signed(mimeMessage.getContentType())) {
         ZimbraLog.mailbox.debug(
             "The message is signed. Forwarding it to SmimeHandler for signature verification.");
         if (SmimeHandler.getHandler() != null) {
-          SmimeHandler.getHandler().verifyMessageSignature(msg, m, mm, octxt);
+          SmimeHandler.getHandler().verifyMessageSignature(msg, messageElement, mimeMessage, octxt);
         }
       } else {
-        // if the original mime message was PKCS7-signed and it was
+        // if the original mime message was PKCS7-signed, and it was
         // decoded and stored in cache as plain mime
-        if ((mm instanceof Mime.FixedMimeMessage) && ((Mime.FixedMimeMessage) mm).isPKCS7Signed()) {
+        if ((mimeMessage instanceof Mime.FixedMimeMessage)
+            && ((Mime.FixedMimeMessage) mimeMessage).isPKCS7Signed()) {
           if (SmimeHandler.getHandler() != null) {
             SmimeHandler.getHandler()
                 .addPKCS7SignedMessageSignatureDetails(
-                    msg.getMailbox().getAccount(), m, mm, octxt.getmResponseProtocol());
+                    msg.getMailbox().getAccount(),
+                    messageElement,
+                    mimeMessage,
+                    octxt.getmResponseProtocol());
           }
         }
       }
-      return m;
-    } catch (IOException ex) {
-      throw ServiceException.FAILURE(ex.getMessage(), ex);
-    } catch (MessagingException ex) {
+      return messageElement;
+    } catch (IOException | MessagingException ex) {
       throw ServiceException.FAILURE(ex.getMessage(), ex);
     } finally {
       // don't leave turds around if we're going to retry
-      if (!success && !bestEffort && m != null) {
-        m.detach();
+      if (!success && !bestEffort && messageElement != null) {
+        messageElement.detach();
       }
     }
   }
