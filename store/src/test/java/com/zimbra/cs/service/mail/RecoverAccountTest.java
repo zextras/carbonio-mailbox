@@ -22,6 +22,7 @@ import com.zimbra.soap.type.Channel;
 import java.util.concurrent.TimeUnit;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -38,6 +39,11 @@ class RecoverAccountTest {
   static void setUp() throws Exception {
     MailboxTestUtil.setUp();
     accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance());
+  }
+
+  @AfterAll
+  public static void tearDown() throws Exception {
+    MailboxTestUtil.tearDown();
   }
 
   @Test
