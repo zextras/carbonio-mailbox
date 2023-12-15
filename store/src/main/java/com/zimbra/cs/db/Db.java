@@ -5,17 +5,12 @@
 
 package com.zimbra.cs.db;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import org.apache.commons.dbcp.PoolingDataSource;
-
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.db.DbPool.DbConnection;
-import com.zimbra.cs.mailbox.Mailbox;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * @since Apr 10, 2004
@@ -23,7 +18,7 @@ import com.zimbra.cs.mailbox.Mailbox;
  */
 public abstract class Db {
 
-    public static enum Error {
+    public enum Error {
         DEADLOCK_DETECTED,
         DUPLICATE_ROW,
         FOREIGN_KEY_CHILD_EXISTS,
@@ -37,7 +32,7 @@ public abstract class Db {
         TABLE_FULL;
     }
 
-    public static enum Capability {
+    public enum Capability {
         BITWISE_OPERATIONS,
         BOOLEAN_DATATYPE,
         CASE_SENSITIVE_COMPARISON,
@@ -103,49 +98,6 @@ public abstract class Db {
      * @see DbPool#getPool() */
     abstract DbPool.PoolConfig getPoolConfig();
 
-    /** Callback invoked immediately after the initialization of the
-     *  connection pool.  Permits the DB implementation to iterate over
-     *  the connections or to operate on the pool itself before any
-     *  connections are returned to callers. */
-    @SuppressWarnings("unused")
-    void startup(PoolingDataSource pool, int poolSize) throws SQLException {
-        // default is to do nothing
-    }
-
-    /** Completely shut down the database.  Warning: You may not use the DB
-     *  at all after calling this method!  <i>Currently only applicable to
-     *  derby.</i> */
-    void shutdown() {
-        // default is to do nothing
-    }
-
-    /** Callback invoked immediately after a new connection is created for the pool. */
-    @SuppressWarnings("unused")
-    void postCreate(Connection conn) throws SQLException {
-        // default is to do nothing
-    }
-
-    /** Callback invoked immediately before a connection is fetched from
-     *  the pool and returned to the user. */
-    @SuppressWarnings("unused")
-    void postOpen(DbConnection conn) throws SQLException {
-        // default is to do nothing
-    }
-
-    /**
-     * Called before opening a connection; used to enforce any preconditions the database may require
-     */
-    void preOpen(Integer mboxId) {
-        //default do nothing
-    }
-
-    /**
-     * Called when connection attempt is aborted, so shared resources can be released
-     */
-    void abortOpen(Integer mboxId) {
-        //default do nothing
-    }
-
     /** optimize and optionally compact a database
      * level 0: analysis tuning only
      * level 1: quick file optimization and analysis
@@ -154,42 +106,10 @@ public abstract class Db {
     @SuppressWarnings("unused")
     public void optimize(DbConnection conn, String name, int level) throws ServiceException {}
 
-    /** Indicates that the connection will be accessing the given Mailbox's
-     *  database in the scope of the current transaction.  Must be called
-     *  <em>before</em> any SQL commands are executed in the transaction. */
-    public static void registerDatabaseInterest(DbConnection conn, Mailbox mbox) throws ServiceException {
-        try {
-            getInstance().registerDatabaseInterest(conn, DbMailbox.getDatabaseName(mbox));
-        } catch (SQLException e) {
-            throw ServiceException.FAILURE("error registering interest in database " + DbMailbox.getDatabaseName(mbox), e);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    void registerDatabaseInterest(DbConnection conn, String dbname) throws SQLException, ServiceException {
-        // default is to do nothing
-    }
-
-    /** Callback invoked immediately before a connection is returned to the
-     *  pool by the user.  Note that <tt>COMMIT</tt>/<tt>ROLLBACK</tt> must
-     *  already have been called before this method is invoked. */
-    @SuppressWarnings("unused")
-    void preClose(DbConnection conn) throws SQLException {
-        // default is to do nothing
-    }
-
 
     /** Returns <tt>true</tt> if the database with the given name exists. */
     public abstract boolean databaseExists(DbConnection conn, String dbname)
     throws ServiceException;
-
-    /** Callback executed immediately before creating a user database. */
-    void precreateDatabase(String dbname)  { }
-
-    void deleteDatabaseFile(DbConnection conn, String dbname) {
-        // not supported by default
-        throw new UnsupportedOperationException("DB is not file-per-database");
-    }
 
     /** Generates the correct SQL to direct the current database engine to use
      *  a particular index to perform a SELECT query.  This string should come
@@ -223,18 +143,6 @@ public abstract class Db {
         return getInstance().getInClauseBatchSize();
     }
 
-    /** Generates a SELECT expression representing a BOOLEAN.  For databases
-     *  that don't support a BOOLEAN datatype, returns an appropriate CASE
-     *  clause that evaluates to 1 when the given BOOLEAN clause is true and
-     *  0 when it's false. */
-    static String selectBOOLEAN(String clause) {
-        if (supports(Capability.BOOLEAN_DATATYPE)) {
-            return clause;
-        } else {
-            return "CASE WHEN " + clause + " THEN 1 ELSE 0 END";
-        }
-    }
-
     /** Generates a WHERE-type clause that evaluates to true when the given
      *  column equals a string later specified by <tt>stmt.setString()</tt>
      *  under a case-insensitive comparison.  Note that the caller *MUST NOT*
@@ -245,19 +153,6 @@ public abstract class Db {
             return "UPPER(" + column + ") = UPPER(?)";
         } else {
             return column + " = ?";
-        }
-    }
-
-    /** Generates a WHERE-type clause that evaluates to true when the given
-     *  column is a case-insensitive match to a SQL pattern string later
-     *  specified by <tt>stmt.setString()</tt> under a  comparison.  Note that
-     *  the caller *MUST NOT* pass an upcased version of the comparison string in
-     *  the subsequent call to <tt>stmt.setString()</tt>. */
-    static String likeSTRING(String column) {
-        if (supports(Capability.CASE_SENSITIVE_COMPARISON)) {
-            return "UPPER(" + column + ") LIKE UPPER(?)";
-        } else {
-            return column + " LIKE ?";
         }
     }
 
