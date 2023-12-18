@@ -197,11 +197,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>yuicompressor</artifactId>
-      <groupId>com.yahoo.platform.yui</groupId>
-    </dependency>
-
-    <dependency>
       <artifactId>junixsocket-common</artifactId>
       <groupId>com.kohlschutter.junixsocket</groupId>
     </dependency>
