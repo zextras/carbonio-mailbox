@@ -15,7 +15,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <description>This project includes dependencies under WEB-INF/lib according to old Ant + Ivy
-    build. These are dependencies required only at runtime, as some services are managed by Apache CXF.
+    build. These are dependencies required only at runtime, but how/by who is a mystery.
   </description>
   <artifactId>store-extra-runtime-dependencies</artifactId>
   <packaging>pom</packaging>

@@ -709,10 +709,6 @@
       <artifactId>zm-charset</artifactId>
       <version>22.5.0</version>
     </dependency>
-    <dependency>
-      <groupId>zimbra</groupId>
-      <artifactId>zm-ews-stub</artifactId>
-    </dependency>
   </dependencies>
 
   <build>

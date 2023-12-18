@@ -71,11 +71,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>zm-ews-stub</artifactId>
-      <groupId>zimbra</groupId>
-    </dependency>
-
-    <dependency>
       <artifactId>jjwt</artifactId>
       <groupId>io.jsonwebtoken</groupId>
     </dependency>
