@@ -137,7 +137,7 @@ public final class MilterServer extends NioServer implements Server {
             } catch (Throwable t) {
                 // in case we're running on an os that doesn't have a HUP. Need to make sure
                 // milter will still start
-                ZimbraLog.milter.error("Unabled to register signal handler CONT/19 and script refresh will not work", t);
+                ZimbraLog.milter.error("Unable to register signal handler CONT/19 and script refresh will not work", t);
             }
         }
     }
