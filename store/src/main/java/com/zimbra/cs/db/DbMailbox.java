@@ -236,7 +236,6 @@ public final class DbMailbox {
       stmt = null;
 
       if (DebugConfig.disableMailboxGroups) {
-        Db.getInstance().registerDatabaseInterest(conn, getDatabaseName(groupId));
 
         if (!DebugConfig.externalMailboxDirectory) {
           // then create the primary lookup row in ZIMBRA.MAILBOX
@@ -338,11 +337,8 @@ public final class DbMailbox {
         return;
       }
 
-      Db.getInstance().precreateDatabase(dbname);
-
       // create the new database
       ZimbraLog.mailbox.info("Creating database " + dbname);
-      Db.getInstance().registerDatabaseInterest(conn, dbname);
 
       String template = new String(ByteUtil.getContent(file));
       Map<String, String> vars = new HashMap<String, String>();
@@ -399,14 +395,11 @@ public final class DbMailbox {
         "clearing contents of mailbox " + mailboxId + ", group " + mbox.getSchemaGroupId());
 
     if (DebugConfig.disableMailboxGroups && Db.supports(Db.Capability.FILE_PER_DATABASE)) {
-      Db.getInstance().deleteDatabaseFile(conn, getDatabaseName(mbox));
       return;
     }
 
     if (conn == null) {
       conn = mbox.getOperationConnection();
-    } else {
-      Db.registerDatabaseInterest(conn, mbox);
     }
 
     try {
@@ -896,8 +889,6 @@ public final class DbMailbox {
         }
       } else {
         for (int mailboxId : mailboxIds) {
-          // note that if groups are disabled, mailboxId == groupId
-          Db.getInstance().registerDatabaseInterest(conn, getDatabaseName(mailboxId));
 
           stmt =
               conn.prepareStatement(
@@ -972,9 +963,6 @@ public final class DbMailbox {
     PreparedStatement stmt = null;
     ResultSet rs = null;
     try {
-      if (DebugConfig.disableMailboxGroups) {
-        Db.getInstance().registerDatabaseInterest(conn, getDatabaseName(mailboxId));
-      }
 
       // note that if groups are disabled, mailboxId == groupId
       stmt =
@@ -1328,7 +1316,6 @@ public final class DbMailbox {
 
         int[] mailboxIds = MailboxManager.getInstance().getMailboxIds();
         for (int mailboxId : mailboxIds) {
-          Db.getInstance().registerDatabaseInterest(conn, getDatabaseName(mailboxId));
 
           stmt =
               conn.prepareStatement(
@@ -1356,18 +1343,6 @@ public final class DbMailbox {
     }
 
     return results;
-  }
-
-  public static void optimize(DbConnection conn, Mailbox mbox, int level) throws ServiceException {
-    assert (mbox.lock.isWriteLockedByCurrentThread());
-
-    String name = getDatabaseName(mbox);
-
-    try {
-      Db.getInstance().optimize(conn, name, level);
-    } catch (Exception e) {
-      throw ServiceException.FAILURE("optimizing mailbox db " + name, e);
-    }
   }
 
   private static void readMailboxRawData(List<Mailbox.MailboxData> results, ResultSet rs)

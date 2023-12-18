@@ -54,7 +54,6 @@ public class ZimbraConnectionFactory extends DriverManagerConnectionFactory {
     @Override
     public Connection createConnection() throws SQLException {
         Connection conn = super.createConnection();
-        Db.getInstance().postCreate(conn);
         return new DebugConnection(conn);
     }
 }
