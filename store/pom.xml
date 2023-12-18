@@ -839,9 +839,6 @@
             <resource>
               <directory>${config.dir}</directory>
               <targetPath>WEB-INF/classes</targetPath>
-              <includes>
-                <include>**/cxf.xml</include>
-              </includes>
               <excludes>
                 <exclude>**/web*</exclude>
               </excludes>
@@ -892,7 +889,6 @@
     <war.web.xml>${config.dir}/web.xml.production</war.web.xml>
     <!--TODO: This file is not in present-->
     <!--    <war.classes.sieveConfig>${config.dir}/sieveConfig.xml</war.classes.sieveConfig>-->
-    <war.classes.cxf>${config.dir}/cxf.xml</war.classes.cxf>
     <warfile.name>service</warfile.name>
     <maven-exec-plugin.version>3.1.0</maven-exec-plugin.version>
     <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>

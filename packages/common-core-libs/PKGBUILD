@@ -62,8 +62,6 @@ package() {
   install -D carbonio-jetty-libs/target/dependencies/curator-recipes-5.5.0.jar \
     "${pkgdir}/opt/zextras/lib/jars/curator-recipes-5.5.0.jar"
 
-  install -D carbonio-jetty-libs/target/dependencies/cxf-core-3.3.4.jar \
-    "${pkgdir}/opt/zextras/lib/jars/cxf-core-3.3.4.jar"
   install -D carbonio-jetty-libs/target/dependencies/dom4j-2.1.4.jar \
     "${pkgdir}/opt/zextras/lib/jars/dom4j-2.1.4.jar"
   install -D carbonio-jetty-libs/target/dependencies/freemarker-2.3.19.jar \
