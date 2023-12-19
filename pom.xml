@@ -791,6 +791,11 @@
         <artifactId>mariadb-java-client</artifactId>
         <version>${mariadb-java-client.version}</version>
       </dependency>
+      <dependency>
+        <groupId>zimbra</groupId>
+        <artifactId>zm-charset</artifactId>
+        <version>22.5.0</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

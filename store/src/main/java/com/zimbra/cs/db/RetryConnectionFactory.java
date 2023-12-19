@@ -27,7 +27,6 @@ public class RetryConnectionFactory extends DriverManagerConnectionFactory {
             @Override
             public ExecuteResult<Connection> execute() throws SQLException {
                 Connection conn = superCreateConnection();
-                Db.getInstance().postCreate(conn);
                 return new ExecuteResult<Connection>(new RetryConnection(conn));
             }
 
