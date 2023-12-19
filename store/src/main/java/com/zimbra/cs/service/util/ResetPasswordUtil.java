@@ -31,8 +31,7 @@ public class ResetPasswordUtil {
             Map<String, String> codeMap = JWEUtil.getDecodedJWE(account.getResetPasswordRecoveryCode());
             if (codeMap != null && StringUtils.isNotEmpty(codeMap.get(CodeConstants.SUSPENSION_TIME.toString()))) {
                 long suspensionTime = Long.parseLong(codeMap.get(CodeConstants.SUSPENSION_TIME.toString()));
-                Date now = new Date();
-                if (suspensionTime < now.getTime()) {
+                if (suspensionTime < new Date().getTime()) {
                     account.setFeatureResetPasswordStatus(FeatureResetPasswordStatus.enabled);
                     account.unsetResetPasswordRecoveryCode();
                 } else {
