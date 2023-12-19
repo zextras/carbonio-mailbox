@@ -542,31 +542,6 @@
         <version>${jython.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-expression</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-core</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-context</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-beans</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-aop</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.apache.ws.xmlschema</groupId>
         <artifactId>xmlschema-core</artifactId>
         <version>2.0.3</version>
@@ -823,7 +798,6 @@
     <bouncycastle.version>1.60</bouncycastle.version>
     <asm.version>8.0.1</asm.version>
     <guava.version>28.1-jre</guava.version>
-    <spring.version>5.1.10.RELEASE</spring.version>
     <jython.version>2.5.2</jython.version>
     <nekohtml.version>1.9.22</nekohtml.version>
     <log4j.version>2.20.0</log4j.version>
