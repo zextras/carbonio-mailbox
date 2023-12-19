@@ -62,8 +62,6 @@ package() {
   install -D carbonio-jetty-libs/target/dependencies/curator-recipes-5.5.0.jar \
     "${pkgdir}/opt/zextras/lib/jars/curator-recipes-5.5.0.jar"
 
-  install -D carbonio-jetty-libs/target/dependencies/cxf-core-3.3.4.jar \
-    "${pkgdir}/opt/zextras/lib/jars/cxf-core-3.3.4.jar"
   install -D carbonio-jetty-libs/target/dependencies/dom4j-2.1.4.jar \
     "${pkgdir}/opt/zextras/lib/jars/dom4j-2.1.4.jar"
   install -D carbonio-jetty-libs/target/dependencies/freemarker-2.3.19.jar \
@@ -220,8 +218,6 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/jedis-2.9.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/commons-pool2-2.4.2.jar \
     "${pkgdir}/opt/zextras/lib/jars/commons-pool2-2.4.2.jar"
-  install -D carbonio-jetty-libs/target/dependencies/sqlite-jdbc-3.7.15-M1.jar \
-    "${pkgdir}/opt/zextras/lib/jars/sqlite-jdbc-3.7.15-M1.jar"
   install -D carbonio-jetty-libs/target/dependencies/stax-ex-1.8.1.jar \
     "${pkgdir}/opt/zextras/lib/jars/stax-ex-1.8.1.jar"
   install -D carbonio-jetty-libs/target/dependencies/stax2-api-3.1.1.jar \
@@ -240,8 +236,6 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/xercesImpl-2.9.1-patch-01.jar"
   install -D carbonio-jetty-libs/target/dependencies/xmlschema-core-2.0.3.jar \
     "${pkgdir}/opt/zextras/lib/jars/xmlschema-core-2.0.3.jar"
-  install -D carbonio-jetty-libs/target/dependencies/zm-ews-stub-2.0.jar \
-    "${pkgdir}/opt/zextras/lib/jars/zm-ews-stub-2.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/ehcache-3.1.2.jar \
     "${pkgdir}/opt/zextras/lib/jars/ehcache-3.1.2.jar"
   install -D carbonio-jetty-libs/target/dependencies/zm-charset*.jar \

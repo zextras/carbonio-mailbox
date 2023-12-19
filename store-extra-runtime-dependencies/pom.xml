@@ -15,7 +15,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <description>This project includes dependencies under WEB-INF/lib according to old Ant + Ivy
-    build. These are dependencies required only at runtime, as some services are managed by Apache CXF.
+    build. These are dependencies required only at runtime, but how/by who is a mystery.
   </description>
   <artifactId>store-extra-runtime-dependencies</artifactId>
   <packaging>pom</packaging>
@@ -25,9 +25,6 @@
     <maven.compiler.target>11</maven.compiler.target>
     <config.dir>${project.basedir}/conf</config.dir>
     <war.web.xml>${config.dir}/web.xml.production</war.web.xml>
-    <!--TODO: This file is not in present-->
-    <!--    <war.classes.sieveConfig>${config.dir}/sieveConfig.xml</war.classes.sieveConfig>-->
-    <war.classes.cxf>${config.dir}/cxf.xml</war.classes.cxf>
     <warfile.name>service</warfile.name>
   </properties>
   <!-- Dependencies provided by no one (but who requires them on installation?) -->
@@ -67,34 +64,6 @@
     <dependency>
       <groupId>org.apache.ws.xmlschema</groupId>
       <artifactId>xmlschema-core</artifactId>
-    </dependency>
-    <dependency>
-      <artifactId>cxf-core</artifactId>
-      <groupId>org.apache.cxf</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>cxf-rt-bindings-soap</artifactId>
-      <groupId>org.apache.cxf</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>cxf-rt-frontend-jaxws</artifactId>
-      <groupId>org.apache.cxf</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>cxf-rt-transports-http</artifactId>
-      <groupId>org.apache.cxf</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>cxf-rt-frontend-simple</artifactId>
-      <groupId>org.apache.cxf</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>cxf-rt-databinding-jaxb</artifactId>
-      <groupId>org.apache.cxf</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>cxf-rt-wsdl</artifactId>
-      <groupId>org.apache.cxf</groupId>
     </dependency>
     <dependency>
       <artifactId>stax2-api</artifactId>

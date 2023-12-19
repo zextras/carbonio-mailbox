@@ -430,28 +430,6 @@
       <artifactId>curator-recipes</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-core</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.transaction</groupId>
-          <artifactId>jta</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-bindings-soap</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-frontend-jaxws</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-transports-http</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.helix</groupId>
       <artifactId>helix-core</artifactId>
       <version>0.6.1-incubating</version>
@@ -724,10 +702,6 @@
     <dependency>
       <groupId>zimbra</groupId>
       <artifactId>zm-charset</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>zimbra</groupId>
-      <artifactId>zm-ews-stub</artifactId>
     </dependency>
   </dependencies>
 

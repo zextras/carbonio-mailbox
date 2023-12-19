@@ -572,46 +572,6 @@
         <version>2.0.3</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.cxf</groupId>
-        <artifactId>cxf-core</artifactId>
-        <version>${cxf.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.cxf</groupId>
-        <artifactId>cxf-rt-bindings-soap</artifactId>
-        <version>${cxf.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.cxf</groupId>
-        <artifactId>cxf-rt-frontend-jaxws</artifactId>
-        <version>${cxf.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.cxf</groupId>
-        <artifactId>cxf-rt-transports-http</artifactId>
-        <version>${cxf.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.cxf</groupId>
-        <artifactId>cxf-rt-frontend-simple</artifactId>
-        <version>${cxf.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.cxf</groupId>
-        <artifactId>cxf-rt-databinding-jaxb</artifactId>
-        <version>${cxf.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.cxf</groupId>
-        <artifactId>cxf-rt-wsdl</artifactId>
-        <version>${cxf.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>zimbra</groupId>
-        <artifactId>zm-ews-stub</artifactId>
-        <version>2.0</version>
-      </dependency>
-      <dependency>
         <groupId>javax.ws.rs</groupId>
         <artifactId>javax.ws.rs-api</artifactId>
         <version>2.0-m10</version>
@@ -865,7 +825,6 @@
     <guava.version>28.1-jre</guava.version>
     <spring.version>5.1.10.RELEASE</spring.version>
     <jython.version>2.5.2</jython.version>
-    <cxf.version>3.3.4</cxf.version>
     <nekohtml.version>1.9.22</nekohtml.version>
     <log4j.version>2.20.0</log4j.version>
     <dom4j.version>2.1.4</dom4j.version>
