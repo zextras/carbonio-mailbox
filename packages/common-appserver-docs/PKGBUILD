@@ -127,8 +127,6 @@ package() {
     "${pkgdir}/opt/zextras/documentation/soap-context-extension.txt"
   install -D "store/docs/soap-im.txt" \
     "${pkgdir}/opt/zextras/documentation/soap-im.txt"
-  install -D "store/docs/soap-mobile.txt" \
-    "${pkgdir}/opt/zextras/documentation/soap-mobile.txt"
   install -D "store/docs/soap-right.txt" \
     "${pkgdir}/opt/zextras/documentation/soap-right.txt"
   install -D "store/docs/soap-waitset.txt" \
