@@ -3786,7 +3786,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 </attr>
 
 <attr id="715" name="zimbraDomainFeatureMaxAccounts" type="string" max="256" cardinality="multi" optionalIn="domain" since="5.0.10">
-  <desc>maximum number of accounts allowed to have specified features in a domain </desc>
+  <desc>maximum number of accounts allowed to have specified features in a domain expected format is {zimbra-feature-attribute-name:max-account}</desc>
 </attr>
 
 <attr id="716" name="zimbraDataSourceType" type="string" max="256" cardinality="single" optionalIn="dataSource" since="5.0.10" callback="DataSourceCallback">
