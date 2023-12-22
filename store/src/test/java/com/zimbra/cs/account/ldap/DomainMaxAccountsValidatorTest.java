@@ -31,7 +31,7 @@ class DomainMaxAccountsValidatorTest {
   }
 
   @Test
-  void should_return_without_failing_when_not_expected_action() throws ServiceException {
+  void should_return_without_failing_when_not_expected_action() {
     final Validators.DomainMaxAccountsValidator validator =
         new Validators.DomainMaxAccountsValidator();
 
@@ -39,8 +39,7 @@ class DomainMaxAccountsValidatorTest {
   }
 
   @Test
-  void should_return_without_failing_when_no_condition_arguments_are_passed()
-      throws ServiceException {
+  void should_return_without_failing_when_no_condition_arguments_are_passed() {
     final Validators.DomainMaxAccountsValidator validator =
         new Validators.DomainMaxAccountsValidator();
 
@@ -71,7 +70,7 @@ class DomainMaxAccountsValidatorTest {
   }
 
   @Test
-  void should_return_without_failing_when_email_null() throws ServiceException {
+  void should_return_without_failing_when_email_null() {
     final Validators.DomainMaxAccountsValidator validator =
         new Validators.DomainMaxAccountsValidator();
     final Object[] conditionArguments =
@@ -86,7 +85,7 @@ class DomainMaxAccountsValidatorTest {
   }
 
   @Test
-  void should_return_without_failing_if_is_system_property() throws ServiceException {
+  void should_return_without_failing_if_is_system_property() {
     final Validators.DomainMaxAccountsValidator validator =
         new Validators.DomainMaxAccountsValidator();
     final Object[] conditionArguments =
@@ -103,7 +102,7 @@ class DomainMaxAccountsValidatorTest {
   }
 
   @Test
-  void should_return_without_failing_if_is_external_account() throws ServiceException {
+  void should_return_without_failing_if_is_external_account() {
     final Validators.DomainMaxAccountsValidator validator =
         new Validators.DomainMaxAccountsValidator();
     final Object[] conditionArguments =
@@ -118,7 +117,7 @@ class DomainMaxAccountsValidatorTest {
   }
 
   @Test
-  void should_return_without_failing_if_email_without_domain_name() throws ServiceException {
+  void should_return_without_failing_if_email_without_domain_name() {
     final Validators.DomainMaxAccountsValidator validator =
         new Validators.DomainMaxAccountsValidator();
     final Account account = Mockito.mock(Account.class);
@@ -131,7 +130,7 @@ class DomainMaxAccountsValidatorTest {
   }
 
   @Test
-  void should_return_without_failing_if_domain_does_not_exist() throws ServiceException {
+  void should_return_without_failing_if_domain_does_not_exist() {
     final Validators.DomainMaxAccountsValidator validator =
         new Validators.DomainMaxAccountsValidator();
 
