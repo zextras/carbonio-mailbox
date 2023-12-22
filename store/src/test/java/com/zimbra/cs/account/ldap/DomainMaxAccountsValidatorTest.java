@@ -190,7 +190,7 @@ class DomainMaxAccountsValidatorTest {
         conditionArguments));
   }
 
-  // validate limits for action create
+  // create account action
   @Test
   void should_throw_if_reaches_feature_max_accounts_limit_when_action_create() throws ServiceException {
     final Validators.DomainMaxAccountsValidator validator =
@@ -282,6 +282,97 @@ class DomainMaxAccountsValidatorTest {
 
 
   // rename account action
+  @Test
+  void should_throw_if_reaches_feature_max_accounts_limit_when_action_rename() throws ServiceException {
+    final Validators.DomainMaxAccountsValidator validator =
+        new Validators.DomainMaxAccountsValidator();
+
+    final Domain domain =
+        Provisioning.getInstance().getDomain(DomainBy.name, MailboxTestUtil.DEFAULT_DOMAIN, false);
+    domain.setDomainFeatureMaxAccounts(new String[] {"zimbraFeatureChatEnabled:0"});
+
+    final Object[] conditionArguments =
+        new Object[] {String.format("user@%s", MailboxTestUtil.DEFAULT_DOMAIN), Map.of("zimbraFeatureChatEnabled", Boolean.TRUE)};
+
+
+    validator.validate(
+        Provisioning.getInstance(),
+        ProvisioningValidator.RENAME_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE,
+        conditionArguments);
+  }
+
+  @Test
+  @DisplayName("Rename: cosId is set on account level")
+  void should_throw_if_reaches_cos_max_accounts_limit_when_action_rename() throws ServiceException {
+    final Validators.DomainMaxAccountsValidator validator =
+        new Validators.DomainMaxAccountsValidator();
+
+    final String cosId = Provisioning.getInstance().getCosByName(Provisioning.DEFAULT_COS_NAME).getId();
+
+    final Domain domain =
+        Provisioning.getInstance().getDomain(DomainBy.name, MailboxTestUtil.DEFAULT_DOMAIN, false);
+    domain.setDomainDefaultCOSId(cosId);
+    domain.setDomainCOSMaxAccounts(new String[] {cosId + ":0"});
+
+    final Object[] conditionArguments =
+        new Object[] {String.format("user@%s", MailboxTestUtil.DEFAULT_DOMAIN), Map.of("zimbraCOSId", cosId)};
+
+    final AccountServiceException accountServiceException = Assertions.assertThrows(
+        AccountServiceException.class,
+        () ->
+            validator.validate(
+                Provisioning.getInstance(),
+                ProvisioningValidator.RENAME_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE,
+                conditionArguments));
+    Assertions.assertEquals("number of accounts reached the limit: domain=test.com[cos=e00428a1-0c00-11d9-836a-000d93afea2a,count=0,limit=0]", accountServiceException.getMessage());
+  }
+
+  @DisplayName("Rename: cosId is set on account level")
+  @Test
+  void should_pass_without_failing_if_cos_max_accounts_limit_not_reached_when_action_rename() throws ServiceException {
+    final Validators.DomainMaxAccountsValidator validator =
+        new Validators.DomainMaxAccountsValidator();
+
+    final String cosId = Provisioning.getInstance().getCosByName(Provisioning.DEFAULT_COS_NAME).getId();
+
+    final Domain domain =
+        Provisioning.getInstance().getDomain(DomainBy.name, MailboxTestUtil.DEFAULT_DOMAIN, false);
+    domain.setDomainDefaultCOSId(cosId);
+    domain.setDomainCOSMaxAccounts(new String[] {cosId + ":1"});
+
+    final Object[] conditionArguments =
+        new Object[] {String.format("user@%s", MailboxTestUtil.DEFAULT_DOMAIN), Map.of("zimbraCOSId", cosId)};
+
+    Assertions.assertDoesNotThrow(() ->
+        validator.validate(
+            Provisioning.getInstance(),
+            ProvisioningValidator.CREATE_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE,
+            conditionArguments));
+  }
+
+  @DisplayName("Rename: cosId is not set on account level")
+  @Test
+  void should_pass_without_failing_if_user_cosId_not_set_when_action_rename() throws ServiceException {
+    final Validators.DomainMaxAccountsValidator validator =
+        new Validators.DomainMaxAccountsValidator();
+
+    final String cosId = Provisioning.getInstance().getCosByName(Provisioning.DEFAULT_COS_NAME).getId();
+
+    final Domain domain =
+        Provisioning.getInstance().getDomain(DomainBy.name, MailboxTestUtil.DEFAULT_DOMAIN, false);
+    domain.setDomainDefaultCOSId(cosId);
+    domain.setDomainCOSMaxAccounts(new String[] {cosId + ":1"});
+
+    final Object[] conditionArguments =
+        new Object[] {String.format("user@%s", MailboxTestUtil.DEFAULT_DOMAIN), Map.of()};
+
+    Assertions.assertDoesNotThrow(() ->
+        validator.validate(
+            Provisioning.getInstance(),
+            ProvisioningValidator.RENAME_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE,
+            conditionArguments));
+  }
+
   @Test
   @DisplayName("Test passing when 3 args and action rename account")
   void should_pass_without_failing_if_Domain_COS_Max_Accounts_set() throws ServiceException {
