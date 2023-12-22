@@ -1,6 +1,6 @@
 # Carbonio Mailbox
 
-![Contributors](https://img.shields.io/github/contributors/zextras/carbonio-mailbox "Contributors") ![Activity](https://img.shields.io/github/commit-activity/m/zextras/carbonio-mailbox "Activity") ![License](https://img.shields.io/badge/license-AGPL%203-green
+![Contributors](https://img.shields.io/github/contributors/zextras/carbonio-mailbox "Contributors") ![Activity](https://img.shields.io/github/commit-activity/m/zextras/carbonio-mailbox "Activity") ![License](https://img.shields.io/badge/license-GPL%202-green
 "License") ![Project](https://img.shields.io/badge/project-carbonio-informational
 "Project") [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/zextras.svg?style=social&label=Follow%20%40zextras)](https://twitter.com/zextras)
 
@@ -102,5 +102,4 @@ we kindly ask to follow that as well.
 
 ## License(s)
 
-See [COPYING-AGPL-3.0-only](COPYING-AGPL-3.0-only) and [COPYING-GPL-2.0-only](COPYING-GPL-2.0-only) 
-file for detail.
+See [COPYING](COPYING) file for detail.
