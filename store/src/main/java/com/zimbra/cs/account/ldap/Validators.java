@@ -256,7 +256,7 @@ public final class Validators {
       }
 
       Set<String> cosFeatures = getCosFeatures(prov, cosFeatureMap, desiredCosId, defaultCosId);
-      Set<String> desiredFeatures = new HashSet<String>();
+      Set<String> desiredFeatures = new HashSet<>();
       // add all new requested features
       if (attrs != null) {
         for (Map.Entry<String, Object> entry : attrs.entrySet()) {
