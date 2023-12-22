@@ -14,7 +14,6 @@ import com.zimbra.cs.ldap.SearchLdapOptions.SearchLdapVisitor;
 import com.zimbra.cs.ldap.ZLdapFilter;
 import com.zimbra.cs.ldap.ZLdapFilterFactory;
 import com.zimbra.soap.admin.type.CountObjectsType;
-
 import java.util.*;
 
 public final class Validators {
@@ -46,11 +45,11 @@ public final class Validators {
     public void validate(Provisioning prov, String action, Object... args) throws ServiceException {
       if (args.length < 1) return;
       if (!(action.equals(CREATE_ACCOUNT) || action.equals(RENAME_ACCOUNT))
-              || !(args[0] instanceof String)) return;
+          || !(args[0] instanceof String)) return;
 
       if (args.length > 1
-              && args[1] instanceof String[]
-              && Arrays.asList((String[]) args[1]).contains(AttributeClass.OC_zimbraCalendarResource)) {
+          && args[1] instanceof String[]
+          && Arrays.asList((String[]) args[1]).contains(AttributeClass.OC_zimbraCalendarResource)) {
         return; // as in LicenseManager, don't want to count calendar resources
       }
 
@@ -86,23 +85,25 @@ public final class Validators {
         try {
           mLastUserCount = prov.countObjects(CountObjectsType.internalUserAccount, d);
         } catch (ServiceException e) {
-          if (e.getCause() != null && e.getCause().getMessage() != null && e.getCause().getMessage().contains("timeout")) {
+          if (e.getCause() != null
+              && e.getCause().getMessage() != null
+              && e.getCause().getMessage().contains("timeout")) {
             throw ServiceException.FAILURE(
-                    "The directory may not be responding or is responding slowly.  The directory may"
-                            + " need tuning or the LDAP read timeout may need to be raised.  Otherwise,"
-                            + " removing the zimbraDomainMaxAccounts restriction will avoid this check.",
-                    e);
+                "The directory may not be responding or is responding slowly.  The directory may"
+                    + " need tuning or the LDAP read timeout may need to be raised.  Otherwise,"
+                    + " removing the zimbraDomainMaxAccounts restriction will avoid this check.",
+                e);
           } else {
             throw ServiceException.FAILURE(
-                    "Unable to count users for setting zimbraDomainMaxAccounts="
-                            + limit
-                            + " in domain "
-                            + d.getName(),
-                    e);
+                "Unable to count users for setting zimbraDomainMaxAccounts="
+                    + limit
+                    + " in domain "
+                    + d.getName(),
+                e);
           }
         }
         long nextCheck =
-                (maxAccount - mLastUserCount) > NUM_ACCT_THRESHOLD ? LDAP_CHECK_INTERVAL : 0;
+            (maxAccount - mLastUserCount) > NUM_ACCT_THRESHOLD ? LDAP_CHECK_INTERVAL : 0;
         setNextCheck(nextCheck);
       }
 
@@ -162,16 +163,20 @@ public final class Validators {
         return;
       }
 
-      if (args.length < 2) return;
+      if (args.length < 2) {
+        return;
+      }
 
-      HashMap<String, Integer> cosCountMap = new HashMap<String, Integer>();
-      HashMap<String, Integer> cosLimitMap = new HashMap<String, Integer>();
-      HashMap<String, Integer> featureCountMap = new HashMap<String, Integer>();
-      HashMap<String, Integer> featureLimitMap = new HashMap<String, Integer>();
-      HashMap<String, Set<String>> cosFeatureMap = new HashMap<String, Set<String>>();
+      HashMap<String, Integer> cosCountMap = new HashMap<>();
+      HashMap<String, Integer> cosLimitMap = new HashMap<>();
+      HashMap<String, Integer> featureCountMap = new HashMap<>();
+      HashMap<String, Integer> featureLimitMap = new HashMap<>();
+      HashMap<String, Set<String>> cosFeatureMap = new HashMap<>();
 
       String emailAddress = (String) args[0];
-      if (emailAddress == null) return;
+      if (emailAddress == null) {
+        return;
+      }
 
       @SuppressWarnings("unchecked")
       Map<String, Object> attrs = (Map<String, Object>) args[1];
@@ -183,27 +188,40 @@ public final class Validators {
       }
 
       Account account = null;
-      if (args.length == 3) account = (Account) args[2];
+      if (args.length == 3) {
+        account = (Account) args[2];
+      }
+
       String domainName = null;
       int index = emailAddress.indexOf('@');
-      if (index != -1) domainName = emailAddress.substring(index + 1);
+      if (index != -1) {
+        domainName = emailAddress.substring(index + 1);
+      }
 
-      if (domainName == null) return;
+      if (domainName == null) {
+        return;
+      }
 
       Domain domain = prov.get(Key.DomainBy.name, domainName);
-      if (domain == null) return;
+      if (domain == null) {
+        return;
+      }
 
       String defaultCosId = domain.getAttr(Provisioning.A_zimbraDomainDefaultCOSId);
       if (defaultCosId == null) {
         Cos defaultCos = prov.get(Key.CosBy.name, Provisioning.DEFAULT_COS_NAME);
-        if (defaultCos != null) defaultCosId = defaultCos.getId();
+        if (defaultCos != null) {
+          defaultCosId = defaultCos.getId();
+        }
       }
 
       Set<String> cosLimit = domain.getMultiAttrSet(Provisioning.A_zimbraDomainCOSMaxAccounts);
       Set<String> featureLimit =
           domain.getMultiAttrSet(Provisioning.A_zimbraDomainFeatureMaxAccounts);
 
-      if (cosLimit.size() == 0 && featureLimit.size() == 0) return;
+      if (cosLimit.isEmpty() && featureLimit.isEmpty()) {
+        return;
+      }
 
       for (String limit : cosLimit) parseLimit(cosLimitMap, limit);
       for (String limit : featureLimit) parseLimit(featureLimitMap, limit);
