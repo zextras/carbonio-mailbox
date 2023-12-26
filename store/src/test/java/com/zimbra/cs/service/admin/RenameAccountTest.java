@@ -3,7 +3,9 @@ package com.zimbra.cs.service.admin;
 import static com.zimbra.common.util.Constants.ERROR_CODE_NO_SUCH_DOMAIN;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
@@ -13,9 +15,10 @@ import java.util.UUID;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -23,13 +26,23 @@ import org.junit.jupiter.api.Test;
 class RenameAccountTest extends SoapTestSuite {
   private static AccountCreator.Factory accountCreatorFactory;
   private static Provisioning provisioning;
+  private Domain targetDomain;
 
   @BeforeAll
-  static void setUp() throws Exception {
+  static void init() {
     provisioning = Provisioning.getInstance();
     accountCreatorFactory = new AccountCreator.Factory(provisioning);
   }
 
+  @BeforeEach
+  void setUp() throws ServiceException {
+    targetDomain = provisioning.createDomain(UUID.randomUUID() + ".com", new HashMap<>());
+  }
+
+  @AfterAll
+  static void tearDown() throws ServiceException {
+    MailboxTestUtil.tearDown();
+  }
 
   @Test
   void shouldRenameAccountByChangingUsername() throws Exception {
@@ -49,7 +62,6 @@ class RenameAccountTest extends SoapTestSuite {
     Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
     final String accountName = UUID.randomUUID().toString();
     Account userAccount = accountCreatorFactory.get().withUsername(accountName).create();
-    final Domain targetDomain = provisioning.createDomain("targetDomain.com", new HashMap<>());
 
     final RenameAccountRequest request =
         new RenameAccountRequest(userAccount.getId(), accountName + "@" + targetDomain.getName());
@@ -76,12 +88,11 @@ class RenameAccountTest extends SoapTestSuite {
   }
 
   @Test
-  @DisplayName("right now throwing an error")
   void shouldRenameAccountWithDomainCOSMaxAccountsSettings() throws Exception {
     final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
     final String accountName = UUID.randomUUID().toString();
     final Account userAccount = accountCreatorFactory.get().withUsername(accountName).create();
-    final Domain targetDomain = provisioning.createDomain("targetDomain.com", new HashMap<>());
+
     targetDomain.setDomainCOSMaxAccounts(new String[] {"default:30"});
 
     final RenameAccountRequest request =
@@ -89,16 +100,15 @@ class RenameAccountTest extends SoapTestSuite {
     final HttpResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, response.getStatusLine().getStatusCode());
+    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
   }
 
   @Test
-  @DisplayName("right now throwing an error")
   void shouldRenameAccountWithDomainFeatureMaxAccountsSettings() throws Exception {
     final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
     final String accountName = UUID.randomUUID().toString();
     final Account userAccount = accountCreatorFactory.get().withUsername(accountName).create();
-    final Domain targetDomain = provisioning.createDomain("targetDomain.com", new HashMap<>());
+
     targetDomain.setDomainFeatureMaxAccounts(new String[] {"zimbraFeatureChatEnabled:30"});
 
     final RenameAccountRequest request =
@@ -106,6 +116,6 @@ class RenameAccountTest extends SoapTestSuite {
     final HttpResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, response.getStatusLine().getStatusCode());
+    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
   }
 }
