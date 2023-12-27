@@ -118,4 +118,42 @@ class RenameAccountTest extends SoapTestSuite {
 
     Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
   }
+
+  @Test
+  void shouldRenameAccountWhenTargetDomainHasDomainDefaultCOSId() throws Exception {
+    final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
+    final String accountName = UUID.randomUUID().toString();
+    final Account userAccount = accountCreatorFactory.get().withUsername(accountName).create();
+
+    final String cosId = provisioning.createCos(UUID.randomUUID().toString(), new HashMap<>()).getId();
+    targetDomain.setDomainDefaultCOSId(cosId);
+
+    final RenameAccountRequest request =
+        new RenameAccountRequest(userAccount.getId(), accountName + "@" + targetDomain.getName());
+    final HttpResponse response =
+        getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
+
+    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+  }
+
+  @Test
+  void shouldRenameAccountWhenTargetDomainHasDifferentCOSThanPrevious() throws Exception {
+    final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
+    final String accountName = UUID.randomUUID().toString();
+    final Account userAccount = accountCreatorFactory.get().withUsername(accountName).create();
+
+    final Domain previousDomain = provisioning.getDomain(userAccount);
+    final String defaultCosId = provisioning.getCosByName(Provisioning.DEFAULT_COS_NAME).getId();
+    previousDomain.setDomainDefaultCOSId(defaultCosId);
+
+    final String cosId = provisioning.createCos(UUID.randomUUID().toString(), new HashMap<>()).getId();
+    targetDomain.setDomainDefaultCOSId(cosId);
+
+    final RenameAccountRequest request =
+        new RenameAccountRequest(userAccount.getId(), accountName + "@" + targetDomain.getName());
+    final HttpResponse response =
+        getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
+
+    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+  }
 }
