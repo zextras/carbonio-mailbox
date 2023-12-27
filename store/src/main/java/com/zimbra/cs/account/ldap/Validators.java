@@ -26,7 +26,7 @@ public final class Validators {
     private static final long NUM_ACCT_THRESHOLD = 5;
 
     private long mNextCheck;
-    private long mLastUserCount; // PFN: this isn't counted per-domain, is it?
+    private long mLastUserCount;
 
     @Override
     public void refresh() {
@@ -143,8 +143,8 @@ public final class Validators {
     // Skip license check if we are restoring a calendar resource
     isSystemResource = attrs.get(Provisioning.A_objectClass);
     if (isSystemResource instanceof String[]) {
-      Set<String> ocs = new HashSet<>(Arrays.asList((String[]) isSystemResource));
-      return ocs.contains(AttributeClass.OC_zimbraCalendarResource);
+      Set<String> objectClasses = new HashSet<>(Arrays.asList((String[]) isSystemResource));
+      return objectClasses.contains(AttributeClass.OC_zimbraCalendarResource);
     }
 
     return false;
@@ -236,8 +236,12 @@ public final class Validators {
         return;
       }
 
-      for (String limit : cosLimit) parseLimit(cosLimitMap, limit);
-      for (String limit : featureLimit) parseLimit(featureLimitMap, limit);
+      for (String limit : cosLimit) {
+        parseLimit(cosLimitMap, limit);
+      }
+      for (String limit : featureLimit) {
+        parseLimit(featureLimitMap, limit);
+      }
 
       // populate count maps with the cos and features we are interested in
       for (Map.Entry<String, Integer> e : cosLimitMap.entrySet()) {
@@ -261,7 +265,7 @@ public final class Validators {
           desiredCosId = defaultCosId;
         }
       } else {
-        // action is modify, so account must not be null
+        // action is modify, but we are not modifying cos, so account must not be null
         if (account != null) {
           desiredCosId = account.getCOS().getId();
         } else {
@@ -284,7 +288,9 @@ public final class Validators {
       // add all features in new cos
       if (cosFeatures != null) {
         for (String feature : cosFeatures) {
-          if (featureLimitMap.containsKey(feature)) desiredFeatures.add(feature);
+          if (featureLimitMap.containsKey(feature)) {
+            desiredFeatures.add(feature);
+          }
         }
       }
       if (ZimbraLog.account.isDebugEnabled()) {
@@ -403,9 +409,11 @@ public final class Validators {
       try {
         max = Integer.parseInt(parts[1]);
       } catch (NumberFormatException e) {
-        // ignore, should log
+        ZimbraLog.account.debug("can not parse limit value for " + parts[1]);
       }
-      if (max < 0) return;
+      if (max < 0) {
+        return;
+      }
       map.put(parts[0], max);
     }
 
@@ -507,7 +515,9 @@ public final class Validators {
     }
 
     private static void incrementCount(Map<String, Integer> map, String key) {
-      if (key == null || !map.containsKey(key)) return; // not something that we care about
+      if (key == null || !map.containsKey(key)) {
+        return;
+      }
       map.put(key, map.get(key) + 1);
     }
 
