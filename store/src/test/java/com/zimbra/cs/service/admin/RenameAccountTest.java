@@ -78,17 +78,19 @@ class RenameAccountTest extends SoapTestSuite {
     final Account userAccount = accountCreatorFactory.get().withUsername(accountName).create();
 
     final RenameAccountRequest request =
-        new RenameAccountRequest(userAccount.getId(), accountName + "@" + UUID.randomUUID() + ".com");
+        new RenameAccountRequest(
+            userAccount.getId(), accountName + "@" + UUID.randomUUID() + ".com");
     final HttpResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, response.getStatusLine().getStatusCode());
+    Assertions.assertEquals(
+        HttpStatus.SC_INTERNAL_SERVER_ERROR, response.getStatusLine().getStatusCode());
     final String responseBody = EntityUtils.toString(response.getEntity());
     Assertions.assertTrue(responseBody.contains(ERROR_CODE_NO_SUCH_DOMAIN));
   }
 
   @Test
-  void shouldRenameAccountWithDomainCOSMaxAccountsSettings() throws Exception {
+  void shouldRenameAccountWhenTargetDomainHasCOSMaxAccountsSettings() throws Exception {
     final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
     final String accountName = UUID.randomUUID().toString();
     final Account userAccount = accountCreatorFactory.get().withUsername(accountName).create();
@@ -104,7 +106,7 @@ class RenameAccountTest extends SoapTestSuite {
   }
 
   @Test
-  void shouldRenameAccountWithDomainFeatureMaxAccountsSettings() throws Exception {
+  void shouldRenameAccountWhenTargetDomainHasFeatureMaxAccountsSettings() throws Exception {
     final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
     final String accountName = UUID.randomUUID().toString();
     final Account userAccount = accountCreatorFactory.get().withUsername(accountName).create();
@@ -120,12 +122,13 @@ class RenameAccountTest extends SoapTestSuite {
   }
 
   @Test
-  void shouldRenameAccountWhenTargetDomainHasDomainDefaultCOSId() throws Exception {
+  void shouldRenameAccountWhenTargetDomainHasCOSIdAndPreviousNot() throws Exception {
     final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
     final String accountName = UUID.randomUUID().toString();
     final Account userAccount = accountCreatorFactory.get().withUsername(accountName).create();
 
-    final String cosId = provisioning.createCos(UUID.randomUUID().toString(), new HashMap<>()).getId();
+    final String cosId =
+        provisioning.createCos(UUID.randomUUID().toString(), new HashMap<>()).getId();
     targetDomain.setDomainDefaultCOSId(cosId);
 
     final RenameAccountRequest request =
@@ -146,7 +149,8 @@ class RenameAccountTest extends SoapTestSuite {
     final String defaultCosId = provisioning.getCosByName(Provisioning.DEFAULT_COS_NAME).getId();
     previousDomain.setDomainDefaultCOSId(defaultCosId);
 
-    final String cosId = provisioning.createCos(UUID.randomUUID().toString(), new HashMap<>()).getId();
+    final String cosId =
+        provisioning.createCos(UUID.randomUUID().toString(), new HashMap<>()).getId();
     targetDomain.setDomainDefaultCOSId(cosId);
 
     final RenameAccountRequest request =
