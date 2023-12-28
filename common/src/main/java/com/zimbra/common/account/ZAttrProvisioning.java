@@ -6298,7 +6298,7 @@ public class ZAttrProvisioning {
 
     /**
      * maximum number of accounts allowed to have specified features in a
-     * domain expected format is {zimbra-feature-attribute-name:max-account}
+     * domain. Expected format is {zimbra-feature-attribute-name:max-account}
      *
      * @since ZCS 5.0.10
      */
