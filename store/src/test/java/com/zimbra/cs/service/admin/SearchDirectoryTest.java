@@ -23,7 +23,7 @@ import java.util.List;
 
 import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
 import static com.zimbra.common.soap.Element.parseXML;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("api")
 class SearchDirectoryTest extends SoapTestSuite {
@@ -71,8 +71,8 @@ class SearchDirectoryTest extends SoapTestSuite {
     SearchDirectoryResponse firstPageResponse = parseSoapResponse(firstPageHttpResponse);
     assertEquals(1, firstPageResponse.getAccounts().size());
     assertEquals(adminAccount.getName(), firstPageResponse.getAccounts().get(0).getName());
-//    assertTrue(firstPageResponse.isMore());
-//    assertEquals(3, firstPageResponse.getSearchTotal());
+    assertEquals(3, firstPageResponse.getSearchTotal());
+    assertTrue(firstPageResponse.isMore());
   }
 
   @Test
@@ -86,8 +86,8 @@ class SearchDirectoryTest extends SoapTestSuite {
     SearchDirectoryResponse secondPageResponse = parseSoapResponse(secondPageHttpResponse);
     assertEquals(1, secondPageResponse.getAccounts().size());
     assertEquals(firstAccount.getName(), secondPageResponse.getAccounts().get(0).getName());
-//    assertTrue(secondPageResponse.isMore());
-//    assertEquals(3, secondPageResponse.getSearchTotal());
+    assertEquals(3, secondPageResponse.getSearchTotal());
+    assertTrue(secondPageResponse.isMore());
   }
 
   @Test
@@ -101,14 +101,9 @@ class SearchDirectoryTest extends SoapTestSuite {
     SearchDirectoryResponse lastPageResponse = parseSoapResponse(lastPageHttpResponse);
     assertEquals(1, lastPageResponse.getAccounts().size());
     assertEquals(secondAccount.getName(), lastPageResponse.getAccounts().get(0).getName());
-//    assertFalse(secondPageResponse.isMore());
-//    assertEquals(3, secondPageResponse.getSearchTotal());
+    assertEquals(3, lastPageResponse.getSearchTotal());
+    assertFalse(lastPageResponse.isMore());
   }
-
-  // TEST CASES:
-  // pagination (more and searchTotal should have the bug)
-  // read some attributes
-  // sorting
 
   private static SearchDirectoryResponse parseSoapResponse(HttpResponse httpResponse) throws IOException, ServiceException {
     final String responseBody = EntityUtils.toString(httpResponse.getEntity());

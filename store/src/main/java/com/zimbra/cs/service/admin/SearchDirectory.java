@@ -178,7 +178,7 @@ public class SearchDirectory extends AdminDocumentHandler {
             accounts = session.searchDirectory(options, offset, rightChecker);
         } else {
             accounts = prov.searchDirectory(options);
-            accounts = rightChecker.getAllowed(accounts, limitMax);
+            accounts = rightChecker.getAllowed(accounts, accounts.size());
         }
 
         if (isCountOnly) {
