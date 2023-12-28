@@ -9,6 +9,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.admin.message.SearchDirectoryRequest;
 import com.zimbra.soap.admin.message.SearchDirectoryResponse;
+import com.zimbra.soap.admin.type.AccountInfo;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
@@ -17,7 +18,10 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 
+import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
 import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -29,23 +33,35 @@ class SearchDirectoryTest extends SoapTestSuite {
   @BeforeAll
   static void setUp() throws Exception {
     provisioning = Provisioning.getInstance();
+    provisioning.createDomain("different.com", new HashMap<>());
     accountCreatorFactory = new AccountCreator.Factory(provisioning);
   }
 
   @Test
-  void todo() throws Exception {
-    Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
-    String domain = adminAccount.getDomainName();
+  void searchAccountsInADomain() throws Exception {
+    Account adminAccount = newAccountOn(DEFAULT_DOMAIN).withUsername("admin.account").asGlobalAdmin().create();
+    Account normalAccount = newAccountOn(DEFAULT_DOMAIN).withUsername("normal.account").create();
+    newAccountOn("different.com").withUsername("different.account").create();
 
     final HttpResponse httpResponse = getSoapClient().newRequest()
         .setCaller(adminAccount)
-        .setSoapBody(searchAccountsByDomain(domain))
+        .setSoapBody(searchAccountsByDomain(DEFAULT_DOMAIN))
         .execute();
 
     assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
     SearchDirectoryResponse response = parseSoapResponse(httpResponse);
-    assertEquals(1, response.getAccounts().size());
+    List<AccountInfo> accounts = response.getAccounts();
+    assertEquals(1 + 1, accounts.size());
+    assertEquals(adminAccount.getId(), accounts.get(0).getId());
+    assertEquals("admin.account@" + DEFAULT_DOMAIN, accounts.get(0).getName());
+    assertEquals(normalAccount.getId(), accounts.get(1).getId());
+    assertEquals("normal.account@" + DEFAULT_DOMAIN, accounts.get(1).getName());
   }
+
+  // TEST CASES:
+  // read some attributes
+  // sorting
+  // pagination (more and searchTotal should have the bug)
 
   private static SearchDirectoryResponse parseSoapResponse(HttpResponse httpResponse) throws IOException, ServiceException {
     final String responseBody = EntityUtils.toString(httpResponse.getEntity());
@@ -57,38 +73,12 @@ class SearchDirectoryTest extends SoapTestSuite {
     SearchDirectoryRequest request = new SearchDirectoryRequest();
     request.setDomain(domain);
     request.setTypes("accounts");
-    request.setAttrs("mail");
+    request.setAttrs("");
     return request;
   }
 
-//  @Test
-//  void shouldRenameAccountByChangingOnlyDomain() throws Exception {
-//    Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
-//    final String accountName = UUID.randomUUID().toString();
-//    Account userAccount = accountCreatorFactory.get().withUsername(accountName).create();
-//    final Domain newDomain = provisioning.createDomain("myDomain.com", new HashMap<>());
-//
-//    RenameAccountRequest request =
-//        new RenameAccountRequest(userAccount.getId(), accountName + "@" + newDomain.getName());
-//    final HttpResponse response =
-//        getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
-//
-//    Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-//  }
-//
-//  @Test
-//  void shouldThrowNoSuchDomainWhenRenamingToNotExistingDomain() throws Exception {
-//    Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
-//    final String accountName = UUID.randomUUID().toString();
-//    Account userAccount = accountCreatorFactory.get().withUsername(accountName).create();
-//
-//    RenameAccountRequest request =
-//        new RenameAccountRequest(userAccount.getId(), accountName + "@" + UUID.randomUUID() + ".com");
-//    final HttpResponse response =
-//        getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
-//
-//    Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, response.getStatusLine().getStatusCode());
-//    final String responseBody = EntityUtils.toString(response.getEntity());
-//    Assertions.assertTrue(responseBody.contains(ERROR_CODE_NO_SUCH_DOMAIN));
-//  }
+  private static AccountCreator newAccountOn(String domain) {
+    return accountCreatorFactory.get().withDomain(domain);
+  }
+
 }
