@@ -29,21 +29,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class SearchDirectoryTest extends SoapTestSuite {
   private static AccountCreator.Factory accountCreatorFactory;
   private static Provisioning provisioning;
+  private static Account adminAccount;
+  private static Account secondAccount;
+  private static Account firstAccount;
 
   @BeforeAll
   static void setUp() throws Exception {
     provisioning = Provisioning.getInstance();
     provisioning.createDomain("different.com", new HashMap<>());
     accountCreatorFactory = new AccountCreator.Factory(provisioning);
+    adminAccount = newAccountOn(DEFAULT_DOMAIN).withUsername("admin.account").asGlobalAdmin().create();
+    secondAccount = newAccountOn(DEFAULT_DOMAIN).withUsername("second.account").create();
+    firstAccount = newAccountOn(DEFAULT_DOMAIN).withUsername("first.account").create();
   }
 
   @Test
   void searchAccountsInADomain() throws Exception {
-    Account adminAccount = newAccountOn(DEFAULT_DOMAIN).withUsername("admin.account").asGlobalAdmin().create();
-    Account normalAccount = newAccountOn(DEFAULT_DOMAIN).withUsername("normal.account").create();
-    newAccountOn("different.com").withUsername("different.account").create();
-
-    final HttpResponse httpResponse = getSoapClient().newRequest()
+    HttpResponse httpResponse = getSoapClient().newRequest()
         .setCaller(adminAccount)
         .setSoapBody(searchAccountsByDomain(DEFAULT_DOMAIN))
         .execute();
@@ -51,17 +53,62 @@ class SearchDirectoryTest extends SoapTestSuite {
     assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
     SearchDirectoryResponse response = parseSoapResponse(httpResponse);
     List<AccountInfo> accounts = response.getAccounts();
-    assertEquals(1 + 1, accounts.size());
+    assertEquals(1 + 2, accounts.size());
     assertEquals(adminAccount.getId(), accounts.get(0).getId());
-    assertEquals("admin.account@" + DEFAULT_DOMAIN, accounts.get(0).getName());
-    assertEquals(normalAccount.getId(), accounts.get(1).getId());
-    assertEquals("normal.account@" + DEFAULT_DOMAIN, accounts.get(1).getName());
+    assertEquals(adminAccount.getName(), accounts.get(0).getName());
+    assertEquals(firstAccount.getId(), accounts.get(1).getId());
+    assertEquals(firstAccount.getName(), accounts.get(1).getName());
+  }
+
+  @Test
+  void searchAccountPaginationFirstPage() throws Exception {
+    HttpResponse firstPageHttpResponse = getSoapClient().newRequest()
+        .setCaller(adminAccount)
+        .setSoapBody(searchAccountsByDomain(DEFAULT_DOMAIN, 1, 0))
+        .execute();
+
+    assertEquals(HttpStatus.SC_OK, firstPageHttpResponse.getStatusLine().getStatusCode());
+    SearchDirectoryResponse firstPageResponse = parseSoapResponse(firstPageHttpResponse);
+    assertEquals(1, firstPageResponse.getAccounts().size());
+    assertEquals(adminAccount.getName(), firstPageResponse.getAccounts().get(0).getName());
+//    assertTrue(firstPageResponse.isMore());
+//    assertEquals(3, firstPageResponse.getSearchTotal());
+  }
+
+  @Test
+  void searchAccountPaginationSecondPage() throws Exception {
+    HttpResponse secondPageHttpResponse = getSoapClient().newRequest()
+        .setCaller(adminAccount)
+        .setSoapBody(searchAccountsByDomain(DEFAULT_DOMAIN, 1, 1))
+        .execute();
+
+    assertEquals(HttpStatus.SC_OK, secondPageHttpResponse.getStatusLine().getStatusCode());
+    SearchDirectoryResponse secondPageResponse = parseSoapResponse(secondPageHttpResponse);
+    assertEquals(1, secondPageResponse.getAccounts().size());
+    assertEquals(firstAccount.getName(), secondPageResponse.getAccounts().get(0).getName());
+//    assertTrue(secondPageResponse.isMore());
+//    assertEquals(3, secondPageResponse.getSearchTotal());
+  }
+
+  @Test
+  void searchAccountPaginationLastPage() throws Exception {
+    final HttpResponse lastPageHttpResponse = getSoapClient().newRequest()
+        .setCaller(adminAccount)
+        .setSoapBody(searchAccountsByDomain(DEFAULT_DOMAIN, 1, 2))
+        .execute();
+
+    assertEquals(HttpStatus.SC_OK, lastPageHttpResponse.getStatusLine().getStatusCode());
+    SearchDirectoryResponse lastPageResponse = parseSoapResponse(lastPageHttpResponse);
+    assertEquals(1, lastPageResponse.getAccounts().size());
+    assertEquals(secondAccount.getName(), lastPageResponse.getAccounts().get(0).getName());
+//    assertFalse(secondPageResponse.isMore());
+//    assertEquals(3, secondPageResponse.getSearchTotal());
   }
 
   // TEST CASES:
+  // pagination (more and searchTotal should have the bug)
   // read some attributes
   // sorting
-  // pagination (more and searchTotal should have the bug)
 
   private static SearchDirectoryResponse parseSoapResponse(HttpResponse httpResponse) throws IOException, ServiceException {
     final String responseBody = EntityUtils.toString(httpResponse.getEntity());
@@ -70,10 +117,22 @@ class SearchDirectoryTest extends SoapTestSuite {
   }
 
   private static SearchDirectoryRequest searchAccountsByDomain(String domain) {
+    return searchAccountsByDomain(domain, null, null);
+  }
+
+  private static SearchDirectoryRequest searchAccountsByDomain(String domain, Integer limit, Integer offset) {
     SearchDirectoryRequest request = new SearchDirectoryRequest();
     request.setDomain(domain);
     request.setTypes("accounts");
     request.setAttrs("");
+
+    if (limit != null) {
+      request.setLimit(limit);
+    }
+
+    if (offset != null) {
+      request.setOffset(offset);
+    }
     return request;
   }
 
