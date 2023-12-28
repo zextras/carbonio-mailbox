@@ -46,8 +46,8 @@ class RenameAccountTest extends SoapTestSuite {
 
   @Test
   void shouldRenameAccountByChangingUsername() throws Exception {
-    Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
-    Account userAccount = accountCreatorFactory.get().create();
+    final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
+    final Account userAccount = accountCreatorFactory.get().create();
 
     final RenameAccountRequest request =
         new RenameAccountRequest(userAccount.getId(), "newName@" + userAccount.getDomainName());
@@ -59,9 +59,9 @@ class RenameAccountTest extends SoapTestSuite {
 
   @Test
   void shouldRenameAccountByChangingOnlyDomain() throws Exception {
-    Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
+    final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
     final String accountName = UUID.randomUUID().toString();
-    Account userAccount = accountCreatorFactory.get().withUsername(accountName).create();
+    final Account userAccount = accountCreatorFactory.get().withUsername(accountName).create();
 
     final RenameAccountRequest request =
         new RenameAccountRequest(userAccount.getId(), accountName + "@" + targetDomain.getName());
