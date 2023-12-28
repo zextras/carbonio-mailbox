@@ -16,13 +16,59 @@ import com.zimbra.cs.ldap.ZLdapFilterFactory;
 import com.zimbra.soap.admin.type.CountObjectsType;
 import java.util.*;
 
+/**
+ * Validators class consists of {@link DomainAccountValidator} and {@link DomainMaxAccountsValidator}.
+ */
 public final class Validators {
 
   private Validators() {}
 
-  // cache the result for 1 min unless the count is within 5 of the limit.
+  private static String getDomainName(String emailAddress) {
+    String domainName = null;
+    int index = emailAddress.indexOf('@');
+    if (index != -1){
+      domainName = emailAddress.substring(index + 1);
+    }
+    return domainName;
+  }
+
+  private static boolean isSystemProperty(Map<String, Object> attrs) {
+    if (attrs == null) {
+      return false;
+    }
+
+    Object isSystemResource = attrs.get(Provisioning.A_zimbraIsSystemResource);
+    if (isSystemResource != null && "true".equalsIgnoreCase(isSystemResource.toString())) {
+      return true; // is system resource, do not check
+    }
+
+    // if we are restoring, the OC array would be empty and
+    // all object classes will be in the attr map.
+    // Skip license check if we are restoring a calendar resource
+    isSystemResource = attrs.get(Provisioning.A_objectClass);
+    if (isSystemResource instanceof String[]) {
+      Set<String> objectClasses = new HashSet<>(Arrays.asList((String[]) isSystemResource));
+      return objectClasses.contains(AttributeClass.OC_zimbraCalendarResource);
+    }
+
+    return false;
+  }
+
+  private static boolean isExternalVirtualAccount(Map<String, Object> attrs) {
+    if (attrs == null) {
+      return false;
+    }
+    Object isExternalVirtualAccount = attrs.get(Provisioning.A_zimbraIsExternalVirtualAccount);
+    return isExternalVirtualAccount != null && "true".equalsIgnoreCase(isExternalVirtualAccount.toString());
+  }
+
+  /**
+   * DomainAccountValidator validates maximum number of accounts allowed in a domain.
+   * Caches the result for 1 min ({@value #LDAP_CHECK_INTERVAL}) unless the count is within
+   * 5 ({@value #NUM_ACCT_THRESHOLD) of the limit.
+   */
   public static class DomainAccountValidator implements Provisioning.ProvisioningValidator {
-    private static final long LDAP_CHECK_INTERVAL = 60 * 1000; // 1 min
+    private static final long LDAP_CHECK_INTERVAL = 60 * 1000;
     private static final long NUM_ACCT_THRESHOLD = 5;
 
     private long mNextCheck;
@@ -41,6 +87,19 @@ public final class Validators {
       return mNextCheck;
     }
 
+    /**
+     * Validates maximum number of accounts allowed in a domain for the actions
+     * {@value #CREATE_ACCOUNT} and {@value #RENAME_ACCOUNT}.
+     *
+     * @param prov {@link Provisioning}
+     * @param action provided action
+     * @param args consists of {@link Provisioning.ProvisioningValidator}, email address,
+     *            String[] additionalObjectClasses, Map<String, Object> origAttrs
+     * @throws ServiceException in case if LDAP is not responding or is responding slowly;
+     * unable to count users for setting zimbraDomainMaxAccounts; the limit of maximum number of
+     * accounts is reached.
+     *
+     */
     @Override
     public void validate(Provisioning prov, String action, Object... args) throws ServiceException {
       if (args.length < 1) {
@@ -119,59 +178,35 @@ public final class Validators {
     }
   }
 
-  private static String getDomainName(String emailAddress) {
-    String domainName = null;
-    int index = emailAddress.indexOf('@');
-    if (index != -1){
-      domainName = emailAddress.substring(index + 1);
-    }
-    return domainName;
-  }
-
-  private static boolean isSystemProperty(Map<String, Object> attrs) {
-    if (attrs == null) {
-      return false;
-    }
-
-    Object isSystemResource = attrs.get(Provisioning.A_zimbraIsSystemResource);
-    if (isSystemResource != null && "true".equalsIgnoreCase(isSystemResource.toString())) {
-      return true; // is system resource, do not check
-    }
-
-    // if we are restoring, the OC array would be empty and
-    // all object classes will be in the attr map.
-    // Skip license check if we are restoring a calendar resource
-    isSystemResource = attrs.get(Provisioning.A_objectClass);
-    if (isSystemResource instanceof String[]) {
-      Set<String> objectClasses = new HashSet<>(Arrays.asList((String[]) isSystemResource));
-      return objectClasses.contains(AttributeClass.OC_zimbraCalendarResource);
-    }
-
-    return false;
-  }
-
-  private static boolean isExternalVirtualAccount(Map<String, Object> attrs) {
-    if (attrs == null) {
-      return false;
-    }
-    Object isExternalVirtualAccount = attrs.get(Provisioning.A_zimbraIsExternalVirtualAccount);
-    return isExternalVirtualAccount != null && "true".equalsIgnoreCase(isExternalVirtualAccount.toString());
-  }
-
   /**
-   * Validate that we are not exceeding max feature and cos counts for the given domain.
-   *
-   * <p>arg is an Object[] consisting of:
+   * DomainMaxAccountsValidator validates that we are not exceeding max feature and cos counts
+   * for the given domain.
    *
    * @author pfnguyen
    */
   public static class DomainMaxAccountsValidator implements Provisioning.ProvisioningValidator {
-
     @Override
     public void refresh() {
       // do nothing
     }
 
+    /**
+     * Validates zimbraDomainCOSMaxAccounts(maximum number of accounts allowed to be assigned to
+     * specified COSes in a domain) and zimbraDomainFeatureMaxAccounts (maximum number of accounts
+     * allowed to have specified features in a domain).
+     * Possible actions are {@value #CREATE_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE},
+     * {@value #RENAME_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE},
+     * {@value #MODIFY_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE}.
+     *
+     * @param prov {@link Provisioning}
+     * @param action provided action
+     * @param args consists of {@link Provisioning.ProvisioningValidator}, email address,
+     *             String[] additionalObjectClasses, Map<String, Object> origAttrs and
+     *             {@link Account} (in case of {@value #MODIFY_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE}
+     * @throws ServiceException when action {@value #MODIFY_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE}
+     * but account is not provided; the limit of maximum number of features or maximum number of
+     * cos accounts is reached for the given domain.
+     */
     @Override
     public void validate(Provisioning prov, String action, Object... args) throws ServiceException {
 
