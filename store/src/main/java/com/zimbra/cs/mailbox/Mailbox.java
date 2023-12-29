@@ -66,8 +66,11 @@ import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.DataSource;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.ProvisioningCache;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ShareLocator;
+import com.zimbra.cs.account.ldap.LdapProv;
+import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.datasource.DataSourceManager;
 import com.zimbra.cs.db.DbDataSource;
 import com.zimbra.cs.db.DbMailItem;
@@ -2660,6 +2663,22 @@ public class Mailbox implements MailboxStore {
       }
     } finally {
       lock.release();
+    }
+  }
+
+  public void markMailboxDeleted() throws ServiceException {
+    MailboxManager.getInstance().markMailboxDeleted(this);
+    try {
+      Provisioning provisioning = Provisioning.getInstance();
+      if (provisioning instanceof ProvisioningCache) {
+        ((ProvisioningCache) provisioning).removeFromCache(this.getAccount());
+      }
+    } catch (AccountServiceException e) {
+      if (AccountServiceException.NO_SUCH_ACCOUNT.equals(e.getCode())) {
+        ZimbraLog.mailbox.warn(this.getAccountId() + " account deleted");
+        return;
+      }
+      throw e;
     }
   }
 

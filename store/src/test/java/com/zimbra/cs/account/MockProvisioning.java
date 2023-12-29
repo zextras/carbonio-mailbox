@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
  *
  * @author ysasaki
  */
-public final class MockProvisioning extends Provisioning {
+public final class MockProvisioning extends Provisioning implements ProvisioningCache {
   public static final String DEFAULT_ACCOUNT_ID = new UUID(0L, 0L).toString();
 
   private final Map<String, Account> id2account = Maps.newHashMap();
@@ -950,5 +950,14 @@ public final class MockProvisioning extends Provisioning {
   public void resetPassword(Account acct, String newPassword, boolean dryRun)
       throws ServiceException {
     throw ServiceException.UNSUPPORTED();
+  }
+
+  @Override
+  public void removeFromCache(Entry entry) {
+    if (entry instanceof Account) {
+      id2account.remove(((Account) entry).getId());
+    } else {
+      throw new UnsupportedOperationException();
+    }
   }
 }
