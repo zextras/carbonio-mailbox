@@ -5,11 +5,10 @@ pkgdesc="Carbonio Core Mailbox Docs"
 arch=('x86_64')
 maintainer="Zextras <packages@zextras.com>"
 copyright=(
-  "2022, Zextras <https://www.zextras.com>"
+  "2022-2024, Zextras <https://www.zextras.com>"
   "2022, Synacor, Inc."
 )
 license=(
-  "AGPL-3.0-only"
   "GPL-2.0-only"
 )
 url="https://github.com/zextras"
@@ -127,8 +126,6 @@ package() {
     "${pkgdir}/opt/zextras/documentation/soap-context-extension.txt"
   install -D "store/docs/soap-im.txt" \
     "${pkgdir}/opt/zextras/documentation/soap-im.txt"
-  install -D "store/docs/soap-mobile.txt" \
-    "${pkgdir}/opt/zextras/documentation/soap-mobile.txt"
   install -D "store/docs/soap-right.txt" \
     "${pkgdir}/opt/zextras/documentation/soap-right.txt"
   install -D "store/docs/soap-waitset.txt" \

@@ -15,7 +15,6 @@ import com.zimbra.common.mailbox.BaseItemInfo;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.common.soap.AdminExtConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.JSONElement;
 import com.zimbra.common.soap.Element.XMLElement;
@@ -59,7 +58,6 @@ public final class JaxbUtil {
   private static final String ACCOUNT_JAXB_PACKAGE = "com.zimbra.soap.account.message";
   private static final String ADMIN_JAXB_PACKAGE = "com.zimbra.soap.admin.message";
   private static final String MAIL_JAXB_PACKAGE = "com.zimbra.soap.mail.message";
-  private static final String ADMIN_EXT_JAXB_PACKAGE = "com.zimbra.soap.adminext.message";
   private static JAXBContext JAXB_CONTEXT;
   private static Map<Class<?>, JAXBContext> classJaxbContexts;
 
@@ -620,12 +618,6 @@ public final class JaxbUtil {
           com.zimbra.soap.admin.message.VerifyIndexResponse.class,
           com.zimbra.soap.admin.message.VerifyStoreManagerRequest.class,
           com.zimbra.soap.admin.message.VerifyStoreManagerResponse.class,
-          com.zimbra.soap.adminext.message.BulkIMAPDataImportRequest.class,
-          com.zimbra.soap.adminext.message.BulkIMAPDataImportResponse.class,
-          com.zimbra.soap.adminext.message.BulkImportAccountsRequest.class,
-          com.zimbra.soap.adminext.message.BulkImportAccountsResponse.class,
-          com.zimbra.soap.adminext.message.GenerateBulkProvisionFileFromLDAPRequest.class,
-          com.zimbra.soap.adminext.message.GenerateBulkProvisionFileFromLDAPResponse.class,
           com.zimbra.soap.mail.message.AddAppointmentInviteRequest.class,
           com.zimbra.soap.mail.message.AddAppointmentInviteResponse.class,
           com.zimbra.soap.mail.message.AddMsgRequest.class,
@@ -934,8 +926,8 @@ public final class JaxbUtil {
   /**
    * @param o - associated JAXB class must have an @XmlRootElement annotation
    * @param factory - e.g. XmlElement.mFactory or JSONElement.mFactory
-   * @return
-   * @throws ServiceException
+   * @return {@link Element} object
+   * @throws ServiceException service exception if something goes wrong
    */
   public static Element jaxbToElement(Object o, Element.ElementFactory factory)
       throws ServiceException {
@@ -1222,8 +1214,6 @@ public final class JaxbUtil {
         className = ACCOUNT_JAXB_PACKAGE + "." + elem.getName();
       } else if (MailConstants.NAMESPACE_STR.equals(ns)) {
         className = MAIL_JAXB_PACKAGE + "." + elem.getName();
-      } else if (AdminExtConstants.NAMESPACE_STR.equals(ns)) {
-        className = ADMIN_EXT_JAXB_PACKAGE + "." + elem.getName();
       } else {
         LOG.info("Unexpected namespace[" + ns + "]");
         return null;

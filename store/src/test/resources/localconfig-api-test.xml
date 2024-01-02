@@ -3,7 +3,7 @@
 <!--
   ~ SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
   ~
-  ~ SPDX-License-Identifier: AGPL-3.0-only
+  ~ SPDX-License-Identifier: GPL-2.0-only
   -->
 
 <localconfig>
@@ -39,5 +39,8 @@
   </key>
   <key name="ldap_noop_search_supported">
     <value>false</value>
+  </key>
+  <key name="localized_msgs_directory">
+    <value>../store-conf/conf/msgs</value>
   </key>
 </localconfig>

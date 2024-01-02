@@ -2,7 +2,7 @@
 <!--
   ~ SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
   ~
-  ~ SPDX-License-Identifier: AGPL-3.0-only
+  ~ SPDX-License-Identifier: GPL-2.0-only
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -34,32 +34,8 @@
       <artifactId>lucene-smartcn</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.w3c.css</groupId>
-      <artifactId>sac</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.xmlgraphics</groupId>
       <artifactId>batik-i18n</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-aop</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-beans</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-expression</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.ws.xmlschema</groupId>

@@ -9,7 +9,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.common.soap.AdminExtConstants;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.util.JaxbInfo;
@@ -36,11 +35,12 @@ public class WsdlDocGenerator {
         AdminConstants.NAMESPACE_STR,
         "The Admin Service includes commands for administering Zimbra.");
     serviceDescriptions.put(
-        AdminExtConstants.NAMESPACE_STR,
-        "The Admin Extension Service includes additional commands for administering Zimbra.");
-    serviceDescriptions.put(
         MailConstants.NAMESPACE_STR,
         "The Mail Service includes commands for managing mail and calendar information.");
+  }
+
+  private WsdlDocGenerator() {
+    // util class
   }
 
   private static String getNamespace(Class<?> jaxbClass, Map<Package, String> pkgToNamespace) {

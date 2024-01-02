@@ -35,9 +35,6 @@ import com.zimbra.soap.admin.message.ScheduleBackupsRequest;
 import com.zimbra.soap.admin.message.SearchMultiMailboxRequest;
 import com.zimbra.soap.admin.message.UnloadMailboxRequest;
 import com.zimbra.soap.admin.message.UnregisterMailboxMoveOutRequest;
-import com.zimbra.soap.adminext.message.BulkIMAPDataImportRequest;
-import com.zimbra.soap.adminext.message.BulkImportAccountsRequest;
-import com.zimbra.soap.adminext.message.GenerateBulkProvisionFileFromLDAPRequest;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -84,9 +81,6 @@ public final class DocExcludedServices {
         SERVICE_SET.add(removeRequest(SearchMultiMailboxRequest.class));
         SERVICE_SET.add(removeRequest(UnloadMailboxRequest.class));
         SERVICE_SET.add(removeRequest(UnregisterMailboxMoveOutRequest.class));
-        SERVICE_SET.add(removeRequest(BulkIMAPDataImportRequest.class));
-        SERVICE_SET.add(removeRequest(BulkImportAccountsRequest.class));
-        SERVICE_SET.add(removeRequest(GenerateBulkProvisionFileFromLDAPRequest.class));
     }
 
     private DocExcludedServices() {}
