@@ -24,8 +24,8 @@
     </not>
   </condition>
 
-  <target name="generate-sources"
-    depends="generate-buildinfo, generate-getters,generate-rights, create-version-sql,create-version-ldap ">
+  <target name="generate-sql-ldap-versions"
+    depends="create-version-sql, create-version-ldap ">
   </target>
 
   <!--  TODO: remove unnecessary folder-->
@@ -45,8 +45,8 @@
   </target>
 
   <target name="generate-buildinfo" depends="build-init, set-dev-version">
-    <mkdir dir="${maven.build.dir}/buildinfo/com/zimbra/cs/util"/>
-    <echo file="${maven.build.dir}/buildinfo/com/zimbra/cs/util/BuildInfoGenerated.java">
+    <mkdir dir="${maven.build.dir}/generated-sources/buildinfo/com/zimbra/cs/util"/>
+    <echo file="${maven.build.dir}/generated-sources/buildinfo/com/zimbra/cs/util/BuildInfoGenerated.java">
       package com.zimbra.cs.util;
 
       class BuildInfoGenerated {
@@ -62,11 +62,6 @@
       public static final String HOST = "${zimbra.buildinfo.host}";
       }
     </echo>
-    <javac includeantruntime="false" destdir="${build.classes.dir}"
-      target="${javac.target}" srcdir="${maven.build.dir}/buildinfo">
-      <compilerarg value="-Xlint:deprecation"/>
-      <compilerarg value="-Xlint:unchecked"/>
-    </javac>
   </target>
 
   <!-- Cleans up store directory and maven build in maven clean phase -->
@@ -87,7 +82,10 @@
     <copy todir="${basedir}/build/zimbra/conf/" file="${basedir}/../store-conf/conf/contacts/contact-fields.xml"/>
   </target>
 
-  <target name="generate-getters" description="generate methods for attributes in attrs.xml">
+  <target name="generate-zattr-rights" description="generate ZAttr and rights"
+    depends="generate-zattr,generate-rights"/>
+
+  <target name="generate-zattr" description="generate methods for attributes in attrs.xml">
     <antcall target="generate-getter">
       <param name="getter.class" value="account"/>
       <param name="getter.output" value="ZAttrAccount.java"/>

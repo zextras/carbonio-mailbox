@@ -16,6 +16,14 @@ and their roles:
 - **store**: WAR package that defines the service. It also includes core functionalities like SOAP
 APIs, LDAP, Krb5, IMAP, POP3 and CLI functions
 
+## Generating Rights and ZAttr classes
+Whenever you make changes to [store/conf/attrs/attrs.xml](store/conf/attrs/attrs.xml)
+you can generate rights and ZAttr* classes by running:
+> mvn antrun:run@generate-zattr-rights
+
+## Generating SOAP DOCS
+> mvn antrun:run@generate-soap-docs
+
 ## Building Carbonio Mailbox from source
 
 ### 1. Build using local mvn command
@@ -43,7 +51,7 @@ Ensure you have JDK version 11 installed. Confirm by running:
 
 ### 2. Build the source code inside a docker container
 ```shell
-$ docker compose -f './docker/jetty-run/docker-compose.yml' run --rm build
+$ UID=${UID} GID=${GID} docker compose -f './docker/jetty-run/docker-compose.yml' run --rm build
 ```
 
 ## Run Carbonio Mailbox locally (for Development)

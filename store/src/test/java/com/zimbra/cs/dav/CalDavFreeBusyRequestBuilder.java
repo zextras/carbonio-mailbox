@@ -1,23 +1,20 @@
 package com.zimbra.cs.dav;
 
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.Account;
-import org.apache.http.HttpHeaders;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
+import static java.lang.String.format;
 
+import com.zimbra.common.service.ServiceException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
-
-import static com.zextras.mailbox.util.MailboxTestUtil.createRandomAccountForDefaultDomain;
-import static java.lang.String.format;
+import org.apache.http.HttpHeaders;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 
 public class CalDavFreeBusyRequestBuilder {
   private UUID uuid = UUID.randomUUID();
-  private Account originator = createRandomAccountForDefaultDomain();
-  private Account recipient = createRandomAccountForDefaultDomain();
+  private String originatorEmail = "originator@test.com";
+  private String recipientEmail = "recipient@test.com";
   private String start = "20231206T114500";
   private String end = "20231208T154500";
   private Mode mode = Mode.THUNDERBIRD;
@@ -32,13 +29,13 @@ public class CalDavFreeBusyRequestBuilder {
     return this;
   }
 
-  public CalDavFreeBusyRequestBuilder originator(Account value) {
-    this.originator = value;
+  public CalDavFreeBusyRequestBuilder originatorEmail(String value) {
+    this.originatorEmail = value;
     return this;
   }
 
-  public CalDavFreeBusyRequestBuilder recipient(Account value) {
-    this.recipient = value;
+  public CalDavFreeBusyRequestBuilder recipientEmail(String value) {
+    this.recipientEmail = value;
     return this;
   }
 
@@ -64,15 +61,15 @@ public class CalDavFreeBusyRequestBuilder {
     request.setHeader(HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8");
 
     if (mode == Mode.THUNDERBIRD) {
-      request.setHeader(DavProtocol.HEADER_ORIGINATOR, "mailto:" + originator.getName());
-      request.setHeader(DavProtocol.HEADER_RECIPIENT, "mailto:" + recipient.getName());
+      request.setHeader(DavProtocol.HEADER_ORIGINATOR, "mailto:" + originatorEmail);
+      request.setHeader(DavProtocol.HEADER_RECIPIENT, "mailto:" + recipientEmail);
     }
 
     return request;
   }
 
   private String buildUrl() {
-    String name = URLEncoder.encode(originator.getName(), StandardCharsets.UTF_8);
+    String name = URLEncoder.encode(originatorEmail, StandardCharsets.UTF_8);
     return baseUrl + "/home/" + name + "/Sent";
   }
 
@@ -87,16 +84,16 @@ public class CalDavFreeBusyRequestBuilder {
         + "DTSTAMP:20231107T113758Z\n"
         + format("DTSTART:%s\n", start)
         + format("DTEND:%s\n", end)
-        + format("ORGANIZER:mailto:%s\n", originator.getName())
+        + format("ORGANIZER:mailto:%s\n", originatorEmail)
         + originatorAsAttendee()
-        + format("ATTENDEE:mailto:%s\n", recipient.getName())
+        + format("ATTENDEE:mailto:%s\n", recipientEmail)
         + "END:VFREEBUSY\n"
         + "END:VCALENDAR";
   }
 
   private String originatorAsAttendee() {
     if (mode == Mode.ICALENDAR) {
-      return format("ATTENDEE:mailto:%s\n", originator.getName());
+      return format("ATTENDEE:mailto:%s\n", originatorEmail);
     }
     return "";
   }

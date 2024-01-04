@@ -42,7 +42,7 @@ public class DbPool {
 
     static ValueCounter<String> sConnectionStackCounter = new ValueCounter<String>();
 
-    public static class DbConnection {
+    public static class DbConnection implements AutoCloseable {
         private final Connection connection;
         private Throwable mStackTrace;
         Integer mboxId;
@@ -123,14 +123,6 @@ public class DbPool {
         }
 
         public void close() throws ServiceException {
-            // first, do any pre-closing ops
-            try {
-                Db.getInstance().preClose(this);
-            } catch (SQLException e) {
-                ZimbraLog.sqltrace.warn("DB connection pre-close processing caught exception", e);
-            }
-
-            // then actually close the connection
             try {
                 connection.close();
             } catch (SQLException e) {
@@ -283,17 +275,10 @@ public class DbPool {
             System.exit(1);
         }
 
-        try {
-            PoolingDataSource pds = new PoolingDataSource(sConnectionPool);
-            pds.setAccessToUnderlyingConnectionAllowed(true);
+        PoolingDataSource pds = new PoolingDataSource(sConnectionPool);
+        pds.setAccessToUnderlyingConnectionAllowed(true);
 
-            Db.getInstance().startup(pds, pconfig.mPoolSize);
-
-            sPoolingDataSource = pds;
-        } catch (SQLException e) {
-            ZimbraLog.system.fatal("can't initialize connection pool", e);
-            System.exit(1);
-        }
+        sPoolingDataSource = pds;
 
         if (pconfig.mSupportsStatsCallback)
             ZimbraPerf.addStatsCallback(new DbStats());
@@ -312,13 +297,25 @@ public class DbPool {
         return getConnection(null);
     }
 
+    /**
+     * Gets a database connection from the pool.
+     * This method was introduced to move from static {@link #getConnection()}
+     * and slowly move to instance-level methods.
+     *
+     * @return a {@link DbConnection}
+     *
+     * @throws ServiceException
+     */
+    public DbConnection getDatabaseConnection() throws ServiceException {
+        return getConnection();
+    }
+
     public static DbConnection getConnection(Mailbox mbox) throws ServiceException {
         if (!isInitialized()) {
             throw ServiceException.FAILURE("Database connection pool not initialized.", null);
         }
         Integer mboxId = mbox != null ? mbox.getId() : -1; //-1 == zimbra db and/or initialization where mbox isn't known yet
         try {
-            Db.getInstance().preOpen(mboxId);
             long start = ZimbraPerf.STOPWATCH_DB_CONN.start();
 
             // If the connection pool is overutilized, warn about potential leaks
@@ -339,7 +336,6 @@ public class DbPool {
                     dbconn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 
                 conn = new DbConnection(dbconn, mboxId);
-                Db.getInstance().postOpen(conn);
             } catch (SQLException e) {
                 try {
                     if (dbconn != null && !dbconn.isClosed())
@@ -360,14 +356,11 @@ public class DbPool {
                     sConnectionStackCounter.increment(stackTrace);
                 }
             }
-            if (mbox != null)
-                Db.registerDatabaseInterest(conn, mbox);
 
             ZimbraPerf.STOPWATCH_DB_CONN.stop(start);
             return conn;
         } catch (ServiceException se) {
             //if connection open fails unlock
-            Db.getInstance().abortOpen(mboxId);
             throw se;
         }
     }
@@ -530,7 +523,6 @@ public class DbPool {
             sConnectionPool = null;
         }
         sPoolingDataSource = null;
-        Db.getInstance().shutdown();
     }
 
     public static synchronized void shutdown() throws Exception {

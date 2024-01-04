@@ -1,5 +1,5 @@
 pkgname="carbonio-appserver-store-libs"
-pkgver="4.11.1"
+pkgver="4.12.0"
 pkgrel="1"
 pkgdesc="Replace Carbonio store libs"
 arch=('x86_64')
@@ -149,8 +149,6 @@ package() {
     "${pkgdir}/opt/zextras/jetty_base/common/lib/unboundid-ldapsdk-2.3.5.jar"
   install -D carbonio-jetty-libs/target/dependencies/xercesImpl-2.9.1-patch-01.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/xercesImpl-2.9.1-patch-01.jar"
-  install -D carbonio-jetty-libs/target/dependencies/yuicompressor-2.4.8.jar \
-    "${pkgdir}/opt/zextras/jetty_base/common/lib/yuicompressor-2.4.8.jar"
   install -D carbonio-jetty-libs/target/dependencies/bcmail-jdk15on-1.60.jar \
     "${pkgdir}/opt/zextras/lib/ext-common/bcmail-jdk15on-1.60.jar"
   install -D carbonio-jetty-libs/target/dependencies/saaj-impl-1.5.1.jar \

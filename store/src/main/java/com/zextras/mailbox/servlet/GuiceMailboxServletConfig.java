@@ -31,7 +31,7 @@ public class GuiceMailboxServletConfig extends GuiceServletContextListener {
    *     on how to solve possible dependencies
    */
   private static Collection<AbstractModule> getInjectionModules() {
-    return Set.of(new MetricsServletModule());
+    return Set.of(new MetricsServletModule(), new HealthServletModule());
   }
 
   /**

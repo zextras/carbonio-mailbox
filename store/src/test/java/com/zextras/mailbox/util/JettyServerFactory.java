@@ -4,18 +4,26 @@
 
 package com.zextras.mailbox.util;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.EventListener;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import javax.servlet.DispatcherType;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
 /** Test utility class to create a {@link Server} instance with custom port and servlets. */
 public class JettyServerFactory {
 
-  private Map<String, ServletHolder> servlets = new HashMap<>();
+  private final Map<String, ServletHolder> servlets = new HashMap<>();
+  private final Map<String, FilterHolder> filters = new HashMap<>();
+  private final List<EventListener> listeners = new ArrayList<>();
   private int port = 7070;
 
   public JettyServerFactory withPort(int port) {
@@ -26,30 +34,34 @@ public class JettyServerFactory {
     this.servlets.put(path, servletHolder);
     return this;
   }
+  public JettyServerFactory addFilter(String path, FilterHolder filterHolder) {
+    this.filters.put(path, filterHolder);
+    return this;
+  }
+
+  public JettyServerFactory addListener(EventListener listener) {
+    this.listeners.add(listener);
+    return this;
+  }
 
   public JettyServerFactory() {}
 
   /**
    * Creates a server instance (not yet started).
    *
-   * @param port listening port of the server
-   * @param servlets {@link Map} of servlets with key path of servlet, value {@link ServletHolder}
    * @return {@link Server}
-   * @deprecated use {@link #create()} instance method
-   * @throws Exception
    */
-  public static Server create(int port, Map<String, ServletHolder> servlets) throws Exception {
+  public Server create() {
     final Server server = new Server();
     ServerConnector connector = new ServerConnector(server);
     connector.setPort(port);
-    ServletContextHandler servletHandler = new ServletContextHandler();
-    servlets.forEach((path, servlet) -> servletHandler.addServlet(servlet, path));
-    server.setHandler(servletHandler);
+    connector.setHost("localhost");
+    ServletContextHandler servletContextHandler = new ServletContextHandler();
+    listeners.forEach(servletContextHandler::addEventListener);
+    filters.forEach((path, filterHolder) -> servletContextHandler.addFilter(filterHolder, path, EnumSet.of(DispatcherType.REQUEST)));
+    servlets.forEach((path, servlet) -> servletContextHandler.addServlet(servlet, path));
+    server.setHandler(servletContextHandler);
     server.setConnectors(new Connector[] {connector});
     return server;
-  }
-
-  public Server create() throws Exception {
-    return create(this.port, this.servlets);
   }
 }

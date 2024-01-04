@@ -9170,7 +9170,6 @@ public class Mailbox implements MailboxStore {
     if (rp == null) {
       rp = new RetentionPolicy();
     } else {
-      validateRetentionPolicy(rp.getKeepPolicy());
       validateRetentionPolicy(rp.getPurgePolicy());
     }
 
@@ -10340,21 +10339,6 @@ public class Mailbox implements MailboxStore {
     } finally {
       endTransaction(success);
       sm.quietDelete(staged);
-    }
-  }
-
-  /** Optimize the underlying database. */
-  public void optimize(int level) {
-    lock.lock();
-    try {
-      DbConnection conn = DbPool.getConnection(this);
-
-      DbMailbox.optimize(conn, this, level);
-      DbPool.quietClose(conn);
-    } catch (Exception e) {
-      ZimbraLog.mailbox.warn("db optimize failed for mailbox " + getId() + ": " + e);
-    } finally {
-      lock.release();
     }
   }
 

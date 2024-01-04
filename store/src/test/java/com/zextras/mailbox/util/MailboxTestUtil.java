@@ -26,7 +26,6 @@ import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.store.StoreManager;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -49,10 +48,12 @@ public class MailboxTestUtil {
   private MailboxTestUtil() {}
 
   /**
-   * Sets up all possible environment variables to make the mailbox operate. - loads native library
-   * - Uses localconfig-api-test.xml as source for {@link LC} - creates a server with name {@link
-   * #SERVER_NAME} - creates a domain with name {@link #DEFAULT_DOMAIN} Starts LDAP and the database
-   * and all possible dependencies. If you find some are missing add them.
+   * Sets up all possible environment variables to make the mailbox work:
+   * - loads native library
+   * - Uses localconfig-api-test.xml as source for {@link LC}
+   * - creates a server with name {@link #SERVER_NAME}
+   * - creates a domain with name {@link #DEFAULT_DOMAIN}
+   * - Starts LDAP and the database and all possible dependencies. If you find some are missing add them.
    *
    * @throws Exception
    */
@@ -96,24 +97,7 @@ public class MailboxTestUtil {
     inMemoryDirectoryServer.shutDown(true);
   }
 
-  /**
-   * Creates a basic account with domain {@link #DEFAULT_DOMAIN} and {@link #SERVER_NAME}. You can
-   * pass extra attributes if needed, for example to make the user an admin. If you pass a {@link
-   * ZAttrProvisioning#A_zimbraMailHost} you will override the default server of the user.
-   *
-   * @param extraAttrs attributes to add on top of default one
-   * @return created account
-   * @throws ServiceException
-   */
-  public static Account createRandomAccountForDefaultDomain(Map<String, Object> extraAttrs) throws ServiceException {
-    return createAccountWithDefaultDomain(UUID.randomUUID().toString(), extraAttrs);
-  }
-
-  /**
-   * Performs actions on an account.
-   * Start with {@link #shareWith(Account)}
-   *
-   */
+  /** Performs actions on an account. Start with {@link #shareWith(Account)} */
   public static class AccountAction {
 
     private final Account account;
@@ -121,29 +105,28 @@ public class MailboxTestUtil {
     private final RightManager rightManager;
 
     /**
-     * Saves a message in current Account mailbox.
-     * It is useful when you want to "simulate" receiving of a message.
+     * Saves a message in current Account mailbox. It is useful when you want to "simulate"
+     * receiving of a message.
      *
-     * @param mailbox mailbox where to save the message
      * @param message message to save
      * @return saved {@link javax.mail.Message}
      * @throws ServiceException
      * @throws IOException
      */
-    public Message saveMsgInInbox(javax.mail.Message message)
-        throws ServiceException, IOException {
+    public Message saveMsgInInbox(javax.mail.Message message) throws ServiceException, IOException {
       final ParsedMessage parsedMessage = new ParsedMessage((MimeMessage) message, false);
       final DeliveryOptions deliveryOptions =
           new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
-      return mailboxManager.getMailboxByAccount(account).addMessage(null, parsedMessage, deliveryOptions, null);
+      return mailboxManager
+          .getMailboxByAccount(account)
+          .addMessage(null, parsedMessage, deliveryOptions, null);
     }
 
     public static class Factory {
       private final MailboxManager mailboxManager;
       private final RightManager rightManager;
 
-      public Factory(MailboxManager mailboxManager,
-          RightManager rightManager) {
+      public Factory(MailboxManager mailboxManager, RightManager rightManager) {
         this.mailboxManager = mailboxManager;
         this.rightManager = rightManager;
       }
@@ -153,7 +136,8 @@ public class MailboxTestUtil {
       }
     }
 
-    private AccountAction(Account account, MailboxManager mailboxManager, RightManager rightManager) {
+    private AccountAction(
+        Account account, MailboxManager mailboxManager, RightManager rightManager) {
       this.account = account;
       this.mailboxManager = mailboxManager;
       this.rightManager = rightManager;
@@ -161,6 +145,7 @@ public class MailboxTestUtil {
 
     /**
      * Shares current account with target
+     *
      * @param target AKA "delegated"
      * @throws ServiceException
      */
@@ -172,13 +157,14 @@ public class MailboxTestUtil {
 
     public AccountAction grantFolderRightTo(Account target, String rights, int folderId)
         throws ServiceException {
-      mailboxManager.getMailboxByAccount(account).grantAccess(
-          null, folderId, target.getId(), ACL.GRANTEE_USER, ACL.stringToRights(rights), null);
+      mailboxManager
+          .getMailboxByAccount(account)
+          .grantAccess(
+              null, folderId, target.getId(), ACL.GRANTEE_USER, ACL.stringToRights(rights), null);
       return this;
     }
 
-    public AccountAction grantRightTo(Account target, Right right)
-        throws ServiceException {
+    public AccountAction grantRightTo(Account target, Right right) throws ServiceException {
       final Set<ZimbraACE> aces = new HashSet<>();
       aces.add(
           new ZimbraACE(
@@ -190,7 +176,6 @@ public class MailboxTestUtil {
       ACLUtil.grantRight(Provisioning.getInstance(), target, aces);
       return this;
     }
-
   }
 
   public static class AccountCreator {
@@ -199,8 +184,8 @@ public class MailboxTestUtil {
     private String username = UUID.randomUUID().toString();
     private String password = "password";
     private String domain = DEFAULT_DOMAIN;
-    private Map<String, Object> defaultAttributes = new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME));
-    private Map<String, Object> extraAttributes = Collections.emptyMap();
+    private final Map<String, Object> attributes =
+        new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME));
 
     private AccountCreator(Provisioning provisioning) {
       this.provisioning = provisioning;
@@ -233,47 +218,19 @@ public class MailboxTestUtil {
       return this;
     }
 
-    public AccountCreator withExtraAttributes(Map<String, Object> extraAttributes) {
-      this.extraAttributes = extraAttributes;
+    public AccountCreator withAttribute(String name, Object value) {
+      this.attributes.put(name, value);
       return this;
     }
 
-    public AccountCreator withDefaultAttributes(Map<String, Object> defaultAttributes) {
-      this.defaultAttributes = defaultAttributes;
+    public AccountCreator asGlobalAdmin() {
+      this.attributes.put(ZAttrProvisioning.A_zimbraIsAdminAccount, "TRUE");
       return this;
     }
 
     public Account create() throws ServiceException {
-      final Map<String, Object> attributes = new HashMap<String, Object>(defaultAttributes);
-      attributes.putAll(extraAttributes);
-      defaultAttributes.putAll(extraAttributes);
-      return provisioning
-          .createAccount(this.username + "@" + this.domain, password, attributes);
+      return provisioning.createAccount(this.username + "@" + this.domain, password, attributes);
     }
-  }
-
-  /**
-   * @return {@link Account}
-   * @deprecated should use {@link AccountCreator}
-   * @throws ServiceException
-   */
-  @Deprecated()
-  public static Account createAccountWithDefaultDomain(String username, Map<String, Object> extraAttrs) throws ServiceException {
-    final HashMap<String, Object> attrs =
-        new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME));
-    attrs.putAll(extraAttrs);
-    return Provisioning.getInstance()
-        .createAccount(username + "@" + MailboxTestUtil.DEFAULT_DOMAIN, "password", attrs);
-  }
-
-  /**
-   * @return {@link Account}
-   * @deprecated should use {@link AccountCreator}
-   * @throws ServiceException
-   */
-  @Deprecated()
-  public static Account createRandomAccountForDefaultDomain() throws ServiceException {
-    return createRandomAccountForDefaultDomain(Collections.emptyMap());
   }
 
 }

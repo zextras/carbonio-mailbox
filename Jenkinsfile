@@ -20,7 +20,7 @@ def getPackages() {
             "carbonio-appserver-store-libs", "carbonio-appserver-war", "carbonio-common-appserver-conf",
             "carbonio-common-appserver-docs",
             "carbonio-common-appserver-native-lib", "carbonio-common-core-jar",
-            "carbonio-common-core-libs"]
+            "carbonio-common-core-libs", "carbonio-directory-server"]
 }
 def getRpmSpec(String upstream, String version) {
     packages = getPackages()

@@ -10,7 +10,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.common.soap.AdminExtConstants;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.ZimbraNamespace;
 import com.zimbra.doc.soap.DocExcludedServices;
@@ -430,14 +429,6 @@ public class WsdlGenerator {
                       AdminConstants.NAMESPACE_STR,
                       zcsAdminService,
                       requestsMessage));
-    }
-    List<String> requests = packageToRequestListMap.get("com.zimbra.soap.adminext.message");
-    if (requests != null) {
-      nsInfoList.add(
-              WsdlInfoForNamespace.create(
-                      AdminExtConstants.NAMESPACE_STR,
-                      zcsAdminService,
-                      requests));
     }
   }
 

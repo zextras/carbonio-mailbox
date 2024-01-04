@@ -4,17 +4,30 @@
 
 package com.zimbra.cs.dav.service;
 
+import static com.icegreen.greenmail.util.ServerSetup.PROTOCOL_SMTP;
+import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
+import static com.zimbra.cs.mailclient.smtp.SmtpConfig.DEFAULT_HOST;
+import static com.zimbra.cs.mailclient.smtp.SmtpConfig.DEFAULT_PORT;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zextras.mailbox.util.MailboxTestUtil;
+import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.calendar.ZCalendar.ScheduleAgent;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.dav.CalDavCreateAppointmentRequestBuilder;
 import com.zimbra.cs.dav.CalDavFreeBusyRequestBuilder;
 import com.zimbra.cs.service.AuthProvider;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -28,21 +41,11 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.junit.jupiter.api.*;
-
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.UUID;
-
-import static com.icegreen.greenmail.util.ServerSetup.PROTOCOL_SMTP;
-import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
-import static com.zextras.mailbox.util.MailboxTestUtil.createRandomAccountForDefaultDomain;
-import static com.zimbra.cs.mailclient.smtp.SmtpConfig.DEFAULT_HOST;
-import static com.zimbra.cs.mailclient.smtp.SmtpConfig.DEFAULT_PORT;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("api")
 class DavServletTest {
@@ -52,13 +55,18 @@ class DavServletTest {
   private static final String DAV_BASE_PATH = "/dav";
   private static final String DAV_BASE_URL = "http://localhost:" + PORT + DAV_BASE_PATH;
   private static GreenMail greenMail;
+  private static AccountCreator.Factory accountCreatorFactory;
 
   @BeforeAll
   public static void setUp() throws Exception {
     MailboxTestUtil.setUp();
     greenMail = new GreenMail(new ServerSetup[]{ new ServerSetup(DEFAULT_PORT, DEFAULT_HOST, PROTOCOL_SMTP) });
     greenMail.start();
-    server = JettyServerFactory.create(PORT, Map.of(DAV_BASE_PATH + "/*", new ServletHolder(DavServlet.class)));
+    accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance());
+    server = new JettyServerFactory()
+        .withPort(PORT)
+        .addServlet(DAV_BASE_PATH + "/*", new ServletHolder(DavServlet.class))
+        .create();
     server.start();
   }
 
@@ -76,15 +84,15 @@ class DavServletTest {
 
   @Test
   void shouldNotSendNotificationWhenScheduleAgentClient() throws Exception {
-    Account organizer = createRandomAccountForDefaultDomain();
+    Account organizer = getRandomAccountForDefaultDomain();
     organizer.addAlias("alias@" + DEFAULT_DOMAIN);
 
     final HttpPut request = new CalDavCreateAppointmentRequestBuilder(DAV_BASE_URL)
         .organizer("alias@" + DEFAULT_DOMAIN)
         .scheduleAgent(ScheduleAgent.CLIENT)
-        .addAttendee(createRandomAccountForDefaultDomain())
-        .addAttendee(createRandomAccountForDefaultDomain())
-        .addAttendee(createRandomAccountForDefaultDomain())
+        .addAttendee(getRandomAccountForDefaultDomain())
+        .addAttendee(getRandomAccountForDefaultDomain())
+        .addAttendee(getRandomAccountForDefaultDomain())
         .build();
     HttpResponse response = createHttpClientWith(organizer).execute(request);
 
@@ -92,16 +100,20 @@ class DavServletTest {
     assertEquals(0, greenMail.getReceivedMessages().length);
   }
 
+  private Account getRandomAccountForDefaultDomain() throws ServiceException {
+    return accountCreatorFactory.get().create();
+  }
+
   @Test
   void shouldSendNotificationsForEachAttendeeWhenScheduleAgentIsServer() throws Exception {
-    Account organizer = createRandomAccountForDefaultDomain();
+    Account organizer = getRandomAccountForDefaultDomain();
 
     final HttpPut request = new CalDavCreateAppointmentRequestBuilder(DAV_BASE_URL)
         .organizer(organizer)
         .scheduleAgent(ScheduleAgent.SERVER)
-        .addAttendee(createRandomAccountForDefaultDomain())
-        .addAttendee(createRandomAccountForDefaultDomain())
-        .addAttendee(createRandomAccountForDefaultDomain())
+        .addAttendee(getRandomAccountForDefaultDomain())
+        .addAttendee(getRandomAccountForDefaultDomain())
+        .addAttendee(getRandomAccountForDefaultDomain())
         .build();
     HttpResponse response = createHttpClientWith(organizer).execute(request);
 
@@ -111,7 +123,7 @@ class DavServletTest {
 
   @Test
   void shouldCreateAppointment() throws Exception {
-    Account organizer = createRandomAccountForDefaultDomain();
+    Account organizer = getRandomAccountForDefaultDomain();
     UUID calendarUUID = UUID.randomUUID();
     HttpPut createAppointmentRequest = new CalDavCreateAppointmentRequestBuilder(DAV_BASE_URL)
         .uuid(calendarUUID)
@@ -125,7 +137,7 @@ class DavServletTest {
 
   @Test
   void shouldGetACreatedAppointment() throws Exception {
-    Account organizer = createRandomAccountForDefaultDomain();
+    Account organizer = getRandomAccountForDefaultDomain();
     UUID calendarUUID = UUID.randomUUID();
     createAppointment(organizer, calendarUUID);
 
@@ -137,7 +149,7 @@ class DavServletTest {
 
   @Test
   void shouldDeleteAppointment() throws Exception {
-    Account organizer = createRandomAccountForDefaultDomain();
+    Account organizer = getRandomAccountForDefaultDomain();
     UUID calendarUUID = UUID.randomUUID();
     createAppointment(organizer, calendarUUID);
 
@@ -149,7 +161,7 @@ class DavServletTest {
 
   @Test
   void createAnAppointmentAndFindThatSlotAsBusyStatus() throws Exception {
-    Account busyPerson = createRandomAccountForDefaultDomain();
+    Account busyPerson = getRandomAccountForDefaultDomain();
     HttpPut createAppointmentRequest = new CalDavCreateAppointmentRequestBuilder(DAV_BASE_URL)
         .organizer(busyPerson)
         .addAttendee(busyPerson)
@@ -158,12 +170,12 @@ class DavServletTest {
     createHttpClientWith(busyPerson).execute(createAppointmentRequest);
 
     UUID calendarId = UUID.randomUUID();
-    Account calendarViewer = createRandomAccountForDefaultDomain();
+    Account calendarViewer = getRandomAccountForDefaultDomain();
     HttpPost freeBusyRequest = new CalDavFreeBusyRequestBuilder(DAV_BASE_URL)
         .asThunderbird()
         .uuid(calendarId)
-        .originator(calendarViewer)
-        .recipient(busyPerson)
+        .originatorEmail(calendarViewer.getName())
+        .recipientEmail(busyPerson.getName())
         .timeslot("20231206T114500", "20231208T154500")
         .build();
     HttpResponse freeBusyResponse = createHttpClientWith(calendarViewer).execute(freeBusyRequest);
@@ -176,7 +188,7 @@ class DavServletTest {
 
   @Test
   void createAnAppointmentAndFindThatSlotAsBusyStatusUsingICalendar() throws Exception {
-    Account busyPerson = createRandomAccountForDefaultDomain();
+    Account busyPerson = getRandomAccountForDefaultDomain();
     HttpPut createAppointmentRequest = new CalDavCreateAppointmentRequestBuilder(DAV_BASE_URL)
         .organizer(busyPerson)
         .addAttendee(busyPerson)
@@ -184,11 +196,11 @@ class DavServletTest {
         .build();
     createHttpClientWith(busyPerson).execute(createAppointmentRequest);
 
-    Account calendarViewer = createRandomAccountForDefaultDomain();
+    Account calendarViewer = getRandomAccountForDefaultDomain();
     HttpPost freeBusyRequest = new CalDavFreeBusyRequestBuilder(DAV_BASE_URL)
         .asICalendar()
-        .originator(calendarViewer)
-        .recipient(busyPerson)
+        .originatorEmail(calendarViewer.getName())
+        .recipientEmail(busyPerson.getName())
         .timeslot("20231206T114500", "20231208T154500")
         .build();
     HttpResponse freeBusyResponse = createHttpClientWith(calendarViewer).execute(freeBusyRequest);

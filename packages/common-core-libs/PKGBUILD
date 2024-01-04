@@ -1,5 +1,5 @@
 pkgname="carbonio-common-core-libs"
-pkgver="4.11.1"
+pkgver="4.12.0"
 pkgrel="1"
 pkgdesc="Replace Carbonio core libs"
 arch=('x86_64')
@@ -58,11 +58,9 @@ package() {
   install -D carbonio-jetty-libs/target/dependencies/concurrentlinkedhashmap-lru-1.3.1.jar \
     "${pkgdir}/opt/zextras/lib/jars/concurrentlinkedhashmap-lru-1.3.1.jar"
 
-  install -D carbonio-jetty-libs/target/dependencies/curator-recipes-2.0.1-incubating.jar \
-    "${pkgdir}/opt/zextras/lib/jars/curator-recipes-2.0.1-incubating.jar"
+  install -D carbonio-jetty-libs/target/dependencies/curator-recipes-5.5.0.jar \
+    "${pkgdir}/opt/zextras/lib/jars/curator-recipes-5.5.0.jar"
 
-  install -D carbonio-jetty-libs/target/dependencies/cxf-core-3.3.4.jar \
-    "${pkgdir}/opt/zextras/lib/jars/cxf-core-3.3.4.jar"
   install -D carbonio-jetty-libs/target/dependencies/dom4j-2.1.4.jar \
     "${pkgdir}/opt/zextras/lib/jars/dom4j-2.1.4.jar"
   install -D carbonio-jetty-libs/target/dependencies/freemarker-2.3.19.jar \
@@ -194,24 +192,10 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/batik-i18n-1.9.jar"
   install -D carbonio-jetty-libs/target/dependencies/batik-util-1.8.jar \
     "${pkgdir}/opt/zextras/lib/jars/batik-util-1.8.jar"
-  install -D carbonio-jetty-libs/target/dependencies/sac-1.3.jar \
-    "${pkgdir}/opt/zextras/lib/jars/sac-1.3.jar"
   install -D carbonio-jetty-libs/target/dependencies/policy-2.3.jar \
     "${pkgdir}/opt/zextras/lib/jars/policy-2.3.jar"
   install -D carbonio-jetty-libs/target/dependencies/slf4j-api-1.7.36.jar \
     "${pkgdir}/opt/zextras/lib/jars/slf4j-api-1.7.36.jar"
-  install -D carbonio-jetty-libs/target/dependencies/spring-aop-5.1.10.RELEASE.jar \
-    "${pkgdir}/opt/zextras/lib/jars/spring-aop-5.1.10.RELEASE.jar"
-  install -D carbonio-jetty-libs/target/dependencies/spring-beans-5.1.10.RELEASE.jar \
-    "${pkgdir}/opt/zextras/lib/jars/spring-beans-5.1.10.RELEASE.jar"
-
-  install -D carbonio-jetty-libs/target/dependencies/spring-context-5.1.10.RELEASE.jar \
-    "${pkgdir}/opt/zextras/lib/jars/spring-context-5.1.10.RELEASE.jar"
-
-  install -D carbonio-jetty-libs/target/dependencies/spring-core-5.1.10.RELEASE.jar \
-    "${pkgdir}/opt/zextras/lib/jars/spring-core-5.1.10.RELEASE.jar"
-  install -D carbonio-jetty-libs/target/dependencies/spring-expression-5.1.10.RELEASE.jar \
-    "${pkgdir}/opt/zextras/lib/jars/spring-expression-5.1.10.RELEASE.jar"
 
   install -D carbonio-jetty-libs/target/dependencies/spymemcached-2.12.1.jar \
     "${pkgdir}/opt/zextras/lib/jars/spymemcached-2.12.1.jar"
@@ -219,8 +203,6 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/jedis-2.9.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/commons-pool2-2.4.2.jar \
     "${pkgdir}/opt/zextras/lib/jars/commons-pool2-2.4.2.jar"
-  install -D carbonio-jetty-libs/target/dependencies/sqlite-jdbc-3.7.15-M1.jar \
-    "${pkgdir}/opt/zextras/lib/jars/sqlite-jdbc-3.7.15-M1.jar"
   install -D carbonio-jetty-libs/target/dependencies/stax-ex-1.8.1.jar \
     "${pkgdir}/opt/zextras/lib/jars/stax-ex-1.8.1.jar"
   install -D carbonio-jetty-libs/target/dependencies/stax2-api-3.1.1.jar \
@@ -239,10 +221,6 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/xercesImpl-2.9.1-patch-01.jar"
   install -D carbonio-jetty-libs/target/dependencies/xmlschema-core-2.0.3.jar \
     "${pkgdir}/opt/zextras/lib/jars/xmlschema-core-2.0.3.jar"
-  install -D carbonio-jetty-libs/target/dependencies/yuicompressor-2.4.8.jar \
-    "${pkgdir}/opt/zextras/lib/jars/yuicompressor-2.4.8.jar"
-  install -D carbonio-jetty-libs/target/dependencies/zm-ews-stub-2.0.jar \
-    "${pkgdir}/opt/zextras/lib/jars/zm-ews-stub-2.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/ehcache-3.1.2.jar \
     "${pkgdir}/opt/zextras/lib/jars/ehcache-3.1.2.jar"
   install -D carbonio-jetty-libs/target/dependencies/zm-charset*.jar \

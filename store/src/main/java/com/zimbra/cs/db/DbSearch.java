@@ -846,9 +846,6 @@ public final class DbSearch {
       sql.append(' ').append(Db.getInstance().limit(offset, limit));
     }
 
-    if (Db.supports(Db.Capability.SQL_PARAM_LIMIT)) {
-      Db.getInstance().checkParamLimit(params.size());
-    }
     PreparedStatement stmt = null;
     ResultSet rs = null;
     try {
