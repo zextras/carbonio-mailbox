@@ -69,8 +69,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ProvisioningCache;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ShareLocator;
-import com.zimbra.cs.account.ldap.LdapProv;
-import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.datasource.DataSourceManager;
 import com.zimbra.cs.db.DbDataSource;
 import com.zimbra.cs.db.DbMailItem;
