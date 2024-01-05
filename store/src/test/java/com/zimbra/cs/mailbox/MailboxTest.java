@@ -14,6 +14,7 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.common.mime.InternetAddress;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.index.BrowseTerm;
@@ -31,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.junit.jupiter.api.*;
 
 /**
@@ -270,6 +272,33 @@ public final class MailboxTest {
   }
   assertTrue(
     mbox.getTombstones(changeId3).isEmpty(), "sync token matches last purged tombstone");
+ }
+
+ @Test
+ void test_markMailboxDeleted_deletes_account_when_account_exists() throws Exception {
+  Account acct = Provisioning.getInstance().getAccount("test@zimbra.com");
+  MailboxManager mailboxManager = MailboxManager.getInstance();
+  Mailbox mbox = mailboxManager.getMailboxByAccount(acct);
+  mbox.markMailboxDeleted();
+  AccountServiceException thrown = assertThrows(
+          AccountServiceException.class,
+          () -> mailboxManager.getMailboxByAccountId(acct.getId())
+  );
+  assertEquals(AccountServiceException.NO_SUCH_ACCOUNT, thrown.getCode());
+ }
+
+ @Test
+ void test_markMailboxDeleted_is_ok_when_account_does_not_exists() throws Exception {
+  Account acct = Provisioning.getInstance().getAccount("test@zimbra.com");
+  MailboxManager mailboxManager = MailboxManager.getInstance();
+  Mailbox mbox = mailboxManager.getMailboxByAccount(acct);
+  mbox.markMailboxDeleted();
+  mbox.markMailboxDeleted();
+  AccountServiceException thrown = assertThrows(
+          AccountServiceException.class,
+          () -> mailboxManager.getMailboxByAccountId(acct.getId())
+  );
+  assertEquals(AccountServiceException.NO_SUCH_ACCOUNT, thrown.getCode());
  }
 
   static class MockListener extends MailboxListener {

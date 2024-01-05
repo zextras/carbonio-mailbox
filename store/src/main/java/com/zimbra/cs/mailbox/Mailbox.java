@@ -66,6 +66,7 @@ import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.DataSource;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.ProvisioningCache;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ShareLocator;
 import com.zimbra.cs.datasource.DataSourceManager;
@@ -2661,6 +2662,22 @@ public class Mailbox implements MailboxStore {
     } finally {
       lock.release();
     }
+  }
+
+  /**
+   * mark mailbox deleted
+   * @throws ServiceException
+   */
+  public void markMailboxDeleted() throws ServiceException {
+    MailboxManager.getInstance().markMailboxDeleted(this);
+      Provisioning provisioning = Provisioning.getInstance();
+      if (provisioning instanceof ProvisioningCache) {
+        String accountId = getAccountId();
+        Account acct = Provisioning.getInstance().get(AccountBy.id, accountId);
+        if (acct != null) {
+          ((ProvisioningCache) provisioning).removeFromCache(acct);
+        }
+      }
   }
 
   public void renameMailbox(String oldName, String newName) throws ServiceException {
