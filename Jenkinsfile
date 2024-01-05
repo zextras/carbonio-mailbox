@@ -118,8 +118,7 @@ pipeline {
             steps {
 
                 mvnCmd("$BUILD_PROPERTIES_PARAMS test -Dexcludegroups=api")
-
-                publishCoverage adapters: [jacocoAdapter(mergeToOneReport: true, path: '**/target/site/jacoco/jacoco.xml')], calculateDiffForChangeRequests: true, failNoReports: true
+                recordCoverage(tools: [[parser: 'JACOCO']],sourceCodeRetention: 'MODIFIED',sourceDirectories: [[path: 'src/main/java']])
                 junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
             }
         }
@@ -140,7 +139,7 @@ pipeline {
                 }
             }
             steps {
-                publishCoverage adapters: [jacocoAdapter(mergeToOneReport: true, path: '**/target/site/jacoco/jacoco.xml')], calculateDiffForChangeRequests: true, failNoReports: true
+                recordCoverage(tools: [[parser: 'JACOCO']],sourceCodeRetention: 'MODIFIED',sourceDirectories: [[path: 'src/main/java']])
                 junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
             }
         }
