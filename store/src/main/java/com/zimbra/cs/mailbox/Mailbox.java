@@ -2666,18 +2666,14 @@ public class Mailbox implements MailboxStore {
 
   public void markMailboxDeleted() throws ServiceException {
     MailboxManager.getInstance().markMailboxDeleted(this);
-    try {
       Provisioning provisioning = Provisioning.getInstance();
       if (provisioning instanceof ProvisioningCache) {
-        ((ProvisioningCache) provisioning).removeFromCache(this.getAccount());
+        String accountId = getAccountId();
+        Account acct = Provisioning.getInstance().get(AccountBy.id, accountId);
+        if (acct != null) {
+          ((ProvisioningCache) provisioning).removeFromCache(acct);
+        }
       }
-    } catch (AccountServiceException e) {
-      if (AccountServiceException.NO_SUCH_ACCOUNT.equals(e.getCode())) {
-        ZimbraLog.mailbox.warn(this.getAccountId() + " account deleted");
-        return;
-      }
-      throw e;
-    }
   }
 
   public void renameMailbox(String oldName, String newName) throws ServiceException {
