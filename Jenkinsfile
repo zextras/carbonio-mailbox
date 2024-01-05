@@ -138,7 +138,7 @@ pipeline {
                 }
             }
             steps {
-                recordCoverage(tools: [[parser: 'JACOCO']],sourceCodeRetention: 'MODIFIED',sourceDirectories: [[glob: '**/src/main/java']])
+                recordCoverage(tools: [[parser: 'JACOCO']],sourceCodeRetention: 'MODIFIED')
                 junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
             }
         }
