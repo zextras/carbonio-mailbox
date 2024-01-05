@@ -282,8 +282,7 @@ public final class MailboxTest {
   mbox.markMailboxDeleted();
   AccountServiceException thrown = assertThrows(
           AccountServiceException.class,
-          () -> mailboxManager.getMailboxByAccountId(acct.getId()),
-          "Expected doThing() to throw, but it didn't"
+          () -> mailboxManager.getMailboxByAccountId(acct.getId())
   );
   assertEquals(AccountServiceException.NO_SUCH_ACCOUNT, thrown.getCode());
  }
@@ -297,8 +296,7 @@ public final class MailboxTest {
   mbox.markMailboxDeleted();
   AccountServiceException thrown = assertThrows(
           AccountServiceException.class,
-          () -> mailboxManager.getMailboxByAccountId(acct.getId()),
-          "Expected doThing() to throw, but it didn't"
+          () -> mailboxManager.getMailboxByAccountId(acct.getId())
   );
   assertEquals(AccountServiceException.NO_SUCH_ACCOUNT, thrown.getCode());
  }

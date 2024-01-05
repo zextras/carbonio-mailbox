@@ -2664,6 +2664,10 @@ public class Mailbox implements MailboxStore {
     }
   }
 
+  /**
+   * mark mailbox deleted
+   * @throws ServiceException
+   */
   public void markMailboxDeleted() throws ServiceException {
     MailboxManager.getInstance().markMailboxDeleted(this);
       Provisioning provisioning = Provisioning.getInstance();
