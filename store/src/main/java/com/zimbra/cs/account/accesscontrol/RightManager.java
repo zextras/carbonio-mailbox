@@ -614,7 +614,7 @@ public class RightManager {
 
     public Right getRight(String right) throws ServiceException {
         if (InlineAttrRight.looksLikeOne(right)) {
-            return InlineAttrRight.newInlineAttrRight(right);
+            return InlineAttrRight.newInlineAttrRight(right, attributeManager);
         } else {
             return getRightInternal(right, true);
         }

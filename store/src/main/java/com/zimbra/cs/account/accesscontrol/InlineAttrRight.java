@@ -15,7 +15,7 @@ public class InlineAttrRight extends AttrRight {
     private static final String OP_GET = "get";
     private static final String OP_SET = "set";
     
-    static InlineAttrRight newInlineAttrRight(String right) throws ServiceException {
+    static InlineAttrRight newInlineAttrRight(String right, AttributeManager attributeManager) throws ServiceException {
         String[] parts = right.split(PARTS_SEPARATOR_ESC);
         if (parts.length != 3)
             throw ServiceException.PARSE_ERROR("inline attr right might have 3 parts", null);
@@ -35,7 +35,7 @@ public class InlineAttrRight extends AttrRight {
         String attrName = parts[2];
         
         // use the {op}.{target-type}.{attr-name} string as the right name and description
-        InlineAttrRight iar = new InlineAttrRight(right, rightType, AttributeManager.getInstance());
+        InlineAttrRight iar = new InlineAttrRight(right, rightType, attributeManager);
         iar.setDesc(right);
         iar.setTargetType(targetType);
         iar.validateAttr(attrName);
