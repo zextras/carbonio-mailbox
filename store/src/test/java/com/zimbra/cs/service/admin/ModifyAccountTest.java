@@ -36,12 +36,12 @@ class ModifyAccountTest extends SoapTestSuite {
 
   @Test
   void shouldModifyAccountWhenDomainAdminChangingMailTransport() throws Exception {
-    Account domainAdminAccount = accountCreatorFactory.get()
+    final Account domainAdminAccount = accountCreatorFactory.get()
         .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE").create();
-    Account userAccount = accountCreatorFactory.get().create();
-    Domain target = provisioning.getDomain(domainAdminAccount);
+    final Account userAccount = accountCreatorFactory.get().create();
+    final Domain target = provisioning.getDomain(domainAdminAccount);
 
-    Set<ZimbraACE> aces = new HashSet<>();
+    final Set<ZimbraACE> aces = new HashSet<>();
     aces.add(new ZimbraACE(
                   domainAdminAccount.getId(),
                   GranteeType.GT_USER,
@@ -50,9 +50,9 @@ class ModifyAccountTest extends SoapTestSuite {
                   null));
     ACLUtil.grantRight(provisioning, target, aces);
 
-    ModifyAccountRequest request =
+    final ModifyAccountRequest request =
         new ModifyAccountRequest(userAccount.getId());
-    request.addAttr("zimbraMailTransport", "lmtp:localhost:7025");
+    request.addAttr(ZAttrProvisioning.A_zimbraMailTransport, "lmtp:localhost:7025");
     final HttpResponse response = getSoapClient().newRequest().setCaller(domainAdminAccount)
         .setSoapBody(request).execute();
     Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
