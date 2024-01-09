@@ -17,10 +17,12 @@ public class AttrRight extends AdminRight {
 
     private Set<TargetType> mTargetTypes = new HashSet<TargetType>();
     private Set<String> mAttrs;
+    private final AttributeManager attributeManager;
 
 
-    AttrRight(String name, RightType rightType) throws ServiceException {
+    AttrRight(String name, RightType rightType, AttributeManager attributeManager) throws ServiceException {
         super(name, rightType);
+        this.attributeManager = attributeManager;
 
         if (rightType != RightType.getAttrs && rightType != RightType.setAttrs)
             throw ServiceException.FAILURE("internal error", null);
@@ -230,16 +232,15 @@ public class AttrRight extends AdminRight {
     }
 
     /**
-     * validate the attribute name is present on all of the specified target types.
+     * validate the attribute name is present on all the specified target types.
      *
-     * @param attrName
-     * @param targetTypes
+     * @param attrName name of the attribute
      */
+
     void validateAttr(String attrName) throws ServiceException {
-        AttributeManager am = AttributeManager.getInstance();
         for (TargetType tt : mTargetTypes) {
             AttributeClass klass = tt.getAttributeClass();
-            if (!am.getAllAttrsInClass(klass).contains(attrName))
+            if (!attributeManager.getAllAttrsInClass(klass).contains(attrName))
                 throw ServiceException.FAILURE("attribute " + attrName + " is not on " + tt.getCode(), null);
         }
     }

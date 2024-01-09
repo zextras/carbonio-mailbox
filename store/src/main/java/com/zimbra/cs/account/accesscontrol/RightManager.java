@@ -84,6 +84,7 @@ public class RightManager {
     private static final String TARGET_TYPE_DELIMITER   = ",";
 
     private static RightManager mInstance;
+    private final AttributeManager attributeManager;
 
     // keep the map sorted so "zmmailbox lp" can display in alphabetical order
     private final Map<String, UserRight> sUserRights = new TreeMap<String, UserRight>();
@@ -135,11 +136,11 @@ public class RightManager {
         if (mInstance != null) {
             return mInstance;
         }
-
-        mInstance = new RightManager(dir, unittest);
+        final AttributeManager attributeManager = AttributeManager.getInstance();
+        mInstance = new RightManager(dir, unittest, attributeManager);
 
         try {
-            Right.init(mInstance);
+            Right.init(mInstance, attributeManager);
         } catch (ServiceException e) {
             ZimbraLog.acl.error("failed to initialize known right from: " + dir, e);
             throw e;
@@ -147,7 +148,8 @@ public class RightManager {
         return mInstance;
     }
 
-    private RightManager(String dir, boolean unittest) throws ServiceException {
+    public RightManager(String dir, boolean unittest, AttributeManager attributeManager) throws ServiceException {
+        this.attributeManager = attributeManager;
         CoreRightDefFiles.init(unittest);
 
         File fdir = new File(dir);
@@ -359,7 +361,7 @@ public class RightManager {
             }
             rightType = AdminRight.RightType.fromString(rt);
 
-            right = AdminRight.newAdminSystemRight(name, rightType);
+            right = AdminRight.newAdminSystemRight(name, rightType, attributeManager);
             if (targetTypeStr != null) {
                 String taregtTypes[] = targetTypeStr.split(TARGET_TYPE_DELIMITER);
                 for (String tt : taregtTypes) {
@@ -922,13 +924,6 @@ public class RightManager {
                     throw ServiceException.INVALID_REQUEST("unknown RightManager CLI action: " + str, e);
                 }
             }
-        }
-
-        private static void check() throws ServiceException  {
-            ZimbraLog.toolSetupLog4j("DEBUG", "/Users/pshao/sandbox/conf/log4j.properties.phoebe");
-
-            RightManager rm = new RightManager("/Users/pshao/p4/main/ZimbraServer/conf/rights", false);
-            System.out.println(rm.dump(null));
         }
 
         private static void genDomainAdminSetAttrsRights(String outFile, String templateFile)

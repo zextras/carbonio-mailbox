@@ -5,11 +5,11 @@
 
 package com.zimbra.cs.account.accesscontrol;
 
+import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.account.AttributeManager;
+import com.zimbra.cs.account.accesscontrol.generated.RightConsts;
 import java.util.Arrays;
 import java.util.Set;
-
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.accesscontrol.generated.RightConsts;
 
 public abstract class Right extends RightConsts implements Comparable<Right> {
 
@@ -46,9 +46,9 @@ public abstract class Right extends RightConsts implements Comparable<Right> {
     private CheckRightFallback mFallback;
     int mCacheIndex = NOT_CACHEABLE;
 
-    static void init(RightManager rm) throws ServiceException {
+    static void init(RightManager rm, AttributeManager attributeManager) throws ServiceException {
         UserRight.init(rm);
-        AdminRight.init(rm);
+        AdminRight.initAdmin(rm, attributeManager);
     }
 
     Right(String name, RightType rightType) {

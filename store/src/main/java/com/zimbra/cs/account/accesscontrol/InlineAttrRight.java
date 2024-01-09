@@ -6,6 +6,7 @@
 package com.zimbra.cs.account.accesscontrol;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.account.AttributeManager;
 
 public class InlineAttrRight extends AttrRight {
 
@@ -34,7 +35,7 @@ public class InlineAttrRight extends AttrRight {
         String attrName = parts[2];
         
         // use the {op}.{target-type}.{attr-name} string as the right name and description
-        InlineAttrRight iar = new InlineAttrRight(right, rightType);
+        InlineAttrRight iar = new InlineAttrRight(right, rightType, AttributeManager.getInstance());
         iar.setDesc(right);
         iar.setTargetType(targetType);
         iar.validateAttr(attrName);
@@ -63,8 +64,8 @@ public class InlineAttrRight extends AttrRight {
             return false;
     }
     
-    private InlineAttrRight(String name, RightType rightType) throws ServiceException {
-        super(name, rightType);
+    private InlineAttrRight(String name, RightType rightType, AttributeManager attributeManager) throws ServiceException {
+        super(name, rightType, attributeManager);
     }
     
     @Override
