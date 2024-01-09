@@ -21,7 +21,6 @@ import com.zimbra.cs.account.Entry.EntryType;
 import com.zimbra.cs.account.callback.CallbackContext;
 import com.zimbra.cs.account.callback.IDNCallback;
 import com.zimbra.cs.account.ldap.LdapProv;
-import com.zimbra.cs.extension.ExtensionUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -74,24 +73,22 @@ public class AttributeManager {
   private static final String E_DEFAULT_EXTERNAL_COS_VALUE = "defaultExternalCOSValue";
   private static final String E_DEFAULT_COS_VALUE_UPGRADE = "defaultCOSValueUpgrade";
 
-  private static final Set<AttributeFlag> allowedEphemeralFlags = new HashSet<>();
-  private static final Map<Integer, String> mGroupMap = new HashMap<>();
-  private static final Map<Integer, String> mOCGroupMap = new HashMap<>();
+  private final Set<AttributeFlag> allowedEphemeralFlags = new HashSet<>() {{
+    add(AttributeFlag.ephemeral);
+    add(AttributeFlag.dynamic);
+    add(AttributeFlag.expirable);
+  }};
+  private final Map<Integer, String> mGroupMap = new HashMap<>();
+  private final Map<Integer, String> mOCGroupMap = new HashMap<>();
   // attrs declared as type="binary" in attrs.xml
-  private static final Set<String> mBinaryAttrs = new HashSet<>();
+  private final Set<String> mBinaryAttrs = new HashSet<>();
   // attrs that require ";binary" appended explicitly when transferred.
   // The only such syntax we support for now is:
   // 1.3.6.1.4.1.1466.115.121.1.8 - Certificate syntax
-  private static final Set<String> mBinaryTransferAttrs = new HashSet<>();
+  private final Set<String> mBinaryTransferAttrs = new HashSet<>();
   private static AttributeManager mInstance;
   // do not keep comments and descriptions when running in a server
   private static boolean mMinimize = false;
-
-  static {
-    allowedEphemeralFlags.add(AttributeFlag.ephemeral);
-    allowedEphemeralFlags.add(AttributeFlag.dynamic);
-    allowedEphemeralFlags.add(AttributeFlag.expirable);
-  }
 
   // contains attrs defined in one of the zimbra .xml files (currently zimbra attrs and some of the
   // amavis attrs)
@@ -205,35 +202,10 @@ public class AttributeManager {
         return mInstance;
       }
       String dir = LC.zimbra_attrs_directory.value();
-      String className = LC.zimbra_class_attrmanager.value();
-      if (!className.equals("")) {
-        try {
-          try {
-            mInstance =
-                (AttributeManager)
-                    Class.forName(className).getDeclaredConstructor(String.class).newInstance(dir);
-          } catch (ClassNotFoundException cnfe) {
-            // ignore and look in extensions
-            mInstance =
-                (AttributeManager)
-                    ExtensionUtil.findClass(className)
-                        .getDeclaredConstructor(String.class)
-                        .newInstance(dir);
-          }
-        } catch (Exception e) {
-          ZimbraLog.account.debug(
-              "could not instantiate AttributeManager interface of class '"
-                  + className
-                  + "'; defaulting to AttributeManager");
-        }
-      }
-      if (mInstance == null) {
-        mInstance = new AttributeManager(dir);
-      }
+      mInstance = new AttributeManager(dir);
       if (mInstance.hasErrors()) {
         throw ServiceException.FAILURE(mInstance.getErrors(), null);
       }
-
       mInstance.computeClassToAllAttrsMap();
 
       return mInstance;
@@ -1104,7 +1076,7 @@ public class AttributeManager {
     }
   }
 
-  private void computeClassToAllAttrsMap() {
+  public void computeClassToAllAttrsMap() {
 
     Set<String> attrs;
 

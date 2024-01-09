@@ -10,9 +10,11 @@ class RightManagerTest {
 
   @Test
   void shouldLoadRights() throws ServiceException {
-    LC.zimbra_attrs_directory.setDefault("../store/conf/attrs");
-    final AttributeManager attributeManager = AttributeManager.getInstance();
+
+    final AttributeManager attributeManager = new AttributeManager("../store/conf/attrs");
+    attributeManager.computeClassToAllAttrsMap();
     RightManager rightManager = new RightManager("../store-conf/conf/rights", false, attributeManager);
+
     Assertions.assertFalse(rightManager.getAllAdminRights().isEmpty());
     Assertions.assertFalse(rightManager.getAllUserRights().isEmpty());
   }
