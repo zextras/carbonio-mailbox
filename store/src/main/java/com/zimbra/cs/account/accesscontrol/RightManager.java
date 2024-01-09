@@ -147,7 +147,7 @@ public class RightManager {
         return mInstance;
     }
 
-    public RightManager(String dir, boolean unittest) throws ServiceException {
+    private RightManager(String dir, boolean unittest) throws ServiceException {
         CoreRightDefFiles.init(unittest);
 
         File fdir = new File(dir);
