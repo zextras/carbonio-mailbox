@@ -185,6 +185,7 @@ public class AttributeManager {
         throw ServiceException.FAILURE("error loading attrs file: " + file, ex);
       }
     }
+    computeClassToAllAttrsMap();
   }
 
   public static AttributeManager getInst() {
