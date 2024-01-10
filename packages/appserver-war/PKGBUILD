@@ -1,5 +1,5 @@
 pkgname="carbonio-appserver-war"
-pkgver="4.12.0"
+pkgver="4.13.0"
 pkgrel="1"
 pkgdesc="Carbonio Mailbox Service War"
 arch=('x86_64')
