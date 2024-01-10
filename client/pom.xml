@@ -91,6 +91,11 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <forkMode>always</forkMode>
+          <parallel>all</parallel>
+          <threadCount>10</threadCount>
+          <threadCountSuites>2</threadCountSuites>
+          <threadCountClasses>2</threadCountClasses>
+          <threadCountMethods>6</threadCountMethods>
         </configuration>
       </plugin>
       <plugin>
