@@ -9,23 +9,40 @@ import org.junit.jupiter.api.Test;
 class RightManagerTest {
 
   @Test
-  void shouldLoadRights() throws ServiceException {
+  void shouldLoadRightsUsingFilesystem() throws ServiceException {
 
     final AttributeManager attributeManager = new AttributeManager("../store/conf/attrs");
-    attributeManager.computeClassToAllAttrsMap();
-    RightManager rightManager = new RightManager("../store-conf/conf/rights", false, attributeManager);
+    RightManager rightManager = RightManager.fromFileSystem("src/main/resources/conf/rights", false, attributeManager);
 
-    Assertions.assertFalse(rightManager.getAllAdminRights().isEmpty());
-    Assertions.assertFalse(rightManager.getAllUserRights().isEmpty());
+    assertRightsLoaded(rightManager);
+  }
+
+  @Test
+  void shouldLoadRightsUsingResources() throws ServiceException {
+    final AttributeManager attributeManager = new AttributeManager("../store/conf/attrs");
+    RightManager rightManager = RightManager.fromResources(attributeManager);
+
+    assertRightsLoaded(rightManager);
   }
 
   @Test
   void shouldLoadRightsUsingSingleton() throws ServiceException {
     LC.zimbra_attrs_directory.setDefault("../store/conf/attrs");
-    LC.zimbra_rights_directory.setDefault("../store-conf/conf/rights");
+    LC.zimbra_rights_directory.setDefault("src/main/resources/conf/rights");
     RightManager rightManager = RightManager.getInstance();
+
+    assertRightsLoaded(rightManager);
+  }
+
+  private void assertRightsLoaded(RightManager rightManager) throws ServiceException {
     Assertions.assertFalse(rightManager.getAllAdminRights().isEmpty());
     Assertions.assertFalse(rightManager.getAllUserRights().isEmpty());
+    Assertions.assertEquals(423, rightManager.getAllAdminRights().size());
+    Assertions.assertEquals(11, rightManager.getAllUserRights().size());
+
+    final AdminRight domainAdminRights = rightManager.getAdminRight("domainAdminRights");
+    Assertions.assertTrue(domainAdminRights.isComboRight());
   }
+
 
 }

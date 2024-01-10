@@ -5,36 +5,6 @@
 
 package com.zimbra.cs.account.accesscontrol;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.XMLWriter;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.TreeMultimap;
@@ -53,6 +23,35 @@ import com.zimbra.cs.account.AttributeManager;
 import com.zimbra.cs.account.FileGenUtil;
 import com.zimbra.cs.account.accesscontrol.Right.RightType;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
 
 
 public class RightManager {
@@ -80,6 +79,15 @@ public class RightManager {
     private static final String A_TARGET_TYPE  = "targetType";
     private static final String A_TYPE         = "type";
     private static final String A_USER_RIGHT   = "userRight";
+    private static final List<String> RIGHTS_FILES = List.of(
+        "adminconsole-ui.xml",
+        "rights.xml",
+        "rights-roles.xml",
+        "user-rights.xml",
+        "rights-adminconsole.xml",
+        "rights-adminconsole-domainadmin.xml",
+        "rights-domainadmin.xml"
+    );
 
     private static final String TARGET_TYPE_DELIMITER   = ",";
 
@@ -92,20 +100,21 @@ public class RightManager {
     private final Map<String, Help> sHelp = new TreeMap<String, Help>();
     private final Map<String, UI> sUI = new TreeMap<String, UI>();
 
-    private static class CoreRightDefFiles {
+  private static class CoreRightDefFiles {
         private static final HashSet<String> sCoreRightDefFiles = new HashSet<String>();
 
         static void init(boolean unittest) {
             sCoreRightDefFiles.add("rights.xml");
             sCoreRightDefFiles.add("user-rights.xml");
 
+            //TODO: remove below logic, file does not even exist
             if (unittest || DebugConfig.running_unittest) {
                 sCoreRightDefFiles.add("rights-unittest.xml");
             }
         }
 
-        static boolean isCoreRightFile(File file) {
-            return sCoreRightDefFiles.contains(file.getName());
+        private static boolean isCoreRightFile(String filename) {
+            return sCoreRightDefFiles.contains(filename);
         }
 
         static String listCoreDefFiles() {
@@ -131,64 +140,104 @@ public class RightManager {
         return getInstance(LC.zimbra_rights_directory.value(), unittest);
     }
 
-    private static synchronized RightManager getInstance(String dir, boolean unittest)
+    private static synchronized RightManager getInstance(String rightsDirectoryPath, boolean unittest)
     throws ServiceException {
         if (mInstance != null) {
             return mInstance;
         }
         final AttributeManager attributeManager = AttributeManager.getInstance();
-        mInstance = new RightManager(dir, unittest, attributeManager);
+
+        if (Objects.isNull(rightsDirectoryPath) || Objects.equals("", rightsDirectoryPath)) {
+            mInstance = RightManager.fromResources(attributeManager);
+        } else {
+            mInstance = RightManager.fromFileSystem(rightsDirectoryPath, unittest, attributeManager);
+        }
 
         try {
             Right.init(mInstance, attributeManager);
         } catch (ServiceException e) {
-            ZimbraLog.acl.error("failed to initialize known right from: " + dir, e);
+            ZimbraLog.acl.error("failed to initialize known right from: " + rightsDirectoryPath, e);
             throw e;
         }
         return mInstance;
     }
 
-    public RightManager(String dir, boolean unittest, AttributeManager attributeManager) throws ServiceException {
+
+    public static RightManager fromResources(AttributeManager attributeManager) throws ServiceException {
+      final RightContentExtractor rightContentExtractor = (String fileName) -> RightManager.class.getResourceAsStream("/conf/rights/" + fileName);
+      return new RightManager(rightContentExtractor, false, attributeManager);
+    }
+
+    private interface RightContentExtractor {
+      InputStream getContent(String rightFileName) throws ServiceException;
+    }
+
+    private static class FileRightContentExtractor implements RightContentExtractor {
+
+      final String baseDirectory;
+
+        private FileRightContentExtractor(String baseDirectory) {
+            this.baseDirectory = baseDirectory;
+        }
+
+        @Override
+        public InputStream getContent(String rightFileName) throws ServiceException {
+            final File file = new File(baseDirectory, rightFileName);
+            try {
+                return new FileInputStream(file);
+            } catch (FileNotFoundException e) {
+                throw ServiceException.FAILURE("Cannot read file " + file.getAbsolutePath(), e);
+            }
+        }
+    }
+
+    private RightManager(RightContentExtractor rightContentExtractor, boolean unittest, AttributeManager attributeManager) throws ServiceException {
         this.attributeManager = attributeManager;
         CoreRightDefFiles.init(unittest);
 
-        File fdir = new File(dir);
-        if (!fdir.exists()) {
-            throw ServiceException.FAILURE("rights directory does not exists: " + dir, null);
-        }
-        if (!fdir.isDirectory()) {
-            throw ServiceException.FAILURE("rights directory is not a directory: " + dir, null);
-        }
+        List<String> yetToProcessFileNames = new ArrayList<String>(RIGHTS_FILES);
+        List<String> processedFileNames = new ArrayList<String>();
 
-        ZimbraLog.acl.debug("Loading rights from %s", fdir.getAbsolutePath());
-
-        File[] files = fdir.listFiles();
-        List<File> yetToProcess = new ArrayList<File>(Arrays.asList(files));
-        List<File> processed = new ArrayList<File>();
-
-        while (!yetToProcess.isEmpty()) {
-            File file = yetToProcess.get(0);
-
-            if (!file.getPath().endsWith(".xml") || !file.isFile()) {
-                ZimbraLog.acl.warn("while loading rights, ignoring none .xml file or sub folder: %s", file);
-                yetToProcess.remove(file);
-                continue;
-            }
+        while (!yetToProcessFileNames.isEmpty()) {
+            String currentFilename = yetToProcessFileNames.get(0);
 
             try {
-                boolean done = loadSystemRights(file, processed, files);
-                if (done) {
-                    processed.add(file);
-                    yetToProcess.remove(file);
-                } else {
-                    // move this file to the end
-                    yetToProcess.remove(file);
-                    yetToProcess.add(file);
+                ZimbraLog.acl.debug("Parsing file %s", currentFilename);
+                try (InputStream inputStream = rightContentExtractor.getContent(currentFilename)) {
+                    boolean done = loadSystemRights(currentFilename, inputStream, processedFileNames, RIGHTS_FILES);
+                    if (done) {
+                        processedFileNames.add(currentFilename);
+                        yetToProcessFileNames.remove(currentFilename);
+                    } else {
+                        // move this file to the end
+                        yetToProcessFileNames.remove(currentFilename);
+                        yetToProcessFileNames.add(currentFilename);
+                    }
+                } catch (FileNotFoundException e) {
+                    throw e;
+                } catch (IOException e) {
+                    ZimbraLog.acl.debug("Problem parsing file %s", currentFilename, e);
+                    throw ServiceException.PARSE_ERROR("Problem parsing file for system rights", null);
                 }
+
             } catch (XmlParseException | FileNotFoundException e) {
-                throw ServiceException.PARSE_ERROR("error loading rights file: " + file, e);
+                throw ServiceException.PARSE_ERROR("error loading rights file: " + currentFilename, e);
             }
         }
+    }
+
+    public static RightManager fromFileSystem(String baseRightsDirectory, boolean unittest, AttributeManager attributeManager) throws ServiceException {
+        File fdir = new File(baseRightsDirectory);
+        if (!fdir.exists()) {
+            throw ServiceException.FAILURE("rights directory does not exists: " + baseRightsDirectory, null);
+        }
+        if (!fdir.isDirectory()) {
+            throw ServiceException.FAILURE("rights directory is not a directory: " + baseRightsDirectory, null);
+        }
+        ZimbraLog.acl.debug("Loading rights from %s", fdir.getAbsolutePath());
+        RightContentExtractor rightContentExtractor = new FileRightContentExtractor(baseRightsDirectory);
+        return new RightManager(rightContentExtractor, unittest, attributeManager);
+
     }
 
     private boolean getBoolean(String value) throws ServiceException {
@@ -423,24 +472,16 @@ public class RightManager {
         return cb;
     }
 
-    private boolean loadSystemRights(File file, List<File> processedFiles, File[] allFiles)
+    private boolean loadSystemRights(String fileName, InputStream fileContent, List<String> processedFiles, List<String> allFileNames)
     throws ServiceException, FileNotFoundException {
-        Document doc;
-        try (FileInputStream fis = new FileInputStream(file)) {
-            doc = W3cDomUtil.parseXMLToDom4jDocUsingSecureProcessing(fis);
-        } catch (FileNotFoundException e) {
-            throw e;
-        } catch (IOException e) {
-            ZimbraLog.acl.debug("Problem parsing file %s", file, e);
-            throw ServiceException.PARSE_ERROR("Problem parsing file for system rights", null);
-        }
+        Document doc = W3cDomUtil.parseXMLToDom4jDocUsingSecureProcessing(fileContent);
         Element root = doc.getRootElement();
         if (!root.getName().equals(E_RIGHTS)) {
             throw ServiceException.PARSE_ERROR("root tag is not " + E_RIGHTS, null);
         }
 
         // preset rights can only be defined in our core right definition file
-        boolean allowPresetRight = CoreRightDefFiles.isCoreRightFile(file);
+        boolean allowPresetRight = CoreRightDefFiles.isCoreRightFile(fileName);
 
         boolean seenRight = false;
         for (Iterator iter = root.elementIterator(); iter.hasNext();) {
@@ -459,8 +500,8 @@ public class RightManager {
 
                 // make sure the include file exists
                 boolean foundFile = false;
-                for (File f : allFiles) {
-                    if (f.getName().equals(includeFile)) {
+                for (String fileInAllFiles : allFileNames) {
+                    if (fileInAllFiles.equals(includeFile)) {
                         foundFile = true;
                         break;
                     }
@@ -470,8 +511,8 @@ public class RightManager {
                 }
 
                 boolean processed = false;
-                for (File f : processedFiles) {
-                    if (f.getName().equals(includeFile)) {
+                for (String alreadyProcessed : processedFiles) {
+                    if (alreadyProcessed.equals(includeFile)) {
                         processed = true;
                         break;
                     }
@@ -484,13 +525,13 @@ public class RightManager {
             } else if (elem.getName().equals(E_RIGHT)) {
                 if (!seenRight) {
                     seenRight = true;
-                    ZimbraLog.acl.debug("Loading %s", file.getAbsolutePath());
+                    ZimbraLog.acl.debug("Loading %s", fileName);
                 }
-                loadRight(elem, file, allowPresetRight);
+                loadRight(elem, fileName, allowPresetRight);
             } else if (elem.getName().equals(E_HELP)) {
-                loadHelp(elem, file);
+                loadHelp(elem);
             } else if (elem.getName().equals(E_UI)) {
-                loadUI(elem, file);
+                loadUI(elem);
             } else {
                 throw ServiceException.PARSE_ERROR("unknown element: " + elem.getName(), null);
             }
@@ -499,7 +540,7 @@ public class RightManager {
         return true;
     }
 
-    private void loadRight(Element eRight, File file, boolean allowPresetRight)
+    private void loadRight(Element eRight, String fileName, boolean allowPresetRight)
     throws ServiceException {
         String name = eRight.attributeValue(A_NAME);
         if (name == null) {
@@ -512,7 +553,7 @@ public class RightManager {
             Right right = parseRight(eRight);
             if (!allowPresetRight && RightType.preset == right.getRightType()) {
                 throw ServiceException.PARSE_ERROR(
-                        "Encountered preset right " + name + " in " + file.getName() +
+                        "Encountered preset right " + name + " in " + fileName +
                         ", preset right can only be defined in one of the core right definition files: " +
                         CoreRightDefFiles.listCoreDefFiles(),
                         null);
@@ -528,7 +569,7 @@ public class RightManager {
         }
     }
 
-    private void loadHelp(Element eHelp, File file) throws ServiceException {
+    private void loadHelp(Element eHelp) throws ServiceException {
         String name = eHelp.attributeValue(A_NAME);
         if (name == null) {
             throw ServiceException.PARSE_ERROR("no name specified", null);
@@ -558,7 +599,7 @@ public class RightManager {
         sHelp.put(name, help);
     }
 
-    private void loadUI(Element eUI, File file) throws ServiceException {
+    private void loadUI(Element eUI) throws ServiceException {
         String name = eUI.attributeValue(A_NAME);
         if (name == null) {
             throw ServiceException.PARSE_ERROR("no name specified", null);
