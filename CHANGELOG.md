@@ -1,3 +1,16 @@
+# [4.12.0](https://github.com/Zextras/carbonio-mailbox/compare/4.11.1...4.12.0) (2024-01-04)
+
+
+### Bug Fixes
+
+* [CO-929] update milter log4j config ([#410](https://github.com/Zextras/carbonio-mailbox/issues/410)) ([28809de](https://github.com/Zextras/carbonio-mailbox/commit/28809deb4cad8b66b9543a530d50f76f0e01da9e))
+* generateversions-init.sql and attr-schema ([#398](https://github.com/Zextras/carbonio-mailbox/issues/398)) ([b737938](https://github.com/Zextras/carbonio-mailbox/commit/b73793848b8aa0a7da228cd715c411d5982461e0))
+
+
+### Features
+
+* [CO-917] generate regular auth token for recover password requests ([#397](https://github.com/Zextras/carbonio-mailbox/issues/397)) ([e35458d](https://github.com/Zextras/carbonio-mailbox/commit/e35458d32daf1577fe7c756aa2d552d11120ce90))
+* healthcheck ([#401](https://github.com/Zextras/carbonio-mailbox/issues/401)) ([237ee66](https://github.com/Zextras/carbonio-mailbox/commit/237ee66280db20fc7c408c646f23b0fa6da6723e))
 
 
 ## [4.11.1](https://github.com/Zextras/carbonio-mailbox/compare/4.11.0...4.11.1) (2023-11-28)

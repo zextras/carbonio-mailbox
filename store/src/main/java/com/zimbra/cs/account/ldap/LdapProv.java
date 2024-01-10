@@ -8,7 +8,7 @@ package com.zimbra.cs.account.ldap;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
-import com.zimbra.cs.account.Entry;
+import com.zimbra.cs.account.ProvisioningCache;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.auth.AuthMechanism.AuthMech;
 import com.zimbra.cs.ldap.LdapClient;
@@ -24,7 +24,7 @@ import java.util.Set;
 /**
  * @author pshao
  */
-public abstract class LdapProv extends Provisioning {
+public abstract class LdapProv extends Provisioning implements ProvisioningCache {
 
   protected LdapDIT mDIT;
   protected LdapHelper helper;
@@ -121,8 +121,6 @@ public abstract class LdapProv extends Provisioning {
    */
   public abstract void zimbraLdapAuthenticate(
       Account acct, String password, Map<String, Object> authCtxt) throws ServiceException;
-
-  public abstract void removeFromCache(Entry entry);
 
   @TODO // deprecate
   public abstract void searchLdapOnMaster(
