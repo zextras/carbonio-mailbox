@@ -1077,7 +1077,7 @@ public class AttributeManager {
     }
   }
 
-  public void computeClassToAllAttrsMap() {
+  private void computeClassToAllAttrsMap() {
 
     Set<String> attrs;
 
