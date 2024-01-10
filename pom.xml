@@ -911,6 +911,11 @@
               -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
               -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
             </argLine>
+            <parallel>all</parallel>
+            <threadCount>10</threadCount>
+            <threadCountSuites>2</threadCountSuites>
+            <threadCountClasses>2</threadCountClasses>
+            <threadCountMethods>6</threadCountMethods>
             <excludes>
               <!-- Exclude qa -->
               <exclude>qa.**</exclude>
