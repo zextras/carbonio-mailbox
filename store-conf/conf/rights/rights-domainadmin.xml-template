@@ -25,6 +25,7 @@
   <attrs>
     <a n="zimbraCOSId"/>
     <a n="zimbraIsDelegatedAdminAccount"/>
+    <a n="zimbraMailTransport"/>
 ${ACCOUNT_AND_CALENDAR_RESOURCE_ATTRS}
   </attrs>
 </right>
@@ -47,7 +48,12 @@ ${DISTRIBUTION_LIST_ATTRS}
 <right name="setDomainAdminDomainAttrs" type="setAttrs" targetType="domain">
   <desc>domain attrs modifiable by domain admins for domain based access manager</desc>
   <attrs>
-    <a n="zimbraDomainDefaultCOSId"/> 
+    <a n="zimbraDomainDefaultCOSId"/>
+    <a n="zimbraPublicServiceHostname"/>
+    <a n="zimbraVirtualHostname"/>
+    <a n="zimbraSSLCertificate"/>
+    <a n="zimbraSSLPrivateKey"/>
+    <a n="zimbraPublicServicePort"/>
 ${DOMAIN_ATTRS}
   </attrs>
 </right>
@@ -177,13 +183,6 @@ ${DOMAIN_ATTRS}
     <r n="domainAdminCalendarResourceRights"/>
     <r n="domainAdminDistributionListRights"/>
     <r n="domainAdminDomainRights"/>
-    <r n="set.domain.zimbraPublicServiceHostname"/>
-    <r n="set.domain.zimbraVirtualHostname"/>
-    <r n="set.domain.zimbraSSLCertificate"/>
-    <r n="set.domain.zimbraSSLPrivateKey"/>
-    <r n="set.domain.zimbraPublicServicePort"/>
-    <r n="set.domain.zimbraPublicServiceProtocol"/>
-    <r n="set.domain.zimbraMailTransport"/>
 
     <!-- not generated, put here manually -->
     <r n="listAlias"/>
