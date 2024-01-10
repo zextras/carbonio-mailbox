@@ -1,5 +1,5 @@
 pkgname="carbonio-appserver-store-libs"
-pkgver="4.13.0"
+pkgver="4.12.0"
 pkgrel="1"
 pkgdesc="Replace Carbonio store libs"
 arch=('x86_64')
