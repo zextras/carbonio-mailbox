@@ -82,7 +82,6 @@ public final class MailboxTestUtil {
     }
     LC.timezone_file.setDefault(timezonefilePath);
     WellKnownTimeZones.loadFromFile(d);
-    LC.zimbra_rights_directory.setDefault("");
     LC.zimbra_attrs_directory.setDefault(zimbraServerDir + "conf/attrs");
     LC.zimbra_tmp_directory.setDefault(zimbraServerDir + "tmp");
     // substitute test DS config file

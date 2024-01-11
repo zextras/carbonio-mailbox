@@ -28,7 +28,6 @@ class RightManagerTest {
   @Test
   void shouldLoadRightsUsingSingleton() throws ServiceException {
     LC.zimbra_attrs_directory.setDefault("../store/conf/attrs");
-    LC.zimbra_rights_directory.setDefault("src/main/resources/conf/rights");
     RightManager rightManager = RightManager.getInstance();
 
     assertRightsLoaded(rightManager);

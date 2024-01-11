@@ -37,9 +37,6 @@
   <key name="timezone_file">
     <value>./src/test/resources/timezones-test.ics</value>
   </key>
-  <key name="zimbra_rights_directory">
-    <value></value>
-  </key>
   <key name="mailboxd_keystore">
     <value>/docker-keystore</value>
   </key>

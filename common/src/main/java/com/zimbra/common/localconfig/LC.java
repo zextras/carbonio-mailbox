@@ -81,7 +81,7 @@ public final class LC {
       KnownKey.newKey("${zimbra_home}/conf/attrs");
 
   public static final KnownKey zimbra_rights_directory =
-      KnownKey.newKey("${zimbra_home}/conf/rights");
+      KnownKey.newKey("");
 
   @Supported public static final KnownKey zimbra_user = KnownKey.newKey("zextras");
 
