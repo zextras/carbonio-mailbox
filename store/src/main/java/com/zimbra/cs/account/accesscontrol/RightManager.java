@@ -72,7 +72,6 @@ public class RightManager {
     private static final String A_FALLBACK     = "fallback";
     private static final String A_FILE         = "file";
     private static final String A_GRANT_TARGET_TYPE  = "grantTargetType";
-    private static final String A_LIMIT        = "l";
     private static final String A_N            = "n";
     private static final String A_NAME         = "name";
     private static final String A_TARGET_TYPE  = "targetType";
@@ -184,8 +183,8 @@ public class RightManager {
         this.attributeManager = attributeManager;
         CoreRightDefFiles.init();
 
-        List<String> yetToProcessFileNames = new ArrayList<>(RIGHTS_FILES);
-        List<String> processedFileNames = new ArrayList<>();
+        final List<String> yetToProcessFileNames = new ArrayList<>(RIGHTS_FILES);
+        final List<String> processedFileNames = new ArrayList<>();
 
         while (!yetToProcessFileNames.isEmpty()) {
             String currentFilename = yetToProcessFileNames.get(0);
@@ -208,16 +207,16 @@ public class RightManager {
         }
     }
 
-    public static RightManager fromFileSystem(String baseRightsDirectory, AttributeManager attributeManager) throws ServiceException {
-        File fdir = new File(baseRightsDirectory);
-        if (!fdir.exists()) {
-            throw ServiceException.FAILURE("rights directory does not exist: " + baseRightsDirectory, null);
+    public static RightManager fromFileSystem(String baseRightsDirectoryPath, AttributeManager attributeManager) throws ServiceException {
+        File baseRightsDirectory = new File(baseRightsDirectoryPath);
+        if (!baseRightsDirectory.exists()) {
+            throw ServiceException.FAILURE("rights directory does not exist: " + baseRightsDirectoryPath, null);
         }
-        if (!fdir.isDirectory()) {
-            throw ServiceException.FAILURE("rights directory is not a directory: " + baseRightsDirectory, null);
+        if (!baseRightsDirectory.isDirectory()) {
+            throw ServiceException.FAILURE("rights directory is not a directory: " + baseRightsDirectoryPath, null);
         }
-        ZimbraLog.acl.debug("Loading rights from %s", fdir.getAbsolutePath());
-        RightContentExtractor rightContentExtractor = new FileRightContentExtractor(baseRightsDirectory);
+        ZimbraLog.acl.debug("Loading rights from %s", baseRightsDirectory.getAbsolutePath());
+        RightContentExtractor rightContentExtractor = new FileRightContentExtractor(baseRightsDirectoryPath);
         return new RightManager(rightContentExtractor, attributeManager);
 
     }
@@ -229,13 +228,6 @@ public class RightManager {
             return false;
         else
             throw ServiceException.PARSE_ERROR("invalid value:" + value, null);
-    }
-
-    private boolean getBooleanAttr(Element elem, String attr) throws ServiceException {
-        String value = elem.attributeValue(attr);
-        if (value == null)
-            throw ServiceException.PARSE_ERROR("missing required attribute: " + attr, null);
-        return getBoolean(value);
     }
 
     private boolean getBooleanAttr(Element elem, String attr, boolean defaultValue)
@@ -390,12 +382,12 @@ public class RightManager {
             if (rt == null) {
                 throw ServiceException.PARSE_ERROR("missing attribute [" + A_TYPE + "]", null);
             }
-            rightType = AdminRight.RightType.fromString(rt);
+            rightType = Right.RightType.fromString(rt);
 
             right = AdminRight.newAdminSystemRight(name, rightType, attributeManager);
             if (targetTypeStr != null) {
-                String taregtTypes[] = targetTypeStr.split(TARGET_TYPE_DELIMITER);
-                for (String tt : taregtTypes) {
+                String[] targetTypes = targetTypeStr.split(TARGET_TYPE_DELIMITER);
+                for (String tt : targetTypes) {
                     TargetType targetType = TargetType.fromCode(tt);
                     right.setTargetType(targetType);
                 }
