@@ -34,6 +34,16 @@ class RightManagerTest {
     assertRightsLoaded(rightManager);
   }
 
+  @Test
+  void shouldFailWhenRightDirectoryDoesNotExist() throws ServiceException {
+    final AttributeManager attributeManager = new AttributeManager("../store/conf/attrs");
+
+    final ServiceException thrownException = Assertions.assertThrows(ServiceException.class,
+        () -> RightManager.fromFileSystem("src/main/resources/non-existing", false,
+            attributeManager));
+    Assertions.assertEquals("system failure: rights directory does not exist: src/main/resources/non-existing", thrownException.getMessage());
+  }
+
   private void assertRightsLoaded(RightManager rightManager) throws ServiceException {
     Assertions.assertFalse(rightManager.getAllAdminRights().isEmpty());
     Assertions.assertFalse(rightManager.getAllUserRights().isEmpty());

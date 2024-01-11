@@ -229,7 +229,7 @@ public class RightManager {
     public static RightManager fromFileSystem(String baseRightsDirectory, boolean unittest, AttributeManager attributeManager) throws ServiceException {
         File fdir = new File(baseRightsDirectory);
         if (!fdir.exists()) {
-            throw ServiceException.FAILURE("rights directory does not exists: " + baseRightsDirectory, null);
+            throw ServiceException.FAILURE("rights directory does not exist: " + baseRightsDirectory, null);
         }
         if (!fdir.isDirectory()) {
             throw ServiceException.FAILURE("rights directory is not a directory: " + baseRightsDirectory, null);
