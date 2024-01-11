@@ -5,6 +5,11 @@
 
 package com.zimbra.common.util.memcached;
 
+import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.util.BEncoding;
+import com.zimbra.common.util.BEncoding.BEncodingException;
+import com.zimbra.common.util.StringUtil;
+import com.zimbra.common.util.ZimbraLog;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
@@ -18,20 +23,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.zip.CRC32;
-
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.BEncoding;
-import com.zimbra.common.util.BEncoding.BEncodingException;
-import com.zimbra.common.util.StringUtil;
-import com.zimbra.common.util.ZimbraLog;
-
 import net.spy.memcached.BinaryConnectionFactory;
 import net.spy.memcached.CachedData;
 import net.spy.memcached.ConnectionFactory;
@@ -111,9 +108,12 @@ public class ZimbraMemcachedClient {
     public void connect(String[] servers, boolean useBinaryProtocol, String hashAlgorithm,
                         int defaultExpiry, long defaultTimeout)
     throws ServiceException {
-        // Force spymemcached to use log4j rather than raw stdout/stderr.
-        Properties props = System.getProperties();
-        props.put("net.spy.log.LoggerImpl", "net.spy.memcached.compat.log.Log4JLogger");
+        // Force spymemcached to use specified logging facility rather than its own raw stdout/stderr.
+        // Log4JLogger from spymemcached still rely on log4j 1.x implementation hence, cannot be used
+        final String loggerImpl = System.getProperty("net.spy.log.LoggerImpl");
+        if (loggerImpl == null) {
+            System.setProperty("net.spy.log.LoggerImpl", "net.spy.memcached.compat.log.SLF4JLogger");
+        }
 
         HashAlgorithm hashAlgo = DefaultHashAlgorithm.KETAMA_HASH;
         if (hashAlgorithm != null && hashAlgorithm.length() > 0) {

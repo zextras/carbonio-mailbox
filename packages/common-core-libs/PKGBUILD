@@ -1,5 +1,5 @@
 pkgname="carbonio-common-core-libs"
-pkgver="4.12.0"
+pkgver="4.13.0"
 pkgrel="1"
 pkgdesc="Replace Carbonio core libs"
 arch=('x86_64')
@@ -197,8 +197,8 @@ package() {
   install -D carbonio-jetty-libs/target/dependencies/slf4j-api-1.7.36.jar \
     "${pkgdir}/opt/zextras/lib/jars/slf4j-api-1.7.36.jar"
 
-  install -D carbonio-jetty-libs/target/dependencies/spymemcached-2.12.1.jar \
-    "${pkgdir}/opt/zextras/lib/jars/spymemcached-2.12.1.jar"
+  install -D carbonio-jetty-libs/target/dependencies/spymemcached-2.12.3.jar \
+    "${pkgdir}/opt/zextras/lib/jars/spymemcached-2.12.3.jar"
   install -D carbonio-jetty-libs/target/dependencies/jedis-2.9.0.jar \
     "${pkgdir}/opt/zextras/lib/jars/jedis-2.9.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/commons-pool2-2.4.2.jar \
