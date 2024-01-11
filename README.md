@@ -91,7 +91,7 @@ and testing SOAP and REST APIs exposed by Mailbox.
    ```
    or build the project using docker container:
    ```shell
-   $ docker compose -f './docker/jetty-run/docker-compose.yml' run --rm build
+   $ UID=${UID} GID=${GID} docker compose -f './docker/jetty-run/docker-compose.yml' run --rm build
    ```
 2. Navigate to the [docker/jetty-run](docker/jetty-run) directory:
     ```shell
@@ -101,7 +101,10 @@ and testing SOAP and REST APIs exposed by Mailbox.
     ```shell
     $ docker compose up
     ```
-
+4. Check if the mailbox is up and running:
+   ```shell
+   $ curl localhost:7070/service/health
+    ```
 ## Contribute to Carbonio Mailbox
 
 All contributions are accepted! Please refer to the CONTRIBUTING file (if present in this repository)
