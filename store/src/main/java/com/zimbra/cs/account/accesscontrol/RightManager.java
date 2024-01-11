@@ -189,28 +189,21 @@ public class RightManager {
 
         while (!yetToProcessFileNames.isEmpty()) {
             String currentFilename = yetToProcessFileNames.get(0);
-
-            try {
+            try (InputStream inputStream = rightContentExtractor.getContent(currentFilename)) {
                 ZimbraLog.acl.debug("Parsing file %s", currentFilename);
-                try (InputStream inputStream = rightContentExtractor.getContent(currentFilename)) {
-                    boolean done = loadSystemRights(currentFilename, inputStream, processedFileNames, RIGHTS_FILES);
-                    if (done) {
-                        processedFileNames.add(currentFilename);
-                        yetToProcessFileNames.remove(currentFilename);
-                    } else {
-                        // move this file to the end
-                        yetToProcessFileNames.remove(currentFilename);
-                        yetToProcessFileNames.add(currentFilename);
-                    }
-                } catch (FileNotFoundException e) {
-                    throw e;
-                } catch (IOException e) {
-                    ZimbraLog.acl.debug("Problem parsing file %s", currentFilename, e);
-                    throw ServiceException.PARSE_ERROR("Problem parsing file for system rights", null);
-                }
 
-            } catch (XmlParseException | FileNotFoundException e) {
-                throw ServiceException.PARSE_ERROR("error loading rights file: " + currentFilename, e);
+                boolean done = loadSystemRights(currentFilename, inputStream, processedFileNames);
+                if (done) {
+                    processedFileNames.add(currentFilename);
+                    yetToProcessFileNames.remove(currentFilename);
+                } else {
+                    // move this file to the end
+                    yetToProcessFileNames.remove(currentFilename);
+                    yetToProcessFileNames.add(currentFilename);
+                }
+            } catch (IOException | XmlParseException e) {
+                ZimbraLog.acl.debug("Problem parsing file %s", currentFilename, e);
+                throw ServiceException.PARSE_ERROR("Problem parsing file for system rights", null);
             }
         }
     }
@@ -461,8 +454,9 @@ public class RightManager {
         return cb;
     }
 
-    private boolean loadSystemRights(String fileName, InputStream fileContent, List<String> processedFiles, List<String> allFileNames)
-    throws ServiceException, FileNotFoundException {
+    private boolean loadSystemRights(String fileName, InputStream fileContent,
+        List<String> processedFiles)
+    throws ServiceException {
         Document doc = W3cDomUtil.parseXMLToDom4jDocUsingSecureProcessing(fileContent);
         Element root = doc.getRootElement();
         if (!root.getName().equals(E_RIGHTS)) {
@@ -489,7 +483,7 @@ public class RightManager {
 
                 // make sure the include file exists
                 boolean foundFile = false;
-                for (String fileInAllFiles : allFileNames) {
+                for (String fileInAllFiles : RightManager.RIGHTS_FILES) {
                     if (fileInAllFiles.equals(includeFile)) {
                         foundFile = true;
                         break;
