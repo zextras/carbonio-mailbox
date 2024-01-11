@@ -8,7 +8,6 @@ package com.zimbra.cs.account.accesscontrol;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.TreeMultimap;
-import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.W3cDomUtil;
@@ -103,14 +102,9 @@ public class RightManager {
   private static class CoreRightDefFiles {
         private static final HashSet<String> sCoreRightDefFiles = new HashSet<String>();
 
-        static void init(boolean unittest) {
+        static void init() {
             sCoreRightDefFiles.add("rights.xml");
             sCoreRightDefFiles.add("user-rights.xml");
-
-            //TODO: remove below logic, file does not even exist
-            if (unittest || DebugConfig.running_unittest) {
-                sCoreRightDefFiles.add("rights-unittest.xml");
-            }
         }
 
         private static boolean isCoreRightFile(String filename) {
@@ -132,15 +126,10 @@ public class RightManager {
     }
 
     public static synchronized RightManager getInstance() throws ServiceException {
-        return getInstance(false);
+        return getInstance(LC.zimbra_rights_directory.value());
     }
 
-    public static synchronized RightManager getInstance(boolean unittest)
-    throws ServiceException {
-        return getInstance(LC.zimbra_rights_directory.value(), unittest);
-    }
-
-    private static synchronized RightManager getInstance(String rightsDirectoryPath, boolean unittest)
+    private static synchronized RightManager getInstance(String rightsDirectoryPath)
     throws ServiceException {
         if (mInstance != null) {
             return mInstance;
@@ -150,7 +139,7 @@ public class RightManager {
         if (Objects.isNull(rightsDirectoryPath) || Objects.equals("", rightsDirectoryPath)) {
             mInstance = RightManager.fromResources(attributeManager);
         } else {
-            mInstance = RightManager.fromFileSystem(rightsDirectoryPath, unittest, attributeManager);
+            mInstance = RightManager.fromFileSystem(rightsDirectoryPath, attributeManager);
         }
 
         try {
@@ -165,7 +154,7 @@ public class RightManager {
 
     public static RightManager fromResources(AttributeManager attributeManager) throws ServiceException {
       final RightContentExtractor rightContentExtractor = (String fileName) -> RightManager.class.getResourceAsStream("/conf/rights/" + fileName);
-      return new RightManager(rightContentExtractor, false, attributeManager);
+      return new RightManager(rightContentExtractor, attributeManager);
     }
 
     private interface RightContentExtractor {
@@ -191,9 +180,9 @@ public class RightManager {
         }
     }
 
-    private RightManager(RightContentExtractor rightContentExtractor, boolean unittest, AttributeManager attributeManager) throws ServiceException {
+    private RightManager(RightContentExtractor rightContentExtractor, AttributeManager attributeManager) throws ServiceException {
         this.attributeManager = attributeManager;
-        CoreRightDefFiles.init(unittest);
+        CoreRightDefFiles.init();
 
         List<String> yetToProcessFileNames = new ArrayList<String>(RIGHTS_FILES);
         List<String> processedFileNames = new ArrayList<String>();
@@ -226,7 +215,7 @@ public class RightManager {
         }
     }
 
-    public static RightManager fromFileSystem(String baseRightsDirectory, boolean unittest, AttributeManager attributeManager) throws ServiceException {
+    public static RightManager fromFileSystem(String baseRightsDirectory, AttributeManager attributeManager) throws ServiceException {
         File fdir = new File(baseRightsDirectory);
         if (!fdir.exists()) {
             throw ServiceException.FAILURE("rights directory does not exist: " + baseRightsDirectory, null);
@@ -236,7 +225,7 @@ public class RightManager {
         }
         ZimbraLog.acl.debug("Loading rights from %s", fdir.getAbsolutePath());
         RightContentExtractor rightContentExtractor = new FileRightContentExtractor(baseRightsDirectory);
-        return new RightManager(rightContentExtractor, unittest, attributeManager);
+        return new RightManager(rightContentExtractor, attributeManager);
 
     }
 
@@ -1074,7 +1063,7 @@ public class RightManager {
                     usage("no input dir specified");
                 }
                 inputDir = cl.getOptionValue('i');
-                rm = RightManager.getInstance(inputDir, false);
+                rm = RightManager.getInstance(inputDir);
             }
 
             String outputDir = null;

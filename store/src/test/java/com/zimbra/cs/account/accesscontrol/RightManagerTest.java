@@ -12,7 +12,7 @@ class RightManagerTest {
   void shouldLoadRightsUsingFilesystem() throws ServiceException {
 
     final AttributeManager attributeManager = new AttributeManager("../store/conf/attrs");
-    RightManager rightManager = RightManager.fromFileSystem("src/main/resources/conf/rights", false, attributeManager);
+    RightManager rightManager = RightManager.fromFileSystem("src/main/resources/conf/rights", attributeManager);
 
     assertRightsLoaded(rightManager);
   }
@@ -39,8 +39,7 @@ class RightManagerTest {
     final AttributeManager attributeManager = new AttributeManager("../store/conf/attrs");
 
     final ServiceException thrownException = Assertions.assertThrows(ServiceException.class,
-        () -> RightManager.fromFileSystem("src/main/resources/non-existing", false,
-            attributeManager));
+        () -> RightManager.fromFileSystem("src/main/resources/non-existing", attributeManager));
     Assertions.assertEquals("system failure: rights directory does not exist: src/main/resources/non-existing", thrownException.getMessage());
   }
 
