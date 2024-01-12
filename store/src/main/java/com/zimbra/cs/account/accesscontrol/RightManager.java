@@ -5,9 +5,6 @@
 
 package com.zimbra.cs.account.accesscontrol;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.TreeMultimap;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.W3cDomUtil;
@@ -21,10 +18,7 @@ import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.AttributeManager;
 import com.zimbra.cs.account.FileGenUtil;
 import com.zimbra.cs.account.accesscontrol.Right.RightType;
-import com.zimbra.cs.account.accesscontrol.Rights.Admin;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -45,10 +39,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.XMLWriter;
 
 
 public class RightManager {
@@ -63,7 +54,6 @@ public class RightManager {
     private static final String E_R            = "r";
     private static final String E_RIGHTS       = "rights";
     private static final String E_RIGHT        = "right";
-    private static final String E_ROOT         = "root";
     private static final String E_UI           = "ui";
 
     private static final String A_CACHE        = "cache";
@@ -210,11 +200,12 @@ public class RightManager {
             throw ServiceException.PARSE_ERROR("invalid value:" + value, null);
     }
 
-    private boolean getBooleanAttr(Element elem, String attr, boolean defaultValue)
+    private boolean getBooleanAttr(Element elem, String attr)
     throws ServiceException {
         String value = elem.attributeValue(attr);
-        if (value == null)
-            return defaultValue;
+        if (value == null) {
+            return false;
+        }
         return getBoolean(value);
     }
 
@@ -287,8 +278,8 @@ public class RightManager {
                     E_ATTRS + " is only allowed for admin getAttrs or setAttrs right", null);
 
         AttrRight attrRight = (AttrRight)right;
-        for (Iterator elemIter = eAttrs.elementIterator(); elemIter.hasNext();) {
-            Element elem = (Element)elemIter.next();
+        for (Iterator<Element> elemIter = eAttrs.elementIterator(); elemIter.hasNext();) {
+            Element elem = elemIter.next();
             if (elem.getName().equals(E_A))
                 parseAttr(elem, attrRight);
             else
@@ -316,8 +307,8 @@ public class RightManager {
 
         ComboRight comboRight = (ComboRight)right;
 
-        for (Iterator elemIter = eAttrs.elementIterator(); elemIter.hasNext();) {
-            Element elem = (Element)elemIter.next();
+        for (Iterator<Element> elemIter = eAttrs.elementIterator(); elemIter.hasNext();) {
+            Element elem = elemIter.next();
             if (elem.getName().equals(E_R))
                 parseRight(elem, comboRight);
             else
@@ -332,12 +323,12 @@ public class RightManager {
         if (name.contains("."))
             throw ServiceException.PARSE_ERROR("righ name cannot contain dot(.): " + name, null);
 
-        boolean userRight = getBooleanAttr(eRight, A_USER_RIGHT, false);
+        boolean userRight = getBooleanAttr(eRight, A_USER_RIGHT);
 
         // System.out.println("Parsing right " + "(" +  (userRight?"user":"admin") + ") " + name);
         Right right;
 
-        AdminRight.RightType rightType = null;
+        AdminRight.RightType rightType;
         String targetTypeStr = eRight.attributeValue(A_TARGET_TYPE, null);
 
         if (userRight) {
@@ -380,13 +371,13 @@ public class RightManager {
             right.setGrantTargetType(grantTargetType);
         }
 
-        boolean cache = getBooleanAttr(eRight, A_CACHE, false);
+        boolean cache = getBooleanAttr(eRight, A_CACHE);
         if (cache) {
             right.setCacheable();
         }
 
-        for (Iterator elemIter = eRight.elementIterator(); elemIter.hasNext();) {
-            Element elem = (Element)elemIter.next();
+        for (Iterator<Element> elemIter = eRight.elementIterator(); elemIter.hasNext();) {
+            Element elem = elemIter.next();
             if (elem.getName().equals(E_DESC)) {
                 parseDesc(elem, right);
             } else if (elem.getName().equals(E_HELP)) {
@@ -439,8 +430,8 @@ public class RightManager {
         boolean allowPresetRight = CoreRightDefFiles.isCoreRightFile(fileName);
 
         boolean seenRight = false;
-        for (Iterator iter = root.elementIterator(); iter.hasNext();) {
-            Element elem = (Element) iter.next();
+        for (Iterator<Element> iter = root.elementIterator(); iter.hasNext();) {
+            Element elem = iter.next();
 
             // see if all include files are processed already
             if (elem.getName().equals(E_INCLUDE)) {
@@ -474,8 +465,6 @@ public class RightManager {
                 }
                 if (!processed) {
                     return false;
-                } else {
-                    continue;
                 }
             } else if (elem.getName().equals(E_RIGHT)) {
                 if (!seenRight) {
@@ -534,8 +523,8 @@ public class RightManager {
 
         Help help = new Help(name);
 
-        for (Iterator elemIter = eHelp.elementIterator(); elemIter.hasNext();) {
-            Element elem = (Element)elemIter.next();
+        for (Iterator<Element> elemIter = eHelp.elementIterator(); elemIter.hasNext();) {
+            Element elem = elemIter.next();
             if (elem.getName().equals(E_DESC)) {
                 if (help.getDesc() != null) {
                     throw ServiceException.PARSE_ERROR("desc for help " + name + " already set", null);
@@ -579,7 +568,7 @@ public class RightManager {
         // because name is the key to the generated ZsMsgRights.properties file.
         //
         // Though currently we don't generate helps/UIs in ZsMsgRights.properties, because
-        // all the formatting will be lost and it won't look good in admin console anyway.
+        // all the formatting will be lost, and it won't look good in admin console anyway.
         // Enforce uniqueness to keep the option open.
         //
         if (sUserRights.containsKey(name) || sAdminRights.containsKey(name) ||
@@ -612,17 +601,17 @@ public class RightManager {
         if (InlineAttrRight.looksLikeOne(right)) {
             return InlineAttrRight.newInlineAttrRight(right, attributeManager);
         } else {
-            return getRightInternal(right, true);
+            return getRightInternal(right);
         }
     }
 
-    private Right getRightInternal(String right, boolean mustFind) throws ServiceException {
+    private Right getRightInternal(String right) throws ServiceException {
         Right r = sUserRights.get(right);
         if (r == null) {
             r = sAdminRights.get(right);
         }
 
-        if (mustFind && r == null) {
+        if (r == null) {
             throw AccountServiceException.NO_SUCH_RIGHT("invalid right " + right);
         }
 
@@ -635,32 +624,6 @@ public class RightManager {
 
     public Map<String, AdminRight> getAllAdminRights() {
         return sAdminRights;
-    }
-
-    private String dump(StringBuilder sb) {
-        if (sb == null) {
-            sb = new StringBuilder();
-        }
-
-        sb.append("============\n");
-        sb.append("user rights:\n");
-        sb.append("============\n");
-        for (Map.Entry<String, UserRight> ur : getAllUserRights().entrySet()) {
-            sb.append("\n------------------------------\n");
-            ur.getValue().dump(sb);
-        }
-
-        sb.append("\n");
-        sb.append("\n");
-        sb.append("=============\n");
-        sb.append("admin rights:\n");
-        sb.append("=============\n");
-        for (Map.Entry<String, AdminRight> ar : getAllAdminRights().entrySet()) {
-            sb.append("\n------------------------------\n");
-            ar.getValue().dump(sb);
-        }
-
-        return sb.toString();
     }
 
     void genRightConst(Right r, StringBuilder sb) {
@@ -767,105 +730,8 @@ public class RightManager {
         }
     }
 
-    /**
-     * generates two files in the output directory
-     *
-     * {right}-expanded.xml: the root combo right fully expanded
-     * {right}-ui.xml: all UI covered by the root combo right
-     *
-     * @param outputDir
-     * @throws ServiceException
-     * @throws IOException
-     */
-    private void genAdminDocs(String outputDir) throws ServiceException, IOException {
-        if (!outputDir.endsWith("/")) {
-            outputDir = outputDir + "/";
-        }
-
-        List<AdminRight> rootRights = ImmutableList.of(
-                Admin.R_adminConsoleRights);
-
-        for (AdminRight right : rootRights) {
-            Multimap<UI, Right> uiMap = TreeMultimap.create();
-
-            /*
-             * output the rights XML.  This XML has the root combo right expanded
-             * down to each atom(preset or attrs) right
-             */
-            Document document = DocumentHelper.createDocument();
-
-            Element rightsRoot = document.addElement(E_ROOT);
-            genAdminDocByRight(rightsRoot, right, uiMap);
-            writeXML(outputDir + right.getName() + "-expanded.xml", document);
-
-            /*
-             * output the UI XML.  This XML contains one entry for each UI, sorted by
-             * the description of the UI.
-             */
-            document = DocumentHelper.createDocument();
-            Element uiRoot = document.addElement(E_ROOT);
-            genAdminDocByUI(uiRoot, uiMap);
-            writeXML(outputDir + right.getName() + "-ui.xml", document);
-        }
-
-    }
-
-    private void writeXML(String fileName, Document document) throws IOException {
-        // Pretty print the document to output file
-        OutputFormat format = OutputFormat.createPrettyPrint();
-
-        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-        XMLWriter xmlWriter = new XMLWriter(writer, format);
-        xmlWriter.write(document);
-        writer.close();
-    }
-
-    private void genAdminDocByRight(Element parent, Right right, Multimap<UI, Right> uiMap)
-    throws ServiceException {
-        Element eRight = parent.addElement(E_RIGHT).
-                addAttribute(A_NAME, right.getName()).
-                addAttribute(A_TYPE, right.getRightType().name());
-        eRight.addElement(E_DESC).setText(right.getDesc());
-
-        UI ui = right.getUI();
-        if (ui != null) {
-            eRight.addElement(E_UI).setText(ui.getDesc());
-            uiMap.put(ui, right);
-        }
-
-        if (right.isComboRight()) {
-            ComboRight comboRight = (ComboRight)right;
-            for (Right childRight : comboRight.getRights()) {
-                genAdminDocByRight(eRight, childRight, uiMap);
-            }
-        } else if (right.isPresetRight()) {
-            eRight.addAttribute(A_TARGET_TYPE, right.getTargetTypeStr());
-        } else if (right.isAttrRight()) {
-            eRight.addAttribute(A_TARGET_TYPE, right.getTargetTypeStr());
-
-            AttrRight attrRight = (AttrRight)right;
-            if (!attrRight.allAttrs()) {
-                Element eAttrs = eRight.addElement(E_ATTRS);
-                for (String attr : attrRight.getAttrs()) {
-                    eAttrs.addElement(E_A).addAttribute(A_N, attr);
-                }
-            }
-        }
-    }
-
-    private void genAdminDocByUI(Element parent, Multimap<UI, Right> uiMap) {
-        for (Map.Entry<UI, Right> entry : uiMap.entries()) {
-            UI ui = entry.getKey();
-            Right right = entry.getValue();
-
-            Element eUI = parent.addElement(E_UI);
-            eUI.addAttribute(E_DESC, ui.getDesc());
-            eUI.addAttribute(E_RIGHT, right.getName());
-        }
-    }
-
     private static class CL {
-        private static Options sOptions = new Options();
+        private static final Options sOptions = new Options();
 
         static {
             sOptions.addOption("h", "help", false,
@@ -883,34 +749,27 @@ public class RightManager {
         }
 
         private enum Action {
-            genRightConsts(true, true, false),
-            genAdminRights(true, true, false),
-            genUserRights(true, true, false),
-            genDomainAdminSetAttrsRights(true, false, false),
-            genMessageProperties(true, true, false),
-            genAdminDocs(false, true, true),
-            validate(false, true, false);
+            genRightConsts(true, true),
+            genAdminRights(true, true),
+            genUserRights(true, true),
+            genDomainAdminSetAttrsRights(true, false),
+            genMessageProperties(true, true),
+            validate(false, true);
 
-            boolean regenFileRequred;
-            boolean inputDirRequired;
-            boolean outputDirRequired;
+            final boolean regenFileRequired;
+            final boolean inputDirRequired;
 
-            private Action(boolean regenFileRequred, boolean inputDirRequired, boolean outputDirRequired) {
-                this.regenFileRequred = regenFileRequred;
+            Action(boolean regenFileRequired, boolean inputDirRequired) {
+                this.regenFileRequired = regenFileRequired;
                 this.inputDirRequired = inputDirRequired;
-                this.outputDirRequired = outputDirRequired;
             }
 
-            private boolean regenFileRequred() {
-                return regenFileRequred;
+            private boolean regenFileRequired() {
+                return regenFileRequired;
             }
 
             private boolean inputDirRequired() {
                 return inputDirRequired;
-            }
-
-            private boolean outputDirRequired() {
-                return outputDirRequired;
             }
 
             private static Action fromString(String str) throws ServiceException {
@@ -934,7 +793,7 @@ public class RightManager {
             Set<String> crOnlyAttrs = SetUtil.subtract(crAttrs, acctAttrs);
 
             // sanity check, since we are not generating it, make sure it is indeed empty
-            if (acctOnlyAttrs.size() != 0)
+            if (!acctOnlyAttrs.isEmpty())
                 throw ServiceException.FAILURE("account only attrs is not empty???", null);
 
             String acctAndCrAttrsFiller = genAttrs(acctAndCrAttrs);
@@ -985,27 +844,27 @@ public class RightManager {
             System.exit((errmsg == null) ? 0 : 1);
         }
 
-        private static CommandLine parseArgs(String args[]) {
+        private static CommandLine parseArgs(String[] args) {
             StringBuffer gotCL = new StringBuffer("cmdline: ");
-            for (int i = 0; i < args.length; i++) {
-                gotCL.append("'").append(args[i]).append("' ");
-            }
+          for (final String arg : args) {
+            gotCL.append("'").append(arg).append("' ");
+          }
             System.out.println(gotCL);
 
             CommandLineParser parser = new GnuParser();
-            CommandLine cl = null;
+            CommandLine commandLine = null;
             try {
-                cl = parser.parse(sOptions, args);
+                commandLine = parser.parse(sOptions, args);
+                if (commandLine.hasOption('h')) {
+                    usage(null);
+                }
             } catch (ParseException pe) {
                 usage(pe.getMessage());
             }
-            if (cl.hasOption('h')) {
-                usage(null);
-            }
-            return cl;
+            return commandLine;
         }
 
-        private static void main(String[] args) throws Exception {
+        private static void generateRights(String[] args) throws Exception {
             CliUtil.toolSetup();
             CommandLine cl = parseArgs(args);
 
@@ -1014,7 +873,7 @@ public class RightManager {
             }
             Action action = Action.fromString(cl.getOptionValue('a'));
 
-            if (action.regenFileRequred()) {
+            if (action.regenFileRequired()) {
                 if (!cl.hasOption('r')) {
                     usage("no regenerate file specified");
                 }
@@ -1023,43 +882,30 @@ public class RightManager {
             String regenFile = cl.getOptionValue('r');
 
             String inputDir = null;
-            RightManager rm = null;
             if (action.inputDirRequired()) {
                 if (!cl.hasOption('i')) {
                     usage("no input dir specified");
                 }
                 inputDir = cl.getOptionValue('i');
-                rm = RightManager.getInstance(inputDir);
             }
-
-            String outputDir = null;
-            if (action.outputDirRequired()) {
-                if (!cl.hasOption('o')) {
-                    usage("no output dir specified");
-                }
-                outputDir = cl.getOptionValue('o');
-            }
+            RightManager rightManager = RightManager.getInstance(inputDir);
 
             switch (action) {
                 case genRightConsts:
-                    FileGenUtil.replaceJavaFile(regenFile, rm.genRightConsts());
+                    FileGenUtil.replaceJavaFile(regenFile, rightManager.genRightConsts());
                     break;
                 case genAdminRights:
-                    FileGenUtil.replaceJavaFile(regenFile, rm.genAdminRights());
+                    FileGenUtil.replaceJavaFile(regenFile, rightManager.genAdminRights());
                     break;
                 case genUserRights:
-                    FileGenUtil.replaceJavaFile(regenFile, rm.genUserRights());
+                    FileGenUtil.replaceJavaFile(regenFile, rightManager.genUserRights());
                     break;
                 case genDomainAdminSetAttrsRights:
                     String templateFile = cl.getOptionValue('t');
                     genDomainAdminSetAttrsRights(regenFile, templateFile);
                     break;
                 case genMessageProperties:
-                    FileGenUtil.replaceFile(regenFile, rm.genMessageProperties());
-                    break;
-                case genAdminDocs:
-                    // zmjava com.zimbra.cs.account.accesscontrol.RightManager -a genAdminDocs -i /Users/pshao/p4/main/ZimbraServer/conf/rights -o /Users/pshao/temp
-                    rm.genAdminDocs(outputDir);
+                    FileGenUtil.replaceFile(regenFile, rightManager.genMessageProperties());
                     break;
                 case validate:
                     // do nothing, all we need is that new RightManager(inputDir) works,
@@ -1070,13 +916,8 @@ public class RightManager {
             }
         }
     }
-    /**
-     * @param args
-     */
+
     public static void main(String[] args) throws Exception {
-        CL.main(args);
-
-        // CL.check();
+        CL.generateRights(args);
     }
-
 }
