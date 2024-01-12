@@ -48,7 +48,6 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -83,8 +82,6 @@ public final class MailboxTestUtil {
     }
     LC.timezone_file.setDefault(timezonefilePath);
     WellKnownTimeZones.loadFromFile(d);
-    LC.zimbra_rights_directory.setDefault(
-        StringUtils.removeEnd(zimbraServerDir, "/") + "-conf" + "/conf/rights");
     LC.zimbra_attrs_directory.setDefault(zimbraServerDir + "conf/attrs");
     LC.zimbra_tmp_directory.setDefault(zimbraServerDir + "tmp");
     // substitute test DS config file

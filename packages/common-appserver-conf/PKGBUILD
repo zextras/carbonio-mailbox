@@ -183,19 +183,19 @@ package() {
   install -D "store-conf/conf/msgs/ZsMsg_zh_TW.properties" \
     "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_zh_TW.properties"
 
-  install -D "store-conf/conf/rights/adminconsole-ui.xml" \
+  install -D "store/src/main/resources/conf/rights/adminconsole-ui.xml" \
     "${pkgdir}/opt/zextras/conf/rights/adminconsole-ui.xml"
-  install -D "store-conf/conf/rights/rights-adminconsole-domainadmin.xml" \
+  install -D "store/src/main/resources/conf/rights/rights-adminconsole-domainadmin.xml" \
     "${pkgdir}/opt/zextras/conf/rights/rights-adminconsole-domainadmin.xml"
-  install -D "store-conf/conf/rights/rights-adminconsole.xml" \
+  install -D "store/src/main/resources/conf/rights/rights-adminconsole.xml" \
     "${pkgdir}/opt/zextras/conf/rights/rights-adminconsole.xml"
-  install -D "store-conf/conf/rights/rights-domainadmin.xml" \
+  install -D "store/src/main/resources/conf/rights/rights-domainadmin.xml" \
     "${pkgdir}/opt/zextras/conf/rights/rights-domainadmin.xml"
-  install -D "store-conf/conf/rights/rights-roles.xml" \
+  install -D "store/src/main/resources/conf/rights/rights-roles.xml" \
     "${pkgdir}/opt/zextras/conf/rights/rights-roles.xml"
-  install -D "store-conf/conf/rights/rights.xml" \
+  install -D "store/src/main/resources/conf/rights/rights.xml" \
     "${pkgdir}/opt/zextras/conf/rights/rights.xml"
-  install -D "store-conf/conf/rights/user-rights.xml" \
+  install -D "store/src/main/resources/conf/rights/user-rights.xml" \
     "${pkgdir}/opt/zextras/conf/rights/user-rights.xml"
 }
 
