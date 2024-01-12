@@ -24,8 +24,6 @@ import com.zimbra.cs.account.accesscontrol.Right.RightType;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -86,6 +84,8 @@ public class RightManager {
         "rights-adminconsole-domainadmin.xml",
         "rights-domainadmin.xml"
     );
+
+    private static final String RIGHT_RESOURCE_PATH = "/conf/rights/";
 
     private static final String TARGET_TYPE_DELIMITER   = ",";
 
@@ -150,36 +150,12 @@ public class RightManager {
         return mInstance;
     }
 
-
     public static RightManager fromResources(AttributeManager attributeManager) throws ServiceException {
-      final RightContentExtractor rightContentExtractor = (String fileName) -> RightManager.class.getResourceAsStream("/conf/rights/" + fileName);
-      return new RightManager(rightContentExtractor, attributeManager);
+      final RightStream rightStream = new ResourceRightStream(RIGHT_RESOURCE_PATH);
+      return new RightManager(rightStream, attributeManager);
     }
 
-    private interface RightContentExtractor {
-      InputStream getContent(String rightFileName) throws ServiceException;
-    }
-
-    private static class FileRightContentExtractor implements RightContentExtractor {
-
-      final String baseDirectory;
-
-        private FileRightContentExtractor(String baseDirectory) {
-            this.baseDirectory = baseDirectory;
-        }
-
-        @Override
-        public InputStream getContent(String rightFileName) throws ServiceException {
-            final File file = new File(baseDirectory, rightFileName);
-            try {
-                return new FileInputStream(file);
-            } catch (FileNotFoundException e) {
-                throw ServiceException.FAILURE("Cannot read file " + file.getAbsolutePath(), e);
-            }
-        }
-    }
-
-    private RightManager(RightContentExtractor rightContentExtractor, AttributeManager attributeManager) throws ServiceException {
+    private RightManager(RightStream rightStream, AttributeManager attributeManager) throws ServiceException {
         this.attributeManager = attributeManager;
         CoreRightDefFiles.init();
 
@@ -188,7 +164,7 @@ public class RightManager {
 
         while (!yetToProcessFileNames.isEmpty()) {
             String currentFilename = yetToProcessFileNames.get(0);
-            try (InputStream inputStream = rightContentExtractor.getContent(currentFilename)) {
+            try (InputStream inputStream = rightStream.open(currentFilename)) {
                 ZimbraLog.acl.debug("Parsing file %s", currentFilename);
 
                 boolean done = loadSystemRights(currentFilename, inputStream, processedFileNames);
@@ -216,8 +192,8 @@ public class RightManager {
             throw ServiceException.FAILURE("rights directory is not a directory: " + baseRightsDirectoryPath, null);
         }
         ZimbraLog.acl.debug("Loading rights from %s", baseRightsDirectory.getAbsolutePath());
-        RightContentExtractor rightContentExtractor = new FileRightContentExtractor(baseRightsDirectoryPath);
-        return new RightManager(rightContentExtractor, attributeManager);
+        RightStream rightStream = new FileRightStream(baseRightsDirectoryPath);
+        return new RightManager(rightStream, attributeManager);
 
     }
 
