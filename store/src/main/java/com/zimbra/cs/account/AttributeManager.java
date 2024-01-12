@@ -150,15 +150,15 @@ public class AttributeManager {
   @VisibleForTesting
   public AttributeManager() {}
 
-  public AttributeManager(String dir) throws ServiceException {
+  public AttributeManager(String attributeDirectoryPath) throws ServiceException {
     initFlagsToAttrsMap();
     initClassToAttrsMap();
-    File fdir = new File(dir);
+    File fdir = new File(attributeDirectoryPath);
     if (!fdir.exists()) {
-      throw ServiceException.FAILURE("attrs directory does not exists: " + dir, null);
+      throw ServiceException.FAILURE("attrs directory does not exists: " + attributeDirectoryPath, null);
     }
     if (!fdir.isDirectory()) {
-      throw ServiceException.FAILURE("attrs directory is not a directory: " + dir, null);
+      throw ServiceException.FAILURE("attrs directory is not a directory: " + attributeDirectoryPath, null);
     }
 
     File[] files = fdir.listFiles();
@@ -202,13 +202,12 @@ public class AttributeManager {
       if (mInstance != null) {
         return mInstance;
       }
-      String dir = LC.zimbra_attrs_directory.value();
-      mInstance = new AttributeManager(dir);
+      String attributeDirectoryPath = LC.zimbra_attrs_directory.value();
+      mInstance = new AttributeManager(attributeDirectoryPath);
       if (mInstance.hasErrors()) {
         throw ServiceException.FAILURE(mInstance.getErrors(), null);
       }
       mInstance.computeClassToAllAttrsMap();
-
       return mInstance;
     }
   }
