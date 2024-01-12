@@ -124,6 +124,10 @@ public class RightManager {
         }
     }
 
+    public static synchronized void destroy() {
+        mInstance = null;
+    }
+
     public static synchronized RightManager getInstance() throws ServiceException {
         return getInstance(LC.zimbra_rights_directory.value());
     }
