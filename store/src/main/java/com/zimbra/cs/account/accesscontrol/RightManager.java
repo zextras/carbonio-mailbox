@@ -451,8 +451,8 @@ public class RightManager {
 
                 // make sure the include file exists
                 boolean foundFile = false;
-                for (String fileInAllFiles : RightManager.RIGHTS_FILES) {
-                    if (fileInAllFiles.equals(includeFile)) {
+                for (String rightFileName : RightManager.RIGHTS_FILES) {
+                    if (rightFileName.equals(includeFile)) {
                         foundFile = true;
                         break;
                     }
