@@ -77,11 +77,8 @@ public class AttributeManager {
   private static final List<String> ATTRS_FILES = List.of(
       "amavisd-new-attrs.xml", "attrs.xml", "ocs.xml");
 
-  private final Set<AttributeFlag> allowedEphemeralFlags = new HashSet<>() {{
-    add(AttributeFlag.ephemeral);
-    add(AttributeFlag.dynamic);
-    add(AttributeFlag.expirable);
-  }};
+  private final Set<AttributeFlag> allowedEphemeralFlags = Set.of(AttributeFlag.ephemeral,
+      AttributeFlag.dynamic, AttributeFlag.expirable);
   private final Map<Integer, String> mGroupMap = new HashMap<>();
   private final Map<Integer, String> mOCGroupMap = new HashMap<>();
   // attrs declared as type="binary" in attrs.xml
@@ -255,7 +252,7 @@ public class AttributeManager {
     if (clazz == null) return null;
     if (clazz.indexOf('.') == -1) clazz = "com.zimbra.cs.account.callback." + clazz;
     try {
-      cb = (AttributeCallback) Class.forName(clazz).newInstance();
+      cb = (AttributeCallback) Class.forName(clazz).getDeclaredConstructor().newInstance();
     } catch (Exception e) {
       ZimbraLog.misc.warn("loadCallback caught exception", e);
     }
