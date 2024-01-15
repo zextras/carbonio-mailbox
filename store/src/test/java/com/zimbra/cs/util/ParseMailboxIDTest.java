@@ -28,7 +28,6 @@ public class ParseMailboxIDTest {
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
-        LC.zimbra_attrs_directory.setDefault(MailboxTestUtil.getZimbraServerDir("") + "conf/attrs");
         MockProvisioning prov = new MockProvisioning();
         prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
         Provisioning.setInstance(prov);
