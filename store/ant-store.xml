@@ -1,10 +1,6 @@
 <project name="zm-store">
   <import file="../ant-build-common.xml"/>
 
-  <property name="service.webapp.dir" location="${jetty.webapps.dir}/service"/>
-  <property name="zimbra.webapp.dir" location="${jetty.webapps.dir}/zimbra"/>
-  <property name="admin.webapp.dir" location="${jetty.webapps.dir}/zimbraAdmin"/>
-  <property name="conf.dir" location="conf"/>
   <property name="store-conf.config.dir" location="${basedir}/../store-conf/conf"/>
   <property name="rights.dir" location="${basedir}/src/main/resources/conf/rights"/>
 
@@ -15,15 +11,6 @@
   <property name="slapd.config.dir" value="${ldap.conf.dir}/ldap/config" />
   <property name="slapd.config.src" value="${slapd.config.dir}/cn=config.ldif"/>
   <property name="ldap.build.dir" value="${basedir}/build/ldap"/>
-
-  <condition property="production.suffix" value=".production" else="">
-    <isset property="is-production"/>
-  </condition>
-  <condition property="war.web.xml" value="${conf.dir}/web.xml${production.suffix}">
-    <not>
-      <isset property="war.web.xml"/>
-    </not>
-  </condition>
 
   <target name="generate-sql-ldap-versions"
     depends="create-version-sql, create-version-ldap ">
@@ -218,10 +205,6 @@
       <targetfileset dir="${maven.build.dir}/ldap-config" includes="*" />
     </dependset>
 
-    <mkdir dir="${maven.build.dir}/attrs"/>
-    <copy todir="${maven.build.dir}/attrs" overwrite="true" preservelastmodified="true">
-      <fileset dir="${attrs.dir}" includes="*.xml" />
-    </copy>
     <mkdir dir="${maven.build.dir}/ldap-config" />
     <mkdir dir="${ldap.build.dir}/config" />
     <mkdir dir="${ldap.build.dir}/schema" />
