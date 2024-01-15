@@ -17,7 +17,7 @@ and their roles:
 APIs, LDAP, Krb5, IMAP, POP3 and CLI functions
 
 ## Generating Rights and ZAttr classes
-Whenever you make changes to [store/conf/attrs/attrs.xml](store/conf/attrs/attrs.xml)
+Whenever you make changes to [attrs.xml](store/src/main/resources/conf/attrs/attrs.xml)
 you can generate rights and ZAttr* classes by running:
 > mvn antrun:run@generate-zattr-rights
 

@@ -17,7 +17,7 @@ class RightManagerTest {
 
   @Test
   void shouldLoadRightsUsingFilesystem() throws ServiceException {
-    final AttributeManager attributeManager = AttributeManager.fromFileSystem("../store/conf/attrs");
+    final AttributeManager attributeManager = AttributeManager.fromFileSystem("src/main/resources/conf/attrs");
     RightManager rightManager = RightManager.fromFileSystem("src/main/resources/conf/rights", attributeManager);
 
     assertRightsLoaded(rightManager);
@@ -25,7 +25,7 @@ class RightManagerTest {
 
   @Test
   void shouldLoadRightsUsingResources() throws ServiceException {
-    final AttributeManager attributeManager = AttributeManager.fromFileSystem("../store/conf/attrs");
+    final AttributeManager attributeManager = AttributeManager.fromFileSystem("src/main/resources/conf/attrs");
     RightManager rightManager = RightManager.fromResources(attributeManager);
 
     assertRightsLoaded(rightManager);
@@ -33,7 +33,7 @@ class RightManagerTest {
 
   @Test
   void shouldLoadRightsFromResourceWhenUsingSingleton() throws ServiceException {
-    LC.zimbra_attrs_directory.setDefault("../store/conf/attrs");
+    LC.zimbra_attrs_directory.setDefault("src/main/resources/conf/attrs");
     RightManager rightManager = RightManager.getInstance();
 
     assertRightsLoaded(rightManager);
@@ -42,7 +42,7 @@ class RightManagerTest {
   @Test
   void shouldLoadRightsFromFileSystemWhenUsingSingleton() throws ServiceException {
     LC.zimbra_rights_directory.setDefault("src/main/resources/conf/rights");
-    LC.zimbra_attrs_directory.setDefault("conf/attrs");
+    LC.zimbra_attrs_directory.setDefault("src/main/resources/conf/attrs");
     RightManager rightManager = RightManager.getInstance();
 
     assertRightsLoaded(rightManager);
@@ -50,7 +50,7 @@ class RightManagerTest {
 
   @Test
   void shouldFailWhenRightDirectoryDoesNotExist() throws ServiceException {
-    final AttributeManager attributeManager = AttributeManager.fromFileSystem("../store/conf/attrs");
+    final AttributeManager attributeManager = AttributeManager.fromFileSystem("src/main/resources/conf/attrs");
 
     final ServiceException thrownException = Assertions.assertThrows(ServiceException.class,
         () -> RightManager.fromFileSystem("src/main/resources/non-existing", attributeManager));

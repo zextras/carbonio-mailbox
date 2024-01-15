@@ -12,7 +12,7 @@ class AttributeManagerTest {
 
   @Test
   void shouldLoadAllAttributesFromAttrsFile() throws ServiceException {
-    final AttributeManager attributeManager = AttributeManager.fromFileSystem("conf/attrs");
+    final AttributeManager attributeManager = AttributeManager.fromFileSystem("src/main/resources/conf/attrs");
     final Map<String, AttributeInfo> allAttrs = attributeManager.getAttrs();
 
     assertLoadedAllAttributes(allAttrs);
@@ -20,7 +20,7 @@ class AttributeManagerTest {
 
   @Test
   void shouldLoadAllAttributesWhenUsingSingleton() throws ServiceException {
-    LC.zimbra_attrs_directory.setDefault("conf/attrs");
+    LC.zimbra_attrs_directory.setDefault("src/main/resources/conf/attrs");
 
     final AttributeManager attributeManager = AttributeManager.getInstance();
     final Map<String, AttributeInfo> allAttrs = attributeManager.getAttrs();
