@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 
 class AttributeManagerTest {
 
+  private static final String BASE_ATTRIBUTES_DIRECTORY_PATH = "src/main/resources/conf/attrs";
+
   @AfterEach
   void cleanup() {
     AttributeManager.destroy();
@@ -21,7 +23,7 @@ class AttributeManagerTest {
   @Test
   void shouldLoadAllAttributesWhenUsingSingletonAndZimbraAttrsDirectoryIsSet()
       throws ServiceException {
-    LC.zimbra_attrs_directory.setDefault("src/main/resources/conf/attrs");
+    LC.zimbra_attrs_directory.setDefault(BASE_ATTRIBUTES_DIRECTORY_PATH);
 
     final AttributeManager attributeManager = AttributeManager.getInstance();
 
@@ -29,14 +31,14 @@ class AttributeManagerTest {
   }
 
   @Test
-  void shouldThrowExceptionWhenTheFileSystemPathDoesntExist() throws ServiceException {
-    LC.zimbra_attrs_directory.setDefault("src/main/resources/conf/attrss");
+  void shouldThrowExceptionWhenTheFileSystemPathDoesntExist() {
+    LC.zimbra_attrs_directory.setDefault("src/main/resources/conf/non-existing-directory");
 
     final ServiceException serviceException = Assertions.assertThrows(ServiceException.class,
         AttributeManager::getInstance);
 
     Assertions.assertEquals(
-        "system failure: attrs directory does not exists: src/main/resources/conf/attrss",
+        "system failure: attrs directory does not exists: src/main/resources/conf/non-existing-directory",
         serviceException.getMessage());
   }
 
@@ -56,7 +58,7 @@ class AttributeManagerTest {
   @Test
   void shouldLoadAllAttributesFromAttrsFile() throws ServiceException {
     final AttributeManager attributeManager = AttributeManager.fromFileSystem(
-        "src/main/resources/conf/attrs");
+        BASE_ATTRIBUTES_DIRECTORY_PATH);
 
     assertLoadedAllAttributes(attributeManager);
   }
