@@ -12,8 +12,8 @@ public class ResourceAttributeStream implements AttributeStream {
   }
 
   @Override
-  public InputStream open(String attributeFileName) throws ServiceException {
-    return AttributeManager.class.getResourceAsStream(rightResourcePath + attributeFileName);
+  public InputStream open(String attributesFileName) throws ServiceException {
+    return AttributeManager.class.getResourceAsStream(rightResourcePath + attributesFileName);
 
   }
 }

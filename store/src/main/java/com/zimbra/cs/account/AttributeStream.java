@@ -5,5 +5,5 @@ import java.io.InputStream;
 
 public interface AttributeStream {
 
-  InputStream open(String rightFileName) throws ServiceException;
+  InputStream open(String attributesFileName) throws ServiceException;
 }

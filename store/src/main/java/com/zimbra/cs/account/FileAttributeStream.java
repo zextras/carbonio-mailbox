@@ -15,8 +15,8 @@ public class FileAttributeStream implements AttributeStream {
   }
 
   @Override
-  public InputStream open(String attributeFileName) throws ServiceException {
-    final File file = new File(baseDirectory, attributeFileName);
+  public InputStream open(String attributesFileName) throws ServiceException {
+    final File file = new File(baseDirectory, attributesFileName);
     try {
       return new FileInputStream(file);
     } catch (FileNotFoundException e) {
