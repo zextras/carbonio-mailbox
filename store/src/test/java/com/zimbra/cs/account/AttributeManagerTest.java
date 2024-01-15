@@ -12,7 +12,7 @@ class AttributeManagerTest {
 
   @Test
   void shouldLoadAllAttributesFromAttrsFile() throws ServiceException {
-    final AttributeManager attributeManager = new AttributeManager("conf/attrs");
+    final AttributeManager attributeManager = AttributeManager.fromFileSystem("conf/attrs");
     final Map<String, AttributeInfo> allAttrs = attributeManager.getAttrs();
 
     assertLoadedAllAttributes(allAttrs);

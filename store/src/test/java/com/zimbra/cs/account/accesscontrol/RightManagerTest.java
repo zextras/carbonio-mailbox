@@ -17,7 +17,7 @@ class RightManagerTest {
 
   @Test
   void shouldLoadRightsUsingFilesystem() throws ServiceException {
-    final AttributeManager attributeManager = new AttributeManager("../store/conf/attrs");
+    final AttributeManager attributeManager = AttributeManager.fromFileSystem("../store/conf/attrs");
     RightManager rightManager = RightManager.fromFileSystem("src/main/resources/conf/rights", attributeManager);
 
     assertRightsLoaded(rightManager);
@@ -25,7 +25,7 @@ class RightManagerTest {
 
   @Test
   void shouldLoadRightsUsingResources() throws ServiceException {
-    final AttributeManager attributeManager = new AttributeManager("../store/conf/attrs");
+    final AttributeManager attributeManager = AttributeManager.fromFileSystem("../store/conf/attrs");
     RightManager rightManager = RightManager.fromResources(attributeManager);
 
     assertRightsLoaded(rightManager);
@@ -50,7 +50,7 @@ class RightManagerTest {
 
   @Test
   void shouldFailWhenRightDirectoryDoesNotExist() throws ServiceException {
-    final AttributeManager attributeManager = new AttributeManager("../store/conf/attrs");
+    final AttributeManager attributeManager = AttributeManager.fromFileSystem("../store/conf/attrs");
 
     final ServiceException thrownException = Assertions.assertThrows(ServiceException.class,
         () -> RightManager.fromFileSystem("src/main/resources/non-existing", attributeManager));
