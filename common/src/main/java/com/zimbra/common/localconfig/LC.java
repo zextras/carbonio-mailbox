@@ -76,12 +76,13 @@ public final class LC {
 
   @Supported public static final KnownKey zimbra_server_hostname = KnownKey.newKey("localhost");
 
-  @Supported
-  public static final KnownKey zimbra_attrs_directory =
-      KnownKey.newKey("${zimbra_home}/conf/attrs");
+  public static final String DEFAULT_ATTRS_DIRECTORY = "";
+  public static final String DEFAULT_RIGHTS_DIRECTORY = "";
 
-  public static final KnownKey zimbra_rights_directory =
-      KnownKey.newKey("");
+  @Supported
+  public static final KnownKey zimbra_attrs_directory = KnownKey.newKey(DEFAULT_ATTRS_DIRECTORY);
+
+  public static final KnownKey zimbra_rights_directory = KnownKey.newKey(DEFAULT_RIGHTS_DIRECTORY);
 
   @Supported public static final KnownKey zimbra_user = KnownKey.newKey("zextras");
 

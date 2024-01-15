@@ -274,6 +274,10 @@ public class AttributeManager {
     }
   }
 
+  public static void destroy() {
+    mInstance = null;
+  }
+
   public boolean isMultiValued(String attrName) {
     AttributeInfo attributeInfo = getAttributeInfo(attrName);
     return attributeInfo != null && attributeInfo.getCardinality() == AttributeCardinality.multi;

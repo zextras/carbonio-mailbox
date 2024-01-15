@@ -9,7 +9,7 @@
   <property name="rights.dir" location="${basedir}/src/main/resources/conf/rights"/>
 
   <!-- LDAP -->
-  <property name="attrs.dir" location="${conf.dir}/attrs"/>
+  <property name="attrs.dir" location="${basedir}/src/main/resources/conf/attrs"/>
   <property name="ldap.dir" location="${basedir}/ldap"/>
   <property name="ldap.conf.dir" location="${ldap.dir}/conf"/>
   <property name="slapd.config.dir" value="${ldap.conf.dir}/ldap/config" />
@@ -229,24 +229,24 @@
     <!-- Schema for pre OpenLDAP 2.4 - uses carbonio.schema-template, should eventually retire carbonio.schema-template and only use ocs.xml -->
     <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpathref="class.path" failonerror="true">
       <sysproperty key="carbonio.version" value="${carbonio.buildinfo.all}" />
-      <arg line="-a generateLdapSchema -i ${maven.build.dir}/attrs -t ${ldap.conf.dir}/ldap/carbonio.schema-template -o ${ldap.build.dir}/schema/carbonio.schema" />
+      <arg line="-a generateLdapSchema -i ${attrs.dir} -t ${ldap.conf.dir}/ldap/carbonio.schema-template -o ${ldap.build.dir}/schema/carbonio.schema" />
     </java>
     <!-- Zimbra schema for OpenLDAP 2.4 - use ocs.xml -->
     <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpathref="class.path" failonerror="true">
       <sysproperty key="carbonio.version" value="${carbonio.buildinfo.all}" />
-      <arg line="-a generateSchemaLdif -i ${maven.build.dir}/attrs -o ${ldap.build.dir}/schema/carbonio.ldif" />
+      <arg line="-a generateSchemaLdif -i ${attrs.dir} -o ${ldap.build.dir}/schema/carbonio.ldif" />
     </java>
     <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpathref="class.path" failonerror="true">
       <sysproperty key="carbonio.version" value="${carbonio.buildinfo.all}" />
-      <arg line="-a generateGlobalConfigLdif -i ${maven.build.dir}/attrs -o ${ldap.build.dir}/zimbra_globalconfig.ldif" />
+      <arg line="-a generateGlobalConfigLdif -i ${attrs.dir} -o ${ldap.build.dir}/zimbra_globalconfig.ldif" />
     </java>
     <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpathref="class.path" failonerror="true">
       <sysproperty key="carbonio.version" value="${carbonio.buildinfo.all}" />
-      <arg line="-a generateDefaultCOSLdif -i ${maven.build.dir}/attrs -o ${ldap.build.dir}/zimbra_defaultcos.ldif" />
+      <arg line="-a generateDefaultCOSLdif -i ${attrs.dir} -o ${ldap.build.dir}/zimbra_defaultcos.ldif" />
     </java>
     <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpathref="class.path" failonerror="true">
       <sysproperty key="carbonio.version" value="${carbonio.buildinfo.all}" />
-      <arg line="-a generateDefaultExternalCOSLdif -i ${maven.build.dir}/attrs -o ${ldap.build.dir}/zimbra_defaultexternalcos.ldif" />
+      <arg line="-a generateDefaultExternalCOSLdif -i ${attrs.dir} -o ${ldap.build.dir}/zimbra_defaultexternalcos.ldif" />
     </java>
     <copy todir="${ldap.build.dir}/" file="${ldap.conf.dir}/ldap/carbonio.ldif" />
     <copy todir="${ldap.build.dir}/" file="${ldap.conf.dir}/ldap/mimehandlers.ldif" />

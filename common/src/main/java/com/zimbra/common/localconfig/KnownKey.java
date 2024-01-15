@@ -238,7 +238,6 @@ public final class KnownKey {
         ALL.put(key, this);
     }
 
-
     public KnownKey setDefault(String defaultValue) {
         this.defaultValue = defaultValue;
         this.value = null;

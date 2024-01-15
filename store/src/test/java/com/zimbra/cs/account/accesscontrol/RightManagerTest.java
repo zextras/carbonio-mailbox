@@ -12,7 +12,7 @@ class RightManagerTest {
   @AfterEach
   void cleanup() {
     RightManager.destroy();
-    LC.zimbra_rights_directory.setDefault("");
+    LC.zimbra_rights_directory.setDefault(LC.DEFAULT_RIGHTS_DIRECTORY);
   }
 
   @Test
