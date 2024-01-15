@@ -175,7 +175,7 @@ public class AttributeManager {
     return new AttributeManager(fileAttributeStream);
   }
 
-  public AttributeManager(AttributeStream attributeStream) throws ServiceException {
+  private AttributeManager(AttributeStream attributeStream) throws ServiceException {
     initFlagsToAttrsMap();
     initClassToAttrsMap();
 
