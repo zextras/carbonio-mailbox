@@ -18,10 +18,10 @@ import com.zimbra.cs.mime.ParsedContact;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import javax.mail.internet.InternetAddress;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -33,24 +33,30 @@ import org.junit.jupiter.api.Test;
  */
 class ContactAutoCompleteTest {
 
+  private static Provisioning provisioning;
+
   @BeforeAll
   public static void init() throws Exception {
     System.setProperty("zimbra.config", "../store/src/test/resources/localconfig-test.xml");
     MailboxTestUtil.initServer();
+
+    provisioning = Provisioning.getInstance();
   }
 
-  @BeforeEach
-  public void setUp() throws Exception {
-    Provisioning prov = Provisioning.getInstance();
-    prov.createAccount("testContAC@zimbra.com", "secret", new HashMap<>());
-    prov.createAccount("test2@zimbra.com", "secret", new HashMap<>());
-    Provisioning.setInstance(prov);
+  @AfterEach
+  public void tearDown() {
+    try {
+      MailboxTestUtil.clearData();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   @Test
   void hitContact() throws Exception {
     ContactAutoComplete.AutoCompleteResult result = new ContactAutoComplete.AutoCompleteResult(10);
-    Account account = Provisioning.getInstance().getAccountByName("testContAC@zimbra.com");
+    final String accountName = UUID.randomUUID() + "@zimbra.com";
+    final Account account = provisioning.createAccount(accountName, "secret", new HashMap<>());
     result.rankings = new ContactRankings(account.getId());
     ContactAutoComplete.ContactEntry contact = new ContactAutoComplete.ContactEntry();
     contact.mDisplayName = "C1";
@@ -65,18 +71,12 @@ class ContactAutoCompleteTest {
     assertEquals(2, result.entries.size());
   }
 
-  @AfterEach
-  public void tearDown() {
-    try {
-      MailboxTestUtil.clearData();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
+
 
   @Test
   void lastNameFirstName() throws Exception {
-    Account account = Provisioning.getInstance().getAccountByName("testContAC@zimbra.com");
+    final String accountName = UUID.randomUUID() + "@zimbra.com";
+    final Account account = provisioning.createAccount(accountName, "secret", new HashMap<>());
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
     Map<String, Object> fields = new HashMap<>();
     fields.put(ContactConstants.A_firstName, "First");
@@ -107,7 +107,8 @@ class ContactAutoCompleteTest {
 
   @Test
   void reservedQueryTerm() throws Exception {
-    Account account = Provisioning.getInstance().getAccountByName("testContAC@zimbra.com");
+    final String accountName = UUID.randomUUID() + "@zimbra.com";
+    final Account account = provisioning.createAccount(accountName, "secret", new HashMap<>());
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
     Map<String, Object> fields = new HashMap<>();
     fields.put(ContactConstants.A_firstName, "not and or");
@@ -127,7 +128,8 @@ class ContactAutoCompleteTest {
 
   @Test
   void dash() throws Exception {
-    Account account = Provisioning.getInstance().getAccountByName("testContAC@zimbra.com");
+    final String accountName = UUID.randomUUID() + "@zimbra.com";
+    final Account account = provisioning.createAccount(accountName, "secret", new HashMap<>());
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
     Map<String, Object> fields = new HashMap<>();
     fields.put(ContactConstants.A_firstName, "Conf - Hillview");
@@ -147,24 +149,28 @@ class ContactAutoCompleteTest {
   @Test
   void hitGroup() throws Exception {
     ContactAutoComplete.AutoCompleteResult result = new ContactAutoComplete.AutoCompleteResult(10);
-    Account account = Provisioning.getInstance().getAccountByName("test2@zimbra.com");
+    final String accountName = UUID.randomUUID() + "@zimbra.com";
+    final Account account = provisioning.createAccount(accountName, "secret", new HashMap<>());
     result.rankings = new ContactRankings(account.getId());
     ContactAutoComplete.ContactEntry group = new ContactAutoComplete.ContactEntry();
     group.mDisplayName = "G1";
     group.mIsContactGroup = true;
     result.addEntry(group);
+
     assertEquals(1, result.entries.size());
 
     group = new ContactAutoComplete.ContactEntry();
     group.mDisplayName = "G2";
     group.mIsContactGroup = true;
     result.addEntry(group);
+
     assertEquals(2, result.entries.size());
   }
 
   @Test
   void addMatchedContacts() throws Exception {
-    Account account = Provisioning.getInstance().getAccountByName("testContAC@zimbra.com");
+    final String accountName = UUID.randomUUID() + "@zimbra.com";
+    final Account account = provisioning.createAccount(accountName, "secret", new HashMap<>());
     ContactAutoComplete comp = new ContactAutoComplete(account, null);
     ContactAutoComplete.AutoCompleteResult result = new ContactAutoComplete.AutoCompleteResult(10);
     result.rankings = new ContactRankings(MockProvisioning.DEFAULT_ACCOUNT_ID);
@@ -174,14 +180,17 @@ class ContactAutoCompleteTest {
         ContactConstants.A_lastName, "Last",
         ContactConstants.A_email, "first.last@zimbra.com");
     comp.addMatchedContacts("first f", attrs, Mailbox.ID_FOLDER_CONTACTS, null, result);
+
     assertEquals(0, result.entries.size());
     result.clear();
 
     comp.addMatchedContacts("first mid", attrs, Mailbox.ID_FOLDER_CONTACTS, null, result);
+
     assertEquals(1, result.entries.size());
     result.clear();
 
     comp.addMatchedContacts("first la", attrs, Mailbox.ID_FOLDER_CONTACTS, null, result);
+
     assertEquals(1, result.entries.size());
     result.clear();
 
@@ -223,8 +232,8 @@ class ContactAutoCompleteTest {
 
   @Test
   void addMatchedContactsWithUnicodeCase() throws Exception {
-    Account account = Provisioning.getInstance().getAccountByName("testContAC@zimbra.com");
-
+    final String accountName = UUID.randomUUID() + "@zimbra.com";
+    final Account account = provisioning.createAccount(accountName, "secret", new HashMap<>());
     ContactAutoComplete comp = new ContactAutoComplete(account, null);
     ContactAutoComplete.AutoCompleteResult result = new ContactAutoComplete.AutoCompleteResult(10);
     result.rankings = new ContactRankings(MockProvisioning.DEFAULT_ACCOUNT_ID);
@@ -237,6 +246,7 @@ class ContactAutoCompleteTest {
     comp.addMatchedContacts(
         "\u0421\u0440\u043f\u0441\u043a\u0438 \u0411\u043e\u0441\u043d\u0430 \u0438 \u0425\u0435\u0440\u0446\u0435\u0433\u043e\u0432\u0438\u043d\u0430",
         attrs, Mailbox.ID_FOLDER_CONTACTS, null, result);
+
     assertEquals(1, result.entries.size());
     result.clear();
   }
