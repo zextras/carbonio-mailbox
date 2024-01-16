@@ -5,7 +5,9 @@
 
 package com.zimbra.cs.db;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -25,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +44,8 @@ public final class DbMailItemTest {
   public static void init() throws Exception {
     MailboxTestUtil.initServer();
     Provisioning prov = Provisioning.getInstance();
-    prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+    final String accountName = UUID.randomUUID() + "@"+ UUID.randomUUID() +".com";
+    prov.createAccount(accountName, "secret", new HashMap<>());
   }
 
   private DbConnection conn = null;
@@ -328,13 +332,13 @@ public final class DbMailItemTest {
 
     assertEquals(
         ImmutableList.of(100, 101, 102, 300, 301, 302),
-        DbMailItem.getReIndexIds(conn, mbox, EnumSet.<MailItem.Type>of(MailItem.Type.MESSAGE)));
+        DbMailItem.getReIndexIds(conn, mbox, EnumSet.of(MailItem.Type.MESSAGE)));
     assertEquals(
         ImmutableList.of(200, 201, 400, 401),
-        DbMailItem.getReIndexIds(conn, mbox, EnumSet.<MailItem.Type>of(MailItem.Type.CONTACT)));
+        DbMailItem.getReIndexIds(conn, mbox, EnumSet.of(MailItem.Type.CONTACT)));
     assertEquals(
         ImmutableList.of(100, 101, 102, 200, 201, 300, 301, 302, 400, 401),
-        DbMailItem.getReIndexIds(conn, mbox, EnumSet.<MailItem.Type>noneOf(MailItem.Type.class)));
+        DbMailItem.getReIndexIds(conn, mbox, EnumSet.noneOf(MailItem.Type.class)));
   }
 
   @Test
@@ -589,28 +593,28 @@ public final class DbMailItemTest {
         now,
         MailItem.Type.CONTACT.toByte(),
         "31,32");
-    Set<MailItem.Type> types = new HashSet<MailItem.Type>();
+    Set<MailItem.Type> types = new HashSet<>();
     types.add(MailItem.Type.MESSAGE);
     List<Integer> tombstones = DbMailItem.readTombstones(mbox, conn, 0, types);
-    assertEquals(tombstones.size(), 3);
+    assertEquals(3, tombstones.size());
     types.add(MailItem.Type.APPOINTMENT);
     tombstones = DbMailItem.readTombstones(mbox, conn, 0, types);
-    assertEquals(tombstones.size(), 7);
+    assertEquals(7, tombstones.size());
 
-    types = new HashSet<MailItem.Type>();
+    types = new HashSet<>();
     types.add(MailItem.Type.APPOINTMENT);
     tombstones = DbMailItem.readTombstones(mbox, conn, 0, types);
-    assertEquals(tombstones.size(), 4);
+    assertEquals(4, tombstones.size());
 
-    types = new HashSet<MailItem.Type>();
+    types = new HashSet<>();
     types.add(MailItem.Type.CONTACT);
     tombstones = DbMailItem.readTombstones(mbox, conn, 0, types);
-    assertEquals(tombstones.size(), 2);
+    assertEquals(2, tombstones.size());
 
-    types = new HashSet<MailItem.Type>();
+    types = new HashSet<>();
     types.add(MailItem.Type.MESSAGE);
     types.add(MailItem.Type.APPOINTMENT);
     tombstones = DbMailItem.readTombstones(mbox, conn, 0, types);
-    assertEquals(tombstones.size(), 7);
+    assertEquals(7, tombstones.size());
   }
 }
