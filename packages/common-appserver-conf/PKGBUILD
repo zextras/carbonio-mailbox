@@ -37,11 +37,11 @@ package() {
   install -D "store-conf/conf/stats.conf.in" \
     "${pkgdir}/opt/zextras/conf/stats.conf.in"
 
-  install -D "store/conf/attrs/amavisd-new-attrs.xml" \
+  install -D "store/src/main/resources/conf/attrs/amavisd-new-attrs.xml" \
     "${pkgdir}/opt/zextras/conf/attrs/amavisd-new-attrs.xml"
-  install -D "store/conf/attrs/attrs.xml" \
+  install -D "store/src/main/resources/conf/attrs/attrs.xml" \
     "${pkgdir}/opt/zextras/conf/attrs/attrs.xml"
-  install -D "store/conf/attrs/ocs.xml" \
+  install -D "store/src/main/resources/conf/attrs/ocs.xml" \
     "${pkgdir}/opt/zextras/conf/attrs/ocs.xml"
 
   install -D "store-conf/conf/msgs/L10nMsg.properties" \
