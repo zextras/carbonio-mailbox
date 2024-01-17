@@ -28,11 +28,11 @@ in `/opt/zextras/common/etc/openldap/zimbra/updates/attrs/`
 ### Naming of update files
 
 Update files are named as the value of last timestamp of last commit on `attrs.xml`(this can be retrieved
-using `git log -1 --pretty=format:%at carbonio-mailbox/store/conf/attrs/attrs.xml`).
+using `git log -1 --pretty=format:%at carbonio-mailbox/store/src/main/resources/conf/attrs/attrs.xml`).
 
 ## How update files are consumed by ldapattributeupdate script?
 
-The `ldapattributeupdate` script runs in postinstall part of the installation procedure in upgrade hook.
+The `ldapattributeupdate` script runs in post-install part of the installation procedure in upgrade hook.
 This script runs after few other scripts that populate the LDIF files and install our schema in place where LDAP looks
 for them. The aim of these update file is to provide information to our update script about: which entry got new
 attribute and when.

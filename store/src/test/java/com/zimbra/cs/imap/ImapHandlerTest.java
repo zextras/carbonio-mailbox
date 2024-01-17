@@ -4,7 +4,10 @@
 
 package com.zimbra.cs.imap;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mailbox.FolderStore;
@@ -18,49 +21,33 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.SearchFolder;
 import com.zimbra.cs.server.ServerThrottle;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import qa.unittest.TestUtil;
 
 
-public class ImapHandlerTest {
-
-  private static final String LOCAL_USER = "localimaptest@zimbra.com";
-  private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-  public String testName;
-
+class ImapHandlerTest {
 
   @BeforeEach
-  public void setUp(TestInfo testInfo) throws Exception {
-    Optional<Method> testMethod = testInfo.getTestMethod();
-    if (testMethod.isPresent()) {
-      this.testName = testMethod.get().getName();
-    }
+  public void setUp() throws Exception {
     LC.imap_use_ehcache.setDefault(false);
     MailboxTestUtil.initServer();
     String[] hosts = {"localhost", "127.0.0.1"};
     ServerThrottle.configureThrottle(new ImapConfig(false).getProtocol(), 100, 100,
         Arrays.asList(hosts), Arrays.asList(hosts));
-    log.info(testName);
   }
 
-  private Account createTestAccount(Provisioning prov, String accountId) throws ServiceException {
+  private Account createTestAccount(Provisioning prov, String accountName) throws ServiceException {
     HashMap<String, Object> attrs = new HashMap<>();
-    attrs.put(Provisioning.A_zimbraId, accountId);
+    attrs.put(Provisioning.A_zimbraId, accountName);
     attrs.put(Provisioning.A_zimbraFeatureAntispamEnabled, "true");
-    return prov.createAccount(LOCAL_USER, "secret", attrs);
+    return prov.createAccount(accountName, "secret", attrs);
   }
 
   @AfterEach
@@ -76,7 +63,8 @@ public class ImapHandlerTest {
   void testDoCOPYByUID() {
 
     try {
-      Account acct = createTestAccount(Provisioning.getInstance(), UUID.randomUUID().toString());
+      Account acct = createTestAccount(Provisioning.getInstance(),
+          UUID.randomUUID() + "@" + UUID.randomUUID() + ".com");
       acct.setFeatureAntispamEnabled(true);
       Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
       Message m1 = TestUtil.addMessage(mbox, "Message 1");
@@ -144,7 +132,8 @@ public class ImapHandlerTest {
   @Test
   void testDoCOPYByNumber() throws Exception {
 
-    Account acct = createTestAccount(Provisioning.getInstance(), UUID.randomUUID().toString());
+    Account acct = createTestAccount(Provisioning.getInstance(),
+        UUID.randomUUID() + "@" + UUID.randomUUID() + ".com");
     acct.setFeatureAntispamEnabled(true);
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
     Message m1 = TestUtil.addMessage(mbox, "Message 1");
@@ -213,7 +202,8 @@ public class ImapHandlerTest {
   @Test
   void testDoSearch() throws Exception {
 
-    Account acct = createTestAccount(Provisioning.getInstance(), UUID.randomUUID().toString());
+    Account acct = createTestAccount(Provisioning.getInstance(),
+        UUID.randomUUID() + "@" + UUID.randomUUID() + ".com");
     acct.setFeatureAntispamEnabled(true);
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
     Message m1 = TestUtil.addMessage(mbox, "Message 1 blue");
@@ -232,13 +222,12 @@ public class ImapHandlerTest {
     byte params = 0;
     handler.setSelectedFolder(pathInbox, params);
     Integer options = null;
-    boolean byUID = false;
     ImapSearch.LogicalOperation i4srch = new ImapSearch.AndOperation();
     ImapSearch child = new ImapSearch.AndOperation(new ImapSearch.FlagSearch("\\Recent"),
         new ImapSearch.NotOperation(new ImapSearch.FlagSearch("\\Seen")));
     i4srch.addChild(child);
     i4srch.addChild(new ImapSearch.ContentSearch("green"));
-    assertTrue(handler.doSEARCH("searchtag", i4srch, byUID, options));
+    assertTrue(handler.doSEARCH("searchtag", i4srch, false, options));
     ByteArrayOutputStream baos = (ByteArrayOutputStream) handler.output;
     assertEquals("* SEARCH 2 3\r\nsearchtag OK SEARCH completed\r\n", baos.toString(),
         "Output of SEARCH");
@@ -247,7 +236,8 @@ public class ImapHandlerTest {
   @Test
   void testSearchInSearchFolder() throws Exception {
 
-    Account acct = createTestAccount(Provisioning.getInstance(), UUID.randomUUID().toString());
+    Account acct = createTestAccount(Provisioning.getInstance(),
+        UUID.randomUUID() + "@" + UUID.randomUUID() + ".com");
     acct.setFeatureAntispamEnabled(true);
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
     Message m1 = TestUtil.addMessage(mbox, "Message 1 blue");
@@ -266,13 +256,12 @@ public class ImapHandlerTest {
     byte params = 0;
     handler.setSelectedFolder(pathSearchFldr, params);
     Integer options = null;
-    boolean byUID = false;
     ImapSearch.LogicalOperation i4srch = new ImapSearch.AndOperation();
     ImapSearch child = new ImapSearch.AndOperation(new ImapSearch.FlagSearch("\\Recent"),
         new ImapSearch.NotOperation(new ImapSearch.FlagSearch("\\Seen")));
     i4srch.addChild(child);
     i4srch.addChild(new ImapSearch.ContentSearch("white"));
-    assertTrue(handler.doSEARCH("searchtag", i4srch, byUID, options));
+    assertTrue(handler.doSEARCH("searchtag", i4srch, false, options));
     ByteArrayOutputStream baos = (ByteArrayOutputStream) handler.output;
     assertEquals("* SEARCH 2\r\nsearchtag OK SEARCH completed\r\n", baos.toString(),
         "Output of SEARCH");
@@ -281,40 +270,36 @@ public class ImapHandlerTest {
   @Test
   void testLogin() throws Exception {
 
-    Account acct = createTestAccount(Provisioning.getInstance(), UUID.randomUUID().toString());
+    Account acct = createTestAccount(Provisioning.getInstance(),
+        UUID.randomUUID() + "@" + UUID.randomUUID() + ".com");
     ImapHandler handler = new MockImapHandler();
 
     acct.setImapEnabled(true);
     acct.setPrefImapEnabled(true);
     handler.setCredentials(null);
-    assertTrue(handler.authenticate(LOCAL_USER, null, "secret", "logintag", null));
+    assertTrue(handler.authenticate(acct.getName(), null, "secret", "logintag", null));
     assertTrue(handler.isAuthenticated());
 
     acct.setImapEnabled(true);
     acct.setPrefImapEnabled(false);
     handler.setCredentials(null);
-    assertTrue(handler.authenticate(LOCAL_USER, null, "secret", "logintag", null));
+    assertTrue(handler.authenticate(acct.getName(), null, "secret", "logintag", null));
     assertFalse(handler.isAuthenticated());
 
     acct.setImapEnabled(false);
     acct.setPrefImapEnabled(true);
     handler.setCredentials(null);
-    assertTrue(handler.authenticate(LOCAL_USER, null, "secret", "logintag", null));
+    assertTrue(handler.authenticate(acct.getName(), null, "secret", "logintag", null));
     assertFalse(handler.isAuthenticated());
 
     acct.setImapEnabled(false);
     acct.setPrefImapEnabled(false);
     handler.setCredentials(null);
-    assertTrue(handler.authenticate(LOCAL_USER, null, "secret", "logintag", null));
+    assertTrue(handler.authenticate(acct.getName(), null, "secret", "logintag", null));
     assertFalse(handler.isAuthenticated());
   }
 
   static class MockImapPath extends ImapPath {
-
-    MockImapPath(ImapPath other) {
-      super(other);
-      // TODO Auto-generated constructor stub
-    }
 
     MockImapPath(String owner, FolderStore folderStore, ImapCredentials creds)
         throws ServiceException {

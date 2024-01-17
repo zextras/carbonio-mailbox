@@ -819,7 +819,7 @@ public class AttributeManagerUtil {
         if (!commandLine.hasOption('i')) {
           usage("no input attribute xml files specified");
         }
-        am = new AttributeManager(commandLine.getOptionValue('i'));
+        am =  AttributeManager.fromFileSystem(commandLine.getOptionValue('i'));
         if (am.hasErrors()) {
           ZimbraLog.misc.warn(am.getErrors());
           System.exit(1);

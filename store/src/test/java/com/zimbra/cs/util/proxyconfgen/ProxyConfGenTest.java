@@ -3,13 +3,26 @@ package com.zimbra.cs.util.proxyconfgen;
 import static com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.zimbra.cs.mailbox.MailboxTestUtil;
 import java.io.File;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class ProxyConfGenTest {
+class ProxyConfGenTest {
+
+  @BeforeAll
+  public static void init() throws Exception {
+    MailboxTestUtil.initServer();
+  }
+
+  @AfterEach
+  public void tearDown() throws Exception {
+    MailboxTestUtil.clearData();
+  }
 
   @Test
   void shouldUseOverrideTemplatePathWhenOverrideConditionMatches() {
