@@ -16,12 +16,12 @@ endif
 
 SHARED := -shared
 
-PLATFORM = $(uname -m)
+PLATFORM = $(uname -s)
 
 buildbegin:
 	@echo $(PLATFORM)
 
-ifeq ($(PLATFORM), 'arm64')
+ifeq ($(PLATFORM), 'Darwin')
 JAVAINC := -I$(JAVA_HOME_)/include -I$(JAVA_HOME_)/include/darwin
 else
 JAVAINC := -I$(JAVA_HOME_)/include -I$(JAVA_HOME_)/include/linux
