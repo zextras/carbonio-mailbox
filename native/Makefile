@@ -18,13 +18,10 @@ SHARED := -shared
 
 PLATFORM = $(uname -s)
 
-buildbegin:
-	@echo $(PLATFORM)
-
 ifeq ($(PLATFORM), 'Darwin')
-JAVAINC := -I$(JAVA_HOME_)/include -I$(JAVA_HOME_)/include/darwin
+	JAVAINC := -I$(JAVA_HOME_)/include -I$(JAVA_HOME_)/include/darwin
 else
-JAVAINC := -I$(JAVA_HOME_)/include -I$(JAVA_HOME_)/include/linux
+	JAVAINC := -I$(JAVA_HOME_)/include -I$(JAVA_HOME_)/include/linux
 endif
 
 SHARED_EXT := so
