@@ -17,4 +17,4 @@ su - zextras -c "/opt/zextras/bin/zmprov createDomain demo.zextras.io"
 su - zextras -c "/opt/zextras/bin/zmprov createServer docker.app.local zimbraServiceEnabled service zimbraServiceEnabled mailbox"
 su - zextras -c "/opt/zextras/bin/zmprov createAccount docker-admin@demo.zextras.io admin-password zimbraMailHost docker.app.local zimbraIsAdminAccount TRUE"
 su - zextras -c "/opt/zextras/bin/zmprov createAccount docker-user@demo.zextras.io user-password zimbraMailHost docker.app.local"
-monit -c /etc/monitrc
+tail -f /dev/null
