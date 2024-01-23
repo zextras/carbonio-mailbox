@@ -277,21 +277,33 @@ public abstract class AutoProvision {
         if (localPart.contains(AT_SIGN)) {
             String[] localPartArr = localPart.split(AT_SIGN);
             if (localPartArr.length > DOMAIN_INDEX) {
-                switch (localPartAttr) {
-                    case SEARCH_BY_MAIL:
-                        if (domain.getName().equals(localPartArr[DOMAIN_INDEX])) {
-                            localPart = localPartArr[EMAIL_INDEX];
-                        } else {
-                            throw ServiceException.FAILURE(localPart + " can not be provisioned for domain " + domain.getName());
-                        }
-                        break;
-                    case SEARCH_BY_USER_PRINCIPAL_NAME:
-                        localPart = localPartArr[EMAIL_INDEX];
-                        break;
+                String attrDomain = localPartArr[DOMAIN_INDEX].trim();
+                if (domain.getName().equals(attrDomain) || getDomainSet().contains(attrDomain)) {
+                    localPart = localPartArr[EMAIL_INDEX];
+                } else {
+                    throw ServiceException.FAILURE(localPart + " can not be provisioned for domain " + domain.getName());
                 }
+
             }
         }
+
         return localPart + AT_SIGN + domain.getName();
+    }
+
+    Set<String> getDomainSet() {
+        String carbonioAutoProvAllowedDomains = domain.getCarbonioAutoProvAllowedDomains();
+
+        if (carbonioAutoProvAllowedDomains == null || carbonioAutoProvAllowedDomains.trim().isEmpty()) {
+            return Set.of();
+        }
+
+        final String[] domainArr = carbonioAutoProvAllowedDomains.split(",");
+        final Set<String> domainSet = new HashSet<>(domainArr.length);
+
+        for(String domain : domainArr) {
+            domainSet.add(domain.trim());
+        }
+        return domainSet;
     }
 
     protected Map<String, Object> mapAttrs(ZAttributes externalAttrs)

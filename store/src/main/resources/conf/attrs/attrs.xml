@@ -10128,4 +10128,9 @@ TODO: delete them permanently from here
   <globalConfigValue>yyyyMMddHHmmss.SSS'Z'</globalConfigValue>
   <desc>AD/LDAP timestamp format. For example: yyyyMMddHHmmss.SSS'Z', yyyyMMddHHmmss'Z'</desc>
 </attr>
+<attr id="3142" name="carbonioAutoProvAllowedDomains" type="string" max="51200" cardinality="single" optionalIn="domain" since="24.2.0">
+  <desc>
+    carbonioAutoProvAllowedDomains comma separated domain names
+  </desc>
+</attr>
 </attrs>
