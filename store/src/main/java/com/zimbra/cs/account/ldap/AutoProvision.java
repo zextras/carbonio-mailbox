@@ -279,7 +279,7 @@ public abstract class AutoProvision {
             String[] localPartArr = localPart.split(AT_SIGN);
             if (localPartArr.length > DOMAIN_INDEX) {
                 String attrDomain = localPartArr[DOMAIN_INDEX].trim();
-                if (domain.getName().equals(attrDomain) || getDomainSet().contains(attrDomain)) {
+                if (domain.getName().equals(attrDomain) || getCarbonioAutoProvAllowedDomainSet().contains(attrDomain)) {
                     localPart = localPartArr[EMAIL_INDEX];
                 } else {
                     throw ServiceException.FAILURE(localPart + " can not be provisioned for domain " + domain.getName()
@@ -296,7 +296,7 @@ public abstract class AutoProvision {
         return localPart + AT_SIGN + domain.getName();
     }
 
-    Set<String> getDomainSet() {
+   private Set<String> getCarbonioAutoProvAllowedDomainSet() {
         String carbonioAutoProvAllowedDomains = domain.getCarbonioAutoProvAllowedDomains();
 
         if (carbonioAutoProvAllowedDomains == null || carbonioAutoProvAllowedDomains.trim().isEmpty()) {
