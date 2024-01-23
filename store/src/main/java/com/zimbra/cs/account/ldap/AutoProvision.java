@@ -29,6 +29,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 
 import com.sun.mail.smtp.SMTPMessage;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.account.ZAttrProvisioning.AutoProvMode;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;
@@ -281,7 +282,13 @@ public abstract class AutoProvision {
                 if (domain.getName().equals(attrDomain) || getDomainSet().contains(attrDomain)) {
                     localPart = localPartArr[EMAIL_INDEX];
                 } else {
-                    throw ServiceException.FAILURE(localPart + " can not be provisioned for domain " + domain.getName());
+                    throw ServiceException.FAILURE(localPart + " can not be provisioned for domain " + domain.getName()
+                            + localPartAttr
+                            + " value contains domain. "
+                            + attrDomain
+                            + " domain is not permitted. You can set "
+                            + ZAttrProvisioning.A_carbonioAutoProvAllowedDomains +
+                            " the domain name to to pass the exception");
                 }
             }
         }
