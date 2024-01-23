@@ -10128,4 +10128,12 @@ TODO: delete them permanently from here
   <globalConfigValue>yyyyMMddHHmmss.SSS'Z'</globalConfigValue>
   <desc>AD/LDAP timestamp format. For example: yyyyMMddHHmmss.SSS'Z', yyyyMMddHHmmss'Z'</desc>
 </attr>
+<attr id="3142" name="carbonioAutoProvAllowedDomains" type="string" max="51200" cardinality="single" optionalIn="domain" since="24.2.0">
+  <desc>
+    carbonioAutoProvAllowedDomains comma separated domain names
+    Used for checks autoProvAccountNameMap value.
+    If value is full email, domain of the email should be one of the value of carbonioAutoProvAllowedDomains
+    active directory domain names may exists at autoProvAccountNameMap.
+  </desc>
+</attr>
 </attrs>
