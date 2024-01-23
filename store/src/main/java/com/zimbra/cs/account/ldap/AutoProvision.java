@@ -70,8 +70,8 @@ import com.zimbra.cs.util.AccountUtil;
 public abstract class AutoProvision {
 
     private static final String AT_SIGN = "@";
-    private static final int DOMAIN_INDEX = 1;
     private static final int EMAIL_INDEX = 0;
+    private static final int DOMAIN_INDEX = 1;
     private static final String SEARCH_BY_MAIL = "mail";
     private static final String SEARCH_BY_USER_PRINCIPAL_NAME = "userPrincipalName";
     protected LdapProv prov;
@@ -283,7 +283,6 @@ public abstract class AutoProvision {
                 } else {
                     throw ServiceException.FAILURE(localPart + " can not be provisioned for domain " + domain.getName());
                 }
-
             }
         }
 
