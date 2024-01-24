@@ -286,9 +286,8 @@ public abstract class AutoProvision {
                             + localPartAttr
                             + " value contains domain. "
                             + attrDomain
-                            + " domain is not permitted. You can set "
-                            + ZAttrProvisioning.A_carbonioAutoProvAllowedDomains +
-                            " the domain name to to pass the exception");
+                            + " domain is not permitted. You can set the attribute "
+                            + ZAttrProvisioning.A_carbonioAutoProvAllowedDomains);
                 }
             }
         }
