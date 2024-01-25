@@ -1,13 +1,12 @@
 #!/bin/bash
 
-# The container 'carbonio/ce-ldap-u20' is already bootstrapped with:
+# The container is already bootstrapped with:
 # - server: "ldap.mail.local" configured with zimbraServiceEnabled 'directory-server' and some other stuff.
 # - domain: "mail.local"
 # We only need to:
 # - update the schemas and the configurations with those we have just built
 # - create an appserver, a domain and a couple of accounts
 
-touch /.dockerenv
 su - zextras -c "/opt/zextras/bin/ldap stop"
 su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
 su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
