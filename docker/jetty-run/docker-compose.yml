@@ -28,10 +28,10 @@ services:
       - "~/.m2:/root/.m2"
 
   ldap:
-    image: carbonio/ce-ldap-u20
-    hostname: ldap.mail.local
+    image: carbonio/ce-directory-server-u20:23.12.0
+    hostname: carbonio-ce-directory-server.carbonio-system.svc.cluster.local
     healthcheck:
-      test: nc -z localhost 2812 || exit 1 # check monit up and running
+      test: netstat -ltn | grep -c :389
       retries: 20
     ports:
       - "389:389"
@@ -39,6 +39,7 @@ services:
       - "./../../store/build/ldap:/opt/zextras/common/etc/openldap/zimbra"
       - "./entrypoint-ldap.sh:/entrypoint-ldap.sh"
     entrypoint: ["/entrypoint-ldap.sh"]
+    user: root
 
   db:
     image: mariadb:10.4.31-focal
