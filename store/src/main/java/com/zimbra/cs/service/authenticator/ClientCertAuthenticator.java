@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
-import org.bouncycastle.asn1.x509.X509Extension;
+import org.bouncycastle.asn1.x509.Extension;
 
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.localconfig.DebugConfig;
@@ -51,10 +51,6 @@ import com.zimbra.cs.account.AccountServiceException.AuthFailedServiceException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.service.authenticator.ClientCertPrincipalMap.Rule;
 import com.zimbra.cs.util.CertValidationUtil;
-
-
-
-
 
 public class ClientCertAuthenticator extends SSOAuthenticator {
 
@@ -95,12 +91,13 @@ public class ClientCertAuthenticator extends SSOAuthenticator {
         }
 
         throw AuthFailedServiceException.AUTH_FAILED(cert.toString(),
-                "ClientCertAuthenticator - no matching Zimbra principal from client certificate.", (Throwable)null);
+                "ClientCertAuthenticator - no matching Zimbra principal from client certificate.", (Throwable) null);
     }
 
     /*
      * Save the client cert to file for debugging.
-     * To view: /opt/zextras/openssl/bin/openssl x509 -in /opt/zextras/data/tmp/clientcert.*** -text
+     * To view: /opt/zextras/openssl/bin/openssl x509 -in
+     * /opt/zextras/data/tmp/clientcert.*** -text
      */
     private void captureClientCert(X509Certificate cert) {
 
@@ -121,7 +118,7 @@ public class ClientCertAuthenticator extends SSOAuthenticator {
             wr.write("\n-----END CERTIFICATE-----\n");
             wr.flush();
         } catch (CertificateEncodingException e) {
-            ZimbraLog.account.debug(LOG_PREFIX +  "unable to capture cert", e);
+            ZimbraLog.account.debug(LOG_PREFIX + "unable to capture cert", e);
         } catch (IOException e) {
             ZimbraLog.account.debug(LOG_PREFIX + "unable to capture cert", e);
         } finally {
@@ -131,9 +128,9 @@ public class ClientCertAuthenticator extends SSOAuthenticator {
     }
 
     private X509Certificate getCert() throws ServiceException {
-        X509Certificate[] certs = (X509Certificate[])req.getAttribute("javax.servlet.request.X509Certificate");
+        X509Certificate[] certs = (X509Certificate[]) req.getAttribute("javax.servlet.request.X509Certificate");
 
-        if (certs==null || certs.length==0 || certs[0]==null) {
+        if (certs == null || certs.length == 0 || certs[0] == null) {
             throw SSOAuthenticatorServiceException.NO_CLIENT_CERTIFICATE();
         }
 
@@ -166,7 +163,8 @@ public class ClientCertAuthenticator extends SSOAuthenticator {
                 }
             }
         } catch (InvalidNameException e) {
-            throw AuthFailedServiceException.AUTH_FAILED("ClientCertAuthenticator - invalid X509 subject: " + x509SubjectDN, e);
+            throw AuthFailedServiceException
+                    .AUTH_FAILED("ClientCertAuthenticator - invalid X509 subject: " + x509SubjectDN, e);
         }
 
         return null;
@@ -177,38 +175,44 @@ public class ClientCertAuthenticator extends SSOAuthenticator {
     }
 
     private void validateClientCert(X509Certificate[] certs) throws ServiceException {
-            String subjectDN = null;
-            try {
-                boolean revocationCheckEnabled = Provisioning.getInstance().getLocalServer().isMailSSLClientCertOCSPEnabled();
-                Set<TrustAnchor> trustedCertsSet = null;
-                if (revocationCheckEnabled) {
-                    char[] pass = LC.client_ssl_truststore_password.value().toCharArray();
-                    trustedCertsSet = CertValidationUtil.loadTrustedAnchors(pass, LC.client_ssl_truststore.value());
-                }
+        String subjectDN = null;
+        try {
+            boolean revocationCheckEnabled = Provisioning.getInstance().getLocalServer()
+                    .isMailSSLClientCertOCSPEnabled();
+            Set<TrustAnchor> trustedCertsSet = null;
+            if (revocationCheckEnabled) {
+                char[] pass = LC.client_ssl_truststore_password.value().toCharArray();
+                trustedCertsSet = CertValidationUtil.loadTrustedAnchors(pass, LC.client_ssl_truststore.value());
+            }
 
-                for (X509Certificate cert : certs) {
-                    subjectDN = getSubjectDNForLogging(cert);
-                    CertValidationUtil.validateCertificate(cert, revocationCheckEnabled, trustedCertsSet);
-                }
-            } catch (CertificateExpiredException e) {
-                throw AuthFailedServiceException.AUTH_FAILED(subjectDN, "client certificate expired", e);
-            } catch (CertificateNotYetValidException e) {
-                throw AuthFailedServiceException.AUTH_FAILED(subjectDN, "client certificate not yet valid", e);
-            } catch (CertificateException e) {
-                throw AuthFailedServiceException.AUTH_FAILED(subjectDN, "can't generate certpath for client certificate", e);
-            } catch (KeyStoreException e) {
-                throw AuthFailedServiceException.AUTH_FAILED(subjectDN, "received KeyStoreException while loading KeyStore", e);
-            } catch (NoSuchAlgorithmException e) {
-                throw AuthFailedServiceException.AUTH_FAILED(subjectDN, "received NoSuchAlgorithmException while obtaining instance of certpath validator", e);
-            } catch (FileNotFoundException e) {
-                throw AuthFailedServiceException.AUTH_FAILED(subjectDN, "mailboxd keystore can't be found", e);
-            } catch (IOException e) {
-                throw AuthFailedServiceException.AUTH_FAILED(subjectDN, "received IOException", e);
-            } catch (InvalidAlgorithmParameterException e) {
-                throw AuthFailedServiceException.AUTH_FAILED(subjectDN, "received InvalidAlgorithmParameter while obtaining instance of certpath validator", e);
-            } catch (CertPathValidatorException e) {
-                throw AuthFailedServiceException.AUTH_FAILED(subjectDN, "received CertPathValidatorException" + e.getMessage(), e);
-            } 
+            for (X509Certificate cert : certs) {
+                subjectDN = getSubjectDNForLogging(cert);
+                CertValidationUtil.validateCertificate(cert, revocationCheckEnabled, trustedCertsSet);
+            }
+        } catch (CertificateExpiredException e) {
+            throw AuthFailedServiceException.AUTH_FAILED(subjectDN, "client certificate expired", e);
+        } catch (CertificateNotYetValidException e) {
+            throw AuthFailedServiceException.AUTH_FAILED(subjectDN, "client certificate not yet valid", e);
+        } catch (CertificateException e) {
+            throw AuthFailedServiceException.AUTH_FAILED(subjectDN, "can't generate certpath for client certificate",
+                    e);
+        } catch (KeyStoreException e) {
+            throw AuthFailedServiceException.AUTH_FAILED(subjectDN, "received KeyStoreException while loading KeyStore",
+                    e);
+        } catch (NoSuchAlgorithmException e) {
+            throw AuthFailedServiceException.AUTH_FAILED(subjectDN,
+                    "received NoSuchAlgorithmException while obtaining instance of certpath validator", e);
+        } catch (FileNotFoundException e) {
+            throw AuthFailedServiceException.AUTH_FAILED(subjectDN, "mailboxd keystore can't be found", e);
+        } catch (IOException e) {
+            throw AuthFailedServiceException.AUTH_FAILED(subjectDN, "received IOException", e);
+        } catch (InvalidAlgorithmParameterException e) {
+            throw AuthFailedServiceException.AUTH_FAILED(subjectDN,
+                    "received InvalidAlgorithmParameter while obtaining instance of certpath validator", e);
+        } catch (CertPathValidatorException e) {
+            throw AuthFailedServiceException.AUTH_FAILED(subjectDN,
+                    "received CertPathValidatorException" + e.getMessage(), e);
+        }
 
     }
 
@@ -216,13 +220,13 @@ public class ClientCertAuthenticator extends SSOAuthenticator {
     private boolean IsAIAInfoPresent(X509Certificate cert) {
         try {
             byte[] authInfoAccessExtensionValue = cert
-                .getExtensionValue(X509Extension.authorityInfoAccess.getId());
+                    .getExtensionValue(Extension.authorityInfoAccess.getId());
             ASN1InputStream ais1 = new ASN1InputStream(
-                new ByteArrayInputStream(authInfoAccessExtensionValue));
+                    new ByteArrayInputStream(authInfoAccessExtensionValue));
             DEROctetString oct = (DEROctetString) (ais1.readObject());
             ASN1InputStream ais2 = new ASN1InputStream(oct.getOctets());
             AuthorityInformationAccess aia = AuthorityInformationAccess
-                .getInstance(ais2.readObject());
+                    .getInstance(ais2.readObject());
             ais1.close();
             ais2.close();
             return (aia != null);

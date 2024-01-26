@@ -31,8 +31,8 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/apache-log4j-extras-1.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/asm-8.0.1.jar \
     "${pkgdir}/opt/zextras/lib/jars/asm-8.0.1.jar"
-  install -D carbonio-jetty-libs/target/dependencies/bcprov-jdk15on-1.60.jar \
-    "${pkgdir}/opt/zextras/lib/jars/bcprov-jdk15on-1.60.jar"
+  install -D carbonio-jetty-libs/target/dependencies/bcprov-jdk18on-1.77.jar \
+    "${pkgdir}/opt/zextras/lib/jars/bcprov-jdk18on-1.77.jar"
   install -D carbonio-jetty-libs/target/dependencies/commons-cli-1.2.jar \
     "${pkgdir}/opt/zextras/lib/jars/commons-cli-1.2.jar"
   install -D carbonio-jetty-libs/target/dependencies/commons-codec-1.11.jar \

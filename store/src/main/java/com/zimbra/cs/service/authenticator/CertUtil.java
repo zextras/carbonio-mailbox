@@ -32,10 +32,13 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1IA5String;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.ASN1TaggedObject;
+import org.bouncycastle.asn1.ASN1UTF8String;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
@@ -45,7 +48,7 @@ import org.bouncycastle.asn1.x509.DistributionPoint;
 import org.bouncycastle.asn1.x509.DistributionPointName;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
-import org.bouncycastle.asn1.x509.X509Extension;
+import org.bouncycastle.asn1.x509.Extension;
 
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.ZimbraLog;
@@ -59,13 +62,14 @@ public class CertUtil {
     static final String ATTR_EMAILADDRESS = "EMAILADDRESS";
 
     /* ObjectID for UPN in SubjectaltName for windows smart card logon */
-    private static final String OID_UPN          = "1.3.6.1.4.1.311.20.2.3";
+    private static final String OID_UPN = "1.3.6.1.4.1.311.20.2.3";
 
     /*
      * RFC 2253 2.3
      *
      * If the AttributeType is in a published table of attribute types
-     * associated with LDAP [4] (RFC 2252), then the type name string from that table
+     * associated with LDAP [4] (RFC 2252), then the type name string from that
+     * table
      * is used, otherwise it is encoded as the dotted-decimal encoding of
      * the AttributeType's OBJECT IDENTIFIER.
      *
@@ -121,15 +125,18 @@ public class CertUtil {
         X500Principal subjectPrincipal = cert.getSubjectX500Principal();
 
         /*
-        String CANONICAL = subjectPrincipal.getName(X500Principal.CANONICAL);
-        // 1.2.840.113549.1.9.1=#161075736572314070686f6562652e6d6270,cn=user one,ou=engineering,o=example company,l=saratoga,st=california,c=us
-
-        String RFC1779   = subjectPrincipal.getName(X500Principal.RFC1779);
-        // OID.1.2.840.113549.1.9.1=user1@phoebe.mbp, CN=user one, OU=Engineering, O=Example Company, L=Saratoga, ST=California, C=US
-
-        String RFC2253   = subjectPrincipal.getName(X500Principal.RFC2253);
-        // 1.2.840.113549.1.9.1=#161075736572314070686f6562652e6d6270,CN=user one,OU=Engineering,O=Example Company,L=Saratoga,ST=California,C=US
-        */
+         * String CANONICAL = subjectPrincipal.getName(X500Principal.CANONICAL);
+         * // 1.2.840.113549.1.9.1=#161075736572314070686f6562652e6d6270,cn=user
+         * one,ou=engineering,o=example company,l=saratoga,st=california,c=us
+         * 
+         * String RFC1779 = subjectPrincipal.getName(X500Principal.RFC1779);
+         * // OID.1.2.840.113549.1.9.1=user1@phoebe.mbp, CN=user one, OU=Engineering,
+         * O=Example Company, L=Saratoga, ST=California, C=US
+         * 
+         * String RFC2253 = subjectPrincipal.getName(X500Principal.RFC2253);
+         * // 1.2.840.113549.1.9.1=#161075736572314070686f6562652e6d6270,CN=user
+         * one,OU=Engineering,O=Example Company,L=Saratoga,ST=California,C=US
+         */
 
         return subjectPrincipal.getName();
     }
@@ -163,9 +170,9 @@ public class CertUtil {
                     String value = null;
                     ASN1TaggedObject otherNameValue = ASN1TaggedObject.getInstance(derSeq.getObjectAt(1));
                     if (OID_UPN.equals(oid)) {
-                        ASN1TaggedObject upnValue = ASN1TaggedObject.getInstance(otherNameValue.getObject());
-                        DERUTF8String str = DERUTF8String.getInstance(upnValue.getObject());
-                        value= str.getString();
+                        ASN1TaggedObject upnValue = ASN1TaggedObject.getInstance(otherNameValue.getBaseObject());
+                        ASN1UTF8String str = DERUTF8String.getInstance(upnValue.getBaseObject());
+                        value = str.getString();
                         return value;
                     }
                 }
@@ -228,12 +235,12 @@ public class CertUtil {
                         try {
                             decoder = new ASN1InputStream(bytes);
                             ASN1Encodable encoded = decoder.readObject();
-                            DERIA5String str = DERIA5String.getInstance(encoded);
+                            ASN1String str = DERIA5String.getInstance(encoded);
                             return str.getString();
                         } catch (IOException e) {
                             ZimbraLog.account.warn(LOG_PREFIX + "unable to decode " + type, e);
                         } finally {
-                        	ByteUtil.closeStream(decoder);
+                            ByteUtil.closeStream(decoder);
                         }
 
                     } else {
@@ -248,8 +255,6 @@ public class CertUtil {
         return null;
     }
 
-
-
     /*
      * ======================================================
      * Printing methods below for CLI - Not production code
@@ -259,7 +264,7 @@ public class CertUtil {
     private void loadCert(String certFilePath) throws Exception {
         InputStream inStream = new FileInputStream(certFilePath);
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
-        cert = (X509Certificate)cf.generateCertificate(inStream);
+        cert = (X509Certificate) cf.generateCertificate(inStream);
         inStream.close();
     }
 
@@ -335,12 +340,12 @@ public class CertUtil {
         outStream.format("Signature Algorithm: %s (%s)\n", sigAlgName, sigAlgOID);
 
         /*
-        byte[] sigAlgParams = cert.getSigAlgParams();
-
-        AlgorithmParameters algParams = AlgorithmParameters.getInstance(sigAlgName);
-        algParams.init(sigAlgParams);
-        outStream.format("Signature Algorithm Params: %s", algParams.toString());
-        */
+         * byte[] sigAlgParams = cert.getSigAlgParams();
+         * 
+         * AlgorithmParameters algParams = AlgorithmParameters.getInstance(sigAlgName);
+         * algParams.init(sigAlgParams);
+         * outStream.format("Signature Algorithm Params: %s", algParams.toString());
+         */
     }
 
     private void printIssuer(PrintStream outStream) {
@@ -379,9 +384,9 @@ public class CertUtil {
             }
 
             /*
-               OtherName ::= SEQUENCE {
-                  type-id    OBJECT IDENTIFIER,
-                  value      [0] EXPLICIT ANY DEFINED BY type-id }
+             * OtherName ::= SEQUENCE {
+             * type-id OBJECT IDENTIFIER,
+             * value [0] EXPLICIT ANY DEFINED BY type-id }
              */
 
             for (List<?> generalName : generalNames) {
@@ -398,9 +403,9 @@ public class CertUtil {
                     String value = null;
                     ASN1TaggedObject otherNameValue = ASN1TaggedObject.getInstance(derSeq.getObjectAt(1));
                     if (OID_UPN.equals(oid)) {
-                        ASN1TaggedObject upnValue = ASN1TaggedObject.getInstance(otherNameValue.getObject());
-                        DERUTF8String str = DERUTF8String.getInstance(upnValue.getObject());
-                        value= str.getString();
+                        ASN1TaggedObject upnValue = ASN1TaggedObject.getInstance(otherNameValue.getBaseObject());
+                        ASN1UTF8String str = DERUTF8String.getInstance(upnValue.getBaseObject());
+                        value = str.getString();
                     }
 
                     outStream.format("    [%d] %s(%s) = %s\n", tag, oid, UPN_DISPLAY, value);
@@ -418,7 +423,7 @@ public class CertUtil {
         } catch (CertificateParsingException e) {
             e.printStackTrace();
         } finally {
-        	ByteUtil.closeStream(decoder);
+            ByteUtil.closeStream(decoder);
         }
     }
 
@@ -426,26 +431,28 @@ public class CertUtil {
 
         outStream.format("X509v3 CRL Distribution Points: \n");
 
-        String extOid = X509Extension.cRLDistributionPoints.getId(); // 2.5.29.31
+        String extOid = Extension.cRLDistributionPoints.getId(); // 2.5.29.31
         byte[] extVal = cert.getExtensionValue(extOid);
         if (extVal == null) {
             return;
         }
 
-        /* http://download.oracle.com/javase/6/docs/api/java/security/cert/X509Extension.html#getExtensionValue(java.lang.String)
+        /*
+         * http://download.oracle.com/javase/6/docs/api/java/security/cert/X509Extension
+         * .html#getExtensionValue(java.lang.String)
          *
-           The ASN.1 definition for this is:
-
-             Extensions  ::=  SEQUENCE SIZE (1..MAX) OF Extension
-
-             Extension  ::=  SEQUENCE  {
-                 extnId        OBJECT IDENTIFIER,
-                 critical      BOOLEAN DEFAULT FALSE,
-                 extnValue     OCTET STRING
-                               -- contains a DER encoding of a value
-                               -- of the type registered for use with
-                               -- the extnId object identifier value
-             }
+         * The ASN.1 definition for this is:
+         * 
+         * Extensions ::= SEQUENCE SIZE (1..MAX) OF Extension
+         * 
+         * Extension ::= SEQUENCE {
+         * extnId OBJECT IDENTIFIER,
+         * critical BOOLEAN DEFAULT FALSE,
+         * extnValue OCTET STRING
+         * -- contains a DER encoding of a value
+         * -- of the type registered for use with
+         * -- the extnId object identifier value
+         * }
          */
 
         byte[] extnValue = DEROctetString.getInstance(ASN1Primitive.fromByteArray(extVal)).getOctets();
@@ -465,7 +472,7 @@ public class CertUtil {
                     int tag = generalname.getTagNo();
                     if (GeneralName.uniformResourceIdentifier == tag) {
                         ASN1Encodable name = generalname.getName();
-                        DERIA5String str = DERIA5String.getInstance(name);
+                        ASN1IA5String str = DERIA5String.getInstance(name);
                         String value = str.getString();
                         outStream.format("    %s\n", value);
                     } else {
@@ -483,7 +490,7 @@ public class CertUtil {
 
     private static String O_CERT = "c";
     private static String O_DUMP = "d";
-    private static String O_GET  = "g";
+    private static String O_GET = "g";
     private static String O_HELP = "h";
     private static String O_PRINT = "p";
 
@@ -505,7 +512,7 @@ public class CertUtil {
     }
 
     /*
-     *  zmjava com.zimbra.cs.service.authenticator.CertUtil [options]
+     * zmjava com.zimbra.cs.service.authenticator.CertUtil [options]
      */
     public static void main(String[] args) {
 
@@ -549,9 +556,9 @@ public class CertUtil {
             certUtil.loadCert(certFilePath);
 
             if (cl.hasOption(O_DUMP)) {
-                certUtil.dumpCert((String)null);
+                certUtil.dumpCert((String) null);
             } else if (cl.hasOption(O_PRINT)) {
-                certUtil.printCert((String)null);
+                certUtil.printCert((String) null);
             } else if (cl.hasOption(O_GET)) {
                 String field = cl.getOptionValue(O_GET);
                 CertField certField = ClientCertPrincipalMap.parseCertField(field);

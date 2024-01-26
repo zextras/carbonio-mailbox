@@ -87,6 +87,13 @@
 
     <!-- Must be provided by container -->
     <dependency>
+      <artifactId>bcutil-jdk18on</artifactId>
+      <groupId>org.bouncycastle</groupId>
+      <version>1.77</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <artifactId>guava</artifactId>
       <groupId>com.google.guava</groupId>
       <scope>provided</scope>
@@ -283,7 +290,7 @@
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcpkix-jdk15on</artifactId>
+      <artifactId>bcpkix-jdk18on</artifactId>
     </dependency>
     <dependency>
       <groupId>com.ibm.icu</groupId>
@@ -295,7 +302,7 @@
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk15on</artifactId>
+      <artifactId>bcprov-jdk18on</artifactId>
     </dependency>
     <!-- Note this should be provided in container classpath -->
     <dependency>
