@@ -40,7 +40,7 @@
       <dependency>
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
-        <version>4.2.0</version>
+        <version>6.6.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -156,7 +156,7 @@
       <dependency>
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
-        <version>1.4</version>
+        <version>1.5</version>
       </dependency>
       <dependency>
         <groupId>com.zextras.carbonio.files</groupId>
@@ -191,7 +191,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>1.20</version>
+        <version>1.25.0</version>
       </dependency>
       <dependency>
         <groupId>ant-1.7.0-ziputil-patched</groupId>
@@ -211,7 +211,7 @@
       <dependency>
         <groupId>org.apache.sshd</groupId>
         <artifactId>sshd-core</artifactId>
-        <version>2.7.0</version>
+        <version>2.12.0</version>
       </dependency>
       <dependency>
         <groupId>commons-collections</groupId>
@@ -251,7 +251,7 @@
       <dependency>
         <groupId>xerces</groupId>
         <artifactId>xercesImpl</artifactId>
-        <version>2.9.1-patch-01</version>
+        <version>2.12.2</version>
       </dependency>
       <dependency>
         <groupId>javax.mail</groupId>
@@ -310,7 +310,7 @@
       <dependency>
         <groupId>org.apache.sshd</groupId>
         <artifactId>sshd-common</artifactId>
-        <version>2.7.0</version>
+        <version>2.12.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -330,17 +330,12 @@
       <dependency>
         <groupId>org.json</groupId>
         <artifactId>json</artifactId>
-        <version>20090211</version>
+        <version>20231013</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-api</artifactId>
         <version>${log4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>1.2.16</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -439,12 +434,12 @@
       <dependency>
         <groupId>org.owasp.antisamy</groupId>
         <artifactId>antisamy</artifactId>
-        <version>1.5.13</version>
+        <version>1.7.4</version>
       </dependency>
       <dependency>
         <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
         <artifactId>owasp-java-html-sanitizer</artifactId>
-        <version>20191001.1</version>
+        <version>20220608.1</version>
       </dependency>
       <dependency>
         <groupId>com.zextras.carbonio.preview</groupId>
@@ -563,9 +558,9 @@
         <version>3.0.2</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.woodstox</groupId>
-        <artifactId>woodstox-core-asl</artifactId>
-        <version>4.2.0</version>
+        <groupId>com.fasterxml.woodstox</groupId>
+        <artifactId>woodstox-core</artifactId>
+        <version>6.6.0</version>
       </dependency>
       <dependency>
         <groupId>wsdl4j</groupId>
@@ -793,26 +788,26 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jetty.version>9.4.48.v20220622</jetty.version>
+    <jetty.version>9.4.53.v20231009</jetty.version>
     <lucene.version>3.5.0</lucene.version>
-    <jackson.version>2.8.9</jackson.version>
+    <jackson.version>2.16.1</jackson.version>
     <bouncycastle.version>1.60</bouncycastle.version>
     <asm.version>8.0.1</asm.version>
-    <guava.version>28.1-jre</guava.version>
-    <jython.version>2.5.2</jython.version>
+    <guava.version>33.0.0-jre</guava.version>
+    <jython.version>2.7.3</jython.version>
     <nekohtml.version>1.9.22</nekohtml.version>
-    <log4j.version>2.20.0</log4j.version>
+    <log4j.version>2.22.1</log4j.version>
     <dom4j.version>2.1.4</dom4j.version>
     <hsqldb.version>2.2.9</hsqldb.version>
     <mockito.version>4.4.0</mockito.version>
-    <unboundid-ldapsdk.version>2.3.5</unboundid-ldapsdk.version>
+    <unboundid-ldapsdk.version>6.0.11</unboundid-ldapsdk.version>
     <jsr305.version>3.0.2</jsr305.version>
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <revision>24.2.0-SNAPSHOT</revision>
     <mockserver.version>5.13.0</mockserver.version>
-    <mariadb-java-client.version>2.7.3</mariadb-java-client.version>
+    <mariadb-java-client.version>3.3.2</mariadb-java-client.version>
   </properties>
   <version>${revision}</version>
   <profiles>

@@ -39,16 +39,16 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/commons-codec-1.11.jar"
   install -D carbonio-jetty-libs/target/dependencies/commons-collections-3.2.2.jar \
     "${pkgdir}/opt/zextras/lib/jars/commons-collections-3.2.2.jar"
-  install -D carbonio-jetty-libs/target/dependencies/commons-compress-1.20.jar \
-    "${pkgdir}/opt/zextras/lib/jars/commons-compress-1.20.jar"
+  install -D carbonio-jetty-libs/target/dependencies/commons-compress-1.25.0.jar \
+    "${pkgdir}/opt/zextras/lib/jars/commons-compress-1.25.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/commons-csv-1.2.jar \
     "${pkgdir}/opt/zextras/lib/jars/commons-csv-1.2.jar"
   install -D carbonio-jetty-libs/target/dependencies/commons-dbcp-1.4.jar \
     "${pkgdir}/opt/zextras/lib/jars/commons-dbcp-1.4.jar"
   install -D carbonio-jetty-libs/target/dependencies/commons-io-2.11.0.jar \
     "${pkgdir}/opt/zextras/lib/jars/commons-io-2.11.0.jar"
-  install -D carbonio-jetty-libs/target/dependencies/commons-fileupload-1.4.jar \
-    "${pkgdir}/opt/zextras/lib/jars/commons-fileupload-1.4.jar"
+  install -D carbonio-jetty-libs/target/dependencies/commons-fileupload-1.5.jar \
+    "${pkgdir}/opt/zextras/lib/jars/commons-fileupload-1.5.jar"
   install -D carbonio-jetty-libs/target/dependencies/commons-lang-2.6.jar \
     "${pkgdir}/opt/zextras/lib/jars/commons-lang-2.6.jar"
   install -D carbonio-jetty-libs/target/dependencies/commons-net-3.3.jar \
@@ -69,8 +69,8 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/net.jmge.gif.gif89-1.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/gmbal-api-only-3.1.0-b001.jar \
     "${pkgdir}/opt/zextras/lib/jars/gmbal-api-only-3.1.0-b001.jar"
-  install -D carbonio-jetty-libs/target/dependencies/guava-28.1-jre.jar \
-    "${pkgdir}/opt/zextras/lib/jars/guava-28.1-jre.jar"
+  install -D carbonio-jetty-libs/target/dependencies/guava-33.0.0-jre.jar \
+    "${pkgdir}/opt/zextras/lib/jars/guava-33.0.0-jre.jar"
   install -D carbonio-jetty-libs/target/dependencies/helix-core-0.6.1-incubating.jar \
     "${pkgdir}/opt/zextras/lib/jars/helix-core-0.6.1-incubating.jar"
 
@@ -88,17 +88,17 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/ical4j-0.9.16-patched.jar"
   install -D carbonio-jetty-libs/target/dependencies/icu4j-4.8.1.1.jar \
     "${pkgdir}/opt/zextras/lib/jars/icu4j-4.8.1.1.jar"
-  install -D carbonio-jetty-libs/target/dependencies/jackson-core-2.8.9.jar \
-    "${pkgdir}/opt/zextras/lib/jars/jackson-core-2.8.9.jar"
-  install -D carbonio-jetty-libs/target/dependencies/jackson-annotations-2.8.9.jar \
-    "${pkgdir}/opt/zextras/lib/jars/jackson-annotations-2.8.9.jar"
-  install -D carbonio-jetty-libs/target/dependencies/jackson-databind-2.8.9.jar \
-    "${pkgdir}/opt/zextras/lib/jars/jackson-databind-2.8.9.jar"
-  install -D carbonio-jetty-libs/target/dependencies/jackson-dataformat-smile-2.8.9.jar \
-    "${pkgdir}/opt/zextras/lib/jars/jackson-dataformat-smile-2.8.9.jar"
+  install -D carbonio-jetty-libs/target/dependencies/jackson-core-2.16.1.jar \
+    "${pkgdir}/opt/zextras/lib/jars/jackson-core-2.16.1.jar"
+  install -D carbonio-jetty-libs/target/dependencies/jackson-annotations-2.16.1.jar \
+    "${pkgdir}/opt/zextras/lib/jars/jackson-annotations-2.16.1.jar"
+  install -D carbonio-jetty-libs/target/dependencies/jackson-databind-2.16.1.jar \
+    "${pkgdir}/opt/zextras/lib/jars/jackson-databind-2.16.1.jar"
+  install -D carbonio-jetty-libs/target/dependencies/jackson-dataformat-smile-2.16.1.jar \
+    "${pkgdir}/opt/zextras/lib/jars/jackson-dataformat-smile-2.16.1.jar"
 
-  install -D carbonio-jetty-libs/target/dependencies/jackson-module-jaxb-annotations-2.8.9.jar \
-    "${pkgdir}/opt/zextras/lib/jars/jackson-module-jaxb-annotations-2.8.9.jar"
+  install -D carbonio-jetty-libs/target/dependencies/jackson-module-jaxb-annotations-2.16.1.jar \
+    "${pkgdir}/opt/zextras/lib/jars/jackson-module-jaxb-annotations-2.16.1.jar"
 
   install -D carbonio-jetty-libs/target/dependencies/jamm-0.2.5.jar \
     "${pkgdir}/opt/zextras/lib/jars/jamm-0.2.5.jar"
@@ -120,8 +120,8 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/jcommon-1.0.21.jar"
   install -D carbonio-jetty-libs/target/dependencies/jcs-1.3.jar \
     "${pkgdir}/opt/zextras/lib/jars/jcs-1.3.jar"
-  install -D carbonio-jetty-libs/target/dependencies/jdom-1.1.3.jar \
-    "${pkgdir}/opt/zextras/lib/jars/jdom-1.1.3.jar"
+  install -D carbonio-jetty-libs/target/dependencies/jdom2-2.0.6.1.jar \
+    "${pkgdir}/opt/zextras/lib/jars/jdom2-2.0.6.1.jar"
   install -D carbonio-jetty-libs/target/dependencies/jersey-client-1.11.jar \
     "${pkgdir}/opt/zextras/lib/jars/jersey-client-1.11.jar"
   install -D carbonio-jetty-libs/target/dependencies/jersey-core-1.11.jar \
@@ -154,20 +154,20 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/junixsocket-native-common-2.4.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/native-lib-loader-2.3.5.jar \
     "${pkgdir}/opt/zextras/lib/jars/native-lib-loader-2.3.5.jar"
-  install -D carbonio-jetty-libs/target/dependencies/jython-standalone-2.5.2.jar \
-    "${pkgdir}/opt/zextras/lib/jars/jython-standalone-2.5.2.jar"
+  install -D carbonio-jetty-libs/target/dependencies/jython-standalone-2.7.3.jar \
+    "${pkgdir}/opt/zextras/lib/jars/jython-standalone-2.7.3.jar"
   install -D carbonio-jetty-libs/target/dependencies/jline-0.9.93.jar \
     "${pkgdir}/opt/zextras/lib/jars/jline-0.9.93.jar"
   install -D carbonio-jetty-libs/target/dependencies/jzlib-1.0.7.jar \
     "${pkgdir}/opt/zextras/lib/jars/jzlib-1.0.7.jar"
   install -D carbonio-jetty-libs/target/dependencies/libidn-1.24.jar \
     "${pkgdir}/opt/zextras/lib/jars/libidn-1.24.jar"
-  install -D carbonio-jetty-libs/target/dependencies/log4j-api-2.20.0.jar \
-    "${pkgdir}/opt/zextras/lib/jars/log4j-api-2.20.0.jar"
-  install -D carbonio-jetty-libs/target/dependencies/log4j-core-2.20.0.jar \
-    "${pkgdir}/opt/zextras/lib/jars/log4j-core-2.20.0.jar"
-  install -D carbonio-jetty-libs/target/dependencies/log4j-slf4j-impl-2.20.0.jar \
-    "${pkgdir}/opt/zextras/lib/jars/log4j-slf4j-impl-2.20.0.jar"
+  install -D carbonio-jetty-libs/target/dependencies/log4j-api-2.22.1.jar \
+    "${pkgdir}/opt/zextras/lib/jars/log4j-api-2.22.1.jar"
+  install -D carbonio-jetty-libs/target/dependencies/log4j-core-2.22.1.jar \
+    "${pkgdir}/opt/zextras/lib/jars/log4j-core-2.22.1.jar"
+  install -D carbonio-jetty-libs/target/dependencies/log4j-slf4j-impl-2.22.1.jar \
+    "${pkgdir}/opt/zextras/lib/jars/log4j-slf4j-impl-2.22.1.jar"
   install -D carbonio-jetty-libs/target/dependencies/lucene-analyzers-3.5.0.jar \
     "${pkgdir}/opt/zextras/lib/jars/lucene-analyzers-3.5.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/lucene-core-3.5.0.jar \
@@ -176,16 +176,16 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/lucene-smartcn-3.5.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/mail-1.4.5.jar \
     "${pkgdir}/opt/zextras/lib/jars/mail-1.4.5.jar"
-  install -D carbonio-jetty-libs/target/dependencies/mariadb-java-client-2.7.3.jar \
-    "${pkgdir}/opt/zextras/lib/jars/mariadb-java-client-2.7.3.jar"
+  install -D carbonio-jetty-libs/target/dependencies/mariadb-java-client-3.3.2.jar \
+    "${pkgdir}/opt/zextras/lib/jars/mariadb-java-client-3.3.2.jar"
   install -D carbonio-jetty-libs/target/dependencies/mina-core-2.1.6.jar \
     "${pkgdir}/opt/zextras/lib/jars/mina-core-2.1.6.jar"
   install -D carbonio-jetty-libs/target/dependencies/neethi-3.0.2.jar \
     "${pkgdir}/opt/zextras/lib/jars/neethi-3.0.2.jar"
   install -D carbonio-jetty-libs/target/dependencies/nekohtml-1.9.22.jar \
     "${pkgdir}/opt/zextras/lib/jars/nekohtml-1.9.22.jar"
-  install -D carbonio-jetty-libs/target/dependencies/antisamy-1.5.13.jar \
-    "${pkgdir}/opt/zextras/lib/jars/antisamy-1.5.13.jar"
+  install -D carbonio-jetty-libs/target/dependencies/antisamy-1.7.4.jar \
+    "${pkgdir}/opt/zextras/lib/jars/antisamy-1.7.4.jar"
   install -D carbonio-jetty-libs/target/dependencies/batik-css-1.7.jar \
     "${pkgdir}/opt/zextras/lib/jars/batik-css-1.7.jar"
   install -D carbonio-jetty-libs/target/dependencies/batik-i18n-1.9.jar \
@@ -209,16 +209,16 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/stax2-api-3.1.1.jar"
   install -D carbonio-jetty-libs/target/dependencies/streambuffer-1.4.jar \
     "${pkgdir}/opt/zextras/lib/jars/streambuffer-1.4.jar"
-  install -D carbonio-jetty-libs/target/dependencies/syslog4j-0.9.60.jar \
-    "${pkgdir}/opt/zextras/lib/jars/syslog4j-0.9.60.jar"
-  install -D carbonio-jetty-libs/target/dependencies/unboundid-ldapsdk-2.3.5.jar \
-    "${pkgdir}/opt/zextras/lib/jars/unboundid-ldapsdk-2.3.5.jar"
-  install -D carbonio-jetty-libs/target/dependencies/woodstox-core-asl-4.2.0.jar \
-    "${pkgdir}/opt/zextras/lib/jars/woodstox-core-asl-4.2.0.jar"
+  install -D carbonio-jetty-libs/target/dependencies/syslog4j-0.9.61.jar \
+    "${pkgdir}/opt/zextras/lib/jars/syslog4j-0.9.61.jar"
+  install -D carbonio-jetty-libs/target/dependencies/unboundid-ldapsdk-6.0.11.jar \
+    "${pkgdir}/opt/zextras/lib/jars/unboundid-ldapsdk-6.0.11.jar"
+  install -D carbonio-jetty-libs/target/dependencies/woodstox-core-6.6.0.jar \
+    "${pkgdir}/opt/zextras/lib/jars/woodstox-core-6.6.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/wsdl4j-1.6.3.jar \
     "${pkgdir}/opt/zextras/lib/jars/wsdl4j-1.6.3.jar"
-  install -D carbonio-jetty-libs/target/dependencies/xercesImpl-2.9.1-patch-01.jar \
-    "${pkgdir}/opt/zextras/lib/jars/xercesImpl-2.9.1-patch-01.jar"
+  install -D carbonio-jetty-libs/target/dependencies/xercesImpl-2.12.2.jar \
+    "${pkgdir}/opt/zextras/lib/jars/xercesImpl-2.12.2.jar"
   install -D carbonio-jetty-libs/target/dependencies/xmlschema-core-2.0.3.jar \
     "${pkgdir}/opt/zextras/lib/jars/xmlschema-core-2.0.3.jar"
   install -D carbonio-jetty-libs/target/dependencies/ehcache-3.1.2.jar \
@@ -227,7 +227,7 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/charset.jar"
   install -D carbonio-jetty-libs/target/dependencies/ant-1.6.5.jar \
     "${pkgdir}/opt/zextras/lib/jars/ant-1.6.5.jar"
-  install -D carbonio-jetty-libs/target/dependencies/json-20090211.jar \
+  install -D carbonio-jetty-libs/target/dependencies/json-20231013.jar \
     "${pkgdir}/opt/zextras/lib/jars/json.jar"
   install -D carbonio-jetty-libs/target/dependencies/commons-logging-1.2.jar \
     "${pkgdir}/opt/zextras/lib/jars/commons-logging.jar"
@@ -240,8 +240,8 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/resolver-20050927.jar"
   install -D carbonio-jetty-libs/target/dependencies/javax.annotation-api-1.3.2.jar \
     "${pkgdir}/opt/zextras/lib/jars/javax.annotation-api-1.3.2.jar"
-  install -D carbonio-jetty-libs/target/dependencies/apache-jsp-9.4.48.v20220622.jar \
-    "${pkgdir}/opt/zextras/lib/jars/apache-jsp-9.4.48.v20220622.jar"
+  install -D carbonio-jetty-libs/target/dependencies/apache-jsp-9.4.53.v20231009.jar \
+    "${pkgdir}/opt/zextras/lib/jars/apache-jsp-9.4.53.v20231009.jar"
 
   install -D carbonio-jetty-libs/target/dependencies/UserAgentUtils-1.21.jar \
     "${pkgdir}/opt/zextras/lib/jars/UserAgentUtils-1.21.jar"
