@@ -127,16 +127,15 @@ public class LdapUtil {
         return true;
     }
 
-    public static void isValidZimbraId(String strRep) throws ServiceException {
-
-        if (strRep.length() > 36) {
-            throw new IllegalArgumentException("uuid must be no longer than 36 characters");
+    public static void validateZimbraId(String zimbraId) throws ServiceException {
+        if (zimbraId == null ) {
+            throw ServiceException.INVALID_REQUEST("null is not a valid zimbraId", null);
         }
 
         try {
-            UUID.fromString(strRep);
+            UUID.fromString(zimbraId);
         } catch (IllegalArgumentException e) {
-            throw ServiceException.INVALID_REQUEST(strRep + " is not a valid UUID", e);
+            throw ServiceException.INVALID_REQUEST(zimbraId + " is not a valid UUID", e);
         }
     }
 

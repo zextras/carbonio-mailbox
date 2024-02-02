@@ -5,8 +5,6 @@
 
 package com.zimbra.cs.service.admin;
 
-import static com.zimbra.common.account.ZAttrProvisioning.A_zimbraId;
-
 import java.util.List;
 import java.util.Map;
 

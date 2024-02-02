@@ -41,7 +41,7 @@ public class SpecialAttrs {
         
         if (zimbraId != null) {
             // present, validate if it is a valid uuid
-            LdapUtil.isValidZimbraId(zimbraId);
+            LdapUtil.validateZimbraId(zimbraId);
 
             /* check for uniqueness of the zimbraId
             * 
