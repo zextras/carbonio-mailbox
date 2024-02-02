@@ -41,13 +41,8 @@ public class SpecialAttrs {
         
         if (zimbraId != null) {
             // present, validate if it is a valid uuid
-            try {
-                if (!LdapUtil.isValidUUID(zimbraId))
-                throw ServiceException.INVALID_REQUEST(zimbraId + " is not a valid UUID", null);
-            } catch (IllegalArgumentException e) {
-                throw ServiceException.INVALID_REQUEST(zimbraId + " is not a valid UUID", e);
-            }
-        
+            LdapUtil.isValidZimbraId(zimbraId);
+
             /* check for uniqueness of the zimbraId
             * 
             * for now we go with GIGO (garbage in, garbage out) and not check, since there is a race condition 
