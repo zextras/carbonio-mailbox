@@ -47,7 +47,7 @@ public class FlushCacheTest extends SoapTestSuite {
 
         final CacheSelector cacheSelector = cacheSelector(CacheEntryType.account, account.getId());
 
-        assertOk(domainAdminAccount, cacheSelector);
+        assertOk(doCall(domainAdminAccount, cacheSelector));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class FlushCacheTest extends SoapTestSuite {
 
         final CacheSelector cacheSelector = cacheSelector(CacheEntryType.domain, domain.getId());
 
-        assertOk(domainAdminAccount, cacheSelector);
+        assertOk(doCall(domainAdminAccount, cacheSelector));
     }
 
     @Test
@@ -71,7 +71,7 @@ public class FlushCacheTest extends SoapTestSuite {
 
         final CacheSelector cacheSelector = cacheSelector(CacheEntryType.domain, domain.getId());
 
-        assertOk(domainAdminAccount, cacheSelector);
+        assertOk(doCall(domainAdminAccount, cacheSelector));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class FlushCacheTest extends SoapTestSuite {
 
         final CacheSelector cacheSelector = cacheSelector(CacheEntryType.server, server.getId());
 
-        assertOk(domainAdminAccount, cacheSelector);
+        assertOk(doCall(domainAdminAccount, cacheSelector));
     }
 
     @Test
@@ -97,7 +97,18 @@ public class FlushCacheTest extends SoapTestSuite {
 
         final CacheSelector cacheSelector = cacheSelector(CacheEntryType.server, server.getId());
 
-        assertOk(domainAdminAccount, cacheSelector);
+        assertOk(doCall(domainAdminAccount, cacheSelector));
+    }
+
+    @Test
+    public void shouldReject_IfNoServerFlushRights() throws Exception {
+        final Account account = accountCreatorFactory.get().create();
+        final Account domainAdminAccount = accountCreatorFactory.get()
+                .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE").create();
+
+        final CacheSelector cacheSelector = cacheSelector(CacheEntryType.account, account.getId());
+
+        assertFailure(doCall(domainAdminAccount, cacheSelector));
     }
 
     private void grantFlushCacheRight(Account domainAdminAccount) throws Exception {
@@ -122,10 +133,20 @@ public class FlushCacheTest extends SoapTestSuite {
         return cacheSelector;
     }
 
-    private void assertOk(Account caller, CacheSelector cacheSelector) throws Exception {
+    private HttpResponse doCall(Account caller, CacheSelector cacheSelector) throws Exception {
         final FlushCacheRequest request = new FlushCacheRequest(cacheSelector);
-        final HttpResponse response = getSoapClient().newRequest().setCaller(caller).setSoapBody(request).execute();
+        return getSoapClient().newRequest().setCaller(caller).setSoapBody(request).execute();
+    }
 
-        Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    private void assertOk(HttpResponse response) {
+        assertStatus(response, HttpStatus.SC_OK);
+    }
+
+    private void assertFailure(HttpResponse response) {
+        assertStatus(response, HttpStatus.SC_INTERNAL_SERVER_ERROR);
+    }
+
+    private void assertStatus(HttpResponse response, int status) {
+        Assertions.assertEquals(status, response.getStatusLine().getStatusCode());
     }
 }
