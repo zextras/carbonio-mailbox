@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class LdapUtilTest {
+class LdapUtilTest {
 
     @Test
     void validateZimbraId_throws_IllegalArgumentException_when_length_is_too_large() {
