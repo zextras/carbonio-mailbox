@@ -5,6 +5,7 @@
 package com.zextras.mailbox.soap;
 
 import com.zextras.mailbox.util.SoapClient;
+import org.apache.http.HttpResponse;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
@@ -22,6 +23,10 @@ public class SoapTestSuite {
 
   public SoapClient getSoapClient() {
     return soapExtension.getSoapClient();
+  }
+
+  public void printResponse(HttpResponse response) throws Exception {
+    System.out.println(new String (response.getEntity().getContent().readAllBytes()));
   }
 
 }
