@@ -27,7 +27,7 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
  *
  * @author ysasaki
  */
-public final class HSQLDB extends Db {
+public class HSQLDB extends Db {
 
     /**
      * Populates ZIMBRA and MBOXGROUP1 schema.
