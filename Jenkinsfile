@@ -151,7 +151,7 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                    mvnCmd("$BUILD_PROPERTIES_PARAMS sonar:sonar")
+                    mvnCmd("$BUILD_PROPERTIES_PARAMS -Dsonar.exclusions=**/account/ZAttr*.java sonar:sonar")
                 }
             }
         }
