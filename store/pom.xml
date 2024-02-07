@@ -694,6 +694,19 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>com/zimbra/cs/account/ZAttrProvisioning.class</exclude>
+            <exclude>com/zimbra/cs/account/ZAttrConfig.class</exclude>
+            <exclude>com/zimbra/cs/account/ZAttrServer.class</exclude>
+            <exclude>com/zimbra/cs/account/ZAttrCos.class</exclude>
+            <exclude>com/zimbra/cs/account/ZAttrDomain.class</exclude>
+            <exclude>com/zimbra/cs/account/ZAttrAccount.class</exclude>
+            <exclude>com/zimbra/cs/account/ZAttrCalendarResource.class</exclude>
+            <exclude>com/zimbra/cs/account/ZAttrDynamicGroup.class</exclude>
+            <exclude>com/zimbra/cs/account/ZAttrShareLocator.class</exclude>
+          </excludes>
+        </configuration>
       </plugin>
 
       <!-- Analyze dependencies -->
