@@ -802,7 +802,7 @@
             </goals>
             <configuration>
               <includes>
-                <include>com/zimbra/cs/db/HSQLDB.class</include>
+                <include>com/zimbra/cs/db/HSQLDB*</include>
               </includes>
             </configuration>
           </execution>
