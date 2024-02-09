@@ -51,6 +51,7 @@ public class InMemoryLdapServer {
       InMemoryDirectoryServerConfig ldapServerConfig =
           new InMemoryDirectoryServerConfig(
               "dc=com",
+              "dc=io",
               "cn=config",
               "cn=defaultExternal,cn=cos,cn=zimbra",
               "cn=default,cn=cos,cn=zimbra",
