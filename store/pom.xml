@@ -812,6 +812,7 @@
             <configuration>
               <includes>
                 <include>com/zimbra/cs/db/HSQLDB*</include>
+                <include>com/zextras/mailbox/util/InMemoryLdapServer*</include>
               </includes>
             </configuration>
           </execution>
