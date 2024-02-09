@@ -69,7 +69,7 @@ public class MailboxTestUtil {
 
     inMemoryLdapServer = new Builder()
         .withLdapPort(LDAP_PORT)
-        .create();
+        .build();
     inMemoryLdapServer.start();
     inMemoryLdapServer.initializeBasicData();
 

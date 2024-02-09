@@ -28,7 +28,7 @@ public class InMemoryLdapServer {
   }
 
   public static class Builder {
-    private int ldapPort = 389;
+    private int ldapPort = 1389;
     private String ldapRootPassword = LC.ldap_root_password.value();
     private String adminPassword = LC.zimbra_ldap_password.value();
 
@@ -47,7 +47,7 @@ public class InMemoryLdapServer {
       return this;
     }
 
-    InMemoryLdapServer create() throws Exception {
+    public InMemoryLdapServer build() throws Exception {
       InMemoryDirectoryServerConfig ldapServerConfig =
           new InMemoryDirectoryServerConfig(
               "dc=com",
