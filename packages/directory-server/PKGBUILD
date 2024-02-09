@@ -60,7 +60,7 @@ package() {
 
   install -Ddm755 store/ldap/generated/ \
     "${pkgdir}/opt/zextras/common/etc/openldap/zimbra/"
-  rsync -a store/build/ldap/ "${pkgdir}/opt/zextras/common/etc/openldap/zimbra/"
+  rsync -a store/ldap/generated/ "${pkgdir}/opt/zextras/common/etc/openldap/zimbra/"
 }
 
 postinst__apt() {
