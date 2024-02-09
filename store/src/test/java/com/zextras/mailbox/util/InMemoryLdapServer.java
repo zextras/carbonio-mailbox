@@ -13,7 +13,7 @@ import com.unboundid.ldap.sdk.ModificationType;
 import com.unboundid.ldif.LDIFReader;
 import com.zimbra.common.localconfig.LC;
 
-/** Util class to create an {@link InMemoryDirectoryServer} */
+/** A simple in meory ldap for testing using carbonio schemas */
 public class InMemoryLdapServer {
 
   private final InMemoryDirectoryServer inMemoryDirectoryServer;
