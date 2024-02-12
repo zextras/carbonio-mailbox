@@ -4,12 +4,14 @@
 
 package com.zimbra.cs.account;
 
-import com.github.stefanbirkner.systemlambda.SystemLambda;
+import static com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit;
+
 import com.zextras.mailbox.soap.SoapExtension;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.account.ProvUtil.Console;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -41,6 +43,14 @@ class ProvUtilTest {
   void createAccount() throws Exception {
     final String result = runCommand(new String[]{"ca", "test@test.com", "password"});
     assertIsUUID(result.trim());
+  }
+
+  private String createAccountForDomain(String domain) throws Exception {
+    return createAccount(UUID.randomUUID() + "@" + domain);
+  }
+
+  private String createAccount(String accountMail) throws Exception {
+    return runCommand(new String[]{"ca", accountMail, "password"});
   }
 
   @Test
@@ -75,7 +85,7 @@ class ProvUtilTest {
 
     OutputStream outputStream = new ByteArrayOutputStream();
     OutputStream errorStream = new ByteArrayOutputStream();
-    SystemLambda.catchSystemExit(() -> runCommand(outputStream, errorStream, new String[]{"dd", domain}));
+    catchSystemExit(() -> runCommand(outputStream, errorStream, new String[]{"dd", domain}));
     final String expectedError = "ERROR: account.DOMAIN_NOT_EMPTY (domain not empty: ohhere.com"
         + " (remaining entries: [uid=putcardealer,ou=people,dc=ohhere,dc=com] ...))\n";
     Assertions.assertEquals(expectedError, errorStream.toString());
@@ -91,7 +101,7 @@ class ProvUtilTest {
 
     OutputStream outputStream = new ByteArrayOutputStream();
     OutputStream errorStream = new ByteArrayOutputStream();
-    SystemLambda.catchSystemExit(() -> runCommand(outputStream, errorStream, new String[]{"ga", accountName}));
+    catchSystemExit(() -> runCommand(outputStream, errorStream, new String[]{"ga", accountName}));
     final String expectedError = "ERROR: account.NO_SUCH_ACCOUNT (no such account: " + accountName + ")\n";
     Assertions.assertEquals(expectedError, errorStream.toString());
   }
@@ -120,6 +130,41 @@ class ProvUtilTest {
     System.out.println(result);
   }
 
+  @Test
+  void testHelpLog() throws Exception {
+    final String result = runCommand(new String[]{"help", "log"});
+    System.out.println(result);
+  }
+
+  @Test
+  void testHelpRight() throws Exception {
+    final String result = runCommand(new String[]{"help", "right"});
+    System.out.println(result);
+  }
+
+  @Test
+  void testCheckRightUsage() throws Exception {
+    catchSystemExit(()-> runCommand(new String[]{"ckr", "blah"}));
+  }
+
+  @Test
+  void doSearchAccounts() throws Exception {
+    final String domain = UUID.randomUUID() + ".com";
+    runCommand(new String[]{"cd", domain});
+
+    final String accountMail = UUID.randomUUID() + "@" + domain;
+    final String accountUUID = createAccount(accountMail).trim();
+    createAccountForDomain(domain);
+    createAccountForDomain(domain);
+
+    final OutputStream outputStream = new ByteArrayOutputStream();
+    final String ldapQuery = "(zimbraId=" + accountUUID + ")";
+    runCommand(new PrintStream(outputStream), System.err, new String[]{"searchAccounts", ldapQuery});
+    Assertions.assertEquals(accountMail, outputStream.toString().trim());
+  }
+
+
+
   private String runCommand(String[] commandWithArgs) throws Exception {
     OutputStream outputStream = new ByteArrayOutputStream();
     runCommand(outputStream, new ByteArrayOutputStream(), commandWithArgs);
@@ -127,6 +172,11 @@ class ProvUtilTest {
   }
 
   private void runCommand(OutputStream outputStream, OutputStream errorStream, String[] commandWithArgs)
+      throws Exception {
+    ProvUtil.main(new Console(outputStream, errorStream), commandWithArgs);
+  }
+
+  private void runCommand(PrintStream outputStream, PrintStream errorStream, String[] commandWithArgs)
       throws Exception {
     ProvUtil.main(new Console(outputStream, errorStream), commandWithArgs);
   }
