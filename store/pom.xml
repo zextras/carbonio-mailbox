@@ -534,6 +534,15 @@
   <packaging>war</packaging>
 
   <build>
+    <testResources>
+      <testResource>
+        <directory>${project.basedir}/src/test/resources</directory>
+      </testResource>
+      <testResource>
+        <directory>${project.basedir}/ldap/generated</directory>
+      </testResource>
+    </testResources>
+
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -643,7 +652,7 @@
               <goal>run</goal>
             </goals>
             <id>generate-ldap-config</id>
-            <phase>prepare-package</phase>
+            <phase>process-classes</phase>
           </execution>
           <!-- Prepare required files for testing -->
           <execution>
@@ -803,6 +812,8 @@
             <configuration>
               <includes>
                 <include>com/zimbra/cs/db/HSQLDB*</include>
+                <include>com/zextras/mailbox/util/InMemoryLdapServer*</include>
+                <include>**/*.ldif</include>
               </includes>
             </configuration>
           </execution>

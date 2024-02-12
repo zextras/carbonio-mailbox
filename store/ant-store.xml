@@ -10,7 +10,8 @@
   <property name="ldap.conf.dir" location="${ldap.dir}/conf"/>
   <property name="slapd.config.dir" value="${ldap.conf.dir}/ldap/config" />
   <property name="slapd.config.src" value="${slapd.config.dir}/cn=config.ldif"/>
-  <property name="ldap.build.dir" value="${basedir}/build/ldap"/>
+  <!-- See store pom.xml. This directory is also used as test resources to load ldap ldifs -->
+  <property name="ldap.build.dir" value="${basedir}/ldap/generated/"/>
 
   <target name="generate-sql-ldap-versions"
     depends="create-version-sql, create-version-ldap ">
@@ -200,6 +201,7 @@
 
   <!-- LDAP schema generation -->
   <target name="generate-ldap-config">
+    <delete dir="${ldap.build.dir}" />
     <dependset>
       <srcfileset dir="${attrs.dir}" includes="*.xml" />
       <targetfileset dir="${maven.build.dir}/ldap-config" includes="*" />
