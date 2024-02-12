@@ -36,7 +36,7 @@ services:
     ports:
       - "389:389"
     volumes:
-      - "./../../store/build/ldap:/opt/zextras/common/etc/openldap/zimbra"
+      - "./../../store/ldap/generated:/opt/zextras/common/etc/openldap/zimbra"
       - "./entrypoint-ldap.sh:/entrypoint-ldap.sh"
     entrypoint: ["/entrypoint-ldap.sh"]
     user: root
