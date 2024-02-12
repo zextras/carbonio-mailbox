@@ -6,12 +6,11 @@ package com.zimbra.cs.account;
 
 import com.zextras.mailbox.soap.SoapExtension;
 import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.service.ServiceException;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -38,11 +37,43 @@ class ProvUtilTest {
   }
 
   @Test
-  void createAccount() throws ServiceException, IOException {
-    OutputStream outputStream = new ByteArrayOutputStream();
-    ProvUtil.mainWithSystemOut(new PrintStream(outputStream),  new String[]{"ca", "test@test.com", "password"});
-    final String result = outputStream.toString();
+  void createAccount() throws Exception {
+    final String result = runCommand(new String[]{"ca", "test@test.com", "password"});
     assertIsUUID(result.trim());
+  }
+
+  @Test
+  void createDomain() throws Exception {
+    final String result = runCommand(new String[]{"cd", "testDomain.com"});
+    assertIsUUID(result.trim());
+  }
+
+  @Test
+  void modifyAccount() throws Exception {
+    final String accountName = UUID.randomUUID() + "@test.com";
+    runCommand(new String[]{"ca", accountName, "password"});
+
+    final String newDisplayName = "My name is Earl";
+    final String modifyOperationResult = runCommand(new String[]{"ma", accountName, "displayName", newDisplayName});
+
+    Assertions.assertTrue(modifyOperationResult.isEmpty());
+
+    final String getOperationResult = runCommand(new String[]{"ga", accountName, "displayName"});
+    final String expectedOutput = "# name " + accountName + "\n"
+                                + "displayName: " + newDisplayName;
+    Assertions.assertEquals(expectedOutput, getOperationResult.trim());
+  }
+
+  @Test
+  void testHelp() throws Exception {
+    final String result = runCommand(new String[]{"help"});
+    System.out.println(result);
+  }
+
+  private String runCommand(String[] commandWithArgs) throws Exception {
+    OutputStream outputStream = new ByteArrayOutputStream();
+    ProvUtil.mainWithSystemOut(new PrintStream(outputStream),  commandWithArgs);
+    return outputStream.toString();
   }
 
   void assertIsUUID(String value) {
