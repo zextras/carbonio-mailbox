@@ -4,6 +4,7 @@
 
 package com.zimbra.cs.account;
 
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 import com.zextras.mailbox.soap.SoapExtension;
 import com.zimbra.common.localconfig.LC;
 import java.io.ByteArrayOutputStream;
@@ -65,6 +66,21 @@ class ProvUtilTest {
   }
 
   @Test
+  void deleteAccount() throws Exception {
+    final String accountName = UUID.randomUUID() + "@test.com";
+    runCommand(new String[]{"ca", accountName, "password"});
+
+    final String deleteOperationResult = runCommand(new String[]{"da", accountName});
+    Assertions.assertTrue(deleteOperationResult.isEmpty());
+
+    OutputStream outputStream = new ByteArrayOutputStream();
+    OutputStream errorStream = new ByteArrayOutputStream();
+    SystemLambda.catchSystemExit(() -> runCommand(outputStream, errorStream, new String[]{"ga", accountName}));
+    final String expectedError = "ERROR: account.NO_SUCH_ACCOUNT (no such account: " + accountName + ")\n";
+    Assertions.assertEquals(expectedError, errorStream.toString());
+  }
+
+  @Test
   void testHelp() throws Exception {
     final String result = runCommand(new String[]{"help"});
     System.out.println(result);
@@ -72,8 +88,12 @@ class ProvUtilTest {
 
   private String runCommand(String[] commandWithArgs) throws Exception {
     OutputStream outputStream = new ByteArrayOutputStream();
-    ProvUtil.mainWithSystemOut(new PrintStream(outputStream),  commandWithArgs);
+    runCommand(outputStream, new ByteArrayOutputStream(), commandWithArgs);
     return outputStream.toString();
+  }
+
+  private void runCommand(OutputStream outputStream, OutputStream errorStream, String[] commandWithArgs) throws Exception {
+    ProvUtil.main(new PrintStream(outputStream), new PrintStream(errorStream), commandWithArgs);
   }
 
   void assertIsUUID(String value) {

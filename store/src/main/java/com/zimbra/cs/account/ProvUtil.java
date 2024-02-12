@@ -135,7 +135,8 @@ public class ProvUtil implements HttpDebugListener {
   private static final String ERR_INVALID_ARG_EV = "arg -e is invalid unless -v is also specified";
 
   private final PrintStream console;
-  private static final PrintStream errConsole = System.err;
+  private final PrintStream errConsole;
+  private final ErrorWriter errorWriter;
 
   enum SoapDebugLevel {
     none, // no SOAP debug
@@ -1172,7 +1173,7 @@ public class ProvUtil implements HttpDebugListener {
     return !(command == Command.HELP);
   }
 
-  static ProvUtil createProvUtil(PrintStream stdOut) {
+  static ProvUtil createProvUtil(PrintStream stdOut, PrintStream stdErr, ErrorWriter errorWriter) {
     final Map<String, Command> commandMap = new HashMap<>();
     for (Command c : Command.values()) {
       String name = c.getName().toLowerCase();
@@ -1186,11 +1187,14 @@ public class ProvUtil implements HttpDebugListener {
       commandMap.put(name, c);
       commandMap.put(alias, c);
     }
-    return new ProvUtil(stdOut, commandMap);
+    return new ProvUtil(stdOut, stdErr, errorWriter, commandMap);
   }
 
-  ProvUtil(PrintStream console, Map<String, Command> commands) {
+  ProvUtil(PrintStream console, PrintStream errConsole,
+      ErrorWriter errorWriter, Map<String, Command> commands) {
     this.console = console;
+    this.errConsole = errConsole;
+    this.errorWriter = errorWriter;
     this.commandIndex = commands;
   }
 
@@ -1925,17 +1929,17 @@ public class ProvUtil implements HttpDebugListener {
             // print error messages, but don't throw any more exceptions, because we
             // have to set account status back to 'active'
             if (ServiceException.UNKNOWN_DOCUMENT.equals(e.getCode())) {
-              printError(
+              errorWriter.printError(
                   "source server version does not support "
                       + AdminConstants.E_LOCKOUT_MAILBOX_REQUEST);
             } else {
-              printError(
+              errorWriter.printError(
                   String.format(
                       "Error: failed to unregister mailbox moveout.\n" + " Exception: %s.",
                       e.getMessage()));
             }
           } catch (IOException | HttpException e) {
-            printError(
+            errorWriter.printError(
                 String.format(
                     "Error sending %s (operation = %s) request for %s to %s"
                         + " after unregistering moveout. Exception: %s",
@@ -3667,7 +3671,7 @@ public class ProvUtil implements HttpDebugListener {
         EntrySearchFilter.Single single = new EntrySearchFilter.Single(false, attr, op, value);
         multi.add(single);
       } catch (IllegalArgumentException e) {
-        printError("Bad search op in: " + attr + " " + op + " '" + value + "'");
+        errorWriter.printError("Bad search op in: " + attr + " " + op + " '" + value + "'");
         e.printStackTrace();
         usage();
         return;
@@ -3996,7 +4000,7 @@ public class ProvUtil implements HttpDebugListener {
         if (entry.getCount() == 1) {
           // If multiple values are being assigned to an attr as part of the same command
           // then we don't consider it an unsafe replacement
-          printError("error: cannot replace multi-valued attr value unless -r is specified");
+          errorWriter.printError("error: cannot replace multi-valued attr value unless -r is specified");
           System.exit(2);
         }
       }
@@ -4069,7 +4073,7 @@ public class ProvUtil implements HttpDebugListener {
                 + (cause == null
                     ? ""
                     : " (cause: " + cause.getClass().getName() + " " + cause.getMessage() + ")");
-        printError(errText);
+        errorWriter.printError(errText);
         if (verboseMode) {
           e.printStackTrace(errConsole);
         }
@@ -4140,16 +4144,27 @@ public class ProvUtil implements HttpDebugListener {
     }
   }
 
-  private static void printError(String text) {
-    PrintStream ps = errConsole;
-    try {
-      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ps, Charsets.UTF_8));
-      writer.write(text + "\n");
-      writer.flush();
-    } catch (IOException e) {
-      ps.println(text);
+  public static class ErrorWriter {
+
+    public ErrorWriter(PrintStream errConsole) {
+      this.errConsole = errConsole;
+    }
+
+    private PrintStream errConsole;
+
+    private void printError(String text) {
+      PrintStream ps = errConsole;
+      try {
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ps, Charsets.UTF_8));
+        writer.write(text + "\n");
+        writer.flush();
+      } catch (IOException e) {
+        ps.println(text);
+      }
     }
   }
+
+
 
   private void printOutput(String text) {
     PrintStream ps = console;
@@ -4164,17 +4179,19 @@ public class ProvUtil implements HttpDebugListener {
 
 
   public static void main(String args[]) throws IOException, ServiceException {
-    mainWithSystemOut(System.out, args);
+    main(System.out, System.err, args);
   }
 
-  public static void mainWithSystemOut(PrintStream stdOut, String args[]) throws IOException, ServiceException {
+  public static void main(PrintStream stdOut, PrintStream stdErr, String args[]) throws IOException, ServiceException {
+    final ErrorWriter errorWriter = new ErrorWriter(stdErr);
+
     CliUtil.setCliSoapHttpTransportTimeout();
     ZimbraLog.toolSetupLog4jConsole("INFO", true, false); // send all logs to stderr
     SocketFactories.registerProtocols();
 
     SoapTransport.setDefaultUserAgent("zmprov", BuildInfo.VERSION);
 
-    ProvUtil pu = createProvUtil(stdOut);
+    ProvUtil pu = createProvUtil(stdOut, stdErr, errorWriter);
     CommandLineParser parser = new PosixParser();
     Options options = new Options();
 
@@ -4215,7 +4232,7 @@ public class ProvUtil implements HttpDebugListener {
 
       cl = parser.parse(options, args, true);
     } catch (ParseException pe) {
-      printError("error: " + pe.getMessage());
+      errorWriter.printError("error: " + pe.getMessage());
       err = true;
     }
 
@@ -4224,7 +4241,7 @@ public class ProvUtil implements HttpDebugListener {
     }
 
     if (cl.hasOption('l') && cl.hasOption('s')) {
-      printError("error: cannot specify both -l and -s at the same time");
+      errorWriter.printError("error: cannot specify both -l and -s at the same time");
       System.exit(2);
     }
 
@@ -4237,7 +4254,7 @@ public class ProvUtil implements HttpDebugListener {
       if (cl.hasOption('l')) {
         ZimbraLog.toolSetupLog4j("INFO", cl.getOptionValue('L'));
       } else {
-        printError("error: cannot specify -L when -l is not specified");
+        errorWriter.printError("error: cannot specify -L when -l is not specified");
         System.exit(2);
       }
     }
@@ -4248,7 +4265,7 @@ public class ProvUtil implements HttpDebugListener {
     }
 
     if (cl.hasOption(SoapCLI.O_AUTHTOKEN) && cl.hasOption(SoapCLI.O_AUTHTOKENFILE)) {
-      printError(
+      errorWriter.printError(
           "error: cannot specify "
               + SoapCLI.O_AUTHTOKEN
               + " when "
@@ -4281,7 +4298,7 @@ public class ProvUtil implements HttpDebugListener {
     }
 
     if (cl.hasOption('d') && cl.hasOption('D')) {
-      printError("error: cannot specify both -d and -D at the same time");
+      errorWriter.printError("error: cannot specify both -d and -D at the same time");
       System.exit(2);
     }
     if (cl.hasOption('D')) {
@@ -4291,7 +4308,7 @@ public class ProvUtil implements HttpDebugListener {
     }
 
     if (!pu.useLdap() && cl.hasOption('m')) {
-      printError("error: cannot specify -m when -l is not specified");
+      errorWriter.printError("error: cannot specify -m when -l is not specified");
       System.exit(2);
     }
 
@@ -4321,9 +4338,9 @@ public class ProvUtil implements HttpDebugListener {
             try {
               CliUtil.enableCommandLineEditing(LC.zimbra_home.value() + "/.zmprov_history");
             } catch (IOException e) {
-              errConsole.println("Command line editing will be disabled: " + e);
+              stdErr.println("Command line editing will be disabled: " + e);
               if (pu.verboseMode) {
-                e.printStackTrace(errConsole);
+                e.printStackTrace(stdErr);
               }
             }
           }
@@ -4368,10 +4385,10 @@ public class ProvUtil implements HttpDebugListener {
                   ? ""
                   : " (cause: " + cause.getClass().getName() + " " + cause.getMessage() + ")");
 
-      printError(errText);
+      errorWriter.printError(errText);
 
       if (pu.verboseMode) {
-        e.printStackTrace(errConsole);
+        e.printStackTrace(stdErr);
       }
       System.exit(2);
     }
