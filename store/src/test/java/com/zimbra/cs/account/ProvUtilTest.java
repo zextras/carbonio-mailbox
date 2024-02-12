@@ -7,9 +7,9 @@ package com.zimbra.cs.account;
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 import com.zextras.mailbox.soap.SoapExtension;
 import com.zimbra.common.localconfig.LC;
+import com.zimbra.cs.account.ProvUtil.Console;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -81,6 +81,24 @@ class ProvUtilTest {
   }
 
   @Test
+  void doCountAccounts() throws Exception {
+    final String domain = UUID.randomUUID() + ".com";
+    runCommand(new String[]{"cd", domain});
+
+    for (int i = 0; i < 5; i++) {
+      final String accountName1 = UUID.randomUUID().toString() + i + "@" + domain;
+      runCommand(new String[]{"ca", accountName1, "password"});
+    }
+
+    final String ctaOutput = runCommand(new String[]{"cta", domain});
+    final String expectedOutput = "cos name             cos id                                   # of accounts\n"
+        + "-------------------- ---------------------------------------- --------------------\n"
+        + "default              e00428a1-0c00-11d9-836a-000d93afea2a     5\n\n";
+
+    Assertions.assertEquals(expectedOutput, ctaOutput);
+  }
+
+  @Test
   void testHelp() throws Exception {
     final String result = runCommand(new String[]{"help"});
     System.out.println(result);
@@ -93,7 +111,7 @@ class ProvUtilTest {
   }
 
   private void runCommand(OutputStream outputStream, OutputStream errorStream, String[] commandWithArgs) throws Exception {
-    ProvUtil.main(new PrintStream(outputStream), new PrintStream(errorStream), commandWithArgs);
+    ProvUtil.main(new Console(outputStream, errorStream), commandWithArgs);
   }
 
   void assertIsUUID(String value) {
