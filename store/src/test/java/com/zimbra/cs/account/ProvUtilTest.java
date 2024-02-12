@@ -61,8 +61,24 @@ class ProvUtilTest {
 
     final String getOperationResult = runCommand(new String[]{"ga", accountName, "displayName"});
     final String expectedOutput = "# name " + accountName + "\n"
-                                + "displayName: " + newDisplayName;
+        + "displayName: " + newDisplayName;
     Assertions.assertEquals(expectedOutput, getOperationResult.trim());
+  }
+
+  @Test
+  void deleteDomain() throws Exception {
+    final String domain = "ohhere.com";
+    runCommand(new String[]{"cd", domain});
+
+    final String accountName1 = "putcardealer@" + domain;
+    runCommand(new String[]{"ca", accountName1, "password"});
+
+    OutputStream outputStream = new ByteArrayOutputStream();
+    OutputStream errorStream = new ByteArrayOutputStream();
+    SystemLambda.catchSystemExit(() -> runCommand(outputStream, errorStream, new String[]{"dd", domain}));
+    final String expectedError = "ERROR: account.DOMAIN_NOT_EMPTY (domain not empty: ohhere.com"
+        + " (remaining entries: [uid=putcardealer,ou=people,dc=ohhere,dc=com] ...))\n";
+    Assertions.assertEquals(expectedError, errorStream.toString());
   }
 
   @Test
@@ -110,7 +126,8 @@ class ProvUtilTest {
     return outputStream.toString();
   }
 
-  private void runCommand(OutputStream outputStream, OutputStream errorStream, String[] commandWithArgs) throws Exception {
+  private void runCommand(OutputStream outputStream, OutputStream errorStream, String[] commandWithArgs)
+      throws Exception {
     ProvUtil.main(new Console(outputStream, errorStream), commandWithArgs);
   }
 
