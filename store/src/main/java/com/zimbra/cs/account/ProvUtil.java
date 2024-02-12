@@ -155,7 +155,7 @@ public class ProvUtil implements HttpDebugListener {
   private String serverHostname = LC.zimbra_zmprov_default_soap_server.value();
   private int serverPort = LC.zimbra_admin_service_port.intValue();
   private Command command;
-  private Map<String, Command> commandIndex;
+  private final Map<String, Command> commandIndex;
   private Provisioning prov;
   private BufferedReader cliReader;
   private boolean outputBinaryToFile;
@@ -1306,26 +1306,6 @@ public class ProvUtil implements HttpDebugListener {
     }
   }
 
-  private void addCommand(Command command) {
-    String name = command.getName().toLowerCase();
-    if (commandIndex.get(name) != null) {
-      throw new RuntimeException("duplicate command: " + name);
-    }
-    String alias = command.getAlias().toLowerCase();
-    if (commandIndex.get(alias) != null) {
-      throw new RuntimeException("duplicate command: " + alias);
-    }
-    commandIndex.put(name, command);
-    commandIndex.put(alias, command);
-  }
-
-  private void initCommands() {
-    commandIndex = new HashMap<String, Command>();
-    for (Command c : Command.values()) {
-      addCommand(c);
-    }
-  }
-
   private Command lookupCommand(String command) {
     return commandIndex.get(command.toLowerCase());
   }
@@ -1345,8 +1325,25 @@ public class ProvUtil implements HttpDebugListener {
     return !(command == Command.HELP);
   }
 
-  private ProvUtil() {
-    initCommands();
+  static ProvUtil createProvUtil() {
+    final Map<String, Command> commandMap = new HashMap<>();
+    for (Command c : Command.values()) {
+      String name = c.getName().toLowerCase();
+      if (commandMap.get(name) != null) {
+        throw new RuntimeException("duplicate command: " + name);
+      }
+      String alias = c.getAlias().toLowerCase();
+      if (commandMap.get(alias) != null) {
+        throw new RuntimeException("duplicate command: " + alias);
+      }
+      commandMap.put(name, c);
+      commandMap.put(alias, c);
+    }
+    return new ProvUtil(commandMap);
+  }
+
+  private ProvUtil(Map<String, Command> commands) {
+    this.commandIndex = commands;
   }
 
   public void initProvisioning() throws ServiceException {
@@ -4318,7 +4315,7 @@ public class ProvUtil implements HttpDebugListener {
 
     SoapTransport.setDefaultUserAgent("zmprov", BuildInfo.VERSION);
 
-    ProvUtil pu = new ProvUtil();
+    ProvUtil pu = createProvUtil();
     CommandLineParser parser = new PosixParser();
     Options options = new Options();
 
