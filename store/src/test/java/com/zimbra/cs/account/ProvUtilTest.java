@@ -7,7 +7,11 @@ package com.zimbra.cs.account;
 import com.zextras.mailbox.soap.SoapExtension;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -35,8 +39,14 @@ class ProvUtilTest {
 
   @Test
   void createAccount() throws ServiceException, IOException {
+    OutputStream outputStream = new ByteArrayOutputStream();
+    ProvUtil.mainWithSystemOut(new PrintStream(outputStream),  new String[]{"ca", "test@test.com", "password"});
+    final String result = outputStream.toString();
+    assertIsUUID(result.trim());
+  }
 
-    ProvUtil.main( new String[]{"ca", "test@test.com", "password"});
+  void assertIsUUID(String value) {
+    UUID.fromString(value);
   }
 
 }

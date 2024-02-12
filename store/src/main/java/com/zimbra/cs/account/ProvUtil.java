@@ -134,7 +134,7 @@ public class ProvUtil implements HttpDebugListener {
   private static final String ERR_VIA_LDAP_ONLY = "can only be used with  \"zmprov -l/--ldap\"";
   private static final String ERR_INVALID_ARG_EV = "arg -e is invalid unless -v is also specified";
 
-  private static final PrintStream console = System.out;
+  private final PrintStream console;
   private static final PrintStream errConsole = System.err;
 
   enum SoapDebugLevel {
@@ -246,7 +246,7 @@ public class ProvUtil implements HttpDebugListener {
         givenHelp = true;
         CommandHelp extraHelp = command.getExtraHelp();
         if (extraHelp != null) {
-          extraHelp.printHelp();
+          console.println(extraHelp.getExtraHelp());
         }
       } else {
         if (violatedVia == Command.Via.ldap) {
@@ -296,7 +296,7 @@ public class ProvUtil implements HttpDebugListener {
     System.exit(1);
   }
 
-  public static enum Category {
+  public enum Category {
     ACCOUNT("help on account-related commands"),
     CALENDAR("help on calendar resource-related commands"),
     COMMANDS("help on all commands"),
@@ -324,170 +324,11 @@ public class ProvUtil implements HttpDebugListener {
     Category(String desc) {
       description = desc;
     }
-
-    static void help(Category cat) {
-      switch (cat) {
-        case CALENDAR:
-          helpCALENDAR();
-          break;
-        case RIGHT:
-          helpRIGHT();
-          break;
-        case LOG:
-          helpLOG();
-          break;
-      }
-    }
-
-    static void helpCALENDAR() {
-      console.println("");
-      StringBuilder sb = new StringBuilder();
-      EntrySearchFilter.Operator vals[] = EntrySearchFilter.Operator.values();
-      for (int i = 0; i < vals.length; i++) {
-        if (i > 0) {
-          sb.append(", ");
-        }
-        sb.append(vals[i].toString());
-      }
-      console.println("    op = " + sb.toString());
-    }
-
-    static void helpRIGHT() {
-      helpRIGHTCommon(true);
-      helpRIGHTRights(false, true);
-    }
-
-    static void helpRIGHTCommand(
-        boolean printRights, boolean secretPossible, boolean modifierPossible) {
-      helpRIGHTCommon(secretPossible);
-      helpRIGHTRights(false, modifierPossible);
-    }
-
-    static void helpRIGHTRights(boolean printRights, boolean modifierPossible) {
-      // rights
-      console.println();
-      if (modifierPossible) {
-        console.println("    {right}: can have the following prefixes:");
-        for (RightModifier rm : RightModifier.values()) {
-          console.println("            " + rm.getModifier() + " : " + rm.getDescription());
-        }
-        console.println();
-      }
-
-      if (printRights) {
-        try {
-          Map<String, AdminRight> allAdminRights = RightManager.getInstance().getAllAdminRights();
-          // print non-combo rights first
-          for (com.zimbra.cs.account.accesscontrol.Right r : allAdminRights.values()) {
-            if (RightType.combo != r.getRightType()) {
-              console.println("        " + r.getName() + " (" + r.getRightType().toString() + ")");
-            }
-          }
-          // then combo rights
-          for (com.zimbra.cs.account.accesscontrol.Right r : allAdminRights.values()) {
-            if (RightType.combo == r.getRightType()) {
-              console.println("        " + r.getName() + " (" + r.getRightType().toString() + ")");
-            }
-          }
-        } catch (ServiceException e) {
-          console.println("cannot get RightManager instance: " + e.getMessage());
-        }
-      } else {
-        console.println("         for complete list of rights, do \"zmprov gar -c ALL\"");
-      }
-
-      console.println();
-    }
-
-    static void helpRIGHTCommon(boolean secretPossible) {
-      // target types
-      console.println();
-      StringBuilder tt = new StringBuilder();
-      StringBuilder ttNeedsTargetIdentity = new StringBuilder();
-      StringBuilder ttNoTargetId = new StringBuilder();
-      TargetType[] tts = TargetType.values();
-      for (int i = 0; i < tts.length; i++) {
-        if (i > 0) {
-          tt.append(", ");
-        }
-        tt.append(tts[i].getCode());
-        if (tts[i].needsTargetIdentity()) {
-          ttNeedsTargetIdentity.append(tts[i].getCode()).append(" ");
-        } else {
-          ttNoTargetId.append(tts[i].getCode()).append(" ");
-        }
-      }
-      console.println("    {target-type} = " + tt.toString());
-      console.println();
-      console.println(
-          "    {target-id|target-name} is required if target-type is: " + ttNeedsTargetIdentity);
-      console.println(
-          "    {target-id|target-name} should not be specified if target-type is: " + ttNoTargetId);
-
-      // grantee types
-      console.println();
-      StringBuilder gt = new StringBuilder();
-      StringBuilder gtNeedsGranteeIdentity = new StringBuilder();
-      StringBuilder gtNoGranteeId = new StringBuilder();
-      StringBuilder gtNeedsSecret = new StringBuilder();
-      StringBuilder gtNoSecret = new StringBuilder();
-      GranteeType[] gts = GranteeType.values();
-      for (int i = 0; i < gts.length; i++) {
-        if (i > 0) {
-          gt.append(", ");
-        }
-        gt.append(gts[i].getCode());
-        if (gts[i].needsGranteeIdentity()) {
-          gtNeedsGranteeIdentity.append(gts[i].getCode()).append(" ");
-        } else {
-          gtNoGranteeId.append(gts[i].getCode()).append(" ");
-        }
-        if (secretPossible) {
-          if (gts[i].allowSecret()) {
-            gtNeedsSecret.append(gts[i].getCode()).append(" ");
-          } else {
-            gtNoSecret.append(gts[i].getCode()).append(" ");
-          }
-        }
-      }
-      console.println("    {grantee-type} = " + gt.toString());
-      console.println();
-      console.println(
-          "    {grantee-id|grantee-name} is required if grantee-type is one of: "
-              + gtNeedsGranteeIdentity);
-      console.println(
-          "    {grantee-id|grantee-name} should not be specified if grantee-type is one"
-              + " of: "
-              + gtNoGranteeId);
-      if (secretPossible) {
-        console.println();
-        console.println("    {secret} is required if grantee-type is one of: " + gtNeedsSecret);
-        console.println(
-            "    {secret} should not be specified if grantee-type is one of: " + gtNoSecret);
-      }
-    }
-
-    static void helpLOG() {
-      console.println("    Log categories:");
-      int maxNameLength = 0;
-      for (String name : ZimbraLog.CATEGORY_DESCRIPTIONS.keySet()) {
-        if (name.length() > maxNameLength) {
-          maxNameLength = name.length();
-        }
-      }
-      for (String name : ZimbraLog.CATEGORY_DESCRIPTIONS.keySet()) {
-        console.print("        " + name);
-        for (int i = 0; i < (maxNameLength - name.length()); i++) {
-          console.print(" ");
-        }
-        console.format(" - %s\n", ZimbraLog.CATEGORY_DESCRIPTIONS.get(name));
-      }
-    }
   }
 
   // TODO: refactor to own class
   interface CommandHelp {
-    public void printHelp();
+    String getExtraHelp();
   }
 
   static class RightCommandHelp implements CommandHelp {
@@ -502,29 +343,35 @@ public class ProvUtil implements HttpDebugListener {
     }
 
     @Override
-    public void printHelp() {
-      Category.helpRIGHTCommand(printRights, secretPossible, modifierPossible);
+    public String getExtraHelp() {
+      return helpRIGHTCommand(secretPossible, modifierPossible);
     }
   }
 
   static class ReindexCommandHelp implements CommandHelp {
+
     @Override
-    public void printHelp() {
+    public String getExtraHelp() {
       /*
        * copied from soap-admin.txt Not exactly match all types in MailboxIndex TODO: cleanup
        */
-      console.println();
-      console.println("Valid types:");
-      console.println("    appointment");
-      // console.println("    chat");
-      console.println("    contact");
-      console.println("    conversation");
-      console.println("    document");
-      console.println("    message");
-      console.println("    note");
-      // console.println("    tag");
-      console.println("    task");
-      console.println();
+      return System.lineSeparator()
+          + "Valid types:"
+          + System.lineSeparator()
+          + "    appointment"
+          + System.lineSeparator()
+          + "    contact"
+          + System.lineSeparator()
+          + "    conversation"
+          + System.lineSeparator()
+          + "    document"
+          + System.lineSeparator()
+          + "    message"
+          + System.lineSeparator()
+          + "    note"
+          + System.lineSeparator()
+          + "    task"
+          + System.lineSeparator();
     }
   }
 
@@ -1186,7 +1033,7 @@ public class ProvUtil implements HttpDebugListener {
     private Via mVia;
     private boolean mNeedsSchemaExtension = false;
 
-    public static enum Via {
+    public enum Via {
       soap,
       ldap;
     }
@@ -1325,7 +1172,7 @@ public class ProvUtil implements HttpDebugListener {
     return !(command == Command.HELP);
   }
 
-  static ProvUtil createProvUtil() {
+  static ProvUtil createProvUtil(PrintStream stdOut) {
     final Map<String, Command> commandMap = new HashMap<>();
     for (Command c : Command.values()) {
       String name = c.getName().toLowerCase();
@@ -1339,10 +1186,11 @@ public class ProvUtil implements HttpDebugListener {
       commandMap.put(name, c);
       commandMap.put(alias, c);
     }
-    return new ProvUtil(commandMap);
+    return new ProvUtil(stdOut, commandMap);
   }
 
-  private ProvUtil(Map<String, Command> commands) {
+  ProvUtil(PrintStream console, Map<String, Command> commands) {
+    this.console = console;
     this.commandIndex = commands;
   }
 
@@ -2540,7 +2388,7 @@ public class ProvUtil implements HttpDebugListener {
         console.println(id);
       }
     } else {
-      HashMap<String, String> via = new HashMap<String, String>();
+      HashMap<String, String> via = new HashMap<>();
       List<Group> groups = prov.getGroups(account, false, via);
       for (Group group : groups) {
         String viaDl = via.get(group.getName());
@@ -2555,12 +2403,18 @@ public class ProvUtil implements HttpDebugListener {
 
   private static class ShareInfoVisitor implements PublishedShareInfoVisitor {
 
+    private final PrintStream console;
+
     private static final String mFormat =
         "%-36.36s %-15.15s %-15.15s %-5.5s %-20.20s %-10.10s %-10.10s %-10.10s %-5.5s"
             + " %-5.5s %-36.36s %-15.15s %-15.15s\n";
 
-    private static void printHeadings() {
-      console.printf(
+    private ShareInfoVisitor(PrintStream console) {
+      this.console = console;
+    }
+
+    private static void printHeadings(PrintStream toPrintStream) {
+      toPrintStream.printf(
           mFormat,
           "owner id",
           "owner email",
@@ -2576,7 +2430,7 @@ public class ProvUtil implements HttpDebugListener {
           "grantee name",
           "grantee display");
 
-      console.printf(
+      toPrintStream.printf(
           mFormat,
           "------------------------------------", // owner id
           "---------------", // owner email
@@ -2620,8 +2474,8 @@ public class ProvUtil implements HttpDebugListener {
     }
     Account owner = lookupAccount(args[1]);
 
-    ShareInfoVisitor.printHeadings();
-    prov.getShareInfo(owner, new ShareInfoVisitor());
+    ShareInfoVisitor.printHeadings(console);
+    prov.getShareInfo(owner, new ShareInfoVisitor(console));
   }
 
   private void doGetSpnegoDomain() throws ServiceException {
@@ -4297,7 +4151,7 @@ public class ProvUtil implements HttpDebugListener {
     }
   }
 
-  private static void printOutput(String text) {
+  private void printOutput(String text) {
     PrintStream ps = console;
     try {
       BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ps, Charsets.UTF_8));
@@ -4308,14 +4162,19 @@ public class ProvUtil implements HttpDebugListener {
     }
   }
 
+
   public static void main(String args[]) throws IOException, ServiceException {
+    mainWithSystemOut(System.out, args);
+  }
+
+  public static void mainWithSystemOut(PrintStream stdOut, String args[]) throws IOException, ServiceException {
     CliUtil.setCliSoapHttpTransportTimeout();
     ZimbraLog.toolSetupLog4jConsole("INFO", true, false); // send all logs to stderr
     SocketFactories.registerProtocols();
 
     SoapTransport.setDefaultUserAgent("zmprov", BuildInfo.VERSION);
 
-    ProvUtil pu = createProvUtil();
+    ProvUtil pu = createProvUtil(stdOut);
     CommandLineParser parser = new PosixParser();
     Options options = new Options();
 
@@ -6051,7 +5910,7 @@ public class ProvUtil implements HttpDebugListener {
         }
       }
 
-      Category.help(cat);
+      console.println(helpCategory(cat));
     }
     console.println();
   }
@@ -6163,5 +6022,186 @@ public class ProvUtil implements HttpDebugListener {
       cascadeDelete = Boolean.valueOf(args[2]) != null ? Boolean.valueOf(args[2]) : false;
     }
     prov.deleteGroup(groupId, cascadeDelete);
+  }
+
+  String helpCategory(Category cat) {
+    switch (cat) {
+      case CALENDAR:
+        return helpCALENDAR();
+      case RIGHT:
+        return helpRIGHT();
+      case LOG:
+        return helpLOG();
+      default:
+        return "";
+    }
+  }
+
+  String helpCALENDAR() {
+    StringBuilder help = new StringBuilder();
+    help.append("\n");
+    StringBuilder sb = new StringBuilder();
+    EntrySearchFilter.Operator vals[] = EntrySearchFilter.Operator.values();
+    for (int i = 0; i < vals.length; i++) {
+      if (i > 0) {
+        sb.append(", ");
+      }
+      sb.append(vals[i].toString());
+    }
+    help.append("    op = " + sb);
+    help.append("\n");
+    return help.toString();
+  }
+
+  String helpRIGHT() {
+    return helpRIGHTCommon(true) +
+    helpRIGHTRights(false, true);
+  }
+
+  static String helpRIGHTCommand(boolean secretPossible, boolean modifierPossible) {
+    return
+        helpRIGHTCommon(secretPossible) +
+        helpRIGHTRights(false, modifierPossible);
+  }
+
+  static String helpRIGHTRights(boolean printRights, boolean modifierPossible) {
+    // rights
+    StringBuilder help = new StringBuilder();
+    help.append("\n");
+    if (modifierPossible) {
+      help.append("    {right}: can have the following prefixes:");
+      help.append("\n");
+      for (RightModifier rm : RightModifier.values()) {
+        help.append("            " + rm.getModifier() + " : " + rm.getDescription());
+        help.append("\n");
+      }
+      help.append("\n");
+    }
+
+    if (printRights) {
+      try {
+        Map<String, AdminRight> allAdminRights = RightManager.getInstance().getAllAdminRights();
+        // print non-combo rights first
+        for (com.zimbra.cs.account.accesscontrol.Right r : allAdminRights.values()) {
+          if (RightType.combo != r.getRightType()) {
+            help.append("        " + r.getName() + " (" + r.getRightType().toString() + ")");
+            help.append("\n");
+          }
+        }
+        // then combo rights
+        for (com.zimbra.cs.account.accesscontrol.Right r : allAdminRights.values()) {
+          if (RightType.combo == r.getRightType()) {
+            help.append("        " + r.getName() + " (" + r.getRightType().toString() + ")");
+            help.append("\n");
+          }
+        }
+      } catch (ServiceException e) {
+        help.append("cannot get RightManager instance: " + e.getMessage());
+        help.append("\n");
+      }
+    } else {
+      help.append("         for complete list of rights, do \"zmprov gar -c ALL\"");
+      help.append("\n");
+    }
+    help.append("\n");
+    return help.toString();
+  }
+
+  static String helpRIGHTCommon(boolean secretPossible) {
+    // target types
+    StringBuilder targetTypes = new StringBuilder();
+    targetTypes.append("\n");
+    StringBuilder ttNeedsTargetIdentity = new StringBuilder();
+    StringBuilder ttNoTargetId = new StringBuilder();
+    TargetType[] tts = TargetType.values();
+    for (int i = 0; i < tts.length; i++) {
+      if (i > 0) {
+        targetTypes.append(", ");
+      }
+      targetTypes.append(tts[i].getCode());
+      if (tts[i].needsTargetIdentity()) {
+        ttNeedsTargetIdentity.append(tts[i].getCode()).append(" ");
+      } else {
+        ttNoTargetId.append(tts[i].getCode()).append(" ");
+      }
+    }
+    StringBuilder help = new StringBuilder();
+    help.append("    {target-type} = " + targetTypes);
+    help.append("\n");
+    help.append(
+        "    {target-id|target-name} is required if target-type is: " + ttNeedsTargetIdentity);
+    help.append("\n");
+    help.append(
+        "    {target-id|target-name} should not be specified if target-type is: " + ttNoTargetId);
+
+    // grantee types
+    help.append("\n");
+    StringBuilder gt = new StringBuilder();
+    StringBuilder gtNeedsGranteeIdentity = new StringBuilder();
+    StringBuilder gtNoGranteeId = new StringBuilder();
+    StringBuilder gtNeedsSecret = new StringBuilder();
+    StringBuilder gtNoSecret = new StringBuilder();
+    GranteeType[] gts = GranteeType.values();
+    for (int i = 0; i < gts.length; i++) {
+      if (i > 0) {
+        gt.append(", ");
+      }
+      gt.append(gts[i].getCode());
+      if (gts[i].needsGranteeIdentity()) {
+        gtNeedsGranteeIdentity.append(gts[i].getCode()).append(" ");
+      } else {
+        gtNoGranteeId.append(gts[i].getCode()).append(" ");
+      }
+      if (secretPossible) {
+        if (gts[i].allowSecret()) {
+          gtNeedsSecret.append(gts[i].getCode()).append(" ");
+        } else {
+          gtNoSecret.append(gts[i].getCode()).append(" ");
+        }
+      }
+    }
+    help.append("    {grantee-type} = " + gt);
+    help.append("\n");
+    help.append(
+        "    {grantee-id|grantee-name} is required if grantee-type is one of: "
+            + gtNeedsGranteeIdentity);
+    help.append("\n");
+    help.append(
+        "    {grantee-id|grantee-name} should not be specified if grantee-type is one"
+            + " of: "
+            + gtNoGranteeId);
+    help.append("\n");
+    if (secretPossible) {
+      help.append("    {secret} is required if grantee-type is one of: " + gtNeedsSecret);
+      help.append("\n");
+      help.append(
+          "    {secret} should not be specified if grantee-type is one of: " + gtNoSecret);
+      help.append("\n");
+    }
+    return help.toString();
+  }
+
+  String helpLOG() {
+    StringBuilder help = new StringBuilder();
+    help.append("    Log categories:");
+    help.append("\n");
+    int maxNameLength = 0;
+    for (String name : ZimbraLog.CATEGORY_DESCRIPTIONS.keySet()) {
+      if (name.length() > maxNameLength) {
+        maxNameLength = name.length();
+      }
+    }
+    for (String name : ZimbraLog.CATEGORY_DESCRIPTIONS.keySet()) {
+      help.append("        ");
+      help.append(name);
+      help.append("\n");
+      for (int i = 0; i < (maxNameLength - name.length()); i++) {
+        help.append(" ");
+        help.append("\n");
+      }
+      help.append(String.format(" - %s\n", ZimbraLog.CATEGORY_DESCRIPTIONS.get(name)));
+      help.append("\n");
+    }
+    return help.toString();
   }
 }
