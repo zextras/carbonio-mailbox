@@ -8,6 +8,7 @@ import static com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit
 
 import com.zextras.mailbox.soap.SoapExtension;
 import com.zimbra.common.localconfig.LC;
+import com.zimbra.cs.account.ProvUtil.Category;
 import com.zimbra.cs.account.ProvUtil.Console;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -18,6 +19,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 @Tag("api")
 class ProvUtilTest {
@@ -130,15 +133,10 @@ class ProvUtilTest {
     System.out.println(result);
   }
 
-  @Test
-  void testHelpLog() throws Exception {
-    final String result = runCommand(new String[]{"help", "log"});
-    System.out.println(result);
-  }
-
-  @Test
-  void testHelpRight() throws Exception {
-    final String result = runCommand(new String[]{"help", "right"});
+  @ParameterizedTest
+  @EnumSource(ProvUtil.Category.class)
+  void testHelpOutput(Category command) throws Exception {
+    final String result = runCommand(new String[]{"help", command.name().toLowerCase()});
     System.out.println(result);
   }
 
