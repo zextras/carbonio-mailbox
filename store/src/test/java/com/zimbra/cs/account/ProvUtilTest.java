@@ -42,10 +42,69 @@ class ProvUtilTest {
     LC.zimbra_admin_service_port.setDefault(SOAP_PORT);
   }
 
+  //=====================HELP=====================
+  @Test
+  void testHelp() throws Exception {
+    final String result = runCommand(new String[]{"help"});
+    System.out.println(result);
+  }
+
+  @ParameterizedTest
+  @EnumSource(ProvUtil.Category.class)
+  void testHelpOutput(Category command) throws Exception {
+    final String result = runCommand(new String[]{"help", command.name().toLowerCase()});
+    System.out.println(result);
+  }
+
+  //=====================ACCOUNT=====================
+  @Test
+  void addAccountAlias() throws Exception {
+    final String accountName = UUID.randomUUID() + "@test.com";
+    runCommand(new String[]{"ca", accountName, "password"});
+
+    runCommand(new String[]{"aaa", accountName, "alias@test.com"});
+    final String result = runCommand(new String[]{"ga", "alias@test.com", "zimbraAliasTargetId"});
+
+    Assertions.assertEquals("# name " + accountName + "\n\n", result);
+  }
+
+  @Test
+  void checkPasswordStrengthForStrongPassword() throws Exception {
+    final String accountName = UUID.randomUUID() + "@test.com";
+    runCommand(new String[]{"ca", accountName, "password"});
+
+    final String result = runCommand(new String[]{"cps", accountName, "password"});
+
+    Assertions.assertEquals("Password passed strength check.\n", result);
+  }
+
+  @Test
+  void checkPasswordStrengthForWeakPassword() throws Exception {
+    final String accountName = UUID.randomUUID() + "@test.com";
+    runCommand(new String[]{"ca", accountName, "password"});
+
+    OutputStream outputStream = new ByteArrayOutputStream();
+    OutputStream errorStream = new ByteArrayOutputStream();
+    catchSystemExit(() -> runCommand(outputStream, errorStream, new String[]{"cps", accountName, "new"}));
+
+    final String expectedError = "ERROR: account.INVALID_PASSWORD (invalid password: too short)\n";
+    Assertions.assertEquals(expectedError, errorStream.toString());
+  }
+
   @Test
   void createAccount() throws Exception {
     final String result = runCommand(new String[]{"ca", "test@test.com", "password"});
     assertIsUUID(result.trim());
+  }
+
+  @Test
+  void createAndGetDataSource() throws Exception {
+    final String accountName = UUID.randomUUID() + "@test.com";
+   runCommand(new String[]{"ca", accountName, "password"});
+
+    final String createdDataSourceId = runCommand(new String[]{"cds", accountName, "imap", "dsname", "zimbraDataSourceEnabled", "TRUE", "zimbraDataSourceFolderId", "2"});
+    final String result = runCommand(new String[]{"gds", accountName, "zimbraDataSourceId"});
+    Assertions.assertTrue(result.contains(createdDataSourceId));
   }
 
   private String createAccountForDomain(String domain) throws Exception {
@@ -127,18 +186,7 @@ class ProvUtilTest {
     Assertions.assertEquals(expectedOutput, ctaOutput);
   }
 
-  @Test
-  void testHelp() throws Exception {
-    final String result = runCommand(new String[]{"help"});
-    System.out.println(result);
-  }
 
-  @ParameterizedTest
-  @EnumSource(ProvUtil.Category.class)
-  void testHelpOutput(Category command) throws Exception {
-    final String result = runCommand(new String[]{"help", command.name().toLowerCase()});
-    System.out.println(result);
-  }
 
   @Test
   void testCheckRightUsage() throws Exception {
