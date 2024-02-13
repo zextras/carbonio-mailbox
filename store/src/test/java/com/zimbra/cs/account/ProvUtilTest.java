@@ -260,7 +260,7 @@ class ProvUtilTest {
 
   //////////////////////////////// MAILBOX
   @Test
-  void unlockMailbox() throws Exception {
+  void unlockMailbox_exists_when_there_is_no_lock() throws Exception {
     final String accountName = UUID.randomUUID() + "@test.com";
     runCommand(new String[]{"ca", accountName, "password"});
 
@@ -314,5 +314,34 @@ class ProvUtilTest {
     final String expected = "mailboxId: 1\nquotaUsed: 0\n";
 
     Assertions.assertEquals(expected, result);
+  }
+
+  @Test
+  void getQuotaUsage() throws Exception {
+    final String accountName = UUID.randomUUID() + "@test.com";
+    runCommand(new String[]{"ca", accountName, "password"});
+
+    final String accountName2 = UUID.randomUUID() + "@test.com";
+    runCommand(new String[]{"ca", accountName2, "password"});
+
+    final String result = runCommand(new String[]{"gqu", "localhost"});
+    final String expected = String.format("%s 0 0%n%s 0 0%n", accountName, accountName2);
+
+    Assertions.assertEquals(expected, result);
+  }
+
+  @Test
+  void recalculateMailboxCounts_exists_when_mailbox_is_not_found() throws Exception {
+    final String domain = "test.com";
+    final UUID id = UUID.randomUUID();
+    final String accountName = id + "@" + domain;
+    runCommand(new String[]{"ca", accountName, "password", "zimbraId", id.toString()});
+
+    final OutputStream stdError = new ByteArrayOutputStream();
+    final OutputStream stdOut = new ByteArrayOutputStream();
+    catchSystemExit(() -> runCommand(stdOut, stdError, new String[]{"rmc", accountName}));
+    final String expected = "ERROR: mail.NO_SUCH_MBOX (no mailbox for account: " + id + ")\n";
+
+    Assertions.assertEquals(expected, stdError.toString());
   }
 }
