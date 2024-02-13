@@ -251,9 +251,7 @@ class ProvUtilTest {
     runCommand(new String[]{"ca", accountName, "password"});
 
     final OutputStream stdOutputStream = new ByteArrayOutputStream();
-    final OutputStream stdErrOutputStream = new ByteArrayOutputStream();
-
-    runCommand(new PrintStream(stdOutputStream), stdErrOutputStream,
+    runCommand(new PrintStream(stdOutputStream), System.err,
         new String[]{"ulm", accountName});
 
     final String accountIdForAccountName = runCommand(new String[]{"ga", accountName, "zimbraId"}).split(
@@ -270,7 +268,7 @@ class ProvUtilTest {
     final OutputStream stdErrOutputStream = new ByteArrayOutputStream();
     catchSystemExit(() -> runCommand(new PrintStream(System.out), stdErrOutputStream,
         new String[]{"ulm", accountName, "localhost"}));
-    String expected = "ERROR: service.FAILURE "
+    final String expected = "ERROR: service.FAILURE "
         + "(system failure: target server version does not support UnregisterMailboxMoveOutRequest.)"
         + " (cause: com.zimbra.common.soap.SoapFaultException unknown document: UnregisterMailboxMoveOutRequest)\n";
 
@@ -286,7 +284,7 @@ class ProvUtilTest {
     final OutputStream stdErrOutputStream = new ByteArrayOutputStream();
     catchSystemExit(() -> runCommand(new PrintStream(System.out), stdErrOutputStream,
         new String[]{"ulm", accountName}));
-    String expected = "Cannot unlock mailbox for account " + accountName
+    final String expected = "Cannot unlock mailbox for account " + accountName
         + ". Account status must be active. Current account status is locked."
         + " You must change the value of zimbraAccountStatus to 'active' first\n";
 

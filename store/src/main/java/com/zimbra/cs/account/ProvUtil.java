@@ -1838,13 +1838,13 @@ public class ProvUtil implements HttpDebugListener {
     if (accountVal != null) {
       Account acct = lookupAccount(accountVal); // will throw NO_SUCH_ACCOUNT if not found
       if (!acct.getAccountStatus().isActive()) {
-        throw ServiceException.FAILURE(
-            String.format(
-                "Cannot unlock mailbox for account %s. Account status must be %s."
-                    + " Curent account status is %s. You must change the value of"
-                    + " zimbraAccountStatus to '%s' first",
-                accountVal, AccountStatus.active, acct.getAccountStatus(), AccountStatus.active),
-            null);
+        final String error = String.format(
+            "Cannot unlock mailbox for account %s. Account status must be %s."
+                + " Current account status is %s. You must change the value of"
+                + " zimbraAccountStatus to '%s' first",
+            accountVal, AccountStatus.active, acct.getAccountStatus(), AccountStatus.active);
+        console.printError(error);
+        System.exit(1);
       }
       String accName = acct.getName();
       String server = acct.getMailHost();
