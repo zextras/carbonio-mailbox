@@ -1,5 +1,8 @@
 package com.zimbra.cs.account.ldap;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
@@ -7,18 +10,12 @@ import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.auth.AuthContext.Protocol;
 import com.zimbra.cs.account.auth.AuthMechanism.AuthMech;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link LdapProvisioning}.
@@ -27,40 +24,38 @@ public class LdapProvisioningTest {
 
     @BeforeAll
     public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
+        MailboxTestUtil.setUp();
+        Provisioning provisioning = Provisioning.getInstance();
+
+        provisioning.createDomain("example.com", new HashMap<>());
 
         HashMap<String, Object> exampleAccountAttrs;
         exampleAccountAttrs = new HashMap<>();
-        exampleAccountAttrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
         exampleAccountAttrs.put(Provisioning.A_sn, "Leesa");
         exampleAccountAttrs.put(Provisioning.A_cn, "Natalie Leesa");
         exampleAccountAttrs.put(Provisioning.A_initials, "James");
-        exampleAccountAttrs.put(Provisioning.A_mail, "natalie.leesa@example.com");
-        prov.createAccount("natalie.leesa@example.com", "testpassword", exampleAccountAttrs);
+        provisioning.createAccount("natalie.leesa@example.com", "testpassword", exampleAccountAttrs);
 
+        provisioning.createDomain("lamborghini.io", new HashMap<>());
         HashMap<String, Object> exampleAccountAttrs2;
         exampleAccountAttrs2 = new HashMap<>();
-        exampleAccountAttrs2.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
         exampleAccountAttrs2.put(Provisioning.A_sn, "Lamborghini");
         exampleAccountAttrs2.put(Provisioning.A_cn, "Milano");
         exampleAccountAttrs2.put(Provisioning.A_initials, "Cars");
-        exampleAccountAttrs2.put(Provisioning.A_mail, "milano@lamborghini");
-        prov.createAccount("milano@lamborghini", "testpassword", exampleAccountAttrs2);
+        provisioning.createAccount("milano@lamborghini.io", "testpassword", exampleAccountAttrs2);
 
+        provisioning.createDomain("lamborghini-europe.com", new HashMap<>());
         HashMap<String, Object> exampleAccountAttrs3;
         exampleAccountAttrs3 = new HashMap<>();
-        exampleAccountAttrs3.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
         exampleAccountAttrs3.put(Provisioning.A_sn, "Lamborghini");
         exampleAccountAttrs3.put(Provisioning.A_cn, "Milano");
         exampleAccountAttrs3.put(Provisioning.A_initials, "Cars");
-        exampleAccountAttrs3.put(Provisioning.A_mail, "milano@lamborghini-europe.com");
-        prov.createAccount("milano@lamborghini-europe.com", "testpassword", exampleAccountAttrs3);
+        provisioning.createAccount("milano@lamborghini-europe.com", "testpassword", exampleAccountAttrs3);
     }
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        MailboxTestUtil.clearData();
+    @AfterAll
+    public static void tearDown() throws Exception {
+        MailboxTestUtil.tearDown();
     }
 
     /**
@@ -96,7 +91,7 @@ public class LdapProvisioningTest {
     void shouldFindPersonalDataInPasswordForDotLessDomainsEmails() throws ServiceException {
         assertThrows(AccountServiceException.class, () -> {
 
-            Account acct = Provisioning.getInstance().getAccount("milano@lamborghini");
+            Account acct = Provisioning.getInstance().getAccount("milano@lamborghini.io");
 
             // fake passwords for test against created user account
             String[] testPasswords = {
@@ -144,7 +139,6 @@ public class LdapProvisioningTest {
      * for admin Tested against external ldap authentication
      */
     @Test
-    @Disabled("Find a way to use a real Ldap and not the Mock, since auth is not implemented")
     void shouldNotFallbackAdminAuthWhenFallbackFalse() throws Exception {
         assertThrows(ServiceException.class, () -> {
             Provisioning prov = Provisioning.getInstance();
@@ -174,14 +168,12 @@ public class LdapProvisioningTest {
      * admin
      */
     @Test
-    @Disabled("Find a way to use a real Ldap and not the Mock, since auth is not implemented")
     void shouldFallbackAdminAuthWhenFallbackTrue() throws Exception {
         Provisioning prov = Provisioning.getInstance();
         // create domain
         final String domain = "demo.com";
         Map<String, Object> domainAttrs = new HashMap<>();
         domainAttrs.put(Provisioning.A_zimbraAuthMech, AuthMech.ldap.toString());
-        prov.createDomain(domain, domainAttrs);
         // create account
         HashMap<String, Object> exampleAccountAttrs3;
         exampleAccountAttrs3 = new HashMap<>();
@@ -192,7 +184,6 @@ public class LdapProvisioningTest {
         exampleAccountAttrs3.put(Provisioning.A_zimbraIsAdminAccount, "TRUE");
         final String email = "testAdmin@" + domain;
         final String password = "testPassword";
-        exampleAccountAttrs3.put(Provisioning.A_mail, email);
         final Account testAdminAccount = prov.createAccount(email, password, exampleAccountAttrs3);
         prov.authAccount(testAdminAccount, password, Protocol.soap);
     }
