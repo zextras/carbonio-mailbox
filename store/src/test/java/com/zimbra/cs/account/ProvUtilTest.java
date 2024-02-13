@@ -43,6 +43,7 @@ class ProvUtilTest {
     LC.zimbra_admin_service_port.setDefault(SOAP_PORT);
   }
 
+  @SuppressWarnings("UnusedReturnValue")
   String createAccountForDomain(String domain) throws Exception {
     return createAccount(UUID.randomUUID() + "@" + domain);
   }
@@ -75,16 +76,24 @@ class ProvUtilTest {
   //////////////////////////////// HELP
 
   @Test
-  void testHelp() throws Exception {
-    final String result = runCommand(new String[]{"help"});
-    System.out.println(result);
+  void testHelp() {
+    try {
+      final String result = runCommand(new String[]{"help"});
+      System.out.println(result);
+    } catch (Exception e) {
+      Assertions.fail("Should not throw exception");
+    }
   }
 
   @ParameterizedTest
   @EnumSource(ProvUtil.Category.class)
-  void testHelpSubCommands(Category command) throws Exception {
-    final String result = runCommand(new String[]{"help", command.name().toLowerCase()});
-    System.out.println(result);
+  void testHelpSubCommands(Category command) {
+    try {
+      final String result = runCommand(new String[]{"help", command.name().toLowerCase()});
+      System.out.println(result);
+    } catch (Exception e) {
+      Assertions.fail("should not throw exception");
+    }
   }
 
   //////////////////////////////// ACCOUNT
@@ -221,8 +230,12 @@ class ProvUtilTest {
   //////////////////////////////// RIGHTS
 
   @Test
-  void testCheckRightUsage() throws Exception {
-    catchSystemExit(() -> runCommand(new String[]{"ckr", "blah"}));
+  void testCheckRightUsage() {
+    try {
+      catchSystemExit(() -> runCommand(new String[]{"ckr", "blah"}));
+    } catch (Exception e) {
+      Assertions.fail("Should have thrown exception");
+    }
   }
 
   //////////////////////////////// SEARCH
@@ -239,7 +252,8 @@ class ProvUtilTest {
 
     final OutputStream outputStream = new ByteArrayOutputStream();
     final String ldapQuery = "(zimbraId=" + accountUUID + ")";
-    runCommand(new PrintStream(outputStream), System.err,
+    final PrintStream errorStream = System.err;
+    runCommand(new PrintStream(outputStream), errorStream,
         new String[]{"searchAccounts", ldapQuery});
     Assertions.assertEquals(accountMail, outputStream.toString().trim());
   }
