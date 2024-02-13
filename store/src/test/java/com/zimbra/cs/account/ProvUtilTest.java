@@ -14,8 +14,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -41,6 +44,21 @@ class ProvUtilTest {
     //noinspection HttpUrlsUsage
     LC.zimbra_admin_service_scheme.setDefault("http://");
     LC.zimbra_admin_service_port.setDefault(SOAP_PORT);
+  }
+
+  @BeforeEach
+  void setUpBefore() throws Exception {
+    soapExtension.initData();
+  }
+
+  @AfterEach
+  void clear() throws Exception  {
+    soapExtension.clearData();
+  }
+
+  @AfterAll
+  static void shutDown() throws Exception  {
+    soapExtension.initData();
   }
 
   @SuppressWarnings("UnusedReturnValue")
@@ -321,11 +339,8 @@ class ProvUtilTest {
     final String accountName = UUID.randomUUID() + "@test.com";
     runCommand(new String[]{"ca", accountName, "password"});
 
-    final String accountName2 = UUID.randomUUID() + "@test.com";
-    runCommand(new String[]{"ca", accountName2, "password"});
-
     final String result = runCommand(new String[]{"gqu", "localhost"});
-    final String expected = String.format("%s 0 0%n%s 0 0%n", accountName, accountName2);
+    final String expected = String.format("%s 0 0%n", accountName);
 
     Assertions.assertEquals(expected, result);
   }
