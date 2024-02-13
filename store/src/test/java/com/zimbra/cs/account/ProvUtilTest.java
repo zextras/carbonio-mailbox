@@ -304,4 +304,15 @@ class ProvUtilTest {
 
     Assertions.assertEquals(expected, stdErrOutputStream.toString());
   }
+
+  @Test
+  void getMailboxInfo() throws Exception {
+    final String accountName = UUID.randomUUID() + "@test.com";
+    runCommand(new String[]{"ca", accountName, "password"});
+
+    final String result = runCommand(new String[]{"gmi", accountName});
+    final String expected = "mailboxId: 1\nquotaUsed: 0\n";
+
+    Assertions.assertEquals(expected, result);
+  }
 }
