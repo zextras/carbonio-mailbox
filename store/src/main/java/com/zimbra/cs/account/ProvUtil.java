@@ -1078,19 +1078,19 @@ public class ProvUtil implements HttpDebugListener {
       // removed
     }
 
-    private Command(String name, String alias) {
+    Command(String name, String alias) {
       mName = name;
       mAlias = alias;
     }
 
-    private Command(String name, String alias, String help, Category cat) {
+    Command(String name, String alias, String help, Category cat) {
       mName = name;
       mAlias = alias;
       mHelp = help;
       mCat = cat;
     }
 
-    private Command(
+    Command(
         String name, String alias, String help, Category cat, int minArgLength, int maxArgLength) {
       mName = name;
       mAlias = alias;
@@ -1100,7 +1100,7 @@ public class ProvUtil implements HttpDebugListener {
       mMaxArgLength = maxArgLength;
     }
 
-    private Command(
+    Command(
         String name,
         String alias,
         String help,
@@ -1117,7 +1117,7 @@ public class ProvUtil implements HttpDebugListener {
       mVia = via;
     }
 
-    private Command(
+    Command(
         String name,
         String alias,
         String help,
@@ -1136,7 +1136,7 @@ public class ProvUtil implements HttpDebugListener {
       mExtraHelp = extraHelp;
     }
 
-    private Command(
+    Command(
         String name,
         String alias,
         String help,
