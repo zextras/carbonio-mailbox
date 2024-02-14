@@ -402,6 +402,15 @@ class ProvUtilTest {
   }
 
 
+  @Test
+  void searchGal_fail_when_domain_not_found() {
+    try {
+      catchSystemExit(() -> runCommand(new String[]{"sg", "unknown.domain", "search_term"}));
+    } catch (Exception e) {
+      Assertions.fail("Should not throw exception, the exit is already caught.");
+    }
+  }
+
   @ParameterizedTest
   @ValueSource(strings = {"", "--ldap"})
   void searchGal(String ldapOption) {
@@ -415,7 +424,35 @@ class ProvUtilTest {
     } catch (Exception e) {
       Assertions.fail(
           "Should not fail when valid arguments are provided, "
-              + "the searchGal need more setup in order to work in test environments");
+              + "the searchGal need more setup in order to work in test environments so don't expect ant results");
     }
   }
+
+  @Test
+  void searchGal_fails_when_using_ldap_backend_and_unsupported_arguments_passed() throws Exception {
+    final String domain = "testDomain.com";
+    runCommand(new String[]{"cd", domain});
+
+    OutputStream stdErr = new ByteArrayOutputStream();
+    catchSystemExit(
+        () -> runCommand(System.out, stdErr, new String[]{"--ldap", "sg", domain, "search_term", "offset", "10"}));
+
+    String expected = "ERROR: service.INVALID_REQUEST (invalid request: offset is not supported with -l)\n";
+    Assertions.assertEquals(expected, stdErr.toString());
+  }
+
+  @Test
+  void searchGal_fails_when_using_ldap_backend_and_unsupported_arguments_passed2() throws Exception {
+    final String domain = "testDomain.com";
+    runCommand(new String[]{"cd", domain});
+
+    OutputStream stdErr = new ByteArrayOutputStream();
+    catchSystemExit(
+        () -> runCommand(System.out, stdErr,
+            new String[]{"--ldap", "sg", domain, "search_term", "sortBy", "fullName"}));
+
+    String expected = "ERROR: service.INVALID_REQUEST (invalid request: sortBy is not supported with -l)\n";
+    Assertions.assertEquals(expected, stdErr.toString());
+  }
+
 }
