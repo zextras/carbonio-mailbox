@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 @Tag("api")
 class ProvUtilTest {
@@ -398,5 +399,23 @@ class ProvUtilTest {
         new String[]{"-l", "scr", "test.com", "zimbraCalResContactName", "has", "TestResName"});
 
     Assertions.assertEquals(calResourceId.toLowerCase() + "\n", searchCalResOutput);
+  }
+
+
+  @ParameterizedTest
+  @ValueSource(strings = {"", "--ldap"})
+  void searchGal(String ldapOption) {
+    try {
+      final String domain = "testDomain.com";
+      runCommand(new String[]{"cd", domain});
+      String[] command = (ldapOption.isEmpty()) ?
+          new String[]{"sg", domain, "search_term"} :
+          new String[]{ldapOption, "sg", domain, "search_term"};
+      runCommand(command);
+    } catch (Exception e) {
+      Assertions.fail(
+          "Should not fail when valid arguments are provided, "
+              + "the searchGal need more setup in order to work in test environments");
+    }
   }
 }
