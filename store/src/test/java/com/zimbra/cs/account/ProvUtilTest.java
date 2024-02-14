@@ -46,19 +46,19 @@ class ProvUtilTest {
     LC.zimbra_admin_service_port.setDefault(SOAP_PORT);
   }
 
+  @AfterAll
+  static void shutDown() throws Exception {
+    soapExtension.initData();
+  }
+
   @BeforeEach
   void setUpBefore() throws Exception {
     soapExtension.initData();
   }
 
   @AfterEach
-  void clear() throws Exception  {
+  void clear() throws Exception {
     soapExtension.clearData();
-  }
-
-  @AfterAll
-  static void shutDown() throws Exception  {
-    soapExtension.initData();
   }
 
   @SuppressWarnings("UnusedReturnValue")
@@ -117,6 +117,25 @@ class ProvUtilTest {
   //////////////////////////////// ACCOUNT
 
   @Test
+  void createAccount() throws Exception {
+    final String result = runCommand(new String[]{"ca", "test@test.com", "password"});
+    assertIsUUID(result.trim());
+  }
+
+  @Test
+  void createAccount_and_getAccount_via_LDAP() throws Exception {
+    final String domain = "test.com";
+    final UUID id = UUID.randomUUID();
+    final String accountName = id + "@" + domain;
+    runCommand(new String[]{"-l", "ca", accountName, "password", "zimbraId", id.toString()});
+
+    final String output = runCommand(new String[]{"-l", "ga", accountName});
+
+    Assertions.assertTrue(output.contains("zimbraId: " + id));
+    Assertions.assertTrue(output.contains("zimbraMailDeliveryAddress: " + accountName));
+  }
+
+  @Test
   void addAccountAlias() throws Exception {
     final String accountName = UUID.randomUUID() + "@test.com";
     runCommand(new String[]{"ca", accountName, "password"});
@@ -149,12 +168,6 @@ class ProvUtilTest {
 
     final String expectedError = "ERROR: account.INVALID_PASSWORD (invalid password: too short)\n";
     Assertions.assertEquals(expectedError, errorStream.toString());
-  }
-
-  @Test
-  void createAccount() throws Exception {
-    final String result = runCommand(new String[]{"ca", "test@test.com", "password"});
-    assertIsUUID(result.trim());
   }
 
   @Test
@@ -256,26 +269,6 @@ class ProvUtilTest {
     }
   }
 
-  //////////////////////////////// SEARCH
-
-  @Test
-  void searchAccounts() throws Exception {
-    final String domain = UUID.randomUUID() + ".com";
-    runCommand(new String[]{"cd", domain});
-
-    final String accountMail = UUID.randomUUID() + "@" + domain;
-    final String accountUUID = createAccount(accountMail).trim();
-    createAccountForDomain(domain);
-    createAccountForDomain(domain);
-
-    final OutputStream outputStream = new ByteArrayOutputStream();
-    final String ldapQuery = "(zimbraId=" + accountUUID + ")";
-    final PrintStream errorStream = System.err;
-    runCommand(new PrintStream(outputStream), errorStream,
-        new String[]{"searchAccounts", ldapQuery});
-    Assertions.assertEquals(accountMail, outputStream.toString().trim());
-  }
-
   //////////////////////////////// MAILBOX
   @Test
   void unlockMailbox_exists_when_there_is_no_lock() throws Exception {
@@ -358,5 +351,52 @@ class ProvUtilTest {
     final String expected = "ERROR: mail.NO_SUCH_MBOX (no mailbox for account: " + id + ")\n";
 
     Assertions.assertEquals(expected, stdError.toString());
+  }
+
+  //////////////////////////////// CALENDAR
+
+  @Test
+  void createCalendarResources() {
+    try {
+      final String calResourceId = "calRes@test.com";
+      runCommand(
+          new String[]{"-l", "ccr", calResourceId, "password", "name", "testCalResource", "zimbraCalResContactName",
+              "TestResName"});
+    } catch (Exception e) {
+      Assertions.fail("Should not fail when valid arguments are provided");
+    }
+  }
+
+  //////////////////////////////// SEARCH
+
+  @Test
+  void searchAccounts() throws Exception {
+    final String domain = UUID.randomUUID() + ".com";
+    runCommand(new String[]{"cd", domain});
+
+    final String accountMail = UUID.randomUUID() + "@" + domain;
+    final String accountUUID = createAccount(accountMail).trim();
+    createAccountForDomain(domain);
+    createAccountForDomain(domain);
+
+    final OutputStream outputStream = new ByteArrayOutputStream();
+    final String ldapQuery = "(zimbraId=" + accountUUID + ")";
+    final PrintStream errorStream = System.err;
+    runCommand(new PrintStream(outputStream), errorStream,
+        new String[]{"searchAccounts", ldapQuery});
+    Assertions.assertEquals(accountMail, outputStream.toString().trim());
+  }
+
+  @Test
+  void searchCalendarResources() throws Exception {
+    final String calResourceId = "calRes@test.com";
+    runCommand(
+        new String[]{"-l", "ccr", calResourceId, "password", "name", "testCalResource", "zimbraCalResContactName",
+            "TestResName"});
+
+    final String searchCalResOutput = runCommand(
+        new String[]{"-l", "scr", "test.com", "zimbraCalResContactName", "has", "TestResName"});
+
+    Assertions.assertEquals(calResourceId.toLowerCase() + "\n", searchCalResOutput);
   }
 }
