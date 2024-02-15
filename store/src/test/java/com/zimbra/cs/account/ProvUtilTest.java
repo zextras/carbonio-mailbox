@@ -357,15 +357,12 @@ class ProvUtilTest {
   //////////////////////////////// CALENDAR
 
   @Test
-  void createCalendarResources() {
-    try {
-      final String calResourceId = "calRes@test.com";
-      runCommand(
-          new String[]{"-l", "ccr", calResourceId, "password", "name", "testCalResource", "zimbraCalResContactName",
-              "TestResName"});
-    } catch (Exception e) {
-      Assertions.fail("Should not fail when valid arguments are provided");
-    }
+  void createCalendarResources() throws Exception {
+    final String calResourceId = "calRes@test.com";
+    final String output = runCommand(
+        new String[]{"-l", "ccr", calResourceId, "password", "name", "testCalResource", "zimbraCalResContactName",
+            "TestResName"});
+    assertIsUUID(output.trim());
   }
 
   //////////////////////////////// SEARCH
@@ -413,19 +410,16 @@ class ProvUtilTest {
 
   @ParameterizedTest
   @ValueSource(strings = {"", "--ldap"})
-  void searchGal(String ldapOption) {
-    try {
-      final String domain = "testDomain.com";
-      runCommand(new String[]{"cd", domain});
-      String[] command = (ldapOption.isEmpty()) ?
-          new String[]{"sg", domain, "search_term"} :
-          new String[]{ldapOption, "sg", domain, "search_term"};
-      runCommand(command);
-    } catch (Exception e) {
-      Assertions.fail(
-          "Should not fail when valid arguments are provided, "
-              + "the searchGal need more setup in order to work in test environments so don't expect ant results");
-    }
+  void searchGal_returns_no_results_when_gal_is_not_configured(String ldapOption) throws Exception {
+    final String domain = "testDomain.com";
+    runCommand(new String[]{"cd", domain});
+    String[] command = (ldapOption.isEmpty()) ?
+        new String[]{"sg", domain, "search_term"} :
+        new String[]{ldapOption, "sg", domain, "search_term"};
+    final String output = runCommand(command);
+
+    Assertions.assertEquals("", output,
+        "searchGal need more setup in order to work in test environments so don't expect any results");
   }
 
   @Test
