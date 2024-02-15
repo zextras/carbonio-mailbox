@@ -1,5 +1,5 @@
 pkgname="carbonio-appserver-store-libs"
-pkgver="4.12.0"
+pkgver="4.14.0"
 pkgrel="1"
 pkgdesc="Replace Carbonio store libs"
 arch=('x86_64')
@@ -139,8 +139,8 @@ package() {
     "${pkgdir}/opt/zextras/jetty_base/common/lib/owasp-java-html-sanitizer-20191001.1.jar"
   install -D carbonio-jetty-libs/target/dependencies/slf4j-api-1.7.36.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/slf4j-api-1.7.36.jar"
-  install -D carbonio-jetty-libs/target/dependencies/spymemcached-2.12.1.jar \
-    "${pkgdir}/opt/zextras/jetty_base/common/lib/spymemcached-2.12.1.jar"
+  install -D carbonio-jetty-libs/target/dependencies/spymemcached-2.12.3.jar \
+    "${pkgdir}/opt/zextras/jetty_base/common/lib/spymemcached-2.12.3.jar"
   install -D carbonio-jetty-libs/target/dependencies/sshd-common-2.7.0.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/sshd-common-2.7.0.jar"
   install -D carbonio-jetty-libs/target/dependencies/sshd-core-2.7.0.jar \

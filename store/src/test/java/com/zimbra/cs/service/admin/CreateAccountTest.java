@@ -21,6 +21,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -74,6 +75,44 @@ class CreateAccountTest {
         final AccountServiceException actualException = Assertions.assertThrows(AccountServiceException.class, () -> creator.handle(request, context));
 
         assertEquals("number of accounts reached the limit: domain=test.domain.com (1)", actualException.getMessage());
+    }
+
+    @Test
+    void create_account_should_throw_service_exception_if_zimbraId_invalid() throws Exception {
+        final String domainName = provisionDomain("test.domain.com", "2");
+        final String expectedAccountName = "testName@" + domainName;
+        final Map<String, Object> context = provisionAdminContext();
+
+        final CreateAccount creator = new CreateAccount();
+        final CreateAccountRequest createAccountRequest = new CreateAccountRequest(expectedAccountName, "superSecretAccountPassword");
+        Map<String, Object> map = Map.of(Provisioning.A_zimbraId, "invalid");
+        createAccountRequest.setAttrs(map);
+        final Element request = JaxbUtil.jaxbToElement(createAccountRequest);
+
+        final ServiceException actualException = Assertions.assertThrows(ServiceException.class, () -> creator.handle(request, context));
+
+        assertEquals("invalid request: invalid is not a valid UUID", actualException.getMessage());
+
+    }
+
+    @Test
+    void should_create_account_when_passed_zimbraId_is_valid() throws Exception {
+        final String domainName = provisionDomain("test.domain.com", "2");
+        final String expectedAccountName = "testName@" + domainName;
+        final Map<String, Object> context = provisionAdminContext();
+
+        final CreateAccount creator = new CreateAccount();
+        final CreateAccountRequest createAccountRequest = new CreateAccountRequest(expectedAccountName, "superSecretAccountPassword");
+        String zimbraId = UUID.randomUUID().toString();
+        Map<String, Object> map = Map.of(Provisioning.A_zimbraId, zimbraId);
+        createAccountRequest.setAttrs(map);
+        final Element request = JaxbUtil.jaxbToElement(createAccountRequest);
+        final Element createAccountResponseXML = creator.handle(request, context);
+
+        final CreateAccountResponse createAccountResponse = JaxbUtil.elementToJaxb(createAccountResponseXML);
+        assert createAccountResponse != null;
+        final AccountInfo accountInfo = createAccountResponse.getAccount();
+        assertEquals(zimbraId, accountInfo.getId());
     }
 
     private String provisionDomain(String domain, String domainMaxAccounts) throws ServiceException {

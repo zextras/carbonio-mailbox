@@ -3,6 +3,7 @@ package com.zextras.mailbox.util;
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
 import com.unboundid.ldap.listener.InMemoryDirectoryServer;
+import com.zextras.mailbox.util.InMemoryLdapServer.Builder;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -43,7 +44,7 @@ public class MailboxTestUtil {
   public static final int LDAP_PORT = 1389;
   public static final String SERVER_NAME = "localhost";
   public static final String DEFAULT_DOMAIN = "test.com";
-  private static InMemoryDirectoryServer inMemoryDirectoryServer;
+  private static InMemoryLdapServer inMemoryLdapServer;
 
   private MailboxTestUtil() {}
 
@@ -66,8 +67,11 @@ public class MailboxTestUtil {
                     "/localconfig-api-test.xml"))
             .getFile());
 
-    inMemoryDirectoryServer = InMemoryLdapServerTestUtil.createInMemoryDirectoryServer(LDAP_PORT);
-    inMemoryDirectoryServer.startListening();
+    inMemoryLdapServer = new Builder()
+        .withLdapPort(LDAP_PORT)
+        .build();
+    inMemoryLdapServer.start();
+    inMemoryLdapServer.initializeBasicData();
 
     LC.ldap_port.setDefault(LDAP_PORT);
     LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
@@ -88,13 +92,13 @@ public class MailboxTestUtil {
   }
 
   /**
-   * Stops the {@link #inMemoryDirectoryServer} and {@link RedoLogProvider} The goal is to cleanup
+   * Stops the {@link #inMemoryLdapServer} and {@link RedoLogProvider} The goal is to cleanup
    * the system before starting another one. If some clean task is missing consider adding it.
    */
   public static void tearDown() throws ServiceException {
-    inMemoryDirectoryServer.clear();
+    inMemoryLdapServer.clear();
     RedoLogProvider.getInstance().shutdown();
-    inMemoryDirectoryServer.shutDown(true);
+    inMemoryLdapServer.shutDown(true);
   }
 
   /** Performs actions on an account. Start with {@link #shareWith(Account)} */

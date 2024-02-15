@@ -2,7 +2,7 @@
 
 <localconfig>
   <key name="ldap_host">
-    <value>ldap.mail.local</value>
+    <value>carbonio-ce-directory-server.carbonio-system.svc.cluster.local</value>
   </key>
   <key name="zimbra_mailbox_groups">
     <value>1</value>
@@ -36,9 +36,6 @@
   </key>
   <key name="timezone_file">
     <value>./src/test/resources/timezones-test.ics</value>
-  </key>
-  <key name="zimbra_rights_directory">
-    <value>../store-conf/conf/rights</value>
   </key>
   <key name="mailboxd_keystore">
     <value>/docker-keystore</value>

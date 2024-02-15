@@ -29,6 +29,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 
 import com.sun.mail.smtp.SMTPMessage;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.account.ZAttrProvisioning.AutoProvMode;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;
@@ -70,8 +71,8 @@ import com.zimbra.cs.util.AccountUtil;
 public abstract class AutoProvision {
 
     private static final String AT_SIGN = "@";
-    private static final int DOMAIN_INDEX = 1;
     private static final int EMAIL_INDEX = 0;
+    private static final int DOMAIN_INDEX = 1;
     private static final String SEARCH_BY_MAIL = "mail";
     private static final String SEARCH_BY_USER_PRINCIPAL_NAME = "userPrincipalName";
     protected LdapProv prov;
@@ -277,21 +278,37 @@ public abstract class AutoProvision {
         if (localPart.contains(AT_SIGN)) {
             String[] localPartArr = localPart.split(AT_SIGN);
             if (localPartArr.length > DOMAIN_INDEX) {
-                switch (localPartAttr) {
-                    case SEARCH_BY_MAIL:
-                        if (domain.getName().equals(localPartArr[DOMAIN_INDEX])) {
-                            localPart = localPartArr[EMAIL_INDEX];
-                        } else {
-                            throw ServiceException.FAILURE(localPart + " can not be provisioned for domain " + domain.getName());
-                        }
-                        break;
-                    case SEARCH_BY_USER_PRINCIPAL_NAME:
-                        localPart = localPartArr[EMAIL_INDEX];
-                        break;
+                String attrDomain = localPartArr[DOMAIN_INDEX].trim();
+                if (domain.getName().equals(attrDomain) || getCarbonioAutoProvAllowedDomainSet().contains(attrDomain)) {
+                    localPart = localPartArr[EMAIL_INDEX];
+                } else {
+                    throw ServiceException.FAILURE(localPart + " can not be provisioned for domain " + domain.getName()
+                            + localPartAttr
+                            + " value contains domain. "
+                            + attrDomain
+                            + " domain is not permitted. You can set the attribute "
+                            + ZAttrProvisioning.A_carbonioAutoProvAllowedDomains);
                 }
             }
         }
+
         return localPart + AT_SIGN + domain.getName();
+    }
+
+   private Set<String> getCarbonioAutoProvAllowedDomainSet() {
+        String carbonioAutoProvAllowedDomains = domain.getCarbonioAutoProvAllowedDomains();
+
+        if (carbonioAutoProvAllowedDomains == null || carbonioAutoProvAllowedDomains.trim().isEmpty()) {
+            return Set.of();
+        }
+
+        final String[] domainArr = carbonioAutoProvAllowedDomains.split(",");
+        final Set<String> domainSet = new HashSet<>(domainArr.length);
+
+        for(String domain : domainArr) {
+            domainSet.add(domain.trim());
+        }
+        return domainSet;
     }
 
     protected Map<String, Object> mapAttrs(ZAttributes externalAttrs)

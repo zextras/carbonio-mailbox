@@ -9,13 +9,21 @@ BUILD   = target
 BUILD_ROOT := $(shell pwd)
 
 ifneq (${JAVA_HOME},)
-JAVA_HOME_ = ${JAVA_HOME}
+	JAVA_HOME_ = ${JAVA_HOME}
 else
-JAVA_HOME_ = $(subst /bin/javac,,$(realpath $(shell which javac)))
+	JAVA_HOME_ = $(subst /bin/javac,,$(realpath $(shell which javac)))
 endif
 
 SHARED := -shared
-JAVAINC := -I$(JAVA_HOME_)/include -I$(JAVA_HOME_)/include/linux
+
+PLATFORM = $(shell uname -s)
+
+ifeq ($(PLATFORM), Darwin)
+	JAVAINC := -I$(JAVA_HOME_)/include -I$(JAVA_HOME_)/include/darwin
+else
+	JAVAINC := -I$(JAVA_HOME_)/include -I$(JAVA_HOME_)/include/linux
+endif
+
 SHARED_EXT := so
 PUSHED_EXT := so.Linux.i386
 CF := -fPIC -g

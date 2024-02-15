@@ -1,28 +1,17 @@
 <project name="zm-store">
   <import file="../ant-build-common.xml"/>
 
-  <property name="service.webapp.dir" location="${jetty.webapps.dir}/service"/>
-  <property name="zimbra.webapp.dir" location="${jetty.webapps.dir}/zimbra"/>
-  <property name="admin.webapp.dir" location="${jetty.webapps.dir}/zimbraAdmin"/>
-  <property name="conf.dir" location="conf"/>
   <property name="store-conf.config.dir" location="${basedir}/../store-conf/conf"/>
+  <property name="rights.dir" location="${basedir}/src/main/resources/conf/rights"/>
 
   <!-- LDAP -->
-  <property name="attrs.dir" location="${conf.dir}/attrs"/>
+  <property name="attrs.dir" location="${basedir}/src/main/resources/conf/attrs"/>
   <property name="ldap.dir" location="${basedir}/ldap"/>
   <property name="ldap.conf.dir" location="${ldap.dir}/conf"/>
   <property name="slapd.config.dir" value="${ldap.conf.dir}/ldap/config" />
   <property name="slapd.config.src" value="${slapd.config.dir}/cn=config.ldif"/>
-  <property name="ldap.build.dir" value="${basedir}/build/ldap"/>
-
-  <condition property="production.suffix" value=".production" else="">
-    <isset property="is-production"/>
-  </condition>
-  <condition property="war.web.xml" value="${conf.dir}/web.xml${production.suffix}">
-    <not>
-      <isset property="war.web.xml"/>
-    </not>
-  </condition>
+  <!-- See store pom.xml. This directory is also used as test resources to load ldap ldifs -->
+  <property name="ldap.build.dir" value="${basedir}/ldap/generated/"/>
 
   <target name="generate-sql-ldap-versions"
     depends="create-version-sql, create-version-ldap ">
@@ -155,11 +144,11 @@
 
   <target name="create-version-ldap" depends="build-init"
     description="Creates ldap schema version: attrs-schema">
-    <exec executable="git" failonerror="false" output="${maven.build.dir}/conf/attrs/attrs-schema">
+    <exec executable="git" failonerror="true" output="${maven.build.dir}/conf/attrs/attrs-schema">
       <arg value="log"/>
       <arg value="-1"/>
       <arg value="--pretty=format:%at"/>
-      <arg value="conf/attrs/attrs.xml"/>
+      <arg value="src/main/resources/conf/attrs/attrs.xml"/>
     </exec>
   </target>
 
@@ -173,7 +162,7 @@
     <java classname="com.zimbra.cs.account.accesscontrol.RightManager" classpathref="class.path"  fork="true" failonerror="true">
       <sysproperty key="carbonio.version" value="${carbonio.buildinfo.all}"/>
       <sysproperty key="zimbra.config" value="conf/localconfig-autogen.xml"/>
-      <arg line="-a genDomainAdminSetAttrsRights -r ${store-conf.config.dir}/rights/rights-domainadmin.xml -t ${store-conf.config.dir}/rights/rights-domainadmin.xml-template"/>
+      <arg line="-a genDomainAdminSetAttrsRights -r ${rights.dir}/rights-domainadmin.xml -t ${rights.dir}/rights-domainadmin.xml-template"/>
     </java>
   </target>
 
@@ -181,18 +170,18 @@
     <java classname="com.zimbra.cs.account.accesscontrol.RightManager" fork="true" classpathref="class.path" failonerror="true">
       <sysproperty key="zimbra.config" value="conf/localconfig-autogen.xml"/>
       <sysproperty key="carbonio.version" value="${carbonio.buildinfo.all}"/>
-      <arg line="-a genRightConsts -i ${store-conf.config.dir}/rights -r
+      <arg line="-a genRightConsts -i ${rights.dir} -r
       ${src.java.dir}/com/zimbra/cs/account/accesscontrol/generated/RightConsts.java"/>
     </java>
     <java classname="com.zimbra.cs.account.accesscontrol.RightManager" fork="true" classpathref="class.path" failonerror="true">
       <sysproperty key="zimbra.config" value="conf/localconfig-autogen.xml"/>
       <sysproperty key="carbonio.version" value="${carbonio.buildinfo.all}"/>
-      <arg line="-a genAdminRights -i ${store-conf.config.dir}/rights -r ${src.java.dir}/com/zimbra/cs/account/accesscontrol/generated/AdminRights.java"/>
+      <arg line="-a genAdminRights -i ${rights.dir} -r ${src.java.dir}/com/zimbra/cs/account/accesscontrol/generated/AdminRights.java"/>
     </java>
     <java classname="com.zimbra.cs.account.accesscontrol.RightManager" fork="true" classpathref="class.path" failonerror="true">
       <sysproperty key="zimbra.config" value="conf/localconfig-autogen.xml"/>
       <sysproperty key="carbonio.version" value="${carbonio.buildinfo.all}"/>
-      <arg line="-a genUserRights -i ${store-conf.config.dir}/rights -r ${src.java.dir}/com/zimbra/cs/account/accesscontrol/generated/UserRights.java"/>
+      <arg line="-a genUserRights -i ${rights.dir} -r ${src.java.dir}/com/zimbra/cs/account/accesscontrol/generated/UserRights.java"/>
     </java>
   </target>
 
@@ -200,7 +189,7 @@
     <java classname="com.zimbra.cs.account.accesscontrol.RightManager" fork="true" classpathref="class.path" failonerror="true">
       <sysproperty key="carbonio.version" value="${carbonio.buildinfo.all}"/>
       <sysproperty key="zimbra.config" value="conf/localconfig-autogen.xml"/>
-      <arg line="-a genMessageProperties -i ${store-conf.config.dir}/rights -r ${store-conf.config.dir}/msgs/ZsMsgRights.properties"/>
+      <arg line="-a genMessageProperties -i ${rights.dir} -r ${store-conf.config.dir}/msgs/ZsMsgRights.properties"/>
     </java>
   </target>
 
@@ -212,15 +201,12 @@
 
   <!-- LDAP schema generation -->
   <target name="generate-ldap-config">
+    <delete dir="${ldap.build.dir}" />
     <dependset>
       <srcfileset dir="${attrs.dir}" includes="*.xml" />
       <targetfileset dir="${maven.build.dir}/ldap-config" includes="*" />
     </dependset>
 
-    <mkdir dir="${maven.build.dir}/attrs"/>
-    <copy todir="${maven.build.dir}/attrs" overwrite="true" preservelastmodified="true">
-      <fileset dir="${attrs.dir}" includes="*.xml" />
-    </copy>
     <mkdir dir="${maven.build.dir}/ldap-config" />
     <mkdir dir="${ldap.build.dir}/config" />
     <mkdir dir="${ldap.build.dir}/schema" />
@@ -228,24 +214,24 @@
     <!-- Schema for pre OpenLDAP 2.4 - uses carbonio.schema-template, should eventually retire carbonio.schema-template and only use ocs.xml -->
     <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpathref="class.path" failonerror="true">
       <sysproperty key="carbonio.version" value="${carbonio.buildinfo.all}" />
-      <arg line="-a generateLdapSchema -i ${maven.build.dir}/attrs -t ${ldap.conf.dir}/ldap/carbonio.schema-template -o ${ldap.build.dir}/schema/carbonio.schema" />
+      <arg line="-a generateLdapSchema -i ${attrs.dir} -t ${ldap.conf.dir}/ldap/carbonio.schema-template -o ${ldap.build.dir}/schema/carbonio.schema" />
     </java>
     <!-- Zimbra schema for OpenLDAP 2.4 - use ocs.xml -->
     <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpathref="class.path" failonerror="true">
       <sysproperty key="carbonio.version" value="${carbonio.buildinfo.all}" />
-      <arg line="-a generateSchemaLdif -i ${maven.build.dir}/attrs -o ${ldap.build.dir}/schema/carbonio.ldif" />
+      <arg line="-a generateSchemaLdif -i ${attrs.dir} -o ${ldap.build.dir}/schema/carbonio.ldif" />
     </java>
     <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpathref="class.path" failonerror="true">
       <sysproperty key="carbonio.version" value="${carbonio.buildinfo.all}" />
-      <arg line="-a generateGlobalConfigLdif -i ${maven.build.dir}/attrs -o ${ldap.build.dir}/zimbra_globalconfig.ldif" />
+      <arg line="-a generateGlobalConfigLdif -i ${attrs.dir} -o ${ldap.build.dir}/zimbra_globalconfig.ldif" />
     </java>
     <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpathref="class.path" failonerror="true">
       <sysproperty key="carbonio.version" value="${carbonio.buildinfo.all}" />
-      <arg line="-a generateDefaultCOSLdif -i ${maven.build.dir}/attrs -o ${ldap.build.dir}/zimbra_defaultcos.ldif" />
+      <arg line="-a generateDefaultCOSLdif -i ${attrs.dir} -o ${ldap.build.dir}/zimbra_defaultcos.ldif" />
     </java>
     <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true" classpathref="class.path" failonerror="true">
       <sysproperty key="carbonio.version" value="${carbonio.buildinfo.all}" />
-      <arg line="-a generateDefaultExternalCOSLdif -i ${maven.build.dir}/attrs -o ${ldap.build.dir}/zimbra_defaultexternalcos.ldif" />
+      <arg line="-a generateDefaultExternalCOSLdif -i ${attrs.dir} -o ${ldap.build.dir}/zimbra_defaultexternalcos.ldif" />
     </java>
     <copy todir="${ldap.build.dir}/" file="${ldap.conf.dir}/ldap/carbonio.ldif" />
     <copy todir="${ldap.build.dir}/" file="${ldap.conf.dir}/ldap/mimehandlers.ldif" />

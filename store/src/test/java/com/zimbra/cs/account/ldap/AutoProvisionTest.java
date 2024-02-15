@@ -87,7 +87,8 @@ class AutoProvisionTest {
                 }.mapName(zAttributes, null),
                 "Expected mapName() to throw, but it didn't"
         );
-        assertEquals("system failure: x@abc.com can not be provisioned for domain ab.com"
+        assertEquals("system failure: x@abc.com can not be provisioned for domain ab.commail value contains domain. " +
+                        "abc.com domain is not permitted. You can set the attribute carbonioAutoProvAllowedDomains"
                 , serviceException.getMessage());
 
     }

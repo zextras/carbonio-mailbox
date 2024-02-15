@@ -11,10 +11,10 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.store.StagedBlob;
 
 public class VolumeStagedBlob extends StagedBlob {
-    private VolumeBlob mLocalBlob;
+    private final VolumeBlob mLocalBlob;
     private boolean mWasStagedDirectly;
 
-    VolumeStagedBlob(Mailbox mbox, VolumeBlob blob) throws IOException {
+    public VolumeStagedBlob(Mailbox mbox, VolumeBlob blob) throws IOException {
         super(mbox, blob.getDigest(), blob.getRawSize());
         mLocalBlob = blob;
     }

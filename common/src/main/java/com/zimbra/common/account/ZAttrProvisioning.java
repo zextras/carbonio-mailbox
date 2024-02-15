@@ -2863,6 +2863,14 @@ public class ZAttrProvisioning {
     public static final String A_carbonioAmavisDisableVirusCheck = "carbonioAmavisDisableVirusCheck";
 
     /**
+     * carbonioAutoProvAllowedDomains comma separated domain names
+     *
+     * @since ZCS 24.2.0
+     */
+    @ZAttr(id=3142)
+    public static final String A_carbonioAutoProvAllowedDomains = "carbonioAutoProvAllowedDomains";
+
+    /**
      * AD/LDAP timestamp format. For example:
      * yyyyMMddHHmmss.SSS&#039;Z&#039;, yyyyMMddHHmmss&#039;Z&#039;
      *
@@ -6298,7 +6306,7 @@ public class ZAttrProvisioning {
 
     /**
      * maximum number of accounts allowed to have specified features in a
-     * domain
+     * domain. Expected format is {zimbra-feature-attribute-name:max-account}
      *
      * @since ZCS 5.0.10
      */

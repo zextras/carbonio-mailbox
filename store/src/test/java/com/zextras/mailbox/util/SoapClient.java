@@ -70,7 +70,7 @@ public class SoapClient {
     private String url = "/";
 
     public HttpResponse execute() throws Exception {
-      AuthToken authToken = AuthProvider.getAuthToken(caller, caller.isIsAdminAccount());;
+      AuthToken authToken = AuthProvider.getAuthToken(caller, isAdminAccount());
       BasicCookieStore cookieStore = new BasicCookieStore();
       BasicClientCookie cookie =
           new BasicClientCookie(ZimbraCookie.authTokenCookieName(false), authToken.getEncoded());
@@ -93,6 +93,10 @@ public class SoapClient {
         httpPost.setEntity(new StringEntity(envelope.toString()));
         return client.execute(httpPost);
       }
+    }
+
+    private boolean isAdminAccount() {
+      return caller.isIsAdminAccount() || caller.isIsDelegatedAdminAccount();
     }
   }
 
@@ -121,4 +125,6 @@ public class SoapClient {
   public HttpResponse executeSoap(Account account, Object soapBodyPOJO) throws Exception {
     return executeSoap(account, JaxbUtil.jaxbToElement(soapBodyPOJO));
   }
+
+
 }

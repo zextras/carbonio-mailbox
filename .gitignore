@@ -36,3 +36,4 @@ target/
 .tool-versions
 /artifacts/x86_64/
 /artifacts/
+/store/ldap/generated/

@@ -534,6 +534,15 @@
   <packaging>war</packaging>
 
   <build>
+    <testResources>
+      <testResource>
+        <directory>${project.basedir}/src/test/resources</directory>
+      </testResource>
+      <testResource>
+        <directory>${project.basedir}/ldap/generated</directory>
+      </testResource>
+    </testResources>
+
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -643,7 +652,7 @@
               <goal>run</goal>
             </goals>
             <id>generate-ldap-config</id>
-            <phase>prepare-package</phase>
+            <phase>process-classes</phase>
           </execution>
           <!-- Prepare required files for testing -->
           <execution>
@@ -789,6 +798,26 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.3.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>com/zimbra/cs/db/HSQLDB*</include>
+                <include>com/zextras/mailbox/util/InMemoryLdapServer*</include>
+                <include>**/*.ldif</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <!-- Maven WAR plugin -->
       <!-- https://maven.apache.org/plugins/maven-war-plugin/examples/including-excluding-files-from-war.html -->

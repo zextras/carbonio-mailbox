@@ -7,10 +7,12 @@ package com.zimbra.cs.ldap;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 // TODO: get rid of this
 import javax.naming.ldap.Rdn;
 
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.UUIDUtil;
 import com.zimbra.cs.account.Provisioning;
@@ -123,6 +125,18 @@ public class LdapUtil {
         }
 
         return true;
+    }
+
+    public static void validateZimbraId(String zimbraId) throws ServiceException {
+        if (zimbraId == null ) {
+            throw ServiceException.INVALID_REQUEST("null is not a valid zimbraId", null);
+        }
+
+        try {
+            UUID.fromString(zimbraId);
+        } catch (IllegalArgumentException e) {
+            throw ServiceException.INVALID_REQUEST(zimbraId + " is not a valid UUID", e);
+        }
     }
 
     /**

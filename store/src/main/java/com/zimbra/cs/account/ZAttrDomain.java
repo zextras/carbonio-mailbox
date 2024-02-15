@@ -982,6 +982,78 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
+     * carbonioAutoProvAllowedDomains comma separated domain names
+     *
+     * @return carbonioAutoProvAllowedDomains, or null if unset
+     *
+     * @since ZCS 24.2.0
+     */
+    @ZAttr(id=3142)
+    public String getCarbonioAutoProvAllowedDomains() {
+        return getAttr(ZAttrProvisioning.A_carbonioAutoProvAllowedDomains, null, true);
+    }
+
+    /**
+     * carbonioAutoProvAllowedDomains comma separated domain names
+     *
+     * @param carbonioAutoProvAllowedDomains new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 24.2.0
+     */
+    @ZAttr(id=3142)
+    public void setCarbonioAutoProvAllowedDomains(String carbonioAutoProvAllowedDomains) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvAllowedDomains, carbonioAutoProvAllowedDomains);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * carbonioAutoProvAllowedDomains comma separated domain names
+     *
+     * @param carbonioAutoProvAllowedDomains new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 24.2.0
+     */
+    @ZAttr(id=3142)
+    public Map<String,Object> setCarbonioAutoProvAllowedDomains(String carbonioAutoProvAllowedDomains, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvAllowedDomains, carbonioAutoProvAllowedDomains);
+        return attrs;
+    }
+
+    /**
+     * carbonioAutoProvAllowedDomains comma separated domain names
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 24.2.0
+     */
+    @ZAttr(id=3142)
+    public void unsetCarbonioAutoProvAllowedDomains() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvAllowedDomains, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * carbonioAutoProvAllowedDomains comma separated domain names
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 24.2.0
+     */
+    @ZAttr(id=3142)
+    public Map<String,Object> unsetCarbonioAutoProvAllowedDomains(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvAllowedDomains, "");
+        return attrs;
+    }
+
+    /**
      * AD/LDAP timestamp format. For example:
      * yyyyMMddHHmmss.SSS&#039;Z&#039;, yyyyMMddHHmmss&#039;Z&#039;
      *
@@ -8977,7 +9049,7 @@ public abstract class ZAttrDomain extends NamedEntry {
 
     /**
      * maximum number of accounts allowed to have specified features in a
-     * domain
+     * domain. Expected format is {zimbra-feature-attribute-name:max-account}
      *
      * @return zimbraDomainFeatureMaxAccounts, or empty array if unset
      *
@@ -8990,7 +9062,7 @@ public abstract class ZAttrDomain extends NamedEntry {
 
     /**
      * maximum number of accounts allowed to have specified features in a
-     * domain
+     * domain. Expected format is {zimbra-feature-attribute-name:max-account}
      *
      * @param zimbraDomainFeatureMaxAccounts new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -9006,7 +9078,7 @@ public abstract class ZAttrDomain extends NamedEntry {
 
     /**
      * maximum number of accounts allowed to have specified features in a
-     * domain
+     * domain. Expected format is {zimbra-feature-attribute-name:max-account}
      *
      * @param zimbraDomainFeatureMaxAccounts new value
      * @param attrs existing map to populate, or null to create a new map
@@ -9023,7 +9095,7 @@ public abstract class ZAttrDomain extends NamedEntry {
 
     /**
      * maximum number of accounts allowed to have specified features in a
-     * domain
+     * domain. Expected format is {zimbra-feature-attribute-name:max-account}
      *
      * @param zimbraDomainFeatureMaxAccounts new to add to existing values
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -9039,7 +9111,7 @@ public abstract class ZAttrDomain extends NamedEntry {
 
     /**
      * maximum number of accounts allowed to have specified features in a
-     * domain
+     * domain. Expected format is {zimbra-feature-attribute-name:max-account}
      *
      * @param zimbraDomainFeatureMaxAccounts new to add to existing values
      * @param attrs existing map to populate, or null to create a new map
@@ -9056,7 +9128,7 @@ public abstract class ZAttrDomain extends NamedEntry {
 
     /**
      * maximum number of accounts allowed to have specified features in a
-     * domain
+     * domain. Expected format is {zimbra-feature-attribute-name:max-account}
      *
      * @param zimbraDomainFeatureMaxAccounts existing value to remove
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -9072,7 +9144,7 @@ public abstract class ZAttrDomain extends NamedEntry {
 
     /**
      * maximum number of accounts allowed to have specified features in a
-     * domain
+     * domain. Expected format is {zimbra-feature-attribute-name:max-account}
      *
      * @param zimbraDomainFeatureMaxAccounts existing value to remove
      * @param attrs existing map to populate, or null to create a new map
@@ -9089,7 +9161,7 @@ public abstract class ZAttrDomain extends NamedEntry {
 
     /**
      * maximum number of accounts allowed to have specified features in a
-     * domain
+     * domain. Expected format is {zimbra-feature-attribute-name:max-account}
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -9104,7 +9176,7 @@ public abstract class ZAttrDomain extends NamedEntry {
 
     /**
      * maximum number of accounts allowed to have specified features in a
-     * domain
+     * domain. Expected format is {zimbra-feature-attribute-name:max-account}
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

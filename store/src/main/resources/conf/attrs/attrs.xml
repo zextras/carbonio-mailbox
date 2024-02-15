@@ -3782,11 +3782,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 </attr>
 
 <attr id="714" name="zimbraDomainCOSMaxAccounts" type="string" max="256" cardinality="multi" optionalIn="domain" callback="DomainCOSMaxAccounts" since="5.0.10">
-  <desc>maximum number of accounts allowed to be assigned to specified COSes in a domain.  Values are in the format of {zimbraId-of-a-cos}:{max-accounts}</desc>
+  <desc>maximum number of accounts allowed to be assigned to specified COSes in a domain. Values are in the format of {zimbraId-of-a-cos}:{max-accounts}</desc>
 </attr>
 
 <attr id="715" name="zimbraDomainFeatureMaxAccounts" type="string" max="256" cardinality="multi" optionalIn="domain" since="5.0.10">
-  <desc>maximum number of accounts allowed to have specified features in a domain </desc>
+  <desc>maximum number of accounts allowed to have specified features in a domain. Expected format is {zimbra-feature-attribute-name:max-account}</desc>
 </attr>
 
 <attr id="716" name="zimbraDataSourceType" type="string" max="256" cardinality="single" optionalIn="dataSource" since="5.0.10" callback="DataSourceCallback">
@@ -10127,5 +10127,13 @@ TODO: delete them permanently from here
 <attr id="3141" name="carbonioAutoProvTimestampFormat" type="string" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited" callback="CheckAutoProvTimestampFormat" since="23.12.0">
   <globalConfigValue>yyyyMMddHHmmss.SSS'Z'</globalConfigValue>
   <desc>AD/LDAP timestamp format. For example: yyyyMMddHHmmss.SSS'Z', yyyyMMddHHmmss'Z'</desc>
+</attr>
+<attr id="3142" name="carbonioAutoProvAllowedDomains" type="string" max="51200" cardinality="single" optionalIn="domain" since="24.2.0">
+  <desc>
+    carbonioAutoProvAllowedDomains comma separated domain names
+    Used for checks autoProvAccountNameMap value.
+    If value is full email, domain of the email should be one of the value of carbonioAutoProvAllowedDomains
+    active directory domain names may exists at autoProvAccountNameMap.
+  </desc>
 </attr>
 </attrs>
