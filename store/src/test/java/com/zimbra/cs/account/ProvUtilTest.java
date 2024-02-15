@@ -82,11 +82,6 @@ class ProvUtilTest {
     ProvUtil.main(new Console(outputStream, errorStream), commandWithArgs);
   }
 
-  private void runCommand(PrintStream outputStream, PrintStream errorStream, String[] commandWithArgs)
-      throws Exception {
-    ProvUtil.main(new Console(outputStream, errorStream), commandWithArgs);
-  }
-
   void assertIsUUID(String value) {
     //noinspection ResultOfMethodCallIgnored
     UUID.fromString(value);
@@ -97,8 +92,7 @@ class ProvUtilTest {
   @Test
   void testHelp() {
     try {
-      final String result = runCommand(new String[]{"help"});
-      System.out.println(result);
+      runCommand(new String[]{"help"});
     } catch (Exception e) {
       Assertions.fail("Should not throw exception");
     }
@@ -108,8 +102,7 @@ class ProvUtilTest {
   @EnumSource(ProvUtil.Category.class)
   void testHelpSubCommands(Category command) {
     try {
-      final String result = runCommand(new String[]{"help", command.name().toLowerCase()});
-      System.out.println(result);
+      runCommand(new String[]{"help", command.name().toLowerCase()});
     } catch (Exception e) {
       Assertions.fail("should not throw exception");
     }
@@ -277,7 +270,7 @@ class ProvUtilTest {
     runCommand(new String[]{"ca", accountName, "password"});
 
     final OutputStream stdOutputStream = new ByteArrayOutputStream();
-    runCommand(new PrintStream(stdOutputStream), System.err,
+    runCommand(new PrintStream(stdOutputStream), new ByteArrayOutputStream(),
         new String[]{"ulm", accountName});
 
     final String accountIdForAccountName = runCommand(new String[]{"ga", accountName, "zimbraId"}).split(
@@ -292,7 +285,7 @@ class ProvUtilTest {
     runCommand(new String[]{"ca", accountName, "password"});
 
     final OutputStream stdErrOutputStream = new ByteArrayOutputStream();
-    catchSystemExit(() -> runCommand(new PrintStream(System.out), stdErrOutputStream,
+    catchSystemExit(() -> runCommand(new ByteArrayOutputStream(), stdErrOutputStream,
         new String[]{"ulm", accountName, "localhost"}));
     final String expected = "ERROR: service.FAILURE "
         + "(system failure: target server version does not support UnregisterMailboxMoveOutRequest.)"
@@ -308,7 +301,7 @@ class ProvUtilTest {
     runCommand(new String[]{"ma", accountName, "zimbraAccountStatus", "locked"});
 
     final OutputStream stdErrOutputStream = new ByteArrayOutputStream();
-    catchSystemExit(() -> runCommand(new PrintStream(System.out), stdErrOutputStream,
+    catchSystemExit(() -> runCommand(new ByteArrayOutputStream(), stdErrOutputStream,
         new String[]{"ulm", accountName}));
     final String expected = "Cannot unlock mailbox for account " + accountName
         + ". Account status must be active. Current account status is locked."
@@ -379,8 +372,7 @@ class ProvUtilTest {
 
     final OutputStream outputStream = new ByteArrayOutputStream();
     final String ldapQuery = "(zimbraId=" + accountUUID + ")";
-    final PrintStream errorStream = System.err;
-    runCommand(new PrintStream(outputStream), errorStream,
+    runCommand(outputStream, new ByteArrayOutputStream(),
         new String[]{"searchAccounts", ldapQuery});
     Assertions.assertEquals(accountMail, outputStream.toString().trim());
   }
@@ -429,7 +421,8 @@ class ProvUtilTest {
 
     OutputStream stdErr = new ByteArrayOutputStream();
     catchSystemExit(
-        () -> runCommand(System.out, stdErr, new String[]{"--ldap", "sg", domain, "search_term", "offset", "10"}));
+        () -> runCommand(new ByteArrayOutputStream(), stdErr,
+            new String[]{"--ldap", "sg", domain, "search_term", "offset", "10"}));
 
     String expected = "ERROR: service.INVALID_REQUEST (invalid request: offset is not supported with -l)\n";
     Assertions.assertEquals(expected, stdErr.toString());
@@ -442,7 +435,7 @@ class ProvUtilTest {
 
     OutputStream stdErr = new ByteArrayOutputStream();
     catchSystemExit(
-        () -> runCommand(System.out, stdErr,
+        () -> runCommand(new ByteArrayOutputStream(), stdErr,
             new String[]{"--ldap", "sg", domain, "search_term", "sortBy", "fullName"}));
 
     String expected = "ERROR: service.INVALID_REQUEST (invalid request: sortBy is not supported with -l)\n";
