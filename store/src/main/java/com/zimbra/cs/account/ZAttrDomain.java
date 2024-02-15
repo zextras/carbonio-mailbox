@@ -982,7 +982,10 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * carbonioAutoProvAllowedDomains comma separated domain names
+     * carbonioAutoProvAllowedDomains comma separated domain names Used for
+     * checks autoProvAccountNameMap value. If value is full email, domain of
+     * the email should be one of the value of carbonioAutoProvAllowedDomains
+     * active directory domain names may exists at autoProvAccountNameMap.
      *
      * @return carbonioAutoProvAllowedDomains, or null if unset
      *
@@ -994,7 +997,10 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * carbonioAutoProvAllowedDomains comma separated domain names
+     * carbonioAutoProvAllowedDomains comma separated domain names Used for
+     * checks autoProvAccountNameMap value. If value is full email, domain of
+     * the email should be one of the value of carbonioAutoProvAllowedDomains
+     * active directory domain names may exists at autoProvAccountNameMap.
      *
      * @param carbonioAutoProvAllowedDomains new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -1009,7 +1015,10 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * carbonioAutoProvAllowedDomains comma separated domain names
+     * carbonioAutoProvAllowedDomains comma separated domain names Used for
+     * checks autoProvAccountNameMap value. If value is full email, domain of
+     * the email should be one of the value of carbonioAutoProvAllowedDomains
+     * active directory domain names may exists at autoProvAccountNameMap.
      *
      * @param carbonioAutoProvAllowedDomains new value
      * @param attrs existing map to populate, or null to create a new map
@@ -1025,7 +1034,10 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * carbonioAutoProvAllowedDomains comma separated domain names
+     * carbonioAutoProvAllowedDomains comma separated domain names Used for
+     * checks autoProvAccountNameMap value. If value is full email, domain of
+     * the email should be one of the value of carbonioAutoProvAllowedDomains
+     * active directory domain names may exists at autoProvAccountNameMap.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -1039,7 +1051,10 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * carbonioAutoProvAllowedDomains comma separated domain names
+     * carbonioAutoProvAllowedDomains comma separated domain names Used for
+     * checks autoProvAccountNameMap value. If value is full email, domain of
+     * the email should be one of the value of carbonioAutoProvAllowedDomains
+     * active directory domain names may exists at autoProvAccountNameMap.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -17253,7 +17268,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      *
      * @return zimbraId, or null if unset
      */
@@ -17263,7 +17278,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      *
      * @param zimbraId new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -17276,7 +17291,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      *
      * @param zimbraId new value
      * @param attrs existing map to populate, or null to create a new map
@@ -17290,7 +17305,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      */
@@ -17302,7 +17317,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

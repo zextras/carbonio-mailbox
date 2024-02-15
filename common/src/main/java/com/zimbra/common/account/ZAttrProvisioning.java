@@ -2863,7 +2863,10 @@ public class ZAttrProvisioning {
     public static final String A_carbonioAmavisDisableVirusCheck = "carbonioAmavisDisableVirusCheck";
 
     /**
-     * carbonioAutoProvAllowedDomains comma separated domain names
+     * carbonioAutoProvAllowedDomains comma separated domain names Used for
+     * checks autoProvAccountNameMap value. If value is full email, domain of
+     * the email should be one of the value of carbonioAutoProvAllowedDomains
+     * active directory domain names may exists at autoProvAccountNameMap.
      *
      * @since ZCS 24.2.0
      */
@@ -3386,7 +3389,7 @@ public class ZAttrProvisioning {
     public static final String A_userCertificate = "userCertificate";
 
     /**
-     * RFC2256/2307: password of user. Stored encoded as SSHA (salted-SHA1)
+     * RFC2256/2307: password of user.
      */
     @ZAttr()
     public static final String A_userPassword = "userPassword";
@@ -8564,7 +8567,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraHttpThrottleSafeIPs = "zimbraHttpThrottleSafeIPs";
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      */
     @ZAttr(id=1)
     public static final String A_zimbraId = "zimbraId";
