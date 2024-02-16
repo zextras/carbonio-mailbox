@@ -2863,10 +2863,11 @@ public class ZAttrProvisioning {
     public static final String A_carbonioAmavisDisableVirusCheck = "carbonioAmavisDisableVirusCheck";
 
     /**
-     * carbonioAutoProvAllowedDomains comma separated domain names Used for
-     * checks autoProvAccountNameMap value. If value is full email, domain of
-     * the email should be one of the value of carbonioAutoProvAllowedDomains
-     * active directory domain names may exists at autoProvAccountNameMap.
+     * Comma-separated domain names used for checking the
+     * autoProvAccountNameMap value. If the value is a full email, the domain
+     * of the email should be one of the values in
+     * carbonioAutoProvAllowedDomains. Active Directory domain names may
+     * exist in autoProvAccountNameMap.
      *
      * @since ZCS 24.2.0
      */
