@@ -1,7 +1,7 @@
-library identifier: 'mailbox-packages-lib@master', retriever: modernSCM(
+def lib = library(identifier: 'mailbox-packages-lib@master', retriever: modernSCM(
         [$class       : 'GitSCMSource',
          remote       : 'git@github.com:zextras/jenkins-packages-build-library.git',
-         credentialsId: 'jenkins-integration-with-github-account'])
+         credentialsId: 'jenkins-integration-with-github-account']));
 
 def mvnCmd(String cmd) {
     def profile = ''
@@ -146,8 +146,8 @@ pipeline {
         stage('Packages') {
             steps {
                 script {
-                    // packages, staging directory, relative path directory to yap.json
-                    buildStage(getPackages(), 'staging', 'packages', params.PLAYGROUND).call()
+                    def packageBuilder = lib.com.zextras.jenkins.PackageBuilder.new(this, getPackages(), 'staging', 'packages')
+                    buildStage(packageBuilder, params.PLAYGROUND).call()
                 }
             }
         }
