@@ -1,3 +1,22 @@
+
+
+# [4.14.0](https://github.com/Zextras/carbonio-mailbox/compare/4.12.0...4.14.0) (2024-02-15)
+
+
+### Bug Fixes
+
+* [CO-856] rename account reports error ([#415](https://github.com/Zextras/carbonio-mailbox/issues/415)) ([21b614c](https://github.com/Zextras/carbonio-mailbox/commit/21b614cc81b89d8a426dbb00af7fe0f0b04a1be4))
+* [CO-862] Autoprovisioning zimbraAutoProvAccountNameMap account create ([#435](https://github.com/Zextras/carbonio-mailbox/issues/435)) ([f1fa2d5](https://github.com/Zextras/carbonio-mailbox/commit/f1fa2d5c93e7e58ca0d551abe9568249f0f421c1))
+* [CO-863] Missing log4j class in zmproxypurge ([#423](https://github.com/Zextras/carbonio-mailbox/issues/423)) ([ed44ba0](https://github.com/Zextras/carbonio-mailbox/commit/ed44ba0df37c27209441e191fe8f8fd92cc1c8b5))
+* AutoProvisionTest ([#436](https://github.com/Zextras/carbonio-mailbox/issues/436)) ([4d81588](https://github.com/Zextras/carbonio-mailbox/commit/4d815881d9aa9afa1ca92c6fb00b6a3ca00be6f5))
+
+
+### Features
+
+* [COR-1022] add zimbra mail transport edit right to combo right "domainAdminRights" ([#424](https://github.com/Zextras/carbonio-mailbox/issues/424)) ([36ffe3e](https://github.com/Zextras/carbonio-mailbox/commit/36ffe3e4d26500091cadc4a0fdccce34be3b17b9))
+* [COR-936] Create account with given zimbraId ([#438](https://github.com/Zextras/carbonio-mailbox/issues/438)) ([2f5e8c5](https://github.com/Zextras/carbonio-mailbox/commit/2f5e8c5906a554d5d5f96601bbd5167399cff2bd))
+* [HIG-112] delete account without store ([#417](https://github.com/Zextras/carbonio-mailbox/issues/417)) ([f895f0b](https://github.com/Zextras/carbonio-mailbox/commit/f895f0bb65e38ae8060d133acdd632c35b0c6d12))
+
 # [4.12.0](https://github.com/Zextras/carbonio-mailbox/compare/4.11.1...4.12.0) (2024-01-04)
 
 
