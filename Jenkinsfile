@@ -147,7 +147,7 @@ pipeline {
             steps {
                 script {
                     // packages, staging directory, relative path directory to yap.json
-                    buildStage(getPackages(), 'staging', 'packages').call()
+                    buildStage(getPackages(), 'staging', 'packages', params.PLAYGROUND).call()
                 }
             }
         }
