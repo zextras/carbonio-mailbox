@@ -67,9 +67,9 @@ The build took ${currentBuild.durationString}.</br>
 It is strongly suggested to save possible build/test failures because the build log could be pruned in the future.
 </p>
 
-Have a nice day,</br>
-</br>
---</br>
+Have a nice day,<br>
+<br>
+--<br>
 Jenkins
 """
                 }
