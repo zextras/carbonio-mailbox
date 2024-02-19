@@ -73,7 +73,12 @@ pipeline {
         stage('Build') {
             steps {
                 mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
-                stash includes: 'store store-extra-runtime-dependencies store-conf milter-conf native client common packages soap carbonio-jetty-libs', name: 'staging'
+
+                sh 'mkdir staging'
+
+                sh 'cp -r store* milter* native client common packages soap carbonio-jetty-libs staging'
+                stash includes: 'staging/**', name: 'staging'
+
             }
         }
         stage('UT & IT') {
