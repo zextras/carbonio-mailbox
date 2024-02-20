@@ -28,9 +28,9 @@ POLICY_NAME='carbonio-mailbox-policy'
 POLICY_DESCRIPTION='Carbonio Mailbox service policy for service and sidecar proxy'
 
 # create or update policy for the specific service (this will be shared across cluster)
-consul acl policy create -name "${POLICY_NAME}" -description "${POLICY_DESCRIPTION}" -rules  @/etc/carbonio/mailbox/service-discover/policies.json >/dev/null 2>&1
+consul acl policy create -name "${POLICY_NAME}" -description "${POLICY_DESCRIPTION}" -rules  @/etc/carbonio/mailbox/service-discover/carbonio-mailbox-policies.json >/dev/null 2>&1
 if [[ "$?" != "0" ]]; then
-    consul acl policy update -no-merge -name "${POLICY_NAME}" -description "${POLICY_DESCRIPTION}" -rules @/etc/carbonio/mailbox/service-discover/policies.json
+    consul acl policy update -no-merge -name "${POLICY_NAME}" -description "${POLICY_DESCRIPTION}" -rules @/etc/carbonio/mailbox/service-discover/carbonio-mailbox-policies.json
     if [[ "$?" != "0" ]]; then
       echo "Setup failed: Cannot update policy for ${POLICY_NAME}"
       exit 1
@@ -40,9 +40,9 @@ fi
 trap 'echo Script for mailbox terminated with error' EXIT
 set -e
 
-consul config write /etc/carbonio/mailbox/service-discover/service-protocol.json
+consul config write /etc/carbonio/mailbox/service-discover/carbonio-mailbox-service-protocol.json
 # Allow other services to contact this service
-consul config write /etc/carbonio/mailbox/service-discover/intentions.json
+consul config write /etc/carbonio/mailbox/service-discover/carbonio-mailbox-intentions.json
 
 if [[ ! -f "/etc/carbonio/mailbox/service-discover/token" ]]; then
     # create the token
