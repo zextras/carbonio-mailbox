@@ -38,7 +38,7 @@ pipeline {
         stage('Test all with coverage (allow failure)') {
             steps {
                 mvnCmd("$BUILD_PROPERTIES_PARAMS test")
-                publishCoverage adapters: [jacocoAdapter(mergeToOneReport: true, path: '**/target/site/jacoco/jacoco.xml')], calculateDiffForChangeRequests: true, failNoReports: true
+                recordCoverage(tools: [[parser: 'JACOCO']],sourceCodeRetention: 'MODIFIED')
                 junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
             }
         }
@@ -67,9 +67,9 @@ The build took ${currentBuild.durationString}.</br>
 It is strongly suggested to save possible build/test failures because the build log could be pruned in the future.
 </p>
 
-Have a nice day,</br>
-</br>
---</br>
+Have a nice day,<br>
+<br>
+--<br>
 Jenkins
 """
                 }
