@@ -1,6 +1,7 @@
 services {
   check {
-    http      = "http://localhost:8080/service/health/ready"
+    http     = "https://localhost:7071/service/health/ready"
+    tls_skip_verify = false
     timeout  = "1s"
     interval = "5s"
   }
