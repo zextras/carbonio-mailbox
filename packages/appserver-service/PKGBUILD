@@ -25,6 +25,8 @@ priority="optional"
 
 package() {
   cd "${srcdir}"/../../staging
+
+  # Mailbox
   install -Dm 755 packages/appserver-service/carbonio-mailbox \
     "${pkgdir}/usr/bin/carbonio-mailbox"
   install -Dm 644 packages/appserver-service/carbonio-mailbox-setup.sh \
@@ -39,6 +41,22 @@ package() {
     "${pkgdir}/etc/carbonio/mailbox/service-discover/policies.json"
   install -Dm 644 packages/appserver-service/carbonio-mailbox-service-protocol.json \
     "${pkgdir}/etc/carbonio/mailbox/service-discover/service-protocol.json"
+
+  # Mailbox Admin
+  install -Dm 755 packages/appserver-service/carbonio-mailbox-admin \
+    "${pkgdir}/usr/bin/carbonio-mailbox-admin"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-admin-setup.sh \
+    "${pkgdir}/etc/zextras/pending-setups.d/carbonio-mailbox-admin.sh"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-admin.hcl \
+    "${pkgdir}/etc/zextras/service-discover/carbonio-mailbox-admin.hcl"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-admin-sidecar.service \
+    "${pkgdir}/lib/systemd/system/carbonio-mailbox-admin-sidecar.service"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-admin-intentions.json \
+    "${pkgdir}/etc/carbonio/mailbox-admin/service-discover/intentions.json"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-admin-policies.json \
+    "${pkgdir}/etc/carbonio/mailbox-admin/service-discover/policies.json"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-admin-service-protocol.json \
+    "${pkgdir}/etc/carbonio/mailbox-admin/service-discover/service-protocol.json"
 }
 
 postinst() {
@@ -57,6 +75,7 @@ postinst() {
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
     systemctl enable carbonio-mailbox-sidecar.service >/dev/null 2>&1 || :
+    systemctl enable carbonio-mailbox-admin-sidecar.service >/dev/null 2>&1 || :
   fi
 
   echo "======================================================"
@@ -68,12 +87,15 @@ postinst() {
 prerm() {
   if [ -d /run/systemd/system ]; then
     systemctl --no-reload disable carbonio-mailbox-sidecar.service >/dev/null 2>&1 || :
+    systemctl --no-reload disable carbonio-mailbox-admin-sidecar.service >/dev/null 2>&1 || :
     systemctl stop carbonio-mailbox-sidecar.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-mailbox-admin-sidecar.service >/dev/null 2>&1 || :
   fi
 }
 
 postrm() {
   rm -f /etc/carbonio/mailbox/service-discover/token
+  rm -f /etc/carbonio/mailbox-admin/service-discover/token
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
   fi
