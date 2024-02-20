@@ -34,11 +34,11 @@ package() {
   install -Dm 644 packages/appserver-service/carbonio-mailbox-sidecar.service \
     "${pkgdir}/lib/systemd/system/carbonio-mailbox-sidecar.service"
   install -Dm 644 packages/appserver-service/carbonio-mailbox-intentions.json \
-    "${pkgdir}/etc/carbonio/mailbox/service-discover/carbonio-mailbox-intentions.json"
+    "${pkgdir}/etc/carbonio/mailbox/service-discover/intentions.json"
   install -Dm 644 packages/appserver-service/carbonio-mailbox-policies.json \
-    "${pkgdir}/etc/carbonio/mailbox/service-discover/carbonio-mailbox-policies.json"
+    "${pkgdir}/etc/carbonio/mailbox/service-discover/policies.json"
   install -Dm 644 packages/appserver-service/carbonio-mailbox-service-protocol.json \
-    "${pkgdir}/etc/carbonio/mailbox/service-discover/carbonio-mailbox-service-protocol.json"
+    "${pkgdir}/etc/carbonio/mailbox/service-discover/service-protocol.json"
 }
 
 postinst() {
