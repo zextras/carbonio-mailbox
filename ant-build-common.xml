@@ -62,8 +62,9 @@
     <echo level="info" message="Using version ${zimbra.buildinfo.version}"/>
   </target>
 
+  <property file="${maven.build.dir}/mvn-ant-shared-build.properties"/>
   <target name="carbonio-version">
-    <property name="carbonio.buildinfo.version" value="24.4.0_ZEXTRAS_202404"/>
+    <property name="carbonio.buildinfo.version" value="${mvn_revision}"/>
     <fail
       message="Missing build version. Define proper version like -Dcarbonio.buildinfo.version">
       <condition>
