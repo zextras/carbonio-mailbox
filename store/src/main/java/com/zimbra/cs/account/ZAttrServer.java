@@ -11472,7 +11472,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      *
      * @return zimbraId, or null if unset
      */
@@ -11482,7 +11482,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      *
      * @param zimbraId new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -11495,7 +11495,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      *
      * @param zimbraId new value
      * @param attrs existing map to populate, or null to create a new map
@@ -11509,7 +11509,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      */
@@ -11521,7 +11521,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
