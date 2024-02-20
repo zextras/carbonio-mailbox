@@ -901,7 +901,7 @@
           <executions>
             <execution>
               <id>generate-ant-properties</id>
-              <phase>generate-resources</phase>
+              <phase>validate</phase>
               <configuration>
                 <target>
                   <propertyfile file="${project.build.directory}/mvn-ant-shared-build.properties">
