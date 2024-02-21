@@ -1,6 +1,6 @@
 {
   "kind": "service-intentions",
-  "name": "carbonio-mailbox-lookup",
+  "name": "carbonio-mailbox-nslookup",
   "sources": [
     {
       "name": "carbonio-files",
