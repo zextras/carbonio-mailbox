@@ -1,5 +1,5 @@
 {
   "kind": "service-defaults",
-  "name": "carbonio-mailbox",
+  "name": "carbonio-mailbox-admin",
   "protocol": "http"
 }

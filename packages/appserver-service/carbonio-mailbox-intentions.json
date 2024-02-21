@@ -9,6 +9,10 @@
     {
       "name": "carbonio-files",
       "action": "allow"
+    },
+    {
+      "name": "carbonio-storages",
+      "action": "allow"
     }
   ]
 }
