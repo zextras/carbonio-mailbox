@@ -883,7 +883,7 @@ a.pure-button-selected {
 .pure-menu-item {
   padding: 0;
   margin: 0;
-  height: 100%
+  height: auto;
 }
 
 .pure-menu-heading,
@@ -1010,11 +1010,11 @@ a.pure-button-selected {
   cursor: default
 }
 
-.pure-menu-active > .pure-menu-link,
+/*.pure-menu-active > .pure-menu-link,
 .pure-menu-link:focus,
 .pure-menu-link:hover {
   background-color: #eee
-}
+}*/
 
 .pure-menu-selected > .pure-menu-link,
 .pure-menu-selected > .pure-menu-link:visited {
@@ -1105,7 +1105,7 @@ html {
 }
 
 body {
-  margin: 8px;
+  margin: 0px;
 }
 
 a {
@@ -1118,6 +1118,14 @@ a:hover {
 }
 
 tr.TableHeadingColor {
+  text-decoration: underline;
+}
+
+.pure-menu-link {
+  color: white !important;
+}
+
+.pure-menu-selected a.pure-menu-link {
   text-decoration: underline;
 }
 
@@ -1276,6 +1284,7 @@ p:first-letter {
 
 .header {
   height: fit-content;
+  background-color: var(--nav-top-bg-color);
 }
 
 .content {
@@ -1295,6 +1304,32 @@ p:first-letter {
   background-color: #e1f6f9;
   margin: 36px 10px;
   border: 1px solid #cbcbcb;
+}
+
+.code2 h3 {
+  width: fit-content;
+  background-color: #f2f2f2;
+  padding: 8px;
+  color: black;
+  margin: 0px;
+  border: 1px solid #cbcbcb;
+  border-top: none;
+  border-left: none;
+  border-bottom-right-radius: 6px;;
+}
+
+.code2 h4 {
+  margin: 8px;
+  color: darkred;
+}
+
+
+.code2 ul li ul {
+    margin: 8px;
+}
+
+.code2 h4 a{
+  color: darkred;
 }
 
 
