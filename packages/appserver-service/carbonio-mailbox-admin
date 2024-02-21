@@ -37,7 +37,7 @@ if [[ "$?" != "0" ]]; then
     fi
 fi
 
-trap 'echo Script for mailbox terminated with error' EXIT
+trap 'echo Script for mailbox admin terminated with error' EXIT
 set -e
 
 consul config write /etc/carbonio/mailbox-admin/service-discover/service-protocol.json
