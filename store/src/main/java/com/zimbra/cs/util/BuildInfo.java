@@ -11,7 +11,6 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.util.ByteUtil;
 import com.zimbra.cs.db.Versions;
 
 public final class BuildInfo {
@@ -32,15 +31,18 @@ public final class BuildInfo {
 
     public static final String FULL_VERSION;
 
+    public static final String UNKNOWN = "unknown";
+    public static final String ZMLICENSE_PATH = "/opt/zextras/bin/zmlicense";
+
     static {
-        String version = "unknown";
+        String version = UNKNOWN;
         String type = getType();
-        String release = "unknown";
-        String date = "unknown";
-        String host = "unknown";
-        String majorversion = "unknown";
-        String minorversion = "unknown";
-        String microversion = "unknown";
+        String release = UNKNOWN;
+        String date = UNKNOWN;
+        String host = UNKNOWN;
+        String majorversion = UNKNOWN;
+        String minorversion = UNKNOWN;
+        String microversion = UNKNOWN;
         String platform = getPlatform();
         String buildnum = "buildnum";
         try {
@@ -53,7 +55,7 @@ public final class BuildInfo {
             minorversion = (String) clz.getField("MINORVERSION").get(null);
             microversion = (String) clz.getField("MICROVERSION").get(null);
             buildnum = (String) clz.getField("BUILDNUM").get(null);
-        } catch (Throwable e) {
+        }catch (NoSuchFieldException | ClassNotFoundException | IllegalAccessException e) {
             System.out.println("build information not available: " + e);
         }
 
@@ -76,7 +78,7 @@ public final class BuildInfo {
     }
 
     private static String getType() {
-        File licenseBin = new File("/opt/zextras/bin/zmlicense");
+        File licenseBin = new File(ZMLICENSE_PATH);
         return licenseBin.exists() ? TYPE_NETWORK : TYPE_FOSS;
     }
 
@@ -85,13 +87,11 @@ public final class BuildInfo {
      * if the platform cannot be determined.
      */
     private static String getPlatform() {
-        String platform = "unknown";
+        String platform = UNKNOWN;
         File platformFile = new File(LC.zimbra_home.value(), ".platform");
         if (platformFile.exists()) {
-            BufferedReader reader = null;
-            try {
-                reader = new BufferedReader(new FileReader(platformFile));
-                String line = null;
+            try (BufferedReader reader = new BufferedReader(new FileReader(platformFile))){
+                String line;
                 while ((line = reader.readLine()) != null) {
                     if (line.length() > 0) {
                         platform = line;
@@ -101,11 +101,9 @@ public final class BuildInfo {
             } catch (IOException e) {
                 System.err.println("Unable to determine platform.");
                 e.printStackTrace(System.err);
-            } finally {
-                ByteUtil.closeReader(reader);
             }
         } else {
-            System.err.format("Unable to determine platform because %s does not exist.\n", platformFile);
+            System.err.format("Unable to determine platform because %s does not exist.%n", platformFile);
         }
         return platform;
     }
