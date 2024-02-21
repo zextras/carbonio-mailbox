@@ -129,64 +129,70 @@
       <!-- generate SOAP docs -->
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
         <dependencies>
           <dependency>
+            <groupId>ant-contrib</groupId>
             <artifactId>ant-contrib</artifactId>
+            <version>1.0b3</version>
             <exclusions>
               <exclusion>
-                <artifactId>ant</artifactId>
                 <groupId>ant</groupId>
+                <artifactId>ant</artifactId>
               </exclusion>
             </exclusions>
-            <groupId>ant-contrib</groupId>
-            <version>1.0b3</version>
           </dependency>
           <dependency>
-            <artifactId>ant-nodeps</artifactId>
             <groupId>org.apache.ant</groupId>
+            <artifactId>ant-nodeps</artifactId>
             <version>1.8.1</version>
           </dependency>
         </dependencies>
         <executions>
           <execution>
+            <id>generate-soap-docs</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
             <configuration>
               <target>
-                <property name="compile_classpath" refid="maven.compile.classpath"/>
-                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
-                <property name="test_classpath" refid="maven.test.classpath"/>
-                <taskdef classpathref="maven.plugin.classpath"
-                  resource="net/sf/antcontrib/antlib.xml"/>
+                <taskdef classpathref="maven.plugin.classpath" resource="net/sf/antcontrib/antlib.xml"/>
                 <ant antfile="${basedir}/ant-generate-soap-docs.xml">
                   <target name="generate-soap-api-doc"/>
                 </ant>
               </target>
             </configuration>
+          </execution>
+          <execution>
+            <id>generate-soap-api-changelog</id>
             <goals>
               <goal>run</goal>
             </goals>
-            <id>generate-soap-docs</id>
-          </execution>
-          <execution>
             <configuration>
               <target>
-                <property name="compile_classpath" refid="maven.compile.classpath"/>
-                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
-                <property name="test_classpath" refid="maven.test.classpath"/>
-                <taskdef classpathref="maven.plugin.classpath"
-                  resource="net/sf/antcontrib/antlib.xml"/>
+                <taskdef classpathref="maven.plugin.classpath" resource="net/sf/antcontrib/antlib.xml"/>
+                <ant antfile="${basedir}/ant-generate-soap-docs.xml">
+                  <target name="generate-soap-api-changelog"/>
+                </ant>
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-wsdl</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <taskdef classpathref="maven.plugin.classpath" resource="net/sf/antcontrib/antlib.xml"/>
                 <ant antfile="${basedir}/ant-generate-soap-docs.xml">
                   <target name="generate-wsdl"/>
                 </ant>
               </target>
             </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <phase>prepare-package</phase>
-            <id>generate-wsdl</id>
           </execution>
         </executions>
-        <groupId>org.apache.maven.plugins</groupId>
       </plugin>
     </plugins>
   </build>
