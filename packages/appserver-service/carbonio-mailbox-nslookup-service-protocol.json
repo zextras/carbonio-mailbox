@@ -1,5 +1,5 @@
 {
   "kind": "service-defaults",
-  "name": "carbonio-mailbox-admin",
+  "name": "carbonio-mailbox-nslookup",
   "protocol": "https"
 }
