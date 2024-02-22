@@ -1,0 +1,26 @@
+{
+  "key_prefix": [
+    {
+      "carbonio-mailbox-nslookup/": {
+        "policy": "read"
+      }
+    }
+  ],
+  "node_prefix": [
+    {
+      "": {
+        "policy": "read"
+      }
+    }
+  ],
+  "service": [
+    {
+      "carbonio-mailbox-nslookup": {
+        "policy": "write"
+      },
+      "carbonio-mailbox-nslookup-sidecar-proxy": {
+        "policy": "write"
+      }
+    }
+  ]
+}

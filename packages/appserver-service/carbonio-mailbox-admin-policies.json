@@ -1,7 +1,7 @@
 {
   "key_prefix": [
     {
-      "carbonio-mailbox/": {
+      "carbonio-mailbox-admin/": {
         "policy": "read"
       }
     }
@@ -15,10 +15,10 @@
   ],
   "service": [
     {
-      "carbonio-mailbox": {
+      "carbonio-mailbox-admin": {
         "policy": "write"
       },
-      "carbonio-mailbox-sidecar-proxy": {
+      "carbonio-mailbox-admin-sidecar-proxy": {
         "policy": "write"
       }
     }

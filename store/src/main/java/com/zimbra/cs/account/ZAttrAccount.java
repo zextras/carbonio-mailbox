@@ -2988,7 +2988,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * RFC2256/2307: password of user. Stored encoded as SSHA (salted-SHA1)
+     * RFC2256/2307: password of user.
      *
      * @return userPassword, or null if unset
      */
@@ -2998,7 +2998,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * RFC2256/2307: password of user. Stored encoded as SSHA (salted-SHA1)
+     * RFC2256/2307: password of user.
      *
      * @param userPassword new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -3011,7 +3011,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * RFC2256/2307: password of user. Stored encoded as SSHA (salted-SHA1)
+     * RFC2256/2307: password of user.
      *
      * @param userPassword new value
      * @param attrs existing map to populate, or null to create a new map
@@ -3025,7 +3025,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * RFC2256/2307: password of user. Stored encoded as SSHA (salted-SHA1)
+     * RFC2256/2307: password of user.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      */
@@ -3037,7 +3037,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * RFC2256/2307: password of user. Stored encoded as SSHA (salted-SHA1)
+     * RFC2256/2307: password of user.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -23809,7 +23809,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      *
      * @return zimbraId, or null if unset
      */
@@ -23819,7 +23819,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      *
      * @param zimbraId new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -23832,7 +23832,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      *
      * @param zimbraId new value
      * @param attrs existing map to populate, or null to create a new map
@@ -23846,7 +23846,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      */
@@ -23858,7 +23858,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
