@@ -3,24 +3,6 @@
     {
       "carbonio-mailbox/": {
         "policy": "read"
-      },
-      "carbonio-powerstore/": {
-        "policy": "read"
-      },
-      "carbonio-abq/": {
-        "policy": "read"
-      },
-      "carbonio-activesync/": {
-        "policy": "read"
-      },
-      "carbonio-auth/": {
-        "policy": "read"
-      },
-      "carbonio-core/": {
-        "policy": "read"
-      },
-      "carbonio-ha/": {
-        "policy": "read"
       }
     }
   ],
