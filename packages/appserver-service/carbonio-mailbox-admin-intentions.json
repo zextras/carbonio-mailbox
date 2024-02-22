@@ -1,0 +1,10 @@
+{
+  "kind": "service-intentions",
+  "name": "carbonio-mailbox-admin",
+  "sources": [
+    {
+      "name": "carbonio-storages",
+      "action": "allow"
+    }
+  ]
+}

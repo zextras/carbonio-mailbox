@@ -1,13 +1,13 @@
 {
   "kind": "service-intentions",
-  "name": "carbonio-mailbox",
+  "name": "carbonio-mailbox-nslookup",
   "sources": [
     {
-      "name": "carbonio-user-management",
+      "name": "carbonio-files",
       "action": "allow"
     },
     {
-      "name": "carbonio-files",
+      "name": "carbonio-ws-collaboration",
       "action": "allow"
     }
   ]

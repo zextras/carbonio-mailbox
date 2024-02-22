@@ -1,0 +1,64 @@
+#!/bin/bash
+
+if [[ $(id -u) -ne 0 ]]; then
+  echo "Please run as root"
+  exit 1
+fi
+
+if [[ "$1" != "setup" ]]; then
+  echo "Syntax: carbonio-mailbox-nslookup setup to automatically setup the service"
+  exit 1;
+fi
+
+# Decrypt the bootstrap token, asking the password to the sys admin
+# --setup check for SETUP_CONSUL_TOKEN env. variable and uses it
+# to avoid re-asking for the password
+echo -n "Insert the cluster credential password: "
+export CONSUL_HTTP_TOKEN=$(service-discover bootstrap-token --setup)
+EXIT_CODE="$?"
+echo ""
+if [[ "${EXIT_CODE}" != "0" ]]; then
+  echo "Cannot access to bootstrap token"
+  exit 1;
+fi
+# Limit secret visibility as much as possible
+export -n SETUP_CONSUL_TOKEN
+
+POLICY_NAME='carbonio-mailbox-nslookup-policy'
+POLICY_DESCRIPTION='Carbonio Mailbox NSLookup service policy for service and sidecar proxy'
+
+# create or update policy for the specific service (this will be shared across cluster)
+consul acl policy create -name "${POLICY_NAME}" -description "${POLICY_DESCRIPTION}" -rules  @/etc/carbonio/mailbox-nslookup/service-discover/policies.json >/dev/null 2>&1
+if [[ "$?" != "0" ]]; then
+    consul acl policy update -no-merge -name "${POLICY_NAME}" -description "${POLICY_DESCRIPTION}" -rules @/etc/carbonio/mailbox-nslookup/service-discover/policies.json
+    if [[ "$?" != "0" ]]; then
+      echo "Setup failed: Cannot update policy for ${POLICY_NAME}"
+      exit 1
+    fi
+fi
+
+trap 'echo Script for mailbox nslookup terminated with error' EXIT
+set -e
+
+consul config write /etc/carbonio/mailbox-nslookup/service-discover/service-protocol.json
+# Allow other services to contact this service
+consul config write /etc/carbonio/mailbox-nslookup/service-discover/intentions.json
+
+if [[ ! -f "/etc/carbonio/mailbox-nslookup/service-discover/token" ]]; then
+    # create the token
+    consul acl token create -format json -policy-name "${POLICY_NAME}" -description "Token for carbonio-mailbox-nslookup/$(hostname -A)" |
+      jq -r '.SecretID' > /etc/carbonio/mailbox-nslookup/service-discover/token;
+fi
+
+chown carbonio-mailbox:carbonio-mailbox /etc/carbonio/mailbox-nslookup/service-discover/token
+chmod 0640 /etc/carbonio/mailbox-nslookup/service-discover/token
+
+consul reload
+
+# limit token visibility as much as possible
+export -n CONSUL_HTTP_TOKEN
+
+# carbonio-mailbox is not managed by systemd
+
+systemctl restart carbonio-mailbox-nslookup-sidecar.service
+trap - EXIT
