@@ -1036,6 +1036,23 @@ public class ProvUtil implements HttpDebugListener {
       ldap
     }
 
+    private static Map<String, Command> getCommandMap() {
+      final Map<String, Command> commandMap = new HashMap<>();
+      for (Command c : Command.values()) {
+        String name = c.getName().toLowerCase();
+        if (commandMap.get(name) != null) {
+          throw new RuntimeException("duplicate command: " + name);
+        }
+        String alias = c.getAlias().toLowerCase();
+        if (commandMap.get(alias) != null) {
+          throw new RuntimeException("duplicate command: " + alias);
+        }
+        commandMap.put(name, c);
+        commandMap.put(alias, c);
+      }
+      return commandMap;
+    }
+
     public String getName() {
       return mName;
     }
@@ -1171,21 +1188,10 @@ public class ProvUtil implements HttpDebugListener {
   }
 
   static ProvUtil createProvUtil(Console console) {
-    final Map<String, Command> commandMap = new HashMap<>();
-    for (Command c : Command.values()) {
-      String name = c.getName().toLowerCase();
-      if (commandMap.get(name) != null) {
-        throw new RuntimeException("duplicate command: " + name);
-      }
-      String alias = c.getAlias().toLowerCase();
-      if (commandMap.get(alias) != null) {
-        throw new RuntimeException("duplicate command: " + alias);
-      }
-      commandMap.put(name, c);
-      commandMap.put(alias, c);
-    }
+    final Map<String, Command> commandMap = Command.getCommandMap();
     return new ProvUtil(console, commandMap);
   }
+
 
   ProvUtil(Console console, Map<String, Command> commands) {
     this.console = console;
@@ -1233,6 +1239,7 @@ public class ProvUtil implements HttpDebugListener {
     }
     return null;
   }
+
 
   private boolean execute(String[] args)
       throws ServiceException, ArgException, IOException, HttpException {
