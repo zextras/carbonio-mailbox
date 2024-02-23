@@ -1963,12 +1963,7 @@ public class ProvUtil implements HttpDebugListener {
       return;
     }
     Domain domain = lookupDomain(args[1], prov, Boolean.FALSE);
-
-    if (prov instanceof SoapProvisioning) {
-      prov.createHabOrgUnit(domain, args[2]);
-    } else {
-      prov.createHabOrgUnit(domain, args[2]);
-    }
+    prov.createHabOrgUnit(domain, args[2]);
   }
 
   private void doListHabOrgUnit(String[] args) throws ServiceException {
@@ -1978,15 +1973,10 @@ public class ProvUtil implements HttpDebugListener {
     }
     Domain domain = lookupDomain(args[1], prov, Boolean.FALSE);
     Set<String> resultSet;
-    if (prov instanceof SoapProvisioning) {
-      resultSet = prov.listHabOrgUnit(domain);
-    } else {
-      resultSet = prov.listHabOrgUnit(domain);
-    }
+    resultSet = prov.listHabOrgUnit(domain);
     for (String result : resultSet) {
       console.println(String.format("%s", result));
     }
-    return;
   }
 
   private void doRenameHabOrgUnit(String[] args) throws ServiceException {
@@ -1995,11 +1985,7 @@ public class ProvUtil implements HttpDebugListener {
       return;
     }
     Domain domain = lookupDomain(args[1], prov, Boolean.FALSE);
-    if (prov instanceof SoapProvisioning) {
-      prov.renameHabOrgUnit(domain, args[2], args[3]);
-    } else {
-      prov.renameHabOrgUnit(domain, args[2], args[3]);
-    }
+    prov.renameHabOrgUnit(domain, args[2], args[3]);
   }
 
   private void doDeleteHabOrgUnit(String[] args) throws ServiceException {
@@ -2008,11 +1994,7 @@ public class ProvUtil implements HttpDebugListener {
       return;
     }
     Domain domain = lookupDomain(args[1], prov, Boolean.FALSE);
-    if (prov instanceof SoapProvisioning) {
-      prov.deleteHabOrgUnit(domain, args[2]);
-    } else {
-      prov.deleteHabOrgUnit(domain, args[2]);
-    }
+    prov.deleteHabOrgUnit(domain, args[2]);
   }
 
   private void doGetHab(String[] args) throws ServiceException {
@@ -2039,7 +2021,6 @@ public class ProvUtil implements HttpDebugListener {
       ((SoapProvisioning) prov).modifyHabGroup(args[1], null, args[2]);
     } else {
       usage();
-      return;
     }
   }
 
@@ -2053,7 +2034,6 @@ public class ProvUtil implements HttpDebugListener {
       ((SoapProvisioning) prov).modifyHabGroupSeniority(args[1], args[2]);
     } else {
       usage();
-      return;
     }
   }
 
@@ -2229,7 +2209,7 @@ public class ProvUtil implements HttpDebugListener {
     console.print("account: " + account.getName() + "\nquotaUsed: " + quotaUsed + "\n");
   }
 
-  private class AccountLoggerOptions {
+  private static class AccountLoggerOptions {
     String server;
     String[] args;
   }
