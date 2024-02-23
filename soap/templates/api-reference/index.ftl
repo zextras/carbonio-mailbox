@@ -29,7 +29,7 @@ Carbonio SOAP API Reference ${build.version}
 </SCRIPT>
 </HEAD>
 <FRAMESET cols="22%,78%" title="" onLoad="top.loadFrames()">
-<FRAMESET rows="42%,58%" title="" onLoad="top.loadFrames()">
+<FRAMESET rows="30%,70%" title="" onLoad="top.loadFrames()">
 <FRAME src="overview-frame.html" name="serviceListFrame" title="All Commands">
 
 <FRAME src="allcommands-frame.html" name="serviceFrame" title="All Commands">
