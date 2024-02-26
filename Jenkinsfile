@@ -1,6 +1,6 @@
 def mvnCmd(String cmd) {
     def profile = ''
-    if (env.BRANCH_NAME == 'main' ) {
+    if (buildingTag()) {
         profile = '-Pprod'
     }
     else if (env.BRANCH_NAME == 'devel' ) {

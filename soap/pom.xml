@@ -5,7 +5,7 @@
   <parent>
     <artifactId>zm-mailbox</artifactId>
     <groupId>zextras</groupId>
-    <version>${revision}</version>
+    <version>${revision}${changelist}</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>

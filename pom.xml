@@ -375,45 +375,45 @@
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-common</artifactId>
-        <version>${revision}</version>
+        <version>${revision}${changelist}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-client</artifactId>
-        <version>${revision}</version>
+        <version>${revision}${changelist}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-soap</artifactId>
-        <version>${revision}</version>
+        <version>${revision}${changelist}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-native</artifactId>
-        <version>${revision}</version>
+        <version>${revision}${changelist}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-store</artifactId>
-        <version>${revision}</version>
+        <version>${revision}${changelist}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-store</artifactId>
-        <version>${revision}</version>
+        <version>${revision}${changelist}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>store-extra-runtime-dependencies</artifactId>
         <type>pom</type>
-        <version>${revision}</version>
+        <version>${revision}${changelist}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>carbonio-jetty-libs</artifactId>
         <type>pom</type>
-        <version>${revision}</version>
+        <version>${revision}${changelist}</version>
         <exclusions>
           <exclusion>
             <artifactId>*</artifactId>
@@ -810,11 +810,12 @@
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
-    <revision>24.4.0-SNAPSHOT</revision>
+    <changelist>-SNAPSHOT</changelist>
+    <revision>24.5.0</revision>
     <mockserver.version>5.13.0</mockserver.version>
     <mariadb-java-client.version>2.7.3</mariadb-java-client.version>
   </properties>
-  <version>${revision}</version>
+  <version>${revision}${changelist}</version>
   <profiles>
     <!-- Allows deploy to Zextras public maven repo -->
     <profile>
@@ -826,7 +827,7 @@
         </repository>
       </distributionManagement>
       <properties>
-        <modifier></modifier>
+        <changelist></changelist>
       </properties>
     </profile>
     <profile>
