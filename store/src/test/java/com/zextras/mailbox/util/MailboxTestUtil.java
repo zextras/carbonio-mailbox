@@ -44,6 +44,11 @@ public class MailboxTestUtil {
   public static final int LDAP_PORT = 1389;
   public static final String SERVER_NAME = "localhost";
   public static final String DEFAULT_DOMAIN = "test.com";
+
+  public static InMemoryLdapServer getInMemoryLdapServer() {
+    return inMemoryLdapServer;
+  }
+
   private static InMemoryLdapServer inMemoryLdapServer;
 
   private MailboxTestUtil() {}
@@ -75,15 +80,12 @@ public class MailboxTestUtil {
 
     LC.ldap_port.setDefault(LDAP_PORT);
     LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
+    initData();
 
     DbPool.startup();
     HSQLDB.createDatabase("");
 
-    final Provisioning provisioning = Provisioning.getInstance(Provisioning.CacheMode.OFF);
-    provisioning.createServer(
-        SERVER_NAME,
-        new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
-    provisioning.createDomain(DEFAULT_DOMAIN, new HashMap<>());
+
 
     RedoLogProvider.getInstance().startup();
     StoreManager.getInstance().startup();
@@ -99,6 +101,20 @@ public class MailboxTestUtil {
     inMemoryLdapServer.clear();
     RedoLogProvider.getInstance().shutdown();
     inMemoryLdapServer.shutDown(true);
+  }
+
+  public static void clearData() throws Exception {
+    inMemoryLdapServer.clear();
+    HSQLDB.clearDatabase();
+  }
+
+  public static void initData() throws Exception {
+    inMemoryLdapServer.initializeBasicData();
+    final Provisioning provisioning = Provisioning.getInstance(Provisioning.CacheMode.OFF);
+    provisioning.createServer(
+        SERVER_NAME,
+        new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
+    provisioning.createDomain(DEFAULT_DOMAIN, new HashMap<>());
   }
 
   /** Performs actions on an account. Start with {@link #shareWith(Account)} */
