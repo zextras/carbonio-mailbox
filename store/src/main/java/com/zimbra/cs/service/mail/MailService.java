@@ -10,6 +10,7 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.service.MailboxAttachmentService;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
+import org.dom4j.QName;
 
 /**
  * @zm-service-description The Mail Service includes commands for managing mail and calendar
@@ -229,5 +230,10 @@ public final class MailService implements DocumentService {
         MailConstants.COPY_TO_DRIVE_REQUEST,
         new CopyToFiles(
             new MailboxAttachmentService(), FilesClient.atURL("http://127.78.0.7:20002")));
+
+
+    // smart link api
+    dispatcher.registerHandler(QName.get("CreateSmartLinksRequest", MailConstants.NAMESPACE), new CreateSmartLinks());
+
   }
 }
