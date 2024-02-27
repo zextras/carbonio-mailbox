@@ -113,20 +113,9 @@ prerm() {
 }
 
 postrm() {
-  # Mailbox
   rm -f /etc/carbonio/mailbox/service-discover/token
-  rm -f /etc/zextras/pending-setups.d/carbonio-mailbox.sh
-  rm -f /etc/zextras/pending-setups.d/done/carbonio-mailbox.sh
-
-  # Mailbox Admin
   rm -f /etc/carbonio/mailbox-admin/service-discover/token
-  rm -f /etc/zextras/pending-setups.d/carbonio-mailbox-admin.sh
-  rm -f /etc/zextras/pending-setups.d/done/carbonio-mailbox-admin.sh
-
-  # Mailbox NSLookup
   rm -f /etc/carbonio/mailbox-nslookup/service-discover/token
-  rm -f /etc/zextras/pending-setups.d/carbonio-mailbox-nslookup.sh
-  rm -f /etc/zextras/pending-setups.d/done/carbonio-mailbox-nslookup.sh
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
