@@ -58,8 +58,8 @@ public class GraphQLFilesClient {
  }
 
  public static CreateLink mapToCreateLink(ObjectMapper objectMapper, String graphQLResponse) throws IOException {
-   final GraphQlResponse<CreateLink> gqlDTO = objectMapper.readValue(graphQLResponse, GraphQlResponse.class);
-   return gqlDTO.getBody();
+   final GraphQlResponse gqlDTO = objectMapper.readValue(graphQLResponse, GraphQlResponse.class);
+   return new CreateLink(gqlDTO.getData().get("createLink").get("url").asText());
  }
 
 

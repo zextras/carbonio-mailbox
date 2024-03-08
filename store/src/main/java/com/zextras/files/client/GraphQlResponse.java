@@ -4,21 +4,19 @@
 
 package com.zextras.files.client;
 
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 
-public class GraphQlResponse<T> {
+public class GraphQlResponse {
 
   public GraphQlResponse() {
   }
 
-  public Map<String, T> getData() {
+  public JsonNode getData() {
     return data;
   }
 
-  public T getBody() {
-    return data.get("data");
-  }
-
-  private Map<String, T> data;
+  @JsonProperty("data")
+  private JsonNode data;
 
 }

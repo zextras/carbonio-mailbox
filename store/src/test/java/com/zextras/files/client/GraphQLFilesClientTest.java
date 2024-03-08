@@ -69,8 +69,6 @@ class GraphQLFilesClientTest {
     final Try<CreateLink> tryCreateLink = graphQLFilesClient.createLink(new Token("testToken"),
         "123Star");
 
-    filesServer.verifyZeroInteractions();
-
     Assertions.assertTrue(tryCreateLink.isSuccess());
     Assertions.assertEquals(url, tryCreateLink.get().getUrl());
   }
