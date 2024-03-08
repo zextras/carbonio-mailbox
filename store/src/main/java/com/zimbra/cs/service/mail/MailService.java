@@ -58,7 +58,8 @@ public final class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.GET_MSG_METADATA_REQUEST, new GetMsgMetadata());
     dispatcher.registerHandler(MailConstants.MSG_ACTION_REQUEST, new MsgAction());
     dispatcher.registerHandler(MailConstants.SEND_MSG_REQUEST, new SendMsg());
-    dispatcher.registerHandler(MailConstants.SEND_MSG_WITH_SMART_LINKS_REQUEST, new SendMsgWithSmartLinks());
+    dispatcher.registerHandler(MailConstants.SEND_MSG_WITH_SMART_LINKS_REQUEST, new SendMsgWithSmartLinks(
+        FilesClient.atURL("http://127.78.0.7:20002")));
     dispatcher.registerHandler(MailConstants.SEND_REPORT_REQUEST, new SendDeliveryReport());
     dispatcher.registerHandler(
         MailConstants.SEND_SHARE_NOTIFICATION_REQUEST, new SendShareNotification());

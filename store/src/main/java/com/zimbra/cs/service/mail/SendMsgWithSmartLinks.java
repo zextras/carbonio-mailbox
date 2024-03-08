@@ -4,6 +4,7 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zextras.carbonio.files.FilesClient;
 import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -15,31 +16,49 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CopyToFilesRequest;
 import com.zimbra.soap.mail.message.CopyToFilesResponse;
+import com.zimbra.soap.mail.message.SendMsgResponse;
 import com.zimbra.soap.mail.message.SendMsgWithSmartLinksRequest;
+import com.zimbra.soap.mail.type.MsgToSend;
 import com.zimbra.soap.mail.type.SmartLink;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class SendMsgWithSmartLinks extends DocumentHandler {
 
+  private final FilesClient filesClient;
+
+  public SendMsgWithSmartLinks(FilesClient filesClient) {
+    this.filesClient = filesClient;
+  }
+
+
+
   @Override
-  public Element handle(Element request, Map<String, Object> context) throws ServiceException {
+  public Element handle(Element request, Map<String, Object> context)
+      throws ServiceException {
     SendMsgWithSmartLinksRequest req = JaxbUtil.elementToJaxb(request, SendMsgWithSmartLinksRequest.class);
     ZimbraSoapContext zsc = getZimbraSoapContext(context);
     final Account authenticatedAccount = getAuthenticatedAccount(zsc);
     final Account requestedAccount = getRequestedAccount(zsc);
-
-    List<String> copyToFilesResponses = new ArrayList<>();
+    final ZAuthToken zAuthToken = zsc.getAuthToken().toZAuthToken();
+    // TODO: add smart links to body and remove attachments
     for (var sl : req.getSmartLinks()) {
-      copyToFilesResponses.add(saveAttachment(authenticatedAccount, requestedAccount, sl, zsc.getAuthToken().toZAuthToken()));
+      // saveToFiles
+      // getPublicLink
+      String nodeId = uploadToFiles(authenticatedAccount, requestedAccount, sl, zAuthToken);
     }
+
+    SendMsgResponse sendMsgResponse = this.sendMsg(authenticatedAccount, requestedAccount, req.getMsg(), zAuthToken);
+    // TODO: use SendMsgWithLinksResponse
+    return JaxbUtil.jaxbToElement(sendMsgResponse);
+  }
+
+  private SendMsgResponse sendMsg(Account authenticatedAccount, Account requestedAccount, MsgToSend msgToSend, ZAuthToken zAuthToken) {
 
     return null;
   }
 
-  private String saveAttachment(Account authenticatedAccount, Account requestedAccount, SmartLink smartLink, ZAuthToken zAuthToken)
+  private String uploadToFiles(Account authenticatedAccount, Account requestedAccount, SmartLink smartLink, ZAuthToken zAuthToken)
       throws ServiceException {
     String soapUrl = URLUtil.getSoapURL(authenticatedAccount.getServer(), true);
     CopyToFilesRequest request = new CopyToFilesRequest();
@@ -54,22 +73,5 @@ public class SendMsgWithSmartLinks extends DocumentHandler {
     } catch (IOException e) {
       throw ServiceException.FAILURE(e.getMessage());
     }
-  }
-}
-
-class  NodeId {
-  private final String id;
-
-  public static NodeId create(String id) {
-    if (id.length() > 23) throw new IllegalArgumentException("sfdsfs w");
-    return new NodeId(id);
-  }
-
-  private NodeId(String id) {
-    this.id = id;
-  }
-
-  public String getId() {
-    return id;
   }
 }

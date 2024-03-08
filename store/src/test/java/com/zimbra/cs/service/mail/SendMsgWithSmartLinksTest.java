@@ -35,6 +35,7 @@ class SendMsgWithSmartLinksTest extends SoapTestSuite {
 
 
     final HttpResponse response = getSoapClient().executeSoap(account, element);
+    this.printResponse(response);
     Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
 
 //    final String soapEnvelope = new String(response.getEntity().getContent().readAllBytes());
