@@ -823,6 +823,8 @@ public final class JaxbUtil {
           com.zimbra.soap.mail.message.SendInviteReplyResponse.class,
           com.zimbra.soap.mail.message.SendMsgRequest.class,
           com.zimbra.soap.mail.message.SendMsgResponse.class,
+            com.zimbra.soap.mail.message.SendMsgWithSmartLinksRequest.class,
+            com.zimbra.soap.mail.message.SendMsgWithSmartLinksResponse.class,
           com.zimbra.soap.mail.message.SendSecureMsgRequest.class,
           com.zimbra.soap.mail.message.SendSecureMsgResponse.class,
           com.zimbra.soap.mail.message.SendShareNotificationRequest.class,
