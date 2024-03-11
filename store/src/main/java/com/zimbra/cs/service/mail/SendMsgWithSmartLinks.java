@@ -9,15 +9,22 @@ import static com.zimbra.soap.JaxbUtil.jaxbToElement;
 
 import com.zextras.mailbox.AuthenticationInfo;
 import com.zextras.mailbox.smartlinks.Attachment;
+import com.zextras.mailbox.smartlinks.SmartLink;
 import com.zextras.mailbox.smartlinks.SmartLinksGenerator;
+import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
+import com.zimbra.common.soap.SoapHttpTransport;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.httpclient.URLUtil;
 import com.zimbra.soap.DocumentHandler;
+import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
+import com.zimbra.soap.mail.message.SendMsgRequest;
 import com.zimbra.soap.mail.message.SendMsgResponse;
 import com.zimbra.soap.mail.message.SendMsgWithSmartLinksRequest;
 import com.zimbra.soap.mail.type.MsgToSend;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,14 +42,30 @@ public class SendMsgWithSmartLinks extends DocumentHandler {
     final var authenticationInfo = getAuthenticationInfo(context);
     final var attachments = toAttachments(req.getSmartLinks());
     final var smartLinks = smartLinksGenerator.smartLinksFrom(attachments, authenticationInfo);
-    // TODO: add smart links to body and remove attachments
 
-    return jaxbToElement(this.sendMsg(req.getMsg(), authenticationInfo));
+    final MsgToSend message = req.getMsg();
+    final String updatedContent = message.getContent() + smartLinks.stream().map(SmartLink::getPublicUrl).collect(
+        Collectors.joining("<br>"));
+    message.setContent(updatedContent);
+    return jaxbToElement(this.sendMsg(message, authenticationInfo));
   }
 
-  private SendMsgResponse sendMsg(MsgToSend msgToSend, AuthenticationInfo authenticationInfo) {
-    // TODO: use SendMsgWithLinksResponse
-    return null;
+  private SendMsgResponse sendMsg(MsgToSend msgToSend, AuthenticationInfo authenticationInfo) throws ServiceException {
+    Account authenticatedAccount = authenticationInfo.getAuthenticatedAccount();
+    Account requestedAccount = authenticationInfo.getRequestedAccount();
+    ZAuthToken zAuthToken = authenticationInfo.getAuthToken().toZAuthToken();
+    String soapUrl = URLUtil.getSoapURL(authenticatedAccount.getServer(), true);
+    SendMsgRequest request = new SendMsgRequest();
+    request.setMsg(msgToSend);
+    final Element autocompleteRequestElement = JaxbUtil.jaxbToElement(request);
+    try {
+      return JaxbUtil.elementToJaxb(
+          new SoapHttpTransport(zAuthToken, soapUrl)
+              .invoke(autocompleteRequestElement, requestedAccount.getId()),
+          SendMsgResponse.class);
+    } catch (IOException e) {
+      throw ServiceException.FAILURE(e.getMessage());
+    }
   }
 
   private static List<Attachment> toAttachments(List<com.zimbra.soap.mail.type.SmartLink> smartLinks1) {
