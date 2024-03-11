@@ -4,15 +4,17 @@
 
 package com.zextras.files.client;
 
-public class Token {
+import com.zimbra.common.util.ZimbraCookie;
 
-  public String getValue() {
-    return value;
-  }
+public class Token {
 
   private final String value;
 
   public Token(String value) {
     this.value = value;
+  }
+
+  public String getCookie() {
+    return ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + value;
   }
 }

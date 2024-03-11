@@ -52,9 +52,9 @@ public class GraphQLFilesClient {
 
   public Try<CreateLink> createLink(Token authToken, String nodeId)  {
    return this.filesClient.genericGraphQLRequest(
-       authToken.getValue(),
+       authToken.getCookie(),
        String.format(GQL_CREATE_LINK_REQUEST, nodeId))
-       .mapTry(response -> this.mapToCreateLink(objectMapper, response));
+       .mapTry(response -> mapToCreateLink(objectMapper, response));
  }
 
  public static CreateLink mapToCreateLink(ObjectMapper objectMapper, String graphQLResponse) throws IOException {

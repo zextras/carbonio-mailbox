@@ -4,12 +4,11 @@
 
 package com.zimbra.cs.service.mail;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zextras.carbonio.files.FilesClient;
-import com.zextras.files.client.GraphQLFilesClient;
+import static com.zimbra.soap.JaxbUtil.elementToJaxb;
+import static com.zimbra.soap.JaxbUtil.jaxbToElement;
+
 import com.zextras.mailbox.AuthenticationInfo;
 import com.zextras.mailbox.smartlinks.Attachment;
-import com.zextras.mailbox.smartlinks.FilesSmartLinksGenerator;
 import com.zextras.mailbox.smartlinks.SmartLinksGenerator;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -19,20 +18,15 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.SendMsgResponse;
 import com.zimbra.soap.mail.message.SendMsgWithSmartLinksRequest;
 import com.zimbra.soap.mail.type.MsgToSend;
-
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.zimbra.soap.JaxbUtil.elementToJaxb;
-import static com.zimbra.soap.JaxbUtil.jaxbToElement;
-
 public class SendMsgWithSmartLinks extends DocumentHandler {
   private final SmartLinksGenerator smartLinksGenerator;
 
-  public SendMsgWithSmartLinks(FilesClient filesClient) {
-    final var graphQLFilesClient = new GraphQLFilesClient(filesClient, new ObjectMapper());
-    smartLinksGenerator = new FilesSmartLinksGenerator(graphQLFilesClient);
+  public SendMsgWithSmartLinks(SmartLinksGenerator smartLinksGenerator) {
+    this.smartLinksGenerator = smartLinksGenerator;
   }
 
   @Override
