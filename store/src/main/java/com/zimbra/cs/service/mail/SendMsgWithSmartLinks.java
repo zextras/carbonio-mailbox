@@ -48,7 +48,15 @@ public class SendMsgWithSmartLinks extends DocumentHandler {
     );
     final var smartLinksContent = smartLinks.stream().map(SmartLink::getPublicUrl).collect(joining("<br>"));
     final var message = req.getMsg();
-    message.setContent(message.getContent() + smartLinksContent);
+
+    message.getMimePart()
+        .getMimeParts()
+        .forEach((mimePart) -> {
+          // TODO: check the mimePart.getContentType() // text/plain | text/html
+          // TODO: for html should be put inside html tags and before signature
+          mimePart.setContent(mimePart.getContent() + smartLinksContent);
+        });
+
     final var response = sendMsg(message, authenticationInfo);
     return jaxbToElement(response);
   }
