@@ -4,11 +4,10 @@
 
 package com.zimbra.soap.mail.type;
 
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAttribute;
 
 public class SmartLink {
-
-  @XmlElement(name = "publicUrl")
+  @XmlAttribute(name = "publicUrl")
   private String publicUrl;
 
   public SmartLink(String publicUrl) {
