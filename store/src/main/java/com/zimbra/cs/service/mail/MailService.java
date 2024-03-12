@@ -8,6 +8,7 @@ package com.zimbra.cs.service.mail;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.carbonio.files.FilesClient;
 import com.zextras.files.client.GraphQLFilesClient;
+import com.zextras.mailbox.smartlinks.FakeSmartLinksGenerator;
 import com.zextras.mailbox.smartlinks.FilesSmartLinksGenerator;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.service.MailboxAttachmentService;
@@ -234,11 +235,9 @@ public final class MailService implements DocumentService {
         new CopyToFiles(
             new MailboxAttachmentService(), FilesClient.atURL("http://127.78.0.7:20002")));
 
-
-    // smart link api
-    dispatcher.registerHandler(QName.get("CreateSmartLinksRequest", MailConstants.NAMESPACE), new CreateSmartLinks(
-        new FilesSmartLinksGenerator(new GraphQLFilesClient(FilesClient.atURL("http://127.78.0.7:20002"), new ObjectMapper())
-        )));
-
+    dispatcher.registerHandler(
+        QName.get("CreateSmartLinksRequest", MailConstants.NAMESPACE),
+        new CreateSmartLinks(new FakeSmartLinksGenerator())
+    );
   }
 }

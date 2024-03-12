@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.zimbra.soap.JaxbUtil.elementToJaxb;
+import static com.zimbra.soap.JaxbUtil.jaxbToElement;
+
 public class CreateSmartLinks extends MailDocumentHandler {
 
   private final SmartLinksGenerator smartLinksGenerator;
@@ -27,11 +30,11 @@ public class CreateSmartLinks extends MailDocumentHandler {
 
   @Override
   public Element handle(Element requestElement, Map<String, Object> context) throws ServiceException {
-    final CreateSmartLinksRequest request = JaxbUtil.elementToJaxb(requestElement);
+    final CreateSmartLinksRequest request = elementToJaxb(requestElement);
     final AuthenticationInfo authenticationInfo = getAuthenticationInfo(context);
 
     final CreateSmartLinksResponse response = handle(request, authenticationInfo);
-    return JaxbUtil.jaxbToElement(response);
+    return jaxbToElement(response);
   }
 
   private CreateSmartLinksResponse handle(
@@ -47,12 +50,11 @@ public class CreateSmartLinks extends MailDocumentHandler {
       AuthenticationInfo authenticationInfo,
       List<Attachment> attachments
   ) throws ServiceException {
-    return Collections.emptyList();
-//    return smartLinksGenerator
-//        .smartLinksFrom(attachments, authenticationInfo)
-//        .stream()
-//        .map(smartLink -> new SmartLink(smartLink.getPublicUrl())
-//    ).collect(Collectors.toList());
+    return smartLinksGenerator
+        .smartLinksFrom(attachments, authenticationInfo)
+        .stream()
+        .map(smartLink -> new SmartLink(smartLink.getPublicUrl())
+    ).collect(Collectors.toList());
   }
 
   private List<Attachment> toAttachments(List<AttachmentToConvert> reqAttachments) {
