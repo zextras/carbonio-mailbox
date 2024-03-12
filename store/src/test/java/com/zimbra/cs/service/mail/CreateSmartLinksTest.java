@@ -47,7 +47,7 @@ class CreateSmartLinksTest extends SoapTestSuite {
     Account account = accountCreatorFactory.get().create();
 
     String xml = "<CreateSmartLinksRequest xmlns=\"urn:zimbraMail\">"
-        + "<attachments draftId=\"3453453-54353\" partName=\"part1\"/>"
+        + "<attachments draftId=\"3453453\" partName=\"part1\"/>"
         + "</CreateSmartLinksRequest>";
 
     mockUploadFile("node1");
