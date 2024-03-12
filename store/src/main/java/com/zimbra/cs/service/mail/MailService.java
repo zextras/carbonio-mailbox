@@ -61,9 +61,6 @@ public final class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.GET_MSG_METADATA_REQUEST, new GetMsgMetadata());
     dispatcher.registerHandler(MailConstants.MSG_ACTION_REQUEST, new MsgAction());
     dispatcher.registerHandler(MailConstants.SEND_MSG_REQUEST, new SendMsg());
-    dispatcher.registerHandler(MailConstants.SEND_MSG_WITH_SMART_LINKS_REQUEST, new SendMsgWithSmartLinks(
-      new FilesSmartLinksGenerator(new GraphQLFilesClient(FilesClient.atURL("http://127.78.0.7:20002"), new ObjectMapper())
-      )));
     dispatcher.registerHandler(MailConstants.SEND_REPORT_REQUEST, new SendDeliveryReport());
     dispatcher.registerHandler(
         MailConstants.SEND_SHARE_NOTIFICATION_REQUEST, new SendShareNotification());
@@ -239,7 +236,9 @@ public final class MailService implements DocumentService {
 
 
     // smart link api
-    dispatcher.registerHandler(QName.get("CreateSmartLinksRequest", MailConstants.NAMESPACE), new CreateSmartLinks());
+    dispatcher.registerHandler(QName.get("CreateSmartLinksRequest", MailConstants.NAMESPACE), new CreateSmartLinks(
+        new FilesSmartLinksGenerator(new GraphQLFilesClient(FilesClient.atURL("http://127.78.0.7:20002"), new ObjectMapper())
+        )));
 
   }
 }

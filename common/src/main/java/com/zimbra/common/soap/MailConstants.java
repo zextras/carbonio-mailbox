@@ -11,7 +11,6 @@ import org.dom4j.QName;
 public final class MailConstants {
 
   public static final String E_EXTRA_ACCOUNT_ID = "extraAccountId";
-  public static final String E_SMART_LINKS = "smartLinks";
 
   public static final class ShareConstants {
     public static final String NAMESPACE_STR = "urn:zimbraShare";
@@ -84,8 +83,6 @@ public final class MailConstants {
   public static final String E_MSG_ACTION_RESPONSE = "MsgActionResponse";
   public static final String E_SEND_MSG_REQUEST = "SendMsgRequest";
   public static final String E_SEND_MSG_RESPONSE = "SendMsgResponse";
-  public static final String E_SEND_MSG_WITH_SMART_LINKS_REQUEST = "SendMsgWithSmartLinksRequest";
-  public static final String E_SEND_MSG_WITH_SMART_LINKS_RESPONSE = "SendMsgWithSmartLinksResponse";
   public static final String E_SEND_REPORT_REQUEST = "SendDeliveryReportRequest";
   public static final String E_SEND_REPORT_RESPONSE = "SendDeliveryReportResponse";
   public static final String E_SEND_SHARE_NOTIFICATION_REQUEST = "SendShareNotificationRequest";
@@ -334,7 +331,6 @@ public final class MailConstants {
   public static final QName MSG_ACTION_RESPONSE = QName.get(E_MSG_ACTION_RESPONSE, NAMESPACE);
   //   SendMsg/AddMsg/SaveDraft
   public static final QName SEND_MSG_REQUEST = QName.get(E_SEND_MSG_REQUEST, NAMESPACE);
-  public static final QName SEND_MSG_WITH_SMART_LINKS_REQUEST = QName.get(E_SEND_MSG_WITH_SMART_LINKS_REQUEST, NAMESPACE);
   public static final QName SEND_MSG_RESPONSE = QName.get(E_SEND_MSG_RESPONSE, NAMESPACE);
   public static final QName SEND_REPORT_REQUEST = QName.get(E_SEND_REPORT_REQUEST, NAMESPACE);
   public static final QName SEND_REPORT_RESPONSE = QName.get(E_SEND_REPORT_RESPONSE, NAMESPACE);
