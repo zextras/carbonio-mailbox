@@ -6,17 +6,16 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zextras.carbonio.files.FilesClient;
 import com.zextras.carbonio.files.entities.NodeId;
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import java.io.IOException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.integration.ClientAndServer;
@@ -25,13 +24,16 @@ class CreateSmartLinksTest extends SoapTestSuite {
   private static AccountCreator.Factory accountCreatorFactory;
 
   private ClientAndServer filesServer;
-  private static final int PORT = 20002;
-  private FilesClient filesClient;
+
+  @BeforeAll
+  static void beforeAll() throws Exception {
+    Provisioning provisioning = Provisioning.getInstance();
+    accountCreatorFactory = new AccountCreator.Factory(provisioning);
+  }
 
 
   @BeforeEach
   void setUp() throws Exception {
-    MailboxTestUtil.initServer();
     filesServer = startClientAndServer("127.78.0.7",20002);
   }
 
@@ -42,10 +44,7 @@ class CreateSmartLinksTest extends SoapTestSuite {
 
   @Test
   void shouldNotFail() throws Exception {
-    Provisioning provisioning = Provisioning.getInstance();
-    accountCreatorFactory = new AccountCreator.Factory(provisioning);
-    Account account = accountCreatorFactory.get().
-        create();
+    Account account = accountCreatorFactory.get().create();
 
     String xml = "<CreateSmartLinksRequest xmlns=\"urn:zimbraMail\">"
         + "<attachments draftId=\"3453453-54353\" partName=\"part1\"/>"
