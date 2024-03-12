@@ -8,7 +8,6 @@ package com.zimbra.cs.service.mail;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.carbonio.files.FilesClient;
 import com.zextras.files.client.GraphQLFilesClient;
-import com.zextras.mailbox.smartlinks.FakeSmartLinksGenerator;
 import com.zextras.mailbox.smartlinks.FilesSmartLinksGenerator;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.service.MailboxAttachmentService;
@@ -22,7 +21,7 @@ import org.dom4j.QName;
  * @since May 26, 2004
  * @author schemers
  */
-public final class MailService implements DocumentService {
+public class MailService implements DocumentService {
 
   @Override
   public void registerHandlers(DocumentDispatcher dispatcher) {
@@ -233,11 +232,15 @@ public final class MailService implements DocumentService {
     dispatcher.registerHandler(
         MailConstants.COPY_TO_DRIVE_REQUEST,
         new CopyToFiles(
-            new MailboxAttachmentService(), FilesClient.atURL("http://127.78.0.7:20002")));
+            new MailboxAttachmentService(), getFilesClient()));
 
     dispatcher.registerHandler(
         QName.get("CreateSmartLinksRequest", MailConstants.NAMESPACE),
-        new CreateSmartLinks(new FakeSmartLinksGenerator())
+        new CreateSmartLinks(new FilesSmartLinksGenerator(new GraphQLFilesClient(getFilesClient(), new ObjectMapper())))
     );
+  }
+
+  protected FilesClient getFilesClient() {
+    return FilesClient.atURL("http://127.78.0.7:20002");
   }
 }
