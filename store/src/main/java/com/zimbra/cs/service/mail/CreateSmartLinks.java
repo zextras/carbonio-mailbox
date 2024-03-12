@@ -6,19 +6,15 @@ import com.zextras.mailbox.smartlinks.SmartLinksGenerator;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
-import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CreateSmartLinksRequest;
 import com.zimbra.soap.mail.message.CreateSmartLinksResponse;
 import com.zimbra.soap.mail.type.AttachmentToConvert;
 import com.zimbra.soap.mail.type.SmartLink;
-import java.util.Collections;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.zimbra.soap.JaxbUtil.elementToJaxb;
-import static com.zimbra.soap.JaxbUtil.jaxbToElement;
 
 public class CreateSmartLinks extends MailDocumentHandler {
 
@@ -30,11 +26,13 @@ public class CreateSmartLinks extends MailDocumentHandler {
 
   @Override
   public Element handle(Element requestElement, Map<String, Object> context) throws ServiceException {
-    final CreateSmartLinksRequest request = elementToJaxb(requestElement);
-    final AuthenticationInfo authenticationInfo = getAuthenticationInfo(context);
+    final var soapContext = getZimbraSoapContext(context);
+    final var authenticationInfo = getAuthenticationInfo(context);
+    final CreateSmartLinksRequest request = soapContext.elementToJaxb(requestElement);
 
-    final CreateSmartLinksResponse response = handle(request, authenticationInfo);
-    return jaxbToElement(response);
+    final var response = handle(request, authenticationInfo);
+
+    return soapContext.jaxbToElement(response);
   }
 
   private CreateSmartLinksResponse handle(
