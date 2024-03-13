@@ -35,6 +35,8 @@ class CreateSmartLinksTest extends SoapTestSuite {
   private final int attachmentPartIndex = 2;
 
   private ClientAndServer filesServer;
+  private Message draftWithPdfAttachment;
+  private Account account;
 
   @BeforeAll
   static void beforeAll() throws Exception {
@@ -46,6 +48,8 @@ class CreateSmartLinksTest extends SoapTestSuite {
   @BeforeEach
   void setUp() throws Exception {
     filesServer = startClientAndServer(20002);
+    account = accountCreatorFactory.get().create();
+    draftWithPdfAttachment = createDraftWithPdfAttachment();
   }
 
   @AfterEach
@@ -53,42 +57,17 @@ class CreateSmartLinksTest extends SoapTestSuite {
     filesServer.stop();
   }
 
-
-  static Message createDraftWithPdfAttachment(Account sender) throws Exception {
-    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(sender);
-
-    MimeMessage mimeMessage = new MimeMessage(JMSession.getSmtpSession(sender));
-
-    Multipart multipart = new MimeMultipart();
-
-    MimeBodyPart bodyPart = new MimeBodyPart();
-    bodyPart.setText("Hello!");
-
-    MimeBodyPart attachmentPart = new MimeBodyPart();
-    attachmentPart.setContent("This is the file content".getBytes(StandardCharsets.UTF_8), "application/pdf");
-    attachmentPart.setFileName("MyFile.pdf");
-
-    multipart.addBodyPart(bodyPart);
-    multipart.addBodyPart(attachmentPart);
-    mimeMessage.setContent(multipart);
-
-    ParsedMessage pm = new ParsedMessage(mimeMessage, false);
-    return mbox.saveDraft(null, pm, Mailbox.ID_AUTO_INCREMENT);
-  }
-
   @Test
-  void shouldNotFail() throws Exception {
-    Account account = accountCreatorFactory.get().create();
-    var draft = createDraftWithPdfAttachment(account);
-    String attachmentPartName = draft.getParsedMessage().getMessageParts().get(attachmentPartIndex).getPartName();
-    String xml = String.format("<CreateSmartLinksRequest xmlns=\"urn:zimbraMail\">"
-        + "<attachments draftId=\"%s\" partName=\"%s\"/>"
-        + "</CreateSmartLinksRequest>", draft.getId(), attachmentPartName);
-    mockUploadFile("node1");
+  void shouldGenerateSmartLinkFromAttachment() throws Exception {
     final String publicUrl = "http://myServer?file=node1";
-    mockCreateLinkFilesResponse(publicUrl);
+    mockAttachmentUploadOnFilesResponse("node1");
+    mockCreateLinkOnFilesResponse(publicUrl);
+    String attachmentPartName = draftWithPdfAttachment.getParsedMessage().getMessageParts().get(attachmentPartIndex).getPartName();
+    String xmlRequest = String.format("<CreateSmartLinksRequest xmlns=\"urn:zimbraMail\">"
+        + "<attachments draftId=\"%s\" partName=\"%s\"/>"
+        + "</CreateSmartLinksRequest>", draftWithPdfAttachment.getId(), attachmentPartName);
 
-    HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xml));
+    HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
 
     final String xmlResponse = getResponse(resp);
     assertEquals(HttpStatus.SC_OK, resp.getStatusLine().getStatusCode());
@@ -99,7 +78,7 @@ class CreateSmartLinksTest extends SoapTestSuite {
     assertTrue(xmlResponse.contains(expected));
   }
 
-  private void mockCreateLinkFilesResponse(String publicUrl) {
+  private void mockCreateLinkOnFilesResponse(String publicUrl) {
     filesServer
         .when(request().withPath("/graphql/"))
         .respond(
@@ -122,7 +101,7 @@ class CreateSmartLinksTest extends SoapTestSuite {
                 .withStatusCode(200));
   }
 
-  private void mockUploadFile(String nodeId) throws Exception {
+  private void mockAttachmentUploadOnFilesResponse(String nodeId) throws Exception {
     final NodeId nodeIdObject = new NodeId();
     nodeIdObject.setNodeId(nodeId);
     filesServer
@@ -130,6 +109,28 @@ class CreateSmartLinksTest extends SoapTestSuite {
         .respond(
             org.mockserver.model.HttpResponse.response(new ObjectMapper().writeValueAsString(nodeIdObject))
                 .withStatusCode(200));
+  }
+
+  private Message createDraftWithPdfAttachment() throws Exception {
+    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+
+    MimeMessage mimeMessage = new MimeMessage(JMSession.getSmtpSession(account));
+
+    Multipart multipart = new MimeMultipart();
+
+    MimeBodyPart bodyPart = new MimeBodyPart();
+    bodyPart.setText("Hello!");
+
+    MimeBodyPart attachmentPart = new MimeBodyPart();
+    attachmentPart.setContent("This is the file content".getBytes(StandardCharsets.UTF_8), "application/pdf");
+    attachmentPart.setFileName("MyFile.pdf");
+
+    multipart.addBodyPart(bodyPart);
+    multipart.addBodyPart(attachmentPart);
+    mimeMessage.setContent(multipart);
+
+    ParsedMessage pm = new ParsedMessage(mimeMessage, false);
+    return mbox.saveDraft(null, pm, Mailbox.ID_AUTO_INCREMENT);
   }
 
 }
