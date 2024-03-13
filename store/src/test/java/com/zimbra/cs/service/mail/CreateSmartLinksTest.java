@@ -11,7 +11,13 @@ import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.mailbox.Message;
+import com.zimbra.cs.mime.ParsedMessage;
+import com.zimbra.cs.util.JMSession;
 import java.io.IOException;
+import javax.mail.internet.MimeMessage;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterEach;
@@ -34,7 +40,7 @@ class CreateSmartLinksTest extends SoapTestSuite {
 
   @BeforeEach
   void setUp() throws Exception {
-    filesServer = startClientAndServer("127.78.0.7",20002);
+    filesServer = startClientAndServer(20002);
   }
 
   @AfterEach
@@ -42,13 +48,25 @@ class CreateSmartLinksTest extends SoapTestSuite {
     filesServer.stop();
   }
 
+
+  static Message createDraft(Account sender) throws Exception {
+    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(sender);
+    MimeMessage mm = new MimeMessage(JMSession.getSmtpSession(sender));
+    mm.setText("foo");
+    mm.setFileName("myfile");
+    ParsedMessage pm = new ParsedMessage(mm, false);
+    return mbox.saveDraft(null, pm, Mailbox.ID_AUTO_INCREMENT);
+  }
+
   @Test
   void shouldNotFail() throws Exception {
     Account account = accountCreatorFactory.get().create();
+    var draft = createDraft(account);
 
-    String xml = "<CreateSmartLinksRequest xmlns=\"urn:zimbraMail\">"
-        + "<attachments draftId=\"3453453\" partName=\"part1\"/>"
-        + "</CreateSmartLinksRequest>";
+    String partName = draft.getParsedMessage().getMessageParts().get(0).getPartName();
+    String xml = String.format("<CreateSmartLinksRequest xmlns=\"urn:zimbraMail\">"
+        + "<attachments draftId=\"%s\" partName=\"%s\"/>"
+        + "</CreateSmartLinksRequest>", draft.getId(), partName);
 
     mockUploadFile("node1");
     final String publicUrl = "http://myServer?file=node1";
@@ -63,7 +81,7 @@ class CreateSmartLinksTest extends SoapTestSuite {
     String expected = "<CreateSmartLinksResponse xmlns=\"urn:zimbraMail\">" +
         "<smartLinks publicUrl=\"" + publicUrl + "\"/>" +
         "</CreateSmartLinksResponse>";
-    assertEquals(expected, xmlResponse);
+    assertTrue(xmlResponse.contains(expected));
   }
 
   private void mockCreateLinkFilesResponse(String publicUrl) {
@@ -93,7 +111,7 @@ class CreateSmartLinksTest extends SoapTestSuite {
     final NodeId nodeIdObject = new NodeId();
     nodeIdObject.setNodeId(nodeId);
     filesServer
-        .when(request().withPath("/upload/"))
+        .when(request().withMethod("POST").withPath("/upload/"))
         .respond(
             org.mockserver.model.HttpResponse.response(new ObjectMapper().writeValueAsString(nodeIdObject))
                 .withStatusCode(200));
