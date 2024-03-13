@@ -91,7 +91,6 @@ class CreateSmartLinksTest extends SoapTestSuite {
     HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xml));
 
     final String xmlResponse = getResponse(resp);
-    System.out.println(xmlResponse);
     assertEquals(HttpStatus.SC_OK, resp.getStatusLine().getStatusCode());
     assertFalse(xmlResponse.contains("Fault"));
     String expected = "<CreateSmartLinksResponse xmlns=\"urn:zimbraMail\">" +
