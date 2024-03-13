@@ -17,7 +17,11 @@ import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.util.JMSession;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import javax.mail.Multipart;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterEach;
@@ -28,6 +32,7 @@ import org.mockserver.integration.ClientAndServer;
 
 class CreateSmartLinksTest extends SoapTestSuite {
   private static AccountCreator.Factory accountCreatorFactory;
+  private final int attachmentPartIndex = 2;
 
   private ClientAndServer filesServer;
 
@@ -49,25 +54,36 @@ class CreateSmartLinksTest extends SoapTestSuite {
   }
 
 
-  static Message createDraft(Account sender) throws Exception {
+  static Message createDraftWithPdfAttachment(Account sender) throws Exception {
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(sender);
-    MimeMessage mm = new MimeMessage(JMSession.getSmtpSession(sender));
-    mm.setText("foo");
-    mm.setFileName("myfile");
-    ParsedMessage pm = new ParsedMessage(mm, false);
+
+    MimeMessage mimeMessage = new MimeMessage(JMSession.getSmtpSession(sender));
+
+    Multipart multipart = new MimeMultipart();
+
+    MimeBodyPart bodyPart = new MimeBodyPart();
+    bodyPart.setText("Hello!");
+
+    MimeBodyPart attachmentPart = new MimeBodyPart();
+    attachmentPart.setContent("This is the file content".getBytes(StandardCharsets.UTF_8), "application/pdf");
+    attachmentPart.setFileName("MyFile.pdf");
+
+    multipart.addBodyPart(bodyPart);
+    multipart.addBodyPart(attachmentPart);
+    mimeMessage.setContent(multipart);
+
+    ParsedMessage pm = new ParsedMessage(mimeMessage, false);
     return mbox.saveDraft(null, pm, Mailbox.ID_AUTO_INCREMENT);
   }
 
   @Test
   void shouldNotFail() throws Exception {
     Account account = accountCreatorFactory.get().create();
-    var draft = createDraft(account);
-
-    String partName = draft.getParsedMessage().getMessageParts().get(0).getPartName();
+    var draft = createDraftWithPdfAttachment(account);
+    String attachmentPartName = draft.getParsedMessage().getMessageParts().get(attachmentPartIndex).getPartName();
     String xml = String.format("<CreateSmartLinksRequest xmlns=\"urn:zimbraMail\">"
         + "<attachments draftId=\"%s\" partName=\"%s\"/>"
-        + "</CreateSmartLinksRequest>", draft.getId(), partName);
-
+        + "</CreateSmartLinksRequest>", draft.getId(), attachmentPartName);
     mockUploadFile("node1");
     final String publicUrl = "http://myServer?file=node1";
     mockCreateLinkFilesResponse(publicUrl);
