@@ -8,6 +8,7 @@
  */
 package com.zimbra.cs.service.account;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -52,6 +53,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 public class ModifyPrefs extends AccountDocumentHandler {
 
     public static final String PREF_PREFIX = "zimbraPref";
+    public static final String PREF_PREFIX2 = "carbonioPref";
 
     public Element handle(Element request, Map<String, Object> context) throws ServiceException {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
@@ -62,59 +64,47 @@ public class ModifyPrefs extends AccountDocumentHandler {
         if (!canModifyOptions(zsc, account))
             throw ServiceException.PERM_DENIED("can not modify options");
 
-        HashMap<String, Object> prefs = new HashMap<String, Object>();
-        Map<String, Set<String>> name2uniqueAttrValues = new HashMap<String, Set<String>>();
+        HashMap<String, Object> prefs = new HashMap<>();
+        Map<String, Set<String>> name2uniqueAttrValues = new HashMap<>();
         for (KeyValuePair kvp : request.listKeyValuePairs(AccountConstants.E_PREF, AccountConstants.A_NAME)) {
-            String name = kvp.getKey(), value = kvp.getValue();
+            final String name = kvp.getKey();
+            final String value = kvp.getValue();
             char ch = name.length() > 0 ? name.charAt(0) : 0;
             int offset = ch == '+' || ch == '-' ? 1 : 0;
-            if (!name.startsWith(PREF_PREFIX, offset))
-                throw ServiceException.INVALID_REQUEST("pref name must start with " + PREF_PREFIX, null);
+            if (!name.startsWith(PREF_PREFIX, offset) && !name.startsWith(PREF_PREFIX2, offset)) {
+                throw ServiceException.INVALID_REQUEST("pref name must start with " + PREF_PREFIX + " or " + PREF_PREFIX2, null);
+            }
 
             AttributeInfo attrInfo = AttributeManager.getInstance().getAttributeInfo(name.substring(offset));
             if (attrInfo == null) {
                 throw ServiceException.INVALID_REQUEST("no such attribute: " + name, null);
             }
+
             if (attrInfo.isCaseInsensitive()) {
                 String valueLowerCase = Strings.nullToEmpty(value).toLowerCase();
-                if (name2uniqueAttrValues.get(name) == null) {
-                    Set<String> set = new HashSet<String>();
-                    set.add(valueLowerCase);
-                    name2uniqueAttrValues.put(name, set);
-                    StringUtil.addToMultiMap(prefs, name, value);
-                } else {
-                    Set<String> set = name2uniqueAttrValues.get(name);
-                    if (set.add(valueLowerCase)) {
-                        StringUtil.addToMultiMap(prefs, name, value);
-                    }
-                }
-            } else {
-                StringUtil.addToMultiMap(prefs, name, value);
+                name2uniqueAttrValues.computeIfAbsent(name, k -> new HashSet<>()).add(valueLowerCase);
             }
+            StringUtil.addToMultiMap(prefs, name, value);
         }
 
-        if (prefs.containsKey(Provisioning.A_zimbraPrefMailForwardingAddress)) {
-            if (!account.getBooleanAttr(Provisioning.A_zimbraFeatureMailForwardingEnabled, false)) {
+
+        if (prefs.containsKey(ZAttrProvisioning.A_zimbraPrefMailForwardingAddress)) {
+            if (!account.getBooleanAttr(ZAttrProvisioning.A_zimbraFeatureMailForwardingEnabled, false)) {
                 throw ServiceException.PERM_DENIED("forwarding not enabled");
             } else {
-                if (account.getBooleanAttr(
-                    Provisioning.A_zimbraFeatureAddressVerificationEnabled, false)) {
+                if (account.getBooleanAttr(ZAttrProvisioning.A_zimbraFeatureAddressVerificationEnabled, false)) {
                     /*
                      * forwarding address verification enabled, store the email
                      * ID in 'zimbraFeatureAddressUnderVerification'
-                     * till the time it's verified
+                     * until it's verified
                      */
-                    String emailIdToVerify = (String) prefs
-                        .get(Provisioning.A_zimbraPrefMailForwardingAddress);
+                    String emailIdToVerify = (String) prefs.get(ZAttrProvisioning.A_zimbraPrefMailForwardingAddress);
                     if (!Strings.isNullOrEmpty(emailIdToVerify)) {
-                        prefs.remove(Provisioning.A_zimbraPrefMailForwardingAddress);
-                        prefs.put(Provisioning.A_zimbraFeatureAddressUnderVerification,
-                            emailIdToVerify);
+                        prefs.remove(ZAttrProvisioning.A_zimbraPrefMailForwardingAddress);
+                        prefs.put(ZAttrProvisioning.A_zimbraFeatureAddressUnderVerification, emailIdToVerify);
                         Account authAccount = getAuthenticatedAccount(zsc);
-                        sendEmailVerificationLink(authAccount, account, emailIdToVerify, octxt,
-                            mbox);
-                        prefs.put(Provisioning.A_zimbraFeatureAddressVerificationStatus,
-                            FeatureAddressVerificationStatus.pending.toString());
+                        sendEmailVerificationLink(authAccount, account, emailIdToVerify, octxt, mbox);
+                        prefs.put(ZAttrProvisioning.A_zimbraFeatureAddressVerificationStatus, FeatureAddressVerificationStatus.pending.toString());
                     } else {
                         account.unsetFeatureAddressUnderVerification();
                         account.unsetFeatureAddressVerificationStatus();
@@ -122,12 +112,8 @@ public class ModifyPrefs extends AccountDocumentHandler {
                 }
             }
         }
-
-        // call modifyAttrs and pass true to checkImmutable
         Provisioning.getInstance().modifyAttrs(account, prefs, true, zsc.getAuthToken());
-
-        Element response = zsc.createElement(AccountConstants.MODIFY_PREFS_RESPONSE);
-        return response;
+        return zsc.createElement(AccountConstants.MODIFY_PREFS_RESPONSE);
     }
 
     public static void sendEmailVerificationLink(Account authAccount, Account ownerAccount,
@@ -139,7 +125,7 @@ public class ModifyPrefs extends AccountDocumentHandler {
         }
         String subject = L10nUtil.getMessage(MsgKey.verifyEmailSubject, locale,
             ownerAcctDisplayName);
-        String charset = authAccount.getAttr(Provisioning.A_zimbraPrefMailDefaultCharset,
+        String charset = authAccount.getAttr(ZAttrProvisioning.A_zimbraPrefMailDefaultCharset,
             MimeConstants.P_CHARSET_UTF8);
         try {
             long expiry = ownerAccount.getFeatureAddressVerificationExpiry();
