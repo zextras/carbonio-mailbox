@@ -78,6 +78,23 @@ class CreateSmartLinksTest extends SoapTestSuite {
     assertTrue(xmlResponse.contains(expected));
   }
 
+  @Test
+  void shouldReturnInvalidRequestIfPartNameIsNotValid() throws Exception {
+    final String publicUrl = "http://myServer?file=node1";
+    mockAttachmentUploadOnFilesResponse("node1");
+    mockCreateLinkOnFilesResponse(publicUrl);
+    String xmlRequest = String.format("<CreateSmartLinksRequest xmlns=\"urn:zimbraMail\">"
+        + "<attachments draftId=\"%s\" partName=\"%s\"/>"
+        + "</CreateSmartLinksRequest>", draftWithPdfAttachment.getId(), "invalid-part-name");
+
+    HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
+
+    final String xmlResponse = getResponse(resp);
+    assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, resp.getStatusLine().getStatusCode());
+    assertTrue(xmlResponse.contains("Fault"));
+    assertTrue(xmlResponse.contains("<Code>service.INVALID_REQUEST</Code>"));
+  }
+
   private void mockCreateLinkOnFilesResponse(String publicUrl) {
     filesServer
         .when(request().withPath("/graphql/"))

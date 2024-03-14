@@ -60,6 +60,9 @@ public class FilesSmartLinksGenerator implements SmartLinksGenerator {
     request.setPart(attachment.getPartName());
     Try<CopyToFilesResponse> resp = filesCopyHandler.copy(request, authenticationInfo.getAuthenticatedAccount().getId(), authenticationInfo.getAuthToken());
     return resp.map(CopyToFilesResponse::getNodeId)
-        .getOrElseThrow( e -> ServiceException.FAILURE(e.getMessage()));
+        .getOrElseThrow( (Throwable e) -> {
+          if (e instanceof ServiceException) return (ServiceException)e;
+          else return ServiceException.FAILURE(e.getMessage());
+        });
   }
 }

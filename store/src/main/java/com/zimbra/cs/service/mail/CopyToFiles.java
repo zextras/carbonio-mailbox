@@ -148,7 +148,7 @@ public class CopyToFiles extends MailDocumentHandler implements FilesCopyHandler
                     .getAttachment(accountUUID, authToken, messageId, req.getPart())
                     .onFailure(ex -> mLog.error(ex.getMessage()))
                     .recoverWith(
-                        ex -> Try.failure(ServiceException.NOT_FOUND("File not found.", ex))))
+                        ex -> Try.failure(ServiceException.INVALID_REQUEST(ex.getMessage(), ex))))
         .flatMap(result -> result);
   }
 
