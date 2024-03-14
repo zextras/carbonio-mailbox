@@ -8,13 +8,13 @@ import static java.util.function.Function.identity;
 import static java.util.function.Predicate.not;
 
 import com.zextras.carbonio.files.FilesClient;
-import com.zextras.carbonio.files.entities.NodeId;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.ZimbraCookie;
+import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.service.AttachmentService;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -24,6 +24,7 @@ import io.vavr.control.Try;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 import javax.mail.internet.MimePart;
 
 /**
@@ -32,7 +33,7 @@ import javax.mail.internet.MimePart;
  * @author davidefrison
  * @since 4.0.7
  */
-public class CopyToFiles extends MailDocumentHandler {
+public class CopyToFiles extends MailDocumentHandler implements FilesCopyHandler {
 
   private static final Log mLog = LogFactory.getLog(CopyToFiles.class);
   private final AttachmentService attachmentService;
@@ -54,29 +55,12 @@ public class CopyToFiles extends MailDocumentHandler {
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
     final ZimbraSoapContext zsc = getZimbraSoapContext(context);
-    final NodeId nodeId =
+    final CopyToFilesResponse copyToFilesResponse =
         Optional.ofNullable(
                 getRequestObject(request)
                     .flatMap(
                         copyToFilesRequest ->
-                            this.getAttachmentToCopy(copyToFilesRequest, zsc)
-                                .flatMap(
-                                    attachment ->
-                                        Try.withResources(attachment::getInputStream)
-                                            .of(
-                                                inputStream ->
-                                                    For(
-                                                            this.getCookie(zsc),
-                                                            this.getDestinationFolderId(
-                                                                copyToFilesRequest),
-                                                            this.getAttachmentName(attachment),
-                                                            this.getAttachmentContentType(
-                                                                attachment),
-                                                            Try.of(() -> inputStream),
-                                                            this.getAttachmentSize(attachment))
-                                                        .yield(filesClient::uploadFile))))
-                    .flatMap(identity())
-                    .flatMap(identity())
+                            copy(copyToFilesRequest, zsc.getAuthtokenAccountId(), zsc.getAuthToken()))
                     .onFailure(ex -> mLog.error(ex.getMessage()))
                     .mapFailure(
                         Case(
@@ -84,9 +68,32 @@ public class CopyToFiles extends MailDocumentHandler {
                             ServiceException::INTERNAL_ERROR))
                     .get())
             .orElseThrow(() -> ServiceException.FAILURE("got null response from Files server."));
-    CopyToFilesResponse copyToFilesResponse = new CopyToFilesResponse();
-    copyToFilesResponse.setNodeId(nodeId.getNodeId());
     return zsc.jaxbToElement(copyToFilesResponse);
+  }
+
+  @Override
+  public Try<CopyToFilesResponse> copy(CopyToFilesRequest copyToFilesRequest, String accountId, AuthToken authToken) {
+    return this.getAttachmentToCopy(copyToFilesRequest, accountId, authToken)
+        .flatMap(
+            attachment ->
+                Try.withResources(attachment::getInputStream)
+                    .of(
+                        inputStream ->
+                            For(
+                                this.getCookie(authToken),
+                                this.getDestinationFolderId(copyToFilesRequest),
+                                this.getAttachmentName(attachment),
+                                this.getAttachmentContentType(attachment),
+                                Try.of(() -> inputStream),
+                                this.getAttachmentSize(attachment))
+                                .yield(filesClient::uploadFile))
+                    .flatMap(identity())
+                    .flatMap(identity()))
+                    .map( nodeId -> {
+                      CopyToFilesResponse copyToFilesResponse = new CopyToFilesResponse();
+                      copyToFilesResponse.setNodeId(nodeId.getNodeId());
+                      return copyToFilesResponse;
+                    });
   }
 
   /**
@@ -101,8 +108,8 @@ public class CopyToFiles extends MailDocumentHandler {
         .recoverWith(ex -> Try.failure(ServiceException.PARSE_ERROR("Malformed request.", ex)));
   }
 
-  private Try<String> getCookie(ZimbraSoapContext zsc) {
-    return Try.of(() -> ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + zsc.getAuthToken().getEncoded());
+  private Try<String> getCookie(AuthToken authToken) {
+    return Try.of(() -> ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + authToken.getEncoded());
   }
 
   /**
@@ -112,7 +119,7 @@ public class CopyToFiles extends MailDocumentHandler {
    * @param context the context for current session
    * @return try of a {@link MimePart}
    */
-  private Try<MimePart> getAttachmentToCopy(CopyToFilesRequest request, ZimbraSoapContext context) {
+  private Try<MimePart> getAttachmentToCopy(CopyToFilesRequest request, String accountId, AuthToken authToken) {
     // get messageId with UUID if available
     final String[] uuidMsgId = request.getMessageId().split(":");
     String accountUUID;
@@ -121,7 +128,7 @@ public class CopyToFiles extends MailDocumentHandler {
       accountUUID = uuidMsgId[0];
       msgId = uuidMsgId[1];
     } else {
-      accountUUID = context.getAuthtokenAccountId();
+      accountUUID = accountId;
       msgId = request.getMessageId();
     }
     final Try<Integer> messageIdTry =
@@ -138,7 +145,7 @@ public class CopyToFiles extends MailDocumentHandler {
         .yield(
             (req, messageId) ->
                 attachmentService
-                    .getAttachment(accountUUID, context.getAuthToken(), messageId, req.getPart())
+                    .getAttachment(accountUUID, authToken, messageId, req.getPart())
                     .onFailure(ex -> mLog.error(ex.getMessage()))
                     .recoverWith(
                         ex -> Try.failure(ServiceException.NOT_FOUND("File not found.", ex))))

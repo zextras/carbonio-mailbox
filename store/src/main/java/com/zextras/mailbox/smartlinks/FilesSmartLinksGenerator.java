@@ -10,7 +10,9 @@ import com.zimbra.common.soap.SoapHttpTransport;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.httpclient.URLUtil;
+import com.zimbra.cs.service.mail.FilesCopyHandler;
 import com.zimbra.soap.JaxbUtil;
+import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CopyToFilesRequest;
 import com.zimbra.soap.mail.message.CopyToFilesResponse;
 import io.vavr.control.Try;
@@ -21,9 +23,11 @@ import java.util.List;
 public class FilesSmartLinksGenerator implements SmartLinksGenerator {
 
   private final GraphQLFilesClient filesClient;
+  private final FilesCopyHandler filesCopyHandler;
 
-  public FilesSmartLinksGenerator(GraphQLFilesClient filesClient) {
+  public FilesSmartLinksGenerator(GraphQLFilesClient filesClient, FilesCopyHandler filesCopyHandler) {
     this.filesClient = filesClient;
+    this.filesCopyHandler = filesCopyHandler;
   }
 
   @Override
@@ -50,23 +54,12 @@ public class FilesSmartLinksGenerator implements SmartLinksGenerator {
 
   private String uploadToFiles(Attachment attachment, AuthenticationInfo authenticationInfo)
       throws ServiceException {
-    Account authenticatedAccount = authenticationInfo.getAuthenticatedAccount();
-    Account requestedAccount = authenticationInfo.getRequestedAccount();
-    ZAuthToken zAuthToken = authenticationInfo.getAuthToken().toZAuthToken();
-    String soapUrl = URLUtil.getSoapURL(authenticatedAccount.getServer(), true);
     CopyToFilesRequest request = new CopyToFilesRequest();
     request.setDestinationFolderId("LOCAL_ROOT");
     request.setMessageId(attachment.getDraftId());
     request.setPart(attachment.getPartName());
-    final Element autocompleteRequestElement = JaxbUtil.jaxbToElement(request);
-    try {
-      CopyToFilesResponse copyToFilesResponse = JaxbUtil.elementToJaxb(
-          new SoapHttpTransport(zAuthToken, soapUrl)
-              .invoke(autocompleteRequestElement, requestedAccount.getId()),
-          CopyToFilesResponse.class);
-      return copyToFilesResponse.getNodeId();
-    } catch (IOException e) {
-      throw ServiceException.FAILURE(e.getMessage());
-    }
+    Try<CopyToFilesResponse> resp = filesCopyHandler.copy(request, authenticationInfo.getAuthenticatedAccount().getId(), authenticationInfo.getAuthToken());
+    return resp.map(CopyToFilesResponse::getNodeId)
+        .getOrElseThrow( e -> ServiceException.FAILURE(e.getMessage()));
   }
 }
