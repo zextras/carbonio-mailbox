@@ -10139,6 +10139,7 @@ TODO: delete them permanently from here
 
 <attr id="3143" name="carbonioPrefSendAnalytics" type="boolean" cardinality="single" optionalIn="account,cos" flags="domainAdminModifiable,accountInherited,accountInfo" since="24.5.0">
   <defaultCOSValue>FALSE</defaultCOSValue>
+  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
   <desc>Whether Carbonio can send analytics reports for Account</desc>
 </attr>
 </attrs>
