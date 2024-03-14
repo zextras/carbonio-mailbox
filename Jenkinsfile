@@ -89,8 +89,8 @@ pipeline {
             }
             steps{
                 sh '''
-                    curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b .
-                    ./syft . -o cyclonedx-json=sbom.cyclonedx.json
+                    curl -sSfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b .
+                    ./trivy filesystem . --format cyclonedx --scanners license --output sbom.cyclonedx.json
                 '''
                 dependencyTrackPublisher artifact: 'sbom.cyclonedx.json',
                         synchronous: false,
