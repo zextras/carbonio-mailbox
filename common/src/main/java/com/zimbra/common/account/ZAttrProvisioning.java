@@ -7306,7 +7306,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureOpenMailInNewWindowEnabled = "zimbraFeatureOpenMailInNewWindowEnabled";
 
     /**
-     * whether an account can modify its zimbraPref* attributes
+     * whether an account can modify its zimbraPref* and carbonioPref*
+     * attributes
      */
     @ZAttr(id=451)
     public static final String A_zimbraFeatureOptionsEnabled = "zimbraFeatureOptionsEnabled";

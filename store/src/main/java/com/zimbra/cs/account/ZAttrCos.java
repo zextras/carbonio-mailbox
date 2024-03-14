@@ -12754,7 +12754,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether an account can modify its zimbraPref* attributes
+     * whether an account can modify its zimbraPref* and carbonioPref*
+     * attributes
      *
      * @return zimbraFeatureOptionsEnabled, or true if unset
      */
@@ -12764,7 +12765,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether an account can modify its zimbraPref* attributes
+     * whether an account can modify its zimbraPref* and carbonioPref*
+     * attributes
      *
      * @param zimbraFeatureOptionsEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -12777,7 +12779,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether an account can modify its zimbraPref* attributes
+     * whether an account can modify its zimbraPref* and carbonioPref*
+     * attributes
      *
      * @param zimbraFeatureOptionsEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -12791,7 +12794,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether an account can modify its zimbraPref* attributes
+     * whether an account can modify its zimbraPref* and carbonioPref*
+     * attributes
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      */
@@ -12803,7 +12807,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether an account can modify its zimbraPref* attributes
+     * whether an account can modify its zimbraPref* and carbonioPref*
+     * attributes
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
