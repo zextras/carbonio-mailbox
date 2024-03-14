@@ -2991,6 +2991,14 @@ public class ZAttrProvisioning {
     public static final String A_carbonioNotificationRecipients = "carbonioNotificationRecipients";
 
     /**
+     * Whether Carbonio can send analytics reports for Account
+     *
+     * @since ZCS 24.5.0
+     */
+    @ZAttr(id=3143)
+    public static final String A_carbonioPrefSendAnalytics = "carbonioPrefSendAnalytics";
+
+    /**
      * Web UI Dark Mode preference for account
      *
      * @since ZCS 22.11.0
