@@ -35,7 +35,8 @@ Zimbra devs - things to keep in mind when adding new attributes:
 
  3) Never change/re-use numbers after the product released.
 
- 4) Prefix attrs that are user-settable prefs with zimbraPref*.
+ 4) Prefix attributes that are account modifiable with carbonioPrefs* or zimbraPref*
+   this makes these attributes modifiable using the ModifyPrefs account SOAP API.
 
 Here is the syntax for declaring attributes:
 
