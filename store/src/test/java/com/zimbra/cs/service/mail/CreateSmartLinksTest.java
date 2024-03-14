@@ -79,7 +79,7 @@ class CreateSmartLinksTest extends SoapTestSuite {
   }
 
   @Test
-  void shouldReturnInvalidRequestIfPartNameIsNotValid() throws Exception {
+  void shouldReturnParserErrorIfPartNameIsNotValid() throws Exception {
     final String publicUrl = "http://myServer?file=node1";
     mockAttachmentUploadOnFilesResponse("node1");
     mockCreateLinkOnFilesResponse(publicUrl);
@@ -92,8 +92,62 @@ class CreateSmartLinksTest extends SoapTestSuite {
     final String xmlResponse = getResponse(resp);
     assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, resp.getStatusLine().getStatusCode());
     assertTrue(xmlResponse.contains("Fault"));
-    assertTrue(xmlResponse.contains("<Code>service.INVALID_REQUEST</Code>"));
+    assertTrue(xmlResponse.contains("<Code>service.PARSE_ERROR</Code>"));
   }
+
+  @Test
+  void shouldReturnBotFoundIfPartNameIsMissing() throws Exception {
+    final String publicUrl = "http://myServer?file=node1";
+    mockAttachmentUploadOnFilesResponse("node1");
+    mockCreateLinkOnFilesResponse(publicUrl);
+    String xmlRequest = String.format("<CreateSmartLinksRequest xmlns=\"urn:zimbraMail\">"
+        + "<attachments draftId=\"%s\" partName=\"%s\"/>"
+        + "</CreateSmartLinksRequest>", draftWithPdfAttachment.getId(), "42");
+
+    HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
+
+    final String xmlResponse = getResponse(resp);
+    assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, resp.getStatusLine().getStatusCode());
+    assertTrue(xmlResponse.contains("Fault"));
+    assertTrue(xmlResponse.contains("<Code>service.NOT_FOUND</Code>"));
+  }
+
+  @Test
+  void shouldReturnInvalidRequestIfDraftIdIsNotValid() throws Exception {
+    final String publicUrl = "http://myServer?file=node1";
+    mockAttachmentUploadOnFilesResponse("node1");
+    mockCreateLinkOnFilesResponse(publicUrl);
+    String attachmentPartName = draftWithPdfAttachment.getParsedMessage().getMessageParts().get(attachmentPartIndex).getPartName();
+    String xmlRequest = String.format("<CreateSmartLinksRequest xmlns=\"urn:zimbraMail\">"
+        + "<attachments draftId=\"%s\" partName=\"%s\"/>"
+        + "</CreateSmartLinksRequest>", "invalid-draft-id", attachmentPartName);
+
+    HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
+
+    final String xmlResponse = getResponse(resp);
+    assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, resp.getStatusLine().getStatusCode());
+    assertTrue(xmlResponse.contains("Fault"));
+    assertTrue(xmlResponse.contains("<Code>service.PARSE_ERROR</Code>"));
+  }
+
+  @Test
+  void shouldReturnNotFoundIfDraftIdIsMissing() throws Exception {
+    final String publicUrl = "http://myServer?file=node1";
+    mockAttachmentUploadOnFilesResponse("node1");
+    mockCreateLinkOnFilesResponse(publicUrl);
+    String attachmentPartName = draftWithPdfAttachment.getParsedMessage().getMessageParts().get(attachmentPartIndex).getPartName();
+    String xmlRequest = String.format("<CreateSmartLinksRequest xmlns=\"urn:zimbraMail\">"
+        + "<attachments draftId=\"%s\" partName=\"%s\"/>"
+        + "</CreateSmartLinksRequest>", "42", attachmentPartName);
+
+    HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
+
+    final String xmlResponse = getResponse(resp);
+    assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, resp.getStatusLine().getStatusCode());
+    assertTrue(xmlResponse.contains("Fault"));
+    assertTrue(xmlResponse.contains("<Code>service.NOT_FOUND</Code>"));
+  }
+
 
   private void mockCreateLinkOnFilesResponse(String publicUrl) {
     filesServer

@@ -24,6 +24,7 @@ import io.vavr.control.Try;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.mail.internet.MimePart;
 
@@ -146,10 +147,8 @@ public class CopyToFiles extends MailDocumentHandler implements FilesCopyHandler
             (req, messageId) ->
                 attachmentService
                     .getAttachment(accountUUID, authToken, messageId, req.getPart())
-                    .onFailure(ex -> mLog.error(ex.getMessage()))
-                    .recoverWith(
-                        ex -> Try.failure(ServiceException.INVALID_REQUEST(ex.getMessage(), ex))))
-        .flatMap(result -> result);
+                    .onFailure(ex -> mLog.error(ex.getMessage())))
+        .flatMap(Function.identity());
   }
 
   /**
@@ -161,7 +160,6 @@ public class CopyToFiles extends MailDocumentHandler implements FilesCopyHandler
    * @return size of mime part
    */
   private Try<Long> getAttachmentSize(MimePart attachment) {
-
     return Try.withResources(attachment::getInputStream)
         .of(
             inputStream -> {
