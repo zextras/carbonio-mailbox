@@ -10,7 +10,6 @@ import javax.mail.internet.InternetAddress;
 
 import com.google.common.base.Strings;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.EmailUtil;
 import com.zimbra.cs.account.Config;
 import com.zimbra.cs.account.Provisioning;
 

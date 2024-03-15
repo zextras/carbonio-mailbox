@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.dom4j.Element;
 
 import com.google.common.collect.ListMultimap;
-import com.google.common.io.Closeables;
 import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;

@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.json.JSONException;
 
-import com.zimbra.client.event.ZModifyEvent;
 import com.zimbra.client.event.ZModifyMessageEvent;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;

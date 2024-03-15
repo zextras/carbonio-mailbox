@@ -8,7 +8,6 @@ package com.zimbra.cs.account.accesscontrol;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.zimbra.common.service.ServiceException;

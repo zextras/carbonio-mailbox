@@ -6,7 +6,6 @@
 package com.zimbra.cs.account.ldap;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 

@@ -15,8 +15,6 @@ import java.util.Map;
 import org.dom4j.QName;
 
 import com.zimbra.common.account.Key;
-import com.zimbra.common.account.Key.DomainBy;
-import com.zimbra.common.account.Key.ServerBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;

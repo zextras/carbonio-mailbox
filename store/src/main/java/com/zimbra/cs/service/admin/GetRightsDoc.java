@@ -6,7 +6,6 @@
 package com.zimbra.cs.service.admin;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,6 @@ import java.util.Set;
 
 import org.dom4j.QName;
 
-import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.SetUtil;

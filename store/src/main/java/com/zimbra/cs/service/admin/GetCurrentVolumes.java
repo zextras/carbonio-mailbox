@@ -15,7 +15,6 @@ import com.zimbra.cs.volume.Volume;
 import com.zimbra.cs.volume.VolumeManager;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
-import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.GetCurrentVolumesRequest;
 import com.zimbra.soap.admin.message.GetCurrentVolumesResponse;

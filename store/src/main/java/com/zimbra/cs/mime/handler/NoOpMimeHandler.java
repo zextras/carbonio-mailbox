@@ -7,8 +7,6 @@ package com.zimbra.cs.mime.handler;
 
 import java.io.IOException;
 
-import javax.activation.DataSource;
-
 import org.apache.lucene.document.Document;
 
 import com.zimbra.cs.convert.AttachmentInfo;

@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.service.mail;
 
-import com.google.common.io.Closeables;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;

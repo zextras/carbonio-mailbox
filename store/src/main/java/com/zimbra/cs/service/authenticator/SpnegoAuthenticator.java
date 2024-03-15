@@ -8,7 +8,6 @@ package com.zimbra.cs.service.authenticator;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.Principal;
-import java.util.Arrays;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;

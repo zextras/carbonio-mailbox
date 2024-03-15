@@ -9,9 +9,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import org.apache.lucene.index.Term;
-import org.apache.lucene.index.TermEnum;
-
 /**
  * Modeled on a subset of {@link org.apache.lucene.index.IndexReader}
  */

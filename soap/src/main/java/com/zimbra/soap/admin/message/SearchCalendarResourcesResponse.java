@@ -8,7 +8,6 @@ package com.zimbra.soap.admin.message;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Iterables;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 

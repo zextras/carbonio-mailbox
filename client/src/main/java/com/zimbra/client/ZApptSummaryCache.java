@@ -14,8 +14,6 @@ import com.zimbra.client.event.ZDeleteEvent;
 import com.zimbra.client.event.ZCreateAppointmentEvent;
 import com.zimbra.client.event.ZModifyAppointmentEvent;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.MailConstants;
-import com.zimbra.common.soap.Element;
 
 import java.util.HashMap;
 import java.util.Map;

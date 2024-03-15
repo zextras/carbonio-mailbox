@@ -7,7 +7,6 @@ package com.zimbra.soap.admin.type;
 
 import java.util.Arrays;
 
-import com.zimbra.common.service.ServiceException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;

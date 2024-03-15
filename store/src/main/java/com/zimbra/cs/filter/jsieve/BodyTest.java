@@ -10,7 +10,6 @@
 package com.zimbra.cs.filter.jsieve;
 
 import com.zimbra.common.filter.Sieve;
-import com.zimbra.common.filter.Sieve.Comparator;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ByteUtil;

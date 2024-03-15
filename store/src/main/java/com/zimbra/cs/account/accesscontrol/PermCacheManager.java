@@ -14,7 +14,6 @@ import com.zimbra.common.util.MapUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.NamedEntry;
-import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.PermissionCache.CachedPermission;
 
 class PermCacheManager {

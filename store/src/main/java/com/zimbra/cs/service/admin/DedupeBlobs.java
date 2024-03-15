@@ -19,7 +19,6 @@ import com.zimbra.cs.store.file.BlobDeduper;
 import com.zimbra.cs.store.file.FileBlobStore;
 import com.zimbra.cs.volume.Volume;
 import com.zimbra.cs.volume.VolumeManager;
-import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.DedupeBlobsRequest;
 import com.zimbra.soap.admin.message.DedupeBlobsResponse;

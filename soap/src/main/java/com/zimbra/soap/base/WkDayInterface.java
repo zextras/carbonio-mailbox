@@ -5,8 +5,6 @@
 
 package com.zimbra.soap.base;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 

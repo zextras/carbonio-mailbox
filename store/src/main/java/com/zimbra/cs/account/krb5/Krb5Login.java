@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.account.krb5;
 
-import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 
 import java.security.PrivilegedExceptionAction;
@@ -13,7 +12,6 @@ import java.security.PrivilegedActionException;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;

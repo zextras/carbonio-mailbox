@@ -16,7 +16,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.ldap.Check;
 import com.zimbra.common.soap.Element;
-import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.CheckHostnameResolveRequest;
 import com.zimbra.soap.admin.message.CheckHostnameResolveResponse;

@@ -7,7 +7,6 @@ package com.zimbra.soap.util;
 
 import java.io.IOException;
 
-import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.service.RemoteServiceException;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;

@@ -10,8 +10,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
 
-import com.zimbra.common.soap.AdminConstants;
-
 @XmlAccessorType(XmlAccessType.NONE)
 public class FailedTestInfo {
 

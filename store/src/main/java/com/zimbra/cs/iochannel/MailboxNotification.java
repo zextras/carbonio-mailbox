@@ -16,7 +16,6 @@ import java.util.concurrent.ExecutorService;
 import com.zimbra.common.mailbox.MailboxStore;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.session.PendingModifications;
 import com.zimbra.cs.session.PendingLocalModifications;
 
 import com.zimbra.cs.session.Session;

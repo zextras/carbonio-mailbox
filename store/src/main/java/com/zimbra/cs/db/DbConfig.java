@@ -14,7 +14,6 @@ import java.util.Map;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.db.DbPool.DbConnection;
-import com.zimbra.cs.mailbox.MailboxManager;
 
 /**
  * @since Apr 8, 2004

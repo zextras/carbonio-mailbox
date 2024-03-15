@@ -5,7 +5,6 @@
 
 package com.zimbra.soap.base;
 
-import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.soap.type.SearchFilterCondition;
 
 public interface EntrySearchFilterInterface {

@@ -20,7 +20,6 @@ import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.EntrySearchFilter;
 import com.zimbra.cs.account.GalContact;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ldap.LdapEntrySearchFilter.LdapQueryVisitor;
 import com.zimbra.cs.gal.GalExtraSearchFilter;
 import com.zimbra.cs.gal.GalExtraSearchFilter.FilteredGalSearchResultCallback;

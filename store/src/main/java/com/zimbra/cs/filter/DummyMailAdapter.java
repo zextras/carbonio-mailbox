@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.apache.jsieve.SieveContext;
-import org.apache.jsieve.exception.InternetAddressException;
 import org.apache.jsieve.exception.SieveException;
 import org.apache.jsieve.mail.Action;
 import org.apache.jsieve.mail.MailAdapter;

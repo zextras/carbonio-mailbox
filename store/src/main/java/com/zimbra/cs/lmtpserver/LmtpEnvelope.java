@@ -15,7 +15,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.zimbra.common.util.ZimbraLog;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 

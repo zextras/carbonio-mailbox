@@ -23,7 +23,6 @@ import com.zimbra.cs.account.auth.AuthContext;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.service.authenticator.SSOAuthenticator;
-import com.zimbra.cs.service.authenticator.SSOAuthenticator.SSOAuthenticatorServiceException;
 import com.zimbra.cs.service.authenticator.SSOAuthenticator.ZimbraPrincipal;
 import com.zimbra.cs.service.authenticator.ClientCertAuthenticator;
 

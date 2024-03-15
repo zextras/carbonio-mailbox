@@ -15,8 +15,6 @@ import java.util.Map;
 
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.StringUtil;
-import com.zimbra.cs.account.AttributeManagerUtil.CLOptions;
-import com.zimbra.cs.util.BuildInfo;
 
 public class FileGenUtil {
 
