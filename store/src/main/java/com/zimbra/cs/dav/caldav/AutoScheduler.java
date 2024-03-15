@@ -683,7 +683,7 @@ public abstract class AutoScheduler {
       HttpServletRequest httpRequest = ctxt.getRequest();
       if ((httpRequest != null) && ("DELETE".equalsIgnoreCase(httpRequest.getMethod()))) {
         String hdrScheduleReply = httpRequest.getHeader(DavProtocol.HEADER_SCHEDULE_REPLY);
-        scheduleReplyWanted = ((hdrScheduleReply == null) || !"F".equals(hdrScheduleReply));
+        scheduleReplyWanted = (!"F".equals(hdrScheduleReply));
       }
     }
 

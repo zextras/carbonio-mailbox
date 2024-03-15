@@ -128,7 +128,7 @@ public class RemoteServiceException extends ServiceException {
             return UNKNOWN_HOST;
         if (t instanceof ProtocolException)
         	return PROTOCOL_EXCEPTION;
-        if (t instanceof ConnectException || t instanceof SocketException)
+        if (t instanceof SocketException)
             return CONNECT_FAILURE;
         if (t instanceof CertificateException)
             return SSLCERT_ERROR;
@@ -152,7 +152,7 @@ public class RemoteServiceException extends ServiceException {
     		throw RemoteServiceException.UNKNOWN_HOST(msg, t);
     	if (t instanceof ProtocolException)
     		throw RemoteServiceException.PROTOCOL_EXCEPTION(msg, t);
-    	if (t instanceof ConnectException || t instanceof SocketException)
+    	if (t instanceof SocketException)
     		throw RemoteServiceException.CONNECT_FAILURE(msg, t);
     }
     

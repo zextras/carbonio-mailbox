@@ -169,7 +169,7 @@ public class GalImport extends MailItemImport {
         private void addFileAsStr(Map<String,Object> attrs) {
             for (String key : FILE_AS_STR_KEYS) {
                 Object fileAsStr = attrs.get(key);
-                if (fileAsStr != null && fileAsStr instanceof String) {
+                if (fileAsStr instanceof String) {
                     attrs.put(ContactConstants.A_fileAs, ContactConstants.FA_EXPLICIT+":"+ fileAsStr);
                     return;
                 }

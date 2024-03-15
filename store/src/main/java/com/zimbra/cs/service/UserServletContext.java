@@ -192,7 +192,7 @@ public class UserServletContext {
         Provisioning prov = Provisioning.getInstance();
 
         String pathInfo = request.getPathInfo();
-        if (pathInfo == null || pathInfo.equals("/") || pathInfo.equals("") || !pathInfo.startsWith("/"))
+        if (pathInfo == null || pathInfo.equals("/") || !pathInfo.startsWith("/"))
             throw new UserServletException(HttpServletResponse.SC_BAD_REQUEST, L10nUtil.getMessage(MsgKey.errInvalidPath, request));
         int pos = pathInfo.indexOf('/', 1);
         if (pos == -1)

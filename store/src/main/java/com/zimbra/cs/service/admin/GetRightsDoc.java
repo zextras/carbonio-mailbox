@@ -151,8 +151,7 @@ public class GetRightsDoc extends AdminDocumentHandler {
             DocumentHandler soapHandler = handler.getValue();
             
             // only works for AdminDocumentHandler
-            if (soapHandler instanceof AdminRightCheckPoint &&
-                soapHandler instanceof AdminDocumentHandler) {
+            if (soapHandler instanceof AdminDocumentHandler) {
                 AdminDocumentHandler adminHandler = (AdminDocumentHandler)soapHandler;
                 if (adminHandler.domainAuthSufficient(context)) {
                     List<AdminRight> relatedRights = new ArrayList<AdminRight>();

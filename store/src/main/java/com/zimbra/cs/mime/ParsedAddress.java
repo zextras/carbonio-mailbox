@@ -359,7 +359,7 @@ public final class ParsedAddress implements Comparable<ParsedAddress> {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        else if (obj == null || !(obj instanceof ParsedAddress))
+        else if (!(obj instanceof ParsedAddress))
             return false;
         else
             return compareTo((ParsedAddress) obj) == 0;

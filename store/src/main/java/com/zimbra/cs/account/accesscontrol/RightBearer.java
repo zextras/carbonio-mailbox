@@ -144,7 +144,7 @@ public abstract class RightBearer {
                 });
             } catch (ExecutionException e) {
                 Throwable throwable = e.getCause();
-                if (throwable != null && throwable instanceof ServiceException) {
+                if (throwable instanceof ServiceException) {
                     throw (ServiceException) throwable;
                 }
                 ZimbraLog.acl.debug("Unexpected escape getting from GRANTEE_CACHE", e);

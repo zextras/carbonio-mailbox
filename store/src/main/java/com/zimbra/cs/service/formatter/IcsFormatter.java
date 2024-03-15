@@ -131,7 +131,7 @@ public class IcsFormatter extends Formatter {
                 fileBufferedWriter.write("<html><body><pre>");
             context.targetMailbox.writeICalendarForCalendarItems(
                     fileBufferedWriter, octxt, calItems,
-                    (context.target != null && context.target instanceof Folder) ? (Folder)context.target : null,
+                    (context.target instanceof Folder) ? (Folder)context.target : null,
                     useOutlookCompatMode, true, needAppleICalHacks, true, htmlFormat, includeInlineAttaches(context));
             if (htmlFormat)
                 fileBufferedWriter.write("</pre></body></html>");

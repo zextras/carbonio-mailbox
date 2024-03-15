@@ -1220,7 +1220,7 @@ public class ZoneInfo2iCalendar {
     }
     LastModified newLastModified = getLastModified(params.lastModified);
     LastModified trialLastModified;
-    if (null != oldLastModProp && oldLastModProp instanceof LastModified) {
+    if (oldLastModProp instanceof LastModified) {
       trialLastModified = (LastModified) oldLastModProp;
     } else {
       trialLastModified = newLastModified;

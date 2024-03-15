@@ -77,7 +77,7 @@ public class StatsImageServlet extends ZimbraServlet {
     	
         String noDefaultImg = req.getParameter("nodef");
         boolean noDefault = false;
-        if (noDefaultImg != null && !noDefaultImg.equals("") && noDefaultImg.equals("1")){
+        if (noDefaultImg != null && noDefaultImg.equals("1")){
             noDefault = true;
         }
         String reqPath = req.getRequestURI(); 

@@ -215,7 +215,7 @@ public class LmtpAddress {
 
 	/* Check starts with '<' */
 	ch = next();
-	if (ch == -1 || ch != '<') {
+	if (ch != '<') {
 	    if (debug) say("does not begin with <");
 	    return false;
 	}

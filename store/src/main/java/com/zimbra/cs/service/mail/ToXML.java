@@ -2720,7 +2720,7 @@ public final class ToXML {
         }
 
         if (invite.isEvent()) {
-          if (calItem != null && calItem instanceof Appointment) {
+          if (calItem instanceof Appointment) {
             Instance inst = Instance.fromInvite(calItem.getId(), invite);
             Appointment appt = (Appointment) calItem;
             e.addAttribute(

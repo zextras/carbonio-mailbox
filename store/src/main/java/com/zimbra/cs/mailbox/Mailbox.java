@@ -9987,7 +9987,6 @@ public class Mailbox implements MailboxStore {
         && trashTimeout <= 0
         && spamTimeout <= 0
         && userInboxReadTimeout <= 0
-        && userInboxReadTimeout <= 0
         && userInboxUnreadTimeout <= 0
         && userSentTimeout <= 0
         && systemDumpsterTimeoutMillis <= 0

@@ -485,7 +485,7 @@ public class CalendarCollection extends Collection {
         try {
           MailItem mailItem =
               mbox.getItemById(ctxt.getOperationContext(), itemId, MailItem.Type.UNKNOWN);
-          if (mailItem != null && mailItem instanceof CalendarItem) {
+          if (mailItem instanceof CalendarItem) {
             origCalItem = (CalendarItem) mailItem;
           }
         } catch (ServiceException se) {

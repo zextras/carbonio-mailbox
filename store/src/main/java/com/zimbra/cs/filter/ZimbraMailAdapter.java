@@ -460,7 +460,7 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
     throws ServiceException {
         Pair<Folder, String> pair = mbox.getFolderByPathLongestMatch(null, Mailbox.ID_FOLDER_USER_ROOT, folderPath);
         Folder f = pair.getFirst();
-        return f != null && f instanceof Mountpoint;
+        return f instanceof Mountpoint;
     }
 
     private List<Action> getDeliveryActions() {

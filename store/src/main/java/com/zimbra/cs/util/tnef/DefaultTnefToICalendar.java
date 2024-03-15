@@ -162,7 +162,7 @@ public class DefaultTnefToICalendar implements TnefToICalendar {
               MAPIProp attachData = attachMPs.getProp(MAPIProp.PR_ATTACH_DATA_OBJ);
               if (attachData != null) {
                 Object theVal = attachData.getValue();
-                if ((theVal != null) && (theVal instanceof TNEFInputStream)) {
+                if ((theVal instanceof TNEFInputStream)) {
                   TNEFInputStream tnefSubStream = (TNEFInputStream) theVal;
                   schedView = new SchedulingViewOfTnef(tnefSubStream);
                   break;

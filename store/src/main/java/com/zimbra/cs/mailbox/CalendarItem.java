@@ -789,7 +789,7 @@ public abstract class CalendarItem extends MailItem {
               checkRecurIdIsSensible(cur.getRecurId());
               Recurrence.ExceptionRule exceptRule = null;
               IRecurrence curRule = cur.getRecurrence();
-              if (curRule != null && curRule instanceof Recurrence.ExceptionRule) {
+              if (curRule instanceof Recurrence.ExceptionRule) {
                 exceptRule = (Recurrence.ExceptionRule) curRule.clone();
               } else {
                 // create a fake ExceptionRule wrapper around the single-instance
@@ -4178,7 +4178,7 @@ public abstract class CalendarItem extends MailItem {
     if (atOrAfter <= 0) { // sanity check
       atOrAfter = snoozeUntil = now;
     }
-    if (snoozeUntil != AlarmData.NO_SNOOZE && snoozeUntil < atOrAfter) {
+    if (snoozeUntil < atOrAfter) {
       snoozeUntil = atOrAfter;
     }
 

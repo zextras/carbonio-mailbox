@@ -1125,7 +1125,7 @@ public abstract class Element implements Cloneable {
         @Override
         public List<KeyValuePair> listKeyValuePairs(String eltname, String attrname) {
             Element attrs = getOptionalElement(E_ATTRS);
-            if (attrs == null || !(attrs instanceof JSONElement))
+            if (!(attrs instanceof JSONElement))
                 return Collections.emptyList();
 
             List<KeyValuePair> pairs = new ArrayList<KeyValuePair>();

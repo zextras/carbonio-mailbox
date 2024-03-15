@@ -6035,7 +6035,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
           summaries.add(result);
           folder2List.put(folderId, result);
           ZFolder folder = targetId != null ? null : getFolderById(folderId);
-          if (folder != null && folder instanceof ZMountpoint) {
+          if (folder instanceof ZMountpoint) {
             folderIdMapper.put(((ZMountpoint) folder).getCanonicalRemoteId(), folderId);
           } else if (targetId != null) {
             folderIdMapper.put(mTransport.getTargetAcctId() + ":" + folderId, folderId);

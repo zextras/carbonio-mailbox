@@ -1223,7 +1223,7 @@ public abstract class SieveVisitor {
      * Returns the given node's name in lower case.
      */
     static String getNodeName(Node node) {
-        if (node == null || !(node instanceof SieveNode)) {
+        if (!(node instanceof SieveNode)) {
             return null;
         }
         String name = ((SieveNode) node).getName();

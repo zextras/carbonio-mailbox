@@ -77,7 +77,7 @@ public class ImapCredentials implements java.io.Serializable {
           ZimbraLog.imap.debug(
               "Handling ZMailbox modification changeId=%s info=%s", changeId, info);
           MailboxStore store = getMailbox();
-          if (store != null && store instanceof ZMailbox) {
+          if (store instanceof ZMailbox) {
             ImapServerListenerPool.getInstance().get((ZMailbox) store).notifyAccountChange(info);
           }
         }
@@ -232,7 +232,7 @@ public class ImapCredentials implements java.io.Serializable {
   public void logout() {
     if (mStore != null) {
       MailboxStore store = mStore.getMailboxStore();
-      if (store != null && store instanceof ZMailbox) {
+      if (store instanceof ZMailbox) {
         try {
           ((ZMailbox) store).logout();
         } catch (ZClientException e) {

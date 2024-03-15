@@ -101,7 +101,7 @@ public class Message extends MailItem {
 
     @Override
     public boolean equals(Object obj) {
-      if (obj != null && obj instanceof DraftInfo) {
+      if (obj instanceof DraftInfo) {
         DraftInfo dInfo = (DraftInfo) obj;
         return StringUtil.equal(accountId, dInfo.accountId)
             && StringUtil.equal(identityId, dInfo.identityId)
