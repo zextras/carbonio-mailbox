@@ -2430,8 +2430,6 @@ public class Invite {
                       if (prop.getBoolValue()) newInv.setLocalOnly(true);
                       break;
                     case X_ZIMBRA_DISCARD_EXCEPTIONS:
-                      newInv.addXProp(prop);
-                      break;
                     case X_ZIMBRA_CHANGES:
                       newInv.addXProp(prop);
                       break;

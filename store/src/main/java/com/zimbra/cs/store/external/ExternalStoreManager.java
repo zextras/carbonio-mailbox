@@ -307,10 +307,8 @@ public abstract class ExternalStoreManager extends StoreManager implements Exter
     @Override
     public boolean supports(StoreFeature feature) {
         switch (feature) {
-            case BULK_DELETE:                   return false;
-            case CENTRALIZED:                   return true;
-            case SINGLE_INSTANCE_SERVER_CREATE: return false;
-            case RESUMABLE_UPLOAD:              return this instanceof ExternalResumableUpload;
+          case CENTRALIZED:                   return true;
+          case RESUMABLE_UPLOAD:              return this instanceof ExternalResumableUpload;
             default:                            return false;
         }
     }

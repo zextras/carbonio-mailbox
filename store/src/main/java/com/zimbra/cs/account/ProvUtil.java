@@ -1611,12 +1611,15 @@ public class ProvUtil implements HttpDebugListener {
         prov.modifyAttrs(lookupGroup(args[1]), getMapAndCheck(args, 2, false), true);
         break;
       case DELETE_DISTRIBUTION_LIST:
+      case DELETE_HAB_GROUP:
         doDeleteDistributionList(args);
         break;
       case ADD_DISTRIBUTION_LIST_MEMBER:
+      case ADD_HAB_GROUP_MEMBER:
         doAddMember(args);
         break;
       case REMOVE_DISTRIBUTION_LIST_MEMBER:
+      case REMOVE_HAB_GROUP_MEMBER:
         doRemoveMember(args);
         break;
       case CREATE_BULK_ACCOUNTS:
@@ -1785,15 +1788,6 @@ public class ProvUtil implements HttpDebugListener {
         break;
       case MODIFY_HAB_GROUP_SENIORITY:
         modifyHabGroupSeniority(args);
-        break;
-      case ADD_HAB_GROUP_MEMBER:
-        doAddMember(args);
-        break;
-      case DELETE_HAB_GROUP:
-        doDeleteDistributionList(args);
-        break;
-      case REMOVE_HAB_GROUP_MEMBER:
-        doRemoveMember(args);
         break;
       case GET_HAB_GROUP_MEMBERS:
         doGetHABGroupMembers(args);

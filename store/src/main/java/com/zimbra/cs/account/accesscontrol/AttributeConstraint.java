@@ -455,31 +455,28 @@ public class AttributeConstraint {
 
         switch (at) {
         case TYPE_BOOLEAN:
-            return new AttributeConstraint(attrName);
+            case TYPE_PHONE:
+            case TYPE_STRING:
+            case TYPE_ASTRING:
+            case TYPE_OSTRING:
+            case TYPE_CSTRING:
+            case TYPE_REGEX:
+            case TYPE_BINARY:
+            case TYPE_CERTIFICATE:
+            case TYPE_EMAIL:
+            case TYPE_EMAILP:
+            case TYPE_CS_EMAILP:
+            case TYPE_ENUM:
+            case TYPE_ID:
+                return new AttributeConstraint(attrName);
         case TYPE_DURATION:
             return new DurationConstraint(attrName);
         case TYPE_GENTIME:
             return new GentimeConstraint(attrName);
-        case TYPE_EMAIL:
-        case TYPE_EMAILP:
-        case TYPE_CS_EMAILP:
-        case TYPE_ENUM:
-        case TYPE_ID:
-            return new AttributeConstraint(attrName);
-        case TYPE_INTEGER:
-            return new IntegerConstraint(attrName);
-        case TYPE_PORT:
-            return new IntegerConstraint(attrName);
-        case TYPE_PHONE:
-        case TYPE_STRING:
-        case TYPE_ASTRING:
-        case TYPE_OSTRING:
-        case TYPE_CSTRING:
-        case TYPE_REGEX:
-        case TYPE_BINARY:
-        case TYPE_CERTIFICATE:
-            return new AttributeConstraint(attrName);
-        case TYPE_LONG:
+            case TYPE_INTEGER:
+            case TYPE_PORT:
+                return new IntegerConstraint(attrName);
+            case TYPE_LONG:
             return new LongConstraint(attrName);
         }
 

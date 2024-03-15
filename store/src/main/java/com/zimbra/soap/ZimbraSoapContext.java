@@ -799,10 +799,6 @@ public final class ZimbraSoapContext {
     SoapSession.RegisterNotificationResult result =
         ss.registerNotificationConnection(mSessionInfo.getPushChannel(!includeDelegates));
     switch (result) {
-      case NO_NOTIFY:
-        return false;
-      case DATA_READY:
-        return false;
       case BLOCKING:
         return true;
       default:

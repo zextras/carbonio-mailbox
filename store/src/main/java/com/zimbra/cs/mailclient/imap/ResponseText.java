@@ -45,18 +45,15 @@ public final class ResponseText {
         case ALERT: case PARSE: case READ_ONLY: case READ_WRITE: case TRYCREATE:
             break;
         case UIDNEXT: case UIDVALIDITY:
+          case UNSEEN:
             is.skipChar(' ');
             // RFC 3501 says these should both be nz-number but some servers
             // return 0 if mailbox is empty (bug 38521).
             data = is.readNumber();
             break;
-        case UNSEEN:
-            is.skipChar(' ');
-            // RFC 3501 says this should be an nz-number but some servers
+          // RFC 3501 says this should be an nz-number but some servers
             // (i.e. GMail) return 0. 
-            data = is.readNumber();
-            break;
-        case BADCHARSET:
+          case BADCHARSET:
             if (is.match(' ')) {
                 is.skipSpaces();
                 if (is.peekChar() == '(') {

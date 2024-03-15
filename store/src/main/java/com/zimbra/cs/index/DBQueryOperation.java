@@ -630,9 +630,6 @@ public class DBQueryOperation extends QueryOperation {
           result.add(MailItem.Type.UNKNOWN);
           break;
         case CONVERSATION:
-          result.add(MailItem.Type.MESSAGE);
-          result.add(MailItem.Type.CHAT);
-          break;
         case MESSAGE:
           result.add(MailItem.Type.MESSAGE);
           result.add(MailItem.Type.CHAT);

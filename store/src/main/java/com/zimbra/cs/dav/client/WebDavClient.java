@@ -264,9 +264,7 @@ public class WebDavClient {
         case infinity:
             depth = "infinity";
             break;
-        case zero:
-            break;
-        default:
+          default:
             break;
         }
         m.addHeader("Depth", depth);

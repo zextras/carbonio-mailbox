@@ -523,12 +523,7 @@ public class RecurrenceDefinition {
                     recurrenceRule.append(monthOnlyFormat.format(bymonthDate));
                 }
                 break;
-            case MONTH_END:
-            case HJ_MONTH:
-            case HJ_MONTH_END:
-            case HJ_MONTH_NTH:
-                throw TNEFtoIcalendarServiceException.UNSUPPORTED_RECURRENCE_TYPE(patternType.name());
-            default:
+          default:
                 throw TNEFtoIcalendarServiceException.UNSUPPORTED_RECURRENCE_TYPE(patternType.name());
         }
         if (recurrenceRule.length() > 5 /* length of "FREQ=" */) {

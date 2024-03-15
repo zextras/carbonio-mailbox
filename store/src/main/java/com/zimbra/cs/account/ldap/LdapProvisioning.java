@@ -1063,13 +1063,12 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   public Account getFromCache(AccountBy keyType, String key) throws ServiceException {
     switch (keyType) {
       case adminName:
+      case name:
         return accountCache.getByName(key);
       case id:
         return accountCache.getById(key);
       case foreignPrincipal:
         return accountCache.getByForeignPrincipal(key);
-      case name:
-        return accountCache.getByName(key);
       case krb5Principal:
         throw ServiceException.FAILURE(
             "key type krb5Principal is not supported by getFromCache", null);

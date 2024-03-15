@@ -597,6 +597,8 @@ public abstract class ArchiveFormatter extends Formatter {
         break;
 
       case FLAG:
+
+      case VIRTUAL_CONVERSATION:
         return aos;
 
       case FOLDER:
@@ -633,9 +635,6 @@ public abstract class ArchiveFormatter extends Formatter {
         }
         ext = "eml";
         break;
-
-      case VIRTUAL_CONVERSATION:
-        return aos;
     }
 
     fldr = fldrs.get(fid);
@@ -1459,6 +1458,8 @@ public abstract class ArchiveFormatter extends Formatter {
           }
           break;
         case FLAG:
+
+        case VIRTUAL_CONVERSATION:
           return;
 
         case FOLDER:
@@ -1641,9 +1642,6 @@ public abstract class ArchiveFormatter extends Formatter {
             newItem = mbox.createTag(octxt, tag.getName(), tag.getColor());
           }
           break;
-
-        case VIRTUAL_CONVERSATION:
-          return;
       }
 
       if (newItem != null) {

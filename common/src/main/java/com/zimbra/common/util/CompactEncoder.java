@@ -216,7 +216,8 @@ public class CompactEncoder {
             return Short.valueOf((short)getStringLong(bb));
         } case 's': {
             return Short.valueOf(bb.getShort());
-        } case 'I': {
+        } case 'I':
+          case 'E': {
             return Integer.valueOf((int)getStringLong(bb));
         } case 'i': {
             return Integer.valueOf(bb.getInt());
@@ -232,9 +233,8 @@ public class CompactEncoder {
             return Double.valueOf(Double.parseDouble(getString(bb)));
         } case 'd': {
             return Double.valueOf(bb.getDouble());
-        } case 'E': {
-            return Integer.valueOf((int)getStringLong(bb));
-        } case 'e': {
+        }
+          case 'e': {
             return Integer.valueOf(bb.getShort());
         } case 'n': {
             return null;

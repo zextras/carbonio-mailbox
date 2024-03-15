@@ -360,12 +360,9 @@ public class FriendlyCalendaringDescription {
             for (Iterator<IRecurrence> iter = masterRule.addRulesIterator(); iter!=null && iter.hasNext();) {
                 r = iter.next();
 
-                switch (r.getType()) {
-                case Recurrence.TYPE_SINGLE_DATES:
-                    //Recurrence.SingleInstanceRule sir = (Recurrence.SingleInstanceRule)r;
-                    assert false; //We don't support single instance.
-                    break;
-                case Recurrence.TYPE_REPEATING:
+                switch (r.getType()) {//Recurrence.SingleInstanceRule sir = (Recurrence.SingleInstanceRule)r;
+                  //We don't support single instance.
+                  case Recurrence.TYPE_REPEATING:
                     Recurrence.SimpleRepeatingRule srr = (Recurrence.SimpleRepeatingRule)r;
                     zr = srr.getRule();
                     break;

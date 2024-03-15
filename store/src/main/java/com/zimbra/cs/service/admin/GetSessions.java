@@ -144,18 +144,14 @@ public class GetSessions extends AdminDocumentHandler {
                     case nameAsc: return a.getAccountName().compareToIgnoreCase(b.getAccountName());
                     case nameDesc: return -a.getAccountName().compareToIgnoreCase(b.getAccountName());
                     case accessedAsc:
-                        diff = a.getAccessed() - b.getAccessed();
+                  case createdAsc:
+                    diff = a.getAccessed() - b.getAccessed();
                         return diff == 0 ? 0 : diff > 0 ? 1 : -1;
                     case accessedDesc:
-                        diff = a.getAccessed() - b.getAccessed();
+                  case createdDesc:
+                    diff = a.getAccessed() - b.getAccessed();
                         return diff == 0 ? 0 : diff > 0 ? -1 : 1;
-                    case createdAsc:
-                        diff = a.getAccessed() - b.getAccessed();
-                        return diff == 0 ? 0 : diff > 0 ? 1 : -1;
-                    case createdDesc:
-                        diff = a.getAccessed() - b.getAccessed();
-                        return diff == 0 ? 0 : diff > 0 ? -1 : 1;
-                    default:
+                  default:
                         return 0;
                 }
             }

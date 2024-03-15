@@ -146,15 +146,6 @@ public final class ReSortingQueryResults implements ZimbraQueryResults {
               }
             };
         break;
-      case READ_ASC:
-        comp =
-            new Comparator<ZimbraHit>() {
-              @Override
-              public int compare(ZimbraHit lhs, ZimbraHit rhs) {
-                return ZimbraHit.compareByReadFlag(true, lhs, rhs);
-              }
-            };
-        break;
       case READ_DESC:
         comp =
             new Comparator<ZimbraHit>() {

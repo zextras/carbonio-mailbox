@@ -6931,12 +6931,11 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       throws ServiceException {
     switch (type) {
       case CHAT:
+      case MESSAGE:
         // ImapHandler suggests that chats have item type of message
         return getMessageById(id);
       case CONTACT:
         return getContact(id);
-      case MESSAGE:
-        return getMessageById(id);
       case UNKNOWN:
         try {
           return getContact(id);
