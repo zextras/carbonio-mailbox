@@ -37,7 +37,7 @@ public class DebugZLock extends ZLock {
       return writeLock;
     }
 
-    private class DebugReentrantReadLock extends ReentrantReadWriteLock.ReadLock {
+    private static class DebugReentrantReadLock extends ReentrantReadWriteLock.ReadLock {
         //wrapper around base ReadLock which tracks lock ownership
 
         private static final long serialVersionUID = -2861690755318306713L;
@@ -108,7 +108,7 @@ public class DebugZLock extends ZLock {
         }
     }
 
-    private class DebugReentrantWriteLock extends ReentrantReadWriteLock.WriteLock {
+    private static class DebugReentrantWriteLock extends ReentrantReadWriteLock.WriteLock {
         //just a wrapper around constructor for now; could add more debug capabilities later
 
         private static final long serialVersionUID = -7969337036084655493L;

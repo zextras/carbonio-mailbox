@@ -363,7 +363,7 @@ public abstract class SieveVisitor {
     private static final Set<String> RULE_NODE_NAMES = ImmutableSet.of("if", "disabled_if", "elsif");
     private static final String COPY_EXT = ":copy";
 
-    public class RuleProperties {
+    public static class RuleProperties {
         private boolean isEnabled = true;
         private boolean isNegativeTest = false;
         private Sieve.Condition condition = null;

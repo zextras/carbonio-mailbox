@@ -112,7 +112,7 @@ public final class IndexEditor {
             throws IOException, MailServiceException, ServiceException;
     }
 
-    public class SingleQueryRunner implements QueryRunner {
+    public static class SingleQueryRunner implements QueryRunner {
         int mMailboxId;
 
         SingleQueryRunner(int mailboxId) {

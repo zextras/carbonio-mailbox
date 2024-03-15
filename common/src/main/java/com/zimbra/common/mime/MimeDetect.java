@@ -45,7 +45,7 @@ public class MimeDetect {
         }
     }
 
-    private class Glob implements Comparable<Glob> {
+    private static class Glob implements Comparable<Glob> {
         private boolean literal;
         private Pattern pattern;
         private int priority;

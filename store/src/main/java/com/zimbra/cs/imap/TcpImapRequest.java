@@ -19,11 +19,11 @@ final class TcpImapRequest extends ImapRequest {
     private long requestSize = 0;
     private boolean maxRequestSizeExceeded = false;
 
-    final class ImapTerminatedException extends ImapParseException {
+    static final class ImapTerminatedException extends ImapParseException {
         private static final long serialVersionUID = 6105950126307803418L;
     }
 
-    final class ImapContinuationException extends ImapParseException {
+    static final class ImapContinuationException extends ImapParseException {
         private static final long serialVersionUID = 7925400980773927177L;
         protected boolean sendContinuation;
         ImapContinuationException(boolean send)  { super(); sendContinuation = send; }

@@ -62,7 +62,7 @@ public class ZMailboxLock {
         return monitor.getOccupiedDepth();
     }
 
-    public final class LockFailedException extends RuntimeException {
+    public static final class LockFailedException extends RuntimeException {
         private static final long serialVersionUID = -6899718561860023270L;
 
         private LockFailedException(String message) {

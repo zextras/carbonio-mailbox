@@ -43,7 +43,7 @@ public class CheckSpelling extends MailDocumentHandler {
 
     private Log log = ZimbraLog.misc;
 
-    private class ServerResponse {
+    private static class ServerResponse {
         int statusCode;
         String content;
     }

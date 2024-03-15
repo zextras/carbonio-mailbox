@@ -217,7 +217,7 @@ public abstract class Filter {
         private boolean mNegate;
         private MatchType mMatch;
 
-        private class Callback extends GalSearchResultCallback {
+        private static class Callback extends GalSearchResultCallback {
             DavContext ctxt;
             ArrayList<AddressObject> result;
             public Callback(DavContext ctxt, ArrayList<AddressObject> result, GalSearchParams params) {

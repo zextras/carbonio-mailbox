@@ -44,28 +44,28 @@ public class SummaryAnalyzer {
           key = buildKey(SummaryConstants.IO_IN,volumeName + ":"
                   + SummaryConstants.IO_UTIL,
                     PlotSettings.AGG_FUNCTION_AVG);
-          mEntryList.add(new ReportEntry( name + " Disk Util",key));
+          mEntryList.add(new ReportEntry(name + " Disk Util", key));
           key = buildKey(
                 SummaryConstants.IO_IN, volumeName + ":"
                         + SummaryConstants.R_THROUGHPUT,
                 PlotSettings.AGG_FUNCTION_AVG);
-          mEntryList.add(new ReportEntry( name + " Read Throughput",key));
+          mEntryList.add(new ReportEntry(name + " Read Throughput", key));
           
           key = buildKey(
                 SummaryConstants.IO_IN, volumeName + ":"
                         + SummaryConstants.W_THROUGHPUT,
                 PlotSettings.AGG_FUNCTION_AVG);
-          mEntryList.add(new ReportEntry(name + " Write Throughput",key));
+          mEntryList.add(new ReportEntry(name + " Write Throughput", key));
           key = buildKey(
                 SummaryConstants.IO_IN, volumeName + ":"
                         + SummaryConstants.R_IOPS,
                 PlotSettings.AGG_FUNCTION_AVG);
-          mEntryList.add(new ReportEntry(name + " Read IOPS",key));
+          mEntryList.add(new ReportEntry(name + " Read IOPS", key));
           key = buildKey(
                 SummaryConstants.IO_IN, volumeName + ":"
                         + SummaryConstants.W_IOPS,
                 PlotSettings.AGG_FUNCTION_AVG);
-          mEntryList.add(new ReportEntry(name + " write IOPS",key));
+          mEntryList.add(new ReportEntry(name + " write IOPS", key));
     }
 
     private List<PlotSettings> getIOPlotSettings(){
@@ -96,22 +96,22 @@ public class SummaryAnalyzer {
          key = buildKey(SummaryConstants.CPU_IN,
                   SummaryConstants.SYS,
                     PlotSettings.AGG_FUNCTION_AVG);
-         mEntryList.add(new ReportEntry("Mail Server CPU Sys ",key));
+         mEntryList.add(new ReportEntry("Mail Server CPU Sys ", key));
          
          key = buildKey(SummaryConstants.CPU_IN,
                   SummaryConstants.USER,
                     PlotSettings.AGG_FUNCTION_AVG);
-         mEntryList.add(new ReportEntry("Mail Server CPU User ",key));
+         mEntryList.add(new ReportEntry("Mail Server CPU User ", key));
          
          key = buildKey(SummaryConstants.CPU_IN,
                   SummaryConstants.IDLE,
                     PlotSettings.AGG_FUNCTION_AVG);
-         mEntryList.add(new ReportEntry("Mail Server CPU Idle ",key));
+         mEntryList.add(new ReportEntry("Mail Server CPU Idle ", key));
          
          key = buildKey(SummaryConstants.CPU_IN,
                   SummaryConstants.IOWAIT,
                     PlotSettings.AGG_FUNCTION_AVG);
-         mEntryList.add(new ReportEntry("Mail Server CPU Iowait ",key));
+         mEntryList.add(new ReportEntry("Mail Server CPU Iowait ", key));
 
     }
 
@@ -120,12 +120,12 @@ public class SummaryAnalyzer {
          key = buildKey(SummaryConstants.GC_IN,
                   SummaryConstants.F_GC,
                     PlotSettings.AGG_FUNCTION_AVG);
-         mEntryList.add(new ReportEntry("Full GC% ",key));
+         mEntryList.add(new ReportEntry("Full GC% ", key));
          
          key = buildKey(SummaryConstants.GC_IN,
                   SummaryConstants.Y_GC,
                     PlotSettings.AGG_FUNCTION_AVG);
-         mEntryList.add(new ReportEntry("Young GC% ",key));
+         mEntryList.add(new ReportEntry("Young GC% ", key));
     }
 
     private void buildServerResponseKeys() {
@@ -133,35 +133,35 @@ public class SummaryAnalyzer {
          key = buildKey(SummaryConstants.SERVER_IN,
                   SummaryConstants.ADD_COUNT,
                     PlotSettings.AGG_FUNCTION_AVG);
-         mEntryList.add(new ReportEntry("Mailbox add rate ",key));
+         mEntryList.add(new ReportEntry("Mailbox add rate ", key));
          
          key = buildKey(SummaryConstants.SERVER_IN,
                   SummaryConstants.ADD_LATENCY,
                     PlotSettings.AGG_FUNCTION_AVG);
-         mEntryList.add(new ReportEntry("Mailbox add latency ",key)); 
+         mEntryList.add(new ReportEntry("Mailbox add latency ", key));
          
          key = buildKey(SummaryConstants.SERVER_IN,
                   SummaryConstants.GET_LATENCY,
                     PlotSettings.AGG_FUNCTION_AVG);
-         mEntryList.add(new ReportEntry("Mailbox get latency ",key));
+         mEntryList.add(new ReportEntry("Mailbox get latency ", key));
          
          key = buildKey(SummaryConstants.SERVER_IN,
                   SummaryConstants.SOAP_RESPONSE,
                     PlotSettings.AGG_FUNCTION_AVG);
-         mEntryList.add(new ReportEntry("Soap response time",key));
+         mEntryList.add(new ReportEntry("Soap response time", key));
          
          key = buildKey(SummaryConstants.SERVER_IN,
                   SummaryConstants.POP_RESPONSE,
                     PlotSettings.AGG_FUNCTION_AVG);
-         mEntryList.add(new ReportEntry("Pop response time",key));
+         mEntryList.add(new ReportEntry("Pop response time", key));
          
          key = buildKey(SummaryConstants.SERVER_IN,
                   SummaryConstants.IMAP_RESPONSE,
                     PlotSettings.AGG_FUNCTION_AVG);
-         mEntryList.add(new ReportEntry("Imap response time",key));
+         mEntryList.add(new ReportEntry("Imap response time", key));
     }
     
-    public class ReportEntry{
+    public static class ReportEntry{
         String entryName;
         String entryKey;
         public ReportEntry(String keyName, String keyVal){

@@ -359,7 +359,7 @@ public final class JaxbInfo {
         return rootElementName;
     }
 
-    public final class KeyValuePairXmlRepresentationInfo {
+    public static final class KeyValuePairXmlRepresentationInfo {
         private final String xmlElementName;
         private final String xmlAttributeName;
         public KeyValuePairXmlRepresentationInfo(String elemName, String attrName) {

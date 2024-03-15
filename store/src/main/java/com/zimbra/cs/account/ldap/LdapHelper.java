@@ -227,7 +227,7 @@ public abstract class LdapHelper {
     throws ServiceException;
 
 
-    private class CountObjectsVisitor extends SearchLdapVisitor {
+    private static class CountObjectsVisitor extends SearchLdapVisitor {
         private long count = 0;
 
         CountObjectsVisitor() {

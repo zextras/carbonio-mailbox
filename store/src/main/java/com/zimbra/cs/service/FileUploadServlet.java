@@ -1113,7 +1113,7 @@ public class FileUploadServlet extends ZimbraServlet {
     }
   }
 
-  private final class MapReaperTask extends TimerTask {
+  private static final class MapReaperTask extends TimerTask {
 
     MapReaperTask() {}
 

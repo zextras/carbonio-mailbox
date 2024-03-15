@@ -40,7 +40,7 @@ import com.zimbra.soap.ZimbraSoapContext;
  */
 public class VerifyStoreManager extends AdminDocumentHandler {
 
-    private class Stats {
+    private static class Stats {
         int numBlobs;
         long incomingTime;
         long stageTime;

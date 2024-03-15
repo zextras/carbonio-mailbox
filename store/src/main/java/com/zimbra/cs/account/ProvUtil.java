@@ -4424,7 +4424,7 @@ public class ProvUtil implements HttpDebugListener {
     return args;
   }
 
-  class ArgException extends Exception {
+  static class ArgException extends Exception {
     ArgException(String msg) {
       super(msg);
     }

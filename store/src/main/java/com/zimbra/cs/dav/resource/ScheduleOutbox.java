@@ -549,7 +549,7 @@ public class ScheduleOutbox extends CalendarCollection {
         }
     }
 
-    private class DelegationInfo {
+    private static class DelegationInfo {
         /** The originator of this iTip request - who might be the organizer or an attendee */
         private String originator;
         private String originatorEmail;

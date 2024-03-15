@@ -58,20 +58,25 @@ public class BlobConsistencyChecker {
 
     public static class Results {
         public int mboxId;
-        public Multimap<Integer, BlobInfo> missingBlobs = TreeMultimap.create(new IntegerComparator(), new BlobInfoComparator());
-        public Multimap<Integer, BlobInfo> incorrectSize = TreeMultimap.create(new IntegerComparator(), new BlobInfoComparator());
-        public Multimap<Integer, BlobInfo> unexpectedBlobs = TreeMultimap.create(new IntegerComparator(), new BlobInfoComparator());
-        public Multimap<Integer, BlobInfo> incorrectModContent = TreeMultimap.create(new IntegerComparator(), new BlobInfoComparator());
-        public Multimap<Integer, BlobInfo> usedBlobs = TreeMultimap.create(new IntegerComparator(), new BlobInfoComparator());
+        public Multimap<Integer, BlobInfo> missingBlobs = TreeMultimap.create(new IntegerComparator(),
+            new BlobInfoComparator());
+        public Multimap<Integer, BlobInfo> incorrectSize = TreeMultimap.create(new IntegerComparator(),
+            new BlobInfoComparator());
+        public Multimap<Integer, BlobInfo> unexpectedBlobs = TreeMultimap.create(new IntegerComparator(),
+            new BlobInfoComparator());
+        public Multimap<Integer, BlobInfo> incorrectModContent = TreeMultimap.create(new IntegerComparator(),
+            new BlobInfoComparator());
+        public Multimap<Integer, BlobInfo> usedBlobs = TreeMultimap.create(new IntegerComparator(),
+            new BlobInfoComparator());
 
-        class IntegerComparator implements Comparator<Integer> {
+        static class IntegerComparator implements Comparator<Integer> {
             @Override
             public int compare(Integer o1, Integer o2) {
                 return o1.compareTo(o2);
             }
         }
 
-        class BlobInfoComparator implements Comparator<BlobInfo> {
+        static class BlobInfoComparator implements Comparator<BlobInfo> {
             @Override
             public int compare(BlobInfo o1, BlobInfo o2) {
                 return o1.path.compareTo(o2.path);

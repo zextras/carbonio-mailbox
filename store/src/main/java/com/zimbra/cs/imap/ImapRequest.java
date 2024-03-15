@@ -136,7 +136,7 @@ public abstract class ImapRequest {
         return this;
     }
 
-    protected abstract class Part {
+    protected abstract static class Part {
         protected abstract int size();
         protected abstract byte[] getBytes() throws IOException;
         protected abstract String getString() throws ImapParseException;

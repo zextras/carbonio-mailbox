@@ -122,7 +122,7 @@ public class TextCalendarHandler extends MimeHandler {
         sIndexedProps.add(ICalTok.LOCATION.toString());
     }
 
-    public class IcsParseHandler implements ZICalendarParseHandler {
+    public static class IcsParseHandler implements ZICalendarParseHandler {
 
         private StringBuilder mContentBuf;
         private int mMaxLength;

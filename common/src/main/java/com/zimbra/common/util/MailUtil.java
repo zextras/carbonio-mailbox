@@ -73,7 +73,7 @@ public class MailUtil {
      * and then get the list of invalid e-mail addresses. 
      */
     
-    private class VerifyRcptSMTPTransport extends SMTPTransport {
+    private static class VerifyRcptSMTPTransport extends SMTPTransport {
         public VerifyRcptSMTPTransport(Session session, URLName urlname) {
             super(session, urlname);
         }

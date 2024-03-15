@@ -81,7 +81,7 @@ public class ThreadPool implements Executor {
         }
     }
 
-    private class ThreadCounter {
+    private static class ThreadCounter {
         private int mCount;
 
         public ThreadCounter() {

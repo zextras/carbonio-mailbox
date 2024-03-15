@@ -49,7 +49,7 @@ public class SmtpToLmtp {
         }
     };
 
-    private class LmtpData {
+    private static class LmtpData {
         String sender;
         List<String> recipients = Lists.newArrayList();
         File file;
