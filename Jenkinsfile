@@ -52,7 +52,7 @@ def buildRpmPackages(String flavor) {
 pipeline {
     agent {
         node {
-            label 'carbonio-agent-v1'
+            label 'carbonio-agent-v2'
         }
     }
     parameters {
@@ -100,6 +100,10 @@ pipeline {
             }
         }
         stage('Build') {
+            environment {
+                JAVA_HOME='/usr/lib/jvm/java-11-openjdk-amd64'
+                JAVA_PATH='${JAVA_HOME}/bin'
+            }
             steps {
                 mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
 
