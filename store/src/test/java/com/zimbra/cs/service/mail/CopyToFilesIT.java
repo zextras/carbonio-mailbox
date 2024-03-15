@@ -97,6 +97,10 @@ class CopyToFilesIT {
     return Stream.of(Arguments.of("AAAA"), Arguments.of(UUID.randomUUID() + ":" + "Hello"));
   }
 
+  private static CopyToFiles copyToFiles(AttachmentService attachmentService, FilesClient filesClient) {
+    return new CopyToFiles(new FilesCopyHandlerImpl(attachmentService, filesClient));
+  }
+
   @BeforeEach
   void setUp() throws Exception {
     MailboxTestUtil.initServer();
@@ -173,7 +177,7 @@ class CopyToFilesIT {
             SoapProtocol.Soap12);
     context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
     CopyToFiles copyToFiles =
-        new CopyToFiles(
+        copyToFiles(
             new MailboxAttachmentService(), FilesClient.atURL("http://127.0.0.1:20002"));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId(String.valueOf(message.getId()));
@@ -217,7 +221,7 @@ class CopyToFilesIT {
             SoapProtocol.Soap12,
             SoapProtocol.Soap12);
     context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
-    CopyToFiles copyToFiles = new CopyToFiles(realAttachmentService, realFilesClient);
+    CopyToFiles copyToFiles = copyToFiles(realAttachmentService, realFilesClient);
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId(sharedAcctUUID + ":" + draftWithFileAttachment.getId());
     up.setPart("1");
@@ -237,7 +241,7 @@ class CopyToFilesIT {
   void shouldThrowFileNotFoundWhenFileNotFound() throws Exception {
     final Map<String, Object> context = this.getRequestContext("test@zimbra.com");
     // request unknown file -> SoapFault
-    CopyToFiles copyToFiles = new CopyToFiles(realAttachmentService, mockFilesClient);
+    CopyToFiles copyToFiles = copyToFiles(realAttachmentService, mockFilesClient);
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("1");
     up.setPart("2");
@@ -265,7 +269,7 @@ class CopyToFilesIT {
     when(mockAttachment.getInputStream()).thenReturn(uploadContent);
     when(mockAttachmentService.getAttachment(anyString(), any(), anyInt(), anyString()))
         .thenReturn(Try.success(mockAttachment));
-    CopyToFiles copyToFiles = new CopyToFiles(mockAttachmentService, mockFilesClient);
+    CopyToFiles copyToFiles = copyToFiles(mockAttachmentService, mockFilesClient);
     when(mockFilesClient.uploadFile(
             anyString(), anyString(), anyString(), anyString(), any(), anyLong()))
         .thenReturn(Try.failure(new RuntimeException("Ooops, Files failed")));
@@ -295,7 +299,7 @@ class CopyToFilesIT {
     when(mockUpload.getInputStream()).thenReturn(uploadContent);
     when(mockAttachmentService.getAttachment(anyString(), any(), anyInt(), anyString()))
         .thenReturn(Try.success(mockUpload));
-    CopyToFiles copyToFiles = new CopyToFiles(mockAttachmentService, mockFilesClient);
+    CopyToFiles copyToFiles = copyToFiles(mockAttachmentService, mockFilesClient);
     when(mockFilesClient.uploadFile(
             anyString(), anyString(), anyString(), anyString(), any(), anyLong()))
         .thenReturn(Try.of(() -> null));
@@ -313,7 +317,7 @@ class CopyToFilesIT {
   @MethodSource("getWrongMidInput")
   void shouldThrowMidMustBeAnIntegerWhenMidNotInteger() throws Exception {
     final Map<String, Object> context = this.getRequestContext("test@zimbra.com");
-    CopyToFiles copyToFiles = new CopyToFiles(mockAttachmentService, mockFilesClient);
+    CopyToFiles copyToFiles = copyToFiles(mockAttachmentService, mockFilesClient);
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("AAAA");
     up.setPart("2");
@@ -343,7 +347,7 @@ class CopyToFilesIT {
     final ServiceException receivedException =
         assertThrows(
             ServiceException.class,
-            () -> new CopyToFiles(mockAttachmentService, mockFilesClient).handle(element, context));
+            () -> copyToFiles(mockAttachmentService, mockFilesClient).handle(element, context));
     assertEquals("system failure: internal error", receivedException.getMessage());
   }
 
@@ -360,7 +364,7 @@ class CopyToFilesIT {
     ServiceException receivedException =
         assertThrows(
             ServiceException.class,
-            () -> new CopyToFiles(mockAttachmentService, mockFilesClient).handle(element, context));
+            () -> copyToFiles(mockAttachmentService, mockFilesClient).handle(element, context));
     assertEquals("parse error: Malformed request.", receivedException.getMessage());
   }
 

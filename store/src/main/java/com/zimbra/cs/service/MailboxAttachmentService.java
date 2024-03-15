@@ -23,7 +23,7 @@ public class MailboxAttachmentService implements AttachmentService {
             mailbox.getMessageById(new OperationContext(token), messageId)
         )
         .recoverWith( ex ->
-            Try.failure(ServiceException.NOT_FOUND(ex.getMessage(), ex))
+            Try.failure(ServiceException.NOT_FOUND("File not found.", ex))
         )
         .flatMap(message ->
             Try.of(() -> Mime.getMimePart(message.getMimeMessage(), part))

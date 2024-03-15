@@ -229,16 +229,16 @@ public class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.SET_RECOVERY_EMAIL_REQUEST, new SetRecoveryAccount());
 
     // Drive attachment upload
-    CopyToFiles copyToFiles = new CopyToFiles(new MailboxAttachmentService(), getFilesClient());
+    FilesCopyHandlerImpl filesCopyHandler = new FilesCopyHandlerImpl(new MailboxAttachmentService(), getFilesClient());
     dispatcher.registerHandler(
         MailConstants.COPY_TO_DRIVE_REQUEST,
-        copyToFiles);
+        new CopyToFiles(filesCopyHandler));
 
     dispatcher.registerHandler(
         QName.get("CreateSmartLinksRequest", MailConstants.NAMESPACE),
         new CreateSmartLinks(new FilesSmartLinksGenerator(
             new GraphQLFilesClient(getFilesClient(), new ObjectMapper()),
-            copyToFiles)
+            filesCopyHandler)
         )
     );
   }

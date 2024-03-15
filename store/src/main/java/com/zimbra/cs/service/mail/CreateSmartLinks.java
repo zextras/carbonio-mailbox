@@ -14,6 +14,7 @@ import com.zimbra.soap.mail.type.SmartLink;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class CreateSmartLinks extends MailDocumentHandler {
@@ -39,6 +40,9 @@ public class CreateSmartLinks extends MailDocumentHandler {
       CreateSmartLinksRequest req,
       AuthenticationInfo authenticationInfo
   ) throws ServiceException {
+    if (req.getAttachments() == null || req.getAttachments().isEmpty()) {
+      throw ServiceException.INVALID_REQUEST("No smartlink has been specified.", new NoSuchElementException());
+    }
     final List<Attachment> attachments = toAttachments(req.getAttachments());
     final List<SmartLink> smartLinks = generateSmartLinks(authenticationInfo, attachments);
     return new CreateSmartLinksResponse(smartLinks);
