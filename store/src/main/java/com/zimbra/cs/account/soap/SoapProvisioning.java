@@ -2749,7 +2749,7 @@ public class SoapProvisioning extends Provisioning {
     invoke(req);
   }
 
-  public class MemcachedClientConfig {
+  public static class MemcachedClientConfig {
     public String serverList;
     public String hashAlgorithm;
     public boolean binaryProtocol;

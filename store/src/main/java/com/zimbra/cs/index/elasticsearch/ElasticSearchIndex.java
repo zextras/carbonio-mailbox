@@ -240,7 +240,7 @@ public final class ElasticSearchIndex extends IndexStore {
         return topLevel;
     }
 
-    private class FieldProperty {
+    private static class FieldProperty {
         private static final String YES = "yes";
         private static final String NO = "no";
         private static final String ANALYZED = "analyzed";

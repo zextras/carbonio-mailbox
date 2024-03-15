@@ -332,7 +332,7 @@ public class SoapSession extends Session {
     }
   }
 
-  private class RemoteSessionInfo {
+  private static class RemoteSessionInfo {
     final String mServerId, mSessionId;
     final long mLastRequest;
     long mLastFailedPing;

@@ -20,7 +20,7 @@ import com.zimbra.cs.service.UserServletException;
 import com.zimbra.cs.service.formatter.FormatterFactory.FormatType;
 
 public class ZipFormatter extends ArchiveFormatter {
-    public class ZipArchiveInputStream implements ArchiveInputStream {
+    public static class ZipArchiveInputStream implements ArchiveInputStream {
         public class ZipArchiveInputEntry implements ArchiveInputEntry {
             private ZipEntry entry;
 
@@ -55,7 +55,7 @@ public class ZipFormatter extends ArchiveFormatter {
         }
     }
     
-    public class ZipArchiveOutputStream implements ArchiveOutputStream {
+    public static class ZipArchiveOutputStream implements ArchiveOutputStream {
         public class ZipArchiveOutputEntry implements ArchiveOutputEntry {
             private com.zimbra.common.util.zip.ZipEntry entry;
 

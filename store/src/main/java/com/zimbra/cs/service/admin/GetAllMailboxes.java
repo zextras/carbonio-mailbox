@@ -90,7 +90,7 @@ public class GetAllMailboxes extends AdminDocumentHandler {
         return response;
     }
 
-    protected class MailboxesParams {
+    protected static class MailboxesParams {
         String mSortBy;
         boolean mSortAscending;
 

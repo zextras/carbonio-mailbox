@@ -136,7 +136,7 @@ public class ZSearchResult implements ToZJSONObject {
   /*
    * TODO: this class is really not a ZSearchHit, but for now that works best do to ZSearchPagerCache. modifyNotication handling
    */
-  public class ZConversationSummary implements ZSearchHit {
+  public static class ZConversationSummary implements ZSearchHit {
 
     private String mId;
     private String mFlags;

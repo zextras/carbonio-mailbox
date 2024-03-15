@@ -120,7 +120,7 @@ public class QuotedTextUtil {
      * A Fragment represents a block of lines from the message with a type
      * associated with it
      */
-    private class Fragment {
+    private static class Fragment {
 
         private LineType type = null;
         private ArrayList<String> block = new ArrayList<String>();

@@ -255,7 +255,7 @@ public class ZimbraNginxLookUpClient {
                         ZimbraLog.misc.warn("Invalid server " + server + "has %d parts" + parts.length);
                         continue;
                     }
-                    Route rt = this.new Route(new InetSocketAddress(host, port), 0);
+                    Route rt = new Route(new InetSocketAddress(host, port), 0);
                     addrs.add(rt);
                 } else {
                     ZimbraLog.misc.warn("Invalid server has null parts" + server);
@@ -268,7 +268,7 @@ public class ZimbraNginxLookUpClient {
         }
     }
 
-    private class Route {
+    private static class Route {
         private InetSocketAddress ngxServerAddress;
         private long failureTime;
 

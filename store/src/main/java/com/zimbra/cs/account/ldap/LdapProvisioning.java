@@ -7899,7 +7899,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     acct.setCachedData(EntryCacheDataKey.GROUPEDENTRY_DIRECT_GROUPIDS.getKeyName(), null);
   }
 
-  private class AddrsOfEntry {
+  private static class AddrsOfEntry {
     List<String> mAllAddrs = new ArrayList<String>(); // including primary
     String mPrimary = null; // primary addr
     boolean mIsAccount = false;

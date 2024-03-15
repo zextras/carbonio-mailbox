@@ -69,7 +69,7 @@ public class DomainCache implements IDomainCache {
     }
     
 
-    class NegativeCache {
+    static class NegativeCache {
         private Map mNegativeNameCache;
         private Map mNegativeIdCache;
         private Map mNegativeVirtualHostnameCache;

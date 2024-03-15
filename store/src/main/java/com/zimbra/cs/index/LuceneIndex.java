@@ -884,7 +884,7 @@ public final class LuceneIndex extends IndexStore {
   }
 
   /** {@link IndexWriter} wrapper that supports a reference counter. */
-  private final class IndexWriterRef {
+  private static final class IndexWriterRef {
     private final LuceneIndex index;
     private final IndexWriter writer;
     private final AtomicInteger count = new AtomicInteger(1); // ref counter

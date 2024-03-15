@@ -3072,7 +3072,7 @@ public abstract class ImapHandler {
         return true;
     }
 
-    public final class GranteeIdAndType {
+    public static final class GranteeIdAndType {
         public final String id;
         public final byte type;
         public GranteeIdAndType(String granteeId, byte typ) {

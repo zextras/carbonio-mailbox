@@ -76,7 +76,7 @@ public class Notification implements LmtpCallback {
      * Subclass of <tt>MimeMessage</tt> that allows the caller to set an explicit <tt>Message-ID</tt>
      * header (see JavaMail FAQ for details).
      */
-    private class MimeMessageWithId extends ZMimeMessage {
+    private static class MimeMessageWithId extends ZMimeMessage {
 
         private final String mMessageId;
 

@@ -45,7 +45,7 @@ public class FileDescriptorCache
     private final FileCache<String> mUncompressedFileCache;
     private final Counter mHitRate = new Counter();
 
-    private class SharedFileInfo {
+    private static class SharedFileInfo {
         public String path;
         public SharedFile file;
 

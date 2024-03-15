@@ -1337,7 +1337,7 @@ public class ChartUtil {
         }
     }
 
-    class Entry {
+    static class Entry {
         Date timestamp;
 
         double value;
@@ -1372,7 +1372,7 @@ public class ChartUtil {
             return dataCollection.get(index);
         }
     }
-    class StringEntry {
+    static class StringEntry {
         Date timestamp;
 
         String value;
@@ -1407,7 +1407,7 @@ public class ChartUtil {
         }
     }
 
-    class Aggregator {
+    static class Aggregator {
         HashMap<String, Integer> set = new HashMap<String, Integer>();
 
         public Aggregator() {

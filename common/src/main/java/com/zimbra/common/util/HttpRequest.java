@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public class HttpRequest {
     
-    public class Constants {
+    public static class Constants {
 
         /** charset for http headers */
         public static final String HTTP_HEADER_CHARSET = "US-ASCII";

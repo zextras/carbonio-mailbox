@@ -133,7 +133,7 @@ public class MySQL extends Db {
         }
     }
 
-    protected class MySQLConfig extends DbPool.PoolConfig {
+    protected static class MySQLConfig extends DbPool.PoolConfig {
         MySQLConfig() {
             mDriverClassName = getDriverClassName();
             mPoolSize = 100;

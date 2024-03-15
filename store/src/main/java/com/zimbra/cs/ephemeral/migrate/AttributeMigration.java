@@ -244,7 +244,7 @@ public class AttributeMigration {
       errorReport.flush();
     }
 
-    private class Report {
+    private static class Report {
       final String name;
       CSVPrinter csvPrinter = null;
       OutputStream outputStream = null;

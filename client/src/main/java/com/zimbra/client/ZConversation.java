@@ -148,7 +148,7 @@ public class ZConversation implements ZItem, ToZJSONObject {
         return mMessageSummaries;
     }
 
-    public class ZMessageSummary implements ZItem, ToZJSONObject {
+    public static class ZMessageSummary implements ZItem, ToZJSONObject {
 
         private long mDate;
         private String mFlags;

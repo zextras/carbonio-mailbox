@@ -34,7 +34,7 @@ public class RetentionPolicyManager {
   private static String FN_NAME = "name";
   private static String FN_LIFETIME = "lifetime";
 
-  private class SystemPolicy {
+  private static class SystemPolicy {
     Map<String, Policy> purge = Maps.newHashMap();
   }
 

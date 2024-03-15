@@ -183,7 +183,7 @@ class ImapPartSpecifier {
         InputStreamWithSize getInputStreamWithSize() throws BinaryDecodingException, ServiceException;
     }
 
-    private class ZimbraMailItemGettableInputStreamWithSize implements GettableInputStreamWithSize {
+    private static class ZimbraMailItemGettableInputStreamWithSize implements GettableInputStreamWithSize {
         private final ZimbraMailItem mailItem;
 
         ZimbraMailItemGettableInputStreamWithSize(ZimbraMailItem zmi) {

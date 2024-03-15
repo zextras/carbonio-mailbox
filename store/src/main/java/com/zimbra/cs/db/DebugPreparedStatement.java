@@ -42,7 +42,7 @@ class DebugPreparedStatement extends DelegatingPreparedStatement {
      * A list that implicitly resizes when {@link #set} is called.
      */
     @SuppressWarnings("serial")
-    private class AutoSizeList<E>
+    private static class AutoSizeList<E>
     extends ArrayList<E> {
         public E set(int index, E element) {
             if (index >= size()) {

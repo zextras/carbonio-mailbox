@@ -70,7 +70,7 @@ public abstract class ExternalStoreManager extends StoreManager implements Exter
 
     }
 
-    private class MessageCacheChecker implements FileCache.RemoveCallback {
+    private static class MessageCacheChecker implements FileCache.RemoveCallback {
         MessageCacheChecker()  { }
 
         @Override

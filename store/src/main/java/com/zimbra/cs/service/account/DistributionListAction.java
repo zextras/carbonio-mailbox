@@ -375,7 +375,7 @@ public class DistributionListAction extends DistributionListDocumentHandler {
               }));
     }
 
-    protected class Grantee {
+    protected static class Grantee {
 
       GranteeType type;
       GranteeBy by;
