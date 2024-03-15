@@ -1060,11 +1060,8 @@ public class Folder extends MailItem implements FolderStore {
             || id == Mailbox.ID_FOLDER_TRASH)) {
       // sync days property has not been set by the user on Inbox/Sent/Drafts/Trash
       return getAccount().getWebClientOfflineSyncMaxDays();
-    } else if (webOfflineSyncDays < 0) {
-      return 0;
-    } else {
-      return webOfflineSyncDays;
-    }
+    } else
+      return Math.max(webOfflineSyncDays, 0);
   }
 
   /**

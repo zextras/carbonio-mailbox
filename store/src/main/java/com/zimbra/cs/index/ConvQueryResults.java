@@ -149,11 +149,7 @@ final class ConvQueryResults extends ZimbraQueryResultsImpl {
             return getNext();
         } else {
             ZimbraHit hit = null;
-            if (hitNo < cachedResults.size()) {
-                nextHitNo = hitNo;
-            } else {
-                nextHitNo = cachedResults.size();
-            }
+          nextHitNo = Math.min(hitNo, cachedResults.size());
             while (nextHitNo <= hitNo) {
                 hit = getNext();
                 if (hit == null) {

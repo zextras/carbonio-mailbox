@@ -86,11 +86,7 @@ public final class ReSortingQueryResults implements ZimbraQueryResults {
   @Override
   public ZimbraHit skipToHit(int hitNo) throws ServiceException {
     List<ZimbraHit> buffer = getHitBuffer();
-    if (hitNo >= buffer.size()) {
-      iterOffset = buffer.size();
-    } else {
-      iterOffset = hitNo;
-    }
+    iterOffset = Math.min(hitNo, buffer.size());
     return getNext();
   }
 

@@ -569,7 +569,7 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
         if (null == zm) {
             return 0;
         }
-        imapUid = (zm.imapUid <=0 ) ? 0 : zm.imapUid;
+        imapUid = Math.max(zm.imapUid, 0);
         return imapUid;
     }
 }

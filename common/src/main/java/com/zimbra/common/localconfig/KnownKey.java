@@ -167,11 +167,8 @@ public final class KnownKey {
         int result = intValue();
         if (result < minValue) {
             return minValue;
-        } else if (result > maxValue) {
-            return maxValue;
-        } else {
-            return result;
-        }
+        } else
+          return Math.min(result, maxValue);
     }
 
     public long longValue() {
@@ -191,11 +188,8 @@ public final class KnownKey {
         long result = longValue();
         if (result < minValue) {
             return minValue;
-        } else if (result > maxValue) {
-            return maxValue;
-        } else {
-            return result;
-        }
+        } else
+          return Math.min(result, maxValue);
     }
 
     public String key() {

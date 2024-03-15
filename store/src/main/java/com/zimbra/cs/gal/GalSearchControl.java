@@ -201,7 +201,7 @@ public class GalSearchControl {
         int domainLimit = domain.getGalSyncSizeLimit();
         // Use the lower value in case of non zero values of limit and domainLimit
         if (limit != 0 && domainLimit != 0) {
-          limit = limit > domainLimit ? domainLimit : limit;
+          limit = Math.min(limit, domainLimit);
         } else if (limit == 0) {
           // if limit is zero use domainLimit
           limit = domainLimit;

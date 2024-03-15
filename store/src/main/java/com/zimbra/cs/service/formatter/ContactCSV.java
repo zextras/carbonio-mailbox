@@ -526,13 +526,13 @@ public final class ContactCSV {
         }
         if (format.allFields()) {
             int end = csv.size();
-            end = (end > fieldNames.size()) ? fieldNames.size() : end;
+            end = Math.min(end, fieldNames.size());
             for (int i = 0; i < end; i++) {
                 contactMap.put(fieldNames.get(i), csv.get(i));
             }
         } else if (format.hasNoHeaders()) {
             int end = csv.size();
-            end = (end > format.columns.size()) ? format.columns.size() : end;
+            end = Math.min(end, format.columns.size());
             for (int i = 0; i < end; i++) {
                 contactMap.put(format.columns.get(i).field, csv.get(i));
             }

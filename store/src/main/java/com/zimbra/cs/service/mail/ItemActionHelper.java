@@ -718,7 +718,7 @@ public class ItemActionHelper {
           Arrays.copyOfRange(
               itemIds,
               offset,
-              (offset + batchSize < itemIds.length) ? offset + batchSize : itemIds.length);
+              Math.min(offset + batchSize, itemIds.length));
 
       batchResult = executeLocalBatch(batchOfIds);
       localResult.appendSuccessIds(batchResult.getSuccessIds());

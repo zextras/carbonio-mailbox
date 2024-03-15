@@ -85,7 +85,7 @@ public class ZBaseItem implements ZItem, ZimbraMailItem {
         if ((null == zmi) || !(zmi instanceof ZBaseItem)) {
             return 0;
         }
-        modifiedSequence = (((ZBaseItem)zmi).modifiedSequence <=0 ) ? 0 : ((ZBaseItem)zmi).modifiedSequence;
+        modifiedSequence = Math.max(((ZBaseItem) zmi).modifiedSequence, 0);
         return modifiedSequence;
     }
 

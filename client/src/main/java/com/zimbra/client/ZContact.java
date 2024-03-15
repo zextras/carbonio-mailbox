@@ -453,7 +453,7 @@ public class ZContact extends ZBaseItem implements ToZJSONObject {
         if (null == zc) {
             return 0;
         }
-        imapUid = (zc.imapUid <=0 ) ? 0 : zc.imapUid;
+        imapUid = Math.max(zc.imapUid, 0);
         return imapUid;
     }
 }
