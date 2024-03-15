@@ -72,6 +72,7 @@ pipeline {
         timeout(time: 2, unit: 'HOURS')
         skipDefaultCheckout()
     }
+
     stages {
         stage('Checkout') {
             steps {
@@ -89,8 +90,8 @@ pipeline {
             }
             steps{
                 sh '''
-                    curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b .
-                    ./syft . -o cyclonedx-json=sbom.cyclonedx.json
+                    curl -sSfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b .
+                    ./trivy filesystem . --format cyclonedx --scanners license --output sbom.cyclonedx.json
                 '''
                 dependencyTrackPublisher artifact: 'sbom.cyclonedx.json',
                         synchronous: false,
@@ -142,6 +143,7 @@ pipeline {
                 junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
             }
         }
+
         stage('Sonarqube Analysis') {
             when {
                 allOf {
@@ -151,7 +153,7 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                    mvnCmd("$BUILD_PROPERTIES_PARAMS sonar:sonar")
+                    mvnCmd("$BUILD_PROPERTIES_PARAMS sonar:sonar -Dsonar.exclusions=**/com/zimbra/cs/account/ZAttr*.java,**/com/zimbra/common/account/ZAttr*.java")
                 }
             }
         }

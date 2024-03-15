@@ -72,7 +72,7 @@
   </target>
 
   <target name="generate-zattr-rights" description="generate ZAttr and rights"
-    depends="generate-zattr,generate-rights"/>
+    depends="generate-zattr,generate-rights,generate-ldap-config"/>
 
   <target name="generate-zattr" description="generate methods for attributes in attrs.xml">
     <antcall target="generate-getter">
