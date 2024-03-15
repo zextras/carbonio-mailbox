@@ -160,7 +160,7 @@ public class ZimbraNginxLookUpClient {
      * given timeout, otherwise <code>false</code>.
      */
     public static boolean ping(String[] schemes, String hostPath, int timeout) {
-        for (String scheme : asList(schemes)) {
+        for (String scheme : schemes) {
             if (ping(scheme + "://" + hostPath, timeout)) {
                 return true;
             }
@@ -173,7 +173,7 @@ public class ZimbraNginxLookUpClient {
         Route nginxLookUpHandler = getNginxRouteHandler();
         ZimbraLog.misc.debug("getting route for account %s with handler %s", userName, nginxLookUpHandler);
         if (nginxLookUpHandler != null) {
-            for (String scheme : asList(ngxSchemes)) {
+            for (String scheme : ngxSchemes) {
                 HttpGet method = new HttpGet((new StringBuilder(scheme + "://").append(nginxLookUpHandler.ngxServerAddress.getHostName()).
                         append(":").append(nginxLookUpHandler.ngxServerAddress.getPort()).append(urlExtension)).toString());
 

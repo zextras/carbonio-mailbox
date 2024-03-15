@@ -61,9 +61,7 @@ public class SearchAutoProvDirectory extends AdminDocumentHandler {
             for (String attr : Splitter.on(',').trimResults().split(attrsStr)) {
                 attrs.add(attr);
             }
-            if (!attrs.contains(keyAttr)) {
-                attrs.add(keyAttr);
-            }
+          attrs.add(keyAttr);
             returnAttrs = attrs.toArray(new String[0]);
         }
         

@@ -179,7 +179,7 @@ public abstract class AttributeCallback {
                 mvm.mMod = MultiValueMod.Mod.DELETING;
             else
                 mvm.mMod = MultiValueMod.Mod.REPLACING;
-        } else if (attrsToModify.keySet().contains(attrName)) {
+        } else if (attrsToModify.containsKey(attrName)) {
             // attrsToModify contains attrName, and the value is null
             mvm.mMod = MultiValueMod.Mod.DELETING;
         }           

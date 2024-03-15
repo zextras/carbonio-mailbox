@@ -137,8 +137,7 @@ public class NetUtil {
         List<String> enabledCSList = new ArrayList<String>(Arrays.asList(enabledCiphers));
 
         for (String cipher : excludedCSList) {
-            if (enabledCSList.contains(cipher))
-                enabledCSList.remove(cipher);
+          enabledCSList.remove(cipher);
         }
 
         return enabledCSList.toArray(new String[0]);

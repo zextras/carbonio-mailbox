@@ -437,7 +437,7 @@ public class Message extends MailItem {
     if (calendarItemInfos != null) {
       return calendarItemInfos.iterator();
     } else {
-      return Collections.<CalendarItemInfo>emptyList().iterator();
+      return Collections.emptyIterator();
     }
   }
 

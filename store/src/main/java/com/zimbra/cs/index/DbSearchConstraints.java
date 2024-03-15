@@ -707,7 +707,7 @@ public interface DbSearchConstraints extends Cloneable {
           //
           // {1} AND {-1} AND {1} == no-results
           //  ... NOT {1} (which could happen if you removed from both arrays on combining!)
-          if (itemIds != null && itemIds.contains(itemId)) {
+          if (itemIds != null) {
             itemIds.remove(itemId);
           }
           prohibitedItemIds.add(itemId);
@@ -730,7 +730,7 @@ public interface DbSearchConstraints extends Cloneable {
           //
           // {1} AND {-1} AND {1} == no-results
           //  ... NOT {1} (which could happen if you removed from both arrays on combining!)
-          if (remoteItemIds != null && remoteItemIds.contains(itemId)) {
+          if (remoteItemIds != null) {
             remoteItemIds.remove(itemId);
           }
           prohibitedRemoteItemIds.add(itemId);

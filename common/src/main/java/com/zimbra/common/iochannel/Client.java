@@ -158,9 +158,7 @@ public class Client implements Runnable {
                 return;
             }
             synchronized (clientThread) {
-                if (!activeSet.contains(this)) {
-                    activeSet.add(this);
-                }
+                activeSet.add(this);
                 clientThread.notifyAll();
             }
         }

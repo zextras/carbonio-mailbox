@@ -376,8 +376,7 @@ public class MessageCache {
                 Map.Entry<String, CacheNode> entry = it.next();
                 CacheNode cacheNode = entry.getValue();
                 try {
-                    if (Mime.isEncrypted(cacheNode.message.getContentType())
-                        && cacheNode.smimeAccessInfo.containsKey(mboxId)) {
+                    if (Mime.isEncrypted(cacheNode.message.getContentType())) {
                         cacheNode.smimeAccessInfo.remove(mboxId);
                     }
                 } catch (MessagingException e) {
