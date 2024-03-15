@@ -87,7 +87,7 @@ public class IncomingDirectory {
     }
 
     public static synchronized void setSweptDirectories(IncomingDirectory inc) {
-        IncomingDirectorySweeper.sSweptDirectories = Arrays.asList(inc);
+        IncomingDirectorySweeper.sSweptDirectories = List.of(inc);
         ZimbraLog.store.debug("Setting swept directory to %s", inc.getPath());
     }
 

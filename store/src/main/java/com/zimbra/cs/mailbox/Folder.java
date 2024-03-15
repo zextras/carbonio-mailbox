@@ -1220,7 +1220,7 @@ public class Folder extends MailItem implements FolderStore {
     if (ZimbraLog.mailop.isDebugEnabled()) {
       ZimbraLog.mailop.debug("setting " + getMailopContext(tag) + " for " + getMailopContext(this));
     }
-    DbTag.alterTag(tag, Arrays.asList(mId), newValue);
+    DbTag.alterTag(tag, List.of(mId), newValue);
 
     if (isNoInheritFlag) {
       if (!newValue && rights != null) {

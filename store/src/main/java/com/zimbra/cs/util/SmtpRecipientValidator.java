@@ -18,6 +18,7 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.DynamicGroup;
 import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.Provisioning;
+import java.util.List;
 
 /**
  * Validates recipients and expands distribution lists for the dev
@@ -34,7 +35,7 @@ implements SmtpToLmtp.RecipientValidator {
             Provisioning prov = Provisioning.getInstance();
             Account account = prov.get(AccountBy.name, recipient);
             if (account != null) {
-                return Arrays.asList(account.getName());
+                return List.of(account.getName());
             } else {
                 Group group = prov.getGroup(Key.DistributionListBy.name, recipient);
                 if (group != null) {

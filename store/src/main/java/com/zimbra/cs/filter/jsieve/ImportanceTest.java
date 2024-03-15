@@ -42,14 +42,14 @@ public final class ImportanceTest extends Header {
         }
 
         // First check "Importance" header
-        List<String> headers = Arrays.asList("Importance");
+        List<String> headers = List.of("Importance");
         List<String> values = null;
         switch (importance) {
             case high:
-                values = Arrays.asList("High");
+                values = List.of("High");
                 break;
             case low:
-                values = Arrays.asList("Low");
+                values = List.of("Low");
                 break;
             case normal:
                 values = Arrays.asList("High", "Low");
@@ -58,14 +58,14 @@ public final class ImportanceTest extends Header {
                 match(mail, Sieve.Comparator.iasciicasemap.toString(), MatchTypeTags.IS_TAG, headers, values, context);
 
         // Now check "X-Priority" header
-        headers = Arrays.asList("X-Priority");
+        headers = List.of("X-Priority");
         values = null;
         switch (importance) {
             case high:
-                values = Arrays.asList("1");
+                values = List.of("1");
                 break;
             case low:
-                values = Arrays.asList("5");
+                values = List.of("5");
                 break;
             case normal:
                 // normal is when it is neither high importance nor low importance

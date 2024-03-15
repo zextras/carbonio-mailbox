@@ -7984,7 +7984,7 @@ public class Mailbox implements MailboxStore {
       List<? extends MailItem> items =
           item instanceof Conversation
               ? ((Conversation) item).getMessages()
-              : Arrays.asList((MailItem) item);
+              : List.of((MailItem) item);
       List<Folder> trashAliases = getTrashAliases(octxt);
       for (MailItem candidate : items) {
         // if it's not a move into or out of Spam, no training is necessary

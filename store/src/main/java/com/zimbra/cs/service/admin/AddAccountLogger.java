@@ -111,7 +111,7 @@ public class AddAccountLogger extends AdminDocumentHandler {
     if (category.equalsIgnoreCase(CATEGORY_ALL)) {
       loggers = LogManager.getAllLoggers();
     } else {
-      loggers = Arrays.asList(LogFactory.getLog(category));
+      loggers = List.of(LogFactory.getLog(category));
     }
     // Add custom loggers.
     for (Log log : loggers) {

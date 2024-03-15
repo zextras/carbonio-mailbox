@@ -8,6 +8,7 @@ package com.zimbra.cs.service.mail;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.mail.MessagingException;
@@ -143,7 +144,7 @@ public class SaveDraft extends MailDocumentHandler {
         if (folderId != null || flags != null || !ArrayUtil.isEmpty(tags) || color != null) {
             try {
                 // best not to fail if there's an error here...
-                ItemActionHelper.UPDATE(octxt, mbox, zsc.getResponseProtocol(), Arrays.asList(msg.getId()),
+                ItemActionHelper.UPDATE(octxt, mbox, zsc.getResponseProtocol(), List.of(msg.getId()),
                         MailItem.Type.MESSAGE, null, null, iidFolder, flags, tags, color);
                 // and make sure the Message object reflects post-update reality
                 msg = mbox.getMessageById(octxt, msg.getId());

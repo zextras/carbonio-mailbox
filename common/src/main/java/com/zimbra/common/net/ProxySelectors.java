@@ -67,7 +67,7 @@ public final class ProxySelectors {
     public static ProxySelector dummyProxySelector() {
         return new ProxySelector() {
             public List<Proxy> select(URI uri) {
-                return Arrays.asList(Proxy.NO_PROXY);
+                return List.of(Proxy.NO_PROXY);
             }
 
             public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {

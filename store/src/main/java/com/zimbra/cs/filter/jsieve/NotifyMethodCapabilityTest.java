@@ -220,7 +220,7 @@ public class NotifyMethodCapabilityTest extends AbstractTest {
     }
 
     private boolean testCount(MailAdapter mail, List<String> keys, String comparator, String operator, SieveContext context) throws SieveException {
-        List<String> values = Arrays.asList(CAPABILITY_MAYBE);
+        List<String> values = List.of(CAPABILITY_MAYBE);
         boolean isMatched = false;
         for (String key : keys) {
             isMatched = ZimbraComparatorUtils.counts(mail, comparator,

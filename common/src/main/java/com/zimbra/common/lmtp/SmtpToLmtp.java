@@ -45,7 +45,7 @@ public class SmtpToLmtp {
     private static final RecipientValidator DUMMY_VALIDATOR = new RecipientValidator() {
         @Override
         public Iterable<String> validate(String recipient) {
-            return Arrays.asList(recipient);
+            return List.of(recipient);
         }
     };
 

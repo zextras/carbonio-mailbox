@@ -476,7 +476,7 @@ implements CreateCalendarItemPlayer, CreateCalendarItemRecorder {
             mTags = TagUtil.tagIdStringToNames(mbox, octxt, mTagIds);
         }
 
-        DeliveryContext dctxt = new DeliveryContext(mShared, Arrays.asList(mboxId));
+        DeliveryContext dctxt = new DeliveryContext(mShared, List.of(mboxId));
 
         if (mMsgBodyType == MSGBODY_LINK) {
             Blob blob = StoreIncomingBlob.fetchBlob(mPath);

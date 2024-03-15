@@ -3798,7 +3798,7 @@ public abstract class ImapHandler {
                     }
                     int parentId = hit.getParentId();
                     if (parentId <= 0) {
-                        threads.put(-i4msg.msgId, Arrays.asList(i4msg));
+                        threads.put(-i4msg.msgId, List.of(i4msg));
                         continue;
                     }
 

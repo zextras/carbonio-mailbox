@@ -271,7 +271,7 @@ public class MimeMessage extends MimePart {
 //    }
 
     public void setAddressHeader(String name, InternetAddress iaddr) {
-        setAddressHeader(name, iaddr == null ? null : Arrays.asList(iaddr));
+        setAddressHeader(name, iaddr == null ? null : List.of(iaddr));
     }
 
     public void setAddressHeader(String name, List<InternetAddress> iaddrs) {

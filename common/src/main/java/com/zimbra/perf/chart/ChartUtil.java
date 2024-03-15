@@ -1282,7 +1282,7 @@ public class ChartUtil {
         }
 
         mChartMap.put(cs, chart);
-        return Arrays.asList(chart);
+        return List.of(chart);
 
     }
 

@@ -323,7 +323,7 @@ public class ProxyServlet extends ZimbraServlet {
                 if (targetResponseBody != null) {
                     try {
                         Upload up = FileUploadServlet.saveUpload(targetResponseBody, filename, contentType, authToken.getAccountId());
-                        uploads = Arrays.asList(up);
+                        uploads = List.of(up);
                     } catch (ServiceException e) {
                         if (e.getCode().equals(MailServiceException.UPLOAD_REJECTED))
                             status = HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE;

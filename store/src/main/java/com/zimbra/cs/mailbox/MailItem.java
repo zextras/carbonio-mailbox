@@ -2438,7 +2438,7 @@ public abstract class MailItem
     }
     // alter our tags in the DB
     //        DbTag.alterTag(this, tag, add);
-    DbTag.alterTag(tag, Arrays.asList(getId()), add);
+    DbTag.alterTag(tag, List.of(getId()), add);
 
     // tell our parent about the tag change (note: must happen after DbMailItem.alterTag)
     if (parent != null) {
@@ -2464,7 +2464,7 @@ public abstract class MailItem
     tagChanged(flag, newValue);
 
     // alter our tags in the DB
-    DbTag.alterTag(flag, Arrays.asList(getId()), newValue);
+    DbTag.alterTag(flag, List.of(getId()), newValue);
 
     // tell our parent about the tag change (note: must happen after DbMailItem.alterTag)
     if (parent != null) {

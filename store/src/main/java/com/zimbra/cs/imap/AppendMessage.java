@@ -119,7 +119,7 @@ final class AppendMessage {
             }
             req.skipChar(')');
         } else {
-            parts = Arrays.asList(new Part(req.readLiteral8()));
+            parts = List.of(new Part(req.readLiteral8()));
         }
     }
 
