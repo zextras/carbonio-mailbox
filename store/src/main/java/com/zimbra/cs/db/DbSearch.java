@@ -762,7 +762,6 @@ public final class DbSearch {
     if (node instanceof DbSearchConstraints.Leaf && !dumpster) {
       DbSearchConstraints.Leaf constraint = node.toLeaf();
       if (constraint.excludeTags.isEmpty()
-          && !constraint.tags.isEmpty()
           && constraint.tags.size() == 1) {
         Tag tag = constraint.tags.iterator().next();
         if (tag.getId() == FlagInfo.UNREAD.toId() || tag.getId() > 0) {
