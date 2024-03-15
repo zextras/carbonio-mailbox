@@ -460,7 +460,7 @@ public class MimeMessage extends MimePart {
 //        dumpParts(mm);
         System.out.write(mm.getRawContent());
 
-        mm = MimeMessage.readStructure(new FileInputStream(new File(args[0] + File.separator + "report-attachment-6667")), null);
+        mm = MimeMessage.readStructure(new FileInputStream(args[0] + File.separator + "report-attachment-6667"), null);
         dumpParts(mm);
 //        ByteUtil.copy(mm.getInputStream(), true, System.out, false);
 

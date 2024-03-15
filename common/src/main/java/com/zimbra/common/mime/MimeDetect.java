@@ -412,7 +412,7 @@ public class MimeDetect {
             BufferedInputStream is = null;
             try {
                 is = new BufferedInputStream(
-                        new FileInputStream(new File(file)));
+                        new FileInputStream(file));
             } catch (FileNotFoundException e) {
                 continue;
             }
@@ -449,7 +449,7 @@ public class MimeDetect {
         for (String file : files) {
             InputStream is = null;
             try {
-                is = new BufferedInputStream(new FileInputStream(new File(file)));
+                is = new BufferedInputStream(new FileInputStream(file));
             } catch (FileNotFoundException e) {
                 continue;
             }
