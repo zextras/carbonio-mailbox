@@ -67,7 +67,6 @@ public class AccountStatus extends AttributeCallback {
                 } catch (ServiceException se) {
                     // all exceptions are already swallowed by LdapProvisioning, just to be safe here.
                     ZimbraLog.account.warn("unable to remove account address and aliases from all DLs for closed account", se);
-                    return;
                 }
             }
         }

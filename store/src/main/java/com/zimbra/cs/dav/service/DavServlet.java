@@ -424,7 +424,6 @@ public class DavServlet extends ZimbraServlet {
             }
         } catch (MailServiceException.NoSuchItemException nsie) {
             sendError(resp, HttpServletResponse.SC_NOT_FOUND, ctxt.getUri()+" not found", null, Level.info);
-            return;
         } catch (ServiceException e) {
             sendError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error handling method "+method.getName(), e);
         } catch (Exception e) {

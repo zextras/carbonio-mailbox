@@ -423,7 +423,6 @@ public class CalDavDataImport extends MailItemImport {
       if (mitem.getType() != MailItem.Type.FOLDER) {
         ZimbraLog.datasource.warn(
             "pushModify: item type doesn't match in metadata for item %d", itemId);
-        return;
       }
       // detect and push rename
     } else if (METADATA_TYPE_APPOINTMENT.equals(type)) {
@@ -448,7 +447,6 @@ public class CalDavDataImport extends MailItemImport {
       }
     } else {
       ZimbraLog.datasource.warn("pushModify: unrecognized item type for %d: %s", itemId, type);
-      return;
     }
   }
 

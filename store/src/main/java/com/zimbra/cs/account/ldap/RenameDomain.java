@@ -831,7 +831,6 @@ public class RenameDomain {
                     fixupForeignTarget(dynGroup, aliasOldAddr, aliasNewAddr);
                 } else {
                     warn("handleForeignAlias", "encountered invalid alias target type", "target=[%s]", targetName);
-                    return;
                 }
             }
         }

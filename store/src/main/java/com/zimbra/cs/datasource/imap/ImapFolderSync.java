@@ -932,7 +932,6 @@ class ImapFolderSync {
         Threader threader = pm.getThreader(ds.getMailbox());
         List<PurgedConversation> purgedConvs = threader.lookupPurgedConversations(ds);
         if (purgedConvs.size() == 0) {
-            return;
         } else {
             for (PurgedConversation conv: purgedConvs) {
                 ImapConnection conn;

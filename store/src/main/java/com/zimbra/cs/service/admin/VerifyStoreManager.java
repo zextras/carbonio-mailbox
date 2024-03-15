@@ -92,7 +92,6 @@ public class VerifyStoreManager extends AdminDocumentHandler {
 
     private void assertEquals(String message, Object o1, Object o2) throws Exception {
         if (o1 == null && o2 == null) {
-            return;
         } else if (o1 == null && o2 != null) {
             throw new Exception("verification failed checking "+message);
         } else if (!o1.equals(o2)) {

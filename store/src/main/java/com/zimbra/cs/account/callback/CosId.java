@@ -27,8 +27,8 @@ public class CosId extends AttributeCallback {
     private void validateCosId(Map attrsToModify, String attrName) throws ServiceException {
         
         SingleValueMod mod = singleValueMod(attrsToModify, attrName);
-        if (mod.unsetting())
-            return;
+        if (mod.unsetting()) {
+        }
         else {
             String cosId = mod.value();
             Provisioning prov = Provisioning.getInstance();

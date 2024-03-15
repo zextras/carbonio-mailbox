@@ -71,8 +71,7 @@ public class CertAuthServlet extends SSOServlet {
             principal = authenticator.authenticate();
             AuthToken authToken = authorize(req, AuthContext.Protocol.client_certificate, principal, isAdminRequest);
             setAuthTokenCookieAndRedirect(req, resp, principal.getAccount(), authToken);
-            return;
-            
+
         } catch (ServiceException e) {
             String reason = "";
             if (e instanceof AuthFailedServiceException) {

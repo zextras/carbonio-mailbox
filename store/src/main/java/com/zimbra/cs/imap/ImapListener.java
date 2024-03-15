@@ -449,7 +449,6 @@ public abstract class ImapListener extends Session {
         ZimbraLog.imap.debug("Handling a delete notification. Change id %d, item id %d", changeId, id);
         MailItem.Type type = (MailItem.Type) chg.what;
         if (id <= 0) {
-            return;
         } else if (type == MailItem.Type.TAG) {
             mFolder.handleTagDelete(changeId, id, chg);
         } else if (id == folderId.id && mFolder instanceof ImapFolder) {
@@ -504,7 +503,6 @@ public abstract class ImapListener extends Session {
                 }
             } catch (ServiceException e) {
                 ZimbraLog.imap.warn("error handling modified items for changeId %s", changeId, e);
-                return;
             }
         }
     }

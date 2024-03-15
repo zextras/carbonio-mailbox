@@ -43,7 +43,6 @@ public class ZMailboxLock {
             //Wait for the lock up to the allowed limit
             if (monitor.enterInterruptibly(timeoutSeconds, TimeUnit.SECONDS)) {
                 ZimbraLog.mailbox.debug("acquired zmailbox lock");
-                return;
             } else {
                 throw new LockFailedException("lock timeout");
             }

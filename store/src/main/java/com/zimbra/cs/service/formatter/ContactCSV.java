@@ -794,7 +794,6 @@ public final class ContactCSV {
             colType = ColType.SIMPLE;
             String type = col.attributeValue(ATTR_TYPE);
             if (type == null) {
-                return;
             } else if (type.equals("multivalue")) {
                 colType = ColType.MULTIVALUE;
                 Collections.addAll(names, name.split(","));

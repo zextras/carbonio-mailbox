@@ -239,7 +239,6 @@ public class ZInternetHeaders extends InternetHeaders {
             this.ordered = false;
         }
         headers.add(header);
-        return;
     }
 
     @Override

@@ -251,8 +251,8 @@ public class ZAuthToken {
             return;
         
         // no Zimbra cookies, look for Yahoo cookies
-        if (fromYahooCookies(request, cookieMap, isAdmin))
-            return;
+        if (fromYahooCookies(request, cookieMap, isAdmin)) {
+        }
         
         // fall thru, leave the ZAuthToken empty
     } 

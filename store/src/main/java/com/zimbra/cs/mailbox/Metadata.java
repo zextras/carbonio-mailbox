@@ -138,7 +138,6 @@ public final class Metadata {
         try {
             try {
                 map = (Map) BEncoding.decode(encoded);
-                return;
             } catch (BEncodingException be) {
                 // Bug 87718 in some instances, it appears that an encoded string is getting corrupted by being
                 // treated at some point as if the bytes were ISO-8859-1 instead of UTF-8.  Try again with this reversed.

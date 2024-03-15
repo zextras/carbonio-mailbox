@@ -114,7 +114,6 @@ public class ZimbraInvalidLoginFilter extends DoSFilter {
         if (this.suspiciousIpAddrLastAttempt.containsKey(clientIp)) {
             ZimbraLog.misc.info ("Access from IP " + clientIp +  " suspended, for repeated failed login.");
             res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-            return;
         } else {
             chain.doFilter(request, response);
 

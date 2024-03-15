@@ -4625,7 +4625,6 @@ public abstract class ImapHandler {
 
     private void checkCommandThrottle(ImapCommand command) throws ImapThrottledException {
         if (reqThrottle.isIpWhitelisted(getOrigRemoteIp()) || reqThrottle.isIpWhitelisted(getRemoteIp())) {
-            return;
         } else if (commandThrottle.isCommandThrottled(command)) {
             ZimbraLog.imap.warn("too many repeated %s requests dropping connection", command.getClass().getSimpleName().toUpperCase());
             throw new ImapThrottledException("too many repeated "+command.getClass().getSimpleName()+" requests");

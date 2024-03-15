@@ -313,7 +313,6 @@ public class TimeZoneDefinition {
         }
         icalOutput.endComponent(Component.VTIMEZONE);
         if (true) {
-            return;
         }
     }
 }

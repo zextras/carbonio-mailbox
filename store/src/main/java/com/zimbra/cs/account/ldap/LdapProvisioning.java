@@ -3101,7 +3101,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         domains.add(attrs.getAttrString(Provisioning.A_zimbraId));
       } catch (ServiceException e) {
         ZimbraLog.search.debug("Problem processing search result entry - ignoring", e);
-        return;
       }
     }
   }
@@ -4307,7 +4306,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       }
     } catch (ServiceException se) {
       ZimbraLog.account.warn("unable to remove " + serverId + " from all COSes ", se);
-      return;
     }
   }
 

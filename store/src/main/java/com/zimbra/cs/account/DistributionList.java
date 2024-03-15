@@ -352,7 +352,6 @@ public abstract class DistributionList extends ZAttrDistributionList implements 
                 distLists.add(new BasicInfo(id, name, aliases, isAdmin));
             } catch (ServiceException e) {
                 ZimbraLog.search.debug("Problem processing search result entry - ignoring", e);
-                return;
             }
         }
 

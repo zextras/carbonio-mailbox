@@ -1147,7 +1147,6 @@ public class SoapSession extends Session {
       Element.ElementFactory factory,
       Map<ItemId, Pair<Boolean, Element>> mountpoints) {
     if (node.mFolder == null || mountpoints == null) {
-      return;
     } else if (node.mFolder instanceof Mountpoint) {
       Mountpoint mpt = (Mountpoint) node.mFolder;
       expandLocalMountpoint(octxt, mpt, factory, mountpoints);

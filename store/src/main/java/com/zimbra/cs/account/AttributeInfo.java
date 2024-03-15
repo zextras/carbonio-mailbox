@@ -417,7 +417,6 @@ public class AttributeInfo {
                 throw AccountServiceException.INVALID_ATTR_VALUE(mName+" must match the regex: "+mValue, null);
         default:
             ZimbraLog.misc.warn("unknown type("+mType+") for attribute: "+value);
-            return;
         }
     }
 

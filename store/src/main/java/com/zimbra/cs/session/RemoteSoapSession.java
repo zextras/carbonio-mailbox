@@ -56,7 +56,6 @@ public class RemoteSoapSession extends SoapSession {
     @Override
     public void putRefresh(Element ctxt, ZimbraSoapContext zsc) {
         ctxt.addUniqueElement(ZimbraNamespace.E_REFRESH);
-        return;
     }
 
     @Override

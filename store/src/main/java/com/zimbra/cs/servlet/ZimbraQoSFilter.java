@@ -123,11 +123,9 @@ public class ZimbraQoSFilter implements Filter {
                 ZimbraLog.clearContext();
                 continuation.setTimeout(suspendMs);
                 continuation.suspend();
-                return;
             }
         } catch(InterruptedException e) {
             ((HttpServletResponse)response).sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-            return;
         }
     }
 

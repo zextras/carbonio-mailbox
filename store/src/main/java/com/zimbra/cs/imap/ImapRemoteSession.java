@@ -55,7 +55,6 @@ public class ImapRemoteSession extends ImapListener {
     private void handleCreate(int changeId, BaseItemInfo item, AddedItems added) {
         try {
             if (item == null || item.getIdInMailbox() <= 0) {
-                return;
             } else if (item.getFolderIdInMailbox() == folderId.id &&
                 (item.getMailItemType() == MailItemType.MESSAGE || item.getMailItemType() == MailItemType.CONTACT)) {
                     mFolder.handleItemCreate(changeId, item, added);

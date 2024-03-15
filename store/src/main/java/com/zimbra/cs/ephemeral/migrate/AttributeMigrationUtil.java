@@ -155,11 +155,9 @@ public class AttributeMigrationUtil {
             migration.migrateAllAccounts();
         } catch (InvalidAttributeException e) {
             Zimbra.halt(String.format("Migration can't proceed: %s", e.getMessage()));
-            return;
         }
         catch (ServiceException e) {
             Zimbra.halt(String.format("error encountered during migration to ephemeral backend at %s; migration cannot proceed", destURL), e);
-            return;
         }
     }
 

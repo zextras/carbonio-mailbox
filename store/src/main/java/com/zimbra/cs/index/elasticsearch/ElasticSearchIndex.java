@@ -1234,6 +1234,5 @@ public final class ElasticSearchIndex extends IndexStore {
      */
     @Override
     public void optimize() {
-        return;
     }
 }

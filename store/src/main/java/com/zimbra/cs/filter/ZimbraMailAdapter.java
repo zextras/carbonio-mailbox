@@ -945,7 +945,6 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
                     ZimbraLog.filter.debug("Updated incoming blob");
                 } catch (IOException e) {
                     ZimbraLog.filter.error("Unable to update incomimg blob.", e);
-                    return;
                 }
             }
         }

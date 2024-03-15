@@ -338,7 +338,6 @@ public class UserServletUtil {
                     }
                 }
                 // always return
-                return;
             }
 
             // there is no credential at this point.  assume anonymous public access and continue.

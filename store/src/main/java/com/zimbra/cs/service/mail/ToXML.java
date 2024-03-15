@@ -1050,7 +1050,6 @@ public final class ToXML {
           }
           elem.addKeyValuePair(name, v);
         }
-        return;
       } catch (JSONException e) {
       }
     } else if (ContactConstants.A_groupMember.equals(name)) {

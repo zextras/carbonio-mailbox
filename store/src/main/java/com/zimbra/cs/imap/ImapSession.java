@@ -132,7 +132,6 @@ public class ImapSession extends ImapListener {
 
     private void handleCreate(int changeId, BaseItemInfo item, AddedItems added) throws ServiceException {
         if (item == null || item.getIdInMailbox() <= 0) {
-            return;
         } else if (item.getFolderIdInMailbox() == folderId.id && (item instanceof Message || item instanceof Contact)) {
             mFolder.handleItemCreate(changeId, item, added);
         }

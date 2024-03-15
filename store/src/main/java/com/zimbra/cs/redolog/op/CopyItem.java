@@ -143,7 +143,6 @@ public class CopyItem extends RedoableOp {
         } catch (MailServiceException e) {
             if (e.getCode() == MailServiceException.ALREADY_EXISTS) {
                 mLog.info("Item is already in mailbox " + mboxId);
-                return;
             } else {
                 throw e;
             }

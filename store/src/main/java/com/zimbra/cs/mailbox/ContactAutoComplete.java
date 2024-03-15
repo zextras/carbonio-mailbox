@@ -479,7 +479,6 @@ public class ContactAutoComplete {
             }
         } catch (Exception e) {
             ZimbraLog.gal.warn("cannot autocomplete gal", e);
-            return;
         }
     }
 

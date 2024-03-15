@@ -497,7 +497,6 @@ implements CreateCalendarItemPlayer, CreateCalendarItemRecorder {
             } catch (MailServiceException e) {
                 if (e.getCode() == MailServiceException.ALREADY_EXISTS) {
                     mLog.info("Message " + mMsgId + " is already in mailbox " + mboxId);
-                    return;
                 } else {
                     throw e;
                 }
@@ -518,7 +517,6 @@ implements CreateCalendarItemPlayer, CreateCalendarItemRecorder {
             } catch (MailServiceException e) {
                 if (e.getCode() == MailServiceException.ALREADY_EXISTS) {
                     mLog.info("Message " + mMsgId + " is already in mailbox " + mboxId);
-                    return;
                 } else {
                     throw e;
                 }
