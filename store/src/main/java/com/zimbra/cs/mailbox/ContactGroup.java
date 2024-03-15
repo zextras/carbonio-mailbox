@@ -660,11 +660,9 @@ public class ContactGroup {
     public static class GalRefMember extends Member {
         private static final String PRIMARY_EMAIL_FIELD = "email";
         private static final Set<String> GAL_EMAIL_FIELDS = new HashSet<String>(Arrays.asList(
-                new String[] {
-                        PRIMARY_EMAIL_FIELD, "email2", "email3", "email4", "email5", "email6", 
-                        "email7", "email8", "email9", "email10", "email11", "email12", "email13", 
-                        "email14", "email15", "email16"
-                }));
+            PRIMARY_EMAIL_FIELD, "email2", "email3", "email4", "email5", "email6",
+            "email7", "email8", "email9", "email10", "email11", "email12", "email13",
+            "email14", "email15", "email16"));
         
         public GalRefMember(String value) throws ServiceException {
             super(value);

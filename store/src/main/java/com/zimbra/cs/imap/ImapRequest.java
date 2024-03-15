@@ -623,7 +623,7 @@ public abstract class ImapRequest {
         if (peekChar() != '(') {
             CacheEntryType type = readCacheEntryType();
             if (type != null) {
-                return Arrays.asList(new CacheEntryType[] { type } );
+                return Arrays.asList(type);
             } else {
                 return Collections.emptyList();
             }

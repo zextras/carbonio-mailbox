@@ -188,7 +188,7 @@ public class DataSourceManager {
               cmdClass = ExtensionUtil.findClass(className);
             }
             if (cmdClass != null) {
-              Constructor<?> constructor = cmdClass.getConstructor(new Class[] {DataSource.class});
+              Constructor<?> constructor = cmdClass.getConstructor(DataSource.class);
               return (DataImport) constructor.newInstance(ds);
             }
             ZimbraLog.datasource.warn(
@@ -210,7 +210,7 @@ public class DataSourceManager {
               cmdClass = ExtensionUtil.findClass(className);
             }
             if (cmdClass != null) {
-              Constructor<?> constructor = cmdClass.getConstructor(new Class[] {DataSource.class});
+              Constructor<?> constructor = cmdClass.getConstructor(DataSource.class);
               return (DataImport) constructor.newInstance(ds);
             }
             ZimbraLog.datasource.warn(

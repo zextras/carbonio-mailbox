@@ -75,8 +75,8 @@ public class QuotedTextUtil {
     /**
      * ignore these html tags while parsing html content
      */
-    private Set<String> ignoreNodes = new HashSet<String>(Arrays.asList(new String[] { "#comment",
-        "br", "script", "select", "style" }));
+    private Set<String> ignoreNodes = new HashSet<String>(Arrays.asList("#comment",
+        "br", "script", "select", "style"));
 
     /**
      * Each line of the email message classified into a type based on the regex
