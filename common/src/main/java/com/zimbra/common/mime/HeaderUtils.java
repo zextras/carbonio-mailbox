@@ -14,6 +14,7 @@ import java.nio.charset.Charset;
 
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.CharsetUtil;
+import java.util.Arrays;
 
 public class HeaderUtils {
 
@@ -83,9 +84,7 @@ public class HeaderUtils {
     static class Q2047Encoder extends ContentTransferEncoding.QuotedPrintableEncoderStream {
         static final boolean[] FORCE_ENCODE = new boolean[128];
         static {
-            for (int i = 0; i < FORCE_ENCODE.length; i++) {
-                FORCE_ENCODE[i] = true;
-            }
+            Arrays.fill(FORCE_ENCODE, true);
             for (int c : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!*+-/ ".getBytes()) {
                 FORCE_ENCODE[c] = false;
             }

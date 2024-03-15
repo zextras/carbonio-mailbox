@@ -652,9 +652,7 @@ public class ZInternetHeader {
         private static class Q2047Encoder extends ZTransferEncoding.QuotedPrintableEncoderStream {
             static final boolean[] FORCE_ENCODE = new boolean[128];
             static {
-                for (int i = 0; i < FORCE_ENCODE.length; i++) {
-                    FORCE_ENCODE[i] = true;
-                }
+                Arrays.fill(FORCE_ENCODE, true);
                 for (int c : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!*+-/ ".getBytes()) {
                     FORCE_ENCODE[c] = false;
                 }
