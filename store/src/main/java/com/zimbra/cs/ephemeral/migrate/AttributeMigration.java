@@ -502,7 +502,6 @@ public class AttributeMigration {
         Account acct = prov.getAccount(acctValue);
         if (acct == null) {
           ZimbraLog.ephemeral.error("no such account: %s", acctValue);
-          continue;
         } else {
           entries.add(acct);
         }

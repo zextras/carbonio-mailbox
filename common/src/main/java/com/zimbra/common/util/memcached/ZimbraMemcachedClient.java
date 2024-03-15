@@ -235,7 +235,6 @@ public class ZimbraMemcachedClient {
                     addrs.add(addr);
                 } else {
                     ZimbraLog.misc.warn("Invalid server " + server);
-                    continue;
                 }
             }
             return addrs;

@@ -62,7 +62,6 @@ public class Tag extends MailItem implements ZimbraTag {
                                 newTag.setIsImapVisible(true);
                             }
                             tlist.add(newTag);
-                            continue;
                         } catch (ServiceException e) {
                             if (!e.getCode().equals(MailServiceException.ALREADY_EXISTS)) {
                                 throw e;

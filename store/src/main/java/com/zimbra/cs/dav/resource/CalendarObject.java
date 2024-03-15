@@ -424,7 +424,6 @@ public interface CalendarObject {
           if (filter.match(vcomp)) return true;
         } catch (ServiceException se) {
           ZimbraLog.dav.warn("cannot convert to ICalendar", se);
-          continue;
         }
       }
 

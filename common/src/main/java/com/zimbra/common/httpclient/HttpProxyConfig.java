@@ -54,7 +54,6 @@ public class HttpProxyConfig {
                 return nhc;
             case SOCKS: //socks proxy can be handled at socket factory level
             default:
-                continue;
             }
         }
         return null;

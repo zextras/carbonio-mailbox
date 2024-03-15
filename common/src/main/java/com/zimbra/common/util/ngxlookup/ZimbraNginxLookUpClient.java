@@ -259,7 +259,6 @@ public class ZimbraNginxLookUpClient {
                     addrs.add(rt);
                 } else {
                     ZimbraLog.misc.warn("Invalid server has null parts" + server);
-                    continue;
                 }
             }
             return addrs;

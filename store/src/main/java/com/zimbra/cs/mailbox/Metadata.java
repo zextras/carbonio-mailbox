@@ -195,7 +195,6 @@ public final class Metadata {
             Object key = entry.getKey();
             Object value = entry.getValue();
             if (key == null || value == null) {
-                continue;
             } else if (value instanceof Map) {
                 result.put(key.toString(), new Metadata((Map<?, ?>) value));
             } else if (value instanceof List) {

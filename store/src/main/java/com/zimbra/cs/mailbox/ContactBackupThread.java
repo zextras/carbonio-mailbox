@@ -231,7 +231,6 @@ public class ContactBackupThread extends Thread {
           ZimbraLog.contactbackup.warn(
               "exception occured while getting document from contact backup folder");
           ZimbraLog.contactbackup.debug(se);
-          continue;
         }
       }
       ZimbraLog.contactbackup.debug("%d items deleted", counter);

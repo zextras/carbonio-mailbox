@@ -58,7 +58,6 @@ public class MetadataList {
         List<T> result = new ArrayList<T>();
         for (Object obj : list) {
             if (obj == null) {
-                continue;
             } else if (obj instanceof Map) {
                 result.add((T) new Metadata((Map<String, ?>) obj));
             } else if (obj instanceof List) {

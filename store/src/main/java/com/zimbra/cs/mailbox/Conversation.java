@@ -774,7 +774,6 @@ public class Conversation extends MailItem {
         for (Message child : msgs) {
             // silently skip explicitly excluded messages, PERMISSION_DENIED messages, and MODIFY_CONFLICT messages
             if (!TargetConstraint.checkItem(tcon, child)) {
-                continue;
             } else if (!child.canAccess(ACL.RIGHT_DELETE)) {
                 excludeAccess = true;
             } else if (!child.checkChangeID()) {

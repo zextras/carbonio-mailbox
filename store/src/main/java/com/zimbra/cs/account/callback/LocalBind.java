@@ -105,7 +105,6 @@ public class LocalBind extends AttributeCallback {
                     }
                 } catch (ServiceException e) {
                     ZimbraLog.misc.warn("Unable to set zimbraMailLocalBind " + e);
-                    continue;
                 }
             }
         }

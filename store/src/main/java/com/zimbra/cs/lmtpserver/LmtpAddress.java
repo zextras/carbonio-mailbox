@@ -315,14 +315,12 @@ public class LmtpAddress {
 	    if (ch == ',') {
 		ch = next();
 		if (debug) say("comma found processing next source route");
-		continue;
-	    } else if (ch == ':') {
+      } else if (ch == ':') {
 		ch = peek();
 		if (ch ==  '@') {
 		    if (debug) say("colon-at processing another source route");
 		    skip(); // the '@'
-		    continue;
-		} else {
+    } else {
 		    if (debug) say("reached end of source routes");
 		    break;
 		}
@@ -370,8 +368,7 @@ public class LmtpAddress {
 	    int ch = peek();
 	    if (isDigit(ch) || isLetter(ch) || ch == '.' || ch == '-') {
 		skip();
-		continue;
-	    } else {
+      } else {
 		break;
 	    }
 	}

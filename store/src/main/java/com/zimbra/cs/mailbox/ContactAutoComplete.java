@@ -767,7 +767,6 @@ public class ContactAutoComplete {
             final Set<Folder> allFolders = FolderUtil.flattenAndSortFolderTree(mbox.getFolderTree(octxt, rootItemId, true));
             for (Folder folder : allFolders) {
                 if (folder.getDefaultView() != MailItem.Type.CONTACT || folder.inTrash()) {
-                    continue;
                 } else if (folder instanceof Mountpoint && !(octxt.isDelegatedRequest(mbox))) {
                     Mountpoint mp = (Mountpoint) folder;
                     mountpoints.put(mp.getTarget(), mp);

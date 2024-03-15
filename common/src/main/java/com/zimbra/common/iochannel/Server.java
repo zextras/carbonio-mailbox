@@ -185,7 +185,6 @@ public class Server implements Runnable {
                                         checkBuffer(buffer);
                                         buffer = newBuffer;
                                         pos = buffer.position();
-                                        continue;
                                     } else {
                                         break;
                                     }

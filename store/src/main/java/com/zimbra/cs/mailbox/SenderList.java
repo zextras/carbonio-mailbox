@@ -56,8 +56,8 @@ public class SenderList {
             if (sender == null || sender.trim().equals(""))
                 continue;
             ParsedAddress pa = new ParsedAddress(sender).parse();
-            if (mParticipants != null && mParticipants.contains(pa))
-                continue;
+            if (mParticipants != null && mParticipants.contains(pa)) {
+            }
             else if (mParticipants == null)
                 (mParticipants = new ArrayList<ParsedAddress>(MAX_PARTICIPANT_COUNT)).add(pa);
             else if (mParticipants.size() >= MAX_PARTICIPANT_COUNT)

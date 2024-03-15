@@ -4106,11 +4106,9 @@ public abstract class ImapHandler {
                         fetchException(cause);
                     } else {
                         ZimbraLog.imap.warn("ignoring error during " + command + ": ", e);
-                        continue;
                     }
                 } catch (MessagingException e) {
                     ZimbraLog.imap.warn("ignoring error during " + command + ": ", e);
-                    continue;
                 } catch (IOException ioe) {
                     fetchException(ioe);
                 }

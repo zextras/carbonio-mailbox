@@ -91,7 +91,6 @@ class TokenMgrError extends Error
           } else {
             retval.append(ch);
           }
-          continue;
       }
     }
     return retval.toString();

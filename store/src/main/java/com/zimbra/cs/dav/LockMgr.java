@@ -119,8 +119,8 @@ public class LockMgr {
 
 	private synchronized Lock hasLock(String owner, String path, LockType type, LockScope scope) throws DavException {
 		for (Lock l : getLocks(path)) {
-			if (l == null)
-				continue;
+			if (l == null) {
+      }
 			else if (l.owner.compareTo(owner) == 0)
 				return l;
 			else if (scope == LockScope.exclusive)

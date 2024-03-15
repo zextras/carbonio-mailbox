@@ -2545,7 +2545,6 @@ public abstract class MailItem
         mMailbox.getTagByName(name).updateUnread(delta, deletedDelta);
       } catch (MailServiceException.NoSuchItemException nsie) {
         ZimbraLog.mailbox.warn("item %d has nonexistent tag %s", mId, name);
-        continue;
       }
     }
   }
@@ -2569,7 +2568,6 @@ public abstract class MailItem
         mMailbox.getTagByName(name).updateSize(countDelta, deletedDelta);
       } catch (MailServiceException.NoSuchItemException nsie) {
         ZimbraLog.mailbox.warn("item %d has nonexistent tag %s", mId, name);
-        continue;
       }
     }
   }

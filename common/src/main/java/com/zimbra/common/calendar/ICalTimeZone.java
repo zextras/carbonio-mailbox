@@ -1086,13 +1086,11 @@ public class ICalTimeZone extends SimpleTimeZone {
             if (ICalTok.STANDARD.equals(tok)) {
                 if (standard == null) {
                     standard = tzComp;
-                    continue;
                 } else
                     standard = moreRecentTzComp(standard, tzComp);
             } else if (ICalTok.DAYLIGHT.equals(tok)) {
                 if (daylight == null) {
                     daylight = tzComp;
-                    continue;
                 } else
                     daylight = moreRecentTzComp(daylight, tzComp);
             }

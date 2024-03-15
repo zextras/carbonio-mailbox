@@ -89,7 +89,6 @@ class MimeParser {
 
                 if (bnd.isEmpty()) {
                     // "" means unspecified boundary, which matches anything starting with 2 dashes
-                    continue;
                 } else if (index >= bnd.length()) {
                     // end boundaries are represented by exactly 2 dashes after a boundary string
                     int trailers = bndData.getValue();

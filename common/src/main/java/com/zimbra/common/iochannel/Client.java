@@ -301,7 +301,6 @@ public class Client implements Runnable {
                             key.cancel();
                             peer.unsetActive();
                             peer.connect();
-                            continue;
                         }
                     }
                 }
@@ -312,7 +311,6 @@ public class Client implements Runnable {
                 if (!(e instanceof ClosedSelectorException)) {
                     // log the error and continue
                     log.warn("writing to peer server", e);
-                    continue;
                 }
             }
         }

@@ -764,7 +764,6 @@ public final class ImapFolder implements ImapListener.ImapFolderData, java.io.Se
                 int urange = range.getSecond();
                 if (lower > urange + 1) {
                     insertpos++;
-                    continue;
                 } else if (upper < lrange - 1) {
                     break;
                 } else {

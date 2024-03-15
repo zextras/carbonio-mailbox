@@ -617,7 +617,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
               "Ephemeral attribute %s doesn't support deletion by key; only deletion by key+value"
                   + " is supported",
               key);
-          continue;
         } else {
           for (Object v : values) {
             if (v == null) {

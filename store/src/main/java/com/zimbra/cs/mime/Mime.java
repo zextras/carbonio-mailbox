@@ -382,7 +382,6 @@ public class Mime {
                     bindex = dashes = 0;
                     failed = false;
                 } else if (failed) {
-                    continue;
                 } else if (dashes != 2) {
                     if (c == '-')
                         dashes++;
