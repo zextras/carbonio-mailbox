@@ -46,7 +46,7 @@ public class FailedTestInfo {
      */
     @SuppressWarnings("unused")
     private FailedTestInfo() {
-        this((String) null, (String) null, (String) null, (String) null);
+        this(null, null, null, null);
     }
 
     public FailedTestInfo(String name, String execSeconds,

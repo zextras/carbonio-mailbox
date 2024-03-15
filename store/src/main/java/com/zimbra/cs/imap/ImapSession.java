@@ -77,7 +77,7 @@ public class ImapSession extends ImapListener {
 
     synchronized int getFootprint() {
         // FIXME: consider saved search results, in-memory data for paged sessions
-        return mFolder instanceof ImapFolder ? ((ImapFolder) mFolder).getSize() : 0;
+        return mFolder instanceof ImapFolder ? mFolder.getSize() : 0;
     }
 
     /** If the folder is selected READ-WRITE, updates its high-water RECENT

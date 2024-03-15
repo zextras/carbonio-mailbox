@@ -163,7 +163,7 @@ public class ActionSelector {
      * no-argument constructor wanted by JAXB
      */
     protected ActionSelector() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public ActionSelector(String ids, String operation) {

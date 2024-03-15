@@ -62,7 +62,7 @@ public class FreeBusyProviderInfo {
      */
     @SuppressWarnings("unused")
     private FreeBusyProviderInfo() {
-        this((String) null, false, -1L, -1L, (String) null, (String) null);
+        this(null, false, -1L, -1L, null, null);
     }
 
     public FreeBusyProviderInfo(String name, boolean propagate,

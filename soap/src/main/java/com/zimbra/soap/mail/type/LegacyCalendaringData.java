@@ -69,7 +69,7 @@ public class LegacyCalendaringData extends CommonCalendaringData
 
   /** no-argument constructor wanted by JAXB */
   public LegacyCalendaringData() {
-    this((String) null, (String) null);
+    this(null, null);
   }
 
   public LegacyCalendaringData(String xUid, String uid) {

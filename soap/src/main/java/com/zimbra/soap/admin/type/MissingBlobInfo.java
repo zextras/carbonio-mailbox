@@ -70,7 +70,7 @@ public class MissingBlobInfo {
      */
     @SuppressWarnings("unused")
     private MissingBlobInfo() {
-        this(-1, -1, -1L, (short)-1, (String) null, false, -1);
+        this(-1, -1, -1L, (short)-1, null, false, -1);
     }
 
     public MissingBlobInfo(int id, int revision, long size, short volumeId, String blobPath, boolean external, int version) {

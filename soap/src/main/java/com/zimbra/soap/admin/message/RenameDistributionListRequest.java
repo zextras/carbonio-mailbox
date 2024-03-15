@@ -42,7 +42,7 @@ public class RenameDistributionListRequest {
      */
      @SuppressWarnings("unused")
     private RenameDistributionListRequest() {
-        this((String)null, (String)null);
+        this(null, null);
     }
 
     public RenameDistributionListRequest(String id, String newName) {

@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 public class DismissAppointmentAlarm extends DismissAlarm {
 
     public DismissAppointmentAlarm() {
-        this((String) null, -1L);
+        this(null, -1L);
     }
 
     public DismissAppointmentAlarm(String id, long dismissedAt) {

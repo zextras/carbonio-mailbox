@@ -33,7 +33,7 @@ public class AutoProvTaskControlResponse {
      */
     @SuppressWarnings("unused")
     private AutoProvTaskControlResponse() {
-        this((Status) null);
+        this(null);
     }
 
     public AutoProvTaskControlResponse(Status status) {

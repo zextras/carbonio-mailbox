@@ -36,7 +36,7 @@ public class CreateFolderRequest {
      */
     @SuppressWarnings("unused")
     private CreateFolderRequest() {
-        this((NewFolderSpec) null);
+        this(null);
     }
 
     public CreateFolderRequest(NewFolderSpec folder) {

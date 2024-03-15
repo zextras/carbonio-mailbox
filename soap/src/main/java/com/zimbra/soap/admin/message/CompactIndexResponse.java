@@ -27,7 +27,7 @@ public class CompactIndexResponse {
      */
      @SuppressWarnings("unused")
     private CompactIndexResponse() {
-        this((String) null);
+        this(null);
     }
 
     public CompactIndexResponse(String status) {

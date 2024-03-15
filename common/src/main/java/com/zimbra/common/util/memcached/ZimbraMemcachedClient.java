@@ -553,7 +553,7 @@ public class ZimbraMemcachedClient {
         public ByteArrayChunksTOC(String encoded) throws ServiceException {
             Map map;
             try {
-                map = (Map) BEncoding.decode(encoded);
+                map = BEncoding.decode(encoded);
             } catch (BEncodingException e) {
                 throw ServiceException.FAILURE("Invalid ByteArrayChunksTOC value: " + encoded, null);
             }
@@ -918,7 +918,7 @@ public class ZimbraMemcachedClient {
         ByteArray[] byteArrays = new ByteArray[numChunks];
         int index = 0;
         for (String ck : chunkKeys) {
-            ByteArray ba = (ByteArray) vals.get(ck);
+            ByteArray ba = vals.get(ck);
             if (ba == null)
                 return null;
             byteArrays[index] = ba;

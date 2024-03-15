@@ -317,7 +317,7 @@ public abstract class MailItemResource extends DavResource {
           if (se.getCode().equals(MailServiceException.ALREADY_EXISTS) == false) throw e;
           else { // get the conflicting item-id
             if (se instanceof SoapFaultException) { // destination belongs other mailbox.
-              String itemIdStr = ((SoapFaultException) se).getArgumentValue("id");
+              String itemIdStr = se.getArgumentValue("id");
               ItemId itemId = new ItemId(itemIdStr, dest.getItemId().getAccountId());
               id = itemId.getId();
             } else { // destination belongs to same mailbox.

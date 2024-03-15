@@ -108,14 +108,14 @@ public class KeyValuePair implements KeyAndValue {
             final String key = entry.getKey();
             final Object value = entry.getValue();
             if (value == null) {
-                newKeyValuePairs.add(new KeyValuePair(key, (String) null));
+                newKeyValuePairs.add(new KeyValuePair(key, null));
             } else if (value instanceof String) {
                 newKeyValuePairs.add(new KeyValuePair(key, (String) value));
             } else if (value instanceof String[]) {
                 final String[] values = (String[]) value;
                 if (values.length == 0) {
                     // an empty array == removing the keyValuePair
-                    newKeyValuePairs.add(new KeyValuePair(key, (String) null));
+                    newKeyValuePairs.add(new KeyValuePair(key, null));
                 } else {
                     for (final String v: values) {
                         newKeyValuePairs.add(new KeyValuePair(key, v));

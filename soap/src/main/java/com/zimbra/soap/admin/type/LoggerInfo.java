@@ -33,7 +33,7 @@ public final class LoggerInfo {
      * no-argument constructor wanted by JAXB
      */
     private LoggerInfo() {
-        this((String) null, (LoggingLevel) null);
+        this(null, null);
     }
 
     private LoggerInfo(String category, LoggingLevel level) {

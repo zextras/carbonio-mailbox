@@ -65,7 +65,7 @@ public class ExportContactsRequest {
      */
     @SuppressWarnings("unused")
     private ExportContactsRequest() {
-        this((String) null);
+        this(null);
     }
 
     public ExportContactsRequest(String contentType) {

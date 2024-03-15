@@ -129,7 +129,7 @@ public class ZimbraExtensionClassLoader extends URLClassLoader {
                 ZimbraLog.extensions.debug("Manifest attribute=" + name + " value=" + attrs.getValue(name));
             }
         }
-        String classname = (String) attrs.getValue(ZIMBRA_EXTENSION_CLASS);
+        String classname = attrs.getValue(ZIMBRA_EXTENSION_CLASS);
         if (classname == null) {
             if (ZimbraLog.extensions.isDebugEnabled()) {
                 ZimbraLog.extensions.debug("no extension class found in manifest of: " + file);

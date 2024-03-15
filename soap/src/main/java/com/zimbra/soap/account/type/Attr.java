@@ -145,14 +145,14 @@ public class Attr implements KeyAndValue {
             final String key = entry.getKey();
             final Object value = entry.getValue();
             if (value == null) {
-                newAttrs.add(new Attr(key, (String) null));
+                newAttrs.add(new Attr(key, null));
             } else if (value instanceof String) {
                 newAttrs.add(new Attr(key, (String) value));
             } else if (value instanceof String[]) {
                 final String[] values = (String[]) value;
                 if (values.length == 0) {
                     // an empty array == removing the attr
-                    newAttrs.add(new Attr(key, (String) null));
+                    newAttrs.add(new Attr(key, null));
                 } else {
                     for (final String v: values) {
                         newAttrs.add(new Attr(key, v));

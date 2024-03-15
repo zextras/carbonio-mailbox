@@ -224,7 +224,7 @@ public class CheckAttrRight extends CheckRight {
             return result;
 
         // as a group member, bump up the relativity
-        granteeFlags = (short)(GranteeFlag.F_GROUP);
+        granteeFlags = GranteeFlag.F_GROUP;
         result = expandACLToAttrs(acl, granteeFlags, relativity+1, subDomain, allowSome, denySome);
 
         return result;

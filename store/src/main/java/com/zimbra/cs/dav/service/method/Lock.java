@@ -72,7 +72,7 @@ public class Lock extends DavMethod {
 	        String owner;
 	        e = top.element(DavElements.E_OWNER);
 	        if (e != null && e.elementIterator(DavElements.E_HREF).hasNext()) {
-	            Element ownerElem = (Element)e.elementIterator(DavElements.E_HREF).next();
+	            Element ownerElem = e.elementIterator(DavElements.E_HREF).next();
 	            owner = ownerElem.getText();
 	        } else {
 	            owner = ctxt.getAuthAccount().getName();

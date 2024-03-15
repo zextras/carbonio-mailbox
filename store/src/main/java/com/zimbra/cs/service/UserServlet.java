@@ -870,7 +870,7 @@ public class UserServlet extends ZimbraServlet {
     Account target = Provisioning.getInstance().get(AccountBy.id, iid.getAccountId(), authToken);
     Map<String, String> pcopy = new HashMap<String, String>(params);
     pcopy.put(QP_ID, iid.toString());
-    return getRemoteContent(authToken, target, (String) null, pcopy);
+    return getRemoteContent(authToken, target, null, pcopy);
   }
 
   public static byte[] getRemoteContent(

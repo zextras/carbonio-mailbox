@@ -734,7 +734,7 @@ public class SoapProvisioning extends Provisioning {
   public <T> T invokeJaxb(Object jaxbObject) throws ServiceException {
     Element req = JaxbUtil.jaxbToElement(jaxbObject);
     Element res = invoke(req);
-    return (T) JaxbUtil.elementToJaxb(res);
+    return JaxbUtil.elementToJaxb(res);
   }
 
   @SuppressWarnings("unchecked")
@@ -742,14 +742,14 @@ public class SoapProvisioning extends Provisioning {
       throws ServiceException {
     Element req = JaxbUtil.jaxbToElement(jaxbObject);
     Element res = invokeOnTargetAccount(req, targetId);
-    return (T) JaxbUtil.elementToJaxb(res);
+    return JaxbUtil.elementToJaxb(res);
   }
 
   @SuppressWarnings("unchecked")
   public <T> T invokeJaxb(Object jaxbObject, String serverName) throws ServiceException {
     Element req = JaxbUtil.jaxbToElement(jaxbObject);
     Element res = invoke(req, serverName);
-    return (T) JaxbUtil.elementToJaxb(res);
+    return JaxbUtil.elementToJaxb(res);
   }
 
   public <T> T invokeJaxbAsAdminWithRetry(Object jaxbObject) throws ServiceException {
@@ -1932,7 +1932,7 @@ public class SoapProvisioning extends Provisioning {
 
   @Override
   public void getAllAccounts(Domain d, Visitor visitor) throws ServiceException {
-    getAllAccounts(d, (Server) null, visitor);
+    getAllAccounts(d, null, visitor);
   }
 
   @Override
@@ -1965,7 +1965,7 @@ public class SoapProvisioning extends Provisioning {
 
   @Override
   public void getAllCalendarResources(Domain d, Visitor visitor) throws ServiceException {
-    getAllCalendarResources(d, (Server) null, visitor);
+    getAllCalendarResources(d, null, visitor);
   }
 
   @Override

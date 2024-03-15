@@ -57,7 +57,7 @@ public class DtVal implements DtValInterface {
     @Override
     public DurationInfoInterface getDurationInterface() { return duration; }
     @Override
-    public void setStartTimeInterface(DtTimeInfoInterface endTime) { setStartTime((DtTimeInfo) startTime); }
+    public void setStartTimeInterface(DtTimeInfoInterface endTime) { setStartTime(startTime); }
     @Override
     public void setEndTimeInterface(DtTimeInfoInterface endTime) { setEndTime((DtTimeInfo) endTime); }
     @Override
@@ -78,7 +78,7 @@ public class DtVal implements DtValInterface {
             return null;
         List <DtValInterface> newList = Lists.newArrayList();
         for (DtVal param : params) {
-            newList.add((DtValInterface) param);
+            newList.add(param);
         }
         return newList;
     }

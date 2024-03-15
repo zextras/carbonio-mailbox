@@ -47,7 +47,7 @@ public class GetZimletStatus extends AdminDocumentHandler {
 		Iterator<Cos> cos = prov.getAllCos().iterator();
 		
 		while (cos.hasNext()) {
-		    Cos c = (Cos) cos.next();
+		    Cos c = cos.next();
 		    
 		    // check if the cos can be listed 
 		    if (!hasRightsToListCos(zsc, c, Admin.R_listCos, needGetAttrsRight()))

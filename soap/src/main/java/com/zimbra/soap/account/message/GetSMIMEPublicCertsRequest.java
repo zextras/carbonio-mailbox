@@ -56,7 +56,7 @@ public class GetSMIMEPublicCertsRequest {
      */
     @SuppressWarnings("unused")
     private GetSMIMEPublicCertsRequest() {
-        this((SMIMEPublicCertsStoreSpec) null);
+        this(null);
     }
 
     public GetSMIMEPublicCertsRequest(SMIMEPublicCertsStoreSpec store) {

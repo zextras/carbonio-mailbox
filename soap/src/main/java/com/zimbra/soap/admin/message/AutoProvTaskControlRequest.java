@@ -51,7 +51,7 @@ public class AutoProvTaskControlRequest {
      */
     @SuppressWarnings("unused")
     private AutoProvTaskControlRequest() {
-        this((Action)null);
+        this(null);
     }
     
     public AutoProvTaskControlRequest(Action action) {

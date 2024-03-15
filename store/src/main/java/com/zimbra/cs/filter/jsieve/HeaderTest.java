@@ -171,7 +171,7 @@ public class HeaderTest extends Header {
         }
         comparator = ZimbraComparatorUtils.getComparator(comparator, matchType);
         if (ASCII_NUMERIC_COMPARATOR.equalsIgnoreCase(comparator) && mail instanceof ZimbraMailAdapter) {
-            Require.checkCapability((ZimbraMailAdapter) mail, ASCII_NUMERIC_COMPARATOR);
+            Require.checkCapability(mail, ASCII_NUMERIC_COMPARATOR);
         }
         if (matchType != null
            && (HeaderConstants.COUNT.equalsIgnoreCase(matchType) || HeaderConstants.VALUE.equalsIgnoreCase(matchType) || IS_TAG.equalsIgnoreCase(matchType))) {

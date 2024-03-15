@@ -36,7 +36,7 @@ public class MimePartAttachSpec extends AttachSpec {
      */
     @SuppressWarnings("unused")
     private MimePartAttachSpec() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public MimePartAttachSpec(String messageId, String part) {

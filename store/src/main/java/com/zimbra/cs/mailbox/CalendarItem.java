@@ -1828,7 +1828,7 @@ public abstract class CalendarItem extends MailItem {
         cancelAll = true;
         // Canceling series.  Check the sequencing requirement to make sure the invite isn't
         // outdated.
-        Invite series = getInvite((RecurId) null);
+        Invite series = getInvite(null);
         // If series invite is not found, assume cancel is not outdated.
         outdated = series != null && !newInvite.isSameOrNewerVersion(series);
       } else {
@@ -3902,7 +3902,7 @@ public abstract class CalendarItem extends MailItem {
   public MimeMessage getSubpartMessage(int subId, boolean runConverters) throws ServiceException {
     try {
       MimeBodyPart mbp = findBodyBySubId(subId, runConverters);
-      return mbp == null ? null : (MimeMessage) Mime.getMessageContent(mbp);
+      return mbp == null ? null : Mime.getMessageContent(mbp);
     } catch (IOException e) {
       throw ServiceException.FAILURE("IOException while getting MimeMessage for item " + mId, e);
     } catch (MessagingException e) {
@@ -4689,7 +4689,7 @@ public abstract class CalendarItem extends MailItem {
       if (rid == null && newInvite.isCancel()) return true;
       Invite current = getInvite(rid);
       // If no matching recurrence-id was found, look at the current series.
-      if (current == null && rid != null) current = getInvite((RecurId) null);
+      if (current == null && rid != null) current = getInvite(null);
       if (current != null && !current.isPublic()) {
         // updating a currently private invite to public
         return true;

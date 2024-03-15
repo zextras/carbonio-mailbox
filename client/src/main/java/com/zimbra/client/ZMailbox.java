@@ -1071,7 +1071,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
                 ZimbraLog.mailbox.errorQuietly("Failed to parse jaxb object.", e);
               }
             });
-    return (T) JaxbUtil.elementToJaxb(res);
+    return JaxbUtil.elementToJaxb(res);
   }
 
   /**
@@ -1086,7 +1086,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
   @SuppressWarnings("unchecked")
   public <T> T invokeJaxb(Object jaxbObject) throws ServiceException {
     Element res = invokeJaxbToElement(jaxbObject);
-    return (T) JaxbUtil.elementToJaxb(res);
+    return JaxbUtil.elementToJaxb(res);
   }
 
   @SuppressWarnings("unchecked")
@@ -1094,7 +1094,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       throws ServiceException {
     Element req = JaxbUtil.jaxbToElement(jaxbObject);
     Element res = invoke(req, requestedAccountId);
-    return (T) JaxbUtil.elementToJaxb(res);
+    return JaxbUtil.elementToJaxb(res);
   }
 
   public Element invoke(Element request) throws ServiceException {
@@ -5426,7 +5426,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     CreateDataSourceRequest req = new CreateDataSourceRequest();
     DataSource jaxbObj = source.toJaxb();
     req.setDataSource(jaxbObj);
-    CreateDataSourceResponse resp = (CreateDataSourceResponse) invokeJaxb(req);
+    CreateDataSourceResponse resp = invokeJaxb(req);
     return resp.getDataSource().getId();
   }
 
@@ -5439,7 +5439,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     TestDataSourceRequest req = new TestDataSourceRequest();
     DataSource jaxbObj = source.toJaxb();
     req.setDataSource(jaxbObj);
-    TestDataSourceResponse resp = (TestDataSourceResponse) invokeJaxb(req);
+    TestDataSourceResponse resp = invokeJaxb(req);
     List<TestDataSource> dataSources = resp.getDataSources();
     int success = 0;
     if (dataSources.size() > 0 && dataSources.get(0) != null) {

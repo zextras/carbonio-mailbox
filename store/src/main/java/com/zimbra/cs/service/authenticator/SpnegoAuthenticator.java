@@ -142,7 +142,7 @@ public class SpnegoAuthenticator extends SSOAuthenticator {
 
                 Account acct = getAccountByPrincipal(user);
                 ZimbraPrincipal zimbraPrincipal = new ZimbraPrincipal(user.getName(), acct);
-                String clientName = ((SpnegoUserPrincipal)user).getName();
+                String clientName = user.getName();
                 String role = clientName.substring(clientName.indexOf('@') + 1);
                 String[] roles = new String[] {role};
                 DefaultUserIdentity defaultUserIdentity = new DefaultUserIdentity(identity.getSubject(), zimbraPrincipal, roles);

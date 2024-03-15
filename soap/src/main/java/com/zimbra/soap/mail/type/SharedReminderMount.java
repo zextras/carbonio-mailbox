@@ -35,7 +35,7 @@ public class SharedReminderMount {
      */
     @SuppressWarnings("unused")
     private SharedReminderMount() {
-        this((String) null, (Boolean) null);
+        this(null, null);
     }
 
     public SharedReminderMount(String id, Boolean showReminders) {

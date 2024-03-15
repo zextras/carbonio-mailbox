@@ -73,9 +73,9 @@ public class Check {
     try {
       InetAddress.getByName(hostname);
     } catch (UnknownHostException e) {
-      return new Provisioning.Result(STATUS_UNKNOWN_HOST, e, (String) null);
+      return new Provisioning.Result(STATUS_UNKNOWN_HOST, e, null);
     }
-    return new Provisioning.Result(STATUS_OK, "", (String) null);
+    return new Provisioning.Result(STATUS_OK, "", null);
   }
 
   public static Provisioning.Result checkExchangeAuth(

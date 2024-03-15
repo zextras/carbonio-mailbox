@@ -69,7 +69,7 @@ public class SessionForWaitSet {
      */
     @SuppressWarnings("unused")
     private SessionForWaitSet() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public SessionForWaitSet(String account, String interests) {

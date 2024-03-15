@@ -36,7 +36,7 @@ public class RightPermission {
      */
     @SuppressWarnings("unused")
     private RightPermission() {
-        this((Boolean) null);
+        this(null);
     }
 
     public RightPermission(Boolean allow) {

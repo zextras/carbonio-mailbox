@@ -581,7 +581,7 @@ public class CalendarCollection extends Collection {
           Invite oldInv = origCalItem.getInvite(i.getRecurId());
           if (oldInv == null && i.hasRecurId()) {
             // It's a new exception instance.  Inherit from series.
-            oldInv = origCalItem.getInvite((RecurId) null);
+            oldInv = origCalItem.getInvite(null);
           }
           if (oldInv != null) {
             MimeMessage mmInv = origCalItem.getSubpartMessage(oldInv.getMailItemId());

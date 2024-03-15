@@ -32,7 +32,7 @@ public class CheckHostnameResolveRequest {
      */
     @SuppressWarnings("unused")
     private CheckHostnameResolveRequest() {
-        this((String)null);
+        this(null);
     }
 
     public CheckHostnameResolveRequest(String hostname) {

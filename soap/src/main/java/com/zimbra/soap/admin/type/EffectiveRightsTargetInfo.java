@@ -41,15 +41,15 @@ public class EffectiveRightsTargetInfo extends EffectiveRightsInfo {
      */
     @SuppressWarnings("unused")
     private EffectiveRightsTargetInfo() {
-        this((TargetType) null, (String) null,
-                (String) null, (Iterable <RightWithName>) null,
-                (EffectiveAttrsInfo) null, (EffectiveAttrsInfo) null);
+        this(null, null,
+            null, null,
+            null, null);
     }
 
     public EffectiveRightsTargetInfo(TargetType type,
             String id, String name,
             EffectiveAttrsInfo setAttrs, EffectiveAttrsInfo getAttrs) {
-        this(type, id, name, (Iterable <RightWithName>) null,
+        this(type, id, name, null,
                 setAttrs, getAttrs);
     }
 

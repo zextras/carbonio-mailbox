@@ -109,7 +109,7 @@ public class TagInfo {
      */
     @SuppressWarnings("unused")
     private TagInfo() {
-        this((String) null);
+        this(null);
     }
 
     public TagInfo(String id) {

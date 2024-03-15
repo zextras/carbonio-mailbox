@@ -111,7 +111,7 @@ public class UserServletContext {
         public MailItem mailItem;
         public Item(String itemId, Account targetAccount) throws ServiceException {
             String[] vals = itemId.split("\\.");
-            ItemId iid = new ItemId((vals.length > 0) ? vals[0] : itemId, targetAccount == null ? (String) null : targetAccount.getId());
+            ItemId iid = new ItemId((vals.length > 0) ? vals[0] : itemId, targetAccount == null ? null : targetAccount.getId());
             id = iid.getId();
             if (targetAccount != null && !targetAccount.getId().equals(iid.getAccountId())) {
                 acctId = iid.getAccountId();

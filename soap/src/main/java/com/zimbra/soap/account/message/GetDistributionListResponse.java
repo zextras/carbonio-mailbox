@@ -24,7 +24,7 @@ public class GetDistributionListResponse {
     DistributionListInfo dl;
 
     public GetDistributionListResponse() {
-        this((DistributionListInfo)null);
+        this(null);
     }
 
     public GetDistributionListResponse(DistributionListInfo dl) {

@@ -43,7 +43,7 @@ public class EffectiveAttrsInfo {
      */
     @SuppressWarnings("unused")
     private EffectiveAttrsInfo() {
-        this((Boolean) null);
+        this(null);
     }
 
     private EffectiveAttrsInfo(Boolean all) {

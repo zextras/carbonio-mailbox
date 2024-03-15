@@ -31,7 +31,7 @@ public class ModifyContactResponse {
      */
     @SuppressWarnings("unused")
     private ModifyContactResponse() {
-        this((ContactInfo) null);
+        this(null);
     }
 
     public ModifyContactResponse(ContactInfo contact) {

@@ -73,7 +73,7 @@ public class AddressTest extends Address {
         }
         params.setComparator(ZimbraComparatorUtils.getComparator(params.getComparator(), params.getMatchType()));
         if (ASCII_NUMERIC_COMPARATOR.equalsIgnoreCase(params.getComparator())) {
-            Require.checkCapability((ZimbraMailAdapter) mail, ASCII_NUMERIC_COMPARATOR);
+            Require.checkCapability(mail, ASCII_NUMERIC_COMPARATOR);
         }
 
         if (HeaderConstants.COUNT.equals(params.getMatchType()) || HeaderConstants.VALUE.equals(params.getMatchType()) || IS_TAG.equalsIgnoreCase(params.getMatchType())) {

@@ -73,7 +73,7 @@ public class DedupeBlobsRequest {
      */
     @SuppressWarnings("unused")
     private DedupeBlobsRequest() {
-        this((DedupAction)null);
+        this(null);
     }
     
     public DedupeBlobsRequest(DedupAction action) {

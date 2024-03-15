@@ -96,8 +96,8 @@ public class ModifyContact extends MailDocumentHandler  {
                 }
                 ItemIdFormatter ifmt = new ItemIdFormatter(zsc);
                 ToXML.encodeContact(response, ifmt, octxt, con,
-                        (ContactGroup)null, (Collection<String>)null /* memberAttrFilter */, true /* summary */,
-                        (Collection<String>)null /* attrFilter */, fields, (String)null /* migratedDList */,
+                    null, null /* memberAttrFilter */, true /* summary */,
+                    null /* attrFilter */, fields, null /* migratedDList */,
                         false /* returnHiddenAttrs */,
                         GetContacts.NO_LIMIT_MAX_MEMBERS, true /* returnCertInfo */);
             } else {

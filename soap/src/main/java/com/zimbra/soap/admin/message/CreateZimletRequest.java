@@ -34,7 +34,7 @@ public class CreateZimletRequest extends AdminAttrsImpl {
      */
     @SuppressWarnings("unused")
     private CreateZimletRequest() {
-        this((String) null);
+        this(null);
     }
 
     public CreateZimletRequest(String name) {

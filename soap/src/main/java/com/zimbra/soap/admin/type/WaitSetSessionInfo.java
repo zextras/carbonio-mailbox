@@ -76,7 +76,7 @@ public class WaitSetSessionInfo {
      */
     @SuppressWarnings("unused")
     private WaitSetSessionInfo() {
-        this((String) null, -1, -1L, -1L, (String) null);
+        this(null, -1, -1L, -1L, null);
     }
 
     public WaitSetSessionInfo(String interestMask, int highestChangeId,

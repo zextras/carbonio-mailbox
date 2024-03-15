@@ -80,7 +80,7 @@ public class InviteTest extends AbstractTest {
         if (!(arg1 instanceof String)) {
             validationError(argList);
         }
-        if (!((String) arg1).equals(":method")) {
+        if (!arg1.equals(":method")) {
             validationError(argList);
         }
         if (!(arg2 instanceof List)) {

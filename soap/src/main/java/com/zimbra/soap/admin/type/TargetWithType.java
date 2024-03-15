@@ -35,7 +35,7 @@ public class TargetWithType {
      */
     @SuppressWarnings("unused")
     private TargetWithType() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public TargetWithType(String type, String value) {

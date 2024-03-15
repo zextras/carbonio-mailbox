@@ -946,7 +946,7 @@ public abstract class AdminAccessControl {
 
     private String printNeededRight(Entry target, Object needed) throws ServiceException {
       if ((needed instanceof AdminRight)
-          && AdminRight.PR_SYSTEM_ADMIN_ONLY == ((AdminRight) needed)) {
+          && AdminRight.PR_SYSTEM_ADMIN_ONLY == needed) {
         return AdminRightCheckPoint.Notes.SYSTEM_ADMINS_ONLY;
       }
 

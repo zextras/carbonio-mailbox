@@ -70,12 +70,12 @@ public class ChildAccount {
      */
      @SuppressWarnings("unused")
     private ChildAccount () {
-        this((String) null, (String) null, false, false);
+        this(null, null, false, false);
     }
 
     public ChildAccount(String id, String name,
             boolean isVisible, boolean isActive) {
-        this(id, name, isVisible, isActive, (Iterable<Attr>) null);
+        this(id, name, isVisible, isActive, null);
     }
 
     public ChildAccount(String id, String name,

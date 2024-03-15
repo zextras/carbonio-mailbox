@@ -60,9 +60,9 @@ public class RdateExdate implements Cloneable {
         }
         for (Object val : mValues) {
             if (val instanceof ParsedDateTime)
-                copy.addValue((ParsedDateTime) ((ParsedDateTime) val).clone());
+                copy.addValue(((ParsedDateTime) val).clone());
             else if (val instanceof ParsedDuration)
-                copy.addValue((ParsedDuration) ((ParsedDuration) val).clone());
+                copy.addValue(((ParsedDuration) val).clone());
         }
         return copy;
     }

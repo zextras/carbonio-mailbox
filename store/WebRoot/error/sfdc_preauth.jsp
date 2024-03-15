@@ -70,7 +70,7 @@ SPDX-License-Identifier: GPL-2.0-only
         private byte[] mKey;
 
         ByteKey(byte[] key) {
-            mKey = (byte[]) key.clone();
+            mKey = key.clone();
         }
 
         public byte[] getEncoded() {

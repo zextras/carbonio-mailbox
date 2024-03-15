@@ -17,7 +17,7 @@ public class Pop3DataSourceId extends Id {
      */
     @SuppressWarnings("unused")
     protected Pop3DataSourceId() {
-        this((String) null);
+        this(null);
     }
 
     Pop3DataSourceId(String id) {

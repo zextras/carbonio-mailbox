@@ -87,23 +87,23 @@ public class GranteeSelector {
      */
     @SuppressWarnings("unused")
     private GranteeSelector() {
-        this((GranteeType) null, (GranteeBy) null, (String) null, (Boolean) null, (String) null);
+        this(null, null, null, null, null);
     }
 
     public GranteeSelector(GranteeBy by, String key) {
-        this((GranteeType) null, by, key, (Boolean) null, (String) null);
+        this(null, by, key, null, null);
     }
 
     public GranteeSelector(GranteeType type, GranteeBy by, String key) {
-        this(type, by, key, (Boolean) null, (String) null);
+        this(type, by, key, null, null);
     }
 
     public GranteeSelector(GranteeType type, GranteeBy by, String key, String secret) {
-        this(type, by, key, (Boolean) null, secret);
+        this(type, by, key, null, secret);
     }
 
     public GranteeSelector(GranteeType type, GranteeBy by, String key, Boolean all) {
-        this(type, by, key, all, (String) null);
+        this(type, by, key, all, null);
     }
 
     public GranteeSelector(GranteeType type, GranteeBy by, String key, Boolean all, String secret) {

@@ -42,7 +42,7 @@ public class MsgActionRequest {
      */
     @SuppressWarnings("unused")
     private MsgActionRequest() {
-        this((ActionSelector) null);
+        this(null);
     }
 
     public MsgActionRequest(ActionSelector action) {

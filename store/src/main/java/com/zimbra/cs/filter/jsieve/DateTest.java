@@ -70,7 +70,7 @@ public class DateTest extends AbstractTest {
             Object argument = argumentsIter.next();
             if (argument instanceof StringListArgument) {
                 StringListArgument strList = (StringListArgument) argument;
-                String datestr = (String) strList.getList().get(0);
+                String datestr = strList.getList().get(0);
                 try {
                     date = mShortDateFormat.parse(datestr);
                 } catch (ParseException e) {

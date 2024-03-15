@@ -31,7 +31,7 @@ public class GetIMAPRecentRequest {
      */
     @SuppressWarnings("unused")
     private GetIMAPRecentRequest() {
-        this((String) null);
+        this(null);
     }
 
     public GetIMAPRecentRequest(String id) {

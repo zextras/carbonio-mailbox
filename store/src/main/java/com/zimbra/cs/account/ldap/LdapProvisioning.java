@@ -3065,7 +3065,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     final List<Domain> result = new ArrayList<Domain>();
     AllDomainIdsCollector collector = new AllDomainIdsCollector();
     BySearchResultEntrySearcher searcher =
-        new BySearchResultEntrySearcher(this, null, (Domain) null, ZIMBRA_ID_ATTR, collector);
+        new BySearchResultEntrySearcher(this, null, null, ZIMBRA_ID_ATTR, collector);
     searcher.doSearch(filterFactory.allDomains(), DOMAINS_OBJECT_TYPE);
     List<String> cacheMisses = Lists.newArrayList();
     for (String zimbraId : collector.domains) {
@@ -3911,7 +3911,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             @Override
             public void searchDirectory(SearchDirectoryOptions options, NamedEntry.Visitor visitor)
                 throws ServiceException {
-              ((LdapProvisioning) mProv).searchDirectory(options, visitor);
+              mProv.searchDirectory(options, visitor);
             }
 
             @Override
@@ -4223,7 +4223,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
   @Override
   public List<Server> getAllServers() throws ServiceException {
-    return getAllServers((String) null);
+    return getAllServers(null);
   }
 
   @Override
@@ -4951,7 +4951,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       throws ServiceException {
     GroupMembership groups = new GroupMembership();
     return LdapDynamicGroup.updateGroupMembershipForCustomDynamicGroups(
-        this, groups, acct, (Domain) null, adminGroupsOnly);
+        this, groups, acct, null, adminGroupsOnly);
   }
 
   /**
@@ -5071,7 +5071,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     GroupMembership groups = new GroupMembership();
     DistributionList.updateGroupMembership(
         this,
-        (ZLdapContext) null,
+        null,
         groups,
         acct,
         null /* via */,
@@ -5123,7 +5123,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     groups = new GroupMembership();
     DistributionList.updateGroupMembership(
         this,
-        (ZLdapContext) null,
+        null,
         groups,
         dl,
         null /* via */,

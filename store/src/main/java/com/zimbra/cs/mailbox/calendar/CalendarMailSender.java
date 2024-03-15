@@ -543,7 +543,7 @@ public class CalendarMailSender {
         descHtml,
         uid,
         cal,
-        (List<Attach>) null,
+        null,
         replyToSender);
   }
 

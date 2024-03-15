@@ -50,14 +50,14 @@ public class Attr extends KeyValuePair {
             String key = entry.getKey();
             Object value = entry.getValue();
             if (value == null) {
-                newAttrs.add(new Attr(key, (String) null));
+                newAttrs.add(new Attr(key, null));
             } else if (value instanceof String) {
                 newAttrs.add(new Attr(key, (String) value));
             } else if (value instanceof String[]) {
                 String[] values = (String[]) value;
                 if (values.length == 0) {
                     // an empty array == removing the attr
-                    newAttrs.add(new Attr(key, (String) null));
+                    newAttrs.add(new Attr(key, null));
                 } else {
                     for (String v: values) {
                         newAttrs.add(new Attr(key, v));

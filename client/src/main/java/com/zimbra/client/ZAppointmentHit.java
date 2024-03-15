@@ -668,11 +668,11 @@ public class ZAppointmentHit implements ZSearchHit {
   }
 
   public boolean isOverLapping(ZAppointmentHit that, long msecsIncr) {
-    long thisStart = ((long) (this.mStartTime / msecsIncr)) * msecsIncr;
-    long thisEnd = ((long) ((this.mEndTime + msecsIncr - 1) / msecsIncr)) * msecsIncr;
+    long thisStart = (this.mStartTime / msecsIncr) * msecsIncr;
+    long thisEnd = ((this.mEndTime + msecsIncr - 1) / msecsIncr) * msecsIncr;
 
-    long thatStart = ((long) (that.mStartTime / msecsIncr)) * msecsIncr;
-    long thatEnd = ((long) ((that.mEndTime + msecsIncr - 1) / msecsIncr)) * msecsIncr;
+    long thatStart = (that.mStartTime / msecsIncr) * msecsIncr;
+    long thatEnd = ((that.mEndTime + msecsIncr - 1) / msecsIncr) * msecsIncr;
 
     return thisStart < thatEnd && thisEnd > thatStart;
   }
@@ -687,11 +687,11 @@ public class ZAppointmentHit implements ZSearchHit {
 
   public static boolean isOverLapping(
       long start1, long end1, long start2, long end2, long msecsIncr) {
-    start1 = ((long) (start1 / msecsIncr)) * msecsIncr;
-    end1 = ((long) ((end1 + msecsIncr - 1) / msecsIncr)) * msecsIncr;
+    start1 = (start1 / msecsIncr) * msecsIncr;
+    end1 = ((end1 + msecsIncr - 1) / msecsIncr) * msecsIncr;
 
-    start2 = ((long) (start2 / msecsIncr)) * msecsIncr;
-    end2 = ((long) ((end2 + msecsIncr - 1) / msecsIncr)) * msecsIncr;
+    start2 = (start2 / msecsIncr) * msecsIncr;
+    end2 = ((end2 + msecsIncr - 1) / msecsIncr) * msecsIncr;
 
     return start1 < end2 && end1 > start2;
   }

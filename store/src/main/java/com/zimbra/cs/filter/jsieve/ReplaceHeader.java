@@ -51,7 +51,7 @@ public class ReplaceHeader extends AbstractCommand {
         }
         ZimbraMailAdapter mailAdapter = (ZimbraMailAdapter) mail;
         if (ASCII_NUMERIC_COMPARATOR.equalsIgnoreCase(ehe.getComparator())) {
-            Require.checkCapability((ZimbraMailAdapter) mail, ASCII_NUMERIC_COMPARATOR);
+            Require.checkCapability(mail, ASCII_NUMERIC_COMPARATOR);
         }
         Require.checkCapability(mailAdapter, CAPABILITY_EDITHEADER);
         if (!mailAdapter.getAccount().isSieveEditHeaderEnabled()) {

@@ -26,7 +26,7 @@ public class HostName {
      */
     @SuppressWarnings("unused")
     private HostName() {
-        this((String) null);
+        this(null);
     }
 
     public HostName(String hostName) {

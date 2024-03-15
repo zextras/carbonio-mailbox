@@ -140,7 +140,7 @@ public class ExtensionUtil {
     }
 
     public static synchronized void initAll() {
-        initAllMatching((ExtensionMatcher) null);
+        initAllMatching(null);
     }
 
     public static synchronized void init(String className) {

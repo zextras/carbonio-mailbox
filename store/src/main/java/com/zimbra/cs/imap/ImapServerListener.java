@@ -512,7 +512,7 @@ public class ImapServerListener {
                     envelope = W3cDomUtil.parseXML(response.getEntity().getContent());
                     SoapProtocol proto = SoapProtocol.determineProtocol(envelope);
                     Element doc = proto.getBodyElement(envelope);
-                    AdminWaitSetResponse wsResp = (AdminWaitSetResponse) JaxbUtil.elementToJaxb(doc);
+                    AdminWaitSetResponse wsResp = JaxbUtil.elementToJaxb(doc);
                     processAdminWaitSetResponse(wsResp);
                 } catch (Exception e) {
                     ZimbraLog.imap.error("Exception thrown while handling WaitSetResponse. ", e);

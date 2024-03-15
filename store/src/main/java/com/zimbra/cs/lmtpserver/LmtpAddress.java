@@ -118,7 +118,7 @@ public class LmtpAddress {
 	if (mParameters.isEmpty()) {
 	    return null;
 	}
-	return (String)mParameters.get(key.toUpperCase());
+	return mParameters.get(key.toUpperCase());
     }
 
     public LmtpReply getDeliveryStatus() {

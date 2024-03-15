@@ -699,7 +699,7 @@ public abstract class Element implements Cloneable {
                     content.append(node.getText());
                     break;
                 case org.dom4j.Node.ELEMENT_NODE:
-                    content.append(((org.dom4j.Element) node).asXML());
+                    content.append(node.asXML());
                     break;
             }
         }

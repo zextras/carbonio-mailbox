@@ -71,8 +71,8 @@ public class GetLoggerStatsRequest {
      */
     @SuppressWarnings("unused")
     private GetLoggerStatsRequest() {
-        this((HostName) null, (StatsSpec) null,
-                (TimeAttr) null, (TimeAttr) null);
+        this(null, null,
+            null, null);
     }
 
     public GetLoggerStatsRequest(HostName hostName, StatsSpec stats,

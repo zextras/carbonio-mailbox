@@ -76,7 +76,7 @@ public class InvitationInfo extends InviteComponent {
     private AttachmentsInfo attachments;
 
     public InvitationInfo() {
-        this((String) null, -1, false);
+        this(null, -1, false);
     }
 
     public InvitationInfo(String method, int componentNum, boolean rsvp) {

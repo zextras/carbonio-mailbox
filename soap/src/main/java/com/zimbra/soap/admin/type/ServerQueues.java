@@ -39,7 +39,7 @@ public class ServerQueues {
      */
     @SuppressWarnings("unused")
     private ServerQueues() {
-        this((String) null);
+        this(null);
     }
 
     public ServerQueues(String serverName) {

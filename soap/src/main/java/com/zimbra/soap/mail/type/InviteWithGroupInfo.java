@@ -58,7 +58,7 @@ public class InviteWithGroupInfo {
      */
     @SuppressWarnings("unused")
     private InviteWithGroupInfo() {
-        this((String) null);
+        this(null);
     }
 
     public InviteWithGroupInfo(String calItemType) {

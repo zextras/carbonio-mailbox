@@ -475,7 +475,7 @@ public class RemoteMailQueue {
         Searcher searcher = null;
         try {
             searcher = new IndexSearcher(indexReader);
-            TopDocs topDocs = searcher.search(query, (Filter) null, limit);
+            TopDocs topDocs = searcher.search(query, null, limit);
             ScoreDoc[] hits = topDocs.scoreDocs;
 
             if (offset < hits.length) {

@@ -23,7 +23,7 @@ public class GalContactInfo extends AdminAttrsImpl {
     private String id;
 
     public GalContactInfo() {
-        this((String) null);
+        this(null);
     }
 
     public GalContactInfo(String id) { this.id = id; }

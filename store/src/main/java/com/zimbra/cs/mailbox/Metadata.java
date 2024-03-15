@@ -126,7 +126,7 @@ public final class Metadata {
     }
 
     public Metadata(String encoded) throws MailServiceException {
-        this(encoded, (Integer) null);
+        this(encoded, null);
     }
 
     public Metadata(String encoded, Integer associatedItemId) throws MailServiceException {
@@ -137,7 +137,7 @@ public final class Metadata {
         }
         try {
             try {
-                map = (Map) BEncoding.decode(encoded);
+                map = BEncoding.decode(encoded);
             } catch (BEncodingException be) {
                 // Bug 87718 in some instances, it appears that an encoded string is getting corrupted by being
                 // treated at some point as if the bytes were ISO-8859-1 instead of UTF-8.  Try again with this reversed.
@@ -146,7 +146,7 @@ public final class Metadata {
                 if (be.getCause() != null && be.getCause() instanceof NumberFormatException) {
                     String fixedUpEncoded = new String(encoded.getBytes(Charsets.ISO_8859_1), Charsets.UTF_8);
                     try {
-                        map = (Map) BEncoding.decode(fixedUpEncoded);
+                        map = BEncoding.decode(fixedUpEncoded);
                         return;
                     } catch (Exception e) {
                     }

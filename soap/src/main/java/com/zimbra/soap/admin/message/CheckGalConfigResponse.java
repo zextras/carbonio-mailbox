@@ -45,7 +45,7 @@ public class CheckGalConfigResponse {
     private List <GalContactInfo> galContacts = Lists.newArrayList();
 
     public CheckGalConfigResponse() {
-        this((String)null, (String) null);
+        this(null, null);
     }
 
     public CheckGalConfigResponse(String code, String message) {

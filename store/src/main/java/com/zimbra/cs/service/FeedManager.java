@@ -782,7 +782,7 @@ public class FeedManager {
         // create the MIME message and wrap it
         try {
             MimeMessage mm = new Mime.FixedMimeMessage(JMSession.getSession());
-            MimePart body = hasAttachments ? new ZMimeBodyPart() : (MimePart) mm;
+            MimePart body = hasAttachments ? new ZMimeBodyPart() : mm;
             body.setText(content, "utf-8");
             body.setHeader("Content-Type", ctype);
 

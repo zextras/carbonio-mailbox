@@ -30,7 +30,7 @@ public class InstallCertResponse {
      */
     @SuppressWarnings("unused")
     private InstallCertResponse() {
-        this((String) null);
+        this(null);
     }
 
     public InstallCertResponse(String server) {

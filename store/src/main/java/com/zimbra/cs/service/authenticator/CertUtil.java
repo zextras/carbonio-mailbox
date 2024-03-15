@@ -549,7 +549,7 @@ public class CertUtil {
             certUtil.loadCert(certFilePath);
 
             if (cl.hasOption(O_DUMP)) {
-                certUtil.dumpCert((String)null);
+                certUtil.dumpCert(null);
             } else if (cl.hasOption(O_PRINT)) {
                 certUtil.printCert((String)null);
             } else if (cl.hasOption(O_GET)) {

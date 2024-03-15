@@ -29,7 +29,7 @@ public class DestroyWaitSetResponse {
      */
     @SuppressWarnings("unused")
     private DestroyWaitSetResponse() {
-        this((String) null);
+        this(null);
     }
 
     public DestroyWaitSetResponse(String waitSetId) {

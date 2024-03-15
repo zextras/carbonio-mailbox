@@ -115,7 +115,7 @@ public class NewMountpointSpec {
      */
     @SuppressWarnings("unused")
     private NewMountpointSpec() {
-        this((String) null);
+        this(null);
     }
 
     public NewMountpointSpec(String name) {

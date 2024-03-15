@@ -62,7 +62,7 @@ public class CalReply extends RecurIdInfo {
      */
     @SuppressWarnings("unused")
     private CalReply() {
-        this((String) null, (String) null, (String) null, -1, -1);
+        this(null, null, null, -1, -1);
     }
 
     public CalReply(String attendee, String sentBy, String partStat, int sequence, int date) {

@@ -289,7 +289,7 @@ public class MessageCache {
             String decryptionError = null;
             try {
                 decryptedMimeMessage = SmimeHandler.getHandler().decryptMessage(
-                    ((Message) item).getMailbox(), cnode.message, item.getId());
+                    item.getMailbox(), cnode.message, item.getId());
                 if (decryptedMimeMessage == null) {
                     decryptionError = MimeConstants.ERR_DECRYPTION_FAILED;
                 }

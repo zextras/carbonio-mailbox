@@ -36,7 +36,7 @@ public class GetMsgRequest {
      */
     @SuppressWarnings("unused")
     private GetMsgRequest() {
-        this((MsgSpec) null);
+        this(null);
     }
 
     public GetMsgRequest(MsgSpec msg) {

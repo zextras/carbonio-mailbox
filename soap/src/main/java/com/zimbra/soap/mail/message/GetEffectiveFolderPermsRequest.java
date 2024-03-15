@@ -34,7 +34,7 @@ public class GetEffectiveFolderPermsRequest {
      */
     @SuppressWarnings("unused")
     private GetEffectiveFolderPermsRequest() {
-        this((FolderSpec) null);
+        this(null);
     }
 
     public GetEffectiveFolderPermsRequest(FolderSpec folder) {

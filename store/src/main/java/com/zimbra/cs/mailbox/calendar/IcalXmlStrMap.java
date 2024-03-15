@@ -27,10 +27,10 @@ public class IcalXmlStrMap {
     }
     
     public String toXml(String name) {
-        return (String)(fwdMap.get(name.toUpperCase()));
+        return fwdMap.get(name.toUpperCase());
     }
     public String toIcal(String name) throws ServiceException {
-        String toRet = (String)(bakMap.get(name.toUpperCase()));
+        String toRet = bakMap.get(name.toUpperCase());
         if (toRet == null) {
             throw MailServiceException.INVALID_REQUEST("Unknown string '"+name+"' for parameter "+mMapName, null);
         }

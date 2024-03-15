@@ -27,7 +27,7 @@ public class DateString {
      */
     @SuppressWarnings("unused")
     private DateString() {
-        this((String) null);
+        this(null);
     }
 
     public DateString(String date) {

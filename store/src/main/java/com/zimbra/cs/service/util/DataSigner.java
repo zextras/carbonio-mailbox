@@ -50,7 +50,7 @@ public class DataSigner {
             pkcs12Store.load(targetStream, expPass);
             String alias = null;
             for (Enumeration<String> en = pkcs12Store.aliases(); en.hasMoreElements();) {
-                alias = (String) en.nextElement();
+                alias = en.nextElement();
             }
             X509Certificate cert = (X509Certificate) pkcs12Store.getCertificate(alias);
             PrivateKey privKey = (PrivateKey) pkcs12Store.getKey(alias, expPass);

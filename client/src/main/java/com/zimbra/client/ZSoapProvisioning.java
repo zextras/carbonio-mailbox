@@ -53,7 +53,7 @@ public class ZSoapProvisioning {
     throws ServiceException {
         Element req = JaxbUtil.jaxbToElement(jaxbObject);
         Element res = invoke(req);
-        return (T) JaxbUtil.elementToJaxb(res);
+        return JaxbUtil.elementToJaxb(res);
     }
 
     public synchronized Element invoke(Element request) throws ServiceException {

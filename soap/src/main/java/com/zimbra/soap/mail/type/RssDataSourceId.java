@@ -17,7 +17,7 @@ public class RssDataSourceId extends Id {
      */
     @SuppressWarnings("unused")
     protected RssDataSourceId() {
-        this((String) null);
+        this(null);
     }
 
     RssDataSourceId(String id) {

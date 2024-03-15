@@ -48,7 +48,7 @@ public class NewNoteSpec {
      */
     @SuppressWarnings("unused")
     private NewNoteSpec() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public NewNoteSpec(String folder, String content) {

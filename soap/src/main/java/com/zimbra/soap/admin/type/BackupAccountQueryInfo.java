@@ -45,7 +45,7 @@ public class BackupAccountQueryInfo {
      */
     @SuppressWarnings("unused")
     private BackupAccountQueryInfo() {
-        this((String) null);
+        this(null);
     }
 
     public BackupAccountQueryInfo(String name) {

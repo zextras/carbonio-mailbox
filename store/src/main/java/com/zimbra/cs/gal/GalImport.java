@@ -170,7 +170,7 @@ public class GalImport extends MailItemImport {
             for (String key : FILE_AS_STR_KEYS) {
                 Object fileAsStr = attrs.get(key);
                 if (fileAsStr != null && fileAsStr instanceof String) {
-                    attrs.put(ContactConstants.A_fileAs, ContactConstants.FA_EXPLICIT+":"+(String)fileAsStr);
+                    attrs.put(ContactConstants.A_fileAs, ContactConstants.FA_EXPLICIT+":"+ fileAsStr);
                     return;
                 }
             }
@@ -246,7 +246,7 @@ public class GalImport extends MailItemImport {
                 Object ldapValue = entry.getValue();
                 if (ldapValue instanceof String) {
                     String contactValue = contact.get(key);
-                    if (!((String)ldapValue).equals(contactValue))
+                    if (!ldapValue.equals(contactValue))
                         return false;
                 } else if (ldapValue instanceof String[]) {
                     try {

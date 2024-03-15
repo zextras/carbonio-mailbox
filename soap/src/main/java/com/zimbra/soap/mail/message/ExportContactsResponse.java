@@ -29,7 +29,7 @@ public class ExportContactsResponse {
      */
     @SuppressWarnings("unused")
     private ExportContactsResponse() {
-        this((String) null);
+        this(null);
     }
 
     public ExportContactsResponse(String content) {

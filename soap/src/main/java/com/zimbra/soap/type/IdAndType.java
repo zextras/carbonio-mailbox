@@ -32,7 +32,7 @@ public class IdAndType {
      */
     @SuppressWarnings("unused")
     private IdAndType() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public IdAndType(String id, String type) {

@@ -4608,7 +4608,7 @@ public abstract class ImapHandler {
                 continue;
             }
             // For newly created items, the UID is the same as the id in the target mailbox
-            ItemIdentifier itemIdentifier = new ItemIdentifier(copyId, (String)null /* defaultAccountId */);
+            ItemIdentifier itemIdentifier = new ItemIdentifier(copyId, null /* defaultAccountId */);
             createdList.add(itemIdentifier.id);
         }
         if (createdList.size() != identList.size()) {

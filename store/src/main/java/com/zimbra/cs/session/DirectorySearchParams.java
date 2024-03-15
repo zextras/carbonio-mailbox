@@ -52,7 +52,7 @@ class DirectorySearchParams {
         if (mRightChecker != null) {
             List<NamedEntry> allowed = new ArrayList<NamedEntry>();
             for (int i = 0; i < mResult.size(); i++) {
-                NamedEntry entry = (NamedEntry)mResult.get(i);
+                NamedEntry entry = mResult.get(i);
                 if (mRightChecker.allow(entry)) {
                     allowed.add(entry);
                 }

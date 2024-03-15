@@ -37,7 +37,7 @@ public class GrantInfo {
      */
     @SuppressWarnings("unused")
     private GrantInfo() {
-        this((TypeIdName) null, (GranteeInfo) null, (RightModifierInfo) null);
+        this(null, null, null);
     }
 
     public GrantInfo(TypeIdName target, GranteeInfo grantee,

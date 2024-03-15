@@ -744,10 +744,10 @@ final class ImapSessionManager {
             }
         }
         if (session instanceof ImapSession) {
-            fstore = mbox.getFolderById((OpContext)null, session.getFolderItemIdentifier().toString());
+            fstore = mbox.getFolderById(null, session.getFolderItemIdentifier().toString());
         } else {
             if (session.getAuthenticatedAccountId() == session.getTargetAccountId()) {
-                fstore = mbox.getFolderById((OpContext)null, session.getFolderItemIdentifier().toString());
+                fstore = mbox.getFolderById(null, session.getFolderItemIdentifier().toString());
             } else {
                 fstore = ((ZMailbox)mbox).getSharedFolderById(session.getFolderItemIdentifier().toString());
             }

@@ -33,7 +33,7 @@ public class QueueSummaryItem {
      */
     @SuppressWarnings("unused")
     private QueueSummaryItem() {
-        this(-1, (String) null);
+        this(-1, null);
     }
 
     public QueueSummaryItem(int count, String term) {

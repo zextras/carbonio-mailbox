@@ -251,7 +251,7 @@ public class ZimletFile implements Comparable<ZimletFile> {
 
     private void initZimletDescription() throws IOException, ZimletException {
         if (mDesc == null) {
-            ZimletEntry entry = (ZimletEntry)mEntries.get(mDescFile.toLowerCase());
+            ZimletEntry entry = mEntries.get(mDescFile.toLowerCase());
             if (entry == null) {
                 throw new FileNotFoundException("zimlet description not found: " + mDescFile);
             }
@@ -288,7 +288,7 @@ public class ZimletFile implements Comparable<ZimletFile> {
 
     private void initZimletConfig() throws IOException, ZimletException {
         if (mConfig == null) {
-            ZimletEntry entry = (ZimletEntry)mEntries.get(CONFIG_TMPL);
+            ZimletEntry entry = mEntries.get(CONFIG_TMPL);
             if (entry == null) {
                 throw new FileNotFoundException("zimlet config not found: " + CONFIG_TMPL);
             }

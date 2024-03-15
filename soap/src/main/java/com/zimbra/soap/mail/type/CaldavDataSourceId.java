@@ -17,7 +17,7 @@ public class CaldavDataSourceId extends Id {
      */
     @SuppressWarnings("unused")
     protected CaldavDataSourceId() {
-        this((String) null);
+        this(null);
     }
 
     CaldavDataSourceId(String id) {

@@ -41,7 +41,7 @@ public class ZimletDeploymentStatus {
      */
     @SuppressWarnings("unused")
     private ZimletDeploymentStatus() {
-        this((String) null, (String) null, (String) null);
+        this(null, null, null);
     }
 
     public ZimletDeploymentStatus(String server, String status, String error) {

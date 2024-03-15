@@ -28,7 +28,7 @@ public class AddGalSyncDataSourceResponse {
      */
     @SuppressWarnings("unused")
     private AddGalSyncDataSourceResponse() {
-        this((AccountInfo) null);
+        this(null);
     }
 
     public AddGalSyncDataSourceResponse(AccountInfo account) {

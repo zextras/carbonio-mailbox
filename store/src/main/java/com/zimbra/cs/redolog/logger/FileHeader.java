@@ -266,7 +266,7 @@ public class FileHeader {
             mFileSize = in.readLong();
             mSeq = in.readLong();
 
-            int serverIdLen = (int) in.readByte();
+            int serverIdLen = in.readByte();
             if (serverIdLen > SERVER_ID_FIELD_LEN)
                 throw new IOException("ServerId too long (" + serverIdLen +
                                       " bytes) in redolog header");

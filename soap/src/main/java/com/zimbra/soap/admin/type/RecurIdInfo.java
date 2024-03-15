@@ -47,7 +47,7 @@ public class RecurIdInfo implements RecurIdInfoInterface {
     private String recurIdZ;
 
     public RecurIdInfo() {
-        this(-1, (String) null);
+        this(-1, null);
     }
 
     public RecurIdInfo(int recurrenceRangeType, String recurrenceId) {

@@ -34,7 +34,7 @@ public class FailoverClusterServiceSpec {
      */
     @SuppressWarnings("unused")
     private FailoverClusterServiceSpec() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public FailoverClusterServiceSpec(String name, String newServer) {

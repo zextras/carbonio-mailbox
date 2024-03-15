@@ -127,8 +127,8 @@ public class CreateContact extends MailDocumentHandler  {
                     fields |= Change.MODSEQ;
                 }
                 ToXML.encodeContact(response, ifmt, octxt, con,
-                        (ContactGroup)null, (Collection<String>)null /* memberAttrFilter */, true /* summary */,
-                        (Collection<String>)null /* attrFilter */, fields, (String)null /* migratedDList */,
+                    null, null /* memberAttrFilter */, true /* summary */,
+                    null /* attrFilter */, fields, null /* migratedDList */,
                         false /* returnHiddenAttrs */, GetContacts.NO_LIMIT_MAX_MEMBERS, true /* returnCertInfo */);
             } else {
                 Element contct = response.addNonUniqueElement(MailConstants.E_CONTACT);

@@ -44,7 +44,7 @@ public class GetAdminConsoleUICompRequest {
      */
     @SuppressWarnings("unused")
     private GetAdminConsoleUICompRequest() {
-        this((AccountSelector) null, (DistributionListSelector) null);
+        this(null, null);
     }
 
     public GetAdminConsoleUICompRequest(AccountSelector account,

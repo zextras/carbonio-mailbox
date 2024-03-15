@@ -779,7 +779,7 @@ public class SendMsg extends MailDocumentHandler {
             RecurId rid = replyInv.getRecurId();
             Invite inv = calItem.getInvite(rid);
             if (inv == null && rid != null) { // replying to a non-exception instance
-              inv = calItem.getInvite((RecurId) null);
+              inv = calItem.getInvite(null);
             }
             if (inv != null) {
               ZOrganizer org = inv.getOrganizer();

@@ -107,7 +107,7 @@ public class AlarmInfo implements AlarmInfoInterface {
      */
     @SuppressWarnings("unused")
     private AlarmInfo() {
-        this((String) null);
+        this(null);
     }
 
     public AlarmInfo(String action) {

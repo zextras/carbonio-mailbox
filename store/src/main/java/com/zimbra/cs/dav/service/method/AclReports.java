@@ -96,7 +96,7 @@ public class AclReports extends Report {
             Element prop = ps.element(DavElements.E_PROP);
             Element match = ps.element(DavElements.E_MATCH);
             if (prop != null && match != null) {
-                Element e = (Element)prop.elements().get(0);
+                Element e = prop.elements().get(0);
                 ret.addAll(getMatchingPrincipals(ctxt, e.getQName(), match.getText(), type));
             }
         }

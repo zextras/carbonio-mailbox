@@ -42,7 +42,7 @@ public class RemoveDistributionListAliasRequest {
      */
      @SuppressWarnings("unused")
     private RemoveDistributionListAliasRequest() {
-        this((String)null, (String)null);
+        this(null, null);
     }
 
     public RemoveDistributionListAliasRequest(String id, String alias) {

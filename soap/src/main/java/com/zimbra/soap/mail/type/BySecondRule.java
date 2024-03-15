@@ -28,7 +28,7 @@ public class BySecondRule implements BySecondRuleInterface {
      */
     @SuppressWarnings("unused")
     private BySecondRule() {
-        this((String) null);
+        this(null);
     }
 
     public BySecondRule(String list) {

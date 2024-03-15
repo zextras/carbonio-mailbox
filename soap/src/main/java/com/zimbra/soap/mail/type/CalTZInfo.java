@@ -75,7 +75,7 @@ public class CalTZInfo implements CalTZInfoInterface {
      */
     @SuppressWarnings("unused")
     private CalTZInfo() {
-        this((String) null, (Integer) null, (Integer) null);
+        this(null, null, null);
     }
 
     public CalTZInfo(String id, Integer tzStdOffset, Integer tzDayOffset) {

@@ -33,7 +33,7 @@ public class LimitedQuery {
      */
     @SuppressWarnings("unused")
     private LimitedQuery() {
-        this((String) null, (Long) null);
+        this(null, null);
     }
 
     public LimitedQuery(String text, Long limit) {

@@ -125,7 +125,7 @@ public class NotifyMailto extends Notify {
                             if (stringList.size() != 1) {
                                 throw new SyntaxException("Expecting exactly one String for " + NOTIFY_FROM);
                             }
-                            String email = FilterUtil.replaceVariables(mailAdapter, (String) stringList.get(0));
+                            String email = FilterUtil.replaceVariables(mailAdapter, stringList.get(0));
                             // Validate email address using javax.mail.internet.InternetAddress
                             try {
                                 InternetAddress addr = new InternetAddress(email);
@@ -151,7 +151,7 @@ public class NotifyMailto extends Notify {
                             if (stringList.size() != 1) {
                                 throw new SyntaxException("Expecting exactly one String for " + NOTIFY_IMPORTANCE);
                             }
-                            String strImportance = (String) stringList.get(0);
+                            String strImportance = stringList.get(0);
                             FilterUtil.replaceVariables(mailAdapter, strImportance);
                             importance = Integer.parseInt(strImportance);
                             if (!(importance  == 1 || importance == 2 || importance == 3)) {
@@ -206,7 +206,7 @@ public class NotifyMailto extends Notify {
                             if (stringList.size() != 1) {
                                 throw new SyntaxException("Expecting exactly one String for " + NOTIFY_MESSAGE);
                             }
-                            message = FilterUtil.replaceVariables(mailAdapter, (String) stringList.get(0));
+                            message = FilterUtil.replaceVariables(mailAdapter, stringList.get(0));
                         } else {
                             throw new SyntaxException("Expecting a StringList for " + NOTIFY_MESSAGE);
                         }
@@ -229,7 +229,7 @@ public class NotifyMailto extends Notify {
                 if (stringList.size() != 1) {
                     throw new SyntaxException("Expecting exactly one String");
                 }
-                method = (String) stringList.get(0);
+                method = stringList.get(0);
             } else {
                 throw new SyntaxException("Expecting a StringList");
             }

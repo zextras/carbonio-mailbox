@@ -73,7 +73,7 @@ public class LdapEntryLocation extends EphemeralLocation {
       case IDENTITY:
         return ((Identity) entry).getId();
       case MIMETYPE:
-        return ((LdapMimeTypeBase) entry).getLabel();
+        return entry.getLabel();
       case SERVER:
         return ((Server) entry).getId();
       case SIGNATURE:

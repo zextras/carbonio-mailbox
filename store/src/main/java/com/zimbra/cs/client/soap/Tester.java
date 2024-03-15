@@ -290,8 +290,8 @@ public class Tester {
         Iterator i = s.iterator();
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry) i.next();
-            System.out.println("key " + (String) entry.getKey() + " value " +
-                    (String) entry.getValue());
+            System.out.println("key " + entry.getKey() + " value " +
+                entry.getValue());
         }
     }
 

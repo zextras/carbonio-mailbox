@@ -176,19 +176,19 @@ public abstract class LdapHelper {
         if (initZlc == null) {
             throw ServiceException.FAILURE("Unexpected null ldap context.", null);
         }
-        return getAttributes(initZlc, (LdapServerType) null, (LdapUsage) null, dn, returnAttrs);
+        return getAttributes(initZlc, null, null, dn, returnAttrs);
     }
 
     public ZAttributes getAttributes(ZLdapContext initZlc, String dn)
     throws LdapEntryNotFoundException, ServiceException {
         assert(initZlc != null);
-        return getAttributes(initZlc, (LdapServerType) null, (LdapUsage) null, dn, (String[]) null);
+        return getAttributes(initZlc, null, null, dn, null);
     }
 
     public ZAttributes getAttributes(LdapUsage usage, String dn)
     throws LdapEntryNotFoundException, ServiceException {
-        return getAttributes((ZLdapContext) null, LdapServerType.REPLICA, usage,
-                dn, (String[]) null);
+        return getAttributes(null, LdapServerType.REPLICA, usage,
+                dn, null);
     }
 
     /**

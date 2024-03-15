@@ -37,7 +37,7 @@ public class GetDataSourcesRequest extends AdminAttrsImpl {
      */
     @SuppressWarnings("unused")
     private GetDataSourcesRequest() {
-        this((String) null);
+        this(null);
     }
 
     public GetDataSourcesRequest(String id) {

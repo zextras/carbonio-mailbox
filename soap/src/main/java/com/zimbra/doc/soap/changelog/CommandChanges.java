@@ -234,7 +234,7 @@ public class CommandChanges {
             Ancestry ancestry, SoapApiSimpleElement baseElem, SoapApiSimpleElement currElem) {
         String baseJaxbClass = baseElem.getJaxb();
         SoapApiType baseType = baselineTypes.get(baseJaxbClass);
-        SoapApiSimpleElement simpleCurr = (SoapApiSimpleElement) currElem;
+        SoapApiSimpleElement simpleCurr = currElem;
         String currJaxbClass = simpleCurr.getJaxb();
         if (currJaxbClass == null) {
             // "curr" doesn't have attributes or sub-elements

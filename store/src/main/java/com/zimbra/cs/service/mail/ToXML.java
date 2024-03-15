@@ -754,8 +754,8 @@ public final class ToXML {
         ifmt,
         octxt,
         contact,
-        (ContactGroup) null,
-        (Collection<String>) null /* memberAttrFilter */,
+        null,
+        null /* memberAttrFilter */,
         summary,
         attrFilter,
         NOTIFY_FIELDS,
@@ -779,12 +779,12 @@ public final class ToXML {
         ifmt,
         octxt,
         contact,
-        (ContactGroup) null,
-        (Collection<String>) null /* memberAttrFilter */,
+        null,
+        null /* memberAttrFilter */,
         summary,
         attrFilter,
         fields,
-        (String) null /* migratedDlist */,
+        null /* migratedDlist */,
         false /* returnHiddenAttrs */,
         GetContacts.NO_LIMIT_MAX_MEMBERS,
         true /* returnCertInfo */);
@@ -819,7 +819,7 @@ public final class ToXML {
         returnHiddenAttrs,
         maxMembers,
         returnCertInfo,
-        (Set<String>) null);
+        null);
   }
 
   public static Element encodeContact(
@@ -2127,7 +2127,7 @@ public final class ToXML {
     if (inv.hasRecurId()) {
       ie.addAttribute(MailConstants.A_CAL_RECURRENCE_ID, inv.getRecurId().toString());
     }
-    encodeInviteComponent(ie, ifmt, octxt, cal, (ItemId) null, inv, NOTIFY_FIELDS, neuter);
+    encodeInviteComponent(ie, ifmt, octxt, cal, null, inv, NOTIFY_FIELDS, neuter);
 
     if (includeContent && (inv.isPublic() || allowPrivateAccess(octxt, cal))) {
       int invId = inv.getMailItemId();
@@ -2368,7 +2368,7 @@ public final class ToXML {
         }
         for (Invite inv : invites) {
           encodeInviteComponent(
-              invElt, ifmt, octxt, calItem, (ItemId) null, inv, NOTIFY_FIELDS, neuter);
+              invElt, ifmt, octxt, calItem, null, inv, NOTIFY_FIELDS, neuter);
         }
       }
 

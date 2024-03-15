@@ -78,7 +78,7 @@ public class ActionGrantSelector {
      */
     @SuppressWarnings("unused")
     private ActionGrantSelector() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public ActionGrantSelector(String rights, String grantType) {

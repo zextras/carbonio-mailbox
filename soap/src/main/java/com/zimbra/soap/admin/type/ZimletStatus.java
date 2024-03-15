@@ -68,7 +68,7 @@ public class ZimletStatus {
      */
     @SuppressWarnings("unused")
     private ZimletStatus() {
-        this((String) null, (ZimletStatusSetting) null, false, (Integer) null);
+        this(null, null, false, null);
     }
 
     public ZimletStatus(String name, ZimletStatusSetting status, boolean extension, Integer priority) {

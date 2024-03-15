@@ -2077,7 +2077,7 @@ public class Invite {
     List<Invite> list = new ArrayList<Invite>();
     for (ZVCalendar cal : cals) {
       createFromCalendar(
-          list, account, fragment, cal, sentByMe, (Mailbox) null, 0, continueOnError, visitor);
+          list, account, fragment, cal, sentByMe, null, 0, continueOnError, visitor);
     }
     return list;
   }

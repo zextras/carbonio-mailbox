@@ -78,7 +78,7 @@ implements CalendaringDataInterface {
      */
     @SuppressWarnings("unused")
     protected CalendaringData() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public CalendaringData(String xUid, String uid) {

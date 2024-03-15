@@ -46,7 +46,7 @@ public class SearchCalendarResourcesResponse {
     private List <CalendarResourceInfo> calResources = Lists.newArrayList();
 
     public SearchCalendarResourcesResponse() {
-        this(false, 0L, (Iterable <CalendarResourceInfo>) null);
+        this(false, 0L, null);
     }
 
     public SearchCalendarResourcesResponse(boolean more, long searchTotal,

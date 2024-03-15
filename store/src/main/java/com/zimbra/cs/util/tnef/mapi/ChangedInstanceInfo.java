@@ -215,14 +215,14 @@ public class ChangedInstanceInfo {
                 buf.append("        changeHLSize:").append(changeHighlightSize).append("\n");
                 buf.append("        changeHLValue:").append(changeHighlightValue).append("\n");
                 buf.append("        chgHLReserved:")
-                    .append(TNEFUtils.toHexString((byte[])chgHLReserved, (int)changeHighlightSize - 4))
+                    .append(TNEFUtils.toHexString(chgHLReserved, (int)changeHighlightSize - 4))
                     .append("\n");
             }
             if (rsrvBlockEE1Size != -1) {
                 buf.append("        rsrvBlockEE1Size:").append(rsrvBlockEE1Size).append("\n");
                 if (rsrvBlockEE1Size != 0) {
                     buf.append("        rsrvBlockEE1:")
-                        .append(TNEFUtils.toHexString((byte[])rsrvBlockEE1, (int)rsrvBlockEE1Size))
+                        .append(TNEFUtils.toHexString(rsrvBlockEE1, (int)rsrvBlockEE1Size))
                         .append("\n");
                 }
             }
@@ -244,7 +244,7 @@ public class ChangedInstanceInfo {
                 buf.append("        rsrvBlockEE2Size:").append(rsrvBlockEE2Size).append("\n");
                 if (rsrvBlockEE2Size != 0) {
                     buf.append("        rsrvBlockEE2:")
-                        .append(TNEFUtils.toHexString((byte[])rsrvBlockEE2, (int)rsrvBlockEE2Size))
+                        .append(TNEFUtils.toHexString(rsrvBlockEE2, (int)rsrvBlockEE2Size))
                         .append("\n");
                 }
             }

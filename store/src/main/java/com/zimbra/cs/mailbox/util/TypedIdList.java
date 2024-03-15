@@ -35,7 +35,7 @@ public final class TypedIdList implements Iterable<Map.Entry<MailItem.Type, List
         }
 
         public ItemInfo(int id, int folderId, String uuid) {
-            this(id, folderId, uuid, (Integer) null);
+            this(id, folderId, uuid, null);
         }
 
         public ItemInfo(int id, int folderId, String uuid, Integer modSequence) {
@@ -83,15 +83,15 @@ public final class TypedIdList implements Iterable<Map.Entry<MailItem.Type, List
 
     /** Adds an id/UUID pair to the list. */
     public void add(MailItem.Type type, Integer id, String uuid) {
-        add(type, id, (Integer) null, uuid, (Integer) null);
+        add(type, id, null, uuid, null);
     }
 
     public void add(MailItem.Type type, Integer id, Integer folderId, String uuid) {
-        add(type, id, folderId, uuid, (Integer) null);
+        add(type, id, folderId, uuid, null);
     }
 
     public void add(MailItem.Type type, Integer id, String uuid, Integer modSequence) {
-        add(type, id, (Integer)null, uuid, modSequence);
+        add(type, id, null, uuid, modSequence);
     }
 
     public void add(MailItem.Type type, Integer id, Integer folderId, String uuid, Integer modSequence) {

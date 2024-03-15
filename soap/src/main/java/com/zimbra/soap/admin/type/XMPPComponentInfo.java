@@ -46,7 +46,7 @@ public class XMPPComponentInfo extends AdminAttrsImpl {
      */
     @SuppressWarnings("unused")
     private XMPPComponentInfo() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public XMPPComponentInfo(String name, String id) {

@@ -22,7 +22,7 @@ public class CookieSpec {
     */
    @SuppressWarnings("unused")
    private CookieSpec() {
-       this((String) null);
+       this(null);
    }
    
    public CookieSpec(String name) {

@@ -346,7 +346,7 @@ public final class ParsedMessage {
             try {
                 wasMutated |= vclass.newInstance().accept(mimeMessage);
                 if (mimeMessage != expandedMessage) {
-                    ((MimeVisitor) vclass.newInstance()).accept(expandedMessage);
+                    vclass.newInstance().accept(expandedMessage);
                 }
             } catch (MessagingException e) {
                 throw e;

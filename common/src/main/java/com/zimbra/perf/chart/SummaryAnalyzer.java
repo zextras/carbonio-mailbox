@@ -73,7 +73,7 @@ public class SummaryAnalyzer {
         List<PlotSettings> settings = null;
         String key;
         while (it.hasNext()) {
-            key = (String) it.next();
+            key = it.next();
             if (key.indexOf(SummaryConstants.KEY_TO_DISK_UTIL) != -1 ) {
                 settings = mOutfilePlotsMap.get(key);
                 break;

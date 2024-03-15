@@ -241,12 +241,12 @@ public class RedoPlayer {
                     // corresponding op from map, and optionally execute the committed op.
                     RedoableOp prepareOp;
                     synchronized (mOpsMapGuard) {
-                        prepareOp = (RedoableOp) mOpsMap.remove(op.getTransactionId());
+                        prepareOp = mOpsMap.remove(op.getTransactionId());
                         if (prepareOp == null) {
                             mHasOrphanOps = true;
                             ZimbraLog.redolog.error("Commit/abort record encountered before corresponding change record (" + op + ")");
                             TransactionId tid = op.getTransactionId();
-                            RedoableOp x = (RedoableOp) mOrphanOps.get(tid);
+                            RedoableOp x = mOrphanOps.get(tid);
                             if (x != null)
                                 ZimbraLog.redolog.error("Op [" + op + "] is already in orphans map: value=" + x);
                             mOrphanOps.put(tid, op);

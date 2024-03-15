@@ -64,11 +64,11 @@ public abstract class RightBearer {
 
         @VisibleForTesting
         public Grantee(NamedEntry grantee) throws ServiceException {
-            this(grantee, (Set<Right>) null, true);
+            this(grantee, null, true);
         }
 
         protected Grantee(NamedEntry grantee, boolean adminOnly) throws ServiceException {
-            this(grantee, (Set<Right>) null, adminOnly);
+            this(grantee, null, adminOnly);
         }
 
         protected Grantee(NamedEntry grantee, Set <Right> rights, boolean adminOnly) throws ServiceException {
@@ -124,11 +124,11 @@ public abstract class RightBearer {
         }
 
         protected static Grantee getGrantee(NamedEntry namedEntry) throws ServiceException {
-            return getGrantee(namedEntry, (Set<Right>) null, true);
+            return getGrantee(namedEntry, null, true);
         }
 
         protected static Grantee getGrantee(NamedEntry namedEntry, boolean adminOnly) throws ServiceException {
-            return getGrantee(namedEntry, (Set<Right>) null, adminOnly);
+            return getGrantee(namedEntry, null, adminOnly);
         }
 
         private static Grantee getGranteeFromCache(NamedEntry namedEntry, Set <Right> right, boolean adminOnly)

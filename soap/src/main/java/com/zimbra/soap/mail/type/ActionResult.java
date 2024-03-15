@@ -53,7 +53,7 @@ public class ActionResult {
      * no-argument constructor wanted by JAXB
      */
     protected ActionResult() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public ActionResult(String id, String operation) {

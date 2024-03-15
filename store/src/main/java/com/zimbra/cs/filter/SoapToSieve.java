@@ -442,7 +442,7 @@ public final class SoapToSieve {
 
     private static String toSieve(FilterTest.AddressTest test) throws ServiceException {
         if (test instanceof FilterTest.EnvelopeTest) {
-            return formatAddress((FilterTest.EnvelopeTest) test, "envelope");
+            return formatAddress(test, "envelope");
         }
         return formatAddress(test, "address");
     }

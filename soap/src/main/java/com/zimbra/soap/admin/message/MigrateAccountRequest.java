@@ -33,7 +33,7 @@ public class MigrateAccountRequest {
      */
     @SuppressWarnings("unused")
     private MigrateAccountRequest() {
-        this((IdAndAction) null);
+        this(null);
     }
 
     public MigrateAccountRequest(IdAndAction migrate) {

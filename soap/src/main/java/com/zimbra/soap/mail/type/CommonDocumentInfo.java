@@ -195,7 +195,7 @@ public class CommonDocumentInfo {
     private Acl acl;
 
     public CommonDocumentInfo() {
-        this((String) null);
+        this(null);
     }
 
     public CommonDocumentInfo(String id) {

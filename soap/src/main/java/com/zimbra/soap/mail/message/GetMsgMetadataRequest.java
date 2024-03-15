@@ -34,7 +34,7 @@ public class GetMsgMetadataRequest {
      */
     @SuppressWarnings("unused")
     private GetMsgMetadataRequest() {
-        this((IdsAttr) null);
+        this(null);
     }
 
     public GetMsgMetadataRequest(IdsAttr msgIds) {

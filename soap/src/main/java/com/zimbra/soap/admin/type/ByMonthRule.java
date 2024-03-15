@@ -28,7 +28,7 @@ public class ByMonthRule implements ByMonthRuleInterface {
      */
     @SuppressWarnings("unused")
     private ByMonthRule() {
-        this((String) null);
+        this(null);
     }
 
     public ByMonthRule(String list) {

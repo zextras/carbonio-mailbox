@@ -274,8 +274,8 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
                     baos.write(vcard.getFormatted().getBytes(MimeConstants.P_CHARSET_UTF8));
                     ZimbraLog.test.debug("contact vcard: %s", vcard.getFormatted());
                 } else {
-                    baos.write(IOUtils.toByteArray(((ZContact)item).getContentStream()));
-                    ZimbraLog.test.debug("zcontact vcard: %s", IOUtils.toString(((ZContact)item).getContentStream()));
+                    baos.write(IOUtils.toByteArray(item.getContentStream()));
+                    ZimbraLog.test.debug("zcontact vcard: %s", IOUtils.toString(item.getContentStream()));
                 }
 
                 return new InputStreamWithSize(new SharedByteArrayInputStream(baos.toByteArray()), (long)baos.size());

@@ -17,7 +17,7 @@ public class UnknownDataSourceId extends Id {
      */
     @SuppressWarnings("unused")
     protected UnknownDataSourceId() {
-        this((String) null);
+        this(null);
     }
 
     UnknownDataSourceId(String id) {

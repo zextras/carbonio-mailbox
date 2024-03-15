@@ -25,7 +25,7 @@ public class ZimbraSoapUtils {
     public static <T> T invokeJaxb(SoapHttpTransport transport, Object jaxbObject) throws ServiceException {
         Element req = JaxbUtil.jaxbToElement(jaxbObject);
         Element res = invoke(transport,req);
-        return (T) JaxbUtil.elementToJaxb(res);
+        return JaxbUtil.elementToJaxb(res);
     }
 
     private static Element invoke(SoapHttpTransport transport,Element request) throws ServiceException {
