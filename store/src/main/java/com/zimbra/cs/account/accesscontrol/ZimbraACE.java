@@ -254,12 +254,12 @@ public class ZimbraACE {
      * @param other
      */
     private ZimbraACE(ZimbraACE other) {
-        mGrantee = new String(other.mGrantee);
+        mGrantee = other.mGrantee;
         mGranteeType = other.mGranteeType;
         mRight = other.mRight;
         mRightModifier = other.mRightModifier;
         if (other.mSecret != null)
-            mSecret = new String(other.mSecret);
+            mSecret = other.mSecret;
 
         mTargetType = other.mTargetType;
         mTargetName = other.mTargetName;

@@ -110,7 +110,7 @@ public class RandomPassword {
     }
 
     private static void usage() {
-        System.out.println("");
+        System.out.println();
         System.out.println("RandomPassword [-l] <minLength> <maxLength>");
         System.exit(1);
     }

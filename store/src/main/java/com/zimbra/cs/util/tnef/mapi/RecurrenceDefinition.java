@@ -738,15 +738,15 @@ public class RecurrenceDefinition {
                 .append(deletedInstanceCount).append("\n");
         for (long since1601 : delMidnightMinsSince1601) {
             long timeSince1601 = since1601 + startTimeOffset;
-            String suffix = new String("");
+            String suffix = "";
             if (changedInstances != null) {
                 for (ChangedInstanceInfo cInst : changedInstances) {
                     if (cInst.getOrigStartMinsSince1601() == timeSince1601) {
                         EnumSet <ExceptionInfoOverrideFlag> overrideFlags = cInst.getOverrideFlags();
                         if ( (overrideFlags == null) || (overrideFlags.isEmpty()) ) {
-                            suffix = new String(" [changed - exdate/rdate]");
+                            suffix = " [changed - exdate/rdate]";
                         } else {
-                            suffix = new String(" [changed - exception]");
+                            suffix = " [changed - exception]";
                         }
                         break;
                     }

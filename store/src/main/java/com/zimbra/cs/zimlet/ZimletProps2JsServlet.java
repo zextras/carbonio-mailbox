@@ -373,7 +373,7 @@ public class ZimletProps2JsServlet extends HttpServlet {
             StringBuilder str = new StringBuilder();
             int index = 0;
             do {
-                str.append(s.substring(index, matcher.start()));
+                str.append(s, index, matcher.start());
                 String pname = matcher.group(1);
                 String pvalue = System.getProperty(pname);
                 str.append(pvalue != null ? pvalue : matcher.group(0));

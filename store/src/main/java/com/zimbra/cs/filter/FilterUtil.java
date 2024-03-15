@@ -907,13 +907,13 @@ public final class FilterUtil {
         while (start1 < sourceStr.length()) {
             int start2 = sourceStr.indexOf("${", start1);
             if (start2 >= 0) {
-                resultStr.append(sourceStr.substring(start1, start2));
+                resultStr.append(sourceStr, start1, start2);
                 end = sourceStr.indexOf("}", start2 + 2);
                 if (end > 0) {
                     int start3 = sourceStr.indexOf("${", start2 + 2);
                     if (start3 > start2 && start3 < end) {
                         start1 = start3;
-                        resultStr.append(sourceStr.substring(start2, start3));
+                        resultStr.append(sourceStr, start2, start3);
                     } else {
                         // a variable name found
                         String key = sourceStr.substring(start2 + 2, end).toLowerCase();
@@ -933,18 +933,18 @@ public final class FilterUtil {
                             }
                         } else {
                             // the variable name contains some invalid characters
-                            resultStr.append(sourceStr.substring(start2, end + 1));
+                            resultStr.append(sourceStr, start2, end + 1);
                         }
                         start1 = end + 1;
                     }
                 } else {
                     // no corresponding }
-                    resultStr.append(sourceStr.substring(start2, sourceStr.length()));
+                    resultStr.append(sourceStr.substring(start2));
                     break;
                 }
             } else {
                 // no more ${
-                resultStr.append(sourceStr.substring(end + 1, sourceStr.length()));
+                resultStr.append(sourceStr.substring(end + 1));
                 break;
             }
         }

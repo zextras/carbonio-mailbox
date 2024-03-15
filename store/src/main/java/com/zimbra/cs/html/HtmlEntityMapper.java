@@ -59,7 +59,7 @@ public final class HtmlEntityMapper {
 
         while (curIdx < s.length()) {
             if (m.find(curIdx)) {
-                toRet.append(s.substring(curIdx, m.start()));
+                toRet.append(s, curIdx, m.start());
                 String id = m.group(1);
                 if (map.containsKey(id)) {
                     toRet.append(prefix).append(map.get(id)).append(";");
@@ -113,7 +113,7 @@ public final class HtmlEntityMapper {
 
         while (curIdx < s.length()) {
             if (m.find(curIdx)) {
-                toRet.append(s.substring(curIdx, m.start()));
+                toRet.append(s, curIdx, m.start());
                 boolean ok = false;
                 try {
                     Integer id = Integer.parseInt(m.group(1));

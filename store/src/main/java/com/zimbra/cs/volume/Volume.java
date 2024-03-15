@@ -368,9 +368,9 @@ public final class Volume {
     StringBuilder result = new StringBuilder();
     if (path.matches("^[a-zA-Z]:[/\\\\].*$")) {
       // windows path with drive letter
-      result.append(path.substring(0, 2)).append(File.separator);
+      result.append(path, 0, 2).append(File.separator);
       path = path.substring(3);
-    } else if (path.length() >= 2 && path.substring(0, 2).equals("\\\\")) {
+    } else if (path.length() >= 2 && path.startsWith("\\\\")) {
       // windows UNC share
       result.append("\\\\");
       String original = path;
@@ -385,7 +385,7 @@ public final class Volume {
       }
       backslash = Math.min(slash, backslash);
       if (backslash >= 0) {
-        result.append(path.substring(0, backslash)).append(File.separator);
+        result.append(path, 0, backslash).append(File.separator);
         path = path.substring(backslash + 1);
       } else {
         throw VolumeServiceException.NOT_ABSOLUTE_PATH(original);

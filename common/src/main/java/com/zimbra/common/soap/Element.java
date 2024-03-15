@@ -1456,7 +1456,7 @@ public abstract class Element implements Cloneable {
         private void marshal(Appendable out, int indent, boolean safe) throws IOException {
             indent = indent < 0 ? -1 : indent + INDENT_SIZE;
             out.append('{');
-            boolean needNamespace = mNamespaces == null ? false : namespaceDeclarationNeeded("", mNamespaces.get("").toString());
+            boolean needNamespace = mNamespaces == null ? false : namespaceDeclarationNeeded("", mNamespaces.get(""));
             int size = mAttributes.size() + (needNamespace ? 1 : 0), lsize;
             if (size != 0) {
                 int index = 0;
@@ -1862,11 +1862,11 @@ public abstract class Element implements Cloneable {
                 if (sb == null)
                     sb = new StringBuilder(str.substring(0, i));
                 else
-                    sb.append(str.substring(last, i));
+                    sb.append(str, last, i);
                 sb.append(replacement);
                 last = i + 1;
             }
-            return (sb == null ? str : sb.append(str.substring(last, i)).toString());
+            return (sb == null ? str : sb.append(str, last, i).toString());
         }
 
         /**

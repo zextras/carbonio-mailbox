@@ -519,7 +519,7 @@ public class FileUtil {
         if (lastDot == filename.length() - 1) {
             return "";
         }
-        return filename.substring(lastDot + 1, filename.length());
+        return filename.substring(lastDot + 1);
     }
     
     /**

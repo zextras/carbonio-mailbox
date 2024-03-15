@@ -262,7 +262,7 @@ public class GetMiniCal extends CalendarRequest {
             ZMailbox zmbx = ZMailbox.getMailbox(zoptions);
             zmbx.setName(target.getName()); /* need this when logging in using another user's auth */
             String remoteIds[] = new String[remoteFolders.size()];
-            for (int i=0; i < remoteIds.length; i++) remoteIds[i] = remoteFolders.get(i).toString();
+            for (int i=0; i < remoteIds.length; i++) remoteIds[i] = remoteFolders.get(i);
             ZGetMiniCalResult result = zmbx.getMiniCal(rangeStart, rangeEnd, remoteIds);
             Set<String> dates = result.getDates();
             if (dates != null) {

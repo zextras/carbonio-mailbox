@@ -1168,7 +1168,7 @@ public class Mime {
                     sb.append((char) calc);
                     start = -1;
                 } else {
-                    sb.append(raw.substring(start, i--));
+                    sb.append(raw, start, i--);
                     start = -1;
                 }
             } else if (c == '&' && i < len - 3 && raw.charAt(i + 1) == '#') {

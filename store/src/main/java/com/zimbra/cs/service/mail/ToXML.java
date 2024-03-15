@@ -3358,7 +3358,7 @@ public final class ToXML {
           data = sw.toString();
         } else {
           String cte = mp.getEncoding();
-          if (cte != null && !cte.trim().toLowerCase().equals(MimeConstants.ET_7BIT)) {
+          if (cte != null && !cte.trim().equalsIgnoreCase(MimeConstants.ET_7BIT)) {
             try {
               DefangFactory.getDefanger(ctype).defang(stream, neuter, out);
               data = sw.toString();

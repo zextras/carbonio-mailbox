@@ -332,7 +332,7 @@ public class LdifFormatter extends Formatter {
         String domain;
 
         if (lastIndexOfAt != -1) {
-            domain = value.substring(lastIndexOfAt + 1, value.length());
+            domain = value.substring(lastIndexOfAt + 1);
             dc = domain.split("\\.");
         }
         return dc;

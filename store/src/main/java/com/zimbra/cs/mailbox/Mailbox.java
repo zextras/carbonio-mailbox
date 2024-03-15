@@ -4494,7 +4494,7 @@ public class Mailbox implements MailboxStore {
   @Override
   public FolderStore getFolderById(OpContext octxt, String id) throws ServiceException {
     try {
-      String idString = ItemIdentifier.asSimplestString(id, this.getAccountId()).toString();
+      String idString = ItemIdentifier.asSimplestString(id, this.getAccountId());
       Folder fldr = getFolderById((OperationContext) octxt, Integer.parseInt(idString));
       return fldr;
     } catch (NumberFormatException nfe) {

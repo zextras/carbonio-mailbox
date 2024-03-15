@@ -176,7 +176,7 @@ public class StringUtil {
                 sb = new StringBuilder(len - 1);
             }
             if (start < i) {
-                sb.append(string.substring(start, i));
+                sb.append(string, start, i);
             }
             start = i + 1;
         }
@@ -207,7 +207,7 @@ public class StringUtil {
                     sb = new StringBuilder(len - 1);
                 }
                 if (start < i) {
-                    sb.append(string.substring(start, i));
+                    sb.append(string, start, i);
                 }
                 sb.append('?');
                 start = ++i + 1;
@@ -404,7 +404,7 @@ public class StringUtil {
                 if (sb == null) {
                     sb = new StringBuilder();
                 }
-                sb.append(line.substring(0, line.length()-1));
+                sb.append(line, 0, line.length()-1);
             } else {
                 break;
             }
@@ -738,12 +738,12 @@ public class StringUtil {
             if (sb == null) {
                 sb = new StringBuilder(str.substring(0, i));
             } else {
-                sb.append(str.substring(last, i));
+                sb.append(str, last, i);
             }
             sb.append(replacement);
             last = i + 1;
         }
-        return (sb == null ? str : sb.append(str.substring(last, i)).toString());
+        return (sb == null ? str : sb.append(str, last, i).toString());
     }
 
     public static String jsEncodeKey(String key) {
@@ -1054,7 +1054,7 @@ public class StringUtil {
                 break;
             default:
                 int maskLen = len - 3;
-                maskedEmail.append(local.substring(0, 3)).append(new String(new char[maskLen]).replace("\0", "*"));
+                maskedEmail.append(local, 0, 3).append(new String(new char[maskLen]).replace("\0", "*"));
                 break;
         }
         maskedEmail.append("@").append(parts[1]);

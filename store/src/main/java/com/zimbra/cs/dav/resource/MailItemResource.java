@@ -525,7 +525,7 @@ public abstract class MailItemResource extends DavResource {
       OutputFormat format = OutputFormat.createCompactFormat();
       XMLWriter writer = new XMLWriter(out, format);
       writer.write(doc);
-      configVal = new String(out.toByteArray(), "UTF-8");
+      configVal = out.toString("UTF-8");
 
       if (configVal.length() > PROP_LENGTH_LIMIT)
         for (Map.Entry<QName, Element> entry : mDeadProps.entrySet())

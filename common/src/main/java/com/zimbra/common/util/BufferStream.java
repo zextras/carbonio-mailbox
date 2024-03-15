@@ -336,7 +336,7 @@ public class BufferStream extends OutputStream {
         UnsupportedEncodingException {
         sync();
         if (buf == null)
-            return new String();
+            return "";
         else if (file == null)
             return new String(buf, 0, (int)size, cset);
         else

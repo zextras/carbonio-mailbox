@@ -205,7 +205,7 @@ public class ContentRange
                 range.setStartAndEnd(start, end);
             }
 
-            String instanceLengthStr = header.substring(slashPos + 1, header.length()).trim();
+            String instanceLengthStr = header.substring(slashPos + 1).trim();
 
             if (!instanceLengthStr.equals("*")) {
                 range.setInstanceLength(Long.parseLong(instanceLengthStr));

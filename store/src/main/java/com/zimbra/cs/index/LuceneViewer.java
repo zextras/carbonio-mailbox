@@ -195,7 +195,7 @@ public class LuceneViewer {
         Collection<String> fieldNames = mIndexReader.getFieldNames(
                 IndexReader.FieldOption.ALL);
         for (String fieldName : fieldNames) {
-            outputLn("    " + fieldName.toString());
+            outputLn("    " + fieldName);
         }
     }
 

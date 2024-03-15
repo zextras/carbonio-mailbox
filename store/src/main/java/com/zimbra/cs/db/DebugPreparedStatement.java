@@ -76,7 +76,7 @@ class DebugPreparedStatement extends DelegatingPreparedStatement {
         int paramIndex = 1;
         
         while (qPos >= 0) {
-            buf.append(mSql.substring(start, qPos));
+            buf.append(mSql, start, qPos);
             if (paramIndex == mParams.size()) {
                 throw new IllegalStateException("Not enough parameters bound for SQL: " + mSql);
             }
@@ -104,7 +104,7 @@ class DebugPreparedStatement extends DelegatingPreparedStatement {
         
         if (start < mSql.length()) {
             // Append the rest of the string
-            buf.append(mSql.substring(start, mSql.length()));
+            buf.append(mSql.substring(start));
         }
         return buf.toString();
     }

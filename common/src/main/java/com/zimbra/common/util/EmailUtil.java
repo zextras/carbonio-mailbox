@@ -41,7 +41,7 @@ public class EmailUtil
             return null;
         }
 
-        String domain = address.substring(at + 1, address.length());
+        String domain = address.substring(at + 1);
         if (domain.length() == 0) {
             return null;
         }

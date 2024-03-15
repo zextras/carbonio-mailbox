@@ -177,7 +177,7 @@ public class MimeHeaderBlock implements Iterable<MimeHeader> {
 
 
     void announce(String hdrName, MimeHeader header) {
-        if (parent != null && hdrName.toLowerCase().equals("content-type")) {
+        if (parent != null && hdrName.equalsIgnoreCase("content-type")) {
             MimePart container = parent.getParent();
             String defaultType = container instanceof MimeMultipart ? ((MimeMultipart) container).getDefaultChildContentType() : "text/plain";
             parent.updateContentType(new ContentType(header, defaultType));

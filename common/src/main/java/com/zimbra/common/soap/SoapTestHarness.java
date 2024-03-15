@@ -564,7 +564,7 @@ public class SoapTestHarness {
             Enumeration<?> keys = props.propertyNames();
             while (keys.hasMoreElements()) {
                 String key = keys.nextElement().toString();
-                String value = props.getProperty(key).toString();
+                String value = props.getProperty(key);
                 if (value != null)
                     setProperty(key, value);
                 else

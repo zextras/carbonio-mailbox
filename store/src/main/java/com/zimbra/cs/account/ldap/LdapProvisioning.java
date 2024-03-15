@@ -661,7 +661,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         return;
       }
     } else {
-      input = new EphemeralInput(new EphemeralKey(key), value.toString());
+      input = new EphemeralInput(new EphemeralKey(key), value);
     }
     if (doAdd) {
       store.update(input, location);

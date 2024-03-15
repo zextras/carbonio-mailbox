@@ -2716,7 +2716,7 @@ public class Invite {
       // LOCATION
       String location = getLocation();
       if (location != null && location.length() > 0)
-        component.addProperty(new ZProperty(ICalTok.LOCATION, location.toString()));
+        component.addProperty(new ZProperty(ICalTok.LOCATION, location));
 
       // ATTENDEES
       for (ZAttendee at : getAttendees()) {

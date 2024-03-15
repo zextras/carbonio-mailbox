@@ -261,7 +261,7 @@ public class VCard {
                 while (pos < limit && vcard.charAt(pos) != '\r' && vcard.charAt(pos) != '\n') {
                     pos++;
                 }
-                line.append(vcard.substring(start, pos));
+                line.append(vcard, start, pos);
                 if (pos < limit) {
                     if (pos < limit && vcard.charAt(pos) == '\r')  pos++;
                     if (pos < limit && vcard.charAt(pos) == '\n')  pos++;

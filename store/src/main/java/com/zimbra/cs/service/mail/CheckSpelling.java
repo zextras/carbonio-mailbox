@@ -136,7 +136,7 @@ public class CheckSpelling extends MailDocumentHandler {
 
                     if (colonPos > 0) {
                         String word = line.substring(0, colonPos);
-                        String suggestions = line.substring(colonPos + 1, line.length());
+                        String suggestions = line.substring(colonPos + 1);
                         if (ignorePattern != null && word.matches(ignorePattern)) {
                             continue;
                         }

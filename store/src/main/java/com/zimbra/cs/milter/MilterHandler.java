@@ -240,7 +240,7 @@ public final class MilterHandler implements NioHandler {
             }
             key = new String(Arrays.copyOfRange(bytes, 0, i));
             if (!StringUtil.isNullOrEmpty(key) &&
-                (key.toLowerCase().equals(TO_HEADER) || key.toLowerCase().equals(CC_HEADER))) {
+                (key.equalsIgnoreCase(TO_HEADER) || key.equalsIgnoreCase(CC_HEADER))) {
                 if (bytes.length > i+1) {
                     byte [] values = Arrays.copyOfRange(bytes, i+1, bytes.length);
                     mHeader = new MimeAddressHeader(key, values);

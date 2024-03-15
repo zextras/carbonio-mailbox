@@ -446,7 +446,7 @@ public abstract class ImapRequest {
                 if (result == null) {
                     result = new StringBuilder();
                 }
-                result.append(content.substring(backslash + 1, i));
+                result.append(content, backslash + 1, i);
                 backslash = i;
                 escaped = true;
             } else if (!escaped && c == '"') {

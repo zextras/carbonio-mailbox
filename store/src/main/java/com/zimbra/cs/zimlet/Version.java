@@ -86,7 +86,7 @@ public class Version implements Comparable<Version> {
 	public String toString() {
 	    if (mVer != null)
 	        return mVer;
-		StringBuffer buf = new StringBuffer("");
+		StringBuffer buf = new StringBuffer();
 		for (int i = 0; i < mTokens.size(); i++) {
 			if (buf.length() > 0) buf.append(".");
 			buf.append(mTokens.get(i));

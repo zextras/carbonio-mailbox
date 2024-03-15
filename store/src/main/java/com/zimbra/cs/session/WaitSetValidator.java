@@ -197,7 +197,7 @@ public class WaitSetValidator implements DebugListener {
     }
 
     void usage() {
-        System.out.println("");
+        System.out.println();
         System.out.println("testwaitset -i waitsetid [-u admin_user] [-p password] [-h host]");
         System.exit(1);
     }

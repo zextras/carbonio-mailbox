@@ -219,7 +219,7 @@ public class ZoneInfoParser {
                 return Integer.toString(mDate);
 
             String wday = mWeekday.toString();
-            wday = wday.substring(0, 1) + wday.toLowerCase().substring(1, 3);
+            wday = wday.charAt(0) + wday.toLowerCase().substring(1, 3);
 
             if (DayType.WEEKNUM.equals(mType)) {
                 if (mWeeknum == -1)

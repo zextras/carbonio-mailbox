@@ -251,7 +251,7 @@ public abstract class OperationContextData {
         }
         
         public static final String EMPTY_NAME = "";
-        public static final String INVALID_GRANT = new String("***INVALID***");
+        public static final String INVALID_GRANT = "***INVALID***";
         
         public String getNameById(String id, byte granteeType) {
             resolveIfNecessary();

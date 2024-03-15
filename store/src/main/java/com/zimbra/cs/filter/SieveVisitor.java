@@ -1270,7 +1270,7 @@ public abstract class SieveVisitor {
                 values.add(value == null ? null : value.toString());
             }
         } else {
-            values.add(getValue(parent, indexes).toString());
+            values.add(getValue(parent, indexes));
         }
         return values;
     }
@@ -1280,7 +1280,7 @@ public abstract class SieveVisitor {
         if (s == null || s.length() == 0 || s.charAt(0) != ':') {
             return s;
         }
-        return s.substring(1, s.length());
+        return s.substring(1);
     }
 
     /**

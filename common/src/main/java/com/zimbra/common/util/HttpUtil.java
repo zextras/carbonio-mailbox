@@ -539,7 +539,7 @@ public final class HttpUtil {
             if (escaped != null || c >= 0x7F) {
                 if (buf == null) {
                     buf = new StringBuilder();
-                    buf.append(str.substring(0, i));
+                    buf.append(str, 0, i);
                 }
                 if (escaped != null)
                     buf.append(escaped);

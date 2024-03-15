@@ -113,7 +113,7 @@ public class DavRequest {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             XMLWriter writer = new XMLWriter(out, format);
             writer.write(mDoc);
-            return new String(out.toByteArray(), "UTF-8");
+            return out.toString("UTF-8");
         }
         return "";
     }

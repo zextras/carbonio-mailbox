@@ -1260,7 +1260,7 @@ public abstract class ArchiveFormatter extends Formatter {
   }
 
   private String string(String s) {
-    return s == null ? new String() : s;
+    return s == null ? "" : s;
   }
 
   private void warn(Exception e) {

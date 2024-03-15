@@ -92,7 +92,7 @@ public class ServiceException extends Exception {
     toRet.append("\nCode:").append(mCode);
     if (mArgs != null) {
       for (Argument arg : mArgs) {
-        toRet.append(" Arg:").append(arg.toString()).append("");
+        toRet.append(" Arg:").append(arg.toString());
       }
     }
 

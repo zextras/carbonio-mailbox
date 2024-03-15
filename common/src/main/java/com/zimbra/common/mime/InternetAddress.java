@@ -485,8 +485,8 @@ public class InternetAddress implements Cloneable {
             // there are some tricky little bits to parsing addresses that weren't followed, so re-parse as an address
             parse(content, start, length, true);
         } else {
-            this.display = base != null ? base : comment == null ? null : comment.toString();
-            this.email = address == null ? null : address.toString().trim();
+            this.display = base != null ? base : comment == null ? null : comment;
+            this.email = address == null ? null : address.trim();
         }
     }
 

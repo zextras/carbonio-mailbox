@@ -462,7 +462,7 @@ public class JavaMailMimeMessage extends MimeMessage implements JavaMailShim {
     @Override
     public String getContentType() throws MessagingException {
         if (ZPARSER) {
-            return bodyDelegate().getContentType().toString();
+            return bodyDelegate().getContentType();
         } else {
             return super.getContentType();
         }

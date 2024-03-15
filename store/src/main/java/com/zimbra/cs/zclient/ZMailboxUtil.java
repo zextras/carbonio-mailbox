@@ -1521,7 +1521,7 @@ public class ZMailboxUtil implements DebugListener {
         int i = t.indexOf('-');
         if (i != -1) {
           int start = Integer.parseInt(t.substring(0, i));
-          int end = Integer.parseInt(t.substring(i + 1, t.length()));
+          int end = Integer.parseInt(t.substring(i + 1));
           for (int j = start; j <= end; j++) {
             String id = mIndexToId.get(j);
             if (id == null) {

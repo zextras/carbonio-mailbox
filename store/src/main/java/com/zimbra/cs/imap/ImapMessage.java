@@ -432,14 +432,14 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
                 if (nonulls == null) {
                     nonulls = new StringBuilder();
                 }
-                nonulls.append(value.substring(lastNull + 1, i));
+                nonulls.append(value, lastNull + 1, i);
                 lastNull = i;
             } else if (c == '"' || c == '\\' || c >= 0x7f || c < 0x20) {
                 literal = true;
             }
         }
 
-        String content = nonulls == null ? value : nonulls.append(value.substring(lastNull + 1, i)).toString();
+        String content = nonulls == null ? value : nonulls.append(value, lastNull + 1, i).toString();
         if (upcase) {
             content = content.toUpperCase();
         }

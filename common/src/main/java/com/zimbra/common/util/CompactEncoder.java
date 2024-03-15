@@ -539,7 +539,7 @@ public class CompactEncoder {
         ArrayList<Object> list = new ArrayList<Object>();
         Map<Object, Object> map = new HashMap<Object, Object>();
         Object[] darray, oarray = new Object[] {
-            new String("arraystring"), Integer.valueOf(9)
+            "arraystring", Integer.valueOf(9)
         };
         byte [] print, raw;
 

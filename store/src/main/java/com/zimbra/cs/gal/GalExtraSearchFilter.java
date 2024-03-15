@@ -364,7 +364,7 @@ public class GalExtraSearchFilter {
             if (op.equals(Operator.has)) {
                 result = (value == null) ? false : value.toLowerCase().contains(opVal.toLowerCase());
             } else if (op.equals(Operator.eq)) {
-                result = (value == null) ? false : value.toLowerCase().equals(opVal.toLowerCase());
+                result = (value == null) ? false : value.equalsIgnoreCase(opVal);
             } else if (op.equals(Operator.ge)) {
                 // always use number comparison
                 result = (value == null) ? false : Integer.valueOf(value) >= Integer.valueOf(opVal);
@@ -377,7 +377,7 @@ public class GalExtraSearchFilter {
                 result = (value == null) ? false : value.toLowerCase().endsWith(opVal.toLowerCase());
             } else {
                 // fallback to EQUALS
-                result = (value == null) ? false : value.toLowerCase().equals(opVal.toLowerCase());
+                result = (value == null) ? false : value.equalsIgnoreCase(opVal);
             }
 
             if (term.isNegation())

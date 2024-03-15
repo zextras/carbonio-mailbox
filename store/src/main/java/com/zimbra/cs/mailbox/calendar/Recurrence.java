@@ -846,7 +846,7 @@ public class Recurrence
             } catch (ParseException e) {
                 throw ServiceException.FAILURE("ParseException ", e);
             }
-            mRecur = new ZRecur(meta.get(FN_RECUR).toString(), tzmap);
+            mRecur = new ZRecur(meta.get(FN_RECUR), tzmap);
             Metadata metaInvId = meta.getMap(FN_INVID, true);
             if (metaInvId != null)
                 mInvId = InviteInfo.fromMetadata(metaInvId, tzmap);

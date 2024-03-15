@@ -360,7 +360,7 @@ public abstract class DavResource {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         XMLWriter writer = new XMLWriter(baos, format);
         writer.write(e);
-        return new String(baos.toByteArray());
+        return baos.toString();
     }
 
     public static boolean isSchedulingEnabled() {
