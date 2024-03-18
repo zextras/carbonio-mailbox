@@ -602,7 +602,7 @@ public class Folder extends MailItem implements FolderStore {
         }
       }
     }
-    Collections.sort(visible, new SortByName());
+    visible.sort(new SortByName());
     return visible;
   }
 

@@ -145,7 +145,7 @@ final class RemoteFolder {
             }
         }
         // Sort UIDs in reverse order so we download latest messages first
-        Collections.sort(uids, Collections.reverseOrder());
+        uids.sort(Collections.reverseOrder());
         return uids;
     }
 

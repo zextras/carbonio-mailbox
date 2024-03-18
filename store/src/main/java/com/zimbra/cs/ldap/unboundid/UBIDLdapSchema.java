@@ -94,7 +94,7 @@ public class UBIDLdapSchema extends ZLdapSchema {
 
         Comparator comparator = (Comparator<UBIDObjectClassDefinition>) (first, second) -> first.getName().compareTo(second.getName());
 
-        Collections.sort(ocList, comparator);
+        ocList.sort(comparator);
         return ocList;
     }
 

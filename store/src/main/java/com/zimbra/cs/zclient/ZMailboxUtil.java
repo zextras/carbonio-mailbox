@@ -2492,7 +2492,7 @@ public class ZMailboxUtil implements DebugListener {
             }
             return order;
           };
-      Collections.sort(result, comparator);
+      result.sort(comparator);
 
       for (ZAce ace : result) {
         stdout.format(

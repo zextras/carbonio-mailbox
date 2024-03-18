@@ -47,7 +47,7 @@ public class SenderList {
         if (msgs == null || msgs.isEmpty())
             return;
 
-        Collections.sort(msgs, new MailItem.SortDateAscending());
+        msgs.sort(new MailItem.SortDateAscending());
         mLastDate = msgs.get(msgs.size() - 1).getDate();
         mSize = msgs.size();
 

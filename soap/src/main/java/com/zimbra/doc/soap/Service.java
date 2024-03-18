@@ -62,7 +62,7 @@ public class Service implements java.io.Serializable {
 
       allCommands.addAll(this.commands);
 
-      Collections.sort(allCommands, new Command.CommandComparator());
+      allCommands.sort(new Command.CommandComparator());
 
         return allCommands;
     }

@@ -439,7 +439,7 @@ public abstract class ArchiveFormatter extends Formatter {
           for (MailItem.Type type : sysTypes) {
             List<MailItem> items = context.targetMailbox.getItemList(context.opContext, type);
 
-            Collections.sort(items, sp);
+            items.sort(sp);
             for (MailItem item : items) {
               aos = saveItem(context, item, fldrs, cnts, false, aos, encoder, names);
             }

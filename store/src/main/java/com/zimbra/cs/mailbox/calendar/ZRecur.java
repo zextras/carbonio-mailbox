@@ -1624,7 +1624,7 @@ public class ZRecur implements Cloneable {
         }
 
         // sort by DAY-OF-WEEK (necessary for the byDay checks to work)
-        Collections.sort(list, new ZWeekDayNum.DayOnlyComparator());
+        list.sort(new ZWeekDayNum.DayOnlyComparator());
     }
 
     private void parseIntList(String str, List<Integer> list, int min, int max, boolean signed) {

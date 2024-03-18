@@ -232,9 +232,7 @@ public class ZimletUtil {
             Version v = new Version(pstring);
             plist.add(new Pair<>(v, z));
         }
-        Collections.sort(plist,
-            (first, second) -> first.getFirst().compareTo(second.getFirst())
-        );
+        plist.sort((first, second) -> first.getFirst().compareTo(second.getFirst()));
 
         List<Zimlet> ret = new ArrayList<>();
         for (Pair<Version,Zimlet> p : plist) {

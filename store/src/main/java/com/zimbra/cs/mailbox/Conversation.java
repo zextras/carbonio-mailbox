@@ -145,7 +145,7 @@ public class Conversation extends MailItem {
     }
 
     SenderList recalculateMetadata(List<Message> msgs) throws ServiceException {
-        Collections.sort(msgs, new Message.SortDateAscending());
+        msgs.sort(new SortDateAscending());
 
         markItemModified(RECALCULATE_CHANGE_MASK);
 

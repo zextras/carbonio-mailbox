@@ -3776,7 +3776,7 @@ public class Mailbox implements MailboxStore {
 
     Comparator<MailItem> comp = MailItem.getComparator(sort);
     if (comp != null) {
-      Collections.sort(result, comp);
+      result.sort(comp);
     }
     return result;
   }
@@ -5548,15 +5548,13 @@ public class Mailbox implements MailboxStore {
           assert false : browseBy;
       }
 
-      Collections.sort(
-          result,
-          (o1, o2) -> {
-            int retVal = o2.getFreq() - o1.getFreq();
-            if (retVal == 0) {
-              retVal = o1.getText().compareTo(o2.getText());
-            }
-            return retVal;
-          });
+      result.sort((o1, o2) -> {
+        int retVal = o2.getFreq() - o1.getFreq();
+        if (retVal == 0) {
+          retVal = o1.getText().compareTo(o2.getText());
+        }
+        return retVal;
+      });
 
       if (max > 0 && result.size() > max) {
         result = result.subList(0, max);
@@ -6970,7 +6968,7 @@ public class Mailbox implements MailboxStore {
           if (matches != null && !matches.isEmpty()) {
             // file the message into the largest conversation, then later merge any other matching
             // convs
-            Collections.sort(matches, new MailItem.SortSizeDescending());
+            matches.sort(new MailItem.SortSizeDescending());
             conv = matches.remove(0);
             mergeConvs = matches;
           }

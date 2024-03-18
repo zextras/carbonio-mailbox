@@ -226,7 +226,7 @@ public final class ReSortingQueryResults implements ZimbraQueryResults {
     }
 
     if (!results.isPreSorted()) {
-      Collections.sort(mHitBuffer, comp);
+      mHitBuffer.sort(comp);
     }
   }
 }

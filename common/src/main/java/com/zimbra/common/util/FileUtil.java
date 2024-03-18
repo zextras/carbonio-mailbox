@@ -371,7 +371,7 @@ public class FileUtil {
 
     public static void sortFilesByModifiedTime(List<File> files, boolean reverse) {
         MTimeComparator comp = new MTimeComparator(reverse);
-        Collections.sort(files, comp);
+        files.sort(comp);
     }
 
     public static void delete(File file) throws IOException {

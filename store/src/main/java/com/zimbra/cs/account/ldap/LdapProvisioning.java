@@ -2259,7 +2259,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         NamedEntryComparator comparator =
             new NamedEntryComparator(
                 this, opts.getSortAttr(), opts.getSortOpt() == SortOpt.SORT_ASCENDING);
-        Collections.sort(result, comparator);
+        result.sort(comparator);
         return result;
       }
     }
@@ -11247,7 +11247,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
           members.add(habMember);
         }
       }
-      Collections.sort(members, new SortBySeniorityIndexThenName());
+      members.sort(new SortBySeniorityIndexThenName());
     } catch (ServiceException e) {
       ZimbraLog.account.debug("unable to get hab dynamic group members", e);
     } finally {
@@ -11307,7 +11307,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
           members.add(habMember);
         }
       }
-      Collections.sort(members, new SortBySeniorityIndexThenName());
+      members.sort(new SortBySeniorityIndexThenName());
     } catch (ServiceException e) {
       ZimbraLog.account.debug("unable to get hab group members", e);
     } finally {

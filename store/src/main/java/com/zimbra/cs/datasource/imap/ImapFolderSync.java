@@ -349,7 +349,7 @@ class ImapFolderSync {
             }
         }
         if (!addedUids.isEmpty()) {
-            Collections.sort(addedUids, Collections.reverseOrder());
+            addedUids.sort(Collections.reverseOrder());
             fetchMessages(addedUids);
         }
         IOExceptionHandler.getInstance().checkpointIOExceptionRate(mailbox);
@@ -913,7 +913,7 @@ class ImapFolderSync {
 
     private static Collection<Long> getOrderedUids(Collection<Long> uidSet) {
         List<Long> uids = new ArrayList<>(uidSet);
-        Collections.sort(uids, Collections.reverseOrder());
+        uids.sort(Collections.reverseOrder());
         return uids;
     }
 

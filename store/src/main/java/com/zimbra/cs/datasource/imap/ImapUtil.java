@@ -61,9 +61,9 @@ public final class ImapUtil {
         if (inbox != null) {
             sorted.add(inbox);
         }
-        Collections.sort(inboxInferiors, COMPARATOR);
+        inboxInferiors.sort(COMPARATOR);
         sorted.addAll(inboxInferiors);
-        Collections.sort(otherFolders, COMPARATOR);
+        otherFolders.sort(COMPARATOR);
         sorted.addAll(otherFolders);
         return sorted;
     }

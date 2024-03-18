@@ -686,7 +686,7 @@ public final class ElasticSearchIndex extends IndexStore {
                 } catch (IOException e) {
                     ZimbraLog.index.error("Problem getting stats for index %s", url, e);
                 }
-                Collections.sort(allValues, (o1, o2) -> {
+                allValues.sort((o1, o2) -> {
                   int retVal = o1.getText().compareTo(o2.getText());
                   if (retVal == 0) {
                     retVal = o2.getFreq() - o1.getFreq();

@@ -573,9 +573,7 @@ public final class DbSearch {
       return toRet;
     }
     // optimize so shortest list is first
-    Collections.sort(
-        lists,
-        (l1, l2) -> l1.size() - l2.size());
+    lists.sort((l1, l2) -> l1.size() - l2.size());
 
     for (Result result : lists.get(0)) {
       boolean intersect = true;
@@ -636,7 +634,7 @@ public final class DbSearch {
           result.addAll(
               new DbSearch(mailbox, dumpster).search(conn, child, sort, offset, limit, fetch));
         }
-        Collections.sort(result, new ResultComparator(sort));
+        result.sort(new ResultComparator(sort));
       } else if (node instanceof DbSearchConstraints.Intersection) {
         List<List<Result>> resultLists = new ArrayList<>();
 
@@ -679,7 +677,7 @@ public final class DbSearch {
         subsetNode.folders.addAll(subList);
         result.addAll(
             new DbSearch(mailbox, dumpster).search(conn, subsetNode, sort, offset, limit, fetch));
-        Collections.sort(result, new ResultComparator(sort));
+        result.sort(new ResultComparator(sort));
       } else {
         throw ServiceException.FAILURE(
             "splitting failed, too many constraints but not caused entirely by folders", null);

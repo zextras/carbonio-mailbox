@@ -156,7 +156,7 @@ public class GetSessions extends AdminDocumentHandler {
               return 0;
           }
         };
-        Collections.sort(result.sessions, comparator);
+        result.sessions.sort(comparator);
 
         if (adminSession != null)
         adminSession.setData(SESSION_KEY, result);
