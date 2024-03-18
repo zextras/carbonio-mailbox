@@ -19,6 +19,22 @@
       <groupId>org.apache.httpcomponents</groupId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-core</artifactId>
+      <version>4.6.0.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-servlet-initializer</artifactId>
+      <version>4.6.0.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-guice</artifactId>
+      <version>4.6.0.Final</version>
+    </dependency>
+
 
     <dependency>
       <artifactId>httpmime</artifactId>

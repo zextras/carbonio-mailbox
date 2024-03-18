@@ -25,6 +25,7 @@ public class JettyServerFactory {
   private final Map<String, FilterHolder> filters = new HashMap<>();
   private final List<EventListener> listeners = new ArrayList<>();
   private int port = 7070;
+  private final Map<String, String> initParam = new HashMap<>();
 
   public JettyServerFactory withPort(int port) {
     this.port = port;
@@ -32,6 +33,11 @@ public class JettyServerFactory {
   }
   public JettyServerFactory addServlet(String path, ServletHolder servletHolder) {
     this.servlets.put(path, servletHolder);
+    return this;
+  }
+
+  public JettyServerFactory addInitParam(String param, String value) {
+    this.initParam.put(param, value);
     return this;
   }
   public JettyServerFactory addFilter(String path, FilterHolder filterHolder) {
@@ -57,6 +63,7 @@ public class JettyServerFactory {
     connector.setPort(port);
     connector.setHost("localhost");
     ServletContextHandler servletContextHandler = new ServletContextHandler();
+    initParam.forEach(servletContextHandler::setInitParameter);
     listeners.forEach(servletContextHandler::addEventListener);
     filters.forEach((path, filterHolder) -> servletContextHandler.addFilter(filterHolder, path, EnumSet.of(DispatcherType.REQUEST)));
     servlets.forEach((path, servlet) -> servletContextHandler.addServlet(servlet, path));
