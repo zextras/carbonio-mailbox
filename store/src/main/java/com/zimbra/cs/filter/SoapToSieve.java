@@ -315,7 +315,7 @@ public final class SoapToSieve {
             for (int i = 0; i < daysOfWeek.length; i ++) {
                 // first validate value
                 try {
-                    int day = Integer.valueOf(daysOfWeek[i]);
+                    int day = Integer.parseInt(daysOfWeek[i]);
                     if (day < 0 || day > 6) {
                         throw ServiceException.INVALID_REQUEST(
                                 "Day of week index must be from 0 (Sunday) to 6 (Saturday)", null);

@@ -135,7 +135,7 @@ public class AclPushSerializer {
         String granteeName = attrs.get("granteeName");
         obj.setGranteeName("null".equals(granteeName) ? null : granteeName);
         obj.setGranteeType(ACL.stringToType(attrs.get("granteeType")));
-        obj.setItemId(Integer.valueOf(attrs.get("folderId")));
+        obj.setItemId(Integer.parseInt(attrs.get("folderId")));
         String uuid = attrs.get("folderUuid");
         obj.setItemUuid("null".equals(uuid) ? null : uuid);
         if (attrs.get("folderPath").contains(SEMICOLON_ESCAPE_SEQ)) {

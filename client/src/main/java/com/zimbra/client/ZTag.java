@@ -180,7 +180,7 @@ public class ZTag implements Comparable<ZTag>, ZItem, ZimbraTag, ToZJSONObject {
 
     @Override
     public int getTagId() {
-        return Integer.valueOf(getId());
+        return Integer.parseInt(getId());
     }
 
     @Override

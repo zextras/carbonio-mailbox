@@ -147,7 +147,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
           // create a new mountpoint in the external user's mailbox if not already created
 
           String[] sharedItems = owner.getSharedItem();
-          int sharedFolderId = Integer.valueOf(folderId);
+          int sharedFolderId = Integer.parseInt(folderId);
           String sharedFolderPath = null;
           MailItem.Type sharedFolderView = null;
           for (String sharedItem : sharedItems) {

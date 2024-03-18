@@ -823,12 +823,12 @@ public abstract class SieveVisitor {
                 List<String> origHeaders = null;
                 if (numArgs == 4) {
                     if (getNode(node, 0, 3).jjtGetNumChildren() == 0) {
-                        maxBodyBytes = Integer.valueOf(getValue(node, 0, 3));
+                        maxBodyBytes = Integer.parseInt(getValue(node, 0, 3));
                     } else {
                         origHeaders = getMultiValue(node, 0, 3, 0);
                     }
                 } else if (numArgs == 5) {
-                    maxBodyBytes = Integer.valueOf(getValue(node, 0, 3));
+                    maxBodyBytes = Integer.parseInt(getValue(node, 0, 3));
                     origHeaders = getMultiValue(node, 0, 4, 0);
                 }
                 visitNotifyAction(

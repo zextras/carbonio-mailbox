@@ -457,7 +457,7 @@ public final class ZFilterRule implements ToZJSONObject {
                     int maxBodyBytes = -1;
                     if (i + 1 <= args.length) {
                         try {
-                            maxBodyBytes = Integer.valueOf(args[i]);
+                            maxBodyBytes = Integer.parseInt(args[i]);
                             i++;
                         } catch (NumberFormatException ignored) {
                         }

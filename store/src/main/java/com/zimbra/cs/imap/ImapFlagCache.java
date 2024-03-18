@@ -59,7 +59,7 @@ public class ImapFlagCache implements Iterable<ImapFlagCache.ImapFlag>, java.io.
         }
 
         ImapFlag(String name, ZTag ztag, boolean positive) {
-            mId   = Integer.valueOf(ztag.getId());    mBitmask = 0;
+            mId   = Integer.parseInt(ztag.getId());    mBitmask = 0;
             mName = ztag.getName();  mImapName  = normalize(name, mId);
             mPositive = positive;    mPermanent = true;
             mListed = VISIBLE;

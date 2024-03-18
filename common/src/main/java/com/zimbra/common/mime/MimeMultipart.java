@@ -84,7 +84,7 @@ public class MimeMultipart extends MimePart implements Iterable<MimePart> {
 
         MimePart subpart = null;
         try {
-            subpart = getSubpart(Integer.valueOf(dot == -1 ? part : part.substring(0, dot)) - 1);
+            subpart = getSubpart(Integer.parseInt(dot == -1 ? part : part.substring(0, dot)) - 1);
         } catch (NumberFormatException nfe) { }
 
         if (dot == -1 || subpart == null) {

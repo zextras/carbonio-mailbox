@@ -455,7 +455,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
                 Header cl = httpResponse.getFirstHeader(HttpHeader.CONTENT_LENGTH.name());
                 int contentLength = 10240;
                 if (cl != null)
-                    contentLength = Integer.valueOf(cl.getValue());
+                    contentLength = Integer.parseInt(cl.getValue());
                 String buf = new String(com.zimbra.common.util.ByteUtil.readInput(
                     httpResponse.getEntity().getContent(), contentLength, contentLength), "UTF-8");
                 ZimbraLog.fb.debug(buf);

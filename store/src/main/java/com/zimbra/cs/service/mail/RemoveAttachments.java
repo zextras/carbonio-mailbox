@@ -105,7 +105,7 @@ public class RemoveAttachments extends MailDocumentHandler {
                 if (subpart2.equalsIgnoreCase("TEXT") && depth == parts2.length - 1)
                     return -1;
 
-                int delta = Integer.valueOf(subpart2) - Integer.valueOf(subpart1);
+                int delta = Integer.parseInt(subpart2) - Integer.parseInt(subpart1);
                 if (delta != 0)
                     return delta;
             }

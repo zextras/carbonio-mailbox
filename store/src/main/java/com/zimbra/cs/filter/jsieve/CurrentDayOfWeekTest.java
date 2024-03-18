@@ -65,7 +65,7 @@ public class CurrentDayOfWeekTest extends AbstractTest {
                 for (String val : valList) {
                     int day;
                     try {
-                        day = Integer.valueOf(val);
+                        day = Integer.parseInt(val);
                     } catch (NumberFormatException e) {
                         throw new SyntaxException(e);
                     }

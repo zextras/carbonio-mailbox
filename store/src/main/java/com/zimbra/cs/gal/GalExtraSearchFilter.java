@@ -367,10 +367,10 @@ public class GalExtraSearchFilter {
                 result = (value == null) ? false : value.equalsIgnoreCase(opVal);
             } else if (op.equals(Operator.ge)) {
                 // always use number comparison
-                result = (value == null) ? false : Integer.valueOf(value) >= Integer.valueOf(opVal);
+                result = (value == null) ? false : Integer.parseInt(value) >= Integer.parseInt(opVal);
             } else if (op.equals(Operator.le)) {
                 // always use number comparison
-                result = (value == null) ? false : Integer.valueOf(value) <= Integer.valueOf(opVal);
+                result = (value == null) ? false : Integer.parseInt(value) <= Integer.parseInt(opVal);
             } else if (op.equals(Operator.startswith)) {
                 result = (value == null) ? false : value.toLowerCase().startsWith(opVal.toLowerCase());
             } else if (op.equals(Operator.endswith)) {

@@ -270,7 +270,7 @@ public final class DateUtil {
     Integer month = MONTH_NUMBER.get(monthabbr.toUpperCase());
     if (month == null) {
       try {
-        month = Integer.valueOf(monthabbr) - 1;
+        month = Integer.parseInt(monthabbr) - 1;
       } catch (NumberFormatException nfe) {
       }
     }
