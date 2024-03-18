@@ -280,7 +280,13 @@ public final class LuceneIndex extends IndexStore {
     try {
       return IndexReader.open(
           luceneDirectory, null, true, LC.zimbra_index_lucene_term_index_divisor.intValue());
-    } catch (CorruptIndexException | AssertionError e) {
+    } catch (CorruptIndexException e) {
+      if (!tryRepair) {
+        throw e;
+      }
+      repair(e);
+      return openIndexReader(false);
+    } catch (AssertionError e) {
       if (!tryRepair) {
         throw e;
       }
@@ -305,7 +311,14 @@ public final class LuceneIndex extends IndexStore {
         writer.setInfoStream(new PrintStream(ByteStreams.nullOutputStream()));
       }
       return writer;
-    } catch (AssertionError | CorruptIndexException e) {
+    } catch (AssertionError e) {
+      unlockIndexWriter();
+      if (!tryRepair) {
+        throw e;
+      }
+      repair(e);
+      return openIndexWriter(mode, false);
+    } catch (CorruptIndexException e) {
       unlockIndexWriter();
       if (!tryRepair) {
         throw e;
@@ -628,7 +641,13 @@ public final class LuceneIndex extends IndexStore {
         } else {
           ZimbraLog.index.debug("Merge is in progress by other thread");
         }
-      } catch (CorruptIndexException | AssertionError e) {
+      } catch (CorruptIndexException e) {
+        try {
+          writer.close(false);
+        } catch (Throwable ignore) {
+        }
+        repair(e);
+      } catch (AssertionError e) {
         try {
           writer.close(false);
         } catch (Throwable ignore) {
