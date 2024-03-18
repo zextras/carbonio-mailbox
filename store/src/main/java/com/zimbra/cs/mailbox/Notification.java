@@ -487,7 +487,7 @@ public class Notification implements LmtpCallback {
         if (autoSubmittedHeaders != null) {
           for (String autoSubmittedHeader : autoSubmittedHeaders) {
             String headerValue = autoSubmittedHeader.toLowerCase();
-            if (headerValue.indexOf("notification") != -1) {
+            if (headerValue.contains("notification")) {
               nfailed("detected a mail loop", destination, rcpt, msg);
               return;
             }

@@ -357,7 +357,7 @@ public interface DbSearchConstraints extends Cloneable {
      * containing spaces.
      */
     private String quoteIfNecessary(String name) {
-      if (name.indexOf(" ") < 0) {
+      if (!name.contains(" ")) {
         return name;
       }
       String quoted =

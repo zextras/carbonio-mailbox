@@ -1846,7 +1846,7 @@ public class Mailbox implements MailboxStore {
         if (pattern.matcher(key).matches()) {
 
           previousDeviceId = key;
-          if (previousDeviceId.indexOf(":") != -1) {
+          if (previousDeviceId.contains(":")) {
             int index = previousDeviceId.indexOf(":");
             previousDeviceId = previousDeviceId.substring(0, index);
           }
@@ -8840,7 +8840,7 @@ public class Mailbox implements MailboxStore {
         javax.mail.internet.InternetAddress iaddr = (javax.mail.internet.InternetAddress) addr;
         try {
           if (!Strings.isNullOrEmpty(iaddr.getAddress())
-              && iaddr.getAddress().indexOf(sender_domain) == -1
+              && !iaddr.getAddress().contains(sender_domain)
               && !index.existsInContacts(
                   Collections.singleton(
                       new com.zimbra.common.mime.InternetAddress(

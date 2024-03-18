@@ -102,7 +102,7 @@ public class ZEmailAddress implements ToZJSONObject {
             return quoteAddress(address);
         } else {
             String p = personal;
-            if (p.indexOf("\"") != -1)
+            if (p.contains("\""))
                 p = p.replaceAll("\"", "\\\"");
             return "\"" + p + "\" "+ quoteAddress(address);
         }
@@ -119,7 +119,7 @@ public class ZEmailAddress implements ToZJSONObject {
                 return address;
             else {
                 String p = personal;
-                if (p.indexOf("\"") != -1)
+                if (p.contains("\""))
                     p = p.replaceAll("\"", "\\\"");
                 return p + " "+getAddress();
             }

@@ -731,7 +731,7 @@ public abstract class ImapRequest {
 
     private String readFolder(boolean isPattern) throws IOException, ImapParseException {
         String raw = readAstring(null, isPattern ? PATTERN_CHARS : ASTRING_CHARS);
-        if (raw == null || raw.indexOf("&") == -1)
+        if (raw == null || !raw.contains("&"))
             return raw;
         try {
             return ImapPath.FOLDER_ENCODING_CHARSET.decode(ByteBuffer.wrap(raw.getBytes(Charsets.US_ASCII))).toString();

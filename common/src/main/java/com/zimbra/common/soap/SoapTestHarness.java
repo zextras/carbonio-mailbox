@@ -376,11 +376,11 @@ public class SoapTestHarness {
         }
         for (Element.Attribute attr : doc.listAttributes()) {
             String text = attr.getValue();
-            if (text.indexOf("${") != -1)
+            if (text.contains("${"))
                 attr.setValue(expandAllProps(text));
         }
         String text = doc.getText();
-        if (text.indexOf("${") != -1)
+        if (text.contains("${"))
             doc.setText(expandAllProps(text));
         return doc;
     }

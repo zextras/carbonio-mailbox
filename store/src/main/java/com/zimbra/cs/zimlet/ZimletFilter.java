@@ -208,7 +208,7 @@ public class ZimletFilter extends ZimbraServlet implements Filter {
 				String zimletName = matcher.group(1);
 				String opath = matcher.group(3);
 				String ipath = opath.replaceAll(".js$", "");
-				boolean isDevZimlet = uri.indexOf("_dev") != -1;
+				boolean isDevZimlet = uri.contains("_dev");
 				File zimletDir = new File(isDevZimlet ? devdir : basedir, zimletName);
 				File ifile = new File(zimletDir, ipath);
 				File ofile = new File(zimletDir, opath);

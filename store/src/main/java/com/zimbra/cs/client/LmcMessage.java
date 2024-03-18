@@ -56,7 +56,7 @@ public class LmcMessage {
     public void setMsgIDHeader(String h) { mMsgIDHeader = h; }
     public void setFlags(String f) {
         mFlags = f;
-        mIsUnread = (mFlags != null && mFlags.indexOf("u") >= 0);
+        mIsUnread = (mFlags != null && mFlags.contains("u"));
     }
     public void setSize(long s) { mSize = s; }
     public void setDate(String d) { mDate = d; }

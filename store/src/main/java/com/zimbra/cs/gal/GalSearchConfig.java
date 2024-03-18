@@ -236,7 +236,7 @@ public class GalSearchConfig {
 			mPageSize = domain.getIntAttr(Provisioning.A_zimbraGalLdapPageSize, 1000);
         	break;
         }
-        if (mFilter != null && mFilter.indexOf("(") == -1)
+        if (mFilter != null && !mFilter.contains("("))
         	mFilter = GalSearchConfig.getFilterDef(mFilter);
 		mGalType = GalType.ldap;
 	}

@@ -672,7 +672,7 @@ public class DefangFilter extends DefaultFilter {
       if (!value.startsWith("/")) {
         value = "/" + value;
       }
-      if (mBaseHref != null && value != null && value.indexOf(":") == -1) {
+      if (mBaseHref != null && value != null && !value.contains(":")) {
         if (mBaseHrefURI != null) {
           try {
             attributes.setValue(index, mBaseHrefURI.resolve(value).toString());

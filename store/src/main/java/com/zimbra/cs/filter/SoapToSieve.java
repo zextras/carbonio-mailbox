@@ -620,7 +620,7 @@ public final class SoapToSieve {
             if (!message.isEmpty()) {
                 filter.append(":message ").append(StringUtil.enclose(message, '"')).append(' ');
             }
-            if (method.indexOf("\n") < 0) {
+            if (!method.contains("\n")) {
                 filter.append(StringUtil.enclose(method, '"'));
             } else {
                 filter.append("text:\r\n").append(method).append("\r\n.\r\n");

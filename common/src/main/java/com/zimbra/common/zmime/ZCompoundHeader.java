@@ -479,7 +479,7 @@ public class ZCompoundHeader extends ZInternetHeader {
                             pvalue = codec.decode(pvalue);
                         } catch (DecoderException ignore) {
                         }
-                    } else if (pvalue.length() >= 8 && pvalue.indexOf("=?") >= 0 && pvalue.indexOf("?=") > 0) {
+                    } else if (pvalue.length() >= 8 && pvalue.contains("=?") && pvalue.indexOf("?=") > 0) {
                         pvalue = decode(pvalue);
                     }
                     attrs.put(pname, pvalue);

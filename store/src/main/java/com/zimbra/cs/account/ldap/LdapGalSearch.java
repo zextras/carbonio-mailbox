@@ -71,7 +71,7 @@ public class LdapGalSearch {
             return result;
         }
 
-        if (filter.indexOf("(") == -1) {
+        if (!filter.contains("(")) {
             String queryExpr = GalSearchConfig.getFilterDef(filter);
             if (queryExpr != null)
                 filter = queryExpr;

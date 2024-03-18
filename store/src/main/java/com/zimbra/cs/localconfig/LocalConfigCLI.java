@@ -303,7 +303,7 @@ public final class LocalConfigCLI {
         Option[] opts = cl.getOptions();
       for (Option opt : opts) {
         String clOption = opt.getOpt() == null ? opt.getLongOpt() : opt.getOpt();
-        if (!mainOption.equals(clOption) && compatibleOptions.indexOf(clOption) == -1) {
+        if (!mainOption.equals(clOption) && !compatibleOptions.contains(clOption)) {
           if (mainOption.equals("")) {
             error("invalid option '" + clOption + "'", null);
           } else {

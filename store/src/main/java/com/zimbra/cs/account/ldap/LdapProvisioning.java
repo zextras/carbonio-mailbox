@@ -7796,7 +7796,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
    * @return
    */
   public static String getGroupOU(String groupDN) {
-    if (StringUtils.isNotEmpty(groupDN) && groupDN.indexOf("ou=") != -1) {
+    if (StringUtils.isNotEmpty(groupDN) && groupDN.contains("ou=")) {
       return groupDN.substring(groupDN.indexOf("ou=") + 3);
     } else {
       return null;

@@ -149,7 +149,7 @@ public class FeedManager {
 
     private static String getBrowserTag() {
         String tag = " Zimbra/" + BuildInfo.MAJORVERSION + "." + BuildInfo.MINORVERSION + "." + BuildInfo.MICROVERSION;
-        return tag.indexOf("unknown") == -1 ? tag : " Zimbra/8.0";
+        return !tag.contains("unknown") ? tag : " Zimbra/8.0";
     }
 
     public static final int MAX_REDIRECTS = 3;
@@ -419,7 +419,7 @@ public class FeedManager {
                         Header contentEncoding = response.getFirstHeader("Content-Encoding");
                         InputStream respInputStream = response.getEntity().getContent();
                         if (contentEncoding != null) {
-                            if (contentEncoding.getValue().indexOf("gzip") != -1) {
+                            if (contentEncoding.getValue().contains("gzip")) {
                                 respInputStream = new GZIPInputStream(respInputStream);
                             }
                         }
@@ -646,7 +646,7 @@ public class FeedManager {
                 }
                 if (text == null)
                     continue;
-                html |= text.indexOf("</") != -1 || text.indexOf("/>") != -1 || text.indexOf("<p>") != -1;
+                html |= text.contains("</") || text.contains("/>") || text.contains("<p>");
 
                 ParsedMessage pm = generateMessage(title, text, href, html, addr, date, enclosures);
                 sdata.recordItem(pm, guid, date.getTime());

@@ -67,7 +67,7 @@ public class EmailUtil
     	int len = domain.length();
     	Matcher matcher = DOMAIN_REGEX.matcher(domain);
     	return len > 0 && domain.charAt(0) != '.' && domain.charAt(len-1) != '.' &&
-    			matcher.matches() && domain.indexOf("..") == -1;
+    			matcher.matches() && !domain.contains("..");
     }
     
     /**

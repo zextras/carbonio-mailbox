@@ -104,7 +104,7 @@ public class UrlNamespace {
 
   /* Returns DavResource at the specified URL. */
   public static DavResource getResourceAtUrl(DavContext ctxt, String url) throws DavException {
-    if (url.indexOf(PRINCIPALS_PATH) >= 0) return getPrincipalAtUrl(ctxt, url);
+    if (url.contains(PRINCIPALS_PATH)) return getPrincipalAtUrl(ctxt, url);
     UrlComponents uc = parseUrl(url);
     if (uc.user == null || uc.path == null)
       throw new DavException("invalid uri", HttpServletResponse.SC_NOT_FOUND, null);

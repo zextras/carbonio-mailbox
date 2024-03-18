@@ -847,7 +847,7 @@ public final class FilterUtil {
         if (null == mailAdapter) {
             return sourceStr;
         }
-        if (sourceStr.indexOf("${") == -1) {
+        if (!sourceStr.contains("${")) {
             return sourceStr;
         }
         validateVariableIndex(sourceStr);

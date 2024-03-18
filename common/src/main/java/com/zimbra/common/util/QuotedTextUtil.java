@@ -390,7 +390,7 @@ public class QuotedTextUtil {
             }
             // Bugzilla summary looks like QUOTED; it should be treated as
             // UNKNOWN
-            if ((line.indexOf("| DO NOT REPLY") == 0) && (lines[i + 2].indexOf("bugzilla") != -1)) {
+            if ((line.indexOf("| DO NOT REPLY") == 0) && (lines[i + 2].contains("bugzilla"))) {
                 isBugzilla = true;
             }
 

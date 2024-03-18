@@ -50,7 +50,7 @@ public class AreaElementPolicy implements ElementPolicy {
                 if (!base.endsWith("/"))
                     base += "/";
             }
-            if (hrefValue.indexOf(":") == -1) {
+            if (!hrefValue.contains(":")) {
                 if (!hrefValue.startsWith("/")) {
                     hrefValue = "/" + hrefValue;
                 }

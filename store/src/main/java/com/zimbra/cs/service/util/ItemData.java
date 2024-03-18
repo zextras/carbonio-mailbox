@@ -194,7 +194,7 @@ public class ItemData {
     }
 
     private boolean isOldTags() {
-        return tags.length() > 0 && Character.isDigit(tags.charAt(0)) && tags.indexOf(":") == -1;
+        return tags.length() > 0 && Character.isDigit(tags.charAt(0)) && !tags.contains(":");
     }
 
     private void getTagsFromJson(JSONObject json) {

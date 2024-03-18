@@ -95,13 +95,13 @@ public class FileGenUtil {
            boolean replaceMode = false;
 
            while((line = in.readLine()) != null) {
-               if (line.indexOf(BEGIN_MARKER) != -1) {
+               if (line.contains(BEGIN_MARKER)) {
                    out.write(line);
                    out.newLine();
                    out.write(content);
                    out.newLine();
                    replaceMode = true;
-               } else if (line.indexOf(END_MARKER) != -1) {
+               } else if (line.contains(END_MARKER)) {
                    replaceMode = false;
                    out.write(line);
                    out.newLine();

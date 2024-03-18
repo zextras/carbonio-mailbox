@@ -815,7 +815,7 @@ public class CalendarUtils {
               // If UNTIL has time part it must be specified
               // as UTC time, i.e. ending in "Z".
               // (RFC2445 Section 4.3.10 Recurrence Rule)
-              if (d.indexOf("T") >= 0) if (d.indexOf("Z") < 0) recurBuf.append('Z');
+              if (d.contains("T")) if (!d.contains("Z")) recurBuf.append('Z');
 
             } else if (ruleEltName.equals(MailConstants.E_CAL_RULE_COUNT)) {
               int num = (int) ruleElt.getAttributeLong(MailConstants.A_CAL_RULE_COUNT_NUM, -1);

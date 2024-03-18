@@ -124,7 +124,7 @@ public class Auth extends AdminDocumentHandler {
 
             try {
 
-                if (by == AccountBy.name && value.indexOf("@") == -1) {
+                if (by == AccountBy.name && !value.contains("@")) {
                     // first try to get by adminName, which resolves the account under cn=admins,cn=zimbra
                     // and does not need a domain
                     acct = prov.get(AccountBy.adminName, value, zsc.getAuthToken());

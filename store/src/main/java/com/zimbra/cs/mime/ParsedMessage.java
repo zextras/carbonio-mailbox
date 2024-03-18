@@ -591,7 +591,7 @@ public final class ParsedMessage {
                     if (envSenderAddrParts != null) {
                         String sender = envSenderAddrParts[0].toLowerCase();
                         if (sender.startsWith("owner-") || sender.endsWith("-owner") ||
-                                sender.indexOf("-request") != -1 || sender.equals("mailer-daemon") ||
+                            sender.contains("-request") || sender.equals("mailer-daemon") ||
                                 sender.equals("majordomo") || sender.equals("listserv")) {
                             return true;
                         }

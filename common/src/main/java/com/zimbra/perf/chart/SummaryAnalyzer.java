@@ -74,7 +74,7 @@ public class SummaryAnalyzer {
         String key;
         while (it.hasNext()) {
             key = it.next();
-            if (key.indexOf(SummaryConstants.KEY_TO_DISK_UTIL) != -1 ) {
+            if (key.contains(SummaryConstants.KEY_TO_DISK_UTIL)) {
                 settings = mOutfilePlotsMap.get(key);
                 break;
             }

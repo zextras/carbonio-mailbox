@@ -531,7 +531,7 @@ public class DavContext {
         String userAgent = mReq.getHeader(DavProtocol.HEADER_USER_AGENT);
         if (userAgent == null)
             return false;
-        return userAgent.indexOf(str) >= 0;
+        return userAgent.contains(str);
     }
 
     public boolean isAddressbookClient() {
@@ -555,11 +555,11 @@ public class DavContext {
 
         static KnownUserAgent lookup(String userAgent) {
             if (userAgent != null) {
-                if (userAgent.indexOf(IPHONE) >= 0)
+                if (userAgent.contains(IPHONE))
                     return iPhone;
-                else if (userAgent.indexOf(ICAL) >= 0)
+                else if (userAgent.contains(ICAL))
                     return iCal;
-                else if (userAgent.indexOf(EVOLUTION) >= 0)
+                else if (userAgent.contains(EVOLUTION))
                     return Evolution;
             }
             return null;

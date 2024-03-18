@@ -658,7 +658,7 @@ public class ICalTimeZone extends SimpleTimeZone {
                 }
                 String tstamp = toTimestamp(onsets[i]);
                 System.out.println(tstamp);
-                if (tstamp.indexOf("to standard") != -1)
+                if (tstamp.contains("to standard"))
                 	actualStandardTime = parseHHMMSS(tstamp);
                 else
                     actualDaylightTime = parseHHMMSS(tstamp);

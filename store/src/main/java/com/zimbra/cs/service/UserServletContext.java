@@ -400,11 +400,11 @@ public class UserServletContext {
     }
 
     public boolean cookieAuthAllowed() {
-        return getAuth().indexOf(UserServlet.AUTH_COOKIE) != -1;
+        return getAuth().contains(UserServlet.AUTH_COOKIE);
     }
 
     public boolean jwtAuthAllowed() {
-        return getAuth().indexOf(UserServlet.AUTH_JWT) != -1;
+        return getAuth().contains(UserServlet.AUTH_JWT);
     }
 
     public boolean isAuthedAcctGuest() {
@@ -414,19 +414,19 @@ public class UserServletContext {
     // bug 42782
     public boolean setCookie() {
         return (!isAuthedAcctGuest() &&
-                getAuth().indexOf(UserServlet.AUTH_SET_COOKIE) != -1 &&
-                getAuth().indexOf(UserServlet.AUTH_NO_SET_COOKIE) == -1);
+            getAuth().contains(UserServlet.AUTH_SET_COOKIE) &&
+            !getAuth().contains(UserServlet.AUTH_NO_SET_COOKIE));
     }
 
     public boolean basicAuthAllowed() {
         String auth = getAuth();
-        return auth.indexOf(UserServlet.AUTH_NO_SET_COOKIE) != -1 ||
-               auth.indexOf(UserServlet.AUTH_BASIC) != -1 ||
-               auth.indexOf(UserServlet.AUTH_SET_COOKIE) != -1;
+        return auth.contains(UserServlet.AUTH_NO_SET_COOKIE) ||
+            auth.contains(UserServlet.AUTH_BASIC) ||
+            auth.contains(UserServlet.AUTH_SET_COOKIE);
     }
 
     public boolean queryParamAuthAllowed() {
-        return getAuth().indexOf(UserServlet.AUTH_QUERYPARAM) != -1;
+        return getAuth().contains(UserServlet.AUTH_QUERYPARAM);
     }
 
     public String getAuth() {
@@ -797,7 +797,7 @@ public class UserServletContext {
             if (filename == null || filename.trim().equals(""))
                 filename = new ContentDisposition(req.getHeader("Content-Disposition")).getParameter("filename");
             is = new UploadInputStream(contentEncoding != null &&
-                contentEncoding.indexOf("gzip") != -1 ?
+                contentEncoding.contains("gzip") ?
                 new GZIPInputStream(req.getInputStream()) :
                     req.getInputStream(), limit);
         }

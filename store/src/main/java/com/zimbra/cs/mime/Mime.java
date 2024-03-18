@@ -1138,7 +1138,7 @@ public class Mime {
         name = StringUtil.sanitizeFilename(name);
 
         // catch (illegal, but less common) character entities
-        if (name.indexOf("&#") != -1 && name.indexOf(';') != -1) {
+        if (name.contains("&#") && name.indexOf(';') != -1) {
             return expandNumericCharacterReferences(name);
         }
 

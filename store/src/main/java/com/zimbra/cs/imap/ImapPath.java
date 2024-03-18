@@ -751,7 +751,7 @@ public class ImapPath implements Comparable<ImapPath> {
     }
     int slash = imapPathNoPrefix.indexOf('/');
     owner = (slash == -1 ? imapPathNoPrefix : imapPathNoPrefix.substring(0, slash)).toLowerCase();
-    if (!allowWildcardOwner && ((owner.indexOf("*") >= 0) || (owner.indexOf("%") >= 0))) {
+    if (!allowWildcardOwner && ((owner.contains("*")) || (owner.contains("%")))) {
       return null;
     }
     path = (slash == -1 ? "" : imapPathNoPrefix.substring(slash));

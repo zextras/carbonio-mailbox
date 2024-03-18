@@ -127,7 +127,7 @@ public final class CsrfUtil {
       }
       String temp = host;
 
-      if (temp.indexOf(":") != -1) {
+      if (temp.contains(":")) {
           int endIndex = temp.indexOf(":");
           temp = host.substring(0, endIndex);
       }

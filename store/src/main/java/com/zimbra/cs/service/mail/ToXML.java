@@ -639,7 +639,7 @@ public final class ToXML {
     elem.addAttribute(MailConstants.A_REST_URL, getRestUrl(ownerName, ownerFolderPath));
     elem.addAttribute(MailConstants.A_URL, mptTarget.getAttribute(MailConstants.A_URL, null));
     elem.addAttribute(MailConstants.A_RIGHTS, mptTarget.getAttribute(MailConstants.A_RIGHTS, null));
-    if (mptTarget.getAttribute(MailConstants.A_FLAGS, "").indexOf("u") != -1) {
+    if (mptTarget.getAttribute(MailConstants.A_FLAGS, "").contains("u")) {
       elem.addAttribute(
           MailConstants.A_FLAGS,
           "u" + elem.getAttribute(MailConstants.A_FLAGS, "").replace("u", ""));

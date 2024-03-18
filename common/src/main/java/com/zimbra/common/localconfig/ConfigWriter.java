@@ -65,7 +65,7 @@ public abstract class ConfigWriter {
 
     public void add(String key, String value) {
         if (value != null) {
-            if (mHidePasswords && (key.indexOf("password") != -1)) {
+            if (mHidePasswords && (key.contains("password"))) {
                 mItems.add(new Pair(key, "*"));
             } else {
                 mItems.add(new Pair(key, value));
