@@ -76,7 +76,7 @@ public class GalSyncAccountUtil {
     if (i == null) {
       usage();
     }
-    return i.intValue();
+    return i;
   }
 
   private static void setup() {

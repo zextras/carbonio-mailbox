@@ -513,7 +513,7 @@ public final class DbSearch {
         sql.append(" AND ");
       }
       needAnd = true;
-      if (isSoloPart.booleanValue()) {
+      if (isSoloPart) {
         sql.append("mi.parent_id is NULL ");
       } else {
         sql.append("mi.parent_id is NOT NULL ");
@@ -525,7 +525,7 @@ public final class DbSearch {
         sql.append(" AND ");
       }
       needAnd = true;
-      if (constraint.hasIndexId.booleanValue()) {
+      if (constraint.hasIndexId) {
         sql.append("mi.index_id is NOT NULL ");
       } else {
         sql.append("mi.index_id is NULL ");

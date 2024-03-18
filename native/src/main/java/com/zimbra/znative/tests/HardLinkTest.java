@@ -46,7 +46,7 @@ public class HardLinkTest {
 			System.out.println("ERROR: args for loop test are { loop count, oldpath, linkdir } ");
 			return;
 		}
-		var n = Integer.valueOf(args[0]).intValue();
+		var n = Integer.valueOf(args[0]);
 		String oldpath = args[1];
 		String outdir = args[2];
 		

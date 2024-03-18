@@ -305,7 +305,7 @@ public class LmtpInject {
         boolean quietMode = cl.hasOption("q");
         int threads = 1;
         if (cl.hasOption("t")) {
-            threads = Integer.valueOf(cl.getOptionValue("t")).intValue();
+            threads = Integer.valueOf(cl.getOptionValue("t"));
         }
 
         String host = null;
@@ -323,7 +323,7 @@ public class LmtpInject {
         } else
             port = 7025;
         if (cl.hasOption("p"))
-            port = Integer.valueOf(cl.getOptionValue("p")).intValue();
+            port = Integer.valueOf(cl.getOptionValue("p"));
 
         String[] recipients = cl.getOptionValues("r");
         String sender = cl.getOptionValue("s");
@@ -331,7 +331,7 @@ public class LmtpInject {
 
         int everyN;
         if (cl.hasOption("N")) {
-            everyN = Integer.valueOf(cl.getOptionValue("N")).intValue();
+            everyN = Integer.valueOf(cl.getOptionValue("N"));
         } else {
             everyN = 100;
         }

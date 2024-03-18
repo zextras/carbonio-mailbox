@@ -1335,9 +1335,9 @@ public abstract class Element implements Cloneable {
                                }
                                if ((value = jsr.readValue()) == null)  /* do nothing */;
                                else if (key.equals(A_CONTENT))         kvp.setValue(value.toString());
-                               else if (value instanceof Boolean)      kvp.addAttribute(attr, ((Boolean) value).booleanValue());
-                               else if (value instanceof Long)         kvp.addAttribute(attr, ((Long) value).longValue());
-                               else if (value instanceof Double)       kvp.addAttribute(attr, ((Double) value).doubleValue());
+                               else if (value instanceof Boolean)      kvp.addAttribute(attr, (Boolean) value);
+                               else if (value instanceof Long)         kvp.addAttribute(attr, (Long) value);
+                               else if (value instanceof Double)       kvp.addAttribute(attr, (Double) value);
                                else                                    kvp.addAttribute(attr, value.toString());
                                switch (jsr.peekChar()) {
                                    case '}':  break;

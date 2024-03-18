@@ -41,9 +41,9 @@ public class InstanceData {
     private void init(String recurIdZ, Long dtStart, Long duration, Long alarmAt, Long tzOffset,
                       String partStat, String freeBusyActual, String percentComplete) {
         mRecurIdZ = recurIdZ;
-        mDtStart = dtStart != null && dtStart.longValue() != 0 ? dtStart : null;
-        mDuration = duration != null && duration.longValue() != 0 ? duration : null;
-        mAlarmAt = alarmAt != null && alarmAt.longValue() != 0 ? alarmAt : null;
+        mDtStart = dtStart != null && dtStart != 0 ? dtStart : null;
+        mDuration = duration != null && duration != 0 ? duration : null;
+        mAlarmAt = alarmAt != null && alarmAt != 0 ? alarmAt : null;
         mTZOffset = tzOffset;
         mPartStat = partStat;
         mFreeBusyActual = freeBusyActual;

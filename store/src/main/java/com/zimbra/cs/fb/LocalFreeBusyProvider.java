@@ -91,17 +91,17 @@ public class LocalFreeBusyProvider {
                 isTransparent = IcalXmlStrMap.TRANSP_TRANSPARENT.equals(transp);
                 long defaultDuration = 0;
                 if (defaultInstance.getDuration() != null)
-                    defaultDuration = defaultInstance.getDuration().longValue();
+                    defaultDuration = defaultInstance.getDuration();
                 String defaultFreeBusy = defaultInstance.getFreeBusyActual();
                 for (Iterator<InstanceData> instIter = appt.instanceIterator(); instIter.hasNext(); ) {
                     InstanceData instance = instIter.next();
-                    long instStart = instance.getDtStart() != null ? instance.getDtStart().longValue() : 0;
+                    long instStart = instance.getDtStart() != null ? instance.getDtStart() : 0;
                     // Skip instances that are outside the time range but were returned due to alarm being in range.
                     if (instStart >= end)
                         continue;
                     long dur = defaultDuration;
                     if (instance.getDuration() != null)
-                        dur = instance.getDuration().longValue();
+                        dur = instance.getDuration();
                     if (dur <= 0)  // Only consider instances with non-zero, positive duration.
                         continue;
                     long instEnd = instStart + dur;

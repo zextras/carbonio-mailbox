@@ -121,16 +121,16 @@ public class CalendarItemData {
         CalendarItemData calItemData = new CalendarItemData(type, mFolderId, mCalItemId, mFlags, mTags, mTagIds, mModMetadata,
                 mModContent, mDate, mChangeDate, mSize, mUid, mIsRecurring, mHasExceptions, mIsPublic, mAlarm, mDefaultData);
         long defaultDuration =
-            mDefaultData.getDuration() != null ? mDefaultData.getDuration().longValue() : 0;
+            mDefaultData.getDuration() != null ? mDefaultData.getDuration() : 0;
         for (InstanceData inst : mInstances) {
-            long alarmAt = inst.getAlarmAt() != null ? inst.getAlarmAt().longValue() : 0;
+            long alarmAt = inst.getAlarmAt() != null ? inst.getAlarmAt() : 0;
             if (rangeStart <= alarmAt && alarmAt < rangeEnd) {
                 // Instance start time is outside the range but its alarm time is within range.
                 calItemData.addInstance(inst);
             } else if (inst.getDtStart() != null) {
-                long instStart = inst.getDtStart().longValue();
+                long instStart = inst.getDtStart();
                 Long instDuration = inst.getDuration();
-                long duration = instDuration != null ? instDuration.longValue() : defaultDuration;
+                long duration = instDuration != null ? instDuration : defaultDuration;
                 long instEnd = instStart + duration;
                 if ((instStart == 0 && instEnd == 0) ||
                     (instStart < rangeEnd && instEnd > rangeStart)) {

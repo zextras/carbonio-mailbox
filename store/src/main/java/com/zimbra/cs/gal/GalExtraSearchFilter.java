@@ -288,7 +288,7 @@ public class GalExtraSearchFilter {
 
         public boolean getResult() {
             // there should one and only one item in the stack
-            return mParentResult.pop().getResult().booleanValue();
+            return mParentResult.pop().getResult();
         }
         @Override
         public void enterMulti(Multi term) {

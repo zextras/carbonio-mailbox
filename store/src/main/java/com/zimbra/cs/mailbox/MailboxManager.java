@@ -785,7 +785,7 @@ public class MailboxManager {
     synchronized (this) {
       v = mailboxIds.get(accountId);
     }
-    return v != null ? v.intValue() : -1;
+    return v != null ? v : -1;
   }
 
   /**

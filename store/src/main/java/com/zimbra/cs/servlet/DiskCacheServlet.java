@@ -77,7 +77,7 @@ public abstract class DiskCacheServlet extends ZimbraServlet {
 
     protected boolean flushCache(ServletRequest req) {
         Boolean flushCache = (Boolean)req.getAttribute(FlushCache.FLUSH_CACHE);
-        if (flushCache != null && flushCache.booleanValue()) {
+        if (flushCache != null && flushCache) {
             if (ZimbraLog.misc.isDebugEnabled()) {
                 ZimbraLog.misc.debug("flushing "+getClass().getName()+" cache");
             }

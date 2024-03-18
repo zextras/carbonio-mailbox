@@ -148,8 +148,8 @@ public class RandomPassword {
                 usage();
             }
             try {
-                minLength = Integer.valueOf(args[0]).intValue();
-                maxLength = Integer.valueOf(args[1]).intValue();
+                minLength = Integer.valueOf(args[0]);
+                maxLength = Integer.valueOf(args[1]);
             } catch (Exception e) {
                 System.err.println(e);
                 e.printStackTrace();

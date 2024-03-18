@@ -334,7 +334,7 @@ public class Appointment extends CalendarItem {
         if (attendee != null) {
             Boolean rsvp = attendee.getRsvp();
             if (rsvp != null)
-                rsvpRequested = rsvp.booleanValue();
+                rsvpRequested = rsvp;
         }
         RedoLogProvider redoProvider = RedoLogProvider.getInstance();
         // Don't send reply emails if we're not on master (in redo-driven master/replica setup).

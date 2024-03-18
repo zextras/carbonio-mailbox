@@ -1068,7 +1068,7 @@ public class Invite {
       ZAttendee at = getMatchingAttendee(acct);
       if (at != null) {
         if (at.getRsvp() != null) {
-          setRsvp(at.getRsvp().booleanValue());
+          setRsvp(at.getRsvp());
         }
         //
         // for BUG 4866 -- basically, if the incoming invite doesn't have a

@@ -3360,7 +3360,7 @@ public class Mailbox implements MailboxStore {
 
     // the tag and folder caches contain ALL tags and folders, so cache miss == doesn't exist
     if (isCachedType(type)) {
-      throw MailItem.noSuchItem(miss.intValue(), type);
+      throw MailItem.noSuchItem(miss, type);
     }
 
     // cache miss, so fetch from the database
@@ -6839,7 +6839,7 @@ public class Mailbox implements MailboxStore {
     if (!isRedo && msgidHeader != null && !isSent && mSentMessageIDs.containsKey(msgidHeader)) {
       Integer sentMsgID = mSentMessageIDs.get(msgidHeader);
       if (conversationId == ID_AUTO_INCREMENT) {
-        conversationId = getConversationIdFromReferent(pm.getMimeMessage(), sentMsgID.intValue());
+        conversationId = getConversationIdFromReferent(pm.getMimeMessage(), sentMsgID);
         ZimbraLog.mailbox.debug(
             "duplicate detected but not deduped (%s); will try to slot into conversation %d",
             msgidHeader, conversationId);

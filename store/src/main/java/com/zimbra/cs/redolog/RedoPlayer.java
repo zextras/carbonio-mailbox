@@ -296,10 +296,10 @@ public class RedoPlayer {
                                 allowRedo = true;
                             } else {
                                 for (Map.Entry<Integer, Integer> entry : mboxIDsMap.entrySet()) {
-                                    if (opMailboxId == entry.getKey().intValue()) {
+                                    if (opMailboxId == entry.getKey()) {
                                         if (entry.getValue() != null) {
                                             // restore to a different mailbox
-                                            prepareOp.setMailboxId(entry.getValue().intValue());
+                                            prepareOp.setMailboxId(entry.getValue());
                                         }
                                         allowRedo = true;
                                         break;

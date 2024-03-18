@@ -1845,7 +1845,7 @@ public class ZimletUtil {
         if (i == null) {
             usage();
         }
-        return i.intValue();
+        return i;
     }
 
     private static void dispatch(String[] args) {

@@ -1063,7 +1063,7 @@ public class ZRecur implements Cloneable {
         if (mByHourList.size() > 0) {
             for (Integer cur: mByHourList) {
                 int curHour = cal.get(Calendar.HOUR_OF_DAY);
-                if (curHour == cur.intValue())
+                if (curHour == cur)
                     return true;
 
                 // since the month list is in order, if we hit a HIGHER month,

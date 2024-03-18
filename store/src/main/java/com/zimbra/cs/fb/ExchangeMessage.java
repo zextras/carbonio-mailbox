@@ -213,7 +213,7 @@ public class ExchangeMessage {
     			try {
     				byte[] raw = new byte[encodedList.size()];
     				for (int i = 0; i < encodedList.size(); i++)
-    					raw[i] = encodedList.get(i).byteValue();
+    					raw[i] = encodedList.get(i);
     		    	byte[] encoded = Base64.encodeBase64(raw);
     		    	buf = new String(encoded, "UTF-8");
     			} catch (IOException e) {

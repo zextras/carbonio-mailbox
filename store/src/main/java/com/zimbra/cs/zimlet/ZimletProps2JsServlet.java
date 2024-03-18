@@ -138,7 +138,7 @@ public class ZimletProps2JsServlet extends HttpServlet {
 
     protected boolean flushCache(ServletRequest req) {
         Boolean flushCache = (Boolean) req.getAttribute(A_FLUSH_CACHE);
-        if (flushCache != null && flushCache.booleanValue()) {
+        if (flushCache != null && flushCache) {
             int oldSize = buffers.size();
             buffers.clear();
             int newSize = buffers.size();

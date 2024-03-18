@@ -309,7 +309,7 @@ public class FriendlyCalendaringDescription {
             List<Integer> monthList = zr.getByMonthList();
             int month = 0;
             if (monthList != null && !monthList.isEmpty()) {
-                month = monthList.get(0).intValue() - 1; //java Calendar month starts from 0
+                month = monthList.get(0) - 1; //java Calendar month starts from 0
             } else {
                 month = dtStart.get(Calendar.DAY_OF_MONTH);
             }
@@ -388,7 +388,7 @@ public class FriendlyCalendaringDescription {
             List<Integer> setposList = recur.getBySetPosList();
             if (setposList != null && !setposList.isEmpty()) {
                 assert setposList.size() == 1;
-                offset = setposList.get(0).intValue();
+                offset = setposList.get(0);
             }
         }
         switch (offset) {

@@ -263,7 +263,7 @@ public class DbResults {
             throw new IllegalStateException("null value at (" + row + ", " + col + ")");
         }
         if (o instanceof Boolean) {
-            return ((Boolean) o).booleanValue();
+            return (Boolean) o;
         }
         int i = ((Number) o).intValue();
         return (i == 0) ? false : true;
@@ -300,7 +300,7 @@ public class DbResults {
         if (i == null) {
             throw new IllegalArgumentException("Column '" + colName + "' does not exist");
         }
-        return i.intValue();
+        return i;
     }
 
     private int getRowNum() {

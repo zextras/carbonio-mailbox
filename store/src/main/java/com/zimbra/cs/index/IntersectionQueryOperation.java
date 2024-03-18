@@ -209,7 +209,7 @@ public final class IntersectionQueryOperation extends CombiningQueryOperation {
             for (int i = 1; i < bufferedHit.size(); i++) {
                 Integer checkId = bufferedHit.get(i).getItemId();
                 if (!seenMsgs.contains(checkId)) {
-                    return checkId.intValue();
+                    return checkId;
                 }
             }
             return -1;

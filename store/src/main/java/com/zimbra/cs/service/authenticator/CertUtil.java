@@ -151,7 +151,7 @@ public class CertUtil {
             // Check that the certificate includes the SubjectAltName extension
             for (List<?> generalName : generalNames) {
                 Integer tag = (Integer) generalName.get(0);
-                if (GeneralName.otherName == tag.intValue()) {
+                if (GeneralName.otherName == tag) {
                     // Value is encoded using ASN.1
                     decoder = new ASN1InputStream((byte[]) generalName.toArray()[1]);
                     ASN1Encodable encoded = decoder.readObject();
@@ -193,7 +193,7 @@ public class CertUtil {
 
         for (List<?> generalName : generalNames) {
             Integer tag = (Integer) generalName.get(0);
-            if (GeneralName.rfc822Name == tag.intValue()) {
+            if (GeneralName.rfc822Name == tag) {
                 String value = (String) generalName.get(1);
                 return value;
             }
@@ -386,7 +386,7 @@ public class CertUtil {
 
             for (List<?> generalName : generalNames) {
                 Integer tag = (Integer) generalName.get(0);
-                if (GeneralName.otherName == tag.intValue()) {
+                if (GeneralName.otherName == tag) {
                     // Value is encoded using ASN.1
                     decoder = new ASN1InputStream((byte[]) generalName.toArray()[1]);
                     ASN1Encodable encoded = decoder.readObject();
@@ -404,10 +404,10 @@ public class CertUtil {
                     }
 
                     outStream.format("    [%d] %s(%s) = %s\n", tag, oid, UPN_DISPLAY, value);
-                } else if (GeneralName.rfc822Name == tag.intValue()) {
+                } else if (GeneralName.rfc822Name == tag) {
                     String value = (String) generalName.get(1);
                     outStream.format("    [%d] %s = %s\n", tag, RFC822NAME_DISPLAY, value);
-                } else if (GeneralName.dNSName == tag.intValue()) {
+                } else if (GeneralName.dNSName == tag) {
                     String value = (String) generalName.get(1);
                     outStream.format("    [%d] %s = %s\n", tag, DNSNAME_DISPLAY, value);
                 } else {

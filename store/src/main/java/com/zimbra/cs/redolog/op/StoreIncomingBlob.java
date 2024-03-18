@@ -90,7 +90,7 @@ public class StoreIncomingBlob extends RedoableOp {
                     if (getVersion().atLeast(1, 26)) {
                         out.writeLong(mboxId.longValue());
                     } else {
-                        out.writeInt(mboxId.intValue());
+                        out.writeInt(mboxId);
                     }
                 }
             } else {

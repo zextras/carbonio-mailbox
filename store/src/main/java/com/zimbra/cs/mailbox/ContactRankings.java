@@ -153,7 +153,7 @@ public class ContactRankings {
                 Long num = (Long) m.get(KEY_RANKING);
                 contact.mRanking = num.intValue();
                 num = (Long) m.get(KEY_LAST_ACCESSED);
-                contact.mLastAccessed = num.longValue();
+                contact.mLastAccessed = num;
                 contact.setName((String) m.get(KEY_NAME));
                 contact.mFolderId = ContactAutoComplete.FOLDER_ID_UNKNOWN;
                 add(contact);

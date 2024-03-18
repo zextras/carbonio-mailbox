@@ -4487,13 +4487,13 @@ public abstract class CalendarItem extends MailItem {
 
     public long getTriggerTime(int pos) {
       Long triggerAt = mTriggerMap.get(pos);
-      if (triggerAt != null) return triggerAt.longValue();
+      if (triggerAt != null) return triggerAt;
       else return 0;
     }
 
     public long getInstStart(int pos) {
       Long start = mInstStartMap.get(pos);
-      if (start != null) return start.longValue();
+      if (start != null) return start;
       else return 0;
     }
 
@@ -4547,7 +4547,7 @@ public abstract class CalendarItem extends MailItem {
         Alarm alarm = iter.next();
         Long lastAtLong = lastAlarmsAt.get(index);
         if (lastAtLong != null) {
-          long lastAt = lastAtLong.longValue();
+          long lastAt = lastAtLong;
           long triggerAt = alarm.getTriggerTime(instStart, instEnd);
           if (lastAt < triggerAt) result.add(index, triggerAt, instStart);
         }
@@ -4568,7 +4568,7 @@ public abstract class CalendarItem extends MailItem {
         Alarm alarm = iter.next();
         Long lastAtLong = lastAlarmsAt.get(index);
         if (lastAtLong != null) {
-          long lastAt = lastAtLong.longValue();
+          long lastAt = lastAtLong;
           for (Instance inst : instances) {
             if (inst.isException()) // only look at non-exception instances
             continue;

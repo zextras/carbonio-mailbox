@@ -147,7 +147,7 @@ public final class KnownKey {
         if (Strings.isNullOrEmpty(s)) {
             s = defaultValue;  // fallback to the default value
         }
-        return Boolean.valueOf(s).booleanValue();
+        return Boolean.valueOf(s);
     }
 
     public int intValue() {

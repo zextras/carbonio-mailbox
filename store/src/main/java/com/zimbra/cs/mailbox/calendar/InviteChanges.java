@@ -150,7 +150,7 @@ public class InviteChanges {
             value = value.trim().toLowerCase();
             Integer i = sLabelToMask.get(value);
             if (i != null)
-                changeMask |= i.intValue();
+                changeMask |= i;
         }
         return changeMask;
     }

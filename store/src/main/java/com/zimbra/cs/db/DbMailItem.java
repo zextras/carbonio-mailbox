@@ -3938,7 +3938,7 @@ public class DbMailItem {
         }
       }
 
-      int fid = folderId != null ? folderId.intValue() : -1;
+      int fid = folderId != null ? folderId : -1;
       if (!dumpsterEnabled
           || fid == Mailbox.ID_FOLDER_DRAFTS
           || (fid == Mailbox.ID_FOLDER_SPAM && !useDumpsterForSpam)) {
@@ -4018,7 +4018,7 @@ public class DbMailItem {
           count.increment(0, 0, rs.getLong(3));
         }
 
-        int fid = folderId != null ? folderId.intValue() : -1;
+        int fid = folderId != null ? folderId : -1;
         if (!dumpsterEnabled
             || fid == Mailbox.ID_FOLDER_DRAFTS
             || (fid == Mailbox.ID_FOLDER_SPAM && !useDumpsterForSpam)) {

@@ -3839,13 +3839,13 @@ public abstract class MailItem
     Short granted = rights != null ? rights.getGrantedRights(authuser) : null;
     short subset;
     if (granted != null) {
-      subset = (short) (granted.shortValue() & rightsNeeded);
+      subset = (short) (granted & rightsNeeded);
       if (ZimbraLog.acl.isTraceEnabled()) {
         ZimbraLog.acl.trace(
             "checkACL '%s' returned=%s granted=%s needed=%s (R)",
             getPath(), subset, granted, rightsNeeded);
       }
-      return (short) (granted.shortValue() & rightsNeeded);
+      return (short) (granted & rightsNeeded);
     }
     // no ACLs apply; can we check parent folder for inherited rights?
     if (mId == Mailbox.ID_FOLDER_ROOT) {
@@ -3863,7 +3863,7 @@ public abstract class MailItem
       return 0;
     }
     granted = getParent().checkACL(rightsNeeded, authuser, asAdmin);
-    subset = (short) (granted.shortValue() & rightsNeeded);
+    subset = (short) (granted & rightsNeeded);
     if (ZimbraLog.acl.isTraceEnabled()) {
       ZimbraLog.acl.trace(
           "checkACL '%s' returned=%s granted=%s needed=%s (P)",

@@ -245,7 +245,7 @@ public abstract class DocumentHandler {
   public boolean canAccessAccount(ZimbraSoapContext zsc, Account target) throws ServiceException {
     Boolean canAccess = canAccessAccountCommon(zsc, target, true);
     if (canAccess != null) {
-      return canAccess.booleanValue();
+      return canAccess;
     }
     return AccessManager.getInstance().canAccessAccount(zsc.getAuthToken(), target);
   }

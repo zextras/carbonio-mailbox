@@ -465,7 +465,7 @@ public class ChartUtil {
             while (keyset.hasNext()) {
                 key = keyset.next();
                 keys.append(key).append(",");
-                vals.append(formatDouble(mStats.get(key).doubleValue()))
+                vals.append(formatDouble(mStats.get(key)))
                         .append(",");
             }
 
@@ -521,7 +521,7 @@ public class ChartUtil {
                             statString.append(" &nbsp;&nbsp; ");
                         statString.append(ps.getAggregateFunction()).append("(")
                             .append(ps.getLegend()).append(") = ")
-                            .append(formatDouble(mAggregates.get(dc).doubleValue()));
+                            .append(formatDouble(mAggregates.get(dc)));
                     }
 
                     writer.write("<a name=\"" + cs.getOutfile() + "\">");
@@ -602,7 +602,7 @@ public class ChartUtil {
                     else
                         statString.append(" &nbsp;&nbsp; ");
                     statString.append(ps.getAggregateFunction()).append("(").append(ps.getLegend())
-                        .append(") = ").append(formatDouble(mAggregates.get(dc).doubleValue()));
+                        .append(") = ").append(formatDouble(mAggregates.get(dc)));
                     count++;
                 }
 
@@ -1209,7 +1209,7 @@ public class ChartUtil {
                  numSamples++) {
                 Pair<Date, Double> entry = pdIter.next();
                 Date tstamp = entry.getFirst();
-                double val = entry.getSecond().doubleValue();
+                double val = entry.getSecond();
                 if (val != 0 || cs.getPlotZero()) {
                     if (d < minValue)
                         minValue = val;
@@ -1413,7 +1413,7 @@ public class ChartUtil {
                 Pair<Date, Double> entry = pdIter.next();
                 Date date = entry.getFirst();
                 if (!date.before(startAt) && !date.after(endAt)) {
-                    val += entry.getSecond().doubleValue();
+                    val += entry.getSecond();
                     count++;
                 }
             }
@@ -1426,7 +1426,7 @@ public class ChartUtil {
                 Pair<Date, Double> entry = pdIter.next();
                 Date date = entry.getFirst();
                 if (!date.before(startAt) && !date.after(endAt))
-                    val = Math.max(val, entry.getSecond().doubleValue());
+                    val = Math.max(val, entry.getSecond());
             }
             return val;
         }
@@ -1438,7 +1438,7 @@ public class ChartUtil {
                 Pair<Date, Double> entry = pdIter.next();
                 Date date = entry.getFirst();
                 if (!date.before(startAt) && !date.after(endAt)) {
-                    val = entry.getSecond().doubleValue();
+                    val = entry.getSecond();
                     // TODO: What is this function supposed to do?
                     // What is "max percentage"?
                 }
@@ -1453,7 +1453,7 @@ public class ChartUtil {
                 Pair<Date, Double> entry = pdIter.next();
                 Date date = entry.getFirst();
                 if (!date.before(startAt) && !date.after(endAt))
-                    val = entry.getSecond().doubleValue();
+                    val = entry.getSecond();
             }
             return val;
         }

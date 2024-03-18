@@ -438,7 +438,7 @@ public class ImapServerListener {
             ZimbraLog.imap.error("Received AdminWaitSetResponse for another waitset ", respWSId);
             return;
         }
-        if(wsResp.getCanceled() != null && wsResp.getCanceled().booleanValue() && wsID.equalsIgnoreCase(respWSId)) {
+        if(wsResp.getCanceled() != null && wsResp.getCanceled() && wsID.equalsIgnoreCase(respWSId)) {
             //this waitset was canceled
             ZimbraLog.imap.warn("AdminWaitSet %s was cancelled", respWSId);
             deleteWaitSet();

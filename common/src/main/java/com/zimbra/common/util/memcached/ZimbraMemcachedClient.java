@@ -399,7 +399,7 @@ public class ZimbraMemcachedClient {
             } catch (ExecutionException e) {
                 ZimbraLog.misc.warn("ExecutionException during memcached set operation", e);
             }
-            return success != null && success.booleanValue();
+            return success != null && success;
         } else {
             return true;
         }
@@ -450,7 +450,7 @@ public class ZimbraMemcachedClient {
             } catch (ExecutionException e) {
                 ZimbraLog.misc.warn("ExecutionException during memcached delete operation", e);
             }
-            return success != null && success.booleanValue();
+            return success != null && success;
         } else {
             return true;
         }
@@ -535,7 +535,7 @@ public class ZimbraMemcachedClient {
             if (val == null)
                 throw ServiceException.FAILURE("Field " + field + " not found", null);
             if (val instanceof Long) {
-                return ((Long) val).longValue();
+                return (Long) val;
             } else if (val instanceof Integer) {
                 return ((Integer) val).longValue();
             } else if (val instanceof String) {
@@ -777,7 +777,7 @@ public class ZimbraMemcachedClient {
                     } catch (ExecutionException e) {
                         ZimbraLog.misc.warn("ExecutionException during memcached set operation", e);
                     }
-                    if (success == null || !success.booleanValue())
+                    if (success == null || !success)
                         return false;
                 }
             }
@@ -811,7 +811,7 @@ public class ZimbraMemcachedClient {
             } catch (ExecutionException e) {
                 ZimbraLog.misc.warn("ExecutionException during memcached set operation", e);
             }
-            return success != null && success.booleanValue();
+            return success != null && success;
         } else {
             return true;
         }
@@ -1012,7 +1012,7 @@ public class ZimbraMemcachedClient {
             long start = System.currentTimeMillis();
             for (int i = 0; i < reps; ++i) {
                 Integer val2 = map.get(foo);
-                boolean same = val2 != null && val2.intValue() == val1;
+                boolean same = val2 != null && val2 == val1;
                 if (!same) {
                     success = false;
                     System.out.println("failed on rep " + i);

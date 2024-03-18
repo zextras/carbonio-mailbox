@@ -116,7 +116,7 @@ public class PermissionCache {
         }
 
         CachedPermission perm = (allowed == null) ? CachedPermission.NO_MATCHING_ACL :
-            allowed.booleanValue() ? CachedPermission.ALLOWED : CachedPermission.DENIED;
+            allowed ? CachedPermission.ALLOWED : CachedPermission.DENIED;
 
         PermCacheManager.getInstance().put(target, cacheKey, rightNeeded, perm);
 

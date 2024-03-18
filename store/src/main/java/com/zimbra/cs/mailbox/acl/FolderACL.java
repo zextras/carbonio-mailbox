@@ -168,7 +168,7 @@ public class FolderACL {
               .canAccessAccount(authuser, mShareTarget.getAccount(), asAdmin);
       mCanAccessOwnerAccount = caa;
     }
-    return mCanAccessOwnerAccount.booleanValue();
+    return mCanAccessOwnerAccount;
   }
 
   /**
@@ -202,7 +202,7 @@ public class FolderACL {
     if (rights != null) granted = rights.getGrantedRights(authuser);
     else granted = getEffectivePermissionsFromServer();
 
-    if (granted != null) return (short) (granted.shortValue() & rightsNeeded);
+    if (granted != null) return (short) (granted & rightsNeeded);
 
     return 0;
   }

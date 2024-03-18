@@ -324,7 +324,7 @@ public class ICalTimeZone extends SimpleTimeZone {
                     Integer day = sDayOfWeekMap.get(value);
                     if (day == null)
                         throw new IllegalArgumentException("Invalid day of week value: " + value);
-                    dayOfWeek = day.intValue();
+                    dayOfWeek = day;
                 } else if ("BYMONTHDAY".equals(token)) {
                     try {
                         dayOfMonth = Integer.parseInt(t.nextToken());

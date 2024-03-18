@@ -42,7 +42,7 @@ public class ValueCounter<E> {
         if (count == null) {
             return 0;
         }
-        return count.intValue();
+        return count;
     }
 
     public Iterator<E> iterator() {

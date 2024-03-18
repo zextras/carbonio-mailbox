@@ -1641,7 +1641,7 @@ public class CalendarUtils {
         int[] items = new int[idlist.size()];
         int i = 0;
         for (Integer id : idlist.getAllIds()) {
-          items[i] = id.intValue();
+          items[i] = id;
           i++;
         }
         mbox.move(null, items, type, targetId, null);
