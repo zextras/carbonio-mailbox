@@ -30,23 +30,11 @@ public abstract class LdapSMIMEConfig {
             } else {
                 instance = (LdapSMIMEConfig)ExtensionUtil.findClass(className).getConstructor(Entry.class).newInstance(entry);
             }
-        } catch (ClassNotFoundException e) {     
-            throw ServiceException.FAILURE("cannot instantiate " + className, e);
-        } catch (IllegalArgumentException e) {
-            throw ServiceException.FAILURE("cannot instantiate " + className, e);
-        } catch (SecurityException e) {
-            throw ServiceException.FAILURE("cannot instantiate " + className, e);
-        } catch (InstantiationException e) {
-            throw ServiceException.FAILURE("cannot instantiate " + className, e);
-        } catch (IllegalAccessException e) {
-            throw ServiceException.FAILURE("cannot instantiate " + className, e);
-        } catch (InvocationTargetException e) {
-            throw ServiceException.FAILURE("cannot instantiate " + className, e);
-        } catch (NoSuchMethodException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException | SecurityException | IllegalArgumentException e) {
             throw ServiceException.FAILURE("cannot instantiate " + className, e);
         }
-           
-        if (instance == null) {
+
+      if (instance == null) {
             throw ServiceException.FAILURE("cannot instantiate " + className, null);
         }
             

@@ -74,10 +74,8 @@ public class RemoveAttachments extends MailDocumentHandler {
 
             ParsedMessage pm = new ParsedMessage(mm, msg.getDate(), mbox.attachmentsIndexingEnabled());
             msg = removeAttachmentOperation(mbox, octxt, pm, msg);
-        } catch (IOException ioe) {
+        } catch (IOException | MessagingException ioe) {
             throw ServiceException.FAILURE("error reading existing message blob", ioe);
-        } catch (MessagingException me) {
-            throw ServiceException.FAILURE("error reading existing message blob", me);
         } finally {
             ByteUtil.closeStream(is);
         }

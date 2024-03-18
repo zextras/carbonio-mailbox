@@ -74,12 +74,10 @@ public class BrowseWrapper extends PhantomResource {
             case type:
                 return browseByType(ctxt);
             }
-        } catch (ServiceException e) {
-            ZimbraLog.dav.error("can't generate browse resource: uri="+getUri(), e);
-        } catch (IOException e) {
+        } catch (ServiceException | IOException e) {
             ZimbraLog.dav.error("can't generate browse resource: uri="+getUri(), e);
         }
-        return Collections.emptyList();
+      return Collections.emptyList();
     }
 
     private String generateUri(String path) {

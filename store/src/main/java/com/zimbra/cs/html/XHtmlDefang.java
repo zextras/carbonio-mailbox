@@ -55,15 +55,11 @@ public class XHtmlDefang extends AbstractDefang{
             //parse the file and also register this class for call backs
             sp.parse(is, handler);
 
-        }catch(SAXException se) {
+        }catch(SAXException | IOException | ParserConfigurationException se) {
             se.printStackTrace();
-        }catch(ParserConfigurationException pce) {
-            pce.printStackTrace();
-        }catch (IOException ie) {
-            ie.printStackTrace();
         }
-        
-        
+
+
     }
 
     public static SAXParserFactory makeSAXParserFactory() throws SAXNotRecognizedException, SAXNotSupportedException, ParserConfigurationException {

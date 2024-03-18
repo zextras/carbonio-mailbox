@@ -126,13 +126,7 @@ public class MailboxNotification extends Message {
                                 log.warn("could not deserialize notification for non-Mailbox MailboxStore '%s'",
                                         mboxStore.getClass().getName());
                             }
-                        } catch (IOException e) {
-                            log.warn("could not deserialize notification", e);
-                            return;
-                        } catch (ClassNotFoundException e) {
-                            log.warn("could not deserialize notification", e);
-                            return;
-                        } catch (ServiceException e) {
+                        } catch (IOException | ServiceException | ClassNotFoundException e) {
                             log.warn("could not deserialize notification", e);
                             return;
                         }

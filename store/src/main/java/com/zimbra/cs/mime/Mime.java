@@ -350,12 +350,10 @@ public class Mime {
                 return new ZMimeMultipart(new RawContentMultipartDataSource(mp, ctype));
             }
             multi.getCount();
-        } catch (ParseException pe) {
-            multi = new ZMimeMultipart(new FixedMultipartDataSource(mp, ctype));
-        } catch (MessagingException me) {
+        } catch (MessagingException pe) {
             multi = new ZMimeMultipart(new FixedMultipartDataSource(mp, ctype));
         }
-        return multi;
+      return multi;
     }
 
     /** Returns whether the given "boundary" string occurs within the first

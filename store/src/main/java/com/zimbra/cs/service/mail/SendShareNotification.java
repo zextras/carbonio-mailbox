@@ -744,11 +744,7 @@ public class SendShareNotification extends MailDocumentHandler {
     for (String extMember : extMembers) {
       try {
         sendNotificationEmail(octxt, mbox, authAccount, ownerAccount, sid, action, null, extMember);
-      } catch (ServiceException e) {
-        sLog.warn(
-            "Ignoring error while sending share notification to external group member " + extMember,
-            e);
-      } catch (MessagingException e) {
+      } catch (ServiceException | MessagingException e) {
         sLog.warn(
             "Ignoring error while sending share notification to external group member " + extMember,
             e);

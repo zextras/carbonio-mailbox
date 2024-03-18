@@ -1037,20 +1037,13 @@ public class ItemActionHelper {
             zmbx.uploadAttachment(
                 "message", baos.toByteArray(), MimeConstants.CT_MESSAGE_RFC822, 6000);
         m.addAttribute(MailConstants.A_ATTACHMENT_ID, uploadId);
-      } catch (IOException ioe) {
+      } catch (IOException | MessagingException ioe) {
         ZimbraLog.misc.info(
             "could not read subpart message for part "
                 + inv.getComponentNum()
                 + " of item "
                 + cal.getId(),
             ioe);
-      } catch (MessagingException me) {
-        ZimbraLog.misc.info(
-            "could not read subpart message for part "
-                + inv.getComponentNum()
-                + " of item "
-                + cal.getId(),
-            me);
       }
     }
 

@@ -448,23 +448,13 @@ public class FeedManager {
                     break;
                 }
             } while (++redirects <= MAX_REDIRECTS);
-        } catch (ServiceException ex) {
-            if (get != null) {
-                get.releaseConnection();
-            }
-            throw ex;
-        } catch (HttpException ex) {
-            if (get != null) {
-                get.releaseConnection();
-            }
-            throw ex;
-        } catch (IOException ex) {
+        } catch (ServiceException | IOException | HttpException ex) {
             if (get != null) {
                 get.releaseConnection();
             }
             throw ex;
         }
-        RemoteDataInfo rdi = new RemoteDataInfo(statusCode, redirects, content, expectedCharset, lastModified);
+      RemoteDataInfo rdi = new RemoteDataInfo(statusCode, redirects, content, expectedCharset, lastModified);
         rdi.setGetMethod(get);
         return rdi;
     }

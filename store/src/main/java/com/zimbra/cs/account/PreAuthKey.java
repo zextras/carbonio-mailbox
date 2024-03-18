@@ -57,9 +57,7 @@ public class PreAuthKey {
             Mac mac = Mac.getInstance("HmacSHA1");
             mac.init(bk);
             return new String(Hex.encodeHex(mac.doFinal(data.getBytes())));
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("fatal error", e);
-        } catch (InvalidKeyException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             throw new RuntimeException("fatal error", e);
         }
     }

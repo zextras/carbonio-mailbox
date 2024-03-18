@@ -224,11 +224,7 @@ public abstract class AutoProvision {
                 } catch (ClassNotFoundException e) {
                     ZimbraLog.autoprov.warn(
                             "unable to find auto provision listener class " + className, e);
-                } catch (InstantiationException e) {
-                    ZimbraLog.autoprov.warn(
-                            "unable to instantiate auto provision listener object of class "
-                            + className, e);
-                } catch (IllegalAccessException e) {
+                } catch (InstantiationException | IllegalAccessException e) {
                     ZimbraLog.autoprov.warn(
                             "unable to instantiate auto provision listener object of class "
                             + className, e);

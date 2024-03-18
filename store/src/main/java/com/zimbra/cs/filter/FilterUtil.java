@@ -274,19 +274,12 @@ public final class FilterUtil {
                 String error = String.format("Detected a mail loop for message %s.", Mime.getMessageID(msg));
                 throw ServiceException.FAILURE(error, null);
             }
-        } catch (MessagingException e) {
+        } catch (MessagingException | IOException e) {
             try {
                 outgoingMsg = createRedirectMsgOnError(msg);
                 ZimbraLog.filter.info("Message format error detected.  Wrapper class in use.  %s", e.toString());
             } catch (MessagingException again) {
                 throw ServiceException.FAILURE("Message format error detected.  Workaround failed.", again);
-            }
-        } catch (IOException e) {
-            try {
-                outgoingMsg = createRedirectMsgOnError(msg);
-                ZimbraLog.filter.info("Message format error detected.  Wrapper class in use.  %s", e.toString());
-            } catch (MessagingException me) {
-                throw ServiceException.FAILURE("Message format error detected.  Workaround failed.", me);
             }
         }
 

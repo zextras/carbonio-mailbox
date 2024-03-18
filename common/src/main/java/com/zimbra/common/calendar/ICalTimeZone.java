@@ -341,8 +341,8 @@ public class ICalTimeZone extends SimpleTimeZone {
                 try {
                     month = Integer.parseInt(dtstart.substring(4, 6));
                     dayOfMonth = Integer.parseInt(dtstart.substring(6, 8));
-                } catch (StringIndexOutOfBoundsException se) {
-                } catch (NumberFormatException ne) {}
+                } catch (StringIndexOutOfBoundsException | NumberFormatException se) {
+                }
             }
         }
 
@@ -353,10 +353,8 @@ public class ICalTimeZone extends SimpleTimeZone {
                 hour = Integer.parseInt(dtstart.substring(indexOfT + 1, indexOfT + 3));
                 minute = Integer.parseInt(dtstart.substring(indexOfT + 3, indexOfT + 5));
                 second = Integer.parseInt(dtstart.substring(indexOfT + 5, indexOfT + 7));
-            } catch (StringIndexOutOfBoundsException se) {
+            } catch (StringIndexOutOfBoundsException | NumberFormatException se) {
                 hour = minute = second = 0;
-            } catch (NumberFormatException ne) {
-                hour = minute = second  = 0;
             }
         }
 
@@ -955,13 +953,7 @@ public class ICalTimeZone extends SimpleTimeZone {
             }
             toRet *= sign;
             return toRet;
-        } catch (NumberFormatException e) {
-            throw ServiceException.INVALID_REQUEST(
-                    "Invalid " +
-                    ICalTok.TZOFFSETFROM + "/" + ICalTok.TZOFFSETTO +
-                    " value \"" + utcOffset +
-                    "\"; must have format \"+/-hhmm[ss]\"", e);
-        } catch (IndexOutOfBoundsException e) {
+        } catch (NumberFormatException | IndexOutOfBoundsException e) {
             throw ServiceException.INVALID_REQUEST(
                     "Invalid " +
                     ICalTok.TZOFFSETFROM + "/" + ICalTok.TZOFFSETTO +

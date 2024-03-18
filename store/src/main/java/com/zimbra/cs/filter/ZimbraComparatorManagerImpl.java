@@ -139,9 +139,7 @@ public class ZimbraComparatorManagerImpl implements ComparatorManager {
     public ZimbraComparator getComparator(String name) throws LookupException {
         try {
             return (ZimbraComparator) lookup(name).newInstance();
-        } catch (InstantiationException e) {
-            throw new LookupException(e.getMessage());
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new LookupException(e.getMessage());
         }
     }

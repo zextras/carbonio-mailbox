@@ -1028,9 +1028,7 @@ public class Invite {
               "Invalid Content-Type found: \"" + ctStr + "\"; skipping part", e);
         }
       }
-    } catch (IOException e) {
-      throw ServiceException.FAILURE("Unable to get calendar item notes MIME part", e);
-    } catch (MessagingException e) {
+    } catch (IOException | MessagingException e) {
       throw ServiceException.FAILURE("Unable to get calendar item notes MIME part", e);
     }
     return null;
@@ -2550,11 +2548,7 @@ public class Invite {
 
             break;
         }
-      } catch (ServiceException e) {
-        if (!continueOnError) throw e;
-        if (newInv != null) logIcsParseImportError(newInv, e);
-        else ZimbraLog.calendar.warn("Skipping error during ics parse/import", e);
-      } catch (RuntimeException e) {
+      } catch (ServiceException | RuntimeException e) {
         if (!continueOnError) throw e;
         if (newInv != null) logIcsParseImportError(newInv, e);
         else ZimbraLog.calendar.warn("Skipping error during ics parse/import", e);

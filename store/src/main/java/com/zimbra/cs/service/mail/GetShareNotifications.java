@@ -91,9 +91,7 @@ public class GetShareNotifications extends MailDocumentHandler {
                                 }
                             }
                         }
-                    } catch (IOException e) {
-                        ZimbraLog.misc.warn("can't parse share notification", e);
-                    } catch (MessagingException e) {
+                    } catch (IOException | MessagingException e) {
                         ZimbraLog.misc.warn("can't parse share notification", e);
                     }
                 }

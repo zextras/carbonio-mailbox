@@ -87,10 +87,8 @@ public class HostedAuth extends ZimbraCustomAuth {
 		HttpResponse response;
         try {
             response = HttpClientUtil.executeMethod(client, method);
-        } catch (HttpException ex) {
+        } catch (HttpException | IOException ex) {
         	throw AuthFailedServiceException.AUTH_FAILED(acct.getName(),acct.getName(), "HTTP request to remote authentication server failed",ex); 
-        } catch (IOException ex) {
-        	throw AuthFailedServiceException.AUTH_FAILED(acct.getName(), acct.getName(), "HTTP request to remote authentication server failed",ex); 
         } finally {
             if (method != null)
                 method.releaseConnection();    

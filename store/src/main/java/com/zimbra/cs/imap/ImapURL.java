@@ -159,10 +159,8 @@ final class ImapURL {
                     if (!req.eof()) {
                         throw new ImapUrlException(tag, url, "extra chars at end of IMAP URL SECTION");
                     }
-                } catch (ImapParseException ipe) {
+                } catch (ImapParseException | IOException ipe) {
                     throw new ImapUrlException(tag, url, ipe.getMessage());
-                } catch (IOException ioe) {
-                    throw new ImapUrlException(tag, url, ioe.getMessage());
                 }
             }
         }

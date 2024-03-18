@@ -4745,11 +4745,7 @@ public abstract class CalendarItem extends MailItem {
           map.put(invId, mm);
         }
       }
-    } catch (MessagingException e) {
-      throw ServiceException.FAILURE("Can't parse calendar item blob", e);
-    } catch (IOException e) {
-      throw ServiceException.FAILURE("Can't parse calendar item blob", e);
-    } catch (NumberFormatException e) {
+    } catch (MessagingException | NumberFormatException | IOException e) {
       throw ServiceException.FAILURE("Can't parse calendar item blob", e);
     }
     return map;

@@ -462,13 +462,10 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
                 response = Element.parseXML(buf);
             } else
                 response = Element.parseXML(httpResponse.getEntity().getContent());
-        } catch (XmlParseException e) {
+        } catch (XmlParseException | IOException | HttpException e) {
             ZimbraLog.fb.warn("error parsing fb response from exchange", e);
             return getEmptyList(req);
-        } catch (IOException | HttpException e) {
-            ZimbraLog.fb.warn("error parsing fb response from exchange", e);
-            return getEmptyList(req);
-        }  finally {
+        } finally {
             EntityUtils.consumeQuietly(httpResponse.getEntity());
         }
         for (Request re : req) {

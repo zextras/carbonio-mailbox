@@ -227,9 +227,7 @@ public final class ParsedMessage {
     private void initialize(Long receivedDate, boolean indexAttachments) throws ServiceException {
         try {
             init(receivedDate, indexAttachments);
-        } catch (MessagingException e) {
-            throw ServiceException.FAILURE("Unable to initialize ParsedMessage", e);
-        } catch (IOException e) {
+        } catch (MessagingException | IOException e) {
             throw ServiceException.FAILURE("Unable to initialize ParsedMessage", e);
         }
     }
@@ -1178,12 +1176,10 @@ public final class ParsedMessage {
                     ByteUtil.closeStream(is);
                 }
             }
-        } catch (MimeHandlerException e) {
-            handleParseError(mpi, e);
-        } catch (ObjectHandlerException e) {
+        } catch (MimeHandlerException | ObjectHandlerException e) {
             handleParseError(mpi, e);
         }
-        return toRet;
+      return toRet;
     }
 
     /**

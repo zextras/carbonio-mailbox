@@ -259,9 +259,7 @@ public class ForwardCalendarItem extends CalendarRequest {
         firstInv = false;
       }
       return new Pair<>(msgs, notifyMsgs);
-    } catch (IOException e) {
-      throw ServiceException.FAILURE("error creating forward message", e);
-    } catch (MessagingException e) {
+    } catch (IOException | MessagingException e) {
       throw ServiceException.FAILURE("error creating forward message", e);
     }
   }
@@ -354,9 +352,7 @@ public class ForwardCalendarItem extends CalendarRequest {
     try {
       return makeFwdMsg(
           senderAcct, inv, mmInv, cal, mmFwdWrapper, plainDescPart, htmlDescPart, true);
-    } catch (IOException e) {
-      throw ServiceException.FAILURE("error creating forward message", e);
-    } catch (MessagingException e) {
+    } catch (IOException | MessagingException e) {
       throw ServiceException.FAILURE("error creating forward message", e);
     }
   }
@@ -478,9 +474,7 @@ public class ForwardCalendarItem extends CalendarRequest {
           desc = plainContent != null ? plainContent.toString() : null;
           Object htmlContent = htmlDescPart != null ? htmlDescPart.getContent() : null;
           descHtml = htmlContent != null ? htmlContent.toString() : null;
-        } catch (MessagingException e) {
-          throw ServiceException.FAILURE("Messaging Exception while retrieving description", e);
-        } catch (IOException e) {
+        } catch (MessagingException | IOException e) {
           throw ServiceException.FAILURE("Messaging Exception while retrieving description", e);
         }
         return CalendarMailSender.createCalendarMessage(

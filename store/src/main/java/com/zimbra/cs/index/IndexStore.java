@@ -124,10 +124,8 @@ public abstract class IndexStore {
     private static synchronized final void setFactory(Class<? extends Factory> factoryClass) {
         try {
             factory = factoryClass.newInstance();
-        } catch (InstantiationException ie) {
+        } catch (InstantiationException | IllegalAccessException ie) {
             Zimbra.halt("Unable to initialize Index Store for " + factoryClass.getDeclaringClass().getSimpleName(), ie);
-        } catch (IllegalAccessException iae) {
-            Zimbra.halt("Unable to initialize Index Store for " + factoryClass.getDeclaringClass().getSimpleName(), iae);
         }
     }
 

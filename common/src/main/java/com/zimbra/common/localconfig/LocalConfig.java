@@ -356,10 +356,8 @@ public class LocalConfig {
   static {
     try {
       load(null);
-    } catch (DocumentException de) {
+    } catch (DocumentException | ConfigException de) {
       throw new RuntimeException(de);
-    } catch (ConfigException ce) {
-      throw new RuntimeException(ce);
     }
   }
 }

@@ -181,9 +181,7 @@ public class Acl extends ResourceProperty {
                 }
 
                 addGrantDeny(ace, g, true);
-            } catch (DavException e) {
-                ZimbraLog.dav.error("can't add principal: grantee="+g.getGranteeId(), e);
-            } catch (ServiceException e) {
+            } catch (DavException | ServiceException e) {
                 ZimbraLog.dav.error("can't add principal: grantee="+g.getGranteeId(), e);
             }
         }

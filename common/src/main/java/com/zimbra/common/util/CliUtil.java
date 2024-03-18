@@ -148,8 +148,6 @@ public class CliUtil {
       if ("y".equalsIgnoreCase(line) || "yes".equalsIgnoreCase(line)) {
         return true;
       }
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
     } catch (IOException e) {
       e.printStackTrace();
     }

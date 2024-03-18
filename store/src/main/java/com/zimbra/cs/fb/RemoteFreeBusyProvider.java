@@ -225,9 +225,6 @@ public class RemoteFreeBusyProvider extends FreeBusyProvider {
                 } else {
                     ZimbraLog.fb.debug("Account " + idStrs[0] + " not found while searching free/busy");
                 }
-            } catch (SoapFaultException e) {
-                ZimbraLog.fb.error("cannot get free/busy for "+idStrs[0], e);
-                addFailedAccounts(response, idStrs);
             } catch (ServiceException e) {
                 ZimbraLog.fb.error("cannot get free/busy for "+idStrs[0], e);
                 addFailedAccounts(response, idStrs);

@@ -120,10 +120,8 @@ public class ClientCertAuthenticator extends SSOAuthenticator {
             wr.write(Base64.getEncoder().encodeToString(buf));
             wr.write("\n-----END CERTIFICATE-----\n");
             wr.flush();
-        } catch (CertificateEncodingException e) {
+        } catch (CertificateEncodingException | IOException e) {
             ZimbraLog.account.debug(LOG_PREFIX +  "unable to capture cert", e);
-        } catch (IOException e) {
-            ZimbraLog.account.debug(LOG_PREFIX + "unable to capture cert", e);
         } finally {
             ByteUtil.closeWriter(wr);
             ByteUtil.closeStream(os);

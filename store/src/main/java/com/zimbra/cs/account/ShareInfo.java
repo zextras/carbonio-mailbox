@@ -934,9 +934,7 @@ public class ShareInfo {
           // send a separate mail to each member being added instead of sending one mail to all
           // members being added
           sendMessage(prov, authedAcct, dl, member, visitor);
-        } catch (MessagingException e) {
-          ZimbraLog.account.warn("failed to send share info message", e);
-        } catch (ServiceException e) {
+        } catch (MessagingException | ServiceException e) {
           ZimbraLog.account.warn("failed to send share info message", e);
         }
       }

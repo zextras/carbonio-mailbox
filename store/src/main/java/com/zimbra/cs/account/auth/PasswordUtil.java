@@ -63,10 +63,7 @@ public class PasswordUtil {
                 System.arraycopy(digest, 0, buff, 0, digest.length);
                 System.arraycopy(salt, 0, buff, digest.length, salt.length);
                 return SSHA_ENCODING + new String(Base64.encodeBase64(buff));
-            } catch (NoSuchAlgorithmException e) {
-                // this shouldn't happen unless JDK is foobar
-                throw new RuntimeException(e);
-            } catch (UnsupportedEncodingException e) {
+            } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
                 // this shouldn't happen unless JDK is foobar
                 throw new RuntimeException(e);
             }
@@ -121,10 +118,7 @@ public class PasswordUtil {
                 System.arraycopy(digest, 0, buff, 0, digest.length);
                 System.arraycopy(salt, 0, buff, digest.length, salt.length);
                 return SSHA512_ENCODING + new String(Base64.encodeBase64(buff));
-            } catch (NoSuchAlgorithmException e) {
-                // this shouldn't happen unless JDK is foobar
-                throw new RuntimeException(e);
-            } catch (UnsupportedEncodingException e) {
+            } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
                 // this shouldn't happen unless JDK is foobar
                 throw new RuntimeException(e);
             }
@@ -172,10 +166,7 @@ public class PasswordUtil {
 
                 byte[] digest = md.digest();
                 return prefix + new String(Base64.encodeBase64(digest));
-            } catch (NoSuchAlgorithmException e) {
-                // this shouldn't happen unless JDK is foobar
-                throw new RuntimeException(e);
-            } catch (UnsupportedEncodingException e) {
+            } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
                 // this shouldn't happen unless JDK is foobar
                 throw new RuntimeException(e);
             }
@@ -209,10 +200,7 @@ public class PasswordUtil {
 
                 byte[] digest = md.digest();
                 return MD5_ENCODING + new String(Base64.encodeBase64(digest));
-            } catch (NoSuchAlgorithmException e) {
-                // this shouldn't happen unless JDK is foobar
-                throw new RuntimeException(e);
-            } catch (UnsupportedEncodingException e) {
+            } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
                 // this shouldn't happen unless JDK is foobar
                 throw new RuntimeException(e);
             }

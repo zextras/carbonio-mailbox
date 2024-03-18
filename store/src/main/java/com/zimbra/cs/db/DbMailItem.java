@@ -4465,9 +4465,7 @@ public class DbMailItem {
       ZimbraLog.mailbox.info(
           "got blob list for group %d volume %d (%d blobs)", groupId, volumeId, blobs.size());
       return blobs;
-    } catch (SQLException e) {
-      throw ServiceException.FAILURE("fetching blob list for group " + groupId, e);
-    } catch (IOException e) {
+    } catch (SQLException | IOException e) {
       throw ServiceException.FAILURE("fetching blob list for group " + groupId, e);
     } finally {
       DbPool.closeStatement(stmt);
@@ -4540,9 +4538,7 @@ public class DbMailItem {
       ZimbraLog.mailbox.info("got blob list for mailbox %d (%d blobs)", mbox.getId(), blobs.size());
 
       return blobs;
-    } catch (SQLException e) {
-      throw ServiceException.FAILURE("fetching blob list for mailbox " + mbox.getId(), e);
-    } catch (IOException e) {
+    } catch (SQLException | IOException e) {
       throw ServiceException.FAILURE("fetching blob list for mailbox " + mbox.getId(), e);
     } finally {
       DbPool.closeStatement(stmt);

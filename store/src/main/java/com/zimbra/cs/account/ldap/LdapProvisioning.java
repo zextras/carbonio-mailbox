@@ -2567,9 +2567,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       removeExternalAddrsFromAllDynamicGroups(aliasedEntry.getAllAddrsSet(), zlc);
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.ACCOUNT_EXISTS(alias, aliasDn, nabe);
-    } catch (LdapException e) {
-      throw e;
-    } catch (AccountServiceException e) {
+    } catch (LdapException | AccountServiceException e) {
       throw e;
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create alias: " + e.getMessage(), e);
@@ -3256,9 +3254,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       return cos;
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.COS_EXISTS(destCosName);
-    } catch (LdapException e) {
-      throw e;
-    } catch (AccountServiceException e) {
+    } catch (LdapException | AccountServiceException e) {
       throw e;
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create cos: " + destCosName, e);
@@ -3285,9 +3281,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       cosCache.remove(cos);
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.COS_EXISTS(newName);
-    } catch (LdapException e) {
-      throw e;
-    } catch (AccountServiceException e) {
+    } catch (LdapException | AccountServiceException e) {
       throw e;
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to rename cos: " + zimbraId, e);
@@ -3607,9 +3601,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       removeExternalAddrsFromAllDynamicGroups(acct.getAllAddrsSet(), zlc);
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.ACCOUNT_EXISTS(newName);
-    } catch (LdapException e) {
-      throw e;
-    } catch (AccountServiceException e) {
+    } catch (LdapException | AccountServiceException e) {
       throw e;
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to rename account: " + newName, e);
@@ -4037,9 +4029,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.SHARE_LOCATOR_EXISTS(id);
-    } catch (LdapException e) {
-      throw e;
-    } catch (AccountServiceException e) {
+    } catch (LdapException | AccountServiceException e) {
       throw e;
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create share locator: " + id, e);
@@ -4101,9 +4091,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.SERVER_EXISTS(name);
-    } catch (LdapException e) {
-      throw e;
-    } catch (AccountServiceException e) {
+    } catch (LdapException | AccountServiceException e) {
       throw e;
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create server: " + name, e);
@@ -4495,9 +4483,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.DISTRIBUTION_LIST_EXISTS(listAddress);
-    } catch (LdapException e) {
-      throw e;
-    } catch (AccountServiceException e) {
+    } catch (LdapException | AccountServiceException e) {
       throw e;
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create distribution list: " + listAddress, e);
@@ -4707,9 +4693,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.DISTRIBUTION_LIST_EXISTS(newEmail);
-    } catch (LdapException e) {
-      throw e;
-    } catch (AccountServiceException e) {
+    } catch (LdapException | AccountServiceException e) {
       throw e;
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to rename distribution list: " + zimbraId, e);
@@ -6608,9 +6592,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       return zimlet;
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.ZIMLET_EXISTS(name);
-    } catch (LdapException e) {
-      throw e;
-    } catch (AccountServiceException e) {
+    } catch (LdapException | AccountServiceException e) {
       throw e;
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create zimlet: " + name, e);
@@ -8087,9 +8069,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       return identity;
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.IDENTITY_EXISTS(identityName);
-    } catch (LdapException e) {
-      throw e;
-    } catch (AccountServiceException e) {
+    } catch (LdapException | AccountServiceException e) {
       throw e;
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create identity " + identityName, e);
@@ -8405,9 +8385,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       return signature;
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.SIGNATURE_EXISTS(signatureName);
-    } catch (LdapException e) {
-      throw e;
-    } catch (AccountServiceException e) {
+    } catch (LdapException | AccountServiceException e) {
       throw e;
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create signature: " + signatureName, e);
@@ -8796,9 +8774,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       return ds;
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.DATA_SOURCE_EXISTS(dsName);
-    } catch (LdapException e) {
-      throw e;
-    } catch (AccountServiceException e) {
+    } catch (LdapException | AccountServiceException e) {
       throw e;
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create data source: " + dsName, e);
@@ -9101,9 +9077,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       xmppComponentCache.remove(comp);
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.IM_COMPONENT_EXISTS(newName);
-    } catch (LdapException e) {
-      throw e;
-    } catch (AccountServiceException e) {
+    } catch (LdapException | AccountServiceException e) {
       throw e;
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to rename XMPPComponent: " + zimbraId, e);
@@ -10463,9 +10437,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.DISTRIBUTION_LIST_EXISTS(groupAddress);
-    } catch (LdapException e) {
-      throw e;
-    } catch (AccountServiceException e) {
+    } catch (LdapException | AccountServiceException e) {
       throw e;
     } finally {
       LdapClient.closeContext(zlc);
@@ -10727,9 +10699,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.DISTRIBUTION_LIST_EXISTS(newEmail);
-    } catch (LdapException e) {
-      throw e;
-    } catch (AccountServiceException e) {
+    } catch (LdapException | AccountServiceException e) {
       throw e;
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to rename dynamic group: " + zimbraId, e);

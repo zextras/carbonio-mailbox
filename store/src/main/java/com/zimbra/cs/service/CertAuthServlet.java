@@ -117,9 +117,7 @@ public class CertAuthServlet extends SSOServlet {
                     dispatcher.forward(req, resp);
                     return;
                 }
-            } catch (IOException e) {
-                ZimbraLog.account.warn("unable to forward to forbidden page" + forbiddenPage, e);
-            } catch (ServletException e) {
+            } catch (IOException | ServletException e) {
                 ZimbraLog.account.warn("unable to forward to forbidden page" + forbiddenPage, e);
             }
         }

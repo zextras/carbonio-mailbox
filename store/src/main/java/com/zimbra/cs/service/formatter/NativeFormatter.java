@@ -506,8 +506,7 @@ public final class NativeFormatter extends Formatter {
                     val = MimeUtility.encodeText(val, "utf-8", "B");
                 }
                 resp.addHeader("X-Zimbra-ItemPath", val);
-            } catch (UnsupportedEncodingException e1) {
-            } catch (ServiceException e) {
+            } catch (UnsupportedEncodingException | ServiceException e1) {
             }
         }
 

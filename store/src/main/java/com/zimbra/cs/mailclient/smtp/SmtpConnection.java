@@ -560,10 +560,7 @@ public final class SmtpConnection extends MailConnection {
       } else {
         smtpData.write(messageString.getBytes());
       }
-    } catch (MessagingException e) { // close without QUIT
-      close();
-      throw e;
-    } catch (IOException e) { // close without QUIT
+    } catch (MessagingException | IOException e) { // close without QUIT
       close();
       throw e;
     }

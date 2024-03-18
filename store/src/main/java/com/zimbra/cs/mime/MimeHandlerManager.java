@@ -40,12 +40,10 @@ public class MimeHandlerManager {
             MimeHandler handler;
             try {
                 handler = clazz.newInstance();
-            } catch (InstantiationException e) {
-                throw new MimeHandlerException(e);
-            } catch (IllegalAccessException e) {
+            } catch (InstantiationException | IllegalAccessException e) {
                 throw new MimeHandlerException(e);
             }
-            handler.setContentType(realMimeType);
+          handler.setContentType(realMimeType);
             handler.setMimeTypeInfo(mimeType);
             return handler;
         }

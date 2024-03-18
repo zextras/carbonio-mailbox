@@ -61,9 +61,7 @@ public class HeaderUtils {
             return new String(dbuffer, 0, dsize, CharsetUtil.normalizeCharset(charset));
         } catch (OutOfMemoryError oome) {
             throw oome;
-        } catch (Error e) { // bug 40926 - catch java.lang.Error thrown by String class for invalid charset issues 
-            return null;
-        } catch (Exception e) {
+        } catch (Error | Exception e) { // bug 40926 - catch java.lang.Error thrown by String class for invalid charset issues
             return null;
         }
     }

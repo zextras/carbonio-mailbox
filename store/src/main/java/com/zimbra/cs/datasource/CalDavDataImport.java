@@ -84,11 +84,7 @@ public class CalDavDataImport extends MailItemImport {
           sync(octxt, f);
         }
       }
-    } catch (DavException e) {
-      throw ServiceException.FAILURE("error importing CalDAV data", e);
-    } catch (IOException e) {
-      throw ServiceException.FAILURE("error importing CalDAV data", e);
-    } catch (HttpException e) {
+    } catch (DavException | HttpException | IOException e) {
       throw ServiceException.FAILURE("error importing CalDAV data", e);
     }
   }

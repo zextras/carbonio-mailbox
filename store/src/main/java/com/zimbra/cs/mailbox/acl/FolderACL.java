@@ -269,9 +269,7 @@ public class FolderACL {
       Element eFolder = response.getElement(MailConstants.E_FOLDER);
       String permsStr = eFolder.getAttribute(MailConstants.A_RIGHTS);
       perms = ACL.stringToRights(permsStr);
-    } catch (ServiceException e) {
-      ZimbraLog.misc.warn("cannot get effective perms from server " + server.getName(), e);
-    } catch (IOException e) {
+    } catch (ServiceException | IOException e) {
       ZimbraLog.misc.warn("cannot get effective perms from server " + server.getName(), e);
     } finally {
       transport.shutdown();

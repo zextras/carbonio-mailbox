@@ -241,11 +241,7 @@ public class InMemoryLdapServer {
                 server.startListening();
                 started = true;
                 
-            } catch (LDIFException e) {
-                throw LdapException.LDAP_ERROR("failed to start in memory ldap server", e);
-            } catch (LDAPException e) {
-                throw LdapException.LDAP_ERROR("failed to start in memory ldap server", e);
-            } catch (IOException e) {
+            } catch (LDIFException | IOException | LDAPException e) {
                 throw LdapException.LDAP_ERROR("failed to start in memory ldap server", e);
             } finally {
                 if (!started) {
@@ -377,13 +373,7 @@ public class InMemoryLdapServer {
                 }
                 ditWriter.close();
                 
-            } catch (ServiceException e) {
-                logger.println("Failed to generate LDIF files for InMemoryLdapSerer");
-                e.printStackTrace(logger);
-            } catch (LDAPException e) {
-                logger.println("Failed to generate LDIF files for InMemoryLdapSerer");
-                e.printStackTrace(logger);
-            } catch (IOException e) {
+            } catch (ServiceException | IOException | LDAPException e) {
                 logger.println("Failed to generate LDIF files for InMemoryLdapSerer");
                 e.printStackTrace(logger);
             } finally {

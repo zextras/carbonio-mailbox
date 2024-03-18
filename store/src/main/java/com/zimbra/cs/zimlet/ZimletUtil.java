@@ -800,9 +800,7 @@ public class ZimletUtil {
             File zimletDir = ZimletUtil.getZimletRootDir(zimlet);
             FileUtil.deleteDir(zimletDir);
             ZimbraLog.zimlet.info("zimlet directory %s is deleted", zimletDir.getName());
-        } catch (IOException e) {
-            throw ServiceException.FAILURE("error occurred when deleting zimlet directory", e);
-        } catch (ZimletException e) {
+        } catch (IOException | ZimletException e) {
             throw ServiceException.FAILURE("error occurred when deleting zimlet directory", e);
         }
     }

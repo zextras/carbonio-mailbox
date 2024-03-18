@@ -236,10 +236,7 @@ public class MySQL extends Db {
                     conn.commit();
                 DbPool.quietClose(conn);
             }
-        } catch (SQLException e) {
-            // If there's an error, let's just log it but not bubble up the exception.
-            ZimbraLog.dbconn.warn("ignoring error while forcing mysql to flush innodb log to disk", e);
-        } catch (ServiceException e) {
+        } catch (SQLException | ServiceException e) {
             // If there's an error, let's just log it but not bubble up the exception.
             ZimbraLog.dbconn.warn("ignoring error while forcing mysql to flush innodb log to disk", e);
         } finally {

@@ -98,17 +98,13 @@ public class Notification implements LmtpCallback {
         // isn't affected
         try {
             notifyIfNecessary(account, newMessage, recipientEmail);
-        } catch (MessagingException e) {
-            ZimbraLog.mailbox.warn("Unable to send new mail notification", e);
-        } catch (ServiceException e) {
+        } catch (MessagingException | ServiceException e) {
             ZimbraLog.mailbox.warn("Unable to send new mail notification", e);
         }
 
-        try {
+      try {
             outOfOfficeIfNecessary(account, mbox, newMessage, recipientEmail, envelopeSender);
-        } catch (MessagingException e) {
-            ZimbraLog.mailbox.warn("Unable to send out-of-office reply", e);
-        } catch (ServiceException e) {
+        } catch (MessagingException | ServiceException e) {
             ZimbraLog.mailbox.warn("Unable to send out-of-office reply", e);
         }
     }

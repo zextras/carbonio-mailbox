@@ -257,9 +257,7 @@ public class FileCache<K> {
                     for (String keyString : keyList) {
                         keys.add(keyParser.parse(keyString));
                     }
-                } catch (IOException e) {
-                    log.warn("Unable to load %s", propFile, e);
-                } catch (BEncodingException e) {
+                } catch (IOException | BEncodingException e) {
                     log.warn("Unable to load %s", propFile, e);
                 } finally {
                     ByteUtil.closeStream(in);

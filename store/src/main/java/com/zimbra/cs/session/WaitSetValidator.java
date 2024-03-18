@@ -208,8 +208,6 @@ public class WaitSetValidator implements DebugListener {
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ps, "UTF-8"));
             writer.write(text+"\n");
             writer.flush();
-        } catch (UnsupportedEncodingException e) {
-            ps.println(text);
         } catch (IOException e) {
             ps.println(text);
         }

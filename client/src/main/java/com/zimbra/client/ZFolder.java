@@ -182,8 +182,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     public static Color fromString(String s) throws ServiceException {
       try {
         return fromInt(Integer.parseInt(s));
-      } catch (NumberFormatException e) {
-      } catch (ServiceException e) {
+      } catch (NumberFormatException | ServiceException e) {
       }
 
       if (colorMap.containsKey(s)) {

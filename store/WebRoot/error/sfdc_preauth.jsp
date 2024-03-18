@@ -59,9 +59,7 @@ SPDX-License-Identifier: GPL-2.0-only
             Mac mac = Mac.getInstance("HmacSHA1");
             mac.init(bk);
             return toHex(mac.doFinal(data.getBytes()));
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("fatal error", e);
-        } catch (InvalidKeyException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             throw new RuntimeException("fatal error", e);
         }
     }

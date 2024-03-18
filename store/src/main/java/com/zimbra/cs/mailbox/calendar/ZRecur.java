@@ -95,9 +95,7 @@ public class ZRecur implements Cloneable {
             sExpansionLimits.maxYears = val == null ? 100 : Integer.parseInt(val);
             val = server.getAttr(Provisioning.A_zimbraCalendarRecurrenceOtherFrequencyMaxYears);
             sExpansionLimits.maxYearsOtherFreqs = val == null ? 1 : Integer.parseInt(val);
-        } catch (NumberFormatException e) {
-            Zimbra.halt("Can't initialize recurrence expansion limits", e);
-        } catch (ServiceException e) {
+        } catch (NumberFormatException | ServiceException e) {
             Zimbra.halt("Can't initialize recurrence expansion limits", e);
         }
     }

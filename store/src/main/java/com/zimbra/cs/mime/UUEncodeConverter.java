@@ -141,15 +141,12 @@ public class UUEncodeConverter extends MimeVisitor {
             } finally {
                 ByteUtil.closeStream(isOrig);
             }
-        } catch (MessagingException e) {
-            ZimbraLog.extensions.warn("exception while uudecoding message part; skipping part", e);
-            return false;
-        } catch (IOException e) {
+        } catch (MessagingException | IOException e) {
             ZimbraLog.extensions.warn("exception while uudecoding message part; skipping part", e);
             return false;
         }
 
-        // replace the top-level part with a new multipart/related
+      // replace the top-level part with a new multipart/related
         mm.setContent(mmp);
         mm.setHeader("Content-Type", mmp.getContentType() + "; generated=true");
         return true;

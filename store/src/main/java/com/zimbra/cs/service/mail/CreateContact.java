@@ -391,10 +391,8 @@ public class CreateContact extends MailDocumentHandler  {
                         return new Attachment(new DataHandler(ds), name, (int) msg.getSize());
                     }
                 }
-            } catch (IOException ioe) {
+            } catch (IOException | MessagingException ioe) {
                 throw ServiceException.FAILURE("error attaching existing item data", ioe);
-            } catch (MessagingException e) {
-                throw ServiceException.FAILURE("error attaching existing item data", e);
             }
         }
 
@@ -495,12 +493,10 @@ public class CreateContact extends MailDocumentHandler  {
                 byte[] content = UserServlet.getRemoteContent(zsc.getAuthToken(), iid, params);
                 text = new String(content, MimeConstants.P_CHARSET_UTF8);
             }
-        } catch (IOException e) {
-            throw ServiceException.FAILURE("error fetching message part: iid=" + iid + ", part=" + part, e);
-        } catch (MessagingException e) {
+        } catch (IOException | MessagingException e) {
             throw ServiceException.FAILURE("error fetching message part: iid=" + iid + ", part=" + part, e);
         }
-        return text;
+      return text;
     }
 
     static boolean needToMigrateDlist(ZimbraSoapContext zsc) throws ServiceException {

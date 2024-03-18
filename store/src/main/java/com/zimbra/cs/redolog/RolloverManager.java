@@ -179,12 +179,10 @@ public class RolloverManager {
 		try {
 			String val = fname.substring(start, end);
 			return Long.parseLong(val);
-		} catch (StringIndexOutOfBoundsException se) {
-			return -1;
-		} catch (NumberFormatException ne) {
+		} catch (StringIndexOutOfBoundsException | NumberFormatException se) {
 			return -1;
 		}
-	}
+  }
 
 	public static long getEndTimeForFile(File f) {
         DateFormat fmt = new SimpleDateFormat(TIMESTAMP_FORMAT);

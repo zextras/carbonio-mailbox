@@ -49,12 +49,10 @@ public abstract class DomainNameMappingHandler {
             DomainNameMappingHandler handler;
             try {
                 handler = mClass.newInstance();
-            } catch (InstantiationException e) {
-                handler = new UnknownDomainNameMappingHandler();
-            } catch (IllegalAccessException e) {
+            } catch (InstantiationException | IllegalAccessException e) {
                 handler = new UnknownDomainNameMappingHandler();
             }
-            return handler;
+          return handler;
         }
     }
     

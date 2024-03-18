@@ -4098,7 +4098,7 @@ public abstract class ImapHandler {
                     // don't write this response line if we're returning NO
                     result = null;
                     throw new ImapParseException(tag, "UNKNOWN-CTE", command + "failed: unknown content-type-encoding", false);
-                } catch (SoapFaultException e) {
+                } catch (SoapFaultException | IOException e) {
                     fetchException(e);
                 } catch (ServiceException e) {
                     Throwable cause = e.getCause();
@@ -4109,10 +4109,7 @@ public abstract class ImapHandler {
                     }
                 } catch (MessagingException e) {
                     ZimbraLog.imap.warn("ignoring error during " + command + ": ", e);
-                } catch (IOException ioe) {
-                    fetchException(ioe);
-                }
-                finally {
+                } finally {
                     if (result != null) {
                         result.write(')');
                         output.write(LINE_SEPARATOR_BYTES, 0, LINE_SEPARATOR_BYTES.length);

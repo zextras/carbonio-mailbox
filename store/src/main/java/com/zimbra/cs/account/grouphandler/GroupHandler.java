@@ -44,12 +44,10 @@ public abstract class GroupHandler {
             GroupHandler handler;
             try {
                 handler = mClass.newInstance();
-            } catch (InstantiationException e) {
-                handler = newDefaultHandler();
-            } catch (IllegalAccessException e) {
+            } catch (InstantiationException | IllegalAccessException e) {
                 handler = newDefaultHandler();
             }
-            return handler;
+          return handler;
         }
     }
 

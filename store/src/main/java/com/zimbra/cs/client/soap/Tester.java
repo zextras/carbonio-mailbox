@@ -551,17 +551,7 @@ public class Tester {
 
             doAddMsg(session, serverURL);
 
-        } catch (SoapFaultException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (LmcSoapClientException e) {
-            e.printStackTrace();
-        } catch (ServiceException e) {
-            e.printStackTrace();
-        } catch (HttpException e) {
+        } catch (HttpException | ServiceException | LmcSoapClientException | IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

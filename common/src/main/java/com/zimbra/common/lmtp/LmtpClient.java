@@ -301,9 +301,7 @@ public class LmtpClient {
                     .getSocketFactory();
             return (SSLSocket) sslSocketFactory.createSocket(sock, sock
                     .getInetAddress().getHostName(), sock.getPort(), false);
-        } catch (KeyManagementException e) {
-            throw new LmtpClientException(e);
-        } catch (NoSuchAlgorithmException e) {
+        } catch (KeyManagementException | NoSuchAlgorithmException e) {
             throw new LmtpClientException(e);
         }
     }

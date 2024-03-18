@@ -428,10 +428,7 @@ class ImapPartSpecifier {
             }
 
             return new InputStreamWithSize(is, length);
-        } catch (IOException e) {
-            ByteUtil.closeStream(is);
-            return null;
-        } catch (MessagingException e) {
+        } catch (IOException | MessagingException e) {
             ByteUtil.closeStream(is);
             return null;
         }

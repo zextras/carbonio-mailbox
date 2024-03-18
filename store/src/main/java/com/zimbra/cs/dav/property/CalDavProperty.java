@@ -232,10 +232,7 @@ public class CalDavProperty extends ResourceProperty {
       if (getStringValue() == null)
         try {
           setStringValue(rs.getVcalendar(ctxt, null));
-        } catch (IOException e) {
-          setStringValue("");
-          ZimbraLog.dav.warn("can't get appt data", e);
-        } catch (DavException e) {
+        } catch (IOException | DavException e) {
           setStringValue("");
           ZimbraLog.dav.warn("can't get appt data", e);
         }

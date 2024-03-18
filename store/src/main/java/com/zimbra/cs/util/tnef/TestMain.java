@@ -323,13 +323,7 @@ public class TestMain {
         } catch (UnsupportedTnefCalendaringMsgException ex) {
             sLog.warn("Unable to map %s to ICALENDAR", mimeFile.getPath(), ex);
             return false;
-        } catch (TNEFtoIcalendarServiceException ex) {
-            sLog.warn("Problem encountered mapping %s to ICALENDAR", mimeFile.getPath(), ex);
-            return false;
-        } catch (MessagingException ex) {
-            sLog.warn("Problem encountered mapping %s to ICALENDAR", mimeFile.getPath(), ex);
-            return false;
-        } catch (ServiceException ex) {
+        } catch (ServiceException | MessagingException ex) {
             sLog.warn("Problem encountered mapping %s to ICALENDAR", mimeFile.getPath(), ex);
             return false;
         } catch (IOException ex) {
@@ -373,9 +367,6 @@ public class TestMain {
                 wout = new OutputStreamWriter(System.out, UTF8);
             wout.write(ical);
             wout.flush();
-        } catch (UnsupportedEncodingException e) {
-            sLog.warn("Problem Writing ICALENDAR for %s", mimeFile.getPath(), e);
-            return false;
         } catch (IOException e) {
             sLog.warn("Problem Writing ICALENDAR for %s", mimeFile.getPath(), e);
             return false;

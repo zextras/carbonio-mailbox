@@ -442,9 +442,7 @@ public class DbPool {
             try {
                 if (conn.getConnection() != null && !conn.getConnection().isClosed())
                     conn.close();
-            } catch (SQLException e) {
-                ZimbraLog.sqltrace.warn("quietClose caught exception", e);
-            } catch (ServiceException e) {
+            } catch (SQLException | ServiceException e) {
                 ZimbraLog.sqltrace.warn("quietClose caught exception", e);
             }
         }
@@ -459,9 +457,7 @@ public class DbPool {
             try {
                 if (conn.getConnection() != null && !conn.getConnection().isClosed())
                     conn.rollback();
-            } catch (SQLException e) {
-                ZimbraLog.sqltrace.warn("quietRollback caught exception", e);
-            } catch (ServiceException e) {
+            } catch (SQLException | ServiceException e) {
                 ZimbraLog.sqltrace.warn("quietRollback caught exception", e);
             }
         }

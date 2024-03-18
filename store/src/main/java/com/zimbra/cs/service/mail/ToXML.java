@@ -2136,9 +2136,7 @@ public final class ToXML {
         List<MPartInfo> parts;
         try {
           parts = Mime.getParts(mm, getDefaultCharset(cal));
-        } catch (IOException ex) {
-          throw ServiceException.FAILURE(ex.getMessage(), ex);
-        } catch (MessagingException ex) {
+        } catch (IOException | MessagingException ex) {
           throw ServiceException.FAILURE(ex.getMessage(), ex);
         }
         if (parts != null && !parts.isEmpty()) {
@@ -2409,9 +2407,7 @@ public final class ToXML {
         Account requestedAcct = calItem.getMailbox().getAccount();
         encodeAddrsWithGroupInfo(m, requestedAcct, authedAcct);
       }
-    } catch (IOException ex) {
-      throw ServiceException.FAILURE(ex.getMessage(), ex);
-    } catch (MessagingException ex) {
+    } catch (IOException | MessagingException ex) {
       throw ServiceException.FAILURE(ex.getMessage(), ex);
     }
     return m;
@@ -3193,8 +3189,7 @@ public final class ToXML {
             MailConstants.A_CONTENT_DISPOSITION,
             StringUtil.stripControlCharacters(cdisp.getDisposition()));
       }
-    } catch (MessagingException e) {
-    } catch (UnsupportedEncodingException e) {
+    } catch (MessagingException | UnsupportedEncodingException e) {
     }
 
     // figure out attachment name
@@ -3209,8 +3204,7 @@ public final class ToXML {
       if (!Strings.isNullOrEmpty(fname)) {
         el.addAttribute(MailConstants.A_CONTENT_FILENAME, StringUtil.stripControlCharacters(fname));
       }
-    } catch (MessagingException me) {
-    } catch (IOException ioe) {
+    } catch (MessagingException | IOException me) {
     }
 
     // figure out content-id (used in displaying attached images)

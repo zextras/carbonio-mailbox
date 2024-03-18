@@ -61,9 +61,7 @@ public class HttpProxyUtil {
                 cred.setCredentials(sProxyAuthScope, sProxyCreds);
                 clientBuilder.setDefaultCredentialsProvider(cred);
             }
-        } catch (ServiceException e) {
-            ZimbraLog.misc.warn("Unable to configureProxy: "+e.getMessage(), e);
-        } catch (URISyntaxException e) {
+        } catch (ServiceException | URISyntaxException e) {
             ZimbraLog.misc.warn("Unable to configureProxy: "+e.getMessage(), e);
         }
     }

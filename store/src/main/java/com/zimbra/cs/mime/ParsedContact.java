@@ -111,10 +111,8 @@ public final class ParsedContact {
                     throw ServiceException.INVALID_REQUEST("contact must have fields", null);
                 }
                 initializeSizeAndDigest(); // This didn't happen in init() because there was no stream.
-            } catch (MessagingException me) {
+            } catch (MessagingException | IOException me) {
                 throw MailServiceException.MESSAGE_PARSE_ERROR(me);
-            } catch (IOException ioe) {
-                throw MailServiceException.MESSAGE_PARSE_ERROR(ioe);
             }
         }
     }
@@ -194,10 +192,8 @@ public final class ParsedContact {
                     contactFields.remove(attach.getName());
                 }
                 initializeSizeAndDigest();
-            } catch (MessagingException me) {
+            } catch (MessagingException | IOException me) {
                 throw MailServiceException.MESSAGE_PARSE_ERROR(me);
-            } catch (IOException ioe) {
-                throw MailServiceException.MESSAGE_PARSE_ERROR(ioe);
             } finally {
                 ByteUtil.closeStream(contentStream);
             }
@@ -478,10 +474,8 @@ public final class ParsedContact {
                 sharedStream = null;
 
                 initializeSizeAndDigest();
-            } catch (MessagingException me) {
+            } catch (MessagingException | IOException me) {
                 throw MailServiceException.MESSAGE_PARSE_ERROR(me);
-            } catch (IOException e) {
-                throw MailServiceException.MESSAGE_PARSE_ERROR(e);
             }
         } else {
             // No attachments.  Wipe out any previous reference to a blob.

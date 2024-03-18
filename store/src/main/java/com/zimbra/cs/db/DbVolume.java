@@ -281,12 +281,10 @@ public final class DbVolume {
         VolumeMetadata metadata;
         try {
             metadata = new VolumeMetadata(new Metadata(rs.getString(CN_METADATA)));
-        } catch (MailServiceException e) {
-            throw VolumeServiceException.INVALID_METADATA(e);
         } catch (ServiceException e) {
             throw VolumeServiceException.INVALID_METADATA(e);
         }
-        return Volume.builder().setId(rs.getShort(CN_ID)).setType(rs.getShort(CN_TYPE)).setName(rs.getString(CN_NAME))
+      return Volume.builder().setId(rs.getShort(CN_ID)).setType(rs.getShort(CN_TYPE)).setName(rs.getString(CN_NAME))
                 .setPath(Volume.getAbsolutePath(rs.getString(CN_PATH)), false)
                 .setMboxGroupBits(rs.getShort(CN_MAILBOX_GROUP_BITS)).setMboxBit(rs.getShort(CN_MAILBOX_BITS))
                 .setFileGroupBits(rs.getShort(CN_FILE_GROUP_BITS)).setFileBits(rs.getShort(CN_FILE_BITS))

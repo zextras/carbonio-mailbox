@@ -16,9 +16,7 @@ public class HardLinkTest {
 		boolean passed = false;
 		try {
 			IO.link(a1, a2);
-		} catch (NullPointerException npe) {
-			passed = true;
-		} catch (IllegalArgumentException iae) {
+		} catch (NullPointerException | IllegalArgumentException npe) {
 			passed = true;
 		} catch (IOException ioe) {
 			ioe.printStackTrace();

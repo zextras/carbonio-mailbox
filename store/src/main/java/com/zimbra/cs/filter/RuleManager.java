@@ -140,10 +140,7 @@ public final class RuleManager {
             attrs.put(sieveScriptAttrName, script);
             Provisioning.getInstance().modifyAttrs(entry, attrs);
             entry.setCachedData(rulesCacheKey, node);
-        } catch (ParseException e) {
-            ZimbraLog.filter.error("Unable to parse script:\n" + script);
-            throw ServiceException.PARSE_ERROR("parsing Sieve script", e);
-        } catch (TokenMgrError e) {
+        } catch (ParseException | TokenMgrError e) {
             ZimbraLog.filter.error("Unable to parse script:\n" + script);
             throw ServiceException.PARSE_ERROR("parsing Sieve script", e);
         } catch (SieveException e) {
@@ -247,12 +244,10 @@ public final class RuleManager {
                 node = getRulesNode(account, OUTGOING_FILTER_RULES_CACHE_KEY);
                 sieveScriptAttrName = Provisioning.A_zimbraMailOutgoingSieveScript;
             }
-        } catch (ParseException e) {
-            throw ServiceException.PARSE_ERROR("parsing Sieve script", e);
-        } catch (TokenMgrError e) {
+        } catch (ParseException | TokenMgrError e) {
             throw ServiceException.PARSE_ERROR("parsing Sieve script", e);
         }
-        SieveToSoap sieveToSoap = new SieveToSoap(getRuleNames(account.getAttr(sieveScriptAttrName)));
+      SieveToSoap sieveToSoap = new SieveToSoap(getRuleNames(account.getAttr(sieveScriptAttrName)));
         sieveToSoap.accept(node);
         return sieveToSoap.toFilterRules();
     }
@@ -430,16 +425,13 @@ public final class RuleManager {
             }
         } catch (ErejectException ex) {
             throw DeliveryServiceException.DELIVERY_REJECTED(ex.getMessage(), ex);
-        } catch (Exception e) {
+        } catch (Exception | TokenMgrError e) {
             ZimbraLog.filter.warn("An error occurred while processing filter rules. Filing message to %s.",
                     handler.getDefaultFolderPath(), e);
-        } catch (TokenMgrError e) {
-            // Workaround for bug 19576.  Certain parse errors can cause JavaCC to throw an Error
-            // instead of an Exception.  Woo.
-            ZimbraLog.filter.warn("An error occurred while processing filter rules. Filing message to %s.",
-                    handler.getDefaultFolderPath(), e);
-        }
-        if (addedMessageIds == null) {
+        } // Workaround for bug 19576.  Certain parse errors can cause JavaCC to throw an Error
+        // instead of an Exception.  Woo.
+
+      if (addedMessageIds == null) {
             // Filter rules were not processed.  File to the default folder.
             Message msg = mailAdapter.keep(KeepType.IMPLICIT_KEEP);
             addedMessageIds = new ArrayList<>(1);
@@ -484,14 +476,11 @@ public final class RuleManager {
             mailAdapter.executeAllActions();
             // multiple fileinto may result in multiple copies of the messages in different folders
             addedMessageIds = mailAdapter.getAddedMessageIds();
-        } catch (Exception e) {
-            ZimbraLog.filter.warn("An error occurred while processing filter rules. Filing message to %s.",
-                handler.getDefaultFolderPath(), e);
-        } catch (TokenMgrError e) {
+        } catch (Exception | TokenMgrError e) {
             ZimbraLog.filter.warn("An error occurred while processing filter rules. Filing message to %s.",
                 handler.getDefaultFolderPath(), e);
         }
-        if (addedMessageIds == null) {
+      if (addedMessageIds == null) {
             // Filter rules were not processed.  File to the default folder.
             Message msg = mailAdapter.keep(KeepType.IMPLICIT_KEEP);
             addedMessageIds = new ArrayList<>(1);

@@ -266,12 +266,9 @@ public class SendMsg extends MailDocumentHandler {
           if (sendRecord != null) {
             sendRecord.setSecond(savedMsgId);
           }
-        } catch (ServiceException e) {
+        } catch (ServiceException | RuntimeException e) {
           clearPendingSend(mbox.getId(), sendRecord);
           throw e;
-        } catch (RuntimeException re) {
-          clearPendingSend(mbox.getId(), sendRecord);
-          throw re;
         } finally {
           // purge the messages fetched from other servers.
           if (mimeData.fetches != null) {

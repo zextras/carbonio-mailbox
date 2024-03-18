@@ -91,9 +91,7 @@ public class ImportContacts extends MailDocumentHandler  {
 
             contacts = ContactCSV.getContacts(reader, format, locale);
             reader.close();
-        } catch (IOException e) {
-            throw MailServiceException.UNABLE_TO_IMPORT_CONTACTS(e.getMessage(), e);
-        } catch (ParseException e) {
+        } catch (IOException | ParseException e) {
             throw MailServiceException.UNABLE_TO_IMPORT_CONTACTS(e.getMessage(), e);
         } finally {
             if (reader != null) {

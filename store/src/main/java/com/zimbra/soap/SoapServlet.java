@@ -156,22 +156,18 @@ public class SoapServlet extends ZimbraServlet {
     Class<?> dispatcherClass = null;
     try {
       dispatcherClass = Class.forName(cname);
-    } catch (ClassNotFoundException cnfe) {
-      throw new ServletException("can't find handler initializer class " + cname, cnfe);
     } catch (OutOfMemoryError e) {
       Zimbra.halt("out of memory", e);
-    } catch (Throwable t) {
-      throw new ServletException("can't find handler initializer class " + cname, t);
+    } catch (Throwable cnfe) {
+      throw new ServletException("can't find handler initializer class " + cname, cnfe);
     }
 
     Object dispatcher;
 
     try {
       dispatcher = dispatcherClass.newInstance();
-    } catch (InstantiationException ie) {
+    } catch (InstantiationException | IllegalAccessException ie) {
       throw new ServletException("can't instantiate class " + cname, ie);
-    } catch (IllegalAccessException iae) {
-      throw new ServletException("can't instantiate class " + cname, iae);
     }
 
     if (!(dispatcher instanceof DocumentService)) {

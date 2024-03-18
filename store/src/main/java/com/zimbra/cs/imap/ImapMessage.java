@@ -741,9 +741,7 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
                 }
             }
             return complete ? lines : lines + 1;
-        } catch (MessagingException e) {
-            return 0;
-        } catch (IOException e) {
+        } catch (MessagingException | IOException e) {
             return 0;
         } finally {
             ByteUtil.closeStream(is);

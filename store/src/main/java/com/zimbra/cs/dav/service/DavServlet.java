@@ -349,15 +349,12 @@ public class DavServlet extends ZimbraServlet {
             }
             ZimbraLog.addToContext(ZimbraLog.C_ANAME, authUser.getName());
             ctxt = new DavContext(req, resp, authUser);
-        } catch (AuthTokenException e) {
-            sendError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error getting authenticated user", e);
-            return;
-        } catch (ServiceException e) {
+        } catch (AuthTokenException | ServiceException e) {
             sendError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error getting authenticated user", e);
             return;
         }
 
-        DavMethod method = sMethods.get(req.getMethod());
+      DavMethod method = sMethods.get(req.getMethod());
         if (method == null) {
             setAllowHeader(resp);
             sendError(resp, HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Not an allowed method", null, Level.debug);
