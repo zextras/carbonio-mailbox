@@ -644,41 +644,40 @@ void getTerm(CharTermAttribute t, int offset, int len) {
         case 3: 
           { return UniversalTokenizer.TokenType.ALNUM;
           }
-        case 10:
-        case 18:
-        case 17:
-        case 16:
-        case 15:
-        case 14:
-        case 13:
-        case 12:
-        case 11:
-          break;
+        case 10: break;
         case 2: 
           { return UniversalTokenizer.TokenType.CJK;
           }
-        case 8: 
+        case 11: break;
+        case 8:
           { return UniversalTokenizer.TokenType.ACRONYM;
           }
-        case 6: 
+        case 12: break;
+        case 6:
           { return UniversalTokenizer.TokenType.HOST;
           }
-        case 1: 
+        case 13: break;
+        case 1:
           { /* ignore */
           }
-        case 9: 
+        case 14: break;
+        case 9:
           { return UniversalTokenizer.TokenType.EMAIL;
           }
-        case 7: 
+        case 15: break;
+        case 7:
           { return UniversalTokenizer.TokenType.COMPANY;
           }
-        case 4: 
+        case 16: break;
+        case 4:
           { return UniversalTokenizer.TokenType.APOSTROPHE;
           }
-        case 5: 
+        case 17: break;
+        case 5:
           { return UniversalTokenizer.TokenType.NUM;
           }
-        default: 
+        case 18: break;
+        default:
           if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
             zzAtEOF = true;
             return null;
