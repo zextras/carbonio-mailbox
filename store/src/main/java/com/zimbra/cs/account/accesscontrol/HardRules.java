@@ -23,7 +23,7 @@ public class HardRules {
     private static Set<String> ALWAYS_FORBIDDEN_ATTRS;
 
     static {
-        Set<String> forbiddenAttr = new HashSet<String>();
+        Set<String> forbiddenAttr = new HashSet<>();
         forbiddenAttr.add(Provisioning.A_zimbraIsAdminAccount.toLowerCase());
 
         ALWAYS_FORBIDDEN_ATTRS = Collections.unmodifiableSet(forbiddenAttr);

@@ -587,7 +587,7 @@ public abstract class DocumentHandler {
     request.detach();
     if (isLocal && engine != null) {
       // executing on same server; just hand back to the SoapEngine
-      Map<String, Object> contextTarget = new HashMap<String, Object>(context);
+      Map<String, Object> contextTarget = new HashMap<>(context);
       contextTarget.put(SoapEngine.ZIMBRA_ENGINE, engine);
       contextTarget.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
       if (ZimbraLog.soap.isDebugEnabled()) {
@@ -727,7 +727,7 @@ public abstract class DocumentHandler {
             || UA_ZCB.equalsIgnoreCase(app)
             || UA_MIGRATION.equalsIgnoreCase(app)) {
           try {
-            return new Pair<String, Version>(app, new Version(version, false));
+            return new Pair<>(app, new Version(version, false));
           } catch (ServiceException e) {
             ZimbraLog.soap.debug("unable to parse zimbra connector client version", e);
           }

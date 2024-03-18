@@ -70,7 +70,7 @@ public class DavContext {
     static {
         synchronized (DavContext.class) {
             if (sExtensions == null)
-                sExtensions = new HashSet<Extension>();
+                sExtensions = new HashSet<>();
         }
     }
     public static void addExtension(Extension ex) {
@@ -122,8 +122,8 @@ public class DavContext {
         HashMap<QName, DavException> errProps;
 
         public RequestProp(boolean no) {
-            props = new HashMap<QName, Element>();
-            errProps = new HashMap<QName, DavException>();
+            props = new HashMap<>();
+            errProps = new HashMap<>();
             nameOnly = no;
             allProp = true;
         }
@@ -495,7 +495,7 @@ public class DavContext {
     }
 
     public java.util.Collection<DavResource> getAllRequestedResources() throws DavException, ServiceException {
-        ArrayList<DavResource> rss = new ArrayList<DavResource>();
+        ArrayList<DavResource> rss = new ArrayList<>();
         if (mRequestType == RequestType.RESOURCE)
             rss = (ArrayList<DavResource>) UrlNamespace.getResources(this, mUser, mPath, getDepth() == Depth.one);
         else {

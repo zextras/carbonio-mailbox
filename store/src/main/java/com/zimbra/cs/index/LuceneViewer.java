@@ -66,7 +66,7 @@ public class LuceneViewer {
             }
         }
 
-        private List<TermFilter> mFilters = new ArrayList<TermFilter>();
+        private List<TermFilter> mFilters = new ArrayList<>();
 
         private void addFilter(String field, String text) {
             mFilters.add(new TermFilter(field, text));
@@ -89,7 +89,7 @@ public class LuceneViewer {
         mWriter = new FileWriter(mOutputFile);
 
         if (hasFilters()) {
-            mDocsIntersection = new HashSet<Integer>();
+            mDocsIntersection = new HashSet<>();
         }
     }
 
@@ -319,7 +319,7 @@ public class LuceneViewer {
             // keep track of docs that appear in all terms that are filtered in.
             Set<Integer> docNums = null;
             if (hasFilters()) {
-                docNums = new HashSet<Integer>();
+                docNums = new HashSet<>();
             }
 
             TermPositions termPos = mIndexReader.termPositions(term);
@@ -368,7 +368,7 @@ public class LuceneViewer {
 
         outputBanner("Documents in which all (filtered in) terms appear");
 
-        List<Integer> sorted = new ArrayList<Integer>(mDocsIntersection);
+        List<Integer> sorted = new ArrayList<>(mDocsIntersection);
         Collections.sort(sorted);
         for (Integer docNum : sorted) {
             outputLn("    " + docNum);

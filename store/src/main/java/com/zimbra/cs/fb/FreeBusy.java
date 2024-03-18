@@ -287,7 +287,7 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
       } else {
         mStatus = IcalXmlStrMap.FBTYPE_FREE;
       }
-      mInstances = new LinkedHashSet<FBInstance>();
+      mInstances = new LinkedHashSet<>();
     }
 
     public Interval(long start, long end, String status, FBInstance instance) {
@@ -712,7 +712,7 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
     String name = null;
     ParsedDateTime dtStart = null;
     ParsedDateTime dtEnd = null;
-    List<Interval> intervals = new ArrayList<Interval>();
+    List<Interval> intervals = new ArrayList<>();
     TimeZoneMap tzmap = new TimeZoneMap(ICalTimeZone.getUTC());
     Iterator<ZProperty> propIter = comp.getPropertyIterator();
     while (propIter.hasNext()) {

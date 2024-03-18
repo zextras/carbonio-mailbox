@@ -259,7 +259,7 @@ public abstract class LocalConfigUpgrade {
     private static final HashMap<String,LocalConfigUpgrade> sUpgrades;
     
     static {
-	sUpgrades = new HashMap<String,LocalConfigUpgrade>();
+	sUpgrades = new HashMap<>();
 	new LocalConfigUpgradeSwitchToCMS("37842");
 	new LocalConfigUpgradeSwitchToServerJVM("37844");
 	new LocalConfigUpgradeUnsetMailboxdJavaHome("37802");

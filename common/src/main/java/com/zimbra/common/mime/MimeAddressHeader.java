@@ -13,7 +13,7 @@ public class MimeAddressHeader extends MimeHeader {
 
     public MimeAddressHeader(final String name, final List<InternetAddress> iaddrs) {
         super(name, null, -1);
-        mAddresses = new ArrayList<InternetAddress>(iaddrs);
+        mAddresses = new ArrayList<>(iaddrs);
     }
 
     @Deprecated public MimeAddressHeader(final String name, final String value) {
@@ -28,7 +28,7 @@ public class MimeAddressHeader extends MimeHeader {
     MimeAddressHeader(MimeHeader header) {
         super(header);
         if (header instanceof MimeAddressHeader) {
-            mAddresses = new ArrayList<InternetAddress>(((MimeAddressHeader) header).getAddresses());
+            mAddresses = new ArrayList<>(((MimeAddressHeader) header).getAddresses());
         } else {
             parseAddresses();
         }
@@ -39,7 +39,7 @@ public class MimeAddressHeader extends MimeHeader {
         if (valueStart > 0) {
             mAddresses = InternetAddress.parseHeader(content, valueStart, content.length - valueStart);
         } else {
-            mAddresses = new ArrayList<InternetAddress>(3);
+            mAddresses = new ArrayList<>(3);
         }
     }
 
@@ -47,7 +47,7 @@ public class MimeAddressHeader extends MimeHeader {
      *  are included as individual unexpended members of this list.
      * @see #expandAddresses() */
     public List<InternetAddress> getAddresses() {
-        List<InternetAddress> addresses = new ArrayList<InternetAddress>(mAddresses.size());
+        List<InternetAddress> addresses = new ArrayList<>(mAddresses.size());
         for (InternetAddress addr : mAddresses) {
             addresses.add(addr.clone());
         }
@@ -57,7 +57,7 @@ public class MimeAddressHeader extends MimeHeader {
     /** Returns copies of all the addresses from the header, replacing RFC 5322
      *  groups with their component addresses. */
     public List<InternetAddress> expandAddresses() {
-        List<InternetAddress> addresses = new ArrayList<InternetAddress>(mAddresses.size());
+        List<InternetAddress> addresses = new ArrayList<>(mAddresses.size());
         for (InternetAddress addr : mAddresses) {
             if (addr instanceof InternetAddress.Group) {
                 for (InternetAddress member : ((InternetAddress.Group) addr).getMembers()) {

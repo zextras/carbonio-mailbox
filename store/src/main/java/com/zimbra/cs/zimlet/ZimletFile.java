@@ -176,7 +176,7 @@ public class ZimletFile implements Comparable<ZimletFile> {
         }
         mDescFile = name + XML_SUFFIX;
         
-        mEntries = new HashMap<String,ZimletEntry>();
+        mEntries = new HashMap<>();
 
         if (mBaseStream != null) {
             mCopy = ByteUtil.getContent(mBaseStream, 0);

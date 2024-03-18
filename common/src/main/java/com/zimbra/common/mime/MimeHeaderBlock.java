@@ -21,23 +21,23 @@ public class MimeHeaderBlock implements Iterable<MimeHeader> {
     }
 
     public MimeHeaderBlock(boolean isMessage, MimePart parent) {
-        this.headers = new ArrayList<MimeHeader>(isMessage ? 20 : 5);
+        this.headers = new ArrayList<>(isMessage ? 20 : 5);
         this.parent = parent;
     }
 
     public MimeHeaderBlock(MimeHeader... headers) {
-        this.headers = new ArrayList<MimeHeader>(Math.max(headers.length, 5));
+        this.headers = new ArrayList<>(Math.max(headers.length, 5));
         for (MimeHeader header : headers) {
             appendHeader(header);
         }
     }
 
     public MimeHeaderBlock(MimeHeaderBlock hblock) {
-        this.headers = new ArrayList<MimeHeader>(hblock.headers);
+        this.headers = new ArrayList<>(hblock.headers);
     }
 
     public MimeHeaderBlock(MimeHeaderBlock hblock, String[] omitHeaders) {
-        this.headers = new ArrayList<MimeHeader>(hblock.headers.size());
+        this.headers = new ArrayList<>(hblock.headers.size());
         for (MimeHeader header : hblock) {
             boolean present = false;
             for (String name : omitHeaders) {
@@ -126,10 +126,10 @@ public class MimeHeaderBlock implements Iterable<MimeHeader> {
      *  appearance in the header block.  If none match, returns {@code null}. */
     public List<MimeHeader> getAll(String name) {
         if (name == null) {
-            return isEmpty() ? null : new ArrayList<MimeHeader>(headers);
+            return isEmpty() ? null : new ArrayList<>(headers);
         }
 
-        List<MimeHeader> matches = new ArrayList<MimeHeader>(2); 
+        List<MimeHeader> matches = new ArrayList<>(2);
         for (MimeHeader header : headers) {
             if (header.getName().equalsIgnoreCase(name)) {
                 matches.add(header.clone());

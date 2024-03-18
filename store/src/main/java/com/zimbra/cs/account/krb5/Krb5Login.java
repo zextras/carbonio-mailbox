@@ -214,7 +214,7 @@ public class Krb5Login {
         }
 
         public static Krb5Config getInstance() {
-            HashMap<String, String> options = new HashMap<String, String>();
+            HashMap<String, String> options = new HashMap<>();
             Krb5Config kc = new Krb5Config(DEFAULT_LOGIN_MODULE_NAME, DEFAULT_CONTROL_FLAG, options);
             kc.mOptions = options;
             return kc;

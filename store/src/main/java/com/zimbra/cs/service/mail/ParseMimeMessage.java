@@ -973,14 +973,14 @@ public final class ParseMimeMessage {
 
     void addUpload(Upload up) {
       if (uploads == null) {
-        uploads = new ArrayList<Upload>(4);
+        uploads = new ArrayList<>(4);
       }
       uploads.add(up);
     }
 
     void addFetch(Upload up) {
       if (fetches == null) {
-        fetches = new ArrayList<Upload>(4);
+        fetches = new ArrayList<>(4);
       }
       fetches.add(up);
     }

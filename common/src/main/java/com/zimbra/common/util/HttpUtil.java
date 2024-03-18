@@ -436,7 +436,7 @@ public final class HttpUtil {
     }
 
     public static Map<String, String> getURIParams(String queryString) {
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         if (queryString == null || queryString.trim().equals(""))
             return params;
 
@@ -488,7 +488,7 @@ public final class HttpUtil {
             return req.getServerName();
     }
 
-    private static final Map<Character,String> sUrlEscapeMap = new HashMap<Character,String>();
+    private static final Map<Character,String> sUrlEscapeMap = new HashMap<>();
 
     static {
         sUrlEscapeMap.put(' ', "%20");
@@ -577,7 +577,7 @@ public final class HttpUtil {
     public static String urlUnescape(String escaped) {
         // all the encoded byte groups should be converted to
         // string together
-        ArrayList<Byte> segment = new ArrayList<Byte>();
+        ArrayList<Byte> segment = new ArrayList<>();
         StringBuilder buf = null;
         for (int i = 0; i < escaped.length(); i++) {
             char c = escaped.charAt(i);
@@ -624,7 +624,7 @@ public final class HttpUtil {
      */
 
     public static String[] getPathFragments(URI uri) {
-        List<String> fragments = new ArrayList<String>();
+        List<String> fragments = new ArrayList<>();
         String[] encodedFragments = uri.getRawPath().split("/");
         for (String encodedFragment : encodedFragments) {
             if (!encodedFragment.isEmpty()) {

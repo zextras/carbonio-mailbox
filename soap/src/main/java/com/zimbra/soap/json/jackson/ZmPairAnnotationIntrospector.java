@@ -50,7 +50,7 @@ public final class ZmPairAnnotationIntrospector extends AnnotationIntrospectorPa
             }
             String n = enumValue.value();
             if (expl == null) {
-                expl = new HashMap<String,String>();
+                expl = new HashMap<>();
             }
             expl.put(f.getName(), n);
         }

@@ -597,7 +597,7 @@ public class ItemActionHelper {
   private ItemActionResult executeLocalBatch(int[] ids) throws ServiceException {
     // iterate over the local items and perform the requested operation
 
-    List<String> originalIds = new ArrayList<String>(ids.length);
+    List<String> originalIds = new ArrayList<>(ids.length);
     for (int id : ids) {
       originalIds.add(mIdFormatter.formatItemId(id));
     }
@@ -625,9 +625,9 @@ public class ItemActionHelper {
         getMailbox().setColor(getOpCtxt(), ids, type, mColor);
         break;
       case HARD_DELETE:
-        List<Integer> nonExistentItems = new ArrayList<Integer>();
+        List<Integer> nonExistentItems = new ArrayList<>();
         getMailbox().delete(getOpCtxt(), ids, type, mTargetConstraint, nonExistentItems);
-        List<String> nonExistentIds = new ArrayList<String>();
+        List<String> nonExistentIds = new ArrayList<>();
         for (Integer id : nonExistentItems) {
           nonExistentIds.add(id.toString());
         }
@@ -645,7 +645,7 @@ public class ItemActionHelper {
         break;
       case COPY:
         List<MailItem> copies = getMailbox().copy(getOpCtxt(), ids, type, mIidFolder.getId());
-        List<String> createdIds = new ArrayList<String>(ids.length);
+        List<String> createdIds = new ArrayList<>(ids.length);
         for (MailItem item : copies) {
           createdIds.add(mIdFormatter.formatItemId(item));
         }
@@ -783,8 +783,8 @@ public class ItemActionHelper {
 
     boolean deleteOriginal = mOperation != Op.COPY;
     String folderStr = mIidFolder.toString();
-    List<String> createdIds = new ArrayList<String>(itemIds.length);
-    List<String> nonExistentIds = new ArrayList<String>();
+    List<String> createdIds = new ArrayList<>(itemIds.length);
+    List<String> nonExistentIds = new ArrayList<>();
 
     boolean toSpam = mIidFolder.getId() == Mailbox.ID_FOLDER_SPAM;
     boolean toMailbox = !toSpam && mIidFolder.getId() != Mailbox.ID_FOLDER_TRASH;
@@ -856,7 +856,7 @@ public class ItemActionHelper {
         case CONTACT:
           Contact ct = (Contact) item;
           Map<String, ZMailbox.ZAttachmentInfo> attachments =
-              new HashMap<String, ZMailbox.ZAttachmentInfo>();
+              new HashMap<>();
           for (Contact.Attachment att : ct.getAttachments()) {
             String attachmentId =
                 zmbx.uploadAttachment(att.getFilename(), att.getContent(), att.getContentType(), 0);
@@ -865,7 +865,7 @@ public class ItemActionHelper {
             attachments.put(att.getName(), info);
           }
           Map<String, String> fields = ct.getFields();
-          Map<String, String> members = new HashMap<String, String>();
+          Map<String, String> members = new HashMap<>();
           for (String key : fields.keySet()) {
             if (ContactConstants.A_groupMember.equals(key)) {
               String memberEncoded = fields.get(key);
@@ -976,7 +976,7 @@ public class ItemActionHelper {
 
       try {
         if (deleteOriginal && !mIdFormatter.formatItemId(item).equals(createdId)) {
-          List<Integer> nonExistentItems = new ArrayList<Integer>();
+          List<Integer> nonExistentItems = new ArrayList<>();
 
           if (msgs == null) {
             mMailbox.delete(

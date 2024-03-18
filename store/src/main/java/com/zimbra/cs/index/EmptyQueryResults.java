@@ -51,7 +51,7 @@ final class EmptyQueryResults extends ZimbraQueryResultsImpl {
 
     @Override
     public List<QueryInfo> getResultInfo() {
-        return new ArrayList<QueryInfo>();
+        return new ArrayList<>();
     }
 
 }

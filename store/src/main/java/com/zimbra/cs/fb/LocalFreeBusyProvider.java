@@ -59,7 +59,7 @@ public class LocalFreeBusyProvider {
         if (folder == FreeBusyQuery.CALENDAR_FOLDER_ALL) {
             calDataResultList = mbox.getAllCalendarsSummaryForRange(null, MailItem.Type.APPOINTMENT, start, end);
         } else {
-            calDataResultList = new ArrayList<CalendarDataResult>(1);
+            calDataResultList = new ArrayList<>(1);
             calDataResultList.add(mbox.getCalendarSummaryForRange(null, folder, MailItem.Type.APPOINTMENT, start, end));
         }
         for (CalendarDataResult result : calDataResultList) {

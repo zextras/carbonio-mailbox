@@ -172,7 +172,7 @@ public class NotifyMailto extends Notify {
                             if (listOptions.size() == 0) {
                                 throw new SyntaxException("Expecting exactly one String for " + NOTIFY_OPTIONS);
                             }
-                            options = new HashMap<String, String>();
+                            options = new HashMap<>();
                             for (String option : listOptions) {
                                 String[] token = option.split("=");
                                 String key = null;
@@ -240,7 +240,7 @@ public class NotifyMailto extends Notify {
             method = FilterUtil.replaceVariables(mailAdapter, method);
         }
         
-        mailtoParams = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
+        mailtoParams = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         try {
             URL url = new URL(method);
             mailto = FilterUtil.replaceVariables(mailAdapter, url.getPath());
@@ -287,7 +287,7 @@ public class NotifyMailto extends Notify {
 
                     if (!mailtoParams.containsKey(headerName)) {
                         // Create a new entry for a header
-                        List<String> value = new ArrayList<String>();
+                        List<String> value = new ArrayList<>();
                         value.add(headerValue);
                         mailtoParams.put(headerName, value);
                     } else {

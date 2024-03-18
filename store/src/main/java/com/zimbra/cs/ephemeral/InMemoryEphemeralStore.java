@@ -19,7 +19,7 @@ public class InMemoryEphemeralStore extends EphemeralStore {
     private Map<String, Multimap<String, String>> storeMap;
 
     public InMemoryEphemeralStore() {
-        storeMap = new HashMap<String, Multimap<String, String>>();
+        storeMap = new HashMap<>();
         setAttributeEncoder(new DynamicExpirationEncoder());
     }
 

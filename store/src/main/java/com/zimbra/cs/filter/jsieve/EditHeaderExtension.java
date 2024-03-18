@@ -414,7 +414,7 @@ public class EditHeaderExtension {
         } else {
             ZimbraLog.filter.debug("Key: %s and Value: %s pair not matching requested criteria.", this.key, value);
         }
-        List<String> keyList = new ArrayList<String>();
+        List<String> keyList = new ArrayList<>();
         keyList.add(this.key);
         HeaderTest.evaluateVarExp(mailAdapter, keyList, HeaderTest.SourceType.HEADER, this.valueList);
         return matchFound;
@@ -440,7 +440,7 @@ public class EditHeaderExtension {
      * @throws SyntaxException 
      */
     public void replaceVariablesInValueList(ZimbraMailAdapter mailAdapter) throws SyntaxException {
-        List<String> temp = new ArrayList<String>();
+        List<String> temp = new ArrayList<>();
         if (this.valueList != null && !this.valueList.isEmpty()) {
             for (String value : this.valueList) {
                 temp.add(FilterUtil.replaceVariables(mailAdapter, value));
@@ -515,7 +515,7 @@ public class EditHeaderExtension {
      * @throws OperationException 
      */
     public List<String> getMatchingHeaders(MimeMessage mm) throws OperationException {
-        List<String> headerList = new ArrayList<String>();
+        List<String> headerList = new ArrayList<>();
         try {
             String[] headerValues = mm.getHeader(this.key);
             if (headerValues != null) {

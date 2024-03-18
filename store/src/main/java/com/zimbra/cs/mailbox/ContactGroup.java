@@ -63,7 +63,7 @@ public class ContactGroup {
     // need to be able to quickly get a member by a unique key.
     //
     // In members are persisted in MetadataList, which is ordered.
-    private Set<Member> members = new LinkedHashSet<Member>();  // ordered Set
+    private Set<Member> members = new LinkedHashSet<>();  // ordered Set
     
     // never persisted
     // contains derefed members sorted by the Member.getKey() order
@@ -229,7 +229,7 @@ public class ContactGroup {
 
     public List<String> getEmailAddresses(boolean refresh, Mailbox mbox, 
             OperationContext octxt, boolean inlineMembersOnly) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         
         if (inlineMembersOnly) {
             for (Member member : members) {
@@ -463,7 +463,7 @@ public class ContactGroup {
         private List<String> getDerefedEmailAddresses(List<String> result) {
             assert(derefed());
             if (result == null) {
-                result = new ArrayList<String>();
+                result = new ArrayList<>();
             }
             
             if (derefedEmailAddrs != null) {
@@ -564,7 +564,7 @@ public class ContactGroup {
             String emailFields[] = Contact.getEmailFields(ownerAcct);
             Map<String, String> fieldMap = contact.getAllFields(); 
             
-            List<String> result = new ArrayList<String>();
+            List<String> result = new ArrayList<>();
             for (String field : emailFields) {
                 String addr = fieldMap.get(field);
                 if (addr != null && !addr.trim().isEmpty()) {
@@ -576,9 +576,9 @@ public class ContactGroup {
         
         private List<String> genDerefedEmailAddrs(Account ownerAcct, Element eContact) {
             String emailFields[] = Contact.getEmailFields(ownerAcct);
-            Set<String> emailFieldsSet = new HashSet<String>(Arrays.asList(emailFields));
+            Set<String> emailFieldsSet = new HashSet<>(Arrays.asList(emailFields));
 
-            List<String> result = new ArrayList<String>();
+            List<String> result = new ArrayList<>();
             for (Element eAttr : eContact.listElements(MailConstants.E_ATTRIBUTE)) {
                 String field = eAttr.getAttribute(MailConstants.A_ATTRIBUTE_NAME, null);
                 if (field != null && emailFieldsSet.contains(field)) {
@@ -659,7 +659,7 @@ public class ContactGroup {
     
     public static class GalRefMember extends Member {
         private static final String PRIMARY_EMAIL_FIELD = "email";
-        private static final Set<String> GAL_EMAIL_FIELDS = new HashSet<String>(Arrays.asList(
+        private static final Set<String> GAL_EMAIL_FIELDS = new HashSet<>(Arrays.asList(
             PRIMARY_EMAIL_FIELD, "email2", "email3", "email4", "email5", "email6",
             "email7", "email8", "email9", "email10", "email11", "email12", "email13",
             "email14", "email15", "email16"));
@@ -701,7 +701,7 @@ public class ContactGroup {
         private List<String> genDerefedEmailAddrs(Contact contact) {
             Map<String, String> fieldMap = contact.getAllFields(); 
             
-            List<String> result = new ArrayList<String>();
+            List<String> result = new ArrayList<>();
             for (String field : GAL_EMAIL_FIELDS) {
                 String addr = fieldMap.get(field);
                 if (addr != null && !addr.trim().isEmpty()) {
@@ -714,7 +714,7 @@ public class ContactGroup {
         private List<String> genDerefedEmailAddrs(GalContact galContact) {
             Map<String, Object> fieldMap = galContact.getAttrs();
             
-            List<String> result = new ArrayList<String>();
+            List<String> result = new ArrayList<>();
             for (String field : GAL_EMAIL_FIELDS) {
                 Object value = fieldMap.get(field);
                 if (value instanceof String) {
@@ -729,7 +729,7 @@ public class ContactGroup {
         
         private List<String> genDerefedEmailAddrs(Element eContact) {
 
-            List<String> result = new ArrayList<String>();
+            List<String> result = new ArrayList<>();
             for (Element eAttr : eContact.listElements(MailConstants.E_ATTRIBUTE)) {
                 String field = eAttr.getAttribute(MailConstants.A_ATTRIBUTE_NAME, null);
                 if (field != null && GAL_EMAIL_FIELDS.contains(field)) {
@@ -827,7 +827,7 @@ public class ContactGroup {
         @Override
         protected void deref(Mailbox mbox, OperationContext octxt, SoapProtocol proxyProtocol) {
             // value is the derefed obj, the key, and the email
-            List<String> emailAddrs = new ArrayList<String>();
+            List<String> emailAddrs = new ArrayList<>();
             emailAddrs.add(value);
             
             setDerefedObject(value, value, emailAddrs);

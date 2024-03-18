@@ -20,7 +20,7 @@ import com.zimbra.common.soap.MailConstants;
 public class CalendarUtil {
 
     public static List<ZParameter> parseXParams(Element element) throws ServiceException {
-        List<ZParameter> params = new ArrayList<ZParameter>();
+        List<ZParameter> params = new ArrayList<>();
         for (Iterator<Element> paramIter = element.elementIterator(MailConstants.E_CAL_XPARAM);
              paramIter.hasNext(); ) {
             Element paramElem = paramIter.next();

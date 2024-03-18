@@ -26,9 +26,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class GetInfoRequest {
     private static Joiner COMMA_JOINER = Joiner.on(",");
 
-    private List<InfoSection> sections = new ArrayList<InfoSection>();
+    private List<InfoSection> sections = new ArrayList<>();
 
-    private List<String> rights = new ArrayList<String>();
+    private List<String> rights = new ArrayList<>();
 
     public GetInfoRequest() {
     }

@@ -84,14 +84,14 @@ public abstract class AttributeCallback {
         }
         
         Mod mMod;
-        List<String> mValues = new ArrayList<String>();
+        List<String> mValues = new ArrayList<>();
         
         public boolean adding() { return mMod==Mod.ADDING; }
         public boolean removing() { return mMod==Mod.REMOVING; }
         public boolean replacing() { return mMod==Mod.REPLACING; }
         public boolean deleting() { return mMod==Mod.DELETING; }
         public List<String> values() { return mValues; }
-        public Set<String> valuesSet() { return new HashSet<String>(mValues); }
+        public Set<String> valuesSet() { return new HashSet<>(mValues); }
     }
     
     protected SingleValueMod singleValueMod(String attrName, Object value)  throws ServiceException {
@@ -207,12 +207,12 @@ public abstract class AttributeCallback {
         List<String> list = null;
         
         if (value instanceof String) {
-            list = new ArrayList<String>(1);
+            list = new ArrayList<>(1);
             list.add((String)value);
         } else if (value instanceof String[]) {
-            list = new ArrayList<String>(Arrays.asList((String[])value));
+            list = new ArrayList<>(Arrays.asList((String[]) value));
         } else if (value instanceof Collection) {
-            list = new ArrayList<String>();
+            list = new ArrayList<>();
             for (Object o : (Collection)value)
                 list.add(o.toString());
         } else
@@ -223,7 +223,7 @@ public abstract class AttributeCallback {
     
     protected Set<String> getMultiValueSet(Object value) throws ServiceException {
         
-        Set<String> values = new HashSet<String>();
+        Set<String> values = new HashSet<>();
         
         if (value instanceof String) {
             values.add((String)value);
@@ -249,19 +249,19 @@ public abstract class AttributeCallback {
                 newValues = curValues;
             } else {
                 if (mod.adding()) {
-                    newValues = new HashSet<String>();
+                    newValues = new HashSet<>();
                     SetUtil.union(newValues, curValues, mod.valuesSet());
                 } else if (mod.removing()) {
                     newValues = SetUtil.subtract(curValues, mod.valuesSet());
                 } else if (mod.deleting()) {
-                    newValues = new HashSet<String>();
+                    newValues = new HashSet<>();
                 } else {
                     newValues = mod.valuesSet();
                 }
             }
         } else {
             if (mod == null)
-                newValues = new HashSet<String>();
+                newValues = new HashSet<>();
             else
                 newValues = mod.valuesSet();
         }

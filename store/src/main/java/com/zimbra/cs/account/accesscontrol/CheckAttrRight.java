@@ -68,8 +68,8 @@ public class CheckAttrRight extends CheckRight {
             return AllowedAttrs.DENY_ALL_ATTRS();
         }
 
-        Map<String, Integer> allowSome = new HashMap<String, Integer>();
-        Map<String, Integer> denySome = new HashMap<String, Integer>();
+        Map<String, Integer> allowSome = new HashMap<>();
+        Map<String, Integer> denySome = new HashMap<>();
         Integer relativity = 1;
 
         // we iterate through all the targets from which grants can be inherited
@@ -467,7 +467,7 @@ public class CheckAttrRight extends CheckRight {
             return AllowedAttrs.ALLOW_ALL_ATTRS();
         } else {
             // get all attrs that can appear on the target entry
-          Set<String> allowed = new HashSet<String>(
+          Set<String> allowed = new HashSet<>(
               AttributeManager.getInstance().getAllAttrsInClass(klass));
 
             // remove denied from all

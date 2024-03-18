@@ -58,7 +58,7 @@ class SoapSignature extends Signature implements SoapEntry {
     
     private static Map<String, Object> fromXML(Element signature) throws ServiceException {
         List<Element> contents = signature.listElements(AccountConstants.E_CONTENT);
-        Map<String,Object> attrs = new HashMap<String, Object>();
+        Map<String,Object> attrs = new HashMap<>();
         attrs.put(Provisioning.A_zimbraSignatureId, signature.getAttribute(AccountConstants.A_ID));
         attrs.put(Provisioning.A_zimbraSignatureName, signature.getAttribute(AccountConstants.A_NAME));
         

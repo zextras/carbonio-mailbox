@@ -729,7 +729,7 @@ public class LdapDIT {
   }
 
   public String[] getSearchBases(int flags) {
-    Set<String> bases = new HashSet<String>();
+    Set<String> bases = new HashSet<>();
 
     boolean accounts = (flags & Provisioning.SD_ACCOUNT_FLAG) != 0;
     boolean aliases = (flags & Provisioning.SD_ALIAS_FLAG) != 0;

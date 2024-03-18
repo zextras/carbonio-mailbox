@@ -23,7 +23,7 @@ import com.zimbra.common.util.ZimbraLog;
  */
 public final class IntersectionQueryOperation extends CombiningQueryOperation {
     private boolean noHits = false;
-    private List<ZimbraHit> bufferedNext = new ArrayList<ZimbraHit>(1);
+    private List<ZimbraHit> bufferedNext = new ArrayList<>(1);
     private HitGrouper messageGrouper[] = null;
 
     @Override
@@ -76,7 +76,7 @@ public final class IntersectionQueryOperation extends CombiningQueryOperation {
                 ZimbraLog.search.debug("MsgGrp[%d]: %s", i, messageGrouper[i]);
             }
 
-            List<Integer> seenMsgs = new ArrayList<Integer>();
+            List<Integer> seenMsgs = new ArrayList<>();
 
             do {
                 if (curHit != null && msgId > 0) {
@@ -177,7 +177,7 @@ public final class IntersectionQueryOperation extends CombiningQueryOperation {
     private static final class HitGrouper {
         private final QueryOperation subOp;
         private final SortBy sortOrder;
-        private final List<ZimbraHit> bufferedHit = new ArrayList<ZimbraHit>();
+        private final List<ZimbraHit> bufferedHit = new ArrayList<>();
         private int curMsgId = -1;
         private ZimbraHit groupHit = null;
         private int curBufPos = 0; // for iterating the current buffer
@@ -406,7 +406,7 @@ public final class IntersectionQueryOperation extends CombiningQueryOperation {
 
     @Override
     QueryOperation expandLocalRemotePart(Mailbox mbox) throws ServiceException {
-        List<QueryOperation> newList = new ArrayList<QueryOperation>();
+        List<QueryOperation> newList = new ArrayList<>();
         for (QueryOperation op : operations) {
             newList.add(op.expandLocalRemotePart(mbox));
         }
@@ -420,7 +420,7 @@ public final class IntersectionQueryOperation extends CombiningQueryOperation {
         if (!hasSpamTrashSetting()) {
             // ensureSpamTrashSetting might very well return a new root node...so we need
             // to build a new mQueryOperations list using the result of ensureSpamTrashSetting
-            List<QueryOperation> newList = new ArrayList<QueryOperation>();
+            List<QueryOperation> newList = new ArrayList<>();
             for (QueryOperation op : operations) {
                 newList.add(op.ensureSpamTrashSetting(mbox, includeTrash, includeSpam));
             }
@@ -668,8 +668,8 @@ public final class IntersectionQueryOperation extends CombiningQueryOperation {
     public Object clone() {
         assert(messageGrouper == null);
         IntersectionQueryOperation result = (IntersectionQueryOperation) super.clone();
-        result.bufferedNext = new ArrayList<ZimbraHit>(1);
-        result.operations = new ArrayList<QueryOperation>(operations.size());
+        result.bufferedNext = new ArrayList<>(1);
+        result.operations = new ArrayList<>(operations.size());
         for (QueryOperation op : operations) {
             result.operations.add((QueryOperation) op.clone());
         }
@@ -723,7 +723,7 @@ public final class IntersectionQueryOperation extends CombiningQueryOperation {
 
     @Override
     public List<QueryInfo> getResultInfo() {
-        List<QueryInfo> result = new ArrayList<QueryInfo>();
+        List<QueryInfo> result = new ArrayList<>();
         for (QueryOperation op : operations) {
             result.addAll(op.getResultInfo());
         }

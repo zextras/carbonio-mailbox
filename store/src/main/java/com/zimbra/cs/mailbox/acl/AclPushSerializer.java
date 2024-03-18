@@ -116,7 +116,7 @@ public class AclPushSerializer {
 
     public static ShareInfoData deserialize(String sharedItemInfo) throws ServiceException {
         String[] parts = sharedItemInfo.split(";");
-        Map<String, String> attrs = new HashMap<String, String>();
+        Map<String, String> attrs = new HashMap<>();
         String key = null;
         for (String part : parts) {
             String x[] = part.split(":", 2);

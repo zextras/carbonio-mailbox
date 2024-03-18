@@ -101,7 +101,7 @@ public class ReplaceHeader extends AbstractCommand {
         }
         ehe.setEffectiveIndex(headerCount);
         int matchIndex = 0;
-        List<Header> newHeaderList = new ArrayList<Header>();
+        List<Header> newHeaderList = new ArrayList<>();
         try {
             boolean hasEdited = false;
             while (headers.hasMoreElements()) {

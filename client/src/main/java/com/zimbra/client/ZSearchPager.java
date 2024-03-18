@@ -27,8 +27,8 @@ public class ZSearchPager {
 
     ZSearchPager(ZSearchParams params) {
         mParams = new ZSearchParams(params);
-        mResults = new ArrayList<ZSearchResult>();
-        mHitMap = new HashMap<String, ZSearchHit>();
+        mResults = new ArrayList<>();
+        mHitMap = new HashMap<>();
     }
     
     ZSearchResult search(ZMailbox mailbox, int page, boolean useCursor) throws ServiceException {

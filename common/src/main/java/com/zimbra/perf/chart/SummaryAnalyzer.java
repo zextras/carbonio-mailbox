@@ -22,10 +22,10 @@ public class SummaryAnalyzer {
 
     private Map<String, List<PlotSettings>> mOutfilePlotsMap = null;
 
-    private List<ReportEntry> mEntryList = new ArrayList<ReportEntry>();
+    private List<ReportEntry> mEntryList = new ArrayList<>();
 
     public SummaryAnalyzer(List<ChartSettings> chartSettings) {
-        mOutfilePlotsMap = new HashMap<String, List<PlotSettings>>(chartSettings.size());
+        mOutfilePlotsMap = new HashMap<>(chartSettings.size());
         for (ChartSettings cs : chartSettings) {
             mOutfilePlotsMap.put(cs.getOutfile(), cs.getPlots());
         }

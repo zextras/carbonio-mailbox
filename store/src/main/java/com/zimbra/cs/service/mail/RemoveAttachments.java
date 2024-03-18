@@ -123,7 +123,7 @@ public class RemoveAttachments extends MailDocumentHandler {
             return Collections.emptyList();
 
         // using a Set has the nice side-effect of removing duplicates
-        Set<String> sorted = new TreeSet<String>(new PartIdComparator());
+        Set<String> sorted = new TreeSet<>(new PartIdComparator());
         for (String part : parts) {
             try {
                 if (!part.trim().equals(""))

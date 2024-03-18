@@ -50,7 +50,7 @@ class DirectorySearchParams {
         mResult = prov.searchDirectory(mSearchOpts);
         
         if (mRightChecker != null) {
-            List<NamedEntry> allowed = new ArrayList<NamedEntry>();
+            List<NamedEntry> allowed = new ArrayList<>();
           for (NamedEntry entry : mResult) {
             if (mRightChecker.allow(entry)) {
               allowed.add(entry);

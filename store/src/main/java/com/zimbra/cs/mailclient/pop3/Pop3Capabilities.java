@@ -37,7 +37,7 @@ public class Pop3Capabilities {
     }
     
     private Pop3Capabilities() {
-        capabilities = new HashMap<String, List<String>>();
+        capabilities = new HashMap<>();
     }
 
     private void readCapabilities(ContentInputStream is) throws IOException {
@@ -48,7 +48,7 @@ public class Pop3Capabilities {
                 String key = words[0];
                 List<String> params = capabilities.get(key);
                 if (params == null) {
-                    params = new ArrayList<String>();
+                    params = new ArrayList<>();
                     capabilities.put(key.toUpperCase(), params);
                 }
                 params.addAll(Arrays.asList(words).subList(1, words.length));

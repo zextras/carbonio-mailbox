@@ -1320,7 +1320,7 @@ public abstract class ZFilterCondition implements ToZJSONObject {
         public static final String METHOD_DECLINECOUNTER = "declinecounter";
 
         private final boolean invite;
-        private final List<String> methods = new ArrayList<String>();
+        private final List<String> methods = new ArrayList<>();
 
         public ZInviteCondition(boolean isInvite) {
             this.invite = isInvite;

@@ -178,7 +178,7 @@ public abstract class DiskCacheServlet extends ZimbraServlet {
                 // ignore -- just use default
             }
         }
-        cache = new LruMap<String, File>(cacheSize) {
+        cache = new LruMap<>(cacheSize) {
             @Override
             protected void willRemove(String cacheId, File file) {
                 processRemovedFile(cacheId, file);

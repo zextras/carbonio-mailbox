@@ -111,7 +111,7 @@ public enum MailboxOperation {
 
     private int code;
 
-    private static final HashMap<Integer,MailboxOperation> operations = new HashMap<Integer,MailboxOperation>();
+    private static final HashMap<Integer,MailboxOperation> operations = new HashMap<>();
 
     static {
         for (MailboxOperation op : EnumSet.allOf(MailboxOperation.class)) {

@@ -135,7 +135,7 @@ class ImapFolderSync {
     private void updateImapTrashFolderId(ListData ld) throws ServiceException {
         Flags flags = ld.getFlags();
         if (flags.isSet("\\Trash") && ds.getImapTrashFolderId() != localFolder.getId()) {
-            Map<String, Object> attrs = new HashMap<String, Object>();
+            Map<String, Object> attrs = new HashMap<>();
             attrs.put(Provisioning.A_zimbraDataSourceImapTrashFolderId, localFolder.getId());
             ds.getProvisioning().modifyDataSource(ds.getAccount(), ds.getId(), attrs);
         }
@@ -320,9 +320,9 @@ class ImapFolderSync {
         }
 
         // Perform full flags sync or just push local changes
-        newMsgIds = new ArrayList<Integer>();
-        addedUids = new ArrayList<Long>();
-        deletedUids = new ArrayList<Long>();
+        newMsgIds = new ArrayList<>();
+        addedUids = new ArrayList<>();
+        deletedUids = new ArrayList<>();
         if (fullSync) {
             // If UIDPLUS supported, use COPY rather than APPEND to remotely
             // move messages that have moved locally between folders.
@@ -912,7 +912,7 @@ class ImapFolderSync {
     }
 
     private static Collection<Long> getOrderedUids(Collection<Long> uidSet) {
-        List<Long> uids = new ArrayList<Long>(uidSet);
+        List<Long> uids = new ArrayList<>(uidSet);
         Collections.sort(uids, Collections.reverseOrder());
         return uids;
     }

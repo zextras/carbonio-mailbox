@@ -16,8 +16,8 @@ import com.zimbra.cs.mailbox.MailItem.CustomMetadata.CustomMetadataList;
 import com.zimbra.cs.mime.ParsedMessage;
 
 public abstract class MetadataCallback {
-    private static Set<String> sCallbackKeys = new CopyOnWriteArraySet<String>();
-    private static List<MetadataCallback> sCallbacks = new CopyOnWriteArrayList<MetadataCallback>();
+    private static Set<String> sCallbackKeys = new CopyOnWriteArraySet<>();
+    private static List<MetadataCallback> sCallbacks = new CopyOnWriteArrayList<>();
 
     /** Adds an instance of an callback class that will be triggered when a
      *  message is added to a user mailbox and when an item is serialized.  */

@@ -30,9 +30,9 @@ public class LmtpEnvelope {
     private LmtpBodyType mBodyType;
     
     public LmtpEnvelope() {
-    	mRecipients = new LinkedList<LmtpAddress>();
-    	mLocalRecipients = new LinkedList<LmtpAddress>();
-    	mRemoteRecipients = new LinkedList<LmtpAddress>();
+    	mRecipients = new LinkedList<>();
+    	mLocalRecipients = new LinkedList<>();
+    	mRemoteRecipients = new LinkedList<>();
     	mRemoteServerToRecipientsMap = ArrayListMultimap.create();
     }
     

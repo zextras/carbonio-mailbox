@@ -58,7 +58,7 @@ public class ObjectHandler {
         if (mHandlerList != null)
             return mHandlerList;
 
-        mHandlerList = new ArrayList<ObjectHandler>();
+        mHandlerList = new ArrayList<>();
         List<Zimlet> dots = Provisioning.getInstance().listAllZimlets();
       for (Zimlet dot : dots) {
         ObjectHandler handler = loadHandler(dot);

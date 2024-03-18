@@ -192,7 +192,7 @@ public class ZSimpleRecurrence {
                         }
                     } else if (weekDays != null) {
                         mWeeklyInterval = rr.getInterval();
-                        mWeeklyIntervalDays = new ArrayList<ZWeekDay>();
+                        mWeeklyIntervalDays = new ArrayList<>();
                         for (ZByDayWeekDay day : weekDays) {
                             if (day.getWeekOrd() == 0) {
                                 mWeeklyIntervalDays.add(day.getDay());
@@ -422,7 +422,7 @@ public class ZSimpleRecurrence {
             return recur;
         
         ZRecurrenceRule rule = new ZRecurrenceRule();
-        List<ZRecurrenceRule> rules = new ArrayList<ZRecurrenceRule>();
+        List<ZRecurrenceRule> rules = new ArrayList<>();
         rules.add(rule);
         recur.setRules(rules);
 
@@ -436,7 +436,7 @@ public class ZSimpleRecurrence {
                 break;
             case DAILY_WEEKDAY:
                 rule.setFrequency(ZFrequency.DAI);
-                rule.setByRules(new ArrayList<ZByRule>());
+                rule.setByRules(new ArrayList<>());
                 rule.getByRules().add(
                         new ZByRule(ZByType.BY_DAY, null,
                                 ZByDayWeekDay.getList(ZWeekDay.MO, ZWeekDay.TU, ZWeekDay.WE, ZWeekDay.TH, ZWeekDay.FR)));
@@ -446,13 +446,13 @@ public class ZSimpleRecurrence {
                 break;
             case WEEKLY_BY_DAY:
                 rule.setFrequency(ZFrequency.WEE);
-                rule.setByRules(new ArrayList<ZByRule>());
+                rule.setByRules(new ArrayList<>());
                 rule.getByRules().add(new ZByRule(ZByType.BY_DAY, null, ZByDayWeekDay.getList(getWeeklyByDay())));
                 break;
             case WEEKLY_CUSTOM:
                 rule.setFrequency(ZFrequency.WEE);
                 rule.setInterval(getWeeklyInterval());
-                rule.setByRules(new ArrayList<ZByRule>());
+                rule.setByRules(new ArrayList<>());
                 rule.getByRules().add(new ZByRule(ZByType.BY_DAY, null, ZByDayWeekDay.getList(getWeeklyIntervalDays())));
                 break;
             case MONTHLY:
@@ -461,13 +461,13 @@ public class ZSimpleRecurrence {
             case MONTHLY_BY_MONTH_DAY:
                 rule.setFrequency(ZFrequency.MON);
                 rule.setInterval(getMonthlyInterval());
-                rule.setByRules(new ArrayList<ZByRule>());
+                rule.setByRules(new ArrayList<>());
                 rule.getByRules().add(new ZByRule(ZByType.BY_MONTHDAY, Integer.toString(getMonthlyMonthDay()), null));
                 break;
             case MONTHLY_RELATIVE:
                 rule.setFrequency(ZFrequency.MON);
                 rule.setInterval(getMonthlyInterval());
-                rule.setByRules(new ArrayList<ZByRule>());
+                rule.setByRules(new ArrayList<>());
                 rule.getByRules().add(new ZByRule(ZByType.BY_DAY, null, List.of(getMonthlyRelativeDay())));
                 break;
             case YEARLY:
@@ -475,13 +475,13 @@ public class ZSimpleRecurrence {
                 break;
             case YEARLY_BY_DATE:
                 rule.setFrequency(ZFrequency.YEA);
-                rule.setByRules(new ArrayList<ZByRule>());
+                rule.setByRules(new ArrayList<>());
                 rule.getByRules().add(new ZByRule(ZByType.BY_MONTHDAY, Integer.toString(getYearlyByDateMonthDay()), null));
                 rule.getByRules().add(new ZByRule(ZByType.BY_MONTH, Integer.toString(getYearlyByDateMonth()), null));
                 break;
             case YEARLY_RELATIVE:
                 rule.setFrequency(ZFrequency.YEA);
-                rule.setByRules(new ArrayList<ZByRule>());
+                rule.setByRules(new ArrayList<>());
                 rule.getByRules().add(new ZByRule(ZByType.BY_DAY, null, List.of(getYearlyRelativeDay())));
                 rule.getByRules().add(new ZByRule(ZByType.BY_MONTH, Integer.toString(getYearlyRelativeMonth()), null));
                 break;

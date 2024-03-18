@@ -18,7 +18,7 @@ public abstract class DataSourceListner {
     private static final HashSet<DataSourceListner> listeners;
 
     static {
-        listeners = new HashSet<DataSourceListner>();
+        listeners = new HashSet<>();
         reset();
     }
 

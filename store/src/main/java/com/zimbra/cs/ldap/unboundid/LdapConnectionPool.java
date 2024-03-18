@@ -39,7 +39,7 @@ public class LdapConnectionPool {
 
     // for unittest and dump stats
     private static final Map<String, LDAPConnectionPool> connPools =
-        new HashMap<String, LDAPConnectionPool>();
+        new HashMap<>();
 
     static LDAPConnectionPool createConnectionPool(String connPoolName,
             LdapServerConfig config) throws LdapException {
@@ -200,9 +200,9 @@ public class LdapConnectionPool {
     private static class DebugConnPool {
 
         private static final Map<String /* connection pool name */, DebugConnPool>
-            checkedOutByPoolName = new HashMap<String, DebugConnPool>();
+            checkedOutByPoolName = new HashMap<>();
 
-        private List<CheckedOutInfo> checkedOutConns = new ArrayList<CheckedOutInfo>();
+        private List<CheckedOutInfo> checkedOutConns = new ArrayList<>();
 
         static boolean enabled() {
             return LC.ldap_connect_pool_debug.booleanValue();

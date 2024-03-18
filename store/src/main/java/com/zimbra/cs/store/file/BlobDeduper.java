@@ -42,8 +42,8 @@ public class BlobDeduper {
     private boolean stopProcessing = false;
     private int totalLinksCreated = 0;
     private long totalSizeSaved = 0;
-    private Map<Short, String> volumeBlobsProgress = new LinkedHashMap<Short, String>();
-    private Map<Short, String> blobDigestsProgress = new LinkedHashMap<Short, String>();
+    private Map<Short, String> volumeBlobsProgress = new LinkedHashMap<>();
+    private Map<Short, String> blobDigestsProgress = new LinkedHashMap<>();
     
     private static final BlobDeduper SINGLETON = new BlobDeduper();
 
@@ -72,7 +72,7 @@ public class BlobDeduper {
             // mark the blob as processed if there is only one blob for given digest.
             markBlobAsProcessed(blobs.get(0));
         }
-        return new Pair<Integer,Long>(0, 0L);
+        return new Pair<>(0, 0L);
     }
 
     private Pair<Integer, Long> deDupe(List<BlobReference> blobs) throws ServiceException {
@@ -130,7 +130,7 @@ public class BlobDeduper {
             }
         }
         if (srcInodeNum == 0) {
-            return new Pair<Integer,Long>(0, 0L);
+            return new Pair<>(0, 0L);
         }
         // First create a hard link for the source path, so that the file
         // doesn't get deleted in the middle.
@@ -187,7 +187,7 @@ public class BlobDeduper {
                 holdFile.delete();
             }
         }
-        return new Pair<Integer,Long>(linksCreated, sizeSaved);
+        return new Pair<>(linksCreated, sizeSaved);
     }
         
     private void markBlobAsProcessed(BlobReference blob) throws ServiceException {
@@ -227,7 +227,7 @@ public class BlobDeduper {
     }
 
     public synchronized Pair<Integer, Long> getCountAndSize() {
-        return new Pair<Integer,Long>(totalLinksCreated, totalSizeSaved);
+        return new Pair<>(totalLinksCreated, totalSizeSaved);
     }
     
     public synchronized Map<Short, String> getVolumeBlobsProgress() {
@@ -342,7 +342,7 @@ public class BlobDeduper {
             try {
                 conn = DbPool.getConnection();
                 Set<Integer> groupIds = DbMailbox.getMboxGroupIds(conn);
-                List<Integer> groupList = new ArrayList<Integer>(groupIds);
+                List<Integer> groupList = new ArrayList<>(groupIds);
                 Collections.sort(groupList);
                 return groupList;
             } finally {

@@ -26,7 +26,7 @@ final class SyncState {
     SyncState(Mailbox mbox) throws ServiceException {
         this.mbox = mbox;
         inboxFolder = mbox.getFolderById(null, Mailbox.ID_FOLDER_INBOX);
-        folders = Collections.synchronizedMap(new HashMap<Integer, FolderSyncState>());
+        folders = Collections.synchronizedMap(new HashMap<>());
     }
 
     public FolderSyncState getFolderSyncState(int folderId) {

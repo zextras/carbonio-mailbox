@@ -102,7 +102,7 @@ public class AddressObject extends MailItemResource {
                 } else { // modify
                     contactGroup = ContactGroup.init(existingContact, true);
                     // remove all the contacts of type CONTACT_REF that belong to the collection same as the group
-                    ArrayList<Member> membersToRemove = new ArrayList<Member>();
+                    ArrayList<Member> membersToRemove = new ArrayList<>();
                     for (Member member : contactGroup.getMembers()) {
                         if (Member.Type.CONTACT_REF.equals(member.getType())) {
                             ItemId itemId = new ItemId(member.getValue(), existingContact.getAccount().getId());

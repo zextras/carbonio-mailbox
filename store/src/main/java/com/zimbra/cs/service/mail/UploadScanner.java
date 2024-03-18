@@ -34,7 +34,7 @@ public abstract class UploadScanner {
     public static final Result REJECT = new Result("REJECT");
     public static final Result ERROR = new Result("ERROR");
     
-    private static List<UploadScanner> sRegisteredScanners = new LinkedList<UploadScanner>();
+    private static List<UploadScanner> sRegisteredScanners = new LinkedList<>();
     
     public static void registerScanner(UploadScanner scanner) {
     	sRegisteredScanners.add(scanner);

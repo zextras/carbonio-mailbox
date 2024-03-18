@@ -63,7 +63,7 @@ public class ChildAccount {
      */
     @XmlElementWrapper(name=AccountConstants.E_ATTRS, required=false)
     @XmlElement(name=AccountConstants.E_ATTR, required=false)
-    private List<Attr> attrs = new ArrayList<Attr>();
+    private List<Attr> attrs = new ArrayList<>();
 
     /**
      * no-argument constructor wanted by JAXB

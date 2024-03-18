@@ -39,12 +39,12 @@ public class MessageCache {
         CacheNode()  { }
         MimeMessage message;
         MimeMessage expanded;
-        Map<Integer, String> smimeAccessInfo = new HashMap<Integer, String>();
+        Map<Integer, String> smimeAccessInfo = new HashMap<>();
         long size = 0;
     }
 
     /** Cache mapping message digest to the corresponding message structure. */
-    private static Map<String, CacheNode> sCache = new LinkedHashMap<String, CacheNode>(150, (float) 0.75, true);
+    private static Map<String, CacheNode> sCache = new LinkedHashMap<>(150, (float) 0.75, true);
     /** Maximum number of items in {@link #sCache}. */
     private static int sMaxCacheSize;
     /** Number of bytes of message data stored in the cache.  This value includes only

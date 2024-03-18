@@ -183,7 +183,7 @@ public final class ImapConnection extends MailConnection {
 
     public IDInfo id(IDInfo info) throws IOException {
         ImapRequest req = newRequest(CAtom.ID, info == null ? CAtom.NIL : info);
-        List<IDInfo> results = new ArrayList<IDInfo>(1);
+        List<IDInfo> results = new ArrayList<>(1);
         req.setResponseHandler(new BasicResponseHandler(CAtom.ID, results));
         req.sendCheckStatus();
         return results.isEmpty() ? new IDInfo() : results.get(0);
@@ -279,7 +279,7 @@ public final class ImapConnection extends MailConnection {
 
     public MailboxInfo status(String name, Object... params) throws IOException {
         ImapRequest req = newRequest(CAtom.STATUS, new MailboxName(name), params);
-        List<MailboxInfo> results = new ArrayList<MailboxInfo>(1);
+        List<MailboxInfo> results = new ArrayList<>(1);
         req.setResponseHandler(new BasicResponseHandler(CAtom.STATUS, results));
         req.sendCheckStatus();
         if (results.isEmpty()) {
@@ -303,7 +303,7 @@ public final class ImapConnection extends MailConnection {
     private List<ListData> doList(CAtom cmd, String ref, String mbox)
         throws IOException {
         ImapRequest req = newRequest(cmd, new MailboxName(ref), new MailboxName(mbox));
-        List<ListData> results = new ArrayList<ListData>();
+        List<ListData> results = new ArrayList<>();
         req.setResponseHandler(new BasicResponseHandler(cmd, results));
         req.sendCheckStatus();
         return results;
@@ -349,7 +349,7 @@ public final class ImapConnection extends MailConnection {
     }
 
     public List<Long> getUids(String seq) throws IOException {
-        final List<Long> uids = new ArrayList<Long>();
+        final List<Long> uids = new ArrayList<>();
         uidFetch(seq, "UID", new FetchResponseHandler() {
             @Override
             public void handleFetchResponse(MessageData md) {
@@ -361,7 +361,7 @@ public final class ImapConnection extends MailConnection {
 
     public Map<Long, MessageData> fetch(String seq, Object param)
         throws IOException {
-        final Map<Long, MessageData> results = new HashMap<Long, MessageData>();
+        final Map<Long, MessageData> results = new HashMap<>();
         fetch(seq, param, new FetchResponseHandler(false) {
             @Override
             public void handleFetchResponse(MessageData md) {
@@ -385,7 +385,7 @@ public final class ImapConnection extends MailConnection {
 
     public Map<Long, MessageData> uidFetch(String seq, Object param)
         throws IOException {
-        final Map<Long, MessageData> results = new HashMap<Long, MessageData>();
+        final Map<Long, MessageData> results = new HashMap<>();
         uidFetch(seq, param, new FetchResponseHandler(false) {
             @Override
             public void handleFetchResponse(MessageData md) {
@@ -417,7 +417,7 @@ public final class ImapConnection extends MailConnection {
 
     @SuppressWarnings("unchecked")
     private List<Long> doSearch(String cmd, Object... params) throws IOException {
-        final List<Long> results = new ArrayList<Long>();
+        final List<Long> results = new ArrayList<>();
         ImapRequest req = newRequest(cmd, params);
         req.setResponseHandler(new ResponseHandler() {
             @Override

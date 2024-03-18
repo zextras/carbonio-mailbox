@@ -28,7 +28,7 @@ public class ZimbraComparatorManagerImpl implements ComparatorManager {
      * See <a href='http://tools.ietf.org/html/rfc5228#section-2.7.3'>RFC5228, 2.7.3 Comparators</a>.
      */
     public static CopyOnWriteArraySet<String> standardDefinedComparators() {
-        final CopyOnWriteArraySet<String> results = new CopyOnWriteArraySet<String>();
+        final CopyOnWriteArraySet<String> results = new CopyOnWriteArraySet<>();
         results.add(OCTET_COMPARATOR);
         results.add(ASCII_CASEMAP_COMPARATOR);
         results.add(ASCII_NUMERIC_COMPARATOR);
@@ -183,7 +183,7 @@ public class ZimbraComparatorManagerImpl implements ComparatorManager {
      */
     @Override
     public List<String> getExtensions() {
-        List<String> extensions = new ArrayList<String>(classNameMap.size());
+        List<String> extensions = new ArrayList<>(classNameMap.size());
         for (String key : classNameMap.keySet())
         {
             if (!isImplicitlyDeclared(key))

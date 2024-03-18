@@ -250,7 +250,7 @@ public final class ContactCSV {
     private void initFields(BufferedReader reader) throws IOException, ParseException {
         lineNumber = 1;
         currContactStartLineNum = 1;
-        fieldNames = new ArrayList<String>();
+        fieldNames = new ArrayList<>();
 
         if (!parseLine(reader, fieldNames, true)) {
             throw new ParseException("no column name definitions");
@@ -541,8 +541,8 @@ public final class ContactCSV {
              * contain duplicate field names with mappings to different
              * Zimbra contact fields.
              */
-            Map <CsvColumn, Map <String, String>> pendMV = new HashMap <CsvColumn, Map <String, String>>();
-          List<CsvColumn> unseenColumns = new ArrayList<CsvColumn>(format.columns);
+            Map <CsvColumn, Map <String, String>> pendMV = new HashMap<>();
+          List<CsvColumn> unseenColumns = new ArrayList<>(format.columns);
             for (int ndx = 0; ndx < fieldNames.size(); ndx++) {
                 String csvFieldName = fieldNames.get(ndx);
                 String fieldValue = (ndx >= csv.size()) ? null : csv.get(ndx );
@@ -586,7 +586,7 @@ public final class ContactCSV {
                             if (cname.toLowerCase().equals(matchingFieldLc)) {
                                 Map <String, String> currMV = pendMV.get(matchingCol);
                                 if (currMV == null) {
-                                    currMV = new HashMap <String, String> ();
+                                    currMV = new HashMap<>();
                                     pendMV.put(matchingCol, currMV);
                                 }
                                 currMV.put(matchingFieldLc, fieldValue);
@@ -627,7 +627,7 @@ public final class ContactCSV {
                 }
             }
             if (onlyBlank)
-                contact = new HashMap<String, String>();
+                contact = new HashMap<>();
         }
         return contact;
     }
@@ -644,8 +644,8 @@ public final class ContactCSV {
             }
 
             LOG.debug("getContactsInternal requested format/locale=[%s/%s]: using %s", fmt, locale, format);
-            List<Map<String, String>> result = new ArrayList<Map<String, String>>();
-            List<String> fields = new ArrayList<String>();
+            List<Map<String, String>> result = new ArrayList<>();
+            List<String> fields = new ArrayList<>();
 
             while (parseLine(reader, fields, false)) {
                 Map<String, String> contact = toContact(fields, format);
@@ -687,7 +687,7 @@ public final class ContactCSV {
     //    ...
     // </delimiters>
     private static void populateDelimiterInfo(Element delimiters) {
-        delimiterInfo = new HashMap<String,Character>();
+        delimiterInfo = new HashMap<>();
 
         for (Iterator elements = delimiters.elementIterator(DELIMITER); elements.hasNext(); ) {
             Element field = (Element) elements.next();
@@ -712,7 +712,7 @@ public final class ContactCSV {
     //   ...
     // </dateformats>
     private static void populateDateFormatInfo(Element dateFormats) {
-        dateOrderInfo = new HashMap<String,String>();
+        dateOrderInfo = new HashMap<>();
 
         for (Iterator elements = dateFormats.elementIterator(DATEFORMAT); elements.hasNext(); ) {
             Element dateFormat = (Element) elements.next();
@@ -739,7 +739,7 @@ public final class ContactCSV {
     }
 
     private static void populateFields(Element fields) {
-        knownFields = new HashSet<String>();
+        knownFields = new HashSet<>();
 
         for (Iterator elements = fields.elementIterator(FIELD); elements.hasNext(); ) {
             Element field = (Element) elements.next();
@@ -757,8 +757,8 @@ public final class ContactCSV {
         private final Set<String> seenFields;
 
         public ContactMap() {
-            contacts = new HashMap<String, String>();
-            seenFields = new HashSet<String>();
+            contacts = new HashMap<>();
+            seenFields = new HashSet<>();
         }
 
         public boolean put(String key, String value) {
@@ -788,7 +788,7 @@ public final class ContactCSV {
         List<String> names;  // in case of multivalue mapping
         ColType colType;
         CsvColumn(Element col) {
-            names = new ArrayList<String>();
+            names = new ArrayList<>();
             name  = col.attributeValue(ATTR_NAME);
             field = col.attributeValue(ATTR_FIELD);
             colType = ColType.SIMPLE;
@@ -851,12 +851,12 @@ public final class ContactCSV {
             name = fmt.attributeValue(ATTR_NAME);
             locale = fmt.attributeValue(ATTR_LOCALE);
             String f = fmt.attributeValue(ATTR_FLAG);
-            flags = new HashSet<String>();
+            flags = new HashSet<>();
             if (f != null)
                 Collections.addAll(flags, f.toLowerCase().split(","));
-            columns = new ArrayList<CsvColumn>();
-            forwardMapping = new HashMap<String,String>();
-            reverseMapping = new HashMap<String,String>();
+            columns = new ArrayList<>();
+            forwardMapping = new HashMap<>();
+            reverseMapping = new HashMap<>();
         }
         void add(Element col) {
             CsvColumn newColumn = new CsvColumn(col);
@@ -919,7 +919,7 @@ public final class ContactCSV {
         }
 
         if (knownFormats == null) {
-            knownFormats = new HashSet<CsvFormat>();
+            knownFormats = new HashSet<>();
         }
         knownFormats.add(fmt);
         if (fmt.hasFlag("default")) {
@@ -942,8 +942,8 @@ public final class ContactCSV {
     }
 
     private static void readMapping(InputStream is) throws XmlParseException {
-        delimiterInfo = new HashMap<String,Character>();
-        dateOrderInfo = new HashMap<String,String>();
+        delimiterInfo = new HashMap<>();
+        dateOrderInfo = new HashMap<>();
         Element root = W3cDomUtil.parseXMLToDom4jDocUsingSecureProcessing(is).getRootElement();
         for (Iterator elements = root.elementIterator(); elements.hasNext(); ) {
             Element elem = (Element) elements.next();
@@ -1034,10 +1034,10 @@ public final class ContactCSV {
             return;
         }
         if (fmt.allFields()) {
-            ArrayList<Map <String, String>> allContacts = new ArrayList<Map <String, String>>();
-            HashSet<String> fields = new HashSet<String>();
+            ArrayList<Map <String, String>> allContacts = new ArrayList<>();
+            HashSet<String> fields = new HashSet<>();
             UserServletUtil.populateContactFields(contacts, mbox, octxt, allContacts, fields);
-          ArrayList<String> allFields = new ArrayList<String>(fields);
+          ArrayList<String> allFields = new ArrayList<>(fields);
             Collections.sort(allFields);
             addFieldDef(allFields, sb);
             for (Map <String, String> contactMap : allContacts) {
@@ -1133,10 +1133,10 @@ public final class ContactCSV {
 
     private static void dump(OutputStream out) throws IOException {
         writeLine(out, "=== Fields ===");
-        for (String f : new TreeSet<String>(knownFields)) {
+        for (String f : new TreeSet<>(knownFields)) {
             writeLine(out, f);
         }
-        for (CsvFormat fmt : new TreeSet<CsvFormat>(knownFormats)) {
+        for (CsvFormat fmt : new TreeSet<>(knownFormats)) {
             StringBuilder sb = new StringBuilder("=== Mapping ");
             sb.append(fmt.toString()).append(" ===");
             writeLine(out, sb.toString());
@@ -1152,7 +1152,7 @@ public final class ContactCSV {
     }
 
     public static String[] getAllFormatNames() {
-        Set<String> formats = new HashSet<String>();
+        Set<String> formats = new HashSet<>();
         for (CsvFormat f : knownFormats) {
             formats.add(f.name);
         }
@@ -1163,7 +1163,7 @@ public final class ContactCSV {
         ZimbraLog.toolSetupLog4jConsole("INFO", true, false);
         //String mappingFile = LC.zimbra_csv_mapping_file.value();
         if (args.length > 0) {
-            knownFormats = new HashSet<CsvFormat>();
+            knownFormats = new HashSet<>();
             readMappingFile(args[0]);
         }
         dump(System.out);

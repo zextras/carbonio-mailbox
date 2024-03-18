@@ -110,7 +110,7 @@ public final class ImapResponse {
     }
 
     private List<Long> readSearchData(ImapInputStream is) throws IOException {
-        ArrayList<Long> ids = new ArrayList<Long>();
+        ArrayList<Long> ids = new ArrayList<>();
         while (is.match(' ')) {
             is.skipSpaces();
             if (!is.isEOL()) {

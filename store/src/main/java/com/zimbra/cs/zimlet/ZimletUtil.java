@@ -99,9 +99,9 @@ public class ZimletUtil {
 
     private static int P_MAX = Integer.MAX_VALUE;
     private static boolean sZimletsLoaded = false;
-    private static Map<String,ZimletFile> sZimlets = new HashMap<String,ZimletFile>();
+    private static Map<String,ZimletFile> sZimlets = new HashMap<>();
 
-    private static Map<String, Class> sZimletHandlers = new HashMap<String, Class>();
+    private static Map<String, Class> sZimletHandlers = new HashMap<>();
 
     public static void migrateUserPrefIfNecessary(Account acct) throws ServiceException {
         if (!DebugConfig.enableMigrateUserZimletPrefs) {
@@ -121,7 +121,7 @@ public class ZimletUtil {
         }
 
         ZimletPresence availZimlets = getAvailableZimlets(acct);
-        Map<String, Object> attrs = new HashMap<String, Object>();
+        Map<String, Object> attrs = new HashMap<>();
         StringBuilder disabledZimletNamesForLogging = new StringBuilder();
 
         for (String zimletName : availZimlets.getZimletNames()) {
@@ -222,7 +222,7 @@ public class ZimletUtil {
     public static List<Zimlet> orderZimletsByPriority(List<Zimlet> zimlets) {
         // create a sortable collection, sort, then return List<Zimlet> in the
         // sorted order.  version is not comparable in String format.
-        List<Pair<Version,Zimlet>> plist = new ArrayList<Pair<Version,Zimlet>>();
+        List<Pair<Version,Zimlet>> plist = new ArrayList<>();
         for (Zimlet z : zimlets) {
             String pstring = z.getPriority();
             if (pstring == null) {
@@ -230,19 +230,19 @@ public class ZimletUtil {
                 pstring = Integer.toString(Integer.MAX_VALUE);
             }
             Version v = new Version(pstring);
-            plist.add(new Pair<Version,Zimlet>(v,z));
+            plist.add(new Pair<>(v, z));
         }
         Collections.sort(plist,
-            new Comparator<Pair<Version,Zimlet>>() {
+            new Comparator<>() {
                 @Override
-                public int compare(Pair<Version,Zimlet> first,
-                                    Pair<Version,Zimlet> second) {
+                public int compare(Pair<Version, Zimlet> first,
+                    Pair<Version, Zimlet> second) {
                     return first.getFirst().compareTo(second.getFirst());
                 }
             }
         );
 
-        List<Zimlet> ret = new ArrayList<Zimlet>();
+        List<Zimlet> ret = new ArrayList<>();
         for (Pair<Version,Zimlet> p : plist) {
             ret.add(p.getSecond());
         }
@@ -251,7 +251,7 @@ public class ZimletUtil {
 
     public static List<Zimlet> orderZimletsByPriority(String[] zimlets) {
         Provisioning prov = Provisioning.getInstance();
-        List<Zimlet> zlist = new ArrayList<Zimlet>();
+        List<Zimlet> zlist = new ArrayList<>();
       for (String zimlet : zimlets) {
         try {
           Zimlet z = prov.getZimlet(zimlet);
@@ -278,7 +278,7 @@ public class ZimletUtil {
         if (zim == null) {
             throw AccountServiceException.NO_SUCH_ZIMLET(zimlet);
         }
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         map.put(Provisioning.A_zimbraZimletHandlerConfig, config);
         prov.modifyAttrs(zim, map);
     }
@@ -379,7 +379,7 @@ public class ZimletUtil {
      *
      */
     public static Map<String,ZimletFile> loadDevZimlets() {
-        Map<String,ZimletFile> zimletMap = new HashMap<String,ZimletFile>();
+        Map<String,ZimletFile> zimletMap = new HashMap<>();
         loadZimletsFromDir(zimletMap, LC.zimlet_directory.value() + File.separator + ZIMLET_DEV_DIR);
         return zimletMap;
     }
@@ -503,7 +503,7 @@ public class ZimletUtil {
     }
 
     private static Map<String,Object> descToMap(ZimletDescription zd) throws ZimletException {
-        Map<String,Object> attrs = new HashMap<String,Object>();
+        Map<String,Object> attrs = new HashMap<>();
         attrs.put(Provisioning.A_zimbraZimletKeyword,         zd.getServerExtensionKeyword());
         attrs.put(Provisioning.A_zimbraZimletVersion,         zd.getVersion().toString());
         attrs.put(Provisioning.A_zimbraZimletDescription,     zd.getDescription());
@@ -822,7 +822,7 @@ public class ZimletUtil {
         if (c == null) {
             throw ZimletException.CANNOT_ACTIVATE("no such cos " + cos, null);
         }
-        Map<String,Object> attrs = new HashMap<String, Object>();
+        Map<String,Object> attrs = new HashMap<>();
         attrs.put("+"+Provisioning.A_zimbraZimletAvailableZimlets, zimlet);
         prov.modifyAttrs(c, attrs);
         ZimletConfig zc = getZimletConfig(zimlet);
@@ -850,7 +850,7 @@ public class ZimletUtil {
         if (c == null) {
             throw ZimletException.CANNOT_DEACTIVATE("no such cos " + cos, null);
         }
-        Map<String,Object> attrs = new HashMap<String, Object>();
+        Map<String,Object> attrs = new HashMap<>();
         attrs.put("-"+Provisioning.A_zimbraZimletAvailableZimlets, zimlet);
         prov.modifyAttrs(c, attrs);
         ZimletConfig zc = getZimletConfig(zimlet);
@@ -862,7 +862,7 @@ public class ZimletUtil {
             return;
         }
         String[] domainArray = domains.toLowerCase().split(",");
-        Set<String> domainsToRemove = new HashSet<String>();
+        Set<String> domainsToRemove = new HashSet<>();
       domainsToRemove.addAll(Arrays.asList(domainArray));
         String[] zimlets = getAvailableZimlets(c).getZimletNamesAsArray();
         for (String z : zimlets) {
@@ -902,7 +902,7 @@ public class ZimletUtil {
             if (z == null) {
                 throw AccountServiceException.NO_SUCH_ZIMLET(zimlet);
             }
-            Map<String,String> attr = new HashMap<String,String>();
+            Map<String,String> attr = new HashMap<>();
             attr.put(Provisioning.A_zimbraZimletEnabled, enabled ? ProvisioningConstants.TRUE : ProvisioningConstants.FALSE);
             prov.modifyAttrs(z, attr);
         } catch (Exception e) {
@@ -1107,7 +1107,7 @@ public class ZimletUtil {
         Set<String> domainSet = cos.getMultiAttrSet(Provisioning.A_zimbraProxyAllowedDomains);
         String[] domainArray = domains.toLowerCase().split(",");
       domainSet.addAll(Arrays.asList(domainArray));
-        Map<String, String[]> newlist = new HashMap<String, String[]>();
+        Map<String, String[]> newlist = new HashMap<>();
         newlist.put(Provisioning.A_zimbraProxyAllowedDomains, domainSet.toArray(new String[0]));
         prov.modifyAttrs(cos, newlist);
     }
@@ -1120,7 +1120,7 @@ public class ZimletUtil {
       for (String s : domainArray) {
         domainSet.remove(s);
       }
-        Map<String, String[]> newlist = new HashMap<String, String[]>();
+        Map<String, String[]> newlist = new HashMap<>();
         newlist.put(Provisioning.A_zimbraProxyAllowedDomains, domainSet.toArray(new String[0]));
         prov.modifyAttrs(cos, newlist);
     }
@@ -1146,7 +1146,7 @@ public class ZimletUtil {
 
     private static void setPriority(Zimlet zimlet, String priority) throws ServiceException {
         Provisioning prov = Provisioning.getInstance();
-        Map<String,String> attr = new HashMap<String,String>();
+        Map<String,String> attr = new HashMap<>();
         attr.put(Provisioning.A_zimbraZimletPriority, priority);
         prov.modifyAttrs(zimlet, attr);
     }
@@ -1800,7 +1800,7 @@ public class ZimletUtil {
     }
 
     private static void setup() {
-        mCommands = new HashMap<String,Integer>();
+        mCommands = new HashMap<>();
         addCommand(DEPLOY_CMD, DEPLOY_ZIMLET);
         addCommand(UNDEPLOY_CMD, UNINSTALL_ZIMLET);
         addCommand(INSTALL_CMD, INSTALL_ZIMLET);

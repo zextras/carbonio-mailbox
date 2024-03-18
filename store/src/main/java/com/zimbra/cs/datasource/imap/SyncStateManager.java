@@ -22,7 +22,7 @@ final class SyncStateManager {
     }
     
     private SyncStateManager() {
-        entries = Collections.synchronizedMap(new HashMap<String, SyncState>());
+        entries = Collections.synchronizedMap(new HashMap<>());
     }
 
     public SyncState getSyncState(DataSource ds) {

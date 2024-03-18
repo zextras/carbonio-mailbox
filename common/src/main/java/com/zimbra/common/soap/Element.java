@@ -148,7 +148,7 @@ public abstract class Element implements Cloneable {
     protected Element setNamespace(String prefix, String uri) {
         if (prefix != null && uri != null && !uri.equals("")) {
             if (mNamespaces == null) {
-                mNamespaces = new HashMap<String, String>();
+                mNamespaces = new HashMap<>();
             }
             mNamespaces.put(prefix, uri);
         }
@@ -807,7 +807,7 @@ public abstract class Element implements Cloneable {
 
         public JSONElement(String name) {
             mName = name;
-            mAttributes = new LinkedHashMap<String, Object>();
+            mAttributes = new LinkedHashMap<>();
         }
 
         @Override
@@ -944,7 +944,7 @@ public abstract class Element implements Cloneable {
             @SuppressWarnings("unchecked")
             List<Element> content = (List<Element>) obj;
             if (content == null) {
-                mAttributes.put(name, content = new ArrayList<Element>());
+                mAttributes.put(name, content = new ArrayList<>());
             }
             content.add(elt);
             elt.mParent = this;
@@ -1035,7 +1035,7 @@ public abstract class Element implements Cloneable {
             if (existing == null) {
                 attrs.mAttributes.put(key, kvp);
             } else if (existing instanceof KeyValuePair) {
-                List<KeyValuePair> pairs = new ArrayList<KeyValuePair>(3);
+                List<KeyValuePair> pairs = new ArrayList<>(3);
                 pairs.add((KeyValuePair) existing);  pairs.add(kvp);
                 attrs.mAttributes.put(key, pairs);
             } else {
@@ -1074,7 +1074,7 @@ public abstract class Element implements Cloneable {
         public Set<Attribute> listAttributes() {
             if (mAttributes.isEmpty())
                 return Collections.emptySet();
-            HashSet<Attribute> set = new HashSet<Attribute>();
+            HashSet<Attribute> set = new HashSet<>();
             for (Map.Entry<String, Object> attr : mAttributes.entrySet()) {
                 Object obj = attr.getValue();
                 if (obj != null && !attr.getKey().equals(A_CONTENT) && !(obj instanceof Element || obj instanceof List<?>))
@@ -1089,7 +1089,7 @@ public abstract class Element implements Cloneable {
             if (mAttributes.isEmpty())
                 return Collections.emptyList();
 
-            List<Element> list = new ArrayList<Element>();
+            List<Element> list = new ArrayList<>();
             for (Map.Entry<String, Object> entry : mAttributes.entrySet()) {
                 String key = entry.getKey();
                 Object obj = entry.getValue();
@@ -1128,7 +1128,7 @@ public abstract class Element implements Cloneable {
             if (!(attrs instanceof JSONElement))
                 return Collections.emptyList();
 
-            List<KeyValuePair> pairs = new ArrayList<KeyValuePair>();
+            List<KeyValuePair> pairs = new ArrayList<>();
             for (Map.Entry<String, Object> entry : attrs.mAttributes.entrySet()) {
                 List<?> values = (entry.getValue() instanceof List<?> ? (List<?>) entry.getValue() : List.of(
                     entry.getValue()));
@@ -1181,7 +1181,7 @@ public abstract class Element implements Cloneable {
             JSONElement clone = new JSONElement(getQName());
             if (mNamespaces != null) {
                 if (clone.mNamespaces == null)
-                    clone.mNamespaces = new HashMap<String, String>(mNamespaces);
+                    clone.mNamespaces = new HashMap<>(mNamespaces);
                 else
                     clone.mNamespaces.putAll(mNamespaces);
             }
@@ -1199,7 +1199,7 @@ public abstract class Element implements Cloneable {
                             Object childclone = child instanceof JSONKeyValuePair ? ((JSONKeyValuePair) child).clone() : child;
                             List<Object> children = (List<Object>) clone.mAttributes.get(key);
                             if (children == null) {
-                                (children = new ArrayList<Object>(((List<?>) value).size())).add(childclone);
+                                (children = new ArrayList<>(((List<?>) value).size())).add(childclone);
                                 clone.mAttributes.put(key, children);
                             } else {
                                 children.add(childclone);
@@ -1647,7 +1647,7 @@ public abstract class Element implements Cloneable {
             }
             assert(elt instanceof XMLElement || elt instanceof FileBackedElement);
             if (mChildren == null) {
-                mChildren = new ArrayList<Element>();
+                mChildren = new ArrayList<>();
             }
             mChildren.add(elt);
             elt.mParent = this;
@@ -1684,7 +1684,7 @@ public abstract class Element implements Cloneable {
                     addNonUniqueElement(key).setText(value);
                 } else {
                     if (mAttributes == null) {
-                        mAttributes = new HashMap<String, Object>();
+                        mAttributes = new HashMap<>();
                     }
                     mAttributes.put(key, value);
                 }
@@ -1761,7 +1761,7 @@ public abstract class Element implements Cloneable {
             if (mAttributes == null || mAttributes.isEmpty()) {
                 return Collections.emptySet();
             }
-            HashSet<Attribute> set = new HashSet<Attribute>();
+            HashSet<Attribute> set = new HashSet<>();
             for (Map.Entry<String, Object> attr : mAttributes.entrySet()) {
                 set.add(new Attribute(attr, this));
             }
@@ -1773,7 +1773,7 @@ public abstract class Element implements Cloneable {
             if (mChildren == null) {
                 return Collections.emptyList();
             }
-            ArrayList<Element> list = new ArrayList<Element>();
+            ArrayList<Element> list = new ArrayList<>();
             if (name == null || name.trim().equals("")) {
                 list.addAll(mChildren);
             } else {
@@ -1796,7 +1796,7 @@ public abstract class Element implements Cloneable {
             eltname = eltname == null ? E_ATTRIBUTE : validateName(eltname);
             attrname = attrname == null ? A_ATTR_NAME : validateName(attrname);
 
-            List<KeyValuePair> pairs = new ArrayList<KeyValuePair>();
+            List<KeyValuePair> pairs = new ArrayList<>();
             for (Element elt : listElements(eltname)) {
                 String key = elt.getAttribute(attrname, null);
                 if (key != null) {
@@ -1904,11 +1904,11 @@ public abstract class Element implements Cloneable {
             XMLElement clone = new XMLElement(getQName());
             clone.mText = mText;
             if (mAttributes != null) {
-                clone.mAttributes = new HashMap<String, Object>(mAttributes);
+                clone.mAttributes = new HashMap<>(mAttributes);
             }
             if (mNamespaces != null) {
                 if (clone.mNamespaces == null)
-                    clone.mNamespaces = new HashMap<String, String>(mNamespaces);
+                    clone.mNamespaces = new HashMap<>(mNamespaces);
                 else
                     clone.mNamespaces.putAll(mNamespaces);
             }

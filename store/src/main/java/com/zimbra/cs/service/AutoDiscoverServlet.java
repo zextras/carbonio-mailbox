@@ -376,7 +376,7 @@ public class AutoDiscoverServlet extends ZimbraServlet {
       }
 
       try {
-        Map<String, Object> authCtxt = new HashMap<String, Object>();
+        Map<String, Object> authCtxt = new HashMap<>();
         authCtxt.put(AuthContext.AC_ORIGINATING_CLIENT_IP, ZimbraServlet.getOrigIp(req));
         authCtxt.put(AuthContext.AC_REMOTE_IP, ZimbraServlet.getClientIp(req));
         authCtxt.put(AuthContext.AC_ACCOUNT_NAME_PASSEDIN, userPassedIn);
@@ -415,7 +415,7 @@ public class AutoDiscoverServlet extends ZimbraServlet {
   @SuppressWarnings("unused")
   private static List<Element> getChildren(Element e) {
     NodeList nl = e.getChildNodes();
-    List<Element> nodes = new ArrayList<Element>(nl.getLength());
+    List<Element> nodes = new ArrayList<>(nl.getLength());
     for (int i = 0; i < nl.getLength(); i++) {
       Node node = nl.item(i);
       if (node instanceof Element) {

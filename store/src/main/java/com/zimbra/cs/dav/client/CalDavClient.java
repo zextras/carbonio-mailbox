@@ -111,7 +111,7 @@ public class CalDavClient extends WebDavClient {
                     String.format("invalid response to propfind on principal url '%s'", principalUrl), null);
         }
         DavObject resp = response.iterator().next();
-        mCalendarHomeSet = new HashSet<String>();
+        mCalendarHomeSet = new HashSet<>();
         Element homeSet = resp.getProperty(DavElements.E_CALENDAR_HOME_SET);
         if (homeSet != null) {
             for (Object href : homeSet.elements(DavElements.E_HREF)) {
@@ -138,13 +138,13 @@ public class CalDavClient extends WebDavClient {
 
     private static Collection<QName> CALENDAR_PROPS;
     static {
-        CALENDAR_PROPS = new ArrayList<QName>();
+        CALENDAR_PROPS = new ArrayList<>();
         CALENDAR_PROPS.add(DavElements.E_DISPLAYNAME);
         CALENDAR_PROPS.add(DavElements.E_RESOURCETYPE);
         CALENDAR_PROPS.add(DavElements.E_GETCTAG);
     }
     public Map<String,DavObject> getCalendars() throws IOException, DavException, HttpException {
-        HashMap<String,DavObject> calendars = new HashMap<String,DavObject>();
+        HashMap<String,DavObject> calendars = new HashMap<>();
         for (String calHome : mCalendarHomeSet) {
             for (DavObject obj : listObjects(calHome, CALENDAR_PROPS)) {
                 String href = obj.getHref();
@@ -157,7 +157,7 @@ public class CalDavClient extends WebDavClient {
     }
 
     public Collection<Appointment> getEtags(String calendarUri) throws IOException, DavException, HttpException {
-        ArrayList<Appointment> etags = new ArrayList<Appointment>();
+        ArrayList<Appointment> etags = new ArrayList<>();
         DavRequest propfind = DavRequest.PROPFIND(calendarUri);
         propfind.setDepth(Depth.one);
         propfind.addRequestProp(DavElements.E_GETETAG);
@@ -216,7 +216,7 @@ public class CalDavClient extends WebDavClient {
     }
 
     public Collection<Appointment> getCalendarData(String url, Collection<Appointment> hrefs) throws IOException, DavException, HttpException {
-        ArrayList<Appointment> appts = new ArrayList<Appointment>();
+        ArrayList<Appointment> appts = new ArrayList<>();
 
         DavRequest multiget = DavRequest.CALENDARMULTIGET(url);
         multiget.addRequestProp(DavElements.E_GETETAG);
@@ -235,7 +235,7 @@ public class CalDavClient extends WebDavClient {
     }
 
     public Collection<Appointment> getAllCalendarData(String url) throws IOException, DavException, HttpException {
-        ArrayList<Appointment> appts = new ArrayList<Appointment>();
+        ArrayList<Appointment> appts = new ArrayList<>();
 
         DavRequest query = DavRequest.CALENDARQUERY(url);
         query.addRequestProp(DavElements.E_GETETAG);

@@ -42,7 +42,7 @@ public class PreAuthKey {
     }
     
     public static  String computePreAuth(Map<String,String> params, String key) {
-        TreeSet<String> names = new TreeSet<String>(params.keySet());
+        TreeSet<String> names = new TreeSet<>(params.keySet());
         StringBuilder sb = new StringBuilder();
         for (String name : names) {
             if (sb.length() > 0) sb.append('|');
@@ -87,7 +87,7 @@ public class PreAuthKey {
     
     public static void main(String args[]) throws ServiceException {
         long now = System.currentTimeMillis();
-        HashMap<String,String> params = new HashMap<String,String>();
+        HashMap<String,String> params = new HashMap<>();
         params.put("account", "user1");
         params.put("by", "name");
         params.put("timestamp", "1176399950434");

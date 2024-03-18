@@ -35,7 +35,7 @@ public abstract class GroupHandler {
             Account acct, boolean asAdmin) throws ServiceException;
 
     private static Map<String, HandlerInfo> sHandlers =
-        new ConcurrentHashMap<String,HandlerInfo>();
+        new ConcurrentHashMap<>();
 
     private static class HandlerInfo {
         Class<? extends GroupHandler> mClass;

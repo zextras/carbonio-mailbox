@@ -116,7 +116,7 @@ public abstract class RightBearer {
             }
 
             // setup grantees ids
-            mIdAndGroupIds = new HashSet<String>();
+            mIdAndGroupIds = new HashSet<>();
             mIdAndGroupIds.add(grantee.getId());
             if (granteeGroups != null) {
                 mIdAndGroupIds.addAll(granteeGroups.groupIds());
@@ -136,11 +136,11 @@ public abstract class RightBearer {
             Grantee grntee = null;
             final GranteeCacheKey key = new GranteeCacheKey(namedEntry, right, adminOnly);
             try {
-                grntee = GRANTEE_CACHE.get(key, new Callable<Grantee>() {
-                    @Override
-                    public Grantee call() throws ServiceException {
-                        return new Grantee(key.namedEntry, key.rights, key.adminOnly);
-                    }
+                grntee = GRANTEE_CACHE.get(key, new Callable<>() {
+                  @Override
+                  public Grantee call() throws ServiceException {
+                    return new Grantee(key.namedEntry, key.rights, key.adminOnly);
+                  }
                 });
             } catch (ExecutionException e) {
                 Throwable throwable = e.getCause();

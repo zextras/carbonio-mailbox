@@ -26,12 +26,12 @@ import com.zimbra.cs.mime.ParsedMessage.CalendarPartInfo;
 
 public class InviteTest extends AbstractTest {
 
-    private static final Set<String> ALL_METHODS = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-    private static final Set<String> ALL_REQUEST_METHODS = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-    private static final Set<String> ALL_REPLY_METHODS = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+    private static final Set<String> ALL_METHODS = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    private static final Set<String> ALL_REQUEST_METHODS = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    private static final Set<String> ALL_REPLY_METHODS = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     private static final String ARG_SPEC;
     
-    private Set<String> mMethods = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+    private Set<String> mMethods = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
     static {
         addMethod(ALL_METHODS, ICalTok.PUBLISH);

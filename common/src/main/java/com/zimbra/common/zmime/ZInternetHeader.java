@@ -208,7 +208,7 @@ public class ZInternetHeader {
             this.unique = unique;  this.prepend = prepend;  this.first = first;
         }
 
-        private static final Map<String, HeaderInfo> lookup = new HashMap<String, HeaderInfo>(40);
+        private static final Map<String, HeaderInfo> lookup = new HashMap<>(40);
         static {
             for (HeaderInfo hinfo : EnumSet.allOf(HeaderInfo.class)) {
                 if (hinfo.name != null) {
@@ -461,7 +461,7 @@ public class ZInternetHeader {
      *
      */
     static class Fields {
-        private List<FieldElement> fields = new ArrayList<FieldElement>();
+        private List<FieldElement> fields = new ArrayList<>();
         public void add(FieldElement element) {
             int end = fields.size() - 1;
             if (element.getSeqType() != SequenceType.EW && element.getText().isEmpty()) {

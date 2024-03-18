@@ -359,7 +359,7 @@ public final class IndexEditor {
         }
     }
 
-    public static List<Object> inputs = new ArrayList<Object>();
+    public static List<Object> inputs = new ArrayList<>();
 
     private static class IndexEditorTcpThread implements Runnable {
         @Override

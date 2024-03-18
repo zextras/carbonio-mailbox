@@ -237,7 +237,7 @@ public class AuthUtil {
             throw new UserServletException(HttpServletResponse.SC_UNAUTHORIZED, "invalid username/password");
         }
         try {
-            Map<String, Object> authCtxt = new HashMap<String, Object>();
+            Map<String, Object> authCtxt = new HashMap<>();
             authCtxt.put(AuthContext.AC_ORIGINATING_CLIENT_IP, ZimbraServlet.getOrigIp(req));
             authCtxt.put(AuthContext.AC_REMOTE_IP, ZimbraServlet.getClientIp(req));
             authCtxt.put(AuthContext.AC_ACCOUNT_NAME_PASSEDIN, userPassedIn);

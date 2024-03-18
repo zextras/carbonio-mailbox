@@ -41,7 +41,7 @@ public class ZTag implements Comparable<ZTag>, ZItem, ZimbraTag, ToZJSONObject {
         rgbColor;
 
         private long mValue;
-        private static Map<String,Color> colorMap = new HashMap<String,Color>();
+        private static Map<String,Color> colorMap = new HashMap<>();
 
         static {
           for (Color c : Color.values())

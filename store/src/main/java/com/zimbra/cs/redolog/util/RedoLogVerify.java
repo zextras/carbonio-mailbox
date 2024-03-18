@@ -91,7 +91,7 @@ public class RedoLogVerify {
     }
 
     private static class Params {
-        public Set<Integer> mboxIds = new HashSet<Integer>();
+        public Set<Integer> mboxIds = new HashSet<>();
         public boolean quiet = false;
         public boolean hideOffset = false;
         public boolean showBlob = false;
@@ -147,7 +147,7 @@ public class RedoLogVerify {
         mParams = params;
         if (mParams == null)
             mParams = new Params();
-        mBadFiles = new ArrayList<BadFile>();
+        mBadFiles = new ArrayList<>();
     }
 
     public boolean scanLog(File logfile) throws IOException {
@@ -296,7 +296,7 @@ public class RedoLogVerify {
         if (all == null || all.length == 0)
             return true;
 
-        List<File> fileList = new ArrayList<File>(all.length);
+        List<File> fileList = new ArrayList<>(all.length);
         for (File f : all) {
             if (!f.isDirectory()) {
                 String fname = f.getName();

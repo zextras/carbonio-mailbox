@@ -16,7 +16,7 @@ public final class ImapUtil {
         if (s.length() == 0) {
             throw new IllegalArgumentException("Empty sequence set");
         }
-        List<Long> uids = new ArrayList<Long>();
+        List<Long> uids = new ArrayList<>();
         for (String part : s.split(",")) {
             String[] range = part.split(":");
             if (range.length == 2) {

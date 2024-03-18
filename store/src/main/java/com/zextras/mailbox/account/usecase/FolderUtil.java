@@ -25,7 +25,7 @@ public class FolderUtil {
    * @return {@link Set} of {@link Folder}
    */
   public static Set<Folder> flattenAndSortFolderTree(final FolderNode root) {
-    Set<Folder> folders = new HashSet<Folder>();
+    Set<Folder> folders = new HashSet<>();
     flattenAndSortFolderTree(root, folders);
     return folders;
   }

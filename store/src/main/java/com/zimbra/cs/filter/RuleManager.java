@@ -136,7 +136,7 @@ public final class RuleManager {
             // evaluate against dummy mail adapter to catch more errors
             SIEVE_FACTORY.evaluate(new DummyMailAdapter(), node);
             // save
-            Map<String, Object> attrs = new HashMap<String, Object>();
+            Map<String, Object> attrs = new HashMap<>();
             attrs.put(sieveScriptAttrName, script);
             Provisioning.getInstance().modifyAttrs(entry, attrs);
             entry.setCachedData(rulesCacheKey, node);
@@ -264,7 +264,7 @@ public final class RuleManager {
      * the rule.  Return the values of all lines that begin with <tt>"# "</tt>.
      */
     public static List<String> getRuleNames(String script) {
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         if (script != null) {
             BufferedReader reader = new BufferedReader(new StringReader(script));
             String line;
@@ -319,7 +319,7 @@ public final class RuleManager {
         } catch (IOException e) {
             ZimbraLog.filter.warn("Unable to get rule %s from script:\n%s.", ruleName, script, e);
         }
-        Pair<String, String> requireScriptPair = new Pair<String, String>(requireBuf.toString(),
+        Pair<String, String> requireScriptPair = new Pair<>(requireBuf.toString(),
             scriptBuf.toString());
         if (scriptBuf.length() > 0) {
             return requireScriptPair;
@@ -442,7 +442,7 @@ public final class RuleManager {
         if (addedMessageIds == null) {
             // Filter rules were not processed.  File to the default folder.
             Message msg = mailAdapter.keep(KeepType.IMPLICIT_KEEP);
-            addedMessageIds = new ArrayList<ItemId>(1);
+            addedMessageIds = new ArrayList<>(1);
             addedMessageIds.add(new ItemId(msg));
         }
         return addedMessageIds;
@@ -494,7 +494,7 @@ public final class RuleManager {
         if (addedMessageIds == null) {
             // Filter rules were not processed.  File to the default folder.
             Message msg = mailAdapter.keep(KeepType.IMPLICIT_KEEP);
-            addedMessageIds = new ArrayList<ItemId>(1);
+            addedMessageIds = new ArrayList<>(1);
             addedMessageIds.add(new ItemId(msg));
         }
         return addedMessageIds;

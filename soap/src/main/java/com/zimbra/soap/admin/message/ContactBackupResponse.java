@@ -69,7 +69,7 @@ public class ContactBackupResponse {
      */
     public void addServers(List<ContactBackupServer> servers) {
         if (this.servers == null) {
-            this.servers = new ArrayList<ContactBackupServer>();
+            this.servers = new ArrayList<>();
         }
         this.servers.addAll(servers);
     }
@@ -79,7 +79,7 @@ public class ContactBackupResponse {
      */
     public void addServer(ContactBackupServer server) {
         if (this.servers == null) {
-            this.servers = new ArrayList<ContactBackupServer>();
+            this.servers = new ArrayList<>();
         }
         this.servers.add(server);
     }

@@ -96,7 +96,7 @@ public class WebDavClient {
     }
 
     public Collection<DavObject> sendMultiResponseRequest(DavRequest req) throws IOException, DavException, HttpException {
-        ArrayList<DavObject> ret = new ArrayList<DavObject>();
+        ArrayList<DavObject> ret = new ArrayList<>();
 
         HttpResponse response = null;
         try {

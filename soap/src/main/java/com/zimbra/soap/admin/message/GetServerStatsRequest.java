@@ -32,7 +32,7 @@ public class GetServerStatsRequest {
      * @zm-api-field-description Stats
      */
     @XmlElement(name=AdminConstants.E_STAT)
-    private List<Stat> stats = new ArrayList<Stat>();
+    private List<Stat> stats = new ArrayList<>();
 
     public GetServerStatsRequest() {
     }

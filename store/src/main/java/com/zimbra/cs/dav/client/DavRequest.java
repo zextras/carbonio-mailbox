@@ -39,7 +39,7 @@ public class DavRequest {
         mUri = uri;
         mMethod = method;
         mDepth = Depth.zero;
-        mHeaders = new ArrayList<Pair<String,String>>();
+        mHeaders = new ArrayList<>();
     }
 
     public Document getRequestMessage() {
@@ -84,7 +84,7 @@ public class DavRequest {
     }
 
     public void addRequestHeader(String name, String value) {
-        mHeaders.add(new Pair<String,String>(name, value));
+        mHeaders.add(new Pair<>(name, value));
     }
 
     public ArrayList<Pair<String,String>> getRequestHeaders() {

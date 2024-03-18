@@ -64,16 +64,16 @@ public class LdapGalMapRules {
     
     private void init(String[] rules, String[] valueMaps, String groupHandlerClass) {
         if (valueMaps !=  null) {
-            mValueMaps = new HashMap<String, LdapGalValueMap>(valueMaps.length);
+            mValueMaps = new HashMap<>(valueMaps.length);
             for (String valueMap : valueMaps) {
                 LdapGalValueMap vMap = new LdapGalValueMap(valueMap);
                 mValueMaps.put(vMap.getFieldName(), vMap);
             }
         }
         
-        mRules = new ArrayList<LdapGalMapRule>(rules.length);
-        mLdapAttrs = new ArrayList<String>();
-        mBinaryLdapAttrs = new HashSet<String>();
+        mRules = new ArrayList<>(rules.length);
+        mLdapAttrs = new ArrayList<>();
+        mBinaryLdapAttrs = new HashSet<>();
         for (String rule: rules)
             add(rule);
         // load the correct default group handler class (bug 78755)
@@ -103,7 +103,7 @@ public class LdapGalMapRules {
     
     public Map<String, Object> apply(ILdapContext ldapContext, String searchBase, String entryDN, IAttributes ldapAttrs) {
          
-        HashMap<String,Object> contactAttrs = new HashMap<String, Object>();        
+        HashMap<String,Object> contactAttrs = new HashMap<>();
         for (LdapGalMapRule rule: mRules) {
         	if (!mNeedSMIMECerts && rule.isSMIMECertificate()) {
         		continue;

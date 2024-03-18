@@ -57,7 +57,7 @@ public class SearchAutoProvDirectory extends AdminDocumentHandler {
         String attrsStr = request.getAttribute(AdminConstants.A_ATTRS, null);
         String[] returnAttrs = null;
         if (attrsStr != null) {
-            Set<String> attrs = new HashSet<String>();
+            Set<String> attrs = new HashSet<>();
             for (String attr : Splitter.on(',').trimResults().split(attrsStr)) {
                 attrs.add(attr);
             }

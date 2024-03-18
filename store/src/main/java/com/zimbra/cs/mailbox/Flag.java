@@ -24,7 +24,7 @@ public final class Flag extends Tag {
     private static final char HIDDEN = '\0';
     private static final FlagInfo[] INDEX2FLAG = new FlagInfo[31];
     private static final FlagInfo[] CHAR2FLAG = new FlagInfo[127];
-    private static final Map<String, FlagInfo> NAME2FLAG = new HashMap<String, FlagInfo>();
+    private static final Map<String, FlagInfo> NAME2FLAG = new HashMap<>();
 
     public enum FlagInfo {
         FROM_ME(-1, "\\Sent", 's'),
@@ -290,7 +290,7 @@ public final class Flag extends Tag {
             return Collections.emptyList();
         }
 
-        List<Integer> result = new ArrayList<Integer>(5);
+        List<Integer> result = new ArrayList<>(5);
         for (FlagInfo flag : FlagInfo.values()) {
             if ((bitmask & flag.bitmask) != 0) {
                 result.add(flag.id);
@@ -324,7 +324,7 @@ public final class Flag extends Tag {
      */
     static List<Flag> allOf(Mailbox mbox) throws ServiceException {
         FlagInfo[] flags = FlagInfo.values();
-        List<Flag> result = new ArrayList<Flag>(flags.length);
+        List<Flag> result = new ArrayList<>(flags.length);
         for (FlagInfo flag : flags) {
             result.add(flag.toFlag(mbox));
         }

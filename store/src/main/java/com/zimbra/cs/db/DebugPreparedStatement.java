@@ -53,7 +53,7 @@ class DebugPreparedStatement extends DelegatingPreparedStatement {
             return super.set(index, element);
         }
     }
-    private List<Object> mParams = new AutoSizeList<Object>();
+    private List<Object> mParams = new AutoSizeList<>();
     
     DebugPreparedStatement(DelegatingConnection conn, PreparedStatement stmt, String sql) {
         super(conn, stmt);

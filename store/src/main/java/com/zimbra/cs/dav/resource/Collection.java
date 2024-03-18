@@ -94,7 +94,7 @@ public class Collection extends MailItemResource {
 
     @Override
     public java.util.Collection<DavResource> getChildren(DavContext ctxt) throws DavException {
-        ArrayList<DavResource> children = new ArrayList<DavResource>();
+        ArrayList<DavResource> children = new ArrayList<>();
 
         try {
             ctxt.setCollectionPath(getUri());
@@ -122,7 +122,7 @@ public class Collection extends MailItemResource {
     private List<MailItem> getChildrenMailItem(DavContext ctxt) throws DavException,ServiceException {
         Mailbox mbox = getMailbox(ctxt);
 
-        List<MailItem> ret = new ArrayList<MailItem>();
+        List<MailItem> ret = new ArrayList<>();
 
         // XXX aggregate into single call
         ret.addAll(mbox.getItemList(ctxt.getOperationContext(), MailItem.Type.FOLDER, mId));

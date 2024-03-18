@@ -142,7 +142,7 @@ public enum TargetType {
   }
 
   private void setInheritedByTargetTypes(TargetType[] targetTypes) {
-    mInheritedByTargetTypes = new HashSet<TargetType>(Arrays.asList(targetTypes));
+    mInheritedByTargetTypes = new HashSet<>(Arrays.asList(targetTypes));
   }
 
   static void init() {
@@ -185,8 +185,8 @@ public enum TargetType {
     // compute mInheritFromTargetTypes and mSubTargetTypes
     // from mInheritedByTargetTypes
     for (TargetType inheritFrom : TargetType.values()) {
-      inheritFrom.mInheritFromTargetTypes = new HashSet<TargetType>();
-      inheritFrom.mSubTargetTypes = new HashSet<TargetType>();
+      inheritFrom.mInheritFromTargetTypes = new HashSet<>();
+      inheritFrom.mSubTargetTypes = new HashSet<>();
 
       for (TargetType inheritedBy : TargetType.values()) {
         if (inheritedBy.mInheritedByTargetTypes.contains(inheritFrom)) {
@@ -576,7 +576,7 @@ public enum TargetType {
     // sanity check, is really an internal error if targetTypes is empty
     if (targetTypes.isEmpty()) return null;
 
-    Map<String, Set<String>> tempResult = new HashMap<String, Set<String>>();
+    Map<String, Set<String>> tempResult = new HashMap<>();
 
     for (TargetType tt : targetTypes) {
       String base = getSearchBase(prov, tt);
@@ -584,7 +584,7 @@ public enum TargetType {
       String oc = tt.getAttributeClass().getOCName();
       Set<String> ocs = tempResult.get(base);
       if (ocs == null) {
-        ocs = new HashSet<String>();
+        ocs = new HashSet<>();
         tempResult.put(base, ocs);
       }
       ocs.add(oc);
@@ -593,8 +593,8 @@ public enum TargetType {
     // optimize
     LdapDIT dit = ((LdapProv) prov).getDIT();
     String configBranchBase = dit.configBranchBaseDN();
-    Set<String> mailBranchOCs = new HashSet<String>();
-    Set<String> configBranchOCs = new HashSet<String>();
+    Set<String> mailBranchOCs = new HashSet<>();
+    Set<String> configBranchOCs = new HashSet<>();
 
     String leastCommonBaseInMailBranch = null;
     String leastCommonBaseInConfigBranch = null;
@@ -624,7 +624,7 @@ public enum TargetType {
       }
     }
 
-    Map<String, Set<String>> result = new HashMap<String, Set<String>>();
+    Map<String, Set<String>> result = new HashMap<>();
 
     // if zimbra default DIT and both mail branch and config branch are needed, merge the two
     if (LdapDIT.isZimbraDefault(dit)) {

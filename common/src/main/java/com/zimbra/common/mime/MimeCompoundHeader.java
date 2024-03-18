@@ -24,7 +24,7 @@ import com.zimbra.common.util.CharsetUtil;
 public class MimeCompoundHeader extends MimeHeader {
     private boolean use2231Encoding;
     private String primaryValue;
-    private Map<String, String> params = new LinkedHashMap<String, String>();
+    private Map<String, String> params = new LinkedHashMap<>();
     private String charset;
 
     protected MimeCompoundHeader(String name, String value) {
@@ -479,11 +479,11 @@ public class MimeCompoundHeader extends MimeHeader {
                 if (continued >= 0) {
                     // in order to handle out-of-order parts, store all partials in a hash until we're done
                     if (partials == null) {
-                        partials = new HashMap<String, Map<Integer, ParameterContinuation>>(3);
+                        partials = new HashMap<>(3);
                     }
                     Map<Integer, ParameterContinuation> parts = partials.get(pname);
                     if (parts == null) {
-                        partials.put(pname, parts = new TreeMap<Integer, ParameterContinuation>());
+                        partials.put(pname, parts = new TreeMap<>());
                     }
                     Charset encoding = charset == null || charset.isEmpty() ? DEFAULT_CHARSET : decodingCharset(CharsetUtil.toCharset(charset.toString()));
                     parts.put(continued, new ParameterContinuation(encoding.toString(), encoded, value.toString()));

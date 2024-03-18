@@ -605,7 +605,7 @@ public final class FilterUtil {
 
         // Envelope TO & Header To/Cc
         // RFC 5436 2.7. (2nd and 5th item of the 'guidelines')
-        Set<String> envelopeTos = new HashSet<String>();
+        Set<String> envelopeTos = new HashSet<>();
         envelopeTos.add(mailto);
         notification.addRecipient(javax.mail.Message.RecipientType.TO, new JavaMailInternetAddress(mailto));
 
@@ -726,11 +726,11 @@ public final class FilterUtil {
     @VisibleForTesting
     static Map<String, String> getVarsMap(Mailbox mailbox, ParsedMessage parsedMessage, MimeMessage mimeMessage)
             throws MessagingException, ServiceException {
-        Map<String, String> vars = new HashMap<String, String>() {
-            @Override
-            public String get(Object key) {
-                return super.get(((String) key).toLowerCase());
-            }
+        Map<String, String> vars = new HashMap<>() {
+          @Override
+          public String get(Object key) {
+            return super.get(((String) key).toLowerCase());
+          }
         };
         Enumeration enumeration = mimeMessage.getAllHeaders();
         while (enumeration.hasMoreElements()) {

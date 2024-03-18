@@ -66,10 +66,10 @@ public class MailboxManager {
   }
 
   private ConcurrentHashMap<String, MailboxMaintenance> maintenanceLocks =
-      new ConcurrentHashMap<String, MailboxMaintenance>();
+      new ConcurrentHashMap<>();
 
   private CopyOnWriteArrayList<AdditionalQuotaProvider> mAdditionalQuotaProviders =
-      new CopyOnWriteArrayList<AdditionalQuotaProvider>();
+      new CopyOnWriteArrayList<>();
 
   public void addAdditionalQuotaProvider(AdditionalQuotaProvider additionalQuotaProvider) {
     assert (!mAdditionalQuotaProviders.contains(additionalQuotaProvider));
@@ -89,7 +89,7 @@ public class MailboxManager {
     return mAdditionalQuotaProviders;
   }
 
-  private CopyOnWriteArrayList<Listener> mListeners = new CopyOnWriteArrayList<Listener>();
+  private CopyOnWriteArrayList<Listener> mListeners = new CopyOnWriteArrayList<>();
 
   public void addListener(Listener listener) {
     assert (!mListeners.contains(listener));
@@ -551,7 +551,7 @@ public class MailboxManager {
    *     mailboxes will not be purged.
    */
   public synchronized List<Mailbox> getAllLoadedMailboxes() {
-    List<Mailbox> mboxes = new ArrayList<Mailbox>(cache.size());
+    List<Mailbox> mboxes = new ArrayList<>(cache.size());
     for (Object o : cache.values()) {
       if (o instanceof Mailbox) {
         mboxes.add((Mailbox) o);
@@ -803,9 +803,9 @@ public class MailboxManager {
     List<Integer> requested;
     synchronized (this) {
       if (accounts == null) {
-        requested = new ArrayList<Integer>(mailboxIds.values());
+        requested = new ArrayList<>(mailboxIds.values());
       } else {
-        requested = new ArrayList<Integer>(accounts.size());
+        requested = new ArrayList<>(accounts.size());
         for (NamedEntry account : accounts) {
           Integer mailboxId = mailboxIds.get(account.getId());
           if (mailboxId != null) requested.add(mailboxId);
@@ -1061,7 +1061,7 @@ public class MailboxManager {
     MailboxMap(int hardSize) {
       hardSize = Math.max(hardSize, 0);
       mHardSize = hardSize;
-      mSoftMap = new HashMap<Integer, Object>();
+      mSoftMap = new HashMap<>();
       mHardMap =
           new LinkedHashMap<Integer, Object>(mHardSize / 4, (float) .75, true) {
             @Override
@@ -1069,7 +1069,7 @@ public class MailboxManager {
               if (size() <= mHardSize) return false;
 
               Object obj = eldest.getValue();
-              if (obj instanceof Mailbox) obj = new SoftReference<Mailbox>((Mailbox) obj);
+              if (obj instanceof Mailbox) obj = new SoftReference<>((Mailbox) obj);
               mSoftMap.put(eldest.getKey(), obj);
               return true;
             }
@@ -1100,7 +1100,7 @@ public class MailboxManager {
 
     @Override
     public Set<Entry<Integer, Object>> entrySet() {
-      Set<Entry<Integer, Object>> entries = new HashSet<Entry<Integer, Object>>(size());
+      Set<Entry<Integer, Object>> entries = new HashSet<>(size());
       if (mHardSize > 0) entries.addAll(mHardMap.entrySet());
       entries.addAll(mSoftMap.entrySet());
       return entries;
@@ -1131,7 +1131,7 @@ public class MailboxManager {
 
     @Override
     public Set<Integer> keySet() {
-      Set<Integer> keys = new HashSet<Integer>(size());
+      Set<Integer> keys = new HashSet<>(size());
       if (mHardSize > 0) keys.addAll(mHardMap.keySet());
       keys.addAll(mSoftMap.keySet());
       return keys;
@@ -1144,7 +1144,7 @@ public class MailboxManager {
         removed = mHardMap.put(key, value);
         if (removed == null) removed = mSoftMap.remove(key);
       } else {
-        if (value instanceof Mailbox) value = new SoftReference<Object>(value);
+        if (value instanceof Mailbox) value = new SoftReference<>(value);
         removed = mSoftMap.put(key, value);
       }
       if (removed instanceof SoftReference) removed = ((SoftReference<?>) removed).get();
@@ -1174,7 +1174,7 @@ public class MailboxManager {
 
     @Override
     public Collection<Object> values() {
-      List<Object> values = new ArrayList<Object>(size());
+      List<Object> values = new ArrayList<>(size());
       if (mHardSize > 0) values.addAll(mHardMap.values());
       for (Object o : mSoftMap.values()) {
         if (o instanceof SoftReference) o = ((SoftReference<?>) o).get();

@@ -96,7 +96,7 @@ public class Util {
     public static List<ZParameter> decodeXParamsFromMetadata(Metadata meta) throws ServiceException {
         int xparamCount = (int) meta.getLong(FN_NUM_XPROPS_OR_XPARAMS, 0);
         if (xparamCount > 0) {
-            List<ZParameter> list = new ArrayList<ZParameter>(xparamCount);
+            List<ZParameter> list = new ArrayList<>(xparamCount);
             for (int paramNum = 0; paramNum < xparamCount; paramNum++) {
                 Metadata paramMeta = meta.getMap(FN_XPROP_OR_XPARAM + paramNum, true);
                 if (paramMeta == null) continue;
@@ -114,7 +114,7 @@ public class Util {
     public static List<ZProperty> decodeXPropsFromMetadata(Metadata meta) throws ServiceException {
         int xpropCount = (int) meta.getLong(FN_NUM_XPROPS_OR_XPARAMS, 0);
         if (xpropCount > 0) {
-            List<ZProperty> list = new ArrayList<ZProperty>(xpropCount);
+            List<ZProperty> list = new ArrayList<>(xpropCount);
             for (int propNum = 0; propNum < xpropCount; propNum++) {
                 Metadata propMeta = meta.getMap(FN_XPROP_OR_XPARAM + propNum, true);
                 if (propMeta == null) continue;
@@ -212,7 +212,7 @@ public class Util {
 
     public static Metadata encodeAsMetadata(TimeZoneMap tzmap) {
         Metadata meta = new Metadata();
-        Map<String /* real TZID */, Integer /* index */> tzIndex = new HashMap<String, Integer>();
+        Map<String /* real TZID */, Integer /* index */> tzIndex = new HashMap<>();
         int nextIndex = 0;
       for (Entry<String, ICalTimeZone> entry : tzmap.getMap().entrySet()) {
         String tzid = entry.getKey();
@@ -246,7 +246,7 @@ public class Util {
      */
     public static TimeZoneMap decodeFromMetadata(Metadata meta, ICalTimeZone localTZ) throws ServiceException {
         Map<String, ?> map = meta.asMap();
-        Map<String, String> aliasMap = new HashMap<String, String>();
+        Map<String, String> aliasMap = new HashMap<>();
         ICalTimeZone[] tzlist = new ICalTimeZone[map.size()];
         // first time, find the tz's
         for (Map.Entry<String, ?> entry : map.entrySet()) {
@@ -273,7 +273,7 @@ public class Util {
             }
         }
 
-        Map<String, ICalTimeZone> tzmap = new HashMap<String, ICalTimeZone>();
+        Map<String, ICalTimeZone> tzmap = new HashMap<>();
         for (ICalTimeZone tz : tzlist) {
             if (tz != null)
                 tzmap.put(tz.getID(), tz);

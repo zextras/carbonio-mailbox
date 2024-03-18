@@ -101,7 +101,7 @@ public class ZoneInfo2iCalendar {
   }
 
   private static List<RuleLine> getRuleLinesForYear(List<RuleLine> ruleLines, int year) {
-    List<RuleLine> result = new ArrayList<RuleLine>();
+    List<RuleLine> result = new ArrayList<>();
     for (RuleLine rline : ruleLines) {
       if (rline.getFromYear() <= year && rline.getToYear() >= year) result.add(rline);
     }
@@ -843,9 +843,9 @@ public class ZoneInfo2iCalendar {
     }
   }
 
-  private static Set<String /* TZID */> sPrimaryTZIDs = new HashSet<String>();
+  private static Set<String /* TZID */> sPrimaryTZIDs = new HashSet<>();
   private static Map<String /* TZID */, Integer /* matchScore */> sMatchScores =
-      new HashMap<String, Integer>();
+      new HashMap<>();
 
   private static enum LineType {
     PRIMARYZONE,
@@ -884,7 +884,7 @@ public class ZoneInfo2iCalendar {
     tokenizer.quoteChar(dquote);
     tokenizer.eolIsSignificant(true);
 
-    List<String> tokenList = new ArrayList<String>();
+    List<String> tokenList = new ArrayList<>();
     LineType lineType = LineType.UNKNOWN;
     boolean atLineStart = true;
 
@@ -1091,7 +1091,7 @@ public class ZoneInfo2iCalendar {
       params.extraDataFile = file;
     }
 
-    List<File> sourceFiles = new ArrayList<File>();
+    List<File> sourceFiles = new ArrayList<>();
 
     if (cl.hasOption(OPT_TZDATA_DIR)) {
       File dir = new File(cl.getOptionValue(OPT_TZDATA_DIR));
@@ -1326,9 +1326,9 @@ public class ZoneInfo2iCalendar {
       out.write(hdr.toString());
 
       Map<String, VTimeZone> oldTimeZones = makeOldTimeZonesMap(params);
-      Set<Zone> zones = new TreeSet<Zone>(new ZoneComparatorByGmtOffset());
+      Set<Zone> zones = new TreeSet<>(new ZoneComparatorByGmtOffset());
       zones.addAll(parser.getZones());
-      Set<String> zoneIDs = new TreeSet<String>();
+      Set<String> zoneIDs = new TreeSet<>();
       for (Zone zone : zones) {
         zoneIDs.add(zone.getName());
       }

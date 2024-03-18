@@ -51,7 +51,7 @@ public class DeployZimlet extends AdminDocumentHandler {
 		private Map<String,Status> mStatus;
 
 		public Progress(boolean allServers) throws ServiceException {
-			mStatus = new HashMap<String,Status>();
+			mStatus = new HashMap<>();
 			Provisioning prov = Provisioning.getInstance();
 			if (!allServers) {
 				changeStatus(prov.getLocalServer().getName(), sPENDING);

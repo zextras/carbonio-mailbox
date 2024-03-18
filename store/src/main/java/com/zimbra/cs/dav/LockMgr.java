@@ -45,7 +45,7 @@ public class LockMgr {
 	private final Map<String,Lock> mLocks;
 
 	private LockMgr() {
-		mLockedResources = new HashMap<String,List<String>>();
+		mLockedResources = new HashMap<>();
 		mLocks = MapUtil.newLruMap(100);
 	}
 
@@ -99,7 +99,7 @@ public class LockMgr {
 	}
 
 	public synchronized List<Lock> getLocks(String path) {
-		List<Lock> locks = new ArrayList<Lock>();
+		List<Lock> locks = new ArrayList<>();
 		List<String> lockTokens = mLockedResources.get(path);
 		if (lockTokens != null) {
 			for (String token : lockTokens) {
@@ -140,7 +140,7 @@ public class LockMgr {
 
 		List<String> locks = mLockedResources.get(path);
 		if (locks == null) {
-			locks = new ArrayList<String>();
+			locks = new ArrayList<>();
 			mLockedResources.put(path, locks);
 		}
 		locks.add(l.token);

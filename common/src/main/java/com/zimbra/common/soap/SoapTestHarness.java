@@ -178,10 +178,10 @@ public class SoapTestHarness {
     }
 
     public SoapTestHarness() {
-        mProps = new HashMap<String, String>();
+        mProps = new HashMap<>();
         mSoapProto = SoapProtocol.Soap12;
         mResponseProto = SoapProtocol.Soap12;
-        mTests = new ArrayList<Test>();
+        mTests = new ArrayList<>();
     }
 
     public void runTests(String args[]) 
@@ -452,7 +452,7 @@ public class SoapTestHarness {
 
     private static Map<String, String> getURIs(SoapProtocol proto) {
         if (mURIs == null) {
-            mURIs = new HashMap<String, String>();
+            mURIs = new HashMap<>();
             mURIs.put("zimbra", "urn:zimbra");
             mURIs.put("acct", "urn:zimbraAccount");
             mURIs.put("mail", "urn:zimbraMail");
@@ -461,7 +461,7 @@ public class SoapTestHarness {
             mURIs.put("soap12", "http://www.w3.org/2003/05/soap-envelope");            
             mURIs.put("soap11", "http://schemas.xmlsoap.org/soap/envelope/");
 
-            mJSURIs = new HashMap<String, String>();
+            mJSURIs = new HashMap<>();
             mJSURIs.put("zimbra", "urn:zimbra");
             mJSURIs.put("acct", "urn:zimbraAccount");
             mJSURIs.put("mail", "urn:zimbraMail");

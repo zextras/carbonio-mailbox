@@ -862,11 +862,11 @@ public class DbMailItem {
       DbConnection conn, Mailbox mbox) throws ServiceException {
     SetMultimap<MailItem.Type, Integer> result =
         Multimaps.newSetMultimap(
-            new EnumMap<MailItem.Type, Collection<Integer>>(MailItem.Type.class),
-            new Supplier<Set<Integer>>() {
+            new EnumMap<>(MailItem.Type.class),
+            new Supplier<>() {
               @Override
               public Set<Integer> get() {
-                return new HashSet<Integer>();
+                return new HashSet<>();
               }
             });
 
@@ -918,7 +918,7 @@ public class DbMailItem {
 
   public static List<Integer> getReIndexIds(
       DbConnection conn, Mailbox mbox, Set<MailItem.Type> types) throws ServiceException {
-    List<Integer> ids = new ArrayList<Integer>();
+    List<Integer> ids = new ArrayList<>();
     PreparedStatement stmt = null;
     ResultSet rs = null;
     try { // from MAIL_ITEM table
@@ -1725,12 +1725,12 @@ public class DbMailItem {
         pos = setMailboxId(stmt, mbox, pos);
         stmt.setInt(pos++, folder.getId());
         rs = stmt.executeQuery();
-        Map<Integer, List<Integer>> counts = new HashMap<Integer, List<Integer>>();
+        Map<Integer, List<Integer>> counts = new HashMap<>();
         while (rs.next()) {
           int convId = rs.getInt(1), count = rs.getInt(2);
           List<Integer> targets = counts.get(count);
           if (targets == null) {
-            counts.put(count, targets = new ArrayList<Integer>());
+            counts.put(count, targets = new ArrayList<>());
           }
           targets.add(convId);
         }
@@ -1840,12 +1840,12 @@ public class DbMailItem {
           stmt.setInt(pos++, id);
         }
         rs = stmt.executeQuery();
-        Map<Integer, List<Integer>> counts = new HashMap<Integer, List<Integer>>();
+        Map<Integer, List<Integer>> counts = new HashMap<>();
         while (rs.next()) {
           int convId = rs.getInt(1), count = rs.getInt(2);
           List<Integer> targets = counts.get(count);
           if (targets == null) {
-            counts.put(count, targets = new ArrayList<Integer>());
+            counts.put(count, targets = new ArrayList<>());
           }
           targets.add(convId);
         }
@@ -1895,7 +1895,7 @@ public class DbMailItem {
     if (candidates == null || candidates.isEmpty()) {
       return null;
     }
-    List<Integer> purgedConvs = new ArrayList<Integer>();
+    List<Integer> purgedConvs = new ArrayList<>();
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     ResultSet rs = null;
@@ -1991,7 +1991,7 @@ public class DbMailItem {
     if (ids == null || ids.size() == 0) {
       return;
     }
-    List<Integer> targets = new ArrayList<Integer>();
+    List<Integer> targets = new ArrayList<>();
     for (int id : ids) {
       if (id > 0) {
         targets.add(id);
@@ -2245,7 +2245,7 @@ public class DbMailItem {
   public static List<Integer> readTombstones(
       Mailbox mbox, DbConnection conn, long lastSync, Set<MailItem.Type> types)
       throws ServiceException {
-    List<Integer> tombstones = new ArrayList<Integer>();
+    List<Integer> tombstones = new ArrayList<>();
     PreparedStatement stmt = null;
     ResultSet rs = null;
     StringBuilder typesValue = new StringBuilder();
@@ -2646,7 +2646,7 @@ public class DbMailItem {
       }
 
       Map<Integer, UnderlyingData> lookup =
-          new HashMap<Integer, UnderlyingData>(folderData.size() + tagData.size());
+          new HashMap<>(folderData.size() + tagData.size());
 
       // going to recalculate counts, so discard any existing counts...
       for (FolderTagMap itemData : new FolderTagMap[] {folderData, tagData}) {
@@ -2758,7 +2758,7 @@ public class DbMailItem {
     if (Mailbox.isCachedType(type)) {
       throw ServiceException.INVALID_REQUEST("folders and tags must be retrieved from cache", null);
     }
-    ArrayList<UnderlyingData> result = new ArrayList<UnderlyingData>();
+    ArrayList<UnderlyingData> result = new ArrayList<>();
 
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
@@ -2807,7 +2807,7 @@ public class DbMailItem {
       MailItem parent, SortBy sort, int limit, boolean fromDumpster) throws ServiceException {
     Mailbox mbox = parent.getMailbox();
 
-    List<UnderlyingData> result = new ArrayList<UnderlyingData>();
+    List<UnderlyingData> result = new ArrayList<>();
 
     StringBuilder sql =
         new StringBuilder("SELECT ")
@@ -2862,7 +2862,7 @@ public class DbMailItem {
     }
 
     Mailbox mbox = relativeTo.getMailbox();
-    ArrayList<UnderlyingData> result = new ArrayList<UnderlyingData>();
+    ArrayList<UnderlyingData> result = new ArrayList<>();
 
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
@@ -2927,7 +2927,7 @@ public class DbMailItem {
     }
     Mailbox mbox = folder.getMailbox();
 
-    List<UnderlyingData> result = new ArrayList<UnderlyingData>();
+    List<UnderlyingData> result = new ArrayList<>();
 
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
@@ -3123,11 +3123,11 @@ public class DbMailItem {
       throw ServiceException.INVALID_REQUEST("folders and tags must be retrieved from cache", null);
     }
 
-    List<UnderlyingData> result = new ArrayList<UnderlyingData>();
+    List<UnderlyingData> result = new ArrayList<>();
     if (ids.isEmpty()) {
       return result;
     }
-    List<UnderlyingData> conversations = new ArrayList<UnderlyingData>();
+    List<UnderlyingData> conversations = new ArrayList<>();
 
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
@@ -3264,7 +3264,7 @@ public class DbMailItem {
       pos = setMailboxId(stmt, mbox, pos);
       rs = stmt.executeQuery();
 
-      List<UnderlyingData> dlist = new ArrayList<UnderlyingData>(3);
+      List<UnderlyingData> dlist = new ArrayList<>(3);
       Set<Integer> convIds = Sets.newHashSetWithExpectedSize(3);
       while (rs.next()) {
         int id = rs.getInt(CI_ID);
@@ -3411,7 +3411,7 @@ public class DbMailItem {
     if (Mailbox.isCachedType(type)) {
       throw ServiceException.INVALID_REQUEST("folders and tags must be retrieved from cache", null);
     }
-    List<Map<String, String>> idList = new ArrayList<Map<String, String>>();
+    List<Map<String, String>> idList = new ArrayList<>();
     TypedIdList missed = new TypedIdList();
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
@@ -3442,7 +3442,7 @@ public class DbMailItem {
         rs = stmt.executeQuery();
         while (rs.next()) {
 
-          Map<String, String> resultData = new HashMap<String, String>();
+          Map<String, String> resultData = new HashMap<>();
           resultData.put("id", Integer.toString(rs.getInt(1)));
           resultData.put("type", Integer.toString(rs.getInt(2)));
           resultData.put("parent_id", Integer.toString(rs.getInt(3)));
@@ -3476,7 +3476,7 @@ public class DbMailItem {
       DbPool.closeStatement(stmt);
     }
 
-    return new Pair<List<Map<String, String>>, TypedIdList>(idList, missed);
+    return new Pair<>(idList, missed);
   }
 
   /**
@@ -3491,7 +3491,7 @@ public class DbMailItem {
   private static Pair<List<Integer>, TypedIdList> populateWithResultSetData(
       Set<Integer> visible, PreparedStatement stmt, int lastDeleteSync)
       throws SQLException, ServiceException {
-    List<Integer> modified = new ArrayList<Integer>();
+    List<Integer> modified = new ArrayList<>();
     TypedIdList missed = new TypedIdList();
     ResultSet rs = null;
     try {
@@ -3514,7 +3514,7 @@ public class DbMailItem {
     } finally {
       DbPool.closeResults(rs);
     }
-    return new Pair<List<Integer>, TypedIdList>(modified, missed);
+    return new Pair<>(modified, missed);
   }
 
   public static void completeConversation(Mailbox mbox, DbConnection conn, UnderlyingData data)
@@ -3535,7 +3535,7 @@ public class DbMailItem {
     }
 
     Map<Integer, UnderlyingData> conversations =
-        new HashMap<Integer, UnderlyingData>(Db.getINClauseBatchSize() * 3 / 2);
+        new HashMap<>(Db.getINClauseBatchSize() * 3 / 2);
 
     PreparedStatement stmt = null;
     ResultSet rs = null;
@@ -3669,7 +3669,7 @@ public class DbMailItem {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     ResultSet rs = null;
-    HashSet<Integer> outdatedIds = new HashSet<Integer>();
+    HashSet<Integer> outdatedIds = new HashSet<>();
 
     if (before <= 0) {
       return outdatedIds;
@@ -3867,7 +3867,7 @@ public class DbMailItem {
     boolean dumpsterEnabled = mbox.dumpsterEnabled();
     boolean useDumpsterForSpam = mbox.useDumpsterForSpam();
     StoreManager sm = StoreManager.getInstance();
-    List<Integer> versioned = new ArrayList<Integer>();
+    List<Integer> versioned = new ArrayList<>();
 
     while (rs.next()) {
       // first check to make sure we don't have a modify conflict
@@ -3962,7 +3962,7 @@ public class DbMailItem {
         boolean indexed = !rs.wasNull();
         if (indexed) {
           if (info.sharedIndex == null) {
-            info.sharedIndex = new HashSet<Integer>();
+            info.sharedIndex = new HashSet<>();
           }
           boolean shared = (flags & Flag.BITMASK_COPIED) != 0;
           if (shared) {
@@ -4084,7 +4084,7 @@ public class DbMailItem {
     if (info.sharedIndex == null || info.sharedIndex.isEmpty()) {
       return;
     }
-    List<Integer> indexIDs = new ArrayList<Integer>(info.sharedIndex);
+    List<Integer> indexIDs = new ArrayList<>(info.sharedIndex);
 
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
@@ -4143,7 +4143,7 @@ public class DbMailItem {
   public static Pair<List<ImapMessage>, Boolean> loadImapFolder(
       Folder folder, Integer limit, Integer cursorId) throws ServiceException {
     Mailbox mbox = folder.getMailbox();
-    List<ImapMessage> result = new ArrayList<ImapMessage>();
+    List<ImapMessage> result = new ArrayList<>();
 
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
@@ -4204,7 +4204,7 @@ public class DbMailItem {
         }
         hasMore = rs.next();
       }
-      return new Pair<List<ImapMessage>, Boolean>(result, hasMore);
+      return new Pair<>(result, hasMore);
     } catch (SQLException e) {
       throw ServiceException.FAILURE("loading IMAP folder data: " + folder.getPath(), e);
     } finally {
@@ -4260,7 +4260,7 @@ public class DbMailItem {
     assert !folders.isEmpty() : folders;
     Mailbox mbox = Iterables.get(folders, 0).getMailbox();
     long popDate = popSince == null ? -1 : Math.max(popSince.getTime(), -1);
-    List<Pop3Message> result = new ArrayList<Pop3Message>();
+    List<Pop3Message> result = new ArrayList<>();
 
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
@@ -4311,7 +4311,7 @@ public class DbMailItem {
   public static List<UnderlyingData> getRevisionInfo(MailItem item, boolean fromDumpster)
       throws ServiceException {
     Mailbox mbox = item.getMailbox();
-    List<UnderlyingData> dlist = new ArrayList<UnderlyingData>();
+    List<UnderlyingData> dlist = new ArrayList<>();
     if (!item.isTagged(Flag.FlagInfo.VERSIONED)) {
       return dlist;
     }
@@ -4350,7 +4350,7 @@ public class DbMailItem {
       throws ServiceException {
     Mailbox mbox = folder.getMailbox();
     boolean allTypes = type == MailItem.Type.UNKNOWN;
-    List<Integer> result = new ArrayList<Integer>();
+    List<Integer> result = new ArrayList<>();
 
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
@@ -4429,7 +4429,7 @@ public class DbMailItem {
       DbConnection conn, int groupId, int volumeId, int lastSyncDate, int currentSyncDate)
       throws ServiceException {
     SpoolingCache<MailboxBlob.MailboxBlobInfo> blobs =
-        new SpoolingCache<MailboxBlob.MailboxBlobInfo>(5000);
+        new SpoolingCache<>(5000);
     PreparedStatement stmt = null;
     try {
       boolean[] dumpsterOrNot = new boolean[] {false, true};
@@ -4491,7 +4491,7 @@ public class DbMailItem {
   public static SpoolingCache<MailboxBlob.MailboxBlobInfo> getAllBlobs(
       DbConnection conn, Mailbox mbox) throws ServiceException {
     SpoolingCache<MailboxBlob.MailboxBlobInfo> blobs =
-        new SpoolingCache<MailboxBlob.MailboxBlobInfo>(5000);
+        new SpoolingCache<>(5000);
 
     PreparedStatement stmt = null;
     try {
@@ -4864,7 +4864,7 @@ public class DbMailItem {
               conn, DB_FIELDS, mbox, type, start, end, folderId, excludeFolderIds);
       rs = stmt.executeQuery();
 
-      List<UnderlyingData> result = new ArrayList<UnderlyingData>();
+      List<UnderlyingData> result = new ArrayList<>();
       while (rs.next()) {
         result.add(constructItem(rs));
       }
@@ -4882,7 +4882,7 @@ public class DbMailItem {
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     ResultSet rs = null;
-    List<UnderlyingData> result = new ArrayList<UnderlyingData>();
+    List<UnderlyingData> result = new ArrayList<>();
     try {
       for (int i = 0; i < uids.size(); i += Db.getINClauseBatchSize()) {
         int count = Math.min(Db.getINClauseBatchSize(), uids.size() - i);
@@ -5157,7 +5157,7 @@ public class DbMailItem {
     Mailbox mbox = folder.getMailbox();
 
     ArrayList<CalendarItem.CalendarMetadata> result =
-        new ArrayList<CalendarItem.CalendarMetadata>();
+        new ArrayList<>();
 
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
@@ -5212,7 +5212,7 @@ public class DbMailItem {
   }
 
   public static class QueryParams {
-    private final SortedSet<Integer> folderIds = new TreeSet<Integer>();
+    private final SortedSet<Integer> folderIds = new TreeSet<>();
     private Integer dateBefore;
     private Integer dateAfter;
     private Integer changeDateBefore;
@@ -5223,7 +5223,7 @@ public class DbMailItem {
     private FlagInfo flagToExclude;
     private final Set<MailItem.Type> includedTypes = EnumSet.noneOf(MailItem.Type.class);
     private final Set<MailItem.Type> excludedTypes = EnumSet.noneOf(MailItem.Type.class);
-    private final List<String> orderBy = new ArrayList<String>();
+    private final List<String> orderBy = new ArrayList<>();
 
     public SortedSet<Integer> getFolderIds() {
       return Collections.unmodifiableSortedSet(folderIds);
@@ -5492,7 +5492,7 @@ public class DbMailItem {
       throws ServiceException {
     PreparedStatement stmt = null;
     ResultSet rs = null;
-    Set<Integer> ids = new HashSet<Integer>();
+    Set<Integer> ids = new HashSet<>();
 
     try {
       // Prepare the statement based on query parameters.
@@ -5541,7 +5541,7 @@ public class DbMailItem {
       throws ServiceException {
     PreparedStatement stmt = null;
     ResultSet rs = null;
-    List<Integer> ids = new ArrayList<Integer>();
+    List<Integer> ids = new ArrayList<>();
     try {
       // Prepare the statement based on query parameters.
       StringBuilder buf = new StringBuilder();
@@ -5593,7 +5593,7 @@ public class DbMailItem {
       throws ServiceException {
     PreparedStatement stmt = null;
     ResultSet rs = null;
-    List<Pair<Integer, Integer>> result = new ArrayList<Pair<Integer, Integer>>();
+    List<Pair<Integer, Integer>> result = new ArrayList<>();
     try {
       // Prepare the statement based on query parameters.
       StringBuilder buf = new StringBuilder();
@@ -5624,7 +5624,7 @@ public class DbMailItem {
       rs = stmt.executeQuery();
 
       while (rs.next()) {
-        result.add(new Pair<Integer, Integer>(rs.getInt(1), rs.getInt(2)));
+        result.add(new Pair<>(rs.getInt(1), rs.getInt(2)));
       }
       return result;
     } catch (SQLException e) {
@@ -6191,7 +6191,7 @@ public class DbMailItem {
           // Fetch a batch of items that don't have UUID.
           PreparedStatement stmt = null;
           ResultSet rs = null;
-          List<Integer> ids = new ArrayList<Integer>(batchSize);
+          List<Integer> ids = new ArrayList<>(batchSize);
           try {
             stmt =
                 conn.prepareStatement(
@@ -6258,7 +6258,7 @@ public class DbMailItem {
    */
   public static List<Integer> getIMAPDeletedItems(Mailbox mbox, long cutOff, int batchSize)
       throws ServiceException {
-    List<Integer> imapDeletedItems = new ArrayList<Integer>();
+    List<Integer> imapDeletedItems = new ArrayList<>();
     DbConnection conn = null;
     PreparedStatement stmt = null;
     ResultSet rs = null;
@@ -6294,7 +6294,7 @@ public class DbMailItem {
 
   public static Map<Integer, Integer> getDumpsterItemAndFolderId(Mailbox mbox, int lastSync)
       throws ServiceException {
-    Map<Integer, Integer> id2folderMap = new HashMap<Integer, Integer>();
+    Map<Integer, Integer> id2folderMap = new HashMap<>();
     DbConnection conn = mbox.getOperationConnection();
     PreparedStatement stmt = null;
     ResultSet rs = null;

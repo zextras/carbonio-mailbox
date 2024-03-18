@@ -77,7 +77,7 @@ public final class DbSearch {
   private final Mailbox mailbox;
   private final boolean dumpster;
   private final StringBuilder sql = new StringBuilder();
-  private final List<Object> params = new ArrayList<Object>();
+  private final List<Object> params = new ArrayList<>();
 
   public DbSearch(Mailbox mbox) {
     this.mailbox = mbox;
@@ -575,7 +575,7 @@ public final class DbSearch {
     // optimize so shortest list is first
     Collections.sort(
         lists,
-        new Comparator<List<Result>>() {
+        new Comparator<>() {
           @Override
           public int compare(List<Result> l1, List<Result> l2) {
             return l1.size() - l2.size();
@@ -631,7 +631,7 @@ public final class DbSearch {
         }
       }
     }
-    List<Result> result = new ArrayList<Result>();
+    List<Result> result = new ArrayList<>();
     if (!(node instanceof DbSearchConstraints.Leaf)) {
       // case 1 (non-leaf node), if (where a or b) not supported or if we encountered too many sql
       // params try splitting
@@ -643,7 +643,7 @@ public final class DbSearch {
         }
         Collections.sort(result, new ResultComparator(sort));
       } else if (node instanceof DbSearchConstraints.Intersection) {
-        List<List<Result>> resultLists = new ArrayList<List<Result>>();
+        List<List<Result>> resultLists = new ArrayList<>();
 
         for (DbSearchConstraints child : node.getChildren()) {
           resultLists.add(
@@ -665,7 +665,7 @@ public final class DbSearch {
       int otherConstraintsCount = params.size() - leafNode.folders.size();
       final int softLimit = dbLimit - otherConstraintsCount - 10;
       if (leafNode.folders.size() > softLimit) {
-        List<Folder> folderList = new ArrayList<Folder>(leafNode.folders);
+        List<Folder> folderList = new ArrayList<>(leafNode.folders);
         int end = leafNode.folders.size();
         int start = end - softLimit;
         leafNode.folders.clear();
@@ -857,7 +857,7 @@ public final class DbSearch {
       }
       rs = stmt.executeQuery();
 
-      List<Result> result = new ArrayList<Result>();
+      List<Result> result = new ArrayList<>();
       while (rs.next()) {
         if (hasValidLIMIT && !Db.supports(Db.Capability.LIMIT_CLAUSE)) {
           if (offset-- > 0) {

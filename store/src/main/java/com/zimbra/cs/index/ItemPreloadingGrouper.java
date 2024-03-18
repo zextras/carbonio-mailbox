@@ -43,7 +43,7 @@ final class ItemPreloadingGrouper extends BufferingResultsGrouper {
             return false;
         }
 
-        ArrayList<ZimbraHit>toLoad = new ArrayList<ZimbraHit>();
+        ArrayList<ZimbraHit>toLoad = new ArrayList<>();
 
         // FIXME: only preloading for the first mailbox right now
         // ...if this were a cross-mailbox-search, we'd be more efficient

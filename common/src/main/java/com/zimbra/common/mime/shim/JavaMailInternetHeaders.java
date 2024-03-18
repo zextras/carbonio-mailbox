@@ -165,7 +165,7 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
         if (names == null) {
             names = NO_HEADERS;
         }
-        List<InternetHeader> jmheaders = new ArrayList<InternetHeader>();
+        List<InternetHeader> jmheaders = new ArrayList<>();
         for (com.zimbra.common.mime.MimeHeader header : zheaders) {
             int i = 0;
             for ( ; i < names.length; i++) {
@@ -177,7 +177,7 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
                 jmheaders.add(new InternetHeader(header.getName(), header.getValue(defaultCharset)));
             }
         }
-        return new IteratorEnumeration<Header>(jmheaders);
+        return new IteratorEnumeration<>(jmheaders);
     }
 
     @SuppressWarnings("unchecked")
@@ -241,7 +241,7 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
         }
         byte[] bvalue = new byte[end - start + 1];
         System.arraycopy(contents, start, bvalue, 0, end - start + 1);
-        return new Pair<String, byte[]>(name, bvalue);
+        return new Pair<>(name, bvalue);
     }
 
     @Override
@@ -262,7 +262,7 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
     }
 
     private Enumeration<String> enumerateHeaderLines(boolean match, String[] names) {
-        List<String> jmheaders = new ArrayList<String>();
+        List<String> jmheaders = new ArrayList<>();
         for (com.zimbra.common.mime.MimeHeader header : zheaders) {
             int i = 0;
             for ( ; i < names.length; i++) {
@@ -274,7 +274,7 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
                 jmheaders.add(new String(header.getRawHeader()).trim());
             }
         }
-        return new IteratorEnumeration<String>(jmheaders);
+        return new IteratorEnumeration<>(jmheaders);
     }
 
     @SuppressWarnings("unchecked")

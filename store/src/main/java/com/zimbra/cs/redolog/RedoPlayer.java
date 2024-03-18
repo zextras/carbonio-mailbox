@@ -49,7 +49,7 @@ public class RedoPlayer {
     private boolean mIgnoreReplayErrors;
     private boolean mSkipDeleteOps;
     protected boolean handleMailboxConflict;
-    protected ConcurrentMap<Integer, Integer> mailboxConflicts = new ConcurrentHashMap<Integer, Integer>();
+    protected ConcurrentMap<Integer, Integer> mailboxConflicts = new ConcurrentHashMap<>();
 
     public RedoPlayer(boolean writable) {
         this(writable, false, false, false, false);
@@ -57,7 +57,7 @@ public class RedoPlayer {
 
     public RedoPlayer(boolean writable, boolean unloggedReplay, boolean ignoreReplayErrors, boolean skipDeleteOps, 
         boolean handleMailboxConflict) {
-        mOpsMap = new LinkedHashMap<TransactionId, RedoableOp>(INITIAL_MAP_SIZE);
+        mOpsMap = new LinkedHashMap<>(INITIAL_MAP_SIZE);
         mWritable = writable;
         mUnloggedReplay = unloggedReplay;
         mIgnoreReplayErrors = ignoreReplayErrors;
@@ -158,7 +158,7 @@ public class RedoPlayer {
     // before its change record
     private boolean mHasOrphanOps = false;
     private Map<TransactionId, RedoableOp> mOrphanOps =
-        new HashMap<TransactionId, RedoableOp>();
+        new HashMap<>();
 
     private final void processOp(RedoableOp op,
             boolean redoCommitted,
@@ -269,7 +269,7 @@ public class RedoPlayer {
                                 StoreIncomingBlob storeOp = (StoreIncomingBlob) prepareOp;
                                 List<Integer> list = storeOp.getMailboxIdList();
                                 if (list != null) {
-                                    Set<Integer> opMboxIds = new HashSet<Integer>(list);
+                                    Set<Integer> opMboxIds = new HashSet<>(list);
                                     for (Map.Entry<Integer, Integer> entry : mboxIDsMap.entrySet()) {
                                         if (opMboxIds.contains(entry.getKey())) {
                                             allowRedo = true;
@@ -277,7 +277,7 @@ public class RedoPlayer {
                                             // replaying it only for the target mailbox ID we're
                                             // interested in.
                                             List<Integer> newList =
-                                                new ArrayList<Integer>(mboxIDsMap.values());
+                                                new ArrayList<>(mboxIDsMap.values());
                                             storeOp.setMailboxIdList(newList);
                                             break;
                                         }
@@ -457,9 +457,9 @@ public class RedoPlayer {
         LinkedHashMap<TransactionId, RedoableOp> map;
         synchronized (mOpsMapGuard) {
             if (mOpsMap != null)
-                map = new LinkedHashMap<TransactionId, RedoableOp>(mOpsMap);
+                map = new LinkedHashMap<>(mOpsMap);
             else
-                map = new LinkedHashMap<TransactionId, RedoableOp>();
+                map = new LinkedHashMap<>();
         }
         return map;
     }

@@ -1262,7 +1262,7 @@ public abstract class SieveVisitor {
 
     private List<String> getMultiValue(Node parent, int ... indexes) throws ServiceException {
         Node child = getNode(parent, indexes);
-        List<String> values = new ArrayList<String>();
+        List<String> values = new ArrayList<>();
         int numChildren = child.jjtGetNumChildren();
         if (numChildren > 0) {
             for (int i = 0; i < numChildren; i++) {

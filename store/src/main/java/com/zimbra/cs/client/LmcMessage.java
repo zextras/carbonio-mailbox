@@ -48,7 +48,7 @@ public class LmcMessage {
     private boolean mIsUnread = false;
     
     public LmcMessage() {
-        mMimeParts = new ArrayList<LmcMimePart>();
+        mMimeParts = new ArrayList<>();
     }
 
     public void setFolder(String f) { mFolder = f; }

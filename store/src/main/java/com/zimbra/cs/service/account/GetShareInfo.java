@@ -284,7 +284,7 @@ public class GetShareInfo extends AccountDocumentHandler {
     ResultFilter mResultFilter;
     ResultFilter resultFilterForUnmounted;
     SortedSet<ShareInfoData> mSortedShareInfo =
-        new TreeSet<ShareInfoData>(new ShareInfoComparator());
+        new TreeSet<>(new ShareInfoComparator());
 
     private static class ShareInfoComparator implements Comparator<ShareInfoData> {
       @Override

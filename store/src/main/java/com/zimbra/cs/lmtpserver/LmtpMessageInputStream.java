@@ -58,7 +58,7 @@ public class LmtpMessageInputStream extends InputStream {
         mIn = new PushbackInputStream(in);
         
         if (prefix != null) {
-            mPrefix = new LinkedList<Integer>();
+            mPrefix = new LinkedList<>();
             byte[] bytes = prefix.getBytes();
             for (byte b : bytes) {
                 mPrefix.add((int) b);

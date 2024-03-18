@@ -81,7 +81,7 @@ public class AttributeMigration {
 
   // map of all available converters
   private static Map<String, AttributeConverter> converterMap =
-      new HashMap<String, AttributeConverter>();
+      new HashMap<>();
 
   static {
     registerConverter(Provisioning.A_zimbraAuthTokens, new AuthTokenConverter());
@@ -149,7 +149,7 @@ public class AttributeMigration {
   }
 
   private void initConverters() throws ServiceException {
-    activeConverterMap = new HashMap<String, AttributeConverter>();
+    activeConverterMap = new HashMap<>();
     for (String attr : attrsToMigrate) {
       AttributeConverter converter = converterMap.get(attr);
       if (converter == null) {
@@ -427,7 +427,7 @@ public class AttributeMigration {
       beginMigration();
       csvReports = new CSVReports(callback.disableCreatingReports());
       this.hook.setCSVReports(csvReports);
-      ConsumableQueue<NamedEntry> queue = new ConsumableQueue<NamedEntry>(source.getEntries());
+      ConsumableQueue<NamedEntry> queue = new ConsumableQueue<>(source.getEntries());
       int numEntries = queue.size();
       if ((numThreads > 1) && (numEntries > 1)) {
         if (numThreads > numEntries) {
@@ -488,7 +488,7 @@ public class AttributeMigration {
   }
 
   static class SomeAccountsSource implements EntrySource {
-    private final List<String> accounts = new ArrayList<String>();
+    private final List<String> accounts = new ArrayList<>();
 
     public SomeAccountsSource(String[] acctValues) {
       accounts.addAll(Arrays.asList(acctValues));
@@ -497,7 +497,7 @@ public class AttributeMigration {
     @Override
     public List<NamedEntry> getEntries() throws ServiceException {
       Provisioning prov = Provisioning.getInstance();
-      List<NamedEntry> entries = new ArrayList<NamedEntry>();
+      List<NamedEntry> entries = new ArrayList<>();
       for (String acctValue : accounts) {
         Account acct = prov.getAccount(acctValue);
         if (acct == null) {
@@ -680,11 +680,11 @@ public class AttributeMigration {
             obj.getClass().getName(), attr);
         return Collections.emptyList();
       }
-      List<Pair<EphemeralInput, Object>> inputs = new LinkedList<Pair<EphemeralInput, Object>>();
+      List<Pair<EphemeralInput, Object>> inputs = new LinkedList<>();
       for (String v : values) {
         EphemeralInput input = converter.convert(attr, v);
         if (input != null) {
-          inputs.add(new Pair<EphemeralInput, Object>(input, v));
+          inputs.add(new Pair<>(input, v));
         }
       }
       return inputs;
@@ -698,13 +698,13 @@ public class AttributeMigration {
       if (obj == null || (obj instanceof String[] && ((String[]) obj).length == 0)) {
         return Collections.emptyList();
       }
-      List<Pair<EphemeralInput, Object>> inputs = new LinkedList<Pair<EphemeralInput, Object>>();
+      List<Pair<EphemeralInput, Object>> inputs = new LinkedList<>();
       if (multiValued) {
         inputs.addAll(migrateMultivaluedAttr(attr, obj, converter));
       } else {
         EphemeralInput input = converter.convert(attr, obj);
         if (input != null) {
-          inputs.add(new Pair<EphemeralInput, Object>(input, obj));
+          inputs.add(new Pair<>(input, obj));
         }
       }
       return inputs;
@@ -715,7 +715,7 @@ public class AttributeMigration {
       start = System.currentTimeMillis();
       ZimbraLog.ephemeral.debug(
           "migrating attributes to ephemeral storage for account '%s'", entry.getLabel());
-      List<Pair<EphemeralInput, Object>> inputs = new LinkedList<Pair<EphemeralInput, Object>>();
+      List<Pair<EphemeralInput, Object>> inputs = new LinkedList<>();
 
       boolean hasDataToMigrate = false;
       for (Map.Entry<String, AttributeConverter> converterEntry : converters.entrySet()) {

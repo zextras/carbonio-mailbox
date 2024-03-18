@@ -216,7 +216,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
 
   public static final int MAX_ZIMBRA_ID_LEN = 127;
 
-  private final List<ProvisioningValidator> validators = new ArrayList<ProvisioningValidator>();
+  private final List<ProvisioningValidator> validators = new ArrayList<>();
 
   private static volatile Provisioning singleton;
 
@@ -792,7 +792,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
 
     // create an empty AclGroups
     public GroupMembership() {
-      this(new ArrayList<MemberOf>(), new ArrayList<String>());
+      this(new ArrayList<>(), new ArrayList<>());
     }
 
     public void append(MemberOf memberOf, String groupId) {
@@ -1575,7 +1575,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
   }
 
   public List<Server> getAllDeployableZimletServers() throws ServiceException {
-    List<Server> deployableservers = new ArrayList<Server>();
+    List<Server> deployableservers = new ArrayList<>();
 
     for (Server server : getAllZimletServers()) {
       if (server.isLocalServer() || server.hasMailClientService()) {
@@ -2025,7 +2025,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
     }
 
     private SearchGalResult() {
-      mMatches = new ArrayList<GalContact>();
+      mMatches = new ArrayList<>();
     }
 
     public String getToken() {
@@ -2159,7 +2159,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
   }
 
   public Identity getDefaultIdentity(Account account) throws ServiceException {
-    Map<String, Object> attrs = new HashMap<String, Object>();
+    Map<String, Object> attrs = new HashMap<>();
     Set<String> identityAttrs =
         AttributeManager.getInstance().getAttrsInClass(AttributeClass.identity);
 
@@ -2443,7 +2443,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public abstract void deleteShareLocator(String id) throws ServiceException;
 
   public ShareLocator createShareLocator(String id, String ownerAccountId) throws ServiceException {
-    Map<String, Object> attrs = new HashMap<String, Object>();
+    Map<String, Object> attrs = new HashMap<>();
     attrs.put(Provisioning.A_zimbraShareOwnerAccountId, ownerAccountId);
     return createShareLocator(id, attrs);
   }
@@ -2469,7 +2469,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
       throws ServiceException;
 
   public static class CountAccountResult {
-    private final List<CountAccountByCos> mCountAccountByCos = new ArrayList<CountAccountByCos>();
+    private final List<CountAccountByCos> mCountAccountByCos = new ArrayList<>();
 
     public static class CountAccountByCos {
       private final String mCosId;
@@ -2579,7 +2579,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
 
   public Map<String, String> getNamesForIds(Set<String> ids, EntryType type)
       throws ServiceException {
-    return new HashMap<String, String>(); // return empty map
+    return new HashMap<>(); // return empty map
   }
 
   public static interface ProvisioningValidator {

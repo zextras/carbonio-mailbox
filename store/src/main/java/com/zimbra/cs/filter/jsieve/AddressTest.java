@@ -104,7 +104,7 @@ public class AddressTest extends Address {
         boolean isMatched = false;
 
         Iterator headerNamesIter = headerNames.iterator();
-        List<String> headerValues = new ArrayList<String>();
+        List<String> headerValues = new ArrayList<>();
         while(headerNamesIter.hasNext()) {
             final MailAdapter.Address[] addresses = mail.parseAddresses((String) headerNamesIter.next());
             final int length = addresses.length;

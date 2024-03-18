@@ -220,13 +220,13 @@ public class ZimbraNginxLookUpClient {
         // Eliminate duplicates and sort case-insensitively.  This negates operator error
         // configuring server list with inconsistent order on different Nginx Route Handler clients.
         // TreeSet provides deduping and sorting.
-        TreeSet<String> tset = new TreeSet<String>();
+        TreeSet<String> tset = new TreeSet<>();
       for (String s : servers) {
         tset.add(s.toLowerCase());
       }
         servers = tset.toArray(new String[0]);
         if (servers != null) {
-            List<Route> addrs = new ArrayList<Route>(servers.length);
+            List<Route> addrs = new ArrayList<>(servers.length);
             for (String server : servers) {
                 if (server.length() == 0)
                     continue;
@@ -263,7 +263,7 @@ public class ZimbraNginxLookUpClient {
             }
             return addrs;
         } else {
-            return new ArrayList<Route>(0);
+            return new ArrayList<>(0);
         }
     }
 

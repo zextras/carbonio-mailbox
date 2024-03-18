@@ -63,8 +63,8 @@ public class LdifFormatter extends Formatter {
         StringBuilder sb = new StringBuilder();
         try {
             contacts = getMailItems(context, -1, -1, Integer.MAX_VALUE);
-            ArrayList<Map<String, String>> allContacts = new ArrayList<Map<String, String>>();
-            HashSet<String> fields = new HashSet<String>();
+            ArrayList<Map<String, String>> allContacts = new ArrayList<>();
+            HashSet<String> fields = new HashSet<>();
             UserServletUtil.populateContactFields(contacts, context.targetMailbox,
                 context.opContext, allContacts, fields);
             for (Map<String, String> contactMap : allContacts) {
@@ -348,7 +348,7 @@ public class LdifFormatter extends Formatter {
         }
         String uid = null;
         String[] dc = null;
-        List<String> dnElements = new ArrayList<String>();
+        List<String> dnElements = new ArrayList<>();
         uid = extractUid(email);
         dc = extractDc(email);
 

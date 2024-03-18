@@ -58,7 +58,7 @@ public class CosInfo implements AdminObjectInterface {
     protected CosInfo(String id, String name, boolean isDefaultCos, Collection <CosInfoAttr> attrs) {
         this.name = name;
         this.id = id;
-        this.attrs = new ArrayList<CosInfoAttr>();
+        this.attrs = new ArrayList<>();
         if (attrs != null) {
             this.attrs.addAll(attrs);
         }

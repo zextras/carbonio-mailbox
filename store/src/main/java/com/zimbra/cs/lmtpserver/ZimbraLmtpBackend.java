@@ -70,7 +70,7 @@ import javax.mail.internet.MimeMessage;
 
 public class ZimbraLmtpBackend implements LmtpBackend {
 
-  private static List<LmtpCallback> callbacks = new CopyOnWriteArrayList<LmtpCallback>();
+  private static List<LmtpCallback> callbacks = new CopyOnWriteArrayList<>();
   private static Map<String, Set<Integer>> receivedMessageIDs;
   private static final LoadingCache<Integer, ReentrantLock> mailboxDeliveryLocks =
       createMailboxDeliveryLocks();
@@ -102,7 +102,7 @@ public class ZimbraLmtpBackend implements LmtpBackend {
 
   private static LoadingCache<Integer, ReentrantLock> createMailboxDeliveryLocks() {
     Function<Integer, ReentrantLock> lockCreator =
-        new Function<Integer, ReentrantLock>() {
+        new Function<>() {
           @Override
           public ReentrantLock apply(Integer from) {
             return new ReentrantLock();
@@ -227,8 +227,8 @@ public class ZimbraLmtpBackend implements LmtpBackend {
           // if non-zero entry timeout is specified then use a timeout map, else use an lru map
           receivedMessageIDs =
               entryTimeout == 0
-                  ? new LruMap<String, Set<Integer>>(cacheSize)
-                  : new TimeoutMap<String, Set<Integer>>(entryTimeout);
+                  ? new LruMap<>(cacheSize)
+                  : new TimeoutMap<>(entryTimeout);
         } else if (receivedMessageIDs instanceof LruMap) {
           if (entryTimeout != 0) {
             // change to a timeout map
@@ -258,7 +258,7 @@ public class ZimbraLmtpBackend implements LmtpBackend {
       // create an empty lru map if it doesn't exist already.
       synchronized (ZimbraLmtpBackend.class) {
         if (receivedMessageIDs == null) {
-          receivedMessageIDs = new LruMap<String, Set<Integer>>(0);
+          receivedMessageIDs = new LruMap<>(0);
         }
       }
     }
@@ -272,7 +272,7 @@ public class ZimbraLmtpBackend implements LmtpBackend {
     synchronized (ZimbraLmtpBackend.class) {
       Set<Integer> mboxIds = receivedMessageIDs.get(msgid);
       if (mboxIds == null) {
-        mboxIds = new HashSet<Integer>();
+        mboxIds = new HashSet<>();
         receivedMessageIDs.put(msgid, mboxIds);
       }
       mboxIds.add(mbox.getId());
@@ -412,10 +412,10 @@ public class ZimbraLmtpBackend implements LmtpBackend {
     String envSender = env.getSender().getEmailAddress();
 
     boolean shared = recipients.size() > 1;
-    List<Integer> targetMailboxIds = new ArrayList<Integer>(recipients.size());
+    List<Integer> targetMailboxIds = new ArrayList<>(recipients.size());
 
     Map<LmtpAddress, RecipientDetail> rcptMap =
-        new HashMap<LmtpAddress, RecipientDetail>(recipients.size());
+        new HashMap<>(recipients.size());
     try {
       // Examine attachments indexing option for all recipients and
       // prepare ParsedMessage versions needed.  Parsing is done before

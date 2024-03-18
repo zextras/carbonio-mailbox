@@ -126,7 +126,7 @@ public class Appointment extends CalendarItem {
 
             // List conflicting appointments and their organizers.
             FreeBusy fb = avail.getFreeBusy();
-            List<FBInstance> instances = new ArrayList<FBInstance>();
+            List<FBInstance> instances = new ArrayList<>();
           for (Interval interval : fb) {
             // busy intervals only
             if (Conflict.isBusy(interval.getStatus())) {
@@ -268,7 +268,7 @@ public class Appointment extends CalendarItem {
         if (invite.isRecurrence()) {
             instances = expandInstances(st, et, false);
         } else {
-            instances = new ArrayList<Instance>(1);
+            instances = new ArrayList<>(1);
             instances.add(Instance.fromInvite(getId(), invite));
         }
         if (instances == null || instances.isEmpty())
@@ -277,7 +277,7 @@ public class Appointment extends CalendarItem {
         int maxByPct = maxPctConflicts * instances.size() / 100;
         int maxConflicts = Math.min(maxNumConflicts, maxByPct);
 
-        List<Conflict> list = new ArrayList<Conflict>();
+        List<Conflict> list = new ArrayList<>();
         int numConflicts = 0;
         boolean hasMoreConflicts = false;
         for (Instance inst : instances) {
@@ -403,7 +403,7 @@ public class Appointment extends CalendarItem {
                                 // There are some conflicts, but within resource's allowed limit.
                                 if (resource.autoAcceptDecline()) {
                                     // Let's accept partially.  (Accept the series and decline conflicting instances.)
-                                    List<Invite> replyInvites = new ArrayList<Invite>();
+                                    List<Invite> replyInvites = new ArrayList<>();
                                     // the REPLY for the ACCEPT of recurrence series
                                     Invite acceptInv = makeReplyInvite(
                                             account, authAcct, lc, onBehalfOf, allowPrivateAccess, invite, invite.getRecurId(),

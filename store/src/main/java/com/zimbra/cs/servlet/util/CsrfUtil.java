@@ -335,7 +335,7 @@ public final class CsrfUtil {
         String ver = csrfToken.substring(0, pos);
 
         String hmac = csrfToken.substring(pos + 1);
-        return new Pair<String, String>(hmac, ver);
+        return new Pair<>(hmac, ver);
     }
 
     /**

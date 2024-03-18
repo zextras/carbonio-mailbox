@@ -2311,7 +2311,7 @@ public class ProvUtil implements HttpDebugListener {
       int numAccounts = Integer.parseInt(args[3]);
       for (int ix = 0; ix < numAccounts; ix++) {
         String name = nameMask + ix + "@" + domain;
-        Map<String, Object> attrs = new HashMap<String, Object>();
+        Map<String, Object> attrs = new HashMap<>();
         String displayName = nameMask + " N. " + ix;
         StringUtil.addToMultiMap(attrs, "displayName", displayName);
         Account account = prov.createAccount(name, password, attrs);
@@ -2597,7 +2597,7 @@ public class ProvUtil implements HttpDebugListener {
 
   private void doGetConfig(String[] args) throws ServiceException {
     String key = args[1];
-    Set<String> needAttr = new HashSet<String>();
+    Set<String> needAttr = new HashSet<>();
     needAttr.add(key);
     dumpAttrs(prov.getConfig(key).getAttrs(), needAttr);
   }
@@ -3157,7 +3157,7 @@ public class ProvUtil implements HttpDebugListener {
       ComboRight comboRight = (ComboRight) right;
       console.println();
       console.println(indent + "rights:");
-      dumpComboRight(comboRight, expandComboRight, indent, new HashSet<String>());
+      dumpComboRight(comboRight, expandComboRight, indent, new HashSet<>());
     }
     console.println();
 
@@ -3376,12 +3376,12 @@ public class ProvUtil implements HttpDebugListener {
 
   private void dumpAttrs(Map<String, Object> attrsIn, Set<String> specificAttrs)
       throws ServiceException {
-    TreeMap<String, Object> attrs = new TreeMap<String, Object>(attrsIn);
+    TreeMap<String, Object> attrs = new TreeMap<>(attrsIn);
 
     Map<String, Set<String>> specificAttrValues = null;
 
     if (specificAttrs != null) {
-      specificAttrValues = new HashMap<String, Set<String>>();
+      specificAttrValues = new HashMap<>();
       for (String specificAttr : specificAttrs) {
         int colonAt = specificAttr.indexOf("=");
         String attrName = null;
@@ -3399,7 +3399,7 @@ public class ProvUtil implements HttpDebugListener {
         attrName = attrName.toLowerCase();
         Set<String> values = specificAttrValues.get(attrName);
         if (values == null) { // haven't seen the attr yet
-          values = new HashSet<String>();
+          values = new HashSet<>();
         }
         if (attrValue != null) {
           values.add(attrValue);
@@ -3474,7 +3474,7 @@ public class ProvUtil implements HttpDebugListener {
       int numAccounts = Integer.parseInt(args[3]);
       for (int i = 0; i < numAccounts; i++) {
         String name = nameMask + i + "@" + domain;
-        Map<String, Object> attrs = new HashMap<String, Object>();
+        Map<String, Object> attrs = new HashMap<>();
         String displayName = nameMask + " N. " + i;
         StringUtil.addToMultiMap(attrs, "displayName", displayName);
         DistributionList dl = prov.createDistributionList(name, attrs);
@@ -3941,7 +3941,7 @@ public class ProvUtil implements HttpDebugListener {
       String[] args, int offset, boolean isCreateCmd) throws IOException, ServiceException {
     AttributeManager attrMgr = AttributeManager.getInstance();
 
-    Map<String, Object> attrs = new HashMap<String, Object>();
+    Map<String, Object> attrs = new HashMap<>();
 
     String safeguarded_attrs_prop = LC.get("zmprov_safeguarded_attrs");
     Set<String> safeguarded_attrs =
@@ -4008,7 +4008,7 @@ public class ProvUtil implements HttpDebugListener {
     if (offset >= args.length) {
       return null;
     }
-    Set<String> result = new HashSet<String>();
+    Set<String> result = new HashSet<>();
     for (int i = offset; i < args.length; i++) {
       result.add(args[i].toLowerCase());
     }
@@ -4744,34 +4744,34 @@ public class ProvUtil implements HttpDebugListener {
       specificAttr = descArgs.mAttr;
     } else if (descArgs.mAttrClass != null) {
       // attrs in a class
-      attrs = new TreeSet<String>(am.getAllAttrsInClass(descArgs.mAttrClass));
+      attrs = new TreeSet<>(am.getAllAttrsInClass(descArgs.mAttrClass));
       if (descArgs.mNonInheritedOnly) {
         Set<String> inheritFrom = null;
         Set<String> netAttrs = null;
         switch (descArgs.mAttrClass) {
           case account:
-            netAttrs = new HashSet<String>(attrs);
-            inheritFrom = new HashSet<String>(am.getAllAttrsInClass(AttributeClass.cos));
+            netAttrs = new HashSet<>(attrs);
+            inheritFrom = new HashSet<>(am.getAllAttrsInClass(AttributeClass.cos));
             netAttrs = SetUtil.subtract(netAttrs, inheritFrom);
-            inheritFrom = new HashSet<String>(am.getAllAttrsInClass(AttributeClass.domain)); // for
+            inheritFrom = new HashSet<>(am.getAllAttrsInClass(AttributeClass.domain)); // for
             // accountCosDomainInherited
             netAttrs = SetUtil.subtract(netAttrs, inheritFrom);
             break;
           case domain:
           case server:
-            netAttrs = new HashSet<String>(attrs);
-            inheritFrom = new HashSet<String>(am.getAllAttrsInClass(AttributeClass.globalConfig));
+            netAttrs = new HashSet<>(attrs);
+            inheritFrom = new HashSet<>(am.getAllAttrsInClass(AttributeClass.globalConfig));
             netAttrs = SetUtil.subtract(netAttrs, inheritFrom);
             break;
         }
 
         if (netAttrs != null) {
-          attrs = new TreeSet<String>(netAttrs);
+          attrs = new TreeSet<>(netAttrs);
         }
       }
 
       if (descArgs.mOnThisObjectTypeOnly) {
-        TreeSet<String> netAttrs = new TreeSet<String>();
+        TreeSet<String> netAttrs = new TreeSet<>();
         for (String attr : attrs) {
           AttributeInfo ai = am.getAttributeInfo(attr);
           if (ai == null) {
@@ -4797,7 +4797,7 @@ public class ProvUtil implements HttpDebugListener {
       // attrs = new TreeSet<String>(am.getAllAttrs());
 
       // attr sets for each AttributeClass contain attrs in the extensions, use them
-      attrs = new TreeSet<String>();
+      attrs = new TreeSet<>();
       for (AttributeClass ac : AttributeClass.values()) {
         attrs.addAll(am.getAllAttrsInClass(ac));
       }
@@ -4900,7 +4900,7 @@ public class ProvUtil implements HttpDebugListener {
           null);
     }
     String preAuthKey = PreAuthKey.generateRandomPreAuthKey();
-    HashMap<String, String> attrs = new HashMap<String, String>();
+    HashMap<String, String> attrs = new HashMap<>();
     attrs.put(Provisioning.A_zimbraPreAuthKey, preAuthKey);
     prov.modifyAttrs(domain, attrs);
     console.print(String.format("preAuthKey: %s\n", preAuthKey));
@@ -4923,7 +4923,7 @@ public class ProvUtil implements HttpDebugListener {
       timestamp = System.currentTimeMillis();
     }
     long expires = Long.parseLong(args[5]);
-    HashMap<String, String> params = new HashMap<String, String>();
+    HashMap<String, String> params = new HashMap<>();
     params.put("account", name);
     params.put("by", by);
     params.put("timestamp", timestamp + "");
@@ -5047,14 +5047,14 @@ public class ProvUtil implements HttpDebugListener {
 
   private List<Pair<String /* hostname */, Integer /* port */>> getMailboxServersFromArgs(
       String[] args) throws ServiceException {
-    List<Pair<String, Integer>> entries = new ArrayList<Pair<String, Integer>>();
+    List<Pair<String, Integer>> entries = new ArrayList<>();
     if (args.length == 2 && "all".equalsIgnoreCase(args[1])) {
       // Get all mailbox servers.
       List<Server> servers = prov.getAllMailClientServers();
       for (Server svr : servers) {
         String host = svr.getAttr(Provisioning.A_zimbraServiceHostname);
         int port = (int) svr.getLongAttr(Provisioning.A_zimbraAdminPort, serverPort);
-        Pair<String, Integer> entry = new Pair<String, Integer>(host, port);
+        Pair<String, Integer> entry = new Pair<>(host, port);
         entries.add(entry);
       }
     } else {
@@ -5062,7 +5062,7 @@ public class ProvUtil implements HttpDebugListener {
       for (int i = 1; i < args.length; ++i) {
         String arg = args[i];
         if (serverHostname.equalsIgnoreCase(arg)) {
-          entries.add(new Pair<String, Integer>(serverHostname, serverPort));
+          entries.add(new Pair<>(serverHostname, serverPort));
         } else {
           Server svr = prov.getServerByServiceHostname(arg);
           if (svr == null) {
@@ -5070,7 +5070,7 @@ public class ProvUtil implements HttpDebugListener {
           }
           // TODO: Verify svr has mailbox service enabled.
           int port = (int) svr.getLongAttr(Provisioning.A_zimbraAdminPort, serverPort);
-          entries.add(new Pair<String, Integer>(arg, port));
+          entries.add(new Pair<>(arg, port));
         }
       }
     }
@@ -5787,7 +5787,7 @@ public class ProvUtil implements HttpDebugListener {
 
   private void doPushFreeBusy(String[] args) throws ServiceException, IOException, HttpException {
     FbCli fbcli = new FbCli();
-    Map<String, HashSet<String>> accountMap = new HashMap<String, HashSet<String>>();
+    Map<String, HashSet<String>> accountMap = new HashMap<>();
     for (int i = 1; i < args.length; i++) {
       String acct = args[i];
       Account account = prov.getAccountById(acct);
@@ -5797,7 +5797,7 @@ public class ProvUtil implements HttpDebugListener {
       String host = account.getMailHost();
       HashSet<String> accountSet = accountMap.get(host);
       if (accountSet == null) {
-        accountSet = new HashSet<String>();
+        accountSet = new HashSet<>();
         accountMap.put(host, accountSet);
       }
       accountSet.add(acct);
@@ -6011,7 +6011,7 @@ public class ProvUtil implements HttpDebugListener {
    */
   private static String[] recombineDecapitatedAttrs(
       String[] parsedArgs, Options options, String[] orgArgs) {
-    List<String> newArgs = new ArrayList<String>(parsedArgs.length);
+    List<String> newArgs = new ArrayList<>(parsedArgs.length);
     String headStr = null;
     for (int i = 0; i < parsedArgs.length; i++) {
       String arg = parsedArgs[i];

@@ -1337,7 +1337,7 @@ public abstract class AdminAccessControl {
    * dynamic get attrs right
    */
   public static class GetAttrsRight extends DynamicAttrsRight {
-    private final Set<String> mAttrs = new HashSet<String>();
+    private final Set<String> mAttrs = new HashSet<>();
 
     public void addAttr(String attrName) {
       mAttrs.add(attrName);
@@ -1353,7 +1353,7 @@ public abstract class AdminAccessControl {
    * dynamic set attrs right, no constraint checking
    */
   public static class SetAttrsRight extends DynamicAttrsRight {
-    private final Set<String> mAttrs = new HashSet<String>();
+    private final Set<String> mAttrs = new HashSet<>();
 
     public void addAttr(String attrName) {
       mAttrs.add(attrName);
@@ -1366,7 +1366,7 @@ public abstract class AdminAccessControl {
   }
 
   public static class SetAttrsRightWithConstraintChecking extends DynamicAttrsRight {
-    private final Map<String, Object> mAttrs = new HashMap<String, Object>();
+    private final Map<String, Object> mAttrs = new HashMap<>();
 
     public void addAttr(String attrName, Object attrValue) {
       mAttrs.put(attrName, attrValue);

@@ -60,8 +60,8 @@ public class ContactAutoComplete {
         private final List<String> keys;
 
         public AutoCompleteResult(int l) {
-            entries = new TreeSet<ContactEntry>();
-            keys = new ArrayList<String>();
+            entries = new TreeSet<>();
+            keys = new ArrayList<>();
             canBeCached = true;
             limit = l;
         }
@@ -755,9 +755,9 @@ public class ContactAutoComplete {
      * @throws ServiceException
      */
     private Pair<List<Folder>, Map<ItemId, Mountpoint>> getLocalRemoteContactFolders(Collection<Integer> folderIDs) throws ServiceException {
-        List<Folder> folders = new ArrayList<Folder>();
-        Map<ItemId, Mountpoint> mountpoints = new HashMap<ItemId, Mountpoint>();
-        Pair<List<Folder>, Map<ItemId, Mountpoint>> pair = new Pair<List<Folder>, Map<ItemId,Mountpoint>>(folders, mountpoints);
+        List<Folder> folders = new ArrayList<>();
+        Map<ItemId, Mountpoint> mountpoints = new HashMap<>();
+        Pair<List<Folder>, Map<ItemId, Mountpoint>> pair = new Pair<>(folders, mountpoints);
         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(getRequestedAcctId());
         if (folderIDs == null) {
             if (!mbox.canAccessFolder(octxt, Mailbox.ID_FOLDER_USER_ROOT)) {
@@ -820,7 +820,7 @@ public class ContactAutoComplete {
                         }
                     }
                 } else if (hit instanceof ProxiedHit) {
-                    fields = new HashMap<String, String>();
+                    fields = new HashMap<>();
                     Element top = ((ProxiedHit) hit).getElement();
                     id = new ItemId(top.getAttribute(MailConstants.A_ID), (String) null);
                     ZimbraLog.gal.debug("hit: %s", id);

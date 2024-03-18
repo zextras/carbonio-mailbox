@@ -74,11 +74,11 @@ public abstract class DavResource {
     public DavResource(String uri, String owner) {
         mNewlyCreated = false;
         mOwner = owner;
-        mProps = new HashMap<QName,ResourceProperty>();
+        mProps = new HashMap<>();
         mUri = uri;
         if (isCollection() && !mUri.endsWith("/"))
             mUri = mUri + "/";
-        mDavCompliance = new TreeSet<Compliance>();
+        mDavCompliance = new TreeSet<>();
         mDavCompliance.add(Compliance.one);
         mDavCompliance.add(Compliance.two);
         mDavCompliance.add(Compliance.three);
@@ -181,7 +181,7 @@ public abstract class DavResource {
     }
 
     public Set<QName> getAllPropertyNames() {
-        Set<QName> ret = new HashSet<QName>();
+        Set<QName> ret = new HashSet<>();
         for (QName key : mProps.keySet())
             if (mProps.get(key).isVisible())
                 ret.add(key);

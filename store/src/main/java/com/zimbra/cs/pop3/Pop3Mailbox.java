@@ -66,7 +66,7 @@ final class Pop3Mailbox {
                 totalSize += p3m.getSize();
             }
         } else {
-            messages = new ArrayList<Pop3Message>(500);
+            messages = new ArrayList<>(500);
             try (ZimbraQueryResults results = mbox.index.search(opContext, query, POP3_TYPES,
                 SortBy.DATE_DESC, 500)) {
                 while (results.hasNext()) {

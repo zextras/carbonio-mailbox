@@ -26,7 +26,7 @@ public class GalSyncToken {
 
     public GalSyncToken(String ldapTs, String accountId, int changeId) {
         mLdapTimestamp = ldapTs;
-        mChangeIdMap = new HashMap<String,String>();
+        mChangeIdMap = new HashMap<>();
         mChangeIdMap.put(accountId, "" + changeId);
     }
 
@@ -42,7 +42,7 @@ public class GalSyncToken {
     private boolean extLdapHasMore = true;
 
     private void parse(String token) {
-        mChangeIdMap = new HashMap<String,String>();
+        mChangeIdMap = new HashMap<>();
         int pos = token.indexOf(':');
         if (pos == -1) {
             // old style LDAP timestamp token

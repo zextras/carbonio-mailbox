@@ -119,7 +119,7 @@ public abstract class ImapRequest {
 
     protected final ImapHandler mHandler;
     protected String tag;
-    protected final List<Part> parts = new ArrayList<Part>();
+    protected final List<Part> parts = new ArrayList<>();
     protected int index;
     protected int offset;
     private boolean isAppend;
@@ -629,7 +629,7 @@ public abstract class ImapRequest {
             }
         }
         skipChar('(');
-        List<CacheEntryType> cacheTypes = new ArrayList<CacheEntryType>();
+        List<CacheEntryType> cacheTypes = new ArrayList<>();
         if (peekChar() != ')') {
             do {
                 CacheEntryType cacheType = readCacheEntryType();
@@ -656,7 +656,7 @@ public abstract class ImapRequest {
         if (peekChar() != '(') {
             throw new ImapParseException(tag, "did not find expected '('");
         }
-        List<CacheEntrySelector> cacheEntries = new ArrayList<CacheEntrySelector>();
+        List<CacheEntrySelector> cacheEntries = new ArrayList<>();
         skipChar('(');
         if (peekChar() != ')') {
             do {
@@ -742,7 +742,7 @@ public abstract class ImapRequest {
     }
 
     protected List<String> readFlags() throws ImapParseException {
-        List<String> tags = new ArrayList<String>();
+        List<String> tags = new ArrayList<>();
         String content = getCurrentLine();
         boolean parens = (peekChar() == '(');
         if (parens) {
@@ -888,7 +888,7 @@ public abstract class ImapRequest {
             skipNIL();  return null;
         }
 
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         skipChar('(');
         if (peekChar() != ')') {//skip over empty parameters
             do {
@@ -1011,7 +1011,7 @@ public abstract class ImapRequest {
             }
             sectionText = readATOM();
             if (sectionText.equals("HEADER.FIELDS") || sectionText.equals("HEADER.FIELDS.NOT")) {
-                headers = new ArrayList<String>();
+                headers = new ArrayList<>();
                 skipSpace();  skipChar('(');
                 while (peekChar() != ')') {
                     if (!headers.isEmpty()) {

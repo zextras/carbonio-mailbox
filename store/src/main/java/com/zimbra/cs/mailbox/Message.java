@@ -301,7 +301,7 @@ public class Message extends MailItem {
     if (iaddrs == null || iaddrs.isEmpty()) {
       return null;
     }
-    List<ParsedAddress> paddrs = new ArrayList<ParsedAddress>(iaddrs.size());
+    List<ParsedAddress> paddrs = new ArrayList<>(iaddrs.size());
     for (InternetAddress iaddr : iaddrs) {
       paddrs.add(new ParsedAddress(iaddr));
     }
@@ -903,7 +903,7 @@ public class Message extends MailItem {
     boolean allowOrganizerAlarm = DebugConfig.calendarAllowOrganizerSpecifiedAlarms;
 
     if (calendarItemInfos == null) {
-      calendarItemInfos = new ArrayList<CalendarItemInfo>();
+      calendarItemInfos = new ArrayList<>();
     }
 
     // Clean up invalid missing organizer/attendee from some Exchanged-originated invite. (bug
@@ -977,7 +977,7 @@ public class Message extends MailItem {
     boolean publicInvites = true; // used to check if any invite is non-public
     status.calItemFolderId = Mailbox.ID_FOLDER_CALENDAR;
     CalendarItem firstCalItem = null;
-    Set<String> calUidsSeen = new HashSet<String>();
+    Set<String> calUidsSeen = new HashSet<>();
     for (Invite cur : invites) {
       if (!cur.isPublic()) {
         publicInvites = false;
@@ -1134,10 +1134,9 @@ public class Message extends MailItem {
 
         if (forwardTo != null && forwardTo.length > 0) {
           List<String> rcptsUnfiltered =
-              new ArrayList<String>(); // recipients to receive unfiltered message
+              new ArrayList<>(); // recipients to receive unfiltered message
           List<String> rcptsFiltered =
-              new ArrayList<
-                  String>(); // recipients to receive message filtered to remove private data
+              new ArrayList<>(); // recipients to receive message filtered to remove private data
           Folder calFolder = null;
           try {
             calFolder = getMailbox().getFolderById(status.calItemFolderId);
@@ -1709,7 +1708,7 @@ public class Message extends MailItem {
     fragment = meta.get(Metadata.FN_FRAGMENT, null);
 
     if (meta.containsKey(Metadata.FN_CALITEM_IDS)) {
-      calendarItemInfos = new ArrayList<CalendarItemInfo>();
+      calendarItemInfos = new ArrayList<>();
       MetadataList mdList = meta.getList(Metadata.FN_CALITEM_IDS);
       for (int i = 0; i < mdList.size(); i++) {
         Metadata md = mdList.getMap(i);

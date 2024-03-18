@@ -118,7 +118,7 @@ public class StoreIncomingBlob extends RedoableOp {
                 throw new IOException("Deserialized mailbox list too large (" + listLen + ")");
             }
             if (listLen >= 1) {
-                List<Integer> list = new ArrayList<Integer>(listLen);
+                List<Integer> list = new ArrayList<>(listLen);
                 for (int i = 0; i < listLen; i++) {
                     // still writing and reading long mailbox IDs for backwards compatibility, even though they're ints again
                     if (getVersion().atLeast(1, 26)) {
@@ -183,7 +183,7 @@ public class StoreIncomingBlob extends RedoableOp {
         }
     }
 
-    private static final Map<String, Blob> sReplayedBlobs = new HashMap<String, Blob>();
+    private static final Map<String, Blob> sReplayedBlobs = new HashMap<>();
     static void registerBlob(String path, Blob blob) {
         synchronized (sReplayedBlobs) {
             sReplayedBlobs.put(path, blob);

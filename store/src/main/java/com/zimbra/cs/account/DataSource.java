@@ -267,7 +267,7 @@ public class DataSource extends AccountProperty {
     if (!StringUtil.isNullOrEmpty(oldInterval)) {
       ZimbraLog.datasource.info(
           "Migrating account POP3 and IMAP polling intervals to %s.", oldInterval);
-      Map<String, Object> attrs = new HashMap<String, Object>();
+      Map<String, Object> attrs = new HashMap<>();
       attrs.put(Provisioning.A_zimbraDataSourcePollingInterval, "");
       attrs.put(Provisioning.A_zimbraDataSourcePop3PollingInterval, oldInterval);
       attrs.put(Provisioning.A_zimbraDataSourceImapPollingInterval, oldInterval);
@@ -281,7 +281,7 @@ public class DataSource extends AccountProperty {
     if (!StringUtil.isNullOrEmpty(oldInterval)) {
       ZimbraLog.datasource.info(
           "Migrating COS POP3 and IMAP polling intervals to %s.", oldInterval);
-      Map<String, Object> attrs = new HashMap<String, Object>();
+      Map<String, Object> attrs = new HashMap<>();
       attrs.put(Provisioning.A_zimbraDataSourcePollingInterval, "");
       attrs.put(Provisioning.A_zimbraDataSourcePop3PollingInterval, oldInterval);
       attrs.put(Provisioning.A_zimbraDataSourceImapPollingInterval, oldInterval);

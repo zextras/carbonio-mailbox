@@ -87,7 +87,7 @@ public abstract class Entry implements ToZJSONObject {
   private AttributeManager mAttrMgr;
 
   protected static String[] sEmptyMulti = new String[0];
-  protected static List<byte[]> sEmptyListMulti = new ArrayList<byte[]>();
+  protected static List<byte[]> sEmptyListMulti = new ArrayList<>();
 
   public EntryType getEntryType() {
     return EntryType.ENTRY;
@@ -261,7 +261,7 @@ public abstract class Entry implements ToZJSONObject {
   private Map<String, Object> toUnicode(Map<String, Object> attrs) {
     AttributeManager attrMgr = getAttributeManager();
 
-    Set<String> keySet = new HashSet<String>(attrs.keySet());
+    Set<String> keySet = new HashSet<>(attrs.keySet());
     for (String key : keySet) {
       IDNType idnType = AttributeManager.idnType(attrMgr, key);
       if (idnType.isEmailOrIDN()) {
@@ -342,7 +342,7 @@ public abstract class Entry implements ToZJSONObject {
 
   public Map<String, Object> getAttrs(boolean applyDefaults, boolean includeEphemeral) {
     if (applyDefaults && (mDefaults != null || mSecondaryDefaults != null)) {
-      Map<String, Object> attrs = new HashMap<String, Object>();
+      Map<String, Object> attrs = new HashMap<>();
       // put the second defaults
       if (mSecondaryDefaults != null) attrs.putAll(mSecondaryDefaults);
 
@@ -372,7 +372,7 @@ public abstract class Entry implements ToZJSONObject {
 
   /** Returns values for non-dynamic ephemeral attributes. */
   public Map<String, Object> getEphemeralAttrs() {
-    Map<String, Object> attrs = new HashMap<String, Object>();
+    Map<String, Object> attrs = new HashMap<>();
     try {
       EphemeralStore.Factory ephemeralFactory = EphemeralStore.getFactory(FailureMode.safe);
       if (ephemeralFactory == null || ephemeralFactory instanceof LdapEphemeralStore.Factory) {
@@ -610,7 +610,7 @@ public abstract class Entry implements ToZJSONObject {
   public List<byte[]> getMultiBinaryAttr(String name, boolean applyDefaults) {
     String[] values = getMultiAttr(name, applyDefaults);
     if (values.length > 0) {
-      List<byte[]> list = new ArrayList<byte[]>();
+      List<byte[]> list = new ArrayList<>();
       for (String value : values) {
         list.add(ByteUtil.decodeLDAPBase64(value));
       }
@@ -624,10 +624,10 @@ public abstract class Entry implements ToZJSONObject {
    * Returns the set of values for the given attribute, or an empty set if no values are defined.
    */
   public Set<String> getMultiAttrSet(String name) {
-    if (mMultiAttrSetCache == null) mMultiAttrSetCache = new HashMap<String, Set<String>>();
+    if (mMultiAttrSetCache == null) mMultiAttrSetCache = new HashMap<>();
     Set<String> result = mMultiAttrSetCache.get(name);
     if (result == null) {
-      result = new HashSet<String>(Arrays.asList(getMultiAttr(name)));
+      result = new HashSet<>(Arrays.asList(getMultiAttr(name)));
       mMultiAttrSetCache.put(name, result);
     }
     return result;
@@ -635,10 +635,10 @@ public abstract class Entry implements ToZJSONObject {
 
   public Set<byte[]> getMultiBinaryAttrSet(String name) {
     if (mMultiBinaryAttrSetCache == null)
-      mMultiBinaryAttrSetCache = new HashMap<String, Set<byte[]>>();
+      mMultiBinaryAttrSetCache = new HashMap<>();
     Set<byte[]> result = mMultiBinaryAttrSetCache.get(name);
     if (result == null) {
-      result = new HashSet<byte[]>(getMultiBinaryAttr(name));
+      result = new HashSet<>(getMultiBinaryAttr(name));
       mMultiBinaryAttrSetCache.put(name, result);
     }
     return result;
@@ -687,7 +687,7 @@ public abstract class Entry implements ToZJSONObject {
    * @param value
    */
   public synchronized void setCachedData(String key, Object value) {
-    if (mData == null) mData = new HashMap<String, Object>();
+    if (mData == null) mData = new HashMap<>();
     mData.put(key, value);
   }
 

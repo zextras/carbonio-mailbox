@@ -300,7 +300,7 @@ class SocketWrapper extends Socket {
 
     private void setOption(int id, Object val) {
         if (options == null) {
-            options = new HashMap<Integer, Object>();
+            options = new HashMap<>();
         }
         options.put(id, val);
     }

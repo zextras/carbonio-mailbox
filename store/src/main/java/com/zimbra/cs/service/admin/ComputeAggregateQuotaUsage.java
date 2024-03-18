@@ -46,41 +46,41 @@ public class ComputeAggregateQuotaUsage extends AdminDocumentHandler {
             throw ServiceException.PERM_DENIED("only global admin is allowed");
         }
 
-        Map<String, Long> domainAggrQuotaUsed = new HashMap<String, Long>();
+        Map<String, Long> domainAggrQuotaUsed = new HashMap<>();
 
         Provisioning prov = Provisioning.getInstance();
         List<Server> servers = prov.getAllMailClientServers();
         // make number of threads in pool configurable?
         ExecutorService executor = Executors.newFixedThreadPool(LC.compute_aggregate_quota_threads.intValue());
-        List<Future<Map<String, Long>>> futures = new LinkedList<Future<Map<String, Long>>>();
+        List<Future<Map<String, Long>>> futures = new LinkedList<>();
         for (final Server server : servers) {
-            futures.add(executor.submit(new Callable<Map<String, Long>>() {
+            futures.add(executor.submit(new Callable<>() {
 
-                @Override
-                public Map<String, Long> call() throws Exception {
-                    ZimbraLog.misc.debug("Invoking %s on server %s",
-                            AdminConstants.E_GET_AGGR_QUOTA_USAGE_ON_SERVER_REQUEST, server.getName());
+              @Override
+              public Map<String, Long> call() throws Exception {
+                ZimbraLog.misc.debug("Invoking %s on server %s",
+                    AdminConstants.E_GET_AGGR_QUOTA_USAGE_ON_SERVER_REQUEST, server.getName());
 
-                    Element req = new Element.XMLElement(AdminConstants.GET_AGGR_QUOTA_USAGE_ON_SERVER_REQUEST);
-                    String adminUrl = URLUtil.getAdminURL(server, AdminConstants.ADMIN_SERVICE_URI);
-                    SoapHttpTransport mTransport = new SoapHttpTransport(adminUrl);
-                    mTransport.setAuthToken(zsc.getRawAuthToken());
-                    Element resp;
-                    try {
-                        resp = mTransport.invoke(req);
-                    } catch (Exception e) {
-                        throw new Exception("Error in invoking " +
-                                AdminConstants.E_GET_AGGR_QUOTA_USAGE_ON_SERVER_REQUEST + " on server " +
-                                server.getName(), e);
-                    }
-                    List<Element> domainElts = resp.getPathElementList(new String[] { AdminConstants.E_DOMAIN });
-                    Map<String, Long> retMap = new HashMap<String, Long>();
-                    for (Element domainElt : domainElts) {
-                        retMap.put(domainElt.getAttribute(AdminConstants.A_ID),
-                                domainElt.getAttributeLong(AdminConstants.A_QUOTA_USED));
-                    }
-                    return retMap;
+                Element req = new Element.XMLElement(AdminConstants.GET_AGGR_QUOTA_USAGE_ON_SERVER_REQUEST);
+                String adminUrl = URLUtil.getAdminURL(server, AdminConstants.ADMIN_SERVICE_URI);
+                SoapHttpTransport mTransport = new SoapHttpTransport(adminUrl);
+                mTransport.setAuthToken(zsc.getRawAuthToken());
+                Element resp;
+                try {
+                  resp = mTransport.invoke(req);
+                } catch (Exception e) {
+                  throw new Exception("Error in invoking " +
+                      AdminConstants.E_GET_AGGR_QUOTA_USAGE_ON_SERVER_REQUEST + " on server " +
+                      server.getName(), e);
                 }
+                List<Element> domainElts = resp.getPathElementList(new String[]{AdminConstants.E_DOMAIN});
+                Map<String, Long> retMap = new HashMap<>();
+                for (Element domainElt : domainElts) {
+                  retMap.put(domainElt.getAttribute(AdminConstants.A_ID),
+                      domainElt.getAttributeLong(AdminConstants.A_QUOTA_USED));
+                }
+                return retMap;
+              }
             }));
         }
         shutdownAndAwaitTermination(executor);

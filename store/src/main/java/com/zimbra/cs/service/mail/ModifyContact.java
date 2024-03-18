@@ -118,7 +118,7 @@ public class ModifyContact extends MailDocumentHandler  {
         if (elist == null || elist.isEmpty())
             return null;
 
-        HashMap<String, String> attrs = new HashMap<String, String>();
+        HashMap<String, String> attrs = new HashMap<>();
         for (Element e : elist) {
             String name = e.getAttribute(MailConstants.A_ATTRIBUTE_NAME);
             attrs.put(name, e.getText());

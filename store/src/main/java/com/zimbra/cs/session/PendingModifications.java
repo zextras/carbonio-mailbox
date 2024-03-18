@@ -313,7 +313,7 @@ public abstract class PendingModifications<T extends ZimbraMailItem> {
             modified.remove(key);
         }
         if (deleted == null) {
-            deleted = new HashMap<ModificationKey, Change>();
+            deleted = new HashMap<>();
         }
         Change existingChg = deleted.get(key);
         if (existingChg == null) {
@@ -453,8 +453,8 @@ public abstract class PendingModifications<T extends ZimbraMailItem> {
 
         if(accountMods!= null && accountMods.modified != null) {
             //aggregate tag changes so they are sent to each folder we are interested in
-            List<ModifyTagNotification> tagMods = new ArrayList<ModifyTagNotification>();
-            List<DeleteItemNotification> tagDeletes = new ArrayList<DeleteItemNotification>();
+            List<ModifyTagNotification> tagMods = new ArrayList<>();
+            List<DeleteItemNotification> tagDeletes = new ArrayList<>();
             for(Object maybeTagChange : accountMods.modified.values()) {
                 if(maybeTagChange instanceof Change) {
                     Object maybeTag = ((Change) maybeTagChange).what;

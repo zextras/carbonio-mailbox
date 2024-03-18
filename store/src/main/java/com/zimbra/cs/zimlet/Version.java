@@ -38,7 +38,7 @@ public class Version implements Comparable<Version> {
 	
 	public Version(int[] v) {
 		int depth = v.length;
-		mTokens = new ArrayList<Integer>();
+		mTokens = new ArrayList<>();
     for (int j : v) {
       mTokens.add(j);
     }
@@ -47,7 +47,7 @@ public class Version implements Comparable<Version> {
 	public void parse(String str) {
 		String[] tokens = str.split("\\.|_");
 		int depth = tokens.length;
-		mTokens = new ArrayList<Integer>();
+		mTokens = new ArrayList<>();
     for (String token : tokens) {
       mTokens.add(Integer.parseInt(token));
     }

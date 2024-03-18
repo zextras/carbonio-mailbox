@@ -294,7 +294,7 @@ public class FileUtil {
      * is empty, does not exist, or is not a directory.
      */
     public static List<File> listFilesRecursively(File dir) {
-        List<File> files = new ArrayList<File>();
+        List<File> files = new ArrayList<>();
         addFilesRecursively(dir, files);
         return files;
     }
@@ -322,7 +322,7 @@ public class FileUtil {
      * is empty, does not exist, or is not a directory.
      */
     public static List<File> listDirsRecursively(File dir) {
-        List<File> dirs = new ArrayList<File>();
+        List<File> dirs = new ArrayList<>();
         if (dir.exists()) {
             addDirsRecursively(dir, dirs);
         }

@@ -114,7 +114,7 @@ public class RedoLogManager {
         mArchiveDir = archdir;
 
         mRWLock = new ReentrantReadWriteLock();
-        mActiveOps = new LinkedHashMap<TransactionId, RedoableOp>(100);
+        mActiveOps = new LinkedHashMap<>(100);
         mTxnIdGenerator = new TxnIdGenerator();
         long minAge = RedoConfig.redoLogRolloverMinFileAge() * 60 * 1000;     // milliseconds
         long softMax = RedoConfig.redoLogRolloverFileSizeKB() * 1024;         // bytes
@@ -201,7 +201,7 @@ public class RedoLogManager {
         long fsyncInterval = RedoConfig.redoLogFsyncIntervalMS();
         mLogWriter = createLogWriter(this, mLogFile, fsyncInterval);
 
-        ArrayList<RedoableOp> postStartupRecoveryOps = new ArrayList<RedoableOp>(100);
+        ArrayList<RedoableOp> postStartupRecoveryOps = new ArrayList<>(100);
         int numRecoveredOps = 0;
         if (mSupportsCrashRecovery) {
             mRecoveryMode = true;
@@ -504,7 +504,7 @@ public class RedoLogManager {
 
             // Create an empty LinkedHashSet and insert keys from mActiveOps
             // by iterating the keyset.
-            txns = new LinkedHashSet<TransactionId>();
+            txns = new LinkedHashSet<>();
           for (Map.Entry<TransactionId, RedoableOp> entry : mActiveOps.entrySet()) {
             txns.add(entry.getKey());
           }
@@ -703,7 +703,7 @@ public class RedoLogManager {
      */
     public Pair<Set<Integer>, CommitId> getChangedMailboxesSince(CommitId cid)
     throws IOException, MailServiceException {
-        Set<Integer> mailboxes = new HashSet<Integer>();
+        Set<Integer> mailboxes = new HashSet<>();
 
         // Grab a read lock to prevent rollover.
         ReadLock readLock = mRWLock.readLock();
@@ -800,7 +800,7 @@ public class RedoLogManager {
                 throw MailServiceException.INVALID_COMMIT_ID(cid.toString());
             }
             CommitId lastCommitId = new CommitId(lastSeq, lastCommitTxn);
-            return new Pair<Set<Integer>, CommitId>(mailboxes, lastCommitId);
+            return new Pair<>(mailboxes, lastCommitId);
         } finally {
             if (linkDir != null) {
                 // Clean up the temp dir with links.

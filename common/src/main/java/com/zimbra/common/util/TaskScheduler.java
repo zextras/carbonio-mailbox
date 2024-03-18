@@ -29,7 +29,7 @@ import com.zimbra.common.util.TaskRetry.RetryParams;
  */
 public class TaskScheduler<V> {
 
-    private static Map<Object, TaskRetry> retries = new HashMap<Object, TaskRetry>();
+    private static Map<Object, TaskRetry> retries = new HashMap<>();
 
     /**
      * <tt>Callable</tt> wrapper that takes care of catching exceptions and
@@ -126,7 +126,7 @@ public class TaskScheduler<V> {
         Collections.synchronizedMap(new HashMap<Object, TaskRunner<V>>());
     private final ScheduledThreadPoolExecutor mThreadPool;
     private final List<ScheduledTaskCallback<V>> mCallbacks =
-        Collections.synchronizedList(new ArrayList<ScheduledTaskCallback<V>>());
+        Collections.synchronizedList(new ArrayList<>());
 
     /**
      * Creates a new <tt>TaskScheduler</tt>.  Task threads will be named
@@ -174,7 +174,7 @@ public class TaskScheduler<V> {
     public void schedule(Object taskId, Callable<V> task, boolean recurs, long intervalMillis, long delayMillis, RetryParams retry) {
         ZimbraLog.scheduler.debug("Scheduling task %s", taskId);
 
-        TaskRunner<V> runner = new TaskRunner<V>(taskId, task, recurs, intervalMillis, mCallbacks, retry);
+        TaskRunner<V> runner = new TaskRunner<>(taskId, task, recurs, intervalMillis, mCallbacks, retry);
         runner.mSchedule = mThreadPool.schedule(runner, delayMillis, TimeUnit.MILLISECONDS);
         mRunnerMap.put(taskId, runner);
     }

@@ -95,7 +95,7 @@ public final class Body {
 
     private static String[] readFieldNames(ImapInputStream is)
         throws IOException {
-        ArrayList<String> names = new ArrayList<String>();
+        ArrayList<String> names = new ArrayList<>();
         is.skipChar('(');
         is.skipSpaces();
         while (!is.match(')')) {

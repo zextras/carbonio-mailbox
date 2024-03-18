@@ -49,7 +49,7 @@ public class LdapServerPool {
     public LdapServerPool(LdapServerConfig config) throws LdapException {
         rawUrls = config.getLdapURL();
 
-        urls = new ArrayList<LDAPURL>();
+        urls = new ArrayList<>();
 
         String[] ldapUrls = config.getLdapURL().split(" ");
 
@@ -164,7 +164,7 @@ public class LdapServerPool {
             for (LDAPURL url : urls) {
                 InetAddress[] addrs = InetAddress.getAllByName(url.getHost());
                 if (addrs.length == 1) {
-                    hostsAndPorts.add(new Pair<String, Integer>(url.getHost(), url.getPort()));
+                    hostsAndPorts.add(new Pair<>(url.getHost(), url.getPort()));
                 } else {
                   for (InetAddress addr : addrs) {
                     hostsAndPorts.add(new Pair<String, Integer>(addr.getHostAddress(), url.getPort()));

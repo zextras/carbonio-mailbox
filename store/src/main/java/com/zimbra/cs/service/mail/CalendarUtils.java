@@ -517,7 +517,7 @@ public class CalendarUtils {
       boolean checkListMembership,
       Account account)
       throws ServiceException {
-    List<ZAttendee> list = new ArrayList<ZAttendee>();
+    List<ZAttendee> list = new ArrayList<>();
     Provisioning prov = Provisioning.getInstance();
     // compare the new attendee list with the existing one...
     // if attendees have been removed, then we need to send them individual cancellation messages
@@ -553,8 +553,8 @@ public class CalendarUtils {
     checkListMembership = checkListMembership && LC.check_dl_membership_enabled.booleanValue();
     // Find out which of the new attendees are local distribution lists or GAL groups.
     if (checkListMembership) {
-      List<DistributionList> newAtsDL = new ArrayList<DistributionList>();
-      List<String /* GAL group email */> newAtsGALGroup = new ArrayList<String>();
+      List<DistributionList> newAtsDL = new ArrayList<>();
+      List<String /* GAL group email */> newAtsGALGroup = new ArrayList<>();
       for (ZAttendee at : newAttendees) {
         String addr = at.getAddress();
         if (addr != null) {
@@ -578,7 +578,7 @@ public class CalendarUtils {
         }
       }
 
-      Set<String> remoteAddrs = new HashSet<String>();
+      Set<String> remoteAddrs = new HashSet<>();
 
       // local DLs: Iterate over attendees first to get each attendee's DL list.  This loop only
       // deals with
@@ -611,7 +611,7 @@ public class CalendarUtils {
           // Get list members.  We won't do recursive expansion; let's keep it sane.
           String[] members = dl.getAllMembers();
           if (members != null && members.length > 0) {
-            Set<String> membersLower = new HashSet<String>();
+            Set<String> membersLower = new HashSet<>();
             for (String member : members) {
               membersLower.add(member.toLowerCase());
             }
@@ -723,8 +723,8 @@ public class CalendarUtils {
       throws ServiceException {
     if (dur == null && dtStart != null && dtEnd != null) dur = dtEnd.difference(dtStart);
 
-    ArrayList<IRecurrence> addRules = new ArrayList<IRecurrence>();
-    ArrayList<IRecurrence> subRules = new ArrayList<IRecurrence>();
+    ArrayList<IRecurrence> addRules = new ArrayList<>();
+    ArrayList<IRecurrence> subRules = new ArrayList<>();
 
     for (Iterator iter = recurElt.elementIterator(); iter.hasNext(); ) {
       Element e = (Element) iter.next();
@@ -1356,7 +1356,7 @@ public class CalendarUtils {
   }
 
   public static List<ZProperty> parseXProps(Element element) throws ServiceException {
-    List<ZProperty> props = new ArrayList<ZProperty>();
+    List<ZProperty> props = new ArrayList<>();
     for (Iterator<Element> propIter = element.elementIterator(MailConstants.E_CAL_XPROP);
         propIter.hasNext(); ) {
       Element propElem = propIter.next();
@@ -1375,7 +1375,7 @@ public class CalendarUtils {
 
   public static List<ReplyInfo> parseReplyList(Element element, TimeZoneMap tzMap)
       throws ServiceException {
-    List<ReplyInfo> list = new ArrayList<ReplyInfo>();
+    List<ReplyInfo> list = new ArrayList<>();
     for (Iterator<Element> iter = element.elementIterator(MailConstants.E_CAL_REPLY);
         iter.hasNext(); ) {
       Element riElem = iter.next();

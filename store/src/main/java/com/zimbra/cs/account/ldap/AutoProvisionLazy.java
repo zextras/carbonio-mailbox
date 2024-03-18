@@ -87,7 +87,7 @@ class AutoProvisionLazy extends AutoProvision {
         
         // only support external LDAP auth for now
         if (AuthMech.ldap == authMech  || AuthMech.ad == authMech) {
-            Map<String, Object> authCtxt = new HashMap<String, Object>();
+            Map<String, Object> authCtxt = new HashMap<>();
             try {
                 prov.externalLdapAuth(domain, authMech, loginName, loginPassword, authCtxt);
                 return AutoProvAuthMech.LDAP;

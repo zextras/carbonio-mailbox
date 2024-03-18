@@ -136,7 +136,7 @@ public class RemoteIP {
   public static class TrustedIPs {
     private static final String IP_LOCALHOST = "127.0.0.1";
 
-    private Set<String> mTrustedIPs = new HashSet<String>();
+    private Set<String> mTrustedIPs = new HashSet<>();
 
     public TrustedIPs(String[] ips) {
       if (ips != null) {

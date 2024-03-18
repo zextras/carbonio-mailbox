@@ -806,6 +806,6 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
   @Override
   public Set<TargetType> targetTypesForGrantSearch() {
     // we want all target types
-    return new HashSet<TargetType>(Arrays.asList(TargetType.values()));
+    return new HashSet<>(Arrays.asList(TargetType.values()));
   }
 }

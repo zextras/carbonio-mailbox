@@ -46,7 +46,7 @@ public class GetShareNotifications extends MailDocumentHandler {
         Mailbox mbox = getRequestedMailbox(zsc);
         OperationContext octxt = getOperationContext(zsc, context);
         Element response = zsc.createElement(MailConstants.GET_SHARE_NOTIFICATIONS_RESPONSE);
-        HashSet<String> shares = new HashSet<String>();
+        HashSet<String> shares = new HashSet<>();
         try(ZimbraQueryResults zqr = mbox.index.search(octxt, query, SEARCH_TYPES, SortBy.DATE_DESC, 10)) {
             while (zqr.hasNext()) {
                 ZimbraHit hit = zqr.getNext();

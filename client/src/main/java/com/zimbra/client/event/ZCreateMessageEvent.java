@@ -116,7 +116,7 @@ public class ZCreateMessageEvent implements ZCreateItemEvent, ToZJSONObject {
     public List<ZEmailAddress> getEmailAddresses(List<ZEmailAddress> defaultValue) throws ServiceException {
         List<ZEmailAddress> result  = null;
         for (Element emailEl: mMessageEl.listElements(MailConstants.E_EMAIL)) {
-            if (result == null) result = new ArrayList<ZEmailAddress>();
+            if (result == null) result = new ArrayList<>();
             result.add(new ZEmailAddress(emailEl));
         }
         return result == null ? defaultValue : result;

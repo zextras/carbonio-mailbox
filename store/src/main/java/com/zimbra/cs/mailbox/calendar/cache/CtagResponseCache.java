@@ -28,7 +28,7 @@ public class CtagResponseCache {
         ZimbraMemcachedClient memcachedClient = MemcachedConnector.getClient();
         CtagResponseSerializer serializer = new CtagResponseSerializer();
         mMemcachedLookup =
-            new MemcachedMap<CtagResponseCacheKey, CtagResponseCacheValue>(memcachedClient, serializer); 
+            new MemcachedMap<>(memcachedClient, serializer);
     }
 
     private static class CtagResponseSerializer implements MemcachedSerializer<CtagResponseCacheValue> {
@@ -154,7 +154,7 @@ public class CtagResponseCache {
             mGzipped = meta.getBool(FN_IS_GZIPPED, false);
             mVersion = meta.get(FN_CALLIST_VERSION, "");
             int numCtags = (int) meta.getLong(FN_NUM_CTAGS, 0);
-            mCtags = new HashMap<Integer, String>(Math.min(numCtags, 100));
+            mCtags = new HashMap<>(Math.min(numCtags, 100));
             if (numCtags > 0) {
                 for (int i = 0; i < numCtags; ++i) {
                     int calId = (int) meta.getLong(FN_CTAGS_CAL_ID + i, -1);

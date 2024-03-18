@@ -18,7 +18,7 @@ public class TimeZoneMap implements Cloneable {
 
     static HashMap<ZWeekDay, Integer> sDayWeekDayMap;
     static {
-        sDayWeekDayMap = new HashMap<ZWeekDay, Integer>();
+        sDayWeekDayMap = new HashMap<>();
         sDayWeekDayMap.put(ZWeekDay.SU, java.util.Calendar.SUNDAY);
         sDayWeekDayMap.put(ZWeekDay.MO, java.util.Calendar.MONDAY);
         sDayWeekDayMap.put(ZWeekDay.TU, java.util.Calendar.TUESDAY);
@@ -38,8 +38,8 @@ public class TimeZoneMap implements Cloneable {
      * @param localTZ local time zone of user account
      */
     public TimeZoneMap(ICalTimeZone localTZ) {
-        mTzMap = new HashMap<String, ICalTimeZone>();
-        mAliasMap = new HashMap<String, String>();
+        mTzMap = new HashMap<>();
+        mAliasMap = new HashMap<>();
         mLocalTZ = localTZ;
     }
 

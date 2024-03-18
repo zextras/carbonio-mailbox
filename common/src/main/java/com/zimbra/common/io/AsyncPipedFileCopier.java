@@ -567,7 +567,7 @@ class AsyncPipedFileCopier extends AbstractAsyncFileCopier implements FileCopier
         private long mNextId;
 
         public CallbackMap(int capacity) {
-            mMap = new HashMap<Long, CbObj>(capacity);
+            mMap = new HashMap<>(capacity);
             mNextId = 0;
         }
 

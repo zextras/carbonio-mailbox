@@ -69,7 +69,7 @@ public class GetDistributionListMembership extends AdminDocumentHandler {
                 Admin.R_getDistributionListMembership /* shouldn't be used */,
                 Admin.R_getDistributionListMembership);
 
-        HashMap<String,String> via = new HashMap<String, String>();
+        HashMap<String,String> via = new HashMap<>();
         List<DistributionList> lists = prov.getDistributionLists(distributionList, false, via);
 
         Element response = zsc.createElement(AdminConstants.GET_DISTRIBUTION_LIST_MEMBERSHIP_RESPONSE);

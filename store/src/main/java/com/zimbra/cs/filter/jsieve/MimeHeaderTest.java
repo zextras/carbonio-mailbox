@@ -46,7 +46,7 @@ public class MimeHeaderTest extends Header {
         Iterator<String> headerNamesIter = headerNames.iterator();
         while (!isMatched && headerNamesIter.hasNext()) {
             Set<String> values = zma.getMatchingHeaderFromAllParts(headerNamesIter.next());
-            isMatched = match(comparator, matchType, new ArrayList<String>(values), keys, context);
+            isMatched = match(comparator, matchType, new ArrayList<>(values), keys, context);
         }
         return isMatched;
     }

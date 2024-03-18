@@ -160,7 +160,7 @@ public class Alarm {
     public Alarm newCopy() {
         List<ZAttendee> attendees = null;
         if (mAttendees != null) {
-            attendees = new ArrayList<ZAttendee>(mAttendees.size());
+            attendees = new ArrayList<>(mAttendees.size());
             for (ZAttendee at : mAttendees) {
                 attendees.add(new ZAttendee(at));  // add a copy of attendee
             }
@@ -421,7 +421,7 @@ public class Alarm {
         while (attendeesIter.hasNext()) {
             ZAttendee at = ZAttendee.parse(attendeesIter.next());
             if (attendees == null)
-                attendees = new ArrayList<ZAttendee>();
+                attendees = new ArrayList<>();
             attendees.add(at);
         }
 
@@ -515,7 +515,7 @@ public class Alarm {
         Attach attach = null;
         List<ZAttendee> attendees = null;
 
-        List<ZProperty> xprops = new ArrayList<ZProperty>();
+        List<ZProperty> xprops = new ArrayList<>();
         Iterator<ZProperty> propIter = comp.getPropertyIterator();
         while (propIter.hasNext()) {
             ZProperty prop = propIter.next();
@@ -590,7 +590,7 @@ public class Alarm {
             case ATTENDEE:
                 ZAttendee attendee = new ZAttendee(prop);
                 if (attendees == null)
-                    attendees = new ArrayList<ZAttendee>();
+                    attendees = new ArrayList<>();
                 attendees.add(attendee);
                 break;
             }
@@ -784,7 +784,7 @@ public class Alarm {
             attach = Util.decodeAttachFromMetadata(metaAttach);
 
         int numAts = (int) meta.getLong(FN_NUM_ATTENDEES, 0);
-        List<ZAttendee> attendees = new ArrayList<ZAttendee>(numAts);
+        List<ZAttendee> attendees = new ArrayList<>(numAts);
         for (int i = 0; i < numAts; i++) {
             try {
                 Metadata metaAttendee = meta.getMap(FN_ATTENDEE + i, true);

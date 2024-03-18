@@ -17,7 +17,7 @@ import com.zimbra.common.service.ServiceException;
 public abstract class BufferingResultsGrouper implements ZimbraQueryResults {
 
     protected final ZimbraQueryResults hits;
-    protected List<ZimbraHit> bufferedHit = new LinkedList<ZimbraHit>();
+    protected List<ZimbraHit> bufferedHit = new LinkedList<>();
     protected boolean atStart = true;
 
     /**

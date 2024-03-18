@@ -29,7 +29,7 @@ abstract class AbstractAsyncFileCopier implements FileCopier {
                     " is too big; limiting to " + MAX_QUEUE_SIZE);
             qsize = MAX_QUEUE_SIZE;
         }
-        mQueue = new LinkedBlockingQueue<FileTask>(qsize);
+        mQueue = new LinkedBlockingQueue<>(qsize);
     }
 
     protected void queuePut(FileTask task) throws InterruptedException {

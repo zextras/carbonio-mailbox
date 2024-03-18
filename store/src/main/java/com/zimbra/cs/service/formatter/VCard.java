@@ -61,32 +61,32 @@ public class VCard {
 
 
     private static final Set<String> PROPERTY_NAMES =
-            new HashSet<String>(Arrays.asList(
-                    "BEGIN",
-                    "FN",
-                    "N",
-                    "NICKNAME",
-                    "PHOTO",
-                    "KEY",
-                    "BDAY",
-                    "ADR",
-                    "TEL",
-                    "EMAIL",
-                    "URL",
-                    "ORG",
-                    "TITLE",
-                    "NOTE",
-                    "AGENT",
-                    "END",
-                    "UID",
-                    "X-ZIMBRA-IMADDRESS1",
-                    "X-ZIMBRA-IMADDRESS2",
-                    "X-ZIMBRA-IMADDRESS3",
-                    "X-ZIMBRA-ANNIVERSARY",
-                    "X-ZIMBRA-MAIDENNAME"
-    ));
+        new HashSet<>(Arrays.asList(
+            "BEGIN",
+            "FN",
+            "N",
+            "NICKNAME",
+            "PHOTO",
+            "KEY",
+            "BDAY",
+            "ADR",
+            "TEL",
+            "EMAIL",
+            "URL",
+            "ORG",
+            "TITLE",
+            "NOTE",
+            "AGENT",
+            "END",
+            "UID",
+            "X-ZIMBRA-IMADDRESS1",
+            "X-ZIMBRA-IMADDRESS2",
+            "X-ZIMBRA-IMADDRESS3",
+            "X-ZIMBRA-ANNIVERSARY",
+            "X-ZIMBRA-MAIDENNAME"
+        ));
 
-    static final Map<String, String> PARAM_ABBREVIATIONS = new HashMap<String, String>();
+    static final Map<String, String> PARAM_ABBREVIATIONS = new HashMap<>();
         static {
             PARAM_ABBREVIATIONS.put("BASE64", "ENCODING=B");
             PARAM_ABBREVIATIONS.put("QUOTED-PRINTABLE", "ENCODING=QUOTED-PRINTABLE");
@@ -103,7 +103,7 @@ public class VCard {
     private static class VCardProperty {
         private String group;
         private String name;
-        private final Set<String> params = new HashSet<String>();
+        private final Set<String> params = new HashSet<>();
         private String charset;
         private Encoding encoding = Encoding.NONE;
         private String value;
@@ -238,11 +238,11 @@ public class VCard {
     }
 
     public static List<VCard> parseVCard(String vcard) throws ServiceException {
-        List<VCard> cards = new ArrayList<VCard>();
+        List<VCard> cards = new ArrayList<>();
 
-        Map<String, String> fields = new HashMap<String, String>();
+        Map<String, String> fields = new HashMap<>();
         ListMultimap<String, VCardParamsAndValue> xprops = ArrayListMultimap.create();
-        List<Attachment> attachments = new ArrayList<Attachment>();
+        List<Attachment> attachments = new ArrayList<>();
 
         VCardProperty vcprop = new VCardProperty();
         int depth = 0;
@@ -305,9 +305,9 @@ public class VCard {
             } else if (name.equals("BEGIN")) {
                 if (++depth == 1) {
                     // starting a top-level vCard; reset state
-                    fields = new HashMap<String, String>();
+                    fields = new HashMap<>();
                     xprops = ArrayListMultimap.create();
-                    attachments = new ArrayList<Attachment>();
+                    attachments = new ArrayList<>();
                     cardstart = linestart;
                     uid = null;
                 }

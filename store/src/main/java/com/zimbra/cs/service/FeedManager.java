@@ -96,11 +96,11 @@ public class FeedManager {
         private boolean notModified;
 
         static SubscriptionData<Object> NOT_MODIFIED() {
-            return new SubscriptionData<Object>(new ArrayList<Object>(0), 0, true);
+            return new SubscriptionData<>(new ArrayList<>(0), 0, true);
         }
 
         SubscriptionData() {
-            this(new ArrayList<T>(), 0);
+            this(new ArrayList<>(), 0);
         }
 
         SubscriptionData(List<T> items, long ldate)  {
@@ -278,7 +278,7 @@ public class FeedManager {
         }
 
         String whitelistString = LC.zimbra_feed_manager_whitelist.value();
-        List<String> whitelist = new ArrayList<String>();
+        List<String> whitelist = new ArrayList<>();
         if (!StringUtil.isNullOrEmpty(whitelistString)) {
             whitelist.addAll(Arrays.asList(whitelistString.trim().split(",")));
         }
@@ -287,7 +287,7 @@ public class FeedManager {
         }
 
         String blacklistString = LC.zimbra_feed_manager_blacklist.value();
-        List<String> blacklist = new ArrayList<String>();
+        List<String> blacklist = new ArrayList<>();
         if (!StringUtil.isNullOrEmpty(blacklistString)) {
             blacklist.addAll(Arrays.asList(blacklistString.trim().split(",")));
         }
@@ -487,7 +487,7 @@ public class FeedManager {
                         inv.setUid(LdapUtil.generateUUID());
                     }
                 }
-                return new SubscriptionData<Invite>(invites, rdi.lastModified);
+                return new SubscriptionData<>(invites, rdi.lastModified);
             default:
                 throw ServiceException.PARSE_ERROR("unrecognized remote content", null);
         }
@@ -592,8 +592,8 @@ public class FeedManager {
             InternetAddress addrChannel = new JavaMailInternetAddress("", subjChannel, "utf-8");
             Date dateChannel = DateUtil.parseRFC2822Date(channel.getAttribute("lastBuildDate", null), new Date());
 
-            List<Enclosure> enclosures = new ArrayList<Enclosure>(3);
-            SubscriptionData<ParsedMessage> sdata = new SubscriptionData<ParsedMessage>();
+            List<Enclosure> enclosures = new ArrayList<>(3);
+            SubscriptionData<ParsedMessage> sdata = new SubscriptionData<>();
 
             if (rname.equals("rss")) {
                 root = channel;
@@ -667,8 +667,8 @@ public class FeedManager {
                 addrFeed = new JavaMailInternetAddress("", stripXML(feed.getAttribute("title")), "utf-8");
             }
             Date dateFeed = DateUtil.parseISO8601Date(feed.getAttribute("updated", null), new Date());
-            List<Enclosure> enclosures = new ArrayList<Enclosure>();
-            SubscriptionData<ParsedMessage> sdata = new SubscriptionData<ParsedMessage>();
+            List<Enclosure> enclosures = new ArrayList<>();
+            SubscriptionData<ParsedMessage> sdata = new SubscriptionData<>();
 
             for (Element item : feed.listElements("entry")) {
                 // get the item's date

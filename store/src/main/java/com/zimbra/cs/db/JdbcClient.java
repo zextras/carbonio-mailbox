@@ -185,7 +185,7 @@ public class JdbcClient {
                 ResultSet rs = stmt.executeQuery(sql);
                 ResultSetMetaData md = rs.getMetaData();
                 int colCount = md.getColumnCount();
-                List<Object[]> firstRows = new ArrayList<Object[]>();
+                List<Object[]> firstRows = new ArrayList<>();
                 int rowCount = 0;
 
                 // Set initial column widths based on column labels

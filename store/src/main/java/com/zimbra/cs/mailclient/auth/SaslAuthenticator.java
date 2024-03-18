@@ -87,7 +87,7 @@ public final class SaslAuthenticator extends Authenticator {
     try {
       return Subject.doAs(
           subject,
-          new PrivilegedExceptionAction<SaslClient>() {
+          new PrivilegedExceptionAction<>() {
             @Override
             public SaslClient run() throws SaslException {
               return createSaslClient();
@@ -109,7 +109,7 @@ public final class SaslAuthenticator extends Authenticator {
   private static final String LOGIN_MODULE_NAME = "com.sun.security.auth.module.Krb5LoginModule";
 
   private LoginContext getLoginContext() throws LoginException {
-    Map<String, String> options = new HashMap<String, String>();
+    Map<String, String> options = new HashMap<>();
     options.put("debug", Boolean.toString(config.getLogger().isDebugEnabled()));
     options.put("principal", getPrincipal());
     // options.put("useTicketCache", "true");
@@ -162,7 +162,7 @@ public final class SaslAuthenticator extends Authenticator {
     try {
       return Subject.doAs(
           subject,
-          new PrivilegedExceptionAction<byte[]>() {
+          new PrivilegedExceptionAction<>() {
             @Override
             public byte[] run() throws SaslException {
               return saslClient.evaluateChallenge(challenge);

@@ -63,11 +63,11 @@ abstract class ZimbraQueryResultsImpl implements ZimbraQueryResults {
     this.sortBy = sort;
 
     conversationHits =
-        new LRUHashMap<Integer, ConversationHit>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
-    messageHits = new LRUHashMap<Integer, MessageHit>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
-    partHits = new LRUHashMap<String, MessagePartHit>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
-    contactHits = new LRUHashMap<Integer, ContactHit>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
-    calItemHits = new LRUHashMap<Integer, CalendarItemHit>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
+        new LRUHashMap<>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
+    messageHits = new LRUHashMap<>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
+    partHits = new LRUHashMap<>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
+    contactHits = new LRUHashMap<>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
+    calItemHits = new LRUHashMap<>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
   }
   ;
 

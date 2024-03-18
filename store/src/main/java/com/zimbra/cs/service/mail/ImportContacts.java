@@ -86,7 +86,7 @@ public class ImportContacts extends MailDocumentHandler  {
                 String text = StringUtil.lfToCrlf(reqContent.getValue());
                 reader = new BufferedReader(new StringReader(text));
             } else {
-                reader = parseUploadedContent(zsc, attachment, uploads = new ArrayList<Upload>());
+                reader = parseUploadedContent(zsc, attachment, uploads = new ArrayList<>());
             }
 
             contacts = ContactCSV.getContacts(reader, format, locale);
@@ -136,7 +136,7 @@ public class ImportContacts extends MailDocumentHandler  {
 
     public static List<ItemId> ImportCsvContacts(OperationContext oc, Mailbox mbox,  ItemId iidFolder, List<Map<String, String>> csvContacts)
     throws ServiceException {
-        List<ItemId> createdIds = new LinkedList<ItemId>();
+        List<ItemId> createdIds = new LinkedList<>();
         for (Map<String,String> contact : csvContacts) {
             String[] tags = TagUtil.decodeTags(ContactCSV.getTags(contact));
             Contact c = mbox.createContact(oc, new ParsedContact(contact), iidFolder.getId(), tags);

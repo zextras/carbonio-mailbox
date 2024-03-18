@@ -32,7 +32,7 @@ public class Checkpoint extends ControlOp {
 
 	public Checkpoint() {
 	    super(MailboxOperation.Checkpoint);
-		mTxnSet = new LinkedHashSet<TransactionId>();
+		mTxnSet = new LinkedHashSet<>();
 	}
 
 	public Checkpoint(LinkedHashSet<TransactionId> txns) {

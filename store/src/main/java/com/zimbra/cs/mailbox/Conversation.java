@@ -126,7 +126,7 @@ public class Conversation extends MailItem {
 
     void recalculateCounts(List<Message> msgs) throws ServiceException {
         markItemModified(Change.TAGS | Change.FLAGS | Change.UNREAD);
-        Set<String> tags = new HashSet<String>();
+        Set<String> tags = new HashSet<>();
         mData.unreadCount = 0;
         mData.setFlags(0);
         for (Message msg : msgs) {
@@ -153,7 +153,7 @@ public class Conversation extends MailItem {
         mSenderList = new SenderList(msgs);
         mData.size = msgs.size();
 
-        Set<String> tags = new HashSet<String>();
+        Set<String> tags = new HashSet<>();
         mData.unreadCount = 0;
         mData.setFlags(0);
         mExtendedData = null;
@@ -188,7 +188,7 @@ public class Conversation extends MailItem {
      * @param limit max number of messages to retrieve, or unlimited if -1
      */
     List<Message> getMessages(SortBy sort, int limit) throws ServiceException {
-        List<Message> msgs = new ArrayList<Message>(getMessageCount());
+        List<Message> msgs = new ArrayList<>(getMessageCount());
         List<UnderlyingData> listData = DbMailItem.getByParent(this, sort, limit, false);
         for (UnderlyingData data : listData) {
             msgs.add(mMailbox.getMessage(data));
@@ -250,7 +250,7 @@ public class Conversation extends MailItem {
 
         int date = 0, unread = 0, flags = 0;
         CustomMetadataList extended = null;
-        Set<String> tags = new HashSet<String>();
+        Set<String> tags = new HashSet<>();
       for (Message msg : msgs) {
         if (msg == null) {
           throw ServiceException.FAILURE("null Message in list", null);
@@ -329,7 +329,7 @@ public class Conversation extends MailItem {
         // then implicitly decrement the unread count for its conversation, folder
         // and tags.
         TargetConstraint tcon = mMailbox.getOperationTargetConstraint();
-        List<Integer> targets = new ArrayList<Integer>();
+        List<Integer> targets = new ArrayList<>();
         for (Message msg : getMessages()) {
             // skip messages that don't need to be changed, or that the client can't modify, doesn't know about, or has explicitly excluded
             if (msg.isUnread() == unread ) {
@@ -395,7 +395,7 @@ public class Conversation extends MailItem {
         boolean excludeAccess = false;
 
         List<Message> msgs = getMessages();
-        List<Integer> targets = new ArrayList<Integer>(msgs.size());
+        List<Integer> targets = new ArrayList<>(msgs.size());
         for (Message msg : msgs) {
             // skip messages that don't need to be changed, or that the client can't modify, doesn't know about, or has explicitly excluded
             if (msg.isTagged(tag) == add) {
@@ -511,9 +511,9 @@ public class Conversation extends MailItem {
 
         boolean excludeAccess = false;
 
-        List<Integer> markedRead = new ArrayList<Integer>();
-        List<Message> moved = new ArrayList<Message>();
-        List<MailItem> indexUpdated = new ArrayList<MailItem>();
+        List<Integer> markedRead = new ArrayList<>();
+        List<Message> moved = new ArrayList<>();
+        List<MailItem> indexUpdated = new ArrayList<>();
 
         for (Message msg : msgs) {
             Folder source = msg.getFolder();

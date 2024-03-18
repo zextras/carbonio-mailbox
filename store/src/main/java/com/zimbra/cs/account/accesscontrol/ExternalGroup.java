@@ -31,9 +31,9 @@ import com.zimbra.cs.ldap.ZSearchResultEntry;
 public class ExternalGroup extends NamedEntry {
 
     private static final NamedEntryCache<ExternalGroup> CACHE =
-        new NamedEntryCache<ExternalGroup>(
-                LC.ldap_cache_group_maxsize.intValue(),
-                LC.ldap_cache_group_maxage.intValue() * Constants.MILLIS_PER_MINUTE);
+        new NamedEntryCache<>(
+            LC.ldap_cache_group_maxsize.intValue(),
+            LC.ldap_cache_group_maxage.intValue() * Constants.MILLIS_PER_MINUTE);
 
     private final String dn;
     private final GroupHandler groupHandler;

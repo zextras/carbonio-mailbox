@@ -212,7 +212,7 @@ public abstract class FreeBusyProvider {
   public static List<FreeBusy> getRemoteFreeBusy(
       Account requestor, List<String> remoteIds, long start, long end, int folder, int hopcount) {
     Set<FreeBusyProvider> providers = getProviders();
-    ArrayList<FreeBusy> ret = new ArrayList<FreeBusy>();
+    ArrayList<FreeBusy> ret = new ArrayList<>();
     for (String emailAddr : remoteIds) {
       Request req = new Request(requestor, emailAddr, start, end, folder, hopcount);
       boolean succeed = false;
@@ -231,12 +231,12 @@ public abstract class FreeBusyProvider {
 
     // there could be duplicate results from different providers.
     // construct the map of results.
-    Map<String, ArrayList<FreeBusy>> freebusyMap = new HashMap<String, ArrayList<FreeBusy>>();
+    Map<String, ArrayList<FreeBusy>> freebusyMap = new HashMap<>();
     for (FreeBusyProvider prov : providers) {
       for (FreeBusy fb : prov.getResults()) {
         ArrayList<FreeBusy> freebusyList = freebusyMap.get(fb.getName());
         if (freebusyList == null) {
-          freebusyList = new ArrayList<FreeBusy>();
+          freebusyList = new ArrayList<>();
           freebusyMap.put(fb.getName(), freebusyList);
         }
         freebusyList.add(fb);
@@ -292,7 +292,7 @@ public abstract class FreeBusyProvider {
   }
 
   protected List<FreeBusy> getEmptyList(ArrayList<Request> req) {
-    ArrayList<FreeBusy> ret = new ArrayList<FreeBusy>();
+    ArrayList<FreeBusy> ret = new ArrayList<>();
     for (Request r : req) ret.add(FreeBusy.nodataFreeBusy(r.email, r.start, r.end));
     return ret;
   }
@@ -307,7 +307,7 @@ public abstract class FreeBusyProvider {
   }
 
   public static Set<FreeBusyProvider> getProviders() {
-    HashSet<FreeBusyProvider> ret = new HashSet<FreeBusyProvider>();
+    HashSet<FreeBusyProvider> ret = new HashSet<>();
     for (FreeBusyProvider p : sPROVIDERS) ret.add(p.getInstance());
     return ret;
   }
@@ -316,8 +316,8 @@ public abstract class FreeBusyProvider {
   private static HashMap<String, FreeBusySyncQueue> sPUSHQUEUES;
 
   static {
-    sPROVIDERS = new HashSet<FreeBusyProvider>();
-    sPUSHQUEUES = new HashMap<String, FreeBusySyncQueue>();
+    sPROVIDERS = new HashSet<>();
+    sPUSHQUEUES = new HashMap<>();
     new ExchangeFreeBusyProvider(); // load the class
   }
 

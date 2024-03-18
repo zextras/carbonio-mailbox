@@ -251,7 +251,7 @@ public class PlaybackUtil {
             params.queueCapacity = Integer.parseInt(cl.getOptionValue(OPT_QUEUE_CAPACITY));
         System.out.printf("Using %d as queue capacity for each redo player thread\n", params.queueCapacity);
 
-        List<File> logList = new ArrayList<File>();
+        List<File> logList = new ArrayList<>();
         if (cl.hasOption(OPT_LOGFILES)) {
             String[] fnames = cl.getOptionValues(OPT_LOGFILES);
             params.logfiles = new File[fnames.length];
@@ -327,7 +327,7 @@ public class PlaybackUtil {
                 try {
                     Map<Integer, Integer> mboxIdMap = null;
                     if (mParams.mboxId != Params.MBOX_ID_UNSET) {
-                        mboxIdMap = new HashMap<Integer, Integer>(1);
+                        mboxIdMap = new HashMap<>(1);
                         mboxIdMap.put(mParams.mboxId, mParams.mboxId);
                     }
                     mPlayer.scanLog(redolog, true, mboxIdMap, mParams.fromTime, until);

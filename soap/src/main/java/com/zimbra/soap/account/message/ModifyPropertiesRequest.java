@@ -30,7 +30,7 @@ public class ModifyPropertiesRequest {
      * @zm-api-field-description Property to be modified
      */
     @XmlElement(name=AccountConstants.E_PROPERTY, required=true)
-    private List<Prop> props = new ArrayList<Prop>();
+    private List<Prop> props = new ArrayList<>();
 
     public List<Prop> getProps() {
         return props; 

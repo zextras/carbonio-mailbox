@@ -101,7 +101,7 @@ public class FileUploadServlet extends ZimbraServlet {
   /** Uploads time out after 15 minutes. */
   static final long UPLOAD_TIMEOUT_MSEC = 15 * Constants.MILLIS_PER_MINUTE;
 
-  static final HashMap<String, Upload> mPending = new HashMap<String, Upload>(100);
+  static final HashMap<String, Upload> mPending = new HashMap<>(100);
   private static final long serialVersionUID = -3156986245375108467L;
 
   /** The character separating server ID from upload ID */
@@ -866,7 +866,7 @@ public class FileUploadServlet extends ZimbraServlet {
       sendResponse(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, fmt, null, null, null);
       return Collections.emptyList();
     }
-    List<FileItem> items = new ArrayList<FileItem>(1);
+    List<FileItem> items = new ArrayList<>(1);
     items.add(fi);
     Upload up = new Upload(acct.getId(), fi, filename);
 
@@ -883,7 +883,7 @@ public class FileUploadServlet extends ZimbraServlet {
     }
     final String finalMimeType = up.contentType;
     String contentTypeBlacklist = LC.zimbra_file_content_type_blacklist.value();
-    List<String> blacklist = new ArrayList<String>();
+    List<String> blacklist = new ArrayList<>();
     if (!StringUtil.isNullOrEmpty(contentTypeBlacklist)) {
       blacklist.addAll(Arrays.asList(contentTypeBlacklist.trim().split(",")));
     }
@@ -1120,7 +1120,7 @@ public class FileUploadServlet extends ZimbraServlet {
     @Override
     public void run() {
       try {
-        ArrayList<Upload> reaped = new ArrayList<Upload>();
+        ArrayList<Upload> reaped = new ArrayList<>();
         int sizeBefore;
         int sizeAfter;
         synchronized (mPending) {

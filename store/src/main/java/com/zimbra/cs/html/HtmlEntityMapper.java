@@ -17,8 +17,8 @@ import java.util.regex.Pattern;
  * This is useful for converting HTML to XML and vice-versa.
  */
 public final class HtmlEntityMapper {
-    private static final Map<String, Integer> sHtmlEntityToUnicodeMap  = new HashMap<String, Integer>();
-    private static final Map<Integer, String> sUnicodeToHtmlEntityMap = new HashMap<Integer, String>();
+    private static final Map<String, Integer> sHtmlEntityToUnicodeMap  = new HashMap<>();
+    private static final Map<Integer, String> sUnicodeToHtmlEntityMap = new HashMap<>();
     
     private static final Pattern htmlEntityPat = Pattern.compile("&([A-Za-z0-9]{2,6});");
     private static final Pattern numEntityPat = Pattern.compile("&#([0-9]{1,5});");

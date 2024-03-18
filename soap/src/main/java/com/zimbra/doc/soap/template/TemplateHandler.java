@@ -115,7 +115,7 @@ public abstract class TemplateHandler {
     }
 
     protected Map<String,String> getBuildInfo() {
-        Map<String,String>    buildInfo = new HashMap<String,String>();
+        Map<String,String>    buildInfo = new HashMap<>();
 
         buildInfo.put(KEY_BUILD_INFO_VERSION, this.buildVersion);
         buildInfo.put(KEY_BUILD_INFO_DATE, this.buildDate);

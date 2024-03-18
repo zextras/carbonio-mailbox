@@ -38,9 +38,9 @@ public class FileDescriptorCache
     private static final Log sLog = LogFactory.getLog(FileDescriptorCache.class);
 
     // Create the file cache with default LinkedHashMap values, but sorted by last access time.
-    private final LinkedHashMap<String, SharedFile> mCache = new LinkedHashMap<String, SharedFile>(16, 0.75f, true);
+    private final LinkedHashMap<String, SharedFile> mCache = new LinkedHashMap<>(16, 0.75f, true);
     // Create a concurrent list for the SharedFies for which the mapping has been removed but is still in use by some threads.
-    private final List<SharedFileInfo> mInactiveCache = Collections.synchronizedList(new ArrayList<SharedFileInfo>());
+    private final List<SharedFileInfo> mInactiveCache = Collections.synchronizedList(new ArrayList<>());
     private int mMaxSize = 1000;
     private final FileCache<String> mUncompressedFileCache;
     private final Counter mHitRate = new Counter();
@@ -265,7 +265,7 @@ public class FileDescriptorCache
          if (getSize() <= mMaxSize)
             return;
 
-        List<Map.Entry<String, SharedFile>> removeList = new ArrayList<Map.Entry<String, SharedFile>>();
+        List<Map.Entry<String, SharedFile>> removeList = new ArrayList<>();
 
         synchronized (this) {
             Iterator<Map.Entry<String, SharedFile>> iEntries = mCache.entrySet().iterator();

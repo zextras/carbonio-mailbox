@@ -33,7 +33,7 @@ public class BlobDeduperUtil {
 
     private Options options;
     private boolean verbose = false;
-    private List<Short> volumeIds = new ArrayList<Short>();
+    private List<Short> volumeIds = new ArrayList<>();
     private DedupeBlobsRequest.DedupAction action;
 
     private BlobDeduperUtil() {

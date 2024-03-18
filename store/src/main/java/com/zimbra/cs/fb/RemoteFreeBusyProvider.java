@@ -55,8 +55,8 @@ public class RemoteFreeBusyProvider extends FreeBusyProvider {
 
     public RemoteFreeBusyProvider(HttpServletRequest httpReq, ZimbraSoapContext zsc,
                                   long start, long end, String exApptUid) {
-        mRemoteAccountMap = new HashMap<String,StringBuilder>();
-        mRequestList = new ArrayList<Request>();
+        mRemoteAccountMap = new HashMap<>();
+        mRequestList = new ArrayList<>();
         mHttpReq = httpReq;
         mSoapCtxt = zsc;
         mStart = start;
@@ -96,7 +96,7 @@ public class RemoteFreeBusyProvider extends FreeBusyProvider {
 
     @Override
     public List<FreeBusy> getResults() {
-        ArrayList<FreeBusy> fbList = new ArrayList<FreeBusy>();
+        ArrayList<FreeBusy> fbList = new ArrayList<>();
         for (Request req : mRequestList) {
             HttpRequestBase method = null;
             Account acct = (Account)req.data;

@@ -22,8 +22,8 @@ import com.zimbra.cs.redolog.RedoLogOutput;
  */
 public class CopyItem extends RedoableOp {
 
-    private Map<Integer, Integer> mDestIds = new HashMap<Integer, Integer>();
-    private Map<Integer, String> mDestUuids = new HashMap<Integer, String>();
+    private Map<Integer, Integer> mDestIds = new HashMap<>();
+    private Map<Integer, String> mDestUuids = new HashMap<>();
     private MailItem.Type type;
     private int mDestFolderId;
     private boolean mFromDumpster;  // false in this class, true in subclass RecoverItem

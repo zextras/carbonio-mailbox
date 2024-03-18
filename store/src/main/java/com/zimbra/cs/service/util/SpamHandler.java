@@ -183,7 +183,7 @@ public class SpamHandler {
 
     private final Object spamReportQueueLock = new Object();
 
-    List<SpamReport> spamReportQueue = new ArrayList<SpamReport>(spamReportQueueSize);
+    List<SpamReport> spamReportQueue = new ArrayList<>(spamReportQueueSize);
 
     void reportLoop() {
         while (true) {
@@ -197,7 +197,7 @@ public class SpamHandler {
                     }
                 }
                 workQueue = spamReportQueue;
-                spamReportQueue = new ArrayList<SpamReport>(spamReportQueueSize);
+                spamReportQueue = new ArrayList<>(spamReportQueueSize);
             }
 
             if (workQueue == null) {

@@ -193,7 +193,7 @@ public class LdapUtil {
 
        int at = name.indexOf("@");
 
-       Map<String, String> vars = new HashMap<String, String>();
+       Map<String, String> vars = new HashMap<>();
        vars.put("n", name);
 
        if (at  == -1) {

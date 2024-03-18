@@ -21,7 +21,7 @@ import com.zimbra.cs.html.owasp.policies.StyleTagReceiver;
 public class OwaspHtmlSanitizer implements Callable<String> {
     private String html;
     private boolean neuterImages;
-    public static final ThreadLocal<OwaspThreadLocal> zThreadLocal = new ThreadLocal<OwaspThreadLocal>();
+    public static final ThreadLocal<OwaspThreadLocal> zThreadLocal = new ThreadLocal<>();
     private String vHost;
 
     public OwaspHtmlSanitizer(String html, boolean neuterImages, String vHost) {
@@ -56,11 +56,11 @@ public class OwaspHtmlSanitizer implements Callable<String> {
         final HtmlStreamRenderer renderer = HtmlStreamRenderer.create(htmlBuilder,
             Handler.PROPAGATE,
             // log errors resulting from exceptionally bizarre inputs
-            new Handler<String>() {
+            new Handler<>() {
 
-                public void handle(final String x) {
-                    throw new AssertionError(x);
-                }
+              public void handle(final String x) {
+                throw new AssertionError(x);
+              }
             });
         // create a thread-specific policy
         instantiatePolicy();

@@ -40,7 +40,7 @@ public class Krb5Keytab {
     private static final int VERSION_2 = 0x0502;    // Standard
 
     private static Map<File, Krb5Keytab> keytabs =
-        new HashMap<File, Krb5Keytab>();
+        new HashMap<>();
 
     /**
      * Returns the Krb5Keytab instance for the specified keytab file path.
@@ -77,7 +77,7 @@ public class Krb5Keytab {
     
     private Krb5Keytab(File file) throws IOException {
         this.file = file;
-        keyMap = new HashMap<KerberosPrincipal, List<KerberosKey>>();
+        keyMap = new HashMap<>();
         loadKeytab();
     }
 
@@ -187,7 +187,7 @@ public class Krb5Keytab {
     private void addKey(KerberosPrincipal kp, KerberosKey key) {
         List<KerberosKey> keys = keyMap.get(kp);
         if (keys == null) {
-            keys = new ArrayList<KerberosKey>();
+            keys = new ArrayList<>();
             keyMap.put(kp, keys);
         }
         keys.add(key);

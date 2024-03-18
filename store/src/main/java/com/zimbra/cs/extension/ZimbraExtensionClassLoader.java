@@ -26,7 +26,7 @@ public class ZimbraExtensionClassLoader extends URLClassLoader {
 
     public static final String ZIMBRA_EXTENSION_CLASS = "Zimbra-Extension-Class";
 
-    private List<String> mExtensionClassNames = new ArrayList<String>();
+    private List<String> mExtensionClassNames = new ArrayList<>();
 
     /**
      * Load classes from all jar files or directories in the directory

@@ -249,7 +249,7 @@ public class UserServletContext {
         String listParam = this.params.get(UserServlet.QP_LIST);
         if (listParam != null && listParam.length() > 0) {
             String[] ids = listParam.split(",");
-            requestedItems = new ArrayList<Item>();
+            requestedItems = new ArrayList<>();
             reqListIds = new int[ids.length];
             String proxyAcct = null;
             for (int i = 0; i < ids.length; ++i) {

@@ -136,7 +136,7 @@ public class ZimbraCommandManagerImpl implements CommandManager {
      */
     @Override
     public List<String> getExtensions() {
-        List<String> extensions = new ArrayList<String>(classNameMap.size());
+        List<String> extensions = new ArrayList<>(classNameMap.size());
         for (String key : classNameMap.keySet())
         {
             if (!isImplicitlyDeclared(key))

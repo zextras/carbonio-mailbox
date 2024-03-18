@@ -95,7 +95,7 @@ public class SSLCertInfo {
     }
 
     public String serialize() {
-        Map<Object, Object> map = new HashMap<Object, Object>();
+        Map<Object, Object> map = new HashMap<>();
         map.put(ALIAS, alias);
         map.put(HOSTNAME, hostname);
         map.put(COMMON_NAME, commonName);

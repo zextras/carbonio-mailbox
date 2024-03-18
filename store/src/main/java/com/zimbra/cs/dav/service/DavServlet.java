@@ -134,7 +134,7 @@ public class DavServlet extends ZimbraServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        sMethods = new HashMap<String, DavMethod>();
+        sMethods = new HashMap<>();
         addMethod(new Copy());
         addMethod(new Delete());
         addMethod(new Get());
@@ -589,7 +589,7 @@ public class DavServlet extends ZimbraServlet {
                             // to attach to the response to be cached later.
                             cache.cacheThisCtagResponse = true;
                             cache.acctVerSnapshot = allCtagsData.getVersion();
-                            cache.ctagsSnapshot = new HashMap<Integer, String>();
+                            cache.ctagsSnapshot = new HashMap<>();
                             Collection<CtagInfo> childCals = allCtagsData.getChildren(rootFolderId);
                             if (rootFolderId != Mailbox.ID_FOLDER_USER_ROOT) {
                                 CtagInfo ctagRoot = allCtagsData.getById(rootFolderId);

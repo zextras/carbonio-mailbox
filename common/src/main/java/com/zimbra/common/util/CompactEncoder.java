@@ -240,16 +240,14 @@ public class CompactEncoder {
             return null;
         } case 'M': {
             int cnt = (int)getStringLong(bb);
-            Map<Object, Object> map = new HashMap<Object,
-                Object>((int)(cnt * 1.5));
+            Map<Object, Object> map = new HashMap<>((int) (cnt * 1.5));
 
             for (int i = 0; i < cnt; i++)
                 map.put(decode(bb), decode(bb));
             return map;
         } case 'm': {
             int cnt = bb.getInt();
-            Map<Object, Object> map = new HashMap<Object,
-                Object>((int)(cnt * 1.5));
+            Map<Object, Object> map = new HashMap<>((int) (cnt * 1.5));
 
             for (int i = 0; i < cnt; i++)
                 map.put(decode(bb), decode(bb));
@@ -271,14 +269,14 @@ public class CompactEncoder {
             return new String(val, "UTF-8");
         } case 'V': {
             int cnt = (int)getStringLong(bb);
-            ArrayList<Object> array = new ArrayList<Object>(cnt);
+            ArrayList<Object> array = new ArrayList<>(cnt);
 
             for (int i = 0; i < cnt; i++)
                 array.add(i, decode(bb));
             return array;
         } case 'v': {
             int cnt = bb.getInt();
-            ArrayList<Object> array = new ArrayList<Object>(cnt);
+            ArrayList<Object> array = new ArrayList<>(cnt);
 
             for (int i = 0; i < cnt; i++)
                 array.add(i, decode(bb));
@@ -536,8 +534,8 @@ public class CompactEncoder {
         char[] carray = new char[] { 'a', 'r', 'r', 'a', 'y'};
         ArrayList<?> dlist;
         Map<?, ?> dmap;
-        ArrayList<Object> list = new ArrayList<Object>();
-        Map<Object, Object> map = new HashMap<Object, Object>();
+        ArrayList<Object> list = new ArrayList<>();
+        Map<Object, Object> map = new HashMap<>();
         Object[] darray, oarray = new Object[] {
             "arraystring", 9
         };
@@ -559,7 +557,7 @@ public class CompactEncoder {
         map.put("byteorder", ByteOrder.nativeOrder());
         map.put("emptystring", "");
         map.put("float", (float) 1.1);
-        map.put("hashmap", new HashMap<Object, Object>());
+        map.put("hashmap", new HashMap<>());
         map.put("list", list);
         map.put("long", 3L);
         map.put("mapstring", "test");

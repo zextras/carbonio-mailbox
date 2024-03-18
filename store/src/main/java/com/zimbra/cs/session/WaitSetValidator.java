@@ -122,7 +122,7 @@ public class WaitSetValidator implements DebugListener {
     protected List<WaitSetSession> queryWaitSet(String id) throws ServiceException {
         Element qws = invokeQueryWaitSet(id);
         
-        List<WaitSetSession> toRet = new ArrayList<WaitSetSession>();
+        List<WaitSetSession> toRet = new ArrayList<>();
         
         for (Iterator<Element> iter = qws.elementIterator("session"); iter.hasNext();) {
             Element selt = iter.next();

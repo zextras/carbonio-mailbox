@@ -84,7 +84,7 @@ public class UBIDLdapSchema extends ZLdapSchema {
 
     @Override
     public List<ZObjectClassDefinition> getObjectClasses() throws LdapException {
-        List<ZObjectClassDefinition> ocList = new ArrayList<ZObjectClassDefinition>();
+        List<ZObjectClassDefinition> ocList = new ArrayList<>();
 
         Set<ObjectClassDefinition> ocs = schema.getObjectClasses();
         for (ObjectClassDefinition oc : ocs) {

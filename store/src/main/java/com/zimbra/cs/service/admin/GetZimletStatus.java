@@ -88,7 +88,7 @@ public class GetZimletStatus extends AdminDocumentHandler {
     }
 	
     private Set<String> needGetAttrsRight() {
-        Set<String> attrsNeeded = new HashSet<String>();
+        Set<String> attrsNeeded = new HashSet<>();
         attrsNeeded.add(Provisioning.A_zimbraZimletAvailableZimlets);
         return attrsNeeded;
     }

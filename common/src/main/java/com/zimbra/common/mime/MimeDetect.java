@@ -30,8 +30,8 @@ import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.ZimbraLog;
 
 public class MimeDetect {
-    private TreeMap<Glob, String> globs = new TreeMap<Glob, String>();
-    private TreeMap<Magic, String> magics = new TreeMap<Magic, String>();
+    private TreeMap<Glob, String> globs = new TreeMap<>();
+    private TreeMap<Magic, String> magics = new TreeMap<>();
     private static MimeDetect mimeDetect = null;
     public static int DEFAULT_LIMIT = 8 * 1024;
     
@@ -180,7 +180,7 @@ public class MimeDetect {
         }
         
         private int priority;
-        private ArrayList<Rule> rules = new ArrayList<Rule>();
+        private ArrayList<Rule> rules = new ArrayList<>();
         private String type;
 
         Magic(InputStream is) throws IOException {
@@ -403,7 +403,7 @@ public class MimeDetect {
             globs.clear();
             return;
         }
-        ArrayList<String> files = new ArrayList<String>();
+        ArrayList<String> files = new ArrayList<>();
         for (String file : fileList.split(":")) {
             files.add(file);
             files.add(file + ".zimbra");
@@ -441,7 +441,7 @@ public class MimeDetect {
             magics.clear();
             return;
         }
-        ArrayList<String> files = new ArrayList<String>();
+        ArrayList<String> files = new ArrayList<>();
         for (String file : fileList.split(":")) {
             files.add(file);
             files.add(file + ".zimbra");

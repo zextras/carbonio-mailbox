@@ -61,7 +61,7 @@ public class GetAccountMembership extends AdminDocumentHandler {
         Account account = prov.get(acctBy, accountSelectorKey, zsc.getAuthToken());
         defendAgainstAccountHarvesting(account, acctBy, accountSelectorKey, zsc, Admin.R_getAccountMembership);
 
-        HashMap<String,String> via = new HashMap<String, String>();
+        HashMap<String,String> via = new HashMap<>();
         List<Group> groups = prov.getGroups(account, false, via);
 
         Element response = zsc.createElement(AdminConstants.GET_ACCOUNT_MEMBERSHIP_RESPONSE);
@@ -98,7 +98,7 @@ public class GetAccountMembership extends AdminDocumentHandler {
     }
 
     private Set<String> needGetAttrsRight() {
-        Set<String> attrsNeeded = new HashSet<String>();
+        Set<String> attrsNeeded = new HashSet<>();
         attrsNeeded.add(Provisioning.A_zimbraIsAdminGroup);
         return attrsNeeded;
     }

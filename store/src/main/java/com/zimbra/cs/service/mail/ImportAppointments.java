@@ -111,7 +111,7 @@ public class ImportAppointments extends MailDocumentHandler  {
             }
 
             if (SourceSpecMethod.ATTACH_ID.equals(sourceSpecMethod)) {
-                is = parseUploadedContent(zsc, attachment, uploads = new ArrayList<Upload>());
+                is = parseUploadedContent(zsc, attachment, uploads = new ArrayList<>());
             } else if (SourceSpecMethod.INLINE_TEXT.equals(sourceSpecMethod)) {
                 // Convert LF to CRLF because the XML parser normalizes element text to LF.
                 String text = StringUtil.lfToCrlf(content.getText());
@@ -124,7 +124,7 @@ public class ImportAppointments extends MailDocumentHandler  {
 
             List<Invite> invites = Invite.createFromCalendar(mbox.getAccount(), null, icals, true, true, null);
 
-            Set<String> uidsSeen = new HashSet<String>();
+            Set<String> uidsSeen = new HashSet<>();
             StringBuilder ids = new StringBuilder();
 
             for (Invite inv : invites) {

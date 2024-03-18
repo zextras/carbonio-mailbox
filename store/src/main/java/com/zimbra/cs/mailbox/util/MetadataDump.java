@@ -86,7 +86,7 @@ public final class MetadataDump {
     private static final String METADATA_COLUMN = "metadata";
 
     private static class Row implements Iterable<Entry<String, String>> {
-        private final Map<String, String> mMap = new LinkedHashMap<String, String>();
+        private final Map<String, String> mMap = new LinkedHashMap<>();
 
         Row()  { }
 
@@ -229,7 +229,7 @@ public final class MetadataDump {
                          " ORDER BY mailbox_id, item_id, version DESC";
             stmt = conn.prepareStatement(sql);
             rs = stmt.executeQuery();
-            List<Row> rows = new ArrayList<Row>();
+            List<Row> rows = new ArrayList<>();
             while (rs.next()) {
                 Row row = new Row();
                 ResultSetMetaData rsMeta = rs.getMetaData();

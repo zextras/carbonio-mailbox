@@ -97,7 +97,7 @@ public final class MilterHandler implements NioHandler {
 
     private static final Charset CHARSET = Charsets.US_ASCII;
 
-    private final Map<Context, String> context = new EnumMap<Context, String>(Context.class);
+    private final Map<Context, String> context = new EnumMap<>(Context.class);
     private final Set<Group> lists = Sets.newHashSetWithExpectedSize(0);
     private final Set<String> visibleAddresses = Sets.newHashSetWithExpectedSize(0);
     private final Provisioning prov;
@@ -271,7 +271,7 @@ public final class MilterHandler implements NioHandler {
      * @throws IOException
      */
     static Map<String, String> parseMacros(IoBuffer buf) throws IOException {
-        Map<String, String> macros = new HashMap<String, String>();
+        Map<String, String> macros = new HashMap<>();
         try {
             while (buf.hasRemaining()) {
                 String key = buf.getString(CHARSET.newDecoder());

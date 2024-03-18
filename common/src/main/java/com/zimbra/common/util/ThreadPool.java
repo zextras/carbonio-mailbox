@@ -36,7 +36,7 @@ public class ThreadPool implements Executor {
         NamedThreadFactory tfac = new NamedThreadFactory(name,
             Thread.NORM_PRIORITY);
         mPool = new ThreadPoolExecutor(1, poolSize, 60, TimeUnit.SECONDS,
-            new LinkedBlockingQueue<Runnable>());
+            new LinkedBlockingQueue<>());
         mPool.setThreadFactory(tfac);
         mActiveThreadsCounter = new ThreadCounter();
     }

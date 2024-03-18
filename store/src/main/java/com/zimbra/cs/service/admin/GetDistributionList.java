@@ -182,7 +182,7 @@ public class GetDistributionList extends DistributionListDocumentHandler {
         if (encodeAttrs) {
             Set<String> hideAttrs = null;
             if (hideMembers) {
-                hideAttrs = new HashSet<String>();
+                hideAttrs = new HashSet<>();
                 if (group.isDynamic()) {
                     hideAttrs.add(Provisioning.A_member);
                 } else {

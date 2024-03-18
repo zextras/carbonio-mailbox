@@ -116,14 +116,14 @@ public class DefangFilter extends DefaultFilter {
 
   /** attr Set cache */
   private static HashMap<String, HashSet<String>> mAttrSetCache =
-      new HashMap<String, HashSet<String>>();
+      new HashMap<>();
 
   /** Accepted elements. */
   private static HashMap<String, HashSet<String>> mAcceptedElements =
-      new HashMap<String, HashSet<String>>();
+      new HashMap<>();
 
   /** Removed elements. */
-  private static HashMap<String, Object> mRemovedElements = new HashMap<String, Object>();
+  private static HashMap<String, Object> mRemovedElements = new HashMap<>();
 
   // state
 
@@ -341,7 +341,7 @@ public class DefangFilter extends DefaultFilter {
       mAcceptedElements.put(element, set);
       return;
     }
-    set = new HashSet<String>();
+    set = new HashSet<>();
     String attrs[] = attributes.toLowerCase().split(",");
     if (attrs != null && attrs.length > 0) {
       for (String attr : attrs) {

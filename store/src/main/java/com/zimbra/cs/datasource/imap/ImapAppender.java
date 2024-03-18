@@ -179,7 +179,7 @@ public class ImapAppender {
     }
 
     private Object[] getSearchParams(MessageInfo mi) throws MessagingException {
-        List<Object> params = new ArrayList<Object>();
+        List<Object> params = new ArrayList<>();
         params.add("SENTON");
         Date date = mi.mm.getSentDate();
         params.add(String.format("%td-%tb-%tY", date, date, date));
@@ -201,7 +201,7 @@ public class ImapAppender {
     }
 
     private List<Long> findUids(String seq, final MessageInfo mi) throws IOException, MessagingException {
-        final List<Long> uids = new ArrayList<Long>(1);
+        final List<Long> uids = new ArrayList<>(1);
         Map<Long, MessageData> mds = connection.uidFetch(seq, "(RFC822.SIZE ENVELOPE)");
         for (MessageData md : mds.values()) {
             if (matches(mi, md)) {

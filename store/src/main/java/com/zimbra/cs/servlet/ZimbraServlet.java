@@ -109,7 +109,7 @@ public class ZimbraServlet extends HttpServlet {
 
   private static final int MAX_PROXY_HOPCOUNT = 3;
 
-  private static Map<String, ZimbraServlet> sServlets = new HashMap<String, ZimbraServlet>();
+  private static Map<String, ZimbraServlet> sServlets = new HashMap<>();
 
   private int[] mAllowedPorts;
 
@@ -126,7 +126,7 @@ public class ZimbraServlet extends HttpServlet {
               "Must specify comma-separated list of port numbers for "
                   + PARAM_ALLOWED_PORTS
                   + " parameter");
-        List<Integer> allowedPorts = new ArrayList<Integer>();
+        List<Integer> allowedPorts = new ArrayList<>();
         int port;
         for (String val : vals) {
           try {
@@ -266,7 +266,7 @@ public class ZimbraServlet extends HttpServlet {
       throws AuthTokenException {
     AuthToken authToken = AuthProvider.getAuthToken(req, isAdminReq);
     if (authToken == null) {
-      Map<Object, Object> engineCtxt = new HashMap<Object, Object>();
+      Map<Object, Object> engineCtxt = new HashMap<>();
       engineCtxt.put(SoapServlet.SERVLET_REQUEST, req);
       authToken = AuthProvider.getJWToken(null, engineCtxt);
     }

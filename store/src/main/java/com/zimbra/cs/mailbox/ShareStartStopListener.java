@@ -94,7 +94,7 @@ public class ShareStartStopListener extends MailboxListener {
                         // Skip if locator already points to this account.
                         if (!me.equalsIgnoreCase(shloc.getShareOwnerAccountId())) {
                             // Change owner to this account.
-                            Map<String, Object> attrs = new HashMap<String, Object>();
+                            Map<String, Object> attrs = new HashMap<>();
                             attrs.put(Provisioning.A_zimbraShareOwnerAccountId, me);
                             prov.modifyAttrs(shloc, attrs);
                         }

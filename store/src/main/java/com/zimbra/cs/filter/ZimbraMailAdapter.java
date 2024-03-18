@@ -86,8 +86,8 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
     private FilterHandler handler;
     private String[] tags;
     private boolean allowFilterToMountpoint = true;
-    private Map<String, String> variables = new HashMap<String, String>();
-    private List<String> matchedValues = new ArrayList<String>();
+    private Map<String, String> variables = new HashMap<>();
+    private List<String> matchedValues = new ArrayList<>();
     private boolean parsedMessageCloned = false;
 
     public enum VARIABLEFEATURETYPE { UNKNOWN, OFF, AVAILABLE};
@@ -97,7 +97,7 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
      * Keeps track of folders into which we filed messages, so we don't file twice
      * (RFC 3028 2.10.3).
      */
-    private Set<String> filedIntoPaths = new HashSet<String>();
+    private Set<String> filedIntoPaths = new HashSet<>();
 
     /**
      * Set of address headers that need to be processed for IDN.
@@ -107,12 +107,12 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
     /**
      * List of Actions to perform.
      */
-    private List<Action> actions = new ArrayList<Action>();
+    private List<Action> actions = new ArrayList<>();
 
     /**
      * Ids of messages that have been added.
      */
-    protected List<ItemId> addedMessageIds = new ArrayList<ItemId>();
+    protected List<ItemId> addedMessageIds = new ArrayList<>();
 
     private SieveContext context;
 
@@ -129,7 +129,7 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
     /**
      * List of capability strings declared by "require" control.
      */
-    private List<String> capabilities = new ArrayList<String>();
+    private List<String> capabilities = new ArrayList<>();
     
     private boolean isStop = false;
 
@@ -464,7 +464,7 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
     }
 
     private List<Action> getDeliveryActions() {
-        List<Action> actions = new ArrayList<Action>();
+        List<Action> actions = new ArrayList<>();
         for (Action action : this.actions) {
             if (action instanceof ActionKeep ||
                 action instanceof ActionExplicitKeep ||
@@ -477,7 +477,7 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
     }
 
     private List<ActionTag> getTagActions() {
-        List<ActionTag> actions = new ArrayList<ActionTag>();
+        List<ActionTag> actions = new ArrayList<>();
         for (Action action : this.actions) {
             if (action instanceof ActionTag) {
                 actions.add((ActionTag) action);
@@ -487,7 +487,7 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
     }
 
     private List<ActionFlag> getFlagActions() {
-        List<ActionFlag> actions = new ArrayList<ActionFlag>();
+        List<ActionFlag> actions = new ArrayList<>();
         for (Action action : this.actions) {
             if (action instanceof ActionFlag) {
                 actions.add((ActionFlag) action);
@@ -497,7 +497,7 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
     }
 
     private List<Action> getReplyNotifyRejectActions() {
-        List<Action> actions = new ArrayList<Action>();
+        List<Action> actions = new ArrayList<>();
         for (Action action : this.actions) {
             if (action instanceof ActionReply || action instanceof ActionNotify
                || action instanceof ActionReject || action instanceof ActionEreject) {
@@ -615,7 +615,7 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
 
     private List<String> handleIDN(String headerName, String[] headers) {
 
-        List<String> hdrs = new ArrayList<String>();
+        List<String> hdrs = new ArrayList<>();
         for (String header : headers) {
             boolean altered = false;
 
@@ -683,7 +683,7 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
 
     @Override
     public List<String> getHeaderNames() throws SieveMailException {
-        Set<String> headerNames = new HashSet<String>();
+        Set<String> headerNames = new HashSet<>();
         MimeMessage msg;
         try {
             msg = handler.getMimeMessage();
@@ -698,7 +698,7 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
             while (allHeaders.hasMoreElements()) {
                 headerNames.add(allHeaders.nextElement().getName());
             }
-            return new ArrayList<String>(headerNames);
+            return new ArrayList<>(headerNames);
         } catch (MessagingException ex) {
             throw new SieveMailException(ex);
         }
@@ -716,7 +716,7 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
     public Set<String> getMatchingHeaderFromAllParts(String name)
     throws SieveMailException {
         MimeMessage msg;
-        Set<String> values = new HashSet<String>();
+        Set<String> values = new HashSet<>();
 
         try {
             msg = handler.getMimeMessage();
@@ -777,7 +777,7 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
             return FilterAddress.EMPTY_ADDRESS_ARRAY;
         }
 
-        List<Address> retVal = new LinkedList<Address>();
+        List<Address> retVal = new LinkedList<>();
         for (String hdrValue : hdrValues) {
             for (InternetAddress addr : InternetAddress.parseHeader(hdrValue)) {
                 String emailAddr = addr.getAddress();
@@ -812,7 +812,7 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
 
     @Override
     public List<String> getEnvelopeNames() throws SieveMailException {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         if (envelope.hasRecipients()) {
             result.add("to");
         }

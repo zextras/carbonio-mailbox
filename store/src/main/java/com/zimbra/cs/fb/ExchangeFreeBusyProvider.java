@@ -154,7 +154,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
 
     private static ArrayList<ExchangeUserResolver> sRESOLVERS;
     static {
-        sRESOLVERS = new ArrayList<ExchangeUserResolver>();
+        sRESOLVERS = new ArrayList<>();
 
         registerResolver(new BasicUserResolver(), 0);
         register(new ExchangeFreeBusyProvider());
@@ -193,7 +193,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
     private void addRequest(ServerInfo info, Request req) {
         ArrayList<Request> r = mRequests.get(info.url);
         if (r == null) {
-            r = new ArrayList<Request>();
+            r = new ArrayList<>();
             mRequests.put(info.url, r);
         }
         req.data = info;
@@ -203,7 +203,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
 
     @Override
     public List<FreeBusy> getResults() {
-        ArrayList<FreeBusy> ret = new ArrayList<FreeBusy>();
+        ArrayList<FreeBusy> ret = new ArrayList<>();
         for (Map.Entry<String, ArrayList<Request>> entry : mRequests.entrySet()) {
             try {
                 ret.addAll(this.getFreeBusyForHost(entry.getKey(), entry.getValue()));
@@ -424,11 +424,11 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
     }
 
     ExchangeFreeBusyProvider() {
-        mRequests = new HashMap<String,ArrayList<Request>>();
+        mRequests = new HashMap<>();
     }
 
     public List<FreeBusy> getFreeBusyForHost(String host, ArrayList<Request> req) throws IOException {
-        ArrayList<FreeBusy> ret = new ArrayList<FreeBusy>();
+        ArrayList<FreeBusy> ret = new ArrayList<>();
         int fb_interval = LC.exchange_free_busy_interval_min.intValueWithinRange(5, 1444);
         Request r = req.get(0);
         ServerInfo serverInfo = (ServerInfo) r.data;
@@ -527,7 +527,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
 
     public static HttpResponse checkAuth(ServerInfo info, Account requestor) throws ServiceException, IOException, HttpException {
         ExchangeFreeBusyProvider prov = new ExchangeFreeBusyProvider();
-        ArrayList<Request> req = new ArrayList<Request>();
+        ArrayList<Request> req = new ArrayList<>();
         req.add(new Request(
                 requestor,
                 requestor.getName(),

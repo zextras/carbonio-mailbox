@@ -105,7 +105,7 @@ public class ServiceStatus {
         for (Entry<String, CsvReader> entry : data.entrySet()) {
             String host = entry.getKey();
             CsvReader r = entry.getValue();
-            List<String> columns = new ArrayList<String>(Arrays.asList(r.getColNames()));
+            List<String> columns = new ArrayList<>(Arrays.asList(r.getColNames()));
             columns.remove("timestamp");
             Map<String,String> row = Maps.newHashMap();
             String lastTS = null;

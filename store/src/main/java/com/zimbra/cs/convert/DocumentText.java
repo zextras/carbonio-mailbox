@@ -97,7 +97,7 @@ public class DocumentText {
         if (mContentTypes == null || "".equals(mContentTypes)) {
             return Collections.emptyList();
         }
-        List<String> a = new ArrayList<String>();
+        List<String> a = new ArrayList<>();
         StringTokenizer st = new StringTokenizer(mContentTypes, ",");
         while (st.hasMoreTokens()) {
             a.add(st.nextToken().trim());

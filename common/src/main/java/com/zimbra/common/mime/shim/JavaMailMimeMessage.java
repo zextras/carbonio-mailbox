@@ -195,7 +195,7 @@ public class JavaMailMimeMessage extends MimeMessage implements JavaMailShim {
     private void setAddressList(String name, Address[] addresses, List<com.zimbra.common.mime.InternetAddress> iaddrs) {
         if (addresses != null) {
             if (iaddrs == null) {
-                iaddrs = new ArrayList<com.zimbra.common.mime.InternetAddress>(addresses.length);
+                iaddrs = new ArrayList<>(addresses.length);
             }
             for (Address addr : addresses) {
                 iaddrs.add(JavaMailInternetAddress.asZimbraInternetAddress(addr));
@@ -289,7 +289,7 @@ public class JavaMailMimeMessage extends MimeMessage implements JavaMailShim {
     public Address[] getAllRecipients() throws MessagingException {
         if (ZPARSER) {
             boolean foundAny = false;
-            List<com.zimbra.common.mime.InternetAddress> iaddrs = new ArrayList<com.zimbra.common.mime.InternetAddress>();
+            List<com.zimbra.common.mime.InternetAddress> iaddrs = new ArrayList<>();
             for (String name : RECIPIENT_HEADERS) {
                 List<com.zimbra.common.mime.InternetAddress> subaddrs = getZimbraAddressList(name);
                 if (subaddrs != null) {
@@ -355,7 +355,7 @@ public class JavaMailMimeMessage extends MimeMessage implements JavaMailShim {
             String name = asZimbraAddressType(type);
             List<com.zimbra.common.mime.InternetAddress> iaddrs = zmessage.getAddressHeader(name);
             if (iaddrs == null) {
-                iaddrs = new ArrayList<com.zimbra.common.mime.InternetAddress>(5);
+                iaddrs = new ArrayList<>(5);
             }
             iaddrs.addAll(com.zimbra.common.mime.InternetAddress.parseHeader(addresses));
             zmessage.setAddressHeader(name, iaddrs);

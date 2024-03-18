@@ -13,7 +13,7 @@ import java.util.List;
  */
 abstract class CombiningQueryOperation extends QueryOperation {
 
-    protected List<QueryOperation> operations = new ArrayList<QueryOperation>();
+    protected List<QueryOperation> operations = new ArrayList<>();
 
     int getNumSubOps() {
         return operations.size();

@@ -10,6 +10,6 @@ import java.util.HashSet;
 
 public class LsubCommand extends AbstractListCommand {
     public LsubCommand(String referenceName, String mailboxName) {
-        super(referenceName, new HashSet<String>(Arrays.asList(mailboxName)));
+        super(referenceName, new HashSet<>(Arrays.asList(mailboxName)));
     }
 }

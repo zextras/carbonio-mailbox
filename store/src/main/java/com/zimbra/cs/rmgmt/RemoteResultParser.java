@@ -38,7 +38,7 @@ public class RemoteResultParser {
         String line;
         int lineNumber = 0;
         
-        Map<String,String> current = new HashMap<String, String>();
+        Map<String,String> current = new HashMap<>();
         int currentMapStartLineNumber = 1;
         
         while ((line = in.readLine()) != null) {
@@ -52,7 +52,7 @@ public class RemoteResultParser {
             		continue;
             	
             	visitor.handle(currentMapStartLineNumber, current);
-                current = new HashMap<String, String>();
+                current = new HashMap<>();
                 currentMapStartLineNumber = lineNumber + 1;
             } else {
                 current.put(matcher.group(KEY_GROUP), matcher.group(VALUE_GROUP));

@@ -138,7 +138,7 @@ public class DbConfig {
 
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        HashMap<String, DbConfig> result = new HashMap<String, DbConfig>();
+        HashMap<String, DbConfig> result = new HashMap<>();
         try {
             if (ts == null) {
                 stmt = conn.prepareStatement("SELECT * FROM config");

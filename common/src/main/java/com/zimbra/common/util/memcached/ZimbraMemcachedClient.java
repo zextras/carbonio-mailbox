@@ -129,7 +129,7 @@ public class ZimbraMemcachedClient {
         if (servers != null && servers.length > 0) {
             // Eliminate duplicates and sort case-insensitively.  This negates operator error
             // configuring server list with inconsistent order on different memcached clients.
-            TreeSet<String> tset = new TreeSet<String>();  // TreeSet provides deduping and sorting.
+            TreeSet<String> tset = new TreeSet<>();  // TreeSet provides deduping and sorting.
           for (String server : servers) {
             tset.add(server.toLowerCase());
           }
@@ -209,7 +209,7 @@ public class ZimbraMemcachedClient {
      */
     private static List<InetSocketAddress> parseServerList(String[] servers) {
         if (servers != null) {
-            List<InetSocketAddress> addrs = new ArrayList<InetSocketAddress>(servers.length);
+            List<InetSocketAddress> addrs = new ArrayList<>(servers.length);
             for (String server : servers) {
                 if (server.length() == 0)
                     continue;
@@ -239,7 +239,7 @@ public class ZimbraMemcachedClient {
             }
             return addrs;
         } else {
-            return new ArrayList<InetSocketAddress>(0);
+            return new ArrayList<>(0);
         }
     }
 
@@ -341,7 +341,7 @@ public class ZimbraMemcachedClient {
         // Make sure the returned map contains an entry for every key passed in.  Add null value
         // for any keys missing from memcached response.
         if (value == null)
-            value = new HashMap<String, Object>(keys.size());
+            value = new HashMap<>(keys.size());
         for (String key : keys) {
             if (!value.containsKey(key))
                 value.put(key, null);
@@ -519,7 +519,7 @@ public class ZimbraMemcachedClient {
         private static final String FN_CHECKSUM = "cs";
 
         public String encode() {
-            Map<String, Long> map = new HashMap<String, Long>();
+            Map<String, Long> map = new HashMap<>();
             map.put(FN_NUM_CHUNKS, (long) mNumChunks);
             map.put(FN_FINGERPRINT, mFingerprint);
             for (int i = 0; i < mNumChunks; ++i) {
@@ -894,7 +894,7 @@ public class ZimbraMemcachedClient {
             ZimbraLog.misc.warn("Big byte array TOC has numChunks=0");
             return null;
         }
-        List<String> chunkKeys = new ArrayList<String>(numChunks);
+        List<String> chunkKeys = new ArrayList<>(numChunks);
         for (int i = 0; i < numChunks; ++i) {
             String ck = key + ":" + toc.getFingerprint() + "." + i;
             chunkKeys.add(ck);
@@ -1002,7 +1002,7 @@ public class ZimbraMemcachedClient {
 
         private boolean testInteger(ZimbraMemcachedClient client, int reps) throws Exception {
             MemcachedMap<TestKey, Integer> map =
-                new MemcachedMap<TestKey, Integer>(client, new IntegerSerializer());
+                new MemcachedMap<>(client, new IntegerSerializer());
             TestKey foo = new TestKey("fooInt");
             int val1 = 1234567890;
 
@@ -1031,7 +1031,7 @@ public class ZimbraMemcachedClient {
         private boolean testString(ZimbraMemcachedClient client, String testName, int dataLen, int reps)
         throws Exception {
             MemcachedMap<TestKey, String> map =
-                new MemcachedMap<TestKey, String>(client, new StringSerializer());
+                new MemcachedMap<>(client, new StringSerializer());
             TestKey foo = new TestKey("fooStr");
             StringBuilder sb = new StringBuilder(dataLen + 20);
             while (sb.length() < dataLen) {
@@ -1068,7 +1068,7 @@ public class ZimbraMemcachedClient {
         private boolean testBBA(ZimbraMemcachedClient client, String testName, int dataLen, int reps)
         throws Exception {
             BigByteArrayMemcachedMap<TestKey, ByteArray> map =
-                new BigByteArrayMemcachedMap<TestKey, ByteArray>(client, new BBASerializer());
+                new BigByteArrayMemcachedMap<>(client, new BBASerializer());
             TestKey foo = new TestKey("fooBBA");
             StringBuilder sb = new StringBuilder(dataLen + 20);
             while (sb.length() < dataLen) {

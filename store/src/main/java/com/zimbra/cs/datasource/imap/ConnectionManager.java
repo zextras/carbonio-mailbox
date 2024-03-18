@@ -39,7 +39,7 @@ import javax.security.auth.login.LoginException;
 
 final class ConnectionManager {
   private Map<String, ImapConnection> connections =
-      Collections.synchronizedMap(new HashMap<String, ImapConnection>());
+      Collections.synchronizedMap(new HashMap<>());
 
   private static final ConnectionManager INSTANCE = new ConnectionManager();
 
@@ -199,7 +199,7 @@ final class ConnectionManager {
 
   public static ImapConfig newImapConfig(DataSource ds) {
     ImapConfig config = new ImapConfig();
-    Map<String, String> props = new HashMap<String, String>();
+    Map<String, String> props = new HashMap<>();
     config.setHost(ds.getHost());
     config.setPort(ds.getPort());
     config.setAuthenticationId(ds.getUsername());

@@ -263,7 +263,7 @@ public class SpamExtract {
 
                 StringBuilder deleteList = new StringBuilder();
 
-                List<String> ids = new ArrayList<String>();
+                List<String> ids = new ArrayList<>();
                 for (Iterator<Element> iter = searchResp.elementIterator(MailConstants.E_MSG); iter.hasNext();) {
                     offset++;
                     Element e = iter.next();
@@ -348,7 +348,7 @@ public class SpamExtract {
     private static final int MAX_BUFFER_SIZE = 10 * 1024 * 1024;
 
     private static List<String> extractMessages(HttpClientBuilder hc, HttpGet gm, String path, File outdir, boolean raw) throws HttpException, IOException {
-        List<String> extractedIds = new ArrayList<String>();
+        List<String> extractedIds = new ArrayList<>();
         HttpClient client = hc.build();
       
         if (LOG.isDebugEnabled()) {

@@ -257,7 +257,7 @@ public class UserServletUtil {
 
             if (context.jwtAuthAllowed()) {
                 try {
-                    Map <Object, Object> engineCtxt = new HashMap<Object, Object>();
+                    Map <Object, Object> engineCtxt = new HashMap<>();
                     engineCtxt.put(SoapServlet.SERVLET_REQUEST, context.req);
                     AuthToken at = AuthProvider.getJWToken(null, engineCtxt);
                     if (at != null) {
@@ -385,7 +385,7 @@ public class UserServletUtil {
 
                 if (c.isContactGroup()) {
                   // first add all the fields and values
-                  HashMap<String, String> nContacts = new HashMap<String, String>(c.getFields());
+                  HashMap<String, String> nContacts = new HashMap<>(c.getFields());
                     // remove groupMemeber
                     nContacts.remove(ContactConstants.A_groupMember);
                     // then re-calculate the dlist as in 7.X

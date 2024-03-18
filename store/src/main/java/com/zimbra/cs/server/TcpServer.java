@@ -62,12 +62,12 @@ public abstract class TcpServer implements Runnable, Server {
         // Idle threads are aged out of the pool after X minutes.
         int keepAlive = config != null ? config.getThreadKeepAliveTime() : 2 * 60;
         pooledExecutor = new ThreadPoolExecutor(1, maxThreads, keepAlive, TimeUnit.SECONDS,
-                new SynchronousQueue<Runnable>(), new TcpThreadFactory(getName(), false, Thread.NORM_PRIORITY));
+            new SynchronousQueue<>(), new TcpThreadFactory(getName(), false, Thread.NORM_PRIORITY));
 
         // TODO a linked list is probably the wrong datastructure here
         // TODO write tests with multiple concurrent client
         // TODO write some tests for shutdown/startup
-        activeHandlers = new LinkedList<ProtocolHandler>();
+        activeHandlers = new LinkedList<>();
     }
 
     @Override
@@ -250,7 +250,7 @@ public abstract class TcpServer implements Runnable, Server {
 
     protected Set<String> getThrottleSafeHosts() throws ServiceException {
 
-        Set<String> safeHosts = new HashSet<String>();
+        Set<String> safeHosts = new HashSet<>();
         for (com.zimbra.cs.account.Server server : Provisioning.getInstance().getAllServers()) {
             safeHosts.add(server.getServiceHostname());
         }
@@ -260,7 +260,7 @@ public abstract class TcpServer implements Runnable, Server {
 
     protected Set<String> getThrottleWhitelist() throws ServiceException {
 
-        Set<String> safeHosts = new HashSet<String>();
+        Set<String> safeHosts = new HashSet<>();
       safeHosts.addAll(Arrays.asList(config.getThrottleWhitelist()));
         return safeHosts;
     }

@@ -122,7 +122,7 @@ public abstract class ImapHandler {
 
     protected enum ImapExtension { CONDSTORE, QRESYNC }
 
-    private static final Set<String> SUPPORTED_EXTENSIONS = new LinkedHashSet<String>(Arrays.asList(
+    private static final Set<String> SUPPORTED_EXTENSIONS = new LinkedHashSet<>(Arrays.asList(
         "ACL", "BINARY", "CATENATE", "CHILDREN", "CONDSTORE", "ENABLE", "ESEARCH", "ESORT",
         "I18NLEVEL=1", "ID", "IDLE", "LIST-EXTENDED", "LIST-STATUS", "LITERAL+", "LOGIN-REFERRALS",
         "MULTIAPPEND", "NAMESPACE", "QRESYNC", "QUOTA", "RIGHTS=ektx", "SASL-IR", "SEARCHRES",
@@ -493,7 +493,7 @@ public abstract class ImapHandler {
                     checkEOF(tag, req);
                     return doAUTHENTICATE(tag, mechanism, response);
                 } else if (command.equals("APPEND")) {
-                    List<AppendMessage> appends = new ArrayList<AppendMessage>(1);
+                    List<AppendMessage> appends = new ArrayList<>(1);
                     req.skipSpace();
                     ImapPath path = new ImapPath(req.readFolder(), credentials);
                     do {
@@ -578,7 +578,7 @@ public abstract class ImapHandler {
                     checkEOF(tag, req);
                     return doEXAMINE(tag, path, params, qri);
                 } else if (command.equals("ENABLE") && extensionEnabled("ENABLE")) {
-                    List<String> extensions = new ArrayList<String>();
+                    List<String> extensions = new ArrayList<>();
                     do {
                         req.skipSpace();
                         extensions.add(req.readATOM());
@@ -589,7 +589,7 @@ public abstract class ImapHandler {
                 break;
             case 'F':
                 if (command.equals("FETCH")) {
-                    List<ImapPartSpecifier> parts = new ArrayList<ImapPartSpecifier>();
+                    List<ImapPartSpecifier> parts = new ArrayList<>();
                     int modseq = -1;
                     req.skipSpace();  String sequence = req.readSequence();
                     req.skipSpace();  int attributes = req.readFetch(parts);
@@ -657,7 +657,7 @@ public abstract class ImapHandler {
                     checkEOF(tag, req);
                     return doLOGOUT(tag);
                 } else if (command.equals("LIST")) {
-                    Set<String> patterns = new LinkedHashSet<String>(2);
+                    Set<String> patterns = new LinkedHashSet<>(2);
                     boolean parenthesized = false;
                     byte selectOptions = 0;
                     byte returnOptions = 0;
@@ -865,7 +865,7 @@ public abstract class ImapHandler {
                     }
                     req.skipChar('(');
                     boolean desc = false;
-                    List<SortBy> order = new ArrayList<SortBy>(2);
+                    List<SortBy> order = new ArrayList<>(2);
                     do {
                         if (desc || !order.isEmpty()) {
                             req.skipSpace();
@@ -923,7 +923,7 @@ public abstract class ImapHandler {
                     }
                     return doSETACL(tag, path, principal, i4rights, action);
                 } else if (command.equals("SETQUOTA") && extensionEnabled("QUOTA")) {
-                    Map<String, String> limits = new HashMap<String, String>();
+                    Map<String, String> limits = new HashMap<>();
                     req.skipSpace();
                     req.readAstring(); // qroot
                     req.skipSpace();
@@ -1361,7 +1361,7 @@ public abstract class ImapHandler {
             return;
         }
         //RFC 2971 section 3.3; fields are not case sensitive
-        Map<String, String> fields = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+        Map<String, String> fields = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         fields.putAll(paramFields);
         String ip = fields.get(IDInfo.X_ORIGINATING_IP);
         if (ip != null) {
@@ -1432,7 +1432,7 @@ public abstract class ImapHandler {
         }
         StringBuilder enabled = new StringBuilder("ENABLED");
 
-        List<ImapExtension> targets = new ArrayList<ImapExtension>(extensions.size());
+        List<ImapExtension> targets = new ArrayList<>(extensions.size());
         for (String ext : extensions) {
             // RFC 5161 3.1: "If the argument is not an extension known to the server,
             //                the server MUST ignore the argument."
@@ -1471,7 +1471,7 @@ public abstract class ImapHandler {
             return;
         }
         if (activeExtensions == null) {
-            activeExtensions = new HashSet<ImapExtension>(1);
+            activeExtensions = new HashSet<>(1);
         }
         activeExtensions.add(ext);
     }
@@ -1717,7 +1717,7 @@ public abstract class ImapHandler {
 
         if(!Provisioning.canUseLocalIMAP(account) && !ZimbraAuthenticator.MECHANISM.equals(mechanism)) {
             List<Server> preferredServers = Provisioning.getPreferredIMAPServers(account);
-            List<String> preferredServerHostnames = new ArrayList<String>();
+            List<String> preferredServerHostnames = new ArrayList<>();
             for (Server server: preferredServers){
                 preferredServerHostnames.add(server.getServiceHostname());
             }
@@ -2145,13 +2145,13 @@ public abstract class ImapHandler {
 
         int paginationSize = LC.zimbra_imap_folder_pagination_size.intValue();
         boolean imapFolderPaginationEnabled = LC.zimbra_imap_folder_pagination_enabled.booleanValue();
-        Map<ImapPath, Object> ownerMatches = new TreeMap<ImapPath, Object>();
-        Map<ImapPath, Object> mountMatches = new TreeMap<ImapPath, Object>();
-        Map<ImapPath, ItemId> ownerPaths = new HashMap<ImapPath, ItemId>();
-        Map<ImapPath, ItemId> mountPaths = new HashMap<ImapPath, ItemId>();
-        Set<ImapPath> ownerSelected = new HashSet<ImapPath>();
-        Set<ImapPath> mountSelected = new HashSet<ImapPath>();
-        List<Pattern> patterns = new ArrayList<Pattern>(mailboxNames.size());
+        Map<ImapPath, Object> ownerMatches = new TreeMap<>();
+        Map<ImapPath, Object> mountMatches = new TreeMap<>();
+        Map<ImapPath, ItemId> ownerPaths = new HashMap<>();
+        Map<ImapPath, ItemId> mountPaths = new HashMap<>();
+        Set<ImapPath> ownerSelected = new HashSet<>();
+        Set<ImapPath> mountSelected = new HashSet<>();
+        List<Pattern> patterns = new ArrayList<>(mailboxNames.size());
         try {
             if (returnSubscribed) {
                 remoteSubscriptions = credentials.listSubscriptions();
@@ -2264,7 +2264,7 @@ public abstract class ImapHandler {
                 // send owners list first
                 Iterable<List<ImapPath>> ownerLists = Iterables.partition(ownerSelected, paginationSize);
                 for (List<ImapPath> listChunk: ownerLists) {
-                  Set<ImapPath> ownerSelectedChunk = new HashSet<ImapPath>(listChunk);
+                  Set<ImapPath> ownerSelectedChunk = new HashSet<>(listChunk);
                     populateFoldersList(ownerPaths, ownerSelectedChunk, ownerMatches, returnOptions, remoteSubscriptions, patterns, command, status, selectRecursive, false);
 
                     if (!ownerMatches.isEmpty()) {
@@ -2279,7 +2279,7 @@ public abstract class ImapHandler {
                         }
                     }
                     ownerMatches = null;
-                    ownerMatches = new TreeMap<ImapPath, Object>();
+                    ownerMatches = new TreeMap<>();
                 }
                 ownerLists = null;
                 ownerMatches = null;
@@ -2288,7 +2288,7 @@ public abstract class ImapHandler {
                 // send shared(mounted) folders list
                 Iterable<List<ImapPath>> sharedLists = Iterables.partition(mountSelected, paginationSize);
                 for (List<ImapPath> listChunk: sharedLists) {
-                  Set<ImapPath> mountSelectedChunk = new HashSet<ImapPath>(listChunk);
+                  Set<ImapPath> mountSelectedChunk = new HashSet<>(listChunk);
                     populateFoldersList(mountPaths, mountSelectedChunk, mountMatches, returnOptions, remoteSubscriptions, patterns, command, status, selectRecursive, true);
 
                     if (!mountMatches.isEmpty()) {
@@ -2303,7 +2303,7 @@ public abstract class ImapHandler {
                         }
                     }
                     mountMatches = null;
-                    mountMatches = new TreeMap<ImapPath, Object>();
+                    mountMatches = new TreeMap<>();
                 }
                 sharedLists = null;
                 mountMatches = null;
@@ -2420,7 +2420,7 @@ public abstract class ImapHandler {
             previousStar = (c == '*');
             previousPercent = (c == '%');
         }
-        return new Pair<String, Pattern>(resolved, Pattern.compile(escaped.toString()));
+        return new Pair<>(resolved, Pattern.compile(escaped.toString()));
     }
 
     private void accumulatePaths(ImapMailboxStore imapStore, String owner, ImapPath relativeTo,
@@ -2608,7 +2608,7 @@ public abstract class ImapHandler {
             // you cannot access your own mailbox via the /home/username mechanism
             String owner = patternPath.getOwner();
             if (owner == null || owner.indexOf('*') != -1 || owner.indexOf('%') != -1 || !patternPath.belongsTo(credentials)) {
-                Map<SubscribedImapPath, Boolean> hits = new HashMap<SubscribedImapPath, Boolean>();
+                Map<SubscribedImapPath, Boolean> hits = new HashMap<>();
 
                 if (owner == null) {
                     MailboxStore mbox = credentials.getMailbox();
@@ -2640,7 +2640,7 @@ public abstract class ImapHandler {
                     }
                 }
 
-                subscriptions = new ArrayList<String>(hits.size());
+                subscriptions = new ArrayList<>(hits.size());
                 for (Entry<SubscribedImapPath, Boolean> hit : hits.entrySet()) {
                     String attrs = hit.getValue() ? "" : "\\NoSelect";
                     subscriptions.add("LSUB (" + attrs + ") \"/\" " + hit.getKey().asUtf7String());
@@ -2856,7 +2856,7 @@ public abstract class ImapHandler {
             return true;
         }
         ImapMailboxStore mboxStore = null;
-        List<Integer> createdIds = new ArrayList<Integer>(appends.size());
+        List<Integer> createdIds = new ArrayList<>(appends.size());
         StringBuilder appendHint = extensionEnabled("UIDPLUS") ? new StringBuilder() : null;
         OperationContext octxt = getContextOrNull();
         try {
@@ -3526,7 +3526,7 @@ public abstract class ImapHandler {
         synchronized (i4folder.getMailbox()) {
             i4set = sequenceSet == null ? null : i4folder.getSubsequence(tag, sequenceSet, true);
         }
-        List<Integer> ids = new ArrayList<Integer>(SUGGESTED_DELETE_BATCH_SIZE);
+        List<Integer> ids = new ArrayList<>(SUGGESTED_DELETE_BATCH_SIZE);
 
         boolean changed = false;
         long checkpoint = System.currentTimeMillis();
@@ -3540,7 +3540,7 @@ public abstract class ImapHandler {
             }
 
             if (ids.size() >= (i == max ? 1 : SUGGESTED_DELETE_BATCH_SIZE)) {
-                List<Integer> nonExistingItems = new ArrayList<Integer>();
+                List<Integer> nonExistingItems = new ArrayList<>();
                 ZimbraLog.imap.debug("  ** deleting: %s", ids);
                 selectedMailbox.delete(getContext(), ids, nonExistingItems);
                 ids.clear();
@@ -3627,7 +3627,7 @@ public abstract class ImapHandler {
                     mboxStore.unlock();
                 }
             } else {
-                hits = unsorted ? new ImapMessageSet() : new ArrayList<ImapMessage>();
+                hits = unsorted ? new ImapMessageSet() : new ArrayList<>();
                 try (ZimbraQueryHitResults zqr = runSearch(i4search, i4folder, sort,
                     requiresMODSEQ ? SearchParams.Fetch.MODSEQ : SearchParams.Fetch.IDS)) {
                     for (ZimbraQueryHit hit = zqr.getNext(); hit != null; hit = zqr.getNext()) {
@@ -3782,7 +3782,7 @@ public abstract class ImapHandler {
         if (requiresMODSEQ && !sessionActivated(ImapExtension.CONDSTORE)) {
             throw new ImapParseException(tag, "NOMODSEQ", "cannot THREAD MODSEQ in this mailbox", true);
         }
-        LinkedHashMap<Integer, List<ImapMessage>> threads = new LinkedHashMap<Integer, List<ImapMessage>>();
+        LinkedHashMap<Integer, List<ImapMessage>> threads = new LinkedHashMap<>();
         try {
             // RFC 5256 3: "The searched messages are sorted by base subject and then
             //              by the sent date.  The messages are then split into separate
@@ -3804,7 +3804,7 @@ public abstract class ImapHandler {
 
                     List<ImapMessage> contents = threads.get(parentId);
                     if (contents == null) {
-                        (contents = new LinkedList<ImapMessage>()).add(i4msg);
+                        (contents = new LinkedList<>()).add(i4msg);
                         threads.put(parentId, contents);
                     } else {
                         contents.add(i4msg);
@@ -3899,7 +3899,7 @@ public abstract class ImapHandler {
         if (!modseqEnabled && (attributes & FETCH_MODSEQ) != 0) {
             throw new ImapParseException(tag, "NOMODSEQ", "cannot FETCH MODSEQ in this mailbox", true);
         }
-        List<ImapPartSpecifier> fullMessage = new ArrayList<ImapPartSpecifier>();
+        List<ImapPartSpecifier> fullMessage = new ArrayList<>();
         if (parts != null && !parts.isEmpty()) {
             for (Iterator<ImapPartSpecifier> it = parts.iterator(); it.hasNext(); ) {
                 ImapPartSpecifier pspec = it.next();
@@ -4240,7 +4240,7 @@ public abstract class ImapHandler {
         ImapMessageSet modifyConflicts = modseqEnabled ? new ImapMessageSet() : null;
 
         String command = (byUID ? "UID STORE" : "STORE");
-        List<Tag> newTags = (operation != StoreAction.REMOVE ? new ArrayList<Tag>() : null);
+        List<Tag> newTags = (operation != StoreAction.REMOVE ? new ArrayList<>() : null);
         MailboxStore mbox = selectedFolderListener.getMailbox();
 
         Set<ImapMessage> i4set;
@@ -4258,7 +4258,7 @@ public abstract class ImapHandler {
             List<String> tags = Lists.newArrayList();
 
              //just Flag objects, no need to convert Tag objects to ImapFlag here
-            Set<ImapFlag> i4flags = new HashSet<ImapFlag>(flagNames.size());
+            Set<ImapFlag> i4flags = new HashSet<>(flagNames.size());
 
             for (String name : flagNames) {
                 ImapFlag i4flag = i4folder.getFlagByName(name);
@@ -4297,8 +4297,8 @@ public abstract class ImapHandler {
             long checkpoint = System.currentTimeMillis();
 
             int i = 0;
-            List<ImapMessage> i4list = new ArrayList<ImapMessage>(SUGGESTED_BATCH_SIZE);
-            List<Integer> idlist = new ArrayList<Integer>(SUGGESTED_BATCH_SIZE);
+            List<ImapMessage> i4list = new ArrayList<>(SUGGESTED_BATCH_SIZE);
+            List<Integer> idlist = new ArrayList<>(SUGGESTED_BATCH_SIZE);
             for (ImapMessage msg : i4set) {
                 // we're sending 'em off in batches of 100
                 i4list.add(msg);  idlist.add(msg.msgId);
@@ -4651,7 +4651,7 @@ public abstract class ImapHandler {
             return;
         }
 
-        List<String> notifications = new ArrayList<String>();
+        List<String> notifications = new ArrayList<>();
         // XXX: is this the right thing to synchronize on?
         mbox.lock(true);
         try {

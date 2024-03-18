@@ -86,7 +86,7 @@ public final class ResponseText {
     }
 
     private String[] readCharset(ImapInputStream is) throws IOException {
-        ArrayList<String> cs = new ArrayList<String>();
+        ArrayList<String> cs = new ArrayList<>();
         is.skipChar('(');
         is.skipSpaces();
         while (!is.match(')')) {

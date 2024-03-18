@@ -225,7 +225,7 @@ public class Contact extends MailItem {
 
             if (fields != null) {
                 // remove dlist if it is there
-                List<String> temp = new ArrayList<String>(fields.length);
+                List<String> temp = new ArrayList<>(fields.length);
                 for (String field : fields) {
                     if (!ContactConstants.A_dlist.equals(field))
                         temp.add(field);
@@ -279,12 +279,12 @@ public class Contact extends MailItem {
 
     /** Returns a new <tt>Map</tt> containing all the contact's field/value pairs. */
     public Map<String, String> getAllFields() {
-        return new HashMap<String, String>(fields);
+        return new HashMap<>(fields);
     }
 
     /** Returns a new <tt>Map</tt> containing all the visible field/value pairs in the contact. */
     public Map<String, String> getFields() {
-        HashMap<String, String> result = new HashMap<String, String>(fields);
+        HashMap<String, String> result = new HashMap<>(fields);
         try {
             String hiddenAttrList = Provisioning.getInstance().getLocalServer().getContactHiddenAttributes();
             if (hiddenAttrList != null) {
@@ -307,7 +307,7 @@ public class Contact extends MailItem {
         if (attachments == null) {
             return Collections.emptyList();
         }
-        return new ArrayList<Attachment>(attachments);
+        return new ArrayList<>(attachments);
     }
 
     /**
@@ -598,7 +598,7 @@ public class Contact extends MailItem {
 
     public static final List<String> getEmailAddresses(String[] fieldNames,
             Map<String, String> fields, DerefGroupMembersOption derefGroupMemberOpt, String ownerAcctId) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (String name : fieldNames) {
             String addr = fields.get(name);
             if (addr != null && !addr.trim().isEmpty()) {
@@ -802,7 +802,7 @@ public class Contact extends MailItem {
 
             MetadataList mlAttach = meta.getList(Metadata.FN_ATTACHMENTS, true);
             if (mlAttach != null) {
-                attachments = new ArrayList<Attachment>(mlAttach.size());
+                attachments = new ArrayList<>(mlAttach.size());
                 for (int i = 0; i < mlAttach.size(); i++) {
                     Metadata attachMeta = mlAttach.getMap(i);
                     String fieldName = attachMeta.get(Attachment.FN_FIELD);
@@ -820,7 +820,7 @@ public class Contact extends MailItem {
             metaAttrs = meta;
         }
 
-        fields = new HashMap<String, String>();
+        fields = new HashMap<>();
         for (Map.Entry<String, ?> entry : metaAttrs.asMap().entrySet()) {
             fields.put(entry.getKey(), entry.getValue().toString());
         }

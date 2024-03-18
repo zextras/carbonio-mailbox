@@ -56,7 +56,7 @@ public class ListUtil {
         if (lhs.size() != rhs.size())
             return false;
 
-      HashSet<T> set = new HashSet<T>(lhs);
+      HashSet<T> set = new HashSet<>(lhs);
         for (T t: rhs) {
             if (!set.remove(t))
                 return false;
@@ -173,7 +173,7 @@ public class ListUtil {
      */
     public static <T> List<T> subtractSortedLists(
             List<T> a, List<T> b, Comparator<T> comparator) {
-        List<T> result = new ArrayList<T>(a.size());
+        List<T> result = new ArrayList<>(a.size());
 
         Iterator<T> aIter = a.iterator();
         Iterator<T> bIter = b.iterator();
@@ -230,18 +230,18 @@ public class ListUtil {
         if (c == null) {
             return null;
         }
-        List<List<E>> splitLists = new ArrayList<List<E>>();
+        List<List<E>> splitLists = new ArrayList<>();
         if (c.size() == 0) {
             return splitLists;
         }
 
-        List<E> curList = new ArrayList<E>(listSize);
+        List<E> curList = new ArrayList<>(listSize);
         int i = 0;
 
         for (E item : c) {
             if (i == listSize) {
                 splitLists.add(curList);
-                curList = new ArrayList<E>(listSize);
+                curList = new ArrayList<>(listSize);
                 i = 0;
             }
             curList.add(item);
@@ -260,7 +260,7 @@ public class ListUtil {
 
             int i = 0;
 
-            in[i] = new ArrayList<Integer>();
+            in[i] = new ArrayList<>();
             in[i].add(1);
             in[i].add(3);
             in[i].add(5);
@@ -268,7 +268,7 @@ public class ListUtil {
             in[i].add(9);
 
             i = 1;
-            in[i] = new ArrayList<Integer>();
+            in[i] = new ArrayList<>();
             in[i].add(1);
             in[i].add(7);
             in[i].add(12);
@@ -276,7 +276,7 @@ public class ListUtil {
             in[i].add(13);
 
             i = 2;
-            in[i] = new ArrayList<Integer>();
+            in[i] = new ArrayList<>();
             in[i].add(1);
             in[i].add(2);
             in[i].add(3);
@@ -284,7 +284,7 @@ public class ListUtil {
             in[i].add(5);
 
             i = 3;
-            in[i] = new ArrayList<Integer>();
+            in[i] = new ArrayList<>();
             in[i].add(5);
             in[i].add(6);
             in[i].add(7);
@@ -292,7 +292,7 @@ public class ListUtil {
             in[i].add(9);
 
             i = 4;
-            in[i] = new ArrayList<Integer>();
+            in[i] = new ArrayList<>();
             in[i].add(100);
             in[i].add(101);
             in[i].add(102);
@@ -301,7 +301,7 @@ public class ListUtil {
 
             List<Integer> test;
 
-            test = new ArrayList<Integer>();
+            test = new ArrayList<>();
             mergeSortedLists(test, in, false);
             System.out.print("DUPES_NOT_REMOVED: ");
             for (Integer cur : test) {
@@ -309,7 +309,7 @@ public class ListUtil {
             }
             System.out.println();
 
-            test = new ArrayList<Integer>();
+            test = new ArrayList<>();
             mergeSortedLists(test, in, true);
             System.out.print("DUPES_REMOVED: ");
             for (Integer cur : test) {

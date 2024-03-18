@@ -28,7 +28,7 @@ public class AuthTokenKey {
     private byte[] mKey;
     private long mVersion;
     private long mCreated;
-    private static HashMap<String, AuthTokenKey> mCache = new HashMap<String, AuthTokenKey>();
+    private static HashMap<String, AuthTokenKey> mCache = new HashMap<>();
     private static AuthTokenKey sLatestKey;
     
     public byte[] getKey() {
@@ -131,7 +131,7 @@ public class AuthTokenKey {
         // bootstrap. automatically create new random key
         if (keys.length == 0) {
             AuthTokenKey key = new AuthTokenKey(0, null);
-            HashMap<String, String> attrs = new HashMap<String, String>();
+            HashMap<String, String> attrs = new HashMap<>();
             attrs.put(Provisioning.A_zimbraAuthTokenKey, key.getEncoded());
             Provisioning.getInstance().modifyAttrs(config, attrs);
             keys = config.getMultiAttr(Provisioning.A_zimbraAuthTokenKey);

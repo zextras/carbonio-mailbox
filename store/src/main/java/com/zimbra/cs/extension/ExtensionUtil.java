@@ -25,9 +25,9 @@ import com.zimbra.cs.redolog.op.RedoableOp;
 
 public class ExtensionUtil {
 
-    private static List<ZimbraExtensionClassLoader> sClassLoaders = new ArrayList<ZimbraExtensionClassLoader>();
+    private static List<ZimbraExtensionClassLoader> sClassLoaders = new ArrayList<>();
     private static ClassLoader sExtParentClassLoader;
-    private static Map<String, ZimbraExtension> sInitializedExtensions = new LinkedHashMap<String, ZimbraExtension>();
+    private static Map<String, ZimbraExtension> sInitializedExtensions = new LinkedHashMap<>();
 
 
     public static URL[] dirListToURLs(File dir) {
@@ -35,7 +35,7 @@ public class ExtensionUtil {
         if (files == null) {
             return null;
         }
-        List<URL> urls = new ArrayList<URL>(files.length);
+        List<URL> urls = new ArrayList<>(files.length);
       for (File file : files) {
         try {
           URI uri = file.toURI();
@@ -104,7 +104,7 @@ public class ExtensionUtil {
     /** @param matcher - Used to filter which extensions to initialize.  Can be null */
     public static synchronized void initAllMatching(ExtensionMatcher matcher) {
         ZimbraLog.extensions.info("Initializing extensions");
-        List<ZimbraExtensionClassLoader> sClassLoadersToRemove = new ArrayList<ZimbraExtensionClassLoader>();
+        List<ZimbraExtensionClassLoader> sClassLoadersToRemove = new ArrayList<>();
         for (ZimbraExtensionClassLoader zcl : sClassLoaders) {
             for (String name : zcl.getExtensionClassNames()) {
                 try {
@@ -211,7 +211,7 @@ public class ExtensionUtil {
 
     public static synchronized void destroyAll() {
         ZimbraLog.extensions.info("Destroying extensions");
-        List<String> extNames = new ArrayList<String>(sInitializedExtensions.keySet());
+        List<String> extNames = new ArrayList<>(sInitializedExtensions.keySet());
         for (String extName : extNames) {
             ZimbraExtension ext = getExtension(extName);
             try {

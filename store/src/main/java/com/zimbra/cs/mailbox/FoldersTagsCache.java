@@ -32,7 +32,7 @@ public class FoldersTagsCache {
     FoldersTagsCache() {
         ZimbraMemcachedClient memcachedClient = MemcachedConnector.getClient();
         FoldersTagsSerializer serializer = new FoldersTagsSerializer();
-        mMemcachedLookup = new MemcachedMap<FoldersTagsCacheKey, FoldersTags>(memcachedClient, serializer, false);
+        mMemcachedLookup = new MemcachedMap<>(memcachedClient, serializer, false);
     }
 
     static class FoldersTags {
@@ -81,7 +81,7 @@ public class FoldersTagsCache {
         }
 
         public List<Metadata> getFolders() {
-            List<Metadata> toRet = new ArrayList<Metadata>();
+            List<Metadata> toRet = new ArrayList<>();
             List list = mFolders.asList();
             for (Object obj : list) {
                 if (obj instanceof Metadata)
@@ -91,7 +91,7 @@ public class FoldersTagsCache {
         }
 
         public List<Metadata> getTags() {
-            List<Metadata> toRet = new ArrayList<Metadata>();
+            List<Metadata> toRet = new ArrayList<>();
             List list = mTags.asList();
             for (Object obj : list) {
                 if (obj instanceof Metadata)

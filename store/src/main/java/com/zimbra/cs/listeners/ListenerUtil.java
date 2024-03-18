@@ -18,18 +18,19 @@ public class ListenerUtil {
 
     // Method for sorting the listener map based on priorities
     public static <K, V extends Comparable<V>> Map<K, V> sortByPriority(final Map<K, V> map) {
-        Comparator<K> valueComparator = new Comparator<K>() {
+        Comparator<K> valueComparator = new Comparator<>() {
 
-            public int compare(K k1, K k2) {
-                int compare = map.get(k1).compareTo(map.get(k2));
-                if (compare == 0)
-                    return 1;
-                else
-                    return compare;
+          public int compare(K k1, K k2) {
+            int compare = map.get(k1).compareTo(map.get(k2));
+            if (compare == 0) {
+              return 1;
+            } else {
+              return compare;
             }
+          }
         };
 
-        Map<K, V> sortedByPriorities = new TreeMap<K, V>(valueComparator);
+        Map<K, V> sortedByPriorities = new TreeMap<>(valueComparator);
         sortedByPriorities.putAll(map);
         return sortedByPriorities;
     }

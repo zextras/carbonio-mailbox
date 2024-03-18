@@ -877,7 +877,7 @@ public class ZoneInfoParser {
 
         public Rule(String name) {
             mName = name;
-            mRuleLines = new ArrayList<RuleLine>();
+            mRuleLines = new ArrayList<>();
         }
 
         public String getName() { return mName; }
@@ -892,8 +892,8 @@ public class ZoneInfoParser {
 
         public Zone(String name) {
             mName = name;
-            mZoneLines = new TreeSet<ZoneLine>();
-            mAliases = new TreeSet<String>();  // sorted
+            mZoneLines = new TreeSet<>();
+            mAliases = new TreeSet<>();  // sorted
         }
 
         public String getName() { return mName; }
@@ -912,11 +912,11 @@ public class ZoneInfoParser {
     private final List<Leap> mLeaps;
 
     public ZoneInfoParser() {
-        mRules = new HashMap<String, Rule>();
-        mZones = new HashMap<String, Zone>();
-        mLinks = new HashMap<String, String>();
+        mRules = new HashMap<>();
+        mZones = new HashMap<>();
+        mLinks = new HashMap<>();
         mLinks.put("Etc/UTC", "UTC");  // Map Etc/UTC to built-in "UTC" time zone.
-        mLeaps = new ArrayList<Leap>();
+        mLeaps = new ArrayList<>();
     }
 
     private static enum LineType {
@@ -945,7 +945,7 @@ public class ZoneInfoParser {
         tokenizer.quoteChar(dquote);
         tokenizer.eolIsSignificant(true);
 
-        List<String> tokenList = new ArrayList<String>();
+        List<String> tokenList = new ArrayList<>();
         LineType lineType = LineType.UNKNOWN;
         boolean atLineStart = true;
 
@@ -1046,8 +1046,8 @@ public class ZoneInfoParser {
       }
 
         // Flatten links map.
-        List<String> aliasesToRemove = new ArrayList<String>();
-        Map<String, String> flattenedLinks = new HashMap<String, String>();
+        List<String> aliasesToRemove = new ArrayList<>();
+        Map<String, String> flattenedLinks = new HashMap<>();
       for (Entry<String, String> lentry : mLinks.entrySet()) {
         String alias = lentry.getKey();
         String real = lentry.getValue();

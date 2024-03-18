@@ -94,7 +94,7 @@ public class DeleteHeader extends AbstractCommand {
         }
         ehe.setEffectiveIndex(headerCount);
         int matchIndex = 0;
-        Set<String> removedHeaders = new HashSet<String>();
+        Set<String> removedHeaders = new HashSet<>();
 
         try {
             boolean hasEdited = false;

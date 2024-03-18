@@ -63,8 +63,8 @@ class ChartSettings {
         mPlotZero = plotZero;
         mWidth = width;
         mHeight = height;
-        mPlots = new ArrayList<PlotSettings>();
-        mGroupPlots = new ArrayList<GroupPlotSettings>();
+        mPlots = new ArrayList<>();
+        mGroupPlots = new ArrayList<>();
         mDocument = outDoc;
         mTopPlots = topPlots;
         mTopPlotsType = topType;

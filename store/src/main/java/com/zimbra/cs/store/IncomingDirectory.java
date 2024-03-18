@@ -96,7 +96,7 @@ public class IncomingDirectory {
             IncomingDirectorySweeper.sSweptDirectories = Collections.emptyList();
             ZimbraLog.store.debug("Clearing swept directories.");
         } else {
-            IncomingDirectorySweeper.sSweptDirectories = new ArrayList<IncomingDirectory>(swept);
+            IncomingDirectorySweeper.sSweptDirectories = new ArrayList<>(swept);
             if (ZimbraLog.store.isDebugEnabled()) {
                 for (IncomingDirectory inc: swept) {
                     ZimbraLog.store.debug("Adding %s to swept directories.", inc.getPath());

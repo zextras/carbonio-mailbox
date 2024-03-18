@@ -27,7 +27,7 @@ public class DomainCOSMaxAccounts extends AttributeCallback {
         String addAttr = "+" + attr;
         String delAttr = "-" + attr;
             
-        Map<String, String> cur = new HashMap<String, String>();
+        Map<String, String> cur = new HashMap<>();
         
         // parse existing values, if ther are any
         if (entry != null) {
@@ -66,7 +66,7 @@ public class DomainCOSMaxAccounts extends AttributeCallback {
                 
             if (attr.equals(aName)) {
                 // replacing
-                checkDup(new HashMap<String, String>(), vals);
+                checkDup(new HashMap<>(), vals);
             } else if (addAttr.equals(aName)) {
                 // adding
                 checkDup(cur, vals);
@@ -97,7 +97,7 @@ public class DomainCOSMaxAccounts extends AttributeCallback {
             else
                 return null;
         }
-        return new Pair<String, String>(parts[0], parts[1]);
+        return new Pair<>(parts[0], parts[1]);
     }
 
     @Override

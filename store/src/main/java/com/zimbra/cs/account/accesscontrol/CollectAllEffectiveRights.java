@@ -60,8 +60,8 @@ public class CollectAllEffectiveRights {
      *
      */
     public static class GroupShape {
-        Set<String> mGroups = new HashSet<String>();   // groups all entries in mMembers are a member of
-        Set<String> mMembers = new HashSet<String>();  // members belongs to all entries of mGroups
+        Set<String> mGroups = new HashSet<>();   // groups all entries in mMembers are a member of
+        Set<String> mMembers = new HashSet<>();  // members belongs to all entries of mGroups
 
         @Override
         public String toString() {
@@ -128,7 +128,7 @@ public class CollectAllEffectiveRights {
             // Add entries in the new Set back into shapes after iterating
             // through it for this group.
             //
-            Set<GroupShape> newShapes = new HashSet<GroupShape>();
+            Set<GroupShape> newShapes = new HashSet<>();
 
             // holds members in the group being shaped that
             // do not belong to any shape in the current discovered shapes
@@ -175,9 +175,9 @@ public class CollectAllEffectiveRights {
     public static class AllGroupMembers {
         String mGroupName; // name of the group
 
-        Set<String> mAccounts = new HashSet<String>();  // all account members of the group
-        Set<String> mCalendarResources = new HashSet<String>(); // all calendar resource memners of the group
-        Set<String> mDistributionLists = new HashSet<String>(); // all distribution list members of the group
+        Set<String> mAccounts = new HashSet<>();  // all account members of the group
+        Set<String> mCalendarResources = new HashSet<>(); // all calendar resource memners of the group
+        Set<String> mDistributionLists = new HashSet<>(); // all distribution list members of the group
 
         AllGroupMembers(String groupName) {
             mGroupName = groupName;
@@ -205,7 +205,7 @@ public class CollectAllEffectiveRights {
         private final LdapDIT mLdapDIT;
 
         // set of names
-        private final Set<String> mNames = new HashSet<String>();
+        private final Set<String> mNames = new HashSet<>();
 
         Visitor(LdapProv prov) {
             super(false);
@@ -285,7 +285,7 @@ public class CollectAllEffectiveRights {
         }
 
         // we want all target types
-        Set<TargetType> targetTypesToSearch = new HashSet<TargetType>(Arrays.asList(TargetType.values()));
+        Set<TargetType> targetTypesToSearch = new HashSet<>(Arrays.asList(TargetType.values()));
 
         // get the set of zimbraId of the grantees to search for
         Set<String> granteeIdsToSearch = mGrantee.getIdAndGroupIds();
@@ -300,7 +300,7 @@ public class CollectAllEffectiveRights {
         Set<GrantsOnTarget> grantsOnTargets = searchGrants.doSearch().getResults(true);
 
         // staging for group grants
-        Set<Group> groupsWithGrants = new HashSet<Group>();
+        Set<Group> groupsWithGrants = new HashSet<>();
 
         //
         // Stage1
@@ -371,11 +371,11 @@ public class CollectAllEffectiveRights {
          * already an aggregation with the exact the same right.  If there are, then just
          * add the targets to the existing aggregation, instead of adding new ones.
          */
-        Set<String> processedGroups = new HashSet<String>();
+        Set<String> processedGroups = new HashSet<>();
 
-        Set<GroupShape> accountShapes = new HashSet<GroupShape>();
-        Set<GroupShape> calendarResourceShapes = new HashSet<GroupShape>();
-        Set<GroupShape> distributionListShapes = new HashSet<GroupShape>();
+        Set<GroupShape> accountShapes = new HashSet<>();
+        Set<GroupShape> calendarResourceShapes = new HashSet<>();
+        Set<GroupShape> distributionListShapes = new HashSet<>();
 
         for (Group group : groupsWithGrants) {
             String groupName = group.getName().toLowerCase();
@@ -439,7 +439,7 @@ public class CollectAllEffectiveRights {
         // then, for each group shape, generate a RightAggregation and record in the AllEffectiveRights.
         // if any of the entries in a shape also have grants as an individual, the effective rigths for
         // those entries will be replaced in stage 3.
-        Set<String> entryIdsHasGrants = new HashSet<String>();
+        Set<String> entryIdsHasGrants = new HashSet<>();
         for (GrantsOnTarget grantsOnTarget : grantsOnTargets) {
             Entry grantedOnEntry = grantsOnTarget.getTargetEntry();
             if (grantedOnEntry instanceof NamedEntry) {
@@ -489,7 +489,7 @@ public class CollectAllEffectiveRights {
     throws ServiceException {
 
         Set<String> members = group.getAllMembersSet();
-        Set<String> accountMembers = new HashSet<String>(members);  // make a copy, assuming all members are account
+        Set<String> accountMembers = new HashSet<>(members);  // make a copy, assuming all members are account
 
         // expand if a member is a group
         for (String member : members) {
@@ -625,7 +625,7 @@ public class CollectAllEffectiveRights {
 
     private List<Domain> searchSubDomains(Domain domain) throws ServiceException {
 
-        List<Domain> subDomains = new ArrayList<Domain>();
+        List<Domain> subDomains = new ArrayList<>();
 
         String base = mProv.getDIT().domainNameToDN(domain.getName());
         ZLdapFilter filter = ZLdapFilterFactory.getInstance().allDomains();
@@ -654,7 +654,7 @@ public class CollectAllEffectiveRights {
     }
 
     private static class SearchSubDomainVisitor extends SearchLdapVisitor {
-        List<String> mDomainIds = new ArrayList<String>();
+        List<String> mDomainIds = new ArrayList<>();
 
         @Override
         public void visit(String dn, Map<String, Object> attrs, IAttributes ldapAttrs) {
@@ -776,12 +776,12 @@ public class CollectAllEffectiveRights {
 
         // create test
         String domainName = "test.com";
-        Domain domain = prov.createDomain(domainName, new HashMap<String, Object>());
+        Domain domain = prov.createDomain(domainName, new HashMap<>());
 
-        DistributionList groupA = prov.createDistributionList("groupA@"+domainName, new HashMap<String, Object>());
-        DistributionList groupB = prov.createDistributionList("groupB@"+domainName, new HashMap<String, Object>());
-        DistributionList groupC = prov.createDistributionList("groupC@"+domainName, new HashMap<String, Object>());
-        DistributionList groupD = prov.createDistributionList("groupD@"+domainName, new HashMap<String, Object>());
+        DistributionList groupA = prov.createDistributionList("groupA@"+domainName, new HashMap<>());
+        DistributionList groupB = prov.createDistributionList("groupB@"+domainName, new HashMap<>());
+        DistributionList groupC = prov.createDistributionList("groupC@"+domainName, new HashMap<>());
+        DistributionList groupD = prov.createDistributionList("groupD@"+domainName, new HashMap<>());
 
         String pw = "test123";
         Account A = prov.createAccount("A@"+domainName, pw, null);
@@ -827,16 +827,16 @@ public class CollectAllEffectiveRights {
         Provisioning prov = Provisioning.getInstance();
 
         // create test
-        Set<DistributionList> groupsWithGrants = new HashSet<DistributionList>();
+        Set<DistributionList> groupsWithGrants = new HashSet<>();
         String domainName = "test.com";
         groupsWithGrants.add(prov.get(DistributionListBy.name, "groupA@"+domainName));
         groupsWithGrants.add(prov.get(DistributionListBy.name, "groupB@"+domainName));
         groupsWithGrants.add(prov.get(DistributionListBy.name, "groupC@"+domainName));
         groupsWithGrants.add(prov.get(DistributionListBy.name, "groupD@"+domainName));
 
-        Set<GroupShape> accountShapes = new HashSet<GroupShape>();
-        Set<GroupShape> calendarResourceShapes = new HashSet<GroupShape>();
-        Set<GroupShape> distributionListShapes = new HashSet<GroupShape>();
+        Set<GroupShape> accountShapes = new HashSet<>();
+        Set<GroupShape> calendarResourceShapes = new HashSet<>();
+        Set<GroupShape> distributionListShapes = new HashSet<>();
 
         for (DistributionList group : groupsWithGrants) {
             // group is an AclGroup, which contains only upward membership, not downward membership.
@@ -863,12 +863,12 @@ public class CollectAllEffectiveRights {
 
         // create test
         String domainName = "test.com";
-        Domain domain = prov.createDomain(domainName, new HashMap<String, Object>());
+        Domain domain = prov.createDomain(domainName, new HashMap<>());
 
-        DistributionList groupA = prov.createDistributionList("groupA@"+domainName, new HashMap<String, Object>());
-        DistributionList groupB = prov.createDistributionList("groupB@"+domainName, new HashMap<String, Object>());
-        DistributionList groupC = prov.createDistributionList("groupC@"+domainName, new HashMap<String, Object>());
-        DistributionList groupD = prov.createDistributionList("groupD@"+domainName, new HashMap<String, Object>());
+        DistributionList groupA = prov.createDistributionList("groupA@"+domainName, new HashMap<>());
+        DistributionList groupB = prov.createDistributionList("groupB@"+domainName, new HashMap<>());
+        DistributionList groupC = prov.createDistributionList("groupC@"+domainName, new HashMap<>());
+        DistributionList groupD = prov.createDistributionList("groupD@"+domainName, new HashMap<>());
 
         String pw = "test123";
         Account A = prov.createAccount("A@"+domainName, pw, null);
@@ -893,16 +893,16 @@ public class CollectAllEffectiveRights {
         Provisioning prov = Provisioning.getInstance();
 
         // create test
-        Set<DistributionList> groupsWithGrants = new HashSet<DistributionList>();
+        Set<DistributionList> groupsWithGrants = new HashSet<>();
         String domainName = "test.com";
         groupsWithGrants.add(prov.get(DistributionListBy.name, "groupA@"+domainName));
         groupsWithGrants.add(prov.get(DistributionListBy.name, "groupB@"+domainName));
         groupsWithGrants.add(prov.get(DistributionListBy.name, "groupC@"+domainName));
         groupsWithGrants.add(prov.get(DistributionListBy.name, "groupD@"+domainName));
 
-        Set<GroupShape> accountShapes = new HashSet<GroupShape>();
-        Set<GroupShape> calendarResourceShapes = new HashSet<GroupShape>();
-        Set<GroupShape> distributionListShapes = new HashSet<GroupShape>();
+        Set<GroupShape> accountShapes = new HashSet<>();
+        Set<GroupShape> calendarResourceShapes = new HashSet<>();
+        Set<GroupShape> distributionListShapes = new HashSet<>();
 
         for (DistributionList group : groupsWithGrants) {
             // group is an AclGroup, which contains only upward membership, not downward membership.

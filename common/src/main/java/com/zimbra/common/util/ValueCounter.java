@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class ValueCounter<E> {
 
-    private Map<E, Integer> mValues = new HashMap<E, Integer>();
+    private Map<E, Integer> mValues = new HashMap<>();
 
     public void increment(E value) {
         increment(value, 1);

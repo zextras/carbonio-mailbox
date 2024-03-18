@@ -264,8 +264,8 @@ public class ZCalendar {
    *     <p>Calendar has Components Properties
    */
   public static class ZVCalendar {
-    List<ZComponent> mComponents = new ArrayList<ZComponent>();
-    List<ZProperty> mProperties = new ArrayList<ZProperty>();
+    List<ZComponent> mComponents = new ArrayList<>();
+    List<ZProperty> mProperties = new ArrayList<>();
 
     public ZVCalendar() {}
 
@@ -418,8 +418,8 @@ public class ZCalendar {
       return mTok;
     }
 
-    List<ZProperty> mProperties = new ArrayList<ZProperty>();
-    List<ZComponent> mComponents = new ArrayList<ZComponent>();
+    List<ZProperty> mProperties = new ArrayList<>();
+    List<ZComponent> mComponents = new ArrayList<>();
 
     public void addProperty(ZProperty prop) {
       mProperties.add(prop);
@@ -598,7 +598,7 @@ public class ZCalendar {
   }
 
   public static List<String> parseCommaSepText(String encoded) {
-    List<String> list = new ArrayList<String>();
+    List<String> list = new ArrayList<>();
     int len;
     if (encoded != null && (len = encoded.length()) > 0) {
       int start = 0;
@@ -669,7 +669,7 @@ public class ZCalendar {
       mValueList = valueList;
     }
 
-    List<ZParameter> mParameters = new ArrayList<ZParameter>();
+    List<ZParameter> mParameters = new ArrayList<>();
 
     public void addParameter(ZParameter param) {
       mParameters.add(param);
@@ -1050,9 +1050,9 @@ public class ZCalendar {
   }
 
   public static class DefaultContentHandler implements ZICalendarParseHandler {
-    List<ZVCalendar> mCals = new ArrayList<ZVCalendar>(1);
+    List<ZVCalendar> mCals = new ArrayList<>(1);
     ZVCalendar mCurCal = null;
-    List<ZComponent> mComponents = new ArrayList<ZComponent>();
+    List<ZComponent> mComponents = new ArrayList<>();
     ZProperty mCurProperty = null;
     private int mNumCals;
     private boolean mInZCalendar;

@@ -287,7 +287,7 @@ public class SetCalendarItem extends CalendarRequest {
     Mailbox mbox = getRequestedMailbox(zsc);
 
     SetCalendarItemParseResult result = new SetCalendarItemParseResult();
-    ArrayList<SetCalendarItemData> exceptions = new ArrayList<SetCalendarItemData>();
+    ArrayList<SetCalendarItemData> exceptions = new ArrayList<>();
     Invite defInv = null;
 
     // First, the <default>

@@ -40,8 +40,8 @@ import com.google.common.base.Joiner;
  */
 public class DbResults {
 
-    private List<Object[]> data = new ArrayList<Object[]>();
-    private Map<String, Integer> columnIndexes = new LinkedHashMap<String, Integer>();
+    private List<Object[]> data = new ArrayList<>();
+    private Map<String, Integer> columnIndexes = new LinkedHashMap<>();
     private int rowNum = 0;
 
     /**

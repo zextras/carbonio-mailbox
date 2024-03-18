@@ -112,7 +112,7 @@ public final class ReIndex extends AdminDocumentHandler {
                     }
                     mbox.index.startReIndexByType(types);
                 } else if (idsStr != null) {
-                    Set<Integer> ids = new HashSet<Integer>();
+                    Set<Integer> ids = new HashSet<>();
                     for (String id : Splitter.on(',').trimResults().split(idsStr)) {
                         try {
                             ids.add(Integer.parseInt(id));

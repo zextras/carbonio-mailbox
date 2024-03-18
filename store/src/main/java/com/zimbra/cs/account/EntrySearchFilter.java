@@ -48,7 +48,7 @@ public class EntrySearchFilter {
         public Multi(boolean negation, AndOr andOr) {
             setNegation(negation);
             mAndOr = andOr;
-            mTerms = new ArrayList<Term>();
+            mTerms = new ArrayList<>();
         }
 
         public Multi(boolean negation, AndOr andOr, Term... terms) {
@@ -96,7 +96,7 @@ public class EntrySearchFilter {
         }
     }
 
-    private static Set<String> sIndexedAttrs = new HashSet<String>();
+    private static Set<String> sIndexedAttrs = new HashSet<>();
     static {
         // list all indexed attributes
         sIndexedAttrs.add(Provisioning.A_objectClass.toLowerCase());

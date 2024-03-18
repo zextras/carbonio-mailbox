@@ -134,10 +134,10 @@ public class ForwardCalendarItem extends CalendarRequest {
       MimeMessage mm,
       Account senderAcct)
       throws ServiceException {
-    List<MimeMessage> fwdMsgs = new ArrayList<MimeMessage>();
-    List<MimeMessage> notifyMsgs = new ArrayList<MimeMessage>();
+    List<MimeMessage> fwdMsgs = new ArrayList<>();
+    List<MimeMessage> notifyMsgs = new ArrayList<>();
     Pair<List<MimeMessage>, List<MimeMessage>> pair =
-        new Pair<List<MimeMessage>, List<MimeMessage>>(fwdMsgs, notifyMsgs);
+        new Pair<>(fwdMsgs, notifyMsgs);
     mbox.lock.lock();
     try {
       if (rid == null) {
@@ -212,17 +212,17 @@ public class ForwardCalendarItem extends CalendarRequest {
     MimeBodyPart htmlDescPart = visitor.getHtmlDescPart();
 
     try {
-      List<MimeMessage> msgs = new ArrayList<MimeMessage>();
-      List<MimeMessage> notifyMsgs = new ArrayList<MimeMessage>();
+      List<MimeMessage> msgs = new ArrayList<>();
+      List<MimeMessage> notifyMsgs = new ArrayList<>();
       long now = octxt != null ? octxt.getTimestamp() : System.currentTimeMillis();
       Invite[] invites = calItem.getInvites();
       // Get canceled instances in the future.  These will be included in the series part.
-      List<Invite> cancels = new ArrayList<Invite>();
+      List<Invite> cancels = new ArrayList<>();
       for (Invite inv : invites) {
         if (inv.isCancel() && inv.hasRecurId() && inviteIsAfterTime(inv, now)) cancels.add(inv);
       }
       // Make sure the series invite is the first one in the list.
-      LinkedList<Invite> invOrderedList = new LinkedList<Invite>();
+      LinkedList<Invite> invOrderedList = new LinkedList<>();
       for (Invite inv : invites) {
         // Ignore exceptions in the past.
         if (inv.hasRecurId() && !inviteIsAfterTime(inv, now)) continue;
@@ -258,7 +258,7 @@ public class ForwardCalendarItem extends CalendarRequest {
         }
         firstInv = false;
       }
-      return new Pair<List<MimeMessage>, List<MimeMessage>>(msgs, notifyMsgs);
+      return new Pair<>(msgs, notifyMsgs);
     } catch (IOException e) {
       throw ServiceException.FAILURE("error creating forward message", e);
     } catch (MessagingException e) {
@@ -426,7 +426,7 @@ public class ForwardCalendarItem extends CalendarRequest {
                 senderAcct, orgAccount, orgAddress, mmFwdWrapper.getAllRecipients(), inv);
       }
     }
-    return new Pair<MimeMessage, MimeMessage>(mm, notifyMimeMsg);
+    return new Pair<>(mm, notifyMimeMsg);
   }
 
   // Take mmInv and mutate it.  text/calendar part is replaced by cal and plain and html parts

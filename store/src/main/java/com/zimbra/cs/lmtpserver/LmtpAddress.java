@@ -29,7 +29,7 @@ public class LmtpAddress {
 
     public LmtpAddress(String arg, String[] allowedParameters, String rcptDelim) {
 	mAllowedParameters = allowedParameters;
-	mParameters = new HashMap<String, String>();
+	mParameters = new HashMap<>();
 	mIsValid = parse(arg);
 	mDeliveryReply = LmtpReply.TEMPORARY_FAILURE;
 

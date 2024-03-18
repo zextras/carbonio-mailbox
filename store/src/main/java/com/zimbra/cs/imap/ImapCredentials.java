@@ -189,7 +189,7 @@ public class ImapCredentials implements java.io.Serializable {
         if (upcase.equals(sub.toUpperCase())) return;
       }
     }
-    if (subscriptions == null) subscriptions = new HashSet<String>();
+    if (subscriptions == null) subscriptions = new HashSet<>();
     subscriptions.add(path.asImapPath());
     saveSubscriptions(subscriptions);
   }
@@ -210,7 +210,7 @@ public class ImapCredentials implements java.io.Serializable {
   }
 
   protected void hideFolder(ImapPath path) {
-    if (mHiddenFolders == null) mHiddenFolders = new HashSet<ImapPath>();
+    if (mHiddenFolders == null) mHiddenFolders = new HashSet<>();
     mHiddenFolders.add(path);
   }
 

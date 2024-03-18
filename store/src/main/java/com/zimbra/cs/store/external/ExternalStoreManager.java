@@ -296,7 +296,7 @@ public abstract class ExternalStoreManager extends StoreManager implements Exter
      * @throws IOException
      */
     public List<String> getAllBlobPaths(Mailbox mbox) throws IOException {
-        return new ArrayList<String>();
+        return new ArrayList<>();
     }
 
     @Override

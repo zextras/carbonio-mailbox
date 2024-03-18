@@ -25,7 +25,7 @@ public class ExtAuthTokenKey {
     private byte[] key;
     private long version;
     private long created;
-    private static HashMap<String, ExtAuthTokenKey> keyCache = new HashMap<String, ExtAuthTokenKey>();
+    private static HashMap<String, ExtAuthTokenKey> keyCache = new HashMap<>();
     private static ExtAuthTokenKey latestExtAuthKey;
 
     public byte[] getKey() {
@@ -128,7 +128,7 @@ public class ExtAuthTokenKey {
         // bootstrap. automatically create new random key
         if (StringUtil.isNullOrEmpty(key)) {
             ExtAuthTokenKey extAuthkey = new ExtAuthTokenKey(0, null);
-            HashMap<String, String> attrs = new HashMap<String, String>();
+            HashMap<String, String> attrs = new HashMap<>();
             attrs.put(Provisioning.A_zimbraExternalAccountProvisioningKey, extAuthkey.getEncoded());
             Provisioning.getInstance().modifyAttrs(config, attrs);
             key = config.getAttr(Provisioning.A_zimbraExternalAccountProvisioningKey);

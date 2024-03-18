@@ -59,7 +59,7 @@ public class AclPushTask extends TimerTask {
 
             for (int mboxId : mboxIdToItemIds.keySet()) {
                 Mailbox mbox;
-                List<Integer> itemsProcessed = new ArrayList<Integer> ();
+                List<Integer> itemsProcessed = new ArrayList<>();
                 try {      
                    mbox = MailboxManager.getInstance().getMailboxById(mboxId);
                 } catch (ServiceException e) {
@@ -73,7 +73,7 @@ public class AclPushTask extends TimerTask {
                 } catch (MailServiceException.NoSuchItemException e) {
                     // one or more folders no longer exist
                     if (itemIds.size() > 1) {
-                        List<MailItem> itemList = new ArrayList<MailItem>();
+                        List<MailItem> itemList = new ArrayList<>();
                         for (int itemId : itemIds) {
                             try {
                                 itemList.add(mbox.getItemById(null, itemId, MailItem.Type.UNKNOWN));
@@ -86,7 +86,7 @@ public class AclPushTask extends TimerTask {
 
                 Account account = mbox.getAccount();
                 String[] existingSharedItems = account.getSharedItem();
-                Set<String> updatedSharedItems = new HashSet<String>();
+                Set<String> updatedSharedItems = new HashSet<>();
 
                 for (String sharedItem : existingSharedItems) {
                     ShareInfoData shareData = AclPushSerializer.deserialize(sharedItem);

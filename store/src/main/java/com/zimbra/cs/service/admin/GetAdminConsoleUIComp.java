@@ -58,7 +58,7 @@ public class GetAdminConsoleUIComp extends AdminDocumentHandler {
 
         Account authedAcct = getAuthenticatedAccount(zsc);
 
-        Set<String> added = new HashSet<String>();
+        Set<String> added = new HashSet<>();
         GroupMembership aclGroups = null;
 
         if (accountSel != null) {

@@ -37,7 +37,7 @@ public final class SomeAccountsWaitSet extends WaitSetBase implements MailboxMan
     private long mCurrentSeqNo; // current sequence number
 
     /** these are the accounts we are listening to.  Stores EITHER a WaitSetSession or an AccountID  */
-    private HashMap<String, WaitSetAccount> mSessions = new HashMap<String, WaitSetAccount>();
+    private HashMap<String, WaitSetAccount> mSessions = new HashMap<>();
 
     /** Constructor */
     SomeAccountsWaitSet(String ownerAccountId, String id, Set<MailItem.Type> defaultInterest) {
@@ -47,7 +47,7 @@ public final class SomeAccountsWaitSet extends WaitSetBase implements MailboxMan
 
     @Override
     public List<WaitSetError> removeAccounts(List<String> accts) {
-        List<WaitSetError> errors = new ArrayList<WaitSetError>();
+        List<WaitSetError> errors = new ArrayList<>();
 
         for (String id : accts) {
             WaitSetSession session = null;
@@ -74,7 +74,7 @@ public final class SomeAccountsWaitSet extends WaitSetBase implements MailboxMan
 
         cancelExistingCB();
 
-        List<WaitSetError> errors = new LinkedList<WaitSetError>();
+        List<WaitSetError> errors = new LinkedList<>();
 
         if (addAccounts != null) {
             errors.addAll(addAccountErrors(addAccounts));
@@ -153,7 +153,7 @@ public final class SomeAccountsWaitSet extends WaitSetBase implements MailboxMan
     }
 
     private synchronized List<WaitSetError> updateAccountErrors(List<WaitSetAccount> updates) {
-        List<WaitSetError> errors = new ArrayList<WaitSetError>();
+        List<WaitSetError> errors = new ArrayList<>();
 
         for (WaitSetAccount update : updates) {
             WaitSetAccount existing = mSessions.get(update.getAccountId());
@@ -175,7 +175,7 @@ public final class SomeAccountsWaitSet extends WaitSetBase implements MailboxMan
     }
 
     protected synchronized List<WaitSetError> addAccountErrors(List<WaitSetAccount> wsas) {
-        List<WaitSetError> errors = new ArrayList<WaitSetError>();
+        List<WaitSetError> errors = new ArrayList<>();
 
         for (WaitSetAccount wsa : wsas) {
             if (!mSessions.containsKey(wsa.getAccountId())) {
@@ -243,7 +243,7 @@ public final class SomeAccountsWaitSet extends WaitSetBase implements MailboxMan
         }
         cancelExistingCB();
         HashMap<String, WaitSetAccount> toRet = mSessions;
-        mSessions = new HashMap<String, WaitSetAccount>();
+        mSessions = new HashMap<>();
         mCurrentSignalledSessions.clear();
         mSentSignalledSessions.clear();
         mSentSignalledAccounts.clear();

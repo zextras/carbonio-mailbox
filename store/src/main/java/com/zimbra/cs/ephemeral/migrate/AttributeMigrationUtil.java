@@ -113,7 +113,7 @@ public class AttributeMigrationUtil {
         if (clArgs.size() > 1) {
             attrsToMigrate = clArgs.subList(1, clArgs.size());
         } else {
-            attrsToMigrate = new ArrayList<String>(AttributeManager.getInstance().getEphemeralAttributeNames());
+            attrsToMigrate = new ArrayList<>(AttributeManager.getInstance().getEphemeralAttributeNames());
         }
 
         if (!dryRun) {

@@ -47,8 +47,8 @@ public class ModifyCalendarItem extends CalendarRequest {
         ModifyCalendarItemParser(Invite inv, Invite seriesInv) {
             mInv = inv;
             mSeriesInv = seriesInv;
-            mAttendeesAdded = new ArrayList<ZAttendee>();
-            mAttendeesCanceled = new ArrayList<ZAttendee>();
+            mAttendeesAdded = new ArrayList<>();
+            mAttendeesCanceled = new ArrayList<>();
         }
 
         public List<ZAttendee> getAttendeesAdded() { return mAttendeesAdded; }
@@ -143,7 +143,7 @@ public class ModifyCalendarItem extends CalendarRequest {
         // Inter-mailbox move if necessary.
         if (isInterMboxMove) {
             CalendarItem calItem = mbox.getCalendarItemById(octxt, iid.getId());
-            List<Integer> ids = new ArrayList<Integer>(1);
+            List<Integer> ids = new ArrayList<>(1);
             ids.add(calItem.getId());
             ItemActionHelper.MOVE(octxt, mbox, zsc.getResponseProtocol(), ids, calItem.getType(), null, iidFolder);
         }
@@ -304,7 +304,7 @@ public class ModifyCalendarItem extends CalendarRequest {
     // Find out if we're notifying all attendees or only those who were added.  Let's assume we're notifying
     // all attendees if the to/cc/bcc list contains anyone other than those being added.
     private static boolean isNotifyingAll(MimeMessage mm, List<ZAttendee> atsAdded) throws ServiceException {
-        Set<String> rcptsSet = new HashSet<String>();
+        Set<String> rcptsSet = new HashSet<>();
         try {
             Address[] rcpts = mm.getAllRecipients();
             if (rcpts != null) {

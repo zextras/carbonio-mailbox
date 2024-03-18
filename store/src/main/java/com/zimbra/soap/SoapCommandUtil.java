@@ -48,7 +48,7 @@ import com.zimbra.common.util.StringUtil;
 public class SoapCommandUtil implements SoapTransport.DebugListener {
 
     private static final Map<String, Namespace> sTypeToNamespace =
-        new TreeMap<String, Namespace>();
+        new TreeMap<>();
 
     private static final String DEFAULT_ADMIN_URL = String.format("https://%s:%d/service/admin/soap",
         LC.zimbra_zmprov_default_soap_server.value(),
@@ -530,7 +530,7 @@ public class SoapCommandUtil implements SoapTransport.DebugListener {
                 }
             }
         } else {
-            results = new ArrayList<Element>();
+            results = new ArrayList<>();
             results.add(response);
         }
 

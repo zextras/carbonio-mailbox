@@ -391,8 +391,8 @@ public interface CalendarObject {
       addProperty(CalDavProperty.getCalendarData(this));
       if (mInvites[0].hasRecurId() && mInvites.length > 1) {
         // put the main series to be the first invite, otherwise iCal won't like it.
-        ArrayList<Invite> newList = new ArrayList<Invite>();
-        ArrayList<Invite> exceptions = new ArrayList<Invite>();
+        ArrayList<Invite> newList = new ArrayList<>();
+        ArrayList<Invite> exceptions = new ArrayList<>();
         for (Invite i : mInvites) {
           if (i.hasRecurId()) exceptions.add(i);
           else newList.add(i);
@@ -585,7 +585,7 @@ public interface CalendarObject {
       if (item.isRecurring() == false) return;
       Invite defInvite = item.getDefaultInviteOrNull();
       if (defInvite == null) return;
-      ArrayList<Invite> inviteList = new ArrayList<Invite>();
+      ArrayList<Invite> inviteList = new ArrayList<>();
       try {
         for (CalendarItem.Instance instance :
             item.expandInstances(range.getStart(), range.getEnd(), false)) {

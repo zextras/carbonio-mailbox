@@ -86,7 +86,7 @@ public class PlainAuthenticator extends Authenticator {
         }
 
         // authenticate the authentication principal
-        Map<String, Object> authCtxt = new HashMap<String, Object>();
+        Map<String, Object> authCtxt = new HashMap<>();
         authCtxt.put(AuthContext.AC_ORIGINATING_CLIENT_IP, origRemoteIp);
         authCtxt.put(AuthContext.AC_REMOTE_IP, remoteIp);
         authCtxt.put(AuthContext.AC_ACCOUNT_NAME_PASSEDIN, authenticateId);

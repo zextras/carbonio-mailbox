@@ -18,7 +18,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.type.Channel;
 
 public abstract class ChannelProvider {
-    private static Map<String, ChannelProvider> providers = new HashMap<String, ChannelProvider>();
+    private static Map<String, ChannelProvider> providers = new HashMap<>();
 
     static {
         try {

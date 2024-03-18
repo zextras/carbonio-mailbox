@@ -104,7 +104,7 @@ public abstract class ArchiveFormatter extends Formatter {
   private final Pattern ILLEGAL_FILE_CHARS = Pattern.compile("[\\/\\:\\*\\?\\\"\\<\\>\\|\\\0]");
   private final Pattern ILLEGAL_FOLDER_CHARS = Pattern.compile("[\\:\\*\\?\\\"\\<\\>\\|\\\0]");
   private static String UTF8 = "UTF-8";
-  private final Map<Integer, List<Contact>> contacts = new HashMap<Integer, List<Contact>>();
+  private final Map<Integer, List<Contact>> contacts = new HashMap<>();
 
   public static enum Resolve {
     Modify,
@@ -285,15 +285,15 @@ public abstract class ArchiveFormatter extends Formatter {
     // Disable the jetty timeout
     disableJettyTimeout(context);
 
-    HashMap<Integer, Integer> cnts = new HashMap<Integer, Integer>();
+    HashMap<Integer, Integer> cnts = new HashMap<>();
     int dot;
-    HashMap<Integer, String> fldrs = new HashMap<Integer, String>();
+    HashMap<Integer, String> fldrs = new HashMap<>();
     String emptyname = context.params.get("emptyname");
     String ext = "." + getType();
     String filename = context.params.get("filename");
     String lock = context.params.get("lock");
     String query = context.getQueryString();
-    Set<String> names = new HashSet<String>(4096);
+    Set<String> names = new HashSet<>(4096);
     Set<MailItem.Type> sysTypes =
         EnumSet.of(
             MailItem.Type.FOLDER,
@@ -446,13 +446,13 @@ public abstract class ArchiveFormatter extends Formatter {
           }
           query = "is:local";
         }
-        Map<Set<MailItem.Type>, String> typesMap = new HashMap<Set<MailItem.Type>, String>();
+        Map<Set<MailItem.Type>, String> typesMap = new HashMap<>();
         typesMap.put(searchTypes, query);
         if (context.getStartTime() != TIME_UNSPECIFIED
             || context.getEndTime() != TIME_UNSPECIFIED) {
           if (searchTypes.contains(MailItem.Type.APPOINTMENT)) {
             searchTypes.remove(MailItem.Type.APPOINTMENT);
-            Set<MailItem.Type> calendarTypes = new HashSet<MailItem.Type>();
+            Set<MailItem.Type> calendarTypes = new HashSet<>();
             calendarTypes.add(MailItem.Type.APPOINTMENT);
             typesMap.put(calendarTypes, calendarQuery);
           }
@@ -736,7 +736,7 @@ public abstract class ArchiveFormatter extends Formatter {
         aos.closeEntry();
       } else if (mi instanceof CalendarItem) {
         Browser browser = HttpUtil.guessBrowser(context.req);
-        List<CalendarItem> calItems = new ArrayList<CalendarItem>();
+        List<CalendarItem> calItems = new ArrayList<>();
         boolean needAppleICalHacks = Browser.APPLE_ICAL.equals(browser);
         boolean useOutlookCompatMode = Browser.IE.equals(browser);
         OperationContext octxt =
@@ -752,7 +752,7 @@ public abstract class ArchiveFormatter extends Formatter {
       } else if (mi instanceof Message) {
         if (context.hasPart()) {
           MimeMessage mm = ((Message) mi).getMimeMessage();
-          Set<String> attachmentNames = new HashSet<String>();
+          Set<String> attachmentNames = new HashSet<>();
           for (String part : context.getPart().split(",")) {
             BufferStream bs;
             MimePart mp = Mime.getMimePart(mm, part);
@@ -950,7 +950,7 @@ public abstract class ArchiveFormatter extends Formatter {
         Map<String, Integer> map =
             CACHE.get(
                 fldrId,
-                new Callable<Map<String, Integer>>() {
+                new Callable<>() {
                   @Override
                   public Map<String, Integer> call() {
                     return makeDigestToID(fldr);
@@ -991,10 +991,10 @@ public abstract class ArchiveFormatter extends Formatter {
     Exception ex = null;
     ItemData id = null;
     FolderDigestInfo digestInfo = new FolderDigestInfo(context.opContext);
-    List<ServiceException> errs = new LinkedList<ServiceException>();
+    List<ServiceException> errs = new LinkedList<>();
     List<Folder> flist;
-    Map<Object, Folder> fmap = new HashMap<Object, Folder>();
-    Map<Integer, Integer> idMap = new HashMap<Integer, Integer>();
+    Map<Object, Folder> fmap = new HashMap<>();
+    Map<Integer, Integer> idMap = new HashMap<>();
     long last = System.currentTimeMillis();
     String types = context.getTypesString();
     String resolve = context.params.get(PARAM_RESOLVE);
@@ -1711,7 +1711,7 @@ public abstract class ArchiveFormatter extends Formatter {
     }
 
     for (Contact contact : contactList) {
-      HashSet<String> emailAdresses = new HashSet<String>(contact.getEmailAddresses());
+      HashSet<String> emailAdresses = new HashSet<>(contact.getEmailAddresses());
       for (String emailId : ct.getEmailAddresses()) {
         if (emailAdresses.contains(emailId)) {
           return contact;

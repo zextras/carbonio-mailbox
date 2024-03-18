@@ -379,7 +379,7 @@ public class ICalTimeZone extends SimpleTimeZone {
 
     // maps iCalendar weekday name to Java weekday number
     private static Map<String, Integer> sDayOfWeekMap =
-        new HashMap<String, Integer>(7);
+        new HashMap<>(7);
     static {
         sDayOfWeekMap.put("SU", Calendar.SUNDAY);     // 1
         sDayOfWeekMap.put("MO", Calendar.MONDAY);     // 2

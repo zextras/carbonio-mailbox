@@ -31,7 +31,7 @@ public class ModifyHABGroupResponse {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=AdminConstants.E_MEMBERS /* members */, required=false)
     @XmlElement(name = AdminConstants.E_MEMBER /*group child member*/, required = false)
-    List<String> members = new ArrayList<String>();
+    List<String> members = new ArrayList<>();
 
     public ModifyHABGroupResponse() {
 

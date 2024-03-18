@@ -19,7 +19,7 @@ import com.zimbra.common.soap.MailConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public class ImportContact {
 
-    private List <String> listOfCreatedIds = new ArrayList<String>();
+    private List <String> listOfCreatedIds = new ArrayList<>();
 
     /**
      * @zm-api-field-tag num-imported

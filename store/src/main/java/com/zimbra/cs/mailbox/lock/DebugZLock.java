@@ -42,7 +42,7 @@ public class DebugZLock extends ZLock {
 
         private static final long serialVersionUID = -2861690755318306713L;
 
-        private final ConcurrentMap<Long,MailboxLockOwner> debugReadOwners = new ConcurrentHashMap<Long, MailboxLockOwner>();
+        private final ConcurrentMap<Long,MailboxLockOwner> debugReadOwners = new ConcurrentHashMap<>();
 
         DebugReentrantReadLock(DebugZLock readWriteLock) {
             super(readWriteLock);

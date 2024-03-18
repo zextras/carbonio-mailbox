@@ -120,7 +120,7 @@ public class ZAuthToken {
             attrs = null;
             JSONObject jAttrs = json.optJSONObject("attrs");
             if (jAttrs != null) {
-                attrs = new HashMap<String, String>();
+                attrs = new HashMap<>();
                 for (Iterator iter = jAttrs.keys(); iter.hasNext(); ) {
                     String k = (String)iter.next();
                     String v = jAttrs.getString(k);
@@ -215,7 +215,7 @@ public class ZAuthToken {
             String name = a.getAttribute(aName);
             String value = a.getText();
             if (mAttrs == null)
-                mAttrs = new HashMap<String, String>();
+                mAttrs = new HashMap<>();
             mAttrs.put(name, value);
         }
     }
@@ -239,7 +239,7 @@ public class ZAuthToken {
     private void fromHttpReq(HttpServletRequest request, boolean isAdmin) {
         Cookie[] cookies = request.getCookies();
         
-        Map<String, String> cookieMap = new HashMap<String, String>();
+        Map<String, String> cookieMap = new HashMap<>();
         if (cookies != null) {
             for (Cookie ck : cookies) {
                 cookieMap.put(ck.getName(), ck.getValue());
@@ -261,7 +261,7 @@ public class ZAuthToken {
         Map<String, String> cookieMap = null;
         if (mValue != null || mProxyAuthToken != null) {
             String cookieName = ZimbraCookie.authTokenCookieName(isAdmin);
-            cookieMap = new HashMap<String, String>();
+            cookieMap = new HashMap<>();
             cookieMap.put(cookieName, mProxyAuthToken !=null ? mProxyAuthToken : mValue);
         }
         return cookieMap;  
@@ -299,7 +299,7 @@ public class ZAuthToken {
     private Map<String, String> toYahooCookieMap(boolean isAdmin) {
         Map<String, String> cookieMap = null;
         if (mAttrs != null) {
-            cookieMap = new HashMap<String, String>();
+            cookieMap = new HashMap<>();
             
             // auth token type
             cookieMap.put(AUTHTOKEN_TYPE_COOKIE, mType);
@@ -335,7 +335,7 @@ public class ZAuthToken {
         
         if (yCookie != null || tCookie != null || aCookie != null || dCookie != null || 
             accessKey != null || hostAccountId != null) {
-            Map<String, String> attrs = new HashMap<String, String>();
+            Map<String, String> attrs = new HashMap<>();
             
             if (yCookie != null)
                 attrs.put(YahooAuthData.cookieNameToAttrName(YAHOO_Y_COOKIE), yCookie);
@@ -416,7 +416,7 @@ public class ZAuthToken {
         resp = trans.invoke(req1);
         
         Element req2 = new XMLElement(AccountConstants.GET_INFO_REQUEST);
-        attrs = new HashMap<String, String>();
+        attrs = new HashMap<>();
         attrs.put("X", "x ...");
         attrs.put("Y", "y ...");
         trans.setAuthToken(new ZAuthToken("foobar", null, attrs));

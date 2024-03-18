@@ -63,7 +63,7 @@ public class DataSigner {
             throws CertificateEncodingException, OperatorCreationException, CMSException, IOException {
         byte[] signedData = null;
         CMSTypedData cmsData = new CMSProcessableByteArray(data);
-        List<X509Certificate> certList = new ArrayList<X509Certificate>();
+        List<X509Certificate> certList = new ArrayList<>();
         certList.add(signingCertificate);
 
         Store certs = new JcaCertStore(certList);

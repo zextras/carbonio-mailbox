@@ -3046,9 +3046,9 @@ public final class ToXML {
       throws ServiceException {
     MPartInfo mpi = mpiRoot;
     LinkedList<Pair<Element, LinkedList<MPartInfo>>> queue =
-        new LinkedList<Pair<Element, LinkedList<MPartInfo>>>();
+        new LinkedList<>();
     Pair<Element, LinkedList<MPartInfo>> level =
-        new Pair<Element, LinkedList<MPartInfo>>(root, new LinkedList<MPartInfo>());
+        new Pair<>(root, new LinkedList<>());
     level.getSecond().add(mpi);
     queue.add(level);
 
@@ -3079,8 +3079,8 @@ public final class ToXML {
               wantContent);
       if (phase == VisitPhase.PREVISIT && child != null && mpi.hasChildren()) {
         queue.addLast(
-            new Pair<Element, LinkedList<MPartInfo>>(
-                child, new LinkedList<MPartInfo>(mpi.getChildren())));
+            new Pair<>(
+                child, new LinkedList<>(mpi.getChildren())));
       } else {
         parts.removeFirst();
         phase = VisitPhase.PREVISIT;

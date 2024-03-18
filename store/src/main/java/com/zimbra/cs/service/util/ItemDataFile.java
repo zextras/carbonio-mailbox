@@ -164,8 +164,8 @@ public class ItemDataFile {
       throws IOException {
     String path = f.getPath();
     String[] all = f.list();
-    List<File> dirs = new ArrayList<File>();
-    List<File> files = new ArrayList<File>();
+    List<File> dirs = new ArrayList<>();
+    List<File> files = new ArrayList<>();
 
     Arrays.sort(all);
     for (String file : all) {

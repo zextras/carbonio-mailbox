@@ -156,7 +156,7 @@ public class ZMailboxUtil implements DebugListener {
   SoapProvisioning mProv;
   private int mTimeout = LC.httpclient_internal_connmgr_so_timeout.intValue();
 
-  private final Map<Integer, String> mIndexToId = new HashMap<Integer, String>();
+  private final Map<Integer, String> mIndexToId = new HashMap<>();
 
   /** current command */
   private Command mCommand;
@@ -1261,7 +1261,7 @@ public class ZMailboxUtil implements DebugListener {
   }
 
   private void initCommands() {
-    mCommandIndex = new HashMap<String, Command>();
+    mCommandIndex = new HashMap<>();
 
     for (Command c : Command.values()) {
       addCommand(c);
@@ -2473,7 +2473,7 @@ public class ZMailboxUtil implements DebugListener {
 
       List<ZAce> result = mMbox.getRights(args);
       Comparator<ZAce> comparator =
-          new Comparator<ZAce>() {
+          new Comparator<>() {
             @Override
             public int compare(ZAce a, ZAce b) {
               // sort by right -> grantee type -> grantee name
@@ -2488,8 +2488,10 @@ public class ZMailboxUtil implements DebugListener {
               int order = aKey.compareTo(bKey);
               if (order
                   == 0) // a grantee is denied and allowed, not likely, but put the deny before
-                // allow if such entry does exist
+              // allow if such entry does exist
+              {
                 order = a.getDeny() ? -1 : 1;
+              }
               return order;
             }
           };
@@ -2612,7 +2614,7 @@ public class ZMailboxUtil implements DebugListener {
 
   private void doCheckRight(String[] args) throws ServiceException {
     String user = args[0];
-    List<String> rights = new ArrayList<String>();
+    List<String> rights = new ArrayList<>();
     rights.add(args[1]); // support only one right in CLI
 
     boolean allow = mMbox.checkRights(user, rights);
@@ -3522,7 +3524,7 @@ public class ZMailboxUtil implements DebugListener {
   }
 
   private Map<String, String> getMap(String[] args, int offset) throws ServiceException {
-    Map<String, String> attrs = new HashMap<String, String>();
+    Map<String, String> attrs = new HashMap<>();
     for (int i = offset; i < args.length; i += 2) {
       String n = args[i];
       if (i + 1 >= args.length) throw ZClientException.CLIENT_ERROR("not enough arguments", null);
@@ -3533,7 +3535,7 @@ public class ZMailboxUtil implements DebugListener {
   }
 
   private List<String> getList(String[] args, int offset) {
-    List<String> attrs = new ArrayList<String>();
+    List<String> attrs = new ArrayList<>();
     attrs.addAll(Arrays.asList(args).subList(offset, args.length));
     return attrs;
   }

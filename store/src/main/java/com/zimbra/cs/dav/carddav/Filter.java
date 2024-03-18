@@ -62,8 +62,8 @@ public abstract class Filter {
     protected Filter mEnclosingFilter;
 
     public Filter(Element elem) {
-        mProps = new HashSet<PropFilter>();
-        mParams = new HashSet<ParamFilter>();
+        mProps = new HashSet<>();
+        mParams = new HashSet<>();
         mName = elem.attributeValue(DavElements.P_NAME);
         parse(elem);
     }
@@ -90,7 +90,7 @@ public abstract class Filter {
             AttrMapping m = new AttrMapping();
             m.type = MappingType.structured;
             m.name = n;
-            m.structures = new HashMap<String,String[]>();
+            m.structures = new HashMap<>();
             int pos = 0;
             while (pos <= args.length - 2) {
                 m.structures.put(args[pos], new String[] { args[pos+1] });
@@ -103,7 +103,7 @@ public abstract class Filter {
             AttrMapping m = new AttrMapping();
             m.type = MappingType.structured;
             m.name = n;
-            m.structures = new HashMap<String,String[]>();
+            m.structures = new HashMap<>();
             sAttrMappings.put(n, m);
             return m;
         }
@@ -119,7 +119,7 @@ public abstract class Filter {
         public String[] getAttrs() {
             if (type == MappingType.simple)
                 return new String[] { contactAttr };
-            HashSet<String> ret = new HashSet<String>();
+            HashSet<String> ret = new HashSet<>();
             for (String[] val : structures.values())
                 Collections.addAll(ret, val);
             return ret.toArray(new String[0]);
@@ -134,7 +134,7 @@ public abstract class Filter {
     private static final HashMap<String,AttrMapping> sAttrMappings;
 
     static {
-        sAttrMappings = new HashMap<String,AttrMapping>();
+        sAttrMappings = new HashMap<>();
         AttrMapping m = AttrMapping.createStructured("FN");
         m.addSubType("name", ContactConstants.A_fullName, ContactConstants.A_firstName, ContactConstants.A_lastName);
         AttrMapping.createSimple("NICKNAME", ContactConstants.A_nickname);
@@ -249,7 +249,7 @@ public abstract class Filter {
         public Collection<AddressObject> match(DavContext ctxt, AddressbookCollection folder) {
             // search the folder for #key:val where key is mName and val is mTextMatch.mText.
             //boolean ignoreCase = mCollation.equals(DavElements.ASCII);
-            ArrayList<AddressObject> result = new ArrayList<AddressObject>();
+            ArrayList<AddressObject> result = new ArrayList<>();
             StringBuilder search = new StringBuilder();
             if (mNegate)
                 search.append("!");
@@ -356,7 +356,7 @@ public abstract class Filter {
             } else if (mTextMatch != null) {
                 return mTextMatch.match(ctxt, folder);
             } else if (mParams != null) {
-                ArrayList<AddressObject> result = new ArrayList<AddressObject>();
+                ArrayList<AddressObject> result = new ArrayList<>();
                 for (ParamFilter f : mParams)
                     result.addAll(f.match(ctxt, folder));
                 return result;

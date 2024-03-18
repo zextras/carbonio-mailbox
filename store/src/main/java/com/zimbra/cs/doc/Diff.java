@@ -121,7 +121,7 @@ public class Diff {
 		public Type disposition;
 		public ArrayList<String> content;
 		public Chunk(String c, Type disp) {
-			content = new ArrayList<String>();
+			content = new ArrayList<>();
 			content.add(c); disposition = disp;
 		}
 	}
@@ -147,7 +147,7 @@ public class Diff {
         String[] x = readInputStream(i1);
         String[] y = readInputStream(i2);
 
-        ArrayList<Chunk> result = new ArrayList<Chunk>();
+        ArrayList<Chunk> result = new ArrayList<>();
         
         // number of lines of each file
         int M = x.length;

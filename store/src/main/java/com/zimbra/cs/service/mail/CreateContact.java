@@ -100,7 +100,7 @@ public class CreateContact extends MailDocumentHandler  {
         if (vcard != null) {
             pclist = parseAttachedVCard(zsc, octxt, mbox, vcard);
         } else {
-            pclist = new ArrayList<ParsedContact>(1);
+            pclist = new ArrayList<>(1);
             Pair<Map<String,Object>, List<Attachment>> cdata = parseContact(cn, zsc, octxt);
             pclist.add(new ParsedContact(cdata.getFirst(), cdata.getSecond()));
         }
@@ -154,8 +154,8 @@ public class CreateContact extends MailDocumentHandler  {
     static Pair<Map<String,Object>, List<Attachment>> parseContact(
             Element cn, ZimbraSoapContext zsc, OperationContext octxt, Contact existing)
     throws ServiceException {
-        Map<String, Object> fields = new HashMap<String, Object>();
-        List<Attachment> attachments = new ArrayList<Attachment>();
+        Map<String, Object> fields = new HashMap<>();
+        List<Attachment> attachments = new ArrayList<>();
         boolean isContactGroup = false;
         Mailbox mbox = getRequestedMailbox(zsc);
         for (Element elt : cn.listElements(MailConstants.E_ATTRIBUTE)) {
@@ -217,7 +217,7 @@ public class CreateContact extends MailDocumentHandler  {
             fields.put(ContactConstants.A_groupMember, contactGroup);
         }
 
-        return new Pair<Map<String,Object>, List<Attachment>>(fields, attachments);
+        return new Pair<>(fields, attachments);
     }
 
     static void disallowOperation(Element elt) throws ServiceException {
@@ -240,7 +240,7 @@ public class CreateContact extends MailDocumentHandler  {
     throws ServiceException {
         Mailbox mbox = getRequestedMailbox(zsc);
         ParsedContact.FieldDeltaList deltaList = new ParsedContact.FieldDeltaList();
-        List<Attachment> attachments = new ArrayList<Attachment>();
+        List<Attachment> attachments = new ArrayList<>();
         boolean isContactGroup = false;
 
         for (Element elt : cn.listElements(MailConstants.E_ATTRIBUTE)) {
@@ -430,7 +430,7 @@ public class CreateContact extends MailDocumentHandler  {
         List<VCard> cards = VCard.parseVCard(text);
         if (cards == null || cards.size() == 0)
             throw MailServiceException.UNABLE_TO_IMPORT_CONTACTS("no vCards present in attachment", null);
-        List<ParsedContact> pclist = new ArrayList<ParsedContact>(cards.size());
+        List<ParsedContact> pclist = new ArrayList<>(cards.size());
         for (VCard vcf : cards)
             pclist.add(vcf.asParsedContact());
         return pclist;
@@ -439,7 +439,7 @@ public class CreateContact extends MailDocumentHandler  {
     public static List<Contact> createContacts(OperationContext oc, Mailbox mbox, ItemId iidFolder, List<ParsedContact> list, String[] tags)
     throws ServiceException {
 
-        List<Contact> toRet = new ArrayList<Contact>();
+        List<Contact> toRet = new ArrayList<>();
 
         mbox.lock.lock();
         try {
@@ -490,7 +490,7 @@ public class CreateContact extends MailDocumentHandler  {
                 text = Mime.getStringContent(mp, charsetWanted);
             } else {
                 // fetch from remote store
-                Map<String, String> params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<>();
                 params.put(UserServlet.QP_PART, part);
                 byte[] content = UserServlet.getRemoteContent(zsc.getAuthToken(), iid, params);
                 text = new String(content, MimeConstants.P_CHARSET_UTF8);

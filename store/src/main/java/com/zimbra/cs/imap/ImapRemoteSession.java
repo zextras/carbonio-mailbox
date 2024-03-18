@@ -28,7 +28,7 @@ public class ImapRemoteSession extends ImapListener {
         @Override
         protected PendingModifications getQueuedNotifications(int changeId) {
             if (queuedChanges == null) {
-                queuedChanges = new TreeMap<Integer, PendingModifications>();
+                queuedChanges = new TreeMap<>();
             }
             PendingModifications pns = queuedChanges.get(changeId);
             if (pns == null) {

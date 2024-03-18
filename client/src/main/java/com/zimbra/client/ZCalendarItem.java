@@ -65,7 +65,7 @@ public class ZCalendarItem implements ZItem, ToZJSONObject {
         mDate = e.getAttributeLong(MailConstants.A_DATE, 0);
         mFolderId = e.getAttribute(MailConstants.A_FOLDER, null);
         mSize = e.getAttributeLong(MailConstants.A_SIZE);
-        mInvites = new ArrayList<ZInvite>();
+        mInvites = new ArrayList<>();
         for (Element inviteEl : e.listElements(MailConstants.E_INVITE)) {
             mInvites.add(new ZInvite(inviteEl));
         }

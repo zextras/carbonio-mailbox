@@ -95,8 +95,8 @@ public class ZContactHit implements ZImapSearchHit {
         imapUid = e.getAttributeInt(MailConstants.A_IMAP_UID, -1);
         modSeq = e.getAttributeInt(MailConstants.A_MODIFIED_SEQUENCE, -1);
 
-        HashMap<String, String> attrs = new HashMap<String, String>();
-        HashMap<String, ZContactAttachmentInfo> attachments = new HashMap<String, ZContactAttachmentInfo>();
+        HashMap<String, String> attrs = new HashMap<>();
+        HashMap<String, ZContactAttachmentInfo> attachments = new HashMap<>();
 
         for (Element attrEl : e.listElements(MailConstants.E_ATTRIBUTE)) {
             String name = attrEl.getAttribute(MailConstants.A_ATTRIBUTE_NAME);

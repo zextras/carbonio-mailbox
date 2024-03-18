@@ -93,7 +93,7 @@ public class ContactBackupThread extends Thread {
    */
   @Override
   public void run() {
-    List<Integer> mailboxIds = new ArrayList<Integer>();
+    List<Integer> mailboxIds = new ArrayList<>();
     try {
       mailboxIds = CallbackUtil.getSortedMailboxIdList();
     } catch (ServiceException e) {

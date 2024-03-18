@@ -178,7 +178,7 @@ public class ZAppointmentHit implements ZSearchHit {
     List<String> categories = null;
     Iterator<Element> catIter = e.elementIterator(MailConstants.E_CAL_CATEGORY);
     if (catIter.hasNext()) {
-      categories = new ArrayList<String>();
+      categories = new ArrayList<>();
       for (; catIter.hasNext(); ) {
         String cat = catIter.next().getTextTrim();
         categories.add(cat);
@@ -211,7 +211,7 @@ public class ZAppointmentHit implements ZSearchHit {
     // if empty, add self as only instance
     boolean noInstances = instances.isEmpty();
     if (noInstances) {
-      instances = new ArrayList<Element>();
+      instances = new ArrayList<>();
       instances.add(e);
     }
 
@@ -259,7 +259,7 @@ public class ZAppointmentHit implements ZSearchHit {
       List<String> instCategories = null;
       Iterator<Element> instCatIter = inst.elementIterator(MailConstants.E_CAL_CATEGORY);
       if (instCatIter.hasNext()) {
-        instCategories = new ArrayList<String>();
+        instCategories = new ArrayList<>();
         for (; instCatIter.hasNext(); ) {
           String cat = instCatIter.next().getTextTrim();
           instCategories.add(cat);

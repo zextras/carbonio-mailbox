@@ -64,7 +64,7 @@ public final class MessageHit extends ZimbraHit {
 
     public void addPart(MessagePartHit part) {
         if (matchedParts == null) {
-            matchedParts = new ArrayList<MessagePartHit>();
+            matchedParts = new ArrayList<>();
         }
         if (!matchedParts.contains(part)) {
             matchedParts.add(part);

@@ -63,7 +63,7 @@ public class ZimbraQoSFilter implements Filter {
                 boolean isAdminRequest = AuthUtil.isAdminRequest(req);
                 AuthToken at = AuthProvider.getAuthToken(req, isAdminRequest);
                 if (at == null) {
-                    Map <Object, Object> engineCtxt = new HashMap<Object, Object>();
+                    Map <Object, Object> engineCtxt = new HashMap<>();
                     engineCtxt.put(SoapServlet.SERVLET_REQUEST, req);
                     at = AuthProvider.getJWToken(null, engineCtxt);
                 }

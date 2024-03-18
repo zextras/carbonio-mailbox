@@ -75,7 +75,7 @@ public final class MessageData {
         CAtom cattr = attr.getCAtom();
         if (cattr == CAtom.BODY && is.peek() == '[') {
             if (bodySections == null) {
-                bodySections = new ArrayList<Body>();
+                bodySections = new ArrayList<>();
             }
             bodySections.add(Body.read(is));
             return;

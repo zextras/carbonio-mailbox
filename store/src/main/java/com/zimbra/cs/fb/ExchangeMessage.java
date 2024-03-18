@@ -191,9 +191,9 @@ public class ExchangeMessage {
     }
 
     private void encodeIntervals(Iterable<Interval> fb, long startMonth, long endMonth, String type, Element months, Element events, IntervalList consolidated) {
-    	HashMap<Long,LinkedList<Byte>> fbMap = new HashMap<Long,LinkedList<Byte>>();
+    	HashMap<Long,LinkedList<Byte>> fbMap = new HashMap<>();
     	for (long i = startMonth; i <= endMonth; i++)
-    		fbMap.put(i, new LinkedList<Byte>());
+    		fbMap.put(i, new LinkedList<>());
     	for (FreeBusy.Interval interval : fb) {
     		String status = interval.getStatus();
     		if (status.equals(type)) {

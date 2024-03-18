@@ -71,7 +71,7 @@ public class DbScheduledTask {
     throws ServiceException {
         ZimbraLog.scheduler.debug("Retrieving tasks for class %s, mailbox %d", className, mailboxId);
 
-        List<ScheduledTask> tasks = new ArrayList<ScheduledTask>();
+        List<ScheduledTask> tasks = new ArrayList<>();
 
         DbConnection conn = null;
         PreparedStatement stmt = null;

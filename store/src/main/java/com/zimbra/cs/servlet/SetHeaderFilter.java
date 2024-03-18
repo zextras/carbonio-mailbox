@@ -33,7 +33,7 @@ import java.util.regex.Matcher;
 public class SetHeaderFilter implements Filter {
     private static final Log LOG = ZimbraLog.misc;
     private static final KeyValue[] NO_HEADERS = {};
-    private static final ConcurrentMap<String, KeyValue[]> RESPONSE_HEADERS = new ConcurrentHashMap<String, KeyValue[]>();
+    private static final ConcurrentMap<String, KeyValue[]> RESPONSE_HEADERS = new ConcurrentHashMap<>();
 
     public static final String P_RESPONSE_HEADERS_ENABLED = "zimbraResponseHeader.enabled";
     public static final Pattern RE_HEADER = Pattern.compile("^([^:]+):\\s+(.*)$");

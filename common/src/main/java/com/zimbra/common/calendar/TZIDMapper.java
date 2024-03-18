@@ -128,10 +128,10 @@ public class TZIDMapper {
     private static final String TRUE = "TRUE";
 
     private static synchronized void loadFromFile(File tzFile) throws IOException {
-        Map<String, TZ> map = new HashMap<String, TZ>();
+        Map<String, TZ> map = new HashMap<>();
         // TZ sets user LinkedHashSet to preserve insertion order.
-        Set<TZ> allTZs = new LinkedHashSet<TZ>();
-        Set<TZ> primaryTZs = new LinkedHashSet<TZ>();
+        Set<TZ> allTZs = new LinkedHashSet<>();
+        Set<TZ> primaryTZs = new LinkedHashSet<>();
 
         FileInputStream fi = null;
         InputStreamReader isr = null;
@@ -146,7 +146,7 @@ public class TZIDMapper {
             boolean matchScoreSpecified = false;
             int matchScore = 0;
             String tzid = null;
-            Set<String> aliases = new TreeSet<String>();
+            Set<String> aliases = new TreeSet<>();
             while ((line = br.readLine()) != null) {
                 // Remove leading/trailing whitespaces.
                 line = line.replaceAll("^\\s+", "");
@@ -159,7 +159,7 @@ public class TZIDMapper {
                         isPrimary = false;
                         matchScoreSpecified = false;
                         matchScore = 0;
-                        aliases = new TreeSet<String>();
+                        aliases = new TreeSet<>();
                     }
                 } else {  // inVTIMEZONE == true
                     if (lineUpper.equals("END:VTIMEZONE")) {

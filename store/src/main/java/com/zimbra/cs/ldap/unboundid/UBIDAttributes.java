@@ -106,7 +106,7 @@ public class UBIDAttributes extends ZAttributes {
     @Override
     public Map<String, Object> getAttrs(Set<String> extraBinaryAttrs)
             throws LdapException {
-        Map<String,Object> map = new HashMap<String,Object>();  
+        Map<String,Object> map = new HashMap<>();
         
         AttributeManager attrMgr = AttributeManager.getInst();
         

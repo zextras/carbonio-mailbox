@@ -103,7 +103,7 @@ public class ScheduleOutbox extends CalendarCollection {
         }
 
         // Get organizer and list of attendees. (mailto:email values)
-        ArrayList<String> attendees = new ArrayList<String>();
+        ArrayList<String> attendees = new ArrayList<>();
         String organizer = null;
         for (Iterator<ZProperty> propsIter = req.getPropertyIterator(); propsIter.hasNext(); ) {
             ZProperty prop = propsIter.next();
@@ -163,7 +163,7 @@ public class ScheduleOutbox extends CalendarCollection {
         }
 
         // Get the recipients.
-        ArrayList<String> rcptArray = new ArrayList<String>();
+        ArrayList<String> rcptArray = new ArrayList<>();
         while (recipients.hasMoreElements()) {
             String rcptHdr = recipients.nextElement();
             String[] rcpts = null;
@@ -347,7 +347,7 @@ public class ScheduleOutbox extends CalendarCollection {
             return;
         }
 
-        ArrayList<Address> recipients = new java.util.ArrayList<Address>();
+        ArrayList<Address> recipients = new java.util.ArrayList<>();
         InternetAddress from, sender, to;
         Account target = null;
         try {

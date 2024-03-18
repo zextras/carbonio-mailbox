@@ -38,7 +38,7 @@ public class ModifyDelegatedAdminConstraints extends AdminDocumentHandler {
         checkRight(zsc, context, entry, sar);
         
         AttributeManager am = AttributeManager.getInstance();
-        List<AttributeConstraint> constraints = new ArrayList<AttributeConstraint>();
+        List<AttributeConstraint> constraints = new ArrayList<>();
         for (Element a : request.listElements(AdminConstants.E_A)) {
             String attrName = a.getAttribute(AdminConstants.A_NAME);
             Element eConstraint = a.getElement(AdminConstants.E_CONSTRAINT);
@@ -49,7 +49,7 @@ public class ModifyDelegatedAdminConstraints extends AdminDocumentHandler {
         AttributeConstraint.modifyConstraint(entry, constraints);
         
         // log it
-        Map<String, Object> attrs = new HashMap<String, Object>();
+        Map<String, Object> attrs = new HashMap<>();
         attrs.put(CONSTRAINT_ATTR, entry.getMultiAttr(CONSTRAINT_ATTR, false));
         ZimbraLog.security.info(ZimbraLog.encodeAttrs(
                 new String[] {"cmd", "ModifyDelegatedAdminConstraints","name", entry.getLabel()}, attrs));

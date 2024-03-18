@@ -25,14 +25,14 @@ public class CalList {
                                 // This is updated on every calendar change in the account.
 
     CalList(Set<Integer> calendars) {
-        mCalendars = new HashSet<Integer>(calendars);
+        mCalendars = new HashSet<>(calendars);
         mVerPrefix = Long.toString(System.currentTimeMillis()) + ":";
         mVerSeq = 1;
         setVersion();
     }
 
     CalList(CalList other) {
-        mCalendars = new HashSet<Integer>(other.mCalendars);
+        mCalendars = new HashSet<>(other.mCalendars);
         mVerPrefix = other.mVerPrefix;
         mVerSeq = other.mVerSeq;
         mVerString = other.mVerString;
@@ -44,7 +44,7 @@ public class CalList {
 
     Metadata encodeMetadata() {
         Metadata meta = new Metadata();
-        List<Integer> list = new ArrayList<Integer>(mCalendars);
+        List<Integer> list = new ArrayList<>(mCalendars);
         MetadataList calsMetaList = new MetadataList(list);
         meta.put(FN_CALS, calsMetaList);
         meta.put(FN_VERSION_PREFIX, mVerPrefix);
@@ -56,7 +56,7 @@ public class CalList {
     CalList(Metadata meta) throws ServiceException {
         MetadataList calsMetaList = meta.getList(FN_CALS, true);
         if (calsMetaList != null) {
-            mCalendars = new HashSet<Integer>(calsMetaList.size());
+            mCalendars = new HashSet<>(calsMetaList.size());
             List vals = calsMetaList.asList();
             for (Object val : vals) {
                 if (val instanceof Long) {
@@ -69,7 +69,7 @@ public class CalList {
                 }
             }
         } else {
-            mCalendars = new HashSet<Integer>(0);
+            mCalendars = new HashSet<>(0);
         }
         mVerPrefix = meta.get(FN_VERSION_PREFIX, "");
         mVerSeq = meta.getLong(FN_VERSION_SEQ, 1);

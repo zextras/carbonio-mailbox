@@ -117,7 +117,7 @@ public abstract class OperationContextData {
         
         void addRootNode(Mailbox.FolderNode node) {
             if (mUnresolvedRootNodes == null)
-                mUnresolvedRootNodes = new HashSet<Mailbox.FolderNode>();
+                mUnresolvedRootNodes = new HashSet<>();
             
             /*
              * We resolve the hierarchy lazily.  
@@ -170,7 +170,7 @@ public abstract class OperationContextData {
             
             // move nodes to resolved set
             if (mResolvedRootNodes == null) {
-                mResolvedRootNodes = new HashSet<Mailbox.FolderNode>();
+                mResolvedRootNodes = new HashSet<>();
             }
             mResolvedRootNodes.addAll(mUnresolvedRootNodes);
             mUnresolvedRootNodes.clear();
@@ -242,7 +242,7 @@ public abstract class OperationContextData {
                     int idx = getGranteeBucket(grant.getGranteeType());
                     if (idx != -1) {
                         if (idHolders[idx] == null) {
-                            idHolders[idx] = new HashSet<String>();
+                            idHolders[idx] = new HashSet<>();
                         }
                         idHolders[idx].add(grant.getGranteeId());    
                     }

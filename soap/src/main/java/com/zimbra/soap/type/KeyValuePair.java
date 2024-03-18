@@ -88,7 +88,7 @@ public class KeyValuePair implements KeyAndValue {
 
     public static List<KeyValuePair> fromMultimap(
                     Multimap<String, String> keyValuePairMap) {
-        final List<KeyValuePair> keyValuePairs = new ArrayList<KeyValuePair>();
+        final List<KeyValuePair> keyValuePairs = new ArrayList<>();
         if (keyValuePairMap != null) {
             for (final Map.Entry<String, String> entry : keyValuePairMap.entries()) {
                 keyValuePairs.add(

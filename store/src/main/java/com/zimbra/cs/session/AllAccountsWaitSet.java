@@ -34,7 +34,7 @@ import com.zimbra.soap.admin.type.WaitSetInfo;
 @Deprecated
 public final class AllAccountsWaitSet extends WaitSetBase {
 
-    private static Map<AllAccountsWaitSet, String> sAllAccountsWaitSets = new ConcurrentHashMap<AllAccountsWaitSet, String>();
+    private static Map<AllAccountsWaitSet, String> sAllAccountsWaitSets = new ConcurrentHashMap<>();
     private static volatile Set<MailItem.Type> interestTypes = EnumSet.noneOf(MailItem.Type.class);
 
     /** If non-null, then we're buffering the commits during creation */
@@ -95,7 +95,7 @@ public final class AllAccountsWaitSet extends WaitSetBase {
         mCurrentSeqNo = "0";
         mCbSeqNo = "0";
         if (bufferCommitsAtCreate) {
-            mBufferedCommits = new LinkedList<Pair<String,String>>();
+            mBufferedCommits = new LinkedList<>();
         } else {
             mBufferedCommits = null;
         }
@@ -119,7 +119,7 @@ public final class AllAccountsWaitSet extends WaitSetBase {
     @Override
     public List<WaitSetError> removeAccounts(List<String> removeAccounts) {
         // do nothing
-        return new ArrayList<WaitSetError>();
+        return new ArrayList<>();
     }
 
     @Override
@@ -134,14 +134,14 @@ public final class AllAccountsWaitSet extends WaitSetBase {
         mCbSeqNo = lastKnownSeqNo;
         trySendData();
 
-        return new ArrayList<WaitSetError>();
+        return new ArrayList<>();
     }
 
     private synchronized void onMailboxChangeCommitted(String commitIdStr, String accountId,
             Set<MailItem.Type> changedTypes) {
         if (!Collections.disjoint(changedTypes, defaultInterest)) {
             if (mBufferedCommits != null) {
-                mBufferedCommits.add(new Pair<String/*acctId*/, String/*commitId*/>(accountId, commitIdStr));
+                mBufferedCommits.add(new Pair<>(accountId, commitIdStr));
             } else {
                 mNextSeqNo = commitIdStr;
                 mCurrentSignalledAccounts.add(accountId);

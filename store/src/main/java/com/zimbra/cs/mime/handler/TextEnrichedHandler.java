@@ -24,7 +24,7 @@ public class TextEnrichedHandler extends TextHtmlHandler {
         return new StringReader(convertToHTML(content));
     }
 
-    private static Map<String,String> sConversions = new HashMap<String,String>();
+    private static Map<String,String> sConversions = new HashMap<>();
         static {
             sConversions.put("bold", "<b>");       sConversions.put("/bold", "</b>");
             sConversions.put("italic", "<i>");     sConversions.put("/italic", "</i>");
@@ -116,7 +116,7 @@ public class TextEnrichedHandler extends TextHtmlHandler {
         return sb.toString();
     }
 
-    private static Map<String,String> sColors = new HashMap<String,String>();
+    private static Map<String,String> sColors = new HashMap<>();
         static {
             sColors.put("red", "FF0000");    sColors.put("blue", "0000FF");
             sColors.put("green", "008000");  sColors.put("yellow", "FFFF00");

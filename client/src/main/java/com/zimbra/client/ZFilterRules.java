@@ -24,7 +24,7 @@ public final class ZFilterRules implements ToZJSONObject {
     }
 
     public ZFilterRules(ZFilterRules rules) {
-        this.rules = new ArrayList<ZFilterRule>(rules.getRules());
+        this.rules = new ArrayList<>(rules.getRules());
     }
 
     public ZFilterRules(Collection<FilterRule> list) throws ServiceException {

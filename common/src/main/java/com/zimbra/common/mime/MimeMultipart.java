@@ -18,7 +18,7 @@ public class MimeMultipart extends MimePart implements Iterable<MimePart> {
 
     private String mBoundary;
     private MimeBodyPart mPreamble, mEpilogue;
-    private List<MimePart> mChildren = new ArrayList<MimePart>(3);
+    private List<MimePart> mChildren = new ArrayList<>(3);
 
     public MimeMultipart(String subtype) {
         super(new ContentType("multipart/" + (subtype == null || subtype.trim().equals("") ? "mixed" : subtype)).setParameter("boundary", generateBoundary()));
@@ -110,7 +110,7 @@ public class MimeMultipart extends MimePart implements Iterable<MimePart> {
      *  changes made via the iterator (e.g. {@link Iterator#remove()}) will not
      *  affect the contents of the multipart. */
     @Override public Iterator<MimePart> iterator() {
-        return new ArrayList<MimePart>(mChildren).iterator();
+        return new ArrayList<>(mChildren).iterator();
     }
 
     public MimeMultipart addPart(MimePart mp) {
@@ -225,7 +225,7 @@ public class MimeMultipart extends MimePart implements Iterable<MimePart> {
 
         byte[] startBoundary = ("\r\n--" + mBoundary + "\r\n").getBytes();
 
-        List<Object> sources = new ArrayList<Object>(mChildren.size() * 2 + 3);
+        List<Object> sources = new ArrayList<>(mChildren.size() * 2 + 3);
         if (mPreamble != null) {
             sources.add(mPreamble);
         }

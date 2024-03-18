@@ -102,7 +102,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
       throw new ServletException("request missing param");
     }
     Map<Object, Object> tokenMap = validatePrelimToken(param);
-    Map<String, String> reqHeaders = new HashMap<String, String>();
+    Map<String, String> reqHeaders = new HashMap<>();
     String ownerId = (String) tokenMap.get(AccountConstants.P_ACCOUNT_ID);
     String folderId = (String) tokenMap.get(AccountConstants.P_FOLDER_ID);
     String extUserEmail = (String) tokenMap.get(AccountConstants.P_EMAIL);
@@ -137,7 +137,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
             provisionVirtualAccountAndRedirect(req, resp, null, null, ownerId, extUserEmail);
           } else {
             resp.addCookie(new Cookie("ZM_PRELIM_AUTH_TOKEN", param));
-            Map<String, String> attrs = new HashMap<String, String>();
+            Map<String, String> attrs = new HashMap<>();
             attrs.put("extuseremail", extUserEmail);
             reqHeaders.put("ZM_PRELIM_AUTH_TOKEN", param);
             redirectRequest(
@@ -199,7 +199,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
                 logger.warn("Error in invoking check action on calendar mountpoint", e);
               }
             }
-            HashSet<MailItem.Type> types = new HashSet<MailItem.Type>();
+            HashSet<MailItem.Type> types = new HashSet<>();
             types.add(sharedFolderView);
             enableAppFeatures(grantee, types);
           }
@@ -236,18 +236,18 @@ public class ExternalUserProvServlet extends ZimbraServlet {
             // provisioned for him
             setCookieAndRedirect(req, resp, grantee);
           } else {
-            Map<String, String> attrs = new HashMap<String, String>();
+            Map<String, String> attrs = new HashMap<>();
             attrs.put("virtualacctdomain", domain.getName());
             redirectRequest(req, resp, attrs, PUBLIC_LOGIN_ON_UI_NODE, PUBLIC_LOGIN_JSP);
           }
         }
       } catch (ServiceException e) {
-        Map<String, String> errorAttrs = new HashMap<String, String>();
+        Map<String, String> errorAttrs = new HashMap<>();
         errorAttrs.put(ERROR_CODE, e.getCode());
         errorAttrs.put(ERROR_MESSAGE, e.getMessage());
         redirectRequest(req, resp, errorAttrs, EXT_USER_PROV_ON_UI_NODE, PUBLIC_EXTUSERPROV_JSP);
       } catch (Exception e) {
-        Map<String, String> errorAttrs = new HashMap<String, String>();
+        Map<String, String> errorAttrs = new HashMap<>();
         errorAttrs.put(ERROR_CODE, ServiceException.FAILURE);
         errorAttrs.put(ERROR_MESSAGE, e.getMessage());
         redirectRequest(req, resp, errorAttrs, EXT_USER_PROV_ON_UI_NODE, PUBLIC_EXTUSERPROV_JSP);
@@ -298,8 +298,8 @@ public class ExternalUserProvServlet extends ZimbraServlet {
       String emailVerified,
       Boolean expired)
       throws ServletException, IOException {
-    Map<String, String> attrs = new HashMap<String, String>();
-    HashMap<String, String> prefs = new HashMap<String, String>();
+    Map<String, String> attrs = new HashMap<>();
+    HashMap<String, String> prefs = new HashMap<>();
     Provisioning prov = Provisioning.getInstance();
     try {
       Account acct = prov.getAccountById(accountId);
@@ -318,7 +318,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
       }
       prov.modifyAttrs(acct, prefs, true, null);
     } catch (ServiceException e) {
-      Map<String, String> errorAttrs = new HashMap<String, String>();
+      Map<String, String> errorAttrs = new HashMap<>();
       errorAttrs.put(MESSAGE_KEY, "Failure");
       redirectRequest(
           req, resp, errorAttrs, EXT_USER_PROV_ON_UI_NODE, PUBLIC_ADDRESS_VERIFICATION_JSP);
@@ -378,12 +378,12 @@ public class ExternalUserProvServlet extends ZimbraServlet {
     try {
       provisionVirtualAccountAndRedirect(req, resp, displayName, password, ownerId, extUserEmail);
     } catch (ServiceException e) {
-      Map<String, String> errorAttrs = new HashMap<String, String>();
+      Map<String, String> errorAttrs = new HashMap<>();
       errorAttrs.put(ERROR_CODE, e.getCode());
       errorAttrs.put(ERROR_MESSAGE, e.getMessage());
       redirectRequest(req, resp, errorAttrs, EXT_USER_PROV_ON_UI_NODE, PUBLIC_EXTUSERPROV_JSP);
     } catch (Exception e) {
-      Map<String, String> errorAttrs = new HashMap<String, String>();
+      Map<String, String> errorAttrs = new HashMap<>();
       errorAttrs.put(ERROR_CODE, ServiceException.FAILURE);
       errorAttrs.put(ERROR_MESSAGE, e.getMessage());
       redirectRequest(req, resp, errorAttrs, EXT_USER_PROV_ON_UI_NODE, PUBLIC_EXTUSERPROV_JSP);
@@ -397,7 +397,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
       String htmlResponsePage,
       String reqForwardPage)
       throws ServletException, IOException {
-    HashMap<String, String> reqHeaders = new HashMap<String, String>();
+    HashMap<String, String> reqHeaders = new HashMap<>();
     redirectRequest(req, resp, attrs, reqHeaders, htmlResponsePage, reqForwardPage);
   }
 
@@ -483,7 +483,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
       }
 
       // create external account
-      Map<String, Object> attrs = new HashMap<String, Object>();
+      Map<String, Object> attrs = new HashMap<>();
       attrs.put(Provisioning.A_zimbraIsExternalVirtualAccount, ProvisioningConstants.TRUE);
       attrs.put(Provisioning.A_zimbraExternalUserMailAddress, extUserEmail);
       attrs.put(Provisioning.A_zimbraMailHost, prov.getLocalServer().getServiceHostname());
@@ -512,7 +512,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
       }
 
       // create mountpoints
-      Set<MailItem.Type> viewTypes = new HashSet<MailItem.Type>();
+      Set<MailItem.Type> viewTypes = new HashSet<>();
       for (NamedEntry ne : accounts) {
         Account account = (Account) ne;
         String[] sharedItems = account.getSharedItem();
@@ -600,7 +600,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
 
   private static void enableAppFeatures(Account grantee, Set<MailItem.Type> viewTypes)
       throws ServiceException {
-    Map<String, Object> appFeatureAttrs = new HashMap<String, Object>();
+    Map<String, Object> appFeatureAttrs = new HashMap<>();
     for (MailItem.Type type : viewTypes) {
       switch (type) {
         case APPOINTMENT:

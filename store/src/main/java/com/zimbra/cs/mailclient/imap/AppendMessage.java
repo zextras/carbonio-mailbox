@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class AppendMessage {
     private Flags flags;
     private Date date;
-    private List<Object> parts = new ArrayList<Object>();
+    private List<Object> parts = new ArrayList<>();
     
     public AppendMessage() {}
 
@@ -51,12 +51,12 @@ public class AppendMessage {
     public List<Object> parts() { return parts; }
 
     public List<Object> getData() {
-        List<Object> data = new ArrayList<Object>();
+        List<Object> data = new ArrayList<>();
         if (flags != null) data.add(flags);
         if (date != null) data.add(date);
         if (isCatenate()) {
             data.add(CAtom.CATENATE);
-            List<Object> list = new ArrayList<Object>(parts.size());
+            List<Object> list = new ArrayList<>(parts.size());
             for (Object part : parts) {
                 if (part instanceof String) {
                     list.add(CAtom.URL);

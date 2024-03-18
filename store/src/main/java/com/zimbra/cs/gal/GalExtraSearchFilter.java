@@ -101,7 +101,7 @@ public class GalExtraSearchFilter {
         private final StringBuilder query;
 
         public MailboxQueryVisitor() {
-            parentTerms = new Stack<Multi>();
+            parentTerms = new Stack<>();
             query = new StringBuilder();
         }
 
@@ -278,12 +278,12 @@ public class GalExtraSearchFilter {
 
         private FilterVisitor(Contact contact) {
             mContact = new ContactKV(contact);
-            mParentResult = new Stack<Result>();
+            mParentResult = new Stack<>();
         }
 
         private FilterVisitor(GalContact galContact) {
             mContact = new GalContactKV(galContact);
-            mParentResult = new Stack<Result>();
+            mParentResult = new Stack<>();
         }
 
         public boolean getResult() {

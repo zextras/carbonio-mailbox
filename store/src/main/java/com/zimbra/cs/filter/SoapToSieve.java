@@ -101,7 +101,7 @@ public final class SoapToSieve {
             buffer.append(condition).append(" (");
 
             // Handle tests
-            Map<Integer, String> index2test = new TreeMap<Integer, String>(); // sort by index
+            Map<Integer, String> index2test = new TreeMap<>(); // sort by index
             for (FilterTest test : tests.getTests()) {
                 String result = handleTest(test);
                 if (result != null) {
@@ -113,7 +113,7 @@ public final class SoapToSieve {
         }
 
         // Handle actions
-        Map<Integer, String> index2action = new TreeMap<Integer, String>(); // sort by index
+        Map<Integer, String> index2action = new TreeMap<>(); // sort by index
         List<FilterAction> filterActions = rule.getFilterActions();
 
         String variables = "";
@@ -182,7 +182,7 @@ public final class SoapToSieve {
         nestedIfBlock.append(childCondition).append(" (");
 
         // Handle tests
-        Map<Integer, String> index2childTest = new TreeMap<Integer, String>(); // sort by index
+        Map<Integer, String> index2childTest = new TreeMap<>(); // sort by index
         for (FilterTest childTest : currentNestedRule.getFilterTests().getTests()) {
             String childResult = handleTest(childTest);
             if (childResult != null) {
@@ -193,7 +193,7 @@ public final class SoapToSieve {
         nestedIfBlock.append(") {\n");
 
         // Handle actions
-        Map<Integer, String> index2childAction = new TreeMap<Integer, String>(); // sort by index
+        Map<Integer, String> index2childAction = new TreeMap<>(); // sort by index
         List<FilterAction> childActions = currentNestedRule.getFilterActions();
 
         String variables = "";

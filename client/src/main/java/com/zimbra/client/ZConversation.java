@@ -73,7 +73,7 @@ public class ZConversation implements ZItem, ToZJSONObject {
         mSubject = e.getAttribute(MailConstants.E_SUBJECT, null);
         mMessageCount = (int) e.getAttributeLong(MailConstants.A_NUM);
 
-        mMessageSummaries = new ArrayList<ZMessageSummary>();
+        mMessageSummaries = new ArrayList<>();
         for (Element msgEl: e.listElements(MailConstants.E_MSG)) {
             mMessageSummaries.add(new ZMessageSummary(msgEl));
         }

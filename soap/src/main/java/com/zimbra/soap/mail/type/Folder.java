@@ -59,7 +59,7 @@ public class Folder {
     @XmlEnumValue("chat")
     CHAT("chat");
 
-    private static Map<String, View> nameToView = new HashMap<String, View>();
+    private static Map<String, View> nameToView = new HashMap<>();
 
     static {
       for (final View v : View.values()) {
@@ -310,7 +310,7 @@ public class Folder {
     @XmlElement(name = MailConstants.E_MOUNT /* link */, type = Mountpoint.class),
     @XmlElement(name = MailConstants.E_SEARCH /* search */, type = SearchFolder.class)
   })
-  private final List<Folder> subfolders = new ArrayList<Folder>();
+  private final List<Folder> subfolders = new ArrayList<>();
 
   /**
    * @zm-api-field-description Retention policy

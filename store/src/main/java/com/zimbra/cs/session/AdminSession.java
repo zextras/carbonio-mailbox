@@ -22,7 +22,7 @@ public class AdminSession extends Session {
     private static final long ADMIN_SESSION_TIMEOUT_MSEC = 10 * Constants.MILLIS_PER_MINUTE;
   
     private DirectorySearchParams mSearchParams;
-    private HashMap<String,Object> mData = new HashMap<String,Object>();
+    private HashMap<String,Object> mData = new HashMap<>();
 
     public AdminSession(String accountId) {
         super(accountId, Session.Type.ADMIN);

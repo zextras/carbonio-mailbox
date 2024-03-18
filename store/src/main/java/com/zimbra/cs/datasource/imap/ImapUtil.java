@@ -24,10 +24,10 @@ public final class ImapUtil {
     // case when comparing mailbox names so we can remove duplicates (Zimbra
     // folder names are case insensitive).
     private static final Comparator<ListData> COMPARATOR =
-        new Comparator<ListData>() {
-            public int compare(ListData ld1, ListData ld2) {
-                return ld2.getMailbox().compareToIgnoreCase(ld1.getMailbox());
-            }
+        new Comparator<>() {
+          public int compare(ListData ld1, ListData ld2) {
+            return ld2.getMailbox().compareToIgnoreCase(ld1.getMailbox());
+          }
         };
 
     public static List<ListData> listFolders(ImapConnection ic, String name)
@@ -39,8 +39,8 @@ public final class ImapUtil {
         // Keep INBOX and inferiors separate so we can return them first
         ListData inbox = null;
         ListData defaultInbox = null;
-        List<ListData> inboxInferiors = new ArrayList<ListData>();
-        List<ListData> otherFolders = new ArrayList<ListData>();
+        List<ListData> inboxInferiors = new ArrayList<>();
+        List<ListData> otherFolders = new ArrayList<>();
         for (ListData ld : folders) {
             if (INBOX.equalsIgnoreCase(ld.getMailbox())) { //rfc3501(5.1), INBOX is case-insensitive
                 if (inbox == null) {
@@ -56,7 +56,7 @@ public final class ImapUtil {
                 otherFolders.add(ld);
             }
         }
-        List<ListData> sorted = new ArrayList<ListData>(folders.size());
+        List<ListData> sorted = new ArrayList<>(folders.size());
         if (inbox == null) {
             // If INBOX missing from LIST response, then see if we can
             // determine a reasonable default (bug 30844).

@@ -59,17 +59,17 @@ public class W3cDomUtil {
     private W3cDomUtil() {}
 
     /** Cache one DocumentBuilder per thread to avoid unnecessarily recreating them for every XML parse. */
-    private static final ThreadLocal<DocumentBuilder> w3DomBuilderTL = new ThreadLocal<DocumentBuilder>() {
-            @Override
-            protected javax.xml.parsers.DocumentBuilder initialValue() {
-                try {
-                    DocumentBuilderFactory dbf = makeDocumentBuilderFactory();
-                    return dbf.newDocumentBuilder();
-                } catch (javax.xml.parsers.ParserConfigurationException pce) {
-                    ZimbraLog.misc.error("Problem setting up w3c DOM builder", pce);
-                    return null;
-                }
-            }
+    private static final ThreadLocal<DocumentBuilder> w3DomBuilderTL = new ThreadLocal<>() {
+      @Override
+      protected javax.xml.parsers.DocumentBuilder initialValue() {
+        try {
+          DocumentBuilderFactory dbf = makeDocumentBuilderFactory();
+          return dbf.newDocumentBuilder();
+        } catch (javax.xml.parsers.ParserConfigurationException pce) {
+          ZimbraLog.misc.error("Problem setting up w3c DOM builder", pce);
+          return null;
+        }
+      }
     };
 
     public static DocumentBuilderFactory makeDocumentBuilderFactory() throws ParserConfigurationException {
@@ -139,21 +139,21 @@ public class W3cDomUtil {
     }
 
     /** Cache one Transformer per thread to avoid unnecessarily recreating them for every XML parse. */
-    private static final ThreadLocal<Transformer> transformerTL = new ThreadLocal<Transformer>() {
-        @Override
-        protected Transformer initialValue() {
-            try {
-                TransformerFactory transformerFactory = makeTransformerFactory();
-                Transformer transformer = transformerFactory.newTransformer();
-                transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-                return transformer;
-            } catch (TransformerFactoryConfigurationError factoryError) {
-                LOG.error("Error creating TransformerFactory", factoryError);
-            } catch (TransformerException transformerError) {
-                LOG.error( "Error creating Transformer", transformerError);
-            }
-            return null;
+    private static final ThreadLocal<Transformer> transformerTL = new ThreadLocal<>() {
+      @Override
+      protected Transformer initialValue() {
+        try {
+          TransformerFactory transformerFactory = makeTransformerFactory();
+          Transformer transformer = transformerFactory.newTransformer();
+          transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+          return transformer;
+        } catch (TransformerFactoryConfigurationError factoryError) {
+          LOG.error("Error creating TransformerFactory", factoryError);
+        } catch (TransformerException transformerError) {
+          LOG.error("Error creating Transformer", transformerError);
         }
+        return null;
+      }
     };
 
     public static TransformerFactory makeTransformerFactory() {

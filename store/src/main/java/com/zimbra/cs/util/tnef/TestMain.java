@@ -411,9 +411,9 @@ public class TestMain {
     private static class TestContentHandler implements ContentHandler {
 
         boolean mDebug;
-        List<ZVCalendar> mCals = new ArrayList<ZVCalendar>(1);
+        List<ZVCalendar> mCals = new ArrayList<>(1);
         ZVCalendar mCurCal = null;
-        List<ZComponent> mComponents = new ArrayList<ZComponent>();
+        List<ZComponent> mComponents = new ArrayList<>();
         ZProperty mCurProperty = null;
         private int mNumCals;
         private boolean mInZCalendar;

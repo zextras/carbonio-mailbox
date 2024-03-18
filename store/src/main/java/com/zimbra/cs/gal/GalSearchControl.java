@@ -160,7 +160,7 @@ public class GalSearchControl {
   private static HashSet<String> SyncClients;
 
   static {
-    SyncClients = new HashSet<String>();
+    SyncClients = new HashSet<>();
   }
 
   public void sync() throws ServiceException {
@@ -508,7 +508,7 @@ public class GalSearchControl {
     boolean syncLocalResources =
         (galMode == GalMode.ldap && domain.isGalAlwaysIncludeLocalCalendarResources());
 
-    Set<Integer> folderIds = new HashSet<Integer>();
+    Set<Integer> folderIds = new HashSet<>();
     String syncToken = null;
     for (DataSource ds : galAcct.getAllDataSources()) {
       if (ds.getType() != DataSourceType.gal) {

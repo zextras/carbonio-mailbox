@@ -64,7 +64,7 @@ public class GalImport extends MailItemImport {
     private void setStatus(boolean success) throws ServiceException {
         Date now = new Date();
         DataSource ds = getDataSource();
-        Map<String,Object> attrs = new HashMap<String,Object>();
+        Map<String,Object> attrs = new HashMap<>();
         String attr = success ?
                 Provisioning.A_zimbraGalLastSuccessfulSyncTimestamp :
                 Provisioning.A_zimbraGalLastFailedSyncTimestamp;
@@ -83,7 +83,7 @@ public class GalImport extends MailItemImport {
             DbDataSource.addMapping(ds, folderMapping);
         }
         String syncToken = fullSync ? "" : folderMapping.md.get(SYNCTOKEN, "");
-        HashMap<String,DataSourceItem> allMappings = new HashMap<String,DataSourceItem>();
+        HashMap<String,DataSourceItem> allMappings = new HashMap<>();
         if (fullSync || force)
             for (DataSourceItem dsItem : DbDataSource.getAllMappings(ds))
                 if (dsItem.md == null || dsItem.md.get(TYPE, null) == null)  // non-folder items
@@ -105,7 +105,7 @@ public class GalImport extends MailItemImport {
             return;
         }
 
-        ArrayList<Integer> deleted = new ArrayList<Integer>();
+        ArrayList<Integer> deleted = new ArrayList<>();
         int[] deletedIds = new int[allMappings.size()];
         int i = 0;
         for (DataSourceItem dsItem : allMappings.values()) {
@@ -235,7 +235,7 @@ public class GalImport extends MailItemImport {
         private boolean allFieldsMatch(Map<String,Object> ldapContact, Map<String,String> contact) {
             if (ldapContact.size() != contact.size())
                 return false;
-            HashSet<String> ignoredKeys = new HashSet<String>();
+            HashSet<String> ignoredKeys = new HashSet<>();
             // always ignore the modified timestamp when comparing attributes.
             ignoredKeys.add(MODIFY_TIMESTAMP);
             Collections.addAll(ignoredKeys, dataSource.getMultiAttr(Provisioning.A_zimbraGalSyncIgnoredAttributes));

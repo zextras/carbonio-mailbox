@@ -386,7 +386,7 @@ public final class SearchParams implements Cloneable, ZimbraSearchParams {
 
   public void addInlinedHeader(String value) {
     if (inlinedHeaders == null) {
-      inlinedHeaders = new HashSet<String>();
+      inlinedHeaders = new HashSet<>();
     }
     inlinedHeaders.add(value);
   }

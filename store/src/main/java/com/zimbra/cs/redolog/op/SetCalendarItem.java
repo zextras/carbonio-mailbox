@@ -236,7 +236,7 @@ public class SetCalendarItem extends RedoableOp implements CreateCalendarItemRec
                 // no replies list
                 mReplies = null;
             } else {
-                mReplies = new ArrayList<ReplyInfo>(num);
+                mReplies = new ArrayList<>(num);
                 TimeZoneMap tzMap = tzmapInv.getTimeZoneMap();
                 for (int i = 0; i < num; i++) {
                     String data = in.readUTF();

@@ -154,7 +154,7 @@ public final class ACLUtil {
     throws ServiceException {
         ZimbraACL acl = getACL(target, Boolean.TRUE);
         if (acl == null) {
-            return new ArrayList<ZimbraACE>(); // return empty list
+            return new ArrayList<>(); // return empty list
         }
         // Make a copy so we don't interfere with others that are using the acl.
         // This instance of acl will never be used in any AccessManager code path.

@@ -103,7 +103,7 @@ public class WebClientL10nUtil {
 
     private static void loadBundles() throws ServiceException {
         ZimbraLog.webclient.debug("Loading locales...");
-        locales = new HashSet<Locale>();
+        locales = new HashSet<>();
 
         if (WebClientServiceUtil.isServerInSplitMode()) {
             String localesStr = WebClientServiceUtil.sendServiceRequestToOneRandomUiNode(LOAD_LOCALES_ON_UI_NODE);
@@ -146,7 +146,7 @@ public class WebClientL10nUtil {
          *      Thus we need to add a "language only" pseudo entry for locales that have
          *      a country part but the "language only" entry is not already there.
          */
-        Set<Locale> pseudoLocales = new HashSet<Locale>();
+        Set<Locale> pseudoLocales = new HashSet<>();
         for (Locale lc : locales) {
             String language = lc.getLanguage();
             Locale lcLang = new Locale(language);
@@ -168,7 +168,7 @@ public class WebClientL10nUtil {
 
         Locale[] sortedLocales = null;
         if (sortedLocalesMap == null) {
-            sortedLocalesMap = new HashMap<Locale, Locale[]>();
+            sortedLocalesMap = new HashMap<>();
         } else {
             sortedLocales = sortedLocalesMap.get(inLocale);
         }

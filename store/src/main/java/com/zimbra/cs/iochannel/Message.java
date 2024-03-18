@@ -67,7 +67,7 @@ public abstract class Message {
         public void handle(Message m, String clientId);
     }
 
-    private static final HashMap<String,Message> messages = new HashMap<String,Message>();
+    private static final HashMap<String,Message> messages = new HashMap<>();
 
     static {
         registerMessage(new CrossServerNotification());

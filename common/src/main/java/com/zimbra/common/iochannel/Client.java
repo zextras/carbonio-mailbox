@@ -48,7 +48,7 @@ public class Client implements Runnable {
             this.id = id;
             hostname = host;
             port = p;
-            backlog = new ConcurrentLinkedQueue<Packet>();
+            backlog = new ConcurrentLinkedQueue<>();
             connect();
         }
 
@@ -200,8 +200,8 @@ public class Client implements Runnable {
 
     private Client(Config c) throws IOException {
         selector = Selector.open();
-        peers = new HashMap<String,PeerServer>();
-        activeSet = new HashSet<PeerServer>();
+        peers = new HashMap<>();
+        activeSet = new HashSet<>();
         for (ServerConfig peer : c.getPeerServers()) {
             peers.put(peer.id, new PeerServer(peer));
         }

@@ -134,7 +134,7 @@ public class GetLoggerStats extends AdminDocumentHandler {
                 if (values != null) {
                     List<Element> counterList = values.listElements(AdminConstants.E_STAT);
                     if (counterList.size() > 0)
-                        counters = new HashSet<String>(counterList.size());
+                        counters = new HashSet<>(counterList.size());
                     for (Element e : counterList) {
                         counters.add(e.getAttribute(AdminConstants.A_NAME));
                     }
@@ -394,48 +394,50 @@ public class GetLoggerStats extends AdminDocumentHandler {
             final BufferedReader inbr = in;
             
             // there is a stream leak here if not read until the end
-            return new Iterator<String>() {
-                String line;
-                boolean isClosed = false;
+            return new Iterator<>() {
+              String line;
+              boolean isClosed = false;
 
-                public boolean hasNext() {
-                    try {
-                        line = inbr.readLine();
-                    }
-                    catch (IOException e) {
-                        ZimbraLog.soap.error("GetLoggerStats IOE", e);
-                        line = null;
-                    }
-                    
-                    if (line == null) {
-                        try {
-                            out.close();
-                            inbr.close();
-                            socket.close();
-                            isClosed = true;
-                        }
-                        catch (IOException e) { } // ignore
-                    }
-                    return line != null;
+              public boolean hasNext() {
+                try {
+                  line = inbr.readLine();
+                } catch (IOException e) {
+                  ZimbraLog.soap.error("GetLoggerStats IOE", e);
+                  line = null;
                 }
 
-                public String next() {
-                    if (!isClosed && line == null) {
-                        try {
-                            inbr.close();
-                        }
-                        catch (IOException e) { } // ignore
-                        throw new IllegalStateException("hasNext not called");
-                    }
-                    if (isClosed)
-                        throw new IllegalStateException("no more results");
-                    String l = line;
-                    line = null;
-                    return l;
+                if (line == null) {
+                  try {
+                    out.close();
+                    inbr.close();
+                    socket.close();
+                    isClosed = true;
+                  } catch (IOException e) {
+                  } // ignore
                 }
+                return line != null;
+              }
 
-                public void remove() { throw new UnsupportedOperationException("remove"); }
-                
+              public String next() {
+                if (!isClosed && line == null) {
+                  try {
+                    inbr.close();
+                  } catch (IOException e) {
+                  } // ignore
+                  throw new IllegalStateException("hasNext not called");
+                }
+                if (isClosed) {
+                  throw new IllegalStateException("no more results");
+                }
+                String l = line;
+                line = null;
+                return l;
+              }
+
+              public void remove() {
+                throw new UnsupportedOperationException("remove");
+              }
+
             };
         }
         catch (IOException e) {

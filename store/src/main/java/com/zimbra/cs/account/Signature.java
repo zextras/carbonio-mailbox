@@ -54,7 +54,7 @@ public class Signature extends AccountProperty implements Comparable {
     }
 
     public Set<SignatureContent> getContents() {
-        Set<SignatureContent> contents = new HashSet<SignatureContent>();
+        Set<SignatureContent> contents = new HashSet<>();
         BrowserDefang defanger = DefangFactory.getDefanger(MimeConstants.CT_TEXT_HTML);
       for (Map.Entry<String, String> stringStringEntry : SignatureUtil.ATTR_TYPE_MAP.entrySet()) {
         Map.Entry entry = (Map.Entry) stringStringEntry;

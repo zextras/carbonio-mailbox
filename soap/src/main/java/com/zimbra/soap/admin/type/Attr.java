@@ -73,7 +73,7 @@ public class Attr extends KeyValuePair {
 
     public static Map<String, Object> collectionToMap(Collection <Attr> attrs, boolean ignoreEmptyValues)
     throws ServiceException {
-        Map<String, Object> result = new HashMap<String,Object>();
+        Map<String, Object> result = new HashMap<>();
         for (Attr a : attrs) {
             String value = a.getValue();
             if (!ignoreEmptyValues || (value != null && value.length() > 0)) {

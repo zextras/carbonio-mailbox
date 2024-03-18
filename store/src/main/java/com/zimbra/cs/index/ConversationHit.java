@@ -29,7 +29,7 @@ public final class ConversationHit extends ZimbraHit {
 
     private final int conversationId;
     private Conversation conversation;
-    private Map<Long, MessageHit> messageHits = new LinkedHashMap<Long, MessageHit>();
+    private Map<Long, MessageHit> messageHits = new LinkedHashMap<>();
 
     ConversationHit(ZimbraQueryResultsImpl results, Mailbox mbx, int convId, Object sortKey) {
         super(results, mbx, sortKey);

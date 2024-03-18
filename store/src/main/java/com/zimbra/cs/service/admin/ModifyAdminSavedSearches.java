@@ -41,7 +41,7 @@ public class ModifyAdminSavedSearches extends AdminDocumentHandler {
         HashMap<String, String> searches = null;
         for (Iterator it = request.elementIterator(AdminConstants.E_SEARCH); it.hasNext(); ) {
             if (searches == null)
-                searches = new HashMap<String, String>();
+                searches = new HashMap<>();
             Element e = (Element) it.next();
             String name = e.getAttribute(AdminConstants.A_NAME);
             String query = e.getText();
@@ -57,7 +57,7 @@ public class ModifyAdminSavedSearches extends AdminDocumentHandler {
     
     public void handle(Account acct, Element response, HashMap<String, String> modSearches) throws ServiceException {
         String[] searches = acct.getMultiAttr(Provisioning.A_zimbraAdminSavedSearches);
-        Map<String, GetAdminSavedSearches.AdminSearch> curSearches = new HashMap<String, GetAdminSavedSearches.AdminSearch>();
+        Map<String, GetAdminSavedSearches.AdminSearch> curSearches = new HashMap<>();
       for (String search : searches) {
         GetAdminSavedSearches.AdminSearch as = GetAdminSavedSearches.AdminSearch.parse(search);
         curSearches.put(as.getName(), as);
@@ -88,7 +88,7 @@ public class ModifyAdminSavedSearches extends AdminDocumentHandler {
       }
             
         Provisioning prov = Provisioning.getInstance();
-        Map<String,String[]> modmap = new HashMap<String,String[]>();
+        Map<String,String[]> modmap = new HashMap<>();
         modmap.put(Provisioning.A_zimbraAdminSavedSearches, mods);
         prov.modifyAttrs(acct, modmap);
     }

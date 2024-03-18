@@ -82,7 +82,7 @@ public class HttpRequestLine {
         if (idx >= 0 && idx < uri.length()) {
             mUriParams = HttpUtil.getURIParams(uri.substring(idx+1));
         } else {
-            mUriParams = new HashMap<String,String>();
+            mUriParams = new HashMap<>();
         }
         return mUriParams;
     }

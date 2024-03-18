@@ -71,7 +71,7 @@ public final class ExportContacts extends MailDocumentHandler  {
 
         StringBuilder sb = new StringBuilder();
         if (contacts == null)
-            contacts = new ArrayList<Contact>();
+            contacts = new ArrayList<>();
 
         try {
             ContactCSV contactCSV = new ContactCSV(mbox,octxt);

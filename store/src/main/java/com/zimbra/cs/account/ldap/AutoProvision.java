@@ -174,7 +174,7 @@ public abstract class AutoProvision {
         }
 
         private static final String DELIMITER = "=";
-        private final Map<String, String> attrMap = new HashMap<String, String>();
+        private final Map<String, String> attrMap = new HashMap<>();
         private final String[] attrsToFetch;
         private AutoProvisionListener listener;
 
@@ -205,7 +205,7 @@ public abstract class AutoProvision {
                 attrMap.put(externalAttr, zimbraAttr);
             }
 
-            Set<String> attrs = new HashSet<String>(attrMap.keySet());
+            Set<String> attrs = new HashSet<>(attrMap.keySet());
             attrs.add(LdapConstants.ATTR_createTimestamp);
             String nameMapAttr = domain.getAutoProvAccountNameMap();
             if (nameMapAttr != null) {
@@ -316,7 +316,7 @@ public abstract class AutoProvision {
         AutoProvisionCachedInfo attrMap = AutoProvisionCachedInfo.getInfo(domain);
 
         Map<String, Object> extAttrs = externalAttrs.getAttrs();
-        Map<String, Object> zimbraAttrs = new HashMap<String, Object>();
+        Map<String, Object> zimbraAttrs = new HashMap<>();
 
         for (Map.Entry<String, Object> extAttr : extAttrs.entrySet()) {
             String extAttrName = extAttr.getKey();

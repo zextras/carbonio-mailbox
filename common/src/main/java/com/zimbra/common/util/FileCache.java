@@ -67,7 +67,7 @@ public class FileCache<K> {
 
     private final Map<K, String> keyToDigest = Maps.newHashMap();
     private final Multimap<String, K> digestToKeys = HashMultimap.create();
-    private final LinkedHashMap<String, Item> digestToItem = new LinkedHashMap<String, Item>(16, 0.75f, true);
+    private final LinkedHashMap<String, Item> digestToItem = new LinkedHashMap<>(16, 0.75f, true);
     private long numBytes = 0;
 
     private static final String PROP_KEYS = "FileCache.keys";
@@ -124,11 +124,11 @@ public class FileCache<K> {
         private long minLifetime = -1;
 
         public static Builder<String> createWithStringKey(File cacheDir, boolean persistent) {
-            return new Builder<String>(cacheDir, STRING_KEY_PARSER, persistent);
+            return new Builder<>(cacheDir, STRING_KEY_PARSER, persistent);
         }
 
         public static Builder<Integer> createWithIntegerKey(File cacheDir, boolean persistent) {
-            return new Builder<Integer>(cacheDir, INTEGER_KEY_PARSER, persistent);
+            return new Builder<>(cacheDir, INTEGER_KEY_PARSER, persistent);
         }
 
         public Builder(File cacheDir, KeyParser<K2> keyParser, boolean persistent) {
@@ -169,21 +169,21 @@ public class FileCache<K> {
         public K3 parse(String keyString);
     }
 
-    private static final KeyParser<String> STRING_KEY_PARSER = new KeyParser<String>() {
-        @Override
-        public String parse(String keyString) {
-            return keyString;
-        }
+    private static final KeyParser<String> STRING_KEY_PARSER = new KeyParser<>() {
+      @Override
+      public String parse(String keyString) {
+        return keyString;
+      }
     };
 
-    private static final KeyParser<Integer> INTEGER_KEY_PARSER = new KeyParser<Integer>() {
-        @Override
-        public Integer parse(String keyString) {
-            if (keyString == null) {
-                return null;
-            }
-            return Integer.parseInt(keyString);
+    private static final KeyParser<Integer> INTEGER_KEY_PARSER = new KeyParser<>() {
+      @Override
+      public Integer parse(String keyString) {
+        if (keyString == null) {
+          return null;
         }
+        return Integer.parseInt(keyString);
+      }
     };
 
     public interface RemoveCallback {

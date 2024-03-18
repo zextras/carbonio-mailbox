@@ -346,7 +346,7 @@ public class WaitSetRequest extends MailDocumentHandler {
       List<WaitSetAddSpec> accountDetails,
       Set<MailItem.Type> defaultInterest)
       throws ServiceException {
-    List<WaitSetAccount> toRet = new ArrayList<WaitSetAccount>();
+    List<WaitSetAccount> toRet = new ArrayList<>();
     if (accountDetails != null) {
       for (WaitSetAddSpec accountDetail : accountDetails) {
         String id;

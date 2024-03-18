@@ -28,7 +28,7 @@ class MailboxErrorUtil {
     static void handleCascadeFailure(Mailbox mbox, List<Integer> cascadeIds, ServiceException e) throws ServiceException {
         if (causeMatchesFKFailure(e)) {
             ZimbraLog.mailbox.error("deleting cascadeIds failed due to foreign key constraint failed; attempting to delete individually and find failure");
-            LinkedList<Integer> failures = new LinkedList<Integer>();
+            LinkedList<Integer> failures = new LinkedList<>();
             for (Integer id: cascadeIds) {
               try {
                   List<Integer> singleItemList = Collections.singletonList(id);

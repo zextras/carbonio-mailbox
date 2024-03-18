@@ -89,8 +89,8 @@ public class ZimletFilter extends ZimbraServlet implements Filter {
 
         // get list of allowed zimlets
         Provisioning prov = Provisioning.getInstance();
-		List<Zimlet> allowedZimlets = new LinkedList<Zimlet>();
-        List<Zimlet> allZimlets = new LinkedList<Zimlet>();
+		List<Zimlet> allowedZimlets = new LinkedList<>();
+        List<Zimlet> allZimlets = new LinkedList<>();
 		try {
 		    isAdminAuth = AdminAccessControl.getAdminAccessControl(authToken).isSufficientAdminForZimletFilterServlet();
 		    
@@ -135,7 +135,7 @@ public class ZimletFilter extends ZimbraServlet implements Filter {
         Set<String> allZimletNames = getZimletNames(allZimlets);
 
         // get list of zimlets for request
-        Set<String> zimletNames = new LinkedHashSet<String>();
+        Set<String> zimletNames = new LinkedHashSet<>();
         String uri = req.getRequestURI();
 		boolean isZimletRes = uri.startsWith(ZIMLET_RES_URL_PREFIX);
 		if (isZimletRes) {
@@ -259,7 +259,7 @@ public class ZimletFilter extends ZimbraServlet implements Filter {
     //
 
     private static Set<String> getZimletNames(List<Zimlet> zimlets) {
-        Set<String> names = new LinkedHashSet<String>();
+        Set<String> names = new LinkedHashSet<>();
         for (Zimlet zimlet : zimlets) {
             names.add(zimlet.getName());
         }

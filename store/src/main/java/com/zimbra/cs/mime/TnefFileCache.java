@@ -41,7 +41,7 @@ public class TnefFileCache {
     /**
      * Maps the TNEF part digest to the file on disk.
      */
-    private Map<String, File> mDigestToFile = new HashMap<String, File>();
+    private Map<String, File> mDigestToFile = new HashMap<>();
     
     private TnefFileCache(File cacheDir) {
         mCacheDir = cacheDir;
@@ -128,7 +128,7 @@ public class TnefFileCache {
      * Returns all part digests from the <tt>mMessageToPart</tt> map.
      */
     private synchronized Set<String> getAllMessagePartDigests() {
-        Set<String> allDigests = new HashSet<String>();
+        Set<String> allDigests = new HashSet<>();
         for (int hashCode : mMessageToPartDigests.keySet()) {
             allDigests.addAll(mMessageToPartDigests.get(hashCode));
         }

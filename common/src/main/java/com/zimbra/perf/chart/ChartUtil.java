@@ -88,13 +88,13 @@ public class ChartUtil {
     private final boolean mSkipSummary;
 
     private final List<ChartSettings> mSyntheticChartSettings =
-        new ArrayList<ChartSettings>();
-    private final List<JFreeChart> mCharts = new ArrayList<JFreeChart>();
+        new ArrayList<>();
+    private final List<JFreeChart> mCharts = new ArrayList<>();
     private final Set<DataColumn> mUniqueDataColumns;
     private final Set<DataColumn> mUniqueStringColumns;
     private final Map<String /* infile */, Set<Pair<String /* column */, DataSeries>>> mColumnsByInfile;
     private final Map<ChartSettings,JFreeChart> mChartMap =
-        new HashMap<ChartSettings,JFreeChart>();
+        new HashMap<>();
     private final Map<DataColumn, DataSeries> mDataSeries;
     private final Map<DataColumn, StringSeries> mStringSeries;
     private final Map<DataColumn, Double> mAggregates;
@@ -252,7 +252,7 @@ public class ChartUtil {
             String[] srcDirStrs = cl.getOptionValues(OPT_SRCDIR);
             if (srcDirStrs == null || srcDirStrs.length == 0)
                 usage(opts, "Missing --" + OPT_SRCDIR + " option");
-            List<File> srcDirsList = new ArrayList<File>(srcDirStrs.length);
+            List<File> srcDirsList = new ArrayList<>(srcDirStrs.length);
           for (String srcDirStr : srcDirStrs) {
             File srcDir = new File(srcDirStr);
             if (srcDir.exists())
@@ -319,21 +319,21 @@ public class ChartUtil {
         mAggregateEndAt = aggregateEndAt != null ? aggregateEndAt : new Date(
                 Long.MAX_VALUE);
         mSkipSummary = skipSummary;
-        mUniqueDataColumns = new HashSet<DataColumn>();
-        mUniqueStringColumns = new HashSet<DataColumn>();
-        mColumnsByInfile = new HashMap<String, Set<Pair<String, DataSeries>>>();
-        mStringSeries = new HashMap<DataColumn, StringSeries>();
-        mDataSeries = new HashMap<DataColumn, DataSeries>();
-        mAggregates = new HashMap<DataColumn, Double>();
+        mUniqueDataColumns = new HashSet<>();
+        mUniqueStringColumns = new HashSet<>();
+        mColumnsByInfile = new HashMap<>();
+        mStringSeries = new HashMap<>();
+        mDataSeries = new HashMap<>();
+        mAggregates = new HashMap<>();
         mAggregator = new Aggregator();
-        mStats = new HashMap<String, Double>();
+        mStats = new HashMap<>();
     }
 
     private void doit() throws Exception {
         List<ChartSettings> allSettings = getAllChartSettings(mConfs);
         readCsvFiles();
-        List<ChartSettings> outDocSettings = new ArrayList<ChartSettings>();
-        HashSet<String> outDocNames = new HashSet<String>();
+        List<ChartSettings> outDocSettings = new ArrayList<>();
+        HashSet<String> outDocNames = new HashSet<>();
         for (Iterator<ChartSettings> i = allSettings.iterator();
                 i.hasNext();) {
             ChartSettings cs = i.next();
@@ -362,7 +362,7 @@ public class ChartUtil {
 
     private List<ChartSettings> getAllChartSettings(File[] chartDefs)
             throws Exception {
-        List<ChartSettings> allSettings = new ArrayList<ChartSettings>();
+        List<ChartSettings> allSettings = new ArrayList<>();
         for (File def : chartDefs) {
             List<ChartSettings> settings = XMLChartConfig.load(def);
             if (settings.size() == 0) {
@@ -373,7 +373,7 @@ public class ChartUtil {
 
             // Figure out which columns in which input files are being charted.
             for (ChartSettings cs : settings) {
-            	ArrayList<PlotSettings> plots = new ArrayList<PlotSettings>();
+            	ArrayList<PlotSettings> plots = new ArrayList<>();
             	plots.addAll(cs.getPlots());
             	plots.addAll(cs.getGroupPlots());
                 for (PlotSettings ps : plots) {
@@ -382,7 +382,7 @@ public class ChartUtil {
                     if (column == null) {
                         String[] top = ps.getRatioTop().split("\\+");
                         String[] bottom = ps.getRatioBottom().split("\\+");
-                        ArrayList<String> cols = new ArrayList<String>();
+                        ArrayList<String> cols = new ArrayList<>();
                         cols.addAll(Arrays.asList(top));
                         cols.addAll(Arrays.asList(bottom));
                         for (String c : cols) {
@@ -412,13 +412,13 @@ public class ChartUtil {
             String column = dc.getColumn();
             Set<Pair<String, DataSeries>> cols = mColumnsByInfile.get(infile);
             if (cols == null) {
-                cols = new HashSet<Pair<String, DataSeries>>();
+                cols = new HashSet<>();
                 mColumnsByInfile.put(infile, cols);
             }
             DataSeries series = new DataSeries();
             mDataSeries.put(dc, series);
-            Pair<String, DataSeries> colSeries = new Pair<String, DataSeries>(
-                    column, series);
+            Pair<String, DataSeries> colSeries = new Pair<>(
+                column, series);
             cols.add(colSeries);
         }
 
@@ -581,7 +581,7 @@ public class ChartUtil {
                 }
                 writer.write("</ul>\n");
             }
-            List<String> noData = new ArrayList<String>();
+            List<String> noData = new ArrayList<>();
 
             int count = 0;
             for (ChartSettings cs : allSettings) {
@@ -940,7 +940,7 @@ public class ChartUtil {
     private void validateChartSettings(List<ChartSettings> allSettings)
             throws ParseException {
         // Make sure we're not writing the same chart twice
-        Set<String> usedFilenames = new HashSet<String>();
+        Set<String> usedFilenames = new HashSet<>();
         for (ChartSettings cs : allSettings) {
             String filename = cs.getOutfile();
             if (usedFilenames.contains(filename)) {
@@ -1028,7 +1028,7 @@ public class ChartUtil {
                 val *= 100;  // percent
             }
             mLastTstamp = tl;
-            return new Pair<Date, Double>(t, val);
+            return new Pair<>(t, val);
         }
 
         @Override
@@ -1061,7 +1061,7 @@ public class ChartUtil {
         TimeSeriesCollection data = new TimeSeriesCollection();
 
         ArrayList<ChartSettings> syntheticSettings =
-            new ArrayList<ChartSettings>();
+            new ArrayList<>();
         for (GroupPlotSettings gps : cs.getGroupPlots()) {
             String groupBy = gps.getGroupBy();
             DataColumn dc = new DataColumn(gps.getInfile(), groupBy);
@@ -1070,12 +1070,12 @@ public class ChartUtil {
             DataSeries ds = mDataSeries.get(dc);
             int idx = 0;
             Map<String,List<Integer>> groups =
-                new HashMap<String,List<Integer>>();
+                new HashMap<>();
             for (StringEntry e : groupBySeries.dataCollection) {
                 String g = e.getVal();
                 List<Integer> indices = groups.get(g);
                 if (indices == null) {
-                    indices = new ArrayList<Integer>();
+                    indices = new ArrayList<>();
                     groups.put(g, indices);
                 }
                 indices.add(idx);
@@ -1119,7 +1119,7 @@ public class ChartUtil {
             }
         }
         if (cs.getOutDocument() != null && cs.getGroupPlots().size() != 0) {
-            ArrayList<JFreeChart> charts = new ArrayList<JFreeChart>();
+            ArrayList<JFreeChart> charts = new ArrayList<>();
             for (ChartSettings c : syntheticSettings) {
                 charts.addAll(createJFReeChart(c));
                 c.setOutDocument(cs.getOutDocument());
@@ -1133,7 +1133,7 @@ public class ChartUtil {
             String aggregateFunction = cs.getTopPlotsType().name().toLowerCase();
             System.out.printf("Reducing %d to %d plots for chart '%s'%n",
                     plots.size(), cs.getTopPlots(), cs.getTitle());
-            ArrayList<PlotAggregatePair> aggregates = new ArrayList<PlotAggregatePair>();
+            ArrayList<PlotAggregatePair> aggregates = new ArrayList<>();
             for (PlotSettings ps : plots) {
                 DataColumn dc = new DataColumn(ps.getInfile(), ps.getDataColumn());
                 String key = ps.getInfile() + ":" + ps.getDataColumn() + ":" +
@@ -1350,7 +1350,7 @@ public class ChartUtil {
     }
 
     class DataSeries {
-        List<Entry> dataCollection = new ArrayList<Entry>();
+        List<Entry> dataCollection = new ArrayList<>();
 
         public void AddEntry(Date t, double d) {
             Entry entry = new Entry(t, d);
@@ -1384,7 +1384,7 @@ public class ChartUtil {
         }
     }
     class StringSeries {
-        List<StringEntry> dataCollection = new ArrayList<StringEntry>();
+        List<StringEntry> dataCollection = new ArrayList<>();
 
         public void AddEntry(Date t, String s) {
             StringEntry entry = new StringEntry(t, s);
@@ -1401,7 +1401,7 @@ public class ChartUtil {
     }
 
     static class Aggregator {
-        HashMap<String, Integer> set = new HashMap<String, Integer>();
+        HashMap<String, Integer> set = new HashMap<>();
 
         public Aggregator() {
         }

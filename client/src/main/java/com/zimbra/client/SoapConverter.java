@@ -44,63 +44,63 @@ public class SoapConverter {
         ACCOUNT_BY_MAP.put(AccountBy.appAdminName, Key.AccountBy.appAdminName);
     }
     
-    public static Function<Folder.View, ZFolder.View> FROM_SOAP_VIEW = new Function<Folder.View, ZFolder.View>() {
-            @Override
-            public ZFolder.View apply(Folder.View from) {
-                ZFolder.View to = VIEW_MAP.get(from);
-                return (to != null ? to : ZFolder.View.unknown);
-            }
+    public static Function<Folder.View, ZFolder.View> FROM_SOAP_VIEW = new Function<>() {
+      @Override
+      public ZFolder.View apply(Folder.View from) {
+        ZFolder.View to = VIEW_MAP.get(from);
+        return (to != null ? to : ZFolder.View.unknown);
+      }
     };
     
-    public static Function<ZFolder.View, Folder.View> TO_SOAP_VIEW = new Function<ZFolder.View, Folder.View>() {
-        @Override
-        public Folder.View apply(ZFolder.View from) {
-            Folder.View to = VIEW_MAP.inverse().get(from);
-            return (to != null ? to : Folder.View.UNKNOWN);
-        }
+    public static Function<ZFolder.View, Folder.View> TO_SOAP_VIEW = new Function<>() {
+      @Override
+      public Folder.View apply(ZFolder.View from) {
+        Folder.View to = VIEW_MAP.inverse().get(from);
+        return (to != null ? to : Folder.View.UNKNOWN);
+      }
     };
 
-    public static Function<Identity, ZIdentity> FROM_SOAP_IDENTITY = new Function<Identity, ZIdentity>() {
-        @Override
-        public ZIdentity apply(Identity from) {
-            return new ZIdentity(from);
-        }
+    public static Function<Identity, ZIdentity> FROM_SOAP_IDENTITY = new Function<>() {
+      @Override
+      public ZIdentity apply(Identity from) {
+        return new ZIdentity(from);
+      }
     };
 
-    public static Function<ZIdentity, Identity> TO_SOAP_IDENTITY = new Function<ZIdentity, Identity>() {
-        @Override
-        public Identity apply(ZIdentity from) {
-            return from.getData();
-        }
+    public static Function<ZIdentity, Identity> TO_SOAP_IDENTITY = new Function<>() {
+      @Override
+      public Identity apply(ZIdentity from) {
+        return from.getData();
+      }
     };
 
-    public static Function<Signature, ZSignature> FROM_SOAP_SIGNATURE = new Function<Signature, ZSignature>() {
-        @Override
-        public ZSignature apply(Signature from) {
-            return new ZSignature(from);
-        }
+    public static Function<Signature, ZSignature> FROM_SOAP_SIGNATURE = new Function<>() {
+      @Override
+      public ZSignature apply(Signature from) {
+        return new ZSignature(from);
+      }
     };
 
-    public static Function<ZSignature, Signature> TO_SOAP_SIGNATURE = new Function<ZSignature, Signature>() {
-        @Override
-        public Signature apply(ZSignature from) {
-            return from.getData();
-        }
+    public static Function<ZSignature, Signature> TO_SOAP_SIGNATURE = new Function<>() {
+      @Override
+      public Signature apply(ZSignature from) {
+        return from.getData();
+      }
     };
     
     public static Function<AccountBy, Key.AccountBy> FROM_SOAP_ACCOUNT_BY =
-        new Function<AccountBy, Key.AccountBy>() {
-        @Override
-        public Key.AccountBy apply(AccountBy by) {
+        new Function<>() {
+          @Override
+          public Key.AccountBy apply(AccountBy by) {
             return ACCOUNT_BY_MAP.get(by);
-        }
-    };
+          }
+        };
     
     public static Function<Key.AccountBy, AccountBy> TO_SOAP_ACCOUNT_BY =
-        new Function<Key.AccountBy, AccountBy>() {
-        @Override
-        public AccountBy apply(Key.AccountBy by) {
+        new Function<>() {
+          @Override
+          public AccountBy apply(Key.AccountBy by) {
             return ACCOUNT_BY_MAP.inverse().get(by);
-        }
-    };
+          }
+        };
 }

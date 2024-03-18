@@ -607,8 +607,8 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
     private static String nATOM(String value) { return value == null ? "NIL" : '"' + value.toUpperCase() + '"'; }
 
     static void serializeStructure(PrintStream ps, MimeMessage root, boolean extensions) throws IOException, MessagingException {
-        LinkedList<LinkedList<MPartInfo>> queue = new LinkedList<LinkedList<MPartInfo>>();
-        LinkedList<MPartInfo> level = new LinkedList<MPartInfo>();
+        LinkedList<LinkedList<MPartInfo>> queue = new LinkedList<>();
+        LinkedList<MPartInfo> level = new LinkedList<>();
         level.add(Mime.getParts(root).get(0));
         queue.add(level);
 
@@ -640,7 +640,7 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
                     if (!hasChildren) {
                         ps.print("NIL");
                     } else {
-                        queue.addLast(new LinkedList<MPartInfo>(mpi.getChildren()));
+                        queue.addLast(new LinkedList<>(mpi.getChildren()));
                         continue;
                     }
                 }
@@ -682,7 +682,7 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
                         } else {
                             MimeMessage mm = (MimeMessage) mpi.getChildren().get(0).getMimePart();
                             ps.write(' ');  serializeEnvelope(ps, mm);  ps.write(' ');
-                            queue.addLast(new LinkedList<MPartInfo>(mpi.getChildren()));
+                            queue.addLast(new LinkedList<>(mpi.getChildren()));
                             continue;
                         }
                     }

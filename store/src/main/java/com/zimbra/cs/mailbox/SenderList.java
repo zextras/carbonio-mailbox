@@ -32,7 +32,7 @@ public class SenderList {
     public SenderList(Message msg) {
         String sender = msg.getSender();
         if (sender != null && !sender.trim().equals("")) {
-            mParticipants = new ArrayList<ParsedAddress>(MAX_PARTICIPANT_COUNT);
+            mParticipants = new ArrayList<>(MAX_PARTICIPANT_COUNT);
             mParticipants.add(new ParsedAddress(sender).parse());
             mLastDate = msg.getDate();
         }
@@ -59,7 +59,7 @@ public class SenderList {
             if (mParticipants != null && mParticipants.contains(pa)) {
             }
             else if (mParticipants == null)
-                (mParticipants = new ArrayList<ParsedAddress>(MAX_PARTICIPANT_COUNT)).add(pa);
+                (mParticipants = new ArrayList<>(MAX_PARTICIPANT_COUNT)).add(pa);
             else if (mParticipants.size() >= MAX_PARTICIPANT_COUNT)
                 mIsElided = true;
             else
@@ -84,7 +84,7 @@ public class SenderList {
 
         ParsedAddress pa = new ParsedAddress(sender).parse();
         if (mParticipants == null) {
-            (mParticipants = new ArrayList<ParsedAddress>(MAX_PARTICIPANT_COUNT)).add(pa);
+            (mParticipants = new ArrayList<>(MAX_PARTICIPANT_COUNT)).add(pa);
         } else {
             mParticipants.remove(pa);
             mParticipants.add(0, pa);
@@ -103,7 +103,7 @@ public class SenderList {
     public List<ParsedAddress> getLastAddresses() {
         if (mParticipants == null || mParticipants.isEmpty())
             return Collections.emptyList();
-        List<ParsedAddress> addrs = new ArrayList<ParsedAddress>(mParticipants);
+        List<ParsedAddress> addrs = new ArrayList<>(mParticipants);
         if (addrs.size() > 1)
             Collections.reverse(addrs);
         return addrs;
@@ -136,7 +136,7 @@ public class SenderList {
         sl.mIsElided = meta.getBool(Metadata.FN_ELIDED);
         MetadataList entries = meta.getList(Metadata.FN_ENTRIES, true);
         if (entries != null && !entries.isEmpty()) {
-            sl.mParticipants = new ArrayList<ParsedAddress>(entries.size());
+            sl.mParticipants = new ArrayList<>(entries.size());
             for (int i = 0; i < entries.size(); i++)
                 sl.mParticipants.add(importAddress(entries.getMap(i)));
         }
@@ -156,7 +156,7 @@ public class SenderList {
         sl.mSize = size;
         sl.mLastDate = meta.getLong(Metadata.FN_LAST_DATE, 0);
         sl.mIsElided = false;
-        sl.mParticipants = new ArrayList<ParsedAddress>(entries == null ? 1 : size);
+        sl.mParticipants = new ArrayList<>(entries == null ? 1 : size);
         if (entries != null && !entries.isEmpty()) {
             for (int i = 0; i < entries.size(); i++)
                 sl.mParticipants.add(importAddress(entries.getMap(i)));

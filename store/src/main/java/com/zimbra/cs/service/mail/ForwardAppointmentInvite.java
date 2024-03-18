@@ -96,7 +96,7 @@ public class ForwardAppointmentInvite extends ForwardAppointment {
     mbox.lock.lock();
     try {
       MimeMessage mmInv = msg.getMimeMessage();
-      List<Invite> invs = new ArrayList<Invite>();
+      List<Invite> invs = new ArrayList<>();
       for (Iterator<CalendarItemInfo> iter = msg.getCalendarItemInfoIterator(); iter.hasNext(); ) {
         CalendarItemInfo cii = iter.next();
         Invite inv = cii.getInvite();

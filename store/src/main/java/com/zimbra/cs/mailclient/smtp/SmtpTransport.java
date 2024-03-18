@@ -280,8 +280,8 @@ public class SmtpTransport extends Transport {
     Set<String> validRcpts = connection.getValidRecipients();
     Set<String> invalidRcpts = connection.getInvalidRecipients();
 
-    List<Address> validAddrs = new ArrayList<Address>(validRcpts.size());
-    List<Address> invalidAddrs = new ArrayList<Address>(invalidRcpts.size());
+    List<Address> validAddrs = new ArrayList<>(validRcpts.size());
+    List<Address> invalidAddrs = new ArrayList<>(invalidRcpts.size());
     for (Address addr : addrs) {
       if (addr instanceof InternetAddress) {
         InternetAddress iaddr = (InternetAddress) addr;

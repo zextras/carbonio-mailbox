@@ -241,7 +241,7 @@ public class FullInstanceData extends InstanceData {
         if (meta.containsKey(FN_NUM_ATTENDEES)) {
             int num = (int) meta.getLong(FN_NUM_ATTENDEES);
             if (num > 0) {
-                attendees = new ArrayList<ZAttendee>(num);
+                attendees = new ArrayList<>(num);
                 for (int i = 0; i < num; i++) {
                     Metadata metaAt = meta.getMap(FN_ATTENDEE + i, true);
                     if (metaAt != null)
@@ -285,7 +285,7 @@ public class FullInstanceData extends InstanceData {
         List<String> categories = null;
         int numCat = (int) meta.getLong(FN_NUM_CATEGORIES, 0);
         if (numCat > 0) {
-            categories = new ArrayList<String>();
+            categories = new ArrayList<>();
             for (int i = 0; i < numCat; i++) {
                 String cat = meta.get(FN_CATEGORY + i, null);
                 if (cat != null)

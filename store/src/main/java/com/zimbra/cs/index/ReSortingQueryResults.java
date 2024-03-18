@@ -128,7 +128,7 @@ public final class ReSortingQueryResults implements ZimbraQueryResults {
 
   private void bufferAllHits() throws ServiceException {
     assert (mHitBuffer == null);
-    mHitBuffer = new ArrayList<ZimbraHit>();
+    mHitBuffer = new ArrayList<>();
 
     // get the proper comparator
     Comparator<ZimbraHit> comp;
@@ -144,7 +144,7 @@ public final class ReSortingQueryResults implements ZimbraQueryResults {
         break;
       case READ_DESC:
         comp =
-            new Comparator<ZimbraHit>() {
+            new Comparator<>() {
               @Override
               public int compare(ZimbraHit lhs, ZimbraHit rhs) {
                 return ZimbraHit.compareByReadFlag(false, lhs, rhs);

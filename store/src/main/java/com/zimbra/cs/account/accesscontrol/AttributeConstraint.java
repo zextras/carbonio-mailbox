@@ -56,7 +56,7 @@ public class AttributeConstraint {
 
     private void addValue(String value) {
         if (mValues == null)
-            mValues = new HashSet<String>();
+            mValues = new HashSet<>();
         mValues.add(value);
     }
 
@@ -513,7 +513,7 @@ public class AttributeConstraint {
     }
 
     private static Map<String, AttributeConstraint> loadConstraints(Entry constraintEntry) throws ServiceException {
-        Map<String, AttributeConstraint> constraints = new HashMap<String, AttributeConstraint>();
+        Map<String, AttributeConstraint> constraints = new HashMap<>();
 
         Set<String> cstrnts = constraintEntry.getMultiAttrSet(Provisioning.A_zimbraConstraint);
 
@@ -556,11 +556,11 @@ public class AttributeConstraint {
 
         // curConstraints now contains the new values
         // update LDAP
-        Map<String, Object> newAttrValues = new HashMap<String, Object>();
+        Map<String, Object> newAttrValues = new HashMap<>();
         if (curConstraints.size() == 0)
             newAttrValues.put(Provisioning.A_zimbraConstraint, null);
         else {
-            List<String> newValues = new ArrayList<String>();
+            List<String> newValues = new ArrayList<>();
             for (AttributeConstraint at : curConstraints.values()) {
                 newValues.add(at.toString());
             }
@@ -635,7 +635,7 @@ public class AttributeConstraint {
         Cos cos = prov.getCOS(acct);
         cos.unsetConstraint();
 
-        Map<String, Object> cosConstraints = new HashMap<String,Object>();
+        Map<String, Object> cosConstraints = new HashMap<>();
 
         // integer
         cos.addConstraint("zimbraPasswordMinLength:min=6:max=10:values=8,9", cosConstraints);

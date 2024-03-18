@@ -45,7 +45,7 @@ import com.zimbra.cs.mailbox.ACL.Grant;
  */
 public class Acl extends ResourceProperty {
     public static Set<ResourceProperty> getAclProperties(DavResource rs, Folder folder) throws ServiceException, DavException {
-        HashSet<ResourceProperty> props = new HashSet<ResourceProperty>();
+        HashSet<ResourceProperty> props = new HashSet<>();
         if (folder == null)
             return props;
 
@@ -227,7 +227,7 @@ public class Acl extends ResourceProperty {
     private static final short RIGHT_UNSUPPORTED = 0;
 
     static {
-        sRightsMap = new HashMap<String, Short>();
+        sRightsMap = new HashMap<>();
         sRightsMap.put(DavElements.P_READ, ACL.RIGHT_READ);
         sRightsMap.put(DavElements.P_READ_CURRENT_USER_PRIVILEGE_SET, ACL.RIGHT_READ);
         sRightsMap.put(DavElements.P_READ_FREE_BUSY, RIGHT_UNSUPPORTED);

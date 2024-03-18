@@ -109,7 +109,7 @@ public final class BounceMsg extends MailDocumentHandler {
         String msgid = new ZMimeMessage(mm.getSession()).getMessageID();
         mm.addHeader("Resent-Message-ID", msgid);
 
-        List<String> recipients = new ArrayList<String>(5);
+        List<String> recipients = new ArrayList<>(5);
         recipients.addAll(addResentRecipientHeader(mm, "Resent-Bcc", maddrs.get(EmailType.BCC.toString())));
         recipients.addAll(addResentRecipientHeader(mm, "Resent-Cc", maddrs.get(EmailType.CC.toString())));
         recipients.addAll(addResentRecipientHeader(mm, "Resent-To", maddrs.get(EmailType.TO.toString())));
@@ -184,7 +184,7 @@ public final class BounceMsg extends MailDocumentHandler {
 
         mm.addHeader(name, Joiner.on(", ").join(addrs));
 
-        List<String> recipients = new ArrayList<String>(5);
+        List<String> recipients = new ArrayList<>(5);
         for (InternetAddress addr : addrs) {
             recipients.add(addr.getAddress());
         }

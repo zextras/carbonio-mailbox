@@ -36,7 +36,7 @@ public class QueryWaitSet extends AdminDocumentHandler {
         List<IWaitSet> sets;
 
         if (waitSetId != null) {
-            sets = new ArrayList<IWaitSet>(1);
+            sets = new ArrayList<>(1);
             IWaitSet ws = WaitSetMgr.lookup(waitSetId);
             if (ws == null) {
                 throw AdminServiceException.NO_SUCH_WAITSET(waitSetId);

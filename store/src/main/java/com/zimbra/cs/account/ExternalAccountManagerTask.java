@@ -48,7 +48,7 @@ public class ExternalAccountManagerTask extends TimerTask {
                     continue;
                 }
                 List<Folder> folders = mbox.getFolderList(null, SortBy.NONE);
-                List<Mountpoint> mountpoints = new LinkedList<Mountpoint>();
+                List<Mountpoint> mountpoints = new LinkedList<>();
                 for (Folder folder : folders) {
                     if (folder instanceof Mountpoint) {
                         mountpoints.add((Mountpoint) folder);

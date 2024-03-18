@@ -46,7 +46,7 @@ import com.zimbra.cs.service.util.ItemId;
  * @author kchen
  */
 public class RuleRewriter {
-    static final Set<String> MATCH_TYPES = new HashSet<String>();
+    static final Set<String> MATCH_TYPES = new HashSet<>();
     static {
         MATCH_TYPES.add(":is");
         MATCH_TYPES.add(":contains");
@@ -57,7 +57,7 @@ public class RuleRewriter {
         MATCH_TYPES.add(":before");
         MATCH_TYPES.add(":after");
     }
-    private final Stack<String> mStack = new Stack<String>();
+    private final Stack<String> mStack = new Stack<>();
 
     private Element mRoot;
     private List<String> mRuleNames;
@@ -243,7 +243,7 @@ public class RuleRewriter {
 
     private List<Object> getStringList(Node node) {
         int n = node.jjtGetNumChildren();
-        List<Object> a = new ArrayList<Object>(n);
+        List<Object> a = new ArrayList<>(n);
         for (int i=0; i<n; i++ ) {
             Node cn = node.jjtGetChild(i);
             a.add(((SieveNode) cn).getValue());

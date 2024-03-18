@@ -227,7 +227,7 @@ public class RecurrenceDefinition {
                 startTimeOffset = 0;
                 endTimeOffset = 0;
                 exceptionCount = 0;
-                changedInstances = new ArrayList <ChangedInstanceInfo>();
+                changedInstances = new ArrayList<>();
                 return;
             }
             readerVersion2 = ris.readU32();
@@ -238,7 +238,7 @@ public class RecurrenceDefinition {
             exceptionCount = ris.readU16();  // Should be same as modifiedInstanceCount?
             //        For each modified instance, expect to find an ExceptionInfo structure.
 
-            changedInstances = new ArrayList <ChangedInstanceInfo>();
+            changedInstances = new ArrayList<>();
             for (int cnt = 1; cnt <= modifiedInstanceCount; cnt++) {
                 ChangedInstanceInfo cInst = new ChangedInstanceInfo(cnt, tzDef, oemCodePage);
                 cInst.readExceptionInfo(ris);
@@ -368,7 +368,7 @@ public class RecurrenceDefinition {
         if (exdateTimes != null) {
             return exdateTimes;
         }
-        exdateTimes = new ArrayList <DateTime>();
+        exdateTimes = new ArrayList<>();
         for (long delSince1601 : delMidnightMinsSince1601) {
             //  Outlook XP uses NEW times in modMidnightMinsSince1601
             // rather than original times - so, cannot mine that
@@ -403,7 +403,7 @@ public class RecurrenceDefinition {
         if (rdateTimes != null) {
             return rdateTimes;
         }
-        rdateTimes = new ArrayList <DateTime>();
+        rdateTimes = new ArrayList<>();
         for (ChangedInstanceInfo cInst : changedInstances) {
             EnumSet <ExceptionInfoOverrideFlag> overrideFlags = cInst.getOverrideFlags();
             // Note that modifications which are just a new time are represented

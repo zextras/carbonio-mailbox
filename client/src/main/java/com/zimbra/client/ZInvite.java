@@ -28,17 +28,17 @@ public class ZInvite implements ToZJSONObject {
   private ZInviteType mType;
 
   public ZInvite() {
-    mTimeZones = new ArrayList<ZTimeZone>();
-    mComponents = new ArrayList<ZComponent>();
+    mTimeZones = new ArrayList<>();
+    mComponents = new ArrayList<>();
   }
 
   public ZInvite(Element e) throws ServiceException {
-    mTimeZones = new ArrayList<ZTimeZone>();
+    mTimeZones = new ArrayList<>();
     mType = ZInviteType.fromString(e.getAttribute(MailConstants.A_TYPE, ZInviteType.appt.name()));
     for (Element tzEl : e.listElements(MailConstants.E_CAL_TZ)) {
       mTimeZones.add(new ZTimeZone(tzEl));
     }
-    mComponents = new ArrayList<ZComponent>();
+    mComponents = new ArrayList<>();
     for (Element compEl : e.listElements(MailConstants.E_INVITE_COMPONENT)) {
       mComponents.add(new ZComponent(compEl));
     }
@@ -177,9 +177,9 @@ public class ZInvite implements ToZJSONObject {
       mClass = ZClass.PUB;
       mFreeBusyStatus = ZFreeBusyStatus.B;
       mTransparency = ZTransparency.O;
-      mReplies = new ArrayList<ZReply>();
-      mAttendees = new ArrayList<ZAttendee>();
-      mAlarms = new ArrayList<ZAlarm>();
+      mReplies = new ArrayList<>();
+      mAttendees = new ArrayList<>();
+      mAlarms = new ArrayList<>();
     }
 
     public ZComponent(Element e) throws ServiceException {
@@ -202,7 +202,7 @@ public class ZInvite implements ToZJSONObject {
 
       Iterator<Element> catIter = e.elementIterator(MailConstants.E_CAL_CATEGORY);
       if (catIter.hasNext()) {
-        List<String> categories = new ArrayList<String>();
+        List<String> categories = new ArrayList<>();
         for (; catIter.hasNext(); ) {
           String cat = catIter.next().getTextTrim();
           categories.add(cat);
@@ -211,7 +211,7 @@ public class ZInvite implements ToZJSONObject {
       }
       Iterator<Element> cmtIter = e.elementIterator(MailConstants.E_CAL_COMMENT);
       if (cmtIter.hasNext()) {
-        List<String> comments = new ArrayList<String>();
+        List<String> comments = new ArrayList<>();
         for (; cmtIter.hasNext(); ) {
           String cmt = cmtIter.next().getTextTrim();
           comments.add(cmt);
@@ -220,7 +220,7 @@ public class ZInvite implements ToZJSONObject {
       }
       Iterator<Element> cnIter = e.elementIterator(MailConstants.E_CAL_CONTACT);
       if (cnIter.hasNext()) {
-        List<String> contacts = new ArrayList<String>();
+        List<String> contacts = new ArrayList<>();
         for (; cnIter.hasNext(); ) {
           String cn = cnIter.next().getTextTrim();
           contacts.add(cn);
@@ -236,8 +236,8 @@ public class ZInvite implements ToZJSONObject {
       mSequenceNumber = e.getAttributeLong(MailConstants.A_CAL_SEQUENCE, 0);
       mPriority = e.getAttribute(MailConstants.A_CAL_PRIORITY, "0");
       mComponentNum = e.getAttribute(MailConstants.A_CAL_COMPONENT_NUM, "0");
-      mReplies = new ArrayList<ZReply>();
-      mAlarms = new ArrayList<ZAlarm>();
+      mReplies = new ArrayList<>();
+      mAlarms = new ArrayList<>();
 
       Element repliesEl = e.getOptionalElement(MailConstants.E_CAL_REPLIES);
       if (repliesEl != null) {
@@ -254,7 +254,7 @@ public class ZInvite implements ToZJSONObject {
       if (durEl != null) mDuration = new ZDuration(durEl);
       Element orEl = e.getOptionalElement(MailConstants.E_CAL_ORGANIZER);
       if (orEl != null) mOrganizer = new ZOrganizer(orEl);
-      mAttendees = new ArrayList<ZAttendee>();
+      mAttendees = new ArrayList<>();
       for (Element attendeeEl : e.listElements(MailConstants.E_CAL_ATTENDEE)) {
         mAttendees.add(new ZAttendee(attendeeEl));
       }
@@ -1423,7 +1423,7 @@ public class ZInvite implements ToZJSONObject {
     private List<ZParameter> mXParams;
 
     public ZCalendarUser() {
-      mXParams = new ArrayList<ZParameter>();
+      mXParams = new ArrayList<>();
     }
 
     public ZCalendarUser(Element e) throws ServiceException {
@@ -1745,7 +1745,7 @@ public class ZInvite implements ToZJSONObject {
     public ZRecurrenceDates() {}
 
     public ZRecurrenceDates(Element e) throws ServiceException {
-      mDates = new ArrayList<ZRecurrenceDate>();
+      mDates = new ArrayList<>();
       mTimeZoneId = e.getAttribute(MailConstants.A_CAL_TIMEZONE, null);
       for (Element dtvalEl : e.listElements(MailConstants.E_CAL_DATE_VAL)) {
         mDates.add(new ZRecurrenceDate(dtvalEl));
@@ -1960,13 +1960,13 @@ public class ZInvite implements ToZJSONObject {
     private ZWeekDay mDay;
 
     public static List<ZByDayWeekDay> getList(ZWeekDay... days) {
-      List<ZByDayWeekDay> result = new ArrayList<ZByDayWeekDay>(days.length);
+      List<ZByDayWeekDay> result = new ArrayList<>(days.length);
       for (ZWeekDay day : days) result.add(new ZByDayWeekDay(day, 0));
       return result;
     }
 
     public static List<ZByDayWeekDay> getList(List<ZWeekDay> days) {
-      List<ZByDayWeekDay> result = new ArrayList<ZByDayWeekDay>(days.size());
+      List<ZByDayWeekDay> result = new ArrayList<>(days.size());
       for (ZWeekDay day : days) result.add(new ZByDayWeekDay(day, 0));
       return result;
     }
@@ -2053,7 +2053,7 @@ public class ZInvite implements ToZJSONObject {
       } else if (ename.equals(MailConstants.E_CAL_RULE_BYDAY)) {
 
         mType = ZByType.BY_DAY;
-        mWeekDays = new ArrayList<ZByDayWeekDay>();
+        mWeekDays = new ArrayList<>();
         for (Element wkdayEl : e.listElements(MailConstants.E_CAL_RULE_BYDAY_WKDAY)) {
           mWeekDays.add(new ZByDayWeekDay(wkdayEl));
         }
@@ -2189,7 +2189,7 @@ public class ZInvite implements ToZJSONObject {
 
     public ZRecurrenceRule(Element e) throws ServiceException {
       mFrequency = ZFrequency.fromString(e.getAttribute(MailConstants.A_CAL_RULE_FREQ));
-      mByRules = new ArrayList<ZByRule>();
+      mByRules = new ArrayList<>();
 
       for (Element childEl : e.listElements()) {
         if (childEl.getName().equals(MailConstants.E_CAL_RULE_UNTIL)) {
@@ -2310,10 +2310,10 @@ public class ZInvite implements ToZJSONObject {
     public ZRecurrence() {}
 
     public ZRecurrence(Element e) throws ServiceException {
-      mRules = new ArrayList<ZRecurrenceRule>();
-      mExRules = new ArrayList<ZRecurrenceRule>();
-      mDates = new ArrayList<ZRecurrenceDates>();
-      mExDates = new ArrayList<ZRecurrenceDates>();
+      mRules = new ArrayList<>();
+      mExRules = new ArrayList<>();
+      mDates = new ArrayList<>();
+      mExDates = new ArrayList<>();
 
       for (Element addEl : e.listElements(MailConstants.E_CAL_ADD)) {
         for (Element ruleEl : addEl.listElements(MailConstants.E_CAL_RULE))

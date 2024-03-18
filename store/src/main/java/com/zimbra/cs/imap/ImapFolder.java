@@ -63,7 +63,7 @@ public final class ImapFolder implements ImapListener.ImapFolderData, java.io.Se
     private final int uidValidity;
     private String query;
     private Set<MailItem.Type> typeConstraint = ImapHandler.ITEM_TYPES;
-    private final List<ImapMessage> sequence = new ArrayList<ImapMessage>();
+    private final List<ImapMessage> sequence = new ArrayList<>();
     private final ImapFlagCache tags;   // operationally could be "transient", but that makes deserialization replay depend on magic
 
     // below this point are session-specific attributes of the folder SELECT state
@@ -78,7 +78,7 @@ public final class ImapFolder implements ImapListener.ImapFolderData, java.io.Se
         protected boolean tagsAreDirty;
         protected boolean notificationsSuspended;
         protected ImapMessageSet savedSearchResults;
-        protected final Map<Integer, DirtyMessage> dirtyMessages = new ConcurrentSkipListMap<Integer, DirtyMessage>();
+        protected final Map<Integer, DirtyMessage> dirtyMessages = new ConcurrentSkipListMap<>();
 
         protected SessionData(ImapPath path, byte params, ImapHandler handler) throws ServiceException {
             this.credentials = handler.getCredentials();
@@ -362,7 +362,7 @@ public final class ImapFolder implements ImapListener.ImapFolderData, java.io.Se
         // if item id and IMAP uid differ, the message goes in the "mMessageIds" map
         if (messageIds == null) {
             // lookup miss means we need to generate the item-id-to-imap-message mapping
-            messageIds = new HashMap<Integer, ImapMessage>();
+            messageIds = new HashMap<>();
             for (ImapMessage i4msg : sequence) {
                 if (i4msg != null && i4msg.msgId != i4msg.imapUid) {
                     messageIds.put(i4msg.msgId, i4msg);
@@ -443,7 +443,7 @@ public final class ImapFolder implements ImapListener.ImapFolderData, java.io.Se
     }
 
     private boolean insertOutOfOrder(ImapMessage i4msg) {
-        LinkedList<ImapMessage> shifted = new LinkedList<ImapMessage>();
+        LinkedList<ImapMessage> shifted = new LinkedList<>();
         int idx  = sequence.size() - 1;
         while (idx > -1) {
             ImapMessage prev = sequence.get(idx);
@@ -737,7 +737,7 @@ public final class ImapFolder implements ImapListener.ImapFolderData, java.io.Se
         ImapMessage i4msg = getLastMessage();
         int lastID = (i4msg == null ? (byUID ? Integer.MAX_VALUE : getSize()) : (byUID ? i4msg.imapUid : i4msg.sequence));
 
-        List<Pair<Integer, Integer>> normalized = new ArrayList<Pair<Integer, Integer>>(5);
+        List<Pair<Integer, Integer>> normalized = new ArrayList<>(5);
         for (String subset : subseqStr.split(",")) {
             int lower;
             int upper;
@@ -771,7 +771,7 @@ public final class ImapFolder implements ImapListener.ImapFolderData, java.io.Se
                     lower = Math.min(lower, lrange);  upper = Math.max(upper, urange);
                 }
             }
-            normalized.add(insertpos, new Pair<Integer, Integer>(lower, upper));
+            normalized.add(insertpos, new Pair<>(lower, upper));
         }
         return normalized;
     }
@@ -1069,7 +1069,7 @@ public final class ImapFolder implements ImapListener.ImapFolderData, java.io.Se
 
         boolean trimmed = false;
         int seq = 1;
-        List<Integer> removed = new ArrayList<Integer>();
+        List<Integer> removed = new ArrayList<>();
         for (ListIterator<ImapMessage> lit = sequence.listIterator(); lit.hasNext(); seq++) {
             ImapMessage i4msg = lit.next();
             if (i4msg.isExpunged()) {
@@ -1244,7 +1244,7 @@ public final class ImapFolder implements ImapListener.ImapFolderData, java.io.Se
             }
         }
 
-        List<Integer> renumber = new ArrayList<Integer>();
+        List<Integer> renumber = new ArrayList<>();
 
         if (added.numbered != null) {
             // if messages have acceptable UIDs, just add 'em

@@ -286,7 +286,7 @@ public abstract class CalendarItem extends MailItem {
   }
 
   protected List<IndexDocument> getIndexDocuments() throws TemporaryIndexingException {
-    List<IndexDocument> toRet = new ArrayList<IndexDocument>();
+    List<IndexDocument> toRet = new ArrayList<>();
 
     // Special case to prevent getDefaultInviteOrNull() from logging an error
     // when this method is called during commit of cancel operation.
@@ -308,7 +308,7 @@ public abstract class CalendarItem extends MailItem {
 
     for (Invite inv : getInvites()) {
       StringBuilder s = new StringBuilder();
-      List<String> toAddrs = new ArrayList<String>();
+      List<String> toAddrs = new ArrayList<>();
 
       // NAME (subject)
       String nameToUse = "";
@@ -400,7 +400,7 @@ public abstract class CalendarItem extends MailItem {
         }
       }
 
-      List<IndexDocument> docList = new ArrayList<IndexDocument>();
+      List<IndexDocument> docList = new ArrayList<>();
 
       if (mm == null) { // no blob!
         IndexDocument doc = new IndexDocument();
@@ -523,7 +523,7 @@ public abstract class CalendarItem extends MailItem {
     sender = Strings.nullToEmpty(sender);
     String subject = Strings.nullToEmpty(firstInvite.getName());
 
-    List<Invite> invites = new ArrayList<Invite>();
+    List<Invite> invites = new ArrayList<>();
     invites.add(firstInvite);
 
     Recurrence.IRecurrence recur = firstInvite.getRecurrence();
@@ -883,12 +883,12 @@ public abstract class CalendarItem extends MailItem {
     super.decodeMetadata(meta);
 
     mUid = Invite.fixupIfOutlookUid(meta.get(Metadata.FN_UID, null));
-    mInvites = new ArrayList<Invite>();
+    mInvites = new ArrayList<>();
 
     ICalTimeZone accountTZ = Util.getAccountTimeZone(getMailbox().getAccount());
     if (meta.containsKey(Metadata.FN_TZMAP)) {
       try {
-        Set<String> tzids = new HashSet<String>();
+        Set<String> tzids = new HashSet<>();
         mTzMap = Util.decodeFromMetadata(meta.getMap(Metadata.FN_TZMAP), accountTZ);
 
         // appointment/task start and end
@@ -1062,7 +1062,7 @@ public abstract class CalendarItem extends MailItem {
       }
     }
 
-    List<Instance> instances = new ArrayList<Instance>();
+    List<Instance> instances = new ArrayList<>();
     if (mRecurrence != null) {
       long startTime = System.currentTimeMillis();
       instances = Recurrence.expandInstances(mRecurrence, getId(), start, endAdjusted);
@@ -1472,7 +1472,7 @@ public abstract class CalendarItem extends MailItem {
       ret[0] = mInvites.get(0);
       return ret;
     } else {
-      ArrayList<Invite> toRet = new ArrayList<Invite>(mInvites.size());
+      ArrayList<Invite> toRet = new ArrayList<>(mInvites.size());
       // First get the series invite(s), then exceptions.  This will generate a friendlier ics file.
       for (Invite inv : mInvites) if (!inv.hasRecurId()) toRet.add(inv);
       for (Invite inv : mInvites) if (inv.hasRecurId()) toRet.add(inv);
@@ -1481,7 +1481,7 @@ public abstract class CalendarItem extends MailItem {
   }
 
   public Invite[] getInvites(int invId) {
-    ArrayList<Invite> toRet = new ArrayList<Invite>();
+    ArrayList<Invite> toRet = new ArrayList<>();
     for (Invite inv : mInvites) if (inv.getMailItemId() == invId) toRet.add(inv);
     return toRet.toArray(new Invite[0]);
   }
@@ -1885,7 +1885,7 @@ public abstract class CalendarItem extends MailItem {
     boolean needRecurrenceIdUpdate = false;
     ParsedDateTime oldDtStart = null;
     ParsedDuration dtStartMovedBy = null;
-    ArrayList<Invite> toUpdate = new ArrayList<Invite>();
+    ArrayList<Invite> toUpdate = new ArrayList<>();
     if (!discardExistingInvites && !isCancel && newInvite.isRecurrence()) {
       Invite defInv = getDefaultInviteOrNull();
       if (defInv != null && defInv.isRecurrence()) {
@@ -2008,7 +2008,7 @@ public abstract class CalendarItem extends MailItem {
     }
 
     // Check if exception instances are made obsolete by updated recurrence rule.  (bug 47061)
-    Set<String> obsoletedRecurIdZs = new HashSet<String>();
+    Set<String> obsoletedRecurIdZs = new HashSet<>();
     if (!isCancel && newInvite.isRecurrence()) {
       Invite seriesInv = null;
       // Find the range of existing exception instances.
@@ -2082,8 +2082,8 @@ public abstract class CalendarItem extends MailItem {
     boolean replaceExceptionBodyWithSeriesBody = false;
     boolean modifiedCalItem = false;
     Invite prev = null; // the invite which has been made obsolete by the new one coming in
-    ArrayList<Invite> toRemove = new ArrayList<Invite>(); // Invites to remove from our blob store
-    ArrayList<Integer> idxsToRemove = new ArrayList<Integer>(); // indexes to remove from mInvites
+    ArrayList<Invite> toRemove = new ArrayList<>(); // Invites to remove from our blob store
+    ArrayList<Integer> idxsToRemove = new ArrayList<>(); // indexes to remove from mInvites
     int numInvitesCurrent =
         mInvites.size(); // get current size because we may add to the list in the loop
     for (int i = 0; i < numInvitesCurrent; i++) {
@@ -3130,7 +3130,7 @@ public abstract class CalendarItem extends MailItem {
     }
 
     public ReplyList() {
-      mReplies = new ArrayList<ReplyInfo>();
+      mReplies = new ArrayList<>();
     }
 
     public ReplyList(List<ReplyInfo> list) {
@@ -3155,7 +3155,7 @@ public abstract class CalendarItem extends MailItem {
     static ReplyList decodeFromMetadata(Metadata md, TimeZoneMap tzMap) throws ServiceException {
       ReplyList toRet = new ReplyList();
       int numReplies = (int) md.getLong(FN_NUM_REPLY_INFO);
-      toRet.mReplies = new ArrayList<ReplyInfo>(numReplies);
+      toRet.mReplies = new ArrayList<>(numReplies);
       for (int i = 0; i < numReplies; i++) {
         ReplyInfo inf = ReplyInfo.decodeFromMetadata(md.getMap(FN_REPLY_INFO + i), tzMap);
         toRet.mReplies.add(i, inf);
@@ -3182,7 +3182,7 @@ public abstract class CalendarItem extends MailItem {
     }
 
     void upgradeEntriesToNewSeq(RecurId recurId, int seqNo, long dtStamp) {
-      List<ReplyInfo> upgraded = new ArrayList<ReplyInfo>();
+      List<ReplyInfo> upgraded = new ArrayList<>();
       for (Iterator<ReplyInfo> iter = mReplies.iterator(); iter.hasNext(); ) {
         ReplyInfo cur = iter.next();
         if (recurMatches(cur.mRecurId, recurId)) {
@@ -3404,7 +3404,7 @@ public abstract class CalendarItem extends MailItem {
     }
 
     List<ReplyInfo> getAllReplies() {
-      List<ReplyInfo> toRet = new ArrayList<ReplyInfo>(mReplies);
+      List<ReplyInfo> toRet = new ArrayList<>(mReplies);
       return toRet;
     }
 
@@ -3412,7 +3412,7 @@ public abstract class CalendarItem extends MailItem {
       assert (inv != null);
 
       Map<String /* attendee address */, ReplyInfo> repliesByAddr =
-          new HashMap<String, ReplyInfo>();
+          new HashMap<>();
 
       if (recurIdZ == null && inv.hasRecurId()) recurIdZ = inv.getRecurId().getDtZ();
 
@@ -3487,7 +3487,7 @@ public abstract class CalendarItem extends MailItem {
         }
       }
 
-      return new ArrayList<ReplyInfo>(repliesByAddr.values());
+      return new ArrayList<>(repliesByAddr.values());
     }
   } // class ReplyList
 
@@ -3923,7 +3923,7 @@ public abstract class CalendarItem extends MailItem {
     try {
       MimeBodyPart mbp = findBodyBySubId(subId);
       if (mbp == null) return null;
-      return new Pair<MimeMessage, Integer>(Mime.getMessageContent(mbp), mbp.getSize());
+      return new Pair<>(Mime.getMessageContent(mbp), mbp.getSize());
     } catch (IOException e) {
       throw ServiceException.FAILURE("IOException while getting MimeMessage for item " + mId, e);
     } catch (MessagingException e) {
@@ -4476,8 +4476,8 @@ public abstract class CalendarItem extends MailItem {
     private final Map<Integer, Long> mInstStartMap;
 
     public NextAlarms() {
-      mTriggerMap = new HashMap<Integer, Long>();
-      mInstStartMap = new HashMap<Integer, Long>();
+      mTriggerMap = new HashMap<>();
+      mInstStartMap = new HashMap<>();
     }
 
     public void add(int pos, long triggerAt, long instStart) {
@@ -4513,7 +4513,7 @@ public abstract class CalendarItem extends MailItem {
    */
   public NextAlarms computeNextAlarms(Invite inv, long lastAt) throws ServiceException {
     int numAlarms = inv.getAlarms().size();
-    Map<Integer, Long> lastAlarmsAt = new HashMap<Integer, Long>(numAlarms);
+    Map<Integer, Long> lastAlarmsAt = new HashMap<>(numAlarms);
     for (int i = 0; i < numAlarms; i++) {
       lastAlarmsAt.put(i, lastAt);
     }
@@ -4711,7 +4711,7 @@ public abstract class CalendarItem extends MailItem {
    * @throws MessagingException
    */
   public static Map<Integer, MimeMessage> decomposeBlob(byte[] digestBlob) throws ServiceException {
-    Map<Integer, MimeMessage> map = new HashMap<Integer, MimeMessage>();
+    Map<Integer, MimeMessage> map = new HashMap<>();
     try {
       InputStream bais = new SharedByteArrayInputStream(digestBlob);
       FixedMimeMessage digestMm = new FixedMimeMessage(JMSession.getSession(), bais);

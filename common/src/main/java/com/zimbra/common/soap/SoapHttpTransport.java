@@ -130,7 +130,7 @@ public class SoapHttpTransport extends SoapTransport {
 
     public Map<String, String> getCustomHeaders() {
         if (mCustomHeaders == null)
-            mCustomHeaders = new HashMap<String, String>();
+            mCustomHeaders = new HashMap<>();
         return mCustomHeaders;
     }
 

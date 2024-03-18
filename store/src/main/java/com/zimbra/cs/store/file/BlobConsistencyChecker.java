@@ -363,8 +363,8 @@ public class BlobConsistencyChecker {
         Iterator<Integer> keyIterator = results.missingBlobs.keySet().iterator();
         while (keyIterator.hasNext()) {
             int itemId = keyIterator.next();
-            List<BlobInfo> missingBlobs = new ArrayList<BlobInfo>(results.missingBlobs.get(itemId));
-            List<BlobInfo> unexpectedBlobs = new ArrayList<BlobInfo>(results.unexpectedBlobs.get(itemId));
+            List<BlobInfo> missingBlobs = new ArrayList<>(results.missingBlobs.get(itemId));
+            List<BlobInfo> unexpectedBlobs = new ArrayList<>(results.unexpectedBlobs.get(itemId));
             if (missingBlobs.size() == 1 && unexpectedBlobs.size() == 1 && revisions.get(itemId).size() == 0) {
                 BlobInfo incorrectRevision = new BlobInfo();
                 BlobInfo missingBlob = missingBlobs.get(0);

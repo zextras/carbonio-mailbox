@@ -296,7 +296,7 @@ public class ClientCertPrincipalMap {
     }
     
     private List<Rule> parse(String rawRules) throws ServiceException {
-        List<Rule> parsedRules = new ArrayList<Rule>();
+        List<Rule> parsedRules = new ArrayList<>();
         
         if (rawRules == null) {
             // default to SUBJECT_EMAILADDRESS=name

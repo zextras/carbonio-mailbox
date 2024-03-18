@@ -82,7 +82,7 @@ public class RemoteSoapSession extends SoapSession {
     private static final Map<String,LinkedList<String>> sentNotifications;
 
     static {
-        sentNotifications = new LruMap<String,LinkedList<String>>(100);  // cache of 100 accounts
+        sentNotifications = new LruMap<>(100);  // cache of 100 accounts
     }
 
     private class CrossMailboxPushChannel implements PushChannel {
@@ -137,7 +137,7 @@ public class RemoteSoapSession extends SoapSession {
             synchronized (sentNotifications) {
                 messageHashes = sentNotifications.get(accountId);
                 if (messageHashes == null) {
-                    messageHashes = new LinkedList<String>();
+                    messageHashes = new LinkedList<>();
                     sentNotifications.put(accountId, messageHashes);
                 }
             }

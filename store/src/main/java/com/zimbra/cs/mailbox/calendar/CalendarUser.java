@@ -47,7 +47,7 @@ public abstract class CalendarUser {
   }
 
   private ScheduleAgent scheduleAgent;
-  private List<ZParameter> mXParams = new ArrayList<ZParameter>();
+  private List<ZParameter> mXParams = new ArrayList<>();
 
   public String getAddress() {
     return mAddress;

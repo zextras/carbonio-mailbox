@@ -304,7 +304,7 @@ public class StringUtil {
      *    a2 -> [v2, v3]
      */
     public static Map<String, Object> keyValueArrayToMultiMap(String[] args, int offset) {
-        Map<String, Object> attrs = new HashMap<String, Object>();
+        Map<String, Object> attrs = new HashMap<>();
         for (int i = offset; i < args.length; i += 2) {
             String n = args[i];
             if (i + 1 >= args.length) {
@@ -340,7 +340,7 @@ public class StringUtil {
      * Converts a Guava multimap to an old-style version.
      */
     public static Map<String, Object> toOldMultimap(Multimap<String, String> newMultimap) {
-        Map<String, Object> oldMap = new HashMap<String, Object>();
+        Map<String, Object> oldMap = new HashMap<>();
         for (Map.Entry<String, String> entry : newMultimap.entries()) {
             addToMultiMap(oldMap, entry.getKey(), entry.getValue());
         }
@@ -427,7 +427,7 @@ public class StringUtil {
     }
 
     public static List<String> parseSieveStringList(String value) throws ServiceException {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         if (value == null) {
             return result;
         }
@@ -478,7 +478,7 @@ public class StringUtil {
      * @return
      */
     public static String[] parseLine(String line) {
-        ArrayList<String> result = new ArrayList<String>();
+        ArrayList<String> result = new ArrayList<>();
 
         int i = 0;
 
@@ -800,61 +800,61 @@ public class StringUtil {
     }
 
     private static Set<String> sJavaReservedWords =
-            new HashSet<String>(Arrays.asList(
-                    "abstract",
-                    "assert",
-                    "boolean",
-                    "break",
-                    "byte",
-                    "case",
-                    "catch",
-                    "char",
-                    "class",
-                    "const",
-                    "continue",
-                    "default",
-                    "do",
-                    "double",
-                    "else",
-                    "enum",
-                    "extends",
-                    "false",
-                    "final",
-                    "finally",
-                    "float",
-                    "for",
-                    "goto",
-                    "if",
-                    "implements",
-                    "import",
-                    "instanceof",
-                    "int",
-                    "interface",
-                    "long",
-                    "native",
-                    "new",
-                    "null",
-                    "package",
-                    "private",
-                    "protected",
-                    "public",
-                    "return",
-                    "short",
-                    "static",
-                    "strictfp",
-                    "super",
-                    "switch",
-                    "synchronized",
-                    "this",
-                    "throw",
-                    "throws",
-                    "transient",
-                    "true",
-                    "try",
-                    "void",
-                    "volatile",
-                    "while"
-            ));
+        new HashSet<>(Arrays.asList(
+            "abstract",
+            "assert",
+            "boolean",
+            "break",
+            "byte",
+            "case",
+            "catch",
+            "char",
+            "class",
+            "const",
+            "continue",
+            "default",
+            "do",
+            "double",
+            "else",
+            "enum",
+            "extends",
+            "false",
+            "final",
+            "finally",
+            "float",
+            "for",
+            "goto",
+            "if",
+            "implements",
+            "import",
+            "instanceof",
+            "int",
+            "interface",
+            "long",
+            "native",
+            "new",
+            "null",
+            "package",
+            "private",
+            "protected",
+            "public",
+            "return",
+            "short",
+            "static",
+            "strictfp",
+            "super",
+            "switch",
+            "synchronized",
+            "this",
+            "throw",
+            "throws",
+            "transient",
+            "true",
+            "try",
+            "void",
+            "volatile",
+            "while"
+        ));
 
     public static boolean isJavaReservedWord(String s) {
         return sJavaReservedWords.contains(s);

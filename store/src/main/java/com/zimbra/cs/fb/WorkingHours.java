@@ -169,7 +169,7 @@ public class WorkingHours {
 
     private static class HoursByDay {
 
-        private Map<Integer /* 1..7 */, TimeRange> mHours = new HashMap<Integer, TimeRange>(7);
+        private Map<Integer /* 1..7 */, TimeRange> mHours = new HashMap<>(7);
 
         public HoursByDay() {
             HourMinute hhmm0000 = new HourMinute(0, 0);

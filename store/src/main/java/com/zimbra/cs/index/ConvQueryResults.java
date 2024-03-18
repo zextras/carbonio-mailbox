@@ -24,8 +24,8 @@ final class ConvQueryResults extends ZimbraQueryResultsImpl {
     private final ZimbraQueryResults results;
     private ZimbraHit nextHit;
     private int nextHitNo = 0;
-    private List<ZimbraHit> cachedResults = new ArrayList<ZimbraHit>();
-    private Set<Integer> seenConvIDs = new HashSet<Integer>();
+    private List<ZimbraHit> cachedResults = new ArrayList<>();
+    private Set<Integer> seenConvIDs = new HashSet<>();
 
     ConvQueryResults(ZimbraQueryResults results, Set<MailItem.Type> types, SortBy sort, SearchParams.Fetch fetch) {
         super(types, sort, fetch);

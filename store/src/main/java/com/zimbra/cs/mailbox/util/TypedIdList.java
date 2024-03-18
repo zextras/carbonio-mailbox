@@ -71,7 +71,7 @@ public final class TypedIdList implements Iterable<Map.Entry<MailItem.Type, List
         }
     }
 
-    private final Map<MailItem.Type, List<ItemInfo>> type2ids = new EnumMap<MailItem.Type, List<ItemInfo>>(MailItem.Type.class);
+    private final Map<MailItem.Type, List<ItemInfo>> type2ids = new EnumMap<>(MailItem.Type.class);
 
     public TypedIdList() {
     }
@@ -101,7 +101,7 @@ public final class TypedIdList implements Iterable<Map.Entry<MailItem.Type, List
 
         List<ItemInfo> items = type2ids.get(type);
         if (items == null) {
-            type2ids.put(type, items = new ArrayList<ItemInfo>(1));
+            type2ids.put(type, items = new ArrayList<>(1));
         }
         items.add(new ItemInfo(id, (null != folderId) ? folderId : Mailbox.ID_AUTO_INCREMENT, uuid, modSequence));
     }
@@ -112,7 +112,7 @@ public final class TypedIdList implements Iterable<Map.Entry<MailItem.Type, List
 
         List<ItemInfo> items = type2ids.get(type);
         if (items == null) {
-            type2ids.put(type, items = new ArrayList<ItemInfo>(1));
+            type2ids.put(type, items = new ArrayList<>(1));
         }
         items.add(new ItemInfo(id, uuid, modSequence, prevFolders));
     }
@@ -126,7 +126,7 @@ public final class TypedIdList implements Iterable<Map.Entry<MailItem.Type, List
             MailItem.Type type = row.getKey();
             List<ItemInfo> items = type2ids.get(type);
             if (items == null) {
-                type2ids.put(type, items = new ArrayList<ItemInfo>(row.getValue().size()));
+                type2ids.put(type, items = new ArrayList<>(row.getValue().size()));
             }
             items.addAll(row.getValue());
         }
@@ -183,7 +183,7 @@ public final class TypedIdList implements Iterable<Map.Entry<MailItem.Type, List
                 continue;
 
             if (ids == null) {
-                ids = new ArrayList<Integer>(typedIds.size());
+                ids = new ArrayList<>(typedIds.size());
             }
             ids.addAll(typedIds);
         }
@@ -196,7 +196,7 @@ public final class TypedIdList implements Iterable<Map.Entry<MailItem.Type, List
             return null;
         }
 
-        List<Integer> ids = new ArrayList<Integer>(items.size());
+        List<Integer> ids = new ArrayList<>(items.size());
         for (ItemInfo pair : items) {
             ids.add(pair.getId());
         }
@@ -204,7 +204,7 @@ public final class TypedIdList implements Iterable<Map.Entry<MailItem.Type, List
     }
 
     public List<Integer> getAllIds() {
-        List<Integer> ids = new ArrayList<Integer>();
+        List<Integer> ids = new ArrayList<>();
         for (List<ItemInfo> set : type2ids.values()) {
             for (ItemInfo pair : set) {
                 ids.add(pair.getId());

@@ -36,7 +36,7 @@ import com.zimbra.cs.util.Zimbra;
  */
 public class DataSourceCallback extends AttributeCallback {
 
-    private static final Set<String> INTERVAL_ATTRS = new HashSet<String>();
+    private static final Set<String> INTERVAL_ATTRS = new HashSet<>();
 
     static {
         INTERVAL_ATTRS.add(Provisioning.A_zimbraDataSourcePollingInterval);
@@ -177,7 +177,7 @@ public class DataSourceCallback extends AttributeCallback {
     // look up all accounts on this server
     private List<Account> lookupAccountsFromDB(Provisioning prov) throws ServiceException {
         Set<String> accountIds = null;
-        List<Account> accts = new ArrayList<Account>();
+        List<Account> accts = new ArrayList<>();
 
         DbConnection conn = null;
         try {

@@ -34,7 +34,7 @@ public class CalSummaryMemcachedCache {
     ZimbraMemcachedClient memcachedClient = MemcachedConnector.getClient();
     CalSummarySerializer serializer = new CalSummarySerializer();
     mMemcachedLookup =
-        new BigByteArrayMemcachedMap<CalSummaryKey, CalendarData>(memcachedClient, serializer);
+        new BigByteArrayMemcachedMap<>(memcachedClient, serializer);
   }
 
   private static class CalSummarySerializer implements ByteArraySerializer<CalendarData> {
@@ -84,7 +84,7 @@ public class CalSummaryMemcachedCache {
   void purgeMailbox(Mailbox mbox) throws ServiceException {
     String accountId = mbox.getAccountId();
     List<Folder> folders = mbox.getCalendarFolders(null, SortBy.NONE);
-    List<CalSummaryKey> keys = new ArrayList<CalSummaryKey>(folders.size());
+    List<CalSummaryKey> keys = new ArrayList<>(folders.size());
     for (Folder folder : folders) {
       CalSummaryKey key = new CalSummaryKey(accountId, folder.getId());
       keys.add(key);
@@ -93,7 +93,7 @@ public class CalSummaryMemcachedCache {
   }
 
   void notifyCommittedChanges(PendingLocalModifications mods, int changeId) {
-    Set<CalSummaryKey> keysToInvalidate = new HashSet<CalSummaryKey>();
+    Set<CalSummaryKey> keysToInvalidate = new HashSet<>();
     if (mods.modified != null) {
       for (Map.Entry<ModificationKey, Change> entry : mods.modified.entrySet()) {
         Change change = entry.getValue();

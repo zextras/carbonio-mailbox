@@ -95,7 +95,7 @@ public final class ParsedAddress implements Comparable<ParsedAddress> {
     }
 
     public static String getSortString(List<ParsedAddress> addrs) {
-        List<String> list = new ArrayList<String>(addrs.size());
+        List<String> list = new ArrayList<>(addrs.size());
         for (ParsedAddress addr : addrs) {
             list.add(addr.getSortString());
         }
@@ -104,7 +104,7 @@ public final class ParsedAddress implements Comparable<ParsedAddress> {
 
     public Map<String, String> getAttributes() {
         parse();
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
         if (honorific != null)     map.put(ContactConstants.A_namePrefix, honorific);
         if (firstName != null)     map.put(ContactConstants.A_firstName, firstName);
         if (middleName != null)    map.put(ContactConstants.A_middleName, middleName);
@@ -468,16 +468,16 @@ public final class ParsedAddress implements Comparable<ParsedAddress> {
             return true;
         }
 
-        private static final Set<String> SURNAME_PREFIXES = new HashSet<String>(Arrays.asList(
-                "ab", "abu", "af", "al", "am", "an", "ap", "auf", "av", "bar", "ben", "bin",
-                "da", "de", "degli", "dei", "del", "della", "de'", "delle", "dello", "den",
-                "der", "di", "dos", "du", "el", "groot", "groote", "het", "ibn", "la", "las",
-                "le", "lo", "los", "mac", "n\u00cd", "nic", "op", "ten", "ter", "toe", "van",
-                "vande", "vander", "vom", "von", "zu", "zum", "zur", "'t", "\u00d3"
+        private static final Set<String> SURNAME_PREFIXES = new HashSet<>(Arrays.asList(
+            "ab", "abu", "af", "al", "am", "an", "ap", "auf", "av", "bar", "ben", "bin",
+            "da", "de", "degli", "dei", "del", "della", "de'", "delle", "dello", "den",
+            "der", "di", "dos", "du", "el", "groot", "groote", "het", "ibn", "la", "las",
+            "le", "lo", "los", "mac", "n\u00cd", "nic", "op", "ten", "ter", "toe", "van",
+            "vande", "vander", "vom", "von", "zu", "zum", "zur", "'t", "\u00d3"
         ));
 
-        private static final Set<String> ROMAN_NUMERALS = new HashSet<String>(Arrays.asList(
-                "II", "III", "IIII", "IV", "V", "VI", "VII", "VIII", "Jr"
+        private static final Set<String> ROMAN_NUMERALS = new HashSet<>(Arrays.asList(
+            "II", "III", "IIII", "IV", "V", "VI", "VII", "VIII", "Jr"
         ));
 
         NameTokenType getType() {
@@ -493,13 +493,13 @@ public final class ParsedAddress implements Comparable<ParsedAddress> {
             return mValue;
         }
 
-        private static final Set<Character> TOKEN_DELIMITERS = new HashSet<Character>(Arrays.asList(
-                ',', ';', '/', ':', '(', ')', '[', ']', '\u3010', '\u3011'
+        private static final Set<Character> TOKEN_DELIMITERS = new HashSet<>(Arrays.asList(
+            ',', ';', '/', ':', '(', ')', '[', ']', '\u3010', '\u3011'
         ));
-        private static final Set<Character> TOKEN_SYMBOLS = new HashSet<Character>(Arrays.asList(
-                '!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/',
-                ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~'
-            ));
+        private static final Set<Character> TOKEN_SYMBOLS = new HashSet<>(Arrays.asList(
+            '!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/',
+            ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~'
+        ));
         private static final int TYPICAL_NUM_SYMBOLS_IN_SMILEY = DebugConfig.numberOfConsecutiveSymbolsInSenderName;
 
         static List<NameToken> tokenize(String raw) {
@@ -508,7 +508,7 @@ public final class ParsedAddress implements Comparable<ParsedAddress> {
 
             raw = raw.trim().replaceAll("\\s+", " ");
             int start = 0, index = 0, length = raw.length();
-            List<NameToken> tokens = new ArrayList<NameToken>(6);
+            List<NameToken> tokens = new ArrayList<>(6);
 
             int smileySymbolCount = 0;
             do {

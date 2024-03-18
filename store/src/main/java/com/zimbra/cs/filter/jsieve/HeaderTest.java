@@ -188,7 +188,7 @@ public class HeaderTest extends Header {
      * @throws SyntaxException 
      */
     public static List<String> replaceVariables(List<String> keys, MailAdapter mail) throws SyntaxException {
-        List<String> replacedVariables = new ArrayList<String>();
+        List<String> replacedVariables = new ArrayList<>();
         if (!(mail instanceof ZimbraMailAdapter)) {
             return replacedVariables;
         }
@@ -215,7 +215,7 @@ public class HeaderTest extends Header {
         if (HeaderConstants.COUNT.equalsIgnoreCase(matchType)) {
             // RFC 5231: 4.2. "... if more than one (header) field name is specified, the counts for
             // all specified fields are added together to obtain the number for comparison."
-            List<String> headerValues = new ArrayList<String>();
+            List<String> headerValues = new ArrayList<>();
             while(headerNamesIter.hasNext()) {
                 headerValues.addAll(mail.getMatchingHeader((String) headerNamesIter.next()));
             }
@@ -297,7 +297,7 @@ public class HeaderTest extends Header {
      */
     public static enum SourceType {HEADER, ENVELOPE, LITERAL};
     public static void evaluateVarExp(ZimbraMailAdapter mailAdapter, List<String> sourceNames, SourceType sourceType, List<String> keys) throws SieveMailException, SievePatternException, MessagingException {
-        List<String> varValues = new ArrayList<String>();
+        List<String> varValues = new ArrayList<>();
 
         String firstMatchedInputSubsequence = null;
 
@@ -313,7 +313,7 @@ public class HeaderTest extends Header {
                 if (headerValues != null && headerValues.length > 0) {
                     values = Arrays.asList(headerValues);
                 } else {
-                    values = new ArrayList<String>();
+                    values = new ArrayList<>();
                 }
                 List<String> decodedValues = new ArrayList<>();
                 for (String value : values) {
@@ -329,7 +329,7 @@ public class HeaderTest extends Header {
                 break;
             case LITERAL:
             default:
-                values = new ArrayList<String>();
+                values = new ArrayList<>();
                 values.add(name);
                 break;
             }

@@ -596,7 +596,7 @@ public final class ZimbraSoapContext {
           case ACL.GRANTEE_GROUP:
             if (authAccount != null) {
               if (groupIds == null) {
-                groupIds = new HashSet<String>();
+                groupIds = new HashSet<>();
               }
               groupIds.add(shareData.getGranteeId());
             }

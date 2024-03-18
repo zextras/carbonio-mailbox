@@ -44,7 +44,7 @@ import com.zimbra.soap.account.type.HABGroup;
 
 public class ToXML {
 
-    public static Set<String> skipAttrs = new HashSet<String>();
+    public static Set<String> skipAttrs = new HashSet<>();
     static {
         skipAttrs.add(Provisioning.A_member);
         skipAttrs.add(Provisioning.A_zimbraMailForwardingAddress);
@@ -156,7 +156,7 @@ public class ToXML {
         Element mRootElement;
 
         public EntrySearchFilterXmlVisitor(Element parent) {
-            mParentStack = new Stack<Element>();
+            mParentStack = new Stack<>();
             mParentStack.push(parent);
         }
 

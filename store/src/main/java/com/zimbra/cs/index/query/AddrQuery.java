@@ -35,7 +35,7 @@ public final class AddrQuery extends SubQuery {
     }
 
     public static AddrQuery create(Analyzer analyzer, Set<Address> addrs, String text) {
-        List<Query> clauses = new ArrayList<Query>();
+        List<Query> clauses = new ArrayList<>();
 
         if (addrs.contains(Address.FROM)) {
             clauses.add(new TextQuery(analyzer, LuceneFields.L_H_FROM, text));

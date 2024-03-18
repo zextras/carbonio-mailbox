@@ -66,7 +66,7 @@ public class GetInfo extends AccountDocumentHandler  {
         public void handle(ZimbraSoapContext zsc, Element getInfoResponse);
     }
 
-    private static ArrayList<GetInfoExt> extensions = new ArrayList<GetInfoExt>();
+    private static ArrayList<GetInfoExt> extensions = new ArrayList<>();
 
     public static void addExtension(GetInfoExt extension) {
         synchronized (extensions) {

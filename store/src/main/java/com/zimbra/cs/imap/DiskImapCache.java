@@ -36,10 +36,11 @@ final class DiskImapCache implements ImapSessionManager.Cache<String, ImapFolder
 
         // iterate over all serialized folders and delete all but the most recent
         File[] allCached = CACHE_DIR.listFiles();
-        Arrays.sort(allCached, new Comparator<File>() {
-            @Override public int compare(File o1, File o2)  {
-                return o1.getName().compareTo(o2.getName());
-            }
+        Arrays.sort(allCached, new Comparator<>() {
+          @Override
+          public int compare(File o1, File o2) {
+            return o1.getName().compareTo(o2.getName());
+          }
         });
         File previous = null;
         String lastOwner = "", lastId = "";

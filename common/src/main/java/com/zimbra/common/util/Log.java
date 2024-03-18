@@ -575,7 +575,7 @@ public class Log {
     if (mAccountLoggers == null) {
       return null;
     }
-    List<AccountLogger> accountLoggers = new ArrayList<AccountLogger>();
+    List<AccountLogger> accountLoggers = new ArrayList<>();
     for (String accountName : mAccountLoggers.keySet()) {
       Logger log4jLogger = mAccountLoggers.get(accountName);
       AccountLogger al =

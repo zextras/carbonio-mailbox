@@ -404,7 +404,7 @@ public abstract class AccessManager {
     } else if (targetAccount != null) {
       // If targetAddress has an external domain, it must be a zimbraAllowFromAddress of the target
       // account.
-      Set<String> addrs = new HashSet<String>();
+      Set<String> addrs = new HashSet<>();
       String[] allowedFromAddrs = targetAccount.getMultiAttr(Provisioning.A_zimbraAllowFromAddress);
       for (String addr : allowedFromAddrs) {
         addrs.add(addr.toLowerCase());

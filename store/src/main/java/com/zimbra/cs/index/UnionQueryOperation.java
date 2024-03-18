@@ -151,7 +151,7 @@ public final class UnionQueryOperation extends CombiningQueryOperation {
 
     @Override
     QueryOperation expandLocalRemotePart(Mailbox mbox) throws ServiceException {
-        List<QueryOperation> newList = new ArrayList<QueryOperation>();
+        List<QueryOperation> newList = new ArrayList<>();
         for (QueryOperation op : operations) {
             newList.add(op.expandLocalRemotePart(mbox));
         }
@@ -161,7 +161,7 @@ public final class UnionQueryOperation extends CombiningQueryOperation {
 
     @Override
     QueryOperation ensureSpamTrashSetting(Mailbox mbox, boolean includeTrash, boolean includeSpam) throws ServiceException {
-        List<QueryOperation> newList = new ArrayList<QueryOperation>(operations.size());
+        List<QueryOperation> newList = new ArrayList<>(operations.size());
         for (QueryOperation op : operations) {
             if (!op.hasSpamTrashSetting()) {
                 newList.add(op.ensureSpamTrashSetting(mbox, includeTrash, includeSpam));
@@ -291,7 +291,7 @@ public final class UnionQueryOperation extends CombiningQueryOperation {
     public Object clone() {
         assert(cachedNextHit == null);
         UnionQueryOperation result = (UnionQueryOperation) super.clone();
-        result.operations = new ArrayList<QueryOperation>(operations.size());
+        result.operations = new ArrayList<>(operations.size());
         for (QueryOperation op : operations) {
             result.operations.add((QueryOperation) op.clone());
         }
@@ -321,7 +321,7 @@ public final class UnionQueryOperation extends CombiningQueryOperation {
 
     @Override
     public List<QueryInfo> getResultInfo() {
-        List<QueryInfo> result = new ArrayList<QueryInfo>();
+        List<QueryInfo> result = new ArrayList<>();
         for (QueryOperation op : operations) {
             result.addAll(op.getResultInfo());
         }

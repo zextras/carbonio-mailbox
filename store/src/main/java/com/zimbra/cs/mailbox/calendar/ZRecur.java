@@ -484,16 +484,16 @@ public class ZRecur implements Cloneable {
 
     }
 
-    private List<ZWeekDayNum> mByDayList = new ArrayList<ZWeekDayNum>();
-    private List<Integer> mByHourList = new ArrayList<Integer>();
-    private List<Integer> mByMinuteList = new ArrayList<Integer>();
-    private List<Integer> mByMonthDayList = new ArrayList<Integer>();
-    private List<Integer> mByMonthList = new ArrayList<Integer>();
-    private List<Integer> mBySecondList = new ArrayList<Integer>();
+    private List<ZWeekDayNum> mByDayList = new ArrayList<>();
+    private List<Integer> mByHourList = new ArrayList<>();
+    private List<Integer> mByMinuteList = new ArrayList<>();
+    private List<Integer> mByMonthDayList = new ArrayList<>();
+    private List<Integer> mByMonthList = new ArrayList<>();
+    private List<Integer> mBySecondList = new ArrayList<>();
 
-    private List<Integer> mBySetPosList = new ArrayList<Integer>();
-    private List<Integer> mByWeekNoList = new ArrayList<Integer>();
-    private List<Integer> mByYearDayList = new ArrayList<Integer>();
+    private List<Integer> mBySetPosList = new ArrayList<>();
+    private List<Integer> mByWeekNoList = new ArrayList<>();
+    private List<Integer> mByYearDayList = new ArrayList<>();
 
     private int mCount = 0;
     private Frequency mFreq = Frequency.WEEKLY;
@@ -645,7 +645,7 @@ public class ZRecur implements Cloneable {
         long rangeStart,
         long rangeEnd)
     throws ServiceException {
-        List<Date> toRet = new LinkedList<Date>();
+        List<Date> toRet = new LinkedList<>();
 
         Date rangeStartDate = new Date(rangeStart);
         // subtract 1000ms (1sec) because the code in the method treats
@@ -722,7 +722,7 @@ public class ZRecur implements Cloneable {
             numIterations++;
             boolean curIsAtOrAfterEarliestDate = !cur.getTime().before(earliestDate);
             boolean curIsAfterEndDate = cur.getTime().after(rangeEndDate);
-            List<Calendar> addList = new LinkedList<Calendar>();
+            List<Calendar> addList = new LinkedList<>();
 
             switch (mFreq) {
             case HOURLY:
@@ -1166,8 +1166,8 @@ public class ZRecur implements Cloneable {
         if (mByDayList.size() <= 0)
             return list;
 
-        List<Calendar> toRet = new ArrayList<Calendar>();
-        Set<Integer> months = new HashSet<Integer>();
+        List<Calendar> toRet = new ArrayList<>();
+        Set<Integer> months = new HashSet<>();
 
 
         for (Calendar cur : list) {
@@ -1179,7 +1179,7 @@ public class ZRecur implements Cloneable {
                 for (ZWeekDayNum day : mByDayList) {
 
                     // find all the cals matching this day-of-week
-                    ArrayList<Integer> matching = new ArrayList<Integer>();
+                    ArrayList<Integer> matching = new ArrayList<>();
 
                     cur.set(Calendar.DAY_OF_MONTH, 1);
                     do {
@@ -1277,7 +1277,7 @@ public class ZRecur implements Cloneable {
         if (mByDayList.size() <= 0)
             return list;
 
-        List<Calendar> toRet = new LinkedList<Calendar>();
+        List<Calendar> toRet = new LinkedList<>();
 
         for (Calendar cur : list) {
             for (ZWeekDayNum day : mByDayList) {
@@ -1296,7 +1296,7 @@ public class ZRecur implements Cloneable {
         if (mByHourList.size() <= 0)
             return list;
 
-        List<Calendar> toRet = new LinkedList<Calendar>();
+        List<Calendar> toRet = new LinkedList<>();
 
         for (Calendar cur : list) {
             for (Integer hour : mByHourList) {
@@ -1315,7 +1315,7 @@ public class ZRecur implements Cloneable {
         if (mByMinuteList.size() <= 0)
             return list;
 
-        List<Calendar> toRet = new LinkedList<Calendar>();
+        List<Calendar> toRet = new LinkedList<>();
 
         for (Calendar cur : list) {
             for (Integer minute: mByMinuteList) {
@@ -1334,7 +1334,7 @@ public class ZRecur implements Cloneable {
         if (mByMonthDayList.size() <= 0)
             return list;
 
-        List<Calendar> toRet = new LinkedList<Calendar>();
+        List<Calendar> toRet = new LinkedList<>();
 
         for (Calendar cur : list) {
             int curMonth = cur.get(Calendar.MONTH);
@@ -1377,7 +1377,7 @@ public class ZRecur implements Cloneable {
         if (mByMonthList.size() <= 0)
             return list;
 
-        List<Calendar> toRet = new LinkedList<Calendar>();
+        List<Calendar> toRet = new LinkedList<>();
 
         for (Calendar cur : list) {
             for (Integer month: mByMonthList) {
@@ -1399,7 +1399,7 @@ public class ZRecur implements Cloneable {
         if (mBySecondList.size() <= 0)
             return list;
 
-        List<Calendar> toRet = new LinkedList<Calendar>();
+        List<Calendar> toRet = new LinkedList<>();
 
         for (Calendar cur : list) {
             for (Integer second: mBySecondList) {
@@ -1419,8 +1419,8 @@ public class ZRecur implements Cloneable {
         if (mByYearDayList.size() <= 0)
             return list;
 
-        List<Calendar> toRet = new LinkedList<Calendar>();
-        Set<Integer> years = new HashSet<Integer>();
+        List<Calendar> toRet = new LinkedList<>();
+        Set<Integer> years = new HashSet<>();
 
 
         for (Calendar cur : list) {
@@ -1454,9 +1454,9 @@ public class ZRecur implements Cloneable {
         Calendar[] array = new Calendar[list.size()];
         array = list.toArray(array);
 
-        LinkedList<Calendar> toRet = new LinkedList<Calendar>();
+        LinkedList<Calendar> toRet = new LinkedList<>();
 
-        ArrayList<Integer> idxsToInclude = new ArrayList<Integer>();
+        ArrayList<Integer> idxsToInclude = new ArrayList<>();
 
         for (Integer cur : mBySetPosList) {
             int idx = cur;

@@ -686,15 +686,15 @@ public final class ElasticSearchIndex extends IndexStore {
                 } catch (IOException e) {
                     ZimbraLog.index.error("Problem getting stats for index %s", url, e);
                 }
-                Collections.sort(allValues, new Comparator<BrowseTerm>() {
-                    @Override
-                    public int compare(BrowseTerm o1, BrowseTerm o2) {
-                        int retVal = o1.getText().compareTo(o2.getText());
-                        if (retVal == 0) {
-                            retVal = o2.getFreq() - o1.getFreq();
-                        }
-                        return retVal;
+                Collections.sort(allValues, new Comparator<>() {
+                  @Override
+                  public int compare(BrowseTerm o1, BrowseTerm o2) {
+                    int retVal = o1.getText().compareTo(o2.getText());
+                    if (retVal == 0) {
+                      retVal = o2.getFreq() - o1.getFreq();
                     }
+                    return retVal;
+                  }
                 });
                 termValues.addAll(allValues);
             }

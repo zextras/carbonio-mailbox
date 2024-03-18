@@ -34,7 +34,7 @@ public class DynamicResultsHelper {
     private String encodedKey;
     private EphemeralKeyValuePair kvp;
     private boolean broadKeyMatch = false;
-    private List<String> valuesToDelete = new ArrayList<String>(); //values that cannot be decoded
+    private List<String> valuesToDelete = new ArrayList<>(); //values that cannot be decoded
     private DeletionCallback deletionCallback;
 
     public DynamicResultsHelper(EphemeralKey key, EphemeralLocation target, AttributeEncoder encoder, DeletionCallback deletionCallback) {
@@ -87,7 +87,7 @@ public class DynamicResultsHelper {
         if (values.isEmpty()) {
             return EphemeralResult.emptyResult(key);
         } else {
-            List<EphemeralKeyValuePair> results = new LinkedList<EphemeralKeyValuePair>();
+            List<EphemeralKeyValuePair> results = new LinkedList<>();
             for (String v: values) {
                 if (filterValue(v)) {
                     results.add(getKeyValuePair());
@@ -99,7 +99,7 @@ public class DynamicResultsHelper {
     }
 
     public List<String> delete(Collection<String> values, String valueToDelete) throws ServiceException {
-        List<String> toDelete = new LinkedList<String>();
+        List<String> toDelete = new LinkedList<>();
         for (String v: values) {
             if (filterValue(v)) {
                 EphemeralKeyValuePair kvp = getKeyValuePair();
@@ -113,7 +113,7 @@ public class DynamicResultsHelper {
     }
 
     public List<String> purge(Collection<String> values) throws ServiceException {
-        List<String> purged = new LinkedList<String>();
+        List<String> purged = new LinkedList<>();
         for (String v: values) {
             if (filterValue(v)) {
                 EphemeralKeyValuePair kvp = getKeyValuePair();

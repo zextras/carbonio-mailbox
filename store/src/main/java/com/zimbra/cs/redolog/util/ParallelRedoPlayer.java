@@ -115,7 +115,7 @@ public class ParallelRedoPlayer extends RedoPlayer {
 
         private PlayerThread(int queueCapacity) {
             queueCapacity = Math.max(queueCapacity, 1);
-            mQueue = new LinkedBlockingQueue<RedoTask>(queueCapacity);
+            mQueue = new LinkedBlockingQueue<>(queueCapacity);
         }
 
         public void enqueue(RedoTask task) throws InterruptedException {

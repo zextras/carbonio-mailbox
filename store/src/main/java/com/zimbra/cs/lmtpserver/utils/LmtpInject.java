@@ -337,7 +337,7 @@ public class LmtpInject {
         }
 
         // Process files from the -d option.
-        List<File> files = new ArrayList<File>();
+        List<File> files = new ArrayList<>();
         if (cl.hasOption("d")) {
             File dir = new File(cl.getOptionValue("d"));
             if (!dir.isDirectory()) {

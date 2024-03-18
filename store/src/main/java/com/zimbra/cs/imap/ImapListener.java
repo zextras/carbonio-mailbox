@@ -48,7 +48,7 @@ public abstract class ImapListener extends Session {
     protected ImapFolderData mFolder;
     protected ImapHandler handler;
     private final ImapMailboxStore imapMboxStore;
-    private final Map<Integer, Integer> renumberCount = new ConcurrentHashMap<Integer, Integer>();
+    private final Map<Integer, Integer> renumberCount = new ConcurrentHashMap<>();
 
     /** Number of queued notifications beyond which we deserialize the session,
      *  apply the changes, and reserialize the session.  This both constrains
@@ -72,9 +72,9 @@ public abstract class ImapListener extends Session {
                 return;
             }
             if (item.getImapUid() > 0) {
-                (numbered == null ? numbered = new ArrayList<ImapMessage>() : numbered).add(i4item);
+                (numbered == null ? numbered = new ArrayList<>() : numbered).add(i4item);
             } else {
-                (unnumbered == null ? unnumbered = new ArrayList<ImapMessage>() : unnumbered).add(i4item);
+                (unnumbered == null ? unnumbered = new ArrayList<>() : unnumbered).add(i4item);
             }
         }
 
@@ -229,7 +229,7 @@ public abstract class ImapListener extends Session {
 
             resetRenumber();
             lastChangeId = 0;
-            SortedSet<Integer> changeIds = new TreeSet<Integer>(queuedChanges.keySet());
+            SortedSet<Integer> changeIds = new TreeSet<>(queuedChanges.keySet());
             for(Integer changeId : changeIds) {
                 PendingModifications mods = queuedChanges.get(changeId);
                 notifyPendingChanges(mods, changeId, null);
@@ -313,16 +313,16 @@ public abstract class ImapListener extends Session {
 
                 final short defaultFlags = (short) (getFolderId() != Mailbox.ID_FOLDER_SPAM ? 0 :
                     ImapMessage.FLAG_SPAM | ImapMessage.FLAG_JUNKRECORDED);
-                final List<Integer> sflags = new ArrayList<Integer>();
-                i4folder.traverse(new Function<ImapMessage, Void>() {
-                    @Override
-                    public Void apply(ImapMessage i4msg) {
-                        if ((i4msg.sflags & ~ImapMessage.FLAG_IS_CONTACT) != defaultFlags) {
-                            sflags.add(i4msg.imapUid);
-                            sflags.add((int) i4msg.sflags);
-                        }
-                        return null;
+                final List<Integer> sflags = new ArrayList<>();
+                i4folder.traverse(new Function<>() {
+                  @Override
+                  public Void apply(ImapMessage i4msg) {
+                    if ((i4msg.sflags & ~ImapMessage.FLAG_IS_CONTACT) != defaultFlags) {
+                      sflags.add(i4msg.imapUid);
+                      sflags.add((int) i4msg.sflags);
                     }
+                    return null;
+                  }
                 });
 
                 if (!sflags.isEmpty()) {

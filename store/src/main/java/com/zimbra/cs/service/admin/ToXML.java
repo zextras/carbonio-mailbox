@@ -97,7 +97,7 @@ public class ToXML {
 
         Set<String> reqAttrsLowerCase = null;
         if (reqAttrs != null) {
-            reqAttrsLowerCase = new HashSet<String>();
+            reqAttrsLowerCase = new HashSet<>();
             for (String reqAttr : reqAttrs) {
                 reqAttrsLowerCase.add(reqAttr.toLowerCase());
             }

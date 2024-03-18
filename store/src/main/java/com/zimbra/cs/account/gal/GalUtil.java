@@ -80,7 +80,7 @@ public class GalUtil {
         }
 
         String query = null;
-        Map<String, String> vars = new HashMap<String, String>();
+        Map<String, String> vars = new HashMap<>();
 
         ZLdapFilterFactory filterFactory = ZLdapFilterFactory.getInstance();
 

@@ -755,7 +755,7 @@ public class ImapPath implements Comparable<ImapPath> {
       return null;
     }
     path = (slash == -1 ? "" : imapPathNoPrefix.substring(slash));
-    return new Pair<String, String>(owner, path);
+    return new Pair<>(owner, path);
   }
 
   protected String asZimbraPath() {

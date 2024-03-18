@@ -71,8 +71,8 @@ public abstract class NioServer implements Server {
 
     // There is one IoProcessor pool shared by all protocol handlers
     private static final IoProcessor<NioSession> IO_PROCESSOR_POOL =
-        new SimpleIoProcessorPool<NioSession>(NioProcessor.class, Executors.newCachedThreadPool(
-                new ThreadFactoryBuilder().setNameFormat("NioProcessor-%d").build()));
+        new SimpleIoProcessorPool<>(NioProcessor.class, Executors.newCachedThreadPool(
+            new ThreadFactoryBuilder().setNameFormat("NioProcessor-%d").build()));
 
     /**
      * Extensions may add a custom {@link IoFilter} to the filter chain. Must call before the server starts.
@@ -342,7 +342,7 @@ public abstract class NioServer implements Server {
 
     protected Set<String> getThrottleSafeHosts() throws ServiceException {
 
-        Set<String> safeHosts = new HashSet<String>();
+        Set<String> safeHosts = new HashSet<>();
         for (com.zimbra.cs.account.Server server : Provisioning.getInstance().getAllServers()) {
             safeHosts.add(server.getServiceHostname());
         }
@@ -352,7 +352,7 @@ public abstract class NioServer implements Server {
 
     protected Set<String> getThrottleWhitelist() throws ServiceException {
 
-        Set<String> safeHosts = new HashSet<String>();
+        Set<String> safeHosts = new HashSet<>();
       safeHosts.addAll(Arrays.asList(config.getThrottleWhitelist()));
         return safeHosts;
     }

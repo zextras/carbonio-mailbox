@@ -45,7 +45,7 @@ public class GetAccountInfoResponse {
      * </table>
      */
     @XmlElement(name=AdminConstants.E_A)
-    private List<Attr> attrList = new ArrayList<Attr>();
+    private List<Attr> attrList = new ArrayList<>();
 
     /**
      * @zm-api-field-description Class of Service (COS) information for account
@@ -63,7 +63,7 @@ public class GetAccountInfoResponse {
      * then only one URL will be returned.
      */
     @XmlElement(name=AdminConstants.E_SOAP_URL /* soapURL */, required=false)
-    private List<String> soapURLList = new ArrayList<String>();
+    private List<String> soapURLList = new ArrayList<>();
 
     /**
      * @zm-api-field-tag admin-soap-url

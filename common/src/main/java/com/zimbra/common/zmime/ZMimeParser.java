@@ -112,7 +112,7 @@ class ZMimeParser {
         private StringBuilder boundary;
 
         BoundaryChecker(List<String> boundaries, long lineStart, LineEnding lastEnding) {
-            boundaryCandidates = new LinkedHashMap<String, Integer>(boundaries.size());
+            boundaryCandidates = new LinkedHashMap<>(boundaries.size());
             for (String bnd : boundaries) {
                 if (bnd.isEmpty()) {
                     // "" means no "boundary" param on the Content-Type
@@ -273,7 +273,7 @@ class ZMimeParser {
     private boolean checkBoundary = false;
 
     /** The stack of active message parts, outermost to innermost. */
-    private final List<PartInfo> parts = new ArrayList<PartInfo>(5);
+    private final List<PartInfo> parts = new ArrayList<>(5);
 
     /** The parser's current position in the message (in bytes). */
     private long position;
@@ -617,7 +617,7 @@ class ZMimeParser {
      *  enclosing parts.  Sets {@link #boundaries} appropriately, or to
      *  {@code null} if there are no valid boundaries. */
     void recalculateBoundaries() {
-        boundaries = new ArrayList<String>(parts.size());
+        boundaries = new ArrayList<>(parts.size());
         for (PartInfo pinfo : parts) {
             if (pinfo.boundary != null) {
                 boundaries.add(pinfo.boundary);

@@ -41,7 +41,7 @@ public class AttachmentInfo {
         mPart = p;
         mFilename = filename;
         mLength = length;
-        mSeqInArchive = new ArrayList<String>(seq.size());
+        mSeqInArchive = new ArrayList<>(seq.size());
         mSeqInArchive.addAll(seq);
         try {
             charset = Charset.forName(cset);
@@ -79,7 +79,7 @@ public class AttachmentInfo {
      * @return Returns the Seq ID of a piece of content in the Archive.
      */
     public List<String> getSeqInArchive() {
-        return new ArrayList<String>(mSeqInArchive);
+        return new ArrayList<>(mSeqInArchive);
     }
 
     /**

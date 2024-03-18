@@ -71,7 +71,7 @@ public class CertUtil {
      *
      *
      */
-    private static final Map<String, String> KNOWN_NON_RFC2252_ATTRS = new HashMap<String, String>();
+    private static final Map<String, String> KNOWN_NON_RFC2252_ATTRS = new HashMap<>();
 
     static {
         KNOWN_NON_RFC2252_ATTRS.put(ATTR_EMAILADDRESS, "1.2.840.113549.1.9.1");

@@ -57,7 +57,7 @@ public class CurrentDayOfWeekTest extends AbstractTest {
             throw new SyntaxException("Expecting \":is\"");
 
         // Second argument MUST be a list of day of week indices; 0=Sunday, 6=Saturday
-        Set<Integer> daysToCheckAgainst = new HashSet<Integer>();
+        Set<Integer> daysToCheckAgainst = new HashSet<>();
         if (argumentsIter.hasNext()) {
             Object argument = argumentsIter.next();
             if (argument instanceof StringListArgument) {

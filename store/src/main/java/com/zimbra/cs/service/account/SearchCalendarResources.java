@@ -80,7 +80,7 @@ public class SearchCalendarResources extends GalDocumentHandler {
 
         String attrsStr = request.getAttribute(AccountConstants.A_ATTRS, null);
         String[] attrs = attrsStr == null ? null : attrsStr.split(",");
-        Set<String> attrsSet = attrs == null ? null : new HashSet<String>(Arrays.asList(attrs));
+        Set<String> attrsSet = attrs == null ? null : new HashSet<>(Arrays.asList(attrs));
 
         params.setResultCallback(new CalendarResourceGalSearchResultCallback(params, filter, attrsSet));
 

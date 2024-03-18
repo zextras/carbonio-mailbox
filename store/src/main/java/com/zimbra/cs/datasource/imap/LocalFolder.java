@@ -133,7 +133,7 @@ final class LocalFolder {
     }
 
     public Set<Integer> getMessageIds() throws ServiceException {
-        return new HashSet<Integer>(mbox.listItemIds(null, MailItem.Type.MESSAGE, folder.getId()));
+        return new HashSet<>(mbox.listItemIds(null, MailItem.Type.MESSAGE, folder.getId()));
     }
 
     public Folder getFolder() throws ServiceException {

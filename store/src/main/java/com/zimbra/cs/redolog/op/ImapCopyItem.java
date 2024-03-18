@@ -19,8 +19,8 @@ import com.zimbra.cs.redolog.RedoLogOutput;
 
 public class ImapCopyItem extends RedoableOp {
 
-    private Map<Integer, Integer> mDestIds = new HashMap<Integer, Integer>();
-    private Map<Integer, String> mDestUuids = new HashMap<Integer, String>();
+    private Map<Integer, Integer> mDestIds = new HashMap<>();
+    private Map<Integer, String> mDestUuids = new HashMap<>();
     private MailItem.Type type;
     private int mDestFolderId;
 

@@ -133,8 +133,8 @@ public class NetUtil {
             excludeCiphers == null || excludeCiphers.length == 0)
             return null;
 
-        List<String> excludedCSList = new ArrayList<String>(Arrays.asList(excludeCiphers));
-        List<String> enabledCSList = new ArrayList<String>(Arrays.asList(enabledCiphers));
+        List<String> excludedCSList = new ArrayList<>(Arrays.asList(excludeCiphers));
+        List<String> enabledCSList = new ArrayList<>(Arrays.asList(enabledCiphers));
 
         for (String cipher : excludedCSList) {
           enabledCSList.remove(cipher);
@@ -155,7 +155,7 @@ public class NetUtil {
             socket.setEnabledCipherSuites(enabledCiphers);
     }
 
-    private static Map<String, ServerSocket> mBoundSockets = new HashMap<String, ServerSocket>();
+    private static Map<String, ServerSocket> mBoundSockets = new HashMap<>();
 
     private static String makeKey(String address, int port, boolean ssl, boolean useChannels) {
         return "[ssl=" + ssl + ";addr=" + address + ";port=" + port + ";useChannels=" + useChannels + "]";

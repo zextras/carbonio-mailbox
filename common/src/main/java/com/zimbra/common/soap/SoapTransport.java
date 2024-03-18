@@ -52,7 +52,7 @@ public abstract class SoapTransport {
     private static final class ViaHolder extends ThreadLocal<LinkedList<String>> {
         @Override
         protected LinkedList<String> initialValue() {
-            return new LinkedList<String>();
+            return new LinkedList<>();
         }
     }
 

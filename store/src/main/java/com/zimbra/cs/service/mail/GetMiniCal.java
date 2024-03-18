@@ -76,7 +76,7 @@ public class GetMiniCal extends CalendarRequest {
         long rangeStart = request.getAttributeLong(MailConstants.A_CAL_START_TIME);
         long rangeEnd = request.getAttributeLong(MailConstants.A_CAL_END_TIME);
 
-        List<ItemId> folderIids = new ArrayList<ItemId>();
+        List<ItemId> folderIids = new ArrayList<>();
         for (Iterator<Element> foldersIter = request.elementIterator(MailConstants.E_FOLDER); foldersIter.hasNext(); ) {
             Element fElem = foldersIter.next();
             ItemId iidFolder = new ItemId(fElem.getAttribute(MailConstants.A_ID), zsc);
@@ -86,7 +86,7 @@ public class GetMiniCal extends CalendarRequest {
         ICalTimeZone tz = parseTimeZone(request);
         if (tz == null)
             tz = Util.getAccountTimeZone(authAcct);  // requestor's time zone, not mailbox owner's
-        TreeSet<String> busyDates = new TreeSet<String>();
+        TreeSet<String> busyDates = new TreeSet<>();
 
         Provisioning prov = Provisioning.getInstance();
         MailboxManager mboxMgr = MailboxManager.getInstance();
@@ -94,7 +94,7 @@ public class GetMiniCal extends CalendarRequest {
 
         ItemIdFormatter ifmt = new ItemIdFormatter(zsc);
         Map<ItemId, Resolved> resolved = resolveMountpoints(octxt, mbox, folderIids);
-        Map<ItemId /* resolved iid */, ItemId /* requested iid */> reverseMap = new HashMap<ItemId, ItemId>();
+        Map<ItemId /* resolved iid */, ItemId /* requested iid */> reverseMap = new HashMap<>();
         for (Map.Entry<ItemId, Resolved> entry : resolved.entrySet()) {
             ItemId requestedIid = entry.getKey();
             Resolved res = entry.getValue();
@@ -187,7 +187,7 @@ public class GetMiniCal extends CalendarRequest {
                 }
             } else {  // remote server
                 String nominalTargetAcctId = null;  // mail service soap requests want to see a target account
-                List<String> folderList = new ArrayList<String>();
+                List<String> folderList = new ArrayList<>();
                 for (Map.Entry<String, List<Integer>> entry : accountFolders.entrySet()) {
                     String acctId = entry.getKey();
                     if (nominalTargetAcctId == null)
@@ -336,7 +336,7 @@ public class GetMiniCal extends CalendarRequest {
     // include PERM_DENIED (if sharer revoked permission), NO_SUCH_FOLDER (if sharer deleted shared folder), and
     // NO_SUCH_ACCOUNT (if sharer account has been deleted).
     private static Map<ItemId, Resolved> resolveMountpoints(OperationContext octxt, Mailbox mbox, List<ItemId> folderIids) {
-        Map<ItemId, Resolved> result = new HashMap<ItemId, Resolved>();
+        Map<ItemId, Resolved> result = new HashMap<>();
         for (ItemId iidFolder : folderIids) {
             String targetAccountId = iidFolder.getAccountId();
             int folderId = iidFolder.getId();
@@ -377,13 +377,13 @@ public class GetMiniCal extends CalendarRequest {
     }
 
     private static Map<String /* account id */, List<Integer> /* folder ids */> groupFoldersByAccount(Map<ItemId, Resolved> map) {
-        Map<String, List<Integer>> foldersMap = new HashMap<String, List<Integer>>();
+        Map<String, List<Integer>> foldersMap = new HashMap<>();
         for (Map.Entry<ItemId, Resolved> entry : map.entrySet()) {
             Resolved res = entry.getValue();
             if (res.error == null) {
                 List<Integer> folderList = foldersMap.get(res.iid.getAccountId());
                 if (folderList == null) {
-                    folderList = new ArrayList<Integer>();
+                    folderList = new ArrayList<>();
                     foldersMap.put(res.iid.getAccountId(), folderList);
                 }
                 folderList.add(res.iid.getId());

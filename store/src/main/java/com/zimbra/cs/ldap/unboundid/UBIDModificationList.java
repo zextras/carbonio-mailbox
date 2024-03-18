@@ -19,7 +19,7 @@ import com.zimbra.cs.ldap.ZModificationList;
 
 public class UBIDModificationList extends ZModificationList {
 
-    private List<Modification> modList = new ArrayList<Modification>();
+    private List<Modification> modList = new ArrayList<>();
 
     @Override
     public void debug(ZLdapElementDebugListener debugListener) {
@@ -107,7 +107,7 @@ public class UBIDModificationList extends ZModificationList {
     public void modifyAttr(String name, String[] value,
             boolean containsBinaryData, boolean isBinaryTransfer) {
 
-        List<ASN1OctetString> valuesToMod = new ArrayList<ASN1OctetString>();
+        List<ASN1OctetString> valuesToMod = new ArrayList<>();
       for (String s : value) {
         valuesToMod.add(UBIDUtil.newASN1OctetString(containsBinaryData, s));
       }

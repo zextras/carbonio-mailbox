@@ -131,30 +131,32 @@ public class GetSessions extends AdminDocumentHandler {
         result = new CachedResult();
         result.type = type;
         result.sortBy = sortBy;
-        result.sessions = new ArrayList<SessionInfo>(sessions.size());
+        result.sessions = new ArrayList<>(sessions.size());
         for (Session s : sessions) {
             result.sessions.add(new SessionInfo(s, getName(prov, s.getAuthenticatedAccountId())));
         }
 
         // SORT
-        Comparator<SessionInfo> comparator = new Comparator<SessionInfo>() {
-            public int compare(SessionInfo a, SessionInfo b) {
-                long diff;
-                switch(sortBy) {
-                    case nameAsc: return a.getAccountName().compareToIgnoreCase(b.getAccountName());
-                    case nameDesc: return -a.getAccountName().compareToIgnoreCase(b.getAccountName());
-                    case accessedAsc:
-                  case createdAsc:
-                    diff = a.getAccessed() - b.getAccessed();
-                        return diff == 0 ? 0 : diff > 0 ? 1 : -1;
-                    case accessedDesc:
-                  case createdDesc:
-                    diff = a.getAccessed() - b.getAccessed();
-                        return diff == 0 ? 0 : diff > 0 ? -1 : 1;
-                  default:
-                        return 0;
-                }
+        Comparator<SessionInfo> comparator = new Comparator<>() {
+          public int compare(SessionInfo a, SessionInfo b) {
+            long diff;
+            switch (sortBy) {
+              case nameAsc:
+                return a.getAccountName().compareToIgnoreCase(b.getAccountName());
+              case nameDesc:
+                return -a.getAccountName().compareToIgnoreCase(b.getAccountName());
+              case accessedAsc:
+              case createdAsc:
+                diff = a.getAccessed() - b.getAccessed();
+                return diff == 0 ? 0 : diff > 0 ? 1 : -1;
+              case accessedDesc:
+              case createdDesc:
+                diff = a.getAccessed() - b.getAccessed();
+                return diff == 0 ? 0 : diff > 0 ? -1 : 1;
+              default:
+                return 0;
             }
+          }
         };
         Collections.sort(result.sessions, comparator);
 

@@ -41,9 +41,9 @@ public class InviteChanges {
             sLabelToMask.put(labelLower, mask);
     }
     static {
-        sMaskList = new ArrayList<Integer>();
-        sMaskToLabel = new HashMap<Integer, String>();
-        sLabelToMask = new HashMap<String, Integer>();
+        sMaskList = new ArrayList<>();
+        sMaskToLabel = new HashMap<>();
+        sLabelToMask = new HashMap<>();
         map(LOCATION, LABEL_LOCATION);
         map(TIME, LABEL_TIME);
         map(RECURRENCE, LABEL_RECURRENCE);

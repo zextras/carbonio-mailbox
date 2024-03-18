@@ -21,11 +21,11 @@ public class MetadataList {
     List<Object> list;
 
     public MetadataList() {
-        list = new ArrayList<Object>();
+        list = new ArrayList<>();
     }
 
     public MetadataList(List<?> list) {
-        this.list = new ArrayList<Object>(list);
+        this.list = new ArrayList<>(list);
     }
 
     public MetadataList(String encoded) throws ServiceException {
@@ -55,7 +55,7 @@ public class MetadataList {
 
     @SuppressWarnings("unchecked")
     public <T> List<T> asList() {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         for (Object obj : list) {
             if (obj == null) {
             } else if (obj instanceof Map) {

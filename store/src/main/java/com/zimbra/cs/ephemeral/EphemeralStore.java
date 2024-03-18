@@ -43,7 +43,7 @@ public abstract class EphemeralStore {
         String getStoreId();
     }
 
-    private static Map<String, String> factories = new HashMap<String, String>();
+    private static Map<String, String> factories = new HashMap<>();
     private static Factory factory;
     protected AttributeEncoder encoder;
     static {

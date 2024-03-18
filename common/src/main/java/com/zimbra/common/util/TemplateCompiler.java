@@ -373,7 +373,7 @@ public class TemplateCompiler {
 	//
 
 	private static Map<String,String> parseAttrs(String s) {
-	    Map<String,String> attrs = new HashMap<String,String>();
+	    Map<String,String> attrs = new HashMap<>();
 	    Matcher matcher = RE_ATTR.matcher(s);
 	    while (matcher.find()) {
 	        String aname = matcher.group(1);

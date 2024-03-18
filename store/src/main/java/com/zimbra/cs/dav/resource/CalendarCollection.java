@@ -167,7 +167,7 @@ public class CalendarCollection extends Collection {
   }
 
   protected Map<String, String> getUidToHrefMap(java.util.Collection<String> hrefs) {
-    HashMap<String, String> uidmap = new HashMap<String, String>();
+    HashMap<String, String> uidmap = new HashMap<>();
     for (String href : hrefs) {
       try {
         int start = href.lastIndexOf('/') + 1;
@@ -193,7 +193,7 @@ public class CalendarCollection extends Collection {
   private static final HashSet<QName> sMetaProps;
 
   static {
-    sMetaProps = new HashSet<QName>();
+    sMetaProps = new HashSet<>();
     sMetaProps.add(DavElements.E_GETETAG);
     sMetaProps.add(DavElements.E_RESOURCETYPE);
     sMetaProps.add(DavElements.E_DISPLAYNAME);
@@ -214,7 +214,7 @@ public class CalendarCollection extends Collection {
       throws ServiceException, DavException {
     Mailbox mbox = getCalendarMailbox(ctxt);
 
-    HashMap<String, DavResource> appts = new HashMap<String, DavResource>();
+    HashMap<String, DavResource> appts = new HashMap<>();
     ctxt.setCollectionPath(getUri());
     if (range == null) range = new TimeRange(getOwner());
     long start = range.getStart();
@@ -241,11 +241,11 @@ public class CalendarCollection extends Collection {
     Map<String, String> uidmap = getUidToHrefMap(hrefs);
     Mailbox mbox = getCalendarMailbox(ctxt);
 
-    ArrayList<DavResource> appts = new ArrayList<DavResource>();
+    ArrayList<DavResource> appts = new ArrayList<>();
     ctxt.setCollectionPath(getUri());
     Map<String, CalendarItem> calItems =
         mbox.getCalendarItemsByUid(
-            ctxt.getOperationContext(), new ArrayList<String>(uidmap.keySet()));
+            ctxt.getOperationContext(), new ArrayList<>(uidmap.keySet()));
     for (String uid : calItems.keySet()) {
       CalendarItem calItem = calItems.get(uid);
       if (calItem == null) appts.add(new DavResource.InvalidResource(uidmap.get(uid), getOwner()));
@@ -267,7 +267,7 @@ public class CalendarCollection extends Collection {
   private String findEventUid(List<Invite> invites) throws DavException {
     String uid = null;
     MailItem.Type itemType = null;
-    LinkedList<Invite> inviteList = new LinkedList<Invite>();
+    LinkedList<Invite> inviteList = new LinkedList<>();
     for (Invite i : invites) {
       MailItem.Type mItemType = i.getItemType();
       if (mItemType == MailItem.Type.APPOINTMENT) {

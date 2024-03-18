@@ -117,12 +117,12 @@ public final class Metadata {
 
     public Metadata() {
         associatedItemId = null;
-        map = new TreeMap<Object, Object>();
+        map = new TreeMap<>();
     }
 
     public Metadata(Map<?, ?> map) {
         associatedItemId = null;
-        this.map = new TreeMap<Object, Object>(map);
+        this.map = new TreeMap<>(map);
     }
 
     public Metadata(String encoded) throws MailServiceException {
@@ -132,7 +132,7 @@ public final class Metadata {
     public Metadata(String encoded, Integer associatedItemId) throws MailServiceException {
         this.associatedItemId = associatedItemId;
         if (Strings.isNullOrEmpty(encoded)) {
-            map = new HashMap<Object, Object>();
+            map = new HashMap<>();
             return;
         }
         try {
@@ -190,7 +190,7 @@ public final class Metadata {
     }
 
     public Map<String, ?> asMap()  {
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = new HashMap<>();
         for (Map.Entry<Object, Object> entry : map.entrySet()) {
             Object key = entry.getKey();
             Object value = entry.getValue();

@@ -362,7 +362,7 @@ public class Sync extends MailDocumentHandler {
     Set<Integer> targetIds =
         (root != null && root.getId() == Mailbox.ID_FOLDER_USER_ROOT
             ? null
-            : new HashSet<Integer>(hierarchy == null ? 0 : hierarchy.size()));
+            : new HashSet<>(hierarchy == null ? 0 : hierarchy.size()));
     if (hierarchy != null) {
       for (Folder folder : hierarchy) {
         targetIds.add(folder.getId());

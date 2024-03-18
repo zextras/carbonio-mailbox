@@ -48,7 +48,7 @@ public class RdateExdate implements Cloneable {
 
         mTimeZone = tz;
         setValueType(valueType);
-        mValues = new ArrayList<Object>();
+        mValues = new ArrayList<>();
     }
 
     public Object clone() {

@@ -90,7 +90,7 @@ public class AddHeader extends AbstractCommand {
                 if (last) {
                     mm.addHeaderLine(headerName + ": " + headerValue);
                 } else {
-                    List<Header> headerList = new ArrayList<Header>();
+                    List<Header> headerList = new ArrayList<>();
                     Enumeration<Header> e = mm.getAllHeaders();
                     // If the first line of the header is "Return-Path",
                     // keep it at the first line.
