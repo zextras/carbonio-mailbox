@@ -162,6 +162,10 @@ pipeline {
             }
         }
         stage('Publish SNAPSHOT to maven') {
+            environment {
+                JAVA_HOME='/usr/lib/jvm/java-11-openjdk-amd64'
+                JAVA_PATH='${JAVA_HOME}/bin'
+            }
             when {
                 branch 'devel';
             }
