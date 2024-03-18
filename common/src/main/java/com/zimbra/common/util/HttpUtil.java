@@ -590,7 +590,7 @@ public final class HttpUtil {
                     // then cast the result back to signed Byte.
                     // e.g. 0xED becomes 237 as Integer, then -19 as Byte
                     int b = Integer.parseInt(bytes, 16);
-                    segment.add(Byte.valueOf((byte)b));
+                    segment.add((byte) b);
                 } catch (NumberFormatException e) {
                 }
                 if (buf == null) {

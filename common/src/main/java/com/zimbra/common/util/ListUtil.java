@@ -261,43 +261,43 @@ public class ListUtil {
             int i = 0;
 
             in[i] = new ArrayList<Integer>();
-            in[i].add(Integer.valueOf(1));
-            in[i].add(Integer.valueOf(3));
-            in[i].add(Integer.valueOf(5));
-            in[i].add(Integer.valueOf(7));
-            in[i].add(Integer.valueOf(9));
+            in[i].add(1);
+            in[i].add(3);
+            in[i].add(5);
+            in[i].add(7);
+            in[i].add(9);
 
             i = 1;
             in[i] = new ArrayList<Integer>();
-            in[i].add(Integer.valueOf(1));
-            in[i].add(Integer.valueOf(7));
-            in[i].add(Integer.valueOf(12));
-            in[i].add(Integer.valueOf(13));
-            in[i].add(Integer.valueOf(13));
+            in[i].add(1);
+            in[i].add(7);
+            in[i].add(12);
+            in[i].add(13);
+            in[i].add(13);
 
             i = 2;
             in[i] = new ArrayList<Integer>();
-            in[i].add(Integer.valueOf(1));
-            in[i].add(Integer.valueOf(2));
-            in[i].add(Integer.valueOf(3));
-            in[i].add(Integer.valueOf(4));
-            in[i].add(Integer.valueOf(5));
+            in[i].add(1);
+            in[i].add(2);
+            in[i].add(3);
+            in[i].add(4);
+            in[i].add(5);
 
             i = 3;
             in[i] = new ArrayList<Integer>();
-            in[i].add(Integer.valueOf(5));
-            in[i].add(Integer.valueOf(6));
-            in[i].add(Integer.valueOf(7));
-            in[i].add(Integer.valueOf(8));
-            in[i].add(Integer.valueOf(9));
+            in[i].add(5);
+            in[i].add(6);
+            in[i].add(7);
+            in[i].add(8);
+            in[i].add(9);
 
             i = 4;
             in[i] = new ArrayList<Integer>();
-            in[i].add(Integer.valueOf(100));
-            in[i].add(Integer.valueOf(101));
-            in[i].add(Integer.valueOf(102));
-            in[i].add(Integer.valueOf(103));
-            in[i].add(Integer.valueOf(104));
+            in[i].add(100);
+            in[i].add(101);
+            in[i].add(102);
+            in[i].add(103);
+            in[i].add(104);
 
             List<Integer> test;
 

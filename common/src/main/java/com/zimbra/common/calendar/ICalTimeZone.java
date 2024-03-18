@@ -381,13 +381,13 @@ public class ICalTimeZone extends SimpleTimeZone {
     private static Map<String, Integer> sDayOfWeekMap =
         new HashMap<String, Integer>(7);
     static {
-        sDayOfWeekMap.put("SU", Integer.valueOf(Calendar.SUNDAY));     // 1
-        sDayOfWeekMap.put("MO", Integer.valueOf(Calendar.MONDAY));     // 2
-        sDayOfWeekMap.put("TU", Integer.valueOf(Calendar.TUESDAY));    // 3
-        sDayOfWeekMap.put("WE", Integer.valueOf(Calendar.WEDNESDAY));  // 4
-        sDayOfWeekMap.put("TH", Integer.valueOf(Calendar.THURSDAY));   // 5
-        sDayOfWeekMap.put("FR", Integer.valueOf(Calendar.FRIDAY));     // 6
-        sDayOfWeekMap.put("SA", Integer.valueOf(Calendar.SATURDAY));   // 7
+        sDayOfWeekMap.put("SU", Calendar.SUNDAY);     // 1
+        sDayOfWeekMap.put("MO", Calendar.MONDAY);     // 2
+        sDayOfWeekMap.put("TU", Calendar.TUESDAY);    // 3
+        sDayOfWeekMap.put("WE", Calendar.WEDNESDAY);  // 4
+        sDayOfWeekMap.put("TH", Calendar.THURSDAY);   // 5
+        sDayOfWeekMap.put("FR", Calendar.FRIDAY);     // 6
+        sDayOfWeekMap.put("SA", Calendar.SATURDAY);   // 7
     }
 
     /**

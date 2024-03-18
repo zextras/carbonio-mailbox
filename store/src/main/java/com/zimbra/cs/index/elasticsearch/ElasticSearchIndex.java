@@ -545,7 +545,7 @@ public final class ElasticSearchIndex extends IndexStore {
                 case STALE:
                 case DONE: // for partial re-index
                     List<Integer> ids = Lists.newArrayListWithCapacity(1);
-                    ids.add(new Integer(item.getId()));
+                    ids.add(item.getId());
                     deleteDocument(ids);
                     break;
                 case DEFERRED:

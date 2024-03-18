@@ -1200,9 +1200,9 @@ public class ZoneInfo2iCalendar {
     Integer matchScore = sMatchScores.get(tzid);
     if (matchScore == null) {
       if (isPrimary) {
-        matchScore = Integer.valueOf(TZIDMapper.DEFAULT_MATCH_SCORE_PRIMARY);
+        matchScore = TZIDMapper.DEFAULT_MATCH_SCORE_PRIMARY;
       } else {
-        matchScore = Integer.valueOf(TZIDMapper.DEFAULT_MATCH_SCORE_NON_PRIMARY);
+        matchScore = TZIDMapper.DEFAULT_MATCH_SCORE_NON_PRIMARY;
       }
     }
     Iterator<String> aliasesIter = aliases.iterator();

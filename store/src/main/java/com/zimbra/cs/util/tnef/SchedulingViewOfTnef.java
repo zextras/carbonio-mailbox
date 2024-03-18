@@ -919,7 +919,7 @@ public class SchedulingViewOfTnef extends Message {
         }
         if (dateTaskCompleted != null) {
             taskStatus = TaskStatus.COMPLETE;
-            percentComplete = Integer.valueOf(100);
+            percentComplete = 100;
         } else {
             taskStatus = TaskStatus.NOT_STARTED;
             intVal = MapiPropertyId.PidLidTaskStatus.getIntegerValue(this);
@@ -934,7 +934,7 @@ public class SchedulingViewOfTnef extends Message {
             Double fractionComplete;
             fractionComplete = MapiPropertyId.PidLidPercentComplete.getDoubleValue(this);
             if ( (fractionComplete == null) || (fractionComplete < 0) || (fractionComplete > 1) ) {
-                percentComplete = Integer.valueOf(0);
+                percentComplete = 0;
             } else {
                 fractionComplete = fractionComplete * 100;
                 percentComplete = (int) Math.round(fractionComplete);

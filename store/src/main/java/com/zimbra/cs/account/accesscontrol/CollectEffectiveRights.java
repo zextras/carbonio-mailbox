@@ -187,7 +187,7 @@ public class CollectEffectiveRights {
         
         Map<Right, Integer> allowed = new HashMap<Right, Integer>();
         Map<Right, Integer> denied = new HashMap<Right, Integer>();
-        Integer relativity = Integer.valueOf(1);
+        Integer relativity = 1;
         
         //
         // collecting phase

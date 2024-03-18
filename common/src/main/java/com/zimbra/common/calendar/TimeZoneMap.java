@@ -19,13 +19,13 @@ public class TimeZoneMap implements Cloneable {
     static HashMap<ZWeekDay, Integer> sDayWeekDayMap;
     static {
         sDayWeekDayMap = new HashMap<ZWeekDay, Integer>();
-        sDayWeekDayMap.put(ZWeekDay.SU, Integer.valueOf(java.util.Calendar.SUNDAY));
-        sDayWeekDayMap.put(ZWeekDay.MO, Integer.valueOf(java.util.Calendar.MONDAY));
-        sDayWeekDayMap.put(ZWeekDay.TU, Integer.valueOf(java.util.Calendar.TUESDAY));
-        sDayWeekDayMap.put(ZWeekDay.WE, Integer.valueOf(java.util.Calendar.WEDNESDAY));
-        sDayWeekDayMap.put(ZWeekDay.TH, Integer.valueOf(java.util.Calendar.THURSDAY));
-        sDayWeekDayMap.put(ZWeekDay.FR, Integer.valueOf(java.util.Calendar.FRIDAY));
-        sDayWeekDayMap.put(ZWeekDay.SA, Integer.valueOf(java.util.Calendar.SATURDAY));
+        sDayWeekDayMap.put(ZWeekDay.SU, java.util.Calendar.SUNDAY);
+        sDayWeekDayMap.put(ZWeekDay.MO, java.util.Calendar.MONDAY);
+        sDayWeekDayMap.put(ZWeekDay.TU, java.util.Calendar.TUESDAY);
+        sDayWeekDayMap.put(ZWeekDay.WE, java.util.Calendar.WEDNESDAY);
+        sDayWeekDayMap.put(ZWeekDay.TH, java.util.Calendar.THURSDAY);
+        sDayWeekDayMap.put(ZWeekDay.FR, java.util.Calendar.FRIDAY);
+        sDayWeekDayMap.put(ZWeekDay.SA, java.util.Calendar.SATURDAY);
     }
 
     private final Map<String /* real TZID */, ICalTimeZone> mTzMap;

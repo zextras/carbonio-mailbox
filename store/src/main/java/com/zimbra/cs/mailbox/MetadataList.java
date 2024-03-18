@@ -77,22 +77,22 @@ public class MetadataList {
     }
 
     public MetadataList add(int value) {
-        list.add(Integer.valueOf(value));
+        list.add(value);
         return this;
     }
 
     public MetadataList add(long value) {
-        list.add(Long.valueOf(value));
+        list.add(value);
         return this;
     }
 
     public MetadataList add(double value) {
-        list.add(new Double(value));
+        list.add(value);
         return this;
     }
 
     public MetadataList add(boolean value) {
-        list.add(Boolean.valueOf(value));
+        list.add(value);
         return this;
     }
 

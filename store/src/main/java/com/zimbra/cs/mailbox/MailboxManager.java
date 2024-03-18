@@ -629,7 +629,7 @@ public class MailboxManager {
   }
 
   protected synchronized void cacheAccount(String accountId, int mailboxId) {
-    mailboxIds.put(accountId.toLowerCase(), Integer.valueOf(mailboxId));
+    mailboxIds.put(accountId.toLowerCase(), mailboxId);
   }
 
   private Mailbox cacheMailbox(Mailbox mailbox) {

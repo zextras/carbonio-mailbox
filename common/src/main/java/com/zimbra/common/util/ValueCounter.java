@@ -30,9 +30,9 @@ public class ValueCounter<E> {
     public void increment(E value, int delta) {
         Integer count = mValues.get(value);
         if (count == null) {
-            count = Integer.valueOf(delta);
+            count = delta;
         } else {
-            count = Integer.valueOf(count.intValue() + delta);
+            count = count.intValue() + delta;
         }
         mValues.put(value, count);
     }

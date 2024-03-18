@@ -72,7 +72,7 @@ public class BlobDeduper {
             // mark the blob as processed if there is only one blob for given digest.
             markBlobAsProcessed(blobs.get(0));
         }
-        return new Pair<Integer,Long>(0, Long.valueOf(0));
+        return new Pair<Integer,Long>(0, 0L);
     }
 
     private Pair<Integer, Long> deDupe(List<BlobReference> blobs) throws ServiceException {
@@ -130,7 +130,7 @@ public class BlobDeduper {
             }
         }
         if (srcInodeNum == 0) {
-            return new Pair<Integer,Long>(0, Long.valueOf(0));
+            return new Pair<Integer,Long>(0, 0L);
         }
         // First create a hard link for the source path, so that the file
         // doesn't get deleted in the middle.

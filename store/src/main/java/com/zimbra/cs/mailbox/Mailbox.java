@@ -3104,7 +3104,7 @@ public class Mailbox implements MailboxStore {
     }
 
     // try the cache first
-    MailItem item = getCachedItem(Integer.valueOf(id), type);
+    MailItem item = getCachedItem(id, type);
     if (item != null) {
       return item;
     }
@@ -3123,7 +3123,7 @@ public class Mailbox implements MailboxStore {
       if (type != MailItem.Type.CONVERSATION && type != MailItem.Type.UNKNOWN) {
         throw MailItem.noSuchItem(id, type);
       }
-      Message msg = getCachedMessage(Integer.valueOf(-id));
+      Message msg = getCachedMessage(-id);
       if (msg == null) {
         ZimbraLog.mailbox.debug("message not cached");
         cachedMsg = false;
@@ -7200,7 +7200,7 @@ public class Mailbox implements MailboxStore {
     String hash = subjectHash != null ? subjectHash : getHash(conv.getNormalizedSubject());
     conv.open(hash);
     markOtherItemDirty(hash);
-    mConvHashes.put(hash, Integer.valueOf(conv.getId()));
+    mConvHashes.put(hash, conv.getId());
   }
 
   // please keep this package-visible but not public

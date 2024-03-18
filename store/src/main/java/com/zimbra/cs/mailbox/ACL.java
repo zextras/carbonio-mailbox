@@ -411,7 +411,7 @@ public final class ACL {
         if (ZimbraLog.acl.isTraceEnabled()) {
             ZimbraLog.acl.trace("ACL.GrantedRights %s from %s grants", rightsGranted, mGrants.size());
         }
-        return Short.valueOf(rightsGranted);
+        return rightsGranted;
     }
 
     /** Returns whether there are any grants encapsulated by this ACL. */

@@ -170,7 +170,7 @@ public class ImapServerListener {
     protected void addNotifyWhenCaughtUp(String accountId, int lastKnownChangeId, CountDownLatch cdl) {
         catchupToKnownLastChangeId.putIfAbsent(accountId, new ConcurrentHashMap<>());
         ConcurrentHashMap<Integer, Set<CountDownLatch>> acctWaitList = catchupToKnownLastChangeId.get(accountId);
-        acctWaitList.putIfAbsent(Integer.valueOf(lastKnownChangeId), new HashSet<>());
+        acctWaitList.putIfAbsent(lastKnownChangeId, new HashSet<>());
         Set<CountDownLatch> latches = acctWaitList.get(lastKnownChangeId);
         ZimbraLog.imap.debug("ImapServerListener.addNotifyWhenCaughtUp(%s,%s,%s)", accountId,
                 lastKnownChangeId, cdl);

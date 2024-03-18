@@ -35,7 +35,7 @@ class AccessBoundedCharSequence implements CharSequence {
      * @param maxAccesses - The maximum number of accesses to characters in <b>target</b>
      */
     public AccessBoundedCharSequence(CharSequence sequence, int maxAccesses) {
-        this(sequence, Integer.valueOf(0), maxAccesses);
+        this(sequence, 0, maxAccesses);
     }
 
     /**

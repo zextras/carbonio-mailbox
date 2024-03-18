@@ -125,7 +125,7 @@ public class Util {
             if (dtStart != null) {
                 ICalTimeZone tz = dtStart.getTimeZone();
                 if (tz != null)
-                    return Long.valueOf(tz.getOffset(instanceStart));
+                    return (long) tz.getOffset(instanceStart);
             }
         }
         return null;

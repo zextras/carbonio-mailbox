@@ -68,7 +68,7 @@ public class GalSyncAccountUtil {
   }
 
   private static void addCommand(String cmd, int cmdId) {
-    mCommands.put(cmd, Integer.valueOf(cmdId));
+    mCommands.put(cmd, cmdId);
   }
 
   private static int lookupCmd(String cmd) {

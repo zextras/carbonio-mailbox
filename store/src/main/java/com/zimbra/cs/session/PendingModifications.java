@@ -173,7 +173,7 @@ public abstract class PendingModifications<T extends ZimbraMailItem> {
                 ZimbraLog.mailbox.warn("error retrieving account id or id in mailbox", e);
             }
             setAccountId(acctId);
-            setItemId(Integer.valueOf(idInMbox));
+            setItemId(idInMbox);
 
         }
 

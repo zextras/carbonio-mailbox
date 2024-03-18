@@ -2145,7 +2145,7 @@ public abstract class CalendarItem extends MailItem {
           toRemove.add(cur);
           // add to FRONT of list, so when we iterate for the removals we go from HIGHER TO LOWER
           // that way the numbers all match up as the list contracts!
-          idxsToRemove.add(0, Integer.valueOf(i));
+          idxsToRemove.add(0, i);
 
           boolean invalidateReplies = false;
           if (!discardExistingInvites) {
@@ -2223,7 +2223,7 @@ public abstract class CalendarItem extends MailItem {
             toRemove.add(cur);
             // add to FRONT of list, so when we iterate for the removals we go from HIGHER TO LOWER
             // that way the numbers all match up as the list contracts!
-            idxsToRemove.add(0, Integer.valueOf(i));
+            idxsToRemove.add(0, i);
 
             // clean up any old REPLYs that have been made obsolete by this new invite
             mReplyList.removeObsoleteEntries(

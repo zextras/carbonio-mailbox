@@ -3883,7 +3883,7 @@ public class DbMailItem {
       long size = rs.getLong(LEAF_CI_SIZE);
       MailItem.Type type = MailItem.Type.of(rs.getByte(LEAF_CI_TYPE));
 
-      Integer itemId = Integer.valueOf(id);
+      Integer itemId = id;
       Integer folderId = rs.getInt(LEAF_CI_FOLDER_ID);
       info.itemIds.add(type, itemId, folderId, uuid);
       info.size += size;

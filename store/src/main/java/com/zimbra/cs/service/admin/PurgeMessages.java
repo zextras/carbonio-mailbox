@@ -67,7 +67,7 @@ public class PurgeMessages extends AdminDocumentHandler {
           continue;
         mbox.purgeMessages(null);
         mboxResp =
-            new MailboxWithMailboxId(mbox.getId(), account.getId(), Long.valueOf(mbox.getSize()));
+            new MailboxWithMailboxId(mbox.getId(), account.getId(), mbox.getSize());
       } else { // remote
         Server server = account.getServer();
         if (server == null)

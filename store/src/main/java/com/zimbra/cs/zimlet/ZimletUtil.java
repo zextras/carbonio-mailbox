@@ -1796,7 +1796,7 @@ public class ZimletUtil {
     private static Map<String,Integer> mCommands;
 
     private static void addCommand(String cmd, int cmdId) {
-        mCommands.put(cmd, Integer.valueOf(cmdId));
+        mCommands.put(cmd, cmdId);
     }
 
     private static void setup() {

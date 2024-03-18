@@ -220,21 +220,21 @@ public final class Metadata {
 
     public Metadata put(String key, long value) {
         if (key != null) {
-            map.put(key, Long.valueOf(value));
+            map.put(key, value);
         }
         return this;
     }
 
     public Metadata put(String key, double value) {
         if (key != null) {
-            map.put(key, new Double(value));
+            map.put(key, value);
         }
         return this;
     }
 
     public Metadata put(String key, boolean value) {
         if (key != null) {
-            map.put(key, Boolean.valueOf(value));
+            map.put(key, value);
         }
         return this;
     }

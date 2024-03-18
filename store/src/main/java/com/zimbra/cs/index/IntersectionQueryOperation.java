@@ -110,7 +110,7 @@ public final class IntersectionQueryOperation extends CombiningQueryOperation {
                     } // for each group
                 } // assuming the first one isn't empty
 
-                seenMsgs.add(Integer.valueOf(msgId));
+                seenMsgs.add(msgId);
                 msgId = messageGrouper[0].getNextMessageId(seenMsgs);
             } while (msgId > 0);
 
@@ -207,7 +207,7 @@ public final class IntersectionQueryOperation extends CombiningQueryOperation {
 
         int getNextMessageId(List<Integer> seenMsgs) throws ServiceException {
             for (int i = 1; i < bufferedHit.size(); i++) {
-                Integer checkId = Integer.valueOf(bufferedHit.get(i).getItemId());
+                Integer checkId = bufferedHit.get(i).getItemId();
                 if (!seenMsgs.contains(checkId)) {
                     return checkId.intValue();
                 }

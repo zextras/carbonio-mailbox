@@ -65,7 +65,7 @@ public class DbResults {
                 ResultSetMetaData md = resultSet.getMetaData();
                 numCols = md.getColumnCount();
                 for (int i = 1; i <= numCols; i++) {
-                    columnIndexes.put(md.getColumnName(i), Integer.valueOf(i));
+                    columnIndexes.put(md.getColumnName(i), i);
                 }
                 isFirst = false;
             }

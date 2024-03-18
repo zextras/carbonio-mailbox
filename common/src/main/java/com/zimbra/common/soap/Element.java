@@ -1001,21 +1001,21 @@ public abstract class Element implements Cloneable {
         @Override
         public Element addAttribute(String key, long value, Disposition disp) throws ContainerException {
             checkNamingConflict(key);
-            mAttributes.put(key, Long.valueOf(value));
+            mAttributes.put(key, value);
             return this;
         }
 
         @Override
         public Element addAttribute(String key, double value, Disposition disp) throws ContainerException {
             checkNamingConflict(key);
-            mAttributes.put(key, Double.valueOf(value));
+            mAttributes.put(key, value);
             return this;
         }
 
         @Override
         public Element addAttribute(String key, boolean value, Disposition disp) throws ContainerException {
             checkNamingConflict(key);
-            mAttributes.put(key, Boolean.valueOf(value));
+            mAttributes.put(key, value);
             return this;
         }
 

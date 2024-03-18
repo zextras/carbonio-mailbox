@@ -205,37 +205,37 @@ public class CompactEncoder {
                 throw new CompactEncoderException("invalid data type");
             }
         } case 'B': {
-            return Byte.valueOf((byte)getStringLong(bb));
+            return (byte) getStringLong(bb);
         } case 'b': {
-            return Byte.valueOf(bb.get());
+            return bb.get();
         } case 'C': {
-            return Character.valueOf((char)getStringLong(bb));
+            return (char) getStringLong(bb);
         } case 'c': {
-            return Character.valueOf(bb.getChar());
+            return bb.getChar();
         } case 'S': {
-            return Short.valueOf((short)getStringLong(bb));
+            return (short) getStringLong(bb);
         } case 's': {
-            return Short.valueOf(bb.getShort());
+            return bb.getShort();
         } case 'I':
           case 'E': {
-            return Integer.valueOf((int)getStringLong(bb));
+            return (int) getStringLong(bb);
         } case 'i': {
-            return Integer.valueOf(bb.getInt());
+            return bb.getInt();
         } case 'L': {
-            return Long.valueOf(getStringLong(bb));
+            return getStringLong(bb);
         } case 'l': {
-            return Long.valueOf(bb.getLong());
+            return bb.getLong();
         } case 'F': {
-            return Float.valueOf(Float.parseFloat(getString(bb)));
+            return Float.parseFloat(getString(bb));
         } case 'f': {
-            return Float.valueOf(bb.getFloat());
+            return bb.getFloat();
         } case 'D': {
-            return Double.valueOf(Double.parseDouble(getString(bb)));
+            return Double.parseDouble(getString(bb));
         } case 'd': {
-            return Double.valueOf(bb.getDouble());
+            return bb.getDouble();
         }
           case 'e': {
-            return Integer.valueOf(bb.getShort());
+            return (int) bb.getShort();
         } case 'n': {
             return null;
         } case 'M': {
@@ -284,9 +284,9 @@ public class CompactEncoder {
                 array.add(i, decode(bb));
             return array;
         } case '{': {
-            return Boolean.valueOf(true);
+            return Boolean.TRUE;
         } case '}': {
-            return Boolean.valueOf(false);
+            return Boolean.FALSE;
         } default:
             throw new CompactEncoderException("invalid data type");
         }
@@ -539,7 +539,7 @@ public class CompactEncoder {
         ArrayList<Object> list = new ArrayList<Object>();
         Map<Object, Object> map = new HashMap<Object, Object>();
         Object[] darray, oarray = new Object[] {
-            "arraystring", Integer.valueOf(9)
+            "arraystring", 9
         };
         byte [] print, raw;
 
@@ -548,7 +548,7 @@ public class CompactEncoder {
         darray = (Object [])decode(print);
         darray = (Object [])decode(raw);
         list.add(carray);
-        list.add(Integer.valueOf(8));
+        list.add(8);
         list.add("string");
         list.add(true);
         print = encodeToString(list);
@@ -558,10 +558,10 @@ public class CompactEncoder {
         map.put("array", oarray);
         map.put("byteorder", ByteOrder.nativeOrder());
         map.put("emptystring", "");
-        map.put("float", new Float(1.1));
+        map.put("float", (float) 1.1);
         map.put("hashmap", new HashMap<Object, Object>());
         map.put("list", list);
-        map.put("long", Long.valueOf(3));
+        map.put("long", 3L);
         map.put("mapstring", "test");
         map.put("null", null);
         map.put("text", "1234567890123456789012345678901234567890");

@@ -70,7 +70,7 @@ public class CheckAttrRight extends CheckRight {
 
         Map<String, Integer> allowSome = new HashMap<String, Integer>();
         Map<String, Integer> denySome = new HashMap<String, Integer>();
-        Integer relativity = Integer.valueOf(1);
+        Integer relativity = 1;
 
         // we iterate through all the targets from which grants can be inherited
         // by the perspective target.  More specific targets are visited before

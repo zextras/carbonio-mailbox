@@ -3480,7 +3480,7 @@ public abstract class MailItem
       throw ServiceException.PERM_DENIED("you do not have the required rights on the item");
     }
 
-    Integer id = Integer.valueOf(mId);
+    Integer id = mId;
     PendingDelete info = new PendingDelete();
     info.size = getTotalSize();
     info.itemIds.add(getType(), id, getFolderId(), mData.uuid);

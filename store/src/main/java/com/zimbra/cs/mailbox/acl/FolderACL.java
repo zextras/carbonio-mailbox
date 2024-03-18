@@ -166,7 +166,7 @@ public class FolderACL {
       boolean caa =
           AccessManager.getInstance()
               .canAccessAccount(authuser, mShareTarget.getAccount(), asAdmin);
-      mCanAccessOwnerAccount = Boolean.valueOf(caa);
+      mCanAccessOwnerAccount = caa;
     }
     return mCanAccessOwnerAccount.booleanValue();
   }
@@ -268,7 +268,7 @@ public class FolderACL {
       Element response = transport.invoke(request);
       Element eFolder = response.getElement(MailConstants.E_FOLDER);
       String permsStr = eFolder.getAttribute(MailConstants.A_RIGHTS);
-      perms = Short.valueOf(ACL.stringToRights(permsStr));
+      perms = ACL.stringToRights(permsStr);
     } catch (ServiceException e) {
       ZimbraLog.misc.warn("cannot get effective perms from server " + server.getName(), e);
     } catch (IOException e) {

@@ -86,7 +86,7 @@ public class GlobalObjectId {
             }
         }
         if (isWrappedIcalUid) {
-            Long uidLen = Long.valueOf(dataSize - thirdPartyWaterMark.length);
+            Long uidLen = dataSize - thirdPartyWaterMark.length;
             byte [] icalUidBytes = risCopy.readBytes(uidLen.intValue());
             icalUid = new String(icalUidBytes, "UTF8");
             icalUid = TNEFUtils.removeTerminatingNulls(icalUid);

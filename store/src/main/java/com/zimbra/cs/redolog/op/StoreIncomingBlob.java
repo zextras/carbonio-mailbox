@@ -122,9 +122,9 @@ public class StoreIncomingBlob extends RedoableOp {
                 for (int i = 0; i < listLen; i++) {
                     // still writing and reading long mailbox IDs for backwards compatibility, even though they're ints again
                     if (getVersion().atLeast(1, 26)) {
-                        list.add(Integer.valueOf((int) in.readLong()));
+                        list.add((int) in.readLong());
                     } else {
-                        list.add(Integer.valueOf(in.readInt()));
+                        list.add(in.readInt());
                     }
                 }
                 mMailboxIdList = list;

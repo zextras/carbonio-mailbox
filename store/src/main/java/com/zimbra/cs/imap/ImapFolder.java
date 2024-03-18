@@ -369,7 +369,7 @@ public final class ImapFolder implements ImapListener.ImapFolderData, java.io.Se
                 }
             }
         }
-        return checkRemoved(messageIds.get(Integer.valueOf(id)));
+        return checkRemoved(messageIds.get(id));
     }
 
     /** Returns the ImapMessage with the given IMAP UID from the folder's
@@ -497,9 +497,9 @@ public final class ImapFolder implements ImapListener.ImapFolderData, java.io.Se
         i4msg.sequence = position;
         if (messageIds != null) {
             if (i4msg.msgId != i4msg.imapUid) {
-                messageIds.put(Integer.valueOf(i4msg.msgId), i4msg);
+                messageIds.put(i4msg.msgId, i4msg);
             } else {
-                messageIds.remove(Integer.valueOf(i4msg.msgId));
+                messageIds.remove(i4msg.msgId);
             }
         }
     }
@@ -513,7 +513,7 @@ public final class ImapFolder implements ImapListener.ImapFolderData, java.io.Se
         }
         SessionData sdata = sessionData;
         if (sdata != null) {
-            sdata.dirtyMessages.remove(Integer.valueOf(i4msg.imapUid));
+            sdata.dirtyMessages.remove(i4msg.imapUid);
             if ((i4msg.sflags & ImapMessage.FLAG_RECENT) != 0) {
                 sdata.recentCount--;
             }
