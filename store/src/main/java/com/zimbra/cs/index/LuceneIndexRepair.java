@@ -65,19 +65,13 @@ final class LuceneIndexRepair {
         long gen = SegmentInfos.generationFromSegmentsFileName(segsFilename);
         String nextSegsFilename = getSegmentsFilename(++gen);
 
-        ChecksumIndexInput input = new ChecksumIndexInput(
-                directory.openInput(segsFilename));
-        try {
-            ChecksumIndexOutput output = new ChecksumIndexOutput(
-                    directory.createOutput(nextSegsFilename));
-            try {
-                convert(input, output);
-            } finally {
-                output.close();
-            }
-        } finally {
-            input.close();
+      try (ChecksumIndexInput input = new ChecksumIndexInput(
+          directory.openInput(segsFilename))) {
+        try (ChecksumIndexOutput output = new ChecksumIndexOutput(
+            directory.createOutput(nextSegsFilename))) {
+          convert(input, output);
         }
+      }
 
         if (repaired == 0) {
             directory.deleteFile(nextSegsFilename);
@@ -100,14 +94,11 @@ final class LuceneIndexRepair {
     }
 
     private void commit(long gen) throws IOException {
-        IndexOutput output = directory.createOutput(SEGMENTS_GEN);
-        try {
-            output.writeInt(SegmentInfos.FORMAT_LOCKLESS);
-            output.writeLong(gen);
-            output.writeLong(gen);
-        } finally {
-            output.close();
-        }
+      try (IndexOutput output = directory.createOutput(SEGMENTS_GEN)) {
+        output.writeInt(SegmentInfos.FORMAT_LOCKLESS);
+        output.writeLong(gen);
+        output.writeLong(gen);
+      }
         directory.sync(Collections.singleton(SEGMENTS_GEN));
     }
 

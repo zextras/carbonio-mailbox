@@ -4653,7 +4653,7 @@ public class DbMailItem {
       PreparedStatement stmt, Mailbox mbox, Callback<String> callback)
       throws SQLException, ServiceException {
     ResultSet rs = null;
-    try {
+    try (stmt) {
       int pos = 1;
       pos = setMailboxId(stmt, mbox, pos);
       rs = stmt.executeQuery();
@@ -4663,7 +4663,6 @@ public class DbMailItem {
       }
     } finally {
       DbPool.closeResults(rs);
-      stmt.close();
     }
   }
 

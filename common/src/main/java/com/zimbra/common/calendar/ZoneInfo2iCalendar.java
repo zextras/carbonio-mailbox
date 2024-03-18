@@ -1277,9 +1277,7 @@ public class ZoneInfo2iCalendar {
     // parse tzdata source
     ZoneInfoParser parser = new ZoneInfoParser();
     for (File tzdataFile : params.tzdataFiles) {
-      Reader r = null;
-      try {
-        r = new InputStreamReader(new FileInputStream(tzdataFile), "UTF-8");
+      try (Reader r = new InputStreamReader(new FileInputStream(tzdataFile), "UTF-8")) {
         parser.readTzdata(r);
       } catch (ParseException e) {
         System.err.println(e.getMessage());
@@ -1287,17 +1285,13 @@ public class ZoneInfo2iCalendar {
         System.err.println("File: " + tzdataFile.getAbsolutePath());
         e.printStackTrace();
         System.exit(1);
-      } finally {
-        if (r != null) r.close();
       }
     }
     parser.analyze();
 
     // read extra data file containing primary TZ list and zone match scores
     if (params.extraDataFile != null) {
-      Reader r = null;
-      try {
-        r = new InputStreamReader(new FileInputStream(params.extraDataFile), "UTF-8");
+      try (Reader r = new InputStreamReader(new FileInputStream(params.extraDataFile), "UTF-8")) {
         readExtraData(r);
       } catch (ParseException e) {
         System.err.println(e.getMessage());
@@ -1305,8 +1299,6 @@ public class ZoneInfo2iCalendar {
         System.err.println("File: " + params.extraDataFile.getAbsolutePath());
         e.printStackTrace();
         System.exit(1);
-      } finally {
-        if (r != null) r.close();
       }
     }
 

@@ -441,42 +441,37 @@ public class ChartUtil {
     private void writeSummary(List<ChartSettings> allSettings)
             throws IOException {
         File resultCsv = new File(mDestDir, SUMMARY_CSV);
-        FileWriter writer = null;
-        try {
-            writer = new FileWriter(resultCsv);
-            int count = 0;
-            String key = "";
-            Double val = null;
-            for (ChartSettings cs : allSettings) {
-                for (PlotSettings ps : cs.getPlots()) {
-                    DataColumn dc = new DataColumn(ps.getInfile(), ps
-                            .getDataColumn());
-                    key = ps.getInfile() + ":" + ps.getDataColumn() + ":"
-                            + ps.getAggregateFunction();
-                    val = mAggregates.get(dc);
-                    count++;
-                    mStats.put(key, val);
-                }
-            }
-            Iterator<String> keyset = mStats.keySet().iterator();
-            StringBuilder keys = new StringBuilder();
-            StringBuilder vals = new StringBuilder();
-
-            while (keyset.hasNext()) {
-                key = keyset.next();
-                keys.append(key).append(",");
-                vals.append(formatDouble(mStats.get(key)))
-                        .append(",");
-            }
-
-            writer.write(keys.toString());
-            writer.write("\n");
-            writer.write(vals.toString());
-            writer.write("\n");
-        } finally {
-            if (writer != null)
-                writer.close();
+      try (FileWriter writer = new FileWriter(resultCsv)) {
+        int count = 0;
+        String key = "";
+        Double val = null;
+        for (ChartSettings cs : allSettings) {
+          for (PlotSettings ps : cs.getPlots()) {
+            DataColumn dc = new DataColumn(ps.getInfile(), ps
+                .getDataColumn());
+            key = ps.getInfile() + ":" + ps.getDataColumn() + ":"
+                + ps.getAggregateFunction();
+            val = mAggregates.get(dc);
+            count++;
+            mStats.put(key, val);
+          }
         }
+        Iterator<String> keyset = mStats.keySet().iterator();
+        StringBuilder keys = new StringBuilder();
+        StringBuilder vals = new StringBuilder();
+
+        while (keyset.hasNext()) {
+          key = keyset.next();
+          keys.append(key).append(",");
+          vals.append(formatDouble(mStats.get(key)))
+              .append(",");
+        }
+
+        writer.write(keys.toString());
+        writer.write("\n");
+        writer.write(vals.toString());
+        writer.write("\n");
+      }
 
         SummaryAnalyzer analyzer = new SummaryAnalyzer(allSettings);
         analyzer.writeReport(resultCsv);
@@ -487,63 +482,52 @@ public class ChartUtil {
         // write all charts
         for (String filename : linkedDocuments) {
             File file = new File(mDestDir, filename);
-            FileWriter writer = new FileWriter(file, false);
-            try {
-                writer.write("<html><head><title>");
-                writer.write(StringUtil.escapeHtml(mTitle) + ": " + filename);
-                writer.write("</title><body bgcolor=\"#eeeeee\"><h1>");
-                writer.write(StringUtil.escapeHtml(mTitle) + ": " + filename);
-                writer.write("</h1>\n");
-            }
-            finally {
-                writer.close();
-            }
+          try (FileWriter writer = new FileWriter(file, false)) {
+            writer.write("<html><head><title>");
+            writer.write(StringUtil.escapeHtml(mTitle) + ": " + filename);
+            writer.write("</title><body bgcolor=\"#eeeeee\"><h1>");
+            writer.write(StringUtil.escapeHtml(mTitle) + ": " + filename);
+            writer.write("</h1>\n");
+          }
         }
         for (ChartSettings cs : outChartSettings) {
             JFreeChart chart = mChartMap.get(cs);
             if (chart != null && hasData(chart)) {
                 writeChart(chart, cs);
-                FileWriter writer = new FileWriter(
-                        new File(mDestDir, cs.getOutDocument()), true);
-                try {
-                    List<PlotSettings> plots = cs.getPlots();
-                    StringBuilder statString = new StringBuilder();
-                    boolean first = true;
-                    for (PlotSettings ps : plots) {
-                        DataColumn dc = new DataColumn(ps.getInfile(),
-                                ps.getDataColumn());
-                        DataSeries ds = mDataSeries.get(dc);
-                        if (ds == null || ds.size() == 0)
-                            continue;
-                        if (first)
-                            first = false;
-                        else
-                            statString.append(" &nbsp;&nbsp; ");
-                        statString.append(ps.getAggregateFunction()).append("(")
-                            .append(ps.getLegend()).append(") = ")
-                            .append(formatDouble(mAggregates.get(dc)));
-                    }
+              try (FileWriter writer = new FileWriter(
+                  new File(mDestDir, cs.getOutDocument()), true)) {
+                List<PlotSettings> plots = cs.getPlots();
+                StringBuilder statString = new StringBuilder();
+                boolean first = true;
+                for (PlotSettings ps : plots) {
+                  DataColumn dc = new DataColumn(ps.getInfile(),
+                      ps.getDataColumn());
+                  DataSeries ds = mDataSeries.get(dc);
+                  if (ds == null || ds.size() == 0)
+                    continue;
+                  if (first)
+                    first = false;
+                  else
+                    statString.append(" &nbsp;&nbsp; ");
+                  statString.append(ps.getAggregateFunction()).append("(")
+                      .append(ps.getLegend()).append(") = ")
+                      .append(formatDouble(mAggregates.get(dc)));
+                }
 
-                    writer.write("<a name=\"" + cs.getOutfile() + "\">");
-                    writer.write("<h3>" + cs.getTitle() + "</h3></a>\n");
-                    writer.write("<h5>" + statString + "</h5>\n");
-                    writer.write(String.format(
-                            "<img src=\"%s\" width=\"%d\" height=\"%d\">\n",
-                            cs.getOutfile(), cs.getWidth(), cs .getHeight()));
-                }
-                finally {
-                    writer.close();
-                }
+                writer.write("<a name=\"" + cs.getOutfile() + "\">");
+                writer.write("<h3>" + cs.getTitle() + "</h3></a>\n");
+                writer.write("<h5>" + statString + "</h5>\n");
+                writer.write(String.format(
+                    "<img src=\"%s\" width=\"%d\" height=\"%d\">\n",
+                    cs.getOutfile(), cs.getWidth(), cs.getHeight()));
+              }
             }
         }
         for (String filename : linkedDocuments) {
             File file = new File(mDestDir, filename);
-            FileWriter writer = new FileWriter(file, true);
-            try {
-                writer.write("</body></html>\n");
-            } finally {
-                writer.close();
-            }
+          try (FileWriter writer = new FileWriter(file, true)) {
+            writer.write("</body></html>\n");
+          }
         }
     }
     private void writeAllCharts(List<ChartSettings> allSettings,
@@ -562,82 +546,77 @@ public class ChartUtil {
             Set<String> linkedDocuments) throws IOException {
         // Generate HTML
         System.out.println("Writing index.html");
-        FileWriter writer = null;
-        try {
-            writer = new FileWriter(new File(mDestDir, "index.html"));
-            writer.write("<html>\n<head>\n<title>"
-                    + StringUtil.escapeHtml(mTitle) + " "
-                    + DateFormat.getDateInstance().format(mMinDate)
-                    + "</title>\n</head>\n<body bgcolor=\"#eeeeee\">\n");
-            writer.write("<h1>" + StringUtil.escapeHtml(mTitle) + "</h1>\n");
+      try (FileWriter writer = new FileWriter(new File(mDestDir, "index.html"))) {
+        writer.write("<html>\n<head>\n<title>"
+            + StringUtil.escapeHtml(mTitle) + " "
+            + DateFormat.getDateInstance().format(mMinDate)
+            + "</title>\n</head>\n<body bgcolor=\"#eeeeee\">\n");
+        writer.write("<h1>" + StringUtil.escapeHtml(mTitle) + "</h1>\n");
 
-            if (linkedDocuments.size() > 0) {
-                writer.write("<h2>Additional charts</h2>");
-                writer.write("<ul>");
-                for (String document : linkedDocuments) {
-                    writer.write("<li><a href=\"" + document + "\">");
-                    writer.write(document);
-                    writer.write("</a></li>\n");
-                }
-                writer.write("</ul>\n");
-            }
-            List<String> noData = new ArrayList<>();
-
-            int count = 0;
-            for (ChartSettings cs : allSettings) {
-                JFreeChart chart = mChartMap.get(cs);
-                if (chart == null)
-                    continue;
-
-                List<PlotSettings> plots = cs.getPlots();
-                StringBuilder statString = new StringBuilder();
-                boolean first = true;
-                for (PlotSettings ps : plots) {
-                    DataColumn dc = new DataColumn(ps.getInfile(), ps.getDataColumn());
-                    DataSeries ds = mDataSeries.get(dc);
-                    if (ds == null || ds.size() == 0)
-                        continue;
-                    if (first)
-                        first = false;
-                    else
-                        statString.append(" &nbsp;&nbsp; ");
-                    statString.append(ps.getAggregateFunction()).append("(").append(ps.getLegend())
-                        .append(") = ").append(formatDouble(mAggregates.get(dc)));
-                    count++;
-                }
-
-                if (hasData(chart)) {
-                    writer.write("<a name=\"" + cs.getOutfile() + "\">");
-                    writer.write("<h3>" + cs.getTitle() + "</h3></a>\n");
-                    writer.write("<h5>" + statString + "</h5>\n");
-                    writer.write(String.format(
-                            "<img src=\"%s\" width=\"%d\" height=\"%d\">\n", cs
-                                    .getOutfile(), cs.getWidth(), cs
-                                    .getHeight()));
-                } else {
-                    noData.add(cs.getTitle());
-                }
-            }
-
-            if (noData.size() > 0) {
-                writer.write("<h3>No data available for the following charts:</h3>\n");
-                writer.write("<p>\n");
-                for (String str : noData) {
-                    writer.write(StringUtil.escapeHtml(str));
-                    writer.write("\n");
-                }
-                writer.write("<p>\n");
-            }
-
-            if (!mSkipSummary)
-                writer.write("<h4><a href=\"" + SummaryConstants.SUMMARY_TXT
-                        + "\">Summary</a></h4>\n");
-
-            writer.write("</body>\n</html>\n");
-        } finally {
-            if (writer != null)
-                writer.close();
+        if (linkedDocuments.size() > 0) {
+          writer.write("<h2>Additional charts</h2>");
+          writer.write("<ul>");
+          for (String document : linkedDocuments) {
+            writer.write("<li><a href=\"" + document + "\">");
+            writer.write(document);
+            writer.write("</a></li>\n");
+          }
+          writer.write("</ul>\n");
         }
+        List<String> noData = new ArrayList<>();
+
+        int count = 0;
+        for (ChartSettings cs : allSettings) {
+          JFreeChart chart = mChartMap.get(cs);
+          if (chart == null)
+            continue;
+
+          List<PlotSettings> plots = cs.getPlots();
+          StringBuilder statString = new StringBuilder();
+          boolean first = true;
+          for (PlotSettings ps : plots) {
+            DataColumn dc = new DataColumn(ps.getInfile(), ps.getDataColumn());
+            DataSeries ds = mDataSeries.get(dc);
+            if (ds == null || ds.size() == 0)
+              continue;
+            if (first)
+              first = false;
+            else
+              statString.append(" &nbsp;&nbsp; ");
+            statString.append(ps.getAggregateFunction()).append("(").append(ps.getLegend())
+                .append(") = ").append(formatDouble(mAggregates.get(dc)));
+            count++;
+          }
+
+          if (hasData(chart)) {
+            writer.write("<a name=\"" + cs.getOutfile() + "\">");
+            writer.write("<h3>" + cs.getTitle() + "</h3></a>\n");
+            writer.write("<h5>" + statString + "</h5>\n");
+            writer.write(String.format(
+                "<img src=\"%s\" width=\"%d\" height=\"%d\">\n", cs
+                    .getOutfile(), cs.getWidth(), cs
+                    .getHeight()));
+          } else {
+            noData.add(cs.getTitle());
+          }
+        }
+
+        if (noData.size() > 0) {
+          writer.write("<h3>No data available for the following charts:</h3>\n");
+          writer.write("<p>\n");
+          for (String str : noData) {
+            writer.write(StringUtil.escapeHtml(str));
+            writer.write("\n");
+          }
+          writer.write("<p>\n");
+        }
+
+        if (!mSkipSummary)
+          writer.write("<h4><a href=\"" + SummaryConstants.SUMMARY_TXT
+              + "\">Summary</a></h4>\n");
+
+        writer.write("</body>\n</html>\n");
+      }
     }
 
     /**

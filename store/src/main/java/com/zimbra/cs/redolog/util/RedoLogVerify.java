@@ -230,23 +230,18 @@ public class RedoLogVerify {
             int linesAfter = 10;
             long startPos = Math.max(lastPosition - (lastPosition % bytesPerLine) - linesBefore * bytesPerLine, 0);
             int count = (int) Math.min((linesBefore + linesAfter + 1) * bytesPerLine, lastPosition - startPos + diff);
-            RandomAccessFile raf = null;
-            try {
-                raf = new RandomAccessFile(logfile, "r");
-                raf.seek(startPos);
-                byte buf[] = new byte[count];
-                raf.read(buf, 0, count);
-                mOut.printf("Data near error offset %08x:", lastPosition);
-                mOut.println();
-                hexdump(mOut, buf, 0, count, startPos, lastPosition);
-                mOut.println();
-            } catch (IOException eh) {
-                mOut.println("Error opening log file " + logfile.getAbsolutePath() + " for hexdump");
-                eh.printStackTrace(mOut);
-            } finally {
-                if (raf != null)
-                    raf.close();
-            }
+          try (RandomAccessFile raf = new RandomAccessFile(logfile, "r")) {
+            raf.seek(startPos);
+            byte buf[] = new byte[count];
+            raf.read(buf, 0, count);
+            mOut.printf("Data near error offset %08x:", lastPosition);
+            mOut.println();
+            hexdump(mOut, buf, 0, count, startPos, lastPosition);
+            mOut.println();
+          } catch (IOException eh) {
+            mOut.println("Error opening log file " + logfile.getAbsolutePath() + " for hexdump");
+            eh.printStackTrace(mOut);
+          }
             
 
             throw e;

@@ -432,13 +432,10 @@ public final class NativeFormatter extends Formatter {
             }
         }
 
-        InputStream is = context.getRequestInputStream();
-        try {
-            Blob blob = StoreManager.getInstance().storeIncoming(is);
-            saveDocument(blob, context, contentType, folder, filename, is);
-        } finally {
-            is.close();
-        }
+      try (InputStream is = context.getRequestInputStream()) {
+        Blob blob = StoreManager.getInstance().storeIncoming(is);
+        saveDocument(blob, context, contentType, folder, filename, is);
+      }
     }
 
     private void saveDocument(Blob blob, UserServletContext context, String contentType, Folder folder, String filename, InputStream is)

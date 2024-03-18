@@ -1412,20 +1412,12 @@ public class ZimletUtil {
         byte buf[] = new byte[32 * 1024];
         CRC32 crc = new CRC32();
         crc.reset();
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(file);
+        try (FileInputStream fis = new FileInputStream(file)) {
             int bytesRead;
             while ((bytesRead = fis.read(buf)) != -1) {
                 crc.update(buf, 0, bytesRead);
             }
             return crc.getValue();
-        } finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {}
-            }
         }
     }
 

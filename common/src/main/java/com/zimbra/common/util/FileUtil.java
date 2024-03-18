@@ -198,34 +198,20 @@ public class FileUtil {
     }
 
     public static void copyOIO(File src, File dest, byte[] buf, boolean sync) throws IOException {
-        FileInputStream fis = null;
-        FileOutputStream fos = null;
-        boolean isComplete = false;
-        try {
-            fis = new FileInputStream(src);
-            fos = new FileOutputStream(dest);
-            int byteRead;
-            while ((byteRead = fis.read(buf)) != -1) {
-                fos.write(buf, 0, byteRead);
-            }
-            if (sync)
-                fos.getChannel().force(true);
-            isComplete = true;
-        } finally {
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e) {}
-            }
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {}
-            }
-            if (!isComplete) {
-                dest.delete();
-            }
+      boolean isComplete = false;
+      try (FileInputStream fis = new FileInputStream(src); FileOutputStream fos = new FileOutputStream(dest)) {
+        int byteRead;
+        while ((byteRead = fis.read(buf)) != -1) {
+          fos.write(buf, 0, byteRead);
         }
+        if (sync)
+          fos.getChannel().force(true);
+        isComplete = true;
+      } finally {
+        if (!isComplete) {
+          dest.delete();
+        }
+      }
     }
 
     /**
@@ -239,17 +225,14 @@ public class FileUtil {
     public static void copy(InputStream in, boolean closeIn, File dest) throws IOException {
         boolean isComplete = false;
         try {
-            FileOutputStream fos = new FileOutputStream(dest);
+          try (FileOutputStream fos = new FileOutputStream(dest)) {
             byte[] buf = new byte[COPYBUFLEN];
-            try {
-                int byteRead;
-                while ((byteRead = in.read(buf)) != -1) {
-                    fos.write(buf, 0, byteRead);
-                }
-                isComplete = true;
-            } finally {
-                fos.close();
+            int byteRead;
+            while ((byteRead = in.read(buf)) != -1) {
+              fos.write(buf, 0, byteRead);
             }
+            isComplete = true;
+          }
         } finally {
             if (closeIn)
                 ByteUtil.closeStream(in);

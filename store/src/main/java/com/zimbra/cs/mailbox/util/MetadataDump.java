@@ -254,19 +254,14 @@ public final class MetadataDump {
 
     private static String loadFromFile(File file) throws ServiceException {
         try {
-            FileInputStream fis = null;
-            try {
-                fis = new FileInputStream(file);
-                Scanner scan = new Scanner(fis);
-                StringBuilder builder = new StringBuilder();
-                while (scan.hasNextLine()) {
-                    builder.append(scan.nextLine());
-                }
-                return builder.toString();
-            } finally {
-                if (fis != null)
-                    fis.close();
+          try (FileInputStream fis = new FileInputStream(file)) {
+            Scanner scan = new Scanner(fis);
+            StringBuilder builder = new StringBuilder();
+            while (scan.hasNextLine()) {
+              builder.append(scan.nextLine());
             }
+            return builder.toString();
+          }
         } catch (IOException e) {
             throw ServiceException.FAILURE("IOException while reading from " + file.getAbsolutePath(), e);
         }

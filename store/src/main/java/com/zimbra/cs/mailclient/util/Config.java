@@ -91,12 +91,9 @@ public final class Config {
      */
     public static void saveProperties(File file, Properties props)
         throws IOException {
-        FileOutputStream os = new FileOutputStream(file);
-        try {
-            props.store(os, null);
-        } finally {
-            os.close();
-        }
+      try (FileOutputStream os = new FileOutputStream(file)) {
+        props.store(os, null);
+      }
     }
     
     // Check if descriptor indicates a supported property

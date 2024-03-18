@@ -472,32 +472,26 @@ public class RemoteMailQueue {
         if (ZimbraLog.rmgmt.isDebugEnabled()) {
             ZimbraLog.rmgmt.debug("searching query=" + query + " offset=" + offset + " limit=" + limit + " " + this);
         }
-        Searcher searcher = null;
-        try {
-            searcher = new IndexSearcher(indexReader);
-            TopDocs topDocs = searcher.search(query, null, limit);
-            ScoreDoc[] hits = topDocs.scoreDocs;
+      try (Searcher searcher = new IndexSearcher(indexReader)) {
+        TopDocs topDocs = searcher.search(query, null, limit);
+        ScoreDoc[] hits = topDocs.scoreDocs;
 
-            if (offset < hits.length) {
-                int n;
-                if (limit <= 0) {
-                    n = hits.length;
-                } else {
-                    n = Math.min(offset + limit, hits.length);
-                }
+        if (offset < hits.length) {
+          int n;
+          if (limit <= 0) {
+            n = hits.length;
+          } else {
+            n = Math.min(offset + limit, hits.length);
+          }
 
-                for (int i = offset; i < n; i++) {
-                    Document doc = searcher.doc(hits[i].doc);
-                    Map<QueueAttr,String> qitem = docToQueueItem(doc);
-                    result.qitems.add(qitem);
-                }
-            }
-            result.hits = hits.length;
-        } finally {
-            if (searcher != null) {
-                searcher.close();
-            }
+          for (int i = offset; i < n; i++) {
+            Document doc = searcher.doc(hits[i].doc);
+            Map<QueueAttr, String> qitem = docToQueueItem(doc);
+            result.qitems.add(qitem);
+          }
         }
+        result.hits = hits.length;
+      }
     }
 
     public SearchResult search(Query query, int offset, int limit) throws ServiceException {

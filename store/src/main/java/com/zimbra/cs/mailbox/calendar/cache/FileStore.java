@@ -147,19 +147,14 @@ public class FileStore {
                     return null;
                 }
                 byte[] buf = new byte[(int) length];
-                FileInputStream fis = null;
-                try {
-                    fis = new FileInputStream(file);
-                    int bytesRead = fis.read(buf);
-                    if (bytesRead < length)
-                        throw ServiceException.FAILURE(
-                                "Read " + bytesRead + " bytes when expecting " + length +
-                                " bytes, from file " + file.getAbsolutePath(), null);
-                    return new String(buf, "utf-8");
-                } finally {
-                    if (fis != null)
-                        fis.close();
-                }
+              try (FileInputStream fis = new FileInputStream(file)) {
+                int bytesRead = fis.read(buf);
+                if (bytesRead < length)
+                  throw ServiceException.FAILURE(
+                      "Read " + bytesRead + " bytes when expecting " + length +
+                          " bytes, from file " + file.getAbsolutePath(), null);
+                return new String(buf, "utf-8");
+              }
             } catch (FileNotFoundException e) {
                 return null;
             } catch (IOException e) {

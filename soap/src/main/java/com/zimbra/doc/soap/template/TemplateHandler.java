@@ -157,25 +157,17 @@ public abstract class TemplateHandler {
      */
     protected    void    processTemplate(Root root, Map data, File outputFile, Template template)
     throws    IOException, SoapDocException {
-        FileWriter out = new FileWriter(outputFile);
 
+      try (FileWriter out = new FileWriter(outputFile)) {
         if (data == null)
-            data = new HashMap();
-
+          data = new HashMap();
         data.put(KEY_SOAP_ROOT, root);
-
-        try {
-            Map    dataModel = getDataModel(data);
-               template.process(dataModel, out);
-        } catch(TemplateException te) {
-            throw new SoapDocException(te);
-        } finally {
-            try {
-                out.close();
-            } catch (Exception e) {
-                // clean-up quietly
-            }
-        }
+        Map dataModel = getDataModel(data);
+        template.process(dataModel, out);
+      } catch (TemplateException te) {
+        throw new SoapDocException(te);
+      }
+      // clean-up quietly
     }
 
     /**
@@ -191,33 +183,15 @@ public abstract class TemplateHandler {
 
         File toFile = getOutputFile(filename);
 
-        FileInputStream from = null;
-        FileOutputStream to = null;
-
-        try {
-          from = new FileInputStream(fromFile);
-          to = new FileOutputStream(toFile);
+        try (FileInputStream from = new FileInputStream(fromFile); FileOutputStream to = new FileOutputStream(toFile)) {
           byte[] buffer = new byte[4096];
           int bytesRead = -1;
 
           while ((bytesRead = from.read(buffer)) != -1)
             to.write(buffer, 0, bytesRead); // write
-        } finally {
-          if (from != null) {
-            try {
-              from.close();
-            } catch (IOException e) {
-              // clean-up quietly
-            }
-          }
-          if (to != null) {
-            try {
-              to.close();
-            } catch (IOException e) {
-              // clean-up quietly
-            }
-          }
         }
+        // clean-up quietly
+        // clean-up quietly
       }
 
     }

@@ -237,12 +237,9 @@ public final class ImapInputStream extends MailInputStream {
         // automatically cleaned up when the ImapResponse is finished.
         File f = File.createTempFile("lit", null, config.getLiteralDataDir());
         f.deleteOnExit();
-        OutputStream os = new FileOutputStream(f);
-        try {
-            Io.copyBytes(in, os, len);
-        } finally {
-            os.close();
-        }
+      try (OutputStream os = new FileOutputStream(f)) {
+        Io.copyBytes(in, os, len);
+      }
         return new Literal(f, true);
     }
 

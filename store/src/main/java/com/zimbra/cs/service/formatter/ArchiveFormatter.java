@@ -1789,9 +1789,8 @@ public abstract class ArchiveFormatter extends Formatter {
         case APPOINTMENT:
           boolean continueOnError = context.ignoreAndContinueOnError();
           boolean preserveExistingAlarms = context.preserveAlarms();
-          InputStream is = ais.getInputStream();
 
-          try {
+          try (InputStream is = ais.getInputStream()) {
             if (aie.getSize() <= LC.calendar_ics_import_full_parse_max_size.intValue()) {
               List<ZVCalendar> icals = ZCalendarBuilder.buildMulti(is, UTF8);
               ImportInviteVisitor visitor =
@@ -1805,8 +1804,6 @@ public abstract class ArchiveFormatter extends Formatter {
                       oc, context.targetAccount, fldr, continueOnError, preserveExistingAlarms);
               ZCalendarBuilder.parse(is, UTF8, handler);
             }
-          } finally {
-            is.close();
           }
           break;
         case CONTACT:

@@ -30,23 +30,20 @@ public class RobotsServlet extends HttpServlet {
             keepOutCrawlers = Provisioning.getInstance().getLocalServer().isMailKeepOutWebCrawlers();
         } catch (ServiceException e) {
         }
-        ServletOutputStream out = response.getOutputStream();
-        try {
-            out.println("User-agent: *");
-            if (keepOutCrawlers) {
-                out.println("Disallow: /");
-            } else {
-                out.println("Allow: /");
-            }
-            String extra = LC.robots_txt.value();
-            File extraFile = new File(extra);
-            if (extraFile.exists()) {
-                FileInputStream in = new FileInputStream(extraFile);
-                ByteUtil.copy(in, true, out, false);
-            }
-            out.flush();
-        } finally {
-            out.close();
+      try (ServletOutputStream out = response.getOutputStream()) {
+        out.println("User-agent: *");
+        if (keepOutCrawlers) {
+          out.println("Disallow: /");
+        } else {
+          out.println("Allow: /");
         }
+        String extra = LC.robots_txt.value();
+        File extraFile = new File(extra);
+        if (extraFile.exists()) {
+          FileInputStream in = new FileInputStream(extraFile);
+          ByteUtil.copy(in, true, out, false);
+        }
+        out.flush();
+      }
     }
 }

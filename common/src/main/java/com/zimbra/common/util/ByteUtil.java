@@ -43,14 +43,9 @@ public class ByteUtil {
      * @throws IOException
      */
     public static void putContent(String path, byte[] data) throws IOException {
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(path);
-            fos.write(data);
-        } finally {
-            if (fos != null)
-                fos.close();
-        }
+      try (FileOutputStream fos = new FileOutputStream(path)) {
+        fos.write(data);
+      }
     }
 
     /**

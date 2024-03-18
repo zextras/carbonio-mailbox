@@ -647,12 +647,9 @@ public class UserServletContext {
     public byte[] getPostBody() throws ServiceException, IOException, UserServletException {
         long sizeLimit = Provisioning.getInstance().getLocalServer().getLongAttr(
                 Provisioning.A_zimbraFileUploadMaxSize, DEFAULT_MAX_POST_SIZE);
-        InputStream is = getRequestInputStream(sizeLimit);
-        try {
-            return ByteUtil.getContent(is, req.getContentLength(), sizeLimit);
-        } finally {
-            is.close();
-        }
+      try (InputStream is = getRequestInputStream(sizeLimit)) {
+        return ByteUtil.getContent(is, req.getContentLength(), sizeLimit);
+      }
     }
 
     private static final class UploadInputStream extends InputStream {

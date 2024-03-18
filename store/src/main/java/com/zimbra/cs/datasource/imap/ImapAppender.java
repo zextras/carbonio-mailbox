@@ -69,14 +69,12 @@ public class ImapAppender {
 
     private long append(MessageInfo mi) throws IOException, ServiceException {
         InputStream is = mi.data.getInputStream();
+      try (is) {
         Literal lit = new Literal(is, mi.data.getSize());
-        try {
-            return hasAppendUid ? append(mi, lit) : appendSlow(mi, lit);
-        } catch (MessagingException e) {
-            throw ServiceException.FAILURE("Parsing error", e);
-        } finally {
-            is.close();
-        }
+        return hasAppendUid ? append(mi, lit) : appendSlow(mi, lit);
+      } catch (MessagingException e) {
+        throw ServiceException.FAILURE("Parsing error", e);
+      }
     }
 
     private static Data getData(final File file) {
@@ -266,19 +264,16 @@ public class ImapAppender {
 
         MessageInfo(Data data, Flags flags) throws ServiceException, IOException {
             this.data = data;
-            InputStream is = data.getInputStream();
-            try {
-                mm = new ZMimeMessage(null, is);
-                this.flags = flags;
-                date = mm.getReceivedDate();
-                if (date == null) {
-                    date = new Date(System.currentTimeMillis());
-                }
-            } catch (MessagingException e) {
-                throw ServiceException.FAILURE("Unable to parse message", e);
-            } finally {
-                is.close();
+          try (InputStream is = data.getInputStream()) {
+            mm = new ZMimeMessage(null, is);
+            this.flags = flags;
+            date = mm.getReceivedDate();
+            if (date == null) {
+              date = new Date(System.currentTimeMillis());
             }
+          } catch (MessagingException e) {
+            throw ServiceException.FAILURE("Unable to parse message", e);
+          }
         }
     }
 

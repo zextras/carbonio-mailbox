@@ -79,14 +79,11 @@ public final class Literal extends ImapData {
     @Override
     public byte[] getBytes() throws IOException {
         if (bytes != null) return bytes;
-        DataInputStream is = new DataInputStream(getInputStream());
-        try {
-            byte[] b = new byte[size];
-            is.readFully(b);
-            return b;
-        } finally {
-            is.close();
-        }
+      try (DataInputStream is = new DataInputStream(getInputStream())) {
+        byte[] b = new byte[size];
+        is.readFully(b);
+        return b;
+      }
     }
 
     public void writePrefix(ImapOutputStream os, boolean lp) throws IOException {
@@ -100,16 +97,13 @@ public final class Literal extends ImapData {
         if (bytes != null) {
             os.write(bytes);
         } else {
-            InputStream is = getInputStream();
-            try {
-                byte[] b = new byte[2048];
-                int len;
-                while ((len = is.read(b)) != -1) {
-                    os.write(b, 0, len);
-                }
-            } finally {
-                is.close();
+          try (InputStream is = getInputStream()) {
+            byte[] b = new byte[2048];
+            int len;
+            while ((len = is.read(b)) != -1) {
+              os.write(b, 0, len);
             }
+          }
         }
     }
 

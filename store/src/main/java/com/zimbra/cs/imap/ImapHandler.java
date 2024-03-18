@@ -3789,30 +3789,27 @@ public abstract class ImapHandler {
             //              threads, with each thread containing messages with the same
             //              base subject text.  Finally, the threads are sorted by the
             //              sent date of the first message in the thread."
-            ZimbraQueryHitResults zqr = runSearch(i4search, i4folder, SortBy.DATE_ASC, SearchParams.Fetch.PARENT);
-            try {
-                for (ZimbraQueryHit hit = zqr.getNext(); hit != null; hit = zqr.getNext()) {
-                    ImapMessage i4msg = i4folder.getById(hit.getItemId());
-                    if (i4msg == null || i4msg.isExpunged()) {
-                        continue;
-                    }
-                    int parentId = hit.getParentId();
-                    if (parentId <= 0) {
-                        threads.put(-i4msg.msgId, List.of(i4msg));
-                        continue;
-                    }
+          try (ZimbraQueryHitResults zqr = runSearch(i4search, i4folder, SortBy.DATE_ASC, SearchParams.Fetch.PARENT)) {
+            for (ZimbraQueryHit hit = zqr.getNext(); hit != null; hit = zqr.getNext()) {
+              ImapMessage i4msg = i4folder.getById(hit.getItemId());
+              if (i4msg == null || i4msg.isExpunged()) {
+                continue;
+              }
+              int parentId = hit.getParentId();
+              if (parentId <= 0) {
+                threads.put(-i4msg.msgId, List.of(i4msg));
+                continue;
+              }
 
-                    List<ImapMessage> contents = threads.get(parentId);
-                    if (contents == null) {
-                        (contents = new LinkedList<>()).add(i4msg);
-                        threads.put(parentId, contents);
-                    } else {
-                        contents.add(i4msg);
-                    }
-                }
-            } finally {
-                zqr.close();
+              List<ImapMessage> contents = threads.get(parentId);
+              if (contents == null) {
+                (contents = new LinkedList<>()).add(i4msg);
+                threads.put(parentId, contents);
+              } else {
+                contents.add(i4msg);
+              }
             }
+          }
         } catch (ServiceException e) {
             ZimbraLog.imap.warn("THREAD failed", e);
             sendNO(tag, "THREAD failed");

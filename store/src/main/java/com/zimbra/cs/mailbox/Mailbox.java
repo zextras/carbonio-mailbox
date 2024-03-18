@@ -6522,16 +6522,10 @@ public class Mailbox implements MailboxStore {
             // TODO: Get the iCalendar data from the
             // MIME part since we already have it.
             String ical;
-            StringWriter sr = null;
-            try {
-              sr = new StringWriter();
+            try (StringWriter sr = new StringWriter()) {
               inv.setMethod(ICalTok.REPLY.toString());
               inv.newToICalendar(true).toICalendar(sr);
               ical = sr.toString();
-            } finally {
-              if (sr != null) {
-                sr.close();
-              }
             }
             Options options = new Options();
             AuthToken authToken = AuthToken.getCsrfUnsecuredAuthToken(getAuthToken(octxt));

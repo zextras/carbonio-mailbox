@@ -410,13 +410,9 @@ public abstract class FreeBusyProvider {
         ZimbraLog.fb.error("The free/busy replication queue is too large. #elem=" + size());
         return;
       }
-      FileOutputStream out = null;
-      try {
-        out = new FileOutputStream(mFilename);
+      try (FileOutputStream out = new FileOutputStream(mFilename)) {
         out.write(buf.toString().getBytes());
         out.getFD().sync();
-      } finally {
-        if (out != null) out.close();
       }
     }
 

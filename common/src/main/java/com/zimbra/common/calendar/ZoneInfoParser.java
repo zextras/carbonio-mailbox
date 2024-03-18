@@ -1109,16 +1109,13 @@ public class ZoneInfoParser {
         for (String fname : args) {
             File f = new File(fname);
             System.out.println("Processing: " + fname);
-            Reader r = new FileReader(f);
-            try {
-                parser.readTzdata(r);
-            } catch (ParseException e) {
-                System.err.println(e.getMessage());
-                System.err.println("Line: " + e.getErrorOffset());
-                e.printStackTrace();
-            } finally {
-                r.close();
-            }
+          try (Reader r = new FileReader(f)) {
+            parser.readTzdata(r);
+          } catch (ParseException e) {
+            System.err.println(e.getMessage());
+            System.err.println("Line: " + e.getErrorOffset());
+            e.printStackTrace();
+          }
         }
     }
 }

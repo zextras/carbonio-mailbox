@@ -200,9 +200,7 @@ public interface CalendarObject {
 
     @Override
     public String getVcalendar(DavContext ctxt, Filter filter) throws IOException, DavException {
-      CharArrayWriter wr = null;
-      try {
-        wr = new CharArrayWriter();
+      try (CharArrayWriter wr = new CharArrayWriter()) {
         wr.append("BEGIN:VCALENDAR\r\n");
         wr.append("VERSION:").append(ZCalendar.sIcalVersion).append("\r\n");
         wr.append("PRODID:").append(ZCalendar.sCarbonioProdID).append("\r\n");
@@ -222,15 +220,14 @@ public interface CalendarObject {
         boolean delegated = !acct.getId().equalsIgnoreCase(mOwnerId);
         Invite fixedInv = getFixedUpCopy(ctxt, mInvite, acct, delegated, true);
         ZComponent comp = fixedInv.newToVComponent(false, allowPrivateAccess);
-        if (filter == null || filter.match(comp)) comp.toICalendar(wr, true);
+        if (filter == null || filter.match(comp))
+          comp.toICalendar(wr, true);
         wr.append("END:VCALENDAR\r\n");
         wr.flush();
         return wr.toString();
       } catch (ServiceException se) {
         ZimbraLog.dav.warn("cannot convert to iCalendar", se);
         return "";
-      } finally {
-        if (wr != null) wr.close();
       }
     }
 

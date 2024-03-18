@@ -112,20 +112,18 @@ public class Krb5Keytab {
     }
 
     private void loadKeytab() throws IOException {
-        RandomAccessFile raf = new RandomAccessFile(file, "r");
-        try {
-            lastModified = file.lastModified();
-            version = readVersion(raf);
-            if (version != VERSION_1 && version != VERSION_2) {
-                throw formatError("Unsupported file format version 0x" +
-                                  Integer.toHexString(version));
-            }
-            keyMap.clear();
-            FileChannel fc = raf.getChannel();
-            while (fc.position() < fc.size()) readEntry(fc);
-        } finally {
-            raf.close();
+      try (RandomAccessFile raf = new RandomAccessFile(file, "r")) {
+        lastModified = file.lastModified();
+        version = readVersion(raf);
+        if (version != VERSION_1 && version != VERSION_2) {
+          throw formatError("Unsupported file format version 0x" +
+              Integer.toHexString(version));
         }
+        keyMap.clear();
+        FileChannel fc = raf.getChannel();
+        while (fc.position() < fc.size())
+          readEntry(fc);
+      }
     }
 
     private static int readVersion(RandomAccessFile raf) throws IOException {

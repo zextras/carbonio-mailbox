@@ -80,15 +80,12 @@ public class BufferStream extends OutputStream {
             os.write(buf, 0, size <= buf.length ? (int)size : buf.length);
         if (file != null) {
             byte tmp[] = new byte[32 * 1024];
-            FileInputStream fis = new FileInputStream(file);
-            int in;
 
-            try {
-                while ((in = fis.read(tmp)) != -1)
-                    os.write(tmp, 0, in);
-            } finally {
-                fis.close();
-            }
+          try (FileInputStream fis = new FileInputStream(file)) {
+            int in;
+            while ((in = fis.read(tmp)) != -1)
+              os.write(tmp, 0, in);
+          }
         }
     }
     
@@ -415,21 +412,15 @@ public class BufferStream extends OutputStream {
         if (len == 0)
             return out;
 
-        FileInputStream fis = null;
-        byte tmp[] = new byte[(int)Math.min(len, 32 * 1024)];
-        
-        try {
-            fis = new FileInputStream(file);
-            while (len > 0 && (in = fis.read(tmp, 0, (int)Math.min(len,
-                tmp.length))) != -1) {
-                os.write(tmp, 0, in);
-                len -= in;
-                out += in;
-            }
-        } finally {
-            if (fis != null)
-                fis.close();
+      byte tmp[] = new byte[(int)Math.min(len, 32 * 1024)];
+      try (FileInputStream fis = new FileInputStream(file)) {
+        while (len > 0 && (in = fis.read(tmp, 0, (int) Math.min(len,
+            tmp.length))) != -1) {
+          os.write(tmp, 0, in);
+          len -= in;
+          out += in;
         }
+      }
         return out;
     }
 }

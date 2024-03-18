@@ -870,11 +870,8 @@ public final class MailboxIndex {
   public void redoIndexItem(MailItem item, int itemId, List<IndexDocument> docs) {
     mailbox.lock.lock();
     try {
-      Indexer indexer = indexStore.openIndexer();
-      try {
+      try (Indexer indexer = indexStore.openIndexer()) {
         indexer.addDocument(item.getFolder(), item, docs);
-      } finally {
-        indexer.close();
       }
     } catch (Exception e) {
       ZimbraLog.index.warn("Skipping indexing; Unable to parse message %d", itemId, e);
@@ -999,11 +996,8 @@ public final class MailboxIndex {
    */
   public void compact() throws ServiceException {
     try {
-      Indexer indexer = indexStore.openIndexer();
-      try {
+      try (Indexer indexer = indexStore.openIndexer()) {
         indexer.compact();
-      } finally {
-        indexer.close();
       }
     } catch (IndexPendingDeleteException e) {
       ZimbraLog.index.debug("Compaction of index aborted as it is pending delete");
@@ -1035,11 +1029,8 @@ public final class MailboxIndex {
     int maxDocs = 0;
     int numDeletedDocs = 0;
     try {
-      Indexer indexer = indexStore.openIndexer();
-      try {
+      try (Indexer indexer = indexStore.openIndexer()) {
         maxDocs = indexer.maxDocs();
-      } finally {
-        indexer.close();
       }
       numDeletedDocs = numDeletedDocs();
     } catch (IOException e) {
