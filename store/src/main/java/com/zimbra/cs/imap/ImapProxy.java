@@ -221,27 +221,24 @@ public final class ImapProxy {
             // necessary because of subsequent race condition with req.cleanup()
             final byte[] payload = req.toByteArray();
 
-            idleThread = new Thread() {
-                @Override
-                public void run() {
-                    boolean success = false;
-                    try {
-                        // the standard aggressive read timeout is inappropriate for IDLE
-                        conn.setReadTimeout(handler.getConfig().getAuthenticatedMaxIdleTime());
-                        // send the IDLE command; this call waits until the subsequent DONE is acknowledged
-                        boolean ok = proxyCommand(payload, true, true);
-                        // restore the old read timeout
-                        conn.setReadTimeout(oldTimeout);
-                        // don't set <code>success</code> until we're past things that can throw IOExceptions
-                        success = ok;
-                    } catch (IOException e) {
-                        ZimbraLog.imap.warn("error encountered during IDLE; dropping connection", e);
-                    }
-                    if (!success) {
-                        handler.dropConnection(true);
-                    }
+            idleThread = new Thread(() -> {
+                boolean success = false;
+                try {
+                    // the standard aggressive read timeout is inappropriate for IDLE
+                    conn.setReadTimeout(handler.getConfig().getAuthenticatedMaxIdleTime());
+                    // send the IDLE command; this call waits until the subsequent DONE is acknowledged
+                    boolean ok = proxyCommand(payload, true, true);
+                    // restore the old read timeout
+                    conn.setReadTimeout(oldTimeout);
+                    // don't set <code>success</code> until we're past things that can throw IOExceptions
+                    success = ok;
+                } catch (IOException e) {
+                    ZimbraLog.imap.warn("error encountered during IDLE; dropping connection", e);
                 }
-            };
+                if (!success) {
+                    handler.dropConnection(true);
+                }
+            });
             idleThread.setName("Imap-Idle-Proxy-" + Thread.currentThread().getName());
             idleThread.start();
         }

@@ -238,19 +238,16 @@ final class TcpImapHandler extends ProtocolHandler {
 
       // TODO use thread pool
       // wait at most 10 seconds for the untagged BYE to be sent, then force the stream closed
-      new Thread() {
-        @Override
-        public void run() {
-          if (output == null) {
-            return;
-          }
-          try {
-            sleep(10 * Constants.MILLIS_PER_SECOND);
-          } catch (InterruptedException e) {
-          }
-          IOUtil.closeQuietly(output);
+      new Thread(() -> {
+        if (output == null) {
+          return;
         }
-      }.start();
+        try {
+          Thread.sleep(10 * Constants.MILLIS_PER_SECOND);
+        } catch (InterruptedException e) {
+        }
+        IOUtil.closeQuietly(output);
+      }).start();
 
       if (credentials != null && !goodbyeSent) {
         ZimbraLog.imap.info(
