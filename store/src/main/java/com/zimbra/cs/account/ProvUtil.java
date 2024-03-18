@@ -2612,14 +2612,11 @@ public class ProvUtil implements HttpDebugListener {
       final Set<String> attrNames)
       throws ServiceException {
     NamedEntry.Visitor visitor =
-        new NamedEntry.Visitor() {
-          @Override
-          public void visit(com.zimbra.cs.account.NamedEntry entry) throws ServiceException {
-            if (verbose) {
-              dumpAccount((Account) entry, applyDefault, attrNames);
-            } else {
-              console.println(entry.getName());
-            }
+        entry -> {
+          if (verbose) {
+            dumpAccount((Account) entry, applyDefault, attrNames);
+          } else {
+            console.println(entry.getName());
           }
         };
 
@@ -2794,12 +2791,7 @@ public class ProvUtil implements HttpDebugListener {
     SearchGalResult result = null;
     if (prov instanceof LdapProv) {
       GalContact.Visitor visitor =
-          new GalContact.Visitor() {
-            @Override
-            public void visit(GalContact gc) throws ServiceException {
-              dumpContact(gc);
-            }
-          };
+          gc -> dumpContact(gc);
       result = prov.syncGal(d, token, visitor);
     } else {
       result = ((SoapProvisioning) prov).searchGal(d, "", GalSearchType.all, token, 0, 0, null);
@@ -2840,12 +2832,7 @@ public class ProvUtil implements HttpDebugListener {
       }
 
       GalContact.Visitor visitor =
-          new GalContact.Visitor() {
-            @Override
-            public void visit(GalContact gc) throws ServiceException {
-              dumpContact(gc);
-            }
-          };
+          gc -> dumpContact(gc);
       result = prov.searchGal(d, query, GalSearchType.all, limit, visitor);
 
     } else {
@@ -2866,12 +2853,7 @@ public class ProvUtil implements HttpDebugListener {
     Domain d = lookupDomain(domain);
 
     GalContact.Visitor visitor =
-        new GalContact.Visitor() {
-          @Override
-          public void visit(GalContact gc) throws ServiceException {
-            dumpContact(gc);
-          }
-        };
+        gc -> dumpContact(gc);
     SearchGalResult result = prov.autoCompleteGal(d, query, GalSearchType.all, limit, visitor);
   }
 
@@ -3601,14 +3583,11 @@ public class ProvUtil implements HttpDebugListener {
       final boolean applyDefault)
       throws ServiceException {
     NamedEntry.Visitor visitor =
-        new NamedEntry.Visitor() {
-          @Override
-          public void visit(com.zimbra.cs.account.NamedEntry entry) throws ServiceException {
-            if (verbose) {
-              dumpCalendarResource((CalendarResource) entry, applyDefault, null);
-            } else {
-              console.println(entry.getName());
-            }
+        entry -> {
+          if (verbose) {
+            dumpCalendarResource((CalendarResource) entry, applyDefault, null);
+          } else {
+            console.println(entry.getName());
           }
         };
     prov.getAllCalendarResources(domain, server, visitor);
@@ -5009,18 +4988,15 @@ public class ProvUtil implements HttpDebugListener {
   private void doGetAllReverseProxyDomains() throws ServiceException {
 
     NamedEntry.Visitor visitor =
-        new NamedEntry.Visitor() {
-          @Override
-          public void visit(NamedEntry entry) throws ServiceException {
-            if (entry.getAttr(Provisioning.A_zimbraVirtualHostname) != null
-                && entry.getAttr(Provisioning.A_zimbraSSLPrivateKey) != null
-                && entry.getAttr(Provisioning.A_zimbraSSLCertificate) != null) {
-              StringBuilder virtualHosts = new StringBuilder();
-              for (String vh : entry.getMultiAttr(Provisioning.A_zimbraVirtualHostname)) {
-                virtualHosts.append(vh).append(" ");
-              }
-              console.println(entry.getName() + " " + virtualHosts);
+        entry -> {
+          if (entry.getAttr(Provisioning.A_zimbraVirtualHostname) != null
+              && entry.getAttr(Provisioning.A_zimbraSSLPrivateKey) != null
+              && entry.getAttr(Provisioning.A_zimbraSSLCertificate) != null) {
+            StringBuilder virtualHosts = new StringBuilder();
+            for (String vh : entry.getMultiAttr(Provisioning.A_zimbraVirtualHostname)) {
+              virtualHosts.append(vh).append(" ");
             }
+            console.println(entry.getName() + " " + virtualHosts);
           }
         };
 

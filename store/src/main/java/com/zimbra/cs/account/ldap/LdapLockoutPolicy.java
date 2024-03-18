@@ -116,12 +116,7 @@ public class LdapLockoutPolicy {
                         if (protocol.equalsIgnoreCase(suppressionProtocol)) {
                             List<String> pwds = null;
                             try {
-                                pwds = cache.get(acct.getId(), new Callable<>() {
-                                  @Override
-                                  public List<String> call() throws Exception {
-                                    return new ArrayList<>();
-                                  }
-                                });
+                                pwds = cache.get(acct.getId(), () -> new ArrayList<>());
                             } catch (ExecutionException e) {
                                 ZimbraLog.account.warn("Error while retrieving invalid password cache entry", e);
                                 return false;

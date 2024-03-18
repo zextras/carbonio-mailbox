@@ -226,12 +226,7 @@ final class ImapSessionManager {
             // XXX: make sure this doesn't result in a loop
             try {
                 if (session.isInteractive()) {
-                    CLOSER.submit(new Runnable() {
-                        @Override
-                        public void run() {
-                            session.cleanup();
-                        }
-                    });
+                    CLOSER.submit(() -> session.cleanup());
                 }
                 session.detach();
             } catch (Exception e) {
@@ -475,14 +470,11 @@ final class ImapSessionManager {
             // found a matching session, so just copy its contents!
             ZimbraLog.imap.debug("copying message data from existing session: %s", i4listener.getPath());
             final List<ImapMessage> i4list = new ArrayList<>(i4selected.getSize());
-            i4selected.traverse(new Function<>() {
-              @Override
-              public Void apply(ImapMessage i4msg) {
-                if (!i4msg.isExpunged()) {
-                  i4list.add(new ImapMessage(i4msg));
-                }
-                return null;
+            i4selected.traverse(i4msg -> {
+              if (!i4msg.isExpunged()) {
+                i4list.add(new ImapMessage(i4msg));
               }
+              return null;
             });
 
             // if we're duplicating an inactive session, nuke that other session
@@ -542,14 +534,11 @@ final class ImapSessionManager {
         ZimbraLog.imap.debug("copying message data from serialized session: %s", folder.getPath());
 
         final List<ImapMessage> i4list = new ArrayList<>(i4folder.getSize());
-        i4folder.traverse(new Function<>() {
-          @Override
-          public Void apply(ImapMessage i4msg) {
-            if (!i4msg.isExpunged()) {
-              i4list.add(i4msg.reset());
-            }
-            return null;
+        i4folder.traverse(i4msg -> {
+          if (!i4msg.isExpunged()) {
+            i4list.add(i4msg.reset());
           }
+          return null;
         });
         return i4list;
     }

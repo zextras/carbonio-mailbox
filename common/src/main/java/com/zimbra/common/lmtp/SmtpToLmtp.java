@@ -42,12 +42,7 @@ public class SmtpToLmtp {
         public Iterable<String> validate(String recipient);
     }
 
-    private static final RecipientValidator DUMMY_VALIDATOR = new RecipientValidator() {
-        @Override
-        public Iterable<String> validate(String recipient) {
-            return List.of(recipient);
-        }
-    };
+    private static final RecipientValidator DUMMY_VALIDATOR = recipient -> List.of(recipient);
 
     private static class LmtpData {
         String sender;

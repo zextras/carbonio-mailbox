@@ -2473,27 +2473,24 @@ public class ZMailboxUtil implements DebugListener {
 
       List<ZAce> result = mMbox.getRights(args);
       Comparator<ZAce> comparator =
-          new Comparator<>() {
-            @Override
-            public int compare(ZAce a, ZAce b) {
-              // sort by right -> grantee type -> grantee name
-              String aKey =
-                  a.getRight()
-                      + a.getGranteeTypeSortOrder()
-                      + (a.getGranteeName() == null ? "" : a.getGranteeName());
-              String bKey =
-                  b.getRight()
-                      + b.getGranteeTypeSortOrder()
-                      + (b.getGranteeName() == null ? "" : b.getGranteeName());
-              int order = aKey.compareTo(bKey);
-              if (order
-                  == 0) // a grantee is denied and allowed, not likely, but put the deny before
-              // allow if such entry does exist
-              {
-                order = a.getDeny() ? -1 : 1;
-              }
-              return order;
+          (a, b) -> {
+            // sort by right -> grantee type -> grantee name
+            String aKey =
+                a.getRight()
+                    + a.getGranteeTypeSortOrder()
+                    + (a.getGranteeName() == null ? "" : a.getGranteeName());
+            String bKey =
+                b.getRight()
+                    + b.getGranteeTypeSortOrder()
+                    + (b.getGranteeName() == null ? "" : b.getGranteeName());
+            int order = aKey.compareTo(bKey);
+            if (order
+                == 0) // a grantee is denied and allowed, not likely, but put the deny before
+            // allow if such entry does exist
+            {
+              order = a.getDeny() ? -1 : 1;
             }
+            return order;
           };
       Collections.sort(result, comparator);
 

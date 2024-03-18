@@ -97,16 +97,13 @@ public class RemoteResultParser {
             is = new FileInputStream(args[0]);
         }
         
-        RemoteResultParser.parse(new InputStreamReader(is), new Visitor() {
-            
-            public void handle(int lineNumber, Map<String, String> map) {
-                for (String key : map.keySet()) {
-                    System.out.print(key);
-                    System.out.print("=");
-                    System.out.println(map.get(key));
-                }
-                System.out.println();
+        RemoteResultParser.parse(new InputStreamReader(is), (lineNumber, map) -> {
+            for (String key : map.keySet()) {
+                System.out.print(key);
+                System.out.print("=");
+                System.out.println(map.get(key));
             }
+            System.out.println();
         });
     }
 

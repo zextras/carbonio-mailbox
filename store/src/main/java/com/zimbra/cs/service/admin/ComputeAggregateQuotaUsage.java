@@ -54,33 +54,29 @@ public class ComputeAggregateQuotaUsage extends AdminDocumentHandler {
         ExecutorService executor = Executors.newFixedThreadPool(LC.compute_aggregate_quota_threads.intValue());
         List<Future<Map<String, Long>>> futures = new LinkedList<>();
         for (final Server server : servers) {
-            futures.add(executor.submit(new Callable<>() {
+            futures.add(executor.submit(() -> {
+              ZimbraLog.misc.debug("Invoking %s on server %s",
+                  AdminConstants.E_GET_AGGR_QUOTA_USAGE_ON_SERVER_REQUEST, server.getName());
 
-              @Override
-              public Map<String, Long> call() throws Exception {
-                ZimbraLog.misc.debug("Invoking %s on server %s",
-                    AdminConstants.E_GET_AGGR_QUOTA_USAGE_ON_SERVER_REQUEST, server.getName());
-
-                Element req = new Element.XMLElement(AdminConstants.GET_AGGR_QUOTA_USAGE_ON_SERVER_REQUEST);
-                String adminUrl = URLUtil.getAdminURL(server, AdminConstants.ADMIN_SERVICE_URI);
-                SoapHttpTransport mTransport = new SoapHttpTransport(adminUrl);
-                mTransport.setAuthToken(zsc.getRawAuthToken());
-                Element resp;
-                try {
-                  resp = mTransport.invoke(req);
-                } catch (Exception e) {
-                  throw new Exception("Error in invoking " +
-                      AdminConstants.E_GET_AGGR_QUOTA_USAGE_ON_SERVER_REQUEST + " on server " +
-                      server.getName(), e);
-                }
-                List<Element> domainElts = resp.getPathElementList(new String[]{AdminConstants.E_DOMAIN});
-                Map<String, Long> retMap = new HashMap<>();
-                for (Element domainElt : domainElts) {
-                  retMap.put(domainElt.getAttribute(AdminConstants.A_ID),
-                      domainElt.getAttributeLong(AdminConstants.A_QUOTA_USED));
-                }
-                return retMap;
+              Element req = new Element.XMLElement(AdminConstants.GET_AGGR_QUOTA_USAGE_ON_SERVER_REQUEST);
+              String adminUrl = URLUtil.getAdminURL(server, AdminConstants.ADMIN_SERVICE_URI);
+              SoapHttpTransport mTransport = new SoapHttpTransport(adminUrl);
+              mTransport.setAuthToken(zsc.getRawAuthToken());
+              Element resp;
+              try {
+                resp = mTransport.invoke(req);
+              } catch (Exception e) {
+                throw new Exception("Error in invoking " +
+                    AdminConstants.E_GET_AGGR_QUOTA_USAGE_ON_SERVER_REQUEST + " on server " +
+                    server.getName(), e);
               }
+              List<Element> domainElts = resp.getPathElementList(new String[]{AdminConstants.E_DOMAIN});
+              Map<String, Long> retMap = new HashMap<>();
+              for (Element domainElt : domainElts) {
+                retMap.put(domainElt.getAttribute(AdminConstants.A_ID),
+                    domainElt.getAttributeLong(AdminConstants.A_QUOTA_USED));
+              }
+              return retMap;
             }));
         }
         shutdownAndAwaitTermination(executor);
@@ -124,37 +120,33 @@ public class ComputeAggregateQuotaUsage extends AdminDocumentHandler {
         if (ArrayUtil.isEmpty(recipients)) {
             return;
         }
-        executor.execute(new Runnable() {
+        executor.execute(() -> {
+            try {
+                SMTPMessage out = new SMTPMessage(JMSession.getSmtpSession(domain));
 
-            @Override
-            public void run() {
-                try {
-                    SMTPMessage out = new SMTPMessage(JMSession.getSmtpSession(domain));
+                // should From be configurable?
+                out.setFrom(new JavaMailInternetAddress("Postmaster <postmaster@" + domain.getName() + ">"));
 
-                    // should From be configurable?
-                    out.setFrom(new JavaMailInternetAddress("Postmaster <postmaster@" + domain.getName() + ">"));
-
-                    for (String recipient : recipients) {
-                        out.setRecipient(javax.mail.Message.RecipientType.TO, new JavaMailInternetAddress(recipient));
-                    }
-
-                    out.setSentDate(new Date());
-
-                    // using default locale since not sure which locale to pick
-                    Locale locale = Locale.getDefault();
-                    out.setSubject(L10nUtil.getMessage(L10nUtil.MsgKey.domainAggrQuotaWarnMsgSubject, locale));
-
-                    out.setText(L10nUtil.getMessage(L10nUtil.MsgKey.domainAggrQuotaWarnMsgBody, locale,
-                            domain.getName(),
-                            domain.getAggregateQuotaLastUsage() / 1024.0 / 1024.0,
-                            domain.getDomainAggregateQuotaWarnPercent(),
-                            domain.getDomainAggregateQuota() / 1024.0 / 1024.0));
-
-                    Transport.send(out);
-                } catch (Exception e) {
-                    ZimbraLog.misc.warn(
-                            "Error in sending aggregate quota warning msg for domain %s", domain.getName(), e);
+                for (String recipient : recipients) {
+                    out.setRecipient(javax.mail.Message.RecipientType.TO, new JavaMailInternetAddress(recipient));
                 }
+
+                out.setSentDate(new Date());
+
+                // using default locale since not sure which locale to pick
+                Locale locale = Locale.getDefault();
+                out.setSubject(L10nUtil.getMessage(L10nUtil.MsgKey.domainAggrQuotaWarnMsgSubject, locale));
+
+                out.setText(L10nUtil.getMessage(L10nUtil.MsgKey.domainAggrQuotaWarnMsgBody, locale,
+                        domain.getName(),
+                        domain.getAggregateQuotaLastUsage() / 1024.0 / 1024.0,
+                        domain.getDomainAggregateQuotaWarnPercent(),
+                        domain.getDomainAggregateQuota() / 1024.0 / 1024.0));
+
+                Transport.send(out);
+            } catch (Exception e) {
+                ZimbraLog.misc.warn(
+                        "Error in sending aggregate quota warning msg for domain %s", domain.getName(), e);
             }
         });
     }

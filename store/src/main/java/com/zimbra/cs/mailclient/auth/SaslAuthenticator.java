@@ -87,12 +87,7 @@ public final class SaslAuthenticator extends Authenticator {
     try {
       return Subject.doAs(
           subject,
-          new PrivilegedExceptionAction<>() {
-            @Override
-            public SaslClient run() throws SaslException {
-              return createSaslClient();
-            }
-          });
+          (PrivilegedExceptionAction<SaslClient>) () -> createSaslClient());
     } catch (PrivilegedActionException e) {
       dispose();
       Exception cause = e.getException();
@@ -162,12 +157,7 @@ public final class SaslAuthenticator extends Authenticator {
     try {
       return Subject.doAs(
           subject,
-          new PrivilegedExceptionAction<>() {
-            @Override
-            public byte[] run() throws SaslException {
-              return saslClient.evaluateChallenge(challenge);
-            }
-          });
+          (PrivilegedExceptionAction<byte[]>) () -> saslClient.evaluateChallenge(challenge));
     } catch (PrivilegedActionException e) {
       dispose();
       Throwable cause = e.getCause();

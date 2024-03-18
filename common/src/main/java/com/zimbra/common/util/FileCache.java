@@ -169,21 +169,13 @@ public class FileCache<K> {
         public K3 parse(String keyString);
     }
 
-    private static final KeyParser<String> STRING_KEY_PARSER = new KeyParser<>() {
-      @Override
-      public String parse(String keyString) {
-        return keyString;
-      }
-    };
+    private static final KeyParser<String> STRING_KEY_PARSER = keyString -> keyString;
 
-    private static final KeyParser<Integer> INTEGER_KEY_PARSER = new KeyParser<>() {
-      @Override
-      public Integer parse(String keyString) {
-        if (keyString == null) {
-          return null;
-        }
-        return Integer.parseInt(keyString);
+    private static final KeyParser<Integer> INTEGER_KEY_PARSER = keyString -> {
+      if (keyString == null) {
+        return null;
       }
+      return Integer.parseInt(keyString);
     };
 
     public interface RemoveCallback {

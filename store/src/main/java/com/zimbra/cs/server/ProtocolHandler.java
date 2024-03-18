@@ -162,12 +162,7 @@ public abstract class ProtocolHandler implements Runnable {
      */
     protected void startHandshake(final SSLSocket sock) throws IOException {
         sock.startHandshake();
-        sock.addHandshakeCompletedListener(new HandshakeCompletedListener() {
-            @Override
-            public void handshakeCompleted(HandshakeCompletedEvent event) {
-                hardShutdown("SSL renegotiation denied: " + sock);
-            }
-        });
+        sock.addHandshakeCompletedListener(event -> hardShutdown("SSL renegotiation denied: " + sock));
     }
 
     private void processConnection() throws Exception {

@@ -1104,19 +1104,16 @@ public class CalendarMailSender {
     // Send in a separate thread to avoid nested transaction error when saving a copy to Sent
     // folder.
     Runnable r =
-        new Runnable() {
-          @Override
-          public void run() {
-            try {
-              MailSender mailSender = getCalendarMailSender(mbox).setSendPartial(true);
-              mailSender.sendMimeMessage(
-                  octxt, mbox, true, mm, null, origMsgId, MailSender.MSGTYPE_REPLY, null, false);
-            } catch (ServiceException e) {
-              ZimbraLog.calendar.warn(
-                  "Ignoring error while sending permission-denied auto reply", e);
-            } catch (OutOfMemoryError e) {
-              Zimbra.halt("OutOfMemoryError while sending permission-denied auto reply", e);
-            }
+        () -> {
+          try {
+            MailSender mailSender = getCalendarMailSender(mbox).setSendPartial(true);
+            mailSender.sendMimeMessage(
+                octxt, mbox, true, mm, null, origMsgId, MailSender.MSGTYPE_REPLY, null, false);
+          } catch (ServiceException e) {
+            ZimbraLog.calendar.warn(
+                "Ignoring error while sending permission-denied auto reply", e);
+          } catch (OutOfMemoryError e) {
+            Zimbra.halt("OutOfMemoryError while sending permission-denied auto reply", e);
           }
         };
     Thread senderThread = new Thread(r, "CalendarPermDeniedReplySender");
@@ -1132,25 +1129,22 @@ public class CalendarMailSender {
     // Send in a separate thread to avoid nested transaction error when saving a copy to Sent
     // folder.
     Runnable r =
-        new Runnable() {
-          @Override
-          public void run() {
-            try {
-              MailSender sender =
-                  getCalendarMailSender(mbox)
-                      .setSaveToSent(true)
-                      .setOriginalMessageId(origMsgId)
-                      .setReplyType(MailSender.MSGTYPE_REPLY)
-                      .setSendPartial(true);
-              sender.setRedirectMode(
-                  true); // Preserve original From and Sender to avoid confusing the delegate user.
-              sender.sendMimeMessage(octxt, mbox, mm);
-            } catch (ServiceException e) {
-              ZimbraLog.calendar.warn(
-                  "Ignoring error while sending permission-denied auto reply", e);
-            } catch (OutOfMemoryError e) {
-              Zimbra.halt("OutOfMemoryError while sending permission-denied auto reply", e);
-            }
+        () -> {
+          try {
+            MailSender sender =
+                getCalendarMailSender(mbox)
+                    .setSaveToSent(true)
+                    .setOriginalMessageId(origMsgId)
+                    .setReplyType(MailSender.MSGTYPE_REPLY)
+                    .setSendPartial(true);
+            sender.setRedirectMode(
+                true); // Preserve original From and Sender to avoid confusing the delegate user.
+            sender.sendMimeMessage(octxt, mbox, mm);
+          } catch (ServiceException e) {
+            ZimbraLog.calendar.warn(
+                "Ignoring error while sending permission-denied auto reply", e);
+          } catch (OutOfMemoryError e) {
+            Zimbra.halt("OutOfMemoryError while sending permission-denied auto reply", e);
           }
         };
     Thread senderThread = new Thread(r, "CalendarInviteForwardSender");
@@ -1572,27 +1566,24 @@ public class CalendarMailSender {
     // Send in a separate thread to avoid nested transaction error when saving a copy to Sent
     // folder.
     Runnable r =
-        new Runnable() {
-          @Override
-          public void run() {
-            try {
-              MailSender mailSender = getCalendarMailSender(mbox).setSendPartial(true);
-              mailSender.sendMimeMessage(
-                  octxt,
-                  mbox,
-                  saveToSent,
-                  mm,
-                  null,
-                  new ItemId(mbox, invId),
-                  replyType,
-                  null,
-                  false);
-            } catch (ServiceException e) {
-              ZimbraLog.calendar.warn("Ignoring error while sending auto accept/decline reply", e);
-            } catch (OutOfMemoryError e) {
-              Zimbra.halt(
-                  "OutOfMemoryError while sending calendar resource auto accept/decline reply", e);
-            }
+        () -> {
+          try {
+            MailSender mailSender = getCalendarMailSender(mbox).setSendPartial(true);
+            mailSender.sendMimeMessage(
+                octxt,
+                mbox,
+                saveToSent,
+                mm,
+                null,
+                new ItemId(mbox, invId),
+                replyType,
+                null,
+                false);
+          } catch (ServiceException e) {
+            ZimbraLog.calendar.warn("Ignoring error while sending auto accept/decline reply", e);
+          } catch (OutOfMemoryError e) {
+            Zimbra.halt(
+                "OutOfMemoryError while sending calendar resource auto accept/decline reply", e);
           }
         };
     Thread senderThread = new Thread(r, "CalendarAutoAcceptDeclineReplySender");

@@ -314,15 +314,12 @@ public abstract class ImapListener extends Session {
                 final short defaultFlags = (short) (getFolderId() != Mailbox.ID_FOLDER_SPAM ? 0 :
                     ImapMessage.FLAG_SPAM | ImapMessage.FLAG_JUNKRECORDED);
                 final List<Integer> sflags = new ArrayList<>();
-                i4folder.traverse(new Function<>() {
-                  @Override
-                  public Void apply(ImapMessage i4msg) {
-                    if ((i4msg.sflags & ~ImapMessage.FLAG_IS_CONTACT) != defaultFlags) {
-                      sflags.add(i4msg.imapUid);
-                      sflags.add((int) i4msg.sflags);
-                    }
-                    return null;
+                i4folder.traverse(i4msg -> {
+                  if ((i4msg.sflags & ~ImapMessage.FLAG_IS_CONTACT) != defaultFlags) {
+                    sflags.add(i4msg.imapUid);
+                    sflags.add((int) i4msg.sflags);
                   }
+                  return null;
                 });
 
                 if (!sflags.isEmpty()) {

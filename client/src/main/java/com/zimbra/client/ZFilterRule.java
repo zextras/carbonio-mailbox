@@ -97,24 +97,14 @@ public final class ZFilterRule implements ToZJSONObject {
         this.allConditions = "allof".equalsIgnoreCase(rule.getFilterTests().getCondition());
 
         List<FilterTest> tests = Lists.newArrayList(rule.getFilterTests().getTests());
-        Collections.sort(tests, new Comparator<>() {
-          @Override
-          public int compare(FilterTest test1, FilterTest test2) {
-            return test1.getIndex() - test2.getIndex();
-          }
-        });
+        Collections.sort(tests, (test1, test2) -> test1.getIndex() - test2.getIndex());
         this.conditions = Lists.newArrayListWithCapacity(tests.size());
         for (FilterTest test : tests) {
             this.conditions.add(ZFilterCondition.of(test));
         }
 
         List<FilterAction> actions = Lists.newArrayList(rule.getFilterActions());
-        Collections.sort(actions, new Comparator<>() {
-          @Override
-          public int compare(FilterAction action1, FilterAction action2) {
-            return action1.getIndex() - action2.getIndex();
-          }
-        });
+        Collections.sort(actions, (action1, action2) -> action1.getIndex() - action2.getIndex());
         this.actions = Lists.newArrayListWithCapacity(actions.size());
         for (FilterAction action : actions) {
             this.actions.add(ZFilterAction.of(action));

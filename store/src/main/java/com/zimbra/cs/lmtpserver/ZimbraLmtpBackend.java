@@ -102,12 +102,7 @@ public class ZimbraLmtpBackend implements LmtpBackend {
 
   private static LoadingCache<Integer, ReentrantLock> createMailboxDeliveryLocks() {
     Function<Integer, ReentrantLock> lockCreator =
-        new Function<>() {
-          @Override
-          public ReentrantLock apply(Integer from) {
-            return new ReentrantLock();
-          }
-        };
+        from -> new ReentrantLock();
     LoadingCache<Integer, ReentrantLock> cache =
         CacheBuilder.newBuilder().build(CacheLoader.from(lockCreator));
     return cache;

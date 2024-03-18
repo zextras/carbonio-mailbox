@@ -318,24 +318,21 @@ public class DataSourceManager {
     ZimbraLog.datasource.debug("Requesting async import for DataSource %s", ds.getId());
 
     executor.submit(
-        new Runnable() {
-          @Override
-          public void run() {
-            try {
-              // todo exploit comonality with DataSourceTask
-              ZimbraLog.clearContext();
-              ZimbraLog.addMboxToContext(ds.getMailbox().getId());
-              ZimbraLog.addAccountNameToContext(ds.getAccount().getName());
-              ZimbraLog.addDataSourceNameToContext(ds.getName());
-              ZimbraLog.datasource.debug("Running on-demand import for DataSource %s", ds.getId());
+        () -> {
+          try {
+            // todo exploit comonality with DataSourceTask
+            ZimbraLog.clearContext();
+            ZimbraLog.addMboxToContext(ds.getMailbox().getId());
+            ZimbraLog.addAccountNameToContext(ds.getAccount().getName());
+            ZimbraLog.addDataSourceNameToContext(ds.getName());
+            ZimbraLog.datasource.debug("Running on-demand import for DataSource %s", ds.getId());
 
-              DataSourceManager.importData(ds);
+            DataSourceManager.importData(ds);
 
-            } catch (Exception e) {
-              ZimbraLog.datasource.warn("On-demand DataSource import failed.", e);
-            } finally {
-              ZimbraLog.clearContext();
-            }
+          } catch (Exception e) {
+            ZimbraLog.datasource.warn("On-demand DataSource import failed.", e);
+          } finally {
+            ZimbraLog.clearContext();
           }
         });
   }

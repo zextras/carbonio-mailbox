@@ -26,13 +26,10 @@ public abstract class ImapLoadBalancingMechanism {
 
     protected ImapLBMech lbMech;
 
-    private static final Comparator<Server> serverComparator = new Comparator<>() {
-      @Override
-      public int compare(Server a, Server b) {
-        String aName = ((a != null) && (a.getName() != null)) ? a.getName() : "UNKNOWN";
-        String bName = ((b != null) && (b.getName() != null)) ? b.getName() : "UNKNOWN";
-        return aName.compareTo(bName);
-      }
+    private static final Comparator<Server> serverComparator = (a, b) -> {
+      String aName = ((a != null) && (a.getName() != null)) ? a.getName() : "UNKNOWN";
+      String bName = ((b != null) && (b.getName() != null)) ? b.getName() : "UNKNOWN";
+      return aName.compareTo(bName);
     };
 
     public static enum ImapLBMech {

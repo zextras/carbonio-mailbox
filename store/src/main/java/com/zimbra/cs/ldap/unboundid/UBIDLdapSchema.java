@@ -92,12 +92,7 @@ public class UBIDLdapSchema extends ZLdapSchema {
             ocList.add(ubidOC);
         }
 
-        Comparator comparator = new Comparator<UBIDObjectClassDefinition>() {
-            public int compare(UBIDObjectClassDefinition first,
-                    UBIDObjectClassDefinition second) {
-                return first.getName().compareTo(second.getName());
-            }
-        };
+        Comparator comparator = (Comparator<UBIDObjectClassDefinition>) (first, second) -> first.getName().compareTo(second.getName());
 
         Collections.sort(ocList, comparator);
         return ocList;

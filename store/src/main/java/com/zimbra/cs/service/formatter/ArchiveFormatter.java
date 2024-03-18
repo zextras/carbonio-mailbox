@@ -950,12 +950,7 @@ public abstract class ArchiveFormatter extends Formatter {
         Map<String, Integer> map =
             CACHE.get(
                 fldrId,
-                new Callable<>() {
-                  @Override
-                  public Map<String, Integer> call() {
-                    return makeDigestToID(fldr);
-                  }
-                });
+                () -> makeDigestToID(fldr));
         if (map == null) {
           return Maps.newHashMap();
         }

@@ -56,11 +56,8 @@ public class OwaspHtmlSanitizer implements Callable<String> {
         final HtmlStreamRenderer renderer = HtmlStreamRenderer.create(htmlBuilder,
             Handler.PROPAGATE,
             // log errors resulting from exceptionally bizarre inputs
-            new Handler<>() {
-
-              public void handle(final String x) {
-                throw new AssertionError(x);
-              }
+            x -> {
+              throw new AssertionError(x);
             });
         // create a thread-specific policy
         instantiatePolicy();

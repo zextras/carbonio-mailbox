@@ -167,12 +167,7 @@ final class SessionMap {
                 if (removed != null) {
                     ZimbraLog.session.info("Too many %s sessions (%d > %d), closing %s", session.getType(), prevSize, maxSessionsPerAcct, removed);
                     // clean up the sessions asynchronously outside of the synchronized block or the mailbox lock
-                    SWEEPER.submit(new Runnable() {
-                        @Override
-                        public void run() {
-                            removed.doCleanup();
-                        }
-                    });
+                    SWEEPER.submit(() -> removed.doCleanup());
                 }
 
                 // note that remove() may have nulled out accountSessionMap[accountId]

@@ -160,13 +160,11 @@ public class Krb5Login {
         kc.setUseTicketCache(false);
         kc.setStoreKey(false);
         Configuration dc = new DynamicConfiguration(S_CONFIG_NAME, new AppConfigurationEntry[] {kc});
-        CallbackHandler handler = new CallbackHandler() {
-            public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
-                for (Callback callback : callbacks) {
-                    if (callback instanceof PasswordCallback) {
-                        PasswordCallback pc = (PasswordCallback) callback;
-                        pc.setPassword(password.toCharArray());
-                    }
+        CallbackHandler handler = callbacks -> {
+            for (Callback callback : callbacks) {
+                if (callback instanceof PasswordCallback) {
+                    PasswordCallback pc = (PasswordCallback) callback;
+                    pc.setPassword(password.toCharArray());
                 }
             }
         };

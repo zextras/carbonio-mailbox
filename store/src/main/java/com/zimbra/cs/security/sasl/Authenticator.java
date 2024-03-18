@@ -34,24 +34,9 @@ public abstract class Authenticator {
     private static Collection<String> mMechanismList = Collections.emptyList();
 
     static {
-        registerMechanism(PlainAuthenticator.MECHANISM, new AuthenticatorFactory() {
-            @Override
-            public Authenticator getAuthenticator(AuthenticatorUser authUser) {
-                return new PlainAuthenticator(authUser);
-            }
-        });
-        registerMechanism(GssAuthenticator.MECHANISM, new AuthenticatorFactory() {
-            @Override
-            public Authenticator getAuthenticator(AuthenticatorUser authUser) {
-                return new GssAuthenticator(authUser);
-            }
-        });
-        registerMechanism(ZimbraAuthenticator.MECHANISM, new AuthenticatorFactory() {
-            @Override
-            public Authenticator getAuthenticator(AuthenticatorUser authUser) {
-                return new ZimbraAuthenticator(authUser);
-            }
-        });
+        registerMechanism(PlainAuthenticator.MECHANISM, authUser -> new PlainAuthenticator(authUser));
+        registerMechanism(GssAuthenticator.MECHANISM, authUser -> new GssAuthenticator(authUser));
+        registerMechanism(ZimbraAuthenticator.MECHANISM, authUser -> new ZimbraAuthenticator(authUser));
     }
 
     public static void registerMechanism(String mechanism, AuthenticatorFactory authFactory) {

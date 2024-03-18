@@ -24,11 +24,7 @@ public final class ImapUtil {
     // case when comparing mailbox names so we can remove duplicates (Zimbra
     // folder names are case insensitive).
     private static final Comparator<ListData> COMPARATOR =
-        new Comparator<>() {
-          public int compare(ListData ld1, ListData ld2) {
-            return ld2.getMailbox().compareToIgnoreCase(ld1.getMailbox());
-          }
-        };
+        (ld1, ld2) -> ld2.getMailbox().compareToIgnoreCase(ld1.getMailbox());
 
     public static List<ListData> listFolders(ImapConnection ic, String name)
         throws IOException {

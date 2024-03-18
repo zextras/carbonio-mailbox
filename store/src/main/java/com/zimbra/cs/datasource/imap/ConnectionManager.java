@@ -278,14 +278,11 @@ final class ConnectionManager {
   }
 
   private static ResponseHandler idleHandler(final DataSource ds) {
-    return new ResponseHandler() {
-      @Override
-      public void handleResponse(ImapResponse res) throws Exception {
-        if (res.getCCode() == CAtom.EXISTS) {
-          SyncState ss = SyncStateManager.getInstance().getOrCreateSyncState(ds);
-          if (ss != null) {
-            ss.setHasRemoteInboxChanges(true);
-          }
+    return res -> {
+      if (res.getCCode() == CAtom.EXISTS) {
+        SyncState ss = SyncStateManager.getInstance().getOrCreateSyncState(ds);
+        if (ss != null) {
+          ss.setHasRemoteInboxChanges(true);
         }
       }
     };

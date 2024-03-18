@@ -59,12 +59,7 @@ public class SpamHandler {
     }
 
     public SpamHandler() {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                reportLoop();
-            }
-        };
+        Runnable r = () -> reportLoop();
         Thread spamHandlerThread = new Thread(r);
         spamHandlerThread.setName("Junk-NotJunk-Handler");
         spamHandlerThread.setDaemon(true);

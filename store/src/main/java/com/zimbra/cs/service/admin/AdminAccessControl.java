@@ -886,12 +886,7 @@ public abstract class AdminAccessControl {
           HardRule violatedRule = HardRule.ruleVolated(e);
           if (ignoreHardRules.contains(violatedRule)) {
             // return an AttrRightChecker that allows no attr
-            return new AttrRightChecker() {
-              @Override
-              public boolean allowAttr(String attrName) {
-                return false;
-              }
-            };
+            return attrName -> false;
           }
         }
 

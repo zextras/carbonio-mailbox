@@ -838,31 +838,27 @@ public class AttributeMigration {
             "error determining if server %s is local server", server.getServiceHostname());
       }
       executor.submit(
-          new Runnable() {
+          () -> {
+            SoapProvisioning soapProv = new SoapProvisioning();
+            try {
+              String adminUrl =
+                  URLUtil.getAdminURL(server, AdminConstants.ADMIN_SERVICE_URI, true);
+              soapProv.soapSetURI(adminUrl);
+            } catch (ServiceException e1) {
+              ZimbraLog.ephemeral.warn(
+                  "could not get admin URL for server %s during ephemeral backend change", e1);
+              return;
+            }
 
-            @Override
-            public void run() {
-              SoapProvisioning soapProv = new SoapProvisioning();
-              try {
-                String adminUrl =
-                    URLUtil.getAdminURL(server, AdminConstants.ADMIN_SERVICE_URI, true);
-                soapProv.soapSetURI(adminUrl);
-              } catch (ServiceException e1) {
-                ZimbraLog.ephemeral.warn(
-                    "could not get admin URL for server %s during ephemeral backend change", e1);
-                return;
-              }
+            try {
+              soapProv.soapZimbraAdminAuthenticate();
+              soapProv.flushCache(CacheEntryType.config.name(), null, false);
+              ZimbraLog.ephemeral.debug(
+                  "sent FlushCache request to server %s", server.getServiceHostname());
 
-              try {
-                soapProv.soapZimbraAdminAuthenticate();
-                soapProv.flushCache(CacheEntryType.config.name(), null, false);
-                ZimbraLog.ephemeral.debug(
-                    "sent FlushCache request to server %s", server.getServiceHostname());
-
-              } catch (ServiceException e) {
-                ZimbraLog.ephemeral.warn(
-                    "cannot send FlushCache request to server %s", server.getServiceHostname(), e);
-              }
+            } catch (ServiceException e) {
+              ZimbraLog.ephemeral.warn(
+                  "cannot send FlushCache request to server %s", server.getServiceHostname(), e);
             }
           });
     }

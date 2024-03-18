@@ -60,33 +60,13 @@ public class SoapConverter {
       }
     };
 
-    public static Function<Identity, ZIdentity> FROM_SOAP_IDENTITY = new Function<>() {
-      @Override
-      public ZIdentity apply(Identity from) {
-        return new ZIdentity(from);
-      }
-    };
+    public static Function<Identity, ZIdentity> FROM_SOAP_IDENTITY = from -> new ZIdentity(from);
 
-    public static Function<ZIdentity, Identity> TO_SOAP_IDENTITY = new Function<>() {
-      @Override
-      public Identity apply(ZIdentity from) {
-        return from.getData();
-      }
-    };
+    public static Function<ZIdentity, Identity> TO_SOAP_IDENTITY = from -> from.getData();
 
-    public static Function<Signature, ZSignature> FROM_SOAP_SIGNATURE = new Function<>() {
-      @Override
-      public ZSignature apply(Signature from) {
-        return new ZSignature(from);
-      }
-    };
+    public static Function<Signature, ZSignature> FROM_SOAP_SIGNATURE = from -> new ZSignature(from);
 
-    public static Function<ZSignature, Signature> TO_SOAP_SIGNATURE = new Function<>() {
-      @Override
-      public Signature apply(ZSignature from) {
-        return from.getData();
-      }
-    };
+    public static Function<ZSignature, Signature> TO_SOAP_SIGNATURE = from -> from.getData();
     
     public static Function<AccountBy, Key.AccountBy> FROM_SOAP_ACCOUNT_BY =
         new Function<>() {

@@ -118,12 +118,7 @@ public class RemoteManager {
     }
 
     public void executeBackground(final String command, final RemoteBackgroundHandler handler) {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                executeBackground0(command, handler);
-            }
-        };
+        Runnable r = () -> executeBackground0(command, handler);
 
         Thread t = new Thread(r);
         t.setName(this + "-" + command);

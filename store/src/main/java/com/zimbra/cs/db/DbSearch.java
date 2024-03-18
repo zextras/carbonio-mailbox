@@ -575,12 +575,7 @@ public final class DbSearch {
     // optimize so shortest list is first
     Collections.sort(
         lists,
-        new Comparator<>() {
-          @Override
-          public int compare(List<Result> l1, List<Result> l2) {
-            return l1.size() - l2.size();
-          }
-        });
+        (l1, l2) -> l1.size() - l2.size());
 
     for (Result result : lists.get(0)) {
       boolean intersect = true;

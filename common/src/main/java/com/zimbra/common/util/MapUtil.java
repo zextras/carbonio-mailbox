@@ -33,12 +33,7 @@ public class MapUtil {
      * the map implicitly creates a new key that maps to an empty {@code List}. 
      */
     public static <K, V> LoadingCache<K, List<V>> newValueListMap() {
-        Function<K, List<V>> listCreator = new Function<>() {
-          @Override
-          public List<V> apply(K from) {
-            return new ArrayList<>();
-          }
-        };
+        Function<K, List<V>> listCreator = from -> new ArrayList<>();
         LoadingCache<K, List<V>> cache = CacheBuilder.newBuilder()
             .build(CacheLoader.from(listCreator));
         return cache;
@@ -50,12 +45,7 @@ public class MapUtil {
      * the map implicitly creates a new key that maps to an empty {@code Set}. 
      */
     public static <K, V> LoadingCache<K, Set<V>> newValueSetMap() {
-        Function<K, Set<V>> setCreator = new Function<>() {
-          @Override
-          public Set<V> apply(K from) {
-            return new HashSet<>();
-          }
-        };
+        Function<K, Set<V>> setCreator = from -> new HashSet<>();
         LoadingCache<K, Set<V>> cache = CacheBuilder.newBuilder()
             .build(CacheLoader.from(setCreator));
         return cache;

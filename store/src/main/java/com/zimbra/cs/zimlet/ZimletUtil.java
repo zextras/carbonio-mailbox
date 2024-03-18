@@ -233,13 +233,7 @@ public class ZimletUtil {
             plist.add(new Pair<>(v, z));
         }
         Collections.sort(plist,
-            new Comparator<>() {
-                @Override
-                public int compare(Pair<Version, Zimlet> first,
-                    Pair<Version, Zimlet> second) {
-                    return first.getFirst().compareTo(second.getFirst());
-                }
-            }
+            (first, second) -> first.getFirst().compareTo(second.getFirst())
         );
 
         List<Zimlet> ret = new ArrayList<>();

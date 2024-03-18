@@ -115,16 +115,14 @@ public class RolloverManager {
     }
 
     public static File[] getArchiveLogs(File archiveDir, final long from, final long to) {
-        File logs[] = archiveDir.listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                if (name.indexOf(ARCH_FILENAME_PREFIX) == 0 &&
-                    name.lastIndexOf(FILENAME_SUFFIX) == name.length() - FILENAME_SUFFIX.length()) {
-                    long seq = getSeqForFile(new File(dir, name));
-                    if (from <= seq && seq <= to)
-                        return true;
-                }
-                return false;
+        File logs[] = archiveDir.listFiles((dir, name) -> {
+            if (name.indexOf(ARCH_FILENAME_PREFIX) == 0 &&
+                name.lastIndexOf(FILENAME_SUFFIX) == name.length() - FILENAME_SUFFIX.length()) {
+                long seq = getSeqForFile(new File(dir, name));
+                if (from <= seq && seq <= to)
+                    return true;
             }
+            return false;
         });
         if (logs != null && logs.length > 0)
             RolloverManager.sortArchiveLogFiles(logs);

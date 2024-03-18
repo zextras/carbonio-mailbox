@@ -5550,15 +5550,12 @@ public class Mailbox implements MailboxStore {
 
       Collections.sort(
           result,
-          new Comparator<>() {
-            @Override
-            public int compare(BrowseTerm o1, BrowseTerm o2) {
-              int retVal = o2.getFreq() - o1.getFreq();
-              if (retVal == 0) {
-                retVal = o1.getText().compareTo(o2.getText());
-              }
-              return retVal;
+          (o1, o2) -> {
+            int retVal = o2.getFreq() - o1.getFreq();
+            if (retVal == 0) {
+              retVal = o1.getText().compareTo(o2.getText());
             }
+            return retVal;
           });
 
       if (max > 0 && result.size() > max) {

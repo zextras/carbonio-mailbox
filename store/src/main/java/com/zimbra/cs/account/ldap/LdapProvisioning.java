@@ -2247,12 +2247,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       final List<NamedEntry> result = new ArrayList<>();
 
       NamedEntry.Visitor listBackedVisitor =
-          new NamedEntry.Visitor() {
-            @Override
-            public void visit(NamedEntry entry) {
-              result.add(entry);
-            }
-          };
+          entry -> result.add(entry);
 
       for (String base : bases) {
         searchLdapObjects(base, filter, returnAttrs, opts, listBackedVisitor);

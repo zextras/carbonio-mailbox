@@ -124,12 +124,8 @@ public class GssAuthenticator extends Authenticator {
         }
 
         try {
-            mSaslServer = (SaslServer) Subject.doAs(subject, new PrivilegedExceptionAction<>() {
-              @Override
-              public Object run() throws SaslException {
-                return Sasl.createSaslServer(getMechanism(), getProtocol(), host, props, new GssCallbackHandler());
-              }
-            });
+            mSaslServer = (SaslServer) Subject.doAs(subject,
+                (PrivilegedExceptionAction<Object>) () -> Sasl.createSaslServer(getMechanism(), getProtocol(), host, props, new GssCallbackHandler()));
         } catch (PrivilegedActionException e) {
             sendFailed();
             getLog().warn("Could not create SaslServer", e.getCause());

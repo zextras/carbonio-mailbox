@@ -419,12 +419,9 @@ public final class ImapConnection extends MailConnection {
     private List<Long> doSearch(String cmd, Object... params) throws IOException {
         final List<Long> results = new ArrayList<>();
         ImapRequest req = newRequest(cmd, params);
-        req.setResponseHandler(new ResponseHandler() {
-            @Override
-            public void handleResponse(ImapResponse res) {
-                if (res.getCCode() == CAtom.SEARCH) {
-                    results.addAll((List<Long>) res.getData());
-                }
+        req.setResponseHandler(res -> {
+            if (res.getCCode() == CAtom.SEARCH) {
+                results.addAll((List<Long>) res.getData());
             }
         });
         req.sendCheckStatus();
@@ -551,12 +548,7 @@ public final class ImapConnection extends MailConnection {
                 return res;
             }
             assert res.isContinuation();
-            Thread t = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    idleHandler();
-                }
-            });
+            Thread t = new Thread(() -> idleHandler());
             t.setName("IMAP IDLE thread");
             t.setDaemon(true);
             t.start();

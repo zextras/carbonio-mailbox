@@ -863,12 +863,7 @@ public class DbMailItem {
     SetMultimap<MailItem.Type, Integer> result =
         Multimaps.newSetMultimap(
             new EnumMap<>(MailItem.Type.class),
-            new Supplier<>() {
-              @Override
-              public Set<Integer> get() {
-                return new HashSet<>();
-              }
-            });
+            () -> new HashSet<>());
 
     PreparedStatement stmt = null;
     ResultSet rs = null;

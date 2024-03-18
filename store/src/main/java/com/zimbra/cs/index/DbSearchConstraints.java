@@ -237,12 +237,7 @@ public interface DbSearchConstraints extends Cloneable {
     public final Multimap<RangeType, Range> ranges =
         Multimaps.newMultimap(
             new EnumMap<>(RangeType.class),
-            new Supplier<Set<Range>>() {
-              @Override
-              public Set<Range> get() {
-                return new HashSet<>();
-              }
-            });
+            (Supplier<Set<Range>>) () -> new HashSet<>());
     public CursorRange cursorRange; // optional
 
     public boolean typesFactoredOut = false;

@@ -31,12 +31,7 @@ import javax.xml.bind.annotation.XmlValue;
  */
 public class Attr implements KeyAndValue {
 
-    public static Function<Attr, Attr> COPY = new Function<>() {
-      @Override
-      public Attr apply(Attr from) {
-        return new Attr(from);
-      }
-    };
+    public static Function<Attr, Attr> COPY = from -> new Attr(from);
 
     /**
      * @zm-api-field-tag attr-name
