@@ -281,20 +281,19 @@ public class LdifFormatter extends Formatter {
             char[] chars = value.toCharArray();
             char lastChar = chars[chars.length - 1];
             if (lastChar != NonSafeInitChars.SPACE.value) {
-                for (int i = 0; i < chars.length; i++) {
-                    char c = chars[i];
-                    if (isFirstChar) {
-                        if (isNonSafeInitChar(c)) {
-                            beginsWithCharOtheThanSAFE_INIT_CHAR = true;
-                            break;
-                        }
-                        isFirstChar = false;
-                    }
-                    if (isNonSafeChar(c)) {
-                        containsCharsOtherThanSAFE_CHAR = true;
-                        break;
-                    }
+              for (char c : chars) {
+                if (isFirstChar) {
+                  if (isNonSafeInitChar(c)) {
+                    beginsWithCharOtheThanSAFE_INIT_CHAR = true;
+                    break;
+                  }
+                  isFirstChar = false;
                 }
+                if (isNonSafeChar(c)) {
+                  containsCharsOtherThanSAFE_CHAR = true;
+                  break;
+                }
+              }
                 // if value contains characters other than those defined
                 // as SAFE-CHAR, or begins with a character other than
                 // those defined as SAFE-INIT-CHAR, MUST be base-64

@@ -95,10 +95,10 @@ public class GetAllAccounts extends AdminDocumentHandler {
             response = zsc.createElement(getResponseQName());
             List domains = prov.getAllDomains();
             if (domains != null) {
-	            for (Iterator dit=domains.iterator(); dit.hasNext(); ) {
-	                Domain domain = (Domain) dit.next();
-	                doDomain(zsc, response, domain, server);                
-	            }
+              for (Object o : domains) {
+                Domain domain = (Domain) o;
+                doDomain(zsc, response, domain, server);
+              }
             } else { //domains not supported, for now only offline
             	doDomain(zsc, response, null, server);
             }

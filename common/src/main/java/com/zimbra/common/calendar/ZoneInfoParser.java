@@ -1029,62 +1029,58 @@ public class ZoneInfoParser {
 
     public void analyze() {
         // Link rules to zones.
-        for (Iterator<Entry<String, Zone>> ziter = mZones.entrySet().iterator(); ziter.hasNext(); ) {
-            Entry<String, Zone> zentry = ziter.next();
-            Zone zone = zentry.getValue();
-            Set<ZoneLine> zlines = zone.getZoneLines();
-            for (ZoneLine zline : zlines) {
-                if (zline.hasRule()) {
-                    String rname = zline.getRuleName();
-                    Rule rule = mRules.get(rname);
-                    if (rule == null) {
-                        System.err.println("Unknown rule: " + rname);
-                        continue;
-                    }
-                    zline.setRule(rule);
-                }
+      for (Entry<String, Zone> zentry : mZones.entrySet()) {
+        Zone zone = zentry.getValue();
+        Set<ZoneLine> zlines = zone.getZoneLines();
+        for (ZoneLine zline : zlines) {
+          if (zline.hasRule()) {
+            String rname = zline.getRuleName();
+            Rule rule = mRules.get(rname);
+            if (rule == null) {
+              System.err.println("Unknown rule: " + rname);
+              continue;
             }
+            zline.setRule(rule);
+          }
         }
+      }
 
         // Flatten links map.
         List<String> aliasesToRemove = new ArrayList<String>();
         Map<String, String> flattenedLinks = new HashMap<String, String>();
-        for (Iterator<Entry<String, String>> liter = mLinks.entrySet().iterator(); liter.hasNext(); ) {
-            Entry<String, String> lentry = liter.next();
-            String alias = lentry.getKey();
-            String real = lentry.getValue();
-            if (!mZones.containsKey(real)) {
-                aliasesToRemove.add(alias);
-                while ((real = mLinks.get(real)) != null) {
-                    if (mZones.containsKey(real)) {
-                        if (!alias.equals(real))
-                            flattenedLinks.put(alias, real);
-                        break;
-                    }
-                }
+      for (Entry<String, String> lentry : mLinks.entrySet()) {
+        String alias = lentry.getKey();
+        String real = lentry.getValue();
+        if (!mZones.containsKey(real)) {
+          aliasesToRemove.add(alias);
+          while ((real = mLinks.get(real)) != null) {
+            if (mZones.containsKey(real)) {
+              if (!alias.equals(real))
+                flattenedLinks.put(alias, real);
+              break;
             }
+          }
         }
+      }
         for (String alias : aliasesToRemove) {
             mLinks.remove(alias);
         }
-        for (Iterator<Entry<String, String>> liter = flattenedLinks.entrySet().iterator(); liter.hasNext(); ) {
-            Entry<String, String> lentry = liter.next();
-            String alias = lentry.getKey();
-            String real = lentry.getValue();
-            mLinks.put(alias, real);
-        }
+      for (Entry<String, String> lentry : flattenedLinks.entrySet()) {
+        String alias = lentry.getKey();
+        String real = lentry.getValue();
+        mLinks.put(alias, real);
+      }
 
         // Register the aliases to zones.
-        for (Iterator<Entry<String, String>> liter = mLinks.entrySet().iterator(); liter.hasNext(); ) {
-            Entry<String, String> lentry = liter.next();
-            String alias = lentry.getKey();
-            String real = lentry.getValue();
-            Zone zone = mZones.get(real);
-            if (zone != null)
-                zone.addAlias(alias);
-            else
-                System.err.println("Invalid state!  Link \"" + alias + "\" points to a non-existent zone \"" + real + "\".");
-        }
+      for (Entry<String, String> lentry : mLinks.entrySet()) {
+        String alias = lentry.getKey();
+        String real = lentry.getValue();
+        Zone zone = mZones.get(real);
+        if (zone != null)
+          zone.addAlias(alias);
+        else
+          System.err.println("Invalid state!  Link \"" + alias + "\" points to a non-existent zone \"" + real + "\".");
+      }
 
         mAnalyzed = true;
     }

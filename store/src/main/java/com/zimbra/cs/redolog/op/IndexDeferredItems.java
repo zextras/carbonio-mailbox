@@ -33,8 +33,8 @@ public class IndexDeferredItems extends RedoableOp {
     @Override
     protected void serializeData(RedoLogOutput out) throws IOException {
         out.writeInt(mItemIds.length);
-        for (int i = 0; i < mItemIds.length; i++)
-            out.writeInt(mItemIds[i]);
+      for (int mItemId : mItemIds)
+        out.writeInt(mItemId);
         for (int i = 0; i < mItemIds.length; i++)
             out.writeByte(mItemTypes[i]);
     }

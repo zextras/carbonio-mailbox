@@ -162,10 +162,9 @@ public class NetUtil {
     }
 
     public static void dumpMap() {
-        for (Iterator<Map.Entry<String, ServerSocket>> iter = mBoundSockets.entrySet().iterator(); iter.hasNext();) {
-            Map.Entry<String, ServerSocket> entry = iter.next();
-            System.err.println(entry.getKey() + " => " + entry.getValue());
-        }
+      for (Map.Entry<String, ServerSocket> entry : mBoundSockets.entrySet()) {
+        System.err.println(entry.getKey() + " => " + entry.getValue());
+      }
     }
 
     public static synchronized void bindServerSocket(String address, int port, boolean ssl, boolean useChannels, String[] excludeCiphers, String[] includeCiphers) throws IOException {

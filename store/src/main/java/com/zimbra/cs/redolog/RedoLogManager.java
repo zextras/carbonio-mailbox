@@ -242,11 +242,10 @@ public class RedoLogManager {
             // file after rollover will still list these uncommitted ops.
             if (postStartupRecoveryOps.size() > 0) {
                 synchronized (mActiveOps) {
-                    for (Iterator iter = postStartupRecoveryOps.iterator(); iter.hasNext(); ) {
-                        RedoableOp op = (RedoableOp) iter.next();
-                        assert(op.isStartMarker());
-                        mActiveOps.put(op.getTransactionId(), op);
-                    }
+                  for (RedoableOp op : postStartupRecoveryOps) {
+                    assert (op.isStartMarker());
+                    mActiveOps.put(op.getTransactionId(), op);
+                  }
                 }
             }
 
@@ -279,39 +278,39 @@ public class RedoLogManager {
         public void run() {
             ZimbraLog.redolog.info("Starting post-startup crash recovery");
             boolean interrupted = false;
-            for (Iterator iter = mOps.iterator(); iter.hasNext(); ) {
-                synchronized (mShuttingDownGuard) {
-                    if (mShuttingDown) {
-                        interrupted = true;
-                        break;
-                    }
-                }
-                RedoableOp op = (RedoableOp) iter.next();
-                try {
-                    if (ZimbraLog.redolog.isDebugEnabled())
-                        ZimbraLog.redolog.debug("REDOING: " + op);
-                    op.redo();
-                } catch (Exception e) {
-                    // If there's any problem, just log the error and move on.
-                    // The alternative is to abort the server, but that may be
-                    // too drastic.
-                    ZimbraLog.redolog.error("Redo failed for [" + op + "]." +
-                                            "  Backend state of affected item is indeterminate." +
-                                            "  Marking operation as aborted and moving on.", e);
-                } finally {
-                    // If the redo didn't work, we need to mark this operation
-                    // as aborted in the redolog so it doesn't get reattempted
-                    // during next startup.
-                    //
-                    // If the redo did work, we still need to mark our op as
-                    // aborted because in the course of the redo a successful
-                    // commit of the operation was logged using a different
-                    // txn ID.  We must therefore tell the redolog the currnt
-                    // op is canceled, to avoid redoing it during next startup.
-                    AbortTxn abort = new AbortTxn(op);
-                    logOnly(abort, true);
-                }
+          for (Object mOp : mOps) {
+            synchronized (mShuttingDownGuard) {
+              if (mShuttingDown) {
+                interrupted = true;
+                break;
+              }
             }
+            RedoableOp op = (RedoableOp) mOp;
+            try {
+              if (ZimbraLog.redolog.isDebugEnabled())
+                ZimbraLog.redolog.debug("REDOING: " + op);
+              op.redo();
+            } catch (Exception e) {
+              // If there's any problem, just log the error and move on.
+              // The alternative is to abort the server, but that may be
+              // too drastic.
+              ZimbraLog.redolog.error("Redo failed for [" + op + "]." +
+                  "  Backend state of affected item is indeterminate." +
+                  "  Marking operation as aborted and moving on.", e);
+            } finally {
+              // If the redo didn't work, we need to mark this operation
+              // as aborted in the redolog so it doesn't get reattempted
+              // during next startup.
+              //
+              // If the redo did work, we still need to mark our op as
+              // aborted because in the course of the redo a successful
+              // commit of the operation was logged using a different
+              // txn ID.  We must therefore tell the redolog the currnt
+              // op is canceled, to avoid redoing it during next startup.
+              AbortTxn abort = new AbortTxn(op);
+              logOnly(abort, true);
+            }
+          }
 
             if (!interrupted)
                 ZimbraLog.redolog.info("Finished post-startup crash recovery");
@@ -506,11 +505,9 @@ public class RedoLogManager {
             // Create an empty LinkedHashSet and insert keys from mActiveOps
             // by iterating the keyset.
             txns = new LinkedHashSet<TransactionId>();
-            for (Iterator<Map.Entry<TransactionId, RedoableOp>>
-                 it = mActiveOps.entrySet().iterator(); it.hasNext(); ) {
-                Map.Entry<TransactionId, RedoableOp> entry = it.next();
-                txns.add(entry.getKey());
-            }
+          for (Map.Entry<TransactionId, RedoableOp> entry : mActiveOps.entrySet()) {
+            txns.add(entry.getKey());
+          }
         }
         Checkpoint ckpt = new Checkpoint(txns);
         logOnly(ckpt, true);

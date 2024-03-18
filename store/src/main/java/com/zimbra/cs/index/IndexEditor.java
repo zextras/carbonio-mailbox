@@ -87,15 +87,15 @@ public final class IndexEditor {
             return;
         }
         int ids[] = mmgr.getMailboxIds();
-        for (int i = 0; i < ids.length; i++) {
-            mLog.info("Mailbox "+ids[i]+"\n");
-            try {
-                Mailbox mbx = mmgr.getMailboxById(ids[i]);
-                mbx.index.startReIndex();
-            } catch (ServiceException e) {
-                mLog.info("Exception ReIndexing " + ids[i], e);
-            }
+      for (int id : ids) {
+        mLog.info("Mailbox " + id + "\n");
+        try {
+          Mailbox mbx = mmgr.getMailboxById(id);
+          mbx.index.startReIndex();
+        } catch (ServiceException e) {
+          mLog.info("Exception ReIndexing " + id, e);
         }
+      }
     }
 
     public void reIndex(int mailboxId) {

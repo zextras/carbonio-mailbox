@@ -2788,8 +2788,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    */
   public String uploadAttachments(File[] files, int msTimeout) throws ServiceException {
     MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-    for (int i = 0; i < files.length; i++) {
-      File file = files[i];
+    for (File file : files) {
       String contentType = URLConnection.getFileNameMap().getContentTypeFor(file.getName());
       if (contentType != null) {
         builder.addBinaryBody(

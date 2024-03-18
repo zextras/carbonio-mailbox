@@ -74,8 +74,8 @@ public class ZInvite implements ToZJSONObject {
 
   public boolean getHasAcceptableComponent() {
     if (ListUtil.isEmpty(mComponents)) return false;
-    for (int i = 0; i < mComponents.size(); i++) {
-      if (mComponents.get(i) != null && !mComponents.get(i).getStatus().isCancelled()) {
+    for (ZComponent mComponent : mComponents) {
+      if (mComponent != null && !mComponent.getStatus().isCancelled()) {
         return true;
       }
     }

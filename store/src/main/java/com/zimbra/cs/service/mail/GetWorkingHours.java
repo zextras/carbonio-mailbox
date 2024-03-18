@@ -55,24 +55,23 @@ public class GetWorkingHours extends GetFreeBusy {
         }
 
         Element response = getResponseElement(zsc);
-        for (Iterator<Map.Entry<String, String>> entryIter = idMap.entrySet().iterator(); entryIter.hasNext(); ) {
-            Map.Entry<String, String> entry = entryIter.next();
-            String idOrName = entry.getKey();
-            String acctId = entry.getValue();
-            Account acct = acctId != null ? prov.get(AccountBy.id, acctId) : null;
-            FreeBusy workHours;
-            if (acct != null) {
-                String name; 
-                if (!idOrName.equalsIgnoreCase(acctId))  // requested by name; use the same name in the response
-                    name = idOrName;
-                else
-                    name = acct.getName();
-                workHours = WorkingHours.getWorkingHours(authAcct, asAdmin, acct, name, rangeStart, rangeEnd);
-            } else {
-                workHours = FreeBusy.nodataFreeBusy(idOrName, rangeStart, rangeEnd);
-            }
-            ToXML.encodeFreeBusy(response, workHours);
+      for (Map.Entry<String, String> entry : idMap.entrySet()) {
+        String idOrName = entry.getKey();
+        String acctId = entry.getValue();
+        Account acct = acctId != null ? prov.get(AccountBy.id, acctId) : null;
+        FreeBusy workHours;
+        if (acct != null) {
+          String name;
+          if (!idOrName.equalsIgnoreCase(acctId))  // requested by name; use the same name in the response
+            name = idOrName;
+          else
+            name = acct.getName();
+          workHours = WorkingHours.getWorkingHours(authAcct, asAdmin, acct, name, rangeStart, rangeEnd);
+        } else {
+          workHours = FreeBusy.nodataFreeBusy(idOrName, rangeStart, rangeEnd);
         }
+        ToXML.encodeFreeBusy(response, workHours);
+      }
         return response;
     }
 }

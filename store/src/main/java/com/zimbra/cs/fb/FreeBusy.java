@@ -435,8 +435,7 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
 
   public String getBusiest() {
     String val = IcalXmlStrMap.FBTYPE_FREE;
-    for (Iterator<Interval> iter = iterator(); iter.hasNext(); ) {
-      Interval interval = iter.next();
+    for (Interval interval : this) {
       val = chooseBusier(val, interval.getStatus());
     }
     return val;
@@ -467,10 +466,11 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
   }
 
   public static String chooseBusier(String freeBusy1, String freeBusy2) {
-    for (int i = 0; i < sBusyOrder.length; i++) {
-      String busy = sBusyOrder[i];
-      if (busy.equals(freeBusy1)) return freeBusy1;
-      if (busy.equals(freeBusy2)) return freeBusy2;
+    for (String busy : sBusyOrder) {
+      if (busy.equals(freeBusy1))
+        return freeBusy1;
+      if (busy.equals(freeBusy2))
+        return freeBusy2;
     }
     if (freeBusy1 != null) return freeBusy1;
     else return freeBusy2;
@@ -544,8 +544,7 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
     //		URL:http://www.host.com/calendar/busytime/jsmith.ifb
     //		END:VFREEBUSY
 
-    for (Iterator<Interval> iter = this.iterator(); iter.hasNext(); ) {
-      FreeBusy.Interval cur = iter.next();
+    for (Interval cur : this) {
       String status = cur.getStatus();
 
       if (status.equals(IcalXmlStrMap.FBTYPE_FREE)) {
@@ -591,8 +590,7 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
     String uidBase = "tmp_" + LdapUtil.generateUUID() + "_";
     int uidCount = 0;
     TimeZoneMap tzMap = new TimeZoneMap(ICalTimeZone.getUTC());
-    for (Iterator<Interval> iter = this.iterator(); iter.hasNext(); ) {
-      FreeBusy.Interval cur = iter.next();
+    for (Interval cur : this) {
       String status = cur.getStatus();
 
       if (status.equals(IcalXmlStrMap.FBTYPE_FREE)) {

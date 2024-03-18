@@ -72,8 +72,8 @@ public class GetPrefs extends AccountDocumentHandler  {
             Object value = entry.getValue();
             if (value instanceof String[]) {
                 String sa[] = (String[]) value;
-                for (int i = 0; i < sa.length; i++)
-                    prefs.addKeyValuePair(key, sa[i], AccountConstants.E_PREF, AccountConstants.A_NAME);
+                for (String s : sa)
+                    prefs.addKeyValuePair(key, s, AccountConstants.E_PREF, AccountConstants.A_NAME);
             } else {
                 // Fixup for time zone id.  Always use canonical (Olson ZoneInfo) ID.
                 if (key.equals(Provisioning.A_zimbraPrefTimeZoneId))

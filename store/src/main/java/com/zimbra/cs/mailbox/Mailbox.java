@@ -3280,8 +3280,8 @@ public class Mailbox implements MailboxStore {
       beginTransaction("getItemById[]", octxt);
       MailItem[] items = getItemById(ids, type, fromDumpster);
       // make sure all those items are visible...
-      for (int i = 0; i < items.length; i++) {
-        checkAccess(items[i]);
+      for (MailItem item : items) {
+        checkAccess(item);
       }
       success = true;
       return items;
@@ -5860,8 +5860,7 @@ public class Mailbox implements MailboxStore {
     List<List<MailItem>> lists = new ArrayList<List<MailItem>>(2);
     lists.add(getItemList(octxt, MailItem.Type.APPOINTMENT));
     for (List<MailItem> items : lists) {
-      for (Iterator<MailItem> iter = items.iterator(); iter.hasNext(); ) {
-        Object obj = iter.next();
+      for (Object obj : items) {
         if (!(obj instanceof CalendarItem)) {
           continue;
         }
@@ -5948,8 +5947,7 @@ public class Mailbox implements MailboxStore {
     List<MailItem>[] lists = new List[2];
     lists[0] = getItemList(octxt, MailItem.Type.APPOINTMENT);
     for (List<MailItem> items : lists) {
-      for (Iterator<MailItem> iter = items.iterator(); iter.hasNext(); ) {
-        Object obj = iter.next();
+      for (Object obj : items) {
         if (!(obj instanceof CalendarItem)) {
           continue;
         }
@@ -6003,8 +6001,7 @@ public class Mailbox implements MailboxStore {
     List<MailItem>[] lists = new List[2];
     lists[0] = getItemList(octxt, MailItem.Type.APPOINTMENT);
     for (List<MailItem> items : lists) {
-      for (Iterator<MailItem> iter = items.iterator(); iter.hasNext(); ) {
-        Object obj = iter.next();
+      for (Object obj : items) {
         if (!(obj instanceof CalendarItem)) {
           continue;
         }
@@ -10739,8 +10736,8 @@ public class Mailbox implements MailboxStore {
             String[] folderIds = folderList.split(",");
 
             isNewMessage = false;
-            for (int i = 0; i < folderIds.length; i++) {
-              if (cm.getFolderId() == Integer.parseInt(folderIds[i])) {
+            for (String folderId : folderIds) {
+              if (cm.getFolderId() == Integer.parseInt(folderId)) {
                 isNewMessage = true;
                 break;
               }

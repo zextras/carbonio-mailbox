@@ -127,17 +127,16 @@ public class Appointment extends CalendarItem {
             // List conflicting appointments and their organizers.
             FreeBusy fb = avail.getFreeBusy();
             List<FBInstance> instances = new ArrayList<FBInstance>();
-            for (Iterator<Interval> iter = fb.iterator(); iter.hasNext(); ) {
-                Interval interval = iter.next();
-                // busy intervals only
-                if (Conflict.isBusy(interval.getStatus())) {
-                    // busy appointments only
-                    for (FBInstance fbinst : interval.getInstances()) {
-                        if (Conflict.isBusy(fbinst.getFreeBusy()))
-                            instances.add(fbinst);
-                    }
-                }
+          for (Interval interval : fb) {
+            // busy intervals only
+            if (Conflict.isBusy(interval.getStatus())) {
+              // busy appointments only
+              for (FBInstance fbinst : interval.getInstances()) {
+                if (Conflict.isBusy(fbinst.getFreeBusy()))
+                  instances.add(fbinst);
+              }
             }
+          }
             for (FBInstance instance : instances) {
                 Date startDate = new Date(instance.getStartTime());
                 Date endDate = new Date(instance.getEndTime());

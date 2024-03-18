@@ -83,10 +83,10 @@ public abstract class ConfigWriter {
         
         public void write(Writer writer) {
             PrintWriter pw = new PrintWriter(writer);
-            for (Iterator iter = mItems.iterator(); iter.hasNext();) {
-                Pair p = (Pair)iter.next();
-                pw.println(p.mKey + " = " + p.mValue);
-            }
+          for (Object mItem : mItems) {
+            Pair p = (Pair) mItem;
+            pw.println(p.mKey + " = " + p.mValue);
+          }
             pw.flush();
         }
         
@@ -102,14 +102,14 @@ public abstract class ConfigWriter {
             Document doc = DocumentHelper.createDocument();
             Element lce = DocumentHelper.createElement(LocalConfig.E_LOCALCONFIG);
             doc.add(lce);
-            for (Iterator iter = mItems.iterator(); iter.hasNext();) {
-                Pair p = (Pair)iter.next();
-                
-                Element key = DocumentHelper.createElement(LocalConfig.E_KEY);
-                key.addAttribute(LocalConfig.A_NAME, p.mKey);
-                key.addElement(LocalConfig.E_VALUE).addText(p.mValue);
-                lce.add(key);
-            }
+          for (Object mItem : mItems) {
+            Pair p = (Pair) mItem;
+
+            Element key = DocumentHelper.createElement(LocalConfig.E_KEY);
+            key.addAttribute(LocalConfig.A_NAME, p.mKey);
+            key.addElement(LocalConfig.E_VALUE).addText(p.mValue);
+            lce.add(key);
+          }
             
             XMLWriter xw = new XMLWriter(writer, org.dom4j.io.OutputFormat.createPrettyPrint());
             xw.write(doc);
@@ -127,22 +127,22 @@ public abstract class ConfigWriter {
         
         public void write(Writer writer) {
             PrintWriter pw = new PrintWriter(writer);
-            for (Iterator iter = mItems.iterator(); iter.hasNext();) {
-                Pair p = (Pair)iter.next();
-                int vlen = p.mValue.length();
-                StringBuffer sb = new StringBuffer(vlen + 2);
-                sb.append('\'');
-                for (int i = 0; i < vlen; i++) {
-                    char ch = p.mValue.charAt(i);
-                    if (ch == '\'') {
-                        sb.append("''");
-                    } else {
-                        sb.append(ch);
-                    }
-                }
-                sb.append('\'');
-                pw.println(p.mKey + "=" + sb + ";");
+          for (Object mItem : mItems) {
+            Pair p = (Pair) mItem;
+            int vlen = p.mValue.length();
+            StringBuffer sb = new StringBuffer(vlen + 2);
+            sb.append('\'');
+            for (int i = 0; i < vlen; i++) {
+              char ch = p.mValue.charAt(i);
+              if (ch == '\'') {
+                sb.append("''");
+              } else {
+                sb.append(ch);
+              }
             }
+            sb.append('\'');
+            pw.println(p.mKey + "=" + sb + ";");
+          }
             pw.flush();
         }
     }
@@ -156,22 +156,22 @@ public abstract class ConfigWriter {
         
         public void write(Writer writer) {
             PrintWriter pw = new PrintWriter(writer);
-            for (Iterator iter = mItems.iterator(); iter.hasNext();) {
-                Pair p = (Pair)iter.next();
-                int vlen = p.mValue.length();
-                StringBuffer sb = new StringBuffer(vlen + 2);
-                sb.append('\'');
-                for (int i = 0; i < vlen; i++) {
-                    char ch = p.mValue.charAt(i);
-                    if (ch == '\'') {
-                        sb.append("''");
-                    } else {
-                        sb.append(ch);
-                    }
-                }
-                sb.append('\'');
-                pw.println("export " + p.mKey + "=" + sb + ";");
+          for (Object mItem : mItems) {
+            Pair p = (Pair) mItem;
+            int vlen = p.mValue.length();
+            StringBuffer sb = new StringBuffer(vlen + 2);
+            sb.append('\'');
+            for (int i = 0; i < vlen; i++) {
+              char ch = p.mValue.charAt(i);
+              if (ch == '\'') {
+                sb.append("''");
+              } else {
+                sb.append(ch);
+              }
             }
+            sb.append('\'');
+            pw.println("export " + p.mKey + "=" + sb + ";");
+          }
             pw.flush();
         }
     }
@@ -184,10 +184,10 @@ public abstract class ConfigWriter {
         
         public void write(Writer writer) {
             PrintWriter pw = new PrintWriter(writer);
-            for (Iterator iter = mItems.iterator(); iter.hasNext();) {
-                Pair p = (Pair)iter.next();
-                pw.println(p.mValue);
-            }
+          for (Object mItem : mItems) {
+            Pair p = (Pair) mItem;
+            pw.println(p.mValue);
+          }
             pw.flush();
         }
     }

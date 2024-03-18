@@ -2331,22 +2331,28 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     boolean needIsExternalVirtualAccount = (flags & Provisioning.SD_ACCOUNT_FLAG) != 0;
     boolean needExternalUserMailAddress = (flags & Provisioning.SD_ACCOUNT_FLAG) != 0;
 
-    for (int i = 0; i < returnAttrs.length; i++) {
-      if (Provisioning.A_uid.equalsIgnoreCase(returnAttrs[i])) needUID = false;
-      else if (Provisioning.A_zimbraId.equalsIgnoreCase(returnAttrs[i])) needID = false;
-      else if (Provisioning.A_zimbraCOSId.equalsIgnoreCase(returnAttrs[i])) needCOSId = false;
-      else if (Provisioning.A_zimbraAliasTargetId.equalsIgnoreCase(returnAttrs[i]))
+    for (String returnAttr : returnAttrs) {
+      if (Provisioning.A_uid.equalsIgnoreCase(returnAttr))
+        needUID = false;
+      else if (Provisioning.A_zimbraId.equalsIgnoreCase(returnAttr))
+        needID = false;
+      else if (Provisioning.A_zimbraCOSId.equalsIgnoreCase(returnAttr))
+        needCOSId = false;
+      else if (Provisioning.A_zimbraAliasTargetId.equalsIgnoreCase(returnAttr))
         needAliasTargetId = false;
-      else if (Provisioning.A_objectClass.equalsIgnoreCase(returnAttrs[i])) needObjectClass = false;
-      else if (Provisioning.A_zimbraAccountCalendarUserType.equalsIgnoreCase(returnAttrs[i]))
+      else if (Provisioning.A_objectClass.equalsIgnoreCase(returnAttr))
+        needObjectClass = false;
+      else if (Provisioning.A_zimbraAccountCalendarUserType.equalsIgnoreCase(returnAttr))
         needCalendarUserType = false;
-      else if (Provisioning.A_zimbraDomainName.equalsIgnoreCase(returnAttrs[i]))
+      else if (Provisioning.A_zimbraDomainName.equalsIgnoreCase(returnAttr))
         needDomainName = false;
-      else if (Provisioning.A_zimbraACE.equalsIgnoreCase(returnAttrs[i])) needZimbraACE = false;
-      else if (Provisioning.A_cn.equalsIgnoreCase(returnAttrs[i])) needCn = false;
-      else if (Provisioning.A_zimbraIsExternalVirtualAccount.equalsIgnoreCase(returnAttrs[i]))
+      else if (Provisioning.A_zimbraACE.equalsIgnoreCase(returnAttr))
+        needZimbraACE = false;
+      else if (Provisioning.A_cn.equalsIgnoreCase(returnAttr))
+        needCn = false;
+      else if (Provisioning.A_zimbraIsExternalVirtualAccount.equalsIgnoreCase(returnAttr))
         needIsExternalVirtualAccount = false;
-      else if (Provisioning.A_zimbraExternalUserMailAddress.equalsIgnoreCase(returnAttrs[i]))
+      else if (Provisioning.A_zimbraExternalUserMailAddress.equalsIgnoreCase(returnAttr))
         needExternalUserMailAddress = false;
     }
 
@@ -3395,9 +3401,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     // delete all aliases of the account
     String aliases[] = acc.getMailAlias();
     if (aliases != null) {
-      for (int i = 0; i < aliases.length; i++) {
+      for (String alias : aliases) {
         try {
-          removeAlias(acc, aliases[i]); // this also removes each alias from any DLs
+          removeAlias(acc, alias); // this also removes each alias from any DLs
         } catch (ServiceException se) {
           if (AccountServiceException.NO_SUCH_ALIAS.equals(se.getCode())) {
             ZimbraLog.account.warn(
@@ -3539,8 +3545,8 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
         // if any of the renamed aliases clashes with the account's new name,
         // it won't be caught by the above check, do a separate check.
-        for (int i = 0; i < aliasNewAddrs.length; i++) {
-          if (newName.equalsIgnoreCase(aliasNewAddrs[i])) {
+        for (String aliasNewAddr : aliasNewAddrs) {
+          if (newName.equalsIgnoreCase(aliasNewAddr)) {
             throw AccountServiceException.ACCOUNT_EXISTS(newName);
           }
         }
@@ -4804,11 +4810,11 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     String aliases[] = dl.getAliases();
     if (aliases != null) {
       String dlName = dl.getName();
-      for (int i = 0; i < aliases.length; i++) {
+      for (String alias : aliases) {
         // the primary name shows up in zimbraMailAlias on the entry, don't bother to remove
         // this "alias" if it is the primary name, the entire entry will be deleted anyway.
-        if (!dlName.equalsIgnoreCase(aliases[i])) {
-          removeAlias(dl, aliases[i]); // this also removes each alias from any DLs
+        if (!dlName.equalsIgnoreCase(alias)) {
+          removeAlias(dl, alias); // this also removes each alias from any DLs
         }
       }
     }
@@ -6065,10 +6071,10 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
    */
   private void checkHistory(String newPassword, String[] history) throws AccountServiceException {
     if (history == null) return;
-    for (int i = 0; i < history.length; i++) {
-      int sepIndex = history[i].indexOf(':');
+    for (String s : history) {
+      int sepIndex = s.indexOf(':');
       if (sepIndex != -1) {
-        String encoded = history[i].substring(sepIndex + 1);
+        String encoded = s.substring(sepIndex + 1);
         if (PasswordUtil.SSHA.isSSHA(encoded)) {
           if (PasswordUtil.SSHA.verifySSHA(encoded, newPassword))
             throw AccountServiceException.PASSWORD_RECENTLY_USED();
@@ -7533,9 +7539,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         Provisioning.getInstance().getConfig().getMultiAttr(Provisioning.A_zimbraGalLdapFilterDef);
     String fname = name + ":";
     String queryExpr = null;
-    for (int i = 0; i < queryExprs.length; i++) {
-      if (queryExprs[i].startsWith(fname)) {
-        queryExpr = queryExprs[i].substring(fname.length());
+    for (String expr : queryExprs) {
+      if (expr.startsWith(fname)) {
+        queryExpr = expr.substring(fname.length());
       }
     }
 
@@ -7680,15 +7686,15 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       dlOU = getGroupOU(((LdapDistributionList) dl).getDN());
     }
 
-    for (int i = 0; i < members.length; i++) {
-      String memberName = members[i].toLowerCase();
+    for (String member : members) {
+      String memberName = member.toLowerCase();
       memberName = IDNUtil.toAsciiEmail(memberName);
 
       if (addrsOfDL.isIn(memberName))
         throw ServiceException.INVALID_REQUEST("Cannot add self as a member: " + memberName, null);
 
       if (dl.isHABGroup()) {
-        Group memberGroup = getGroup(Key.DistributionListBy.name, memberName);
+        Group memberGroup = getGroup(DistributionListBy.name, memberName);
         if (memberGroup != null) {
           if (!memberGroup.isHABGroup()) {
             throw ServiceException.INVALID_REQUEST(
@@ -7706,7 +7712,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
       // cannot add a dynamic group as member in non-hab group
       DynamicGroup dynMember =
-          getDynamicGroup(Key.DistributionListBy.name, memberName, null, Boolean.FALSE);
+          getDynamicGroup(DistributionListBy.name, memberName, null, Boolean.FALSE);
       if (dynMember != null) {
         if (dl.isHABGroup()) {
           if (dlIsInDynamicHABGroup(dynMember, addrsOfDL.getAll())) {
@@ -7743,7 +7749,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
           // the upward membership cache for that is computed and cache only when
           // the entry is loaded/being cached, instead of lazily computed like we
           // do for account.
-          removeGroupFromCache(Key.DistributionListBy.name, memberName);
+          removeGroupFromCache(DistributionListBy.name, memberName);
         }
       }
     }
@@ -7808,8 +7814,8 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     Set<String> mods = new HashSet<String>();
     HashSet<String> failed = new HashSet<String>();
 
-    for (int i = 0; i < members.length; i++) {
-      String memberName = members[i].toLowerCase();
+    for (String member : members) {
+      String memberName = member.toLowerCase();
       memberName = IDNUtil.toAsciiEmail(memberName);
       if (memberName.length() == 0) {
         throw ServiceException.INVALID_REQUEST("invalid member email address: " + memberName, null);
@@ -7857,9 +7863,10 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       if (primary != null) {
         if (addrsOfEntry.isAccount()) {
           Account acct = getFromCache(AccountBy.name, primary);
-          if (acct != null) clearUpwardMembershipCache(acct);
+          if (acct != null)
+            clearUpwardMembershipCache(acct);
         } else {
-          removeGroupFromCache(Key.DistributionListBy.name, primary);
+          removeGroupFromCache(DistributionListBy.name, primary);
         }
       }
     }
@@ -8613,8 +8620,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     String oldAddrs[] = entry.getMultiAttr(attrName);
     String newAddrs[] = new String[0];
 
-    for (int i = 0; i < oldAddrs.length; i++) {
-      String oldMail = oldAddrs[i];
+    for (String oldMail : oldAddrs) {
       if (oldMail.equals(oldAddr)) {
         // exact match, replace the entire old addr with new addr
         newAddrs = addMultiValue(newAddrs, newAddr);
@@ -10483,11 +10489,11 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     String aliases[] = group.getAliases();
     if (aliases != null) {
       String groupName = group.getName();
-      for (int i = 0; i < aliases.length; i++) {
+      for (String alias : aliases) {
         // the primary name shows up in zimbraMailAlias on the entry, don't bother to remove
         // this "alias" if it is the primary name, the entire entry will be deleted anyway.
-        if (!groupName.equalsIgnoreCase(aliases[i])) {
-          removeGroupAlias(group, aliases[i]); // this also removes each alias from any DLs
+        if (!groupName.equalsIgnoreCase(alias)) {
+          removeGroupAlias(group, alias); // this also removes each alias from any DLs
         }
       }
     }

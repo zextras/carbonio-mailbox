@@ -53,14 +53,14 @@ public class GetAdminSavedSearches extends AdminDocumentHandler {
     
     public void handle(Account acct, Element response, HashSet<String> specificSearches) throws ServiceException {
         String[] searches = acct.getMultiAttr(Provisioning.A_zimbraAdminSavedSearches);
-        
-        for (int i = 0; i < searches.length; i++) {
-            String search = searches[i];
-            AdminSearch as = AdminSearch.parse(search);
-            
-            if (specificSearches == null || specificSearches.contains(as.getName()))
-                response.addElement(AdminConstants.E_SEARCH).addAttribute(AdminConstants.A_NAME, as.getName()).setText(as.getQuery());
-        }
+
+      for (String search : searches) {
+        AdminSearch as = AdminSearch.parse(search);
+
+        if (specificSearches == null || specificSearches.contains(as.getName()))
+          response.addElement(AdminConstants.E_SEARCH).addAttribute(AdminConstants.A_NAME, as.getName())
+              .setText(as.getQuery());
+      }
     }
     
     @Override

@@ -39,9 +39,9 @@ public class ParallelRedoPlayer extends RedoPlayer {
         try {
             super.shutdown();
         } finally {
-            for (int i = 0; i < mPlayerThreads.length; i++) {
-                mPlayerThreads[i].shutdown();
-            }
+          for (PlayerThread mPlayerThread : mPlayerThreads) {
+            mPlayerThread.shutdown();
+          }
         }
         ZimbraLog.redolog.debug("ParallelRedoPlayer shutdown complete");
     }

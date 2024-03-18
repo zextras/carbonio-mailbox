@@ -251,17 +251,16 @@ public class Conversation extends MailItem {
         int date = 0, unread = 0, flags = 0;
         CustomMetadataList extended = null;
         Set<String> tags = new HashSet<String>();
-        for (int i = 0; i < msgs.length; i++) {
-            Message msg = msgs[i];
-            if (msg == null) {
-                throw ServiceException.FAILURE("null Message in list", null);
-            }
-            date = Math.max(date, msg.mData.date);
-            unread += msg.mData.unreadCount;
-            flags  |= msg.mData.getFlags();
-          tags.addAll(Arrays.asList(msg.mData.getTags()));
-            extended = MetadataCallback.duringConversationAdd(extended, msg);
+      for (Message msg : msgs) {
+        if (msg == null) {
+          throw ServiceException.FAILURE("null Message in list", null);
         }
+        date = Math.max(date, msg.mData.date);
+        unread += msg.mData.unreadCount;
+        flags |= msg.mData.getFlags();
+        tags.addAll(Arrays.asList(msg.mData.getTags()));
+        extended = MetadataCallback.duringConversationAdd(extended, msg);
+      }
 
         UnderlyingData data = new UnderlyingData();
         data.id = id;
@@ -281,11 +280,11 @@ public class Conversation extends MailItem {
         conv.finishCreation(null);
 
         DbMailItem.setParent(msgs, conv);
-        for (int i = 0; i < msgs.length; i++) {
-            mbox.markItemModified(msgs[i], Change.PARENT);
-            msgs[i].mData.parentId = id;
-            msgs[i].metadataChanged();
-        }
+      for (Message msg : msgs) {
+        mbox.markItemModified(msg, Change.PARENT);
+        msg.mData.parentId = id;
+        msg.metadataChanged();
+      }
         return conv;
     }
 

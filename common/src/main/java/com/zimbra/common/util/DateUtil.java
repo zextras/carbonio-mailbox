@@ -132,9 +132,9 @@ public final class DateUtil {
   private static String getTimezoneAbbreviation(String tzid, boolean dst) {
     if (tzid == null) return null;
 
-    for (int tzindex = 0; tzindex < ZONE_INFO.length; tzindex++) {
-      if (tzid.equalsIgnoreCase(ZONE_INFO[tzindex][0]))
-        return dst ? ZONE_INFO[tzindex][4] : ZONE_INFO[tzindex][2];
+    for (String[] strings : ZONE_INFO) {
+      if (tzid.equalsIgnoreCase(strings[0]))
+        return dst ? strings[4] : strings[2];
     }
     return null;
   }

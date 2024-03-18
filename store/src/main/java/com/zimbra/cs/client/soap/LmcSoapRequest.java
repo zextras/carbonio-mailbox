@@ -499,19 +499,19 @@ public abstract class LmcSoapRequest {
     // attachment ID's if present
     String attachmentIDs[] = msg.getAttachmentIDs();
     if (attachmentIDs != null) {
-      for (int i = 0; i < attachmentIDs.length; i++) {
+      for (String attachmentID : attachmentIDs) {
         Element aid = DomUtil.add(m, MailConstants.E_ATTACH, "");
-        addAttrNotNull(aid, MailConstants.A_ATTACHMENT_ID, attachmentIDs[i]);
+        addAttrNotNull(aid, MailConstants.A_ATTACHMENT_ID, attachmentID);
       }
     }
 
     // forwarding messages with attachments
     if (fwdPartNumbers != null) {
       Element attach = DomUtil.add(m, MailConstants.E_ATTACH, "");
-      for (int i = 0; i < fwdPartNumbers.length; i++) {
+      for (String fwdPartNumber : fwdPartNumbers) {
         Element part = DomUtil.add(attach, MailConstants.E_MIMEPART, "");
         DomUtil.addAttr(part, MailConstants.A_MESSAGE_ID, fwdMsgID);
-        DomUtil.addAttr(part, MailConstants.A_PART, fwdPartNumbers[i]);
+        DomUtil.addAttr(part, MailConstants.A_PART, fwdPartNumber);
       }
     }
   }

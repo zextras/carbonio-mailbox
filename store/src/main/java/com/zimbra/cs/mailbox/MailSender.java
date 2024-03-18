@@ -1037,10 +1037,10 @@ public class MailSender {
 
   private static void appendEnvelopeTo(StringBuilder msg, Address[] rcptAddresses) {
     msg.append(", nrcpts=").append(rcptAddresses.length);
-    for (int i = 0; i < rcptAddresses.length; i++) {
+    for (Address rcptAddress : rcptAddresses) {
       String addr = null;
-      if (rcptAddresses[i] instanceof InternetAddress) {
-        addr = ((InternetAddress) rcptAddresses[i]).getAddress();
+      if (rcptAddress instanceof InternetAddress) {
+        addr = ((InternetAddress) rcptAddress).getAddress();
       }
       if (null != addr) {
         msg.append(", to=").append(addr);

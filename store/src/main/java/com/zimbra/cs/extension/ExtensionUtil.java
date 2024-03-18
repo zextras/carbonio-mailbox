@@ -36,18 +36,18 @@ public class ExtensionUtil {
             return null;
         }
         List<URL> urls = new ArrayList<URL>(files.length);
-        for (int i = 0; i < files.length; i++) {
-            try {
-                URI uri = files[i].toURI();
-                URL url = uri.toURL();
-                urls.add(url);
-                if (ZimbraLog.extensions.isDebugEnabled()) {
-                    ZimbraLog.extensions.debug("adding url: " + url);
-                }
-            } catch (MalformedURLException mue) {
-                ZimbraLog.extensions.warn("ExtensionsUtil: exception creating url for " + files[i], mue);
-            }
+      for (File file : files) {
+        try {
+          URI uri = file.toURI();
+          URL url = uri.toURL();
+          urls.add(url);
+          if (ZimbraLog.extensions.isDebugEnabled()) {
+            ZimbraLog.extensions.debug("adding url: " + url);
+          }
+        } catch (MalformedURLException mue) {
+          ZimbraLog.extensions.warn("ExtensionsUtil: exception creating url for " + file, mue);
         }
+      }
         return urls.toArray(new URL[0]);
     }
 

@@ -103,42 +103,42 @@ public class ToXML {
             }
         }
 
-        for (Iterator iter = attrs.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Entry) iter.next();
-            String name = (String) entry.getKey();
-            Object value = entry.getValue();
+      for (Object o : attrs.entrySet()) {
+        Entry entry = (Entry) o;
+        String name = (String) entry.getKey();
+        Object value = entry.getValue();
 
-            // Never return data source passwords
-            if (name.equalsIgnoreCase(Provisioning.A_zimbraDataSourcePassword)) {
-                continue;
-            }
-
-            value = Provisioning.sanitizedAttrValue(name, value);
-
-            // only returns requested attrs
-            if (reqAttrsLowerCase != null && !reqAttrsLowerCase.contains(name.toLowerCase())) {
-                continue;
-            }
-
-            // do not return attrs hidden by protocol
-            if (hideAttrs != null && hideAttrs.contains(name)) {
-                continue;
-            }
-
-            boolean allowed = attrRightChecker == null ? true : attrRightChecker.allowAttr(name);
-
-            IDNType idnType = AttributeManager.idnType(attrMgr, name);
-
-            if (value instanceof String[]) {
-                String sv[] = (String[]) value;
-                for (int i = 0; i < sv.length; i++) {
-                    encodeAttr(e, name, sv[i], AdminConstants.E_A, key, idnType, allowed);
-                }
-            } else if (value instanceof String) {
-                value = com.zimbra.cs.service.account.ToXML.fixupZimbraPrefTimeZoneId(name, (String)value);
-                encodeAttr(e, name, (String)value, AdminConstants.E_A, key, idnType, allowed);
-            }
+        // Never return data source passwords
+        if (name.equalsIgnoreCase(Provisioning.A_zimbraDataSourcePassword)) {
+          continue;
         }
+
+        value = Provisioning.sanitizedAttrValue(name, value);
+
+        // only returns requested attrs
+        if (reqAttrsLowerCase != null && !reqAttrsLowerCase.contains(name.toLowerCase())) {
+          continue;
+        }
+
+        // do not return attrs hidden by protocol
+        if (hideAttrs != null && hideAttrs.contains(name)) {
+          continue;
+        }
+
+        boolean allowed = attrRightChecker == null ? true : attrRightChecker.allowAttr(name);
+
+        IDNType idnType = AttributeManager.idnType(attrMgr, name);
+
+        if (value instanceof String[]) {
+          String sv[] = (String[]) value;
+          for (String s : sv) {
+            encodeAttr(e, name, s, AdminConstants.E_A, key, idnType, allowed);
+          }
+        } else if (value instanceof String) {
+          value = com.zimbra.cs.service.account.ToXML.fixupZimbraPrefTimeZoneId(name, (String) value);
+          encodeAttr(e, name, (String) value, AdminConstants.E_A, key, idnType, allowed);
+        }
+      }
     }
 
     public static void encodeAttr(Element parent, String key, String value, String eltname, String attrname,

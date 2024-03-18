@@ -2339,9 +2339,9 @@ public abstract class CalendarItem extends MailItem {
     }
 
     // now remove the inviteid's from our list
-    for (Iterator<Integer> iter = idxsToRemove.iterator(); iter.hasNext(); ) {
+    for (Integer integer : idxsToRemove) {
       assert (modifiedCalItem);
-      Integer i = iter.next();
+      Integer i = integer;
       mInvites.remove(i.intValue());
     }
 

@@ -252,17 +252,17 @@ public class ZimletUtil {
     public static List<Zimlet> orderZimletsByPriority(String[] zimlets) {
         Provisioning prov = Provisioning.getInstance();
         List<Zimlet> zlist = new ArrayList<Zimlet>();
-        for (int i = 0; i < zimlets.length; i++) {
-            try {
-                Zimlet z = prov.getZimlet(zimlets[i]);
-                if (z != null) {
-                    zlist.add(z);
-                }
-            } catch (ServiceException se) {
-                // ignore error and continue on
-                ZimbraLog.zimlet.warn("unable to get zimlet " + zimlets[i], se);
-            }
+      for (String zimlet : zimlets) {
+        try {
+          Zimlet z = prov.getZimlet(zimlet);
+          if (z != null) {
+            zlist.add(z);
+          }
+        } catch (ServiceException se) {
+          // ignore error and continue on
+          ZimbraLog.zimlet.warn("unable to get zimlet " + zimlet, se);
         }
+      }
         return orderZimletsByPriority(zlist);
     }
 
@@ -424,16 +424,16 @@ public class ZimletUtil {
             zimlets.clear();
             String[] zimletNames = zimletRootDir.list();
             assert(zimletNames != null);
-            for (int i = 0; i < zimletNames.length; i++) {
-                if (zimletNames[i].equals(ZIMLET_DEV_DIR)) {
-                    continue;
-                }
-                try {
-                    zimlets.put(zimletNames[i], new ZimletFile(zimletRootDir, zimletNames[i]));
-                } catch (Exception e) {
-                    ZimbraLog.zimlet.warn("error loading zimlet "+zimletNames[i], e);
-                }
+          for (String zimletName : zimletNames) {
+            if (zimletName.equals(ZIMLET_DEV_DIR)) {
+              continue;
             }
+            try {
+              zimlets.put(zimletName, new ZimletFile(zimletRootDir, zimletName));
+            } catch (Exception e) {
+              ZimbraLog.zimlet.warn("error loading zimlet " + zimletName, e);
+            }
+          }
         }
     }
 
@@ -972,12 +972,12 @@ public class ZimletUtil {
         Provisioning prov = Provisioning.getInstance();
         for (Cos cos : prov.getAllCos()) {
             String[] zimlets = getAvailableZimlets(cos).getZimletNamesAsArray();
-            for (int i = 0; i < zimlets.length; i++) {
-                if (zimlets[i].equals(zimlet)) {
-                    System.out.println("\t"+cos.getName());
-                    break;
-                }
+          for (String s : zimlets) {
+            if (s.equals(zimlet)) {
+              System.out.println("\t" + cos.getName());
+              break;
             }
+          }
         }
     }
 
@@ -991,20 +991,20 @@ public class ZimletUtil {
         loadZimlets();
         ZimletFile[] zimlets = sZimlets.values().toArray(new ZimletFile[0]);
         Arrays.sort(zimlets);
-        for (int i = 0; i < zimlets.length; i++) {
-            ZimletDescription zd;
-            System.out.print("\t"+zimlets[i].getZimletName());
-            try {
-                zd = zimlets[i].getZimletDescription();
-                boolean isExtension = (zd != null && zd.isExtension());
-                if (isExtension && everything) {
-                    System.out.print(" (ext)");
-                }
-            } catch (Exception e) {
-                ZimbraLog.zimlet.warn("error reading zimlet : "+zimlets[i].getName(), e);
-            }
-            System.out.println();
+      for (ZimletFile zimlet : zimlets) {
+        ZimletDescription zd;
+        System.out.print("\t" + zimlet.getZimletName());
+        try {
+          zd = zimlet.getZimletDescription();
+          boolean isExtension = (zd != null && zd.isExtension());
+          if (isExtension && everything) {
+            System.out.print(" (ext)");
+          }
+        } catch (Exception e) {
+          ZimbraLog.zimlet.warn("error reading zimlet : " + zimlet.getName(), e);
         }
+        System.out.println();
+      }
     }
 
     /**
@@ -1043,9 +1043,9 @@ public class ZimletUtil {
             System.out.println("  "+cos.getName()+":");
             String[] zimlets = getAvailableZimlets(cos).getZimletNamesAsArray();
             Arrays.sort(zimlets);
-            for (int i = 0; i < zimlets.length; i++) {
-                System.out.println("\t"+zimlets[i]);
-            }
+          for (String zimlet : zimlets) {
+            System.out.println("\t" + zimlet);
+          }
         }
     }
 
@@ -1117,9 +1117,9 @@ public class ZimletUtil {
         Cos cos = prov.get(Key.CosBy.name, cosName);
         Set<String> domainSet = cos.getMultiAttrSet(Provisioning.A_zimbraProxyAllowedDomains);
         String[] domainArray = domains.toArray(new String[0]);
-        for (int i = 0; i < domainArray.length; i++) {
-            domainSet.remove(domainArray[i]);
-        }
+      for (String s : domainArray) {
+        domainSet.remove(s);
+      }
         Map<String, String[]> newlist = new HashMap<String, String[]>();
         newlist.put(Provisioning.A_zimbraProxyAllowedDomains, domainSet.toArray(new String[0]));
         prov.modifyAttrs(cos, newlist);

@@ -56,9 +56,9 @@ public class GetZimletStatus extends AdminDocumentHandler {
 			elem = response.addElement(AdminConstants.E_COS);
 			elem.addAttribute(AdminConstants.E_NAME, c.getName());
 			String[] z = ZimletUtil.getAvailableZimlets(c).getZimletNamesAsArray();
-			for (int i = 0; i < z.length; i++) {
-			    doZimlet(zsc, context, prov.getZimlet(z[i]), elem, -1);
-			}
+      for (String s : z) {
+        doZimlet(zsc, context, prov.getZimlet(s), elem, -1);
+      }
 		}
         return response;
     }

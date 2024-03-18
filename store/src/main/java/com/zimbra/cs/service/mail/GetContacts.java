@@ -105,9 +105,9 @@ public final class GetContacts extends MailDocumentHandler  {
                 if(idStr.indexOf(",") > 0) {
                     //comma-separated IDs. TODO: deprecate this use-case
                     String[] toks = idStr.split(",");
-                    for(int i=0; i < toks.length; i++) {
-                        ids.add(new ItemId(toks[i], zsc));
-                    }
+                  for (String tok : toks) {
+                    ids.add(new ItemId(tok, zsc));
+                  }
                 } else {
                     ids.add(new ItemId(idStr, zsc));
                 }

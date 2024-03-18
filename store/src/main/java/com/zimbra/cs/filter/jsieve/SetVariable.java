@@ -136,35 +136,34 @@ public class SetVariable extends AbstractCommand {
      */
     public static String applyModifiers(String value, String[] operations) {
         String temp = value;
-        for (int i = 0; i < operations.length; ++i) {
-            String operation = operations[i];
-            if (operation == null) {
-                continue;
-            }
-            if (operation.equals(STRING_LENGTH)) {
-                temp = String.valueOf(value.length());
-            } else if (operation.equals(QUOTE_WILDCARD)) {
-                temp = temp.replaceAll("\\\\", "\\\\\\\\");
-                temp = temp.replaceAll("\\*", "\\\\*");
-                temp = temp.replaceAll("\\?", "\\\\?");    
-            } else if (operation.equals(LOWERCASE_FIRST)) {
-                temp = String.valueOf(temp.charAt(0)).toLowerCase() + temp.substring(1);
-            } else if (operation.equals(UPPERCASE_FIRST)) {
-                temp = String.valueOf(temp.charAt(0)).toUpperCase() + temp.substring(1);
-            } else if (operation.equals(ALL_LOWER_CASE)) {
-                temp = value.toLowerCase();
-            } else if (operation.equals(ALL_UPPER_CASE)) {
-                temp = temp.toUpperCase();
-            } else if (operation.equals(ENCODE_URL)) {
-                try {
-                    temp = URLEncoder.encode(temp, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    temp = value;
-                }
-            } else {
-                temp = value;
-            }
+      for (String operation : operations) {
+        if (operation == null) {
+          continue;
         }
+        if (operation.equals(STRING_LENGTH)) {
+          temp = String.valueOf(value.length());
+        } else if (operation.equals(QUOTE_WILDCARD)) {
+          temp = temp.replaceAll("\\\\", "\\\\\\\\");
+          temp = temp.replaceAll("\\*", "\\\\*");
+          temp = temp.replaceAll("\\?", "\\\\?");
+        } else if (operation.equals(LOWERCASE_FIRST)) {
+          temp = String.valueOf(temp.charAt(0)).toLowerCase() + temp.substring(1);
+        } else if (operation.equals(UPPERCASE_FIRST)) {
+          temp = String.valueOf(temp.charAt(0)).toUpperCase() + temp.substring(1);
+        } else if (operation.equals(ALL_LOWER_CASE)) {
+          temp = value.toLowerCase();
+        } else if (operation.equals(ALL_UPPER_CASE)) {
+          temp = temp.toUpperCase();
+        } else if (operation.equals(ENCODE_URL)) {
+          try {
+            temp = URLEncoder.encode(temp, "UTF-8");
+          } catch (UnsupportedEncodingException e) {
+            temp = value;
+          }
+        } else {
+          temp = value;
+        }
+      }
         return temp;
     }
 

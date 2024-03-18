@@ -87,9 +87,9 @@ public class LmcMessage {
     public String getContentMatched() { return mContentMatched; }
     public LmcEmailAddress[] getEmailAddresses() { return mEmailAddrs; }
     public LmcEmailAddress getFromAddress() {
-    	for (int i = 0; i < mEmailAddrs.length; i++)
-            if (mEmailAddrs[i].getType().equals("f"))  // XXX should have constant
-                return mEmailAddrs[i];
+      for (LmcEmailAddress mEmailAddr : mEmailAddrs)
+        if (mEmailAddr.getType().equals("f"))  // XXX should have constant
+          return mEmailAddr;
         return null;
     }
     public int getNumMimeParts() { return mMimeParts.size(); }

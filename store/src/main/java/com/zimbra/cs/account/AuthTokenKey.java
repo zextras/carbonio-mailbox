@@ -137,16 +137,16 @@ public class AuthTokenKey {
             keys = config.getMultiAttr(Provisioning.A_zimbraAuthTokenKey);
         }
 
-        for (int i=0; i < keys.length; i++) {
-            AuthTokenKey key = mCache.get(keys[i]);
-            if (key == null) {
-                key = new AuthTokenKey(keys[i]);
-                mCache.put(keys[i], key);
-                mCache.put(Long.toString(key.mVersion), key);
-                if (sLatestKey == null || sLatestKey.mVersion < key.mVersion)
-                    sLatestKey = key;
-            }
-        }        
+      for (String s : keys) {
+        AuthTokenKey key = mCache.get(s);
+        if (key == null) {
+          key = new AuthTokenKey(s);
+          mCache.put(s, key);
+          mCache.put(Long.toString(key.mVersion), key);
+          if (sLatestKey == null || sLatestKey.mVersion < key.mVersion)
+            sLatestKey = key;
+        }
+      }
     }
 
     public static synchronized AuthTokenKey getCurrentKey() throws ServiceException {

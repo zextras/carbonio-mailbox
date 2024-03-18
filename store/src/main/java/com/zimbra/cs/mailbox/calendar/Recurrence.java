@@ -245,10 +245,9 @@ public class Recurrence
         @Override
         public Object clone() {
             List<IRecurrence> newRules = new ArrayList<IRecurrence>();
-            for (Iterator iter = mRules.iterator(); iter.hasNext();) {
-                IRecurrence rule = (IRecurrence) iter.next();
-                newRules.add((IRecurrence) rule.clone());
-            }
+          for (IRecurrence rule : mRules) {
+            newRules.add((IRecurrence) rule.clone());
+          }
             return new MultiRuleSorter(newRules);
         }
 
@@ -275,17 +274,15 @@ public class Recurrence
         }
 
         public void setInviteId(InviteInfo invId) {
-            for (Iterator iter = mRules.iterator(); iter.hasNext();) {
-                IRecurrence cur = (IRecurrence)iter.next();
-                cur.setInviteId(invId);
-            }
+          for (IRecurrence cur : mRules) {
+            cur.setInviteId(invId);
+          }
         }
 
         public Element toXml(Element parent) {
-            for (Iterator iter = mRules.iterator(); iter.hasNext();) {
-                IRecurrence cur = (IRecurrence)iter.next();
-                parent.addElement(cur.toXml(parent));
-            }
+          for (IRecurrence cur : mRules) {
+            parent.addElement(cur.toXml(parent));
+          }
             return parent;
         }
 
@@ -293,11 +290,10 @@ public class Recurrence
         throws ServiceException {
             List lists[] = new ArrayList[mRules.size()];
             int num = 0;
-            for (Iterator iter = mRules.iterator(); iter.hasNext();) {
-                IRecurrence cur = (IRecurrence)iter.next();
-                lists[num] = cur.expandInstances(calItemId, start, end);
-                num++;
-            }
+          for (IRecurrence cur : mRules) {
+            lists[num] = cur.expandInstances(calItemId, start, end);
+            num++;
+          }
 
             List<Instance> toRet = new LinkedList<Instance>();
             ListUtil.mergeSortedLists(toRet, lists, true);
@@ -309,35 +305,32 @@ public class Recurrence
         public String toString() {
             StringBuffer toRet = new StringBuffer();
             toRet.append("(");
-            for (Iterator iter = mRules.iterator();iter.hasNext();) {
-                IRecurrence rule  = (IRecurrence)iter.next();
-                toRet.append(rule.toString());
-            }
+          for (IRecurrence rule : mRules) {
+            toRet.append(rule.toString());
+          }
             toRet.append(")");
             return toRet.toString();
         }
 
         public ParsedDateTime getStartTime() {
             ParsedDateTime earliestStart = null;
-            for (Iterator iter = mRules.iterator(); iter.hasNext();) {
-                IRecurrence cur = (IRecurrence)iter.next();
-                ParsedDateTime start = cur.getStartTime();
-                if (earliestStart == null || (start != null && start.compareTo(earliestStart) < 0)) {
-                    earliestStart = start;
-                }
+          for (IRecurrence cur : mRules) {
+            ParsedDateTime start = cur.getStartTime();
+            if (earliestStart == null || (start != null && start.compareTo(earliestStart) < 0)) {
+              earliestStart = start;
             }
+          }
             return earliestStart;
         }
 
         public ParsedDateTime getEndTime() throws ServiceException {
             ParsedDateTime latestEnd = null;
-            for (Iterator iter = mRules.iterator(); iter.hasNext();) {
-                IRecurrence cur = (IRecurrence)iter.next();
-                ParsedDateTime end = cur.getEndTime();
-                if (latestEnd == null || (end != null && end.compareTo(latestEnd)>0)) {
-                    latestEnd = end;
-                }
+          for (IRecurrence cur : mRules) {
+            ParsedDateTime end = cur.getEndTime();
+            if (latestEnd == null || (end != null && end.compareTo(latestEnd) > 0)) {
+              latestEnd = end;
             }
+          }
             return latestEnd;
         }
 
@@ -735,24 +728,24 @@ public class Recurrence
                 toRet = new ArrayList<Instance>(dateList.size());
 
                 int num = 0;
-                for (Iterator iter = dateList.iterator(); iter.hasNext();) {
-                    Date cur = (Date)iter.next();
-                    long instStart = cur.getTime();
-                    long instEnd;
-                    if (mDuration != null) {
-                        ParsedDateTime startDt = ParsedDateTime.fromUTCTime(instStart, tz);
-                        instEnd = startDt.add(mDuration).getUtcTime();
-                    } else {
-                        instEnd = instStart;
-                    }
-                    if (instStart < end && instEnd > start) {
-                        int startTzo = tz.getOffset(instStart);
-                        int endTzo = tz.getOffset(instEnd);
-                        boolean allDay = !mDtStart.hasTime() || (mDtStart.hasZeroTime() && mDuration != null && mDuration.isMultipleOfDays());
-                        toRet.add(num++, new Instance(calItemId, mInvId, true, true, instStart, instEnd,
-                                allDay, startTzo, endTzo, false, false));
-                    }
+              for (Date cur : dateList) {
+                long instStart = cur.getTime();
+                long instEnd;
+                if (mDuration != null) {
+                  ParsedDateTime startDt = ParsedDateTime.fromUTCTime(instStart, tz);
+                  instEnd = startDt.add(mDuration).getUtcTime();
+                } else {
+                  instEnd = instStart;
                 }
+                if (instStart < end && instEnd > start) {
+                  int startTzo = tz.getOffset(instStart);
+                  int endTzo = tz.getOffset(instEnd);
+                  boolean allDay = !mDtStart.hasTime() || (mDtStart.hasZeroTime() && mDuration != null
+                      && mDuration.isMultipleOfDays());
+                  toRet.add(num++, new Instance(calItemId, mInvId, true, true, instStart, instEnd,
+                      allDay, startTzo, endTzo, false, false));
+                }
+              }
             } catch (ServiceException se) {
                 // Bugs 3172 and 3240.  Ignore recurrence rules with bad data.
                 ZimbraLog.calendar.warn("ServiceException expanding recurrence rule: " + mRecur.toString(), se);
@@ -1291,10 +1284,9 @@ public class Recurrence
         throws ServiceException {
             List<Instance> toRet = super.expandInstances(calItemId, start, end);
 
-            for (Iterator iter = toRet.iterator(); iter.hasNext();) {
-                CalendarItem.Instance cur = (CalendarItem.Instance)iter.next();
-                cur.setIsException(true);
-            }
+          for (Instance cur : toRet) {
+            cur.setIsException(true);
+          }
             return toRet;
         }
 
@@ -1418,10 +1410,9 @@ public class Recurrence
 
         @Override
         public Element toXml(Element parent) {
-            for (Iterator iter = mExceptions.iterator(); iter.hasNext();) {
-                IException cur = (IException)iter.next();
-                cur.toXml(parent);
-            }
+          for (IException cur : mExceptions) {
+            cur.toXml(parent);
+          }
             super.toXml(parent);
 
             return parent;
@@ -1550,10 +1541,9 @@ public class Recurrence
             StringBuffer toRet = new StringBuffer();
 
             toRet.append("RECUR(").append(super.toString());
-            for (Iterator iter = mExceptions.iterator(); iter.hasNext();) {
-                IException ex = (IException)iter.next();
-                toRet.append("\n\t\t").append(ex.toString());
-            }
+          for (IException ex : mExceptions) {
+            toRet.append("\n\t\t").append(ex.toString());
+          }
             toRet.append(")");
 
             return toRet.toString();
@@ -1589,10 +1579,9 @@ public class Recurrence
                   other.mSubtractRules == null ? null : (MultiRuleSorter) other.mSubtractRules.clone(),
                   other.mInvId == null ? null : (InviteInfo) other.mInvId.clone());
             mExceptions = new ArrayList<IException>();
-            for (Iterator iter = other.mExceptions.iterator(); iter.hasNext();) {
-                IException cur = (IException)iter.next();
-                mExceptions.add((IException) cur.clone());
-            }
+          for (IException cur : other.mExceptions) {
+            mExceptions.add((IException) cur.clone());
+          }
         }
 
         @Override

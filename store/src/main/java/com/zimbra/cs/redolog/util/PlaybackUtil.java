@@ -255,13 +255,13 @@ public class PlaybackUtil {
         if (cl.hasOption(OPT_LOGFILES)) {
             String[] fnames = cl.getOptionValues(OPT_LOGFILES);
             params.logfiles = new File[fnames.length];
-            for (int i = 0; i < fnames.length; i++) {
-                File f = new File(fnames[i]);
-                if (f.exists())
-                    logList.add(f);
-                else
-                    throw new FileNotFoundException("No such file: " + f.getAbsolutePath());
-            }
+          for (String fname : fnames) {
+            File f = new File(fname);
+            if (f.exists())
+              logList.add(f);
+            else
+              throw new FileNotFoundException("No such file: " + f.getAbsolutePath());
+          }
         } else {
             // By default, use /opt/zextras/redolog/archive/*, then /opt/zextras/redolog/redo.log,
             // ordered by log sequence.

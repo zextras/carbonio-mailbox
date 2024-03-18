@@ -56,24 +56,24 @@ public class Signature extends AccountProperty implements Comparable {
     public Set<SignatureContent> getContents() {
         Set<SignatureContent> contents = new HashSet<SignatureContent>();
         BrowserDefang defanger = DefangFactory.getDefanger(MimeConstants.CT_TEXT_HTML);
-        for (Iterator it = SignatureUtil.ATTR_TYPE_MAP.entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry entry = (Map.Entry)it.next();
+      for (Map.Entry<String, String> stringStringEntry : SignatureUtil.ATTR_TYPE_MAP.entrySet()) {
+        Map.Entry entry = (Map.Entry) stringStringEntry;
 
-            String content = getAttr((String)entry.getKey());
-            if (content != null) {
-                if (entry.getKey().equals(ZAttrProvisioning.A_zimbraPrefMailSignatureHTML)) {
+        String content = getAttr((String) entry.getKey());
+        if (content != null) {
+          if (entry.getKey().equals(ZAttrProvisioning.A_zimbraPrefMailSignatureHTML)) {
 
-                    StringReader reader = new StringReader(content);
-                    try {
-                        content = defanger.defang(reader, false);
-                    } catch (IOException e) {
-                       ZimbraLog.misc.info("Error sanitizing html signature: %s", content);
-                    }
-
-                }
-                contents.add(new SignatureContent((String)entry.getValue(), content));
+            StringReader reader = new StringReader(content);
+            try {
+              content = defanger.defang(reader, false);
+            } catch (IOException e) {
+              ZimbraLog.misc.info("Error sanitizing html signature: %s", content);
             }
+
+          }
+          contents.add(new SignatureContent((String) entry.getValue(), content));
         }
+      }
         return contents;
     }
 }

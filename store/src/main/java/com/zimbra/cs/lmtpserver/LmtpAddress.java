@@ -543,13 +543,15 @@ public class LmtpAddress {
 	    return false;
 	}
 	if (debug) say("checking " + mAllowedParameters.length + " allowed parameters");
-	for (int i = 0; i < mAllowedParameters.length; i++) {
-	    if (debug) say("checking key " + key + " against allowed " + mAllowedParameters[i]);
-	    if (key.equalsIgnoreCase(mAllowedParameters[i])) {
-		if (debug) say("parameter " + key + " is allowed");
-		return true;
-	    }
-	}
+      for (String mAllowedParameter : mAllowedParameters) {
+        if (debug)
+          say("checking key " + key + " against allowed " + mAllowedParameter);
+        if (key.equalsIgnoreCase(mAllowedParameter)) {
+          if (debug)
+            say("parameter " + key + " is allowed");
+          return true;
+        }
+      }
 	if (debug) say("parameter " + key + " is not allowed");
 	return false;
     }

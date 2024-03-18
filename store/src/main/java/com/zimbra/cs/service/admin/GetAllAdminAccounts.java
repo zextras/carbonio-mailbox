@@ -37,12 +37,12 @@ public class GetAllAdminAccounts extends AdminDocumentHandler {
         AdminAccessControl aac = AdminAccessControl.getAdminAccessControl(zsc);
 
         Element response = zsc.createElement(AdminConstants.GET_ALL_ADMIN_ACCOUNTS_RESPONSE);
-        for (Iterator it=accounts.iterator(); it.hasNext(); ) {
-            Account acct = (Account)it.next();
-            
-            if (aac.hasRightsToList(acct, Admin.R_listAccount, null))
-                ToXML.encodeAccount(response, acct, applyCos, null, aac.getAttrRightChecker(acct));
-        }
+    for (Object account : accounts) {
+      Account acct = (Account) account;
+
+      if (aac.hasRightsToList(acct, Admin.R_listAccount, null))
+        ToXML.encodeAccount(response, acct, applyCos, null, aac.getAttrRightChecker(acct));
+    }
 	    return response;
 	}
 	

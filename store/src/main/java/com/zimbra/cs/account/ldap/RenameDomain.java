@@ -608,43 +608,44 @@ public class RenameDomain {
             String oldDn = ldapEntry.getDN();
 
             // move aliases in the old domain if there are any
-            for (int i=0; i<aliases.length; i++) {
+          for (String alias : aliases) {
 
-                // for dl and dynamic group, the main dl addr is also in the zimbraMailAlias.
-                // To be consistent with account, we don't move that when we move aliases;
-                // and will move it when we move the entry itself
-                if (aliases[i].equals(targetEntry.getName()))
-                    continue;
+            // for dl and dynamic group, the main dl addr is also in the zimbraMailAlias.
+            // To be consistent with account, we don't move that when we move aliases;
+            // and will move it when we move the entry itself
+            if (alias.equals(targetEntry.getName()))
+              continue;
 
-                String[] parts = EmailUtil.getLocalPartAndDomain(aliases[i]);
-                if (parts == null) {
-                    assert(false);
-                    warn("moveEntry", "encountered invalid alias address",
-                            "alias=[%s], entry=[%s]", aliases[i], targetEntry.getName());
-                    continue;
-                }
-                String aliasLocal = parts[0];
-                String aliasDomain = parts[1];
-                if (aliasDomain.equals(mOldDomainName)) {
-                    // move the alias
-                    // ug, aliasDN and aliasDNRename also throw ServiceExeption -
-                    // declared vars outside the try block so we can log it in the catch blocks
-                    String oldAliasDn = "";
-                    String newAliasDn = "";
-                    try {
-                        oldAliasDn = mProv.getDIT().aliasDN(oldDn, mOldDomainName, aliasLocal, mOldDomainName);
-                        newAliasDn = mProv.getDIT().aliasDNRename(newTargetDn, mNewDomainName, aliasLocal+"@"+mNewDomainName);
-                        if (!oldAliasDn.equals(newAliasDn)) {
-                            mLdapHelper.renameEntry(oldAliasDn, newAliasDn);
-                        }
-                    } catch (ServiceException e) {
-                        // log the error and continue
-                        warn(e, "moveEntry", "alias not moved",
-                                "alias=[%s], entry=[%s], oldAliasDn=[%s], newAliasDn=[%s]",
-                                aliases[i], targetEntry.getName(), oldAliasDn, newAliasDn);
-                    }
-                }
+            String[] parts = EmailUtil.getLocalPartAndDomain(alias);
+            if (parts == null) {
+              assert (false);
+              warn("moveEntry", "encountered invalid alias address",
+                  "alias=[%s], entry=[%s]", alias, targetEntry.getName());
+              continue;
             }
+            String aliasLocal = parts[0];
+            String aliasDomain = parts[1];
+            if (aliasDomain.equals(mOldDomainName)) {
+              // move the alias
+              // ug, aliasDN and aliasDNRename also throw ServiceExeption -
+              // declared vars outside the try block so we can log it in the catch blocks
+              String oldAliasDn = "";
+              String newAliasDn = "";
+              try {
+                oldAliasDn = mProv.getDIT().aliasDN(oldDn, mOldDomainName, aliasLocal, mOldDomainName);
+                newAliasDn = mProv.getDIT()
+                    .aliasDNRename(newTargetDn, mNewDomainName, aliasLocal + "@" + mNewDomainName);
+                if (!oldAliasDn.equals(newAliasDn)) {
+                  mLdapHelper.renameEntry(oldAliasDn, newAliasDn);
+                }
+              } catch (ServiceException e) {
+                // log the error and continue
+                warn(e, "moveEntry", "alias not moved",
+                    "alias=[%s], entry=[%s], oldAliasDn=[%s], newAliasDn=[%s]",
+                    alias, targetEntry.getName(), oldAliasDn, newAliasDn);
+              }
+            }
+          }
         }
 
         private void moveEntry(NamedEntry entry, String oldDn, String newDn) {
@@ -717,13 +718,13 @@ public class RenameDomain {
                 String[] values = entry.getMultiAttr(attr, false);
                 if (values.length > 0) {
                     Set<String> newValues = new HashSet<String>();
-                    for (int i=0; i<values.length; i++) {
-                        String newValue = convertToNewAddr(values[i],
-                                mOldDomainName, mNewDomainName, addrCanBeDomainOnly);
-                        if (newValue != null) {
-                            newValues.add(newValue);
-                        }
+                  for (String value : values) {
+                    String newValue = convertToNewAddr(value,
+                        mOldDomainName, mNewDomainName, addrCanBeDomainOnly);
+                    if (newValue != null) {
+                      newValues.add(newValue);
                     }
+                  }
 
                     // replace the attr with the new values
                     // if there is any address format error and the address cannot be converted,

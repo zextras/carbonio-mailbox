@@ -344,9 +344,10 @@ public class DefangFilter extends DefaultFilter {
     set = new HashSet<String>();
     String attrs[] = attributes.toLowerCase().split(",");
     if (attrs != null && attrs.length > 0) {
-      for (int i = 0; i < attrs.length; i++) {
+      for (String attr : attrs) {
         // deal with consecutive commas
-        if (attrs[i].length() > 0) set.add(attrs[i]);
+        if (attr.length() > 0)
+          set.add(attr);
       }
     }
     mAcceptedElements.put(element, set);
@@ -806,9 +807,9 @@ public class DefangFilter extends DefaultFilter {
     if (index > -1) {
       String jsString = result.substring(0, index);
       char[] chars = jsString.toCharArray();
-      for (int i = 0; i < chars.length; ++i) {
-        if (!Character.isSpace(chars[i])) {
-          sb.append(chars[i]);
+      for (char aChar : chars) {
+        if (!Character.isSpace(aChar)) {
+          sb.append(aChar);
         }
       }
     }
@@ -869,9 +870,9 @@ public class DefangFilter extends DefaultFilter {
     char c[] = data.toCharArray();
     StringBuilder sanitizedStrg = new StringBuilder();
     StringBuilder asciiData = new StringBuilder();
-    for (int i = 0; i < c.length; ++i) {
-      if (c[i] <= ASCII_DATA_VALUE) {
-        asciiData.append(c[i]);
+    for (char value : c) {
+      if (value <= ASCII_DATA_VALUE) {
+        asciiData.append(value);
 
       } else {
         String temp = asciiData.toString();
@@ -880,7 +881,7 @@ public class DefangFilter extends DefaultFilter {
           sanitizedStrg.append(temp);
           asciiData = new StringBuilder();
         }
-        sanitizedStrg.append(c[i]);
+        sanitizedStrg.append(value);
       }
     }
     // Append the asciiData to the sanitizedStrg

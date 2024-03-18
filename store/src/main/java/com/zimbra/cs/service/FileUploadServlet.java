@@ -342,9 +342,9 @@ public class FileUploadServlet extends ZimbraServlet {
     }
 
     mLog.info("deleting %d temporary upload files left over from last time", files.length);
-    for (int i = 0; i < files.length; i++) {
-      String path = files[i].getAbsolutePath();
-      if (files[i].delete()) {
+    for (File file : files) {
+      String path = file.getAbsolutePath();
+      if (file.delete()) {
         mLog.info("deleted leftover upload file %s", path);
       } else {
         mLog.error("unable to delete leftover upload file %s", path);

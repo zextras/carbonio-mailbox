@@ -153,10 +153,11 @@ public class LdapGalMapRule {
                     index = addToContactAttrs(contactAttrs, val, index);
                     return;
                 } else {
-                    for (int i=0; i < val.length; i++) {
-                        if (index >= mContactAttrs.length) return;
-                        index = addToContactAttrs(contactAttrs, IDNUtil.toUnicode(val[i], idnType), index);                        
-                    }
+                  for (String s : val) {
+                    if (index >= mContactAttrs.length)
+                      return;
+                    index = addToContactAttrs(contactAttrs, IDNUtil.toUnicode(s, idnType), index);
+                  }
                 }
             }
         }

@@ -54,50 +54,48 @@ public abstract class UploadScanner {
             info.append(" ").append(ioe);
             return ERROR;
         }
-        for (Iterator iter = sRegisteredScanners.iterator(); iter.hasNext();) {
-            UploadScanner scanner = (UploadScanner)iter.next();
-            if (!scanner.isEnabled()) {
-                continue;
-            }
-
-            Result result;
-            try {
-                result = scanner.accept(is, info); 
-            } finally {
-                ByteUtil.closeStream(is);
-            }
-            if (result == REJECT || result == ERROR) {
-                // Fail on the first scanner that says it was bad,
-                // or first error we encounter. Is bailing on first error
-                // too harsh, should we continue to try other scanners?
-                return result;
-            }
+      for (UploadScanner scanner : sRegisteredScanners) {
+        if (!scanner.isEnabled()) {
+          continue;
         }
+
+        Result result;
+        try {
+          result = scanner.accept(is, info);
+        } finally {
+          ByteUtil.closeStream(is);
+        }
+        if (result == REJECT || result == ERROR) {
+          // Fail on the first scanner that says it was bad,
+          // or first error we encounter. Is bailing on first error
+          // too harsh, should we continue to try other scanners?
+          return result;
+        }
+      }
         return ACCEPT;
     }
 
     public static Result acceptStream(InputStream is, StringBuffer info) {
 
-        for (Iterator iter = sRegisteredScanners.iterator(); iter.hasNext();) {
+      for (UploadScanner scanner : sRegisteredScanners) {
 
-            UploadScanner scanner = (UploadScanner)iter.next();
-            if (!scanner.isEnabled()) {
-                continue;
-            }
-
-            Result result;
-            try {
-                result = scanner.accept(is, info);
-            } finally {
-                ByteUtil.closeStream(is);
-            }
-            if (result == REJECT || result == ERROR) {
-                // Fail on the first scanner that says it was bad,
-                // or first error we encounter. Is bailing on first error
-                // too harsh, should we continue to try other scanners?
-                return result;
-            }
+        if (!scanner.isEnabled()) {
+          continue;
         }
+
+        Result result;
+        try {
+          result = scanner.accept(is, info);
+        } finally {
+          ByteUtil.closeStream(is);
+        }
+        if (result == REJECT || result == ERROR) {
+          // Fail on the first scanner that says it was bad,
+          // or first error we encounter. Is bailing on first error
+          // too harsh, should we continue to try other scanners?
+          return result;
+        }
+      }
         return ACCEPT;
     }
 

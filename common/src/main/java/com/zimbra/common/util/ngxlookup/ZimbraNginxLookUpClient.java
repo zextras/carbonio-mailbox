@@ -221,9 +221,9 @@ public class ZimbraNginxLookUpClient {
         // configuring server list with inconsistent order on different Nginx Route Handler clients.
         // TreeSet provides deduping and sorting.
         TreeSet<String> tset = new TreeSet<String>();
-        for (int i = 0; i < servers.length; ++i) {
-            tset.add(servers[i].toLowerCase());
-        }
+      for (String s : servers) {
+        tset.add(s.toLowerCase());
+      }
         servers = tset.toArray(new String[0]);
         if (servers != null) {
             List<Route> addrs = new ArrayList<Route>(servers.length);

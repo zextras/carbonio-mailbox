@@ -185,40 +185,40 @@ public abstract class TemplateHandler {
      */
     protected void copyFiles(String[] filenames)
     throws java.io.FileNotFoundException, IOException {
-        for (int i=0; i < filenames.length; i++) {
-            File tmp = new File(templatesDir, getName());
-            File fromFile = new File(tmp, filenames[i]);
+      for (String filename : filenames) {
+        File tmp = new File(templatesDir, getName());
+        File fromFile = new File(tmp, filename);
 
-            File toFile = getOutputFile(filenames[i]);
+        File toFile = getOutputFile(filename);
 
-            FileInputStream from = null;
-            FileOutputStream to = null;
+        FileInputStream from = null;
+        FileOutputStream to = null;
 
+        try {
+          from = new FileInputStream(fromFile);
+          to = new FileOutputStream(toFile);
+          byte[] buffer = new byte[4096];
+          int bytesRead = -1;
+
+          while ((bytesRead = from.read(buffer)) != -1)
+            to.write(buffer, 0, bytesRead); // write
+        } finally {
+          if (from != null) {
             try {
-                from = new FileInputStream(fromFile);
-                to = new FileOutputStream(toFile);
-                byte[] buffer = new byte[4096];
-                int bytesRead = -1;
-
-                while ((bytesRead = from.read(buffer)) != -1)
-                    to.write(buffer, 0, bytesRead); // write
-            } finally {
-                if (from != null) {
-                    try {
-                        from.close();
-                    } catch (IOException e) {
-                        // clean-up quietly
-                    }
-                }
-                if (to != null) {
-                    try {
-                        to.close();
-                    } catch (IOException e) {
-                        // clean-up quietly
-                    }
-                }
+              from.close();
+            } catch (IOException e) {
+              // clean-up quietly
             }
+          }
+          if (to != null) {
+            try {
+              to.close();
+            } catch (IOException e) {
+              // clean-up quietly
+            }
+          }
         }
+      }
 
     }
 

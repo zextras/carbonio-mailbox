@@ -70,9 +70,7 @@ final class EhcacheImapCache implements ImapSessionManager.Cache<String, ImapFol
                 if (size() > ACTIVE_CACHE_THRESHOLD) {
                   // keep size under threshold when possible - can grow if there are many active
                   // sessions but will shrink as they 'expire'
-                  for (Iterator<Entry<String, Long>> it = this.entrySet().iterator();
-                      it.hasNext(); ) {
-                    Entry<String, Long> entry = it.next();
+                  for (Entry<String, Long> entry : this.entrySet()) {
                     if (isExpired(entry.getValue())) {
                       keysToRemove.add(entry.getKey());
                     } else {

@@ -106,20 +106,20 @@ public class CompressedDomainTree {
      * @param root
      */
     private void dump(Map root, String indent, StringBuffer sb) {
-        for (Iterator it = root.entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Entry) it.next();
-            String name = (String) entry.getKey();
-            Object o = entry.getValue();
-            if (o instanceof String) {
-                //sb.append(indent).append(name).append(": ").append(o).append("\n");
-                sb.append(indent).append(name).append("\n");
-            } else {
-                sb.append(indent).append(name).append(": {\n");
-                dump((Map) o, indent+" ", sb);
-                sb.append(indent).append("}\n");
-            }
-            
+      for (Object value : root.entrySet()) {
+        Entry entry = (Entry) value;
+        String name = (String) entry.getKey();
+        Object o = entry.getValue();
+        if (o instanceof String) {
+          //sb.append(indent).append(name).append(": ").append(o).append("\n");
+          sb.append(indent).append(name).append("\n");
+        } else {
+          sb.append(indent).append(name).append(": {\n");
+          dump((Map) o, indent + " ", sb);
+          sb.append(indent).append("}\n");
         }
+
+      }
     }
 
     public String toTree() {
@@ -133,30 +133,30 @@ public class CompressedDomainTree {
      */
     private void dumpTree(Map root, StringBuffer sb) {
         boolean first = true;
-        for (Iterator it = root.entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Entry) it.next();
-            String name = (String) entry.getKey();
-            Object o = entry.getValue();
-            if (!first) {
-                sb.append(',');
-            } else {
-                first = false;
-            }
-            if (o instanceof String) {
-                //sb.append(indent).append(name).append(": ").append(o).append("\n");
-                if (name.equals(LEAF)) {
-                    //sb.append('');
-                } else {
-                    sb.append(name);
-                }
-            } else {
-                sb.append(name).append('{');
-                dumpTree((Map) o,sb);
-                sb.append('}');
-            }
-            
-            
+      for (Object value : root.entrySet()) {
+        Entry entry = (Entry) value;
+        String name = (String) entry.getKey();
+        Object o = entry.getValue();
+        if (!first) {
+          sb.append(',');
+        } else {
+          first = false;
         }
+        if (o instanceof String) {
+          //sb.append(indent).append(name).append(": ").append(o).append("\n");
+          if (name.equals(LEAF)) {
+            //sb.append('');
+          } else {
+            sb.append(name);
+          }
+        } else {
+          sb.append(name).append('{');
+          dumpTree((Map) o, sb);
+          sb.append('}');
+        }
+
+
+      }
     }
 
     public static void main(String args[]) throws AddressException {

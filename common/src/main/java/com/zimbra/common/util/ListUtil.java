@@ -79,28 +79,28 @@ public class ListUtil {
             List<T> dest, List<T>[] src, boolean removeDuplicates)
     {
         int numSrc = 0;
-        for (int i = 0; i < src.length; i++) {
-            if (src[i] != null) {
-                numSrc++;
-            }
+      for (List<T> tList : src) {
+        if (tList != null) {
+          numSrc++;
         }
+      }
 
         if (numSrc == 1) {
-            for (int i = 0; i < src.length; i++) {
-                if (src[i] != null) {
-                    dest.addAll(src[i]);
-                    return;
-                }
+          for (List<T> ts : src) {
+            if (ts != null) {
+              dest.addAll(ts);
+              return;
             }
+          }
         }
 
         Iterator<T> iter[] = new Iterator[numSrc];
         int iterOffset = 0;
-        for (int i = 0; i < src.length; i++) {
-            if (src[i] != null) {
-                iter[iterOffset++] = src[i].iterator();
-            }
+      for (List<T> ts : src) {
+        if (ts != null) {
+          iter[iterOffset++] = ts.iterator();
         }
+      }
 
 
         int numItersActive = src.length;
@@ -319,18 +319,16 @@ public class ListUtil {
 
             test = subtractSortedLists(in[2], in[0], new IntegerComparator());
             System.out.print("(1,2,3,4,5) - (1,3,5,7,9): ");
-            for (Iterator<Integer> iter = test.iterator(); iter.hasNext();) {
-                Integer cur = iter.next();
-                System.out.print(cur+", ");
-            }
+          for (Integer cur : test) {
+            System.out.print(cur + ", ");
+          }
             System.out.println();
 
             test = subtractSortedLists(in[0], in[1], new IntegerComparator());
             System.out.print("(1,3,5,7,9) - (1,7,12,13,13): ");
-            for (Iterator<Integer> iter = test.iterator(); iter.hasNext();) {
-                Integer cur = iter.next();
-                System.out.print(cur+", ");
-            }
+          for (Integer cur : test) {
+            System.out.print(cur + ", ");
+          }
             System.out.println();
 
         }

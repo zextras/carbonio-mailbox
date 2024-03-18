@@ -134,9 +134,9 @@ public class LdapServerPool {
                 }
             } else {
                 Set<String> uniqAddr = new HashSet<>();
-                for (int i = 0; i < addrs.length; i++) {
-                    uniqAddr.add(addrs[i].getHostAddress());
-                }
+              for (InetAddress inetAddress : addrs) {
+                uniqAddr.add(inetAddress.getHostAddress());
+              }
                 if (uniqAddr.size() == 1) {
                     if (socketFactory == null) {
                         return new SingleServerSet(url.getHost(), url.getPort(), connOpts);
@@ -166,9 +166,9 @@ public class LdapServerPool {
                 if (addrs.length == 1) {
                     hostsAndPorts.add(new Pair<String, Integer>(url.getHost(), url.getPort()));
                 } else {
-                    for (int i = 0; i < addrs.length; i++) {
-                        hostsAndPorts.add(new Pair<String, Integer>(addrs[i].getHostAddress(), url.getPort()));
-                    }
+                  for (InetAddress addr : addrs) {
+                    hostsAndPorts.add(new Pair<String, Integer>(addr.getHostAddress(), url.getPort()));
+                  }
                 }
             }
             String[] hostsStrs = new String[hostsAndPorts.size()];

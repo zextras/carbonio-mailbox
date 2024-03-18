@@ -431,16 +431,16 @@ public class FileUtil {
             return;
         File[] files = directory.listFiles();
         if (files != null) {
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].isDirectory()) {
-                    deleteDir(files[i]);
-                } else {
-                    if (!files[i].delete()) {
-                        throw new IOException("Cannot remove "
-                            + files[i].getPath());
-                    }
-                }
+          for (File file : files) {
+            if (file.isDirectory()) {
+              deleteDir(file);
+            } else {
+              if (!file.delete()) {
+                throw new IOException("Cannot remove "
+                    + file.getPath());
+              }
             }
+          }
         }
     }
 
@@ -486,13 +486,13 @@ public class FileUtil {
 
         if (filename == null || filename.equals(""))
             return null;
-        for (int i = 0; i < delimiter.length; i++) {
-            int index = filename.lastIndexOf(delimiter[i]);
-            if (index == filename.length() - 1)
-                return null;
-            if (index != -1)
-                filename = filename.substring(index + 1);
-        }
+      for (char c : delimiter) {
+        int index = filename.lastIndexOf(c);
+        if (index == filename.length() - 1)
+          return null;
+        if (index != -1)
+          filename = filename.substring(index + 1);
+      }
         return filename;
     }
 

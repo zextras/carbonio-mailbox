@@ -122,10 +122,10 @@ public class AttachmentInfo {
         StringBuffer buf = new StringBuffer();
         buf.append(mDigest).append(File.separator);
         buf.append(mPart);
-        for (int i = 0; i < mSeqInArchive.size(); i++) {
-            buf.append(File.separator);
-            buf.append(mSeqInArchive.get(i));
-        }
+      for (String s : mSeqInArchive) {
+        buf.append(File.separator);
+        buf.append(s);
+      }
         buf.append(".html");
         return buf.toString();
     }

@@ -94,12 +94,11 @@ public class TimeZoneMap implements Cloneable {
      */
     public void add(TimeZoneMap other) {
         mAliasMap.putAll(other.mAliasMap);
-        for (Iterator<Entry<String, ICalTimeZone>> it = other.mTzMap.entrySet().iterator(); it.hasNext(); ) {
-            Entry<String, ICalTimeZone> entry = it.next();
-            ICalTimeZone zone = entry.getValue();
-            if (!mTzMap.containsKey(zone.getID()))
-                add(zone);
-        }
+      for (Entry<String, ICalTimeZone> entry : other.mTzMap.entrySet()) {
+        ICalTimeZone zone = entry.getValue();
+        if (!mTzMap.containsKey(zone.getID()))
+          add(zone);
+      }
     }
 
     public void add(ICalTimeZone tz) {

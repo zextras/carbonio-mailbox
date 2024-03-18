@@ -80,27 +80,27 @@ public class GetCos extends AdminDocumentHandler {
 
         Map attrs = c.getUnicodeAttrs();
         AttributeManager attrMgr = AttributeManager.getInstance();
-        for (Iterator mit=attrs.entrySet().iterator(); mit.hasNext(); ) {
-            Map.Entry entry = (Entry) mit.next();
-            String name = (String) entry.getKey();
-            Object value = entry.getValue();
+      for (Object o : attrs.entrySet()) {
+        Entry entry = (Entry) o;
+        String name = (String) entry.getKey();
+        Object value = entry.getValue();
 
-            if (reqAttrs != null && !reqAttrs.contains(name))
-                continue;
+        if (reqAttrs != null && !reqAttrs.contains(name))
+          continue;
 
-            boolean allowed = attrRightChecker == null ? true : attrRightChecker.allowAttr(name);
+        boolean allowed = attrRightChecker == null ? true : attrRightChecker.allowAttr(name);
 
-            boolean isCosAttr = !attrMgr.isAccountInherited(name);
-            if (value instanceof String[]) {
-                String sv[] = (String[]) value;
-                for (int i = 0; i < sv.length; i++) {
-                    encodeCosAttr(cos, name, sv[i], isCosAttr, allowed);
-                }
-            } else if (value instanceof String) {
-                value = com.zimbra.cs.service.account.ToXML.fixupZimbraPrefTimeZoneId(name, (String)value);
-                encodeCosAttr(cos, name, (String)value, isCosAttr, allowed);
-            }
+        boolean isCosAttr = !attrMgr.isAccountInherited(name);
+        if (value instanceof String[]) {
+          String sv[] = (String[]) value;
+          for (String s : sv) {
+            encodeCosAttr(cos, name, s, isCosAttr, allowed);
+          }
+        } else if (value instanceof String) {
+          value = com.zimbra.cs.service.account.ToXML.fixupZimbraPrefTimeZoneId(name, (String) value);
+          encodeCosAttr(cos, name, (String) value, isCosAttr, allowed);
         }
+      }
     }
 
     private static void encodeCosAttr(Element parent, String key, String value, boolean isCosAttr, boolean allowed) {

@@ -403,8 +403,7 @@ public final class Volume {
     }
     String newDirs[] = new String[dirs.length];
     int numDirs = 0;
-    for (int i = 0; i < dirs.length; i++) {
-      String dir = dirs[i];
+    for (String dir : dirs) {
       // single dot or triple dots
       if (dir.isEmpty() || dir.equals(".") || (dir.length() > 2 && dir.matches("^\\.+$"))) {
         continue; // ignore

@@ -34,9 +34,9 @@ public final class IntersectionQueryOperation extends CombiningQueryOperation {
     @Override
     public void resetIterator() throws ServiceException {
         bufferedNext.clear();
-        for (int i = 0; i < messageGrouper.length; i++) {
-            messageGrouper[i].resetIterator();
-        }
+      for (HitGrouper hitGrouper : messageGrouper) {
+        hitGrouper.resetIterator();
+      }
     }
 
     @Override
@@ -121,10 +121,9 @@ public final class IntersectionQueryOperation extends CombiningQueryOperation {
             // no hits -- go back to the top and try again.
         } // while true (for easy retry)
 
-        for (int i = 0; i < bufferedNext.size(); i++) {
-            ZimbraHit hit = bufferedNext.get(i);
-            ZimbraLog.search.debug("BUFFERED: %s", hit);
-        }
+      for (ZimbraHit hit : bufferedNext) {
+        ZimbraLog.search.debug("BUFFERED: %s", hit);
+      }
     }
 
     @Override
@@ -186,10 +185,9 @@ public final class IntersectionQueryOperation extends CombiningQueryOperation {
         @Override
         public String toString() {
             StringBuffer toRet = new StringBuffer(subOp.toString()).append("\n\t");
-            for (int i = 0; i < bufferedHit.size(); i++) {
-                ZimbraHit hit = bufferedHit.get(i);
-                toRet.append(hit.toString()).append("\n\t");
-            }
+          for (ZimbraHit hit : bufferedHit) {
+            toRet.append(hit.toString()).append("\n\t");
+          }
             return toRet.toString();
         }
 
@@ -281,11 +279,11 @@ public final class IntersectionQueryOperation extends CombiningQueryOperation {
 
         boolean intersectWithBuffer(MessageHit hit) throws ServiceException {
             int hitMsgId = hit.getItemId();
-            for (int i = 0; i < bufferedHit.size(); i++) {
-                if (bufferedHit.get(i).getItemId() == hitMsgId) {
-                    return true;
-                }
+          for (ZimbraHit zimbraHit : bufferedHit) {
+            if (zimbraHit.getItemId() == hitMsgId) {
+              return true;
             }
+          }
             return false;
         }
 
@@ -294,20 +292,19 @@ public final class IntersectionQueryOperation extends CombiningQueryOperation {
          */
         boolean intersectWithBuffer(MessagePartHit hit) throws ServiceException {
             int hitMsgId = hit.getItemId();
-            for (int i = 0; i < bufferedHit.size(); i++) {
-                ZimbraHit bufHit = bufferedHit.get(i);
-                if (bufHit.getItemId() == hitMsgId) {
-                    if (bufHit instanceof MessagePartHit) {
-                        MessagePartHit mph = (MessagePartHit) bufHit;
-                        if (mph == hit) {
-                            return true;
-                        }
-                    } else {
-                        // msgID's must be equal
-                        return true;
-                    }
+          for (ZimbraHit bufHit : bufferedHit) {
+            if (bufHit.getItemId() == hitMsgId) {
+              if (bufHit instanceof MessagePartHit) {
+                MessagePartHit mph = (MessagePartHit) bufHit;
+                if (mph == hit) {
+                  return true;
                 }
+              } else {
+                // msgID's must be equal
+                return true;
+              }
             }
+          }
             return false;
         }
 

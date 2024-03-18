@@ -214,28 +214,26 @@ public class Util {
         Metadata meta = new Metadata();
         Map<String /* real TZID */, Integer /* index */> tzIndex = new HashMap<String, Integer>();
         int nextIndex = 0;
-        for (Iterator<Entry<String, ICalTimeZone>> iter = tzmap.getMap().entrySet().iterator(); iter.hasNext(); ) {
-            Entry<String, ICalTimeZone> entry = iter.next();
-            String tzid = entry.getKey();
-            if (tzid == null || tzid.length() < 1)    // ignore null/empty TZIDs (bug 25183)
-                continue;
-            ICalTimeZone zone = entry.getValue();
-            String realTzid = zone.getID();
-            if (!tzIndex.containsKey(realTzid)) {
-                meta.put("#" + nextIndex, encodeAsMetadata(zone));
-                tzIndex.put(realTzid, nextIndex);
-                ++nextIndex;
-            }
+      for (Entry<String, ICalTimeZone> entry : tzmap.getMap().entrySet()) {
+        String tzid = entry.getKey();
+        if (tzid == null || tzid.length() < 1)    // ignore null/empty TZIDs (bug 25183)
+          continue;
+        ICalTimeZone zone = entry.getValue();
+        String realTzid = zone.getID();
+        if (!tzIndex.containsKey(realTzid)) {
+          meta.put("#" + nextIndex, encodeAsMetadata(zone));
+          tzIndex.put(realTzid, nextIndex);
+          ++nextIndex;
         }
-        for (Iterator<Entry<String, String>> iter = tzmap.getAliasMap().entrySet().iterator(); iter.hasNext(); ) {
-            Entry<String, String> entry = iter.next();
-            String alias = entry.getKey();
-            String realTzid = entry.getValue();
-            if (tzIndex.containsKey(realTzid)) {
-                int index = tzIndex.get(realTzid);
-                meta.put(alias, index);
-            }
+      }
+      for (Entry<String, String> entry : tzmap.getAliasMap().entrySet()) {
+        String alias = entry.getKey();
+        String realTzid = entry.getValue();
+        if (tzIndex.containsKey(realTzid)) {
+          int index = tzIndex.get(realTzid);
+          meta.put(alias, index);
         }
+      }
         return meta;
     }
 

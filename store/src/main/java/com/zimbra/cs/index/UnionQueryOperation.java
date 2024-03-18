@@ -44,10 +44,9 @@ public final class UnionQueryOperation extends CombiningQueryOperation {
     @Override
     public void resetIterator() throws ServiceException {
         if (!atStart) {
-            for (Iterator<QueryOperation> iter = operations.iterator(); iter.hasNext(); ) {
-                QueryOperation q = iter.next();
-                q.resetIterator();
-            }
+          for (QueryOperation q : operations) {
+            q.resetIterator();
+          }
             cachedNextHit = null;
             internalGetNext();
         }

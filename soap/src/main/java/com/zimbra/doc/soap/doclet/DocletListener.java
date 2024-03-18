@@ -34,11 +34,11 @@ public abstract class DocletListener {
      */
     protected static String getTagText(Tag[] tags, String tag) {
         if (tags.length > 0) {
-            for (int k=0; k < tags.length; k++) {
-                if (tags[k].name().equalsIgnoreCase(tag)) {
-                    return tags[k].text();
-                }
+          for (Tag value : tags) {
+            if (value.name().equalsIgnoreCase(tag)) {
+              return value.text();
             }
+          }
         }
         return null;
     }

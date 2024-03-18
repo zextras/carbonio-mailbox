@@ -66,10 +66,10 @@ public class Tester {
         /* ran search for messages so hopefully everything is a message */
         List mList = sResp.getResults();
         LmcMessage msg = null;
-        for (Iterator mit = mList.iterator(); mit.hasNext(); ) {
-            msg = (LmcMessage) mit.next();
-            System.out.println(msg);
-        }
+      for (Object o : mList) {
+        msg = (LmcMessage) o;
+        System.out.println(msg);
+      }
 
         // this is a little cheesy.  if it can't find a message based on
         // the search above it just throws an exception.
@@ -140,12 +140,12 @@ public class Tester {
         LmcConversation conv = null;
         LmcConversation firstConv = null;
         List cList = sResp.getResults();
-        for (Iterator cit = cList.iterator(); cit.hasNext(); ) {
-            conv = (LmcConversation) cit.next();
-            if (firstConv == null)
-                firstConv = conv;
-            System.out.println(conv);
-        }
+      for (Object o : cList) {
+        conv = (LmcConversation) o;
+        if (firstConv == null)
+          firstConv = conv;
+        System.out.println(conv);
+      }
 
         // this is a little cheesy.  if it can't find a conv based on
         // the search above it just throws an exception.
@@ -207,10 +207,10 @@ public class Tester {
         /* ran search for messages so hopefully everything is a message */
         List mList = sResp.getResults();
         LmcMessage msg = null;
-        for (Iterator mit = mList.iterator(); mit.hasNext(); ) {
-            msg = (LmcMessage) mit.next();
-            System.out.println(msg);
-        }
+      for (Object o : mList) {
+        msg = (LmcMessage) o;
+        System.out.println(msg);
+      }
     }
 
     private static void doBrowse(LmcSession session, String serverURL)
@@ -222,9 +222,9 @@ public class Tester {
         LmcBrowseResponse bResp = (LmcBrowseResponse) bReq.invoke(serverURL);
         System.out.println("got back browse data");
         LmcBrowseData bd[] = bResp.getData();
-        for (int i = 0; i < bd.length; i++) {
-            System.out.println(bd[i].getFlags() + " " + bd[i].getData());
-        }
+      for (LmcBrowseData lmcBrowseData : bd) {
+        System.out.println(lmcBrowseData.getFlags() + " " + lmcBrowseData.getData());
+      }
     }
 
 
@@ -457,12 +457,12 @@ public class Tester {
             LmcConversation conv = null;
             LmcConversation firstConv = null;
             List cList = sResp.getResults();
-            for (Iterator cit = cList.iterator(); cit.hasNext(); ) {
-                conv = (LmcConversation) cit.next();
-                if (firstConv == null)
-                    firstConv = conv;
-                System.out.println(conv);
-            }
+          for (Object o : cList) {
+            conv = (LmcConversation) o;
+            if (firstConv == null)
+              firstConv = conv;
+            System.out.println(conv);
+          }
 
 
             /*****  at this point the emulation of a login is complete *****/

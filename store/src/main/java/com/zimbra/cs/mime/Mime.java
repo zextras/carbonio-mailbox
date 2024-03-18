@@ -948,18 +948,18 @@ public class Mime {
             if (addrs == null)
                 continue;
             ArrayList<InternetAddress> list = new ArrayList<InternetAddress>(addrs.length);
-            for (int j = 0; j < addrs.length; j++) {
-                InternetAddress inetAddr = (InternetAddress) addrs[j];
-                String addr = inetAddr.getAddress();
-                boolean match = false;
-                for (int k = 0; k < rcpts.length; k++)
-                    if (addr.equalsIgnoreCase(rcpts[k])) {
-                        match = true;
-                        break;
-                    }
-                if (!match)
-                    list.add(inetAddr);
-            }
+          for (Address address : addrs) {
+            InternetAddress inetAddr = (InternetAddress) address;
+            String addr = inetAddr.getAddress();
+            boolean match = false;
+            for (String rcpt : rcpts)
+              if (addr.equalsIgnoreCase(rcpt)) {
+                match = true;
+                break;
+              }
+            if (!match)
+              list.add(inetAddr);
+          }
             if (list.size() < addrs.length) {
                 InternetAddress[] newRcpts = new InternetAddress[list.size()];
                 list.toArray(newRcpts);
@@ -1516,11 +1516,11 @@ public class Mime {
     public static boolean isAutoSubmitted(MimePart part) throws MessagingException {
         String[] autoSubmitted = part.getHeader("Auto-Submitted");
         if (autoSubmitted != null) {
-            for (int i = 0; i < autoSubmitted.length; i++) {
-                if (!autoSubmitted[i].equalsIgnoreCase("no")) {
-                    return true;
-                }
+          for (String s : autoSubmitted) {
+            if (!s.equalsIgnoreCase("no")) {
+              return true;
             }
+          }
         }
         return false;
     }

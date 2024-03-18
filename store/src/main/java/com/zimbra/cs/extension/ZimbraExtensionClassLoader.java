@@ -52,18 +52,18 @@ public class ZimbraExtensionClassLoader extends URLClassLoader {
 
     private void findExtensions() {
         URL[] urls = getURLs();
-        for (int i = 0; i < urls.length; i++) {
-            File entry = null;
-            try {
-                entry = new File(urls[i].toURI());
-            } catch (URISyntaxException e) {
-                entry = new File(urls[i].getFile());
-            }
-            String className = getExtensionClassInManifest(entry);
-            if (className != null) {
-                mExtensionClassNames.add(className);
-            }
+      for (URL url : urls) {
+        File entry = null;
+        try {
+          entry = new File(url.toURI());
+        } catch (URISyntaxException e) {
+          entry = new File(url.getFile());
         }
+        String className = getExtensionClassInManifest(entry);
+        if (className != null) {
+          mExtensionClassNames.add(className);
+        }
+      }
     }
 
     public boolean hasExtensions() {

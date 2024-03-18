@@ -39,10 +39,10 @@ public class LmcGetConvRequest extends LmcSoapRequest {
 
         // add message elements within the conversation element if desired
         if (mMsgsToGet != null) {
-            for (int i = 0; i < mMsgsToGet.length; i++) {
-                Element m = DomUtil.add(convElement, MailConstants.E_MSG, "");
-                DomUtil.addAttr(m, MailConstants.A_ID, mMsgsToGet[i]);
-            }
+          for (String s : mMsgsToGet) {
+            Element m = DomUtil.add(convElement, MailConstants.E_MSG, "");
+            DomUtil.addAttr(m, MailConstants.A_ID, s);
+          }
         }
 
         return request;

@@ -215,8 +215,7 @@ public class LocalConfig {
       keys = mConfiguredKeys.keySet().toArray(new String[0]);
       Arrays.sort(keys);
     }
-    for (int i = 0; i < keys.length; i++) {
-      String key = keys[i];
+    for (String key : keys) {
       boolean add = true;
       if (KnownKey.isKnown(key)) {
         String configuredValue = get(key);
@@ -244,8 +243,7 @@ public class LocalConfig {
       keys = KnownKey.getAll();
       Arrays.sort(keys);
     }
-    for (int i = 0; i < keys.length; i++) {
-      String key = keys[i];
+    for (String key : keys) {
       if (!KnownKey.isKnown(key)) {
         Logging.warn("not a known key '" + key + "'");
       } else {
@@ -281,14 +279,12 @@ public class LocalConfig {
     if (keys.length == 0) {
       keys = allKeys();
       Arrays.sort(keys);
-      for (int i = 0; i < keys.length; i++) {
-        String key = keys[i];
+      for (String key : keys) {
         String value = writer.expand() ? get(key) : getRaw(key);
         writer.add(key, value);
       }
     } else {
-      for (int i = 0; i < keys.length; i++) {
-        String key = keys[i];
+      for (String key : keys) {
         String value = writer.expand() ? get(key) : getRaw(key);
         if (value == null) {
           Logging.warn("null valued key '" + key + "'");
@@ -303,8 +299,7 @@ public class LocalConfig {
   private static void fmt(PrintStream ps, String str, int limit) {
     String[] tokens = str.split("\\s");
     int cols = 0;
-    for (int x = 0; x < tokens.length; x++) {
-      String tok = tokens[x];
+    for (String tok : tokens) {
       if ((tok.length() + cols) > limit) {
         cols = 0;
         ps.println();

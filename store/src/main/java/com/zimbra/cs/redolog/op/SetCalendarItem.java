@@ -147,9 +147,9 @@ public class SetCalendarItem extends RedoableOp implements CreateCalendarItemRec
             out.writeInt(0);
         } else {
             out.writeInt(mExceptions.length);
-            for (int i = 0; i < mExceptions.length; i++) {
-                serializeSetCalendarItemData(out, mExceptions[i]);
-            }
+          for (Mailbox.SetCalendarItemData mException : mExceptions) {
+            serializeSetCalendarItemData(out, mException);
+          }
         }
 
         if (getVersion().atLeast(1, 15)) {

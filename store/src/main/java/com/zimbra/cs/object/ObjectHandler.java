@@ -60,13 +60,12 @@ public class ObjectHandler {
 
         mHandlerList = new ArrayList<ObjectHandler>();
         List<Zimlet> dots = Provisioning.getInstance().listAllZimlets();
-        for (Iterator<Zimlet> it=dots.iterator(); it.hasNext();) {
-            Zimlet dot = it.next();
-            ObjectHandler handler = loadHandler(dot);
-            if (handler != null) {
-                mHandlerList.add(handler);
-            }
+      for (Zimlet dot : dots) {
+        ObjectHandler handler = loadHandler(dot);
+        if (handler != null) {
+          mHandlerList.add(handler);
         }
+      }
         return mHandlerList;
     }
 
@@ -93,12 +92,12 @@ public class ObjectHandler {
     throws ObjectHandlerException {
         try {
             String[] matchedStrings = mHandlerObject.match(text, mConfigObject);
-            for (int i = 0; i < matchedStrings.length; i++) {
-                MatchedObject mo = new MatchedObject(this, matchedStrings[i]);
-                matchedObjects.add(mo);
-                if (firstMatchOnly)
-                    return;
-            }
+          for (String matchedString : matchedStrings) {
+            MatchedObject mo = new MatchedObject(this, matchedString);
+            matchedObjects.add(mo);
+            if (firstMatchOnly)
+              return;
+          }
         } catch (ZimletException ze) {
             throw new ObjectHandlerException("error running ZimletHandler " + mObjectType.getType(), ze);
         }

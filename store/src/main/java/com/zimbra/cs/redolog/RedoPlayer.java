@@ -410,39 +410,39 @@ public class RedoPlayer {
         synchronized (mOpsMapGuard) {
             Set entrySet = mOpsMap.entrySet();
             ZimbraLog.redolog.info("Redoing " + numOps + " uncommitted transactions");
-            for (Iterator it = entrySet.iterator(); it.hasNext(); ) {
-                Map.Entry entry = (Entry) it.next();
-                RedoableOp op = (RedoableOp) entry.getValue();
-                if (op == null)
-                    continue;
+          for (Object o : entrySet) {
+            Entry entry = (Entry) o;
+            RedoableOp op = (RedoableOp) entry.getValue();
+            if (op == null)
+              continue;
 
-                if (op.deferCrashRecovery()) {
-                    ZimbraLog.redolog.info("Deferring crash recovery to after startup: " + op);
-                    postStartupRecoveryOps.add(op);
-                    continue;
-                }
-
-                if (ZimbraLog.redolog.isInfoEnabled())
-                    ZimbraLog.redolog.info("REDOING: " + op);
-
-                boolean success = false;
-                try {
-                    op.redo();
-                    success = true;
-                } catch (Exception e) {
-                    ZimbraLog.redolog.error("Redo failed for [" + op + "]." +
-                            "  Backend state of affected item is indeterminate." +
-                            "  Marking operation as aborted and moving on.", e);
-                } finally {
-                    if (success) {
-                        CommitTxn commit = new CommitTxn(op);
-                        redoLogMgr.logOnly(commit, true);
-                    } else {
-                        AbortTxn abort = new AbortTxn(op);
-                        redoLogMgr.logOnly(abort, true);
-                    }
-                }
+            if (op.deferCrashRecovery()) {
+              ZimbraLog.redolog.info("Deferring crash recovery to after startup: " + op);
+              postStartupRecoveryOps.add(op);
+              continue;
             }
+
+            if (ZimbraLog.redolog.isInfoEnabled())
+              ZimbraLog.redolog.info("REDOING: " + op);
+
+            boolean success = false;
+            try {
+              op.redo();
+              success = true;
+            } catch (Exception e) {
+              ZimbraLog.redolog.error("Redo failed for [" + op + "]." +
+                  "  Backend state of affected item is indeterminate." +
+                  "  Marking operation as aborted and moving on.", e);
+            } finally {
+              if (success) {
+                CommitTxn commit = new CommitTxn(op);
+                redoLogMgr.logOnly(commit, true);
+              } else {
+                AbortTxn abort = new AbortTxn(op);
+                redoLogMgr.logOnly(abort, true);
+              }
+            }
+          }
             mOpsMap.clear();
         }
 

@@ -2485,8 +2485,7 @@ public class Invite {
               InviteInfo inviteInfo = new InviteInfo(newInv);
               List<IRecurrence> addRules = new ArrayList<IRecurrence>();
               if (addRecurs.size() > 0) {
-                for (Iterator<Object> iter = addRecurs.iterator(); iter.hasNext(); ) {
-                  Object next = iter.next();
+                for (Object next : addRecurs) {
                   if (next instanceof ZRecur) {
                     ZRecur cur = (ZRecur) next;
                     addRules.add(

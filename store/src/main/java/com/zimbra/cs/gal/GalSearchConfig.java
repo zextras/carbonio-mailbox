@@ -344,11 +344,11 @@ public class GalSearchConfig {
         String queryExprs[] = Provisioning.getInstance().getConfig().getMultiAttr(Provisioning.A_zimbraGalLdapFilterDef);
         String fname = name+":";
         String queryExpr = null;
-        for (int i=0; i < queryExprs.length; i++) {
-            if (queryExprs[i].startsWith(fname)) {
-                queryExpr = queryExprs[i].substring(fname.length());
-            }
+      for (String expr : queryExprs) {
+        if (expr.startsWith(fname)) {
+          queryExpr = expr.substring(fname.length());
         }
+      }
 
         if (queryExpr == null) {
             ZimbraLog.gal.warn("missing filter def " + name + " in " + Provisioning.A_zimbraGalLdapFilterDef);

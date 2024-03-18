@@ -485,13 +485,13 @@ public class Notification implements LmtpCallback {
         // Check for mail loop
         String[] autoSubmittedHeaders = mm.getHeader("Auto-Submitted");
         if (autoSubmittedHeaders != null) {
-            for (int i = 0; i < autoSubmittedHeaders.length; i++) {
-                String headerValue= autoSubmittedHeaders[i].toLowerCase();
-                if (headerValue.indexOf("notification") != -1) {
-                    nfailed("detected a mail loop", destination, rcpt, msg);
-                    return;
-                }
+          for (String autoSubmittedHeader : autoSubmittedHeaders) {
+            String headerValue = autoSubmittedHeader.toLowerCase();
+            if (headerValue.indexOf("notification") != -1) {
+              nfailed("detected a mail loop", destination, rcpt, msg);
+              return;
             }
+          }
         }
 
         // Send the message
@@ -684,11 +684,11 @@ public class Notification implements LmtpCallback {
      */
     private static boolean hasPrecedence(String[] precedence, String value) {
         if (precedence != null) {
-            for (int i = 0; i < precedence.length; i++) {
-                if (precedence[i].equalsIgnoreCase(value)) {
-                    return true;
-                }
+          for (String s : precedence) {
+            if (s.equalsIgnoreCase(value)) {
+              return true;
             }
+          }
         }
         return false;
     }

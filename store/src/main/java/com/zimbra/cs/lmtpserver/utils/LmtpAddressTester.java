@@ -63,13 +63,13 @@ public class LmtpAddressTester {
 			System.out.println("  domain-part=/" + addr.getDomainPart() + "/");
 			Map params = addr.getParameters();
 			int i = 0;
-			for (Iterator it = params.entrySet().iterator(); it.hasNext();) {
-				Map.Entry e = (Map.Entry) it.next();
-				String key = (String)e.getKey();
-				String val = (String)e.getValue();
-				System.out.println("  [" + i + "] key=/" + key + "/ val=/" + val + "/");
-				i++;
-			}
+      for (Object o : params.entrySet()) {
+        Map.Entry e = (Map.Entry) o;
+        String key = (String) e.getKey();
+        String val = (String) e.getValue();
+        System.out.println("  [" + i + "] key=/" + key + "/ val=/" + val + "/");
+        i++;
+      }
 		}
 		return addr.isValid();
 	}

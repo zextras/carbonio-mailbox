@@ -49,12 +49,12 @@ public final class ItemQuery extends Query {
             rangeQuery = true;
         } else {
             String[] items = str.split(",");
-            for (int i = 0; i < items.length; i++) {
-                if (items[i].length() > 0) {
-                    ItemId iid = new ItemId(items[i], mbox.getAccountId());
-                    itemIds.add(iid);
-                }
+          for (String item : items) {
+            if (item.length() > 0) {
+              ItemId iid = new ItemId(item, mbox.getAccountId());
+              itemIds.add(iid);
             }
+          }
             if (itemIds.size() == 0) {
                 noneQuery = true;
             }

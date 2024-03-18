@@ -253,14 +253,14 @@ public class ChartUtil {
             if (srcDirStrs == null || srcDirStrs.length == 0)
                 usage(opts, "Missing --" + OPT_SRCDIR + " option");
             List<File> srcDirsList = new ArrayList<File>(srcDirStrs.length);
-            for (int i = 0; i < srcDirStrs.length; i++) {
-                File srcDir = new File(srcDirStrs[i]);
-                if (srcDir.exists())
-                    srcDirsList.add(srcDir);
-                else
-                    System.err.printf("Source directory %s does not exist\n",
-                            srcDir.getAbsolutePath());
-            }
+          for (String srcDirStr : srcDirStrs) {
+            File srcDir = new File(srcDirStr);
+            if (srcDir.exists())
+              srcDirsList.add(srcDir);
+            else
+              System.err.printf("Source directory %s does not exist\n",
+                  srcDir.getAbsolutePath());
+          }
             if (srcDirsList.size() < 1)
                 usage(opts, "No valid source directory found");
             File[] srcDirs = new File[srcDirsList.size()];
@@ -830,103 +830,96 @@ public class ChartUtil {
             }
         }
         // Read CSVs and populate data series.
-        for (Iterator<Map.Entry<String, Set<Pair<String, DataSeries>>>> mapIter = mColumnsByInfile
-                .entrySet().iterator(); mapIter.hasNext();) {
-            Map.Entry<String, Set<Pair<String, DataSeries>>> entry = mapIter
-                    .next();
-            String inFilename = entry.getKey();
-            Set<Pair<String, DataSeries>> columns = entry.getValue();
+      for (Map.Entry<String, Set<Pair<String, DataSeries>>> entry : mColumnsByInfile
+          .entrySet()) {
+        String inFilename = entry.getKey();
+        Set<Pair<String, DataSeries>> columns = entry.getValue();
 
-            System.out.println("Reading CSV " + inFilename);
-            Reader reader = null;
-            try {
-                reader = new MultipleDirsFileReader(inFilename, mSrcDirs);
-            } catch (FileNotFoundException e) {
-                System.out.printf("CSV file %s not found; Skipping...\n",
-                        inFilename);
-                continue;
-            }
-
-            CsvReader csv = null;
-            try {
-                csv = new CsvReader(reader);
-                int line = 1;
-                while (csv.hasNext()) {
-                    line++;
-                    String context = inFilename + ", line " + line;
-
-                    Date ts = null;
-                    try {
-                        ts = readTS(csv, context);
-                    }
-                    catch (ParseException e) {
-                        if (e.getMessage().compareTo(
-                        "Unparseable date: \"timestamp\"") != 0) {
-                            //bug 54626, ignored the repeat timestamp header
-                            System.out.println(context + ": " + e);
-                        }
-                        continue;
-                    }
-
-                    if (ts.before(mStartAt) || ts.after(mEndAt))
-                        continue;
-
-                    // Set min/max date
-                    if (minDate == null) {
-                        minDate = ts;
-                        maxDate = ts;
-                    } else {
-                        if (ts.compareTo(minDate) < 0) {
-                            minDate = ts;
-                        }
-                        if (ts.compareTo(maxDate) > 0) {
-                            maxDate = ts;
-                        }
-                    }
-
-                    // Parse values
-                    for (Iterator<Pair<String, DataSeries>> colIter = columns
-                            .iterator(); colIter.hasNext();) {
-                        Pair<String, DataSeries> colSeries = colIter.next();
-                        String column = colSeries.getFirst();
-                        DataSeries series = colSeries.getSecond();
-                        String val = csv.getValue(column);
-                        if (!StringUtil.isNullOrEmpty(val)) {
-                            try {
-                                double d = Double.parseDouble(val);
-                                try {
-                                    series.AddEntry(ts, d);
-                                } catch (SeriesException e) {
-                                    System.out.printf(
-                                            "Can't add sample to series: timestamp=%s, value=%s\n",
-                                            ts, val);
-                                    e.printStackTrace(System.out);
-                                }
-                            } catch (NumberFormatException e) {
-                                System.out.printf(
-                                    "%s: unable to parse value '%s' for %s: %s%n",
-                                        context, val, column, e);
-                            }
-                        } else { // default an entry to 0 if string is empty
-                            series.AddEntry(ts, 0.0);
-                        }
-                    }
-                }
-
-                for (Iterator<Pair<String, DataSeries>> colIter = columns
-                        .iterator(); colIter.hasNext();) {
-                    Pair<String, DataSeries> colSeries = colIter.next();
-                    String column = colSeries.getFirst();
-                    DataSeries series = colSeries.getSecond();
-                    System.out.format(
-                            "Adding %d %s points between %s and %s.\n\n",
-                            series.size(), column, minDate, maxDate);
-                }
-            } finally {
-                if (csv != null)
-                    csv.close();
-            }
+        System.out.println("Reading CSV " + inFilename);
+        Reader reader = null;
+        try {
+          reader = new MultipleDirsFileReader(inFilename, mSrcDirs);
+        } catch (FileNotFoundException e) {
+          System.out.printf("CSV file %s not found; Skipping...\n",
+              inFilename);
+          continue;
         }
+
+        CsvReader csv = null;
+        try {
+          csv = new CsvReader(reader);
+          int line = 1;
+          while (csv.hasNext()) {
+            line++;
+            String context = inFilename + ", line " + line;
+
+            Date ts = null;
+            try {
+              ts = readTS(csv, context);
+            } catch (ParseException e) {
+              if (e.getMessage().compareTo(
+                  "Unparseable date: \"timestamp\"") != 0) {
+                //bug 54626, ignored the repeat timestamp header
+                System.out.println(context + ": " + e);
+              }
+              continue;
+            }
+
+            if (ts.before(mStartAt) || ts.after(mEndAt))
+              continue;
+
+            // Set min/max date
+            if (minDate == null) {
+              minDate = ts;
+              maxDate = ts;
+            } else {
+              if (ts.compareTo(minDate) < 0) {
+                minDate = ts;
+              }
+              if (ts.compareTo(maxDate) > 0) {
+                maxDate = ts;
+              }
+            }
+
+            // Parse values
+            for (Pair<String, DataSeries> colSeries : columns) {
+              String column = colSeries.getFirst();
+              DataSeries series = colSeries.getSecond();
+              String val = csv.getValue(column);
+              if (!StringUtil.isNullOrEmpty(val)) {
+                try {
+                  double d = Double.parseDouble(val);
+                  try {
+                    series.AddEntry(ts, d);
+                  } catch (SeriesException e) {
+                    System.out.printf(
+                        "Can't add sample to series: timestamp=%s, value=%s\n",
+                        ts, val);
+                    e.printStackTrace(System.out);
+                  }
+                } catch (NumberFormatException e) {
+                  System.out.printf(
+                      "%s: unable to parse value '%s' for %s: %s%n",
+                      context, val, column, e);
+                }
+              } else { // default an entry to 0 if string is empty
+                series.AddEntry(ts, 0.0);
+              }
+            }
+          }
+
+          for (Pair<String, DataSeries> colSeries : columns) {
+            String column = colSeries.getFirst();
+            DataSeries series = colSeries.getSecond();
+            System.out.format(
+                "Adding %d %s points between %s and %s.\n\n",
+                series.size(), column, minDate, maxDate);
+          }
+        } finally {
+          if (csv != null)
+            csv.close();
+        }
+      }
 
         adustSampleRange(minDate, maxDate);
     }
@@ -1188,15 +1181,15 @@ public class ChartUtil {
                     double bottomValue = 0.0;
                     double ratio = 0.0;
                     Entry lastEntry = null;
-                    for (int m = 0, n = topData.length; m < n; m++) {
-                        Entry e = topData[m].get(i);
-                        topValue += e.getVal();
-                    }
-                    for (int m = 0, n = bottomData.length; m < n; m++) {
-                        Entry e = bottomData[m].get(i);
-                        bottomValue += e.getVal();
-                        lastEntry = e;
-                    }
+                  for (DataSeries topDatum : topData) {
+                    Entry e = topDatum.get(i);
+                    topValue += e.getVal();
+                  }
+                  for (DataSeries bottomDatum : bottomData) {
+                    Entry e = bottomDatum.get(i);
+                    bottomValue += e.getVal();
+                    lastEntry = e;
+                  }
                     if (bottomValue != 0.0) {
                         ratio = topValue / bottomValue;
                     }

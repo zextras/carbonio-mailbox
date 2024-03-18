@@ -97,20 +97,19 @@ public class CheckSpelling extends MailDocumentHandler {
 
         // Get word list from one of the spell servers.
         ServerResponse spellResponse = null;
-        for (int i = 0; i < urls.length; i++) {
-            String url = urls[i];
-            try {
-                boolean ignoreAllCaps = account.isPrefSpellIgnoreAllCaps();
-                log.debug("Checking spelling: url=%s, dictionary=%s, text=%s, ignore=%s, ignoreAllCaps=%b",
-                    url, dictionary, text, ignoreWords, ignoreAllCaps);
-                spellResponse = checkSpelling(url, dictionary, ignoreWords, text, ignoreAllCaps);
-                if (spellResponse.statusCode == 200) {
-                    break; // Successful request.  No need to check the other servers.
-                }
-            } catch (IOException | HttpException ex) {
-                ZimbraLog.mailbox.warn("An error occurred while contacting " + url, ex);
-            }
+      for (String url : urls) {
+        try {
+          boolean ignoreAllCaps = account.isPrefSpellIgnoreAllCaps();
+          log.debug("Checking spelling: url=%s, dictionary=%s, text=%s, ignore=%s, ignoreAllCaps=%b",
+              url, dictionary, text, ignoreWords, ignoreAllCaps);
+          spellResponse = checkSpelling(url, dictionary, ignoreWords, text, ignoreAllCaps);
+          if (spellResponse.statusCode == 200) {
+            break; // Successful request.  No need to check the other servers.
+          }
+        } catch (IOException | HttpException ex) {
+          ZimbraLog.mailbox.warn("An error occurred while contacting " + url, ex);
         }
+      }
 
         // Check for errors
         if (spellResponse == null) {

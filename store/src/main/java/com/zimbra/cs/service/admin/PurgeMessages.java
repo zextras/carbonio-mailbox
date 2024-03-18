@@ -56,22 +56,26 @@ public class PurgeMessages extends AdminDocumentHandler {
     }
 
     PurgeMessagesResponse purgeResponse = new PurgeMessagesResponse();
-    for (int i = 0; i < accounts.length; i++) {
-      Account account = Provisioning.getInstance().getAccountById(accounts[i]);
-      if (account == null) continue;
+    for (String s : accounts) {
+      Account account = Provisioning.getInstance().getAccountById(s);
+      if (account == null)
+        continue;
       MailboxWithMailboxId mboxResp;
       if (Provisioning.getInstance().onLocalServer(account)) { // local
         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account, false);
-        if (mbox == null) continue;
+        if (mbox == null)
+          continue;
         mbox.purgeMessages(null);
         mboxResp =
             new MailboxWithMailboxId(mbox.getId(), account.getId(), Long.valueOf(mbox.getSize()));
       } else { // remote
         Server server = account.getServer();
-        if (server == null) continue;
+        if (server == null)
+          continue;
         SoapProvisioning soapProvisioning = SoapProvisioning.getAdminInstance();
         mboxResp = soapProvisioning.purgeMessages(account);
-        if (mboxResp == null) continue;
+        if (mboxResp == null)
+          continue;
         mboxResp.setAccountId(account.getId());
       }
       purgeResponse.addMailbox(mboxResp);

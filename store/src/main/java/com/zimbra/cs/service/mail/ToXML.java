@@ -1915,9 +1915,9 @@ public final class ToXML {
         for (String name : headers) {
           String[] values = mimeMessage.getHeader(name);
           if (values != null) {
-            for (int i = 0; i < values.length; i++) {
+            for (String value : values) {
               messageElement.addKeyValuePair(
-                  name, values[i], MailConstants.A_HEADER, MailConstants.A_ATTRIBUTE_NAME);
+                  name, value, MailConstants.A_HEADER, MailConstants.A_ATTRIBUTE_NAME);
             }
           }
         }
@@ -2381,9 +2381,9 @@ public final class ToXML {
             if (values == null) {
               continue;
             }
-            for (int i = 0; i < values.length; i++) {
+            for (String value : values) {
               m.addKeyValuePair(
-                  name, values[i], MailConstants.A_HEADER, MailConstants.A_ATTRIBUTE_NAME);
+                  name, value, MailConstants.A_HEADER, MailConstants.A_ATTRIBUTE_NAME);
             }
           }
         }
@@ -3687,9 +3687,7 @@ public final class ToXML {
   public static Element encodeFreeBusy(Element parent, FreeBusy fb) {
     Element resp = parent.addNonUniqueElement(MailConstants.E_FREEBUSY_USER);
     resp.addAttribute(MailConstants.A_ID, fb.getName());
-    for (Iterator<FreeBusy.Interval> iter = fb.iterator(); iter.hasNext(); ) {
-      FreeBusy.Interval cur = iter.next();
-
+    for (FreeBusy.Interval cur : fb) {
       String status = cur.getStatus();
       Element elt;
       if (status.equals(IcalXmlStrMap.FBTYPE_FREE)) {
@@ -3868,9 +3866,9 @@ public final class ToXML {
         Object value = entry.getValue();
         if (value instanceof String[]) {
           String sa[] = (String[]) value;
-          for (int i = 0; i < sa.length; i++)
+          for (String s : sa)
             cn.addKeyValuePair(
-                key, sa[i], MailConstants.E_ATTRIBUTE, MailConstants.A_ATTRIBUTE_NAME);
+                key, s, MailConstants.E_ATTRIBUTE, MailConstants.A_ATTRIBUTE_NAME);
         } else {
           cn.addKeyValuePair(
               key, (String) value, MailConstants.E_ATTRIBUTE, MailConstants.A_ATTRIBUTE_NAME);

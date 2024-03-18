@@ -1267,8 +1267,7 @@ public abstract class AdminAccessControl {
     public List<NamedEntry> getAllowed(List<NamedEntry> entries, int maxEntries)
         throws ServiceException {
       List<NamedEntry> allowedEntries = Lists.newArrayListWithExpectedSize(entries.size());
-      for (int i = 0; i < entries.size(); i++) {
-        NamedEntry entry = entries.get(i);
+      for (NamedEntry entry : entries) {
         if (allow(entry)) {
           allowedEntries.add(entry);
         }

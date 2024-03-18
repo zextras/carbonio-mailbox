@@ -278,8 +278,8 @@ public class AttributeInfo {
             checkValue((String) value, checkImmutable, attrsToModify);
         } else if (value instanceof String[]) {
             String[] values = (String[]) value;
-            for (int i=0; i < values.length; i++)
-                checkValue(values[i], checkImmutable, attrsToModify);
+          for (String s : values)
+            checkValue(s, checkImmutable, attrsToModify);
         }
 
         if (isDeprecated() && !DebugConfig.allowModifyingDeprecatedAttributes) {

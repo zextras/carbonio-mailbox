@@ -130,9 +130,9 @@ public class ZimbraMemcachedClient {
             // Eliminate duplicates and sort case-insensitively.  This negates operator error
             // configuring server list with inconsistent order on different memcached clients.
             TreeSet<String> tset = new TreeSet<String>();  // TreeSet provides deduping and sorting.
-            for (int i = 0; i < servers.length; ++i) {
-                tset.add(servers[i].toLowerCase());
-            }
+          for (String server : servers) {
+            tset.add(server.toLowerCase());
+          }
             for (String s : tset) {
                 if (serverList.length() > 0)
                     serverList.append(", ");
@@ -659,11 +659,11 @@ public class ZimbraMemcachedClient {
                         " bytes; requested " + len + " bytes", null);
             byte[] data = new byte[len];
             int offset = 0;
-            for (int i = 0; i < arrays.length; ++i) {
-                byte[] chunk = arrays[i].getBytes();
-                System.arraycopy(chunk, 0, data, offset, chunk.length);
-                offset += chunk.length;
-            }
+          for (ByteArray array : arrays) {
+            byte[] chunk = array.getBytes();
+            System.arraycopy(chunk, 0, data, offset, chunk.length);
+            offset += chunk.length;
+          }
             return data;
         }
     }

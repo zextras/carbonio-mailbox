@@ -808,12 +808,12 @@ public class DbMailItem {
                   + IN_THIS_MAILBOX_AND
                   + "id = ?");
       int modseq = mbox.getOperationChangeID();
-      for (int j = 0; j < msgs.size(); j++) {
+      for (Message msg : msgs) {
         int pos = 1;
         stmt.setInt(pos++, folder.getId());
-        UnderlyingData ud = msgs.get(j).getUnderlyingData();
+        UnderlyingData ud = msg.getUnderlyingData();
         // prev folders ordered by modseq ascending, e.g. 100:2;200:101;300:5
-        if (msgs.get(j).getFolderId() != folder.getId()) {
+        if (msg.getFolderId() != folder.getId()) {
           String prevFolders = ud.getPrevFolders();
           if (!StringUtil.isNullOrEmpty(prevFolders)) {
             String[] modseq2FolderId = prevFolders.split(";");
@@ -833,12 +833,12 @@ public class DbMailItem {
           stmt.setString(pos++, prevFolders);
           ud.setPrevFolders(prevFolders);
         } else {
-          stmt.setString(pos++, msgs.get(j).getUnderlyingData().getPrevFolders());
+          stmt.setString(pos++, msg.getUnderlyingData().getPrevFolders());
         }
         stmt.setInt(pos++, modseq);
         stmt.setInt(pos++, mbox.getOperationTimestamp());
         pos = setMailboxId(stmt, mbox, pos);
-        stmt.setInt(pos++, msgs.get(j).getId());
+        stmt.setInt(pos++, msg.getId());
         stmt.addBatch();
         if (++count % batchSize == 0) {
           stmt.executeBatch();

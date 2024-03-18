@@ -1158,8 +1158,8 @@ public class ZoneInfo2iCalendar {
       try (FileInputStream fin = new FileInputStream(params.oldTimezonesFileName)) {
         CalendarBuilder builder = new CalendarBuilder();
         net.fortuna.ical4j.model.Calendar calendar = builder.build(fin, "UTF-8");
-        for (Iterator i = calendar.getComponents().iterator(); i.hasNext(); ) {
-          Component component = (Component) i.next();
+        for (Object o : calendar.getComponents()) {
+          Component component = (Component) o;
           if (Component.VTIMEZONE.equals(component.getName())) {
             VTimeZone vtz = (VTimeZone) component;
             Property tzprop = vtz.getProperties().getProperty(Property.TZID);

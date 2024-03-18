@@ -263,10 +263,9 @@ public class HttpRequest {
         StringBuffer sb = new StringBuffer(1024);
         sb.append(mHttpRequestLine);
         sb.append(NL);
-        for (java.util.Iterator it=mRequestHeaders.keySet().iterator(); 
-             it.hasNext();) {
-            String name = (String) it.next();
-            String value = (String)mRequestHeaders.get(name);
+        for (Object o : mRequestHeaders.keySet()) {
+            String name = (String) o;
+            String value = (String) mRequestHeaders.get(name);
             sb.append(name).append(": ").append(value).append(NL);
         }
         sb.append(NL);

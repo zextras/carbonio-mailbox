@@ -284,15 +284,14 @@ public class LdapConnectionPool {
             assert(checkedOutFromPool != null);
 
             boolean checkedIn = false;
-            for (Iterator<CheckedOutInfo> it = checkedOutFromPool.checkedOutConns.iterator(); it.hasNext();) {
-                CheckedOutInfo checkedOutConn = it.next();
-                long connId = conn.getConnectionID();
-                if (connId == checkedOutConn.connId) {
-                    checkedOutFromPool.checkedOutConns.remove(checkedOutConn);
-                    checkedIn = true;
-                    break;
-                }
+          for (CheckedOutInfo checkedOutConn : checkedOutFromPool.checkedOutConns) {
+            long connId = conn.getConnectionID();
+            if (connId == checkedOutConn.connId) {
+              checkedOutFromPool.checkedOutConns.remove(checkedOutConn);
+              checkedIn = true;
+              break;
             }
+          }
 
             assert(checkedIn);
         }

@@ -379,15 +379,15 @@ public class RedoLogVerify {
         boolean allGood = true;
         RedoLogVerify verify = new RedoLogVerify(params, System.out);
 
-        for (int i = 0; i < args.length; i++) {
-            File f = new File(args[i]);
-            boolean good = false;
-            if (f.isDirectory())
-                good = verify.verifyDirectory(f);
-            else
-                good = verify.verifyFile(f);
-            allGood = allGood && good;
-        }
+      for (String arg : args) {
+        File f = new File(arg);
+        boolean good = false;
+        if (f.isDirectory())
+          good = verify.verifyDirectory(f);
+        else
+          good = verify.verifyFile(f);
+        allGood = allGood && good;
+      }
 
         if (!allGood) {
             verify.listErrors();

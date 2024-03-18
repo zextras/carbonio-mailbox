@@ -586,17 +586,17 @@ public class SoapCommandUtil implements SoapTransport.DebugListener {
         // Walk parts and implicitly create elements.
         String[] parts = path.split("/");
         String part = null;
-        for (int i = 0; i < parts.length; i++) {
-            part = parts[i];
-            if (element == null) {
-                QName name = QName.get(part, mNamespace);
-                element = factory.createElement(name);
-            } else if (part.equals("..")) {
-                element = element.getParent();
-            } else if (!(part.startsWith("@"))) {
-                element = element.addElement(part);
-            }
+      for (String s : parts) {
+        part = s;
+        if (element == null) {
+          QName name = QName.get(part, mNamespace);
+          element = factory.createElement(name);
+        } else if (part.equals("..")) {
+          element = element.getParent();
+        } else if (!(part.startsWith("@"))) {
+          element = element.addElement(part);
         }
+      }
 
         // Set either element text or attribute value
         if (value != null && part != null) {

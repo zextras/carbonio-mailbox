@@ -33,10 +33,10 @@ public class LmcGetPrefsRequest extends LmcSoapRequest {
     protected Element getRequestXML() {
         Element request = DocumentHelper.createElement(AccountConstants.GET_PREFS_REQUEST);
         if (mPrefsToGet != null) {
-            for (int i = 0; i < mPrefsToGet.length; i++) {
-                    Element pe = DomUtil.add(request, AccountConstants.E_PREF, "");
-                    DomUtil.addAttr(pe, AccountConstants.A_NAME, mPrefsToGet[i]);
-            }
+          for (String s : mPrefsToGet) {
+            Element pe = DomUtil.add(request, AccountConstants.E_PREF, "");
+            DomUtil.addAttr(pe, AccountConstants.A_NAME, s);
+          }
         }
         return request;
     }
