@@ -48,7 +48,10 @@ class RestServletTest {
       final HttpGet httpGet = new HttpGet("http://localhost:8080/hello/name");
       final CloseableHttpResponse execute = client.execute(httpGet);
       final int statusCode = execute.getStatusLine().getStatusCode();
+      final String response = new String(execute.getEntity().getContent().readAllBytes());
+      System.out.println(response);
       Assertions.assertEquals(200, statusCode);
+      Assertions.assertEquals("{\"value\":\"hello!\"}", response);
     } catch (IOException e) {
       e.printStackTrace();
     }
