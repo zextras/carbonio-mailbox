@@ -404,6 +404,7 @@ public final class ParseMimeMessage {
       contentID = '<' + contentID + '>';
     }
 
+    // aid
     String attachIds = attachElem.getAttribute(MailConstants.A_ATTACHMENT_ID, null);
     if (attachIds != null) {
       for (String uploadId : attachIds.split(FileUploadServlet.UPLOAD_DELIMITER)) {
@@ -412,11 +413,12 @@ public final class ParseMimeMessage {
         if (up == null) {
           throw MailServiceException.NO_SUCH_UPLOAD(uploadId);
         }
-        attachUpload(mmp, up, contentID, ctxt, null, null, contentDisposition);
+        attachUpload(mmp, up, contentID, ctxt, null, null, contentDisposition, false);
         ctxt.out.addUpload(up);
       }
     }
 
+    // mp -> multipart
     for (Element elem : attachElem.listElements()) {
       String attachType = elem.getName();
       boolean optional = elem.getAttributeBool(MailConstants.A_OPTIONAL, false);
@@ -430,7 +432,8 @@ public final class ParseMimeMessage {
             }
             ItemId iid = new ItemId(mid, ctxt.zsc);
             String part = elem.getAttribute(MailConstants.A_PART);
-            attachPart(mmp, iid, part, contentID, ctxt, contentDisposition);
+            Boolean requiresSmartLinkConversion = elem.getAttributeBool(MailConstants.A_REQUIRES_SMART_LINK_CONVERSION, false);
+            attachPart(mmp, iid, part, contentID, ctxt, contentDisposition, requiresSmartLinkConversion);
             break;
           }
           case MailConstants.E_MSG: {
@@ -639,7 +642,7 @@ public final class ParseMimeMessage {
 
   private static void attachUpload(MimeMultipart mmp, Upload up, String contentID,
       ParseMessageContext ctxt, ContentType ctypeOverride, String contentDescription,
-      String contentDisposition)
+      String contentDisposition, Boolean requiresSmartLinkConversion)
       throws ServiceException, MessagingException {
     // make sure we haven't exceeded the max size
     ctxt.incrementSize("upload " + up.getName(), (long) (up.getSize() * 1.33));
@@ -680,6 +683,11 @@ public final class ParseMimeMessage {
     }
     mbp.setHeader("Content-Type", ctype.setCharset(ctxt.defaultCharset).toString());
     mbp.setHeader("Content-Disposition", cdisp.setCharset(ctxt.defaultCharset).toString());
+    if (requiresSmartLinkConversion) {
+      mbp.setHeader("X-Smart-Link", "true");
+    } else {
+      mbp.removeHeader("X-Smart-Link");
+    }
     if (contentDescription != null) {
       mbp.setHeader("Content-Description", contentDescription);
     }
@@ -699,7 +707,7 @@ public final class ParseMimeMessage {
     try {
       Upload up = UserServlet.getRemoteResourceAsUpload(ctxt.zsc.getAuthToken(), iid, params);
       ctxt.out.addFetch(up);
-      attachUpload(mmp, up, contentID, ctxt, ctypeOverride, null, "");
+      attachUpload(mmp, up, contentID, ctxt, ctypeOverride, null, "", false);
     } catch (IOException ioe) {
       throw ServiceException.FAILURE("can't serialize remote item", ioe);
     }
@@ -768,7 +776,7 @@ public final class ParseMimeMessage {
   }
 
   private static void attachPart(MimeMultipart mmp, ItemId iid, String part, String contentID,
-      ParseMessageContext ctxt, String contentDisposition)
+      ParseMessageContext ctxt, String contentDisposition, Boolean requiresSmartLinkConversion)
       throws IOException, MessagingException, ServiceException {
     if (!iid.isLocal()) {
       Map<String, String> params = new HashMap<>(3);
@@ -806,7 +814,7 @@ public final class ParseMimeMessage {
     String[] contentDesc = mp.getHeader("Content-Description");
     attachUpload(mmp, up, contentID, ctxt, null,
         (contentDesc == null || contentDesc.length == 0) ? null : contentDesc[0],
-        contentDisposition);
+        contentDisposition, requiresSmartLinkConversion);
   }
 
   private static void addAddressHeaders(MimeMessage mm, MessageAddresses maddrs)
