@@ -5,8 +5,30 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.common.account.Key;
+import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.soap.JaxbUtil;
+import com.zimbra.soap.mail.message.SaveDraftRequest;
+import com.zimbra.soap.mail.message.SaveDraftResponse;
+import com.zimbra.soap.mail.type.AttachmentsInfo;
+import com.zimbra.soap.mail.type.MimePartAttachSpec;
+import com.zimbra.soap.mail.type.MimePartInfo;
+import com.zimbra.soap.mail.type.PartInfo;
+import com.zimbra.soap.mail.type.SaveDraftMsg;
+import java.io.File;
+import java.util.List;
+import java.util.Properties;
+import java.util.stream.Collectors;
+import javax.mail.Address;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 
+import javax.mail.internet.MimeMessage.RecipientType;
+import javax.mail.internet.MimeMultipart;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -117,4 +139,55 @@ public class SaveDraftTest {
   assertEquals(MODIFIED_CONTENT, response.getElement(MailConstants.E_MSG).getElement(MailConstants.E_MIMEPART).getAttribute(MailConstants.E_CONTENT), "picked up modified content");
  }
 
+
+ @Test
+ void smartLinkIsIncludedInSaveDraftResponse() throws Exception {
+   final var acct = Provisioning.getInstance().getAccountByName("test@zimbra.com");
+
+   var draftMessage = createDraftWithFileAttachment(acct);
+
+   final var context = ServiceTestUtil.getRequestContext(acct);
+   final var request = new SaveDraftRequest();
+   final var message = new SaveDraftMsg();
+   AttachmentsInfo attachments = new AttachmentsInfo();
+   boolean requiresSmartLinkConversion = true;
+   attachments.addAttachment(new MimePartAttachSpec(String.valueOf(draftMessage.getId()), "1", requiresSmartLinkConversion));
+   message.setAttachments(attachments);
+   message.setSubject("dinner appt");
+   message.setContent("bee");
+
+   request.setMsg(message);
+
+   Element response = new SaveDraft().handle(JaxbUtil.jaxbToElement(request), context);
+   SaveDraftResponse saveDraftResponse = JaxbUtil.elementToJaxb(response, SaveDraftResponse.class);
+   PartInfo topLevelPartInfo = saveDraftResponse.getMessage().getContentElems().get(0);
+   var attachmentPartInfo = topLevelPartInfo.getMimeParts().get(0);
+   assertEquals(requiresSmartLinkConversion, attachmentPartInfo.getRequiresSmartLinkConversion());
+ }
+
+  /*
+   *  Remove duplicated code, see com.zimbra.cs.service.mail.CopyToFilesIT#createDraftWithFileAttachment
+   */
+  private Message createDraftWithFileAttachment(Account account) throws Exception {
+    final MimeMessage mimeMessage = new MimeMessage(Session.getInstance(new Properties()));
+    Account acct = Provisioning.getInstance().get(Key.AccountBy.name, account.getName());
+    final Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+    final OperationContext operationContext = new OperationContext(acct);
+    Address[] recipients = new Address[] {new InternetAddress(acct.getName())};
+    mimeMessage.setFrom(new InternetAddress(acct.getName()));
+    mimeMessage.setRecipients(RecipientType.TO, recipients);
+    mimeMessage.setSubject("Test email");
+    Multipart multipart = new MimeMultipart();
+    MimeBodyPart text = new MimeBodyPart();
+    text.setText("Hello there");
+    MimeBodyPart attachmentPart = new MimeBodyPart();
+    attachmentPart.attachFile(new File(this.getClass().getResource("/test-save-to-files.txt").getFile()));
+    multipart.addBodyPart(text);
+    multipart.addBodyPart(attachmentPart);
+    mimeMessage.setContent(multipart);
+    mimeMessage.setSender(new InternetAddress(acct.getName()));
+    final ParsedMessage parsedMessage =
+        new ParsedMessage(mimeMessage, mailbox.attachmentsIndexingEnabled());
+    return mailbox.saveDraft(operationContext, parsedMessage, Mailbox.ID_AUTO_INCREMENT);
+  }
 }

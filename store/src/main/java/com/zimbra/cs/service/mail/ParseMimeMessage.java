@@ -96,6 +96,7 @@ public final class ParseMimeMessage {
   };
   private static final long DEFAULT_MAX_SIZE = 10 * 1024 * 1024L;
   private static final Map<String, String> FETCH_CONTACT_PARAMS = new HashMap<>(3);
+  public static final String SMART_LINK_HEADER = "X-Smart-Link";
 
   static {
     FETCH_CONTACT_PARAMS.put(UserServlet.QP_FMT, "vcf");
@@ -684,9 +685,9 @@ public final class ParseMimeMessage {
     mbp.setHeader("Content-Type", ctype.setCharset(ctxt.defaultCharset).toString());
     mbp.setHeader("Content-Disposition", cdisp.setCharset(ctxt.defaultCharset).toString());
     if (requiresSmartLinkConversion) {
-      mbp.setHeader("X-Smart-Link", "true");
+      mbp.setHeader(SMART_LINK_HEADER, "true");
     } else {
-      mbp.removeHeader("X-Smart-Link");
+      mbp.removeHeader(SMART_LINK_HEADER);
     }
     if (contentDescription != null) {
       mbp.setHeader("Content-Description", contentDescription);
