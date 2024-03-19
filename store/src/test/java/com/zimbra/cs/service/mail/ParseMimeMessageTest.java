@@ -37,7 +37,6 @@ import javax.mail.internet.MimePart;
 import org.dom4j.QName;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -71,19 +70,20 @@ public final class ParseMimeMessageTest {
   }
 
  @Test
- @Disabled("Fix me. Null pointer exception.")
  void parseMimeMsgSoap() throws Exception {
+  Element rootEl = new Element.JSONElement(MailConstants.E_SEND_MSG_REQUEST);
   Element el = new Element.JSONElement(MailConstants.E_MSG);
-  el.addAttribute(MailConstants.E_SUBJECT, "dinner appt");
-  el.addUniqueElement(MailConstants.E_MIMEPART)
+   el.addAttribute(MailConstants.E_SUBJECT, "dinner appt");
+   el.addUniqueElement(MailConstants.E_MIMEPART)
     .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
     .addAttribute(MailConstants.E_CONTENT, "foo bar");
-  el.addElement(MailConstants.E_EMAIL)
+   el.addElement(MailConstants.E_EMAIL)
     .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
     .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
 
-  Account acct = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-  OperationContext octxt = new OperationContext(acct);
+   rootEl.addUniqueElement(el);
+   Account acct = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   OperationContext octxt = new OperationContext(acct);
   ZimbraSoapContext zsc = getMockSoapContext();
 
   MimeMessage mm =
@@ -97,8 +97,8 @@ public final class ParseMimeMessageTest {
  }
 
  @Test
- @Disabled("Fix me. Null pointer exception.")
  void customMimeHeader() throws Exception {
+    Element rootEl = new Element.JSONElement(MailConstants.E_SEND_MSG_REQUEST);
   Element el = new Element.JSONElement(MailConstants.E_MSG);
   el.addAttribute(MailConstants.E_SUBJECT, "subject");
   el.addUniqueElement(MailConstants.E_MIMEPART)
@@ -113,6 +113,7 @@ public final class ParseMimeMessageTest {
   el.addElement(MailConstants.E_HEADER)
     .addAttribute(MailConstants.A_NAME, "X-Zimbra-Test")
     .setText("\u30ab\u30b9\u30bf\u30e0");
+  rootEl.addUniqueElement(el);
 
   Account acct = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
   OperationContext octxt = new OperationContext(acct);
@@ -138,8 +139,8 @@ public final class ParseMimeMessageTest {
  }
 
  @Test
- @Disabled("Fix me. Null pointer exception.")
  void attachedMessage() throws Exception {
+   Element rootEl = new Element.JSONElement(MailConstants.E_SEND_MSG_REQUEST);
   Element el = new Element.JSONElement(MailConstants.E_MSG);
   el.addAttribute(MailConstants.E_SUBJECT, "attach message");
   el.addElement(MailConstants.E_EMAIL)
@@ -162,6 +163,7 @@ public final class ParseMimeMessageTest {
         + "Content-Transfer-Encoding: 7bit\r\n"
         + "MIME-Version: 1.0\r\n\r\n"
         + "This is the inner message.");
+  rootEl.addUniqueElement(el);
 
   Account acct = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
   OperationContext octxt = new OperationContext(acct);
