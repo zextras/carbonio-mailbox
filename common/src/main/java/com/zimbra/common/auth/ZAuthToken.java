@@ -247,13 +247,13 @@ public class ZAuthToken {
         }
         
         // look for zimbra cookie first
-        if (fromZimbraCookies(cookieMap, isAdmin))
+        if (fromZimbraCookies(cookieMap, isAdmin)){
             return;
-        
-        // no Zimbra cookies, look for Yahoo cookies
-        if (fromYahooCookies(request, cookieMap, isAdmin)) {
         }
-        
+
+        // no Zimbra cookies, look for Yahoo cookies
+        fromYahooCookies(request, cookieMap, isAdmin);
+
         // fall thru, leave the ZAuthToken empty
     } 
    
