@@ -501,7 +501,7 @@ public abstract class AdminDocumentHandler extends DocumentHandler implements Ad
     }
   }
 
-  protected class GroupHarvestingCheckerUsingGetAttrsPerms extends GroupHarvestingCheckerBase {
+  protected static class GroupHarvestingCheckerUsingGetAttrsPerms extends GroupHarvestingCheckerBase {
     private final AttrRightChecker arc;
     private final List<String> getAttrs;
     private String currAttr;

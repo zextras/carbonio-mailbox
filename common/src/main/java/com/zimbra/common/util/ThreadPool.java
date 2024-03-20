@@ -108,7 +108,7 @@ public class ThreadPool implements Executor {
      * executes all tasks using this wrapper class to keep track of the number
      * of active worker threads.
      */
-    public class CountedTask implements Runnable {
+    public static class CountedTask implements Runnable {
         ThreadCounter mCounter;
         Runnable mTask;
 

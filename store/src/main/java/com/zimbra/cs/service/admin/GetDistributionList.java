@@ -92,7 +92,7 @@ public class GetDistributionList extends DistributionListDocumentHandler {
             }
             if (arc != null) {
                 defendAgainstGroupHarvestingWhenAbsent(dlBy, dlSel.getKey(), zsc,
-                        new GroupHarvestingCheckerUsingGetAttrsPerms(zsc, arc, Arrays.asList(minimumAttrs)));
+                    new GroupHarvestingCheckerUsingGetAttrsPerms(zsc, arc, Arrays.asList(minimumAttrs)));
             } else {
                 defendAgainstGroupHarvestingWhenAbsent(dlBy, dlSel.getKey(), zsc, Admin.R_getDistributionList);
             }
@@ -105,7 +105,7 @@ public class GetDistributionList extends DistributionListDocumentHandler {
             arc = aac.getAttrRightChecker(group);
         }
         defendAgainstGroupHarvesting(group, dlBy, dlSel.getKey(), zsc,
-                        new GroupHarvestingCheckerUsingGetAttrsPerms(zsc, arc, Arrays.asList(minimumAttrs)));
+            new GroupHarvestingCheckerUsingGetAttrsPerms(zsc, arc, Arrays.asList(minimumAttrs)));
 
         Element response = zsc.createElement(AdminConstants.GET_DISTRIBUTION_LIST_RESPONSE);
         Element eDL = encodeDistributionList(response, group, true, false, reqAttrs, arc);

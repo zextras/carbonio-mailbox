@@ -278,7 +278,7 @@ public final class ElasticSearchIndex extends IndexStore {
         }
     }
 
-    private class DateFieldProperty extends FieldProperty {
+    private static class DateFieldProperty extends FieldProperty {
         private static final String TYPE_DATE = "date";
         public DateFieldProperty(boolean store) throws JSONException {
             super(TYPE_DATE, store);
@@ -289,7 +289,7 @@ public final class ElasticSearchIndex extends IndexStore {
         }
     }
 
-    private class StringFieldProperty extends FieldProperty {
+    private static class StringFieldProperty extends FieldProperty {
         private static final String TYPE_STRING = "string";
         public StringFieldProperty(boolean store) throws JSONException {
             super(TYPE_STRING, store);

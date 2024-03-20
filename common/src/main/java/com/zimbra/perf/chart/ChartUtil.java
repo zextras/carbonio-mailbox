@@ -1328,7 +1328,7 @@ public class ChartUtil {
         }
     }
 
-    class DataSeries {
+    static class DataSeries {
         List<Entry> dataCollection = new ArrayList<>();
 
         public void AddEntry(Date t, double d) {
@@ -1362,7 +1362,7 @@ public class ChartUtil {
             return value;
         }
     }
-    class StringSeries {
+    static class StringSeries {
         List<StringEntry> dataCollection = new ArrayList<>();
 
         public void AddEntry(Date t, String s) {
