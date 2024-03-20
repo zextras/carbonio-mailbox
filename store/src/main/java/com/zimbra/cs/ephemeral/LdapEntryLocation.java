@@ -21,7 +21,6 @@ import com.zimbra.cs.account.XMPPComponent;
 import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.account.ldap.entry.LdapDynamicGroup.DynamicUnit;
 import com.zimbra.cs.account.ldap.entry.LdapDynamicGroup.StaticUnit;
-import com.zimbra.cs.account.ldap.entry.LdapMimeTypeBase;
 
 /**
  * Implementation of @EphemeralLocation used for LDAP entries.

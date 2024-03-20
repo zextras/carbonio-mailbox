@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.service.mail;
 
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

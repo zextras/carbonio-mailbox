@@ -8,7 +8,6 @@ package com.zimbra.cs.service.mail;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 

@@ -13,7 +13,6 @@ import static org.apache.jsieve.comparators.MatchTypeTags.MATCHES_TAG;
 import static org.apache.jsieve.tests.ComparatorTags.COMPARATOR_TAG;
 
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
 

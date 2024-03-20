@@ -46,7 +46,6 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimePart;
 import javax.mail.internet.MimeUtility;
-import javax.mail.internet.ParseException;
 import javax.mail.util.ByteArrayDataSource;
 import javax.mail.util.SharedFileInputStream;
 

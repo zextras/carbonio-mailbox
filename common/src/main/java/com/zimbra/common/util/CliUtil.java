@@ -11,7 +11,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import jline.ConsoleReader;
 import jline.ConsoleReaderInputStream;
 import jline.History;

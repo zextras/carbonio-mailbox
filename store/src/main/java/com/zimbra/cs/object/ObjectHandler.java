@@ -10,7 +10,6 @@ package com.zimbra.cs.object;
 
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.zimbra.common.service.ServiceException;

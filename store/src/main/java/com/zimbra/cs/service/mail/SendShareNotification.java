@@ -45,7 +45,6 @@ import com.zimbra.soap.mail.message.SendShareNotificationRequest;
 import com.zimbra.soap.mail.message.SendShareNotificationRequest.Action;
 import com.zimbra.soap.mail.type.EmailAddrInfo;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;

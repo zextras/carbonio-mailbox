@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.mime;
 
-import java.io.IOException;
 import java.io.PipedOutputStream;
 
 import javax.mail.MessagingException;

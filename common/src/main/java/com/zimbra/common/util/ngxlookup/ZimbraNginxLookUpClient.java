@@ -5,8 +5,6 @@
 
 package com.zimbra.common.util.ngxlookup;
 
-import static java.util.Arrays.asList;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;

@@ -8,7 +8,6 @@ package com.zimbra.cs.account;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 

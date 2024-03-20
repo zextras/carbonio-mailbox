@@ -26,7 +26,6 @@ import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.index.ZimbraHit;
 import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.CalendarItem;
-import com.zimbra.cs.mailbox.ContactGroup;
 import com.zimbra.cs.mailbox.ContactMemberOfMap;
 import com.zimbra.cs.mailbox.Conversation;
 import com.zimbra.cs.mailbox.Flag;

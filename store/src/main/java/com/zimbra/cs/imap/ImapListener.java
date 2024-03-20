@@ -15,7 +15,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.mailbox.BaseFolderInfo;

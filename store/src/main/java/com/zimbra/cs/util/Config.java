@@ -7,7 +7,6 @@ package com.zimbra.cs.util;
 
 import java.io.File;
 import java.sql.Timestamp;
-import java.util.Iterator;
 import java.util.Map;
 
 import com.zimbra.common.localconfig.LC;

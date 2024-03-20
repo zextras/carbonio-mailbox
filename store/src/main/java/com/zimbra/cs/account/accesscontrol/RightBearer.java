@@ -7,7 +7,6 @@ package com.zimbra.cs.account.accesscontrol;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 

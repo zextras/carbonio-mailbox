@@ -11,8 +11,6 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.nio.channels.AsynchronousCloseException;
 
-import javax.net.ssl.HandshakeCompletedEvent;
-import javax.net.ssl.HandshakeCompletedListener;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSocket;
 
