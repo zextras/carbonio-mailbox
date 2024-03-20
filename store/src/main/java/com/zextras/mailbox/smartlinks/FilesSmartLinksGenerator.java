@@ -35,6 +35,8 @@ public class FilesSmartLinksGenerator implements SmartLinksGenerator {
         );
         if (smartLinkTry.isSuccess()) {
           smartLinks.add(smartLinkTry.get());
+        } else {
+          throw ServiceException.FAILURE("Files CreateLink failed", smartLinkTry.getCause());
         }
       }
       return smartLinks;

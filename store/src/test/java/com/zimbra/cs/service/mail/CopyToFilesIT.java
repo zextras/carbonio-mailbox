@@ -247,7 +247,7 @@ class CopyToFilesIT {
     Element element = JaxbUtil.jaxbToElement(up);
     final ServiceException receivedException =
         assertThrows(ServiceException.class, () -> copyToFiles.handle(element, context));
-    assertEquals("system failure: internal error", receivedException.getMessage());
+    assertEquals("system failure: Files upload failed", receivedException.getMessage());
   }
 
   @Test

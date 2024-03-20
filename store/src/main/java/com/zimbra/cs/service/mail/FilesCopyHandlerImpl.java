@@ -7,6 +7,7 @@ import static io.vavr.API.For;
 import static java.util.function.Function.identity;
 
 import com.zextras.carbonio.files.FilesClient;
+import com.zextras.carbonio.files.entities.NodeId;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.Log;
@@ -17,6 +18,7 @@ import com.zimbra.cs.service.AttachmentService;
 import com.zimbra.soap.mail.message.CopyToFilesRequest;
 import com.zimbra.soap.mail.message.CopyToFilesResponse;
 import io.vavr.control.Try;
+import java.io.InputStream;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -48,7 +50,7 @@ public class FilesCopyHandlerImpl implements FilesCopyHandler {
                                 this.getAttachmentContentType(attachment),
                                 Try.of(() -> inputStream),
                                 this.getAttachmentSize(attachment))
-                                .yield(filesClient::uploadFile))
+                                .yield(this::uploadFile))
                     .flatMap(identity())
                     .flatMap(identity()))
         .flatMap( nodeId -> {
@@ -59,6 +61,11 @@ public class FilesCopyHandlerImpl implements FilesCopyHandler {
             return Try.success(copyToFilesResponse);
           }
         });
+  }
+
+  public Try<NodeId> uploadFile(String cookie, String destinationFolderId, String filename, String mimeType, InputStream file, long fileLength) {
+    return filesClient.uploadFile(cookie, destinationFolderId, filename, mimeType, file, fileLength)
+        .recoverWith( __ -> Try.failure(ServiceException.FAILURE("Files upload failed")));
   }
 
   private Try<String> getCookie(AuthToken authToken) {

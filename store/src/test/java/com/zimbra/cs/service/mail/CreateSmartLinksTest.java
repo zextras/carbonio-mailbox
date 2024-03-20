@@ -4,6 +4,7 @@ import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.carbonio.files.entities.NodeId;
@@ -158,12 +159,49 @@ class CreateSmartLinksTest extends SoapTestSuite {
     assertTrue(xmlResponse.contains("<Code>service.NOT_FOUND</Code>"));
   }
 
+  @Test
+  void shouldFailWhenFilesUploadFails() throws Exception {
+    final String publicUrl = "http://myServer?file=node1";
+    mockFailingAttachmentUploadOnFilesResponse("node1");
+    mockCreateLinkOnFilesResponse(publicUrl);
+    String attachmentPartName = draftWithAttachment.getParsedMessage().getMessageParts().get(attachmentPartIndex).getPartName();
+    String xmlRequest = String.format("<CreateSmartLinksRequest xmlns=\"urn:zimbraMail\">"
+        + "<attachments draftId=\"%s\" partName=\"%s\"/>"
+        + "</CreateSmartLinksRequest>", draftWithAttachment.getId(), attachmentPartName);
+
+    HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
+
+    final String xmlResponse = getResponse(resp);
+    assertTrue(xmlResponse.contains("Fault"));
+    assertTrue(xmlResponse.contains("<Code>service.FAILURE</Code>"));
+    assertTrue(xmlResponse.contains("Files upload failed"));
+    assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, resp.getStatusLine().getStatusCode());
+  }
+
+  @Test
+  void shouldFailWhenFilesCreateLinkFails() throws Exception {
+    final String publicUrl = "http://myServer?file=node1";
+    mockAttachmentUploadOnFilesResponse("node1");
+    mockFailingCreateLinkOnFilesResponse(publicUrl);
+    String attachmentPartName = draftWithAttachment.getParsedMessage().getMessageParts().get(attachmentPartIndex).getPartName();
+    String xmlRequest = String.format("<CreateSmartLinksRequest xmlns=\"urn:zimbraMail\">"
+        + "<attachments draftId=\"%s\" partName=\"%s\"/>"
+        + "</CreateSmartLinksRequest>", draftWithAttachment.getId(), attachmentPartName);
+
+    HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
+
+    final String xmlResponse = getResponse(resp);
+    assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, resp.getStatusLine().getStatusCode());
+    assertTrue(xmlResponse.contains("Fault"));
+    assertTrue(xmlResponse.contains("<Code>service.FAILURE</Code>"));
+    assertTrue(xmlResponse.contains("Files CreateLink failed"));
+  }
 
   private void mockCreateLinkOnFilesResponse(String publicUrl) {
     filesServer
         .when(request().withPath("/graphql/"))
         .respond(
-            org.mockserver.model.HttpResponse.response("{"
+            response("{"
                     + "    \"data\": {"
                     + "        \"createLink\": {"
                     + "            \"id\": \"a4bbe479-1f42-49e4-8619-b6a068015dd5\","
@@ -188,8 +226,22 @@ class CreateSmartLinksTest extends SoapTestSuite {
     filesServer
         .when(request().withMethod("POST").withPath("/upload/"))
         .respond(
-            org.mockserver.model.HttpResponse.response(new ObjectMapper().writeValueAsString(nodeIdObject))
+            response(new ObjectMapper().writeValueAsString(nodeIdObject))
                 .withStatusCode(200));
+  }
+
+  private void mockFailingCreateLinkOnFilesResponse(String publicUrl) {
+    filesServer
+        .when(request().withPath("/graphql/"))
+        .respond(response().withStatusCode(500));
+  }
+
+  private void mockFailingAttachmentUploadOnFilesResponse(String nodeId) throws Exception {
+    final NodeId nodeIdObject = new NodeId();
+    nodeIdObject.setNodeId(nodeId);
+    filesServer
+        .when(request().withMethod("POST").withPath("/upload/"))
+        .respond(response().withStatusCode(500));
   }
 
   private Message createDraftWithAttachment() throws Exception {
