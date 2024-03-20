@@ -379,19 +379,20 @@ public class Mime {
                         return true;
                     bindex = dashes = 0;
                     failed = false;
-                } else if (failed) {
-                } else if (dashes != 2) {
-                    if (c == '-')
-                        dashes++;
-                    else
-                        failed = true;
-                } else if (boundary == null) {
-                    if (Character.isWhitespace(c))
-                        failed = true;
-                    bindex++;
-                } else {
-                    if (bindex >= blength || c != boundary.charAt(bindex++))
-                        failed = true;
+                } else if (!failed) {
+                    if (dashes != 2) {
+                        if (c == '-')
+                            dashes++;
+                        else
+                            failed = true;
+                    } else if (boundary == null) {
+                        if (Character.isWhitespace(c))
+                            failed = true;
+                        bindex++;
+                    } else {
+                        if (bindex >= blength || c != boundary.charAt(bindex++))
+                            failed = true;
+                    }
                 }
             }
         } finally {
