@@ -1,16 +1,19 @@
 def mvnCmd(String cmd) {
     sh 'mvn -B -s settings-jenkins.xml ' + cmd
 }
+
 pipeline {
     agent {
         node {
-            label 'carbonio-agent-v1'
+            label 'carbonio-agent-v2'
         }
     }
     triggers {
         cron('H 5 * * *')
     }
     environment {
+        JAVA_HOME='/usr/lib/jvm/java-11-openjdk-amd64'
+        JAVA_PATH='${JAVA_HOME}/bin'
         JAVA_OPTS="-Dfile.encoding=UTF8"
         LC_ALL="C.UTF-8"
         jenkins_build="true"
@@ -57,7 +60,7 @@ pipeline {
                             subject: "[Carbonio-Mailbox] Jenkins nightly report for ${today}",
                             body: """
 <p>
-Hello,</br>
+Hello,<br>
 this is your daily report for nightly tests.</br>
 You can find your report at <a href="${BUILD_URL}">the following link</a>.</br>
 The current build status is ${currentBuild.currentResult}.</br>

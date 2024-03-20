@@ -55,18 +55,23 @@ pipeline {
             label 'carbonio-agent-v2'
         }
     }
+
     parameters {
         booleanParam defaultValue: false, description: 'Upload packages in playground repositories.', name: 'PLAYGROUND'
         booleanParam defaultValue: false, description: 'Skip test and sonar analysis.', name: 'SKIP_TEST_WITH_COVERAGE'
         booleanParam defaultValue: false, description: 'Skip sonar analysis.', name: 'SKIP_SONARQUBE'
     }
+
     environment {
+        JAVA_HOME='/usr/lib/jvm/java-11-openjdk-amd64'
+        JAVA_PATH='${JAVA_HOME}/bin'
         JAVA_OPTS='-Dfile.encoding=UTF8'
         LC_ALL='C.UTF-8'
         MAVEN_OPTS = "-Xmx4g"
         BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1'
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
     }
+
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
         timeout(time: 2, unit: 'HOURS')
@@ -100,10 +105,6 @@ pipeline {
             }
         }
         stage('Build') {
-            environment {
-                JAVA_HOME='/usr/lib/jvm/java-11-openjdk-amd64'
-                JAVA_PATH='${JAVA_HOME}/bin'
-            }
             steps {
                 mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
 
@@ -149,6 +150,10 @@ pipeline {
         }
 
         stage('Sonarqube Analysis') {
+            environment {
+                JAVA_HOME='/usr/lib/jvm/java-17-openjdk-amd64'
+                JAVA_PATH='${JAVA_HOME}/bin'
+            }
             when {
                 allOf {
                     expression { params.SKIP_SONARQUBE == false }
@@ -162,10 +167,6 @@ pipeline {
             }
         }
         stage('Publish SNAPSHOT to maven') {
-            environment {
-                JAVA_HOME='/usr/lib/jvm/java-11-openjdk-amd64'
-                JAVA_PATH='${JAVA_HOME}/bin'
-            }
             when {
                 branch 'devel';
             }
