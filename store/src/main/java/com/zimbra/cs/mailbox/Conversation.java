@@ -771,13 +771,14 @@ public class Conversation extends MailItem {
         boolean excludeModify = false, excludeAccess = false;
         for (Message child : msgs) {
             // silently skip explicitly excluded messages, PERMISSION_DENIED messages, and MODIFY_CONFLICT messages
-            if (!TargetConstraint.checkItem(tcon, child)) {
-            } else if (!child.canAccess(ACL.RIGHT_DELETE)) {
-                excludeAccess = true;
-            } else if (!child.checkChangeID()) {
-                excludeModify = true;
-            } else {
-                info.add(child.getDeletionInfo());
+            if (TargetConstraint.checkItem(tcon, child)) {
+                if (!child.canAccess(ACL.RIGHT_DELETE)) {
+                    excludeAccess = true;
+                } else if (!child.checkChangeID()) {
+                    excludeModify = true;
+                } else {
+                    info.add(child.getDeletionInfo());
+                }
             }
         }
 
