@@ -13,6 +13,8 @@ import static org.mockserver.model.HttpRequest.request;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.carbonio.files.FilesClient;
 import com.zextras.carbonio.files.entities.NodeId;
+import com.zextras.mailbox.util.MailMessageBuilder;
+import com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
