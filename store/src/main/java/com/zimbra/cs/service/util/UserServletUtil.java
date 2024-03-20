@@ -337,7 +337,6 @@ public class UserServletUtil {
                         context.authToken.encode(context.resp, isAdminRequest, secureCookie);
                     }
                 }
-                // always return
             }
 
             // there is no credential at this point.  assume anonymous public access and continue.
