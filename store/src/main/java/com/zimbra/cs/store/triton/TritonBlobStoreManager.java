@@ -160,8 +160,7 @@ public class TritonBlobStoreManager extends SisStore implements ExternalResumabl
             post.addHeader(TritonHeaders.HASH_TYPE, hashType.toString());
             HttpResponse httpResp = HttpClientUtil.executeMethod(client, post);
             int statusCode = httpResp.getStatusLine().getStatusCode();
-            if (statusCode == HttpStatus.SC_CREATED) {
-            } else {
+            if (statusCode != HttpStatus.SC_CREATED) {
                 ZimbraLog.store.error("failed with code %d response: %s", statusCode, EntityUtils.toString(httpResp.getEntity()));
                 throw ServiceException.FAILURE("unable to store blob " + statusCode + ":" +  httpResp.getStatusLine().getReasonPhrase(), null);
             }
