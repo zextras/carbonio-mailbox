@@ -527,10 +527,9 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
                         }
                         ps.print("(NIL NIL NIL NIL)");
                     } catch (ParseException e) { }
-                } else if (addr.getAddress() == null) {
-                } else {
-                    // 7.4.2: "The fields of an address structure are in the following order: personal
-                    //         name, [SMTP] at-domain-list (source route), mailbox name, and host name."
+                } else if (addr.getAddress() != null) {
+                        // 7.4.2: "The fields of an address structure are in the following order: personal
+                        //         name, [SMTP] at-domain-list (source route), mailbox name, and host name."
                     if (count++ == 0) {
                         ps.write('(');
                     }
