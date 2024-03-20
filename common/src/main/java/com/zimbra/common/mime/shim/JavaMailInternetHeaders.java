@@ -248,13 +248,14 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
     @Override
     public void addHeaderLine(String line) {
         if (ZPARSER) {
-            if (line == null || line.isEmpty()) {
-            } else if (line.charAt(0) == ' ' || line.charAt(0) == '\t') {
-                throw new UnsupportedOperationException("adding continuation lines not yet supported");
-            } else {
-                Pair<String, byte[]> parsed = parseHeaderLine(line);
-                if (parsed != null) {
-                    zheaders.appendHeader(parsed.getFirst(), parsed.getSecond());
+            if (line != null && !line.isEmpty()) {
+                if (line.charAt(0) == ' ' || line.charAt(0) == '\t') {
+                    throw new UnsupportedOperationException("adding continuation lines not yet supported");
+                } else {
+                    Pair<String, byte[]> parsed = parseHeaderLine(line);
+                    if (parsed != null) {
+                        zheaders.appendHeader(parsed.getFirst(), parsed.getSecond());
+                    }
                 }
             }
         } else {
