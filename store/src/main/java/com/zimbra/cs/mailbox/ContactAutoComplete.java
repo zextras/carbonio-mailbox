@@ -766,15 +766,16 @@ public class ContactAutoComplete {
             final ItemId rootItemId = new ItemId(mbox, Mailbox.ID_FOLDER_USER_ROOT);
             final Set<Folder> allFolders = FolderUtil.flattenAndSortFolderTree(mbox.getFolderTree(octxt, rootItemId, true));
             for (Folder folder : allFolders) {
-                if (folder.getDefaultView() != MailItem.Type.CONTACT || folder.inTrash()) {
-                } else if (folder instanceof Mountpoint && !(octxt.isDelegatedRequest(mbox))) {
-                    Mountpoint mp = (Mountpoint) folder;
-                    mountpoints.put(mp.getTarget(), mp);
-                    if (mIncludeSharedFolders) {
+                if (folder.getDefaultView() == MailItem.Type.CONTACT && !folder.inTrash()) {
+                    if (folder instanceof Mountpoint && !(octxt.isDelegatedRequest(mbox))) {
+                        Mountpoint mp = (Mountpoint) folder;
+                        mountpoints.put(mp.getTarget(), mp);
+                        if (mIncludeSharedFolders) {
+                            folders.add(folder);
+                        }
+                    } else {
                         folders.add(folder);
                     }
-                } else {
-                    folders.add(folder);
                 }
             }
         } else {
