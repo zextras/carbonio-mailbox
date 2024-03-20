@@ -96,7 +96,7 @@ public final class ParseMimeMessage {
   };
   private static final long DEFAULT_MAX_SIZE = 10 * 1024 * 1024L;
   private static final Map<String, String> FETCH_CONTACT_PARAMS = new HashMap<>(3);
-  public static final String SMART_LINK_HEADER = "X-Smart-Link";
+  public static final String SMART_LINK_HEADER = "X-Requires-Smart-Link-Conversion";
 
   static {
     FETCH_CONTACT_PARAMS.put(UserServlet.QP_FMT, "vcf");

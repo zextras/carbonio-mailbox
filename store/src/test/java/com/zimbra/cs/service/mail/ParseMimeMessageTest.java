@@ -7,20 +7,18 @@ package com.zimbra.cs.service.mail;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.zimbra.common.account.Key;
+import com.zextras.mailbox.util.MailMessageBuilder;
+import com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.zmime.ZMimeMultipart;
-import com.zimbra.common.zmime.ZMimeUtility;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ZimbraAuthToken;
-import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
@@ -36,39 +34,20 @@ import com.zimbra.soap.mail.type.AttachSpec;
 import com.zimbra.soap.mail.type.AttachmentsInfo;
 import com.zimbra.soap.mail.type.MimePartAttachSpec;
 import com.zimbra.soap.mail.type.SaveDraftMsg;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Optional;
-import java.util.Properties;
-import java.util.Random;
-import javax.mail.Address;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMessage.RecipientType;
 import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimePart;
 import org.dom4j.QName;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/**
- * Unit test for {@link ParseMimeMessage}.
- *
- * @author ysasaki
- */
 public final class ParseMimeMessageTest {
 
   @BeforeAll
@@ -157,9 +136,8 @@ public final class ParseMimeMessageTest {
         ParseMimeMessage.parseMimeMsgSoap(
             zsc, octxt, null, msgElement, null, new ParseMimeMessage.MimeMessageData());
     mimeMessageWithAttachment.getContent();
-    // TODO: X-Smart-Link or X-Requires-Smart-Link-Conversion ?
     final String[] header = ((ZMimeMultipart) mimeMessageWithAttachment.getContent()).getBodyPart(0)
-        .getHeader("X-Smart-Link");
+        .getHeader(ParseMimeMessage.SMART_LINK_HEADER);
     Assertions.assertNotNull(header);
     Assertions.assertTrue(header.length > 0);
   }
@@ -205,7 +183,7 @@ public final class ParseMimeMessageTest {
             zsc, octxt, null, msgElement, null, new ParseMimeMessage.MimeMessageData());
     mimeMessageWithAttachment.getContent();
     final String[] header = ((ZMimeMultipart) mimeMessageWithAttachment.getContent()).getBodyPart(0)
-        .getHeader("X-Smart-Link");
+        .getHeader(ParseMimeMessage.SMART_LINK_HEADER);
     Assertions.assertNull(header);
   }
 
@@ -305,27 +283,6 @@ public final class ParseMimeMessageTest {
   assertEquals("This is the inner message.", msg.getContent());
  }
 
-  private ByteArrayInputStream randomContent(String prefix, int length) {
-    ZMimeUtility.ByteBuilder bb = new ZMimeUtility.ByteBuilder();
-    Random rnd = new Random();
-    bb.append(prefix).append("\n");
-    for (int i = prefix.length() + 2; i < length; i++) {
-      int r = rnd.nextInt(55);
-      if (r < 26) {
-        bb.append((char) ('A' + r));
-      } else if (r < 52) {
-        bb.append((char) ('a' + r));
-      } else {
-        bb.append(' ');
-      }
-    }
-    return new ByteArrayInputStream(bb.toByteArray());
-  }
-
-  private String firstLine(MimePart part) throws IOException, MessagingException {
-    return new BufferedReader(new InputStreamReader(part.getInputStream())).readLine();
-  }
-
  @Test
  void shouldReturnElementWithGivenContentTypeWhenCalledGetFirstElementFromMimePartByType()
    throws ServiceException {
@@ -380,45 +337,25 @@ public final class ParseMimeMessageTest {
  }
 
   private Message createDraftWithFileAttachment(Account account) throws Exception {
-    final MimeMessage mimeMessage = new MimeMessage(Session.getInstance(new Properties()));
-    Account acct = Provisioning.getInstance().get(Key.AccountBy.name, account.getName());
-    final Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(acct);
-    final OperationContext operationContext = new OperationContext(acct);
-    Address[] recipients = new Address[] {new InternetAddress(acct.getName())};
-    mimeMessage.setFrom(new InternetAddress(acct.getName()));
-    mimeMessage.setRecipients(RecipientType.TO, recipients);
-    mimeMessage.setSubject("Test email");
-    Multipart multipart = new MimeMultipart();
-    MimeBodyPart text = new MimeBodyPart();
-    text.setText("Hello there");
-    MimeBodyPart attachmentPart = new MimeBodyPart();
-    attachmentPart.attachFile(new File(this.getClass().getResource("/test-save-to-files.txt").getFile()));
-    multipart.addBodyPart(text);
-    multipart.addBodyPart(attachmentPart);
-    mimeMessage.setContent(multipart);
-    mimeMessage.setSender(new InternetAddress(acct.getName()));
-    final ParsedMessage parsedMessage =
-        new ParsedMessage(mimeMessage, mailbox.attachmentsIndexingEnabled());
-    return mailbox.saveDraft(operationContext, parsedMessage, Mailbox.ID_AUTO_INCREMENT);
+    final String accountName = account.getName();
+    final ParsedMessage message = new MailMessageBuilder()
+        .from(accountName)
+        .addRecipient(accountName)
+        .subject("Test email")
+        .body("Hello there")
+        .addAttachmentFromResources("/test-save-to-files.txt")
+        .build();
+    return AccountAction.Factory.getDefault().forAccount(account).saveDraft(message);
   }
 
   private Message createDraft(Account account) throws Exception {
-    final MimeMessage mimeMessage = new MimeMessage(Session.getInstance(new Properties()));
-    Account acct = Provisioning.getInstance().get(Key.AccountBy.name, account.getName());
-    final Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(acct);
-    final OperationContext operationContext = new OperationContext(acct);
-    Address[] recipients = new Address[] {new InternetAddress(acct.getName())};
-    mimeMessage.setFrom(new InternetAddress(acct.getName()));
-    mimeMessage.setRecipients(RecipientType.TO, recipients);
-    mimeMessage.setSubject("Test email");
-    Multipart multipart = new MimeMultipart();
-    MimeBodyPart text = new MimeBodyPart();
-    text.setText("Hello there");
-    multipart.addBodyPart(text);
-    mimeMessage.setContent(multipart);
-    mimeMessage.setSender(new InternetAddress(acct.getName()));
-    final ParsedMessage parsedMessage =
-        new ParsedMessage(mimeMessage, mailbox.attachmentsIndexingEnabled());
-    return mailbox.saveDraft(operationContext, parsedMessage, Mailbox.ID_AUTO_INCREMENT);
+    final String accountName = account.getName();
+    final ParsedMessage message = new MailMessageBuilder()
+        .from(accountName)
+        .addRecipient(accountName)
+        .subject("Test email")
+        .body("Hello there")
+        .build();
+    return AccountAction.Factory.getDefault().forAccount(account).saveDraft(message);
   }
 }
