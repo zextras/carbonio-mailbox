@@ -216,6 +216,7 @@ public class EphemeralBackendCheck extends AttributeCallback {
                         + "Ephemeral data will be forwarded to %s until migration info is reset or the backend is changed to match it", URL, info.getURL(), info.getURL());
                 return;
             default:
+                break;
             }
         }
 
