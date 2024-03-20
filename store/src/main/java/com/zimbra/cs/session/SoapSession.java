@@ -1146,13 +1146,14 @@ public class SoapSession extends Session {
       FolderNode node,
       Element.ElementFactory factory,
       Map<ItemId, Pair<Boolean, Element>> mountpoints) {
-    if (node.mFolder == null || mountpoints == null) {
-    } else if (node.mFolder instanceof Mountpoint) {
-      Mountpoint mpt = (Mountpoint) node.mFolder;
-      expandLocalMountpoint(octxt, mpt, factory, mountpoints);
-    } else {
-      for (FolderNode child : node.mSubfolders) {
-        expandLocalMountpoints(octxt, child, factory, mountpoints);
+    if (node.mFolder != null && mountpoints != null) {
+      if (node.mFolder instanceof Mountpoint) {
+        Mountpoint mpt = (Mountpoint) node.mFolder;
+        expandLocalMountpoint(octxt, mpt, factory, mountpoints);
+      } else {
+        for (FolderNode child : node.mSubfolders) {
+          expandLocalMountpoints(octxt, child, factory, mountpoints);
+        }
       }
     }
   }
