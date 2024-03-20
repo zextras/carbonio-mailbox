@@ -119,15 +119,15 @@ public class LockMgr {
 
 	private synchronized Lock hasLock(String owner, String path, LockType type, LockScope scope) throws DavException {
 		for (Lock l : getLocks(path)) {
-			if (l == null) {
-      }
-			else if (l.owner.compareTo(owner) == 0)
-				return l;
-			else if (scope == LockScope.exclusive)
-				throw new DavException("already locked "+path, DavProtocol.STATUS_LOCKED);
-			else if (scope == LockScope.shared && l.scope == LockScope.exclusive)
-				throw new DavException("shared lock exists "+path, DavProtocol.STATUS_LOCKED);
-		}
+            if (l != null) {
+                if (l.owner.compareTo(owner) == 0)
+                    return l;
+                else if (scope == LockScope.exclusive)
+                    throw new DavException("already locked "+path, DavProtocol.STATUS_LOCKED);
+                else if (scope == LockScope.shared && l.scope == LockScope.exclusive)
+                    throw new DavException("shared lock exists "+path, DavProtocol.STATUS_LOCKED);
+            }
+        }
 		return null;
 	}
 
