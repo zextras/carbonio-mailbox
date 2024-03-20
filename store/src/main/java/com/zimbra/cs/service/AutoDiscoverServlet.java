@@ -134,7 +134,7 @@ public class AutoDiscoverServlet extends ZimbraServlet {
         }
       }
       if (req.isSecure()) {
-        Account acct = authenticate(req, resp, NS_MOBILE);
+        authenticate(req, resp, NS_MOBILE);
       } else {
         resp.sendRedirect(LC.zimbra_activesync_autodiscover_url.value());
       }
