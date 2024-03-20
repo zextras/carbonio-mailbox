@@ -793,18 +793,25 @@ public final class ContactCSV {
             field = col.attributeValue(ATTR_FIELD);
             colType = ColType.SIMPLE;
             String type = col.attributeValue(ATTR_TYPE);
-            if (type == null) {
-            } else if (type.equals("multivalue")) {
-                colType = ColType.MULTIVALUE;
-                Collections.addAll(names, name.split(","));
-                name = names.get(0);
-            } else if (type.equals("name")) {
-                colType = ColType.NAME;
-            } else if (type.equals("tag")) {
-                colType = ColType.TAG;
-            } else if (type.equals("date")) {
-                colType = ColType.DATE;
+            switch (type) {
+                case "multivalue":
+                    colType = ColType.MULTIVALUE;
+                    Collections.addAll(names, name.split(","));
+                    name = names.get(0);
+                    break;
+                case "name":
+                    colType = ColType.NAME;
+                    break;
+                case "tag":
+                    colType = ColType.TAG;
+                    break;
+                case "date":
+                    colType = ColType.DATE;
+                    break;
+                default:
+                    break;
             }
+
         }
 
         @Override
