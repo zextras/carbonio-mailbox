@@ -91,18 +91,19 @@ public class VerifyStoreManager extends AdminDocumentHandler {
     }
 
     private void assertEquals(String message, Object o1, Object o2) throws Exception {
-        if (o1 == null && o2 == null) {
-        } else if (o1 == null && o2 != null) {
-            throw new Exception("verification failed checking "+message);
-        } else if (!o1.equals(o2)) {
-            if (o1 instanceof Number && o2 instanceof Number) {
-                Number num1 = (Number) o1;
-                Number num2 = (Number) o2;
-                if (num1.longValue() == num2.longValue()) {
-                    return;
+        if (o1 != null || o2 != null) {
+            if (o1 == null) {
+                throw new Exception("verification failed checking "+message);
+            } else if (!o1.equals(o2)) {
+                if (o1 instanceof Number && o2 instanceof Number) {
+                    Number num1 = (Number) o1;
+                    Number num2 = (Number) o2;
+                    if (num1.longValue() == num2.longValue()) {
+                        return;
+                    }
                 }
+                throw new Exception("verification failed checking "+message);
             }
-            throw new Exception("verification failed checking "+message);
         }
     }
 
