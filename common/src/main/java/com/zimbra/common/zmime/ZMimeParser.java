@@ -148,22 +148,22 @@ class ZMimeParser {
                 Map.Entry<String, Integer> bndData = it.next();
                 String bnd = bndData.getKey();
 
-                if (bnd.isEmpty()) {
-                    // "" means unspecified boundary, which matches anything starting with 2 dashes
-                } else if (index >= bnd.length()) {
-                    // end boundaries are represented by exactly 2 dashes after a boundary string
-                    int trailers = bndData.getValue();
-                    if (c == '-' && trailers < 2) {
-                        bndData.setValue(trailers + 1);
-                    } else if (c != ' ' && c != '\t') {
-                        it.remove();
-                    }
-                } else {
-                    // FIXME: comparison probably wrong for high-bit-set bytes
-                    if (bnd.charAt(index) != c) {
-                        it.remove();
-                    } else if (index == bnd.length() - 1) {
-                        bndData.setValue(0);
+                if (!bnd.isEmpty()) {
+                    if (index >= bnd.length()) {
+                        // end boundaries are represented by exactly 2 dashes after a boundary string
+                        int trailers = bndData.getValue();
+                        if (c == '-' && trailers < 2) {
+                            bndData.setValue(trailers + 1);
+                        } else if (c != ' ' && c != '\t') {
+                            it.remove();
+                        }
+                    } else {
+                        // FIXME: comparison probably wrong for high-bit-set bytes
+                        if (bnd.charAt(index) != c) {
+                            it.remove();
+                        } else if (index == bnd.length() - 1) {
+                            bndData.setValue(0);
+                        }
                     }
                 }
             }
