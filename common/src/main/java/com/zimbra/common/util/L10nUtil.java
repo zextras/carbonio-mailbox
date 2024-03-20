@@ -31,7 +31,7 @@ public class L10nUtil {
     /**
      * List all message keys here
      */
-    public static enum MsgKey {
+    public enum MsgKey {
 
         replySubjectPrefix,
 
@@ -282,7 +282,7 @@ public class L10nUtil {
     private static ClassLoader getClassLoader(String directory) {
         ClassLoader classLoader = null;
         try {
-            URL urls[] = new URL[] { new File(directory).toURL() };
+            URL[] urls = new URL[] { new File(directory).toURL() };
             classLoader = new URLClassLoader(urls);
         } catch (MalformedURLException e) {
             try {
@@ -504,7 +504,7 @@ public class L10nUtil {
             synchronized (sLocaleMap) {
                 lc = sLocaleMap.get(name);
                 if (lc == null) {
-                    String parts[] = name.indexOf('_') != -1 ? name.split("_") : name.split("-");
+                    String[] parts = name.indexOf('_') != -1 ? name.split("_") : name.split("-");
                     if (parts.length == 1) {
                         lc = new Locale(parts[0]);
                     } else if (parts.length == 2) {

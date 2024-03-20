@@ -375,7 +375,7 @@ public final class Metadata {
         } else if (object instanceof Long || object instanceof Integer || object instanceof Short || object instanceof Byte) {
             sb.append(object).append("\n");
         } else if (object != null) {
-            sb.append(object.toString()).append("\n");
+            sb.append(object).append("\n");
         }
         return sb;
     }

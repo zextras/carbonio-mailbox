@@ -257,7 +257,7 @@ public abstract class AccessManager {
      * @return
      * @throws ServiceException
      */
-    public boolean allowAttr(String attrName);
+    boolean allowAttr(String attrName);
   }
 
   /**

@@ -197,7 +197,7 @@ public class MimeMultipart extends MimePart implements Iterable<MimePart> {
     public static String generateBoundary() {
         // RFC 1521 5.1: "A good strategy is to choose a boundary that includes a character
         //                sequence such as "=_" which can never appear in a quoted-printable body."
-        return "=_" + UUID.randomUUID().toString();
+        return "=_" + UUID.randomUUID();
     }
 
 

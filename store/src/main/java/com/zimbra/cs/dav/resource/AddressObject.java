@@ -8,6 +8,7 @@ package com.zimbra.cs.dav.resource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -81,7 +82,7 @@ public class AddressObject extends MailItemResource {
     @Override
     public InputStream getContent(DavContext ctxt) throws DavException, IOException {
         try {
-            return new ByteArrayInputStream(toVCard(ctxt).getBytes("UTF-8"));
+            return new ByteArrayInputStream(toVCard(ctxt).getBytes(StandardCharsets.UTF_8));
         } catch (ServiceException e) {
             ZimbraLog.dav.warn("can't get content for Contact %d", mId, e);
         }
@@ -218,7 +219,7 @@ public class AddressObject extends MailItemResource {
         }
         List<VCard> vcards = null;
         try (InputStream is = ctxt.getUpload().getInputStream()) {
-            String buf = new String(ByteUtil.getContent(is, (int)uploadSize), MimeConstants.P_CHARSET_UTF8);
+            String buf = new String(ByteUtil.getContent(is, (int)uploadSize), StandardCharsets.UTF_8);
             vcards = VCard.parseVCard(buf);
         } catch (ServiceException se) {
             throw new DavException.InvalidData(DavElements.CardDav.E_VALID_ADDRESS_DATA,
@@ -321,7 +322,7 @@ public class AddressObject extends MailItemResource {
                     throw new DavException("item etag does not match", HttpServletResponse.SC_PRECONDITION_FAILED);
                 }
                 String ifnonematch = ctxt.getRequest().getHeader(DavProtocol.HEADER_IF_NONE_MATCH);
-                if ((ifnonematch != null) && ifnonematch.equals("*")) {
+                if ("*".equals(ifnonematch)) {
                     throw new DavException("item already exists", HttpServletResponse.SC_PRECONDITION_FAILED);
                 }
                 MailItemResource mir = (MailItemResource) res;

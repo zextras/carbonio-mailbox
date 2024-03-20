@@ -26,7 +26,7 @@ public enum Channel {
 
     private String name;
 
-    private Channel(String name) {
+    Channel(String name) {
         this.name = name;
     }
 

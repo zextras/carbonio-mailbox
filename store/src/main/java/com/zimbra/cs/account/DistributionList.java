@@ -105,7 +105,7 @@ public abstract class DistributionList extends ZAttrDistributionList implements 
      */
     @Override
     public String[] getAllAddrsAsGroupMember() throws ServiceException {
-        String aliases[] = getAliases();
+        String[] aliases = getAliases();
         List<String> addrs = Lists.newArrayListWithExpectedSize(aliases.length + 1);
         String myName = getName();
         addrs.add(myName);

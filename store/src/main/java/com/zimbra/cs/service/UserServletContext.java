@@ -8,6 +8,7 @@ package com.zimbra.cs.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
@@ -585,7 +586,7 @@ public class UserServletContext {
      *  specified or is set to a non-zero value. */
     public boolean shouldReturnBody() {
         String bodyVal = params.get(UserServlet.QP_BODY);
-        if (bodyVal != null && bodyVal.equals("0"))
+        if ("0".equals(bodyVal))
             return false;
         return true;
     }
@@ -688,9 +689,9 @@ public class UserServletContext {
             return value;
         }
 
-        @Override public int read(byte b[]) throws IOException { return (int)check(is.read(b)); }
+        @Override public int read(byte[] b) throws IOException { return (int)check(is.read(b)); }
 
-        @Override public int read(byte b[], int off, int len) throws IOException {
+        @Override public int read(byte[] b, int off, int len) throws IOException {
             return (int)check(is.read(b, off, len));
         }
 
@@ -748,7 +749,7 @@ public class UserServletContext {
                     if (fis.isFormField()) {
                         is = fis.openStream();
                         params.put(fis.getFieldName(),
-                            new String(ByteUtil.getContent(is, -1), "UTF-8"));
+                            new String(ByteUtil.getContent(is, -1), StandardCharsets.UTF_8));
                         if (doCsrfCheck && !this.csrfAuthSucceeded) {
                             String csrfToken = params.get(FileUploadServlet.PARAM_CSRF_TOKEN);
                             if (UserServlet.log.isDebugEnabled()) {

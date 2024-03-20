@@ -180,6 +180,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -690,9 +691,9 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     }
   }
 
-  public static enum TrustedStatus {
+  public enum TrustedStatus {
     trusted,
-    not_trusted;
+    not_trusted
   }
 
   private static class ItemCache {
@@ -3781,29 +3782,21 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       throws ServiceException {
     String relPathWithParams = relativePath;
     URI uri = null;
-    try {
-      if (startTimeArg != null) {
-        String encodedArg = URLEncoder.encode(startTimeArg, "UTF-8");
-        if (!relPathWithParams.contains("?")) {
-          relPathWithParams = relPathWithParams + "?start=" + encodedArg;
-        } else {
-          relPathWithParams = relPathWithParams + "&start=" + encodedArg;
-        }
+    if (startTimeArg != null) {
+      String encodedArg = URLEncoder.encode(startTimeArg, StandardCharsets.UTF_8);
+      if (!relPathWithParams.contains("?")) {
+        relPathWithParams = relPathWithParams + "?start=" + encodedArg;
+      } else {
+        relPathWithParams = relPathWithParams + "&start=" + encodedArg;
       }
-      if (endTimeArg != null) {
-        String encodedArg = URLEncoder.encode(endTimeArg, "UTF-8");
-        if (!relPathWithParams.contains("?")) {
-          relPathWithParams = relPathWithParams + "?end=" + encodedArg;
-        } else {
-          relPathWithParams = relPathWithParams + "&end=" + encodedArg;
-        }
+    }
+    if (endTimeArg != null) {
+      String encodedArg = URLEncoder.encode(endTimeArg, StandardCharsets.UTF_8);
+      if (!relPathWithParams.contains("?")) {
+        relPathWithParams = relPathWithParams + "?end=" + encodedArg;
+      } else {
+        relPathWithParams = relPathWithParams + "&end=" + encodedArg;
       }
-    } catch (UnsupportedEncodingException e) {
-      String msg =
-          String.format(
-              "Unable to get REST resource relativePath=%s start=%s end=%s: %s",
-              relPathWithParams, startTimeArg, endTimeArg, e.getMessage());
-      throw ZClientException.IO_ERROR(msg, e);
     }
     uri = getRestURI(relPathWithParams, alternateUrl);
     return getResource(uri, msecTimeout);
@@ -5717,7 +5710,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
         applyConditions((ArrayList<Object>) condition, element);
       }
       if (condition instanceof String[]) {
-        String conditionAttr[] = (String[]) condition;
+        String[] conditionAttr = (String[]) condition;
         Element conditionElem =
             parentCondition.addNonUniqueElement(AccountConstants.E_ENTRY_SEARCH_FILTER_SINGLECOND);
         conditionElem.addAttribute(AccountConstants.A_ENTRY_SEARCH_FILTER_ATTR, conditionAttr[0]);
@@ -5873,7 +5866,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     }
   }
 
-  public ZGetMiniCalResult getMiniCal(long startMsec, long endMsec, String folderIds[])
+  public ZGetMiniCalResult getMiniCal(long startMsec, long endMsec, String[] folderIds)
       throws ServiceException {
     lock();
     try {
@@ -5982,7 +5975,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       String query,
       long startMsec,
       long endMsec,
-      String folderIds[],
+      String[] folderIds,
       TimeZone timeZone,
       String types)
       throws ServiceException {
@@ -6831,7 +6824,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     if (folder instanceof ZFolder && !folder.isIMAPSubscribed()) {
       ZFolder zFolder = (ZFolder) folder;
       String flags = zFolder.getFlags() == null ? "" : zFolder.getFlags();
-      flags = flags + String.valueOf(ZFolder.Flag.imapSubscribed.getFlagChar());
+      flags = flags + ZFolder.Flag.imapSubscribed.getFlagChar();
       updateFolder(zFolder.getFolderIdAsString(), null, null, null, null, flags, null);
     }
   }

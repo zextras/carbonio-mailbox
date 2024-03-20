@@ -115,7 +115,7 @@ public class RandomPassword {
         System.exit(1);
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         CommandLineParser parser = new GnuParser();
         Options options = new Options();
         options.addOption("l", "localpart", false, "generated string does not contain dot(.)");

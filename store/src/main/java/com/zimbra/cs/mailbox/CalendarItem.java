@@ -391,7 +391,7 @@ public abstract class CalendarItem extends MailItem {
           if (ZimbraLog.index.isDebugEnabled()) {
             ZimbraLog.index.debug(
                 "Caught MessagingException for Invite "
-                    + inv.toString()
+                    + inv
                     + " while fetching MM during indexing of CalendarItem "
                     + this.getId()
                     + " skipping Invite",
@@ -419,7 +419,7 @@ public abstract class CalendarItem extends MailItem {
           if (ZimbraLog.index.isDebugEnabled()) {
             ZimbraLog.index.debug(
                 "Caught MessagingException for Invite "
-                    + inv.toString()
+                    + inv
                     + " while indexing CalendarItem "
                     + this.getId()
                     + " skipping Invite",
@@ -802,7 +802,7 @@ public abstract class CalendarItem extends MailItem {
               }
               ((Recurrence.RecurrenceRule) mRecurrence).addException(exceptRule);
             } else {
-              sLog.debug("Got second invite with no RecurID: " + cur.toString());
+              sLog.debug("Got second invite with no RecurID: " + cur);
             }
           }
         }
@@ -2514,11 +2514,11 @@ public abstract class CalendarItem extends MailItem {
 
   // YCC special
   public interface Callback {
-    public void created(CalendarItem calItem) throws ServiceException;
+    void created(CalendarItem calItem) throws ServiceException;
 
-    public void modified(CalendarItem calItem) throws ServiceException;
+    void modified(CalendarItem calItem) throws ServiceException;
 
-    public void deleted(CalendarItem calItem) throws ServiceException;
+    void deleted(CalendarItem calItem) throws ServiceException;
   }
 
   private static Callback sCallback = null;
@@ -2879,7 +2879,7 @@ public abstract class CalendarItem extends MailItem {
                 + ": id="
                 + mId
                 + ", content="
-                + obj.toString(),
+                + obj,
             null);
 
       boolean updated = false;
@@ -3955,7 +3955,7 @@ public abstract class CalendarItem extends MailItem {
                   + ": id="
                   + mId
                   + ", content="
-                  + obj.toString(),
+                  + obj,
               null);
         }
       } finally {
@@ -4722,7 +4722,7 @@ public abstract class CalendarItem extends MailItem {
       if (obj instanceof MimeMultipart) mmp = (MimeMultipart) obj;
       else
         throw ServiceException.FAILURE(
-            "Expected MimeMultipart, but got " + obj.getClass().getName() + ": " + obj.toString(),
+            "Expected MimeMultipart, but got " + obj.getClass().getName() + ": " + obj,
             null);
 
       int numParts = mmp.getCount();
@@ -4740,7 +4740,7 @@ public abstract class CalendarItem extends MailItem {
                 "Expected MimeMessage, but got "
                     + objMbp.getClass().getName()
                     + ": "
-                    + objMbp.toString(),
+                    + objMbp,
                 null);
           map.put(invId, mm);
         }

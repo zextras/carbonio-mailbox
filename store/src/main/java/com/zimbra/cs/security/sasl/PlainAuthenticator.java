@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.security.sasl;
 
+import java.nio.charset.StandardCharsets;
 import javax.security.sasl.SaslServer;
 
 import com.zimbra.common.account.Key;
@@ -50,7 +51,7 @@ public class PlainAuthenticator extends Authenticator {
 
         // RFC 2595 6: "Non-US-ASCII characters are permitted as long as they are
         //              represented in UTF-8 [UTF-8]."
-        String message = new String(data, "utf-8");
+        String message = new String(data, StandardCharsets.UTF_8);
 
         // RFC 2595 6: "The client sends the authorization identity (identity to
         //              login as), followed by a US-ASCII NUL character, followed by the

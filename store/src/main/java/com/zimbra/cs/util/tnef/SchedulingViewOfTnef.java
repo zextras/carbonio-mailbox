@@ -787,7 +787,7 @@ public class SchedulingViewOfTnef extends Message {
                 gid = new GlobalObjectId(ris);
             }
         } catch (IOException e) {
-            sLog.debug("Problem getting value of MAPI property " + mpi.toString() + " from TNEF", e);
+            sLog.debug("Problem getting value of MAPI property " + mpi + " from TNEF", e);
         }
         return gid;
     }

@@ -86,7 +86,7 @@ public final class IndexEditor {
             ZimbraLog.index.error("could not retrieve mailbox manager; aborting reindex", e);
             return;
         }
-        int ids[] = mmgr.getMailboxIds();
+        int[] ids = mmgr.getMailboxIds();
       for (int id : ids) {
         mLog.info("Mailbox " + id + "\n");
         try {
@@ -197,10 +197,10 @@ public final class IndexEditor {
         } else {
             if (hit instanceof MessageHit) {
                 MessageHit mh = (MessageHit)hit;
-                outputStream.println(mh.toString());
+                outputStream.println(mh);
             } else if (hit instanceof MessagePartHit){
                 MessagePartHit mph = (MessagePartHit)hit;
-                outputStream.println(mph.toString());
+                outputStream.println(mph);
             } else {
                 outputStream.println(hit.toString());
             }
@@ -286,7 +286,7 @@ public final class IndexEditor {
 
         Field content = d.getField(LuceneFields.L_CONTENT);
         if (content != null) {
-            outputStream.println("\t"+content.toString());
+            outputStream.println("\t"+ content);
         }
     }
 
@@ -677,7 +677,7 @@ public final class IndexEditor {
             outputStream.print("Enter logging level> ");
             logLevel = inputReader.readLine();
         } catch(Exception e) {
-            outputStream.print("Caught exception: "+e.toString());
+            outputStream.print("Caught exception: "+ e);
         }
 
         Logger root = LogManager.getRootLogger();

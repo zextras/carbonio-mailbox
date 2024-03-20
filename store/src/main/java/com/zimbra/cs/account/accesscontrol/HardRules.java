@@ -29,7 +29,7 @@ public class HardRules {
         ALWAYS_FORBIDDEN_ATTRS = Collections.unmodifiableSet(forbiddenAttr);
     }
 
-    public static enum HardRule {
+    public enum HardRule {
         NOT_EFFECTIVE_DELEGATED_ADMIN_ACCOUNT,
         DELEGATED_ADMIN_CANNOT_ACCESS_GLOBAL_ADMIN;
 

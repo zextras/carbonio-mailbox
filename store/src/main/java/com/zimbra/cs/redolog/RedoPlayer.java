@@ -207,7 +207,7 @@ public class RedoPlayer {
                                 }
                                 ZimbraLog.redolog.info("Checkpoint discrepancy: # current uncommitted ops = " + mOpsMap.size() +
                                         ", # checkpoint uncommitted ops = " + txns.size() +
-                                        "\nMAP DUMP:\n" + sb1.toString() + "\n" + sb2.toString());
+                                        "\nMAP DUMP:\n" + sb1 + "\n" + sb2);
                             }
                         }
                     }
@@ -226,7 +226,7 @@ public class RedoPlayer {
                                 }
                                 ZimbraLog.redolog.info("Checkpoint discrepancy: # current uncommitted ops = " +
                                         mOpsMap.size() + " instead of 0\nMAP DUMP:\n" +
-                                        sb1.toString());
+                                    sb1);
                             }
                         }
                     }
@@ -309,11 +309,11 @@ public class RedoPlayer {
                         }
                         if (allowRedo) {
                             if (mSkipDeleteOps && prepareOp.isDeleteOp()) {
-                                ZimbraLog.redolog.info("Skipping delete op: " + prepareOp.toString());
+                                ZimbraLog.redolog.info("Skipping delete op: " + prepareOp);
                             } else {
                                 try {
                                     if (ZimbraLog.redolog.isDebugEnabled())
-                                        ZimbraLog.redolog.debug("Redoing: " + prepareOp.toString());
+                                        ZimbraLog.redolog.debug("Redoing: " + prepareOp);
                                     prepareOp.setUnloggedReplay(mUnloggedReplay);
                                     playOp(prepareOp);
                                 } catch(Exception e) {

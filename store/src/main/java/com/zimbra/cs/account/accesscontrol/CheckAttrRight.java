@@ -28,7 +28,7 @@ public class CheckAttrRight extends CheckRight {
     private Grantee mGrantee;
     private AttrRight mAttrRightNeeded;
 
-    static enum CollectAttrsResult {
+    enum CollectAttrsResult {
         SOME(false),
         ALLOW_ALL(true),
         DENY_ALL(true);
@@ -176,7 +176,7 @@ public class CheckAttrRight extends CheckRight {
             if (car == CollectAttrsResult.SOME && allowSome.isEmpty() && denySome.isEmpty()) {
                 sLog.debug("accessibleAttrs: NONE");
             } else {
-                sLog.debug("accessibleAttrs: " + car.name() + ". " + sb.toString());
+                sLog.debug("accessibleAttrs: " + car.name() + ". " + sb);
             }
         }
 

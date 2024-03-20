@@ -61,9 +61,9 @@ public class ModifyCalendarItem extends CalendarRequest {
                     inviteElem, mInv, mSeriesInv, mAttendeesAdded, mAttendeesCanceled, !mInv.hasRecurId());
             return toRet;
         }
-    };
+    }
 
-    @Override
+  @Override
     public Element handle(Element request, Map<String, Object> context) throws ServiceException {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
         Account acct = getRequestedAccount(zsc);
@@ -331,7 +331,7 @@ public class ModifyCalendarItem extends CalendarRequest {
 
     private static void removeAllRecipients(MimeMessage mm) throws ServiceException {
         try {
-            RecipientType rcptTypes[] = { RecipientType.TO, RecipientType.CC, RecipientType.BCC };
+            RecipientType[] rcptTypes = { RecipientType.TO, RecipientType.CC, RecipientType.BCC };
             for (RecipientType rcptType : rcptTypes) {
                 mm.setRecipients(rcptType, (Address[]) null);
             }

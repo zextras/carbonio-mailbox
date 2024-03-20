@@ -166,7 +166,7 @@ public class EphemeralBackendCheck extends AttributeCallback {
      */
     public abstract static class MigrationStateHelper {
 
-        public static enum Reason {NO_MIGRATION, MIGRATION_ERROR, URL_MISMATCH }
+        public enum Reason {NO_MIGRATION, MIGRATION_ERROR, URL_MISMATCH }
 
         protected String URL;
 
@@ -178,8 +178,8 @@ public class EphemeralBackendCheck extends AttributeCallback {
         public abstract void warn(Reason reason);
         public abstract void allow();
 
-        public static interface Factory {
-            public MigrationStateHelper getHelper() throws ServiceException;
+        public interface Factory {
+            MigrationStateHelper getHelper() throws ServiceException;
         }
     }
 

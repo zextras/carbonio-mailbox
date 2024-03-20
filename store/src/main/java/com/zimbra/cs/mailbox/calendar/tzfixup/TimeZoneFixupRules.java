@@ -21,7 +21,7 @@ import com.zimbra.cs.mailbox.calendar.Invite;
 
 public class TimeZoneFixupRules {
 
-    private static enum MatchBy { ANY, TZID, OFFSET, RULES, DATES };
+    private enum MatchBy { ANY, TZID, OFFSET, RULES, DATES }
 
     public static class Matcher {
         private MatchBy mMatchBy;

@@ -8,6 +8,7 @@ package com.zimbra.cs.fb;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -107,20 +108,17 @@ public class RemoteFreeBusyProvider extends FreeBusyProvider {
                 targetUrl.append("&end=").append(mEnd);
                 if (req.folder != FreeBusyQuery.CALENDAR_FOLDER_ALL)
                     targetUrl.append("&").append(UserServlet.QP_FREEBUSY_CALENDAR).append("=").append(req.folder);
-                try {
-                    if (mExApptUid != null)
-                        targetUrl.append("&").append(UserServlet.QP_EXUID).append("=").append(URLEncoder.encode(mExApptUid, "UTF-8"));
-                } catch (UnsupportedEncodingException e) {}
-                String authToken = null;
+              if (mExApptUid != null)
+                  targetUrl.append("&").append(UserServlet.QP_EXUID).append("=").append(URLEncoder.encode(mExApptUid,
+                      StandardCharsets.UTF_8));
+              String authToken = null;
                 try {
                     if (mSoapCtxt != null)
                         authToken = mSoapCtxt.getAuthToken().getEncoded();
                 } catch (AuthTokenException e) {}
                 if (authToken != null) {
                     targetUrl.append("&").append(ZimbraServlet.QP_ZAUTHTOKEN).append("=");
-                    try {
-                        targetUrl.append(URLEncoder.encode(authToken, "UTF-8"));
-                    } catch (UnsupportedEncodingException e) {}
+                  targetUrl.append(URLEncoder.encode(authToken, StandardCharsets.UTF_8));
                 }
                 HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
                 HttpProxyUtil.configureProxy(clientBuilder);
@@ -129,7 +127,7 @@ public class RemoteFreeBusyProvider extends FreeBusyProvider {
                 try {
                     HttpResponse response =  HttpClientUtil.executeMethod(clientBuilder.build(), method);
                     byte[] buf = ByteUtil.getContent(response.getEntity().getContent(), 0);
-                    fbMsg = new String(buf, "UTF-8");
+                    fbMsg = new String(buf, StandardCharsets.UTF_8);
                 } catch (IOException | HttpException ex) {
                     // ignore this recipient and go on
                     fbMsg = null;

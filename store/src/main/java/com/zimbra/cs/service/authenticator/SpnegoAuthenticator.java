@@ -149,7 +149,7 @@ public class SpnegoAuthenticator extends SSOAuthenticator {
                 SpnegoUserIdentity spnegoUserIdentity = new SpnegoUserIdentity(identity.getSubject(), zimbraPrincipal, defaultUserIdentity);
                 Authentication authentication = new UserAuthentication(getAuthType(), spnegoUserIdentity);
                 request.setAuthentication(authentication);
-                response.addHeader(HttpHeader.WWW_AUTHENTICATE.toString(), HttpHeader.NEGOTIATE.toString() + " " + ((SpnegoUserPrincipal)user).getToken());
+                response.addHeader(HttpHeader.WWW_AUTHENTICATE.toString(), HttpHeader.NEGOTIATE + " " + ((SpnegoUserPrincipal)user).getToken());
 
                 return zimbraPrincipal;
             }

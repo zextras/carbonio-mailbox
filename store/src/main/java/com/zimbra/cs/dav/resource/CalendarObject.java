@@ -53,6 +53,7 @@ import java.io.ByteArrayInputStream;
 import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -68,17 +69,17 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface CalendarObject {
 
-  public static final String CAL_EXTENSION = ".ics";
+  String CAL_EXTENSION = ".ics";
 
-  public String getUid();
+  String getUid();
 
-  public boolean match(Filter filter);
+  boolean match(Filter filter);
 
-  public String getVcalendar(DavContext ctxt, Filter filter) throws IOException, DavException;
+  String getVcalendar(DavContext ctxt, Filter filter) throws IOException, DavException;
 
-  public void expand(ExpandRange range);
+  void expand(ExpandRange range);
 
-  public abstract static class LocalCalendarObjectBase extends MailItemResource {
+  abstract class LocalCalendarObjectBase extends MailItemResource {
     public LocalCalendarObjectBase(DavContext ctxt, String path, MailItem item)
         throws ServiceException {
       super(ctxt, path, item);
@@ -120,7 +121,7 @@ public interface CalendarObject {
     }
   }
 
-  public static class CalendarPath {
+  class CalendarPath {
     /**
      * @param ctxt - If not null, used to augment path information
      * @param itemPath - path for parent collection
@@ -180,7 +181,7 @@ public interface CalendarObject {
     }
   }
 
-  public static class ScheduleMessage extends LocalCalendarObjectBase implements CalendarObject {
+  class ScheduleMessage extends LocalCalendarObjectBase implements CalendarObject {
     public ScheduleMessage(DavContext ctxt, String path, String owner, Invite inv, Message msg)
         throws ServiceException {
       super(ctxt, path, msg);
@@ -233,7 +234,7 @@ public interface CalendarObject {
 
     @Override
     public InputStream getContent(DavContext ctxt) throws IOException, DavException {
-      return new ByteArrayInputStream(getVcalendar(ctxt, null).getBytes("UTF-8"));
+      return new ByteArrayInputStream(getVcalendar(ctxt, null).getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
@@ -271,7 +272,7 @@ public interface CalendarObject {
     public void expand(ExpandRange range) {}
   }
 
-  public static class LightWeightCalendarObject extends DavResource implements CalendarObject {
+  class LightWeightCalendarObject extends DavResource implements CalendarObject {
     private final int mMailboxId;
     private final int mId;
     private final String mUid;
@@ -319,7 +320,7 @@ public interface CalendarObject {
 
     @Override
     public InputStream getContent(DavContext ctxt) throws IOException, DavException {
-      return new ByteArrayInputStream(getVcalendar(ctxt, null).getBytes("UTF-8"));
+      return new ByteArrayInputStream(getVcalendar(ctxt, null).getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
@@ -352,7 +353,7 @@ public interface CalendarObject {
     public void expand(ExpandRange range) {}
   }
 
-  public static class LocalCalendarObject extends LocalCalendarObjectBase
+  class LocalCalendarObject extends LocalCalendarObjectBase
       implements CalendarObject {
 
     public LocalCalendarObject(DavContext ctxt, CalendarItem calItem) throws ServiceException {
@@ -559,7 +560,7 @@ public interface CalendarObject {
 
     @Override
     public InputStream getContent(DavContext ctxt) throws IOException, DavException {
-      return new ByteArrayInputStream(getVcalendar(ctxt, null).getBytes("UTF-8"));
+      return new ByteArrayInputStream(getVcalendar(ctxt, null).getBytes(StandardCharsets.UTF_8));
     }
 
     @Override

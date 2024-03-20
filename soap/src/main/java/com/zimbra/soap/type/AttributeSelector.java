@@ -6,9 +6,9 @@
 package com.zimbra.soap.type;
 
 public interface AttributeSelector {
-    public String getAttrs();
-    public AttributeSelector setAttrs(String attrs);
-    public AttributeSelector addAttrs(String attr);
-    public AttributeSelector addAttrs(String ... attrNames);
-    public AttributeSelector addAttrs(Iterable<String> attrs);
+    String getAttrs();
+    AttributeSelector setAttrs(String attrs);
+    AttributeSelector addAttrs(String attr);
+    AttributeSelector addAttrs(String... attrNames);
+    AttributeSelector addAttrs(Iterable<String> attrs);
 }

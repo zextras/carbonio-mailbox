@@ -9,7 +9,7 @@ public interface BaseFolderInfo {
      * Paths are relative to the user root folder, which has the path <code>"/"</code>.  So the Inbox's path is
      *  <code>"/Inbox"</code>, etc.
      */
-    public String getPath();
-    public int getFolderIdInOwnerMailbox();
+    String getPath();
+    int getFolderIdInOwnerMailbox();
 
 }

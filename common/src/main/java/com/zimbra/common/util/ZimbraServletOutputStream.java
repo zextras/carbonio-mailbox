@@ -7,6 +7,7 @@ package com.zimbra.common.util;
 
 import java.io.IOException;
 
+import java.nio.charset.StandardCharsets;
 import javax.servlet.ServletOutputStream;
 
 import com.zimbra.common.localconfig.LC;
@@ -89,7 +90,7 @@ public class ZimbraServletOutputStream implements Appendable {
     }
     
     private void write(String str) throws IOException {
-        mOut.write(str.getBytes("utf-8"));
+        mOut.write(str.getBytes(StandardCharsets.UTF_8));
     }
     
     public void flush() throws IOException {

@@ -105,7 +105,7 @@ abstract class AbstractAsyncFileCopier implements FileCopier {
 
     protected static class FileTask {
 
-        public static enum Op { COPY, COPYRO, LINK, MOVE, DELETE, QUIT };
+        public enum Op { COPY, COPYRO, LINK, MOVE, DELETE, QUIT }
 
         public static FileTask QUIT = new FileTask(Op.QUIT, null, null, null, null);
 

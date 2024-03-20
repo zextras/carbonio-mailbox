@@ -403,7 +403,7 @@ public class ForwardCalendarItem extends CalendarRequest {
               senderAcct, from, sender, null, mmInv, inv, cal, false);
     }
     // Copy recipient headers from forward wrapper msg.
-    RecipientType rcptTypes[] = {RecipientType.TO, RecipientType.CC, RecipientType.BCC};
+    RecipientType[] rcptTypes = {RecipientType.TO, RecipientType.CC, RecipientType.BCC};
     for (RecipientType rcptType : rcptTypes) {
       Address[] rcpts = mmFwdWrapper.getRecipients(rcptType);
       mm.setRecipients(rcptType, rcpts);

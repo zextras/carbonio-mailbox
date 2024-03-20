@@ -52,7 +52,7 @@ public class ZApptSummaryCache extends ZEventHandler {
         return start+":"+end+":"+folderId+":"+timezone.getID() + ":"+ query;
     }
 
-    private String makeMiniCalKey(long start, long end, String folderIds[]) {
+    private String makeMiniCalKey(long start, long end, String[] folderIds) {
         if (folderIds.length == 1) {
             return start+":"+end+":"+folderIds[0];
         } else {
@@ -88,11 +88,11 @@ public class ZApptSummaryCache extends ZEventHandler {
         return result;
     }
 
-    synchronized void putMiniCal(Set<String> result, long start, long end, String folderIds[]) {
+    synchronized void putMiniCal(Set<String> result, long start, long end, String[] folderIds) {
         mMiniCalCache.put(makeMiniCalKey(start, end, folderIds), result);
     }
 
-    synchronized Set<String> getMiniCal(long start, long end, String folderIds[]) {
+    synchronized Set<String> getMiniCal(long start, long end, String[] folderIds) {
         return mMiniCalCache.get(makeMiniCalKey(start, end, folderIds));
     }
 

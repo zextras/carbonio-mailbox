@@ -31,7 +31,7 @@ public class LmcSearchGalRequest extends LmcSoapRequest {
 	protected LmcSoapResponse parseResponseXML(Element responseXML)
 	    throws SoapParseException, ServiceException, LmcSoapClientException 
     {
-        LmcContact contacts[] = parseContactArray(responseXML);
+        LmcContact[] contacts = parseContactArray(responseXML);
         LmcSearchGalResponse sgResp = new LmcSearchGalResponse();
         sgResp.setContacts(contacts);
         return sgResp;

@@ -32,7 +32,7 @@ public abstract class ImapLoadBalancingMechanism {
       return aName.compareTo(bName);
     };
 
-    public static enum ImapLBMech {
+    public enum ImapLBMech {
 
         /**
          * zimbraImapLoadBalancingAlgorithm type of "AccountIdHash" will select an IMAP

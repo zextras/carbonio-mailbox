@@ -21,6 +21,7 @@ import java.io.OutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.EOFException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * An input stream for reading IMAP response data.
@@ -252,7 +253,7 @@ public final class ImapInputStream extends MailInputStream {
         do {
             baos.write(read());
         } while (!isEOL());
-        return baos.toString("UTF8");
+        return baos.toString(StandardCharsets.UTF_8);
     }
 
     public String readText(char delim) throws IOException {

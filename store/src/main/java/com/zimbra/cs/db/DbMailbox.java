@@ -386,7 +386,6 @@ public final class DbMailbox {
     sTables.add(DbImapMessage.TABLE_IMAP_MESSAGE);
     sTables.add(DbDataSource.TABLE_DATA_SOURCE_ITEM);
   }
-  ;
 
   private static void dropMailboxFromGroup(DbConnection conn, Mailbox mbox)
       throws ServiceException {

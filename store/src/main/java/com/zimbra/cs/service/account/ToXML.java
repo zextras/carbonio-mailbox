@@ -47,9 +47,9 @@ public class ToXML {
     static {
         skipAttrs.add(Provisioning.A_member);
         skipAttrs.add(Provisioning.A_zimbraMailForwardingAddress);
-        };
-    
-    static Element encodeAccount(Element parent, Account account) {
+        }
+
+  static Element encodeAccount(Element parent, Account account) {
         return encodeAccount(parent, account, true, null, null);
     }
 
@@ -139,7 +139,7 @@ public class ToXML {
         IDNType idnType = AttributeManager.idnType(attrMgr, name);
 
         if (value instanceof String[]) {
-          String sv[] = (String[]) value;
+          String[] sv = (String[]) value;
           for (String s : sv) {
             encodeAttr(e, name, s, AccountConstants.E_A, key, idnType, allowed);
           }
@@ -266,7 +266,7 @@ public class ToXML {
 
     public static void encodeAttr(Element response, String key, Object value) {
         if (value instanceof String[]) {
-            String sa[] = (String[]) value;
+            String[] sa = (String[]) value;
           for (String s : sa) {
             if (!Strings.isNullOrEmpty(s)) {
               response.addKeyValuePair(key, s, AccountConstants.E_ATTR, AccountConstants.A_NAME);

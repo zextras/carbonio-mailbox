@@ -27,8 +27,8 @@ public abstract class MimePart implements Cloneable {
     public static final String PROP_CHARSET_DEFAULT = "charset.default";
 
     public interface InputStreamSource {
-        public InputStream newStream(long start, long end);
-        public long getSize();
+        InputStream newStream(long start, long end);
+        long getSize();
     }
 
     enum Dirty {

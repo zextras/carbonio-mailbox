@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -272,7 +273,7 @@ public class FileHeader {
               " bytes) in redolog header");
         byte[] serverIdBuf = new byte[SERVER_ID_FIELD_LEN];
         in.readFully(serverIdBuf, 0, SERVER_ID_FIELD_LEN);
-        mServerId = new String(serverIdBuf, 0, serverIdLen, "UTF-8");
+        mServerId = new String(serverIdBuf, 0, serverIdLen, StandardCharsets.UTF_8);
 
         mFirstOpTstamp = in.readLong();
         mLastOpTstamp = in.readLong();

@@ -12,6 +12,7 @@ package com.zimbra.common.soap;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,8 +78,8 @@ public class SoapHttpTransport extends SoapTransport {
     private static int defaultTimeout = LC.httpclient_soaphttptransport_so_timeout.intValue();
 
     public interface HttpDebugListener {
-        public void sendSoapMessage(HttpPost postMethod, Element envelope, BasicCookieStore httpState);
-        public void receiveSoapMessage(HttpPost postMethod, Element envelope);
+        void sendSoapMessage(HttpPost postMethod, Element envelope, BasicCookieStore httpState);
+        void receiveSoapMessage(HttpPost postMethod, Element envelope);
     }
 
     @Override public String toString() {
@@ -387,7 +388,7 @@ public class SoapHttpTransport extends SoapTransport {
         return name;
     }
 
-    public static interface ResponseHandler {
+    public interface ResponseHandler {
         void process(Reader src) throws ServiceException;
     }
 
@@ -454,7 +455,7 @@ public class SoapHttpTransport extends SoapTransport {
         //SOAP message
         Element soapReq = generateSoapMessage(document, raw, noSession, requestedAccountId, changeToken, tokenType, nFormat, curWaitSetID);
         String soapMessage = SoapProtocol.toString(soapReq, getPrettyPrint());
-        post.setEntity(new ByteArrayEntity(soapMessage.getBytes("UTF-8")));
+        post.setEntity(new ByteArrayEntity(soapMessage.getBytes(StandardCharsets.UTF_8)));
         HttpClientContext context = HttpClientContext.create();
         String host = post.getURI().getHost();
         CookieStore cookieStore = HttpClientUtil.newCookieStore(getAuthToken(), host, isAdmin());

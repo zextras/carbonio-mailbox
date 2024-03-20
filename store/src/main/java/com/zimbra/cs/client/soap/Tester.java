@@ -46,7 +46,7 @@ public class Tester {
                 trashFolderID = f.getFolderID();
             else if (fName.equals(FOLDER_NAME_INBOX))
                 inboxFolderID = f.getFolderID();
-        LmcFolder subFolders[] = f.getSubFolders();
+        LmcFolder[] subFolders = f.getSubFolders();
         for (int i = 0; subFolders != null && i < subFolders.length; i++)
             recursiveDumpFolder(subFolders[i], depth + 1);
     }
@@ -185,7 +185,7 @@ public class Tester {
 
         /* dump the contacts */
         System.out.println("====== DUMP CONTACTS ======");
-        LmcContact contacts[] = gcResp.getContacts();
+        LmcContact[] contacts = gcResp.getContacts();
         for (int o = 0; contacts != null && o < contacts.length; o++)
             System.out.println(contacts[o]);
 
@@ -221,7 +221,7 @@ public class Tester {
         bReq.setSession(session);
         LmcBrowseResponse bResp = (LmcBrowseResponse) bReq.invoke(serverURL);
         System.out.println("got back browse data");
-        LmcBrowseData bd[] = bResp.getData();
+        LmcBrowseData[] bd = bResp.getData();
       for (LmcBrowseData lmcBrowseData : bd) {
         System.out.println(lmcBrowseData.getFlags() + " " + lmcBrowseData.getData());
       }
@@ -236,7 +236,7 @@ public class Tester {
         LmcCreateContactRequest ccReq = new LmcCreateContactRequest();
         ccReq.setSession(session);
         LmcContact c = new LmcContact();
-        LmcContactAttr attrs[] = new LmcContactAttr[] {
+        LmcContactAttr[] attrs = new LmcContactAttr[] {
             new LmcContactAttr("email", "1", null, "schumie@f1.com"),
             new LmcContactAttr("firstName", "2", null, "Michael"),
             new LmcContactAttr("lastName", "3", null, "Schumacher")
@@ -298,7 +298,7 @@ public class Tester {
     private static void doGetDumpPrefs(LmcSession session, String serverURL)
             throws IOException, LmcSoapClientException, ServiceException, SoapFaultException, HttpException {
         System.out.println("====== GET PREFS ==========");
-        String prefs[] = new String[] { "zimbraPrefMailSignatureEnabled",
+        String[] prefs = new String[] { "zimbraPrefMailSignatureEnabled",
                                         "zimbraPrefSaveToSent" };
         LmcGetPrefsRequest prefReq = new LmcGetPrefsRequest();
         prefReq.setSession(session);
@@ -381,12 +381,12 @@ public class Tester {
         sgReq.setName(searchTarget);
         LmcSearchGalResponse sgResp = (LmcSearchGalResponse) sgReq.invoke(serverURL);
         System.out.println("Search results ----");
-        LmcContact contacts[] = sgResp.getContacts();
+        LmcContact[] contacts = sgResp.getContacts();
         for (int o = 0; contacts != null && o < contacts.length; o++)
             System.out.println(contacts[o]);
     }
 
-    public static void main(String argv[]) {
+    public static void main(String[] argv) {
         CliUtil.toolSetup();
 
         if (argv.length != 3) {
@@ -425,7 +425,7 @@ public class Tester {
 
             /* dump the tags */
             System.out.println("==== DUMP TAGS ======");
-            LmcTag tags[] = gtResp.getTags();
+            LmcTag[] tags = gtResp.getTags();
             for (int t = 0; tags != null && t < tags.length; t++)
                 System.out.println(tags[t]);
 
@@ -479,7 +479,7 @@ public class Tester {
              * the client gets message detail in the getConvRequest and then
              * fetches the msg with GetMsgReq anyway.  so that's repeated here.
              */
-            String msgDetail[] = new String[] { firstConv.getMessages()[0].getID() };
+            String[] msgDetail = new String[] { firstConv.getMessages()[0].getID() };
             gconvReq.setMsgsToGet(msgDetail);
             LmcGetConvResponse gconvResp = (LmcGetConvResponse) gconvReq.invoke(serverURL);
 

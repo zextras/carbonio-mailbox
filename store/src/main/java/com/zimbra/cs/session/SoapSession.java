@@ -795,24 +795,24 @@ public class SoapSession extends Session {
   }
 
   /** A callback interface which is listening on this session and waiting for new notifications */
-  public static interface PushChannel {
-    public void closePushChannel();
+  public interface PushChannel {
+    void closePushChannel();
 
-    public int getLastKnownSequence();
+    int getLastKnownSequence();
 
-    public ZimbraSoapContext getSoapContext();
+    ZimbraSoapContext getSoapContext();
 
-    public boolean localChangesOnly();
+    boolean localChangesOnly();
 
-    public boolean isPersistent();
+    boolean isPersistent();
 
-    public void notificationsReady() throws ServiceException;
+    void notificationsReady() throws ServiceException;
   }
 
-  public static enum RegisterNotificationResult {
+  public enum RegisterNotificationResult {
     NO_NOTIFY, // notifications not available for this session
     DATA_READY, // notifications already here
-    BLOCKING; // none here yet, wait
+    BLOCKING // none here yet, wait
   }
 
   /**
@@ -1694,7 +1694,7 @@ public class SoapSession extends Session {
   }
 
   public interface ActivityCallback {
-    public void putActivities(PendingLocalModifications pms, Element notify, ItemIdFormatter ifmt)
+    void putActivities(PendingLocalModifications pms, Element notify, ItemIdFormatter ifmt)
         throws ServiceException;
   }
 

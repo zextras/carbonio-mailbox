@@ -158,9 +158,9 @@ public class CompressedDomainTree {
       }
     }
 
-    public static void main(String args[]) throws AddressException {
+    public static void main(String[] args) throws AddressException {
         CompressedDomainTree dt = new CompressedDomainTree();
-        String domains[] = {
+        String[] domains = {
                 "something", "[127.0.0.1]",
                 "stanford.edu", "windlord.stanford.edu", "lists.stanford.edu",
                 "washington.edu",
@@ -175,7 +175,7 @@ public class CompressedDomainTree {
         }
 
         System.out.println(dt.toTree());
-        System.out.println(full.toString());
+        System.out.println(full);
         InternetAddress ia = new InternetAddress("schemers@[12.12.12.12]");
         System.out.println(ia.getAddress());
         System.out.println(ia.getPersonal());

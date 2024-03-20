@@ -394,7 +394,7 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
     String cosStr = null;
 
     if (targetType.isDomained()) {
-      String parts[] = EmailUtil.getLocalPartAndDomain(entryName);
+      String[] parts = EmailUtil.getLocalPartAndDomain(entryName);
       if (parts == null) {
         throw ServiceException.INVALID_REQUEST("must be valid email address: " + entryName, null);
       }

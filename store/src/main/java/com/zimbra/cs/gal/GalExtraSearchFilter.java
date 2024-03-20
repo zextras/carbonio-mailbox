@@ -210,9 +210,9 @@ public class GalExtraSearchFilter {
     }
 
     private static class FilterVisitor implements Visitor {
-        private static interface KeyValue {
+        private interface KeyValue {
             // returns a String or String[]
-            public Object get(String key);
+            Object get(String key);
         }
 
         private static class ContactKV implements KeyValue {

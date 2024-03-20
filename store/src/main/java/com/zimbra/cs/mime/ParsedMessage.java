@@ -1012,7 +1012,7 @@ public final class ParsedMessage {
             appendToContent(contentPrepend, fn); // also add the non-tokenized form, so full-filename searches match
         }
 
-        String text = contentPrepend.toString() + " " + fullContent.toString();
+        String text = contentPrepend + " " + fullContent.toString();
         doc.addContent(text);
 
         try {

@@ -123,7 +123,7 @@ public final class ParsedAddress implements Comparable<ParsedAddress> {
         if (personalPart != null && personalPart.startsWith("\"") && personalPart.indexOf('"', 1) == personalPart.length() - 1)
             personalPart = personalPart.substring(1, personalPart.length() - 1).trim().replaceAll("\\s+", " ");
 
-        if (personalPart != null && personalPart.equals(""))
+        if ("".equals(personalPart))
             personalPart = null;
 
         if (emailPart != null && emailPart.equals(personalPart))
@@ -394,7 +394,7 @@ public final class ParsedAddress implements Comparable<ParsedAddress> {
     }
 
     private enum NameTokenType {
-        TOKEN, PREFIX, INITIAL, HONORIFIC, ABBREVIATION, NUMERAL, COMMA, OPEN, CLOSE, DELIMITER;
+        TOKEN, PREFIX, INITIAL, HONORIFIC, ABBREVIATION, NUMERAL, COMMA, OPEN, CLOSE, DELIMITER
     }
 
     private static class NameToken {

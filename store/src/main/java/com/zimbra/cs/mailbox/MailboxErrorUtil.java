@@ -78,7 +78,7 @@ class MailboxErrorUtil {
                         ZimbraLog.mailbox.warn("cascade failure in unexpected type ["+item.getType()+":"+item.getClass().getSimpleName()+"] other than folder or conversation");
                     }
                 }
-                throw ServiceException.FAILURE(e.getMessage()+"---"+sb.toString(),e);
+                throw ServiceException.FAILURE(e.getMessage()+"---"+ sb,e);
             } else {
                 throw ServiceException.FAILURE(e.getMessage()+"--- no additional data available from attempting individual deletes.",e);
             }

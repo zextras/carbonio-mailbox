@@ -105,7 +105,7 @@ public class MailSender {
     mSession = JMSession.getSession();
   }
 
-  public static enum DsnNotifyOption {
+  public enum DsnNotifyOption {
     NEVER,
     SUCCESS,
     FAILURE,
@@ -400,7 +400,7 @@ public class MailSender {
     return mUploads;
   }
 
-  public static enum ReplyForwardType {
+  public enum ReplyForwardType {
     ORIGINAL, // This is an original message; not a reply or forward.
     REPLY, // Reply to another message
     FORWARD // Forwarding another message

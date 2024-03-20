@@ -636,7 +636,7 @@ public class ItemAction extends MailDocumentHandler {
         if (sb == null) {
           remote.put(iid.getAccountId(), new StringBuilder(iid.toString()));
         } else {
-          sb.append(',').append(iid.toString());
+          sb.append(',').append(iid);
         }
       }
     }

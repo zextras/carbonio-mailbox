@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -255,7 +256,7 @@ public class ZimletFile implements Comparable<ZimletFile> {
             if (entry == null) {
                 throw new FileNotFoundException("zimlet description not found: " + mDescFile);
             }
-            mDescString = new String(entry.getContents(), "UTF-8");
+            mDescString = new String(entry.getContents(), StandardCharsets.UTF_8);
             mDesc = new ZimletDescription(mDescString);
         }
     }

@@ -386,7 +386,7 @@ public class ZCompoundHeader extends ZInternetHeader {
 
     private enum RFC2231State {
         PARAM, CONTINUED, EXTENDED, EQUALS, CHARSET, LANG, VALUE, QVALUE, SLOP, COMMENT
-    };
+    }
 
     private static class RFC2231Data {
         RFC2231State state = RFC2231State.EQUALS;
@@ -524,7 +524,7 @@ public class ZCompoundHeader extends ZInternetHeader {
                             URLCodec codec = new URLCodec(paramCharset);
                             assembled.append(codec.decode(raw.toString()));
                         } catch (DecoderException e) {
-                            assembled.append(raw.toString());
+                            assembled.append(raw);
                         }
                         raw = null;
                     }

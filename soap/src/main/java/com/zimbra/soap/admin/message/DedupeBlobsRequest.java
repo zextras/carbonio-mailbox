@@ -33,7 +33,7 @@ import com.zimbra.soap.admin.type.IntIdAttr;
 public class DedupeBlobsRequest {
 
     @XmlEnum
-    public static enum DedupAction {
+    public enum DedupAction {
         start,
         status,
         stop,

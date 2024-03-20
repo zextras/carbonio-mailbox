@@ -11,6 +11,7 @@ import java.io.PrintStream;
 import java.net.InetSocketAddress;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1725,7 +1726,8 @@ public abstract class ImapHandler {
             if (!extensionEnabled("LOGIN_REFERRALS") || preferredServers.isEmpty()) {
                 sendNO(tag, "%s failed (wrong host)", command);
             } else {
-                sendNO(tag, "[REFERRAL imap://%s@%s/] %s failed", URLEncoder.encode(account.getName(), "utf-8"), preferredServers.get(0).getServiceHostname(), command);
+                sendNO(tag, "[REFERRAL imap://%s@%s/] %s failed", URLEncoder.encode(account.getName(),
+                    StandardCharsets.UTF_8), preferredServers.get(0).getServiceHostname(), command);
             }
             return null;
         }

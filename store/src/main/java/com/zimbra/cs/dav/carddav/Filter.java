@@ -72,8 +72,9 @@ public abstract class Filter {
         return mName;
     }
 
-    private enum MappingType { simple, structured };
-    private static final class AttrMapping {
+    private enum MappingType { simple, structured }
+
+  private static final class AttrMapping {
         public String name;
         public MappingType type;
         public String contactAttr;
@@ -209,9 +210,9 @@ public abstract class Filter {
             }
             return contains;
         }
-    };
+    }
 
-    public static class TextMatch extends Filter {
+  public static class TextMatch extends Filter {
         //private String mCollation;
         private String mText;
         private boolean mNegate;

@@ -854,7 +854,7 @@ public class DefaultTnefToICalendar implements TnefToICalendar {
       // TNEF_to_iCalendar.pdf Spec = exclude TRANSP for CANCEL/REPLY/COUNTER
       return;
     }
-    if ((busyStatus != null) && (busyStatus.equals(BusyStatus.FREE))) {
+    if (BusyStatus.FREE.equals(busyStatus)) {
       IcalUtil.addProperty(icalOutput, Transp.TRANSPARENT);
     } else {
       IcalUtil.addProperty(icalOutput, Transp.OPAQUE);

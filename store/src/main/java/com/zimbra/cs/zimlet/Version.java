@@ -144,7 +144,7 @@ public class Version implements Comparable<Version> {
 	 */
 	public void increment(Version before) {
 		if (compareTo(before) >= 0) {
-			throw new IllegalArgumentException(toString() + " >= " + before.toString());
+			throw new IllegalArgumentException(this + " >= " + before);
 		}
 		Version v = new Version(this);
 		v.increment();

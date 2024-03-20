@@ -747,7 +747,7 @@ public final class ElasticSearchIndex extends IndexStore {
             }
             if (docID instanceof ZimbraElasticDocumentID) {
                 ZimbraElasticDocumentID eDocID = (ZimbraElasticDocumentID) docID;
-                String storedFields[] = { LuceneFields.L_PARTNAME, LuceneFields.L_FILENAME, LuceneFields.L_SORT_SIZE,
+                String[] storedFields = { LuceneFields.L_PARTNAME, LuceneFields.L_FILENAME, LuceneFields.L_SORT_SIZE,
                         LuceneFields.L_SORT_ATTACH, LuceneFields.L_SORT_FLAG, LuceneFields.L_SORT_PRIORITY,
                         LuceneFields.L_MAILBOX_BLOB_ID, LuceneFields.L_SORT_DATE, LuceneFields.L_VERSION };
                 String url = String.format("%s%s/%s?fields=%s", indexUrl, indexType, eDocID.getDocID(),

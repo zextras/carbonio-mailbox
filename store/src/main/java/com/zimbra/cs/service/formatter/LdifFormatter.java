@@ -86,7 +86,7 @@ public class LdifFormatter extends Formatter {
         context.resp.addHeader("Content-Disposition", cd);
         context.resp.setCharacterEncoding(context.getCharset().name());
         context.resp.setContentType(MimeConstants.CT_TEXT_LDIF);
-        context.resp.getWriter().print(sb.toString());
+        context.resp.getWriter().print(sb);
     }
 
     protected boolean toLDIFContact(Map<String, String> contact, StringBuilder sb, String[] galLdapAttrMap) {
@@ -238,7 +238,7 @@ public class LdifFormatter extends Formatter {
     private enum NonSafeChars {
         NUL(0), LF(10), CR(13);
         private int value;
-        private NonSafeChars(int value) {
+        NonSafeChars(int value) {
             this.value = value;
         }
     }
@@ -246,7 +246,7 @@ public class LdifFormatter extends Formatter {
     private enum NonSafeInitChars {
         NUL(0), LF(10), CR(13), SPACE(32), COLON(58), LESSTHAN(60);
         private int value;
-        private NonSafeInitChars(int value) {
+        NonSafeInitChars(int value) {
             this.value = value;
         }
     }

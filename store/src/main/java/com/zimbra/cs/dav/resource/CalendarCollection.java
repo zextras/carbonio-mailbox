@@ -55,6 +55,7 @@ import com.zimbra.cs.util.AccountUtil.AccountAddressMatcher;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -174,7 +175,7 @@ public class CalendarCollection extends Collection {
         int end = href.lastIndexOf(".ics");
         if ((start >= 0) && (end > start)) {
           String uid = href.substring(start, end);
-          uid = URLDecoder.decode(uid, "UTF-8");
+          uid = URLDecoder.decode(uid, StandardCharsets.UTF_8);
           if (start > 0 && end > 0 && end > start) {
             uidmap.put(uid, href);
           }
@@ -557,7 +558,7 @@ public class CalendarCollection extends Collection {
       int flags = 0;
       String[] tags = null;
       List<ReplyInfo> replies = null;
-      Invite origInvites[] = null;
+      Invite[] origInvites = null;
       if (origCalItem != null) {
         flags = origCalItem.getFlagBitmask();
         tags = origCalItem.getTags();
@@ -565,7 +566,7 @@ public class CalendarCollection extends Collection {
         origInvites = origCalItem.getInvites();
       }
       SetCalendarItemData scidDefault = new SetCalendarItemData();
-      SetCalendarItemData scidExceptions[] = null;
+      SetCalendarItemData[] scidExceptions = null;
 
       int idxExceptions = 0;
       boolean first = true;

@@ -19,7 +19,7 @@ class RuleRewriterFactory {
 	
 	private static RuleRewriterFactory instance = null;	
 	
-    synchronized static RuleRewriterFactory getInstance() {
+    static synchronized RuleRewriterFactory getInstance() {
 		if (instance == null) {
 	        String className = LC.zimbra_class_rulerewriterfactory.value();
 	        if (className != null && !className.equals("")) {

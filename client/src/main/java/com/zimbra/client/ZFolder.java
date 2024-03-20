@@ -27,6 +27,7 @@ import com.zimbra.soap.mail.type.RetentionPolicy;
 import com.zimbra.soap.mail.type.SearchFolder;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -587,11 +588,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
   }
 
   public String getNameURLEncoded() {
-    try {
-      return URLEncoder.encode(mName, "utf-8").replace("+", "%20");
-    } catch (UnsupportedEncodingException e) {
-      return mName;
-    }
+    return URLEncoder.encode(mName, StandardCharsets.UTF_8).replace("+", "%20");
   }
 
   /**
@@ -638,11 +635,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     else {
       String pp = mParent.getPathURLEncoded();
       String n = null;
-      try {
-        n = URLEncoder.encode(mName, "utf-8").replace("+", "%20");
-      } catch (UnsupportedEncodingException e) {
-        n = mName;
-      }
+      n = URLEncoder.encode(mName, StandardCharsets.UTF_8).replace("+", "%20");
       return pp.length() == 1 ? (pp + n) : (pp + ZMailbox.PATH_SEPARATOR + n);
     }
   }

@@ -12,6 +12,7 @@ package com.zimbra.cs.convert;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,8 +47,8 @@ public class AttachmentInfo {
         try {
             charset = Charset.forName(cset);
         } catch (Exception e) {
-            charset = Charset.forName("UTF-8");
-            ZimbraLog.mailbox.error("Invalid character set - %s", cset);;
+            charset = StandardCharsets.UTF_8;
+            ZimbraLog.mailbox.error("Invalid character set - %s", cset);
         }
     }
     

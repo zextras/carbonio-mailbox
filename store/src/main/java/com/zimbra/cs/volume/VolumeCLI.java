@@ -318,7 +318,7 @@ public final class VolumeCLI extends SoapCLI {
         }
         buf.append(Strings.repeat(" ", 35 - buf.length()));
         buf.append(opt.getDescription());
-        System.err.println(buf.toString());
+        System.err.println(buf);
     }
 
     /**

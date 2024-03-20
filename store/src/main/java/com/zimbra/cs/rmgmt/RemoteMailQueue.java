@@ -578,9 +578,9 @@ public class RemoteMailQueue {
         }
     }
 
-    private enum TestTask { scan, search, action };
+    private enum TestTask { scan, search, action }
 
-    private static void usage(String err) {
+  private static void usage(String err) {
         if (err != null) {
             System.err.println("ERROR: " + err + "\n");
         }

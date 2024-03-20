@@ -9,6 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -271,7 +272,7 @@ public abstract class DavResource {
     }
 
     public InputStream getContent(DavContext ctxt) throws IOException, DavException {
-        return new ByteArrayInputStream(getTextContent(ctxt).getBytes("UTF-8"));
+        return new ByteArrayInputStream(getTextContent(ctxt).getBytes(StandardCharsets.UTF_8));
     }
 
     public abstract boolean isCollection();

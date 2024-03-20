@@ -615,7 +615,7 @@ public class AttributeConstraint {
             sb.append(value.toString());
 
 
-        System.out.println("Setting " + attrName + " to " + "[" + sb.toString() + "]" + " => " + (violated?"denied":"allowed"));
+        System.out.println("Setting " + attrName + " to " + "[" + sb + "]" + " => " + (violated?"denied":"allowed"));
         if (violated != expected)
             System.out.println("failed\n");
     }

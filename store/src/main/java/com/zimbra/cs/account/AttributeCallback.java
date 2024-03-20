@@ -61,7 +61,7 @@ public abstract class AttributeCallback {
     
     protected static class SingleValueMod {
         
-        static enum Mod {
+        enum Mod {
             SETTING,
             UNSETTING
         }
@@ -76,7 +76,7 @@ public abstract class AttributeCallback {
     
     protected static class MultiValueMod {
         
-        static enum Mod {
+        enum Mod {
             ADDING,
             REMOVING,  // removing some values
             REPLACING,

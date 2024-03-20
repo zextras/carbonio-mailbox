@@ -629,7 +629,7 @@ public class CollectAllEffectiveRights {
 
         String base = mProv.getDIT().domainNameToDN(domain.getName());
         ZLdapFilter filter = ZLdapFilterFactory.getInstance().allDomains();
-        String returnAttrs[] = new String[] {Provisioning.A_zimbraId};
+        String[] returnAttrs = new String[] {Provisioning.A_zimbraId};
         SearchSubDomainVisitor visitor = new SearchSubDomainVisitor();
 
         mProv.searchLdapOnMaster(base, filter, returnAttrs, visitor);

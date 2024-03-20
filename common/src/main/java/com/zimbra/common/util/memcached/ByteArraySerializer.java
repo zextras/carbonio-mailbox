@@ -14,6 +14,6 @@ import com.zimbra.common.service.ServiceException;
  */
 public interface ByteArraySerializer<V> {
 
-    public byte[] serialize(V value) throws ServiceException;
+    byte[] serialize(V value) throws ServiceException;
     public V deserialize(byte[] bytes) throws ServiceException;
 }

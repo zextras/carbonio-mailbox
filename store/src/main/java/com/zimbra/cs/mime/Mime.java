@@ -19,6 +19,7 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -468,7 +469,7 @@ public class Mime {
                 super(is);
 
                 String explicitBoundary = getParsedContentType().getParameter("boundary");
-                mBoundary = explicitBoundary == null ? "_-_" + UUID.randomUUID().toString() : explicitBoundary;
+                mBoundary = explicitBoundary == null ? "_-_" + UUID.randomUUID() : explicitBoundary;
                 byte[] boundary = mBoundary.getBytes();
 
                 mPrologue = new byte[2 + boundary.length + 4];
@@ -1455,14 +1456,15 @@ public class Mime {
 
 
     public static void main(String[] args) throws MessagingException, IOException {
-        String s = URLDecoder.decode("Zimbra%20&#26085;&#26412;&#35486;&#21270;&#12398;&#32771;&#24942;&#28857;.txt", "utf-8");
+        String s = URLDecoder.decode("Zimbra%20&#26085;&#26412;&#35486;&#21270;&#12398;&#32771;&#24942;&#28857;.txt",
+            StandardCharsets.UTF_8);
         System.out.println(s);
         System.out.println(expandNumericCharacterReferences("Zimbra%20&#26085;&#26412;&#35486;&#21270;&#12398;&#32771;&#24942;&#28857;.txt&#x40;&;&#;&#x;&#&#3876;&#55"));
 
         MimeMessage mm = new FixedMimeMessage(JMSession.getSession(), new SharedFileInputStream("C:\\Temp\\mail\\24245"));
         InputStream is = new RawContentMultipartDataSource(mm, new ContentType(mm.getContentType())).getInputStream();
         int num;
-        byte buf[] = new byte[1024];
+        byte[] buf = new byte[1024];
         while ((num = is.read(buf)) != -1) {
             System.out.write(buf, 0, num);
         }

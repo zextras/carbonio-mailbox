@@ -413,8 +413,8 @@ public class LdapDIT {
   }
 
   public String domainNameToDN(String domainName) {
-    String parts[] = domainName.split("\\.");
-    String dns[] = domainToDNs(parts);
+    String[] parts = domainName.split("\\.");
+    String[] dns = domainToDNs(parts);
     return dns[0];
   }
 
@@ -429,7 +429,7 @@ public class LdapDIT {
   }
 
   protected String[] domainToDNsInternal(String[] parts, String base) {
-    String dns[] = new String[parts.length];
+    String[] dns = new String[parts.length];
     for (int i = parts.length - 1; i >= 0; i--) {
       dns[i] = LdapUtil.domainToDN(parts, i);
       if (base != null) {

@@ -360,7 +360,7 @@ public final class SmtpConnection extends MailConnection {
           if (authenticator.isComplete()) {
             return;
           } else {
-            throw new SaslException("SASL client auth not complete yet S: " + reply.toString());
+            throw new SaslException("SASL client auth not complete yet S: " + reply);
           }
         case 334: // continue
           byte[] challenge =

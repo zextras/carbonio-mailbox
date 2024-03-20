@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -185,9 +186,7 @@ public class SoapCommandUtil implements SoapTransport.DebugListener {
 
         mOptions.addOption(new Option(null, LO_USE_SESSION, false, "Use a SOAP session."));
 
-        try {
-            mOut = new PrintStream(System.out, true, "utf-8");
-        } catch (UnsupportedEncodingException e) {}
+      mOut = new PrintStream(System.out, true, StandardCharsets.UTF_8);
     }
 
     private void usage(String errorMsg) {

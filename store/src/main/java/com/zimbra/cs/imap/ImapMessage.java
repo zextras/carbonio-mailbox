@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -271,7 +272,7 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
                 baos.write(ImapHandler.LINE_SEPARATOR_BYTES);
                 if(item instanceof Contact) {
                     VCard vcard = VCard.formatContact((Contact) item);
-                    baos.write(vcard.getFormatted().getBytes(MimeConstants.P_CHARSET_UTF8));
+                    baos.write(vcard.getFormatted().getBytes(StandardCharsets.UTF_8));
                     ZimbraLog.test.debug("contact vcard: %s", vcard.getFormatted());
                 } else {
                     baos.write(IOUtils.toByteArray(item.getContentStream()));
@@ -447,14 +448,12 @@ public class ImapMessage implements Comparable<ImapMessage>, java.io.Serializabl
         if (!literal) {
             ps.write('"');  ps.print(content);  ps.write('"');
         } else {
-            try {
-                byte[] bytes = content.getBytes(MimeConstants.P_CHARSET_UTF8);
-                ps.write('{');  ps.print(bytes.length);  ps.write('}');
-                ps.write(ImapHandler.LINE_SEPARATOR_BYTES, 0, 2);
-                ps.write(bytes, 0, bytes.length);
-            } catch (UnsupportedEncodingException uee) {
-                ps.write(NIL, 0, 3);
-            }
+          byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
+          ps.write('{');
+          ps.print(bytes.length);
+          ps.write('}');
+          ps.write(ImapHandler.LINE_SEPARATOR_BYTES, 0, 2);
+          ps.write(bytes, 0, bytes.length);
         }
     }
 

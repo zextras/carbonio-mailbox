@@ -8,6 +8,7 @@ package com.zimbra.cs.fb;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -67,7 +68,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
     public static final int MULTI_STATUS = 207;
     public static final String TYPE_WEBDAV = "webdav";
 
-    public enum AuthScheme { basic, form };
+    public enum AuthScheme { basic, form }
 
     public static class ServerInfo {
         public boolean enabled;
@@ -78,8 +79,8 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
         public String authPassword;
         public AuthScheme scheme;
     }
-    public static interface ExchangeUserResolver {
-        public ServerInfo getServerInfo(String emailAddr);
+    public interface ExchangeUserResolver {
+        ServerInfo getServerInfo(String emailAddr);
     }
 
     private static class BasicUserResolver implements ExchangeUserResolver {
@@ -104,7 +105,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
                     acct = Provisioning.getInstance().get(AccountBy.name, emailAddr);
                 }
                 if (acct != null) {
-                    String fps[] = acct.getMultiAttr(Provisioning.A_zimbraForeignPrincipal);
+                    String[] fps = acct.getMultiAttr(Provisioning.A_zimbraForeignPrincipal);
                     if (fps != null && fps.length > 0) {
                         for (String fp : fps) {
                             if (fp.startsWith(Provisioning.FP_PREFIX_AD)) {
@@ -350,7 +351,8 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
             int status = response.getStatusLine().getStatusCode();
             if (status != MULTI_STATUS) {
                 InputStream resp = response.getEntity().getContent();
-                String respStr = (resp == null ? "" : new String(ByteUtil.readInput(resp, 1024, 1024), "UTF-8"));
+                String respStr = (resp == null ? "" : new String(ByteUtil.readInput(resp, 1024, 1024),
+                    StandardCharsets.UTF_8));
                 ZimbraLog.fb.error("cannot modify resource at %s : http error %d, buf (%s)", url, status, respStr);
                 return false;  // retry
             }
@@ -395,11 +397,11 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
     private boolean formAuth(HttpClientBuilder clientBuilder, ServerInfo info) throws IOException, HttpException {
         StringBuilder buf = new StringBuilder();
         buf.append("destination=");
-        buf.append(URLEncoder.encode(info.url, "UTF-8"));
+        buf.append(URLEncoder.encode(info.url, StandardCharsets.UTF_8));
         buf.append("&username=");
         buf.append(info.authUsername);
         buf.append("&password=");
-        buf.append(URLEncoder.encode(info.authPassword, "UTF-8"));
+        buf.append(URLEncoder.encode(info.authPassword, StandardCharsets.UTF_8));
         buf.append("&flags=0");
         buf.append("&SubmitCreds=Log On");
         buf.append("&trusted=0");
@@ -457,7 +459,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
                 if (cl != null)
                     contentLength = Integer.parseInt(cl.getValue());
                 String buf = new String(com.zimbra.common.util.ByteUtil.readInput(
-                    httpResponse.getEntity().getContent(), contentLength, contentLength), "UTF-8");
+                    httpResponse.getEntity().getContent(), contentLength, contentLength), StandardCharsets.UTF_8);
                 ZimbraLog.fb.debug(buf);
                 response = Element.parseXML(buf);
             } else

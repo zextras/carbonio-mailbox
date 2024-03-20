@@ -434,7 +434,7 @@ public class RedoLogManager {
                         mCounter++;
                     }
                 } catch (NullPointerException e) {
-                    StackTraceElement stack[] = e.getStackTrace();
+                    StackTraceElement[] stack = e.getStackTrace();
                     if (stack == null || stack.length == 0) {
                         ZimbraLog.redolog.warn("Caught NullPointerException during redo logging, but " +
                                                "there is no stack trace in the exception.  " +

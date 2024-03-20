@@ -157,7 +157,7 @@ public class GetDistributionList extends DistributionListDocumentHandler {
 
                 Object value = entry.getValue();
                 if (value instanceof String[]) {
-                    String sa[] = (String[]) value;
+                    String[] sa = (String[]) value;
                   for (String s : sa) {
                     eParent.addKeyValuePair(key, s, AccountConstants.E_A, AccountConstants.A_N);
                   }

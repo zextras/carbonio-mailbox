@@ -81,8 +81,8 @@ public class InMemoryEphemeralStore extends EphemeralStore {
     @Override
     public void deleteData(EphemeralLocation location) throws ServiceException {
         String[] locationHierarchy = location.getLocation();
-        String storeKey = Joiner.on("|").join(locationHierarchy);;
-        storeMap.remove(storeKey);
+        String storeKey = Joiner.on("|").join(locationHierarchy);
+      storeMap.remove(storeKey);
     }
 
 

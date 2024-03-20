@@ -92,7 +92,7 @@ public final class BEncoding {
                 Map<String, Object> map = new HashMap<>();
                 while ((key = decode(buffer, offset)) != null) {
                     if ((value = decode(buffer, offset)) == null) {
-                        throw new BEncodingException("missing dictionary value for key " + key.toString());
+                        throw new BEncodingException("missing dictionary value for key " + key);
                     }
                     map.put(key.toString(), value);
                 }

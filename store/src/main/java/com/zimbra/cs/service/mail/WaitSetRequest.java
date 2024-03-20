@@ -390,7 +390,7 @@ public class WaitSetRequest extends MailDocumentHandler {
     return remove;
   }
 
-  public static enum TypeEnum {
+  public enum TypeEnum {
     f(EnumSet.of(MailItem.Type.FOLDER)),
     m(EnumSet.of(MailItem.Type.MESSAGE)),
     c(EnumSet.of(MailItem.Type.CONTACT)),

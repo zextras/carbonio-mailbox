@@ -129,7 +129,7 @@ public class ToXML {
         IDNType idnType = AttributeManager.idnType(attrMgr, name);
 
         if (value instanceof String[]) {
-          String sv[] = (String[]) value;
+          String[] sv = (String[]) value;
           for (String s : sv) {
             encodeAttr(e, name, s, AdminConstants.E_A, key, idnType, allowed);
           }

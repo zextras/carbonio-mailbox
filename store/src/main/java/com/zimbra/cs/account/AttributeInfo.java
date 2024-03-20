@@ -224,7 +224,7 @@ public class AttributeInfo {
             }
             break;
         case TYPE_ENUM:
-            String enums[] = value.split(",");
+            String[] enums = value.split(",");
             mEnumSet = new LinkedHashSet<>(enums.length);
           mEnumSet.addAll(Arrays.asList(enums));
             break;

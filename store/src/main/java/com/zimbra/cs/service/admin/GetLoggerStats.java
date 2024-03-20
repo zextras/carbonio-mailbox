@@ -12,6 +12,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -381,14 +382,15 @@ public class GetLoggerStats extends AdminDocumentHandler {
         BufferedReader in = null;
         try {
             final Socket socket = new Socket(InetAddress.getByName("127.0.0.1"), LC.logger_zmrrdfetch_port.intValue());
-            final PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"));
+            final PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(),
+                StandardCharsets.UTF_8));
             
             StringBuilder cmdline = new StringBuilder();
             for (String arg : args) {
                 cmdline.append(arg).append(" ");
             }
             cmdline.setLength(cmdline.length() - 1);
-            out.println(cmdline.toString());
+            out.println(cmdline);
             out.flush();
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             final BufferedReader inbr = in;

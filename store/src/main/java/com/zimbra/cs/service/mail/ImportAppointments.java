@@ -27,6 +27,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -91,7 +92,7 @@ public class ImportAppointments extends MailDocumentHandler  {
                 ItemId iid = new ItemId(messageId, zsc);
                 String part = content.getAttribute(MailConstants.A_PART);
                 partStr = CreateContact.fetchItemPart(zsc, octxt, mbox, iid, part, null, MimeConstants.P_CHARSET_UTF8);
-                is = new ByteArrayInputStream(partStr.getBytes(MimeConstants.P_CHARSET_UTF8));
+                is = new ByteArrayInputStream(partStr.getBytes(StandardCharsets.UTF_8));
             }
 
             // if the "target item" is remote, we will need to proxy the request
@@ -115,7 +116,7 @@ public class ImportAppointments extends MailDocumentHandler  {
             } else if (SourceSpecMethod.INLINE_TEXT.equals(sourceSpecMethod)) {
                 // Convert LF to CRLF because the XML parser normalizes element text to LF.
                 String text = StringUtil.lfToCrlf(content.getText());
-                is = new ByteArrayInputStream(text.getBytes(MimeConstants.P_CHARSET_UTF8));
+                is = new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8));
             }
 
             List<ZVCalendar> icals = ZCalendarBuilder.buildMulti(is, MimeConstants.P_CHARSET_UTF8);

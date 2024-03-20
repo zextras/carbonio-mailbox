@@ -17,8 +17,9 @@ class ChartSettings {
     public static final int DEFAULT_CHART_HEIGHT = 200;
     public static final int MINIMUM_CHART_HEIGHT = 200;
 
-    public static enum ImageType { JPG, PNG };
-    public static enum TopPlotsType { AVG, MAX };
+    public enum ImageType { JPG, PNG }
+
+    public enum TopPlotsType { AVG, MAX }
 
     private String mDocument;
     private String mTitle;

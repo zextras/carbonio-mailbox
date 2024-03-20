@@ -13,6 +13,7 @@ import static java.lang.Character.isDigit;
 import java.lang.reflect.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -91,7 +92,7 @@ public class CompactEncoder {
             byte[] str = new byte[type - ' '];
 
             bb.get(str);
-            return new String(str, "UTF-8");
+            return new String(str, StandardCharsets.UTF_8);
         } case 'A': {
             byte atype = bb.get();
             int len = (int)getStringLong(bb);
@@ -256,17 +257,17 @@ public class CompactEncoder {
             byte[] val = new byte[bb.getShort()];
 
             bb.get(val);
-            return new String(val, "UTF-8");
+            return new String(val, StandardCharsets.UTF_8);
         } case 'T': {
             byte[] str = new byte[(int)getStringLong(bb)];
 
             bb.get(str);
-            return new String(str, "UTF-8");
+            return new String(str, StandardCharsets.UTF_8);
         } case 't': {
             byte[] val = new byte[bb.getInt()];
 
             bb.get(val);
-            return new String(val, "UTF-8");
+            return new String(val, StandardCharsets.UTF_8);
         } case 'V': {
             int cnt = (int)getStringLong(bb);
             ArrayList<Object> array = new ArrayList<>(cnt);
@@ -369,7 +370,7 @@ public class CompactEncoder {
         }
         byte[] val = null;
         try {
-            val = obj.toString().getBytes("UTF-8");
+            val = obj.toString().getBytes(StandardCharsets.UTF_8);
         } catch (Exception e) {
         }
         if (val.length < 'A' - ' ')
@@ -460,7 +461,7 @@ public class CompactEncoder {
         }
         byte[] val = null;
         try {
-            val = obj.toString().getBytes("UTF-8");
+            val = obj.toString().getBytes(StandardCharsets.UTF_8);
         } catch (Exception e) {
         }
         if (val.length < 'A' - ' ')
@@ -474,7 +475,7 @@ public class CompactEncoder {
         byte[] val = new byte[len];
 
         bb.get(val);
-        return new String(val, "UTF-8");
+        return new String(val, StandardCharsets.UTF_8);
     }
 
     private static long getStringLong(ByteBuffer bb) throws
@@ -511,7 +512,7 @@ public class CompactEncoder {
         byte [] str;
 
         try {
-            str = obj.toString().getBytes("UTF-8");
+            str = obj.toString().getBytes(StandardCharsets.UTF_8);
         } catch (Exception e) {
             str = obj.getClass().getName().getBytes();
         }
@@ -523,7 +524,7 @@ public class CompactEncoder {
         byte [] str;
 
         try {
-            str = obj.toString().getBytes("UTF-8");
+            str = obj.toString().getBytes(StandardCharsets.UTF_8);
         } catch (Exception e) {
             str = obj.getClass().getName().getBytes();
         }

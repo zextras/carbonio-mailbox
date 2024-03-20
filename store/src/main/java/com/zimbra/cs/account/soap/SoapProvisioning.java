@@ -1336,9 +1336,9 @@ public class SoapProvisioning extends Provisioning {
     return new MailboxInfo(resp.getMbox());
   }
 
-  public static enum ReIndexBy {
+  public enum ReIndexBy {
     types,
-    ids;
+    ids
   }
 
   public static final class ReIndexInfo {

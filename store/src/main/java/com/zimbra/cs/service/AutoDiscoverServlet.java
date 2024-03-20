@@ -25,6 +25,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -177,7 +178,7 @@ public class AutoDiscoverServlet extends ZimbraServlet {
       sendError(resp, 600, "No content found in the request");
       return;
     }
-    String content = new String(reqBytes, "UTF-8");
+    String content = new String(reqBytes, StandardCharsets.UTF_8);
     log.debug("Request before auth: %s", content);
 
     if (log.isDebugEnabled()) {
@@ -293,7 +294,7 @@ public class AutoDiscoverServlet extends ZimbraServlet {
 
     try {
       ByteUtil.copy(
-          new ByteArrayInputStream(respDoc.getBytes("UTF-8")), true, resp.getOutputStream(), false);
+          new ByteArrayInputStream(respDoc.getBytes(StandardCharsets.UTF_8)), true, resp.getOutputStream(), false);
     } catch (IOException e) {
       log.error("copy response error", e);
       sendError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());

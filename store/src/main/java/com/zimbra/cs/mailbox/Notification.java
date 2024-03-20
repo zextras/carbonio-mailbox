@@ -244,7 +244,7 @@ public class Notification implements LmtpCallback {
 
         // multipart/report is also machine generated
         String ct = mm.getContentType();
-        if (ct != null && ct.equalsIgnoreCase("multipart/report")) {
+        if ("multipart/report".equalsIgnoreCase(ct)) {
             ofailed("content-type multipart/report", destination, rcpt, msgId);
             return;
         }

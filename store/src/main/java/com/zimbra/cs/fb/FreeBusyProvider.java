@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -430,7 +431,7 @@ public abstract class FreeBusyProvider {
       try {
         in = new FileInputStream(f);
         byte[] buf = ByteUtil.readInput(in, (int) len, MAX_FILE_SIZE);
-        tokens = new String(buf, "UTF-8").split("\n");
+        tokens = new String(buf, StandardCharsets.UTF_8).split("\n");
       } finally {
         if (in != null) in.close();
       }

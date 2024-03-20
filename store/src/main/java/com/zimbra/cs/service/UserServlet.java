@@ -788,7 +788,7 @@ public class UserServlet extends ZimbraServlet {
       HttpServletRequest req, HttpServletResponse resp, UserServletContext context, MailItem item)
       throws IOException, ServiceException, UserServletException {
     if (!(item instanceof Mountpoint)) return false;
-    if (context.format != null && context.format.equals("html")) return false;
+    if ("html".equals(context.format)) return false;
     Mountpoint mpt = (Mountpoint) item;
 
     StringBuilder uri =

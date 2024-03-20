@@ -40,8 +40,7 @@ public class DisplayName extends AttributeCallback {
         }
         
         // update cn only if it is not the naming attr
-        if (namingRdnAttr == null ||   // non LdapProvisioning, pass thru
-            !namingRdnAttr.equals(Provisioning.A_cn)) {
+        if (!Provisioning.A_cn.equals(namingRdnAttr)) {
             if (!attrsToModify.containsKey(Provisioning.A_cn)) {
                 attrsToModify.put(Provisioning.A_cn, displayName);
             }

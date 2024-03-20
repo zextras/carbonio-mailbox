@@ -112,38 +112,38 @@ public class Recurrence
      *
      */
     public interface IRecurrence extends Cloneable {
-        public Metadata encodeMetadata();
+        Metadata encodeMetadata();
 
-        abstract List<Instance> expandInstances(int calItemId, long start, long end)
+        List<Instance> expandInstances(int calItemId, long start, long end)
         throws ServiceException;
 
         // get the first time for which the rule has instances
-        public ParsedDateTime getStartTime();
+        ParsedDateTime getStartTime();
         // get the last time (-1 means forever) for which the rule has instances
-        public ParsedDateTime getEndTime() throws ServiceException;
+        ParsedDateTime getEndTime() throws ServiceException;
 
-        public Object clone();
+        Object clone();
 
         /**
          * @return TYPE_RECURRENCE, TYPE_EXCEPTION, TYPE_CANCELLATION, TYPE_SINGLE_DATES, or TYPE_REPEATING
          */
-        public int getType();
+        int getType();
 
         /**
          * @return an Iterator over all child rules that add instances to this current node, or NULL if none
          */
-        public Iterator /* IRecurrence */ addRulesIterator();
+        Iterator /* IRecurrence */ addRulesIterator();
 
         /**
          * @return an Iterator over all child rules that add instances to this current node, or NULL if none
          */
-        public Iterator /* IRecurrence */ subRulesIterator();
+        Iterator /* IRecurrence */ subRulesIterator();
 
 
         /**
          * @return Identifier for the Invite which created this particular rule
          */
-        public InviteInfo getInviteInfo();
+        InviteInfo getInviteInfo();
 
 
         /**
@@ -154,9 +154,9 @@ public class Recurrence
          *
          * @param invId
          */
-        public void setInviteId(InviteInfo invId);
+        void setInviteId(InviteInfo invId);
 
-        public abstract Element toXml(Element parent);
+        Element toXml(Element parent);
     }
 
 
@@ -167,11 +167,11 @@ public class Recurrence
      *
      * Real implementations are ExceptionRule and CancellationRule
      */
-    public static interface IException extends IRecurrence
+    public interface IException extends IRecurrence
     {
-        public boolean matches(long date);
+        boolean matches(long date);
 
-        public RecurId getRecurId();
+        RecurId getRecurId();
     }
 
     /**
@@ -181,9 +181,9 @@ public class Recurrence
      * or SimpleRepeatingRule
      *
      */
-    public static interface IInstanceGeneratingRule extends IRecurrence {
+    public interface IInstanceGeneratingRule extends IRecurrence {
         @Override
-        public InviteInfo getInviteInfo();
+        InviteInfo getInviteInfo();
     }
 
 
@@ -288,7 +288,7 @@ public class Recurrence
 
         List<Instance> expandInstances(int calItemId, long start, long end)
         throws ServiceException {
-            List lists[] = new ArrayList[mRules.size()];
+            List[] lists = new ArrayList[mRules.size()];
             int num = 0;
           for (IRecurrence cur : mRules) {
             lists[num] = cur.expandInstances(calItemId, start, end);
@@ -371,13 +371,13 @@ public class Recurrence
                     toRet.append("rdate=[");
                 else
                     toRet.append("exdate=[");
-                toRet.append(mRdateExdate.toString()).append("]");
+                toRet.append(mRdateExdate).append("]");
             } else {
                 toRet.append("rdate/exdate=<none>");
             }
             toRet.append(", defaultDuration=").append(mDefaultDuration.toString());
             if (mInvId != null)
-                toRet.append(", InvId=").append(mInvId.toString());
+                toRet.append(", InvId=").append(mInvId);
             toRet.append("]");
 
             return toRet.toString();
@@ -520,8 +520,8 @@ public class Recurrence
             @Override
             public String toString() {
                 StringBuilder sb = new StringBuilder();
-                sb.append("[start=").append(mStart.toString());
-                sb.append(", end=").append(mEnd.toString());
+                sb.append("[start=").append(mStart);
+                sb.append(", end=").append(mEnd);
                 sb.append("]");
                 return sb.toString();
             }
@@ -748,7 +748,7 @@ public class Recurrence
               }
             } catch (ServiceException se) {
                 // Bugs 3172 and 3240.  Ignore recurrence rules with bad data.
-                ZimbraLog.calendar.warn("ServiceException expanding recurrence rule: " + mRecur.toString(), se);
+                ZimbraLog.calendar.warn("ServiceException expanding recurrence rule: " + mRecur, se);
                 toRet = new ArrayList<>();
             } catch (IllegalArgumentException iae) {
                 // Bugs 3172 and 3240.  Ignore recurrence rules with bad data.
@@ -1071,10 +1071,10 @@ public class Recurrence
             toRet.append("FIRST=").append(mDtStart != null ? mDtStart.getDate() : "<none>");
             toRet.append(",DUR=").append(mDuration);
             if (mAddRules != null) {
-                toRet.append("\n\t\tADD[").append(mAddRules.toString()).append("]");
+                toRet.append("\n\t\tADD[").append(mAddRules).append("]");
             }
             if (mSubtractRules != null) {
-                toRet.append("\n\t\tSUBTRACT[").append(mSubtractRules.toString()).append("]");
+                toRet.append("\n\t\tSUBTRACT[").append(mSubtractRules).append("]");
             }
             return toRet.toString();
         }
@@ -1524,7 +1524,7 @@ public class Recurrence
                 toRet = stdInstances;
             } else {
                 toRet = new ArrayList<>();
-                List<Instance> toAdd[] = new List[exceptionInstancesList.size() + 1];
+                List<Instance>[] toAdd = new List[exceptionInstancesList.size() + 1];
                 toAdd[0] = stdInstances;
                 int offset = 1;
                 for (List<Instance> except : exceptionInstancesList) {

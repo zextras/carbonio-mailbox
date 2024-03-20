@@ -421,12 +421,14 @@ public class ZInternetHeader {
         if (null != decoded) {
             text.append(decoded);
         } else {
-            text.append(needDecode.toString());
+            text.append(needDecode);
         }
     }
 
-    public enum SequenceType {UNDEFINED, ERROR, COMMENT /* comment */, EW /* encoded-word */, LWS /* linear-white-space */};
-    public enum EncodeSequenceState {CHARSET, ENCODEMETHOD, TEXT, UNDEFINED};
+    public enum SequenceType {UNDEFINED, ERROR, COMMENT /* comment */, EW /* encoded-word */, LWS /* linear-white-space */}
+
+    public enum EncodeSequenceState {CHARSET, ENCODEMETHOD, TEXT, UNDEFINED}
+
     public static class FieldElement {
         private SequenceType seqType;
         private ByteArrayOutputStream bytes;

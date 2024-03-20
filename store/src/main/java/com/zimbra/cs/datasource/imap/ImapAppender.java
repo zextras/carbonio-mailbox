@@ -277,7 +277,7 @@ public class ImapAppender {
         }
     }
 
-    private static interface Data {
+    private interface Data {
         InputStream getInputStream() throws IOException;
 
         int getSize() throws IOException;

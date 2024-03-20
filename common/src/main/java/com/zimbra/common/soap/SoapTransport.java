@@ -46,7 +46,8 @@ public abstract class SoapTransport {
     private static String sDefaultUserAgentName = DEFAULT_USER_AGENT_NAME;
     private static String sDefaultUserAgentVersion;
     private static final ViaHolder viaHolder = new ViaHolder();
-    public static enum NotificationFormat {DEFAULT, IMAP};
+    public enum NotificationFormat {DEFAULT, IMAP}
+
     // This needs to be a LinkedList and not a Deque, to support older Android
     // devices that run JDK 1.5.
     private static final class ViaHolder extends ThreadLocal<LinkedList<String>> {

@@ -151,7 +151,7 @@ public class WebClientL10nUtil {
             String language = lc.getLanguage();
             Locale lcLang = new Locale(language);
             if (!locales.contains(lcLang) && !pseudoLocales.contains(lcLang)) {
-                ZimbraLog.misc.info("Adding locale " + lcLang.toString() + " (pseudo)");
+                ZimbraLog.misc.info("Adding locale " + lcLang + " (pseudo)");
                 pseudoLocales.add(lcLang);
             }
         }

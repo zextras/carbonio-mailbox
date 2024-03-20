@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -534,7 +535,7 @@ public abstract class AutoProvision {
                 if (mBuf == null) {
                     ByteArrayOutputStream buf = new ByteArrayOutputStream();
                     OutputStreamWriter wout =
-                        new OutputStreamWriter(buf, MimeConstants.P_CHARSET_UTF8);
+                        new OutputStreamWriter(buf, StandardCharsets.UTF_8);
                     String text = mText;
                     wout.write(text);
                     wout.flush();

@@ -206,7 +206,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
 
           // check if the external user is already logged-in
           String zAuthTokenCookie = null;
-          javax.servlet.http.Cookie cookies[] = req.getCookies();
+          javax.servlet.http.Cookie[] cookies = req.getCookies();
           if (cookies != null) {
             for (Cookie cookie : cookies) {
               if (cookie.getName().equals("ZM_AUTH_TOKEN")) {
@@ -358,7 +358,7 @@ public class ExternalUserProvServlet extends ZimbraServlet {
     String password = req.getParameter("password");
 
     String prelimToken = null;
-    javax.servlet.http.Cookie cookies[] = req.getCookies();
+    javax.servlet.http.Cookie[] cookies = req.getCookies();
     if (cookies != null) {
       for (Cookie cookie : cookies) {
         if (cookie.getName().equals("ZM_PRELIM_AUTH_TOKEN")) {

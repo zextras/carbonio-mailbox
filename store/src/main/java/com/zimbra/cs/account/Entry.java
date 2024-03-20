@@ -267,7 +267,7 @@ public abstract class Entry implements ToZJSONObject {
       if (idnType.isEmailOrIDN()) {
         Object value = attrs.get(key);
         if (value instanceof String[]) {
-          String sv[] = (String[]) value;
+          String[] sv = (String[]) value;
           for (int i = 0; i < sv.length; i++) {
             sv[i] = IDNUtil.toUnicode(sv[i], idnType);
           }

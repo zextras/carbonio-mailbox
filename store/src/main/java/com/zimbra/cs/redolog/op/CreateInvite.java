@@ -54,8 +54,8 @@ public class CreateInvite extends RedoableOp implements CreateCalendarItemRecord
         sb.append(", folder=").append(mFolderId);
         sb.append(", dataLen=").append(mData != null ? mData.length : 0);
         ICalTimeZone localTz = mInvite.getTimeZoneMap().getLocalTimeZone();
-        sb.append(", localTZ=").append(Util.encodeAsMetadata(localTz).toString());
-        sb.append(", inv=").append(Invite.encodeMetadata(mInvite).toString());
+        sb.append(", localTZ=").append(Util.encodeAsMetadata(localTz));
+        sb.append(", inv=").append(Invite.encodeMetadata(mInvite));
         sb.append(", preserveExistingAlarms=").append(mPreserveExistingAlarms);
         sb.append(", discardExistingInvites=").append(mDiscardExistingInvites);
         sb.append(", addRevision=").append(mAddRevision);
@@ -113,7 +113,7 @@ public class CreateInvite extends RedoableOp implements CreateCalendarItemRecord
         
         } catch (ServiceException ex) {
             ex.printStackTrace();
-            throw new IOException("Cannot read serialized entry for CreateInvite "+ex.toString());
+            throw new IOException("Cannot read serialized entry for CreateInvite "+ ex);
         }
 
         if (getVersion().atLeast(1, 22)) {

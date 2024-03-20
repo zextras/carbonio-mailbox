@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -67,7 +68,7 @@ public class ZCalendar {
     }
   }
 
-  public static enum ICalTok {
+  public enum ICalTok {
     ACTION,
     ALTREP,
     ATTACH,
@@ -817,12 +818,10 @@ public class ZCalendar {
     public long getLongValue() {
       return Long.parseLong(mValue);
     }
-    ;
 
     public int getIntValue() {
       return Integer.parseInt(mValue);
     }
-    ;
 
     public boolean getBoolValue() {
       return mValue.equalsIgnoreCase("TRUE");
@@ -928,12 +927,10 @@ public class ZCalendar {
     long getLongValue() {
       return Long.parseLong(maValue);
     }
-    ;
 
     int getIntValue() {
       return Integer.parseInt(maValue);
     }
-    ;
 
     private final ICalTok mTok;
     private String mName;
@@ -1044,9 +1041,9 @@ public class ZCalendar {
   }
 
   public interface ZICalendarParseHandler extends ContentHandler {
-    public boolean inZCalendar();
+    boolean inZCalendar();
 
-    public int getNumCals();
+    int getNumCals();
   }
 
   public static class DefaultContentHandler implements ZICalendarParseHandler {
@@ -1158,11 +1155,7 @@ public class ZCalendar {
 
     public static ZVCalendar build(String icalStr) throws ServiceException {
       ByteArrayInputStream bais = null;
-      try {
-        bais = new ByteArrayInputStream(icalStr.getBytes(MimeConstants.P_CHARSET_UTF8));
-      } catch (UnsupportedEncodingException e) {
-        throw ServiceException.FAILURE("Can't get input stream from string", e);
-      }
+      bais = new ByteArrayInputStream(icalStr.getBytes(StandardCharsets.UTF_8));
       try {
         return build(bais, MimeConstants.P_CHARSET_UTF8);
       } finally {
@@ -1241,7 +1234,7 @@ public class ZCalendar {
           // Found garbage after END:ZCALENDAR.  Log warning and move on.
           if (ZimbraLog.calendar.isDebugEnabled())
             ZimbraLog.calendar.warn(
-                "Ignoring bad data at the end of text/calendar part: " + s.toString(), e);
+                "Ignoring bad data at the end of text/calendar part: " + s, e);
           else
             ZimbraLog.calendar.warn(
                 "Ignoring bad data at the end of text/calendar part: " + e.getMessage());

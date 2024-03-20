@@ -7,6 +7,7 @@ package com.zimbra.cs.dav.service;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -185,7 +186,7 @@ public class DavResponse {
     /* Writes response XML Document to OutputStream. */
     public void writeTo(OutputStream out) throws IOException {
         if (ZimbraLog.dav.isDebugEnabled())
-            ZimbraLog.dav.debug("RESPONSE:\n"+new String(DomUtil.getBytes(mResponse), "UTF-8"));
+            ZimbraLog.dav.debug("RESPONSE:\n"+new String(DomUtil.getBytes(mResponse), StandardCharsets.UTF_8));
         DomUtil.writeDocumentToStream(mResponse, out);
     }
 

@@ -453,7 +453,7 @@ public class Account extends ZAttrAccount implements GroupedEntry, AliasedEntry 
     if (isIsExternalVirtualAccount()) {
       return new String[] {getExternalUserMailAddress()};
     } else {
-      String aliases[] = getMailAlias();
+      String[] aliases = getMailAlias();
       List<String> addrs = Lists.newArrayListWithExpectedSize(aliases.length + 1);
       String myName = getName();
       addrs.add(myName);

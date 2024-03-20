@@ -397,11 +397,11 @@ public final class Volume {
       throw VolumeServiceException.NOT_ABSOLUTE_PATH(path);
     }
 
-    String dirs[] = path.split("[/\\\\]");
+    String[] dirs = path.split("[/\\\\]");
     if (dirs.length == 0) {
       return result.toString();
     }
-    String newDirs[] = new String[dirs.length];
+    String[] newDirs = new String[dirs.length];
     int numDirs = 0;
     for (String dir : dirs) {
       // single dot or triple dots

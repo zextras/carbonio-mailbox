@@ -11,6 +11,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -204,7 +205,7 @@ public class WaitSetValidator implements DebugListener {
     private static void printError(String text) {
         PrintStream ps = System.err;
         try {
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ps, "UTF-8"));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ps, StandardCharsets.UTF_8));
             writer.write(text+"\n");
             writer.flush();
         } catch (IOException e) {

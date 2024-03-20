@@ -10,8 +10,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface NotificationInterface {
-    public void setTruncatedContent(Boolean truncatedContent);
-    public void setContent(String content);
-    public Boolean getTruncatedContent();
-    public String getContent();
+    void setTruncatedContent(Boolean truncatedContent);
+    void setContent(String content);
+    Boolean getTruncatedContent();
+    String getContent();
 }

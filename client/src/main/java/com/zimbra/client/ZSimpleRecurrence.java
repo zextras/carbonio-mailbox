@@ -245,8 +245,8 @@ public class ZSimpleRecurrence {
                     ZByRule bymonthday = findType(byRules, ZByType.BY_MONTHDAY);
                     ZByRule byday = findType(byRules, ZByType.BY_DAY);
                     if (bymonthday != null && bymonth != null) {
-                        String monthdays[] = bymonthday.getList();
-                        String months[] = bymonth.getList();
+                        String[] monthdays = bymonthday.getList();
+                        String[] months = bymonth.getList();
                         if (monthdays.length == 1 && months.length == 1) {
                             mYearlyByDateMonthDay = parseInt(monthdays[0], -1);
                             mYearlyByDateMonth = parseInt(months[0], -1);
@@ -256,7 +256,7 @@ public class ZSimpleRecurrence {
                             }
                         }
                     } else if (byday != null && bymonth != null) {
-                        String months[] = bymonth.getList();
+                        String[] months = bymonth.getList();
                         List<ZByDayWeekDay> weekDays = byday.getByDayWeekDays();
                         if (weekDays != null && weekDays.size() == 1 && months.length == 1) {
                             mYearlyRelativeMonth = parseInt(months[0], -1);

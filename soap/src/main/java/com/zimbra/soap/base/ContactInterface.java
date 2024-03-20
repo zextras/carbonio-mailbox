@@ -15,57 +15,57 @@ import com.zimbra.soap.type.ContactAttr;
  * Note that encodeContactAttachment forces KeyValuePairs to be represented by list of ContactAttr
  */
 public interface ContactInterface {
-    public void setId(String id);
-    public void setSortField(String sortField);
-    public void setCanExpand(Boolean canExpand);
-    public void setFolder(String folder);
-    public void setFlags(String flags);
+    void setId(String id);
+    void setSortField(String sortField);
+    void setCanExpand(Boolean canExpand);
+    void setFolder(String folder);
+    void setFlags(String flags);
     @Deprecated
-    public void setTags(String tags);
-    public void setTagNames(String tagNames);
-    public void setChangeDate(Long changeDate);
-    public void setModifiedSequenceId(Integer modifiedSequenceId);
-    public void setDate(Long date);
-    public void setRevisionId(Integer revisionId);
-    public void setFileAs(String fileAs);
-    public void setEmail(String email);
-    public void setEmail2(String email2);
-    public void setEmail3(String email3);
-    public void setType(String type);
-    public void setDlist(String dlist);
-    public void setReference(String reference);
-    public void setTooManyMembers(Boolean tooManyMembers);
-    public void setMetadataInterfaces(Iterable <CustomMetadataInterface> metadatas);
-    public void addMetadataInterfaces(CustomMetadataInterface metadata);
+    void setTags(String tags);
+    void setTagNames(String tagNames);
+    void setChangeDate(Long changeDate);
+    void setModifiedSequenceId(Integer modifiedSequenceId);
+    void setDate(Long date);
+    void setRevisionId(Integer revisionId);
+    void setFileAs(String fileAs);
+    void setEmail(String email);
+    void setEmail2(String email2);
+    void setEmail3(String email3);
+    void setType(String type);
+    void setDlist(String dlist);
+    void setReference(String reference);
+    void setTooManyMembers(Boolean tooManyMembers);
+    void setMetadataInterfaces(Iterable<CustomMetadataInterface> metadatas);
+    void addMetadataInterfaces(CustomMetadataInterface metadata);
     // ContactAttr extends KeyValuePair.
     // com.zimbra.cs.service.mail.ToXML.encodeContactAttachment decorates KeyValuePairs with additional attributes
-    public void setAttrs(Iterable <ContactAttr> attrs);
-    public void addAttr(ContactAttr attr);
-    public void setContactGroupMemberInterfaces(Iterable <ContactGroupMemberInterface> contactGroupMembers);
-    public void addContactGroupMember(ContactGroupMemberInterface contactGroupMember);
+    void setAttrs(Iterable<ContactAttr> attrs);
+    void addAttr(ContactAttr attr);
+    void setContactGroupMemberInterfaces(Iterable<ContactGroupMemberInterface> contactGroupMembers);
+    void addContactGroupMember(ContactGroupMemberInterface contactGroupMember);
 
 
-    public String getId();
-    public String getSortField();
-    public Boolean getCanExpand();
-    public String getFolder();
-    public String getFlags();
+    String getId();
+    String getSortField();
+    Boolean getCanExpand();
+    String getFolder();
+    String getFlags();
     @Deprecated
-    public String getTags();
-    public String getTagNames();
-    public Long getChangeDate();
-    public Integer getModifiedSequenceId();
-    public Long getDate();
-    public Integer getRevisionId();
-    public String getFileAs();
-    public String getEmail();
-    public String getEmail2();
-    public String getEmail3();
-    public String getType();
-    public String getDlist();
-    public String getReference();
-    public Boolean getTooManyMembers();
-    public List<CustomMetadataInterface> getMetadataInterfaces();
-    public List<ContactAttr> getAttrs();
-    public List<ContactGroupMemberInterface> getContactGroupMemberInterfaces();
+    String getTags();
+    String getTagNames();
+    Long getChangeDate();
+    Integer getModifiedSequenceId();
+    Long getDate();
+    Integer getRevisionId();
+    String getFileAs();
+    String getEmail();
+    String getEmail2();
+    String getEmail3();
+    String getType();
+    String getDlist();
+    String getReference();
+    Boolean getTooManyMembers();
+    List<CustomMetadataInterface> getMetadataInterfaces();
+    List<ContactAttr> getAttrs();
+    List<ContactGroupMemberInterface> getContactGroupMemberInterfaces();
 }

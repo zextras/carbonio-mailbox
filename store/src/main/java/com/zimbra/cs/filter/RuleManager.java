@@ -27,6 +27,7 @@ import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.SpamHandler;
 import com.zimbra.soap.mail.type.FilterRule;
 
+import java.nio.charset.StandardCharsets;
 import org.apache.jsieve.ConfigurationManager;
 import org.apache.jsieve.SieveFactory;
 import org.apache.jsieve.exception.SieveException;
@@ -70,14 +71,15 @@ public final class RuleManager {
             RuleManager.class.getSimpleName() + ".ADMIN_OUTGOING_FILTER_RULES_AFTER_CACHE";
     public static final String editHeaderUserScriptError = "EDIT_HEADER_NOT_SUPPORTED_FOR_USER_SCRIPT";
 
-    public static enum FilterType {INCOMING, OUTGOING};
-    public static enum AdminFilterType {
+    public enum FilterType {INCOMING, OUTGOING}
+
+    public enum AdminFilterType {
         BEFORE,
         AFTER;
         public String getType() {
             return name().toLowerCase();
         }
-    };
+    }
 
     private static SieveFactory SIEVE_FACTORY = createSieveFactory();
 
@@ -541,12 +543,8 @@ public final class RuleManager {
      */
     public static Node parse(String script) throws ParseException {
         ByteArrayInputStream sin;
-        try {
-            sin = new ByteArrayInputStream(script.getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            throw new ParseException(e.getMessage());
-        }
-        Node node = null;
+      sin = new ByteArrayInputStream(script.getBytes(StandardCharsets.UTF_8));
+      Node node = null;
         try {
             node = SIEVE_FACTORY.parse(sin);
         } catch (TokenMgrError e) {
@@ -557,12 +555,8 @@ public final class RuleManager {
             // an undefined escape sequence (such as "\a" in a context where "a" has no
             // special meaning). Here is the workaround to re-try parsing using the same
             // filter string without any undefined escape sequences.
-            try {
-                sin = new ByteArrayInputStream(ignoreBackslash(script).getBytes("UTF-8"));
-            } catch (UnsupportedEncodingException uee) {
-                throw new ParseException(uee.getMessage());
-            }
-            node = SIEVE_FACTORY.parse(sin);
+          sin = new ByteArrayInputStream(ignoreBackslash(script).getBytes(StandardCharsets.UTF_8));
+          node = SIEVE_FACTORY.parse(sin);
         }
         return node;
     }

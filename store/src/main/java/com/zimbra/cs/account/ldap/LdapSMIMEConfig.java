@@ -48,10 +48,10 @@ public abstract class LdapSMIMEConfig {
     public abstract void remove(String configName) throws ServiceException;
     
     public interface ResultCallback {
-        public void add(String field, String cert);
-        public boolean continueWithNextConfig();
+        void add(String field, String cert);
+        boolean continueWithNextConfig();
     }
     
     public abstract void lookupPublicKeys(Account acct, String email, ResultCallback resultCallback) 
     throws ServiceException;
-};
+}

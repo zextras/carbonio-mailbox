@@ -63,7 +63,7 @@ public class CsrfTokenKey {
     }
 
     private CsrfTokenKey(String k) throws ServiceException {
-        String parts[] = k.split(":");
+        String[] parts = k.split(":");
         if (parts.length != 3)
             throw ServiceException.INVALID_REQUEST("invalid auth token key",
                 null);

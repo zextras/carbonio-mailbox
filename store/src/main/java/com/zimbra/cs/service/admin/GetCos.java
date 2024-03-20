@@ -91,7 +91,7 @@ public class GetCos extends AdminDocumentHandler {
 
         boolean isCosAttr = !attrMgr.isAccountInherited(name);
         if (value instanceof String[]) {
-          String sv[] = (String[]) value;
+          String[] sv = (String[]) value;
           for (String s : sv) {
             encodeCosAttr(cos, name, s, isCosAttr, allowed);
           }

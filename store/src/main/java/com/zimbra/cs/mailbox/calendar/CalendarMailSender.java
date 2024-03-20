@@ -58,6 +58,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -1653,7 +1654,7 @@ public class CalendarMailSender {
       synchronized (this) {
         if (mBuf == null) {
           ByteArrayOutputStream buf = new ByteArrayOutputStream();
-          OutputStreamWriter wout = new OutputStreamWriter(buf, MimeConstants.P_CHARSET_UTF8);
+          OutputStreamWriter wout = new OutputStreamWriter(buf, StandardCharsets.UTF_8);
           String text = HEAD + mText + TAIL;
           wout.write(text);
           wout.flush();

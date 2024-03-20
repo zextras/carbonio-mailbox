@@ -96,7 +96,7 @@ public class HostedAuth extends ZimbraCustomAuth {
         
         int status = response.getStatusLine().getStatusCode();
         if(status != HttpStatus.SC_OK) {
-        	throw AuthFailedServiceException.AUTH_FAILED(acct.getName(), "HTTP request to remote authentication server failed. Remote response code: " + Integer.toString(status));
+        	throw AuthFailedServiceException.AUTH_FAILED(acct.getName(), "HTTP request to remote authentication server failed. Remote response code: " + status);
         }
         
         String responseMessage;

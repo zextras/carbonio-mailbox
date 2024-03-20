@@ -46,6 +46,7 @@ import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.util.SpoolingCache;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -3009,9 +3010,9 @@ public class DbMailItem {
     return getBy(LookupBy.uuid, mbox, uuid, type, fromDumpster);
   }
 
-  private static enum LookupBy {
+  private enum LookupBy {
     id,
-    uuid;
+    uuid
   }
 
   private static UnderlyingData getBy(
@@ -4592,8 +4593,8 @@ public class DbMailItem {
     }
   }
 
-  public static interface Callback<T> {
-    public void call(T value);
+  public interface Callback<T> {
+    void call(T value);
   }
 
   public static void visitAllBlobDigests(Mailbox mbox, Callback<String> callback)
@@ -5438,7 +5439,7 @@ public class DbMailItem {
         }
         buf.append(Db.getInstance().bitAND("flags", String.valueOf(flagToExclude.toBitmask())))
             .append(" != ")
-            .append(String.valueOf(flagToExclude.toBitmask()));
+            .append(flagToExclude.toBitmask());
       }
       return buf.toString();
     }
@@ -5717,7 +5718,7 @@ public class DbMailItem {
         failures += " BLOB_DIGEST";
       }
       if (dataSender != dbdataSender
-          && (dataSender == null || !dataSender.equalsIgnoreCase(dbdataSender))) {
+          && (!dbdataSender.equalsIgnoreCase(dataSender))) {
         failures += " SENDER";
       }
       if (data.getSubject() != dbdata.getSubject()
@@ -5796,11 +5797,8 @@ public class DbMailItem {
           throw ServiceException.FAILURE("metadata too long", null);
         }
       } else {
-        try {
-          if (result.getBytes("utf-8").length > MAX_MEDIUMTEXT_LENGTH) {
-            throw ServiceException.FAILURE("metadata too long", null);
-          }
-        } catch (UnsupportedEncodingException uee) {
+        if (result.getBytes(StandardCharsets.UTF_8).length > MAX_MEDIUMTEXT_LENGTH) {
+          throw ServiceException.FAILURE("metadata too long", null);
         }
       }
     }
@@ -6262,7 +6260,7 @@ public class DbMailItem {
                   + " change_date < ? AND "
                   + Db.getInstance().bitAND("flags", String.valueOf(Flag.BITMASK_DELETED))
                   + " = "
-                  + String.valueOf(Flag.BITMASK_DELETED)
+                  + Flag.BITMASK_DELETED
                   + " limit "
                   + batchSize);
       setMailboxId(stmt, mbox, 1);

@@ -141,7 +141,7 @@ public class IcsImportParseHandler implements ZICalendarParseHandler {
               break;
           }
         } catch (ServiceException e) {
-          throw new ParserException("Error while parsing " + tok.toString(), e);
+          throw new ParserException("Error while parsing " + tok, e);
         }
       }
     } else {

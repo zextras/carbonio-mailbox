@@ -13,9 +13,9 @@ package com.zimbra.cs.index;
  */
 public class Fragment {
 
-    public enum Source { MESSAGE, APPOINTMENT, NOTEBOOK };
+    public enum Source { MESSAGE, APPOINTMENT, NOTEBOOK }
 
-    private static final int MAX_FRAGMENT_LENGTH = 150;
+  private static final int MAX_FRAGMENT_LENGTH = 150;
 
     private static final String CALENDAR_SEPARATOR = "*~*~*~*~*~*~*~*~*~*";
 

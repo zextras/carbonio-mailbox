@@ -12,6 +12,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -47,7 +48,7 @@ public final class HttpUtil {
         private final String userAgentStr;
         Browser(String userAgentStr) {
             this.userAgentStr = userAgentStr;
-        };
+        }
 
         String getUserAgentStr() {
             return userAgentStr;
@@ -249,7 +250,7 @@ public final class HttpUtil {
         }
 
 
-      };
+      }
 
     // Encode ' ' to '%20' instead of '+' because IE doesn't decode '+' to ' '.
     private static final BitSet IE_URL_SAFE = new BitSet(256);
@@ -444,11 +445,8 @@ public final class HttpUtil {
             String[] keyVal = pair.split("=");
             // URI query string is always encoded with application/x-www-form-urlencoded,
             // so use URLDecoder.decode() which converts '+' to ' '
-            try {
-                String value = keyVal.length > 1 ? URLDecoder.decode(keyVal[1], "UTF-8") : "";
-                params.put(URLDecoder.decode(keyVal[0], "UTF-8"), value);
-            } catch (UnsupportedEncodingException e) {
-            }
+          String value = keyVal.length > 1 ? URLDecoder.decode(keyVal[1], StandardCharsets.UTF_8) : "";
+          params.put(URLDecoder.decode(keyVal[0], StandardCharsets.UTF_8), value);
         }
         return params;
     }
@@ -544,15 +542,11 @@ public final class HttpUtil {
                 if (escaped != null)
                     buf.append(escaped);
                 else {
-                    try {
-                        byte[] raw = Character.valueOf(c).toString().getBytes("UTF-8");
-                        for (byte b : raw) {
-                            int unsignedB = b & 0xFF;  // byte is signed
-                            buf.append("%").append(Integer.toHexString(unsignedB).toUpperCase());
-                        }
-                    } catch (IOException e) {
-                        buf.append(c);
-                    }
+                  byte[] raw = Character.valueOf(c).toString().getBytes(StandardCharsets.UTF_8);
+                  for (byte b : raw) {
+                      int unsignedB = b & 0xFF;  // byte is signed
+                      buf.append("%").append(Integer.toHexString(unsignedB).toUpperCase());
+                  }
                 }
             } else if (buf != null) {
                 buf.append(c);
@@ -600,11 +594,8 @@ public final class HttpUtil {
                 // append to the buffer if we are at the end of the string,
                 // or if this is the last encoded character in the segment.
                 if (i + 1 == escaped.length() || escaped.charAt(i + 1) != '%') {
-                    try {
-                        buf.append(new String(Bytes.toArray(segment), "UTF-8"));
-                    } catch (UnsupportedEncodingException e) {
-                    }
-                    segment.clear();
+                  buf.append(new String(Bytes.toArray(segment), StandardCharsets.UTF_8));
+                  segment.clear();
                 }
                 continue;
             }

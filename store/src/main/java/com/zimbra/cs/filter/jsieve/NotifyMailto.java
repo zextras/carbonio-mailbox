@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.filter.jsieve;
 
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jsieve.Argument;
 import org.apache.jsieve.Arguments;
@@ -264,9 +265,7 @@ public class NotifyMailto extends Notify {
                     String headerName = null;
                     String headerValue = null;
                     try {
-                        headerName = URLDecoder.decode(token[0], "UTF-8");
-                    } catch (UnsupportedEncodingException e)  {
-                        // No exception should be thrown because the charset is always "UTF-8"
+                        headerName = URLDecoder.decode(token[0], StandardCharsets.UTF_8);
                     } catch (IllegalArgumentException e) {
                         headerName = token[0];
                     }
@@ -278,9 +277,7 @@ public class NotifyMailto extends Notify {
                         headerValue = token[1];
                     }
                     try {
-                        headerValue = URLDecoder.decode(headerValue, "UTF-8");
-                    } catch (UnsupportedEncodingException e)  {
-                        // No exception should be thrown because the charset is always "UTF-8"
+                        headerValue = URLDecoder.decode(headerValue, StandardCharsets.UTF_8);
                     } catch (IllegalArgumentException e) {
                         // Use token[1] as is
                     }

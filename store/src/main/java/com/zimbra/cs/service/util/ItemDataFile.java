@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,7 +81,7 @@ public class ItemDataFile {
           System.out.println(f);
           out = new FileOutputStream(f);
           ItemData id = new ItemData(getData(tis, te));
-          out.write(id.encode(2).getBytes("UTF-8"));
+          out.write(id.encode(2).getBytes(StandardCharsets.UTF_8));
         } else {
           int in;
 

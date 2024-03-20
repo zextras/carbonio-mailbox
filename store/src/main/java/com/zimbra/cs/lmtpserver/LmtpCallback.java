@@ -15,10 +15,11 @@ public interface LmtpCallback {
     /**
      * Called after the message is delivered to the given account.
      */
-    public void afterDelivery(Account account, Mailbox mbox, String envelopeSender, String recipientEmail, Message newMessage);
+    void afterDelivery(Account account, Mailbox mbox, String envelopeSender, String recipientEmail, Message newMessage);
 
     /**
      * Called when mail forwarding is set up for the account but delivery to mailbox is disabled.
      */
-    public void forwardWithoutDelivery(Account account, Mailbox mbox, String envelopeSender, String recipientEmail, ParsedMessage pm);
+    void forwardWithoutDelivery(Account account, Mailbox mbox, String envelopeSender, String recipientEmail,
+        ParsedMessage pm);
 }

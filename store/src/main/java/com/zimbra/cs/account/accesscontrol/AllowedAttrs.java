@@ -23,7 +23,7 @@ public class AllowedAttrs implements AccessManager.AttrRightChecker {
     public enum Result {
         ALLOW_ALL,
         DENY_ALL,
-        ALLOW_SOME;
+        ALLOW_SOME
     }
     
     private Result mResult;
@@ -77,7 +77,7 @@ public class AllowedAttrs implements AccessManager.AttrRightChecker {
                 for (String a : attrsNeeded)
                     sb.append(a).append(" ");
             }
-            sLog.debug("canAccessAttrs attrsNeeded: " + sb.toString());
+            sLog.debug("canAccessAttrs attrsNeeded: " + sb);
         }
         
         if (mResult == AllowedAttrs.Result.ALLOW_ALL)

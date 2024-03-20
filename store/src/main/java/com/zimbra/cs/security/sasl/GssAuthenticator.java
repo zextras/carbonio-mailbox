@@ -14,6 +14,7 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 
+import java.nio.charset.StandardCharsets;
 import javax.security.sasl.SaslServer;
 import javax.security.sasl.Sasl;
 import javax.security.sasl.SaslException;
@@ -175,7 +176,7 @@ public class GssAuthenticator extends Authenticator {
         // If exchange not complete, send additional challenge
         if (!isComplete()) {
             assert !mSaslServer.isComplete();
-            String s = new String(Base64.encodeBase64(bytes), "US-ASCII");
+            String s = new String(Base64.encodeBase64(bytes), StandardCharsets.US_ASCII);
             sendContinuation(s);
             return;
         }

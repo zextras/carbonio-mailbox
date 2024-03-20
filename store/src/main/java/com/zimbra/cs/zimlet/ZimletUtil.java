@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -138,7 +139,7 @@ public class ZimletUtil {
             return;
         }
 
-        ZimbraLog.account.info("Migrating zimbraPrefDisabledZimlets for account " + acct.getName() + " to " + disabledZimletNamesForLogging.toString());
+        ZimbraLog.account.info("Migrating zimbraPrefDisabledZimlets for account " + acct.getName() + " to " + disabledZimletNamesForLogging);
 
         Provisioning prov = Provisioning.getInstance();
         prov.modifyAttrs(acct, attrs);
@@ -544,9 +545,9 @@ public class ZimletUtil {
         }
     }
 
-    public static interface DeployListener {
-        public void markFinished(Server s);
-        public void markFailed(Server s, Exception e);
+    public interface DeployListener {
+        void markFinished(Server s);
+        void markFailed(Server s, Exception e);
     }
 
     public static void deployZimletLocally(ZimletFile zf, DeployListener listener) throws IOException, ZimletException, ServiceException {
@@ -557,7 +558,7 @@ public class ZimletUtil {
         }
     }
 
-    enum Action { INSTALL, UPGRADE, REPAIR };
+    enum Action { INSTALL, UPGRADE, REPAIR }
 
     /**
      * Deploys the specified Zimlet on local server, be it service node or ui node. The following actions are taken.
@@ -712,7 +713,7 @@ public class ZimletUtil {
         }
 
         String disableZimletUndeploy = zd.getDisableUIUndeploy();
-        if (disableZimletUndeploy != null && disableZimletUndeploy.equalsIgnoreCase("true")) {
+        if ("true".equalsIgnoreCase(disableZimletUndeploy)) {
             attrs.put(Provisioning.A_zimbraAdminExtDisableUIUndeploy, ProvisioningConstants.TRUE);
         }
 
@@ -1373,7 +1374,7 @@ public class ZimletUtil {
         }
         String manifest = "Manifest-Version: 1.0\nZimlet-Description-File: "+target+"\n";
         JarOutputStream out = new JarOutputStream(new FileOutputStream(target.substring(0, target.length()-4)+".zip"),
-                new Manifest(new ByteArrayInputStream(manifest.getBytes("UTF-8"))));
+                new Manifest(new ByteArrayInputStream(manifest.getBytes(StandardCharsets.UTF_8))));
         for (File f : dir.listFiles()) {
             addZipEntry(out, f, null);
         }
@@ -1399,7 +1400,7 @@ public class ZimletUtil {
     }
 
     private static long computeCRC32(File file) throws IOException {
-        byte buf[] = new byte[32 * 1024];
+        byte[] buf = new byte[32 * 1024];
         CRC32 crc = new CRC32();
         crc.reset();
         try (FileInputStream fis = new FileInputStream(file)) {

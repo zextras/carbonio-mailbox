@@ -6,5 +6,5 @@
 package com.zimbra.common.mailbox;
 
 public interface MountpointStore extends FolderStore {
-    public ItemIdentifier getTargetItemIdentifier();
+    ItemIdentifier getTargetItemIdentifier();
 }

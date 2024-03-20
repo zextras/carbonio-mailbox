@@ -9,17 +9,17 @@ import java.util.List;
 
 public interface InstanceDataInterface
 extends CommonInstanceDataAttrsInterface {
-    public void setStartTime(Long startTime);
-    public void setIsException(Boolean isException);
-    public void setOrganizer(CalOrganizer organizer);
-    public void setCategories(Iterable <String> categories);
-    public void addCategory(String category);
-    public void setGeo(GeoInfo geo);
-    public void setFragment(String fragment);
-    public Long getStartTime();
-    public Boolean getIsException();
-    public CalOrganizer getOrganizer();
-    public List<String> getCategories();
-    public GeoInfo getGeo();
-    public String getFragment();
+    void setStartTime(Long startTime);
+    void setIsException(Boolean isException);
+    void setOrganizer(CalOrganizer organizer);
+    void setCategories(Iterable<String> categories);
+    void addCategory(String category);
+    void setGeo(GeoInfo geo);
+    void setFragment(String fragment);
+    Long getStartTime();
+    Boolean getIsException();
+    CalOrganizer getOrganizer();
+    List<String> getCategories();
+    GeoInfo getGeo();
+    String getFragment();
 }

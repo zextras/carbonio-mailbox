@@ -90,7 +90,8 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
     private List<String> matchedValues = new ArrayList<>();
     private boolean parsedMessageCloned = false;
 
-    public enum VARIABLEFEATURETYPE { UNKNOWN, OFF, AVAILABLE};
+    public enum VARIABLEFEATURETYPE { UNKNOWN, OFF, AVAILABLE}
+
     private VARIABLEFEATURETYPE variablesExtAvailable = VARIABLEFEATURETYPE.UNKNOWN;
 
     /**
@@ -123,7 +124,8 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
     /**
      * Parse result of the triggering message (editheader actions)
      */
-    public enum PARSESTATUS { UNKNOWN, TOLERABLE, MIMEMALFORMED };
+    public enum PARSESTATUS { UNKNOWN, TOLERABLE, MIMEMALFORMED }
+
     private PARSESTATUS eheParseStatus = PARSESTATUS.UNKNOWN;
 
     /**
@@ -512,7 +514,8 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
      * Keeps track of the folder path, to make sure we don't file to the same
      * folder twice.
      */
-    public enum KeepType {IMPLICIT_KEEP, EXPLICIT_KEEP};
+    public enum KeepType {IMPLICIT_KEEP, EXPLICIT_KEEP}
+
     public Message keep(KeepType type) throws ServiceException {
         String folderPath = handler.getDefaultFolderPath();
         folderPath = CharMatcher.is('/').trimFrom(folderPath); // trim leading and trailing '/'
@@ -636,7 +639,7 @@ public class ZimbraMailAdapter implements MailAdapter, EnvelopeAccessors {
                             altered = true;
                             // put the unicode addr back to the address
                             inetAddr.setAddress(unicodeAddr);
-                            addrs.append(inetAddr.toString()).append(delim);
+                            addrs.append(inetAddr).append(delim);
                         }
                     } catch (AddressException e) {
                         ZimbraLog.filter.warn("handleIDN encountered invalid address " + address + "in header " + headerName);

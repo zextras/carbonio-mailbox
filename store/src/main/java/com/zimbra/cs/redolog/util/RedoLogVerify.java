@@ -79,7 +79,7 @@ public class RedoLogVerify {
         System.exit((errmsg == null) ? 0 : 1);
     }
 
-    private static CommandLine parseArgs(String args[]) {
+    private static CommandLine parseArgs(String[] args) {
         CommandLineParser parser = new GnuParser();
         CommandLine cl = null;
         try {
@@ -232,7 +232,7 @@ public class RedoLogVerify {
             int count = (int) Math.min((linesBefore + linesAfter + 1) * bytesPerLine, lastPosition - startPos + diff);
           try (RandomAccessFile raf = new RandomAccessFile(logfile, "r")) {
             raf.seek(startPos);
-            byte buf[] = new byte[count];
+            byte[] buf = new byte[count];
             raf.read(buf, 0, count);
             mOut.printf("Data near error offset %08x:", lastPosition);
             mOut.println();

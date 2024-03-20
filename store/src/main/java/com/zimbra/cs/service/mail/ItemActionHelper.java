@@ -415,7 +415,7 @@ public class ItemActionHelper {
     return ia;
   }
 
-  public static enum Op {
+  public enum Op {
     TAG("tag"),
     FLAG("flag"),
     PRIORITY("priority"),
@@ -434,7 +434,7 @@ public class ItemActionHelper {
 
     private final String name;
 
-    private Op(String name) {
+    Op(String name) {
       this.name = name;
     }
 
@@ -452,7 +452,7 @@ public class ItemActionHelper {
     toRet.append(" Type=").append(type);
     toRet.append(" FlagValue=").append(mFlagValue);
     if (mTargetConstraint != null) {
-      toRet.append(" TargetConst=").append(mTargetConstraint.toString());
+      toRet.append(" TargetConst=").append(mTargetConstraint);
     }
 
     if (mOperation == Op.TAG) {
@@ -839,7 +839,7 @@ public class ItemActionHelper {
         } catch (OutOfMemoryError e) {
           Zimbra.halt("out of memory", e);
         } catch (Throwable t) {
-          ZimbraLog.mailop.info("could not train spam filter: " + new ItemId(item).toString(), t);
+          ZimbraLog.mailop.info("could not train spam filter: " + new ItemId(item), t);
         }
       }
 

@@ -38,12 +38,12 @@ public class LmcMessage {
     private String mFragment;
     private String mOriginalID;
     private String mFolder;
-    private LmcEmailAddress mEmailAddrs[];
+    private LmcEmailAddress[] mEmailAddrs;
     private ArrayList<LmcMimePart> mMimeParts;
     private String mContentMatched;  // for SearchResponse
     private String mTag; // for AddMsg
     private String mContent; // for AddMsg
-    private String mAttachmentIDs[]; // for SendMsg
+    private String[] mAttachmentIDs; // for SendMsg
 
     private boolean mIsUnread = false;
     
@@ -63,7 +63,7 @@ public class LmcMessage {
     public void setConvID(String cid) { mConvID = cid; }
     public void setScore(String s) { mScore = s; }
     public void setOriginalID(String o) { mOriginalID = o; }
-    public void setEmailAddresses(LmcEmailAddress e[]) { mEmailAddrs = e; }
+    public void setEmailAddresses(LmcEmailAddress[] e) { mEmailAddrs = e; }
     public void addMimePart(LmcMimePart m) { mMimeParts.add(m); }
     public void clearMimeParts() { mMimeParts.clear(); }
     public void setContentMatched(String c) { mContentMatched = c; }
@@ -71,7 +71,7 @@ public class LmcMessage {
     public void setSubject(String s) { mSubject = s; }
     public void setTag(String t) { mTag = t; }
     public void setContent(String c) { mContent = c; }
-    public void setAttachmentIDs(String ids[]) { mAttachmentIDs = ids; }
+    public void setAttachmentIDs(String[] ids) { mAttachmentIDs = ids; }
 
     public String getSubject() { return mSubject; }
     public String getFragment() { return mFragment; }

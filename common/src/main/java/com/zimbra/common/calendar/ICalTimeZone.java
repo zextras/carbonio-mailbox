@@ -363,7 +363,7 @@ public class ICalTimeZone extends SimpleTimeZone {
     }
 
     // maps Java weekday number to iCalendar weekday name
-    private static String sDayOfWeekNames[] = new String[Calendar.SATURDAY + 1];
+    private static String[] sDayOfWeekNames = new String[Calendar.SATURDAY + 1];
     static {
         sDayOfWeekNames[0] = "XX";  // unused
         sDayOfWeekNames[Calendar.SUNDAY]    = "SU";  // 1

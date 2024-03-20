@@ -12,12 +12,12 @@ import com.zimbra.cs.account.gal.GalOp;
 
 public class ZimbraGalSearchBase {
 
-    public static enum PredefinedSearchBase {
+    public enum PredefinedSearchBase {
         DOMAIN,
         SUBDOMAINS,
-        ROOT;
-    };
-    
+        ROOT
+    }
+
     public static String getSearchBaseRaw(Domain domain, GalOp galOp) 
     throws ServiceException {
         String sb;

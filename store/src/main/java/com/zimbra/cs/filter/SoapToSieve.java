@@ -277,7 +277,7 @@ public final class SoapToSieve {
                     }
                     format.append("\"").append(FilterUtil.escape(item)).append("\"");
                 }
-                snippet = "addressbook :in [" + format.toString() + ']';
+                snippet = "addressbook :in [" + format + ']';
             } else {
                 snippet = "addressbook :in \"" + FilterUtil.escape(header) + '"';
             }
@@ -647,10 +647,10 @@ public final class SoapToSieve {
                         || FilterAction.LogAction.LogLevel.debug == level
                         || FilterAction.LogAction.LogLevel.trace == level
                         )) {
-                    String message = "Invalid log action: Invalid log level found: " + level.toString();
+                    String message = "Invalid log action: Invalid log level found: " + level;
                     throw ServiceException.PARSE_ERROR(message, null);
                 }
-                sb.append(" :").append(level.toString());
+                sb.append(" :").append(level);
             }
             sb.append(" \"").append(logAction.getContent()).append("\"");
             return sb.toString();

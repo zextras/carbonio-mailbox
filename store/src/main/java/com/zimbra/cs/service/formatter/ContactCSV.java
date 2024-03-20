@@ -52,9 +52,9 @@ public final class ContactCSV {
     // CSV files intended for use in locales where ',' as the decimal separator
     // sometimes use ';' as a field separator instead of ','.
     private static final char[] SUPPORTED_SEPARATORS = { DEFAULT_FIELD_SEPARATOR, ';' };
-    private enum ColType { SIMPLE, MULTIVALUE, NAME, TAG, DATE };
+    private enum ColType { SIMPLE, MULTIVALUE, NAME, TAG, DATE }
 
-    private int lineNumber;
+  private int lineNumber;
     private int currContactStartLineNum;
     private ArrayList<String> fieldNames; // Names of fields from first line in CSV file
     private final boolean detectFieldSeparator;
@@ -350,7 +350,7 @@ public final class ContactCSV {
             if (splitFields.length != 3)
                 splitFields = value.split("-");
             if (splitFields.length == 3) {
-                int dateFs[] = new int[3];
+                int[] dateFs = new int[3];
                 dateFs[0] = Integer.parseInt(splitFields[0]);
                 dateFs[1] = Integer.parseInt(splitFields[1]);
                 dateFs[2] = Integer.parseInt(splitFields[2]);
@@ -414,7 +414,7 @@ public final class ContactCSV {
     private void addMultiValueDateField(CsvColumn col, Map <String, String> fieldMap, ContactMap contact) {
         String zimbraDateValue = null;
         if (col.names.size() == 3) {
-            int dateFs[] = new int[3];
+            int[] dateFs = new int[3];
             int ndx = 0;
             try {
                 for (String n : col.names) {
@@ -1159,7 +1159,7 @@ public final class ContactCSV {
         return formats.toArray(new String[0]);
     }
 
-    public static void main(String args[]) throws IOException, XmlParseException {
+    public static void main(String[] args) throws IOException, XmlParseException {
         ZimbraLog.toolSetupLog4jConsole("INFO", true, false);
         //String mappingFile = LC.zimbra_csv_mapping_file.value();
         if (args.length > 0) {

@@ -9,6 +9,7 @@ import com.zimbra.cs.service.FileUploadServlet;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,8 +84,8 @@ public class Collection extends MailItemResource {
     @Override
     public InputStream getContent(DavContext ctxt) throws IOException, DavException {
         if (ctxt.isWebRequest())
-            return new ByteArrayInputStream(getTextContent(ctxt).getBytes("UTF-8"));
-        return new ByteArrayInputStream(getPropertiesAsText(ctxt).getBytes("UTF-8"));
+            return new ByteArrayInputStream(getTextContent(ctxt).getBytes(StandardCharsets.UTF_8));
+        return new ByteArrayInputStream(getPropertiesAsText(ctxt).getBytes(StandardCharsets.UTF_8));
     }
 
     @Override

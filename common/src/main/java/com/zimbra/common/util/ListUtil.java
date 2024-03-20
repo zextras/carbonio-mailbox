@@ -94,7 +94,7 @@ public class ListUtil {
           }
         }
 
-        Iterator<T> iter[] = new Iterator[numSrc];
+        Iterator<T>[] iter = new Iterator[numSrc];
         int iterOffset = 0;
       for (List<T> ts : src) {
         if (ts != null) {
@@ -106,7 +106,7 @@ public class ListUtil {
         int numItersActive = src.length;
 
         // holds the next values of each iterator
-        T nextValue[] = (T[]) new Comparable[src.length];
+        T[] nextValue = (T[]) new Comparable[src.length];
 
         T lowestValue = null;
         int lowestValueOffset = -1;

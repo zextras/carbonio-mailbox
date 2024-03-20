@@ -6,6 +6,7 @@
 package com.zimbra.cs.fb;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -210,17 +211,12 @@ public class ExchangeMessage {
     		String buf = "";
     		LinkedList<Byte> encodedList = fbMap.get(m);
     		if (encodedList.size() > 0) {
-    			try {
-    				byte[] raw = new byte[encodedList.size()];
-    				for (int i = 0; i < encodedList.size(); i++)
-    					raw[i] = encodedList.get(i);
-    		    	byte[] encoded = Base64.encodeBase64(raw);
-    		    	buf = new String(encoded, "UTF-8");
-    			} catch (IOException e) {
-					ZimbraLog.fb.warn("error converting millis to minutes for month "+m, e);
-					continue;
-    			}
-    		}
+          byte[] raw = new byte[encodedList.size()];
+          for (int i = 0; i < encodedList.size(); i++)
+            raw[i] = encodedList.get(i);
+          byte[] encoded = Base64.encodeBase64(raw);
+          buf = new String(encoded, StandardCharsets.UTF_8);
+        }
     		addElement(months, EL_V, Long.toString(m));
     		addElement(events, EL_V, buf);
     	}
@@ -237,7 +233,7 @@ public class ExchangeMessage {
 		Document doc = createRequest(fb);
 		byte[] buf = DomUtil.getBytes(doc);
 		if (ZimbraLog.fb.isDebugEnabled())
-			ZimbraLog.fb.debug(new String(buf, "UTF-8"));
+			ZimbraLog.fb.debug(new String(buf, StandardCharsets.UTF_8));
 		ByteArrayEntity re = new ByteArrayEntity(buf, ContentType.create("text/xml"));
 		method.setEntity(re);
 		return method;

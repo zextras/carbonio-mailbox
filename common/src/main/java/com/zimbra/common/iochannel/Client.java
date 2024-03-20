@@ -13,6 +13,7 @@ import java.nio.channels.NotYetConnectedException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -56,7 +57,7 @@ public class Client implements Runnable {
          * Requests iochannel to send a message to this peer server.
          */
         public void sendMessage(String msg) throws IOException {
-            sendMessage(msg.getBytes("UTF-8"));
+            sendMessage(msg.getBytes(StandardCharsets.UTF_8));
         }
 
         /**

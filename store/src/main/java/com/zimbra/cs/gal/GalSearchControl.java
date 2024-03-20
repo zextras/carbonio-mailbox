@@ -403,7 +403,7 @@ public class GalSearchControl {
       searchQuery.append(" AND (");
       searchQuery.append(" inid:").append(ds.getFolderId());
       searchQuery.append(")");
-      ZimbraLog.gal.debug("query: " + searchQuery.toString());
+      ZimbraLog.gal.debug("query: " + searchQuery);
       mParams.parseSearchParams(mParams.getRequest(), searchQuery.toString());
       return true;
     }

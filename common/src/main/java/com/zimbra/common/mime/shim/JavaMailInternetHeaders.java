@@ -215,8 +215,9 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
             return null;
         }
 
-        byte contents[] = line.getBytes(), b;
-        int colon, start, end, wsp;
+        byte[] contents = line.getBytes();
+      byte b;
+      int colon, start, end, wsp;
         for (colon = 0; colon < contents.length; colon++) {
             if (contents[colon] == ':') {
                 break;

@@ -861,7 +861,7 @@ class ImapFolderSync {
         try {
             connection.uidFetch(getSequence(uidSet), "BODY.PEEK[]", handler);
         } catch (CommandFailedException e) {
-            String msg = "UID FETCH failed: " + e.toString();
+            String msg = "UID FETCH failed: " + e;
             checkCanContinue(msg, e);
             LOG.warn(msg, e);
         }
@@ -1065,7 +1065,7 @@ class ImapFolderSync {
         Collection<DataSourceItem> mappings = tracker.getMappings();
         List<Integer> allIds = mailbox.listItemIds(mailbox.getOperationContext(),
                 MailItem.Type.MESSAGE, tracker.getItemId());
-        Integer sortedIds[] = allIds.toArray(new Integer[0]);
+        Integer[] sortedIds = allIds.toArray(new Integer[0]);
 
         Arrays.sort(sortedIds);
         for (DataSourceItem mapping : mappings) {

@@ -10,8 +10,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface WkDayInterface {
-    public WkDayInterface create(String day);
-    public void setOrdWk(Integer ordWk);
-    public String getDay();
-    public Integer getOrdWk();
+    WkDayInterface create(String day);
+    void setOrdWk(Integer ordWk);
+    String getDay();
+    Integer getOrdWk();
 }

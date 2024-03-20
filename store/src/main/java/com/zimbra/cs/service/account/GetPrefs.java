@@ -71,7 +71,7 @@ public class GetPrefs extends AccountDocumentHandler  {
 
             Object value = entry.getValue();
             if (value instanceof String[]) {
-                String sa[] = (String[]) value;
+                String[] sa = (String[]) value;
                 for (String s : sa)
                     prefs.addKeyValuePair(key, s, AccountConstants.E_PREF, AccountConstants.A_NAME);
             } else {

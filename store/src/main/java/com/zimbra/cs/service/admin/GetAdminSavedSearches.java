@@ -135,7 +135,7 @@ public class GetAdminSavedSearches extends AdminDocumentHandler {
         assert(encoded.equals(encoded2));
     }
     
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         test("name : query");
         test("n a m e : q u e r y");
         test("name\\:\\ : que : ry");

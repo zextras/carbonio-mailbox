@@ -1017,7 +1017,7 @@ public class Message extends MailItem {
               ZimbraLog.calendar.info(
                   "Got malformed invite that lists attendees without specifying an organizer.  "
                       + "Defaulting organizer to: "
-                      + org.toString());
+                      + org);
             } else {
               // For attendee-originated methods, look up organizer from appointment on calendar.
               // If appointment is not found, fall back to the intended-for address, then finally to
@@ -1043,7 +1043,7 @@ public class Message extends MailItem {
               cur.setOrganizer(org);
               cur.setIsOrganizer(status.intendedForMe);
               ZimbraLog.calendar.info(
-                  "Got malformed reply missing organizer.  Defaulting to " + org.toString());
+                  "Got malformed reply missing organizer.  Defaulting to " + org);
             }
           }
         }

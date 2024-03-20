@@ -6,6 +6,7 @@
 package com.zimbra.cs.dav.client;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -177,7 +178,7 @@ public class CalDavClient extends WebDavClient {
         appt.data = null;
         if (resp.getStatusCode() == 200) {
             byte[] res = ByteUtil.getContent(resp, resp.getContentLength());
-            appt.data = new String(res, "UTF-8");
+            appt.data = new String(res, StandardCharsets.UTF_8);
         }
         return appt;
     }
@@ -200,7 +201,7 @@ public class CalDavClient extends WebDavClient {
     }
 
     public String sendCalendarData(Appointment appt) throws IOException, DavException, HttpException {
-        HttpInputStream resp = sendPut(appt.href, appt.data.getBytes("UTF-8"), MimeConstants.CT_TEXT_CALENDAR, appt.etag, null);
+        HttpInputStream resp = sendPut(appt.href, appt.data.getBytes(StandardCharsets.UTF_8), MimeConstants.CT_TEXT_CALENDAR, appt.etag, null);
         String etag = resp.getHeader(DavProtocol.HEADER_ETAG);
         ZimbraLog.dav.debug("ETags: "+appt.etag+", "+etag);
         int status = resp.getStatusCode();

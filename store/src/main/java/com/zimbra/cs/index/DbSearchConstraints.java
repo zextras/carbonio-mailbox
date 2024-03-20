@@ -108,7 +108,7 @@ public interface DbSearchConstraints extends Cloneable {
    * Clone is critical for things to work correctly (exploding constraints into multiple trees if
    * the query goes to many target servers).
    */
-  public Object clone();
+  Object clone();
 
   /**
    * Outputs the constraints tree in a format that is parsable via our QueryParser. This is used
@@ -122,7 +122,7 @@ public interface DbSearchConstraints extends Cloneable {
   /** Casts to {@link Leaf} if it is a {@link Leaf}, or NULL if it is not. */
   Leaf toLeaf();
 
-  public static final class Leaf implements DbSearchConstraints, Cloneable {
+  final class Leaf implements DbSearchConstraints, Cloneable {
 
     @Override
     public boolean isEmpty() {

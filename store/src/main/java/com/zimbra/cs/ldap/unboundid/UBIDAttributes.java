@@ -62,7 +62,7 @@ public class UBIDAttributes extends ZAttributes {
     }
     
     private String[] getMultiAttrStringInternal(Attribute attr, boolean containsBinaryData) {
-        String result[] = new String[attr.size()];
+        String[] result = new String[attr.size()];
         
         if (containsBinaryData) {
             byte[][] bytesArrays = attr.getValueByteArrays();

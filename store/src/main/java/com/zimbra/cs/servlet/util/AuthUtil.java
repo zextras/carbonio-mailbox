@@ -8,6 +8,7 @@ package com.zimbra.cs.servlet.util;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -206,7 +207,7 @@ public class AuthUtil {
         }
 
         // 6 comes from "Basic ".length();
-        String userPass = new String(Base64.decodeBase64(auth.substring(6).getBytes()), "UTF-8");
+        String userPass = new String(Base64.decodeBase64(auth.substring(6).getBytes()), StandardCharsets.UTF_8);
 
         int loc = userPass.indexOf(":");
         if (loc == -1) {

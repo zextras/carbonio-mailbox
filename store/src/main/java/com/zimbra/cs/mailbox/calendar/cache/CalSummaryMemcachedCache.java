@@ -20,6 +20,7 @@ import com.zimbra.cs.session.PendingLocalModifications;
 import com.zimbra.cs.session.PendingModifications.Change;
 import com.zimbra.cs.session.PendingModifications.ModificationKey;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,24 +43,14 @@ public class CalSummaryMemcachedCache {
 
     @Override
     public byte[] serialize(CalendarData value) {
-      try {
-        return value.encodeMetadata().toString().getBytes("utf-8");
-      } catch (UnsupportedEncodingException e) {
-        ZimbraLog.calendar.warn("Unable to serialize data for calendar summary cache", e);
-        return null;
-      }
+      return value.encodeMetadata().toString().getBytes(StandardCharsets.UTF_8);
     }
 
     @Override
     public CalendarData deserialize(byte[] bytes) throws ServiceException {
       if (bytes != null) {
         String encoded;
-        try {
-          encoded = new String(bytes, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-          ZimbraLog.calendar.warn("Unable to deserialize data for calendar summary cache", e);
-          return null;
-        }
+        encoded = new String(bytes, StandardCharsets.UTF_8);
         Metadata meta = new Metadata(encoded);
         return new CalendarData(meta);
       } else {

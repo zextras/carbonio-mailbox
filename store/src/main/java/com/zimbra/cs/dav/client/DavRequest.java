@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import org.apache.http.Header;
@@ -113,7 +114,7 @@ public class DavRequest {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             XMLWriter writer = new XMLWriter(out, format);
             writer.write(mDoc);
-            return out.toString("UTF-8");
+            return out.toString(StandardCharsets.UTF_8);
         }
         return "";
     }

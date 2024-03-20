@@ -861,12 +861,12 @@ public final class FilterUtil {
         // (1) Resolve the Matched Variables (numeric variables; "${N}" (N=0,1,...9)
         int i = 0;
         for (; i < matchedVariables.size() && i < 10; i++) {
-            String keyName = "(?i)" + "\\$\\{0*" + String.valueOf(i) + "\\}";
+            String keyName = "(?i)" + "\\$\\{0*" + i + "\\}";
             resultStr = resultStr.replaceAll(keyName, Matcher.quoteReplacement(matchedVariables.get(i)));
         }
         // (2) Replace the empty string to Matched Variables whose index is out of range
         for (; i < 10; i++) {
-            String keyName = "(?i)" + "\\$\\{0*" + String.valueOf(i) + "\\}";
+            String keyName = "(?i)" + "\\$\\{0*" + i + "\\}";
             resultStr = resultStr.replaceAll(keyName, Matcher.quoteReplacement(""));
         }
 

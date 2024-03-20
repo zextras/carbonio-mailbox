@@ -194,11 +194,11 @@ public class GetShareInfo extends AccountDocumentHandler {
     return (granteeType == null) ? 0 : ACL.stringToType(granteeType);
   }
 
-  public static interface ResultFilter {
+  public interface ResultFilter {
     /*
      * return true if filtered in, false if filtered out
      */
-    public boolean check(ShareInfoData sid);
+    boolean check(ShareInfoData sid);
   }
 
   public static class ResultFilterByTarget implements ResultFilter {

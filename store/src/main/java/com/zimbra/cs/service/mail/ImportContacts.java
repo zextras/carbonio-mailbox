@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -126,7 +127,7 @@ public class ImportContacts extends MailDocumentHandler  {
 
         uploads.add(up);
         try {
-            return new BufferedReader(new InputStreamReader(up.getInputStream(), "UTF-8"));
+            return new BufferedReader(new InputStreamReader(up.getInputStream(), StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw ServiceException.FAILURE(e.getMessage(), e);
         }

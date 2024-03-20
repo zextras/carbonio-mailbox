@@ -74,12 +74,12 @@ public class AccountCache implements IAccountCache {
             mNameCache.remove(entry.getName());
             mIdCache.remove(entry.getId());
 
-            String aliases[] = entry.getMultiAttr(Provisioning.A_zimbraMailAlias);
+            String[] aliases = entry.getMultiAttr(Provisioning.A_zimbraMailAlias);
             for (String alias : aliases) {
                 mAliasCache.remove(alias);
             }
 
-            String fps[] = entry.getMultiAttr(Provisioning.A_zimbraForeignPrincipal);
+            String[] fps = entry.getMultiAttr(Provisioning.A_zimbraForeignPrincipal);
             for (String fp : fps) {
                 mForeignPrincipalCache.remove(fp);
             }
@@ -94,12 +94,12 @@ public class AccountCache implements IAccountCache {
             mNameCache.put(entry.getName(), cacheEntry);
             mIdCache.put(entry.getId(), cacheEntry);
 
-            String aliases[] = entry.getMultiAttr(Provisioning.A_zimbraMailAlias);
+            String[] aliases = entry.getMultiAttr(Provisioning.A_zimbraMailAlias);
             for (String alias : aliases) {
                 mAliasCache.put(alias, cacheEntry);
             }
 
-            String fps[] = entry.getMultiAttr(Provisioning.A_zimbraForeignPrincipal);
+            String[] fps = entry.getMultiAttr(Provisioning.A_zimbraForeignPrincipal);
             for (String fp : fps) {
                 mForeignPrincipalCache.put(fp, cacheEntry);
             }

@@ -77,7 +77,7 @@ public class StatsImageServlet extends ZimbraServlet {
     	
         String noDefaultImg = req.getParameter("nodef");
         boolean noDefault = false;
-        if (noDefaultImg != null && noDefaultImg.equals("1")){
+        if ("1".equals(noDefaultImg)){
             noDefault = true;
         }
         String reqPath = req.getRequestURI(); 
@@ -141,7 +141,7 @@ public class StatsImageServlet extends ZimbraServlet {
 	        if (mLog.isDebugEnabled())
 	            mLog.debug("received request to:("+reqPath+")");
 
-	        String reqParts[] = reqPath.split("/");
+	        String[] reqParts = reqPath.split("/");
 	
 	        String reqFilename = reqParts[3];
 	        imgName = LC.stats_img_folder.value() + File.separator + reqFilename;        	

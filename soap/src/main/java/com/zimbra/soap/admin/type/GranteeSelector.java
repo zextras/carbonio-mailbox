@@ -20,7 +20,7 @@ import com.zimbra.soap.type.ZmBoolean;
 public class GranteeSelector {
 
     @XmlEnum
-    public static enum GranteeBy {
+    public enum GranteeBy {
         // case must match protocol
         id, name;
 

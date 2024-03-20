@@ -11,11 +11,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @XmlAccessorType(XmlAccessType.NONE)
 public interface CalendarReplyInterface
 extends RecurIdInfoInterface {
-    public void setSentBy(String sentBy);
-    public void setPartStat(String partStat);
-    public int getSeq();
-    public long getDate();
-    public String getAttendee();
-    public String getSentBy();
-    public String getPartStat();
+    void setSentBy(String sentBy);
+    void setPartStat(String partStat);
+    int getSeq();
+    long getDate();
+    String getAttendee();
+    String getSentBy();
+    String getPartStat();
 }

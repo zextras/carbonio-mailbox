@@ -253,7 +253,7 @@ public class MySQL extends Db {
     }
 
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         // command line argument parsing
         Options options = new Options();
         CommandLine cl = Versions.parseCmdlineArgs(args, options);

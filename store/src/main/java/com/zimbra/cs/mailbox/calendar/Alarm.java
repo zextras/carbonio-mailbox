@@ -38,7 +38,7 @@ import com.zimbra.soap.mail.type.DurationInfo;
  */
 public class Alarm {
 
-    public static enum Action {
+    public enum Action {
         DISPLAY, AUDIO, EMAIL, PROCEDURE, NONE,
         // Yahoo calendar reminder custom actions
         X_YAHOO_CALENDAR_ACTION_IM, X_YAHOO_CALENDAR_ACTION_MOBILE;
@@ -57,8 +57,9 @@ public class Alarm {
         public String toString() {
             return super.toString().replace('_', '-');
         }
-    };
-    public static enum TriggerType {
+    }
+
+    public enum TriggerType {
         RELATIVE, ABSOLUTE;
 
         public static TriggerType lookup(String str) {
@@ -70,9 +71,9 @@ public class Alarm {
             }
             return null;
         }
-    };
+    }
 
-    public static enum TriggerRelated {
+    public enum TriggerRelated {
         START, END;
 
         public static TriggerRelated lookup(String str) {
@@ -84,7 +85,7 @@ public class Alarm {
             }
             return null;
         }
-    };
+    }
 
     // ACTION
     private final Action mAction;
@@ -200,7 +201,7 @@ public class Alarm {
         sb.append(", summary=\"").append(mSummary).append("\"");
         sb.append(", desc=\"").append(mDescription).append("\"");
         if (mAttach != null)
-            sb.append(", attach=").append(mAttach.toString());
+            sb.append(", attach=").append(mAttach);
         if (mAttendees != null) {
             sb.append(", attendees=[");
             boolean first = true;
@@ -334,7 +335,7 @@ public class Alarm {
 
     public static boolean actionAllowed(Action action) {
         if (Action.PROCEDURE.equals(action) && !DebugConfig.calendarAllowProcedureAlarms) {
-            ZimbraLog.calendar.warn("Action " + action.toString() + " is not allowed; ignoring alarm");
+            ZimbraLog.calendar.warn("Action " + action + " is not allowed; ignoring alarm");
             return false;
         } else {
             return true;

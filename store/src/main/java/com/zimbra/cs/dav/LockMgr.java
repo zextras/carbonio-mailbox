@@ -136,7 +136,7 @@ public class LockMgr {
 		if (l != null)
 			return l;
 		l = new Lock(type, scope, depth, owner);
-		l.token = sTOKEN_PREFIX + UUID.randomUUID().toString();
+		l.token = sTOKEN_PREFIX + UUID.randomUUID();
 
 		List<String> locks = mLockedResources.get(path);
 		if (locks == null) {

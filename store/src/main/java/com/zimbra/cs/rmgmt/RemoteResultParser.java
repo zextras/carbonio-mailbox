@@ -26,7 +26,7 @@ import com.zimbra.cs.rmgmt.RemoteMailQueue.QueueAttr;
 public class RemoteResultParser {
     
     public interface Visitor {
-        public void handle(int lineNo, Map<String, String> map) throws IOException;
+        void handle(int lineNo, Map<String, String> map) throws IOException;
     }
     
     private static final Pattern KEY_VALUE_PATTERN = Pattern.compile("^([^=]+)=(.*)$");

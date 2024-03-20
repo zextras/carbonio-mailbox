@@ -1064,7 +1064,7 @@ public final class SearchParams implements Cloneable, ZimbraSearchParams {
 
     private final ZimbraFetchMode zfm;
 
-    private Fetch(ZimbraFetchMode zimbraFetchMode) {
+    Fetch(ZimbraFetchMode zimbraFetchMode) {
       zfm = zimbraFetchMode;
     }
 

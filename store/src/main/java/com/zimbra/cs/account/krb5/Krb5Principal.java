@@ -72,7 +72,7 @@ public class Krb5Principal {
      
      public static String getKrb5Principal(Domain domain, Account acct) {
          String principal = null;
-         String fps[] = acct.getMultiAttr(Provisioning.A_zimbraForeignPrincipal);
+         String[] fps = acct.getMultiAttr(Provisioning.A_zimbraForeignPrincipal);
          if (fps != null && fps.length > 0) {
              for (String fp : fps) {
                  if (fp.startsWith(Provisioning.FP_PREFIX_KERBEROS5)) {

@@ -341,7 +341,7 @@ public class GalSearchConfig {
 	}
 
     public static String getFilterDef(String name) throws ServiceException {
-        String queryExprs[] = Provisioning.getInstance().getConfig().getMultiAttr(Provisioning.A_zimbraGalLdapFilterDef);
+        String[] queryExprs = Provisioning.getInstance().getConfig().getMultiAttr(Provisioning.A_zimbraGalLdapFilterDef);
         String fname = name+":";
         String queryExpr = null;
       for (String expr : queryExprs) {

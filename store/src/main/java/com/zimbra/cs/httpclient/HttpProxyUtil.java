@@ -33,7 +33,7 @@ public class HttpProxyUtil {
             if (url == null) return;
 
             // need to initializae all the statics
-            if (sProxyUrl == null || !sProxyUrl.equals(url)) {
+            if (!url.equals(sProxyUrl)) {
                 sProxyUrl = url;
                 sProxyUri = new URI(url);
                 sProxyAuthScope = null;

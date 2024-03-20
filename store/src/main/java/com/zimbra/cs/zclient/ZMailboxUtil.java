@@ -90,6 +90,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -261,7 +262,7 @@ public class ZMailboxUtil implements DebugListener {
     System.exit(1);
   }
 
-  public static enum Category {
+  public enum Category {
     ADMIN("help on admin-related commands"),
     ACCOUNT("help on account-related commands"),
     APPOINTMENT(
@@ -1147,7 +1148,7 @@ public class ZMailboxUtil implements DebugListener {
       return mSyntax != null;
     }
 
-    public boolean checkArgsLength(String args[]) {
+    public boolean checkArgsLength(String[] args) {
       int len = args == null ? 0 : args.length;
       return len >= mMinArgLength && len <= mMaxArgLength;
     }
@@ -1206,7 +1207,7 @@ public class ZMailboxUtil implements DebugListener {
       return sb.toString();
     }
 
-    private Command(
+    Command(
         String name,
         String alias,
         String syntax,
@@ -1705,13 +1706,13 @@ public class ZMailboxUtil implements DebugListener {
   enum ExecuteStatus {
     OK,
     EXIT
-  };
+  }
 
-  public ExecuteStatus execute(String argsIn[]) throws ServiceException, IOException {
+  public ExecuteStatus execute(String[] argsIn) throws ServiceException, IOException {
     mCommand = lookupCommand(argsIn[0]);
 
     // shift them over for parser
-    String args[] = new String[argsIn.length - 1];
+    String[] args = new String[argsIn.length - 1];
     System.arraycopy(argsIn, 1, args, 0, args.length);
 
     if (mCommand == null)
@@ -2129,7 +2130,7 @@ public class ZMailboxUtil implements DebugListener {
       }
   */
 
-  private void doGetAppointmentSummaries(String args[]) throws ServiceException {
+  private void doGetAppointmentSummaries(String[] args) throws ServiceException {
     long startTime = DateUtil.parseDateSpecifier(args[0], new Date().getTime());
     long endTime =
         DateUtil.parseDateSpecifier(args[1], (new Date().getTime()) + Constants.MILLIS_PER_WEEK);
@@ -2324,7 +2325,7 @@ public class ZMailboxUtil implements DebugListener {
         if (sb.length() > 0) sb.append(",\n");
         sb.append(g.dump());
       }
-      stdout.format("[%n%s%n]%n", sb.toString());
+      stdout.format("[%n%s%n]%n", sb);
     } else {
       String format = "%11.11s  %8.8s  %s%n";
       stdout.format(format, "Permissions", "Type", "Display");
@@ -2464,7 +2465,7 @@ public class ZMailboxUtil implements DebugListener {
         if (sb.length() > 0) sb.append(",\n");
         sb.append(g.dump());
       }
-      stdout.format("[%n%s%n]%n", sb.toString());
+      stdout.format("[%n%s%n]%n", sb);
     } else {
       String format = "%16.16s  %8.8s  %s%n";
       stdout.format(format, "Right", "Type", "Display");
@@ -2644,13 +2645,8 @@ public class ZMailboxUtil implements DebugListener {
   private static Session mSession;
 
   static {
-    try {
-      stdout = new PrintWriter(new OutputStreamWriter(System.out, "UTF-8"), true);
-      stderr = new PrintWriter(new OutputStreamWriter(System.err, "UTF-8"), true);
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
-      System.exit(1);
-    }
+    stdout = new PrintWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8), true);
+    stderr = new PrintWriter(new OutputStreamWriter(System.err, StandardCharsets.UTF_8), true);
     Properties props = new Properties();
     props.setProperty("mail.mime.address.strict", "false");
     mSession = Session.getInstance(props);
@@ -2722,7 +2718,7 @@ public class ZMailboxUtil implements DebugListener {
     return sb.toString();
   }
 
-  private void doCreateFolder(String args[]) throws ServiceException {
+  private void doCreateFolder(String[] args) throws ServiceException {
     ZFolder cf =
         mMbox.createFolder(
             lookupFolderId(args[0], true),
@@ -2734,18 +2730,18 @@ public class ZMailboxUtil implements DebugListener {
     stdout.println(cf.getId());
   }
 
-  private void doCreateSignature(String args[]) throws ServiceException {
+  private void doCreateSignature(String[] args) throws ServiceException {
     ZSignature sig = new ZSignature(args[0], args[1]);
     stdout.println(mMbox.createSignature(sig));
   }
 
-  private void doModifySignature(String args[]) throws ServiceException {
+  private void doModifySignature(String[] args) throws ServiceException {
     ZSignature sig = lookupSignature(args[0]);
     ZSignature modSig = new ZSignature(sig.getId(), sig.getName(), args[1]);
     mMbox.modifySignature(modSig);
   }
 
-  private void doRenameSignature(String args[]) throws ServiceException {
+  private void doRenameSignature(String[] args) throws ServiceException {
     ZSignature sig = lookupSignature(args[0]);
     ZSignature modSig = new ZSignature(sig.getId(), args[1], sig.getValue());
     mMbox.modifySignature(modSig);
@@ -2772,7 +2768,7 @@ public class ZMailboxUtil implements DebugListener {
     }
   }
 
-  private void doCreateSearchFolder(String args[]) throws ServiceException {
+  private void doCreateSearchFolder(String[] args) throws ServiceException {
     ZSearchFolder csf =
         mMbox.createSearchFolder(
             lookupFolderId(args[0], true),
@@ -2784,7 +2780,7 @@ public class ZMailboxUtil implements DebugListener {
     stdout.println(csf.getId());
   }
 
-  private void doCreateMountpoint(String args[]) throws ServiceException {
+  private void doCreateMountpoint(String[] args) throws ServiceException {
     String cmPath = args[0];
     String cmOwner = args[1];
     String cmItem = args[2];
@@ -2823,7 +2819,7 @@ public class ZMailboxUtil implements DebugListener {
     stdout.println(cm.getId());
   }
 
-  private void doEnableSharedReminder(String args[]) throws ServiceException {}
+  private void doEnableSharedReminder(String[] args) throws ServiceException {}
 
   private void doSearch(String[] args) throws ServiceException {
 
@@ -3127,7 +3123,7 @@ public class ZMailboxUtil implements DebugListener {
         if (sb.length() > 0) sb.append(",\n");
         sb.append(tag.dump());
       }
-      stdout.format("[%n%s%n]%n", sb.toString());
+      stdout.format("[%n%s%n]%n", sb);
     } else {
       if (mMbox.getAllTagNames().size() == 0) return;
       String hdrFormat = "%10.10s  %10.10s  %10.10s  %s%n";
@@ -3545,7 +3541,7 @@ public class ZMailboxUtil implements DebugListener {
       if (mGlobalVerbose) {
         stdout.println(line);
       }
-      String args[] = StringUtil.parseLine(line);
+      String[] args = StringUtil.parseLine(line);
       if (args.length == 0) continue;
       try {
         switch (execute(args)) {
@@ -3569,7 +3565,7 @@ public class ZMailboxUtil implements DebugListener {
     }
   }
 
-  public static void main(String args[]) throws IOException, ServiceException {
+  public static void main(String[] args) throws IOException, ServiceException {
     CliUtil.toolSetup();
     SoapTransport.setDefaultUserAgent("zmmailbox", BuildInfo.VERSION);
 
@@ -3704,7 +3700,7 @@ public class ZMailboxUtil implements DebugListener {
           }
           is = System.in; // This has to happen last because JLine modifies System.in.
         }
-        pu.interactive(new BufferedReader(new InputStreamReader(is, "UTF-8")));
+        pu.interactive(new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8)));
       } else {
         pu.execute(args);
       }
@@ -3790,7 +3786,7 @@ public class ZMailboxUtil implements DebugListener {
       unencoded = unencoded.substring(0, queryStringStart);
     }
     StringBuilder encoded = new StringBuilder();
-    String parts[] = unencoded.split("/");
+    String[] parts = unencoded.split("/");
     if (parts != null) {
       for (int i = 0; i < parts.length; i++) {
         parts[i] = HttpUtil.encodePath(parts[i]);
@@ -3812,7 +3808,7 @@ public class ZMailboxUtil implements DebugListener {
     return encoded.toString();
   }
 
-  private void doGetRestURL(String args[]) throws ServiceException {
+  private void doGetRestURL(String[] args) throws ServiceException {
     OutputStream os = null;
     String outputFile = outputFileOpt();
     boolean hasOutputFile = outputFile != null;
@@ -3838,7 +3834,7 @@ public class ZMailboxUtil implements DebugListener {
     }
   }
 
-  private void doPostRestURL(String args[]) throws ServiceException {
+  private void doPostRestURL(String[] args) throws ServiceException {
     try {
       File file = new File(args[1]);
       mMbox.postRESTResource(

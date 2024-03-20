@@ -78,7 +78,7 @@ public class GetDomain extends AdminDocumentHandler {
         Map attrs = d.getUnicodeAttrs(applyConfig);
         Object value = attrs.get(Provisioning.A_zimbraAuthLdapURL);
 		if (value instanceof String[]) {
-			String sv[] = (String[]) value;
+			String[] sv = (String[]) value;
 			String joinedValue = String.join(" ", sv);
 			attrs.put(Provisioning.A_zimbraAuthLdapURL, joinedValue);
 		}

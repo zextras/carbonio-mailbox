@@ -307,11 +307,11 @@ public final class DbUtil {
         }
     }
 
-    private static String[] addScript(String s1[], String s2[]) {
+    private static String[] addScript(String[] s1, String[] s2) {
         if (s1 == null)
             return s2;
 
-        String temp[] = new String[s1.length + s2.length];
+        String[] temp = new String[s1.length + s2.length];
 
         System.arraycopy(s1, 0, temp, 0, s1.length);
         System.arraycopy(s2, 0, temp, s1.length, s2.length);
@@ -326,7 +326,7 @@ public final class DbUtil {
         StringBuilder buf = new StringBuilder();
         BufferedReader br = new BufferedReader(scriptReader);
         String line;
-        String ret[] = null;
+        String[] ret = null;
 
         while ((line = br.readLine()) != null) {
             line = removeComments(line);

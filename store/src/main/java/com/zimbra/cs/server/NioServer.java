@@ -318,9 +318,9 @@ public abstract class NioServer implements Server {
                 out.write(buf);
             }
         }
-    };
+    }
 
-    /**
+  /**
      * Returns the number of connections currently established.
      */
     protected int getNumConnections() {

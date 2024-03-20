@@ -53,7 +53,7 @@ public class LdapGalSearch {
             String token,
             GalContact.Visitor visitor) throws ServiceException {
 
-        String url[] = galParams.url();
+        String[] url = galParams.url();
         String base = galParams.searchBase();
         String filter = galParams.filter();
 
@@ -357,7 +357,7 @@ public class LdapGalSearch {
             }
         }
 
-        String reqAttrs[] = rules.getLdapAttrs();
+        String[] reqAttrs = rules.getLdapAttrs();
 
         if (ZimbraLog.gal.isDebugEnabled()) {
             StringBuffer returnAttrs = new StringBuffer();
@@ -401,7 +401,7 @@ public class LdapGalSearch {
             if (GalOp.sync != op || ((GalOp.sync == op) && !result.getHadMore())) {
                 boolean gotNewToken = true;
                 String newToken = result.getToken();
-                if (newToken == null || (token != null && token.equals(newToken)) || newToken.equals(LdapConstants.EARLIEST_SYNC_TOKEN))
+                if (newToken == null || (newToken.equals(token)) || newToken.equals(LdapConstants.EARLIEST_SYNC_TOKEN))
                     gotNewToken = false;
 
                 if (gotNewToken) {
@@ -440,7 +440,7 @@ public class LdapGalSearch {
             LdapGalMapRules rules,
             SearchGalResult result) throws ServiceException {
 
-        String reqAttrs[] = rules.getLdapAttrs();
+        String[] reqAttrs = rules.getLdapAttrs();
 
         if (ZimbraLog.gal.isDebugEnabled()) {
             StringBuffer returnAttrs = new StringBuffer();

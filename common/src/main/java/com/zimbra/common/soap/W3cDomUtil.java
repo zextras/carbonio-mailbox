@@ -97,9 +97,9 @@ public class W3cDomUtil {
             ZimbraLog.misc.error("Problem setting up SAXParser", e);
             throw XmlParseException.PARSE_ERROR();
         }
-    };
+    }
 
-    public static SAXParserFactory makeSAXParserFactory() throws XmlParseException {
+  public static SAXParserFactory makeSAXParserFactory() throws XmlParseException {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
         factory.setXIncludeAware(false);

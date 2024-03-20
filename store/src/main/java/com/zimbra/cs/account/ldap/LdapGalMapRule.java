@@ -137,7 +137,7 @@ public class LdapGalMapRule {
         int index = 0; // index into mContactAttrs
         for (String ldapAttr: mLdapAttrs) {
             if (index >= mContactAttrs.length) return;
-            String val[];
+            String[] val;
             try { 
                 val = ldapAttrs.getMultiAttrString(ldapAttr, containsBinaryData(), isBinaryTransfer()); 
             } catch (ServiceException e) { 

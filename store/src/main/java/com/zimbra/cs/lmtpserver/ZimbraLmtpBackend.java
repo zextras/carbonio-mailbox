@@ -519,7 +519,7 @@ public class ZimbraLmtpBackend implements LmtpBackend {
       if (ZimbraLog.lmtp.isInfoEnabled()) {
         ZimbraLog.lmtp.info(
             "Delivering message: size=%s, nrcpts=%d, sender=%s, msgid=%s",
-            env.getSize() == 0 ? "unspecified" : Integer.toString(env.getSize()) + " bytes",
+            env.getSize() == 0 ? "unspecified" : env.getSize() + " bytes",
             recipients.size(),
             env.getSender(),
             msgId == null ? "" : msgId);

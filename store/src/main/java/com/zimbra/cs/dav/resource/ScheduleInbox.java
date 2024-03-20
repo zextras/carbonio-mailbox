@@ -47,7 +47,7 @@ public class ScheduleInbox extends CalendarCollection {
     addProperty(CalDavProperty.getCalendarFreeBusySet(user, getCalendarFolders(ctxt, f.getId())));
   }
 
-  private QName supportedInboxReports[] = null;
+  private QName[] supportedInboxReports = null;
 
   @Override
   protected QName[] getSupportedReports() {

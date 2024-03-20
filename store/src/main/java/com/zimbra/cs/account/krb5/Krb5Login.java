@@ -300,7 +300,7 @@ public class Krb5Login {
         }
     }
 
-    public static void main(String arsg[]) throws LoginException {
+    public static void main(String[] arsg) throws LoginException {
         // verifyPassword("user1@MACPRO.LOCAL", "test123");
         testPerformAs();
         

@@ -131,8 +131,9 @@ public class CopyItem extends RedoableOp {
         int mboxId = getMailboxId();
         Mailbox mbox = MailboxManager.getInstance().getMailboxById(mboxId);
 
-        int i = 0, itemIds[] = new int[mDestIds.size()];
-        for (int id : mDestIds.keySet()) {
+        int i = 0;
+      int[] itemIds = new int[mDestIds.size()];
+      for (int id : mDestIds.keySet()) {
             itemIds[i++] = id;
         }
         try {

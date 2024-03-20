@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 import com.zimbra.common.util.Log;
@@ -64,7 +65,7 @@ public abstract class Message {
      * the Message.
      */
     public interface MessageHandler {
-        public void handle(Message m, String clientId);
+        void handle(Message m, String clientId);
     }
 
     private static final HashMap<String,Message> messages = new HashMap<>();
@@ -84,7 +85,7 @@ public abstract class Message {
         int len = buffer.getInt();
         byte[] appId = new byte[len];
         buffer.get(appId);
-        String appIdStr = new String(appId, "UTF-8");
+        String appIdStr = new String(appId, StandardCharsets.UTF_8);
         Message m = messages.get(appIdStr);
         if (m != null) {
             return m.construct(buffer);
@@ -110,7 +111,7 @@ public abstract class Message {
     }
 
     protected Message(Charset c) {
-        charset = c != null ? c : Charset.forName("UTF-8");
+        charset = c != null ? c : StandardCharsets.UTF_8;
     }
 
     protected ByteBuffer encode(String str) throws IOException {

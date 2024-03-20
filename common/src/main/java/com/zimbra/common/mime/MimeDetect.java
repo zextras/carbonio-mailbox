@@ -57,7 +57,7 @@ public class MimeDetect {
         
         Glob(String regex, int priority) throws IOException {
             StringBuffer buf = new StringBuffer();
-            char chars[] = regex.toCharArray();
+            char[] chars = regex.toCharArray();
 
             literal = true;
             this.priority = priority;
@@ -116,13 +116,13 @@ public class MimeDetect {
     private class Magic implements Comparable<Magic> {
         public class Rule {
             public int indent;
-            public byte mask[];
+            public byte[] mask;
             public int offset;
             public int range;
-            public byte value[];
+            public byte[] value;
             public int word;
             
-            public Rule(int indent, int offset, byte value[], byte mask[],
+            public Rule(int indent, int offset, byte[] value, byte[] mask,
                 int word, int range) {
                 this.indent = indent;
                 this.offset = offset;
@@ -136,7 +136,7 @@ public class MimeDetect {
                 this.range = range;
             }
 
-            public boolean detect(byte data[], int limit) {
+            public boolean detect(byte[] data, int limit) {
                 if (limit == -1 || limit > data.length)
                     limit = data.length;
                 loop:
@@ -153,7 +153,7 @@ public class MimeDetect {
 
             public boolean detect(RandomAccessFile raf, int limit) {
                 try {
-                    byte buf[];
+                    byte[] buf;
                     long maxpos = raf.length();
                     
                     if (limit < 0 || limit < maxpos)
@@ -190,7 +190,7 @@ public class MimeDetect {
                 throw new IOException("invalid magic section");
 
             Rule rule;
-            String tokens[] = line.substring(line.charAt(0) == '[' ? 1 : 0,
+            String[] tokens = line.substring(line.charAt(0) == '[' ? 1 : 0,
                 line.length() - 1).split(":");
             
             if (tokens.length != 2)
@@ -213,11 +213,11 @@ public class MimeDetect {
             int c = is.read(), c2;
             int indent = 0;
             int length;
-            byte mask[] = null;
+            byte[] mask = null;
             int offset;
             int range = 1;
             StringBuffer sb = new StringBuffer();
-            byte value[];
+            byte[] value;
             int word = 1;
 
             if (c == '[' || c == -1) {
@@ -281,9 +281,9 @@ public class MimeDetect {
         return null;
     }
 
-    public String detect(byte data[]) { return detect(null, data, data.length); }
+    public String detect(byte[] data) { return detect(null, data, data.length); }
     
-    public String detect(byte data[], int limit) {
+    public String detect(byte[] data, int limit) {
         for (Map.Entry<Magic, String> entry : magics.entrySet()) {
             boolean found = true;
             int indent = 0;
@@ -300,11 +300,11 @@ public class MimeDetect {
         return null;
     }
     
-    public String detect(String file, byte data[]) {
+    public String detect(String file, byte[] data) {
         return detect(file, data, data.length);
     }
     
-    public String detect(String file, byte data[], int limit) {
+    public String detect(String file, byte[] data, int limit) {
         String ct = detect(file);
         
         if (ct != null)
@@ -369,7 +369,7 @@ public class MimeDetect {
         return detect(ByteUtil.getPartialContent(is, limit, limit), limit);
     }
 
-    public String validate(String file, byte data[], int limit) {
+    public String validate(String file, byte[] data, int limit) {
         return validate(detect(file), detect(data, limit));
     }
     
@@ -420,7 +420,7 @@ public class MimeDetect {
             
             while ((line = readLine(is)) != null) {
                 if (!line.startsWith("#")) {
-                    String tokens[] = line.split(":");
+                    String[] tokens = line.split(":");
                     
                     if (tokens.length == 2)
                         globs.put(new Glob(tokens[1]), tokens[0]);
@@ -455,7 +455,7 @@ public class MimeDetect {
             }
             String line = readLine(is);
             
-            if (line == null || !line.equals(MAGIC_MAGIC)) {
+            if (!MAGIC_MAGIC.equals(line)) {
                 ZimbraLog.system.warn("invalid magic file %s", file);
                 continue;
             }

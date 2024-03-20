@@ -43,7 +43,7 @@ public class ImapCredentials implements java.io.Serializable {
    * logging into the IMAP server; for instance, the Windows Mobile 5 hack is enabled via the suffix
    * "/wm".
    */
-  static enum EnabledHack {
+  enum EnabledHack {
     NONE,
     WM5("/wm"),
     THUNDERBIRD("/tb"),

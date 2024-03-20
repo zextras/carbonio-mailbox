@@ -83,7 +83,7 @@ public class PreAuthKey {
 
     }
     
-    public static void main(String args[]) throws ServiceException {
+    public static void main(String[] args) throws ServiceException {
         long now = System.currentTimeMillis();
         HashMap<String,String> params = new HashMap<>();
         params.put("account", "user1");

@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
+import java.nio.charset.StandardCharsets;
 import javax.mail.util.SharedByteArrayInputStream;
 
 import com.zimbra.common.zmime.ZSharedFileInputStream;
@@ -113,7 +114,7 @@ public final class Literal extends ImapData {
             return String.format("[literal %d bytes]", size);
         }
         try {
-            return new String(getBytes(), "UTF-8");
+            return new String(getBytes(), StandardCharsets.UTF_8);
         } catch (UnsupportedEncodingException e) {
             throw new InternalError("UTF-8 charset not found");
         } catch (IOException e) {

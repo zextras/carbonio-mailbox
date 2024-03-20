@@ -27,7 +27,7 @@ import com.zimbra.cs.mailbox.Contact;
 public class GalContact implements Comparable {
     
     public interface Visitor  {
-        public void visit(GalContact gc) throws ServiceException;
+        void visit(GalContact gc) throws ServiceException;
     }
    
     private GalType mGalType;

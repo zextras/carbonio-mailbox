@@ -101,7 +101,7 @@ public enum MailboxOperation {
     SetWebOfflineSyncDays(92),
     DeleteConfig(93);
 
-    private MailboxOperation(int c) {
+    MailboxOperation(int c) {
         code = c;
     }
 

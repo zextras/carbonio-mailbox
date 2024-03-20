@@ -188,9 +188,9 @@ class PermCacheManager {
         
         private long resetAt;
         
-        private final LruMap<String, byte[]> credentialToPermissionMap;;
-        
-        private PermCache() {
+        private final LruMap<String, byte[]> credentialToPermissionMap;
+
+      private PermCache() {
             credentialToPermissionMap = MapUtil.newLruMap(ACL_CACHE_CREDENTIAL_MAXSIZE);
             reset();
         }

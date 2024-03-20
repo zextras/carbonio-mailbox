@@ -342,7 +342,7 @@ public class DefangFilter extends DefaultFilter {
       return;
     }
     set = new HashSet<>();
-    String attrs[] = attributes.toLowerCase().split(",");
+    String[] attrs = attributes.toLowerCase().split(",");
     if (attrs != null && attrs.length > 0) {
       for (String attr : attrs) {
         // deal with consecutive commas
@@ -867,7 +867,7 @@ public class DefangFilter extends DefaultFilter {
    */
   @VisibleForTesting
   String extractAndSanitizeAsciiData(String data) {
-    char c[] = data.toCharArray();
+    char[] c = data.toCharArray();
     StringBuilder sanitizedStrg = new StringBuilder();
     StringBuilder asciiData = new StringBuilder();
     for (char value : c) {

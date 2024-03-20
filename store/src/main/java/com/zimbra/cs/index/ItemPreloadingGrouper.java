@@ -70,7 +70,7 @@ final class ItemPreloadingGrouper extends BufferingResultsGrouper {
     }
 
     private void preload(Mailbox mbox, List<ZimbraHit> hits) throws ServiceException {
-        int unloadedIds[] = new int[hits.size()];
+        int[] unloadedIds = new int[hits.size()];
         int numToLoad = 0;
         for (int i = 0; i < hits.size(); i++) {
             ZimbraHit cur = hits.get(i);

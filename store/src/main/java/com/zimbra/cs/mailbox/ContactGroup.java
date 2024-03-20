@@ -325,7 +325,7 @@ public class ContactGroup {
         }
         
         // type encoded/stored in metadata - do not change the encoded value
-        public static enum Type {
+        public enum Type {
             CONTACT_REF("C", ContactConstants.GROUP_MEMBER_TYPE_CONTACT_REF, "memberC"),  // ContactRefMember
             GAL_REF("G", ContactConstants.GROUP_MEMBER_TYPE_GAL_REF, "memberG"),          // ContactRefMember
             INLINE("I", ContactConstants.GROUP_MEMBER_TYPE_INLINE, "memberI");            // InlineMember
@@ -561,7 +561,7 @@ public class ContactGroup {
         }
         
         private List<String> genDerefedEmailAddrs(Account ownerAcct, Contact contact) {
-            String emailFields[] = Contact.getEmailFields(ownerAcct);
+            String[] emailFields = Contact.getEmailFields(ownerAcct);
             Map<String, String> fieldMap = contact.getAllFields(); 
             
             List<String> result = new ArrayList<>();
@@ -575,7 +575,7 @@ public class ContactGroup {
         }
         
         private List<String> genDerefedEmailAddrs(Account ownerAcct, Element eContact) {
-            String emailFields[] = Contact.getEmailFields(ownerAcct);
+            String[] emailFields = Contact.getEmailFields(ownerAcct);
             Set<String> emailFieldsSet = new HashSet<>(Arrays.asList(emailFields));
 
             List<String> result = new ArrayList<>();
@@ -603,7 +603,7 @@ public class ContactGroup {
             String ownerAcctId = itemId.getAccountId();
             Account ownerAcct = Provisioning.getInstance().get(AccountBy.id, ownerAcctId);
             if (ownerAcct == null) {
-                ZimbraLog.contact.debug("no such account for contact group member: " + itemId.toString());
+                ZimbraLog.contact.debug("no such account for contact group member: " + itemId);
                 return;
             }
             
@@ -647,7 +647,7 @@ public class ContactGroup {
                 response = transport.invokeWithoutSession(request);
             } catch (IOException e) {
                 ZimbraLog.contact.debug("unable to fetch remote member ", e);
-                throw ServiceException.PROXY_ERROR("unable to fetch remote member " + contactId.toString(), serverUrl);
+                throw ServiceException.PROXY_ERROR("unable to fetch remote member " + contactId, serverUrl);
             }
             Element eGotContact = response.getOptionalElement(MailConstants.E_CONTACT);
             if (eGotContact != null) {

@@ -134,7 +134,7 @@ public class PrivilegedHandler {
     private static String getAttr(Map<String, Object> attributes, String name, String defaultValue) {
         Object v = attributes.get(name);
         String s = (String)v;
-        if (s != null && s.equals("")) s = null; //null out empty string because jetty-setuid.xml may pass in ""
+        if ("".equals(s)) s = null; //null out empty string because jetty-setuid.xml may pass in ""
         return s == null ? defaultValue : s;
     }
 

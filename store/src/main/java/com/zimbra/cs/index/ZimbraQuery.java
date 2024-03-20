@@ -588,7 +588,6 @@ public final class ZimbraQuery {
         }
       } else {
         includeTrash = authAcct.isPrefIncludeTrashInSearch();
-        ;
         includeSpam = authAcct.isPrefIncludeSpamInSearch();
       }
       if (!includeTrash || !includeSpam) {

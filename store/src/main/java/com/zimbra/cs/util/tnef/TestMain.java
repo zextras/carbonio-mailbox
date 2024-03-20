@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -189,8 +190,8 @@ public class TestMain {
                     if (i >= args.length - 2)
                         usage();
                     outDirName = args[i+1];
-                    firstTestFileArgIndex = i + 2;;
-                    break;
+                    firstTestFileArgIndex = i + 2;
+                  break;
                 } else if (arg.equalsIgnoreCase("-i")) {
                     if (i >= args.length - 1)
                         usage();
@@ -292,7 +293,7 @@ public class TestMain {
         boolean doneConversion = false;
         try {
             fisMime = new ZSharedFileInputStream(mimeFile);
-            baosOut = new OutputStreamWriter(baos, UTF8);
+            baosOut = new OutputStreamWriter(baos, StandardCharsets.UTF_8);
 
             // Do the conversion.
             MimeMessage mm = new ZMimeMessage(JMSession.getSession(), fisMime);
@@ -359,11 +360,11 @@ public class TestMain {
         String ical = null;
         Writer wout = null;
         try {
-            ical = icalBaos.toString(UTF8);
+            ical = icalBaos.toString(StandardCharsets.UTF_8);
             if (icalFile != null)
                 wout = new FileWriter(icalFile);
             else
-                wout = new OutputStreamWriter(System.out, UTF8);
+                wout = new OutputStreamWriter(System.out, StandardCharsets.UTF_8);
             wout.write(ical);
             wout.flush();
         } catch (IOException e) {

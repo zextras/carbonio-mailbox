@@ -13,7 +13,7 @@ import com.zimbra.common.service.ServiceException;
 
 public class ZimletPresence {
 
-    public static enum Presence {
+    public enum Presence {
         mandatory('!'),
         enabled('+'),
         disabled('-');

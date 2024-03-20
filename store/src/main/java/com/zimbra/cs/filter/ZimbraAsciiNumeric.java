@@ -219,8 +219,9 @@ public class ZimbraAsciiNumeric extends AsciiNumeric implements ZimbraComparator
         return intLhs.equals(intRhs);
     }
 
-    public enum NumericType {POSITIVE_NUMBER, NEGATIVE_NUMBER, POSITIVEINFINITY};
-    /** 
+    public enum NumericType {POSITIVE_NUMBER, NEGATIVE_NUMBER, POSITIVEINFINITY}
+
+  /**
      * Check the string type
      * <ul>
      * <li> If the value has a '-' (0x2d) followed by one or more digits, then it is negative number.

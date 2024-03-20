@@ -442,10 +442,10 @@ public class ZoneInfo2iCalendar {
     public String toString() {
       StringBuilder sb = new StringBuilder("Observances:\n");
       if (null != std) {
-        sb.append("    Standard Observance:\n").append(std.toString());
+        sb.append("    Standard Observance:\n").append(std);
       }
       if (null != daylight) {
-        sb.append("    Daylight Observance=\n").append(daylight.toString());
+        sb.append("    Daylight Observance=\n").append(daylight);
       }
       return sb.toString();
     }
@@ -469,10 +469,10 @@ public class ZoneInfo2iCalendar {
       StringBuilder sb = new StringBuilder("RuleLines:hasRule=").append(hasRule);
       sb.append(" saveDuration=").append(saveDuration == null ? "<null>" : saveDuration.toString());
       if (null != standard) {
-        sb.append(" STD=").append(standard.toString());
+        sb.append(" STD=").append(standard);
       }
       if (null != daylight) {
-        sb.append(" DAY=").append(daylight.toString());
+        sb.append(" DAY=").append(daylight);
       }
       return sb.toString();
     }
@@ -595,10 +595,10 @@ public class ZoneInfo2iCalendar {
           if (obs2.inDaylightTimeOnDate(referenceDate)) {
             System.err.printf(
                 "1st zoneLine '%s' for '%s' only has STANDARD time.%n",
-                zline1.toString(), zline1.getName());
+                zline1, zline1.getName());
             System.err.printf(
                 "Reference date %s would be in DAYLIGHT time by rules of 2nd zoneLine '%s'%n",
-                fmtRefDate, zline2.toString());
+                fmtRefDate, zline2);
             System.err.println("Therefore, Ignoring 2nd zoneLine.");
             suppressWarning = true;
           } else {
@@ -613,14 +613,14 @@ public class ZoneInfo2iCalendar {
             }
             System.err.printf(
                 "1st zoneLine '%s' for '%s' only has STANDARD time.%n",
-                zline1.toString(), zline1.getName());
+                zline1, zline1.getName());
             System.err.printf(
                 "Reference date %s would also be in STANDARD time by rules of 2nd zoneLine"
                     + " '%s'%n",
-                fmtRefDate, zline2.toString());
+                fmtRefDate, zline2);
             System.err.printf(
                 "BUT OLD STANDARD has TZOFFSETTO=%s which differs from new TZOFFSETTO=%s.%n",
-                oldOffsetTo.toString(), newOffsetTo.toString());
+                oldOffsetTo, newOffsetTo.toString());
             System.err.println("Therefore, Ignoring 2nd zoneLine.");
             suppressWarning = true;
           }
@@ -631,7 +631,7 @@ public class ZoneInfo2iCalendar {
       System.err.printf(
           "More than 1 zoneLine for zone '%s' but unknown scenario.  Using only zoneLine:\n"
               + "    %s%n",
-          zline1.getName(), zline1.toString());
+          zline1.getName(), zline1);
     }
     return toVTimeZoneComp(hintYear, toObservances(hintYear, zline1), vtzProps);
   }
@@ -753,7 +753,6 @@ public class ZoneInfo2iCalendar {
           return null;
         }
         daylightOffset = standardOffset; /* random value - fix later */
-        ;
         obs4zl2 =
             toObservanceComp(hintYear, newRule, true, standardOffset, daylightOffset, tznameFormat);
         TzOffsetFrom stdOffsetFrom =
@@ -847,7 +846,7 @@ public class ZoneInfo2iCalendar {
   private static Map<String /* TZID */, Integer /* matchScore */> sMatchScores =
       new HashMap<>();
 
-  private static enum LineType {
+  private enum LineType {
     PRIMARYZONE,
     ZONEMATCHSCORE,
     UNKNOWN;
@@ -1000,7 +999,7 @@ public class ZoneInfo2iCalendar {
     pw.flush();
   }
 
-  private static CommandLine parseArgs(String args[]) throws org.apache.commons.cli.ParseException {
+  private static CommandLine parseArgs(String[] args) throws org.apache.commons.cli.ParseException {
     CommandLineParser parser = new GnuParser();
     CommandLine cl = null;
     try {

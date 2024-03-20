@@ -293,7 +293,7 @@ public final class ParsedContact {
     public abstract static class FieldDelta {
         private final Op op;
 
-        public static enum Op {
+        public enum Op {
             ADD,
             REMOVE;
 
@@ -702,7 +702,7 @@ public final class ParsedContact {
 
         StringBuilder contentText = new StringBuilder();
 
-        String emailFields[] = Contact.getEmailFields(acct);
+        String[] emailFields = Contact.getEmailFields(acct);
 
         FieldTokenStream fields = new FieldTokenStream();
         for (Map.Entry<String, String> entry : getFields().entrySet()) {

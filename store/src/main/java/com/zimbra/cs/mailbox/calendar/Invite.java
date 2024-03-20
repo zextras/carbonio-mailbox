@@ -1155,7 +1155,6 @@ public class Invite {
   public String getUid() {
     return mUid;
   }
-  ;
 
   public void setUid(String uid) {
     mUid = uid;
@@ -1164,7 +1163,6 @@ public class Invite {
   public String getName() {
     return mName;
   }
-  ;
 
   public void setName(String name) {
     mName = name;
@@ -2012,8 +2010,8 @@ public class Invite {
     return vcal;
   }
 
-  public static interface InviteVisitor {
-    public void visit(Invite inv) throws ServiceException;
+  public interface InviteVisitor {
+    void visit(Invite inv) throws ServiceException;
   }
 
   public static List<Invite> createFromCalendar(
@@ -2873,7 +2871,7 @@ public class Invite {
    *
    * @param recurId - if this is null, it means match Series or instance if it is a single instance
    */
-  public static Invite matchingInvite(Invite invites[], RecurId aRecurId) {
+  public static Invite matchingInvite(Invite[] invites, RecurId aRecurId) {
     return matchingInvite(Arrays.asList(invites), aRecurId);
   }
 

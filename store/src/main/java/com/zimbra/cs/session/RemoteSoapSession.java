@@ -6,6 +6,7 @@
 package com.zimbra.cs.session;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -127,12 +128,8 @@ public class RemoteSoapSession extends SoapSession {
 
         private boolean checkDuplicateNotification(CrossServerNotification ntfn) {
             String msgHash;
-            try {
-                msgHash = ByteUtil.getDigest(ntfn.toString().getBytes("UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                msgHash = ByteUtil.getDigest(ntfn.toString().getBytes());
-            }
-            String accountId = authUserCtxt.getAuthtokenAccountId();
+          msgHash = ByteUtil.getDigest(ntfn.toString().getBytes(StandardCharsets.UTF_8));
+          String accountId = authUserCtxt.getAuthtokenAccountId();
             LinkedList<String> messageHashes;
             synchronized (sentNotifications) {
                 messageHashes = sentNotifications.get(accountId);

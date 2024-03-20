@@ -67,7 +67,7 @@ public class SmtpInject {
         System.exit((errmsg == null) ? 0 : 1);
     }
 
-    private static CommandLine parseArgs(String args[]) {
+    private static CommandLine parseArgs(String[] args) {
         StringBuffer gotCL = new StringBuffer("cmdline: ");
       for (String arg : args) {
         gotCL.append("'").append(arg).append("' ");

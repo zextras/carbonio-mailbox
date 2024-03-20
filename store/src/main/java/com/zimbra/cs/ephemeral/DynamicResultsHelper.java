@@ -158,7 +158,7 @@ public class DynamicResultsHelper {
         }
     }
 
-    static interface DeletionCallback {
+    interface DeletionCallback {
         void delete(String encodedKey, List<String> values) throws ServiceException;
     }
 }

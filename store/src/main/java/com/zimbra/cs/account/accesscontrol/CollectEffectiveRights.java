@@ -269,14 +269,14 @@ public class CollectEffectiveRights {
                 sbAllowed.append("(").append(a.getKey().getName()).append(", ").append(a.getValue())
                     .append(") ");
             }
-            sLog.debug("allowed: " + sbAllowed.toString());
+            sLog.debug("allowed: " + sbAllowed);
             
             StringBuilder sbDenied = new StringBuilder();
             for (Map.Entry<Right, Integer> a : denied.entrySet()) {
                 sbDenied.append("(").append(a.getKey().getName()).append(", ").append(a.getValue())
                     .append(") ");
             }
-            sLog.debug("denied: " + sbDenied.toString());
+            sLog.debug("denied: " + sbDenied);
         }
         
         Set<Right> conflicts = SetUtil.intersect(allowed.keySet(), denied.keySet());

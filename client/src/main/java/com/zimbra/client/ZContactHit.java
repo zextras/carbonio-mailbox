@@ -299,15 +299,17 @@ public class ZContactHit implements ZImapSearchHit {
     public String getFileAs() { return mFileAs; }
     public String getNickname() { return mNickname; }
     public String getNamePrefix() { return mNamePrefix; }
-    public String getFirstName() { return mFirstName; };
-    public String getPhoneticFirstName() { return mPhoneticFirstName; }
+    public String getFirstName() { return mFirstName; }
+
+  public String getPhoneticFirstName() { return mPhoneticFirstName; }
     public String getMiddleName() { return mMiddleName; }
     public String getMaidenName() { return mMaidenName; }
     public String getLastName() { return mLastName; }
     public String getPhoneticLastName() { return mPhoneticLastName; }
     public String getNameSuffix() { return mNameSuffix; }
-    public String getCompany() { return mCompany; };
-    public String getPhoneticCompany() { return mPhoneticCompany; }
+    public String getCompany() { return mCompany; }
+
+  public String getPhoneticCompany() { return mPhoneticCompany; }
 
     @Override
     public void modifyNotification(ZModifyEvent event) throws ServiceException {

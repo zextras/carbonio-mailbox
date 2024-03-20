@@ -6,6 +6,7 @@
 package com.zimbra.cs.service.formatter;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -79,8 +80,8 @@ public class RssFormatter extends Formatter {
             if (iterator instanceof QueryResultIterator)
                 ((QueryResultIterator) iterator).finished();
         }
-        sb.append(rss.toString());
-        context.resp.getOutputStream().write(sb.toString().getBytes("UTF-8"));
+        sb.append(rss);
+        context.resp.getOutputStream().write(sb.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     @Override

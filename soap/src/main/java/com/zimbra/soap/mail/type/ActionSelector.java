@@ -187,8 +187,9 @@ public class ActionSelector {
     public void setColor(Byte color) { this.color = color; }
     public void setName(String name) { this.name = name; }
     public void setFlags(String flags) { this.flags = flags; }
-    public void setNonExistentIds(boolean r) { this.nonExistentIds = ZmBoolean.fromBool(r); };
-    /**
+    public void setNonExistentIds(boolean r) { this.nonExistentIds = ZmBoolean.fromBool(r); }
+
+  /**
      * Use {@link ActionSelector#setTagNames(String)} instead.
      */
     @Deprecated
@@ -198,11 +199,13 @@ public class ActionSelector {
     public String getIds() { return ids; }
     public String getOperation() { return operation; }
     public String getConstraint() { return constraint; }
-    public boolean getNonExistentIds() { return ZmBoolean.toBool(nonExistentIds); };
-    public void setNewlyCreatedIds(boolean r) { this.newlyCreatedIds = ZmBoolean.fromBool(r); };
-    public boolean getNewlyCreatedIds() { return ZmBoolean.toBool(newlyCreatedIds); };
+    public boolean getNonExistentIds() { return ZmBoolean.toBool(nonExistentIds); }
 
-    /**
+  public void setNewlyCreatedIds(boolean r) { this.newlyCreatedIds = ZmBoolean.fromBool(r); }
+
+  public boolean getNewlyCreatedIds() { return ZmBoolean.toBool(newlyCreatedIds); }
+
+  /**
      * Use {@link ActionSelector#getTagNames()} instead.
      */
     @Deprecated

@@ -122,7 +122,7 @@ public class SpamExtract {
         System.exit((errmsg == null) ? 0 : 1);
     }
 
-    private static CommandLine parseArgs(String args[]) {
+    private static CommandLine parseArgs(String[] args) {
         CommandLineParser parser = new GnuParser();
         CommandLine cl = null;
         try {
@@ -276,7 +276,8 @@ public class SpamExtract {
                     LOG.debug("adding id %s", mid);
                     ids.add(mid);
                     if (ids.size() >= BATCH_SIZE || !iter.hasNext()) {
-                        StringBuilder path = new StringBuilder(restURL.toString() + "/service/user/" + account.getName() + "/?fmt=tgz&list=" + StringUtils.join(ids, ","));
+                        StringBuilder path = new StringBuilder(
+                            restURL + "/service/user/" + account.getName() + "/?fmt=tgz&list=" + StringUtils.join(ids, ","));
                         LOG.debug("sending request for path %s", path.toString());
                         List<String> extractedIds = extractMessages(hc, gm, path.toString(), outdir, raw);
                         if (ids.size() > extractedIds.size()) {

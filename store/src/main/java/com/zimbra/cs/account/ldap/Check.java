@@ -63,7 +63,7 @@ public class Check {
     Object v = attrs.get(name);
     if (v instanceof String) return new String[] {(String) v};
     else if (v instanceof String[]) {
-      String value[] = (String[]) v;
+      String[] value = (String[]) v;
       if (value != null && value.length > 0) return value;
     }
     throw ServiceException.INVALID_REQUEST("must specifiy: " + name, null);
@@ -113,7 +113,7 @@ public class Check {
     System.out.println(r);
   }
 
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     testCheckHostnameResolve();
     // testCheckGal();
   }

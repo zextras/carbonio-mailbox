@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.security.kerberos;
 
+import java.nio.charset.StandardCharsets;
 import javax.security.auth.kerberos.KerberosKey;
 import javax.security.auth.kerberos.KerberosPrincipal;
 import java.io.EOFException;
@@ -192,11 +193,7 @@ public class Krb5Keytab {
     }
 
     private String getString(ByteBuffer bb) {
-        try {
-            return new String(getBytes(bb), "US-ASCII");
-        } catch (UnsupportedEncodingException e) {
-            throw new InternalError("US-ASCII encoding not supported");
-        }
+      return new String(getBytes(bb), StandardCharsets.US_ASCII);
     }
 
     private byte[] getBytes(ByteBuffer bb) {

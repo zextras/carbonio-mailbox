@@ -8,6 +8,7 @@ package com.zimbra.cs.service.mail;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
@@ -370,7 +371,7 @@ public class CreateContact extends MailDocumentHandler  {
                         throw ServiceException.INVALID_REQUEST("invalid contact part number: " + part, null);
                     } else {
                         VCard vcf = VCard.formatContact(contact);
-                        return new Attachment(vcf.getFormatted().getBytes("utf-8"), "text/x-vcard; charset=utf-8", name, vcf.fn + ".vcf");
+                        return new Attachment(vcf.getFormatted().getBytes(StandardCharsets.UTF_8), "text/x-vcard; charset=utf-8", name, vcf.fn + ".vcf");
                     }
                 } else if (item instanceof Message) {
                     Message msg = (Message) item;
@@ -490,7 +491,7 @@ public class CreateContact extends MailDocumentHandler  {
                 Map<String, String> params = new HashMap<>();
                 params.put(UserServlet.QP_PART, part);
                 byte[] content = UserServlet.getRemoteContent(zsc.getAuthToken(), iid, params);
-                text = new String(content, MimeConstants.P_CHARSET_UTF8);
+                text = new String(content, StandardCharsets.UTF_8);
             }
         } catch (IOException | MessagingException e) {
             throw ServiceException.FAILURE("error fetching message part: iid=" + iid + ", part=" + part, e);

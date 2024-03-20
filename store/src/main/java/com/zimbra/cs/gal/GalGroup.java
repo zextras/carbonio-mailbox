@@ -45,7 +45,7 @@ public abstract class GalGroup {
     public enum GroupInfo {
         IS_GROUP,   // address is a group
         CAN_EXPAND  // address is a group and the authed account has right to expand it
-    };
+    }
 
     private static final Provisioning prov = Provisioning.getInstance();
     private static Map<String, DomainGalGroupCache> groups = new HashMap<>();
@@ -510,7 +510,7 @@ public abstract class GalGroup {
 
                     if (email == null) {
                         ZimbraLog.gal.info("GalGroup - handle Element: contact " +
-                                e.toString() + " does not have an email address." +
+                            e + " does not have an email address." +
                                 " Not adding to gal group cache.");
                     } else {
                         addResult(email, zimbraId, contact);

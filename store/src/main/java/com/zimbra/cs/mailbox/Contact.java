@@ -182,11 +182,11 @@ public class Contact extends MailItem {
         }
     }
 
-    public static enum DerefGroupMembersOption {
+    public enum DerefGroupMembersOption {
         // ALL,      // deref all group members - not yet supported
         NONE,        // do not deref any group members
-        INLINE_ONLY; // deref only inline group members (see ContactGroup.Member.Type)
-    };
+        INLINE_ONLY // deref only inline group members (see ContactGroup.Member.Type)
+    }
 
     /** Relates contact fields ({@code firstName}) to this contact's values ({@code John}). */
     private Map<String, String> fields;

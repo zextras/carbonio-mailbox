@@ -68,7 +68,7 @@ public final class DbSearch {
     MODSEQ,
     PARENT,
     MODCONTENT
-  };
+  }
 
   private static final byte[] APPOINTMENT_TABLE_TYPES =
       new byte[] {MailItem.Type.APPOINTMENT.toByte()};

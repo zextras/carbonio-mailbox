@@ -44,7 +44,7 @@ public class RecurrenceDefinition {
 
     static Log sLog = ZimbraLog.tnef;
 
-    public static enum RecurrenceFrequency {
+    public enum RecurrenceFrequency {
         DAILY (0x200A), WEEKLY (0x200B), MONTHLY (0x200C), YEARLY (0x200D);
 
         private final int MapiPropValue;
@@ -58,7 +58,7 @@ public class RecurrenceDefinition {
         }
     }
 
-    public static enum PatternType {
+    public enum PatternType {
         DAY (0x0000), WEEK (0x0001),
         MONTH (0x0002), MONTH_NTH (0x0003), MONTH_END (0x0004),
         HJ_MONTH (0x000A), HJ_MONTH_NTH (0x000B), HJ_MONTH_END (0x000C);
@@ -74,7 +74,7 @@ public class RecurrenceDefinition {
         }
     }
 
-    public static enum EndType {
+    public enum EndType {
         END_BY_DATE (0x00002021),
         END_AFTER_N_OCCURRENCES (0x00002022),
         NEVER_END (0x00002023),
@@ -113,9 +113,9 @@ public class RecurrenceDefinition {
     private DayOfWeek firstDayOfWeek;
     private EnumSet <DayOfWeek> dayOfWeekMask;
     int deletedInstanceCount;
-    long delMidnightMinsSince1601[];
+    long[] delMidnightMinsSince1601;
     int modifiedInstanceCount;
-    long modMidnightMinsSince1601[];
+    long[] modMidnightMinsSince1601;
     // Minutes since 1601 Date portion of DTSTART in local time
     private long startMinsSince1601;
     // Minutes since 1601 Date portion of Start of LAST instance in local time

@@ -83,5 +83,5 @@ public interface ZimbraQueryResults extends Closeable {
      * @return true if results are already sorted in the desired order - for instance they are based on
      * a proxied search.
      */
-    public boolean isPreSorted();
+    boolean isPreSorted();
 }

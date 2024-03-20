@@ -101,7 +101,7 @@ public class QuotedTextUtil {
 
         private Matcher[] matcher;
 
-        private LineType(String... regex) {
+        LineType(String... regex) {
             matcher = new Matcher[regex.length];
             for (int i = 0; i < regex.length; i++) {
                 matcher[i] = Pattern.compile(regex[i]).matcher("");

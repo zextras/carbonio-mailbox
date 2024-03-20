@@ -47,9 +47,9 @@ public abstract class AutoScheduler {
   public static final String CANCEL_PREFIX = "Cancel: ";
   protected final Mailbox userMailbox;
   protected final Account calendarAccount;
-  protected final Invite origInvites[];
+  protected final Invite[] origInvites;
   protected final SetCalendarItemData scidDefault;
-  protected final SetCalendarItemData scidExceptions[];
+  protected final SetCalendarItemData[] scidExceptions;
   // newInvites is a convenient collection of invites from scidDefault/scidExceptions
   protected final List<Invite> newInvites = Lists.newArrayList();
   protected final int calendarMailItemId;
@@ -71,12 +71,12 @@ public abstract class AutoScheduler {
   protected AutoScheduler(
       Mailbox userMailbox,
       Mailbox calendarMailbox,
-      Invite origInvites[],
+      Invite[] origInvites,
       int calendarMailItemId,
       int flags,
       String[] tags,
       SetCalendarItemData scidDefault,
-      SetCalendarItemData scidExceptions[],
+      SetCalendarItemData[] scidExceptions,
       List<ReplyInfo> replies,
       DavContext ctxt)
       throws ServiceException {
@@ -118,7 +118,7 @@ public abstract class AutoScheduler {
     this.ctxt = ctxt;
   }
 
-  private static boolean isEmpty(Invite invites[]) {
+  private static boolean isEmpty(Invite[] invites) {
     return (invites == null) || (invites.length <= 0);
   }
 
@@ -144,7 +144,7 @@ public abstract class AutoScheduler {
   public static AutoScheduler getAutoScheduler(
       Mailbox userMailbox,
       Mailbox calendarMailbox,
-      Invite origInvites[],
+      Invite[] origInvites,
       int calendarMailItemId,
       DavContext context) {
     return getAutoScheduler(
@@ -163,12 +163,12 @@ public abstract class AutoScheduler {
   public static AutoScheduler getAutoScheduler(
       Mailbox userMailbox,
       Mailbox calendarMailbox,
-      Invite origInvites[],
+      Invite[] origInvites,
       int calendarMailItemId,
       int flags,
       String[] tags,
       SetCalendarItemData scidDefault,
-      SetCalendarItemData scidExceptions[],
+      SetCalendarItemData[] scidExceptions,
       List<ReplyInfo> replies,
       DavContext context) {
     if (!DavResource.isCalendarAutoSchedulingEnabled()) {
@@ -372,12 +372,12 @@ public abstract class AutoScheduler {
     protected OrganizerAutoScheduler(
         Mailbox userMailbox,
         Mailbox calendarMailbox,
-        Invite origInvites[],
+        Invite[] origInvites,
         int calendarMailItemId,
         int flags,
         String[] tags,
         SetCalendarItemData scidDefault,
-        SetCalendarItemData scidExceptions[],
+        SetCalendarItemData[] scidExceptions,
         List<ReplyInfo> replies,
         DavContext ctxt)
         throws ServiceException {
@@ -660,12 +660,12 @@ public abstract class AutoScheduler {
     protected AttendeeAutoScheduler(
         Mailbox userMailbox,
         Mailbox calendarMailbox,
-        Invite origInvites[],
+        Invite[] origInvites,
         int calendarMailItemId,
         int flags,
         String[] tags,
         SetCalendarItemData scidDefault,
-        SetCalendarItemData scidExceptions[],
+        SetCalendarItemData[] scidExceptions,
         List<ReplyInfo> replies,
         DavContext ctxt)
         throws ServiceException {

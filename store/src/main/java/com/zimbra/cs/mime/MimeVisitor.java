@@ -115,11 +115,11 @@ public abstract class MimeVisitor {
      *  performed by a <code>MimeVistor</code>.  Note that when a call to
      *  {@link Mime#accept} results in multiple modifications, the callback
      *  will be invoked multiple times. */
-    public static interface ModificationCallback {
+    public interface ModificationCallback {
         /** A callback function invoked immediately prior to any modification
          *  of the message.  If the callback returns <code>false</code>, the
          *  modification is not performed. */
-        public boolean onModification();
+        boolean onModification();
     }
 
     protected ModificationCallback mCallback;
@@ -138,7 +138,7 @@ public abstract class MimeVisitor {
 
     /** The flags passed to the <code>visitXXX</code> methods before and
      *  after a node's children are visited, respectively. */
-    protected enum VisitPhase { VISIT_BEGIN, VISIT_END };
+    protected enum VisitPhase { VISIT_BEGIN, VISIT_END }
 
     /** Visitor callback for traversing a MimeMessage, either standalone
      *  or as an attachment to another MimeMessage.

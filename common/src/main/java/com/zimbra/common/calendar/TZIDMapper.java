@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -138,7 +139,7 @@ public class TZIDMapper {
         BufferedReader br = null;
         try {
             fi = new FileInputStream(tzFile);
-            isr = new InputStreamReader(fi, "UTF-8");
+            isr = new InputStreamReader(fi, StandardCharsets.UTF_8);
             br = new BufferedReader(isr);
             String line;
             boolean inVTIMEZONE = false;

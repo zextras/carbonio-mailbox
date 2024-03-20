@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,7 +52,7 @@ public abstract class Element implements Cloneable {
      *
      *  <i>Note that JSON serialization ignores all such hints and serializes
      *  all attributes as <tt>"key": "value"</tt>.</i> */
-    public static enum Disposition {
+    public enum Disposition {
         ATTRIBUTE, CONTENT
     }
 
@@ -461,12 +462,7 @@ public abstract class Element implements Cloneable {
 
     // dumping the element hierarchy
     public byte[] toUTF8() {
-        try {
-            return toString().getBytes("utf-8");
-        } catch (UnsupportedEncodingException e) {
-            // should *never* happen since UTF-8 and UTF-16 cover the exact same character space
-            return null;
-        }
+      return toString().getBytes(StandardCharsets.UTF_8);
     }
 
     public void output(Appendable out) throws IOException {
@@ -528,7 +524,7 @@ public abstract class Element implements Cloneable {
 
     private org.w3c.dom.Node toW3cDom(org.w3c.dom.Document doc, org.w3c.dom.Element parent) {
         String uri = getNamespaceURI(mPrefix);
-        if ((uri != null) && uri.equals("urn:zimbraSoap")) {
+        if ("urn:zimbraSoap".equals(uri)) {
             uri = null;
         }
         org.w3c.dom.Element elem;
@@ -614,7 +610,7 @@ public abstract class Element implements Cloneable {
      */
     public static Element parseJSON(InputStream is, ElementFactory factory) throws SoapParseException {
         try {
-            return parseJSON(new String(com.zimbra.common.util.ByteUtil.getContent(is, -1), "utf-8"), factory);
+            return parseJSON(new String(com.zimbra.common.util.ByteUtil.getContent(is, -1), StandardCharsets.UTF_8), factory);
         } catch (SoapParseException e) {
             throw e;
         } catch (Exception e) {
@@ -756,20 +752,20 @@ public abstract class Element implements Cloneable {
         public ContainerException(String message)  { super(message); }
     }
 
-    public static interface ElementFactory {
-        public Element createElement(String name);
-        public Element createElement(QName qname);
+    public interface ElementFactory {
+        Element createElement(String name);
+        Element createElement(QName qname);
     }
 
-    public static interface KeyValuePair {
-        public KeyValuePair setValue(String value) throws ContainerException;
-        public KeyValuePair addAttribute(String key, String value) throws ContainerException;
-        public KeyValuePair addAttribute(String key, long value) throws ContainerException;
-        public KeyValuePair addAttribute(String key, double value) throws ContainerException;
-        public KeyValuePair addAttribute(String key, boolean value) throws ContainerException;
+    public interface KeyValuePair {
+        KeyValuePair setValue(String value) throws ContainerException;
+        KeyValuePair addAttribute(String key, String value) throws ContainerException;
+        KeyValuePair addAttribute(String key, long value) throws ContainerException;
+        KeyValuePair addAttribute(String key, double value) throws ContainerException;
+        KeyValuePair addAttribute(String key, boolean value) throws ContainerException;
 
-        public String getKey() throws ContainerException;
-        public String getValue() throws ContainerException;
+        String getKey() throws ContainerException;
+        String getValue() throws ContainerException;
     }
 
     public static class Attribute {
@@ -1355,8 +1351,8 @@ public abstract class Element implements Cloneable {
                                    case ';':  jsr.skipChar();  break;
                                    default:   throw new SoapParseException("missing expected ',' or ']'", jsr.js);
                                }
-                           };
-                           jsr.skipChar();  break;
+                           }
+                    jsr.skipChar();  break;
                 default:   if ((value = jsr.readValue()) != null)
                                parent.addKeyValuePair(key, value.toString());  break;
             }
@@ -1397,8 +1393,8 @@ public abstract class Element implements Cloneable {
                                            case ';':  jsr.skipChar();  break;
                                            default:   throw new SoapParseException("missing expected ',' or ']'", jsr.js);
                                        }
-                                   };
-                                   jsr.skipChar();  break;
+                                   }
+                            jsr.skipChar();  break;
                         default:   if ((value = jsr.readValue()) == null)  break;
                                    if (key.equals(A_NAMESPACE))            elt.setNamespace("", value.toString());
                                    else if (value instanceof Boolean)      elt.addAttribute(key, ((Boolean) value).booleanValue());
@@ -2211,7 +2207,8 @@ public abstract class Element implements Cloneable {
 
 //        System.out.println(com.zimbra.common.soap.SoapProtocol.toString(e.toXML(), true));
         System.out.println(new XMLElement("test").setText("  this\t    is\nthe\rway ").getTextTrim() + "|");
-        System.out.println(Element.parseJSON("{part:\"TEXT\",t:null,h:true,i:\"false\",\"ct\":\"\\x25multipart\\u0025\\/mixed\",\\u0073:3718}").toString());
+        System.out.println(
+            Element.parseJSON("{part:\"TEXT\",t:null,h:true,i:\"false\",\"ct\":\"\\x25multipart\\u0025\\/mixed\",\\u0073:3718}"));
         try {
             Element.parseJSON("{\"wkday\":{\"day\":\"TU\"},\"wkday\":{\"day\":\"WE\"},\"wkday\":{\"day\":\"FR\"}}");
         } catch (SoapParseException spe) {

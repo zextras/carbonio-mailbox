@@ -200,7 +200,7 @@ public class TemplateCompiler {
                     // compile to JavaScript
 	                String body = matcher.group(2);
 	                String stripWsAttr = attrs.get(A_XML_SPACE);
-		            if (stripWsAttr == null || !stripWsAttr.equals(V_XML_SPACE_PRESERVE)) {
+		            if (!V_XML_SPACE_PRESERVE.equals(stripWsAttr)) {
 		                body = body.replaceAll(S_GT_LINESEP_LT, "><").trim();
 		            }
 	                convertLines(out, id, body, attrs, authoritative);

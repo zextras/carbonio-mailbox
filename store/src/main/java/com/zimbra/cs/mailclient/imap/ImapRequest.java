@@ -237,7 +237,7 @@ public class ImapRequest {
             } catch (IOException e) {
                 throw new AssertionError();
             }
-            sb.append(baos.toString());
+            sb.append(baos);
         } else if (param instanceof Literal) {
             sb.append("<literal ");
             sb.append(((Literal) param).getSize());

@@ -533,7 +533,7 @@ public final class ParseMimeMessage {
             content = ctype.getContentType().equals(ContentType.MESSAGE_RFC822) ?
                 new ZMimeMessage(JMSession.getSession(), new SharedByteArrayInputStream(raw))
                 : text;
-            String mbpHeaders = "Content-Type: " + ctype.toString()
+            String mbpHeaders = "Content-Type: " + ctype
                 + "\r\nContent-Transfer-Encoding: " + MimeConstants.ET_QUOTED_PRINTABLE
                 + "\r\n";
             mmp.addBodyPart(new MimeBodyPart(

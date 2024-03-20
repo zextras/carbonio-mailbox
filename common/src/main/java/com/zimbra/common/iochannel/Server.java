@@ -61,7 +61,7 @@ public class Server implements Runnable {
      * peer.
      */
     public interface NotifyCallback {
-        public void dataReceived(String sender, ByteBuffer buffer);
+        void dataReceived(String sender, ByteBuffer buffer);
     }
 
     /**

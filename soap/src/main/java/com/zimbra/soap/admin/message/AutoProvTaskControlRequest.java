@@ -26,7 +26,7 @@ import com.zimbra.common.soap.AdminConstants;
 public class AutoProvTaskControlRequest {
     
     @XmlEnum
-    public static enum Action {
+    public enum Action {
         start,
         status,
         stop;

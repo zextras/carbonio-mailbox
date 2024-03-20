@@ -97,8 +97,8 @@ public class ExtensionUtil {
         }
     }
 
-    public static interface ExtensionMatcher {
-        public boolean matches(ZimbraExtension ext);
+    public interface ExtensionMatcher {
+        boolean matches(ZimbraExtension ext);
     }
 
     /** @param matcher - Used to filter which extensions to initialize.  Can be null */

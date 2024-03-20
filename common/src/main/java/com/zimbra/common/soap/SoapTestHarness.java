@@ -10,6 +10,7 @@ package com.zimbra.common.soap;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -171,7 +172,7 @@ public class SoapTestHarness {
         System.exit(1);
     }
 
-    public static void main(String args[]) 
+    public static void main(String[] args)
     throws HarnessException, IOException, ServiceException {
         SoapTestHarness harness = new SoapTestHarness();
         harness.runTests(args);
@@ -184,7 +185,7 @@ public class SoapTestHarness {
         mTests = new ArrayList<>();
     }
 
-    public void runTests(String args[]) 
+    public void runTests(String[] args)
     throws HarnessException, IOException, ServiceException {
 
         CliUtil.toolSetup();
@@ -218,9 +219,9 @@ public class SoapTestHarness {
         String file = cl.getOptionValue("f");
 
         if (cl.hasOption("s"))
-            expandSystemProperties();;
+            expandSystemProperties();
 
-            String docStr = new String(ByteUtil.getContent(new File(file)), "utf-8");
+        String docStr = new String(ByteUtil.getContent(new File(file)), StandardCharsets.UTF_8);
             doTests(Element.parseXML(docStr));
 
             //Element request = doc.getRootElement();

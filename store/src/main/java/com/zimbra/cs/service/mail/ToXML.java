@@ -130,6 +130,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -156,7 +157,7 @@ import org.json.JSONException;
 public final class ToXML {
   private static final Log LOG = LogFactory.getLog(ToXML.class);
 
-  public static enum OutputParticipants {
+  public enum OutputParticipants {
     PUT_SENDERS(0),
     PUT_RECIPIENTS(1),
     PUT_BOTH(2);
@@ -1275,7 +1276,6 @@ public final class ToXML {
         m.addAttribute(MailConstants.A_DATE, msg.getDate());
         m.addAttribute(MailConstants.A_SIZE, msg.getSize());
         m.addAttribute(MailConstants.A_SUBJECT, msg.getSubject(), Element.Disposition.CONTENT);
-        ;
         m.addAttribute(
             MailConstants.A_FOLDER,
             ifmt.formatItemId(new ItemId(msg.getMailbox().getAccountId(), msg.getFolderId())));
@@ -1297,7 +1297,7 @@ public final class ToXML {
     public ToRecipsList() {}
 
     public ToRecipsList add(Message msg) {
-      InternetAddress toRecips[] = Mime.parseAddressHeader(msg.getRecipients());
+      InternetAddress[] toRecips = Mime.parseAddressHeader(msg.getRecipients());
       String sender = msg.getSender();
       if (sender == null || sender.trim().equals("")) {
         return this;
@@ -2439,20 +2439,16 @@ public final class ToXML {
     } else if (mustNotInline || (!mustInline && size > MAX_INLINE_MSG_SIZE)) {
       content.addAttribute(MailConstants.A_URL, CONTENT_SERVLET_URI + ifmt.formatItemId(msg));
     } else {
-      try {
-        byte[] raw = msg.getContent();
-        if (!ByteUtil.isASCII(raw)) {
-          if (!mustInline) {
-            content.addAttribute(MailConstants.A_URL, CONTENT_SERVLET_URI + ifmt.formatItemId(msg));
-          } else {
-            // Assume the data is utf-8.
-            content.setText(new String(raw, "utf-8"));
-          }
+      byte[] raw = msg.getContent();
+      if (!ByteUtil.isASCII(raw)) {
+        if (!mustInline) {
+          content.addAttribute(MailConstants.A_URL, CONTENT_SERVLET_URI + ifmt.formatItemId(msg));
         } else {
-          content.setText(new String(raw, "US-ASCII"));
+          // Assume the data is utf-8.
+          content.setText(new String(raw, StandardCharsets.UTF_8));
         }
-      } catch (IOException ex) {
-        throw ServiceException.FAILURE(ex.getMessage(), ex);
+      } else {
+        content.setText(new String(raw, StandardCharsets.US_ASCII));
       }
     }
 
@@ -3457,7 +3453,7 @@ public final class ToXML {
 
     private final String rep;
 
-    private EmailType(String c) {
+    EmailType(String c) {
       rep = c;
     }
 
@@ -3859,7 +3855,7 @@ public final class ToXML {
       if (returnAttrs == null || returnAttrs.contains(key)) {
         Object value = entry.getValue();
         if (value instanceof String[]) {
-          String sa[] = (String[]) value;
+          String[] sa = (String[]) value;
           for (String s : sa)
             cn.addKeyValuePair(
                 key, s, MailConstants.E_ATTRIBUTE, MailConstants.A_ATTRIBUTE_NAME);

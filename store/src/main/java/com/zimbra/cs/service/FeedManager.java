@@ -19,6 +19,7 @@ import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -312,7 +313,7 @@ public class FeedManager {
         SocketConfig config = SocketConfig.custom().setSoTimeout(60000).build();
         clientBuilder.setDefaultSocketConfig(config);
 
-        ConnectionConfig connConfig = ConnectionConfig.custom().setCharset(Charset.forName(MimeConstants.P_CHARSET_UTF8)).build();
+        ConnectionConfig connConfig = ConnectionConfig.custom().setCharset(StandardCharsets.UTF_8).build();
         clientBuilder.setDefaultConnectionConfig(connConfig);
 
         HttpGet get = null;
@@ -356,7 +357,7 @@ public class FeedManager {
                         String user = httpurl.getUserInfo();
                         if (user.indexOf('%') != -1) {
                             try {
-                                user = URLDecoder.decode(user, "UTF-8");
+                                user = URLDecoder.decode(user, StandardCharsets.UTF_8);
                             } catch (OutOfMemoryError e) {
                                 Zimbra.halt("out of memory", e);
                             } catch (Throwable t) { }
@@ -559,12 +560,8 @@ public class FeedManager {
 
         String getContentType() {
             ContentType ctype = new ContentType(cthdr == null ? "text/plain" : cthdr).cleanup();
-            try {
-                ctype.setParameter("name", FileUtil.trimFilename(URLDecoder.decode(url, "utf-8")));
-            } catch (UnsupportedEncodingException e) {
-                ctype.setParameter("name", FileUtil.trimFilename(url));
-            }
-            return ctype.toString();
+          ctype.setParameter("name", FileUtil.trimFilename(URLDecoder.decode(url, StandardCharsets.UTF_8)));
+          return ctype.toString();
         }
     }
 

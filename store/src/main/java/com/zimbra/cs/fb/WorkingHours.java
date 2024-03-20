@@ -189,16 +189,16 @@ public class WorkingHours {
             if (prefStr.endsWith(","))
                 throw ServiceException.INVALID_REQUEST("Working hours spec should not have trailing commas", null);
 
-            int daySpecified[] = new int[] { 0, 0, 0, 0, 0, 0, 0 };  // tracks which days of the week are specified
+            int[] daySpecified = new int[] { 0, 0, 0, 0, 0, 0, 0 };  // tracks which days of the week are specified
 
-            String days[] = prefStr.split(",");
+            String[] days = prefStr.split(",");
             if (days.length != 7)
                 throw ServiceException.INVALID_REQUEST("Working hours spec must specify all days of a week", null);
           for (String day : days) {
             if (day.endsWith(":"))
               throw ServiceException.INVALID_REQUEST(
                   "Working hours spec day section \"" + day + "\" should not have trailing colons", null);
-            String parts[] = day.split(":");
+            String[] parts = day.split(":");
             if (parts.length != 4)
               throw ServiceException.INVALID_REQUEST(
                   "Working hours spec day section \"" + day + "\" must have 4 colon-separated parts", null);

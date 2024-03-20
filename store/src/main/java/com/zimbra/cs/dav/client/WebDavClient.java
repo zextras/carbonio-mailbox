@@ -7,6 +7,7 @@ package com.zimbra.cs.dav.client;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -146,7 +147,7 @@ public class WebDavClient {
             HttpPut put = new HttpPut(mBaseUrl + href);
             put.setEntity(new ByteArrayEntity(buf, ContentType.create(contentType)));
             if (mDebugEnabled && contentType.startsWith("text"))
-                ZimbraLog.dav.debug("PUT payload: \n"+new String(buf, "UTF-8"));
+                ZimbraLog.dav.debug("PUT payload: \n"+new String(buf, StandardCharsets.UTF_8));
             if (etag != null)
                 put.addHeader(DavProtocol.HEADER_IF_MATCH, etag);
             if (headers != null)
@@ -196,7 +197,7 @@ public class WebDavClient {
         StringBuilder reqLog = new StringBuilder();
         reqLog.append("WebDAV request:\n").append(method.getMethod()).append(" ").append(method.getURI().toString());
         reqLog.append('\n');
-        Header headers[] = method.getAllHeaders();
+        Header[] headers = method.getAllHeaders();
         if (headers != null && headers.length > 0) {
             for (Header hdr : headers) {
                 String hdrName = hdr.getName();
@@ -221,7 +222,7 @@ public class WebDavClient {
         }
         StringBuilder responseLog = new StringBuilder();
         responseLog.append("WebDAV response:\n").append(response.getStatusLine()).append('\n');
-        Header headers[] = response.getAllHeaders();
+        Header[] headers = response.getAllHeaders();
         if (headers != null && headers.length > 0) {
             for (Header hdr : headers) {
                 String hdrName = hdr.getName();
@@ -236,7 +237,8 @@ public class WebDavClient {
         if (response.getEntity() == null || !ZimbraLog.dav.isTraceEnabled()) {
             ZimbraLog.dav.debug(responseLog.toString());
         } else {
-            ZimbraLog.dav.debug("%s\n%s", responseLog.toString(), new String(EntityUtils.toByteArray(response.getEntity()), "UTF-8"));
+            ZimbraLog.dav.debug("%s\n%s", responseLog.toString(), new String(EntityUtils.toByteArray(response.getEntity()),
+                StandardCharsets.UTF_8));
         }
     }
 

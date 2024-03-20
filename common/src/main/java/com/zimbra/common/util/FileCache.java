@@ -166,7 +166,7 @@ public class FileCache<K> {
      * Generates a key value from its {@code toString()} representation.
      */
     public interface KeyParser<K3> {
-        public K3 parse(String keyString);
+        K3 parse(String keyString);
     }
 
     private static final KeyParser<String> STRING_KEY_PARSER = keyString -> keyString;
@@ -179,7 +179,7 @@ public class FileCache<K> {
     };
 
     public interface RemoveCallback {
-        public boolean okToRemove(Item item);
+        boolean okToRemove(Item item);
     }
 
     private FileCache(File cacheDir, Integer maxFiles, Long maxBytes, Long minLifetime, KeyParser<K> keyParser, RemoveCallback callback, boolean persistent) {

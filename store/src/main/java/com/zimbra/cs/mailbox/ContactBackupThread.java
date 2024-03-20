@@ -180,7 +180,7 @@ public class ContactBackupThread extends Thread {
               CT_TYPE,
               startTime.getTime(),
               OPERATION,
-              FILE_DESC + startTime.toString());
+              FILE_DESC + startTime);
     } catch (UnsupportedOperationException | IOException | ServiceException exception) {
       success = false;
       ZimbraLog.contactbackup.warn("contact export failed, continuing to next mailbox");

@@ -295,7 +295,8 @@ public class HeaderTest extends Header {
      * @throws SievePatternException
      * @throws MessagingException 
      */
-    public static enum SourceType {HEADER, ENVELOPE, LITERAL};
+    public enum SourceType {HEADER, ENVELOPE, LITERAL}
+
     public static void evaluateVarExp(ZimbraMailAdapter mailAdapter, List<String> sourceNames, SourceType sourceType, List<String> keys) throws SieveMailException, SievePatternException, MessagingException {
         List<String> varValues = new ArrayList<>();
 

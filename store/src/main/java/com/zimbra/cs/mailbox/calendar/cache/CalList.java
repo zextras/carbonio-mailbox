@@ -26,7 +26,7 @@ public class CalList {
 
     CalList(Set<Integer> calendars) {
         mCalendars = new HashSet<>(calendars);
-        mVerPrefix = Long.toString(System.currentTimeMillis()) + ":";
+        mVerPrefix = System.currentTimeMillis() + ":";
         mVerSeq = 1;
         setVersion();
     }
@@ -96,7 +96,7 @@ public class CalList {
     public String getVersion() { return mVerString; }
 
     private void setVersion() {
-        mVerString = mVerPrefix + Long.toString(mVerSeq);
+        mVerString = mVerPrefix + mVerSeq;
     }
 
     public Collection<Integer> getCalendars() { return mCalendars; }

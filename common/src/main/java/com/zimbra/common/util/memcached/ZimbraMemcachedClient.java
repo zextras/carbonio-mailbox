@@ -377,7 +377,7 @@ public class ZimbraMemcachedClient {
         key = hashMemcacheKey(key);
         if (StringUtil.isNullOrEmpty(key)) {
             return false;
-        };
+        }
         synchronized (this) {
             client = mMCDClient;
             if (expirySec == DEFAULT_EXPIRY)
@@ -542,10 +542,10 @@ public class ZimbraMemcachedClient {
                 try {
                     return Long.parseLong((String) val);
                 } catch (NumberFormatException e) {
-                    throw ServiceException.FAILURE("Invalid number " + val.toString(), null);
+                    throw ServiceException.FAILURE("Invalid number " + val, null);
                 }
             } else {
-                throw ServiceException.FAILURE("Invalid number " + val.toString(), null);
+                throw ServiceException.FAILURE("Invalid number " + val, null);
             }
         }
 
@@ -621,7 +621,7 @@ public class ZimbraMemcachedClient {
         public ByteArray getChunk(int chunkIndex) { return mChunks[chunkIndex]; }
 
         public ByteArrayChunksTOC makeTOC() {
-            int lengths[] = new int[mNumChunks];
+            int[] lengths = new int[mNumChunks];
             for (int i = 0; i < mNumChunks; ++i) {
                 lengths[i] = mChunks[i].getBytes().length;
             }
@@ -785,12 +785,7 @@ public class ZimbraMemcachedClient {
             // Put the table of contents as the main value.  Do this after all chunks have been
             // added successfully.
             byte[] tocBytes;
-            try {
-                tocBytes = toc.encode().getBytes("utf-8");
-            } catch (UnsupportedEncodingException e) {
-                ZimbraLog.misc.warn("Unable to get bytes for BBA table of contents", e);
-                return false;
-            }
+            tocBytes = toc.encode().getBytes(StandardCharsets.UTF_8);
             byte[] prefixed = new byte[tocBytes.length + 1];
             System.arraycopy(tocBytes, 0, prefixed, 0, tocBytes.length);
             prefixed[tocBytes.length] = BBA_PREFIX_TOC;

@@ -221,6 +221,7 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.lang.ref.SoftReference;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -1151,7 +1152,7 @@ public class Mailbox implements MailboxStore {
   }
 
   public interface ItemIdGetter {
-    public int get();
+    int get();
   }
 
   /** Wrapper for getNextItemId method - should only be used within a transaction */
@@ -3305,7 +3306,7 @@ public class Mailbox implements MailboxStore {
     if (ids == null) {
       return null;
     }
-    MailItem items[] = new MailItem[ids.length];
+    MailItem[] items = new MailItem[ids.length];
     if (fromDumpster) {
       for (int i = 0; i < items.length; ++i) {
         int id = ids[i];
@@ -7176,11 +7177,7 @@ public class Mailbox implements MailboxStore {
   }
 
   public static String getHash(String subject) {
-    try {
-      return ByteUtil.getSHA1Digest(Strings.nullToEmpty(subject).getBytes("utf-8"), true);
-    } catch (UnsupportedEncodingException uee) {
-      return ByteUtil.getSHA1Digest(Strings.nullToEmpty(subject).getBytes(), true);
-    }
+    return ByteUtil.getSHA1Digest(Strings.nullToEmpty(subject).getBytes(StandardCharsets.UTF_8), true);
   }
 
   // please keep this package-visible but not public
@@ -7631,7 +7628,7 @@ public class Mailbox implements MailboxStore {
   }
 
   // common code for the two AlterTag variants (Flag.FlagInfo vs. by tag name)
-  private void alterTag(int itemIds[], MailItem.Type type, Tag tag, boolean addTag)
+  private void alterTag(int[] itemIds, MailItem.Type type, Tag tag, boolean addTag)
       throws ServiceException {
     MailItem[] items = getItemById(itemIds, type);
     for (MailItem item : items) {
@@ -8784,7 +8781,7 @@ public class Mailbox implements MailboxStore {
             ? octxt.getAuthenticatedUser().getPrefLocale()
             : null;
     boolean nameFormatLastFirst = false;
-    if (locale != null && locale.equals("ja")) {
+    if ("ja".equals(locale)) {
       nameFormatLastFirst = true;
     }
     for (InternetAddress addr : addrs) {
@@ -9428,7 +9425,7 @@ public class Mailbox implements MailboxStore {
                 delete(octxtNoConflicts, calItem.getId(), MailItem.Type.UNKNOWN);
                 importIt = true;
               } else {
-                Invite oldInvites[] = calItem.getInvites();
+                Invite[] oldInvites = calItem.getInvites();
                 if ((oldInvites == null) || (oldInvites.length == 0)) {
                   // Something is seriously wrong with the existing calendar item.  Delete it so
                   // new invite will import cleanly
@@ -11260,7 +11257,7 @@ public class Mailbox implements MailboxStore {
           ZimbraLog.purge.debug(
               "Batch %d - Found %d items with \\Deleted flags",
               batch, itemIdsWithDeletedFlag.size());
-          int itemIds[] = new int[itemIdsWithDeletedFlag.size()];
+          int[] itemIds = new int[itemIdsWithDeletedFlag.size()];
           int pos = 0;
           for (Integer integer : itemIdsWithDeletedFlag) {
             itemIds[pos] = integer;

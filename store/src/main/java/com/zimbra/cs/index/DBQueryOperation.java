@@ -96,11 +96,11 @@ public class DBQueryOperation extends QueryOperation {
   private DbSearch.FetchMode fetch = null;
   private QueryExecuteMode executeMode = null;
 
-  private static enum QueryExecuteMode {
+  private enum QueryExecuteMode {
     NO_RESULTS,
     NO_LUCENE,
     DB_FIRST,
-    LUCENE_FIRST;
+    LUCENE_FIRST
   }
 
   /**
@@ -1094,7 +1094,7 @@ public class DBQueryOperation extends QueryOperation {
     boolean atFirst = true;
     StringBuilder result = new StringBuilder("<");
     if (luceneOp != null) {
-      result.append(luceneOp.toString());
+      result.append(luceneOp);
       atFirst = false;
     }
     if (!atFirst) {

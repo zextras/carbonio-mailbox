@@ -278,7 +278,7 @@ public class LmtpInject {
         System.exit((errmsg == null) ? 0 : 1);
     }
 
-    private static CommandLine parseArgs(String args[]) {
+    private static CommandLine parseArgs(String[] args) {
         StringBuffer gotCL = new StringBuffer("cmdline: ");
       for (String arg : args) {
         gotCL.append("'").append(arg).append("' ");
@@ -375,7 +375,7 @@ public class LmtpInject {
                         valid = true;
                     }
                 } catch (IOException e) {
-                    System.err.format("Unable to validate %s: %s.\n", file.getPath(), e.toString());
+                    System.err.format("Unable to validate %s: %s.\n", file.getPath(), e);
                 } finally {
                     ByteUtil.closeStream(in);
                 }

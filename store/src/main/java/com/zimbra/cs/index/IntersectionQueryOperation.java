@@ -24,7 +24,7 @@ import com.zimbra.common.util.ZimbraLog;
 public final class IntersectionQueryOperation extends CombiningQueryOperation {
     private boolean noHits = false;
     private List<ZimbraHit> bufferedNext = new ArrayList<>(1);
-    private HitGrouper messageGrouper[] = null;
+    private HitGrouper[] messageGrouper = null;
 
     @Override
     public long getCursorOffset() {

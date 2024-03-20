@@ -53,7 +53,7 @@ public class GetAllMailboxes extends AdminDocumentHandler {
         AdminSession session = (AdminSession) getSession(zsc, Session.Type.ADMIN);
         if (session != null) {
             MailboxesParams cachedParams = (MailboxesParams) session.getData(GET_ALL_MAILBOXES_CACHE_KEY);
-            if (cachedParams == null || !cachedParams.equals(params)) {
+            if (!params.equals(cachedParams)) {
                 mailboxes = params.doSearch();
                 session.setData(GET_ALL_MAILBOXES_CACHE_KEY, params);
             } else {

@@ -175,10 +175,10 @@ public class Sync extends MailDocumentHandler {
 
   private static final int DEFAULT_FOLDER_ID = Mailbox.ID_FOLDER_ROOT;
 
-  private static enum SyncPhase {
+  private enum SyncPhase {
     INITIAL,
     DELTA
-  };
+  }
 
   /**
    * @param calendarStart start time of range, in milliseconds. {@code -1} means to leave the start

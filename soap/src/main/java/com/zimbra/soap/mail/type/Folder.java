@@ -69,7 +69,7 @@ public class Folder {
 
     private String name;
 
-    private View(String name) {
+    View(String name) {
       this.name = name;
     }
 
@@ -84,7 +84,7 @@ public class Folder {
       }
       return nameToView.get(name);
     }
-  };
+  }
 
   /**
    * @zm-api-field-tag folder-id

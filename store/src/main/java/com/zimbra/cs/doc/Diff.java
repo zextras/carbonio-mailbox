@@ -7,6 +7,7 @@ package com.zimbra.cs.doc;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.ArrayList;
 
@@ -115,9 +116,9 @@ import com.zimbra.common.util.ByteUtil;
 public class Diff {
 
 	public static final long MAX_LENGTH = 1024 * 1024;  // 1MB
-	public enum Type { common, first, second };
-	
-	public static class Chunk {
+	public enum Type { common, first, second }
+
+  public static class Chunk {
 		public Type disposition;
 		public ArrayList<String> content;
 		public Chunk(String c, Type disp) {
@@ -140,7 +141,7 @@ public class Diff {
 	
 	private static String[] readInputStream(InputStream in) throws IOException {
 		byte[] buf = ByteUtil.getContent(in, -1);
-		return new String(buf, "UTF-8").split("\\n");
+		return new String(buf, StandardCharsets.UTF_8).split("\\n");
 	}
 	
     public static Collection<Chunk> getResult(InputStream i1, InputStream i2) throws IOException {

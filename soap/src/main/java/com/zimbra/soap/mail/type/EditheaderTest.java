@@ -279,7 +279,7 @@ public class EditheaderTest {
         // relational comparator must be available with numeric comparison
         if (comparator != null && comparator.equals(HeaderConstants.I_ASCII_NUMERIC)
                 && !((count != null && count) || (value != null && value)
-                        || (matchType != null && matchType.equals(MatchTypeTags.IS_TAG.substring(1))))) {
+                        || (MatchTypeTags.IS_TAG.substring(1).equals(matchType)))) {
             throw ServiceException.PARSE_ERROR("EditheaderTest : No valid comparator (:value, :count or :is) found for numeric operation.", null);
         }
     }

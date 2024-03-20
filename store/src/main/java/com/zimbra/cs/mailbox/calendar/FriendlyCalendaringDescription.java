@@ -395,7 +395,7 @@ public class FriendlyCalendaringDescription {
         case -1: case 1: case 2: case 3: case 4:
             break;
         default:
-            sLog.warn("Invalid RECUR pattern: " + recur.toString());
+            sLog.warn("Invalid RECUR pattern: " + recur);
             break;
         }
         return offset;

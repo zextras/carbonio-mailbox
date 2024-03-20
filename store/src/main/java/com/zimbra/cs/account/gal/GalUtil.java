@@ -85,7 +85,7 @@ public class GalUtil {
         ZLdapFilterFactory filterFactory = ZLdapFilterFactory.getInstance();
 
         if (tokenize != null) {
-            String tokens[] = key.split("\\s+");
+            String[] tokens = key.split("\\s+");
             if (tokens.length > 1) {
                 StringBuilder q;
                 if (GalConstants.TOKENIZE_KEY_AND.equals(tokenize)) {

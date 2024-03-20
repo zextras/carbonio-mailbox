@@ -23,6 +23,7 @@ import java.io.PipedInputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.zip.GZIPInputStream;
@@ -472,20 +473,12 @@ public class ByteUtil {
             if (encoded[i] == (byte) '/')
                 encoded[i] = (byte) ',';
         }
-        try {
-            return new String(encoded, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            return null;  // this shouldn't happen
-        }
+        return new String(encoded, StandardCharsets.UTF_8);
     }
 
     public static byte[] decodeFSSafeBase64(String str) {
         byte[] bytes = null;
-        try {
-            bytes = str.getBytes("utf-8");
-        } catch (UnsupportedEncodingException e) {
-            // this shouldn't happen
-        }
+        bytes = str.getBytes(StandardCharsets.UTF_8);
         // Undo the mapping done in encodeFSSafeBase64().
         for (int i = 0; i < bytes.length; i++) {
             if (bytes[i] == (byte) ',')
@@ -697,7 +690,7 @@ public class ByteUtil {
         try {
             long transferred = 0;
             if (maxLength != 0) {
-                byte buffer[] = new byte[8192];
+                byte[] buffer = new byte[8192];
                 int numRead;
                 do {
                     int readMax = buffer.length;
@@ -826,7 +819,7 @@ public class ByteUtil {
         if (len > MAX_STRING_LEN)
             throw new IOException("String length " + len + " is too long in ByteUtil.writeUTF8(); max=" + MAX_STRING_LEN);
         if (len > 0) {
-            byte[] buf = str.getBytes("UTF-8");
+            byte[] buf = str.getBytes(StandardCharsets.UTF_8);
             out.writeInt(buf.length);
             out.write(buf);
         } else {
@@ -841,7 +834,7 @@ public class ByteUtil {
         } else if (len > 0) {
             byte[] buf = new byte[len];
             in.readFully(buf, 0, len);
-            return new String(buf, "UTF-8");
+            return new String(buf, StandardCharsets.UTF_8);
         } else if (len == 0) {
             return "";
         } else if (len == -1) {
@@ -880,7 +873,7 @@ public class ByteUtil {
         }
 
         @Override
-        public void write(byte b[], int off, int len) throws IOException {
+        public void write(byte[] b, int off, int len) throws IOException {
             if (stream1 != null) {
                 stream1.write(b, off, len);
             }

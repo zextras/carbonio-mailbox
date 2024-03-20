@@ -94,7 +94,7 @@ public class CsvFormatter extends Formatter {
         context.resp.addHeader("Content-Disposition", cd);
         context.resp.setCharacterEncoding(context.getCharset().name());
         context.resp.setContentType("text/csv");
-        context.resp.getWriter().print(sb.toString());
+        context.resp.getWriter().print(sb);
     }
 
     @Override

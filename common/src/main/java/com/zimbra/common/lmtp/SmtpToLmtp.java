@@ -38,7 +38,7 @@ public class SmtpToLmtp {
          * @return one or more valid mailbox addresses, or an empty {@code Iterable}
          * if the recipient is invalid
          */
-        public Iterable<String> validate(String recipient);
+        Iterable<String> validate(String recipient);
     }
 
     private static final RecipientValidator DUMMY_VALIDATOR = recipient -> List.of(recipient);

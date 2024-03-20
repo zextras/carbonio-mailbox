@@ -220,13 +220,13 @@ public abstract class Provisioning extends ZAttrProvisioning {
 
   private static volatile Provisioning singleton;
 
-  public static enum CacheMode {
+  public enum CacheMode {
     DEFAULT, // use the Provisioning implementation's default caching mode
     ON,
     OFF
   }
 
-  public static enum AuthMode {
+  public enum AuthMode {
     PASSWORD,
     RECOVERY_CODE
   }
@@ -585,7 +585,7 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public String getEmailAddrByDomainAlias(String emailAddress) throws ServiceException {
     String addr = null;
 
-    String parts[] = emailAddress.split("@");
+    String[] parts = emailAddress.split("@");
     if (parts.length == 2) {
       Domain domain = getDomain(Key.DomainBy.name, parts[1], true);
       if ((domain != null) && (!domain.isLocal())) {
@@ -1027,9 +1027,9 @@ public abstract class Provisioning extends ZAttrProvisioning {
     return get(acctSel.getBy().toKeyAccountBy(), acctSel.getKey());
   }
 
-  public static interface EagerAutoProvisionScheduler {
+  public interface EagerAutoProvisionScheduler {
     // returns whether a shutdown has been request to the scheduler
-    public boolean isShutDownRequested();
+    boolean isShutDownRequested();
   }
 
   /**
@@ -1084,10 +1084,9 @@ public abstract class Provisioning extends ZAttrProvisioning {
     throw ServiceException.UNSUPPORTED();
   }
 
-  public static interface DirectoryEntryVisitor {
+  public interface DirectoryEntryVisitor {
     void visit(String dn, Map<String, Object> attrs);
   }
-  ;
 
   public void searchAutoProvDirectory(
       Domain domain,
@@ -2557,8 +2556,8 @@ public abstract class Provisioning extends ZAttrProvisioning {
     // do nothing by default
   }
 
-  public static interface PublishedShareInfoVisitor {
-    public void visit(ShareInfoData shareInfoData) throws ServiceException;
+  public interface PublishedShareInfoVisitor {
+    void visit(ShareInfoData shareInfoData) throws ServiceException;
   }
 
   public void getShareInfo(Account ownerAcct, PublishedShareInfoVisitor visitor)
@@ -2567,14 +2566,14 @@ public abstract class Provisioning extends ZAttrProvisioning {
   }
 
   // TODO: consolidate with CacheType in main
-  public static enum EntryType {
+  public enum EntryType {
     account,
     group,
     config,
     cos,
     domain,
     server,
-    zimlet;
+    zimlet
   }
 
   public Map<String, String> getNamesForIds(Set<String> ids, EntryType type)
@@ -2582,17 +2581,17 @@ public abstract class Provisioning extends ZAttrProvisioning {
     return new HashMap<>(); // return empty map
   }
 
-  public static interface ProvisioningValidator {
-    static final String CREATE_ACCOUNT_SUCCEEDED = "createAccountSucceeded";
-    static final String CREATE_ACCOUNT = "createAccount";
-    static final String CREATE_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE =
+  public interface ProvisioningValidator {
+    String CREATE_ACCOUNT_SUCCEEDED = "createAccountSucceeded";
+    String CREATE_ACCOUNT = "createAccount";
+    String CREATE_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE =
         "createAccountCheckDomainCosAndFeature";
-    static final String MODIFY_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE =
+    String MODIFY_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE =
         "modifyAccountCheckDomainCosAndFeature";
-    static final String RENAME_ACCOUNT = "renameAccount";
-    static final String RENAME_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE =
+    String RENAME_ACCOUNT = "renameAccount";
+    String RENAME_ACCOUNT_CHECK_DOMAIN_COS_AND_FEATURE =
         "renameAccountCheckDomainCosAndFeature";
-    static final String DELETE_ACCOUNT_SUCCEEDED = "deleteAccountSucceeded";
+    String DELETE_ACCOUNT_SUCCEEDED = "deleteAccountSucceeded";
 
     void validate(Provisioning prov, String action, Object... args) throws ServiceException;
 

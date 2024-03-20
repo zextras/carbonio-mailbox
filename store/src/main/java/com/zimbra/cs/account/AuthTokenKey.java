@@ -60,7 +60,7 @@ public class AuthTokenKey {
     }
 
     private AuthTokenKey(String k) throws ServiceException {
-        String parts[] = k.split(":");
+        String[] parts = k.split(":");
         if (parts.length != 3)
             throw ServiceException.INVALID_REQUEST("invalid auth token key", null);
         String ver = parts[0];

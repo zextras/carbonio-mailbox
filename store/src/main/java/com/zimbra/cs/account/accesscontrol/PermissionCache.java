@@ -29,7 +29,7 @@ public class PermissionCache {
         private final Boolean result;
         private final short cacheMask;
 
-        private CachedPermission(Boolean result, short cacheMask) {
+        CachedPermission(Boolean result, short cacheMask) {
             this.result = result;
             this.cacheMask = cacheMask;
         }
@@ -121,7 +121,7 @@ public class PermissionCache {
         PermCacheManager.getInstance().put(target, cacheKey, rightNeeded, perm);
 
         if (ZimbraLog.acl.isDebugEnabled()) {
-            ZimbraLog.acl.debug("PermissionCache put: " + perm.toString() +
+            ZimbraLog.acl.debug("PermissionCache put: " + perm +
                     " (target=" + target.getLabel() + ", grantee=" + grantee.getName() +
                     ", right=" + rightNeeded.getName() + ", canDelegateNeeded=" + canDelegateNeeded + ")");
         }

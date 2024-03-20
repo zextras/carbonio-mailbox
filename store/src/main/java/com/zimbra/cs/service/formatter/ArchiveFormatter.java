@@ -105,7 +105,7 @@ public abstract class ArchiveFormatter extends Formatter {
   private static String UTF8 = "UTF-8";
   private final Map<Integer, List<Contact>> contacts = new HashMap<>();
 
-  public static enum Resolve {
+  public enum Resolve {
     Modify,
     Replace,
     Reset,
@@ -216,46 +216,46 @@ public abstract class ArchiveFormatter extends Formatter {
     }
   }
 
-  public abstract interface ArchiveInputEntry {
-    public long getModTime();
+  public interface ArchiveInputEntry {
+    long getModTime();
 
-    public String getName();
+    String getName();
 
-    public long getSize();
+    long getSize();
 
-    public int getType();
+    int getType();
 
-    public boolean isUnread();
+    boolean isUnread();
   }
 
-  public abstract interface ArchiveOutputEntry {
-    public void setUnread();
+  public interface ArchiveOutputEntry {
+    void setUnread();
 
-    public void setSize(long size);
+    void setSize(long size);
   }
 
-  public abstract interface ArchiveInputStream extends Closeable {
-    public InputStream getInputStream();
+  public interface ArchiveInputStream extends Closeable {
+    InputStream getInputStream();
 
-    public ArchiveInputEntry getNextEntry() throws IOException;
+    ArchiveInputEntry getNextEntry() throws IOException;
 
-    public int read(byte[] buf, int offset, int len) throws IOException;
+    int read(byte[] buf, int offset, int len) throws IOException;
   }
 
-  public abstract interface ArchiveOutputStream extends Closeable {
-    public void closeEntry() throws IOException;
+  public interface ArchiveOutputStream extends Closeable {
+    void closeEntry() throws IOException;
 
-    public OutputStream getOutputStream();
+    OutputStream getOutputStream();
 
-    public int getRecordSize();
+    int getRecordSize();
 
-    public ArchiveOutputEntry newOutputEntry(String path, String name, int type, long date);
+    ArchiveOutputEntry newOutputEntry(String path, String name, int type, long date);
 
-    public void putNextEntry(ArchiveOutputEntry entry) throws IOException;
+    void putNextEntry(ArchiveOutputEntry entry) throws IOException;
 
-    public void write(byte[] buf) throws IOException;
+    void write(byte[] buf) throws IOException;
 
-    public void write(byte[] buf, int offset, int len) throws IOException;
+    void write(byte[] buf, int offset, int len) throws IOException;
   }
 
   @Override
@@ -678,7 +678,7 @@ public abstract class ArchiveFormatter extends Formatter {
     }
     try {
       ArchiveOutputEntry aoe;
-      byte data[] = null;
+      byte[] data = null;
       String path =
           mi instanceof Contact
               ? getEntryName(mi, fldr, name, ext, charsetEncoder, names)
@@ -812,7 +812,7 @@ public abstract class ArchiveFormatter extends Formatter {
         aos.closeEntry();
       } else if (is != null) {
         if (context.shouldReturnBody()) {
-          byte buf[] = new byte[aos.getRecordSize() * 20];
+          byte[] buf = new byte[aos.getRecordSize() * 20];
           int in;
           long remain = miSize;
 
@@ -841,7 +841,7 @@ public abstract class ArchiveFormatter extends Formatter {
           }
         } else {
           // Read headers into memory to compute size
-          byte headerData[] = HeadersOnlyInputStream.getHeaders(is);
+          byte[] headerData = HeadersOnlyInputStream.getHeaders(is);
 
           aoe.setSize(headerData.length);
           aos.putNextEntry(aoe);
@@ -998,7 +998,7 @@ public abstract class ArchiveFormatter extends Formatter {
 
     try {
       ArchiveInputStream ais;
-      int ids[] = null;
+      int[] ids = null;
       long interval = 45 * 1000;
       Resolve r =
           resolve == null
@@ -1059,7 +1059,7 @@ public abstract class ArchiveFormatter extends Formatter {
             }
             if (delIds == null) continue;
 
-            int delIdsArray[] = new int[delIds.size()];
+            int[] delIdsArray = new int[delIds.size()];
             int i = 0;
 
             for (Integer del : delIds) {
@@ -1128,7 +1128,7 @@ public abstract class ArchiveFormatter extends Formatter {
                   fmap,
                   searchTypes,
                   r,
-                  timestamp == null || !timestamp.equals("0"),
+                  !"0".equals(timestamp),
                   ais,
                   aie,
                   errs);
@@ -1333,8 +1333,8 @@ public abstract class ArchiveFormatter extends Formatter {
             Map<Integer, MimeMessage> blobMimeMsgMap =
                 data == null ? null : CalendarItem.decomposeBlob(data);
             SetCalendarItemData defScid = new SetCalendarItemData();
-            SetCalendarItemData exceptionScids[] = null;
-            Invite invs[] = ci.getInvites();
+            SetCalendarItemData[] exceptionScids = null;
+            Invite[] invs = ci.getInvites();
             MimeMessage mm;
 
             if (invs != null && invs.length > 0) {
@@ -1458,7 +1458,7 @@ public abstract class ArchiveFormatter extends Formatter {
 
         case FOLDER:
           String aclParam = context.params.get("acl");
-          boolean doACL = aclParam == null || !aclParam.equals("0");
+          boolean doACL = !"0".equals(aclParam);
           Folder f = (Folder) mi;
           ACL acl = f.getACL();
           Folder oldF = null;

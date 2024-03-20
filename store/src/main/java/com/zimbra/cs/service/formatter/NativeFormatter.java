@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
@@ -245,7 +246,7 @@ public final class NativeFormatter extends Formatter {
                     String returnCode = null;
                     if (data != null) {
                         returnCode = new String(Arrays.copyOfRange(data, 0,
-                            NativeFormatter.RETURN_CODE_NO_RESIZE.length()), "UTF-8");
+                            NativeFormatter.RETURN_CODE_NO_RESIZE.length()), StandardCharsets.UTF_8);
                     }
                     if (data != null && !NativeFormatter.RETURN_CODE_NO_RESIZE.equals(returnCode)) {
                         in = new ByteArrayInputStream(data);

@@ -68,6 +68,6 @@ public class ZimbraTopFieldDocs extends ZimbraTopDocs {
 
     @Override
     public String toString() {
-        return super.toString() + MoreObjects.toStringHelper(this).add("sortFields", sortFields).toString();
+        return super.toString() + MoreObjects.toStringHelper(this).add("sortFields", sortFields);
     }
 }

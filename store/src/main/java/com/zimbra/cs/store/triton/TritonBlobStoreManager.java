@@ -48,8 +48,9 @@ public class TritonBlobStoreManager extends SisStore implements ExternalResumabl
 
     private String url;
     private String blobApiUrl;
-    enum HashType {SHA0, SHA256};
-    private HashType hashType;
+    enum HashType {SHA0, SHA256}
+
+  private HashType hashType;
     private String emptyLocator;
 
     @VisibleForTesting

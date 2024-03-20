@@ -31,7 +31,7 @@ public abstract class DataSourceListner {
          * @param name
          * @param ordinal
          */
-        private DataSourceAction(String name) {
+        DataSourceAction(String name) {
             this.action = name;
         }
 

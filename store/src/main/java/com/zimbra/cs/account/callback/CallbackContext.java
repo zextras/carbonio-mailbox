@@ -17,19 +17,19 @@ public class CallbackContext {
 
     public enum Op {
         CREATE,
-        MODIFY;
-    };
+        MODIFY
+    }
 
-    public enum DataKey {
+  public enum DataKey {
         MAX_SIGNATURE_LEN,
         MAIL_FORWARDING_ADDRESS_MAX_LEN,
         MAIL_FORWARDING_ADDRESS_MAX_NUM_ADDRS,
         MAIL_WHITELIST_MAX_NUM_ENTRIES,
         MAIL_BLACKLIST_MAX_NUM_ENTRIES,
-        PREV_EPHEMERAL_BACKEND_URL;
-    };
+        PREV_EPHEMERAL_BACKEND_URL
+  }
 
-    // whether the entry is being created
+  // whether the entry is being created
     private final Op op;
 
     // named of the entry being created

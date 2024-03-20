@@ -88,7 +88,7 @@ public class SendMsg extends MailDocumentHandler {
     NEW,
     SENT,
     PENDING
-  };
+  }
 
   private static final long MAX_IN_FLIGHT_DELAY_MSECS = 4 * Constants.MILLIS_PER_SECOND;
   private static final long RETRY_CHECK_PERIOD_MSECS = 500;
@@ -600,7 +600,7 @@ public class SendMsg extends MailDocumentHandler {
             String sender = ((InternetAddress) senderAddr).getAddress();
             if (sender == null) return false;
 
-            String froms[] = new String[fromAddrs.length];
+            String[] froms = new String[fromAddrs.length];
             for (int i = 0; i < fromAddrs.length; i++) {
               Address fromAddr = fromAddrs[i];
               if (fromAddr == null) return false;

@@ -39,13 +39,13 @@ public class ClientCertPrincipalMap {
     
     // a fixed, known certificate field 
     static class KnownCertField extends CertField {
-        static enum Field {
+        enum Field {
             SUBJECT_DN,
             SUBJECTALTNAME_OTHERNAME_UPN,
             SUBJECTALTNAME_RFC822NAME;
             
             private KnownCertField knownCertField;
-            private Field() {
+            Field() {
                 knownCertField = new KnownCertField(this);
             }
             
@@ -62,8 +62,8 @@ public class ClientCertPrincipalMap {
                 }
                 return str.toString();
             }
-        };
-        
+        }
+
         private Field field;
                 
         private KnownCertField(Field field) {
@@ -131,7 +131,7 @@ public class ClientCertPrincipalMap {
         
     }
     
-    static enum ZimbraKey {
+    enum ZimbraKey {
         // Note: do NOT support search Zimbra account by DN because:
         // (1) DOS attack (non-existing DN will cause repeated LDAP search)
         // and
@@ -140,7 +140,7 @@ public class ClientCertPrincipalMap {
         // dn, 
         name,
         zimbraId,
-        zimbraForeignPrincipal;
+        zimbraForeignPrincipal
     }
     
     abstract static class Rule {

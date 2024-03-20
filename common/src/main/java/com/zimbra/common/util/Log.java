@@ -61,8 +61,8 @@ public class Log {
     warn,
     info,
     debug,
-    trace;
-  };
+    trace
+  }
 
   private final Logger mLogger;
 

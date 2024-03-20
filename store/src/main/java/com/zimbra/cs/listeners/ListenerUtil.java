@@ -13,7 +13,7 @@ public class ListenerUtil {
 
     // listeners priority
     public enum Priority {
-        ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN;
+        ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN
     }
 
     // Method for sorting the listener map based on priorities

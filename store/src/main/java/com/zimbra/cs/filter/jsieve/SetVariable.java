@@ -10,6 +10,7 @@ import static com.zimbra.cs.filter.JsieveConfigMapHandler.CAPABILITY_ENOTIFY;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -155,11 +156,7 @@ public class SetVariable extends AbstractCommand {
         } else if (operation.equals(ALL_UPPER_CASE)) {
           temp = temp.toUpperCase();
         } else if (operation.equals(ENCODE_URL)) {
-          try {
-            temp = URLEncoder.encode(temp, "UTF-8");
-          } catch (UnsupportedEncodingException e) {
-            temp = value;
-          }
+          temp = URLEncoder.encode(temp, StandardCharsets.UTF_8);
         } else {
           temp = value;
         }

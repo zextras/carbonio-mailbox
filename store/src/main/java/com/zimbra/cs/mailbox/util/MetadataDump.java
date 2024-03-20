@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -71,7 +72,7 @@ public final class MetadataDump {
         System.err.println("   or: zmmetadump -s <encoded string>");
     }
 
-    private static CommandLine parseArgs(String args[]) {
+    private static CommandLine parseArgs(String[] args) {
         CommandLineParser parser = new GnuParser();
         CommandLine cl = null;
         try {
@@ -313,7 +314,7 @@ public final class MetadataDump {
             int mboxId = 0;
             int itemId = 0;
 
-            PrintStream out = new PrintStream(System.out, true, "utf-8");
+            PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
             CommandLine cl = parseArgs(args);
             if (cl.hasOption(OPT_HELP)) {

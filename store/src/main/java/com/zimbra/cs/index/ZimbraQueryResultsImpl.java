@@ -69,7 +69,6 @@ abstract class ZimbraQueryResultsImpl implements ZimbraQueryResults {
     contactHits = new LRUHashMap<>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
     calItemHits = new LRUHashMap<>(MAX_LRU_ENTRIES, INITIAL_TABLE_SIZE);
   }
-  ;
 
   @Override
   public abstract ZimbraHit skipToHit(int hitNo) throws ServiceException;
@@ -132,7 +131,7 @@ abstract class ZimbraQueryResultsImpl implements ZimbraQueryResults {
 
   protected MessagePartHit getMessagePartHit(
       Mailbox mbx, int id, Message msg, Document doc, Object sortValue) {
-    String key = Integer.toString(id) + "-" + doc.get(LuceneFields.L_PARTNAME);
+    String key = id + "-" + doc.get(LuceneFields.L_PARTNAME);
     MessagePartHit hit = partHits.get(key);
     if (hit == null) {
       hit = new MessagePartHit(this, mbx, id, msg, doc, sortValue);

@@ -336,7 +336,7 @@ public class FileUploadServlet extends ZimbraServlet {
   }
 
   private static void cleanupLeftoverTempFiles() {
-    File files[] = new File(getUploadDir()).listFiles(new TempFileFilter());
+    File[] files = new File(getUploadDir()).listFiles(new TempFileFilter());
     if (files == null || files.length < 1) {
       return;
     }
@@ -386,7 +386,7 @@ public class FileUploadServlet extends ZimbraServlet {
           elt.addAttribute(MailConstants.A_CONTENT_TYPE, up.getContentType());
           elt.addAttribute(MailConstants.A_CONTENT_FILENAME, up.name);
           elt.addAttribute(MailConstants.A_SIZE, up.getSize());
-          results.append(first ? "" : ",").append(elt.toString());
+          results.append(first ? "" : ",").append(elt);
           first = false;
         }
         results.append(']');

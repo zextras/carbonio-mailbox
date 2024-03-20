@@ -96,7 +96,7 @@ public class ScheduleOutbox extends CalendarCollection {
             String method = vcalendar.getPropVal(ICalTok.METHOD, null);
             if (method != null) {
                 isOrganizerMethod = Invite.isOrganizerMethod(method);
-                isCancel = ICalTok.CANCEL.toString().equalsIgnoreCase(method);;
+                isCancel = ICalTok.CANCEL.toString().equalsIgnoreCase(method);
             }
 
             CalDavUtils.removeAttendeeForOrganizer(req);  // Apple iCal fixup

@@ -83,7 +83,6 @@ public class SetCalendarItem extends CalendarRequest {
       }
     }
   }
-  ;
 
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {

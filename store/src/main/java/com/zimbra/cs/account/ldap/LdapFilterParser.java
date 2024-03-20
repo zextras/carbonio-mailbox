@@ -17,7 +17,7 @@ import com.zimbra.cs.account.EntrySearchFilter.Term;
  */
 public class LdapFilterParser {
     
-    private static enum FilterType {
+    private enum FilterType {
         AND,                 // &
         OR,                  // |
         NOT,                 // !

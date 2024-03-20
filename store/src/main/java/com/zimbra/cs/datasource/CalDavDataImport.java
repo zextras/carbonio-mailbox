@@ -116,7 +116,7 @@ public class CalDavDataImport extends MailItemImport {
 
   protected String getDefaultPrincipalUrl() {
     DataSource ds = getDataSource();
-    String attrs[] = ds.getMultiAttr(Provisioning.A_zimbraDataSourceAttribute);
+    String[] attrs = ds.getMultiAttr(Provisioning.A_zimbraDataSourceAttribute);
     for (String a : attrs) {
       if (a.startsWith("p:")) {
         return a.substring(2).replaceAll("_USERNAME_", getUsername());
@@ -163,7 +163,7 @@ public class CalDavDataImport extends MailItemImport {
     created,
     deleted,
     modified
-  };
+  }
 
   private static class RemoteItem {
     Status status;
@@ -364,7 +364,7 @@ public class CalDavDataImport extends MailItemImport {
       return;
     }
     String type = item.md.get(METADATA_KEY_TYPE, null);
-    if (type == null || !type.equals(METADATA_TYPE_APPOINTMENT)) {
+    if (!METADATA_TYPE_APPOINTMENT.equals(type)) {
       // not a calendar item
       return;
     }
@@ -578,7 +578,7 @@ public class CalDavDataImport extends MailItemImport {
       ZimbraLog.datasource.debug("Updating stale appointment %s", item.href);
       ZCalendar.ZVCalendar vcalendar;
       SetCalendarItemData main = new SetCalendarItemData();
-      SetCalendarItemData exceptions[] = null;
+      SetCalendarItemData[] exceptions = null;
       CalDavClient client = null;
       try {
         client = getClient();

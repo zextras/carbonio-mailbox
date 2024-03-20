@@ -411,7 +411,7 @@ public enum TargetType {
         break;
       default:
         ServiceException.INVALID_REQUEST(
-            "invallid target type for lookupTarget:" + targetType.toString(), null);
+            "invallid target type for lookupTarget:" + targetType, null);
     }
 
     return targetEntry;

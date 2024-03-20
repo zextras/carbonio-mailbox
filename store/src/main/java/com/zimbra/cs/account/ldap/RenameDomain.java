@@ -117,7 +117,7 @@ public class RenameDomain {
         // the old domain into the new domain
         phase = RenamePhase.RENAME_ENTRIES;
         if (phase.ordinal() >= startingPhase.ordinal()) {
-            debug("Entering phase " + phase.toString());
+            debug("Entering phase " + phase);
             // don't need to setPhase for the first first, it was set or got from beginRenameDomain
             visitor = getVisitor(phase);
 
@@ -134,7 +134,7 @@ public class RenameDomain {
         // left in the domain should be aliases with target in other domains
         phase = RenamePhase.FIX_FOREIGN_ALIASES;
         if (phase.ordinal() >= startingPhase.ordinal()) {
-            debug("Entering phase " + phase.toString());
+            debug("Entering phase " + phase);
             renameInfo.setPhase(phase);
             renameInfo.write(mProv, mOldDomain);
             visitor = getVisitor(phase);
@@ -156,7 +156,7 @@ public class RenameDomain {
         //       in the first pass.
         phase = RenamePhase.FIX_FOREIGN_DL_MEMBERS;
         if (phase.ordinal() >= startingPhase.ordinal()) {
-            debug("Entering phase " + phase.toString());
+            debug("Entering phase " + phase);
             renameInfo.setPhase(phase);
             renameInfo.write(mProv, mOldDomain);
             visitor = getVisitor(phase);
@@ -200,7 +200,7 @@ public class RenameDomain {
         flushCacheOnAllServers(CacheEntryType.account);
     }
 
-    public static enum RenamePhase {
+    public enum RenamePhase {
         /*
          * Note: the following text is written in zimbraDomainRenameInfo -
          * change would require migration!!

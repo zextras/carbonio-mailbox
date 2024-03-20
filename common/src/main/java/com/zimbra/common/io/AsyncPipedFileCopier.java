@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -297,7 +298,7 @@ class AsyncPipedFileCopier extends AbstractAsyncFileCopier implements FileCopier
 
                 long callbackId = -1;
                 try {
-                    byte destPath[] = dest.getAbsolutePath().getBytes(CHARSET_UTF8);
+                    byte[] destPath = dest.getAbsolutePath().getBytes(StandardCharsets.UTF_8);
                     mByteBuffer.clear();
                     // command
                     mByteBuffer.putInt(CMD_COPY.length);
@@ -547,7 +548,7 @@ class AsyncPipedFileCopier extends AbstractAsyncFileCopier implements FileCopier
                 byte[] strBytes = new byte[strLen];
                 mByteBuffer.flip();
                 mByteBuffer.get(strBytes);
-                String str = new String(strBytes, CHARSET_UTF8);
+                String str = new String(strBytes, StandardCharsets.UTF_8);
                 return str;
             }
         }

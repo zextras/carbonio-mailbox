@@ -220,9 +220,9 @@ public abstract class Right extends RightConsts implements Comparable<Right> {
     void setTargetType(TargetType targetType) throws ServiceException {
         if (mTargetType != null) {
             throw ServiceException.PARSE_ERROR("target type already set", null);
-        };
+        }
 
-        mTargetType = targetType;
+      mTargetType = targetType;
     }
 
     void setGrantTargetType(TargetType targetType) throws ServiceException {

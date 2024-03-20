@@ -389,7 +389,7 @@ public class ZimbraServlet extends HttpServlet {
       BasicCookieStore state)
       throws IOException, ServiceException, HttpException {
     // create an HTTP client with the same cookies
-    javax.servlet.http.Cookie cookies[] = req.getCookies();
+    javax.servlet.http.Cookie[] cookies = req.getCookies();
     String hostname = method.getURI().getHost();
     boolean hasZMAuth = hasZimbraAuthCookie(state);
     boolean hasJwtSalt = hasJWTSaltCookie(state);

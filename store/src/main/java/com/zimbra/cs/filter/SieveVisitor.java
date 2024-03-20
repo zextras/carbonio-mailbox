@@ -1344,7 +1344,7 @@ public abstract class SieveVisitor {
 
     private void validateCountComparator(boolean isCount, Sieve.Comparator comparator) throws ServiceException {
         if (isCount && comparator != null && !Sieve.Comparator.iasciinumeric.equals(comparator)) {
-            throw ServiceException.PARSE_ERROR("Invalid Comparator For Count: " + comparator.toString(), null);
+            throw ServiceException.PARSE_ERROR("Invalid Comparator For Count: " + comparator, null);
         }
     }
 }

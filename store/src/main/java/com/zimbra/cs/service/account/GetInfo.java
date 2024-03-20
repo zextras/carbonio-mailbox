@@ -63,7 +63,7 @@ import java.util.Set;
 public class GetInfo extends AccountDocumentHandler  {
 
     public interface GetInfoExt {
-        public void handle(ZimbraSoapContext zsc, Element getInfoResponse);
+        void handle(ZimbraSoapContext zsc, Element getInfoResponse);
     }
 
     private static ArrayList<GetInfoExt> extensions = new ArrayList<>();

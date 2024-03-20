@@ -79,7 +79,7 @@ public final class Flag extends Tag {
         final char ch;
         final int bitmask;
 
-        private FlagInfo(int id, String name, char ch) {
+        FlagInfo(int id, String name, char ch) {
             this.id = id;
             this.flagName = name;
             this.ch = ch;

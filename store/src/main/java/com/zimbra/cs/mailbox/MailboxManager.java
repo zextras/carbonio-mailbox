@@ -40,29 +40,28 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MailboxManager {
 
-  public static enum FetchMode {
+  public enum FetchMode {
     AUTOCREATE, // create the mailbox if it doesn't exist
     DO_NOT_AUTOCREATE, // fetch from DB if not in memory, but don't create it if it isn't in the DB
     ONLY_IF_CACHED, // don't fetch from the DB, only return if cached
-    ;
   }
 
   /** Listener for mailbox loading */
-  public static interface Listener {
+  public interface Listener {
     /** Called whenever a mailbox has left Maintenance mode */
-    public void mailboxAvailable(Mailbox mbox);
+    void mailboxAvailable(Mailbox mbox);
 
     /** Called whenever a mailbox is loaded */
-    public void mailboxLoaded(Mailbox mbox);
+    void mailboxLoaded(Mailbox mbox);
 
     /** Called whenever a mailbox is created */
-    public void mailboxCreated(Mailbox mbox);
+    void mailboxCreated(Mailbox mbox);
 
     /**
      * Called whenever a mailbox is deleted from this server. Could mean the mailbox was moved to
      * another server, or could mean really deleted
      */
-    public void mailboxDeleted(String accountId);
+    void mailboxDeleted(String accountId);
   }
 
   private ConcurrentHashMap<String, MailboxMaintenance> maintenanceLocks =
