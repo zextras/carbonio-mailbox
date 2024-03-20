@@ -194,13 +194,14 @@ public final class Metadata {
         for (Map.Entry<Object, Object> entry : map.entrySet()) {
             Object key = entry.getKey();
             Object value = entry.getValue();
-            if (key == null || value == null) {
-            } else if (value instanceof Map) {
-                result.put(key.toString(), new Metadata((Map<?, ?>) value));
-            } else if (value instanceof List) {
-                result.put(key.toString(), new MetadataList((List<?>) value));
-            } else {
-                result.put(key.toString(), value);
+            if (key != null && value != null) {
+                if (value instanceof Map) {
+                    result.put(key.toString(), new Metadata((Map<?, ?>) value));
+                } else if (value instanceof List) {
+                    result.put(key.toString(), new MetadataList((List<?>) value));
+                } else {
+                    result.put(key.toString(), value);
+                }
             }
         }
         return result;
