@@ -56,14 +56,14 @@ public class SenderList {
             if (sender == null || sender.trim().equals(""))
                 continue;
             ParsedAddress pa = new ParsedAddress(sender).parse();
-            if (mParticipants != null && mParticipants.contains(pa)) {
+            if (mParticipants == null || !mParticipants.contains(pa)) {
+                if (mParticipants == null)
+                    (mParticipants = new ArrayList<>(MAX_PARTICIPANT_COUNT)).add(pa);
+                else if (mParticipants.size() >= MAX_PARTICIPANT_COUNT)
+                    mIsElided = true;
+                else
+                    mParticipants.add(pa);
             }
-            else if (mParticipants == null)
-                (mParticipants = new ArrayList<>(MAX_PARTICIPANT_COUNT)).add(pa);
-            else if (mParticipants.size() >= MAX_PARTICIPANT_COUNT)
-                mIsElided = true;
-            else
-                mParticipants.add(pa);
         }
     }
 
