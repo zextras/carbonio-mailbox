@@ -931,46 +931,43 @@ class ImapFolderSync {
         }
         Threader threader = pm.getThreader(ds.getMailbox());
         List<PurgedConversation> purgedConvs = threader.lookupPurgedConversations(ds);
-        if (purgedConvs.size() == 0) {
-        } else {
-            for (PurgedConversation conv: purgedConvs) {
-                ImapConnection conn;
-                try {
-                    conn = getRefetchConnection();
-                } catch (ServiceException e) {
-                    ZimbraLog.datasource.warn("could not establish IMAP connection to refetch purged messages");
-                    return;
-                }
-                for (PurgedMessage msg: conv.getMessages()) {
-                    String remoteFolderId = msg.getRemoteFolder();
-                    String msgUid = msg.getUid();
-                    final Integer folderId = msg.getLocalFolderId();
-                    ZimbraLog.datasource.info("restoring message " + msgUid + " in remote folder " + remoteFolderId);
-                    conn.select(remoteFolderId);
-                    final Map<Long, MessageData> msgFlags =
-                            conn.uidFetch(msgUid, "(FLAGS INTERNALDATE)");
-                    FetchResponseHandler handler = new FetchResponseHandler() {
-                        @Override
-                        public void handleFetchResponse(MessageData md) throws Exception {
-                            long uid = md.getUid();
-                            IOExceptionHandler.getInstance().trackSyncItem(mailbox, uid);
-                            try {
-                                handleFetch(md, msgFlags, folderId, false, false);
-                                clearError(uid);
-                            } catch (OutOfMemoryError e) {
-                                Zimbra.halt("Out of memory", e);
-                            } catch (Exception e) {
-                                if (!IOExceptionHandler.getInstance().isRecoverable(mailbox, uid, "Exception re-fetching UID "+uid, e)) {
-                                    syncFailed("re-fetch failed for uid " + uid, e);
-                                    SyncErrorManager.incrementErrorCount(ds, remoteId(uid));
-                                }
+        for (PurgedConversation conv: purgedConvs) {
+            ImapConnection conn;
+            try {
+                conn = getRefetchConnection();
+            } catch (ServiceException e) {
+                ZimbraLog.datasource.warn("could not establish IMAP connection to refetch purged messages");
+                return;
+            }
+            for (PurgedMessage msg: conv.getMessages()) {
+                String remoteFolderId = msg.getRemoteFolder();
+                String msgUid = msg.getUid();
+                final Integer folderId = msg.getLocalFolderId();
+                ZimbraLog.datasource.info("restoring message " + msgUid + " in remote folder " + remoteFolderId);
+                conn.select(remoteFolderId);
+                final Map<Long, MessageData> msgFlags =
+                        conn.uidFetch(msgUid, "(FLAGS INTERNALDATE)");
+                FetchResponseHandler handler = new FetchResponseHandler() {
+                    @Override
+                    public void handleFetchResponse(MessageData md) throws Exception {
+                        long uid = md.getUid();
+                        IOExceptionHandler.getInstance().trackSyncItem(mailbox, uid);
+                        try {
+                            handleFetch(md, msgFlags, folderId, false, false);
+                            clearError(uid);
+                        } catch (OutOfMemoryError e) {
+                            Zimbra.halt("Out of memory", e);
+                        } catch (Exception e) {
+                            if (!IOExceptionHandler.getInstance().isRecoverable(mailbox, uid, "Exception re-fetching UID "+uid, e)) {
+                                syncFailed("re-fetch failed for uid " + uid, e);
+                                SyncErrorManager.incrementErrorCount(ds, remoteId(uid));
                             }
                         }
-                    };
-                    conn.uidFetch(msgUid, "BODY.PEEK[]", handler);
-                }
-                conv.unpurge();
+                    }
+                };
+                conn.uidFetch(msgUid, "BODY.PEEK[]", handler);
             }
+            conv.unpurge();
         }
     }
 
