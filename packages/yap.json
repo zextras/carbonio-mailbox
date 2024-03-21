@@ -23,9 +23,6 @@
       "name": "common-appserver-conf"
     },
     {
-      "name": "common-appserver-docs"
-    },
-    {
       "name": "common-appserver-native-lib"
     },
     {
