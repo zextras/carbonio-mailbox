@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class GraphQlResponse {
 
   public GraphQlResponse() {
+    // empty constructor needed by Jackson
   }
 
   public JsonNode getData() {
