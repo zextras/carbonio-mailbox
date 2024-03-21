@@ -123,7 +123,7 @@ pipeline {
             }
             steps {
 
-                mvnCmd("$BUILD_PROPERTIES_PARAMS test -Dexcludegroups=api")
+                mvnCmd("$BUILD_PROPERTIES_PARAMS verify -Dexcludegroups=api")
                 junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
             }
         }
