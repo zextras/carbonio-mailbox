@@ -398,8 +398,7 @@ public class MimeDetect {
     }
 
     public void parseGlobs(String fileList) throws IOException {
-        
-        if (fileList == null || fileList.length() == 0) {
+        if (fileList == null || fileList.trim().isEmpty()) {
             globs.clear();
             return;
         }
@@ -409,27 +408,24 @@ public class MimeDetect {
             files.add(file + ".zimbra");
         }
         for (String file : files) {
-            BufferedInputStream is = null;
-            try {
-                is = new BufferedInputStream(
-                        new FileInputStream(file));
-            } catch (FileNotFoundException e) {
-                continue;
-            }
-            String line;
-            
-            while ((line = readLine(is)) != null) {
-                if (!line.startsWith("#")) {
-                    String[] tokens = line.split(":");
-                    
-                    if (tokens.length == 2)
-                        globs.put(new Glob(tokens[1]), tokens[0]);
-                    else if (tokens.length == 3)
-                        globs.put(new Glob(tokens[2],
-                            Integer.parseInt(tokens[0])), tokens[1]);
-                    else
-                        ZimbraLog.system.warn("invalid glob syntax " + line);
+            try (FileInputStream fis = new FileInputStream(file);
+                BufferedInputStream bis = new BufferedInputStream(fis)) {
+                String line;
+                while ((line = readLine(bis)) != null) {
+                    if (!line.startsWith("#")) {
+                        String[] tokens = line.split(":");
+
+                        if (tokens.length == 2)
+                            globs.put(new Glob(tokens[1]), tokens[0]);
+                        else if (tokens.length == 3)
+                            globs.put(new Glob(tokens[2],
+                                Integer.parseInt(tokens[0])), tokens[1]);
+                        else
+                            ZimbraLog.system.warn("invalid glob syntax " + line);
+                    }
                 }
+            } catch (FileNotFoundException e) {
+                ZimbraLog.system.warn("file not found %s", file);
             }
         }
     }

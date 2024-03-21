@@ -7,11 +7,26 @@ package com.zimbra.common.mime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.zimbra.common.localconfig.LC;
 import java.io.IOException;
-
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class MimeDetectTest {
+class MimeDetectTest {
+  private static final String BASE_MIME_MAGIC_DIRECTORY_PATH = MimeDetectTest.class.getResource("/").getPath();
+
+  @BeforeAll
+  static void setup(){
+    LC.shared_mime_info_globs.setDefault(BASE_MIME_MAGIC_DIRECTORY_PATH+"globs2");
+    LC.shared_mime_info_magic.setDefault(BASE_MIME_MAGIC_DIRECTORY_PATH + "globs2");
+  }
+
+  @AfterAll
+  static void cleanup() {
+    LC.shared_mime_info_globs.setDefault("");
+    LC.shared_mime_info_globs.setDefault("");
+  }
 
   @Test
   void testFileName() throws IOException {
