@@ -433,7 +433,7 @@ public final class ParseMimeMessage {
             }
             ItemId iid = new ItemId(mid, ctxt.zsc);
             String part = elem.getAttribute(MailConstants.A_PART);
-            Boolean requiresSmartLinkConversion = elem.getAttributeBool(MailConstants.A_REQUIRES_SMART_LINK_CONVERSION, false);
+            boolean requiresSmartLinkConversion = elem.getAttributeBool(MailConstants.A_REQUIRES_SMART_LINK_CONVERSION, false);
             attachPart(mmp, iid, part, contentID, ctxt, contentDisposition, requiresSmartLinkConversion);
             break;
           }
@@ -777,7 +777,7 @@ public final class ParseMimeMessage {
   }
 
   private static void attachPart(MimeMultipart mmp, ItemId iid, String part, String contentID,
-      ParseMessageContext ctxt, String contentDisposition, Boolean requiresSmartLinkConversion)
+      ParseMessageContext ctxt, String contentDisposition, boolean requiresSmartLinkConversion)
       throws IOException, MessagingException, ServiceException {
     if (!iid.isLocal()) {
       Map<String, String> params = new HashMap<>(3);
