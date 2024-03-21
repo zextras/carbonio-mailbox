@@ -643,7 +643,7 @@ public final class ParseMimeMessage {
 
   private static void attachUpload(MimeMultipart mmp, Upload up, String contentID,
       ParseMessageContext ctxt, ContentType ctypeOverride, String contentDescription,
-      String contentDisposition, Boolean requiresSmartLinkConversion)
+      String contentDisposition, boolean requiresSmartLinkConversion)
       throws ServiceException, MessagingException {
     // make sure we haven't exceeded the max size
     ctxt.incrementSize("upload " + up.getName(), (long) (up.getSize() * 1.33));
