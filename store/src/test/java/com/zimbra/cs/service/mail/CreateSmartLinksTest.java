@@ -119,7 +119,7 @@ class CreateSmartLinksTest extends SoapTestSuite {
     final String xmlResponse = getResponse(resp);
     assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, resp.getStatusLine().getStatusCode());
     assertTrue(xmlResponse.contains("Fault"));
-    System.out.println(xmlResponse);
+    
     assertTrue(xmlResponse.contains("<Code>service.INVALID_REQUEST</Code>"));
   }
 
