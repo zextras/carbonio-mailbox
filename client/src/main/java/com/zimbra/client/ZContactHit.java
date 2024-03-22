@@ -300,8 +300,7 @@ public class ZContactHit implements ZImapSearchHit {
     public String getNickname() { return mNickname; }
     public String getNamePrefix() { return mNamePrefix; }
     public String getFirstName() { return mFirstName; }
-
-  public String getPhoneticFirstName() { return mPhoneticFirstName; }
+    public String getPhoneticFirstName() { return mPhoneticFirstName; }
     public String getMiddleName() { return mMiddleName; }
     public String getMaidenName() { return mMaidenName; }
     public String getLastName() { return mLastName; }
