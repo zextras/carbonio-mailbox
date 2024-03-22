@@ -12,7 +12,7 @@ import java.io.IOException;
 public class GraphQLFilesClient {
 
 
-  private final static String GQL_CREATE_LINK_REQUEST = "{\"operationName\":\"createLink\","
+  private static final String GQL_CREATE_LINK_REQUEST = "{\"operationName\":\"createLink\","
       + "\"variables\":"
       + "{\"node_id\":\"%s\","
       + "\"description\":\"\"},"

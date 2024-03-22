@@ -27,7 +27,7 @@ public class MailboxAttachmentService implements AttachmentService {
         )
         .flatMap(message ->
             Try.of(() -> Mime.getMimePart(message.getMimeMessage(), part))
-                .recoverWith( (e) ->
+                .recoverWith( e ->
                     Try.failure(ServiceException.PARSE_ERROR("Error parsing mime message", e))
                 )
                 .flatMap( mimePart ->

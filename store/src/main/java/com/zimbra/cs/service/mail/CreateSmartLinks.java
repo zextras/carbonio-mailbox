@@ -41,7 +41,7 @@ public class CreateSmartLinks extends MailDocumentHandler {
       AuthenticationInfo authenticationInfo
   ) throws ServiceException {
     if (req.getAttachments() == null || req.getAttachments().isEmpty()) {
-      throw ServiceException.INVALID_REQUEST("No smartlink has been specified.", new NoSuchElementException());
+      throw ServiceException.INVALID_REQUEST("No attachment has been specified.", new NoSuchElementException());
     }
     final List<Attachment> attachments = toAttachments(req.getAttachments());
     final List<SmartLink> smartLinks = generateSmartLinks(authenticationInfo, attachments);
