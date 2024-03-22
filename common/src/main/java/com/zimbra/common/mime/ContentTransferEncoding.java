@@ -40,7 +40,7 @@ public enum ContentTransferEncoding {
         static final byte[] BASE64_TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".getBytes();
 
         private int column;
-      private int[] buf = new int[4];
+        private int[] buf = new int[4];
         private boolean fold = true;
 
         Base64EncoderStream(InputStream is) {
@@ -86,8 +86,8 @@ public enum ContentTransferEncoding {
 
         private boolean closed;
         private int position = 3;
-      private int valid = 3;
-      private int[] buf = new int[3];
+        private int valid = 3;
+        private int[] buf = new int[3];
 
         Base64DecoderStream(InputStream is) {
             super(is);
@@ -189,8 +189,8 @@ public enum ContentTransferEncoding {
 
         private int column, valid, out1, out2;
         private boolean fold = true;
-      private boolean text;
-      private boolean[] force;
+        private boolean text;
+        private boolean[] force;
 
         QuotedPrintableEncoderStream(InputStream is, ContentType ctype) {
             super(is, 2);  setContentType(ctype);

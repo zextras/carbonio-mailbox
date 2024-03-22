@@ -67,7 +67,7 @@ public class Folder {
       }
     }
 
-    private String name;
+    private final String name;
 
     View(String name) {
       this.name = name;
