@@ -7,8 +7,17 @@ import javax.xml.bind.annotation.XmlAttribute;
 @XmlAccessorType(XmlAccessType.NONE)
 public class AttachmentToConvert {
 
+  /**
+   * @zm-api-field-tag partName
+   * @zm-api-field-description part name of the attachment
+   */
   @XmlAttribute(name = "partName", required = true)
   private String partName;
+
+  /**
+   * @zm-api-field-tag draftId
+   * @zm-api-field-description id of the draft mail the attachment belongs to
+   */
   @XmlAttribute(name = "draftId", required = true)
   private String draftId;
 
