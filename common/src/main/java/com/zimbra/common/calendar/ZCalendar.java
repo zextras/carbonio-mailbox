@@ -1153,15 +1153,21 @@ public class ZCalendar {
 
   public static class ZCalendarBuilder {
 
+    private ZCalendarBuilder() {
+      throw new IllegalStateException("Utility class");
+    }
+
     public static ZVCalendar build(String icalStr) throws ServiceException {
       ByteArrayInputStream bais = null;
-      bais = new ByteArrayInputStream(icalStr.getBytes(StandardCharsets.UTF_8));
       try {
+        bais = new ByteArrayInputStream(icalStr.getBytes(StandardCharsets.UTF_8));
         return build(bais, MimeConstants.P_CHARSET_UTF8);
       } finally {
         try {
-          bais.close();
-        } catch (IOException e) {
+          if(bais != null){
+            bais.close();
+          }
+        } catch (IOException ignored) {
         }
       }
     }
