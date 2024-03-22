@@ -634,8 +634,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     if (mParent == null) return ZMailbox.PATH_SEPARATOR;
     else {
       String pp = mParent.getPathURLEncoded();
-      String n = null;
-      n = URLEncoder.encode(mName, StandardCharsets.UTF_8).replace("+", "%20");
+      String n = URLEncoder.encode(mName, StandardCharsets.UTF_8).replace("+", "%20");
       return pp.length() == 1 ? (pp + n) : (pp + ZMailbox.PATH_SEPARATOR + n);
     }
   }
