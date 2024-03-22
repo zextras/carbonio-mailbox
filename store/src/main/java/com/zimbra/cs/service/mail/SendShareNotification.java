@@ -45,8 +45,8 @@ import com.zimbra.soap.mail.message.SendShareNotificationRequest;
 import com.zimbra.soap.mail.message.SendShareNotificationRequest.Action;
 import com.zimbra.soap.mail.type.EmailAddrInfo;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.mail.MessagingException;
@@ -114,7 +114,7 @@ public class SendShareNotification extends MailDocumentHandler {
 
     Element eShare = request.getOptionalElement(MailConstants.E_SHARE);
     if (eShare != null) {
-      return List.of(validateShareRecipient(zsc, context, octxt, mbox, eShare));
+      return Arrays.asList(validateShareRecipient(zsc, context, octxt, mbox, eShare));
     }
 
     String action = request.getAttribute(MailConstants.A_ACTION, null);

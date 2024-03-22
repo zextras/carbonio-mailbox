@@ -223,6 +223,7 @@ import java.io.Writer;
 import java.lang.ref.SoftReference;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -7966,7 +7967,7 @@ public class Mailbox implements MailboxStore {
       List<? extends MailItem> items =
           item instanceof Conversation
               ? ((Conversation) item).getMessages()
-              : List.of((MailItem) item);
+              : Arrays.asList((MailItem) item);
       List<Folder> trashAliases = getTrashAliases(octxt);
       for (MailItem candidate : items) {
         // if it's not a move into or out of Spam, no training is necessary

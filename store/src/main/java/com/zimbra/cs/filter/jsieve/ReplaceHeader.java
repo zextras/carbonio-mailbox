@@ -77,7 +77,7 @@ public class ReplaceHeader extends AbstractCommand {
         ehe.replaceVariablesInValueList(mailAdapter);
         ehe.replaceVariablesInKey(mailAdapter);
         if(ehe.getValueList() == null || ehe.getValueList().isEmpty()) {
-            ehe.setValueList(List.of("*"));
+            ehe.setValueList(Arrays.asList("*"));
         }
         FilterUtil.headerNameHasSpace(ehe.getKey());
 

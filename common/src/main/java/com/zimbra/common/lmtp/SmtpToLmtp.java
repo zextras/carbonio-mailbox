@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -41,7 +42,12 @@ public class SmtpToLmtp {
         Iterable<String> validate(String recipient);
     }
 
-    private static final RecipientValidator DUMMY_VALIDATOR = recipient -> List.of(recipient);
+    private static final RecipientValidator DUMMY_VALIDATOR = new RecipientValidator() {
+        @Override
+        public Iterable<String> validate(String recipient) {
+            return Arrays.asList(recipient);
+        }
+    };
 
     private static class LmtpData {
         String sender;

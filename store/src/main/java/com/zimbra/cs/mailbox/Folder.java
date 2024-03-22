@@ -28,6 +28,7 @@ import com.zimbra.cs.session.Session;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.mail.type.RetentionPolicy;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -1219,7 +1220,7 @@ public class Folder extends MailItem implements FolderStore {
     if (ZimbraLog.mailop.isDebugEnabled()) {
       ZimbraLog.mailop.debug("setting " + getMailopContext(tag) + " for " + getMailopContext(this));
     }
-    DbTag.alterTag(tag, List.of(mId), newValue);
+    DbTag.alterTag(tag, Arrays.asList(mId), newValue);
 
     if (isNoInheritFlag) {
       if (!newValue && rights != null) {

@@ -1126,8 +1126,7 @@ public abstract class Element implements Cloneable {
 
             List<KeyValuePair> pairs = new ArrayList<>();
             for (Map.Entry<String, Object> entry : attrs.mAttributes.entrySet()) {
-                List<?> values = (entry.getValue() instanceof List<?> ? (List<?>) entry.getValue() : List.of(
-                    entry.getValue()));
+                List<?> values = (entry.getValue() instanceof List<?> ? (List<?>) entry.getValue() : Arrays.asList(entry.getValue()));
                 for (Object multi : values) {
                     if (multi instanceof KeyValuePair)
                         pairs.add((KeyValuePair) multi);

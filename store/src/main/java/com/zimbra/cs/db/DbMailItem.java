@@ -3226,7 +3226,7 @@ public class DbMailItem {
   }
 
   public static UnderlyingData getByHash(Mailbox mbox, String hash) throws ServiceException {
-    return ListUtil.getFirstElement(getByHashes(mbox, List.of(hash)));
+    return ListUtil.getFirstElement(getByHashes(mbox, Arrays.asList(hash)));
   }
 
   public static List<UnderlyingData> getByHashes(Mailbox mbox, List<String> hashes)

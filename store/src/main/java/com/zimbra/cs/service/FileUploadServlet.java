@@ -907,7 +907,7 @@ public class FileUploadServlet extends ZimbraServlet {
       mPending.put(up.uuid, up);
     }
 
-    List<Upload> uploads = List.of(up);
+    List<Upload> uploads = Arrays.asList(up);
     sendResponse(resp, HttpServletResponse.SC_OK, fmt, null, uploads, items);
     return uploads;
   }

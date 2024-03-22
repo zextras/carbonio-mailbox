@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -475,7 +476,7 @@ implements CreateCalendarItemPlayer, CreateCalendarItemRecorder {
             mTags = TagUtil.tagIdStringToNames(mbox, octxt, mTagIds);
         }
 
-        DeliveryContext dctxt = new DeliveryContext(mShared, List.of(mboxId));
+        DeliveryContext dctxt = new DeliveryContext(mShared, Arrays.asList(mboxId));
 
         if (mMsgBodyType == MSGBODY_LINK) {
             Blob blob = StoreIncomingBlob.fetchBlob(mPath);

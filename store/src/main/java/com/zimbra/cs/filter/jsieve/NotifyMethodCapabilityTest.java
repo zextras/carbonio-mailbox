@@ -13,6 +13,7 @@ import static org.apache.jsieve.comparators.MatchTypeTags.MATCHES_TAG;
 import static org.apache.jsieve.tests.ComparatorTags.COMPARATOR_TAG;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -219,7 +220,7 @@ public class NotifyMethodCapabilityTest extends AbstractTest {
     }
 
     private boolean testCount(MailAdapter mail, List<String> keys, String comparator, String operator, SieveContext context) throws SieveException {
-        List<String> values = List.of(CAPABILITY_MAYBE);
+        List<String> values = Arrays.asList(CAPABILITY_MAYBE);
         boolean isMatched = false;
         for (String key : keys) {
             isMatched = ZimbraComparatorUtils.counts(mail, comparator,

@@ -468,7 +468,7 @@ public class ZSimpleRecurrence {
                 rule.setFrequency(ZFrequency.MON);
                 rule.setInterval(getMonthlyInterval());
                 rule.setByRules(new ArrayList<>());
-                rule.getByRules().add(new ZByRule(ZByType.BY_DAY, null, List.of(getMonthlyRelativeDay())));
+                rule.getByRules().add(new ZByRule(ZByType.BY_DAY, null, Arrays.asList(getMonthlyRelativeDay())));
                 break;
             case YEARLY:
                 rule.setFrequency(ZFrequency.YEA);
@@ -482,7 +482,7 @@ public class ZSimpleRecurrence {
             case YEARLY_RELATIVE:
                 rule.setFrequency(ZFrequency.YEA);
                 rule.setByRules(new ArrayList<>());
-                rule.getByRules().add(new ZByRule(ZByType.BY_DAY, null, List.of(getYearlyRelativeDay())));
+                rule.getByRules().add(new ZByRule(ZByType.BY_DAY, null, Arrays.asList(getYearlyRelativeDay())));
                 rule.getByRules().add(new ZByRule(ZByType.BY_MONTH, Integer.toString(getYearlyRelativeMonth()), null));
                 break;
         }

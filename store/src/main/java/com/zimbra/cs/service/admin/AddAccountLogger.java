@@ -22,6 +22,7 @@ import com.zimbra.soap.admin.message.AddAccountLoggerResponse;
 import com.zimbra.soap.admin.type.LoggerInfo;
 import com.zimbra.soap.type.LoggingLevel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -110,7 +111,7 @@ public class AddAccountLogger extends AdminDocumentHandler {
     if (category.equalsIgnoreCase(CATEGORY_ALL)) {
       loggers = LogManager.getAllLoggers();
     } else {
-      loggers = List.of(LogFactory.getLog(category));
+      loggers = Arrays.asList(LogFactory.getLog(category));
     }
     // Add custom loggers.
     for (Log log : loggers) {

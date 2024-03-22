@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
@@ -322,7 +323,7 @@ public class ProxyServlet extends ZimbraServlet {
                 if (targetResponseBody != null) {
                     try {
                         Upload up = FileUploadServlet.saveUpload(targetResponseBody, filename, contentType, authToken.getAccountId());
-                        uploads = List.of(up);
+                        uploads = Arrays.asList(up);
                     } catch (ServiceException e) {
                         if (e.getCode().equals(MailServiceException.UPLOAD_REJECTED))
                             status = HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE;

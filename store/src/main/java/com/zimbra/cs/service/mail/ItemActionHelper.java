@@ -303,7 +303,7 @@ public class ItemActionHelper {
               octxt,
               mbox,
               responseProto,
-              List.of(convId),
+              Arrays.asList(convId),
               MailItem.Type.CONVERSATION,
               tcon,
               new ItemId(targetFolder)));

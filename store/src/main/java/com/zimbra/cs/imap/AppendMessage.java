@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -118,7 +119,7 @@ final class AppendMessage {
             }
             req.skipChar(')');
         } else {
-            parts = List.of(new Part(req.readLiteral8()));
+            parts = Arrays.asList(new Part(req.readLiteral8()));
         }
     }
 

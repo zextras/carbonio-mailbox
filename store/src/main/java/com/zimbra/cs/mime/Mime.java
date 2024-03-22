@@ -246,7 +246,7 @@ public class Mime {
                 if (mm != null) {
                     MPartInfo child = generateMPartInfo(mm, mpart, mpart.mPartName, 0);
                     queue.addFirst(child);
-                    mpart.mChildren = List.of(child);
+                    mpart.mChildren = Arrays.asList(child);
                 }
             } else {
                 // nothing to do at this stage
@@ -1330,7 +1330,7 @@ public class Mime {
         } else if (ctype.equals(MimeConstants.CT_MULTIPART_MIXED) || !KNOWN_MULTIPART_TYPES.contains(ctype)) {
             children = base.getChildren();
         } else {
-            children = List.of(base.getChildren().get(0));
+            children = Arrays.asList(base.getChildren().get(0));
         }
 
         Set<MPartInfo> bodies = null;

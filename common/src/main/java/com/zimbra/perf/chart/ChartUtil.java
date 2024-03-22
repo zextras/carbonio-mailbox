@@ -1254,7 +1254,7 @@ public class ChartUtil {
         }
 
         mChartMap.put(cs, chart);
-        return List.of(chart);
+        return Arrays.asList(chart);
 
     }
 
