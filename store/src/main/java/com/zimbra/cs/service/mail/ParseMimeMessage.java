@@ -143,7 +143,7 @@ public final class ParseMimeMessage {
       boolean attachMessageFromCache)
       throws ServiceException {
     return parseMimeMsgSoap(zsc, octxt, mbox, msgElem, additionalParts, NO_INV_ALLOWED_PARSER, out,
-        attachMessageFromCache);
+        attachMessageFromCache, new ParseMessageContext(false));
   }
 
   public static String getTextPlainContent(Element elem) {
@@ -204,10 +204,15 @@ public final class ParseMimeMessage {
       Element msgElem, MimeBodyPart[] additionalParts, InviteParser inviteParser,
       MimeMessageData out, boolean attachMessageFromCache)
       throws ServiceException {
+    return parseMimeMsgSoap(zsc, octxt, mbox, msgElem, additionalParts, inviteParser, out, attachMessageFromCache, new ParseMessageContext());
+  }
+
+  private static MimeMessage parseMimeMsgSoap(ZimbraSoapContext zsc, OperationContext octxt, Mailbox mbox, Element msgElem, MimeBodyPart[] additionalParts,
+      InviteParser inviteParser, MimeMessageData out, boolean attachMessageFromCache, ParseMessageContext ctxt) throws ServiceException {
     assert (msgElem.getName().equals(MailConstants.E_MSG)); // msgElem == "<m>" E_MSG
 
     Account target = DocumentHandler.getRequestedAccount(zsc);
-    ParseMessageContext ctxt = new ParseMessageContext();
+
     ctxt.out = out;
     ctxt.zsc = zsc;
     ctxt.octxt = octxt;
@@ -1000,6 +1005,7 @@ public final class ParseMimeMessage {
    */
   private static class ParseMessageContext {
 
+    private final boolean raiseErrorWhenSizeExceed;
     MimeMessageData out;
     ZimbraSoapContext zsc;
     OperationContext octxt;
@@ -1010,6 +1016,10 @@ public final class ParseMimeMessage {
     long maxSize;
 
     ParseMessageContext() {
+      this(true);
+    }
+    ParseMessageContext(boolean raiseErrorWhenSizeExceed) {
+      this.raiseErrorWhenSizeExceed = raiseErrorWhenSizeExceed;
       try {
         Config config = Provisioning.getInstance().getConfig();
         maxSize = config.getLongAttr(Provisioning.A_zimbraMtaMaxMessageSize, -1);
@@ -1024,7 +1034,7 @@ public final class ParseMimeMessage {
     void incrementSize(String name, long numBytes) throws MailServiceException {
       size += numBytes;
       ZimbraLog.soap.debug("Adding %s, incrementing size by %d to %d.", name, numBytes, size);
-      if ((maxSize != 0 /* 0 means "no limit" */) && (size > maxSize)) {
+      if (raiseErrorWhenSizeExceed && (maxSize != 0 /* 0 means "no limit" */) && (size > maxSize)) {
         throw MailServiceException.MESSAGE_TOO_BIG(maxSize, size);
       }
     }
