@@ -12,7 +12,10 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
+import com.zimbra.client.ZContactByPhoneCache.ContactPhone;
 import com.zimbra.client.ZFolder.Color;
+import com.zimbra.client.ZFolder.Flag;
+import com.zimbra.client.ZFolder.View;
 import com.zimbra.client.ZGrant.GranteeType;
 import com.zimbra.client.ZInvite.ZTimeZone;
 import com.zimbra.client.ZMailbox.ZOutgoingMessage.AttachedMessagePart;
@@ -39,14 +42,16 @@ import com.zimbra.client.event.ZModifyMountpointEvent;
 import com.zimbra.client.event.ZModifySearchFolderEvent;
 import com.zimbra.client.event.ZModifyTagEvent;
 import com.zimbra.client.event.ZRefreshEvent;
-import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
+import com.zimbra.common.account.Key.DataSourceBy;
+import com.zimbra.common.account.Key.IdentityBy;
 import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.httpclient.HttpClientUtil;
 import com.zimbra.common.httpclient.InputStreamRequestHttpRetryHandler;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mailbox.ExistingParentFolderStoreAndUnmatchedPart;
 import com.zimbra.common.mailbox.FolderStore;
+import com.zimbra.common.mailbox.GrantGranteeType;
 import com.zimbra.common.mailbox.ItemIdentifier;
 import com.zimbra.common.mailbox.MailItemType;
 import com.zimbra.common.mailbox.MailboxStore;
@@ -60,14 +65,16 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
+import com.zimbra.common.soap.Element.Disposition;
 import com.zimbra.common.soap.Element.JSONElement;
 import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.soap.HeaderConstants;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapFaultException;
 import com.zimbra.common.soap.SoapHttpTransport;
+import com.zimbra.common.soap.SoapHttpTransport.HttpDebugListener;
 import com.zimbra.common.soap.SoapProtocol;
-import com.zimbra.common.soap.SoapTransport;
+import com.zimbra.common.soap.SoapTransport.DebugListener;
 import com.zimbra.common.soap.SoapTransport.NotificationFormat;
 import com.zimbra.common.soap.ZimbraNamespace;
 import com.zimbra.common.util.ByteUtil;
@@ -148,6 +155,7 @@ import com.zimbra.soap.mail.message.TestDataSourceRequest;
 import com.zimbra.soap.mail.message.TestDataSourceResponse;
 import com.zimbra.soap.mail.type.ActionResult;
 import com.zimbra.soap.mail.type.ActionSelector;
+import com.zimbra.soap.mail.type.CalendarItemInfo;
 import com.zimbra.soap.mail.type.ContactSpec;
 import com.zimbra.soap.mail.type.Content;
 import com.zimbra.soap.mail.type.Folder;
@@ -175,7 +183,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLConnection;
@@ -192,6 +199,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -402,8 +410,8 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     private String mOriginalUserAgent;
     private int mTimeout = -1;
     private int mRetryCount = -1;
-    private SoapTransport.DebugListener mDebugListener;
-    private SoapHttpTransport.HttpDebugListener mHttpDebugListener;
+    private DebugListener mDebugListener;
+    private HttpDebugListener mHttpDebugListener;
     private String mTargetAccount;
     private AccountBy mTargetAccountBy = AccountBy.name;
     private boolean mNoSession;
@@ -413,8 +421,8 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     private List<String> mPrefs;
     private boolean mCsrfSupported; // Used by AuthRequest
     private Map<String, String> mCustomHeaders;
-    private SoapTransport.NotificationFormat notificationFormat =
-        SoapTransport.NotificationFormat.DEFAULT;
+    private NotificationFormat notificationFormat =
+        NotificationFormat.DEFAULT;
     private boolean alwaysRefreshFolders;
 
     public Options() {}
@@ -534,11 +542,11 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       return this;
     }
 
-    public SoapTransport.NotificationFormat getNotificationFormat() {
+    public NotificationFormat getNotificationFormat() {
       return notificationFormat;
     }
 
-    public Options setNotificationFormat(SoapTransport.NotificationFormat notificationFormat) {
+    public Options setNotificationFormat(NotificationFormat notificationFormat) {
       this.notificationFormat = notificationFormat;
       return this;
     }
@@ -608,20 +616,20 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       return this;
     }
 
-    public SoapTransport.DebugListener getDebugListener() {
+    public DebugListener getDebugListener() {
       return mDebugListener;
     }
 
-    public Options setDebugListener(SoapTransport.DebugListener listener) {
+    public Options setDebugListener(DebugListener listener) {
       mDebugListener = listener;
       return this;
     }
 
-    public SoapHttpTransport.HttpDebugListener getHttpDebugListener() {
+    public HttpDebugListener getHttpDebugListener() {
       return mHttpDebugListener;
     }
 
-    public Options setHttpDebugListener(SoapHttpTransport.HttpDebugListener listener) {
+    public Options setHttpDebugListener(HttpDebugListener listener) {
       mHttpDebugListener = listener;
       return this;
     }
@@ -1044,7 +1052,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     if (mCsrfToken != null) {
       mTransport.setCsrfToken(mCsrfToken);
     }
-    for (Map.Entry<String, String> entry : options.getCustomHeaders().entrySet()) {
+    for (Entry<String, String> entry : options.getCustomHeaders().entrySet()) {
       mTransport.getCustomHeaders().put(entry.getKey(), entry.getValue());
     }
   }
@@ -1655,7 +1663,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
   /**
    * @return current size of mailbox in bytes
-   * @throws com.zimbra.common.service.ServiceException on error
+   * @throws ServiceException on error
    */
   @Override
   public long getSize() throws ServiceException {
@@ -1665,7 +1673,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
   /**
    * @return account name of mailbox
-   * @throws com.zimbra.common.service.ServiceException on error
+   * @throws ServiceException on error
    */
   public String getName() throws ServiceException {
     if (name != null) {
@@ -1773,7 +1781,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
   /**
    * @return current List of all tags in the mailbox
-   * @throws com.zimbra.common.service.ServiceException on error
+   * @throws ServiceException on error
    */
   public List<ZTag> getAllTags() throws ServiceException {
     populateTagCache();
@@ -1793,7 +1801,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
   /**
    * @return current list of all tags names in the mailbox, sorted
-   * @throws com.zimbra.common.service.ServiceException on error
+   * @throws ServiceException on error
    */
   public List<String> getAllTagNames() throws ServiceException {
     populateTagCache();
@@ -1808,7 +1816,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    *
    * @param name tag name
    * @return the tag, or null if tag not found
-   * @throws com.zimbra.common.service.ServiceException on error
+   * @throws ServiceException on error
    */
   public ZTag getTag(String nameOrId) throws ServiceException {
     ZTag result = getTagByName(nameOrId);
@@ -1820,7 +1828,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    *
    * @param name tag name
    * @return the tag, or null if tag not found
-   * @throws com.zimbra.common.service.ServiceException on error
+   * @throws ServiceException on error
    */
   public ZTag getTagByName(String name) throws ServiceException {
     populateTagCache();
@@ -1832,7 +1840,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    *
    * @param id the tag id
    * @return tag with given id, or null
-   * @throws com.zimbra.common.service.ServiceException on error
+   * @throws ServiceException on error
    */
   public ZTag getTagById(String id) throws ServiceException {
     populateTagCache();
@@ -1849,7 +1857,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    *
    * @param ids the tag ids
    * @return the tag list, or an empty list if no ids match
-   * @throws com.zimbra.common.service.ServiceException on error
+   * @throws ServiceException on error
    */
   public List<ZTag> getTags(String ids) throws ServiceException {
     List<ZTag> tags = new ArrayList<>();
@@ -1870,7 +1878,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    * @return newly created tag
    * @param name name of the tag
    * @param color optional color of the tag
-   * @throws com.zimbra.common.service.ServiceException if an error occurs
+   * @throws ServiceException if an error occurs
    */
   public ZTag createTag(String name, ZTag.Color color) throws ServiceException {
     Element req = newRequestElement(MailConstants.CREATE_TAG_REQUEST);
@@ -1895,7 +1903,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    * @param id id of tag to update
    * @param name new name of tag
    * @param color color of tag to modify
-   * @throws com.zimbra.common.service.ServiceException on error
+   * @throws ServiceException on error
    */
   public ZActionResult updateTag(String id, String name, ZTag.Color color) throws ServiceException {
     Element action = tagAction("update", id);
@@ -1918,7 +1926,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    * @return action result
    * @param id id of tag to modify
    * @param color color of tag to modify
-   * @throws com.zimbra.common.service.ServiceException on error
+   * @throws ServiceException on error
    */
   public ZActionResult modifyTagColor(String id, ZTag.Color color) throws ServiceException {
     if (color == ZTag.Color.rgbColor) {
@@ -2141,7 +2149,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     }
     addAttrsAndAttachmentsToContact(contactSpec, attrs, attachments);
     if (members != null) {
-      for (Map.Entry<String, String> entry : members.entrySet()) {
+      for (Entry<String, String> entry : members.entrySet()) {
         contactSpec.addContactGroupMemberWithTypeAndValue(entry.getValue(), entry.getKey());
       }
     }
@@ -2153,7 +2161,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       Map<String, String> attrs,
       Map<String, ZAttachmentInfo> attachments) {
     if (attrs != null) {
-      for (Map.Entry<String, String> entry : attrs.entrySet()) {
+      for (Entry<String, String> entry : attrs.entrySet()) {
         contactSpec.addAttrWithNameAndValue(entry.getKey(), entry.getValue().trim());
       }
     }
@@ -2239,7 +2247,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     mcReq.setReplace(replace);
     addAttrsAndAttachmentsToContact(contactSpec, attrs, attachments);
     if (members != null) {
-      for (Map.Entry<String, String> entry : members.entrySet()) {
+      for (Entry<String, String> entry : members.entrySet()) {
         contactSpec.addContactGroupMemberWithTypeAndValue(entry.getValue(), entry.getKey());
       }
     }
@@ -3023,7 +3031,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    * @param content message content
    * @param noICal if TRUE, then don't process iCal attachments.
    * @return ID of newly created message
-   * @throws com.zimbra.common.service.ServiceException on error
+   * @throws ServiceException on error
    */
   public String addMessage(
       String folderId, String flags, String tags, long receivedDate, String content, boolean noICal)
@@ -3042,7 +3050,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    * @param noICal if TRUE, then don't process iCal attachments.
    * @param filterSent if TRUE, then do outgoing message filtering
    * @return ID of newly created message
-   * @throws com.zimbra.common.service.ServiceException on error
+   * @throws ServiceException on error
    */
   public String addMessage(
       String folderId,
@@ -3315,7 +3323,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    * @return action result
    * @param ids of messages to flag
    * @param flag flag on /off
-   * @throws com.zimbra.common.service.ServiceException on error
+   * @throws ServiceException on error
    */
   public ZActionResult flagMessage(String ids, boolean flag) throws ServiceException {
     return doAction(messageAction(flag ? "flag" : "!flag", ids));
@@ -3378,7 +3386,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    * return the root user folder
    *
    * @return user root folder
-   * @throws com.zimbra.common.service.ServiceException on error
+   * @throws ServiceException on error
    */
   public ZFolder getUserRoot() throws ServiceException {
     populateFolderCache();
@@ -3442,7 +3450,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    *
    * @param path path of folder. Must start with {@link #PATH_SEPARATOR}.
    * @return ZFolder if found, null otherwise.
-   * @throws com.zimbra.common.service.ServiceException on error
+   * @throws ServiceException on error
    */
   public ZFolder getFolderByPath(String path) throws ServiceException {
     populateFolderCache();
@@ -3505,7 +3513,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    *
    * @param id id of folder
    * @return ZFolder if found, null otherwise.
-   * @throws com.zimbra.common.service.ServiceException on error
+   * @throws ServiceException on error
    */
   public ZFolder getFolderById(String id) throws ServiceException {
     populateFolderCache();
@@ -3552,7 +3560,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    *
    * @param uuid UUID of folder
    * @return ZFolder if found, null otherwise.
-   * @throws com.zimbra.common.service.ServiceException on error
+   * @throws ServiceException on error
    */
   public ZFolder getFolderByUuid(String uuid) throws ServiceException {
     populateFolderCache();
@@ -3569,7 +3577,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    *
    * @param pathOrId path or id of folder
    * @return ZFolder if found, null otherwise.
-   * @throws com.zimbra.common.service.ServiceException on error
+   * @throws ServiceException on error
    */
   public ZFolder getFolder(String pathOrId) throws ServiceException {
     ZFolder result = getFolderByPath(pathOrId);
@@ -3912,7 +3920,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    *
    * @param id id of folder
    * @return ZSearchFolder if found, null otherwise.
-   * @throws com.zimbra.common.service.ServiceException on error
+   * @throws ServiceException on error
    */
   public ZSearchFolder getSearchFolderById(String id) throws ServiceException {
     populateFolderCache();
@@ -3929,7 +3937,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    *
    * @param id id of mountpoint
    * @return ZMountpoint if found, null otherwise.
-   * @throws com.zimbra.common.service.ServiceException on error
+   * @throws ServiceException on error
    */
   public ZMountpoint getMountpointById(String id) throws ServiceException {
     populateFolderCache();
@@ -3956,8 +3964,8 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
   public ZFolder createFolder(
       String parentId,
       String name,
-      ZFolder.View defaultView,
-      ZFolder.Color color,
+      View defaultView,
+      Color color,
       String flags,
       String url)
       throws ServiceException {
@@ -3988,7 +3996,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
   @Override
   public void createFolderForMsgs(OpContext octxt, String path) throws ServiceException {
-    createFolder(null, path, ZFolder.View.message, ZFolder.Color.DEFAULTCOLOR, null, null);
+    createFolder(null, path, View.message, Color.DEFAULTCOLOR, null, null);
   }
 
   /**
@@ -4010,7 +4018,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       String query,
       String types,
       SearchSortBy sortBy,
-      ZFolder.Color color)
+      Color color)
       throws ServiceException {
     NewSearchFolderSpec spec = NewSearchFolderSpec.forNameQueryAndFolder(name, query, parentId);
     if (color != null) {
@@ -4117,7 +4125,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    * @return action result
    * @throws ServiceException on error
    */
-  public ZActionResult modifyFolderColor(String ids, ZFolder.Color color) throws ServiceException {
+  public ZActionResult modifyFolderColor(String ids, Color color) throws ServiceException {
     return doAction(
         folderAction("color", ids).addAttribute(MailConstants.A_COLOR, color.getValue()));
   }
@@ -4361,7 +4369,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
   public void modifyFolderGrant(
       OpContext ctxt,
       FolderStore folder,
-      com.zimbra.common.mailbox.GrantGranteeType granteeType,
+      GrantGranteeType granteeType,
       String granteeId,
       String perms,
       String args)
@@ -4541,7 +4549,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
       req.addAttribute(MailConstants.A_PREFETCH, false);
     }
 
-    req.addAttribute(MailConstants.E_QUERY, params.getQuery(), Element.Disposition.CONTENT);
+    req.addAttribute(MailConstants.E_QUERY, params.getQuery(), Disposition.CONTENT);
 
     if (params.getCursor() != null) {
       Cursor cursor = params.getCursor();
@@ -4773,8 +4781,8 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
   public ZMountpoint createMountpoint(
       String parentId,
       String name,
-      ZFolder.View defaultView,
-      ZFolder.Color color,
+      View defaultView,
+      Color color,
       String flags,
       OwnerBy ownerBy,
       String owner,
@@ -5386,18 +5394,18 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
   public List<ZIdentity> getIdentities() throws ServiceException {
     GetIdentitiesResponse res = invokeJaxb(new GetIdentitiesRequest());
-    return ListUtil.newArrayList(res.getIdentities(), SoapConverter.FROM_SOAP_IDENTITY);
+    return ListUtil.newArrayList(res.getIdentities(), SoapConverter.FROM_SOAP_IDENTITY::apply);
   }
 
   public void deleteIdentity(String name) throws ServiceException {
-    deleteIdentity(Key.IdentityBy.name, name);
+    deleteIdentity(IdentityBy.name, name);
   }
 
-  public void deleteIdentity(Key.IdentityBy by, String key) throws ServiceException {
+  public void deleteIdentity(IdentityBy by, String key) throws ServiceException {
     Element req = newRequestElement(AccountConstants.DELETE_IDENTITY_REQUEST);
-    if (by == Key.IdentityBy.name) {
+    if (by == IdentityBy.name) {
       req.addUniqueElement(AccountConstants.E_IDENTITY).addAttribute(AccountConstants.A_NAME, key);
-    } else if (by == Key.IdentityBy.id) {
+    } else if (by == IdentityBy.id) {
       req.addUniqueElement(AccountConstants.E_IDENTITY).addAttribute(AccountConstants.A_ID, key);
     }
     invoke(req);
@@ -5543,11 +5551,11 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     outgoingRules = new ZFilterRules(rules);
   }
 
-  public void deleteDataSource(Key.DataSourceBy by, String key) throws ServiceException {
+  public void deleteDataSource(DataSourceBy by, String key) throws ServiceException {
     Element req = newRequestElement(MailConstants.DELETE_DATA_SOURCE_REQUEST);
-    if (by == Key.DataSourceBy.name) {
+    if (by == DataSourceBy.name) {
       req.addUniqueElement(MailConstants.E_DS).addAttribute(MailConstants.A_NAME, key);
-    } else if (by == Key.DataSourceBy.id) {
+    } else if (by == DataSourceBy.id) {
       req.addUniqueElement(MailConstants.E_DS).addAttribute(MailConstants.A_ID, key);
     } else {
       throw ServiceException.INVALID_REQUEST("must specify data source by id or name", null);
@@ -5618,7 +5626,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    */
   public void modifyPrefs(Map<String, ? extends Object> prefs) throws ServiceException {
     Element req = newRequestElement(AccountConstants.MODIFY_PREFS_REQUEST);
-    for (Map.Entry<String, ? extends Object> entry : prefs.entrySet()) {
+    for (Entry<String, ? extends Object> entry : prefs.entrySet()) {
       Object vo = entry.getValue();
       if (vo instanceof String[]) {
         String[] values = (String[]) vo;
@@ -6309,7 +6317,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     return new ZAppointment(invoke(req).getElement(MailConstants.E_APPOINTMENT));
   }
 
-  public com.zimbra.soap.mail.type.CalendarItemInfo getRemoteCalItemByUID(
+  public CalendarItemInfo getRemoteCalItemByUID(
       String requestedAccountId, String uid, boolean includeInvites, boolean includeContent)
       throws ServiceException {
     GetAppointmentResponse resp =
@@ -6479,7 +6487,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     req.addNonUniqueElement(mVoiceStorePrincipal.clone());
   }
 
-  public ZContactByPhoneCache.ContactPhone getContactByPhone(String phone) throws ServiceException {
+  public ContactPhone getContactByPhone(String phone) throws ServiceException {
     lock();
     try {
       if (mContactByPhoneCache == null) {
@@ -6513,7 +6521,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
 
   public List<ZSignature> getSignatures() throws ServiceException {
     GetSignaturesResponse res = invokeJaxb(new GetSignaturesRequest());
-    return ListUtil.newArrayList(res.getSignatures(), SoapConverter.FROM_SOAP_SIGNATURE);
+    return ListUtil.newArrayList(res.getSignatures(), SoapConverter.FROM_SOAP_SIGNATURE::apply);
   }
 
   public void deleteSignature(String id) throws ServiceException {
@@ -6824,7 +6832,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     if (folder instanceof ZFolder && !folder.isIMAPSubscribed()) {
       ZFolder zFolder = (ZFolder) folder;
       String flags = zFolder.getFlags() == null ? "" : zFolder.getFlags();
-      flags = flags + ZFolder.Flag.imapSubscribed.getFlagChar();
+      flags = flags + Flag.imapSubscribed.getFlagChar();
       updateFolder(zFolder.getFolderIdAsString(), null, null, null, null, flags, null);
     }
   }
@@ -6834,7 +6842,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     if (folder instanceof ZFolder && folder.isIMAPSubscribed()) {
       ZFolder zFolder = (ZFolder) folder;
       String flags =
-          zFolder.getFlags().replace(String.valueOf(ZFolder.Flag.imapSubscribed.getFlagChar()), "");
+          zFolder.getFlags().replace(String.valueOf(Flag.imapSubscribed.getFlagChar()), "");
       updateFolder(zFolder.getFolderIdAsString(), null, null, null, null, flags, null);
     }
   }

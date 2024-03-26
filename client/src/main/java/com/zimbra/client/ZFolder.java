@@ -25,7 +25,6 @@ import com.zimbra.soap.mail.type.Grant;
 import com.zimbra.soap.mail.type.Mountpoint;
 import com.zimbra.soap.mail.type.RetentionPolicy;
 import com.zimbra.soap.mail.type.SearchFolder;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -60,7 +59,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
 
   public static final String PERM_WRITE = "w";
 
-  private ZFolder.Color mColor;
+  private Color mColor;
   private final String mRgb;
   private final String mId;
   private final String mUuid;
@@ -517,12 +516,12 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
 
   @Override
   public boolean isContactsFolder() {
-    return (ZFolder.View.contact == getDefaultView());
+    return (View.contact == getDefaultView());
   }
 
   @Override
   public boolean isChatsFolder() {
-    return (ZFolder.View.chat == getDefaultView());
+    return (View.chat == getDefaultView());
   }
 
   @Override
@@ -1006,7 +1005,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     mMailbox.modifyFolderExcludeFreeBusy(mId, exclude);
   }
 
-  public void modifyColor(ZFolder.Color color) throws ServiceException {
+  public void modifyColor(Color color) throws ServiceException {
     mMailbox.modifyFolderColor(mId, color);
   }
 
