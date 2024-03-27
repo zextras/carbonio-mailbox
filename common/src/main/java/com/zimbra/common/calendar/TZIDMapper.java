@@ -134,13 +134,10 @@ public class TZIDMapper {
         Set<TZ> allTZs = new LinkedHashSet<>();
         Set<TZ> primaryTZs = new LinkedHashSet<>();
 
-        FileInputStream fi = null;
-        InputStreamReader isr = null;
-        BufferedReader br = null;
-        try {
-            fi = new FileInputStream(tzFile);
-            isr = new InputStreamReader(fi, StandardCharsets.UTF_8);
-            br = new BufferedReader(isr);
+        try(FileInputStream fi = new FileInputStream(tzFile);
+            InputStreamReader isr = new InputStreamReader(fi, StandardCharsets.UTF_8);
+            BufferedReader br = new BufferedReader(isr)) {
+
             String line;
             boolean inVTIMEZONE = false;
             boolean isPrimary = false;
@@ -197,7 +194,7 @@ public class TZIDMapper {
                         try {
                             matchScore = Integer.parseInt(matchScoreStr);
                             matchScoreSpecified = true;
-                        } catch (NumberFormatException e) {}
+                        } catch (NumberFormatException ignored) {}
                     }
                 }
             }
@@ -205,13 +202,6 @@ public class TZIDMapper {
             sMap = map;
             sAllTZs = allTZs;
             sPrimaryTZs = primaryTZs;
-        } finally {
-            if (br != null)
-                br.close();
-            else if (isr != null)
-                isr.close();
-            else if (fi != null)
-                fi.close();
         }
     }
 
