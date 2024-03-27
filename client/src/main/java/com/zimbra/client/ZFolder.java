@@ -147,21 +147,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     public static final Color GRAY = new Color("gray", 8);
     public static final Color ORANGE = new Color("orange", 9);
 
-    private static final Map<String, Color> colorMap =
-        new HashMap<>() {
-          {
-            put("defaultColor", DEFAULTCOLOR);
-            put("blue", BLUE);
-            put("cyan", CYAN);
-            put("green", GREEN);
-            put("purple", PURPLE);
-            put("red", RED);
-            put("yellow", YELLOW);
-            put("pink", PINK);
-            put("gray", GRAY);
-            put("orange", ORANGE);
-          }
-        };
+    private static final Map<String, Color> colorMap = initializeColorMap();
 
     private final String mName;
     private final long mValue;
@@ -182,7 +168,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     public static Color fromString(String s) throws ServiceException {
       try {
         return fromInt(Integer.parseInt(s));
-      } catch (NumberFormatException | ServiceException e) {
+      } catch (NumberFormatException | ServiceException ignored) {
       }
 
       if (colorMap.containsKey(s)) {
@@ -209,6 +195,21 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
       }
       throw ZClientException.CLIENT_ERROR(
           "invalid color: " + value + ", must be between 0 and " + (colorMap.size() - 1), null);
+    }
+
+    private static Map<String, Color> initializeColorMap() {
+      Map<String, Color> map = new HashMap<>();
+      map.put("defaultColor", DEFAULTCOLOR);
+      map.put("blue", BLUE);
+      map.put("cyan", CYAN);
+      map.put("green", GREEN);
+      map.put("purple", PURPLE);
+      map.put("red", RED);
+      map.put("yellow", YELLOW);
+      map.put("pink", PINK);
+      map.put("gray", GRAY);
+      map.put("orange", ORANGE);
+      return map;
     }
   }
 
