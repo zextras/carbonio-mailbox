@@ -66,13 +66,13 @@ public class SoapConverter {
       }
     };
 
-    public static java.util.function.Function<Identity, @Nullable ZIdentity> FROM_SOAP_IDENTITY = from -> new ZIdentity(from);
+    public static java.util.function.Function<Identity, @Nullable ZIdentity> FROM_SOAP_IDENTITY = ZIdentity::new;
 
-    public static java.util.function.Function<ZIdentity, @Nullable Identity> TO_SOAP_IDENTITY = from -> from.getData();
+    public static java.util.function.Function<ZIdentity, @Nullable Identity> TO_SOAP_IDENTITY = ZIdentity::getData;
 
-    public static java.util.function.Function<Signature, @Nullable ZSignature> FROM_SOAP_SIGNATURE = from -> new ZSignature(from);
+    public static java.util.function.Function<Signature, @Nullable ZSignature> FROM_SOAP_SIGNATURE = ZSignature::new;
 
-    public static java.util.function.Function<ZSignature, @Nullable Signature> TO_SOAP_SIGNATURE = from -> from.getData();
+    public static java.util.function.Function<ZSignature, @Nullable Signature> TO_SOAP_SIGNATURE = ZSignature::getData;
     
     public static java.util.function.Function<AccountBy, Key.@Nullable AccountBy> FROM_SOAP_ACCOUNT_BY =
         new Function<>() {
