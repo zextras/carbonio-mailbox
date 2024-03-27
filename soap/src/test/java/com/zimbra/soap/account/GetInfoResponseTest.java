@@ -5,20 +5,20 @@
 
 package com.zimbra.soap.account;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.zimbra.common.soap.Element;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.account.message.GetInfoResponse;
 import com.zimbra.soap.account.type.Identity;
-
 import java.util.Collection;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.List;
+import java.util.Objects;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -67,7 +67,6 @@ public class GetInfoResponseTest {
   }
 
   @Test
-  @Disabled("add the required xml")
   void unmarshall() throws Exception {
     checkAsserts(
         (GetInfoResponse)
@@ -75,12 +74,10 @@ public class GetInfoResponseTest {
   }
 
   @Test
-  @Disabled("add the required xml")
   void jaxbUtilUnmarshall() throws Exception {
     // same as unmarshall but use JaxbUtil; this provokes/tests issues with utf8 conversion
     checkAsserts(
-        (GetInfoResponse)
-            JaxbUtil.elementToJaxb(
-                Element.parseXML(getClass().getResourceAsStream("GetInfoResponse.xml"))));
+        Objects.requireNonNull(JaxbUtil.elementToJaxb(
+            Element.parseXML(getClass().getResourceAsStream("GetInfoResponse.xml")))));
   }
 }
