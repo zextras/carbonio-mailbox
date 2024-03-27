@@ -6,5 +6,5 @@ import com.zimbra.common.service.ServiceException;
 import java.util.List;
 
 public interface SmartLinksGenerator {
-  List<SmartLink> smartLinksFrom(List<Attachment> smartLinks, AuthenticationInfo authenticationInfo) throws ServiceException;
+  List<SmartLink> smartLinksFrom(List<Attachment> attachments, AuthenticationInfo authenticationInfo) throws ServiceException;
 }
