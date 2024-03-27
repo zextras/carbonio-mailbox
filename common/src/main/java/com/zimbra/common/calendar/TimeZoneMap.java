@@ -5,6 +5,7 @@
 
 package com.zimbra.common.calendar;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -16,9 +17,9 @@ import com.zimbra.common.util.ZimbraLog;
 
 public class TimeZoneMap implements Cloneable {
 
-    static HashMap<ZWeekDay, Integer> sDayWeekDayMap;
+    static Map<ZWeekDay, Integer> sDayWeekDayMap;
     static {
-        sDayWeekDayMap = new HashMap<>();
+        sDayWeekDayMap = new EnumMap<>(ZWeekDay.class);
         sDayWeekDayMap.put(ZWeekDay.SU, java.util.Calendar.SUNDAY);
         sDayWeekDayMap.put(ZWeekDay.MO, java.util.Calendar.MONDAY);
         sDayWeekDayMap.put(ZWeekDay.TU, java.util.Calendar.TUESDAY);
@@ -90,7 +91,7 @@ public class TimeZoneMap implements Cloneable {
     /**
      * Merge the other timezone map into this one
      *
-     * @param other
+     * @param other the other timezone map
      */
     public void add(TimeZoneMap other) {
         mAliasMap.putAll(other.mAliasMap);
@@ -103,7 +104,7 @@ public class TimeZoneMap implements Cloneable {
 
     public void add(ICalTimeZone tz) {
         String tzid = tz.getID();
-        String canonTzid = null;
+        String canonTzid;
         if (!DebugConfig.disableCalendarTZMatchByID) {
             canonTzid = TZIDMapper.canonicalize(tzid);
             ICalTimeZone canonTz = WellKnownTimeZones.getTimeZoneById(canonTzid);
@@ -139,7 +140,7 @@ public class TimeZoneMap implements Cloneable {
 
     public ICalTimeZone lookupAndAdd(String tzId) {
         tzId = sanitizeTZID(tzId);
-        if (tzId.equals(""))
+        if ("".equals(tzId))
             return null;
 
         if (!DebugConfig.disableCalendarTZMatchByID)
