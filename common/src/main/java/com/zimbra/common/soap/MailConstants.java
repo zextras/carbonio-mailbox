@@ -11,6 +11,7 @@ import org.dom4j.QName;
 public final class MailConstants {
 
   public static final String E_EXTRA_ACCOUNT_ID = "extraAccountId";
+  public static final String A_REQUIRES_SMART_LINK_CONVERSION = "requiresSmartLinkConversion";
 
   public static final class ShareConstants {
     public static final String NAMESPACE_STR = "urn:zimbraShare";
@@ -1442,4 +1443,5 @@ public final class MailConstants {
   public static final String E_COPY_TO_FILES_RESPONSE = "CopyToFilesResponse";
   public static final QName COPY_TO_DRIVE_REQUEST = QName.get(E_COPY_TO_FILES_REQUEST, NAMESPACE);
   public static final QName COPY_TO_DRIVE_RESPONSE = QName.get(E_COPY_TO_FILES_RESPONSE, NAMESPACE);
+
 }

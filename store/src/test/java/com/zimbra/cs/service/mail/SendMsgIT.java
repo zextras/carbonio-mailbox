@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
+import com.zextras.mailbox.util.MailMessageBuilder;
+import com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.soap.Element;
@@ -27,7 +29,6 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
-import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mailclient.smtp.SmtpConfig;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.AuthProvider;
@@ -36,17 +37,8 @@ import com.zimbra.soap.ZimbraSoapContext;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
-import javax.mail.Address;
-import javax.mail.Multipart;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMessage.RecipientType;
-import javax.mail.internet.MimeMultipart;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -113,22 +105,12 @@ class SendMsgIT {
   }
 
   private Message createDraft(String sender) throws Exception {
-    final MimeMessage mimeMessage = new MimeMessage(Session.getInstance(new Properties()));
-    Account acct = Provisioning.getInstance().get(Key.AccountBy.name, sender);
-    final Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(acct);
-    final OperationContext operationContext = new OperationContext(acct);
-    Address[] recipients = new Address[] {new InternetAddress(acct.getName())};
-    mimeMessage.setFrom(new InternetAddress(acct.getName()));
-    mimeMessage.setRecipients(RecipientType.TO, recipients);
-    mimeMessage.setSubject("Test email");
-    Multipart multipart = new MimeMultipart();
-    MimeBodyPart text = new MimeBodyPart();
-    text.setText("Hello there");
-    mimeMessage.setContent(multipart);
-    mimeMessage.setSender(new InternetAddress(acct.getName()));
-    final ParsedMessage parsedMessage =
-        new ParsedMessage(mimeMessage, mailbox.attachmentsIndexingEnabled());
-    return mailbox.saveDraft(operationContext, parsedMessage, Mailbox.ID_AUTO_INCREMENT);
+    Account account = Provisioning.getInstance().get(Key.AccountBy.name, sender);
+    final ParsedMessage message = new MailMessageBuilder()
+        .from(sender)
+        .addRecipient(sender)
+        .build();
+    return AccountAction.Factory.getDefault().forAccount(account).saveDraft(message);
   }
 
   /**
