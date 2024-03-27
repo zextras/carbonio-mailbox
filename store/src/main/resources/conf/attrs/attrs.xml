@@ -35,7 +35,8 @@ Zimbra devs - things to keep in mind when adding new attributes:
 
  3) Never change/re-use numbers after the product released.
 
- 4) Prefix attrs that are user-settable prefs with zimbraPref*.
+ 4) Prefix attributes that are account modifiable with carbonioPrefs* or zimbraPref*
+   this makes these attributes modifiable using the ModifyPrefs account SOAP API.
 
 Here is the syntax for declaring attributes:
 
@@ -2385,7 +2386,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
 <attr id="451" name="zimbraFeatureOptionsEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited">
   <defaultCOSValue>TRUE</defaultCOSValue>
   <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
-  <desc>whether an account can modify its zimbraPref* attributes</desc>
+  <desc>whether an account can modify its zimbraPref* and carbonioPref* attributes</desc>
 </attr>
 
 <attr id="452" name="zimbraFeatureShortcutAliasesEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited"  deprecatedSince="6.0.0_GA">
@@ -10128,11 +10129,18 @@ TODO: delete them permanently from here
   <globalConfigValue>yyyyMMddHHmmss.SSS'Z'</globalConfigValue>
   <desc>AD/LDAP timestamp format. For example: yyyyMMddHHmmss.SSS'Z', yyyyMMddHHmmss'Z'</desc>
 </attr>
+
 <attr id="3142" name="carbonioAutoProvAllowedDomains" type="string" max="51200" cardinality="single" optionalIn="domain" since="24.2.0">
   <desc>
     Comma-separated domain names used for checking the autoProvAccountNameMap value.
     If the value is a full email, the domain of the email should be one of the values in carbonioAutoProvAllowedDomains.
     Active Directory domain names may exist in autoProvAccountNameMap.
   </desc>
+</attr>
+
+<attr id="3143" name="carbonioPrefSendAnalytics" type="boolean" cardinality="single" optionalIn="account,cos" flags="domainAdminModifiable,accountInherited,accountInfo" since="24.5.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
+  <desc>Whether Carbonio can send analytics reports for Account</desc>
 </attr>
 </attrs>

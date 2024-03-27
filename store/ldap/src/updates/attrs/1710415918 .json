@@ -1,0 +1,8 @@
+{
+  "zimbra_defaultcos": [
+    "carbonioPrefSendAnalytics"
+  ],
+  "zimbra_defaultexternalcos": [
+    "carbonioPrefSendAnalytics"
+  ]
+}
