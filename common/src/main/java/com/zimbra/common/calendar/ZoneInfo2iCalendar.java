@@ -28,6 +28,7 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -294,7 +295,7 @@ public class ZoneInfo2iCalendar {
     }
     if (tznameFormat.contains("%s")) {
       String letter = (rline == null) ? "" : rline.getLetter();
-      if (letter == null || letter.equals("-")) {
+      if (letter == null || "-".equals(letter)) {
         letter = "";
       }
       return String.format(tznameFormat, letter);
@@ -1100,7 +1101,7 @@ public class ZoneInfo2iCalendar {
       if (!dir.canRead())
         throw new IOException("Permission denied on directory " + dir.getAbsolutePath());
 
-      File files[] = dir.listFiles();
+      File[] files = dir.listFiles();
       if (files != null) {
         for (File file : files) {
           if (!file.isFile()) continue;
@@ -1112,14 +1113,14 @@ public class ZoneInfo2iCalendar {
               || name.endsWith(".pl")
               || (name.startsWith(".") || name.endsWith(".swp"))
               || // ignore editor temporary files
-              name.equalsIgnoreCase("CONTRIBUTING")
-              || name.equalsIgnoreCase("Makefile")
-              || name.equalsIgnoreCase("NEWS")
-              || name.equalsIgnoreCase("README")
-              || name.equalsIgnoreCase("LICENSE")
-              || name.equalsIgnoreCase("Theory")
-              || name.equalsIgnoreCase("factory")
-              || name.equalsIgnoreCase("leap-seconds.list")) {
+              "CONTRIBUTING".equalsIgnoreCase(name)
+              || "Makefile".equalsIgnoreCase(name)
+              || "NEWS".equalsIgnoreCase(name)
+              || "README".equalsIgnoreCase(name)
+              || "LICENSE".equalsIgnoreCase(name)
+              || "Theory".equalsIgnoreCase(name)
+              || "factory".equalsIgnoreCase(name)
+              || "leap-seconds.list".equalsIgnoreCase(name)) {
             continue;
           }
           if (!file.canRead())
@@ -1130,7 +1131,7 @@ public class ZoneInfo2iCalendar {
     }
 
     // Any leftover arguments are tzdata source filenames.
-    String dataFiles[] = cl.getArgs();
+    String[] dataFiles = cl.getArgs();
     if (dataFiles != null) {
       for (String fname : dataFiles) {
         File file = new File(fname);
@@ -1176,7 +1177,7 @@ public class ZoneInfo2iCalendar {
 
   private static String getTimeZoneForZone(
       Zone zone, Params params, Set<String> zoneIDs, Map<String, VTimeZone> oldTimeZones) {
-    List<ZoneLine> zoneLines = ZoneInfo2iCalendar.getZoneLinesFromDate(zone, params.referenceDate);
+    List<ZoneLine> zoneLines = getZoneLinesFromDate(zone, params.referenceDate);
     return getTimeZoneForZoneLines(
         zone.getName(), zone.getAliases(), zoneLines, params, zoneIDs, oldTimeZones);
   }
@@ -1276,7 +1277,7 @@ public class ZoneInfo2iCalendar {
     // parse tzdata source
     ZoneInfoParser parser = new ZoneInfoParser();
     for (File tzdataFile : params.tzdataFiles) {
-      try (Reader r = new InputStreamReader(new FileInputStream(tzdataFile), "UTF-8")) {
+      try (Reader r = new InputStreamReader(new FileInputStream(tzdataFile), StandardCharsets.UTF_8)) {
         parser.readTzdata(r);
       } catch (ParseException e) {
         System.err.println(e.getMessage());
@@ -1290,7 +1291,7 @@ public class ZoneInfo2iCalendar {
 
     // read extra data file containing primary TZ list and zone match scores
     if (params.extraDataFile != null) {
-      try (Reader r = new InputStreamReader(new FileInputStream(params.extraDataFile), "UTF-8")) {
+      try (Reader r = new InputStreamReader(new FileInputStream(params.extraDataFile), StandardCharsets.UTF_8)) {
         readExtraData(r);
       } catch (ParseException e) {
         System.err.println(e.getMessage());
@@ -1303,9 +1304,9 @@ public class ZoneInfo2iCalendar {
 
     Writer out;
     if (params.outputFile != null) {
-      out = new PrintWriter(params.outputFile, "UTF-8");
+      out = new PrintWriter(params.outputFile, StandardCharsets.UTF_8);
     } else {
-      out = new PrintWriter(new OutputStreamWriter(System.out, "UTF-8"));
+      out = new PrintWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8));
     }
 
     try {
