@@ -100,7 +100,7 @@ public class SaveDraft extends MailDocumentHandler {
             if (attachment != null) {
                 mm = SendMsg.parseUploadedMessage(zsc, attachment, mimeData);
             } else {
-                mm = ParseMimeMessage.parseMimeMsgSoap(zsc, octxt, mbox, msgElem, null, mimeData, true);
+                mm = ParseMimeMessage.parseDraftMimeMsgSoap(zsc, octxt, mbox, msgElem, mimeData);
             }
 
             long date = System.currentTimeMillis();

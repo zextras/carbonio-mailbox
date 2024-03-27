@@ -137,13 +137,12 @@ public final class ParseMimeMessage {
         out, false);
   }
 
-  public static MimeMessage parseMimeMsgSoap(ZimbraSoapContext zsc, OperationContext octxt,
+  public static MimeMessage parseDraftMimeMsgSoap(ZimbraSoapContext zsc, OperationContext octxt,
       Mailbox mbox,
-      Element msgElem, MimeBodyPart[] additionalParts, MimeMessageData out,
-      boolean attachMessageFromCache)
+      Element msgElem, MimeMessageData out)
       throws ServiceException {
-    return parseMimeMsgSoap(zsc, octxt, mbox, msgElem, additionalParts, NO_INV_ALLOWED_PARSER, out,
-        attachMessageFromCache, new ParseMessageContext(false));
+    return parseMimeMsgSoap(zsc, octxt, mbox, msgElem, null, NO_INV_ALLOWED_PARSER, out,
+        true, new ParseMessageContext(false));
   }
 
   public static String getTextPlainContent(Element elem) {
@@ -199,7 +198,7 @@ public final class ParseMimeMessage {
    * @param out             Holds info about things we parsed out of the message that the caller
    *                        might want to know about
    */
-  public static MimeMessage parseMimeMsgSoap(ZimbraSoapContext zsc, OperationContext octxt,
+  private static MimeMessage parseMimeMsgSoap(ZimbraSoapContext zsc, OperationContext octxt,
       Mailbox mbox,
       Element msgElem, MimeBodyPart[] additionalParts, InviteParser inviteParser,
       MimeMessageData out, boolean attachMessageFromCache)
