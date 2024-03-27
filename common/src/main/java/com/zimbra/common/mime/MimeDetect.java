@@ -462,7 +462,6 @@ public class MimeDetect {
                 System.err.println("File not found: " + file);
             } catch (IOException e) {
                 System.err.println("Error reading file: " + file);
-                e.printStackTrace();
             }
         }
     }
