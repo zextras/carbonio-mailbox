@@ -133,10 +133,14 @@ public class AutoDiscoverServlet extends ZimbraServlet {
           log.debug("GET header: %s", header + ":" + req.getHeader(header));
         }
       }
-      if (req.isSecure()) {
-        authenticate(req, resp, NS_MOBILE);
-      } else {
-        resp.sendRedirect(LC.zimbra_activesync_autodiscover_url.value());
+      try {
+        if (req.isSecure()) {
+            authenticate(req, resp, NS_MOBILE);
+        } else {
+          resp.sendRedirect(LC.zimbra_activesync_autodiscover_url.value());
+        }
+      } catch (ServletException | IOException e) {
+        log.warn(e.getMessage(), e);
       }
     }
   }
@@ -168,7 +172,6 @@ public class AutoDiscoverServlet extends ZimbraServlet {
     addRemoteIpToLoggingContext(req);
 
     log.info("Handling autodiscover request...");
-
     byte[] reqBytes = null;
     reqBytes = ByteUtil.getContent(req.getInputStream(), req.getContentLength());
     if (reqBytes == null) {
