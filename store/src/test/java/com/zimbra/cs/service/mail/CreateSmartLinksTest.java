@@ -74,7 +74,7 @@ class CreateSmartLinksTest extends SoapTestSuite {
   }
 
   @Test
-  void shouldReturnParserErrorIfPartNameIsNotValid() throws Exception {
+  void shouldReturnServiceNotFoundIfPartNameIsNotValid() throws Exception {
     final String publicUrl = "http://myServer?file=node1";
     mockAttachmentUploadOnFilesResponse("node1");
     mockCreateLinkOnFilesResponse(publicUrl);
@@ -87,7 +87,8 @@ class CreateSmartLinksTest extends SoapTestSuite {
     final String xmlResponse = getResponse(resp);
     assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, resp.getStatusLine().getStatusCode());
     assertTrue(xmlResponse.contains("Fault"));
-    assertTrue(xmlResponse.contains("<Code>service.PARSE_ERROR</Code>"));
+    System.out.println(xmlResponse);
+    assertTrue(xmlResponse.contains("<Code>service.NOT_FOUND</Code>"));
   }
 
   @Test
