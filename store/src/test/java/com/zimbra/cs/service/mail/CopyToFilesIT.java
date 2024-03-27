@@ -214,7 +214,7 @@ class CopyToFilesIT {
   @Test
   void shouldThrowFileNotFoundWhenFileNotFound() throws Exception {
     final Map<String, Object> context = this.getRequestContext("test@zimbra.com");
-    // request unknown file -> SoapFault
+    // request unknown attachment -> SoapFault
     CopyToFiles copyToFiles = copyToFiles(realAttachmentService, mockFilesClient);
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("1");
@@ -222,7 +222,7 @@ class CopyToFilesIT {
     Element element = JaxbUtil.jaxbToElement(up);
     final ServiceException receivedException =
         assertThrows(ServiceException.class, () -> copyToFiles.handle(element, context));
-    assertEquals("File not found.", receivedException.getMessage());
+    assertEquals("Attachment 1:2 not found.", receivedException.getMessage());
   }
 
   @Test

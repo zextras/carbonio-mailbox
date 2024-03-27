@@ -17,6 +17,7 @@ import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.service.AttachmentService;
 import com.zimbra.soap.mail.message.CopyToFilesRequest;
 import com.zimbra.soap.mail.message.CopyToFilesResponse;
+import io.vavr.API.Match.Pattern0;
 import io.vavr.control.Try;
 import java.io.InputStream;
 import java.util.Objects;
@@ -107,6 +108,10 @@ public class FilesCopyHandlerImpl implements FilesCopyHandler {
             (req, messageId) ->
                 attachmentService
                     .getAttachment(accountUUID, authToken, messageId, req.getPart())
+                    .mapFailure(Case(
+                        Pattern0.of(Exception.class),
+                        ex -> ServiceException.NOT_FOUND(String.format("Attachment %s:%s not found.", messageId, req.getPart()))
+                    ))
                     .onFailure(ex -> mLog.error(ex.getMessage())))
         .flatMap(Function.identity());
   }

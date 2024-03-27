@@ -1,18 +1,24 @@
 package com.zextras.mailbox.util;
 
 import com.zimbra.cs.mime.ParsedMessage;
-
-import javax.mail.Address;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Session;
-import javax.mail.internet.*;
-import javax.mail.internet.MimeMessage.RecipientType;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.Address;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMessage.RecipientType;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 
 public class MailMessageBuilder {
   private final List<Address> recipients = new ArrayList<>();
@@ -40,7 +46,7 @@ public class MailMessageBuilder {
   }
 
   public MailMessageBuilder addAttachment(File value) throws MessagingException, IOException {
-    attachments.add(createMimeBodyPart(value));
+    attachments.add(createAttachment(value));
     return this;
   }
 
@@ -56,6 +62,10 @@ public class MailMessageBuilder {
 
   public MailMessageBuilder body(String value) throws MessagingException {
     body = createMimeBodyPart(value);
+    return this;
+  }
+  public MailMessageBuilder addAttachment(String content, String fileName, String contentType) throws Exception {
+    attachments.add(createAttachment(content, fileName, contentType));
     return this;
   }
 
@@ -86,10 +96,18 @@ public class MailMessageBuilder {
     return part;
   }
 
-  private static MimeBodyPart createMimeBodyPart(File value) throws MessagingException, IOException {
+  private static MimeBodyPart createAttachment(File value) throws MessagingException, IOException {
     MimeBodyPart part = new MimeBodyPart();
     part.attachFile(value);
     return part;
   }
 
+  private MimeBodyPart createAttachment(String content, String fileName, String contentType)
+      throws IOException, MessagingException {
+    MimeBodyPart part = new MimeBodyPart();
+    DataSource ds = new ByteArrayDataSource(content, contentType);
+    part.setFileName(fileName);
+    part.setDataHandler(new DataHandler(ds));
+    return part;
+  }
 }

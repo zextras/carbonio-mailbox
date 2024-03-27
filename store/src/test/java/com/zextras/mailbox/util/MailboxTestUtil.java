@@ -219,12 +219,16 @@ public class MailboxTestUtil {
     public static class Factory {
       private final Provisioning provisioning;
 
-      public AccountCreator get() {
-        return new AccountCreator(provisioning);
-      }
-
       public Factory(Provisioning provisioning) {
         this.provisioning = provisioning;
+      }
+
+      public static Factory getDefault() {
+        return new AccountCreator.Factory(Provisioning.getInstance());
+      }
+
+      public AccountCreator get() {
+        return new AccountCreator(provisioning);
       }
     }
 
