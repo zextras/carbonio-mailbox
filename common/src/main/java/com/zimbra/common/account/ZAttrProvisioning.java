@@ -2991,6 +2991,14 @@ public class ZAttrProvisioning {
     public static final String A_carbonioNotificationRecipients = "carbonioNotificationRecipients";
 
     /**
+     * Whether Carbonio can send analytics reports for Account
+     *
+     * @since ZCS 24.5.0
+     */
+    @ZAttr(id=3143)
+    public static final String A_carbonioPrefSendAnalytics = "carbonioPrefSendAnalytics";
+
+    /**
      * Web UI Dark Mode preference for account
      *
      * @since ZCS 22.11.0
@@ -7298,7 +7306,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureOpenMailInNewWindowEnabled = "zimbraFeatureOpenMailInNewWindowEnabled";
 
     /**
-     * whether an account can modify its zimbraPref* attributes
+     * whether an account can modify its zimbraPref* and carbonioPref*
+     * attributes
      */
     @ZAttr(id=451)
     public static final String A_zimbraFeatureOptionsEnabled = "zimbraFeatureOptionsEnabled";

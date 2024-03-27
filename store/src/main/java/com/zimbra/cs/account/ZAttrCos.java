@@ -535,6 +535,78 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
+     * Whether Carbonio can send analytics reports for Account
+     *
+     * @return carbonioPrefSendAnalytics, or false if unset
+     *
+     * @since ZCS 24.5.0
+     */
+    @ZAttr(id=3143)
+    public boolean isCarbonioPrefSendAnalytics() {
+        return getBooleanAttr(ZAttrProvisioning.A_carbonioPrefSendAnalytics, false, true);
+    }
+
+    /**
+     * Whether Carbonio can send analytics reports for Account
+     *
+     * @param carbonioPrefSendAnalytics new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 24.5.0
+     */
+    @ZAttr(id=3143)
+    public void setCarbonioPrefSendAnalytics(boolean carbonioPrefSendAnalytics) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioPrefSendAnalytics, carbonioPrefSendAnalytics ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether Carbonio can send analytics reports for Account
+     *
+     * @param carbonioPrefSendAnalytics new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 24.5.0
+     */
+    @ZAttr(id=3143)
+    public Map<String,Object> setCarbonioPrefSendAnalytics(boolean carbonioPrefSendAnalytics, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioPrefSendAnalytics, carbonioPrefSendAnalytics ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether Carbonio can send analytics reports for Account
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 24.5.0
+     */
+    @ZAttr(id=3143)
+    public void unsetCarbonioPrefSendAnalytics() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioPrefSendAnalytics, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether Carbonio can send analytics reports for Account
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 24.5.0
+     */
+    @ZAttr(id=3143)
+    public Map<String,Object> unsetCarbonioPrefSendAnalytics(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioPrefSendAnalytics, "");
+        return attrs;
+    }
+
+    /**
      * Web UI Dark Mode preference for account
      *
      * @return carbonioPrefWebUiDarkMode, or false if unset
@@ -12682,7 +12754,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether an account can modify its zimbraPref* attributes
+     * whether an account can modify its zimbraPref* and carbonioPref*
+     * attributes
      *
      * @return zimbraFeatureOptionsEnabled, or true if unset
      */
@@ -12692,7 +12765,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether an account can modify its zimbraPref* attributes
+     * whether an account can modify its zimbraPref* and carbonioPref*
+     * attributes
      *
      * @param zimbraFeatureOptionsEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -12705,7 +12779,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether an account can modify its zimbraPref* attributes
+     * whether an account can modify its zimbraPref* and carbonioPref*
+     * attributes
      *
      * @param zimbraFeatureOptionsEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -12719,7 +12794,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether an account can modify its zimbraPref* attributes
+     * whether an account can modify its zimbraPref* and carbonioPref*
+     * attributes
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      */
@@ -12731,7 +12807,8 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether an account can modify its zimbraPref* attributes
+     * whether an account can modify its zimbraPref* and carbonioPref*
+     * attributes
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
