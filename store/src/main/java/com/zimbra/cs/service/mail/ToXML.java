@@ -3228,6 +3228,13 @@ public final class ToXML {
     } catch (MessagingException e) {
     }
 
+    try {
+      var requiresSmartLinkConversion = Boolean.valueOf(mp.getHeader(ParseMimeMessage.SMART_LINK_HEADER, "false"));
+      el.addAttribute(MailConstants.A_REQUIRES_SMART_LINK_CONVERSION, requiresSmartLinkConversion);
+    } catch (MessagingException e) {
+      ZimbraLog.mailbox.warn("Unable to parse '%s' header: %s", ParseMimeMessage.SMART_LINK_HEADER, e.getMessage());
+    }
+
     // include the part's content if this is the displayable "memo part",
     // or if it was requested to include all parts
     if (bodies == null || bodies.contains(mpi)) {

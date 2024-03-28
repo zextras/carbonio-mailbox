@@ -5,11 +5,15 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.carbonio.files.FilesClient;
+import com.zextras.files.client.GraphQLFilesClient;
+import com.zextras.mailbox.smartlinks.FilesSmartLinksGenerator;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.service.MailboxAttachmentService;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
+import org.dom4j.QName;
 
 /**
  * @zm-service-description The Mail Service includes commands for managing mail and calendar
@@ -17,7 +21,7 @@ import com.zimbra.soap.DocumentService;
  * @since May 26, 2004
  * @author schemers
  */
-public final class MailService implements DocumentService {
+public class MailService implements DocumentService {
 
   @Override
   public void registerHandlers(DocumentDispatcher dispatcher) {
@@ -225,9 +229,21 @@ public final class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.SET_RECOVERY_EMAIL_REQUEST, new SetRecoveryAccount());
 
     // Drive attachment upload
+    FilesCopyHandlerImpl filesCopyHandler = new FilesCopyHandlerImpl(new MailboxAttachmentService(), getFilesClient());
     dispatcher.registerHandler(
         MailConstants.COPY_TO_DRIVE_REQUEST,
-        new CopyToFiles(
-            new MailboxAttachmentService(), FilesClient.atURL("http://127.78.0.7:20002")));
+        new CopyToFiles(filesCopyHandler));
+
+    dispatcher.registerHandler(
+        QName.get("CreateSmartLinksRequest", MailConstants.NAMESPACE),
+        new CreateSmartLinks(new FilesSmartLinksGenerator(
+            new GraphQLFilesClient(getFilesClient(), new ObjectMapper()),
+            filesCopyHandler)
+        )
+    );
+  }
+
+  protected FilesClient getFilesClient() {
+    return FilesClient.atURL("http://127.78.0.7:20002");
   }
 }

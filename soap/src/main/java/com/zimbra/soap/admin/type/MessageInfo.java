@@ -31,7 +31,7 @@ import com.zimbra.soap.json.jackson.annotate.ZimbraJsonAttribute;
     "messageIdHeader", "inReplyTo", "invite", "headers", "contentElems" })
 public class MessageInfo
 extends MessageCommon
-implements MessageInfoInterface {
+implements MessageInfoInterface<PartInfo> {
 
     /**
      * @zm-api-field-tag msg-id
@@ -160,7 +160,7 @@ implements MessageInfoInterface {
         @XmlElement(name=MailConstants.E_DL_SUBSCRIPTION_NOTIFICATION /* dlSubs */,
             type=DLSubscriptionNotification.class)
     })
-    private List<Object> contentElems = Lists.newArrayList();
+    private List<PartInfo> contentElems = Lists.newArrayList();
 
     public MessageInfo() {
     }
@@ -249,7 +249,7 @@ implements MessageInfoInterface {
     }
 
     @Override
-    public void setContentElems(Iterable <Object> contentElems) {
+    public void setContentElems(Iterable<PartInfo> contentElems) {
         this.contentElems.clear();
         if (contentElems != null) {
             Iterables.addAll(this.contentElems,contentElems);
@@ -257,7 +257,7 @@ implements MessageInfoInterface {
     }
 
     @Override
-    public void addContentElem(Object contentElem) {
+    public void addContentElem(PartInfo contentElem) {
         this.contentElems.add(contentElem);
     }
 
@@ -298,7 +298,7 @@ implements MessageInfoInterface {
         return Collections.unmodifiableList(headers);
     }
     @Override
-    public List<Object> getContentElems() {
+    public List<PartInfo> getContentElems() {
         return Collections.unmodifiableList(contentElems);
     }
 

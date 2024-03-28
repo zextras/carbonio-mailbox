@@ -25,8 +25,8 @@ public class SoapTestSuite {
     return soapExtension.getSoapClient();
   }
 
-  public void printResponse(HttpResponse response) throws Exception {
-    System.out.println(new String (response.getEntity().getContent().readAllBytes()));
+  public String getResponse(HttpResponse response) throws Exception {
+    return new String (response.getEntity().getContent().readAllBytes());
   }
 
 }
