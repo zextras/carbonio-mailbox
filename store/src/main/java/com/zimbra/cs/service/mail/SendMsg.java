@@ -221,9 +221,9 @@ public class SendMsg extends MailDocumentHandler {
                   MailboxManager.getInstance().getMailboxByAccountId(authAcct.getId());
               mm =
                   ParseMimeMessage.parseMimeMsgSoap(
-                      zsc, octxt, loggedUserMbox, msgElem, null, mimeData);
+                      zsc, octxt, loggedUserMbox, msgElem, mimeData);
             } else {
-              mm = ParseMimeMessage.parseMimeMsgSoap(zsc, octxt, mbox, msgElem, null, mimeData);
+              mm = ParseMimeMessage.parseMimeMsgSoap(zsc, octxt, mbox, msgElem, mimeData);
             }
           }
 

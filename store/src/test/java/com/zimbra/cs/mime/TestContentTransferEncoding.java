@@ -68,7 +68,7 @@ public class TestContentTransferEncoding {
         Element msgElt = reqElt.getElement(MailConstants.E_MSG);
         AuthToken at = AuthProvider.getAuthToken(mbox.getAccount());
         ZimbraSoapContext zsc = new ZimbraSoapContext(at, mbox.getAccountId(), SoapProtocol.Soap12, SoapProtocol.Soap12);
-        return ParseMimeMessage.parseMimeMsgSoap(zsc, null, mbox, msgElt, null, new MimeMessageData());
+        return ParseMimeMessage.parseMimeMsgSoap(zsc, null, mbox, msgElt, new MimeMessageData());
     }
 
  /*

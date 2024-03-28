@@ -126,17 +126,16 @@ public final class ParseMimeMessage {
 
   // send msg
   public static MimeMessage parseMimeMsgSoap(ZimbraSoapContext zsc, OperationContext octxt,
-      Mailbox mbox, Element msgElem, MimeBodyPart[] additionalParts, MimeMessageData out)
+      Mailbox mbox, Element msgElem, MimeMessageData out)
       throws ServiceException {
-    return parseMimeMsgSoap(zsc, octxt, mbox, msgElem, additionalParts, NO_INV_ALLOWED_PARSER,
-        out, false);
+    return parseMimeMsgSoap(zsc, octxt, mbox, msgElem, null, NO_INV_ALLOWED_PARSER, out, false, new ParseMessageContext());
   }
 
   // calendar
   public static MimeMessage parseMimeMsgSoap(ZimbraSoapContext zsc, OperationContext octxt,
       Mailbox mbox, Element msgElem, MimeBodyPart[] additionalParts, InviteParser inviteParser,
       MimeMessageData out) throws ServiceException {
-    return parseMimeMsgSoap(zsc, octxt, mbox, msgElem, additionalParts, inviteParser, out, false);
+    return parseMimeMsgSoap(zsc, octxt, mbox, msgElem, additionalParts, inviteParser, out, false, new ParseMessageContext());
   }
 
   // draft
@@ -148,27 +147,6 @@ public final class ParseMimeMessage {
         true, new ParseMessageContext(false));
   }
 
-
-  /**
-   * Used only in SendMsg and Calendar
-   * Given an {@code <m>} element from SOAP, return us a parsed {@link MimeMessage}, and also fill
-   * in the {@link MimeMessageData} structure with information we parsed out of it (e.g. contained
-   * Invite, msgids, etc etc)
-   *
-   * @param msgElem         the {@code <m>} element
-   * @param additionalParts MimeBodyParts that we want to have added to the {@link MimeMessage} (ie
-   *                        things the server is adding onto the message)
-   * @param inviteParser    Callback which handles {@code <inv>} embedded invite components
-   * @param out             Holds info about things we parsed out of the message that the caller
-   *                        might want to know about
-   */
-  private static MimeMessage parseMimeMsgSoap(ZimbraSoapContext zsc, OperationContext octxt,
-      Mailbox mbox,
-      Element msgElem, MimeBodyPart[] additionalParts, InviteParser inviteParser,
-      MimeMessageData out, boolean attachMessageFromCache)
-      throws ServiceException {
-    return parseMimeMsgSoap(zsc, octxt, mbox, msgElem, additionalParts, inviteParser, out, attachMessageFromCache, new ParseMessageContext());
-  }
 
   private static MimeMessage parseMimeMsgSoap(ZimbraSoapContext zsc, OperationContext octxt, Mailbox mbox, Element msgElem, MimeBodyPart[] additionalParts,
       InviteParser inviteParser, MimeMessageData out, boolean attachMessageFromCache, ParseMessageContext ctxt) throws ServiceException {
