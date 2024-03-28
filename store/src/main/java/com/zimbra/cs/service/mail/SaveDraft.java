@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.cs.service.mail.message.parser.MimeMessageData;
+import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
@@ -93,14 +95,14 @@ public class SaveDraft extends MailDocumentHandler {
         String attachment = msgElem.getAttribute(MailConstants.A_ATTACHMENT_ID, null);
         long autoSendTime = new Long(msgElem.getAttribute(MailConstants.A_AUTO_SEND_TIME, "0"));
 
-        ParseMimeMessage.MimeMessageData mimeData = new ParseMimeMessage.MimeMessageData();
+        MimeMessageData mimeData = new MimeMessageData();
         Message msg;
         try {
             MimeMessage mm;
             if (attachment != null) {
                 mm = SendMsg.parseUploadedMessage(zsc, attachment, mimeData);
             } else {
-                mm = ParseMimeMessage.parseMimeMsgSoap(zsc, octxt, mbox, msgElem, null, mimeData, true);
+                mm = ParseMimeMessage.parseDraftMimeMsgSoap(zsc, octxt, mbox, msgElem, mimeData);
             }
 
             long date = System.currentTimeMillis();

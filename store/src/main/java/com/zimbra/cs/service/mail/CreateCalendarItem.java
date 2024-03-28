@@ -17,6 +17,8 @@ import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.OperationContext;
+import com.zimbra.cs.service.mail.message.parser.InviteParser;
+import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.ItemIdFormatter;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -46,8 +48,8 @@ public class CreateCalendarItem extends CalendarRequest {
   }
 
   // very simple: generate a new UID and send a REQUEST
-  protected class CreateCalendarItemInviteParser extends ParseMimeMessage.InviteParser {
-    public ParseMimeMessage.InviteParserResult parseInviteElement(
+  protected class CreateCalendarItemInviteParser extends InviteParser {
+    public InviteParserResult parseInviteElement(
         ZimbraSoapContext lc, OperationContext octxt, Account account, Element inviteElem)
         throws ServiceException {
       return CalendarUtils.parseInviteForCreate(

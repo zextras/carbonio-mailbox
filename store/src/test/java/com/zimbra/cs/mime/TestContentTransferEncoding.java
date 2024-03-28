@@ -33,8 +33,8 @@ import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.service.AuthProvider;
-import com.zimbra.cs.service.mail.ParseMimeMessage;
-import com.zimbra.cs.service.mail.ParseMimeMessage.MimeMessageData;
+import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
+import com.zimbra.cs.service.mail.message.parser.MimeMessageData;
 import com.zimbra.cs.util.JMSession;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -68,7 +68,7 @@ public class TestContentTransferEncoding {
         Element msgElt = reqElt.getElement(MailConstants.E_MSG);
         AuthToken at = AuthProvider.getAuthToken(mbox.getAccount());
         ZimbraSoapContext zsc = new ZimbraSoapContext(at, mbox.getAccountId(), SoapProtocol.Soap12, SoapProtocol.Soap12);
-        return ParseMimeMessage.parseMimeMsgSoap(zsc, null, mbox, msgElt, null, new MimeMessageData());
+        return ParseMimeMessage.parseMimeMsgSoap(zsc, null, mbox, msgElt, new MimeMessageData());
     }
 
  /*

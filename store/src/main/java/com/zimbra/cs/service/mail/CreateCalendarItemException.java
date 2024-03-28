@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.cs.service.mail.message.parser.InviteParser;
+import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +33,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 
 public class CreateCalendarItemException extends CalendarRequest {
 
-    protected class CreateCalendarItemExceptionInviteParser extends ParseMimeMessage.InviteParser {
+    protected class CreateCalendarItemExceptionInviteParser extends InviteParser {
         private String mUid;
         private Invite mDefaultInvite;
         private MailSendQueue sendQueue;
@@ -43,9 +45,9 @@ public class CreateCalendarItemException extends CalendarRequest {
         }
 
         @Override
-        public ParseMimeMessage.InviteParserResult parseInviteElement(ZimbraSoapContext zsc, OperationContext octxt,
+        public InviteParserResult parseInviteElement(ZimbraSoapContext zsc, OperationContext octxt,
                 Account account, Element inviteElem) throws ServiceException {
-            ParseMimeMessage.InviteParserResult toRet = CalendarUtils.parseInviteForCreateException(
+            InviteParserResult toRet = CalendarUtils.parseInviteForCreateException(
                     account, getItemType(), inviteElem, (mDefaultInvite.getTimeZoneMap() != null ) ? 
                             mDefaultInvite.getTimeZoneMap().clone() : null, mUid, mDefaultInvite);
 

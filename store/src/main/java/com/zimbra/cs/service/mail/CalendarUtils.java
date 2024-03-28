@@ -58,6 +58,7 @@ import com.zimbra.cs.mailbox.calendar.ZAttendee;
 import com.zimbra.cs.mailbox.calendar.ZOrganizer;
 import com.zimbra.cs.mailbox.calendar.ZRecur;
 import com.zimbra.cs.mailbox.util.TypedIdList;
+import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
 import com.zimbra.cs.util.AccountUtil.AccountAddressMatcher;
 import com.zimbra.soap.base.CalTZInfoInterface;
 import com.zimbra.soap.type.TzOnsetInfo;
@@ -86,9 +87,9 @@ public class CalendarUtils {
    * @return
    * @throws ServiceException
    */
-  static ParseMimeMessage.InviteParserResult parseInviteRaw(Account account, Element inviteElem)
+  static InviteParserResult parseInviteRaw(Account account, Element inviteElem)
       throws ServiceException {
-    ParseMimeMessage.InviteParserResult toRet = new ParseMimeMessage.InviteParserResult();
+    InviteParserResult toRet = new InviteParserResult();
 
     Element content = inviteElem.getElement(MailConstants.E_CONTENT /* content */);
     toRet.mUid = content.getAttribute(MailConstants.A_UID /* uid */);
@@ -117,7 +118,7 @@ public class CalendarUtils {
    * @return
    * @throws ServiceException
    */
-  static ParseMimeMessage.InviteParserResult parseInviteForCreate(
+  static InviteParserResult parseInviteForCreate(
       Account account,
       MailItem.Type type,
       Element inviteElem,
@@ -152,7 +153,7 @@ public class CalendarUtils {
 
     String summaryStr = create.getName() != null ? create.getName() : "";
 
-    ParseMimeMessage.InviteParserResult toRet = new ParseMimeMessage.InviteParserResult();
+    InviteParserResult toRet = new InviteParserResult();
     toRet.mCal = iCal;
     toRet.mUid = create.getUid();
     toRet.mSummary = summaryStr;
@@ -169,7 +170,7 @@ public class CalendarUtils {
     else return null;
   }
 
-  static ParseMimeMessage.InviteParserResult parseInviteForCreateException(
+  static InviteParserResult parseInviteForCreateException(
       Account account,
       MailItem.Type type,
       Element inviteElem,
@@ -214,7 +215,7 @@ public class CalendarUtils {
 
     String summaryStr = create.getName() != null ? create.getName() : "";
 
-    ParseMimeMessage.InviteParserResult toRet = new ParseMimeMessage.InviteParserResult();
+    InviteParserResult toRet = new InviteParserResult();
     toRet.mCal = iCal;
     toRet.mUid = create.getUid();
     toRet.mSummary = summaryStr;
@@ -231,7 +232,7 @@ public class CalendarUtils {
    * @return
    * @throws ServiceException
    */
-  static ParseMimeMessage.InviteParserResult parseInviteForModify(
+  static InviteParserResult parseInviteForModify(
       Account account,
       MailItem.Type type,
       Element inviteElem,
@@ -305,7 +306,7 @@ public class CalendarUtils {
       summaryStr = mod.getName();
     }
 
-    ParseMimeMessage.InviteParserResult toRet = new ParseMimeMessage.InviteParserResult();
+    InviteParserResult toRet = new InviteParserResult();
     toRet.mCal = iCal;
     toRet.mUid = mod.getUid();
     toRet.mSummary = summaryStr;
@@ -314,7 +315,7 @@ public class CalendarUtils {
     return toRet;
   }
 
-  static ParseMimeMessage.InviteParserResult parseInviteForCancel(
+  static InviteParserResult parseInviteForCancel(
       Account account,
       Folder folder,
       MailItem.Type type,
@@ -356,7 +357,7 @@ public class CalendarUtils {
 
     String summaryStr = sanitized.getName() != null ? sanitized.getName() : "";
 
-    ParseMimeMessage.InviteParserResult toRet = new ParseMimeMessage.InviteParserResult();
+    InviteParserResult toRet = new InviteParserResult();
     toRet.mCal = iCal;
     toRet.mUid = sanitized.getUid();
     toRet.mSummary = summaryStr;
@@ -365,7 +366,7 @@ public class CalendarUtils {
     return toRet;
   }
 
-  static ParseMimeMessage.InviteParserResult parseInviteForAddInvite(
+  static InviteParserResult parseInviteForAddInvite(
       Account account, MailItem.Type type, Element inviteElem, TimeZoneMap tzMap)
       throws ServiceException {
     if (tzMap == null) tzMap = new TimeZoneMap(Util.getAccountTimeZone(account));
@@ -386,7 +387,7 @@ public class CalendarUtils {
 
     String summaryStr = inv.getName() != null ? inv.getName() : "";
 
-    ParseMimeMessage.InviteParserResult toRet = new ParseMimeMessage.InviteParserResult();
+    InviteParserResult toRet = new InviteParserResult();
     toRet.mCal = iCal;
     toRet.mUid = inv.getUid();
     toRet.mSummary = summaryStr;
@@ -395,7 +396,7 @@ public class CalendarUtils {
     return toRet;
   }
 
-  static ParseMimeMessage.InviteParserResult parseInviteForCounter(
+  static InviteParserResult parseInviteForCounter(
       Account account, Invite oldInvite, MailItem.Type type, Element inviteElem)
       throws ServiceException {
     TimeZoneMap tzMap = new TimeZoneMap(Util.getAccountTimeZone(account));
@@ -465,7 +466,7 @@ public class CalendarUtils {
 
     String summaryStr = inv.getName() != null ? inv.getName() : "";
 
-    ParseMimeMessage.InviteParserResult toRet = new ParseMimeMessage.InviteParserResult();
+    InviteParserResult toRet = new InviteParserResult();
     toRet.mCal = iCal;
     toRet.mUid = inv.getUid();
     toRet.mSummary = summaryStr;
@@ -474,7 +475,7 @@ public class CalendarUtils {
     return toRet;
   }
 
-  static ParseMimeMessage.InviteParserResult parseInviteForDeclineCounter(
+  static InviteParserResult parseInviteForDeclineCounter(
       Account account, MailItem.Type type, Element inviteElem) throws ServiceException {
     TimeZoneMap tzMap = new TimeZoneMap(Util.getAccountTimeZone(account));
     Invite inv = new Invite(ICalTok.DECLINECOUNTER.toString(), tzMap, false);
@@ -500,7 +501,7 @@ public class CalendarUtils {
 
     String summaryStr = inv.getName() != null ? inv.getName() : "";
 
-    ParseMimeMessage.InviteParserResult toRet = new ParseMimeMessage.InviteParserResult();
+    InviteParserResult toRet = new InviteParserResult();
     toRet.mCal = iCal;
     toRet.mUid = inv.getUid();
     toRet.mSummary = summaryStr;

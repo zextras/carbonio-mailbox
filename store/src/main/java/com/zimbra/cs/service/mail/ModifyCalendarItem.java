@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.cs.service.mail.message.parser.InviteParser;
+import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +40,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 public class ModifyCalendarItem extends CalendarRequest {
 
     // very simple: generate a new UID and send a REQUEST
-    protected class ModifyCalendarItemParser extends ParseMimeMessage.InviteParser {
+    protected class ModifyCalendarItemParser extends InviteParser {
         private Invite mInv;
         private Invite mSeriesInv;
         private List<ZAttendee> mAttendeesAdded;
@@ -55,9 +57,9 @@ public class ModifyCalendarItem extends CalendarRequest {
         public List<ZAttendee> getAttendeesCanceled() { return mAttendeesCanceled; }
 
         @Override
-        public ParseMimeMessage.InviteParserResult parseInviteElement(ZimbraSoapContext lc, OperationContext octxt,
+        public InviteParserResult parseInviteElement(ZimbraSoapContext lc, OperationContext octxt,
                 Account account, Element inviteElem) throws ServiceException {
-            ParseMimeMessage.InviteParserResult toRet = CalendarUtils.parseInviteForModify(account, getItemType(),
+            InviteParserResult toRet = CalendarUtils.parseInviteForModify(account, getItemType(),
                     inviteElem, mInv, mSeriesInv, mAttendeesAdded, mAttendeesCanceled, !mInv.hasRecurId());
             return toRet;
         }

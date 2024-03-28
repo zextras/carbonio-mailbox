@@ -25,7 +25,10 @@ import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mailbox.util.TagUtil;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.mime.ParsedMessage.CalendarPartInfo;
-import com.zimbra.cs.service.mail.ParseMimeMessage.InviteParserResult;
+import com.zimbra.cs.service.mail.message.parser.InviteParser;
+import com.zimbra.cs.service.mail.message.parser.MimeMessageData;
+import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
+import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.ItemIdFormatter;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -48,7 +51,7 @@ public class SetCalendarItem extends CalendarRequest {
     return true;
   }
 
-  static class SetCalendarItemInviteParser extends ParseMimeMessage.InviteParser {
+  static class SetCalendarItemInviteParser extends InviteParser {
 
     private boolean mExceptOk = false;
     private boolean mForCancel = false;
@@ -64,12 +67,12 @@ public class SetCalendarItem extends CalendarRequest {
     }
 
     @Override
-    public ParseMimeMessage.InviteParserResult parseInviteElement(
+    public InviteParserResult parseInviteElement(
         ZimbraSoapContext zc, OperationContext octxt, Account account, Element inviteElem)
         throws ServiceException {
       Element content = inviteElem.getOptionalElement(MailConstants.E_CONTENT);
       if (content != null) {
-        ParseMimeMessage.InviteParserResult toRet =
+        InviteParserResult toRet =
             CalendarUtils.parseInviteRaw(account, inviteElem);
         return toRet;
       } else {
@@ -196,7 +199,7 @@ public class SetCalendarItem extends CalendarRequest {
       Account acct,
       Mailbox mbox,
       Element e,
-      ParseMimeMessage.InviteParser parser)
+      InviteParser parser)
       throws ServiceException {
     String partStatStr =
         e.getAttribute(MailConstants.A_CAL_PARTSTAT, IcalXmlStrMap.PARTSTAT_NEEDS_ACTION);
@@ -212,7 +215,7 @@ public class SetCalendarItem extends CalendarRequest {
 
     MimeMessage mm = null;
     if (attachmentId != null) {
-      ParseMimeMessage.MimeMessageData mimeData = new ParseMimeMessage.MimeMessageData();
+      MimeMessageData mimeData = new MimeMessageData();
       mm = SendMsg.parseUploadedMessage(zsc, attachmentId, mimeData);
     } else if (contentElement != null) {
       mm = ParseMimeMessage.importMsgSoap(msgElem);

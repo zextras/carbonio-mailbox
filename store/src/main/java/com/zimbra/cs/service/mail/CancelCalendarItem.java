@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;

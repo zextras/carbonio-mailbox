@@ -1,9 +1,8 @@
-// SPDX-FileCopyrightText: 2022 Synacor, Inc.
-// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+// SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
 //
-// SPDX-License-Identifier: GPL-2.0-only
+// SPDX-License-Identifier: AGPL-3.0-only
 
-package com.zimbra.cs.service.mail;
+package com.zimbra.cs.service.mail.message.parser;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,6 +18,7 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ZimbraAuthToken;
+import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
@@ -38,7 +38,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import javax.mail.BodyPart;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
@@ -92,13 +94,57 @@ public final class ParseMimeMessageTest {
 
   MimeMessage mm =
     ParseMimeMessage.parseMimeMsgSoap(
-      zsc, octxt, null, el, null, new ParseMimeMessage.MimeMessageData());
+      zsc, octxt, null, el, new MimeMessageData());
   assertEquals("text/plain; charset=utf-8", mm.getContentType());
   assertEquals("dinner appt", mm.getSubject());
   assertEquals("rcpt@zimbra.com", mm.getHeader("To", ","));
   assertEquals("7bit", mm.getHeader("Content-Transfer-Encoding", ","));
   assertEquals("foo bar", mm.getContent());
  }
+
+  @Test
+  void parseMimeMsgSoapWithEmptyFile_DoesNotAffectMtaMaxMessageSizeQuotaCheck() throws Exception {
+    Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    OperationContext octxt = new OperationContext(account);
+    ZimbraSoapContext parent =
+        new ZimbraSoapContext(
+            (Element) null,
+            (QName) null,
+            (DocumentHandler) null,
+            Collections.<String, Object>emptyMap(),
+            SoapProtocol.SoapJS);
+    ZimbraSoapContext zsc = new ZimbraSoapContext(parent, new ZimbraAuthToken(account), MockProvisioning.DEFAULT_ACCOUNT_ID, null);
+    final Message draftWithFileAttachment = this.createDraftWithFileAttachment(account);
+
+    // upload empty file
+    final InputStream uploadInputStream = this.getClass()
+        .getResourceAsStream("/empty-file.txt");
+    final String filename = "emptyFile.txt";
+    final Upload upload = FileUploadServlet.saveUpload(uploadInputStream, filename,
+        "text/plain", account.getId(), true);
+
+    final SaveDraftRequest sendMsgRequest = new SaveDraftRequest();
+    final SaveDraftMsg msgToSend = new SaveDraftMsg();
+    final int draftId = draftWithFileAttachment.getId();
+    msgToSend.setId(draftId);
+    msgToSend.setContent("Hey there!");
+    msgToSend.setSubject("Test subject");
+    final AttachmentsInfo attachmentsInfo = new AttachmentsInfo();
+    attachmentsInfo.setAttachmentId(upload.getId());
+    msgToSend.setAttachments(attachmentsInfo);
+    sendMsgRequest.setMsg(msgToSend);
+    final Element rootElem = JaxbUtil.jaxbToElement(sendMsgRequest);
+    final Element msgElement = rootElem.getElement(MailConstants.E_MSG);
+
+    final MimeMessage mimeMessage = ParseMimeMessage.parseDraftMimeMsgSoap(zsc, octxt, null,
+        msgElement, new MimeMessageData());
+
+    final ZMimeMultipart multiPart = (ZMimeMultipart) mimeMessage.getContent();
+    Assertions.assertEquals (1, multiPart.getCount());
+    final BodyPart attachment = multiPart.getBodyPart(0);
+    Assertions.assertEquals ("", attachment.getContent());
+    Assertions.assertEquals (filename, attachment.getFileName());
+  }
 
   @Test
   void parseMimeMsgSoapWithSmartLink() throws Exception {
@@ -134,7 +180,7 @@ public final class ParseMimeMessageTest {
 
     MimeMessage mimeMessageWithAttachment =
         ParseMimeMessage.parseMimeMsgSoap(
-            zsc, octxt, null, msgElement, null, new ParseMimeMessage.MimeMessageData());
+            zsc, octxt, null, msgElement, new MimeMessageData());
     mimeMessageWithAttachment.getContent();
     final String[] header = ((ZMimeMultipart) mimeMessageWithAttachment.getContent()).getBodyPart(0)
         .getHeader(ParseMimeMessage.SMART_LINK_HEADER);
@@ -180,11 +226,187 @@ public final class ParseMimeMessageTest {
 
     MimeMessage mimeMessageWithAttachment =
         ParseMimeMessage.parseMimeMsgSoap(
-            zsc, octxt, null, msgElement, null, new ParseMimeMessage.MimeMessageData());
+            zsc, octxt, null, msgElement, new MimeMessageData());
     mimeMessageWithAttachment.getContent();
     final String[] header = ((ZMimeMultipart) mimeMessageWithAttachment.getContent()).getBodyPart(0)
         .getHeader(ParseMimeMessage.SMART_LINK_HEADER);
     Assertions.assertNull(header);
+  }
+
+
+  @Test
+  void parseMimeMsgSoap_IgnoresFileSizeMtaQuotaWhenNoAttachments() throws Exception {
+    var config = Provisioning.getInstance().getConfig();
+    try {
+      config.modify(new HashMap<>(Map.of(
+          Provisioning.A_zimbraMtaMaxMessageSize, "1"
+      )));
+
+      Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+      OperationContext octxt = new OperationContext(account);
+      ZimbraSoapContext parent =
+          new ZimbraSoapContext(
+              (Element) null,
+              (QName) null,
+              (DocumentHandler) null,
+              Collections.<String, Object>emptyMap(),
+              SoapProtocol.SoapJS);
+      ZimbraSoapContext zsc = new ZimbraSoapContext(parent, new ZimbraAuthToken(account), MockProvisioning.DEFAULT_ACCOUNT_ID, null);
+
+      // 1 save a draft message with attachments
+      final Message draft = this.createDraft(account);
+
+      // set attachment as smartlink
+      final SaveDraftRequest sendMsgRequest = new SaveDraftRequest();
+      final SaveDraftMsg msgToSend = new SaveDraftMsg();
+      final int draftId = draft.getId();
+      msgToSend.setId(draftId);
+      msgToSend.setContent("Hey there!");
+      msgToSend.setSubject("Test subject");
+      sendMsgRequest.setMsg(msgToSend);
+      final Element rootElem = JaxbUtil.jaxbToElement(sendMsgRequest);
+      final Element msgElement = rootElem.getElement(MailConstants.E_MSG);
+
+      Assertions.assertDoesNotThrow( () -> {
+        ParseMimeMessage.parseMimeMsgSoap(
+            zsc, octxt, null, msgElement, new MimeMessageData());
+      });
+
+    } finally {
+      config.unsetMtaMaxMessageSize();
+    }
+  }
+
+  @Test
+  void parseMimeMsgSoap_WithFileSizeExceedingMtaQuotaFails() throws Exception {
+    var config = Provisioning.getInstance().getConfig();
+    try {
+      config.modify(new HashMap<>(Map.of(
+          Provisioning.A_zimbraMtaMaxMessageSize, "1"
+      )));
+
+      Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+      OperationContext octxt = new OperationContext(account);
+      ZimbraSoapContext parent =
+          new ZimbraSoapContext(
+              (Element) null,
+              (QName) null,
+              (DocumentHandler) null,
+              Collections.<String, Object>emptyMap(),
+              SoapProtocol.SoapJS);
+      ZimbraSoapContext zsc = new ZimbraSoapContext(parent, new ZimbraAuthToken(account), MockProvisioning.DEFAULT_ACCOUNT_ID, null);
+
+      // 1 save a draft message with attachments
+      final Message draft = this.createDraft(account);
+
+      // 2 upload file
+      final InputStream uploadInputStream = this.getClass()
+          .getResourceAsStream("/test-save-to-files.txt");
+      final Upload upload = FileUploadServlet.saveUpload(uploadInputStream, "myFiletest.txt",
+          "text/plain", account.getId(), true);
+
+      // set attachment as smartlink
+      final SaveDraftRequest sendMsgRequest = new SaveDraftRequest();
+      final SaveDraftMsg msgToSend = new SaveDraftMsg();
+      final int draftId = draft.getId();
+      msgToSend.setId(draftId);
+      msgToSend.setContent("Hey there!");
+      msgToSend.setSubject("Test subject");
+      final AttachmentsInfo attachmentsInfo = new AttachmentsInfo();
+      attachmentsInfo.setAttachmentId(upload.getId());
+      msgToSend.setAttachments(attachmentsInfo);
+      sendMsgRequest.setMsg(msgToSend);
+      final Element rootElem = JaxbUtil.jaxbToElement(sendMsgRequest);
+      final Element msgElement = rootElem.getElement(MailConstants.E_MSG);
+
+      Assertions.assertThrows( MailServiceException.class, () -> {
+        ParseMimeMessage.parseMimeMsgSoap(
+            zsc, octxt, null, msgElement, new MimeMessageData());
+          });
+
+    } finally {
+      config.unsetMtaMaxMessageSize();
+    }
+  }
+
+
+  @Test
+  void parseDraftMimeMsgSoap() throws Exception {
+    Element rootEl = new Element.JSONElement(MailConstants.E_SEND_MSG_REQUEST);
+    Element el = new Element.JSONElement(MailConstants.E_MSG);
+    el.addAttribute(MailConstants.E_SUBJECT, "dinner appt");
+    el.addUniqueElement(MailConstants.E_MIMEPART)
+        .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
+        .addAttribute(MailConstants.E_CONTENT, "foo bar");
+    el.addElement(MailConstants.E_EMAIL)
+        .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
+        .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
+
+    rootEl.addUniqueElement(el);
+    Account acct = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    OperationContext octxt = new OperationContext(acct);
+    ZimbraSoapContext zsc = getMockSoapContext();
+
+    MimeMessage mm =
+        ParseMimeMessage.parseDraftMimeMsgSoap(
+            zsc, octxt, null, el, new MimeMessageData());
+    assertEquals("text/plain; charset=utf-8", mm.getContentType());
+    assertEquals("dinner appt", mm.getSubject());
+    assertEquals("rcpt@zimbra.com", mm.getHeader("To", ","));
+    assertEquals("7bit", mm.getHeader("Content-Transfer-Encoding", ","));
+    assertEquals("foo bar", mm.getContent());
+  }
+
+  @Test
+  void parseDraftMimeMsgSoap_SucceedsEvenIfSizeExceedsMtaQuota() throws Exception {
+    var config = Provisioning.getInstance().getConfig();
+    try {
+      config.modify(new HashMap<>(Map.of(
+          Provisioning.A_zimbraMtaMaxMessageSize, "1"
+      )));
+
+      Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+      OperationContext octxt = new OperationContext(account);
+      ZimbraSoapContext parent =
+          new ZimbraSoapContext(
+              (Element) null,
+              (QName) null,
+              (DocumentHandler) null,
+              Collections.<String, Object>emptyMap(),
+              SoapProtocol.SoapJS);
+      ZimbraSoapContext zsc = new ZimbraSoapContext(parent, new ZimbraAuthToken(account), MockProvisioning.DEFAULT_ACCOUNT_ID, null);
+
+      // 1 save a draft message with attachments
+      final Message draft = this.createDraft(account);
+
+      // 2 upload file
+      final InputStream uploadInputStream = this.getClass()
+          .getResourceAsStream("/test-save-to-files.txt");
+      final Upload upload = FileUploadServlet.saveUpload(uploadInputStream, "myFiletest.txt",
+          "text/plain", account.getId(), true);
+
+      // set attachment as smartlink
+      final SaveDraftRequest sendMsgRequest = new SaveDraftRequest();
+      final SaveDraftMsg msgToSend = new SaveDraftMsg();
+      final int draftId = draft.getId();
+      msgToSend.setId(draftId);
+      msgToSend.setContent("Hey there!");
+      msgToSend.setSubject("Test subject");
+      final AttachmentsInfo attachmentsInfo = new AttachmentsInfo();
+      attachmentsInfo.setAttachmentId(upload.getId());
+      msgToSend.setAttachments(attachmentsInfo);
+      sendMsgRequest.setMsg(msgToSend);
+      final Element rootElem = JaxbUtil.jaxbToElement(sendMsgRequest);
+      final Element msgElement = rootElem.getElement(MailConstants.E_MSG);
+
+      Assertions.assertDoesNotThrow( () -> {
+        ParseMimeMessage.parseDraftMimeMsgSoap(
+            zsc, octxt, null, msgElement, new MimeMessageData());
+      });
+
+    } finally {
+      config.unsetMtaMaxMessageSize();
+    }
   }
 
  @Test
@@ -214,7 +436,7 @@ public final class ParseMimeMessageTest {
   try {
    mm =
      ParseMimeMessage.parseMimeMsgSoap(
-       zsc, octxt, null, el, null, new ParseMimeMessage.MimeMessageData());
+       zsc, octxt, null, el, new MimeMessageData());
    fail();
   } catch (ServiceException expected) {
    assertEquals("invalid request: header 'X-Zimbra-Test' not allowed", expected.getMessage());
@@ -225,7 +447,7 @@ public final class ParseMimeMessageTest {
     .setCustomMimeHeaderNameAllowed(new String[]{"X-Zimbra-Test"});
   mm =
     ParseMimeMessage.parseMimeMsgSoap(
-      zsc, octxt, null, el, null, new ParseMimeMessage.MimeMessageData());
+      zsc, octxt, null, el, new MimeMessageData());
   assertEquals("custom, =?utf-8?B?44Kr44K544K/44Og?=", mm.getHeader("X-Zimbra-Test", ", "));
  }
 
@@ -262,7 +484,7 @@ public final class ParseMimeMessageTest {
 
   MimeMessage mm =
     ParseMimeMessage.parseMimeMsgSoap(
-      zsc, octxt, null, el, null, new ParseMimeMessage.MimeMessageData());
+      zsc, octxt, null, el, new MimeMessageData());
   assertTrue(mm.getContentType().startsWith("multipart/mixed;"));
   assertEquals("attach message", mm.getSubject());
   assertEquals("rcpt@zimbra.com", mm.getHeader("To", ","));
@@ -335,6 +557,7 @@ public final class ParseMimeMessageTest {
       .contains(expectedFirstTextHtmlMimePart.get()));
   assertEquals("foo", expectedFirstTextHtmlMimePart.get().getAttribute(MailConstants.E_CONTENT));
  }
+
 
   private Message createDraftWithFileAttachment(Account account) throws Exception {
     final String accountName = account.getName();

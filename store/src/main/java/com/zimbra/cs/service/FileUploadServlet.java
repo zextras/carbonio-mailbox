@@ -257,7 +257,7 @@ public class FileUploadServlet extends ZimbraServlet {
         is, filename, contentType, accountId, getFileUploadMaxSize(limitByFileUploadMaxSize));
   }
 
-  public static Upload saveUpload(
+  private static Upload saveUpload(
       InputStream is, String filename, String contentType, String accountId, long limit)
       throws ServiceException, IOException {
     FileItem fi = null;
@@ -478,7 +478,7 @@ public class FileUploadServlet extends ZimbraServlet {
     return maxSize;
   }
 
-  public static ServletFileUpload getUploader2(boolean limitByFileUploadMaxSize) {
+  private static ServletFileUpload getUploader2(boolean limitByFileUploadMaxSize) {
     return getUploader(getFileUploadMaxSize(limitByFileUploadMaxSize));
   }
 
