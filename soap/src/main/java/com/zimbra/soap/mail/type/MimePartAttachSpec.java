@@ -31,6 +31,13 @@ public class MimePartAttachSpec extends AttachSpec {
     @XmlAttribute(name=MailConstants.A_PART, required=true)
     private final String part;
 
+    public void setRequiresSmartLinkConversion(Boolean requiresSmartLinkConversion) {
+        this.requiresSmartLinkConversion = requiresSmartLinkConversion;
+    }
+
+    @XmlAttribute(name=MailConstants.A_REQUIRES_SMART_LINK_CONVERSION, required=true)
+    private Boolean requiresSmartLinkConversion;
+
     /**
      * no-argument constructor wanted by JAXB
      */
@@ -42,6 +49,12 @@ public class MimePartAttachSpec extends AttachSpec {
     public MimePartAttachSpec(String messageId, String part) {
         this.messageId = messageId;
         this.part = part;
+    }
+
+    public MimePartAttachSpec(String messageId, String part, Boolean requiresSmartLinkConversion) {
+        this.messageId = messageId;
+        this.part = part;
+        this.requiresSmartLinkConversion = requiresSmartLinkConversion;
     }
 
     public String getMessageId() { return messageId; }
@@ -57,5 +70,9 @@ public class MimePartAttachSpec extends AttachSpec {
     @Override
     public String toString() {
         return addToStringInfo(MoreObjects.toStringHelper(this)).toString();
+    }
+
+    public Boolean getRequiresSmartLinkConversion() {
+        return requiresSmartLinkConversion;
     }
 }

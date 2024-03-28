@@ -104,6 +104,9 @@ implements PartInfoInterface {
     @XmlElement(name=MailConstants.E_MIMEPART /* mp */, required=false)
     private List<PartInfo> mimeParts = Lists.newArrayList();
 
+    @XmlAttribute(name=MailConstants.A_REQUIRES_SMART_LINK_CONVERSION, required=true)
+    private Boolean requiresSmartLinkConversion = false;
+
     /**
      * no-argument constructor wanted by JAXB
      */
@@ -151,6 +154,9 @@ implements PartInfoInterface {
             Iterables.addAll(this.mimeParts,mimeParts);
         }
     }
+    public void setRequiresSmartLinkConversion(Boolean requiresSmartLinkConversion) {
+        this.requiresSmartLinkConversion = requiresSmartLinkConversion;
+    }
 
     public PartInfo addMimePart(PartInfo mimePart) {
         this.mimeParts.add(mimePart);
@@ -179,6 +185,9 @@ implements PartInfoInterface {
     public String getContent() { return content; }
     public List<PartInfo> getMimeParts() {
         return Collections.unmodifiableList(mimeParts);
+    }
+    public Boolean getRequiresSmartLinkConversion() {
+        return requiresSmartLinkConversion;
     }
 
     @Override
@@ -231,6 +240,7 @@ implements PartInfoInterface {
             .add("truncatedContent", truncatedContent)
             .add("content", content)
             .add("mimeParts", mimeParts)
+            .add("requiresSmartLinkConversion", requiresSmartLinkConversion)
             .toString();
     }
 }

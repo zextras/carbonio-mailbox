@@ -24,6 +24,8 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.soap.json.JacksonUtil;
 import com.zimbra.soap.mail.message.CopyToFilesRequest;
 import com.zimbra.soap.mail.message.CopyToFilesResponse;
+import com.zimbra.soap.mail.message.CreateSmartLinksRequest;
+import com.zimbra.soap.mail.message.CreateSmartLinksResponse;
 import com.zimbra.soap.mail.type.CreateItemNotification;
 import com.zimbra.soap.mail.type.DeleteItemNotification;
 import com.zimbra.soap.mail.type.ImapMessageInfo;
@@ -849,7 +851,9 @@ public final class JaxbUtil {
           com.zimbra.soap.admin.message.GetAddressListInfoRequest.class,
           com.zimbra.soap.admin.message.GetAddressListInfoResponse.class,
           CopyToFilesRequest.class,
-          CopyToFilesResponse.class
+          CopyToFilesResponse.class,
+          CreateSmartLinksRequest.class,
+          CreateSmartLinksResponse.class,
         };
 
     try {

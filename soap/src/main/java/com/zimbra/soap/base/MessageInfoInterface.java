@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import com.zimbra.soap.type.KeyValuePair;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public interface MessageInfoInterface
+public interface MessageInfoInterface<P>
 extends MessageCommonInterface {
     MessageInfoInterface createFromId(String id);
     void setId(String id);
@@ -32,8 +32,8 @@ extends MessageCommonInterface {
     void setInReplyTo(String inReplyTo);
     void setHeaders(Iterable<KeyValuePair> headers);
     void addHeader(KeyValuePair header);
-    void setContentElems(Iterable<Object> contentElems);
-    void addContentElem(Object contentElem);
+    void setContentElems(Iterable<P> contentElems);
+    void addContentElem(P contentElem);
     String getId();
     String getCalendarIntendedFor();
     String getOrigId();
@@ -49,7 +49,7 @@ extends MessageCommonInterface {
     String getMessageIdHeader();
     String getInReplyTo();
     List<KeyValuePair> getHeaders();
-    List<Object> getContentElems();
+    List<P> getContentElems();
     void setEmailInterfaces(Iterable<EmailInfoInterface> emails);
     void addEmailInterface(EmailInfoInterface email);
     void setInviteInterface(InviteInfoInterface invite);

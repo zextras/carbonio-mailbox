@@ -35,7 +35,7 @@ class RobotsServletTest {
   }
 
   @Test
-  void doGet_should_allow_webcrawlers_when_mailKeepOutWebCrawlers_is_set_to_true() throws Exception {
+  void doGet_should_allow_webcrawlers_when_mailKeepOutWebCrawlers_is_set_to_false() throws Exception {
     final Server localServer = Provisioning.getInstance().getLocalServer();
     localServer.setMailKeepOutWebCrawlers(false);
 
