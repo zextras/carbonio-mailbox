@@ -130,6 +130,7 @@ public final class ParseMimeMessage {
     }
   }
 
+  // send msg
   public static MimeMessage parseMimeMsgSoap(ZimbraSoapContext zsc, OperationContext octxt,
       Mailbox mbox, Element msgElem, MimeBodyPart[] additionalParts, MimeMessageData out)
       throws ServiceException {
@@ -137,6 +138,14 @@ public final class ParseMimeMessage {
         out, false);
   }
 
+  // calendar
+  public static MimeMessage parseMimeMsgSoap(ZimbraSoapContext zsc, OperationContext octxt,
+      Mailbox mbox, Element msgElem, MimeBodyPart[] additionalParts, InviteParser inviteParser,
+      MimeMessageData out) throws ServiceException {
+    return parseMimeMsgSoap(zsc, octxt, mbox, msgElem, additionalParts, inviteParser, out, false);
+  }
+
+  // draft
   public static MimeMessage parseDraftMimeMsgSoap(ZimbraSoapContext zsc, OperationContext octxt,
       Mailbox mbox,
       Element msgElem, MimeMessageData out)
@@ -145,48 +154,9 @@ public final class ParseMimeMessage {
         true, new ParseMessageContext(false));
   }
 
-  public static String getTextPlainContent(Element elem) {
-    return getFirstContentByType(elem, MimeConstants.CT_TEXT_PLAIN);
-  }
-
-  public static String getTextHtmlContent(Element elem) {
-    return getFirstContentByType(elem, MimeConstants.CT_TEXT_HTML);
-  }
-
-  // Recursively find and return the content of the first part with the specified content type.
-  static String getFirstContentByType(Element elem, String contentType) {
-    if (elem == null) {
-      return null;
-    }
-
-    if (MailConstants.E_MSG.equals(elem.getName())) {
-      elem = elem.getOptionalElement(MailConstants.E_MIMEPART);
-      if (elem == null) {
-        return null;
-      }
-    }
-
-    String type = elem.getAttribute(MailConstants.A_CONTENT_TYPE, contentType).trim().toLowerCase();
-    if (type.equals(contentType)) {
-      return elem.getAttribute(MailConstants.E_CONTENT, null);
-    } else if (type.startsWith(MimeConstants.CT_MULTIPART_PREFIX)) {
-      for (Element childElem : elem.listElements(MailConstants.E_MIMEPART)) {
-        String text = getFirstContentByType(childElem, contentType);
-        if (text != null) {
-          return text;
-        }
-      }
-    }
-    return null;
-  }
-
-  public static MimeMessage parseMimeMsgSoap(ZimbraSoapContext zsc, OperationContext octxt,
-      Mailbox mbox, Element msgElem, MimeBodyPart[] additionalParts, InviteParser inviteParser,
-      MimeMessageData out) throws ServiceException {
-    return parseMimeMsgSoap(zsc, octxt, mbox, msgElem, additionalParts, inviteParser, out, false);
-  }
 
   /**
+   * Used only in SendMsg and Calendar
    * Given an {@code <m>} element from SOAP, return us a parsed {@link MimeMessage}, and also fill
    * in the {@link MimeMessageData} structure with information we parsed out of it (e.g. contained
    * Invite, msgids, etc etc)
@@ -395,6 +365,42 @@ public final class ParseMimeMessage {
     }
   }
 
+  public static String getTextPlainContent(Element elem) {
+    return getFirstContentByType(elem, MimeConstants.CT_TEXT_PLAIN);
+  }
+
+  public static String getTextHtmlContent(Element elem) {
+    return getFirstContentByType(elem, MimeConstants.CT_TEXT_HTML);
+  }
+
+  // Recursively find and return the content of the first part with the specified content type.
+  private static String getFirstContentByType(Element elem, String contentType) {
+    if (elem == null) {
+      return null;
+    }
+
+    if (MailConstants.E_MSG.equals(elem.getName())) {
+      elem = elem.getOptionalElement(MailConstants.E_MIMEPART);
+      if (elem == null) {
+        return null;
+      }
+    }
+
+    String type = elem.getAttribute(MailConstants.A_CONTENT_TYPE, contentType).trim().toLowerCase();
+    if (type.equals(contentType)) {
+      return elem.getAttribute(MailConstants.E_CONTENT, null);
+    } else if (type.startsWith(MimeConstants.CT_MULTIPART_PREFIX)) {
+      for (Element childElem : elem.listElements(MailConstants.E_MIMEPART)) {
+        String text = getFirstContentByType(childElem, contentType);
+        if (text != null) {
+          return text;
+        }
+      }
+    }
+    return null;
+  }
+
+
   private static void handleAttachments(Element attachElem, MimeMultipart mmp,
       ParseMessageContext ctxt, String contentID, String contentDisposition)
       throws ServiceException, MessagingException, IOException {
@@ -461,19 +467,6 @@ public final class ParseMimeMessage {
         ZimbraLog.soap.info("skipping missing optional attachment: " + elem);
       }
     }
-  }
-
-  /**
-   * The <mp>'s from the client and the MimeBodyParts in alternatives[] all want to be "content" of
-   * this MimeMessage.  The alternatives[] all need to be "alternative" to whatever the client sends
-   * us....but we want to be careful so that we do NOT create a nested multipart/alternative
-   * structure within another one (that would be very tacky)....so this is a bit complicated.
-   */
-  private static void setContent(MimeMessage mm, MimeMultipart mmp, Element elem,
-      MimeBodyPart[] alternatives,
-      ParseMessageContext ctxt)
-      throws MessagingException, ServiceException, IOException {
-    setContent(mm, mmp, elem, alternatives, ctxt, false);
   }
 
   private static void setContent(MimeMessage mm, MimeMultipart mmp, Element elem,
@@ -716,12 +709,6 @@ public final class ParseMimeMessage {
     } catch (IOException ioe) {
       throw ServiceException.FAILURE("can't serialize remote item", ioe);
     }
-  }
-
-  @SuppressWarnings("unchecked")
-  private static void attachMessage(MimeMultipart mmp, ItemId iid, String contentID,
-      ParseMessageContext ctxt) throws MessagingException, ServiceException {
-    attachMessage(mmp, iid, contentID, ctxt, false);
   }
 
   @SuppressWarnings("unchecked")
