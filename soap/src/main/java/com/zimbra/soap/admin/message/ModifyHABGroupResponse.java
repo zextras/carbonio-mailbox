@@ -14,7 +14,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.soap.json.jackson.annotate.ZimbraJsonArrayForWrapper;
 
@@ -32,7 +31,7 @@ public class ModifyHABGroupResponse {
     @ZimbraJsonArrayForWrapper
     @XmlElementWrapper(name=AdminConstants.E_MEMBERS /* members */, required=false)
     @XmlElement(name = AdminConstants.E_MEMBER /*group child member*/, required = false)
-    List<String> members = new ArrayList<String>();
+    List<String> members = new ArrayList<>();
 
     public ModifyHABGroupResponse() {
 

@@ -23,7 +23,7 @@ import com.zimbra.cs.account.Provisioning;
 
 public class ServerThrottle {
 
-    private static final ConcurrentMap<String, ServerThrottle> instances = new ConcurrentHashMap<String, ServerThrottle>();
+    private static final ConcurrentMap<String, ServerThrottle> instances = new ConcurrentHashMap<>();
 
     public static ServerThrottle getThrottle(String serverType) {
         return instances.get(serverType);
@@ -106,15 +106,15 @@ public class ServerThrottle {
 
     private int acctReqsPerSecond = 0; // max reqs/second per account
 
-    private ConcurrentMap<String, List<Long>> ipReqs = new ConcurrentHashMap<String, List<Long>>();
+    private ConcurrentMap<String, List<Long>> ipReqs = new ConcurrentHashMap<>();
     // map containing a list of the timestamps for prior requests by ip
 
-    private ConcurrentMap<String, List<Long>> acctReqs = new ConcurrentHashMap<String, List<Long>>();
+    private ConcurrentMap<String, List<Long>> acctReqs = new ConcurrentHashMap<>();
     // map containing a list of the timestamps for prior requests by acct
 
-    private Set<String> ignoredIps = new HashSet<String>();
+    private Set<String> ignoredIps = new HashSet<>();
 
-    private Set<String> whitelistIps = new HashSet<String>();
+    private Set<String> whitelistIps = new HashSet<>();
 
     @VisibleForTesting
     void setIpReqsPerSecond(int ipReqsPerSecond) {
@@ -239,7 +239,7 @@ public class ServerThrottle {
             // race here; duplicate initialization is tolerable since it only
             // makes our count slightly inaccurate for the first second. a real
             // flood will be detected +/- a few requests
-            reqs = new ArrayList<Long>();
+            reqs = new ArrayList<>();
             reqMap.put(key, reqs);
         }
         return reqs;

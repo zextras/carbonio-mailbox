@@ -28,7 +28,7 @@ public class RenameCalendarResourceResponse {
      */
      @SuppressWarnings("unused")
     private RenameCalendarResourceResponse() {
-        this((CalendarResourceInfo)null);
+        this(null);
     }
 
     public RenameCalendarResourceResponse(CalendarResourceInfo calResource) {

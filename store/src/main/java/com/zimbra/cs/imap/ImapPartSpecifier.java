@@ -183,7 +183,7 @@ class ImapPartSpecifier {
         InputStreamWithSize getInputStreamWithSize() throws BinaryDecodingException, ServiceException;
     }
 
-    private class ZimbraMailItemGettableInputStreamWithSize implements GettableInputStreamWithSize {
+    private static class ZimbraMailItemGettableInputStreamWithSize implements GettableInputStreamWithSize {
         private final ZimbraMailItem mailItem;
 
         ZimbraMailItemGettableInputStreamWithSize(ZimbraMailItem zmi) {
@@ -361,7 +361,7 @@ class ImapPartSpecifier {
                 if (mp instanceof MimeBodyPart) {
                     if (command.startsWith("BINARY")) {
                         try {
-                            is = ((MimeBodyPart) mp).getInputStream();
+                            is = mp.getInputStream();
                         } catch (IOException ioe) {
                             throw new BinaryDecodingException();
                         }
@@ -375,7 +375,7 @@ class ImapPartSpecifier {
                         return new ImapPartSpecifier(command, parentPart, "TEXT").getContent(msg);
                     } else if (command.startsWith("BINARY")) {
                         try {
-                            is = ((MimeMessage) mp).getInputStream();
+                            is = mp.getInputStream();
                         } catch (IOException ioe) {
                             throw new BinaryDecodingException();
                         }
@@ -428,10 +428,7 @@ class ImapPartSpecifier {
             }
 
             return new InputStreamWithSize(is, length);
-        } catch (IOException e) {
-            ByteUtil.closeStream(is);
-            return null;
-        } catch (MessagingException e) {
+        } catch (IOException | MessagingException e) {
             ByteUtil.closeStream(is);
             return null;
         }

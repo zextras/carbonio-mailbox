@@ -134,10 +134,10 @@ public class ForwardCalendarItem extends CalendarRequest {
       MimeMessage mm,
       Account senderAcct)
       throws ServiceException {
-    List<MimeMessage> fwdMsgs = new ArrayList<MimeMessage>();
-    List<MimeMessage> notifyMsgs = new ArrayList<MimeMessage>();
+    List<MimeMessage> fwdMsgs = new ArrayList<>();
+    List<MimeMessage> notifyMsgs = new ArrayList<>();
     Pair<List<MimeMessage>, List<MimeMessage>> pair =
-        new Pair<List<MimeMessage>, List<MimeMessage>>(fwdMsgs, notifyMsgs);
+        new Pair<>(fwdMsgs, notifyMsgs);
     mbox.lock.lock();
     try {
       if (rid == null) {
@@ -212,17 +212,17 @@ public class ForwardCalendarItem extends CalendarRequest {
     MimeBodyPart htmlDescPart = visitor.getHtmlDescPart();
 
     try {
-      List<MimeMessage> msgs = new ArrayList<MimeMessage>();
-      List<MimeMessage> notifyMsgs = new ArrayList<MimeMessage>();
+      List<MimeMessage> msgs = new ArrayList<>();
+      List<MimeMessage> notifyMsgs = new ArrayList<>();
       long now = octxt != null ? octxt.getTimestamp() : System.currentTimeMillis();
       Invite[] invites = calItem.getInvites();
       // Get canceled instances in the future.  These will be included in the series part.
-      List<Invite> cancels = new ArrayList<Invite>();
+      List<Invite> cancels = new ArrayList<>();
       for (Invite inv : invites) {
         if (inv.isCancel() && inv.hasRecurId() && inviteIsAfterTime(inv, now)) cancels.add(inv);
       }
       // Make sure the series invite is the first one in the list.
-      LinkedList<Invite> invOrderedList = new LinkedList<Invite>();
+      LinkedList<Invite> invOrderedList = new LinkedList<>();
       for (Invite inv : invites) {
         // Ignore exceptions in the past.
         if (inv.hasRecurId() && !inviteIsAfterTime(inv, now)) continue;
@@ -258,10 +258,8 @@ public class ForwardCalendarItem extends CalendarRequest {
         }
         firstInv = false;
       }
-      return new Pair<List<MimeMessage>, List<MimeMessage>>(msgs, notifyMsgs);
-    } catch (IOException e) {
-      throw ServiceException.FAILURE("error creating forward message", e);
-    } catch (MessagingException e) {
+      return new Pair<>(msgs, notifyMsgs);
+    } catch (IOException | MessagingException e) {
       throw ServiceException.FAILURE("error creating forward message", e);
     }
   }
@@ -354,9 +352,7 @@ public class ForwardCalendarItem extends CalendarRequest {
     try {
       return makeFwdMsg(
           senderAcct, inv, mmInv, cal, mmFwdWrapper, plainDescPart, htmlDescPart, true);
-    } catch (IOException e) {
-      throw ServiceException.FAILURE("error creating forward message", e);
-    } catch (MessagingException e) {
+    } catch (IOException | MessagingException e) {
       throw ServiceException.FAILURE("error creating forward message", e);
     }
   }
@@ -407,7 +403,7 @@ public class ForwardCalendarItem extends CalendarRequest {
               senderAcct, from, sender, null, mmInv, inv, cal, false);
     }
     // Copy recipient headers from forward wrapper msg.
-    RecipientType rcptTypes[] = {RecipientType.TO, RecipientType.CC, RecipientType.BCC};
+    RecipientType[] rcptTypes = {RecipientType.TO, RecipientType.CC, RecipientType.BCC};
     for (RecipientType rcptType : rcptTypes) {
       Address[] rcpts = mmFwdWrapper.getRecipients(rcptType);
       mm.setRecipients(rcptType, rcpts);
@@ -426,7 +422,7 @@ public class ForwardCalendarItem extends CalendarRequest {
                 senderAcct, orgAccount, orgAddress, mmFwdWrapper.getAllRecipients(), inv);
       }
     }
-    return new Pair<MimeMessage, MimeMessage>(mm, notifyMimeMsg);
+    return new Pair<>(mm, notifyMimeMsg);
   }
 
   // Take mmInv and mutate it.  text/calendar part is replaced by cal and plain and html parts
@@ -478,9 +474,7 @@ public class ForwardCalendarItem extends CalendarRequest {
           desc = plainContent != null ? plainContent.toString() : null;
           Object htmlContent = htmlDescPart != null ? htmlDescPart.getContent() : null;
           descHtml = htmlContent != null ? htmlContent.toString() : null;
-        } catch (MessagingException e) {
-          throw ServiceException.FAILURE("Messaging Exception while retrieving description", e);
-        } catch (IOException e) {
+        } catch (MessagingException | IOException e) {
           throw ServiceException.FAILURE("Messaging Exception while retrieving description", e);
         }
         return CalendarMailSender.createCalendarMessage(

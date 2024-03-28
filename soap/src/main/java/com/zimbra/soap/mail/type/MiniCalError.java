@@ -43,7 +43,7 @@ public class MiniCalError {
      */
     @SuppressWarnings("unused")
     private MiniCalError() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public MiniCalError(String id, String code) {

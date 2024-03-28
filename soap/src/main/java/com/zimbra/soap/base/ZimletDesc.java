@@ -8,20 +8,20 @@ package com.zimbra.soap.base;
 import java.util.List;
 
 public interface ZimletDesc {
-    public void setName(String name);
-    public void setVersion(String version);
-    public void setDescription(String description);
-    public void setExtension(String extension);
-    public void setTarget(String target);
-    public void setLabel(String label);
-    public void setElements(Iterable <Object> elements);
-    public void addElement(Object element);
+    void setName(String name);
+    void setVersion(String version);
+    void setDescription(String description);
+    void setExtension(String extension);
+    void setTarget(String target);
+    void setLabel(String label);
+    void setElements(Iterable<Object> elements);
+    void addElement(Object element);
 
-    public String getName();
-    public String getVersion();
-    public String getDescription();
-    public String getExtension();
-    public String getTarget();
-    public String getLabel();
-    public List<Object> getElements();
+    String getName();
+    String getVersion();
+    String getDescription();
+    String getExtension();
+    String getTarget();
+    String getLabel();
+    List<Object> getElements();
 }

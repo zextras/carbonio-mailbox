@@ -7,6 +7,7 @@ package com.zimbra.cs.dav.service.method;
 
 import java.io.IOException;
 
+import java.nio.charset.StandardCharsets;
 import javax.servlet.http.HttpServletResponse;
 
 import org.dom4j.Element;
@@ -46,7 +47,7 @@ public class FreeBusyQuery extends Report {
 			String freebusy = ((CalendarCollection)rs).getFreeBusyReport(ctxt, timeRange);
 			HttpServletResponse resp = ctxt.getResponse();
             resp.setContentType(MimeConstants.CT_TEXT_CALENDAR);
-			resp.getOutputStream().write(freebusy.getBytes("UTF-8"));
+			resp.getOutputStream().write(freebusy.getBytes(StandardCharsets.UTF_8));
 			ctxt.responseSent();
 		} catch (ServiceException se) {
 			throw new DavException("can't get freebusy report", HttpServletResponse.SC_INTERNAL_SERVER_ERROR, se);

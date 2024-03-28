@@ -27,7 +27,7 @@ public class PresetRight extends AdminRight {
     
     @Override
     Set<TargetType> getGrantableTargetTypes() {
-        Set<TargetType> targetTypes = new HashSet<TargetType>();
+        Set<TargetType> targetTypes = new HashSet<>();
       targetTypes.addAll(mTargetType.inheritFrom());
         return targetTypes;
     }

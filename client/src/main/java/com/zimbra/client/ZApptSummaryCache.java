@@ -14,8 +14,6 @@ import com.zimbra.client.event.ZDeleteEvent;
 import com.zimbra.client.event.ZCreateAppointmentEvent;
 import com.zimbra.client.event.ZModifyAppointmentEvent;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.MailConstants;
-import com.zimbra.common.soap.Element;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,9 +42,9 @@ public class ZApptSummaryCache extends ZEventHandler {
     private Map<String, Set<String>> mMiniCalCache;
 
     public ZApptSummaryCache() {
-        mResults = new HashMap<String, ZApptSummaryResult>();
-        mIds = new HashSet<String>();
-        mMiniCalCache = new HashMap<String, Set<String>>();
+        mResults = new HashMap<>();
+        mIds = new HashSet<>();
+        mMiniCalCache = new HashMap<>();
     }
 
     private String makeKey(long start, long end, String folderId, TimeZone timezone, String query) {
@@ -54,7 +52,7 @@ public class ZApptSummaryCache extends ZEventHandler {
         return start+":"+end+":"+folderId+":"+timezone.getID() + ":"+ query;
     }
 
-    private String makeMiniCalKey(long start, long end, String folderIds[]) {
+    private String makeMiniCalKey(long start, long end, String[] folderIds) {
         if (folderIds.length == 1) {
             return start+":"+end+":"+folderIds[0];
         } else {
@@ -78,7 +76,7 @@ public class ZApptSummaryCache extends ZEventHandler {
             // let's see if results might potentially be contained within another result
             for (ZApptSummaryResult cached : mResults.values()) {
                 if (cached.getQuery().equals(query) && cached.getTimeZone().getID().equals(timezone.getID()) && cached.getFolderId().equals(folderId) && (cached.getStart() <= start && end <= cached.getEnd())) {
-                    List<ZAppointmentHit> appts = new ArrayList<ZAppointmentHit>();
+                    List<ZAppointmentHit> appts = new ArrayList<>();
                     for (ZAppointmentHit appt : cached.getAppointments()) {
                         if (appt.isInRange(start, end))
                             appts.add(appt);
@@ -90,11 +88,11 @@ public class ZApptSummaryCache extends ZEventHandler {
         return result;
     }
 
-    synchronized void putMiniCal(Set<String> result, long start, long end, String folderIds[]) {
+    synchronized void putMiniCal(Set<String> result, long start, long end, String[] folderIds) {
         mMiniCalCache.put(makeMiniCalKey(start, end, folderIds), result);
     }
 
-    synchronized Set<String> getMiniCal(long start, long end, String folderIds[]) {
+    synchronized Set<String> getMiniCal(long start, long end, String[] folderIds) {
         return mMiniCalCache.get(makeMiniCalKey(start, end, folderIds));
     }
 

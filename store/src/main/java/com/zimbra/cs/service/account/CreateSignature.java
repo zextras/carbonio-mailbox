@@ -35,7 +35,7 @@ public class CreateSignature extends DocumentHandler {
         String id = eReqSignature.getAttribute(AccountConstants.A_ID, null);
         
         List<Element> contents = eReqSignature.listElements(AccountConstants.E_CONTENT);
-        Map<String,Object> attrs = new HashMap<String, Object>();
+        Map<String,Object> attrs = new HashMap<>();
         for (Element eContent : contents) {
             String type = eContent.getAttribute(AccountConstants.A_TYPE);
             String attr = SignatureUtil.mimeTypeToAttrName(type);

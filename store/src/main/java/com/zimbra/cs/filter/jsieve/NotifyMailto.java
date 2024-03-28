@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.filter.jsieve;
 
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jsieve.Argument;
 import org.apache.jsieve.Arguments;
@@ -125,7 +126,7 @@ public class NotifyMailto extends Notify {
                             if (stringList.size() != 1) {
                                 throw new SyntaxException("Expecting exactly one String for " + NOTIFY_FROM);
                             }
-                            String email = FilterUtil.replaceVariables(mailAdapter, (String) stringList.get(0));
+                            String email = FilterUtil.replaceVariables(mailAdapter, stringList.get(0));
                             // Validate email address using javax.mail.internet.InternetAddress
                             try {
                                 InternetAddress addr = new InternetAddress(email);
@@ -151,7 +152,7 @@ public class NotifyMailto extends Notify {
                             if (stringList.size() != 1) {
                                 throw new SyntaxException("Expecting exactly one String for " + NOTIFY_IMPORTANCE);
                             }
-                            String strImportance = (String) stringList.get(0);
+                            String strImportance = stringList.get(0);
                             FilterUtil.replaceVariables(mailAdapter, strImportance);
                             importance = Integer.parseInt(strImportance);
                             if (!(importance  == 1 || importance == 2 || importance == 3)) {
@@ -172,7 +173,7 @@ public class NotifyMailto extends Notify {
                             if (listOptions.size() == 0) {
                                 throw new SyntaxException("Expecting exactly one String for " + NOTIFY_OPTIONS);
                             }
-                            options = new HashMap<String, String>();
+                            options = new HashMap<>();
                             for (String option : listOptions) {
                                 String[] token = option.split("=");
                                 String key = null;
@@ -206,7 +207,7 @@ public class NotifyMailto extends Notify {
                             if (stringList.size() != 1) {
                                 throw new SyntaxException("Expecting exactly one String for " + NOTIFY_MESSAGE);
                             }
-                            message = FilterUtil.replaceVariables(mailAdapter, (String) stringList.get(0));
+                            message = FilterUtil.replaceVariables(mailAdapter, stringList.get(0));
                         } else {
                             throw new SyntaxException("Expecting a StringList for " + NOTIFY_MESSAGE);
                         }
@@ -229,7 +230,7 @@ public class NotifyMailto extends Notify {
                 if (stringList.size() != 1) {
                     throw new SyntaxException("Expecting exactly one String");
                 }
-                method = (String) stringList.get(0);
+                method = stringList.get(0);
             } else {
                 throw new SyntaxException("Expecting a StringList");
             }
@@ -240,7 +241,7 @@ public class NotifyMailto extends Notify {
             method = FilterUtil.replaceVariables(mailAdapter, method);
         }
         
-        mailtoParams = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
+        mailtoParams = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         try {
             URL url = new URL(method);
             mailto = FilterUtil.replaceVariables(mailAdapter, url.getPath());
@@ -264,9 +265,7 @@ public class NotifyMailto extends Notify {
                     String headerName = null;
                     String headerValue = null;
                     try {
-                        headerName = URLDecoder.decode(token[0], "UTF-8");
-                    } catch (UnsupportedEncodingException e)  {
-                        // No exception should be thrown because the charset is always "UTF-8"
+                        headerName = URLDecoder.decode(token[0], StandardCharsets.UTF_8);
                     } catch (IllegalArgumentException e) {
                         headerName = token[0];
                     }
@@ -278,16 +277,14 @@ public class NotifyMailto extends Notify {
                         headerValue = token[1];
                     }
                     try {
-                        headerValue = URLDecoder.decode(headerValue, "UTF-8");
-                    } catch (UnsupportedEncodingException e)  {
-                        // No exception should be thrown because the charset is always "UTF-8"
+                        headerValue = URLDecoder.decode(headerValue, StandardCharsets.UTF_8);
                     } catch (IllegalArgumentException e) {
                         // Use token[1] as is
                     }
 
                     if (!mailtoParams.containsKey(headerName)) {
                         // Create a new entry for a header
-                        List<String> value = new ArrayList<String>();
+                        List<String> value = new ArrayList<>();
                         value.add(headerValue);
                         mailtoParams.put(headerName, value);
                     } else {

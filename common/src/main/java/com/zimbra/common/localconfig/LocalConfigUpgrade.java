@@ -259,7 +259,7 @@ public abstract class LocalConfigUpgrade {
     private static final HashMap<String,LocalConfigUpgrade> sUpgrades;
     
     static {
-	sUpgrades = new HashMap<String,LocalConfigUpgrade>();
+	sUpgrades = new HashMap<>();
 	new LocalConfigUpgradeSwitchToCMS("37842");
 	new LocalConfigUpgradeSwitchToServerJVM("37844");
 	new LocalConfigUpgradeUnsetMailboxdJavaHome("37802");
@@ -326,11 +326,8 @@ public abstract class LocalConfigUpgrade {
         
         try {
             lc.save();
-        } catch (IOException ioe) {
+        } catch (IOException | ConfigException ioe) {
             ZimbraLog.misc.error("failed writing config file", ioe);
-            System.exit(1);
-        } catch (ConfigException ce) {
-            ZimbraLog.misc.error("failed writing config file", ce);
             System.exit(1);
         }
     }

@@ -9,15 +9,11 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.DataSource;
 import com.zimbra.cs.mailbox.Folder;
-import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 final class SyncState {
     private final Mailbox mbox;
@@ -30,7 +26,7 @@ final class SyncState {
     SyncState(Mailbox mbox) throws ServiceException {
         this.mbox = mbox;
         inboxFolder = mbox.getFolderById(null, Mailbox.ID_FOLDER_INBOX);
-        folders = Collections.synchronizedMap(new HashMap<Integer, FolderSyncState>());
+        folders = Collections.synchronizedMap(new HashMap<>());
     }
 
     public FolderSyncState getFolderSyncState(int folderId) {

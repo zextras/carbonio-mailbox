@@ -147,7 +147,7 @@ public class StringTest extends Header {
                     throw context.getCoordinate().syntaxException(
                             "Expecting a StringListof header names");
                 }
-                sourceValues = new ArrayList<String>();
+                sourceValues = new ArrayList<>();
                 for (String source : sourceStringList) {
                     sourceValues.add(FilterUtil.replaceVariables(mailAdapter, source));
                 }
@@ -163,7 +163,7 @@ public class StringTest extends Header {
                     throw context.getCoordinate().syntaxException(
                             "Expecting a StringList of keys");
                 }
-                keyValues = new ArrayList<String>();
+                keyValues = new ArrayList<>();
                 for (String key : keyStringList) {
                     keyValues.add(FilterUtil.replaceVariables(mailAdapter, key));
                 }

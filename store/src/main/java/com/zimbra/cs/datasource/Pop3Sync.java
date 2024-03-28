@@ -172,7 +172,7 @@ public class Pop3Sync extends MailItemImport {
 
     private void fetchAndDeleteMessages()
         throws Exception {
-        Integer sizes[] = connection.getMessageSizes();
+        Integer[] sizes = connection.getMessageSizes();
 
         LOG.info("Found %d new message(s) on remote server", sizes.length);
         IOExceptionHandler.getInstance().resetSyncCounter(mbox);

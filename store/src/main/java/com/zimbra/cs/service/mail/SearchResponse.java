@@ -26,7 +26,6 @@ import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.index.ZimbraHit;
 import com.zimbra.cs.mailbox.Appointment;
 import com.zimbra.cs.mailbox.CalendarItem;
-import com.zimbra.cs.mailbox.ContactGroup;
 import com.zimbra.cs.mailbox.ContactMemberOfMap;
 import com.zimbra.cs.mailbox.Conversation;
 import com.zimbra.cs.mailbox.Flag;
@@ -71,7 +70,7 @@ final class SearchResponse {
 
   protected SearchResponse(
       ZimbraSoapContext zsc, OperationContext octxt, Element el, SearchParams params) {
-    this(zsc, octxt, el, params, (Map<String, Set<String>>) null);
+    this(zsc, octxt, el, params, null);
   }
 
   protected SearchResponse(
@@ -358,12 +357,12 @@ final class SearchResponse {
         ifmt,
         octxt,
         hit.getContact(),
-        (ContactGroup) null,
-        (Collection<String>) null /* memberAttrFilter */,
+        null,
+        null /* memberAttrFilter */,
         true /* summary */,
-        (Collection<String>) null /* attrFilter */,
+        null /* attrFilter */,
         getFieldBitmask(),
-        (String) null /* migratedDlist */,
+        null /* migratedDlist */,
         false /* returnHiddenAttrs */,
         GetContacts.NO_LIMIT_MAX_MEMBERS,
         true /* returnCertInfo */,

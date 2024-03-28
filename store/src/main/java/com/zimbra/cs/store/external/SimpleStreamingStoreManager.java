@@ -84,7 +84,7 @@ public class SimpleStreamingStoreManager extends SimpleStoreManager implements E
         }
     }
 
-    private class SimpleStreamingOutputStream extends ExternalResumableOutputStream {
+    private static class SimpleStreamingOutputStream extends ExternalResumableOutputStream {
 
         private final FileOutputStream fos;
 

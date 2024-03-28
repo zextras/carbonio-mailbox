@@ -12,7 +12,7 @@ import com.zimbra.soap.type.GranteeType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface DistributionListGranteeInfoInterface {
-    public GranteeType getType();
-    public String getId();
-    public String getName();
+    GranteeType getType();
+    String getId();
+    String getName();
 }

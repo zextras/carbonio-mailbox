@@ -95,7 +95,7 @@ public class SSLCertInfo {
     }
 
     public String serialize() {
-        Map<Object, Object> map = new HashMap<Object, Object>();
+        Map<Object, Object> map = new HashMap<>();
         map.put(ALIAS, alias);
         map.put(HOSTNAME, hostname);
         map.put(COMMON_NAME, commonName);
@@ -117,7 +117,7 @@ public class SSLCertInfo {
     public static SSLCertInfo deserialize(String s) {
         SSLCertInfo certInfo = new SSLCertInfo();
         try {
-            Map map = (Map)BEncoding.decode(s);
+            Map map = BEncoding.decode(s);
             certInfo.alias = (String)map.get(ALIAS);
             certInfo.hostname = (String)map.get(HOSTNAME);
             certInfo.commonName = (String)map.get(COMMON_NAME);

@@ -15,5 +15,5 @@ public interface GroupedEntry {
      * 
      * @return
      */
-    public String[] getAllAddrsAsGroupMember() throws ServiceException;
+    String[] getAllAddrsAsGroupMember() throws ServiceException;
 }

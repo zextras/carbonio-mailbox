@@ -9,7 +9,7 @@ import com.zimbra.common.service.ServiceException;
 
 public class FileCopierOptions {
 
-    public static enum Method {
+    public enum Method {
         PIPE, PARALLEL, SERIAL;
 
         public static Method parseMethod(String str) throws ServiceException {
@@ -20,9 +20,9 @@ public class FileCopierOptions {
                         "Invalid FileCopier method " + str, e);
             }
         }
-    };
+    }
 
-    public static enum IOType {
+    public enum IOType {
         OIO, NIO;
 
         public static IOType parseIOType(String str) throws ServiceException {
@@ -33,7 +33,7 @@ public class FileCopierOptions {
                         "Invalid IO type " + str, e);
             }
         }
-    };
+    }
 
     public static final int DEFAULT_OIO_COPY_BUFFER_SIZE = 16 * 1024;  // 16KB
     public static final int DEFAULT_CONCURRENCY = 8;

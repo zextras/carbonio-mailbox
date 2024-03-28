@@ -37,7 +37,7 @@ public class GetXMPPComponentRequest extends AttributeSelectorImpl {
      */
     @SuppressWarnings("unused")
     private GetXMPPComponentRequest() {
-        this((XMPPComponentSelector) null);
+        this(null);
     }
 
     public GetXMPPComponentRequest(XMPPComponentSelector component) {

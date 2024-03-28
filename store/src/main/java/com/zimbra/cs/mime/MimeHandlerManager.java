@@ -28,7 +28,7 @@ import com.zimbra.cs.mime.handler.UnknownTypeHandler;
 
 public class MimeHandlerManager {
 
-    private static Map<String, HandlerInfo> sHandlers = new ConcurrentHashMap<String,HandlerInfo>();
+    private static Map<String, HandlerInfo> sHandlers = new ConcurrentHashMap<>();
     private static Log sLog = LogFactory.getLog(MimeHandlerManager.class);
 
     private static class HandlerInfo {
@@ -40,12 +40,10 @@ public class MimeHandlerManager {
             MimeHandler handler;
             try {
                 handler = clazz.newInstance();
-            } catch (InstantiationException e) {
-                throw new MimeHandlerException(e);
-            } catch (IllegalAccessException e) {
+            } catch (InstantiationException | IllegalAccessException e) {
                 throw new MimeHandlerException(e);
             }
-            handler.setContentType(realMimeType);
+          handler.setContentType(realMimeType);
             handler.setMimeTypeInfo(mimeType);
             return handler;
         }

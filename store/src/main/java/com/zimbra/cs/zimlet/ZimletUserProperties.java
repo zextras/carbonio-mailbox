@@ -28,7 +28,7 @@ public final class ZimletUserProperties {
     private static final Cache<String, ZimletUserProperties> CACHE =
         CacheBuilder.newBuilder().maximumSize(1024).expireAfterAccess(30, TimeUnit.MINUTES).build();
 
-    private final Set<Prop> properties = new HashSet<Prop>(); // guarded by ZimletUserProperties.this
+    private final Set<Prop> properties = new HashSet<>(); // guarded by ZimletUserProperties.this
 
     public static ZimletUserProperties getProperties(Account account) {
         String key = account.getId();

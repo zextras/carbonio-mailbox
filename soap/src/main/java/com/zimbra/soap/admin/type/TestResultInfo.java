@@ -16,8 +16,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-import com.zimbra.common.soap.AdminConstants;
-
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlType(propOrder = {"completedTests", "failedTests"})
 public class TestResultInfo {

@@ -28,7 +28,7 @@ public class CreateDistributionListResponse {
      */
      @SuppressWarnings("unused")
     private CreateDistributionListResponse() {
-        this((DLInfo)null);
+        this(null);
     }
 
     public CreateDistributionListResponse(DLInfo dl) {

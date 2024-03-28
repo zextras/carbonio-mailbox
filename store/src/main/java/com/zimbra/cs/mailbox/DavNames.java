@@ -98,8 +98,8 @@ public class DavNames {
         }
     }
 
-    private static final Map<DavName, Integer> nameToID = new ConcurrentHashMap<DavName, Integer>();
-    private static final Map<MboxAndId, DavName> idToName = new ConcurrentHashMap<MboxAndId, DavName>();
+    private static final Map<DavName, Integer> nameToID = new ConcurrentHashMap<>();
+    private static final Map<MboxAndId, DavName> idToName = new ConcurrentHashMap<>();
 
     private DavNames() {
     }

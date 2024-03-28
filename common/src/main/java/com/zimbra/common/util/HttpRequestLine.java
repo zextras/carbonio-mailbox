@@ -12,6 +12,7 @@ package com.zimbra.common.util;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,11 +68,7 @@ public class HttpRequestLine {
     public String getBaseURI() {
         int idx = uri.indexOf('?');
         String baseURI = idx >= 0 ? uri.substring(0, idx) : uri;
-        try {
-            return URLDecoder.decode(baseURI, "utf-8");
-        } catch (UnsupportedEncodingException uee) {
-            return baseURI;
-        }
+      return URLDecoder.decode(baseURI, StandardCharsets.UTF_8);
     }
     
     public Map<String, String> getUriParams() {
@@ -82,7 +79,7 @@ public class HttpRequestLine {
         if (idx >= 0 && idx < uri.length()) {
             mUriParams = HttpUtil.getURIParams(uri.substring(idx+1));
         } else {
-            mUriParams = new HashMap<String,String>();
+            mUriParams = new HashMap<>();
         }
         return mUriParams;
     }

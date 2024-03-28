@@ -47,11 +47,11 @@ public class CreateDistributionListRequest extends AdminAttrsImpl {
     private ZmBoolean dynamic;
 
     public CreateDistributionListRequest() {
-        this((String)null);
+        this(null);
     }
 
     public CreateDistributionListRequest(String name) {
-        this(name, (Collection<Attr>) null, false);
+        this(name, null, false);
     }
 
     public CreateDistributionListRequest(String name, Collection<Attr> attrs, boolean dynamic) {

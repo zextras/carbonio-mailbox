@@ -16,9 +16,7 @@ import org.apache.jsieve.exception.SieveException;
 import org.apache.jsieve.exception.SyntaxException;
 import org.apache.jsieve.mail.MailAdapter;
 
-import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.filter.FilterUtil;
-import com.zimbra.cs.filter.JsieveConfigMapHandler;
 import com.zimbra.cs.filter.ZimbraMailAdapter;
 
 import java.util.List;

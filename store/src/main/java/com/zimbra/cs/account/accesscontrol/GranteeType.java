@@ -49,7 +49,7 @@ public enum GranteeType {
 
 
     private static class GT {
-        static Map<String, GranteeType> sCodeMap = new HashMap<String, GranteeType>();
+        static Map<String, GranteeType> sCodeMap = new HashMap<>();
     }
 
     private String mCode;

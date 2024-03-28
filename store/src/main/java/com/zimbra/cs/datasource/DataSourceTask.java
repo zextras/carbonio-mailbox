@@ -6,7 +6,6 @@
 package com.zimbra.cs.datasource;
 
 import com.zimbra.common.account.Key;
-import com.zimbra.common.account.Key.DataSourceBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;

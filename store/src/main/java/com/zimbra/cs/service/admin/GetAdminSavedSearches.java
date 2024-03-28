@@ -40,7 +40,7 @@ public class GetAdminSavedSearches extends AdminDocumentHandler {
         HashSet<String> specificSearches = null;
         for (Iterator it = request.elementIterator(AdminConstants.E_SEARCH); it.hasNext(); ) {
             if (specificSearches == null)
-                specificSearches = new HashSet<String>();
+                specificSearches = new HashSet<>();
             Element e = (Element) it.next();
             String name = e.getAttribute(AdminConstants.A_NAME);
             if (name != null)
@@ -53,14 +53,14 @@ public class GetAdminSavedSearches extends AdminDocumentHandler {
     
     public void handle(Account acct, Element response, HashSet<String> specificSearches) throws ServiceException {
         String[] searches = acct.getMultiAttr(Provisioning.A_zimbraAdminSavedSearches);
-        
-        for (int i = 0; i < searches.length; i++) {
-            String search = searches[i];
-            AdminSearch as = AdminSearch.parse(search);
-            
-            if (specificSearches == null || specificSearches.contains(as.getName()))
-                response.addElement(AdminConstants.E_SEARCH).addAttribute(AdminConstants.A_NAME, as.getName()).setText(as.getQuery());
-        }
+
+      for (String search : searches) {
+        AdminSearch as = AdminSearch.parse(search);
+
+        if (specificSearches == null || specificSearches.contains(as.getName()))
+          response.addElement(AdminConstants.E_SEARCH).addAttribute(AdminConstants.A_NAME, as.getName())
+              .setText(as.getQuery());
+      }
     }
     
     @Override
@@ -135,7 +135,7 @@ public class GetAdminSavedSearches extends AdminDocumentHandler {
         assert(encoded.equals(encoded2));
     }
     
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         test("name : query");
         test("n a m e : q u e r y");
         test("name\\:\\ : que : ry");

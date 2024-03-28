@@ -107,38 +107,35 @@ public class CrossServerNotification extends Message {
 
     @Override
     public MessageHandler getHandler() {
-        return new MessageHandler() {
-            @Override
-            public void handle(Message m, String clientId) {
-                if (!(m instanceof CrossServerNotification)) {
-                    return;
+        return (m, clientId) -> {
+            if (!(m instanceof CrossServerNotification)) {
+                return;
+            }
+            CrossServerNotification message = (CrossServerNotification)m;
+            Collection<Session> sessions = SessionCache.getSoapSessions(m.getRecipientAccountId());
+            if (sessions == null) {
+                log.warn("no active sessions for account %s", m.getRecipientAccountId());
+                return;
+            }
+            RemoteNotifications soapNtfn = null, jsonNtfn = null;
+            try {
+                org.dom4j.Document dom = org.dom4j.DocumentHelper.parseText(message.getPayload());
+                soapNtfn = new RemoteNotifications(Element.convertDOM(dom.getRootElement(), XMLElement.mFactory));
+                jsonNtfn = new RemoteNotifications(Element.convertDOM(dom.getRootElement(), JSONElement.mFactory));
+            } catch (DocumentException e) {
+                log.warn("cannot parse notification from %s", clientId, e);
+                return;
+            }
+            for (Session session : sessions) {
+                log.debug("notifying session %s", session.toString());
+                SoapSession ss = (SoapSession)session;
+                SoapProtocol responseProtocol = ss.getResponseProtocol();
+                if (responseProtocol == SoapProtocol.Soap11 || responseProtocol == SoapProtocol.Soap12) {
+                    ss.addRemoteNotifications(soapNtfn);
+                } else if (responseProtocol == SoapProtocol.SoapJS) {
+                    ss.addRemoteNotifications(jsonNtfn);
                 }
-                CrossServerNotification message = (CrossServerNotification)m;
-                Collection<Session> sessions = SessionCache.getSoapSessions(m.getRecipientAccountId());
-                if (sessions == null) {
-                    log.warn("no active sessions for account %s", m.getRecipientAccountId());
-                    return;
-                }
-                RemoteNotifications soapNtfn = null, jsonNtfn = null;
-                try {
-                    org.dom4j.Document dom = org.dom4j.DocumentHelper.parseText(message.getPayload());
-                    soapNtfn = new RemoteNotifications(Element.convertDOM(dom.getRootElement(), XMLElement.mFactory));
-                    jsonNtfn = new RemoteNotifications(Element.convertDOM(dom.getRootElement(), JSONElement.mFactory));
-                } catch (DocumentException e) {
-                    log.warn("cannot parse notification from %s", clientId, e);
-                    return;
-                }
-                for (Session session : sessions) {
-                    log.debug("notifying session %s", session.toString());
-                    SoapSession ss = (SoapSession)session;
-                    SoapProtocol responseProtocol = ss.getResponseProtocol();
-                    if (responseProtocol == SoapProtocol.Soap11 || responseProtocol == SoapProtocol.Soap12) {
-                        ss.addRemoteNotifications(soapNtfn);
-                    } else if (responseProtocol == SoapProtocol.SoapJS) {
-                        ss.addRemoteNotifications(jsonNtfn);
-                    }
-                    ss.forcePush();
-                }
+                ss.forcePush();
             }
         };
     }

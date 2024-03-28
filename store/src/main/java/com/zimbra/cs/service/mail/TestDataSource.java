@@ -51,7 +51,7 @@ public class TestDataSource extends MailDocumentHandler {
   static String testDataSource(
       Provisioning prov, Account account, Element eDataSource, DataSourceType type)
       throws ServiceException {
-    Map<String, Object> testAttrs = new HashMap<String, Object>();
+    Map<String, Object> testAttrs = new HashMap<>();
     String testId = "TestId";
 
     String id = eDataSource.getAttribute(MailConstants.A_ID, null);

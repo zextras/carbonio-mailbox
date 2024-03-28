@@ -24,7 +24,7 @@ public class QuotedStringParser {
     }
 
     public List<String> parse() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
 
         boolean returnTokens = true;
         String currentDelims = DELIM_WHITESPACE_AND_QUOTES;

@@ -28,7 +28,7 @@ public class GuestAccount extends Account {
     public static final String GUID_AUTHUSER = "00000000-0000-0000-0000-000000000000";
 
     private static Map<String, Object> getAnonAttrs() {
-        Map<String,Object> attrs = new HashMap<String,Object>();
+        Map<String,Object> attrs = new HashMap<>();
         attrs.put(Provisioning.A_uid, "public");
         attrs.put(Provisioning.A_zimbraId, GuestAccount.GUID_PUBLIC);
         return attrs;

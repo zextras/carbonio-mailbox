@@ -12,8 +12,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Comparator;
-import java.util.Collections;
 import java.io.IOException;
 
 /**
@@ -77,7 +75,7 @@ public final class MessageData {
         CAtom cattr = attr.getCAtom();
         if (cattr == CAtom.BODY && is.peek() == '[') {
             if (bodySections == null) {
-                bodySections = new ArrayList<Body>();
+                bodySections = new ArrayList<>();
             }
             bodySections.add(Body.read(is));
             return;

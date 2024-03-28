@@ -29,9 +29,9 @@ public class LmcMimePart {
     // XXX not sure where this one goes
     private String contentDesc;
 
-    private LmcMimePart subParts[];
+    private LmcMimePart[] subParts;
 
-    public void setSubParts(LmcMimePart s[]) { subParts = s; }
+    public void setSubParts(LmcMimePart[] s) { subParts = s; }
     public void setConvID(String c) { convID = c; }
     public void setSize(String s) { size = s; }
     public void setPartName(String m) { partName = m; }

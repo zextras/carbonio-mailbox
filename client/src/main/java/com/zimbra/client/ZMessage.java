@@ -74,13 +74,13 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
             mContentURL = content.getAttribute(MailConstants.A_URL, null);
         }
 
-        mAddresses = new ArrayList<ZEmailAddress>();
+        mAddresses = new ArrayList<>();
         for (Element emailEl: e.listElements(MailConstants.E_EMAIL)) {
             mAddresses.add(new ZEmailAddress(emailEl));
         }
 
         //request headers
-        mReqHdrs = new HashMap<String,String>();
+        mReqHdrs = new HashMap<>();
         List<Element.KeyValuePair> hdrs = e.listKeyValuePairs(MailConstants.A_HEADER, MailConstants.A_ATTRIBUTE_NAME);
         if (hdrs != null) {
             for (Element.KeyValuePair hdr : hdrs) {
@@ -310,7 +310,7 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
             mIsBody = e.getAttributeBool(MailConstants.A_BODY, false);
             mSize = e.getAttributeLong(MailConstants.A_SIZE, 0);
             mContent = e.getAttribute(MailConstants.E_CONTENT, null);
-            mChildren = new ArrayList<ZMimePart>();
+            mChildren = new ArrayList<>();
             for (Element mpEl: e.listElements(MailConstants.E_MIMEPART)) {
                 mChildren.add(new ZMimePart(this, mpEl));
             }
@@ -569,7 +569,7 @@ public class ZMessage extends ZBaseItem implements ToZJSONObject {
         if (null == zm) {
             return 0;
         }
-        imapUid = (zm.imapUid <=0 ) ? 0 : zm.imapUid;
+        imapUid = Math.max(zm.imapUid, 0);
         return imapUid;
     }
 }

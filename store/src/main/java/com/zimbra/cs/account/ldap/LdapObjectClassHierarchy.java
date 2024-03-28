@@ -19,7 +19,7 @@ public class LdapObjectClassHierarchy {
      * key: an objectClass
      * value set: all superior objectClass's of the key objectClass
      */
-    private static Map<String, Set<String>> sSuperOCs = new HashMap<String, Set<String>>();
+    private static Map<String, Set<String>> sSuperOCs = new HashMap<>();
 
     private static synchronized void addToSuperOCCache(Map<String, Set<String>> addition) {
         sSuperOCs.putAll(addition);
@@ -67,7 +67,7 @@ public class LdapObjectClassHierarchy {
      */
     private static void fetchAndCacheSuperiorOCsIfNecessary(LdapProv prov, String[] ocs) {
 
-        Map<String, Set<String>> ocsToLookFor = new HashMap<String, Set<String>>();
+        Map<String, Set<String>> ocsToLookFor = new HashMap<>();
 
         for (String oc : ocs) {
             String ocLower = oc.toLowerCase();
@@ -78,7 +78,7 @@ public class LdapObjectClassHierarchy {
 
             // publish in cache if not in yet
             if (getFromCache(ocLower) == null) {
-                ocsToLookFor.put(ocLower, new HashSet<String>());
+                ocsToLookFor.put(ocLower, new HashSet<>());
             }
         }
 

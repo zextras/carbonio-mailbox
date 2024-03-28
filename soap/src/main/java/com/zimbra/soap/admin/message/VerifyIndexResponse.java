@@ -38,7 +38,7 @@ public class VerifyIndexResponse {
      */
      @SuppressWarnings("unused")
     private VerifyIndexResponse() {
-        this(false,(String) null);
+        this(false, null);
     }
 
     public VerifyIndexResponse(boolean status, String message) {

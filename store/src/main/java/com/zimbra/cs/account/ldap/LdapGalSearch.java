@@ -15,7 +15,6 @@ import javax.security.auth.login.LoginException;
 import org.apache.commons.lang.StringUtils;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.DateUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.GalContact;
 import com.zimbra.cs.account.Provisioning;
@@ -26,7 +25,6 @@ import com.zimbra.cs.account.gal.GalUtil;
 import com.zimbra.cs.account.krb5.Krb5Login;
 import com.zimbra.cs.gal.GalSearchConfig;
 import com.zimbra.cs.gal.GalSearchParams;
-import com.zimbra.cs.gal.GalSyncToken;
 import com.zimbra.cs.ldap.IAttributes;
 import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.LdapConstants;
@@ -55,7 +53,7 @@ public class LdapGalSearch {
             String token,
             GalContact.Visitor visitor) throws ServiceException {
 
-        String url[] = galParams.url();
+        String[] url = galParams.url();
         String base = galParams.searchBase();
         String filter = galParams.filter();
 
@@ -73,7 +71,7 @@ public class LdapGalSearch {
             return result;
         }
 
-        if (filter.indexOf("(") == -1) {
+        if (!filter.contains("(")) {
             String queryExpr = GalSearchConfig.getFilterDef(filter);
             if (queryExpr != null)
                 filter = queryExpr;
@@ -359,7 +357,7 @@ public class LdapGalSearch {
             }
         }
 
-        String reqAttrs[] = rules.getLdapAttrs();
+        String[] reqAttrs = rules.getLdapAttrs();
 
         if (ZimbraLog.gal.isDebugEnabled()) {
             StringBuffer returnAttrs = new StringBuffer();
@@ -403,7 +401,7 @@ public class LdapGalSearch {
             if (GalOp.sync != op || ((GalOp.sync == op) && !result.getHadMore())) {
                 boolean gotNewToken = true;
                 String newToken = result.getToken();
-                if (newToken == null || (token != null && token.equals(newToken)) || newToken.equals(LdapConstants.EARLIEST_SYNC_TOKEN))
+                if (newToken == null || (newToken.equals(token)) || newToken.equals(LdapConstants.EARLIEST_SYNC_TOKEN))
                     gotNewToken = false;
 
                 if (gotNewToken) {
@@ -442,7 +440,7 @@ public class LdapGalSearch {
             LdapGalMapRules rules,
             SearchGalResult result) throws ServiceException {
 
-        String reqAttrs[] = rules.getLdapAttrs();
+        String[] reqAttrs = rules.getLdapAttrs();
 
         if (ZimbraLog.gal.isDebugEnabled()) {
             StringBuffer returnAttrs = new StringBuffer();

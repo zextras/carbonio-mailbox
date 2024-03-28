@@ -124,7 +124,7 @@ public class AccountService implements DocumentService {
    */
   public static Map<String, Object> getAttrs(
       Element request, boolean ignoreEmptyValues, String nameAttr) throws ServiceException {
-    Map<String, Object> result = new HashMap<String, Object>();
+    Map<String, Object> result = new HashMap<>();
     for (KeyValuePair pair : request.listKeyValuePairs(AdminConstants.E_A, nameAttr)) {
       String name = pair.getKey();
       String value = pair.getValue();
@@ -147,7 +147,7 @@ public class AccountService implements DocumentService {
    */
   public static Map<String, Object> getKeyValuePairs(
       Element parent, String elemName, String attrName) throws ServiceException {
-    Map<String, Object> result = new HashMap<String, Object>();
+    Map<String, Object> result = new HashMap<>();
     for (Element eKV : parent.listElements(elemName)) {
       String key = eKV.getAttribute(attrName);
       String value = eKV.getText();

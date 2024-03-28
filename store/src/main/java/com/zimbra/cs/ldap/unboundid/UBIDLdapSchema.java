@@ -7,7 +7,6 @@ package com.zimbra.cs.ldap.unboundid;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -84,7 +83,7 @@ public class UBIDLdapSchema extends ZLdapSchema {
 
     @Override
     public List<ZObjectClassDefinition> getObjectClasses() throws LdapException {
-        List<ZObjectClassDefinition> ocList = new ArrayList<ZObjectClassDefinition>();
+        List<ZObjectClassDefinition> ocList = new ArrayList<>();
 
         Set<ObjectClassDefinition> ocs = schema.getObjectClasses();
         for (ObjectClassDefinition oc : ocs) {
@@ -92,14 +91,9 @@ public class UBIDLdapSchema extends ZLdapSchema {
             ocList.add(ubidOC);
         }
 
-        Comparator comparator = new Comparator<UBIDObjectClassDefinition>() {
-            public int compare(UBIDObjectClassDefinition first,
-                    UBIDObjectClassDefinition second) {
-                return first.getName().compareTo(second.getName());
-            }
-        };
+        Comparator comparator = (Comparator<UBIDObjectClassDefinition>) (first, second) -> first.getName().compareTo(second.getName());
 
-        Collections.sort(ocList, comparator);
+        ocList.sort(comparator);
         return ocList;
     }
 

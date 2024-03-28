@@ -78,9 +78,9 @@ public class MoveItem extends RedoableOp {
         }
         out.writeInt(mIds == null ? 0 : mIds.length);
         if (mIds != null) {
-            for (int i = 0; i < mIds.length; i++) {
-                out.writeInt(mIds[i]);
-            }
+          for (int mId : mIds) {
+            out.writeInt(mId);
+          }
         }
         if (getVersion().atLeast(1, 16)) {
             out.writeInt(mUIDNEXT);

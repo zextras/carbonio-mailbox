@@ -75,7 +75,7 @@ public class GetMsg extends MailDocumentHandler {
 
         Set<String> headers = null;
         for (AttributeName hdr : msgSpec.getHeaders()) {
-            if (headers == null)  headers = new HashSet<String>();
+            if (headers == null)  headers = new HashSet<>();
             headers.add(hdr.getName());
         }
 
@@ -158,7 +158,7 @@ public class GetMsg extends MailDocumentHandler {
             msgIdArray[i++] = id;
         }
 
-        List<Message> toRet = new ArrayList<Message>(msgIdArray.length);
+        List<Message> toRet = new ArrayList<>(msgIdArray.length);
         for (MailItem item : mbox.getItemById(octxt, msgIdArray, MailItem.Type.MESSAGE)) {
             toRet.add((Message) item);
             if (read && item.isUnread() && !RedoLogProvider.getInstance().isSlave()) {

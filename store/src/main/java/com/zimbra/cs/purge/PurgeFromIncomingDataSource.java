@@ -20,7 +20,7 @@ public class PurgeFromIncomingDataSource extends DataSourcePurge {
 
     @Override
     List<DataSource> getPurgeableDataSources(DataSource incoming) throws ServiceException {
-        List<DataSource> sources = new ArrayList<DataSource>(1);
+        List<DataSource> sources = new ArrayList<>(1);
         sources.add(incoming);
         return sources;
     }

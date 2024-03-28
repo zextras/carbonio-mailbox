@@ -12,9 +12,9 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mime.MimeTypeInfo;
 
 public interface IMimeTypeCache {
-    public void flushCache(Provisioning prov) throws ServiceException;
+    void flushCache(Provisioning prov) throws ServiceException;
     
-    public List<MimeTypeInfo> getAllMimeTypes(Provisioning prov) throws ServiceException;
+    List<MimeTypeInfo> getAllMimeTypes(Provisioning prov) throws ServiceException;
     
-    public List<MimeTypeInfo> getMimeTypes(Provisioning prov, String mimeType) throws ServiceException;
+    List<MimeTypeInfo> getMimeTypes(Provisioning prov, String mimeType) throws ServiceException;
 }

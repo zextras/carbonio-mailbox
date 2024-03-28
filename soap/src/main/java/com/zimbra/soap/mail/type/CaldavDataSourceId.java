@@ -8,7 +8,6 @@ package com.zimbra.soap.mail.type;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.type.Id;
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -18,7 +17,7 @@ public class CaldavDataSourceId extends Id {
      */
     @SuppressWarnings("unused")
     protected CaldavDataSourceId() {
-        this((String) null);
+        this(null);
     }
 
     CaldavDataSourceId(String id) {

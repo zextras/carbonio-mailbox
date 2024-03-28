@@ -54,7 +54,7 @@ public class GetQuotaUsageResponse {
     }
 
     public GetQuotaUsageResponse(boolean more, int searchTotal) {
-        this(more, searchTotal, (Collection <AccountQuotaInfo>) null);
+        this(more, searchTotal, null);
     }
 
     public GetQuotaUsageResponse(boolean more, int searchTotal,

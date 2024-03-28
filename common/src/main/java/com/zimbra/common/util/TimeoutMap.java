@@ -22,8 +22,8 @@ import java.util.TreeMap;
 public class TimeoutMap<K, V> implements Map<K, V> {
     
     private long timeoutMillis;
-    private Map<K, V> map = new HashMap<K, V>();
-    private Map<Long, K> timestamps = new TreeMap<Long, K>();
+    private Map<K, V> map = new HashMap<>();
+    private Map<Long, K> timestamps = new TreeMap<>();
     private long lastTimestamp = 0;
 
     public TimeoutMap(long timeoutMillis) {

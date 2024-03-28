@@ -15,7 +15,7 @@ import com.zimbra.cs.account.AttributeManager;
 
 public class AttrRight extends AdminRight {
 
-    private Set<TargetType> mTargetTypes = new HashSet<TargetType>();
+    private Set<TargetType> mTargetTypes = new HashSet<>();
     private Set<String> mAttrs;
     private final AttributeManager attributeManager;
 
@@ -115,7 +115,7 @@ public class AttrRight extends AdminRight {
     Set<TargetType> getGrantableTargetTypes() {
         // return *union* of target types from which *any* of the target types
         // for the right can inherit from
-        Set<TargetType> targetTypes = new HashSet<TargetType>();
+        Set<TargetType> targetTypes = new HashSet<>();
         for (TargetType tt : getTargetTypes()) {
             SetUtil.union(targetTypes, tt.inheritFrom());
         }
@@ -163,7 +163,7 @@ public class AttrRight extends AdminRight {
         }
 
         if (mAttrs == null) {
-            mAttrs = new HashSet<String>();
+            mAttrs = new HashSet<>();
         }
 
         mAttrs.add(attrName);

@@ -58,7 +58,7 @@ public class Lock extends DavMethod {
 	            else if (v.getQName().equals(DavElements.E_SHARED))
 	                scope = LockScope.shared;
 	            else
-	                throw new DavException("unrecognized scope element "+v.toString(), HttpServletResponse.SC_BAD_REQUEST, null);
+	                throw new DavException("unrecognized scope element "+ v, HttpServletResponse.SC_BAD_REQUEST, null);
 	        }
 	        e = top.element(DavElements.E_LOCKTYPE);
 	        @SuppressWarnings("unchecked")
@@ -67,12 +67,12 @@ public class Lock extends DavMethod {
 	            if (v.getQName().equals(DavElements.E_WRITE))
 	                type = LockType.write;
 	            else
-	                throw new DavException("unrecognized type element "+v.toString(), HttpServletResponse.SC_BAD_REQUEST, null);
+	                throw new DavException("unrecognized type element "+ v, HttpServletResponse.SC_BAD_REQUEST, null);
 	        }
 	        String owner;
 	        e = top.element(DavElements.E_OWNER);
 	        if (e != null && e.elementIterator(DavElements.E_HREF).hasNext()) {
-	            Element ownerElem = (Element)e.elementIterator(DavElements.E_HREF).next();
+	            Element ownerElem = e.elementIterator(DavElements.E_HREF).next();
 	            owner = ownerElem.getText();
 	        } else {
 	            owner = ctxt.getAuthAccount().getName();

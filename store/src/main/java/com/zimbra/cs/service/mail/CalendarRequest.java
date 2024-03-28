@@ -830,9 +830,9 @@ public abstract class CalendarRequest extends MailDocumentHandler {
           "Could not inform attendees ("
               + to
               + ") that they were removed from meeting "
-              + invToCancel.toString()
+              + invToCancel
               + " b/c of exception: "
-              + ex.toString());
+              + ex);
     }
   }
 

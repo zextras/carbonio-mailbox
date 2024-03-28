@@ -41,7 +41,7 @@ implements XNameRuleInterface {
      */
     @SuppressWarnings("unused")
     private XNameRule() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public XNameRule( String name, String value) {

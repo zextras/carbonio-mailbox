@@ -32,7 +32,7 @@ public class MySQL extends Db {
     private Map<Db.Error, Integer> mErrorCodes;
 
     MySQL() {
-        mErrorCodes = new HashMap<Db.Error, Integer>(6);
+        mErrorCodes = new HashMap<>(6);
         //see SQLExceptionMapper or MysqlErrorNumbers from MySQL Connector-J for listing of error codes
         mErrorCodes.put(Db.Error.DEADLOCK_DETECTED,        1213); //MysqlErrorNumbers.ER_LOCK_DEADLOCK
         mErrorCodes.put(Db.Error.DUPLICATE_ROW,            1062); //MysqlErrorNumbers.ER_DUP_ENTRY
@@ -46,26 +46,28 @@ public class MySQL extends Db {
     @Override
     boolean supportsCapability(Db.Capability capability) {
         switch (capability) {
-            case AVOID_OR_IN_WHERE_CLAUSE:   return false;
-            case BITWISE_OPERATIONS:         return true;
-            case BOOLEAN_DATATYPE:           return true;
-            case CASE_SENSITIVE_COMPARISON:  return false;
-            case CAST_AS_BIGINT:             return false;
-            case CLOB_COMPARISON:            return true;
-            case DISABLE_CONSTRAINT_CHECK:   return true;
-            case FILE_PER_DATABASE:          return false;
-            case LIMIT_CLAUSE:               return true;
-            case MULTITABLE_UPDATE:          return true;
-            case NON_BMP_CHARACTERS:         return false;
-            case ON_DUPLICATE_KEY:           return true;
-            case ON_UPDATE_CASCADE:          return true;
-            case READ_COMMITTED_ISOLATION:   return true;
-            case REPLACE_INTO:               return true;
-            case REQUEST_UTF8_UNICODE_COLLATION:  return true;
-            case ROW_LEVEL_LOCKING:          return true;
-            case UNIQUE_NAME_INDEX:          return true;
-            case SQL_PARAM_LIMIT:            return false;
-            case DUMPSTER_TABLES:            return true;
+            case AVOID_OR_IN_WHERE_CLAUSE:
+          case SQL_PARAM_LIMIT:
+          case NON_BMP_CHARACTERS:
+          case FILE_PER_DATABASE:
+          case CAST_AS_BIGINT:
+          case CASE_SENSITIVE_COMPARISON:
+            return false;
+            case BITWISE_OPERATIONS:
+          case DUMPSTER_TABLES:
+          case UNIQUE_NAME_INDEX:
+          case ROW_LEVEL_LOCKING:
+          case REQUEST_UTF8_UNICODE_COLLATION:
+          case REPLACE_INTO:
+          case READ_COMMITTED_ISOLATION:
+          case ON_UPDATE_CASCADE:
+          case ON_DUPLICATE_KEY:
+          case MULTITABLE_UPDATE:
+          case LIMIT_CLAUSE:
+          case DISABLE_CONSTRAINT_CHECK:
+          case CLOB_COMPARISON:
+          case BOOLEAN_DATATYPE:
+            return true;
         }
         return false;
     }
@@ -133,7 +135,7 @@ public class MySQL extends Db {
         }
     }
 
-    protected class MySQLConfig extends DbPool.PoolConfig {
+    protected static class MySQLConfig extends DbPool.PoolConfig {
         MySQLConfig() {
             mDriverClassName = getDriverClassName();
             mPoolSize = 100;
@@ -234,10 +236,7 @@ public class MySQL extends Db {
                     conn.commit();
                 DbPool.quietClose(conn);
             }
-        } catch (SQLException e) {
-            // If there's an error, let's just log it but not bubble up the exception.
-            ZimbraLog.dbconn.warn("ignoring error while forcing mysql to flush innodb log to disk", e);
-        } catch (ServiceException e) {
+        } catch (SQLException | ServiceException e) {
             // If there's an error, let's just log it but not bubble up the exception.
             ZimbraLog.dbconn.warn("ignoring error while forcing mysql to flush innodb log to disk", e);
         } finally {
@@ -254,7 +253,7 @@ public class MySQL extends Db {
     }
 
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         // command line argument parsing
         Options options = new Options();
         CommandLine cl = Versions.parseCmdlineArgs(args, options);

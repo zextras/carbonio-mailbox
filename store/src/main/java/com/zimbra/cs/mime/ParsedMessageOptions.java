@@ -25,11 +25,11 @@ public class ParsedMessageOptions {
     public ParsedMessageOptions() {
     }
 
-    public ParsedMessageOptions(Blob blob, byte buffer[]) throws IOException {
+    public ParsedMessageOptions(Blob blob, byte[] buffer) throws IOException {
         this(blob, buffer, null, null);
     }
 
-    public ParsedMessageOptions(Blob blob, byte buffer[], Long receivedDate,
+    public ParsedMessageOptions(Blob blob, byte[] buffer, Long receivedDate,
         Boolean indexAttachments) throws IOException {
         if (buffer == null)
             setContent(blob.getFile());

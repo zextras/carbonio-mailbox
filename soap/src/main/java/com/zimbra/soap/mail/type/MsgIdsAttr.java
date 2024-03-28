@@ -15,6 +15,6 @@ public class MsgIdsAttr extends IdsAttr {
      */
     @SuppressWarnings("unused")
     private MsgIdsAttr() {
-        this((String) null);
+        this(null);
     }
 }

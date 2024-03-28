@@ -47,7 +47,7 @@ public class AccountQuotaInfo {
      */
     @SuppressWarnings("unused")
     private AccountQuotaInfo() {
-        this((String) null, (String) null, -1L, -1L);
+        this(null, null, -1L, -1L);
     }
 
     public AccountQuotaInfo(String name, String id, long quotaUsed, long quotaLimit) {

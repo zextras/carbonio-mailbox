@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.account.krb5;
 
-import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 
 import java.security.PrivilegedExceptionAction;
@@ -13,7 +12,6 @@ import java.security.PrivilegedActionException;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
@@ -23,13 +21,11 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.Subject;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-import java.io.IOException;
 
 public class Krb5Login {
 
@@ -162,13 +158,11 @@ public class Krb5Login {
         kc.setUseTicketCache(false);
         kc.setStoreKey(false);
         Configuration dc = new DynamicConfiguration(S_CONFIG_NAME, new AppConfigurationEntry[] {kc});
-        CallbackHandler handler = new CallbackHandler() {
-            public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
-                for (Callback callback : callbacks) {
-                    if (callback instanceof PasswordCallback) {
-                        PasswordCallback pc = (PasswordCallback) callback;
-                        pc.setPassword(password.toCharArray());
-                    }
+        CallbackHandler handler = callbacks -> {
+            for (Callback callback : callbacks) {
+                if (callback instanceof PasswordCallback) {
+                    PasswordCallback pc = (PasswordCallback) callback;
+                    pc.setPassword(password.toCharArray());
                 }
             }
         };
@@ -216,7 +210,7 @@ public class Krb5Login {
         }
 
         public static Krb5Config getInstance() {
-            HashMap<String, String> options = new HashMap<String, String>();
+            HashMap<String, String> options = new HashMap<>();
             Krb5Config kc = new Krb5Config(DEFAULT_LOGIN_MODULE_NAME, DEFAULT_CONTROL_FLAG, options);
             kc.mOptions = options;
             return kc;
@@ -306,7 +300,7 @@ public class Krb5Login {
         }
     }
 
-    public static void main(String arsg[]) throws LoginException {
+    public static void main(String[] arsg) throws LoginException {
         // verifyPassword("user1@MACPRO.LOCAL", "test123");
         testPerformAs();
         

@@ -33,7 +33,7 @@ public class HostStats {
      */
     @SuppressWarnings("unused")
     private HostStats() {
-        this((String) null);
+        this(null);
     }
 
     public HostStats(String hostName) {

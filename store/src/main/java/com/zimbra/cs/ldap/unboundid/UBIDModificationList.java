@@ -19,7 +19,7 @@ import com.zimbra.cs.ldap.ZModificationList;
 
 public class UBIDModificationList extends ZModificationList {
 
-    private List<Modification> modList = new ArrayList<Modification>();
+    private List<Modification> modList = new ArrayList<>();
 
     @Override
     public void debug(ZLdapElementDebugListener debugListener) {
@@ -66,15 +66,15 @@ public class UBIDModificationList extends ZModificationList {
         String[] currentValues = entry.getMultiAttr(name, false, true);
 
         List<ASN1OctetString> valuesToAdd = null;
-        for (int i=0; i < value.length; i++) {
-            if (LdapUtil.contains(currentValues, value[i])) {
-                continue;
-            }
-            if (valuesToAdd == null) {
-                valuesToAdd = new ArrayList<ASN1OctetString>();
-            }
-            valuesToAdd.add(UBIDUtil.newASN1OctetString(containsBinaryData, value[i]));
+      for (String s : value) {
+        if (LdapUtil.contains(currentValues, s)) {
+          continue;
         }
+        if (valuesToAdd == null) {
+          valuesToAdd = new ArrayList<ASN1OctetString>();
+        }
+        valuesToAdd.add(UBIDUtil.newASN1OctetString(containsBinaryData, s));
+      }
         if (valuesToAdd != null) {
             String transferAttrName = LdapUtil.attrNameToBinaryTransferAttrName(isBinaryTransfer, name);
             Modification mod = new Modification(ModificationType.ADD, transferAttrName,
@@ -107,10 +107,10 @@ public class UBIDModificationList extends ZModificationList {
     public void modifyAttr(String name, String[] value,
             boolean containsBinaryData, boolean isBinaryTransfer) {
 
-        List<ASN1OctetString> valuesToMod = new ArrayList<ASN1OctetString>();
-        for (int i=0; i < value.length; i++) {
-            valuesToMod.add(UBIDUtil.newASN1OctetString(containsBinaryData, value[i]));
-        }
+        List<ASN1OctetString> valuesToMod = new ArrayList<>();
+      for (String s : value) {
+        valuesToMod.add(UBIDUtil.newASN1OctetString(containsBinaryData, s));
+      }
 
         String transferAttrName = LdapUtil.attrNameToBinaryTransferAttrName(isBinaryTransfer, name);
         Modification mod = new Modification(ModificationType.REPLACE, transferAttrName,
@@ -136,15 +136,15 @@ public class UBIDModificationList extends ZModificationList {
         }
 
         List<ASN1OctetString> valuesToRemove = null;
-        for (int i=0; i < value.length; i++) {
-            if (!LdapUtil.contains(currentValues, value[i])) {
-                continue;
-            }
-            if (valuesToRemove == null) {
-                valuesToRemove = new ArrayList<ASN1OctetString>();
-            }
-            valuesToRemove.add(UBIDUtil.newASN1OctetString(containsBinaryData, value[i]));
+      for (String s : value) {
+        if (!LdapUtil.contains(currentValues, s)) {
+          continue;
         }
+        if (valuesToRemove == null) {
+          valuesToRemove = new ArrayList<ASN1OctetString>();
+        }
+        valuesToRemove.add(UBIDUtil.newASN1OctetString(containsBinaryData, s));
+      }
         if (valuesToRemove != null) {
             String transferAttrName = LdapUtil.attrNameToBinaryTransferAttrName(isBinaryTransfer, name);
             Modification mod = new Modification(ModificationType.DELETE, transferAttrName,

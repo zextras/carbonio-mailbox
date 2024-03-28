@@ -3,11 +3,9 @@ package com.zimbra.soap.account.message;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.zimbra.common.soap.AccountConstants;
-import com.zimbra.soap.account.type.AttrsImpl;
 import com.zimbra.soap.type.ZmBoolean;
 
 // SPDX-FileCopyrightText: 2022 Synacor, Inc.

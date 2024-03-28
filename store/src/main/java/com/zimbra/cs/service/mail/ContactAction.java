@@ -72,8 +72,8 @@ public class ContactAction extends ItemAction {
         OperationContext octxt = getOperationContext(zsc, context);
 
         // figure out which items are local and which ones are remote, and proxy accordingly
-        ArrayList<Integer> local = new ArrayList<Integer>();
-        HashMap<String, StringBuilder> remote = new HashMap<String, StringBuilder>();
+        ArrayList<Integer> local = new ArrayList<>();
+        HashMap<String, StringBuilder> remote = new HashMap<>();
         partitionItems(zsc, action.getAttribute(MailConstants.A_ID), local, remote);
         ItemActionResult successes = proxyRemoteItems(action, remote, request, context);
 

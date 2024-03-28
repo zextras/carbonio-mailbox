@@ -52,7 +52,7 @@ public class DeliveryContext {
         mMailboxBlob = null;
         mMailboxIdList = mboxIdList;
         if (mShared) {
-            mailBoxBlobMap =  new HashMap<Integer,Blob>();
+            mailBoxBlobMap = new HashMap<>();
         }
     }
 

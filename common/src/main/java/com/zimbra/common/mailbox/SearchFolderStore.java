@@ -6,7 +6,7 @@
 package com.zimbra.common.mailbox;
 
 public interface SearchFolderStore extends FolderStore {
-    public String getQuery();
+    String getQuery();
     /** Returns the set of item types returned by this search, or <code>""</code> if none were specified. */
-    public String getReturnTypes();
+    String getReturnTypes();
 }

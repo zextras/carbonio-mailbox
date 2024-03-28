@@ -6,89 +6,89 @@
 package com.zimbra.soap.mail.type;
 
 public interface CommonInstanceDataAttrsInterface {
-  public void setPartStat(String partStat);
+  void setPartStat(String partStat);
 
-  public void setRecurIdZ(String recurIdZ);
+  void setRecurIdZ(String recurIdZ);
 
-  public void setTzOffset(Long tzOffset);
+  void setTzOffset(Long tzOffset);
 
-  public void setFreeBusyActual(String freeBusyActual);
+  void setFreeBusyActual(String freeBusyActual);
 
-  public void setIsRecurring(Boolean isRecurring);
+  void setIsRecurring(Boolean isRecurring);
 
-  public void setPriority(String priority);
+  void setPriority(String priority);
 
-  public void setFreeBusyIntended(String freeBusyIntended);
+  void setFreeBusyIntended(String freeBusyIntended);
 
-  public void setTransparency(String transparency);
+  void setTransparency(String transparency);
 
-  public void setName(String name);
+  void setName(String name);
 
-  public void setLocation(String location);
+  void setLocation(String location);
 
-  public void setHasOtherAttendees(Boolean hasOtherAttendees);
+  void setHasOtherAttendees(Boolean hasOtherAttendees);
 
-  public void setHasAlarm(Boolean hasAlarm);
+  void setHasAlarm(Boolean hasAlarm);
 
-  public void setIsOrganizer(Boolean isOrganizer);
+  void setIsOrganizer(Boolean isOrganizer);
 
-  public void setInvId(String invId);
+  void setInvId(String invId);
 
-  public void setComponentNum(Integer componentNum);
+  void setComponentNum(Integer componentNum);
 
-  public void setStatus(String status);
+  void setStatus(String status);
 
-  public void setCalClass(String calClass);
+  void setCalClass(String calClass);
 
-  public void setAllDay(Boolean allDay);
+  void setAllDay(Boolean allDay);
 
-  public void setDraft(Boolean draft);
+  void setDraft(Boolean draft);
 
-  public void setNeverSent(Boolean neverSent);
+  void setNeverSent(Boolean neverSent);
 
   // see CommonInstanceDataAttrs
-  public String getPartStat();
+  String getPartStat();
 
-  public String getRecurIdZ();
+  String getRecurIdZ();
 
-  public Long getTzOffset();
+  Long getTzOffset();
 
-  public String getFreeBusyActual();
+  String getFreeBusyActual();
 
-  public Boolean getIsRecurring();
+  Boolean getIsRecurring();
 
-  public String getPriority();
+  String getPriority();
 
-  public String getFreeBusyIntended();
+  String getFreeBusyIntended();
 
-  public String getTransparency();
+  String getTransparency();
 
-  public String getName();
+  String getName();
 
-  public String getLocation();
+  String getLocation();
 
-  public Boolean getHasOtherAttendees();
+  Boolean getHasOtherAttendees();
 
-  public Boolean getHasAlarm();
+  Boolean getHasAlarm();
 
-  public Boolean getIsOrganizer();
+  Boolean getIsOrganizer();
 
-  public String getInvId();
+  String getInvId();
 
-  public Integer getComponentNum();
+  Integer getComponentNum();
 
-  public String getStatus();
+  String getStatus();
 
-  public String getCalClass();
+  String getCalClass();
 
-  public Boolean getAllDay();
+  Boolean getAllDay();
 
-  public Boolean getDraft();
+  Boolean getDraft();
 
-  public Boolean getNeverSent();
+  Boolean getNeverSent();
 
   // see InstanceDataAttrs /LegacyInstanceDataAttrs
-  public void setDuration(Long duration);
+  void setDuration(Long duration);
 
-  public Long getDuration();
+  Long getDuration();
 }

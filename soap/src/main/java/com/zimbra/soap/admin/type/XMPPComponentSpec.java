@@ -40,7 +40,7 @@ public class XMPPComponentSpec extends AdminAttrsImpl {
      */
     @SuppressWarnings("unused")
     private XMPPComponentSpec() {
-        this((String) null, (DomainSelector) null, (ServerSelector) null);
+        this(null, null, null);
     }
 
     public XMPPComponentSpec(String name, DomainSelector domain,

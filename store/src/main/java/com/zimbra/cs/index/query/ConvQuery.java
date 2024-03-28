@@ -37,7 +37,7 @@ public final class ConvQuery extends Query {
         if (convId.getId() < 0) {
             // ...convert negative convId to positive ItemId...
             convId = new ItemId(convId.getAccountId(), -1 * convId.getId());
-            List<ItemId> iidList = new ArrayList<ItemId>(1);
+            List<ItemId> iidList = new ArrayList<>(1);
             iidList.add(convId);
             return new ItemQuery(false, false, false, iidList);
         } else {

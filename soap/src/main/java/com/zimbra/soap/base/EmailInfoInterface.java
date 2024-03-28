@@ -5,21 +5,19 @@
 
 package com.zimbra.soap.base;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface EmailInfoInterface {
-    public EmailInfoInterface create(String address, String display,
-            String personal, String addressType);
-    public void setGroup(Boolean group);
-    public void setCanExpandGroupMembers(Boolean canExpandGroupMembers);
-    public String getAddress();
-    public String getDisplay();
-    public String getPersonal();
-    public String getAddressType();
-    public Boolean getGroup();
-    public Boolean getCanExpandGroupMembers();
+    EmailInfoInterface create(String address, String display,
+        String personal, String addressType);
+    void setGroup(Boolean group);
+    void setCanExpandGroupMembers(Boolean canExpandGroupMembers);
+    String getAddress();
+    String getDisplay();
+    String getPersonal();
+    String getAddressType();
+    Boolean getGroup();
+    Boolean getCanExpandGroupMembers();
 }

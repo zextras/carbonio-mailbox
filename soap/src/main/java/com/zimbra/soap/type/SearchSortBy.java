@@ -40,7 +40,7 @@ public enum SearchSortBy {
 
     private ZimbraSortBy zsb;
 
-    private SearchSortBy(ZimbraSortBy zsb) {
+    SearchSortBy(ZimbraSortBy zsb) {
         this.zsb = zsb;
     }
 

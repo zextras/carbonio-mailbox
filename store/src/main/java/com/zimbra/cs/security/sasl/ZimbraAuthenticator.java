@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import java.nio.charset.StandardCharsets;
 import javax.security.sasl.SaslServer;
 
 import com.zimbra.common.account.Key;
@@ -47,7 +48,7 @@ public class ZimbraAuthenticator extends Authenticator {
         if (isComplete())
             throw new IllegalStateException("Authentication already completed");
 
-        String message = new String(data, "utf-8");
+        String message = new String(data, StandardCharsets.UTF_8);
 
         int nul1 = message.indexOf('\0'), nul2 = message.indexOf('\0', nul1 + 1);
         if (nul1 == -1 || nul2 == -1) {

@@ -64,7 +64,7 @@ public class CreateDataSourceRequest {
      */
     @SuppressWarnings("unused")
     private CreateDataSourceRequest() {
-        this((String) null, (DataSourceSpecifier) null);
+        this(null, null);
     }
 
     public CreateDataSourceRequest(String id, DataSourceSpecifier dataSource) {

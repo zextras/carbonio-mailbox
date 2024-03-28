@@ -6,5 +6,5 @@
 package com.zimbra.cs.stats;
 
 public interface JmxStatsMBeanBase {
-    public void reset();
+    void reset();
 }

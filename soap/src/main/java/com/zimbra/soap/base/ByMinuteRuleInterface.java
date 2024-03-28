@@ -10,6 +10,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface ByMinuteRuleInterface {
-    public ByMinuteRuleInterface create(String list);
-    public String getList();
+    ByMinuteRuleInterface create(String list);
+    String getList();
 }

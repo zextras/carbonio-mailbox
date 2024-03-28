@@ -62,7 +62,7 @@ public class LocalBind extends AttributeCallback {
         // zimbraMailMode is also in globalConfig. Make sure to update the zimbraMailLocalBind of all the
         // servers if this globalconfig is changed.
         
-        List<Server> serverList = new ArrayList<Server>();
+        List<Server> serverList = new ArrayList<>();
         if (entry instanceof Config) {
             try {
                 serverList = Provisioning.getInstance().getAllServers();
@@ -105,7 +105,6 @@ public class LocalBind extends AttributeCallback {
                     }
                 } catch (ServiceException e) {
                     ZimbraLog.misc.warn("Unable to set zimbraMailLocalBind " + e);
-                    continue;
                 }
             }
         }

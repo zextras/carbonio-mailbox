@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * @author ysasaki
  */
-public class ZFolderTest {
+class ZFolderTest {
 
     @Test
     void defaultView() throws Exception {

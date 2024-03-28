@@ -6,6 +6,7 @@
 package com.zimbra.cs.service.util;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.json.JSONException;
@@ -23,7 +24,7 @@ public class ItemData {
     public MailItem.UnderlyingData ud;
     private String tagsOldFmt = null;
 
-    private static enum Keys {
+    private enum Keys {
         id, uuid, type, parent_id, folder_id, index_id, imap_id, date, size,
         volume_id, blob_digest, unread, flags, tags, subject, name,
         metadata, mod_metadata, change_date, mod_content,
@@ -92,7 +93,7 @@ public class ItemData {
     }
 
     public ItemData(final byte[] encoded) throws IOException {
-        this(new String(encoded, "UTF-8"));
+        this(new String(encoded, StandardCharsets.UTF_8));
     }
 
     public JSONObject toJSON() throws IOException {
@@ -142,7 +143,7 @@ public class ItemData {
 
     public byte[] encode() throws IOException {
         try {
-            return toJSON().toString().getBytes("UTF-8");
+            return toJSON().toString().getBytes(StandardCharsets.UTF_8);
         } catch (Exception e) {
             throw new IOException("encode error: " + e);
         }
@@ -194,7 +195,7 @@ public class ItemData {
     }
 
     private boolean isOldTags() {
-        return tags.length() > 0 && Character.isDigit(tags.charAt(0)) && tags.indexOf(":") == -1;
+        return tags.length() > 0 && Character.isDigit(tags.charAt(0)) && !tags.contains(":");
     }
 
     private void getTagsFromJson(JSONObject json) {

@@ -25,7 +25,7 @@ public class SrcAttributePolicy implements AttributePolicy {
                 if (!base.endsWith("/"))
                     base += "/";
             }
-            if (srcValue.indexOf(":") == -1) {
+            if (!srcValue.contains(":")) {
                 if (!srcValue.startsWith("/")) {
                     srcValue = "/" + srcValue;
                 }

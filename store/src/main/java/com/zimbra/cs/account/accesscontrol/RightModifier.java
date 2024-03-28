@@ -97,7 +97,7 @@ public enum RightModifier {
     private char mModifier;
     private String description;
 
-    private RightModifier(char modifier, String soapAttrMapping, String desc) {
+    RightModifier(char modifier, String soapAttrMapping, String desc) {
         mModifier = modifier;
         mSoapAttrMapping = soapAttrMapping;
         description = desc;

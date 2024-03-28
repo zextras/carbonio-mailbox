@@ -41,7 +41,7 @@ public class SecureObjectInputStream extends ObjectInputStream {
      */
     public SecureObjectInputStream(InputStream in, String acceptedClassname) throws IOException {
         super(in);
-        this.acceptedClassname = new HashSet<String>();
+        this.acceptedClassname = new HashSet<>();
         this.acceptedClassname.add(acceptedClassname);
     }
 

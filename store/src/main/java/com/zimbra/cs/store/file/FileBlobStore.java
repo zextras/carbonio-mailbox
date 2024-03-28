@@ -63,10 +63,7 @@ public final class FileBlobStore extends StoreManager {
     public boolean supports(StoreFeature feature) {
         switch (feature) {
             case BULK_DELETE:  return true;
-            case CENTRALIZED:  return false;
-            case SINGLE_INSTANCE_SERVER_CREATE : return false;
-            case RESUMABLE_UPLOAD : return false;
-            default:           return false;
+          default:           return false;
         }
     }
 

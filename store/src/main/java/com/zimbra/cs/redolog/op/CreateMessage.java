@@ -393,7 +393,7 @@ implements CreateCalendarItemPlayer, CreateCalendarItemRecorder {
         }
         if (getVersion().atLeast(1, 32)) {
             int mergeCount = in.readInt();
-            mMergedConvIds = new ArrayList<Integer>(mergeCount);
+            mMergedConvIds = new ArrayList<>(mergeCount);
             for (int i = 0; i < mergeCount; i++) {
                 mMergedConvIds.add(in.readInt());
             }
@@ -497,7 +497,6 @@ implements CreateCalendarItemPlayer, CreateCalendarItemRecorder {
             } catch (MailServiceException e) {
                 if (e.getCode() == MailServiceException.ALREADY_EXISTS) {
                     mLog.info("Message " + mMsgId + " is already in mailbox " + mboxId);
-                    return;
                 } else {
                     throw e;
                 }
@@ -518,7 +517,6 @@ implements CreateCalendarItemPlayer, CreateCalendarItemRecorder {
             } catch (MailServiceException e) {
                 if (e.getCode() == MailServiceException.ALREADY_EXISTS) {
                     mLog.info("Message " + mMsgId + " is already in mailbox " + mboxId);
-                    return;
                 } else {
                     throw e;
                 }

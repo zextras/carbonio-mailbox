@@ -109,7 +109,7 @@ public class GetAccountInfoResponse {
   /** no-argument constructor wanted by JAXB */
   @SuppressWarnings("unused")
   private GetAccountInfoResponse() {
-    this((String) null);
+    this(null);
   }
 
   public GetAccountInfoResponse(String name) {

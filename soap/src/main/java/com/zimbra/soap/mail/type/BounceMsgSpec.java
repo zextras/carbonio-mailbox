@@ -40,7 +40,7 @@ public class BounceMsgSpec {
      */
     @SuppressWarnings("unused")
     private BounceMsgSpec() {
-        this((String) null);
+        this(null);
     }
 
     public BounceMsgSpec(String id) {

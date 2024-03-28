@@ -80,17 +80,14 @@ public final class RawIndexEditor {
 
 
     void dumpAll() throws IOException {
-        IndexReader reader = IndexReader.open(luceneDirectory);
-        try {
-            int maxDoc = reader.maxDoc();
-            System.out.println("There are "+maxDoc+" documents in this index.");
+      try (IndexReader reader = IndexReader.open(luceneDirectory)) {
+        int maxDoc = reader.maxDoc();
+        System.out.println("There are " + maxDoc + " documents in this index.");
 
-            for (int i = 0; i < maxDoc; i++) {
-                dumpDocument(reader.document(i), reader.isDeleted(i));
-            }
-        } finally {
-            reader.close();
+        for (int i = 0; i < maxDoc; i++) {
+          dumpDocument(reader.document(i), reader.isDeleted(i));
         }
+      }
     }
 
     void run() throws IOException {

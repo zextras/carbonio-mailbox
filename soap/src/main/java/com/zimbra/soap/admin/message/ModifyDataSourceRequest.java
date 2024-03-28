@@ -49,7 +49,7 @@ public class ModifyDataSourceRequest extends AdminAttrsImpl {
      */
     @SuppressWarnings("unused")
     private ModifyDataSourceRequest() {
-        this((String) null, (DataSourceInfo) null);
+        this(null, null);
     }
 
     public ModifyDataSourceRequest(String id, DataSourceInfo dataSource) {

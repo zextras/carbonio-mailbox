@@ -93,7 +93,7 @@ public class ContactBackupThread extends Thread {
    */
   @Override
   public void run() {
-    List<Integer> mailboxIds = new ArrayList<Integer>();
+    List<Integer> mailboxIds = new ArrayList<>();
     try {
       mailboxIds = CallbackUtil.getSortedMailboxIdList();
     } catch (ServiceException e) {
@@ -180,7 +180,7 @@ public class ContactBackupThread extends Thread {
               CT_TYPE,
               startTime.getTime(),
               OPERATION,
-              FILE_DESC + startTime.toString());
+              FILE_DESC + startTime);
     } catch (UnsupportedOperationException | IOException | ServiceException exception) {
       success = false;
       ZimbraLog.contactbackup.warn("contact export failed, continuing to next mailbox");
@@ -231,7 +231,6 @@ public class ContactBackupThread extends Thread {
           ZimbraLog.contactbackup.warn(
               "exception occured while getting document from contact backup folder");
           ZimbraLog.contactbackup.debug(se);
-          continue;
         }
       }
       ZimbraLog.contactbackup.debug("%d items deleted", counter);

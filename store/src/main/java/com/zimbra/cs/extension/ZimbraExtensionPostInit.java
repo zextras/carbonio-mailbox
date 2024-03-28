@@ -14,6 +14,6 @@ public interface ZimbraExtensionPostInit {
      * Called at the end of the server boot process, after all server subsystems
      * are up and running.
      */
-    public void postInit();
+    void postInit();
 
 }

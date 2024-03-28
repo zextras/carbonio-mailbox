@@ -49,7 +49,7 @@ public class RedoPlayer {
     private boolean mIgnoreReplayErrors;
     private boolean mSkipDeleteOps;
     protected boolean handleMailboxConflict;
-    protected ConcurrentMap<Integer, Integer> mailboxConflicts = new ConcurrentHashMap<Integer, Integer>();
+    protected ConcurrentMap<Integer, Integer> mailboxConflicts = new ConcurrentHashMap<>();
 
     public RedoPlayer(boolean writable) {
         this(writable, false, false, false, false);
@@ -57,7 +57,7 @@ public class RedoPlayer {
 
     public RedoPlayer(boolean writable, boolean unloggedReplay, boolean ignoreReplayErrors, boolean skipDeleteOps, 
         boolean handleMailboxConflict) {
-        mOpsMap = new LinkedHashMap<TransactionId, RedoableOp>(INITIAL_MAP_SIZE);
+        mOpsMap = new LinkedHashMap<>(INITIAL_MAP_SIZE);
         mWritable = writable;
         mUnloggedReplay = unloggedReplay;
         mIgnoreReplayErrors = ignoreReplayErrors;
@@ -158,7 +158,7 @@ public class RedoPlayer {
     // before its change record
     private boolean mHasOrphanOps = false;
     private Map<TransactionId, RedoableOp> mOrphanOps =
-        new HashMap<TransactionId, RedoableOp>();
+        new HashMap<>();
 
     private final void processOp(RedoableOp op,
             boolean redoCommitted,
@@ -207,7 +207,7 @@ public class RedoPlayer {
                                 }
                                 ZimbraLog.redolog.info("Checkpoint discrepancy: # current uncommitted ops = " + mOpsMap.size() +
                                         ", # checkpoint uncommitted ops = " + txns.size() +
-                                        "\nMAP DUMP:\n" + sb1.toString() + "\n" + sb2.toString());
+                                        "\nMAP DUMP:\n" + sb1 + "\n" + sb2);
                             }
                         }
                     }
@@ -226,7 +226,7 @@ public class RedoPlayer {
                                 }
                                 ZimbraLog.redolog.info("Checkpoint discrepancy: # current uncommitted ops = " +
                                         mOpsMap.size() + " instead of 0\nMAP DUMP:\n" +
-                                        sb1.toString());
+                                    sb1);
                             }
                         }
                     }
@@ -241,12 +241,12 @@ public class RedoPlayer {
                     // corresponding op from map, and optionally execute the committed op.
                     RedoableOp prepareOp;
                     synchronized (mOpsMapGuard) {
-                        prepareOp = (RedoableOp) mOpsMap.remove(op.getTransactionId());
+                        prepareOp = mOpsMap.remove(op.getTransactionId());
                         if (prepareOp == null) {
                             mHasOrphanOps = true;
                             ZimbraLog.redolog.error("Commit/abort record encountered before corresponding change record (" + op + ")");
                             TransactionId tid = op.getTransactionId();
-                            RedoableOp x = (RedoableOp) mOrphanOps.get(tid);
+                            RedoableOp x = mOrphanOps.get(tid);
                             if (x != null)
                                 ZimbraLog.redolog.error("Op [" + op + "] is already in orphans map: value=" + x);
                             mOrphanOps.put(tid, op);
@@ -269,7 +269,7 @@ public class RedoPlayer {
                                 StoreIncomingBlob storeOp = (StoreIncomingBlob) prepareOp;
                                 List<Integer> list = storeOp.getMailboxIdList();
                                 if (list != null) {
-                                    Set<Integer> opMboxIds = new HashSet<Integer>(list);
+                                    Set<Integer> opMboxIds = new HashSet<>(list);
                                     for (Map.Entry<Integer, Integer> entry : mboxIDsMap.entrySet()) {
                                         if (opMboxIds.contains(entry.getKey())) {
                                             allowRedo = true;
@@ -277,7 +277,7 @@ public class RedoPlayer {
                                             // replaying it only for the target mailbox ID we're
                                             // interested in.
                                             List<Integer> newList =
-                                                new ArrayList<Integer>(mboxIDsMap.values());
+                                                new ArrayList<>(mboxIDsMap.values());
                                             storeOp.setMailboxIdList(newList);
                                             break;
                                         }
@@ -296,10 +296,10 @@ public class RedoPlayer {
                                 allowRedo = true;
                             } else {
                                 for (Map.Entry<Integer, Integer> entry : mboxIDsMap.entrySet()) {
-                                    if (opMailboxId == entry.getKey().intValue()) {
+                                    if (opMailboxId == entry.getKey()) {
                                         if (entry.getValue() != null) {
                                             // restore to a different mailbox
-                                            prepareOp.setMailboxId(entry.getValue().intValue());
+                                            prepareOp.setMailboxId(entry.getValue());
                                         }
                                         allowRedo = true;
                                         break;
@@ -309,11 +309,11 @@ public class RedoPlayer {
                         }
                         if (allowRedo) {
                             if (mSkipDeleteOps && prepareOp.isDeleteOp()) {
-                                ZimbraLog.redolog.info("Skipping delete op: " + prepareOp.toString());
+                                ZimbraLog.redolog.info("Skipping delete op: " + prepareOp);
                             } else {
                                 try {
                                     if (ZimbraLog.redolog.isDebugEnabled())
-                                        ZimbraLog.redolog.debug("Redoing: " + prepareOp.toString());
+                                        ZimbraLog.redolog.debug("Redoing: " + prepareOp);
                                     prepareOp.setUnloggedReplay(mUnloggedReplay);
                                     playOp(prepareOp);
                                 } catch(Exception e) {
@@ -410,39 +410,39 @@ public class RedoPlayer {
         synchronized (mOpsMapGuard) {
             Set entrySet = mOpsMap.entrySet();
             ZimbraLog.redolog.info("Redoing " + numOps + " uncommitted transactions");
-            for (Iterator it = entrySet.iterator(); it.hasNext(); ) {
-                Map.Entry entry = (Entry) it.next();
-                RedoableOp op = (RedoableOp) entry.getValue();
-                if (op == null)
-                    continue;
+          for (Object o : entrySet) {
+            Entry entry = (Entry) o;
+            RedoableOp op = (RedoableOp) entry.getValue();
+            if (op == null)
+              continue;
 
-                if (op.deferCrashRecovery()) {
-                    ZimbraLog.redolog.info("Deferring crash recovery to after startup: " + op);
-                    postStartupRecoveryOps.add(op);
-                    continue;
-                }
-
-                if (ZimbraLog.redolog.isInfoEnabled())
-                    ZimbraLog.redolog.info("REDOING: " + op);
-
-                boolean success = false;
-                try {
-                    op.redo();
-                    success = true;
-                } catch (Exception e) {
-                    ZimbraLog.redolog.error("Redo failed for [" + op + "]." +
-                            "  Backend state of affected item is indeterminate." +
-                            "  Marking operation as aborted and moving on.", e);
-                } finally {
-                    if (success) {
-                        CommitTxn commit = new CommitTxn(op);
-                        redoLogMgr.logOnly(commit, true);
-                    } else {
-                        AbortTxn abort = new AbortTxn(op);
-                        redoLogMgr.logOnly(abort, true);
-                    }
-                }
+            if (op.deferCrashRecovery()) {
+              ZimbraLog.redolog.info("Deferring crash recovery to after startup: " + op);
+              postStartupRecoveryOps.add(op);
+              continue;
             }
+
+            if (ZimbraLog.redolog.isInfoEnabled())
+              ZimbraLog.redolog.info("REDOING: " + op);
+
+            boolean success = false;
+            try {
+              op.redo();
+              success = true;
+            } catch (Exception e) {
+              ZimbraLog.redolog.error("Redo failed for [" + op + "]." +
+                  "  Backend state of affected item is indeterminate." +
+                  "  Marking operation as aborted and moving on.", e);
+            } finally {
+              if (success) {
+                CommitTxn commit = new CommitTxn(op);
+                redoLogMgr.logOnly(commit, true);
+              } else {
+                AbortTxn abort = new AbortTxn(op);
+                redoLogMgr.logOnly(abort, true);
+              }
+            }
+          }
             mOpsMap.clear();
         }
 
@@ -457,9 +457,9 @@ public class RedoPlayer {
         LinkedHashMap<TransactionId, RedoableOp> map;
         synchronized (mOpsMapGuard) {
             if (mOpsMap != null)
-                map = new LinkedHashMap<TransactionId, RedoableOp>(mOpsMap);
+                map = new LinkedHashMap<>(mOpsMap);
             else
-                map = new LinkedHashMap<TransactionId, RedoableOp>();
+                map = new LinkedHashMap<>();
         }
         return map;
     }

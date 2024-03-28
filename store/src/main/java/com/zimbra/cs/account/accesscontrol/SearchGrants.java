@@ -105,7 +105,7 @@ public final class SearchGrants {
     //    key: target id (or name if zimlet)
     //    value: grants on this target
     private final Map<String, GrantsOnTargetRaw> rawResults =
-        new HashMap<String, GrantsOnTargetRaw>();
+        new HashMap<>();
 
     // results in the form usable by callers
     private Set<GrantsOnTarget> results;

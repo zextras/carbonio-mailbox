@@ -169,8 +169,8 @@ public class CalendarQuery extends Report {
         Set<RequestedComponent> comps;
 
         RequestedComponent(Element elem) {
-            props = new HashSet<String>();
-            comps = new HashSet<RequestedComponent>();
+            props = new HashSet<>();
+            comps = new HashSet<>();
         }
 
         void parse(Element elem) {

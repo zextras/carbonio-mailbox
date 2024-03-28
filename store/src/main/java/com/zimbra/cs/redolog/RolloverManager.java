@@ -56,7 +56,7 @@ public class RolloverManager {
 	 * RolloverManager.rollover().
 	 */
 	public void crashRecovery() throws IOException {
-		File logs[] = mRedoLogFile.getParentFile().listFiles(new TempLogFilenameFilter());
+		File[] logs = mRedoLogFile.getParentFile().listFiles(new TempLogFilenameFilter());
 		if (logs.length > 0) {
 			FileUtil.sortFilesByModifiedTime(logs);
 
@@ -115,16 +115,14 @@ public class RolloverManager {
     }
 
     public static File[] getArchiveLogs(File archiveDir, final long from, final long to) {
-        File logs[] = archiveDir.listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                if (name.indexOf(ARCH_FILENAME_PREFIX) == 0 &&
-                    name.lastIndexOf(FILENAME_SUFFIX) == name.length() - FILENAME_SUFFIX.length()) {
-                    long seq = getSeqForFile(new File(dir, name));
-                    if (from <= seq && seq <= to)
-                        return true;
-                }
-                return false;
+        File[] logs = archiveDir.listFiles((dir, name) -> {
+            if (name.indexOf(ARCH_FILENAME_PREFIX) == 0 &&
+                name.lastIndexOf(FILENAME_SUFFIX) == name.length() - FILENAME_SUFFIX.length()) {
+                long seq = getSeqForFile(new File(dir, name));
+                if (from <= seq && seq <= to)
+                    return true;
             }
+            return false;
         });
         if (logs != null && logs.length > 0)
             RolloverManager.sortArchiveLogFiles(logs);
@@ -179,12 +177,10 @@ public class RolloverManager {
 		try {
 			String val = fname.substring(start, end);
 			return Long.parseLong(val);
-		} catch (StringIndexOutOfBoundsException se) {
-			return -1;
-		} catch (NumberFormatException ne) {
+		} catch (StringIndexOutOfBoundsException | NumberFormatException se) {
 			return -1;
 		}
-	}
+  }
 
 	public static long getEndTimeForFile(File f) {
         DateFormat fmt = new SimpleDateFormat(TIMESTAMP_FORMAT);

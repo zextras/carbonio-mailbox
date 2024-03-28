@@ -24,7 +24,7 @@ public class ModifyContactAttr extends NewContactAttr {
     private String operation;
 
     public ModifyContactAttr() {
-         this((String) null);
+         this(null);
     }
 
     public ModifyContactAttr(String name) {

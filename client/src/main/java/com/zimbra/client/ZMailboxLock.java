@@ -43,7 +43,6 @@ public class ZMailboxLock {
             //Wait for the lock up to the allowed limit
             if (monitor.enterInterruptibly(timeoutSeconds, TimeUnit.SECONDS)) {
                 ZimbraLog.mailbox.debug("acquired zmailbox lock");
-                return;
             } else {
                 throw new LockFailedException("lock timeout");
             }
@@ -62,7 +61,7 @@ public class ZMailboxLock {
         return monitor.getOccupiedDepth();
     }
 
-    public final class LockFailedException extends RuntimeException {
+    public static final class LockFailedException extends RuntimeException {
         private static final long serialVersionUID = -6899718561860023270L;
 
         private LockFailedException(String message) {

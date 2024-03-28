@@ -17,7 +17,7 @@ import com.zimbra.cs.session.SoapSession;
 public abstract class SoapContextExtension {
 	
 	
-	private static List<SoapContextExtension> sExtensions = Collections.synchronizedList(new ArrayList<SoapContextExtension>());
+	private static List<SoapContextExtension> sExtensions = Collections.synchronizedList(new ArrayList<>());
 	
 	public static void register(String name, SoapContextExtension sce) {
 		synchronized (sExtensions) {

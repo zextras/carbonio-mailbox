@@ -30,7 +30,7 @@ public class GetAllAccountLoggersResponse {
     private List <AccountLoggerInfo> loggers = Lists.newArrayList();
 
     public GetAllAccountLoggersResponse() {
-        this((Collection <AccountLoggerInfo>) null);
+        this(null);
     }
 
     public GetAllAccountLoggersResponse(

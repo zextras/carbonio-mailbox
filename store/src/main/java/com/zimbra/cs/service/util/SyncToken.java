@@ -122,7 +122,7 @@ public class SyncToken implements Cloneable, Comparable {
     public String toString() {
         StringBuffer token = new StringBuffer();
         if (this.mChangeId > 0) {
-            token.append("").append(this.mChangeId);
+            token.append(this.mChangeId);
         }
         if (this.mChangeOffsetInNext > 0) {
             token.append(MODSEQ_ITEMID_SEPARATOR).append(this.mChangeOffsetInNext);

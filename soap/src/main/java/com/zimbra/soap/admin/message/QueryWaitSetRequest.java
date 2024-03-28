@@ -74,7 +74,7 @@ public class QueryWaitSetRequest {
      */
     @SuppressWarnings("unused")
     private QueryWaitSetRequest() {
-        this((String) null);
+        this(null);
     }
 
     public QueryWaitSetRequest(String waitSetId) {

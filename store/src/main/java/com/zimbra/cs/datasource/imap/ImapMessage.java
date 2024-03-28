@@ -60,7 +60,7 @@ public class ImapMessage extends DataSourceMapping {
     }
 
     private static String remoteId(int folderId, long uid) {
-        return Integer.toString(folderId) + "_" + Long.toString(uid); 
+        return folderId + "_" + uid;
     }
 
     public String toString() {

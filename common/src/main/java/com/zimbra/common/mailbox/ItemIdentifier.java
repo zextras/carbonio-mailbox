@@ -102,7 +102,7 @@ public class ItemIdentifier implements Serializable {
 
     @Override
     public String toString() {
-        return toString((String) null);
+        return toString(null);
     }
 
     public boolean sameAndFullyDefined(ItemIdentifier other) {

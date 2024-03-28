@@ -32,13 +32,13 @@ public final class DocumentDispatcher {
     private ArrayList<String> includeList;
 
     DocumentDispatcher() {
-        handlers = new HashMap<QName, DocumentHandler>();
-        responses = new HashMap<QName, QName>();
+        handlers = new HashMap<>();
+        responses = new HashMap<>();
 
         String whiteListString = LC.get("admin_soap_white_list");
         ZimbraLog.soap.debug("Loading admin SOAP white list");
         if (whiteListString.length() > 0) {
-            includeList = new ArrayList<String>(Arrays.asList(whiteListString.split("(,[\n\r]*)")));
+            includeList = new ArrayList<>(Arrays.asList(whiteListString.split("(,[\n\r]*)")));
         } else {
             ZimbraLog.soap.debug("No white list found. All available admin SOAP handlers will be loaded.");
         }

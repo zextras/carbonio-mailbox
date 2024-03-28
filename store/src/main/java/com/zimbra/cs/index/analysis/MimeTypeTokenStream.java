@@ -26,7 +26,7 @@ public final class MimeTypeTokenStream extends TokenStream {
     private static final int MAX_TOKEN_LEN = 256;
     private static final int MAX_TOKEN_COUNT = 100;
 
-    private final List<String> tokens = new LinkedList<String>();
+    private final List<String> tokens = new LinkedList<>();
     private Iterator<String> itr;
     private final CharTermAttribute termAttr = addAttribute(CharTermAttribute.class);
 

@@ -8,6 +8,7 @@ package com.zimbra.cs.fb;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -67,7 +68,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
     public static final int MULTI_STATUS = 207;
     public static final String TYPE_WEBDAV = "webdav";
 
-    public enum AuthScheme { basic, form };
+    public enum AuthScheme { basic, form }
 
     public static class ServerInfo {
         public boolean enabled;
@@ -78,8 +79,8 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
         public String authPassword;
         public AuthScheme scheme;
     }
-    public static interface ExchangeUserResolver {
-        public ServerInfo getServerInfo(String emailAddr);
+    public interface ExchangeUserResolver {
+        ServerInfo getServerInfo(String emailAddr);
     }
 
     private static class BasicUserResolver implements ExchangeUserResolver {
@@ -104,7 +105,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
                     acct = Provisioning.getInstance().get(AccountBy.name, emailAddr);
                 }
                 if (acct != null) {
-                    String fps[] = acct.getMultiAttr(Provisioning.A_zimbraForeignPrincipal);
+                    String[] fps = acct.getMultiAttr(Provisioning.A_zimbraForeignPrincipal);
                     if (fps != null && fps.length > 0) {
                         for (String fp : fps) {
                             if (fp.startsWith(Provisioning.FP_PREFIX_AD)) {
@@ -154,7 +155,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
 
     private static ArrayList<ExchangeUserResolver> sRESOLVERS;
     static {
-        sRESOLVERS = new ArrayList<ExchangeUserResolver>();
+        sRESOLVERS = new ArrayList<>();
 
         registerResolver(new BasicUserResolver(), 0);
         register(new ExchangeFreeBusyProvider());
@@ -193,7 +194,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
     private void addRequest(ServerInfo info, Request req) {
         ArrayList<Request> r = mRequests.get(info.url);
         if (r == null) {
-            r = new ArrayList<Request>();
+            r = new ArrayList<>();
             mRequests.put(info.url, r);
         }
         req.data = info;
@@ -203,7 +204,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
 
     @Override
     public List<FreeBusy> getResults() {
-        ArrayList<FreeBusy> ret = new ArrayList<FreeBusy>();
+        ArrayList<FreeBusy> ret = new ArrayList<>();
         for (Map.Entry<String, ArrayList<Request>> entry : mRequests.entrySet()) {
             try {
                 ret.addAll(this.getFreeBusyForHost(entry.getKey(), entry.getValue()));
@@ -350,7 +351,8 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
             int status = response.getStatusLine().getStatusCode();
             if (status != MULTI_STATUS) {
                 InputStream resp = response.getEntity().getContent();
-                String respStr = (resp == null ? "" : new String(ByteUtil.readInput(resp, 1024, 1024), "UTF-8"));
+                String respStr = (resp == null ? "" : new String(ByteUtil.readInput(resp, 1024, 1024),
+                    StandardCharsets.UTF_8));
                 ZimbraLog.fb.error("cannot modify resource at %s : http error %d, buf (%s)", url, status, respStr);
                 return false;  // retry
             }
@@ -395,11 +397,11 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
     private boolean formAuth(HttpClientBuilder clientBuilder, ServerInfo info) throws IOException, HttpException {
         StringBuilder buf = new StringBuilder();
         buf.append("destination=");
-        buf.append(URLEncoder.encode(info.url, "UTF-8"));
+        buf.append(URLEncoder.encode(info.url, StandardCharsets.UTF_8));
         buf.append("&username=");
         buf.append(info.authUsername);
         buf.append("&password=");
-        buf.append(URLEncoder.encode(info.authPassword, "UTF-8"));
+        buf.append(URLEncoder.encode(info.authPassword, StandardCharsets.UTF_8));
         buf.append("&flags=0");
         buf.append("&SubmitCreds=Log On");
         buf.append("&trusted=0");
@@ -424,11 +426,11 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
     }
 
     ExchangeFreeBusyProvider() {
-        mRequests = new HashMap<String,ArrayList<Request>>();
+        mRequests = new HashMap<>();
     }
 
     public List<FreeBusy> getFreeBusyForHost(String host, ArrayList<Request> req) throws IOException {
-        ArrayList<FreeBusy> ret = new ArrayList<FreeBusy>();
+        ArrayList<FreeBusy> ret = new ArrayList<>();
         int fb_interval = LC.exchange_free_busy_interval_min.intValueWithinRange(5, 1444);
         Request r = req.get(0);
         ServerInfo serverInfo = (ServerInfo) r.data;
@@ -455,20 +457,17 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
                 Header cl = httpResponse.getFirstHeader(HttpHeader.CONTENT_LENGTH.name());
                 int contentLength = 10240;
                 if (cl != null)
-                    contentLength = Integer.valueOf(cl.getValue());
+                    contentLength = Integer.parseInt(cl.getValue());
                 String buf = new String(com.zimbra.common.util.ByteUtil.readInput(
-                    httpResponse.getEntity().getContent(), contentLength, contentLength), "UTF-8");
+                    httpResponse.getEntity().getContent(), contentLength, contentLength), StandardCharsets.UTF_8);
                 ZimbraLog.fb.debug(buf);
                 response = Element.parseXML(buf);
             } else
                 response = Element.parseXML(httpResponse.getEntity().getContent());
-        } catch (XmlParseException e) {
+        } catch (XmlParseException | IOException | HttpException e) {
             ZimbraLog.fb.warn("error parsing fb response from exchange", e);
             return getEmptyList(req);
-        } catch (IOException | HttpException e) {
-            ZimbraLog.fb.warn("error parsing fb response from exchange", e);
-            return getEmptyList(req);
-        }  finally {
+        } finally {
             EntityUtils.consumeQuietly(httpResponse.getEntity());
         }
         for (Request re : req) {
@@ -527,7 +526,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
 
     public static HttpResponse checkAuth(ServerInfo info, Account requestor) throws ServiceException, IOException, HttpException {
         ExchangeFreeBusyProvider prov = new ExchangeFreeBusyProvider();
-        ArrayList<Request> req = new ArrayList<Request>();
+        ArrayList<Request> req = new ArrayList<>();
         req.add(new Request(
                 requestor,
                 requestor.getName(),

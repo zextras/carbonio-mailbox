@@ -49,7 +49,7 @@ public class GetRightRequest {
      */
     @SuppressWarnings("unused")
     private GetRightRequest() {
-        this((String) null, (Boolean) null);
+        this(null, null);
     }
 
     public GetRightRequest(String right, Boolean expandAllAttrs) {

@@ -49,7 +49,7 @@ public class CreateDataSource extends MailDocumentHandler {
     // Create the data source
 
     String folderIdStr = eDataSource.getAttribute(MailConstants.A_FOLDER);
-    int folderId = Integer.valueOf(folderIdStr);
+    int folderId = Integer.parseInt(folderIdStr);
     String name = eDataSource.getAttribute(MailConstants.A_NAME);
     boolean returnFolderId = false;
     if (folderId == -1) {

@@ -17,13 +17,13 @@ import com.zimbra.cs.client.*;
 public class LmcGetConvRequest extends LmcSoapRequest {
 
     private String mConvID;
-    private String mMsgsToGet[];
+    private String[] mMsgsToGet;
     
     // There is a single conversation to get.  Must be present.
     public void setConvToGet(String f) { mConvID = f; }
 
     // Set the ID's of the msgs within the conversation to get.  Optional.
-    public void setMsgsToGet(String m[]) { mMsgsToGet = m; }
+    public void setMsgsToGet(String[] m) { mMsgsToGet = m; }
     
     public String getConvToGet() { return mConvID; }
 
@@ -39,10 +39,10 @@ public class LmcGetConvRequest extends LmcSoapRequest {
 
         // add message elements within the conversation element if desired
         if (mMsgsToGet != null) {
-            for (int i = 0; i < mMsgsToGet.length; i++) {
-                Element m = DomUtil.add(convElement, MailConstants.E_MSG, "");
-                DomUtil.addAttr(m, MailConstants.A_ID, mMsgsToGet[i]);
-            }
+          for (String s : mMsgsToGet) {
+            Element m = DomUtil.add(convElement, MailConstants.E_MSG, "");
+            DomUtil.addAttr(m, MailConstants.A_ID, s);
+          }
         }
 
         return request;

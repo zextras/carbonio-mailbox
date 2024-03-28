@@ -42,9 +42,9 @@ public class SoapDynamicGroup extends DynamicGroup implements SoapEntry {
     throws ServiceException {
         // DistributionListMembershipInfo does not supply attributes
         super(dlInfo.getName(), dlInfo.getId(),
-                new HashMap<String,Object>(), prov);
+            new HashMap<>(), prov);
         // DistributionListMembershipInfo does not supply membership info
-        addDlm(new ArrayList<String>(), getRawAttrs());
+        addDlm(new ArrayList<>(), getRawAttrs());
     }
 
     SoapDynamicGroup(DistributionListInfo dlInfo, Provisioning prov)
@@ -59,7 +59,7 @@ public class SoapDynamicGroup extends DynamicGroup implements SoapEntry {
         super(dlInfo.getName(), dlInfo.getId(), 
                 Attr.collectionToMap(dlInfo.getAttrList()), prov);
         // DLInfo does not supply membership info
-        addDlm(new ArrayList<String>(), getRawAttrs());
+        addDlm(new ArrayList<>(), getRawAttrs());
     }
 
     SoapDynamicGroup(Element e, Provisioning prov) throws ServiceException {
@@ -98,7 +98,7 @@ public class SoapDynamicGroup extends DynamicGroup implements SoapEntry {
     }
     
     private void addDlm(Element e, Map<String, Object> attrs) {
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         for (Element dlm : e.listElements(AdminConstants.E_DLM)) {
             list.add(dlm.getText());
         }

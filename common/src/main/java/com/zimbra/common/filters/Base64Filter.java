@@ -59,7 +59,7 @@ public class Base64Filter implements Filter {
     }
 
 
-    public class Base64ResponseWrapper extends HttpServletResponseWrapper {
+    public static class Base64ResponseWrapper extends HttpServletResponseWrapper {
         private final HttpServletResponse response;
         private ServletOutputStream output;
         private PrintWriter writer;

@@ -27,7 +27,7 @@ public class JavaMailMimeMultipart extends MimeMultipart implements JavaMailShim
     private static final boolean ZPARSER = JavaMailMimeMessage.ZPARSER;
 
     private com.zimbra.common.mime.MimeMultipart zmultipart;
-    private Map<com.zimbra.common.mime.MimePart, JavaMailMimeBodyPart> partMap = new HashMap<com.zimbra.common.mime.MimePart, JavaMailMimeBodyPart>();
+    private Map<com.zimbra.common.mime.MimePart, JavaMailMimeBodyPart> partMap = new HashMap<>();
 
     JavaMailMimeMultipart(com.zimbra.common.mime.MimeMultipart multi) {
         this(multi, null);

@@ -29,7 +29,7 @@ class DbStats implements RealtimeStatsCallback {
     private static final Pattern PATTERN_BP_HIT_RATE = Pattern.compile("hit rate (\\d+)");
     
     public Map<String, Object> getStatData() {
-        Map<String, Object> data = new HashMap<String, Object>();
+        Map<String, Object> data = new HashMap<>();
 
         try {
             data.put(ZimbraPerf.RTS_DB_POOL_SIZE, DbPool.getSize());

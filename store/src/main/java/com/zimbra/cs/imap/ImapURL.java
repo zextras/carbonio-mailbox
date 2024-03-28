@@ -11,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import java.nio.charset.StandardCharsets;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -159,10 +160,8 @@ final class ImapURL {
                     if (!req.eof()) {
                         throw new ImapUrlException(tag, url, "extra chars at end of IMAP URL SECTION");
                     }
-                } catch (ImapParseException ipe) {
+                } catch (ImapParseException | IOException ipe) {
                     throw new ImapUrlException(tag, url, ipe.getMessage());
-                } catch (IOException ioe) {
-                    throw new ImapUrlException(tag, url, ioe.getMessage());
                 }
             }
         }
@@ -193,11 +192,7 @@ final class ImapURL {
     }
 
     private String urlDecode(String raw) {
-        try {
-            return URLDecoder.decode(raw, "utf-8");
-        } catch (UnsupportedEncodingException uee) {
-            return raw;
-        }
+      return URLDecoder.decode(raw, StandardCharsets.UTF_8);
     }
 
     public InputStreamWithSize getContentAsStream(ImapHandler handler, ImapCredentials creds, String tag)
@@ -267,14 +262,9 @@ final class ImapURL {
 
     @Override
     public String toString() {
-        try {
-            return "imap://" + URLEncoder.encode(mUsername, "utf-8") + '@' + mHostname + (mPort > 0 ? ":" + mPort : "") +
-                   '/' + URLEncoder.encode(mPath.asImapPath(), "utf-8") + "/;UID=" + mUid +
-                   (mPart != null ? "/;SECTION=" + URLEncoder.encode(mPart.getSectionSpec(), "utf-8") : "");
-        } catch (UnsupportedEncodingException e) {
-            return "imap://" + mUsername + '@' + mHostname + (mPort > 0 ? ":" + mPort : "") +
-                   '/' + mPath + "/;UID=" + mUid + (mPart != null ? "/;SECTION=" + mPart.getSectionSpec() : "");
-        }
+      return "imap://" + URLEncoder.encode(mUsername, StandardCharsets.UTF_8) + '@' + mHostname + (mPort > 0 ? ":" + mPort : "") +
+             '/' + URLEncoder.encode(mPath.asImapPath(), StandardCharsets.UTF_8) + "/;UID=" + mUid +
+             (mPart != null ? "/;SECTION=" + URLEncoder.encode(mPart.getSectionSpec(), StandardCharsets.UTF_8) : "");
     }
 
     @Override

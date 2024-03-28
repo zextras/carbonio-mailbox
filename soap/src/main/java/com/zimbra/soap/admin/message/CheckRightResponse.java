@@ -36,7 +36,7 @@ public class CheckRightResponse {
      */
     @SuppressWarnings("unused")
     private CheckRightResponse() {
-        this(false, (RightViaInfo) null);
+        this(false, null);
     }
 
     public CheckRightResponse(boolean allow, RightViaInfo via) {

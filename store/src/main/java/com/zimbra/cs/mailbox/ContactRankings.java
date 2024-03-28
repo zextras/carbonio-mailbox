@@ -36,8 +36,8 @@ public class ContactRankings {
     private HashMap<String,ContactEntry> mEntries;
     public ContactRankings(String accountId) throws ServiceException {
         mAccountId = accountId;
-        mEntryMap = new TreeMap<String,TreeSet<ContactEntry>>();
-        mEntries = new HashMap<String,ContactEntry>();
+        mEntryMap = new TreeMap<>();
+        mEntries = new HashMap<>();
         mTableSize = Provisioning.getInstance().get(Key.AccountBy.id, mAccountId).getIntAttr(Provisioning.A_zimbraContactRankingTableSize, 40);
         if (!LC.contact_ranking_enabled.booleanValue())
             return;
@@ -75,7 +75,7 @@ public class ContactRankings {
     }
 
     public static void increment(String accountId, Address[] addrs) throws ServiceException {
-        HashSet<Address> addrSet = new HashSet<Address>();
+        HashSet<Address> addrSet = new HashSet<>();
         Collections.addAll(addrSet, addrs);
         increment(accountId, addrSet);
     }
@@ -124,7 +124,7 @@ public class ContactRankings {
         return 0;
     }
     public synchronized Collection<ContactEntry> search(String str) {
-        TreeSet<ContactEntry> entries = new TreeSet<ContactEntry>();
+        TreeSet<ContactEntry> entries = new TreeSet<>();
         int len = str.length();
         for (String k : mEntryMap.tailMap(str).keySet()) {
             if (k.length() >= len &&
@@ -136,7 +136,7 @@ public class ContactRankings {
         return entries;
     }
     private synchronized TreeSet<ContactEntry> getSortedSet() {
-        return new TreeSet<ContactEntry>(mEntries.values());
+        return new TreeSet<>(mEntries.values());
     }
     private synchronized void readFromDatabase() throws ServiceException {
         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(mAccountId);
@@ -153,7 +153,7 @@ public class ContactRankings {
                 Long num = (Long) m.get(KEY_RANKING);
                 contact.mRanking = num.intValue();
                 num = (Long) m.get(KEY_LAST_ACCESSED);
-                contact.mLastAccessed = num.longValue();
+                contact.mLastAccessed = num;
                 contact.setName((String) m.get(KEY_NAME));
                 contact.mFolderId = ContactAutoComplete.FOLDER_ID_UNKNOWN;
                 add(contact);
@@ -178,7 +178,7 @@ public class ContactRankings {
     private synchronized TreeSet<ContactEntry> get(String str) {
         TreeSet<ContactEntry> val = mEntryMap.get(str.toLowerCase());
         if (val == null) {
-            val = new TreeSet<ContactEntry>();
+            val = new TreeSet<>();
             mEntryMap.put(str.toLowerCase(), val);
         }
         return val;

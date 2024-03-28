@@ -58,20 +58,25 @@ public class BlobConsistencyChecker {
 
     public static class Results {
         public int mboxId;
-        public Multimap<Integer, BlobInfo> missingBlobs = TreeMultimap.create(new IntegerComparator(), new BlobInfoComparator());
-        public Multimap<Integer, BlobInfo> incorrectSize = TreeMultimap.create(new IntegerComparator(), new BlobInfoComparator());
-        public Multimap<Integer, BlobInfo> unexpectedBlobs = TreeMultimap.create(new IntegerComparator(), new BlobInfoComparator());
-        public Multimap<Integer, BlobInfo> incorrectModContent = TreeMultimap.create(new IntegerComparator(), new BlobInfoComparator());
-        public Multimap<Integer, BlobInfo> usedBlobs = TreeMultimap.create(new IntegerComparator(), new BlobInfoComparator());
+        public Multimap<Integer, BlobInfo> missingBlobs = TreeMultimap.create(new IntegerComparator(),
+            new BlobInfoComparator());
+        public Multimap<Integer, BlobInfo> incorrectSize = TreeMultimap.create(new IntegerComparator(),
+            new BlobInfoComparator());
+        public Multimap<Integer, BlobInfo> unexpectedBlobs = TreeMultimap.create(new IntegerComparator(),
+            new BlobInfoComparator());
+        public Multimap<Integer, BlobInfo> incorrectModContent = TreeMultimap.create(new IntegerComparator(),
+            new BlobInfoComparator());
+        public Multimap<Integer, BlobInfo> usedBlobs = TreeMultimap.create(new IntegerComparator(),
+            new BlobInfoComparator());
 
-        class IntegerComparator implements Comparator<Integer> {
+        static class IntegerComparator implements Comparator<Integer> {
             @Override
             public int compare(Integer o1, Integer o2) {
                 return o1.compareTo(o2);
             }
         }
 
-        class BlobInfoComparator implements Comparator<BlobInfo> {
+        static class BlobInfoComparator implements Comparator<BlobInfo> {
             @Override
             public int compare(BlobInfo o1, BlobInfo o2) {
                 return o1.path.compareTo(o2.path);
@@ -358,8 +363,8 @@ public class BlobConsistencyChecker {
         Iterator<Integer> keyIterator = results.missingBlobs.keySet().iterator();
         while (keyIterator.hasNext()) {
             int itemId = keyIterator.next();
-            List<BlobInfo> missingBlobs = new ArrayList<BlobInfo>(results.missingBlobs.get(itemId));
-            List<BlobInfo> unexpectedBlobs = new ArrayList<BlobInfo>(results.unexpectedBlobs.get(itemId));
+            List<BlobInfo> missingBlobs = new ArrayList<>(results.missingBlobs.get(itemId));
+            List<BlobInfo> unexpectedBlobs = new ArrayList<>(results.unexpectedBlobs.get(itemId));
             if (missingBlobs.size() == 1 && unexpectedBlobs.size() == 1 && revisions.get(itemId).size() == 0) {
                 BlobInfo incorrectRevision = new BlobInfo();
                 BlobInfo missingBlob = missingBlobs.get(0);

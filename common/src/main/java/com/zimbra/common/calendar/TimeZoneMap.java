@@ -5,6 +5,7 @@
 
 package com.zimbra.common.calendar;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -16,16 +17,16 @@ import com.zimbra.common.util.ZimbraLog;
 
 public class TimeZoneMap implements Cloneable {
 
-    static HashMap<ZWeekDay, Integer> sDayWeekDayMap;
+    static Map<ZWeekDay, Integer> sDayWeekDayMap;
     static {
-        sDayWeekDayMap = new HashMap<ZWeekDay, Integer>();
-        sDayWeekDayMap.put(ZWeekDay.SU, Integer.valueOf(java.util.Calendar.SUNDAY));
-        sDayWeekDayMap.put(ZWeekDay.MO, Integer.valueOf(java.util.Calendar.MONDAY));
-        sDayWeekDayMap.put(ZWeekDay.TU, Integer.valueOf(java.util.Calendar.TUESDAY));
-        sDayWeekDayMap.put(ZWeekDay.WE, Integer.valueOf(java.util.Calendar.WEDNESDAY));
-        sDayWeekDayMap.put(ZWeekDay.TH, Integer.valueOf(java.util.Calendar.THURSDAY));
-        sDayWeekDayMap.put(ZWeekDay.FR, Integer.valueOf(java.util.Calendar.FRIDAY));
-        sDayWeekDayMap.put(ZWeekDay.SA, Integer.valueOf(java.util.Calendar.SATURDAY));
+        sDayWeekDayMap = new EnumMap<>(ZWeekDay.class);
+        sDayWeekDayMap.put(ZWeekDay.SU, java.util.Calendar.SUNDAY);
+        sDayWeekDayMap.put(ZWeekDay.MO, java.util.Calendar.MONDAY);
+        sDayWeekDayMap.put(ZWeekDay.TU, java.util.Calendar.TUESDAY);
+        sDayWeekDayMap.put(ZWeekDay.WE, java.util.Calendar.WEDNESDAY);
+        sDayWeekDayMap.put(ZWeekDay.TH, java.util.Calendar.THURSDAY);
+        sDayWeekDayMap.put(ZWeekDay.FR, java.util.Calendar.FRIDAY);
+        sDayWeekDayMap.put(ZWeekDay.SA, java.util.Calendar.SATURDAY);
     }
 
     private final Map<String /* real TZID */, ICalTimeZone> mTzMap;
@@ -38,8 +39,8 @@ public class TimeZoneMap implements Cloneable {
      * @param localTZ local time zone of user account
      */
     public TimeZoneMap(ICalTimeZone localTZ) {
-        mTzMap = new HashMap<String, ICalTimeZone>();
-        mAliasMap = new HashMap<String, String>();
+        mTzMap = new HashMap<>();
+        mAliasMap = new HashMap<>();
         mLocalTZ = localTZ;
     }
 
@@ -90,21 +91,20 @@ public class TimeZoneMap implements Cloneable {
     /**
      * Merge the other timezone map into this one
      *
-     * @param other
+     * @param other the other timezone map
      */
     public void add(TimeZoneMap other) {
         mAliasMap.putAll(other.mAliasMap);
-        for (Iterator<Entry<String, ICalTimeZone>> it = other.mTzMap.entrySet().iterator(); it.hasNext(); ) {
-            Entry<String, ICalTimeZone> entry = it.next();
-            ICalTimeZone zone = entry.getValue();
-            if (!mTzMap.containsKey(zone.getID()))
-                add(zone);
-        }
+      for (Entry<String, ICalTimeZone> entry : other.mTzMap.entrySet()) {
+        ICalTimeZone zone = entry.getValue();
+        if (!mTzMap.containsKey(zone.getID()))
+          add(zone);
+      }
     }
 
     public void add(ICalTimeZone tz) {
         String tzid = tz.getID();
-        String canonTzid = null;
+        String canonTzid;
         if (!DebugConfig.disableCalendarTZMatchByID) {
             canonTzid = TZIDMapper.canonicalize(tzid);
             ICalTimeZone canonTz = WellKnownTimeZones.getTimeZoneById(canonTzid);
@@ -140,7 +140,7 @@ public class TimeZoneMap implements Cloneable {
 
     public ICalTimeZone lookupAndAdd(String tzId) {
         tzId = sanitizeTZID(tzId);
-        if (tzId.equals(""))
+        if ("".equals(tzId))
             return null;
 
         if (!DebugConfig.disableCalendarTZMatchByID)

@@ -52,11 +52,11 @@ public class CountObjectsRequest {
   /** no-argument constructor wanted by JAXB */
   @SuppressWarnings("unused")
   public CountObjectsRequest() {
-    this((CountObjectsType) null, (DomainSelector) null);
+    this(null, null);
   }
 
   public CountObjectsRequest(CountObjectsType type) {
-    this(type, (DomainSelector) null);
+    this(type, null);
   }
 
   public CountObjectsRequest(CountObjectsType type, DomainSelector domain) {

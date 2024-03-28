@@ -14,7 +14,7 @@ import java.io.IOException;
  * IMAP server capabilities
  */
 public class ImapCapabilities {
-    private final Set<Atom> capabilities = new HashSet<Atom>();
+    private final Set<Atom> capabilities = new HashSet<>();
 
     public static final String IMAP4REV1 = "IMAP4rev1";
     public static final String STARTTLS = "STARTTLS";

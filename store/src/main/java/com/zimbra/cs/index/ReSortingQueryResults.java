@@ -9,7 +9,6 @@ import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.service.ServiceException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -86,11 +85,7 @@ public final class ReSortingQueryResults implements ZimbraQueryResults {
   @Override
   public ZimbraHit skipToHit(int hitNo) throws ServiceException {
     List<ZimbraHit> buffer = getHitBuffer();
-    if (hitNo >= buffer.size()) {
-      iterOffset = buffer.size();
-    } else {
-      iterOffset = hitNo;
-    }
+    iterOffset = Math.min(hitNo, buffer.size());
     return getNext();
   }
 
@@ -132,7 +127,7 @@ public final class ReSortingQueryResults implements ZimbraQueryResults {
 
   private void bufferAllHits() throws ServiceException {
     assert (mHitBuffer == null);
-    mHitBuffer = new ArrayList<ZimbraHit>();
+    mHitBuffer = new ArrayList<>();
 
     // get the proper comparator
     Comparator<ZimbraHit> comp;
@@ -146,23 +141,9 @@ public final class ReSortingQueryResults implements ZimbraQueryResults {
               }
             };
         break;
-      case READ_ASC:
-        comp =
-            new Comparator<ZimbraHit>() {
-              @Override
-              public int compare(ZimbraHit lhs, ZimbraHit rhs) {
-                return ZimbraHit.compareByReadFlag(true, lhs, rhs);
-              }
-            };
-        break;
       case READ_DESC:
         comp =
-            new Comparator<ZimbraHit>() {
-              @Override
-              public int compare(ZimbraHit lhs, ZimbraHit rhs) {
-                return ZimbraHit.compareByReadFlag(false, lhs, rhs);
-              }
-            };
+            (lhs, rhs) -> ZimbraHit.compareByReadFlag(false, lhs, rhs);
         break;
       case NAME_LOCALIZED_ASC:
       case NAME_LOCALIZED_DESC:
@@ -244,7 +225,7 @@ public final class ReSortingQueryResults implements ZimbraQueryResults {
     }
 
     if (!results.isPreSorted()) {
-      Collections.sort(mHitBuffer, comp);
+      mHitBuffer.sort(comp);
     }
   }
 }

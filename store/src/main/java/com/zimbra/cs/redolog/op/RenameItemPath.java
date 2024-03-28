@@ -22,8 +22,8 @@ public class RenameItemPath extends RedoableOp {
     protected int mId;
     protected MailItem.Type type;
     protected String mPath;
-    protected int mParentIds[];
-    protected String mParentUuids[];
+    protected int[] mParentIds;
+    protected String[] mParentUuids;
 
     public RenameItemPath() {
         super(MailboxOperation.RenameItemPath);
@@ -47,7 +47,7 @@ public class RenameItemPath extends RedoableOp {
         return mParentUuids;
     }
 
-    public void setParentIdsAndUuids(int parentIds[], String parentUuids[]) {
+    public void setParentIdsAndUuids(int[] parentIds, String[] parentUuids) {
         mParentIds = parentIds;
         mParentUuids = parentUuids;
     }

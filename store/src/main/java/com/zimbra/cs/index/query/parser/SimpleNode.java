@@ -39,7 +39,7 @@ class SimpleNode implements Node {
     if (children == null) {
       children = new Node[i + 1];
     } else if (i >= children.length) {
-      Node c[] = new Node[i + 1];
+      Node[] c = new Node[i + 1];
       System.arraycopy(children, 0, c, 0, children.length);
       children = c;
     }
@@ -69,7 +69,7 @@ class SimpleNode implements Node {
      you need to do. */
 
   public String toString() { return ParserTreeConstants.jjtNodeName[id]; }
-  public String toString(String prefix) { return prefix + toString(); }
+  public String toString(String prefix) { return prefix + this; }
 
   /* Override this method if you want to customize how the node dumps
      out its children. */
@@ -77,8 +77,8 @@ class SimpleNode implements Node {
   public void dump(String prefix) {
     System.out.println(toString(prefix));
     if (children != null) {
-      for (int i = 0; i < children.length; ++i) {
-        SimpleNode n = (SimpleNode)children[i];
+      for (Node child : children) {
+        SimpleNode n = (SimpleNode) child;
         if (n != null) {
           n.dump(prefix + " ");
         }

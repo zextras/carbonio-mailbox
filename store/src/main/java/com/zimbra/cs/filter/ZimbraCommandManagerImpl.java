@@ -86,9 +86,7 @@ public class ZimbraCommandManagerImpl implements CommandManager {
     public ExecutableCommand getCommand(String name) throws LookupException {
         try {
             return (ExecutableCommand) lookup(name).newInstance();
-        } catch (InstantiationException e) {
-            throw new LookupException(e.getMessage());
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new LookupException(e.getMessage());
         }
     }
@@ -136,7 +134,7 @@ public class ZimbraCommandManagerImpl implements CommandManager {
      */
     @Override
     public List<String> getExtensions() {
-        List<String> extensions = new ArrayList<String>(classNameMap.size());
+        List<String> extensions = new ArrayList<>(classNameMap.size());
         for (String key : classNameMap.keySet())
         {
             if (!isImplicitlyDeclared(key))

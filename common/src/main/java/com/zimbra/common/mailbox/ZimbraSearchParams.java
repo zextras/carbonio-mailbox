@@ -9,20 +9,20 @@ import java.util.Set;
 import java.util.TimeZone;
 
 public interface ZimbraSearchParams {
-    public boolean getIncludeTagDeleted();
-    public void setIncludeTagDeleted(boolean value);
-    public boolean getPrefetch();
-    public void setPrefetch(boolean value);
-    public String getQueryString();
-    public void setQueryString(String value);
-    public Set<MailItemType> getMailItemTypes();
-    public ZimbraSearchParams setMailItemTypes(Set<MailItemType> values);
-    public ZimbraSortBy getZimbraSortBy();
-    public ZimbraSearchParams setZimbraSortBy(ZimbraSortBy value);
-    public int getLimit();
-    public void setLimit(int value);
-    public ZimbraFetchMode getZimbraFetchMode();
-    public ZimbraSearchParams setZimbraFetchMode(ZimbraFetchMode value);
-    public TimeZone getTimeZone();
-    public void setTimeZone(TimeZone value);
+    boolean getIncludeTagDeleted();
+    void setIncludeTagDeleted(boolean value);
+    boolean getPrefetch();
+    void setPrefetch(boolean value);
+    String getQueryString();
+    void setQueryString(String value);
+    Set<MailItemType> getMailItemTypes();
+    ZimbraSearchParams setMailItemTypes(Set<MailItemType> values);
+    ZimbraSortBy getZimbraSortBy();
+    ZimbraSearchParams setZimbraSortBy(ZimbraSortBy value);
+    int getLimit();
+    void setLimit(int value);
+    ZimbraFetchMode getZimbraFetchMode();
+    ZimbraSearchParams setZimbraFetchMode(ZimbraFetchMode value);
+    TimeZone getTimeZone();
+    void setTimeZone(TimeZone value);
 }

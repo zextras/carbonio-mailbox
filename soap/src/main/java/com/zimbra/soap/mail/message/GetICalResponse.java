@@ -29,7 +29,7 @@ public class GetICalResponse {
      */
     @SuppressWarnings("unused")
     private GetICalResponse() {
-        this((ICalContent) null);
+        this(null);
     }
 
     public GetICalResponse(ICalContent content) {

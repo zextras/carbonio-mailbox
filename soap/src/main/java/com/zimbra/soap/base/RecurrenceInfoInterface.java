@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface RecurrenceInfoInterface {
-    public void setRuleInterfaces(Iterable<RecurRuleBaseInterface> rules);
-    public void addRuleInterface(RecurRuleBaseInterface rule);
-    public List<RecurRuleBaseInterface> getRuleInterfaces();
+    void setRuleInterfaces(Iterable<RecurRuleBaseInterface> rules);
+    void addRuleInterface(RecurRuleBaseInterface rule);
+    List<RecurRuleBaseInterface> getRuleInterfaces();
 }

@@ -30,7 +30,7 @@ public class ByWeekNoRule implements ByWeekNoRuleInterface {
      */
     @SuppressWarnings("unused")
     private ByWeekNoRule() {
-        this((String) null);
+        this(null);
     }
 
     public ByWeekNoRule(String list) {

@@ -61,32 +61,32 @@ public class VCard {
 
 
     private static final Set<String> PROPERTY_NAMES =
-            new HashSet<String>(Arrays.asList(
-                    "BEGIN",
-                    "FN",
-                    "N",
-                    "NICKNAME",
-                    "PHOTO",
-                    "KEY",
-                    "BDAY",
-                    "ADR",
-                    "TEL",
-                    "EMAIL",
-                    "URL",
-                    "ORG",
-                    "TITLE",
-                    "NOTE",
-                    "AGENT",
-                    "END",
-                    "UID",
-                    "X-ZIMBRA-IMADDRESS1",
-                    "X-ZIMBRA-IMADDRESS2",
-                    "X-ZIMBRA-IMADDRESS3",
-                    "X-ZIMBRA-ANNIVERSARY",
-                    "X-ZIMBRA-MAIDENNAME"
-    ));
+        new HashSet<>(Arrays.asList(
+            "BEGIN",
+            "FN",
+            "N",
+            "NICKNAME",
+            "PHOTO",
+            "KEY",
+            "BDAY",
+            "ADR",
+            "TEL",
+            "EMAIL",
+            "URL",
+            "ORG",
+            "TITLE",
+            "NOTE",
+            "AGENT",
+            "END",
+            "UID",
+            "X-ZIMBRA-IMADDRESS1",
+            "X-ZIMBRA-IMADDRESS2",
+            "X-ZIMBRA-IMADDRESS3",
+            "X-ZIMBRA-ANNIVERSARY",
+            "X-ZIMBRA-MAIDENNAME"
+        ));
 
-    static final Map<String, String> PARAM_ABBREVIATIONS = new HashMap<String, String>();
+    static final Map<String, String> PARAM_ABBREVIATIONS = new HashMap<>();
         static {
             PARAM_ABBREVIATIONS.put("BASE64", "ENCODING=B");
             PARAM_ABBREVIATIONS.put("QUOTED-PRINTABLE", "ENCODING=QUOTED-PRINTABLE");
@@ -103,7 +103,7 @@ public class VCard {
     private static class VCardProperty {
         private String group;
         private String name;
-        private final Set<String> params = new HashSet<String>();
+        private final Set<String> params = new HashSet<>();
         private String charset;
         private Encoding encoding = Encoding.NONE;
         private String value;
@@ -191,7 +191,7 @@ public class VCard {
                             encoding = Encoding.B;
                         } else if (paramUCase.equals("ENCODING=QUOTED-PRINTABLE")) {
                             encoding = Encoding.Q;
-                        } else if (pname != null && pname.equals("CHARSET")) {
+                        } else if ("CHARSET".equals(pname)) {
                             charset = pval;
                         } else {
                             params.add(param);
@@ -238,11 +238,11 @@ public class VCard {
     }
 
     public static List<VCard> parseVCard(String vcard) throws ServiceException {
-        List<VCard> cards = new ArrayList<VCard>();
+        List<VCard> cards = new ArrayList<>();
 
-        Map<String, String> fields = new HashMap<String, String>();
+        Map<String, String> fields = new HashMap<>();
         ListMultimap<String, VCardParamsAndValue> xprops = ArrayListMultimap.create();
-        List<Attachment> attachments = new ArrayList<Attachment>();
+        List<Attachment> attachments = new ArrayList<>();
 
         VCardProperty vcprop = new VCardProperty();
         int depth = 0;
@@ -261,7 +261,7 @@ public class VCard {
                 while (pos < limit && vcard.charAt(pos) != '\r' && vcard.charAt(pos) != '\n') {
                     pos++;
                 }
-                line.append(vcard.substring(start, pos));
+                line.append(vcard, start, pos);
                 if (pos < limit) {
                     if (pos < limit && vcard.charAt(pos) == '\r')  pos++;
                     if (pos < limit && vcard.charAt(pos) == '\n')  pos++;
@@ -305,9 +305,9 @@ public class VCard {
             } else if (name.equals("BEGIN")) {
                 if (++depth == 1) {
                     // starting a top-level vCard; reset state
-                    fields = new HashMap<String, String>();
+                    fields = new HashMap<>();
                     xprops = ArrayListMultimap.create();
-                    attachments = new ArrayList<Attachment>();
+                    attachments = new ArrayList<>();
                     cardstart = linestart;
                     uid = null;
                 }
@@ -403,7 +403,7 @@ public class VCard {
             fields.remove(firstKey);
         }
         for (int suffix = firstSuffix; suffix < 20; suffix++) {
-            String trialKey = new StringBuilder(firstKey).append(String.valueOf(suffix)).toString();
+            String trialKey = new StringBuilder(firstKey).append(suffix).toString();
             if (fields.remove(trialKey) == null) {
                 break;
             }
@@ -493,7 +493,7 @@ public class VCard {
         } else {
             if (customPrefix == null) customPrefix = firstKey;
             for (int suffix = firstSuffix;suffix < 20 ;suffix++) {
-                String trialKey = new StringBuilder(customPrefix).append(String.valueOf(suffix)).toString();
+                String trialKey = new StringBuilder(customPrefix).append(suffix).toString();
                 if (!fields.containsKey(trialKey)) {
                     fields.put(trialKey, value);
                     break;
@@ -838,7 +838,7 @@ public class VCard {
                         writer.write(":");
                         writer.write(vcfEncodedValue);
                         writer.write("\r\n");
-                        sb.append(sw.toString());
+                        sb.append(sw);
                     } catch (IOException e) {
                          ZimbraLog.misc.debug("Problem with adding property '%s' to VCARD - ignoring", key, e);
                     }
@@ -883,7 +883,7 @@ public class VCard {
             sb.append(name).append(':').append(vcfEncode(value)).append("\r\n");
         }
         for (int suffix = firstSuffix; suffix < 20 ;suffix++) {
-            String key = new StringBuilder(firstKey).append(String.valueOf(suffix)).toString();
+            String key = new StringBuilder(firstKey).append(suffix).toString();
             value = fields.get(key);
             if (value == null)
                 return;
@@ -908,15 +908,15 @@ public class VCard {
             sb.append("ADR;TYPE=").append(type).append(':').append(addr).append("\r\n");
         }
         for (int suffix = firstSuffix; suffix < 20 ;suffix++) {
-            String key = new StringBuilder(streetKey).append(String.valueOf(suffix)).toString();
+            String key = new StringBuilder(streetKey).append(suffix).toString();
             street = fields.get(key);
-            key = new StringBuilder(cityKey).append(String.valueOf(suffix)).toString();
+            key = new StringBuilder(cityKey).append(suffix).toString();
             city = fields.get(key);
-            key = new StringBuilder(stateKey).append(String.valueOf(suffix)).toString();
+            key = new StringBuilder(stateKey).append(suffix).toString();
             state = fields.get(key);
-            key = new StringBuilder(zipKey).append(String.valueOf(suffix)).toString();
+            key = new StringBuilder(zipKey).append(suffix).toString();
             zip = fields.get(key);
-            key = new StringBuilder(countryKey).append(String.valueOf(suffix)).toString();
+            key = new StringBuilder(countryKey).append(suffix).toString();
             country = fields.get(key);
             if (street == null && city == null && state == null && zip == null && country == null)
                 return;
@@ -939,7 +939,7 @@ public class VCard {
             sb.append("TEL;TYPE=").append(type).append(':').append(phone).append("\r\n");
         }
         for (int suffix = firstSuffix; suffix < 20 ;suffix++) {
-            String key = new StringBuilder(firstKey).append(String.valueOf(suffix)).toString();
+            String key = new StringBuilder(firstKey).append(suffix).toString();
             phone = fields.get(key);
             if (phone == null)
                 return;
@@ -985,7 +985,7 @@ public class VCard {
         return formatted;
     }
 
-    public static void main(String args[]) throws ServiceException {
+    public static void main(String[] args) throws ServiceException {
         // Test data moved to VCardTest
     }
 }

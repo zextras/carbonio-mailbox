@@ -12,8 +12,8 @@ import com.zimbra.common.calendar.Geo;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface GeoInfoInterface {
-    public GeoInfoInterface create(String latitude, String longitude);
-    public GeoInfoInterface create(Geo geo);
-    public String getLatitude();
-    public String getLongitude();
+    GeoInfoInterface create(String latitude, String longitude);
+    GeoInfoInterface create(Geo geo);
+    String getLatitude();
+    String getLongitude();
 }

@@ -9,6 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Set;
@@ -17,6 +18,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
 
+import javax.security.cert.CertificateEncodingException;
 import org.bouncycastle.est.jcajce.JsseDefaultHostnameAuthorizer;
 
 import com.google.common.collect.Sets;
@@ -55,11 +57,9 @@ public class CustomHostnameVerifier implements HostnameVerifier {
             ByteArrayInputStream bis = new ByteArrayInputStream(cert.getEncoded());
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
             return (java.security.cert.X509Certificate) cf.generateCertificate(bis);
-        } catch (java.security.cert.CertificateEncodingException e) {
-        } catch (javax.security.cert.CertificateEncodingException e) {
-        } catch (java.security.cert.CertificateException e) {
+        } catch (CertificateException | CertificateEncodingException e) {
         }
-        return null;
+      return null;
     }
 
     @Override

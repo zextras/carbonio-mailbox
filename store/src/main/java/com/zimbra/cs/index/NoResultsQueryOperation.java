@@ -117,7 +117,7 @@ public final class NoResultsQueryOperation extends QueryOperation {
 
     @Override
     public List<QueryInfo> getResultInfo() {
-        return new ArrayList<QueryInfo>();
+        return new ArrayList<>();
     }
 
     @Override

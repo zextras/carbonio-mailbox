@@ -42,9 +42,9 @@ public class ZContactByPhoneCache extends ZEventHandler {
 	private Map<String,ZContact> mContacts;
 
     public ZContactByPhoneCache() {
-        mCache = new HashMap<String, ContactPhone>();
+        mCache = new HashMap<>();
         mCleared = true;
-		mContacts = new HashMap<String, ZContact>();
+		mContacts = new HashMap<>();
     }
 
     private void addPhoneKey(String field, ZContact contact) {

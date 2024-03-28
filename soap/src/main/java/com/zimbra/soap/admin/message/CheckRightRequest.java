@@ -97,8 +97,8 @@ public class CheckRightRequest extends AdminAttrsImpl {
      */
     @SuppressWarnings("unused")
     private CheckRightRequest() {
-        this((EffectiveRightsTargetSelector) null,
-                (GranteeSelector) null, (CheckedRight) null);
+        this(null,
+            null, null);
     }
 
     public CheckRightRequest(EffectiveRightsTargetSelector target,

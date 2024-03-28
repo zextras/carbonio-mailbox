@@ -25,7 +25,7 @@ public class ModifyWhiteBlackList extends AccountDocumentHandler {
         if (!canModifyOptions(zsc, account))
             throw ServiceException.PERM_DENIED("can not modify options");
 
-        HashMap<String, Object> addrs = new HashMap<String, Object>();
+        HashMap<String, Object> addrs = new HashMap<>();
         
         doList(request.getOptionalElement(AccountConstants.E_WHITE_LIST),
                Provisioning.A_amavisWhitelistSender,

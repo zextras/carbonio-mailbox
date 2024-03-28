@@ -50,7 +50,7 @@ public class DataSigner {
             pkcs12Store.load(targetStream, expPass);
             String alias = null;
             for (Enumeration<String> en = pkcs12Store.aliases(); en.hasMoreElements();) {
-                alias = (String) en.nextElement();
+                alias = en.nextElement();
             }
             X509Certificate cert = (X509Certificate) pkcs12Store.getCertificate(alias);
             PrivateKey privKey = (PrivateKey) pkcs12Store.getKey(alias, expPass);
@@ -63,7 +63,7 @@ public class DataSigner {
             throws CertificateEncodingException, OperatorCreationException, CMSException, IOException {
         byte[] signedData = null;
         CMSTypedData cmsData = new CMSProcessableByteArray(data);
-        List<X509Certificate> certList = new ArrayList<X509Certificate>();
+        List<X509Certificate> certList = new ArrayList<>();
         certList.add(signingCertificate);
 
         Store certs = new JcaCertStore(certList);

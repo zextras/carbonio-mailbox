@@ -50,7 +50,7 @@ import com.zimbra.common.mime.InternetAddress;
  * @author ysasaki
  */
 public final class RFC822AddressTokenStream extends TokenStream {
-    private final List<String> tokens = new LinkedList<String>();
+    private final List<String> tokens = new LinkedList<>();
     private Iterator<String> itr;
     private final CharTermAttribute termAttr = addAttribute(CharTermAttribute.class);
 
@@ -67,7 +67,7 @@ public final class RFC822AddressTokenStream extends TokenStream {
         }
 
         // casually parse addresses, then tokenize them
-        Set<String> emails = new HashSet<String>();
+        Set<String> emails = new HashSet<>();
         Tokenizer tokenizer = new AddrCharTokenizer(new StringReader(decoded));
         CharTermAttribute term = tokenizer.addAttribute(CharTermAttribute.class);
         try {

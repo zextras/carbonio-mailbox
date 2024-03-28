@@ -52,7 +52,7 @@ public class ChildAccount extends AttributeCallback {
         if (allChildrenMod != null && allChildrenMod.deleting()) {
             attrsToModify.put(Provisioning.A_zimbraPrefChildVisibleAccount, "");
         } else {
-            Set<String> vidsToRemove = new HashSet<String>();
+            Set<String> vidsToRemove = new HashSet<>();
             for (String vid : visibleChildren) {
                 if (!allChildren.contains(vid)) {
                     /*

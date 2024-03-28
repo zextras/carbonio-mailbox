@@ -58,15 +58,15 @@ public class FileInto extends org.apache.jsieve.commands.optional.FileInto {
 	    String copyArg;
 	    if(args.size() == 1) {
 	    	// folder list argument
-	    	argument = (Argument)args.get(0);
+	    	argument = args.get(0);
 	    } else {
-	    	copyArg = ((Argument)args.get(0)).getValue().toString();
+	    	copyArg = args.get(0).getValue().toString();
 	    	// if arguments size is 2; first argument should be :copy
             if (!Copy.COPY.equalsIgnoreCase(copyArg)) {
 	  	      throw new SyntaxException("Error in sieve fileinto. Expecting argument :copy");
 	  	    } 
 	    	// folder list argument
-	    	argument = (Argument)args.get(1);
+	    	argument = args.get(1);
 	    }
 	    // folder list argument should be a String list
 	    if (!(argument instanceof StringListArgument)) {

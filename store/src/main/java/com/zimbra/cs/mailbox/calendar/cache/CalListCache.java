@@ -35,7 +35,7 @@ public class CalListCache {
   CalListCache() {
     ZimbraMemcachedClient memcachedClient = MemcachedConnector.getClient();
     CalListSerializer serializer = new CalListSerializer();
-    mMemcachedLookup = new MemcachedMap<AccountKey, CalList>(memcachedClient, serializer);
+    mMemcachedLookup = new MemcachedMap<>(memcachedClient, serializer);
   }
 
   private static class CalListSerializer implements MemcachedSerializer<CalList> {
@@ -64,7 +64,7 @@ public class CalListCache {
       return null;
     }
     List<Folder> calFolders = mbox.getCalendarFolders(null, SortBy.NONE);
-    Set<Integer> idset = new HashSet<Integer>(calFolders.size());
+    Set<Integer> idset = new HashSet<>(calFolders.size());
     idset.add(Mailbox.ID_FOLDER_INBOX); // Inbox is always included for scheduling support.
     for (Folder calFolder : calFolders) {
       idset.add(calFolder.getId());
@@ -80,9 +80,9 @@ public class CalListCache {
   }
 
   private static class ChangedFolders {
-    public Set<Integer> created = new HashSet<Integer>();
-    public Set<Integer> modified = new HashSet<Integer>();
-    public Set<Integer> deleted = new HashSet<Integer>();
+    public Set<Integer> created = new HashSet<>();
+    public Set<Integer> modified = new HashSet<>();
+    public Set<Integer> deleted = new HashSet<>();
 
     public boolean isEmpty() {
       return created.isEmpty() && modified.isEmpty() && deleted.isEmpty();

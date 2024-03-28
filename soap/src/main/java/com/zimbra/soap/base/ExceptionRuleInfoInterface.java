@@ -10,8 +10,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface ExceptionRuleInfoInterface {
-    public void setAddInterface(RecurrenceInfoInterface add);
-    public void setExcludeInterface(RecurrenceInfoInterface exclude);
-    public RecurrenceInfoInterface getAddInterface();
-    public RecurrenceInfoInterface getExcludeInterface();
+    void setAddInterface(RecurrenceInfoInterface add);
+    void setExcludeInterface(RecurrenceInfoInterface exclude);
+    RecurrenceInfoInterface getAddInterface();
+    RecurrenceInfoInterface getExcludeInterface();
 }

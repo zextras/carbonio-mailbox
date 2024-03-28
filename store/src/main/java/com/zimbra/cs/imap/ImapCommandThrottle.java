@@ -86,7 +86,7 @@ public class ImapCommandThrottle {
         } catch (InterruptedException e) {
         }
         if (!locked) {
-            throw new ImapThrottledException("Unable to obtain command lock " + lock.toString() + " aborting operation");
+            throw new ImapThrottledException("Unable to obtain command lock " + lock + " aborting operation");
         } else {
             return lock;
         }

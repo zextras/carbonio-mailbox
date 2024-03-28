@@ -66,10 +66,10 @@ public class XMPPComponent extends NamedEntry implements Comparable {
         List<String> toRet = null;
         String[] features = this.getMultiAttr(Provisioning.A_zimbraXMPPComponentFeatures);
         if (features != null && features.length > 0) {
-            toRet = new ArrayList<String>(features.length);
+            toRet = new ArrayList<>(features.length);
           toRet.addAll(Arrays.asList(features));
         } else {
-            toRet = new ArrayList<String>();
+            toRet = new ArrayList<>();
         }
         return toRet;
     }

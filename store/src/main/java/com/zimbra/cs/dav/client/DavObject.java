@@ -18,7 +18,7 @@ import com.zimbra.cs.dav.DavElements;
 public class DavObject {
 	
 	public DavObject(Element objElem) {
-		mProps = new HashMap<Integer,Element>();
+		mProps = new HashMap<>();
 		if (!objElem.getQName().equals(DavElements.E_RESPONSE))
 			return;
 		Element href = objElem.element(DavElements.E_HREF);

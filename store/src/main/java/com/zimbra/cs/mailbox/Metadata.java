@@ -117,28 +117,27 @@ public final class Metadata {
 
     public Metadata() {
         associatedItemId = null;
-        map = new TreeMap<Object, Object>();
+        map = new TreeMap<>();
     }
 
     public Metadata(Map<?, ?> map) {
         associatedItemId = null;
-        this.map = new TreeMap<Object, Object>(map);
+        this.map = new TreeMap<>(map);
     }
 
     public Metadata(String encoded) throws MailServiceException {
-        this(encoded, (Integer) null);
+        this(encoded, null);
     }
 
     public Metadata(String encoded, Integer associatedItemId) throws MailServiceException {
         this.associatedItemId = associatedItemId;
         if (Strings.isNullOrEmpty(encoded)) {
-            map = new HashMap<Object, Object>();
+            map = new HashMap<>();
             return;
         }
         try {
             try {
-                map = (Map) BEncoding.decode(encoded);
-                return;
+                map = BEncoding.decode(encoded);
             } catch (BEncodingException be) {
                 // Bug 87718 in some instances, it appears that an encoded string is getting corrupted by being
                 // treated at some point as if the bytes were ISO-8859-1 instead of UTF-8.  Try again with this reversed.
@@ -147,7 +146,7 @@ public final class Metadata {
                 if (be.getCause() != null && be.getCause() instanceof NumberFormatException) {
                     String fixedUpEncoded = new String(encoded.getBytes(Charsets.ISO_8859_1), Charsets.UTF_8);
                     try {
-                        map = (Map) BEncoding.decode(fixedUpEncoded);
+                        map = BEncoding.decode(fixedUpEncoded);
                         return;
                     } catch (Exception e) {
                     }
@@ -191,18 +190,18 @@ public final class Metadata {
     }
 
     public Map<String, ?> asMap()  {
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = new HashMap<>();
         for (Map.Entry<Object, Object> entry : map.entrySet()) {
             Object key = entry.getKey();
             Object value = entry.getValue();
-            if (key == null || value == null) {
-                continue;
-            } else if (value instanceof Map) {
-                result.put(key.toString(), new Metadata((Map<?, ?>) value));
-            } else if (value instanceof List) {
-                result.put(key.toString(), new MetadataList((List<?>) value));
-            } else {
-                result.put(key.toString(), value);
+            if (key != null && value != null) {
+                if (value instanceof Map) {
+                    result.put(key.toString(), new Metadata((Map<?, ?>) value));
+                } else if (value instanceof List) {
+                    result.put(key.toString(), new MetadataList((List<?>) value));
+                } else {
+                    result.put(key.toString(), value);
+                }
             }
         }
         return result;
@@ -222,21 +221,21 @@ public final class Metadata {
 
     public Metadata put(String key, long value) {
         if (key != null) {
-            map.put(key, Long.valueOf(value));
+            map.put(key, value);
         }
         return this;
     }
 
     public Metadata put(String key, double value) {
         if (key != null) {
-            map.put(key, new Double(value));
+            map.put(key, value);
         }
         return this;
     }
 
     public Metadata put(String key, boolean value) {
         if (key != null) {
-            map.put(key, Boolean.valueOf(value));
+            map.put(key, value);
         }
         return this;
     }
@@ -377,7 +376,7 @@ public final class Metadata {
         } else if (object instanceof Long || object instanceof Integer || object instanceof Short || object instanceof Byte) {
             sb.append(object).append("\n");
         } else if (object != null) {
-            sb.append(object.toString()).append("\n");
+            sb.append(object).append("\n");
         }
         return sb;
     }

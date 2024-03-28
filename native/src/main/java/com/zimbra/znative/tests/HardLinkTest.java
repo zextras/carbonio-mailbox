@@ -16,9 +16,7 @@ public class HardLinkTest {
 		boolean passed = false;
 		try {
 			IO.link(a1, a2);
-		} catch (NullPointerException npe) {
-			passed = true;
-		} catch (IllegalArgumentException iae) {
+		} catch (NullPointerException | IllegalArgumentException npe) {
 			passed = true;
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
@@ -46,7 +44,7 @@ public class HardLinkTest {
 			System.out.println("ERROR: args for loop test are { loop count, oldpath, linkdir } ");
 			return;
 		}
-		var n = Integer.valueOf(args[0]).intValue();
+		var n = Integer.valueOf(args[0]);
 		String oldpath = args[1];
 		String outdir = args[2];
 		

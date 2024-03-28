@@ -29,7 +29,7 @@ import org.apache.curator.framework.recipes.locks.InterProcessSemaphoreMutex;
 public final class MailboxLock {
   private final ZLock zLock = DebugConfig.debugMailboxLock ? new DebugZLock() : new ZLock();
   private InterProcessSemaphoreMutex dLock = null;
-  private final Stack<Boolean> lockStack = new Stack<Boolean>();
+  private final Stack<Boolean> lockStack = new Stack<>();
   private Mailbox mbox;
 
   public MailboxLock(String id, Mailbox mbox) {
@@ -102,7 +102,7 @@ public final class MailboxLock {
     // they must not already own read lock
     // states - no lock, read lock only, write lock only
     if (assertReadLocks == null) {
-      assertReadLocks = new ThreadLocal<Boolean>();
+      assertReadLocks = new ThreadLocal<>();
     }
     if (zLock.getWriteHoldCount() == 0) {
       if (write) {

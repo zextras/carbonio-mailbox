@@ -27,7 +27,7 @@ import com.zimbra.cs.extension.ExtensionUtil;
  */
 public abstract class DomainNameMappingHandler {
     
-    private static Map<String, HandlerInfo> sHandlers = new ConcurrentHashMap<String,HandlerInfo>();
+    private static Map<String, HandlerInfo> sHandlers = new ConcurrentHashMap<>();
     private static Log sLog = LogFactory.getLog(DomainNameMappingHandler.class);
     
     
@@ -49,12 +49,10 @@ public abstract class DomainNameMappingHandler {
             DomainNameMappingHandler handler;
             try {
                 handler = mClass.newInstance();
-            } catch (InstantiationException e) {
-                handler = new UnknownDomainNameMappingHandler();
-            } catch (IllegalAccessException e) {
+            } catch (InstantiationException | IllegalAccessException e) {
                 handler = new UnknownDomainNameMappingHandler();
             }
-            return handler;
+          return handler;
         }
     }
     
@@ -122,7 +120,7 @@ public abstract class DomainNameMappingHandler {
             (Map<String, HandlerConfig>)domain.getCachedData(EntryCacheDataKey.DOMAIN_FOREIGN_NAME_HANDLERS.getKeyName());
         
         if (handlers == null) {
-            handlers = new HashMap<String, HandlerConfig>();
+            handlers = new HashMap<>();
             
             String[] handlersRaw = domain.getForeignNameHandler();
             for (String handlerRaw : handlersRaw) {

@@ -44,7 +44,7 @@ public class RenameCalendarResourceRequest {
      */
      @SuppressWarnings("unused")
     private RenameCalendarResourceRequest() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public RenameCalendarResourceRequest(String id, String newName) {

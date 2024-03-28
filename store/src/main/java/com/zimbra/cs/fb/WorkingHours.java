@@ -9,7 +9,6 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -63,11 +62,10 @@ public class WorkingHours {
         }
         // Invert FREE and BUSY_UNAVAILABLE in the intervals so that working hours are displayed as free and non-working
         // hours are shown as out-of-office.
-        for (Iterator<Interval> iter = intervals.iterator(); iter.hasNext(); ) {
-            Interval interval = iter.next();
-            String status = interval.getStatus();
-            interval.setStatus(invertStatus(status));
-        }
+      for (Interval interval : intervals) {
+        String status = interval.getStatus();
+        interval.setStatus(invertStatus(status));
+      }
         return new FreeBusy(name, intervals, start, end);
     }
 
@@ -170,7 +168,7 @@ public class WorkingHours {
 
     private static class HoursByDay {
 
-        private Map<Integer /* 1..7 */, TimeRange> mHours = new HashMap<Integer, TimeRange>(7);
+        private Map<Integer /* 1..7 */, TimeRange> mHours = new HashMap<>(7);
 
         public HoursByDay() {
             HourMinute hhmm0000 = new HourMinute(0, 0);
@@ -191,58 +189,60 @@ public class WorkingHours {
             if (prefStr.endsWith(","))
                 throw ServiceException.INVALID_REQUEST("Working hours spec should not have trailing commas", null);
 
-            int daySpecified[] = new int[] { 0, 0, 0, 0, 0, 0, 0 };  // tracks which days of the week are specified
+            int[] daySpecified = new int[] { 0, 0, 0, 0, 0, 0, 0 };  // tracks which days of the week are specified
 
-            String days[] = prefStr.split(",");
+            String[] days = prefStr.split(",");
             if (days.length != 7)
                 throw ServiceException.INVALID_REQUEST("Working hours spec must specify all days of a week", null);
-            for (int i = 0; i < days.length; ++i) {
-                if (days[i].endsWith(":"))
-                    throw ServiceException.INVALID_REQUEST(
-                            "Working hours spec day section \"" + days[i] + "\" should not have trailing colons", null);
-                String parts[] = days[i].split(":");
-                if (parts.length != 4)
-                    throw ServiceException.INVALID_REQUEST(
-                            "Working hours spec day section \"" + days[i] + "\" must have 4 colon-separated parts", null);
+          for (String day : days) {
+            if (day.endsWith(":"))
+              throw ServiceException.INVALID_REQUEST(
+                  "Working hours spec day section \"" + day + "\" should not have trailing colons", null);
+            String[] parts = day.split(":");
+            if (parts.length != 4)
+              throw ServiceException.INVALID_REQUEST(
+                  "Working hours spec day section \"" + day + "\" must have 4 colon-separated parts", null);
 
-                // First part is day number, 1 (Sunday) to 7 (Saturday).
-                int dayNum = -1;
-                try {
-                    dayNum = Integer.parseInt(parts[0]);
-                } catch (NumberFormatException e) {}
-                if (dayNum < 1 || dayNum > 7)
-                    throw ServiceException.INVALID_REQUEST(
-                            "Working hours spec day section \"" + days[i] + "\" has invalid day number (must be 1 to 7)", null);
-
-                // Don't allow specifying the same day twice.
-                if (daySpecified[dayNum-1] != 0)
-                    throw ServiceException.INVALID_REQUEST(
-                            "Working hours spec must not specify the same day more than once; found repeated day " + dayNum, null);
-                daySpecified[dayNum-1] = 1;
-
-                // Second part is a flag indicating if the working hours for the day are in effect ("Y") or not ("N").
-                if (parts[1].length() != 1)
-                    throw ServiceException.INVALID_REQUEST(
-                            "Working hours spec day section \"" + days[i] + "\" has invalid on/off flag (must be Y or N)", null);
-                char flag = parts[1].charAt(0);
-                if (flag != 'Y' && flag != 'N')
-                    throw ServiceException.INVALID_REQUEST(
-                            "Working hours spec day section \"" + days[i] + "\" has invalid on/off flag (must be Y or N)", null);
-                boolean enabled = flag == 'Y';
-
-                // Third part is the start time of the working hours.  Format is HHMM with 24-hour hour.  Range is 0000 to 2359.
-                HourMinute startTime = new HourMinute(parts[2], false, days[i]);
-
-                // Fourth part is the end time of the working hours.  Range is 0000 to 2400.
-                HourMinute endTime = new HourMinute(parts[3], true, days[i]);
-
-                // End time cannot be earlier than start time.
-                if (startTime.laterThan(endTime))
-                    throw ServiceException.INVALID_REQUEST(
-                            "Working hours spec day section \"" + days[i] + "\" has end time earlier than start time", null);
-
-                mHours.put(dayNum, new TimeRange(startTime, endTime, enabled));
+            // First part is day number, 1 (Sunday) to 7 (Saturday).
+            int dayNum = -1;
+            try {
+              dayNum = Integer.parseInt(parts[0]);
+            } catch (NumberFormatException e) {
             }
+            if (dayNum < 1 || dayNum > 7)
+              throw ServiceException.INVALID_REQUEST(
+                  "Working hours spec day section \"" + day + "\" has invalid day number (must be 1 to 7)", null);
+
+            // Don't allow specifying the same day twice.
+            if (daySpecified[dayNum - 1] != 0)
+              throw ServiceException.INVALID_REQUEST(
+                  "Working hours spec must not specify the same day more than once; found repeated day " + dayNum,
+                  null);
+            daySpecified[dayNum - 1] = 1;
+
+            // Second part is a flag indicating if the working hours for the day are in effect ("Y") or not ("N").
+            if (parts[1].length() != 1)
+              throw ServiceException.INVALID_REQUEST(
+                  "Working hours spec day section \"" + day + "\" has invalid on/off flag (must be Y or N)", null);
+            char flag = parts[1].charAt(0);
+            if (flag != 'Y' && flag != 'N')
+              throw ServiceException.INVALID_REQUEST(
+                  "Working hours spec day section \"" + day + "\" has invalid on/off flag (must be Y or N)", null);
+            boolean enabled = flag == 'Y';
+
+            // Third part is the start time of the working hours.  Format is HHMM with 24-hour hour.  Range is 0000 to 2359.
+            HourMinute startTime = new HourMinute(parts[2], false, day);
+
+            // Fourth part is the end time of the working hours.  Range is 0000 to 2400.
+            HourMinute endTime = new HourMinute(parts[3], true, day);
+
+            // End time cannot be earlier than start time.
+            if (startTime.laterThan(endTime))
+              throw ServiceException.INVALID_REQUEST(
+                  "Working hours spec day section \"" + day + "\" has end time earlier than start time", null);
+
+            mHours.put(dayNum, new TimeRange(startTime, endTime, enabled));
+          }
         }
     }
 

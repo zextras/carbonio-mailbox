@@ -48,7 +48,7 @@ public class CalendarProxyWriteFor extends AbstractProxyProperty {
             return proxy;
         }
         ArrayList<Pair<Mountpoint,ZFolder>> mps = getMountpoints(ctxt);
-        HashSet<Account> proxies = new HashSet<Account>();
+        HashSet<Account> proxies = new HashSet<>();
         for (Pair<Mountpoint,ZFolder> folder : mps) {
             try {
                 short rights = ACL.stringToRights(folder.getSecond().getEffectivePerms());

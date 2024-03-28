@@ -38,7 +38,7 @@ public class ModifyVolumeRequest {
      */
      @SuppressWarnings("unused")
     private ModifyVolumeRequest() {
-        this((short)-1, (VolumeInfo)null);
+        this((short)-1, null);
     }
 
     public ModifyVolumeRequest(short id, VolumeInfo volume) {

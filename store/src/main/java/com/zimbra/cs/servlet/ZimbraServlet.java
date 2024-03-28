@@ -109,7 +109,7 @@ public class ZimbraServlet extends HttpServlet {
 
   private static final int MAX_PROXY_HOPCOUNT = 3;
 
-  private static Map<String, ZimbraServlet> sServlets = new HashMap<String, ZimbraServlet>();
+  private static Map<String, ZimbraServlet> sServlets = new HashMap<>();
 
   private int[] mAllowedPorts;
 
@@ -126,24 +126,24 @@ public class ZimbraServlet extends HttpServlet {
               "Must specify comma-separated list of port numbers for "
                   + PARAM_ALLOWED_PORTS
                   + " parameter");
-        List<Integer> allowedPorts = new ArrayList<Integer>();
+        List<Integer> allowedPorts = new ArrayList<>();
         int port;
-        for (int i = 0; i < vals.length; i++) {
+        for (String val : vals) {
           try {
-            port = Integer.parseInt(vals[i]);
+            port = Integer.parseInt(val);
           } catch (NumberFormatException e) {
             throw new ServletException(
-                "Invalid port number \"" + vals[i] + "\" in " + PARAM_ALLOWED_PORTS + " parameter");
+                "Invalid port number \"" + val + "\" in " + PARAM_ALLOWED_PORTS + " parameter");
           }
           if (port < 0)
             throw new ServletException(
                 "Invalid port number "
-                    + vals[i]
+                    + val
                     + " in "
                     + PARAM_ALLOWED_PORTS
                     + " parameter; port number must be greater than zero");
           else if (port != 0) // 0 is a legit value for those ports that are disabled
-          allowedPorts.add(port);
+            allowedPorts.add(port);
         }
 
         mAllowedPorts = new int[allowedPorts.size()];
@@ -173,8 +173,8 @@ public class ZimbraServlet extends HttpServlet {
   protected boolean isRequestOnAllowedPort(HttpServletRequest request) {
     if (mAllowedPorts != null && mAllowedPorts.length > 0) {
       int incoming = request.getLocalPort();
-      for (int i = 0; i < mAllowedPorts.length; i++) {
-        if (mAllowedPorts[i] == incoming) {
+      for (int mAllowedPort : mAllowedPorts) {
+        if (mAllowedPort == incoming) {
           return true;
         }
       }
@@ -266,7 +266,7 @@ public class ZimbraServlet extends HttpServlet {
       throws AuthTokenException {
     AuthToken authToken = AuthProvider.getAuthToken(req, isAdminReq);
     if (authToken == null) {
-      Map<Object, Object> engineCtxt = new HashMap<Object, Object>();
+      Map<Object, Object> engineCtxt = new HashMap<>();
       engineCtxt.put(SoapServlet.SERVLET_REQUEST, req);
       authToken = AuthProvider.getJWToken(null, engineCtxt);
     }
@@ -389,16 +389,17 @@ public class ZimbraServlet extends HttpServlet {
       BasicCookieStore state)
       throws IOException, ServiceException, HttpException {
     // create an HTTP client with the same cookies
-    javax.servlet.http.Cookie cookies[] = req.getCookies();
+    javax.servlet.http.Cookie[] cookies = req.getCookies();
     String hostname = method.getURI().getHost();
     boolean hasZMAuth = hasZimbraAuthCookie(state);
     boolean hasJwtSalt = hasJWTSaltCookie(state);
     if (cookies != null) {
-      for (int i = 0; i < cookies.length; i++) {
-        if ((cookies[i].getName().equals(ZimbraCookie.COOKIE_ZM_AUTH_TOKEN) && hasZMAuth)
-            || (hasJwtSalt && cookies[i].getName().equals(ZimbraCookie.COOKIE_ZM_JWT))) continue;
+      for (javax.servlet.http.Cookie value : cookies) {
+        if ((value.getName().equals(ZimbraCookie.COOKIE_ZM_AUTH_TOKEN) && hasZMAuth)
+            || (hasJwtSalt && value.getName().equals(ZimbraCookie.COOKIE_ZM_JWT)))
+          continue;
         BasicClientCookie cookie =
-            new BasicClientCookie(cookies[i].getName(), cookies[i].getValue());
+            new BasicClientCookie(value.getName(), value.getValue());
         cookie.setDomain(hostname);
         cookie.setPath("/");
         cookie.setSecure(false);
@@ -445,10 +446,10 @@ public class ZimbraServlet extends HttpServlet {
     }
 
     Header[] headers = httpResp.getAllHeaders();
-    for (int i = 0; i < headers.length; i++) {
-      String hname = headers[i].getName(), hlc = hname.toLowerCase();
+    for (Header header : headers) {
+      String hname = header.getName(), hlc = hname.toLowerCase();
       if (hlc.startsWith("x-") || hlc.startsWith("content-") || hlc.startsWith("www-"))
-        resp.addHeader(hname, headers[i].getValue());
+        resp.addHeader(hname, header.getValue());
     }
     InputStream responseStream = httpResp.getEntity().getContent();
     if (responseStream == null || resp.getOutputStream() == null) return;

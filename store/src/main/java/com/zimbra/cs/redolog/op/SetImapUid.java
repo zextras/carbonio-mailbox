@@ -22,7 +22,7 @@ import com.zimbra.cs.redolog.RedoLogOutput;
 
 public class SetImapUid extends RedoableOp {
 
-    private Map<Integer, Integer> mImapUids = new HashMap<Integer, Integer>();
+    private Map<Integer, Integer> mImapUids = new HashMap<>();
 
     public SetImapUid() {
         super(MailboxOperation.SetImapUid);
@@ -70,6 +70,6 @@ public class SetImapUid extends RedoableOp {
 
     @Override public void redo() throws Exception {
         Mailbox mbox = MailboxManager.getInstance().getMailboxById(getMailboxId());
-        mbox.resetImapUid(getOperationContext(), new ArrayList<Integer>(mImapUids.keySet()));
+        mbox.resetImapUid(getOperationContext(), new ArrayList<>(mImapUids.keySet()));
     }
 }

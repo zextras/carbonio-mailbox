@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.json.JSONException;
 
-import com.zimbra.client.event.ZModifyEvent;
 import com.zimbra.client.event.ZModifyMessageEvent;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -66,7 +65,7 @@ public class ZCalendarItem implements ZItem, ToZJSONObject {
         mDate = e.getAttributeLong(MailConstants.A_DATE, 0);
         mFolderId = e.getAttribute(MailConstants.A_FOLDER, null);
         mSize = e.getAttributeLong(MailConstants.A_SIZE);
-        mInvites = new ArrayList<ZInvite>();
+        mInvites = new ArrayList<>();
         for (Element inviteEl : e.listElements(MailConstants.E_INVITE)) {
             mInvites.add(new ZInvite(inviteEl));
         }

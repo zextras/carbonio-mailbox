@@ -48,7 +48,7 @@ public class PurgeMovedMailboxRequest {
      */
     @SuppressWarnings("unused")
     private PurgeMovedMailboxRequest() {
-        this((Name) null);
+        this(null);
     }
 
     public PurgeMovedMailboxRequest(Name mailbox) {

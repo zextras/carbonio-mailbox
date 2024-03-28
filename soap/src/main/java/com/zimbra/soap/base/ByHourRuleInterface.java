@@ -11,6 +11,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @XmlAccessorType(XmlAccessType.NONE)
 public interface ByHourRuleInterface {
 
-    public ByHourRuleInterface create(String list);
-    public String getList();
+    ByHourRuleInterface create(String list);
+    String getList();
 }

@@ -176,7 +176,7 @@ public class InternetAddress implements Cloneable {
         // FIXME: will split the header incorrectly if there's a ',' in the middle of a domain literal ("@[...]")
         boolean quoted = false, escaped = false, empty = true;
         int pos = start, astart = pos, end = start + length, clevel = 0;
-        List<InternetAddress> iaddrs = new ArrayList<InternetAddress>(5);
+        List<InternetAddress> iaddrs = new ArrayList<>(5);
         Group group = null;
 
         while (pos < end) {
@@ -234,7 +234,7 @@ public class InternetAddress implements Cloneable {
     }
 
     public static class Group extends InternetAddress {
-        private List<InternetAddress> addresses = new ArrayList<InternetAddress>(5);
+        private List<InternetAddress> addresses = new ArrayList<>(5);
 
         public Group(String name) {
             super(name, null);
@@ -284,7 +284,7 @@ public class InternetAddress implements Cloneable {
         }
 
         public List<InternetAddress> getMembers() {
-            List<InternetAddress> members = new ArrayList<InternetAddress>(addresses.size());
+            List<InternetAddress> members = new ArrayList<>(addresses.size());
             for (InternetAddress addr : addresses) {
                 members.add(addr.clone());
             }
@@ -485,8 +485,8 @@ public class InternetAddress implements Cloneable {
             // there are some tricky little bits to parsing addresses that weren't followed, so re-parse as an address
             parse(content, start, length, true);
         } else {
-            this.display = base != null ? base : comment == null ? null : comment.toString();
-            this.email = address == null ? null : address.toString().trim();
+            this.display = base != null ? base : comment == null ? null : comment;
+            this.email = address == null ? null : address.trim();
         }
     }
 

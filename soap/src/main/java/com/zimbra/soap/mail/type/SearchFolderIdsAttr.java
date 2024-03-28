@@ -15,6 +15,6 @@ public class SearchFolderIdsAttr extends IdsAttr {
      */
     @SuppressWarnings("unused")
     private SearchFolderIdsAttr() {
-        this((String) null);
+        this(null);
     }
 }

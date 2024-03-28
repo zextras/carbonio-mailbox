@@ -47,7 +47,7 @@ public class GetZimletStatus extends AdminDocumentHandler {
 		Iterator<Cos> cos = prov.getAllCos().iterator();
 		
 		while (cos.hasNext()) {
-		    Cos c = (Cos) cos.next();
+		    Cos c = cos.next();
 		    
 		    // check if the cos can be listed 
 		    if (!hasRightsToListCos(zsc, c, Admin.R_listCos, needGetAttrsRight()))
@@ -56,9 +56,9 @@ public class GetZimletStatus extends AdminDocumentHandler {
 			elem = response.addElement(AdminConstants.E_COS);
 			elem.addAttribute(AdminConstants.E_NAME, c.getName());
 			String[] z = ZimletUtil.getAvailableZimlets(c).getZimletNamesAsArray();
-			for (int i = 0; i < z.length; i++) {
-			    doZimlet(zsc, context, prov.getZimlet(z[i]), elem, -1);
-			}
+      for (String s : z) {
+        doZimlet(zsc, context, prov.getZimlet(s), elem, -1);
+      }
 		}
         return response;
     }
@@ -88,7 +88,7 @@ public class GetZimletStatus extends AdminDocumentHandler {
     }
 	
     private Set<String> needGetAttrsRight() {
-        Set<String> attrsNeeded = new HashSet<String>();
+        Set<String> attrsNeeded = new HashSet<>();
         attrsNeeded.add(Provisioning.A_zimbraZimletAvailableZimlets);
         return attrsNeeded;
     }

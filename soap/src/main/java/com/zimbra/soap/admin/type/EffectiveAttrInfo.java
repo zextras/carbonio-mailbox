@@ -50,11 +50,11 @@ public class EffectiveAttrInfo {
      */
     @SuppressWarnings("unused")
     private EffectiveAttrInfo() {
-        this((String) null, (ConstraintInfo) null);
+        this(null, null);
     }
 
     public EffectiveAttrInfo(String name) {
-        this(name, (ConstraintInfo) null);
+        this(name, null);
     }
 
     public EffectiveAttrInfo(String name, ConstraintInfo constraint) {

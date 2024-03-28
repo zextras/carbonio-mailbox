@@ -11,17 +11,17 @@ import com.zimbra.soap.mail.type.NewContactAttr;
 import com.zimbra.soap.mail.type.NewContactGroupMember;
 
 public interface SpecifyContact <T extends NewContactAttr, M extends NewContactGroupMember> {
-    public void setId(Integer id);
-    public void setTagNames(String tagNames);
-    public void setAttrs(Iterable <T> attrs);
-    public void addAttr(T attr);
-    public T addAttrWithName(String name);
-    public T addAttrWithNameAndValue(String name, String value);
-    public void setContactGroupMembers(Iterable <M> contactGroupMembers);
-    public void addContactGroupMember(M contactGroupMember);
-    public M addContactGroupMemberWithTypeAndValue(String type, String value);
-    public Integer getId();
-    public String getTagNames();
-    public List<T> getAttrs();
-    public List<M> getContactGroupMembers();
+    void setId(Integer id);
+    void setTagNames(String tagNames);
+    void setAttrs(Iterable<T> attrs);
+    void addAttr(T attr);
+    T addAttrWithName(String name);
+    T addAttrWithNameAndValue(String name, String value);
+    void setContactGroupMembers(Iterable<M> contactGroupMembers);
+    void addContactGroupMember(M contactGroupMember);
+    M addContactGroupMemberWithTypeAndValue(String type, String value);
+    Integer getId();
+    String getTagNames();
+    List<T> getAttrs();
+    List<M> getContactGroupMembers();
 }

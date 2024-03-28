@@ -34,7 +34,7 @@ public class SoapAccountInfo {
      SoapAccountInfo(Element e) throws ServiceException {
         mAttrs = SoapProvisioning.getAttrs(e);
         mName = e.getElement(AdminConstants.E_NAME).getText();
-        mSoapURL = new ArrayList<String>();
+        mSoapURL = new ArrayList<>();
         for (Element su : e.listElements(AdminConstants.E_SOAP_URL)) {
             mSoapURL.add(su.getText());
         }

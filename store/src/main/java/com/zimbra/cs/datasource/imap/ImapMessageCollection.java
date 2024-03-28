@@ -13,12 +13,12 @@ import java.util.Collection;
 
 
 public class ImapMessageCollection implements Iterable<ImapMessage> {
-    private Map<Integer, ImapMessage> mByItemId = new HashMap<Integer, ImapMessage>();
-    private Map<Long, ImapMessage> mByUid = new HashMap<Long, ImapMessage>();
+    private Map<Integer, ImapMessage> mByItemId = new HashMap<>();
+    private Map<Long, ImapMessage> mByUid = new HashMap<>();
     // Tracked message with a UID of 0 did not return a UID when appended to a
     // remote folder. In this case, we will try to fill in the correct uid
     // when we fetch the message later (see bug 26347).
-    private Map<Integer, ImapMessage> mNoUid = new HashMap<Integer, ImapMessage>();
+    private Map<Integer, ImapMessage> mNoUid = new HashMap<>();
 
     public void add(ImapMessage msg) {
         mByItemId.put(msg.getItemId(), msg);

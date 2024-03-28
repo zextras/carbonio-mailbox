@@ -6,6 +6,7 @@
 package com.zimbra.cs.service.formatter;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -87,7 +88,7 @@ public class IfbFormatter extends Formatter {
             String url = context.req.getRequestURL() + "?" + context.req.getQueryString();
             fbMsg = fb.toVCalendar(FreeBusy.Method.PUBLISH, acctName, null, url, null);
         }
-        context.resp.getOutputStream().write(fbMsg.getBytes("UTF-8"));
+        context.resp.getOutputStream().write(fbMsg.getBytes(StandardCharsets.UTF_8));
     }
 
     @Override

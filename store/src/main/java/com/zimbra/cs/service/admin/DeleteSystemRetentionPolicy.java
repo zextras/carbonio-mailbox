@@ -16,12 +16,10 @@ import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.mailbox.RetentionPolicyManager;
-import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.DeleteSystemRetentionPolicyRequest;
 import com.zimbra.soap.admin.message.DeleteSystemRetentionPolicyResponse;
 import com.zimbra.soap.admin.type.CosSelector;
-import com.zimbra.soap.mail.message.GetSystemRetentionPolicyRequest;
 import com.zimbra.soap.mail.type.Policy;
 
 public class DeleteSystemRetentionPolicy extends AdminDocumentHandler {

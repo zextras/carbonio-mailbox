@@ -139,7 +139,7 @@ public class AddressbookCollection extends Collection {
      */
     @Override
     public java.util.Collection<DavResource> getChildren(DavContext ctxt) throws DavException {
-        ArrayList<DavResource> children = new ArrayList<DavResource>();
+        ArrayList<DavResource> children = new ArrayList<>();
         java.util.Collection<DavResource> allChildren = super.getChildren(ctxt);
         for (DavResource child: allChildren) {
             if (child.isCollection() || child instanceof AddressObject) {

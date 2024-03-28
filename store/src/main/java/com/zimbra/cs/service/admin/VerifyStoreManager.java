@@ -40,7 +40,7 @@ import com.zimbra.soap.ZimbraSoapContext;
  */
 public class VerifyStoreManager extends AdminDocumentHandler {
 
-    private class Stats {
+    private static class Stats {
         int numBlobs;
         long incomingTime;
         long stageTime;
@@ -91,19 +91,19 @@ public class VerifyStoreManager extends AdminDocumentHandler {
     }
 
     private void assertEquals(String message, Object o1, Object o2) throws Exception {
-        if (o1 == null && o2 == null) {
-            return;
-        } else if (o1 == null && o2 != null) {
-            throw new Exception("verification failed checking "+message);
-        } else if (!o1.equals(o2)) {
-            if (o1 instanceof Number && o2 instanceof Number) {
-                Number num1 = (Number) o1;
-                Number num2 = (Number) o2;
-                if (num1.longValue() == num2.longValue()) {
-                    return;
+        if (o1 != null || o2 != null) {
+            if (o1 == null) {
+                throw new Exception("verification failed checking "+message);
+            } else if (!o1.equals(o2)) {
+                if (o1 instanceof Number && o2 instanceof Number) {
+                    Number num1 = (Number) o1;
+                    Number num2 = (Number) o2;
+                    if (num1.longValue() == num2.longValue()) {
+                        return;
+                    }
                 }
+                throw new Exception("verification failed checking "+message);
             }
-            throw new Exception("verification failed checking "+message);
         }
     }
 
@@ -168,12 +168,12 @@ public class VerifyStoreManager extends AdminDocumentHandler {
     private Stats basicPerfTest(int numBlobs, int blobSize, boolean checkBlobs) throws Exception {
         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(AccountTestUtil.getAccount(USER_NAME));
         StoreManager sm = StoreManager.getInstance();
-        List<ParsedMessage> msgs = new ArrayList<ParsedMessage>();
+        List<ParsedMessage> msgs = new ArrayList<>();
         int count = numBlobs;
         for (int i = 0; i < count; i++) {
             msgs.add(getMessage(blobSize));
         }
-        List<Blob> incoming = new ArrayList<Blob>();
+        List<Blob> incoming = new ArrayList<>();
         ZimbraLog.store.info("starting store incoming loop");
         long start = System.currentTimeMillis();
         for (ParsedMessage msg : msgs) {
@@ -181,7 +181,7 @@ public class VerifyStoreManager extends AdminDocumentHandler {
         }
         long incomingTime = System.currentTimeMillis() - start;
 
-        List<StagedBlob> staged = new ArrayList<StagedBlob>();
+        List<StagedBlob> staged = new ArrayList<>();
         ZimbraLog.store.info("starting stage loop");
         start = System.currentTimeMillis();
         for (Blob blob : incoming) {
@@ -189,7 +189,7 @@ public class VerifyStoreManager extends AdminDocumentHandler {
         }
         long stageTime = System.currentTimeMillis() - start;
 
-        List<MailboxBlob> linked = new ArrayList<MailboxBlob>();
+        List<MailboxBlob> linked = new ArrayList<>();
         ZimbraLog.store.info("starting link loop");
         start = System.currentTimeMillis();
         int i = 0; //fake itemId, never use this test with real userid
@@ -198,7 +198,7 @@ public class VerifyStoreManager extends AdminDocumentHandler {
         }
         long linkTime = System.currentTimeMillis() - start;
 
-        List<MailboxBlob> fetched = new ArrayList<MailboxBlob>();
+        List<MailboxBlob> fetched = new ArrayList<>();
         ZimbraLog.store.info("starting fetch loop");
         start = System.currentTimeMillis();
         i = 0;

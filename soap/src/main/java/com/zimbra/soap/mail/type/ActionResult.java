@@ -53,7 +53,7 @@ public class ActionResult {
      * no-argument constructor wanted by JAXB
      */
     protected ActionResult() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public ActionResult(String id, String operation) {
@@ -64,9 +64,11 @@ public class ActionResult {
     public String getId() { return id; }
     public String getOperation() { return operation; }
 
-    public void setNonExistentIds(String ids) { this.nonExistentIds = ids; };
-    public String getNonExistentIds() { return nonExistentIds; };
-    public void setNewlyCreatedIds(String newlyCreatedIds) { this.newlyCreatedIds = newlyCreatedIds; }
+    public void setNonExistentIds(String ids) { this.nonExistentIds = ids; }
+
+  public String getNonExistentIds() { return nonExistentIds; }
+
+  public void setNewlyCreatedIds(String newlyCreatedIds) { this.newlyCreatedIds = newlyCreatedIds; }
     @XmlTransient
     public Iterable<String> getNewlyCreatedIds() {
         if (null == newlyCreatedIds) {

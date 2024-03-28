@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -67,7 +68,7 @@ public class ZCalendar {
     }
   }
 
-  public static enum ICalTok {
+  public enum ICalTok {
     ACTION,
     ALTREP,
     ATTACH,
@@ -264,8 +265,8 @@ public class ZCalendar {
    *     <p>Calendar has Components Properties
    */
   public static class ZVCalendar {
-    List<ZComponent> mComponents = new ArrayList<ZComponent>();
-    List<ZProperty> mProperties = new ArrayList<ZProperty>();
+    List<ZComponent> mComponents = new ArrayList<>();
+    List<ZProperty> mProperties = new ArrayList<>();
 
     public ZVCalendar() {}
 
@@ -418,8 +419,8 @@ public class ZCalendar {
       return mTok;
     }
 
-    List<ZProperty> mProperties = new ArrayList<ZProperty>();
-    List<ZComponent> mComponents = new ArrayList<ZComponent>();
+    List<ZProperty> mProperties = new ArrayList<>();
+    List<ZComponent> mComponents = new ArrayList<>();
 
     public void addProperty(ZProperty prop) {
       mProperties.add(prop);
@@ -598,7 +599,7 @@ public class ZCalendar {
   }
 
   public static List<String> parseCommaSepText(String encoded) {
-    List<String> list = new ArrayList<String>();
+    List<String> list = new ArrayList<>();
     int len;
     if (encoded != null && (len = encoded.length()) > 0) {
       int start = 0;
@@ -669,7 +670,7 @@ public class ZCalendar {
       mValueList = valueList;
     }
 
-    List<ZParameter> mParameters = new ArrayList<ZParameter>();
+    List<ZParameter> mParameters = new ArrayList<>();
 
     public void addParameter(ZParameter param) {
       mParameters.add(param);
@@ -817,12 +818,10 @@ public class ZCalendar {
     public long getLongValue() {
       return Long.parseLong(mValue);
     }
-    ;
 
     public int getIntValue() {
       return Integer.parseInt(mValue);
     }
-    ;
 
     public boolean getBoolValue() {
       return mValue.equalsIgnoreCase("TRUE");
@@ -928,12 +927,10 @@ public class ZCalendar {
     long getLongValue() {
       return Long.parseLong(maValue);
     }
-    ;
 
     int getIntValue() {
       return Integer.parseInt(maValue);
     }
-    ;
 
     private final ICalTok mTok;
     private String mName;
@@ -1044,15 +1041,15 @@ public class ZCalendar {
   }
 
   public interface ZICalendarParseHandler extends ContentHandler {
-    public boolean inZCalendar();
+    boolean inZCalendar();
 
-    public int getNumCals();
+    int getNumCals();
   }
 
   public static class DefaultContentHandler implements ZICalendarParseHandler {
-    List<ZVCalendar> mCals = new ArrayList<ZVCalendar>(1);
+    List<ZVCalendar> mCals = new ArrayList<>(1);
     ZVCalendar mCurCal = null;
-    List<ZComponent> mComponents = new ArrayList<ZComponent>();
+    List<ZComponent> mComponents = new ArrayList<>();
     ZProperty mCurProperty = null;
     private int mNumCals;
     private boolean mInZCalendar;
@@ -1156,19 +1153,21 @@ public class ZCalendar {
 
   public static class ZCalendarBuilder {
 
+    private ZCalendarBuilder() {
+      throw new IllegalStateException("Utility class");
+    }
+
     public static ZVCalendar build(String icalStr) throws ServiceException {
       ByteArrayInputStream bais = null;
       try {
-        bais = new ByteArrayInputStream(icalStr.getBytes(MimeConstants.P_CHARSET_UTF8));
-      } catch (UnsupportedEncodingException e) {
-        throw ServiceException.FAILURE("Can't get input stream from string", e);
-      }
-      try {
+        bais = new ByteArrayInputStream(icalStr.getBytes(StandardCharsets.UTF_8));
         return build(bais, MimeConstants.P_CHARSET_UTF8);
       } finally {
         try {
-          bais.close();
-        } catch (IOException e) {
+          if(bais != null){
+            bais.close();
+          }
+        } catch (IOException ignored) {
         }
       }
     }
@@ -1241,7 +1240,7 @@ public class ZCalendar {
           // Found garbage after END:ZCALENDAR.  Log warning and move on.
           if (ZimbraLog.calendar.isDebugEnabled())
             ZimbraLog.calendar.warn(
-                "Ignoring bad data at the end of text/calendar part: " + s.toString(), e);
+                "Ignoring bad data at the end of text/calendar part: " + s, e);
           else
             ZimbraLog.calendar.warn(
                 "Ignoring bad data at the end of text/calendar part: " + e.getMessage());

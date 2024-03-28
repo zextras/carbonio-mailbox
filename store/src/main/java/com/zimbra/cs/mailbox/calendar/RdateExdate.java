@@ -48,7 +48,7 @@ public class RdateExdate implements Cloneable {
 
         mTimeZone = tz;
         setValueType(valueType);
-        mValues = new ArrayList<Object>();
+        mValues = new ArrayList<>();
     }
 
     public Object clone() {
@@ -60,9 +60,9 @@ public class RdateExdate implements Cloneable {
         }
         for (Object val : mValues) {
             if (val instanceof ParsedDateTime)
-                copy.addValue((ParsedDateTime) ((ParsedDateTime) val).clone());
+                copy.addValue(((ParsedDateTime) val).clone());
             else if (val instanceof ParsedDuration)
-                copy.addValue((ParsedDuration) ((ParsedDuration) val).clone());
+                copy.addValue(((ParsedDuration) val).clone());
         }
         return copy;
     }
@@ -79,7 +79,7 @@ public class RdateExdate implements Cloneable {
             break;
         default:
             throw ServiceException.INVALID_REQUEST(
-                    "Invalid value type " + valueType.toString() + " in " +
+                    "Invalid value type " + valueType + " in " +
                     mPropertyName.toString(), null);
         }
         mValueType = valueType;
@@ -120,7 +120,7 @@ public class RdateExdate implements Cloneable {
                 ParsedDateTime t = (ParsedDateTime) value;
                 sb.append(t.getDateTimePartString(false));
             } else if (value instanceof Period)
-                sb.append(value.toString());
+                sb.append(value);
         }
         return sb.toString();
     }
@@ -279,8 +279,8 @@ public class RdateExdate implements Cloneable {
                     dt = ParsedDateTime.parse(dtStr, tzmap, tz, tzmap.getLocalTimeZone());
                 } catch (ParseException e) {
                     throw ServiceException.INVALID_REQUEST(
-                            "Invalid " + propName.toString() +
-                            " date/time in metadata: " + meta.toString(), e);
+                            "Invalid " + propName +
+                            " date/time in metadata: " + meta, e);
                 }
                 rexdate.addValue(dt);
             } else if (valueType.equals(ICalTok.PERIOD)) {

@@ -94,7 +94,7 @@ public final class EhcacheManager {
             maxBytesOnLocalDisk = Provisioning.getInstance().getLocalServer().getImapInactiveSessionCacheMaxDiskSize();
         } catch (ServiceException e) {
             ZimbraLog.imap.error("Exception while fetching attribute %s", Provisioning.A_zimbraImapInactiveSessionCacheMaxDiskSize, e);
-            maxBytesOnLocalDisk = new MemoryUnitUtil().convertToBytes("100GB");;
+            maxBytesOnLocalDisk = new MemoryUnitUtil().convertToBytes("100GB");
         }
         try {
             inactiveSessionCache = Provisioning.getInstance().getLocalServer().getImapInactiveSessionEhcacheSize();
@@ -156,12 +156,12 @@ public final class EhcacheManager {
         cacheManager.close();
     }
 
-    public static enum Service {
+    public enum Service {
         MAILBOX("mailboxd"),
         IMAP("imap");
         private String val;
 
-        private Service(String val) {
+        Service(String val) {
             this.val = val;
         }
     }

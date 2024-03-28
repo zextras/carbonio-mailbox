@@ -78,7 +78,7 @@ public class ActivityInfo {
      */
     @SuppressWarnings("unused")
     private ActivityInfo() {
-        this((String) null, -1L, (String) null);
+        this(null, -1L, null);
     }
 
     public ActivityInfo(String operation, long timeStamp, String itemId) {

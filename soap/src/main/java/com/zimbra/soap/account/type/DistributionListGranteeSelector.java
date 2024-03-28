@@ -43,8 +43,8 @@ public class DistributionListGranteeSelector {
      */
     @SuppressWarnings("unused")
     private DistributionListGranteeSelector() {
-        this((GranteeType) null,
-                (DistributionListGranteeBy) null, (String) null);
+        this(null,
+            null, null);
     }
 
     public DistributionListGranteeSelector(GranteeType type, DistributionListGranteeBy by, String key) {

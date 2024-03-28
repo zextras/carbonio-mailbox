@@ -64,7 +64,7 @@ public final class MessageHit extends ZimbraHit {
 
     public void addPart(MessagePartHit part) {
         if (matchedParts == null) {
-            matchedParts = new ArrayList<MessagePartHit>();
+            matchedParts = new ArrayList<>();
         }
         if (!matchedParts.contains(part)) {
             matchedParts.add(part);
@@ -160,7 +160,7 @@ public final class MessageHit extends ZimbraHit {
      */
     public ConversationHit getConversationResult() throws ServiceException {
         if (conversationHit == null) {
-            Integer cid = Integer.valueOf(getConversationId());
+            Integer cid = getConversationId();
             conversationHit = getResults().getConversationHit(getMailbox(), cid, sortValue);
             conversationHit.addMessageHit(this);
         }

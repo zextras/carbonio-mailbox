@@ -141,7 +141,7 @@ public class SendDeliveryReport extends MailDocumentHandler {
             report.saveChanges();
 
             Transport.send(report);
-            MailSender.logMessage((MimeMessage)report, report.getAllRecipients(), report.getEnvelopeFrom(),
+            MailSender.logMessage(report, report.getAllRecipients(), report.getEnvelopeFrom(),
                     smtpSession.getProperties().getProperty("mail.smtp.host"),
                     String.valueOf(msg.getId()), null, null, "read receipt");
         } catch (MessagingException me) {

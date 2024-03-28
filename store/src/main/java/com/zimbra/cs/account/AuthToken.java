@@ -263,7 +263,7 @@ public abstract class AuthToken {
 
     private String code;
 
-    private Usage(String code) {
+    Usage(String code) {
       this.code = code;
     }
 
@@ -286,7 +286,7 @@ public abstract class AuthToken {
     JWT("jwt");
     private String code;
 
-    private TokenType(String code) {
+    TokenType(String code) {
       this.code = code;
     }
 

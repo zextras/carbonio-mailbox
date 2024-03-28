@@ -36,11 +36,11 @@ public class ReIndexResponse {
      */
      @SuppressWarnings("unused")
     private ReIndexResponse() {
-        this((String) null, (ReindexProgressInfo)null);
+        this(null, null);
     }
 
     public ReIndexResponse(String status) {
-        this(status, (ReindexProgressInfo)null);
+        this(status, null);
     }
 
     public ReIndexResponse(String status, ReindexProgressInfo progress) {

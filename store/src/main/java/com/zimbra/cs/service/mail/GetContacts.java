@@ -81,7 +81,7 @@ public final class GetContacts extends MailDocumentHandler  {
         //MailConstants.A_ATTRIBUTE_NAME
         List<AttributeName> reqAttrs = req.getAttributes();
         if(reqAttrs != null && reqAttrs.size() > 0) {
-            attrs = new ArrayList<String>();
+            attrs = new ArrayList<>();
             for(AttributeName attrName : reqAttrs) {
                 attrs.add(attrName.getName());
             }
@@ -90,7 +90,7 @@ public final class GetContacts extends MailDocumentHandler  {
         //MailConstants.E_CONTACT_GROUP_MEMBER_ATTRIBUTE
         reqAttrs = req.getMemberAttributes();
         if(reqAttrs != null && reqAttrs.size() > 0) {
-            memberAttrs = new ArrayList<String>();
+            memberAttrs = new ArrayList<>();
             for(AttributeName attrName : reqAttrs) {
                 memberAttrs.add(attrName.getName());
             }
@@ -99,15 +99,15 @@ public final class GetContacts extends MailDocumentHandler  {
         //MailConstants.E_CONTACT
         List<Id> contactIds = req.getContacts();
         if(contactIds != null && contactIds.size() > 0) {
-            ids = new ArrayList<ItemId>();
+            ids = new ArrayList<>();
             for(Id target : contactIds) {
                 String idStr = target.getId();
                 if(idStr.indexOf(",") > 0) {
                     //comma-separated IDs. TODO: deprecate this use-case
                     String[] toks = idStr.split(",");
-                    for(int i=0; i < toks.length; i++) {
-                        ids.add(new ItemId(toks[i], zsc));
-                    }
+                  for (String tok : toks) {
+                    ids.add(new ItemId(tok, zsc));
+                  }
                 } else {
                     ids.add(new ItemId(idStr, zsc));
                 }
@@ -146,8 +146,8 @@ public final class GetContacts extends MailDocumentHandler  {
         }
 
         if (ids != null) {
-            ArrayList<Integer> local = new ArrayList<Integer>();
-            HashMap<String, StringBuffer> remote = new HashMap<String, StringBuffer>();
+            ArrayList<Integer> local = new ArrayList<>();
+            HashMap<String, StringBuffer> remote = new HashMap<>();
             partitionItems(zsc, ids, local, remote);
 
             if (remote.size() > 0) {
@@ -216,7 +216,7 @@ public final class GetContacts extends MailDocumentHandler  {
 
     List<Element> proxyRemote(Element request, Map<String, StringBuffer> remote, Map<String,Object> context)
     throws ServiceException {
-        List<Element> responses = new ArrayList<Element>();
+        List<Element> responses = new ArrayList<>();
 
         //remove all 'contact' elements from original request
         for (Element e : request.listElements(MailConstants.E_CONTACT)) {

@@ -50,7 +50,7 @@ class FolderChanges {
         if ((tombstones == null || tombstones.isEmpty()) && modifiedFolders.isEmpty()) {
             return this; // No changes
         }
-        changes = new ArrayList<FolderChange>();
+        changes = new ArrayList<>();
 
         // Find deleted folders
         if (tombstones != null) {
@@ -91,7 +91,7 @@ class FolderChanges {
 
     public Collection<FolderChange> getChanges() {
         if (changes == null) {
-            changes = new ArrayList<FolderChange>();
+            changes = new ArrayList<>();
         }
         return changes;
     }

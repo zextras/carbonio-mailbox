@@ -80,7 +80,7 @@ public class CheckRecurConflicts extends ExpandRecur {
                 fbQuery.addEmailAddress(name, folderId);
         }
         Collection<FreeBusy> fbResults = fbQuery.getResults();
-        List<UserConflicts> conflicts = new ArrayList<UserConflicts>();
+        List<UserConflicts> conflicts = new ArrayList<>();
         for (FreeBusy fb : fbResults) {
             UserConflicts ucon = getConflicts(fb, instances);
             conflicts.add(ucon);
@@ -112,7 +112,7 @@ public class CheckRecurConflicts extends ExpandRecur {
 
         public UserConflicts(String username) {
             mUsername = username;
-            mMap = new HashMap<Instance, String>();
+            mMap = new HashMap<>();
         }
 
         public String getUsername() { return mUsername; }

@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.json.JSONException;
 
-import com.zimbra.client.event.ZModifyEvent;
 import com.zimbra.client.event.ZModifyTagEvent;
 import com.zimbra.common.mailbox.ZimbraTag;
 import com.zimbra.common.service.ServiceException;
@@ -42,7 +41,7 @@ public class ZTag implements Comparable<ZTag>, ZItem, ZimbraTag, ToZJSONObject {
         rgbColor;
 
         private long mValue;
-        private static Map<String,Color> colorMap = new HashMap<String,Color>();
+        private static Map<String,Color> colorMap = new HashMap<>();
 
         static {
           for (Color c : Color.values())
@@ -181,7 +180,7 @@ public class ZTag implements Comparable<ZTag>, ZItem, ZimbraTag, ToZJSONObject {
 
     @Override
     public int getTagId() {
-        return Integer.valueOf(getId());
+        return Integer.parseInt(getId());
     }
 
     @Override

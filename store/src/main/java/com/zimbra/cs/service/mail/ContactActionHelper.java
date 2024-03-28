@@ -76,7 +76,7 @@ public class ContactActionHelper extends ItemActionHelper {
             throw ServiceException.INVALID_REQUEST("unknown operation: " + mOperation, null);
         }
 
-        List<String> successes = new ArrayList<String>();
+        List<String> successes = new ArrayList<>();
         for (int id : itemIds) {
             successes.add(mIdFormatter.formatItemId(id));
         }

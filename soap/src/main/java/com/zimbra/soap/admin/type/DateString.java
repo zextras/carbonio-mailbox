@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
-import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.SyncAdminConstants;
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -28,7 +27,7 @@ public class DateString {
      */
     @SuppressWarnings("unused")
     private DateString() {
-        this((String) null);
+        this(null);
     }
 
     public DateString(String date) {

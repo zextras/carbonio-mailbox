@@ -343,7 +343,7 @@ public class WsdlGenerator {
     private final String serviceName;
     private final String targetNamespace;
 
-    private WsdlDefinition(String fileName, String serviceName, String targetNamespace) {
+    WsdlDefinition(String fileName, String serviceName, String targetNamespace) {
       this.fileName = fileName;
       this.serviceName = serviceName;
       this.targetNamespace = targetNamespace;

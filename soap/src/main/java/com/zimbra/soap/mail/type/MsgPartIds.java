@@ -34,7 +34,7 @@ public class MsgPartIds {
      */
     @SuppressWarnings("unused")
     private MsgPartIds() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public MsgPartIds(String id, String partIds) {

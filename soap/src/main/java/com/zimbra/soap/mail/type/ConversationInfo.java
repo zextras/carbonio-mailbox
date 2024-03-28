@@ -94,7 +94,7 @@ public class ConversationInfo {
     private List<MessageInfo> messages = Lists.newArrayList();
 
     public ConversationInfo() {
-        this((String) null);
+        this(null);
     }
 
     public ConversationInfo(String id) {

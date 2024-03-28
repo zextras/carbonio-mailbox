@@ -34,7 +34,7 @@ public class PurgeMovedMailboxInfo {
      */
     @SuppressWarnings("unused")
     private PurgeMovedMailboxInfo() {
-        this((String) null, -1);
+        this(null, -1);
     }
 
     public PurgeMovedMailboxInfo(String server, int mailboxId) {

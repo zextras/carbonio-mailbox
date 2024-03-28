@@ -165,8 +165,8 @@ public class ZContact extends ZBaseItem implements ToZJSONObject {
         mDate = e.getAttributeLong(MailConstants.A_DATE, 0);
         mMetaDataChangedDate = e.getAttributeLong(MailConstants.A_CHANGE_DATE, 0) * 1000;
 
-        HashMap<String, String> attrs = new HashMap<String, String>();
-        HashMap<String, ZContactAttachmentInfo> attachments = new HashMap<String, ZContactAttachmentInfo>();
+        HashMap<String, String> attrs = new HashMap<>();
+        HashMap<String, ZContactAttachmentInfo> attachments = new HashMap<>();
 
         for (Element attrEl : e.listElements(MailConstants.E_ATTRIBUTE)) {
             String name = attrEl.getAttribute(MailConstants.A_ATTRIBUTE_NAME);
@@ -184,7 +184,7 @@ public class ZContact extends ZBaseItem implements ToZJSONObject {
         mAttrs = Collections.unmodifiableMap(attrs);
         mAttachments = Collections.unmodifiableMap(attachments);
 
-        HashMap<String, ZContact> members = new HashMap<String, ZContact>();
+        HashMap<String, ZContact> members = new HashMap<>();
         for (Element memberEl : e.listElements(MailConstants.E_CONTACT_GROUP_MEMBER)) {
             String id = memberEl.getAttribute(MailConstants.A_CONTACT_GROUP_MEMBER_VALUE);
             String type = memberEl.getAttribute(MailConstants.A_CONTACT_GROUP_MEMBER_TYPE);
@@ -453,7 +453,7 @@ public class ZContact extends ZBaseItem implements ToZJSONObject {
         if (null == zc) {
             return 0;
         }
-        imapUid = (zc.imapUid <=0 ) ? 0 : zc.imapUid;
+        imapUid = Math.max(zc.imapUid, 0);
         return imapUid;
     }
 }

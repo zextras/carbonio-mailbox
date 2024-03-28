@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.soap.admin.type.DistributionListInfo;
 
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name=AdminConstants.E_CREATE_HAB_GROUP_RESPONSE)
@@ -21,6 +20,6 @@ public class CreateHABGroupResponse extends CreateDistributionListResponse {
      */
     @SuppressWarnings("unused")
     private CreateHABGroupResponse() {
-        super((DistributionListInfo) null);
+        super(null);
     }
 }

@@ -234,7 +234,7 @@ public abstract class ServerConfig {
     }
 
     public static String[] getAddrListCsv(String[] addrCsvs) {
-        ArrayList<String> addrList = new ArrayList<String>(addrCsvs.length);
+        ArrayList<String> addrList = new ArrayList<>(addrCsvs.length);
         for (String addrCsv : addrCsvs) {
             if (addrCsv != null && addrCsv.length() > 0) {
                 String[] addrs = addrCsv.split(",");

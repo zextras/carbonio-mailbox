@@ -57,7 +57,6 @@ import com.zimbra.common.zmime.ZMimeBodyPart;
 import com.zimbra.common.zmime.ZMimeMultipart;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
-import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.filter.jsieve.ActionFlag;
 import com.zimbra.cs.filter.jsieve.Require;
@@ -275,19 +274,12 @@ public final class FilterUtil {
                 String error = String.format("Detected a mail loop for message %s.", Mime.getMessageID(msg));
                 throw ServiceException.FAILURE(error, null);
             }
-        } catch (MessagingException e) {
+        } catch (MessagingException | IOException e) {
             try {
                 outgoingMsg = createRedirectMsgOnError(msg);
                 ZimbraLog.filter.info("Message format error detected.  Wrapper class in use.  %s", e.toString());
             } catch (MessagingException again) {
                 throw ServiceException.FAILURE("Message format error detected.  Workaround failed.", again);
-            }
-        } catch (IOException e) {
-            try {
-                outgoingMsg = createRedirectMsgOnError(msg);
-                ZimbraLog.filter.info("Message format error detected.  Wrapper class in use.  %s", e.toString());
-            } catch (MessagingException me) {
-                throw ServiceException.FAILURE("Message format error detected.  Workaround failed.", me);
             }
         }
 
@@ -606,7 +598,7 @@ public final class FilterUtil {
 
         // Envelope TO & Header To/Cc
         // RFC 5436 2.7. (2nd and 5th item of the 'guidelines')
-        Set<String> envelopeTos = new HashSet<String>();
+        Set<String> envelopeTos = new HashSet<>();
         envelopeTos.add(mailto);
         notification.addRecipient(javax.mail.Message.RecipientType.TO, new JavaMailInternetAddress(mailto));
 
@@ -727,11 +719,11 @@ public final class FilterUtil {
     @VisibleForTesting
     static Map<String, String> getVarsMap(Mailbox mailbox, ParsedMessage parsedMessage, MimeMessage mimeMessage)
             throws MessagingException, ServiceException {
-        Map<String, String> vars = new HashMap<String, String>() {
-            @Override
-            public String get(Object key) {
-                return super.get(((String) key).toLowerCase());
-            }
+        Map<String, String> vars = new HashMap<>() {
+          @Override
+          public String get(Object key) {
+            return super.get(((String) key).toLowerCase());
+          }
         };
         Enumeration enumeration = mimeMessage.getAllHeaders();
         while (enumeration.hasMoreElements()) {
@@ -848,7 +840,7 @@ public final class FilterUtil {
         if (null == mailAdapter) {
             return sourceStr;
         }
-        if (sourceStr.indexOf("${") == -1) {
+        if (!sourceStr.contains("${")) {
             return sourceStr;
         }
         validateVariableIndex(sourceStr);
@@ -869,12 +861,12 @@ public final class FilterUtil {
         // (1) Resolve the Matched Variables (numeric variables; "${N}" (N=0,1,...9)
         int i = 0;
         for (; i < matchedVariables.size() && i < 10; i++) {
-            String keyName = "(?i)" + "\\$\\{0*" + String.valueOf(i) + "\\}";
+            String keyName = "(?i)" + "\\$\\{0*" + i + "\\}";
             resultStr = resultStr.replaceAll(keyName, Matcher.quoteReplacement(matchedVariables.get(i)));
         }
         // (2) Replace the empty string to Matched Variables whose index is out of range
         for (; i < 10; i++) {
-            String keyName = "(?i)" + "\\$\\{0*" + String.valueOf(i) + "\\}";
+            String keyName = "(?i)" + "\\$\\{0*" + i + "\\}";
             resultStr = resultStr.replaceAll(keyName, Matcher.quoteReplacement(""));
         }
 
@@ -908,13 +900,13 @@ public final class FilterUtil {
         while (start1 < sourceStr.length()) {
             int start2 = sourceStr.indexOf("${", start1);
             if (start2 >= 0) {
-                resultStr.append(sourceStr.substring(start1, start2));
+                resultStr.append(sourceStr, start1, start2);
                 end = sourceStr.indexOf("}", start2 + 2);
                 if (end > 0) {
                     int start3 = sourceStr.indexOf("${", start2 + 2);
                     if (start3 > start2 && start3 < end) {
                         start1 = start3;
-                        resultStr.append(sourceStr.substring(start2, start3));
+                        resultStr.append(sourceStr, start2, start3);
                     } else {
                         // a variable name found
                         String key = sourceStr.substring(start2 + 2, end).toLowerCase();
@@ -934,18 +926,18 @@ public final class FilterUtil {
                             }
                         } else {
                             // the variable name contains some invalid characters
-                            resultStr.append(sourceStr.substring(start2, end + 1));
+                            resultStr.append(sourceStr, start2, end + 1);
                         }
                         start1 = end + 1;
                     }
                 } else {
                     // no corresponding }
-                    resultStr.append(sourceStr.substring(start2, sourceStr.length()));
+                    resultStr.append(sourceStr.substring(start2));
                     break;
                 }
             } else {
                 // no more ${
-                resultStr.append(sourceStr.substring(end + 1, sourceStr.length()));
+                resultStr.append(sourceStr.substring(end + 1));
                 break;
             }
         }

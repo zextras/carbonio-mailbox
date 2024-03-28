@@ -423,7 +423,7 @@ public abstract class RedoableOp {
         synchronized (mSBAVGuard) {
             if (mSerializedByteArrayVector == null)
                 setSerializedByteArray(serializeToByteArray());
-            List<InputStream> streams = new ArrayList<InputStream>(mSerializedByteArrayVector.length + 1);
+            List<InputStream> streams = new ArrayList<>(mSerializedByteArrayVector.length + 1);
             for (byte[] array : mSerializedByteArrayVector) {
                 streams.add(new ByteArrayInputStream(array));
             }
@@ -442,7 +442,7 @@ public abstract class RedoableOp {
 
     public synchronized void addChainedOp(RedoableOp subOp) {
         if (mChainedOps == null)
-            mChainedOps = new LinkedList<RedoableOp>();
+            mChainedOps = new LinkedList<>();
         mChainedOps.add(subOp);
     }
 
@@ -480,8 +480,8 @@ public abstract class RedoableOp {
         return allGood;
     }
 
-    private static Map<String, Class> sOpClassMap = new HashMap<String, Class>();
-    private static List<ClassLoader> sOpClassLoaders = new ArrayList<ClassLoader>();
+    private static Map<String, Class> sOpClassMap = new HashMap<>();
+    private static List<ClassLoader> sOpClassLoaders = new ArrayList<>();
 
     /**
      * Register a class loader for instantiating redo op objects.
@@ -497,7 +497,7 @@ public abstract class RedoableOp {
 
     public static synchronized void deregisterClassLoader(ClassLoader ldr) {
         mLog.debug("Deregistering class loader " + ldr);
-        List<String> toRemove = new ArrayList<String>();
+        List<String> toRemove = new ArrayList<>();
         for (Map.Entry<String, Class> entry : sOpClassMap.entrySet()) {
             Class clz = entry.getValue();
             if (clz.getClassLoader().equals(ldr))

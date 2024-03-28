@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class ValueCounter<E> {
 
-    private Map<E, Integer> mValues = new HashMap<E, Integer>();
+    private Map<E, Integer> mValues = new HashMap<>();
 
     public void increment(E value) {
         increment(value, 1);
@@ -30,9 +30,9 @@ public class ValueCounter<E> {
     public void increment(E value, int delta) {
         Integer count = mValues.get(value);
         if (count == null) {
-            count = Integer.valueOf(delta);
+            count = delta;
         } else {
-            count = Integer.valueOf(count.intValue() + delta);
+            count = count.intValue() + delta;
         }
         mValues.put(value, count);
     }
@@ -42,7 +42,7 @@ public class ValueCounter<E> {
         if (count == null) {
             return 0;
         }
-        return count.intValue();
+        return count;
     }
 
     public Iterator<E> iterator() {

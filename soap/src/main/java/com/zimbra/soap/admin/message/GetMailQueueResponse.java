@@ -28,7 +28,7 @@ public class GetMailQueueResponse {
      */
     @SuppressWarnings("unused")
     private GetMailQueueResponse() {
-        this((ServerMailQueueDetails) null);
+        this(null);
     }
 
     public GetMailQueueResponse(ServerMailQueueDetails server) {

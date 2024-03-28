@@ -11,16 +11,16 @@ import com.zimbra.soap.type.AccountWithModifications;
 import com.zimbra.soap.type.IdAndType;
 
 public interface WaitSetResp {
-    public void setCanceled(Boolean canceled);
-    public void setSeqNo(String seqNo);
-    public void setSignalledAccounts(Iterable <AccountWithModifications> signalledAccounts);
-    public WaitSetResp addSignalledAccount(AccountWithModifications signalledAccount);
-    public void setErrors(Iterable <IdAndType> errors);
-    public WaitSetResp addError(IdAndType error);
-    public String getWaitSetId();
-    public Boolean getCanceled();
-    public String getSeqNo();
-    public List<AccountWithModifications> getSignalledAccounts();
-    public List<IdAndType> getErrors();
-    public void setWaitSetId(String waitSetId);
+    void setCanceled(Boolean canceled);
+    void setSeqNo(String seqNo);
+    void setSignalledAccounts(Iterable<AccountWithModifications> signalledAccounts);
+    WaitSetResp addSignalledAccount(AccountWithModifications signalledAccount);
+    void setErrors(Iterable<IdAndType> errors);
+    WaitSetResp addError(IdAndType error);
+    String getWaitSetId();
+    Boolean getCanceled();
+    String getSeqNo();
+    List<AccountWithModifications> getSignalledAccounts();
+    List<IdAndType> getErrors();
+    void setWaitSetId(String waitSetId);
 }

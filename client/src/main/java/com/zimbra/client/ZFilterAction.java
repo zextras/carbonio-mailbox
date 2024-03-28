@@ -303,7 +303,7 @@ public abstract class ZFilterAction implements ToZJSONObject {
         }
 
         public int getMaxBodyBytes() {
-            return Integer.valueOf(args.get(3));
+            return Integer.parseInt(args.get(3));
         }
 
         public String getOrigHeaders() {

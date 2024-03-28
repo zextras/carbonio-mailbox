@@ -5,17 +5,6 @@
 
 package com.zimbra.cs.account;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;
@@ -25,6 +14,15 @@ import com.zimbra.common.util.DateUtil;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.Version;
 import com.zimbra.common.util.ZimbraLog;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 
 public class AttributeInfo {
 
@@ -224,8 +222,8 @@ public class AttributeInfo {
             }
             break;
         case TYPE_ENUM:
-            String enums[] = value.split(",");
-            mEnumSet = new LinkedHashSet<String>(enums.length);
+            String[] enums = value.split(",");
+            mEnumSet = new LinkedHashSet<>(enums.length);
           mEnumSet.addAll(Arrays.asList(enums));
             break;
         case TYPE_REGEX:
@@ -278,8 +276,8 @@ public class AttributeInfo {
             checkValue((String) value, checkImmutable, attrsToModify);
         } else if (value instanceof String[]) {
             String[] values = (String[]) value;
-            for (int i=0; i < values.length; i++)
-                checkValue(values[i], checkImmutable, attrsToModify);
+          for (String s : values)
+            checkValue(s, checkImmutable, attrsToModify);
         }
 
         if (isDeprecated() && !DebugConfig.allowModifyingDeprecatedAttributes) {
@@ -300,124 +298,144 @@ public class AttributeInfo {
             return;
 
         switch (mType) {
-        case TYPE_BOOLEAN:
-            if ("TRUE".equals(value) || "FALSE".equals(value))
-                return;
-            else
-                throw AccountServiceException.INVALID_ATTR_VALUE(mName+" must be TRUE or FALSE", null);
-        case TYPE_BINARY:
-        case TYPE_CERTIFICATE:
-            byte[] binary = ByteUtil.decodeLDAPBase64(value);
-            if (binary.length > mMax)
-                throw AccountServiceException.INVALID_ATTR_VALUE(
-                        mName+" value length("+binary.length+") larger than max allowed: "+mMax, null);
-            return;
-        case TYPE_DURATION:
-            if (!DURATION_PATTERN.matcher(value).matches())
-                throw AccountServiceException.INVALID_ATTR_VALUE(mName + " " + DURATION_PATTERN_DOC, null);
-            long l = DateUtil.getTimeInterval(value, 0);
-            if (l < mMin)
-                throw AccountServiceException.INVALID_ATTR_VALUE(
-                        mName+" is shorter than minimum allowed: "+mMinDuration, null);
-            if (l > mMax)
-                throw AccountServiceException.INVALID_ATTR_VALUE(
-                        mName+" is longer than max allowed: "+mMaxDuration, null);
-            return;
-        case TYPE_EMAIL:
-            if (value.length() > mMax)
-                throw AccountServiceException.INVALID_ATTR_VALUE(
-                        mName+" value length("+value.length()+") larger than max allowed: "+mMax, null);
-            validEmailAddress(value, false);
-            return;
-        case TYPE_EMAILP:
-            if (value.length() > mMax)
-                throw AccountServiceException.INVALID_ATTR_VALUE(
-                        mName+" value length("+value.length()+") larger than max allowed: "+mMax, null);
-            validEmailAddress(value, true);
-            return;
-        case TYPE_CS_EMAILP:
-            if (value.length() > mMax)
-                throw AccountServiceException.INVALID_ATTR_VALUE(
-                        mName+" value length("+value.length()+") larger than max allowed: "+mMax, null);
-            String[] emails = value.split(",");
-            for (String email : emails)
-                validEmailAddress(email, true);
-            return;
-        case TYPE_ENUM:
-            if (mEnumSet.contains(value))
-                return;
-            else
-                throw AccountServiceException.INVALID_ATTR_VALUE(mName+" must be one of: "+mValue, null);
-        case TYPE_GENTIME:
-            if (GENTIME_PATTERN.matcher(value).matches())
-                return;
-            else
-                throw AccountServiceException.INVALID_ATTR_VALUE(
-                        mName+" must be a valid generalized time: yyyyMMddHHmmssZ or yyyyMMddHHmmss.SSSZ", null);
-        case TYPE_ID:
-            // For bug 21776 we check format for id only if the Provisioning class mandates
-            // that all attributes of type id must be an UUID.
-            //
-            if (!Provisioning.getInstance().idIsUUID())
-                return;
-
-            if (ID_PATTERN.matcher(value).matches())
-                return;
-            else
-                throw AccountServiceException.INVALID_ATTR_VALUE(mName+" must be a valid id", null);
-        case TYPE_INTEGER:
-            try {
-                int v = Integer.parseInt(value);
-                if (v < mMin)
-                    throw AccountServiceException.INVALID_ATTR_VALUE(
-                            mName+" value("+v+") smaller than minimum allowed: "+mMin, null);
-                if (v > mMax)
-                    throw AccountServiceException.INVALID_ATTR_VALUE(
-                            mName+" value("+v+") larger than max allowed: "+mMax, null);
-                return;
-            } catch (NumberFormatException e) {
-                throw AccountServiceException.INVALID_ATTR_VALUE(mName+" must be a valid integer: "+value, e);
-            }
-        case TYPE_LONG:
-            try {
-                long v = Long.parseLong(value);
-                if (v < mMin)
-                    throw AccountServiceException.INVALID_ATTR_VALUE(
-                            mName+" value("+v+") smaller than minimum allowed: "+mMin, null);
-                if (v > mMax)
-                    throw AccountServiceException.INVALID_ATTR_VALUE(
-                            mName+" value("+v+") larger than max allowed: "+mMax, null);
-                return;
-            } catch (NumberFormatException e) {
-                throw AccountServiceException.INVALID_ATTR_VALUE(mName+" must be a valid long: "+value, e);
-            }
-        case TYPE_PORT:
-            try {
-                int v = Integer.parseInt(value);
-                if (v >= 0 && v <= 65535)
+            case TYPE_BOOLEAN:
+                if ("TRUE".equals(value) || "FALSE".equals(value)) {
                     return;
-                throw AccountServiceException.INVALID_ATTR_VALUE(mName+" must be a valid port: "+value, null);
-            } catch (NumberFormatException e) {
-                throw AccountServiceException.INVALID_ATTR_VALUE(mName+" must be a valid port: "+value, null);
-            }
-        case TYPE_STRING:
-        case TYPE_ASTRING:
-        case TYPE_OSTRING:
-        case TYPE_CSTRING:
-        case TYPE_PHONE:
-            if (value.length() > mMax)
-                throw AccountServiceException.INVALID_ATTR_VALUE(
-                        mName+" value length("+value.length()+") larger than max allowed: "+mMax, null);
-            // TODO
-            return;
-        case TYPE_REGEX:
-            if (mRegex.matcher(value).matches())
+                } else {
+                    throw AccountServiceException.INVALID_ATTR_VALUE(mName + " must be TRUE or FALSE", null);
+                }
+            case TYPE_BINARY:
+            case TYPE_CERTIFICATE:
+                byte[] binary = ByteUtil.decodeLDAPBase64(value);
+                if (binary.length > mMax) {
+                    throw AccountServiceException.INVALID_ATTR_VALUE(
+                        mName + " value length(" + binary.length + ") larger than max allowed: " + mMax, null);
+                }
                 return;
-            else
-                throw AccountServiceException.INVALID_ATTR_VALUE(mName+" must match the regex: "+mValue, null);
-        default:
-            ZimbraLog.misc.warn("unknown type("+mType+") for attribute: "+value);
-            return;
+            case TYPE_DURATION:
+                if (!DURATION_PATTERN.matcher(value).matches()) {
+                    throw AccountServiceException.INVALID_ATTR_VALUE(mName + " " + DURATION_PATTERN_DOC, null);
+                }
+                long l = DateUtil.getTimeInterval(value, 0);
+                if (l < mMin) {
+                    throw AccountServiceException.INVALID_ATTR_VALUE(
+                        mName + " is shorter than minimum allowed: " + mMinDuration, null);
+                }
+                if (l > mMax) {
+                    throw AccountServiceException.INVALID_ATTR_VALUE(
+                        mName + " is longer than max allowed: " + mMaxDuration, null);
+                }
+                return;
+            case TYPE_EMAIL:
+                if (value.length() > mMax) {
+                    throw AccountServiceException.INVALID_ATTR_VALUE(
+                        mName + " value length(" + value.length() + ") larger than max allowed: " + mMax, null);
+                }
+                validEmailAddress(value, false);
+                return;
+            case TYPE_EMAILP:
+                if (value.length() > mMax) {
+                    throw AccountServiceException.INVALID_ATTR_VALUE(
+                        mName + " value length(" + value.length() + ") larger than max allowed: " + mMax, null);
+                }
+                validEmailAddress(value, true);
+                return;
+            case TYPE_CS_EMAILP:
+                if (value.length() > mMax) {
+                    throw AccountServiceException.INVALID_ATTR_VALUE(
+                        mName + " value length(" + value.length() + ") larger than max allowed: " + mMax, null);
+                }
+                String[] emails = value.split(",");
+                for (String email : emails) {
+                    validEmailAddress(email, true);
+                }
+                return;
+            case TYPE_ENUM:
+                if (mEnumSet.contains(value)) {
+                    return;
+                } else {
+                    throw AccountServiceException.INVALID_ATTR_VALUE(mName + " must be one of: " + mValue, null);
+                }
+            case TYPE_GENTIME:
+                if (GENTIME_PATTERN.matcher(value).matches()) {
+                    return;
+                } else {
+                    throw AccountServiceException.INVALID_ATTR_VALUE(
+                        mName + " must be a valid generalized time: yyyyMMddHHmmssZ or yyyyMMddHHmmss.SSSZ", null);
+                }
+            case TYPE_ID:
+                // For bug 21776 we check format for id only if the Provisioning class mandates
+                // that all attributes of type id must be an UUID.
+                //
+                if (!Provisioning.getInstance().idIsUUID()) {
+                    return;
+                }
+
+                if (ID_PATTERN.matcher(value).matches()) {
+                    return;
+                } else {
+                    throw AccountServiceException.INVALID_ATTR_VALUE(mName + " must be a valid id", null);
+                }
+            case TYPE_INTEGER:
+                try {
+                    int v = Integer.parseInt(value);
+                    if (v < mMin) {
+                        throw AccountServiceException.INVALID_ATTR_VALUE(
+                            mName + " value(" + v + ") smaller than minimum allowed: " + mMin, null);
+                    }
+                    if (v > mMax) {
+                        throw AccountServiceException.INVALID_ATTR_VALUE(
+                            mName + " value(" + v + ") larger than max allowed: " + mMax, null);
+                    }
+                    return;
+                } catch (NumberFormatException e) {
+                    throw AccountServiceException.INVALID_ATTR_VALUE(mName + " must be a valid integer: " + value, e);
+                }
+            case TYPE_LONG:
+                try {
+                    long v = Long.parseLong(value);
+                    if (v < mMin) {
+                        throw AccountServiceException.INVALID_ATTR_VALUE(
+                            mName + " value(" + v + ") smaller than minimum allowed: " + mMin, null);
+                    }
+                    if (v > mMax) {
+                        throw AccountServiceException.INVALID_ATTR_VALUE(
+                            mName + " value(" + v + ") larger than max allowed: " + mMax, null);
+                    }
+                    return;
+                } catch (NumberFormatException e) {
+                    throw AccountServiceException.INVALID_ATTR_VALUE(mName + " must be a valid long: " + value, e);
+                }
+            case TYPE_PORT:
+                try {
+                    int v = Integer.parseInt(value);
+                    if (v >= 0 && v <= 65535) {
+                        return;
+                    }
+                    throw AccountServiceException.INVALID_ATTR_VALUE(mName + " must be a valid port: " + value, null);
+                } catch (NumberFormatException e) {
+                    throw AccountServiceException.INVALID_ATTR_VALUE(mName + " must be a valid port: " + value, null);
+                }
+            case TYPE_STRING:
+            case TYPE_ASTRING:
+            case TYPE_OSTRING:
+            case TYPE_CSTRING:
+            case TYPE_PHONE:
+                if (value.length() > mMax) {
+                    throw AccountServiceException.INVALID_ATTR_VALUE(
+                        mName + " value length(" + value.length() + ") larger than max allowed: " + mMax, null);
+                }
+                // TODO
+                return;
+            case TYPE_REGEX:
+                if (mRegex.matcher(value).matches()) {
+                    return;
+                } else {
+                    throw AccountServiceException.INVALID_ATTR_VALUE(mName + " must match the regex: " + mValue, null);
+                }
+            default:
+                ZimbraLog.misc.warn("unknown type(" + mType + ") for attribute: " + value);
+                break;
         }
     }
 

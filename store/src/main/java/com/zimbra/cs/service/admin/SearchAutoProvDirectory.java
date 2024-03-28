@@ -57,13 +57,11 @@ public class SearchAutoProvDirectory extends AdminDocumentHandler {
         String attrsStr = request.getAttribute(AdminConstants.A_ATTRS, null);
         String[] returnAttrs = null;
         if (attrsStr != null) {
-            Set<String> attrs = new HashSet<String>();
+            Set<String> attrs = new HashSet<>();
             for (String attr : Splitter.on(',').trimResults().split(attrsStr)) {
                 attrs.add(attr);
             }
-            if (!attrs.contains(keyAttr)) {
-                attrs.add(keyAttr);
-            }
+          attrs.add(keyAttr);
             returnAttrs = attrs.toArray(new String[0]);
         }
         
@@ -211,10 +209,10 @@ public class SearchAutoProvDirectory extends AdminDocumentHandler {
             CachedResult cachedResult = new CachedResult(params, result);
             session.setData(SEARCH_AUTO_PROV_DIRECTORY_CACHE_KEY, cachedResult);
         }
-    };
-    
-    
-    private void encodeEntries(Element response, List<Entry> entryList, String keyAttr, 
+    }
+
+
+  private void encodeEntries(Element response, List<Entry> entryList, String keyAttr,
             int offset, int limit) {
         int totalEntries = entryList.size();
         
@@ -320,9 +318,9 @@ public class SearchAutoProvDirectory extends AdminDocumentHandler {
         private int size() {
             return entries.size();
         }
-    };
-    
-    private List<Entry> search(Domain domain, String query, String name, String keyAttr, 
+    }
+
+  private List<Entry> search(Domain domain, String query, String name, String keyAttr,
             String[] returnAttrs, int maxResults) throws ServiceException {
         
         Result result = new Result(keyAttr);

@@ -75,7 +75,7 @@ public class MessageSummary extends MessageCommon {
      */
     @SuppressWarnings("unused")
     private MessageSummary() {
-        this((String) null);
+        this(null);
     }
 
     public MessageSummary(String id) {

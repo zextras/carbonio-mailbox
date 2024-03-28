@@ -30,7 +30,7 @@ public abstract class Query {
 
         private final String symbol;
 
-        private Modifier(String symbol) {
+        Modifier(String symbol) {
             this.symbol = symbol;
         }
 
@@ -45,7 +45,7 @@ public abstract class Query {
 
         private final String symbol;
 
-        private Comparison(String symbol) {
+        Comparison(String symbol) {
             this.symbol = symbol;
         }
 

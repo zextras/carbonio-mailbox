@@ -28,10 +28,10 @@ public abstract class MimeVisitor {
 
     /** The list of registered MimeVistor classes that convert stored
      *  messages on the fly. */
-    private static List<Class<? extends MimeVisitor>> sMimeConverters = new ArrayList<Class<? extends MimeVisitor>>();
+    private static List<Class<? extends MimeVisitor>> sMimeConverters = new ArrayList<>();
     /** The list of registered MimeVistor classes that convert new messages
      *  before storing them to disk. */
-    private static List<Class<? extends MimeVisitor>> sMimeMutators   = new ArrayList<Class<? extends MimeVisitor>>();
+    private static List<Class<? extends MimeVisitor>> sMimeMutators   = new ArrayList<>();
 
         static {
             try {
@@ -71,7 +71,7 @@ public abstract class MimeVisitor {
     /** Retrieves the list of all registered MimeVisitor converter classes.
      * @see #registerConverter(Class) */
     public static List<Class<? extends MimeVisitor>> getConverters() {
-        return new ArrayList<Class<? extends MimeVisitor>>(sMimeConverters);
+        return new ArrayList<>(sMimeConverters);
     }
 
     /** Returns whether there are any registered MimeVisitor converter classes.
@@ -100,7 +100,7 @@ public abstract class MimeVisitor {
     /** Retrieves the list of all registered MimeVisitor mutator classes.
      * @see #registerMutator(Class) */
     public static List<Class<? extends MimeVisitor>> getMutators() {
-        return new ArrayList<Class<? extends MimeVisitor>>(sMimeMutators);
+        return new ArrayList<>(sMimeMutators);
     }
 
     /** Returns whether there are any registered MimeVisitor mutator classes.
@@ -115,11 +115,11 @@ public abstract class MimeVisitor {
      *  performed by a <code>MimeVistor</code>.  Note that when a call to
      *  {@link Mime#accept} results in multiple modifications, the callback
      *  will be invoked multiple times. */
-    public static interface ModificationCallback {
+    public interface ModificationCallback {
         /** A callback function invoked immediately prior to any modification
          *  of the message.  If the callback returns <code>false</code>, the
          *  modification is not performed. */
-        public boolean onModification();
+        boolean onModification();
     }
 
     protected ModificationCallback mCallback;
@@ -138,7 +138,7 @@ public abstract class MimeVisitor {
 
     /** The flags passed to the <code>visitXXX</code> methods before and
      *  after a node's children are visited, respectively. */
-    protected enum VisitPhase { VISIT_BEGIN, VISIT_END };
+    protected enum VisitPhase { VISIT_BEGIN, VISIT_END }
 
     /** Visitor callback for traversing a MimeMessage, either standalone
      *  or as an attachment to another MimeMessage.

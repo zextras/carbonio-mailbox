@@ -43,7 +43,7 @@ public class ImapCredentials implements java.io.Serializable {
    * logging into the IMAP server; for instance, the Windows Mobile 5 hack is enabled via the suffix
    * "/wm".
    */
-  static enum EnabledHack {
+  enum EnabledHack {
     NONE,
     WM5("/wm"),
     THUNDERBIRD("/tb"),
@@ -77,7 +77,7 @@ public class ImapCredentials implements java.io.Serializable {
           ZimbraLog.imap.debug(
               "Handling ZMailbox modification changeId=%s info=%s", changeId, info);
           MailboxStore store = getMailbox();
-          if (store != null && store instanceof ZMailbox) {
+          if (store instanceof ZMailbox) {
             ImapServerListenerPool.getInstance().get((ZMailbox) store).notifyAccountChange(info);
           }
         }
@@ -189,7 +189,7 @@ public class ImapCredentials implements java.io.Serializable {
         if (upcase.equals(sub.toUpperCase())) return;
       }
     }
-    if (subscriptions == null) subscriptions = new HashSet<String>();
+    if (subscriptions == null) subscriptions = new HashSet<>();
     subscriptions.add(path.asImapPath());
     saveSubscriptions(subscriptions);
   }
@@ -210,7 +210,7 @@ public class ImapCredentials implements java.io.Serializable {
   }
 
   protected void hideFolder(ImapPath path) {
-    if (mHiddenFolders == null) mHiddenFolders = new HashSet<ImapPath>();
+    if (mHiddenFolders == null) mHiddenFolders = new HashSet<>();
     mHiddenFolders.add(path);
   }
 
@@ -232,7 +232,7 @@ public class ImapCredentials implements java.io.Serializable {
   public void logout() {
     if (mStore != null) {
       MailboxStore store = mStore.getMailboxStore();
-      if (store != null && store instanceof ZMailbox) {
+      if (store instanceof ZMailbox) {
         try {
           ((ZMailbox) store).logout();
         } catch (ZClientException e) {

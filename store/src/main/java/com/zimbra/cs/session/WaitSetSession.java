@@ -116,7 +116,7 @@ public class WaitSetSession extends Session {
             }
             return;
         }
-        if (source != null && source instanceof SoapSession) {
+        if (source instanceof SoapSession) {
             String curWaitSetID = ((SoapSession) source).getCurWaitSetID();
             if (curWaitSetID != null && curWaitSetID.equals(mWs.getWaitSetId())) {
                 if (trace) {

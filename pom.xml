@@ -772,6 +772,12 @@
         <artifactId>zm-charset</artifactId>
         <version>22.5.0</version>
       </dependency>
+      <dependency>
+        <groupId>com.github.stefanbirkner</groupId>
+        <artifactId>system-lambda</artifactId>
+        <version>${system-lambda.version}</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -809,6 +815,7 @@
     <jsr305.version>3.0.2</jsr305.version>
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
+    <system-lambda.version>1.2.1</system-lambda.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <changelist>-SNAPSHOT</changelist>
     <revision>24.5.0</revision>

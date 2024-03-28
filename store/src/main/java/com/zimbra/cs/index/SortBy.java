@@ -87,7 +87,7 @@ public enum SortBy {
         NAME2SORT = builder.build();
     }
 
-    private SortBy(String name, Key key, Direction dir, ZimbraSortBy zimbraSortBy) {
+    SortBy(String name, Key key, Direction dir, ZimbraSortBy zimbraSortBy) {
         this.name = name;
         this.key = key;
         direction = dir;

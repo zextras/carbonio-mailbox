@@ -8,7 +8,6 @@ package com.zimbra.cs.mailbox;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -126,18 +125,17 @@ public class Appointment extends CalendarItem {
 
             // List conflicting appointments and their organizers.
             FreeBusy fb = avail.getFreeBusy();
-            List<FBInstance> instances = new ArrayList<FBInstance>();
-            for (Iterator<Interval> iter = fb.iterator(); iter.hasNext(); ) {
-                Interval interval = iter.next();
-                // busy intervals only
-                if (Conflict.isBusy(interval.getStatus())) {
-                    // busy appointments only
-                    for (FBInstance fbinst : interval.getInstances()) {
-                        if (Conflict.isBusy(fbinst.getFreeBusy()))
-                            instances.add(fbinst);
-                    }
-                }
+            List<FBInstance> instances = new ArrayList<>();
+          for (Interval interval : fb) {
+            // busy intervals only
+            if (Conflict.isBusy(interval.getStatus())) {
+              // busy appointments only
+              for (FBInstance fbinst : interval.getInstances()) {
+                if (Conflict.isBusy(fbinst.getFreeBusy()))
+                  instances.add(fbinst);
+              }
             }
+          }
             for (FBInstance instance : instances) {
                 Date startDate = new Date(instance.getStartTime());
                 Date endDate = new Date(instance.getEndTime());
@@ -269,7 +267,7 @@ public class Appointment extends CalendarItem {
         if (invite.isRecurrence()) {
             instances = expandInstances(st, et, false);
         } else {
-            instances = new ArrayList<Instance>(1);
+            instances = new ArrayList<>(1);
             instances.add(Instance.fromInvite(getId(), invite));
         }
         if (instances == null || instances.isEmpty())
@@ -278,7 +276,7 @@ public class Appointment extends CalendarItem {
         int maxByPct = maxPctConflicts * instances.size() / 100;
         int maxConflicts = Math.min(maxNumConflicts, maxByPct);
 
-        List<Conflict> list = new ArrayList<Conflict>();
+        List<Conflict> list = new ArrayList<>();
         int numConflicts = 0;
         boolean hasMoreConflicts = false;
         for (Instance inst : instances) {
@@ -335,7 +333,7 @@ public class Appointment extends CalendarItem {
         if (attendee != null) {
             Boolean rsvp = attendee.getRsvp();
             if (rsvp != null)
-                rsvpRequested = rsvp.booleanValue();
+                rsvpRequested = rsvp;
         }
         RedoLogProvider redoProvider = RedoLogProvider.getInstance();
         // Don't send reply emails if we're not on master (in redo-driven master/replica setup).
@@ -404,7 +402,7 @@ public class Appointment extends CalendarItem {
                                 // There are some conflicts, but within resource's allowed limit.
                                 if (resource.autoAcceptDecline()) {
                                     // Let's accept partially.  (Accept the series and decline conflicting instances.)
-                                    List<Invite> replyInvites = new ArrayList<Invite>();
+                                    List<Invite> replyInvites = new ArrayList<>();
                                     // the REPLY for the ACCEPT of recurrence series
                                     Invite acceptInv = makeReplyInvite(
                                             account, authAcct, lc, onBehalfOf, allowPrivateAccess, invite, invite.getRecurId(),

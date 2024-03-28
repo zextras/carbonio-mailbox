@@ -51,7 +51,7 @@ implements StatsDumperDataSource
     public Collection<String> getDataLines() {
         // Tally threads by name
         String[] threadNamePrefixes = getThreadNamePrefixes();
-        Map<String, Integer> threadCount = new LinkedHashMap<String, Integer>();
+        Map<String, Integer> threadCount = new LinkedHashMap<>();
         for (String prefix : threadNamePrefixes) {
             threadCount.put(prefix, 0);
         }
@@ -91,7 +91,7 @@ implements StatsDumperDataSource
         buf.append(numThreads);
         
         // Return value
-        List<String> retVal = new ArrayList<String>(1);
+        List<String> retVal = new ArrayList<>(1);
         retVal.add(buf.toString());
         return retVal;
     }

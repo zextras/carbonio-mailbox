@@ -63,9 +63,7 @@ public class CommitId {
                     long txnTstamp = Long.parseLong(fields[1]);
                     TransactionId txnId = TransactionId.decodeFromString(fields[2]);
                     return new CommitId(seq, txnTstamp, txnId);
-                } catch (NumberFormatException e) {
-                    cause = e;
-                } catch (ServiceException e) {
+                } catch (NumberFormatException | ServiceException e) {
                     cause = e;
                 }
             }

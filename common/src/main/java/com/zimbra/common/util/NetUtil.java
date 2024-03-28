@@ -13,7 +13,6 @@ import java.nio.channels.ServerSocketChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -133,12 +132,11 @@ public class NetUtil {
             excludeCiphers == null || excludeCiphers.length == 0)
             return null;
 
-        List<String> excludedCSList = new ArrayList<String>(Arrays.asList(excludeCiphers));
-        List<String> enabledCSList = new ArrayList<String>(Arrays.asList(enabledCiphers));
+        List<String> excludedCSList = new ArrayList<>(Arrays.asList(excludeCiphers));
+        List<String> enabledCSList = new ArrayList<>(Arrays.asList(enabledCiphers));
 
         for (String cipher : excludedCSList) {
-            if (enabledCSList.contains(cipher))
-                enabledCSList.remove(cipher);
+          enabledCSList.remove(cipher);
         }
 
         return enabledCSList.toArray(new String[0]);
@@ -156,17 +154,16 @@ public class NetUtil {
             socket.setEnabledCipherSuites(enabledCiphers);
     }
 
-    private static Map<String, ServerSocket> mBoundSockets = new HashMap<String, ServerSocket>();
+    private static Map<String, ServerSocket> mBoundSockets = new HashMap<>();
 
     private static String makeKey(String address, int port, boolean ssl, boolean useChannels) {
         return "[ssl=" + ssl + ";addr=" + address + ";port=" + port + ";useChannels=" + useChannels + "]";
     }
 
     public static void dumpMap() {
-        for (Iterator<Map.Entry<String, ServerSocket>> iter = mBoundSockets.entrySet().iterator(); iter.hasNext();) {
-            Map.Entry<String, ServerSocket> entry = iter.next();
-            System.err.println(entry.getKey() + " => " + entry.getValue());
-        }
+      for (Map.Entry<String, ServerSocket> entry : mBoundSockets.entrySet()) {
+        System.err.println(entry.getKey() + " => " + entry.getValue());
+      }
     }
 
     public static synchronized void bindServerSocket(String address, int port, boolean ssl, boolean useChannels, String[] excludeCiphers, String[] includeCiphers) throws IOException {

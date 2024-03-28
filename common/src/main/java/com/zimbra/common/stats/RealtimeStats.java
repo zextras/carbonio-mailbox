@@ -25,13 +25,13 @@ import com.zimbra.common.util.ZimbraLog;
 public class RealtimeStats implements Accumulator {
 
     private List<String> mNames;
-    private List<RealtimeStatsCallback> mCallbacks = new ArrayList<RealtimeStatsCallback>();
+    private List<RealtimeStatsCallback> mCallbacks = new ArrayList<>();
     
     public RealtimeStats(String[] names) {
         if (ArrayUtil.isEmpty(names)) {
             throw new IllegalArgumentException("names cannot be null or empty");
         }
-        mNames = new ArrayList<String>();
+        mNames = new ArrayList<>();
       mNames.addAll(Arrays.asList(names));
     }
     
@@ -48,10 +48,10 @@ public class RealtimeStats implements Accumulator {
     }
 
     public List<Object> getData() {
-        List<Object> data = new ArrayList<Object>();
+        List<Object> data = new ArrayList<>();
         
         // Collect stats from all callbacks
-        Map<String, Object> callbackResults = new HashMap<String, Object>();
+        Map<String, Object> callbackResults = new HashMap<>();
         for (RealtimeStatsCallback callback : mCallbacks) {
             Map<String, Object> callbackData = callback.getStatData();
             if (callbackData != null) {

@@ -9,7 +9,7 @@ import com.zimbra.common.util.ZimbraLog;
 
 public abstract class ZLdapElement {
     
-    public static interface ZLdapElementDebugListener {
+    public interface ZLdapElementDebugListener {
         void print(String txt);
         void println(String txt);
         void printStackTrace(Throwable e);

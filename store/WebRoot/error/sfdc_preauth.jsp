@@ -24,7 +24,7 @@ SPDX-License-Identifier: GPL-2.0-only
 --%>
 <%!
     public static String generateRedirect(HttpServletRequest request, String name, String domain_key) throws UnsupportedEncodingException {
-        HashMap<String, String> params = new HashMap<String, String>();
+        HashMap<String, String> params = new HashMap<>();
         String ts = System.currentTimeMillis() + "";
         params.put("account", name);
         params.put("by", "name"); // needs to be part of hmac
@@ -44,7 +44,7 @@ SPDX-License-Identifier: GPL-2.0-only
     }
 
     public static String computePreAuth(Map<String, String> params, String key) {
-        TreeSet<String> names = new TreeSet<String>(params.keySet());
+        TreeSet<String> names = new TreeSet<>(params.keySet());
         StringBuffer sb = new StringBuffer();
         for (Object name : names) {
             if (sb.length() > 0) sb.append('|');
@@ -59,9 +59,7 @@ SPDX-License-Identifier: GPL-2.0-only
             Mac mac = Mac.getInstance("HmacSHA1");
             mac.init(bk);
             return toHex(mac.doFinal(data.getBytes()));
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("fatal error", e);
-        } catch (InvalidKeyException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             throw new RuntimeException("fatal error", e);
         }
     }
@@ -70,7 +68,7 @@ SPDX-License-Identifier: GPL-2.0-only
         private byte[] mKey;
 
         ByteKey(byte[] key) {
-            mKey = (byte[]) key.clone();
+            mKey = key.clone();
         }
 
         public byte[] getEncoded() {

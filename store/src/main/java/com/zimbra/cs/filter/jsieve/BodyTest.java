@@ -10,7 +10,6 @@
 package com.zimbra.cs.filter.jsieve;
 
 import com.zimbra.common.filter.Sieve;
-import com.zimbra.common.filter.Sieve.Comparator;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ByteUtil;
@@ -91,7 +90,7 @@ public class BodyTest extends AbstractTest {
                             try {
                                 String comparator = strList.getList().get(0);
                                 if (ASCII_NUMERIC_COMPARATOR.equalsIgnoreCase(comparator) && mail instanceof ZimbraMailAdapter) {
-                                    Require.checkCapability((ZimbraMailAdapter) mail, ASCII_NUMERIC_COMPARATOR);
+                                    Require.checkCapability(mail, ASCII_NUMERIC_COMPARATOR);
                                 }
                                 caseSensitive = Sieve.Comparator.ioctet == Sieve.Comparator.fromString(comparator);
                             } catch (ServiceException e) {

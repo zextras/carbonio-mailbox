@@ -78,15 +78,12 @@ public class ExpandMimeMessage {
                 if (mExpandedMessage != mMimeMessage)
                     vclass.newInstance().accept(mExpandedMessage);
             }
-        } catch (IllegalAccessException e) {
-            mExpandedMessage = mMimeMessage;
-            throw new MessagingException("Unable to instantiate MimeVisitor", e);
-        } catch (InstantiationException e) {
+        } catch (IllegalAccessException | InstantiationException e) {
             mExpandedMessage = mMimeMessage;
             throw new MessagingException("Unable to instantiate MimeVisitor", e);
         }
-        
-        return wasExpanded();
+
+      return wasExpanded();
     }
 
 }

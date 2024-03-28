@@ -76,7 +76,7 @@ public abstract class AccountDocumentHandler extends DocumentHandler {
         String[] attrs = attrsStr.split(",");
 
         Set<String> attrsOnEntry = AttributeManager.getInstance().getAllAttrsInClass(klass);
-        Set<String> validAttrs = new HashSet<String>();
+        Set<String> validAttrs = new HashSet<>();
 
         for (String attr : attrs) {
             if (attrsOnEntry.contains(attr)) {

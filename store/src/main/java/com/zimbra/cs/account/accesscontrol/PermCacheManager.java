@@ -14,7 +14,6 @@ import com.zimbra.common.util.MapUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.NamedEntry;
-import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.PermissionCache.CachedPermission;
 
 class PermCacheManager {
@@ -189,9 +188,9 @@ class PermCacheManager {
         
         private long resetAt;
         
-        private final LruMap<String, byte[]> credentialToPermissionMap;;
-        
-        private PermCache() {
+        private final LruMap<String, byte[]> credentialToPermissionMap;
+
+      private PermCache() {
             credentialToPermissionMap = MapUtil.newLruMap(ACL_CACHE_CREDENTIAL_MAXSIZE);
             reset();
         }

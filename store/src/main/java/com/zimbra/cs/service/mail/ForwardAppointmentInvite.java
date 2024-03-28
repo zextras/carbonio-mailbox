@@ -96,7 +96,7 @@ public class ForwardAppointmentInvite extends ForwardAppointment {
     mbox.lock.lock();
     try {
       MimeMessage mmInv = msg.getMimeMessage();
-      List<Invite> invs = new ArrayList<Invite>();
+      List<Invite> invs = new ArrayList<>();
       for (Iterator<CalendarItemInfo> iter = msg.getCalendarItemInfoIterator(); iter.hasNext(); ) {
         CalendarItemInfo cii = iter.next();
         Invite inv = cii.getInvite();
@@ -143,10 +143,7 @@ public class ForwardAppointmentInvite extends ForwardAppointment {
               throw ServiceException.FAILURE(
                   "Error building Invite for calendar part in message " + msg.getId(), null);
           }
-        } catch (MessagingException e) {
-          throw ServiceException.FAILURE(
-              "Error getting calendar part in message " + msg.getId(), null);
-        } catch (IOException e) {
+        } catch (MessagingException | IOException e) {
           throw ServiceException.FAILURE(
               "Error getting calendar part in message " + msg.getId(), null);
         }

@@ -47,7 +47,6 @@ public class CreateChat extends CreateMessage {
         } catch (MailServiceException e) {
             if (e.getCode() == MailServiceException.ALREADY_EXISTS) {
                 mLog.info("Chat " + getMessageId() + " is already in mailbox " + mboxId);
-                return;
             } else {
                 throw e;
             }

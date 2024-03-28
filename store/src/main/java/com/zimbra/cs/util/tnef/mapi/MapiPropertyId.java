@@ -228,7 +228,7 @@ public class MapiPropertyId {
       throws IOException {
     Boolean truthValue = getBooleanValue(schedView);
     if (truthValue == null) {
-      truthValue = Boolean.valueOf(defaultValue);
+      truthValue = defaultValue;
     }
     return truthValue;
   }
@@ -260,7 +260,7 @@ public class MapiPropertyId {
       throws IOException {
     Integer retVal = this.getIntegerValue(schedView);
     if (retVal == null) {
-      retVal = Integer.valueOf(defaultVal);
+      retVal = defaultVal;
     }
     return retVal;
   }

@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -114,7 +113,7 @@ public class RedoLogManager {
         mArchiveDir = archdir;
 
         mRWLock = new ReentrantReadWriteLock();
-        mActiveOps = new LinkedHashMap<TransactionId, RedoableOp>(100);
+        mActiveOps = new LinkedHashMap<>(100);
         mTxnIdGenerator = new TxnIdGenerator();
         long minAge = RedoConfig.redoLogRolloverMinFileAge() * 60 * 1000;     // milliseconds
         long softMax = RedoConfig.redoLogRolloverFileSizeKB() * 1024;         // bytes
@@ -201,7 +200,7 @@ public class RedoLogManager {
         long fsyncInterval = RedoConfig.redoLogFsyncIntervalMS();
         mLogWriter = createLogWriter(this, mLogFile, fsyncInterval);
 
-        ArrayList<RedoableOp> postStartupRecoveryOps = new ArrayList<RedoableOp>(100);
+        ArrayList<RedoableOp> postStartupRecoveryOps = new ArrayList<>(100);
         int numRecoveredOps = 0;
         if (mSupportsCrashRecovery) {
             mRecoveryMode = true;
@@ -242,11 +241,10 @@ public class RedoLogManager {
             // file after rollover will still list these uncommitted ops.
             if (postStartupRecoveryOps.size() > 0) {
                 synchronized (mActiveOps) {
-                    for (Iterator iter = postStartupRecoveryOps.iterator(); iter.hasNext(); ) {
-                        RedoableOp op = (RedoableOp) iter.next();
-                        assert(op.isStartMarker());
-                        mActiveOps.put(op.getTransactionId(), op);
-                    }
+                  for (RedoableOp op : postStartupRecoveryOps) {
+                    assert (op.isStartMarker());
+                    mActiveOps.put(op.getTransactionId(), op);
+                  }
                 }
             }
 
@@ -279,39 +277,39 @@ public class RedoLogManager {
         public void run() {
             ZimbraLog.redolog.info("Starting post-startup crash recovery");
             boolean interrupted = false;
-            for (Iterator iter = mOps.iterator(); iter.hasNext(); ) {
-                synchronized (mShuttingDownGuard) {
-                    if (mShuttingDown) {
-                        interrupted = true;
-                        break;
-                    }
-                }
-                RedoableOp op = (RedoableOp) iter.next();
-                try {
-                    if (ZimbraLog.redolog.isDebugEnabled())
-                        ZimbraLog.redolog.debug("REDOING: " + op);
-                    op.redo();
-                } catch (Exception e) {
-                    // If there's any problem, just log the error and move on.
-                    // The alternative is to abort the server, but that may be
-                    // too drastic.
-                    ZimbraLog.redolog.error("Redo failed for [" + op + "]." +
-                                            "  Backend state of affected item is indeterminate." +
-                                            "  Marking operation as aborted and moving on.", e);
-                } finally {
-                    // If the redo didn't work, we need to mark this operation
-                    // as aborted in the redolog so it doesn't get reattempted
-                    // during next startup.
-                    //
-                    // If the redo did work, we still need to mark our op as
-                    // aborted because in the course of the redo a successful
-                    // commit of the operation was logged using a different
-                    // txn ID.  We must therefore tell the redolog the currnt
-                    // op is canceled, to avoid redoing it during next startup.
-                    AbortTxn abort = new AbortTxn(op);
-                    logOnly(abort, true);
-                }
+          for (Object mOp : mOps) {
+            synchronized (mShuttingDownGuard) {
+              if (mShuttingDown) {
+                interrupted = true;
+                break;
+              }
             }
+            RedoableOp op = (RedoableOp) mOp;
+            try {
+              if (ZimbraLog.redolog.isDebugEnabled())
+                ZimbraLog.redolog.debug("REDOING: " + op);
+              op.redo();
+            } catch (Exception e) {
+              // If there's any problem, just log the error and move on.
+              // The alternative is to abort the server, but that may be
+              // too drastic.
+              ZimbraLog.redolog.error("Redo failed for [" + op + "]." +
+                  "  Backend state of affected item is indeterminate." +
+                  "  Marking operation as aborted and moving on.", e);
+            } finally {
+              // If the redo didn't work, we need to mark this operation
+              // as aborted in the redolog so it doesn't get reattempted
+              // during next startup.
+              //
+              // If the redo did work, we still need to mark our op as
+              // aborted because in the course of the redo a successful
+              // commit of the operation was logged using a different
+              // txn ID.  We must therefore tell the redolog the currnt
+              // op is canceled, to avoid redoing it during next startup.
+              AbortTxn abort = new AbortTxn(op);
+              logOnly(abort, true);
+            }
+          }
 
             if (!interrupted)
                 ZimbraLog.redolog.info("Finished post-startup crash recovery");
@@ -436,7 +434,7 @@ public class RedoLogManager {
                         mCounter++;
                     }
                 } catch (NullPointerException e) {
-                    StackTraceElement stack[] = e.getStackTrace();
+                    StackTraceElement[] stack = e.getStackTrace();
                     if (stack == null || stack.length == 0) {
                         ZimbraLog.redolog.warn("Caught NullPointerException during redo logging, but " +
                                                "there is no stack trace in the exception.  " +
@@ -505,12 +503,10 @@ public class RedoLogManager {
 
             // Create an empty LinkedHashSet and insert keys from mActiveOps
             // by iterating the keyset.
-            txns = new LinkedHashSet<TransactionId>();
-            for (Iterator<Map.Entry<TransactionId, RedoableOp>>
-                 it = mActiveOps.entrySet().iterator(); it.hasNext(); ) {
-                Map.Entry<TransactionId, RedoableOp> entry = it.next();
-                txns.add(entry.getKey());
-            }
+            txns = new LinkedHashSet<>();
+          for (Map.Entry<TransactionId, RedoableOp> entry : mActiveOps.entrySet()) {
+            txns.add(entry.getKey());
+          }
         }
         Checkpoint ckpt = new Checkpoint(txns);
         logOnly(ckpt, true);
@@ -706,7 +702,7 @@ public class RedoLogManager {
      */
     public Pair<Set<Integer>, CommitId> getChangedMailboxesSince(CommitId cid)
     throws IOException, MailServiceException {
-        Set<Integer> mailboxes = new HashSet<Integer>();
+        Set<Integer> mailboxes = new HashSet<>();
 
         // Grab a read lock to prevent rollover.
         ReadLock readLock = mRWLock.readLock();
@@ -803,7 +799,7 @@ public class RedoLogManager {
                 throw MailServiceException.INVALID_COMMIT_ID(cid.toString());
             }
             CommitId lastCommitId = new CommitId(lastSeq, lastCommitTxn);
-            return new Pair<Set<Integer>, CommitId>(mailboxes, lastCommitId);
+            return new Pair<>(mailboxes, lastCommitId);
         } finally {
             if (linkDir != null) {
                 // Clean up the temp dir with links.

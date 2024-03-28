@@ -85,7 +85,7 @@ public class CertInfo {
      */
     @SuppressWarnings("unused")
     private CertInfo() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public CertInfo(String server, String type) {

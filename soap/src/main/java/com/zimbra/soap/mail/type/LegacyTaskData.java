@@ -11,7 +11,7 @@ public class LegacyTaskData extends LegacyCalendaringData {
      */
     @SuppressWarnings("unused")
     private LegacyTaskData() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public LegacyTaskData(String xUid, String uid) {

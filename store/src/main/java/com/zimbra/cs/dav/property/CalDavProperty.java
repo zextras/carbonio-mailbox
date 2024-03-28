@@ -147,7 +147,7 @@ public class CalDavProperty extends ResourceProperty {
     public SupportedCalendarComponentSet(MailItem.Type view, boolean includeFreeBusy) {
       super(DavElements.E_SUPPORTED_CALENDAR_COMPONENT_SET);
       super.setAllowSetOnCreate(true);
-      ArrayList<CalComponent> comps = new ArrayList<CalComponent>();
+      ArrayList<CalComponent> comps = new ArrayList<>();
       if (view == MailItem.Type.APPOINTMENT) {
         comps.add(CalComponent.VEVENT);
       } else {
@@ -232,10 +232,7 @@ public class CalDavProperty extends ResourceProperty {
       if (getStringValue() == null)
         try {
           setStringValue(rs.getVcalendar(ctxt, null));
-        } catch (IOException e) {
-          setStringValue("");
-          ZimbraLog.dav.warn("can't get appt data", e);
-        } catch (DavException e) {
+        } catch (IOException | DavException e) {
           setStringValue("");
           ZimbraLog.dav.warn("can't get appt data", e);
         }
@@ -326,7 +323,7 @@ public class CalDavProperty extends ResourceProperty {
       setProtected(false);
       setVisible(false);
 
-      ArrayList<Integer> parentIds = new ArrayList<Integer>();
+      ArrayList<Integer> parentIds = new ArrayList<>();
       try {
         String[] homeSets =
             Provisioning.getInstance()

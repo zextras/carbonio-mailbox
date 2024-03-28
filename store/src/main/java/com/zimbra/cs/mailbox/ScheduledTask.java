@@ -15,7 +15,7 @@ public abstract class ScheduledTask<V>
 implements Callable<V> {
 
     private int mMailboxId;
-    private Map<String, String> mProperties = new HashMap<String, String>();
+    private Map<String, String> mProperties = new HashMap<>();
     private long mIntervalMillis;
     private Date mExecTime;
 

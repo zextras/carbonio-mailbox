@@ -6,7 +6,6 @@
 package com.zimbra.cs.service.account;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -44,13 +43,13 @@ import com.zimbra.soap.account.type.HABGroup;
 
 public class ToXML {
 
-    public static Set<String> skipAttrs = new HashSet<String>();
+    public static Set<String> skipAttrs = new HashSet<>();
     static {
         skipAttrs.add(Provisioning.A_member);
         skipAttrs.add(Provisioning.A_zimbraMailForwardingAddress);
-        };
-    
-    static Element encodeAccount(Element parent, Account account) {
+        }
+
+  static Element encodeAccount(Element parent, Account account) {
         return encodeAccount(parent, account, true, null, null);
     }
 
@@ -120,35 +119,35 @@ public class ToXML {
             ZimbraLog.account.warn("failed to get AttributeManager instance", se);
         }
 
-        for (Iterator iter = attrs.entrySet().iterator(); iter.hasNext(); ) {
-            Map.Entry entry = (Entry) iter.next();
-            String name = (String) entry.getKey();
-            Object value = entry.getValue();
+      for (Object o : attrs.entrySet()) {
+        Entry entry = (Entry) o;
+        String name = (String) entry.getKey();
+        Object value = entry.getValue();
 
-            // Never return data source passwords
-            if (name.equalsIgnoreCase(Provisioning.A_zimbraDataSourcePassword))
-                continue;
+        // Never return data source passwords
+        if (name.equalsIgnoreCase(Provisioning.A_zimbraDataSourcePassword))
+          continue;
 
-            value = Provisioning.sanitizedAttrValue(name, value);
+        value = Provisioning.sanitizedAttrValue(name, value);
 
-            // only returns requested attrs
-            if (reqAttrs != null && !reqAttrs.contains(name))
-                continue;
+        // only returns requested attrs
+        if (reqAttrs != null && !reqAttrs.contains(name))
+          continue;
 
-            boolean allowed = attrRightChecker == null ? true : attrRightChecker.allowAttr(name);
+        boolean allowed = attrRightChecker == null ? true : attrRightChecker.allowAttr(name);
 
-            IDNType idnType = AttributeManager.idnType(attrMgr, name);
+        IDNType idnType = AttributeManager.idnType(attrMgr, name);
 
-            if (value instanceof String[]) {
-                String sv[] = (String[]) value;
-                for (int i = 0; i < sv.length; i++) {
-                    encodeAttr(e, name, sv[i], AccountConstants.E_A, key, idnType, allowed);
-                }
-            } else if (value instanceof String) {
-                value = fixupZimbraPrefTimeZoneId(name, (String)value);
-                encodeAttr(e, name, (String)value, AccountConstants.E_A, key, idnType, allowed);
-            }
+        if (value instanceof String[]) {
+          String[] sv = (String[]) value;
+          for (String s : sv) {
+            encodeAttr(e, name, s, AccountConstants.E_A, key, idnType, allowed);
+          }
+        } else if (value instanceof String) {
+          value = fixupZimbraPrefTimeZoneId(name, (String) value);
+          encodeAttr(e, name, (String) value, AccountConstants.E_A, key, idnType, allowed);
         }
+      }
     }
 
     private static class EntrySearchFilterXmlVisitor implements Visitor {
@@ -156,7 +155,7 @@ public class ToXML {
         Element mRootElement;
 
         public EntrySearchFilterXmlVisitor(Element parent) {
-            mParentStack = new Stack<Element>();
+            mParentStack = new Stack<>();
             mParentStack.push(parent);
         }
 
@@ -267,12 +266,12 @@ public class ToXML {
 
     public static void encodeAttr(Element response, String key, Object value) {
         if (value instanceof String[]) {
-            String sa[] = (String[]) value;
-            for (int i = 0; i < sa.length; i++) {
-                if (!Strings.isNullOrEmpty(sa[i])) {
-                    response.addKeyValuePair(key, sa[i], AccountConstants.E_ATTR, AccountConstants.A_NAME);
-                }
+            String[] sa = (String[]) value;
+          for (String s : sa) {
+            if (!Strings.isNullOrEmpty(s)) {
+              response.addKeyValuePair(key, s, AccountConstants.E_ATTR, AccountConstants.A_NAME);
             }
+          }
         } else if (value instanceof String) {
             if (!Strings.isNullOrEmpty((String) value)) {
                 response.addKeyValuePair(key, (String) value, AccountConstants.E_ATTR, AccountConstants.A_NAME);

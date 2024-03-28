@@ -94,7 +94,7 @@ public final class DbSession {
     public static List<String> get(DbConnection conn, int id) throws ServiceException {
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         try {
             stmt = conn.prepareStatement("SELECT server_id FROM current_sessions WHERE id = ?");
             stmt.setInt(1, id);

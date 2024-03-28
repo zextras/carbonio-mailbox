@@ -89,7 +89,7 @@ public class CheckGalConfigRequest extends AdminAttrsImpl {
     private String action;
 
     public CheckGalConfigRequest() {
-        this((LimitedQuery)null, (String)null);
+        this(null, null);
     }
 
     public CheckGalConfigRequest(LimitedQuery query, String action) {

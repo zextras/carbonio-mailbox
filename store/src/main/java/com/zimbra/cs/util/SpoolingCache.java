@@ -29,7 +29,7 @@ public class SpoolingCache<K extends Serializable> implements Iterable<K> {
     File diskcache = null;
     private ObjectOutputStream oos = null;
     int size = 0;
-    final List<CacheIterator> iterators = new ArrayList<CacheIterator>(3);
+    final List<CacheIterator> iterators = new ArrayList<>(3);
 
     private static final int DEFAULT_MEMORY_CACHE_ITEMS = 100000;
 
@@ -39,7 +39,7 @@ public class SpoolingCache<K extends Serializable> implements Iterable<K> {
 
     public SpoolingCache(int memoryItemLimit) {
         memlimit = memoryItemLimit;
-        memcache = new ArrayList<K>(Math.min(memlimit, 1000));
+        memcache = new ArrayList<>(Math.min(memlimit, 1000));
     }
 
     public void add(K item) throws IOException {
@@ -68,7 +68,7 @@ public class SpoolingCache<K extends Serializable> implements Iterable<K> {
             diskcache = null;
         }
         if (!iterators.isEmpty()) {
-            for (CacheIterator it : new ArrayList<CacheIterator>(iterators)) {
+            for (CacheIterator it : new ArrayList<>(iterators)) {
                 it.cleanup();
             }
         }

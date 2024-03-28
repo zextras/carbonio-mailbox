@@ -18,7 +18,6 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.formatter.ContactCSV;
 import com.zimbra.cs.service.util.ItemId;
-import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.ExportContactsRequest;
 import com.zimbra.soap.mail.message.ExportContactsResponse;
@@ -72,7 +71,7 @@ public final class ExportContacts extends MailDocumentHandler  {
 
         StringBuilder sb = new StringBuilder();
         if (contacts == null)
-            contacts = new ArrayList<Contact>();
+            contacts = new ArrayList<>();
 
         try {
             ContactCSV contactCSV = new ContactCSV(mbox,octxt);

@@ -79,7 +79,7 @@ public class MailSender {
   public static final String MSGTYPE_REPLY = String.valueOf(Flag.toChar(Flag.ID_REPLIED));
   public static final String MSGTYPE_FORWARD = String.valueOf(Flag.toChar(Flag.ID_FORWARDED));
   private static Map<String, PreSendMailListener> mPreSendMailListeners =
-      new ConcurrentHashMap<String, PreSendMailListener>();
+      new ConcurrentHashMap<>();
 
   private Boolean mSaveToSent;
   private Collection<Upload> mUploads;
@@ -92,11 +92,11 @@ public class MailSender {
   private boolean mRedirectMode = false;
   private boolean mCalendarMode = false;
   private boolean mSkipHeaderUpdate = false;
-  private final List<String> mSmtpHosts = new ArrayList<String>();
+  private final List<String> mSmtpHosts = new ArrayList<>();
   private Session mSession;
   private boolean mTrackBadHosts = true;
   private int mCurrentHostIndex = 0;
-  private final List<String> mRecipients = new ArrayList<String>();
+  private final List<String> mRecipients = new ArrayList<>();
   private String mEnvelopeFrom;
   private String mDsn;
   private MimeProcessor mimeProcessor = null;
@@ -105,7 +105,7 @@ public class MailSender {
     mSession = JMSession.getSession();
   }
 
-  public static enum DsnNotifyOption {
+  public enum DsnNotifyOption {
     NEVER,
     SUCCESS,
     FAILURE,
@@ -400,7 +400,7 @@ public class MailSender {
     return mUploads;
   }
 
-  public static enum ReplyForwardType {
+  public enum ReplyForwardType {
     ORIGINAL, // This is an original message; not a reply or forward.
     REPLY, // Reply to another message
     FORWARD // Forwarding another message
@@ -651,7 +651,7 @@ public class MailSender {
       boolean hasRecipients = (mm.getAllRecipients() != null);
       mSaveToSent &= hasRecipients;
 
-      LinkedList<RollbackData> rollbacks = new LinkedList<RollbackData>();
+      LinkedList<RollbackData> rollbacks = new LinkedList<>();
       Object authMailbox = isDelegatedRequest ? null : mbox;
 
       // Bug: 66823
@@ -856,7 +856,7 @@ public class MailSender {
           newAddrs.retainAll(sentAddresses);
           // convert JavaMail Address to Zimbra InternetAddress
           List<com.zimbra.common.mime.InternetAddress> iaddrs =
-              new ArrayList<com.zimbra.common.mime.InternetAddress>(newAddrs.size());
+              new ArrayList<>(newAddrs.size());
           for (Address addr : newAddrs) {
             if (addr instanceof InternetAddress) {
               InternetAddress iaddr = (InternetAddress) addr;
@@ -1037,10 +1037,10 @@ public class MailSender {
 
   private static void appendEnvelopeTo(StringBuilder msg, Address[] rcptAddresses) {
     msg.append(", nrcpts=").append(rcptAddresses.length);
-    for (int i = 0; i < rcptAddresses.length; i++) {
+    for (Address rcptAddress : rcptAddresses) {
       String addr = null;
-      if (rcptAddresses[i] instanceof InternetAddress) {
-        addr = ((InternetAddress) rcptAddresses[i]).getAddress();
+      if (rcptAddress instanceof InternetAddress) {
+        addr = ((InternetAddress) rcptAddress).getAddress();
       }
       if (null != addr) {
         msg.append(", to=").append(addr);
@@ -1142,10 +1142,10 @@ public class MailSender {
       InternetAddress from, InternetAddress sender, Account acct, Account authuser, boolean asAdmin)
       throws ServiceException {
     if (from != null && authuser.isAllowAnyFromAddress()) {
-      return new Pair<InternetAddress, InternetAddress>(from, sender);
+      return new Pair<>(from, sender);
     }
     if (from == null && sender == null) {
-      return new Pair<InternetAddress, InternetAddress>(
+      return new Pair<>(
           AccountUtil.getFriendlyEmailAddress(authuser), null);
     }
     if (Objects.equal(sender, from)) { // no need for matching Sender and From addresses
@@ -1162,7 +1162,7 @@ public class MailSender {
             || // either it's my address
             amgr.canSendAs(
                 authuser, acct, from.getAddress(), asAdmin))) { // or I've been granted permission
-      return new Pair<InternetAddress, InternetAddress>(from, null);
+      return new Pair<>(from, null);
     }
     if (sender != null) {
       // send-obo requested.
@@ -1177,16 +1177,16 @@ public class MailSender {
     }
     if (mCalendarMode) {
       // In calendar mode any user may send on behalf of any other user.
-      return new Pair<InternetAddress, InternetAddress>(from, sender);
+      return new Pair<>(from, sender);
     } else if (amgr.canSendOnBehalfOf(authuser, acct, from.getAddress(), asAdmin)) {
       // Allow based on rights granted.
-      return new Pair<InternetAddress, InternetAddress>(from, sender);
+      return new Pair<>(from, sender);
     } else if (AccountUtil.isAllowedDataSourceSendAddress(authuser, from.getAddress())) {
       // Allow send-obo if address is a pop/imap/caldav data source address. (bugs 38813/46378)
-      return new Pair<InternetAddress, InternetAddress>(from, sender);
+      return new Pair<>(from, sender);
     } else {
       // Not allowed to use the requested From value.  Send as self.
-      return new Pair<InternetAddress, InternetAddress>(sender, null);
+      return new Pair<>(sender, null);
     }
   }
 
@@ -1236,7 +1236,7 @@ public class MailSender {
           authToken = AuthProvider.getAuthToken(authuser, isAdminRequest);
         }
         // using the sync formatter is suboptimal, but it should work
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         params.put("fmt", "sync");
         params.put("body", "0");
         params.put("nohdr", "1");
@@ -1328,7 +1328,7 @@ public class MailSender {
       Mailbox mbox, final MimeMessage mm, Collection<RollbackData> rollbacks)
       throws SafeMessagingException, IOException {
     // send the message via SMTP
-    HashSet<Address> sentAddresses = new HashSet<Address>();
+    HashSet<Address> sentAddresses = new HashSet<>();
     mCurrentHostIndex = 0;
     String hostname = getNextHost();
 

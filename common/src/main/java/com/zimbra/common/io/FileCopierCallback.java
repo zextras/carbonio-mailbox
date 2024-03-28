@@ -22,12 +22,12 @@ public interface FileCopierCallback {
      * @return true if operation may proceed; false if operation should not
      *         proceed, usually due to an error in earlier operation
      */
-    public boolean fileCopierCallbackBegin(Object cbarg);
+    boolean fileCopierCallbackBegin(Object cbarg);
 
     /**
      * Callback that is called when a file operation completes
      * @param cbarg
      * @param err null if successful; non-null if there was an error
      */
-    public void fileCopierCallbackEnd(Object cbarg, Throwable err);
+    void fileCopierCallbackEnd(Object cbarg, Throwable err);
 }

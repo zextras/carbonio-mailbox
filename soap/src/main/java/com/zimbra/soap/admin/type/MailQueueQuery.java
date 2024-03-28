@@ -47,7 +47,7 @@ public class MailQueueQuery {
      */
     @SuppressWarnings("unused")
     private MailQueueQuery() {
-        this((String) null, (Boolean) null, (Long) null, (QueueQuery) null);
+        this(null, null, null, null);
     }
 
     public MailQueueQuery(String queueName, Boolean scan, Long waitSeconds, QueueQuery query) {

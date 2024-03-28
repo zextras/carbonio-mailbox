@@ -5,7 +5,5 @@
 
 package com.zimbra.soap.mail.type;
 
-import com.zimbra.common.soap.MailConstants;
-
 public class ChatMessageInfo extends MessageInfo {
 }

@@ -27,7 +27,7 @@ public class FolderSpec {
      */
     @SuppressWarnings("unused")
     private FolderSpec() {
-        this((String) null);
+        this(null);
     }
 
     public FolderSpec(String folder) {

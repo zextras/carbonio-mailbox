@@ -23,7 +23,7 @@ public interface ExternalResumableUpload {
      * @throws IOException
      * @throws ServiceException
      */
-    public ExternalResumableIncomingBlob newIncomingBlob(String id, Object ctxt) throws IOException, ServiceException;
+    ExternalResumableIncomingBlob newIncomingBlob(String id, Object ctxt) throws IOException, ServiceException;
 
     /**
      * Finalize an upload. Depending on store semantics this may involve a
@@ -34,5 +34,5 @@ public interface ExternalResumableUpload {
      * @throws IOException
      * @throws ServiceException
      */
-    public String finishUpload(ExternalUploadedBlob blob) throws IOException, ServiceException;
+    String finishUpload(ExternalUploadedBlob blob) throws IOException, ServiceException;
 }

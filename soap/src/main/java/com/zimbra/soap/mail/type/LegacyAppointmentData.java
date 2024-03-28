@@ -11,7 +11,7 @@ public class LegacyAppointmentData extends LegacyCalendaringData {
      */
     @SuppressWarnings("unused")
     private LegacyAppointmentData() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public LegacyAppointmentData(String xUid, String uid) {

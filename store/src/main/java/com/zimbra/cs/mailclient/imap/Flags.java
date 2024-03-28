@@ -101,7 +101,7 @@ public final class Flags extends AbstractSet<Atom> {
             return b;
         }
         if (otherFlags == null) {
-            otherFlags = new HashSet<Atom>();
+            otherFlags = new HashSet<>();
         }
         return otherFlags.add(flag);
     }
@@ -171,7 +171,7 @@ public final class Flags extends AbstractSet<Atom> {
 
     @Override
     public Iterator<Atom> iterator() {
-        List<Atom> flags = new ArrayList<Atom>(size());
+        List<Atom> flags = new ArrayList<>(size());
         for (CAtom catom : FLAG_ATOMS) {
             if (isSet(getMask(catom))) {
                 flags.add(catom.atom());

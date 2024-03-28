@@ -33,9 +33,7 @@ public class DbStatus {
             rs = stmt.executeQuery();
             if (rs.next())
                 result = true;
-        } catch (SQLException e) {
-            mLog.warn("Database health check error", e);
-        } catch (ServiceException e) {
+        } catch (SQLException | ServiceException e) {
             mLog.warn("Database health check error", e);
         } finally {
             try {

@@ -16,7 +16,7 @@ import java.util.Set;
 public final class DomainBrowseTerm extends BrowseTerm {
 
     public enum Field {
-        FROM, TO, CC;
+        FROM, TO, CC
     }
 
     private Set<Field> fields = EnumSet.noneOf(Field.class);

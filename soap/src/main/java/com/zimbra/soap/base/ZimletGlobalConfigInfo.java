@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ZimletGlobalConfigInfo {
 
-    public void setZimletProperties(Iterable <ZimletProperty> properties);
-    public void addZimletProperty(ZimletProperty property);
-    public List<ZimletProperty> getZimletProperties();
+    void setZimletProperties(Iterable<ZimletProperty> properties);
+    void addZimletProperty(ZimletProperty property);
+    List<ZimletProperty> getZimletProperties();
 }

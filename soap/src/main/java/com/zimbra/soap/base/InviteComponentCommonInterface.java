@@ -10,107 +10,107 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface InviteComponentCommonInterface {
-  public InviteComponentCommonInterface create(String method, int componentNum, boolean rsvp);
+  InviteComponentCommonInterface create(String method, int componentNum, boolean rsvp);
 
-  public void setPriority(String priority);
+  void setPriority(String priority);
 
-  public void setName(String name);
+  void setName(String name);
 
-  public void setLocation(String location);
+  void setLocation(String location);
 
-  public void setNoBlob(Boolean noBlob);
+  void setNoBlob(Boolean noBlob);
 
-  public void setFreeBusyActual(String freeBusyActual);
+  void setFreeBusyActual(String freeBusyActual);
 
-  public void setFreeBusy(String freeBusy);
+  void setFreeBusy(String freeBusy);
 
-  public void setTransparency(String transparency);
+  void setTransparency(String transparency);
 
-  public void setIsOrganizer(Boolean isOrganizer);
+  void setIsOrganizer(Boolean isOrganizer);
 
-  public void setXUid(String xUid);
+  void setXUid(String xUid);
 
-  public void setUid(String uid);
+  void setUid(String uid);
 
-  public void setSequence(Integer sequence);
+  void setSequence(Integer sequence);
 
-  public void setDateTime(Long dateTime);
+  void setDateTime(Long dateTime);
 
-  public void setCalItemId(String calItemId);
+  void setCalItemId(String calItemId);
 
-  public void setDeprecatedApptId(String deprecatedApptId);
+  void setDeprecatedApptId(String deprecatedApptId);
 
-  public void setCalItemFolder(String calItemFolder);
+  void setCalItemFolder(String calItemFolder);
 
-  public void setStatus(String status);
+  void setStatus(String status);
 
-  public void setCalClass(String calClass);
+  void setCalClass(String calClass);
 
-  public void setUrl(String url);
+  void setUrl(String url);
 
-  public void setIsException(Boolean isException);
+  void setIsException(Boolean isException);
 
-  public void setRecurIdZ(String recurIdZ);
+  void setRecurIdZ(String recurIdZ);
 
-  public void setIsAllDay(Boolean isAllDay);
+  void setIsAllDay(Boolean isAllDay);
 
-  public void setIsDraft(Boolean isDraft);
+  void setIsDraft(Boolean isDraft);
 
-  public void setNeverSent(Boolean neverSent);
+  void setNeverSent(Boolean neverSent);
 
-  public void setChanges(String changes);
+  void setChanges(String changes);
 
-  public String getMethod();
+  String getMethod();
 
-  public int getComponentNum();
+  int getComponentNum();
 
-  public boolean getRsvp();
+  boolean getRsvp();
 
-  public String getPriority();
+  String getPriority();
 
-  public String getName();
+  String getName();
 
-  public String getLocation();
+  String getLocation();
 
-  public Boolean getNoBlob();
+  Boolean getNoBlob();
 
-  public String getFreeBusyActual();
+  String getFreeBusyActual();
 
-  public String getFreeBusy();
+  String getFreeBusy();
 
-  public String getTransparency();
+  String getTransparency();
 
-  public Boolean getIsOrganizer();
+  Boolean getIsOrganizer();
 
-  public String getXUid();
+  String getXUid();
 
-  public String getUid();
+  String getUid();
 
-  public Integer getSequence();
+  Integer getSequence();
 
-  public Long getDateTime();
+  Long getDateTime();
 
-  public String getCalItemId();
+  String getCalItemId();
 
-  public String getDeprecatedApptId();
+  String getDeprecatedApptId();
 
-  public String getCalItemFolder();
+  String getCalItemFolder();
 
-  public String getStatus();
+  String getStatus();
 
-  public String getCalClass();
+  String getCalClass();
 
-  public String getUrl();
+  String getUrl();
 
-  public Boolean getIsException();
+  Boolean getIsException();
 
-  public String getRecurIdZ();
+  String getRecurIdZ();
 
-  public Boolean getIsAllDay();
+  Boolean getIsAllDay();
 
-  public Boolean getIsDraft();
+  Boolean getIsDraft();
 
-  public Boolean getNeverSent();
+  Boolean getNeverSent();
 
-  public String getChanges();
+  String getChanges();
 }

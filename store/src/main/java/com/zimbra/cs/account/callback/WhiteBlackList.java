@@ -62,7 +62,7 @@ public class WhiteBlackList extends AttributeCallback {
         // if max can't be parsed as an integer, NumberFormatException will be thrown
         // and the check will fail.   It is not likely to happen though, becasue the 
         // limit attrs are defined as integer.
-        int numMax = Integer.valueOf(max);
+        int numMax = Integer.parseInt(max);
         
         Object replace = attrsToModify.get(attrName);
         Object add = attrsToModify.get("+" + attrName);

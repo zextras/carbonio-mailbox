@@ -16,7 +16,6 @@ import java.util.concurrent.ExecutorService;
 import com.zimbra.common.mailbox.MailboxStore;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.session.PendingModifications;
 import com.zimbra.cs.session.PendingLocalModifications;
 
 import com.zimbra.cs.session.Session;
@@ -106,54 +105,42 @@ public class MailboxNotification extends Message {
     }
 
     private void handleMailboxNotification(final MailboxNotification message) {
-        executor.submit(new Runnable() {
-            @Override
-            public void run() {
-                Collection<Session> sessions = SessionCache.getAllSessions(message.getRecipientAccountId());
-                if (sessions == null || sessions.isEmpty()) {
-                    log.warn("no active sessions for account %s", message.getRecipientAccountId());
-                    return;
-                }
+        executor.submit(() -> {
+            Collection<Session> sessions = SessionCache.getAllSessions(message.getRecipientAccountId());
+            if (sessions == null || sessions.isEmpty()) {
+                log.warn("no active sessions for account %s", message.getRecipientAccountId());
+                return;
+            }
 
-                PendingLocalModifications pms = null;
-                for (Session session : sessions) {
-                    log.debug("notifying session %s", session.toString());
-                    if (pms == null) {
-                        try {
-                            MailboxStore mboxStore = session.getMailbox();
-                            if ((null == mboxStore) || (mboxStore instanceof Mailbox)) {
-                                pms = PendingLocalModifications.deserialize((Mailbox)mboxStore, message.getPayload());
-                            } else {
-                                log.warn("could not deserialize notification for non-Mailbox MailboxStore '%s'",
-                                        mboxStore.getClass().getName());
-                            }
-                        } catch (IOException e) {
-                            log.warn("could not deserialize notification", e);
-                            return;
-                        } catch (ClassNotFoundException e) {
-                            log.warn("could not deserialize notification", e);
-                            return;
-                        } catch (ServiceException e) {
-                            log.warn("could not deserialize notification", e);
-                            return;
+            PendingLocalModifications pms = null;
+            for (Session session : sessions) {
+                log.debug("notifying session %s", session.toString());
+                if (pms == null) {
+                    try {
+                        MailboxStore mboxStore = session.getMailbox();
+                        if ((null == mboxStore) || (mboxStore instanceof Mailbox)) {
+                            pms = PendingLocalModifications.deserialize((Mailbox)mboxStore, message.getPayload());
+                        } else {
+                            log.warn("could not deserialize notification for non-Mailbox MailboxStore '%s'",
+                                    mboxStore.getClass().getName());
                         }
+                    } catch (IOException | ServiceException | ClassNotFoundException e) {
+                        log.warn("could not deserialize notification", e);
+                        return;
                     }
-                    session.notifyPendingChanges(pms, message.getChangeId(), null);
                 }
+                session.notifyPendingChanges(pms, message.getChangeId(), null);
             }
         });
     }
 
     @Override
     public MessageHandler getHandler() {
-        return new MessageHandler() {
-            @Override
-            public void handle(Message m, String clientId) {
-                if (!(m instanceof MailboxNotification)) {
-                    return;
-                }
-                handleMailboxNotification((MailboxNotification) m);
+        return (m, clientId) -> {
+            if (!(m instanceof MailboxNotification)) {
+                return;
             }
+            handleMailboxNotification((MailboxNotification) m);
         };
     }
 

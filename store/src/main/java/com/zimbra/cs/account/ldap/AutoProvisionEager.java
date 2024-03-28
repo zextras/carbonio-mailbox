@@ -137,7 +137,7 @@ public class AutoProvisionEager extends AutoProvision {
 
         long polledAt = System.currentTimeMillis();
 
-        List<ExternalEntry> entries = new ArrayList<ExternalEntry>();
+        List<ExternalEntry> entries = new ArrayList<>();
         boolean hitSizeLimitExceededException = searchAccounts(entries, domain.getAutoProvBatchSize());
         ZimbraLog.autoprov.info("%d external LDAP entries returned as search result", entries.size());
         int stuckAcctNum = 0;
@@ -196,7 +196,7 @@ public class AutoProvisionEager extends AutoProvision {
         Server localServer = prov.getLocalServer();
 
         ZLdapFilter filter = ZLdapFilterFactory.getInstance().domainLockedForEagerAutoProvision();
-        Map<String, Object> attrs = new HashMap<String, Object>();
+        Map<String, Object> attrs = new HashMap<>();
         attrs.put(Provisioning.A_zimbraAutoProvLock, localServer.getId());
 
         boolean gotLock = prov.getHelper().testAndModifyEntry(zlc, ((LdapEntry)domain).getDN(),
@@ -212,7 +212,7 @@ public class AutoProvisionEager extends AutoProvision {
 
     private void unlockDomain(ZLdapContext zlc) throws ServiceException {
         // clear the server id in the lock
-        Map<String, Object> attrs = new HashMap<String, Object>();
+        Map<String, Object> attrs = new HashMap<>();
         attrs.put(Provisioning.A_zimbraAutoProvLock, "");
 
         prov.getHelper().modifyAttrs(zlc, ((LdapEntry)domain).getDN(), attrs, domain);

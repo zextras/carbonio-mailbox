@@ -14,7 +14,6 @@ import java.util.Map;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.db.DbPool.DbConnection;
-import com.zimbra.cs.mailbox.MailboxManager;
 
 /**
  * @since Apr 8, 2004
@@ -139,7 +138,7 @@ public class DbConfig {
 
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        HashMap<String, DbConfig> result = new HashMap<String, DbConfig>();
+        HashMap<String, DbConfig> result = new HashMap<>();
         try {
             if (ts == null) {
                 stmt = conn.prepareStatement("SELECT * FROM config");

@@ -41,8 +41,8 @@ public class MailUtil {
             .append("could not be delivered to one or more recipients.\n\n")
             .append("For further assistance, please send mail to postmaster.\n\n");
 
-        List<String> invalidAddrs = new ArrayList<String> ();
-        List<String> unsentAddrs = new ArrayList<String> ();
+        List<String> invalidAddrs = new ArrayList<>();
+        List<String> unsentAddrs = new ArrayList<>();
 
         if (addressArgs != null) {
             for (Argument arg : addressArgs) {
@@ -73,7 +73,7 @@ public class MailUtil {
      * and then get the list of invalid e-mail addresses. 
      */
     
-    private class VerifyRcptSMTPTransport extends SMTPTransport {
+    private static class VerifyRcptSMTPTransport extends SMTPTransport {
         public VerifyRcptSMTPTransport(Session session, URLName urlname) {
             super(session, urlname);
         }

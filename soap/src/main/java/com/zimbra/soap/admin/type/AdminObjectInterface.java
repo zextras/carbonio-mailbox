@@ -8,7 +8,7 @@ package com.zimbra.soap.admin.type;
 import java.util.List;
 
 public interface AdminObjectInterface {
-    public String getName();
-    public String getId();
-    public List<Attr> getAttrList();
+    String getName();
+    String getId();
+    List<Attr> getAttrList();
 }

@@ -14,7 +14,6 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.accesscontrol.Right.RightType;
 import com.zimbra.cs.account.accesscontrol.RightBearer.Grantee;
 
 public class AllowedAttrs implements AccessManager.AttrRightChecker {
@@ -24,7 +23,7 @@ public class AllowedAttrs implements AccessManager.AttrRightChecker {
     public enum Result {
         ALLOW_ALL,
         DENY_ALL,
-        ALLOW_SOME;
+        ALLOW_SOME
     }
     
     private Result mResult;
@@ -78,7 +77,7 @@ public class AllowedAttrs implements AccessManager.AttrRightChecker {
                 for (String a : attrsNeeded)
                     sb.append(a).append(" ");
             }
-            sLog.debug("canAccessAttrs attrsNeeded: " + sb.toString());
+            sLog.debug("canAccessAttrs attrsNeeded: " + sb);
         }
         
         if (mResult == AllowedAttrs.Result.ALLOW_ALL)

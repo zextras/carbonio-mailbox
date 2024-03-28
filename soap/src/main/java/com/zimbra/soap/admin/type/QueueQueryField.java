@@ -39,7 +39,7 @@ public class QueueQueryField {
      */
     @SuppressWarnings("unused")
     private QueueQueryField() {
-        this((String) null);
+        this(null);
     }
 
     public QueueQueryField(String name) {
