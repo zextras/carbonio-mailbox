@@ -4,7 +4,6 @@
 
 package com.zimbra.cs.service.mail.message.parser;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
@@ -128,14 +127,16 @@ public final class ParseMimeMessage {
   public static MimeMessage parseMimeMsgSoap(ZimbraSoapContext zsc, OperationContext octxt,
       Mailbox mbox, Element msgElem, MimeMessageData out)
       throws ServiceException {
-    return parseMimeMsgSoap(zsc, octxt, mbox, msgElem, null, NO_INV_ALLOWED_PARSER, out, false, new ParseMessageContext());
+    var parseMessageContext = ParseMessageContext.create(zsc, octxt, mbox, out, true);
+    return parseMimeMsgSoap(parseMessageContext, msgElem, null, NO_INV_ALLOWED_PARSER, false);
   }
 
   // calendar
   public static MimeMessage parseMimeMsgSoap(ZimbraSoapContext zsc, OperationContext octxt,
       Mailbox mbox, Element msgElem, MimeBodyPart[] additionalParts, InviteParser inviteParser,
       MimeMessageData out) throws ServiceException {
-    return parseMimeMsgSoap(zsc, octxt, mbox, msgElem, additionalParts, inviteParser, out, false, new ParseMessageContext());
+    var parseMessageContext = ParseMessageContext.create(zsc, octxt, mbox, out, true);
+    return parseMimeMsgSoap(parseMessageContext, msgElem, additionalParts, inviteParser, false);
   }
 
   // draft
@@ -143,29 +144,15 @@ public final class ParseMimeMessage {
       Mailbox mbox,
       Element msgElem, MimeMessageData out)
       throws ServiceException {
-    return parseMimeMsgSoap(zsc, octxt, mbox, msgElem, null, NO_INV_ALLOWED_PARSER, out,
-        true, new ParseMessageContext(false));
+    var parseMessageContext = ParseMessageContext.create(zsc, octxt, mbox, out, false);
+    return parseMimeMsgSoap(parseMessageContext, msgElem, null, NO_INV_ALLOWED_PARSER, true);
   }
 
 
-  private static MimeMessage parseMimeMsgSoap(ZimbraSoapContext zsc, OperationContext octxt, Mailbox mbox, Element msgElem, MimeBodyPart[] additionalParts,
-      InviteParser inviteParser, MimeMessageData out, boolean attachMessageFromCache, ParseMessageContext ctxt) throws ServiceException {
+  private static MimeMessage parseMimeMsgSoap(ParseMessageContext ctxt, Element msgElem, MimeBodyPart[] additionalParts, InviteParser inviteParser, boolean attachMessageFromCache) throws ServiceException {
     assert (msgElem.getName().equals(MailConstants.E_MSG)); // msgElem == "<m>" E_MSG
-
-    Account target = DocumentHandler.getRequestedAccount(zsc);
-
-    ctxt.out = out;
-    ctxt.zsc = zsc;
-    ctxt.octxt = octxt;
-    ctxt.mbox = mbox;
-    ctxt.use2231 = target.isPrefUseRfc2231();
-    ctxt.defaultCharset = target.getPrefMailDefaultCharset();
-    if (Strings.isNullOrEmpty(ctxt.defaultCharset)) {
-      ctxt.defaultCharset = MimeConstants.P_CHARSET_UTF8;
-    }
-
     try {
-      MimeMessage mm = new Mime.FixedMimeMessage(JMSession.getSmtpSession(target));
+      MimeMessage mm = new Mime.FixedMimeMessage(ctxt.getSmtpSession());
       MimeMultipart mmp = null;
 
       Element partElem = msgElem.getOptionalElement(MailConstants.E_MIMEPART);
@@ -200,7 +187,7 @@ public final class ParseMimeMessage {
         int curAltPart = 0;
 
         // goes into the "content" subpart
-        InviteParserResult result = inviteParser.parse(zsc, octxt, mbox.getAccount(), inviteElem);
+        InviteParserResult result = inviteParser.parse(ctxt.getZsc(), ctxt.getOctxt(), ctxt.getMbox().getAccount(), inviteElem);
 
         if (partElem != null && result.mCal != null) {
           // If textual content is provided and there's an invite,
@@ -261,7 +248,7 @@ public final class ParseMimeMessage {
             // processMessagePart(mm, elem);
             break;
           case MailConstants.E_EMAIL:  /* <e> */
-            maddrs.add(elem, ctxt.defaultCharset);
+            maddrs.add(elem, ctxt.getDefaultCharset());
             break;
           case MailConstants.E_IN_REPLY_TO:  /* <irt> */
             // mm.setHeader("In-Reply-To", elem.getText());
@@ -297,7 +284,7 @@ public final class ParseMimeMessage {
 
       // deal with things that can be either <m> attributes or subelements
       String subject = msgElem.getAttribute(MailConstants.E_SUBJECT, "");
-      mm.setSubject(subject, CharsetUtil.checkCharset(subject, ctxt.defaultCharset));
+      mm.setSubject(subject, CharsetUtil.checkCharset(subject, ctxt.getDefaultCharset()));
 
       String irt = cleanReference(msgElem.getAttribute(MailConstants.E_IN_REPLY_TO, null));
       if (irt != null) {
@@ -391,13 +378,13 @@ public final class ParseMimeMessage {
     String attachIds = attachElem.getAttribute(MailConstants.A_ATTACHMENT_ID, null);
     if (attachIds != null) {
       for (String uploadId : attachIds.split(FileUploadServlet.UPLOAD_DELIMITER)) {
-        Upload up = FileUploadServlet.fetchUpload(ctxt.zsc.getAuthtokenAccountId(), uploadId,
-            ctxt.zsc.getAuthToken());
+        Upload up = FileUploadServlet.fetchUpload(ctxt.getZsc().getAuthtokenAccountId(), uploadId,
+            ctxt.getZsc().getAuthToken());
         if (up == null) {
           throw MailServiceException.NO_SUCH_UPLOAD(uploadId);
         }
         attachUpload(mmp, up, contentID, ctxt, null, null, contentDisposition, false);
-        ctxt.out.addUpload(up);
+        ctxt.getOut().addUpload(up);
       }
     }
 
@@ -410,22 +397,22 @@ public final class ParseMimeMessage {
           case MailConstants.E_MIMEPART: {
             String mid = elem.getAttribute(MailConstants.A_MESSAGE_ID);
             if (mid.indexOf(ItemIdentifier.ACCOUNT_DELIMITER) == -1) {
-              mid = ctxt.zsc.getAuthToken().getAccount().getId()
+              mid = ctxt.getZsc().getAuthToken().getAccount().getId()
                   + ItemIdentifier.ACCOUNT_DELIMITER + mid;
             }
-            ItemId iid = new ItemId(mid, ctxt.zsc);
+            ItemId iid = new ItemId(mid, ctxt.getZsc());
             String part = elem.getAttribute(MailConstants.A_PART);
             boolean requiresSmartLinkConversion = elem.getAttributeBool(MailConstants.A_REQUIRES_SMART_LINK_CONVERSION, false);
             attachPart(mmp, iid, part, contentID, ctxt, contentDisposition, requiresSmartLinkConversion);
             break;
           }
           case MailConstants.E_MSG: {
-            ItemId iid = new ItemId(elem.getAttribute(MailConstants.A_ID), ctxt.zsc);
+            ItemId iid = new ItemId(elem.getAttribute(MailConstants.A_ID), ctxt.getZsc());
             attachMessage(mmp, iid, contentID, ctxt, attachFromMessageCache);
             break;
           }
           case MailConstants.E_CONTACT: {
-            ItemId iid = new ItemId(elem.getAttribute(MailConstants.A_ID), ctxt.zsc);
+            ItemId iid = new ItemId(elem.getAttribute(MailConstants.A_ID), ctxt.getZsc());
             attachContact(mmp, iid, contentID, ctxt);
             break;
           }
@@ -446,7 +433,7 @@ public final class ParseMimeMessage {
       ParseMessageContext ctxt, boolean isQPencodeRequired)
       throws MessagingException, ServiceException, IOException {
     String type = elem.getAttribute(MailConstants.A_CONTENT_TYPE, MimeConstants.CT_DEFAULT).trim();
-    ContentType ctype = new ContentType(type, ctxt.use2231).cleanup();
+    ContentType ctype = new ContentType(type, ctxt.isUse2231()).cleanup();
 
     // is the client passing us a multipart?
     if (ctype.getPrimaryType().equals("multipart")) {
@@ -490,7 +477,7 @@ public final class ParseMimeMessage {
       ctxt.incrementSize("message body", raw.length);
 
       // if the user has specified an alternative charset, make sure it exists and can encode the content
-      String charset = CharsetUtil.checkCharset(text, ctxt.defaultCharset);
+      String charset = CharsetUtil.checkCharset(text, ctxt.getDefaultCharset());
       ctype.setCharset(charset).setParameter(MimeConstants.P_CHARSET, charset);
 
       Object content = ctype.getContentType().equals(ContentType.MESSAGE_RFC822) ?
@@ -640,9 +627,9 @@ public final class ParseMimeMessage {
     ContentType ctype = ctypeOverride;
     ContentDisposition cdisp;
     if (Part.INLINE.equalsIgnoreCase(contentDisposition)) {
-      cdisp = new ContentDisposition(Part.INLINE, ctxt.use2231);
+      cdisp = new ContentDisposition(Part.INLINE, ctxt.isUse2231());
     } else {
-      cdisp = new ContentDisposition(Part.ATTACHMENT, ctxt.use2231);
+      cdisp = new ContentDisposition(Part.ATTACHMENT, ctxt.isUse2231());
     }
     if (ctype == null) {
       ctype = new ContentType(
@@ -651,8 +638,8 @@ public final class ParseMimeMessage {
       ctype.cleanup().setParameter("name", filename);
       cdisp.setParameter("filename", filename);
     }
-    mbp.setHeader("Content-Type", ctype.setCharset(ctxt.defaultCharset).toString());
-    mbp.setHeader("Content-Disposition", cdisp.setCharset(ctxt.defaultCharset).toString());
+    mbp.setHeader("Content-Type", ctype.setCharset(ctxt.getDefaultCharset()).toString());
+    mbp.setHeader("Content-Disposition", cdisp.setCharset(ctxt.getDefaultCharset()).toString());
     if (requiresSmartLinkConversion) {
       mbp.setHeader(SMART_LINK_HEADER, "true");
     } else {
@@ -675,8 +662,8 @@ public final class ParseMimeMessage {
       Map<String, String> params, ContentType ctypeOverride)
       throws ServiceException, MessagingException {
     try {
-      Upload up = UserServlet.getRemoteResourceAsUpload(ctxt.zsc.getAuthToken(), iid, params);
-      ctxt.out.addFetch(up);
+      Upload up = UserServlet.getRemoteResourceAsUpload(ctxt.getZsc().getAuthToken(), iid, params);
+      ctxt.getOut().addFetch(up);
       attachUpload(mmp, up, contentID, ctxt, ctypeOverride, null, "", false);
     } catch (IOException ioe) {
       throw ServiceException.FAILURE("can't serialize remote item", ioe);
@@ -694,7 +681,7 @@ public final class ParseMimeMessage {
     }
 
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(iid.getAccountId());
-    Message msg = mbox.getMessageById(ctxt.octxt, iid.getId());
+    Message msg = mbox.getMessageById(ctxt.getOctxt(), iid.getId());
     ctxt.incrementSize("attached message", msg.getSize());
 
     MimeBodyPart mbp = new ZMimeBodyPart();
@@ -721,19 +708,19 @@ public final class ParseMimeMessage {
     }
 
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(iid.getAccountId());
-    VCard vcf = VCard.formatContact(mbox.getContactById(ctxt.octxt, iid.getId()));
+    VCard vcf = VCard.formatContact(mbox.getContactById(ctxt.getOctxt(), iid.getId()));
 
     ctxt.incrementSize("contact", vcf.getFormatted().length());
     String filename = vcf.fn + ".vcf";
-    String charset = CharsetUtil.checkCharset(vcf.getFormatted(), ctxt.defaultCharset);
+    String charset = CharsetUtil.checkCharset(vcf.getFormatted(), ctxt.getDefaultCharset());
 
     MimeBodyPart mbp = new ZMimeBodyPart();
     mbp.setText(vcf.getFormatted(), charset);
     mbp.setHeader("Content-Type",
-        new ContentType("text/x-vcard", ctxt.use2231).setCharset(ctxt.defaultCharset)
+        new ContentType("text/x-vcard", ctxt.isUse2231()).setCharset(ctxt.getDefaultCharset())
             .setParameter("name", filename).setParameter("charset", charset).toString());
     mbp.setHeader("Content-Disposition",
-        new ContentDisposition(Part.ATTACHMENT, ctxt.use2231).setCharset(ctxt.defaultCharset)
+        new ContentDisposition(Part.ATTACHMENT, ctxt.isUse2231()).setCharset(ctxt.getDefaultCharset())
             .setParameter("filename", filename).toString());
     mbp.setContentID(contentID);
     mmp.addBodyPart(mbp);
@@ -752,9 +739,9 @@ public final class ParseMimeMessage {
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(iid.getAccountId());
     MimeMessage mm;
     if (iid.hasSubpart()) {
-      mm = mbox.getCalendarItemById(ctxt.octxt, iid.getId()).getSubpartMessage(iid.getSubpartId());
+      mm = mbox.getCalendarItemById(ctxt.getOctxt(), iid.getId()).getSubpartMessage(iid.getSubpartId());
     } else {
-      mm = mbox.getMessageById(ctxt.octxt, iid.getId()).getMimeMessage();
+      mm = mbox.getMessageById(ctxt.getOctxt(), iid.getId()).getMimeMessage();
     }
     MimePart mp = Mime.getMimePart(mm, part);
     if (mp == null) {
@@ -765,16 +752,16 @@ public final class ParseMimeMessage {
     String ctypeHdr = mp.getContentType();
     String contentType = null;
     if (ctypeHdr != null) {
-      contentType = new ContentType(ctypeHdr, ctxt.use2231).cleanup()
-          .setCharset(ctxt.defaultCharset).setParameter("name", filename).toString();
+      contentType = new ContentType(ctypeHdr, ctxt.isUse2231()).cleanup()
+          .setCharset(ctxt.getDefaultCharset()).setParameter("name", filename).toString();
     }
 
     // bug 70015: two concurrent SaveDrafts each reference the same attachment in the original draft
     //   -- avoid race condition by copying attached part to FileUploadServlet, so
     //      deleting original blob doesn't lead to stale BlobInputStream references
     Upload up = FileUploadServlet.saveUpload(mp.getInputStream(), filename, contentType,
-        DocumentHandler.getRequestedAccount(ctxt.zsc).getId());
-    ctxt.out.addFetch(up);
+        DocumentHandler.getRequestedAccount(ctxt.getZsc()).getId());
+    ctxt.getOut().addFetch(up);
     String[] contentDesc = mp.getHeader("Content-Description");
     attachUpload(mmp, up, contentID, ctxt, null,
         (contentDesc == null || contentDesc.length == 0) ? null : contentDesc[0],
