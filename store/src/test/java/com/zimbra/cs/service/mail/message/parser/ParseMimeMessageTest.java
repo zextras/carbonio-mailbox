@@ -1,9 +1,8 @@
-// SPDX-FileCopyrightText: 2022 Synacor, Inc.
-// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+// SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
 //
-// SPDX-License-Identifier: GPL-2.0-only
+// SPDX-License-Identifier: AGPL-3.0-only
 
-package com.zimbra.cs.service.mail;
+package com.zimbra.cs.service.mail.message.parser;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +25,6 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.FileUploadServlet;
 import com.zimbra.cs.service.FileUploadServlet.Upload;
-import com.zimbra.cs.service.mail.ParseMimeMessage.MimeMessageData;
 import com.zimbra.cs.service.mail.ToXML.EmailType;
 import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.JaxbUtil;
@@ -96,7 +94,7 @@ public final class ParseMimeMessageTest {
 
   MimeMessage mm =
     ParseMimeMessage.parseMimeMsgSoap(
-      zsc, octxt, null, el, null, new ParseMimeMessage.MimeMessageData());
+      zsc, octxt, null, el, null, new MimeMessageData());
   assertEquals("text/plain; charset=utf-8", mm.getContentType());
   assertEquals("dinner appt", mm.getSubject());
   assertEquals("rcpt@zimbra.com", mm.getHeader("To", ","));
@@ -182,7 +180,7 @@ public final class ParseMimeMessageTest {
 
     MimeMessage mimeMessageWithAttachment =
         ParseMimeMessage.parseMimeMsgSoap(
-            zsc, octxt, null, msgElement, null, new ParseMimeMessage.MimeMessageData());
+            zsc, octxt, null, msgElement, null, new MimeMessageData());
     mimeMessageWithAttachment.getContent();
     final String[] header = ((ZMimeMultipart) mimeMessageWithAttachment.getContent()).getBodyPart(0)
         .getHeader(ParseMimeMessage.SMART_LINK_HEADER);
@@ -228,7 +226,7 @@ public final class ParseMimeMessageTest {
 
     MimeMessage mimeMessageWithAttachment =
         ParseMimeMessage.parseMimeMsgSoap(
-            zsc, octxt, null, msgElement, null, new ParseMimeMessage.MimeMessageData());
+            zsc, octxt, null, msgElement, null, new MimeMessageData());
     mimeMessageWithAttachment.getContent();
     final String[] header = ((ZMimeMultipart) mimeMessageWithAttachment.getContent()).getBodyPart(0)
         .getHeader(ParseMimeMessage.SMART_LINK_HEADER);
@@ -271,7 +269,7 @@ public final class ParseMimeMessageTest {
 
       Assertions.assertDoesNotThrow( () -> {
         ParseMimeMessage.parseMimeMsgSoap(
-            zsc, octxt, null, msgElement, null, new ParseMimeMessage.MimeMessageData());
+            zsc, octxt, null, msgElement, null, new MimeMessageData());
       });
 
     } finally {
@@ -323,7 +321,7 @@ public final class ParseMimeMessageTest {
 
       Assertions.assertThrows( MailServiceException.class, () -> {
         ParseMimeMessage.parseMimeMsgSoap(
-            zsc, octxt, null, msgElement, null, new ParseMimeMessage.MimeMessageData());
+            zsc, octxt, null, msgElement, null, new MimeMessageData());
           });
 
     } finally {
@@ -351,7 +349,7 @@ public final class ParseMimeMessageTest {
 
     MimeMessage mm =
         ParseMimeMessage.parseDraftMimeMsgSoap(
-            zsc, octxt, null, el, new ParseMimeMessage.MimeMessageData());
+            zsc, octxt, null, el, new MimeMessageData());
     assertEquals("text/plain; charset=utf-8", mm.getContentType());
     assertEquals("dinner appt", mm.getSubject());
     assertEquals("rcpt@zimbra.com", mm.getHeader("To", ","));
@@ -403,7 +401,7 @@ public final class ParseMimeMessageTest {
 
       Assertions.assertDoesNotThrow( () -> {
         ParseMimeMessage.parseDraftMimeMsgSoap(
-            zsc, octxt, null, msgElement, new ParseMimeMessage.MimeMessageData());
+            zsc, octxt, null, msgElement, new MimeMessageData());
       });
 
     } finally {
@@ -438,7 +436,7 @@ public final class ParseMimeMessageTest {
   try {
    mm =
      ParseMimeMessage.parseMimeMsgSoap(
-       zsc, octxt, null, el, null, new ParseMimeMessage.MimeMessageData());
+       zsc, octxt, null, el, null, new MimeMessageData());
    fail();
   } catch (ServiceException expected) {
    assertEquals("invalid request: header 'X-Zimbra-Test' not allowed", expected.getMessage());
@@ -449,7 +447,7 @@ public final class ParseMimeMessageTest {
     .setCustomMimeHeaderNameAllowed(new String[]{"X-Zimbra-Test"});
   mm =
     ParseMimeMessage.parseMimeMsgSoap(
-      zsc, octxt, null, el, null, new ParseMimeMessage.MimeMessageData());
+      zsc, octxt, null, el, null, new MimeMessageData());
   assertEquals("custom, =?utf-8?B?44Kr44K544K/44Og?=", mm.getHeader("X-Zimbra-Test", ", "));
  }
 
@@ -486,7 +484,7 @@ public final class ParseMimeMessageTest {
 
   MimeMessage mm =
     ParseMimeMessage.parseMimeMsgSoap(
-      zsc, octxt, null, el, null, new ParseMimeMessage.MimeMessageData());
+      zsc, octxt, null, el, null, new MimeMessageData());
   assertTrue(mm.getContentType().startsWith("multipart/mixed;"));
   assertEquals("attach message", mm.getSubject());
   assertEquals("rcpt@zimbra.com", mm.getHeader("To", ","));

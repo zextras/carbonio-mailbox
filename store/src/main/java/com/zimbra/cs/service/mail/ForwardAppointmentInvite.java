@@ -22,6 +22,8 @@ import com.zimbra.cs.mailbox.Message.CalendarItemInfo;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mime.MimeVisitor;
+import com.zimbra.cs.service.mail.message.parser.MimeMessageData;
+import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.soap.ZimbraSoapContext;
 import java.io.IOException;
@@ -55,7 +57,7 @@ public class ForwardAppointmentInvite extends ForwardAppointment {
     }
 
     Element msgElem = request.getElement(MailConstants.E_MSG);
-    ParseMimeMessage.MimeMessageData parsedMessageData = new ParseMimeMessage.MimeMessageData();
+    MimeMessageData parsedMessageData = new MimeMessageData();
     MimeMessage mmFwdWrapper =
         ParseMimeMessage.parseMimeMsgSoap(
             zsc,

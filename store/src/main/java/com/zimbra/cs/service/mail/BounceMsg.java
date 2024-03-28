@@ -37,7 +37,7 @@ import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.service.FileUploadServlet;
 import com.zimbra.cs.service.FileUploadServlet.Upload;
 import com.zimbra.cs.service.UserServlet;
-import com.zimbra.cs.service.mail.ParseMimeMessage.MessageAddresses;
+import com.zimbra.cs.service.mail.message.parser.MessageAddresses;
 import com.zimbra.cs.service.mail.ToXML.EmailType;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.util.JMSession;

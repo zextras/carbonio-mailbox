@@ -1,21 +1,18 @@
-// SPDX-FileCopyrightText: 2022 Synacor, Inc.
-// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+// SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
 //
-// SPDX-License-Identifier: GPL-2.0-only
+// SPDX-License-Identifier: AGPL-3.0-only
 
-package com.zimbra.cs.service.mail;
+package com.zimbra.cs.service.mail.message.parser;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.zimbra.common.account.ZAttrProvisioning;
-import com.zimbra.common.calendar.ZCalendar;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mailbox.ItemIdentifier;
 import com.zimbra.common.mime.ContentDisposition;
 import com.zimbra.common.mime.ContentType;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.mime.MimeHeader;
-import com.zimbra.common.mime.shim.JavaMailInternetAddress;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -27,8 +24,6 @@ import com.zimbra.common.zmime.ZMimeBodyPart;
 import com.zimbra.common.zmime.ZMimeMessage;
 import com.zimbra.common.zmime.ZMimeMultipart;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Config;
-import com.zimbra.cs.account.IDNUtil;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.index.Fragment;
 import com.zimbra.cs.mailbox.Flag;
@@ -40,7 +35,6 @@ import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mailbox.calendar.CalendarMailSender;
-import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mime.MailboxBlobDataSource;
 import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.service.FileUploadServlet;
@@ -49,6 +43,8 @@ import com.zimbra.cs.service.UploadDataSource;
 import com.zimbra.cs.service.UserServlet;
 import com.zimbra.cs.service.formatter.VCard;
 import com.zimbra.cs.service.mail.ToXML.EmailType;
+import com.zimbra.cs.service.mail.UploadScanner;
+import com.zimbra.cs.service.mail.UploadScanner.Result;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.util.JMSession;
 import com.zimbra.soap.DocumentHandler;
@@ -60,10 +56,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -86,7 +80,7 @@ import javax.mail.util.SharedByteArrayInputStream;
 public final class ParseMimeMessage {
 
   // by default, no invite allowed
-  static final InviteParser NO_INV_ALLOWED_PARSER = new InviteParser() {
+  public static final InviteParser NO_INV_ALLOWED_PARSER = new InviteParser() {
     @Override
     public InviteParserResult parseInviteElement(ZimbraSoapContext zsc, OperationContext octxt,
         Account account, Element inviteElem)
@@ -647,7 +641,7 @@ public final class ParseMimeMessage {
 
     // scan upload for viruses
     StringBuffer info = new StringBuffer();
-    UploadScanner.Result result = UploadScanner.accept(up, info);
+    Result result = UploadScanner.accept(up, info);
     if (result == UploadScanner.REJECT) {
       throw MailServiceException.UPLOAD_REJECTED(up.getName(), info.toString());
     } else if (result == UploadScanner.ERROR) {
@@ -908,167 +902,4 @@ public final class ParseMimeMessage {
     }
   }
 
-  /**
-   * Overrides the default transfer encoding and sets the encoding of all non-message attachments to
-   * base64, so that we preserve line endings of text attachments (bugs 45858 and 53405).
-   */
-  private static class ForceBase64MimeBodyPart extends ZMimeBodyPart {
-
-    public ForceBase64MimeBodyPart() {
-    }
-
-    @Override
-    protected void updateHeaders() throws MessagingException {
-      super.updateHeaders();
-      if (LC.text_attachments_base64.booleanValue()) {
-        String ct = Mime.getContentType(this);
-        if (!(ct.startsWith(MimeConstants.CT_MESSAGE_PREFIX) || ct.startsWith(
-            MimeConstants.CT_MULTIPART_PREFIX))) {
-          setHeader("Content-Transfer-Encoding", "base64");
-        }
-      }
-    }
-  }
-
-  /**
-   * Callback routine for parsing the <inv> element and building a iCal4j Calendar from it
-   * <p>
-   * We use a callback b/c there are differences in the parsing depending on the operation: Replying
-   * to an invite is different than Creating or Modifying one, etc etc...
-   */
-  abstract static class InviteParser {
-
-    private InviteParserResult mResult;
-
-    protected abstract InviteParserResult parseInviteElement(ZimbraSoapContext zsc,
-        OperationContext octxt, Account account, Element invElement) throws ServiceException;
-
-    public final InviteParserResult parse(ZimbraSoapContext zsc, OperationContext octxt,
-        Account account, Element invElement) throws ServiceException {
-      mResult = parseInviteElement(zsc, octxt, account, invElement);
-      return mResult;
-    }
-
-    public InviteParserResult getResult() {
-      return mResult;
-    }
-  }
-
-  static class InviteParserResult {
-
-    public ZCalendar.ZVCalendar mCal;
-    public String mUid;
-    public String mSummary;
-    public Invite mInvite;
-  }
-
-  /**
-   * Wrapper class for data parsed out of the mime message
-   */
-  public static class MimeMessageData {
-
-    public List<Upload> fetches; // NULL unless we fetched messages from another server
-    public List<Upload> uploads; // NULL unless there are uploaded attachments
-    public String iCalUUID; // NULL unless there is an iCal part
-
-    void addUpload(Upload up) {
-      if (uploads == null) {
-        uploads = new ArrayList<Upload>(4);
-      }
-      uploads.add(up);
-    }
-
-    void addFetch(Upload up) {
-      if (fetches == null) {
-        fetches = new ArrayList<Upload>(4);
-      }
-      fetches.add(up);
-    }
-  }
-
-  /**
-   * Class encapsulating common data passed among methods.
-   */
-  private static class ParseMessageContext {
-
-    private final boolean raiseErrorWhenSizeExceed;
-    MimeMessageData out;
-    ZimbraSoapContext zsc;
-    OperationContext octxt;
-    Mailbox mbox;
-    boolean use2231;
-    String defaultCharset;
-    long size;
-    long maxSize;
-
-    ParseMessageContext() {
-      this(true);
-    }
-    ParseMessageContext(boolean raiseErrorWhenSizeExceed) {
-      this.raiseErrorWhenSizeExceed = raiseErrorWhenSizeExceed;
-      try {
-        Config config = Provisioning.getInstance().getConfig();
-        maxSize = config.getLongAttr(Provisioning.A_zimbraMtaMaxMessageSize, -1);
-      } catch (ServiceException e) {
-        ZimbraLog.soap.warn("Unable to determine max message size.  Disabling limit check.", e);
-      }
-      if (maxSize < 0) {
-        maxSize = Long.MAX_VALUE;
-      }
-    }
-
-    void incrementSize(String name, long numBytes) throws MailServiceException {
-      size += numBytes;
-      ZimbraLog.soap.debug("Adding %s, incrementing size by %d to %d.", name, numBytes, size);
-      if (raiseErrorWhenSizeExceed && (maxSize != 0 /* 0 means "no limit" */) && (size > maxSize)) {
-        throw MailServiceException.MESSAGE_TOO_BIG(maxSize, size);
-      }
-    }
-  }
-
-  static final class MessageAddresses {
-
-    private final HashMap<String, Object> addrs = new HashMap<>();
-
-    public void add(Element elem, String defaultCharset)
-        throws ServiceException, UnsupportedEncodingException {
-      String emailAddress = IDNUtil.toAscii(elem.getAttribute(MailConstants.A_ADDRESS));
-      String personalName = elem.getAttribute(MailConstants.A_PERSONAL, null);
-      String addressType = elem.getAttribute(MailConstants.A_ADDRESS_TYPE);
-
-      InternetAddress addr = new JavaMailInternetAddress(emailAddress, personalName,
-          CharsetUtil.checkCharset(personalName, defaultCharset));
-
-      Object content = addrs.get(addressType);
-      if (content == null || addressType.equals(EmailType.FROM.toString()) ||
-          addressType.equals(EmailType.SENDER.toString())) {
-        addrs.put(addressType, addr);
-      } else if (content instanceof List) {
-        @SuppressWarnings("unchecked")
-        List<InternetAddress> list = (List<InternetAddress>) content;
-        list.add(addr);
-      } else {
-        List<InternetAddress> list = new ArrayList<>();
-        list.add((InternetAddress) content);
-        list.add(addr);
-        addrs.put(addressType, list);
-      }
-    }
-
-    @SuppressWarnings("unchecked")
-    public InternetAddress[] get(String addressType) {
-      Object content = addrs.get(addressType);
-      if (content == null) {
-        return null;
-      } else if (content instanceof InternetAddress) {
-        return new InternetAddress[]{(InternetAddress) content};
-      } else {
-        return ((List<InternetAddress>) content).toArray(new InternetAddress[0]);
-      }
-    }
-
-    public boolean isEmpty() {
-      return addrs.isEmpty();
-    }
-  }
 }

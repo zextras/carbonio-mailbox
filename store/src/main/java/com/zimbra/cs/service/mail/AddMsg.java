@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.cs.service.mail.message.parser.MimeMessageData;
+import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -98,7 +100,7 @@ public class AddMsg extends MailDocumentHandler {
         // check to see whether the entire message has been uploaded under separate cover
         String attachment = msgElem.getAttribute(MailConstants.A_ATTACHMENT_ID, null);
 
-        ParseMimeMessage.MimeMessageData mimeData = new ParseMimeMessage.MimeMessageData();
+        MimeMessageData mimeData = new MimeMessageData();
         Message msg;
         try {
             MimeMessage mm;
