@@ -66,7 +66,7 @@ public class ElasticSearchConnector {
         return statusCode;
     }
 
-    public class ZimbraElasticSearchDownException extends IndexStoreException {
+    public static class ZimbraElasticSearchDownException extends IndexStoreException {
         private static final long serialVersionUID = -1564956672861500861L;
 
         public ZimbraElasticSearchDownException(Exception e) {
@@ -74,7 +74,7 @@ public class ElasticSearchConnector {
         }
     }
 
-    public class ZimbraElasticSearchNoResponseException extends IndexStoreException {
+    public static class ZimbraElasticSearchNoResponseException extends IndexStoreException {
         private static final long serialVersionUID = -1564956672861500861L;
 
         public ZimbraElasticSearchNoResponseException(Exception e) {

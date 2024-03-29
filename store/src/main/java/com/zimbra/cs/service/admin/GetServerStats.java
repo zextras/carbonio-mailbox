@@ -33,14 +33,14 @@ public class GetServerStats extends AdminDocumentHandler {
         
         // Assemble list of requested stat names.
         List<Element> eStats = request.listElements(AdminConstants.E_STAT);
-        Set<String> requestedNames = new HashSet<String>();
-        for (int i = 0; i < eStats.size(); i++) {
-            requestedNames.add(eStats.get(i).getAttribute(AdminConstants.A_NAME));
-        }
+        Set<String> requestedNames = new HashSet<>();
+      for (Element stat : eStats) {
+        requestedNames.add(stat.getAttribute(AdminConstants.A_NAME));
+      }
         
         // Get latest values.
         Map<String, Object> allStats = ZimbraPerf.getStats();
-        Map<String, Object> returnedStats = new TreeMap<String, Object>();
+        Map<String, Object> returnedStats = new TreeMap<>();
         boolean returnAllStats = (requestedNames.size() == 0);
         
         for (String name : allStats.keySet()) {

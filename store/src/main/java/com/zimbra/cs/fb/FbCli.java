@@ -44,7 +44,7 @@ public class FbCli {
         public String name;
         Collection<String> accounts;
         public FbQueue() {
-            accounts = new ArrayList<String>();
+            accounts = new ArrayList<>();
         }
         public String toString() {
             StringBuilder buf = new StringBuilder();
@@ -65,7 +65,7 @@ public class FbCli {
     }
 
     public Collection<FbProvider> getAllFreeBusyProviders() throws ServiceException, IOException, HttpException {
-        ArrayList<FbProvider> providers = new ArrayList<FbProvider>();
+        ArrayList<FbProvider> providers = new ArrayList<>();
         try {
             auth();
             XMLElement req = new XMLElement(AdminConstants.GET_ALL_FREE_BUSY_PROVIDERS_REQUEST);
@@ -87,7 +87,7 @@ public class FbCli {
     }
 
     public Collection<FbQueue> getFreeBusyQueueInfo(String provider) throws ServiceException, IOException, HttpException {
-        ArrayList<FbQueue> queues = new ArrayList<FbQueue>();
+        ArrayList<FbQueue> queues = new ArrayList<>();
         try {
             auth();
             XMLElement req = new XMLElement(AdminConstants.GET_FREE_BUSY_QUEUE_INFO_REQUEST);

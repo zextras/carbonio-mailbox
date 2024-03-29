@@ -98,7 +98,7 @@ public final class RecoverAccount extends MailDocumentHandler {
       throw ServiceException.FAILURE("Error while fetching Password Recovery Code.", e);
     }
     if (Objects.isNull(recoveryCodeMap)) {
-      recoveryCodeMap = new HashMap<String, String>();
+      recoveryCodeMap = new HashMap<>();
     }
     checkVerifiedRecoveryAccAndSetResendCount(account, recoveryCodeMap, maxAttempts, zsc, resp);
     fetchAndFormRecoveryCodeParams(account, recoveryCodeMap, recoveryAccount, zsc);

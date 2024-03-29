@@ -84,7 +84,7 @@ public class AccountACEinfo {
      */
     @SuppressWarnings("unused")
     private AccountACEinfo() {
-        this((GranteeType) null, (String) null);
+        this(null, null);
     }
 
     public AccountACEinfo(GranteeType granteeType, String right) {

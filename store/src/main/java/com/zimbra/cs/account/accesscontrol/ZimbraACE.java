@@ -192,16 +192,15 @@ public class ZimbraACE {
             mGrantee = grantee;
             break;
         case GT_EXT_GROUP:
+          case GT_EMAIL:
+          case GT_EXT_DOMAIN:
             // do not split zimbra domain id and external group name
             // callsites need the domain id to find the external group
             // callsites should call ZimbraACE.getExternalGroupInfo(grantee)
             // to get the zimbra domain part and external group part.
             mGrantee = grantee;
             break;
-        case GT_EXT_DOMAIN:
-            mGrantee = grantee;
-            break;
-        case GT_GUEST:
+          case GT_GUEST:
         case GT_KEY:
             String[] externalParts = grantee.split(S_SECRET_DELIMITER);
             if (externalParts.length != 1 && externalParts.length != 2) {
@@ -215,10 +214,7 @@ public class ZimbraACE {
                 mSecret = null;
             }
             break;
-        case GT_EMAIL:
-            mGrantee = grantee;
-            break;
-        default:
+          default:
             throw ServiceException.PARSE_ERROR("invalid grantee type " + mGranteeType, null);
         }
 
@@ -258,12 +254,12 @@ public class ZimbraACE {
      * @param other
      */
     private ZimbraACE(ZimbraACE other) {
-        mGrantee = new String(other.mGrantee);
+        mGrantee = other.mGrantee;
         mGranteeType = other.mGranteeType;
         mRight = other.mRight;
         mRightModifier = other.mRightModifier;
         if (other.mSecret != null)
-            mSecret = new String(other.mSecret);
+            mSecret = other.mSecret;
 
         mTargetType = other.mTargetType;
         mTargetName = other.mTargetName;

@@ -225,7 +225,7 @@ public class CancelCalendarItem extends CalendarRequest {
             if (inv.isOrganizer())
                 rcpts = CalendarMailSender.toListFromAttendees(inv.getAttendees());
             else
-                rcpts = new ArrayList<Address>(0);
+                rcpts = new ArrayList<>(0);
             csd.mMm = CalendarMailSender.createCancelMessage(
                     acct, authAcct, zsc.isUsingAdminPrivileges(), onBehalfOf, rcpts,
                     calItem, inv, text, iCal);

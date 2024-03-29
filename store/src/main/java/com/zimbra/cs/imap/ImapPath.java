@@ -36,6 +36,7 @@ import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.util.AccountUtil;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class ImapPath implements Comparable<ImapPath> {
   enum Scope {
@@ -43,7 +44,7 @@ public class ImapPath implements Comparable<ImapPath> {
     NAME,
     CONTENT,
     REFERENCE
-  };
+  }
 
   protected static Charset FOLDER_ENCODING_CHARSET;
 
@@ -55,7 +56,7 @@ public class ImapPath implements Comparable<ImapPath> {
           "could not load imap-utf-7 charset (perhaps charset.jar is not in the jetty endorsed"
               + " directory)",
           e);
-      FOLDER_ENCODING_CHARSET = Charset.forName("utf-8");
+      FOLDER_ENCODING_CHARSET = StandardCharsets.UTF_8;
     }
   }
 
@@ -751,11 +752,11 @@ public class ImapPath implements Comparable<ImapPath> {
     }
     int slash = imapPathNoPrefix.indexOf('/');
     owner = (slash == -1 ? imapPathNoPrefix : imapPathNoPrefix.substring(0, slash)).toLowerCase();
-    if (!allowWildcardOwner && ((owner.indexOf("*") >= 0) || (owner.indexOf("%") >= 0))) {
+    if (!allowWildcardOwner && ((owner.contains("*")) || (owner.contains("%")))) {
       return null;
     }
     path = (slash == -1 ? "" : imapPathNoPrefix.substring(slash));
-    return new Pair<String, String>(owner, path);
+    return new Pair<>(owner, path);
   }
 
   protected String asZimbraPath() {

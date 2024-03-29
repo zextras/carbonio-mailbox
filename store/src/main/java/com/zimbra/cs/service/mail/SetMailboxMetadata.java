@@ -23,7 +23,7 @@ public class SetMailboxMetadata extends MailDocumentHandler {
 
     private static final int TOTAL_METADATA_LIMIT = 32768;
     
-    private static enum SectionNames {
+    private enum SectionNames {
         zwc, bes
     }
     

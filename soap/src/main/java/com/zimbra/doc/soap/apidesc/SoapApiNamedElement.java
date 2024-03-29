@@ -7,6 +7,6 @@ package com.zimbra.doc.soap.apidesc;
 
 public interface SoapApiNamedElement
 extends SoapApiElementArtifact {
-    public String getName();
-    public String getNamespace();
+    String getName();
+    String getNamespace();
 }

@@ -7,7 +7,6 @@ package com.zimbra.cs.datasource;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.DataSource;
-import com.zimbra.cs.db.DbDataSource;
 import com.zimbra.cs.db.DbDataSource.DataSourceItem;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Metadata;

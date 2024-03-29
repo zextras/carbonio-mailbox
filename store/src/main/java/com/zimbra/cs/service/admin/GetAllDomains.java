@@ -8,7 +8,6 @@
  */
 package com.zimbra.cs.service.admin;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -40,12 +39,12 @@ public class GetAllDomains extends AdminDocumentHandler {
         AdminAccessControl aac = AdminAccessControl.getAdminAccessControl(zsc);
         
         Element response = zsc.createElement(AdminConstants.GET_ALL_DOMAINS_RESPONSE);
-        for (Iterator it = domains.iterator(); it.hasNext(); ) {
-            Domain domain = (Domain) it.next();
-            
-            if (aac.hasRightsToList(domain, Admin.R_listDomain, null))
-                GetDomain.encodeDomain(response, domain, applyConfig, null, aac.getAttrRightChecker(domain));
-        }
+    for (Object o : domains) {
+      Domain domain = (Domain) o;
+
+      if (aac.hasRightsToList(domain, Admin.R_listDomain, null))
+        GetDomain.encodeDomain(response, domain, applyConfig, null, aac.getAttrRightChecker(domain));
+    }
 
 	    return response;
 	}

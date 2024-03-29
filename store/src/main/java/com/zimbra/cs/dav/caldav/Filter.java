@@ -48,10 +48,10 @@ public abstract class Filter {
 	protected HashSet<TextMatch> mTextMatches;
 
 	public Filter(Element elem) {
-		mProps = new HashSet<PropFilter>();
-		mComps = new HashSet<CompFilter>();
-		mParams = new HashSet<ParamFilter>();
-		mTextMatches = new HashSet<TextMatch>();
+		mProps = new HashSet<>();
+		mComps = new HashSet<>();
+		mParams = new HashSet<>();
+		mTextMatches = new HashSet<>();
 		mName = elem.attributeValue(DavElements.P_NAME);
 		parse(elem);
 	}

@@ -75,7 +75,7 @@ public abstract class MailboxBlob {
 
     public long getSize() throws IOException {
         if (size == null) {
-            this.size = Long.valueOf(getLocalBlob().getRawSize());
+            this.size = getLocalBlob().getRawSize();
         }
         return size;
     }

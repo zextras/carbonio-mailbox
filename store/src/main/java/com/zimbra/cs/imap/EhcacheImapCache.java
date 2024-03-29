@@ -10,7 +10,6 @@ import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.util.EhcacheManager;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -66,13 +65,11 @@ final class EhcacheImapCache implements ImapSessionManager.Cache<String, ImapFol
 
             protected boolean removeEldestEntry(Cache.Entry<String, Long> eldest) {
               if (removeIfExpired(eldest)) {
-                Set<String> keysToRemove = new HashSet<String>();
+                Set<String> keysToRemove = new HashSet<>();
                 if (size() > ACTIVE_CACHE_THRESHOLD) {
                   // keep size under threshold when possible - can grow if there are many active
                   // sessions but will shrink as they 'expire'
-                  for (Iterator<Entry<String, Long>> it = this.entrySet().iterator();
-                      it.hasNext(); ) {
-                    Entry<String, Long> entry = it.next();
+                  for (Entry<String, Long> entry : this.entrySet()) {
                     if (isExpired(entry.getValue())) {
                       keysToRemove.add(entry.getKey());
                     } else {

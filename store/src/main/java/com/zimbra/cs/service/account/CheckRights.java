@@ -63,9 +63,9 @@ public class CheckRights extends AccountDocumentHandler {
         private List<UserRight> getRights() {
             return rights;
         }
-    };
-    
-    @Override
+    }
+
+  @Override
     public Element handle(Element request, Map<String, Object> context)
             throws ServiceException {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);

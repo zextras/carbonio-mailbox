@@ -104,7 +104,7 @@ public class AddCalendarItemInvite extends CalendarRequest {
             ZimbraLog.calendar.info(
                 "Got malformed invite that lists attendees without specifying an organizer.  "
                     + "Defaulting organizer to: "
-                    + org.toString());
+                    + org);
           }
         }
       }

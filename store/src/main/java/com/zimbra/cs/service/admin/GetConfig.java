@@ -40,7 +40,7 @@ public class GetConfig extends AdminDocumentHandler {
         
         Element response = zsc.createElement(AdminConstants.GET_CONFIG_RESPONSE);
         
-        Set<String> reqAttrs = new HashSet<String>();
+        Set<String> reqAttrs = new HashSet<>();
         reqAttrs.add(name);
         GetAllConfig.encodeConfig(response, config, reqAttrs, aac.getAttrRightChecker(config));
 

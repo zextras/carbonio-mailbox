@@ -28,7 +28,7 @@ public class ZDeleteEvent implements ToZJSONObject {
 
     public synchronized List<String> toList() {
         if (mList == null) {
-            mList = new ArrayList<String>();
+            mList = new ArrayList<>();
             if (mIds != null && mIds.length() > 0)
               mList.addAll(Arrays.asList(mIds.split(",")));
         }

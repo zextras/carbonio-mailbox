@@ -25,7 +25,6 @@ package com.zimbra.cs.index;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.lucene.index.IndexReader;
@@ -64,13 +63,12 @@ public class TermsFilter extends Filter
     public DocIdSet getDocIdSet(IndexReader reader) throws IOException {
     OpenBitSet result=new OpenBitSet(reader.maxDoc());
         try (TermDocs td = reader.termDocs()) {
-            for (Iterator<Term> iter = terms.iterator(); iter.hasNext();) {
-                Term term = iter.next();
-                td.seek(term);
-                while (td.next()) {
-                    result.set(td.doc());
-                }
+          for (Term term : terms) {
+            td.seek(term);
+            while (td.next()) {
+              result.set(td.doc());
             }
+          }
         }
         return result;
     }
@@ -90,10 +88,9 @@ public class TermsFilter extends Filter
     @Override
     public int hashCode() {
         int hash=9;
-        for (Iterator<Term> iter = terms.iterator(); iter.hasNext();) {
-            Term term = iter.next();
-            hash = 31 * hash + term.hashCode();
-        }
+      for (Term term : terms) {
+        hash = 31 * hash + term.hashCode();
+      }
         return hash;
     }
 }

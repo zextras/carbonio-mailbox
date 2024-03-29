@@ -33,7 +33,6 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.common.zmime.ZMimeBodyPart;
 import com.zimbra.common.zmime.ZMimeMultipart;
 import com.zimbra.cs.account.Config;
-import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailSender;
@@ -45,7 +44,6 @@ import com.zimbra.cs.mime.MailboxBlobDataSource;
 import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.store.MailboxBlob;
 import com.zimbra.cs.util.AccountUtil;
-import com.zimbra.cs.util.JMSession;
 
 public class SpamHandler {
 
@@ -61,12 +59,7 @@ public class SpamHandler {
     }
 
     public SpamHandler() {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                reportLoop();
-            }
-        };
+        Runnable r = () -> reportLoop();
         Thread spamHandlerThread = new Thread(r);
         spamHandlerThread.setName("Junk-NotJunk-Handler");
         spamHandlerThread.setDaemon(true);
@@ -185,7 +178,7 @@ public class SpamHandler {
 
     private final Object spamReportQueueLock = new Object();
 
-    List<SpamReport> spamReportQueue = new ArrayList<SpamReport>(spamReportQueueSize);
+    List<SpamReport> spamReportQueue = new ArrayList<>(spamReportQueueSize);
 
     void reportLoop() {
         while (true) {
@@ -199,7 +192,7 @@ public class SpamHandler {
                     }
                 }
                 workQueue = spamReportQueue;
-                spamReportQueue = new ArrayList<SpamReport>(spamReportQueueSize);
+                spamReportQueue = new ArrayList<>(spamReportQueueSize);
             }
 
             if (workQueue == null) {

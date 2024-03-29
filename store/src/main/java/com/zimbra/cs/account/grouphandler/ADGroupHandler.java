@@ -70,7 +70,7 @@ public class ADGroupHandler extends GroupHandler {
     
     private static class SearchADGroupMembers extends SearchLdapVisitor {
 
-        TreeSet<String> result = new TreeSet<String>();
+        TreeSet<String> result = new TreeSet<>();
         
         SearchADGroupMembers() {
             super(false);

@@ -8,6 +8,7 @@ package com.zimbra.cs.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
@@ -111,7 +112,7 @@ public class UserServletContext {
         public MailItem mailItem;
         public Item(String itemId, Account targetAccount) throws ServiceException {
             String[] vals = itemId.split("\\.");
-            ItemId iid = new ItemId((vals.length > 0) ? vals[0] : itemId, targetAccount == null ? (String) null : targetAccount.getId());
+            ItemId iid = new ItemId((vals.length > 0) ? vals[0] : itemId, targetAccount == null ? null : targetAccount.getId());
             id = iid.getId();
             if (targetAccount != null && !targetAccount.getId().equals(iid.getAccountId())) {
                 acctId = iid.getAccountId();
@@ -192,7 +193,7 @@ public class UserServletContext {
         Provisioning prov = Provisioning.getInstance();
 
         String pathInfo = request.getPathInfo();
-        if (pathInfo == null || pathInfo.equals("/") || pathInfo.equals("") || !pathInfo.startsWith("/"))
+        if (pathInfo == null || pathInfo.equals("/") || !pathInfo.startsWith("/"))
             throw new UserServletException(HttpServletResponse.SC_BAD_REQUEST, L10nUtil.getMessage(MsgKey.errInvalidPath, request));
         int pos = pathInfo.indexOf('/', 1);
         if (pos == -1)
@@ -249,7 +250,7 @@ public class UserServletContext {
         String listParam = this.params.get(UserServlet.QP_LIST);
         if (listParam != null && listParam.length() > 0) {
             String[] ids = listParam.split(",");
-            requestedItems = new ArrayList<Item>();
+            requestedItems = new ArrayList<>();
             reqListIds = new int[ids.length];
             String proxyAcct = null;
             for (int i = 0; i < ids.length; ++i) {
@@ -400,11 +401,11 @@ public class UserServletContext {
     }
 
     public boolean cookieAuthAllowed() {
-        return getAuth().indexOf(UserServlet.AUTH_COOKIE) != -1;
+        return getAuth().contains(UserServlet.AUTH_COOKIE);
     }
 
     public boolean jwtAuthAllowed() {
-        return getAuth().indexOf(UserServlet.AUTH_JWT) != -1;
+        return getAuth().contains(UserServlet.AUTH_JWT);
     }
 
     public boolean isAuthedAcctGuest() {
@@ -414,19 +415,19 @@ public class UserServletContext {
     // bug 42782
     public boolean setCookie() {
         return (!isAuthedAcctGuest() &&
-                getAuth().indexOf(UserServlet.AUTH_SET_COOKIE) != -1 &&
-                getAuth().indexOf(UserServlet.AUTH_NO_SET_COOKIE) == -1);
+            getAuth().contains(UserServlet.AUTH_SET_COOKIE) &&
+            !getAuth().contains(UserServlet.AUTH_NO_SET_COOKIE));
     }
 
     public boolean basicAuthAllowed() {
         String auth = getAuth();
-        return auth.indexOf(UserServlet.AUTH_NO_SET_COOKIE) != -1 ||
-               auth.indexOf(UserServlet.AUTH_BASIC) != -1 ||
-               auth.indexOf(UserServlet.AUTH_SET_COOKIE) != -1;
+        return auth.contains(UserServlet.AUTH_NO_SET_COOKIE) ||
+            auth.contains(UserServlet.AUTH_BASIC) ||
+            auth.contains(UserServlet.AUTH_SET_COOKIE);
     }
 
     public boolean queryParamAuthAllowed() {
-        return getAuth().indexOf(UserServlet.AUTH_QUERYPARAM) != -1;
+        return getAuth().contains(UserServlet.AUTH_QUERYPARAM);
     }
 
     public String getAuth() {
@@ -585,7 +586,7 @@ public class UserServletContext {
      *  specified or is set to a non-zero value. */
     public boolean shouldReturnBody() {
         String bodyVal = params.get(UserServlet.QP_BODY);
-        if (bodyVal != null && bodyVal.equals("0"))
+        if ("0".equals(bodyVal))
             return false;
         return true;
     }
@@ -647,12 +648,9 @@ public class UserServletContext {
     public byte[] getPostBody() throws ServiceException, IOException, UserServletException {
         long sizeLimit = Provisioning.getInstance().getLocalServer().getLongAttr(
                 Provisioning.A_zimbraFileUploadMaxSize, DEFAULT_MAX_POST_SIZE);
-        InputStream is = getRequestInputStream(sizeLimit);
-        try {
-            return ByteUtil.getContent(is, req.getContentLength(), sizeLimit);
-        } finally {
-            is.close();
-        }
+      try (InputStream is = getRequestInputStream(sizeLimit)) {
+        return ByteUtil.getContent(is, req.getContentLength(), sizeLimit);
+      }
     }
 
     private static final class UploadInputStream extends InputStream {
@@ -691,9 +689,9 @@ public class UserServletContext {
             return value;
         }
 
-        @Override public int read(byte b[]) throws IOException { return (int)check(is.read(b)); }
+        @Override public int read(byte[] b) throws IOException { return (int)check(is.read(b)); }
 
-        @Override public int read(byte b[], int off, int len) throws IOException {
+        @Override public int read(byte[] b, int off, int len) throws IOException {
             return (int)check(is.read(b, off, len));
         }
 
@@ -751,7 +749,7 @@ public class UserServletContext {
                     if (fis.isFormField()) {
                         is = fis.openStream();
                         params.put(fis.getFieldName(),
-                            new String(ByteUtil.getContent(is, -1), "UTF-8"));
+                            new String(ByteUtil.getContent(is, -1), StandardCharsets.UTF_8));
                         if (doCsrfCheck && !this.csrfAuthSucceeded) {
                             String csrfToken = params.get(FileUploadServlet.PARAM_CSRF_TOKEN);
                             if (UserServlet.log.isDebugEnabled()) {
@@ -797,7 +795,7 @@ public class UserServletContext {
             if (filename == null || filename.trim().equals(""))
                 filename = new ContentDisposition(req.getHeader("Content-Disposition")).getParameter("filename");
             is = new UploadInputStream(contentEncoding != null &&
-                contentEncoding.indexOf("gzip") != -1 ?
+                contentEncoding.contains("gzip") ?
                 new GZIPInputStream(req.getInputStream()) :
                     req.getInputStream(), limit);
         }

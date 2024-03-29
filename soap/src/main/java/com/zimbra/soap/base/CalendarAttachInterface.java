@@ -12,11 +12,11 @@ import com.zimbra.common.calendar.Attach;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface CalendarAttachInterface {
-    public CalendarAttachInterface createFromAttach(Attach att);
-    public void setUri(String uri);
-    public void setContentType(String contentType);
-    public void setBinaryB64Data(String binaryB64Data);
-    public String getUri();
-    public String getContentType();
-    public String getBinaryB64Data();
+    CalendarAttachInterface createFromAttach(Attach att);
+    void setUri(String uri);
+    void setContentType(String contentType);
+    void setBinaryB64Data(String binaryB64Data);
+    String getUri();
+    String getContentType();
+    String getBinaryB64Data();
 }

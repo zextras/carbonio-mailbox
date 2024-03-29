@@ -32,7 +32,7 @@ public class NameId {
      */
     @SuppressWarnings("unused")
     private NameId() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public NameId( String name,

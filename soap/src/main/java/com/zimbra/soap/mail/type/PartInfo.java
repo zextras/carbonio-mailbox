@@ -112,7 +112,7 @@ implements PartInfoInterface {
      */
     @SuppressWarnings("unused")
     private PartInfo() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public PartInfo(String part, String contentType) {

@@ -50,7 +50,7 @@ public class GetShareInfoRequest {
      */
     @SuppressWarnings("unused")
     private GetShareInfoRequest() {
-        this((GranteeChooser) null, (AccountSelector) null);
+        this(null, null);
     }
 
     public GetShareInfoRequest(AccountSelector owner) {

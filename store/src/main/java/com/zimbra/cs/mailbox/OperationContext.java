@@ -184,7 +184,7 @@ public class OperationContext implements OpContext {
 
   public void setCtxtData(String key, OperationContextData data) {
     if (contextData == null) {
-      contextData = new HashMap<String, OperationContextData>();
+      contextData = new HashMap<>();
     }
     contextData.put(key, data);
   }

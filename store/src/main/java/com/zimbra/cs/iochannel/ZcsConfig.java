@@ -19,7 +19,7 @@ public class ZcsConfig extends Config {
     public ZcsConfig() throws ServiceException {
         Provisioning prov = Provisioning.getInstance();
         Server localServer = prov.getLocalServer();
-        peerServers = new HashSet<ServerConfig>();
+        peerServers = new HashSet<>();
         // null on hostname in order to bind to all the addresses
         localConfig = new ServerConfig(localServer.getServiceHostname(), null, localServer.getMessageChannelPort());
         for (Server s : prov.getAllServers()) {

@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.zimbra.common.account.Key;
-import com.zimbra.common.account.Key.CosBy;
 import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
@@ -89,7 +88,7 @@ public class ModifyZimlet extends AdminDocumentHandler {
         if (val == null) return;
 	    boolean status = val.equalsIgnoreCase("enabled");
 
-	    Map<String, String> attrRightNeeded = new HashMap<String,String>();
+	    Map<String, String> attrRightNeeded = new HashMap<>();
 	    attrRightNeeded.put(Provisioning.A_zimbraZimletEnabled, status ? ProvisioningConstants.TRUE : ProvisioningConstants.FALSE);
 	    checkRight(zsc, context, zimlet, attrRightNeeded);
 	    
@@ -116,7 +115,7 @@ public class ModifyZimlet extends AdminDocumentHandler {
         //
         // need right to modify zimbraZimletPriority on *all* zimlets, because
         // all zimlets can be re-prioritized.
-        Map<String, String> attrRightNeeded = new HashMap<String,String>();
+        Map<String, String> attrRightNeeded = new HashMap<>();
         attrRightNeeded.put(Provisioning.A_zimbraZimletPriority, null); // yuck, pass null for the value
         
         List<Zimlet> allZimlets = Provisioning.getInstance().listAllZimlets();

@@ -51,11 +51,11 @@ public class GetAccountRequest extends AttributeSelectorImpl {
     }
 
     public GetAccountRequest(AccountSelector account) {
-        this(account, (Boolean) null, (Iterable<String>) null);
+        this(account, null, null);
     }
 
     public GetAccountRequest(AccountSelector account, Boolean applyCos) {
-        this(account, applyCos, (Iterable<String>) null);
+        this(account, applyCos, null);
     }
 
     public GetAccountRequest(AccountSelector account, Boolean applyCos,

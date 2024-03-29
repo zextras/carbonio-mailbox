@@ -36,7 +36,7 @@ public class GetAvailableLocales extends AccountDocumentHandler {
         Locale displayLocale = getDisplayLocale(account, context);
 
         // get installed locales, sorted
-        Locale installedLocales[] = WebClientL10nUtil.getLocales(displayLocale);
+        Locale[] installedLocales = WebClientL10nUtil.getLocales(displayLocale);
 
         // get avail locales for this account/COS
         Set<String> allowedLocales = account.getMultiAttrSet(Provisioning.A_zimbraAvailableLocale);

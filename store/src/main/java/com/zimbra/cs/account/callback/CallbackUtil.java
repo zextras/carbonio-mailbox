@@ -88,9 +88,9 @@ public class CallbackUtil {
 
     public static List<Integer> getSortedMailboxIdList() throws ServiceException {
         int[] arr = MailboxManager.getInstance().getMailboxIds();
-        List<Integer> list = new ArrayList<Integer>();
-        for (int i = 0; i < arr.length; i++) {
-            list.add(arr[i]);
+        List<Integer> list = new ArrayList<>();
+        for (int j : arr) {
+            list.add(j);
         }
         Collections.sort(list);
         return list;

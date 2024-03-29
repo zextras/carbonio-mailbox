@@ -127,7 +127,7 @@ public class FolderActionRequest {
      */
     @SuppressWarnings("unused")
     private FolderActionRequest() {
-        this((FolderActionSelector) null);
+        this(null);
     }
 
     public FolderActionRequest(FolderActionSelector action) {

@@ -32,32 +32,40 @@ public enum MdsConnectionType {
     }
 
     public static Function<ConnectionType, MdsConnectionType> CT_TO_MCT =
-        new Function<ConnectionType, MdsConnectionType>() {
-            @Override
-            public MdsConnectionType apply(ConnectionType from) {
-                switch (from) {
-                case cleartext : return cleartext;
-                case ssl: return ssl;
-                case tls: return tls;
-                case tls_if_available : return tls_if_available;
-                }
-                ZimbraLog.soap.warn("Unexpected connection type %s.  Returning %s.", from, cleartext);
+        new Function<>() {
+          @Override
+          public MdsConnectionType apply(ConnectionType from) {
+            switch (from) {
+              case cleartext:
                 return cleartext;
+              case ssl:
+                return ssl;
+              case tls:
+                return tls;
+              case tls_if_available:
+                return tls_if_available;
             }
-    };
+            ZimbraLog.soap.warn("Unexpected connection type %s.  Returning %s.", from, cleartext);
+            return cleartext;
+          }
+        };
 
     public static Function<MdsConnectionType, ConnectionType> MCT_TO_CT =
-        new Function<MdsConnectionType, ConnectionType>() {
-            @Override
-            public ConnectionType apply(MdsConnectionType from) {
-                switch (from) {
-                case cleartext : return ConnectionType.cleartext;
-                case ssl: return ConnectionType.ssl;
-                case tls: return ConnectionType.tls;
-                case tls_if_available : return ConnectionType.tls_if_available;
-                }
-                ZimbraLog.soap.warn("Unexpected connection type %s.  Returning %s.", from, ConnectionType.cleartext);
+        new Function<>() {
+          @Override
+          public ConnectionType apply(MdsConnectionType from) {
+            switch (from) {
+              case cleartext:
                 return ConnectionType.cleartext;
+              case ssl:
+                return ConnectionType.ssl;
+              case tls:
+                return ConnectionType.tls;
+              case tls_if_available:
+                return ConnectionType.tls_if_available;
             }
-    };
+            ZimbraLog.soap.warn("Unexpected connection type %s.  Returning %s.", from, ConnectionType.cleartext);
+            return ConnectionType.cleartext;
+          }
+        };
 }

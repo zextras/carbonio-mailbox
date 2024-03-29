@@ -198,7 +198,7 @@ public abstract class Group extends MailTarget implements AliasedEntry {
 
         public static List<GroupOwner> getOwners(Group group, boolean needName)
         throws ServiceException {
-            List<GroupOwner> owners = new ArrayList<GroupOwner>();
+            List<GroupOwner> owners = new ArrayList<>();
 
             /*
              * No need to check rights granted on the domain or globalgrant,

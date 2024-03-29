@@ -7,6 +7,7 @@ package com.zimbra.cs.dav.service.method;
 
 import java.io.IOException;
 
+import java.nio.charset.StandardCharsets;
 import javax.servlet.http.HttpServletResponse;
 
 import com.zimbra.common.mime.ContentType;
@@ -69,7 +70,7 @@ public class Get extends DavMethod {
             if (contentType != null && contentType.startsWith("text")) {
                 DavServlet.addResponseHeaderLoggingInfo(resp, sb);
                 if (ZimbraLog.dav.isTraceEnabled()) {
-                    sb.append(new String(ByteUtil.getContent(resource.getContent(ctxt), 0), "UTF-8"));
+                    sb.append(new String(ByteUtil.getContent(resource.getContent(ctxt), 0), StandardCharsets.UTF_8));
                 }
                 ZimbraLog.dav.debug(sb);
             }

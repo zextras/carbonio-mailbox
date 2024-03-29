@@ -39,11 +39,11 @@ import com.zimbra.cs.util.Zimbra;
 public abstract class EphemeralStore {
 
     /** Use this interface to identify ZimbraExtensions that provide EphemeralStores */
-    public static interface Extension {
+    public interface Extension {
         String getStoreId();
     }
 
-    private static Map<String, String> factories = new HashMap<String, String>();
+    private static Map<String, String> factories = new HashMap<>();
     private static Factory factory;
     protected AttributeEncoder encoder;
     static {
@@ -276,10 +276,12 @@ public abstract class EphemeralStore {
                 factoryClassName = getFactoryClassName(tokens[0], false);
             }
         } else {
-            throw ServiceException.FAILURE(String.format("no ephemeral backend URL specified for backend type '%s'", backendType.toString()), null);
+            throw ServiceException.FAILURE(String.format("no ephemeral backend URL specified for backend type '%s'",
+                backendType), null);
         }
         if (factoryClassName == null) {
-            throw ServiceException.FAILURE(String.format("no EphemeralStore.Factory class specified for backend type '%s'", backendType.toString()), null);
+            throw ServiceException.FAILURE(String.format("no EphemeralStore.Factory class specified for backend type '%s'",
+                backendType), null);
         }
         Class<? extends Factory> factoryClass = null;
         try {
@@ -488,11 +490,11 @@ public abstract class EphemeralStore {
         public abstract void test(String url) throws ServiceException;
     }
 
-    public static enum FailureMode {
-        halt, safe;
+    public enum FailureMode {
+        halt, safe
     }
 
-    public static enum BackendType {
-        primary, previous, migration;
+    public enum BackendType {
+        primary, previous, migration
     }
 }

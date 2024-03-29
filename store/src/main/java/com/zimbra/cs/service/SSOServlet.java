@@ -47,7 +47,7 @@ public abstract class SSOServlet extends ZimbraServlet {
             ZimbraPrincipal principal, boolean isAdminRequest)
     throws ServiceException {
 
-        Map<String, Object> authCtxt = new HashMap<String, Object>();
+        Map<String, Object> authCtxt = new HashMap<>();
         authCtxt.put(AuthContext.AC_ORIGINATING_CLIENT_IP, ZimbraServlet.getOrigIp(req));
         authCtxt.put(AuthContext.AC_REMOTE_IP, ZimbraServlet.getClientIp(req));
         authCtxt.put(AuthContext.AC_ACCOUNT_NAME_PASSEDIN, principal.getName());

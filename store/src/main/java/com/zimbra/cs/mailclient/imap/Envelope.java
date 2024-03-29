@@ -80,7 +80,7 @@ public class Envelope {
     private static Address[] readAList(ImapInputStream is) throws IOException {
         is.skipSpaces();
         if (is.match('(')) {
-            List<Address> addrs = new ArrayList<Address>();
+            List<Address> addrs = new ArrayList<>();
             is.skipSpaces();
             while (!is.match(')')) {
                 addrs.add(readAddress(is));

@@ -14,7 +14,7 @@ public class ListJavaTimeZones {
 
     public static void main(String[] args) throws Exception {
         String[] tzids = TimeZone.getAvailableIDs();
-        Set<TimeZone> tzset = new TreeSet<TimeZone>(new TZComparatorByOffset());  // TreeSet for sorting.
+        Set<TimeZone> tzset = new TreeSet<>(new TZComparatorByOffset());  // TreeSet for sorting.
         for (String tzid : tzids) {
             tzset.add(TimeZone.getTimeZone(tzid));
         }

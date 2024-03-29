@@ -58,7 +58,7 @@ public class NewContactAttr {
      */
     @SuppressWarnings("unused")
     private NewContactAttr() {
-         this((String) null);
+         this(null);
     }
 
     public NewContactAttr( String name) {

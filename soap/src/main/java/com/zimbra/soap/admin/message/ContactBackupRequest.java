@@ -110,7 +110,7 @@ public class ContactBackupRequest {
      */
     public void addServers(List<ServerSelector> servers) {
         if (this.servers == null) {
-            this.servers = new ArrayList<ServerSelector>();
+            this.servers = new ArrayList<>();
         }
         this.servers.addAll(servers);
     }
@@ -120,7 +120,7 @@ public class ContactBackupRequest {
      */
     public void addServer(ServerSelector server) {
         if (this.servers == null) {
-            this.servers = new ArrayList<ServerSelector>();
+            this.servers = new ArrayList<>();
         }
         this.servers.add(server);
     }

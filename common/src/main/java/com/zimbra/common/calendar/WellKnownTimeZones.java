@@ -26,9 +26,9 @@ import com.zimbra.common.service.ServiceException;
 
 public class WellKnownTimeZones {
 
-    private static Map<String /* TZID (or alias) */, ICalTimeZone> sTZIDMap = new HashMap<String, ICalTimeZone>();
+    private static Map<String /* TZID (or alias) */, ICalTimeZone> sTZIDMap = new HashMap<>();
     private static Map<ICalTimeZone, ICalTimeZone> sOffsetRuleMatches =
-            new TreeMap<ICalTimeZone, ICalTimeZone>(new SimpleYearlyTZComparator(false /* fuzzy */));
+        new TreeMap<>(new SimpleYearlyTZComparator(false /* fuzzy */));
     /* Bug 95440 Calendar.app on Yosemite behaves very badly with timezones it doesn't recognize.
      * Combine that with slightly buggy timezone rules coming out of ActiveSync and these get seen more than
      * ideally.
@@ -37,7 +37,7 @@ public class WellKnownTimeZones {
      * days should be affected by the rules changes.
      */
     private static Map<ICalTimeZone, ICalTimeZone> fuzzyOffsetRuleMatches =
-            new TreeMap<ICalTimeZone, ICalTimeZone>(new SimpleYearlyTZComparator(true /* fuzzy */));
+        new TreeMap<>(new SimpleYearlyTZComparator(true /* fuzzy */));
 
     /**
      * Look up a well-known time zone by its TZID.
@@ -103,7 +103,7 @@ public class WellKnownTimeZones {
             sTZIDMap.put(tz.getID(), tz);
         }
         // Add aliases from TZIDMapper.  Build map of TZID to match score.
-        Map<String, Integer> matchScoreMap = new HashMap<String, Integer>();
+        Map<String, Integer> matchScoreMap = new HashMap<>();
         for (Iterator<TZIDMapper.TZ> tzIter = TZIDMapper.iterator(false);
              tzIter.hasNext(); ) {
             TZIDMapper.TZ tz = tzIter.next();

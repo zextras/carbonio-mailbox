@@ -149,7 +149,7 @@ implements InviteComponentInterface
      * no-argument constructor wanted by JAXB
      */
     protected InviteComponent() {
-        this((String) null, -1, false);
+        this(null, -1, false);
     }
 
     public InviteComponent(String method, int componentNum, boolean rsvp) {

@@ -29,7 +29,7 @@ public class GetAppointmentResponse {
   /** no-argument constructor wanted by JAXB */
   @SuppressWarnings("unused")
   private GetAppointmentResponse() {
-    this((CalendarItemInfo) null);
+    this(null);
   }
 
   public GetAppointmentResponse(CalendarItemInfo item) {

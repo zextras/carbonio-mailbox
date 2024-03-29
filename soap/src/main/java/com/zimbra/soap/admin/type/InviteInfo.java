@@ -64,7 +64,7 @@ implements InviteInfoInterface {
      */
     @SuppressWarnings("unused")
     private InviteInfo() {
-        this((String) null);
+        this(null);
     }
 
     public InviteInfo(String calItemType) {

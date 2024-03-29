@@ -9,9 +9,9 @@ import java.io.IOException;
 
 public interface FileCopier {
 
-    public boolean isAsync();
+    boolean isAsync();
 
-    public void start() throws IOException;
+    void start() throws IOException;
 
     public void shutdown() throws IOException;
 

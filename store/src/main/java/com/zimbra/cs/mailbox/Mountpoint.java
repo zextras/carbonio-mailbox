@@ -99,7 +99,6 @@ public class Mountpoint extends Folder implements MountpointStore {
      *
      * @see #grantAccess(String, byte, short, boolean) */
     @Override void revokeAccess(String liquidId) {
-        return;
     }
 
     @Override boolean canHaveChildren() { return false; }

@@ -39,7 +39,7 @@ public class Reject extends org.apache.jsieve.commands.optional.Reject {
         account = mailAdapter.getAccount();
         if (account.isSieveRejectMailEnabled()) {
             mailAdapter.setDiscardActionPresent();
-            final String message = FilterUtil.replaceVariables((ZimbraMailAdapter) mailAdapter,
+            final String message = FilterUtil.replaceVariables(mailAdapter,
                 ((StringListArgument) arguments.getArgumentList().get(0)).getList().get(0));
             mail.addAction(new ActionReject(message));
         } else {

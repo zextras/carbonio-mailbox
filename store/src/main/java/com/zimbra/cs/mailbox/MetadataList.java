@@ -21,11 +21,11 @@ public class MetadataList {
     List<Object> list;
 
     public MetadataList() {
-        list = new ArrayList<Object>();
+        list = new ArrayList<>();
     }
 
     public MetadataList(List<?> list) {
-        this.list = new ArrayList<Object>(list);
+        this.list = new ArrayList<>(list);
     }
 
     public MetadataList(String encoded) throws ServiceException {
@@ -55,16 +55,16 @@ public class MetadataList {
 
     @SuppressWarnings("unchecked")
     public <T> List<T> asList() {
-        List<T> result = new ArrayList<T>();
+        List<T> result = new ArrayList<>();
         for (Object obj : list) {
-            if (obj == null) {
-                continue;
-            } else if (obj instanceof Map) {
-                result.add((T) new Metadata((Map<String, ?>) obj));
-            } else if (obj instanceof List) {
-                result.add((T) new MetadataList((List<?>) obj));
-            } else {
-                result.add((T) obj);
+            if (obj != null) {
+                if (obj instanceof Map) {
+                    result.add((T) new Metadata((Map<String, ?>) obj));
+                } else if (obj instanceof List) {
+                    result.add((T) new MetadataList((List<?>) obj));
+                } else {
+                    result.add((T) obj);
+                }
             }
         }
         return result;
@@ -78,22 +78,22 @@ public class MetadataList {
     }
 
     public MetadataList add(int value) {
-        list.add(Integer.valueOf(value));
+        list.add(value);
         return this;
     }
 
     public MetadataList add(long value) {
-        list.add(Long.valueOf(value));
+        list.add(value);
         return this;
     }
 
     public MetadataList add(double value) {
-        list.add(new Double(value));
+        list.add(value);
         return this;
     }
 
     public MetadataList add(boolean value) {
-        list.add(Boolean.valueOf(value));
+        list.add(value);
         return this;
     }
 

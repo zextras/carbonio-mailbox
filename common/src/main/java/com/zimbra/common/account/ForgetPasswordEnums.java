@@ -27,7 +27,7 @@ public class ForgetPasswordEnums {
 
         private String name;
 
-        private CodeConstants(String name) {
+        CodeConstants(String name) {
             this.name = name;
         }
 

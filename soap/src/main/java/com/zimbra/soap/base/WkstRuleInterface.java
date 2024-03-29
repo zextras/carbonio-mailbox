@@ -10,6 +10,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface WkstRuleInterface {
-    public WkstRuleInterface create(String day);
-    public String getDay();
+    WkstRuleInterface create(String day);
+    String getDay();
 }

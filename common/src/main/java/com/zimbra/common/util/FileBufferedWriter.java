@@ -91,15 +91,12 @@ public class FileBufferedWriter extends Writer {
                 if (mMemBufferOffset > 0)
                     mOut.write(mMemBuffer, 0, mMemBufferOffset);
                 if (hasFile) {
-                    InputStreamReader reader = new InputStreamReader(new FileInputStream(mTempFile), CHARSET);
-                    try {
-                        int charsRead;
-                        while ((charsRead = reader.read(mMemBuffer, 0, mMemBuffer.length)) != -1) {
-                            mOut.write(mMemBuffer, 0, charsRead);
-                        }
-                    } finally {
-                        reader.close();
+                  try (InputStreamReader reader = new InputStreamReader(new FileInputStream(mTempFile), CHARSET)) {
+                    int charsRead;
+                    while ((charsRead = reader.read(mMemBuffer, 0, mMemBuffer.length)) != -1) {
+                      mOut.write(mMemBuffer, 0, charsRead);
                     }
+                  }
                 }
             } finally {
                 if (mTempFile != null) {

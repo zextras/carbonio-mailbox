@@ -11,7 +11,6 @@ import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -240,7 +239,7 @@ public final class ElasticSearchIndex extends IndexStore {
         return topLevel;
     }
 
-    private class FieldProperty {
+    private static class FieldProperty {
         private static final String YES = "yes";
         private static final String NO = "no";
         private static final String ANALYZED = "analyzed";
@@ -278,7 +277,7 @@ public final class ElasticSearchIndex extends IndexStore {
         }
     }
 
-    private class DateFieldProperty extends FieldProperty {
+    private static class DateFieldProperty extends FieldProperty {
         private static final String TYPE_DATE = "date";
         public DateFieldProperty(boolean store) throws JSONException {
             super(TYPE_DATE, store);
@@ -289,7 +288,7 @@ public final class ElasticSearchIndex extends IndexStore {
         }
     }
 
-    private class StringFieldProperty extends FieldProperty {
+    private static class StringFieldProperty extends FieldProperty {
         private static final String TYPE_STRING = "string";
         public StringFieldProperty(boolean store) throws JSONException {
             super(TYPE_STRING, store);
@@ -545,7 +544,7 @@ public final class ElasticSearchIndex extends IndexStore {
                 case STALE:
                 case DONE: // for partial re-index
                     List<Integer> ids = Lists.newArrayListWithCapacity(1);
-                    ids.add(new Integer(item.getId()));
+                    ids.add(item.getId());
                     deleteDocument(ids);
                     break;
                 case DEFERRED:
@@ -686,15 +685,12 @@ public final class ElasticSearchIndex extends IndexStore {
                 } catch (IOException e) {
                     ZimbraLog.index.error("Problem getting stats for index %s", url, e);
                 }
-                Collections.sort(allValues, new Comparator<BrowseTerm>() {
-                    @Override
-                    public int compare(BrowseTerm o1, BrowseTerm o2) {
-                        int retVal = o1.getText().compareTo(o2.getText());
-                        if (retVal == 0) {
-                            retVal = o2.getFreq() - o1.getFreq();
-                        }
-                        return retVal;
-                    }
+                allValues.sort((o1, o2) -> {
+                  int retVal = o1.getText().compareTo(o2.getText());
+                  if (retVal == 0) {
+                    retVal = o2.getFreq() - o1.getFreq();
+                  }
+                  return retVal;
                 });
                 termValues.addAll(allValues);
             }
@@ -751,7 +747,7 @@ public final class ElasticSearchIndex extends IndexStore {
             }
             if (docID instanceof ZimbraElasticDocumentID) {
                 ZimbraElasticDocumentID eDocID = (ZimbraElasticDocumentID) docID;
-                String storedFields[] = { LuceneFields.L_PARTNAME, LuceneFields.L_FILENAME, LuceneFields.L_SORT_SIZE,
+                String[] storedFields = { LuceneFields.L_PARTNAME, LuceneFields.L_FILENAME, LuceneFields.L_SORT_SIZE,
                         LuceneFields.L_SORT_ATTACH, LuceneFields.L_SORT_FLAG, LuceneFields.L_SORT_PRIORITY,
                         LuceneFields.L_MAILBOX_BLOB_ID, LuceneFields.L_SORT_DATE, LuceneFields.L_VERSION };
                 String url = String.format("%s%s/%s?fields=%s", indexUrl, indexType, eDocID.getDocID(),
@@ -1234,6 +1230,5 @@ public final class ElasticSearchIndex extends IndexStore {
      */
     @Override
     public void optimize() {
-        return;
     }
 }

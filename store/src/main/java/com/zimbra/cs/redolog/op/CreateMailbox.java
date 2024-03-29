@@ -67,7 +67,6 @@ public class CreateMailbox extends RedoableOp {
         int mboxId = mbox.getId();
         if (opMboxId == mboxId) {
             mLog.info("Mailbox " + opMboxId + " for account " + mAccountId + " already exists");
-            return;
         } else {
             throw new MailboxIdConflictException(mAccountId, opMboxId, mboxId, this);
         }

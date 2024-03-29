@@ -16,7 +16,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -102,7 +101,7 @@ public class ZoneInfoParser {
 
     }
 
-    public static enum Weekday {
+    public enum Weekday {
         SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY;
 
         public static Weekday lookUp(String str) {
@@ -136,13 +135,13 @@ public class ZoneInfoParser {
     }
 
     public static class Day implements Comparable<Day> {
-        public static enum DayType {
+        public enum DayType {
             ON,            // on day N
             WEEKNUM,       // on Nth weekday (N=-1 => last week of the month)
             BEFORE,        // W<D (last weekday W before date D; e.g. Sun<8)
             ON_OR_BEFORE,  // W<=D (last weekday W on or before date D; e.g. Sun<=8)
             ON_OR_AFTER,   // W>=D (first weekday W on or after date D; e.g. Sun>=8)
-            AFTER;         // W>D (first weekday W after date D; e.g. Sun>8)
+            AFTER         // W>D (first weekday W after date D; e.g. Sun>8)
         }
 
         private DayType mType;
@@ -219,12 +218,12 @@ public class ZoneInfoParser {
                 return Integer.toString(mDate);
 
             String wday = mWeekday.toString();
-            wday = wday.substring(0, 1) + wday.toLowerCase().substring(1, 3);
+            wday = wday.charAt(0) + wday.toLowerCase().substring(1, 3);
 
             if (DayType.WEEKNUM.equals(mType)) {
                 if (mWeeknum == -1)
                     return "last" + wday;
-                return Integer.toString(mWeeknum) + wday;
+                return mWeeknum + wday;
             }
 
             String oper = null;
@@ -244,7 +243,7 @@ public class ZoneInfoParser {
             }
 
             if (oper != null)
-                return wday + oper + Integer.toString(mDate);
+                return wday + oper + mDate;
 
             return "type=" + mType + ", weeknum=" + mWeeknum + ", wkday=" + mWeekday + ", date=" + mDate;
         }
@@ -346,8 +345,8 @@ public class ZoneInfoParser {
             if (comp != 0)
                 return comp;
 
-            DayType dt[] = { mType, other.getType() };
-            int dtIndex[] = new int[2];
+            DayType[] dt = { mType, other.getType() };
+            int[] dtIndex = new int[2];
             for (int i = 0; i < dt.length; ++i) {
                 switch (dt[i]) {
                 case ON:
@@ -383,7 +382,7 @@ public class ZoneInfoParser {
 
     // Represents either duration in seconds, or time in seconds from midnight.
     public static class Time implements Comparable<Time> {
-        public static enum TimeType { WALL_TIME, STANDARD_TIME, UTC_TIME }
+        public enum TimeType { WALL_TIME, STANDARD_TIME, UTC_TIME }
 
         private int mHour;
         private int mMin;
@@ -686,7 +685,7 @@ public class ZoneInfoParser {
     }
 
     public static class ZoneLine implements Comparable<ZoneLine> {
-        public static enum RuleSaveType { RULE, SAVE };
+        public enum RuleSaveType { RULE, SAVE }
 
         private String mName;
         private final Time mGmtOff;  // in seconds
@@ -877,7 +876,7 @@ public class ZoneInfoParser {
 
         public Rule(String name) {
             mName = name;
-            mRuleLines = new ArrayList<RuleLine>();
+            mRuleLines = new ArrayList<>();
         }
 
         public String getName() { return mName; }
@@ -892,8 +891,8 @@ public class ZoneInfoParser {
 
         public Zone(String name) {
             mName = name;
-            mZoneLines = new TreeSet<ZoneLine>();
-            mAliases = new TreeSet<String>();  // sorted
+            mZoneLines = new TreeSet<>();
+            mAliases = new TreeSet<>();  // sorted
         }
 
         public String getName() { return mName; }
@@ -912,14 +911,14 @@ public class ZoneInfoParser {
     private final List<Leap> mLeaps;
 
     public ZoneInfoParser() {
-        mRules = new HashMap<String, Rule>();
-        mZones = new HashMap<String, Zone>();
-        mLinks = new HashMap<String, String>();
+        mRules = new HashMap<>();
+        mZones = new HashMap<>();
+        mLinks = new HashMap<>();
         mLinks.put("Etc/UTC", "UTC");  // Map Etc/UTC to built-in "UTC" time zone.
-        mLeaps = new ArrayList<Leap>();
+        mLeaps = new ArrayList<>();
     }
 
-    private static enum LineType {
+    private enum LineType {
         RULE, ZONE, LINK, LEAP, UNKNOWN;
 
         public static LineType lookUp(String str) {
@@ -945,7 +944,7 @@ public class ZoneInfoParser {
         tokenizer.quoteChar(dquote);
         tokenizer.eolIsSignificant(true);
 
-        List<String> tokenList = new ArrayList<String>();
+        List<String> tokenList = new ArrayList<>();
         LineType lineType = LineType.UNKNOWN;
         boolean atLineStart = true;
 
@@ -1029,62 +1028,58 @@ public class ZoneInfoParser {
 
     public void analyze() {
         // Link rules to zones.
-        for (Iterator<Entry<String, Zone>> ziter = mZones.entrySet().iterator(); ziter.hasNext(); ) {
-            Entry<String, Zone> zentry = ziter.next();
-            Zone zone = zentry.getValue();
-            Set<ZoneLine> zlines = zone.getZoneLines();
-            for (ZoneLine zline : zlines) {
-                if (zline.hasRule()) {
-                    String rname = zline.getRuleName();
-                    Rule rule = mRules.get(rname);
-                    if (rule == null) {
-                        System.err.println("Unknown rule: " + rname);
-                        continue;
-                    }
-                    zline.setRule(rule);
-                }
+      for (Entry<String, Zone> zentry : mZones.entrySet()) {
+        Zone zone = zentry.getValue();
+        Set<ZoneLine> zlines = zone.getZoneLines();
+        for (ZoneLine zline : zlines) {
+          if (zline.hasRule()) {
+            String rname = zline.getRuleName();
+            Rule rule = mRules.get(rname);
+            if (rule == null) {
+              System.err.println("Unknown rule: " + rname);
+              continue;
             }
+            zline.setRule(rule);
+          }
         }
+      }
 
         // Flatten links map.
-        List<String> aliasesToRemove = new ArrayList<String>();
-        Map<String, String> flattenedLinks = new HashMap<String, String>();
-        for (Iterator<Entry<String, String>> liter = mLinks.entrySet().iterator(); liter.hasNext(); ) {
-            Entry<String, String> lentry = liter.next();
-            String alias = lentry.getKey();
-            String real = lentry.getValue();
-            if (!mZones.containsKey(real)) {
-                aliasesToRemove.add(alias);
-                while ((real = mLinks.get(real)) != null) {
-                    if (mZones.containsKey(real)) {
-                        if (!alias.equals(real))
-                            flattenedLinks.put(alias, real);
-                        break;
-                    }
-                }
+        List<String> aliasesToRemove = new ArrayList<>();
+        Map<String, String> flattenedLinks = new HashMap<>();
+      for (Entry<String, String> lentry : mLinks.entrySet()) {
+        String alias = lentry.getKey();
+        String real = lentry.getValue();
+        if (!mZones.containsKey(real)) {
+          aliasesToRemove.add(alias);
+          while ((real = mLinks.get(real)) != null) {
+            if (mZones.containsKey(real)) {
+              if (!alias.equals(real))
+                flattenedLinks.put(alias, real);
+              break;
             }
+          }
         }
+      }
         for (String alias : aliasesToRemove) {
             mLinks.remove(alias);
         }
-        for (Iterator<Entry<String, String>> liter = flattenedLinks.entrySet().iterator(); liter.hasNext(); ) {
-            Entry<String, String> lentry = liter.next();
-            String alias = lentry.getKey();
-            String real = lentry.getValue();
-            mLinks.put(alias, real);
-        }
+      for (Entry<String, String> lentry : flattenedLinks.entrySet()) {
+        String alias = lentry.getKey();
+        String real = lentry.getValue();
+        mLinks.put(alias, real);
+      }
 
         // Register the aliases to zones.
-        for (Iterator<Entry<String, String>> liter = mLinks.entrySet().iterator(); liter.hasNext(); ) {
-            Entry<String, String> lentry = liter.next();
-            String alias = lentry.getKey();
-            String real = lentry.getValue();
-            Zone zone = mZones.get(real);
-            if (zone != null)
-                zone.addAlias(alias);
-            else
-                System.err.println("Invalid state!  Link \"" + alias + "\" points to a non-existent zone \"" + real + "\".");
-        }
+      for (Entry<String, String> lentry : mLinks.entrySet()) {
+        String alias = lentry.getKey();
+        String real = lentry.getValue();
+        Zone zone = mZones.get(real);
+        if (zone != null)
+          zone.addAlias(alias);
+        else
+          System.err.println("Invalid state!  Link \"" + alias + "\" points to a non-existent zone \"" + real + "\".");
+      }
 
         mAnalyzed = true;
     }
@@ -1113,16 +1108,13 @@ public class ZoneInfoParser {
         for (String fname : args) {
             File f = new File(fname);
             System.out.println("Processing: " + fname);
-            Reader r = new FileReader(f);
-            try {
-                parser.readTzdata(r);
-            } catch (ParseException e) {
-                System.err.println(e.getMessage());
-                System.err.println("Line: " + e.getErrorOffset());
-                e.printStackTrace();
-            } finally {
-                r.close();
-            }
+          try (Reader r = new FileReader(f)) {
+            parser.readTzdata(r);
+          } catch (ParseException e) {
+            System.err.println(e.getMessage());
+            System.err.println("Line: " + e.getErrorOffset());
+            e.printStackTrace();
+          }
         }
     }
 }

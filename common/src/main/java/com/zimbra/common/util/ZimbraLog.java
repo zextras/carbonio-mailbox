@@ -425,7 +425,7 @@ public final class ZimbraLog {
     } else {
       // Add
       if (contextMap == null) {
-        contextMap = new LinkedHashMap<String, String>();
+        contextMap = new LinkedHashMap<>();
         sContextMap.set(contextMap);
       }
       String oldValue = contextMap.put(key, value);

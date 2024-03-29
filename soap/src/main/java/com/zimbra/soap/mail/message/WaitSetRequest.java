@@ -138,7 +138,7 @@ public class WaitSetRequest implements WaitSetReq {
      */
     @SuppressWarnings("unused")
     private WaitSetRequest() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public WaitSetRequest(String waitSetId, String lastKnownSeqNo) {

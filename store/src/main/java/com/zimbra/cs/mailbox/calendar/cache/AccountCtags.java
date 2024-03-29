@@ -22,7 +22,7 @@ public class AccountCtags {
 
     AccountCtags(CalList calList, Collection<CtagInfo> ctags) {
         mCalList = calList;
-        mCtagMap = new HashMap<Integer, CtagInfo>(ctags.size());
+        mCtagMap = new HashMap<>(ctags.size());
         for (CtagInfo ctag : ctags) {
             mCtagMap.put(ctag.getId(), ctag);
         }
@@ -65,7 +65,7 @@ public class AccountCtags {
         Collection<CtagInfo> allFolders = mCtagMap.values();
         if (parentFolderId == Mailbox.ID_FOLDER_USER_ROOT)
             return allFolders;
-        List<CtagInfo> children = new ArrayList<CtagInfo>();
+        List<CtagInfo> children = new ArrayList<>();
         for (CtagInfo calInfo : allFolders) {
             if (calInfo.getFolderId() == parentFolderId)
                 children.add(calInfo);

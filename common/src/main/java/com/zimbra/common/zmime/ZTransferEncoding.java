@@ -17,7 +17,7 @@ public enum ZTransferEncoding {
     QUOTED_PRINTABLE("quoted-printable"), BASE64("base64"), SEVEN_BIT("7bit"), EIGHT_BIT("8bit"), BINARY("binary");
 
     private String mValue;
-    private ZTransferEncoding(String value)  { mValue = value; }
+    ZTransferEncoding(String value)  { mValue = value; }
 
     @Override public String toString()  { return mValue; }
 
@@ -41,7 +41,7 @@ public enum ZTransferEncoding {
 
         private int column;
 
-        private final int buf[] = new int[4];
+        private final int[] buf = new int[4];
         private boolean fold = true;
 
         Base64EncoderStream(InputStream is) {
@@ -87,7 +87,7 @@ public enum ZTransferEncoding {
 
         private boolean closed;
         private int position = 3, valid = 3;
-        private final int buf[] = new int[3];
+        private final int[] buf = new int[3];
 
         Base64DecoderStream(InputStream is) {
             super(is);
@@ -188,7 +188,9 @@ public enum ZTransferEncoding {
         static final byte[] QP_TABLE = "0123456789ABCDEF".getBytes();
 
         private int column, valid, out1, out2;
-        private boolean fold = true, text, force[];
+        private boolean fold = true;
+      private boolean text;
+      private boolean[] force;
 
         QuotedPrintableEncoderStream(InputStream is, ZContentType ctype) {
             super(is, 2);  setContentType(ctype);

@@ -23,7 +23,6 @@ import com.zimbra.cs.account.auth.AuthContext;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.service.authenticator.SSOAuthenticator;
-import com.zimbra.cs.service.authenticator.SSOAuthenticator.SSOAuthenticatorServiceException;
 import com.zimbra.cs.service.authenticator.SSOAuthenticator.ZimbraPrincipal;
 import com.zimbra.cs.service.authenticator.ClientCertAuthenticator;
 
@@ -72,8 +71,7 @@ public class CertAuthServlet extends SSOServlet {
             principal = authenticator.authenticate();
             AuthToken authToken = authorize(req, AuthContext.Protocol.client_certificate, principal, isAdminRequest);
             setAuthTokenCookieAndRedirect(req, resp, principal.getAccount(), authToken);
-            return;
-            
+
         } catch (ServiceException e) {
             String reason = "";
             if (e instanceof AuthFailedServiceException) {
@@ -119,9 +117,7 @@ public class CertAuthServlet extends SSOServlet {
                     dispatcher.forward(req, resp);
                     return;
                 }
-            } catch (IOException e) {
-                ZimbraLog.account.warn("unable to forward to forbidden page" + forbiddenPage, e);
-            } catch (ServletException e) {
+            } catch (IOException | ServletException e) {
                 ZimbraLog.account.warn("unable to forward to forbidden page" + forbiddenPage, e);
             }
         }

@@ -231,7 +231,7 @@ public class MimeMessage extends MimePart {
      *  {@code MimeMessage} itself is included in the {@code Map} with part
      *  name <tt>""</tt>. */
     public Map<String, MimePart> listMimeParts() {
-        Map<String, MimePart> parts = new LinkedHashMap<String, MimePart>(6);
+        Map<String, MimePart> parts = new LinkedHashMap<>(6);
         parts.put("", this);
         return listMimeParts(parts, "");
     }
@@ -434,7 +434,7 @@ public class MimeMessage extends MimePart {
 //        if (c1 != c2)
 //            System.out.println("divergence at decoded position " + pos + " (new = " + c1 + ", old = " + c2 + ")");
 //        ByteUtil.copy(mm.getSubpart("4").getInputStream(), true, System.out, false);
-        ((MimeMultipart) mm.getBodyPart()).setContentType(((MimeMultipart) mm.getBodyPart()).getContentType().setParameter("boundary", "b*o*u*n*d*a*r*y"));
+        mm.getBodyPart().setContentType(mm.getBodyPart().getContentType().setParameter("boundary", "b*o*u*n*d*a*r*y"));
 //        System.out.write(mm.getContent());
 
         mm = new MimeMessage(new File(args[0] + File.separator + "partial-multipart-5775"));
@@ -442,9 +442,9 @@ public class MimeMessage extends MimePart {
 
         mm = new MimeMessage(new File(args[0] + File.separator + "accent"));
 //        dumpParts(mm);
-        ((MimeBodyPart) mm.getSubpart("1")).setContentType(new ContentType("text/plain; format=flowed; charset=iso-8859-2"));
+        mm.getSubpart("1").setContentType(new ContentType("text/plain; format=flowed; charset=iso-8859-2"));
         ((MimeBodyPart) mm.getSubpart("1")).setTransferEncoding(ContentTransferEncoding.BASE64);
-        ((MimeMultipart) mm.getBodyPart()).setContentType(((MimeMultipart) mm.getBodyPart()).getContentType().setParameter("boundary", "b*o*u*n*d*a*r*y"));
+        mm.getBodyPart().setContentType(mm.getBodyPart().getContentType().setParameter("boundary", "b*o*u*n*d*a*r*y"));
 //        System.out.write(mm.getSubpart("2").getContent());
 //        ByteUtil.copy(mm.getSubpart("2").getContentStream(), true, System.out, false);
         System.out.write(mm.getContent());
@@ -460,7 +460,7 @@ public class MimeMessage extends MimePart {
 //        dumpParts(mm);
         System.out.write(mm.getRawContent());
 
-        mm = MimeMessage.readStructure(new FileInputStream(new File(args[0] + File.separator + "report-attachment-6667")), null);
+        mm = MimeMessage.readStructure(new FileInputStream(args[0] + File.separator + "report-attachment-6667"), null);
         dumpParts(mm);
 //        ByteUtil.copy(mm.getInputStream(), true, System.out, false);
 

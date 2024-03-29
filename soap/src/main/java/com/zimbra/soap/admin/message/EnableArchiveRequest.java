@@ -58,7 +58,7 @@ public class EnableArchiveRequest {
      */
     @SuppressWarnings("unused")
     private EnableArchiveRequest() {
-        this((AccountSelector) null);
+        this(null);
     }
 
     public EnableArchiveRequest(AccountSelector account) {

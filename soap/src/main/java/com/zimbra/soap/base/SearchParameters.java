@@ -13,109 +13,109 @@ import java.util.List;
 public interface SearchParameters {
 
   // Used for requests which use attributes and elements processed by SearchParams.parse
-  public void setIncludeTagDeleted(Boolean includeTagDeleted);
+  void setIncludeTagDeleted(Boolean includeTagDeleted);
 
-  public void setIncludeTagMuted(Boolean includeTagMuted);
+  void setIncludeTagMuted(Boolean includeTagMuted);
 
-  public void setCalItemExpandStart(Long calItemExpandStart);
+  void setCalItemExpandStart(Long calItemExpandStart);
 
-  public void setCalItemExpandEnd(Long calItemExpandEnd);
+  void setCalItemExpandEnd(Long calItemExpandEnd);
 
-  public void setQuery(String query);
+  void setQuery(String query);
 
-  public void setInDumpster(Boolean inDumpster);
+  void setInDumpster(Boolean inDumpster);
 
-  public void setSearchTypes(String searchTypes);
+  void setSearchTypes(String searchTypes);
 
-  public void setGroupBy(String groupBy);
+  void setGroupBy(String groupBy);
 
-  public void setQuick(Boolean quick);
+  void setQuick(Boolean quick);
 
-  public void setSortBy(String sortBy);
+  void setSortBy(String sortBy);
 
-  public void setFetch(String fetch);
+  void setFetch(String fetch);
 
-  public void setMarkRead(Boolean markRead);
+  void setMarkRead(Boolean markRead);
 
-  public void setMaxInlinedLength(Integer maxInlinedLength);
+  void setMaxInlinedLength(Integer maxInlinedLength);
 
-  public void setWantHtml(Boolean wantHtml);
+  void setWantHtml(Boolean wantHtml);
 
-  public void setNeedCanExpand(Boolean needCanExpand);
+  void setNeedCanExpand(Boolean needCanExpand);
 
-  public void setNeuterImages(Boolean neuterImages);
+  void setNeuterImages(Boolean neuterImages);
 
-  public void setWantRecipients(WantRecipsSetting wantRecipients);
+  void setWantRecipients(WantRecipsSetting wantRecipients);
 
-  public void setPrefetch(Boolean prefetch);
+  void setPrefetch(Boolean prefetch);
 
-  public void setResultMode(String resultMode);
+  void setResultMode(String resultMode);
 
-  public void setField(String field);
+  void setField(String field);
 
-  public void setLimit(Integer limit);
+  void setLimit(Integer limit);
 
-  public void setOffset(Integer offset);
+  void setOffset(Integer offset);
 
-  public void setHeaders(Iterable<AttributeName> headers);
+  void setHeaders(Iterable<AttributeName> headers);
 
-  public void addHeader(AttributeName header);
+  void addHeader(AttributeName header);
 
-  public void setCalTz(CalTZInfoInterface calTz);
+  void setCalTz(CalTZInfoInterface calTz);
 
-  public void setLocale(String locale);
+  void setLocale(String locale);
 
-  public void setCursor(CursorInfo cursor);
+  void setCursor(CursorInfo cursor);
 
-  public Boolean getIncludeTagDeleted();
+  Boolean getIncludeTagDeleted();
 
-  public Boolean getIncludeTagMuted();
+  Boolean getIncludeTagMuted();
 
-  public Long getCalItemExpandStart();
+  Long getCalItemExpandStart();
 
-  public Long getCalItemExpandEnd();
+  Long getCalItemExpandEnd();
 
-  public String getQuery();
+  String getQuery();
 
-  public Boolean getInDumpster();
+  Boolean getInDumpster();
 
-  public String getSearchTypes();
+  String getSearchTypes();
 
-  public String getGroupBy();
+  String getGroupBy();
 
-  public Boolean getQuick();
+  Boolean getQuick();
 
-  public String getSortBy();
+  String getSortBy();
 
-  public String getFetch();
+  String getFetch();
 
-  public Boolean getMarkRead();
+  Boolean getMarkRead();
 
-  public Integer getMaxInlinedLength();
+  Integer getMaxInlinedLength();
 
-  public Boolean getWantHtml();
+  Boolean getWantHtml();
 
-  public Boolean getNeedCanExpand();
+  Boolean getNeedCanExpand();
 
-  public Boolean getNeuterImages();
+  Boolean getNeuterImages();
 
-  public WantRecipsSetting getWantRecipients();
+  WantRecipsSetting getWantRecipients();
 
-  public Boolean getPrefetch();
+  Boolean getPrefetch();
 
-  public String getResultMode();
+  String getResultMode();
 
-  public String getField();
+  String getField();
 
-  public Integer getLimit();
+  Integer getLimit();
 
-  public Integer getOffset();
+  Integer getOffset();
 
-  public List<AttributeName> getHeaders();
+  List<AttributeName> getHeaders();
 
-  public CalTZInfoInterface getCalTz();
+  CalTZInfoInterface getCalTz();
 
-  public String getLocale();
+  String getLocale();
 
-  public CursorInfo getCursor();
+  CursorInfo getCursor();
 }

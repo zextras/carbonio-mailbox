@@ -31,7 +31,7 @@ public class ConvActionResponse {
      */
     @SuppressWarnings("unused")
     private ConvActionResponse() {
-        this((ActionResult) null);
+        this(null);
     }
 
     public ConvActionResponse(ActionResult action) {

@@ -51,12 +51,12 @@ implements RecurRuleBase, ExceptionRuleInfoInterface {
 
     @Override
     public RecurrenceInfoInterface getAddInterface() {
-        return (RecurrenceInfo) add;
+        return add;
     }
 
     @Override
     public RecurrenceInfoInterface getExcludeInterface() {
-        return (RecurrenceInfo) exclude;
+        return exclude;
     }
 
     @Override

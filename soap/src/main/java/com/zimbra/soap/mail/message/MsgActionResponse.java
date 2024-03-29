@@ -33,7 +33,7 @@ public class MsgActionResponse {
      */
     @SuppressWarnings("unused")
     private MsgActionResponse() {
-        this((ActionResult) null);
+        this(null);
     }
 
     public MsgActionResponse(ActionResult action) {

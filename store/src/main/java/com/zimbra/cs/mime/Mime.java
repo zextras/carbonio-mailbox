@@ -19,6 +19,7 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -46,7 +47,6 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimePart;
 import javax.mail.internet.MimeUtility;
-import javax.mail.internet.ParseException;
 import javax.mail.util.ByteArrayDataSource;
 import javax.mail.util.SharedFileInputStream;
 
@@ -203,9 +203,9 @@ public class Mime {
     }
 
     private static List<MPartInfo> listParts(MimePart root, String defaultCharset) throws MessagingException, IOException {
-        List<MPartInfo> parts = new ArrayList<MPartInfo>();
+        List<MPartInfo> parts = new ArrayList<>();
 
-        LinkedList<MPartInfo> queue = new LinkedList<MPartInfo>();
+        LinkedList<MPartInfo> queue = new LinkedList<>();
         queue.add(generateMPartInfo(root, null, "", 0));
 
         MimeMultipart emptyMultipart = null;
@@ -235,7 +235,7 @@ public class Mime {
                             mpart.mContentType = mpart.mContentType.replace(MimeConstants.CT_MULTIPART_APPLEDOUBLE, MimeConstants.CT_APPLEFILE);
                         }
                     }
-                    mpart.mChildren = new ArrayList<MPartInfo>(multi.getCount());
+                    mpart.mChildren = new ArrayList<>(multi.getCount());
                     for (int i = 1; i <= multi.getCount(); i++) {
                         mpart.mChildren.add(generateMPartInfo((MimePart) multi.getBodyPart(i - 1), mpart, prefix + i, i));
                     }
@@ -350,12 +350,10 @@ public class Mime {
                 return new ZMimeMultipart(new RawContentMultipartDataSource(mp, ctype));
             }
             multi.getCount();
-        } catch (ParseException pe) {
-            multi = new ZMimeMultipart(new FixedMultipartDataSource(mp, ctype));
-        } catch (MessagingException me) {
+        } catch (MessagingException pe) {
             multi = new ZMimeMultipart(new FixedMultipartDataSource(mp, ctype));
         }
-        return multi;
+      return multi;
     }
 
     /** Returns whether the given "boundary" string occurs within the first
@@ -381,20 +379,20 @@ public class Mime {
                         return true;
                     bindex = dashes = 0;
                     failed = false;
-                } else if (failed) {
-                    continue;
-                } else if (dashes != 2) {
-                    if (c == '-')
-                        dashes++;
-                    else
-                        failed = true;
-                } else if (boundary == null) {
-                    if (Character.isWhitespace(c))
-                        failed = true;
-                    bindex++;
-                } else {
-                    if (bindex >= blength || c != boundary.charAt(bindex++))
-                        failed = true;
+                } else if (!failed) {
+                    if (dashes != 2) {
+                        if (c == '-')
+                            dashes++;
+                        else
+                            failed = true;
+                    } else if (boundary == null) {
+                        if (Character.isWhitespace(c))
+                            failed = true;
+                        bindex++;
+                    } else {
+                        if (bindex >= blength || c != boundary.charAt(bindex++))
+                            failed = true;
+                    }
                 }
             }
         } finally {
@@ -472,7 +470,7 @@ public class Mime {
                 super(is);
 
                 String explicitBoundary = getParsedContentType().getParameter("boundary");
-                mBoundary = explicitBoundary == null ? "_-_" + UUID.randomUUID().toString() : explicitBoundary;
+                mBoundary = explicitBoundary == null ? "_-_" + UUID.randomUUID() : explicitBoundary;
                 byte[] boundary = mBoundary.getBytes();
 
                 mPrologue = new byte[2 + boundary.length + 4];
@@ -831,7 +829,7 @@ public class Mime {
      */
     public static Set<String> getAttachmentTypeList(List<MPartInfo> parts) {
         // get a set of all the content types
-        Set<String> set = new HashSet<String>();
+        Set<String> set = new HashSet<>();
         for (MPartInfo mpi : parts) {
             if (mpi.isFilterableAttachment()) {
                 set.add(mpi.getContentType());
@@ -915,7 +913,7 @@ public class Mime {
             return addresses;
 
         // if we're here, we need to expand at least one group...
-        List<InternetAddress> expanded = new ArrayList<InternetAddress>();
+        List<InternetAddress> expanded = new ArrayList<>();
         for (InternetAddress addr : addresses) {
             if (!addr.isGroup()) {
                 expanded.add(addr);
@@ -948,19 +946,19 @@ public class Mime {
             Address[] addrs = mm.getRecipients(rcptType);
             if (addrs == null)
                 continue;
-            ArrayList<InternetAddress> list = new ArrayList<InternetAddress>(addrs.length);
-            for (int j = 0; j < addrs.length; j++) {
-                InternetAddress inetAddr = (InternetAddress) addrs[j];
-                String addr = inetAddr.getAddress();
-                boolean match = false;
-                for (int k = 0; k < rcpts.length; k++)
-                    if (addr.equalsIgnoreCase(rcpts[k])) {
-                        match = true;
-                        break;
-                    }
-                if (!match)
-                    list.add(inetAddr);
-            }
+            ArrayList<InternetAddress> list = new ArrayList<>(addrs.length);
+          for (Address address : addrs) {
+            InternetAddress inetAddr = (InternetAddress) address;
+            String addr = inetAddr.getAddress();
+            boolean match = false;
+            for (String rcpt : rcpts)
+              if (addr.equalsIgnoreCase(rcpt)) {
+                match = true;
+                break;
+              }
+            if (!match)
+              list.add(inetAddr);
+          }
             if (list.size() < addrs.length) {
                 InternetAddress[] newRcpts = new InternetAddress[list.size()];
                 list.toArray(newRcpts);
@@ -1139,7 +1137,7 @@ public class Mime {
         name = StringUtil.sanitizeFilename(name);
 
         // catch (illegal, but less common) character entities
-        if (name.indexOf("&#") != -1 && name.indexOf(';') != -1) {
+        if (name.contains("&#") && name.indexOf(';') != -1) {
             return expandNumericCharacterReferences(name);
         }
 
@@ -1169,7 +1167,7 @@ public class Mime {
                     sb.append((char) calc);
                     start = -1;
                 } else {
-                    sb.append(raw.substring(start, i--));
+                    sb.append(raw, start, i--);
                     start = -1;
                 }
             } else if (c == '&' && i < len - 3 && raw.charAt(i + 1) == '#') {
@@ -1208,7 +1206,7 @@ public class Mime {
         MPartInfo top = parts.get(0);
         if (!top.isMultipart()) {
             if (!top.getDisposition().equals(Part.ATTACHMENT)) {
-                (bodies = new HashSet<MPartInfo>(1)).add(top);
+                (bodies = new HashSet<>(1)).add(top);
             }
         } else {
             bodies = getBodySubparts(top, preferHtml);
@@ -1341,13 +1339,13 @@ public class Mime {
                 Set<MPartInfo> found = getBodySubparts(mpi, preferHtml);
                 if (found != null) {
                     if (bodies == null)
-                        bodies = new LinkedHashSet<MPartInfo>(found.size());
+                        bodies = new LinkedHashSet<>(found.size());
                     bodies.addAll(found);
                 }
             } else if (!mpi.getDisposition().equals(Part.ATTACHMENT) && !mpi.isMessage() &&
                     (mpi.getContentID() == null || mpi.getContentType().matches(MimeConstants.CT_TEXT_WILD))) {
                 if (bodies == null)
-                    bodies = new LinkedHashSet<MPartInfo>(1);
+                    bodies = new LinkedHashSet<>(1);
                 bodies.add(mpi);
             }
         }
@@ -1356,7 +1354,7 @@ public class Mime {
     }
 
     private static <T> Set<T> setContaining(T mpi) {
-        Set<T> body = new LinkedHashSet<T>(1);
+        Set<T> body = new LinkedHashSet<>(1);
         body.add(mpi);
         return body;
     }
@@ -1426,9 +1424,9 @@ public class Mime {
         //get all text subparts which match the preferHtml argument
         //if none match, return all alternative text subparts
         //in either case, text/rfc822-headers part is included in returned bodies if present
-        Set<MPartInfo> subparts = new HashSet<MPartInfo>();
-        Set<MPartInfo> alternatives = new HashSet<MPartInfo>();
-        Set<MPartInfo> headers = new HashSet<MPartInfo>();
+        Set<MPartInfo> subparts = new HashSet<>();
+        Set<MPartInfo> alternatives = new HashSet<>();
+        Set<MPartInfo> headers = new HashSet<>();
         for (MPartInfo mpi : children) {
             boolean isAttachment = mpi.getDisposition().equals(Part.ATTACHMENT);
             // the Content-Type we want and the one we'd settle for...
@@ -1459,14 +1457,15 @@ public class Mime {
 
 
     public static void main(String[] args) throws MessagingException, IOException {
-        String s = URLDecoder.decode("Zimbra%20&#26085;&#26412;&#35486;&#21270;&#12398;&#32771;&#24942;&#28857;.txt", "utf-8");
+        String s = URLDecoder.decode("Zimbra%20&#26085;&#26412;&#35486;&#21270;&#12398;&#32771;&#24942;&#28857;.txt",
+            StandardCharsets.UTF_8);
         System.out.println(s);
         System.out.println(expandNumericCharacterReferences("Zimbra%20&#26085;&#26412;&#35486;&#21270;&#12398;&#32771;&#24942;&#28857;.txt&#x40;&;&#;&#x;&#&#3876;&#55"));
 
         MimeMessage mm = new FixedMimeMessage(JMSession.getSession(), new SharedFileInputStream("C:\\Temp\\mail\\24245"));
         InputStream is = new RawContentMultipartDataSource(mm, new ContentType(mm.getContentType())).getInputStream();
         int num;
-        byte buf[] = new byte[1024];
+        byte[] buf = new byte[1024];
         while ((num = is.read(buf)) != -1) {
             System.out.write(buf, 0, num);
         }
@@ -1517,11 +1516,11 @@ public class Mime {
     public static boolean isAutoSubmitted(MimePart part) throws MessagingException {
         String[] autoSubmitted = part.getHeader("Auto-Submitted");
         if (autoSubmitted != null) {
-            for (int i = 0; i < autoSubmitted.length; i++) {
-                if (!autoSubmitted[i].equalsIgnoreCase("no")) {
-                    return true;
-                }
+          for (String s : autoSubmitted) {
+            if (!s.equalsIgnoreCase("no")) {
+              return true;
             }
+          }
         }
         return false;
     }
@@ -1534,7 +1533,7 @@ public class Mime {
         try {
             return getReferences(mm.getHeader(header, " "));
         } catch (MessagingException e) {
-            return new ArrayList<String>(0);
+            return new ArrayList<>(0);
         }
     }
 
@@ -1550,10 +1549,10 @@ public class Mime {
         String value = StringUtil.stripControlCharacters(hvalue);
 
         if (Strings.isNullOrEmpty(value)) {
-            return new ArrayList<String>(0);
+            return new ArrayList<>(0);
         }
 
-        List<String> refs = new ArrayList<String>();
+        List<String> refs = new ArrayList<>();
         boolean quoted = false, escaped = false, empty = true;
         int pos = 0, astart = pos, end = value.length(), clevel = 0;
 

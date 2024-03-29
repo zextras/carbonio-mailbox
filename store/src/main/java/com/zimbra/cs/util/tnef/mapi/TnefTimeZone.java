@@ -212,11 +212,11 @@ public class TnefTimeZone {
      */
     private static TimeZone getNoDaylightSavingTimeZoneFromUtcOffset(int utcOffsetInMilliseconds) {
         String[] ids = TimeZone.getAvailableIDs(utcOffsetInMilliseconds);
-        for (int i = 0; i < ids.length; i++) {
-            if (TimeZone.getTimeZone(ids[i]).getDSTSavings() == 0) {
-                return TimeZone.getTimeZone(ids[i]);
-            }
+      for (String id : ids) {
+        if (TimeZone.getTimeZone(id).getDSTSavings() == 0) {
+          return TimeZone.getTimeZone(id);
         }
+      }
         return null;
     }
     

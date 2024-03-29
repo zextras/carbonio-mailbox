@@ -28,7 +28,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.cs.account.accesscontrol.TargetType;
-import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.GetDistributionListRequest;
 import com.zimbra.soap.admin.type.DistributionListSelector;
@@ -93,7 +92,7 @@ public class GetDistributionList extends DistributionListDocumentHandler {
             }
             if (arc != null) {
                 defendAgainstGroupHarvestingWhenAbsent(dlBy, dlSel.getKey(), zsc,
-                        new GroupHarvestingCheckerUsingGetAttrsPerms(zsc, arc, Arrays.asList(minimumAttrs)));
+                    new GroupHarvestingCheckerUsingGetAttrsPerms(zsc, arc, Arrays.asList(minimumAttrs)));
             } else {
                 defendAgainstGroupHarvestingWhenAbsent(dlBy, dlSel.getKey(), zsc, Admin.R_getDistributionList);
             }
@@ -106,7 +105,7 @@ public class GetDistributionList extends DistributionListDocumentHandler {
             arc = aac.getAttrRightChecker(group);
         }
         defendAgainstGroupHarvesting(group, dlBy, dlSel.getKey(), zsc,
-                        new GroupHarvestingCheckerUsingGetAttrsPerms(zsc, arc, Arrays.asList(minimumAttrs)));
+            new GroupHarvestingCheckerUsingGetAttrsPerms(zsc, arc, Arrays.asList(minimumAttrs)));
 
         Element response = zsc.createElement(AdminConstants.GET_DISTRIBUTION_LIST_RESPONSE);
         Element eDL = encodeDistributionList(response, group, true, false, reqAttrs, arc);
@@ -183,7 +182,7 @@ public class GetDistributionList extends DistributionListDocumentHandler {
         if (encodeAttrs) {
             Set<String> hideAttrs = null;
             if (hideMembers) {
-                hideAttrs = new HashSet<String>();
+                hideAttrs = new HashSet<>();
                 if (group.isDynamic()) {
                     hideAttrs.add(Provisioning.A_member);
                 } else {

@@ -31,7 +31,7 @@ public class BackupResponse {
      */
     @SuppressWarnings("unused")
     private BackupResponse() {
-        this((BackupInfo) null);
+        this(null);
     }
 
     public BackupResponse(BackupInfo backup) {

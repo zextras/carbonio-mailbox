@@ -87,10 +87,8 @@ public class HostedAuth extends ZimbraCustomAuth {
 		HttpResponse response;
         try {
             response = HttpClientUtil.executeMethod(client, method);
-        } catch (HttpException ex) {
+        } catch (HttpException | IOException ex) {
         	throw AuthFailedServiceException.AUTH_FAILED(acct.getName(),acct.getName(), "HTTP request to remote authentication server failed",ex); 
-        } catch (IOException ex) {
-        	throw AuthFailedServiceException.AUTH_FAILED(acct.getName(), acct.getName(), "HTTP request to remote authentication server failed",ex); 
         } finally {
             if (method != null)
                 method.releaseConnection();    
@@ -98,7 +96,7 @@ public class HostedAuth extends ZimbraCustomAuth {
         
         int status = response.getStatusLine().getStatusCode();
         if(status != HttpStatus.SC_OK) {
-        	throw AuthFailedServiceException.AUTH_FAILED(acct.getName(), "HTTP request to remote authentication server failed. Remote response code: " + Integer.toString(status));
+        	throw AuthFailedServiceException.AUTH_FAILED(acct.getName(), "HTTP request to remote authentication server failed. Remote response code: " + status);
         }
         
         String responseMessage;
@@ -107,12 +105,9 @@ public class HostedAuth extends ZimbraCustomAuth {
         } else {
         	throw AuthFailedServiceException.AUTH_FAILED(acct.getName(), "Empty response from remote authentication server.");
         }
-        if(responseMessage.equalsIgnoreCase(AUTH_STATUS_OK)) {
-        	return;
-        } else {
-        	throw AuthFailedServiceException.AUTH_FAILED(acct.getName(), responseMessage);
-        }
-        
+				if (!responseMessage.equalsIgnoreCase(AUTH_STATUS_OK)) {
+					throw AuthFailedServiceException.AUTH_FAILED(acct.getName(), responseMessage);
+				}
 	}
 
 }

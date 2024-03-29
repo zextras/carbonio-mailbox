@@ -56,7 +56,7 @@ public class InfoForSessionType {
      */
     @SuppressWarnings("unused")
     private InfoForSessionType() {
-        this((Integer) null, -1);
+        this(null, -1);
     }
 
     public InfoForSessionType(Integer activeAccounts, int activeSessions) {

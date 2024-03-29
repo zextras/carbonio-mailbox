@@ -101,7 +101,7 @@ public class ModifyContact extends RedoableOp {
             in.readBoolean();
         int numAttrs = in.readShort();
         if (numAttrs > 0) {
-            mFields = new HashMap<String, String>(numAttrs);
+            mFields = new HashMap<>(numAttrs);
             for (int i = 0; i < numAttrs; i++) {
                 String key = in.readUTF();
                 String value = in.readUTF();

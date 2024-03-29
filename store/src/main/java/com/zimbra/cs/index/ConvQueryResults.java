@@ -13,7 +13,6 @@ import java.util.Set;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.mailbox.MailItem;
-import com.zimbra.cs.mailbox.Mailbox;
 
 /**
  * A set of UngroupedQueryResults which groups by Conversation.
@@ -25,8 +24,8 @@ final class ConvQueryResults extends ZimbraQueryResultsImpl {
     private final ZimbraQueryResults results;
     private ZimbraHit nextHit;
     private int nextHitNo = 0;
-    private List<ZimbraHit> cachedResults = new ArrayList<ZimbraHit>();
-    private Set<Integer> seenConvIDs = new HashSet<Integer>();
+    private List<ZimbraHit> cachedResults = new ArrayList<>();
+    private Set<Integer> seenConvIDs = new HashSet<>();
 
     ConvQueryResults(ZimbraQueryResults results, Set<MailItem.Type> types, SortBy sort, SearchParams.Fetch fetch) {
         super(types, sort, fetch);
@@ -150,11 +149,7 @@ final class ConvQueryResults extends ZimbraQueryResultsImpl {
             return getNext();
         } else {
             ZimbraHit hit = null;
-            if (hitNo < cachedResults.size()) {
-                nextHitNo = hitNo;
-            } else {
-                nextHitNo = cachedResults.size();
-            }
+          nextHitNo = Math.min(hitNo, cachedResults.size());
             while (nextHitNo <= hitNo) {
                 hit = getNext();
                 if (hit == null) {

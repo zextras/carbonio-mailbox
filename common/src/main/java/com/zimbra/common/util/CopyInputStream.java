@@ -57,7 +57,7 @@ public class CopyInputStream extends InputStream {
         return in;
     }
 
-    public int read(byte data[], int off, int len) throws IOException {
+    public int read(byte[] data, int off, int len) throws IOException {
         int in = is.read(data, off, len);
         
         if (in > 0)

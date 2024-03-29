@@ -29,7 +29,7 @@ public abstract class Db {
         BUSY,
         LOCKED,
         CANTOPEN,
-        TABLE_FULL;
+        TABLE_FULL
     }
 
     public enum Capability {
@@ -53,7 +53,7 @@ public abstract class Db {
         REQUEST_UTF8_UNICODE_COLLATION, // for mysql
         FORCE_INDEX_EVEN_IF_NO_SORT, // for derby
         SQL_PARAM_LIMIT,
-        DUMPSTER_TABLES;
+        DUMPSTER_TABLES
     }
 
     private static Db sDatabase;

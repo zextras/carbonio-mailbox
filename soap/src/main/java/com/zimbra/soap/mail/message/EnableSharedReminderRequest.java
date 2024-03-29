@@ -36,7 +36,7 @@ public class EnableSharedReminderRequest {
      */
     @SuppressWarnings("unused")
     private EnableSharedReminderRequest() {
-        this((SharedReminderMount) null);
+        this(null);
     }
 
     public EnableSharedReminderRequest(SharedReminderMount mount) {

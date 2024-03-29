@@ -31,7 +31,7 @@ public class GetAccountLoggersResponse {
     private List <LoggerInfo> loggers = Lists.newArrayList();
 
     public GetAccountLoggersResponse() {
-        this((Collection<LoggerInfo>) null);
+        this(null);
     }
 
     public GetAccountLoggersResponse(Collection<LoggerInfo> loggers) {

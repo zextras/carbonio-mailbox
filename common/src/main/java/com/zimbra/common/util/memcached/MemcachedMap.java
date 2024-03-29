@@ -100,14 +100,14 @@ public class MemcachedMap<K extends MemcachedKey, V> {
      * @throws ServiceException
      */
     public Map<K, V> getMulti(Collection<K> keys) throws ServiceException {
-        Map<String, K> keyMap = new HashMap<String, K>(keys.size());
+        Map<String, K> keyMap = new HashMap<>(keys.size());
         for (K key : keys) {
             String prefix = key.getKeyPrefix();
             String kval = prefix != null ? prefix + key.getKeyValue() : key.getKeyValue();
             keyMap.put(kval, key);
         }
         Map<String, Object> valueMap = mClient.getMulti(keyMap.keySet());
-        Map<K, V> result = new HashMap<K, V>(keys.size());
+        Map<K, V> result = new HashMap<>(keys.size());
         // Put the values in a map keyed by the K objects.
         for (Map.Entry<String, Object> entry : valueMap.entrySet()) {
             K key = keyMap.get(entry.getKey());

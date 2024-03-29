@@ -33,7 +33,7 @@ public class CheckExchangeAuthRequest {
      */
     @SuppressWarnings("unused")
     private CheckExchangeAuthRequest() {
-        this((ExchangeAuthSpec) null);
+        this(null);
     }
 
     public CheckExchangeAuthRequest(ExchangeAuthSpec auth) {

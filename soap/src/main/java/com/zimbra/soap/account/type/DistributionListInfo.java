@@ -79,13 +79,13 @@ public class DistributionListInfo extends ObjectInfo {
      */
     @SuppressWarnings("unused")
     private DistributionListInfo() {
-        this((String) null, (String) null,
-            (Collection <String>) null, (Collection <KeyValuePair>) null);
+        this(null, null,
+            null, null);
     }
 
     public DistributionListInfo(String id, String name) {
-        this((String)id, (String)name,
-            (Collection <String>) null, (Collection <KeyValuePair>) null);
+        this(id, name,
+            null, null);
     }
 
     public DistributionListInfo(String id, String name,

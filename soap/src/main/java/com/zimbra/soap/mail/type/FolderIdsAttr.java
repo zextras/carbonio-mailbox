@@ -15,6 +15,6 @@ public class FolderIdsAttr extends IdsAttr {
      */
     @SuppressWarnings("unused")
     private FolderIdsAttr() {
-        this((String) null);
+        this(null);
     }
 }

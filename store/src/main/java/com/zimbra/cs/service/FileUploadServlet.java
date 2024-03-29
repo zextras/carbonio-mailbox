@@ -101,7 +101,7 @@ public class FileUploadServlet extends ZimbraServlet {
   /** Uploads time out after 15 minutes. */
   static final long UPLOAD_TIMEOUT_MSEC = 15 * Constants.MILLIS_PER_MINUTE;
 
-  static final HashMap<String, Upload> mPending = new HashMap<String, Upload>(100);
+  static final HashMap<String, Upload> mPending = new HashMap<>(100);
   private static final long serialVersionUID = -3156986245375108467L;
 
   /** The character separating server ID from upload ID */
@@ -336,15 +336,15 @@ public class FileUploadServlet extends ZimbraServlet {
   }
 
   private static void cleanupLeftoverTempFiles() {
-    File files[] = new File(getUploadDir()).listFiles(new TempFileFilter());
+    File[] files = new File(getUploadDir()).listFiles(new TempFileFilter());
     if (files == null || files.length < 1) {
       return;
     }
 
     mLog.info("deleting %d temporary upload files left over from last time", files.length);
-    for (int i = 0; i < files.length; i++) {
-      String path = files[i].getAbsolutePath();
-      if (files[i].delete()) {
+    for (File file : files) {
+      String path = file.getAbsolutePath();
+      if (file.delete()) {
         mLog.info("deleted leftover upload file %s", path);
       } else {
         mLog.error("unable to delete leftover upload file %s", path);
@@ -386,7 +386,7 @@ public class FileUploadServlet extends ZimbraServlet {
           elt.addAttribute(MailConstants.A_CONTENT_TYPE, up.getContentType());
           elt.addAttribute(MailConstants.A_CONTENT_FILENAME, up.name);
           elt.addAttribute(MailConstants.A_SIZE, up.getSize());
-          results.append(first ? "" : ",").append(elt.toString());
+          results.append(first ? "" : ",").append(elt);
           first = false;
         }
         results.append(']');
@@ -866,7 +866,7 @@ public class FileUploadServlet extends ZimbraServlet {
       sendResponse(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, fmt, null, null, null);
       return Collections.emptyList();
     }
-    List<FileItem> items = new ArrayList<FileItem>(1);
+    List<FileItem> items = new ArrayList<>(1);
     items.add(fi);
     Upload up = new Upload(acct.getId(), fi, filename);
 
@@ -883,7 +883,7 @@ public class FileUploadServlet extends ZimbraServlet {
     }
     final String finalMimeType = up.contentType;
     String contentTypeBlacklist = LC.zimbra_file_content_type_blacklist.value();
-    List<String> blacklist = new ArrayList<String>();
+    List<String> blacklist = new ArrayList<>();
     if (!StringUtil.isNullOrEmpty(contentTypeBlacklist)) {
       blacklist.addAll(Arrays.asList(contentTypeBlacklist.trim().split(",")));
     }
@@ -1113,14 +1113,14 @@ public class FileUploadServlet extends ZimbraServlet {
     }
   }
 
-  private final class MapReaperTask extends TimerTask {
+  private static final class MapReaperTask extends TimerTask {
 
     MapReaperTask() {}
 
     @Override
     public void run() {
       try {
-        ArrayList<Upload> reaped = new ArrayList<Upload>();
+        ArrayList<Upload> reaped = new ArrayList<>();
         int sizeBefore;
         int sizeAfter;
         synchronized (mPending) {

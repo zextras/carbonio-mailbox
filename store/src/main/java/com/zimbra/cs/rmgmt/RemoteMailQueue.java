@@ -24,7 +24,6 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.index.TermEnum;
-import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -45,7 +44,7 @@ import com.zimbra.cs.index.LuceneIndex;
 import com.zimbra.cs.service.admin.GetMailQueue;
 
 public class RemoteMailQueue {
-    private static Map<String,RemoteMailQueue> mMailQueueCache = new HashMap<String,RemoteMailQueue>();
+    private static Map<String,RemoteMailQueue> mMailQueueCache = new HashMap<>();
 
     public static RemoteMailQueue getRemoteMailQueue(Server server, String queueName, boolean forceScan) throws ServiceException {
         synchronized (mMailQueueCache) {
@@ -366,9 +365,9 @@ public class RemoteMailQueue {
 
 
     public static class SearchResult {
-        public Map<QueueAttr, List<SummaryItem>> sitems = new HashMap<QueueAttr,List<SummaryItem>>();
+        public Map<QueueAttr, List<SummaryItem>> sitems = new HashMap<>();
         public int hits;
-        public List<Map<QueueAttr, String>> qitems = new LinkedList<Map<QueueAttr, String>>();
+        public List<Map<QueueAttr, String>> qitems = new LinkedList<>();
     }
 
     private void summarize(SearchResult result, IndexReader indexReader) throws IOException {
@@ -391,7 +390,7 @@ public class RemoteMailQueue {
                     {
                         List<SummaryItem> list = result.sitems.get(attr);
                         if (list == null) {
-                            list = new LinkedList<SummaryItem>();
+                            list = new LinkedList<>();
                             result.sitems.put(attr, list);
                         }
                         int count = 0;
@@ -415,7 +414,7 @@ public class RemoteMailQueue {
     }
 
     private Map<QueueAttr,String> docToQueueItem(Document doc) {
-        Map<QueueAttr, String> qitem = new HashMap<QueueAttr,String>();
+        Map<QueueAttr, String> qitem = new HashMap<>();
         for (QueueAttr attr : QueueAttr.values()) {
             Field[] fields = doc.getFields(attr.toString());
             if (fields != null) {
@@ -472,32 +471,26 @@ public class RemoteMailQueue {
         if (ZimbraLog.rmgmt.isDebugEnabled()) {
             ZimbraLog.rmgmt.debug("searching query=" + query + " offset=" + offset + " limit=" + limit + " " + this);
         }
-        Searcher searcher = null;
-        try {
-            searcher = new IndexSearcher(indexReader);
-            TopDocs topDocs = searcher.search(query, (Filter) null, limit);
-            ScoreDoc[] hits = topDocs.scoreDocs;
+      try (Searcher searcher = new IndexSearcher(indexReader)) {
+        TopDocs topDocs = searcher.search(query, null, limit);
+        ScoreDoc[] hits = topDocs.scoreDocs;
 
-            if (offset < hits.length) {
-                int n;
-                if (limit <= 0) {
-                    n = hits.length;
-                } else {
-                    n = Math.min(offset + limit, hits.length);
-                }
+        if (offset < hits.length) {
+          int n;
+          if (limit <= 0) {
+            n = hits.length;
+          } else {
+            n = Math.min(offset + limit, hits.length);
+          }
 
-                for (int i = offset; i < n; i++) {
-                    Document doc = searcher.doc(hits[i].doc);
-                    Map<QueueAttr,String> qitem = docToQueueItem(doc);
-                    result.qitems.add(qitem);
-                }
-            }
-            result.hits = hits.length;
-        } finally {
-            if (searcher != null) {
-                searcher.close();
-            }
+          for (int i = offset; i < n; i++) {
+            Document doc = searcher.doc(hits[i].doc);
+            Map<QueueAttr, String> qitem = docToQueueItem(doc);
+            result.qitems.add(qitem);
+          }
         }
+        result.hits = hits.length;
+      }
     }
 
     public SearchResult search(Query query, int offset, int limit) throws ServiceException {
@@ -585,9 +578,9 @@ public class RemoteMailQueue {
         }
     }
 
-    private enum TestTask { scan, search, action };
+    private enum TestTask { scan, search, action }
 
-    private static void usage(String err) {
+  private static void usage(String err) {
         if (err != null) {
             System.err.println("ERROR: " + err + "\n");
         }

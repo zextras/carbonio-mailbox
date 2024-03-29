@@ -30,7 +30,6 @@ import org.apache.jsieve.exception.SieveException;
 import org.apache.jsieve.exception.SyntaxException;
 import org.apache.jsieve.mail.MailAdapter;
 
-import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.CharsetUtil;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
@@ -91,7 +90,7 @@ public class AddHeader extends AbstractCommand {
                 if (last) {
                     mm.addHeaderLine(headerName + ": " + headerValue);
                 } else {
-                    List<Header> headerList = new ArrayList<Header>();
+                    List<Header> headerList = new ArrayList<>();
                     Enumeration<Header> e = mm.getAllHeaders();
                     // If the first line of the header is "Return-Path",
                     // keep it at the first line.

@@ -10,9 +10,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.Writer;
-
-import org.apache.xerces.xni.parser.XMLInputSource;
 
 /**
  * Utility class that implements many of the more mundane methods.

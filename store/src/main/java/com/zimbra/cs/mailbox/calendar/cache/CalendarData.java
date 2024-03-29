@@ -30,9 +30,9 @@ public class CalendarData {
         mModSeq = modSeq;
         mRangeStart = rangeStart;
         mRangeEnd = rangeEnd;
-        mCalendarItems = new ArrayList<CalendarItemData>();
-        mCalendarItemsMap = new HashMap<Integer, CalendarItemData>();
-        mStaleItemIds = new HashSet<Integer>();
+        mCalendarItems = new ArrayList<>();
+        mCalendarItemsMap = new HashMap<>();
+        mStaleItemIds = new HashSet<>();
     }
 
     void addCalendarItem(CalendarItemData calItemData) {
@@ -99,8 +99,8 @@ public class CalendarData {
         mRangeEnd = meta.getLong(FN_RANGE_END);
         int numCalItems = (int) meta.getLong(FN_NUM_CALITEMS);
         if (numCalItems > 0) {
-            mCalendarItems = new ArrayList<CalendarItemData>(numCalItems);
-            mCalendarItemsMap = new HashMap<Integer, CalendarItemData>(numCalItems);
+            mCalendarItems = new ArrayList<>(numCalItems);
+            mCalendarItemsMap = new HashMap<>(numCalItems);
             for (int i = 0; i < numCalItems; i++) {
                 Metadata metaCalItem = meta.getMap(FN_CALITEM + i, true);
                 if (metaCalItem != null) {
@@ -109,10 +109,10 @@ public class CalendarData {
                 }
             }
         } else {
-            mCalendarItems = new ArrayList<CalendarItemData>(0);
-            mCalendarItemsMap = new HashMap<Integer, CalendarItemData>(0);
+            mCalendarItems = new ArrayList<>(0);
+            mCalendarItemsMap = new HashMap<>(0);
         }
-        mStaleItemIds = new HashSet<Integer>();
+        mStaleItemIds = new HashSet<>();
     }
 
     Metadata encodeMetadata() {

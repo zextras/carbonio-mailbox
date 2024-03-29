@@ -58,7 +58,7 @@ public class DataSourceManager {
 
   // accountId -> dataSourceId -> ImportStatus
   private static final Map<String, Map<String, ImportStatus>> sImportStatus =
-      new HashMap<String, Map<String, ImportStatus>>();
+      new HashMap<>();
 
   // Bug: 40799
   // Methods to keep track of managed data sources so we can easily detect
@@ -71,11 +71,11 @@ public class DataSourceManager {
       newCachedThreadPool(newDaemonThreadFactory("ImportData"));
 
   private static <E> Set<E> newConcurrentHashSet() {
-    return newSetFromMap(new ConcurrentHashMap<E, Boolean>());
+    return newSetFromMap(new ConcurrentHashMap<>());
   }
 
   private static Object key(String accountId, String dataSourceId) {
-    return new Pair<String, String>(accountId, dataSourceId);
+    return new Pair<>(accountId, dataSourceId);
   }
 
   public static void addManaged(DataSource ds) {
@@ -188,7 +188,7 @@ public class DataSourceManager {
               cmdClass = ExtensionUtil.findClass(className);
             }
             if (cmdClass != null) {
-              Constructor<?> constructor = cmdClass.getConstructor(new Class[] {DataSource.class});
+              Constructor<?> constructor = cmdClass.getConstructor(DataSource.class);
               return (DataImport) constructor.newInstance(ds);
             }
             ZimbraLog.datasource.warn(
@@ -210,7 +210,7 @@ public class DataSourceManager {
               cmdClass = ExtensionUtil.findClass(className);
             }
             if (cmdClass != null) {
-              Constructor<?> constructor = cmdClass.getConstructor(new Class[] {DataSource.class});
+              Constructor<?> constructor = cmdClass.getConstructor(DataSource.class);
               return (DataImport) constructor.newInstance(ds);
             }
             ZimbraLog.datasource.warn(
@@ -288,7 +288,7 @@ public class DataSourceManager {
 
   public static List<ImportStatus> getImportStatus(Account account) throws ServiceException {
     List<DataSource> dsList = Provisioning.getInstance().getAllDataSources(account);
-    List<ImportStatus> allStatus = new ArrayList<ImportStatus>();
+    List<ImportStatus> allStatus = new ArrayList<>();
     for (DataSource ds : dsList) {
       allStatus.add(getImportStatus(account, ds));
     }
@@ -301,7 +301,7 @@ public class DataSourceManager {
     synchronized (sImportStatus) {
       Map<String, ImportStatus> isMap = sImportStatus.get(account.getId());
       if (isMap == null) {
-        isMap = new HashMap<String, ImportStatus>();
+        isMap = new HashMap<>();
         sImportStatus.put(account.getId(), isMap);
       }
       importStatus = isMap.get(ds.getId());
@@ -318,24 +318,21 @@ public class DataSourceManager {
     ZimbraLog.datasource.debug("Requesting async import for DataSource %s", ds.getId());
 
     executor.submit(
-        new Runnable() {
-          @Override
-          public void run() {
-            try {
-              // todo exploit comonality with DataSourceTask
-              ZimbraLog.clearContext();
-              ZimbraLog.addMboxToContext(ds.getMailbox().getId());
-              ZimbraLog.addAccountNameToContext(ds.getAccount().getName());
-              ZimbraLog.addDataSourceNameToContext(ds.getName());
-              ZimbraLog.datasource.debug("Running on-demand import for DataSource %s", ds.getId());
+        () -> {
+          try {
+            // todo exploit comonality with DataSourceTask
+            ZimbraLog.clearContext();
+            ZimbraLog.addMboxToContext(ds.getMailbox().getId());
+            ZimbraLog.addAccountNameToContext(ds.getAccount().getName());
+            ZimbraLog.addDataSourceNameToContext(ds.getName());
+            ZimbraLog.datasource.debug("Running on-demand import for DataSource %s", ds.getId());
 
-              DataSourceManager.importData(ds);
+            DataSourceManager.importData(ds);
 
-            } catch (Exception e) {
-              ZimbraLog.datasource.warn("On-demand DataSource import failed.", e);
-            } finally {
-              ZimbraLog.clearContext();
-            }
+          } catch (Exception e) {
+            ZimbraLog.datasource.warn("On-demand DataSource import failed.", e);
+          } finally {
+            ZimbraLog.clearContext();
           }
         });
   }
@@ -406,7 +403,7 @@ public class DataSourceManager {
   public static void resetErrorStatus(DataSource ds) {
     if (ds.getAttr(Provisioning.A_zimbraDataSourceFailingSince) != null
         || ds.getAttr(Provisioning.A_zimbraDataSourceLastError) != null) {
-      Map<String, Object> attrs = new HashMap<String, Object>();
+      Map<String, Object> attrs = new HashMap<>();
       attrs.put(Provisioning.A_zimbraDataSourceFailingSince, null);
       attrs.put(Provisioning.A_zimbraDataSourceLastError, null);
       try {
@@ -418,7 +415,7 @@ public class DataSourceManager {
   }
 
   private static void setErrorStatus(DataSource ds, String error) {
-    Map<String, Object> attrs = new HashMap<String, Object>();
+    Map<String, Object> attrs = new HashMap<>();
     attrs.put(Provisioning.A_zimbraDataSourceLastError, error);
     if (ds.getAttr(Provisioning.A_zimbraDataSourceFailingSince) == null) {
       attrs.put(

@@ -70,7 +70,7 @@ public abstract class ExternalStoreManager extends StoreManager implements Exter
 
     }
 
-    private class MessageCacheChecker implements FileCache.RemoveCallback {
+    private static class MessageCacheChecker implements FileCache.RemoveCallback {
         MessageCacheChecker()  { }
 
         @Override
@@ -78,9 +78,9 @@ public abstract class ExternalStoreManager extends StoreManager implements Exter
             // Don't remove blobs that are being referenced by a cached message.
             return !MessageCache.contains(item.digest);
         }
-    };
+    }
 
-    @Override
+  @Override
     public MailboxBlob copy(MailboxBlob src, Mailbox destMbox, int destItemId, int destRevision)
     throws IOException, ServiceException {
         //default implementation does not handle de-duping
@@ -296,7 +296,7 @@ public abstract class ExternalStoreManager extends StoreManager implements Exter
      * @throws IOException
      */
     public List<String> getAllBlobPaths(Mailbox mbox) throws IOException {
-        return new ArrayList<String>();
+        return new ArrayList<>();
     }
 
     @Override
@@ -307,10 +307,8 @@ public abstract class ExternalStoreManager extends StoreManager implements Exter
     @Override
     public boolean supports(StoreFeature feature) {
         switch (feature) {
-            case BULK_DELETE:                   return false;
-            case CENTRALIZED:                   return true;
-            case SINGLE_INSTANCE_SERVER_CREATE: return false;
-            case RESUMABLE_UPLOAD:              return this instanceof ExternalResumableUpload;
+          case CENTRALIZED:                   return true;
+          case RESUMABLE_UPLOAD:              return this instanceof ExternalResumableUpload;
             default:                            return false;
         }
     }

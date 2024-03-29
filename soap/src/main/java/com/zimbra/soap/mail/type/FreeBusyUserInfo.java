@@ -47,7 +47,7 @@ public class FreeBusyUserInfo {
      */
     @SuppressWarnings("unused")
     private FreeBusyUserInfo() {
-        this((String) null);
+        this(null);
     }
 
     public FreeBusyUserInfo(String id) {

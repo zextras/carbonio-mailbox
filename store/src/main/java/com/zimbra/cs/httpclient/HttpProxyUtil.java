@@ -33,7 +33,7 @@ public class HttpProxyUtil {
             if (url == null) return;
 
             // need to initializae all the statics
-            if (sProxyUrl == null || !sProxyUrl.equals(url)) {
+            if (!url.equals(sProxyUrl)) {
                 sProxyUrl = url;
                 sProxyUri = new URI(url);
                 sProxyAuthScope = null;
@@ -61,9 +61,7 @@ public class HttpProxyUtil {
                 cred.setCredentials(sProxyAuthScope, sProxyCreds);
                 clientBuilder.setDefaultCredentialsProvider(cred);
             }
-        } catch (ServiceException e) {
-            ZimbraLog.misc.warn("Unable to configureProxy: "+e.getMessage(), e);
-        } catch (URISyntaxException e) {
+        } catch (ServiceException | URISyntaxException e) {
             ZimbraLog.misc.warn("Unable to configureProxy: "+e.getMessage(), e);
         }
     }

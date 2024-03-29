@@ -7,7 +7,6 @@ package com.zimbra.cs.filter.jsieve;
 
 import static com.zimbra.cs.filter.JsieveConfigMapHandler.CAPABILITY_ENVELOPE;
 import static com.zimbra.cs.filter.jsieve.ComparatorName.ASCII_NUMERIC_COMPARATOR;
-import static org.apache.jsieve.comparators.ComparatorNames.ASCII_CASEMAP_COMPARATOR;
 import static org.apache.jsieve.comparators.MatchTypeTags.IS_TAG;
 import static org.apache.jsieve.tests.AddressPartTags.ALL_TAG;
 import static org.apache.jsieve.tests.AddressPartTags.LOCALPART_TAG;

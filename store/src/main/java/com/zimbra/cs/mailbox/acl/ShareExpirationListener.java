@@ -78,7 +78,7 @@ public class ShareExpirationListener extends MailboxListener {
         for (ACL.Grant grant : acl.getGrants()) {
             long expiry = grant.getEffectiveExpiry(acl);
             if (expiry != 0) {
-                nextExpiry = nextExpiry == 0 ? expiry : expiry < nextExpiry ? expiry : nextExpiry;
+                nextExpiry = nextExpiry == 0 ? expiry : Math.min(expiry, nextExpiry);
             }
         }
         if (nextExpiry == 0) {

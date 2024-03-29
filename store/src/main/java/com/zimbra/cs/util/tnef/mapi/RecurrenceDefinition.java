@@ -44,7 +44,7 @@ public class RecurrenceDefinition {
 
     static Log sLog = ZimbraLog.tnef;
 
-    public static enum RecurrenceFrequency {
+    public enum RecurrenceFrequency {
         DAILY (0x200A), WEEKLY (0x200B), MONTHLY (0x200C), YEARLY (0x200D);
 
         private final int MapiPropValue;
@@ -58,7 +58,7 @@ public class RecurrenceDefinition {
         }
     }
 
-    public static enum PatternType {
+    public enum PatternType {
         DAY (0x0000), WEEK (0x0001),
         MONTH (0x0002), MONTH_NTH (0x0003), MONTH_END (0x0004),
         HJ_MONTH (0x000A), HJ_MONTH_NTH (0x000B), HJ_MONTH_END (0x000C);
@@ -74,7 +74,7 @@ public class RecurrenceDefinition {
         }
     }
 
-    public static enum EndType {
+    public enum EndType {
         END_BY_DATE (0x00002021),
         END_AFTER_N_OCCURRENCES (0x00002022),
         NEVER_END (0x00002023),
@@ -113,9 +113,9 @@ public class RecurrenceDefinition {
     private DayOfWeek firstDayOfWeek;
     private EnumSet <DayOfWeek> dayOfWeekMask;
     int deletedInstanceCount;
-    long delMidnightMinsSince1601[];
+    long[] delMidnightMinsSince1601;
     int modifiedInstanceCount;
-    long modMidnightMinsSince1601[];
+    long[] modMidnightMinsSince1601;
     // Minutes since 1601 Date portion of DTSTART in local time
     private long startMinsSince1601;
     // Minutes since 1601 Date portion of Start of LAST instance in local time
@@ -227,7 +227,7 @@ public class RecurrenceDefinition {
                 startTimeOffset = 0;
                 endTimeOffset = 0;
                 exceptionCount = 0;
-                changedInstances = new ArrayList <ChangedInstanceInfo>();
+                changedInstances = new ArrayList<>();
                 return;
             }
             readerVersion2 = ris.readU32();
@@ -238,7 +238,7 @@ public class RecurrenceDefinition {
             exceptionCount = ris.readU16();  // Should be same as modifiedInstanceCount?
             //        For each modified instance, expect to find an ExceptionInfo structure.
 
-            changedInstances = new ArrayList <ChangedInstanceInfo>();
+            changedInstances = new ArrayList<>();
             for (int cnt = 1; cnt <= modifiedInstanceCount; cnt++) {
                 ChangedInstanceInfo cInst = new ChangedInstanceInfo(cnt, tzDef, oemCodePage);
                 cInst.readExceptionInfo(ris);
@@ -368,7 +368,7 @@ public class RecurrenceDefinition {
         if (exdateTimes != null) {
             return exdateTimes;
         }
-        exdateTimes = new ArrayList <DateTime>();
+        exdateTimes = new ArrayList<>();
         for (long delSince1601 : delMidnightMinsSince1601) {
             //  Outlook XP uses NEW times in modMidnightMinsSince1601
             // rather than original times - so, cannot mine that
@@ -403,7 +403,7 @@ public class RecurrenceDefinition {
         if (rdateTimes != null) {
             return rdateTimes;
         }
-        rdateTimes = new ArrayList <DateTime>();
+        rdateTimes = new ArrayList<>();
         for (ChangedInstanceInfo cInst : changedInstances) {
             EnumSet <ExceptionInfoOverrideFlag> overrideFlags = cInst.getOverrideFlags();
             // Note that modifications which are just a new time are represented
@@ -523,12 +523,7 @@ public class RecurrenceDefinition {
                     recurrenceRule.append(monthOnlyFormat.format(bymonthDate));
                 }
                 break;
-            case MONTH_END:
-            case HJ_MONTH:
-            case HJ_MONTH_END:
-            case HJ_MONTH_NTH:
-                throw TNEFtoIcalendarServiceException.UNSUPPORTED_RECURRENCE_TYPE(patternType.name());
-            default:
+          default:
                 throw TNEFtoIcalendarServiceException.UNSUPPORTED_RECURRENCE_TYPE(patternType.name());
         }
         if (recurrenceRule.length() > 5 /* length of "FREQ=" */) {
@@ -743,15 +738,15 @@ public class RecurrenceDefinition {
                 .append(deletedInstanceCount).append("\n");
         for (long since1601 : delMidnightMinsSince1601) {
             long timeSince1601 = since1601 + startTimeOffset;
-            String suffix = new String("");
+            String suffix = "";
             if (changedInstances != null) {
                 for (ChangedInstanceInfo cInst : changedInstances) {
                     if (cInst.getOrigStartMinsSince1601() == timeSince1601) {
                         EnumSet <ExceptionInfoOverrideFlag> overrideFlags = cInst.getOverrideFlags();
                         if ( (overrideFlags == null) || (overrideFlags.isEmpty()) ) {
-                            suffix = new String(" [changed - exdate/rdate]");
+                            suffix = " [changed - exdate/rdate]";
                         } else {
-                            suffix = new String(" [changed - exception]");
+                            suffix = " [changed - exception]";
                         }
                         break;
                     }

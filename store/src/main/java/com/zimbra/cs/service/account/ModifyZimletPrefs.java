@@ -31,7 +31,7 @@ public class ModifyZimletPrefs extends AccountDocumentHandler {
         if (!canModifyOptions(zsc, account))
             throw ServiceException.PERM_DENIED("can not modify options");
 
-        Map<String, Object> attrs = new HashMap<String, Object>();
+        Map<String, Object> attrs = new HashMap<>();
         
         ZimletPresence availZimlets = ZimletUtil.getAvailableZimlets(account);
         

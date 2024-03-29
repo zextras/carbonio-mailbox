@@ -32,7 +32,7 @@ implements JaxbNodeInfo {
         }
         if (name == null) {
             throw new RuntimeException(
-                String.format("Ignoring element with annotation %s unable to determine name", annot.toString()));
+                String.format("Ignoring element with annotation %s unable to determine name", annot));
         }
         stamp = String.format("[element=%s]", name);
         atomClass = annot.type();
@@ -70,7 +70,7 @@ implements JaxbNodeInfo {
         }
         if (name == null) {
             throw new RuntimeException(
-                String.format("Ignoring element with annotation %s unable to determine name", annot.toString()));
+                String.format("Ignoring element with annotation %s unable to determine name", annot));
         }
         stamp = String.format("[element=%s]", name);
         canHaveMultipleElements = JaxbInfo.representsMultipleElements(defaultGenericType);

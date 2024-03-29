@@ -83,7 +83,7 @@ public final class SearchConv extends Search {
                 Conversation conv = mbox.getConversationById(octxt, cid.getId());
                 if (conv.isTagged(Flag.FlagInfo.DELETED)) {
                     List<Message> raw = msgs;
-                    msgs = new ArrayList<Message>();
+                    msgs = new ArrayList<>();
                     for (Message msg : raw) {
                         if (!msg.isTagged(Flag.FlagInfo.DELETED)) {
                             msgs.add(msg);

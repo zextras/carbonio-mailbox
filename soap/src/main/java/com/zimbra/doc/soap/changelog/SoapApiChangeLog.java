@@ -82,16 +82,10 @@ public class SoapApiChangeLog {
         config.setObjectWrapper(new BeansWrapper());
         fmTemplate = config.getTemplate(TEMPLATE_FILE);
         File of = new File(outputDir, OUTPUT_FILE);
-        FileWriter out = new FileWriter(of);
-        try {
-            fmTemplate.process(changelogDataModel, out);
-        } finally {
-            try {
-                out.close();
-            } catch (Exception e) {
-                // worst case scenario...clean-up quietly
-            }
-        }
+      try (FileWriter out = new FileWriter(of)) {
+        fmTemplate.process(changelogDataModel, out);
+      }
+      // worst case scenario...clean-up quietly
     }
 
     public void makeChangeLogDataModel()

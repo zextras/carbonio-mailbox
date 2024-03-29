@@ -18,6 +18,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.FileUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.mailbox.Metadata;
+import java.nio.charset.StandardCharsets;
 
 public class FileStore {
     private static final String FILE_EXT = ".dat";
@@ -123,7 +124,7 @@ public class FileStore {
             FileOutputStream fos = null;
             try {
                 fos = new FileOutputStream(tmpFile);
-                writer = new OutputStreamWriter(fos, "utf-8");
+                writer = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
                 writer.write(str);
             } finally {
                 if (writer != null)
@@ -147,19 +148,14 @@ public class FileStore {
                     return null;
                 }
                 byte[] buf = new byte[(int) length];
-                FileInputStream fis = null;
-                try {
-                    fis = new FileInputStream(file);
-                    int bytesRead = fis.read(buf);
-                    if (bytesRead < length)
-                        throw ServiceException.FAILURE(
-                                "Read " + bytesRead + " bytes when expecting " + length +
-                                " bytes, from file " + file.getAbsolutePath(), null);
-                    return new String(buf, "utf-8");
-                } finally {
-                    if (fis != null)
-                        fis.close();
-                }
+              try (FileInputStream fis = new FileInputStream(file)) {
+                int bytesRead = fis.read(buf);
+                if (bytesRead < length)
+                  throw ServiceException.FAILURE(
+                      "Read " + bytesRead + " bytes when expecting " + length +
+                          " bytes, from file " + file.getAbsolutePath(), null);
+                return new String(buf, StandardCharsets.UTF_8);
+              }
             } catch (FileNotFoundException e) {
                 return null;
             } catch (IOException e) {

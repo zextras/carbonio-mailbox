@@ -5,17 +5,14 @@
 
 package com.zimbra.cs.service.admin;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import com.zimbra.common.account.Key;
-import com.zimbra.common.account.Key.DomainBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.AccountServiceException;
-import com.zimbra.cs.account.DistributionList;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.Provisioning;
@@ -75,30 +72,30 @@ public class GetAllDistributionLists extends AdminDocumentHandler {
         } else {
             response = zsc.createElement(AdminConstants.GET_ALL_DISTRIBUTION_LISTS_RESPONSE);
             List domains = prov.getAllDomains();
-            for (Iterator dit=domains.iterator(); dit.hasNext(); ) {
-                Domain dm = (Domain) dit.next();
-                doDomain(zsc, response, dm, aac);                
-            }
+          for (Object o : domains) {
+            Domain dm = (Domain) o;
+            doDomain(zsc, response, dm, aac);
+          }
         }
         return response;        
     }
     
     private void doDomain(ZimbraSoapContext zsc, Element e, Domain d, AdminAccessControl aac) throws ServiceException {
         List dls = Provisioning.getInstance().getAllGroups(d);
-        for (Iterator it = dls.iterator(); it.hasNext(); ) {
-            Group dl = (Group) it.next();
-            boolean hasRightToList = true;
-            if (dl.isDynamic()) {
-                // TODO: fix me
-                hasRightToList = true;
-            } else {
-                hasRightToList = aac.hasRightsToList(dl, Admin.R_listDistributionList, null);
-            }
-            
-            if (hasRightToList) {
-                GetDistributionList.encodeDistributionList(e, dl, true, false, null, aac.getAttrRightChecker(dl));
-            }
-        }        
+      for (Object o : dls) {
+        Group dl = (Group) o;
+        boolean hasRightToList = true;
+        if (dl.isDynamic()) {
+          // TODO: fix me
+          hasRightToList = true;
+        } else {
+          hasRightToList = aac.hasRightsToList(dl, Admin.R_listDistributionList, null);
+        }
+
+        if (hasRightToList) {
+          GetDistributionList.encodeDistributionList(e, dl, true, false, null, aac.getAttrRightChecker(dl));
+        }
+      }
     }
     
     @Override

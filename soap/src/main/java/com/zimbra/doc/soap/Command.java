@@ -20,7 +20,7 @@ public class Command implements java.io.Serializable {
     private XmlElementDescription request;
     private XmlElementDescription response;
 
-    private List<XmlElementDescription> allElements = new LinkedList<XmlElementDescription>();
+    private List<XmlElementDescription> allElements = new LinkedList<>();
 
     private Service service = null;
     private String name = null;

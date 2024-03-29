@@ -57,7 +57,7 @@ public class GetCertRequest {
      */
     @SuppressWarnings("unused")
     private GetCertRequest() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public GetCertRequest(String server, String type) {

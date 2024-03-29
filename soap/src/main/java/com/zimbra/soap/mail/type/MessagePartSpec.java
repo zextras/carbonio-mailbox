@@ -34,7 +34,7 @@ public class MessagePartSpec {
      */
     @SuppressWarnings("unused")
     private MessagePartSpec() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public MessagePartSpec(String part, String id) {

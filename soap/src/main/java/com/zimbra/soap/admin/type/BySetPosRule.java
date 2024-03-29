@@ -30,7 +30,7 @@ public class BySetPosRule implements BySetPosRuleInterface {
      */
     @SuppressWarnings("unused")
     private BySetPosRule() {
-        this((String) null);
+        this(null);
     }
 
     public BySetPosRule(String list) {

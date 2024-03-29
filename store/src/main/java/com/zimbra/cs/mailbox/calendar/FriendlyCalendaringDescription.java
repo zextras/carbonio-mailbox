@@ -309,7 +309,7 @@ public class FriendlyCalendaringDescription {
             List<Integer> monthList = zr.getByMonthList();
             int month = 0;
             if (monthList != null && !monthList.isEmpty()) {
-                month = monthList.get(0).intValue() - 1; //java Calendar month starts from 0
+                month = monthList.get(0) - 1; //java Calendar month starts from 0
             } else {
                 month = dtStart.get(Calendar.DAY_OF_MONTH);
             }
@@ -360,12 +360,9 @@ public class FriendlyCalendaringDescription {
             for (Iterator<IRecurrence> iter = masterRule.addRulesIterator(); iter!=null && iter.hasNext();) {
                 r = iter.next();
 
-                switch (r.getType()) {
-                case Recurrence.TYPE_SINGLE_DATES:
-                    //Recurrence.SingleInstanceRule sir = (Recurrence.SingleInstanceRule)r;
-                    assert false; //We don't support single instance.
-                    break;
-                case Recurrence.TYPE_REPEATING:
+                switch (r.getType()) {//Recurrence.SingleInstanceRule sir = (Recurrence.SingleInstanceRule)r;
+                  //We don't support single instance.
+                  case Recurrence.TYPE_REPEATING:
                     Recurrence.SimpleRepeatingRule srr = (Recurrence.SimpleRepeatingRule)r;
                     zr = srr.getRule();
                     break;
@@ -391,14 +388,14 @@ public class FriendlyCalendaringDescription {
             List<Integer> setposList = recur.getBySetPosList();
             if (setposList != null && !setposList.isEmpty()) {
                 assert setposList.size() == 1;
-                offset = setposList.get(0).intValue();
+                offset = setposList.get(0);
             }
         }
         switch (offset) {
         case -1: case 1: case 2: case 3: case 4:
             break;
         default:
-            sLog.warn("Invalid RECUR pattern: " + recur.toString());
+            sLog.warn("Invalid RECUR pattern: " + recur);
             break;
         }
         return offset;

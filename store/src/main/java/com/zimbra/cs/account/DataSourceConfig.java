@@ -38,7 +38,7 @@ public final class DataSourceConfig {
     }
 
     private DataSourceConfig() {
-        services = new ArrayList<Service>();
+        services = new ArrayList<>();
     }
 
     public boolean isSyncAllFolders() {
@@ -94,7 +94,7 @@ public final class DataSourceConfig {
         private static final String FOLDER = "folder";
 
         public Service() {
-            folders = new ArrayList<Folder>();
+            folders = new ArrayList<>();
         }
 
         public String getName() {

@@ -47,7 +47,7 @@ public abstract class CalendarUser {
   }
 
   private ScheduleAgent scheduleAgent;
-  private List<ZParameter> mXParams = new ArrayList<ZParameter>();
+  private List<ZParameter> mXParams = new ArrayList<>();
 
   public String getAddress() {
     return mAddress;
@@ -204,9 +204,7 @@ public abstract class CalendarUser {
         addr = new JavaMailInternetAddress(address, getCn(), MimeConstants.P_CHARSET_UTF8);
       else addr = new JavaMailInternetAddress(address);
       return addr;
-    } catch (UnsupportedEncodingException e) {
-      throw MailServiceException.ADDRESS_PARSE_ERROR(e);
-    } catch (AddressException e) {
+    } catch (UnsupportedEncodingException | AddressException e) {
       throw MailServiceException.ADDRESS_PARSE_ERROR(e);
     }
   }

@@ -43,8 +43,8 @@ public class LocalConfig {
     return mConfigFile;
   }
 
-  private final Map<String, String> mConfiguredKeys = new HashMap<String, String>();
-  private final Map<String, String> mExpanded = new HashMap<String, String>();
+  private final Map<String, String> mConfiguredKeys = new HashMap<>();
+  private final Map<String, String> mExpanded = new HashMap<>();
 
   public void set(String key, String value) {
     mConfiguredKeys.put(key, value);
@@ -99,7 +99,7 @@ public class LocalConfig {
   String expand(String key, String rawValue) throws ConfigException {
     if (rawValue == null) return null;
 
-    return expandDeep(key, new HashSet<String>());
+    return expandDeep(key, new HashSet<>());
   }
 
   String get(String key) throws ConfigException {
@@ -215,8 +215,7 @@ public class LocalConfig {
       keys = mConfiguredKeys.keySet().toArray(new String[0]);
       Arrays.sort(keys);
     }
-    for (int i = 0; i < keys.length; i++) {
-      String key = keys[i];
+    for (String key : keys) {
       boolean add = true;
       if (KnownKey.isKnown(key)) {
         String configuredValue = get(key);
@@ -244,8 +243,7 @@ public class LocalConfig {
       keys = KnownKey.getAll();
       Arrays.sort(keys);
     }
-    for (int i = 0; i < keys.length; i++) {
-      String key = keys[i];
+    for (String key : keys) {
       if (!KnownKey.isKnown(key)) {
         Logging.warn("not a known key '" + key + "'");
       } else {
@@ -263,7 +261,7 @@ public class LocalConfig {
    * Return all keys - known or otherwise.
    */
   String[] allKeys() {
-    Set<String> union = new HashSet<String>();
+    Set<String> union = new HashSet<>();
 
     // Add known keys.
     String[] knownKeys = KnownKey.getAll();
@@ -281,14 +279,12 @@ public class LocalConfig {
     if (keys.length == 0) {
       keys = allKeys();
       Arrays.sort(keys);
-      for (int i = 0; i < keys.length; i++) {
-        String key = keys[i];
+      for (String key : keys) {
         String value = writer.expand() ? get(key) : getRaw(key);
         writer.add(key, value);
       }
     } else {
-      for (int i = 0; i < keys.length; i++) {
-        String key = keys[i];
+      for (String key : keys) {
         String value = writer.expand() ? get(key) : getRaw(key);
         if (value == null) {
           Logging.warn("null valued key '" + key + "'");
@@ -303,8 +299,7 @@ public class LocalConfig {
   private static void fmt(PrintStream ps, String str, int limit) {
     String[] tokens = str.split("\\s");
     int cols = 0;
-    for (int x = 0; x < tokens.length; x++) {
-      String tok = tokens[x];
+    for (String tok : tokens) {
       if ((tok.length() + cols) > limit) {
         cols = 0;
         ps.println();
@@ -361,10 +356,8 @@ public class LocalConfig {
   static {
     try {
       load(null);
-    } catch (DocumentException de) {
+    } catch (DocumentException | ConfigException de) {
       throw new RuntimeException(de);
-    } catch (ConfigException ce) {
-      throw new RuntimeException(ce);
     }
   }
 }

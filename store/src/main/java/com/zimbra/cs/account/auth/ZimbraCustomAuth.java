@@ -11,7 +11,6 @@ import java.util.Map;
 
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
 import java.util.Objects;
 
 public abstract class ZimbraCustomAuth {
@@ -32,7 +31,7 @@ public abstract class ZimbraCustomAuth {
     public static synchronized void register(String handlerName, ZimbraCustomAuth handler) {
         
         if (mHandlers == null)
-            mHandlers = new HashMap<String, ZimbraCustomAuth>();
+            mHandlers = new HashMap<>();
         else {
             //  sanity check
             ZimbraCustomAuth obj = mHandlers.get(handlerName);

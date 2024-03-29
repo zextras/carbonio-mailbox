@@ -9,7 +9,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.ldap.LdapException;
 import com.zimbra.cs.ldap.ZAttributes;
-import com.zimbra.cs.ldap.ZSearchResultEntry;
 
 /**
  * 

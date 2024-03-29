@@ -64,32 +64,38 @@ public class ZimbraAsciiNumeric extends AsciiNumeric implements ZimbraComparator
 
         if (isPosInfLHS && isPosInfRHS) {
             switch (operator) {
-            case HeaderConstants.GT_OP: return false;
-            case HeaderConstants.GE_OP: return true;
-            case HeaderConstants.LT_OP: return false;
-            case HeaderConstants.LE_OP: return true;
-            case HeaderConstants.EQ_OP: return true;
-            case HeaderConstants.NE_OP: return false;
+            case HeaderConstants.GT_OP:
+              case HeaderConstants.NE_OP:
+              case HeaderConstants.LT_OP:
+                return false;
+            case HeaderConstants.GE_OP:
+              case HeaderConstants.EQ_OP:
+              case HeaderConstants.LE_OP:
+                return true;
             }
         }
         if (isPosInfLHS && !isPosInfRHS) {
             switch (operator) {
-            case HeaderConstants.GT_OP: return true;
-            case HeaderConstants.GE_OP: return true;
-            case HeaderConstants.LT_OP: return false;
-            case HeaderConstants.LE_OP: return false;
-            case HeaderConstants.EQ_OP: return false;
-            case HeaderConstants.NE_OP: return true;
+            case HeaderConstants.GT_OP:
+              case HeaderConstants.NE_OP:
+              case HeaderConstants.GE_OP:
+                return true;
+              case HeaderConstants.LT_OP:
+              case HeaderConstants.EQ_OP:
+              case HeaderConstants.LE_OP:
+                return false;
             }
         }
         if (!isPosInfLHS && isPosInfRHS) {
             switch (operator) {
-            case HeaderConstants.GT_OP: return false;
-            case HeaderConstants.GE_OP: return false;
-            case HeaderConstants.LT_OP: return true;
-            case HeaderConstants.LE_OP: return true;
-            case HeaderConstants.EQ_OP: return false;
-            case HeaderConstants.NE_OP: return true;
+            case HeaderConstants.GT_OP:
+              case HeaderConstants.EQ_OP:
+              case HeaderConstants.GE_OP:
+                return false;
+              case HeaderConstants.LT_OP:
+              case HeaderConstants.NE_OP:
+              case HeaderConstants.LE_OP:
+                return true;
             }
         }
         return false;
@@ -178,12 +184,14 @@ public class ZimbraAsciiNumeric extends AsciiNumeric implements ZimbraComparator
     private boolean countInfinity(String operator, BigInteger count, String value) {
         if (isPositiveInfinity(value)) {
             switch (operator) {
-            case HeaderConstants.GT_OP: return false;
-            case HeaderConstants.GE_OP: return false;
-            case HeaderConstants.LT_OP: return true;
-            case HeaderConstants.LE_OP: return true;
-            case HeaderConstants.EQ_OP: return false;
-            case HeaderConstants.NE_OP: return true;
+            case HeaderConstants.GT_OP:
+              case HeaderConstants.EQ_OP:
+              case HeaderConstants.GE_OP:
+                return false;
+              case HeaderConstants.LT_OP:
+              case HeaderConstants.NE_OP:
+              case HeaderConstants.LE_OP:
+                return true;
             }
         }
         return false;
@@ -211,8 +219,9 @@ public class ZimbraAsciiNumeric extends AsciiNumeric implements ZimbraComparator
         return intLhs.equals(intRhs);
     }
 
-    public enum NumericType {POSITIVE_NUMBER, NEGATIVE_NUMBER, POSITIVEINFINITY};
-    /** 
+    public enum NumericType {POSITIVE_NUMBER, NEGATIVE_NUMBER, POSITIVEINFINITY}
+
+  /**
      * Check the string type
      * <ul>
      * <li> If the value has a '-' (0x2d) followed by one or more digits, then it is negative number.

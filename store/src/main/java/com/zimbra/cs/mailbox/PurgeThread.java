@@ -110,7 +110,7 @@ extends Thread {
             return;
         }
 
-        Set<Integer> purgePendingMailboxes = new HashSet<Integer>();
+        Set<Integer> purgePendingMailboxes = new HashSet<>();
         while (true) {
             List<Integer> mailboxIds = getMailboxIds();
             boolean slept = false;
@@ -230,7 +230,7 @@ extends Thread {
      * after {@link Config#KEY_PURGE_LAST_MAILBOX_ID}.
      */
     private List<Integer> getMailboxIds() {
-        List<Integer> mailboxIds = new ArrayList<Integer>();
+        List<Integer> mailboxIds = new ArrayList<>();
 
         try {
             mailboxIds = CallbackUtil.getSortedMailboxIdList();

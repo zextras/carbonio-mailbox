@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -128,25 +129,22 @@ public class TZIDMapper {
     private static final String TRUE = "TRUE";
 
     private static synchronized void loadFromFile(File tzFile) throws IOException {
-        Map<String, TZ> map = new HashMap<String, TZ>();
+        Map<String, TZ> map = new HashMap<>();
         // TZ sets user LinkedHashSet to preserve insertion order.
-        Set<TZ> allTZs = new LinkedHashSet<TZ>();
-        Set<TZ> primaryTZs = new LinkedHashSet<TZ>();
+        Set<TZ> allTZs = new LinkedHashSet<>();
+        Set<TZ> primaryTZs = new LinkedHashSet<>();
 
-        FileInputStream fi = null;
-        InputStreamReader isr = null;
-        BufferedReader br = null;
-        try {
-            fi = new FileInputStream(tzFile);
-            isr = new InputStreamReader(fi, "UTF-8");
-            br = new BufferedReader(isr);
+        try(FileInputStream fi = new FileInputStream(tzFile);
+            InputStreamReader isr = new InputStreamReader(fi, StandardCharsets.UTF_8);
+            BufferedReader br = new BufferedReader(isr)) {
+
             String line;
             boolean inVTIMEZONE = false;
             boolean isPrimary = false;
             boolean matchScoreSpecified = false;
             int matchScore = 0;
             String tzid = null;
-            Set<String> aliases = new TreeSet<String>();
+            Set<String> aliases = new TreeSet<>();
             while ((line = br.readLine()) != null) {
                 // Remove leading/trailing whitespaces.
                 line = line.replaceAll("^\\s+", "");
@@ -159,7 +157,7 @@ public class TZIDMapper {
                         isPrimary = false;
                         matchScoreSpecified = false;
                         matchScore = 0;
-                        aliases = new TreeSet<String>();
+                        aliases = new TreeSet<>();
                     }
                 } else {  // inVTIMEZONE == true
                     if (lineUpper.equals("END:VTIMEZONE")) {
@@ -196,7 +194,7 @@ public class TZIDMapper {
                         try {
                             matchScore = Integer.parseInt(matchScoreStr);
                             matchScoreSpecified = true;
-                        } catch (NumberFormatException e) {}
+                        } catch (NumberFormatException ignored) {}
                     }
                 }
             }
@@ -204,13 +202,6 @@ public class TZIDMapper {
             sMap = map;
             sAllTZs = allTZs;
             sPrimaryTZs = primaryTZs;
-        } finally {
-            if (br != null)
-                br.close();
-            else if (isr != null)
-                isr.close();
-            else if (fi != null)
-                fi.close();
         }
     }
 

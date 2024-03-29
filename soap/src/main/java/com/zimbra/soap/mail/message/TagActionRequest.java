@@ -42,7 +42,7 @@ public class TagActionRequest {
      */
     @SuppressWarnings("unused")
     private TagActionRequest() {
-        this((TagActionSelector) null);
+        this(null);
     }
 
     public TagActionRequest(TagActionSelector action) {

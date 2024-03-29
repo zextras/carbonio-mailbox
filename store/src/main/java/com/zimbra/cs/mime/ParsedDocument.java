@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;

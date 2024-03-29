@@ -29,7 +29,7 @@ public class LmtpAddress {
 
     public LmtpAddress(String arg, String[] allowedParameters, String rcptDelim) {
 	mAllowedParameters = allowedParameters;
-	mParameters = new HashMap<String, String>();
+	mParameters = new HashMap<>();
 	mIsValid = parse(arg);
 	mDeliveryReply = LmtpReply.TEMPORARY_FAILURE;
 
@@ -118,7 +118,7 @@ public class LmtpAddress {
 	if (mParameters.isEmpty()) {
 	    return null;
 	}
-	return (String)mParameters.get(key.toUpperCase());
+	return mParameters.get(key.toUpperCase());
     }
 
     public LmtpReply getDeliveryStatus() {
@@ -215,7 +215,7 @@ public class LmtpAddress {
 
 	/* Check starts with '<' */
 	ch = next();
-	if (ch == -1 || ch != '<') {
+	if (ch != '<') {
 	    if (debug) say("does not begin with <");
 	    return false;
 	}
@@ -315,14 +315,12 @@ public class LmtpAddress {
 	    if (ch == ',') {
 		ch = next();
 		if (debug) say("comma found processing next source route");
-		continue;
-	    } else if (ch == ':') {
+      } else if (ch == ':') {
 		ch = peek();
 		if (ch ==  '@') {
 		    if (debug) say("colon-at processing another source route");
 		    skip(); // the '@'
-		    continue;
-		} else {
+    } else {
 		    if (debug) say("reached end of source routes");
 		    break;
 		}
@@ -370,8 +368,7 @@ public class LmtpAddress {
 	    int ch = peek();
 	    if (isDigit(ch) || isLetter(ch) || ch == '.' || ch == '-') {
 		skip();
-		continue;
-	    } else {
+      } else {
 		break;
 	    }
 	}
@@ -546,13 +543,15 @@ public class LmtpAddress {
 	    return false;
 	}
 	if (debug) say("checking " + mAllowedParameters.length + " allowed parameters");
-	for (int i = 0; i < mAllowedParameters.length; i++) {
-	    if (debug) say("checking key " + key + " against allowed " + mAllowedParameters[i]);
-	    if (key.equalsIgnoreCase(mAllowedParameters[i])) {
-		if (debug) say("parameter " + key + " is allowed");
-		return true;
-	    }
-	}
+      for (String mAllowedParameter : mAllowedParameters) {
+        if (debug)
+          say("checking key " + key + " against allowed " + mAllowedParameter);
+        if (key.equalsIgnoreCase(mAllowedParameter)) {
+          if (debug)
+            say("parameter " + key + " is allowed");
+          return true;
+        }
+      }
 	if (debug) say("parameter " + key + " is not allowed");
 	return false;
     }

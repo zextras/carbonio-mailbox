@@ -63,13 +63,11 @@ public final class ParseMailboxID {
   public String getString() {
     return initialString;
   }
-  ;
 
   @Override
   public String toString() {
     return getString();
   }
-  ;
 
   /**
    * @return TRUE if the mailbox is owned by this server

@@ -111,7 +111,7 @@ public class GetFolder extends MailDocumentHandler {
             List<ExpandableMountpoint> mounts = Lists.newArrayList();
             Element folderRoot = encodeFolderNode(rootnode, response, ifmt, octxt, true, depth, view, traverse, mounts);
 
-            if (rootnode.mFolder != null && rootnode.mFolder instanceof Mountpoint) {
+            if (rootnode.mFolder instanceof Mountpoint) {
                 mounts.add(new ExpandableMountpoint(folderRoot, (Mountpoint) rootnode.mFolder, depth));
             }
             for (ExpandableMountpoint empt : mounts) {

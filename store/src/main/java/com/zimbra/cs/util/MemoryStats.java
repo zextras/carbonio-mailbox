@@ -61,7 +61,7 @@ public final class MemoryStats implements RealtimeStatsCallback {
 
     static {
         // Set of major garbage collectors.  All others are minor collectors.
-        sMajorCollectors = new HashSet<String>(4);
+        sMajorCollectors = new HashSet<>(4);
         sMajorCollectors.add(MEMMGR_GC_MAJOR_MSC);
         sMajorCollectors.add(MEMMGR_GC_MAJOR_CMS);
         sMajorCollectors.add(MEMMGR_GC_MAJOR_PS_MARKSWEEP);
@@ -170,7 +170,7 @@ public final class MemoryStats implements RealtimeStatsCallback {
      */
     public static String[] getHeapPoolNames() {
         List<MemoryPoolMXBean> pools = ManagementFactory.getMemoryPoolMXBeans();
-        ArrayList<String> array = new ArrayList<String>(pools.size());
+        ArrayList<String> array = new ArrayList<>(pools.size());
         
         for (MemoryPoolMXBean pool : pools) {
 //          for bug 16398, include non-heap pools (so we get permgen info)            
@@ -246,7 +246,7 @@ public final class MemoryStats implements RealtimeStatsCallback {
      * @see com.zimbra.common.stats.RealtimeStatsCallback#getStatData()
      */
     public Map<String, Object> getStatData() {
-        Map<String, Object> toRet = new HashMap<String, Object>();
+        Map<String, Object> toRet = new HashMap<>();
 
         // GC times
         long minorCount = 0, minorTime = 0, majorCount = 0, majorTime = 0;

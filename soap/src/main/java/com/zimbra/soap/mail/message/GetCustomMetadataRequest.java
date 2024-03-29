@@ -42,7 +42,7 @@ public class GetCustomMetadataRequest {
      */
     @SuppressWarnings("unused")
     private GetCustomMetadataRequest() {
-        this((String) null);
+        this(null);
     }
 
     public GetCustomMetadataRequest(String id) {

@@ -98,7 +98,7 @@ public class ModifyInvitePartStat extends RedoableOp
         out.writeUTF(mCUTypeStr);
         out.writeUTF(mRoleStr);
         out.writeUTF(mPartStatStr);
-        out.writeBoolean(mRsvp.booleanValue());
+        out.writeBoolean(mRsvp);
         out.writeInt(mSeqNo);
         out.writeLong(mDtStamp);
     }
@@ -116,7 +116,7 @@ public class ModifyInvitePartStat extends RedoableOp
         mCUTypeStr = in.readUTF();
         mRoleStr = in.readUTF();
         mPartStatStr = in.readUTF();
-        mRsvp = Boolean.valueOf(in.readBoolean());
+        mRsvp = in.readBoolean();
         mSeqNo = in.readInt();
         mDtStamp = in.readLong();
     }

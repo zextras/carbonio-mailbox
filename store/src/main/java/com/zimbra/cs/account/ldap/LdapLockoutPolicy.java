@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -81,7 +80,7 @@ public class LdapLockoutPolicy {
 
     public void successfulLogin() {
         if (!mEnabled) return;
-        Map<String, Object> attrs = new HashMap<String,Object>();
+        Map<String, Object> attrs = new HashMap<>();
         if (failedLogins.mEnabled && failedLogins.mFailures.length > 0) {
             attrs.put(failedLogins.failuresAttrName, "");
         }
@@ -116,12 +115,7 @@ public class LdapLockoutPolicy {
                         if (protocol.equalsIgnoreCase(suppressionProtocol)) {
                             List<String> pwds = null;
                             try {
-                                pwds = cache.get(acct.getId(), new Callable<List<String>>() {
-                                    @Override
-                                    public List<String> call() throws Exception {
-                                        return new ArrayList<String>();
-                                    }
-                                });
+                                pwds = cache.get(acct.getId(), () -> new ArrayList<>());
                             } catch (ExecutionException e) {
                                 ZimbraLog.account.warn("Error while retrieving invalid password cache entry", e);
                                 return false;
@@ -173,7 +167,7 @@ public class LdapLockoutPolicy {
             ZimbraLog.security.info("Account is lockout, not updating failure time.");
             return;
         }
-        Map<String, Object> attrs = new HashMap<String,Object>();
+        Map<String, Object> attrs = new HashMap<>();
 
         int totalFailures = login.updateFailureTimes(attrs);
 
@@ -224,7 +218,7 @@ public class LdapLockoutPolicy {
                 String expiredTime = LdapDateUtil.toGeneralizedTime(new Date(System.currentTimeMillis() - duration));
                 for (String failure : mFailures) {
                     if (failure.compareTo(expiredTime) < 0) {
-                        if (mFailuresToRemove == null) mFailuresToRemove = new ArrayList<String>();
+                        if (mFailuresToRemove == null) mFailuresToRemove = new ArrayList<>();
                         mFailuresToRemove.add(failure);
                     }
                 }

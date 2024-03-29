@@ -113,7 +113,7 @@ public class AttributeMigrationUtil {
         if (clArgs.size() > 1) {
             attrsToMigrate = clArgs.subList(1, clArgs.size());
         } else {
-            attrsToMigrate = new ArrayList<String>(AttributeManager.getInstance().getEphemeralAttributeNames());
+            attrsToMigrate = new ArrayList<>(AttributeManager.getInstance().getEphemeralAttributeNames());
         }
 
         if (!dryRun) {
@@ -155,11 +155,9 @@ public class AttributeMigrationUtil {
             migration.migrateAllAccounts();
         } catch (InvalidAttributeException e) {
             Zimbra.halt(String.format("Migration can't proceed: %s", e.getMessage()));
-            return;
         }
         catch (ServiceException e) {
             Zimbra.halt(String.format("error encountered during migration to ephemeral backend at %s; migration cannot proceed", destURL), e);
-            return;
         }
     }
 

@@ -8,7 +8,6 @@ package com.zimbra.soap.admin.message;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Iterables;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,7 +46,7 @@ public class SearchCalendarResourcesResponse {
     private List <CalendarResourceInfo> calResources = Lists.newArrayList();
 
     public SearchCalendarResourcesResponse() {
-        this(false, 0L, (Iterable <CalendarResourceInfo>) null);
+        this(false, 0L, null);
     }
 
     public SearchCalendarResourcesResponse(boolean more, long searchTotal,

@@ -21,7 +21,7 @@ import com.zimbra.cs.mailbox.calendar.Invite;
 
 public class TimeZoneFixupRules {
 
-    private static enum MatchBy { ANY, TZID, OFFSET, RULES, DATES };
+    private enum MatchBy { ANY, TZID, OFFSET, RULES, DATES }
 
     public static class Matcher {
         private MatchBy mMatchBy;
@@ -133,7 +133,7 @@ public class TimeZoneFixupRules {
     }
 
     public TimeZoneFixupRules(Map<String, ICalTimeZone> replacements) {
-        mMatchers = new ArrayList<Matcher>();
+        mMatchers = new ArrayList<>();
         for (Map.Entry<String, ICalTimeZone> entry : replacements.entrySet()) {
             String oldTZID = entry.getKey();
             ICalTimeZone replacementTZ = entry.getValue();
@@ -175,7 +175,7 @@ public class TimeZoneFixupRules {
     private int fixTZMap(TimeZoneMap tzmap, Map<String, ICalTimeZone> replaced) {
         int numFixed = 0;
         if (tzmap == null) return 0;
-        List<ICalTimeZone> newTZList = new ArrayList<ICalTimeZone>();
+        List<ICalTimeZone> newTZList = new ArrayList<>();
         for (Iterator<ICalTimeZone> iter = tzmap.tzIterator(); iter.hasNext(); ) {
             ICalTimeZone tz = iter.next();
             ICalTimeZone newTZ = fixTZ(tz, replaced);

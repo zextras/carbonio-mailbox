@@ -314,7 +314,7 @@ public abstract class TargetIterator {
       super(prov, TargetType.domain, target);
 
       mCurSuperDomain = 0;
-      mSuperDomains = new ArrayList<Domain>();
+      mSuperDomains = new ArrayList<>();
 
       Domain domain = (Domain) target;
       String domainName = domain.getName();
@@ -399,9 +399,9 @@ public abstract class TargetIterator {
 
     // sub1.sub2.sub3.sub4.sub5.top
 
-    Domain sub1 = prov.createDomain("sub1.sub2.sub3.sub4.sub5.top", new HashMap<String, Object>());
-    Domain sub3 = prov.createDomain("sub3.sub4.sub5.top", new HashMap<String, Object>());
-    Domain sub5 = prov.createDomain("sub5.top", new HashMap<String, Object>());
+    Domain sub1 = prov.createDomain("sub1.sub2.sub3.sub4.sub5.top", new HashMap<>());
+    Domain sub3 = prov.createDomain("sub3.sub4.sub5.top", new HashMap<>());
+    Domain sub5 = prov.createDomain("sub5.top", new HashMap<>());
 
     TargetIterator targetIter;
     Entry grantedOn;

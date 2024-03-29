@@ -6,6 +6,7 @@
 package com.zimbra.cs.util.tnef.mapi;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import net.freeutils.tnef.RawInputStream;
 import net.freeutils.tnef.TNEFUtils;
 
@@ -86,9 +87,9 @@ public class GlobalObjectId {
             }
         }
         if (isWrappedIcalUid) {
-            Long uidLen = Long.valueOf(dataSize - thirdPartyWaterMark.length);
+            Long uidLen = dataSize - thirdPartyWaterMark.length;
             byte [] icalUidBytes = risCopy.readBytes(uidLen.intValue());
-            icalUid = new String(icalUidBytes, "UTF8");
+            icalUid = new String(icalUidBytes, StandardCharsets.UTF_8);
             icalUid = TNEFUtils.removeTerminatingNulls(icalUid);
         } else {
             //  Ensure that date fields are zeroed

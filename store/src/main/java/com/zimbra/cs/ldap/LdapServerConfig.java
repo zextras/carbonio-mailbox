@@ -320,7 +320,7 @@ public abstract class LdapServerConfig {
     }
 
 
-    public static String joinURLS(String urls[]) {
+    public static String joinURLS(String[] urls) {
         if (urls.length == 1) {
             return urls[0];
         }

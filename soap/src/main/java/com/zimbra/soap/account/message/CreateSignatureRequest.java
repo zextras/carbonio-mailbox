@@ -44,7 +44,7 @@ public class CreateSignatureRequest {
      */
     @SuppressWarnings("unused")
     private CreateSignatureRequest() {
-        this((Signature) null);
+        this(null);
     }
 
     public CreateSignatureRequest(Signature signature) {

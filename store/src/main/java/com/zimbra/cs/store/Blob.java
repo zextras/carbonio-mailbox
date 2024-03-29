@@ -77,7 +77,7 @@ public class Blob {
 
     public boolean isCompressed() throws IOException {
         if (compressed == null) {
-            if (rawSize != null && rawSize.longValue() == file.length()) {
+            if (rawSize != null && rawSize == file.length()) {
                 this.compressed = Boolean.FALSE;
             } else {
                 this.compressed = FileUtil.isGzipped(file);

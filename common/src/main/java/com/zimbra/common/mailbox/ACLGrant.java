@@ -6,8 +6,8 @@
 package com.zimbra.common.mailbox;
 
 public interface ACLGrant {
-    public String getGranteeId();
-    public String getGranteeName();
-    public GrantGranteeType getGrantGranteeType();
-    public String getPermissions();
+    String getGranteeId();
+    String getGranteeName();
+    GrantGranteeType getGrantGranteeType();
+    String getPermissions();
 }

@@ -26,7 +26,7 @@ public class ParallelRedoPlayer extends RedoPlayer {
         numThreads = Math.max(numThreads, 1);
         mPlayerThreads = new PlayerThread[numThreads];
         for (int i = 0; i < numThreads; i++) {
-            String name = "RedoPlayer-" + Integer.toString(i);
+            String name = "RedoPlayer-" + i;
             PlayerThread player = new PlayerThread(queueCapacity);
             mPlayerThreads[i] = player;
             player.setName(name);
@@ -39,9 +39,9 @@ public class ParallelRedoPlayer extends RedoPlayer {
         try {
             super.shutdown();
         } finally {
-            for (int i = 0; i < mPlayerThreads.length; i++) {
-                mPlayerThreads[i].shutdown();
-            }
+          for (PlayerThread mPlayerThread : mPlayerThreads) {
+            mPlayerThread.shutdown();
+          }
         }
         ZimbraLog.redolog.debug("ParallelRedoPlayer shutdown complete");
     }
@@ -53,7 +53,7 @@ public class ParallelRedoPlayer extends RedoPlayer {
             // Multi-mailbox ops are executed by the main thread to prevent later ops
             // that depend on this op's result aren't run out of order.
             if (ZimbraLog.redolog.isDebugEnabled())
-                ZimbraLog.redolog.info("Executing: " + op.toString());
+                ZimbraLog.redolog.info("Executing: " + op);
             op.redo();
         } else {
             // Ops for the same mailbox must be played back in order.  To ensure that,
@@ -64,7 +64,7 @@ public class ParallelRedoPlayer extends RedoPlayer {
             PlayerThread player = mPlayerThreads[index];
             RedoTask task = new RedoTask(op);
             if (ZimbraLog.redolog.isDebugEnabled())
-                ZimbraLog.redolog.info("Enqueuing: " + op.toString());
+                ZimbraLog.redolog.info("Enqueuing: " + op);
             try {
                 player.enqueue(task);
             } catch (InterruptedException e) {}
@@ -115,7 +115,7 @@ public class ParallelRedoPlayer extends RedoPlayer {
 
         private PlayerThread(int queueCapacity) {
             queueCapacity = Math.max(queueCapacity, 1);
-            mQueue = new LinkedBlockingQueue<RedoTask>(queueCapacity);
+            mQueue = new LinkedBlockingQueue<>(queueCapacity);
         }
 
         public void enqueue(RedoTask task) throws InterruptedException {

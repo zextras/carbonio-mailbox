@@ -10,6 +10,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface BySecondRuleInterface {
-    public BySecondRuleInterface create(String list);
-    public String getList();
+    BySecondRuleInterface create(String list);
+    String getList();
 }

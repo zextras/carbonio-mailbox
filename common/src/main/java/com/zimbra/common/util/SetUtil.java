@@ -20,7 +20,7 @@ public class SetUtil {
      * @return
      */
     public static <T> Set<T> subtract(Set<T> lhs, Set<T> rhs) {
-        HashSet<T> out = new HashSet<T>();
+        HashSet<T> out = new HashSet<>();
         
         for (T o : lhs) {
             if (!rhs.contains(o))
@@ -38,7 +38,7 @@ public class SetUtil {
      * @return
      */
     public static <T> Set<T> intersect(Set<T> lhs, Set<T> rhs) {
-        HashSet<T> out = new HashSet<T>();
+        HashSet<T> out = new HashSet<>();
         
         for (T o : lhs) {
             if (rhs.contains(o))

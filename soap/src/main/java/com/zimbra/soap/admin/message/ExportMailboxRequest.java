@@ -42,7 +42,7 @@ public class ExportMailboxRequest {
      */
     @SuppressWarnings("unused")
     private ExportMailboxRequest() {
-        this((ExportMailboxSelector) null);
+        this(null);
     }
 
     public ExportMailboxRequest(ExportMailboxSelector account) {

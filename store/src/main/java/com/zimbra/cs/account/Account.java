@@ -411,7 +411,7 @@ public class Account extends ZAttrAccount implements GroupedEntry, AliasedEntry 
         getProvisioning().reload(this, false); // reload from replica
         setCachedData(
             EntryCacheDataKey.ACCOUNT_VALIDITY_VALUE_HIGHEST_RELOAD.getKeyName(),
-            Integer.valueOf(authTokenValue));
+            authTokenValue);
 
         // validate the value again
         acctValue = getAuthTokenValidityValue();
@@ -453,7 +453,7 @@ public class Account extends ZAttrAccount implements GroupedEntry, AliasedEntry 
     if (isIsExternalVirtualAccount()) {
       return new String[] {getExternalUserMailAddress()};
     } else {
-      String aliases[] = getMailAlias();
+      String[] aliases = getMailAlias();
       List<String> addrs = Lists.newArrayListWithExpectedSize(aliases.length + 1);
       String myName = getName();
       addrs.add(myName);

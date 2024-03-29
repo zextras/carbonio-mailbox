@@ -28,7 +28,7 @@ public class ImapRemoteSession extends ImapListener {
         @Override
         protected PendingModifications getQueuedNotifications(int changeId) {
             if (queuedChanges == null) {
-                queuedChanges = new TreeMap<Integer, PendingModifications>();
+                queuedChanges = new TreeMap<>();
             }
             PendingModifications pns = queuedChanges.get(changeId);
             if (pns == null) {
@@ -54,11 +54,11 @@ public class ImapRemoteSession extends ImapListener {
 
     private void handleCreate(int changeId, BaseItemInfo item, AddedItems added) {
         try {
-            if (item == null || item.getIdInMailbox() <= 0) {
-                return;
-            } else if (item.getFolderIdInMailbox() == folderId.id &&
-                (item.getMailItemType() == MailItemType.MESSAGE || item.getMailItemType() == MailItemType.CONTACT)) {
-                    mFolder.handleItemCreate(changeId, item, added);
+            if (item != null && item.getIdInMailbox() > 0) {
+                if (item.getFolderIdInMailbox() == folderId.id &&
+                    (item.getMailItemType() == MailItemType.MESSAGE || item.getMailItemType() == MailItemType.CONTACT)) {
+                        mFolder.handleItemCreate(changeId, item, added);
+                }
             }
         } catch (ServiceException e) {
             ZimbraLog.imap.warn("Error retrieving ID of item or folder", e);

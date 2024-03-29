@@ -38,7 +38,7 @@ public class GetXMPPComponentResponse {
      */
     @SuppressWarnings("unused")
     private GetXMPPComponentResponse() {
-        this((XMPPComponentInfo) null);
+        this(null);
     }
 
     public GetXMPPComponentResponse(XMPPComponentInfo component) {

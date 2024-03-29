@@ -9,11 +9,11 @@ public interface ZimbraTag {
     /**
      * Return the ID of the tag
      */
-    public int getTagId();
+    int getTagId();
 
     /**
      * Return the name of the tag;
      */
-    public String getTagName();
+    String getTagName();
 
 }

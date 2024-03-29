@@ -17,7 +17,7 @@ public class CalDataSourceId extends Id {
      */
     @SuppressWarnings("unused")
     protected CalDataSourceId() {
-        this((String) null);
+        this(null);
     }
 
     CalDataSourceId(String id) {

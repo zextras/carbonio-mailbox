@@ -23,7 +23,7 @@ public final class SizeQuery extends Query {
 
         private final String symbol;
 
-        private Type(String symbol) {
+        Type(String symbol) {
             this.symbol = symbol;
         }
 

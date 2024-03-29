@@ -6,6 +6,7 @@
 package com.zimbra.cs.session;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -56,7 +57,6 @@ public class RemoteSoapSession extends SoapSession {
     @Override
     public void putRefresh(Element ctxt, ZimbraSoapContext zsc) {
         ctxt.addUniqueElement(ZimbraNamespace.E_REFRESH);
-        return;
     }
 
     @Override
@@ -83,7 +83,7 @@ public class RemoteSoapSession extends SoapSession {
     private static final Map<String,LinkedList<String>> sentNotifications;
 
     static {
-        sentNotifications = new LruMap<String,LinkedList<String>>(100);  // cache of 100 accounts
+        sentNotifications = new LruMap<>(100);  // cache of 100 accounts
     }
 
     private class CrossMailboxPushChannel implements PushChannel {
@@ -128,17 +128,13 @@ public class RemoteSoapSession extends SoapSession {
 
         private boolean checkDuplicateNotification(CrossServerNotification ntfn) {
             String msgHash;
-            try {
-                msgHash = ByteUtil.getDigest(ntfn.toString().getBytes("UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                msgHash = ByteUtil.getDigest(ntfn.toString().getBytes());
-            }
-            String accountId = authUserCtxt.getAuthtokenAccountId();
+          msgHash = ByteUtil.getDigest(ntfn.toString().getBytes(StandardCharsets.UTF_8));
+          String accountId = authUserCtxt.getAuthtokenAccountId();
             LinkedList<String> messageHashes;
             synchronized (sentNotifications) {
                 messageHashes = sentNotifications.get(accountId);
                 if (messageHashes == null) {
-                    messageHashes = new LinkedList<String>();
+                    messageHashes = new LinkedList<>();
                     sentNotifications.put(accountId, messageHashes);
                 }
             }

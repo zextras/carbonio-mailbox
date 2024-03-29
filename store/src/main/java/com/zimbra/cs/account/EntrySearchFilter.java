@@ -12,12 +12,12 @@ import java.util.Set;
 
 public class EntrySearchFilter {
 
-    public static enum AndOr {
+    public enum AndOr {
         and,
         or
     }
 
-    public static enum Operator {
+    public enum Operator {
         eq,         // exact match (=val; string or integer)
         has,        // substring (=*val*; string only)
         startswith, // starts with (=val*; string only)
@@ -28,10 +28,10 @@ public class EntrySearchFilter {
         lt          // less than (<val; integer only)
     }
 
-    public static interface Visitor {
-        public void visitSingle(Single term);
-        public void enterMulti(Multi term);
-        public void leaveMulti(Multi term);
+    public interface Visitor {
+        void visitSingle(Single term);
+        void enterMulti(Multi term);
+        void leaveMulti(Multi term);
     }
 
     public abstract static class Term {
@@ -48,7 +48,7 @@ public class EntrySearchFilter {
         public Multi(boolean negation, AndOr andOr) {
             setNegation(negation);
             mAndOr = andOr;
-            mTerms = new ArrayList<Term>();
+            mTerms = new ArrayList<>();
         }
 
         public Multi(boolean negation, AndOr andOr, Term... terms) {
@@ -96,7 +96,7 @@ public class EntrySearchFilter {
         }
     }
 
-    private static Set<String> sIndexedAttrs = new HashSet<String>();
+    private static Set<String> sIndexedAttrs = new HashSet<>();
     static {
         // list all indexed attributes
         sIndexedAttrs.add(Provisioning.A_objectClass.toLowerCase());

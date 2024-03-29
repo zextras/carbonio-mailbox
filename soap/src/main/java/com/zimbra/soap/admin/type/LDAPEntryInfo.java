@@ -27,7 +27,7 @@ public class LDAPEntryInfo extends AdminAttrsImpl {
      */
     @SuppressWarnings("unused")
     private LDAPEntryInfo() {
-        this((String) null);
+        this(null);
     }
 
     public LDAPEntryInfo(String name) {

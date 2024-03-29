@@ -1248,7 +1248,7 @@ public final class JaxbUtil {
       org.w3c.dom.Document doc, Class<?> klass, boolean jaxbClassInContext)
       throws ServiceException {
     fixupStructureForJaxb(doc.getDocumentElement(), klass);
-    return (T) rawW3cDomDocToJaxb(doc, klass, jaxbClassInContext);
+    return rawW3cDomDocToJaxb(doc, klass, jaxbClassInContext);
   }
 
   /**
@@ -1294,7 +1294,7 @@ public final class JaxbUtil {
    */
   @SuppressWarnings("unchecked")
   public static <T> T elementToJaxb(Element elem, Class<?> klass) throws ServiceException {
-    return (T) w3cDomDocToJaxb(elem.toW3cDom(), klass, false);
+    return w3cDomDocToJaxb(elem.toW3cDom(), klass, false);
   }
 
   /**
@@ -1311,7 +1311,7 @@ public final class JaxbUtil {
           "Failed to find CLASS for name=[" + e.getName() + "]  Is it a Request or Response node?");
       return null;
     }
-    return (T) w3cDomDocToJaxb(e.toW3cDom(), klass, true);
+    return w3cDomDocToJaxb(e.toW3cDom(), klass, true);
   }
 
   /** Only for use when marshalling request or response objects. */

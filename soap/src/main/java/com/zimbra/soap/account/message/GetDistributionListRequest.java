@@ -54,7 +54,7 @@ public class GetDistributionListRequest extends AttrsImpl {
     private DistributionListSelector dl;
 
     public GetDistributionListRequest() {
-        this((DistributionListSelector) null, (Boolean) null, (String) null);
+        this(null, null, null);
     }
 
     public GetDistributionListRequest(DistributionListSelector dl, Boolean needOwners) {

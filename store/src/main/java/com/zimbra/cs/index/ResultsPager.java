@@ -107,7 +107,7 @@ public final class ResultsPager {
             }
         } else {
             if (forward) {
-                bufferedHits = new ArrayList<ZimbraHit>(1);
+                bufferedHits = new ArrayList<>(1);
                 ZimbraHit current = forwardFindFirst();
                 if (current != null)
                     bufferedHits.add(current);
@@ -197,7 +197,7 @@ public final class ResultsPager {
      * Returns a list (in reverse order) of all hits between start and current-cursor position.
      */
     private List<ZimbraHit> backward() throws ServiceException {
-        List<ZimbraHit> result = new LinkedList<ZimbraHit>();
+        List<ZimbraHit> result = new LinkedList<>();
         offset = -1;
         results.resetIterator();
         ZimbraHit hit = results.getNext();

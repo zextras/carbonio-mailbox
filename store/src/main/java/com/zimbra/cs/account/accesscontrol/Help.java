@@ -16,7 +16,7 @@ public class Help {
     private List<String> items = Lists.newArrayList();
     
     Help(String name) {
-        this.name = new String(name);
+        this.name = name;
     }
     
     String getName() {
@@ -24,7 +24,7 @@ public class Help {
     }
     
     void setDesc(String desc) {
-        this.desc = new String(desc);
+        this.desc = desc;
     }
     
     public String getDesc() {
@@ -32,7 +32,7 @@ public class Help {
     }
 
     void addItem(String item) {
-        items.add(new String(item));
+        items.add(item);
     }
     
     public List<String> getItems() {

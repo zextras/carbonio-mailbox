@@ -11,6 +11,7 @@ package com.zimbra.cs.convert;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +26,7 @@ public class DocumentText {
     public static DocumentText EMPTY;
     static {
         try {
-            EMPTY = new DocumentText("".getBytes("UTF-8"), "UTF-8", Collections.EMPTY_MAP, "text/plain");
+            EMPTY = new DocumentText("".getBytes(StandardCharsets.UTF_8), "UTF-8", Collections.EMPTY_MAP, "text/plain");
         } catch (UnsupportedEncodingException e) {
             // unless underlying java platform does not have UTF-8
         }
@@ -97,7 +98,7 @@ public class DocumentText {
         if (mContentTypes == null || "".equals(mContentTypes)) {
             return Collections.emptyList();
         }
-        List<String> a = new ArrayList<String>();
+        List<String> a = new ArrayList<>();
         StringTokenizer st = new StringTokenizer(mContentTypes, ",");
         while (st.hasMoreTokens()) {
             a.add(st.nextToken().trim());

@@ -38,7 +38,7 @@ implements SearchHit {
     private final List<ConversationMsgHitInfo> messageHits = Lists.newArrayList();
 
     public ConversationHitInfo() {
-        this((String) null);
+        this(null);
     }
 
     public ConversationHitInfo(String id) {

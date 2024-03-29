@@ -6,11 +6,8 @@
 package com.zimbra.cs.gal;
 
 import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.soap.Element;
-import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.extension.ExtensionUtil;
 import com.zimbra.cs.gal.GalGroup.GroupInfo;
 

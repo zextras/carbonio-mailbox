@@ -33,7 +33,7 @@ public class StatsInfo {
      */
     @SuppressWarnings("unused")
     private StatsInfo() {
-        this((String) null, (StatsValues) null);
+        this(null, null);
     }
 
     public StatsInfo(String name, StatsValues values) {

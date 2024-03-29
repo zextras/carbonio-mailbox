@@ -443,8 +443,7 @@ public class SendInviteReply extends CalendarRequest {
         else apptFolderId = Mailbox.ID_FOLDER_CALENDAR;
         MailSendQueue sendQueue = new MailSendQueue();
         try {
-          if (stat != null
-              && IcalXmlStrMap.PARTSTAT_DECLINED.equals(stat)
+          if (IcalXmlStrMap.PARTSTAT_DECLINED.equals(stat)
               && !CalendarMailSender.VERB_DECLINE.equals(verb)) {
             sendCalendarMessage(
                 zsc,

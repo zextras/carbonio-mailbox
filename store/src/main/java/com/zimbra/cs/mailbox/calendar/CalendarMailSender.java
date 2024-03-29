@@ -58,6 +58,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -127,7 +128,7 @@ public class CalendarMailSender {
   protected static Map<String, Verb> sVerbs;
 
   static {
-    sVerbs = new HashMap<String, Verb>();
+    sVerbs = new HashMap<>();
     sVerbs.put("accept", VERB_ACCEPT);
     sVerbs.put("decline", VERB_DECLINE);
     sVerbs.put("tentative", VERB_TENTATIVE);
@@ -136,7 +137,7 @@ public class CalendarMailSender {
   private static Map<Verb, MsgKey> sVerbMsgKeys;
 
   static {
-    sVerbMsgKeys = new HashMap<Verb, MsgKey>();
+    sVerbMsgKeys = new HashMap<>();
     sVerbMsgKeys.put(VERB_ACCEPT, MsgKey.calendarReplySubjectAccept);
     sVerbMsgKeys.put(VERB_DECLINE, MsgKey.calendarReplySubjectDecline);
     sVerbMsgKeys.put(VERB_TENTATIVE, MsgKey.calendarReplySubjectTentative);
@@ -361,7 +362,7 @@ public class CalendarMailSender {
       replyText.append(sigText).append("\r\n");
     }
 
-    List<Address> toList = new ArrayList<Address>(1);
+    List<Address> toList = new ArrayList<>(1);
     if (organizerAddress != null) toList.add(organizerAddress);
     Address senderAddr = null;
     if (onBehalfOf) senderAddr = authIdentity.getFriendlyEmailAddress();
@@ -424,7 +425,7 @@ public class CalendarMailSender {
    */
   public static List<Address> toListFromAttendees(List<ZAttendee> list)
       throws MailServiceException {
-    List<Address> toList = new ArrayList<Address>(list.size());
+    List<Address> toList = new ArrayList<>(list.size());
     for (ZAttendee attendee : list) {
       toList.add(attendee.getFriendlyAddress());
     }
@@ -543,7 +544,7 @@ public class CalendarMailSender {
         descHtml,
         uid,
         cal,
-        (List<Attach>) null,
+        null,
         replyToSender);
   }
 
@@ -781,7 +782,7 @@ public class CalendarMailSender {
 
   public static MimeMessage createForwardedInviteMessage(
       MimeMessage mmOrig, String origSenderEmail, String forwarderEmail, String[] forwardTo) {
-    List<Address> rcpts = new ArrayList<Address>();
+    List<Address> rcpts = new ArrayList<>();
     for (String to : forwardTo) {
       try {
         rcpts.add(new JavaMailInternetAddress(to));
@@ -824,7 +825,7 @@ public class CalendarMailSender {
       String[] forwardTo)
       throws ServiceException {
     if (invites == null || invites.isEmpty()) return null;
-    List<Address> rcpts = new ArrayList<Address>();
+    List<Address> rcpts = new ArrayList<>();
     for (String to : forwardTo) {
       try {
         rcpts.add(new JavaMailInternetAddress(to));
@@ -836,7 +837,7 @@ public class CalendarMailSender {
 
     String subject = L10nUtil.getMessage(MsgKey.calendarSubjectWithheld, lc);
     // Create filtered version of invites.
-    List<Invite> filteredInvs = new ArrayList<Invite>();
+    List<Invite> filteredInvs = new ArrayList<>();
     for (Invite inv : invites) {
       Invite filtered = inv.newCopy();
       filtered.clearAlarms();
@@ -946,7 +947,7 @@ public class CalendarMailSender {
     Address fromAddr = fromIdentity.getFriendlyEmailAddress();
     Address senderAddr = null;
     if (onBehalfOf) senderAddr = AccountUtil.getFriendlyEmailAddress(senderAccount);
-    List<Address> toAddrs = new ArrayList<Address>(1);
+    List<Address> toAddrs = new ArrayList<>(1);
     toAddrs.add(toAddr);
     return createCalendarMessage(
         senderAccount,
@@ -1104,19 +1105,16 @@ public class CalendarMailSender {
     // Send in a separate thread to avoid nested transaction error when saving a copy to Sent
     // folder.
     Runnable r =
-        new Runnable() {
-          @Override
-          public void run() {
-            try {
-              MailSender mailSender = getCalendarMailSender(mbox).setSendPartial(true);
-              mailSender.sendMimeMessage(
-                  octxt, mbox, true, mm, null, origMsgId, MailSender.MSGTYPE_REPLY, null, false);
-            } catch (ServiceException e) {
-              ZimbraLog.calendar.warn(
-                  "Ignoring error while sending permission-denied auto reply", e);
-            } catch (OutOfMemoryError e) {
-              Zimbra.halt("OutOfMemoryError while sending permission-denied auto reply", e);
-            }
+        () -> {
+          try {
+            MailSender mailSender = getCalendarMailSender(mbox).setSendPartial(true);
+            mailSender.sendMimeMessage(
+                octxt, mbox, true, mm, null, origMsgId, MailSender.MSGTYPE_REPLY, null, false);
+          } catch (ServiceException e) {
+            ZimbraLog.calendar.warn(
+                "Ignoring error while sending permission-denied auto reply", e);
+          } catch (OutOfMemoryError e) {
+            Zimbra.halt("OutOfMemoryError while sending permission-denied auto reply", e);
           }
         };
     Thread senderThread = new Thread(r, "CalendarPermDeniedReplySender");
@@ -1132,25 +1130,22 @@ public class CalendarMailSender {
     // Send in a separate thread to avoid nested transaction error when saving a copy to Sent
     // folder.
     Runnable r =
-        new Runnable() {
-          @Override
-          public void run() {
-            try {
-              MailSender sender =
-                  getCalendarMailSender(mbox)
-                      .setSaveToSent(true)
-                      .setOriginalMessageId(origMsgId)
-                      .setReplyType(MailSender.MSGTYPE_REPLY)
-                      .setSendPartial(true);
-              sender.setRedirectMode(
-                  true); // Preserve original From and Sender to avoid confusing the delegate user.
-              sender.sendMimeMessage(octxt, mbox, mm);
-            } catch (ServiceException e) {
-              ZimbraLog.calendar.warn(
-                  "Ignoring error while sending permission-denied auto reply", e);
-            } catch (OutOfMemoryError e) {
-              Zimbra.halt("OutOfMemoryError while sending permission-denied auto reply", e);
-            }
+        () -> {
+          try {
+            MailSender sender =
+                getCalendarMailSender(mbox)
+                    .setSaveToSent(true)
+                    .setOriginalMessageId(origMsgId)
+                    .setReplyType(MailSender.MSGTYPE_REPLY)
+                    .setSendPartial(true);
+            sender.setRedirectMode(
+                true); // Preserve original From and Sender to avoid confusing the delegate user.
+            sender.sendMimeMessage(octxt, mbox, mm);
+          } catch (ServiceException e) {
+            ZimbraLog.calendar.warn(
+                "Ignoring error while sending permission-denied auto reply", e);
+          } catch (OutOfMemoryError e) {
+            Zimbra.halt("OutOfMemoryError while sending permission-denied auto reply", e);
           }
         };
     Thread senderThread = new Thread(r, "CalendarInviteForwardSender");
@@ -1468,7 +1463,7 @@ public class CalendarMailSender {
         MimeConstants.P_CHARSET_UTF8);
     mm.setSentDate(new Date());
     String postmaster = senderAcct.getAttr(Provisioning.A_zimbraNewMailNotificationFrom);
-    Map<String, String> vars = new HashMap<String, String>();
+    Map<String, String> vars = new HashMap<>();
     vars.put("RECIPIENT_DOMAIN", senderAcct.getDomainName());
     postmaster = StringUtil.fillTemplate(postmaster, vars);
     mm.setSender(new JavaMailInternetAddress(postmaster));
@@ -1572,27 +1567,24 @@ public class CalendarMailSender {
     // Send in a separate thread to avoid nested transaction error when saving a copy to Sent
     // folder.
     Runnable r =
-        new Runnable() {
-          @Override
-          public void run() {
-            try {
-              MailSender mailSender = getCalendarMailSender(mbox).setSendPartial(true);
-              mailSender.sendMimeMessage(
-                  octxt,
-                  mbox,
-                  saveToSent,
-                  mm,
-                  null,
-                  new ItemId(mbox, invId),
-                  replyType,
-                  null,
-                  false);
-            } catch (ServiceException e) {
-              ZimbraLog.calendar.warn("Ignoring error while sending auto accept/decline reply", e);
-            } catch (OutOfMemoryError e) {
-              Zimbra.halt(
-                  "OutOfMemoryError while sending calendar resource auto accept/decline reply", e);
-            }
+        () -> {
+          try {
+            MailSender mailSender = getCalendarMailSender(mbox).setSendPartial(true);
+            mailSender.sendMimeMessage(
+                octxt,
+                mbox,
+                saveToSent,
+                mm,
+                null,
+                new ItemId(mbox, invId),
+                replyType,
+                null,
+                false);
+          } catch (ServiceException e) {
+            ZimbraLog.calendar.warn("Ignoring error while sending auto accept/decline reply", e);
+          } catch (OutOfMemoryError e) {
+            Zimbra.halt(
+                "OutOfMemoryError while sending calendar resource auto accept/decline reply", e);
           }
         };
     Thread senderThread = new Thread(r, "CalendarAutoAcceptDeclineReplySender");
@@ -1662,7 +1654,7 @@ public class CalendarMailSender {
       synchronized (this) {
         if (mBuf == null) {
           ByteArrayOutputStream buf = new ByteArrayOutputStream();
-          OutputStreamWriter wout = new OutputStreamWriter(buf, MimeConstants.P_CHARSET_UTF8);
+          OutputStreamWriter wout = new OutputStreamWriter(buf, StandardCharsets.UTF_8);
           String text = HEAD + mText + TAIL;
           wout.write(text);
           wout.flush();

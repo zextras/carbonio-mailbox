@@ -14,7 +14,7 @@ import com.zimbra.cs.service.formatter.ArchiveFormatter.ArchiveInputEntry;
 import com.zimbra.cs.service.formatter.ArchiveFormatter.ArchiveInputStream;
 
 public class TarArchiveInputStream implements ArchiveInputStream {
-    public class TarArchiveInputEntry implements ArchiveInputEntry {
+    public static class TarArchiveInputEntry implements ArchiveInputEntry {
         private TarEntry entry;
 
         public TarArchiveInputEntry(TarInputStream is) throws IOException {

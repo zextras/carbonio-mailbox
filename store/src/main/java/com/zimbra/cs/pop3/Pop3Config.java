@@ -6,7 +6,6 @@
 package com.zimbra.cs.pop3;
 
 import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.server.ServerConfig;

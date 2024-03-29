@@ -9,13 +9,13 @@ import org.w3c.dom.Element;
 
 public interface ZimletInterface {
 
-    public void setZimletContext(ZimletContextInterface zimletContext);
-    public void setZimlet(ZimletDesc zimlet);
-    public void setZimletConfig(ZimletConfigInfo zimletConfig);
-    public void setZimletHandlerConfig(Element zimletHandlerConfig);
+    void setZimletContext(ZimletContextInterface zimletContext);
+    void setZimlet(ZimletDesc zimlet);
+    void setZimletConfig(ZimletConfigInfo zimletConfig);
+    void setZimletHandlerConfig(Element zimletHandlerConfig);
 
-    public ZimletContextInterface getZimletContext();
-    public ZimletDesc getZimlet();
-    public ZimletConfigInfo getZimletConfig();
-    public Element getZimletHandlerConfig();
+    ZimletContextInterface getZimletContext();
+    ZimletDesc getZimlet();
+    ZimletConfigInfo getZimletConfig();
+    Element getZimletHandlerConfig();
 }

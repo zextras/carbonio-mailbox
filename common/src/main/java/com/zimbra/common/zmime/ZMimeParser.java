@@ -112,7 +112,7 @@ class ZMimeParser {
         private StringBuilder boundary;
 
         BoundaryChecker(List<String> boundaries, long lineStart, LineEnding lastEnding) {
-            boundaryCandidates = new LinkedHashMap<String, Integer>(boundaries.size());
+            boundaryCandidates = new LinkedHashMap<>(boundaries.size());
             for (String bnd : boundaries) {
                 if (bnd.isEmpty()) {
                     // "" means no "boundary" param on the Content-Type
@@ -148,23 +148,22 @@ class ZMimeParser {
                 Map.Entry<String, Integer> bndData = it.next();
                 String bnd = bndData.getKey();
 
-                if (bnd.isEmpty()) {
-                    // "" means unspecified boundary, which matches anything starting with 2 dashes
-                    continue;
-                } else if (index >= bnd.length()) {
-                    // end boundaries are represented by exactly 2 dashes after a boundary string
-                    int trailers = bndData.getValue();
-                    if (c == '-' && trailers < 2) {
-                        bndData.setValue(trailers + 1);
-                    } else if (c != ' ' && c != '\t') {
-                        it.remove();
-                    }
-                } else {
-                    // FIXME: comparison probably wrong for high-bit-set bytes
-                    if (bnd.charAt(index) != c) {
-                        it.remove();
-                    } else if (index == bnd.length() - 1) {
-                        bndData.setValue(0);
+                if (!bnd.isEmpty()) {
+                    if (index >= bnd.length()) {
+                        // end boundaries are represented by exactly 2 dashes after a boundary string
+                        int trailers = bndData.getValue();
+                        if (c == '-' && trailers < 2) {
+                            bndData.setValue(trailers + 1);
+                        } else if (c != ' ' && c != '\t') {
+                            it.remove();
+                        }
+                    } else {
+                        // FIXME: comparison probably wrong for high-bit-set bytes
+                        if (bnd.charAt(index) != c) {
+                            it.remove();
+                        } else if (index == bnd.length() - 1) {
+                            bndData.setValue(0);
+                        }
                     }
                 }
             }
@@ -274,7 +273,7 @@ class ZMimeParser {
     private boolean checkBoundary = false;
 
     /** The stack of active message parts, outermost to innermost. */
-    private final List<PartInfo> parts = new ArrayList<PartInfo>(5);
+    private final List<PartInfo> parts = new ArrayList<>(5);
 
     /** The parser's current position in the message (in bytes). */
     private long position;
@@ -618,7 +617,7 @@ class ZMimeParser {
      *  enclosing parts.  Sets {@link #boundaries} appropriately, or to
      *  {@code null} if there are no valid boundaries. */
     void recalculateBoundaries() {
-        boundaries = new ArrayList<String>(parts.size());
+        boundaries = new ArrayList<>(parts.size());
         for (PartInfo pinfo : parts) {
             if (pinfo.boundary != null) {
                 boundaries.add(pinfo.boundary);

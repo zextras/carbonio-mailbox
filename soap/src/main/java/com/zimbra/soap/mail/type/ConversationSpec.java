@@ -74,7 +74,7 @@ public class ConversationSpec {
      */
     @SuppressWarnings("unused")
     private ConversationSpec() {
-        this((String) null);
+        this(null);
     }
 
     public ConversationSpec(String id) {

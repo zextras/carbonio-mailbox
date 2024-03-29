@@ -48,7 +48,7 @@ public class AddDistributionListMemberRequest {
     private List <String> members = Lists.newArrayList();
 
     public AddDistributionListMemberRequest() {
-        this((String) null, (Collection<String>) null);
+        this(null, null);
     }
 
     public AddDistributionListMemberRequest(String id, Collection<String> members) {

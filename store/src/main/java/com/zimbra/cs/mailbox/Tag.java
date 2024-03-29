@@ -62,7 +62,6 @@ public class Tag extends MailItem implements ZimbraTag {
                                 newTag.setIsImapVisible(true);
                             }
                             tlist.add(newTag);
-                            continue;
                         } catch (ServiceException e) {
                             if (!e.getCode().equals(MailServiceException.ALREADY_EXISTS)) {
                                 throw e;
@@ -278,7 +277,7 @@ public class Tag extends MailItem implements ZimbraTag {
         // decrement the in-memory unread count of each message.  each message will
         // then implicitly decrement the unread count for its conversation, folder
         // and tags.
-        List<Integer> targets = new ArrayList<Integer>();
+        List<Integer> targets = new ArrayList<>();
         int delta = unread ? 1 : -1;
         for (UnderlyingData data : DbTag.getUnreadMessages(this)) {
             Message msg = mMailbox.getMessage(data);

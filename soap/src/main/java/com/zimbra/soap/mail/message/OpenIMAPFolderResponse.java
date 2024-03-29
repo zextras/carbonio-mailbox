@@ -27,7 +27,7 @@ public class OpenIMAPFolderResponse {
      */
     @XmlElementWrapper(name=MailConstants.E_FOLDER)
     @XmlElement(name=MailConstants.E_MSG, /* m */ required=true)
-    private List<ImapMessageInfo> messages = new LinkedList<ImapMessageInfo>();
+    private List<ImapMessageInfo> messages = new LinkedList<>();
 
     /**
      * @zm-api-field-description whether there are more imap messages remaining in the folder

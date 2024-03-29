@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
-import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -24,7 +23,7 @@ public class GalContactInfo extends AdminAttrsImpl {
     private String id;
 
     public GalContactInfo() {
-        this((String) null);
+        this(null);
     }
 
     public GalContactInfo(String id) { this.id = id; }

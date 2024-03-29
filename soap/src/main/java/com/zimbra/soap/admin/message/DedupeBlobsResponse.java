@@ -20,7 +20,7 @@ import com.zimbra.soap.admin.type.VolumeIdAndProgress;
 public class DedupeBlobsResponse {
 
     @XmlEnum
-    public static enum DedupStatus {
+    public enum DedupStatus {
         running,
         stopped
     }

@@ -8,13 +8,11 @@ package com.zimbra.soap.mail.type;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-import com.zimbra.common.soap.MailConstants;
-
 @XmlAccessorType(XmlAccessType.NONE)
 public class DismissAppointmentAlarm extends DismissAlarm {
 
     public DismissAppointmentAlarm() {
-        this((String) null, -1L);
+        this(null, -1L);
     }
 
     public DismissAppointmentAlarm(String id, long dismissedAt) {

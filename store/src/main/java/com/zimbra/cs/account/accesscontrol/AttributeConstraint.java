@@ -56,7 +56,7 @@ public class AttributeConstraint {
 
     private void addValue(String value) {
         if (mValues == null)
-            mValues = new HashSet<String>();
+            mValues = new HashSet<>();
         mValues.add(value);
     }
 
@@ -455,31 +455,28 @@ public class AttributeConstraint {
 
         switch (at) {
         case TYPE_BOOLEAN:
-            return new AttributeConstraint(attrName);
+            case TYPE_PHONE:
+            case TYPE_STRING:
+            case TYPE_ASTRING:
+            case TYPE_OSTRING:
+            case TYPE_CSTRING:
+            case TYPE_REGEX:
+            case TYPE_BINARY:
+            case TYPE_CERTIFICATE:
+            case TYPE_EMAIL:
+            case TYPE_EMAILP:
+            case TYPE_CS_EMAILP:
+            case TYPE_ENUM:
+            case TYPE_ID:
+                return new AttributeConstraint(attrName);
         case TYPE_DURATION:
             return new DurationConstraint(attrName);
         case TYPE_GENTIME:
             return new GentimeConstraint(attrName);
-        case TYPE_EMAIL:
-        case TYPE_EMAILP:
-        case TYPE_CS_EMAILP:
-        case TYPE_ENUM:
-        case TYPE_ID:
-            return new AttributeConstraint(attrName);
-        case TYPE_INTEGER:
-            return new IntegerConstraint(attrName);
-        case TYPE_PORT:
-            return new IntegerConstraint(attrName);
-        case TYPE_PHONE:
-        case TYPE_STRING:
-        case TYPE_ASTRING:
-        case TYPE_OSTRING:
-        case TYPE_CSTRING:
-        case TYPE_REGEX:
-        case TYPE_BINARY:
-        case TYPE_CERTIFICATE:
-            return new AttributeConstraint(attrName);
-        case TYPE_LONG:
+            case TYPE_INTEGER:
+            case TYPE_PORT:
+                return new IntegerConstraint(attrName);
+            case TYPE_LONG:
             return new LongConstraint(attrName);
         }
 
@@ -516,7 +513,7 @@ public class AttributeConstraint {
     }
 
     private static Map<String, AttributeConstraint> loadConstraints(Entry constraintEntry) throws ServiceException {
-        Map<String, AttributeConstraint> constraints = new HashMap<String, AttributeConstraint>();
+        Map<String, AttributeConstraint> constraints = new HashMap<>();
 
         Set<String> cstrnts = constraintEntry.getMultiAttrSet(Provisioning.A_zimbraConstraint);
 
@@ -559,11 +556,11 @@ public class AttributeConstraint {
 
         // curConstraints now contains the new values
         // update LDAP
-        Map<String, Object> newAttrValues = new HashMap<String, Object>();
+        Map<String, Object> newAttrValues = new HashMap<>();
         if (curConstraints.size() == 0)
             newAttrValues.put(Provisioning.A_zimbraConstraint, null);
         else {
-            List<String> newValues = new ArrayList<String>();
+            List<String> newValues = new ArrayList<>();
             for (AttributeConstraint at : curConstraints.values()) {
                 newValues.add(at.toString());
             }
@@ -618,7 +615,7 @@ public class AttributeConstraint {
             sb.append(value.toString());
 
 
-        System.out.println("Setting " + attrName + " to " + "[" + sb.toString() + "]" + " => " + (violated?"denied":"allowed"));
+        System.out.println("Setting " + attrName + " to " + "[" + sb + "]" + " => " + (violated?"denied":"allowed"));
         if (violated != expected)
             System.out.println("failed\n");
     }
@@ -638,7 +635,7 @@ public class AttributeConstraint {
         Cos cos = prov.getCOS(acct);
         cos.unsetConstraint();
 
-        Map<String, Object> cosConstraints = new HashMap<String,Object>();
+        Map<String, Object> cosConstraints = new HashMap<>();
 
         // integer
         cos.addConstraint("zimbraPasswordMinLength:min=6:max=10:values=8,9", cosConstraints);

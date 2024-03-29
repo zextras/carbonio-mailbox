@@ -19,7 +19,7 @@ import com.zimbra.common.soap.AdminConstants;
 public class CosSelector {
 
     @XmlEnum
-    public static enum CosBy {
+    public enum CosBy {
         // case must match protocol
         id, name;
 

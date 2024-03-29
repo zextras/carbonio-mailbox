@@ -80,12 +80,12 @@ public class GalUtil {
         }
 
         String query = null;
-        Map<String, String> vars = new HashMap<String, String>();
+        Map<String, String> vars = new HashMap<>();
 
         ZLdapFilterFactory filterFactory = ZLdapFilterFactory.getInstance();
 
         if (tokenize != null) {
-            String tokens[] = key.split("\\s+");
+            String[] tokens = key.split("\\s+");
             if (tokens.length > 1) {
                 StringBuilder q;
                 if (GalConstants.TOKENIZE_KEY_AND.equals(tokenize)) {

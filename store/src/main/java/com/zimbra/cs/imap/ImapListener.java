@@ -15,7 +15,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.mailbox.BaseFolderInfo;
@@ -48,7 +47,7 @@ public abstract class ImapListener extends Session {
     protected ImapFolderData mFolder;
     protected ImapHandler handler;
     private final ImapMailboxStore imapMboxStore;
-    private final Map<Integer, Integer> renumberCount = new ConcurrentHashMap<Integer, Integer>();
+    private final Map<Integer, Integer> renumberCount = new ConcurrentHashMap<>();
 
     /** Number of queued notifications beyond which we deserialize the session,
      *  apply the changes, and reserialize the session.  This both constrains
@@ -72,9 +71,9 @@ public abstract class ImapListener extends Session {
                 return;
             }
             if (item.getImapUid() > 0) {
-                (numbered == null ? numbered = new ArrayList<ImapMessage>() : numbered).add(i4item);
+                (numbered == null ? numbered = new ArrayList<>() : numbered).add(i4item);
             } else {
-                (unnumbered == null ? unnumbered = new ArrayList<ImapMessage>() : unnumbered).add(i4item);
+                (unnumbered == null ? unnumbered = new ArrayList<>() : unnumbered).add(i4item);
             }
         }
 
@@ -229,7 +228,7 @@ public abstract class ImapListener extends Session {
 
             resetRenumber();
             lastChangeId = 0;
-            SortedSet<Integer> changeIds = new TreeSet<Integer>(queuedChanges.keySet());
+            SortedSet<Integer> changeIds = new TreeSet<>(queuedChanges.keySet());
             for(Integer changeId : changeIds) {
                 PendingModifications mods = queuedChanges.get(changeId);
                 notifyPendingChanges(mods, changeId, null);
@@ -313,16 +312,13 @@ public abstract class ImapListener extends Session {
 
                 final short defaultFlags = (short) (getFolderId() != Mailbox.ID_FOLDER_SPAM ? 0 :
                     ImapMessage.FLAG_SPAM | ImapMessage.FLAG_JUNKRECORDED);
-                final List<Integer> sflags = new ArrayList<Integer>();
-                i4folder.traverse(new Function<ImapMessage, Void>() {
-                    @Override
-                    public Void apply(ImapMessage i4msg) {
-                        if ((i4msg.sflags & ~ImapMessage.FLAG_IS_CONTACT) != defaultFlags) {
-                            sflags.add(i4msg.imapUid);
-                            sflags.add((int) i4msg.sflags);
-                        }
-                        return null;
-                    }
+                final List<Integer> sflags = new ArrayList<>();
+                i4folder.traverse(i4msg -> {
+                  if ((i4msg.sflags & ~ImapMessage.FLAG_IS_CONTACT) != defaultFlags) {
+                    sflags.add(i4msg.imapUid);
+                    sflags.add((int) i4msg.sflags);
+                  }
+                  return null;
                 });
 
                 if (!sflags.isEmpty()) {
@@ -448,24 +444,24 @@ public abstract class ImapListener extends Session {
     private void handleDelete(int changeId, int id, Change chg) {
         ZimbraLog.imap.debug("Handling a delete notification. Change id %d, item id %d", changeId, id);
         MailItem.Type type = (MailItem.Type) chg.what;
-        if (id <= 0) {
-            return;
-        } else if (type == MailItem.Type.TAG) {
-            mFolder.handleTagDelete(changeId, id, chg);
-        } else if (id == folderId.id && mFolder instanceof ImapFolder) {
-            // Once the folder's gone, there's no point in keeping an IMAP Session listening on it around.
-            detach();
-            //set MailStore to NULL before closing connection to avoid serializing this session
-            mailbox = null;
+        if (id > 0) {
+            if (type == MailItem.Type.TAG) {
+                mFolder.handleTagDelete(changeId, id, chg);
+            } else if (id == folderId.id && mFolder instanceof ImapFolder) {
+                // Once the folder's gone, there's no point in keeping an IMAP Session listening on it around.
+                detach();
+                //set MailStore to NULL before closing connection to avoid serializing this session
+                mailbox = null;
 
-            // notify client that mailbox is deselected due to delete?
-            // RFC 2180 3.3: "The server MAY allow the DELETE/RENAME of a multi-accessed
-            //                mailbox, but disconnect all other clients who have the
-            //                mailbox accessed by sending a untagged BYE response."
-            handler.close();
-            handler = null;
-        } else if (ImapMessage.SUPPORTED_TYPES.contains(type)) {
-            mFolder.handleItemDelete(changeId, id, chg);
+                // notify client that mailbox is deselected due to delete?
+                // RFC 2180 3.3: "The server MAY allow the DELETE/RENAME of a multi-accessed
+                //                mailbox, but disconnect all other clients who have the
+                //                mailbox accessed by sending a untagged BYE response."
+                handler.close();
+                handler = null;
+            } else if (ImapMessage.SUPPORTED_TYPES.contains(type)) {
+                mFolder.handleItemDelete(changeId, id, chg);
+            }
         }
     }
 
@@ -504,7 +500,6 @@ public abstract class ImapListener extends Session {
                 }
             } catch (ServiceException e) {
                 ZimbraLog.imap.warn("error handling modified items for changeId %s", changeId, e);
-                return;
             }
         }
     }

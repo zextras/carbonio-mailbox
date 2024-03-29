@@ -48,7 +48,7 @@ public class CtagInfoCache {
   CtagInfoCache() {
     ZimbraMemcachedClient memcachedClient = MemcachedConnector.getClient();
     CtagInfoSerializer serializer = new CtagInfoSerializer();
-    mMemcachedLookup = new MemcachedMap<CalendarKey, CtagInfo>(memcachedClient, serializer);
+    mMemcachedLookup = new MemcachedMap<>(memcachedClient, serializer);
   }
 
   private static class CtagInfoSerializer implements MemcachedSerializer<CtagInfo> {
@@ -117,7 +117,7 @@ public class CtagInfoCache {
   }
 
   public Map<CalendarKey, CtagInfo> getMultiSerial(List<CalendarKey> keys) throws ServiceException {
-    Map<CalendarKey, CtagInfo> result = new HashMap<CalendarKey, CtagInfo>(keys.size());
+    Map<CalendarKey, CtagInfo> result = new HashMap<>(keys.size());
     for (CalendarKey key : keys) {
       CtagInfo value = get(key);
       result.put(key, value); // Null values are added too.
@@ -127,7 +127,7 @@ public class CtagInfoCache {
 
   public Map<CalendarKey, CtagInfo> getMulti(List<CalendarKey> keys) throws ServiceException {
     // entries to put back to cache
-    Map<CalendarKey, CtagInfo> toPut = new HashMap<CalendarKey, CtagInfo>(keys.size());
+    Map<CalendarKey, CtagInfo> toPut = new HashMap<>(keys.size());
 
     // Use multi-get from cache.
     Map<CalendarKey, CtagInfo> result = mMemcachedLookup.getMulti(keys);
@@ -204,7 +204,7 @@ public class CtagInfoCache {
   void purgeMailbox(Mailbox mbox) throws ServiceException {
     String accountId = mbox.getAccountId();
     List<Folder> folders = mbox.getCalendarFolders(null, SortBy.NONE);
-    List<CalendarKey> keys = new ArrayList<CalendarKey>(folders.size());
+    List<CalendarKey> keys = new ArrayList<>(folders.size());
     for (Folder folder : folders) {
       CalendarKey key = new CalendarKey(accountId, folder.getId());
       keys.add(key);
@@ -214,7 +214,7 @@ public class CtagInfoCache {
 
   void notifyCommittedChanges(PendingLocalModifications mods, int changeId) {
     int inboxFolder = Mailbox.ID_FOLDER_INBOX;
-    Set<CalendarKey> keysToInvalidate = new HashSet<CalendarKey>();
+    Set<CalendarKey> keysToInvalidate = new HashSet<>();
     if (mods.created != null) {
       for (Map.Entry<ModificationKey, BaseItemInfo> entry : mods.created.entrySet()) {
         BaseItemInfo item = entry.getValue();

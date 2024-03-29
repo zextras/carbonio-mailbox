@@ -83,7 +83,7 @@ public class UUEncodeConverter extends MimeVisitor {
                         String filename = FileUtil.trimFilename(sb.toString().trim());
                         if (c != -1 && filename.length() > 0) {
                             if (uufiles == null)
-                                uufiles = new ArrayList<UUDecodedFile>(3);
+                                uufiles = new ArrayList<>(3);
                             try {
                                 uufiles.add(new UUDecodedFile(is, filename, start));
                                 // check to make sure that the caller's OK with altering the message
@@ -141,15 +141,12 @@ public class UUEncodeConverter extends MimeVisitor {
             } finally {
                 ByteUtil.closeStream(isOrig);
             }
-        } catch (MessagingException e) {
-            ZimbraLog.extensions.warn("exception while uudecoding message part; skipping part", e);
-            return false;
-        } catch (IOException e) {
+        } catch (MessagingException | IOException e) {
             ZimbraLog.extensions.warn("exception while uudecoding message part; skipping part", e);
             return false;
         }
 
-        // replace the top-level part with a new multipart/related
+      // replace the top-level part with a new multipart/related
         mm.setContent(mmp);
         mm.setHeader("Content-Type", mmp.getContentType() + "; generated=true");
         return true;

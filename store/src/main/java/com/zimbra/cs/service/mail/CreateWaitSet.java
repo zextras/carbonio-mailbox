@@ -74,7 +74,7 @@ public class CreateWaitSet extends MailDocumentHandler {
         List<WaitSetAccount> add = WaitSetRequest.parseAddUpdateAccounts(zsc, request.getAccounts(), defaultInterests);
 
         // workaround for 27480: load the mailboxes NOW, before we grab the waitset lock
-        List<Mailbox> referencedMailboxes = new ArrayList<Mailbox>();
+        List<Mailbox> referencedMailboxes = new ArrayList<>();
         for (WaitSetAccount acct : add) {
             try {
                 MailboxManager.FetchMode fetchMode = MailboxManager.FetchMode.AUTOCREATE;

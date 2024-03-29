@@ -277,7 +277,7 @@ public class PseudoTarget {
     Config config = prov.getConfig();
 
     String zimbraId = PseudoZimbraId.getPseudoZimbraId();
-    Map<String, Object> attrMap = new HashMap<String, Object>();
+    Map<String, Object> attrMap = new HashMap<>();
     attrMap.put(Provisioning.A_zimbraId, zimbraId);
 
     Domain pseudoDomain = null;

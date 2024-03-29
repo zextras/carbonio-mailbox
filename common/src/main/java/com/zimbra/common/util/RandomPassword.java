@@ -110,12 +110,12 @@ public class RandomPassword {
     }
 
     private static void usage() {
-        System.out.println("");
+        System.out.println();
         System.out.println("RandomPassword [-l] <minLength> <maxLength>");
         System.exit(1);
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         CommandLineParser parser = new GnuParser();
         Options options = new Options();
         options.addOption("l", "localpart", false, "generated string does not contain dot(.)");
@@ -148,8 +148,8 @@ public class RandomPassword {
                 usage();
             }
             try {
-                minLength = Integer.valueOf(args[0]).intValue();
-                maxLength = Integer.valueOf(args[1]).intValue();
+                minLength = Integer.valueOf(args[0]);
+                maxLength = Integer.valueOf(args[1]);
             } catch (Exception e) {
                 System.err.println(e);
                 e.printStackTrace();

@@ -57,7 +57,7 @@ public abstract class LdapMimeTypeBase extends Entry implements LdapEntry, MimeT
 
     public Set<String> getFileExtensions() {
         String[] extensions = super.getMultiAttr(Provisioning.A_zimbraMimeFileExtension);
-        Set<String> extSet = new TreeSet<String>();
+        Set<String> extSet = new TreeSet<>();
         for (String ext : extensions) {
             if (ext != null) {
                 extSet.add(ext.toLowerCase());

@@ -89,17 +89,17 @@ public final class BEncoding {
         char c = buffer[offset.offset++];
         switch (c) {
             case 'd':
-                Map<String, Object> map = new HashMap<String, Object>();
+                Map<String, Object> map = new HashMap<>();
                 while ((key = decode(buffer, offset)) != null) {
                     if ((value = decode(buffer, offset)) == null) {
-                        throw new BEncodingException("missing dictionary value for key " + key.toString());
+                        throw new BEncodingException("missing dictionary value for key " + key);
                     }
                     map.put(key.toString(), value);
                 }
                 return map;
 
             case 'l':
-                List<Object> list = new ArrayList<Object>();
+                List<Object> list = new ArrayList<>();
                 while ((key = decode(buffer, offset)) != null) {
                     list.add(key);
                 }
@@ -109,7 +109,7 @@ public final class BEncoding {
                 return null;
 
             case 'i':
-                return Long.valueOf(readLong(buffer, offset, 'e'));
+                return readLong(buffer, offset, 'e');
 
             default:
                 offset.offset--;

@@ -67,11 +67,11 @@ public class SmtpInject {
         System.exit((errmsg == null) ? 0 : 1);
     }
 
-    private static CommandLine parseArgs(String args[]) {
+    private static CommandLine parseArgs(String[] args) {
         StringBuffer gotCL = new StringBuffer("cmdline: ");
-        for (int i = 0; i < args.length; i++) {
-            gotCL.append("'").append(args[i]).append("' ");
-        }
+      for (String arg : args) {
+        gotCL.append("'").append(arg).append("' ");
+      }
         //mLog.info(gotCL);
 
         CommandLineParser parser = new GnuParser();

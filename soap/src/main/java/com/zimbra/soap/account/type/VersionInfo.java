@@ -48,7 +48,7 @@ public class VersionInfo {
      */
     @SuppressWarnings("unused")
     private VersionInfo() {
-        this((String) null, (String) null, (String) null, (String) null);
+        this(null, null, null, null);
     }
 
     public VersionInfo(String fullVersion, String release,

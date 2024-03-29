@@ -25,8 +25,8 @@ import com.zimbra.soap.mail.type.Grant;
 import com.zimbra.soap.mail.type.Mountpoint;
 import com.zimbra.soap.mail.type.RetentionPolicy;
 import com.zimbra.soap.mail.type.SearchFolder;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +59,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
 
   public static final String PERM_WRITE = "w";
 
-  private ZFolder.Color mColor;
+  private Color mColor;
   private final String mRgb;
   private final String mId;
   private final String mUuid;
@@ -147,21 +147,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     public static final Color GRAY = new Color("gray", 8);
     public static final Color ORANGE = new Color("orange", 9);
 
-    private static final Map<String, Color> colorMap =
-        new HashMap<String, Color>() {
-          {
-            put("defaultColor", DEFAULTCOLOR);
-            put("blue", BLUE);
-            put("cyan", CYAN);
-            put("green", GREEN);
-            put("purple", PURPLE);
-            put("red", RED);
-            put("yellow", YELLOW);
-            put("pink", PINK);
-            put("gray", GRAY);
-            put("orange", ORANGE);
-          }
-        };
+    private static final Map<String, Color> colorMap = initializeColorMap();
 
     private final String mName;
     private final long mValue;
@@ -182,8 +168,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     public static Color fromString(String s) throws ServiceException {
       try {
         return fromInt(Integer.parseInt(s));
-      } catch (NumberFormatException e) {
-      } catch (ServiceException e) {
+      } catch (NumberFormatException | ServiceException ignored) {
       }
 
       if (colorMap.containsKey(s)) {
@@ -210,6 +195,21 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
       }
       throw ZClientException.CLIENT_ERROR(
           "invalid color: " + value + ", must be between 0 and " + (colorMap.size() - 1), null);
+    }
+
+    private static Map<String, Color> initializeColorMap() {
+      Map<String, Color> map = new HashMap<>();
+      map.put("defaultColor", DEFAULTCOLOR);
+      map.put("blue", BLUE);
+      map.put("cyan", CYAN);
+      map.put("green", GREEN);
+      map.put("purple", PURPLE);
+      map.put("red", RED);
+      map.put("yellow", YELLOW);
+      map.put("pink", PINK);
+      map.put("gray", GRAY);
+      map.put("orange", ORANGE);
+      return map;
     }
   }
 
@@ -289,8 +289,8 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     mDeletable = e.getAttributeBool(MailConstants.A_DELETABLE, true);
     mAbsolutePath = e.getAttribute(MailConstants.A_ABS_FOLDER_PATH, null);
 
-    mGrants = new ArrayList<ZGrant>();
-    mSubFolders = new ArrayList<ZFolder>();
+    mGrants = new ArrayList<>();
+    mSubFolders = new ArrayList<>();
 
     Element aclEl = e.getOptionalElement(MailConstants.E_ACL);
 
@@ -355,8 +355,8 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     mSize = SystemUtil.coalesce(f.getTotalSize(), 0L);
     if (f.isActiveSyncDisabled() != null) mActiveSyncDisabled = f.isActiveSyncDisabled();
 
-    mGrants = new ArrayList<ZGrant>();
-    mSubFolders = new ArrayList<ZFolder>();
+    mGrants = new ArrayList<>();
+    mSubFolders = new ArrayList<>();
 
     Acl acl = f.getAcl();
     if (acl != null) {
@@ -396,13 +396,13 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
   }
 
   synchronized void addChild(ZFolder folder) {
-    List<ZFolder> newSubs = new ArrayList<ZFolder>(mSubFolders);
+    List<ZFolder> newSubs = new ArrayList<>(mSubFolders);
     newSubs.add(folder);
     mSubFolders = newSubs;
   }
 
   synchronized void removeChild(ZFolder folder) {
-    List<ZFolder> newSubs = new ArrayList<ZFolder>(mSubFolders);
+    List<ZFolder> newSubs = new ArrayList<>(mSubFolders);
     newSubs.remove(folder);
     mSubFolders = newSubs;
   }
@@ -517,12 +517,12 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
 
   @Override
   public boolean isContactsFolder() {
-    return (ZFolder.View.contact == getDefaultView());
+    return (View.contact == getDefaultView());
   }
 
   @Override
   public boolean isChatsFolder() {
-    return (ZFolder.View.chat == getDefaultView());
+    return (View.chat == getDefaultView());
   }
 
   @Override
@@ -588,11 +588,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
   }
 
   public String getNameURLEncoded() {
-    try {
-      return URLEncoder.encode(mName, "utf-8").replace("+", "%20");
-    } catch (UnsupportedEncodingException e) {
-      return mName;
-    }
+    return URLEncoder.encode(mName, StandardCharsets.UTF_8).replace("+", "%20");
   }
 
   /**
@@ -638,12 +634,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     if (mParent == null) return ZMailbox.PATH_SEPARATOR;
     else {
       String pp = mParent.getPathURLEncoded();
-      String n = null;
-      try {
-        n = URLEncoder.encode(mName, "utf-8").replace("+", "%20");
-      } catch (UnsupportedEncodingException e) {
-        n = mName;
-      }
+      String n = URLEncoder.encode(mName, StandardCharsets.UTF_8).replace("+", "%20");
       return pp.length() == 1 ? (pp + n) : (pp + ZMailbox.PATH_SEPARATOR + n);
     }
   }
@@ -988,7 +979,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
   }
 
   public void clearGrants() throws ServiceException {
-    mMailbox.updateFolder(mId, null, null, null, null, null, new ArrayList<ZGrant>());
+    mMailbox.updateFolder(mId, null, null, null, null, null, new ArrayList<>());
   }
 
   public void empty(boolean recursive) throws ServiceException {
@@ -1015,7 +1006,7 @@ public class ZFolder implements ZItem, FolderStore, Comparable<Object>, ToZJSONO
     mMailbox.modifyFolderExcludeFreeBusy(mId, exclude);
   }
 
-  public void modifyColor(ZFolder.Color color) throws ServiceException {
+  public void modifyColor(Color color) throws ServiceException {
     mMailbox.modifyFolderColor(mId, color);
   }
 

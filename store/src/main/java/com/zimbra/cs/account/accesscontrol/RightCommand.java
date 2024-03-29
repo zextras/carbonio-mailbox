@@ -69,7 +69,7 @@ public class RightCommand {
      */
 
     public static class Grants {
-        Set<ACE> mACEs = new HashSet<ACE>();
+        Set<ACE> mACEs = new HashSet<>();
 
         Grants() {
         }
@@ -250,7 +250,7 @@ public class RightCommand {
     }
 
     public static class EffectiveAttr {
-        private static final Set<String> EMPTY_SET = new HashSet<String>();
+        private static final Set<String> EMPTY_SET = new HashSet<>();
 
         String mAttrName;
         Set<String> mDefault;
@@ -279,7 +279,7 @@ public class RightCommand {
 
     public static class EffectiveRights {
         private static final SortedMap<String, EffectiveAttr>
-            EMPTY_MAP = new TreeMap<String, EffectiveAttr>();
+            EMPTY_MAP = new TreeMap<>();
 
         String mTargetType;
         String mTargetId;
@@ -290,7 +290,7 @@ public class RightCommand {
         String mDigest;
 
         // preset
-        List<String> mPresetRights = new ArrayList<String>();       // sorted by right name
+        List<String> mPresetRights = new ArrayList<>();       // sorted by right name
 
         // setAttrs
         boolean mCanSetAllAttrs = false;
@@ -344,7 +344,7 @@ public class RightCommand {
             if (mCanSetAllAttrs)
                 rights.append("all;");
             else {
-                List<String> attrs = new ArrayList<String>(mCanSetAttrs.keySet());
+                List<String> attrs = new ArrayList<>(mCanSetAttrs.keySet());
                 rights.append(attrs.hashCode()).append(";");
             }
 
@@ -353,7 +353,7 @@ public class RightCommand {
             if (mCanGetAllAttrs)
                 rights.append("all;");
             else {
-                List<String> attrs = new ArrayList<String>(mCanGetAttrs.keySet());
+                List<String> attrs = new ArrayList<>(mCanGetAttrs.keySet());
                 rights.append(attrs.hashCode()).append(";");
             }
 
@@ -389,7 +389,7 @@ public class RightCommand {
             EffectiveRights er = new EffectiveRights();
 
             // preset rights
-            er.mPresetRights = new ArrayList<String>();
+            er.mPresetRights = new ArrayList<>();
             for (RightWithName eRight : eRights.getRights())
                 er.mPresetRights.add(eRight.getName());
 
@@ -417,7 +417,7 @@ public class RightCommand {
         private static TreeMap<String, EffectiveAttr> from_attrs(
                 EffectiveAttrsInfo eAttrs)
         throws ServiceException {
-            TreeMap<String, EffectiveAttr> attrs = new TreeMap<String, EffectiveAttr>();
+            TreeMap<String, EffectiveAttr> attrs = new TreeMap<>();
             AttributeManager am = AttributeManager.getInstance();
 
             for (EffectiveAttrInfo eAttr : eAttrs.getAttrs()) {
@@ -447,7 +447,7 @@ public class RightCommand {
 
         private static TreeMap<String, EffectiveAttr> fromXML_attrs(Element eAttrs)
         throws ServiceException {
-            TreeMap<String, EffectiveAttr> attrs = new TreeMap<String, EffectiveAttr>();
+            TreeMap<String, EffectiveAttr> attrs = new TreeMap<>();
 
             AttributeManager am = AttributeManager.getInstance();
 
@@ -464,7 +464,7 @@ public class RightCommand {
                 Element eDefault = eAttr.getOptionalElement(AdminConstants.E_DEFAULT);
                 Set<String> defaultValues = null;
                 if (eDefault != null) {
-                    defaultValues = new HashSet<String>();
+                    defaultValues = new HashSet<>();
                     for (Element eValue : eDefault.listElements(AdminConstants.E_VALUE)) {
                         defaultValues.add(eValue.getText());
                     }
@@ -577,13 +577,13 @@ public class RightCommand {
         public EffectiveRights effectiveRights() { return mRights; }
 
         private RightAggregation(String name, EffectiveRights rights) {
-            mEntries = new HashSet<String>();
+            mEntries = new HashSet<>();
             mEntries.add(name);
             mRights = rights;
         }
 
         private RightAggregation(Set<String> names, EffectiveRights rights) {
-            mEntries = new HashSet<String>();
+            mEntries = new HashSet<>();
             mEntries.addAll(names);
             mRights = rights;
         }
@@ -628,7 +628,7 @@ public class RightCommand {
         //      account-4, account-5:            rights B
         //      account-6:                       rights X, Y
         //
-        Set<RightAggregation> mEntries = new HashSet<RightAggregation>();
+        Set<RightAggregation> mEntries = new HashSet<>();
 
         public EffectiveRights all() { return mAll; }
         public Set<RightAggregation> entries() { return mEntries; }
@@ -707,7 +707,7 @@ public class RightCommand {
         // e.g. all accounts in domain-1, domain-2: rights A, B
         //      all accounts in domain-3:           rights B, C, D
         //
-        Set<RightAggregation> mDomains = new HashSet<RightAggregation>();
+        Set<RightAggregation> mDomains = new HashSet<>();
 
         public Set<RightAggregation> domains() { return mDomains; }
 
@@ -727,7 +727,7 @@ public class RightCommand {
         String mGranteeName;
 
         Map<TargetType, RightsByTargetType> mRightsByTargetType =
-            new HashMap<TargetType, RightsByTargetType>();
+            new HashMap<>();
 
         AllEffectiveRights(String granteeType, String granteeId, String granteeName) {
             mGranteeType = granteeType;
@@ -799,7 +799,7 @@ public class RightCommand {
                     DomainedRightsByTargetType drbtt =
                         (DomainedRightsByTargetType)rbtt;
                     for (InDomainInfo inDomInfo : target.getInDomainLists()) {
-                        Set<String> domains = new HashSet<String>();
+                        Set<String> domains = new HashSet<>();
                         for (NamedElement dom : inDomInfo.getDomains())
                             domains.add(dom.getName());
                         EffectiveRights er =
@@ -809,7 +809,7 @@ public class RightCommand {
                     }
                 }
                 for (RightsEntriesInfo eEntries : target.getEntriesLists()) {
-                    Set<String> entries = new HashSet<String>();
+                    Set<String> entries = new HashSet<>();
                     for (NamedElement eEntry : eEntries.getEntries())
                         entries.add(eEntry.getName());
                     EffectiveRights er = EffectiveRights.fromJaxb(eEntries.getRights());
@@ -916,7 +916,7 @@ public class RightCommand {
     throws ServiceException {
         verifyAccessManager();
 
-        List<Right> result = new ArrayList<Right>();
+        List<Right> result = new ArrayList<>();
 
         TargetType tt = (targetType==null)? null : TargetType.fromCode(targetType);
         RightClass rc = (rightClass==null)? RightClass.ADMIN : RightClass.fromString(rightClass);
@@ -1158,7 +1158,7 @@ public class RightCommand {
                 Grantee theGrantee = Grantee.getGrantee(granteeEntry, false);
                 granteeFilter = theGrantee.getIdAndGroupIds();
             } else {
-                granteeFilter = new HashSet<String>();
+                granteeFilter = new HashSet<>();
                 granteeFilter.add(granteeEntry.getId());
             }
         }
@@ -1184,7 +1184,7 @@ public class RightCommand {
 
             // we want all target types
             Set<TargetType> targetTypesToSearch =
-                new HashSet<TargetType>(Arrays.asList(TargetType.values()));
+                new HashSet<>(Arrays.asList(TargetType.values()));
 
             SearchGrants searchGrants = new SearchGrants(prov, targetTypesToSearch, granteeFilter);
             Set<GrantsOnTarget> grantsOnTargets = searchGrants.doSearch().getResults();
@@ -1413,7 +1413,7 @@ public class RightCommand {
             return;
         }
 
-        Set<ZimbraACE> aces = new HashSet<ZimbraACE>();
+        Set<ZimbraACE> aces = new HashSet<>();
         ZimbraACE ace = new ZimbraACE(granteeId, gt, r, rightModifier, secret);
         aces.add(ace);
 
@@ -1496,7 +1496,7 @@ public class RightCommand {
             validateGrant(authedAcct, tt, targetEntry, gt, granteeEntry, null, r, rightModifier, true);
         }
 
-        Set<ZimbraACE> aces = new HashSet<ZimbraACE>();
+        Set<ZimbraACE> aces = new HashSet<>();
         ZimbraACE ace = new ZimbraACE(granteeId, gt, r, rightModifier, null);
         aces.add(ace);
 
@@ -1525,7 +1525,7 @@ public class RightCommand {
         Set<TargetType> targetTypesToSearch = acc.targetTypesForGrantSearch();
 
         // search for grants granted to this grantee
-        Set<String> granteeIdsToSearch = new HashSet<String>();
+        Set<String> granteeIdsToSearch = new HashSet<>();
         granteeIdsToSearch.add(granteeId);
 
         SearchGrants searchGrants = new SearchGrants(prov, targetTypesToSearch, granteeIdsToSearch);
@@ -1534,7 +1534,7 @@ public class RightCommand {
         for (GrantsOnTarget grantsOnTarget : grantsOnTargets) {
             Entry targetEntry = grantsOnTarget.getTargetEntry();
 
-            Set<ZimbraACE> acesToRevoke = new HashSet<ZimbraACE>();
+            Set<ZimbraACE> acesToRevoke = new HashSet<>();
             for (ZimbraACE ace : grantsOnTarget.getAcl().getAllACEs()) {
                 if (granteeId.equals(ace.getGrantee())) {
                     acesToRevoke.add(ace);

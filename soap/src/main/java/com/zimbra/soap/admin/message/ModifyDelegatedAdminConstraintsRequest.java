@@ -62,7 +62,7 @@ public class ModifyDelegatedAdminConstraintsRequest {
      */
     @SuppressWarnings("unused")
     private ModifyDelegatedAdminConstraintsRequest() {
-        this((TargetType) null, (String) null, (String) null);
+        this(null, null, null);
     }
 
     public ModifyDelegatedAdminConstraintsRequest(

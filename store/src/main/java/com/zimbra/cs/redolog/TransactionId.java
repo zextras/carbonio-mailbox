@@ -56,7 +56,7 @@ public class TransactionId {
 
 	@Override
     public String toString() {
-		return Integer.toString(mTime) + "." + Integer.toString(mCounter);
+		return mTime + "." + mCounter;
 	}
 
 	public void serialize(RedoLogOutput out) throws IOException {

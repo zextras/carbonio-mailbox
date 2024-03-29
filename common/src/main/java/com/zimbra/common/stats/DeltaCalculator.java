@@ -74,7 +74,7 @@ implements Accumulator {
     }
     
     private void updateNames() {
-        ArrayList<String> names = new ArrayList<String>();
+        ArrayList<String> names = new ArrayList<>();
         if (mCountName != null) {
             names.add(mCountName);
         }
@@ -162,7 +162,7 @@ implements Accumulator {
             return Collections.emptyList();
         }
         
-        List<Object> data = new ArrayList<Object>(mNames.size());
+        List<Object> data = new ArrayList<>(mNames.size());
         synchronized (mCounter) {
             if (mCountName != null) {
                 data.add(getCount());

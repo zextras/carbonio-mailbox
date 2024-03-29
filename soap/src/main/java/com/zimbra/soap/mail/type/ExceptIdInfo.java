@@ -34,7 +34,7 @@ public class ExceptIdInfo {
      */
     @SuppressWarnings("unused")
     private ExceptIdInfo() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public ExceptIdInfo(String recurrenceId, String id) {

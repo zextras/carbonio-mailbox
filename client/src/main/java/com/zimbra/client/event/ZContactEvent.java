@@ -85,7 +85,7 @@ public class ZContactEvent implements ToZJSONObject {
     public Map<String, String> getAttrs(Map<String, String> defaultValue) throws ServiceException {
     	Map<String, String> attrs = null;
         for (KeyValuePair pair : mContactEl.listKeyValuePairs(MailConstants.E_ATTRIBUTE, MailConstants.A_ATTRIBUTE_NAME)) {
-            if (attrs == null) attrs = new HashMap<String, String>();
+            if (attrs == null) attrs = new HashMap<>();
             attrs.put(pair.getKey(), pair.getValue());
 
         }

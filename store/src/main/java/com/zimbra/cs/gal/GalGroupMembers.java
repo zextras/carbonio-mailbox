@@ -42,7 +42,7 @@ public class GalGroupMembers {
         protected abstract Set<String> getAllMembers() throws ServiceException;
 
         protected Set<String> createMembersSet() {
-            return new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+            return new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
         }
     }
 

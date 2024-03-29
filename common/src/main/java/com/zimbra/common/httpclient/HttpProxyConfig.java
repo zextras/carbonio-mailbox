@@ -52,9 +52,8 @@ public class HttpProxyConfig {
                     nhc.setPassword(((AuthProxy) proxy).getPassword());
                 }
                 return nhc;
-            case SOCKS: //socks proxy can be handled at socket factory level
             default:
-                continue;
+                break;
             }
         }
         return null;

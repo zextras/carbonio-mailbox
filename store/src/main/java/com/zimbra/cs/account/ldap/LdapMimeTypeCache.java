@@ -70,7 +70,7 @@ public class LdapMimeTypeCache implements IMimeTypeCache {
 	
 	private void refresh(LdapProv ldapProv) throws ServiceException {
 		mAllMimeTypes = Collections.unmodifiableList(ldapProv.getAllMimeTypesByQuery());
-		mMapByMimeType = new HashMap<String, List<MimeTypeInfo>>();
+		mMapByMimeType = new HashMap<>();
 		mLifetime = System.currentTimeMillis() + mRefreshTTL;
 	}
 }

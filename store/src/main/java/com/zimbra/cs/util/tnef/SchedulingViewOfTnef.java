@@ -65,8 +65,8 @@ public class SchedulingViewOfTnef extends Message {
     private ICALENDAR_TYPE icalType;
 
     public SchedulingViewOfTnef() {
-        List <Attr> attribs = new ArrayList <Attr>();
-        List <Attachment> attaches = new ArrayList <Attachment>();
+        List <Attr> attribs = new ArrayList<>();
+        List <Attachment> attaches = new ArrayList<>();
         setAttributes(attribs);
         setAttachments(attaches);
         messageClass = null;
@@ -411,7 +411,7 @@ public class SchedulingViewOfTnef extends Message {
         if (values == null) {
             return null;
         }
-        ArrayList <String> categories = new ArrayList <String> ();
+        ArrayList <String> categories = new ArrayList<>();
         for (MAPIValue val:values) {
             categories.add(val.toString());
         }
@@ -787,7 +787,7 @@ public class SchedulingViewOfTnef extends Message {
                 gid = new GlobalObjectId(ris);
             }
         } catch (IOException e) {
-            sLog.debug("Problem getting value of MAPI property " + mpi.toString() + " from TNEF", e);
+            sLog.debug("Problem getting value of MAPI property " + mpi + " from TNEF", e);
         }
         return gid;
     }
@@ -919,7 +919,7 @@ public class SchedulingViewOfTnef extends Message {
         }
         if (dateTaskCompleted != null) {
             taskStatus = TaskStatus.COMPLETE;
-            percentComplete = Integer.valueOf(100);
+            percentComplete = 100;
         } else {
             taskStatus = TaskStatus.NOT_STARTED;
             intVal = MapiPropertyId.PidLidTaskStatus.getIntegerValue(this);
@@ -934,7 +934,7 @@ public class SchedulingViewOfTnef extends Message {
             Double fractionComplete;
             fractionComplete = MapiPropertyId.PidLidPercentComplete.getDoubleValue(this);
             if ( (fractionComplete == null) || (fractionComplete < 0) || (fractionComplete > 1) ) {
-                percentComplete = Integer.valueOf(0);
+                percentComplete = 0;
             } else {
                 fractionComplete = fractionComplete * 100;
                 percentComplete = (int) Math.round(fractionComplete);

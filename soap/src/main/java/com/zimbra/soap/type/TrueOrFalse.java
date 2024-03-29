@@ -33,7 +33,7 @@ public enum TrueOrFalse {
 
     private String name;
 
-    private TrueOrFalse(String name) {
+    TrueOrFalse(String name) {
         this.name = name;
     }
 

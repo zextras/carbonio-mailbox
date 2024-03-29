@@ -788,7 +788,7 @@ public class UserServlet extends ZimbraServlet {
       HttpServletRequest req, HttpServletResponse resp, UserServletContext context, MailItem item)
       throws IOException, ServiceException, UserServletException {
     if (!(item instanceof Mountpoint)) return false;
-    if (context.format != null && context.format.equals("html")) return false;
+    if ("html".equals(context.format)) return false;
     Mountpoint mpt = (Mountpoint) item;
 
     StringBuilder uri =
@@ -827,7 +827,7 @@ public class UserServlet extends ZimbraServlet {
     return true;
   }
 
-  private static HashSet<String> ZIMBRA_DOC_CONTENT_TYPE = new HashSet<String>();
+  private static HashSet<String> ZIMBRA_DOC_CONTENT_TYPE = new HashSet<>();
 
   static {
     ZIMBRA_DOC_CONTENT_TYPE.add("application/x-doc");
@@ -868,9 +868,9 @@ public class UserServlet extends ZimbraServlet {
   public static byte[] getRemoteContent(AuthToken authToken, ItemId iid, Map<String, String> params)
       throws ServiceException {
     Account target = Provisioning.getInstance().get(AccountBy.id, iid.getAccountId(), authToken);
-    Map<String, String> pcopy = new HashMap<String, String>(params);
+    Map<String, String> pcopy = new HashMap<>(params);
     pcopy.put(QP_ID, iid.toString());
-    return getRemoteContent(authToken, target, (String) null, pcopy);
+    return getRemoteContent(authToken, target, null, pcopy);
   }
 
   public static byte[] getRemoteContent(
@@ -920,7 +920,7 @@ public class UserServlet extends ZimbraServlet {
     try {
       Pair<Header[], HttpResponse> pair = doHttpOp(authToken, new HttpGet(url));
       response = pair.getSecond();
-      return new Pair<Header[], byte[]>(
+      return new Pair<>(
           pair.getFirst(), EntityUtils.toByteArray(response.getEntity()));
     } catch (IOException x) {
       throw ServiceException.FAILURE("Can't read response body " + url, x);
@@ -933,7 +933,7 @@ public class UserServlet extends ZimbraServlet {
 
   public static FileUploadServlet.Upload getRemoteResourceAsUpload(
       AuthToken at, ItemId iid, Map<String, String> params) throws ServiceException, IOException {
-    Map<String, String> pcopy = new HashMap<String, String>(params);
+    Map<String, String> pcopy = new HashMap<>(params);
     pcopy.put(QP_ID, iid.toString());
 
     // fetch from remote store
@@ -990,7 +990,7 @@ public class UserServlet extends ZimbraServlet {
 
   public static Pair<Header[], HttpInputStream> getRemoteResourceAsStream(
       ZAuthToken authToken, ItemId iid, String extraPath) throws ServiceException, IOException {
-    Map<String, String> params = new HashMap<String, String>();
+    Map<String, String> params = new HashMap<>();
     params.put(QP_ID, iid.toString());
     if (extraPath != null) params.put(QP_NAME, extraPath);
     Account target = Provisioning.getInstance().getAccountById(iid.getAccountId());
@@ -1001,13 +1001,13 @@ public class UserServlet extends ZimbraServlet {
   public static Pair<Integer, InputStream> getRemoteResourceAsStreamWithLength(
       ZAuthToken authToken, String url) throws ServiceException, IOException {
     HttpInputStream his = getRemoteResourceAsStream(authToken, url).getSecond();
-    return new Pair<Integer, InputStream>(his.getContentLength(), his);
+    return new Pair<>(his.getContentLength(), his);
   }
 
   public static Pair<Header[], HttpInputStream> getRemoteResourceAsStream(
       ZAuthToken authToken, String url) throws ServiceException, IOException {
     Pair<Header[], HttpResponse> pair = doHttpOp(authToken, new HttpGet(url));
-    return new Pair<Header[], HttpInputStream>(
+    return new Pair<>(
         pair.getFirst(), new HttpInputStream(pair.getSecond()));
   }
 
@@ -1038,7 +1038,7 @@ public class UserServlet extends ZimbraServlet {
     }
     method.setEntity(new InputStreamEntity(req, ContentType.create(contentType)));
     Pair<Header[], HttpResponse> pair = doHttpOp(authToken, method);
-    return new Pair<Header[], HttpInputStream>(
+    return new Pair<>(
         pair.getFirst(), new HttpInputStream(pair.getSecond()));
   }
 
@@ -1109,9 +1109,9 @@ public class UserServlet extends ZimbraServlet {
             new ServiceException.InternalArgument(
                 HTTP_STATUS_CODE, statusCode, ServiceException.Argument.Type.NUM));
 
-      List<Header> headers = new ArrayList<Header>(Arrays.asList(response.getAllHeaders()));
+      List<Header> headers = new ArrayList<>(Arrays.asList(response.getAllHeaders()));
       headers.add(new BasicHeader("X-Zimbra-Http-Status", "" + statusCode));
-      return new Pair<Header[], HttpResponse>(headers.toArray(new Header[0]), response);
+      return new Pair<>(headers.toArray(new Header[0]), response);
     } catch (HttpException e) {
       throw ServiceException.RESOURCE_UNREACHABLE("HttpException while fetching " + url, e);
     } catch (IOException e) {

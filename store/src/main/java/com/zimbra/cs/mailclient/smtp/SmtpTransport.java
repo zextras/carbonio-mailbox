@@ -195,9 +195,7 @@ public class SmtpTransport extends Transport {
     if (auth || (user != null && passwd != null)) {
       try {
         connection.authenticate(passwd);
-      } catch (LoginException e) {
-        throw new AuthenticationFailedException(e.getMessage());
-      } catch (IOException e) {
+      } catch (LoginException | IOException e) {
         throw new AuthenticationFailedException(e.getMessage());
       }
     }
@@ -229,10 +227,7 @@ public class SmtpTransport extends Transport {
       } else {
         connection.sendMessage(rcpts, (MimeMessage) msg);
       }
-    } catch (MessagingException e) {
-      ZimbraLog.smtp.warn("Failed to send message", e);
-      notify(e, msg, rcpts);
-    } catch (IOException e) {
+    } catch (MessagingException | IOException e) {
       ZimbraLog.smtp.warn("Failed to send message", e);
       notify(e, msg, rcpts);
     }
@@ -280,8 +275,8 @@ public class SmtpTransport extends Transport {
     Set<String> validRcpts = connection.getValidRecipients();
     Set<String> invalidRcpts = connection.getInvalidRecipients();
 
-    List<Address> validAddrs = new ArrayList<Address>(validRcpts.size());
-    List<Address> invalidAddrs = new ArrayList<Address>(invalidRcpts.size());
+    List<Address> validAddrs = new ArrayList<>(validRcpts.size());
+    List<Address> invalidAddrs = new ArrayList<>(invalidRcpts.size());
     for (Address addr : addrs) {
       if (addr instanceof InternetAddress) {
         InternetAddress iaddr = (InternetAddress) addr;

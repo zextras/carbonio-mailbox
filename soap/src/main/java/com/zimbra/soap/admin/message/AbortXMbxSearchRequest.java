@@ -43,7 +43,7 @@ public class AbortXMbxSearchRequest {
      */
     @SuppressWarnings("unused")
     private AbortXMbxSearchRequest() {
-        this((SearchID) null, (AccountSelector) null);
+        this(null, null);
     }
 
     public AbortXMbxSearchRequest(SearchID searchTask, AccountSelector account) {

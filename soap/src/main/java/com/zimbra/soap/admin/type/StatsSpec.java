@@ -59,7 +59,7 @@ public class StatsSpec {
      */
     @SuppressWarnings("unused")
     private StatsSpec() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public StatsSpec(String limit, String name) {

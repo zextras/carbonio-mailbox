@@ -74,10 +74,8 @@ public class RemoveAttachments extends MailDocumentHandler {
 
             ParsedMessage pm = new ParsedMessage(mm, msg.getDate(), mbox.attachmentsIndexingEnabled());
             msg = removeAttachmentOperation(mbox, octxt, pm, msg);
-        } catch (IOException ioe) {
+        } catch (IOException | MessagingException ioe) {
             throw ServiceException.FAILURE("error reading existing message blob", ioe);
-        } catch (MessagingException me) {
-            throw ServiceException.FAILURE("error reading existing message blob", me);
         } finally {
             ByteUtil.closeStream(is);
         }
@@ -105,7 +103,7 @@ public class RemoveAttachments extends MailDocumentHandler {
                 if (subpart2.equalsIgnoreCase("TEXT") && depth == parts2.length - 1)
                     return -1;
 
-                int delta = Integer.valueOf(subpart2) - Integer.valueOf(subpart1);
+                int delta = Integer.parseInt(subpart2) - Integer.parseInt(subpart1);
                 if (delta != 0)
                     return delta;
             }
@@ -123,7 +121,7 @@ public class RemoveAttachments extends MailDocumentHandler {
             return Collections.emptyList();
 
         // using a Set has the nice side-effect of removing duplicates
-        Set<String> sorted = new TreeSet<String>(new PartIdComparator());
+        Set<String> sorted = new TreeSet<>(new PartIdComparator());
         for (String part : parts) {
             try {
                 if (!part.trim().equals(""))

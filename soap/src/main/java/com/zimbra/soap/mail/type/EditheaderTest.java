@@ -198,7 +198,7 @@ public class EditheaderTest {
      */
     public void addHeaderValue(String headerValue) {
         if (this.headerValue == null) {
-            this.headerValue = new ArrayList<String>();
+            this.headerValue = new ArrayList<>();
         }
         this.headerValue.add(headerValue);
     }
@@ -208,7 +208,7 @@ public class EditheaderTest {
      */
     public void addAllHeaderValues(List<String> headerValue) {
         if (this.headerValue == null) {
-            this.headerValue = new ArrayList<String>();
+            this.headerValue = new ArrayList<>();
         }
         this.headerValue.addAll(headerValue);
     }
@@ -279,7 +279,7 @@ public class EditheaderTest {
         // relational comparator must be available with numeric comparison
         if (comparator != null && comparator.equals(HeaderConstants.I_ASCII_NUMERIC)
                 && !((count != null && count) || (value != null && value)
-                        || (matchType != null && matchType.equals(MatchTypeTags.IS_TAG.substring(1))))) {
+                        || (MatchTypeTags.IS_TAG.substring(1).equals(matchType)))) {
             throw ServiceException.PARSE_ERROR("EditheaderTest : No valid comparator (:value, :count or :is) found for numeric operation.", null);
         }
     }

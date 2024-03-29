@@ -13,6 +13,7 @@ import java.nio.channels.NotYetConnectedException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,7 +49,7 @@ public class Client implements Runnable {
             this.id = id;
             hostname = host;
             port = p;
-            backlog = new ConcurrentLinkedQueue<Packet>();
+            backlog = new ConcurrentLinkedQueue<>();
             connect();
         }
 
@@ -56,7 +57,7 @@ public class Client implements Runnable {
          * Requests iochannel to send a message to this peer server.
          */
         public void sendMessage(String msg) throws IOException {
-            sendMessage(msg.getBytes("UTF-8"));
+            sendMessage(msg.getBytes(StandardCharsets.UTF_8));
         }
 
         /**
@@ -158,9 +159,7 @@ public class Client implements Runnable {
                 return;
             }
             synchronized (clientThread) {
-                if (!activeSet.contains(this)) {
-                    activeSet.add(this);
-                }
+                activeSet.add(this);
                 clientThread.notifyAll();
             }
         }
@@ -202,8 +201,8 @@ public class Client implements Runnable {
 
     private Client(Config c) throws IOException {
         selector = Selector.open();
-        peers = new HashMap<String,PeerServer>();
-        activeSet = new HashSet<PeerServer>();
+        peers = new HashMap<>();
+        activeSet = new HashSet<>();
         for (ServerConfig peer : c.getPeerServers()) {
             peers.put(peer.id, new PeerServer(peer));
         }
@@ -301,7 +300,6 @@ public class Client implements Runnable {
                             key.cancel();
                             peer.unsetActive();
                             peer.connect();
-                            continue;
                         }
                     }
                 }
@@ -312,7 +310,6 @@ public class Client implements Runnable {
                 if (!(e instanceof ClosedSelectorException)) {
                     // log the error and continue
                     log.warn("writing to peer server", e);
-                    continue;
                 }
             }
         }

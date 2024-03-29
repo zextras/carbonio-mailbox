@@ -25,7 +25,7 @@ public class GetIdentitiesResponse {
      * @zm-api-field-description Identities
      */
     @XmlElement(name=AccountConstants.E_IDENTITY)
-    List<Identity> identities = new ArrayList<Identity>();
+    List<Identity> identities = new ArrayList<>();
 
     public List<Identity> getIdentities() {
         return Collections.unmodifiableList(identities);

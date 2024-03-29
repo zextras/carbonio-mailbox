@@ -8,7 +8,6 @@ package com.zimbra.soap.admin.type;
 import java.util.List;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 
 import com.google.common.collect.Lists;
 
@@ -44,11 +43,11 @@ public class AccountLoggerInfo {
     private List<LoggerInfo> loggers = Lists.newArrayList();
 
     public AccountLoggerInfo() {
-        this((String) null, (String) null, (Collection<LoggerInfo>) null);
+        this(null, null, null);
     }
 
     public AccountLoggerInfo(String name, String id) {
-        this(name, id, (Collection<LoggerInfo>) null);
+        this(name, id, null);
     }
 
     public AccountLoggerInfo(String name, String id,

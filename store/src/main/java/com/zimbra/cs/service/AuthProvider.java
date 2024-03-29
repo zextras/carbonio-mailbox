@@ -35,7 +35,7 @@ public abstract class AuthProvider {
 
   // registered/installed providers
   private static Map<String, AuthProvider> registeredProviders =
-      new HashMap<String, AuthProvider>();
+      new HashMap<>();
 
   // ordered list of enabled providers
   private static List<AuthProvider> enabledProviders = null;
@@ -64,7 +64,7 @@ public abstract class AuthProvider {
    * <p>TODO, can be called from zmprov flushCache to flush the enabled cache
    */
   public static void refresh() {
-    List<AuthProvider> providerList = new ArrayList<AuthProvider>();
+    List<AuthProvider> providerList = new ArrayList<>();
     String[] providers = LC.zimbra_auth_provider.value().split(",");
     for (String provider : providers) {
 

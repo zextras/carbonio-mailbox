@@ -58,7 +58,7 @@ public class MPInviteInfo {
      */
     @SuppressWarnings("unused")
     private MPInviteInfo() {
-        this((String) null);
+        this(null);
     }
 
     public MPInviteInfo( String calItemType) {

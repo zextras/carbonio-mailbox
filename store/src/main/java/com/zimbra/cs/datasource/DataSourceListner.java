@@ -18,7 +18,7 @@ public abstract class DataSourceListner {
     private static final HashSet<DataSourceListner> listeners;
 
     static {
-        listeners = new HashSet<DataSourceListner>();
+        listeners = new HashSet<>();
         reset();
     }
 
@@ -31,7 +31,7 @@ public abstract class DataSourceListner {
          * @param name
          * @param ordinal
          */
-        private DataSourceAction(String name) {
+        DataSourceAction(String name) {
             this.action = name;
         }
 

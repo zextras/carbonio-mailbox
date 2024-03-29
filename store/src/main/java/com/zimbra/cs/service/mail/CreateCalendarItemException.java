@@ -191,7 +191,7 @@ public class CreateCalendarItemException extends CalendarRequest {
         // Inter-mailbox move if necessary.
         if (isInterMboxMove) {
             CalendarItem calItem = mbox.getCalendarItemById(octxt, iid.getId());
-            List<Integer> ids = new ArrayList<Integer>(1);
+            List<Integer> ids = new ArrayList<>(1);
             ids.add(calItem.getId());
             ItemActionHelper.MOVE(octxt, mbox, zsc.getResponseProtocol(), ids, calItem.getType(), null, iidFolder);
         }

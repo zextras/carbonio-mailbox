@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,12 +43,12 @@ public class ItemDataFile {
     TarOutputStream tos =
         new TarOutputStream(new GZIPOutputStream(os), cset == null ? "UTF-8" : cset);
 
-    tos.setLongFileMode(TarOutputStream.LONGFILE_GNU);
-    try {
-      if (f.isDirectory()) addDir(f, f.getPath(), types, tos);
-      else addFile(f, f.getParent(), types, tos);
-    } finally {
-      tos.close();
+    try (tos) {
+      tos.setLongFileMode(TarOutputStream.LONGFILE_GNU);
+      if (f.isDirectory())
+        addDir(f, f.getPath(), types, tos);
+      else
+        addFile(f, f.getParent(), types, tos);
     }
   }
 
@@ -60,37 +61,38 @@ public class ItemDataFile {
       throws IOException {
     byte[] buf = new byte[TarBuffer.DEFAULT_BLKSIZE];
     TarEntry te;
-    TarInputStream tis = new TarInputStream(new GZIPInputStream(is), cset == null ? "UTF-8" : cset);
 
-    if (dir == null) dir = ".";
-    try {
+    try (TarInputStream tis = new TarInputStream(new GZIPInputStream(is), cset == null ? "UTF-8" : cset)) {
+      if (dir == null)
+        dir = ".";
       while ((te = tis.getNextEntry()) != null) {
-        if (skip(types, MailItem.Type.of((byte) te.getMajorDeviceId()))) {
+        if (skip(types, Type.of((byte) te.getMajorDeviceId()))) {
           continue;
         }
 
         File f = new File(dir + File.separator + te.getName());
         FileOutputStream out;
 
-        if (!f.getParent().equals(".")) f.getParentFile().mkdir();
+        if (!f.getParent().equals("."))
+          f.getParentFile().mkdir();
         if (te.getName().endsWith(".meta")) {
-          if (!meta) continue;
+          if (!meta)
+            continue;
           System.out.println(f);
           out = new FileOutputStream(f);
           ItemData id = new ItemData(getData(tis, te));
-          out.write(id.encode(2).getBytes("UTF-8"));
+          out.write(id.encode(2).getBytes(StandardCharsets.UTF_8));
         } else {
           int in;
 
           System.out.println(f);
           out = new FileOutputStream(f);
-          while ((in = tis.read(buf)) != -1) out.write(buf, 0, in);
+          while ((in = tis.read(buf)) != -1)
+            out.write(buf, 0, in);
         }
         out.close();
         f.setLastModified(te.getModTime().getTime());
       }
-    } finally {
-      tis.close();
     }
   }
 
@@ -102,16 +104,15 @@ public class ItemDataFile {
       throws IOException {
     DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
     TarEntry te;
-    TarInputStream tis = new TarInputStream(new GZIPInputStream(is), cset == null ? "UTF-8" : cset);
 
-    os.format("%-13s %17s %10s %6s %s\n", "TYPE", "DATE", "SIZE", "METASZ", "PATH");
-    try {
+    try (TarInputStream tis = new TarInputStream(new GZIPInputStream(is), cset == null ? "UTF-8" : cset)) {
+      os.format("%-13s %17s %10s %6s %s\n", "TYPE", "DATE", "SIZE", "METASZ", "PATH");
       TarEntry idEntry = null;
 
       while ((te = tis.getNextEntry()) != null) {
         if (te.getName().endsWith(".meta")) {
           if (idEntry != null
-              && !skip(types, MailItem.Type.of((byte) idEntry.getMajorDeviceId()))) {
+              && !skip(types, Type.of((byte) idEntry.getMajorDeviceId()))) {
             os.format(
                 "%-13s %17s %10s %6d %s\n",
                 idEntry.getGroupName(),
@@ -122,7 +123,7 @@ public class ItemDataFile {
           }
           idEntry = te;
         } else {
-          if (!skip(types, MailItem.Type.of((byte) te.getMajorDeviceId()))) {
+          if (!skip(types, Type.of((byte) te.getMajorDeviceId()))) {
             os.format(
                 "%-13s %17s %10s %6d %s\n",
                 te.getGroupName(),
@@ -134,7 +135,7 @@ public class ItemDataFile {
           idEntry = null;
         }
       }
-      if (idEntry != null && !skip(types, MailItem.Type.of((byte) idEntry.getMajorDeviceId()))) {
+      if (idEntry != null && !skip(types, Type.of((byte) idEntry.getMajorDeviceId()))) {
         os.format(
             "%-13s %17s %10s %6d %s\n",
             idEntry.getGroupName(),
@@ -143,8 +144,6 @@ public class ItemDataFile {
             idEntry.getSize(),
             idEntry.getName().substring(0, idEntry.getName().indexOf(".meta")));
       }
-    } finally {
-      tis.close();
     }
   }
 
@@ -164,8 +163,8 @@ public class ItemDataFile {
       throws IOException {
     String path = f.getPath();
     String[] all = f.list();
-    List<File> dirs = new ArrayList<File>();
-    List<File> files = new ArrayList<File>();
+    List<File> dirs = new ArrayList<>();
+    List<File> files = new ArrayList<>();
 
     Arrays.sort(all);
     for (String file : all) {

@@ -80,7 +80,7 @@ public abstract class SaslSecurityLayer {
      */
     public boolean isEnabled() {
         String qop = (String) getNegotiatedProperty(Sasl.QOP);
-        return qop != null && (QOP_AUTH_INT.equals(qop) || QOP_AUTH_CONF.equals(qop));
+        return (QOP_AUTH_INT.equals(qop) || QOP_AUTH_CONF.equals(qop));
     }
 
     public int getMaxSendSize() {

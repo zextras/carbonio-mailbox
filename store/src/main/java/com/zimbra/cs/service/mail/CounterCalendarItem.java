@@ -35,9 +35,9 @@ public class CounterCalendarItem extends CalendarRequest {
         throws ServiceException {
             return CalendarUtils.parseInviteForCounter(account, mInv, getItemType(), inviteElem);
         }
-    };
+    }
 
-    @Override
+  @Override
     public Element handle(Element request, Map<String, Object> context) throws ServiceException {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
         Account acct = getRequestedAccount(zsc);

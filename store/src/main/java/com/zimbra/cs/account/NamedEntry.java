@@ -20,7 +20,7 @@ public abstract class NamedEntry extends Entry implements Comparable {
     protected String mId;
 
     public interface Visitor  {
-        public void visit(NamedEntry entry) throws ServiceException;
+        void visit(NamedEntry entry) throws ServiceException;
     }
     
     public interface CheckRight {

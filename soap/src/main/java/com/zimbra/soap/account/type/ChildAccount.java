@@ -63,19 +63,19 @@ public class ChildAccount {
      */
     @XmlElementWrapper(name=AccountConstants.E_ATTRS, required=false)
     @XmlElement(name=AccountConstants.E_ATTR, required=false)
-    private List<Attr> attrs = new ArrayList<Attr>();
+    private List<Attr> attrs = new ArrayList<>();
 
     /**
      * no-argument constructor wanted by JAXB
      */
      @SuppressWarnings("unused")
     private ChildAccount () {
-        this((String) null, (String) null, false, false);
+        this(null, null, false, false);
     }
 
     public ChildAccount(String id, String name,
             boolean isVisible, boolean isActive) {
-        this(id, name, isVisible, isActive, (Iterable<Attr>) null);
+        this(id, name, isVisible, isActive, null);
     }
 
     public ChildAccount(String id, String name,

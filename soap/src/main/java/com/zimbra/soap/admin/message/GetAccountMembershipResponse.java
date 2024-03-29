@@ -28,7 +28,7 @@ public class GetAccountMembershipResponse {
      * @zm-api-field-description List membership information
      */
     @XmlElement(name=AdminConstants.E_DL)
-    private List<DLInfo> dlList = new ArrayList<DLInfo>();
+    private List<DLInfo> dlList = new ArrayList<>();
 
     public GetAccountMembershipResponse() {
     }

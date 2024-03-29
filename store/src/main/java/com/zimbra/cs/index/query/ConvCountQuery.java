@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.index.query;
 
-import com.google.common.base.Strings;
 import com.zimbra.cs.index.DBQueryOperation;
 import com.zimbra.cs.index.QueryOperation;
 import com.zimbra.cs.mailbox.Mailbox;

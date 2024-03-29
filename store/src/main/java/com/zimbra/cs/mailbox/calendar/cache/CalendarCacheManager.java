@@ -68,7 +68,7 @@ public class CalendarCacheManager {
         CalList calList = mCalListCache.get(key);
         if (calList == null) return null;
         Collection<Integer> calendarIds = calList.getCalendars();
-        List<CalendarKey> calKeys = new ArrayList<CalendarKey>(calendarIds.size());
+        List<CalendarKey> calKeys = new ArrayList<>(calendarIds.size());
         String accountId = key.getAccountId();
         for (int calFolderId : calendarIds) {
             calKeys.add(new CalendarKey(accountId, calFolderId));

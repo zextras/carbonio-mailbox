@@ -14,7 +14,7 @@ public abstract class MigrationInfo {
 
     private static Factory factory;
 
-    public static enum Status { NONE, IN_PROGRESS, COMPLETED, FAILED }
+    public enum Status { NONE, IN_PROGRESS, COMPLETED, FAILED }
 
     protected MigrationInfo.Status status = Status.NONE;
     protected String URL;
@@ -92,8 +92,8 @@ public abstract class MigrationInfo {
         MigrationInfo.factory = factory;
     }
 
-    public static interface Factory {
-        public MigrationInfo getInfo() throws ServiceException;
+    public interface Factory {
+        MigrationInfo getInfo() throws ServiceException;
     }
 
 }

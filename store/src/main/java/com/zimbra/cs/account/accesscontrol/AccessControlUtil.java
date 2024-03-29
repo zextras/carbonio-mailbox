@@ -21,7 +21,7 @@ public class AccessControlUtil {
     }
 
     public static boolean isGlobalAdmin(MailTarget target, boolean asAdmin) {
-        if (!asAdmin || target == null || !(target instanceof Account)) {
+        if (!asAdmin || !(target instanceof Account)) {
             return false;
         }
         return ((Account)target).isIsAdminAccount();

@@ -44,7 +44,7 @@ public class TargetSpec {
      */
     @SuppressWarnings("unused")
     private TargetSpec() {
-        this((TargetType) null, (AccountBy) null);
+        this(null, null);
     }
 
     public TargetSpec(TargetType targetType, AccountBy accountBy) {

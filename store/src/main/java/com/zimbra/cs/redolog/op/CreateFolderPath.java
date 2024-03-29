@@ -33,8 +33,8 @@ public class CreateFolderPath extends RedoableOp {
     private String url;
     private Long date;
     private CustomMetadata custom;
-    private int folderIds[];
-    private String folderUuids[];
+    private int[] folderIds;
+    private String[] folderUuids;
 
     public CreateFolderPath() {
         super(MailboxOperation.CreateFolderPath);
@@ -61,7 +61,7 @@ public class CreateFolderPath extends RedoableOp {
         return folderUuids;
     }
 
-    public void setFolderIdsAndUuids(int folderIds[], String folderUuids[]) {
+    public void setFolderIdsAndUuids(int[] folderIds, String[] folderUuids) {
         this.folderIds = folderIds;
         this.folderUuids = folderUuids;
     }

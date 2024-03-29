@@ -34,7 +34,7 @@ public class GetRights extends AccountDocumentHandler {
         Set<Right> specificRights = null;
         for (Element eACE : request.listElements(AccountConstants.E_ACE)) {
             if (specificRights == null)
-                specificRights = new HashSet<Right>();
+                specificRights = new HashSet<>();
             specificRights.add(RightManager.getInstance().getUserRight(eACE.getAttribute(AccountConstants.A_RIGHT)));
         }
         

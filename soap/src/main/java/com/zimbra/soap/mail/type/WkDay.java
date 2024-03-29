@@ -40,7 +40,7 @@ public class WkDay implements WkDayInterface {
      */
     @SuppressWarnings("unused")
     private WkDay() {
-        this((String) null);
+        this(null);
     }
 
     public WkDay(String day) {

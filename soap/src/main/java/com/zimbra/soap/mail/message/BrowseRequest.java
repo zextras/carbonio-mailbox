@@ -71,7 +71,7 @@ public class BrowseRequest {
      */
     @SuppressWarnings("unused")
     private BrowseRequest() {
-        this((String) null, (String) null, (Integer) null);
+        this(null, null, null);
     }
 
     public BrowseRequest(String browseBy, String regex, Integer max) {

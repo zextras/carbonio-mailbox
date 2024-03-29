@@ -39,7 +39,7 @@ public class ZimletStatusCos {
      */
     @SuppressWarnings("unused")
     private ZimletStatusCos() {
-        this((String) null);
+        this(null);
     }
 
     public ZimletStatusCos(String name) {

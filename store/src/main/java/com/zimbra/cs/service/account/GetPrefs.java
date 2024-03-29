@@ -50,9 +50,8 @@ public class GetPrefs extends AccountDocumentHandler  {
         HashSet<String> specificPrefs = null;
 
         for (Element epref : request.listElements(AccountConstants.E_PREF)) {
-            if (specificPrefs == null) {
+            if (specificPrefs == null)
                 specificPrefs = new HashSet<>();
-            }
             specificPrefs.add(epref.getAttribute(AccountConstants.A_NAME));
         }
 

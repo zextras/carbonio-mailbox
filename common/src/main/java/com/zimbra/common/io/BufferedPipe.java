@@ -161,7 +161,7 @@ class BufferedPipe {
                     int written = 0;
                     int tailRoom = roomAfterTail();
                     if (tailRoom > 0) {
-                        toWrite = tailRoom < remaining ? tailRoom : remaining;
+                        toWrite = Math.min(tailRoom, remaining);
                         src.get(mBuffer, mTail, toWrite);
                         written += toWrite;
                         advanceTail(toWrite);
@@ -171,7 +171,7 @@ class BufferedPipe {
                     if (remaining > 0) {
                         int headRoom = roomBeforeHead();
                         if (headRoom > 0) {
-                            toWrite = headRoom < remaining ? headRoom : remaining;
+                            toWrite = Math.min(headRoom, remaining);
                             src.get(mBuffer, mTail, toWrite);
                             written += toWrite;
                             advanceTail(toWrite);
@@ -223,7 +223,7 @@ class BufferedPipe {
                     int written = 0;
                     int tailRoom = roomAfterTail();
                     if (tailRoom > 0) {
-                        toWrite = tailRoom < remaining ? tailRoom : remaining;
+                        toWrite = Math.min(tailRoom, remaining);
                         System.arraycopy(src, offset, mBuffer, mTail, toWrite);
                         offset += toWrite;
                         written += toWrite;
@@ -234,7 +234,7 @@ class BufferedPipe {
                     if (remaining > 0) {
                         int headRoom = roomBeforeHead();
                         if (headRoom > 0) {
-                            toWrite = headRoom < remaining ? headRoom : remaining;
+                            toWrite = Math.min(headRoom, remaining);
                             System.arraycopy(src, offset, mBuffer, mTail, toWrite);
                             offset += toWrite;
                             written += toWrite;
@@ -294,7 +294,7 @@ class BufferedPipe {
 
                     int bytesPart1 = headBytes();
                     if (bytesPart1 > 0) {
-                        toRead = bytesPart1 < remaining ? bytesPart1 : remaining;
+                        toRead = Math.min(bytesPart1, remaining);
                         dst.put(mBuffer, mHead, toRead);
                         bytesRead += toRead;
                         advanceHead(toRead);
@@ -304,7 +304,7 @@ class BufferedPipe {
                     if (remaining > 0) {
                         int bytesPart2 = tailBytes();
                         if (bytesPart2 > 0) {
-                            toRead = bytesPart2 < remaining ? bytesPart2 : remaining;
+                            toRead = Math.min(bytesPart2, remaining);
                             dst.put(mBuffer, mHead, toRead);
                             bytesRead += toRead;
                             advanceHead(toRead);
@@ -357,7 +357,7 @@ class BufferedPipe {
 
                     int bytesPart1 = headBytes();
                     if (bytesPart1 > 0) {
-                        toRead = bytesPart1 < remaining ? bytesPart1 : remaining;
+                        toRead = Math.min(bytesPart1, remaining);
                         System.arraycopy(mBuffer, mHead, dst, offset, toRead);
                         offset += toRead;
                         bytesRead += toRead;
@@ -368,7 +368,7 @@ class BufferedPipe {
                     if (remaining > 0) {
                         int bytesPart2 = tailBytes();
                         if (bytesPart2 > 0) {
-                            toRead = bytesPart2 < remaining ? bytesPart2 : remaining;
+                            toRead = Math.min(bytesPart2, remaining);
                             System.arraycopy(mBuffer, mHead, dst, offset, toRead);
                             offset += toRead;
                             bytesRead += toRead;

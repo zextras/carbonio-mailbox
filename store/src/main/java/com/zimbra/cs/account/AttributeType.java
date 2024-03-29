@@ -30,7 +30,7 @@ public enum AttributeType {
     TYPE_LONG("long");
 
     private static class TM {
-        static Map<String, AttributeType> sTypeMap = new HashMap<String, AttributeType>();
+        static Map<String, AttributeType> sTypeMap = new HashMap<>();
     }
     
     private String mName; 

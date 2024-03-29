@@ -131,6 +131,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -157,7 +158,7 @@ import org.json.JSONException;
 public final class ToXML {
   private static final Log LOG = LogFactory.getLog(ToXML.class);
 
-  public static enum OutputParticipants {
+  public enum OutputParticipants {
     PUT_SENDERS(0),
     PUT_RECIPIENTS(1),
     PUT_BOTH(2);
@@ -640,7 +641,7 @@ public final class ToXML {
     elem.addAttribute(MailConstants.A_REST_URL, getRestUrl(ownerName, ownerFolderPath));
     elem.addAttribute(MailConstants.A_URL, mptTarget.getAttribute(MailConstants.A_URL, null));
     elem.addAttribute(MailConstants.A_RIGHTS, mptTarget.getAttribute(MailConstants.A_RIGHTS, null));
-    if (mptTarget.getAttribute(MailConstants.A_FLAGS, "").indexOf("u") != -1) {
+    if (mptTarget.getAttribute(MailConstants.A_FLAGS, "").contains("u")) {
       elem.addAttribute(
           MailConstants.A_FLAGS,
           "u" + elem.getAttribute(MailConstants.A_FLAGS, "").replace("u", ""));
@@ -755,8 +756,8 @@ public final class ToXML {
         ifmt,
         octxt,
         contact,
-        (ContactGroup) null,
-        (Collection<String>) null /* memberAttrFilter */,
+        null,
+        null /* memberAttrFilter */,
         summary,
         attrFilter,
         NOTIFY_FIELDS,
@@ -780,12 +781,12 @@ public final class ToXML {
         ifmt,
         octxt,
         contact,
-        (ContactGroup) null,
-        (Collection<String>) null /* memberAttrFilter */,
+        null,
+        null /* memberAttrFilter */,
         summary,
         attrFilter,
         fields,
-        (String) null /* migratedDlist */,
+        null /* migratedDlist */,
         false /* returnHiddenAttrs */,
         GetContacts.NO_LIMIT_MAX_MEMBERS,
         true /* returnCertInfo */);
@@ -820,7 +821,7 @@ public final class ToXML {
         returnHiddenAttrs,
         maxMembers,
         returnCertInfo,
-        (Set<String>) null);
+        null);
   }
 
   public static Element encodeContact(
@@ -1051,7 +1052,6 @@ public final class ToXML {
           }
           elem.addKeyValuePair(name, v);
         }
-        return;
       } catch (JSONException e) {
       }
     } else if (ContactConstants.A_groupMember.equals(name)) {
@@ -1277,7 +1277,6 @@ public final class ToXML {
         m.addAttribute(MailConstants.A_DATE, msg.getDate());
         m.addAttribute(MailConstants.A_SIZE, msg.getSize());
         m.addAttribute(MailConstants.A_SUBJECT, msg.getSubject(), Element.Disposition.CONTENT);
-        ;
         m.addAttribute(
             MailConstants.A_FOLDER,
             ifmt.formatItemId(new ItemId(msg.getMailbox().getAccountId(), msg.getFolderId())));
@@ -1299,7 +1298,7 @@ public final class ToXML {
     public ToRecipsList() {}
 
     public ToRecipsList add(Message msg) {
-      InternetAddress toRecips[] = Mime.parseAddressHeader(msg.getRecipients());
+      InternetAddress[] toRecips = Mime.parseAddressHeader(msg.getRecipients());
       String sender = msg.getSender();
       if (sender == null || sender.trim().equals("")) {
         return this;
@@ -1917,9 +1916,9 @@ public final class ToXML {
         for (String name : headers) {
           String[] values = mimeMessage.getHeader(name);
           if (values != null) {
-            for (int i = 0; i < values.length; i++) {
+            for (String value : values) {
               messageElement.addKeyValuePair(
-                  name, values[i], MailConstants.A_HEADER, MailConstants.A_ATTRIBUTE_NAME);
+                  name, value, MailConstants.A_HEADER, MailConstants.A_ATTRIBUTE_NAME);
             }
           }
         }
@@ -2129,7 +2128,7 @@ public final class ToXML {
     if (inv.hasRecurId()) {
       ie.addAttribute(MailConstants.A_CAL_RECURRENCE_ID, inv.getRecurId().toString());
     }
-    encodeInviteComponent(ie, ifmt, octxt, cal, (ItemId) null, inv, NOTIFY_FIELDS, neuter);
+    encodeInviteComponent(ie, ifmt, octxt, cal, null, inv, NOTIFY_FIELDS, neuter);
 
     if (includeContent && (inv.isPublic() || allowPrivateAccess(octxt, cal))) {
       int invId = inv.getMailItemId();
@@ -2138,9 +2137,7 @@ public final class ToXML {
         List<MPartInfo> parts;
         try {
           parts = Mime.getParts(mm, getDefaultCharset(cal));
-        } catch (IOException ex) {
-          throw ServiceException.FAILURE(ex.getMessage(), ex);
-        } catch (MessagingException ex) {
+        } catch (IOException | MessagingException ex) {
           throw ServiceException.FAILURE(ex.getMessage(), ex);
         }
         if (parts != null && !parts.isEmpty()) {
@@ -2370,7 +2367,7 @@ public final class ToXML {
         }
         for (Invite inv : invites) {
           encodeInviteComponent(
-              invElt, ifmt, octxt, calItem, (ItemId) null, inv, NOTIFY_FIELDS, neuter);
+              invElt, ifmt, octxt, calItem, null, inv, NOTIFY_FIELDS, neuter);
         }
       }
 
@@ -2383,9 +2380,9 @@ public final class ToXML {
             if (values == null) {
               continue;
             }
-            for (int i = 0; i < values.length; i++) {
+            for (String value : values) {
               m.addKeyValuePair(
-                  name, values[i], MailConstants.A_HEADER, MailConstants.A_ATTRIBUTE_NAME);
+                  name, value, MailConstants.A_HEADER, MailConstants.A_ATTRIBUTE_NAME);
             }
           }
         }
@@ -2411,9 +2408,7 @@ public final class ToXML {
         Account requestedAcct = calItem.getMailbox().getAccount();
         encodeAddrsWithGroupInfo(m, requestedAcct, authedAcct);
       }
-    } catch (IOException ex) {
-      throw ServiceException.FAILURE(ex.getMessage(), ex);
-    } catch (MessagingException ex) {
+    } catch (IOException | MessagingException ex) {
       throw ServiceException.FAILURE(ex.getMessage(), ex);
     }
     return m;
@@ -2445,20 +2440,16 @@ public final class ToXML {
     } else if (mustNotInline || (!mustInline && size > MAX_INLINE_MSG_SIZE)) {
       content.addAttribute(MailConstants.A_URL, CONTENT_SERVLET_URI + ifmt.formatItemId(msg));
     } else {
-      try {
-        byte[] raw = msg.getContent();
-        if (!ByteUtil.isASCII(raw)) {
-          if (!mustInline) {
-            content.addAttribute(MailConstants.A_URL, CONTENT_SERVLET_URI + ifmt.formatItemId(msg));
-          } else {
-            // Assume the data is utf-8.
-            content.setText(new String(raw, "utf-8"));
-          }
+      byte[] raw = msg.getContent();
+      if (!ByteUtil.isASCII(raw)) {
+        if (!mustInline) {
+          content.addAttribute(MailConstants.A_URL, CONTENT_SERVLET_URI + ifmt.formatItemId(msg));
         } else {
-          content.setText(new String(raw, "US-ASCII"));
+          // Assume the data is utf-8.
+          content.setText(new String(raw, StandardCharsets.UTF_8));
         }
-      } catch (IOException ex) {
-        throw ServiceException.FAILURE(ex.getMessage(), ex);
+      } else {
+        content.setText(new String(raw, StandardCharsets.US_ASCII));
       }
     }
 
@@ -2722,7 +2713,7 @@ public final class ToXML {
         }
 
         if (invite.isEvent()) {
-          if (calItem != null && calItem instanceof Appointment) {
+          if (calItem instanceof Appointment) {
             Instance inst = Instance.fromInvite(calItem.getId(), invite);
             Appointment appt = (Appointment) calItem;
             e.addAttribute(
@@ -3048,9 +3039,9 @@ public final class ToXML {
       throws ServiceException {
     MPartInfo mpi = mpiRoot;
     LinkedList<Pair<Element, LinkedList<MPartInfo>>> queue =
-        new LinkedList<Pair<Element, LinkedList<MPartInfo>>>();
+        new LinkedList<>();
     Pair<Element, LinkedList<MPartInfo>> level =
-        new Pair<Element, LinkedList<MPartInfo>>(root, new LinkedList<MPartInfo>());
+        new Pair<>(root, new LinkedList<>());
     level.getSecond().add(mpi);
     queue.add(level);
 
@@ -3081,8 +3072,8 @@ public final class ToXML {
               wantContent);
       if (phase == VisitPhase.PREVISIT && child != null && mpi.hasChildren()) {
         queue.addLast(
-            new Pair<Element, LinkedList<MPartInfo>>(
-                child, new LinkedList<MPartInfo>(mpi.getChildren())));
+            new Pair<>(
+                child, new LinkedList<>(mpi.getChildren())));
       } else {
         parts.removeFirst();
         phase = VisitPhase.PREVISIT;
@@ -3195,8 +3186,7 @@ public final class ToXML {
             MailConstants.A_CONTENT_DISPOSITION,
             StringUtil.stripControlCharacters(cdisp.getDisposition()));
       }
-    } catch (MessagingException e) {
-    } catch (UnsupportedEncodingException e) {
+    } catch (MessagingException | UnsupportedEncodingException e) {
     }
 
     // figure out attachment name
@@ -3211,8 +3201,7 @@ public final class ToXML {
       if (!Strings.isNullOrEmpty(fname)) {
         el.addAttribute(MailConstants.A_CONTENT_FILENAME, StringUtil.stripControlCharacters(fname));
       }
-    } catch (MessagingException me) {
-    } catch (IOException ioe) {
+    } catch (MessagingException | IOException me) {
     }
 
     // figure out content-id (used in displaying attached images)
@@ -3367,7 +3356,7 @@ public final class ToXML {
           data = sw.toString();
         } else {
           String cte = mp.getEncoding();
-          if (cte != null && !cte.trim().toLowerCase().equals(MimeConstants.ET_7BIT)) {
+          if (cte != null && !cte.trim().equalsIgnoreCase(MimeConstants.ET_7BIT)) {
             try {
               DefangFactory.getDefanger(ctype).defang(stream, neuter, out);
               data = sw.toString();
@@ -3472,7 +3461,7 @@ public final class ToXML {
 
     private final String rep;
 
-    private EmailType(String c) {
+    EmailType(String c) {
       rep = c;
     }
 
@@ -3696,9 +3685,7 @@ public final class ToXML {
   public static Element encodeFreeBusy(Element parent, FreeBusy fb) {
     Element resp = parent.addNonUniqueElement(MailConstants.E_FREEBUSY_USER);
     resp.addAttribute(MailConstants.A_ID, fb.getName());
-    for (Iterator<FreeBusy.Interval> iter = fb.iterator(); iter.hasNext(); ) {
-      FreeBusy.Interval cur = iter.next();
-
+    for (FreeBusy.Interval cur : fb) {
       String status = cur.getStatus();
       Element elt;
       if (status.equals(IcalXmlStrMap.FBTYPE_FREE)) {
@@ -3876,10 +3863,10 @@ public final class ToXML {
       if (returnAttrs == null || returnAttrs.contains(key)) {
         Object value = entry.getValue();
         if (value instanceof String[]) {
-          String sa[] = (String[]) value;
-          for (int i = 0; i < sa.length; i++)
+          String[] sa = (String[]) value;
+          for (String s : sa)
             cn.addKeyValuePair(
-                key, sa[i], MailConstants.E_ATTRIBUTE, MailConstants.A_ATTRIBUTE_NAME);
+                key, s, MailConstants.E_ATTRIBUTE, MailConstants.A_ATTRIBUTE_NAME);
         } else {
           cn.addKeyValuePair(
               key, (String) value, MailConstants.E_ATTRIBUTE, MailConstants.A_ATTRIBUTE_NAME);

@@ -83,7 +83,7 @@ public class GetDelegatedAdminConstraintsRequest {
      */
     @SuppressWarnings("unused")
     private GetDelegatedAdminConstraintsRequest() {
-        this((TargetType) null, (String) null, (String) null);
+        this(null, null, null);
     }
 
     public GetDelegatedAdminConstraintsRequest(

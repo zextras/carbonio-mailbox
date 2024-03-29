@@ -132,7 +132,7 @@ public class MimeHeader implements Cloneable {
             this.unique = unique;  this.prepend = prepend;  this.first = first;
         }
 
-        private static final Map<String, HeaderInfo> lookup = new HashMap<String, HeaderInfo>(40);
+        private static final Map<String, HeaderInfo> lookup = new HashMap<>(40);
         static {
             for (HeaderInfo hinfo : EnumSet.allOf(HeaderInfo.class)) {
                 if (hinfo.name != null) {

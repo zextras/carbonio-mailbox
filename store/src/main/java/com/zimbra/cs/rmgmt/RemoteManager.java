@@ -101,8 +101,10 @@ public class RemoteManager {
         try {
             result = executeRemoteCommand(mUser,mHost,mPort,mPrivateKey,mShimCommand,command);
                 try {
-                    ZimbraLog.rmgmt.trace("stdout content for cmd:\n%s", new String(result.mStdout, "UTF-8"));
-                    ZimbraLog.rmgmt.trace("stderr content for cmd:\n%s", new String(result.mStderr, "UTF-8"));
+                    ZimbraLog.rmgmt.trace("stdout content for cmd:\n%s", new String(result.mStdout,
+                        StandardCharsets.UTF_8));
+                    ZimbraLog.rmgmt.trace("stderr content for cmd:\n%s", new String(result.mStderr,
+                        StandardCharsets.UTF_8));
                 } catch (Exception ex) {
                     ZimbraLog.rmgmt.trace("Problem logging stdout or stderr for cmd - probably not UTF-8");
                 }
@@ -118,12 +120,7 @@ public class RemoteManager {
     }
 
     public void executeBackground(final String command, final RemoteBackgroundHandler handler) {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                executeBackground0(command, handler);
-            }
-        };
+        Runnable r = () -> executeBackground0(command, handler);
 
         Thread t = new Thread(r);
         t.setName(this + "-" + command);

@@ -102,7 +102,7 @@ public final class ParsedMessage {
     private boolean analyzedBodyParts = false;
     private boolean analyzedNonBodyParts = false;
     private String bodyContent = "";
-    private final List<String> filenames = new ArrayList<String>();
+    private final List<String> filenames = new ArrayList<>();
     private boolean indexAttachments;
     private int numParseErrors = 0;
     private String defaultCharset;
@@ -130,11 +130,11 @@ public final class ParsedMessage {
     private String normalizedSubject;
     private boolean subjectIsReply;
     private Boolean hasReplyToHeader = null;
-    private final List<IndexDocument> luceneDocuments = new ArrayList<IndexDocument>(2);
+    private final List<IndexDocument> luceneDocuments = new ArrayList<>(2);
     private CalendarPartInfo calendarPartInfo;
     private boolean wasMutated;
     private InputStream sharedStream;
-    private final Map<Mailbox, Threader> threaders = new HashMap<Mailbox, Threader>();
+    private final Map<Mailbox, Threader> threaders = new HashMap<>();
     private String dataSourceId = null;
 
     public ParsedMessage(MimeMessage msg, boolean indexAttachments) throws ServiceException {
@@ -227,9 +227,7 @@ public final class ParsedMessage {
     private void initialize(Long receivedDate, boolean indexAttachments) throws ServiceException {
         try {
             init(receivedDate, indexAttachments);
-        } catch (MessagingException e) {
-            throw ServiceException.FAILURE("Unable to initialize ParsedMessage", e);
-        } catch (IOException e) {
+        } catch (MessagingException | IOException e) {
             throw ServiceException.FAILURE("Unable to initialize ParsedMessage", e);
         }
     }
@@ -327,7 +325,7 @@ public final class ParsedMessage {
             hasTextCalendarPart = Mime.hasTextCalenndar(messageParts);
         } catch (Exception e) {
             ZimbraLog.index.warn("exception while parsing message; message will not be indexed", e);
-            messageParts = new ArrayList<MPartInfo>();
+            messageParts = new ArrayList<>();
         }
         return this;
     }
@@ -346,7 +344,7 @@ public final class ParsedMessage {
             try {
                 wasMutated |= vclass.newInstance().accept(mimeMessage);
                 if (mimeMessage != expandedMessage) {
-                    ((MimeVisitor) vclass.newInstance()).accept(expandedMessage);
+                    vclass.newInstance().accept(expandedMessage);
                 }
             } catch (MessagingException e) {
                 throw e;
@@ -591,7 +589,7 @@ public final class ParsedMessage {
                     if (envSenderAddrParts != null) {
                         String sender = envSenderAddrParts[0].toLowerCase();
                         if (sender.startsWith("owner-") || sender.endsWith("-owner") ||
-                                sender.indexOf("-request") != -1 || sender.equals("mailer-daemon") ||
+                            sender.contains("-request") || sender.equals("mailer-daemon") ||
                                 sender.equals("majordomo") || sender.equals("listserv")) {
                             return true;
                         }
@@ -664,7 +662,7 @@ public final class ParsedMessage {
     public Set<String> getAllReferences() {
         MimeMessage mm = getMimeMessage();
 
-        Set<String> refs = new HashSet<String>();
+        Set<String> refs = new HashSet<>();
         refs.addAll(Mime.getReferences(mm, "Message-ID"));
         refs.addAll(Mime.getReferences(mm, "In-Reply-To"));
         refs.addAll(Mime.getReferences(mm, "References"));
@@ -697,7 +695,7 @@ public final class ParsedMessage {
             List<com.zimbra.common.mime.InternetAddress> addrs = com.zimbra.common.mime.InternetAddress.parseHeader(
                     getRecipients());
             if (addrs != null) {
-                parsedRecipients = new ArrayList<ParsedAddress>(addrs.size());
+                parsedRecipients = new ArrayList<>(addrs.size());
                 for (com.zimbra.common.mime.InternetAddress addr : addrs) {
                     parsedRecipients.add(new ParsedAddress(addr).parse());
                 }
@@ -959,7 +957,7 @@ public final class ParsedMessage {
         // iterate all the message headers, add them to the structured-field data in the index
         FieldTokenStream fields = new FieldTokenStream();
         MimeMessage mm = getMimeMessage();
-        List<Part> parts = new ArrayList<Part>();
+        List<Part> parts = new ArrayList<>();
         parts.add(mm);
         try {
             if (mm.getContent() instanceof ZMimeMultipart) {
@@ -1014,7 +1012,7 @@ public final class ParsedMessage {
             appendToContent(contentPrepend, fn); // also add the non-tokenized form, so full-filename searches match
         }
 
-        String text = contentPrepend.toString() + " " + fullContent.toString();
+        String text = contentPrepend + " " + fullContent.toString();
         doc.addContent(text);
 
         try {
@@ -1178,12 +1176,10 @@ public final class ParsedMessage {
                     ByteUtil.closeStream(is);
                 }
             }
-        } catch (MimeHandlerException e) {
-            handleParseError(mpi, e);
-        } catch (ObjectHandlerException e) {
+        } catch (MimeHandlerException | ObjectHandlerException e) {
             handleParseError(mpi, e);
         }
-        return toRet;
+      return toRet;
     }
 
     /**
@@ -1240,13 +1236,13 @@ public final class ParsedMessage {
     @VisibleForTesting
     static Pair<String, Boolean> trimPrefixes(String subject) {
         if (Strings.isNullOrEmpty(subject)) {
-            return new Pair<String, Boolean>("", false);
+            return new Pair<>("", false);
         }
         boolean trimmed = false;
         while (true) {
             subject = subject.trim();
             if (subject.length() == 0)
-                return new Pair<String, Boolean>(subject, trimmed);
+                return new Pair<>(subject, trimmed);
 
             // first, strip off any "(fwd)" at the end
             int tstart = subject.length() - 5;
@@ -1307,7 +1303,7 @@ public final class ParsedMessage {
                 }
             }
 
-            return new Pair<String, Boolean>(subject, trimmed);
+            return new Pair<>(subject, trimmed);
         }
     }
 

@@ -15,18 +15,18 @@ public class ItemActionResult {
     protected List<String> mSuccessIds;
 
     public ItemActionResult() {
-        mSuccessIds = new ArrayList<String>();
+        mSuccessIds = new ArrayList<>();
     }
 
     public ItemActionResult(int[] ids) {
-        mSuccessIds = new ArrayList<String>(ids.length);
+        mSuccessIds = new ArrayList<>(ids.length);
         for (int id : ids) {
             mSuccessIds.add(Integer.toString(id));
         }
     }
 
     public ItemActionResult(List<Integer> ids) {
-        mSuccessIds = new ArrayList<String>(ids.size());
+        mSuccessIds = new ArrayList<>(ids.size());
         for (Integer id : ids) {
             mSuccessIds.add(id.toString());
         }

@@ -346,7 +346,7 @@ public class WaitSetRequest extends MailDocumentHandler {
       List<WaitSetAddSpec> accountDetails,
       Set<MailItem.Type> defaultInterest)
       throws ServiceException {
-    List<WaitSetAccount> toRet = new ArrayList<WaitSetAccount>();
+    List<WaitSetAccount> toRet = new ArrayList<>();
     if (accountDetails != null) {
       for (WaitSetAddSpec accountDetail : accountDetails) {
         String id;
@@ -390,7 +390,7 @@ public class WaitSetRequest extends MailDocumentHandler {
     return remove;
   }
 
-  public static enum TypeEnum {
+  public enum TypeEnum {
     f(EnumSet.of(MailItem.Type.FOLDER)),
     m(EnumSet.of(MailItem.Type.MESSAGE)),
     c(EnumSet.of(MailItem.Type.CONTACT)),

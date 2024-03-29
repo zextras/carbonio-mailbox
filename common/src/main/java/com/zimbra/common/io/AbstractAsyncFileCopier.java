@@ -29,7 +29,7 @@ abstract class AbstractAsyncFileCopier implements FileCopier {
                     " is too big; limiting to " + MAX_QUEUE_SIZE);
             qsize = MAX_QUEUE_SIZE;
         }
-        mQueue = new LinkedBlockingQueue<FileTask>(qsize);
+        mQueue = new LinkedBlockingQueue<>(qsize);
     }
 
     protected void queuePut(FileTask task) throws InterruptedException {
@@ -105,7 +105,7 @@ abstract class AbstractAsyncFileCopier implements FileCopier {
 
     protected static class FileTask {
 
-        public static enum Op { COPY, COPYRO, LINK, MOVE, DELETE, QUIT };
+        public enum Op { COPY, COPYRO, LINK, MOVE, DELETE, QUIT }
 
         public static FileTask QUIT = new FileTask(Op.QUIT, null, null, null, null);
 

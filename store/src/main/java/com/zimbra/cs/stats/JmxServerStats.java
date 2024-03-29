@@ -31,7 +31,7 @@ public class JmxServerStats implements JmxServerStatsMBean {
     private final List<Accumulator> mAccumulators;
     
     JmxServerStats() {
-        List<Accumulator> accumulators = new ArrayList<Accumulator>();
+        List<Accumulator> accumulators = new ArrayList<>();
         
         accumulators.add(mDbConn);
         accumulators.add(mLdapConn);

@@ -5,27 +5,15 @@
 
 package com.zimbra.cs.service.authenticator;
 
-import java.io.IOException;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.jetty.util.security.Constraint;
-
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
-import com.zimbra.cs.account.AuthToken;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.Server;
-import com.zimbra.cs.account.auth.AuthContext;
-import com.zimbra.cs.service.AuthProvider;
-import com.zimbra.cs.servlet.ZimbraServlet;
 
 public abstract class SSOAuthenticator {
 

@@ -63,12 +63,12 @@ abstract class LdapCache {
             LC.ldap_cache_account_maxage.intValue() * Constants.MILLIS_PER_MINUTE);
 
     private final INamedEntryCache<LdapCos> cosCache =
-        new NamedEntryCache<LdapCos>(
+        new NamedEntryCache<>(
             LC.ldap_cache_cos_maxsize.intValue(),
             LC.ldap_cache_cos_maxage.intValue() * Constants.MILLIS_PER_MINUTE);
 
     private final INamedEntryCache<ShareLocator> shareLocatorCache =
-        new NamedEntryCache<ShareLocator>(
+        new NamedEntryCache<>(
             LC.ldap_cache_share_locator_maxsize.intValue(),
             LC.ldap_cache_share_locator_maxage.intValue() * Constants.MILLIS_PER_MINUTE);
 
@@ -82,22 +82,22 @@ abstract class LdapCache {
     private final IMimeTypeCache mimeTypeCache = new LdapMimeTypeCache();
 
     private final INamedEntryCache<Server> serverCache =
-        new NamedEntryCache<Server>(
+        new NamedEntryCache<>(
             LC.ldap_cache_server_maxsize.intValue(),
             LC.ldap_cache_server_maxage.intValue() * Constants.MILLIS_PER_MINUTE);
 
     private final INamedEntryCache<LdapZimlet> zimletCache =
-        new NamedEntryCache<LdapZimlet>(
+        new NamedEntryCache<>(
             LC.ldap_cache_zimlet_maxsize.intValue(),
             LC.ldap_cache_zimlet_maxage.intValue() * Constants.MILLIS_PER_MINUTE);
 
     private final INamedEntryCache<Group> groupCache =
-        new NamedEntryCache<Group>(
+        new NamedEntryCache<>(
             LC.ldap_cache_group_maxsize.intValue(),
             LC.ldap_cache_group_maxage.intValue() * Constants.MILLIS_PER_MINUTE);
 
     private final INamedEntryCache<XMPPComponent> xmppComponentCache =
-        new NamedEntryCache<XMPPComponent>(
+        new NamedEntryCache<>(
             LC.ldap_cache_xmppcomponent_maxsize.intValue(),
             LC.ldap_cache_xmppcomponent_maxage.intValue() * Constants.MILLIS_PER_MINUTE);
 
@@ -151,16 +151,16 @@ abstract class LdapCache {
   static class NoopCache extends LdapCache {
 
     private final IAccountCache accountCache = new NoopAccountCache();
-    private final INamedEntryCache<LdapCos> cosCache = new NoopNamedEntryCache<LdapCos>();
+    private final INamedEntryCache<LdapCos> cosCache = new NoopNamedEntryCache<>();
     private final INamedEntryCache<ShareLocator> shareLocatorCache =
-        new NoopNamedEntryCache<ShareLocator>();
+        new NoopNamedEntryCache<>();
     private final IDomainCache domainCache = new NoopDomainCache();
     private final IMimeTypeCache mimeTypeCache = new NoopMimeTypeCache();
-    private final INamedEntryCache<Server> serverCache = new NoopNamedEntryCache<Server>();
-    private final INamedEntryCache<LdapZimlet> zimletCache = new NoopNamedEntryCache<LdapZimlet>();
-    private final INamedEntryCache<Group> groupCache = new NoopNamedEntryCache<Group>();
+    private final INamedEntryCache<Server> serverCache = new NoopNamedEntryCache<>();
+    private final INamedEntryCache<LdapZimlet> zimletCache = new NoopNamedEntryCache<>();
+    private final INamedEntryCache<Group> groupCache = new NoopNamedEntryCache<>();
     private final INamedEntryCache<XMPPComponent> xmppComponentCache =
-        new NoopNamedEntryCache<XMPPComponent>();
+        new NoopNamedEntryCache<>();
 
     static class NoopAccountCache implements IAccountCache {
       @Override
@@ -298,7 +298,7 @@ abstract class LdapCache {
     static class NoopMimeTypeCache implements IMimeTypeCache {
 
       private final List<MimeTypeInfo> mimeTypes =
-          Collections.unmodifiableList(new ArrayList<MimeTypeInfo>());
+          Collections.unmodifiableList(new ArrayList<>());
 
       @Override
       public void flushCache(Provisioning prov) throws ServiceException {}

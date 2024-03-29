@@ -223,7 +223,7 @@ public class InviteComponentCommon implements InviteComponentCommonInterface {
   /** no-argument constructor wanted by JAXB */
   @SuppressWarnings("unused")
   private InviteComponentCommon() {
-    this((String) null, -1, false);
+    this(null, -1, false);
   }
 
   public InviteComponentCommon(String method, int componentNum, boolean rsvp) {

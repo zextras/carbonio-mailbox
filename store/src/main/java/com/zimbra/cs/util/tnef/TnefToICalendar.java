@@ -24,6 +24,6 @@ public interface TnefToICalendar {
      *         successfully to ICAL in <code>icalOutput</code>
      * @throws ServiceException
      */
-    public boolean convert(MimeMessage mimeMsg, InputStream tnefInput, ContentHandler icalOutput)
+    boolean convert(MimeMessage mimeMsg, InputStream tnefInput, ContentHandler icalOutput)
     throws ServiceException;
 }
