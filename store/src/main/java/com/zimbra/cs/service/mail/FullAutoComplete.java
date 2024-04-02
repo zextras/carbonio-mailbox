@@ -17,83 +17,109 @@ import com.zimbra.soap.mail.message.AutoCompleteResponse;
 import com.zimbra.soap.mail.message.FullAutocompleteRequest;
 import com.zimbra.soap.mail.message.FullAutocompleteResponse;
 import com.zimbra.soap.mail.type.AutoCompleteMatch;
+import io.vavr.Tuple2;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 /**
- * A variant of {@link AutoComplete} that returns all contacts of authenticated account
- * + contacts of all accounts shared with it.
- * It doesn't support delegated requests.
- *
+ * A variant of {@link AutoComplete} that returns all contacts of authenticated account + contacts of all accounts
+ * shared with it. It doesn't support delegated requests.
  */
 public class FullAutoComplete extends MailDocumentHandler {
 
+
+  private Tuple2<String, List<String>> parsePreferredAccounts(String input) {
+    String preferredAccount = null;
+    List<String> otherAccounts = new ArrayList<>();
+
+    if (input != null && !input.isEmpty()) {
+      String[] tokens = input.split(",");
+      if (tokens.length > 0) {
+        preferredAccount = tokens[0].trim();
+        for (int i = 1; i < tokens.length; i++) {
+          otherAccounts.add(tokens[i].trim());
+        }
+      }
+    }
+    return new Tuple2<>(preferredAccount, otherAccounts);
+  }
+
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
-    ZimbraSoapContext zsc = getZimbraSoapContext(context);
-    final List<AutoCompleteResponse> autoCompleteResponses = new ArrayList<>();
+    final ZimbraSoapContext zsc = getZimbraSoapContext(context);
     final FullAutocompleteRequest fullAutocompleteRequest = JaxbUtil.elementToJaxb(request);
+    if (fullAutocompleteRequest == null) {
+      throw ServiceException.FAILURE("Invalid Request");
+    }
+    final ZAuthToken zAuthToken = zsc.getAuthToken().toZAuthToken();
+
+    final List<AutoCompleteMatch> fullAutoCompleteMatches = new ArrayList<>();
+    final List<AutoCompleteMatch> otherAutoCompleteMatches = new ArrayList<>();
 
     final Account authenticatedAccount = zsc.getAuthToken().getAccount();
-    final ZAuthToken zAuthToken = zsc.getAuthToken().toZAuthToken();
+    final int contactAutoCompleteMaxResultsLimit = authenticatedAccount.getContactAutoCompleteMaxResults();
+    final Tuple2<String, List<String>> parsedAccountIds = parsePreferredAccounts(
+        fullAutocompleteRequest.getOrderedAccountIds());
+    final String preferredAccountId = parsedAccountIds._1();
+    final List<String> otherPreferredAccountIds = parsedAccountIds._2();
     final AutoCompleteRequest autoCompleteRequest = fullAutocompleteRequest.getAutoCompleteRequest();
-    Map<String, AutoCompleteMatch> matchesComparator = new HashMap<>();
     try {
-      final AutoCompleteResponse selfAutoComplete;
-      selfAutoComplete = doSelfAutoComplete(authenticatedAccount, zAuthToken,
-          autoCompleteRequest);
-      autoCompleteResponses.add(selfAutoComplete);
-    } catch (IOException e) {
+      // process matches from "preferred account"
+      final AutoCompleteResponse preferredAccountAutoCompleteResponse = doAutoCompleteOnAccount(authenticatedAccount,
+          zAuthToken, preferredAccountId, autoCompleteRequest);
+      for (AutoCompleteMatch match : preferredAccountAutoCompleteResponse.getMatches()) {
+        if (contactAutoCompleteMaxResultsLimit > 0
+            && fullAutoCompleteMatches.size() >= contactAutoCompleteMaxResultsLimit) {
+          break;
+        }
+        fullAutoCompleteMatches.add(match);
+      }
+
+      // process matches from "other preferred accounts"
+      for (String otherAccountId : otherPreferredAccountIds) {
+        final AutoCompleteResponse otherAccountAutoCompleteResponse = doAutoCompleteOnAccount(authenticatedAccount,
+            zAuthToken, otherAccountId, autoCompleteRequest);
+        for (AutoCompleteMatch match : otherAccountAutoCompleteResponse.getMatches()) {
+          if (contactAutoCompleteMaxResultsLimit > 0
+              && fullAutoCompleteMatches.size() + otherAutoCompleteMatches.size()
+              >= contactAutoCompleteMaxResultsLimit) {
+            break;
+          }
+          if (!fullAutoCompleteMatches.contains(match)) {
+            otherAutoCompleteMatches.add(match);
+          }
+        }
+      }
+      otherAutoCompleteMatches.sort(Comparator.comparing(AutoCompleteMatch::getRanking).reversed());
+    } catch (ServiceException | IOException e) {
       throw ServiceException.FAILURE(e.getMessage());
     }
 
-    for (String requestedAccountId: fullAutocompleteRequest.getExtraAccountIds()) {
-      final AutoCompleteResponse accountAutoComplete;
-      try {
-        accountAutoComplete = doAutoCompleteOnAccount(authenticatedAccount, zAuthToken,
-            requestedAccountId, autoCompleteRequest);
-      } catch (IOException e) {
-        throw  ServiceException.FAILURE(e.getMessage());
-      }
-      autoCompleteResponses.add(accountAutoComplete);
-    }
+    fullAutoCompleteMatches.addAll(otherAutoCompleteMatches);
 
-    autoCompleteResponses.forEach(
-        autoCompleteResponse -> autoCompleteResponse.getMatches().forEach(
-            match -> matchesComparator.putIfAbsent(match.getEmail(), match)
-        )
-    );
-
-    AutoCompleteResponse autoCompleteResponse = new FullAutocompleteResponse();
-    autoCompleteResponse.setMatches(matchesComparator.values());
+    final AutoCompleteResponse autoCompleteResponse = new FullAutocompleteResponse();
+    autoCompleteResponse.setMatches(fullAutoCompleteMatches);
     autoCompleteResponse.setCanBeCached(false);
     return JaxbUtil.jaxbToElement(autoCompleteResponse);
-
   }
 
-  /**
-   * Executes and {@link AutoCompleteRequest} from the requested Account.
-   *
-   * @param zAuthToken a {@link ZAuthToken}
-   * @param requestedAccountId requested account id
-   * @param autoCompleteRequest the request to execute against requested target
-   * @return {@link AutoCompleteResponse}
-   */
-  private AutoCompleteResponse doAutoCompleteOnAccount(Account authenticatedAccount, ZAuthToken zAuthToken, String requestedAccountId, AutoCompleteRequest autoCompleteRequest)
+  private AutoCompleteResponse doAutoCompleteOnAccount(Account authenticatedAccount, ZAuthToken zAuthToken,
+      String requestedAccountId, AutoCompleteRequest autoCompleteRequest)
       throws ServiceException, IOException {
     String soapUrl = URLUtil.getSoapURL(authenticatedAccount.getServer(), true);
     final Element autocompleteRequestElement = JaxbUtil.jaxbToElement(autoCompleteRequest);
-    return JaxbUtil.elementToJaxb(new SoapHttpTransport(zAuthToken, soapUrl).invoke(
-            autocompleteRequestElement, requestedAccountId));
-  }
 
-  private AutoCompleteResponse doSelfAutoComplete(Account authenticatedAccount, ZAuthToken zAuthToken, AutoCompleteRequest autoCompleteRequest) throws ServiceException, IOException {
-    String soapUrl = URLUtil.getSoapURL(authenticatedAccount.getServer(), true);
-    final Element autocompleteRequestElement = JaxbUtil.jaxbToElement(autoCompleteRequest);
-    return JaxbUtil.elementToJaxb(new SoapHttpTransport(zAuthToken, soapUrl).invoke(
-        autocompleteRequestElement),  AutoCompleteResponse.class);
+    AutoCompleteResponse autoCompleteResponse;
+    if (authenticatedAccount.getId().equalsIgnoreCase(requestedAccountId)) {
+      autoCompleteResponse = JaxbUtil.elementToJaxb(new SoapHttpTransport(zAuthToken, soapUrl).invoke(
+          autocompleteRequestElement), AutoCompleteResponse.class);
+    } else {
+      autoCompleteResponse = JaxbUtil.elementToJaxb(new SoapHttpTransport(zAuthToken, soapUrl).invoke(
+          autocompleteRequestElement, requestedAccountId));
+    }
+    return autoCompleteResponse;
   }
 }
