@@ -5,6 +5,7 @@
 
 package com.zimbra.soap.mail.type;
 
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -14,7 +15,7 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.type.ZmBoolean;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class AutoCompleteMatch {
+public class AutoCompleteMatch implements Comparable<AutoCompleteMatch>{
 
     /**
      * @zm-api-field-tag email-addresses-for-group
@@ -182,5 +183,28 @@ public class AutoCompleteMatch {
     @Override
     public String toString() {
         return addToStringInfo(MoreObjects.toStringHelper(this)).toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AutoCompleteMatch that = (AutoCompleteMatch) o;
+        return Objects.equals(email, that.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email, matchType, ranking, group, canExpandGroupMembers, id, folder, displayName, firstName,
+            middleName, lastName, fullName, nickname, company, fileAs);
+    }
+
+    @Override
+    public int compareTo(AutoCompleteMatch autoCompleteMatch) {
+        return Integer.compare(this.getRanking(), autoCompleteMatch.getRanking());
     }
 }
