@@ -360,10 +360,10 @@ public final class ParseMimeMessage {
   }
 
 
-  private static void handleAttachments(Element attachElem, MimeMultipart mmp,
-      ParseMessageContext ctxt, String contentID, String contentDisposition)
+  private static void handleInlineAttachments(Element attachElem, MimeMultipart mmp,
+      ParseMessageContext ctxt, String contentID)
       throws ServiceException, MessagingException, IOException {
-    handleAttachments(attachElem, mmp, ctxt, contentID, contentDisposition, false);
+    handleAttachments(attachElem, mmp, ctxt, contentID, Part.INLINE, false);
   }
 
   private static void handleAttachments(Element attachElem, MimeMultipart mmp,
@@ -444,8 +444,8 @@ public final class ParseMimeMessage {
 
     Element inline = elem.getOptionalElement(MailConstants.E_ATTACH);
     if (inline != null) {
-      handleAttachments(inline, mmp, ctxt, elem.getAttribute(MailConstants.A_CONTENT_ID, null),
-          Part.INLINE);
+      handleInlineAttachments(inline, mmp, ctxt, elem.getAttribute(MailConstants.A_CONTENT_ID, null)
+      );
       return;
     }
 
