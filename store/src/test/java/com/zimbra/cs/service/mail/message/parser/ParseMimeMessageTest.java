@@ -358,6 +358,35 @@ public final class ParseMimeMessageTest {
   }
 
   @Test
+  void parseDraftInlineMimeMsgSoap() throws Exception {
+    Element request = new Element.JSONElement(MailConstants.E_SEND_MSG_REQUEST);
+    Element message = new Element.JSONElement(MailConstants.E_MSG);
+    message.addAttribute(MailConstants.E_SUBJECT, "dinner appt");
+    var inlineAttachment = message.addUniqueElement(MailConstants.E_MIMEPART)
+        .addAttribute(MailConstants.A_CONTENT_DISPOSITION, "inline")
+        .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain");
+
+    inlineAttachment.addNonUniqueElement(MailConstants.E_ATTACH);
+
+    message.addElement(MailConstants.E_EMAIL)
+        .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
+        .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
+
+    request.addUniqueElement(message);
+    Account acct = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    OperationContext octxt = new OperationContext(acct);
+    ZimbraSoapContext zsc = getMockSoapContext();
+
+    MimeMessage mm =
+        ParseMimeMessage.parseDraftMimeMsgSoap(
+            zsc, octxt, null, message, new MimeMessageData());
+    assertEquals("text/plain", mm.getContentType());
+    assertEquals("dinner appt", mm.getSubject());
+    assertEquals("rcpt@zimbra.com", mm.getHeader("To", ","));
+    assertEquals("base64", mm.getHeader("Content-Transfer-Encoding", ","));
+  }
+
+  @Test
   void parseDraftMimeMsgSoap_SucceedsEvenIfSizeExceedsMtaQuota() throws Exception {
     var config = Provisioning.getInstance().getConfig();
     try {
