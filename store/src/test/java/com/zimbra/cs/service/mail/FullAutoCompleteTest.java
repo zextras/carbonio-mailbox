@@ -161,8 +161,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
   }
 
   @Test
-  void should_return_relevant_matches_ordered_by_ranking_without_duplicates()
-      throws Exception {
+  void should_return_relevant_matches_ordered_by_ranking_without_duplicates() throws Exception {
     String searchTerm = "test-";
     String email1 = searchTerm + UUID.randomUUID() + "_email1@something.com";
     String email2 = searchTerm + UUID.randomUUID() + "_email2@something.com";
@@ -238,61 +237,83 @@ class FullAutoCompleteTest extends SoapTestSuite {
       assertEquals(expectedRanking.get(i), autoCompleteMatch.getRanking());
       assertEquals("<" + expectedMatchedEmailAddresses.get(i) + ">", autoCompleteMatch.getEmail());
     }
-
   }
 
   @Test
-  @Disabled("TODO: implement the sorting logic for this case")
-  void should_return_relevant_matches_when_ranking_of_all_matches_is_zero() throws Exception {
-    String searchTerm = "test-";
-    String email1 = searchTerm + UUID.randomUUID() + "_email1@something.com";
-    String email2 = searchTerm + UUID.randomUUID() + "_email2@something.com";
-    String email3 = searchTerm + UUID.randomUUID() + "_email3@something.com";
-    String email4 = searchTerm + UUID.randomUUID() + "_email4@something.com";
-    String email5 = searchTerm + UUID.randomUUID() + "_email5@something.com";
+  void should_order_relevant_matches_by_ranking_and_alphabetically_when_matches_have_same_ranking() throws Exception {
+    String searchTerm = "test";
+    String email1 = searchTerm + "_email1@something.com";
+    String email2 = searchTerm + "_email2@something.com";
+    String email3 = searchTerm + "_email3@something.com";
+    String email4 = searchTerm + "_email4@something.com";
+    String email5 = searchTerm + "_email5@something.com";
+    String email6 = searchTerm + "_email6@something.com";
+    String email7 = searchTerm + "_email7@something.com";
+    String email8 = UUID.randomUUID() + "_email8@something.com";
 
     // create accounts
-    Account account = accountCreatorFactory.get().withUsername(searchTerm + "user1-" + UUID.randomUUID()).create();
-    Account account2 = accountCreatorFactory.get().withUsername(searchTerm + "user2-" + UUID.randomUUID()).create();
-    Account account3 = accountCreatorFactory.get().withUsername(searchTerm + "user3-" + UUID.randomUUID()).create();
+    Account account = accountCreatorFactory.get()
+        .withUsername(searchTerm + "user1-" + UUID.randomUUID()).create();
+    Account account2 = accountCreatorFactory.get()
+        .withUsername(searchTerm + "user2-" + UUID.randomUUID()).create();
+    Account account3 = accountCreatorFactory.get()
+        .withUsername(searchTerm + "user3-" + UUID.randomUUID()).create();
 
-    // create contacts account
+    // create contacts for account
     getSoapClient().executeSoap(account, new CreateContactRequest(new ContactSpec().addEmail(email1)));
     getSoapClient().executeSoap(account, new CreateContactRequest(new ContactSpec().addEmail(email2)));
     getSoapClient().executeSoap(account, new CreateContactRequest(new ContactSpec().addEmail(email3)));
+    getSoapClient().executeSoap(account, new CreateContactRequest(new ContactSpec().addEmail(email4)));
+    getSoapClient().executeSoap(account, new CreateContactRequest(new ContactSpec().addEmail(email8)));
 
-    // create contacts account2
-    getSoapClient().executeSoap(account2, new CreateContactRequest(new ContactSpec().addEmail(email1)));
-    getSoapClient().executeSoap(account2, new CreateContactRequest(new ContactSpec().addEmail(email2)));
-    getSoapClient().executeSoap(account2, new CreateContactRequest(new ContactSpec().addEmail(email3)));
+    // create contacts for account2
+    getSoapClient().executeSoap(account2,
+        new CreateContactRequest(new ContactSpec().addEmail(email5)));
 
-    // create contacts account3
-    getSoapClient().executeSoap(account3, new CreateContactRequest(new ContactSpec().addEmail(email1)));
-    getSoapClient().executeSoap(account3, new CreateContactRequest(new ContactSpec().addEmail(email2)));
-    getSoapClient().executeSoap(account3, new CreateContactRequest(new ContactSpec().addEmail(email3)));
-    getSoapClient().executeSoap(account3, new CreateContactRequest(new ContactSpec().addEmail(email4)));
-    getSoapClient().executeSoap(account3, new CreateContactRequest(new ContactSpec().addEmail(email5)));
+    // create contacts for account3
+    getSoapClient().executeSoap(account3,
+        new CreateContactRequest(new ContactSpec().addEmail(email6)));
+    getSoapClient().executeSoap(account3,
+        new CreateContactRequest(new ContactSpec().addEmail(email7)));
 
     // share accounts with primary account (account)
     accountActionFactory.forAccount(account2).shareWith(account);
     accountActionFactory.forAccount(account3).shareWith(account);
 
+    // increment the ranking
+    ContactRankings.increment(account.getId(), Collections.singleton(new InternetAddress(email1)));
+    ContactRankings.increment(account.getId(), Collections.singleton(new InternetAddress(email1)));
+    ContactRankings.increment(account.getId(), Collections.singleton(new InternetAddress(email3)));
+    ContactRankings.increment(account.getId(), Collections.singleton(new InternetAddress(email3)));
+
+    ContactRankings.increment(account3.getId(), Collections.singleton(new InternetAddress(email6)));
+    ContactRankings.increment(account3.getId(), Collections.singleton(new InternetAddress(email6)));
+
     FullAutocompleteRequest fullAutocompleteRequest = new FullAutocompleteRequest(
         new AutoCompleteRequest(searchTerm));
-    fullAutocompleteRequest.setOrderedAccountIds(account.getId() + "," + account2.getId() + "," + account3.getId());
+    fullAutocompleteRequest.setOrderedAccountIds(
+        account.getId() + "," + account2.getId() + "," + account3.getId());
 
     Element request = JaxbUtil.jaxbToElement(fullAutocompleteRequest);
-    HttpResponse execute = getSoapClient().newRequest().setCaller(account).setSoapBody(request).execute();
-    String responseBody = new String(execute.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
+    HttpResponse execute = getSoapClient().newRequest().setCaller(account).setSoapBody(request)
+        .execute();
+    String responseBody = new String(execute.getEntity().getContent().readAllBytes(),
+        StandardCharsets.UTF_8);
 
+    Element rootElement = Element.parseXML(responseBody).getElement("Body").getElement(
+        MailConstants.FULL_AUTO_COMPLETE_RESPONSE);
+    FullAutocompleteResponse fullAutocompleteResponse = JaxbUtil.elementToJaxb(rootElement,
+        FullAutocompleteResponse.class);
     System.out.println("responseBody = " + responseBody);
 
-//    Element rootElement = Element.parseXML(responseBody).getElement("Body").getElement(
-//        MailConstants.FULL_AUTO_COMPLETE_RESPONSE);
-//    FullAutocompleteResponse fullAutocompleteResponse = JaxbUtil.elementToJaxb(rootElement,
-//        FullAutocompleteResponse.class);
-//
-//    Assertions.assertEquals(5, fullAutocompleteResponse.getMatches().size());
+    assertEquals(7, fullAutocompleteResponse.getMatches().size());
+    List<Integer> expectedRanking = List.of(2, 2, 0, 0, 2, 0, 0);
+    List<String> expectedMatchedEmailAddresses = List.of(email1, email3, email2, email4, email6, email5, email7);
+    for (int i = 0; i < fullAutocompleteResponse.getMatches().size(); i++) {
+      AutoCompleteMatch autoCompleteMatch = fullAutocompleteResponse.getMatches().get(i);
+      assertEquals(expectedRanking.get(i), autoCompleteMatch.getRanking());
+      assertEquals("<" + expectedMatchedEmailAddresses.get(i) + ">", autoCompleteMatch.getEmail());
+    }
   }
 
   @Test
