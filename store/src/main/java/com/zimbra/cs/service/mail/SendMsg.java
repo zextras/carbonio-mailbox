@@ -52,7 +52,8 @@ import com.zimbra.cs.mime.MimeProcessor;
 import com.zimbra.cs.mime.MimeVisitor;
 import com.zimbra.cs.service.FileUploadServlet;
 import com.zimbra.cs.service.FileUploadServlet.Upload;
-import com.zimbra.cs.service.mail.ParseMimeMessage.MimeMessageData;
+import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
+import com.zimbra.cs.service.mail.message.parser.MimeMessageData;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.ItemIdFormatter;
 import com.zimbra.cs.util.AccountUtil;
@@ -220,9 +221,9 @@ public class SendMsg extends MailDocumentHandler {
                   MailboxManager.getInstance().getMailboxByAccountId(authAcct.getId());
               mm =
                   ParseMimeMessage.parseMimeMsgSoap(
-                      zsc, octxt, loggedUserMbox, msgElem, null, mimeData);
+                      zsc, octxt, loggedUserMbox, msgElem, mimeData);
             } else {
-              mm = ParseMimeMessage.parseMimeMsgSoap(zsc, octxt, mbox, msgElem, null, mimeData);
+              mm = ParseMimeMessage.parseMimeMsgSoap(zsc, octxt, mbox, msgElem, mimeData);
             }
           }
 

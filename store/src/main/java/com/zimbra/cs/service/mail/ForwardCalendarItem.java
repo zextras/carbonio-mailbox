@@ -33,6 +33,8 @@ import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mailbox.calendar.RecurId;
 import com.zimbra.cs.mailbox.calendar.ZOrganizer;
 import com.zimbra.cs.mime.MimeVisitor;
+import com.zimbra.cs.service.mail.message.parser.MimeMessageData;
+import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -74,7 +76,7 @@ public class ForwardCalendarItem extends CalendarRequest {
     }
 
     Element msgElem = request.getElement(MailConstants.E_MSG);
-    ParseMimeMessage.MimeMessageData parsedMessageData = new ParseMimeMessage.MimeMessageData();
+    MimeMessageData parsedMessageData = new MimeMessageData();
     MimeMessage mm =
         ParseMimeMessage.parseMimeMsgSoap(
             zsc,
