@@ -31,6 +31,13 @@ import java.util.Map;
 public class FullAutoComplete extends MailDocumentHandler {
 
 
+  /**
+   * Parses {@link com.zimbra.common.soap.MailConstants#E_ORDERED_ACCOUNT_IDS} into a {@link Tuple2} object containing
+   * first object as "Preferred Account" and second object as "Other Preferred Account"
+   *
+   * @param input {@link String} containing comma seperated ordered list of accounts IDs
+   * @return a tuple containing first object as "Preferred Account" and second object as "Other Preferred Account"
+   */
   private Tuple2<String, List<String>> parsePreferredAccounts(String input) {
     String preferredAccount = null;
     List<String> otherAccounts = new ArrayList<>();
@@ -106,6 +113,16 @@ public class FullAutoComplete extends MailDocumentHandler {
     return JaxbUtil.jaxbToElement(autoCompleteResponse);
   }
 
+  /**
+   * @param authenticatedAccount The Authenticated account
+   * @param zAuthToken           The {@link ZAuthToken} that will be used to perform SOAP calls
+   * @param requestedAccountId   The account ID for which the {@link AutoComplete} matches will be returned
+   * @param autoCompleteRequest  The original {@link AutoCompleteRequest} element that will be used to perform {@link
+   *                             AutoComplete} SOAP call
+   * @return {@link AutoCompleteResponse}
+   * @throws ServiceException If something goes wrong.
+   * @throws IOException      If an I/O error occurs during the request transport.
+   */
   private AutoCompleteResponse doAutoCompleteOnAccount(Account authenticatedAccount, ZAuthToken zAuthToken,
       String requestedAccountId, AutoCompleteRequest autoCompleteRequest)
       throws ServiceException, IOException {
