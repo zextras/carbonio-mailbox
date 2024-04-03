@@ -47,7 +47,6 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import org.dom4j.QName;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -622,7 +621,6 @@ public final class ParseMimeMessageTest {
     return new ZimbraSoapContext(parent, MockProvisioning.DEFAULT_ACCOUNT_ID, null);
   }
 
-  @NotNull
   private ZimbraSoapContext getZimbraSoapContext(Account account) throws ServiceException {
     ZimbraSoapContext parent =
         new ZimbraSoapContext(
