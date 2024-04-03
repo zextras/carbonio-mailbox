@@ -294,5 +294,11 @@ class FullAutoCompleteTest extends SoapTestSuite {
 //
 //    Assertions.assertEquals(5, fullAutocompleteResponse.getMatches().size());
   }
+
+  @Test
+  @Disabled("Behavior needed to be discussed")
+  void should_do_something_when_request_misses_OrderedAccountIds() {
+      // should return AutoComplete matches from authenticated
+  }
 }
 
