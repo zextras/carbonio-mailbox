@@ -100,12 +100,11 @@ public class FullAutoComplete extends MailDocumentHandler {
           }
         }
       }
+      otherAutoCompleteMatches.sort(Comparator.comparing(AutoCompleteMatch::getRanking).reversed()
+          .thenComparing(AutoCompleteMatch::getEmail));
     } catch (ServiceException | IOException e) {
       throw ServiceException.FAILURE(e.getMessage());
     }
-    otherAutoCompleteMatches.sort(Comparator.comparing(AutoCompleteMatch::getRanking).reversed()
-        .thenComparing(AutoCompleteMatch::getEmail));
-
     fullAutoCompleteMatches.addAll(otherAutoCompleteMatches);
 
     final AutoCompleteResponse autoCompleteResponse = new FullAutocompleteResponse();
