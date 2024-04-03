@@ -57,7 +57,6 @@ import com.zimbra.cs.mailbox.calendar.Util;
 import com.zimbra.cs.mailbox.calendar.ZAttendee;
 import com.zimbra.cs.mailbox.calendar.ZOrganizer;
 import com.zimbra.cs.mailbox.calendar.ZRecur;
-import com.zimbra.cs.mailbox.util.TypedIdList;
 import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
 import com.zimbra.cs.util.AccountUtil.AccountAddressMatcher;
 import com.zimbra.soap.base.CalTZInfoInterface;
@@ -102,8 +101,6 @@ public class CalendarUtils {
 
     return toRet;
   }
-
-  public static final boolean RECUR_NOT_ALLOWED = false;
 
   public static final boolean RECUR_ALLOWED = true;
 
@@ -340,15 +337,11 @@ public class CalendarUtils {
     Invite sanitized =
         cancelInvite(
             account,
-            null,
-            false,
-            false,
             folder,
             cancel,
-            null,
             cancel.getAttendees(),
-            cancel.getRecurId(),
-            false);
+            cancel.getRecurId()
+        );
 
     sanitized.setInviteId(cancel.getMailItemId()); // zdsync
     sanitized.setDtStamp(cancel.getDTStamp()); // zdsync
@@ -677,15 +670,13 @@ public class CalendarUtils {
       tzId = tzId.substring(1, len - 1);
     }
 
-    ICalTimeZone zone = null;
-
     if (tzId.equals("")) {
       return null;
     }
 
     if (!DebugConfig.disableCalendarTZMatchByID) tzId = TZIDMapper.canonicalize(tzId);
 
-    zone = WellKnownTimeZones.getTimeZoneById(tzId);
+    ICalTimeZone zone = WellKnownTimeZones.getTimeZoneById(tzId);
 
     if (zone == null) {
       // Could be a custom TZID during modify operation of invite from
@@ -752,7 +743,7 @@ public class CalendarUtils {
           ICalTok valueType = null;
           for (Iterator<Element> dtvalIter = intElt.elementIterator(MailConstants.E_CAL_DATE_VAL);
               dtvalIter.hasNext(); ) {
-            ICalTok dtvalValueType = null;
+            ICalTok dtvalValueType;
             Element dtvalElem = dtvalIter.next();
             Element dtvalStartElem = dtvalElem.getElement(MailConstants.E_CAL_START_TIME);
             String dtvalStartDateStr = dtvalStartElem.getAttribute(MailConstants.A_CAL_DATETIME);
@@ -841,11 +832,11 @@ public class CalendarUtils {
             } else if (ruleEltName.equals(MailConstants.E_CAL_RULE_BYDAY)) {
               recurBuf.append(";BYDAY=");
               int pos = 0;
-              for (Iterator bydayIter =
+              for (Iterator<Element> bydayIter =
                       ruleElt.elementIterator(MailConstants.E_CAL_RULE_BYDAY_WKDAY);
                   bydayIter.hasNext();
                   pos++) {
-                Element wkdayElt = (Element) bydayIter.next();
+                Element wkdayElt = bydayIter.next();
                 if (pos > 0) recurBuf.append(",");
                 String ordwk =
                     wkdayElt.getAttribute(MailConstants.A_CAL_RULE_BYDAY_WKDAY_ORDWK, null);
@@ -1492,27 +1483,22 @@ public class CalendarUtils {
 
   private static Invite cancelInvite(
       Account acct,
-      Account senderAcct,
-      boolean asAdmin,
-      boolean onBehalfOf,
       Folder folder,
       Invite inv,
-      String comment,
       List<ZAttendee> forAttendees,
-      RecurId recurId,
-      boolean incrementSeq)
+      RecurId recurId)
       throws ServiceException {
-    boolean allowPrivateAccess = CalendarItem.allowPrivateAccess(folder, senderAcct, asAdmin);
+    boolean allowPrivateAccess = CalendarItem.allowPrivateAccess(folder, null, false);
     return cancelInvite(
         acct,
-        senderAcct,
+        null,
         allowPrivateAccess,
-        onBehalfOf,
+        false,
         inv,
-        comment,
+        null,
         forAttendees,
         recurId,
-        incrementSeq);
+        false);
   }
 
   private static Invite cancelInvite(
@@ -1603,51 +1589,6 @@ public class CalendarUtils {
     cancel.setDtStamp(new Date().getTime());
 
     return cancel;
-  }
-
-  /**
-   * Move appointments from TASKS type folders to Calendar folder. Also, move tasks from APPOINTMENT
-   * type folders to Tasks folder.
-   *
-   * @param mbox
-   * @throws ServiceException
-   */
-  public static void migrateAppointmentsAndTasks(Mailbox mbox) throws ServiceException {
-    // get the list of folders.
-    List<Folder> folderList = mbox.getFolderList(null, SortBy.NONE);
-
-    for (Folder folder : folderList) {
-      int targetId;
-      TypedIdList idlist;
-      MailItem.Type type;
-
-      if (folder.getDefaultView() == MailItem.Type.APPOINTMENT) {
-        idlist =
-            mbox.listCalendarItemsForRange(null, MailItem.Type.APPOINTMENT, -1, -1, folder.getId());
-        targetId = Mailbox.ID_FOLDER_CALENDAR;
-        type = MailItem.Type.APPOINTMENT;
-      } else {
-        continue;
-      }
-
-      if (!idlist.isEmpty()) {
-        if (type == MailItem.Type.APPOINTMENT)
-          ZimbraLog.calendar.info(
-              "Migrating "
-                  + idlist.size()
-                  + " Appointment(s) from '"
-                  + folder.getName()
-                  + "' to 'Calendar' folder for mailbox "
-                  + mbox.getId());
-        int[] items = new int[idlist.size()];
-        int i = 0;
-        for (Integer id : idlist.getAllIds()) {
-          items[i] = id;
-          i++;
-        }
-        mbox.move(null, items, type, targetId, null);
-      }
-    }
   }
 
   /**
