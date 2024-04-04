@@ -42,7 +42,7 @@ public class FullAutocompleteRequest {
    *
    * <p>
    * This field is used to specify the accounts from which autocomplete matches should be retrieved. The order of the
-   * account IDs determines the preference order for autocomplete matches.
+   * account IDs determines the order in which matches in response are returned.
    * </p>
    *
    * @zm-api-field-tag orderedAccountIds

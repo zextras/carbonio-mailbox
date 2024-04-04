@@ -8,6 +8,7 @@ import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapHttpTransport;
+import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.httpclient.URLUtil;
 import com.zimbra.soap.JaxbUtil;
@@ -48,14 +49,12 @@ public class FullAutoComplete extends MailDocumentHandler {
       final var preferredAccountId = parsedAccountIds._1();
       final var otherPreferredAccountIds = parsedAccountIds._2();
 
-      // process matches from "preferred account"
-      doAutoCompleteOnAccount(authenticatedAccount, zAuthToken, preferredAccountId, autoCompleteRequest).getMatches()
+      doAutoCompleteOnAccount(authenticatedAccount, zAuthToken, preferredAccountId, autoCompleteRequest)
+          .getMatches()
           .stream()
-          .takeWhile(autoCompleteMatch -> contactAutoCompleteMaxResultsLimit <= 0
-              || fullAutoCompleteMatches.size() < contactAutoCompleteMaxResultsLimit)
+          .limit(Math.max(contactAutoCompleteMaxResultsLimit, 0))
           .forEachOrdered(fullAutoCompleteMatches::add);
 
-      // process matches from "other preferred accounts"
       otherPreferredAccountIds.stream()
           .map(otherAccountId -> doAutoCompleteOnAccount(authenticatedAccount, zAuthToken, otherAccountId,
               autoCompleteRequest))
@@ -74,7 +73,7 @@ public class FullAutoComplete extends MailDocumentHandler {
         .filter(autoCompleteMatch -> fullAutoCompleteMatches.stream()
             .noneMatch(m -> m.getEmail().equalsIgnoreCase(autoCompleteMatch.getEmail())))
         .limit(Math.max(contactAutoCompleteMaxResultsLimit - fullAutoCompleteMatches.size(), 0))
-        .forEach(fullAutoCompleteMatches::add);
+        .forEachOrdered(fullAutoCompleteMatches::add);
 
     return fullAutoCompleteResponseFor(fullAutoCompleteMatches, false);
   }
@@ -137,8 +136,8 @@ public class FullAutoComplete extends MailDocumentHandler {
             autocompleteRequestElement, requestedAccountId));
       }
       return autoCompleteResponse;
-    } catch (ServiceException | IOException ignored) {
-      // TODO add logging
+    } catch (ServiceException | IOException e) {
+      ZimbraLog.misc.warn(e.getMessage(), e);
       return new AutoCompleteResponse();
     }
   }
