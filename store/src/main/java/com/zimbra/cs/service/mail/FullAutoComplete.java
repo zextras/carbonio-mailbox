@@ -11,7 +11,6 @@ import com.zimbra.common.soap.SoapHttpTransport;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.httpclient.URLUtil;
 import com.zimbra.soap.JaxbUtil;
-import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.AutoCompleteRequest;
 import com.zimbra.soap.mail.message.AutoCompleteResponse;
 import com.zimbra.soap.mail.message.FullAutocompleteRequest;
@@ -25,78 +24,51 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A variant of {@link AutoComplete} that returns all contacts of authenticated account + contacts of all accounts
- * shared with it. It doesn't support delegated requests.
+ * A variant of {@link AutoComplete} that returns {@link AutoCompleteMatch}es from multiple sources ({@link Account}s)
+ * based on the order provided by the {@link com.zimbra.common.soap.MailConstants#E_ORDERED_ACCOUNT_IDS}
  */
 public class FullAutoComplete extends MailDocumentHandler {
 
-
-  /**
-   * Parses {@link com.zimbra.common.soap.MailConstants#E_ORDERED_ACCOUNT_IDS} into a {@link Tuple2} object containing
-   * first object as "Preferred Account" and second object as "Other Preferred Account"
-   *
-   * @param input {@link String} containing comma seperated ordered list of accounts IDs
-   * @return a tuple containing first object as "Preferred Account" and second object as "Other Preferred Account"
-   */
-  private Tuple2<String, List<String>> parsePreferredAccounts(String input) {
-    String preferredAccount = null;
-    List<String> otherAccounts = new ArrayList<>();
-
-    if (input != null && !input.isEmpty()) {
-      String[] tokens = input.split(",");
-      if (tokens.length > 0) {
-        preferredAccount = tokens[0].trim();
-        for (int i = 1; i < tokens.length; i++) {
-          otherAccounts.add(tokens[i].trim());
-        }
-      }
-    }
-    return new Tuple2<>(preferredAccount, otherAccounts);
-  }
-
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
-    final ZimbraSoapContext zsc = getZimbraSoapContext(context);
-    final FullAutocompleteRequest fullAutocompleteRequest = JaxbUtil.elementToJaxb(request);
-    if (fullAutocompleteRequest == null) {
-      throw ServiceException.FAILURE("Invalid Request");
-    }
-    final ZAuthToken zAuthToken = zsc.getAuthToken().toZAuthToken();
+    final var zsc = getZimbraSoapContext(context);
+    final var fullAutocompleteRequest = getFullAutocompleteRequestFrom(request);
+    final var fullAutoCompleteMatches = new ArrayList<AutoCompleteMatch>();
+    final var otherAutoCompleteMatches = new ArrayList<AutoCompleteMatch>();
 
-    final List<AutoCompleteMatch> fullAutoCompleteMatches = new ArrayList<>();
-    final List<AutoCompleteMatch> otherAutoCompleteMatches = new ArrayList<>();
-
-    final Account authenticatedAccount = zsc.getAuthToken().getAccount();
-    final int contactAutoCompleteMaxResultsLimit = authenticatedAccount.getContactAutoCompleteMaxResults();
-    final Tuple2<String, List<String>> parsedAccountIds = parsePreferredAccounts(
-        fullAutocompleteRequest.getOrderedAccountIds());
-    final String preferredAccountId = parsedAccountIds._1();
-    final List<String> otherPreferredAccountIds = parsedAccountIds._2();
-    final AutoCompleteRequest autoCompleteRequest = fullAutocompleteRequest.getAutoCompleteRequest();
     try {
+      final var autoCompleteRequest = fullAutocompleteRequest.getAutoCompleteRequest();
+      final var authenticatedAccount = zsc.getAuthToken().getAccount();
+      final var zAuthToken = zsc.getAuthToken().toZAuthToken();
+      final int contactAutoCompleteMaxResultsLimit = authenticatedAccount.getContactAutoCompleteMaxResults();
+      final var parsedAccountIds = parsePreferredAccountsFrom(
+          fullAutocompleteRequest.getOrderedAccountIds());
+      final var preferredAccountId = parsedAccountIds._1();
+      final var otherPreferredAccountIds = parsedAccountIds._2();
+
       // process matches from "preferred account"
-      final AutoCompleteResponse preferredAccountAutoCompleteResponse = doAutoCompleteOnAccount(authenticatedAccount,
+      final var preferredAccountAutoCompleteResponse = doAutoCompleteOnAccount(authenticatedAccount,
           zAuthToken, preferredAccountId, autoCompleteRequest);
-      for (AutoCompleteMatch match : preferredAccountAutoCompleteResponse.getMatches()) {
+      for (var autoCompleteMatch : preferredAccountAutoCompleteResponse.getMatches()) {
         if (contactAutoCompleteMaxResultsLimit > 0
             && fullAutoCompleteMatches.size() >= contactAutoCompleteMaxResultsLimit) {
           break;
         }
-        fullAutoCompleteMatches.add(match);
+        fullAutoCompleteMatches.add(autoCompleteMatch);
       }
 
       // process matches from "other preferred accounts"
-      for (String otherAccountId : otherPreferredAccountIds) {
-        final AutoCompleteResponse otherAccountAutoCompleteResponse = doAutoCompleteOnAccount(authenticatedAccount,
+      for (var otherAccountId : otherPreferredAccountIds) {
+        final var otherAccountAutoCompleteResponse = doAutoCompleteOnAccount(authenticatedAccount,
             zAuthToken, otherAccountId, autoCompleteRequest);
-        for (AutoCompleteMatch match : otherAccountAutoCompleteResponse.getMatches()) {
+        for (var autoCompleteMatch : otherAccountAutoCompleteResponse.getMatches()) {
           if (contactAutoCompleteMaxResultsLimit > 0
               && fullAutoCompleteMatches.size() + otherAutoCompleteMatches.size()
               >= contactAutoCompleteMaxResultsLimit) {
             break;
           }
-          if (!fullAutoCompleteMatches.contains(match)) {
-            otherAutoCompleteMatches.add(match);
+          if (!fullAutoCompleteMatches.contains(autoCompleteMatch)) {
+            otherAutoCompleteMatches.add(autoCompleteMatch);
           }
         }
       }
@@ -107,9 +79,41 @@ public class FullAutoComplete extends MailDocumentHandler {
     }
     fullAutoCompleteMatches.addAll(otherAutoCompleteMatches);
 
-    final AutoCompleteResponse autoCompleteResponse = new FullAutocompleteResponse();
+    return fullAutoCompleteResponseFor(fullAutoCompleteMatches, false);
+  }
+
+  /**
+   * Retrieves a {@link FullAutocompleteRequest} object from the provided raw XML {@link Element}.
+   *
+   * @param request The raw XML {@link Element} containing the {@link FullAutocompleteRequest}.
+   * @return The {@link FullAutocompleteRequest} object parsed from the raw XML {@link Element}.
+   * @throws ServiceException If the raw XML {@link Element} does not contain a valid {@link FullAutocompleteRequest}
+   *                          element.
+   */
+  private FullAutocompleteRequest getFullAutocompleteRequestFrom(Element request) throws ServiceException {
+    final FullAutocompleteRequest fullAutocompleteRequest = JaxbUtil.elementToJaxb(request);
+
+    if (fullAutocompleteRequest == null) {
+      throw ServiceException.FAILURE("Invalid Request");
+    }
+    return fullAutocompleteRequest;
+  }
+
+  /**
+   * Generates an XML {@link Element} representing a {@link FullAutocompleteResponse} based on the provided list of
+   * autocomplete matches ({@link AutoCompleteMatch}) and cache flag.
+   *
+   * @param fullAutoCompleteMatches The list of autocomplete({@link AutoCompleteMatch}) matches.
+   * @param canBeCached             A boolean flag indicating whether the response can be cached.
+   * @return The XML {@link  Element} representing the {@link FullAutocompleteResponse}.
+   * @throws ServiceException If an error occurs during the generation of the {@link FullAutocompleteResponse}.
+   */
+  @SuppressWarnings("SameParameterValue")
+  private Element fullAutoCompleteResponseFor(List<AutoCompleteMatch> fullAutoCompleteMatches, boolean canBeCached)
+      throws ServiceException {
+    final var autoCompleteResponse = new FullAutocompleteResponse();
     autoCompleteResponse.setMatches(fullAutoCompleteMatches);
-    autoCompleteResponse.setCanBeCached(false);
+    autoCompleteResponse.setCanBeCached(canBeCached);
     return JaxbUtil.jaxbToElement(autoCompleteResponse);
   }
 
@@ -126,10 +130,10 @@ public class FullAutoComplete extends MailDocumentHandler {
   private AutoCompleteResponse doAutoCompleteOnAccount(Account authenticatedAccount, ZAuthToken zAuthToken,
       String requestedAccountId, AutoCompleteRequest autoCompleteRequest)
       throws ServiceException, IOException {
-    String soapUrl = URLUtil.getSoapURL(authenticatedAccount.getServer(), true);
-    final Element autocompleteRequestElement = JaxbUtil.jaxbToElement(autoCompleteRequest);
+    final var soapUrl = URLUtil.getSoapURL(authenticatedAccount.getServer(), true);
+    final var autocompleteRequestElement = JaxbUtil.jaxbToElement(autoCompleteRequest);
 
-    AutoCompleteResponse autoCompleteResponse;
+    final AutoCompleteResponse autoCompleteResponse;
     if (authenticatedAccount.getId().equalsIgnoreCase(requestedAccountId)) {
       autoCompleteResponse = JaxbUtil.elementToJaxb(new SoapHttpTransport(zAuthToken, soapUrl).invoke(
           autocompleteRequestElement), AutoCompleteResponse.class);
@@ -138,5 +142,29 @@ public class FullAutoComplete extends MailDocumentHandler {
           autocompleteRequestElement, requestedAccountId));
     }
     return autoCompleteResponse;
+  }
+
+  /**
+   * Parses {@link com.zimbra.common.soap.MailConstants#E_ORDERED_ACCOUNT_IDS} into a {@link Tuple2} object containing
+   * first object as "Preferred Account" and second object as "Other Preferred Account"
+   *
+   * @param preferredAccountsStr {@link String} containing comma seperated ordered list of accounts IDs
+   * @return a tuple containing first object as "Preferred Account" and second object as "Other Preferred Account".
+   */
+  Tuple2<String, List<String>> parsePreferredAccountsFrom(String preferredAccountsStr) {
+    String preferredAccount = null;
+    List<String> otherAccounts = new ArrayList<>();
+
+    if (preferredAccountsStr != null && !preferredAccountsStr.isEmpty()) {
+      String[] tokens = preferredAccountsStr.split(",");
+      preferredAccount = tokens[0].trim();
+      for (int i = 1; i < tokens.length; i++) {
+        String trimmedToken = tokens[i].trim();
+        if (!trimmedToken.isEmpty()) {
+          otherAccounts.add(trimmedToken);
+        }
+      }
+    }
+    return new Tuple2<>(preferredAccount, otherAccounts);
   }
 }

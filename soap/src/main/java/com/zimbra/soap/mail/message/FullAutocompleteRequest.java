@@ -13,10 +13,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * @zm-api-command-auth-required true
  * @zm-api-command-admin-auth-required false
- * @zm-api-command-description FullAutoComplete This API executes an AutoComplete on current logged in account and all
- * extra requested accounts. If one of the requests in extra accounts fails, the whole API will fail. The API returns
- * the same content of AutoComplete by merging the result and discarding duplicates following the order of requested
- * accounts, starting from logged user response.
+ * @zm-api-command-description Retrieves AutoComplete matches from multiple source Accounts defined by
+ * 'orderedAccountIds'. The ordering logic ensures that the most relevant results are returned based on the values
+ * supplied in the 'orderedAccountIds' element.
+ *
+ * <p>
+ * The sorting/ordering and limiting algorithm works as follows:
+ * <ul>
+ *     <li>Matches from the most preferred source account (the first accountId in 'orderedAccountIds') are given higher priority and are placed on top.</li>
+ *     <li>Matches from other source accounts are sorted primarily based on ranking, followed by alphabetical ordering.</li>
+ *     <li>Duplicate matches from other source accounts are omitted, with comparison against matches from the preferred source account.</li>
+ *     <li>If the optional 'orderedAccountIds' element is not passed, matches from the authenticated Account are returned, which is equivalent to a regular AutoCompleteRequest.</li>
+ *     <li>The number of matches returned depends on the value set for authenticated account's ContactAutoCompleteMaxResults.</li>
+ * </ul>
+ * </p>
  */
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = MailConstants.E_FULL_AUTO_COMPLETE_REQUEST)
@@ -24,10 +34,19 @@ public class FullAutocompleteRequest {
 
   @XmlElement(name = MailConstants.E_AUTO_COMPLETE_REQUEST, required = true)
   private AutoCompleteRequest autoCompleteRequest;
+
   /**
+   * Represents an ordered, comma-separated list of account IDs whose autocomplete matches will be included in the
+   * {@link FullAutocompleteResponse}.
+   *
+   * <p>
+   * This field is used to specify the accounts from which autocomplete matches should be retrieved. The order of the
+   * account IDs determines the preference order for autocomplete matches.
+   * </p>
+   *
    * @zm-api-field-tag orderedAccountIds
-   * @zm-api-field-description ordered, comma seperated list of account IDs whose matches will be included in the
-   * response.
+   * @zm-api-field-description ordered, comma-separated list of account IDs whose matches will be included in the
+   * FullAutocompleteResponse.
    */
   @XmlElement(name = MailConstants.E_ORDERED_ACCOUNT_IDS, required = false)
   private String orderedAccountIds;
