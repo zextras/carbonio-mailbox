@@ -25,9 +25,11 @@ import com.zimbra.soap.mail.message.FullAutocompleteRequest;
 import com.zimbra.soap.mail.message.FullAutocompleteResponse;
 import com.zimbra.soap.mail.type.AutoCompleteMatch;
 import com.zimbra.soap.mail.type.ContactSpec;
+import io.vavr.Tuple2;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +41,9 @@ import org.apache.http.HttpResponse;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 @Tag("api")
 class FullAutoCompleteTest extends SoapTestSuite {
@@ -51,6 +56,21 @@ class FullAutoCompleteTest extends SoapTestSuite {
     accountActionFactory = new AccountAction.Factory(
         MailboxManager.getInstance(), RightManager.getInstance());
     accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance());
+  }
+
+  private static Collection<Arguments> parsePreferredAccountsTestData() {
+    return Arrays.asList(
+        Arguments.of("", null, List.of()),
+        Arguments.of(null, null, List.of()),
+        Arguments.of("1,2,3", "1", Arrays.asList("2", "3")),
+        Arguments.of("abc,def,ghi", "abc", Arrays.asList("def", "ghi")),
+        Arguments.of("a,b,c", "a", Arrays.asList("b", "c")),
+        Arguments.of("x,y,", "x", List.of("y")),
+        Arguments.of("123", "123", List.of()),
+        Arguments.of("123 , ,", "123", List.of()),
+        Arguments.of("123 , ", "123", List.of()),
+        Arguments.of(" 123, ", "123", List.of())
+    );
   }
 
   @Test
@@ -77,7 +97,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
     Account account = createRandomAccountWithContacts(contactEmail1, contactEmail2, contactEmail3);
     Cos cos = Provisioning.getInstance().createCos(UUID.randomUUID().toString(), Map.of());
     cos.setContactAutoCompleteMaxResults(1);
-    Provisioning.getInstance().setCOS(account,cos);
+    Provisioning.getInstance().setCOS(account, cos);
 
     FullAutocompleteResponse fullAutocompleteResponse = performFullAutocompleteRequest(searchTerm, account,
         new ArrayList<>());
@@ -133,7 +153,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
   }
 
   @Test
-  void should_return_relevant_matches_ordered_by_ranking_without_duplicates() throws Exception {
+  void should_return_matches_ordered_by_ranking_without_duplicates() throws Exception {
     String searchTerm = "fac-";
     String domain = "something.com";
     String userName = searchTerm + UUID.randomUUID() + "_email";
@@ -176,7 +196,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
   }
 
   @Test
-  void should_return_relevant_matches()
+  void should_return_matches()
       throws Exception {
     String searchTerm = "fac-";
     String domain = "something.com";
@@ -257,7 +277,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
   }
 
   @Test
-  void should_return_relevant_matches_from_authenticated_account_when_request_misses_OrderedAccountIds()
+  void should_return_matches_from_authenticated_account_when_request_misses_OrderedAccountIds()
       throws Exception {
     String searchTerm = "fac-";
     String domain = "something.com";
@@ -299,9 +319,10 @@ class FullAutoCompleteTest extends SoapTestSuite {
     accountActionFactory.forAccount(accountToShare).shareWith(primaryAccount);
   }
 
-  private void incrementRankings(Account account, String email, int times) throws AddressException, ServiceException {
+  private void incrementRankings(Account account, String targetEmailAddress, int times)
+      throws AddressException, ServiceException {
     for (int i = 0; i < times; i++) {
-      ContactRankings.increment(account.getId(), Collections.singleton(new InternetAddress(email)));
+      ContactRankings.increment(account.getId(), Collections.singleton(new InternetAddress(targetEmailAddress)));
     }
   }
 
@@ -318,6 +339,16 @@ class FullAutoCompleteTest extends SoapTestSuite {
     Element rootElement = Element.parseXML(responseBody).getElement("Body")
         .getElement(MailConstants.FULL_AUTO_COMPLETE_RESPONSE);
     return JaxbUtil.elementToJaxb(rootElement, FullAutocompleteResponse.class);
+  }
+
+  @ParameterizedTest
+  @MethodSource("parsePreferredAccountsTestData")
+  void testParsePreferredAccountsFrom(String input, String expectedPreferredAccount,
+      List<String> expectedOtherAccounts) {
+    FullAutoComplete fullAutoComplete = new FullAutoComplete();
+    Tuple2<String, List<String>> result = fullAutoComplete.parsePreferredAccountsFrom(input);
+    assertEquals(expectedPreferredAccount, result._1());
+    assertEquals(expectedOtherAccounts, result._2());
   }
 }
 
