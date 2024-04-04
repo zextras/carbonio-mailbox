@@ -153,15 +153,18 @@ public class FullAutoComplete extends MailDocumentHandler {
    */
   Tuple2<String, List<String>> parsePreferredAccountsFrom(String preferredAccountsStr) {
     String preferredAccount = null;
-    List<String> otherAccounts = new ArrayList<>();
+    final var otherAccounts = new ArrayList<String>();
 
     if (preferredAccountsStr != null && !preferredAccountsStr.isEmpty()) {
       String[] tokens = preferredAccountsStr.split(",");
-      preferredAccount = tokens[0].trim();
-      for (int i = 1; i < tokens.length; i++) {
-        String trimmedToken = tokens[i].trim();
+      for (String token : tokens) {
+        String trimmedToken = token.trim();
         if (!trimmedToken.isEmpty()) {
-          otherAccounts.add(trimmedToken);
+          if (preferredAccount == null) {
+            preferredAccount = trimmedToken;
+          } else {
+            otherAccounts.add(trimmedToken);
+          }
         }
       }
     }

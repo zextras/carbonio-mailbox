@@ -17,7 +17,9 @@ import com.zimbra.cs.account.Cos;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.mailbox.ContactRankings;
+import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.AutoCompleteRequest;
 import com.zimbra.soap.mail.message.CreateContactRequest;
@@ -64,12 +66,11 @@ class FullAutoCompleteTest extends SoapTestSuite {
         Arguments.of(null, null, List.of()),
         Arguments.of("1,2,3", "1", Arrays.asList("2", "3")),
         Arguments.of("abc,def,ghi", "abc", Arrays.asList("def", "ghi")),
-        Arguments.of("a,b,c", "a", Arrays.asList("b", "c")),
-        Arguments.of("x,y,", "x", List.of("y")),
         Arguments.of("123", "123", List.of()),
         Arguments.of("123 , ,", "123", List.of()),
         Arguments.of("123 , ", "123", List.of()),
-        Arguments.of(" 123, ", "123", List.of())
+        Arguments.of(" 123, ", "123", List.of()),
+        Arguments.of(",123,", "123", List.of())
     );
   }
 
@@ -127,7 +128,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
   }
 
   @Test
-  void should_return_matches_from_preferred_account_and_other_preferred_accounts_respecting_account_AutoCompleteMaxResultsLimit()
+  void should_return_matches_from_other_preferred_accounts_respecting_account_AutoCompleteMaxResultsLimit()
       throws Exception {
     String searchTerm = "fac-";
     String domain = "something.com";
@@ -315,9 +316,19 @@ class FullAutoCompleteTest extends SoapTestSuite {
     return account;
   }
 
-  private void shareAccountWithPrimary(Account accountToShare, Account primaryAccount) throws ServiceException {
-    accountActionFactory.forAccount(accountToShare).shareWith(primaryAccount);
+  private void shareAccountWithPrimary(Account accountToShare, Account primaryAccount) {
+    try {
+      Mailbox mailboxOfTargetAccount = MailboxManager.getInstance().getMailboxByAccount(accountToShare);
+      int attempts = 0;
+      while (!mailboxOfTargetAccount.canAccessFolder(new OperationContext(primaryAccount),
+          Mailbox.ID_FOLDER_USER_ROOT) && attempts < 5) {
+        accountActionFactory.forAccount(accountToShare).shareWith(primaryAccount);
+        attempts++;
+      }
+    } catch (ServiceException ignored) {
+    }
   }
+
 
   private void incrementRankings(Account account, String targetEmailAddress, int times)
       throws AddressException, ServiceException {

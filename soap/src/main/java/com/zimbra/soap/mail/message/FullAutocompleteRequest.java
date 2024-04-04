@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *     <li>Matches from other source accounts are sorted primarily based on ranking, followed by alphabetical ordering.</li>
  *     <li>Duplicate matches from other source accounts are omitted, with comparison against matches from the preferred source account.</li>
  *     <li>If the optional 'orderedAccountIds' element is not passed, matches from the authenticated Account are returned, which is equivalent to a regular AutoCompleteRequest.</li>
- *     <li>The number of matches returned depends on the value set for authenticated account's ContactAutoCompleteMaxResults.</li>
+ *     <li>The number of matches returned depends on the value set for authenticated account's ContactAutoCompleteMaxResults attribute.</li>
  * </ul>
  * </p>
  */
