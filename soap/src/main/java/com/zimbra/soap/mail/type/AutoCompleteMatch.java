@@ -184,22 +184,4 @@ public class AutoCompleteMatch {
     public String toString() {
         return addToStringInfo(MoreObjects.toStringHelper(this)).toString();
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        AutoCompleteMatch that = (AutoCompleteMatch) o;
-        return Objects.equals(email, that.email);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(email, matchType, ranking, group, canExpandGroupMembers, id, folder, displayName, firstName,
-            middleName, lastName, fullName, nickname, company, fileAs);
-    }
 }
