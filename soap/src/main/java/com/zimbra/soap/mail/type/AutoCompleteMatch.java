@@ -15,7 +15,7 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.type.ZmBoolean;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class AutoCompleteMatch implements Comparable<AutoCompleteMatch>{
+public class AutoCompleteMatch {
 
     /**
      * @zm-api-field-tag email-addresses-for-group
@@ -201,10 +201,5 @@ public class AutoCompleteMatch implements Comparable<AutoCompleteMatch>{
     public int hashCode() {
         return Objects.hash(email, matchType, ranking, group, canExpandGroupMembers, id, folder, displayName, firstName,
             middleName, lastName, fullName, nickname, company, fileAs);
-    }
-
-    @Override
-    public int compareTo(AutoCompleteMatch autoCompleteMatch) {
-        return Integer.compare(this.getRanking(), autoCompleteMatch.getRanking());
     }
 }
