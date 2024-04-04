@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -62,22 +63,24 @@ class FullAutoCompleteTest extends SoapTestSuite {
 
   private static Collection<Arguments> parsePreferredAccountsTestData() {
     return Arrays.asList(
-        Arguments.of("", null, List.of()),
-        Arguments.of(null, null, List.of()),
-        Arguments.of("1,2,3", "1", Arrays.asList("2", "3")),
-        Arguments.of("abc,def,ghi", "abc", Arrays.asList("def", "ghi")),
-        Arguments.of("123", "123", List.of()),
-        Arguments.of("123 , ,", "123", List.of()),
-        Arguments.of("123 , ", "123", List.of()),
-        Arguments.of(" 123, ", "123", List.of()),
-        Arguments.of(",123,", "123", List.of())
+        Arguments.of("", null, new LinkedHashSet<>()),
+        Arguments.of(null, null, new LinkedHashSet<>()),
+        Arguments.of("1,2,3", "1", new LinkedHashSet<>(Arrays.asList("2", "3"))),
+        Arguments.of("abc,def,ghi", "abc", new LinkedHashSet<>(Arrays.asList("def", "ghi"))),
+        Arguments.of("123", "123", new LinkedHashSet<>()),
+        Arguments.of("123 , ,", "123", new LinkedHashSet<>()),
+        Arguments.of("123 , ", "123", new LinkedHashSet<>()),
+        Arguments.of(" 123, ", "123", new LinkedHashSet<>()),
+        Arguments.of(",123,", "123", new LinkedHashSet<>()),
+        Arguments.of("123,123,456,456,789", "123", new LinkedHashSet<>(Arrays.asList("456", "789")))
     );
   }
+
 
   @Test
   void should_return_matches_from_authenticated_account_only() throws Exception {
     String domain = "abc.com";
-    String searchTerm = "fac-";
+    String searchTerm = "fac";
     String contactEmail1 = searchTerm + UUID.randomUUID() + "@" + domain;
     String contactEmail2 = searchTerm + UUID.randomUUID() + "@" + domain;
     Account account = createRandomAccountWithContacts(contactEmail1, contactEmail2);
@@ -90,7 +93,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
 
   @Test
   void should_return_matches_from_authenticated_account_respecting_COS_AutoCompleteMaxResultsLimit() throws Exception {
-    String searchTerm = "fac-";
+    String searchTerm = "fac";
     final String contactEmail1 = searchTerm + UUID.randomUUID() + "@something.com";
     final String contactEmail2 = searchTerm + UUID.randomUUID() + "@something.com";
     final String contactEmail3 = searchTerm + UUID.randomUUID() + "@something.com";
@@ -109,7 +112,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
   @Test
   void should_return_matches_from_authenticated_account_respecting_account_AutoCompleteMaxResultsLimit()
       throws Exception {
-    String searchTerm = "fac-";
+    String searchTerm = "fac";
     String contactEmail1 = searchTerm + UUID.randomUUID() + "@something.com";
     String contactEmail2 = searchTerm + UUID.randomUUID() + "@something.com";
 
@@ -130,12 +133,12 @@ class FullAutoCompleteTest extends SoapTestSuite {
   @Test
   void should_return_matches_from_other_preferred_accounts_respecting_account_AutoCompleteMaxResultsLimit()
       throws Exception {
-    String searchTerm = "fac-";
+    String searchTerm = "fac";
     String domain = "something.com";
-    String contactEmail1 = searchTerm + UUID.randomUUID() + "@" + domain;
-    String contactEmail2 = searchTerm + UUID.randomUUID() + "@" + domain;
-    String contactEmail3 = searchTerm + UUID.randomUUID() + "@" + domain;
-    String contactEmail4 = searchTerm + UUID.randomUUID() + "@" + domain;
+    String contactEmail1 = searchTerm + "email1@" + domain;
+    String contactEmail2 = searchTerm + "email2@" + domain;
+    String contactEmail3 = searchTerm + "email3@" + domain;
+    String contactEmail4 = searchTerm + "email4@" + domain;
 
     Account account = createRandomAccountWithContacts(contactEmail1);
     Account account2 = createRandomAccountWithContacts(contactEmail1, contactEmail2);
@@ -155,7 +158,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
 
   @Test
   void should_return_matches_ordered_by_ranking_without_duplicates() throws Exception {
-    String searchTerm = "fac-";
+    String searchTerm = "fac";
     String domain = "something.com";
     String userName = searchTerm + UUID.randomUUID() + "_email";
 
@@ -199,7 +202,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
   @Test
   void should_return_matches()
       throws Exception {
-    String searchTerm = "fac-";
+    String searchTerm = "fac";
     String domain = "something.com";
     String userName = searchTerm + "_email";
 
@@ -237,8 +240,9 @@ class FullAutoCompleteTest extends SoapTestSuite {
   }
 
   @Test
-  void should_order_relevant_matches_by_ranking_and_alphabetically_when_matches_have_same_ranking() throws Exception {
-    String searchTerm = "fac-";
+  void should_return_matches_without_duplicates_ordered_by_ranking_and_alphabetically_when_matches_have_same_ranking()
+      throws Exception {
+    String searchTerm = "fac";
     String domain = "something.com";
     String userName = searchTerm + "_email";
 
@@ -252,12 +256,14 @@ class FullAutoCompleteTest extends SoapTestSuite {
 
     Account account = createRandomAccountWithContacts(contactEmail1, contactEmail2, contactEmail3, contactEmail4);
     Account account2 = createRandomAccountWithContacts(contactEmail5);
-    Account account3 = createRandomAccountWithContacts(contactEmail6, contactEmail7);
+    Account account3 = createRandomAccountWithContacts(contactEmail5, contactEmail6, contactEmail7);
 
     shareAccountWithPrimary(account2, account);
     shareAccountWithPrimary(account3, account);
 
     incrementRankings(account, contactEmail1, 2);
+    incrementRankings(account2, contactEmail5, 1);
+    incrementRankings(account3, contactEmail5, 4);
     incrementRankings(account, contactEmail3, 2);
     incrementRankings(account3, contactEmail6, 2);
 
@@ -266,10 +272,9 @@ class FullAutoCompleteTest extends SoapTestSuite {
         preferredAccounts);
 
     assertEquals(7, fullAutocompleteResponse.getMatches().size());
-    List<Integer> expectedRanking = List.of(2, 2, 0, 0, 2, 0, 0);
+    List<Integer> expectedRanking = List.of(2, 2, 0, 0, 4, 2, 0);
     List<String> expectedMatchedEmailAddresses = Arrays.asList(contactEmail1, contactEmail3, contactEmail2,
-        contactEmail4, contactEmail6,
-        contactEmail5, contactEmail7);
+        contactEmail4, contactEmail5, contactEmail6, contactEmail7);
     for (int i = 0; i < fullAutocompleteResponse.getMatches().size(); i++) {
       AutoCompleteMatch autoCompleteMatch = fullAutocompleteResponse.getMatches().get(i);
       assertEquals(expectedRanking.get(i), autoCompleteMatch.getRanking());
@@ -280,7 +285,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
   @Test
   void should_return_matches_from_authenticated_account_when_request_misses_OrderedAccountIds()
       throws Exception {
-    String searchTerm = "fac-";
+    String searchTerm = "fac";
     String domain = "something.com";
     String userName = searchTerm + "_email";
 
@@ -355,9 +360,9 @@ class FullAutoCompleteTest extends SoapTestSuite {
   @ParameterizedTest
   @MethodSource("parsePreferredAccountsTestData")
   void testParsePreferredAccountsFrom(String input, String expectedPreferredAccount,
-      List<String> expectedOtherAccounts) {
+      LinkedHashSet<String> expectedOtherAccounts) {
     FullAutoComplete fullAutoComplete = new FullAutoComplete();
-    Tuple2<String, List<String>> result = fullAutoComplete.parsePreferredAccountsFrom(input);
+    Tuple2<String, LinkedHashSet<String>> result = fullAutoComplete.parsePreferredAccountsFrom(input);
     assertEquals(expectedPreferredAccount, result._1());
     assertEquals(expectedOtherAccounts, result._2());
   }
