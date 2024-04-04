@@ -15,7 +15,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @zm-api-command-admin-auth-required false
  * @zm-api-command-description Retrieves AutoComplete matches from multiple source Accounts defined by
  * 'orderedAccountIds'. The ordering logic ensures that the most relevant results are returned based on the values
- * supplied in the 'orderedAccountIds' element.
+ * supplied in the 'orderedAccountIds' element. The returned matches are ordered (top match being most relevant) based
+ * on account IDs order passed in 'orderedAccountIds'. Hence, the 'ranking' attribute of matches should be ignored.
  *
  * <p>
  * The sorting/ordering and limiting algorithm works as follows:
@@ -46,7 +47,7 @@ public class FullAutocompleteRequest {
    *
    * @zm-api-field-tag orderedAccountIds
    * @zm-api-field-description ordered, comma-separated list of account IDs whose matches will be included in the
-   * FullAutocompleteResponse.
+   * FullAutocompleteResponse. Duplicate account IDs are ignored.
    */
   @XmlElement(name = MailConstants.E_ORDERED_ACCOUNT_IDS, required = false)
   private String orderedAccountIds;
