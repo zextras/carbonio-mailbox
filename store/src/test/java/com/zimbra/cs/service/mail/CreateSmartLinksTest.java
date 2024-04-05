@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-public class CreateSmartLinksTest {
+class CreateSmartLinksTest {
   private static Account account;
   private Tracking tracking;
   private SmartLinksGenerator smartLinksGenerator;

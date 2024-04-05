@@ -8,6 +8,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 public class TrackingUtil {
 
+  private TrackingUtil() {
+  }
+
   public static String anonymize(String value) {
     return new DigestUtils("SHA-256").digestAsHex(value);
   }
