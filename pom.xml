@@ -161,7 +161,7 @@
       <dependency>
         <groupId>com.zextras.carbonio.files</groupId>
         <artifactId>carbonio-files-sdk</artifactId>
-        <version>0.0.3</version>
+        <version>0.0.4</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
