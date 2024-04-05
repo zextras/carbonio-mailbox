@@ -10,8 +10,6 @@ import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.Element;
-import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Cos;
 import com.zimbra.cs.account.Provisioning;
@@ -28,7 +26,6 @@ import com.zimbra.soap.mail.message.FullAutocompleteResponse;
 import com.zimbra.soap.mail.type.AutoCompleteMatch;
 import com.zimbra.soap.mail.type.ContactSpec;
 import io.vavr.Tuple2;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,7 +37,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
-import org.apache.http.HttpResponse;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -160,13 +156,12 @@ class FullAutoCompleteTest extends SoapTestSuite {
   void should_return_matches_ordered_by_ranking_without_duplicates() throws Exception {
     String searchTerm = "fac";
     String domain = "something.com";
-    String userName = searchTerm + UUID.randomUUID() + "_email";
-
-    String contactEmail1 = userName + "1" + "@" + domain;
-    String contactEmail2 = userName + "2" + "@" + domain;
-    String contactEmail3 = userName + "3" + "@" + domain;
-    String contactEmail4 = userName + "4" + "@" + domain;
-    String contactEmail5 = userName + "5" + "@" + domain;
+    String userName = searchTerm + UUID.randomUUID();
+    String contactEmail1 = userName + "_email1@" + domain;
+    String contactEmail2 = userName + "_email2@" + domain;
+    String contactEmail3 = userName + "_email3@" + domain;
+    String contactEmail4 = userName + "_email4@" + domain;
+    String contactEmail5 = userName + "_email5@" + domain;
 
     Account account = createRandomAccountWithContacts(contactEmail1, contactEmail2, contactEmail3);
     Account account2 = createRandomAccountWithContacts(contactEmail1, contactEmail2, contactEmail3);
@@ -204,12 +199,11 @@ class FullAutoCompleteTest extends SoapTestSuite {
       throws Exception {
     String searchTerm = "fac";
     String domain = "something.com";
-    String userName = searchTerm + "_email";
 
-    String contactEmail1 = userName + "1" + "@" + domain;
-    String contactEmail2 = userName + "2" + "@" + domain;
-    String contactEmail3 = userName + "3" + "@" + domain;
-    String contactEmail4 = userName + "4" + "@" + domain;
+    String contactEmail1 = searchTerm + "_email1@" + domain;
+    String contactEmail2 = searchTerm + "_email2@" + domain;
+    String contactEmail3 = searchTerm + "_email3@" + domain;
+    String contactEmail4 = searchTerm + "_email4@" + domain;
 
     Account account = createRandomAccountWithContacts(contactEmail1, contactEmail2, contactEmail3, contactEmail4);
     Account account2 = createRandomAccountWithContacts(contactEmail1, contactEmail4);
@@ -244,15 +238,14 @@ class FullAutoCompleteTest extends SoapTestSuite {
       throws Exception {
     String searchTerm = "fac";
     String domain = "something.com";
-    String userName = searchTerm + "_email";
 
-    String contactEmail1 = userName + "1" + "@" + domain;
-    String contactEmail2 = userName + "2" + "@" + domain;
-    String contactEmail3 = userName + "3" + "@" + domain;
-    String contactEmail4 = userName + "4" + "@" + domain;
-    String contactEmail5 = userName + "5" + "@" + domain;
-    String contactEmail6 = userName + "6" + "@" + domain;
-    String contactEmail7 = userName + "7" + "@" + domain;
+    String contactEmail1 = searchTerm + "_email1@" + domain;
+    String contactEmail2 = searchTerm + "_email2@" + domain;
+    String contactEmail3 = searchTerm + "_email3@" + domain;
+    String contactEmail4 = searchTerm + "_email4@" + domain;
+    String contactEmail5 = searchTerm + "_email5@" + domain;
+    String contactEmail6 = searchTerm + "_email6@" + domain;
+    String contactEmail7 = searchTerm + "_email7@" + domain;
 
     Account account = createRandomAccountWithContacts(contactEmail1, contactEmail2, contactEmail3, contactEmail4);
     Account account2 = createRandomAccountWithContacts(contactEmail5);
@@ -287,12 +280,11 @@ class FullAutoCompleteTest extends SoapTestSuite {
       throws Exception {
     String searchTerm = "fac";
     String domain = "something.com";
-    String userName = searchTerm + "_email";
 
-    String contactEmail1 = userName + "1" + "@" + domain;
-    String contactEmail2 = userName + "2" + "@" + domain;
-    String contactEmail3 = userName + "3" + "@" + domain;
-    String contactEmail4 = userName + "4" + "@" + domain;
+    String contactEmail1 = searchTerm + "_email1@" + domain;
+    String contactEmail2 = searchTerm + "_email2@" + domain;
+    String contactEmail3 = searchTerm + "_email3@" + domain;
+    String contactEmail4 = searchTerm + "_email4@" + domain;
 
     Account account = createRandomAccountWithContacts(contactEmail1, contactEmail2, contactEmail3, contactEmail4);
 
@@ -311,6 +303,16 @@ class FullAutoCompleteTest extends SoapTestSuite {
       assertEquals(expectedRanking.get(i), autoCompleteMatch.getRanking());
       assertEquals("<" + expectedMatchedEmailAddresses.get(i) + ">", autoCompleteMatch.getEmail());
     }
+  }
+
+  @ParameterizedTest
+  @MethodSource("parsePreferredAccountsTestData")
+  void testParsePreferredAccountsFrom(String input, String expectedPreferredAccount,
+      LinkedHashSet<String> expectedOtherAccounts) {
+    FullAutoComplete fullAutoComplete = new FullAutoComplete();
+    Tuple2<String, LinkedHashSet<String>> result = fullAutoComplete.parsePreferredAccountsFrom(input);
+    assertEquals(expectedPreferredAccount, result._1());
+    assertEquals(expectedOtherAccounts, result._2());
   }
 
   private Account createRandomAccountWithContacts(String... emails) throws Exception {
@@ -334,7 +336,6 @@ class FullAutoCompleteTest extends SoapTestSuite {
     }
   }
 
-
   private void incrementRankings(Account account, String targetEmailAddress, int times)
       throws AddressException, ServiceException {
     for (int i = 0; i < times; i++) {
@@ -343,28 +344,13 @@ class FullAutoCompleteTest extends SoapTestSuite {
   }
 
   private FullAutocompleteResponse performFullAutocompleteRequest(String searchTerm, Account authenticatorAccount,
-      ArrayList<Account> orderedAccountIds)
-      throws Exception {
-    FullAutocompleteRequest request = new FullAutocompleteRequest(new AutoCompleteRequest(searchTerm));
+      ArrayList<Account> orderedAccountIds) throws Exception {
     String orderedAccountIdsStr = orderedAccountIds.stream().map(Account::getId).collect(Collectors.joining(","));
+    FullAutocompleteRequest request = new FullAutocompleteRequest(new AutoCompleteRequest(searchTerm));
     request.setOrderedAccountIds(orderedAccountIdsStr);
-    Element requestElement = JaxbUtil.jaxbToElement(request);
-    HttpResponse response = getSoapClient().newRequest().setCaller(authenticatorAccount).setSoapBody(requestElement)
-        .execute();
-    String responseBody = new String(response.getEntity().getContent().readAllBytes(), StandardCharsets.UTF_8);
-    Element rootElement = Element.parseXML(responseBody).getElement("Body")
-        .getElement(MailConstants.FULL_AUTO_COMPLETE_RESPONSE);
-    return JaxbUtil.elementToJaxb(rootElement, FullAutocompleteResponse.class);
-  }
 
-  @ParameterizedTest
-  @MethodSource("parsePreferredAccountsTestData")
-  void testParsePreferredAccountsFrom(String input, String expectedPreferredAccount,
-      LinkedHashSet<String> expectedOtherAccounts) {
-    FullAutoComplete fullAutoComplete = new FullAutoComplete();
-    Tuple2<String, LinkedHashSet<String>> result = fullAutoComplete.parsePreferredAccountsFrom(input);
-    assertEquals(expectedPreferredAccount, result._1());
-    assertEquals(expectedOtherAccounts, result._2());
+    return JaxbUtil.elementToJaxb(new FullAutoComplete().handle(JaxbUtil.jaxbToElement(request),
+        ServiceTestUtil.getRequestContext(authenticatorAccount)));
   }
 }
 
