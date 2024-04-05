@@ -6,6 +6,8 @@ package com.zextras.mailbox.tracking;
 
 import io.vavr.control.Try;
 import java.net.URI;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -24,7 +26,11 @@ public class MatomoTracking implements Tracking {
       try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
         final HttpGet httpGet = new HttpGet();
         httpGet.setURI(URI.create(generateRequest(event)));
-        client.execute(httpGet);
+        final CloseableHttpResponse execute = client.execute(httpGet);
+        final int statusCode = execute.getStatusLine().getStatusCode();
+        if (statusCode != HttpStatus.SC_NO_CONTENT) {
+          throw new RuntimeException("failed");
+        }
       }
     });
   }

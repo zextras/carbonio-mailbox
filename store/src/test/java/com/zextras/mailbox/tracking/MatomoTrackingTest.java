@@ -40,7 +40,7 @@ class MatomoTrackingTest {
     final String category = "TestCategory";
     final String action = "TestAction";
     final Event event = new Event(userId, category, action);
-    final HttpRequest matomoRequest = matomoRequest(userId, category, action);
+    final HttpRequest matomoRequest = createMatomoRequest(userId, category, action);
     mockSuccessMatomoResponse(matomoRequest);
 
     final Try<Void> response = new MatomoTracking("http://localhost:" + MATOMO_PORT).sendEvent(event);
@@ -49,13 +49,34 @@ class MatomoTrackingTest {
     Assertions.assertTrue(response.isSuccess());
   }
 
+  @Test
+  void shouldFailWhenMatomoFails() {
+    final String userId = "AAA";
+    final String category = "TestCategory";
+    final String action = "TestAction";
+    final Event event = new Event(userId, category, action);
+    final HttpRequest matomoRequest = createMatomoRequest(userId, category, action);
+    mockFailureMatomoResponse(matomoRequest);
+
+    final Try<Void> response = new MatomoTracking("http://localhost:" + MATOMO_PORT).sendEvent(event);
+
+    matomo.verify(matomoRequest, VerificationTimes.exactly(1));
+    Assertions.assertTrue(response.isFailure());
+  }
+
+  private void mockFailureMatomoResponse(HttpRequest request) {
+    matomo
+        .when(request)
+        .respond(response().withStatusCode(500));
+  }
+
   private void mockSuccessMatomoResponse(HttpRequest request) {
     matomo
         .when(request)
         .respond(response().withStatusCode(204));
   }
 
-  private HttpRequest matomoRequest(String uid, String category, String action) {
+  private HttpRequest createMatomoRequest(String uid, String category, String action) {
     return request()
         .withMethod("GET")
         .withPath("/matomo.php")
