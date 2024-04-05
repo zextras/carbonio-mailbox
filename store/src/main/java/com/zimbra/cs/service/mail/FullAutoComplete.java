@@ -136,7 +136,7 @@ public class FullAutoComplete extends MailDocumentHandler {
       }
       return autoCompleteResponse;
     } catch (ServiceException | IOException e) {
-      ZimbraLog.misc.warn(e.getMessage(), e);
+      ZimbraLog.misc.warn(e.getMessage());
       return new AutoCompleteResponse();
     }
   }
