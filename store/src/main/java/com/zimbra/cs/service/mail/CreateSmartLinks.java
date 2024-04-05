@@ -3,6 +3,9 @@ package com.zimbra.cs.service.mail;
 import com.zextras.mailbox.AuthenticationInfo;
 import com.zextras.mailbox.smartlinks.Attachment;
 import com.zextras.mailbox.smartlinks.SmartLinksGenerator;
+import com.zextras.mailbox.tracking.Event;
+import com.zextras.mailbox.tracking.Tracking;
+import com.zextras.mailbox.tracking.TrackingUtil;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
@@ -11,7 +14,6 @@ import com.zimbra.soap.mail.message.CreateSmartLinksRequest;
 import com.zimbra.soap.mail.message.CreateSmartLinksResponse;
 import com.zimbra.soap.mail.type.AttachmentToConvert;
 import com.zimbra.soap.mail.type.SmartLink;
-
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -20,9 +22,12 @@ import java.util.stream.Collectors;
 public class CreateSmartLinks extends MailDocumentHandler {
 
   private final SmartLinksGenerator smartLinksGenerator;
+  private final Tracking tracking;
 
-  public CreateSmartLinks(SmartLinksGenerator smartLinksGenerator) {
+  public CreateSmartLinks(SmartLinksGenerator smartLinksGenerator,
+      Tracking tracking) {
     this.smartLinksGenerator = smartLinksGenerator;
+    this.tracking = tracking;
   }
 
   @Override
@@ -45,6 +50,10 @@ public class CreateSmartLinks extends MailDocumentHandler {
     }
     final List<Attachment> attachments = toAttachments(req.getAttachments());
     final List<SmartLink> smartLinks = generateSmartLinks(authenticationInfo, attachments);
+
+    final String uid = TrackingUtil.anonymize(authenticationInfo.getAuthenticatedAccount().getId());
+    tracking.sendEvent(new Event(uid, "Mail", "SendEmailWithSmartLink"));
+
     return new CreateSmartLinksResponse(smartLinks);
   }
 
