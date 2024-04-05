@@ -62,14 +62,13 @@ public class FullAutoComplete extends MailDocumentHandler {
               .filter(autoCompleteMatch -> fullAutoCompleteMatches.stream()
                   .noneMatch(m -> m.getEmail().equalsIgnoreCase(autoCompleteMatch.getEmail())))
               .forEachOrdered(otherAutoCompleteMatches::add));
-
-      otherAutoCompleteMatches.sort(Comparator.comparing(AutoCompleteMatch::getRanking).reversed()
-          .thenComparing(AutoCompleteMatch::getEmail));
     } catch (ServiceException e) {
       throw ServiceException.FAILURE(e.getMessage());
     }
 
     otherAutoCompleteMatches.stream()
+        .sorted(Comparator.comparing(AutoCompleteMatch::getRanking).reversed()
+            .thenComparing(AutoCompleteMatch::getEmail))
         .filter(autoCompleteMatch -> fullAutoCompleteMatches.stream()
             .noneMatch(m -> m.getEmail().equalsIgnoreCase(autoCompleteMatch.getEmail())))
         .limit(Math.max(contactAutoCompleteMaxResultsLimit - fullAutoCompleteMatches.size(), 0))
