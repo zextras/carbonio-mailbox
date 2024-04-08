@@ -61,6 +61,18 @@ package() {
   install -Ddm755 store/ldap/generated/ \
     "${pkgdir}/opt/zextras/common/etc/openldap/zimbra/"
   rsync -a store/ldap/generated/ "${pkgdir}/opt/zextras/common/etc/openldap/zimbra/"
+
+  # systemd units and target
+  mkdir -p "${pkgdir}/lib/systemd/system/${pkgname}.target.wants"
+  install -Dm 644 "packages/directory-server/${pkgname}.target" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target"
+
+  ln -sf "/lib/systemd/system/carbonio-configd.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-configd.service"
+  ln -sf "/lib/systemd/system/carbonio-openldap.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-openldap.service"
+  ln -sf "/lib/systemd/system/carbonio-stats.service" \
+    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-stats.service"
 }
 
 postinst__apt() {

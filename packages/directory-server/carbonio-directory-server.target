@@ -1,0 +1,7 @@
+[Unit]
+Description=Carbonio Directory Server
+Documentation=man:systemd.special(7)
+Requires=multi-user.target
+After=multi-user.target
+PartOf=carbonio-ce.target carbonio.target
+AllowIsolate=yes
