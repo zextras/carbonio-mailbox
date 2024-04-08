@@ -52,7 +52,7 @@ public class CreateSmartLinks extends MailDocumentHandler {
     final List<SmartLink> smartLinks = generateSmartLinks(authenticationInfo, attachments);
 
     final String uid = TrackingUtil.anonymize(authenticationInfo.getAuthenticatedAccount().getId());
-    tracking.sendEvent(new Event(uid, "Mail", "SendEmailWithSmartLink"));
+    tracking.sendEventIgnoringFailure(new Event(uid, "Mail", "SendEmailWithSmartLink"));
 
     return new CreateSmartLinksResponse(smartLinks);
   }

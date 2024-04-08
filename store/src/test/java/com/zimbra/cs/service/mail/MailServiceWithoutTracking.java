@@ -12,7 +12,7 @@ import io.vavr.control.Try;
  * Mail Service registration API that uses a fake tracking to avoid sending data to Matomo.
  *
  */
-public class MailServiceTest extends MailService {
+public class MailServiceWithoutTracking extends MailService {
 
   @Override
   protected Tracking getTracking() {
@@ -22,9 +22,7 @@ public class MailServiceTest extends MailService {
   static class FakeTracking implements Tracking {
 
     @Override
-    public Try<Void> sendEvent(Event event) {
-      return Try.run(() -> {
-      });
+    public void sendEventIgnoringFailure(Event event) {
     }
   }
 }

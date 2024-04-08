@@ -17,7 +17,7 @@ public class SoapTestSuite {
   static SoapExtension soapExtension = new SoapExtension.Builder()
       .addEngineHandler("com.zimbra.cs.service.admin.AdminService")
       .addEngineHandler("com.zimbra.cs.service.account.AccountService")
-      .addEngineHandler("com.zimbra.cs.service.mail.MailServiceTest")
+      .addEngineHandler("com.zimbra.cs.service.mail.MailServiceWithoutTracking")
       .create();
 
   public SoapClient getSoapClient() {

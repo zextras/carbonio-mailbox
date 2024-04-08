@@ -4,14 +4,13 @@
 
 package com.zextras.mailbox.tracking;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
-import io.vavr.control.Try;
 import java.io.IOException;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.integration.ClientAndServer;
@@ -40,10 +39,8 @@ class MatomoTrackingTest {
     final HttpRequest matomoRequest = createMatomoRequest("UserId", "TestCategory", "TestAction");
     mockSuccessMatomoResponse(matomoRequest);
 
-    final Try<Void> response = new MatomoTracking("http://localhost:" + MATOMO_PORT).sendEvent(event);
-
+    assertDoesNotThrow(() -> new MatomoTracking("http://localhost:" + MATOMO_PORT).sendEventIgnoringFailure(event));
     matomo.verify(matomoRequest, VerificationTimes.exactly(1));
-    Assertions.assertTrue(response.isSuccess());
   }
 
   @Test
@@ -52,10 +49,8 @@ class MatomoTrackingTest {
     final HttpRequest matomoRequest = createMatomoRequest("UserId", "TestCategory", "TestAction");
     mockFailureMatomoResponse(matomoRequest);
 
-    final Try<Void> response = new MatomoTracking("http://localhost:" + MATOMO_PORT).sendEvent(event);
-
+    assertDoesNotThrow(() -> new MatomoTracking("http://localhost:" + MATOMO_PORT).sendEventIgnoringFailure(event));
     matomo.verify(matomoRequest, VerificationTimes.exactly(1));
-    Assertions.assertTrue(response.isFailure());
   }
 
   private void mockFailureMatomoResponse(HttpRequest request) {
