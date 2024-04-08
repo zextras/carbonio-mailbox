@@ -4,14 +4,9 @@
 
 package com.zimbra.cs.service.mail;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import com.zextras.mailbox.smartlinks.SmartLinksGenerator;
 import com.zextras.mailbox.tracking.Event;
 import com.zextras.mailbox.tracking.Tracking;
-import com.zextras.mailbox.tracking.TrackingUtil;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.soap.Element;
@@ -19,14 +14,19 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.CreateSmartLinksRequest;
 import com.zimbra.soap.mail.type.AttachmentToConvert;
-import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 class CreateSmartLinksTest {
   private static Account account;
@@ -66,7 +66,6 @@ class CreateSmartLinksTest {
     final Event receivedEvent = eventCaptor.getValue();
     assertEquals("Mail", receivedEvent.getCategory());
     assertEquals("SendEmailWithSmartLink", receivedEvent.getAction());
-    assertEquals(TrackingUtil.anonymize(account.getId()), receivedEvent.getUserId());
+    assertEquals(account.getId(), receivedEvent.getUserId());
   }
-
 }
