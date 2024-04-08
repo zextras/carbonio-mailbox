@@ -1,6 +1,6 @@
 def mvnCmd(String cmd) {
     def profile = ''
-    if (buildingTag()) {
+    if (isBuildingTag()) {
         profile = '-Pprod'
     }
     else if (env.BRANCH_NAME == 'devel' ) {
@@ -8,6 +8,16 @@ def mvnCmd(String cmd) {
     }
     sh 'mvn -B -s settings-jenkins.xml ' + profile + ' ' + cmd
 }
+def isBuildingTag() {
+    def changeSet = currentBuild.changeSets[0]
+    if (changeSet != null) {
+        return changeSet.getItems().any { item ->
+            item.comment.contains('refs/tags/')
+        }
+    }
+    return false
+}
+
 def buildDebPackages(String flavor) {
     unstash 'staging'
     sh 'cp -r staging /tmp'
