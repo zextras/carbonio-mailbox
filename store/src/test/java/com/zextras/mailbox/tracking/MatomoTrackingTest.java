@@ -36,11 +36,8 @@ class MatomoTrackingTest {
 
   @Test
   void shouldSendEventToMatomo() {
-    final String userId = "AAA";
-    final String category = "TestCategory";
-    final String action = "TestAction";
-    final Event event = new Event(userId, category, action);
-    final HttpRequest matomoRequest = createMatomoRequest(userId, category, action);
+    final Event event = new Event("UserId", "TestCategory", "TestAction");
+    final HttpRequest matomoRequest = createMatomoRequest("UserId", "TestCategory", "TestAction");
     mockSuccessMatomoResponse(matomoRequest);
 
     final Try<Void> response = new MatomoTracking("http://localhost:" + MATOMO_PORT).sendEvent(event);
@@ -51,11 +48,8 @@ class MatomoTrackingTest {
 
   @Test
   void shouldFailWhenMatomoFails() {
-    final String userId = "AAA";
-    final String category = "TestCategory";
-    final String action = "TestAction";
-    final Event event = new Event(userId, category, action);
-    final HttpRequest matomoRequest = createMatomoRequest(userId, category, action);
+    final Event event = new Event("UserId", "TestCategory", "TestAction");
+    final HttpRequest matomoRequest = createMatomoRequest("UserId", "TestCategory", "TestAction");
     mockFailureMatomoResponse(matomoRequest);
 
     final Try<Void> response = new MatomoTracking("http://localhost:" + MATOMO_PORT).sendEvent(event);
