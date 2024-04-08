@@ -11,6 +11,14 @@ import org.junit.jupiter.api.Test;
 class TrackingUtilTest {
 
   @Test
+  void anonymize_shouldGenerateSameHashForSameValues() {
+    assertEquals(
+        TrackingUtil.anonymize("a"),
+        TrackingUtil.anonymize("a")
+    );
+  }
+
+  @Test
   void anonymize_shouldGenerateDifferentHashesForDifferentValues() {
     assertNotEquals(
         TrackingUtil.anonymize("a"),
