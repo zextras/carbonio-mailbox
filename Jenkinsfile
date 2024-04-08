@@ -66,7 +66,7 @@ pipeline {
     }
 
     triggers {
-        cron(env.BRANCH_NAME == 'feat/CO-1037' ? '47 14 * * *' : '')
+        cron('49 14 * * *')
     }
 
     parameters {
