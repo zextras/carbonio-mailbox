@@ -24,9 +24,7 @@ public class MatomoTracking implements Tracking {
   public Try<Void> sendEvent(Event event) {
     return Try.run(() -> {
       try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
-        final HttpGet httpGet = new HttpGet();
-        httpGet.setURI(URI.create(generateRequest(event)));
-        final CloseableHttpResponse execute = client.execute(httpGet);
+        final CloseableHttpResponse execute = client.execute(generateRequest(event));
         final int statusCode = execute.getStatusLine().getStatusCode();
         if (statusCode != HttpStatus.SC_NO_CONTENT) {
           throw new RuntimeException("failed");
@@ -35,11 +33,14 @@ public class MatomoTracking implements Tracking {
     });
   }
 
-  private String generateRequest(Event event) {
-    return matomoEndpoint + "/matomo.php?idsite=7&rec=1&send_image=0&apiv=1"
+  private HttpGet generateRequest(Event event) {
+    final HttpGet httpGet = new HttpGet();
+    String url = matomoEndpoint + "/matomo.php?idsite=7&rec=1&send_image=0&apiv=1"
         + "&e_c=" + event.getCategory() +
         "&e_a=" + event.getAction() +
         "&uid=" + event.getUserId();
+    httpGet.setURI(URI.create(url));
+    return httpGet;
   }
 
 }
