@@ -5,7 +5,6 @@
 package com.zextras.mailbox.soap;
 
 import com.zextras.mailbox.util.SoapClient;
-import org.apache.http.HttpResponse;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
@@ -18,15 +17,11 @@ public class SoapTestSuite {
   static SoapExtension soapExtension = new SoapExtension.Builder()
       .addEngineHandler("com.zimbra.cs.service.admin.AdminService")
       .addEngineHandler("com.zimbra.cs.service.account.AccountService")
-      .addEngineHandler("com.zimbra.cs.service.mail.MailService")
+      .addEngineHandler("com.zimbra.cs.service.mail.MailServiceWithoutTracking")
       .create();
 
   public SoapClient getSoapClient() {
     return soapExtension.getSoapClient();
-  }
-
-  public String getResponse(HttpResponse response) throws Exception {
-    return new String (response.getEntity().getContent().readAllBytes());
   }
 
 }
