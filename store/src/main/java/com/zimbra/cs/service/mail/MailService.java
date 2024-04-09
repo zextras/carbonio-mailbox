@@ -5,9 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.carbonio.files.FilesClient;
-import com.zextras.files.client.GraphQLFilesClient;
 import com.zextras.mailbox.smartlinks.FilesSmartLinksGenerator;
 import com.zextras.mailbox.tracking.MatomoTracking;
 import com.zextras.mailbox.tracking.Tracking;
@@ -239,8 +237,8 @@ public class MailService implements DocumentService {
 
     dispatcher.registerHandler(
         QName.get("CreateSmartLinksRequest", MailConstants.NAMESPACE),
-        new CreateSmartLinks(getProvisioning(), new FilesSmartLinksGenerator(
-            new GraphQLFilesClient(getFilesClient(), new ObjectMapper()), filesCopyHandler),
+        new CreateSmartLinks(getProvisioning(),
+            new FilesSmartLinksGenerator(getFilesClient(), filesCopyHandler),
             getTracking()
         )
     );
