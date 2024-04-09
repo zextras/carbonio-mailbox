@@ -54,12 +54,16 @@ public class CreateSmartLinks extends MailDocumentHandler {
     final List<Attachment> attachments = toAttachments(req.getAttachments());
     final List<SmartLink> smartLinks = generateSmartLinks(authenticationInfo, attachments);
 
-    final String uid = authenticationInfo.getAuthenticatedAccount().getId();
-    if (provisioning.getConfig().isCarbonioSendAnalytics()) {
-      tracking.sendEventIgnoringFailure(new Event(uid, "Mail", "SendEmailWithSmartLink"));
-    }
+    sendCreateSmartLinkTrackingEvent(authenticationInfo);
 
     return new CreateSmartLinksResponse(smartLinks);
+  }
+
+  private void sendCreateSmartLinkTrackingEvent(AuthenticationInfo authenticationInfo) throws ServiceException {
+    if (provisioning.getConfig().isCarbonioSendAnalytics()) {
+      final String uid = authenticationInfo.getAuthenticatedAccount().getId();
+      tracking.sendEventIgnoringFailure(new Event(uid, "Mail", "SendEmailWithSmartLink"));
+    }
   }
 
   private List<SmartLink> generateSmartLinks(
