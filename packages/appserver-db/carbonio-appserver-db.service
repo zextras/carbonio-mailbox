@@ -1,0 +1,18 @@
+[Unit]
+Description=Carbonio Appserver DB Daemon
+After=carbonio-configd.service
+Wants=carbonio-configd.service
+PartOf=carbonio-appserver.target carbonio-ce.target carbonio.target
+
+[Service]
+User=zextras
+EnvironmentFile=-/opt/zextras/data/systemd.env
+ExecStart=/opt/zextras/common/bin/mysqld_safe \
+  --defaults-file=${mysql_mycnf} \
+  --external-locking \
+  --log-error=${mysql_errlogfile} \
+  --malloc-lib=/opt/zextras/common/lib/libjemalloc.so \
+  --ledir=/opt/zextras/common/sbin
+
+[Install]
+WantedBy=carbonio-appserver.target carbonio-ce.target carbonio.target

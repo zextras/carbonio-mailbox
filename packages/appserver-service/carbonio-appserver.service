@@ -1,0 +1,34 @@
+[Unit]
+Description=Carbonio Appserver Daemon
+After=carbonio-appserver-db.service
+Wants=carbonio-appserver-db.service
+PartOf=carbonio-appserver.target carbonio-ce.target carbonio.target
+
+[Service]
+User=zextras
+PIDFile=/opt/zextras/log/zmmailboxd_java.pid
+EnvironmentFile=-/opt/zextras/data/systemd.env
+ExecStartPre=/opt/zextras/bin/zmtlsctl
+ExecStart=/opt/zextras/common/bin/java \
+  -Dfile.encoding=UTF-8 \
+  $mailboxd_java_options \
+  -Xms${java_xms}m \
+  -Xmx${java_xmx}m \
+  -Djava.io.tmpdir=/opt/zextras/mailboxd/work \
+  -Djava.library.path=/opt/zextras/lib \
+  -Dzimbra.config=/opt/zextras/conf/localconfig.xml \
+  --module-path /opt/zextras/mailboxd/common/endorsed \
+  -Djetty.base=/opt/zextras/mailboxd \
+  -Djetty.home=/opt/zextras/common/jetty_home \
+  -DSTART=/opt/zextras/mailboxd/etc/start.config \
+  -jar /opt/zextras/common/jetty_home/start.jar \
+  --module=zimbra,server,mail,servlet,servlets,jsp,jstl,jmx,resources,websocket,ext,plus,rewrite,continuation,webapp,setuid \
+  jetty.home=/opt/zextras/common/jetty_home \
+  jetty.base=/opt/zextras/mailboxd \
+  /opt/zextras/mailboxd/etc/jetty.xml
+RestartSec=3
+Restart=on-failure
+SuccessExitStatus=143
+
+[Install]
+WantedBy=carbonio-appserver.target carbonio-ce.target carbonio.target

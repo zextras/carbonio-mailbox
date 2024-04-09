@@ -70,6 +70,10 @@ package() {
     "${pkgdir}/etc/carbonio/mailbox-nslookup/service-discover/policies.json"
   install -Dm 644 packages/appserver-service/carbonio-mailbox-nslookup-service-protocol.json \
     "${pkgdir}/etc/carbonio/mailbox-nslookup/service-discover/service-protocol.json"
+
+  # systemd unit
+  install -Dm 644 packages/appserver-service/carbonio-appserver.service \
+    "${pkgdir}/lib/systemd/system/carbonio-appserver.service"
 }
 
 postinst() {
