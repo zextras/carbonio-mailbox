@@ -10,6 +10,7 @@ import com.zextras.mailbox.smartlinks.FilesSmartLinksGenerator;
 import com.zextras.mailbox.tracking.MatomoTracking;
 import com.zextras.mailbox.tracking.Tracking;
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.service.MailboxAttachmentService;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
@@ -236,11 +237,15 @@ public class MailService implements DocumentService {
 
     dispatcher.registerHandler(
         QName.get("CreateSmartLinksRequest", MailConstants.NAMESPACE),
-        new CreateSmartLinks(
+        new CreateSmartLinks(getProvisioning(),
             new FilesSmartLinksGenerator(getFilesClient(), filesCopyHandler),
             getTracking()
         )
     );
+  }
+
+  protected Provisioning getProvisioning() {
+    return Provisioning.getInstance();
   }
 
   protected Tracking getTracking() {
