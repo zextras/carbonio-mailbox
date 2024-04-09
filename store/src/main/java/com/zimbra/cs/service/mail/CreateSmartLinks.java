@@ -8,6 +8,7 @@ import com.zextras.mailbox.tracking.Tracking;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CreateSmartLinksRequest;
 import com.zimbra.soap.mail.message.CreateSmartLinksResponse;
@@ -23,8 +24,11 @@ public class CreateSmartLinks extends MailDocumentHandler {
 
   private final SmartLinksGenerator smartLinksGenerator;
   private final Tracking tracking;
+  private final Provisioning provisioning;
 
-  public CreateSmartLinks(SmartLinksGenerator smartLinksGenerator, Tracking tracking) {
+  public CreateSmartLinks(Provisioning provisioning,
+      SmartLinksGenerator smartLinksGenerator, Tracking tracking) {
+    this.provisioning = provisioning;
     this.smartLinksGenerator = smartLinksGenerator;
     this.tracking = tracking;
   }
@@ -51,7 +55,9 @@ public class CreateSmartLinks extends MailDocumentHandler {
     final List<SmartLink> smartLinks = generateSmartLinks(authenticationInfo, attachments);
 
     final String uid = authenticationInfo.getAuthenticatedAccount().getId();
-    tracking.sendEventIgnoringFailure(new Event(uid, "Mail", "SendEmailWithSmartLink"));
+    if (provisioning.getConfig().isCarbonioSendAnalytics()) {
+      tracking.sendEventIgnoringFailure(new Event(uid, "Mail", "SendEmailWithSmartLink"));
+    }
 
     return new CreateSmartLinksResponse(smartLinks);
   }
