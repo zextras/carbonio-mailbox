@@ -31,7 +31,7 @@ public class FilesSmartLinksGenerator implements SmartLinksGenerator {
       final String cookie = getZmCookie(authenticationInfo.getAuthToken());
       for (var attachment : attachments) {
         String nodeId = uploadToFiles(attachment, authenticationInfo);
-        final Try<SmartLink> smartLinkTry = filesClient.createLink(cookie, nodeId).mapTry(
+        final Try<SmartLink> smartLinkTry = filesClient.createPublicLink(cookie, nodeId).mapTry(
             createLink -> new SmartLink(createLink.getUrl())
         );
         if (smartLinkTry.isSuccess()) {
