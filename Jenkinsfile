@@ -65,6 +65,10 @@ pipeline {
         }
     }
 
+    triggers {
+        cron(env.BRANCH_NAME == 'devel' ? 'H 5 * * *' : '')
+    }
+
     parameters {
         booleanParam defaultValue: false, description: 'Upload packages in playground repositories.', name: 'PLAYGROUND'
         booleanParam defaultValue: false, description: 'Skip test and sonar analysis.', name: 'SKIP_TEST_WITH_COVERAGE'

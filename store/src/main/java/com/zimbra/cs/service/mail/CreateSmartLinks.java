@@ -3,6 +3,8 @@ package com.zimbra.cs.service.mail;
 import com.zextras.mailbox.AuthenticationInfo;
 import com.zextras.mailbox.smartlinks.Attachment;
 import com.zextras.mailbox.smartlinks.SmartLinksGenerator;
+import com.zextras.mailbox.tracking.Event;
+import com.zextras.mailbox.tracking.Tracking;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
@@ -20,9 +22,11 @@ import java.util.stream.Collectors;
 public class CreateSmartLinks extends MailDocumentHandler {
 
   private final SmartLinksGenerator smartLinksGenerator;
+  private final Tracking tracking;
 
-  public CreateSmartLinks(SmartLinksGenerator smartLinksGenerator) {
+  public CreateSmartLinks(SmartLinksGenerator smartLinksGenerator, Tracking tracking) {
     this.smartLinksGenerator = smartLinksGenerator;
+    this.tracking = tracking;
   }
 
   @Override
@@ -45,6 +49,10 @@ public class CreateSmartLinks extends MailDocumentHandler {
     }
     final List<Attachment> attachments = toAttachments(req.getAttachments());
     final List<SmartLink> smartLinks = generateSmartLinks(authenticationInfo, attachments);
+
+    final String uid = authenticationInfo.getAuthenticatedAccount().getId();
+    tracking.sendEventIgnoringFailure(new Event(uid, "Mail", "SendEmailWithSmartLink"));
+
     return new CreateSmartLinksResponse(smartLinks);
   }
 
@@ -56,7 +64,7 @@ public class CreateSmartLinks extends MailDocumentHandler {
         .smartLinksFrom(attachments, authenticationInfo)
         .stream()
         .map(smartLink -> new SmartLink(smartLink.getPublicUrl())
-    ).collect(Collectors.toList());
+        ).collect(Collectors.toList());
   }
 
   private List<Attachment> toAttachments(List<AttachmentToConvert> reqAttachments) {
