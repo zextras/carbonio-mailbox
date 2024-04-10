@@ -17,7 +17,7 @@
     <dependency>
       <artifactId>httpclient</artifactId>
       <groupId>org.apache.httpcomponents</groupId>
-      <scope>provided</scope>
+
     </dependency>
 
     <dependency>
@@ -89,7 +89,7 @@
     <dependency>
       <artifactId>guava</artifactId>
       <groupId>com.google.guava</groupId>
-      <scope>provided</scope>
+
     </dependency>
 
     <dependency>
@@ -188,7 +188,7 @@
     <dependency>
       <artifactId>closure-compiler</artifactId>
       <groupId>com.google.javascript</groupId>
-      <scope>provided</scope>
+      <scope>runtime</scope>
     </dependency>
 
     <dependency>
@@ -269,13 +269,12 @@
     <dependency>
       <artifactId>hsqldb</artifactId>
       <groupId>org.hsqldb</groupId>
-      <scope>test</scope>
+      <scope>runtime</scope>
     </dependency>
 
     <dependency>
       <artifactId>sqltool</artifactId>
       <groupId>org.hsqldb</groupId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -301,7 +300,7 @@
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
-      <scope>provided</scope>
+
     </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
@@ -403,7 +402,7 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore</artifactId>
-      <scope>provided</scope>
+
     </dependency>
     <dependency>
       <groupId>org.json</groupId>
@@ -413,18 +412,18 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
-      <scope>provided</scope>
+
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
-      <scope>provided</scope>
+
     </dependency>
     <!-- Needed to bridge log4j -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <scope>provided</scope>
+
     </dependency>
     <dependency>
       <groupId>com.github.stefanbirkner</groupId>
@@ -434,13 +433,13 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
-      <scope>provided</scope>
+      <scope>runtime</scope>
     </dependency>
 
     <dependency>
       <groupId>org.dom4j</groupId>
       <artifactId>dom4j</artifactId>
-      <scope>provided</scope>
+
     </dependency>
     <dependency>
       <artifactId>javax.servlet-api</artifactId>
@@ -527,12 +526,22 @@
       <version>1.19.0</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-webapp</artifactId>
+      <version>9.4.48.v20220622</version>
+    </dependency>
   </dependencies>
 
   <modelVersion>4.0.0</modelVersion>
   <packaging>war</packaging>
 
   <build>
+    <resources>
+      <resource>
+        <directory>${project.basedir}/ldap/generated</directory>
+      </resource>
+    </resources>
     <testResources>
       <testResource>
         <directory>${project.basedir}/src/test/resources</directory>

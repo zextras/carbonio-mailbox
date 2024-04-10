@@ -48,7 +48,6 @@
     <dependency>
       <artifactId>javax.servlet-api</artifactId>
       <groupId>javax.servlet</groupId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
