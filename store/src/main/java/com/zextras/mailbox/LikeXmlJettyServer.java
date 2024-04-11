@@ -34,6 +34,7 @@ public class LikeXmlJettyServer {
   private static final int APP_ADMIN_SERVER_PORT = 7071;
   private static final int MTA_APP_ADMIN_SERVER_PORT = 7073;
   private static final int EXTENSIONS_SERVER_PORT = 7072;
+  private static final int SECURE_PORT = 8443;
 
   public static class Builder {
 
@@ -41,12 +42,19 @@ public class LikeXmlJettyServer {
       ThreadPool threadPool = createThreadPool();
       Server server = new Server(threadPool);
 
-      createUserHttpConnector(server).start();
-      createAdminHttpsConnector(server).start();
-      createMtaAdminHttpsConnector(server).start();
-      createExtensionsHttpsConnector(server).start();
+      final ServerConnector userHttpConnector = createUserHttpConnector(server);
+      server.addConnector(userHttpConnector);
+
+      final ServerConnector adminHttpsConnector = createAdminHttpsConnector(server);
+      server.addConnector(adminHttpsConnector);
+
+      server.addConnector(createMtaAdminHttpsConnector(server));
+      server.addConnector(createExtensionsHttpsConnector(server));
 
       server.setHandler(createRewriteHandler());
+
+      userHttpConnector.open();
+      adminHttpsConnector.open();
       //TODO: add GZIP handler
 //    server.setHandler(new GzipHandler());
 
@@ -358,10 +366,11 @@ public class LikeXmlJettyServer {
 //		<Arg><Ref id="pool"/></Arg>
 //	</Call>
     QueuedThreadPool threadPool = new QueuedThreadPool();
-    threadPool.setMaxThreads(250);
     threadPool.setMinThreads(10);
+    threadPool.setMaxThreads(250);
+    threadPool.setIdleTimeout(10000);
     threadPool.setDetailedDump(false);
-    threadPool.setDetailedDump(false);
+
     JettyMonitor.setThreadPool(threadPool);
     return threadPool;
   }
@@ -381,14 +390,13 @@ public class LikeXmlJettyServer {
     httpConfig.setSendServerVersion(false);
     httpConfig.setSendDateHeader(true);
     httpConfig.setHeaderCacheSize(512);
-    httpConfig.setSecurePort(8443);
+    httpConfig.setSecurePort(SECURE_PORT);
 
     final ForwardedRequestCustomizer forwardedRequestCustomizer = new ForwardedRequestCustomizer();
     forwardedRequestCustomizer.setForwardedForHeader("bogus");
     httpConfig.addCustomizer(forwardedRequestCustomizer);
 
-    //TODO: add server name (hostname of VM)
-    final HostHeaderCustomizer hostHeaderCustomizer = new HostHeaderCustomizer("");
+    final HostHeaderCustomizer hostHeaderCustomizer = new HostHeaderCustomizer("carbonio-ce-proxy.carbonio-system.svc.cluster.local");
     httpConfig.addCustomizer(hostHeaderCustomizer);
 
     return httpConfig;
