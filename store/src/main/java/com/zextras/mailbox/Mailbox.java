@@ -17,12 +17,19 @@ public class Mailbox {
   private static final int APP_USER_SERVER_PORT = 7070;
   private static final int APP_ADMIN_SERVER_PORT = 7071;
   private static final String WEB_DESCRIPTOR = "webDescriptor";
+  private static final String LOCALCONFIG = "localconfig";
 
   public static void main(String[] args) throws Exception {
+    System.setProperty("zimbra.native.required", "false");
     Options options = getOptions();
     CommandLineParser parser = new GnuParser();
     CommandLine commandLine = parser.parse(options, args);
-    String webDescriptor = "store/conf/web.xml";
+
+    if (commandLine.hasOption(LOCALCONFIG)) {
+      System.setProperty("zimbra.config", commandLine.getOptionValue(LOCALCONFIG));
+    }
+
+    String webDescriptor = "store/conf/web-dev.xml";
     if (commandLine.hasOption(WEB_DESCRIPTOR)) {
       webDescriptor = commandLine.getOptionValue(WEB_DESCRIPTOR);
     }
@@ -43,6 +50,11 @@ public class Mailbox {
     webDescriptor.setRequired(false);
     Options options = new Options();
     options.addOption(webDescriptor);
+
+    Option localconfig =  new Option(LOCALCONFIG,true, "Location to localconfig");
+    localconfig.setRequired(false);
+    options.addOption(localconfig);
+
     return options;
   }
 

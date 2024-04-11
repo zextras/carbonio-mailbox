@@ -56,7 +56,7 @@ public class SampleLocalMailbox {
                     ZAttrProvisioning.A_zimbraImapSSLServerEnabled, "FALSE")));
 
     WebAppContext webAppContext = new WebAppContext();
-    webAppContext.setDescriptor("store/conf/web.xml");
+    webAppContext.setDescriptor("store/conf/web-dev.xml");
     webAppContext.setResourceBase("/");
     webAppContext.setContextPath("/service");
 
