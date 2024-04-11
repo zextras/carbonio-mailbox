@@ -4,9 +4,9 @@
 
 package com.zextras.mailbox;
 
-import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.eclipse.jetty.server.Server;
@@ -20,7 +20,7 @@ public class Mailbox {
 
   public static void main(String[] args) throws Exception {
     Options options = getOptions();
-    CommandLineParser parser = new BasicParser();
+    CommandLineParser parser = new GnuParser();
     CommandLine commandLine = parser.parse(options, args);
     String webDescriptor = "store/conf/web.xml";
     if (commandLine.hasOption(WEB_DESCRIPTOR)) {
@@ -39,7 +39,7 @@ public class Mailbox {
   }
 
   private static Options getOptions() {
-    Option webDescriptor =  new Option(Mailbox.WEB_DESCRIPTOR,"Location to web descriptor");
+    Option webDescriptor =  new Option(Mailbox.WEB_DESCRIPTOR,true, "Location to web descriptor");
     webDescriptor.setRequired(false);
     Options options = new Options();
     options.addOption(webDescriptor);

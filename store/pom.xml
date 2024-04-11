@@ -827,12 +827,16 @@
           </execution>
         </executions>
       </plugin>
-      <!-- Maven ASSEMBLY plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <version>3.6.0</version>
         <configuration>
+          <archive>
+            <manifest>
+              <mainClass>com.zextras.mailbox.Mailbox</mainClass>
+            </manifest>
+          </archive>
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
