@@ -1,6 +1,6 @@
 def mvnCmd(String cmd) {
     def profile = ''
-    if (env.BRANCH_NAME == 'main' ) {
+    if (buildingTag()) {
         profile = '-Pprod'
     }
     else if (env.BRANCH_NAME == 'devel' ) {
@@ -52,26 +52,32 @@ def buildRpmPackages(String flavor) {
 pipeline {
     agent {
         node {
-            label 'carbonio-agent-v1'
+            label 'carbonio-agent-v2'
         }
     }
+
     parameters {
         booleanParam defaultValue: false, description: 'Upload packages in playground repositories.', name: 'PLAYGROUND'
         booleanParam defaultValue: false, description: 'Skip test and sonar analysis.', name: 'SKIP_TEST_WITH_COVERAGE'
         booleanParam defaultValue: false, description: 'Skip sonar analysis.', name: 'SKIP_SONARQUBE'
     }
+
     environment {
+        JAVA_HOME='/usr/lib/jvm/java-11-openjdk-amd64'
+        JAVA_PATH='${JAVA_HOME}/bin'
         JAVA_OPTS='-Dfile.encoding=UTF8'
         LC_ALL='C.UTF-8'
         MAVEN_OPTS = "-Xmx4g"
         BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1'
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
     }
+
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
         timeout(time: 2, unit: 'HOURS')
         skipDefaultCheckout()
     }
+
     stages {
         stage('Checkout') {
             steps {
@@ -89,8 +95,8 @@ pipeline {
             }
             steps{
                 sh '''
-                    curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b .
-                    ./syft . -o cyclonedx-json=sbom.cyclonedx.json
+                    curl -sSfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b .
+                    ./trivy filesystem . --format cyclonedx --scanners license --output sbom.cyclonedx.json
                 '''
                 dependencyTrackPublisher artifact: 'sbom.cyclonedx.json',
                         synchronous: false,
@@ -142,7 +148,12 @@ pipeline {
                 junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
             }
         }
+
         stage('Sonarqube Analysis') {
+            environment {
+                JAVA_HOME='/usr/lib/jvm/java-17-openjdk-amd64'
+                JAVA_PATH='${JAVA_HOME}/bin'
+            }
             when {
                 allOf {
                     expression { params.SKIP_SONARQUBE == false }
