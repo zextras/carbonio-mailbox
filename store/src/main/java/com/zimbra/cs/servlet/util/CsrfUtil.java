@@ -127,7 +127,7 @@ public final class CsrfUtil {
       }
       String temp = host;
 
-      if (temp.indexOf(":") != -1) {
+      if (temp.contains(":")) {
           int endIndex = temp.indexOf(":");
           temp = host.substring(0, endIndex);
       }
@@ -335,7 +335,7 @@ public final class CsrfUtil {
         String ver = csrfToken.substring(0, pos);
 
         String hmac = csrfToken.substring(pos + 1);
-        return new Pair<String, String>(hmac, ver);
+        return new Pair<>(hmac, ver);
     }
 
     /**

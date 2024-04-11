@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
-import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.soap.admin.type.AdminAttrsImpl;
 
@@ -47,7 +46,7 @@ public class XMPPComponentInfo extends AdminAttrsImpl {
      */
     @SuppressWarnings("unused")
     private XMPPComponentInfo() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public XMPPComponentInfo(String name, String id) {

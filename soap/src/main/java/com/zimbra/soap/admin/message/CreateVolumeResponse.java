@@ -28,7 +28,7 @@ public class CreateVolumeResponse {
      */
      @SuppressWarnings("unused")
     private CreateVolumeResponse() {
-        this((VolumeInfo)null);
+        this(null);
     }
 
     public CreateVolumeResponse(VolumeInfo volume) {

@@ -12,7 +12,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
 import com.google.common.base.MoreObjects;
@@ -196,7 +195,7 @@ public class CommonDocumentInfo {
     private Acl acl;
 
     public CommonDocumentInfo() {
-        this((String) null);
+        this(null);
     }
 
     public CommonDocumentInfo(String id) {

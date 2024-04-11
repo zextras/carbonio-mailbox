@@ -332,7 +332,7 @@ public class SoapSession extends Session {
     }
   }
 
-  private class RemoteSessionInfo {
+  private static class RemoteSessionInfo {
     final String mServerId, mSessionId;
     final long mLastRequest;
     long mLastFailedPing;
@@ -357,9 +357,9 @@ public class SoapSession extends Session {
       if ((eSection = eNotify.getOptionalElement(ZimbraNamespace.E_DELETED)) != null)
         deleted = eSection.getAttribute(A_ID, null);
       if ((eSection = eNotify.getOptionalElement(ZimbraNamespace.E_CREATED)) != null)
-        created = new ArrayList<Element>(eSection.listElements());
+        created = new ArrayList<>(eSection.listElements());
       if ((eSection = eNotify.getOptionalElement(ZimbraNamespace.E_MODIFIED)) != null)
-        modified = new ArrayList<Element>(eSection.listElements());
+        modified = new ArrayList<>(eSection.listElements());
       activities = eNotify.listElements(MailConstants.E_A);
       if (activities.isEmpty()) activities = null;
     }
@@ -446,7 +446,7 @@ public class SoapSession extends Session {
 
     void addNotification(ExternalEventNotification extra) {
       if (mExternalNotifications == null)
-        mExternalNotifications = new LinkedList<ExternalEventNotification>();
+        mExternalNotifications = new LinkedList<>();
       mExternalNotifications.add(extra);
     }
 
@@ -488,12 +488,12 @@ public class SoapSession extends Session {
 
   // read/write access to all these members requires synchronizing on "mSentChanges"
   protected int forceRefresh;
-  protected LinkedList<QueuedNotifications> sentChanges = new LinkedList<QueuedNotifications>();
+  protected LinkedList<QueuedNotifications> sentChanges = new LinkedList<>();
   protected QueuedNotifications changes = new QueuedNotifications(1);
   private PushChannel pushChannel;
   private boolean unregistered;
   private final Map<String, DelegateSession> delegateSessions =
-      new HashMap<String, DelegateSession>(3);
+      new HashMap<>(3);
   private List<RemoteSessionInfo> remoteSessions;
   private final boolean asAdmin;
   private boolean isOffline = false;
@@ -549,7 +549,7 @@ public class SoapSession extends Session {
     // unloading a SoapSession also must unload all its delegates
     List<DelegateSession> delegates;
     synchronized (delegateSessions) {
-      delegates = new ArrayList<DelegateSession>(delegateSessions.values());
+      delegates = new ArrayList<>(delegateSessions.values());
       delegateSessions.clear();
       unregistered = true;
     }
@@ -662,7 +662,7 @@ public class SoapSession extends Session {
     synchronized (this) {
       boolean isNewEntry = true;
       if (remoteSessions == null) {
-        remoteSessions = new LinkedList<RemoteSessionInfo>();
+        remoteSessions = new LinkedList<>();
       } else {
         for (Iterator<RemoteSessionInfo> it = remoteSessions.iterator(); it.hasNext(); ) {
           if (it.next().mServerId.equals(server.getId())) {
@@ -732,7 +732,7 @@ public class SoapSession extends Session {
       for (RemoteSessionInfo rsi : remoteSessions) {
         if (rsi.mLastRequest < cutoff && now - rsi.mLastFailedPing > MINIMUM_PING_RETRY_TIME) {
           if (needsPing == null) {
-            needsPing = new LinkedList<RemoteSessionInfo>();
+            needsPing = new LinkedList<>();
           }
           needsPing.add(rsi);
         }
@@ -795,24 +795,24 @@ public class SoapSession extends Session {
   }
 
   /** A callback interface which is listening on this session and waiting for new notifications */
-  public static interface PushChannel {
-    public void closePushChannel();
+  public interface PushChannel {
+    void closePushChannel();
 
-    public int getLastKnownSequence();
+    int getLastKnownSequence();
 
-    public ZimbraSoapContext getSoapContext();
+    ZimbraSoapContext getSoapContext();
 
-    public boolean localChangesOnly();
+    boolean localChangesOnly();
 
-    public boolean isPersistent();
+    boolean isPersistent();
 
-    public void notificationsReady() throws ServiceException;
+    void notificationsReady() throws ServiceException;
   }
 
-  public static enum RegisterNotificationResult {
+  public enum RegisterNotificationResult {
     NO_NOTIFY, // notifications not available for this session
     DATA_READY, // notifications already here
-    BLOCKING; // none here yet, wait
+    BLOCKING // none here yet, wait
   }
 
   /**
@@ -1127,7 +1127,7 @@ public class SoapSession extends Session {
     GetFolder.encodeFolderNode(root, eRefresh, ifmt, octxt);
 
     // The Boolean of the Pair indicates whether the mountpoint is found to be broken
-    Map<ItemId, Pair<Boolean, Element>> mountpoints = new HashMap<ItemId, Pair<Boolean, Element>>();
+    Map<ItemId, Pair<Boolean, Element>> mountpoints = new HashMap<>();
     // for mountpoints pointing to this host, get the serialized folder subhierarchy
     expandLocalMountpoints(octxt, root, eRefresh.getFactory(), mountpoints);
     // for mountpoints pointing to other hosts, get the folder structure from the remote server
@@ -1146,14 +1146,14 @@ public class SoapSession extends Session {
       FolderNode node,
       Element.ElementFactory factory,
       Map<ItemId, Pair<Boolean, Element>> mountpoints) {
-    if (node.mFolder == null || mountpoints == null) {
-      return;
-    } else if (node.mFolder instanceof Mountpoint) {
-      Mountpoint mpt = (Mountpoint) node.mFolder;
-      expandLocalMountpoint(octxt, mpt, factory, mountpoints);
-    } else {
-      for (FolderNode child : node.mSubfolders) {
-        expandLocalMountpoints(octxt, child, factory, mountpoints);
+    if (node.mFolder != null && mountpoints != null) {
+      if (node.mFolder instanceof Mountpoint) {
+        Mountpoint mpt = (Mountpoint) node.mFolder;
+        expandLocalMountpoint(octxt, mpt, factory, mountpoints);
+      } else {
+        for (FolderNode child : node.mSubfolders) {
+          expandLocalMountpoints(octxt, child, factory, mountpoints);
+        }
       }
     }
   }
@@ -1172,7 +1172,7 @@ public class SoapSession extends Session {
       Provisioning prov = Provisioning.getInstance();
       Account owner = prov.get(Key.AccountBy.id, mpt.getOwnerId(), octxt.getAuthToken());
       if (owner == null || owner.getId().equals(mAuthenticatedAccountId)) {
-        mountpoints.put(iidTarget, new Pair<Boolean, Element>(true, null));
+        mountpoints.put(iidTarget, new Pair<>(true, null));
         return;
       }
 
@@ -1183,7 +1183,7 @@ public class SoapSession extends Session {
               && (!octxt.isUsingAdminPrivileges()
                   || !AccessManager.getInstance()
                       .canAccessAccount(octxt.getAuthenticatedUser(), owner)))) {
-        mountpoints.put(iidTarget, new Pair<Boolean, Element>(true, null));
+        mountpoints.put(iidTarget, new Pair<>(true, null));
         return;
       }
 
@@ -1204,12 +1204,12 @@ public class SoapSession extends Session {
         Element subhierarchy =
             GetFolder.encodeFolderNode(remote, factory.createElement("ignored"), ifmt, octxt)
                 .detach();
-        mountpoints.put(iidTarget, new Pair<Boolean, Element>(false, subhierarchy));
+        mountpoints.put(iidTarget, new Pair<>(false, subhierarchy));
         // fault in a delegate session because there's actually something to listen on...
         getDelegateSession(mpt.getOwnerId());
       }
     } catch (ServiceException e) {
-      mountpoints.put(iidTarget, new Pair<Boolean, Element>(true, null));
+      mountpoints.put(iidTarget, new Pair<>(true, null));
     }
   }
 
@@ -1235,7 +1235,7 @@ public class SoapSession extends Session {
           continue;
         }
         if (remoteServers == null) {
-          remoteServers = new HashMap<String, Server>(3);
+          remoteServers = new HashMap<>(3);
         }
         remoteServers.put(owner.getId(), server);
       } catch (ServiceException e) {
@@ -1254,14 +1254,14 @@ public class SoapSession extends Session {
             findRemoteFolder(
                 iid.toString(mAuthenticatedAccountId), remoteHierarchies.get(iid.getAccountId()));
         mptinfo.setValue(
-            new Pair<Boolean, Element>(remoteFolderElement == null, remoteFolderElement));
+            new Pair<>(remoteFolderElement == null, remoteFolderElement));
       }
     }
   }
 
   private Map<String, Element> fetchRemoteHierarchies(
       OperationContext octxt, ZimbraSoapContext zsc, Map<String, Server> remoteServers) {
-    Map<String, Element> hierarchies = new HashMap<String, Element>();
+    Map<String, Element> hierarchies = new HashMap<>();
 
     Element noop;
     try {
@@ -1391,7 +1391,7 @@ public class SoapSession extends Session {
   }
 
   public Collection<PendingLocalModifications> getNotifications() {
-    List<PendingLocalModifications> ret = new ArrayList<PendingLocalModifications>();
+    List<PendingLocalModifications> ret = new ArrayList<>();
     synchronized (sentChanges) {
       for (QueuedNotifications notification : sentChanges) {
         if (notification.hasNotifications()) {
@@ -1484,7 +1484,7 @@ public class SoapSession extends Session {
       if (sentChanges.isEmpty()) {
         return ctxt;
       }
-      notifications = new LinkedList<QueuedNotifications>(sentChanges);
+      notifications = new LinkedList<>(sentChanges);
     }
 
     // send all the old changes
@@ -1577,7 +1577,7 @@ public class SoapSession extends Session {
               // special-case notifications for new mountpoints in the authenticated user's mailbox
               if (item instanceof Mountpoint && mbox == mi.getMailbox()) {
                 Map<ItemId, Pair<Boolean, Element>> mountpoints =
-                    new HashMap<ItemId, Pair<Boolean, Element>>(2);
+                    new HashMap<>(2);
                 expandLocalMountpoint(octxt, (Mountpoint) mi, eCreated.getFactory(), mountpoints);
                 expandRemoteMountpoints(octxt, zsc, mountpoints);
                 transferMountpointContents(elem, octxt, mountpoints);
@@ -1695,7 +1695,7 @@ public class SoapSession extends Session {
   }
 
   public interface ActivityCallback {
-    public void putActivities(PendingLocalModifications pms, Element notify, ItemIdFormatter ifmt)
+    void putActivities(PendingLocalModifications pms, Element notify, ItemIdFormatter ifmt)
         throws ServiceException;
   }
 

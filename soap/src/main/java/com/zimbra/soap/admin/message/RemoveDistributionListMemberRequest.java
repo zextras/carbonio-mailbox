@@ -54,7 +54,7 @@ public class RemoveDistributionListMemberRequest {
     private List <String> accounts = Lists.newArrayList();
 
     public RemoveDistributionListMemberRequest() {
-        this((String) null, (Collection<String>) null, (Collection<String>) null);
+        this(null, null, null);
     }
 
     public RemoveDistributionListMemberRequest(String id, Collection<String> members) {

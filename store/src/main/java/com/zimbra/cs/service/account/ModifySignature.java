@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.zimbra.common.account.Key;
-import com.zimbra.common.account.Key.SignatureBy;
 import com.zimbra.common.account.SignatureUtil;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
@@ -42,7 +41,7 @@ public class ModifySignature extends DocumentHandler {
             throw AccountServiceException.NO_SUCH_SIGNATURE(id);
 
         List<Element> contents = eSignature.listElements(AccountConstants.E_CONTENT);
-        Map<String,Object> attrs = new HashMap<String, Object>();
+        Map<String,Object> attrs = new HashMap<>();
         for (Element eContent : contents) {
             String type = eContent.getAttribute(AccountConstants.A_TYPE);
             String attr = SignatureUtil.mimeTypeToAttrName(type);

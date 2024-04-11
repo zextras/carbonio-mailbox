@@ -51,7 +51,7 @@ public class ExportAndDeleteItemsRequest {
      */
     @SuppressWarnings("unused")
     private ExportAndDeleteItemsRequest() {
-        this((String) null, (String) null, (ExportAndDeleteMailboxSpec) null);
+        this(null, null, null);
     }
 
     public ExportAndDeleteItemsRequest(String exportDir,

@@ -204,7 +204,7 @@ public class ZModifyFolderEvent implements ZModifyItemEvent, ToZJSONObject {
     public List<ZGrant> getGrants(List<ZGrant> defaultValue) throws ServiceException {
         Element aclEl = mFolderEl.getOptionalElement(MailConstants.E_ACL);
         if (aclEl != null) {
-            List<ZGrant> grants = new ArrayList<ZGrant>();
+            List<ZGrant> grants = new ArrayList<>();
             for (Element grant : aclEl.listElements(MailConstants.E_GRANT)) {
                 grants.add(new ZGrant(grant));
             }

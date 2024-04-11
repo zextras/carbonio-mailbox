@@ -115,14 +115,14 @@ public class TextCalendarHandler extends MimeHandler {
 
     private static final Set<String> sIndexedProps;
     static {
-        sIndexedProps = new HashSet<String>();
+        sIndexedProps = new HashSet<>();
         sIndexedProps.add(ICalTok.SUMMARY.toString());
         sIndexedProps.add(ICalTok.DESCRIPTION.toString());
         sIndexedProps.add(ICalTok.COMMENT.toString());
         sIndexedProps.add(ICalTok.LOCATION.toString());
     }
 
-    public class IcsParseHandler implements ZICalendarParseHandler {
+    public static class IcsParseHandler implements ZICalendarParseHandler {
 
         private StringBuilder mContentBuf;
         private int mMaxLength;

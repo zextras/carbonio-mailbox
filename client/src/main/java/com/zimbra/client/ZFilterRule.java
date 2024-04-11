@@ -50,8 +50,6 @@ import com.zimbra.soap.mail.type.FilterTests;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public final class ZFilterRule implements ToZJSONObject {
@@ -97,24 +95,14 @@ public final class ZFilterRule implements ToZJSONObject {
         this.allConditions = "allof".equalsIgnoreCase(rule.getFilterTests().getCondition());
 
         List<FilterTest> tests = Lists.newArrayList(rule.getFilterTests().getTests());
-        Collections.sort(tests, new Comparator<FilterTest>() {
-            @Override
-            public int compare(FilterTest test1, FilterTest test2) {
-                return test1.getIndex() - test2.getIndex();
-            }
-        });
+        tests.sort((test1, test2) -> test1.getIndex() - test2.getIndex());
         this.conditions = Lists.newArrayListWithCapacity(tests.size());
         for (FilterTest test : tests) {
             this.conditions.add(ZFilterCondition.of(test));
         }
 
         List<FilterAction> actions = Lists.newArrayList(rule.getFilterActions());
-        Collections.sort(actions, new Comparator<FilterAction>() {
-            @Override
-            public int compare(FilterAction action1, FilterAction action2) {
-                return action1.getIndex() - action2.getIndex();
-            }
-        });
+        actions.sort((action1, action2) -> action1.getIndex() - action2.getIndex());
         this.actions = Lists.newArrayListWithCapacity(actions.size());
         for (FilterAction action : actions) {
             this.actions.add(ZFilterAction.of(action));
@@ -193,8 +181,8 @@ public final class ZFilterRule implements ToZJSONObject {
         boolean all = true;
         boolean active = true;
 
-        List<ZFilterCondition> conditions = new ArrayList<ZFilterCondition>();
-        List<ZFilterAction> actions = new ArrayList<ZFilterAction>();
+        List<ZFilterCondition> conditions = new ArrayList<>();
+        List<ZFilterAction> actions = new ArrayList<>();
 
         int i = 1;
         while (i < args.length) {
@@ -457,7 +445,7 @@ public final class ZFilterRule implements ToZJSONObject {
                     int maxBodyBytes = -1;
                     if (i + 1 <= args.length) {
                         try {
-                            maxBodyBytes = Integer.valueOf(args[i]);
+                            maxBodyBytes = Integer.parseInt(args[i]);
                             i++;
                         } catch (NumberFormatException ignored) {
                         }

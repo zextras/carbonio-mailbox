@@ -38,9 +38,9 @@ class SoapDistributionList extends DistributionList implements SoapEntry {
     throws ServiceException {
         // DistributionListMembershipInfo does not supply attributes
         super(dlInfo.getName(), dlInfo.getId(),
-                new HashMap<String,Object>(), prov);
+            new HashMap<>(), prov);
         // DistributionListMembershipInfo does not supply membership info
-        addDlm(new ArrayList<String>(), getRawAttrs());
+        addDlm(new ArrayList<>(), getRawAttrs());
     }
 
     SoapDistributionList(DistributionListInfo dlInfo, Provisioning prov)
@@ -60,7 +60,7 @@ class SoapDistributionList extends DistributionList implements SoapEntry {
         attrs.put(Provisioning.A_zimbraId, dlInfo.getId());
         
         // DLInfo does not supply membership info
-        addDlm(new ArrayList<String>(), getRawAttrs());
+        addDlm(new ArrayList<>(), getRawAttrs());
     }
 
     SoapDistributionList(Element e, Provisioning prov) throws ServiceException {
@@ -76,7 +76,7 @@ class SoapDistributionList extends DistributionList implements SoapEntry {
     }
 
     private void addDlm(Element e, Map<String, Object> attrs) {
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         for (Element dlm : e.listElements(AdminConstants.E_DLM)) {
             list.add(dlm.getText());
         }

@@ -5,8 +5,6 @@
 
 package com.zimbra.soap.base;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -14,17 +12,17 @@ import com.zimbra.soap.type.TzOnsetInfo;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface CalTZInfoInterface {
-    public CalTZInfoInterface createFromIdStdOffsetDayOffset(String id,
-            Integer tzStdOffset, Integer tzDayOffset);
-    public void setStandardTzOnset(TzOnsetInfo standardTzOnset);
-    public void setDaylightTzOnset(TzOnsetInfo daylightTzOnset);
-    public void setStandardTZName(String standardTZName);
-    public void setDaylightTZName(String daylightTZName);
-    public String getId();
-    public Integer getTzStdOffset();
-    public Integer getTzDayOffset();
-    public TzOnsetInfo getStandardTzOnset();
-    public TzOnsetInfo getDaylightTzOnset();
-    public String getStandardTZName();
-    public String getDaylightTZName();
+    CalTZInfoInterface createFromIdStdOffsetDayOffset(String id,
+        Integer tzStdOffset, Integer tzDayOffset);
+    void setStandardTzOnset(TzOnsetInfo standardTzOnset);
+    void setDaylightTzOnset(TzOnsetInfo daylightTzOnset);
+    void setStandardTZName(String standardTZName);
+    void setDaylightTZName(String daylightTZName);
+    String getId();
+    Integer getTzStdOffset();
+    Integer getTzDayOffset();
+    TzOnsetInfo getStandardTzOnset();
+    TzOnsetInfo getDaylightTzOnset();
+    String getStandardTZName();
+    String getDaylightTZName();
 }

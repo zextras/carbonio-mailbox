@@ -14,6 +14,7 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 
+import java.nio.charset.StandardCharsets;
 import javax.security.sasl.SaslServer;
 import javax.security.sasl.Sasl;
 import javax.security.sasl.SaslException;
@@ -57,7 +58,7 @@ public class GssAuthenticator extends Authenticator {
     private static final Boolean GSS_ENABLED = Boolean.getBoolean("ZimbraGssEnabled");
 
     // SASL properties to enable encryption
-    private static final Map<String, String> ENCRYPTION_PROPS = new HashMap<String, String>();
+    private static final Map<String, String> ENCRYPTION_PROPS = new HashMap<>();
 
     static {
         ENCRYPTION_PROPS.put(Sasl.QOP, QOP_AUTH + "," + QOP_AUTH_INT + "," + QOP_AUTH_CONF);
@@ -124,12 +125,8 @@ public class GssAuthenticator extends Authenticator {
         }
 
         try {
-            mSaslServer = (SaslServer) Subject.doAs(subject, new PrivilegedExceptionAction<Object>() {
-                @Override
-                public Object run() throws SaslException {
-                    return Sasl.createSaslServer(getMechanism(), getProtocol(), host, props, new GssCallbackHandler());
-                }
-            });
+            mSaslServer = (SaslServer) Subject.doAs(subject,
+                (PrivilegedExceptionAction<Object>) () -> Sasl.createSaslServer(getMechanism(), getProtocol(), host, props, new GssCallbackHandler()));
         } catch (PrivilegedActionException e) {
             sendFailed();
             getLog().warn("Could not create SaslServer", e.getCause());
@@ -179,7 +176,7 @@ public class GssAuthenticator extends Authenticator {
         // If exchange not complete, send additional challenge
         if (!isComplete()) {
             assert !mSaslServer.isComplete();
-            String s = new String(Base64.encodeBase64(bytes), "US-ASCII");
+            String s = new String(Base64.encodeBase64(bytes), StandardCharsets.US_ASCII);
             sendContinuation(s);
             return;
         }

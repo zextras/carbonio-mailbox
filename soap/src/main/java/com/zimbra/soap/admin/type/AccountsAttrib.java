@@ -26,7 +26,7 @@ public class AccountsAttrib {
      */
     @SuppressWarnings("unused")
     private AccountsAttrib() {
-        this((String) null);
+        this(null);
     }
 
     public AccountsAttrib(String accounts) {

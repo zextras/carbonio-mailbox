@@ -60,7 +60,7 @@ public class ExportMailboxSelector {
      */
     @SuppressWarnings("unused")
     private ExportMailboxSelector() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public ExportMailboxSelector(String name, String target) {

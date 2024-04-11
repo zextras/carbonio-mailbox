@@ -33,7 +33,7 @@ public class ZimletAcl {
      */
     @SuppressWarnings("unused")
     private ZimletAcl() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public ZimletAcl(String cos, String acl) {

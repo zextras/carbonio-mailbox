@@ -28,7 +28,7 @@ public final class Util {
             } catch (UnsatisfiedLinkError ule) {
                 //this lets unit tests run from command line (i.e. 'ant test') without setting up native
                 String skipNative = System.getProperty("zimbra.native.required");
-                if (skipNative != null && skipNative.equalsIgnoreCase("false")) {
+                if ("false".equalsIgnoreCase(skipNative)) {
                     System.err.println("WARNING: native libraries not available, " +
                         "however zimbra.native.required is false." +
                         "You are probably running unit tests; " +
@@ -88,7 +88,7 @@ public final class Util {
             PrintWriter pw = new PrintWriter(sw);
             pw.println(message);
             t.printStackTrace(pw);
-            System.err.println("Fatal error: terminating: " + sw.toString());
+            System.err.println("Fatal error: terminating: " + sw);
         } finally {
             Runtime.getRuntime().halt(1);
         }

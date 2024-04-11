@@ -34,7 +34,7 @@ public class CheckHostnameResolveResponse {
      */
     @SuppressWarnings("unused")
     private CheckHostnameResolveResponse() {
-        this((String)null, (String)null);
+        this(null, null);
     }
 
     private CheckHostnameResolveResponse(String code, String message) {

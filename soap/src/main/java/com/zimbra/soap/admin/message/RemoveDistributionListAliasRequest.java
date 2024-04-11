@@ -8,7 +8,6 @@ package com.zimbra.soap.admin.message;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.zimbra.common.soap.AdminConstants;
@@ -43,7 +42,7 @@ public class RemoveDistributionListAliasRequest {
      */
      @SuppressWarnings("unused")
     private RemoveDistributionListAliasRequest() {
-        this((String)null, (String)null);
+        this(null, null);
     }
 
     public RemoveDistributionListAliasRequest(String id, String alias) {

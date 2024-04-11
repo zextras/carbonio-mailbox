@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -29,7 +30,8 @@ import com.zimbra.common.util.CharsetUtil;
 
 public class LmtpClient {
 
-    public static enum Protocol { LMTP, SMTP };
+    public enum Protocol { LMTP, SMTP }
+
     private static String STARTTLS = "STARTTLS";
 
     private Protocol mProtocol;
@@ -96,7 +98,7 @@ public class LmtpClient {
         if (mTrace) {
             trace("CLI: " + line);
         }
-        mOut.write(line.getBytes("iso-8859-1"));
+        mOut.write(line.getBytes(StandardCharsets.ISO_8859_1));
         mOut.write(lineSeparator);
         if (flush) mOut.flush();
     }
@@ -301,9 +303,7 @@ public class LmtpClient {
                     .getSocketFactory();
             return (SSLSocket) sslSocketFactory.createSocket(sock, sock
                     .getInetAddress().getHostName(), sock.getPort(), false);
-        } catch (KeyManagementException e) {
-            throw new LmtpClientException(e);
-        } catch (NoSuchAlgorithmException e) {
+        } catch (KeyManagementException | NoSuchAlgorithmException e) {
             throw new LmtpClientException(e);
         }
     }

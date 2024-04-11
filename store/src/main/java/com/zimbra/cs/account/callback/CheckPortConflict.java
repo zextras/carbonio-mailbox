@@ -25,7 +25,7 @@ import com.zimbra.cs.account.Server;
 
 public class CheckPortConflict extends AttributeCallback {
 
-    private static final Set<String> ProxyPortAttrs = new HashSet<String>();
+    private static final Set<String> ProxyPortAttrs = new HashSet<>();
 
     static {
         // TODO: use a flag in attrs.xml and generate this map automatically
@@ -44,7 +44,7 @@ public class CheckPortConflict extends AttributeCallback {
         ProxyPortAttrs.add(Provisioning.A_carbonioAdminProxyPort);
     }
 
-    private static final Set<String> NonProxyPortAttrs = new HashSet<String>();
+    private static final Set<String> NonProxyPortAttrs = new HashSet<>();
 
     static {
         // TODO: use a flag in attrs.xml and generate this map automatically
@@ -69,7 +69,7 @@ public class CheckPortConflict extends AttributeCallback {
         NonProxyPortAttrs.add(Provisioning.A_zimbraMtaAuthPort);
     }
 
-    private static Set<String> sPortAttrs = new HashSet<String>(NonProxyPortAttrs);
+    private static Set<String> sPortAttrs = new HashSet<>(NonProxyPortAttrs);
 
     @Override
     public void preModify(CallbackContext context, String attrName, Object attrValue,
@@ -98,7 +98,7 @@ public class CheckPortConflict extends AttributeCallback {
     }
 
     private void checkServer(Server server, Map<String, Object> serverAttrsToModify) throws ServiceException {
-        Map<String, String> ports = new HashMap<String, String>();
+        Map<String, String> ports = new HashMap<>();
         Map<String, Object> defaults = Provisioning.getInstance().getConfig().getServerDefaults();
 
         // collect current port values
@@ -184,7 +184,7 @@ public class CheckPortConflict extends AttributeCallback {
     private void checkServerWithNewDefaults(Server server, BiMap<String, String> newDefaults,
             Map<String, Object> configAttrsToModify)
     throws ServiceException {
-        Map<String, String> ports = new HashMap<String, String>();
+        Map<String, String> ports = new HashMap<>();
 
         for (String attrName : sPortAttrs) {
             String newValue = null;

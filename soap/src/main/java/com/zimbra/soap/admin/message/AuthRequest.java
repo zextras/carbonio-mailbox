@@ -80,7 +80,7 @@ public class AuthRequest {
     private String virtualHost;
 
     public AuthRequest() {
-        this((String)null, (String)null);
+        this(null, null);
     }
 
     public AuthRequest(String name, String password) {

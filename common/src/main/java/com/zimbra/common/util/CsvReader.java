@@ -57,7 +57,7 @@ public class CsvReader {
         String[] values = SPLIT_PATTERN.split(line);
         int length = Math.min(values.length, mColNames.length);
         if (mCurrent == null) {
-            mCurrent = new HashMap<String, String>();
+            mCurrent = new HashMap<>();
         } else {
             mCurrent.clear();
         }

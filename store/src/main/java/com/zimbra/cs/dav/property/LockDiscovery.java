@@ -27,7 +27,7 @@ public class LockDiscovery extends ResourceProperty {
 	public LockDiscovery() {
 		super(DavElements.E_LOCKDISCOVERY);
 		setProtected(true);
-		mLocks = new HashSet<LockMgr.Lock>();
+		mLocks = new HashSet<>();
 	}
 	
 	public LockDiscovery(LockMgr.Lock lock) {

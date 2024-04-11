@@ -26,7 +26,7 @@ public class IntegerValueAttrib {
      */
     @SuppressWarnings("unused")
     private IntegerValueAttrib() {
-        this((Integer) null);
+        this(null);
     }
 
     public IntegerValueAttrib(Integer value) {

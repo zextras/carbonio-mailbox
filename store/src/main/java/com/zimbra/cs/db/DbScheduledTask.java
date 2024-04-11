@@ -18,7 +18,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.db.DbPool.DbConnection;
-import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Metadata;
 import com.zimbra.cs.mailbox.ScheduledTask;
 
@@ -72,7 +71,7 @@ public class DbScheduledTask {
     throws ServiceException {
         ZimbraLog.scheduler.debug("Retrieving tasks for class %s, mailbox %d", className, mailboxId);
 
-        List<ScheduledTask> tasks = new ArrayList<ScheduledTask>();
+        List<ScheduledTask> tasks = new ArrayList<>();
 
         DbConnection conn = null;
         PreparedStatement stmt = null;

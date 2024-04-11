@@ -123,7 +123,7 @@ public class WaitSetInfo {
      */
     @SuppressWarnings("unused")
     private WaitSetInfo() {
-        this((String) null, (String) null, (String) null, -1L);
+        this(null, null, null, -1L);
     }
 
     private WaitSetInfo(String waitSetId, String owner,

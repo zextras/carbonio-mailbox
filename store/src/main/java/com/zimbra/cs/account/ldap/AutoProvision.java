@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -174,7 +175,7 @@ public abstract class AutoProvision {
         }
 
         private static final String DELIMITER = "=";
-        private final Map<String, String> attrMap = new HashMap<String, String>();
+        private final Map<String, String> attrMap = new HashMap<>();
         private final String[] attrsToFetch;
         private AutoProvisionListener listener;
 
@@ -205,7 +206,7 @@ public abstract class AutoProvision {
                 attrMap.put(externalAttr, zimbraAttr);
             }
 
-            Set<String> attrs = new HashSet<String>(attrMap.keySet());
+            Set<String> attrs = new HashSet<>(attrMap.keySet());
             attrs.add(LdapConstants.ATTR_createTimestamp);
             String nameMapAttr = domain.getAutoProvAccountNameMap();
             if (nameMapAttr != null) {
@@ -224,11 +225,7 @@ public abstract class AutoProvision {
                 } catch (ClassNotFoundException e) {
                     ZimbraLog.autoprov.warn(
                             "unable to find auto provision listener class " + className, e);
-                } catch (InstantiationException e) {
-                    ZimbraLog.autoprov.warn(
-                            "unable to instantiate auto provision listener object of class "
-                            + className, e);
-                } catch (IllegalAccessException e) {
+                } catch (InstantiationException | IllegalAccessException e) {
                     ZimbraLog.autoprov.warn(
                             "unable to instantiate auto provision listener object of class "
                             + className, e);
@@ -316,7 +313,7 @@ public abstract class AutoProvision {
         AutoProvisionCachedInfo attrMap = AutoProvisionCachedInfo.getInfo(domain);
 
         Map<String, Object> extAttrs = externalAttrs.getAttrs();
-        Map<String, Object> zimbraAttrs = new HashMap<String, Object>();
+        Map<String, Object> zimbraAttrs = new HashMap<>();
 
         for (Map.Entry<String, Object> extAttr : extAttrs.entrySet()) {
             String extAttrName = extAttr.getKey();
@@ -538,7 +535,7 @@ public abstract class AutoProvision {
                 if (mBuf == null) {
                     ByteArrayOutputStream buf = new ByteArrayOutputStream();
                     OutputStreamWriter wout =
-                        new OutputStreamWriter(buf, MimeConstants.P_CHARSET_UTF8);
+                        new OutputStreamWriter(buf, StandardCharsets.UTF_8);
                     String text = mText;
                     wout.write(text);
                     wout.flush();

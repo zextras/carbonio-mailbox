@@ -34,7 +34,7 @@ public class DismissAlarm {
      */
     @SuppressWarnings("unused")
     protected DismissAlarm() {
-        this((String) null, -1L);
+        this(null, -1L);
     }
 
     public DismissAlarm(String id, long dismissedAt) {

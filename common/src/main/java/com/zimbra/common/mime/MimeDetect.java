@@ -5,6 +5,9 @@
 
 package com.zimbra.common.mime;
 
+import com.zimbra.common.localconfig.LC;
+import com.zimbra.common.util.ByteUtil;
+import com.zimbra.common.util.ZimbraLog;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,12 +15,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -25,13 +28,9 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.UnrecognizedOptionException;
 
-import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.util.ByteUtil;
-import com.zimbra.common.util.ZimbraLog;
-
 public class MimeDetect {
-    private TreeMap<Glob, String> globs = new TreeMap<Glob, String>();
-    private TreeMap<Magic, String> magics = new TreeMap<Magic, String>();
+    private TreeMap<Glob, String> globs = new TreeMap<>();
+    private TreeMap<Magic, String> magics = new TreeMap<>();
     private static MimeDetect mimeDetect = null;
     public static int DEFAULT_LIMIT = 8 * 1024;
     
@@ -45,7 +44,7 @@ public class MimeDetect {
         }
     }
 
-    private class Glob implements Comparable<Glob> {
+    private static class Glob implements Comparable<Glob> {
         private boolean literal;
         private Pattern pattern;
         private int priority;
@@ -57,7 +56,7 @@ public class MimeDetect {
         
         Glob(String regex, int priority) throws IOException {
             StringBuffer buf = new StringBuffer();
-            char chars[] = regex.toCharArray();
+            char[] chars = regex.toCharArray();
 
             literal = true;
             this.priority = priority;
@@ -116,13 +115,13 @@ public class MimeDetect {
     private class Magic implements Comparable<Magic> {
         public class Rule {
             public int indent;
-            public byte mask[];
+            public byte[] mask;
             public int offset;
             public int range;
-            public byte value[];
+            public byte[] value;
             public int word;
             
-            public Rule(int indent, int offset, byte value[], byte mask[],
+            public Rule(int indent, int offset, byte[] value, byte[] mask,
                 int word, int range) {
                 this.indent = indent;
                 this.offset = offset;
@@ -136,7 +135,7 @@ public class MimeDetect {
                 this.range = range;
             }
 
-            public boolean detect(byte data[], int limit) {
+            public boolean detect(byte[] data, int limit) {
                 if (limit == -1 || limit > data.length)
                     limit = data.length;
                 loop:
@@ -153,7 +152,7 @@ public class MimeDetect {
 
             public boolean detect(RandomAccessFile raf, int limit) {
                 try {
-                    byte buf[];
+                    byte[] buf;
                     long maxpos = raf.length();
                     
                     if (limit < 0 || limit < maxpos)
@@ -180,7 +179,7 @@ public class MimeDetect {
         }
         
         private int priority;
-        private ArrayList<Rule> rules = new ArrayList<Rule>();
+        private ArrayList<Rule> rules = new ArrayList<>();
         private String type;
 
         Magic(InputStream is) throws IOException {
@@ -190,7 +189,7 @@ public class MimeDetect {
                 throw new IOException("invalid magic section");
 
             Rule rule;
-            String tokens[] = line.substring(line.charAt(0) == '[' ? 1 : 0,
+            String[] tokens = line.substring(line.charAt(0) == '[' ? 1 : 0,
                 line.length() - 1).split(":");
             
             if (tokens.length != 2)
@@ -213,11 +212,11 @@ public class MimeDetect {
             int c = is.read(), c2;
             int indent = 0;
             int length;
-            byte mask[] = null;
+            byte[] mask = null;
             int offset;
             int range = 1;
             StringBuffer sb = new StringBuffer();
-            byte value[];
+            byte[] value;
             int word = 1;
 
             if (c == '[' || c == -1) {
@@ -281,13 +280,13 @@ public class MimeDetect {
         return null;
     }
 
-    public String detect(byte data[]) { return detect(null, data, data.length); }
-    
-    public String detect(byte data[], int limit) {
+    public String detect(byte[] data) { return detect(null, data, data.length); }
+
+    public String detect(byte[] data, int limit) {
         for (Map.Entry<Magic, String> entry : magics.entrySet()) {
             boolean found = true;
             int indent = 0;
-            
+
             for (Magic.Rule rule : entry.getKey().rules) {
                 if (rule.indent == indent) {
                     if (found = rule.detect(data, limit))
@@ -299,12 +298,12 @@ public class MimeDetect {
         }
         return null;
     }
-    
-    public String detect(String file, byte data[]) {
+
+    public String detect(String file, byte[] data) {
         return detect(file, data, data.length);
     }
     
-    public String detect(String file, byte data[], int limit) {
+    public String detect(String file, byte[] data, int limit) {
         String ct = detect(file);
         
         if (ct != null)
@@ -317,10 +316,10 @@ public class MimeDetect {
     }
 
     public String detect(File file, int limit) throws IOException {
-        return detect(file.getName(), file, limit);
+        return detect(file.getName(), limit);
     }
 
-    public String detect(String file, File fd, int limit) throws IOException {
+    public String detect(String file, int limit) throws IOException {
         String ct = detect(file);
         
         if (ct != null)
@@ -369,7 +368,7 @@ public class MimeDetect {
         return detect(ByteUtil.getPartialContent(is, limit, limit), limit);
     }
 
-    public String validate(String file, byte data[], int limit) {
+    public String validate(String file, byte[] data, int limit) {
         return validate(detect(file), detect(data, limit));
     }
     
@@ -378,7 +377,7 @@ public class MimeDetect {
     }
     
     public String validate(File fd, int limit) throws IOException {
-        return validate(detect(fd.getName()), detect(null, fd, limit));
+        return validate(detect(fd.getName()), detect(fd, limit));
     }
     
     private String validate(String ct1, String ct2) {
@@ -398,75 +397,71 @@ public class MimeDetect {
     }
 
     public void parseGlobs(String fileList) throws IOException {
-        
-        if (fileList == null || fileList.length() == 0) {
+        if (fileList == null || fileList.trim().isEmpty()) {
             globs.clear();
             return;
         }
-        ArrayList<String> files = new ArrayList<String>();
+        ArrayList<String> files = new ArrayList<>();
         for (String file : fileList.split(":")) {
             files.add(file);
             files.add(file + ".zimbra");
         }
         for (String file : files) {
-            BufferedInputStream is = null;
-            try {
-                is = new BufferedInputStream(
-                        new FileInputStream(new File(file)));
-            } catch (FileNotFoundException e) {
-                continue;
-            }
-            String line;
-            
-            while ((line = readLine(is)) != null) {
-                if (!line.startsWith("#")) {
-                    String tokens[] = line.split(":");
-                    
-                    if (tokens.length == 2)
-                        globs.put(new Glob(tokens[1]), tokens[0]);
-                    else if (tokens.length == 3)
-                        globs.put(new Glob(tokens[2],
-                            Integer.parseInt(tokens[0])), tokens[1]);
-                    else
-                        ZimbraLog.system.warn("invalid glob syntax " + line);
+            try (FileInputStream fis = new FileInputStream(file);
+                BufferedInputStream bis = new BufferedInputStream(fis)) {
+                String line;
+                while ((line = readLine(bis)) != null) {
+                    if (!line.startsWith("#")) {
+                        String[] tokens = line.split(":");
+
+                        if (tokens.length == 2)
+                            globs.put(new Glob(tokens[1]), tokens[0]);
+                        else if (tokens.length == 3)
+                            globs.put(new Glob(tokens[2],
+                                Integer.parseInt(tokens[0])), tokens[1]);
+                        else
+                            ZimbraLog.system.warn("invalid glob syntax " + line);
+                    }
                 }
+            } catch (FileNotFoundException e) {
+                ZimbraLog.system.warn("file not found %s", file);
             }
         }
     }
-    
+
     public void parseMagic(String fileList) throws IOException {
         final String MAGIC_MAGIC = "MIME-Magic\0";
 
-        if (fileList == null || fileList.length() == 0) {
+        if (fileList == null || fileList.isEmpty()) {
             magics.clear();
             return;
         }
-        ArrayList<String> files = new ArrayList<String>();
+
+        List<String> files = new ArrayList<>();
         for (String file : fileList.split(":")) {
             files.add(file);
             files.add(file + ".zimbra");
         }
-        for (String file : files) {
-            InputStream is = null;
-            try {
-                is = new BufferedInputStream(new FileInputStream(new File(file)));
-            } catch (FileNotFoundException e) {
-                continue;
-            }
-            String line = readLine(is);
-            
-            if (line == null || !line.equals(MAGIC_MAGIC)) {
-                ZimbraLog.system.warn("invalid magic file %s", file);
-                continue;
-            }
-            if (is.read() != '[') {
-                ZimbraLog.system.warn("invalid magic section in %s", file);
-                continue;
-            }
-            while (is.available() > 0) {
-                Magic magic = new Magic(is);
 
-                magics.put(magic, magic.type);
+        for (String file : files) {
+            try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(file))) {
+                String line = readLine(is);
+                if (!MAGIC_MAGIC.equals(line)) {
+                    ZimbraLog.system.warn("invalid magic file %s", file);
+                    continue;
+                }
+                if (is.read() != '[') {
+                    ZimbraLog.system.warn("invalid magic section in %s", file);
+                    continue;
+                }
+                while (is.available() > 0) {
+                    Magic magic = new Magic(is);
+                    magics.put(magic, magic.type);
+                }
+            } catch (FileNotFoundException e) {
+                System.err.println("File not found: " + file);
+            } catch (IOException e) {
+                System.err.println("Error reading file: " + file);
             }
         }
     }

@@ -1,5 +1,5 @@
 pkgname="carbonio-appserver-db"
-pkgver="4.14.0"
+pkgver="4.15.0"
 pkgrel="1"
 pkgdesc="Carbonio Appserver DB Files"
 arch=('x86_64')
@@ -34,4 +34,8 @@ package() {
   mkdir -p "${pkgdir}/opt/zextras/libexec/scripts/migrations"
   rsync -a "store/db/migration/" \
     "${pkgdir}/opt/zextras/libexec/scripts/migrations"
+
+  # systemd unit
+  install -Dm 644 packages/appserver-db/${pkgname}.service \
+    "${pkgdir}/lib/systemd/system/${pkgname}.service"
 }

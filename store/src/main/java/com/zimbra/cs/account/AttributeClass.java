@@ -72,7 +72,7 @@ public enum AttributeClass {
   public static final String OC_zimbraAddressList = addressList.getOCName();
 
   private static class TM {
-    static Map<String, AttributeClass> sOCMap = new HashMap<String, AttributeClass>();
+    static Map<String, AttributeClass> sOCMap = new HashMap<>();
   }
 
   String mOCName;

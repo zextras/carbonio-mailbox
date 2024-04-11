@@ -59,11 +59,11 @@ public class CreateCalendarResourceRequest extends AdminAttrsImpl {
      */
      @SuppressWarnings("unused")
     private CreateCalendarResourceRequest() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public CreateCalendarResourceRequest(String name, String password) {
-        this(name, password, (Collection<Attr>) null);
+        this(name, password, null);
     }
     public CreateCalendarResourceRequest(
             String name, String password, Collection<Attr> attrs) {

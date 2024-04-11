@@ -12,7 +12,6 @@ import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
-import com.zimbra.common.account.Key.DomainBy;
 
 public class Krb5Principal {
     
@@ -73,7 +72,7 @@ public class Krb5Principal {
      
      public static String getKrb5Principal(Domain domain, Account acct) {
          String principal = null;
-         String fps[] = acct.getMultiAttr(Provisioning.A_zimbraForeignPrincipal);
+         String[] fps = acct.getMultiAttr(Provisioning.A_zimbraForeignPrincipal);
          if (fps != null && fps.length > 0) {
              for (String fp : fps) {
                  if (fp.startsWith(Provisioning.FP_PREFIX_KERBEROS5)) {

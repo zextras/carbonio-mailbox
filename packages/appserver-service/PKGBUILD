@@ -1,5 +1,5 @@
 pkgname="carbonio-appserver-service"
-pkgver="4.14.0"
+pkgver="4.15.0"
 pkgrel="1"
 pkgdesc="Carbonio Mailbox Service"
 arch=('x86_64')
@@ -12,9 +12,6 @@ license=(
   "GPL-2.0-only"
 )
 url="https://github.com/zextras"
-optdepends=(
-  "carbonio-common-appserver-docs"
-)
 depends=(
   "service-discover"
   "pending-setups"
@@ -25,6 +22,8 @@ priority="optional"
 
 package() {
   cd "${srcdir}"/../../staging
+
+  # Mailbox
   install -Dm 755 packages/appserver-service/carbonio-mailbox \
     "${pkgdir}/usr/bin/carbonio-mailbox"
   install -Dm 644 packages/appserver-service/carbonio-mailbox-setup.sh \
@@ -33,12 +32,48 @@ package() {
     "${pkgdir}/etc/zextras/service-discover/carbonio-mailbox.hcl"
   install -Dm 644 packages/appserver-service/carbonio-mailbox-sidecar.service \
     "${pkgdir}/lib/systemd/system/carbonio-mailbox-sidecar.service"
-  install -Dm 644 packages/appserver-service/intentions.json \
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-intentions.json \
     "${pkgdir}/etc/carbonio/mailbox/service-discover/intentions.json"
-  install -Dm 644 packages/appserver-service/policies.json \
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-policies.json \
     "${pkgdir}/etc/carbonio/mailbox/service-discover/policies.json"
-  install -Dm 644 packages/appserver-service/service-protocol.json \
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-service-protocol.json \
     "${pkgdir}/etc/carbonio/mailbox/service-discover/service-protocol.json"
+
+  # Mailbox Admin
+  install -Dm 755 packages/appserver-service/carbonio-mailbox-admin \
+    "${pkgdir}/usr/bin/carbonio-mailbox-admin"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-admin-setup.sh \
+    "${pkgdir}/etc/zextras/pending-setups.d/carbonio-mailbox-admin.sh"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-admin.hcl \
+    "${pkgdir}/etc/zextras/service-discover/carbonio-mailbox-admin.hcl"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-admin-sidecar.service \
+    "${pkgdir}/lib/systemd/system/carbonio-mailbox-admin-sidecar.service"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-admin-intentions.json \
+    "${pkgdir}/etc/carbonio/mailbox-admin/service-discover/intentions.json"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-admin-policies.json \
+    "${pkgdir}/etc/carbonio/mailbox-admin/service-discover/policies.json"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-admin-service-protocol.json \
+    "${pkgdir}/etc/carbonio/mailbox-admin/service-discover/service-protocol.json"
+
+  # Mailbox NSLookup
+  install -Dm 755 packages/appserver-service/carbonio-mailbox-nslookup \
+    "${pkgdir}/usr/bin/carbonio-mailbox-nslookup"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-nslookup-setup.sh \
+    "${pkgdir}/etc/zextras/pending-setups.d/carbonio-mailbox-nslookup.sh"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-nslookup.hcl \
+    "${pkgdir}/etc/zextras/service-discover/carbonio-mailbox-nslookup.hcl"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-nslookup-sidecar.service \
+    "${pkgdir}/lib/systemd/system/carbonio-mailbox-nslookup-sidecar.service"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-nslookup-intentions.json \
+    "${pkgdir}/etc/carbonio/mailbox-nslookup/service-discover/intentions.json"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-nslookup-policies.json \
+    "${pkgdir}/etc/carbonio/mailbox-nslookup/service-discover/policies.json"
+  install -Dm 644 packages/appserver-service/carbonio-mailbox-nslookup-service-protocol.json \
+    "${pkgdir}/etc/carbonio/mailbox-nslookup/service-discover/service-protocol.json"
+
+  # systemd unit
+  install -Dm 644 packages/appserver-service/carbonio-appserver.service \
+    "${pkgdir}/lib/systemd/system/carbonio-appserver.service"
 }
 
 postinst() {
@@ -57,6 +92,8 @@ postinst() {
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
     systemctl enable carbonio-mailbox-sidecar.service >/dev/null 2>&1 || :
+    systemctl enable carbonio-mailbox-admin-sidecar.service >/dev/null 2>&1 || :
+    systemctl enable carbonio-mailbox-nslookup-sidecar.service >/dev/null 2>&1 || :
   fi
 
   echo "======================================================"
@@ -68,12 +105,19 @@ postinst() {
 prerm() {
   if [ -d /run/systemd/system ]; then
     systemctl --no-reload disable carbonio-mailbox-sidecar.service >/dev/null 2>&1 || :
+    systemctl --no-reload disable carbonio-mailbox-admin-sidecar.service >/dev/null 2>&1 || :
+    systemctl --no-reload disable carbonio-mailbox-nslookup-sidecar.service >/dev/null 2>&1 || :
     systemctl stop carbonio-mailbox-sidecar.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-mailbox-admin-sidecar.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-mailbox-nslookup-sidecar.service >/dev/null 2>&1 || :
   fi
 }
 
 postrm() {
   rm -f /etc/carbonio/mailbox/service-discover/token
+  rm -f /etc/carbonio/mailbox-admin/service-discover/token
+  rm -f /etc/carbonio/mailbox-nslookup/service-discover/token
+
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
   fi

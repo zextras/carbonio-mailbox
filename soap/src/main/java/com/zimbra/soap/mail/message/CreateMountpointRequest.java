@@ -37,7 +37,7 @@ public class CreateMountpointRequest {
      */
     @SuppressWarnings("unused")
     private CreateMountpointRequest() {
-        this((NewMountpointSpec) null);
+        this(null);
     }
 
     public CreateMountpointRequest(NewMountpointSpec folder) {

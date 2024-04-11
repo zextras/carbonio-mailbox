@@ -20,7 +20,6 @@ import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.EntrySearchFilter;
 import com.zimbra.cs.account.GalContact;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ldap.LdapEntrySearchFilter.LdapQueryVisitor;
 import com.zimbra.cs.gal.GalExtraSearchFilter;
 import com.zimbra.cs.gal.GalExtraSearchFilter.FilteredGalSearchResultCallback;
@@ -81,7 +80,7 @@ public class SearchCalendarResources extends GalDocumentHandler {
 
         String attrsStr = request.getAttribute(AccountConstants.A_ATTRS, null);
         String[] attrs = attrsStr == null ? null : attrsStr.split(",");
-        Set<String> attrsSet = attrs == null ? null : new HashSet<String>(Arrays.asList(attrs));
+        Set<String> attrsSet = attrs == null ? null : new HashSet<>(Arrays.asList(attrs));
 
         params.setResultCallback(new CalendarResourceGalSearchResultCallback(params, filter, attrsSet));
 

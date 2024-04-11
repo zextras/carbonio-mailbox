@@ -34,7 +34,7 @@ public class FreeBusyUserStatus {
      */
     @SuppressWarnings("unused")
     private FreeBusyUserStatus() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public FreeBusyUserStatus(String name, String freebusyStatus) {

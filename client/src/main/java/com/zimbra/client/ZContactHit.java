@@ -95,8 +95,8 @@ public class ZContactHit implements ZImapSearchHit {
         imapUid = e.getAttributeInt(MailConstants.A_IMAP_UID, -1);
         modSeq = e.getAttributeInt(MailConstants.A_MODIFIED_SEQUENCE, -1);
 
-        HashMap<String, String> attrs = new HashMap<String, String>();
-        HashMap<String, ZContactAttachmentInfo> attachments = new HashMap<String, ZContactAttachmentInfo>();
+        HashMap<String, String> attrs = new HashMap<>();
+        HashMap<String, ZContactAttachmentInfo> attachments = new HashMap<>();
 
         for (Element attrEl : e.listElements(MailConstants.E_ATTRIBUTE)) {
             String name = attrEl.getAttribute(MailConstants.A_ATTRIBUTE_NAME);
@@ -299,15 +299,16 @@ public class ZContactHit implements ZImapSearchHit {
     public String getFileAs() { return mFileAs; }
     public String getNickname() { return mNickname; }
     public String getNamePrefix() { return mNamePrefix; }
-    public String getFirstName() { return mFirstName; };
+    public String getFirstName() { return mFirstName; }
     public String getPhoneticFirstName() { return mPhoneticFirstName; }
     public String getMiddleName() { return mMiddleName; }
     public String getMaidenName() { return mMaidenName; }
     public String getLastName() { return mLastName; }
     public String getPhoneticLastName() { return mPhoneticLastName; }
     public String getNameSuffix() { return mNameSuffix; }
-    public String getCompany() { return mCompany; };
-    public String getPhoneticCompany() { return mPhoneticCompany; }
+    public String getCompany() { return mCompany; }
+
+  public String getPhoneticCompany() { return mPhoneticCompany; }
 
     @Override
     public void modifyNotification(ZModifyEvent event) throws ServiceException {

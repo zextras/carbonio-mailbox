@@ -185,7 +185,7 @@ public class LdapDynamicGroup extends DynamicGroup implements LdapEntry {
         try {
             zlcCompare = LdapClient.getContext(LdapServerType.get(false /* useMaster */), LdapUsage.COMPARE);
             BySearchResultEntrySearcher searcher = new BySearchResultEntrySearcher(
-                    prov, (ZLdapContext) null, domain, BASIC_ATTRS, new GroupMembershipUpdator(prov, zlcCompare,
+                    prov, null, domain, BASIC_ATTRS, new GroupMembershipUpdator(prov, zlcCompare,
                             acctDN, membership, adminGroupsOnly, true, false));
             searcher.doSearch(filter, DYNAMIC_GROUPS_TYPE);
         } finally {
@@ -210,7 +210,7 @@ public class LdapDynamicGroup extends DynamicGroup implements LdapEntry {
         try {
             zlcCompare = LdapClient.getContext(LdapServerType.get(false /* useMaster */), LdapUsage.COMPARE);
             BySearchResultEntrySearcher searcher = new BySearchResultEntrySearcher(
-                    prov, (ZLdapContext) null, (Domain) null, BASIC_ATTRS, new GroupMembershipUpdator(prov, zlcCompare,
+                    prov, null, null, BASIC_ATTRS, new GroupMembershipUpdator(prov, zlcCompare,
                             acctDN, membership, adminGroupsOnly, customGroupsOnly, nonCustomGroupsOnly));
             searcher.doSearch(filter, DYNAMIC_GROUPS_TYPE);
         } finally {

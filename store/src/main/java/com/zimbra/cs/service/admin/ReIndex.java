@@ -24,7 +24,6 @@ import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxIndex;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.ReIndexRequest;
 import com.zimbra.soap.admin.type.ReindexMailboxInfo;
@@ -113,7 +112,7 @@ public final class ReIndex extends AdminDocumentHandler {
                     }
                     mbox.index.startReIndexByType(types);
                 } else if (idsStr != null) {
-                    Set<Integer> ids = new HashSet<Integer>();
+                    Set<Integer> ids = new HashSet<>();
                     for (String id : Splitter.on(',').trimResults().split(idsStr)) {
                         try {
                             ids.add(Integer.parseInt(id));

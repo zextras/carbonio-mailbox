@@ -80,14 +80,14 @@ public abstract class Formatter {
   }
 
   private static Map<Class<? extends Formatter>, FormatListener> listeners =
-      new ConcurrentHashMap<Class<? extends Formatter>, FormatListener>();
+      new ConcurrentHashMap<>();
 
   public static void registerListener(Class<? extends Formatter> clazz, FormatListener listener) {
     listeners.put(clazz, listener);
   }
 
   private Set<FormatListener> getClassListeners() {
-    Set<FormatListener> set = new HashSet<FormatListener>();
+    Set<FormatListener> set = new HashSet<>();
     for (Class<? extends Formatter> clazz : listeners.keySet()) {
       if (clazz.isAssignableFrom(this.getClass())) {
         set.add(listeners.get(clazz));
@@ -222,7 +222,7 @@ public abstract class Formatter {
           getMailItemsFromFolder(context, (Folder) context.target, startTime, endTime, chunkSize);
       return items != null ? items.iterator() : null;
     } else {
-      ArrayList<MailItem> result = new ArrayList<MailItem>();
+      ArrayList<MailItem> result = new ArrayList<>();
       result.add(context.target);
       return result.iterator();
     }

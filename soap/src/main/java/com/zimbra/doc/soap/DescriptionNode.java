@@ -8,12 +8,12 @@ package com.zimbra.doc.soap;
 import java.util.List;
 
 public interface DescriptionNode {
-    public DescriptionNode getParent();
-    public List<DescriptionNode> getChildren();
-    public void writeDescription(StringBuilder desc, int depth);
-    public String getDescription();
-    public String getSummary();
-    public String getXPath();
-    public String xmlLinkTargetName();
-    public String tableLinkTargetName();
+    DescriptionNode getParent();
+    List<DescriptionNode> getChildren();
+    void writeDescription(StringBuilder desc, int depth);
+    String getDescription();
+    String getSummary();
+    String getXPath();
+    String xmlLinkTargetName();
+    String tableLinkTargetName();
 }

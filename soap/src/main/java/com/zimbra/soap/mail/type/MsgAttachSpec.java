@@ -29,7 +29,7 @@ public class MsgAttachSpec extends AttachSpec {
      */
     @SuppressWarnings("unused")
     private MsgAttachSpec() {
-        this((String) null);
+        this(null);
     }
 
     public MsgAttachSpec(String id) {

@@ -32,7 +32,7 @@ public class ImapSession extends ImapListener {
         @Override
         protected PendingModifications getQueuedNotifications(int changeId) {
             if (queuedChanges == null) {
-                queuedChanges = new TreeMap<Integer, PendingModifications>();
+                queuedChanges = new TreeMap<>();
             }
             PendingModifications pns = queuedChanges.get(changeId);
             if (pns == null) {
@@ -77,7 +77,7 @@ public class ImapSession extends ImapListener {
 
     synchronized int getFootprint() {
         // FIXME: consider saved search results, in-memory data for paged sessions
-        return mFolder instanceof ImapFolder ? ((ImapFolder) mFolder).getSize() : 0;
+        return mFolder instanceof ImapFolder ? mFolder.getSize() : 0;
     }
 
     /** If the folder is selected READ-WRITE, updates its high-water RECENT
@@ -131,10 +131,10 @@ public class ImapSession extends ImapListener {
     }
 
     private void handleCreate(int changeId, BaseItemInfo item, AddedItems added) throws ServiceException {
-        if (item == null || item.getIdInMailbox() <= 0) {
-            return;
-        } else if (item.getFolderIdInMailbox() == folderId.id && (item instanceof Message || item instanceof Contact)) {
-            mFolder.handleItemCreate(changeId, item, added);
+        if (item != null && item.getIdInMailbox() > 0) {
+            if (item.getFolderIdInMailbox() == folderId.id && (item instanceof Message || item instanceof Contact)) {
+                mFolder.handleItemCreate(changeId, item, added);
+            }
         }
     }
 

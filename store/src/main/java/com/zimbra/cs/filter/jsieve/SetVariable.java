@@ -10,6 +10,7 @@ import static com.zimbra.cs.filter.JsieveConfigMapHandler.CAPABILITY_ENOTIFY;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -25,36 +26,8 @@ import org.apache.jsieve.exception.SieveException;
 import org.apache.jsieve.exception.SyntaxException;
 import org.apache.jsieve.mail.MailAdapter;
 
-import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.filter.FilterUtil;
-import com.zimbra.cs.filter.ZimbraMailAdapter;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import org.apache.jsieve.Argument;
-import org.apache.jsieve.Arguments;
-import org.apache.jsieve.Block;
-import org.apache.jsieve.SieveContext;
-import org.apache.jsieve.StringListArgument;
-import org.apache.jsieve.TagArgument;
-import org.apache.jsieve.commands.AbstractCommand;
-import org.apache.jsieve.exception.SieveException;
-import org.apache.jsieve.exception.SyntaxException;
-import org.apache.jsieve.mail.MailAdapter;
-
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.StringUtil;
-import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.filter.FilterUtil;
 import com.zimbra.cs.filter.ZimbraMailAdapter;
 
@@ -164,35 +137,30 @@ public class SetVariable extends AbstractCommand {
      */
     public static String applyModifiers(String value, String[] operations) {
         String temp = value;
-        for (int i = 0; i < operations.length; ++i) {
-            String operation = operations[i];
-            if (operation == null) {
-                continue;
-            }
-            if (operation.equals(STRING_LENGTH)) {
-                temp = String.valueOf(value.length());
-            } else if (operation.equals(QUOTE_WILDCARD)) {
-                temp = temp.replaceAll("\\\\", "\\\\\\\\");
-                temp = temp.replaceAll("\\*", "\\\\*");
-                temp = temp.replaceAll("\\?", "\\\\?");    
-            } else if (operation.equals(LOWERCASE_FIRST)) {
-                temp = String.valueOf(temp.charAt(0)).toLowerCase() + temp.substring(1);
-            } else if (operation.equals(UPPERCASE_FIRST)) {
-                temp = String.valueOf(temp.charAt(0)).toUpperCase() + temp.substring(1);
-            } else if (operation.equals(ALL_LOWER_CASE)) {
-                temp = value.toLowerCase();
-            } else if (operation.equals(ALL_UPPER_CASE)) {
-                temp = temp.toUpperCase();
-            } else if (operation.equals(ENCODE_URL)) {
-                try {
-                    temp = URLEncoder.encode(temp, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    temp = value;
-                }
-            } else {
-                temp = value;
-            }
+      for (String operation : operations) {
+        if (operation == null) {
+          continue;
         }
+        if (operation.equals(STRING_LENGTH)) {
+          temp = String.valueOf(value.length());
+        } else if (operation.equals(QUOTE_WILDCARD)) {
+          temp = temp.replaceAll("\\\\", "\\\\\\\\");
+          temp = temp.replaceAll("\\*", "\\\\*");
+          temp = temp.replaceAll("\\?", "\\\\?");
+        } else if (operation.equals(LOWERCASE_FIRST)) {
+          temp = String.valueOf(temp.charAt(0)).toLowerCase() + temp.substring(1);
+        } else if (operation.equals(UPPERCASE_FIRST)) {
+          temp = String.valueOf(temp.charAt(0)).toUpperCase() + temp.substring(1);
+        } else if (operation.equals(ALL_LOWER_CASE)) {
+          temp = value.toLowerCase();
+        } else if (operation.equals(ALL_UPPER_CASE)) {
+          temp = temp.toUpperCase();
+        } else if (operation.equals(ENCODE_URL)) {
+          temp = URLEncoder.encode(temp, StandardCharsets.UTF_8);
+        } else {
+          temp = value;
+        }
+      }
         return temp;
     }
 

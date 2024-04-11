@@ -104,7 +104,7 @@ public class CalendarItemData {
         mIsPublic = isPublic;
         mAlarm = alarm;
         mDefaultData = defaultData;
-        mInstances = new ArrayList<InstanceData>();
+        mInstances = new ArrayList<>();
     }
 
     void addInstance(InstanceData instance) {
@@ -121,16 +121,16 @@ public class CalendarItemData {
         CalendarItemData calItemData = new CalendarItemData(type, mFolderId, mCalItemId, mFlags, mTags, mTagIds, mModMetadata,
                 mModContent, mDate, mChangeDate, mSize, mUid, mIsRecurring, mHasExceptions, mIsPublic, mAlarm, mDefaultData);
         long defaultDuration =
-            mDefaultData.getDuration() != null ? mDefaultData.getDuration().longValue() : 0;
+            mDefaultData.getDuration() != null ? mDefaultData.getDuration() : 0;
         for (InstanceData inst : mInstances) {
-            long alarmAt = inst.getAlarmAt() != null ? inst.getAlarmAt().longValue() : 0;
+            long alarmAt = inst.getAlarmAt() != null ? inst.getAlarmAt() : 0;
             if (rangeStart <= alarmAt && alarmAt < rangeEnd) {
                 // Instance start time is outside the range but its alarm time is within range.
                 calItemData.addInstance(inst);
             } else if (inst.getDtStart() != null) {
-                long instStart = inst.getDtStart().longValue();
+                long instStart = inst.getDtStart();
                 Long instDuration = inst.getDuration();
-                long duration = instDuration != null ? instDuration.longValue() : defaultDuration;
+                long duration = instDuration != null ? instDuration : defaultDuration;
                 long instEnd = instStart + duration;
                 if ((instStart == 0 && instEnd == 0) ||
                     (instStart < rangeEnd && instEnd > rangeStart)) {
@@ -192,7 +192,7 @@ public class CalendarItemData {
             mDefaultData = new FullInstanceData(metaDefInst);
         int numInst = (int) meta.getLong(FN_NUM_INST, 0);
         if (numInst > 0) {
-            List<InstanceData> instances = new ArrayList<InstanceData>(numInst);
+            List<InstanceData> instances = new ArrayList<>(numInst);
             for (int i = 0; i < numInst; i++) {
                 Metadata metaInst = meta.getMap(FN_INST + i, true);
                 if (metaInst != null) {
@@ -206,7 +206,7 @@ public class CalendarItemData {
             }
             mInstances = instances;
         } else {
-            mInstances = new ArrayList<InstanceData>(0);
+            mInstances = new ArrayList<>(0);
         }
         mActualRangeStart = meta.getLong(FN_RANGE_START);
         mActualRangeEnd = meta.getLong(FN_RANGE_END);

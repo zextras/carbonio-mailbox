@@ -27,7 +27,7 @@ public class SMIMEConfigInfo extends AdminAttrsImpl {
      */
     @SuppressWarnings("unused")
     private SMIMEConfigInfo() {
-        this((String) null);
+        this(null);
     }
 
     public SMIMEConfigInfo(String name) {

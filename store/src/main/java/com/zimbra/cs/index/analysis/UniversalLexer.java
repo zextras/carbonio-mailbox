@@ -33,7 +33,7 @@ final class UniversalLexer {
    *                  at the beginning of a line
    * l is of the form l = 2*k, k a non negative integer
    */
-  private static final int ZZ_LEXSTATE[] = { 
+  private static final int[] ZZ_LEXSTATE = {
      0, 0
   };
 
@@ -245,7 +245,7 @@ final class UniversalLexer {
   private static final int ZZ_PUSHBACK_2BIG = 2;
 
   /* error messages for the codes above */
-  private static final String ZZ_ERROR_MSG[] = {
+  private static final String[] ZZ_ERROR_MSG = {
     "Unkown internal scanner error",
     "Error: could not match input",
     "Error: pushback value was too large"
@@ -290,7 +290,7 @@ final class UniversalLexer {
 
   /** this buffer contains the current text to be matched and is
       the source of the yytext() string */
-  private char zzBuffer[] = new char[ZZ_BUFFERSIZE];
+  private char[] zzBuffer = new char[ZZ_BUFFERSIZE];
 
   /** the textposition at the last accepting state */
   private int zzMarkedPos;
@@ -406,7 +406,7 @@ void getTerm(CharTermAttribute t, int offset, int len) {
     /* is the buffer big enough? */
     if (zzCurrentPos >= zzBuffer.length) {
       /* if not: blow it up */
-      char newBuffer[] = new char[zzCurrentPos*2];
+      char[] newBuffer = new char[zzCurrentPos*2];
       System.arraycopy(zzBuffer, 0, newBuffer, 0, zzBuffer.length);
       zzBuffer = newBuffer;
     }
@@ -649,35 +649,35 @@ void getTerm(CharTermAttribute t, int offset, int len) {
           { return UniversalTokenizer.TokenType.CJK;
           }
         case 11: break;
-        case 8: 
+        case 8:
           { return UniversalTokenizer.TokenType.ACRONYM;
           }
         case 12: break;
-        case 6: 
+        case 6:
           { return UniversalTokenizer.TokenType.HOST;
           }
         case 13: break;
-        case 1: 
+        case 1:
           { /* ignore */
           }
         case 14: break;
-        case 9: 
+        case 9:
           { return UniversalTokenizer.TokenType.EMAIL;
           }
         case 15: break;
-        case 7: 
+        case 7:
           { return UniversalTokenizer.TokenType.COMPANY;
           }
         case 16: break;
-        case 4: 
+        case 4:
           { return UniversalTokenizer.TokenType.APOSTROPHE;
           }
         case 17: break;
-        case 5: 
+        case 5:
           { return UniversalTokenizer.TokenType.NUM;
           }
         case 18: break;
-        default: 
+        default:
           if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
             zzAtEOF = true;
             return null;

@@ -8,6 +8,7 @@ package com.zimbra.cs.service.formatter;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class ContactFolderFormatter extends Formatter {
     private static final byte FIELD_DELIMITER   = '\u001D';  // group separator
     private static final byte CONTACT_DELIMITER = '\u001E';  // record separator
 
-    private enum Delimiter { Field, Contact };
+    private enum Delimiter { Field, Contact }
 
 
     @Override
@@ -48,7 +49,7 @@ public class ContactFolderFormatter extends Formatter {
         }
         String v = context.params.get("t");
         Delimiter d = Delimiter.Field;
-        if (v != null && v.equals("2"))
+        if ("2".equals(v))
             d = Delimiter.Contact;
         v = context.params.get("all");
         boolean allContacts = false;
@@ -82,31 +83,31 @@ public class ContactFolderFormatter extends Formatter {
             return;
         // send metadata of the Contact
         // itemId
-        out.write(MailConstants.A_ID.getBytes("UTF-8"));
+        out.write(MailConstants.A_ID.getBytes(StandardCharsets.UTF_8));
         out.write(FIELD_DELIMITER);
-        out.write(ifmt.formatItemId(item).getBytes("UTF-8"));
+        out.write(ifmt.formatItemId(item).getBytes(StandardCharsets.UTF_8));
         out.write(FIELD_DELIMITER);
         // folderId
-        out.write(MailConstants.A_FOLDER.getBytes("UTF-8"));
+        out.write(MailConstants.A_FOLDER.getBytes(StandardCharsets.UTF_8));
         out.write(FIELD_DELIMITER);
-        out.write(ifmt.formatItemId(item.getFolderId()).getBytes("UTF-8"));
+        out.write(ifmt.formatItemId(item.getFolderId()).getBytes(StandardCharsets.UTF_8));
         out.write(FIELD_DELIMITER);
         // date
-        out.write(MailConstants.A_DATE.getBytes("UTF-8"));
+        out.write(MailConstants.A_DATE.getBytes(StandardCharsets.UTF_8));
         out.write(FIELD_DELIMITER);
-        out.write(Long.toString(item.getDate()).getBytes("UTF-8"));
+        out.write(Long.toString(item.getDate()).getBytes(StandardCharsets.UTF_8));
         out.write(FIELD_DELIMITER);
         // revision
-        out.write(MailConstants.A_REVISION.getBytes("UTF-8"));
+        out.write(MailConstants.A_REVISION.getBytes(StandardCharsets.UTF_8));
         out.write(FIELD_DELIMITER);
-        out.write(Integer.toString(item.getSavedSequence()).getBytes("UTF-8"));
+        out.write(Integer.toString(item.getSavedSequence()).getBytes(StandardCharsets.UTF_8));
         out.write(FIELD_DELIMITER);
         // fileAsStr
         try {
             String fileAsStr = ((Contact)item).getFileAsString();
-            out.write(MailConstants.A_FILE_AS_STR.getBytes("UTF-8"));
+            out.write(MailConstants.A_FILE_AS_STR.getBytes(StandardCharsets.UTF_8));
             out.write(FIELD_DELIMITER);
-            out.write(fileAsStr.getBytes("UTF-8"));
+            out.write(fileAsStr.getBytes(StandardCharsets.UTF_8));
         } catch (ServiceException se) {
         }
 
@@ -116,9 +117,9 @@ public class ContactFolderFormatter extends Formatter {
                 printContactGroup(fields.get(k), out, item.getMailbox().getAccountId());
             } else {
                 out.write(FIELD_DELIMITER);
-                out.write(k.getBytes("UTF-8"));
+                out.write(k.getBytes(StandardCharsets.UTF_8));
                 out.write(FIELD_DELIMITER);
-                out.write(fields.get(k).getBytes("UTF-8"));
+                out.write(fields.get(k).getBytes(StandardCharsets.UTF_8));
             }
         }
 
@@ -127,9 +128,9 @@ public class ContactFolderFormatter extends Formatter {
         for (Contact.Attachment attachment : attachments) {
             if (attachment.getName().equals(ContactConstants.A_image)) {
                 out.write(FIELD_DELIMITER);
-                out.write((ContactConstants.A_image + MailConstants.A_PART).getBytes("UTF-8"));
+                out.write((ContactConstants.A_image + MailConstants.A_PART).getBytes(StandardCharsets.UTF_8));
                 out.write(FIELD_DELIMITER);
-                out.write(attachment.getPartName().getBytes("UTF-8"));
+                out.write(attachment.getPartName().getBytes(StandardCharsets.UTF_8));
                 break;
             }
         }
@@ -160,9 +161,9 @@ public class ContactFolderFormatter extends Formatter {
         for (ContactGroup.Member member : contactGroup.getMembers()) {
             ContactGroup.Member.Type type = member.getType();
             out.write(FIELD_DELIMITER);
-            out.write(type.getDelimittedFieldsEncoded().getBytes("UTF-8"));
+            out.write(type.getDelimittedFieldsEncoded().getBytes(StandardCharsets.UTF_8));
             out.write(FIELD_DELIMITER);
-            out.write(member.getValue().getBytes("UTF-8"));
+            out.write(member.getValue().getBytes(StandardCharsets.UTF_8));
         }
     }
 

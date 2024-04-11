@@ -359,7 +359,7 @@ public final class JaxbInfo {
         return rootElementName;
     }
 
-    public final class KeyValuePairXmlRepresentationInfo {
+    public static final class KeyValuePairXmlRepresentationInfo {
         private final String xmlElementName;
         private final String xmlAttributeName;
         public KeyValuePairXmlRepresentationInfo(String elemName, String attrName) {
@@ -381,7 +381,7 @@ public final class JaxbInfo {
         }
         String elemName = null;
         String attrName = null;
-        Field fields[] = jaxbClass.getDeclaredFields();
+        Field[] fields = jaxbClass.getDeclaredFields();
         for (Field field: fields) {
             ZimbraKeyValuePairs annot = field.getAnnotation(ZimbraKeyValuePairs.class);
             if (annot == null) {
@@ -395,7 +395,7 @@ public final class JaxbInfo {
             }
         }
         if (elemName != null) {
-            Method methods[] = jaxbClass.getDeclaredMethods();
+            Method[] methods = jaxbClass.getDeclaredMethods();
             for (Method method : methods) {
                 ZimbraKeyValuePairs annot = method.getAnnotation(ZimbraKeyValuePairs.class);
                 if (annot == null) {
@@ -544,7 +544,7 @@ public final class JaxbInfo {
         }
     }
 
-    private void processFieldRelatedAnnotations(Annotation annots[], String fieldName, Type defaultGenericType) {
+    private void processFieldRelatedAnnotations(Annotation[] annots, String fieldName, Type defaultGenericType) {
         WrappedElementInfo wrappedInfo = null;
         for (Annotation annot : annots) {
             if (annot instanceof XmlElementWrapper) {
@@ -650,7 +650,7 @@ public final class JaxbInfo {
             defKlass = (Class<?>) genericType;
         } else if (genericType instanceof ParameterizedType) {
             ParameterizedType pt = (ParameterizedType) genericType;
-            Type typeArgs[] = pt.getActualTypeArguments();
+            Type[] typeArgs = pt.getActualTypeArguments();
             if (typeArgs.length != 1) {
                 // Odd - better to ignore this
                 return null;
@@ -663,7 +663,7 @@ public final class JaxbInfo {
             TypeVariable<?> tv = (TypeVariable<?>) genericType;
             defKlass = tv.getClass();
         } else {
-            LOG.debug("classFromType unknown instance type [" + genericType.toString() + "] - ignoring");
+            LOG.debug("classFromType unknown instance type [" + genericType + "] - ignoring");
             defKlass = null;
         }
         return defKlass;
@@ -723,13 +723,13 @@ public final class JaxbInfo {
             accessType = XmlAccessType.PUBLIC_MEMBER;
         }
 
-        Field fields[] = jaxbClass.getDeclaredFields();
+        Field[] fields = jaxbClass.getDeclaredFields();
         for (Field field: fields) {
             XmlTransient xmlTransient = field.getAnnotation(XmlTransient.class);
             if (xmlTransient != null) {
                 continue;
             }
-            Annotation fAnnots[] = field.getAnnotations();
+            Annotation[] fAnnots = field.getAnnotations();
             if ((fAnnots == null) || (fAnnots.length == 0)) {
                 boolean autoFields =
                     (accessType.equals(XmlAccessType.PUBLIC_MEMBER) || accessType.equals(XmlAccessType.FIELD));
@@ -740,7 +740,7 @@ public final class JaxbInfo {
             processFieldRelatedAnnotations(fAnnots, field.getName(), field.getGenericType());
         }
 
-        Method methods[] = jaxbClass.getDeclaredMethods();
+        Method[] methods = jaxbClass.getDeclaredMethods();
         for (Method method : methods) {
             XmlTransient xmlTransient = method.getAnnotation(XmlTransient.class);
             if (xmlTransient != null) {
@@ -749,7 +749,7 @@ public final class JaxbInfo {
             if (!isGetterOrSetter(method)) {
                 continue;
             }
-            Annotation mAnnots[] = method.getAnnotations();
+            Annotation[] mAnnots = method.getAnnotations();
             if ((mAnnots == null) || (mAnnots.length == 0)) {
                 boolean autoGettersSetters =
                     (accessType.equals(XmlAccessType.PUBLIC_MEMBER) || accessType.equals(XmlAccessType.PROPERTY));

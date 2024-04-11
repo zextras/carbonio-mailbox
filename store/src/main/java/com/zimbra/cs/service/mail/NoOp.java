@@ -61,7 +61,7 @@ public class NoOp extends MailDocumentHandler  {
     }
 
     ConcurrentHashMap<String /*AccountId*/, ZimbraSoapContext> sBlockedNops =
-        new ConcurrentHashMap<String /*AccountId*/, ZimbraSoapContext>(5000, 0.75f, 50);
+        new ConcurrentHashMap<>(5000, 0.75f, 50);
 
 	@Override
     public Element handle(Element request, Map<String, Object> context) throws ServiceException {

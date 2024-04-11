@@ -1075,6 +1075,8 @@ public class AttributeManagerUtil {
         equality = "booleanMatch";
         break;
       case TYPE_BINARY:
+
+      case TYPE_OSTRING:
         // cannot use the binary syntax because it cannot support adding/deleting individual values
         // in a multi-valued attrs, only replacement(i.e. replace all values) is supported.
         //
@@ -1180,15 +1182,6 @@ public class AttributeManagerUtil {
         syntax = "1.3.6.1.4.1.1466.115.121.1.26" + lengthSuffix;
         equality = "caseIgnoreIA5Match";
         substr = "caseIgnoreSubstringsMatch";
-        break;
-
-      case TYPE_OSTRING:
-        lengthSuffix = "";
-        if (ai.getMax() != Long.MAX_VALUE) {
-          lengthSuffix = "{" + ai.getMax() + "}";
-        }
-        syntax = "1.3.6.1.4.1.1466.115.121.1.40" + lengthSuffix;
-        equality = "octetStringMatch";
         break;
 
       case TYPE_CSTRING:

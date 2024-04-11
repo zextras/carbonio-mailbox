@@ -23,7 +23,7 @@ public abstract class ChangePasswordListener {
   public enum InternalChangePasswordListenerId {
     CPL_SYNC,
     CPL_REVOKE_APP_PASSWORDS,
-    CPL_REMOVE_EWS_PWD_CACHE_ENTRY;
+    CPL_REMOVE_EWS_PWD_CACHE_ENTRY
   }
 
   /*
@@ -32,11 +32,11 @@ public abstract class ChangePasswordListener {
    */
   private static Map<InternalChangePasswordListenerId, ChangePasswordListener> mInternalListeners =
       Collections.synchronizedMap(
-          new EnumMap<InternalChangePasswordListenerId, ChangePasswordListener>(
+          new EnumMap<>(
               InternalChangePasswordListenerId.class));
 
   private static Map<String, ChangePasswordListener> mExternalListeners =
-      Collections.synchronizedMap(new HashMap<String, ChangePasswordListener>());
+      Collections.synchronizedMap(new HashMap<>());
 
   /**
    * Register a change password listener. It should be invoked from the init() method of
@@ -104,7 +104,7 @@ public abstract class ChangePasswordListener {
    */
   public static class ChangePasswordListenerContext {
     Map<InternalChangePasswordListenerId, Map<String, Object>> mInternalCtxts =
-        new EnumMap<InternalChangePasswordListenerId, Map<String, Object>>(
+        new EnumMap<>(
             InternalChangePasswordListenerId.class);
 
     ChangePasswordListener mExternalListener = null;
@@ -123,7 +123,7 @@ public abstract class ChangePasswordListener {
         mInternalListeners.entrySet()) {
       InternalChangePasswordListenerId listenerEnum = listener.getKey();
       ChangePasswordListener listenerInstance = listener.getValue();
-      Map<String, Object> context = new HashMap<String, Object>();
+      Map<String, Object> context = new HashMap<>();
       ctxts.mInternalCtxts.put(listenerEnum, context);
       listenerInstance.preModify(acct, newPassword, context, attrsToModify);
     }
@@ -133,7 +133,7 @@ public abstract class ChangePasswordListener {
     if (cpListener != null) {
       ctxts.mExternalListener = cpListener;
 
-      Map<String, Object> context = new HashMap<String, Object>();
+      Map<String, Object> context = new HashMap<>();
       ctxts.mExternalCtxt = context;
       cpListener.preModify(acct, newPassword, context, attrsToModify);
     }

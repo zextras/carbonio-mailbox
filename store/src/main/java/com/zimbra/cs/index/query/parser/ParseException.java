@@ -96,14 +96,14 @@ public class ParseException extends Exception {
     String eol = System.getProperty("line.separator", "\n");
     StringBuffer expected = new StringBuffer();
     int maxSize = 0;
-    for (int i = 0; i < expectedTokenSequences.length; i++) {
-      if (maxSize < expectedTokenSequences[i].length) {
-        maxSize = expectedTokenSequences[i].length;
+    for (int[] expectedTokenSequence : expectedTokenSequences) {
+      if (maxSize < expectedTokenSequence.length) {
+        maxSize = expectedTokenSequence.length;
       }
-      for (int j = 0; j < expectedTokenSequences[i].length; j++) {
-        expected.append(tokenImage[expectedTokenSequences[i][j]]).append(' ');
+      for (int j = 0; j < expectedTokenSequence.length; j++) {
+        expected.append(tokenImage[expectedTokenSequence[j]]).append(' ');
       }
-      if (expectedTokenSequences[i][expectedTokenSequences[i].length - 1] != 0) {
+      if (expectedTokenSequence[expectedTokenSequence.length - 1] != 0) {
         expected.append("...");
       }
       expected.append(eol).append("    ");
@@ -130,7 +130,7 @@ public class ParseException extends Exception {
     } else {
       retval.append("Was expecting one of:").append(eol).append("    ");
     }
-    retval.append(expected.toString());
+    retval.append(expected);
     return retval.toString();
   }
 
@@ -179,11 +179,10 @@ public class ParseException extends Exception {
            default:
               if ((ch = str.charAt(i)) < 0x20 || ch > 0x7e) {
                  String s = "0000" + Integer.toString(ch, 16);
-                 retval.append("\\u").append(s.substring(s.length() - 4, s.length()));
+                 retval.append("\\u").append(s.substring(s.length() - 4));
               } else {
                  retval.append(ch);
               }
-              continue;
         }
       }
       return retval.toString();

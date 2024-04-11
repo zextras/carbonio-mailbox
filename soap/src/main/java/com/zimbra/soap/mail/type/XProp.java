@@ -51,7 +51,7 @@ public class XProp implements XPropInterface {
      */
     @SuppressWarnings("unused")
     private XProp() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public XProp(

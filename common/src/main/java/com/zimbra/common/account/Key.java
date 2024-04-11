@@ -10,7 +10,7 @@ import com.zimbra.common.service.ServiceException;
 /** Keys used to look up Provisioning objects. */
 public class Key {
 
-  public static enum AccountBy {
+  public enum AccountBy {
 
     // case must match protocol
     adminName,
@@ -30,7 +30,7 @@ public class Key {
   }
 
   // data sources
-  public static enum DataSourceBy {
+  public enum DataSourceBy {
     id,
     name;
 
@@ -44,7 +44,7 @@ public class Key {
   }
 
   // identities
-  public static enum IdentityBy {
+  public enum IdentityBy {
     id,
     name;
 
@@ -57,7 +57,7 @@ public class Key {
     }
   }
 
-  public static enum DomainBy {
+  public enum DomainBy {
 
     // case must match protocol
     id,
@@ -75,7 +75,7 @@ public class Key {
     }
   }
 
-  public static enum ServerBy {
+  public enum ServerBy {
 
     // case must match protocol
     id,
@@ -91,7 +91,7 @@ public class Key {
     }
   }
 
-  public static enum ZimletBy {
+  public enum ZimletBy {
 
     // case must match protocol
     id,
@@ -107,7 +107,7 @@ public class Key {
   }
 
   // signatures
-  public static enum SignatureBy {
+  public enum SignatureBy {
     id,
     name;
 
@@ -120,7 +120,7 @@ public class Key {
     }
   }
 
-  public static enum CacheEntryBy {
+  public enum CacheEntryBy {
 
     // case must match protocol
     id,
@@ -135,7 +135,7 @@ public class Key {
     }
   }
 
-  public static enum CosBy {
+  public enum CosBy {
 
     // case must match protocol
     id,
@@ -150,7 +150,7 @@ public class Key {
     }
   }
 
-  public static enum CalendarResourceBy {
+  public enum CalendarResourceBy {
 
     // case must match protocol
     id,
@@ -166,7 +166,7 @@ public class Key {
     }
   }
 
-  public static enum XMPPComponentBy {
+  public enum XMPPComponentBy {
 
     // case must match protocol
     id,
@@ -182,7 +182,7 @@ public class Key {
     }
   }
 
-  public static enum DistributionListBy {
+  public enum DistributionListBy {
 
     // case must match protocol
     id,
@@ -197,7 +197,7 @@ public class Key {
     }
   }
 
-  public static enum ShareLocatorBy {
+  public enum ShareLocatorBy {
     id;
 
     public static ShareLocatorBy fromString(String s) throws ServiceException {

@@ -33,7 +33,7 @@ public class NameAndValue {
      */
     @SuppressWarnings("unused")
     private NameAndValue() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public NameAndValue(String name, String value) {

@@ -710,7 +710,7 @@ public abstract class MailItem
       public void addSection(String key, String encoded) {
         removeSection(key);
         if (key != null && encoded != null) {
-          add(new Pair<String, String>(key, encoded));
+          add(new Pair<>(key, encoded));
         }
       }
 
@@ -726,7 +726,7 @@ public abstract class MailItem
       }
 
       public List<String> listSections() {
-        List<String> sections = new ArrayList<String>(size());
+        List<String> sections = new ArrayList<>(size());
         for (Pair<String, String> entry : this) {
           sections.add(entry.getFirst());
         }
@@ -1773,7 +1773,7 @@ public abstract class MailItem
     if (ids == null || ids.isEmpty()) {
       return Collections.emptyList();
     }
-    List<MailItem> items = new ArrayList<MailItem>();
+    List<MailItem> items = new ArrayList<>();
     for (UnderlyingData ud : DbMailItem.getById(mbox, ids, type)) {
       items.add(mbox.getItem(ud));
     }
@@ -2175,7 +2175,7 @@ public abstract class MailItem
 
   List<MailItem> loadRevisions() throws ServiceException {
     if (mRevisions == null) {
-      mRevisions = new ArrayList<MailItem>();
+      mRevisions = new ArrayList<>();
 
       if (isTagged(Flag.FlagInfo.VERSIONED)) {
         for (UnderlyingData data : DbMailItem.getRevisionInfo(this, inDumpster()))
@@ -2246,7 +2246,7 @@ public abstract class MailItem
       List<MailItem> revisions = loadRevisions();
       int numRevsToPurge = revisions.size() - (maxNumRevisions - 1); // -1 for main item
       if (numRevsToPurge > 0) {
-        List<MailItem> toPurge = new ArrayList<MailItem>();
+        List<MailItem> toPurge = new ArrayList<>();
         int numPurged = 0;
         for (Iterator<MailItem> it = revisions.iterator();
             it.hasNext() && numPurged < numRevsToPurge;
@@ -2545,7 +2545,6 @@ public abstract class MailItem
         mMailbox.getTagByName(name).updateUnread(delta, deletedDelta);
       } catch (MailServiceException.NoSuchItemException nsie) {
         ZimbraLog.mailbox.warn("item %d has nonexistent tag %s", mId, name);
-        continue;
       }
     }
   }
@@ -2569,7 +2568,6 @@ public abstract class MailItem
         mMailbox.getTagByName(name).updateSize(countDelta, deletedDelta);
       } catch (MailServiceException.NoSuchItemException nsie) {
         ZimbraLog.mailbox.warn("item %d has nonexistent tag %s", mId, name);
-        continue;
       }
     }
   }
@@ -3165,7 +3163,7 @@ public abstract class MailItem
     public TypedIdList itemIds = new TypedIdList();
 
     /** The ids of all unread items being deleted. This is a subset of {@link #itemIds}. */
-    public List<Integer> unreadIds = new ArrayList<Integer>(1);
+    public List<Integer> unreadIds = new ArrayList<>(1);
 
     /**
      * The ids of all items that must be deleted but whose deletion must be deferred because of
@@ -3179,10 +3177,10 @@ public abstract class MailItem
      * {@link Conversation}s whose messages are <b>not</b> all deleted during a {@link Folder}
      * delete.)
      */
-    public Set<Integer> modifiedIds = new HashSet<Integer>(2);
+    public Set<Integer> modifiedIds = new HashSet<>(2);
 
     /** The document ids that need to be removed from the index. */
-    public final List<Integer> indexIds = new ArrayList<Integer>(1);
+    public final List<Integer> indexIds = new ArrayList<>(1);
 
     /**
      * The ids of all items with the {@link Flag#BITMASK_COPIED} flag being deleted. Items in
@@ -3195,7 +3193,7 @@ public abstract class MailItem
      * The {@link com.zimbra.cs.store.Blob}s for all items being deleted that have content persisted
      * in the store.
      */
-    public List<MailboxBlob> blobs = new ArrayList<MailboxBlob>(1);
+    public List<MailboxBlob> blobs = new ArrayList<>(1);
 
     /**
      * Maps {@link Folder} ids to {@link DbMailItem.LocationCount}s tracking various per-folder
@@ -3210,7 +3208,7 @@ public abstract class MailItem
     public Map<String, DbMailItem.LocationCount> tagCounts = Maps.newHashMapWithExpectedSize(1);
 
     /** Digests of all blobs being deleted. */
-    public Set<String> blobDigests = new HashSet<String>(2);
+    public Set<String> blobDigests = new HashSet<>(2);
 
     /**
      * Combines the data from another <tt>PendingDelete</tt> into this object. The other
@@ -3235,13 +3233,13 @@ public abstract class MailItem
 
         if (other.cascadeIds != null) {
           (cascadeIds == null
-                  ? cascadeIds = new ArrayList<Integer>(other.cascadeIds.size())
+                  ? cascadeIds = new ArrayList<>(other.cascadeIds.size())
                   : cascadeIds)
               .addAll(other.cascadeIds);
         }
         if (other.sharedIndex != null) {
           (sharedIndex == null
-                  ? sharedIndex = new HashSet<Integer>(other.sharedIndex.size())
+                  ? sharedIndex = new HashSet<>(other.sharedIndex.size())
                   : sharedIndex)
               .addAll(other.sharedIndex);
         }
@@ -3372,7 +3370,7 @@ public abstract class MailItem
 
       // If there are any related items being deleted, log them in blocks of 200.
       int itemId = item == null ? 0 : Math.abs(item.getId()); // Use abs() for VirtualConversations
-      Set<Integer> idSet = new TreeSet<Integer>();
+      Set<Integer> idSet = new TreeSet<>();
       for (MailItem.Type type : info.itemIds.types()) {
         for (int id : info.itemIds.getIds(type)) {
           id = Math.abs(id); // Use abs() for VirtualConversations
@@ -3482,7 +3480,7 @@ public abstract class MailItem
       throw ServiceException.PERM_DENIED("you do not have the required rights on the item");
     }
 
-    Integer id = Integer.valueOf(mId);
+    Integer id = mId;
     PendingDelete info = new PendingDelete();
     info.size = getTotalSize();
     info.itemIds.add(getType(), id, getFolderId(), mData.uuid);
@@ -3516,7 +3514,7 @@ public abstract class MailItem
         }
       }
 
-      List<MailItem> items = new ArrayList<MailItem>(3);
+      List<MailItem> items = new ArrayList<>(3);
       items.add(this);
       items.addAll(loadRevisions());
       for (MailItem revision : items) {
@@ -3805,7 +3803,7 @@ public abstract class MailItem
   public static Set<Integer> toId(Set<? extends MailItem> items) {
     if (items == null) return null;
 
-    Set<Integer> result = new HashSet<Integer>(items.size());
+    Set<Integer> result = new HashSet<>(items.size());
     for (MailItem item : items) {
       result.add(item.getId());
     }
@@ -3815,7 +3813,7 @@ public abstract class MailItem
   public static List<Integer> toId(List<? extends MailItem> items) {
     if (items == null) return null;
 
-    List<Integer> result = new ArrayList<Integer>(items.size());
+    List<Integer> result = new ArrayList<>(items.size());
     for (MailItem item : items) {
       result.add(item.getId());
     }
@@ -3841,13 +3839,13 @@ public abstract class MailItem
     Short granted = rights != null ? rights.getGrantedRights(authuser) : null;
     short subset;
     if (granted != null) {
-      subset = (short) (granted.shortValue() & rightsNeeded);
+      subset = (short) (granted & rightsNeeded);
       if (ZimbraLog.acl.isTraceEnabled()) {
         ZimbraLog.acl.trace(
             "checkACL '%s' returned=%s granted=%s needed=%s (R)",
             getPath(), subset, granted, rightsNeeded);
       }
-      return (short) (granted.shortValue() & rightsNeeded);
+      return (short) (granted & rightsNeeded);
     }
     // no ACLs apply; can we check parent folder for inherited rights?
     if (mId == Mailbox.ID_FOLDER_ROOT) {
@@ -3865,7 +3863,7 @@ public abstract class MailItem
       return 0;
     }
     granted = getParent().checkACL(rightsNeeded, authuser, asAdmin);
-    subset = (short) (granted.shortValue() & rightsNeeded);
+    subset = (short) (granted & rightsNeeded);
     if (ZimbraLog.acl.isTraceEnabled()) {
       ZimbraLog.acl.trace(
           "checkACL '%s' returned=%s granted=%s needed=%s (P)",

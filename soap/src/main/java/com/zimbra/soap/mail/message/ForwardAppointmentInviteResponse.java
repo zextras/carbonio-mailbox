@@ -7,8 +7,6 @@ package com.zimbra.soap.mail.message;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.zimbra.common.soap.MailConstants;
-
 @XmlRootElement(name="ForwardAppointmentInviteResponse")
 public class ForwardAppointmentInviteResponse {
 }

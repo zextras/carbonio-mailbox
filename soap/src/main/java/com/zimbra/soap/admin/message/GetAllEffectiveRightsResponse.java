@@ -43,7 +43,7 @@ public class GetAllEffectiveRightsResponse {
      */
     @SuppressWarnings("unused")
     private GetAllEffectiveRightsResponse() {
-        this((GranteeInfo) null);
+        this(null);
     }
 
     public GetAllEffectiveRightsResponse(GranteeInfo grantee) {

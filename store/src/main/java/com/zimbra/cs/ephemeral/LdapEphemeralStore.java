@@ -133,7 +133,7 @@ public class LdapEphemeralStore extends EphemeralStore {
         protected Map<String, Object> attrs;
 
         public AbstractLdapHelper() {
-            attrs = new HashMap<String, Object>();
+            attrs = new HashMap<>();
         }
 
         void addChange(String attr, String value) {

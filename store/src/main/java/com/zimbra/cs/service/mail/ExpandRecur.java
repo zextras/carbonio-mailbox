@@ -63,7 +63,7 @@ public class ExpandRecur extends MailDocumentHandler {
     protected static ParsedRecurrence parseRecur(Element request, TimeZoneMap tzmap) throws ServiceException {
         CalendarUtils.parseTimeZones(request, tzmap);
         IRecurrence recurrence = null;
-        List<IException> exceptions = new ArrayList<IException>();
+        List<IException> exceptions = new ArrayList<>();
         for (Iterator<Element> compIter = request.elementIterator(); compIter.hasNext();) {
             Element elem = compIter.next();
             String elemName = elem.getName();
@@ -131,7 +131,7 @@ public class ExpandRecur extends MailDocumentHandler {
         if (parsed.rrule != null) {
             instances = parsed.rrule.expandInstances(0, rangeStart, rangeEnd);
         } else if (parsed.exceptions != null && !parsed.exceptions.isEmpty()) {
-            instances = new ArrayList<Instance>(parsed.exceptions.size());
+            instances = new ArrayList<>(parsed.exceptions.size());
             for (IException except : parsed.exceptions) {
                 if (except instanceof CancellationRule)
                     continue;  // Skip canceled instances.

@@ -34,7 +34,7 @@ public class GranteeWithType {
      */
     @SuppressWarnings("unused")
     private GranteeWithType() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public GranteeWithType(String type, String value) {

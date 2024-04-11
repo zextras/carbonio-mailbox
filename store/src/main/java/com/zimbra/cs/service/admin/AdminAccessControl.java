@@ -494,7 +494,7 @@ public abstract class AdminAccessControl {
       if (canAccess == null) {
         throwIfNotAllowed();
       } else {
-        boolean hasRight = canAccess.booleanValue();
+        boolean hasRight = canAccess;
         if (!hasRight) {
           throw ServiceException.PERM_DENIED("only global admin is allowed");
         }
@@ -776,7 +776,7 @@ public abstract class AdminAccessControl {
       if (canAccess == null) {
         hasRight = doCheckRight(account, needed);
       } else {
-        hasRight = canAccess.booleanValue();
+        hasRight = canAccess;
       }
       if (!hasRight) {
         throw ServiceException.PERM_DENIED(printNeededRight(account, needed));
@@ -795,7 +795,7 @@ public abstract class AdminAccessControl {
       if (canAccess == null) {
         hasRight = doCheckRight(cr, needed);
       } else {
-        hasRight = canAccess.booleanValue();
+        hasRight = canAccess;
       }
 
       if (!hasRight) {
@@ -886,12 +886,7 @@ public abstract class AdminAccessControl {
           HardRule violatedRule = HardRule.ruleVolated(e);
           if (ignoreHardRules.contains(violatedRule)) {
             // return an AttrRightChecker that allows no attr
-            return new AttrRightChecker() {
-              @Override
-              public boolean allowAttr(String attrName) {
-                return false;
-              }
-            };
+            return attrName -> false;
           }
         }
 
@@ -946,7 +941,7 @@ public abstract class AdminAccessControl {
 
     private String printNeededRight(Entry target, Object needed) throws ServiceException {
       if ((needed instanceof AdminRight)
-          && AdminRight.PR_SYSTEM_ADMIN_ONLY == ((AdminRight) needed)) {
+          && AdminRight.PR_SYSTEM_ADMIN_ONLY == needed) {
         return AdminRightCheckPoint.Notes.SYSTEM_ADMINS_ONLY;
       }
 
@@ -1053,7 +1048,7 @@ public abstract class AdminAccessControl {
         Boolean hardRulesResult =
             HardRules.checkHardRules(mAC.mAuthedAcct, true, target, rightNeeded);
         if (hardRulesResult != null) {
-          return hardRulesResult.booleanValue();
+          return hardRulesResult;
         }
       } catch (ServiceException e) {
         // if PERM_DENIED, log and return false, do not throw,
@@ -1267,8 +1262,7 @@ public abstract class AdminAccessControl {
     public List<NamedEntry> getAllowed(List<NamedEntry> entries, int maxEntries)
         throws ServiceException {
       List<NamedEntry> allowedEntries = Lists.newArrayListWithExpectedSize(entries.size());
-      for (int i = 0; i < entries.size(); i++) {
-        NamedEntry entry = entries.get(i);
+      for (NamedEntry entry : entries) {
         if (allow(entry)) {
           allowedEntries.add(entry);
         }
@@ -1338,7 +1332,7 @@ public abstract class AdminAccessControl {
    * dynamic get attrs right
    */
   public static class GetAttrsRight extends DynamicAttrsRight {
-    private final Set<String> mAttrs = new HashSet<String>();
+    private final Set<String> mAttrs = new HashSet<>();
 
     public void addAttr(String attrName) {
       mAttrs.add(attrName);
@@ -1354,7 +1348,7 @@ public abstract class AdminAccessControl {
    * dynamic set attrs right, no constraint checking
    */
   public static class SetAttrsRight extends DynamicAttrsRight {
-    private final Set<String> mAttrs = new HashSet<String>();
+    private final Set<String> mAttrs = new HashSet<>();
 
     public void addAttr(String attrName) {
       mAttrs.add(attrName);
@@ -1367,7 +1361,7 @@ public abstract class AdminAccessControl {
   }
 
   public static class SetAttrsRightWithConstraintChecking extends DynamicAttrsRight {
-    private final Map<String, Object> mAttrs = new HashMap<String, Object>();
+    private final Map<String, Object> mAttrs = new HashMap<>();
 
     public void addAttr(String attrName, Object attrValue) {
       mAttrs.put(attrName, attrValue);

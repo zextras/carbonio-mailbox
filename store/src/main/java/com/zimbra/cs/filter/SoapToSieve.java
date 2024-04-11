@@ -101,7 +101,7 @@ public final class SoapToSieve {
             buffer.append(condition).append(" (");
 
             // Handle tests
-            Map<Integer, String> index2test = new TreeMap<Integer, String>(); // sort by index
+            Map<Integer, String> index2test = new TreeMap<>(); // sort by index
             for (FilterTest test : tests.getTests()) {
                 String result = handleTest(test);
                 if (result != null) {
@@ -113,7 +113,7 @@ public final class SoapToSieve {
         }
 
         // Handle actions
-        Map<Integer, String> index2action = new TreeMap<Integer, String>(); // sort by index
+        Map<Integer, String> index2action = new TreeMap<>(); // sort by index
         List<FilterAction> filterActions = rule.getFilterActions();
 
         String variables = "";
@@ -182,7 +182,7 @@ public final class SoapToSieve {
         nestedIfBlock.append(childCondition).append(" (");
 
         // Handle tests
-        Map<Integer, String> index2childTest = new TreeMap<Integer, String>(); // sort by index
+        Map<Integer, String> index2childTest = new TreeMap<>(); // sort by index
         for (FilterTest childTest : currentNestedRule.getFilterTests().getTests()) {
             String childResult = handleTest(childTest);
             if (childResult != null) {
@@ -193,7 +193,7 @@ public final class SoapToSieve {
         nestedIfBlock.append(") {\n");
 
         // Handle actions
-        Map<Integer, String> index2childAction = new TreeMap<Integer, String>(); // sort by index
+        Map<Integer, String> index2childAction = new TreeMap<>(); // sort by index
         List<FilterAction> childActions = currentNestedRule.getFilterActions();
 
         String variables = "";
@@ -277,7 +277,7 @@ public final class SoapToSieve {
                     }
                     format.append("\"").append(FilterUtil.escape(item)).append("\"");
                 }
-                snippet = "addressbook :in [" + format.toString() + ']';
+                snippet = "addressbook :in [" + format + ']';
             } else {
                 snippet = "addressbook :in \"" + FilterUtil.escape(header) + '"';
             }
@@ -315,7 +315,7 @@ public final class SoapToSieve {
             for (int i = 0; i < daysOfWeek.length; i ++) {
                 // first validate value
                 try {
-                    int day = Integer.valueOf(daysOfWeek[i]);
+                    int day = Integer.parseInt(daysOfWeek[i]);
                     if (day < 0 || day > 6) {
                         throw ServiceException.INVALID_REQUEST(
                                 "Day of week index must be from 0 (Sunday) to 6 (Saturday)", null);
@@ -442,7 +442,7 @@ public final class SoapToSieve {
 
     private static String toSieve(FilterTest.AddressTest test) throws ServiceException {
         if (test instanceof FilterTest.EnvelopeTest) {
-            return formatAddress((FilterTest.EnvelopeTest) test, "envelope");
+            return formatAddress(test, "envelope");
         }
         return formatAddress(test, "address");
     }
@@ -620,7 +620,7 @@ public final class SoapToSieve {
             if (!message.isEmpty()) {
                 filter.append(":message ").append(StringUtil.enclose(message, '"')).append(' ');
             }
-            if (method.indexOf("\n") < 0) {
+            if (!method.contains("\n")) {
                 filter.append(StringUtil.enclose(method, '"'));
             } else {
                 filter.append("text:\r\n").append(method).append("\r\n.\r\n");
@@ -647,10 +647,10 @@ public final class SoapToSieve {
                         || FilterAction.LogAction.LogLevel.debug == level
                         || FilterAction.LogAction.LogLevel.trace == level
                         )) {
-                    String message = "Invalid log action: Invalid log level found: " + level.toString();
+                    String message = "Invalid log action: Invalid log level found: " + level;
                     throw ServiceException.PARSE_ERROR(message, null);
                 }
-                sb.append(" :").append(level.toString());
+                sb.append(" :").append(level);
             }
             sb.append(" \"").append(logAction.getContent()).append("\"");
             return sb.toString();

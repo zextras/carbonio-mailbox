@@ -64,11 +64,11 @@ public class RightModifierInfo {
      */
     @SuppressWarnings("unused")
     private RightModifierInfo() {
-        this((Boolean) null, (Boolean) null, (Boolean) null, (Boolean) null, (String) null);
+        this(null, null, null, null, null);
     }
 
     public RightModifierInfo(String value) {
-        this((Boolean) null, (Boolean) null, (Boolean) null, (Boolean) null, value);
+        this(null, null, null, null, value);
     }
 
     public RightModifierInfo(Boolean deny, Boolean canDelegate,

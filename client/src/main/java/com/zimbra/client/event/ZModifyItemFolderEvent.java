@@ -9,6 +9,6 @@ import com.zimbra.common.service.ServiceException;
 
 public interface ZModifyItemFolderEvent extends ZModifyEvent {
 
-    public String getFolderId(String defaultValue) throws ServiceException;
+    String getFolderId(String defaultValue) throws ServiceException;
 
 }

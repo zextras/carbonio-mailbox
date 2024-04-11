@@ -27,7 +27,7 @@ public enum LoggingLevel {
 
     private final com.zimbra.common.util.Log.Level commonLevel;
 
-    private LoggingLevel(com.zimbra.common.util.Log.Level commonLvl) {
+    LoggingLevel(com.zimbra.common.util.Log.Level commonLvl) {
         this.commonLevel = commonLvl;
     }
 

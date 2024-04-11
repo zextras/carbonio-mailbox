@@ -26,7 +26,7 @@ public final class AuthenticatorFactory {
   }
 
   public AuthenticatorFactory() {
-    authenticators = new HashMap<String, Info>();
+    authenticators = new HashMap<>();
     register(SaslAuthenticator.PLAIN, SaslAuthenticator.class);
     register(SaslAuthenticator.GSSAPI, SaslAuthenticator.class, false);
     register(SaslAuthenticator.CRAM_MD5, SaslAuthenticator.class);

@@ -19,7 +19,7 @@ public class GetAllLocales extends AccountDocumentHandler {
     public Element handle(Element request, Map<String, Object> context) {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
 
-        Locale locales[] = WebClientL10nUtil.getAllLocalesSorted();
+        Locale[] locales = WebClientL10nUtil.getAllLocalesSorted();
         Element response = zsc.createElement(AccountConstants.GET_ALL_LOCALES_RESPONSE);
         for (Locale locale : locales) {
             ToXML.encodeLocale(response, locale, Locale.US);

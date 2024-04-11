@@ -379,7 +379,6 @@ public abstract class LmtpHandler extends ProtocolHandler {
     if (sz != null) {
       try {
         size = Integer.parseInt(sz);
-        ;
       } catch (NumberFormatException nfe) {
         sendReply(LmtpReply.INVALID_SIZE_PARAMETER);
         return;

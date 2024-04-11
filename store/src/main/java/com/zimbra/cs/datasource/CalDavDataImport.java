@@ -72,7 +72,7 @@ public class CalDavDataImport extends MailItemImport {
 
   @Override
   public void importData(List<Integer> folderIds, boolean fullSync) throws ServiceException {
-    ArrayList<CalendarFolder> folders = new ArrayList<CalendarFolder>();
+    ArrayList<CalendarFolder> folders = new ArrayList<>();
     try {
       mbox.beginTrackingSync();
       if (folderIds != null) for (int fid : folderIds) folders.add(new CalendarFolder(fid));
@@ -84,11 +84,7 @@ public class CalDavDataImport extends MailItemImport {
           sync(octxt, f);
         }
       }
-    } catch (DavException e) {
-      throw ServiceException.FAILURE("error importing CalDAV data", e);
-    } catch (IOException e) {
-      throw ServiceException.FAILURE("error importing CalDAV data", e);
-    } catch (HttpException e) {
+    } catch (DavException | HttpException | IOException e) {
       throw ServiceException.FAILURE("error importing CalDAV data", e);
     }
   }
@@ -120,7 +116,7 @@ public class CalDavDataImport extends MailItemImport {
 
   protected String getDefaultPrincipalUrl() {
     DataSource ds = getDataSource();
-    String attrs[] = ds.getMultiAttr(Provisioning.A_zimbraDataSourceAttribute);
+    String[] attrs = ds.getMultiAttr(Provisioning.A_zimbraDataSourceAttribute);
     for (String a : attrs) {
       if (a.startsWith("p:")) {
         return a.substring(2).replaceAll("_USERNAME_", getUsername());
@@ -167,7 +163,7 @@ public class CalDavDataImport extends MailItemImport {
     created,
     deleted,
     modified
-  };
+  }
 
   private static class RemoteItem {
     Status status;
@@ -195,14 +191,14 @@ public class CalDavDataImport extends MailItemImport {
       throws ServiceException {
     Collection<DataSourceItem> allFolders =
         DbDataSource.getAllMappingsInFolder(ds, getRootFolderId(ds));
-    HashMap<String, DataSourceItem> folders = new HashMap<String, DataSourceItem>();
+    HashMap<String, DataSourceItem> folders = new HashMap<>();
     for (DataSourceItem f : allFolders) if (f.remoteId != null) folders.put(f.remoteId, f);
     return folders;
   }
 
   private ArrayList<CalendarFolder> syncFolders()
       throws ServiceException, IOException, DavException, HttpException {
-    ArrayList<CalendarFolder> ret = new ArrayList<CalendarFolder>();
+    ArrayList<CalendarFolder> ret = new ArrayList<>();
     DataSource ds = getDataSource();
     OperationContext octxt = new OperationContext(mbox);
     HashMap<String, DataSourceItem> allFolders = getAllFolderMappings(ds);
@@ -215,9 +211,9 @@ public class CalDavDataImport extends MailItemImport {
           "Folder %d was deleted.  Deleting data source %s.", getRootFolderId(ds), ds.getName());
       mbox.getAccount().deleteDataSource(ds.getId());
       // return empty array
-      return new ArrayList<CalendarFolder>(0);
+      return new ArrayList<>(0);
     }
-    List<Integer> deleted = new ArrayList<Integer>();
+    List<Integer> deleted = new ArrayList<>();
     int lastSync = (int) rootFolder.getLastSyncDate();
     if (lastSync > 0) {
       deleted.addAll(mbox.getTombstones(lastSync).getAllIds());
@@ -311,7 +307,7 @@ public class CalDavDataImport extends MailItemImport {
     }
     if (!allFolders.isEmpty()) {
       // handle deleted folders
-      ArrayList<Integer> fids = new ArrayList<Integer>();
+      ArrayList<Integer> fids = new ArrayList<>();
       int[] fidArray = new int[allFolders.size()];
       int i = 0;
       for (DataSourceItem f : allFolders.values()) {
@@ -345,7 +341,7 @@ public class CalDavDataImport extends MailItemImport {
   private boolean pushDelete(Collection<Integer> itemIds) throws ServiceException {
     DataSource ds = getDataSource();
     boolean deleted = false;
-    ArrayList<Integer> toDelete = new ArrayList<Integer>();
+    ArrayList<Integer> toDelete = new ArrayList<>();
     for (int itemId : itemIds) {
       try {
         deleteRemoteItem(DbDataSource.getMapping(ds, itemId));
@@ -368,7 +364,7 @@ public class CalDavDataImport extends MailItemImport {
       return;
     }
     String type = item.md.get(METADATA_KEY_TYPE, null);
-    if (type == null || !type.equals(METADATA_TYPE_APPOINTMENT)) {
+    if (!METADATA_TYPE_APPOINTMENT.equals(type)) {
       // not a calendar item
       return;
     }
@@ -423,7 +419,6 @@ public class CalDavDataImport extends MailItemImport {
       if (mitem.getType() != MailItem.Type.FOLDER) {
         ZimbraLog.datasource.warn(
             "pushModify: item type doesn't match in metadata for item %d", itemId);
-        return;
       }
       // detect and push rename
     } else if (METADATA_TYPE_APPOINTMENT.equals(type)) {
@@ -448,14 +443,13 @@ public class CalDavDataImport extends MailItemImport {
       }
     } else {
       ZimbraLog.datasource.warn("pushModify: unrecognized item type for %d: %s", itemId, type);
-      return;
     }
   }
 
   private String putAppointment(CalendarItem calItem, DataSourceItem dsItem)
       throws ServiceException, IOException, DavException, HttpException {
     StringBuilder buf = new StringBuilder();
-    ArrayList<String> recipients = new ArrayList<String>();
+    ArrayList<String> recipients = new ArrayList<>();
 
     buf.append("BEGIN:VCALENDAR\r\n");
     buf.append("VERSION:").append(ZCalendar.sIcalVersion).append("\r\n");
@@ -502,19 +496,19 @@ public class CalDavDataImport extends MailItemImport {
     // CalDAV doesn't provide delete tombstone.  in order to check for deleted appointments
     // we need to cross reference the current result with what we have from last sync
     // and check for any appointment that has disappeared since last sync.
-    HashMap<String, DataSourceItem> allItems = new HashMap<String, DataSourceItem>();
+    HashMap<String, DataSourceItem> allItems = new HashMap<>();
     for (DataSourceItem localItem :
         DbDataSource.getAllMappingsInFolder(getDataSource(), folder.getId()))
       allItems.put(localItem.remoteId, localItem);
 
-    ArrayList<RemoteItem> ret = new ArrayList<RemoteItem>();
+    ArrayList<RemoteItem> ret = new ArrayList<>();
     CalDavClient client = getClient();
     Collection<Appointment> appts = client.getEtags(item.remoteId);
     for (Appointment a : appts) {
       ret.add(new RemoteCalendarItem(a.href, a.etag));
       allItems.remove(a.href);
     }
-    ArrayList<Integer> deletedIds = new ArrayList<Integer>();
+    ArrayList<Integer> deletedIds = new ArrayList<>();
     for (DataSourceItem deletedItem : allItems.values()) {
       // what's left in the collection are previous mapping that has disappeared.
       // we need to delete the appointments that are mapped locally.
@@ -584,7 +578,7 @@ public class CalDavDataImport extends MailItemImport {
       ZimbraLog.datasource.debug("Updating stale appointment %s", item.href);
       ZCalendar.ZVCalendar vcalendar;
       SetCalendarItemData main = new SetCalendarItemData();
-      SetCalendarItemData exceptions[] = null;
+      SetCalendarItemData[] exceptions = null;
       CalDavClient client = null;
       try {
         client = getClient();
@@ -643,7 +637,7 @@ public class CalDavDataImport extends MailItemImport {
         mi = mbox.getItemById(octxt, dsItem.itemId, MailItem.Type.UNKNOWN);
       } catch (NoSuchItemException se) {
         // item not found.  delete the mapping so it can be downloaded again if needed.
-        ArrayList<Integer> deletedIds = new ArrayList<Integer>();
+        ArrayList<Integer> deletedIds = new ArrayList<>();
         deletedIds.add(dsItem.itemId);
         DbDataSource.deleteMappings(ds, deletedIds);
       }
@@ -661,8 +655,8 @@ public class CalDavDataImport extends MailItemImport {
     // token
     int currentSync = lastSync;
     boolean allDone = false;
-    HashMap<Integer, Integer> modifiedFromRemote = new HashMap<Integer, Integer>();
-    ArrayList<Integer> deletedFromRemote = new ArrayList<Integer>();
+    HashMap<Integer, Integer> modifiedFromRemote = new HashMap<>();
+    ArrayList<Integer> deletedFromRemote = new ArrayList<>();
 
     // loop through as long as there are un'synced local changes
     while (!allDone) {
@@ -670,7 +664,7 @@ public class CalDavDataImport extends MailItemImport {
 
       if (lastSync > 0) { // Don't push local changes during initial sync.
         // push local deletion
-        List<Integer> deleted = new ArrayList<Integer>();
+        List<Integer> deleted = new ArrayList<>();
         for (int itemId : mbox.getTombstones(lastSync).getAllIds()) {
           if (deletedFromRemote.contains(itemId)) {
             continue; // was just deleted from sync
@@ -679,7 +673,7 @@ public class CalDavDataImport extends MailItemImport {
         }
 
         // move to trash is equivalent to delete
-        HashSet<Integer> fid = new HashSet<Integer>();
+        HashSet<Integer> fid = new HashSet<>();
         fid.add(Mailbox.ID_FOLDER_TRASH);
         List<Integer> trashed =
             mbox.getModifiedItems(octxt, lastSync, MailItem.Type.UNKNOWN, fid).getFirst();

@@ -112,7 +112,7 @@ public class SaslFilter extends IoFilterAdapter {
      */
     private List<IoBuffer> encrypt(IoBuffer buf) throws IOException {
         debug("encrypt enter: input buffer size = %d", buf.remaining());
-        List<IoBuffer> buffers = new ArrayList<IoBuffer>(2);
+        List<IoBuffer> buffers = new ArrayList<>(2);
         synchronized (mOutputBuffer) {
             // May loop more than once if RAW_SEND_SIZE is exceeded
             do {

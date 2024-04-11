@@ -23,7 +23,7 @@ public class FetchCommand extends ImapCommand {
         this.sequence = sequence;
         this.attributes = attributes;
         this.parts = parts;
-        this.originalParts = (parts == null ? null : new ArrayList<ImapPartSpecifier>(parts));
+        this.originalParts = (parts == null ? null : new ArrayList<>(parts));
     }
 
     @Override

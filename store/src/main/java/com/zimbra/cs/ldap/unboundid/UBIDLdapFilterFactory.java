@@ -321,9 +321,9 @@ public class UBIDLdapFilterFactory extends ZLdapFilterFactory {
   @Override
   public ZLdapFilter addrsExist(String[] addrs) {
     List<Filter> filters = Lists.newArrayList();
-    for (int i = 0; i < addrs.length; i++) {
-      filters.add(Filter.createEqualityFilter(Provisioning.A_zimbraMailDeliveryAddress, addrs[i]));
-      filters.add(Filter.createEqualityFilter(Provisioning.A_zimbraMailAlias, addrs[i]));
+    for (String addr : addrs) {
+      filters.add(Filter.createEqualityFilter(Provisioning.A_zimbraMailDeliveryAddress, addr));
+      filters.add(Filter.createEqualityFilter(Provisioning.A_zimbraMailAlias, addr));
     }
 
     return new UBIDLdapFilter(FilterId.ADDRS_EXIST, Filter.createORFilter(filters));
@@ -651,9 +651,9 @@ public class UBIDLdapFilterFactory extends ZLdapFilterFactory {
   @Override
   public ZLdapFilter distributionListsByMemberAddrs(String[] memberAddrs) {
     List<Filter> filters = Lists.newArrayList();
-    for (int i = 0; i < memberAddrs.length; i++) {
+    for (String memberAddr : memberAddrs) {
       filters.add(
-          Filter.createEqualityFilter(Provisioning.A_zimbraMailForwardingAddress, memberAddrs[i]));
+          Filter.createEqualityFilter(Provisioning.A_zimbraMailForwardingAddress, memberAddr));
     }
 
     return new UBIDLdapFilter(

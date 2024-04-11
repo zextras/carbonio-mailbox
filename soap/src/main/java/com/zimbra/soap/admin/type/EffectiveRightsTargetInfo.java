@@ -5,15 +5,9 @@
 
 package com.zimbra.soap.admin.type;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
 
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.soap.type.TargetType;
@@ -47,15 +41,15 @@ public class EffectiveRightsTargetInfo extends EffectiveRightsInfo {
      */
     @SuppressWarnings("unused")
     private EffectiveRightsTargetInfo() {
-        this((TargetType) null, (String) null,
-                (String) null, (Iterable <RightWithName>) null,
-                (EffectiveAttrsInfo) null, (EffectiveAttrsInfo) null);
+        this(null, null,
+            null, null,
+            null, null);
     }
 
     public EffectiveRightsTargetInfo(TargetType type,
             String id, String name,
             EffectiveAttrsInfo setAttrs, EffectiveAttrsInfo getAttrs) {
-        this(type, id, name, (Iterable <RightWithName>) null,
+        this(type, id, name, null,
                 setAttrs, getAttrs);
     }
 

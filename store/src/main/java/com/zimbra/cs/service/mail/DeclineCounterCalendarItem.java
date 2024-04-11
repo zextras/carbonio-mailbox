@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
 import java.util.Map;
 
 import com.zimbra.common.service.ServiceException;
@@ -18,15 +19,15 @@ import com.zimbra.soap.ZimbraSoapContext;
 
 public class DeclineCounterCalendarItem extends CalendarRequest {
 
-    private class InviteParser extends ParseMimeMessage.InviteParser { 
-        public ParseMimeMessage.InviteParserResult parseInviteElement(
+    private class InviteParser extends com.zimbra.cs.service.mail.message.parser.InviteParser {
+        public InviteParserResult parseInviteElement(
                 ZimbraSoapContext lc, OperationContext octxt, Account account, Element inviteElem)
         throws ServiceException {
             return CalendarUtils.parseInviteForDeclineCounter(account, getItemType(), inviteElem);
         }
-    };
+    }
 
-    @Override
+  @Override
     public Element handle(Element request, Map<String, Object> context) throws ServiceException {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
         Account acct = getRequestedAccount(zsc);

@@ -21,7 +21,7 @@ import java.nio.charset.Charset;
 import com.zimbra.common.localconfig.LC;
 
 public class BufferStream extends OutputStream {
-    private byte buf[] = null;
+    private byte[] buf = null;
     private File file = null;
     private FileOutputStream fos = null;
     private int maxMem;
@@ -56,7 +56,7 @@ public class BufferStream extends OutputStream {
             return (int)(buf.length - size);
         } else if (buf.length < maxMem) {
             long tot = size + len;
-            byte newBuf[];
+            byte[] newBuf;
 
             if (tot < buf.length << 1)
                 tot = Math.min(buf.length << 1, maxMem);
@@ -79,16 +79,13 @@ public class BufferStream extends OutputStream {
         if (buf != null)
             os.write(buf, 0, size <= buf.length ? (int)size : buf.length);
         if (file != null) {
-            byte tmp[] = new byte[32 * 1024];
-            FileInputStream fis = new FileInputStream(file);
-            int in;
+            byte[] tmp = new byte[32 * 1024];
 
-            try {
-                while ((in = fis.read(tmp)) != -1)
-                    os.write(tmp, 0, in);
-            } finally {
-                fis.close();
-            }
+          try (FileInputStream fis = new FileInputStream(file)) {
+            int in;
+            while ((in = fis.read(tmp)) != -1)
+              os.write(tmp, 0, in);
+          }
         }
     }
     
@@ -103,7 +100,7 @@ public class BufferStream extends OutputStream {
         } catch (IOException e) {
         }
         if (buf != null && buf.length > size) {
-            byte newBuf[] = new byte[(int)size];
+            byte[] newBuf = new byte[(int)size];
             
             System.arraycopy(buf, 0, newBuf, 0, (int)size);
             buf = newBuf;
@@ -197,7 +194,7 @@ public class BufferStream extends OutputStream {
         if (len == 0)
             return out;
 
-        byte tmp[] = new byte[(int)Math.min(len, 32 * 1024)];
+        byte[] tmp = new byte[(int)Math.min(len, 32 * 1024)];
         
         while (len > 0) {
             if ((in = is.read(tmp, 0, (int)Math.min(len, tmp.length))) == -1)
@@ -276,13 +273,13 @@ public class BufferStream extends OutputStream {
         } catch (IOException e) {
         }
         if (size <= maxMem) {
-            byte tmp[] = getBuffer();
+            byte[] tmp = getBuffer();
             
             return tmp == null ? new byte[0] : tmp;
         } else if (file == null || size > Integer.MAX_VALUE) {
             throw new RuntimeException("BufferStream overflow");
         } else {
-            byte newBuf[] = new byte[(int)size];
+            byte[] newBuf = new byte[(int)size];
             FileInputStream fis = null;
             
             System.arraycopy(buf, 0, newBuf, 0, buf.length);
@@ -336,7 +333,7 @@ public class BufferStream extends OutputStream {
         UnsupportedEncodingException {
         sync();
         if (buf == null)
-            return new String();
+            return "";
         else if (file == null)
             return new String(buf, 0, (int)size, cset);
         else
@@ -370,7 +367,7 @@ public class BufferStream extends OutputStream {
         size++;
     }
     
-    public void write(byte data[], int off, int len) {
+    public void write(byte[] data, int off, int len) {
         int left = buffer(len);
         
         if (left > 0) {
@@ -415,21 +412,15 @@ public class BufferStream extends OutputStream {
         if (len == 0)
             return out;
 
-        FileInputStream fis = null;
-        byte tmp[] = new byte[(int)Math.min(len, 32 * 1024)];
-        
-        try {
-            fis = new FileInputStream(file);
-            while (len > 0 && (in = fis.read(tmp, 0, (int)Math.min(len,
-                tmp.length))) != -1) {
-                os.write(tmp, 0, in);
-                len -= in;
-                out += in;
-            }
-        } finally {
-            if (fis != null)
-                fis.close();
+      byte[] tmp = new byte[(int)Math.min(len, 32 * 1024)];
+      try (FileInputStream fis = new FileInputStream(file)) {
+        while (len > 0 && (in = fis.read(tmp, 0, (int) Math.min(len,
+            tmp.length))) != -1) {
+          os.write(tmp, 0, in);
+          len -= in;
+          out += in;
         }
+      }
         return out;
     }
 }

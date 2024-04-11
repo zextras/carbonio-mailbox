@@ -37,11 +37,11 @@ public class ModifyDistributionListRequest extends AdminAttrsImpl {
     private String id;
 
     public ModifyDistributionListRequest() {
-        this((String) null, (Collection<Attr>) null);
+        this(null, null);
     }
 
     public ModifyDistributionListRequest(String id) {
-        this((String) id, (Collection<Attr>) null);
+        this(id, null);
     }
 
     public ModifyDistributionListRequest(String id, Collection<Attr> attrs) {

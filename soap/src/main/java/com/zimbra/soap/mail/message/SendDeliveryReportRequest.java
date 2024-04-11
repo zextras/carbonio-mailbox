@@ -34,7 +34,7 @@ public class SendDeliveryReportRequest {
      */
     @SuppressWarnings("unused")
     private SendDeliveryReportRequest() {
-        this((String) null);
+        this(null);
     }
 
     public SendDeliveryReportRequest(String messageId) {

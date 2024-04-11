@@ -285,7 +285,7 @@ public abstract class MimeHandler {
             if (!h.isIndexingEnabled()) {
                 continue;
             }
-            List<MatchedObject> matchedObjects = new ArrayList<MatchedObject>();
+            List<MatchedObject> matchedObjects = new ArrayList<>();
             h.parse(text, matchedObjects, true);
             if (!matchedObjects.isEmpty()) {
                 if (l_objects.length() > 0) {

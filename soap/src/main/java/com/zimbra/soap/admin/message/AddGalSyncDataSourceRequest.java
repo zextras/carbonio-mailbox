@@ -73,8 +73,8 @@ public class AddGalSyncDataSourceRequest extends AdminAttrsImpl {
      */
     @SuppressWarnings("unused")
     private AddGalSyncDataSourceRequest() {
-        this((String) null, (String) null, (GalMode) null,
-                (AccountSelector) null, (String) null, (String) null);
+        this(null, null, null,
+            null, null, null);
     }
 
     public AddGalSyncDataSourceRequest(String name, String domain,

@@ -74,6 +74,6 @@ public class AuthContext {
         zsync,
 
         //for internal use only
-        test;
-    };
+        test
+    }
 }

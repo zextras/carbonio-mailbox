@@ -56,7 +56,7 @@ public class ListUtil {
         if (lhs.size() != rhs.size())
             return false;
 
-      HashSet<T> set = new HashSet<T>(lhs);
+      HashSet<T> set = new HashSet<>(lhs);
         for (T t: rhs) {
             if (!set.remove(t))
                 return false;
@@ -79,34 +79,34 @@ public class ListUtil {
             List<T> dest, List<T>[] src, boolean removeDuplicates)
     {
         int numSrc = 0;
-        for (int i = 0; i < src.length; i++) {
-            if (src[i] != null) {
-                numSrc++;
-            }
+      for (List<T> tList : src) {
+        if (tList != null) {
+          numSrc++;
         }
+      }
 
         if (numSrc == 1) {
-            for (int i = 0; i < src.length; i++) {
-                if (src[i] != null) {
-                    dest.addAll(src[i]);
-                    return;
-                }
+          for (List<T> ts : src) {
+            if (ts != null) {
+              dest.addAll(ts);
+              return;
             }
+          }
         }
 
-        Iterator<T> iter[] = new Iterator[numSrc];
+        Iterator<T>[] iter = new Iterator[numSrc];
         int iterOffset = 0;
-        for (int i = 0; i < src.length; i++) {
-            if (src[i] != null) {
-                iter[iterOffset++] = src[i].iterator();
-            }
+      for (List<T> ts : src) {
+        if (ts != null) {
+          iter[iterOffset++] = ts.iterator();
         }
+      }
 
 
         int numItersActive = src.length;
 
         // holds the next values of each iterator
-        T nextValue[] = (T[]) new Comparable[src.length];
+        T[] nextValue = (T[]) new Comparable[src.length];
 
         T lowestValue = null;
         int lowestValueOffset = -1;
@@ -173,7 +173,7 @@ public class ListUtil {
      */
     public static <T> List<T> subtractSortedLists(
             List<T> a, List<T> b, Comparator<T> comparator) {
-        List<T> result = new ArrayList<T>(a.size());
+        List<T> result = new ArrayList<>(a.size());
 
         Iterator<T> aIter = a.iterator();
         Iterator<T> bIter = b.iterator();
@@ -230,18 +230,18 @@ public class ListUtil {
         if (c == null) {
             return null;
         }
-        List<List<E>> splitLists = new ArrayList<List<E>>();
+        List<List<E>> splitLists = new ArrayList<>();
         if (c.size() == 0) {
             return splitLists;
         }
 
-        List<E> curList = new ArrayList<E>(listSize);
+        List<E> curList = new ArrayList<>(listSize);
         int i = 0;
 
         for (E item : c) {
             if (i == listSize) {
                 splitLists.add(curList);
-                curList = new ArrayList<E>(listSize);
+                curList = new ArrayList<>(listSize);
                 i = 0;
             }
             curList.add(item);
@@ -260,48 +260,48 @@ public class ListUtil {
 
             int i = 0;
 
-            in[i] = new ArrayList<Integer>();
-            in[i].add(Integer.valueOf(1));
-            in[i].add(Integer.valueOf(3));
-            in[i].add(Integer.valueOf(5));
-            in[i].add(Integer.valueOf(7));
-            in[i].add(Integer.valueOf(9));
+            in[i] = new ArrayList<>();
+            in[i].add(1);
+            in[i].add(3);
+            in[i].add(5);
+            in[i].add(7);
+            in[i].add(9);
 
             i = 1;
-            in[i] = new ArrayList<Integer>();
-            in[i].add(Integer.valueOf(1));
-            in[i].add(Integer.valueOf(7));
-            in[i].add(Integer.valueOf(12));
-            in[i].add(Integer.valueOf(13));
-            in[i].add(Integer.valueOf(13));
+            in[i] = new ArrayList<>();
+            in[i].add(1);
+            in[i].add(7);
+            in[i].add(12);
+            in[i].add(13);
+            in[i].add(13);
 
             i = 2;
-            in[i] = new ArrayList<Integer>();
-            in[i].add(Integer.valueOf(1));
-            in[i].add(Integer.valueOf(2));
-            in[i].add(Integer.valueOf(3));
-            in[i].add(Integer.valueOf(4));
-            in[i].add(Integer.valueOf(5));
+            in[i] = new ArrayList<>();
+            in[i].add(1);
+            in[i].add(2);
+            in[i].add(3);
+            in[i].add(4);
+            in[i].add(5);
 
             i = 3;
-            in[i] = new ArrayList<Integer>();
-            in[i].add(Integer.valueOf(5));
-            in[i].add(Integer.valueOf(6));
-            in[i].add(Integer.valueOf(7));
-            in[i].add(Integer.valueOf(8));
-            in[i].add(Integer.valueOf(9));
+            in[i] = new ArrayList<>();
+            in[i].add(5);
+            in[i].add(6);
+            in[i].add(7);
+            in[i].add(8);
+            in[i].add(9);
 
             i = 4;
-            in[i] = new ArrayList<Integer>();
-            in[i].add(Integer.valueOf(100));
-            in[i].add(Integer.valueOf(101));
-            in[i].add(Integer.valueOf(102));
-            in[i].add(Integer.valueOf(103));
-            in[i].add(Integer.valueOf(104));
+            in[i] = new ArrayList<>();
+            in[i].add(100);
+            in[i].add(101);
+            in[i].add(102);
+            in[i].add(103);
+            in[i].add(104);
 
             List<Integer> test;
 
-            test = new ArrayList<Integer>();
+            test = new ArrayList<>();
             mergeSortedLists(test, in, false);
             System.out.print("DUPES_NOT_REMOVED: ");
             for (Integer cur : test) {
@@ -309,7 +309,7 @@ public class ListUtil {
             }
             System.out.println();
 
-            test = new ArrayList<Integer>();
+            test = new ArrayList<>();
             mergeSortedLists(test, in, true);
             System.out.print("DUPES_REMOVED: ");
             for (Integer cur : test) {
@@ -319,18 +319,16 @@ public class ListUtil {
 
             test = subtractSortedLists(in[2], in[0], new IntegerComparator());
             System.out.print("(1,2,3,4,5) - (1,3,5,7,9): ");
-            for (Iterator<Integer> iter = test.iterator(); iter.hasNext();) {
-                Integer cur = iter.next();
-                System.out.print(cur+", ");
-            }
+          for (Integer cur : test) {
+            System.out.print(cur + ", ");
+          }
             System.out.println();
 
             test = subtractSortedLists(in[0], in[1], new IntegerComparator());
             System.out.print("(1,3,5,7,9) - (1,7,12,13,13): ");
-            for (Iterator<Integer> iter = test.iterator(); iter.hasNext();) {
-                Integer cur = iter.next();
-                System.out.print(cur+", ");
-            }
+          for (Integer cur : test) {
+            System.out.print(cur + ", ");
+          }
             System.out.println();
 
         }

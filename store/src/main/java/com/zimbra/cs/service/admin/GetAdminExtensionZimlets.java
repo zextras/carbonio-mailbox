@@ -57,7 +57,7 @@ public class GetAdminExtensionZimlets extends AdminDocumentHandler  {
 		Iterator<Zimlet> zimlets = Provisioning.getInstance().listAllZimlets().iterator();
 		while (zimlets.hasNext()) {
 		    
-		    Zimlet z = (Zimlet) zimlets.next();
+		    Zimlet z = zimlets.next();
 		    
 		    if (!hasRightsToList(zsc, z, Admin.R_listZimlet, Admin.R_getZimlet))
 			    continue;

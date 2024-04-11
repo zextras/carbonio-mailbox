@@ -27,7 +27,7 @@ public class Range
         return ranges;
     }
 
-    private List<Pair<Long, Long>> ranges = new LinkedList<Pair<Long, Long>>();
+    private List<Pair<Long, Long>> ranges = new LinkedList<>();
 
     private Range()
     {
@@ -115,7 +115,7 @@ public class Range
                 throw new RangeException(HttpServletResponse.SC_BAD_REQUEST);
             }
 
-            range.ranges.add(new Pair<Long, Long>(start, end));
+            range.ranges.add(new Pair<>(start, end));
         }
 
         if (range.ranges.isEmpty()) {

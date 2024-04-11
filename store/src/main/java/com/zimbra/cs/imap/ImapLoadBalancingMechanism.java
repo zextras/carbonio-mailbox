@@ -26,16 +26,13 @@ public abstract class ImapLoadBalancingMechanism {
 
     protected ImapLBMech lbMech;
 
-    private static final Comparator<Server> serverComparator = new Comparator<Server>() {
-        @Override
-        public int compare (Server a, Server b) {
-            String aName = ((a != null) && (a.getName() != null)) ? a.getName() : "UNKNOWN";
-            String bName = ((b != null) && (b.getName() != null)) ? b.getName() : "UNKNOWN";
-            return aName.compareTo(bName);
-        }
+    private static final Comparator<Server> serverComparator = (a, b) -> {
+      String aName = ((a != null) && (a.getName() != null)) ? a.getName() : "UNKNOWN";
+      String bName = ((b != null) && (b.getName() != null)) ? b.getName() : "UNKNOWN";
+      return aName.compareTo(bName);
     };
 
-    public static enum ImapLBMech {
+    public enum ImapLBMech {
 
         /**
          * zimbraImapLoadBalancingAlgorithm type of "AccountIdHash" will select an IMAP
@@ -188,7 +185,7 @@ public abstract class ImapLoadBalancingMechanism {
          */
         public static void register(String customMechName, Class<? extends CustomLBMech> customMech) {
             if (customLBMechs == null) {
-                customLBMechs = new HashMap<String, Class<? extends CustomLBMech>>();
+                customLBMechs = new HashMap<>();
             } else if (customLBMechs.get(customMechName) != null) {
                 ZimbraLog.imap.warn("load-balancing mechanism " + customMechName + " is already registered");
                 return;

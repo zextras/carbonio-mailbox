@@ -30,7 +30,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +68,7 @@ public final class DbSearch {
     MODSEQ,
     PARENT,
     MODCONTENT
-  };
+  }
 
   private static final byte[] APPOINTMENT_TABLE_TYPES =
       new byte[] {MailItem.Type.APPOINTMENT.toByte()};
@@ -77,7 +76,7 @@ public final class DbSearch {
   private final Mailbox mailbox;
   private final boolean dumpster;
   private final StringBuilder sql = new StringBuilder();
-  private final List<Object> params = new ArrayList<Object>();
+  private final List<Object> params = new ArrayList<>();
 
   public DbSearch(Mailbox mbox) {
     this.mailbox = mbox;
@@ -513,7 +512,7 @@ public final class DbSearch {
         sql.append(" AND ");
       }
       needAnd = true;
-      if (isSoloPart.booleanValue()) {
+      if (isSoloPart) {
         sql.append("mi.parent_id is NULL ");
       } else {
         sql.append("mi.parent_id is NOT NULL ");
@@ -525,7 +524,7 @@ public final class DbSearch {
         sql.append(" AND ");
       }
       needAnd = true;
-      if (constraint.hasIndexId.booleanValue()) {
+      if (constraint.hasIndexId) {
         sql.append("mi.index_id is NOT NULL ");
       } else {
         sql.append("mi.index_id is NULL ");
@@ -573,14 +572,7 @@ public final class DbSearch {
       return toRet;
     }
     // optimize so shortest list is first
-    Collections.sort(
-        lists,
-        new Comparator<List<Result>>() {
-          @Override
-          public int compare(List<Result> l1, List<Result> l2) {
-            return l1.size() - l2.size();
-          }
-        });
+    lists.sort((l1, l2) -> l1.size() - l2.size());
 
     for (Result result : lists.get(0)) {
       boolean intersect = true;
@@ -631,7 +623,7 @@ public final class DbSearch {
         }
       }
     }
-    List<Result> result = new ArrayList<Result>();
+    List<Result> result = new ArrayList<>();
     if (!(node instanceof DbSearchConstraints.Leaf)) {
       // case 1 (non-leaf node), if (where a or b) not supported or if we encountered too many sql
       // params try splitting
@@ -641,9 +633,9 @@ public final class DbSearch {
           result.addAll(
               new DbSearch(mailbox, dumpster).search(conn, child, sort, offset, limit, fetch));
         }
-        Collections.sort(result, new ResultComparator(sort));
+        result.sort(new ResultComparator(sort));
       } else if (node instanceof DbSearchConstraints.Intersection) {
-        List<List<Result>> resultLists = new ArrayList<List<Result>>();
+        List<List<Result>> resultLists = new ArrayList<>();
 
         for (DbSearchConstraints child : node.getChildren()) {
           resultLists.add(
@@ -665,7 +657,7 @@ public final class DbSearch {
       int otherConstraintsCount = params.size() - leafNode.folders.size();
       final int softLimit = dbLimit - otherConstraintsCount - 10;
       if (leafNode.folders.size() > softLimit) {
-        List<Folder> folderList = new ArrayList<Folder>(leafNode.folders);
+        List<Folder> folderList = new ArrayList<>(leafNode.folders);
         int end = leafNode.folders.size();
         int start = end - softLimit;
         leafNode.folders.clear();
@@ -684,7 +676,7 @@ public final class DbSearch {
         subsetNode.folders.addAll(subList);
         result.addAll(
             new DbSearch(mailbox, dumpster).search(conn, subsetNode, sort, offset, limit, fetch));
-        Collections.sort(result, new ResultComparator(sort));
+        result.sort(new ResultComparator(sort));
       } else {
         throw ServiceException.FAILURE(
             "splitting failed, too many constraints but not caused entirely by folders", null);
@@ -762,7 +754,6 @@ public final class DbSearch {
     if (node instanceof DbSearchConstraints.Leaf && !dumpster) {
       DbSearchConstraints.Leaf constraint = node.toLeaf();
       if (constraint.excludeTags.isEmpty()
-          && !constraint.tags.isEmpty()
           && constraint.tags.size() == 1) {
         Tag tag = constraint.tags.iterator().next();
         if (tag.getId() == FlagInfo.UNREAD.toId() || tag.getId() > 0) {
@@ -858,7 +849,7 @@ public final class DbSearch {
       }
       rs = stmt.executeQuery();
 
-      List<Result> result = new ArrayList<Result>();
+      List<Result> result = new ArrayList<>();
       while (rs.next()) {
         if (hasValidLIMIT && !Db.supports(Db.Capability.LIMIT_CLAUSE)) {
           if (offset-- > 0) {
@@ -997,15 +988,15 @@ public final class DbSearch {
       case PRIORITY:
         return Strings.nullToEmpty(rs.getString(SORT_COLUMN_ALIAS));
       case SIZE:
-        return Long.valueOf(rs.getInt(SORT_COLUMN_ALIAS));
+        return (long) rs.getInt(SORT_COLUMN_ALIAS);
       case ID:
-        return Integer.valueOf(rs.getInt(SORT_COLUMN_ALIAS));
+        return rs.getInt(SORT_COLUMN_ALIAS);
       case DATE:
       default:
         // Assuming this multiplication by 1000 is intended for DATE in order to convert from a
         // UNIX time in seconds to milliseconds since epoc
         // seems odd to also do this for the default case though...
-        return Long.valueOf(rs.getInt(SORT_COLUMN_ALIAS) * 1000L);
+        return rs.getInt(SORT_COLUMN_ALIAS) * 1000L;
     }
   }
 

@@ -55,10 +55,10 @@ public final class SmtpConnection extends MailConnection {
   private static final String[] IGNORE_HEADERS =
       new String[] {"Bcc", "Resent-Bcc", "Content-Length"};
 
-  private Set<String> invalidRecipients = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-  private Set<String> validRecipients = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-  private Set<String> serverAuthMechanisms = new HashSet<String>();
-  private Set<String> serverExtensions = new HashSet<String>();
+  private Set<String> invalidRecipients = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+  private Set<String> validRecipients = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+  private Set<String> serverAuthMechanisms = new HashSet<>();
+  private Set<String> serverExtensions = new HashSet<>();
 
   public SmtpConnection(SmtpConfig config) {
     super(config);
@@ -360,7 +360,7 @@ public final class SmtpConnection extends MailConnection {
           if (authenticator.isComplete()) {
             return;
           } else {
-            throw new SaslException("SASL client auth not complete yet S: " + reply.toString());
+            throw new SaslException("SASL client auth not complete yet S: " + reply);
           }
         case 334: // continue
           byte[] challenge =
@@ -421,7 +421,7 @@ public final class SmtpConnection extends MailConnection {
   }
 
   private String[] toString(Address[] addrs) {
-    List<String> result = new ArrayList<String>();
+    List<String> result = new ArrayList<>();
     for (Address addr : addrs) {
       String str = getAddress(addr);
       if (!Strings.isNullOrEmpty(str)) {
@@ -560,10 +560,7 @@ public final class SmtpConnection extends MailConnection {
       } else {
         smtpData.write(messageString.getBytes());
       }
-    } catch (MessagingException e) { // close without QUIT
-      close();
-      throw e;
-    } catch (IOException e) { // close without QUIT
+    } catch (MessagingException | IOException e) { // close without QUIT
       close();
       throw e;
     }

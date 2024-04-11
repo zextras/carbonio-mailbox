@@ -30,7 +30,7 @@ public class GetAllDistributionListsResponse {
     private List <DistributionListInfo> dls = Lists.newArrayList();
 
     public GetAllDistributionListsResponse() {
-        this((List <DistributionListInfo>)null);
+        this(null);
     }
 
     public GetAllDistributionListsResponse(List <DistributionListInfo> dls) {

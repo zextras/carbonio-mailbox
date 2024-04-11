@@ -43,7 +43,7 @@ final class ItemPreloadingGrouper extends BufferingResultsGrouper {
             return false;
         }
 
-        ArrayList<ZimbraHit>toLoad = new ArrayList<ZimbraHit>();
+        ArrayList<ZimbraHit>toLoad = new ArrayList<>();
 
         // FIXME: only preloading for the first mailbox right now
         // ...if this were a cross-mailbox-search, we'd be more efficient
@@ -70,7 +70,7 @@ final class ItemPreloadingGrouper extends BufferingResultsGrouper {
     }
 
     private void preload(Mailbox mbox, List<ZimbraHit> hits) throws ServiceException {
-        int unloadedIds[] = new int[hits.size()];
+        int[] unloadedIds = new int[hits.size()];
         int numToLoad = 0;
         for (int i = 0; i < hits.size(); i++) {
             ZimbraHit cur = hits.get(i);

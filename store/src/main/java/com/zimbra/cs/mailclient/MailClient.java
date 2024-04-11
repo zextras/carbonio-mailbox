@@ -225,7 +225,7 @@ public abstract class MailClient {
         }
         // If SSL is enabled then only QOP_AUTH is supported
         if (config.getSecurity() != MailConfig.Security.SSL) {
-            Map<String, String> props = new HashMap<String, String>();
+            Map<String, String> props = new HashMap<>();
             props.put(Sasl.QOP, getQop(minQop, maxQop));
             config.setSaslProperties(props);
         }

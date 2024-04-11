@@ -45,7 +45,7 @@ public class AuthToken {
      */
     @SuppressWarnings("unused")
     private AuthToken() {
-        this((String) null, (Boolean) null);
+        this(null, null);
     }
 
     public AuthToken(String value, Boolean verifyAccount) {

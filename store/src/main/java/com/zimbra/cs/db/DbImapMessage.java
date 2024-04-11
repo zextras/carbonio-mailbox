@@ -272,7 +272,7 @@ public class DbImapMessage {
                 int tflags = rs.getInt("tflags");
                 int folderId = rs.getInt("imap_folder_id");
                 flags = unread > 0 ? (flags | Flag.BITMASK_UNREAD) : (flags & ~Flag.BITMASK_UNREAD);
-                return new Pair<ImapMessage, Integer>(new ImapMessage(ds, -1, itemId, tflags, uid, flags), folderId);
+                return new Pair<>(new ImapMessage(ds, -1, itemId, tflags, uid, flags), folderId);
             }
             return null;
         } catch (SQLException e) {
@@ -286,7 +286,7 @@ public class DbImapMessage {
 
     public static List<ImapMessage> getMovedMessages(Mailbox mbox, DataSource ds, int folderId)
     throws ServiceException {
-        List<ImapMessage> msgs = new ArrayList<ImapMessage>();
+        List<ImapMessage> msgs = new ArrayList<>();
 
         DbConnection conn = null;
         PreparedStatement stmt = null;
@@ -383,7 +383,7 @@ public class DbImapMessage {
     public static List<Integer> getNewLocalMessageIds(Mailbox mbox, int folderId)
     throws ServiceException {
 
-        List<Integer> newIds = new ArrayList<Integer>();
+        List<Integer> newIds = new ArrayList<>();
 
         DbConnection conn = null;
         PreparedStatement stmt = null;

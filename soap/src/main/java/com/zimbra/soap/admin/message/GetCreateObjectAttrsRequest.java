@@ -118,11 +118,11 @@ public class GetCreateObjectAttrsRequest {
      */
     @SuppressWarnings("unused")
     private GetCreateObjectAttrsRequest() {
-        this((TargetWithType) null, (DomainSelector) null, (CosSelector) null);
+        this(null, null, null);
     }
 
     public GetCreateObjectAttrsRequest(TargetWithType target) {
-        this(target, (DomainSelector) null, (CosSelector) null);
+        this(target, null, null);
     }
 
     public GetCreateObjectAttrsRequest(TargetWithType target,

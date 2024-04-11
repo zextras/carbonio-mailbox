@@ -42,7 +42,7 @@ public class PreAuthKey {
     }
     
     public static  String computePreAuth(Map<String,String> params, String key) {
-        TreeSet<String> names = new TreeSet<String>(params.keySet());
+        TreeSet<String> names = new TreeSet<>(params.keySet());
         StringBuilder sb = new StringBuilder();
         for (String name : names) {
             if (sb.length() > 0) sb.append('|');
@@ -57,9 +57,7 @@ public class PreAuthKey {
             Mac mac = Mac.getInstance("HmacSHA1");
             mac.init(bk);
             return new String(Hex.encodeHex(mac.doFinal(data.getBytes())));
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("fatal error", e);
-        } catch (InvalidKeyException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             throw new RuntimeException("fatal error", e);
         }
     }
@@ -85,9 +83,9 @@ public class PreAuthKey {
 
     }
     
-    public static void main(String args[]) throws ServiceException {
+    public static void main(String[] args) throws ServiceException {
         long now = System.currentTimeMillis();
-        HashMap<String,String> params = new HashMap<String,String>();
+        HashMap<String,String> params = new HashMap<>();
         params.put("account", "user1");
         params.put("by", "name");
         params.put("timestamp", "1176399950434");

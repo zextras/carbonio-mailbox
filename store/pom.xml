@@ -8,7 +8,7 @@
   <parent>
     <artifactId>zm-mailbox</artifactId>
     <groupId>zextras</groupId>
-    <version>${revision}</version>
+    <version>${revision}${changelist}</version>
   </parent>
 
   <!-- To sort out dependencies take a look at: https://wiki.eclipse.org/Jetty/Reference/Dependencies -->
@@ -429,7 +429,6 @@
     <dependency>
       <groupId>com.github.stefanbirkner</groupId>
       <artifactId>system-lambda</artifactId>
-      <version>1.2.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>

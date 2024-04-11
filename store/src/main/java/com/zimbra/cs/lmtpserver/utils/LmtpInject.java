@@ -278,11 +278,11 @@ public class LmtpInject {
         System.exit((errmsg == null) ? 0 : 1);
     }
 
-    private static CommandLine parseArgs(String args[]) {
+    private static CommandLine parseArgs(String[] args) {
         StringBuffer gotCL = new StringBuffer("cmdline: ");
-        for (int i = 0; i < args.length; i++) {
-            gotCL.append("'").append(args[i]).append("' ");
-        }
+      for (String arg : args) {
+        gotCL.append("'").append(arg).append("' ");
+      }
         //mLog.info(gotCL);
 
         CommandLineParser parser = new GnuParser();
@@ -305,7 +305,7 @@ public class LmtpInject {
         boolean quietMode = cl.hasOption("q");
         int threads = 1;
         if (cl.hasOption("t")) {
-            threads = Integer.valueOf(cl.getOptionValue("t")).intValue();
+            threads = Integer.valueOf(cl.getOptionValue("t"));
         }
 
         String host = null;
@@ -323,7 +323,7 @@ public class LmtpInject {
         } else
             port = 7025;
         if (cl.hasOption("p"))
-            port = Integer.valueOf(cl.getOptionValue("p")).intValue();
+            port = Integer.valueOf(cl.getOptionValue("p"));
 
         String[] recipients = cl.getOptionValues("r");
         String sender = cl.getOptionValue("s");
@@ -331,13 +331,13 @@ public class LmtpInject {
 
         int everyN;
         if (cl.hasOption("N")) {
-            everyN = Integer.valueOf(cl.getOptionValue("N")).intValue();
+            everyN = Integer.valueOf(cl.getOptionValue("N"));
         } else {
             everyN = 100;
         }
 
         // Process files from the -d option.
-        List<File> files = new ArrayList<File>();
+        List<File> files = new ArrayList<>();
         if (cl.hasOption("d")) {
             File dir = new File(cl.getOptionValue("d"));
             if (!dir.isDirectory()) {
@@ -375,7 +375,7 @@ public class LmtpInject {
                         valid = true;
                     }
                 } catch (IOException e) {
-                    System.err.format("Unable to validate %s: %s.\n", file.getPath(), e.toString());
+                    System.err.format("Unable to validate %s: %s.\n", file.getPath(), e);
                 } finally {
                     ByteUtil.closeStream(in);
                 }

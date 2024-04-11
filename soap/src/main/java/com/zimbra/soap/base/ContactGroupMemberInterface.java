@@ -6,10 +6,10 @@
 package com.zimbra.soap.base;
 
 public interface ContactGroupMemberInterface {
-    public void setType(String type);
-    public void setValue(String value);
-    public void setContact(ContactInterface contact);
-    public String getType();
-    public String getValue();
-    public ContactInterface getContact();
+    void setType(String type);
+    void setValue(String value);
+    void setContact(ContactInterface contact);
+    String getType();
+    String getValue();
+    ContactInterface getContact();
 }

@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -254,43 +255,41 @@ public class FileHeader {
 
     private void deserialize(byte[] headerBuf) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(headerBuf);
+
+      try (bais) {
         RedoLogInput in = new RedoLogInput(bais);
+        byte[] magic = new byte[MAGIC.length];
+        in.readFully(magic, 0, MAGIC.length);
+        if (!Arrays.equals(magic, MAGIC))
+          throw new IOException("Missing magic bytes in redolog header");
 
-        try {
-            byte[] magic = new byte[MAGIC.length];
-            in.readFully(magic, 0, MAGIC.length);
-            if (!Arrays.equals(magic, MAGIC))
-                throw new IOException("Missing magic bytes in redolog header");
+        mOpen = in.readByte();
+        mFileSize = in.readLong();
+        mSeq = in.readLong();
 
-            mOpen = in.readByte();
-            mFileSize = in.readLong();
-            mSeq = in.readLong();
+        int serverIdLen = in.readByte();
+        if (serverIdLen > SERVER_ID_FIELD_LEN)
+          throw new IOException("ServerId too long (" + serverIdLen +
+              " bytes) in redolog header");
+        byte[] serverIdBuf = new byte[SERVER_ID_FIELD_LEN];
+        in.readFully(serverIdBuf, 0, SERVER_ID_FIELD_LEN);
+        mServerId = new String(serverIdBuf, 0, serverIdLen, StandardCharsets.UTF_8);
 
-            int serverIdLen = (int) in.readByte();
-            if (serverIdLen > SERVER_ID_FIELD_LEN)
-                throw new IOException("ServerId too long (" + serverIdLen +
-                                      " bytes) in redolog header");
-            byte[] serverIdBuf = new byte[SERVER_ID_FIELD_LEN];
-            in.readFully(serverIdBuf, 0, SERVER_ID_FIELD_LEN);
-            mServerId = new String(serverIdBuf, 0, serverIdLen, "UTF-8");
+        mFirstOpTstamp = in.readLong();
+        mLastOpTstamp = in.readLong();
+        mVersion.deserialize(in);
+        if (mVersion.tooHigh())
+          throw new IOException("Redo log version " + mVersion +
+              " is higher than the highest known version " +
+              Version.latest());
+        // Versioning of file header was added late in the game.
+        // Any redolog files created previously will have version 0.0.
+        // Assume version 1.0 for those files.
+        if (!mVersion.atLeast(1, 0))
+          mVersion = new Version(1, 0);
 
-            mFirstOpTstamp = in.readLong();
-            mLastOpTstamp = in.readLong();
-            mVersion.deserialize(in);
-            if (mVersion.tooHigh())
-    			throw new IOException("Redo log version " + mVersion +
-    								  " is higher than the highest known version " +
-    								  Version.latest());
-            // Versioning of file header was added late in the game.
-            // Any redolog files created previously will have version 0.0.
-            // Assume version 1.0 for those files.
-            if (!mVersion.atLeast(1, 0))
-            	mVersion = new Version(1, 0);
-
-            mCreateTime = in.readLong();
-        } finally {
-            bais.close();
-        }
+        mCreateTime = in.readLong();
+      }
     }
 
     private static String DATE_FORMAT = "EEE, yyyy/MM/dd HH:mm:ss.SSS z";

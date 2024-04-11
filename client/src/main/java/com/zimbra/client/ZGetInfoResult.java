@@ -55,11 +55,11 @@ public class ZGetInfoResult implements ToZJSONObject {
   }
 
   void setSignatures(List<ZSignature> sigs) {
-    data.setSignatures(ListUtil.newArrayList(sigs, SoapConverter.TO_SOAP_SIGNATURE));
+    data.setSignatures(ListUtil.newArrayList(sigs, SoapConverter.TO_SOAP_SIGNATURE::apply));
   }
 
   public List<ZSignature> getSignatures() {
-    return ListUtil.newArrayList(data.getSignatures(), SoapConverter.FROM_SOAP_SIGNATURE);
+    return ListUtil.newArrayList(data.getSignatures(), SoapConverter.FROM_SOAP_SIGNATURE::apply);
   }
 
   public ZSignature getSignature(String id) {
@@ -73,7 +73,7 @@ public class ZGetInfoResult implements ToZJSONObject {
   }
 
   public List<ZIdentity> getIdentities() {
-    return ListUtil.newArrayList(data.getIdentities(), SoapConverter.FROM_SOAP_IDENTITY);
+    return ListUtil.newArrayList(data.getIdentities(), SoapConverter.FROM_SOAP_IDENTITY::apply);
   }
 
   public List<ZDataSource> getDataSources() {

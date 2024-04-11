@@ -36,7 +36,7 @@ public final class FieldTokenStream extends TokenStream {
     private static final int MAX_TOKEN_COUNT = 1000;
     private static final Pattern NUMERIC_VALUE_REGEX = Pattern.compile("-?\\d+");
 
-    private final List<String> tokens = new LinkedList<String>();
+    private final List<String> tokens = new LinkedList<>();
     private Iterator<String> iterator;
     private final CharTermAttribute termAttr = addAttribute(CharTermAttribute.class);
 
@@ -72,7 +72,7 @@ public final class FieldTokenStream extends TokenStream {
             // treat '-' as whitespace UNLESS it is at the beginning of a word
             if (isWhitespace(c) || (c == '-' && word.length() > 0)) {
                 if (word.length() > 0) {
-                    add(name + ':' + word.toString());
+                    add(name + ':' + word);
                     word.setLength(0);
                 }
             } else if (!Character.isISOControl(c)) {
@@ -81,7 +81,7 @@ public final class FieldTokenStream extends TokenStream {
         }
 
         if (word.length() > 0) {
-            add(name + ':' + word.toString());
+            add(name + ':' + word);
         }
     }
 

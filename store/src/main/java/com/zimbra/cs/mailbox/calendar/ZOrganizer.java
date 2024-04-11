@@ -17,7 +17,6 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.IDNUtil;
 import com.zimbra.cs.mailbox.Metadata;
 import com.zimbra.cs.service.mail.ToXML;
-import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.type.CalOrganizer;
 
 public class ZOrganizer extends CalendarUser {

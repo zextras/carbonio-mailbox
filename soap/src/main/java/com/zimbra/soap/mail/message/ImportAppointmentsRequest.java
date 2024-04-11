@@ -51,7 +51,7 @@ public class ImportAppointmentsRequest {
      */
     @SuppressWarnings("unused")
     private ImportAppointmentsRequest() {
-        this((String) null, (ContentSpec) null);
+        this(null, null);
     }
 
     public ImportAppointmentsRequest(String contentType, ContentSpec content) {

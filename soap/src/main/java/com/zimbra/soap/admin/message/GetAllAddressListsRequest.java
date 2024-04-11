@@ -28,7 +28,7 @@ public class GetAllAddressListsRequest {
      */
      @SuppressWarnings("unused")
     private GetAllAddressListsRequest() {
-        this((DomainSelector)null);
+        this(null);
     }
 
     public GetAllAddressListsRequest(DomainSelector domain) {

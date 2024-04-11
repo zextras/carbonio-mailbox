@@ -145,7 +145,7 @@ final class RemoteFolder {
             }
         }
         // Sort UIDs in reverse order so we download latest messages first
-        Collections.sort(uids, Collections.reverseOrder());
+        uids.sort(Collections.reverseOrder());
         return uids;
     }
 
@@ -155,7 +155,7 @@ final class RemoteFolder {
      */
     public List<MessageData> getFlags(long startUid, long endUid)
         throws IOException {
-        final List<MessageData> mds = new ArrayList<MessageData>();
+        final List<MessageData> mds = new ArrayList<>();
         String end = endUid > 0 ? String.valueOf(endUid) : "*";
         connection.uidFetch(startUid + ":" + end, "FLAGS",
             new FetchResponseHandler() {

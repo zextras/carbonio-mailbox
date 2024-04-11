@@ -26,7 +26,7 @@ public class HABGroupMember extends HABMember {
      */
     @SuppressWarnings("unused")
     public HABGroupMember() {
-        this((String) null);
+        this(null);
     }
 
     public HABGroupMember(String name) {

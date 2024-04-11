@@ -21,7 +21,6 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.account.GetShareInfo.ResultFilter;
 import com.zimbra.cs.service.account.GetShareInfo.ResultFilterByTarget;
 import com.zimbra.cs.service.account.GetShareInfo.ShareInfoVisitor;
-import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.GetShareInfoRequest;
 import com.zimbra.soap.admin.message.GetShareInfoResponse;

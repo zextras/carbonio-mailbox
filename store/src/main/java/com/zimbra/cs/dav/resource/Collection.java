@@ -9,6 +9,7 @@ import com.zimbra.cs.service.FileUploadServlet;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,8 +84,8 @@ public class Collection extends MailItemResource {
     @Override
     public InputStream getContent(DavContext ctxt) throws IOException, DavException {
         if (ctxt.isWebRequest())
-            return new ByteArrayInputStream(getTextContent(ctxt).getBytes("UTF-8"));
-        return new ByteArrayInputStream(getPropertiesAsText(ctxt).getBytes("UTF-8"));
+            return new ByteArrayInputStream(getTextContent(ctxt).getBytes(StandardCharsets.UTF_8));
+        return new ByteArrayInputStream(getPropertiesAsText(ctxt).getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
@@ -94,7 +95,7 @@ public class Collection extends MailItemResource {
 
     @Override
     public java.util.Collection<DavResource> getChildren(DavContext ctxt) throws DavException {
-        ArrayList<DavResource> children = new ArrayList<DavResource>();
+        ArrayList<DavResource> children = new ArrayList<>();
 
         try {
             ctxt.setCollectionPath(getUri());
@@ -122,7 +123,7 @@ public class Collection extends MailItemResource {
     private List<MailItem> getChildrenMailItem(DavContext ctxt) throws DavException,ServiceException {
         Mailbox mbox = getMailbox(ctxt);
 
-        List<MailItem> ret = new ArrayList<MailItem>();
+        List<MailItem> ret = new ArrayList<>();
 
         // XXX aggregate into single call
         ret.addAll(mbox.getItemList(ctxt.getOperationContext(), MailItem.Type.FOLDER, mId));

@@ -7,7 +7,6 @@ package com.zimbra.cs.util;
 
 import java.io.File;
 import java.sql.Timestamp;
-import java.util.Iterator;
 import java.util.Map;
 
 import com.zimbra.common.localconfig.LC;
@@ -46,14 +45,13 @@ public final class Config {
         try {
             conn = DbPool.getConnection();
             mConfigMap = DbConfig.getAll(conn, ts);
-            for (Iterator<DbConfig> it = mConfigMap.values().iterator(); it.hasNext();) {
-                DbConfig c = it.next();
-                if (mYoungest == null) {
-                    mYoungest = c.getModified();
-                } else if (c.getModified().after(mYoungest)) {
-                    mYoungest = c.getModified();
-                }
+          for (DbConfig c : mConfigMap.values()) {
+            if (mYoungest == null) {
+              mYoungest = c.getModified();
+            } else if (c.getModified().after(mYoungest)) {
+              mYoungest = c.getModified();
             }
+          }
         } finally {
             if (conn != null)
                 DbPool.quietClose(conn);

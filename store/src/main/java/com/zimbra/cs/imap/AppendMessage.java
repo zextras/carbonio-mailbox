@@ -102,7 +102,7 @@ final class AppendMessage {
             req.skipSpace();
             req.skipChar('(');
             catenate = true;
-            parts = new ArrayList<Part>(5);
+            parts = new ArrayList<>(5);
             while (req.peekChar() != ')') {
                 if (!parts.isEmpty()) {
                     req.skipSpace();

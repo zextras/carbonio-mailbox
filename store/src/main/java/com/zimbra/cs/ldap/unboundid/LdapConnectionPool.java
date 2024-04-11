@@ -7,7 +7,6 @@ package com.zimbra.cs.ldap.unboundid;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +38,7 @@ public class LdapConnectionPool {
 
     // for unittest and dump stats
     private static final Map<String, LDAPConnectionPool> connPools =
-        new HashMap<String, LDAPConnectionPool>();
+        new HashMap<>();
 
     static LDAPConnectionPool createConnectionPool(String connPoolName,
             LdapServerConfig config) throws LdapException {
@@ -200,9 +199,9 @@ public class LdapConnectionPool {
     private static class DebugConnPool {
 
         private static final Map<String /* connection pool name */, DebugConnPool>
-            checkedOutByPoolName = new HashMap<String, DebugConnPool>();
+            checkedOutByPoolName = new HashMap<>();
 
-        private List<CheckedOutInfo> checkedOutConns = new ArrayList<CheckedOutInfo>();
+        private List<CheckedOutInfo> checkedOutConns = new ArrayList<>();
 
         static boolean enabled() {
             return LC.ldap_connect_pool_debug.booleanValue();
@@ -284,15 +283,14 @@ public class LdapConnectionPool {
             assert(checkedOutFromPool != null);
 
             boolean checkedIn = false;
-            for (Iterator<CheckedOutInfo> it = checkedOutFromPool.checkedOutConns.iterator(); it.hasNext();) {
-                CheckedOutInfo checkedOutConn = it.next();
-                long connId = conn.getConnectionID();
-                if (connId == checkedOutConn.connId) {
-                    checkedOutFromPool.checkedOutConns.remove(checkedOutConn);
-                    checkedIn = true;
-                    break;
-                }
+          for (CheckedOutInfo checkedOutConn : checkedOutFromPool.checkedOutConns) {
+            long connId = conn.getConnectionID();
+            if (connId == checkedOutConn.connId) {
+              checkedOutFromPool.checkedOutConns.remove(checkedOutConn);
+              checkedIn = true;
+              break;
             }
+          }
 
             assert(checkedIn);
         }

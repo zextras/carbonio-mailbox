@@ -41,7 +41,7 @@ public class ResourceProperty {
 
     public ResourceProperty(QName name) {
         mName = name;
-        mChildren = new ArrayList<Element>();
+        mChildren = new ArrayList<>();
     }
 
     public ResourceProperty(Element elem) {

@@ -18,7 +18,7 @@ import com.zimbra.common.util.ZimbraLog;
  */
 public class ProxyAuthenticator extends Authenticator {
     
-    private Map<Proxy.Type, UsernamePassword> userPasswords = new HashMap<Proxy.Type, UsernamePassword>();
+    private Map<Proxy.Type, UsernamePassword> userPasswords = new HashMap<>();
     
     public ProxyAuthenticator() {
         super();

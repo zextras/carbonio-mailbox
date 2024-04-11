@@ -41,7 +41,7 @@ public class ModifyAdminSavedSearches extends AdminDocumentHandler {
         HashMap<String, String> searches = null;
         for (Iterator it = request.elementIterator(AdminConstants.E_SEARCH); it.hasNext(); ) {
             if (searches == null)
-                searches = new HashMap<String, String>();
+                searches = new HashMap<>();
             Element e = (Element) it.next();
             String name = e.getAttribute(AdminConstants.A_NAME);
             String query = e.getText();
@@ -57,39 +57,38 @@ public class ModifyAdminSavedSearches extends AdminDocumentHandler {
     
     public void handle(Account acct, Element response, HashMap<String, String> modSearches) throws ServiceException {
         String[] searches = acct.getMultiAttr(Provisioning.A_zimbraAdminSavedSearches);
-        Map<String, GetAdminSavedSearches.AdminSearch> curSearches = new HashMap<String, GetAdminSavedSearches.AdminSearch>();
-        for (int i = 0; i < searches.length; i++) {
-            GetAdminSavedSearches.AdminSearch as = GetAdminSavedSearches.AdminSearch.parse(searches[i]);
-            curSearches.put(as.getName(), as);
+        Map<String, GetAdminSavedSearches.AdminSearch> curSearches = new HashMap<>();
+      for (String search : searches) {
+        GetAdminSavedSearches.AdminSearch as = GetAdminSavedSearches.AdminSearch.parse(search);
+        curSearches.put(as.getName(), as);
+      }
+
+      for (Map.Entry<String, String> stringStringEntry : modSearches.entrySet()) {
+        Map.Entry entry = (Map.Entry) stringStringEntry;
+        String name = (String) entry.getKey();
+        String query = (String) entry.getValue();
+        GetAdminSavedSearches.AdminSearch mod = new GetAdminSavedSearches.AdminSearch(name, query);
+        if (curSearches.containsKey(name)) {
+          if (query.length() == 0)
+            curSearches.remove(name);
+          else
+            curSearches.put(name, mod);
+        } else {
+          if (query.length() == 0)
+            throw ServiceException.INVALID_REQUEST("query for " + name + " is empty", null);
+          else
+            curSearches.put(name, mod);
         }
-        
-        for (Iterator it = modSearches.entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry entry = (Map.Entry)it.next();
-            String name = (String)entry.getKey();
-            String query = (String)entry.getValue();
-            GetAdminSavedSearches.AdminSearch mod = new GetAdminSavedSearches.AdminSearch(name, query);
-            if (curSearches.containsKey(name)) {
-                if (query.length() == 0)
-                    curSearches.remove(name);             
-                else
-                    curSearches.put(name, mod);
-            } else {
-                if (query.length() == 0)
-                    throw ServiceException.INVALID_REQUEST("query for " + name + " is empty", null);
-                else
-                    curSearches.put(name, mod);
-            }
-        }
+      }
 
         String[] mods = new String[curSearches.size()];
         int i = 0;
-        for (Iterator it = curSearches.values().iterator(); it.hasNext(); ) {
-            GetAdminSavedSearches.AdminSearch m = (GetAdminSavedSearches.AdminSearch)it.next();
-            mods[i++] = m.encode();
-        }
+      for (GetAdminSavedSearches.AdminSearch m : curSearches.values()) {
+        mods[i++] = m.encode();
+      }
             
         Provisioning prov = Provisioning.getInstance();
-        Map<String,String[]> modmap = new HashMap<String,String[]>();
+        Map<String,String[]> modmap = new HashMap<>();
         modmap.put(Provisioning.A_zimbraAdminSavedSearches, mods);
         prov.modifyAttrs(acct, modmap);
     }

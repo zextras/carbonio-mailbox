@@ -27,7 +27,7 @@ import com.zimbra.cs.service.formatter.FormatterFactory.FormatType;
 
 public class NetscapeLdifFormatter extends LdifFormatter {
 
-    private Map<String, String> netscapeAttrMap = new HashMap<String, String>();
+    private Map<String, String> netscapeAttrMap = new HashMap<>();
     private static final String MOZILLA_HOME_STREET = "mozillaHomeStreet";
     private static final String MOZILLA_HOME_LOCALITY_NAME = "mozillaHomeLocalityName";
     private static final String MOZILLA_HOME_STATE = "mozillaHomeState";
@@ -156,7 +156,7 @@ public class NetscapeLdifFormatter extends LdifFormatter {
 
     @Override
     protected String getCommonName(Map<String, String> contact) {
-        List<String> cnElements = new ArrayList<String>();
+        List<String> cnElements = new ArrayList<>();
         String firstName = contact.get(ContactConstants.A_firstName);
         String middleName = contact.get(ContactConstants.A_middleName);
         String lastName = contact.get(ContactConstants.A_lastName);
@@ -179,7 +179,7 @@ public class NetscapeLdifFormatter extends LdifFormatter {
         if (StringUtil.isNullOrEmpty(cn) && StringUtil.isNullOrEmpty(email)) {
             return "";
         }
-        List<String> dnElements = new ArrayList<String>();
+        List<String> dnElements = new ArrayList<>();
         if (cn != null) {
             dnElements.add(LdapConstants.ATTR_cn + "=" + cn);
         }

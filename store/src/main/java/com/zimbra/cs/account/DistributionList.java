@@ -105,7 +105,7 @@ public abstract class DistributionList extends ZAttrDistributionList implements 
      */
     @Override
     public String[] getAllAddrsAsGroupMember() throws ServiceException {
-        String aliases[] = getAliases();
+        String[] aliases = getAliases();
         List<String> addrs = Lists.newArrayListWithExpectedSize(aliases.length + 1);
         String myName = getName();
         addrs.add(myName);
@@ -179,7 +179,7 @@ public abstract class DistributionList extends ZAttrDistributionList implements 
                 ownContext = true;
                 zlc = LdapClient.getContext(LdapServerType.get(false /* useMaster */), LdapUsage.SEARCH);
             }
-            BySearchResultEntrySearcher searcher = new BySearchResultEntrySearcher(prov, zlc, (Domain) null,
+            BySearchResultEntrySearcher searcher = new BySearchResultEntrySearcher(prov, zlc, null,
                     BASIC_ATTRS, dlUpdator);
             searcher.doSearch(filter, DISTRIBUTION_LISTS);
             List<BasicInfo> directDLs = dlUpdator.getDistLists();
@@ -289,7 +289,7 @@ public abstract class DistributionList extends ZAttrDistributionList implements 
         String[] addrs = dl.getAllAddrsAsGroupMember().toArray(new String[0]);
         ZLdapFilter filter = ZLdapFilterFactory.getInstance().distributionListsByMemberAddrs(addrs);
         ContainingDLUpdator dlUpdator = new ContainingDLUpdator(prov, adminGroupsOnly);
-        BySearchResultEntrySearcher searcher = new BySearchResultEntrySearcher(prov, zlc, (Domain) null,
+        BySearchResultEntrySearcher searcher = new BySearchResultEntrySearcher(prov, zlc, null,
                 BASIC_ATTRS, dlUpdator);
         searcher.doSearch(filter, DISTRIBUTION_LISTS);
         return dlUpdator.getDistLists();
@@ -311,7 +311,7 @@ public abstract class DistributionList extends ZAttrDistributionList implements 
             String[] chunk = addrs.subList(start, end + 1).toArray(new String[0]);
             ZLdapFilter filter = ZLdapFilterFactory.getInstance().distributionListsByMemberAddrs(chunk);
             ContainingDLUpdator dlUpdator = new ContainingDLUpdator(prov, adminGroupsOnly);
-            BySearchResultEntrySearcher searcher = new BySearchResultEntrySearcher(prov, zlc, (Domain) null,
+            BySearchResultEntrySearcher searcher = new BySearchResultEntrySearcher(prov, zlc, null,
                     BASIC_ATTRS, dlUpdator);
             searcher.doSearch(filter, DISTRIBUTION_LISTS);
             containingDLs.addAll(dlUpdator.getDistLists());
@@ -352,7 +352,6 @@ public abstract class DistributionList extends ZAttrDistributionList implements 
                 distLists.add(new BasicInfo(id, name, aliases, isAdmin));
             } catch (ServiceException e) {
                 ZimbraLog.search.debug("Problem processing search result entry - ignoring", e);
-                return;
             }
         }
 

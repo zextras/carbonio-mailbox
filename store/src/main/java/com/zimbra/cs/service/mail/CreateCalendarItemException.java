@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.cs.service.mail.message.parser.InviteParser;
+import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +33,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 
 public class CreateCalendarItemException extends CalendarRequest {
 
-    protected class CreateCalendarItemExceptionInviteParser extends ParseMimeMessage.InviteParser {
+    protected class CreateCalendarItemExceptionInviteParser extends InviteParser {
         private String mUid;
         private Invite mDefaultInvite;
         private MailSendQueue sendQueue;
@@ -43,9 +45,9 @@ public class CreateCalendarItemException extends CalendarRequest {
         }
 
         @Override
-        public ParseMimeMessage.InviteParserResult parseInviteElement(ZimbraSoapContext zsc, OperationContext octxt,
+        public InviteParserResult parseInviteElement(ZimbraSoapContext zsc, OperationContext octxt,
                 Account account, Element inviteElem) throws ServiceException {
-            ParseMimeMessage.InviteParserResult toRet = CalendarUtils.parseInviteForCreateException(
+            InviteParserResult toRet = CalendarUtils.parseInviteForCreateException(
                     account, getItemType(), inviteElem, (mDefaultInvite.getTimeZoneMap() != null ) ? 
                             mDefaultInvite.getTimeZoneMap().clone() : null, mUid, mDefaultInvite);
 
@@ -189,7 +191,7 @@ public class CreateCalendarItemException extends CalendarRequest {
         // Inter-mailbox move if necessary.
         if (isInterMboxMove) {
             CalendarItem calItem = mbox.getCalendarItemById(octxt, iid.getId());
-            List<Integer> ids = new ArrayList<Integer>(1);
+            List<Integer> ids = new ArrayList<>(1);
             ids.add(calItem.getId());
             ItemActionHelper.MOVE(octxt, mbox, zsc.getResponseProtocol(), ids, calItem.getType(), null, iidFolder);
         }

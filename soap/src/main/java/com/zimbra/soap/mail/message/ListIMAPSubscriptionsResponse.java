@@ -22,7 +22,7 @@ public class ListIMAPSubscriptionsResponse {
      * @zm-api-field-description list of folder paths subscribed via IMAP
      */
     @XmlElement(name=AccountConstants.E_SUBSCRIPTION)
-    Set<String> subs = new HashSet<String>();
+    Set<String> subs = new HashSet<>();
 
     public Set<String> getSubscriptions() {
         return Collections.unmodifiableSet(subs);

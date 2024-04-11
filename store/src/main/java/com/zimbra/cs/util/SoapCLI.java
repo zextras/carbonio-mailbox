@@ -158,7 +158,7 @@ public abstract class SoapCLI {
     @SuppressWarnings("unchecked")
     private Options getAllOptions() {
         Options newOptions = new Options();
-        Set<OptionGroup> groups = new HashSet<OptionGroup>();
+        Set<OptionGroup> groups = new HashSet<>();
         Options[] optionses =
             new Options[] { mOptions, mHiddenOptions };
         for (Options options : optionses) {

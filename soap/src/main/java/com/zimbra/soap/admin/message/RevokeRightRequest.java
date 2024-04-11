@@ -48,7 +48,7 @@ public class RevokeRightRequest {
      */
     @SuppressWarnings("unused")
     private RevokeRightRequest() {
-        this((EffectiveRightsTargetSelector) null, (GranteeSelector) null, (RightModifierInfo) null);
+        this(null, null, null);
     }
 
     public RevokeRightRequest(EffectiveRightsTargetSelector target, GranteeSelector grantee, RightModifierInfo right) {

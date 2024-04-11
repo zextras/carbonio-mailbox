@@ -59,7 +59,7 @@ public class ZimletProps2JsServlet extends HttpServlet {
     protected static final String A_BASENAME_PATTERNS_LIST = A_BASENAME_PATTERNS + "-list";
 
     private static Map<Locale, Map<String, byte[]>> buffers =
-            new HashMap<Locale, Map<String, byte[]>>();
+        new HashMap<>();
 
     private String getDirPath(String dirname) {
         if (new File(dirname).isAbsolute()) {
@@ -96,8 +96,7 @@ public class ZimletProps2JsServlet extends HttpServlet {
         synchronized (buffers) {
             localeBuffers = buffers.get(locale);
             if (localeBuffers == null) {
-                localeBuffers = Collections.synchronizedMap(new HashMap<String,
-                        byte[]>());
+                localeBuffers = Collections.synchronizedMap(new HashMap<>());
                 buffers.put(locale, localeBuffers);
             }
         }
@@ -138,7 +137,7 @@ public class ZimletProps2JsServlet extends HttpServlet {
 
     protected boolean flushCache(ServletRequest req) {
         Boolean flushCache = (Boolean) req.getAttribute(A_FLUSH_CACHE);
-        if (flushCache != null && flushCache.booleanValue()) {
+        if (flushCache != null && flushCache) {
             int oldSize = buffers.size();
             buffers.clear();
             int newSize = buffers.size();
@@ -157,7 +156,7 @@ public class ZimletProps2JsServlet extends HttpServlet {
     }
 
     protected List<String> getBasenamePatternsList(HttpServletRequest req) {
-        List<String> list = new LinkedList<String>();
+        List<String> list = new LinkedList<>();
         String patterns = (String) req.getAttribute(A_BASENAME_PATTERNS);
 
         if (patterns == null) {
@@ -199,10 +198,10 @@ public class ZimletProps2JsServlet extends HttpServlet {
 
         // tokenize the list of patterns
         List<String> patternsList = this.getBasenamePatternsList(req);
-        List<List<String>> basenamePatterns = new LinkedList<List<String>>();
+        List<List<String>> basenamePatterns = new LinkedList<>();
         for (String patterns : patternsList) {
             StringTokenizer tokenizer = new StringTokenizer(patterns, ",");
-            List<String> basenamesList = new LinkedList<String>();
+            List<String> basenamesList = new LinkedList<>();
             basenamePatterns.add(basenamesList);
             while (tokenizer.hasMoreTokens()) {
                 String pattern = tokenizer.nextToken().trim();
@@ -308,7 +307,7 @@ public class ZimletProps2JsServlet extends HttpServlet {
             this.dir = basedir.replaceAll("/[^/]+$", "").replaceAll("^.*/", "");
             this.dirname = dirname;
             this.name = classname;
-            this.files = new LinkedList<File>();
+            this.files = new LinkedList<>();
         }
 
         public List<File> getFiles() {
@@ -373,7 +372,7 @@ public class ZimletProps2JsServlet extends HttpServlet {
             StringBuilder str = new StringBuilder();
             int index = 0;
             do {
-                str.append(s.substring(index, matcher.start()));
+                str.append(s, index, matcher.start());
                 String pname = matcher.group(1);
                 String pvalue = System.getProperty(pname);
                 str.append(pvalue != null ? pvalue : matcher.group(0));

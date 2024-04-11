@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -115,15 +116,13 @@ public class ClientCertAuthenticator extends SSOAuthenticator {
 
             os = new FileOutputStream(file);
             // Write in text form
-            wr = new OutputStreamWriter(os, Charset.forName("UTF-8"));
+            wr = new OutputStreamWriter(os, StandardCharsets.UTF_8);
             wr.write("-----BEGIN CERTIFICATE-----\n");
             wr.write(Base64.getEncoder().encodeToString(buf));
             wr.write("\n-----END CERTIFICATE-----\n");
             wr.flush();
-        } catch (CertificateEncodingException e) {
+        } catch (CertificateEncodingException | IOException e) {
             ZimbraLog.account.debug(LOG_PREFIX +  "unable to capture cert", e);
-        } catch (IOException e) {
-            ZimbraLog.account.debug(LOG_PREFIX + "unable to capture cert", e);
         } finally {
             ByteUtil.closeWriter(wr);
             ByteUtil.closeStream(os);

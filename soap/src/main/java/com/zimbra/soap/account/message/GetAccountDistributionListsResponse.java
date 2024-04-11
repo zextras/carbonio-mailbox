@@ -26,7 +26,7 @@ public class GetAccountDistributionListsResponse {
      * @zm-api-field-description Information on distribution lists
      */
     @XmlElement(name=AccountConstants.E_DL)
-    private List<DLInfo> dlList = new ArrayList<DLInfo>();
+    private List<DLInfo> dlList = new ArrayList<>();
 
     public GetAccountDistributionListsResponse() {
     }

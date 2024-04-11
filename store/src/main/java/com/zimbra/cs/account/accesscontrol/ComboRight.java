@@ -13,16 +13,16 @@ import com.zimbra.common.util.SetUtil;
 
 public class ComboRight extends AdminRight {
     // directly contained rights
-    private Set<Right> mRights = new HashSet<Right>();
+    private Set<Right> mRights = new HashSet<>();
 
     // directly and indirectly contained rights
-    private Set<Right> mAllRights = new HashSet<Right>();
+    private Set<Right> mAllRights = new HashSet<>();
 
     // all preset rights contained in this combo right
-    private Set<Right> mPresetRights = new HashSet<Right>();
+    private Set<Right> mPresetRights = new HashSet<>();
 
     // all attr rights contained in this combo right
-    private Set<AttrRight> mAttrRights = new HashSet<AttrRight>();
+    private Set<AttrRight> mAttrRights = new HashSet<>();
 
     ComboRight(String name) {
         super(name, RightType.combo);

@@ -11,5 +11,5 @@ package com.zimbra.cs.zimlet;
  *
  */
 public interface ZimletHandler {
-	public String[] match(String document, ZimletConf config) throws ZimletException;
+	String[] match(String document, ZimletConf config) throws ZimletException;
 }

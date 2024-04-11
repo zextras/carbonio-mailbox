@@ -24,9 +24,7 @@ public final class ContactTokenFilter extends TokenFilter {
     @Override
     public boolean incrementToken() throws IOException {
         while (input.incrementToken()) {
-            if (termAttr.length() == 1 && termAttr.charAt(0) == '.') {
-                continue; // swallow dot
-            } else {
+            if (termAttr.length() != 1 || termAttr.charAt(0) != '.') {
                 return true;
             }
         }

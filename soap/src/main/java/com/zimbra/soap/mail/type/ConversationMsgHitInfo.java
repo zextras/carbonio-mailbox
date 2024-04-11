@@ -64,7 +64,7 @@ public class ConversationMsgHitInfo {
      */
     @SuppressWarnings("unused")
     private ConversationMsgHitInfo() {
-        this((String) null);
+        this(null);
     }
 
     public ConversationMsgHitInfo(String id) {

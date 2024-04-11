@@ -31,7 +31,7 @@ public class ByYearDayRule implements ByYearDayRuleInterface {
      */
     @SuppressWarnings("unused")
     private ByYearDayRule() {
-        this((String) null);
+        this(null);
     }
 
     public ByYearDayRule(String list) {

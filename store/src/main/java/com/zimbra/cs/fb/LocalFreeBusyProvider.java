@@ -59,7 +59,7 @@ public class LocalFreeBusyProvider {
         if (folder == FreeBusyQuery.CALENDAR_FOLDER_ALL) {
             calDataResultList = mbox.getAllCalendarsSummaryForRange(null, MailItem.Type.APPOINTMENT, start, end);
         } else {
-            calDataResultList = new ArrayList<CalendarDataResult>(1);
+            calDataResultList = new ArrayList<>(1);
             calDataResultList.add(mbox.getCalendarSummaryForRange(null, folder, MailItem.Type.APPOINTMENT, start, end));
         }
         for (CalendarDataResult result : calDataResultList) {
@@ -91,17 +91,17 @@ public class LocalFreeBusyProvider {
                 isTransparent = IcalXmlStrMap.TRANSP_TRANSPARENT.equals(transp);
                 long defaultDuration = 0;
                 if (defaultInstance.getDuration() != null)
-                    defaultDuration = defaultInstance.getDuration().longValue();
+                    defaultDuration = defaultInstance.getDuration();
                 String defaultFreeBusy = defaultInstance.getFreeBusyActual();
                 for (Iterator<InstanceData> instIter = appt.instanceIterator(); instIter.hasNext(); ) {
                     InstanceData instance = instIter.next();
-                    long instStart = instance.getDtStart() != null ? instance.getDtStart().longValue() : 0;
+                    long instStart = instance.getDtStart() != null ? instance.getDtStart() : 0;
                     // Skip instances that are outside the time range but were returned due to alarm being in range.
                     if (instStart >= end)
                         continue;
                     long dur = defaultDuration;
                     if (instance.getDuration() != null)
-                        dur = instance.getDuration().longValue();
+                        dur = instance.getDuration();
                     if (dur <= 0)  // Only consider instances with non-zero, positive duration.
                         continue;
                     long instEnd = instStart + dur;
@@ -140,25 +140,25 @@ public class LocalFreeBusyProvider {
         IntervalList l = new IntervalList(0, 100);
         Interval toAdd;
 
-        System.out.println("List: "+ l.toString());
+        System.out.println("List: "+ l);
 
         toAdd = new Interval(50, 60, IcalXmlStrMap.FBTYPE_BUSY);
         l.addInterval(toAdd);
-        System.out.println("Added: "+toAdd+l.toString());
+        System.out.println("Added: "+toAdd+ l);
         toAdd = new Interval(10, 20, IcalXmlStrMap.FBTYPE_BUSY_TENTATIVE);
         l.addInterval(toAdd);
-        System.out.println("Added: "+toAdd+l.toString());
+        System.out.println("Added: "+toAdd+ l);
         toAdd = new Interval(20, 30, IcalXmlStrMap.FBTYPE_BUSY_UNAVAILABLE);
         l.addInterval(toAdd);
-        System.out.println("Added: "+toAdd+l.toString());
+        System.out.println("Added: "+toAdd+ l);
         toAdd = new Interval(15, 35, IcalXmlStrMap.FBTYPE_BUSY);
         l.addInterval(toAdd);
-        System.out.println("Added: "+toAdd+l.toString());
+        System.out.println("Added: "+toAdd+ l);
 
         try {
             Mailbox mbox = MailboxManager.getInstance().getMailboxById(1);
             FreeBusy fb = getFreeBusyList(mbox.getAccount(), false, mbox, mbox.getAccount().getName(), 0, Long.MAX_VALUE, FreeBusyQuery.CALENDAR_FOLDER_ALL, null);
-            System.out.println(fb.toString());
+            System.out.println(fb);
         } catch (ServiceException e){
             System.out.println("EXCEPTION: "+e);
             e.printStackTrace();

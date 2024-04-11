@@ -38,17 +38,17 @@ public class LmcMessage {
     private String mFragment;
     private String mOriginalID;
     private String mFolder;
-    private LmcEmailAddress mEmailAddrs[];
+    private LmcEmailAddress[] mEmailAddrs;
     private ArrayList<LmcMimePart> mMimeParts;
     private String mContentMatched;  // for SearchResponse
     private String mTag; // for AddMsg
     private String mContent; // for AddMsg
-    private String mAttachmentIDs[]; // for SendMsg
+    private String[] mAttachmentIDs; // for SendMsg
 
     private boolean mIsUnread = false;
     
     public LmcMessage() {
-        mMimeParts = new ArrayList<LmcMimePart>();
+        mMimeParts = new ArrayList<>();
     }
 
     public void setFolder(String f) { mFolder = f; }
@@ -56,14 +56,14 @@ public class LmcMessage {
     public void setMsgIDHeader(String h) { mMsgIDHeader = h; }
     public void setFlags(String f) {
         mFlags = f;
-        mIsUnread = (mFlags != null && mFlags.indexOf("u") >= 0);
+        mIsUnread = (mFlags != null && mFlags.contains("u"));
     }
     public void setSize(long s) { mSize = s; }
     public void setDate(String d) { mDate = d; }
     public void setConvID(String cid) { mConvID = cid; }
     public void setScore(String s) { mScore = s; }
     public void setOriginalID(String o) { mOriginalID = o; }
-    public void setEmailAddresses(LmcEmailAddress e[]) { mEmailAddrs = e; }
+    public void setEmailAddresses(LmcEmailAddress[] e) { mEmailAddrs = e; }
     public void addMimePart(LmcMimePart m) { mMimeParts.add(m); }
     public void clearMimeParts() { mMimeParts.clear(); }
     public void setContentMatched(String c) { mContentMatched = c; }
@@ -71,7 +71,7 @@ public class LmcMessage {
     public void setSubject(String s) { mSubject = s; }
     public void setTag(String t) { mTag = t; }
     public void setContent(String c) { mContent = c; }
-    public void setAttachmentIDs(String ids[]) { mAttachmentIDs = ids; }
+    public void setAttachmentIDs(String[] ids) { mAttachmentIDs = ids; }
 
     public String getSubject() { return mSubject; }
     public String getFragment() { return mFragment; }
@@ -87,9 +87,9 @@ public class LmcMessage {
     public String getContentMatched() { return mContentMatched; }
     public LmcEmailAddress[] getEmailAddresses() { return mEmailAddrs; }
     public LmcEmailAddress getFromAddress() {
-    	for (int i = 0; i < mEmailAddrs.length; i++)
-            if (mEmailAddrs[i].getType().equals("f"))  // XXX should have constant
-                return mEmailAddrs[i];
+      for (LmcEmailAddress mEmailAddr : mEmailAddrs)
+        if (mEmailAddr.getType().equals("f"))  // XXX should have constant
+          return mEmailAddr;
         return null;
     }
     public int getNumMimeParts() { return mMimeParts.size(); }

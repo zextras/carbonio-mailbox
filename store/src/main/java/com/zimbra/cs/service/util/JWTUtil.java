@@ -115,15 +115,15 @@ public class JWTUtil {
                 ZimbraLog.account.debug("salt not found in soap context or engine context, looking in cookie");
                 HttpServletRequest req = (HttpServletRequest) engineCtxt.get(SoapServlet.SERVLET_REQUEST);
                 if (req != null) {
-                    javax.servlet.http.Cookie cookies[] =  req.getCookies();
+                    javax.servlet.http.Cookie[] cookies =  req.getCookies();
                     if (cookies != null) {
-                        for (int i = 0; i < cookies.length; i++) {
-                            if (ZimbraCookie.COOKIE_ZM_JWT.equals(cookies[i].getName())) {
-                                salt = cookies[i].getValue();
-                                ZimbraLog.account.debug("salt found in zm_jwt cookie");
-                                break;
-                            }
+                      for (Cookie cookie : cookies) {
+                        if (ZimbraCookie.COOKIE_ZM_JWT.equals(cookie.getName())) {
+                          salt = cookie.getValue();
+                          ZimbraLog.account.debug("salt found in zm_jwt cookie");
+                          break;
                         }
+                      }
                     }
                 }
             }
@@ -313,14 +313,14 @@ public class JWTUtil {
     public static String getZMJWTCookieValue(HttpServletRequest httpReq) {
         String cookieVal = null;
         if (httpReq != null) {
-            Cookie cookies[] =  httpReq.getCookies();
+            Cookie[] cookies =  httpReq.getCookies();
             if (cookies != null) {
-                for (int i = 0; i < cookies.length; i++) {
-                    if (cookies[i].getName().equals(ZimbraCookie.COOKIE_ZM_JWT)) {
-                        cookieVal = cookies[i].getValue();
-                        break;
-                    }
+              for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(ZimbraCookie.COOKIE_ZM_JWT)) {
+                  cookieVal = cookie.getValue();
+                  break;
                 }
+              }
             }
         }
         return cookieVal;

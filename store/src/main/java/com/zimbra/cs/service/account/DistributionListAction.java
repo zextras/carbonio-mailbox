@@ -375,7 +375,7 @@ public class DistributionListAction extends DistributionListDocumentHandler {
               }));
     }
 
-    protected class Grantee {
+    protected static class Grantee {
 
       GranteeType type;
       GranteeBy by;
@@ -516,7 +516,7 @@ public class DistributionListAction extends DistributionListDocumentHandler {
       RightManager rightMgr = RightManager.getInstance();
 
       // keep the soap order, use LinkedHashMap
-      Map<Right, List<Grantee>> rights = new LinkedHashMap<Right, List<Grantee>>();
+      Map<Right, List<Grantee>> rights = new LinkedHashMap<>();
       for (Element eRight : eAction.listElements(AccountConstants.E_RIGHT)) {
         Right right = rightMgr.getUserRight(eRight.getAttribute(AccountConstants.A_RIGHT));
 
@@ -636,7 +636,7 @@ public class DistributionListAction extends DistributionListDocumentHandler {
 
     @Override
     void handle() throws ServiceException {
-      List<String> memberList = new LinkedList<String>();
+      List<String> memberList = new LinkedList<>();
       for (Element elem : eAction.listElements(AccountConstants.E_DLM)) {
         memberList.add(elem.getTextTrim());
       }
@@ -673,7 +673,7 @@ public class DistributionListAction extends DistributionListDocumentHandler {
 
     @Override
     void handle() throws ServiceException {
-      List<String> memberList = new LinkedList<String>();
+      List<String> memberList = new LinkedList<>();
       for (Element elem : eAction.listElements(AccountConstants.E_DLM)) {
         memberList.add(elem.getTextTrim());
       }

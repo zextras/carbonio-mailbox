@@ -2863,7 +2863,11 @@ public class ZAttrProvisioning {
     public static final String A_carbonioAmavisDisableVirusCheck = "carbonioAmavisDisableVirusCheck";
 
     /**
-     * carbonioAutoProvAllowedDomains comma separated domain names
+     * Comma-separated domain names used for checking the
+     * autoProvAccountNameMap value. If the value is a full email, the domain
+     * of the email should be one of the values in
+     * carbonioAutoProvAllowedDomains. Active Directory domain names may
+     * exist in autoProvAccountNameMap.
      *
      * @since ZCS 24.2.0
      */
@@ -2985,6 +2989,14 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=3128)
     public static final String A_carbonioNotificationRecipients = "carbonioNotificationRecipients";
+
+    /**
+     * Whether Carbonio can send analytics reports for Account
+     *
+     * @since ZCS 24.5.0
+     */
+    @ZAttr(id=3143)
+    public static final String A_carbonioPrefSendAnalytics = "carbonioPrefSendAnalytics";
 
     /**
      * Web UI Dark Mode preference for account
@@ -3386,7 +3398,7 @@ public class ZAttrProvisioning {
     public static final String A_userCertificate = "userCertificate";
 
     /**
-     * RFC2256/2307: password of user. Stored encoded as SSHA (salted-SHA1)
+     * RFC2256/2307: password of user.
      */
     @ZAttr()
     public static final String A_userPassword = "userPassword";
@@ -7294,7 +7306,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureOpenMailInNewWindowEnabled = "zimbraFeatureOpenMailInNewWindowEnabled";
 
     /**
-     * whether an account can modify its zimbraPref* attributes
+     * whether an account can modify its zimbraPref* and carbonioPref*
+     * attributes
      */
     @ZAttr(id=451)
     public static final String A_zimbraFeatureOptionsEnabled = "zimbraFeatureOptionsEnabled";
@@ -8564,7 +8577,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraHttpThrottleSafeIPs = "zimbraHttpThrottleSafeIPs";
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      */
     @ZAttr(id=1)
     public static final String A_zimbraId = "zimbraId";

@@ -30,7 +30,7 @@ public enum ModifyGroupMemberOperation {
 
         private String name;
 
-        private ModifyGroupMemberOperation(String name) {
+        ModifyGroupMemberOperation(String name) {
             this.name = name;
         }
 

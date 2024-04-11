@@ -15,6 +15,6 @@ public class MountIdsAttr extends IdsAttr {
      */
     @SuppressWarnings("unused")
     private MountIdsAttr() {
-        this((String) null);
+        this(null);
     }
 }

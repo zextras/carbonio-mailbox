@@ -221,6 +221,7 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.lang.ref.SoftReference;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -339,7 +340,7 @@ public class Mailbox implements MailboxStore {
       mbd.trackSync = trackSync;
       mbd.trackImap = trackImap;
       if (configKeys != null) {
-        mbd.configKeys = new HashSet<String>(configKeys);
+        mbd.configKeys = new HashSet<>(configKeys);
       }
       mbd.version = version;
       mbd.itemcacheCheckpoint = itemcacheCheckpoint;
@@ -370,7 +371,7 @@ public class Mailbox implements MailboxStore {
     boolean active;
     DbConnection conn = null;
     RedoableOp recorder = null;
-    List<IndexItemEntry> indexItems = new ArrayList<IndexItemEntry>();
+    List<IndexItemEntry> indexItems = new ArrayList<>();
     ItemCache itemCache = null;
     OperationContext octxt = null;
     TargetConstraint tcon = null;
@@ -386,7 +387,7 @@ public class Mailbox implements MailboxStore {
     Pair<String, Metadata> config = null;
 
     PendingLocalModifications dirty = new PendingLocalModifications();
-    final List<Object> otherDirtyStuff = new LinkedList<Object>();
+    final List<Object> otherDirtyStuff = new LinkedList<>();
     PendingDelete deletes = null;
     private boolean writeChange;
 
@@ -685,12 +686,12 @@ public class Mailbox implements MailboxStore {
 
   private final int mId;
   private final MailboxData mData;
-  private final ThreadLocal<MailboxChange> threadChange = new ThreadLocal<MailboxChange>();
-  private final List<Session> mListeners = new CopyOnWriteArrayList<Session>();
+  private final ThreadLocal<MailboxChange> threadChange = new ThreadLocal<>();
+  private final List<Session> mListeners = new CopyOnWriteArrayList<>();
 
   private FolderCache mFolderCache;
   private Map<Object, Tag> mTagCache;
-  private SoftReference<ItemCache> mItemCache = new SoftReference<ItemCache>(null);
+  private SoftReference<ItemCache> mItemCache = new SoftReference<>(null);
   private final Map<String, Integer> mConvHashes =
       new ConcurrentLinkedHashMap.Builder<String, Integer>()
           .maximumWeightedCapacity(MAX_MSGID_CACHE)
@@ -899,10 +900,10 @@ public class Mailbox implements MailboxStore {
     if (mListeners.isEmpty()) {
       return Collections.emptyList();
     } else if (stype == null) {
-      return new ArrayList<Session>(mListeners);
+      return new ArrayList<>(mListeners);
     }
 
-    List<Session> sessions = new ArrayList<Session>(mListeners.size());
+    List<Session> sessions = new ArrayList<>(mListeners.size());
     for (Session s : mListeners) {
       if (s.getType() == stype) {
         sessions.add(s);
@@ -1152,7 +1153,7 @@ public class Mailbox implements MailboxStore {
   }
 
   public interface ItemIdGetter {
-    public int get();
+    int get();
   }
 
   /** Wrapper for getNextItemId method - should only be used within a transaction */
@@ -1764,7 +1765,7 @@ public class Mailbox implements MailboxStore {
     ItemCache cache = mItemCache.get();
     if (cache == null) {
       cache = new ItemCache(this);
-      mItemCache = new SoftReference<ItemCache>(cache);
+      mItemCache = new SoftReference<>(cache);
       ZimbraLog.cache.debug("created a new MailItem cache for mailbox " + getId());
     }
     currentChange().itemCache = cache;
@@ -1841,12 +1842,12 @@ public class Mailbox implements MailboxStore {
       return null;
     } else {
 
-      SortedSet<String> clientIds = new TreeSet<String>(mData.configKeys);
+      SortedSet<String> clientIds = new TreeSet<>(mData.configKeys);
       for (String key : clientIds) {
         if (pattern.matcher(key).matches()) {
 
           previousDeviceId = key;
-          if (previousDeviceId.indexOf(":") != -1) {
+          if (previousDeviceId.contains(":")) {
             int index = previousDeviceId.indexOf(":");
             previousDeviceId = previousDeviceId.substring(0, index);
           }
@@ -1891,7 +1892,7 @@ public class Mailbox implements MailboxStore {
         throw ServiceException.PERM_DENIED("you do not have sufficient permissions");
       }
       currentChange().dirty.recordModified(this, Change.CONFIG);
-      currentChange().config = new Pair<String, Metadata>(section, config);
+      currentChange().config = new Pair<>(section, config);
       DbMailbox.updateConfig(this, section, config);
       success = true;
     } finally {
@@ -2032,7 +2033,7 @@ public class Mailbox implements MailboxStore {
     }
 
     int parentId = parent.getId();
-    List<MailItem> children = new ArrayList<MailItem>();
+    List<MailItem> children = new ArrayList<>();
     for (MailItem item : cached) {
       if (item.getParentId() == parentId) {
         children.add(item);
@@ -2476,7 +2477,7 @@ public class Mailbox implements MailboxStore {
         }
       }
 
-      mTagCache = new ConcurrentHashMap<Object, Tag>(tagData.size() * 3);
+      mTagCache = new ConcurrentHashMap<>(tagData.size() * 3);
       // create the tag objects and, as a side-effect, populate the new
       // cache
       for (Map.Entry<MailItem.UnderlyingData, DbMailItem.FolderTagCounts> entry :
@@ -2505,8 +2506,8 @@ public class Mailbox implements MailboxStore {
   void cacheFoldersTagsToMemcached() throws ServiceException {
     lock.lock();
     try {
-      List<Folder> folderList = new ArrayList<Folder>(mFolderCache.values());
-      List<Tag> tagList = new ArrayList<Tag>();
+      List<Folder> folderList = new ArrayList<>(mFolderCache.values());
+      List<Tag> tagList = new ArrayList<>();
       for (Map.Entry<Object, Tag> entry : mTagCache.entrySet()) {
         // A tag is cached twice, once by its id and once by name.  Dedupe.
         if (entry.getKey() instanceof String) {
@@ -2732,7 +2733,7 @@ public class Mailbox implements MailboxStore {
       // remove the deprecated ZIMBRA.MAILBOX_METADATA version value, if present
       if (mData.configKeys != null && mData.configKeys.contains(MailboxVersion.MD_CONFIG_VERSION)) {
         currentChange().dirty.recordModified(this, Change.CONFIG);
-        currentChange().config = new Pair<String, Metadata>(MailboxVersion.MD_CONFIG_VERSION, null);
+        currentChange().config = new Pair<>(MailboxVersion.MD_CONFIG_VERSION, null);
         DbMailbox.updateConfig(this, MailboxVersion.MD_CONFIG_VERSION, null);
       }
 
@@ -3104,7 +3105,7 @@ public class Mailbox implements MailboxStore {
     }
 
     // try the cache first
-    MailItem item = getCachedItem(Integer.valueOf(id), type);
+    MailItem item = getCachedItem(id, type);
     if (item != null) {
       return item;
     }
@@ -3123,7 +3124,7 @@ public class Mailbox implements MailboxStore {
       if (type != MailItem.Type.CONVERSATION && type != MailItem.Type.UNKNOWN) {
         throw MailItem.noSuchItem(id, type);
       }
-      Message msg = getCachedMessage(Integer.valueOf(-id));
+      Message msg = getCachedMessage(-id);
       if (msg == null) {
         ZimbraLog.mailbox.debug("message not cached");
         cachedMsg = false;
@@ -3280,8 +3281,8 @@ public class Mailbox implements MailboxStore {
       beginTransaction("getItemById[]", octxt);
       MailItem[] items = getItemById(ids, type, fromDumpster);
       // make sure all those items are visible...
-      for (int i = 0; i < items.length; i++) {
-        checkAccess(items[i]);
+      for (MailItem item : items) {
+        checkAccess(item);
       }
       success = true;
       return items;
@@ -3306,7 +3307,7 @@ public class Mailbox implements MailboxStore {
     if (ids == null) {
       return null;
     }
-    MailItem items[] = new MailItem[ids.length];
+    MailItem[] items = new MailItem[ids.length];
     if (fromDumpster) {
       for (int i = 0; i < items.length; ++i) {
         int id = ids[i];
@@ -3317,7 +3318,7 @@ public class Mailbox implements MailboxStore {
       return items;
     }
 
-    Set<Integer> uncached = new HashSet<Integer>();
+    Set<Integer> uncached = new HashSet<>();
 
     // try the cache first
     Integer miss = null;
@@ -3360,18 +3361,18 @@ public class Mailbox implements MailboxStore {
 
     // the tag and folder caches contain ALL tags and folders, so cache miss == doesn't exist
     if (isCachedType(type)) {
-      throw MailItem.noSuchItem(miss.intValue(), type);
+      throw MailItem.noSuchItem(miss, type);
     }
 
     // cache miss, so fetch from the database
     List<MailItem> itemsFromDb =
         MailItem.getById(this, uncached, relaxType ? MailItem.Type.UNKNOWN : type);
-    HashMap<Integer, MailItem> tempCache = new HashMap<Integer, MailItem>();
+    HashMap<Integer, MailItem> tempCache = new HashMap<>();
     for (MailItem item : itemsFromDb) {
       tempCache.put(item.getId(), item);
     }
     uncached.clear();
-    Map<Integer, Integer> virtualConvsToRealConvs = new HashMap<Integer, Integer>();
+    Map<Integer, Integer> virtualConvsToRealConvs = new HashMap<>();
     for (int i = 0; i < ids.length; i++) {
       if (ids[i] != ID_AUTO_INCREMENT && items[i] == null) {
         if (ids[i] <= -FIRST_USER_ID) {
@@ -3556,7 +3557,7 @@ public class Mailbox implements MailboxStore {
       beginTransaction("getAllRevisions", octxt);
       T item = (T) checkAccess(getItemById(id, type));
       List<MailItem> previousRevisions = item.loadRevisions();
-      List<T> result = new ArrayList<T>(previousRevisions.size());
+      List<T> result = new ArrayList<>(previousRevisions.size());
       for (MailItem rev : previousRevisions) {
         result.add((T) rev);
       }
@@ -3715,7 +3716,7 @@ public class Mailbox implements MailboxStore {
         case FOLDER:
         case SEARCHFOLDER:
         case MOUNTPOINT:
-          result = new ArrayList<MailItem>(mFolderCache.size());
+          result = new ArrayList<>(mFolderCache.size());
           for (Folder subfolder : mFolderCache.values()) {
             if (subfolder.getType() == type || type == MailItem.Type.FOLDER) {
               if (folder == null || subfolder.getFolderId() == folderId) {
@@ -3729,7 +3730,7 @@ public class Mailbox implements MailboxStore {
           if (folderId != -1 && folderId != ID_FOLDER_TAGS) {
             return Collections.emptyList();
           }
-          result = new ArrayList<MailItem>(mTagCache.size() / 2);
+          result = new ArrayList<>(mTagCache.size() / 2);
           for (Map.Entry<Object, Tag> entry : mTagCache.entrySet()) {
             Tag tag = entry.getValue();
             if (entry.getKey() instanceof String && tag.isListed()) {
@@ -3743,7 +3744,7 @@ public class Mailbox implements MailboxStore {
             return Collections.emptyList();
           }
           List<Flag> allFlags = Flag.allOf(this);
-          result = new ArrayList<MailItem>(allFlags.size());
+          result = new ArrayList<>(allFlags.size());
           result.addAll(allFlags);
           success = true;
           break;
@@ -3757,7 +3758,7 @@ public class Mailbox implements MailboxStore {
           if (dataList == null) {
             return Collections.emptyList();
           }
-          result = new ArrayList<MailItem>(dataList.size());
+          result = new ArrayList<>(dataList.size());
           for (MailItem.UnderlyingData data : dataList) {
             if (data != null) {
               result.add(getItem(data));
@@ -3776,7 +3777,7 @@ public class Mailbox implements MailboxStore {
 
     Comparator<MailItem> comp = MailItem.getComparator(sort);
     if (comp != null) {
-      Collections.sort(result, comp);
+      result.sort(comp);
     }
     return result;
   }
@@ -4065,7 +4066,7 @@ public class Mailbox implements MailboxStore {
         return Collections.emptyList();
       }
 
-      List<Folder> modified = new ArrayList<Folder>();
+      List<Folder> modified = new ArrayList<>();
       boolean success = false;
       try {
         beginReadTransaction("getModifiedFolders", null);
@@ -4092,7 +4093,7 @@ public class Mailbox implements MailboxStore {
       if (lastSync >= getLastChangeID()) {
         return Collections.emptyList();
       }
-      List<Tag> modified = new ArrayList<Tag>();
+      List<Tag> modified = new ArrayList<>();
       boolean success = false;
       try {
         beginReadTransaction("getModifiedTags", octxt);
@@ -4242,7 +4243,7 @@ public class Mailbox implements MailboxStore {
     lock.lock(false);
     try {
       if (lastSync >= getLastChangeID()) {
-        return new Pair<List<Integer>, TypedIdList>(
+        return new Pair<>(
             Collections.<Integer>emptyList(), new TypedIdList());
       }
       boolean success = false;
@@ -4348,7 +4349,7 @@ public class Mailbox implements MailboxStore {
       return null;
     }
     boolean incomplete = false;
-    Set<Folder> visible = new HashSet<Folder>();
+    Set<Folder> visible = new HashSet<>();
     for (Folder folder : mFolderCache.values()) {
       if (folder.canAccess(rights)) {
         visible.add(folder);
@@ -4380,7 +4381,7 @@ public class Mailbox implements MailboxStore {
   }
 
   public List<Tag> getTagList(OperationContext octxt) throws ServiceException {
-    List<Tag> tags = new ArrayList<Tag>();
+    List<Tag> tags = new ArrayList<>();
     for (MailItem item : getItemList(octxt, MailItem.Type.TAG)) {
       tags.add((Tag) item);
     }
@@ -4494,7 +4495,7 @@ public class Mailbox implements MailboxStore {
   @Override
   public FolderStore getFolderById(OpContext octxt, String id) throws ServiceException {
     try {
-      String idString = ItemIdentifier.asSimplestString(id, this.getAccountId()).toString();
+      String idString = ItemIdentifier.asSimplestString(id, this.getAccountId());
       Folder fldr = getFolderById((OperationContext) octxt, Integer.parseInt(idString));
       return fldr;
     } catch (NumberFormatException nfe) {
@@ -4580,7 +4581,7 @@ public class Mailbox implements MailboxStore {
     assert (folder != null);
     path = CharMatcher.is('/').trimFrom(path); // trim leading and trailing '/'
     if (path.isEmpty()) { // relative root to the base folder
-      return new Pair<Folder, String>(checkAccess(folder), null);
+      return new Pair<>(checkAccess(folder), null);
     }
 
     boolean success = false;
@@ -4597,7 +4598,7 @@ public class Mailbox implements MailboxStore {
         folder = subfolder;
       }
       // apply the "read access" check to the returned folder...
-      return new Pair<Folder, String>(checkAccess(folder), unmatched);
+      return new Pair<>(checkAccess(folder), unmatched);
     } finally {
       endTransaction(success);
     }
@@ -4624,7 +4625,7 @@ public class Mailbox implements MailboxStore {
   }
 
   public List<Folder> getFolderList(OperationContext octxt, SortBy sort) throws ServiceException {
-    List<Folder> folders = new ArrayList<Folder>();
+    List<Folder> folders = new ArrayList<>();
     for (MailItem item : getItemList(octxt, MailItem.Type.FOLDER, -1, sort)) {
       folders.add((Folder) item);
     }
@@ -4641,7 +4642,7 @@ public class Mailbox implements MailboxStore {
    */
   public List<Folder> getFolderList(OperationContext octxt, SortBy sort, int folderId)
       throws ServiceException {
-    List<Folder> folders = new ArrayList<Folder>();
+    List<Folder> folders = new ArrayList<>();
     for (MailItem item : getItemList(octxt, MailItem.Type.FOLDER, folderId, sort)) {
       folders.add((Folder) item);
     }
@@ -4649,14 +4650,14 @@ public class Mailbox implements MailboxStore {
   }
 
   List<Folder> listAllFolders() {
-    return new ArrayList<Folder>(mFolderCache.values());
+    return new ArrayList<>(mFolderCache.values());
   }
 
   public static class FolderNode {
     public int mId;
     public String mName;
     public Folder mFolder;
-    public List<FolderNode> mSubfolders = new ArrayList<FolderNode>();
+    public List<FolderNode> mSubfolders = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -4808,7 +4809,7 @@ public class Mailbox implements MailboxStore {
 
   public List<Chat> getChatList(OperationContext octxt, int folderId, SortBy sort)
       throws ServiceException {
-    List<Chat> chats = new ArrayList<Chat>();
+    List<Chat> chats = new ArrayList<>();
     for (MailItem item : getItemList(octxt, MailItem.Type.CHAT, folderId, sort)) {
       chats.add((Chat) item);
     }
@@ -4830,7 +4831,7 @@ public class Mailbox implements MailboxStore {
 
   public List<Contact> getContactList(OperationContext octxt, int folderId, SortBy sort)
       throws ServiceException {
-    List<Contact> contacts = new ArrayList<Contact>();
+    List<Contact> contacts = new ArrayList<>();
     for (MailItem item : getItemList(octxt, MailItem.Type.CONTACT, folderId, sort)) {
       contacts.add((Contact) item);
     }
@@ -4877,7 +4878,7 @@ public class Mailbox implements MailboxStore {
       List<Message> msgs = getConversationById(convId).getMessages(sort, limit);
 
       boolean hasMailboxAccess = hasFullAccess();
-      List<Message> filteredMsgs = new ArrayList<Message>(msgs.size());
+      List<Message> filteredMsgs = new ArrayList<>(msgs.size());
       for (Message msg : msgs) {
         if (!hasMailboxAccess && !msg.canAccess(ACL.RIGHT_READ)) {
           continue;
@@ -5116,7 +5117,7 @@ public class Mailbox implements MailboxStore {
       }
 
       // get the list of all visible calendar items in the specified folder
-      List<CalendarItem> calItems = new ArrayList<CalendarItem>();
+      List<CalendarItem> calItems = new ArrayList<>();
       List<MailItem.UnderlyingData> invData =
           DbMailItem.getCalendarItems(this, type, start, end, folderId, excludeFolders);
       for (MailItem.UnderlyingData data : invData) {
@@ -5389,7 +5390,7 @@ public class Mailbox implements MailboxStore {
       // folder cache is populated in beginTransaction...
       beginReadTransaction("getAllCalendarsSummaryForRange", octxt);
       success = true;
-      List<CalendarDataResult> list = new ArrayList<CalendarDataResult>();
+      List<CalendarDataResult> list = new ArrayList<>();
       for (Folder folder : listAllFolders()) {
         if (folder.inTrash() || folder.inSpam()) {
           continue;
@@ -5514,7 +5515,7 @@ public class Mailbox implements MailboxStore {
           result = index.getAttachmentTypes(regex);
           break;
         case domains:
-          Map<String, DomainBrowseTerm> domains = new HashMap<String, DomainBrowseTerm>();
+          Map<String, DomainBrowseTerm> domains = new HashMap<>();
           for (BrowseTerm term : index.getDomains(LuceneFields.L_H_FROM, regex)) {
             DomainBrowseTerm domain = domains.get(term.getText());
             if (domain == null) {
@@ -5539,7 +5540,7 @@ public class Mailbox implements MailboxStore {
             }
             domain.addField(DomainBrowseTerm.Field.CC);
           }
-          result = new ArrayList<BrowseTerm>(domains.values());
+          result = new ArrayList<>(domains.values());
           break;
         case objects:
           result = index.getObjects(regex);
@@ -5548,18 +5549,13 @@ public class Mailbox implements MailboxStore {
           assert false : browseBy;
       }
 
-      Collections.sort(
-          result,
-          new Comparator<BrowseTerm>() {
-            @Override
-            public int compare(BrowseTerm o1, BrowseTerm o2) {
-              int retVal = o2.getFreq() - o1.getFreq();
-              if (retVal == 0) {
-                retVal = o1.getText().compareTo(o2.getText());
-              }
-              return retVal;
-            }
-          });
+      result.sort((o1, o2) -> {
+        int retVal = o2.getFreq() - o1.getFreq();
+        if (retVal == 0) {
+          retVal = o1.getText().compareTo(o2.getText());
+        }
+        return retVal;
+      });
 
       if (max > 0 && result.size() > max) {
         result = result.subList(0, max);
@@ -5666,7 +5662,7 @@ public class Mailbox implements MailboxStore {
 
       // Make a single list containing default and exceptions.
       int scidLen = (defaultInv != null ? 1 : 0) + (exceptions != null ? exceptions.length : 0);
-      List<SetCalendarItemData> scidList = new ArrayList<SetCalendarItemData>(scidLen);
+      List<SetCalendarItemData> scidList = new ArrayList<>(scidLen);
       if (defaultInv != null) {
         defaultInv.invite.setLastFullSeqNo(defaultInv.invite.getSeqNo());
         scidList.add(defaultInv);
@@ -5857,11 +5853,10 @@ public class Mailbox implements MailboxStore {
     int numFixedCalItems = 0;
     int numFixedTZs = 0;
     ZimbraLog.calendar.info("Started: timezone fixup in calendar of mailbox " + getId());
-    List<List<MailItem>> lists = new ArrayList<List<MailItem>>(2);
+    List<List<MailItem>> lists = new ArrayList<>(2);
     lists.add(getItemList(octxt, MailItem.Type.APPOINTMENT));
     for (List<MailItem> items : lists) {
-      for (Iterator<MailItem> iter = items.iterator(); iter.hasNext(); ) {
-        Object obj = iter.next();
+      for (Object obj : items) {
         if (!(obj instanceof CalendarItem)) {
           continue;
         }
@@ -5913,7 +5908,7 @@ public class Mailbox implements MailboxStore {
     try {
       beginTransaction("fixCalendarItemTimeZone2", octxt, redoRecorder);
       CalendarItem calItem = getCalendarItemById(octxt, calItemId);
-      Map<String, ICalTimeZone> replaced = new HashMap<String, ICalTimeZone>();
+      Map<String, ICalTimeZone> replaced = new HashMap<>();
       int numFixed = fixupRules.fixCalendarItem(calItem, replaced);
       if (numFixed > 0) {
         ZimbraLog.calendar.info(
@@ -5948,8 +5943,7 @@ public class Mailbox implements MailboxStore {
     List<MailItem>[] lists = new List[2];
     lists[0] = getItemList(octxt, MailItem.Type.APPOINTMENT);
     for (List<MailItem> items : lists) {
-      for (Iterator<MailItem> iter = items.iterator(); iter.hasNext(); ) {
-        Object obj = iter.next();
+      for (Object obj : items) {
         if (!(obj instanceof CalendarItem)) {
           continue;
         }
@@ -6003,8 +5997,7 @@ public class Mailbox implements MailboxStore {
     List<MailItem>[] lists = new List[2];
     lists[0] = getItemList(octxt, MailItem.Type.APPOINTMENT);
     for (List<MailItem> items : lists) {
-      for (Iterator<MailItem> iter = items.iterator(); iter.hasNext(); ) {
-        Object obj = iter.next();
+      for (Object obj : items) {
         if (!(obj instanceof CalendarItem)) {
           continue;
         }
@@ -6337,8 +6330,8 @@ public class Mailbox implements MailboxStore {
     boolean success = false;
     try {
       beginTransaction("getCalendarItemsByUid", octxt);
-      ArrayList<String> uidList = new ArrayList<String>(uids);
-      Map<String, CalendarItem> calItems = new HashMap<String, CalendarItem>();
+      ArrayList<String> uidList = new ArrayList<>(uids);
+      Map<String, CalendarItem> calItems = new HashMap<>();
       List<MailItem.UnderlyingData> invData = DbMailItem.getCalendarItems(this, uids);
       for (MailItem.UnderlyingData data : invData) {
         try {
@@ -6525,16 +6518,10 @@ public class Mailbox implements MailboxStore {
             // TODO: Get the iCalendar data from the
             // MIME part since we already have it.
             String ical;
-            StringWriter sr = null;
-            try {
-              sr = new StringWriter();
+            try (StringWriter sr = new StringWriter()) {
               inv.setMethod(ICalTok.REPLY.toString());
               inv.newToICalendar(true).toICalendar(sr);
               ical = sr.toString();
-            } finally {
-              if (sr != null) {
-                sr.close();
-              }
             }
             Options options = new Options();
             AuthToken authToken = AuthToken.getCsrfUnsecuredAuthToken(getAuthToken(octxt));
@@ -6842,7 +6829,7 @@ public class Mailbox implements MailboxStore {
     if (!isRedo && msgidHeader != null && !isSent && mSentMessageIDs.containsKey(msgidHeader)) {
       Integer sentMsgID = mSentMessageIDs.get(msgidHeader);
       if (conversationId == ID_AUTO_INCREMENT) {
-        conversationId = getConversationIdFromReferent(pm.getMimeMessage(), sentMsgID.intValue());
+        conversationId = getConversationIdFromReferent(pm.getMimeMessage(), sentMsgID);
         ZimbraLog.mailbox.debug(
             "duplicate detected but not deduped (%s); will try to slot into conversation %d",
             msgidHeader, conversationId);
@@ -6950,7 +6937,7 @@ public class Mailbox implements MailboxStore {
 
         // fetch the conversations that were merged in as a result of the original delivery...
         List<Integer> mergeConvIds = redoPlayer.getMergedConvIds();
-        mergeConvs = new ArrayList<Conversation>(mergeConvIds.size());
+        mergeConvs = new ArrayList<>(mergeConvIds.size());
         for (int mergeId : mergeConvIds) {
           try {
             mergeConvs.add(getConversationById(mergeId));
@@ -6982,7 +6969,7 @@ public class Mailbox implements MailboxStore {
           if (matches != null && !matches.isEmpty()) {
             // file the message into the largest conversation, then later merge any other matching
             // convs
-            Collections.sort(matches, new MailItem.SortSizeDescending());
+            matches.sort(new MailItem.SortSizeDescending());
             conv = matches.remove(0);
             mergeConvs = matches;
           }
@@ -7191,11 +7178,7 @@ public class Mailbox implements MailboxStore {
   }
 
   public static String getHash(String subject) {
-    try {
-      return ByteUtil.getSHA1Digest(Strings.nullToEmpty(subject).getBytes("utf-8"), true);
-    } catch (UnsupportedEncodingException uee) {
-      return ByteUtil.getSHA1Digest(Strings.nullToEmpty(subject).getBytes(), true);
-    }
+    return ByteUtil.getSHA1Digest(Strings.nullToEmpty(subject).getBytes(StandardCharsets.UTF_8), true);
   }
 
   // please keep this package-visible but not public
@@ -7203,7 +7186,7 @@ public class Mailbox implements MailboxStore {
     String hash = subjectHash != null ? subjectHash : getHash(conv.getNormalizedSubject());
     conv.open(hash);
     markOtherItemDirty(hash);
-    mConvHashes.put(hash, Integer.valueOf(conv.getId()));
+    mConvHashes.put(hash, conv.getId());
   }
 
   // please keep this package-visible but not public
@@ -7405,7 +7388,7 @@ public class Mailbox implements MailboxStore {
       throws ServiceException {
     SetImapUid redoRecorder = new SetImapUid(mId, itemIds);
 
-    List<Integer> newIds = new ArrayList<Integer>();
+    List<Integer> newIds = new ArrayList<>();
     boolean success = false;
     try {
       beginTransaction("resetImapUid", OperationContext.asOperationContext(octxt), redoRecorder);
@@ -7646,7 +7629,7 @@ public class Mailbox implements MailboxStore {
   }
 
   // common code for the two AlterTag variants (Flag.FlagInfo vs. by tag name)
-  private void alterTag(int itemIds[], MailItem.Type type, Tag tag, boolean addTag)
+  private void alterTag(int[] itemIds, MailItem.Type type, Tag tag, boolean addTag)
       throws ServiceException {
     MailItem[] items = getItemById(itemIds, type);
     for (MailItem item : items) {
@@ -7808,7 +7791,7 @@ public class Mailbox implements MailboxStore {
       }
       CopyItem redoPlayer = (CopyItem) currentChange().getRedoPlayer();
 
-      List<MailItem> result = new ArrayList<MailItem>();
+      List<MailItem> result = new ArrayList<>();
 
       Folder folder = getFolderById(folderId);
 
@@ -7834,7 +7817,7 @@ public class Mailbox implements MailboxStore {
         if (item instanceof Conversation) {
           // this should be done in Conversation.copy(), but redolog issues make that impossible
           Conversation conv = (Conversation) item;
-          List<Message> msgs = new ArrayList<Message>((int) conv.getSize());
+          List<Message> msgs = new ArrayList<>((int) conv.getSize());
           for (Message original : conv.getMessages()) {
             if (!original.canAccess(ACL.RIGHT_READ)) {
               continue;
@@ -7947,7 +7930,7 @@ public class Mailbox implements MailboxStore {
         checkSizeChange(getEffectiveSize(requiredQuota));
       }
 
-      List<MailItem> result = new ArrayList<MailItem>();
+      List<MailItem> result = new ArrayList<>();
 
       for (MailItem item : items) {
         int srcId = item.getId();
@@ -8022,7 +8005,7 @@ public class Mailbox implements MailboxStore {
 
   private List<Folder> getTrashAliases(OperationContext octx) throws ServiceException {
     String[] aliases = Provisioning.getInstance().getConfig().getSpamTrashAlias();
-    List<Folder> result = new ArrayList<Folder>(aliases.length);
+    List<Folder> result = new ArrayList<>(aliases.length);
     for (String path : aliases) {
       try {
         result.add(getFolderByPath(octx, path));
@@ -8793,13 +8776,13 @@ public class Mailbox implements MailboxStore {
     if (addrs.isEmpty()) {
       return Collections.emptyList();
     }
-    List<Contact> result = new ArrayList<Contact>(addrs.size());
+    List<Contact> result = new ArrayList<>(addrs.size());
     String locale =
         octxt != null && octxt.getAuthenticatedUser() != null
             ? octxt.getAuthenticatedUser().getPrefLocale()
             : null;
     boolean nameFormatLastFirst = false;
-    if (locale != null && locale.equals("ja")) {
+    if ("ja".equals(locale)) {
       nameFormatLastFirst = true;
     }
     for (InternetAddress addr : addrs) {
@@ -8837,13 +8820,13 @@ public class Mailbox implements MailboxStore {
       ZimbraLog.mailbox.warn("Unable to auto-add contact while holding Mailbox lock");
       return Collections.emptySet();
     }
-    Set<Address> newAddrs = new HashSet<Address>();
+    Set<Address> newAddrs = new HashSet<>();
     for (Address addr : addrs) {
       if (addr instanceof javax.mail.internet.InternetAddress) {
         javax.mail.internet.InternetAddress iaddr = (javax.mail.internet.InternetAddress) addr;
         try {
           if (!Strings.isNullOrEmpty(iaddr.getAddress())
-              && iaddr.getAddress().indexOf(sender_domain) == -1
+              && !iaddr.getAddress().contains(sender_domain)
               && !index.existsInContacts(
                   Collections.singleton(
                       new com.zimbra.common.mime.InternetAddress(
@@ -9317,7 +9300,7 @@ public class Mailbox implements MailboxStore {
 
       // URL is not null or empty.  Create data source if necessary.
       if (ds == null) {
-        Map<String, Object> attrs = new HashMap<String, Object>();
+        Map<String, Object> attrs = new HashMap<>();
         attrs.put(Provisioning.A_zimbraDataSourceEnabled, LdapConstants.LDAP_TRUE);
         attrs.put(Provisioning.A_zimbraDataSourceFolderId, Integer.toString(folder.getId()));
 
@@ -9375,7 +9358,7 @@ public class Mailbox implements MailboxStore {
     // appointments/tasks, we need to remove ones that were not updated because they are apparently
     // deleted from the source feed.
     boolean isCalendar = folder.getDefaultView() == MailItem.Type.APPOINTMENT;
-    Set<Integer> toRemove = new HashSet<Integer>();
+    Set<Integer> toRemove = new HashSet<>();
     if (subscription && isCalendar) {
       toRemove.addAll(listItemIds(octxt, Type.UNKNOWN, folder.getId()));
     }
@@ -9401,7 +9384,7 @@ public class Mailbox implements MailboxStore {
     }
 
     // add the newly-fetched items to the folder
-    Set<String> calUidsSeen = new HashSet<String>();
+    Set<String> calUidsSeen = new HashSet<>();
     int numSkipped = 0;
     for (Object obj : items) {
       try {
@@ -9443,7 +9426,7 @@ public class Mailbox implements MailboxStore {
                 delete(octxtNoConflicts, calItem.getId(), MailItem.Type.UNKNOWN);
                 importIt = true;
               } else {
-                Invite oldInvites[] = calItem.getInvites();
+                Invite[] oldInvites = calItem.getInvites();
                 if ((oldInvites == null) || (oldInvites.length == 0)) {
                   // Something is seriously wrong with the existing calendar item.  Delete it so
                   // new invite will import cleanly
@@ -9622,7 +9605,7 @@ public class Mailbox implements MailboxStore {
         ZimbraLog.mailbox.debug(
             "Emptying folder %s, removeTopLevelFolder=%b, removeSubfolders=%b, batchSize=%d",
             folderId, removeTopLevelFolder, removeSubfolders, batchSize);
-        List<Integer> folderIds = new ArrayList<Integer>();
+        List<Integer> folderIds = new ArrayList<>();
         if (!removeSubfolders) {
           folderIds.add(folderId);
         } else {
@@ -9986,7 +9969,6 @@ public class Mailbox implements MailboxStore {
     if (globalTimeout <= 0
         && trashTimeout <= 0
         && spamTimeout <= 0
-        && userInboxReadTimeout <= 0
         && userInboxReadTimeout <= 0
         && userInboxUnreadTimeout <= 0
         && userSentTimeout <= 0
@@ -10550,7 +10532,7 @@ public class Mailbox implements MailboxStore {
           // TODO: See bug 15072 - we need to clear mCurrentChange.indexItems (it is stored in a
           // temporary) here,
           // just in case item.reindex() recurses into a new transaction...
-          currentChange().indexItems = new ArrayList<IndexItemEntry>();
+          currentChange().indexItems = new ArrayList<>();
           index.add(indexItems);
         }
 
@@ -10740,8 +10722,8 @@ public class Mailbox implements MailboxStore {
             String[] folderIds = folderList.split(",");
 
             isNewMessage = false;
-            for (int i = 0; i < folderIds.length; i++) {
-              if (cm.getFolderId() == Integer.parseInt(folderIds[i])) {
+            for (String folderId : folderIds) {
+              if (cm.getFolderId() == Integer.parseInt(folderId)) {
                 isNewMessage = true;
                 break;
               }
@@ -10901,7 +10883,7 @@ public class Mailbox implements MailboxStore {
           }
         } else {
           if (mData.configKeys == null) {
-            mData.configKeys = new HashSet<String>(1);
+            mData.configKeys = new HashSet<>(1);
           }
           mData.configKeys.add(change.config.getFirst());
         }
@@ -10982,7 +10964,7 @@ public class Mailbox implements MailboxStore {
       }
 
       // roll back any changes to external items
-      List<Object> deletes = new ArrayList<Object>(change.otherDirtyStuff.size());
+      List<Object> deletes = new ArrayList<>(change.otherDirtyStuff.size());
       for (Object obj : change.otherDirtyStuff) {
         if (obj instanceof MailboxBlob || obj instanceof Blob) {
           deletes.add(obj);
@@ -11276,7 +11258,7 @@ public class Mailbox implements MailboxStore {
           ZimbraLog.purge.debug(
               "Batch %d - Found %d items with \\Deleted flags",
               batch, itemIdsWithDeletedFlag.size());
-          int itemIds[] = new int[itemIdsWithDeletedFlag.size()];
+          int[] itemIds = new int[itemIdsWithDeletedFlag.size()];
           int pos = 0;
           for (Integer integer : itemIdsWithDeletedFlag) {
             itemIds[pos] = integer;

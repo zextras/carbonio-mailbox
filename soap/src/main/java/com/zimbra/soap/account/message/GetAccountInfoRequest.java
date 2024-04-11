@@ -34,7 +34,7 @@ public class GetAccountInfoRequest {
      */
     @SuppressWarnings("unused")
     private GetAccountInfoRequest() {
-        this((AccountSelector) null);
+        this(null);
     }
 
     public GetAccountInfoRequest(AccountSelector account) {

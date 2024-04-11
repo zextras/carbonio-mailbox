@@ -28,7 +28,7 @@ final class MsgQueryResults extends ZimbraQueryResultsImpl {
      * that in situations where we have multiple {@link MessagePartHit}s we
      * still only return a single Message.
      */
-    private final Set<Integer> mSeenMsgs = new HashSet<Integer>();
+    private final Set<Integer> mSeenMsgs = new HashSet<>();
 
     MsgQueryResults(ZimbraQueryResults topLevelQueryOperation, Set<MailItem.Type> types,
             SortBy sort, SearchParams.Fetch fetch) {

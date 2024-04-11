@@ -28,7 +28,7 @@ class MailboxErrorUtil {
     static void handleCascadeFailure(Mailbox mbox, List<Integer> cascadeIds, ServiceException e) throws ServiceException {
         if (causeMatchesFKFailure(e)) {
             ZimbraLog.mailbox.error("deleting cascadeIds failed due to foreign key constraint failed; attempting to delete individually and find failure");
-            LinkedList<Integer> failures = new LinkedList<Integer>();
+            LinkedList<Integer> failures = new LinkedList<>();
             for (Integer id: cascadeIds) {
               try {
                   List<Integer> singleItemList = Collections.singletonList(id);
@@ -78,7 +78,7 @@ class MailboxErrorUtil {
                         ZimbraLog.mailbox.warn("cascade failure in unexpected type ["+item.getType()+":"+item.getClass().getSimpleName()+"] other than folder or conversation");
                     }
                 }
-                throw ServiceException.FAILURE(e.getMessage()+"---"+sb.toString(),e);
+                throw ServiceException.FAILURE(e.getMessage()+"---"+ sb,e);
             } else {
                 throw ServiceException.FAILURE(e.getMessage()+"--- no additional data available from attempting individual deletes.",e);
             }

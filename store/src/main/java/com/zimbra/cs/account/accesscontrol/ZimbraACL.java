@@ -20,22 +20,22 @@ public class ZimbraACL {
     private static final Log sLog = ZimbraLog.acl;
 
     // all aces
-    private List<ZimbraACE> mAces = new ArrayList<ZimbraACE>();
+    private List<ZimbraACE> mAces = new ArrayList<>();
     
     // positive grants, but not delegable, *not* including subdomain grants
-    private Set<ZimbraACE> mAllowedNotDelegable = new HashSet<ZimbraACE>();
+    private Set<ZimbraACE> mAllowedNotDelegable = new HashSet<>();
     
     // positive grants, and delegable
-    private Set<ZimbraACE> mAllowedDelegable = new HashSet<ZimbraACE>();
+    private Set<ZimbraACE> mAllowedDelegable = new HashSet<>();
     
     // negative grants
-    private Set<ZimbraACE> mDenied = new HashSet<ZimbraACE>();
+    private Set<ZimbraACE> mDenied = new HashSet<>();
     
     // subdomain grants
-    private Set<ZimbraACE> mSubDomain = new HashSet<ZimbraACE>();
+    private Set<ZimbraACE> mSubDomain = new HashSet<>();
 
     // for the containsRight call, can probably remove now
-    private Set<Right> mContainsRight = new HashSet<Right>();
+    private Set<Right> mContainsRight = new HashSet<>();
     
     /**
      * ctor for loading from LDAP
@@ -193,7 +193,7 @@ public class ZimbraACL {
     }
    
     List<ZimbraACE> grantAccess(Set<ZimbraACE> acesToGrant) {
-        List<ZimbraACE> granted = new ArrayList<ZimbraACE>();
+        List<ZimbraACE> granted = new ArrayList<>();
         for (ZimbraACE ace : acesToGrant) {
             if (grant(ace))
                 granted.add(ace);
@@ -217,7 +217,7 @@ public class ZimbraACL {
      * @return the set of ZimbraACE that are successfully revoked.
      */
     List<ZimbraACE> revokeAccess(Set<ZimbraACE> acesToRevoke) {
-        List<ZimbraACE> revoked = new ArrayList<ZimbraACE>();
+        List<ZimbraACE> revoked = new ArrayList<>();
         for (ZimbraACE ace : acesToRevoke) {
             if (revoke(ace))
                 revoked.add(ace);
@@ -259,7 +259,7 @@ public class ZimbraACL {
      * @return ACEs with right specified in rights
      */
     List<ZimbraACE> getACEs(Set<? extends Right> rights) {
-        List<ZimbraACE> result = new ArrayList<ZimbraACE>();
+        List<ZimbraACE> result = new ArrayList<>();
         
         for (ZimbraACE ace : mAces) {
             if (rights.contains(ace.getRight())) {
@@ -271,7 +271,7 @@ public class ZimbraACL {
     }
     
     List<String> serialize() {
-        List<String> aces = new ArrayList<String>();
+        List<String> aces = new ArrayList<>();
         
         for (ZimbraACE ace : mAces) {
             aces.add(ace.serialize());

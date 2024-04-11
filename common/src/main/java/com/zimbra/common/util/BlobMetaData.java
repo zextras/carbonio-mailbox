@@ -53,7 +53,7 @@ public final class BlobMetaData {
      * @throws BlobMetaDataEncodingException if unable to decode the meta-data.
      */
     public static Map<Object, Object> decode(String metaData) throws BlobMetaDataEncodingException {
-        Map<Object, Object> map = new HashMap<Object, Object>();
+        Map<Object, Object> map = new HashMap<>();
         int offset = 0;
         int p = 0;
         int len = metaData.length();

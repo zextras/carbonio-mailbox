@@ -39,7 +39,7 @@ class CustomSSLSocket extends SSLSocket {
     private Boolean needClientAuth;
     private Boolean wantClientAuth;
 
-    private static final ThreadLocal<String> threadLocal = new ThreadLocal<String>();
+    private static final ThreadLocal<String> threadLocal = new ThreadLocal<>();
 
     static String getCertificateHostname() {
         return threadLocal.get();
@@ -102,7 +102,7 @@ class CustomSSLSocket extends SSLSocket {
             sslSocket.addHandshakeCompletedListener(listener);
         } else {
             if (listeners == null) {
-                listeners = new ArrayList<HandshakeCompletedListener>();
+                listeners = new ArrayList<>();
             }
             listeners.add(listener);
         }
@@ -120,7 +120,7 @@ class CustomSSLSocket extends SSLSocket {
     }
     
     private String[] filterDHcipher(String[] suites) {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         for (String suite : suites) {
             if(!suite.contains("_DHE_")) {
                 list.add(suite);

@@ -37,7 +37,7 @@ public class Root {
     }
 
     public List<Service> getServices() {
-        Collections.sort(this.services, new Service.ServiceComparator());
+        this.services.sort(new Service.ServiceComparator());
         return Collections.unmodifiableList(this.services);
     }
 
@@ -53,7 +53,7 @@ public class Root {
           allCommands.addAll(s.getCommands());
         }
 
-        Collections.sort(allCommands, new Command.CommandComparator());
+        allCommands.sort(new Command.CommandComparator());
         return allCommands;
     }
 

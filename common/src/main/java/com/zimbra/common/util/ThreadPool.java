@@ -36,7 +36,7 @@ public class ThreadPool implements Executor {
         NamedThreadFactory tfac = new NamedThreadFactory(name,
             Thread.NORM_PRIORITY);
         mPool = new ThreadPoolExecutor(1, poolSize, 60, TimeUnit.SECONDS,
-            new LinkedBlockingQueue<Runnable>());
+            new LinkedBlockingQueue<>());
         mPool.setThreadFactory(tfac);
         mActiveThreadsCounter = new ThreadCounter();
     }
@@ -81,7 +81,7 @@ public class ThreadPool implements Executor {
         }
     }
 
-    private class ThreadCounter {
+    private static class ThreadCounter {
         private int mCount;
 
         public ThreadCounter() {
@@ -108,7 +108,7 @@ public class ThreadPool implements Executor {
      * executes all tasks using this wrapper class to keep track of the number
      * of active worker threads.
      */
-    public class CountedTask implements Runnable {
+    public static class CountedTask implements Runnable {
         ThreadCounter mCounter;
         Runnable mTask;
 

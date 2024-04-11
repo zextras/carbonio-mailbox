@@ -15,7 +15,7 @@ public class MariaDB extends MySQL {
         return new MariaDBConfig();
     }
 
-    protected class MariaDBConfig extends MySQLConfig {
+    protected static class MariaDBConfig extends MySQLConfig {
 
         @Override
         protected String getDriverClassName() {

@@ -28,7 +28,7 @@ public class RenameDistributionListResponse {
      */
      @SuppressWarnings("unused")
     private RenameDistributionListResponse() {
-        this((DistributionListInfo)null);
+        this(null);
     }
 
     public RenameDistributionListResponse(DistributionListInfo dl) {

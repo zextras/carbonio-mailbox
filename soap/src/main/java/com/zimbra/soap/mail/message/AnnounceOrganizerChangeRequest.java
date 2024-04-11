@@ -34,7 +34,7 @@ public class AnnounceOrganizerChangeRequest {
      */
     @SuppressWarnings("unused")
     private AnnounceOrganizerChangeRequest() {
-        this((String) null);
+        this(null);
     }
 
     public AnnounceOrganizerChangeRequest(String id) {

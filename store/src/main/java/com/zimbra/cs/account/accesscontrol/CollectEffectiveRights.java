@@ -122,7 +122,7 @@ public class CollectEffectiveRights {
         // finally, populate our result 
         
         // preset rights
-        Set<String> rights= new HashSet<String>();
+        Set<String> rights= new HashSet<>();
         for (Right r : presetRights) {
             rights.add(r.getName());
         }
@@ -156,7 +156,7 @@ public class CollectEffectiveRights {
     private Set<Right> getAllExecutableAdminPresetRights() throws ServiceException {
         Map<String, AdminRight> allRights = RightManager.getInstance().getAllAdminRights();
         
-        Set<Right> rights = new HashSet<Right>();
+        Set<Right> rights = new HashSet<>();
         
         for (Map.Entry<String, AdminRight> right : allRights.entrySet()) {
             Right r = right.getValue();
@@ -185,9 +185,9 @@ public class CollectEffectiveRights {
         Grantee grantee = getGrantee();
         TargetType targetType = TargetType.getTargetType(mTarget);
         
-        Map<Right, Integer> allowed = new HashMap<Right, Integer>();
-        Map<Right, Integer> denied = new HashMap<Right, Integer>();
-        Integer relativity = Integer.valueOf(1);
+        Map<Right, Integer> allowed = new HashMap<>();
+        Map<Right, Integer> denied = new HashMap<>();
+        Integer relativity = 1;
         
         //
         // collecting phase
@@ -269,14 +269,14 @@ public class CollectEffectiveRights {
                 sbAllowed.append("(").append(a.getKey().getName()).append(", ").append(a.getValue())
                     .append(") ");
             }
-            sLog.debug("allowed: " + sbAllowed.toString());
+            sLog.debug("allowed: " + sbAllowed);
             
             StringBuilder sbDenied = new StringBuilder();
             for (Map.Entry<Right, Integer> a : denied.entrySet()) {
                 sbDenied.append("(").append(a.getKey().getName()).append(", ").append(a.getValue())
                     .append(") ");
             }
-            sLog.debug("denied: " + sbDenied.toString());
+            sLog.debug("denied: " + sbDenied);
         }
         
         Set<Right> conflicts = SetUtil.intersect(allowed.keySet(), denied.keySet());
@@ -356,7 +356,7 @@ public class CollectEffectiveRights {
     }
     
     private List<String> setToSortedList(Set<String> set) {
-        List<String> list = new ArrayList<String>(set);
+        List<String> list = new ArrayList<>(set);
         Collections.sort(list);
         return list;
     }
@@ -380,8 +380,8 @@ public class CollectEffectiveRights {
      */
     private SortedMap<String, RightCommand.EffectiveAttr> fillDefaultAndConstratint(
             Set<String> attrs, AttrRight rightNeeded) throws ServiceException {
-        SortedMap<String, RightCommand.EffectiveAttr> effAttrs = 
-            new TreeMap<String, RightCommand.EffectiveAttr>();
+        SortedMap<String, RightCommand.EffectiveAttr> effAttrs =
+            new TreeMap<>();
         
         Entry constraintEntry = AttributeConstraint.getConstraintEntry(mTarget);
         Map<String, AttributeConstraint> constraints = (constraintEntry==null)?null:
@@ -400,10 +400,10 @@ public class CollectEffectiveRights {
             Object defaultValue = mTarget.getAttrDefault(attrName);
             if (defaultValue instanceof String) {
                 defaultValue = ToXML.fixupZimbraPrefTimeZoneId(attrName, (String)defaultValue);
-                defaultValues = new HashSet<String>();
+                defaultValues = new HashSet<>();
                 defaultValues.add((String)defaultValue);
             } else if (defaultValue instanceof String[]) {
-                defaultValues = new HashSet<String>(Arrays.asList((String[])defaultValue));
+                defaultValues = new HashSet<>(Arrays.asList((String[]) defaultValue));
             }
 
             AttributeConstraint constraint = (hasConstraints)?constraints.get(attrName):null;

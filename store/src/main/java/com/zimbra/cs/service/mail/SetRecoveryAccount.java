@@ -106,7 +106,7 @@ public class SetRecoveryAccount extends DocumentHandler {
         recoveryCodeMap.put(CodeConstants.CODE.toString(), code);
         recoveryCodeMap.put(CodeConstants.EXPIRY_TIME.toString(), String.valueOf(expiryTime));
         recoveryCodeMap.put(CodeConstants.RESEND_COUNT.toString(), String.valueOf(resendCount));
-        HashMap<String, Object> prefs = new HashMap<String, Object>();
+        HashMap<String, Object> prefs = new HashMap<>();
         prefs.put(Provisioning.A_zimbraPrefPasswordRecoveryAddress,
                 recoveryCodeMap.get(CodeConstants.EMAIL.toString()));
         prefs.put(Provisioning.A_zimbraPrefPasswordRecoveryAddressStatus, PrefPasswordRecoveryAddressStatus.pending);
@@ -152,7 +152,7 @@ public class SetRecoveryAccount extends DocumentHandler {
     }
 
     protected void reset(Mailbox mbox, ZimbraSoapContext zsc) throws ServiceException {
-        HashMap<String, Object> prefs = new HashMap<String, Object>();
+        HashMap<String, Object> prefs = new HashMap<>();
         prefs.put(Provisioning.A_zimbraPrefPasswordRecoveryAddress, null);
         prefs.put(Provisioning.A_zimbraPrefPasswordRecoveryAddressStatus, null);
         prefs.put(Provisioning.A_zimbraRecoveryAccountVerificationData, null);

@@ -79,7 +79,7 @@ public class UnmodifiableBloomFilter<E> {
      * @return Unmodifiable bloom filter
      */
     public static <E> UnmodifiableBloomFilter<E> createFilter(BloomFilter<E> filter) {
-        return new UnmodifiableBloomFilter<E>(filter);
+        return new UnmodifiableBloomFilter<>(filter);
     }
 
     /**
@@ -117,9 +117,9 @@ public class UnmodifiableBloomFilter<E> {
     public static UnmodifiableBloomFilter<String> createLazyFilterFromFile(String fileLocation, double tolerance) {
         // password filter file is unset, return disabled cache instance without warn
         if (StringUtil.isNullOrEmpty(fileLocation)) {
-            return new UnmodifiableBloomFilter<String>(null, null, tolerance);
+            return new UnmodifiableBloomFilter<>(null, null, tolerance);
         }
-        return new UnmodifiableBloomFilter<String>(fileLocation, null, tolerance);
+        return new UnmodifiableBloomFilter<>(fileLocation, null, tolerance);
     }
 
     private static BloomFilter<String> loadFilter(File file, Double tolerance) {

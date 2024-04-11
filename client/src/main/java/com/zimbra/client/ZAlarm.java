@@ -175,7 +175,7 @@ public class ZAlarm {
         while (attendeesIter.hasNext()) {
             ZAttendee at = new ZAttendee(attendeesIter.next());
             if (this.mAttendees == null)
-                this.mAttendees = new ArrayList<ZAttendee>();
+                this.mAttendees = new ArrayList<>();
             this.mAttendees.add(at);
         }
         setAction(action);
@@ -251,7 +251,7 @@ public class ZAlarm {
 
     public void addAttendee(ZAttendee attendee){
         if (this.mAttendees == null){
-            this.mAttendees = new ArrayList<ZAttendee>();
+            this.mAttendees = new ArrayList<>();
         }
         this.mAttendees.add(attendee);
     }

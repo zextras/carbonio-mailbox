@@ -38,7 +38,7 @@ public class DestroyWaitSetRequest {
      */
     @SuppressWarnings("unused")
     private DestroyWaitSetRequest() {
-        this((String) null);
+        this(null);
     }
 
     public DestroyWaitSetRequest(String waitSetId) {

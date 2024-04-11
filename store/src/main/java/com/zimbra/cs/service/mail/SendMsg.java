@@ -52,7 +52,8 @@ import com.zimbra.cs.mime.MimeProcessor;
 import com.zimbra.cs.mime.MimeVisitor;
 import com.zimbra.cs.service.FileUploadServlet;
 import com.zimbra.cs.service.FileUploadServlet.Upload;
-import com.zimbra.cs.service.mail.ParseMimeMessage.MimeMessageData;
+import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
+import com.zimbra.cs.service.mail.message.parser.MimeMessageData;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.ItemIdFormatter;
 import com.zimbra.cs.util.AccountUtil;
@@ -88,7 +89,7 @@ public class SendMsg extends MailDocumentHandler {
     NEW,
     SENT,
     PENDING
-  };
+  }
 
   private static final long MAX_IN_FLIGHT_DELAY_MSECS = 4 * Constants.MILLIS_PER_SECOND;
   private static final long RETRY_CHECK_PERIOD_MSECS = 500;
@@ -220,9 +221,9 @@ public class SendMsg extends MailDocumentHandler {
                   MailboxManager.getInstance().getMailboxByAccountId(authAcct.getId());
               mm =
                   ParseMimeMessage.parseMimeMsgSoap(
-                      zsc, octxt, loggedUserMbox, msgElem, null, mimeData);
+                      zsc, octxt, loggedUserMbox, msgElem, mimeData);
             } else {
-              mm = ParseMimeMessage.parseMimeMsgSoap(zsc, octxt, mbox, msgElem, null, mimeData);
+              mm = ParseMimeMessage.parseMimeMsgSoap(zsc, octxt, mbox, msgElem, mimeData);
             }
           }
 
@@ -266,12 +267,9 @@ public class SendMsg extends MailDocumentHandler {
           if (sendRecord != null) {
             sendRecord.setSecond(savedMsgId);
           }
-        } catch (ServiceException e) {
+        } catch (ServiceException | RuntimeException e) {
           clearPendingSend(mbox.getId(), sendRecord);
           throw e;
-        } catch (RuntimeException re) {
-          clearPendingSend(mbox.getId(), sendRecord);
-          throw re;
         } finally {
           // purge the messages fetched from other servers.
           if (mimeData.fetches != null) {
@@ -416,7 +414,7 @@ public class SendMsg extends MailDocumentHandler {
     if (up == null) {
       throw MailServiceException.NO_SUCH_UPLOAD(attachId);
     }
-    (mimeData.uploads = new ArrayList<Upload>(1)).add(up);
+    (mimeData.uploads = new ArrayList<>(1)).add(up);
     try {
       // if we may need to mutate the message, we can't use the "updateHeaders" hack...
       if (anySystemMutators || needCalendarSentByFixup) {
@@ -456,7 +454,7 @@ public class SendMsg extends MailDocumentHandler {
   }
 
   private static final Map<Integer, List<Pair<String, ItemId>>> sSentTokens =
-      new HashMap<Integer, List<Pair<String, ItemId>>>(100);
+      new HashMap<>(100);
   private static final int MAX_SEND_UID_CACHE = 5;
 
   private static Pair<SendState, Pair<String, ItemId>> findPendingSend(
@@ -468,7 +466,7 @@ public class SendMsg extends MailDocumentHandler {
       List<Pair<String, ItemId>> sendData = sSentTokens.get(mailboxId);
       if (sendData == null) {
         sSentTokens.put(
-            mailboxId, sendData = new ArrayList<Pair<String, ItemId>>(MAX_SEND_UID_CACHE));
+            mailboxId, sendData = new ArrayList<>(MAX_SEND_UID_CACHE));
       }
 
       for (Pair<String, ItemId> record : sendData) {
@@ -483,12 +481,12 @@ public class SendMsg extends MailDocumentHandler {
         if (sendData.size() >= MAX_SEND_UID_CACHE) {
           sendData.remove(0);
         }
-        sendRecord = new Pair<String, ItemId>(sendUid, null);
+        sendRecord = new Pair<>(sendUid, null);
         sendData.add(sendRecord);
       }
     }
 
-    return new Pair<SendState, Pair<String, ItemId>>(state, sendRecord);
+    return new Pair<>(state, sendRecord);
   }
 
   private static void clearPendingSend(Integer mailboxId, Pair<String, ItemId> sendRecord) {
@@ -603,7 +601,7 @@ public class SendMsg extends MailDocumentHandler {
             String sender = ((InternetAddress) senderAddr).getAddress();
             if (sender == null) return false;
 
-            String froms[] = new String[fromAddrs.length];
+            String[] froms = new String[fromAddrs.length];
             for (int i = 0; i < fromAddrs.length; i++) {
               Address fromAddr = fromAddrs[i];
               if (fromAddr == null) return false;
@@ -760,7 +758,7 @@ public class SendMsg extends MailDocumentHandler {
       // key = UID, value = ORGANIZER
       // No need to track VEVENTS/VTODOs with same UID but different RECURRENCE-ID separately.
       // Almost all replies should contain exactly one VEVENT/VTODO.
-      Map<String, ZProperty> uidToOrganizer = new HashMap<String, ZProperty>();
+      Map<String, ZProperty> uidToOrganizer = new HashMap<>();
 
       // Turn things into Invite objects.  For each Invite, check if organizer fixup is necessary.
       // Needed fixups are recorded in the uidToOrganizer map.
@@ -779,7 +777,7 @@ public class SendMsg extends MailDocumentHandler {
             RecurId rid = replyInv.getRecurId();
             Invite inv = calItem.getInvite(rid);
             if (inv == null && rid != null) { // replying to a non-exception instance
-              inv = calItem.getInvite((RecurId) null);
+              inv = calItem.getInvite(null);
             }
             if (inv != null) {
               ZOrganizer org = inv.getOrganizer();

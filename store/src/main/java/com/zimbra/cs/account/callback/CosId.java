@@ -27,20 +27,18 @@ public class CosId extends AttributeCallback {
     private void validateCosId(Map attrsToModify, String attrName) throws ServiceException {
         
         SingleValueMod mod = singleValueMod(attrsToModify, attrName);
-        if (mod.unsetting())
-            return;
-        else {
+        if (!mod.unsetting()) {
             String cosId = mod.value();
             Provisioning prov = Provisioning.getInstance();
             /*
-             * hmm, not sure if YCC(CalendarProvisioning) also requires that 
+             * hmm, not sure if YCC(CalendarProvisioning) also requires that
              * cos must exist when setting a cos id (e.g. zimbraDomainDefaultCOSId)
              * skip for now.  Hack to use idIsUUID() for the check.
              */
             if (prov.idIsUUID()) {
                 Cos cos = prov.get(Key.CosBy.id, cosId);
                 if (cos == null)
-                    throw ServiceException.INVALID_REQUEST("cos id " + cosId + 
+                    throw ServiceException.INVALID_REQUEST("cos id " + cosId +
                             " does not point to a valid cos", null);
             }
         }

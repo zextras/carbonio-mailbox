@@ -85,7 +85,7 @@ public class ImapFolder extends DataSourceFolderMapping {
         Collection<DataSourceItem> mappings = getMappingsAndFlags(ds, getItemId());
         Mailbox mbox = DataSourceManager.getInstance().getMailbox(ds);
         List<Integer> allIds = mbox.listItemIds(mbox.getOperationContext(), MailItem.Type.MESSAGE, getItemId());
-        List<Integer> newIds = new ArrayList<Integer>();
+        List<Integer> newIds = new ArrayList<>();
 
         loop:
         for (Integer id : allIds) {

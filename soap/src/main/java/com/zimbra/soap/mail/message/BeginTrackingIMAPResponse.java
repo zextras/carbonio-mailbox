@@ -10,5 +10,5 @@ import com.zimbra.common.soap.MailConstants;
 
 @XmlRootElement(name=MailConstants.E_BEGIN_TRACKING_IMAP_RESPONSE)
 public class BeginTrackingIMAPResponse {
-    public BeginTrackingIMAPResponse() {};
+    public BeginTrackingIMAPResponse() {}
 }

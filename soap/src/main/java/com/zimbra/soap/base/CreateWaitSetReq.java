@@ -10,9 +10,9 @@ import java.util.List;
 import com.zimbra.soap.type.WaitSetAddSpec;
 
 public interface CreateWaitSetReq {
-    public void setAccounts(Iterable <WaitSetAddSpec> accounts);
-    public CreateWaitSetReq addAccount(WaitSetAddSpec account);
-    public String getDefaultInterests();
-    public Boolean getAllAccounts();
-    public List<WaitSetAddSpec> getAccounts();
+    void setAccounts(Iterable<WaitSetAddSpec> accounts);
+    CreateWaitSetReq addAccount(WaitSetAddSpec account);
+    String getDefaultInterests();
+    Boolean getAllAccounts();
+    List<WaitSetAddSpec> getAccounts();
 }

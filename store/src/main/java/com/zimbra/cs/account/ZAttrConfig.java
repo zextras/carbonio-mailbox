@@ -1900,13 +1900,13 @@ public abstract class ZAttrConfig extends Entry {
      * will enforce CSP rule on the client side. Note: the value MUST be the
      * entire header line (e.g. X-Foo: Bar, X-Zoo: &quot;Bar1; Bar2&quot;).
      *
-     * @return carbonioReverseProxyResponseCSPHeader, or "Content-Security-Policy: \"default-src 'self' data: blob: cid:; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.zextras.tools; style-src * 'unsafe-inline'; img-src * data: blob: cid:; font-src * data:; connect-src 'self' *.zextras.tools; media-src * blob: data: cid:; object-src 'self'; child-src 'self' blob: data: cid:; frame-src 'self' blob: data: cid:; frame-ancestors 'self'; form-action 'self';\"" if unset
+     * @return carbonioReverseProxyResponseCSPHeader, or "Content-Security-Policy: \"default-src 'self' data: blob: cid:; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.zextras.tools *.jsdelivr.net; style-src * 'unsafe-inline'; img-src * data: blob: cid:; font-src * data:; connect-src 'self' *.zextras.tools *.jsdelivr.net; media-src * blob: data: cid:; object-src 'self'; child-src 'self' blob: data: cid:; frame-src 'self' blob: data: cid:; frame-ancestors 'self'; form-action 'self';\"" if unset
      *
      * @since ZCS 23.7.0
      */
     @ZAttr(id=3133)
     public String getCarbonioReverseProxyResponseCSPHeader() {
-        return getAttr(ZAttrProvisioning.A_carbonioReverseProxyResponseCSPHeader, "Content-Security-Policy: \"default-src 'self' data: blob: cid:; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.zextras.tools; style-src * 'unsafe-inline'; img-src * data: blob: cid:; font-src * data:; connect-src 'self' *.zextras.tools; media-src * blob: data: cid:; object-src 'self'; child-src 'self' blob: data: cid:; frame-src 'self' blob: data: cid:; frame-ancestors 'self'; form-action 'self';\"", true);
+        return getAttr(ZAttrProvisioning.A_carbonioReverseProxyResponseCSPHeader, "Content-Security-Policy: \"default-src 'self' data: blob: cid:; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.zextras.tools *.jsdelivr.net; style-src * 'unsafe-inline'; img-src * data: blob: cid:; font-src * data:; connect-src 'self' *.zextras.tools *.jsdelivr.net; media-src * blob: data: cid:; object-src 'self'; child-src 'self' blob: data: cid:; frame-src 'self' blob: data: cid:; frame-ancestors 'self'; form-action 'self';\"", true);
     }
 
     /**

@@ -5,8 +5,6 @@
 
 package com.zimbra.common.util.ngxlookup;
 
-import static java.util.Arrays.asList;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
@@ -160,7 +158,7 @@ public class ZimbraNginxLookUpClient {
      * given timeout, otherwise <code>false</code>.
      */
     public static boolean ping(String[] schemes, String hostPath, int timeout) {
-        for (String scheme : asList(schemes)) {
+        for (String scheme : schemes) {
             if (ping(scheme + "://" + hostPath, timeout)) {
                 return true;
             }
@@ -173,7 +171,7 @@ public class ZimbraNginxLookUpClient {
         Route nginxLookUpHandler = getNginxRouteHandler();
         ZimbraLog.misc.debug("getting route for account %s with handler %s", userName, nginxLookUpHandler);
         if (nginxLookUpHandler != null) {
-            for (String scheme : asList(ngxSchemes)) {
+            for (String scheme : ngxSchemes) {
                 HttpGet method = new HttpGet((new StringBuilder(scheme + "://").append(nginxLookUpHandler.ngxServerAddress.getHostName()).
                         append(":").append(nginxLookUpHandler.ngxServerAddress.getPort()).append(urlExtension)).toString());
 
@@ -220,13 +218,13 @@ public class ZimbraNginxLookUpClient {
         // Eliminate duplicates and sort case-insensitively.  This negates operator error
         // configuring server list with inconsistent order on different Nginx Route Handler clients.
         // TreeSet provides deduping and sorting.
-        TreeSet<String> tset = new TreeSet<String>();
-        for (int i = 0; i < servers.length; ++i) {
-            tset.add(servers[i].toLowerCase());
-        }
+        TreeSet<String> tset = new TreeSet<>();
+      for (String s : servers) {
+        tset.add(s.toLowerCase());
+      }
         servers = tset.toArray(new String[0]);
         if (servers != null) {
-            List<Route> addrs = new ArrayList<Route>(servers.length);
+            List<Route> addrs = new ArrayList<>(servers.length);
             for (String server : servers) {
                 if (server.length() == 0)
                     continue;
@@ -255,20 +253,19 @@ public class ZimbraNginxLookUpClient {
                         ZimbraLog.misc.warn("Invalid server " + server + "has %d parts" + parts.length);
                         continue;
                     }
-                    Route rt = this.new Route(new InetSocketAddress(host, port), 0);
+                    Route rt = new Route(new InetSocketAddress(host, port), 0);
                     addrs.add(rt);
                 } else {
                     ZimbraLog.misc.warn("Invalid server has null parts" + server);
-                    continue;
                 }
             }
             return addrs;
         } else {
-            return new ArrayList<Route>(0);
+            return new ArrayList<>(0);
         }
     }
 
-    private class Route {
+    private static class Route {
         private InetSocketAddress ngxServerAddress;
         private long failureTime;
 

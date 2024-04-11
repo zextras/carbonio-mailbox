@@ -57,8 +57,8 @@ public class FreeBusyQuery {
     mStart = start;
     mEnd = end;
     mExApptUid = exApptUid;
-    mTargets = new HashMap<String, Account>();
-    mTargetFolder = new HashMap<String, Integer>();
+    mTargets = new HashMap<>();
+    mTargetFolder = new HashMap<>();
   }
 
   public void addAccountId(String accountId, int calFolderId) {
@@ -157,8 +157,8 @@ public class FreeBusyQuery {
   public Collection<FreeBusy> getResults() {
     RemoteFreeBusyProvider remote =
         new RemoteFreeBusyProvider(mReq, mCtxt, mStart, mEnd, mExApptUid);
-    ArrayList<String> external = new ArrayList<String>();
-    ArrayList<FreeBusy> fbList = new ArrayList<FreeBusy>();
+    ArrayList<String> external = new ArrayList<>();
+    ArrayList<FreeBusy> fbList = new ArrayList<>();
     prepareRequests(fbList, remote, external);
 
     fbList.addAll(remote.getResults());
@@ -172,8 +172,8 @@ public class FreeBusyQuery {
   public void getResults(Element response) {
     RemoteFreeBusyProvider remote =
         new RemoteFreeBusyProvider(mReq, mCtxt, mStart, mEnd, mExApptUid);
-    ArrayList<String> external = new ArrayList<String>();
-    ArrayList<FreeBusy> fbList = new ArrayList<FreeBusy>();
+    ArrayList<String> external = new ArrayList<>();
+    ArrayList<FreeBusy> fbList = new ArrayList<>();
     prepareRequests(fbList, remote, external);
 
     for (FreeBusy fb : fbList) ToXML.encodeFreeBusy(response, fb);

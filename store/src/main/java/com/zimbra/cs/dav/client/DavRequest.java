@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import org.apache.http.Header;
@@ -39,7 +40,7 @@ public class DavRequest {
         mUri = uri;
         mMethod = method;
         mDepth = Depth.zero;
-        mHeaders = new ArrayList<Pair<String,String>>();
+        mHeaders = new ArrayList<>();
     }
 
     public Document getRequestMessage() {
@@ -84,7 +85,7 @@ public class DavRequest {
     }
 
     public void addRequestHeader(String name, String value) {
-        mHeaders.add(new Pair<String,String>(name, value));
+        mHeaders.add(new Pair<>(name, value));
     }
 
     public ArrayList<Pair<String,String>> getRequestHeaders() {
@@ -113,7 +114,7 @@ public class DavRequest {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             XMLWriter writer = new XMLWriter(out, format);
             writer.write(mDoc);
-            return new String(out.toByteArray(), "UTF-8");
+            return out.toString(StandardCharsets.UTF_8);
         }
         return "";
     }

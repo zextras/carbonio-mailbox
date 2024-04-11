@@ -36,7 +36,7 @@ final class SessionMap {
 
     private final Session.Type type;
     private final Map<String /*accountId*/, AccountSessionMap> accountSessionMap =
-        new LinkedHashMap<String, AccountSessionMap>(100);
+        new LinkedHashMap<>(100);
 
     /**
      * Because different types of sessions can have different timeout values, we can't just store
@@ -44,7 +44,7 @@ final class SessionMap {
      * all active sessions, which could potentially be bad.  Instead, we store sessions in a separate
      * cache depending on their timeout length.
      */
-    private final Map<Long, Set<Session>> sessionAccessSet = new HashMap<Long, Set<Session>>();
+    private final Map<Long, Set<Session>> sessionAccessSet = new HashMap<>();
     private int totalActiveSessions = 0;
 
 
@@ -167,12 +167,7 @@ final class SessionMap {
                 if (removed != null) {
                     ZimbraLog.session.info("Too many %s sessions (%d > %d), closing %s", session.getType(), prevSize, maxSessionsPerAcct, removed);
                     // clean up the sessions asynchronously outside of the synchronized block or the mailbox lock
-                    SWEEPER.submit(new Runnable() {
-                        @Override
-                        public void run() {
-                            removed.doCleanup();
-                        }
-                    });
+                    SWEEPER.submit(() -> removed.doCleanup());
                 }
 
                 // note that remove() may have nulled out accountSessionMap[accountId]
@@ -227,7 +222,7 @@ final class SessionMap {
      * Returns a shallow-copy of the list of sessions.
      */
     synchronized List<Session> copySessionList() {
-        List<Session> toRet = new ArrayList<Session>(totalActiveSessions);
+        List<Session> toRet = new ArrayList<>(totalActiveSessions);
         for (Set<Session> set : sessionAccessSet.values()) {
             toRet.addAll(set);
         }
@@ -271,7 +266,7 @@ final class SessionMap {
     }
 
     private synchronized List<Session> pruneSessionsInternal(boolean all, long cutoffIn) {
-        List<Session> toRet = new ArrayList<Session>();
+        List<Session> toRet = new ArrayList<>();
         long now = System.currentTimeMillis();
 
         for (Map.Entry<Long, Set<Session>> entry : sessionAccessSet.entrySet()) {
@@ -316,7 +311,7 @@ final class SessionMap {
     private synchronized Set<Session> getSessionAccessSet(Long timeout) {
         Set<Session> toRet = sessionAccessSet.get(timeout);
         if (toRet == null) {
-            toRet = new LinkedHashSet<Session>();
+            toRet = new LinkedHashSet<>();
             sessionAccessSet.put(timeout, toRet);
         }
         return toRet;

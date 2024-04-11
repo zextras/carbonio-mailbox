@@ -52,8 +52,8 @@ public class TaskRetry {
         long maxDelay;
         DelayPolicy policy;
 
-        public static enum DelayPolicy {
-            constant, linear, exponential;
+        public enum DelayPolicy {
+            constant, linear, exponential
         }
 
         public void setMaxRetries(int retries) { this.maxRetries = retries; }
@@ -67,7 +67,7 @@ public class TaskRetry {
         abstract long getDelayMillis();
     }
 
-    private class ConstantDelay extends Delay {
+    private static class ConstantDelay extends Delay {
         private long delay;
 
         ConstantDelay(long delay) {

@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.mime;
 
-import java.io.IOException;
 import java.io.PipedOutputStream;
 
 import javax.mail.MessagingException;
@@ -39,12 +38,10 @@ public class MimeMessageOutputThread implements Runnable {
     public void run() {
         try {
             mMsg.writeTo(mOut);
-        } catch (IOException e) {
-            ZimbraLog.misc.warn("Unable to write MimeMessage to output stream.", e);
         } catch (MessagingException e) {
             ZimbraLog.misc.warn("Unable to write MimeMessage to output stream.", e);
-        } catch (Throwable t) {
-            ZimbraLog.misc.warn("Unable to write MimeMessage to output stream.", t);
+        } catch (Throwable e) {
+            ZimbraLog.misc.warn("Unable to write MimeMessage to output stream.", e);
         } finally {
             ByteUtil.closeStream(mOut);
         }

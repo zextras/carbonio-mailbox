@@ -16,7 +16,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -32,7 +31,6 @@ import com.zimbra.common.mailbox.ItemIdentifier;
 import com.zimbra.common.mailbox.MailItemType;
 import com.zimbra.common.mailbox.MailboxStore;
 import com.zimbra.common.mailbox.MountpointStore;
-import com.zimbra.common.mailbox.OpContext;
 import com.zimbra.common.mailbox.SearchFolderStore;
 import com.zimbra.common.mailbox.ZimbraFetchMode;
 import com.zimbra.common.mailbox.ZimbraQueryHit;
@@ -226,12 +224,7 @@ final class ImapSessionManager {
             // XXX: make sure this doesn't result in a loop
             try {
                 if (session.isInteractive()) {
-                    CLOSER.submit(new Runnable() {
-                        @Override
-                        public void run() {
-                            session.cleanup();
-                        }
-                    });
+                    CLOSER.submit(() -> session.cleanup());
                 }
                 session.detach();
             } catch (Exception e) {
@@ -440,14 +433,11 @@ final class ImapSessionManager {
         params.setLimit(1000);
         params.setZimbraFetchMode(ZimbraFetchMode.IMAP);
         try {
-            ZimbraQueryHitResults zqr = mbox.searchImap(octxt, params);
-            try {
-                for (ZimbraQueryHit hit = zqr.getNext(); hit != null; hit = zqr.getNext()) {
-                    i4list.add(new ImapMessage(hit));
-                }
-            } finally {
-                zqr.close();
+          try (ZimbraQueryHitResults zqr = mbox.searchImap(octxt, params)) {
+            for (ZimbraQueryHit hit = zqr.getNext(); hit != null; hit = zqr.getNext()) {
+              i4list.add(new ImapMessage(hit));
             }
+          }
         } catch (ServiceException e) {
             throw e;
         } catch (Exception e) {
@@ -477,15 +467,12 @@ final class ImapSessionManager {
             }
             // found a matching session, so just copy its contents!
             ZimbraLog.imap.debug("copying message data from existing session: %s", i4listener.getPath());
-            final List<ImapMessage> i4list = new ArrayList<ImapMessage>(i4selected.getSize());
-            i4selected.traverse(new Function<ImapMessage, Void>() {
-                @Override
-                public Void apply(ImapMessage i4msg) {
-                    if (!i4msg.isExpunged()) {
-                        i4list.add(new ImapMessage(i4msg));
-                    }
-                    return null;
-                }
+            final List<ImapMessage> i4list = new ArrayList<>(i4selected.getSize());
+            i4selected.traverse(i4msg -> {
+              if (!i4msg.isExpunged()) {
+                i4list.add(new ImapMessage(i4msg));
+              }
+              return null;
             });
 
             // if we're duplicating an inactive session, nuke that other session
@@ -544,15 +531,12 @@ final class ImapSessionManager {
         }
         ZimbraLog.imap.debug("copying message data from serialized session: %s", folder.getPath());
 
-        final List<ImapMessage> i4list = new ArrayList<ImapMessage>(i4folder.getSize());
-        i4folder.traverse(new Function<ImapMessage, Void>() {
-            @Override
-            public Void apply(ImapMessage i4msg) {
-                if (!i4msg.isExpunged()) {
-                    i4list.add(i4msg.reset());
-                }
-                return null;
-            }
+        final List<ImapMessage> i4list = new ArrayList<>(i4folder.getSize());
+        i4folder.traverse(i4msg -> {
+          if (!i4msg.isExpunged()) {
+            i4list.add(i4msg.reset());
+          }
+          return null;
         });
         return i4list;
     }
@@ -611,7 +595,7 @@ final class ImapSessionManager {
     }
 
     private List<ImapMessage> dupeCheck(List<ImapMessage> list) {
-        List<ImapMessage> dupes = new ArrayList<ImapMessage>();
+        List<ImapMessage> dupes = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             ImapMessage current = list.get(i);
             if (dupes.contains(current) || list.lastIndexOf(current) != i) {
@@ -623,8 +607,8 @@ final class ImapSessionManager {
 
     private static void renumberMessages(OperationContext octxt, MailboxStore mbox, List<ImapMessage> i4sorted)
     throws ServiceException {
-        List<ImapMessage> unnumbered = new ArrayList<ImapMessage>();
-        List<Integer> renumber = new ArrayList<Integer>();
+        List<ImapMessage> unnumbered = new ArrayList<>();
+        List<Integer> renumber = new ArrayList<>();
         while (!i4sorted.isEmpty() && i4sorted.get(0).imapUid <= 0) {
             ImapMessage i4msg = i4sorted.remove(0);
             unnumbered.add(i4msg);  renumber.add(i4msg.msgId);
@@ -744,10 +728,10 @@ final class ImapSessionManager {
             }
         }
         if (session instanceof ImapSession) {
-            fstore = mbox.getFolderById((OpContext)null, session.getFolderItemIdentifier().toString());
+            fstore = mbox.getFolderById(null, session.getFolderItemIdentifier().toString());
         } else {
             if (session.getAuthenticatedAccountId() == session.getTargetAccountId()) {
-                fstore = mbox.getFolderById((OpContext)null, session.getFolderItemIdentifier().toString());
+                fstore = mbox.getFolderById(null, session.getFolderItemIdentifier().toString());
             } else {
                 fstore = ((ZMailbox)mbox).getSharedFolderById(session.getFolderItemIdentifier().toString());
             }

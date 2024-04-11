@@ -8,7 +8,6 @@ package com.zimbra.cs.mailclient.imap;
 import com.zimbra.cs.mailclient.ParseException;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -96,7 +95,7 @@ public final class Body {
 
     private static String[] readFieldNames(ImapInputStream is)
         throws IOException {
-        ArrayList<String> names = new ArrayList<String>();
+        ArrayList<String> names = new ArrayList<>();
         is.skipChar('(');
         is.skipSpaces();
         while (!is.match(')')) {

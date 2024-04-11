@@ -240,7 +240,7 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
     // check hard rules
     Boolean hardRulesResult = HardRules.checkHardRules(grantee, asAdmin, target, rightNeeded);
     if (hardRulesResult != null) {
-      return hardRulesResult.booleanValue();
+      return hardRulesResult;
     }
 
     if (checkOverridingRules(grantee, asAdmin, target, rightNeeded)) {
@@ -299,7 +299,7 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
     // check hard rules
     Boolean hardRulesResult = HardRules.checkHardRules(grantee, asAdmin, target, null);
     if (hardRulesResult != null) {
-      return hardRulesResult.booleanValue();
+      return hardRulesResult;
     }
 
     return canGetAttrsInternal(grantee, target, attrsNeeded, false);
@@ -343,7 +343,7 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
     // check hard rules
     Boolean hardRulesResult = HardRules.checkHardRules(grantee, asAdmin, target, null);
     if (hardRulesResult != null) {
-      return hardRulesResult.booleanValue();
+      return hardRulesResult;
     }
 
     return canSetAttrsInternal(grantee, target, attrsNeeded, false);
@@ -364,7 +364,7 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
     // check hard rules
     Boolean hardRulesResult = HardRules.checkHardRules(granteeAcct, asAdmin, target, null);
     if (hardRulesResult != null) {
-      return hardRulesResult.booleanValue();
+      return hardRulesResult;
     }
 
     Grantee grantee = Grantee.getGrantee(granteeAcct);
@@ -394,7 +394,7 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
     String cosStr = null;
 
     if (targetType.isDomained()) {
-      String parts[] = EmailUtil.getLocalPartAndDomain(entryName);
+      String[] parts = EmailUtil.getLocalPartAndDomain(entryName);
       if (parts == null) {
         throw ServiceException.INVALID_REQUEST("must be valid email address: " + entryName, null);
       }
@@ -441,7 +441,7 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
     // check hard rules
     Boolean hardRulesResult = HardRules.checkHardRules(grantee, asAdmin, target, rightNeeded);
     if (hardRulesResult != null) {
-      return hardRulesResult.booleanValue();
+      return hardRulesResult;
     }
 
     if (checkOverridingRules(grantee, asAdmin, target, rightNeeded)) {
@@ -655,8 +655,8 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
         result = CheckPresetRight.check(grantee, target, rightNeeded, canDelegateNeeded, via);
       }
 
-      if (result != null && result.booleanValue()) {
-        return result.booleanValue(); // allowed by ACL
+      if (result != null && result) {
+        return result; // allowed by ACL
       } else {
         // either no matching ACL for the right or is not allowed by ACL
 
@@ -669,8 +669,8 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
         if ((fallback != null) && (grantee instanceof Account)) {
           Boolean fallbackResult = fallback.checkRight((Account) grantee, target, asAdmin);
           if (fallbackResult != null) {
-            ZimbraLog.acl.debug("checkPresetRight fallback to: " + fallbackResult.booleanValue());
-            return fallbackResult.booleanValue();
+            ZimbraLog.acl.debug("checkPresetRight fallback to: " + fallbackResult);
+            return fallbackResult;
           }
         }
 
@@ -679,8 +679,8 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
           // see if there is a configured default
           Boolean defaultValue = rightNeeded.getDefault();
           if (defaultValue != null) {
-            ZimbraLog.acl.debug("checkPresetRight default to: " + defaultValue.booleanValue());
-            return defaultValue.booleanValue();
+            ZimbraLog.acl.debug("checkPresetRight default to: " + defaultValue);
+            return defaultValue;
           }
         }
       }
@@ -806,6 +806,6 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
   @Override
   public Set<TargetType> targetTypesForGrantSearch() {
     // we want all target types
-    return new HashSet<TargetType>(Arrays.asList(TargetType.values()));
+    return new HashSet<>(Arrays.asList(TargetType.values()));
   }
 }

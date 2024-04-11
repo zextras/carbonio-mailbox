@@ -210,7 +210,7 @@ public class CacheToXML {
         parent.addAttribute(MailConstants.E_FRAG, fragment, Element.Disposition.CONTENT);
       Integer numAttendees = fullInstance.getNumAttendees();
       if (numAttendees != null)
-        parent.addAttribute(MailConstants.A_CAL_OTHER_ATTENDEES, numAttendees.intValue() > 0);
+        parent.addAttribute(MailConstants.A_CAL_OTHER_ATTENDEES, numAttendees > 0);
 
       if (fullInstance.hasAlarm() != null)
         parent.addAttribute(MailConstants.A_CAL_ALARM, fullInstance.hasAlarm().booleanValue());

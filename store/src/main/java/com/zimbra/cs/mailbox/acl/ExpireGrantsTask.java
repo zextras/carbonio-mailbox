@@ -57,7 +57,7 @@ public class ExpireGrantsTask extends ScheduledTask {
      * @see ExpireGrantsTaskCallback
      */
     public MailItem call() throws Exception {
-        int itemId = Integer.valueOf(getProperty(ITEM_ID_PROP_NAME));
+        int itemId = Integer.parseInt(getProperty(ITEM_ID_PROP_NAME));
         Mailbox mbox = MailboxManager.getInstance().getMailboxById(getMailboxId());
         MailItem item;
         try {

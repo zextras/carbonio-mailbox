@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -48,7 +49,7 @@ import com.zimbra.common.util.StringUtil;
 public class SoapCommandUtil implements SoapTransport.DebugListener {
 
     private static final Map<String, Namespace> sTypeToNamespace =
-        new TreeMap<String, Namespace>();
+        new TreeMap<>();
 
     private static final String DEFAULT_ADMIN_URL = String.format("https://%s:%d/service/admin/soap",
         LC.zimbra_zmprov_default_soap_server.value(),
@@ -185,9 +186,7 @@ public class SoapCommandUtil implements SoapTransport.DebugListener {
 
         mOptions.addOption(new Option(null, LO_USE_SESSION, false, "Use a SOAP session."));
 
-        try {
-            mOut = new PrintStream(System.out, true, "utf-8");
-        } catch (UnsupportedEncodingException e) {}
+      mOut = new PrintStream(System.out, true, StandardCharsets.UTF_8);
     }
 
     private void usage(String errorMsg) {
@@ -530,7 +529,7 @@ public class SoapCommandUtil implements SoapTransport.DebugListener {
                 }
             }
         } else {
-            results = new ArrayList<Element>();
+            results = new ArrayList<>();
             results.add(response);
         }
 
@@ -586,17 +585,17 @@ public class SoapCommandUtil implements SoapTransport.DebugListener {
         // Walk parts and implicitly create elements.
         String[] parts = path.split("/");
         String part = null;
-        for (int i = 0; i < parts.length; i++) {
-            part = parts[i];
-            if (element == null) {
-                QName name = QName.get(part, mNamespace);
-                element = factory.createElement(name);
-            } else if (part.equals("..")) {
-                element = element.getParent();
-            } else if (!(part.startsWith("@"))) {
-                element = element.addElement(part);
-            }
+      for (String s : parts) {
+        part = s;
+        if (element == null) {
+          QName name = QName.get(part, mNamespace);
+          element = factory.createElement(name);
+        } else if (part.equals("..")) {
+          element = element.getParent();
+        } else if (!(part.startsWith("@"))) {
+          element = element.addElement(part);
         }
+      }
 
         // Set either element text or attribute value
         if (value != null && part != null) {

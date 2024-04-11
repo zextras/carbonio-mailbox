@@ -73,7 +73,7 @@ public class GetAccountDistributionListsRequest {
      */
     @SuppressWarnings("unused")
     private GetAccountDistributionListsRequest() {
-        this((Boolean) null, (MemberOfSelector) null, (Iterable<String>) null);
+        this(null, null, null);
     }
 
     public GetAccountDistributionListsRequest(Boolean owner, MemberOfSelector member,

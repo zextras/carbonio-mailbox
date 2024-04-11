@@ -96,11 +96,11 @@ public class GalSearchResultCallback implements GalContact.Visitor {
     	} else if (mNeedSMIMECerts) {
     		// this is the case only when proxying SearcgGalRequest for the call from
     	    // GetSMIMEPublicCerts (in ZimbraNetwork)
-    	    Set<String> fieldSet = new HashSet<String>(c.getFields().keySet());
+    	    Set<String> fieldSet = new HashSet<>(c.getFields().keySet());
     		fieldSet.addAll(Contact.getSMIMECertFields());
     	    eContact = ToXML.encodeContact(mResponse, mFormatter, null, c, true, fieldSet);
     	} else {
-    	    Set<String> fieldSet = new HashSet<String>(c.getFields().keySet());
+    	    Set<String> fieldSet = new HashSet<>(c.getFields().keySet());
             fieldSet.removeAll(Contact.getSMIMECertFields());
     	    eContact = ToXML.encodeContact(mResponse, mFormatter, null, c, true, fieldSet);
     	}
@@ -163,7 +163,7 @@ public class GalSearchResultCallback implements GalContact.Visitor {
     }
 
     protected HashMap<String,Object> parseContactElement(Element e) {
-    	HashMap<String,Object> map = new HashMap<String,Object>();
+    	HashMap<String,Object> map = new HashMap<>();
     	Iterator<Element> iter = e.elementIterator(MailConstants.E_ATTRIBUTE);
     	while (iter.hasNext()) {
     		Element elem = iter.next();
@@ -179,7 +179,7 @@ public class GalSearchResultCallback implements GalContact.Visitor {
     				str[1] = value;
     				map.put(key, str);
     			} else if (obj instanceof String[]) {
-            ArrayList<String> arr = new ArrayList<String>(Arrays.asList((String[]) obj));
+            ArrayList<String> arr = new ArrayList<>(Arrays.asList((String[]) obj));
     				arr.add(value);
     				map.put(key, arr.toArray(new String[0]));
     			}

@@ -24,7 +24,7 @@ public final class PriorityQuery extends TagQuery {
 
         private final String flag;
 
-        private Priority(String flag) {
+        Priority(String flag) {
             this.flag = flag;
         }
 

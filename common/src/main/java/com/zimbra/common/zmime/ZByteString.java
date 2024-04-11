@@ -44,7 +44,7 @@ public class ZByteString {
                     lastByteString = lastByteString.merge(bStr);
                 }
                 else {
-                    builder.append(lastByteString.toString());
+                    builder.append(lastByteString);
                     lastByteString = bStr;
                 }
             }
@@ -53,7 +53,7 @@ public class ZByteString {
             }
         }
         if (lastByteString != null) {
-            builder.append(lastByteString.toString());
+            builder.append(lastByteString);
         }
         return builder.toString();
     }

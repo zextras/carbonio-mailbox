@@ -39,7 +39,7 @@ public class UndeployZimletRequest {
      */
     @SuppressWarnings("unused")
     private UndeployZimletRequest() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public UndeployZimletRequest(String name, String action) {

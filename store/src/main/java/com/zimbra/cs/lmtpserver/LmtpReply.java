@@ -52,13 +52,13 @@ public enum LmtpReply {
 	protected abstract String detail();
     }
     
-    private LmtpReply(int code, String enhancedCode, String detail) {
+    LmtpReply(int code, String enhancedCode, String detail) {
 	mCode = code;
 	mEnhancedCode = enhancedCode;
 	mDetail = detail;
     }
 
-    private LmtpReply(int code, String enhancedCode, DetailCB detail) {
+    LmtpReply(int code, String enhancedCode, DetailCB detail) {
 	mCode = code;
 	mEnhancedCode = enhancedCode;
 	mDetailCallback = detail;

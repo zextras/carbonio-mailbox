@@ -9,7 +9,6 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -46,7 +45,7 @@ public class BackupAccountQueryInfo {
      */
     @SuppressWarnings("unused")
     private BackupAccountQueryInfo() {
-        this((String) null);
+        this(null);
     }
 
     public BackupAccountQueryInfo(String name) {

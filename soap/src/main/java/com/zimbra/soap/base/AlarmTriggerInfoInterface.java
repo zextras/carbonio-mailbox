@@ -11,8 +11,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @XmlAccessorType(XmlAccessType.NONE)
 public interface AlarmTriggerInfoInterface {
 
-    public void setAbsoluteInterface(DateAttrInterface absolute);
-    public void setRelativeInterface(DurationInfoInterface relative);
-    public DateAttrInterface getAbsoluteInterface();
-    public DurationInfoInterface getRelativeInterface();
+    void setAbsoluteInterface(DateAttrInterface absolute);
+    void setRelativeInterface(DurationInfoInterface relative);
+    DateAttrInterface getAbsoluteInterface();
+    DurationInfoInterface getRelativeInterface();
 }

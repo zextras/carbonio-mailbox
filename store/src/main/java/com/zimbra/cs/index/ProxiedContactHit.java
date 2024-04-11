@@ -8,7 +8,6 @@ package com.zimbra.cs.index;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.Element;
-import com.zimbra.common.util.ZimbraLog;
 
 /**
  * A {@link ZimbraHit} which is being proxied from another server: i.e. we did a SOAP request somewhere else and are now

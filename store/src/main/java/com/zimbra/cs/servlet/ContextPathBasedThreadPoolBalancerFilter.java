@@ -35,8 +35,8 @@ public class ContextPathBasedThreadPoolBalancerFilter implements Filter {
     static final String RULES_INIT_PARAM = "Rules";
     static final String SUSPEND_INIT_PARAM = "suspendMs";
     static final long DEFAULT_SUSPEND_MS = 1000;
-    ConcurrentHashMap<String, AtomicInteger> activeRequestsByContextPath = new ConcurrentHashMap<String, AtomicInteger>();
-    ConcurrentHashMap<String, Rules> rulesByContextPath = new ConcurrentHashMap<String, Rules>();
+    ConcurrentHashMap<String, AtomicInteger> activeRequestsByContextPath = new ConcurrentHashMap<>();
+    ConcurrentHashMap<String, Rules> rulesByContextPath = new ConcurrentHashMap<>();
     QueuedThreadPool queuedThreadPool = null;
     long suspendMs = 1000;
 

@@ -110,7 +110,7 @@ public class AccountACEInfo {
      */
     @SuppressWarnings("unused")
     private AccountACEInfo() {
-        this((GranteeType) null, (String) null);
+        this(null, null);
     }
 
     public AccountACEInfo(GranteeType granteeType, String right) {

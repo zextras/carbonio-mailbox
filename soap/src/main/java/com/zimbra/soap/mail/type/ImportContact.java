@@ -13,14 +13,13 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import com.zimbra.common.soap.MailConstants;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class ImportContact {
 
-    private List <String> listOfCreatedIds = new ArrayList<String>();
+    private List <String> listOfCreatedIds = new ArrayList<>();
 
     /**
      * @zm-api-field-tag num-imported

@@ -58,7 +58,7 @@ public class AutoComplete extends MailDocumentHandler {
     private ArrayList<Integer> csvToArray(String csv) {
         if (csv == null)
             return null;
-        ArrayList<Integer> array = new ArrayList<Integer>();
+        ArrayList<Integer> array = new ArrayList<>();
         for (String f : csv.split(",")) {
             array.add(Integer.parseInt(f));
         }

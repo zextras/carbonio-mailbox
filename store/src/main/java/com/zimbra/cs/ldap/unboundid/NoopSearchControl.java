@@ -43,7 +43,7 @@ public final class NoopSearchControl extends Control implements DecodeableContro
         // The default text for this message
         private final String defaultText;
 
-        private ControlMessages(final String defaultText) {
+        ControlMessages(final String defaultText) {
           this.defaultText = defaultText;
         }
 

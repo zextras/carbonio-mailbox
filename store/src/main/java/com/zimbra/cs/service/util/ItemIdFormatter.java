@@ -16,7 +16,7 @@ public class ItemIdFormatter {
     private String mDefaultId;
 
     public ItemIdFormatter() {
-        this((String) null, (String) null, false);
+        this(null, (String) null, false);
     }
 
     public ItemIdFormatter(String authId) {
@@ -24,7 +24,7 @@ public class ItemIdFormatter {
     }
 
     public ItemIdFormatter(boolean noqualify) {
-        this((String) null, (String) null, noqualify);
+        this(null, (String) null, noqualify);
     }
 
     public ItemIdFormatter(ZimbraSoapContext zsc) {

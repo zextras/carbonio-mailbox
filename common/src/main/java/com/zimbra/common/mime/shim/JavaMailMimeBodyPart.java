@@ -610,18 +610,16 @@ public class JavaMailMimeBodyPart extends MimeBodyPart implements JavaMailShim {
 
     static void writeTo(InputStream is, OutputStream os) throws IOException {
         byte buffer[] = new byte[8192];
-        try {
-            while (true) {
-                int numRead = is.read(buffer);
-                if (numRead < 0) {
-                    break;
-                } else if (os != null) {
-                    os.write(buffer, 0, numRead);
-                }
-            }
-        } finally {
-            is.close();
+      try (is) {
+        while (true) {
+          int numRead = is.read(buffer);
+          if (numRead < 0) {
+            break;
+          } else if (os != null) {
+            os.write(buffer, 0, numRead);
+          }
         }
+      }
     }
 
     @Override

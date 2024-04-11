@@ -52,13 +52,13 @@ public class CosInfo implements AdminObjectInterface {
 
     /** no-argument constructor wanted by JAXB */
     protected CosInfo() {
-        this((String) null,(String) null, false, (Collection <CosInfoAttr>) null);
+        this(null, null, false, null);
     }
 
     protected CosInfo(String id, String name, boolean isDefaultCos, Collection <CosInfoAttr> attrs) {
         this.name = name;
         this.id = id;
-        this.attrs = new ArrayList<CosInfoAttr>();
+        this.attrs = new ArrayList<>();
         if (attrs != null) {
             this.attrs.addAll(attrs);
         }
@@ -66,7 +66,7 @@ public class CosInfo implements AdminObjectInterface {
     }
 
     public static CosInfo createForIdAndName(String id, String name) {
-        return new CosInfo(id, name, false, (Collection <CosInfoAttr>) null);
+        return new CosInfo(id, name, false, null);
     }
 
     public static CosInfo createForIdNameAndAttrs(String id, String name, Collection <CosInfoAttr> attrs) {

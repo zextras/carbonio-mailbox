@@ -40,11 +40,11 @@ public class ModifyCalendarResourceRequest extends AdminAttrsImpl {
     private String id;
 
     public ModifyCalendarResourceRequest() {
-        this((String)null);
+        this(null);
     }
 
     public ModifyCalendarResourceRequest(String id) {
-        this(id, (Collection<Attr>) null);
+        this(id, null);
     }
 
     public ModifyCalendarResourceRequest(String id, Collection<Attr> attrs) {

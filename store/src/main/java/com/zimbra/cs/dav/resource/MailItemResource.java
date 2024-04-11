@@ -95,7 +95,7 @@ public abstract class MailItemResource extends DavResource {
     DEFAULT_COLOR, BLUE, CYAN, GREEN, PURPLE, RED, YELLOW, PINK, GRAY, ORANGE
   };
 
-  protected static final ArrayList<String> COLOR_LIST = new ArrayList<String>();
+  protected static final ArrayList<String> COLOR_LIST = new ArrayList<>();
 
   static {
     Collections.addAll(COLOR_LIST, COLOR_MAP);
@@ -129,7 +129,7 @@ public abstract class MailItemResource extends DavResource {
 
   public MailItemResource(String path, String acct) {
     super(path, acct);
-    mDeadProps = new HashMap<QName, Element>();
+    mDeadProps = new HashMap<>();
     try {
       Account account = Provisioning.getInstance().getAccountByName(acct);
       if (account != null) {
@@ -268,7 +268,7 @@ public abstract class MailItemResource extends DavResource {
   public void move(DavContext ctxt, Collection dest, String newName) throws DavException {
     try {
       Mailbox mbox = getMailbox(ctxt);
-      ArrayList<Integer> ids = new ArrayList<Integer>();
+      ArrayList<Integer> ids = new ArrayList<>();
       ids.add(mId);
       if (newName != null)
         ItemActionHelper.RENAME(
@@ -317,7 +317,7 @@ public abstract class MailItemResource extends DavResource {
           if (se.getCode().equals(MailServiceException.ALREADY_EXISTS) == false) throw e;
           else { // get the conflicting item-id
             if (se instanceof SoapFaultException) { // destination belongs other mailbox.
-              String itemIdStr = ((SoapFaultException) se).getArgumentValue("id");
+              String itemIdStr = se.getArgumentValue("id");
               ItemId itemId = new ItemId(itemIdStr, dest.getItemId().getAccountId());
               id = itemId.getId();
             } else { // destination belongs to same mailbox.
@@ -365,7 +365,7 @@ public abstract class MailItemResource extends DavResource {
   public void copy(DavContext ctxt, Collection dest, String newName) throws DavException {
     try {
       Mailbox mbox = getMailbox(ctxt);
-      ArrayList<Integer> ids = new ArrayList<Integer>();
+      ArrayList<Integer> ids = new ArrayList<>();
       if (newName == null) {
         ids.add(mId);
         ItemActionHelper.COPY(
@@ -401,7 +401,7 @@ public abstract class MailItemResource extends DavResource {
 
   private Map<QName, Element> getDeadProps(DavContext ctxt, MailItem item)
       throws IOException, ServiceException {
-    HashMap<QName, Element> props = new HashMap<QName, Element>();
+    HashMap<QName, Element> props = new HashMap<>();
     Mailbox mbox = item.getMailbox();
     Metadata data = mbox.getConfig(ctxt.getOperationContext(), CONFIG_KEY);
     if (data == null) return props;
@@ -430,7 +430,7 @@ public abstract class MailItemResource extends DavResource {
   public void patchProperties(
       DavContext ctxt, java.util.Collection<Element> set, java.util.Collection<QName> remove)
       throws DavException, IOException {
-    List<QName> reqProps = new ArrayList<QName>();
+    List<QName> reqProps = new ArrayList<>();
     for (QName n : remove) {
       mDeadProps.remove(n);
       reqProps.add(n);
@@ -525,7 +525,7 @@ public abstract class MailItemResource extends DavResource {
       OutputFormat format = OutputFormat.createCompactFormat();
       XMLWriter writer = new XMLWriter(out, format);
       writer.write(doc);
-      configVal = new String(out.toByteArray(), "UTF-8");
+      configVal = out.toString(StandardCharsets.UTF_8);
 
       if (configVal.length() > PROP_LENGTH_LIMIT)
         for (Map.Entry<QName, Element> entry : mDeadProps.entrySet())
@@ -586,7 +586,7 @@ public abstract class MailItemResource extends DavResource {
   }
 
   public List<Ace> getAce(DavContext ctxt) throws ServiceException, DavException {
-    ArrayList<Ace> aces = new ArrayList<Ace>();
+    ArrayList<Ace> aces = new ArrayList<>();
     Mailbox mbox = getMailbox(ctxt);
     MailItem item = mbox.getItemById(ctxt.getOperationContext(), mId, MailItem.Type.UNKNOWN);
     Folder f = null;

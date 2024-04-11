@@ -26,7 +26,7 @@ public class ZimbraExtensionClassLoader extends URLClassLoader {
 
     public static final String ZIMBRA_EXTENSION_CLASS = "Zimbra-Extension-Class";
 
-    private List<String> mExtensionClassNames = new ArrayList<String>();
+    private List<String> mExtensionClassNames = new ArrayList<>();
 
     /**
      * Load classes from all jar files or directories in the directory
@@ -52,18 +52,18 @@ public class ZimbraExtensionClassLoader extends URLClassLoader {
 
     private void findExtensions() {
         URL[] urls = getURLs();
-        for (int i = 0; i < urls.length; i++) {
-            File entry = null;
-            try {
-                entry = new File(urls[i].toURI());
-            } catch (URISyntaxException e) {
-                entry = new File(urls[i].getFile());
-            }
-            String className = getExtensionClassInManifest(entry);
-            if (className != null) {
-                mExtensionClassNames.add(className);
-            }
+      for (URL url : urls) {
+        File entry = null;
+        try {
+          entry = new File(url.toURI());
+        } catch (URISyntaxException e) {
+          entry = new File(url.getFile());
         }
+        String className = getExtensionClassInManifest(entry);
+        if (className != null) {
+          mExtensionClassNames.add(className);
+        }
+      }
     }
 
     public boolean hasExtensions() {
@@ -129,7 +129,7 @@ public class ZimbraExtensionClassLoader extends URLClassLoader {
                 ZimbraLog.extensions.debug("Manifest attribute=" + name + " value=" + attrs.getValue(name));
             }
         }
-        String classname = (String) attrs.getValue(ZIMBRA_EXTENSION_CLASS);
+        String classname = attrs.getValue(ZIMBRA_EXTENSION_CLASS);
         if (classname == null) {
             if (ZimbraLog.extensions.isDebugEnabled()) {
                 ZimbraLog.extensions.debug("no extension class found in manifest of: " + file);

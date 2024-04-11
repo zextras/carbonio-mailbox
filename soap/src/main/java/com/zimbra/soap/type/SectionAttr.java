@@ -27,7 +27,7 @@ public class SectionAttr {
      */
     @SuppressWarnings("unused")
     private SectionAttr() {
-        this((String) null);
+        this(null);
     }
 
     public SectionAttr(String section) {

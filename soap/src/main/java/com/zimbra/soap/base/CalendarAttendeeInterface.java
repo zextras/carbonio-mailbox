@@ -12,35 +12,35 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface CalendarAttendeeInterface {
-    public void setAddress(String address);
-    public void setUrl(String url);
-    public void setDisplayName(String displayName);
-    public void setSentBy(String sentBy);
-    public void setDir(String dir);
-    public void setLanguage(String language);
-    public void setCuType(String cuType);
-    public void setRole(String role);
-    public void setPartStat(String partStat);
-    public void setRsvp(Boolean rsvp);
-    public void setMember(String member);
-    public void setDelegatedTo(String delegatedTo);
-    public void setDelegatedFrom(String delegatedFrom);
+    void setAddress(String address);
+    void setUrl(String url);
+    void setDisplayName(String displayName);
+    void setSentBy(String sentBy);
+    void setDir(String dir);
+    void setLanguage(String language);
+    void setCuType(String cuType);
+    void setRole(String role);
+    void setPartStat(String partStat);
+    void setRsvp(Boolean rsvp);
+    void setMember(String member);
+    void setDelegatedTo(String delegatedTo);
+    void setDelegatedFrom(String delegatedFrom);
 
-    public String getAddress();
-    public String getUrl();
-    public String getDisplayName();
-    public String getSentBy();
-    public String getDir();
-    public String getLanguage();
-    public String getCuType();
-    public String getRole();
-    public String getPartStat();
-    public Boolean getRsvp();
-    public String getMember();
-    public String getDelegatedTo();
-    public String getDelegatedFrom();
+    String getAddress();
+    String getUrl();
+    String getDisplayName();
+    String getSentBy();
+    String getDir();
+    String getLanguage();
+    String getCuType();
+    String getRole();
+    String getPartStat();
+    Boolean getRsvp();
+    String getMember();
+    String getDelegatedTo();
+    String getDelegatedFrom();
 
-    public void setXParamInterfaces(Iterable<XParamInterface> xParams);
-    public void addXParamInterface(XParamInterface xParam);
-    public List<XParamInterface> getXParamInterfaces();
+    void setXParamInterfaces(Iterable<XParamInterface> xParams);
+    void addXParamInterface(XParamInterface xParam);
+    List<XParamInterface> getXParamInterfaces();
 }

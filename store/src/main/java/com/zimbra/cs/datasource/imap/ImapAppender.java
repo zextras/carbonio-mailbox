@@ -69,14 +69,12 @@ public class ImapAppender {
 
     private long append(MessageInfo mi) throws IOException, ServiceException {
         InputStream is = mi.data.getInputStream();
+      try (is) {
         Literal lit = new Literal(is, mi.data.getSize());
-        try {
-            return hasAppendUid ? append(mi, lit) : appendSlow(mi, lit);
-        } catch (MessagingException e) {
-            throw ServiceException.FAILURE("Parsing error", e);
-        } finally {
-            is.close();
-        }
+        return hasAppendUid ? append(mi, lit) : appendSlow(mi, lit);
+      } catch (MessagingException e) {
+        throw ServiceException.FAILURE("Parsing error", e);
+      }
     }
 
     private static Data getData(final File file) {
@@ -179,7 +177,7 @@ public class ImapAppender {
     }
 
     private Object[] getSearchParams(MessageInfo mi) throws MessagingException {
-        List<Object> params = new ArrayList<Object>();
+        List<Object> params = new ArrayList<>();
         params.add("SENTON");
         Date date = mi.mm.getSentDate();
         params.add(String.format("%td-%tb-%tY", date, date, date));
@@ -201,7 +199,7 @@ public class ImapAppender {
     }
 
     private List<Long> findUids(String seq, final MessageInfo mi) throws IOException, MessagingException {
-        final List<Long> uids = new ArrayList<Long>(1);
+        final List<Long> uids = new ArrayList<>(1);
         Map<Long, MessageData> mds = connection.uidFetch(seq, "(RFC822.SIZE ENVELOPE)");
         for (MessageData md : mds.values()) {
             if (matches(mi, md)) {
@@ -266,23 +264,20 @@ public class ImapAppender {
 
         MessageInfo(Data data, Flags flags) throws ServiceException, IOException {
             this.data = data;
-            InputStream is = data.getInputStream();
-            try {
-                mm = new ZMimeMessage(null, is);
-                this.flags = flags;
-                date = mm.getReceivedDate();
-                if (date == null) {
-                    date = new Date(System.currentTimeMillis());
-                }
-            } catch (MessagingException e) {
-                throw ServiceException.FAILURE("Unable to parse message", e);
-            } finally {
-                is.close();
+          try (InputStream is = data.getInputStream()) {
+            mm = new ZMimeMessage(null, is);
+            this.flags = flags;
+            date = mm.getReceivedDate();
+            if (date == null) {
+              date = new Date(System.currentTimeMillis());
             }
+          } catch (MessagingException e) {
+            throw ServiceException.FAILURE("Unable to parse message", e);
+          }
         }
     }
 
-    private static interface Data {
+    private interface Data {
         InputStream getInputStream() throws IOException;
 
         int getSize() throws IOException;

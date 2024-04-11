@@ -173,7 +173,7 @@ public abstract class PendingModifications<T extends ZimbraMailItem> {
                 ZimbraLog.mailbox.warn("error retrieving account id or id in mailbox", e);
             }
             setAccountId(acctId);
-            setItemId(Integer.valueOf(idInMbox));
+            setItemId(idInMbox);
 
         }
 
@@ -313,7 +313,7 @@ public abstract class PendingModifications<T extends ZimbraMailItem> {
             modified.remove(key);
         }
         if (deleted == null) {
-            deleted = new HashMap<ModificationKey, Change>();
+            deleted = new HashMap<>();
         }
         Change existingChg = deleted.get(key);
         if (existingChg == null) {
@@ -453,12 +453,12 @@ public abstract class PendingModifications<T extends ZimbraMailItem> {
 
         if(accountMods!= null && accountMods.modified != null) {
             //aggregate tag changes so they are sent to each folder we are interested in
-            List<ModifyTagNotification> tagMods = new ArrayList<ModifyTagNotification>();
-            List<DeleteItemNotification> tagDeletes = new ArrayList<DeleteItemNotification>();
+            List<ModifyTagNotification> tagMods = new ArrayList<>();
+            List<DeleteItemNotification> tagDeletes = new ArrayList<>();
             for(Object maybeTagChange : accountMods.modified.values()) {
                 if(maybeTagChange instanceof Change) {
                     Object maybeTag = ((Change) maybeTagChange).what;
-                    if(maybeTag != null && maybeTag instanceof Tag) {
+                    if(maybeTag instanceof Tag) {
                         Tag tag = (Tag) maybeTag;
                         tagMods.add(new ModifyTagNotification(tag.getIdInMailbox(), tag.getName(), ((Change) maybeTagChange).why));
                     }
@@ -472,7 +472,7 @@ public abstract class PendingModifications<T extends ZimbraMailItem> {
                     Change mod = entry.getValue();
                     if(mod instanceof Change) {
                         Object what = mod.what;
-                        if(what != null && what instanceof MailItem.Type) {
+                        if(what instanceof Type) {
                             if(what == MailItem.Type.TAG) {
                                 //aggregate tag deletions so they are sent to each folder we are interested in
                                 tagDeletes.add(JaxbUtil.getDeletedItemSOAP(key.getItemId(), what.toString()));
@@ -495,7 +495,7 @@ public abstract class PendingModifications<T extends ZimbraMailItem> {
             for(Object mod : accountMods.modified.values()) {
                 if(mod instanceof Change) {
                     Object what = ((Change) mod).what;
-                    if(what != null && what instanceof BaseItemInfo) {
+                    if(what instanceof BaseItemInfo) {
                         BaseItemInfo itemInfo = (BaseItemInfo)what;
                         Integer folderId = itemInfo.getFolderIdInMailbox();
                         if (itemInfo instanceof Folder) {

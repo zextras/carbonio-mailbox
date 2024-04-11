@@ -287,7 +287,7 @@ public class ZMimeBodyPart extends MimeBodyPart implements ZMimePart {
 
         boolean isText = ctype.getPrimaryType().equals("text");
         String disp = part.getDisposition();
-        boolean isAttachment = disp != null && disp.equals(ATTACHMENT);
+        boolean isAttachment = ATTACHMENT.equals(disp);
 
         String encoding = "base64";
         if (dh.getName() == null) {

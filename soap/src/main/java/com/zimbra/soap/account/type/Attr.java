@@ -31,12 +31,7 @@ import javax.xml.bind.annotation.XmlValue;
  */
 public class Attr implements KeyAndValue {
 
-    public static Function<Attr, Attr> COPY = new Function<Attr, Attr>() {
-        @Override
-        public Attr apply(Attr from) {
-            return new Attr(from);
-        }
-    };
+    public static Function<Attr, Attr> COPY = from -> new Attr(from);
 
     /**
      * @zm-api-field-tag attr-name
@@ -127,7 +122,7 @@ public class Attr implements KeyAndValue {
     }
 
     public static List<Attr> fromMultimap(Multimap<String, String> attrMap) {
-        final List<Attr> attrs = new ArrayList<Attr>();
+        final List<Attr> attrs = new ArrayList<>();
         if (attrMap != null) {
             for (final Map.Entry<String, String> entry : attrMap.entries()) {
                 attrs.add(new Attr(entry.getKey(), entry.getValue()));
@@ -145,14 +140,14 @@ public class Attr implements KeyAndValue {
             final String key = entry.getKey();
             final Object value = entry.getValue();
             if (value == null) {
-                newAttrs.add(new Attr(key, (String) null));
+                newAttrs.add(new Attr(key, null));
             } else if (value instanceof String) {
                 newAttrs.add(new Attr(key, (String) value));
             } else if (value instanceof String[]) {
                 final String[] values = (String[]) value;
                 if (values.length == 0) {
                     // an empty array == removing the attr
-                    newAttrs.add(new Attr(key, (String) null));
+                    newAttrs.add(new Attr(key, null));
                 } else {
                     for (final String v: values) {
                         newAttrs.add(new Attr(key, v));

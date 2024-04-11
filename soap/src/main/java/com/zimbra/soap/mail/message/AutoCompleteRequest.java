@@ -72,7 +72,7 @@ public class AutoCompleteRequest {
      */
     @SuppressWarnings("unused")
     private AutoCompleteRequest() {
-        this((String) null);
+        this(null);
     }
 
     public AutoCompleteRequest(String name) {

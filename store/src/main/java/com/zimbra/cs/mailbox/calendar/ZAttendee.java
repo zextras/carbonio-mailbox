@@ -173,7 +173,7 @@ public class ZAttendee extends CalendarUser {
             meta.put(FN_ROLE, getRole());
         if (hasPartStat())
             meta.put(FN_PARTSTAT, getPartStat());
-        if (hasRsvp() && getRsvp().booleanValue())
+        if (hasRsvp() && getRsvp())
             meta.put(FN_RSVP_BOOL, "1");
         if (hasMember())
             meta.put(FN_MEMBER, getMember());
@@ -231,7 +231,7 @@ public class ZAttendee extends CalendarUser {
         if (hasRsvp()) {
             if (sb.length() > 0) sb.append(';');
             sb.append("RSVP=");
-            if (getRsvp().booleanValue())
+            if (getRsvp())
                 sb.append("TRUE");
             else
                 sb.append("FALSE");

@@ -13,8 +13,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -190,8 +190,8 @@ public class TestMain {
                     if (i >= args.length - 2)
                         usage();
                     outDirName = args[i+1];
-                    firstTestFileArgIndex = i + 2;;
-                    break;
+                    firstTestFileArgIndex = i + 2;
+                  break;
                 } else if (arg.equalsIgnoreCase("-i")) {
                     if (i >= args.length - 1)
                         usage();
@@ -293,7 +293,7 @@ public class TestMain {
         boolean doneConversion = false;
         try {
             fisMime = new ZSharedFileInputStream(mimeFile);
-            baosOut = new OutputStreamWriter(baos, UTF8);
+            baosOut = new OutputStreamWriter(baos, StandardCharsets.UTF_8);
 
             // Do the conversion.
             MimeMessage mm = new ZMimeMessage(JMSession.getSession(), fisMime);
@@ -323,13 +323,7 @@ public class TestMain {
         } catch (UnsupportedTnefCalendaringMsgException ex) {
             sLog.warn("Unable to map %s to ICALENDAR", mimeFile.getPath(), ex);
             return false;
-        } catch (TNEFtoIcalendarServiceException ex) {
-            sLog.warn("Problem encountered mapping %s to ICALENDAR", mimeFile.getPath(), ex);
-            return false;
-        } catch (MessagingException ex) {
-            sLog.warn("Problem encountered mapping %s to ICALENDAR", mimeFile.getPath(), ex);
-            return false;
-        } catch (ServiceException ex) {
+        } catch (ServiceException | MessagingException ex) {
             sLog.warn("Problem encountered mapping %s to ICALENDAR", mimeFile.getPath(), ex);
             return false;
         } catch (IOException ex) {
@@ -366,16 +360,13 @@ public class TestMain {
         String ical = null;
         Writer wout = null;
         try {
-            ical = icalBaos.toString(UTF8);
+            ical = icalBaos.toString(StandardCharsets.UTF_8);
             if (icalFile != null)
                 wout = new FileWriter(icalFile);
             else
-                wout = new OutputStreamWriter(System.out, UTF8);
+                wout = new OutputStreamWriter(System.out, StandardCharsets.UTF_8);
             wout.write(ical);
             wout.flush();
-        } catch (UnsupportedEncodingException e) {
-            sLog.warn("Problem Writing ICALENDAR for %s", mimeFile.getPath(), e);
-            return false;
         } catch (IOException e) {
             sLog.warn("Problem Writing ICALENDAR for %s", mimeFile.getPath(), e);
             return false;
@@ -411,9 +402,9 @@ public class TestMain {
     private static class TestContentHandler implements ContentHandler {
 
         boolean mDebug;
-        List<ZVCalendar> mCals = new ArrayList<ZVCalendar>(1);
+        List<ZVCalendar> mCals = new ArrayList<>(1);
         ZVCalendar mCurCal = null;
-        List<ZComponent> mComponents = new ArrayList<ZComponent>();
+        List<ZComponent> mComponents = new ArrayList<>();
         ZProperty mCurProperty = null;
         private int mNumCals;
         private boolean mInZCalendar;

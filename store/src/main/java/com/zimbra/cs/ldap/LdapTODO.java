@@ -8,10 +8,8 @@ package com.zimbra.cs.ldap;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.util.Zimbra;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 public class LdapTODO {
     
@@ -49,7 +47,7 @@ public class LdapTODO {
         Zimbra.halt("TODO", e);
     }
     
-    public static enum FailCode {
+    public enum FailCode {
         /*
          * Turn JVM assertion on.  If this failure never happens, remove 
          * catching the LdapNameNotFoundException exception from all callsites.

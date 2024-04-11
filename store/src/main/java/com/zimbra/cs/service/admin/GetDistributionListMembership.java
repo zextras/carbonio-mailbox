@@ -20,7 +20,6 @@ import com.zimbra.cs.account.DistributionList;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
-import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.GetDistributionListMembershipRequest;
 import com.zimbra.soap.admin.type.DistributionListSelector;
@@ -70,7 +69,7 @@ public class GetDistributionListMembership extends AdminDocumentHandler {
                 Admin.R_getDistributionListMembership /* shouldn't be used */,
                 Admin.R_getDistributionListMembership);
 
-        HashMap<String,String> via = new HashMap<String, String>();
+        HashMap<String,String> via = new HashMap<>();
         List<DistributionList> lists = prov.getDistributionLists(distributionList, false, via);
 
         Element response = zsc.createElement(AdminConstants.GET_DISTRIBUTION_LIST_MEMBERSHIP_RESPONSE);

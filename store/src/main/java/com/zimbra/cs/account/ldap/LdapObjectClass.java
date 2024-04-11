@@ -40,7 +40,7 @@ public class LdapObjectClass {
 
   public static Set<String> getAccountObjectClasses(Provisioning prov, boolean zimbraDefaultOnly)
       throws ServiceException {
-    Set<String> ocs = new LinkedHashSet<String>();
+    Set<String> ocs = new LinkedHashSet<>();
 
     ocs.add(ZIMBRA_DEFAULT_PERSON_OC);
     ocs.add(AttributeClass.OC_zimbraAccount);
@@ -56,7 +56,7 @@ public class LdapObjectClass {
 
   public static Set<String> getCalendarResourceObjectClasses(Provisioning prov)
       throws ServiceException {
-    Set<String> ocs = new LinkedHashSet<String>();
+    Set<String> ocs = new LinkedHashSet<>();
 
     ocs.add(AttributeClass.OC_zimbraCalendarResource);
 
@@ -65,7 +65,7 @@ public class LdapObjectClass {
   }
 
   public static Set<String> getCosObjectClasses(Provisioning prov) throws ServiceException {
-    Set<String> ocs = new LinkedHashSet<String>();
+    Set<String> ocs = new LinkedHashSet<>();
 
     ocs.add(AttributeClass.OC_zimbraCOS);
 
@@ -74,7 +74,7 @@ public class LdapObjectClass {
   }
 
   public static Set<String> getDomainObjectClasses(Provisioning prov) throws ServiceException {
-    Set<String> ocs = new LinkedHashSet<String>();
+    Set<String> ocs = new LinkedHashSet<>();
 
     ocs.add("dcObject");
     ocs.add("organization");
@@ -91,7 +91,7 @@ public class LdapObjectClass {
 
   public static Set<String> getDistributionListObjectClasses(Provisioning prov, boolean isHabGroup)
       throws ServiceException {
-    Set<String> ocs = new LinkedHashSet<String>();
+    Set<String> ocs = new LinkedHashSet<>();
     ocs.add(AttributeClass.OC_zimbraDistributionList);
     ocs.add(AttributeClass.OC_zimbraMailRecipient);
     if (isHabGroup) {
@@ -106,7 +106,7 @@ public class LdapObjectClass {
 
   public static Set<String> getGroupObjectClasses(Provisioning prov, boolean isHabGroup)
       throws ServiceException {
-    Set<String> ocs = new LinkedHashSet<String>();
+    Set<String> ocs = new LinkedHashSet<>();
 
     ocs.add("groupOfURLs");
     ocs.add("dgIdentityAux");
@@ -120,7 +120,7 @@ public class LdapObjectClass {
 
   public static Set<String> getGroupDynamicUnitObjectClasses(Provisioning prov)
       throws ServiceException {
-    Set<String> ocs = new LinkedHashSet<String>();
+    Set<String> ocs = new LinkedHashSet<>();
 
     ocs.add("groupOfURLs");
     ocs.add("dgIdentityAux");
@@ -131,7 +131,7 @@ public class LdapObjectClass {
 
   public static Set<String> getGroupStaticUnitObjectClasses(Provisioning prov)
       throws ServiceException {
-    Set<String> ocs = new LinkedHashSet<String>();
+    Set<String> ocs = new LinkedHashSet<>();
 
     ocs.add(AttributeClass.OC_zimbraGroupStaticUnit);
 
@@ -139,7 +139,7 @@ public class LdapObjectClass {
   }
 
   public static Set<String> getServerObjectClasses(Provisioning prov) throws ServiceException {
-    Set<String> ocs = new LinkedHashSet<String>();
+    Set<String> ocs = new LinkedHashSet<>();
 
     ocs.add(AttributeClass.OC_zimbraServer);
 
@@ -149,13 +149,13 @@ public class LdapObjectClass {
 
   public static Set<String> getShareLocatorObjectClasses(Provisioning prov)
       throws ServiceException {
-    Set<String> ocs = new LinkedHashSet<String>();
+    Set<String> ocs = new LinkedHashSet<>();
     ocs.add(AttributeClass.OC_zimbraShareLocator);
     return ocs;
   }
 
   public static Set<String> getOrganizationUnitObjectClasses() throws ServiceException {
-    Set<String> ocs = new LinkedHashSet<String>();
+    Set<String> ocs = new LinkedHashSet<>();
     ocs.add("top");
     ocs.add("organizationalUnit");
     return ocs;

@@ -45,10 +45,10 @@ public abstract class GalGroup {
     public enum GroupInfo {
         IS_GROUP,   // address is a group
         CAN_EXPAND  // address is a group and the authed account has right to expand it
-    };
+    }
 
     private static final Provisioning prov = Provisioning.getInstance();
-    private static Map<String, DomainGalGroupCache> groups = new HashMap<String, DomainGalGroupCache>();
+    private static Map<String, DomainGalGroupCache> groups = new HashMap<>();
     private static ThreadPool syncGalGroupThreadPool = new ThreadPool("SyncGalGroup", 10);
 
     private interface GalGroupCache {
@@ -305,8 +305,8 @@ public abstract class GalGroup {
 
             this.domainName = domainName;
             isSyncing = true;
-            internalGroups = new HashSet<String>();
-            externalGroups = new HashSet<String>();
+            internalGroups = new HashSet<>();
+            externalGroups = new HashSet<>();
         }
 
         private synchronized boolean isSyncing() {
@@ -510,7 +510,7 @@ public abstract class GalGroup {
 
                     if (email == null) {
                         ZimbraLog.gal.info("GalGroup - handle Element: contact " +
-                                e.toString() + " does not have an email address." +
+                            e + " does not have an email address." +
                                 " Not adding to gal group cache.");
                     } else {
                         addResult(email, zimbraId, contact);

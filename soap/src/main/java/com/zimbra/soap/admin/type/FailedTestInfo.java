@@ -10,8 +10,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
 
-import com.zimbra.common.soap.AdminConstants;
-
 @XmlAccessorType(XmlAccessType.NONE)
 public class FailedTestInfo {
 
@@ -48,7 +46,7 @@ public class FailedTestInfo {
      */
     @SuppressWarnings("unused")
     private FailedTestInfo() {
-        this((String) null, (String) null, (String) null, (String) null);
+        this(null, null, null, null);
     }
 
     public FailedTestInfo(String name, String execSeconds,

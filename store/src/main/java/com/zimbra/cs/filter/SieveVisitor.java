@@ -363,7 +363,7 @@ public abstract class SieveVisitor {
     private static final Set<String> RULE_NODE_NAMES = ImmutableSet.of("if", "disabled_if", "elsif");
     private static final String COPY_EXT = ":copy";
 
-    public class RuleProperties {
+    public static class RuleProperties {
         private boolean isEnabled = true;
         private boolean isNegativeTest = false;
         private Sieve.Condition condition = null;
@@ -823,12 +823,12 @@ public abstract class SieveVisitor {
                 List<String> origHeaders = null;
                 if (numArgs == 4) {
                     if (getNode(node, 0, 3).jjtGetNumChildren() == 0) {
-                        maxBodyBytes = Integer.valueOf(getValue(node, 0, 3));
+                        maxBodyBytes = Integer.parseInt(getValue(node, 0, 3));
                     } else {
                         origHeaders = getMultiValue(node, 0, 3, 0);
                     }
                 } else if (numArgs == 5) {
-                    maxBodyBytes = Integer.valueOf(getValue(node, 0, 3));
+                    maxBodyBytes = Integer.parseInt(getValue(node, 0, 3));
                     origHeaders = getMultiValue(node, 0, 4, 0);
                 }
                 visitNotifyAction(
@@ -1223,7 +1223,7 @@ public abstract class SieveVisitor {
      * Returns the given node's name in lower case.
      */
     static String getNodeName(Node node) {
-        if (node == null || !(node instanceof SieveNode)) {
+        if (!(node instanceof SieveNode)) {
             return null;
         }
         String name = ((SieveNode) node).getName();
@@ -1262,7 +1262,7 @@ public abstract class SieveVisitor {
 
     private List<String> getMultiValue(Node parent, int ... indexes) throws ServiceException {
         Node child = getNode(parent, indexes);
-        List<String> values = new ArrayList<String>();
+        List<String> values = new ArrayList<>();
         int numChildren = child.jjtGetNumChildren();
         if (numChildren > 0) {
             for (int i = 0; i < numChildren; i++) {
@@ -1270,7 +1270,7 @@ public abstract class SieveVisitor {
                 values.add(value == null ? null : value.toString());
             }
         } else {
-            values.add(getValue(parent, indexes).toString());
+            values.add(getValue(parent, indexes));
         }
         return values;
     }
@@ -1280,7 +1280,7 @@ public abstract class SieveVisitor {
         if (s == null || s.length() == 0 || s.charAt(0) != ':') {
             return s;
         }
-        return s.substring(1, s.length());
+        return s.substring(1);
     }
 
     /**
@@ -1344,7 +1344,7 @@ public abstract class SieveVisitor {
 
     private void validateCountComparator(boolean isCount, Sieve.Comparator comparator) throws ServiceException {
         if (isCount && comparator != null && !Sieve.Comparator.iasciinumeric.equals(comparator)) {
-            throw ServiceException.PARSE_ERROR("Invalid Comparator For Count: " + comparator.toString(), null);
+            throw ServiceException.PARSE_ERROR("Invalid Comparator For Count: " + comparator, null);
         }
     }
 }

@@ -39,7 +39,7 @@ public class QueueSummary {
      */
     @SuppressWarnings("unused")
     private QueueSummary() {
-        this((String) null);
+        this(null);
     }
 
     public QueueSummary(String type) {

@@ -20,5 +20,5 @@ public interface Counts {
      * @param rhs right hand side
      * @return boolean
      */
-    public boolean counts(String operator, List<String> lhs, String rhs) throws FeatureException;
+    boolean counts(String operator, List<String> lhs, String rhs) throws FeatureException;
 }

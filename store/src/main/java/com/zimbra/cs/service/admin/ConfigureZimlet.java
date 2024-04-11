@@ -41,10 +41,8 @@ public class ConfigureZimlet extends AdminDocumentHandler {
 		try {
 			byte[] blob = ByteUtil.getContent(up.getInputStream(), 0);
 			ZimletUtil.installConfig(new String(blob));
-		} catch (IOException ioe) {
+		} catch (IOException | ZimletException ioe) {
 			throw ServiceException.FAILURE("cannot configure", ioe);
-		} catch (ZimletException ze) {
-			throw ServiceException.FAILURE("cannot configure", ze);
 		} finally {
 			FileUploadServlet.deleteUpload(up);
 		}

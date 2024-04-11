@@ -86,7 +86,7 @@ implements EmailInfoInterface {
      */
     @SuppressWarnings("unused")
     private EmailInfo() {
-        this((String) null, (String) null, (String) null, (String) null);
+        this(null, null, null, null);
     }
 
     public EmailInfo(String address, String display, String personal,

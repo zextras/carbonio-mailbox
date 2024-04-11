@@ -21,10 +21,10 @@ public class SoapDebugListener implements HttpDebugListener {
     
     public interface Printer {
         // print an empty line
-        public void println();
+        void println();
         
         // print str on a line
-        public void println(String str);
+        void println(String str);
     }
     
     private static class StdoutPrinter implements Printer {

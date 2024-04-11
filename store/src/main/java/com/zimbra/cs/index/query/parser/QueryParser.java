@@ -311,7 +311,7 @@ public final class QueryParser {
     private List<Query> toQuery(SimpleNode node) throws ParseException, ServiceException {
         assert(node.id == JJTQUERY);
 
-        List<Query> result = new LinkedList<Query>();
+        List<Query> result = new LinkedList<>();
         ConjQuery conj = null;
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             SimpleNode child = (SimpleNode) node.jjtGetChild(i);
@@ -415,7 +415,7 @@ public final class QueryParser {
             Token token = node.jjtGetFirstToken();
             return createQuery(field, token, toString(node));
         } else {
-            List<Query> sub = new LinkedList<Query>();
+            List<Query> sub = new LinkedList<>();
             ConjQuery conj = null;
             Modifier mod = null;
             for (int i = 0; i < node.jjtGetNumChildren(); i++) {
@@ -671,7 +671,7 @@ public final class QueryParser {
                 return new ContactQuery(text);
             case CONTENT:
                 if (types.contains(MailItem.Type.CONTACT)) { // combine with CONTACT query
-                    List<Query> clauses = new ArrayList<Query>(3);
+                    List<Query> clauses = new ArrayList<>(3);
                     clauses.add(new ContactQuery(text));
                     clauses.add(new ConjQuery(ConjQuery.Conjunction.OR));
                     clauses.add(createContentQuery(text));

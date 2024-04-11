@@ -86,7 +86,7 @@ public class AdminCreateWaitSetRequest implements CreateWaitSetReq {
      */
     @SuppressWarnings("unused")
     private AdminCreateWaitSetRequest() {
-        this((String) null, (Boolean) null);
+        this(null, null);
     }
 
     public AdminCreateWaitSetRequest(String defaultInterests, Boolean allAccounts) {

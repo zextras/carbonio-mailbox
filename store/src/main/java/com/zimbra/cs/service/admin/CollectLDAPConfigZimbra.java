@@ -62,8 +62,7 @@ public class CollectLDAPConfigZimbra extends ZimbraServlet {
 			ByteUtil.copy(new ByteArrayInputStream(rr.getMStdout()), true, resp.getOutputStream(), false);
 		} catch (ServiceException e) {
 			returnError(resp, e);
-        	return;
-		}
+    }
 
 	}
 

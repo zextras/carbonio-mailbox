@@ -34,7 +34,7 @@ public class DeleteZimletRequest {
      */
     @SuppressWarnings("unused")
     private DeleteZimletRequest() {
-        this((NamedElement) null);
+        this(null);
     }
 
     public DeleteZimletRequest(NamedElement zimlet) {

@@ -161,7 +161,7 @@
       <dependency>
         <groupId>com.zextras.carbonio.files</groupId>
         <artifactId>carbonio-files-sdk</artifactId>
-        <version>0.0.3</version>
+        <version>0.0.4</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -338,11 +338,6 @@
         <version>${log4j.version}</version>
       </dependency>
       <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>1.2.16</version>
-      </dependency>
-      <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-core</artifactId>
         <version>${log4j.version}</version>
@@ -375,45 +370,45 @@
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-common</artifactId>
-        <version>${revision}</version>
+        <version>${revision}${changelist}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-client</artifactId>
-        <version>${revision}</version>
+        <version>${revision}${changelist}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-soap</artifactId>
-        <version>${revision}</version>
+        <version>${revision}${changelist}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-native</artifactId>
-        <version>${revision}</version>
+        <version>${revision}${changelist}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-store</artifactId>
-        <version>${revision}</version>
+        <version>${revision}${changelist}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-store</artifactId>
-        <version>${revision}</version>
+        <version>${revision}${changelist}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>store-extra-runtime-dependencies</artifactId>
         <type>pom</type>
-        <version>${revision}</version>
+        <version>${revision}${changelist}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>carbonio-jetty-libs</artifactId>
         <type>pom</type>
-        <version>${revision}</version>
+        <version>${revision}${changelist}</version>
         <exclusions>
           <exclusion>
             <artifactId>*</artifactId>
@@ -693,9 +688,9 @@
         <version>1.0-2</version>
       </dependency>
       <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <version>6.0.0</version>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.core</artifactId>
+        <version>6.0.0</version>
       </dependency>
       <dependency>
         <groupId>org.freemarker</groupId>
@@ -772,6 +767,12 @@
         <artifactId>zm-charset</artifactId>
         <version>22.5.0</version>
       </dependency>
+      <dependency>
+        <groupId>com.github.stefanbirkner</groupId>
+        <artifactId>system-lambda</artifactId>
+        <version>${system-lambda.version}</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -809,12 +810,14 @@
     <jsr305.version>3.0.2</jsr305.version>
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
+    <system-lambda.version>1.2.1</system-lambda.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
-    <revision>24.4.0-SNAPSHOT</revision>
+    <changelist>-SNAPSHOT</changelist>
+    <revision>24.5.0</revision>
     <mockserver.version>5.13.0</mockserver.version>
     <mariadb-java-client.version>2.7.3</mariadb-java-client.version>
   </properties>
-  <version>${revision}</version>
+  <version>${revision}${changelist}</version>
   <profiles>
     <!-- Allows deploy to Zextras public maven repo -->
     <profile>
@@ -826,7 +829,7 @@
         </repository>
       </distributionManagement>
       <properties>
-        <modifier></modifier>
+        <changelist></changelist>
       </properties>
     </profile>
     <profile>
@@ -898,6 +901,35 @@
           <artifactId>maven-antrun-plugin</artifactId>
           <groupId>org.apache.maven.plugins</groupId>
           <version>3.1.0</version>
+          <executions>
+            <execution>
+              <id>generate-ant-properties</id>
+              <phase>validate</phase>
+              <configuration>
+                <target>
+                  <pathconvert property="compile_classpath_value" refid="maven.compile.classpath"/>
+                  <pathconvert property="runtime_classpath_value" refid="maven.runtime.classpath"/>
+                  <pathconvert property="test_classpath_value" refid="maven.test.classpath"/>
+                  <!--mvn properties shared with all modules while building project-->
+                  <propertyfile file="${project.build.directory}/mvn-ant-shared-build.properties">
+                    <!--required to set carbonio.buildinfo.version-->
+                    <entry key="mvn_revision" value="${revision}"/>
+
+                    <!--properties needed by some ant tasks-->
+                    <entry key="compile_classpath" value="${compile_classpath_value}"/>
+                    <entry key="runtime_classpath" value="${runtime_classpath_value}"/>
+                    <entry key="test_classpath" value="${test_classpath_value}"/>
+                  </propertyfile>
+                  <propertyfile file="${project.build.directory}/mvn-ant-shared-build.properties">
+                    <entry key="mvn_revision" value="${revision}"/>
+                  </propertyfile>
+                </target>
+              </configuration>
+              <goals>
+                <goal>run</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
         <!-- Testing -->
         <plugin>

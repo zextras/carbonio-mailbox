@@ -44,7 +44,7 @@ public class GetZimletStatusResponse {
      */
     @SuppressWarnings("unused")
     private GetZimletStatusResponse() {
-        this((ZimletStatusParent) null);
+        this(null);
     }
 
     public GetZimletStatusResponse(ZimletStatusParent zimlets) {

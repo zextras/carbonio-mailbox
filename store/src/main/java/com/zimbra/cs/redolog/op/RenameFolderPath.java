@@ -34,9 +34,9 @@ public class RenameFolderPath extends RenameItemPath {
         out.writeUTF(mPath);
         if (mParentIds != null) {
             out.writeInt(mParentIds.length);
-            for (int i = 0; i < mParentIds.length; i++) {
-                out.writeInt(mParentIds[i]);
-            }
+          for (int mParentId : mParentIds) {
+            out.writeInt(mParentId);
+          }
         } else {
             out.writeInt(0);
         }

@@ -160,7 +160,7 @@ public class GalSearchControl {
   private static HashSet<String> SyncClients;
 
   static {
-    SyncClients = new HashSet<String>();
+    SyncClients = new HashSet<>();
   }
 
   public void sync() throws ServiceException {
@@ -201,7 +201,7 @@ public class GalSearchControl {
         int domainLimit = domain.getGalSyncSizeLimit();
         // Use the lower value in case of non zero values of limit and domainLimit
         if (limit != 0 && domainLimit != 0) {
-          limit = limit > domainLimit ? domainLimit : limit;
+          limit = Math.min(limit, domainLimit);
         } else if (limit == 0) {
           // if limit is zero use domainLimit
           limit = domainLimit;
@@ -403,7 +403,7 @@ public class GalSearchControl {
       searchQuery.append(" AND (");
       searchQuery.append(" inid:").append(ds.getFolderId());
       searchQuery.append(")");
-      ZimbraLog.gal.debug("query: " + searchQuery.toString());
+      ZimbraLog.gal.debug("query: " + searchQuery);
       mParams.parseSearchParams(mParams.getRequest(), searchQuery.toString());
       return true;
     }
@@ -508,7 +508,7 @@ public class GalSearchControl {
     boolean syncLocalResources =
         (galMode == GalMode.ldap && domain.isGalAlwaysIncludeLocalCalendarResources());
 
-    Set<Integer> folderIds = new HashSet<Integer>();
+    Set<Integer> folderIds = new HashSet<>();
     String syncToken = null;
     for (DataSource ds : galAcct.getAllDataSources()) {
       if (ds.getType() != DataSourceType.gal) {

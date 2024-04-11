@@ -39,12 +39,12 @@ public class MessageCache {
         CacheNode()  { }
         MimeMessage message;
         MimeMessage expanded;
-        Map<Integer, String> smimeAccessInfo = new HashMap<Integer, String>();
+        Map<Integer, String> smimeAccessInfo = new HashMap<>();
         long size = 0;
     }
 
     /** Cache mapping message digest to the corresponding message structure. */
-    private static Map<String, CacheNode> sCache = new LinkedHashMap<String, CacheNode>(150, (float) 0.75, true);
+    private static Map<String, CacheNode> sCache = new LinkedHashMap<>(150, (float) 0.75, true);
     /** Maximum number of items in {@link #sCache}. */
     private static int sMaxCacheSize;
     /** Number of bytes of message data stored in the cache.  This value includes only
@@ -289,7 +289,7 @@ public class MessageCache {
             String decryptionError = null;
             try {
                 decryptedMimeMessage = SmimeHandler.getHandler().decryptMessage(
-                    ((Message) item).getMailbox(), cnode.message, item.getId());
+                    item.getMailbox(), cnode.message, item.getId());
                 if (decryptedMimeMessage == null) {
                     decryptionError = MimeConstants.ERR_DECRYPTION_FAILED;
                 }
@@ -376,8 +376,7 @@ public class MessageCache {
                 Map.Entry<String, CacheNode> entry = it.next();
                 CacheNode cacheNode = entry.getValue();
                 try {
-                    if (Mime.isEncrypted(cacheNode.message.getContentType())
-                        && cacheNode.smimeAccessInfo.containsKey(mboxId)) {
+                    if (Mime.isEncrypted(cacheNode.message.getContentType())) {
                         cacheNode.smimeAccessInfo.remove(mboxId);
                     }
                 } catch (MessagingException e) {

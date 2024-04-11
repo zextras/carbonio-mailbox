@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -176,7 +177,7 @@ public class StringUtil {
                 sb = new StringBuilder(len - 1);
             }
             if (start < i) {
-                sb.append(string.substring(start, i));
+                sb.append(string, start, i);
             }
             start = i + 1;
         }
@@ -207,7 +208,7 @@ public class StringUtil {
                     sb = new StringBuilder(len - 1);
                 }
                 if (start < i) {
-                    sb.append(string.substring(start, i));
+                    sb.append(string, start, i);
                 }
                 sb.append('?');
                 start = ++i + 1;
@@ -304,7 +305,7 @@ public class StringUtil {
      *    a2 -> [v2, v3]
      */
     public static Map<String, Object> keyValueArrayToMultiMap(String[] args, int offset) {
-        Map<String, Object> attrs = new HashMap<String, Object>();
+        Map<String, Object> attrs = new HashMap<>();
         for (int i = offset; i < args.length; i += 2) {
             String n = args[i];
             if (i + 1 >= args.length) {
@@ -340,7 +341,7 @@ public class StringUtil {
      * Converts a Guava multimap to an old-style version.
      */
     public static Map<String, Object> toOldMultimap(Multimap<String, String> newMultimap) {
-        Map<String, Object> oldMap = new HashMap<String, Object>();
+        Map<String, Object> oldMap = new HashMap<>();
         for (Map.Entry<String, String> entry : newMultimap.entries()) {
             addToMultiMap(oldMap, entry.getKey(), entry.getValue());
         }
@@ -404,7 +405,7 @@ public class StringUtil {
                 if (sb == null) {
                     sb = new StringBuilder();
                 }
-                sb.append(line.substring(0, line.length()-1));
+                sb.append(line, 0, line.length()-1);
             } else {
                 break;
             }
@@ -427,7 +428,7 @@ public class StringUtil {
     }
 
     public static List<String> parseSieveStringList(String value) throws ServiceException {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         if (value == null) {
             return result;
         }
@@ -478,7 +479,7 @@ public class StringUtil {
      * @return
      */
     public static String[] parseLine(String line) {
-        ArrayList<String> result = new ArrayList<String>();
+        ArrayList<String> result = new ArrayList<>();
 
         int i = 0;
 
@@ -576,7 +577,7 @@ public class StringUtil {
         System.out.println();
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         dump("this is a test");
         dump("this is 'a nother' test");
         dump("this is\\ test");
@@ -738,12 +739,12 @@ public class StringUtil {
             if (sb == null) {
                 sb = new StringBuilder(str.substring(0, i));
             } else {
-                sb.append(str.substring(last, i));
+                sb.append(str, last, i);
             }
             sb.append(replacement);
             last = i + 1;
         }
-        return (sb == null ? str : sb.append(str.substring(last, i)).toString());
+        return (sb == null ? str : sb.append(str, last, i).toString());
     }
 
     public static String jsEncodeKey(String key) {
@@ -800,61 +801,61 @@ public class StringUtil {
     }
 
     private static Set<String> sJavaReservedWords =
-            new HashSet<String>(Arrays.asList(
-                    "abstract",
-                    "assert",
-                    "boolean",
-                    "break",
-                    "byte",
-                    "case",
-                    "catch",
-                    "char",
-                    "class",
-                    "const",
-                    "continue",
-                    "default",
-                    "do",
-                    "double",
-                    "else",
-                    "enum",
-                    "extends",
-                    "false",
-                    "final",
-                    "finally",
-                    "float",
-                    "for",
-                    "goto",
-                    "if",
-                    "implements",
-                    "import",
-                    "instanceof",
-                    "int",
-                    "interface",
-                    "long",
-                    "native",
-                    "new",
-                    "null",
-                    "package",
-                    "private",
-                    "protected",
-                    "public",
-                    "return",
-                    "short",
-                    "static",
-                    "strictfp",
-                    "super",
-                    "switch",
-                    "synchronized",
-                    "this",
-                    "throw",
-                    "throws",
-                    "transient",
-                    "true",
-                    "try",
-                    "void",
-                    "volatile",
-                    "while"
-            ));
+        new HashSet<>(Arrays.asList(
+            "abstract",
+            "assert",
+            "boolean",
+            "break",
+            "byte",
+            "case",
+            "catch",
+            "char",
+            "class",
+            "const",
+            "continue",
+            "default",
+            "do",
+            "double",
+            "else",
+            "enum",
+            "extends",
+            "false",
+            "final",
+            "finally",
+            "float",
+            "for",
+            "goto",
+            "if",
+            "implements",
+            "import",
+            "instanceof",
+            "int",
+            "interface",
+            "long",
+            "native",
+            "new",
+            "null",
+            "package",
+            "private",
+            "protected",
+            "public",
+            "return",
+            "short",
+            "static",
+            "strictfp",
+            "super",
+            "switch",
+            "synchronized",
+            "this",
+            "throw",
+            "throws",
+            "transient",
+            "true",
+            "try",
+            "void",
+            "volatile",
+            "while"
+        ));
 
     public static boolean isJavaReservedWord(String s) {
         return sJavaReservedWords.contains(s);
@@ -979,20 +980,16 @@ public class StringUtil {
     }
 
     public static String truncateIfRequired(String body, int maxBodyBytes) {
-        try {
-            byte[] bodyBytes = body.getBytes(MimeConstants.P_CHARSET_UTF8);
-            if (maxBodyBytes > -1 && bodyBytes.length > maxBodyBytes) {
-                // During truncation make sure that we don't end up with a partial char at the end of the body.
-                // Start from index maxBodyBytes and going backwards determine the first byte that is a starting
-                // byte for a character. Such a byte is one whose top bit is 0 or whose top 2 bits are 11.
-                int indexToExclude = maxBodyBytes;
-                while (indexToExclude > 0 && bodyBytes[indexToExclude] < -64) {
-                    indexToExclude--;
-                }
-                return new String(bodyBytes, 0, indexToExclude, MimeConstants.P_CHARSET_UTF8);
+        byte[] bodyBytes = body.getBytes(StandardCharsets.UTF_8);
+        if (maxBodyBytes > -1 && bodyBytes.length > maxBodyBytes) {
+            // During truncation make sure that we don't end up with a partial char at the end of the body.
+            // Start from index maxBodyBytes and going backwards determine the first byte that is a starting
+            // byte for a character. Such a byte is one whose top bit is 0 or whose top 2 bits are 11.
+            int indexToExclude = maxBodyBytes;
+            while (indexToExclude > 0 && bodyBytes[indexToExclude] < -64) {
+                indexToExclude--;
             }
-        } catch (UnsupportedEncodingException e) {
-            ZimbraLog.filter.error("Error while truncating body", e);
+            return new String(bodyBytes, 0, indexToExclude, StandardCharsets.UTF_8);
         }
         return body;
     }
@@ -1054,7 +1051,7 @@ public class StringUtil {
                 break;
             default:
                 int maskLen = len - 3;
-                maskedEmail.append(local.substring(0, 3)).append(new String(new char[maskLen]).replace("\0", "*"));
+                maskedEmail.append(local, 0, 3).append(new String(new char[maskLen]).replace("\0", "*"));
                 break;
         }
         maskedEmail.append("@").append(parts[1]);

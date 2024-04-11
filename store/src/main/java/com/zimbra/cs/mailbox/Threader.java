@@ -126,7 +126,7 @@ public final class Threader {
      * @return a mutable {@code List} containing the base64-encoded hashes.
      * @throws ServiceException */
     private List<String> getReferenceHashes(boolean includeParents) throws ServiceException {
-        List<String> hashes = new ArrayList<String>();
+        List<String> hashes = new ArrayList<>();
         Collection<String> references = includeParents ? pm.getAllReferences() : Mime.getReferences(pm.getMimeMessage(), "Message-ID");
         for (String reference : references) {
             hashes.add(Mailbox.getHash("\u0001\u0002" + prependDataSource(Strings.nullToEmpty(reference))));
@@ -178,7 +178,7 @@ public final class Threader {
         if (tindex == null)
             return Collections.emptyList();
 
-        List<String> hashes = new ArrayList<String>(3);
+        List<String> hashes = new ArrayList<>(3);
         // technically shouldn't be shorter than 22 bytes, but always take 1 pass just in case
         int length = tindex.length;
         boolean addDataSource = mbox.getAccount().isDisableCrossAccountConversationThreading();
@@ -298,7 +298,7 @@ public final class Threader {
             }
             matchedConversations = matches;
         }
-        return new ArrayList<Conversation>(matchedConversations);
+        return new ArrayList<>(matchedConversations);
     }
 
     /** Clears cached threader results.  Matching conversations will be
@@ -340,7 +340,7 @@ public final class Threader {
             return Collections.emptyList();
         }
 
-        List<Conversation> matches = new ArrayList<Conversation>(dlist.size());
+        List<Conversation> matches = new ArrayList<>(dlist.size());
         for (MailItem.UnderlyingData data : dlist) {
             if (data.type == MailItem.Type.CONVERSATION.toByte()) {
                 matches.add(mbox.getConversation(data));
@@ -371,7 +371,7 @@ public final class Threader {
     }
 
     private List<String> getCurrentHashes() {
-        List<String> hashes = new ArrayList<String>();
+        List<String> hashes = new ArrayList<>();
         if (refHashes != null) {
             hashes.addAll(refHashes);
         }

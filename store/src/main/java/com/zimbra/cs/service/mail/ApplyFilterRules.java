@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.service.mail;
 
-import com.google.common.io.Closeables;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -90,8 +89,8 @@ public class ApplyFilterRules extends MailDocumentHandler {
         }
 
         Mailbox mbox = getRequestedMailbox(zsc);
-        List<Integer> messageIds = new ArrayList<Integer>();
-        List<Integer> affectedIds = new ArrayList<Integer>();
+        List<Integer> messageIds = new ArrayList<>();
+        List<Integer> affectedIds = new ArrayList<>();
         OperationContext octxt = getOperationContext(zsc, context);
 
         if (msgEl != null) {

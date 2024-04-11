@@ -99,8 +99,8 @@ public class GetEffectiveRightsRequest {
      */
     @SuppressWarnings("unused")
     private GetEffectiveRightsRequest() {
-        this((EffectiveRightsTargetSelector) null, (GranteeSelector) null,
-                (Boolean) null, (Boolean) null);
+        this(null, null,
+            null, null);
     }
 
     public GetEffectiveRightsRequest(EffectiveRightsTargetSelector target,

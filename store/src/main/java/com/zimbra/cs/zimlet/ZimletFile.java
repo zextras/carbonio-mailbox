@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -176,7 +177,7 @@ public class ZimletFile implements Comparable<ZimletFile> {
         }
         mDescFile = name + XML_SUFFIX;
         
-        mEntries = new HashMap<String,ZimletEntry>();
+        mEntries = new HashMap<>();
 
         if (mBaseStream != null) {
             mCopy = ByteUtil.getContent(mBaseStream, 0);
@@ -251,11 +252,11 @@ public class ZimletFile implements Comparable<ZimletFile> {
 
     private void initZimletDescription() throws IOException, ZimletException {
         if (mDesc == null) {
-            ZimletEntry entry = (ZimletEntry)mEntries.get(mDescFile.toLowerCase());
+            ZimletEntry entry = mEntries.get(mDescFile.toLowerCase());
             if (entry == null) {
                 throw new FileNotFoundException("zimlet description not found: " + mDescFile);
             }
-            mDescString = new String(entry.getContents(), "UTF-8");
+            mDescString = new String(entry.getContents(), StandardCharsets.UTF_8);
             mDesc = new ZimletDescription(mDescString);
         }
     }
@@ -288,7 +289,7 @@ public class ZimletFile implements Comparable<ZimletFile> {
 
     private void initZimletConfig() throws IOException, ZimletException {
         if (mConfig == null) {
-            ZimletEntry entry = (ZimletEntry)mEntries.get(CONFIG_TMPL);
+            ZimletEntry entry = mEntries.get(CONFIG_TMPL);
             if (entry == null) {
                 throw new FileNotFoundException("zimlet config not found: " + CONFIG_TMPL);
             }

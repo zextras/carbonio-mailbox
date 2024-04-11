@@ -34,38 +34,46 @@ public enum AdsConnectionType {
     }
 
     public static Function<ConnectionType, AdsConnectionType> CT_TO_ACT =
-        new Function<ConnectionType, AdsConnectionType>() {
-            @Override
-            public AdsConnectionType apply(ConnectionType from) {
-                if (from == null) {
-                    return null;
-                }
-                switch (from) {
-                case cleartext : return cleartext;
-                case ssl: return ssl;
-                case tls: return tls;
-                case tls_if_available : return tls_if_available;
-                }
-                ZimbraLog.soap.warn("Unexpected connection type %s.  Returning %s.", from, cleartext);
-                return cleartext;
+        new Function<>() {
+          @Override
+          public AdsConnectionType apply(ConnectionType from) {
+            if (from == null) {
+              return null;
             }
-    };
+            switch (from) {
+              case cleartext:
+                return cleartext;
+              case ssl:
+                return ssl;
+              case tls:
+                return tls;
+              case tls_if_available:
+                return tls_if_available;
+            }
+            ZimbraLog.soap.warn("Unexpected connection type %s.  Returning %s.", from, cleartext);
+            return cleartext;
+          }
+        };
     
     public static Function<AdsConnectionType, ConnectionType> ACT_TO_CT =
-        new Function<AdsConnectionType, ConnectionType>() {
-            @Override
-            public ConnectionType apply(AdsConnectionType from) {
-                if (from == null) {
-                    return null;
-                }
-                switch (from) {
-                case cleartext : return ConnectionType.cleartext;
-                case ssl: return ConnectionType.ssl;
-                case tls: return ConnectionType.tls;
-                case tls_if_available : return ConnectionType.tls_if_available;
-                }
-                ZimbraLog.soap.warn("Unexpected connection type %s.  Returning %s.", from, ConnectionType.cleartext);
-                return ConnectionType.cleartext;
+        new Function<>() {
+          @Override
+          public ConnectionType apply(AdsConnectionType from) {
+            if (from == null) {
+              return null;
             }
-    };
+            switch (from) {
+              case cleartext:
+                return ConnectionType.cleartext;
+              case ssl:
+                return ConnectionType.ssl;
+              case tls:
+                return ConnectionType.tls;
+              case tls_if_available:
+                return ConnectionType.tls_if_available;
+            }
+            ZimbraLog.soap.warn("Unexpected connection type %s.  Returning %s.", from, ConnectionType.cleartext);
+            return ConnectionType.cleartext;
+          }
+        };
 }

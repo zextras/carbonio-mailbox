@@ -48,7 +48,7 @@ public class ModifyDataSource extends MailDocumentHandler {
       throw ServiceException.INVALID_REQUEST("Unable to find data source with id=" + id, null);
     }
 
-    Map<String, Object> dsAttrs = new HashMap<String, Object>();
+    Map<String, Object> dsAttrs = new HashMap<>();
     String value = eDataSource.getAttribute(MailConstants.A_NAME, null);
     if (value != null) {
       dsAttrs.put(Provisioning.A_zimbraDataSourceName, value);
@@ -218,7 +218,7 @@ public class ModifyDataSource extends MailDocumentHandler {
 
     Iterator<Element> attrs = eDataSource.elementIterator(MailConstants.E_ATTRIBUTE);
     if (attrs != null && attrs.hasNext()) {
-      ArrayList<String> attrList = new ArrayList<String>();
+      ArrayList<String> attrList = new ArrayList<>();
       while (attrs.hasNext()) {
         attrList.add(attrs.next().getText());
       }

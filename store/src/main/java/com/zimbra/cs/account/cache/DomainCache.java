@@ -38,7 +38,7 @@ public class DomainCache implements IDomainCache {
     public enum GetFromDomainCacheOption {
         POSITIVE, // only get from positive cache
         NEGATIVE, // only get from negative cache
-        BOTH;     // try positive cache first, if not found then try the negative cache
+        BOTH     // try positive cache first, if not found then try the negative cache
     }
     
     /*
@@ -69,7 +69,7 @@ public class DomainCache implements IDomainCache {
     }
     
 
-    class NegativeCache {
+    static class NegativeCache {
         private Map mNegativeNameCache;
         private Map mNegativeIdCache;
         private Map mNegativeVirtualHostnameCache;
@@ -164,11 +164,11 @@ public class DomainCache implements IDomainCache {
             mNegativeNameCache.remove(entry.getName());
             mNegativeIdCache.remove(entry.getId());
             
-            String vhost[] = entry.getMultiAttr(Provisioning.A_zimbraVirtualHostname);            
+            String[] vhost = entry.getMultiAttr(Provisioning.A_zimbraVirtualHostname);
             for (String vh : vhost)
                 mNegativeVirtualHostnameCache.remove(vh.toLowerCase());
             
-            String foreignName[] = entry.getMultiAttr(Provisioning.A_zimbraForeignName);            
+            String[] foreignName = entry.getMultiAttr(Provisioning.A_zimbraForeignName);
             for (String fn : foreignName)
                 mNegativeForeignNameCache.remove(fn.toLowerCase());
             
@@ -219,11 +219,11 @@ public class DomainCache implements IDomainCache {
             mNameCache.remove(entry.getName());
             mIdCache.remove(entry.getId());
             
-            String vhost[] = entry.getMultiAttr(Provisioning.A_zimbraVirtualHostname);            
+            String[] vhost = entry.getMultiAttr(Provisioning.A_zimbraVirtualHostname);
             for (String vh : vhost)
                 mVirtualHostnameCache.remove(vh.toLowerCase());
             
-            String foreignName[] = entry.getMultiAttr(Provisioning.A_zimbraForeignName);            
+            String[] foreignName = entry.getMultiAttr(Provisioning.A_zimbraForeignName);
             for (String fn : foreignName)
                 mForeignNameCache.remove(fn.toLowerCase());
             
@@ -254,11 +254,11 @@ public class DomainCache implements IDomainCache {
             mNameCache.put(entry.getName(), cacheEntry);
             mIdCache.put(entry.getId(), cacheEntry);
             
-            String vhost[] = entry.getMultiAttr(Provisioning.A_zimbraVirtualHostname);            
+            String[] vhost = entry.getMultiAttr(Provisioning.A_zimbraVirtualHostname);
             for (String vh : vhost)
                 mVirtualHostnameCache.put(vh.toLowerCase(), cacheEntry);          
             
-            String foreignName[] = entry.getMultiAttr(Provisioning.A_zimbraForeignName);            
+            String[] foreignName = entry.getMultiAttr(Provisioning.A_zimbraForeignName);
             for (String fn : foreignName)
                 mForeignNameCache.put(fn.toLowerCase(), cacheEntry);  
             

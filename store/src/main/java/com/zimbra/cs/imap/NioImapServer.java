@@ -95,6 +95,6 @@ public final class NioImapServer extends NioServer implements ImapServer, Realti
     String threadStatName =
         getConfig().isSslEnabled() ? ZimbraPerf.RTS_IMAP_SSL_THREADS : ZimbraPerf.RTS_IMAP_THREADS;
     return ImmutableMap.of(
-        connStatName, (Object) getNumConnections(), threadStatName, getNumThreads());
+        connStatName, getNumConnections(), threadStatName, getNumThreads());
   }
 }

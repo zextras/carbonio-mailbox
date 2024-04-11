@@ -5,6 +5,16 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zextras.mailbox.util.MailMessageBuilder;
+import com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
+import com.zimbra.soap.JaxbUtil;
+import com.zimbra.soap.mail.message.SaveDraftRequest;
+import com.zimbra.soap.mail.message.SaveDraftResponse;
+import com.zimbra.soap.mail.type.AttachmentsInfo;
+import com.zimbra.soap.mail.type.MimePartAttachSpec;
+import com.zimbra.soap.mail.type.PartInfo;
+import com.zimbra.soap.mail.type.SaveDraftMsg;
+
 import javax.mail.internet.MimeMessage;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -117,4 +127,39 @@ public class SaveDraftTest {
   assertEquals(MODIFIED_CONTENT, response.getElement(MailConstants.E_MSG).getElement(MailConstants.E_MIMEPART).getAttribute(MailConstants.E_CONTENT), "picked up modified content");
  }
 
+
+ @Test
+ void smartLinkIsIncludedInSaveDraftResponse() throws Exception {
+   final var acct = Provisioning.getInstance().getAccountByName("test@zimbra.com");
+
+   var draftMessage = createDraftWithFileAttachment(acct);
+
+   final var context = ServiceTestUtil.getRequestContext(acct);
+   final var request = new SaveDraftRequest();
+   final var message = new SaveDraftMsg();
+   AttachmentsInfo attachments = new AttachmentsInfo();
+   boolean requiresSmartLinkConversion = true;
+   attachments.addAttachment(new MimePartAttachSpec(String.valueOf(draftMessage.getId()), "1", requiresSmartLinkConversion));
+   message.setAttachments(attachments);
+   message.setSubject("dinner appt");
+   message.setContent("bee");
+
+   request.setMsg(message);
+
+   Element response = new SaveDraft().handle(JaxbUtil.jaxbToElement(request), context);
+   SaveDraftResponse saveDraftResponse = JaxbUtil.elementToJaxb(response, SaveDraftResponse.class);
+   PartInfo topLevelPartInfo = saveDraftResponse.getMessage().getContentElems().get(0);
+   var attachmentPartInfo = topLevelPartInfo.getMimeParts().get(0);
+   assertEquals(requiresSmartLinkConversion, attachmentPartInfo.getRequiresSmartLinkConversion());
+ }
+
+  private Message createDraftWithFileAttachment(Account account) throws Exception {
+    ParsedMessage draft = new MailMessageBuilder()
+        .from(account.getName())
+        .addRecipient(account.getName())
+        .addAttachmentFromResources("/test-save-to-files.txt")
+        .build();
+
+    return AccountAction.Factory.getDefault().forAccount(account).saveDraft(draft);
+  }
 }

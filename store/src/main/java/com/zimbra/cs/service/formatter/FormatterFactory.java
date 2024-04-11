@@ -88,7 +88,7 @@ public class FormatterFactory {
 
                 // if we missed this is likely the first call
                 if(result == null && strToType.isEmpty()) {
-                    Map<String, FormatType> tempMap = new HashMap<String, FormatType>();
+                    Map<String, FormatType> tempMap = new HashMap<>();
                     for (FormatType type :FormatType.values()) {
                         tempMap.put(type.toString(),type);
                         if (type.toString().equals(str)) {
@@ -107,8 +107,8 @@ public class FormatterFactory {
     public static Map<FormatType, Formatter> mFormatters;
     public static Map<String, Formatter> mDefaultFormatters;
     static {
-        mFormatters = new HashMap<FormatType, Formatter>();
-        mDefaultFormatters = new HashMap<String, Formatter>();
+        mFormatters = new HashMap<>();
+        mDefaultFormatters = new HashMap<>();
         mFormatters = Collections.synchronizedMap(mFormatters);
         mDefaultFormatters = Collections.synchronizedMap(mDefaultFormatters);
 

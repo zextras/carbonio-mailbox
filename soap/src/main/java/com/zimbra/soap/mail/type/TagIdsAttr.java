@@ -15,6 +15,6 @@ public class TagIdsAttr extends IdsAttr {
      */
     @SuppressWarnings("unused")
     private TagIdsAttr() {
-        this((String) null);
+        this(null);
     }
 }

@@ -126,7 +126,7 @@ public class GenCSRRequest implements CertSubjectAttrs {
      */
     @SuppressWarnings("unused")
     private GenCSRRequest() {
-        this((String) null);
+        this(null);
     }
 
     public GenCSRRequest(String server) {

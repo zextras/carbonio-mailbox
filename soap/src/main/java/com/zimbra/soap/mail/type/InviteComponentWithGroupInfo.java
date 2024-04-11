@@ -139,7 +139,7 @@ extends InviteComponentCommon {
      * no-argument constructor wanted by JAXB
      */
     protected InviteComponentWithGroupInfo() {
-        this((String) null, -1, false);
+        this(null, -1, false);
     }
 
     public InviteComponentWithGroupInfo(String method, int componentNum, boolean rsvp) {

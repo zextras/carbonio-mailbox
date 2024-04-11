@@ -39,7 +39,7 @@ public class DumpSessionsRequest {
      */
     @SuppressWarnings("unused")
     private DumpSessionsRequest() {
-        this((Boolean) null, (Boolean) null);
+        this(null, null);
     }
 
     public DumpSessionsRequest(Boolean includeAccounts,

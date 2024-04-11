@@ -11,12 +11,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.StringUtil;
-import com.zimbra.cs.account.AttributeManagerUtil.CLOptions;
-import com.zimbra.cs.util.BuildInfo;
 
 public class FileGenUtil {
 
@@ -97,13 +96,13 @@ public class FileGenUtil {
            boolean replaceMode = false;
 
            while((line = in.readLine()) != null) {
-               if (line.indexOf(BEGIN_MARKER) != -1) {
+               if (line.contains(BEGIN_MARKER)) {
                    out.write(line);
                    out.newLine();
                    out.write(content);
                    out.newLine();
                    replaceMode = true;
-               } else if (line.indexOf(END_MARKER) != -1) {
+               } else if (line.contains(END_MARKER)) {
                    replaceMode = false;
                    out.write(line);
                    out.newLine();
@@ -139,7 +138,7 @@ public class FileGenUtil {
     public static void replaceFile(String outFile, String templateFile, Map<String,String> templateFillers)
     throws IOException {
         byte[] templateBytes = ByteUtil.getContent(new File(templateFile));
-        String templateString = new String(templateBytes, "utf-8");
+        String templateString = new String(templateBytes, StandardCharsets.UTF_8);
 
         String content = StringUtil.fillTemplate(templateString, templateFillers);
 

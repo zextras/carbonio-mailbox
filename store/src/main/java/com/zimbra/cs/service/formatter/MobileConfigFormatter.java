@@ -142,7 +142,7 @@ public class MobileConfigFormatter extends Formatter {
             keyPayloadDescriptionElement.appendChild(payloadDescription);
             dictElement.appendChild(keyPayloadDescriptionElement);
             Element stringPayloadDescriptionElement = document.createElement(ConfigEnum.STRING.toString()); // string element
-            String description = emailPart + "'s " + configType.toString() + " settings";
+            String description = emailPart + "'s " + configType + " settings";
             payloadDescription = document.createTextNode(description);
             stringPayloadDescriptionElement.appendChild(payloadDescription);
             dictElement.appendChild(stringPayloadDescriptionElement);
@@ -153,7 +153,7 @@ public class MobileConfigFormatter extends Formatter {
             keyPayloadDisplayNameElement.appendChild(payloadDisplayName);
             dictElement.appendChild(keyPayloadDisplayNameElement);
             Element stringPayloadDisplayNameElement = document.createElement(ConfigEnum.STRING.toString()); // string element
-            String displayName = user.getMail() + " " + configType.toString();
+            String displayName = user.getMail() + " " + configType;
             payloadDisplayName = document.createTextNode(displayName);
             stringPayloadDisplayNameElement.appendChild(payloadDisplayName);
             dictElement.appendChild(stringPayloadDisplayNameElement);
@@ -164,7 +164,7 @@ public class MobileConfigFormatter extends Formatter {
             keyPayloadIdentifierElement.appendChild(payloadIdentifier);
             dictElement.appendChild(keyPayloadIdentifierElement);
             Element stringPayloadIdentifierElement = document.createElement(ConfigEnum.STRING.toString()); // string element
-            String identifier = domain.getDomainName() + "." + configType.toString() + ".account." + emailPart;
+            String identifier = domain.getDomainName() + "." + configType + ".account." + emailPart;
             payloadIdentifier = document.createTextNode(identifier);
             stringPayloadIdentifierElement.appendChild(payloadIdentifier);
             dictElement.appendChild(stringPayloadIdentifierElement);
@@ -706,7 +706,7 @@ public class MobileConfigFormatter extends Formatter {
         keyPayloadDisplayNameElement.appendChild(payloadDisplayName);
         dictElement.appendChild(keyPayloadDisplayNameElement);
         Element stringPayloadDisplayNameElement = document.createElement(ConfigEnum.STRING.toString()); // string element
-        String displayName = configType.toString() + " " + emailPart;
+        String displayName = configType + " " + emailPart;
         payloadDisplayName = document.createTextNode(displayName);
         stringPayloadDisplayNameElement.appendChild(payloadDisplayName);
         dictElement.appendChild(stringPayloadDisplayNameElement);
@@ -717,7 +717,7 @@ public class MobileConfigFormatter extends Formatter {
         keyPayloadIdentifierElement.appendChild(payloadIdentifier);
         dictElement.appendChild(keyPayloadIdentifierElement);
         Element stringPayloadIdentifierElement = document.createElement(ConfigEnum.STRING.toString()); // string element
-        String identifier = domain.getDomainName() + "." + configType.toString() + ".account." + emailPart;
+        String identifier = domain.getDomainName() + "." + configType + ".account." + emailPart;
         payloadIdentifier = document.createTextNode(identifier);
         stringPayloadIdentifierElement.appendChild(payloadIdentifier);
         dictElement.appendChild(stringPayloadIdentifierElement);
@@ -756,7 +756,7 @@ public class MobileConfigFormatter extends Formatter {
         keyPayloadUUIDElement.appendChild(payloadUUID);
         dictElement.appendChild(keyPayloadUUIDElement);
         Element stringPayloadUUIDElement = document.createElement(ConfigEnum.STRING.toString()); // string element
-        String uuid = user.getId() + "_" + configType.toString();
+        String uuid = user.getId() + "_" + configType;
         payloadUUID = document.createTextNode(uuid);
         stringPayloadUUIDElement.appendChild(payloadUUID);
         dictElement.appendChild(stringPayloadUUIDElement);
@@ -800,7 +800,7 @@ public class MobileConfigFormatter extends Formatter {
         }
 
         private String name;
-        private ConfigType(String name) {
+        ConfigType(String name) {
             this.name = name;
         }
 
@@ -836,7 +836,7 @@ public class MobileConfigFormatter extends Formatter {
         }
 
         private String name;
-        private ConfigEnum(String name) {
+        ConfigEnum(String name) {
             this.name = name;
         }
 
@@ -873,7 +873,7 @@ public class MobileConfigFormatter extends Formatter {
         }
 
         private String name;
-        private PayloadEnum(String name) {
+        PayloadEnum(String name) {
             this.name = name;
         }
 
@@ -910,7 +910,7 @@ public class MobileConfigFormatter extends Formatter {
         }
 
         private String name;
-        private CaldavEnum(String name) {
+        CaldavEnum(String name) {
             this.name = name;
         }
 
@@ -947,7 +947,7 @@ public class MobileConfigFormatter extends Formatter {
         }
 
         private String name;
-        private CarddavEnum(String name) {
+        CarddavEnum(String name) {
             this.name = name;
         }
 
@@ -981,7 +981,7 @@ public class MobileConfigFormatter extends Formatter {
         }
 
         private String name;
-        private EmailAuthEnum(String name) {
+        EmailAuthEnum(String name) {
             this.name = name;
         }
 
@@ -1039,7 +1039,7 @@ public class MobileConfigFormatter extends Formatter {
         }
 
         private String name;
-        private ImapEnum(String name) {
+        ImapEnum(String name) {
             this.name = name;
         }
 
@@ -1070,7 +1070,7 @@ public class MobileConfigFormatter extends Formatter {
         }
 
         private String name;
-        private EmailAccountTypeEnum(String name) {
+        EmailAccountTypeEnum(String name) {
             this.name = name;
         }
 

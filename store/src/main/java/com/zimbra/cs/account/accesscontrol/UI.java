@@ -29,7 +29,7 @@ public class UI implements Comparable<UI> {
     }
     
     void setDesc(String desc) {
-        this.desc = new String(desc);
+        this.desc = desc;
     }
     
     String getDesc() {

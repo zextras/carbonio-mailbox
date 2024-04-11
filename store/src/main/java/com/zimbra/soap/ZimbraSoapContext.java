@@ -596,7 +596,7 @@ public final class ZimbraSoapContext {
           case ACL.GRANTEE_GROUP:
             if (authAccount != null) {
               if (groupIds == null) {
-                groupIds = new HashSet<String>();
+                groupIds = new HashSet<>();
               }
               groupIds.add(shareData.getGranteeId());
             }
@@ -799,10 +799,6 @@ public final class ZimbraSoapContext {
     SoapSession.RegisterNotificationResult result =
         ss.registerNotificationConnection(mSessionInfo.getPushChannel(!includeDelegates));
     switch (result) {
-      case NO_NOTIFY:
-        return false;
-      case DATA_READY:
-        return false;
       case BLOCKING:
         return true;
       default:

@@ -80,7 +80,7 @@ public class ZInternetHeaders extends InternetHeaders {
     public String[] getHeader(String name) {
         if (ZPARSER) {
             Charset charset = defaultCharset();
-            List<String> matches = new ArrayList<String>(5);
+            List<String> matches = new ArrayList<>(5);
             for (ZInternetHeader header : (List<ZInternetHeader>) headers) {
                 if (name.equalsIgnoreCase(header.getName())) {
                     matches.add(header.getEncodedValue(charset));
@@ -239,7 +239,6 @@ public class ZInternetHeaders extends InternetHeaders {
             this.ordered = false;
         }
         headers.add(header);
-        return;
     }
 
     @Override
@@ -305,7 +304,7 @@ public class ZInternetHeaders extends InternetHeaders {
             names = NO_HEADERS;
         }
         Charset charset = defaultCharset();
-        List<InternetHeader> jmheaders = new ArrayList<InternetHeader>();
+        List<InternetHeader> jmheaders = new ArrayList<>();
         for (ZInternetHeader header : (List<ZInternetHeader>) headers) {
             int i = 0;
             for ( ; i < names.length; i++) {
@@ -317,7 +316,7 @@ public class ZInternetHeaders extends InternetHeaders {
                 jmheaders.add(new InternetHeader(header.getName(), header.getEncodedValue(charset)));
             }
         }
-        return new IteratorEnumeration<Header>(jmheaders);
+        return new IteratorEnumeration<>(jmheaders);
     }
 
     @SuppressWarnings("unchecked")
@@ -356,7 +355,7 @@ public class ZInternetHeaders extends InternetHeaders {
             names = NO_HEADERS;
         }
         Charset charset = ZInternetHeader.decodingCharset(defaultCharset());
-        List<String> jmheaders = new ArrayList<String>();
+        List<String> jmheaders = new ArrayList<>();
         for (ZInternetHeader header : (List<ZInternetHeader>) headers) {
             int i = 0;
             for ( ; i < names.length; i++) {
@@ -370,7 +369,7 @@ public class ZInternetHeaders extends InternetHeaders {
                 jmheaders.add(new String(rawHeader, 0, rawHeader.length - 2, charset));
             }
         }
-        return new IteratorEnumeration<String>(jmheaders);
+        return new IteratorEnumeration<>(jmheaders);
     }
 
     @SuppressWarnings("unchecked")

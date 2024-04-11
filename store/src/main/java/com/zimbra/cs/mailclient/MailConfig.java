@@ -38,7 +38,7 @@ public abstract class MailConfig {
     private int readTimeout;
     private int connectTimeout;
 
-    public static enum Security {
+    public enum Security {
         NONE, SSL, TLS, TLS_IF_AVAILABLE
     }
 

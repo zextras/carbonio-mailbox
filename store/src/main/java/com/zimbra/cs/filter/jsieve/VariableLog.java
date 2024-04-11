@@ -63,12 +63,12 @@ public class VariableLog extends Log {
                     throw new SyntaxException("Log: Log level must be mentioned before log message.");
                 }
                 TagArgument tag = (TagArgument) arg;
-                if (!(tag.is(":" + FilterAction.LogAction.LogLevel.fatal.toString())
-                        || tag.is(":" + FilterAction.LogAction.LogLevel.error.toString())
-                        || tag.is(":" + FilterAction.LogAction.LogLevel.warn.toString())
-                        || tag.is(":" + FilterAction.LogAction.LogLevel.info.toString())
-                        || tag.is(":" + FilterAction.LogAction.LogLevel.debug.toString())
-                        || tag.is(":" + FilterAction.LogAction.LogLevel.trace.toString())
+                if (!(tag.is(":" + FilterAction.LogAction.LogLevel.fatal)
+                        || tag.is(":" + FilterAction.LogAction.LogLevel.error)
+                        || tag.is(":" + FilterAction.LogAction.LogLevel.warn)
+                        || tag.is(":" + FilterAction.LogAction.LogLevel.info)
+                        || tag.is(":" + FilterAction.LogAction.LogLevel.debug)
+                        || tag.is(":" + FilterAction.LogAction.LogLevel.trace)
                         )) {
                     throw new SyntaxException("Log: Invalid log level provided - " + tag.getTag());
                 }

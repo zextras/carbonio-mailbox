@@ -25,4 +25,4 @@ public enum AutoProvPrincipalBy {
                     ", valid values: " + Arrays.asList(AutoProvPrincipalBy.values()), null);
         }
     }
-};
+}

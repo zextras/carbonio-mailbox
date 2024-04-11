@@ -220,7 +220,7 @@ class ProxyConfVar {
 
   public String formatTime(Object o) {
     Formatter f = new Formatter();
-    f.format("%dms", (Long) o);
+    f.format("%dms", o);
     final String out = f.toString();
     f.close();
     return out;
@@ -238,7 +238,7 @@ class ProxyConfVar {
 
   public String formatInteger(Object o) {
     Formatter f = new Formatter();
-    f.format("%d", (Integer) o);
+    f.format("%d", o);
     final String out = f.toString();
     f.close();
     return out;

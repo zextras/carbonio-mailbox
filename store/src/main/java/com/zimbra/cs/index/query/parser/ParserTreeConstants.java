@@ -8,24 +8,24 @@ package com.zimbra.cs.index.query.parser;
 
 public interface ParserTreeConstants
 {
-  public int JJTROOT = 0;
-  public int JJTQUERY = 1;
-  public int JJTCLAUSE = 2;
-  public int JJTDEFAULTCLAUSE = 3;
-  public int JJTTEXTCLAUSE = 4;
-  public int JJTITEMCLAUSE = 5;
-  public int JJTDATECLAUSE = 6;
-  public int JJTVOID = 7;
-  public int JJTCONJUNCTION = 8;
-  public int JJTMODIFIER = 9;
-  public int JJTDATEMODIFIER = 10;
-  public int JJTSORTBY = 11;
-  public int JJTTEXTTERM = 12;
-  public int JJTITEMTERM = 13;
-  public int JJTDATETERM = 14;
+  int JJTROOT = 0;
+  int JJTQUERY = 1;
+  int JJTCLAUSE = 2;
+  int JJTDEFAULTCLAUSE = 3;
+  int JJTTEXTCLAUSE = 4;
+  int JJTITEMCLAUSE = 5;
+  int JJTDATECLAUSE = 6;
+  int JJTVOID = 7;
+  int JJTCONJUNCTION = 8;
+  int JJTMODIFIER = 9;
+  int JJTDATEMODIFIER = 10;
+  int JJTSORTBY = 11;
+  int JJTTEXTTERM = 12;
+  int JJTITEMTERM = 13;
+  int JJTDATETERM = 14;
 
 
-  public String[] jjtNodeName = {
+  String[] jjtNodeName = {
     "Root",
     "Query",
     "Clause",

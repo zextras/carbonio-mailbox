@@ -982,7 +982,11 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * carbonioAutoProvAllowedDomains comma separated domain names
+     * Comma-separated domain names used for checking the
+     * autoProvAccountNameMap value. If the value is a full email, the domain
+     * of the email should be one of the values in
+     * carbonioAutoProvAllowedDomains. Active Directory domain names may
+     * exist in autoProvAccountNameMap.
      *
      * @return carbonioAutoProvAllowedDomains, or null if unset
      *
@@ -994,7 +998,11 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * carbonioAutoProvAllowedDomains comma separated domain names
+     * Comma-separated domain names used for checking the
+     * autoProvAccountNameMap value. If the value is a full email, the domain
+     * of the email should be one of the values in
+     * carbonioAutoProvAllowedDomains. Active Directory domain names may
+     * exist in autoProvAccountNameMap.
      *
      * @param carbonioAutoProvAllowedDomains new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -1009,7 +1017,11 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * carbonioAutoProvAllowedDomains comma separated domain names
+     * Comma-separated domain names used for checking the
+     * autoProvAccountNameMap value. If the value is a full email, the domain
+     * of the email should be one of the values in
+     * carbonioAutoProvAllowedDomains. Active Directory domain names may
+     * exist in autoProvAccountNameMap.
      *
      * @param carbonioAutoProvAllowedDomains new value
      * @param attrs existing map to populate, or null to create a new map
@@ -1025,7 +1037,11 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * carbonioAutoProvAllowedDomains comma separated domain names
+     * Comma-separated domain names used for checking the
+     * autoProvAccountNameMap value. If the value is a full email, the domain
+     * of the email should be one of the values in
+     * carbonioAutoProvAllowedDomains. Active Directory domain names may
+     * exist in autoProvAccountNameMap.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -1039,7 +1055,11 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * carbonioAutoProvAllowedDomains comma separated domain names
+     * Comma-separated domain names used for checking the
+     * autoProvAccountNameMap value. If the value is a full email, the domain
+     * of the email should be one of the values in
+     * carbonioAutoProvAllowedDomains. Active Directory domain names may
+     * exist in autoProvAccountNameMap.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -1430,13 +1450,13 @@ public abstract class ZAttrDomain extends NamedEntry {
      * will enforce CSP rule on the client side. Note: the value MUST be the
      * entire header line (e.g. X-Foo: Bar, X-Zoo: &quot;Bar1; Bar2&quot;).
      *
-     * @return carbonioReverseProxyResponseCSPHeader, or "Content-Security-Policy: \"default-src 'self' data: blob: cid:; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.zextras.tools; style-src * 'unsafe-inline'; img-src * data: blob: cid:; font-src * data:; connect-src 'self' *.zextras.tools; media-src * blob: data: cid:; object-src 'self'; child-src 'self' blob: data: cid:; frame-src 'self' blob: data: cid:; frame-ancestors 'self'; form-action 'self';\"" if unset
+     * @return carbonioReverseProxyResponseCSPHeader, or "Content-Security-Policy: \"default-src 'self' data: blob: cid:; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.zextras.tools *.jsdelivr.net; style-src * 'unsafe-inline'; img-src * data: blob: cid:; font-src * data:; connect-src 'self' *.zextras.tools *.jsdelivr.net; media-src * blob: data: cid:; object-src 'self'; child-src 'self' blob: data: cid:; frame-src 'self' blob: data: cid:; frame-ancestors 'self'; form-action 'self';\"" if unset
      *
      * @since ZCS 23.7.0
      */
     @ZAttr(id=3133)
     public String getCarbonioReverseProxyResponseCSPHeader() {
-        return getAttr(ZAttrProvisioning.A_carbonioReverseProxyResponseCSPHeader, "Content-Security-Policy: \"default-src 'self' data: blob: cid:; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.zextras.tools; style-src * 'unsafe-inline'; img-src * data: blob: cid:; font-src * data:; connect-src 'self' *.zextras.tools; media-src * blob: data: cid:; object-src 'self'; child-src 'self' blob: data: cid:; frame-src 'self' blob: data: cid:; frame-ancestors 'self'; form-action 'self';\"", true);
+        return getAttr(ZAttrProvisioning.A_carbonioReverseProxyResponseCSPHeader, "Content-Security-Policy: \"default-src 'self' data: blob: cid:; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.zextras.tools *.jsdelivr.net; style-src * 'unsafe-inline'; img-src * data: blob: cid:; font-src * data:; connect-src 'self' *.zextras.tools *.jsdelivr.net; media-src * blob: data: cid:; object-src 'self'; child-src 'self' blob: data: cid:; frame-src 'self' blob: data: cid:; frame-ancestors 'self'; form-action 'self';\"", true);
     }
 
     /**
@@ -17253,7 +17273,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      *
      * @return zimbraId, or null if unset
      */
@@ -17263,7 +17283,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      *
      * @param zimbraId new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -17276,7 +17296,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      *
      * @param zimbraId new value
      * @param attrs existing map to populate, or null to create a new map
@@ -17290,7 +17310,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      */
@@ -17302,7 +17322,7 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Zimbra Systems Unique ID
+     * Unique identifier for an entry
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

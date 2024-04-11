@@ -17,7 +17,7 @@ public class ImapDataSourceId extends Id {
      */
     @SuppressWarnings("unused")
     protected ImapDataSourceId() {
-        this((String) null);
+        this(null);
     }
 
     ImapDataSourceId(String id) {

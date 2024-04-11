@@ -90,7 +90,7 @@ public final class Sieve {
 
         private String value;
 
-        private Comparator(String value) {
+        Comparator(String value) {
             this.value = value;
         }
 

@@ -51,7 +51,7 @@ public class DirPathInfo {
      */
     @SuppressWarnings("unused")
     private DirPathInfo() {
-        this((String)null, false, false, false, false);
+        this(null, false, false, false, false);
     }
 
     public DirPathInfo(String path, boolean exists, boolean directory,

@@ -22,6 +22,8 @@ import com.zimbra.cs.mailbox.Message.CalendarItemInfo;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mime.MimeVisitor;
+import com.zimbra.cs.service.mail.message.parser.MimeMessageData;
+import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.soap.ZimbraSoapContext;
 import java.io.IOException;
@@ -55,7 +57,7 @@ public class ForwardAppointmentInvite extends ForwardAppointment {
     }
 
     Element msgElem = request.getElement(MailConstants.E_MSG);
-    ParseMimeMessage.MimeMessageData parsedMessageData = new ParseMimeMessage.MimeMessageData();
+    MimeMessageData parsedMessageData = new MimeMessageData();
     MimeMessage mmFwdWrapper =
         ParseMimeMessage.parseMimeMsgSoap(
             zsc,
@@ -96,7 +98,7 @@ public class ForwardAppointmentInvite extends ForwardAppointment {
     mbox.lock.lock();
     try {
       MimeMessage mmInv = msg.getMimeMessage();
-      List<Invite> invs = new ArrayList<Invite>();
+      List<Invite> invs = new ArrayList<>();
       for (Iterator<CalendarItemInfo> iter = msg.getCalendarItemInfoIterator(); iter.hasNext(); ) {
         CalendarItemInfo cii = iter.next();
         Invite inv = cii.getInvite();
@@ -143,10 +145,7 @@ public class ForwardAppointmentInvite extends ForwardAppointment {
               throw ServiceException.FAILURE(
                   "Error building Invite for calendar part in message " + msg.getId(), null);
           }
-        } catch (MessagingException e) {
-          throw ServiceException.FAILURE(
-              "Error getting calendar part in message " + msg.getId(), null);
-        } catch (IOException e) {
+        } catch (MessagingException | IOException e) {
           throw ServiceException.FAILURE(
               "Error getting calendar part in message " + msg.getId(), null);
         }

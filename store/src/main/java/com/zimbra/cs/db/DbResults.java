@@ -40,8 +40,8 @@ import com.google.common.base.Joiner;
  */
 public class DbResults {
 
-    private List<Object[]> data = new ArrayList<Object[]>();
-    private Map<String, Integer> columnIndexes = new LinkedHashMap<String, Integer>();
+    private List<Object[]> data = new ArrayList<>();
+    private Map<String, Integer> columnIndexes = new LinkedHashMap<>();
     private int rowNum = 0;
 
     /**
@@ -65,7 +65,7 @@ public class DbResults {
                 ResultSetMetaData md = resultSet.getMetaData();
                 numCols = md.getColumnCount();
                 for (int i = 1; i <= numCols; i++) {
-                    columnIndexes.put(md.getColumnName(i), Integer.valueOf(i));
+                    columnIndexes.put(md.getColumnName(i), i);
                 }
                 isFirst = false;
             }
@@ -263,7 +263,7 @@ public class DbResults {
             throw new IllegalStateException("null value at (" + row + ", " + col + ")");
         }
         if (o instanceof Boolean) {
-            return ((Boolean) o).booleanValue();
+            return (Boolean) o;
         }
         int i = ((Number) o).intValue();
         return (i == 0) ? false : true;
@@ -300,7 +300,7 @@ public class DbResults {
         if (i == null) {
             throw new IllegalArgumentException("Column '" + colName + "' does not exist");
         }
-        return i.intValue();
+        return i;
     }
 
     private int getRowNum() {

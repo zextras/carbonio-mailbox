@@ -64,7 +64,7 @@ public class FixCalendarItemTZ extends RedoableOp {
         mId = in.readInt();
         int numReplacements = in.readInt();
         if (numReplacements > 0) {
-            mReplacementMap = new HashMap<String, ICalTimeZone>(numReplacements);
+            mReplacementMap = new HashMap<>(numReplacements);
             for (int i = 0; i < numReplacements; i++) {
                 String tzid = in.readUTF();
                 String newTZMeta = in.readUTF();

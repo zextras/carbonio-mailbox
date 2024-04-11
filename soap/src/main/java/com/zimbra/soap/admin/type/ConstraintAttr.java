@@ -33,7 +33,7 @@ public class ConstraintAttr {
      */
     @SuppressWarnings("unused")
     private ConstraintAttr() {
-        this((String) null, (ConstraintInfo) null);
+        this(null, null);
     }
 
     public ConstraintAttr(String name, ConstraintInfo constraint) {

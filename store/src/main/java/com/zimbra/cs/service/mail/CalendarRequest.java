@@ -37,6 +37,9 @@ import com.zimbra.cs.mime.MPartInfo;
 import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.mime.Mime.FixedMimeMessage;
 import com.zimbra.cs.mime.ParsedMessage;
+import com.zimbra.cs.service.mail.message.parser.InviteParser;
+import com.zimbra.cs.service.mail.message.parser.MimeMessageData;
+import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.ItemIdFormatter;
 import com.zimbra.cs.util.AccountUtil;
@@ -89,7 +92,7 @@ public abstract class CalendarRequest extends MailDocumentHandler {
       Element msgElem,
       Account acct,
       Mailbox mbox,
-      ParseMimeMessage.InviteParser inviteParser)
+      InviteParser inviteParser)
       throws ServiceException {
     CalSendData csd = new CalSendData();
 
@@ -830,9 +833,9 @@ public abstract class CalendarRequest extends MailDocumentHandler {
           "Could not inform attendees ("
               + to
               + ") that they were removed from meeting "
-              + invToCancel.toString()
+              + invToCancel
               + " b/c of exception: "
-              + ex.toString());
+              + ex);
     }
   }
 
@@ -854,7 +857,7 @@ public abstract class CalendarRequest extends MailDocumentHandler {
     return type;
   }
 
-  protected static class CalSendData extends ParseMimeMessage.MimeMessageData {
+  protected static class CalSendData extends MimeMessageData {
     ItemId mOrigId; // orig id if this is a reply
     String mReplyType;
     String mIdentityId;

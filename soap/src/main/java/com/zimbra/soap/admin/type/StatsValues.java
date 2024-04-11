@@ -39,7 +39,7 @@ public class StatsValues {
      */
     @SuppressWarnings("unused")
     private StatsValues() {
-        this((String) null);
+        this(null);
     }
 
     public StatsValues(String t) {
