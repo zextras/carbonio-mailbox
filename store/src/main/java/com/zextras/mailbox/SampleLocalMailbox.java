@@ -21,20 +21,22 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 public class SampleLocalMailbox {
 
+  private static final int LDAP_PORT = 1389;
+  private static final String APP_SERVER_NAME = "localhost";
+  private static final int APP_SERVER_PORT = 7070;
+
+
   public static void main(String[] args) throws Exception {
-    final int ldapPort = 1389;
-    final int serverPort = 7070;
     System.setProperty("zimbra.native.required", "false");
     LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
-    LC.ldap_port.setDefault(ldapPort);
+    LC.ldap_port.setDefault(LDAP_PORT);
     LC.zimbra_home.setDefault("./store");
     LC.mailboxd_keystore_password.setDefault("zextras");
-    final String serverName = "localhost";
-    LC.zimbra_server_hostname.setDefault(serverName);
+    LC.zimbra_server_hostname.setDefault(APP_SERVER_NAME);
     LC.timezone_file.setDefault("store/src/test/resources/timezones-test.ics");
 
     final InMemoryLdapServer inMemoryLdapServer = new Builder().
-        withLdapPort(ldapPort)
+        withLdapPort(LDAP_PORT)
         .build();
     inMemoryLdapServer.start();
     inMemoryLdapServer.initializeBasicData();
@@ -44,11 +46,11 @@ public class SampleLocalMailbox {
     DbPool.startup();
     HSQLDB.createDatabase("store/");
     Provisioning.getInstance()
-        .getServerByName(serverName)
+        .getServerByName(APP_SERVER_NAME)
         .modify(
             new HashMap<>(
                 Map.of(
-                    Provisioning.A_zimbraMailPort, String.valueOf(serverPort),
+                    Provisioning.A_zimbraMailPort, String.valueOf(APP_SERVER_PORT),
                     ZAttrProvisioning.A_zimbraMailMode, "http",
                     ZAttrProvisioning.A_zimbraPop3SSLServerEnabled, "FALSE",
                     ZAttrProvisioning.A_zimbraImapSSLServerEnabled, "FALSE")));
@@ -58,7 +60,7 @@ public class SampleLocalMailbox {
     webAppContext.setResourceBase("/");
     webAppContext.setContextPath("/service");
 
-    Server server = new Server(serverPort);
+    Server server = new Server(APP_SERVER_PORT);
     server.setHandler(webAppContext);
     server.start();
     server.join();
