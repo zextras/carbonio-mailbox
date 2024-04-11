@@ -542,6 +542,8 @@
   <packaging>jar</packaging>
 
   <build>
+
+    <finalName>${project.artifactId}</finalName>
     <resources>
       <resource>
         <directory>${project.basedir}/ldap/generated</directory>

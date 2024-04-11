@@ -38,6 +38,8 @@ services:
     image: carbonio/ce-appserver-u20:${DOCKER_IMAGES_VERSION}
     entrypoint: "/scripts/entrypoint-mailbox.sh carbonio-ce-directory-server.carbonio-system.svc.cluster.local:389"
     hostname: carbonio-ce-appserver.carbonio-system.svc.cluster.local
+    ports:
+      - "5005:5005"
     depends_on:
       - ldap
     tty: true
@@ -49,5 +51,6 @@ services:
       timeout: 10s
     volumes:
       - ./scripts/:/scripts/
+      - ./../../store/target/zm-store-jar-with-dependencies.jar:/scripts/zm-store-jar-with-dependencies.jar
     user: root
 
