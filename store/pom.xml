@@ -531,6 +531,11 @@
       <artifactId>jetty-webapp</artifactId>
       <version>9.4.48.v20220622</version>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-rewrite</artifactId>
+      <version>9.4.48.v20220622</version>
+    </dependency>
   </dependencies>
 
   <modelVersion>4.0.0</modelVersion>
