@@ -8,32 +8,38 @@ package com.zimbra.client;
 import com.google.common.base.Function;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.EnumBiMap;
+import com.zimbra.client.ZFolder.View;
 import com.zimbra.common.account.Key;
 import com.zimbra.soap.account.type.Identity;
 import com.zimbra.soap.account.type.Signature;
 import com.zimbra.soap.mail.type.Folder;
 import com.zimbra.soap.type.AccountBy;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 
 /**
  * Converts between {@code com.zimbra.soap} objects and {@code com.zimbra.client} objects.
  */
 public class SoapConverter {
-    
-    private static final BiMap<Folder.View, ZFolder.View> VIEW_MAP;
+
+  private SoapConverter() {
+    throw new IllegalStateException("Utility class");
+  }
+
+  private static final BiMap<Folder.View, View> VIEW_MAP;
     private static final BiMap<AccountBy, Key.AccountBy> ACCOUNT_BY_MAP;
     
     static {
-        VIEW_MAP = EnumBiMap.create(Folder.View.class, ZFolder.View.class);
-        VIEW_MAP.put(Folder.View.UNKNOWN, ZFolder.View.unknown);
-        VIEW_MAP.put(Folder.View.APPOINTMENT, ZFolder.View.appointment);
-        VIEW_MAP.put(Folder.View.CHAT, ZFolder.View.chat);
-        VIEW_MAP.put(Folder.View.CONTACT, ZFolder.View.contact);
-        VIEW_MAP.put(Folder.View.CONVERSATION, ZFolder.View.conversation);
-        VIEW_MAP.put(Folder.View.MESSAGE, ZFolder.View.message);
-        VIEW_MAP.put(Folder.View.REMOTE_FOLDER, ZFolder.View.remote);
-        VIEW_MAP.put(Folder.View.SEARCH_FOLDER, ZFolder.View.search);
-        VIEW_MAP.put(Folder.View.TASK, ZFolder.View.task);
+        VIEW_MAP = EnumBiMap.create(Folder.View.class, View.class);
+        VIEW_MAP.put(Folder.View.UNKNOWN, View.unknown);
+        VIEW_MAP.put(Folder.View.APPOINTMENT, View.appointment);
+        VIEW_MAP.put(Folder.View.CHAT, View.chat);
+        VIEW_MAP.put(Folder.View.CONTACT, View.contact);
+        VIEW_MAP.put(Folder.View.CONVERSATION, View.conversation);
+        VIEW_MAP.put(Folder.View.MESSAGE, View.message);
+        VIEW_MAP.put(Folder.View.REMOTE_FOLDER, View.remote);
+        VIEW_MAP.put(Folder.View.SEARCH_FOLDER, View.search);
+        VIEW_MAP.put(Folder.View.TASK, View.task);
         
         ACCOUNT_BY_MAP = EnumBiMap.create(AccountBy.class, Key.AccountBy.class);
         ACCOUNT_BY_MAP.put(AccountBy.name , Key.AccountBy.name);
@@ -44,63 +50,43 @@ public class SoapConverter {
         ACCOUNT_BY_MAP.put(AccountBy.appAdminName, Key.AccountBy.appAdminName);
     }
     
-    public static Function<Folder.View, ZFolder.View> FROM_SOAP_VIEW = new Function<Folder.View, ZFolder.View>() {
-            @Override
-            public ZFolder.View apply(Folder.View from) {
-                ZFolder.View to = VIEW_MAP.get(from);
-                return (to != null ? to : ZFolder.View.unknown);
-            }
+    public static java.util.function.Function<Folder.View, @Nullable View> FROM_SOAP_VIEW = new Function<>() {
+      @Override
+      public View apply(Folder.View from) {
+        View to = VIEW_MAP.get(from);
+        return (to != null ? to : View.unknown);
+      }
     };
     
-    public static Function<ZFolder.View, Folder.View> TO_SOAP_VIEW = new Function<ZFolder.View, Folder.View>() {
-        @Override
-        public Folder.View apply(ZFolder.View from) {
-            Folder.View to = VIEW_MAP.inverse().get(from);
-            return (to != null ? to : Folder.View.UNKNOWN);
-        }
+    public static java.util.function.Function<View, Folder.@Nullable View> TO_SOAP_VIEW = new Function<>() {
+      @Override
+      public Folder.View apply(View from) {
+        Folder.View to = VIEW_MAP.inverse().get(from);
+        return (to != null ? to : Folder.View.UNKNOWN);
+      }
     };
 
-    public static Function<Identity, ZIdentity> FROM_SOAP_IDENTITY = new Function<Identity, ZIdentity>() {
-        @Override
-        public ZIdentity apply(Identity from) {
-            return new ZIdentity(from);
-        }
-    };
+    public static java.util.function.Function<Identity, @Nullable ZIdentity> FROM_SOAP_IDENTITY = ZIdentity::new;
 
-    public static Function<ZIdentity, Identity> TO_SOAP_IDENTITY = new Function<ZIdentity, Identity>() {
-        @Override
-        public Identity apply(ZIdentity from) {
-            return from.getData();
-        }
-    };
+    public static java.util.function.Function<ZIdentity, @Nullable Identity> TO_SOAP_IDENTITY = ZIdentity::getData;
 
-    public static Function<Signature, ZSignature> FROM_SOAP_SIGNATURE = new Function<Signature, ZSignature>() {
-        @Override
-        public ZSignature apply(Signature from) {
-            return new ZSignature(from);
-        }
-    };
+    public static java.util.function.Function<Signature, @Nullable ZSignature> FROM_SOAP_SIGNATURE = ZSignature::new;
 
-    public static Function<ZSignature, Signature> TO_SOAP_SIGNATURE = new Function<ZSignature, Signature>() {
-        @Override
-        public Signature apply(ZSignature from) {
-            return from.getData();
-        }
-    };
+    public static java.util.function.Function<ZSignature, @Nullable Signature> TO_SOAP_SIGNATURE = ZSignature::getData;
     
-    public static Function<AccountBy, Key.AccountBy> FROM_SOAP_ACCOUNT_BY =
-        new Function<AccountBy, Key.AccountBy>() {
-        @Override
-        public Key.AccountBy apply(AccountBy by) {
+    public static java.util.function.Function<AccountBy, Key.@Nullable AccountBy> FROM_SOAP_ACCOUNT_BY =
+        new Function<>() {
+          @Override
+          public Key.AccountBy apply(AccountBy by) {
             return ACCOUNT_BY_MAP.get(by);
-        }
-    };
+          }
+        };
     
-    public static Function<Key.AccountBy, AccountBy> TO_SOAP_ACCOUNT_BY =
-        new Function<Key.AccountBy, AccountBy>() {
-        @Override
-        public AccountBy apply(Key.AccountBy by) {
+    public static java.util.function.Function<Key.AccountBy, @Nullable AccountBy> TO_SOAP_ACCOUNT_BY =
+        new Function<>() {
+          @Override
+          public AccountBy apply(Key.AccountBy by) {
             return ACCOUNT_BY_MAP.inverse().get(by);
-        }
-    };
+          }
+        };
 }

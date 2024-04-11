@@ -9,11 +9,9 @@ import javax.net.SocketFactory;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.net.URI;
 
 class ProxySelectorSocketFactory extends SocketFactory {
     private final ProxySelector proxySelector;

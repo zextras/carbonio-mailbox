@@ -47,7 +47,7 @@ public class DavProtocol {
     // addressbook-access: draft-daboo-carddav
 
     static {
-        sComplianceStrMap = new HashMap<Compliance,String>();
+        sComplianceStrMap = new HashMap<>();
         sComplianceStrMap.put(Compliance.one, "1");
         sComplianceStrMap.put(Compliance.two, "2");
         sComplianceStrMap.put(Compliance.three, "3");

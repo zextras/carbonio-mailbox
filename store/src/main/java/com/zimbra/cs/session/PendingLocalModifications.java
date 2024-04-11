@@ -71,7 +71,7 @@ public final class PendingLocalModifications extends PendingModifications<MailIt
     @Override
     public void recordCreated(BaseItemInfo item) {
         if (created == null) {
-            created = new LinkedHashMap<PendingModifications.ModificationKey, BaseItemInfo>();
+            created = new LinkedHashMap<>();
         }
         changedTypes.add(MailItem.Type.fromCommon(item.getMailItemType()));
         try {
@@ -157,7 +157,7 @@ public final class PendingLocalModifications extends PendingModifications<MailIt
         } else if (deleted != null && deleted.containsKey(key)) {
             return;
         } else if (modified == null) {
-            modified = new HashMap<PendingModifications.ModificationKey, PendingModifications.Change>();
+            modified = new HashMap<>();
         } else {
             chg = modified.get(key);
             if (chg != null) {
@@ -191,7 +191,7 @@ public final class PendingLocalModifications extends PendingModifications<MailIt
         if (map == null) {
             return null;
         }
-        Map<PendingModifications.ModificationKey, PendingModifications.Change> ret = new LinkedHashMap<PendingModifications.ModificationKey, PendingModifications.Change>();
+        Map<PendingModifications.ModificationKey, PendingModifications.Change> ret = new LinkedHashMap<>();
         Iterator<Entry<ModificationKeyMeta, ChangeMeta>> iter = map.entrySet().iterator();
         while (iter.hasNext()) {
             Entry<ModificationKeyMeta, ChangeMeta> entry = iter.next();
@@ -254,7 +254,7 @@ public final class PendingLocalModifications extends PendingModifications<MailIt
             LinkedHashMap<ModificationKeyMeta, String> metaCreated = (LinkedHashMap<ModificationKeyMeta, String>) ois
                     .readObject();
             if (metaCreated != null) {
-                pms.created = new LinkedHashMap<PendingModifications.ModificationKey, BaseItemInfo>();
+                pms.created = new LinkedHashMap<>();
                 Iterator<Entry<ModificationKeyMeta, String>> iter = metaCreated.entrySet().iterator();
                 while (iter.hasNext()) {
                     Entry<ModificationKeyMeta, String> entry = iter.next();

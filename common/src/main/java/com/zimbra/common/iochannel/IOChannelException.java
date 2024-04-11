@@ -13,9 +13,9 @@ public class IOChannelException extends IOException {
 
     public enum Code {
         NoSuchPeer, PacketTooBig, ChannelClosed, Error
-    };
+    }
 
-    private final Code errorCode;
+  private final Code errorCode;
 
     public IOChannelException(Code c, String msg) {
         super(msg);

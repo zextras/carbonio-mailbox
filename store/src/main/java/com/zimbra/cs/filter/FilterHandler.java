@@ -32,7 +32,7 @@ interface FilterHandler {
 
     MimeMessage getMimeMessage() throws ServiceException;
 
-    default public DeliveryContext getDeliveryContext() {
+    public default DeliveryContext getDeliveryContext() {
         return null;
     }
 
@@ -95,18 +95,18 @@ interface FilterHandler {
     /**
      * Sends an email notification.
      */
-    abstract void notify(String emailAddr, String subjectTemplate, String bodyTemplate, int maxBodyBytes,
-            List<String> origHeaders) throws ServiceException, MessagingException;
+    void notify(String emailAddr, String subjectTemplate, String bodyTemplate, int maxBodyBytes,
+        List<String> origHeaders) throws ServiceException, MessagingException;
 
     /**
      * Rejects delivery of a message.
      */
-    abstract void reject(String reason, LmtpEnvelope envelope) throws ServiceException, MessagingException;
+    void reject(String reason, LmtpEnvelope envelope) throws ServiceException, MessagingException;
 
     /**
      * Execute erejects action.
      */
-    abstract void ereject(LmtpEnvelope envelope) throws ErejectException;
+    void ereject(LmtpEnvelope envelope) throws ErejectException;
 
     /**
      * Sends an email notification (RFC 5435 and 5436 compliant)
@@ -119,7 +119,7 @@ interface FilterHandler {
      * @throws ServiceException
      * @throws MessagingException
      */
-    abstract void notifyMailto(LmtpEnvelope envelope, String from, int importance,
+    void notifyMailto(LmtpEnvelope envelope, String from, int importance,
         Map<String, String> options, String message, String mailto,
         Map<String, List<String>> mailtoParams) throws ServiceException, MessagingException;
 }

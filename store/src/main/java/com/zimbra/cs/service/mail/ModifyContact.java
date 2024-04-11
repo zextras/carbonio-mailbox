@@ -8,7 +8,6 @@
  */
 package com.zimbra.cs.service.mail;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +18,6 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.Pair;
 import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.Contact.Attachment;
-import com.zimbra.cs.mailbox.ContactGroup;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.OperationContext;
@@ -96,8 +94,8 @@ public class ModifyContact extends MailDocumentHandler  {
                 }
                 ItemIdFormatter ifmt = new ItemIdFormatter(zsc);
                 ToXML.encodeContact(response, ifmt, octxt, con,
-                        (ContactGroup)null, (Collection<String>)null /* memberAttrFilter */, true /* summary */,
-                        (Collection<String>)null /* attrFilter */, fields, (String)null /* migratedDList */,
+                    null, null /* memberAttrFilter */, true /* summary */,
+                    null /* attrFilter */, fields, null /* migratedDList */,
                         false /* returnHiddenAttrs */,
                         GetContacts.NO_LIMIT_MAX_MEMBERS, true /* returnCertInfo */);
             } else {
@@ -118,7 +116,7 @@ public class ModifyContact extends MailDocumentHandler  {
         if (elist == null || elist.isEmpty())
             return null;
 
-        HashMap<String, String> attrs = new HashMap<String, String>();
+        HashMap<String, String> attrs = new HashMap<>();
         for (Element e : elist) {
             String name = e.getAttribute(MailConstants.A_ATTRIBUTE_NAME);
             attrs.put(name, e.getText());

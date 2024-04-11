@@ -44,7 +44,7 @@ public class SetCustomMetadataRequest {
      */
     @SuppressWarnings("unused")
     private SetCustomMetadataRequest() {
-        this((String) null);
+        this(null);
     }
 
     public SetCustomMetadataRequest(String id) {

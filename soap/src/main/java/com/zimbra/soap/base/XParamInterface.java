@@ -5,14 +5,12 @@
 
 package com.zimbra.soap.base;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface XParamInterface {
-    public XParamInterface createFromNameAndValue(String name, String value);
-    public String getName();
-    public String getValue();
+    XParamInterface createFromNameAndValue(String name, String value);
+    String getName();
+    String getValue();
 }

@@ -7,6 +7,7 @@ package com.zimbra.cs.mailbox.calendar;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -99,7 +100,7 @@ public class FixCalendarTZUtil extends SoapCLI {
         if (!ruleFile.exists())
             throw new IOException("Missing rule file " + ruleFile.getAbsolutePath());
 
-        String docStr = new String(ByteUtil.getContent(ruleFile), "utf-8");
+        String docStr = new String(ByteUtil.getContent(ruleFile), StandardCharsets.UTF_8);
         Element tzfixupElem = Element.parseXML(docStr);
         tzfixupElem.detach();
         XmlFixupRules.parseTzFixup(tzfixupElem);  // parse it to make sure it's good

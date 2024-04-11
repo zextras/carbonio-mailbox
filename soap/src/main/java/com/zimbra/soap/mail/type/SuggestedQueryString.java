@@ -27,7 +27,7 @@ public class SuggestedQueryString implements BaseQueryInfo {
      * no-argument constructor wanted by JAXB
      */
     private SuggestedQueryString() {
-        this((String) null);
+        this(null);
     }
 
     private SuggestedQueryString(String suggestedQueryString) {

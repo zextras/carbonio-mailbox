@@ -9,5 +9,5 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 
 public interface AutoProvisionListener {
-    public void postCreate(Domain domain, Account acct, String externalDN);
+    void postCreate(Domain domain, Account acct, String externalDN);
 }

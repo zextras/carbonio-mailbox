@@ -18,7 +18,7 @@ import com.zimbra.common.soap.AccountConstants;
 
 public class LmcGetPrefsRequest extends LmcSoapRequest {
 
-    private String mPrefsToGet[];
+    private String[] mPrefsToGet;
 
 
     /**
@@ -26,17 +26,17 @@ public class LmcGetPrefsRequest extends LmcSoapRequest {
      * @param prefsToGet[] - array of names of prefs to get.  Pass in null 
      * for all preferences
      */
-    public void setPrefsToGet(String prefsToGet[]) { mPrefsToGet = prefsToGet; }
+    public void setPrefsToGet(String[] prefsToGet) { mPrefsToGet = prefsToGet; }
 
     public String[] getPrefsToGet() { return mPrefsToGet; }
 
     protected Element getRequestXML() {
         Element request = DocumentHelper.createElement(AccountConstants.GET_PREFS_REQUEST);
         if (mPrefsToGet != null) {
-            for (int i = 0; i < mPrefsToGet.length; i++) {
-                    Element pe = DomUtil.add(request, AccountConstants.E_PREF, "");
-                    DomUtil.addAttr(pe, AccountConstants.A_NAME, mPrefsToGet[i]);
-            }
+          for (String s : mPrefsToGet) {
+            Element pe = DomUtil.add(request, AccountConstants.E_PREF, "");
+            DomUtil.addAttr(pe, AccountConstants.A_NAME, s);
+          }
         }
         return request;
     }

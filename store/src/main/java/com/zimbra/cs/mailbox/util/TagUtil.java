@@ -66,7 +66,7 @@ public class TagUtil {
             return Collections.emptyList();
         }
 
-        List<Integer> tagIds = new ArrayList<Integer>(tags.length);
+        List<Integer> tagIds = new ArrayList<>(tags.length);
         for (String tag : tags) {
             try {
                 tagIds.add(mbox.getTagByName(null, tag).getId());

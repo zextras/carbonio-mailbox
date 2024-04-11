@@ -64,7 +64,7 @@ public final class ProxiedQueryResults extends ZimbraQueryResultsImpl {
      */
     private long mTimeout = -1;
 
-    private List<QueryInfo> queryInfo = new ArrayList<QueryInfo>();
+    private List<QueryInfo> queryInfo = new ArrayList<>();
 
     /**
      * A search request in the current mailbox on a different server.
@@ -227,7 +227,7 @@ public final class ProxiedQueryResults extends ZimbraQueryResultsImpl {
         }
 
         bufferEndOffset = bufferStartOffset + chunkSizeToUse;
-        hitBuffer = new ArrayList<ProxiedHit>(chunkSizeToUse);
+        hitBuffer = new ArrayList<>(chunkSizeToUse);
 
         Element searchElt = Element.create(responseProto, MailConstants.SEARCH_REQUEST);
 

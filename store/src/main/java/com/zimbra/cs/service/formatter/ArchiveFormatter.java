@@ -91,7 +91,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -104,9 +103,9 @@ public abstract class ArchiveFormatter extends Formatter {
   private final Pattern ILLEGAL_FILE_CHARS = Pattern.compile("[\\/\\:\\*\\?\\\"\\<\\>\\|\\\0]");
   private final Pattern ILLEGAL_FOLDER_CHARS = Pattern.compile("[\\:\\*\\?\\\"\\<\\>\\|\\\0]");
   private static String UTF8 = "UTF-8";
-  private final Map<Integer, List<Contact>> contacts = new HashMap<Integer, List<Contact>>();
+  private final Map<Integer, List<Contact>> contacts = new HashMap<>();
 
-  public static enum Resolve {
+  public enum Resolve {
     Modify,
     Replace,
     Reset,
@@ -217,46 +216,46 @@ public abstract class ArchiveFormatter extends Formatter {
     }
   }
 
-  public abstract interface ArchiveInputEntry {
-    public long getModTime();
+  public interface ArchiveInputEntry {
+    long getModTime();
 
-    public String getName();
+    String getName();
 
-    public long getSize();
+    long getSize();
 
-    public int getType();
+    int getType();
 
-    public boolean isUnread();
+    boolean isUnread();
   }
 
-  public abstract interface ArchiveOutputEntry {
-    public void setUnread();
+  public interface ArchiveOutputEntry {
+    void setUnread();
 
-    public void setSize(long size);
+    void setSize(long size);
   }
 
-  public abstract interface ArchiveInputStream extends Closeable {
-    public InputStream getInputStream();
+  public interface ArchiveInputStream extends Closeable {
+    InputStream getInputStream();
 
-    public ArchiveInputEntry getNextEntry() throws IOException;
+    ArchiveInputEntry getNextEntry() throws IOException;
 
-    public int read(byte[] buf, int offset, int len) throws IOException;
+    int read(byte[] buf, int offset, int len) throws IOException;
   }
 
-  public abstract interface ArchiveOutputStream extends Closeable {
-    public void closeEntry() throws IOException;
+  public interface ArchiveOutputStream extends Closeable {
+    void closeEntry() throws IOException;
 
-    public OutputStream getOutputStream();
+    OutputStream getOutputStream();
 
-    public int getRecordSize();
+    int getRecordSize();
 
-    public ArchiveOutputEntry newOutputEntry(String path, String name, int type, long date);
+    ArchiveOutputEntry newOutputEntry(String path, String name, int type, long date);
 
-    public void putNextEntry(ArchiveOutputEntry entry) throws IOException;
+    void putNextEntry(ArchiveOutputEntry entry) throws IOException;
 
-    public void write(byte[] buf) throws IOException;
+    void write(byte[] buf) throws IOException;
 
-    public void write(byte[] buf, int offset, int len) throws IOException;
+    void write(byte[] buf, int offset, int len) throws IOException;
   }
 
   @Override
@@ -285,15 +284,15 @@ public abstract class ArchiveFormatter extends Formatter {
     // Disable the jetty timeout
     disableJettyTimeout(context);
 
-    HashMap<Integer, Integer> cnts = new HashMap<Integer, Integer>();
+    HashMap<Integer, Integer> cnts = new HashMap<>();
     int dot;
-    HashMap<Integer, String> fldrs = new HashMap<Integer, String>();
+    HashMap<Integer, String> fldrs = new HashMap<>();
     String emptyname = context.params.get("emptyname");
     String ext = "." + getType();
     String filename = context.params.get("filename");
     String lock = context.params.get("lock");
     String query = context.getQueryString();
-    Set<String> names = new HashSet<String>(4096);
+    Set<String> names = new HashSet<>(4096);
     Set<MailItem.Type> sysTypes =
         EnumSet.of(
             MailItem.Type.FOLDER,
@@ -439,20 +438,20 @@ public abstract class ArchiveFormatter extends Formatter {
           for (MailItem.Type type : sysTypes) {
             List<MailItem> items = context.targetMailbox.getItemList(context.opContext, type);
 
-            Collections.sort(items, sp);
+            items.sort(sp);
             for (MailItem item : items) {
               aos = saveItem(context, item, fldrs, cnts, false, aos, encoder, names);
             }
           }
           query = "is:local";
         }
-        Map<Set<MailItem.Type>, String> typesMap = new HashMap<Set<MailItem.Type>, String>();
+        Map<Set<MailItem.Type>, String> typesMap = new HashMap<>();
         typesMap.put(searchTypes, query);
         if (context.getStartTime() != TIME_UNSPECIFIED
             || context.getEndTime() != TIME_UNSPECIFIED) {
           if (searchTypes.contains(MailItem.Type.APPOINTMENT)) {
             searchTypes.remove(MailItem.Type.APPOINTMENT);
-            Set<MailItem.Type> calendarTypes = new HashSet<MailItem.Type>();
+            Set<MailItem.Type> calendarTypes = new HashSet<>();
             calendarTypes.add(MailItem.Type.APPOINTMENT);
             typesMap.put(calendarTypes, calendarQuery);
           }
@@ -597,6 +596,8 @@ public abstract class ArchiveFormatter extends Formatter {
         break;
 
       case FLAG:
+
+      case VIRTUAL_CONVERSATION:
         return aos;
 
       case FOLDER:
@@ -633,9 +634,6 @@ public abstract class ArchiveFormatter extends Formatter {
         }
         ext = "eml";
         break;
-
-      case VIRTUAL_CONVERSATION:
-        return aos;
     }
 
     fldr = fldrs.get(fid);
@@ -680,7 +678,7 @@ public abstract class ArchiveFormatter extends Formatter {
     }
     try {
       ArchiveOutputEntry aoe;
-      byte data[] = null;
+      byte[] data = null;
       String path =
           mi instanceof Contact
               ? getEntryName(mi, fldr, name, ext, charsetEncoder, names)
@@ -737,7 +735,7 @@ public abstract class ArchiveFormatter extends Formatter {
         aos.closeEntry();
       } else if (mi instanceof CalendarItem) {
         Browser browser = HttpUtil.guessBrowser(context.req);
-        List<CalendarItem> calItems = new ArrayList<CalendarItem>();
+        List<CalendarItem> calItems = new ArrayList<>();
         boolean needAppleICalHacks = Browser.APPLE_ICAL.equals(browser);
         boolean useOutlookCompatMode = Browser.IE.equals(browser);
         OperationContext octxt =
@@ -753,7 +751,7 @@ public abstract class ArchiveFormatter extends Formatter {
       } else if (mi instanceof Message) {
         if (context.hasPart()) {
           MimeMessage mm = ((Message) mi).getMimeMessage();
-          Set<String> attachmentNames = new HashSet<String>();
+          Set<String> attachmentNames = new HashSet<>();
           for (String part : context.getPart().split(",")) {
             BufferStream bs;
             MimePart mp = Mime.getMimePart(mm, part);
@@ -814,7 +812,7 @@ public abstract class ArchiveFormatter extends Formatter {
         aos.closeEntry();
       } else if (is != null) {
         if (context.shouldReturnBody()) {
-          byte buf[] = new byte[aos.getRecordSize() * 20];
+          byte[] buf = new byte[aos.getRecordSize() * 20];
           int in;
           long remain = miSize;
 
@@ -843,7 +841,7 @@ public abstract class ArchiveFormatter extends Formatter {
           }
         } else {
           // Read headers into memory to compute size
-          byte headerData[] = HeadersOnlyInputStream.getHeaders(is);
+          byte[] headerData = HeadersOnlyInputStream.getHeaders(is);
 
           aoe.setSize(headerData.length);
           aos.putNextEntry(aoe);
@@ -951,12 +949,7 @@ public abstract class ArchiveFormatter extends Formatter {
         Map<String, Integer> map =
             CACHE.get(
                 fldrId,
-                new Callable<Map<String, Integer>>() {
-                  @Override
-                  public Map<String, Integer> call() {
-                    return makeDigestToID(fldr);
-                  }
-                });
+                () -> makeDigestToID(fldr));
         if (map == null) {
           return Maps.newHashMap();
         }
@@ -992,10 +985,10 @@ public abstract class ArchiveFormatter extends Formatter {
     Exception ex = null;
     ItemData id = null;
     FolderDigestInfo digestInfo = new FolderDigestInfo(context.opContext);
-    List<ServiceException> errs = new LinkedList<ServiceException>();
+    List<ServiceException> errs = new LinkedList<>();
     List<Folder> flist;
-    Map<Object, Folder> fmap = new HashMap<Object, Folder>();
-    Map<Integer, Integer> idMap = new HashMap<Integer, Integer>();
+    Map<Object, Folder> fmap = new HashMap<>();
+    Map<Integer, Integer> idMap = new HashMap<>();
     long last = System.currentTimeMillis();
     String types = context.getTypesString();
     String resolve = context.params.get(PARAM_RESOLVE);
@@ -1005,7 +998,7 @@ public abstract class ArchiveFormatter extends Formatter {
 
     try {
       ArchiveInputStream ais;
-      int ids[] = null;
+      int[] ids = null;
       long interval = 45 * 1000;
       Resolve r =
           resolve == null
@@ -1066,7 +1059,7 @@ public abstract class ArchiveFormatter extends Formatter {
             }
             if (delIds == null) continue;
 
-            int delIdsArray[] = new int[delIds.size()];
+            int[] delIdsArray = new int[delIds.size()];
             int i = 0;
 
             for (Integer del : delIds) {
@@ -1135,7 +1128,7 @@ public abstract class ArchiveFormatter extends Formatter {
                   fmap,
                   searchTypes,
                   r,
-                  timestamp == null || !timestamp.equals("0"),
+                  !"0".equals(timestamp),
                   ais,
                   aie,
                   errs);
@@ -1261,7 +1254,7 @@ public abstract class ArchiveFormatter extends Formatter {
   }
 
   private String string(String s) {
-    return s == null ? new String() : s;
+    return s == null ? "" : s;
   }
 
   private void warn(Exception e) {
@@ -1340,8 +1333,8 @@ public abstract class ArchiveFormatter extends Formatter {
             Map<Integer, MimeMessage> blobMimeMsgMap =
                 data == null ? null : CalendarItem.decomposeBlob(data);
             SetCalendarItemData defScid = new SetCalendarItemData();
-            SetCalendarItemData exceptionScids[] = null;
-            Invite invs[] = ci.getInvites();
+            SetCalendarItemData[] exceptionScids = null;
+            Invite[] invs = ci.getInvites();
             MimeMessage mm;
 
             if (invs != null && invs.length > 0) {
@@ -1459,11 +1452,13 @@ public abstract class ArchiveFormatter extends Formatter {
           }
           break;
         case FLAG:
+
+        case VIRTUAL_CONVERSATION:
           return;
 
         case FOLDER:
           String aclParam = context.params.get("acl");
-          boolean doACL = aclParam == null || !aclParam.equals("0");
+          boolean doACL = !"0".equals(aclParam);
           Folder f = (Folder) mi;
           ACL acl = f.getACL();
           Folder oldF = null;
@@ -1641,9 +1636,6 @@ public abstract class ArchiveFormatter extends Formatter {
             newItem = mbox.createTag(octxt, tag.getName(), tag.getColor());
           }
           break;
-
-        case VIRTUAL_CONVERSATION:
-          return;
       }
 
       if (newItem != null) {
@@ -1713,7 +1705,7 @@ public abstract class ArchiveFormatter extends Formatter {
     }
 
     for (Contact contact : contactList) {
-      HashSet<String> emailAdresses = new HashSet<String>(contact.getEmailAddresses());
+      HashSet<String> emailAdresses = new HashSet<>(contact.getEmailAddresses());
       for (String emailId : ct.getEmailAddresses()) {
         if (emailAdresses.contains(emailId)) {
           return contact;
@@ -1791,9 +1783,8 @@ public abstract class ArchiveFormatter extends Formatter {
         case APPOINTMENT:
           boolean continueOnError = context.ignoreAndContinueOnError();
           boolean preserveExistingAlarms = context.preserveAlarms();
-          InputStream is = ais.getInputStream();
 
-          try {
+          try (InputStream is = ais.getInputStream()) {
             if (aie.getSize() <= LC.calendar_ics_import_full_parse_max_size.intValue()) {
               List<ZVCalendar> icals = ZCalendarBuilder.buildMulti(is, UTF8);
               ImportInviteVisitor visitor =
@@ -1807,8 +1798,6 @@ public abstract class ArchiveFormatter extends Formatter {
                       oc, context.targetAccount, fldr, continueOnError, preserveExistingAlarms);
               ZCalendarBuilder.parse(is, UTF8, handler);
             }
-          } finally {
-            is.close();
           }
           break;
         case CONTACT:

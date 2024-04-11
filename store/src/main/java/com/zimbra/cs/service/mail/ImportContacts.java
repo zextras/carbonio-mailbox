@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,11 +21,9 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.ContactGroup;
-import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.OperationContext;
-import com.zimbra.cs.mailbox.Tag;
 import com.zimbra.cs.mailbox.util.TagUtil;
 import com.zimbra.cs.mime.ParsedContact;
 import com.zimbra.cs.service.FileUploadServlet;
@@ -35,7 +34,6 @@ import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.ItemIdFormatter;
 import com.zimbra.client.ZMailbox;
 import com.zimbra.soap.ZimbraSoapContext;
-import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.ImportContactsRequest;
 import com.zimbra.soap.mail.message.ImportContactsResponse;
 import com.zimbra.soap.mail.type.Content;
@@ -89,14 +87,12 @@ public class ImportContacts extends MailDocumentHandler  {
                 String text = StringUtil.lfToCrlf(reqContent.getValue());
                 reader = new BufferedReader(new StringReader(text));
             } else {
-                reader = parseUploadedContent(zsc, attachment, uploads = new ArrayList<Upload>());
+                reader = parseUploadedContent(zsc, attachment, uploads = new ArrayList<>());
             }
 
             contacts = ContactCSV.getContacts(reader, format, locale);
             reader.close();
-        } catch (IOException e) {
-            throw MailServiceException.UNABLE_TO_IMPORT_CONTACTS(e.getMessage(), e);
-        } catch (ParseException e) {
+        } catch (IOException | ParseException e) {
             throw MailServiceException.UNABLE_TO_IMPORT_CONTACTS(e.getMessage(), e);
         } finally {
             if (reader != null) {
@@ -131,7 +127,7 @@ public class ImportContacts extends MailDocumentHandler  {
 
         uploads.add(up);
         try {
-            return new BufferedReader(new InputStreamReader(up.getInputStream(), "UTF-8"));
+            return new BufferedReader(new InputStreamReader(up.getInputStream(), StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw ServiceException.FAILURE(e.getMessage(), e);
         }
@@ -139,7 +135,7 @@ public class ImportContacts extends MailDocumentHandler  {
 
     public static List<ItemId> ImportCsvContacts(OperationContext oc, Mailbox mbox,  ItemId iidFolder, List<Map<String, String>> csvContacts)
     throws ServiceException {
-        List<ItemId> createdIds = new LinkedList<ItemId>();
+        List<ItemId> createdIds = new LinkedList<>();
         for (Map<String,String> contact : csvContacts) {
             String[] tags = TagUtil.decodeTags(ContactCSV.getTags(contact));
             Contact c = mbox.createContact(oc, new ParsedContact(contact), iidFolder.getId(), tags);

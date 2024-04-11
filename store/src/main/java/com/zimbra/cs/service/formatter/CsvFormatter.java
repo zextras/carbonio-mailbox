@@ -94,7 +94,7 @@ public class CsvFormatter extends Formatter {
         context.resp.addHeader("Content-Disposition", cd);
         context.resp.setCharacterEncoding(context.getCharset().name());
         context.resp.setContentType("text/csv");
-        context.resp.getWriter().print(sb.toString());
+        context.resp.getWriter().print(sb);
     }
 
     @Override
@@ -131,25 +131,22 @@ public class CsvFormatter extends Formatter {
             pis.unread(buf, 0, bytesRead);
         }
         InputStreamReader isr = new InputStreamReader(pis, charset);
-        BufferedReader reader = new BufferedReader(isr);
 
-        try {
-            String format = context.params.get(UserServlet.QP_CSVFORMAT);
-            String locale = context.req.getParameter(UserServlet.QP_CSVLOCALE);
-            if (locale == null) {
-                locale = context.getLocale().toString();
-            }
-            List<Map<String, String>> contacts = ContactCSV.getContacts(reader, format, locale);
-            ItemId iidFolder = new ItemId(folder);
-
-            ImportContacts.ImportCsvContacts(context.opContext, context.targetMailbox, iidFolder, contacts);
-        } catch (ContactCSV.ParseException e) {
-            ZimbraLog.misc.debug("ContactCSV - ParseException thrown", e);
-            throw new UserServletException(HttpServletResponse.SC_BAD_REQUEST,
-                    "Could not parse csv file - Reason : " + e.getMessage());
-        } finally {
-            reader.close();
+      try (BufferedReader reader = new BufferedReader(isr)) {
+        String format = context.params.get(UserServlet.QP_CSVFORMAT);
+        String locale = context.req.getParameter(UserServlet.QP_CSVLOCALE);
+        if (locale == null) {
+          locale = context.getLocale().toString();
         }
+        List<Map<String, String>> contacts = ContactCSV.getContacts(reader, format, locale);
+        ItemId iidFolder = new ItemId(folder);
+
+        ImportContacts.ImportCsvContacts(context.opContext, context.targetMailbox, iidFolder, contacts);
+      } catch (ContactCSV.ParseException e) {
+        ZimbraLog.misc.debug("ContactCSV - ParseException thrown", e);
+        throw new UserServletException(HttpServletResponse.SC_BAD_REQUEST,
+            "Could not parse csv file - Reason : " + e.getMessage());
+      }
     }
 
     /**

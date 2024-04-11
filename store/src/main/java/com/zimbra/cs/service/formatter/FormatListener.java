@@ -16,20 +16,20 @@ public interface FormatListener {
     /**
      * Called when the format callback begins
      */
-    public void formatCallbackStarted(UserServletContext context) throws ServiceException;
+    void formatCallbackStarted(UserServletContext context) throws ServiceException;
 
     /**
      * Called when the format callback completes
      */
-    public void formatCallbackEnded(UserServletContext context) throws ServiceException;
+    void formatCallbackEnded(UserServletContext context) throws ServiceException;
 
     /**
      * Called when the save callback begins
      */
-    public void saveCallbackStarted(UserServletContext context) throws ServiceException;
+    void saveCallbackStarted(UserServletContext context) throws ServiceException;
     
     /**
      * Called when the save callback completes
      */
-    public void saveCallbackEnded(UserServletContext context) throws ServiceException;
+    void saveCallbackEnded(UserServletContext context) throws ServiceException;
 }

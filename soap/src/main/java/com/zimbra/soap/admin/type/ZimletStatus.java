@@ -7,7 +7,6 @@ package com.zimbra.soap.admin.type;
 
 import java.util.Arrays;
 
-import com.zimbra.common.service.ServiceException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -69,7 +68,7 @@ public class ZimletStatus {
      */
     @SuppressWarnings("unused")
     private ZimletStatus() {
-        this((String) null, (ZimletStatusSetting) null, false, (Integer) null);
+        this(null, null, false, null);
     }
 
     public ZimletStatus(String name, ZimletStatusSetting status, boolean extension, Integer priority) {

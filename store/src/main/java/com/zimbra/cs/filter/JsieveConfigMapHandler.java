@@ -9,9 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.Provisioning;
 
 /**
  * Handler class for jSieve's configuration map, such as CommandMap & TestMap.
@@ -44,7 +42,7 @@ public class JsieveConfigMapHandler {
     private static Map<String, String> createDefaultCommandMap() {
 
         Map<String, String> mCommandMap =
-                Collections.synchronizedMap(new HashMap<String, String>());
+                Collections.synchronizedMap(new HashMap<>());
         mCommandMap.put("disabled_if", com.zimbra.cs.filter.jsieve.DisabledIf.class.getName());
         mCommandMap.put("tag", com.zimbra.cs.filter.jsieve.Tag.class.getName());
         mCommandMap.put("flag", com.zimbra.cs.filter.jsieve.Flag.class.getName());
@@ -78,7 +76,7 @@ public class JsieveConfigMapHandler {
 	private static Map<String, String> createDefaultTestMap() {
 
         Map<String, String> mTestMap =
-                Collections.synchronizedMap(new HashMap<String, String>());
+                Collections.synchronizedMap(new HashMap<>());
         mTestMap.put("header", com.zimbra.cs.filter.jsieve.HeaderTest.class.getName());
         mTestMap.put("address", com.zimbra.cs.filter.jsieve.AddressTest.class.getName());
         mTestMap.put(CAPABILITY_ENVELOPE, com.zimbra.cs.filter.jsieve.EnvelopeTest.class.getName());

@@ -44,7 +44,7 @@ public class ZJWToken extends ZAuthToken {
     public Map<String, String> cookieMap(boolean isAdmin) {
         Map<String, String> cookieMap = null;
         if (!StringUtil.isNullOrEmpty(salt)) {
-            cookieMap = new HashMap<String, String>();
+            cookieMap = new HashMap<>();
             cookieMap.put(ZimbraCookie.COOKIE_ZM_JWT, salt);
         }
         return cookieMap;  

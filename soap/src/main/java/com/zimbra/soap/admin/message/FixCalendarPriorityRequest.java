@@ -52,7 +52,7 @@ public class FixCalendarPriorityRequest {
      */
     @SuppressWarnings("unused")
     private FixCalendarPriorityRequest() {
-        this((Boolean) null);
+        this(null);
     }
 
     public FixCalendarPriorityRequest(Boolean sync) {

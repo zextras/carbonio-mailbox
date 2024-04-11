@@ -36,7 +36,7 @@ public class RemoveAttachmentsRequest {
      */
     @SuppressWarnings("unused")
     private RemoveAttachmentsRequest() {
-        this((MsgPartIds) null);
+        this(null);
     }
 
     public RemoveAttachmentsRequest(MsgPartIds msg) {

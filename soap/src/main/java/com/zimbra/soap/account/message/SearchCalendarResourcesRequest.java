@@ -111,7 +111,7 @@ public class SearchCalendarResourcesRequest extends AttributeSelectorImpl {
   /** no-argument constructor wanted by JAXB */
   @SuppressWarnings("unused")
   private SearchCalendarResourcesRequest() {
-    this((String) null);
+    this(null);
   }
 
   public SearchCalendarResourcesRequest(String name) {

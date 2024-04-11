@@ -11,8 +11,6 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.nio.channels.AsynchronousCloseException;
 
-import javax.net.ssl.HandshakeCompletedEvent;
-import javax.net.ssl.HandshakeCompletedListener;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSocket;
 
@@ -162,12 +160,7 @@ public abstract class ProtocolHandler implements Runnable {
      */
     protected void startHandshake(final SSLSocket sock) throws IOException {
         sock.startHandshake();
-        sock.addHandshakeCompletedListener(new HandshakeCompletedListener() {
-            @Override
-            public void handshakeCompleted(HandshakeCompletedEvent event) {
-                hardShutdown("SSL renegotiation denied: " + sock);
-            }
-        });
+        sock.addHandshakeCompletedListener(event -> hardShutdown("SSL renegotiation denied: " + sock));
     }
 
     private void processConnection() throws Exception {

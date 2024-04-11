@@ -43,7 +43,7 @@ public class ConstraintInfo {
     private List <String> values = Lists.newArrayList();
 
     public ConstraintInfo() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public ConstraintInfo(String min, String max) {

@@ -7,6 +7,7 @@ package com.zimbra.cs.dav.service;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -39,7 +40,7 @@ public class DavResponse {
     public static Map<Integer, String> sStatusTextMap;
 
     static {
-        sStatusTextMap = new HashMap<Integer, String>();
+        sStatusTextMap = new HashMap<>();
 
         sStatusTextMap.put(HttpServletResponse.SC_CONTINUE,            "HTTP/1.1 100 Continue");
         sStatusTextMap.put(HttpServletResponse.SC_SWITCHING_PROTOCOLS, "HTTP/1.1 101 Switching Protocols");
@@ -185,7 +186,7 @@ public class DavResponse {
     /* Writes response XML Document to OutputStream. */
     public void writeTo(OutputStream out) throws IOException {
         if (ZimbraLog.dav.isDebugEnabled())
-            ZimbraLog.dav.debug("RESPONSE:\n"+new String(DomUtil.getBytes(mResponse), "UTF-8"));
+            ZimbraLog.dav.debug("RESPONSE:\n"+new String(DomUtil.getBytes(mResponse), StandardCharsets.UTF_8));
         DomUtil.writeDocumentToStream(mResponse, out);
     }
 
@@ -193,8 +194,8 @@ public class DavResponse {
         private final HashMap<Integer,Element> mMap;
         private final ArrayList<ResourceProperty> mProps;
         public PropStat() {
-            mProps = new ArrayList<ResourceProperty>();
-            mMap = new HashMap<Integer,Element>();
+            mProps = new ArrayList<>();
+            mMap = new HashMap<>();
         }
         public void toResponse(DavContext ctxt, Element response, boolean nameOnly) {
             if (!mProps.isEmpty()) {

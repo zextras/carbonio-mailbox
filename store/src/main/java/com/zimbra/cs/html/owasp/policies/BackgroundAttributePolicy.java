@@ -30,7 +30,7 @@ public class BackgroundAttributePolicy implements AttributePolicy {
                 if (!base.endsWith("/"))
                     base += "/";
             }
-            if (bgValue.indexOf(":") == -1) {
+            if (!bgValue.contains(":")) {
                 if (!bgValue.startsWith("/")) {
                     bgValue = "/" + bgValue;
                 }

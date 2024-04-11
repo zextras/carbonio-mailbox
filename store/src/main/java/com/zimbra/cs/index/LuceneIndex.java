@@ -9,10 +9,8 @@ import com.google.common.base.MoreObjects;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
 import com.google.common.io.ByteStreams;
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
-import com.googlecode.concurrentlinkedhashmap.EvictionListener;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
@@ -83,13 +81,7 @@ public final class LuceneIndex extends IndexStore {
           .maximumSize(LC.zimbra_index_reader_cache_size.intValue())
           .expireAfterAccess(LC.zimbra_index_reader_cache_ttl.intValue(), TimeUnit.SECONDS)
           .removalListener(
-              new RemovalListener<Integer, IndexSearcherImpl>() {
-                @Override
-                public void onRemoval(
-                    RemovalNotification<Integer, IndexSearcherImpl> notification) {
-                  IOUtil.closeQuietly(notification.getValue());
-                }
-              })
+              (RemovalListener<Integer, IndexSearcherImpl>) notification -> IOUtil.closeQuietly(notification.getValue()))
           .build();
 
   // Bug: 60631
@@ -98,12 +90,7 @@ public final class LuceneIndex extends IndexStore {
       new ConcurrentLinkedHashMap.Builder<Integer, IndexSearcherImpl>()
           .maximumWeightedCapacity(LC.zimbra_galsync_index_reader_cache_size.intValue())
           .listener(
-              new EvictionListener<Integer, IndexSearcherImpl>() {
-                @Override
-                public void onEviction(Integer mboxId, IndexSearcherImpl searcher) {
-                  IOUtil.closeQuietly(searcher);
-                }
-              })
+              (mboxId, searcher) -> IOUtil.closeQuietly(searcher))
           .build();
 
   private final Mailbox mailbox;
@@ -884,7 +871,7 @@ public final class LuceneIndex extends IndexStore {
   }
 
   /** {@link IndexWriter} wrapper that supports a reference counter. */
-  private final class IndexWriterRef {
+  private static final class IndexWriterRef {
     private final LuceneIndex index;
     private final IndexWriter writer;
     private final AtomicInteger count = new AtomicInteger(1); // ref counter

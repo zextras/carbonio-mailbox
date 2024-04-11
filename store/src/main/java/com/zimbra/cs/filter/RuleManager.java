@@ -27,6 +27,7 @@ import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.SpamHandler;
 import com.zimbra.soap.mail.type.FilterRule;
 
+import java.nio.charset.StandardCharsets;
 import org.apache.jsieve.ConfigurationManager;
 import org.apache.jsieve.SieveFactory;
 import org.apache.jsieve.exception.SieveException;
@@ -70,14 +71,15 @@ public final class RuleManager {
             RuleManager.class.getSimpleName() + ".ADMIN_OUTGOING_FILTER_RULES_AFTER_CACHE";
     public static final String editHeaderUserScriptError = "EDIT_HEADER_NOT_SUPPORTED_FOR_USER_SCRIPT";
 
-    public static enum FilterType {INCOMING, OUTGOING};
-    public static enum AdminFilterType {
+    public enum FilterType {INCOMING, OUTGOING}
+
+    public enum AdminFilterType {
         BEFORE,
         AFTER;
         public String getType() {
             return name().toLowerCase();
         }
-    };
+    }
 
     private static SieveFactory SIEVE_FACTORY = createSieveFactory();
 
@@ -136,14 +138,11 @@ public final class RuleManager {
             // evaluate against dummy mail adapter to catch more errors
             SIEVE_FACTORY.evaluate(new DummyMailAdapter(), node);
             // save
-            Map<String, Object> attrs = new HashMap<String, Object>();
+            Map<String, Object> attrs = new HashMap<>();
             attrs.put(sieveScriptAttrName, script);
             Provisioning.getInstance().modifyAttrs(entry, attrs);
             entry.setCachedData(rulesCacheKey, node);
-        } catch (ParseException e) {
-            ZimbraLog.filter.error("Unable to parse script:\n" + script);
-            throw ServiceException.PARSE_ERROR("parsing Sieve script", e);
-        } catch (TokenMgrError e) {
+        } catch (ParseException | TokenMgrError e) {
             ZimbraLog.filter.error("Unable to parse script:\n" + script);
             throw ServiceException.PARSE_ERROR("parsing Sieve script", e);
         } catch (SieveException e) {
@@ -247,12 +246,10 @@ public final class RuleManager {
                 node = getRulesNode(account, OUTGOING_FILTER_RULES_CACHE_KEY);
                 sieveScriptAttrName = Provisioning.A_zimbraMailOutgoingSieveScript;
             }
-        } catch (ParseException e) {
-            throw ServiceException.PARSE_ERROR("parsing Sieve script", e);
-        } catch (TokenMgrError e) {
+        } catch (ParseException | TokenMgrError e) {
             throw ServiceException.PARSE_ERROR("parsing Sieve script", e);
         }
-        SieveToSoap sieveToSoap = new SieveToSoap(getRuleNames(account.getAttr(sieveScriptAttrName)));
+      SieveToSoap sieveToSoap = new SieveToSoap(getRuleNames(account.getAttr(sieveScriptAttrName)));
         sieveToSoap.accept(node);
         return sieveToSoap.toFilterRules();
     }
@@ -264,7 +261,7 @@ public final class RuleManager {
      * the rule.  Return the values of all lines that begin with <tt>"# "</tt>.
      */
     public static List<String> getRuleNames(String script) {
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         if (script != null) {
             BufferedReader reader = new BufferedReader(new StringReader(script));
             String line;
@@ -319,7 +316,7 @@ public final class RuleManager {
         } catch (IOException e) {
             ZimbraLog.filter.warn("Unable to get rule %s from script:\n%s.", ruleName, script, e);
         }
-        Pair<String, String> requireScriptPair = new Pair<String, String>(requireBuf.toString(),
+        Pair<String, String> requireScriptPair = new Pair<>(requireBuf.toString(),
             scriptBuf.toString());
         if (scriptBuf.length() > 0) {
             return requireScriptPair;
@@ -430,19 +427,16 @@ public final class RuleManager {
             }
         } catch (ErejectException ex) {
             throw DeliveryServiceException.DELIVERY_REJECTED(ex.getMessage(), ex);
-        } catch (Exception e) {
+        } catch (Exception | TokenMgrError e) {
             ZimbraLog.filter.warn("An error occurred while processing filter rules. Filing message to %s.",
                     handler.getDefaultFolderPath(), e);
-        } catch (TokenMgrError e) {
-            // Workaround for bug 19576.  Certain parse errors can cause JavaCC to throw an Error
-            // instead of an Exception.  Woo.
-            ZimbraLog.filter.warn("An error occurred while processing filter rules. Filing message to %s.",
-                    handler.getDefaultFolderPath(), e);
-        }
-        if (addedMessageIds == null) {
+        } // Workaround for bug 19576.  Certain parse errors can cause JavaCC to throw an Error
+        // instead of an Exception.  Woo.
+
+      if (addedMessageIds == null) {
             // Filter rules were not processed.  File to the default folder.
             Message msg = mailAdapter.keep(KeepType.IMPLICIT_KEEP);
-            addedMessageIds = new ArrayList<ItemId>(1);
+            addedMessageIds = new ArrayList<>(1);
             addedMessageIds.add(new ItemId(msg));
         }
         return addedMessageIds;
@@ -484,17 +478,14 @@ public final class RuleManager {
             mailAdapter.executeAllActions();
             // multiple fileinto may result in multiple copies of the messages in different folders
             addedMessageIds = mailAdapter.getAddedMessageIds();
-        } catch (Exception e) {
-            ZimbraLog.filter.warn("An error occurred while processing filter rules. Filing message to %s.",
-                handler.getDefaultFolderPath(), e);
-        } catch (TokenMgrError e) {
+        } catch (Exception | TokenMgrError e) {
             ZimbraLog.filter.warn("An error occurred while processing filter rules. Filing message to %s.",
                 handler.getDefaultFolderPath(), e);
         }
-        if (addedMessageIds == null) {
+      if (addedMessageIds == null) {
             // Filter rules were not processed.  File to the default folder.
             Message msg = mailAdapter.keep(KeepType.IMPLICIT_KEEP);
-            addedMessageIds = new ArrayList<ItemId>(1);
+            addedMessageIds = new ArrayList<>(1);
             addedMessageIds.add(new ItemId(msg));
         }
         return addedMessageIds;
@@ -552,12 +543,8 @@ public final class RuleManager {
      */
     public static Node parse(String script) throws ParseException {
         ByteArrayInputStream sin;
-        try {
-            sin = new ByteArrayInputStream(script.getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            throw new ParseException(e.getMessage());
-        }
-        Node node = null;
+      sin = new ByteArrayInputStream(script.getBytes(StandardCharsets.UTF_8));
+      Node node = null;
         try {
             node = SIEVE_FACTORY.parse(sin);
         } catch (TokenMgrError e) {
@@ -568,12 +555,8 @@ public final class RuleManager {
             // an undefined escape sequence (such as "\a" in a context where "a" has no
             // special meaning). Here is the workaround to re-try parsing using the same
             // filter string without any undefined escape sequences.
-            try {
-                sin = new ByteArrayInputStream(ignoreBackslash(script).getBytes("UTF-8"));
-            } catch (UnsupportedEncodingException uee) {
-                throw new ParseException(uee.getMessage());
-            }
-            node = SIEVE_FACTORY.parse(sin);
+          sin = new ByteArrayInputStream(ignoreBackslash(script).getBytes(StandardCharsets.UTF_8));
+          node = SIEVE_FACTORY.parse(sin);
         }
         return node;
     }

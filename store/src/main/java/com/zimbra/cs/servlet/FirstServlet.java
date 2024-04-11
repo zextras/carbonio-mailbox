@@ -21,7 +21,6 @@ import com.zimbra.common.net.SocketFactories;
 import com.zimbra.cs.util.Zimbra;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.znative.IO;
-import com.zimbra.znative.Util;
 
 /**
  * Bind to all necessary privileged ports and then drop privilege.

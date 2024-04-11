@@ -49,7 +49,7 @@ public class QueueQuery {
      */
     @SuppressWarnings("unused")
     private QueueQuery() {
-        this((Integer) null, (Integer) null);
+        this(null, null);
     }
 
     public QueueQuery(Integer offset, Integer limit) {

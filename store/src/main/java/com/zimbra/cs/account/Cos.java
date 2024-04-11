@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public class Cos extends ZAttrCos {
  
-    private Map<String, Object> mAccountDefaults = new HashMap<String, Object>();
+    private Map<String, Object> mAccountDefaults = new HashMap<>();
 
     public Cos(String name, String id, Map<String,Object> attrs, Provisioning prov) {
         super(name, id, attrs, prov);

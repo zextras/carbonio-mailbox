@@ -119,7 +119,7 @@ public abstract class ImapRequest {
 
     protected final ImapHandler mHandler;
     protected String tag;
-    protected final List<Part> parts = new ArrayList<Part>();
+    protected final List<Part> parts = new ArrayList<>();
     protected int index;
     protected int offset;
     private boolean isAppend;
@@ -136,7 +136,7 @@ public abstract class ImapRequest {
         return this;
     }
 
-    protected abstract class Part {
+    protected abstract static class Part {
         protected abstract int size();
         protected abstract byte[] getBytes() throws IOException;
         protected abstract String getString() throws ImapParseException;
@@ -446,7 +446,7 @@ public abstract class ImapRequest {
                 if (result == null) {
                     result = new StringBuilder();
                 }
-                result.append(content.substring(backslash + 1, i));
+                result.append(content, backslash + 1, i);
                 backslash = i;
                 escaped = true;
             } else if (!escaped && c == '"') {
@@ -623,13 +623,13 @@ public abstract class ImapRequest {
         if (peekChar() != '(') {
             CacheEntryType type = readCacheEntryType();
             if (type != null) {
-                return Arrays.asList(new CacheEntryType[] { type } );
+                return Arrays.asList(type);
             } else {
                 return Collections.emptyList();
             }
         }
         skipChar('(');
-        List<CacheEntryType> cacheTypes = new ArrayList<CacheEntryType>();
+        List<CacheEntryType> cacheTypes = new ArrayList<>();
         if (peekChar() != ')') {
             do {
                 CacheEntryType cacheType = readCacheEntryType();
@@ -656,7 +656,7 @@ public abstract class ImapRequest {
         if (peekChar() != '(') {
             throw new ImapParseException(tag, "did not find expected '('");
         }
-        List<CacheEntrySelector> cacheEntries = new ArrayList<CacheEntrySelector>();
+        List<CacheEntrySelector> cacheEntries = new ArrayList<>();
         skipChar('(');
         if (peekChar() != ')') {
             do {
@@ -731,7 +731,7 @@ public abstract class ImapRequest {
 
     private String readFolder(boolean isPattern) throws IOException, ImapParseException {
         String raw = readAstring(null, isPattern ? PATTERN_CHARS : ASTRING_CHARS);
-        if (raw == null || raw.indexOf("&") == -1)
+        if (raw == null || !raw.contains("&"))
             return raw;
         try {
             return ImapPath.FOLDER_ENCODING_CHARSET.decode(ByteBuffer.wrap(raw.getBytes(Charsets.US_ASCII))).toString();
@@ -742,7 +742,7 @@ public abstract class ImapRequest {
     }
 
     protected List<String> readFlags() throws ImapParseException {
-        List<String> tags = new ArrayList<String>();
+        List<String> tags = new ArrayList<>();
         String content = getCurrentLine();
         boolean parens = (peekChar() == '(');
         if (parens) {
@@ -888,7 +888,7 @@ public abstract class ImapRequest {
             skipNIL();  return null;
         }
 
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         skipChar('(');
         if (peekChar() != ')') {//skip over empty parameters
             do {
@@ -1011,7 +1011,7 @@ public abstract class ImapRequest {
             }
             sectionText = readATOM();
             if (sectionText.equals("HEADER.FIELDS") || sectionText.equals("HEADER.FIELDS.NOT")) {
-                headers = new ArrayList<String>();
+                headers = new ArrayList<>();
                 skipSpace();  skipChar('(');
                 while (peekChar() != ')') {
                     if (!headers.isEmpty()) {

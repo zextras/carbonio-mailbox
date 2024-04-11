@@ -37,7 +37,7 @@ public class GetCustomMetadataResponse {
      */
     @SuppressWarnings("unused")
     private GetCustomMetadataResponse() {
-        this((String) null);
+        this(null);
     }
 
     public GetCustomMetadataResponse(String id) {

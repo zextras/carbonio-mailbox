@@ -68,7 +68,7 @@ public class GalSyncAccountUtil {
   }
 
   private static void addCommand(String cmd, int cmdId) {
-    mCommands.put(cmd, Integer.valueOf(cmdId));
+    mCommands.put(cmd, cmdId);
   }
 
   private static int lookupCmd(String cmd) {
@@ -76,11 +76,11 @@ public class GalSyncAccountUtil {
     if (i == null) {
       usage();
     }
-    return i.intValue();
+    return i;
   }
 
   private static void setup() {
-    mCommands = new HashMap<String, Integer>();
+    mCommands = new HashMap<>();
     addCommand(CREATE_ACCOUNT_COMMAND, CREATE_ACCOUNT);
     addCommand(ADD_DATASOURCE_COMMAND, ADD_DATASOURCE);
     addCommand(DELETE_ACCOUNT_COMMAND, DELETE_ACCOUNT);

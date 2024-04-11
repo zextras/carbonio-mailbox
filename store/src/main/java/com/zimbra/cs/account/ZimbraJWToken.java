@@ -71,7 +71,7 @@ public class ZimbraJWToken extends AuthToken {
     }
 
     ZimbraJWToken(Claims body, String jwt) throws AuthTokenException {
-        Map<Object, Object> map = new HashMap<Object, Object>();
+        Map<Object, Object> map = new HashMap<>();
         map.put(AuthTokenProperties.C_ID, body.getSubject());
         if (body.getExpiration() != null) {
             map.put(AuthTokenProperties.C_EXP, String.valueOf(body.getExpiration().getTime()));

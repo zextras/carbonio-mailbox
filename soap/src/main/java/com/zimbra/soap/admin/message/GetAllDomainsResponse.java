@@ -20,7 +20,7 @@ public class GetAllDomainsResponse {
      * @zm-api-field-description Information on domains
      */
     @XmlElement(name=AdminConstants.E_DOMAIN)
-    private List <DomainInfo> domainList = new ArrayList<DomainInfo>();
+    private List <DomainInfo> domainList = new ArrayList<>();
 
     public GetAllDomainsResponse() {
     }

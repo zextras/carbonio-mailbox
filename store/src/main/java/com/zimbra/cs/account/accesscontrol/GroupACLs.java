@@ -8,7 +8,6 @@ package com.zimbra.cs.account.accesscontrol;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.zimbra.common.service.ServiceException;
@@ -30,9 +29,9 @@ public class GroupACLs {
     // Set of zimbraId of groups the account target is a direct member of
     private Set<String> directGroupsOfAccountTarget;
     
-    private Set<ZimbraACE> aclsOnGroupTargetsAllowedNotDelegable = new HashSet<ZimbraACE>();
-    private Set<ZimbraACE> aclsOnGroupTargetsAllowedDelegable = new HashSet<ZimbraACE>();
-    private Set<ZimbraACE> aclsOnGroupTargetsDenied = new HashSet<ZimbraACE>();
+    private Set<ZimbraACE> aclsOnGroupTargetsAllowedNotDelegable = new HashSet<>();
+    private Set<ZimbraACE> aclsOnGroupTargetsAllowedDelegable = new HashSet<>();
+    private Set<ZimbraACE> aclsOnGroupTargetsDenied = new HashSet<>();
     
     GroupACLs(Entry target) throws ServiceException {
         if (target instanceof Account) {
@@ -106,7 +105,7 @@ public class GroupACLs {
             !aclsOnGroupTargetsAllowedDelegable.isEmpty() ||   
             !aclsOnGroupTargetsDenied.isEmpty()) {
                 
-            List<ZimbraACE> aclsOnGroupTargets = new ArrayList<ZimbraACE>();
+            List<ZimbraACE> aclsOnGroupTargets = new ArrayList<>();
             aclsOnGroupTargets.addAll(aclsOnGroupTargetsDenied);
             aclsOnGroupTargets.addAll(aclsOnGroupTargetsAllowedDelegable);
             aclsOnGroupTargets.addAll(aclsOnGroupTargetsAllowedNotDelegable);

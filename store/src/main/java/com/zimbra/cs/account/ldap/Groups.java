@@ -25,7 +25,7 @@ public class Groups {
     private Set<String> mAllDLs = null; // email addresses of all distribution lists on the system
 
     private static class GetAllDLsVisitor extends SearchLdapVisitor {
-        Set<String> allDLs = new HashSet<String>();
+        Set<String> allDLs = new HashSet<>();
 
         @Override
         public void visit(String dn, Map<String, Object> attrs, IAttributes ldapAttrs) {

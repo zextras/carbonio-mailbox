@@ -34,7 +34,7 @@ public class GetRecurRequest {
      */
     @SuppressWarnings("unused")
     private GetRecurRequest() {
-        this((String) null);
+        this(null);
     }
 
     public GetRecurRequest(String id) {

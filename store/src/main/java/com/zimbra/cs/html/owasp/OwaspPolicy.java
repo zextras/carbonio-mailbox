@@ -48,13 +48,13 @@ public class OwaspPolicy {
      * reload the policy file on the fly without locking.
      */
     private static volatile OwaspPolicy mOwaspPolicy;
-    private static final Map<String, String> mConfiguredElements = new HashMap<String, String>();
-    private static final Set<String> mDisallowTextElements = new HashSet<String>();
-    private static final Set<String> mAllowTextElements = new HashSet<String>();
-    private static final Set<String> mCssWhitelist = new HashSet<String>();
-    private static final Set<String> mURLProtocols = new HashSet<String>();
-    private static final Set<String> mURLProtocolAttrs = new HashSet<String>();
-    private static final Map<String, String> mElementUrlProtocols = new HashMap<String, String>();
+    private static final Map<String, String> mConfiguredElements = new HashMap<>();
+    private static final Set<String> mDisallowTextElements = new HashSet<>();
+    private static final Set<String> mAllowTextElements = new HashSet<>();
+    private static final Set<String> mCssWhitelist = new HashSet<>();
+    private static final Set<String> mURLProtocols = new HashSet<>();
+    private static final Set<String> mURLProtocolAttrs = new HashSet<>();
+    private static final Map<String, String> mElementUrlProtocols = new HashMap<>();
 
     static {
         try {

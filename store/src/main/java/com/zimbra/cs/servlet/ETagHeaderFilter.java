@@ -36,7 +36,7 @@ public class ETagHeaderFilter implements Filter {
         chain.doFilter(request, wrapper);
     }
 
-    private class ETagResponseWrapper extends HttpServletResponseWrapper {
+    private static class ETagResponseWrapper extends HttpServletResponseWrapper {
 
         public ETagResponseWrapper(HttpServletResponse response) {
             super(response);

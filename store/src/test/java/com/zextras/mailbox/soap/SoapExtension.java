@@ -33,6 +33,15 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
     return soapClient;
   }
 
+  public void clearData() throws Exception{
+    MailboxTestUtil.clearData();
+  }
+
+  public void initData() throws Exception{
+    MailboxTestUtil.initData();
+  }
+
+
   private final SoapClient soapClient;
   private final Server server;
   private final int port;

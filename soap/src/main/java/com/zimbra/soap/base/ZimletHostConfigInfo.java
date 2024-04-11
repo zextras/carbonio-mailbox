@@ -9,10 +9,10 @@ import java.util.List;
 
 public interface ZimletHostConfigInfo {
 
-    public void setName(String name);
-    public void setZimletProperties(Iterable <ZimletProperty> properties);
-    public void addZimletProperty(ZimletProperty property);
+    void setName(String name);
+    void setZimletProperties(Iterable<ZimletProperty> properties);
+    void addZimletProperty(ZimletProperty property);
 
-    public String getName();
-    public List<ZimletProperty> getZimletProperties();
+    String getName();
+    List<ZimletProperty> getZimletProperties();
 }

@@ -35,7 +35,7 @@ public class LmcCreateContactRequest extends LmcSoapRequest {
         LmcSoapRequest.addAttrNotNull(newCN, MailConstants.A_TAGS, mContact.getTags());
         
         // emit contact attributes if any
-        LmcContactAttr attrs[] = mContact.getAttrs();
+        LmcContactAttr[] attrs = mContact.getAttrs();
 		for (int i = 0; attrs != null && i < attrs.length; i++)
 			addContactAttr(newCN, attrs[i]);
 		

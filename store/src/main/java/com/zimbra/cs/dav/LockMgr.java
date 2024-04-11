@@ -45,7 +45,7 @@ public class LockMgr {
 	private final Map<String,Lock> mLocks;
 
 	private LockMgr() {
-		mLockedResources = new HashMap<String,List<String>>();
+		mLockedResources = new HashMap<>();
 		mLocks = MapUtil.newLruMap(100);
 	}
 
@@ -99,7 +99,7 @@ public class LockMgr {
 	}
 
 	public synchronized List<Lock> getLocks(String path) {
-		List<Lock> locks = new ArrayList<Lock>();
+		List<Lock> locks = new ArrayList<>();
 		List<String> lockTokens = mLockedResources.get(path);
 		if (lockTokens != null) {
 			for (String token : lockTokens) {
@@ -119,15 +119,15 @@ public class LockMgr {
 
 	private synchronized Lock hasLock(String owner, String path, LockType type, LockScope scope) throws DavException {
 		for (Lock l : getLocks(path)) {
-			if (l == null)
-				continue;
-			else if (l.owner.compareTo(owner) == 0)
-				return l;
-			else if (scope == LockScope.exclusive)
-				throw new DavException("already locked "+path, DavProtocol.STATUS_LOCKED);
-			else if (scope == LockScope.shared && l.scope == LockScope.exclusive)
-				throw new DavException("shared lock exists "+path, DavProtocol.STATUS_LOCKED);
-		}
+            if (l != null) {
+                if (l.owner.compareTo(owner) == 0)
+                    return l;
+                else if (scope == LockScope.exclusive)
+                    throw new DavException("already locked "+path, DavProtocol.STATUS_LOCKED);
+                else if (scope == LockScope.shared && l.scope == LockScope.exclusive)
+                    throw new DavException("shared lock exists "+path, DavProtocol.STATUS_LOCKED);
+            }
+        }
 		return null;
 	}
 
@@ -136,11 +136,11 @@ public class LockMgr {
 		if (l != null)
 			return l;
 		l = new Lock(type, scope, depth, owner);
-		l.token = sTOKEN_PREFIX + UUID.randomUUID().toString();
+		l.token = sTOKEN_PREFIX + UUID.randomUUID();
 
 		List<String> locks = mLockedResources.get(path);
 		if (locks == null) {
-			locks = new ArrayList<String>();
+			locks = new ArrayList<>();
 			mLockedResources.put(path, locks);
 		}
 		locks.add(l.token);

@@ -119,7 +119,7 @@ public final class SessionCache {
     public static Collection<Session> getAllSessions(String accountId) {
         if (sShutdown)
             return null;
-        Collection<Session> ret = new ArrayList<Session>();
+        Collection<Session> ret = new ArrayList<>();
         for (Session.Type type : Session.Type.values()) {
             Collection<Session> sessions = getSessionMap(type).get(accountId);
             if (sessions != null) {
@@ -283,7 +283,7 @@ public final class SessionCache {
         /* @see com.zimbra.common.stats.RealtimeStatsCallback#getStatData() */
         @Override
         public Map<String, Object> getStatData() {
-            Map<String, Object> data = new HashMap<String, Object>();
+            Map<String, Object> data = new HashMap<>();
             SessionMap soapMap = getSessionMap(Session.Type.SOAP);
             data.put(ZimbraPerf.RTS_SOAP_SESSIONS, soapMap.totalActiveSessions());
             return data;

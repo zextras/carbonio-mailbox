@@ -41,7 +41,7 @@ public class BounceMsgRequest {
      */
     @SuppressWarnings("unused")
     private BounceMsgRequest() {
-        this((BounceMsgSpec) null);
+        this(null);
     }
 
     public BounceMsgRequest(BounceMsgSpec msg) {

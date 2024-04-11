@@ -36,7 +36,7 @@ public class GeoInfo implements GeoInfoInterface {
      */
     @SuppressWarnings("unused")
     private GeoInfo() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public GeoInfo( String latitude,

@@ -37,7 +37,7 @@ public enum CAtom {
 
     private final Atom atom;
 
-    private static final Map<Atom, CAtom> byAtom = new HashMap<Atom, CAtom>();
+    private static final Map<Atom, CAtom> byAtom = new HashMap<>();
 
     static {
         for (CAtom catom : values()) {
@@ -54,11 +54,11 @@ public enum CAtom {
         return ca != null ? ca : UNKNOWN;
     }
 
-    private CAtom() {
+    CAtom() {
         atom = new Atom(name());
     }
 
-    private CAtom(String s) {
+    CAtom(String s) {
         atom = new Atom(s);
     }
 

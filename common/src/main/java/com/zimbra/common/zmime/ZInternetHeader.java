@@ -208,7 +208,7 @@ public class ZInternetHeader {
             this.unique = unique;  this.prepend = prepend;  this.first = first;
         }
 
-        private static final Map<String, HeaderInfo> lookup = new HashMap<String, HeaderInfo>(40);
+        private static final Map<String, HeaderInfo> lookup = new HashMap<>(40);
         static {
             for (HeaderInfo hinfo : EnumSet.allOf(HeaderInfo.class)) {
                 if (hinfo.name != null) {
@@ -349,56 +349,56 @@ public class ZInternetHeader {
         int last = results.size();
         StringBuilder text = new StringBuilder();
         StringBuilder decodeMe = new StringBuilder();
-        for (int i = 0; i < last; i++) {
-            prev = current;
-            current = results.get(i);
+      for (FieldElement result : results) {
+        prev = current;
+        current = result;
 
-            if (current.getSeqType() == SequenceType.LWS) {
-                if (prev != null && prev.getSeqType() == SequenceType.EW) {
-                    decodeAndAppend(decodeMe, text);
-                    decodeMe.setLength(0);
-                }
-                text.append(current.getText());
-            } else if (current.getSeqType() == SequenceType.EW) {
-                if (prev != null && prev.getSeqType() == SequenceType.EW &&
-                        prev.getCharset().equalsIgnoreCase(current.getCharset()) &&
-                        prev.getDecodeType().equalsIgnoreCase(current.getDecodeType())) {
-                    int endIdx = decodeMe.length() - 1;
-                    if ("B".equalsIgnoreCase(current.getDecodeType()) && endIdx > 1 &&
-                            decodeMe.charAt(endIdx) == '=') {
-                        // This chunk is correctly padded
-                        decodeAndAppend(decodeMe, text);
-                        setupNewNeedDecode(decodeMe, current);
-                    } else if ("Q".equalsIgnoreCase(current.getDecodeType()) && endIdx > 1 &&
-                            decodeMe.charAt(endIdx) == '=') {
-                        /* RFC 2047 Section 5. (3)
-                         * ```
-                         * The 'encoded-text' in each 'encoded-word' must be well-formed according
-                         * to the encoding specified; the 'encoded-text' may not be continued in
-                         * the next 'encoded-word'.  (For example, "=?charset?Q?=?=
-                         * =?charset?Q?AB?=" would be illegal, because the two hex digits "AB"
-                         * must follow the "=" in the same 'encoded-word'.)
-                         * ```
-                        */
-                        text.append(decodeMe);
-                        setupNewNeedDecode(decodeMe, current);
-                    } else {
-                        decodeMe.append(current.getText());
-                    }
-                } else if (prev != null && prev.getSeqType() == SequenceType.EW) {
-                    decodeAndAppend(decodeMe, text);
-                    setupNewNeedDecode(decodeMe, current);
-                } else {
-                    setupNewNeedDecode(decodeMe, current);
-                }
-            } else if (current.getSeqType() == SequenceType.COMMENT) {
-                if (prev != null && prev.getSeqType() == SequenceType.EW) {
-                    decodeAndAppend(decodeMe, text);
-                    decodeMe.setLength(0);
-                }
-                text.append(current.getText());
+        if (current.getSeqType() == SequenceType.LWS) {
+          if (prev != null && prev.getSeqType() == SequenceType.EW) {
+            decodeAndAppend(decodeMe, text);
+            decodeMe.setLength(0);
+          }
+          text.append(current.getText());
+        } else if (current.getSeqType() == SequenceType.EW) {
+          if (prev != null && prev.getSeqType() == SequenceType.EW &&
+              prev.getCharset().equalsIgnoreCase(current.getCharset()) &&
+              prev.getDecodeType().equalsIgnoreCase(current.getDecodeType())) {
+            int endIdx = decodeMe.length() - 1;
+            if ("B".equalsIgnoreCase(current.getDecodeType()) && endIdx > 1 &&
+                decodeMe.charAt(endIdx) == '=') {
+              // This chunk is correctly padded
+              decodeAndAppend(decodeMe, text);
+              setupNewNeedDecode(decodeMe, current);
+            } else if ("Q".equalsIgnoreCase(current.getDecodeType()) && endIdx > 1 &&
+                decodeMe.charAt(endIdx) == '=') {
+              /* RFC 2047 Section 5. (3)
+               * ```
+               * The 'encoded-text' in each 'encoded-word' must be well-formed according
+               * to the encoding specified; the 'encoded-text' may not be continued in
+               * the next 'encoded-word'.  (For example, "=?charset?Q?=?=
+               * =?charset?Q?AB?=" would be illegal, because the two hex digits "AB"
+               * must follow the "=" in the same 'encoded-word'.)
+               * ```
+               */
+              text.append(decodeMe);
+              setupNewNeedDecode(decodeMe, current);
+            } else {
+              decodeMe.append(current.getText());
             }
+          } else if (prev != null && prev.getSeqType() == SequenceType.EW) {
+            decodeAndAppend(decodeMe, text);
+            setupNewNeedDecode(decodeMe, current);
+          } else {
+            setupNewNeedDecode(decodeMe, current);
+          }
+        } else if (current.getSeqType() == SequenceType.COMMENT) {
+          if (prev != null && prev.getSeqType() == SequenceType.EW) {
+            decodeAndAppend(decodeMe, text);
+            decodeMe.setLength(0);
+          }
+          text.append(current.getText());
         }
+      }
         if (decodeMe.length() > 0) {
             decodeAndAppend(decodeMe, text);
         }
@@ -421,12 +421,14 @@ public class ZInternetHeader {
         if (null != decoded) {
             text.append(decoded);
         } else {
-            text.append(needDecode.toString());
+            text.append(needDecode);
         }
     }
 
-    public enum SequenceType {UNDEFINED, ERROR, COMMENT /* comment */, EW /* encoded-word */, LWS /* linear-white-space */};
-    public enum EncodeSequenceState {CHARSET, ENCODEMETHOD, TEXT, UNDEFINED};
+    public enum SequenceType {UNDEFINED, ERROR, COMMENT /* comment */, EW /* encoded-word */, LWS /* linear-white-space */}
+
+    public enum EncodeSequenceState {CHARSET, ENCODEMETHOD, TEXT, UNDEFINED}
+
     public static class FieldElement {
         private SequenceType seqType;
         private ByteArrayOutputStream bytes;
@@ -461,7 +463,7 @@ public class ZInternetHeader {
      *
      */
     static class Fields {
-        private List<FieldElement> fields = new ArrayList<FieldElement>();
+        private List<FieldElement> fields = new ArrayList<>();
         public void add(FieldElement element) {
             int end = fields.size() - 1;
             if (element.getSeqType() != SequenceType.EW && element.getText().isEmpty()) {
@@ -652,9 +654,7 @@ public class ZInternetHeader {
         private static class Q2047Encoder extends ZTransferEncoding.QuotedPrintableEncoderStream {
             static final boolean[] FORCE_ENCODE = new boolean[128];
             static {
-                for (int i = 0; i < FORCE_ENCODE.length; i++) {
-                    FORCE_ENCODE[i] = true;
-                }
+                Arrays.fill(FORCE_ENCODE, true);
                 for (int c : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!*+-/ ".getBytes()) {
                     FORCE_ENCODE[c] = false;
                 }

@@ -32,7 +32,7 @@ import com.zimbra.cs.util.Zimbra;
 
 public class ZRecur implements Cloneable {
 
-    public static enum Frequency { DAILY, HOURLY, MINUTELY, MONTHLY, SECONDLY, WEEKLY, YEARLY }
+    public enum Frequency { DAILY, HOURLY, MINUTELY, MONTHLY, SECONDLY, WEEKLY, YEARLY }
 
     public static class ZWeekDayNum {
         public static class DayOnlyComparator implements Comparator<ZWeekDayNum>
@@ -49,7 +49,7 @@ public class ZRecur implements Cloneable {
         public int mOrdinal; // -4,-3,-2,-1,+1,+2,+3,+4
 
         public ZWeekDayNum() {}
-        public ZWeekDayNum(int ord, ZWeekDay day) { mOrdinal = ord; mDay = day; };
+        public ZWeekDayNum(int ord, ZWeekDay day) { mOrdinal = ord; mDay = day; }
 
         @Override
         public String toString() {
@@ -58,11 +58,11 @@ public class ZRecur implements Cloneable {
             else
                 return mDay.toString();
         }
-    };
+    }
 
-    private static enum Tokens {
+    private enum Tokens {
         BYDAY, BYHOUR, BYMINUTE, BYMONTH, BYMONTHDAY, BYSECOND, BYSETPOS, BYWEEKNO,
-        BYYEARDAY, COUNT, FREQ, INTERVAL, UNTIL, WKST;
+        BYYEARDAY, COUNT, FREQ, INTERVAL, UNTIL, WKST
     }
 
     // Max date known to calendaring = 01/01/9000 00:00:00 in UTC
@@ -95,9 +95,7 @@ public class ZRecur implements Cloneable {
             sExpansionLimits.maxYears = val == null ? 100 : Integer.parseInt(val);
             val = server.getAttr(Provisioning.A_zimbraCalendarRecurrenceOtherFrequencyMaxYears);
             sExpansionLimits.maxYearsOtherFreqs = val == null ? 1 : Integer.parseInt(val);
-        } catch (NumberFormatException e) {
-            Zimbra.halt("Can't initialize recurrence expansion limits", e);
-        } catch (ServiceException e) {
+        } catch (NumberFormatException | ServiceException e) {
             Zimbra.halt("Can't initialize recurrence expansion limits", e);
         }
     }
@@ -271,7 +269,7 @@ public class ZRecur implements Cloneable {
 
         try {
             ZRecur test = new ZRecur("FREQ=DAILY;BYMONTH=5,6", tzmap);
-            System.out.println("\n\n"+test.toString()+"\n-------------------------------------------------");
+            System.out.println("\n\n"+ test +"\n-------------------------------------------------");
             List<Date> dateList = test.expandRecurrenceOverRange(dtStart, rangeStart.getTime(), rangeEnd.getTime());
             for (Date d : dateList) {
                 cal.setTime(d);
@@ -285,7 +283,7 @@ public class ZRecur implements Cloneable {
 
         try {
             ZRecur test = new ZRecur("FREQ=DAILY;BYMONTH=5,6;BYDAY=TH,-1MO", tzmap);
-            System.out.println("\n\n"+test.toString()+"\n-------------------------------------------------");
+            System.out.println("\n\n"+ test +"\n-------------------------------------------------");
             List<Date> dateList = test.expandRecurrenceOverRange(dtStart, rangeStart.getTime(), rangeEnd.getTime());
             for (Date d : dateList) {
                 cal.setTime(d);
@@ -299,7 +297,7 @@ public class ZRecur implements Cloneable {
 
         try {
             ZRecur test = new ZRecur("FREQ=DAILY;BYMONTH=5,6;BYMONTHDAY=1,3,5,7,9,31", tzmap);
-            System.out.println("\n\n"+test.toString()+"\n-------------------------------------------------");
+            System.out.println("\n\n"+ test +"\n-------------------------------------------------");
             List<Date> dateList = test.expandRecurrenceOverRange(dtStart, rangeStart.getTime(), rangeEnd.getTime());
             for (Date d : dateList) {
                 cal.setTime(d);
@@ -312,7 +310,7 @@ public class ZRecur implements Cloneable {
 
         try {
             ZRecur test = new ZRecur("FREQ=DAILY;BYMONTH=5,6;BYMONTHDAY=1,3,5,7,9,31;BYDAY=SU,SA", tzmap);
-            System.out.println("\n\n"+test.toString()+"\n--------------------------------------------------------------");
+            System.out.println("\n\n"+ test +"\n--------------------------------------------------------------");
             List<Date> dateList = test.expandRecurrenceOverRange(dtStart, rangeStart.getTime(), rangeEnd.getTime());
             for (Date d : dateList) {
                 cal.setTime(d);
@@ -326,7 +324,7 @@ public class ZRecur implements Cloneable {
 
         try {
             ZRecur test = new ZRecur("FREQ=DAILY;BYMONTH=5,6;BYMONTHDAY=1,3,5,7,9,31;BYDAY=SU,SA;BYHOUR=21,0", tzmap);
-            System.out.println("\n\n"+test.toString()+"\n--------------------------------------------------------------");
+            System.out.println("\n\n"+ test +"\n--------------------------------------------------------------");
             List<Date> dateList = test.expandRecurrenceOverRange(dtStart, rangeStart.getTime(), rangeEnd.getTime());
             for (Date d : dateList) {
                 cal.setTime(d);
@@ -339,7 +337,7 @@ public class ZRecur implements Cloneable {
 
         try {
             ZRecur test = new ZRecur("FREQ=DAILY;BYMONTH=5,6;BYMONTHDAY=1,3,5,7,9,31;BYDAY=SU;BYHOUR=21,0;BYMINUTE=23", tzmap);
-            System.out.println("\n\n"+test.toString()+"\n--------------------------------------------------------------");
+            System.out.println("\n\n"+ test +"\n--------------------------------------------------------------");
             List<Date> dateList = test.expandRecurrenceOverRange(dtStart, rangeStart.getTime(), rangeEnd.getTime());
             for (Date d : dateList) {
                 cal.setTime(d);
@@ -352,7 +350,7 @@ public class ZRecur implements Cloneable {
 
         try {
             ZRecur test = new ZRecur("FREQ=DAILY;BYMONTH=5,6;BYMONTHDAY=1,3,5,7,9,31;BYDAY=SU;BYHOUR=1,21,0;BYSECOND=0,59", tzmap);
-            System.out.println("\n\n"+test.toString()+"\n--------------------------------------------------------------");
+            System.out.println("\n\n"+ test +"\n--------------------------------------------------------------");
             List<Date> dateList = test.expandRecurrenceOverRange(dtStart, rangeStart.getTime(), rangeEnd.getTime());
             for (Date d : dateList) {
                 cal.setTime(d);
@@ -366,7 +364,7 @@ public class ZRecur implements Cloneable {
         try {
             // parse error testing
             ZRecur test = new ZRecur("FREQ=DAILY;BIYMONTH=5,6;BYMONTHDAY=1,3,5,7,9,31;BYDAY=SU;BYHOUR=1,21,0;BYSECOND=0,59;BYSETPOS=1,-1,3,1000,,-1000", tzmap);
-            System.out.println("\n\n"+test.toString()+"\n--------------------------------------------------------------");
+            System.out.println("\n\n"+ test +"\n--------------------------------------------------------------");
             List<Date> dateList = test.expandRecurrenceOverRange(dtStart, rangeStart.getTime(), rangeEnd.getTime());
             for (Date d : dateList) {
                 cal.setTime(d);
@@ -379,7 +377,7 @@ public class ZRecur implements Cloneable {
 
         try {
             ZRecur test = new ZRecur("FREQ=HOURLY;BIYMONTH=6;BYMONTHDAY=1,3;BYHOUR=2,14", tzmap);
-            System.out.println("\n\n"+test.toString()+"\n--------------------------------------------------------------");
+            System.out.println("\n\n"+ test +"\n--------------------------------------------------------------");
             List<Date> dateList = test.expandRecurrenceOverRange(dtStart, rangeStart.getTime(), rangeEnd.getTime());
             for (Date d : dateList) {
                 cal.setTime(d);
@@ -392,7 +390,7 @@ public class ZRecur implements Cloneable {
 
         try {
             ZRecur test = new ZRecur("FREQ=HOURLY;BIYMONTH=6;BYMONTHDAY=1;;BYMINUTE=10;BYSECOND=11,12", tzmap);
-            System.out.println("\n\n"+test.toString()+"\n--------------------------------------------------------------");
+            System.out.println("\n\n"+ test +"\n--------------------------------------------------------------");
             List<Date> dateList = test.expandRecurrenceOverRange(dtStart, rangeStart.getTime(), rangeEnd.getTime());
             for (Date d : dateList) {
                 cal.setTime(d);
@@ -410,7 +408,7 @@ public class ZRecur implements Cloneable {
 
         try {
             ZRecur test = new ZRecur("FREQ=YEARLY", tzmap);
-            System.out.println("\n\n"+test.toString()+"\n--------------------------------------------------------------");
+            System.out.println("\n\n"+ test +"\n--------------------------------------------------------------");
             List<Date> dateList = test.expandRecurrenceOverRange(dtStart, rangeStart.getTime(), rangeEnd.getTime());
             for (Date d : dateList) {
                 cal.setTime(d);
@@ -424,7 +422,7 @@ public class ZRecur implements Cloneable {
 
         try {
             ZRecur test = new ZRecur("FREQ=YEARLY;BYYEARDAY=-1", tzmap);
-            System.out.println("\n\n"+test.toString()+"\n--------------------------------------------------------------");
+            System.out.println("\n\n"+ test +"\n--------------------------------------------------------------");
             List<Date> dateList = test.expandRecurrenceOverRange(dtStart, rangeStart.getTime(), rangeEnd.getTime());
             for (Date d : dateList) {
                 cal.setTime(d);
@@ -437,7 +435,7 @@ public class ZRecur implements Cloneable {
 
         try {
             ZRecur test = new ZRecur("FREQ=SECONDLY", tzmap);
-            System.out.println("\n\n"+test.toString()+"\n--------------------------------------------------------------");
+            System.out.println("\n\n"+ test +"\n--------------------------------------------------------------");
             List<Date> dateList = test.expandRecurrenceOverRange(dtStart, rangeStart.getTime(), rangeEnd.getTime());
             for (Date d : dateList) {
                 cal.setTime(d);
@@ -451,7 +449,7 @@ public class ZRecur implements Cloneable {
         try {
             ParsedDateTime myDtStart = ParsedDateTime.parse("16010101T020000", tzmap, tzUTC, tzUTC);
             ZRecur test = new ZRecur("FREQ=YEARLY;WKST=MO;INTERVAL=1;BYMONTH=12;BYDAY=-1SU", tzmap);
-            System.out.println("\n\n"+test.toString()+"\n--------------------------------------------------------------");
+            System.out.println("\n\n"+ test +"\n--------------------------------------------------------------");
             List<Date> dateList = test.expandRecurrenceOverRange(myDtStart, rangeStart.getTime(), rangeEnd.getTime());
             for (Date d : dateList) {
                 cal.setTime(d);
@@ -470,7 +468,7 @@ public class ZRecur implements Cloneable {
 
         try {
             ZRecur test = new ZRecur("FREQ=YEARLY;BYMONTH=12;BYDAY=1WE", tzmap);
-            System.out.println("\n\n"+test.toString()+"\n--------------------------------------------------------------");
+            System.out.println("\n\n"+ test +"\n--------------------------------------------------------------");
             List<Date> dateList = test.expandRecurrenceOverRange(dtStart, rangeStart.getTime(), rangeEnd.getTime());
             for (Date d : dateList) {
                 cal.setTime(d);
@@ -484,16 +482,16 @@ public class ZRecur implements Cloneable {
 
     }
 
-    private List<ZWeekDayNum> mByDayList = new ArrayList<ZWeekDayNum>();
-    private List<Integer> mByHourList = new ArrayList<Integer>();
-    private List<Integer> mByMinuteList = new ArrayList<Integer>();
-    private List<Integer> mByMonthDayList = new ArrayList<Integer>();
-    private List<Integer> mByMonthList = new ArrayList<Integer>();
-    private List<Integer> mBySecondList = new ArrayList<Integer>();
+    private List<ZWeekDayNum> mByDayList = new ArrayList<>();
+    private List<Integer> mByHourList = new ArrayList<>();
+    private List<Integer> mByMinuteList = new ArrayList<>();
+    private List<Integer> mByMonthDayList = new ArrayList<>();
+    private List<Integer> mByMonthList = new ArrayList<>();
+    private List<Integer> mBySecondList = new ArrayList<>();
 
-    private List<Integer> mBySetPosList = new ArrayList<Integer>();
-    private List<Integer> mByWeekNoList = new ArrayList<Integer>();
-    private List<Integer> mByYearDayList = new ArrayList<Integer>();
+    private List<Integer> mBySetPosList = new ArrayList<>();
+    private List<Integer> mByWeekNoList = new ArrayList<>();
+    private List<Integer> mByYearDayList = new ArrayList<>();
 
     private int mCount = 0;
     private Frequency mFreq = Frequency.WEEKLY;
@@ -645,7 +643,7 @@ public class ZRecur implements Cloneable {
         long rangeStart,
         long rangeEnd)
     throws ServiceException {
-        List<Date> toRet = new LinkedList<Date>();
+        List<Date> toRet = new LinkedList<>();
 
         Date rangeStartDate = new Date(rangeStart);
         // subtract 1000ms (1sec) because the code in the method treats
@@ -722,7 +720,7 @@ public class ZRecur implements Cloneable {
             numIterations++;
             boolean curIsAtOrAfterEarliestDate = !cur.getTime().before(earliestDate);
             boolean curIsAfterEndDate = cur.getTime().after(rangeEndDate);
-            List<Calendar> addList = new LinkedList<Calendar>();
+            List<Calendar> addList = new LinkedList<>();
 
             switch (mFreq) {
             case HOURLY:
@@ -975,7 +973,7 @@ public class ZRecur implements Cloneable {
                 else
                     numConsecutiveIterationsWithoutMatchingInstance = 0;
                 if (numConsecutiveIterationsWithoutMatchingInstance >= 4) {
-                    ZimbraLog.calendar.warn("Invalid recurrence rule: " + toString());
+                    ZimbraLog.calendar.warn("Invalid recurrence rule: " + this);
                     return toRet;
                 }
             }
@@ -1063,7 +1061,7 @@ public class ZRecur implements Cloneable {
         if (mByHourList.size() > 0) {
             for (Integer cur: mByHourList) {
                 int curHour = cal.get(Calendar.HOUR_OF_DAY);
-                if (curHour == cur.intValue())
+                if (curHour == cur)
                     return true;
 
                 // since the month list is in order, if we hit a HIGHER month,
@@ -1166,8 +1164,8 @@ public class ZRecur implements Cloneable {
         if (mByDayList.size() <= 0)
             return list;
 
-        List<Calendar> toRet = new ArrayList<Calendar>();
-        Set<Integer> months = new HashSet<Integer>();
+        List<Calendar> toRet = new ArrayList<>();
+        Set<Integer> months = new HashSet<>();
 
 
         for (Calendar cur : list) {
@@ -1179,7 +1177,7 @@ public class ZRecur implements Cloneable {
                 for (ZWeekDayNum day : mByDayList) {
 
                     // find all the cals matching this day-of-week
-                    ArrayList<Integer> matching = new ArrayList<Integer>();
+                    ArrayList<Integer> matching = new ArrayList<>();
 
                     cur.set(Calendar.DAY_OF_MONTH, 1);
                     do {
@@ -1277,7 +1275,7 @@ public class ZRecur implements Cloneable {
         if (mByDayList.size() <= 0)
             return list;
 
-        List<Calendar> toRet = new LinkedList<Calendar>();
+        List<Calendar> toRet = new LinkedList<>();
 
         for (Calendar cur : list) {
             for (ZWeekDayNum day : mByDayList) {
@@ -1296,7 +1294,7 @@ public class ZRecur implements Cloneable {
         if (mByHourList.size() <= 0)
             return list;
 
-        List<Calendar> toRet = new LinkedList<Calendar>();
+        List<Calendar> toRet = new LinkedList<>();
 
         for (Calendar cur : list) {
             for (Integer hour : mByHourList) {
@@ -1315,7 +1313,7 @@ public class ZRecur implements Cloneable {
         if (mByMinuteList.size() <= 0)
             return list;
 
-        List<Calendar> toRet = new LinkedList<Calendar>();
+        List<Calendar> toRet = new LinkedList<>();
 
         for (Calendar cur : list) {
             for (Integer minute: mByMinuteList) {
@@ -1334,7 +1332,7 @@ public class ZRecur implements Cloneable {
         if (mByMonthDayList.size() <= 0)
             return list;
 
-        List<Calendar> toRet = new LinkedList<Calendar>();
+        List<Calendar> toRet = new LinkedList<>();
 
         for (Calendar cur : list) {
             int curMonth = cur.get(Calendar.MONTH);
@@ -1377,7 +1375,7 @@ public class ZRecur implements Cloneable {
         if (mByMonthList.size() <= 0)
             return list;
 
-        List<Calendar> toRet = new LinkedList<Calendar>();
+        List<Calendar> toRet = new LinkedList<>();
 
         for (Calendar cur : list) {
             for (Integer month: mByMonthList) {
@@ -1399,7 +1397,7 @@ public class ZRecur implements Cloneable {
         if (mBySecondList.size() <= 0)
             return list;
 
-        List<Calendar> toRet = new LinkedList<Calendar>();
+        List<Calendar> toRet = new LinkedList<>();
 
         for (Calendar cur : list) {
             for (Integer second: mBySecondList) {
@@ -1419,8 +1417,8 @@ public class ZRecur implements Cloneable {
         if (mByYearDayList.size() <= 0)
             return list;
 
-        List<Calendar> toRet = new LinkedList<Calendar>();
-        Set<Integer> years = new HashSet<Integer>();
+        List<Calendar> toRet = new LinkedList<>();
+        Set<Integer> years = new HashSet<>();
 
 
         for (Calendar cur : list) {
@@ -1454,9 +1452,9 @@ public class ZRecur implements Cloneable {
         Calendar[] array = new Calendar[list.size()];
         array = list.toArray(array);
 
-        LinkedList<Calendar> toRet = new LinkedList<Calendar>();
+        LinkedList<Calendar> toRet = new LinkedList<>();
 
-        ArrayList<Integer> idxsToInclude = new ArrayList<Integer>();
+        ArrayList<Integer> idxsToInclude = new ArrayList<>();
 
         for (Integer cur : mBySetPosList) {
             int idx = cur;
@@ -1626,7 +1624,7 @@ public class ZRecur implements Cloneable {
         }
 
         // sort by DAY-OF-WEEK (necessary for the byDay checks to work)
-        Collections.sort(list, new ZWeekDayNum.DayOnlyComparator());
+        list.sort(new ZWeekDayNum.DayOnlyComparator());
     }
 
     private void parseIntList(String str, List<Integer> list, int min, int max, boolean signed) {

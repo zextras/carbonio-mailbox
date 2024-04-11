@@ -33,7 +33,7 @@ public class ItemActionResponse {
      */
     @SuppressWarnings("unused")
     private ItemActionResponse() {
-        this((ActionResult) null);
+        this(null);
     }
 
     public ItemActionResponse(ActionResult action) {

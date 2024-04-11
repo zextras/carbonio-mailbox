@@ -11,7 +11,6 @@
  */
 package com.zimbra.common.util;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -106,20 +105,20 @@ public class CompressedDomainTree {
      * @param root
      */
     private void dump(Map root, String indent, StringBuffer sb) {
-        for (Iterator it = root.entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Entry) it.next();
-            String name = (String) entry.getKey();
-            Object o = entry.getValue();
-            if (o instanceof String) {
-                //sb.append(indent).append(name).append(": ").append(o).append("\n");
-                sb.append(indent).append(name).append("\n");
-            } else {
-                sb.append(indent).append(name).append(": {\n");
-                dump((Map) o, indent+" ", sb);
-                sb.append(indent).append("}\n");
-            }
-            
+      for (Object value : root.entrySet()) {
+        Entry entry = (Entry) value;
+        String name = (String) entry.getKey();
+        Object o = entry.getValue();
+        if (o instanceof String) {
+          //sb.append(indent).append(name).append(": ").append(o).append("\n");
+          sb.append(indent).append(name).append("\n");
+        } else {
+          sb.append(indent).append(name).append(": {\n");
+          dump((Map) o, indent + " ", sb);
+          sb.append(indent).append("}\n");
         }
+
+      }
     }
 
     public String toTree() {
@@ -133,35 +132,35 @@ public class CompressedDomainTree {
      */
     private void dumpTree(Map root, StringBuffer sb) {
         boolean first = true;
-        for (Iterator it = root.entrySet().iterator(); it.hasNext();) {
-            Map.Entry entry = (Entry) it.next();
-            String name = (String) entry.getKey();
-            Object o = entry.getValue();
-            if (!first) {
-                sb.append(',');
-            } else {
-                first = false;
-            }
-            if (o instanceof String) {
-                //sb.append(indent).append(name).append(": ").append(o).append("\n");
-                if (name.equals(LEAF)) {
-                    //sb.append('');
-                } else {
-                    sb.append(name);
-                }
-            } else {
-                sb.append(name).append('{');
-                dumpTree((Map) o,sb);
-                sb.append('}');
-            }
-            
-            
+      for (Object value : root.entrySet()) {
+        Entry entry = (Entry) value;
+        String name = (String) entry.getKey();
+        Object o = entry.getValue();
+        if (!first) {
+          sb.append(',');
+        } else {
+          first = false;
         }
+        if (o instanceof String) {
+          //sb.append(indent).append(name).append(": ").append(o).append("\n");
+          if (name.equals(LEAF)) {
+            //sb.append('');
+          } else {
+            sb.append(name);
+          }
+        } else {
+          sb.append(name).append('{');
+          dumpTree((Map) o, sb);
+          sb.append('}');
+        }
+
+
+      }
     }
 
-    public static void main(String args[]) throws AddressException {
+    public static void main(String[] args) throws AddressException {
         CompressedDomainTree dt = new CompressedDomainTree();
-        String domains[] = {
+        String[] domains = {
                 "something", "[127.0.0.1]",
                 "stanford.edu", "windlord.stanford.edu", "lists.stanford.edu",
                 "washington.edu",
@@ -176,7 +175,7 @@ public class CompressedDomainTree {
         }
 
         System.out.println(dt.toTree());
-        System.out.println(full.toString());
+        System.out.println(full);
         InternetAddress ia = new InternetAddress("schemers@[12.12.12.12]");
         System.out.println(ia.getAddress());
         System.out.println(ia.getPersonal());

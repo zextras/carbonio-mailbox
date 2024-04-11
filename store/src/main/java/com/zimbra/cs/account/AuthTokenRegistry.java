@@ -29,7 +29,7 @@ import com.zimbra.soap.admin.message.RefreshRegisteredAuthTokensRequest;
 public final class AuthTokenRegistry {
     private static final Log mLOG = LogFactory.getLog(AuthTokenRegistry.class);
     //queue of deregistered authtokens
-    private static final ConcurrentLinkedQueue<AuthToken> deregisteredOutAuthTokens = new ConcurrentLinkedQueue<AuthToken>();
+    private static final ConcurrentLinkedQueue<AuthToken> deregisteredOutAuthTokens = new ConcurrentLinkedQueue<>();
 
     /**
      * adds a token to the queue of deregistered tokens

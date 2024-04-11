@@ -42,7 +42,7 @@ public class GetMailQueueInfoResponse {
      */
     @SuppressWarnings("unused")
     private GetMailQueueInfoResponse() {
-        this((ServerQueues) null);
+        this(null);
     }
 
     public GetMailQueueInfoResponse(ServerQueues server) {

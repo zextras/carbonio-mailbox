@@ -7,12 +7,10 @@ package com.zimbra.cs.account.ldap;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.AttributeManager;
 import com.zimbra.cs.account.AttributeManager.IDNType;
 import com.zimbra.cs.account.EntrySearchFilter;
 import com.zimbra.cs.account.IDNUtil;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.EntrySearchFilter.Multi;
 import com.zimbra.cs.account.EntrySearchFilter.Operator;
 import com.zimbra.cs.account.EntrySearchFilter.Single;

@@ -17,16 +17,16 @@ public interface Accumulator {
      * Returns stat names.  The size of the <code>List</code> must match the size of the
      * <code>List</code> returned by {@link #getData()}.
      */
-    public List<String> getNames();
+    List<String> getNames();
     
     /**
      * Returns stat values.  The size of the <code>List</code> must match the size of the
      * <code>List</code> returned by {@link #getNames()}.
      */
-    public List<Object> getData();
+    List<Object> getData();
     
     /**
      * Resets the values tracked by this <code>Accumulator</code>.
      */
-    public void reset();
+    void reset();
 }

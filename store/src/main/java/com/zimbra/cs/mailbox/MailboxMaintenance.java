@@ -28,7 +28,7 @@ public final class MailboxMaintenance {
         accountId = acct.toLowerCase();
         mailboxId = id;
         mailbox = mbox;
-        allowedThreads = new ArrayList<Thread>();
+        allowedThreads = new ArrayList<>();
         allowedThreads.add(Thread.currentThread());
     }
 

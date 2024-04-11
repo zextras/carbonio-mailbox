@@ -6,7 +6,6 @@
 package com.zimbra.cs.account.ldap;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,23 +30,11 @@ public abstract class LdapSMIMEConfig {
             } else {
                 instance = (LdapSMIMEConfig)ExtensionUtil.findClass(className).getConstructor(Entry.class).newInstance(entry);
             }
-        } catch (ClassNotFoundException e) {     
-            throw ServiceException.FAILURE("cannot instantiate " + className, e);
-        } catch (IllegalArgumentException e) {
-            throw ServiceException.FAILURE("cannot instantiate " + className, e);
-        } catch (SecurityException e) {
-            throw ServiceException.FAILURE("cannot instantiate " + className, e);
-        } catch (InstantiationException e) {
-            throw ServiceException.FAILURE("cannot instantiate " + className, e);
-        } catch (IllegalAccessException e) {
-            throw ServiceException.FAILURE("cannot instantiate " + className, e);
-        } catch (InvocationTargetException e) {
-            throw ServiceException.FAILURE("cannot instantiate " + className, e);
-        } catch (NoSuchMethodException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException | SecurityException | IllegalArgumentException e) {
             throw ServiceException.FAILURE("cannot instantiate " + className, e);
         }
-           
-        if (instance == null) {
+
+      if (instance == null) {
             throw ServiceException.FAILURE("cannot instantiate " + className, null);
         }
             
@@ -61,10 +48,10 @@ public abstract class LdapSMIMEConfig {
     public abstract void remove(String configName) throws ServiceException;
     
     public interface ResultCallback {
-        public void add(String field, String cert);
-        public boolean continueWithNextConfig();
+        void add(String field, String cert);
+        boolean continueWithNextConfig();
     }
     
     public abstract void lookupPublicKeys(Account acct, String email, ResultCallback resultCallback) 
     throws ServiceException;
-};
+}

@@ -33,7 +33,7 @@ public class GetDistributionListMembershipResponse {
     private List <DistributionListMembershipInfo> dls = Lists.newArrayList();
 
     public GetDistributionListMembershipResponse() {
-        this((Iterable<DistributionListMembershipInfo>) null);
+        this(null);
     }
 
     public GetDistributionListMembershipResponse(

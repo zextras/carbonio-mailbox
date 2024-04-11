@@ -58,6 +58,7 @@ import com.zimbra.cs.mailbox.calendar.ZAttendee;
 import com.zimbra.cs.mailbox.calendar.ZOrganizer;
 import com.zimbra.cs.mailbox.calendar.ZRecur;
 import com.zimbra.cs.mailbox.util.TypedIdList;
+import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
 import com.zimbra.cs.util.AccountUtil.AccountAddressMatcher;
 import com.zimbra.soap.base.CalTZInfoInterface;
 import com.zimbra.soap.type.TzOnsetInfo;
@@ -86,9 +87,9 @@ public class CalendarUtils {
    * @return
    * @throws ServiceException
    */
-  static ParseMimeMessage.InviteParserResult parseInviteRaw(Account account, Element inviteElem)
+  static InviteParserResult parseInviteRaw(Account account, Element inviteElem)
       throws ServiceException {
-    ParseMimeMessage.InviteParserResult toRet = new ParseMimeMessage.InviteParserResult();
+    InviteParserResult toRet = new InviteParserResult();
 
     Element content = inviteElem.getElement(MailConstants.E_CONTENT /* content */);
     toRet.mUid = content.getAttribute(MailConstants.A_UID /* uid */);
@@ -117,7 +118,7 @@ public class CalendarUtils {
    * @return
    * @throws ServiceException
    */
-  static ParseMimeMessage.InviteParserResult parseInviteForCreate(
+  static InviteParserResult parseInviteForCreate(
       Account account,
       MailItem.Type type,
       Element inviteElem,
@@ -152,7 +153,7 @@ public class CalendarUtils {
 
     String summaryStr = create.getName() != null ? create.getName() : "";
 
-    ParseMimeMessage.InviteParserResult toRet = new ParseMimeMessage.InviteParserResult();
+    InviteParserResult toRet = new InviteParserResult();
     toRet.mCal = iCal;
     toRet.mUid = create.getUid();
     toRet.mSummary = summaryStr;
@@ -169,7 +170,7 @@ public class CalendarUtils {
     else return null;
   }
 
-  static ParseMimeMessage.InviteParserResult parseInviteForCreateException(
+  static InviteParserResult parseInviteForCreateException(
       Account account,
       MailItem.Type type,
       Element inviteElem,
@@ -214,7 +215,7 @@ public class CalendarUtils {
 
     String summaryStr = create.getName() != null ? create.getName() : "";
 
-    ParseMimeMessage.InviteParserResult toRet = new ParseMimeMessage.InviteParserResult();
+    InviteParserResult toRet = new InviteParserResult();
     toRet.mCal = iCal;
     toRet.mUid = create.getUid();
     toRet.mSummary = summaryStr;
@@ -231,7 +232,7 @@ public class CalendarUtils {
    * @return
    * @throws ServiceException
    */
-  static ParseMimeMessage.InviteParserResult parseInviteForModify(
+  static InviteParserResult parseInviteForModify(
       Account account,
       MailItem.Type type,
       Element inviteElem,
@@ -305,7 +306,7 @@ public class CalendarUtils {
       summaryStr = mod.getName();
     }
 
-    ParseMimeMessage.InviteParserResult toRet = new ParseMimeMessage.InviteParserResult();
+    InviteParserResult toRet = new InviteParserResult();
     toRet.mCal = iCal;
     toRet.mUid = mod.getUid();
     toRet.mSummary = summaryStr;
@@ -314,7 +315,7 @@ public class CalendarUtils {
     return toRet;
   }
 
-  static ParseMimeMessage.InviteParserResult parseInviteForCancel(
+  static InviteParserResult parseInviteForCancel(
       Account account,
       Folder folder,
       MailItem.Type type,
@@ -356,7 +357,7 @@ public class CalendarUtils {
 
     String summaryStr = sanitized.getName() != null ? sanitized.getName() : "";
 
-    ParseMimeMessage.InviteParserResult toRet = new ParseMimeMessage.InviteParserResult();
+    InviteParserResult toRet = new InviteParserResult();
     toRet.mCal = iCal;
     toRet.mUid = sanitized.getUid();
     toRet.mSummary = summaryStr;
@@ -365,7 +366,7 @@ public class CalendarUtils {
     return toRet;
   }
 
-  static ParseMimeMessage.InviteParserResult parseInviteForAddInvite(
+  static InviteParserResult parseInviteForAddInvite(
       Account account, MailItem.Type type, Element inviteElem, TimeZoneMap tzMap)
       throws ServiceException {
     if (tzMap == null) tzMap = new TimeZoneMap(Util.getAccountTimeZone(account));
@@ -386,7 +387,7 @@ public class CalendarUtils {
 
     String summaryStr = inv.getName() != null ? inv.getName() : "";
 
-    ParseMimeMessage.InviteParserResult toRet = new ParseMimeMessage.InviteParserResult();
+    InviteParserResult toRet = new InviteParserResult();
     toRet.mCal = iCal;
     toRet.mUid = inv.getUid();
     toRet.mSummary = summaryStr;
@@ -395,7 +396,7 @@ public class CalendarUtils {
     return toRet;
   }
 
-  static ParseMimeMessage.InviteParserResult parseInviteForCounter(
+  static InviteParserResult parseInviteForCounter(
       Account account, Invite oldInvite, MailItem.Type type, Element inviteElem)
       throws ServiceException {
     TimeZoneMap tzMap = new TimeZoneMap(Util.getAccountTimeZone(account));
@@ -465,7 +466,7 @@ public class CalendarUtils {
 
     String summaryStr = inv.getName() != null ? inv.getName() : "";
 
-    ParseMimeMessage.InviteParserResult toRet = new ParseMimeMessage.InviteParserResult();
+    InviteParserResult toRet = new InviteParserResult();
     toRet.mCal = iCal;
     toRet.mUid = inv.getUid();
     toRet.mSummary = summaryStr;
@@ -474,7 +475,7 @@ public class CalendarUtils {
     return toRet;
   }
 
-  static ParseMimeMessage.InviteParserResult parseInviteForDeclineCounter(
+  static InviteParserResult parseInviteForDeclineCounter(
       Account account, MailItem.Type type, Element inviteElem) throws ServiceException {
     TimeZoneMap tzMap = new TimeZoneMap(Util.getAccountTimeZone(account));
     Invite inv = new Invite(ICalTok.DECLINECOUNTER.toString(), tzMap, false);
@@ -500,7 +501,7 @@ public class CalendarUtils {
 
     String summaryStr = inv.getName() != null ? inv.getName() : "";
 
-    ParseMimeMessage.InviteParserResult toRet = new ParseMimeMessage.InviteParserResult();
+    InviteParserResult toRet = new InviteParserResult();
     toRet.mCal = iCal;
     toRet.mUid = inv.getUid();
     toRet.mSummary = summaryStr;
@@ -517,7 +518,7 @@ public class CalendarUtils {
       boolean checkListMembership,
       Account account)
       throws ServiceException {
-    List<ZAttendee> list = new ArrayList<ZAttendee>();
+    List<ZAttendee> list = new ArrayList<>();
     Provisioning prov = Provisioning.getInstance();
     // compare the new attendee list with the existing one...
     // if attendees have been removed, then we need to send them individual cancellation messages
@@ -553,8 +554,8 @@ public class CalendarUtils {
     checkListMembership = checkListMembership && LC.check_dl_membership_enabled.booleanValue();
     // Find out which of the new attendees are local distribution lists or GAL groups.
     if (checkListMembership) {
-      List<DistributionList> newAtsDL = new ArrayList<DistributionList>();
-      List<String /* GAL group email */> newAtsGALGroup = new ArrayList<String>();
+      List<DistributionList> newAtsDL = new ArrayList<>();
+      List<String /* GAL group email */> newAtsGALGroup = new ArrayList<>();
       for (ZAttendee at : newAttendees) {
         String addr = at.getAddress();
         if (addr != null) {
@@ -578,7 +579,7 @@ public class CalendarUtils {
         }
       }
 
-      Set<String> remoteAddrs = new HashSet<String>();
+      Set<String> remoteAddrs = new HashSet<>();
 
       // local DLs: Iterate over attendees first to get each attendee's DL list.  This loop only
       // deals with
@@ -611,7 +612,7 @@ public class CalendarUtils {
           // Get list members.  We won't do recursive expansion; let's keep it sane.
           String[] members = dl.getAllMembers();
           if (members != null && members.length > 0) {
-            Set<String> membersLower = new HashSet<String>();
+            Set<String> membersLower = new HashSet<>();
             for (String member : members) {
               membersLower.add(member.toLowerCase());
             }
@@ -723,8 +724,8 @@ public class CalendarUtils {
       throws ServiceException {
     if (dur == null && dtStart != null && dtEnd != null) dur = dtEnd.difference(dtStart);
 
-    ArrayList<IRecurrence> addRules = new ArrayList<IRecurrence>();
-    ArrayList<IRecurrence> subRules = new ArrayList<IRecurrence>();
+    ArrayList<IRecurrence> addRules = new ArrayList<>();
+    ArrayList<IRecurrence> subRules = new ArrayList<>();
 
     for (Iterator iter = recurElt.elementIterator(); iter.hasNext(); ) {
       Element e = (Element) iter.next();
@@ -815,7 +816,7 @@ public class CalendarUtils {
               // If UNTIL has time part it must be specified
               // as UTC time, i.e. ending in "Z".
               // (RFC2445 Section 4.3.10 Recurrence Rule)
-              if (d.indexOf("T") >= 0) if (d.indexOf("Z") < 0) recurBuf.append('Z');
+              if (d.contains("T")) if (!d.contains("Z")) recurBuf.append('Z');
 
             } else if (ruleEltName.equals(MailConstants.E_CAL_RULE_COUNT)) {
               int num = (int) ruleElt.getAttributeLong(MailConstants.A_CAL_RULE_COUNT_NUM, -1);
@@ -1356,7 +1357,7 @@ public class CalendarUtils {
   }
 
   public static List<ZProperty> parseXProps(Element element) throws ServiceException {
-    List<ZProperty> props = new ArrayList<ZProperty>();
+    List<ZProperty> props = new ArrayList<>();
     for (Iterator<Element> propIter = element.elementIterator(MailConstants.E_CAL_XPROP);
         propIter.hasNext(); ) {
       Element propElem = propIter.next();
@@ -1375,7 +1376,7 @@ public class CalendarUtils {
 
   public static List<ReplyInfo> parseReplyList(Element element, TimeZoneMap tzMap)
       throws ServiceException {
-    List<ReplyInfo> list = new ArrayList<ReplyInfo>();
+    List<ReplyInfo> list = new ArrayList<>();
     for (Iterator<Element> iter = element.elementIterator(MailConstants.E_CAL_REPLY);
         iter.hasNext(); ) {
       Element riElem = iter.next();
@@ -1641,7 +1642,7 @@ public class CalendarUtils {
         int[] items = new int[idlist.size()];
         int i = 0;
         for (Integer id : idlist.getAllIds()) {
-          items[i] = id.intValue();
+          items[i] = id;
           i++;
         }
         mbox.move(null, items, type, targetId, null);

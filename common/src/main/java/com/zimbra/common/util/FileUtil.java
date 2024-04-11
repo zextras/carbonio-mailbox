@@ -22,7 +22,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -198,34 +197,20 @@ public class FileUtil {
     }
 
     public static void copyOIO(File src, File dest, byte[] buf, boolean sync) throws IOException {
-        FileInputStream fis = null;
-        FileOutputStream fos = null;
-        boolean isComplete = false;
-        try {
-            fis = new FileInputStream(src);
-            fos = new FileOutputStream(dest);
-            int byteRead;
-            while ((byteRead = fis.read(buf)) != -1) {
-                fos.write(buf, 0, byteRead);
-            }
-            if (sync)
-                fos.getChannel().force(true);
-            isComplete = true;
-        } finally {
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e) {}
-            }
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {}
-            }
-            if (!isComplete) {
-                dest.delete();
-            }
+      boolean isComplete = false;
+      try (FileInputStream fis = new FileInputStream(src); FileOutputStream fos = new FileOutputStream(dest)) {
+        int byteRead;
+        while ((byteRead = fis.read(buf)) != -1) {
+          fos.write(buf, 0, byteRead);
         }
+        if (sync)
+          fos.getChannel().force(true);
+        isComplete = true;
+      } finally {
+        if (!isComplete) {
+          dest.delete();
+        }
+      }
     }
 
     /**
@@ -239,17 +224,14 @@ public class FileUtil {
     public static void copy(InputStream in, boolean closeIn, File dest) throws IOException {
         boolean isComplete = false;
         try {
-            FileOutputStream fos = new FileOutputStream(dest);
+          try (FileOutputStream fos = new FileOutputStream(dest)) {
             byte[] buf = new byte[COPYBUFLEN];
-            try {
-                int byteRead;
-                while ((byteRead = in.read(buf)) != -1) {
-                    fos.write(buf, 0, byteRead);
-                }
-                isComplete = true;
-            } finally {
-                fos.close();
+            int byteRead;
+            while ((byteRead = in.read(buf)) != -1) {
+              fos.write(buf, 0, byteRead);
             }
+            isComplete = true;
+          }
         } finally {
             if (closeIn)
                 ByteUtil.closeStream(in);
@@ -294,7 +276,7 @@ public class FileUtil {
      * is empty, does not exist, or is not a directory.
      */
     public static List<File> listFilesRecursively(File dir) {
-        List<File> files = new ArrayList<File>();
+        List<File> files = new ArrayList<>();
         addFilesRecursively(dir, files);
         return files;
     }
@@ -322,7 +304,7 @@ public class FileUtil {
      * is empty, does not exist, or is not a directory.
      */
     public static List<File> listDirsRecursively(File dir) {
-        List<File> dirs = new ArrayList<File>();
+        List<File> dirs = new ArrayList<>();
         if (dir.exists()) {
             addDirsRecursively(dir, dirs);
         }
@@ -388,7 +370,7 @@ public class FileUtil {
 
     public static void sortFilesByModifiedTime(List<File> files, boolean reverse) {
         MTimeComparator comp = new MTimeComparator(reverse);
-        Collections.sort(files, comp);
+        files.sort(comp);
     }
 
     public static void delete(File file) throws IOException {
@@ -431,16 +413,16 @@ public class FileUtil {
             return;
         File[] files = directory.listFiles();
         if (files != null) {
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].isDirectory()) {
-                    deleteDir(files[i]);
-                } else {
-                    if (!files[i].delete()) {
-                        throw new IOException("Cannot remove "
-                            + files[i].getPath());
-                    }
-                }
+          for (File file : files) {
+            if (file.isDirectory()) {
+              deleteDir(file);
+            } else {
+              if (!file.delete()) {
+                throw new IOException("Cannot remove "
+                    + file.getPath());
+              }
             }
+          }
         }
     }
 
@@ -486,13 +468,13 @@ public class FileUtil {
 
         if (filename == null || filename.equals(""))
             return null;
-        for (int i = 0; i < delimiter.length; i++) {
-            int index = filename.lastIndexOf(delimiter[i]);
-            if (index == filename.length() - 1)
-                return null;
-            if (index != -1)
-                filename = filename.substring(index + 1);
-        }
+      for (char c : delimiter) {
+        int index = filename.lastIndexOf(c);
+        if (index == filename.length() - 1)
+          return null;
+        if (index != -1)
+          filename = filename.substring(index + 1);
+      }
         return filename;
     }
 
@@ -519,7 +501,7 @@ public class FileUtil {
         if (lastDot == filename.length() - 1) {
             return "";
         }
-        return filename.substring(lastDot + 1, filename.length());
+        return filename.substring(lastDot + 1);
     }
     
     /**

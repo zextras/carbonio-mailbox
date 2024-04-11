@@ -58,10 +58,10 @@ public class Pair<F,S> {
     }
 
     public static void main(String[] args) {
-        System.out.println(new Pair<String,String>("foo", "bar").equals(new Pair<String,String>("foo", "bar")));
+        System.out.println(new Pair<String,String>("foo", "bar").equals(new Pair<>("foo", "bar")));
         System.out.println(new Pair<String,String>("foo", null).equals(new Pair<String,String>("fo" + 'o', null)));
         System.out.println(new Pair<String,String>(null, "bar").equals(new Pair<String,String>(null, "foo")));
-        System.out.println(new Pair<String,String>("foo", "bar").equals(new Pair<String,Integer>("foo", 8)));
-        System.out.println(new Pair<String,String>(null, "bar").equals(new Pair<Integer,String>(0, "bar")));
+        System.out.println(new Pair<String,String>("foo", "bar").equals(new Pair<>("foo", 8)));
+        System.out.println(new Pair<String,String>(null, "bar").equals(new Pair<>(0, "bar")));
     }
 }

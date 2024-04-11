@@ -28,7 +28,7 @@ public class GetZimletResponse {
      */
     @SuppressWarnings("unused")
     private GetZimletResponse() {
-        this((ZimletInfo) null);
+        this(null);
     }
 
     public GetZimletResponse(ZimletInfo zimlet) {

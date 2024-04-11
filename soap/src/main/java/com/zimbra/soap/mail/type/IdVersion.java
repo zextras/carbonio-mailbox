@@ -34,7 +34,7 @@ public class IdVersion {
      */
     @SuppressWarnings("unused")
     private IdVersion() {
-        this((String) null);
+        this(null);
     }
 
     public IdVersion(String id) {

@@ -49,7 +49,7 @@ public class ShareNotificationInfo {
   /** no-argument constructor wanted by JAXB */
   @SuppressWarnings("unused")
   private ShareNotificationInfo() {
-    this((String) null, (String) null, -1L, (Grantor) null);
+    this(null, null, -1L, null);
   }
 
   public ShareNotificationInfo(String status, String id, long date, Grantor grantor) {

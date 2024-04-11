@@ -77,7 +77,7 @@ public class NamedEntryCache<E extends NamedEntry> implements INamedEntryCache<E
     @Override
     public synchronized void put(E entry) {
         if (entry != null) {
-            CacheEntry<E> cacheEntry = new CacheEntry<E>(entry, mRefreshTTL);
+            CacheEntry<E> cacheEntry = new CacheEntry<>(entry, mRefreshTTL);
             mNameCache.put(entry.getName(), cacheEntry);
             mIdCache.put(entry.getId(), cacheEntry);
         }

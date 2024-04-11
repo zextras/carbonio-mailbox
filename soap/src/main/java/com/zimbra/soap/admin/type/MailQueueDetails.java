@@ -81,7 +81,7 @@ public class MailQueueDetails {
      */
     @SuppressWarnings("unused")
     private MailQueueDetails() {
-        this((String) null, -1L, false, -1, false);
+        this(null, -1L, false, -1, false);
     }
 
     public MailQueueDetails(String name, long time, boolean stillScanning,

@@ -28,7 +28,7 @@ public class CreateZimletResponse {
      */
     @SuppressWarnings("unused")
     private CreateZimletResponse() {
-        this((ZimletInfo) null);
+        this(null);
     }
 
     public CreateZimletResponse(ZimletInfo zimlet) {

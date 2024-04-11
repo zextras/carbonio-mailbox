@@ -6,7 +6,6 @@
 package com.zimbra.cs.filter.jsieve;
 
 import org.apache.jsieve.exception.SieveException;
-import org.apache.jsieve.exception.StopException;
 
 /**
  * Class <code>ErejectException</code> indicates that message delivery should be

@@ -33,7 +33,7 @@ public class IdAndAction {
      */
     @SuppressWarnings("unused")
     private IdAndAction() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public IdAndAction(String id, String action) {

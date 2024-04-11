@@ -124,7 +124,7 @@ public class Auth extends AdminDocumentHandler {
 
             try {
 
-                if (by == AccountBy.name && value.indexOf("@") == -1) {
+                if (by == AccountBy.name && !value.contains("@")) {
                     // first try to get by adminName, which resolves the account under cn=admins,cn=zimbra
                     // and does not need a domain
                     acct = prov.get(AccountBy.adminName, value, zsc.getAuthToken());
@@ -152,7 +152,7 @@ public class Auth extends AdminDocumentHandler {
                 ZimbraLog.security.info(ZimbraLog.encodeAttrs(
                         new String[] {"cmd", "AdminAuth","account", value}));
 
-                Map<String, Object> authCtxt = new HashMap<String, Object>();
+                Map<String, Object> authCtxt = new HashMap<>();
                 authCtxt.put(AuthContext.AC_ORIGINATING_CLIENT_IP, context.get(SoapEngine.ORIG_REQUEST_IP));
                 authCtxt.put(AuthContext.AC_REMOTE_IP, context.get(SoapEngine.SOAP_REQUEST_IP));
                 authCtxt.put(AuthContext.AC_ACCOUNT_NAME_PASSEDIN, valuePassedIn);

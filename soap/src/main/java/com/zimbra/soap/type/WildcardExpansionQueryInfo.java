@@ -44,7 +44,7 @@ public class WildcardExpansionQueryInfo implements BaseQueryInfo {
      */
     @SuppressWarnings("unused")
     private WildcardExpansionQueryInfo() {
-        this((String) null, false, -1);
+        this(null, false, -1);
     }
 
     public WildcardExpansionQueryInfo(String str, boolean expanded,

@@ -82,10 +82,10 @@ public class ZBaseItem implements ZItem, ZimbraMailItem {
                     mMailbox, getId(), e);
             return 0;
         }
-        if ((null == zmi) || !(zmi instanceof ZBaseItem)) {
+        if (!(zmi instanceof ZBaseItem)) {
             return 0;
         }
-        modifiedSequence = (((ZBaseItem)zmi).modifiedSequence <=0 ) ? 0 : ((ZBaseItem)zmi).modifiedSequence;
+        modifiedSequence = Math.max(((ZBaseItem) zmi).modifiedSequence, 0);
         return modifiedSequence;
     }
 

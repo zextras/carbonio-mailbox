@@ -17,7 +17,7 @@ import com.zimbra.cs.account.EntrySearchFilter.Term;
  */
 public class LdapFilterParser {
     
-    private static enum FilterType {
+    private enum FilterType {
         AND,                 // &
         OR,                  // |
         NOT,                 // !
@@ -172,7 +172,7 @@ public class LdapFilterParser {
                 // otherwise treat it as eq and pass thru
             } else if (attrValue.startsWith("*")) {
                 op = Operator.endswith;
-                attrValue = attrValue.substring(1, attrValue.length());
+                attrValue = attrValue.substring(1);
             } else if (attrValue.endsWith("*")) {
                 op = Operator.startswith;
                 attrValue = attrValue.substring(0, attrValue.length()-1);

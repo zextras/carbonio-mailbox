@@ -28,7 +28,7 @@ public class ModifyCalendarResourceResponse {
      */
      @SuppressWarnings("unused")
     private ModifyCalendarResourceResponse() {
-        this((CalendarResourceInfo)null);
+        this(null);
     }
 
     public ModifyCalendarResourceResponse(CalendarResourceInfo calResource) {

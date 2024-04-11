@@ -67,7 +67,7 @@ public final class PendingRemoteModifications extends PendingModifications<ZBase
     @Override
     public void recordCreated(BaseItemInfo item) {
         if (created == null) {
-            created = new LinkedHashMap<PendingModifications.ModificationKey, BaseItemInfo>();
+            created = new LinkedHashMap<>();
         }
         changedTypes.add(getItemType(item));
         /* assumption - don't care about tracking folder IDs for PendingRemoteModifications */
@@ -137,7 +137,7 @@ public final class PendingRemoteModifications extends PendingModifications<ZBase
         } else if (deleted != null && deleted.containsKey(key)) {
             return;
         } else if (modified == null) {
-            modified = new HashMap<PendingModifications.ModificationKey, PendingModifications.Change>();
+            modified = new HashMap<>();
         } else {
             chg = modified.get(key);
             if (chg != null) {

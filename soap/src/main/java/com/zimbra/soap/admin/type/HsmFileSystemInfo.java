@@ -35,7 +35,7 @@ public class HsmFileSystemInfo {
      */
     @SuppressWarnings("unused")
     private HsmFileSystemInfo() {
-        this((String) null);
+        this(null);
     }
 
     public HsmFileSystemInfo(String size) {

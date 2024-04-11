@@ -62,7 +62,7 @@ public class UBIDAttributes extends ZAttributes {
     }
     
     private String[] getMultiAttrStringInternal(Attribute attr, boolean containsBinaryData) {
-        String result[] = new String[attr.size()];
+        String[] result = new String[attr.size()];
         
         if (containsBinaryData) {
             byte[][] bytesArrays = attr.getValueByteArrays();
@@ -106,7 +106,7 @@ public class UBIDAttributes extends ZAttributes {
     @Override
     public Map<String, Object> getAttrs(Set<String> extraBinaryAttrs)
             throws LdapException {
-        Map<String,Object> map = new HashMap<String,Object>();  
+        Map<String,Object> map = new HashMap<>();
         
         AttributeManager attrMgr = AttributeManager.getInst();
         

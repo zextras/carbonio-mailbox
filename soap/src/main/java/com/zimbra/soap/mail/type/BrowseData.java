@@ -53,7 +53,7 @@ public class BrowseData {
      */
     @SuppressWarnings("unused")
     private BrowseData() {
-        this((String) null, -1, (String) null);
+        this(null, -1, null);
     }
 
     public BrowseData(String browseDomainHeader, int frequency, String data) {

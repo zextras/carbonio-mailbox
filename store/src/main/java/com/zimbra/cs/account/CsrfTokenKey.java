@@ -26,7 +26,7 @@ public class CsrfTokenKey {
     private byte[] csrfTokenKey;
     private long keyVersion;
     private long keyCreatedAt;
-    private static HashMap<String, CsrfTokenKey> tokenCache = new HashMap<String, CsrfTokenKey>();
+    private static HashMap<String, CsrfTokenKey> tokenCache = new HashMap<>();
     private static CsrfTokenKey latestCsrfKey;
 
     public byte[] getKey() {
@@ -63,7 +63,7 @@ public class CsrfTokenKey {
     }
 
     private CsrfTokenKey(String k) throws ServiceException {
-        String parts[] = k.split(":");
+        String[] parts = k.split(":");
         if (parts.length != 3)
             throw ServiceException.INVALID_REQUEST("invalid auth token key",
                 null);
@@ -111,7 +111,7 @@ public class CsrfTokenKey {
         // bootstrap. automatically create new random key
         if (key == null) {
             CsrfTokenKey csrfKey = new CsrfTokenKey(0, null);
-            HashMap<String, String> attrs = new HashMap<String, String>();
+            HashMap<String, String> attrs = new HashMap<>();
             attrs.put(Provisioning.A_zimbraCsrfTokenKey, csrfKey.getEncoded());
             Provisioning.getInstance().modifyAttrs(config, attrs);
             key = config.getAttr(Provisioning.A_zimbraCsrfTokenKey);

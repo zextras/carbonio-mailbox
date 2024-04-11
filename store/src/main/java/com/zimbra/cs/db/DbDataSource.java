@@ -324,7 +324,7 @@ public class DbDataSource {
     public static Collection<DataSourceItem> deleteAllMappingsInFolder(DataSource ds, int folderId, boolean isBatch) throws ServiceException {
         Mailbox mbox = DataSourceManager.getInstance().getMailbox(ds);
 
-        ArrayList<DataSourceItem> items = new ArrayList<DataSourceItem>();
+        ArrayList<DataSourceItem> items = new ArrayList<>();
 
         ZimbraLog.datasource.debug("Deleting all mappings for dataSource %s in folder %d", ds.getName(), folderId);
 
@@ -379,7 +379,7 @@ public class DbDataSource {
     public static Collection<DataSourceItem> getAllMappings(DataSource ds) throws ServiceException {
         Mailbox mbox = DataSourceManager.getInstance().getMailbox(ds);
 
-        ArrayList<DataSourceItem> items = new ArrayList<DataSourceItem>();
+        ArrayList<DataSourceItem> items = new ArrayList<>();
 
         ZimbraLog.datasource.debug("Get all mappings for %s", ds.getName());
 
@@ -421,7 +421,7 @@ public class DbDataSource {
     public static Collection<DataSourceItem> getAllMappingsInFolder(DataSource ds, int folderId) throws ServiceException {
         Mailbox mbox = DataSourceManager.getInstance().getMailbox(ds);
 
-        ArrayList<DataSourceItem> items = new ArrayList<DataSourceItem>();
+        ArrayList<DataSourceItem> items = new ArrayList<>();
 
         ZimbraLog.datasource.debug("Get all mappings for %s in folder %d", ds.getName(), folderId);
 
@@ -467,7 +467,7 @@ public class DbDataSource {
     public static Collection<DataSourceItem> getAllMappingsAndFlagsInFolder(DataSource ds, int folderId) throws ServiceException {
         Mailbox mbox = DataSourceManager.getInstance().getMailbox(ds);
 
-        ArrayList<DataSourceItem> items = new ArrayList<DataSourceItem>();
+        ArrayList<DataSourceItem> items = new ArrayList<>();
 
         ZimbraLog.datasource.debug("Get all mappings for %s in folder %d", ds.getName(), folderId);
 
@@ -520,7 +520,7 @@ public class DbDataSource {
             throws ServiceException {
         Mailbox mbox = DataSourceManager.getInstance().getMailbox(ds);
 
-        List<DataSourceItem> items = new ArrayList<DataSourceItem>();
+        List<DataSourceItem> items = new ArrayList<>();
 
         DbConnection conn = null;
         PreparedStatement stmt = null;
@@ -666,7 +666,7 @@ public class DbDataSource {
         String remoteId = null;
         Metadata md = null;
         List<List<Integer>> splitIds = ListUtil.split(ids, Db.getINClauseBatchSize());
-        ArrayList<DataSourceItem> items = new ArrayList<DataSourceItem>();
+        ArrayList<DataSourceItem> items = new ArrayList<>();
 
         ZimbraLog.datasource.debug("Get mappings for %s", ds.getName());
 
@@ -720,7 +720,7 @@ public class DbDataSource {
         String remoteId;
         Metadata md = null;
         List<List<String>> splitIds = ListUtil.split(remoteIds, Db.getINClauseBatchSize());
-        ArrayList<DataSourceItem> items = new ArrayList<DataSourceItem>();
+        ArrayList<DataSourceItem> items = new ArrayList<>();
 
         ZimbraLog.datasource.debug("Get reverse mappings for %s", ds.getName());
 
@@ -866,7 +866,7 @@ public class DbDataSource {
                 stmt.setLong(pos++, startDate);
             }
             rs = stmt.executeQuery();
-            List<PurgeableConv> convs = new LinkedList<PurgeableConv>();
+            List<PurgeableConv> convs = new LinkedList<>();
             while (rs.next() && totalSize < targetSize) {
                 long convSize = rs.getLong("size");
                 int itemId = rs.getInt("item_id");
@@ -909,7 +909,7 @@ public class DbDataSource {
             stmt.setInt(pos++, convId);
             stmt.setString(pos++, dsId);
             rs = stmt.executeQuery();
-            Set<Integer> ids = new HashSet<Integer>();
+            Set<Integer> ids = new HashSet<>();
             while (rs.next()) {
                 ids.add(rs.getInt(1));
             }
@@ -1111,7 +1111,7 @@ public class DbDataSource {
         DbConnection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs;
-        Map<Integer, PurgedConversation> convMap = new HashMap<Integer, PurgedConversation>();
+        Map<Integer, PurgedConversation> convMap = new HashMap<>();
         try {
             conn = DbPool.getConnection();
             StringBuilder sb = new StringBuilder();
@@ -1152,7 +1152,7 @@ public class DbDataSource {
             rs.close();
             stmt.close();
             Collection<PurgedConversation> values = convMap.values();
-            return new ArrayList<PurgedConversation>(values);
+            return new ArrayList<>(values);
         } catch (SQLException e) {
             throw ServiceException.FAILURE("Unable to get purged conversations", e);
         } finally {
@@ -1222,7 +1222,7 @@ public class DbDataSource {
     public static class PurgedConversation {
         private Integer id;
         private DataSource ds;
-        private List<PurgedMessage> messages = new ArrayList<PurgedMessage>();
+        private List<PurgedMessage> messages = new ArrayList<>();
 
         public PurgedConversation(DataSource ds, Integer convId) {
             this.ds = ds;

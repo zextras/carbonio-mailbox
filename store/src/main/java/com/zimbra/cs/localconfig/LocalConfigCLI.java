@@ -170,26 +170,26 @@ public final class LocalConfigCLI {
             if (av == null || av.length == 0) {
                 error("insufficient arguments", null);
             }
-            for (int i = 0; i < av.length; i++) {
-                String key = null;
-                String value = null;
-                if (cl.hasOption("r")) {
-                    key = av[i];
-                    value = RandomPassword.generate();
-                } else {
-                    int eqidx = av[i].indexOf("=");
-                    if (eqidx <= 0) {
-                        // <= 0 also catches first char being =, ie no key specified
-                        error("argument '" + av[i] + "' not in key=value form", null);
-                    }
-                    key = av[i].substring(0, eqidx);
-                    value = av[i].substring(eqidx + 1, av[i].length());
-                }
-                if (KnownKey.needForceToEdit(key) && !cl.hasOption("f")) {
-                   error("can not edit key " + key, null);
-                }
-                lc.set(key, value);
+          for (String s : av) {
+            String key = null;
+            String value = null;
+            if (cl.hasOption("r")) {
+              key = s;
+              value = RandomPassword.generate();
+            } else {
+              int eqidx = s.indexOf("=");
+              if (eqidx <= 0) {
+                // <= 0 also catches first char being =, ie no key specified
+                error("argument '" + s + "' not in key=value form", null);
+              }
+              key = s.substring(0, eqidx);
+              value = s.substring(eqidx + 1);
             }
+            if (KnownKey.needForceToEdit(key) && !cl.hasOption("f")) {
+              error("can not edit key " + key, null);
+            }
+            lc.set(key, value);
+          }
             try {
                 lc.save();
             } catch (Exception e) {
@@ -206,13 +206,12 @@ public final class LocalConfigCLI {
             if (av == null || av.length == 0) {
                 error("insufficient arguments", null);
             }
-            for (int i = 0; i < av.length; i++) {
-                String key = av[i];
-                if (!lc.isSet(key)) {
-                    error("key " + key + " is not set", null);
-                }
-                lc.remove(key);
+          for (String key : av) {
+            if (!lc.isSet(key)) {
+              error("key " + key + " is not set", null);
             }
+            lc.remove(key);
+          }
             try {
                 lc.save();
             } catch (Exception e) {
@@ -302,16 +301,16 @@ public final class LocalConfigCLI {
 
     private void checkCompatibleOptions(String mainOption, String compatibleOptions, CommandLine cl) {
         Option[] opts = cl.getOptions();
-        for (int i = 0; i < opts.length; i++) {
-            String clOption = opts[i].getOpt() == null ? opts[i].getLongOpt() : opts[i].getOpt();
-            if (!mainOption.equals(clOption) && compatibleOptions.indexOf(clOption) == -1) {
-                if (mainOption.equals("")) {
-                    error("invalid option '" + clOption + "'", null);
-                } else {
-                    error("option '" + clOption + "' can not be used with option '" + mainOption + "'", null);
-                }
-            }
+      for (Option opt : opts) {
+        String clOption = opt.getOpt() == null ? opt.getLongOpt() : opt.getOpt();
+        if (!mainOption.equals(clOption) && !compatibleOptions.contains(clOption)) {
+          if (mainOption.equals("")) {
+            error("invalid option '" + clOption + "'", null);
+          } else {
+            error("option '" + clOption + "' can not be used with option '" + mainOption + "'", null);
+          }
         }
+      }
     }
 
     private void reload() throws ServiceException {

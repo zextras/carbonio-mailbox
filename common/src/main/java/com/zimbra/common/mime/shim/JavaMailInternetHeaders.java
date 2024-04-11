@@ -165,7 +165,7 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
         if (names == null) {
             names = NO_HEADERS;
         }
-        List<InternetHeader> jmheaders = new ArrayList<InternetHeader>();
+        List<InternetHeader> jmheaders = new ArrayList<>();
         for (com.zimbra.common.mime.MimeHeader header : zheaders) {
             int i = 0;
             for ( ; i < names.length; i++) {
@@ -177,7 +177,7 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
                 jmheaders.add(new InternetHeader(header.getName(), header.getValue(defaultCharset)));
             }
         }
-        return new IteratorEnumeration<Header>(jmheaders);
+        return new IteratorEnumeration<>(jmheaders);
     }
 
     @SuppressWarnings("unchecked")
@@ -215,8 +215,9 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
             return null;
         }
 
-        byte contents[] = line.getBytes(), b;
-        int colon, start, end, wsp;
+        byte[] contents = line.getBytes();
+      byte b;
+      int colon, start, end, wsp;
         for (colon = 0; colon < contents.length; colon++) {
             if (contents[colon] == ':') {
                 break;
@@ -241,20 +242,20 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
         }
         byte[] bvalue = new byte[end - start + 1];
         System.arraycopy(contents, start, bvalue, 0, end - start + 1);
-        return new Pair<String, byte[]>(name, bvalue);
+        return new Pair<>(name, bvalue);
     }
 
     @Override
     public void addHeaderLine(String line) {
         if (ZPARSER) {
-            if (line == null || line.isEmpty()) {
-                return;
-            } else if (line.charAt(0) == ' ' || line.charAt(0) == '\t') {
-                throw new UnsupportedOperationException("adding continuation lines not yet supported");
-            } else {
-                Pair<String, byte[]> parsed = parseHeaderLine(line);
-                if (parsed != null) {
-                    zheaders.appendHeader(parsed.getFirst(), parsed.getSecond());
+            if (line != null && !line.isEmpty()) {
+                if (line.charAt(0) == ' ' || line.charAt(0) == '\t') {
+                    throw new UnsupportedOperationException("adding continuation lines not yet supported");
+                } else {
+                    Pair<String, byte[]> parsed = parseHeaderLine(line);
+                    if (parsed != null) {
+                        zheaders.appendHeader(parsed.getFirst(), parsed.getSecond());
+                    }
                 }
             }
         } else {
@@ -263,7 +264,7 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
     }
 
     private Enumeration<String> enumerateHeaderLines(boolean match, String[] names) {
-        List<String> jmheaders = new ArrayList<String>();
+        List<String> jmheaders = new ArrayList<>();
         for (com.zimbra.common.mime.MimeHeader header : zheaders) {
             int i = 0;
             for ( ; i < names.length; i++) {
@@ -275,7 +276,7 @@ public class JavaMailInternetHeaders extends InternetHeaders implements JavaMail
                 jmheaders.add(new String(header.getRawHeader()).trim());
             }
         }
-        return new IteratorEnumeration<String>(jmheaders);
+        return new IteratorEnumeration<>(jmheaders);
     }
 
     @SuppressWarnings("unchecked")

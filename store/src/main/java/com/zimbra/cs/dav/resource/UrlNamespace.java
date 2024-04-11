@@ -104,7 +104,7 @@ public class UrlNamespace {
 
   /* Returns DavResource at the specified URL. */
   public static DavResource getResourceAtUrl(DavContext ctxt, String url) throws DavException {
-    if (url.indexOf(PRINCIPALS_PATH) >= 0) return getPrincipalAtUrl(ctxt, url);
+    if (url.contains(PRINCIPALS_PATH)) return getPrincipalAtUrl(ctxt, url);
     UrlComponents uc = parseUrl(url);
     if (uc.user == null || uc.path == null)
       throw new DavException("invalid uri", HttpServletResponse.SC_NOT_FOUND, null);
@@ -195,7 +195,7 @@ public class UrlNamespace {
 
   public static java.util.Collection<DavResource> getResources(
       DavContext ctxt, String user, String path, boolean includeChildren) throws DavException {
-    ArrayList<DavResource> rss = new ArrayList<DavResource>();
+    ArrayList<DavResource> rss = new ArrayList<>();
     if ("".equals(user)) {
       try {
         rss.add(new Principal(ctxt.getAuthAccount(), DavServlet.DAV_PATH));
@@ -398,13 +398,13 @@ public class UrlNamespace {
   public static void addToRenamedResource(String user, String path, DavResource rsc) {
     synchronized (sRenamedResourceMap) {
       sRenamedResourceMap.put(
-          new Pair<String, String>(user, path.toLowerCase()),
-          new Pair<DavResource, Long>(rsc, System.currentTimeMillis()));
+          new Pair<>(user, path.toLowerCase()),
+          new Pair<>(rsc, System.currentTimeMillis()));
     }
   }
 
   public static DavResource checkRenamedResource(String user, String path) {
-    Pair<String, String> key = new Pair<String, String>(user, path.toLowerCase());
+    Pair<String, String> key = new Pair<>(user, path.toLowerCase());
     DavResource rsc = null;
     synchronized (sRenamedResourceMap) {
       Pair<DavResource, Long> item = sRenamedResourceMap.get(key);
@@ -557,7 +557,7 @@ public class UrlNamespace {
 
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
     OperationContext octxt = ctxt.getOperationContext();
-    ArrayList<DavResource> rss = new ArrayList<DavResource>();
+    ArrayList<DavResource> rss = new ArrayList<>();
     for (Folder f : mbox.getVisibleFolders(octxt)) rss.add(getResourceFromMailItem(ctxt, f));
     return rss;
   }
@@ -675,7 +675,7 @@ public class UrlNamespace {
     DavResource resource;
     String target = ctxt.getPath();
 
-    ArrayList<String> tokens = new ArrayList<String>();
+    ArrayList<String> tokens = new ArrayList<>();
     StringTokenizer tok = new StringTokenizer(target, "/");
     int numTokens = tok.countTokens();
     while (tok.hasMoreTokens()) {

@@ -17,9 +17,9 @@ public class ImapFolderCollection implements Iterable<ImapFolder> {
     private final Map<String, ImapFolder> mByRemotePath;
 
     public ImapFolderCollection() {
-        mByItemId = new HashMap<Integer, ImapFolder>();
-        mByLocalPath = new HashMap<String, ImapFolder>();
-        mByRemotePath = new HashMap<String, ImapFolder>();
+        mByItemId = new HashMap<>();
+        mByLocalPath = new HashMap<>();
+        mByRemotePath = new HashMap<>();
     }
 
     public void add(ImapFolder imapFolder) {

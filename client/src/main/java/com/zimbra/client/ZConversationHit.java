@@ -38,12 +38,12 @@ public class ZConversationHit implements ZSearchHit {
         mSubject = e.getAttribute(MailConstants.E_SUBJECT, null);
         mSortField = e.getAttribute(MailConstants.A_SORT_FIELD, null);
         mMessageCount = (int) e.getAttributeLong(MailConstants.A_NUM);
-        mMessageIds = new ArrayList<String>();
+        mMessageIds = new ArrayList<>();
         for (Element m: e.listElements(MailConstants.E_MSG)) {
             mMessageIds.add(m.getAttribute(MailConstants.A_ID));
         }
 
-        mRecipients = new ArrayList<ZEmailAddress>();
+        mRecipients = new ArrayList<>();
         for (Element emailEl: e.listElements(MailConstants.E_EMAIL)) {
             mRecipients.add(new ZEmailAddress(emailEl));
         }

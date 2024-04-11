@@ -76,7 +76,7 @@ public class Notification implements LmtpCallback {
      * Subclass of <tt>MimeMessage</tt> that allows the caller to set an explicit <tt>Message-ID</tt>
      * header (see JavaMail FAQ for details).
      */
-    private class MimeMessageWithId extends ZMimeMessage {
+    private static class MimeMessageWithId extends ZMimeMessage {
 
         private final String mMessageId;
 
@@ -98,17 +98,13 @@ public class Notification implements LmtpCallback {
         // isn't affected
         try {
             notifyIfNecessary(account, newMessage, recipientEmail);
-        } catch (MessagingException e) {
-            ZimbraLog.mailbox.warn("Unable to send new mail notification", e);
-        } catch (ServiceException e) {
+        } catch (MessagingException | ServiceException e) {
             ZimbraLog.mailbox.warn("Unable to send new mail notification", e);
         }
 
-        try {
+      try {
             outOfOfficeIfNecessary(account, mbox, newMessage, recipientEmail, envelopeSender);
-        } catch (MessagingException e) {
-            ZimbraLog.mailbox.warn("Unable to send out-of-office reply", e);
-        } catch (ServiceException e) {
+        } catch (MessagingException | ServiceException e) {
             ZimbraLog.mailbox.warn("Unable to send out-of-office reply", e);
         }
     }
@@ -248,7 +244,7 @@ public class Notification implements LmtpCallback {
 
         // multipart/report is also machine generated
         String ct = mm.getContentType();
-        if (ct != null && ct.equalsIgnoreCase("multipart/report")) {
+        if ("multipart/report".equalsIgnoreCase(ct)) {
             ofailed("content-type multipart/report", destination, rcpt, msgId);
             return;
         }
@@ -485,13 +481,13 @@ public class Notification implements LmtpCallback {
         // Check for mail loop
         String[] autoSubmittedHeaders = mm.getHeader("Auto-Submitted");
         if (autoSubmittedHeaders != null) {
-            for (int i = 0; i < autoSubmittedHeaders.length; i++) {
-                String headerValue= autoSubmittedHeaders[i].toLowerCase();
-                if (headerValue.indexOf("notification") != -1) {
-                    nfailed("detected a mail loop", destination, rcpt, msg);
-                    return;
-                }
+          for (String autoSubmittedHeader : autoSubmittedHeaders) {
+            String headerValue = autoSubmittedHeader.toLowerCase();
+            if (headerValue.contains("notification")) {
+              nfailed("detected a mail loop", destination, rcpt, msg);
+              return;
             }
+          }
         }
 
         // Send the message
@@ -529,7 +525,7 @@ public class Notification implements LmtpCallback {
 
     	String recipientDomain = getDomain(rcpt);
 
-        Map<String, String> vars = new HashMap<String, String>();
+        Map<String, String> vars = new HashMap<>();
         vars.put("SENDER_ADDRESS", ZInternetHeader.decode(msg.getSender()));
         vars.put("RECIPIENT_ADDRESS", rcpt);
         vars.put("RECIPIENT_DOMAIN", recipientDomain);
@@ -613,7 +609,7 @@ public class Notification implements LmtpCallback {
                         folderName = folder.getName();
                         folderId = Integer.toString(folder.getId());
                     }
-                    Map<String, String> vars = new HashMap<String, String>();
+                    Map<String, String> vars = new HashMap<>();
                     vars.put("ACCOUNT_DOMAIN", getDomain(account.getName()));
                     vars.put("ACCOUNT_ADDRESS", account.getName());
                     vars.put("MESSAGE_SUBJECT", Mime.getSubject(msg));
@@ -684,11 +680,11 @@ public class Notification implements LmtpCallback {
      */
     private static boolean hasPrecedence(String[] precedence, String value) {
         if (precedence != null) {
-            for (int i = 0; i < precedence.length; i++) {
-                if (precedence[i].equalsIgnoreCase(value)) {
-                    return true;
-                }
+          for (String s : precedence) {
+            if (s.equalsIgnoreCase(value)) {
+              return true;
             }
+          }
         }
         return false;
     }

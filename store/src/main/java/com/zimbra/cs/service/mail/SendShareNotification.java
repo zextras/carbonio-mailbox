@@ -118,7 +118,7 @@ public class SendShareNotification extends MailDocumentHandler {
     }
 
     String action = request.getAttribute(MailConstants.A_ACTION, null);
-    ArrayList<ShareInfoData> shareInfos = new ArrayList<ShareInfoData>();
+    ArrayList<ShareInfoData> shareInfos = new ArrayList<>();
     SendShareNotificationRequest req = zsc.elementToJaxb(request);
     ItemId iid = new ItemId(req.getItem().getId(), zsc);
     MailItem item = mbox.getItemById(octxt, iid.getId(), MailItem.Type.UNKNOWN);
@@ -538,7 +538,7 @@ public class SendShareNotification extends MailDocumentHandler {
           "unsupported grantee type for sending share notification email", null);
     }
 
-    return new Pair<NamedEntry, String>(grantee, displayName);
+    return new Pair<>(grantee, displayName);
   }
 
   private Folder getFolder(
@@ -743,11 +743,7 @@ public class SendShareNotification extends MailDocumentHandler {
     for (String extMember : extMembers) {
       try {
         sendNotificationEmail(octxt, mbox, authAccount, ownerAccount, sid, action, null, extMember);
-      } catch (ServiceException e) {
-        sLog.warn(
-            "Ignoring error while sending share notification to external group member " + extMember,
-            e);
-      } catch (MessagingException e) {
+      } catch (ServiceException | MessagingException e) {
         sLog.warn(
             "Ignoring error while sending share notification to external group member " + extMember,
             e);

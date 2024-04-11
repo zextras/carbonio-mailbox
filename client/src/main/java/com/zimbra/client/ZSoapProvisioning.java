@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.apache.http.HttpException;
-
 import com.zimbra.common.account.Key.DomainBy;
 import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.service.ServiceException;
@@ -55,7 +53,7 @@ public class ZSoapProvisioning {
     throws ServiceException {
         Element req = JaxbUtil.jaxbToElement(jaxbObject);
         Element res = invoke(req);
-        return (T) JaxbUtil.elementToJaxb(res);
+        return JaxbUtil.elementToJaxb(res);
     }
 
     public synchronized Element invoke(Element request) throws ServiceException {

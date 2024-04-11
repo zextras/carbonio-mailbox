@@ -12,16 +12,16 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface InviteInfoInterface {
-    public InviteInfoInterface create(String calItemType);
-    public String getCalItemType();
-    public void setTimezoneInterfaces(Iterable<CalTZInfoInterface> timezones);
-    public void addTimezoneInterface(CalTZInfoInterface timezone);
-    public void setInviteComponentInterface(
-            InviteComponentInterface inviteComponent);
-    public void setCalendarReplyInterfaces(
-            Iterable<CalendarReplyInterface> calendarReplies);
-    public void addCalendarReplyInterface(CalendarReplyInterface calendarReply);
-    public List<CalTZInfoInterface> getTimezoneInterfaces();
-    public InviteComponentInterface getInviteComponentInterface();
-    public List<CalendarReplyInterface> getCalendarReplyInterfaces();
+    InviteInfoInterface create(String calItemType);
+    String getCalItemType();
+    void setTimezoneInterfaces(Iterable<CalTZInfoInterface> timezones);
+    void addTimezoneInterface(CalTZInfoInterface timezone);
+    void setInviteComponentInterface(
+        InviteComponentInterface inviteComponent);
+    void setCalendarReplyInterfaces(
+        Iterable<CalendarReplyInterface> calendarReplies);
+    void addCalendarReplyInterface(CalendarReplyInterface calendarReply);
+    List<CalTZInfoInterface> getTimezoneInterfaces();
+    InviteComponentInterface getInviteComponentInterface();
+    List<CalendarReplyInterface> getCalendarReplyInterfaces();
 }

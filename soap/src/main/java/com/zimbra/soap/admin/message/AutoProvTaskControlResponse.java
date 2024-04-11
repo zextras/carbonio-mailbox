@@ -15,7 +15,7 @@ import com.zimbra.common.soap.AdminConstants;
 public class AutoProvTaskControlResponse {
     
     @XmlEnum
-    public static enum Status {
+    public enum Status {
         started,
         running,
         idle,
@@ -33,7 +33,7 @@ public class AutoProvTaskControlResponse {
      */
     @SuppressWarnings("unused")
     private AutoProvTaskControlResponse() {
-        this((Status) null);
+        this(null);
     }
 
     public AutoProvTaskControlResponse(Status status) {

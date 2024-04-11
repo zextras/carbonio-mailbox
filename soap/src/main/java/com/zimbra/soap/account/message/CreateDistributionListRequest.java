@@ -47,11 +47,11 @@ public class CreateDistributionListRequest extends AccountKeyValuePairs {
     private ZmBoolean dynamic;
 
     public CreateDistributionListRequest() {
-        this((String)null);
+        this(null);
     }
 
     public CreateDistributionListRequest(String name) {
-        this(name, (Collection<KeyValuePair>) null, false);
+        this(name, null, false);
     }
 
     public CreateDistributionListRequest(String name, Collection<KeyValuePair> attrs, Boolean dynamic) {

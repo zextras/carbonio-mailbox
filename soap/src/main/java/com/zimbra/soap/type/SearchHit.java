@@ -6,8 +6,8 @@
 package com.zimbra.soap.type;
 
 public interface SearchHit {
-    public void setId(String id);
-    public void setSortField(String sortField);
-    public String getId();
-    public String getSortField();
+    void setId(String id);
+    void setSortField(String sortField);
+    String getId();
+    String getSortField();
 }

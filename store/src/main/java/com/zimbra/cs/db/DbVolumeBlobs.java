@@ -120,7 +120,7 @@ public final class DbVolumeBlobs {
     }
 
     private static List<BlobReference> fillBlobReferences(ResultSet rs) throws SQLException {
-        List<BlobReference> blobs = new ArrayList<BlobReference>();
+        List<BlobReference> blobs = new ArrayList<>();
         while (rs.next()) {
             BlobReference blob = new BlobReference();
             blob.setId(rs.getLong(1));
@@ -136,7 +136,7 @@ public final class DbVolumeBlobs {
     }
     
     private static SpoolingCache<String> fillBlobDigests(ResultSet rs) throws SQLException, IOException {
-        SpoolingCache<String> digests = new SpoolingCache<String>();
+        SpoolingCache<String> digests = new SpoolingCache<>();
         while (rs.next()) {
             digests.add(rs.getString(1));
         }

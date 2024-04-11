@@ -6,6 +6,7 @@
 package com.zimbra.cs.mailbox.calendar.cache;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public class CtagResponseCache {
         ZimbraMemcachedClient memcachedClient = MemcachedConnector.getClient();
         CtagResponseSerializer serializer = new CtagResponseSerializer();
         mMemcachedLookup =
-            new MemcachedMap<CtagResponseCacheKey, CtagResponseCacheValue>(memcachedClient, serializer); 
+            new MemcachedMap<>(memcachedClient, serializer);
     }
 
     private static class CtagResponseSerializer implements MemcachedSerializer<CtagResponseCacheValue> {
@@ -116,12 +117,8 @@ public class CtagResponseCache {
         Metadata encodeMetadata() throws ServiceException {
             Metadata meta = new Metadata();
             String body = null;
-            try {
-                body = new String(mRespBody, "iso-8859-1");  // must use iso-8859-1 to allow all bytes
-            } catch (UnsupportedEncodingException e) {
-                throw ServiceException.FAILURE("Unable to encode ctag response body", e);
-            } 
-            meta.put(FN_BODY_LENGTH, mRespBody.length);
+          body = new String(mRespBody, StandardCharsets.ISO_8859_1);  // must use iso-8859-1 to allow all bytes
+          meta.put(FN_BODY_LENGTH, mRespBody.length);
             meta.put(FN_RESPONSE_BODY, body);
             meta.put(FN_RAW_LENGTH, mRawLen);
             if (mGzipped)
@@ -145,16 +142,12 @@ public class CtagResponseCache {
             if (body.length() != bodyLen)
                 throw ServiceException.FAILURE("Ctag response body has wrong length: " + body.length() +
                                                " when expecting " + bodyLen, null);
-            try {
-                mRespBody = body.getBytes("iso-8859-1");  // must use iso-8859-1 to allow all bytes
-            } catch (UnsupportedEncodingException e) {
-                throw ServiceException.FAILURE("Unable to decode ctag response body", e);
-            }
-            mRawLen = (int) meta.getLong(FN_RAW_LENGTH, 0);
+          mRespBody = body.getBytes(StandardCharsets.ISO_8859_1);  // must use iso-8859-1 to allow all bytes
+          mRawLen = (int) meta.getLong(FN_RAW_LENGTH, 0);
             mGzipped = meta.getBool(FN_IS_GZIPPED, false);
             mVersion = meta.get(FN_CALLIST_VERSION, "");
             int numCtags = (int) meta.getLong(FN_NUM_CTAGS, 0);
-            mCtags = new HashMap<Integer, String>(Math.min(numCtags, 100));
+            mCtags = new HashMap<>(Math.min(numCtags, 100));
             if (numCtags > 0) {
                 for (int i = 0; i < numCtags; ++i) {
                     int calId = (int) meta.getLong(FN_CTAGS_CAL_ID + i, -1);

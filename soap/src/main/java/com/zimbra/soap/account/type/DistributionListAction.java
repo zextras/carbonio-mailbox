@@ -22,7 +22,7 @@ import com.zimbra.common.soap.AccountConstants;
 public class DistributionListAction extends AccountKeyValuePairs {
 
     @XmlEnum
-    public static enum Operation {
+    public enum Operation {
         // case must match protocol
         delete,
         modify,

@@ -38,7 +38,7 @@ import com.zimbra.cs.index.analysis.UniversalAnalyzer;
  */
 public final class ZimbraAnalyzer extends Analyzer {
     private static final ZimbraAnalyzer SINGLETON = new ZimbraAnalyzer();
-    private static final Map<String, Analyzer> ANALYZERS = new ConcurrentHashMap<String, Analyzer>();
+    private static final Map<String, Analyzer> ANALYZERS = new ConcurrentHashMap<>();
     static {
         ANALYZERS.put("StandardAnalyzer", new ForwardingAnalyzer(new StandardAnalyzer(LuceneIndex.VERSION)));
     }

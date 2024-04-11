@@ -28,7 +28,7 @@ public class GetVolumeResponse {
      */
      @SuppressWarnings("unused")
     private GetVolumeResponse() {
-        this((VolumeInfo)null);
+        this(null);
     }
 
     public GetVolumeResponse(VolumeInfo volume) {

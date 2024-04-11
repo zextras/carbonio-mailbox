@@ -25,9 +25,9 @@ import com.zimbra.cs.redolog.op.RedoableOp;
 
 public class ExtensionUtil {
 
-    private static List<ZimbraExtensionClassLoader> sClassLoaders = new ArrayList<ZimbraExtensionClassLoader>();
+    private static List<ZimbraExtensionClassLoader> sClassLoaders = new ArrayList<>();
     private static ClassLoader sExtParentClassLoader;
-    private static Map<String, ZimbraExtension> sInitializedExtensions = new LinkedHashMap<String, ZimbraExtension>();
+    private static Map<String, ZimbraExtension> sInitializedExtensions = new LinkedHashMap<>();
 
 
     public static URL[] dirListToURLs(File dir) {
@@ -35,19 +35,19 @@ public class ExtensionUtil {
         if (files == null) {
             return null;
         }
-        List<URL> urls = new ArrayList<URL>(files.length);
-        for (int i = 0; i < files.length; i++) {
-            try {
-                URI uri = files[i].toURI();
-                URL url = uri.toURL();
-                urls.add(url);
-                if (ZimbraLog.extensions.isDebugEnabled()) {
-                    ZimbraLog.extensions.debug("adding url: " + url);
-                }
-            } catch (MalformedURLException mue) {
-                ZimbraLog.extensions.warn("ExtensionsUtil: exception creating url for " + files[i], mue);
-            }
+        List<URL> urls = new ArrayList<>(files.length);
+      for (File file : files) {
+        try {
+          URI uri = file.toURI();
+          URL url = uri.toURL();
+          urls.add(url);
+          if (ZimbraLog.extensions.isDebugEnabled()) {
+            ZimbraLog.extensions.debug("adding url: " + url);
+          }
+        } catch (MalformedURLException mue) {
+          ZimbraLog.extensions.warn("ExtensionsUtil: exception creating url for " + file, mue);
         }
+      }
         return urls.toArray(new URL[0]);
     }
 
@@ -97,14 +97,14 @@ public class ExtensionUtil {
         }
     }
 
-    public static interface ExtensionMatcher {
-        public boolean matches(ZimbraExtension ext);
+    public interface ExtensionMatcher {
+        boolean matches(ZimbraExtension ext);
     }
 
     /** @param matcher - Used to filter which extensions to initialize.  Can be null */
     public static synchronized void initAllMatching(ExtensionMatcher matcher) {
         ZimbraLog.extensions.info("Initializing extensions");
-        List<ZimbraExtensionClassLoader> sClassLoadersToRemove = new ArrayList<ZimbraExtensionClassLoader>();
+        List<ZimbraExtensionClassLoader> sClassLoadersToRemove = new ArrayList<>();
         for (ZimbraExtensionClassLoader zcl : sClassLoaders) {
             for (String name : zcl.getExtensionClassNames()) {
                 try {
@@ -140,7 +140,7 @@ public class ExtensionUtil {
     }
 
     public static synchronized void initAll() {
-        initAllMatching((ExtensionMatcher) null);
+        initAllMatching(null);
     }
 
     public static synchronized void init(String className) {
@@ -211,7 +211,7 @@ public class ExtensionUtil {
 
     public static synchronized void destroyAll() {
         ZimbraLog.extensions.info("Destroying extensions");
-        List<String> extNames = new ArrayList<String>(sInitializedExtensions.keySet());
+        List<String> extNames = new ArrayList<>(sInitializedExtensions.keySet());
         for (String extName : extNames) {
             ZimbraExtension ext = getExtension(extName);
             try {

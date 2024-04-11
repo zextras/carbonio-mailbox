@@ -47,7 +47,6 @@ import org.apache.mina.transport.socket.nio.ZimbraSocketAcceptor;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.Log;
@@ -72,8 +71,8 @@ public abstract class NioServer implements Server {
 
     // There is one IoProcessor pool shared by all protocol handlers
     private static final IoProcessor<NioSession> IO_PROCESSOR_POOL =
-        new SimpleIoProcessorPool<NioSession>(NioProcessor.class, Executors.newCachedThreadPool(
-                new ThreadFactoryBuilder().setNameFormat("NioProcessor-%d").build()));
+        new SimpleIoProcessorPool<>(NioProcessor.class, Executors.newCachedThreadPool(
+            new ThreadFactoryBuilder().setNameFormat("NioProcessor-%d").build()));
 
     /**
      * Extensions may add a custom {@link IoFilter} to the filter chain. Must call before the server starts.
@@ -319,9 +318,9 @@ public abstract class NioServer implements Server {
                 out.write(buf);
             }
         }
-    };
+    }
 
-    /**
+  /**
      * Returns the number of connections currently established.
      */
     protected int getNumConnections() {
@@ -343,7 +342,7 @@ public abstract class NioServer implements Server {
 
     protected Set<String> getThrottleSafeHosts() throws ServiceException {
 
-        Set<String> safeHosts = new HashSet<String>();
+        Set<String> safeHosts = new HashSet<>();
         for (com.zimbra.cs.account.Server server : Provisioning.getInstance().getAllServers()) {
             safeHosts.add(server.getServiceHostname());
         }
@@ -353,7 +352,7 @@ public abstract class NioServer implements Server {
 
     protected Set<String> getThrottleWhitelist() throws ServiceException {
 
-        Set<String> safeHosts = new HashSet<String>();
+        Set<String> safeHosts = new HashSet<>();
       safeHosts.addAll(Arrays.asList(config.getThrottleWhitelist()));
         return safeHosts;
     }

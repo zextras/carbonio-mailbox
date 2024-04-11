@@ -11,7 +11,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
 
-import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -34,7 +33,7 @@ public class LimitedQuery {
      */
     @SuppressWarnings("unused")
     private LimitedQuery() {
-        this((String) null, (Long) null);
+        this(null, null);
     }
 
     public LimitedQuery(String text, Long limit) {

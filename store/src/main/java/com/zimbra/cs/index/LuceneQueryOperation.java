@@ -183,7 +183,7 @@ public final class LuceneQueryOperation extends QueryOperation {
     curHitNo = 0;
 
     if (filterTerms == null) {
-      filterTerms = new ArrayList<Term>();
+      filterTerms = new ArrayList<>();
     }
     filterTerms.add(t);
   }
@@ -691,7 +691,7 @@ public final class LuceneQueryOperation extends QueryOperation {
 
   @Override
   public List<QueryInfo> getResultInfo() {
-    List<QueryInfo> toRet = new ArrayList<QueryInfo>(queryInfo);
+    List<QueryInfo> toRet = new ArrayList<>(queryInfo);
     if (dbOp != null) {
       toRet.addAll(dbOp.getQueryInfo());
     }

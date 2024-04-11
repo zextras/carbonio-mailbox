@@ -1,6 +1,6 @@
 def mvnCmd(String cmd) {
     def profile = ''
-    if (env.BRANCH_NAME == 'main' ) {
+    if (isBuildingTag()) {
         profile = '-Pprod'
     }
     else if (env.BRANCH_NAME == 'devel' ) {
@@ -8,6 +8,16 @@ def mvnCmd(String cmd) {
     }
     sh 'mvn -B -s settings-jenkins.xml ' + profile + ' ' + cmd
 }
+def isBuildingTag() {
+    def changeSet = currentBuild.changeSets[0]
+    if (changeSet != null) {
+        return changeSet.getItems().any { item ->
+            item.comment.contains('refs/tags/')
+        }
+    }
+    return false
+}
+
 def buildDebPackages(String flavor) {
     unstash 'staging'
     sh 'cp -r staging /tmp'
@@ -18,7 +28,6 @@ def buildDebPackages(String flavor) {
 def getPackages() {
     return ["carbonio-appserver-conf","carbonio-appserver-db", "carbonio-appserver-service",
             "carbonio-appserver-store-libs", "carbonio-appserver-war", "carbonio-common-appserver-conf",
-            "carbonio-common-appserver-docs",
             "carbonio-common-appserver-native-lib", "carbonio-common-core-jar",
             "carbonio-common-core-libs", "carbonio-directory-server"]
 }
@@ -52,26 +61,36 @@ def buildRpmPackages(String flavor) {
 pipeline {
     agent {
         node {
-            label 'carbonio-agent-v1'
+            label 'carbonio-agent-v2'
         }
     }
+
+    triggers {
+        cron(env.BRANCH_NAME == 'devel' ? 'H 5 * * *' : '')
+    }
+
     parameters {
         booleanParam defaultValue: false, description: 'Upload packages in playground repositories.', name: 'PLAYGROUND'
         booleanParam defaultValue: false, description: 'Skip test and sonar analysis.', name: 'SKIP_TEST_WITH_COVERAGE'
         booleanParam defaultValue: false, description: 'Skip sonar analysis.', name: 'SKIP_SONARQUBE'
     }
+
     environment {
+        JAVA_HOME='/usr/lib/jvm/java-11-openjdk-amd64'
+        JAVA_PATH='${JAVA_HOME}/bin'
         JAVA_OPTS='-Dfile.encoding=UTF8'
         LC_ALL='C.UTF-8'
         MAVEN_OPTS = "-Xmx4g"
         BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1'
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
     }
+
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
         timeout(time: 2, unit: 'HOURS')
         skipDefaultCheckout()
     }
+
     stages {
         stage('Checkout') {
             steps {
@@ -89,8 +108,8 @@ pipeline {
             }
             steps{
                 sh '''
-                    curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b .
-                    ./syft . -o cyclonedx-json=sbom.cyclonedx.json
+                    curl -sSfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b .
+                    ./trivy filesystem . --format cyclonedx --scanners license --output sbom.cyclonedx.json
                 '''
                 dependencyTrackPublisher artifact: 'sbom.cyclonedx.json',
                         synchronous: false,
@@ -117,7 +136,7 @@ pipeline {
             }
             steps {
 
-                mvnCmd("$BUILD_PROPERTIES_PARAMS test -Dexcludegroups=api")
+                mvnCmd("$BUILD_PROPERTIES_PARAMS verify -Dexcludegroups=api")
                 junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
             }
         }
@@ -142,7 +161,12 @@ pipeline {
                 junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
             }
         }
+
         stage('Sonarqube Analysis') {
+            environment {
+                JAVA_HOME='/usr/lib/jvm/java-17-openjdk-amd64'
+                JAVA_PATH='${JAVA_HOME}/bin'
+            }
             when {
                 allOf {
                     expression { params.SKIP_SONARQUBE == false }
@@ -151,7 +175,7 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                    mvnCmd("$BUILD_PROPERTIES_PARAMS sonar:sonar")
+                    mvnCmd("$BUILD_PROPERTIES_PARAMS sonar:sonar -Dsonar.exclusions=**/com/zimbra/soap/mail/type/*.java,**/com/zimbra/soap/mail/message/*.java,**/com/zimbra/cs/account/ZAttr*.java,**/com/zimbra/common/account/ZAttr*.java")
                 }
             }
         }

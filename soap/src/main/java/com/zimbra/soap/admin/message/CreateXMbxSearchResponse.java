@@ -31,7 +31,7 @@ public class CreateXMbxSearchResponse {
      */
     @SuppressWarnings("unused")
     private CreateXMbxSearchResponse() {
-        this((SearchNode) null);
+        this(null);
     }
 
     public CreateXMbxSearchResponse(SearchNode searchNode) {

@@ -41,9 +41,9 @@ public class InstanceData {
     private void init(String recurIdZ, Long dtStart, Long duration, Long alarmAt, Long tzOffset,
                       String partStat, String freeBusyActual, String percentComplete) {
         mRecurIdZ = recurIdZ;
-        mDtStart = dtStart != null && dtStart.longValue() != 0 ? dtStart : null;
-        mDuration = duration != null && duration.longValue() != 0 ? duration : null;
-        mAlarmAt = alarmAt != null && alarmAt.longValue() != 0 ? alarmAt : null;
+        mDtStart = dtStart != null && dtStart != 0 ? dtStart : null;
+        mDuration = duration != null && duration != 0 ? duration : null;
+        mAlarmAt = alarmAt != null && alarmAt != 0 ? alarmAt : null;
         mTZOffset = tzOffset;
         mPartStat = partStat;
         mFreeBusyActual = freeBusyActual;
@@ -88,13 +88,13 @@ public class InstanceData {
         String recurIdZ = meta.get(FN_RECURRENCE_ID_Z, null);
         Long dtStart = null, duration = null, alarmAt = null, tzOffset = null;
         if (meta.containsKey(FN_DTSTART))
-            dtStart = Long.valueOf(meta.getLong(FN_DTSTART));
+            dtStart = meta.getLong(FN_DTSTART);
         if (meta.containsKey(FN_DURATION))
-            duration = Long.valueOf(meta.getLong(FN_DURATION));
+            duration = meta.getLong(FN_DURATION);
         if (meta.containsKey(FN_ALARM_AT))
-            alarmAt = Long.valueOf(meta.getLong(FN_ALARM_AT));
+            alarmAt = meta.getLong(FN_ALARM_AT);
         if (meta.containsKey(FN_TZOFFSET))
-            tzOffset = Long.valueOf(meta.getLong(FN_TZOFFSET));
+            tzOffset = meta.getLong(FN_TZOFFSET);
         String ptst = meta.get(FN_PARTSTAT, null);
         String fba = meta.get(FN_FREEBUSY_ACTUAL, null);
         String pctComp = meta.get(FN_PERCENT_COMPLETE, null);

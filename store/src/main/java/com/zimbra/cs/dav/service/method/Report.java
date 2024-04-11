@@ -31,7 +31,7 @@ public class Report extends DavMethod {
     private static HashMap<QName,DavMethod> sReports;
 
     static {
-        sReports = new HashMap<QName,DavMethod>();
+        sReports = new HashMap<>();
         sReports.put(DavElements.E_CALENDAR_QUERY, new CalendarQuery());
         sReports.put(DavElements.E_CALENDAR_MULTIGET, new CalendarMultiget());
         sReports.put(DavElements.E_FREE_BUSY_QUERY, new FreeBusyQuery());

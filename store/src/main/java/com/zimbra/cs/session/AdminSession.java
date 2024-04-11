@@ -10,13 +10,8 @@ package com.zimbra.cs.session;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Constants;
-import com.zimbra.cs.account.Domain;
-import com.zimbra.cs.account.EntrySearchFilter;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.SearchDirectoryOptions;
-import com.zimbra.cs.account.SearchDirectoryOptions.SortOpt;
-import com.zimbra.cs.account.ldap.LdapEntrySearchFilter;
-import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +22,7 @@ public class AdminSession extends Session {
     private static final long ADMIN_SESSION_TIMEOUT_MSEC = 10 * Constants.MILLIS_PER_MINUTE;
   
     private DirectorySearchParams mSearchParams;
-    private HashMap<String,Object> mData = new HashMap<String,Object>();
+    private HashMap<String,Object> mData = new HashMap<>();
 
     public AdminSession(String accountId) {
         super(accountId, Session.Type.ADMIN);

@@ -24,7 +24,7 @@ public abstract class CacheExtension {
     public static synchronized void register(String cacheType, CacheExtension handler) {
         
         if (mHandlers == null)
-            mHandlers = new HashMap<String, CacheExtension>();
+            mHandlers = new HashMap<>();
         else {
             //  make sure the cache is not already registered
             CacheExtension obj = mHandlers.get(cacheType);

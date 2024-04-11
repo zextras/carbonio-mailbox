@@ -9,7 +9,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.accesscontrol.CheckRightFallback;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.acl.FolderACL;
 import com.zimbra.cs.mailbox.Mailbox;

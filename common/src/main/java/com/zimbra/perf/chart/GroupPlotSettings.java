@@ -26,7 +26,7 @@ public class GroupPlotSettings extends PlotSettings {
                 percentTime, dataFunction, aggFunction, optional, null, null);
         mGroupBy = groupBy;
         mIgnore = ignore;
-        mIgnoreSet = new HashSet<String>();
+        mIgnoreSet = new HashSet<>();
         if (mIgnore != null) {
             String[] ignores = mIgnore.split("\\s*,\\s*");
             if (ignores.length > 0)

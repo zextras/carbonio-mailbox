@@ -32,7 +32,7 @@ public class Checkpoint extends ControlOp {
 
 	public Checkpoint() {
 	    super(MailboxOperation.Checkpoint);
-		mTxnSet = new LinkedHashSet<TransactionId>();
+		mTxnSet = new LinkedHashSet<>();
 	}
 
 	public Checkpoint(LinkedHashSet<TransactionId> txns) {
@@ -71,10 +71,9 @@ public class Checkpoint extends ControlOp {
 
 	protected void serializeData(RedoLogOutput out) throws IOException {
 		out.writeInt(mTxnSet.size());
-		for (Iterator it = mTxnSet.iterator(); it.hasNext(); ) {
-			TransactionId txn = (TransactionId) it.next();
-			txn.serialize(out);
-		}
+    for (TransactionId txn : mTxnSet) {
+      txn.serialize(out);
+    }
 	}
 
 	protected void deserializeData(RedoLogInput in) throws IOException {

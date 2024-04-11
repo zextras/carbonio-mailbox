@@ -10,7 +10,7 @@ import com.zimbra.common.service.ServiceException;
 // to be used for reset password feature exceptions
 @SuppressWarnings("serial")
 public class ForgetPasswordException extends AccountServiceException {
-    private static enum Codes{
+    private enum Codes{
         RECOVERY_EMAIL_SAME_AS_PRIMARY_OR_ALIAS("service.RECOVERY_EMAIL_SAME_AS_PRIMARY_OR_ALIAS"),
         CODE_ALREADY_SENT("service.CODE_ALREADY_SENT"),
         MAX_ATTEMPTS_REACHED("service.MAX_ATTEMPTS_REACHED"),
@@ -23,7 +23,7 @@ public class ForgetPasswordException extends AccountServiceException {
         FEATURE_RESET_PASSWORD_DISABLED("service.FEATURE_RESET_PASSWORD_DISABLED");
 
         private String code;
-        private Codes(String code) {
+        Codes(String code) {
             this.code = code;
         }
 

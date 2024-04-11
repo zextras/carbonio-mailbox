@@ -19,6 +19,8 @@ import com.zimbra.cs.mailbox.calendar.CalendarMailSender;
 import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mailbox.calendar.RecurId;
 import com.zimbra.cs.mailbox.calendar.ZOrganizer;
+import com.zimbra.cs.service.mail.message.parser.InviteParser;
+import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import java.util.Map;
@@ -26,9 +28,9 @@ import javax.mail.MessagingException;
 
 public class AddCalendarItemInvite extends CalendarRequest {
 
-  protected class AddInviteParser extends ParseMimeMessage.InviteParser {
+  protected class AddInviteParser extends InviteParser {
     @Override
-    public ParseMimeMessage.InviteParserResult parseInviteElement(
+    public InviteParserResult parseInviteElement(
         ZimbraSoapContext lc, OperationContext octxt, Account account, Element inviteElem)
         throws ServiceException {
       return CalendarUtils.parseInviteForAddInvite(account, getItemType(), inviteElem, null);
@@ -102,7 +104,7 @@ public class AddCalendarItemInvite extends CalendarRequest {
             ZimbraLog.calendar.info(
                 "Got malformed invite that lists attendees without specifying an organizer.  "
                     + "Defaulting organizer to: "
-                    + org.toString());
+                    + org);
           }
         }
       }

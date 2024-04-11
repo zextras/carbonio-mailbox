@@ -15,7 +15,7 @@ import com.zimbra.common.util.L10nUtil;
 
 public final class KnownKey {
 
-    private static final Map<String, KnownKey> ALL = new LinkedHashMap<String, KnownKey>();
+    private static final Map<String, KnownKey> ALL = new LinkedHashMap<>();
 
     static {
         // Since all the known keys are actually defined in another class, we
@@ -147,7 +147,7 @@ public final class KnownKey {
         if (Strings.isNullOrEmpty(s)) {
             s = defaultValue;  // fallback to the default value
         }
-        return Boolean.valueOf(s).booleanValue();
+        return Boolean.valueOf(s);
     }
 
     public int intValue() {
@@ -167,10 +167,8 @@ public final class KnownKey {
         int result = intValue();
         if (result < minValue) {
             return minValue;
-        } else if (result > maxValue) {
-            return maxValue;
         } else {
-            return result;
+            return Math.min(result, maxValue);
         }
     }
 
@@ -191,10 +189,8 @@ public final class KnownKey {
         long result = longValue();
         if (result < minValue) {
             return minValue;
-        } else if (result > maxValue) {
-            return maxValue;
         } else {
-            return result;
+            return Math.min(result, maxValue);
         }
     }
 

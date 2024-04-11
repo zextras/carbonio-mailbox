@@ -33,7 +33,7 @@ public class DataSourceQuota extends AttributeCallback {
             }
             if (attrName.equals(ZAttrProvisioning.A_zimbraDataSourceQuota)) {
                 long totalQuota = account.getDataSourceTotalQuota();
-                if (newQuota > 0 && totalQuota > 0 && newQuota > totalQuota) {
+                if (totalQuota > 0 && newQuota > totalQuota) {
                     throw ServiceException.FAILURE("cannot set data source quota to be higher than total data source quota", null);
                 }
             } else if (attrName.equals(ZAttrProvisioning.A_zimbraDataSourceTotalQuota)) {
@@ -46,7 +46,7 @@ public class DataSourceQuota extends AttributeCallback {
             Cos cos = (Cos) entry;
             if (attrName.equals(ZAttrProvisioning.A_zimbraDataSourceQuota)) {
                 long totalQuota = cos.getDataSourceTotalQuota();
-                if (newQuota > 0 && totalQuota > 0 && newQuota > totalQuota) {
+                if (totalQuota > 0 && newQuota > totalQuota) {
                     throw ServiceException.FAILURE("cannot set data source quota to be higher than total data source quota", null);
                 }
             } else if (attrName.equals(ZAttrProvisioning.A_zimbraDataSourceTotalQuota)) {

@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface DataSource {
 
-  public enum ConnectionType {
+  enum ConnectionType {
     cleartext,
     ssl,
     tls,
@@ -25,99 +25,99 @@ public interface DataSource {
             "invalid type: " + s + ", valid values: " + Arrays.asList(ConnectionType.values()), e);
       }
     }
-  };
+  }
 
-  public void copy(DataSource from);
+  void copy(DataSource from);
 
-  public void setId(String id);
+  void setId(String id);
 
-  public void setName(String name);
+  void setName(String name);
 
-  public void setFolderId(String folderId);
+  void setFolderId(String folderId);
 
-  public void setEnabled(Boolean enabled);
+  void setEnabled(Boolean enabled);
 
-  public void setImportOnly(Boolean importOnly);
+  void setImportOnly(Boolean importOnly);
 
-  public void setHost(String host);
+  void setHost(String host);
 
-  public void setPort(Integer port);
-
-  /* Interface interested in ConnectionType, not MdsConnectionType */
-  public void setConnectionType(ConnectionType connectionType);
-
-  public void setUsername(String username);
-
-  public void setPassword(String password);
-
-  public void setPollingInterval(String pollingInterval);
-
-  public void setEmailAddress(String emailAddress);
-
-  public void setUseAddressForForwardReply(Boolean useAddressForForwardReply);
-
-  public void setDefaultSignature(String defaultSignature);
-
-  public void setForwardReplySignature(String forwardReplySignature);
-
-  public void setFromDisplay(String fromDisplay);
-
-  public void setReplyToAddress(String replyToAddress);
-
-  public void setReplyToDisplay(String replyToDisplay);
-
-  public void setImportClass(String importClass);
-
-  public void setFailingSince(Long failingSince);
-
-  public void setLastError(String lastError);
-
-  public void setAttributes(Iterable<String> attributes);
-
-  public void addAttribute(String attribute);
-
-  public String getId();
-
-  public String getName();
-
-  public String getFolderId();
-
-  public Boolean isEnabled();
-
-  public Boolean isImportOnly();
-
-  public String getHost();
-
-  public Integer getPort();
+  void setPort(Integer port);
 
   /* Interface interested in ConnectionType, not MdsConnectionType */
-  public ConnectionType getConnectionType();
+  void setConnectionType(ConnectionType connectionType);
 
-  public String getUsername();
+  void setUsername(String username);
 
-  public String getPassword();
+  void setPassword(String password);
 
-  public String getPollingInterval();
+  void setPollingInterval(String pollingInterval);
 
-  public String getEmailAddress();
+  void setEmailAddress(String emailAddress);
 
-  public Boolean isUseAddressForForwardReply();
+  void setUseAddressForForwardReply(Boolean useAddressForForwardReply);
 
-  public String getDefaultSignature();
+  void setDefaultSignature(String defaultSignature);
 
-  public String getForwardReplySignature();
+  void setForwardReplySignature(String forwardReplySignature);
 
-  public String getFromDisplay();
+  void setFromDisplay(String fromDisplay);
 
-  public String getReplyToAddress();
+  void setReplyToAddress(String replyToAddress);
 
-  public String getReplyToDisplay();
+  void setReplyToDisplay(String replyToDisplay);
 
-  public String getImportClass();
+  void setImportClass(String importClass);
 
-  public Long getFailingSince();
+  void setFailingSince(Long failingSince);
 
-  public String getLastError();
+  void setLastError(String lastError);
 
-  public List<String> getAttributes();
+  void setAttributes(Iterable<String> attributes);
+
+  void addAttribute(String attribute);
+
+  String getId();
+
+  String getName();
+
+  String getFolderId();
+
+  Boolean isEnabled();
+
+  Boolean isImportOnly();
+
+  String getHost();
+
+  Integer getPort();
+
+  /* Interface interested in ConnectionType, not MdsConnectionType */
+  ConnectionType getConnectionType();
+
+  String getUsername();
+
+  String getPassword();
+
+  String getPollingInterval();
+
+  String getEmailAddress();
+
+  Boolean isUseAddressForForwardReply();
+
+  String getDefaultSignature();
+
+  String getForwardReplySignature();
+
+  String getFromDisplay();
+
+  String getReplyToAddress();
+
+  String getReplyToDisplay();
+
+  String getImportClass();
+
+  Long getFailingSince();
+
+  String getLastError();
+
+  List<String> getAttributes();
 }

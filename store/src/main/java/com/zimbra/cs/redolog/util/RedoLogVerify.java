@@ -79,7 +79,7 @@ public class RedoLogVerify {
         System.exit((errmsg == null) ? 0 : 1);
     }
 
-    private static CommandLine parseArgs(String args[]) {
+    private static CommandLine parseArgs(String[] args) {
         CommandLineParser parser = new GnuParser();
         CommandLine cl = null;
         try {
@@ -91,7 +91,7 @@ public class RedoLogVerify {
     }
 
     private static class Params {
-        public Set<Integer> mboxIds = new HashSet<Integer>();
+        public Set<Integer> mboxIds = new HashSet<>();
         public boolean quiet = false;
         public boolean hideOffset = false;
         public boolean showBlob = false;
@@ -147,7 +147,7 @@ public class RedoLogVerify {
         mParams = params;
         if (mParams == null)
             mParams = new Params();
-        mBadFiles = new ArrayList<BadFile>();
+        mBadFiles = new ArrayList<>();
     }
 
     public boolean scanLog(File logfile) throws IOException {
@@ -230,23 +230,18 @@ public class RedoLogVerify {
             int linesAfter = 10;
             long startPos = Math.max(lastPosition - (lastPosition % bytesPerLine) - linesBefore * bytesPerLine, 0);
             int count = (int) Math.min((linesBefore + linesAfter + 1) * bytesPerLine, lastPosition - startPos + diff);
-            RandomAccessFile raf = null;
-            try {
-                raf = new RandomAccessFile(logfile, "r");
-                raf.seek(startPos);
-                byte buf[] = new byte[count];
-                raf.read(buf, 0, count);
-                mOut.printf("Data near error offset %08x:", lastPosition);
-                mOut.println();
-                hexdump(mOut, buf, 0, count, startPos, lastPosition);
-                mOut.println();
-            } catch (IOException eh) {
-                mOut.println("Error opening log file " + logfile.getAbsolutePath() + " for hexdump");
-                eh.printStackTrace(mOut);
-            } finally {
-                if (raf != null)
-                    raf.close();
-            }
+          try (RandomAccessFile raf = new RandomAccessFile(logfile, "r")) {
+            raf.seek(startPos);
+            byte[] buf = new byte[count];
+            raf.read(buf, 0, count);
+            mOut.printf("Data near error offset %08x:", lastPosition);
+            mOut.println();
+            hexdump(mOut, buf, 0, count, startPos, lastPosition);
+            mOut.println();
+          } catch (IOException eh) {
+            mOut.println("Error opening log file " + logfile.getAbsolutePath() + " for hexdump");
+            eh.printStackTrace(mOut);
+          }
             
 
             throw e;
@@ -296,7 +291,7 @@ public class RedoLogVerify {
         if (all == null || all.length == 0)
             return true;
 
-        List<File> fileList = new ArrayList<File>(all.length);
+        List<File> fileList = new ArrayList<>(all.length);
         for (File f : all) {
             if (!f.isDirectory()) {
                 String fname = f.getName();
@@ -379,15 +374,15 @@ public class RedoLogVerify {
         boolean allGood = true;
         RedoLogVerify verify = new RedoLogVerify(params, System.out);
 
-        for (int i = 0; i < args.length; i++) {
-            File f = new File(args[i]);
-            boolean good = false;
-            if (f.isDirectory())
-                good = verify.verifyDirectory(f);
-            else
-                good = verify.verifyFile(f);
-            allGood = allGood && good;
-        }
+      for (String arg : args) {
+        File f = new File(arg);
+        boolean good = false;
+        if (f.isDirectory())
+          good = verify.verifyDirectory(f);
+        else
+          good = verify.verifyFile(f);
+        allGood = allGood && good;
+      }
 
         if (!allGood) {
             verify.listErrors();

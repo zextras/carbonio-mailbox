@@ -12,7 +12,7 @@ public class ChatSummary extends MessageSummary {
      */
     @SuppressWarnings("unused")
     private ChatSummary() {
-        this((String) null);
+        this(null);
     }
 
     public ChatSummary(String id) {

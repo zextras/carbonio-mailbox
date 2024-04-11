@@ -21,7 +21,7 @@ import com.zimbra.cs.ldap.ZSearchScope;
 
 public class BySearchResultEntrySearcher {
     public interface SearchEntryProcessor {
-        public void processSearchEntry(ZSearchResultEntry sr);
+        void processSearchEntry(ZSearchResultEntry sr);
     }
 
     private final LdapProvisioning prov;

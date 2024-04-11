@@ -144,9 +144,9 @@ public class MimeUtil {
             }
 
             buf.append(prefix);
-            for (int i = 0; i < encodedBytes.length; i++) {
-                buf.append((char)encodedBytes[i]);
-            }
+          for (byte encodedByte : encodedBytes) {
+            buf.append((char) encodedByte);
+          }
             buf.append("?="); // terminate the current sequence
         }
     }

@@ -58,9 +58,9 @@ public abstract class QueryOperation implements Cloneable, ZimbraQueryResults {
     private static final float MESSAGES_PER_CONV_ESTIMATE = 2.25f;
 
     // What level of result grouping do we want?  ConversationResult, MessageResult, or DocumentResult?
-    private static enum Grouping {
-        CONVERSATION, MESSAGE, ITEM;
-    };
+    private enum Grouping {
+        CONVERSATION, MESSAGE, ITEM
+    }
 
     /**
      * Executes the query.

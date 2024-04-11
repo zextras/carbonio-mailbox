@@ -87,12 +87,7 @@ public final class SaslAuthenticator extends Authenticator {
     try {
       return Subject.doAs(
           subject,
-          new PrivilegedExceptionAction<SaslClient>() {
-            @Override
-            public SaslClient run() throws SaslException {
-              return createSaslClient();
-            }
-          });
+          (PrivilegedExceptionAction<SaslClient>) () -> createSaslClient());
     } catch (PrivilegedActionException e) {
       dispose();
       Exception cause = e.getException();
@@ -109,7 +104,7 @@ public final class SaslAuthenticator extends Authenticator {
   private static final String LOGIN_MODULE_NAME = "com.sun.security.auth.module.Krb5LoginModule";
 
   private LoginContext getLoginContext() throws LoginException {
-    Map<String, String> options = new HashMap<String, String>();
+    Map<String, String> options = new HashMap<>();
     options.put("debug", Boolean.toString(config.getLogger().isDebugEnabled()));
     options.put("principal", getPrincipal());
     // options.put("useTicketCache", "true");
@@ -162,12 +157,7 @@ public final class SaslAuthenticator extends Authenticator {
     try {
       return Subject.doAs(
           subject,
-          new PrivilegedExceptionAction<byte[]>() {
-            @Override
-            public byte[] run() throws SaslException {
-              return saslClient.evaluateChallenge(challenge);
-            }
-          });
+          (PrivilegedExceptionAction<byte[]>) () -> saslClient.evaluateChallenge(challenge));
     } catch (PrivilegedActionException e) {
       dispose();
       Throwable cause = e.getCause();

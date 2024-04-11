@@ -93,7 +93,7 @@ abstract class ImapSearch {
 
 
     abstract static class LogicalOperation extends ImapSearch {
-        protected List<ImapSearch> mChildren = new ArrayList<ImapSearch>();
+        protected List<ImapSearch> mChildren = new ArrayList<>();
 
         protected LogicalOperation addChild(ImapSearch i4search) {
             mChildren.add(i4search);  return this;
@@ -390,8 +390,9 @@ abstract class ImapSearch {
             String query;
             Relation(String rep)                { query = rep; }
             @Override public String toString()  { return query; }
-        };
-        private Relation mRelation;
+        }
+
+      private Relation mRelation;
         private Date mDate;
         private long mTimestamp;
         DateSearch(Relation relation, Date date)  { mDate = date;  mTimestamp = date.getTime();  mRelation = relation; }
@@ -555,8 +556,9 @@ abstract class ImapSearch {
     }
 
     static class SizeSearch extends ImapSearch {
-        enum Relation { larger, smaller };
-        private Relation mRelation;
+        enum Relation { larger, smaller }
+
+      private Relation mRelation;
         private long mSize;
         SizeSearch(Relation relation, long size)  { mSize = size;  mRelation = relation; }
 
@@ -721,9 +723,9 @@ abstract class ImapSearch {
                 }
                 return true;
             }
-        };
+        }
 
-        protected HeaderSearch(Header header, String origValue) {
+      protected HeaderSearch(Header header, String origValue) {
             String value = origValue;
             while (value.startsWith("<") || value.startsWith(">") || value.startsWith("=")) {
                 value = value.substring(1);

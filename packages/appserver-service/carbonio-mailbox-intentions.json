@@ -1,0 +1,18 @@
+{
+  "kind": "service-intentions",
+  "name": "carbonio-mailbox",
+  "sources": [
+    {
+      "name": "carbonio-user-management",
+      "action": "allow"
+    },
+    {
+      "name": "carbonio-files",
+      "action": "allow"
+    },
+    {
+      "name": "carbonio-storages",
+      "action": "allow"
+    }
+  ]
+}

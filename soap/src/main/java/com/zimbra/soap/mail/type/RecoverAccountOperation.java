@@ -27,7 +27,7 @@ public enum RecoverAccountOperation {
 
     private String name;
 
-    private RecoverAccountOperation(String name) {
+    RecoverAccountOperation(String name) {
         this.name = name;
     }
 

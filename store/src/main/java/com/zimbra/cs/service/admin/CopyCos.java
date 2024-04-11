@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.zimbra.common.account.Key;
-import com.zimbra.common.account.Key.CosBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.common.soap.AdminConstants;

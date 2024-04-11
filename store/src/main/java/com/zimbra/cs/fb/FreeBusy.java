@@ -250,7 +250,7 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
     public String toString() {
       StringBuilder toRet = new StringBuilder("\n");
       for (Interval cur = mHead; cur != null; cur = cur.getNext()) {
-        toRet.append("\t").append(cur.toString()).append("\n");
+        toRet.append("\t").append(cur).append("\n");
       }
       return toRet.toString();
     }
@@ -287,7 +287,7 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
       } else {
         mStatus = IcalXmlStrMap.FBTYPE_FREE;
       }
-      mInstances = new LinkedHashSet<FBInstance>();
+      mInstances = new LinkedHashSet<>();
     }
 
     public Interval(long start, long end, String status, FBInstance instance) {
@@ -435,8 +435,7 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
 
   public String getBusiest() {
     String val = IcalXmlStrMap.FBTYPE_FREE;
-    for (Iterator<Interval> iter = iterator(); iter.hasNext(); ) {
-      Interval interval = iter.next();
+    for (Interval interval : this) {
       val = chooseBusier(val, interval.getStatus());
     }
     return val;
@@ -455,7 +454,7 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
   public static final String FBTYPE_OUTLOOK_TENTATIVE = "TENTATIVE";
   public static final String FBTYPE_OUTLOOK_OUTOFOFFICE = "OOF";
 
-  private static String sBusyOrder[] = new String[5];
+  private static String[] sBusyOrder = new String[5];
 
   static {
     // The lower index, the busier.
@@ -467,10 +466,11 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
   }
 
   public static String chooseBusier(String freeBusy1, String freeBusy2) {
-    for (int i = 0; i < sBusyOrder.length; i++) {
-      String busy = sBusyOrder[i];
-      if (busy.equals(freeBusy1)) return freeBusy1;
-      if (busy.equals(freeBusy2)) return freeBusy2;
+    for (String busy : sBusyOrder) {
+      if (busy.equals(freeBusy1))
+        return freeBusy1;
+      if (busy.equals(freeBusy2))
+        return freeBusy2;
     }
     if (freeBusy1 != null) return freeBusy1;
     else return freeBusy2;
@@ -529,9 +529,9 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
         toRet.append(MAILTO);
       toRet.append(attendee).append(NL);
     }
-    toRet.append("DTSTAMP:").append(now.toString()).append(NL);
-    toRet.append("DTSTART:").append(startTime.toString()).append(NL);
-    toRet.append("DTEND:").append(endTime.toString()).append(NL);
+    toRet.append("DTSTAMP:").append(now).append(NL);
+    toRet.append("DTSTART:").append(startTime).append(NL);
+    toRet.append("DTEND:").append(endTime).append(NL);
     if (url != null) toRet.append("URL:").append(url).append(NL);
 
     //		BEGIN:VFREEBUSY
@@ -544,8 +544,7 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
     //		URL:http://www.host.com/calendar/busytime/jsmith.ifb
     //		END:VFREEBUSY
 
-    for (Iterator<Interval> iter = this.iterator(); iter.hasNext(); ) {
-      FreeBusy.Interval cur = iter.next();
+    for (Interval cur : this) {
       String status = cur.getStatus();
 
       if (status.equals(IcalXmlStrMap.FBTYPE_FREE)) {
@@ -570,7 +569,7 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
       ParsedDateTime curStart = ParsedDateTime.fromUTCTime(cur.getStart());
       ParsedDateTime curEnd = ParsedDateTime.fromUTCTime(cur.getEnd());
 
-      toRet.append(curStart.toString()).append('/').append(curEnd.toString()).append(NL);
+      toRet.append(curStart).append('/').append(curEnd).append(NL);
     }
 
     toRet.append("END:VFREEBUSY").append(NL);
@@ -591,8 +590,7 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
     String uidBase = "tmp_" + LdapUtil.generateUUID() + "_";
     int uidCount = 0;
     TimeZoneMap tzMap = new TimeZoneMap(ICalTimeZone.getUTC());
-    for (Iterator<Interval> iter = this.iterator(); iter.hasNext(); ) {
-      FreeBusy.Interval cur = iter.next();
+    for (Interval cur : this) {
       String status = cur.getStatus();
 
       if (status.equals(IcalXmlStrMap.FBTYPE_FREE)) {
@@ -632,7 +630,6 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
   public String toString() {
     return mList.toString();
   }
-  ;
 
   public long getStartTime() {
     return mStart;
@@ -714,7 +711,7 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
     String name = null;
     ParsedDateTime dtStart = null;
     ParsedDateTime dtEnd = null;
-    List<Interval> intervals = new ArrayList<Interval>();
+    List<Interval> intervals = new ArrayList<>();
     TimeZoneMap tzmap = new TimeZoneMap(ICalTimeZone.getUTC());
     Iterator<ZProperty> propIter = comp.getPropertyIterator();
     while (propIter.hasNext()) {
@@ -726,14 +723,14 @@ public class FreeBusy implements Iterable<FreeBusy.Interval> {
           try {
             dtStart = ParsedDateTime.parse(prop, tzmap);
           } catch (ParseException e) {
-            throw ServiceException.INVALID_REQUEST("bad DTSTART: " + prop.toString(), e);
+            throw ServiceException.INVALID_REQUEST("bad DTSTART: " + prop, e);
           }
           break;
         case DTEND:
           try {
             dtEnd = ParsedDateTime.parse(prop, tzmap);
           } catch (ParseException e) {
-            throw ServiceException.INVALID_REQUEST("bad DTEND: " + prop.toString(), e);
+            throw ServiceException.INVALID_REQUEST("bad DTEND: " + prop, e);
           }
           break;
         case ORGANIZER:

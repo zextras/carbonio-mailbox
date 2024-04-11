@@ -98,7 +98,7 @@ extends InstanceDataAttrs {
      * no-argument constructor wanted by JAXB
      */
     protected CommonCalendaringData() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public CommonCalendaringData(String xUid, String uid) {

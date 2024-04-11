@@ -26,7 +26,6 @@ import com.zimbra.cs.mailclient.imap.ImapCapabilities;
 import com.zimbra.cs.mailclient.imap.ImapConfig;
 import com.zimbra.cs.mailclient.imap.ImapConnection;
 import com.zimbra.cs.mailclient.imap.ImapData;
-import com.zimbra.cs.mailclient.imap.ImapResponse;
 import com.zimbra.cs.mailclient.imap.ResponseHandler;
 import com.zimbra.cs.util.BuildInfo;
 import com.zimbra.cs.util.Zimbra;
@@ -39,7 +38,7 @@ import javax.security.auth.login.LoginException;
 
 final class ConnectionManager {
   private Map<String, ImapConnection> connections =
-      Collections.synchronizedMap(new HashMap<String, ImapConnection>());
+      Collections.synchronizedMap(new HashMap<>());
 
   private static final ConnectionManager INSTANCE = new ConnectionManager();
 
@@ -199,7 +198,7 @@ final class ConnectionManager {
 
   public static ImapConfig newImapConfig(DataSource ds) {
     ImapConfig config = new ImapConfig();
-    Map<String, String> props = new HashMap<String, String>();
+    Map<String, String> props = new HashMap<>();
     config.setHost(ds.getHost());
     config.setPort(ds.getPort());
     config.setAuthenticationId(ds.getUsername());
@@ -278,14 +277,11 @@ final class ConnectionManager {
   }
 
   private static ResponseHandler idleHandler(final DataSource ds) {
-    return new ResponseHandler() {
-      @Override
-      public void handleResponse(ImapResponse res) throws Exception {
-        if (res.getCCode() == CAtom.EXISTS) {
-          SyncState ss = SyncStateManager.getInstance().getOrCreateSyncState(ds);
-          if (ss != null) {
-            ss.setHasRemoteInboxChanges(true);
-          }
+    return res -> {
+      if (res.getCCode() == CAtom.EXISTS) {
+        SyncState ss = SyncStateManager.getInstance().getOrCreateSyncState(ds);
+        if (ss != null) {
+          ss.setHasRemoteInboxChanges(true);
         }
       }
     };

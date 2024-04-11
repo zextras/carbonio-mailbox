@@ -8,10 +8,10 @@ package com.zimbra.cs.service.mail;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +100,7 @@ public class CreateContact extends MailDocumentHandler  {
         if (vcard != null) {
             pclist = parseAttachedVCard(zsc, octxt, mbox, vcard);
         } else {
-            pclist = new ArrayList<ParsedContact>(1);
+            pclist = new ArrayList<>(1);
             Pair<Map<String,Object>, List<Attachment>> cdata = parseContact(cn, zsc, octxt);
             pclist.add(new ParsedContact(cdata.getFirst(), cdata.getSecond()));
         }
@@ -127,8 +127,8 @@ public class CreateContact extends MailDocumentHandler  {
                     fields |= Change.MODSEQ;
                 }
                 ToXML.encodeContact(response, ifmt, octxt, con,
-                        (ContactGroup)null, (Collection<String>)null /* memberAttrFilter */, true /* summary */,
-                        (Collection<String>)null /* attrFilter */, fields, (String)null /* migratedDList */,
+                    null, null /* memberAttrFilter */, true /* summary */,
+                    null /* attrFilter */, fields, null /* migratedDList */,
                         false /* returnHiddenAttrs */, GetContacts.NO_LIMIT_MAX_MEMBERS, true /* returnCertInfo */);
             } else {
                 Element contct = response.addNonUniqueElement(MailConstants.E_CONTACT);
@@ -154,8 +154,8 @@ public class CreateContact extends MailDocumentHandler  {
     static Pair<Map<String,Object>, List<Attachment>> parseContact(
             Element cn, ZimbraSoapContext zsc, OperationContext octxt, Contact existing)
     throws ServiceException {
-        Map<String, Object> fields = new HashMap<String, Object>();
-        List<Attachment> attachments = new ArrayList<Attachment>();
+        Map<String, Object> fields = new HashMap<>();
+        List<Attachment> attachments = new ArrayList<>();
         boolean isContactGroup = false;
         Mailbox mbox = getRequestedMailbox(zsc);
         for (Element elt : cn.listElements(MailConstants.E_ATTRIBUTE)) {
@@ -217,7 +217,7 @@ public class CreateContact extends MailDocumentHandler  {
             fields.put(ContactConstants.A_groupMember, contactGroup);
         }
 
-        return new Pair<Map<String,Object>, List<Attachment>>(fields, attachments);
+        return new Pair<>(fields, attachments);
     }
 
     static void disallowOperation(Element elt) throws ServiceException {
@@ -240,7 +240,7 @@ public class CreateContact extends MailDocumentHandler  {
     throws ServiceException {
         Mailbox mbox = getRequestedMailbox(zsc);
         ParsedContact.FieldDeltaList deltaList = new ParsedContact.FieldDeltaList();
-        List<Attachment> attachments = new ArrayList<Attachment>();
+        List<Attachment> attachments = new ArrayList<>();
         boolean isContactGroup = false;
 
         for (Element elt : cn.listElements(MailConstants.E_ATTRIBUTE)) {
@@ -371,7 +371,7 @@ public class CreateContact extends MailDocumentHandler  {
                         throw ServiceException.INVALID_REQUEST("invalid contact part number: " + part, null);
                     } else {
                         VCard vcf = VCard.formatContact(contact);
-                        return new Attachment(vcf.getFormatted().getBytes("utf-8"), "text/x-vcard; charset=utf-8", name, vcf.fn + ".vcf");
+                        return new Attachment(vcf.getFormatted().getBytes(StandardCharsets.UTF_8), "text/x-vcard; charset=utf-8", name, vcf.fn + ".vcf");
                     }
                 } else if (item instanceof Message) {
                     Message msg = (Message) item;
@@ -391,10 +391,8 @@ public class CreateContact extends MailDocumentHandler  {
                         return new Attachment(new DataHandler(ds), name, (int) msg.getSize());
                     }
                 }
-            } catch (IOException ioe) {
+            } catch (IOException | MessagingException ioe) {
                 throw ServiceException.FAILURE("error attaching existing item data", ioe);
-            } catch (MessagingException e) {
-                throw ServiceException.FAILURE("error attaching existing item data", e);
             }
         }
 
@@ -430,7 +428,7 @@ public class CreateContact extends MailDocumentHandler  {
         List<VCard> cards = VCard.parseVCard(text);
         if (cards == null || cards.size() == 0)
             throw MailServiceException.UNABLE_TO_IMPORT_CONTACTS("no vCards present in attachment", null);
-        List<ParsedContact> pclist = new ArrayList<ParsedContact>(cards.size());
+        List<ParsedContact> pclist = new ArrayList<>(cards.size());
         for (VCard vcf : cards)
             pclist.add(vcf.asParsedContact());
         return pclist;
@@ -439,7 +437,7 @@ public class CreateContact extends MailDocumentHandler  {
     public static List<Contact> createContacts(OperationContext oc, Mailbox mbox, ItemId iidFolder, List<ParsedContact> list, String[] tags)
     throws ServiceException {
 
-        List<Contact> toRet = new ArrayList<Contact>();
+        List<Contact> toRet = new ArrayList<>();
 
         mbox.lock.lock();
         try {
@@ -490,17 +488,15 @@ public class CreateContact extends MailDocumentHandler  {
                 text = Mime.getStringContent(mp, charsetWanted);
             } else {
                 // fetch from remote store
-                Map<String, String> params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<>();
                 params.put(UserServlet.QP_PART, part);
                 byte[] content = UserServlet.getRemoteContent(zsc.getAuthToken(), iid, params);
-                text = new String(content, MimeConstants.P_CHARSET_UTF8);
+                text = new String(content, StandardCharsets.UTF_8);
             }
-        } catch (IOException e) {
-            throw ServiceException.FAILURE("error fetching message part: iid=" + iid + ", part=" + part, e);
-        } catch (MessagingException e) {
+        } catch (IOException | MessagingException e) {
             throw ServiceException.FAILURE("error fetching message part: iid=" + iid + ", part=" + part, e);
         }
-        return text;
+      return text;
     }
 
     static boolean needToMigrateDlist(ZimbraSoapContext zsc) throws ServiceException {

@@ -34,7 +34,7 @@ public class UpdatedAlarmInfo {
      */
     @SuppressWarnings("unused")
     protected UpdatedAlarmInfo() {
-        this((String) null);
+        this(null);
     }
 
     public UpdatedAlarmInfo(String calItemId) {

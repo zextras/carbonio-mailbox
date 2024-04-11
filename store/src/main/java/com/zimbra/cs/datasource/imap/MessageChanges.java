@@ -56,7 +56,7 @@ class MessageChanges {
             return this; // No changes
         }
 
-        changes = new ArrayList<MessageChange>();
+        changes = new ArrayList<>();
 
         // Find messages deleted from this folder
         if (tombstones != null) {
@@ -111,7 +111,7 @@ class MessageChanges {
 
     public Collection<MessageChange> getChanges() {
         if (changes == null) {
-            changes = new ArrayList<MessageChange>();
+            changes = new ArrayList<>();
         }
         return changes;
     }
@@ -121,7 +121,7 @@ class MessageChanges {
     }
 
     public Collection<Integer> getFolderIdsToSync() {
-        HashSet<Integer> folderIds = new HashSet<Integer>();
+        HashSet<Integer> folderIds = new HashSet<>();
         for (MessageChange change : changes) {
             if (change.isAdded() || change.isUpdated() || change.isMoved()) {
                 folderIds.add(change.getMessage().getFolderId());

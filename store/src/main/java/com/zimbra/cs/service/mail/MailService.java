@@ -6,10 +6,15 @@
 package com.zimbra.cs.service.mail;
 
 import com.zextras.carbonio.files.FilesClient;
+import com.zextras.mailbox.smartlinks.FilesSmartLinksGenerator;
+import com.zextras.mailbox.tracking.MatomoTracking;
+import com.zextras.mailbox.tracking.Tracking;
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.service.MailboxAttachmentService;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
+import org.dom4j.QName;
 
 /**
  * @zm-service-description The Mail Service includes commands for managing mail and calendar
@@ -17,7 +22,7 @@ import com.zimbra.soap.DocumentService;
  * @since May 26, 2004
  * @author schemers
  */
-public final class MailService implements DocumentService {
+public class MailService implements DocumentService {
 
   @Override
   public void registerHandlers(DocumentDispatcher dispatcher) {
@@ -225,9 +230,29 @@ public final class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.SET_RECOVERY_EMAIL_REQUEST, new SetRecoveryAccount());
 
     // Drive attachment upload
+    FilesCopyHandlerImpl filesCopyHandler = new FilesCopyHandlerImpl(new MailboxAttachmentService(), getFilesClient());
     dispatcher.registerHandler(
         MailConstants.COPY_TO_DRIVE_REQUEST,
-        new CopyToFiles(
-            new MailboxAttachmentService(), FilesClient.atURL("http://127.78.0.7:20002")));
+        new CopyToFiles(filesCopyHandler));
+
+    dispatcher.registerHandler(
+        QName.get("CreateSmartLinksRequest", MailConstants.NAMESPACE),
+        new CreateSmartLinks(getProvisioning(),
+            new FilesSmartLinksGenerator(getFilesClient(), filesCopyHandler),
+            getTracking()
+        )
+    );
+  }
+
+  protected Provisioning getProvisioning() {
+    return Provisioning.getInstance();
+  }
+
+  protected Tracking getTracking() {
+    return new MatomoTracking("https://analytics.zextras.tools");
+  }
+
+  protected FilesClient getFilesClient() {
+    return FilesClient.atURL("http://127.78.0.7:20002");
   }
 }

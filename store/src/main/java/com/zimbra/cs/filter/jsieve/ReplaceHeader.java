@@ -51,7 +51,7 @@ public class ReplaceHeader extends AbstractCommand {
         }
         ZimbraMailAdapter mailAdapter = (ZimbraMailAdapter) mail;
         if (ASCII_NUMERIC_COMPARATOR.equalsIgnoreCase(ehe.getComparator())) {
-            Require.checkCapability((ZimbraMailAdapter) mail, ASCII_NUMERIC_COMPARATOR);
+            Require.checkCapability(mail, ASCII_NUMERIC_COMPARATOR);
         }
         Require.checkCapability(mailAdapter, CAPABILITY_EDITHEADER);
         if (!mailAdapter.getAccount().isSieveEditHeaderEnabled()) {
@@ -101,7 +101,7 @@ public class ReplaceHeader extends AbstractCommand {
         }
         ehe.setEffectiveIndex(headerCount);
         int matchIndex = 0;
-        List<Header> newHeaderList = new ArrayList<Header>();
+        List<Header> newHeaderList = new ArrayList<>();
         try {
             boolean hasEdited = false;
             while (headers.hasMoreElements()) {

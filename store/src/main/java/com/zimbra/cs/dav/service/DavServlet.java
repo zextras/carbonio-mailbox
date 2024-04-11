@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -134,7 +135,7 @@ public class DavServlet extends ZimbraServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        sMethods = new HashMap<String, DavMethod>();
+        sMethods = new HashMap<>();
         addMethod(new Copy());
         addMethod(new Delete());
         addMethod(new Get());
@@ -168,7 +169,7 @@ public class DavServlet extends ZimbraServlet {
         DavMethod.setResponseHeader(resp, DavProtocol.HEADER_ALLOW, buf.toString());
     }
 
-    enum RequestType { password, authtoken, both, none };
+    enum RequestType { password, authtoken, both, none }
 
     private RequestType getAllowedRequestType(HttpServletRequest req) {
         if (!super.isRequestOnAllowedPort(req))
@@ -208,7 +209,7 @@ public class DavServlet extends ZimbraServlet {
                     hdrs.append("\n").append(paramName).append("=*** REPLACED ***");
                     continue;
                 }
-                String params[] = req.getParameterValues(paramName);
+                String[] params = req.getParameterValues(paramName);
                 if (params != null) {
                     for (String param : params) {
                         hdrs.append("\n").append(paramName).append("=").append(param);
@@ -349,15 +350,12 @@ public class DavServlet extends ZimbraServlet {
             }
             ZimbraLog.addToContext(ZimbraLog.C_ANAME, authUser.getName());
             ctxt = new DavContext(req, resp, authUser);
-        } catch (AuthTokenException e) {
-            sendError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error getting authenticated user", e);
-            return;
-        } catch (ServiceException e) {
+        } catch (AuthTokenException | ServiceException e) {
             sendError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error getting authenticated user", e);
             return;
         }
 
-        DavMethod method = sMethods.get(req.getMethod());
+      DavMethod method = sMethods.get(req.getMethod());
         if (method == null) {
             setAllowHeader(resp);
             sendError(resp, HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Not an allowed method", null, Level.debug);
@@ -373,7 +371,8 @@ public class DavServlet extends ZimbraServlet {
                     Upload upload = ctxt.getUpload();
                     if (upload.getSize() > 0 && upload.getContentType().startsWith("text")) {
                         StringBuilder logMsg = new StringBuilder("REQUEST\n").append(
-                                new String(ByteUtil.readInput(upload.getInputStream(), -1, 20480), "UTF-8"));
+                                new String(ByteUtil.readInput(upload.getInputStream(), -1, 20480),
+                                    StandardCharsets.UTF_8));
                         ZimbraLog.dav.debug(logMsg.toString());
                     }
                 } catch (DavException de) {
@@ -424,7 +423,6 @@ public class DavServlet extends ZimbraServlet {
             }
         } catch (MailServiceException.NoSuchItemException nsie) {
             sendError(resp, HttpServletResponse.SC_NOT_FOUND, ctxt.getUri()+" not found", null, Level.info);
-            return;
         } catch (ServiceException e) {
             sendError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error handling method "+method.getName(), e);
         } catch (Exception e) {
@@ -563,7 +561,8 @@ public class DavServlet extends ZimbraServlet {
                                             unzipped = respData;
                                         }
                                         if (ZimbraLog.dav.isDebugEnabled()) {
-                                            ZimbraLog.dav.debug("RESPONSE:\n" + new String(unzipped, "UTF-8"));
+                                            ZimbraLog.dav.debug("RESPONSE:\n" + new String(unzipped,
+                                                StandardCharsets.UTF_8));
                                         }
                                     }
                                     if (!ctagResponse.isGzipped()) {
@@ -590,7 +589,7 @@ public class DavServlet extends ZimbraServlet {
                             // to attach to the response to be cached later.
                             cache.cacheThisCtagResponse = true;
                             cache.acctVerSnapshot = allCtagsData.getVersion();
-                            cache.ctagsSnapshot = new HashMap<Integer, String>();
+                            cache.ctagsSnapshot = new HashMap<>();
                             Collection<CtagInfo> childCals = allCtagsData.getChildren(rootFolderId);
                             if (rootFolderId != Mailbox.ID_FOLDER_USER_ROOT) {
                                 CtagInfo ctagRoot = allCtagsData.getById(rootFolderId);
@@ -717,7 +716,7 @@ public class DavServlet extends ZimbraServlet {
         zoptions.setTargetAccount(target.getAccountId());
         zoptions.setTargetAccountBy(Key.AccountBy.id);
         ZMailbox zmbx = ZMailbox.getMailbox(zoptions);
-        ZFolder f = zmbx.getFolderById("" + target.toString());
+        ZFolder f = zmbx.getFolderById("" + target);
         if (f == null) {
             return false;
         }
@@ -809,13 +808,14 @@ public class DavServlet extends ZimbraServlet {
                             Element href = ((Element)responseObj).element(DavElements.E_HREF);
                             String v = href.getText();
                             // Bug:106438, because v contains URL encoded value(%40) for '@' the comparison fails
-                            newPrefix = newPrefix.replace("@", URLEncoder.encode("@", MimeConstants.P_CHARSET_UTF8));
+                            newPrefix = newPrefix.replace("@", URLEncoder.encode("@", StandardCharsets.UTF_8));
                             if (v.startsWith(newPrefix)) {
                                 href.setText(prefix + v.substring(newPrefix.length()+1));
                             }
                         }
                         if (ZimbraLog.dav.isDebugEnabled()) {
-                            ZimbraLog.dav.debug("PROXY RESPONSE:\n%s", new String(DomUtil.getBytes(response), "UTF-8"));
+                            ZimbraLog.dav.debug("PROXY RESPONSE:\n%s", new String(DomUtil.getBytes(response),
+                                StandardCharsets.UTF_8));
                         }
                         DomUtil.writeDocumentToStream(response, ctxt.getResponse().getOutputStream());
                         ctxt.responseSent();

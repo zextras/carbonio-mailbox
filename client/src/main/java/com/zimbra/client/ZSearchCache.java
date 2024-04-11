@@ -37,7 +37,7 @@ public class ZSearchCache {
 
     ZSearchCache(ZSearchParams params) {
         mParams = new ZSearchParams(params);
-        mHitMap = new HashMap<String, ZSearchCacheHit>();
+        mHitMap = new HashMap<>();
         mHasMore = true;
     }
 
@@ -45,7 +45,7 @@ public class ZSearchCache {
         int limit = mParams.getLimit();
         int offset = page * limit;
 
-        List<ZSearchHit> hits = new ArrayList<ZSearchHit>();
+        List<ZSearchHit> hits = new ArrayList<>();
 
         int actualIndex = 0;
         int nonDeletedIndex = -1;

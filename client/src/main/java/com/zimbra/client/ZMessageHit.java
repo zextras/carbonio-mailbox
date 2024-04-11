@@ -53,7 +53,7 @@ public class ZMessageHit implements ZImapSearchHit {
         mConvId = e.getAttribute(MailConstants.A_CONV_ID);
         mContentMatched = e.getAttributeBool(MailConstants.A_CONTENTMATCHED, false);
         mAutoSendTime = e.getAttributeLong(MailConstants.A_AUTO_SEND_TIME, -1);
-        mMimePartHits = new ArrayList<String>();
+        mMimePartHits = new ArrayList<>();
         for (Element hp: e.listElements(MailConstants.E_HIT_MIMEPART)) {
             mMimePartHits.add(hp.getAttribute(MailConstants.A_PART));
         }
@@ -64,7 +64,7 @@ public class ZMessageHit implements ZImapSearchHit {
                 break;
             }
         }
-        mAddresses = new ArrayList<ZEmailAddress>();
+        mAddresses = new ArrayList<>();
         for (Element emailEl : e.listElements(MailConstants.E_EMAIL)) {
             mAddresses.add(new ZEmailAddress(emailEl));
         }

@@ -89,7 +89,7 @@ public class Invitation {
      */
     @SuppressWarnings("unused")
     private Invitation() {
-        this((String) null, (Integer) null, (Integer) null, (Integer) null);
+        this(null, null, null, null);
     }
 
     public Invitation(String calItemType, Integer sequence, Integer id, Integer componentNum) {

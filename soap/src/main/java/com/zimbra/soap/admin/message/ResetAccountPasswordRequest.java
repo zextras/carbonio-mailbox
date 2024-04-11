@@ -27,7 +27,7 @@ public class ResetAccountPasswordRequest {
      * no-argument constructor wanted by JAXB
      */
     public ResetAccountPasswordRequest() {
-        this((AccountSelector) null);
+        this(null);
     }
 
     public ResetAccountPasswordRequest(AccountSelector account) {

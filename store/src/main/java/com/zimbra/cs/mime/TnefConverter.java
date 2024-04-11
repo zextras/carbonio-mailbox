@@ -109,15 +109,12 @@ public class TnefConverter extends MimeVisitor {
 
             // add the TNEF to the expanded multipart
             multi.addBodyPart(tnefPart, 0);
-        } catch (MessagingException e) {
-            ZimbraLog.extensions.warn("exception while decoding TNEF message content; skipping part", e);
-            return false;
-        } catch (IOException e) {
+        } catch (MessagingException | IOException e) {
             ZimbraLog.extensions.warn("exception while decoding TNEF message content; skipping part", e);
             return false;
         }
 
-        // and put the new multipart/alternative where the TNEF used to be
+      // and put the new multipart/alternative where the TNEF used to be
         msg.setContent(multi);
         msg.setHeader("Content-Type", multi.getContentType() + "; generated=true");
         return true;
@@ -159,7 +156,7 @@ public class TnefConverter extends MimeVisitor {
             return false;
         }
 
-        List<MultipartReplacement> tnefReplacements = new ArrayList<MultipartReplacement>();
+        List<MultipartReplacement> tnefReplacements = new ArrayList<>();
         try {
             for (int i = 0; i < mmp.getCount(); i++) {
                 BodyPart bp = mmp.getBodyPart(i);

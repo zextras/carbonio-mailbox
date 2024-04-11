@@ -29,7 +29,7 @@ public class CreateXMPPComponentResponse {
      */
     @SuppressWarnings("unused")
     private CreateXMPPComponentResponse() {
-        this((XMPPComponentInfo) null);
+        this(null);
     }
 
     public CreateXMPPComponentResponse(XMPPComponentInfo component) {

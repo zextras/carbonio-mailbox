@@ -22,9 +22,9 @@ public interface AliasedEntry {
      * @param addr
      * @return
      */
-    public boolean isAddrOfEntry(String addr);
+    boolean isAddrOfEntry(String addr);
     
-    public String[] getAliases() throws ServiceException;
+    String[] getAliases() throws ServiceException;
     
     /**
      * returns all addresses of the entry, including primary address and 
@@ -32,5 +32,5 @@ public interface AliasedEntry {
      * 
      * @return
      */
-    public Set<String> getAllAddrsSet();
+    Set<String> getAllAddrsSet();
 }

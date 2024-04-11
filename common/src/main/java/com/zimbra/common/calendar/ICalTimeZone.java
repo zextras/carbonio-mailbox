@@ -324,7 +324,7 @@ public class ICalTimeZone extends SimpleTimeZone {
                     Integer day = sDayOfWeekMap.get(value);
                     if (day == null)
                         throw new IllegalArgumentException("Invalid day of week value: " + value);
-                    dayOfWeek = day.intValue();
+                    dayOfWeek = day;
                 } else if ("BYMONTHDAY".equals(token)) {
                     try {
                         dayOfMonth = Integer.parseInt(t.nextToken());
@@ -341,8 +341,8 @@ public class ICalTimeZone extends SimpleTimeZone {
                 try {
                     month = Integer.parseInt(dtstart.substring(4, 6));
                     dayOfMonth = Integer.parseInt(dtstart.substring(6, 8));
-                } catch (StringIndexOutOfBoundsException se) {
-                } catch (NumberFormatException ne) {}
+                } catch (StringIndexOutOfBoundsException | NumberFormatException se) {
+                }
             }
         }
 
@@ -353,10 +353,8 @@ public class ICalTimeZone extends SimpleTimeZone {
                 hour = Integer.parseInt(dtstart.substring(indexOfT + 1, indexOfT + 3));
                 minute = Integer.parseInt(dtstart.substring(indexOfT + 3, indexOfT + 5));
                 second = Integer.parseInt(dtstart.substring(indexOfT + 5, indexOfT + 7));
-            } catch (StringIndexOutOfBoundsException se) {
+            } catch (StringIndexOutOfBoundsException | NumberFormatException se) {
                 hour = minute = second = 0;
-            } catch (NumberFormatException ne) {
-                hour = minute = second  = 0;
             }
         }
 
@@ -365,7 +363,7 @@ public class ICalTimeZone extends SimpleTimeZone {
     }
 
     // maps Java weekday number to iCalendar weekday name
-    private static String sDayOfWeekNames[] = new String[Calendar.SATURDAY + 1];
+    private static String[] sDayOfWeekNames = new String[Calendar.SATURDAY + 1];
     static {
         sDayOfWeekNames[0] = "XX";  // unused
         sDayOfWeekNames[Calendar.SUNDAY]    = "SU";  // 1
@@ -379,15 +377,15 @@ public class ICalTimeZone extends SimpleTimeZone {
 
     // maps iCalendar weekday name to Java weekday number
     private static Map<String, Integer> sDayOfWeekMap =
-        new HashMap<String, Integer>(7);
+        new HashMap<>(7);
     static {
-        sDayOfWeekMap.put("SU", Integer.valueOf(Calendar.SUNDAY));     // 1
-        sDayOfWeekMap.put("MO", Integer.valueOf(Calendar.MONDAY));     // 2
-        sDayOfWeekMap.put("TU", Integer.valueOf(Calendar.TUESDAY));    // 3
-        sDayOfWeekMap.put("WE", Integer.valueOf(Calendar.WEDNESDAY));  // 4
-        sDayOfWeekMap.put("TH", Integer.valueOf(Calendar.THURSDAY));   // 5
-        sDayOfWeekMap.put("FR", Integer.valueOf(Calendar.FRIDAY));     // 6
-        sDayOfWeekMap.put("SA", Integer.valueOf(Calendar.SATURDAY));   // 7
+        sDayOfWeekMap.put("SU", Calendar.SUNDAY);     // 1
+        sDayOfWeekMap.put("MO", Calendar.MONDAY);     // 2
+        sDayOfWeekMap.put("TU", Calendar.TUESDAY);    // 3
+        sDayOfWeekMap.put("WE", Calendar.WEDNESDAY);  // 4
+        sDayOfWeekMap.put("TH", Calendar.THURSDAY);   // 5
+        sDayOfWeekMap.put("FR", Calendar.FRIDAY);     // 6
+        sDayOfWeekMap.put("SA", Calendar.SATURDAY);   // 7
     }
 
     /**
@@ -658,7 +656,7 @@ public class ICalTimeZone extends SimpleTimeZone {
                 }
                 String tstamp = toTimestamp(onsets[i]);
                 System.out.println(tstamp);
-                if (tstamp.indexOf("to standard") != -1)
+                if (tstamp.contains("to standard"))
                 	actualStandardTime = parseHHMMSS(tstamp);
                 else
                     actualDaylightTime = parseHHMMSS(tstamp);
@@ -955,13 +953,7 @@ public class ICalTimeZone extends SimpleTimeZone {
             }
             toRet *= sign;
             return toRet;
-        } catch (NumberFormatException e) {
-            throw ServiceException.INVALID_REQUEST(
-                    "Invalid " +
-                    ICalTok.TZOFFSETFROM + "/" + ICalTok.TZOFFSETTO +
-                    " value \"" + utcOffset +
-                    "\"; must have format \"+/-hhmm[ss]\"", e);
-        } catch (IndexOutOfBoundsException e) {
+        } catch (NumberFormatException | IndexOutOfBoundsException e) {
             throw ServiceException.INVALID_REQUEST(
                     "Invalid " +
                     ICalTok.TZOFFSETFROM + "/" + ICalTok.TZOFFSETTO +
@@ -1086,13 +1078,11 @@ public class ICalTimeZone extends SimpleTimeZone {
             if (ICalTok.STANDARD.equals(tok)) {
                 if (standard == null) {
                     standard = tzComp;
-                    continue;
                 } else
                     standard = moreRecentTzComp(standard, tzComp);
             } else if (ICalTok.DAYLIGHT.equals(tok)) {
                 if (daylight == null) {
                     daylight = tzComp;
-                    continue;
                 } else
                     daylight = moreRecentTzComp(daylight, tzComp);
             }

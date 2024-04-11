@@ -14,7 +14,6 @@ import java.util.Map;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.db.DbPool.DbConnection;
-import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Metadata;
 import com.zimbra.cs.volume.Volume;
 import com.zimbra.cs.volume.Volume.VolumeMetadata;
@@ -197,7 +196,7 @@ public final class DbVolume {
     public static Map<Short, Volume> getAll(DbConnection conn) throws ServiceException {
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        Map<Short, Volume> result = new HashMap<Short, Volume>();
+        Map<Short, Volume> result = new HashMap<>();
         try {
             stmt = conn.prepareStatement("SELECT * FROM volume");
             rs = stmt.executeQuery();
@@ -281,12 +280,10 @@ public final class DbVolume {
         VolumeMetadata metadata;
         try {
             metadata = new VolumeMetadata(new Metadata(rs.getString(CN_METADATA)));
-        } catch (MailServiceException e) {
-            throw VolumeServiceException.INVALID_METADATA(e);
         } catch (ServiceException e) {
             throw VolumeServiceException.INVALID_METADATA(e);
         }
-        return Volume.builder().setId(rs.getShort(CN_ID)).setType(rs.getShort(CN_TYPE)).setName(rs.getString(CN_NAME))
+      return Volume.builder().setId(rs.getShort(CN_ID)).setType(rs.getShort(CN_TYPE)).setName(rs.getString(CN_NAME))
                 .setPath(Volume.getAbsolutePath(rs.getString(CN_PATH)), false)
                 .setMboxGroupBits(rs.getShort(CN_MAILBOX_GROUP_BITS)).setMboxBit(rs.getShort(CN_MAILBOX_BITS))
                 .setFileGroupBits(rs.getShort(CN_FILE_GROUP_BITS)).setFileBits(rs.getShort(CN_FILE_BITS))

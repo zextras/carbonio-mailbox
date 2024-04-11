@@ -47,7 +47,7 @@ public class SyncDeletedInfo {
   /** no-argument constructor wanted by JAXB */
   @SuppressWarnings("unused")
   private SyncDeletedInfo() {
-    this((String) null);
+    this(null);
   }
 
   public SyncDeletedInfo(String ids) {

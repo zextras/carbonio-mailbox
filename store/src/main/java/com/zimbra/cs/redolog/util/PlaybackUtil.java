@@ -151,7 +151,7 @@ public class PlaybackUtil {
         }
     }
 
-    private static CommandLine parseArgs(String args[]) {
+    private static CommandLine parseArgs(String[] args) {
         CommandLineParser parser = new GnuParser();
         CommandLine cl = null;
         try {
@@ -251,17 +251,17 @@ public class PlaybackUtil {
             params.queueCapacity = Integer.parseInt(cl.getOptionValue(OPT_QUEUE_CAPACITY));
         System.out.printf("Using %d as queue capacity for each redo player thread\n", params.queueCapacity);
 
-        List<File> logList = new ArrayList<File>();
+        List<File> logList = new ArrayList<>();
         if (cl.hasOption(OPT_LOGFILES)) {
             String[] fnames = cl.getOptionValues(OPT_LOGFILES);
             params.logfiles = new File[fnames.length];
-            for (int i = 0; i < fnames.length; i++) {
-                File f = new File(fnames[i]);
-                if (f.exists())
-                    logList.add(f);
-                else
-                    throw new FileNotFoundException("No such file: " + f.getAbsolutePath());
-            }
+          for (String fname : fnames) {
+            File f = new File(fname);
+            if (f.exists())
+              logList.add(f);
+            else
+              throw new FileNotFoundException("No such file: " + f.getAbsolutePath());
+          }
         } else {
             // By default, use /opt/zextras/redolog/archive/*, then /opt/zextras/redolog/redo.log,
             // ordered by log sequence.
@@ -327,7 +327,7 @@ public class PlaybackUtil {
                 try {
                     Map<Integer, Integer> mboxIdMap = null;
                     if (mParams.mboxId != Params.MBOX_ID_UNSET) {
-                        mboxIdMap = new HashMap<Integer, Integer>(1);
+                        mboxIdMap = new HashMap<>(1);
                         mboxIdMap.put(mParams.mboxId, mParams.mboxId);
                     }
                     mPlayer.scanLog(redolog, true, mboxIdMap, mParams.fromTime, until);

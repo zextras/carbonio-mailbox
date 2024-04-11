@@ -84,7 +84,7 @@ public class SessionInfo {
      */
     @SuppressWarnings("unused")
     private SessionInfo() {
-        this((String) null, (String) null, (String) null, -1L, -1L);
+        this(null, null, null, -1L, -1L);
     }
 
     public SessionInfo(String zimbraId, String name, String sessionId,

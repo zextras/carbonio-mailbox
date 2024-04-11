@@ -23,7 +23,7 @@ public abstract class ZModificationList extends ZLdapElement {
     
     public abstract boolean isEmpty();
     
-    public abstract void addAttr(String name, String value[], Entry entry, 
+    public abstract void addAttr(String name, String[] value, Entry entry,
             boolean containsBinaryData, boolean isBinaryTransfer);
     
     /**
@@ -37,6 +37,6 @@ public abstract class ZModificationList extends ZLdapElement {
     
     public abstract void removeAttr(String attrName, boolean isBinaryTransfer);
     
-    public abstract void removeAttr(String name, String value[], Entry entry, 
+    public abstract void removeAttr(String name, String[] value, Entry entry,
             boolean containsBinaryData, boolean isBinaryTransfer);
 }

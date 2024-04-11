@@ -6,6 +6,7 @@
 package com.zimbra.cs.service.formatter;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -79,8 +80,8 @@ public class RssFormatter extends Formatter {
             if (iterator instanceof QueryResultIterator)
                 ((QueryResultIterator) iterator).finished();
         }
-        sb.append(rss.toString());
-        context.resp.getOutputStream().write(sb.toString().getBytes("UTF-8"));
+        sb.append(rss);
+        context.resp.getOutputStream().write(sb.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
@@ -96,13 +97,12 @@ public class RssFormatter extends Formatter {
 
     private void addCalendarItem(CalendarItem calItem, Element channel, UserServletContext context) throws ServiceException {
         Collection<Instance> instances = calItem.expandInstances(context.getStartTime(), context.getEndTime(), false);
-        for (Iterator<Instance> instIt = instances.iterator(); instIt.hasNext(); ) {
-            CalendarItem.Instance inst = instIt.next();
-            InviteInfo invId = inst.getInviteInfo();
-            Invite inv = calItem.getInvite(invId.getMsgId(), invId.getComponentId());
-            Element rssItem = channel.addElement("item");
-            rssItem.addElement("title").setText(inv.getName());
-            rssItem.addElement("pubDate").setText(mDateFormat.format(new Date(inst.getStart())));
+      for (Instance inst : instances) {
+        InviteInfo invId = inst.getInviteInfo();
+        Invite inv = calItem.getInvite(invId.getMsgId(), invId.getComponentId());
+        Element rssItem = channel.addElement("item");
+        rssItem.addElement("title").setText(inv.getName());
+        rssItem.addElement("pubDate").setText(mDateFormat.format(new Date(inst.getStart())));
             /*
             StringBuffer desc = new StringBuffer();
             sb.append("Start: ").append(sdf.format(new Date(inst.getStart()))).append("\n");
@@ -111,10 +111,10 @@ public class RssFormatter extends Formatter {
             sb.append("Notes: ").append(inv.getFragment()).append("\n");
             item.addElement("description").setText(sb.toString());
             */
-            rssItem.addElement("description").setText(inv.getFragment());
-            if (inv.hasOrganizer())
-                rssItem.addElement("author").setText(inv.getOrganizer().getAddress());
-        }
+        rssItem.addElement("description").setText(inv.getFragment());
+        if (inv.hasOrganizer())
+          rssItem.addElement("author").setText(inv.getOrganizer().getAddress());
+      }
 
     }
 

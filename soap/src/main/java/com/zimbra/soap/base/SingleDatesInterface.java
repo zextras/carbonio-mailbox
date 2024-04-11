@@ -12,9 +12,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public interface SingleDatesInterface {
-    public void setTimezone(String timezone);
-    public String getTimezone();
-    public void setDtValInterfaces(Iterable <DtValInterface> dtvals);
-    public void addDtValInterface(DtValInterface dtval);
-    public List<DtValInterface> getDtValInterfaces();
+    void setTimezone(String timezone);
+    String getTimezone();
+    void setDtValInterfaces(Iterable<DtValInterface> dtvals);
+    void addDtValInterface(DtValInterface dtval);
+    List<DtValInterface> getDtValInterfaces();
 }

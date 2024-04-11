@@ -49,7 +49,7 @@ public class LmcBrowseRequest extends LmcSoapRequest {
         }
 
         if (!bdArray.isEmpty()) {
-            LmcBrowseData bds[] = new LmcBrowseData[bdArray.size()]; 
+            LmcBrowseData[] bds = new LmcBrowseData[bdArray.size()];
             response.setData((LmcBrowseData []) bdArray.toArray(bds));
         } 
 

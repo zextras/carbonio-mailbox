@@ -34,12 +34,12 @@ public class XHtmlDocumentHandler extends DefaultHandler {
     /**
      * The list of tags that should always be allowed
      */
-    private static Set<String> allowTags = new HashSet<String>(
+    private static Set<String> allowTags = new HashSet<>(
         Arrays.asList(DebugConfig.xhtmlWhitelistedTags.split(",")));
     /**
      * The list of attributes that should always be allowed
      */
-    private static Set<String> allowAttributes = new HashSet<String>(
+    private static Set<String> allowAttributes = new HashSet<>(
         Arrays.asList(DebugConfig.xhtmlWhitelistedAttributes.split(",")));
 
     /*
@@ -52,7 +52,7 @@ public class XHtmlDocumentHandler extends DefaultHandler {
      * have been removed. It lets us keep track of what tags
      * need their end tag removed.
      */
-    private Stack<String> removedElements = new Stack<String>();
+    private Stack<String> removedElements = new Stack<>();
 
     /**
      * This buffer keeps track of the text between tags

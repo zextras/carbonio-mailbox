@@ -1,0 +1,26 @@
+{
+  "key_prefix": [
+    {
+      "carbonio-mailbox-admin/": {
+        "policy": "read"
+      }
+    }
+  ],
+  "node_prefix": [
+    {
+      "": {
+        "policy": "read"
+      }
+    }
+  ],
+  "service": [
+    {
+      "carbonio-mailbox-admin": {
+        "policy": "write"
+      },
+      "carbonio-mailbox-admin-sidecar-proxy": {
+        "policy": "write"
+      }
+    }
+  ]
+}

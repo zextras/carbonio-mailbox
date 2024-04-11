@@ -46,7 +46,7 @@ public class SearchConvRequest extends MailSearchParams {
      */
     @SuppressWarnings("unused")
     private SearchConvRequest() {
-        this((String) null);
+        this(null);
     }
 
     public SearchConvRequest(String conversationId) {

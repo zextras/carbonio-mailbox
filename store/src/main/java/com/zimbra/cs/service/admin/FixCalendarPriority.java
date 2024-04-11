@@ -54,11 +54,11 @@ public class FixCalendarPriority extends AdminDocumentHandler {
     }
 
     protected List<String> parseAccountNames(List<Element> acctElems) throws ServiceException {
-        List<String> a = new ArrayList<String>(acctElems.size());
+        List<String> a = new ArrayList<>(acctElems.size());
         for (Element elem : acctElems) {
             String name = elem.getAttribute(AdminConstants.A_NAME);
             if (ALL.equals(name)) {
-                List<String> all = new ArrayList<String>(1);
+                List<String> all = new ArrayList<>(1);
                 all.add(ALL);
                 return all;
             } else {
@@ -96,7 +96,7 @@ public class FixCalendarPriority extends AdminDocumentHandler {
         if (all) {
             accts = getAccountsOnServer();
         } else {
-            accts = new ArrayList<NamedEntry>(acctNames.size());
+            accts = new ArrayList<>(acctNames.size());
             for (String name : acctNames) {
                 try {
                     accts.add(Provisioning.getInstance().get(AccountBy.name, name));

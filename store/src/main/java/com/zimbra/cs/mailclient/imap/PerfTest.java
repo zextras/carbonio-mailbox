@@ -15,7 +15,7 @@ public class PerfTest {
 
     public PerfTest(int count) {
         this.count = count;
-        connections = new ArrayList<ImapConnection>(count);
+        connections = new ArrayList<>(count);
     }
 
     public void run() throws IOException {

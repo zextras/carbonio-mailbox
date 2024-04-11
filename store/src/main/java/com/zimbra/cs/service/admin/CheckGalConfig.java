@@ -18,7 +18,6 @@ import com.zimbra.cs.account.GalContact;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.gal.GalOp;
-import com.zimbra.cs.account.ldap.Check;
 import com.zimbra.cs.service.mail.ToXML;
 import com.zimbra.soap.ZimbraSoapContext;
 

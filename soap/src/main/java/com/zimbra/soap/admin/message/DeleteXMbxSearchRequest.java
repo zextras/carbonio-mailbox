@@ -45,7 +45,7 @@ public class DeleteXMbxSearchRequest {
      */
     @SuppressWarnings("unused")
     private DeleteXMbxSearchRequest() {
-        this((SearchID) null, (AccountSelector)null);
+        this(null, null);
     }
 
     /*public DeleteXMbxSearchRequest(SearchID searchTask) {

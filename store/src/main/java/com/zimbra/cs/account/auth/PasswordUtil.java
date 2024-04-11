@@ -6,6 +6,7 @@
 package com.zimbra.cs.account.auth;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -56,7 +57,7 @@ public class PasswordUtil {
                         sr.nextBytes(salt);
                     }
                 }
-                md.update(password.getBytes("UTF-8"));
+                md.update(password.getBytes(StandardCharsets.UTF_8));
                 md.update(salt);
                 byte[] digest = md.digest();
                 byte[] buff = new byte[digest.length + salt.length];
@@ -64,9 +65,6 @@ public class PasswordUtil {
                 System.arraycopy(salt, 0, buff, digest.length, salt.length);
                 return SSHA_ENCODING + new String(Base64.encodeBase64(buff));
             } catch (NoSuchAlgorithmException e) {
-                // this shouldn't happen unless JDK is foobar
-                throw new RuntimeException(e);
-            } catch (UnsupportedEncodingException e) {
                 // this shouldn't happen unless JDK is foobar
                 throw new RuntimeException(e);
             }
@@ -114,7 +112,7 @@ public class PasswordUtil {
                         sr.nextBytes(salt);
                     }
                 }
-                md.update(password.getBytes("UTF-8"));
+                md.update(password.getBytes(StandardCharsets.UTF_8));
                 md.update(salt);
                 byte[] digest = md.digest();
                 byte[] buff = new byte[digest.length + salt.length];
@@ -122,9 +120,6 @@ public class PasswordUtil {
                 System.arraycopy(salt, 0, buff, digest.length, salt.length);
                 return SSHA512_ENCODING + new String(Base64.encodeBase64(buff));
             } catch (NoSuchAlgorithmException e) {
-                // this shouldn't happen unless JDK is foobar
-                throw new RuntimeException(e);
-            } catch (UnsupportedEncodingException e) {
                 // this shouldn't happen unless JDK is foobar
                 throw new RuntimeException(e);
             }
@@ -168,14 +163,11 @@ public class PasswordUtil {
 			if (prefix == null) prefix = SHA1_ENCODING;
             try {
                 MessageDigest md = MessageDigest.getInstance("SHA1");
-                md.update(password.getBytes("UTF-8"));
+                md.update(password.getBytes(StandardCharsets.UTF_8));
 
                 byte[] digest = md.digest();
                 return prefix + new String(Base64.encodeBase64(digest));
             } catch (NoSuchAlgorithmException e) {
-                // this shouldn't happen unless JDK is foobar
-                throw new RuntimeException(e);
-            } catch (UnsupportedEncodingException e) {
                 // this shouldn't happen unless JDK is foobar
                 throw new RuntimeException(e);
             }
@@ -205,21 +197,18 @@ public class PasswordUtil {
         public static String generateMD5(String password) {
             try {
                 MessageDigest md = MessageDigest.getInstance("MD5");
-                md.update(password.getBytes("UTF-8"));
+                md.update(password.getBytes(StandardCharsets.UTF_8));
 
                 byte[] digest = md.digest();
                 return MD5_ENCODING + new String(Base64.encodeBase64(digest));
             } catch (NoSuchAlgorithmException e) {
                 // this shouldn't happen unless JDK is foobar
                 throw new RuntimeException(e);
-            } catch (UnsupportedEncodingException e) {
-                // this shouldn't happen unless JDK is foobar
-                throw new RuntimeException(e);
             }
         }
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
 
         String plain = "test123";
         System.out.println("plain:        " + plain);

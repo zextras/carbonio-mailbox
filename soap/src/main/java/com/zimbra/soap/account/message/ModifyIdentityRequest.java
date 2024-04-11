@@ -35,7 +35,7 @@ public class ModifyIdentityRequest {
      */
     @SuppressWarnings("unused")
     private ModifyIdentityRequest() {
-        this((Identity) null);
+        this(null);
     }
 
     public ModifyIdentityRequest(Identity identity) {

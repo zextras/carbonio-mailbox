@@ -39,7 +39,7 @@ public final class EffectiveACLCache {
     EffectiveACLCache() {
         ZimbraMemcachedClient memcachedClient = MemcachedConnector.getClient();
         ACLSerializer serializer = new ACLSerializer();
-        mMemcachedLookup = new MemcachedMap<EffectiveACLCacheKey, ACL>(memcachedClient, serializer);
+        mMemcachedLookup = new MemcachedMap<>(memcachedClient, serializer);
     }
 
     private static class ACLSerializer implements MemcachedSerializer<ACL> {
@@ -89,7 +89,7 @@ public final class EffectiveACLCache {
     public void purgeMailbox(Mailbox mbox) throws ServiceException {
         String accountId = mbox.getAccountId();
         List<Folder> folders = mbox.getFolderList(null, SortBy.NONE);
-        List<EffectiveACLCacheKey> keys = new ArrayList<EffectiveACLCacheKey>(folders.size());
+        List<EffectiveACLCacheKey> keys = new ArrayList<>(folders.size());
         for (Folder folder : folders) {
             EffectiveACLCacheKey key = new EffectiveACLCacheKey(accountId, folder.getId());
             keys.add(key);
@@ -98,7 +98,7 @@ public final class EffectiveACLCache {
     }
 
     public void notifyCommittedChanges(PendingLocalModifications mods, int changeId) {
-        Set<EffectiveACLCacheKey> keysToInvalidate = new HashSet<EffectiveACLCacheKey>();
+        Set<EffectiveACLCacheKey> keysToInvalidate = new HashSet<>();
         if (mods.modified != null) {
             for (Map.Entry<ModificationKey, Change> entry : mods.modified.entrySet()) {
                 Change change = entry.getValue();

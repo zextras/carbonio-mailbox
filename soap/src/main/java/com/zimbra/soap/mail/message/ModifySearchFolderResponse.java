@@ -29,7 +29,7 @@ public class ModifySearchFolderResponse {
      */
     @SuppressWarnings("unused")
     private ModifySearchFolderResponse() {
-        this((SearchFolder) null);
+        this(null);
     }
 
     public ModifySearchFolderResponse(SearchFolder searchFolder) {

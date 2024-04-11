@@ -66,7 +66,7 @@ final class Pop3Mailbox {
                 totalSize += p3m.getSize();
             }
         } else {
-            messages = new ArrayList<Pop3Message>(500);
+            messages = new ArrayList<>(500);
             try (ZimbraQueryResults results = mbox.index.search(opContext, query, POP3_TYPES,
                 SortBy.DATE_DESC, 500)) {
                 while (results.hasNext()) {
@@ -168,15 +168,14 @@ final class Pop3Mailbox {
      */
     int undeleteMarked() {
         int count = 0;
-        for (int i = 0; i < messages.size(); i++) {
-            Pop3Message p3m = messages.get(i);
-            if (p3m.isDeleted()) {
-                numDeleted--;
-                deletedSize -= p3m.getSize();
-                p3m.setDeleted(false);
-                count++;
-            }
+      for (Pop3Message p3m : messages) {
+        if (p3m.isDeleted()) {
+          numDeleted--;
+          deletedSize -= p3m.getSize();
+          p3m.setDeleted(false);
+          count++;
         }
+      }
         return count;
     }
 

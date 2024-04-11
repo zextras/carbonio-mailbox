@@ -31,7 +31,7 @@ public class FolderActionResponse {
      */
     @SuppressWarnings("unused")
     private FolderActionResponse() {
-        this((FolderActionResult) null);
+        this(null);
     }
 
     public FolderActionResponse(FolderActionResult action) {

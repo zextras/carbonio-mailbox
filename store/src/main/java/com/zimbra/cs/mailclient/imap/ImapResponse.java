@@ -97,21 +97,20 @@ public final class ImapResponse {
             data = MessageData.read(is, number);
             break;
         case EXISTS: case RECENT: case EXPUNGE:
+          case NOOP:
             break;
         case ID:
             //bug 57859; at least one IMAP server incorrectly excludes space here
             is.skipOptionalChar(' ');
             data = IDInfo.read(is);
             break;
-        case NOOP:
-            break;
-        default:
+          default:
             throw new ParseException("Unknown response code: " + code);
         }
     }
 
     private List<Long> readSearchData(ImapInputStream is) throws IOException {
-        ArrayList<Long> ids = new ArrayList<Long>();
+        ArrayList<Long> ids = new ArrayList<>();
         while (is.match(' ')) {
             is.skipSpaces();
             if (!is.isEOL()) {

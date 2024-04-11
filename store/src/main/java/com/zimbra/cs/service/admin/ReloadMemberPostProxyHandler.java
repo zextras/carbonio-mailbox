@@ -33,7 +33,7 @@ public abstract class ReloadMemberPostProxyHandler extends
     }
 
     protected List<String> getMemberList(Element request, Map<String, Object> context) throws ServiceException {
-        List<String> memberList = new LinkedList<String>();
+        List<String> memberList = new LinkedList<>();
         for (Element elem : request.listElements(AdminConstants.E_DLM)) {
             memberList.add(elem.getTextTrim());
         }

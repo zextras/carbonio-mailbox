@@ -52,8 +52,8 @@ public class ZSearchResult implements ToZJSONObject {
     sortBy = resp.getAttribute(MailConstants.A_SORTBY);
     hasMore = resp.getAttributeBool(MailConstants.A_QUERY_MORE);
     offset = (int) resp.getAttributeLong(MailConstants.A_QUERY_OFFSET, -1);
-    hits = new ArrayList<ZSearchHit>();
-    imapHits = new ArrayList<ZImapSearchHit>();
+    hits = new ArrayList<>();
+    imapHits = new ArrayList<>();
     for (Element h : el.listElements()) {
       if (h.getName().equals(MailConstants.E_CONV)) {
         hits.add(new ZConversationHit(h));
@@ -136,7 +136,7 @@ public class ZSearchResult implements ToZJSONObject {
   /*
    * TODO: this class is really not a ZSearchHit, but for now that works best do to ZSearchPagerCache. modifyNotication handling
    */
-  public class ZConversationSummary implements ZSearchHit {
+  public static class ZConversationSummary implements ZSearchHit {
 
     private String mId;
     private String mFlags;

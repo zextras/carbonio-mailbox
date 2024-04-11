@@ -20,6 +20,7 @@ import com.zimbra.cs.session.PendingLocalModifications;
 import com.zimbra.cs.session.PendingModifications.Change;
 import com.zimbra.cs.session.PendingModifications.ModificationKey;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -34,7 +35,7 @@ public class CalSummaryMemcachedCache {
     ZimbraMemcachedClient memcachedClient = MemcachedConnector.getClient();
     CalSummarySerializer serializer = new CalSummarySerializer();
     mMemcachedLookup =
-        new BigByteArrayMemcachedMap<CalSummaryKey, CalendarData>(memcachedClient, serializer);
+        new BigByteArrayMemcachedMap<>(memcachedClient, serializer);
   }
 
   private static class CalSummarySerializer implements ByteArraySerializer<CalendarData> {
@@ -42,24 +43,14 @@ public class CalSummaryMemcachedCache {
 
     @Override
     public byte[] serialize(CalendarData value) {
-      try {
-        return value.encodeMetadata().toString().getBytes("utf-8");
-      } catch (UnsupportedEncodingException e) {
-        ZimbraLog.calendar.warn("Unable to serialize data for calendar summary cache", e);
-        return null;
-      }
+      return value.encodeMetadata().toString().getBytes(StandardCharsets.UTF_8);
     }
 
     @Override
     public CalendarData deserialize(byte[] bytes) throws ServiceException {
       if (bytes != null) {
         String encoded;
-        try {
-          encoded = new String(bytes, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-          ZimbraLog.calendar.warn("Unable to deserialize data for calendar summary cache", e);
-          return null;
-        }
+        encoded = new String(bytes, StandardCharsets.UTF_8);
         Metadata meta = new Metadata(encoded);
         return new CalendarData(meta);
       } else {
@@ -84,7 +75,7 @@ public class CalSummaryMemcachedCache {
   void purgeMailbox(Mailbox mbox) throws ServiceException {
     String accountId = mbox.getAccountId();
     List<Folder> folders = mbox.getCalendarFolders(null, SortBy.NONE);
-    List<CalSummaryKey> keys = new ArrayList<CalSummaryKey>(folders.size());
+    List<CalSummaryKey> keys = new ArrayList<>(folders.size());
     for (Folder folder : folders) {
       CalSummaryKey key = new CalSummaryKey(accountId, folder.getId());
       keys.add(key);
@@ -93,7 +84,7 @@ public class CalSummaryMemcachedCache {
   }
 
   void notifyCommittedChanges(PendingLocalModifications mods, int changeId) {
-    Set<CalSummaryKey> keysToInvalidate = new HashSet<CalSummaryKey>();
+    Set<CalSummaryKey> keysToInvalidate = new HashSet<>();
     if (mods.modified != null) {
       for (Map.Entry<ModificationKey, Change> entry : mods.modified.entrySet()) {
         Change change = entry.getValue();

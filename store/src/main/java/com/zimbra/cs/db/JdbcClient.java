@@ -185,7 +185,7 @@ public class JdbcClient {
                 ResultSet rs = stmt.executeQuery(sql);
                 ResultSetMetaData md = rs.getMetaData();
                 int colCount = md.getColumnCount();
-                List<Object[]> firstRows = new ArrayList<Object[]>();
+                List<Object[]> firstRows = new ArrayList<>();
                 int rowCount = 0;
 
                 // Set initial column widths based on column labels
@@ -262,10 +262,10 @@ public class JdbcClient {
     
     private void printDivider(int[] colWidths) {
         StringBuilder b = new StringBuilder();
-        for (int i = 0; i < colWidths.length; i++) {
-            b.append('+');
-            b.append("-".repeat(Math.max(0, colWidths[i] + 2)));
-        }
+      for (int colWidth : colWidths) {
+        b.append('+');
+        b.append("-".repeat(Math.max(0, colWidth + 2)));
+      }
         b.append('+');
         System.out.println(b);
     }

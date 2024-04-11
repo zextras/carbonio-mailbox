@@ -33,7 +33,7 @@ public abstract class DataSourcePurge {
 
     protected Mailbox mbox;
     private static long PURGE_BATCH_SIZE = 1000000L;
-    protected Map<String, ConversationPurgeQueue> purgeQueues = new HashMap<String,ConversationPurgeQueue>();
+    protected Map<String, ConversationPurgeQueue> purgeQueues = new HashMap<>();
 
     public DataSourcePurge(Mailbox mbox) {
         this.mbox = mbox;
@@ -112,7 +112,7 @@ public abstract class DataSourcePurge {
         if (dataSources.size() == 1) {
             return String.format("%s:%s", accountId, dataSources.get(0).getId());
         }
-        List<String> dsIds = new ArrayList<String>();
+        List<String> dsIds = new ArrayList<>();
         for (DataSource ds: dataSources) {
             dsIds.add(ds.getId());
         }
@@ -227,7 +227,7 @@ public abstract class DataSourcePurge {
         private PurgeableConvs() {
             totalSize = 0L;
             latestDate = 0L;
-            convs = new LinkedList<PurgeableConv>();
+            convs = new LinkedList<>();
         }
 
         void add(PurgeableConv conv) {
@@ -263,7 +263,7 @@ public abstract class DataSourcePurge {
      */
     public static class ConversationPurgeQueue {
         // map that is used to look up all nodes in all queues containing OldestConvs with the same ID as the key
-        private static Map<Integer, LinkedList<Node>> nodes = new HashMap<Integer, LinkedList<Node>>();
+        private static Map<Integer, LinkedList<Node>> nodes = new HashMap<>();
         static class Node {
             private PurgeableConv conv;
             private Node next = null;
@@ -299,7 +299,7 @@ public abstract class DataSourcePurge {
             }
         }
 
-        private Map<Integer, Node> map = new HashMap<Integer, Node>();
+        private Map<Integer, Node> map = new HashMap<>();
         private Node head;
         private Node tail = new Node(this, null);
         private int length;
@@ -321,7 +321,7 @@ public abstract class DataSourcePurge {
             map.put(conv.getId(), node);
             LinkedList<Node> instances = nodes.get(conv.getId());
             if (instances == null) {
-                instances = new LinkedList<Node>();
+                instances = new LinkedList<>();
                 nodes.put(conv.getId(), instances);
             }
             instances.add(node);

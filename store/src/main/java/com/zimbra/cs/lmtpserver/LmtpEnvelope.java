@@ -15,7 +15,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.zimbra.common.util.ZimbraLog;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,9 +30,9 @@ public class LmtpEnvelope {
     private LmtpBodyType mBodyType;
     
     public LmtpEnvelope() {
-    	mRecipients = new LinkedList<LmtpAddress>();
-    	mLocalRecipients = new LinkedList<LmtpAddress>();
-    	mRemoteRecipients = new LinkedList<LmtpAddress>();
+    	mRecipients = new LinkedList<>();
+    	mLocalRecipients = new LinkedList<>();
+    	mRemoteRecipients = new LinkedList<>();
     	mRemoteServerToRecipientsMap = ArrayListMultimap.create();
     }
     

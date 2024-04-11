@@ -26,7 +26,7 @@ public enum LdapOp {
 
     private String desc;
 
-    private LdapOp(String desc) {
+    LdapOp(String desc) {
         this.desc = desc;
     }
 

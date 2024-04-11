@@ -40,7 +40,7 @@ public class User extends Principal {
             }
         }
         addProperty(Acl.getPrincipalUrl(this));
-        ArrayList<String> addrs = new ArrayList<String>();
+        ArrayList<String> addrs = new ArrayList<>();
       addrs.addAll(Arrays.asList(account.getMailDeliveryAddress()));
       addrs.addAll(Arrays.asList(account.getMailAlias()));
         String principalAddr = UrlNamespace.getPrincipalUrl(account);
@@ -60,7 +60,7 @@ public class User extends Principal {
 
     @Override
     public java.util.Collection<DavResource> getChildren(DavContext ctxt) throws DavException {
-        ArrayList<DavResource> proxies = new ArrayList<DavResource>();
+        ArrayList<DavResource> proxies = new ArrayList<>();
         if (ctxt.useIcalDelegation()) {
             try {
                 proxies.add(new CalendarProxyRead(getOwner(), mUri));

@@ -35,8 +35,8 @@ public abstract class WaitSetBase implements IWaitSet {
     /**
      * List of errors (right now, only mailbox deletion notifications) to be sent
      */
-    protected List<WaitSetError> mCurrentErrors = new ArrayList<WaitSetError>();
-    protected List<WaitSetError> mSentErrors = new ArrayList<WaitSetError>();
+    protected List<WaitSetError> mCurrentErrors = new ArrayList<>();
+    protected List<WaitSetError> mSentErrors = new ArrayList<>();
 
     /** this is the signalled set data that is new (has never been sent) */
     protected HashSet<String /*accountId*/> mCurrentSignalledAccounts = Sets.newHashSet();

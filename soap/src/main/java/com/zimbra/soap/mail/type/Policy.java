@@ -30,7 +30,7 @@ public class Policy {
 
         private String name;
 
-        private Type(String name) {
+        Type(String name) {
             this.name = name;
         }
 
@@ -48,7 +48,7 @@ public class Policy {
                 throw new IllegalArgumentException("Invalid Type value: " + name);
             }
         }
-    };
+    }
 
     /**
      * @zm-api-field-tag retention-policy-type

@@ -140,7 +140,7 @@ public final class DbMailbox {
     callbacks.add(callback);
   }
 
-  private static final HashSet<DbTableCallback> callbacks = new HashSet<DbTableCallback>();
+  private static final HashSet<DbTableCallback> callbacks = new HashSet<>();
 
   /**
    * Gets the next mailbox id. If <tt>mailboxId</tt> is {@link Mailbox#ID_AUTO_INCREMENT} or greater
@@ -341,7 +341,7 @@ public final class DbMailbox {
       ZimbraLog.mailbox.info("Creating database " + dbname);
 
       String template = new String(ByteUtil.getContent(file));
-      Map<String, String> vars = new HashMap<String, String>();
+      Map<String, String> vars = new HashMap<>();
       vars.put("DATABASE_NAME", dbname);
       String script = StringUtil.fillTemplate(template, vars);
       // note that DbUtil.executeScript ends with a COMMIT
@@ -363,7 +363,7 @@ public final class DbMailbox {
 
   // Tables are listed in order of creation.  dropMailboxFromGroup() drops them
   // in reverse order.
-  static final List<String> sTables = new ArrayList<String>();
+  static final List<String> sTables = new ArrayList<>();
 
   static {
     if (DebugConfig.disableMailboxGroups) {
@@ -386,7 +386,6 @@ public final class DbMailbox {
     sTables.add(DbImapMessage.TABLE_IMAP_MESSAGE);
     sTables.add(DbDataSource.TABLE_DATA_SOURCE_ITEM);
   }
-  ;
 
   private static void dropMailboxFromGroup(DbConnection conn, Mailbox mbox)
       throws ServiceException {
@@ -408,7 +407,7 @@ public final class DbMailbox {
       }
 
       // delete from tables in reverse order
-      ArrayList<String> tables = new ArrayList<String>(sTables);
+      ArrayList<String> tables = new ArrayList<>(sTables);
       for (DbTableCallback callback : callbacks) {
         tables.addAll(callback.getTableNames());
       }
@@ -808,7 +807,7 @@ public final class DbMailbox {
 
   public static Map<String, Integer> listMailboxes(DbConnection conn, MailboxManager mmgr)
       throws ServiceException {
-    HashMap<String, Integer> result = new HashMap<String, Integer>();
+    HashMap<String, Integer> result = new HashMap<>();
     if (DebugConfig.externalMailboxDirectory) {
       return result;
     }
@@ -873,7 +872,7 @@ public final class DbMailbox {
    */
   public static Map<String, Long> getMailboxSizes(DbConnection conn, List<Integer> mailboxIds)
       throws ServiceException {
-    HashMap<String, Long> sizes = new HashMap<String, Long>();
+    HashMap<String, Long> sizes = new HashMap<>();
     if (DebugConfig.externalMailboxDirectory) {
       return sizes;
     }
@@ -927,7 +926,7 @@ public final class DbMailbox {
    */
   public static Set<Integer> listPurgePendingMailboxes(DbConnection conn, long time)
       throws ServiceException {
-    Set<Integer> result = new HashSet<Integer>();
+    Set<Integer> result = new HashSet<>();
     if (DebugConfig.externalMailboxDirectory) {
       return result;
     }
@@ -1039,7 +1038,7 @@ public final class DbMailbox {
 
       while (rs.next()) {
         if (mbd.configKeys == null) {
-          mbd.configKeys = new HashSet<String>();
+          mbd.configKeys = new HashSet<>();
         }
         mbd.configKeys.add(rs.getString(1));
       }
@@ -1369,7 +1368,7 @@ public final class DbMailbox {
   }
 
   public static Set<Integer> getMboxGroupIds(DbConnection conn) throws ServiceException {
-    Set<Integer> groups = new HashSet<Integer>();
+    Set<Integer> groups = new HashSet<>();
 
     PreparedStatement stmt = null;
     ResultSet rs = null;

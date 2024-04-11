@@ -69,7 +69,7 @@ public class ZimbraCookie {
     if (maxAge != null) {
       // jetty actually turns maxAge(lifetime in seconds) into an
       // Expires directive, not the Max-Age directive.
-      cookie.setMaxAge(maxAge.intValue());
+      cookie.setMaxAge(maxAge);
     }
     ZimbraCookie.setAuthTokenCookieDomainPath(cookie, ZimbraCookie.PATH_ROOT);
 

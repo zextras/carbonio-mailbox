@@ -96,14 +96,14 @@ public class ScheduleOutbox extends CalendarCollection {
             String method = vcalendar.getPropVal(ICalTok.METHOD, null);
             if (method != null) {
                 isOrganizerMethod = Invite.isOrganizerMethod(method);
-                isCancel = ICalTok.CANCEL.toString().equalsIgnoreCase(method);;
+                isCancel = ICalTok.CANCEL.toString().equalsIgnoreCase(method);
             }
 
             CalDavUtils.removeAttendeeForOrganizer(req);  // Apple iCal fixup
         }
 
         // Get organizer and list of attendees. (mailto:email values)
-        ArrayList<String> attendees = new ArrayList<String>();
+        ArrayList<String> attendees = new ArrayList<>();
         String organizer = null;
         for (Iterator<ZProperty> propsIter = req.getPropertyIterator(); propsIter.hasNext(); ) {
             ZProperty prop = propsIter.next();
@@ -163,7 +163,7 @@ public class ScheduleOutbox extends CalendarCollection {
         }
 
         // Get the recipients.
-        ArrayList<String> rcptArray = new ArrayList<String>();
+        ArrayList<String> rcptArray = new ArrayList<>();
         while (recipients.hasMoreElements()) {
             String rcptHdr = recipients.nextElement();
             String[] rcpts = null;
@@ -347,7 +347,7 @@ public class ScheduleOutbox extends CalendarCollection {
             return;
         }
 
-        ArrayList<Address> recipients = new java.util.ArrayList<Address>();
+        ArrayList<Address> recipients = new java.util.ArrayList<>();
         InternetAddress from, sender, to;
         Account target = null;
         try {
@@ -549,7 +549,7 @@ public class ScheduleOutbox extends CalendarCollection {
         }
     }
 
-    private class DelegationInfo {
+    private static class DelegationInfo {
         /** The originator of this iTip request - who might be the organizer or an attendee */
         private String originator;
         private String originatorEmail;

@@ -6,6 +6,7 @@
 package com.zimbra.cs.service.formatter;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -70,8 +71,8 @@ public class AtomFormatter extends Formatter {
             if (iterator instanceof QueryResultIterator)
                 ((QueryResultIterator) iterator).finished();
         }
-        sb.append(feed.toString());
-        context.resp.getOutputStream().write(sb.toString().getBytes("UTF-8"));
+        sb.append(feed);
+        context.resp.getOutputStream().write(sb.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
@@ -87,21 +88,20 @@ public class AtomFormatter extends Formatter {
 
     private void addCalendarItem(CalendarItem calItem, Element feed, UserServletContext context) throws ServiceException {
         Collection<Instance> instances = calItem.expandInstances(context.getStartTime(), context.getEndTime(), false);
-        for (Iterator<Instance> instIt = instances.iterator(); instIt.hasNext(); ) {
-            CalendarItem.Instance inst = instIt.next();
-            InviteInfo invId = inst.getInviteInfo();
-            Invite inv = calItem.getInvite(invId.getMsgId(), invId.getComponentId());
-            Element entry = feed.addElement("entry");
-            entry.addElement("title").setText(inv.getName());
-            entry.addElement("updated").setText(DateUtil.toISO8601(new Date(inst.getStart())));
-            entry.addElement("summary").setText(inv.getFragment());
-            // TODO: only personal part in name
-            if (inv.hasOrganizer()) {
-                Element author = entry.addElement("author");
-                author.addElement("name").setText(inv.getOrganizer().getCn());
-                author.addElement("email").setText(inv.getOrganizer().getAddress());
-            }
+      for (Instance inst : instances) {
+        InviteInfo invId = inst.getInviteInfo();
+        Invite inv = calItem.getInvite(invId.getMsgId(), invId.getComponentId());
+        Element entry = feed.addElement("entry");
+        entry.addElement("title").setText(inv.getName());
+        entry.addElement("updated").setText(DateUtil.toISO8601(new Date(inst.getStart())));
+        entry.addElement("summary").setText(inv.getFragment());
+        // TODO: only personal part in name
+        if (inv.hasOrganizer()) {
+          Element author = entry.addElement("author");
+          author.addElement("name").setText(inv.getOrganizer().getCn());
+          author.addElement("email").setText(inv.getOrganizer().getAddress());
         }
+      }
 
     }
 

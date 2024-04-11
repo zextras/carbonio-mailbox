@@ -18,12 +18,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.zimbra.common.account.Key;
-import com.zimbra.common.account.Key.ServerBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.StringUtil;
-import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.AdminRight;

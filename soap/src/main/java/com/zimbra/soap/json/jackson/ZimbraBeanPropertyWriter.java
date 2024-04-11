@@ -126,7 +126,7 @@ public class ZimbraBeanPropertyWriter
                 return;
         }
         
-        if (_suppressableValue != null && _suppressableValue.equals(value)) {
+        if (value.equals(_suppressableValue)) {
             return;
         }
 

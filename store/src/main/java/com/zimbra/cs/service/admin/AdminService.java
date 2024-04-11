@@ -381,7 +381,7 @@ public class AdminService implements DocumentService {
    */
   public static Map<String, Object> getAttrs(Element request, boolean ignoreEmptyValues)
       throws ServiceException {
-    Map<String, Object> result = new HashMap<String, Object>();
+    Map<String, Object> result = new HashMap<>();
     for (Element a : request.listElements(AdminConstants.E_A)) {
       String name = a.getAttribute(AdminConstants.A_N);
       String value = a.getText();

@@ -22,8 +22,8 @@ import com.zimbra.cs.redolog.RedoLogOutput;
  */
 public class CopyItem extends RedoableOp {
 
-    private Map<Integer, Integer> mDestIds = new HashMap<Integer, Integer>();
-    private Map<Integer, String> mDestUuids = new HashMap<Integer, String>();
+    private Map<Integer, Integer> mDestIds = new HashMap<>();
+    private Map<Integer, String> mDestUuids = new HashMap<>();
     private MailItem.Type type;
     private int mDestFolderId;
     private boolean mFromDumpster;  // false in this class, true in subclass RecoverItem
@@ -131,8 +131,9 @@ public class CopyItem extends RedoableOp {
         int mboxId = getMailboxId();
         Mailbox mbox = MailboxManager.getInstance().getMailboxById(mboxId);
 
-        int i = 0, itemIds[] = new int[mDestIds.size()];
-        for (int id : mDestIds.keySet()) {
+        int i = 0;
+      int[] itemIds = new int[mDestIds.size()];
+      for (int id : mDestIds.keySet()) {
             itemIds[i++] = id;
         }
         try {
@@ -143,7 +144,6 @@ public class CopyItem extends RedoableOp {
         } catch (MailServiceException e) {
             if (e.getCode() == MailServiceException.ALREADY_EXISTS) {
                 mLog.info("Item is already in mailbox " + mboxId);
-                return;
             } else {
                 throw e;
             }

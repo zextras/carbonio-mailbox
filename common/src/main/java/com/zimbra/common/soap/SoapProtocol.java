@@ -245,7 +245,7 @@ public abstract class SoapProtocol {
             String type = arg.getAttribute("t", "UNKNOWN");
             if (type.equals(ServiceException.Argument.Type.IID.toString())) {
                 String value = arg.getTextTrim();
-                if (value.indexOf(":") < 0) {
+                if (!value.contains(":")) {
                     arg.setText(remoteAccountId + ":" + value);
                 }
             }

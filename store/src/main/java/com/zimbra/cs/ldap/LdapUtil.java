@@ -193,7 +193,7 @@ public class LdapUtil {
 
        int at = name.indexOf("@");
 
-       Map<String, String> vars = new HashMap<String, String>();
+       Map<String, String> vars = new HashMap<>();
        vars.put("n", name);
 
        if (at  == -1) {
@@ -222,7 +222,7 @@ public class LdapUtil {
         return (String)Rdn.unescapeValue(rdn);
     }
 
-    public static String domainToDN(String parts[], int offset) {
+    public static String domainToDN(String[] parts, int offset) {
         StringBuffer sb = new StringBuffer(128);
         for (int i=offset; i < parts.length; i++) {
             if (i-offset > 0) {

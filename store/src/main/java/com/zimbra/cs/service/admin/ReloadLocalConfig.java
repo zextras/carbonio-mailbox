@@ -32,14 +32,11 @@ public final class ReloadLocalConfig extends AdminDocumentHandler {
             throws ServiceException {
         try {
             LC.reload();
-        } catch (DocumentException e) {
-            ZimbraLog.misc.error("Failed to reload LocalConfig", e);
-            throw AdminServiceException.FAILURE("Failed to reload LocalConfig", e);
-        } catch (ConfigException e) {
+        } catch (DocumentException | ConfigException e) {
             ZimbraLog.misc.error("Failed to reload LocalConfig", e);
             throw AdminServiceException.FAILURE("Failed to reload LocalConfig", e);
         }
-        ZimbraLog.misc.info("LocalConfig reloaded");
+      ZimbraLog.misc.info("LocalConfig reloaded");
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
         return zsc.jaxbToElement(new ReloadLocalConfigResponse());
     }

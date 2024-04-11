@@ -46,7 +46,7 @@ public class AccountSessionInfo {
      */
     @SuppressWarnings("unused")
     private AccountSessionInfo() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public AccountSessionInfo(String name, String id) {

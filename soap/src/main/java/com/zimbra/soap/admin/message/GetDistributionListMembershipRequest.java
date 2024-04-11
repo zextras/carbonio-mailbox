@@ -48,8 +48,8 @@ public class GetDistributionListMembershipRequest {
      */
      @SuppressWarnings("unused")
     private GetDistributionListMembershipRequest() {
-        this((DistributionListSelector) null,
-            (Integer) null, (Integer) null);
+        this(null,
+            null, null);
     }
 
     public GetDistributionListMembershipRequest(DistributionListSelector dl,

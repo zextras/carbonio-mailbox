@@ -29,7 +29,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -378,11 +377,11 @@ public class FileLogWriter implements LogWriter {
         // Rewrite change entries for all active operations, maintaining
         // their order of occurrence.  (LinkedHashMap ensures ordering.)
         Set opsSet = activeOps.entrySet();
-        for (Iterator it = opsSet.iterator(); it.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) it.next();
-            RedoableOp op = (RedoableOp) entry.getValue();
-            tempLogger.log(op, op.getInputStream(), false);
-        }
+      for (Object o : opsSet) {
+        Map.Entry entry = (Map.Entry) o;
+        RedoableOp op = (RedoableOp) entry.getValue();
+        tempLogger.log(op, op.getInputStream(), false);
+      }
         tempLogger.close();
 
         // Rename the current log to rolled-over name.

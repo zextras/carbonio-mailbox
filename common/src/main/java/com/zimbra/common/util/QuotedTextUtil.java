@@ -75,8 +75,8 @@ public class QuotedTextUtil {
     /**
      * ignore these html tags while parsing html content
      */
-    private Set<String> ignoreNodes = new HashSet<String>(Arrays.asList(new String[] { "#comment",
-        "br", "script", "select", "style" }));
+    private Set<String> ignoreNodes = new HashSet<>(Arrays.asList("#comment",
+        "br", "script", "select", "style"));
 
     /**
      * Each line of the email message classified into a type based on the regex
@@ -101,7 +101,7 @@ public class QuotedTextUtil {
 
         private Matcher[] matcher;
 
-        private LineType(String... regex) {
+        LineType(String... regex) {
             matcher = new Matcher[regex.length];
             for (int i = 0; i < regex.length; i++) {
                 matcher[i] = Pattern.compile(regex[i]).matcher("");
@@ -120,10 +120,10 @@ public class QuotedTextUtil {
      * A Fragment represents a block of lines from the message with a type
      * associated with it
      */
-    private class Fragment {
+    private static class Fragment {
 
         private LineType type = null;
-        private ArrayList<String> block = new ArrayList<String>();
+        private ArrayList<String> block = new ArrayList<>();
 
         /**
          * @param type the line type
@@ -239,7 +239,7 @@ public class QuotedTextUtil {
         if (getCount(count, LineType.WROTE_STRONG) > 0) {
             ArrayList<String> unknownBlock = null;
             boolean foundSep = false;
-            Map<LineType, Boolean> afterSep = new HashMap<QuotedTextUtil.LineType, Boolean>();
+            Map<LineType, Boolean> afterSep = new HashMap<>();
 
             for (Fragment resFragment : results) {
                 LineType type = resFragment.getType();
@@ -343,7 +343,7 @@ public class QuotedTextUtil {
         // If we have a STRONG separator (eg "--- Original Message ---"),
         // consider it authoritative and return the text that precedes it
         if (getCount(count, LineType.SEP_STRONG) > 0) {
-            ArrayList<String> block = new ArrayList<String>();
+            ArrayList<String> block = new ArrayList<>();
             for (Fragment resFragment : results) {
                 if (resFragment.getType() == LineType.SEP_STRONG) {
                     break;
@@ -372,7 +372,7 @@ public class QuotedTextUtil {
      */
     private ArrayList<String> classifyContent(String text, ArrayList<Fragment> results,
         ArrayList<String> unknownBlock, Map<LineType, Integer> count) {
-        ArrayList<String> currentBlock = new ArrayList<String>();
+        ArrayList<String> currentBlock = new ArrayList<>();
 
         LineType currentType = null;
         boolean isMerged = false;
@@ -390,7 +390,7 @@ public class QuotedTextUtil {
             }
             // Bugzilla summary looks like QUOTED; it should be treated as
             // UNKNOWN
-            if ((line.indexOf("| DO NOT REPLY") == 0) && (lines[i + 2].indexOf("bugzilla") != -1)) {
+            if ((line.indexOf("| DO NOT REPLY") == 0) && (lines[i + 2].contains("bugzilla"))) {
                 isBugzilla = true;
             }
 
@@ -435,7 +435,7 @@ public class QuotedTextUtil {
                 unknownBlock = (currentType == LineType.UNKNOWN ? currentBlock : unknownBlock);
                 int currentTypeCount = getCount(count, currentType);
                 count.put(currentType, currentTypeCount + 1);
-                currentBlock = new ArrayList<String>();
+                currentBlock = new ArrayList<>();
                 currentType = type;
             } else {
                 currentType = type;
@@ -488,9 +488,9 @@ public class QuotedTextUtil {
      * @return the original text content
      */
     private String getOriginalTextContent(String text) {
-        ArrayList<Fragment> results = new ArrayList<Fragment>();
-        ArrayList<String> unknownBlock = new ArrayList<String>();
-        Map<LineType, Integer> count = new HashMap<LineType, Integer>();
+        ArrayList<Fragment> results = new ArrayList<>();
+        ArrayList<String> unknownBlock = new ArrayList<>();
+        Map<LineType, Integer> count = new HashMap<>();
 
         unknownBlock = classifyContent(text, results, unknownBlock, count);
 
@@ -507,7 +507,7 @@ public class QuotedTextUtil {
      *         complete message content
      */
     private String getOriginalHtmlContent(String text) {
-        ArrayList<Node> nodeList = new ArrayList<Node>();
+        ArrayList<Node> nodeList = new ArrayList<>();
         Node previousNode = null, sepNode = null;
         LineType previousType = null;
         boolean done = false;

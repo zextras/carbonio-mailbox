@@ -24,7 +24,7 @@ public class GetSignaturesResponse {
      * @zm-api-field-description Signatures
      */
     @XmlElement(name=AccountConstants.E_SIGNATURE)
-    private List<Signature> signatures = new ArrayList<Signature>();
+    private List<Signature> signatures = new ArrayList<>();
 
     public List<Signature> getSignatures() { return Collections.unmodifiableList(signatures); }
 

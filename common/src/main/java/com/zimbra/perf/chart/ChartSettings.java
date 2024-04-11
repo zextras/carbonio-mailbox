@@ -17,8 +17,9 @@ class ChartSettings {
     public static final int DEFAULT_CHART_HEIGHT = 200;
     public static final int MINIMUM_CHART_HEIGHT = 200;
 
-    public static enum ImageType { JPG, PNG };
-    public static enum TopPlotsType { AVG, MAX };
+    public enum ImageType { JPG, PNG }
+
+    public enum TopPlotsType { AVG, MAX }
 
     private String mDocument;
     private String mTitle;
@@ -63,8 +64,8 @@ class ChartSettings {
         mPlotZero = plotZero;
         mWidth = width;
         mHeight = height;
-        mPlots = new ArrayList<PlotSettings>();
-        mGroupPlots = new ArrayList<GroupPlotSettings>();
+        mPlots = new ArrayList<>();
+        mGroupPlots = new ArrayList<>();
         mDocument = outDoc;
         mTopPlots = topPlots;
         mTopPlotsType = topType;

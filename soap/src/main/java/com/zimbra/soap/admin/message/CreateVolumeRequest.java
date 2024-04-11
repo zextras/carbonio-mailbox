@@ -33,7 +33,7 @@ public class CreateVolumeRequest {
      */
      @SuppressWarnings("unused")
     private CreateVolumeRequest() {
-        this((VolumeInfo)null);
+        this(null);
     }
 
     public CreateVolumeRequest(VolumeInfo volume) {

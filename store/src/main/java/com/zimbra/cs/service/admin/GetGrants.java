@@ -69,7 +69,7 @@ public class GetGrants extends RightDocumentHandler {
 
         // check if the authed admin can see the zimbraACE attr on
         // each of the target on which grants for the specified grantee are found
-        Set<String> OKedTarget = new HashSet<String>();
+        Set<String> OKedTarget = new HashSet<>();
         for (RightCommand.ACE ace : grants.getACEs()) {
             TargetType tt = TargetType.fromCode(ace.targetType());
             // has to look up target by name, because zimlet can only be looked up by name

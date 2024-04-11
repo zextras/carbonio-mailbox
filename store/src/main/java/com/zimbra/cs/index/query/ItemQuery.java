@@ -33,7 +33,7 @@ public final class ItemQuery extends Query {
         boolean allQuery = false;
         boolean noneQuery = false;
         boolean rangeQuery = false;
-        List<ItemId> itemIds = new ArrayList<ItemId>();
+        List<ItemId> itemIds = new ArrayList<>();
 
         if (str.equalsIgnoreCase("all")) {
             allQuery = true;
@@ -49,12 +49,12 @@ public final class ItemQuery extends Query {
             rangeQuery = true;
         } else {
             String[] items = str.split(",");
-            for (int i = 0; i < items.length; i++) {
-                if (items[i].length() > 0) {
-                    ItemId iid = new ItemId(items[i], mbox.getAccountId());
-                    itemIds.add(iid);
-                }
+          for (String item : items) {
+            if (item.length() > 0) {
+              ItemId iid = new ItemId(item, mbox.getAccountId());
+              itemIds.add(iid);
             }
+          }
             if (itemIds.size() == 0) {
                 noneQuery = true;
             }

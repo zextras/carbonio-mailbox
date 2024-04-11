@@ -115,7 +115,7 @@ public abstract class TemplateHandler {
     }
 
     protected Map<String,String> getBuildInfo() {
-        Map<String,String>    buildInfo = new HashMap<String,String>();
+        Map<String,String>    buildInfo = new HashMap<>();
 
         buildInfo.put(KEY_BUILD_INFO_VERSION, this.buildVersion);
         buildInfo.put(KEY_BUILD_INFO_DATE, this.buildDate);
@@ -157,25 +157,17 @@ public abstract class TemplateHandler {
      */
     protected    void    processTemplate(Root root, Map data, File outputFile, Template template)
     throws    IOException, SoapDocException {
-        FileWriter out = new FileWriter(outputFile);
 
+      try (FileWriter out = new FileWriter(outputFile)) {
         if (data == null)
-            data = new HashMap();
-
+          data = new HashMap();
         data.put(KEY_SOAP_ROOT, root);
-
-        try {
-            Map    dataModel = getDataModel(data);
-               template.process(dataModel, out);
-        } catch(TemplateException te) {
-            throw new SoapDocException(te);
-        } finally {
-            try {
-                out.close();
-            } catch (Exception e) {
-                // clean-up quietly
-            }
-        }
+        Map dataModel = getDataModel(data);
+        template.process(dataModel, out);
+      } catch (TemplateException te) {
+        throw new SoapDocException(te);
+      }
+      // clean-up quietly
     }
 
     /**
@@ -185,40 +177,22 @@ public abstract class TemplateHandler {
      */
     protected void copyFiles(String[] filenames)
     throws java.io.FileNotFoundException, IOException {
-        for (int i=0; i < filenames.length; i++) {
-            File tmp = new File(templatesDir, getName());
-            File fromFile = new File(tmp, filenames[i]);
+      for (String filename : filenames) {
+        File tmp = new File(templatesDir, getName());
+        File fromFile = new File(tmp, filename);
 
-            File toFile = getOutputFile(filenames[i]);
+        File toFile = getOutputFile(filename);
 
-            FileInputStream from = null;
-            FileOutputStream to = null;
+        try (FileInputStream from = new FileInputStream(fromFile); FileOutputStream to = new FileOutputStream(toFile)) {
+          byte[] buffer = new byte[4096];
+          int bytesRead = -1;
 
-            try {
-                from = new FileInputStream(fromFile);
-                to = new FileOutputStream(toFile);
-                byte[] buffer = new byte[4096];
-                int bytesRead = -1;
-
-                while ((bytesRead = from.read(buffer)) != -1)
-                    to.write(buffer, 0, bytesRead); // write
-            } finally {
-                if (from != null) {
-                    try {
-                        from.close();
-                    } catch (IOException e) {
-                        // clean-up quietly
-                    }
-                }
-                if (to != null) {
-                    try {
-                        to.close();
-                    } catch (IOException e) {
-                        // clean-up quietly
-                    }
-                }
-            }
+          while ((bytesRead = from.read(buffer)) != -1)
+            to.write(buffer, 0, bytesRead); // write
         }
+        // clean-up quietly
+        // clean-up quietly
+      }
 
     }
 

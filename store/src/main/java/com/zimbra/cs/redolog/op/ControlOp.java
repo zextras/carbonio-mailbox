@@ -11,11 +11,7 @@
  */
 package com.zimbra.cs.redolog.op;
 
-import java.io.IOException;
-
 import com.zimbra.cs.mailbox.MailboxOperation;
-import com.zimbra.cs.redolog.RedoLogInput;
-import com.zimbra.cs.redolog.RedoLogOutput;
 import com.zimbra.cs.redolog.TransactionId;
 
 /**

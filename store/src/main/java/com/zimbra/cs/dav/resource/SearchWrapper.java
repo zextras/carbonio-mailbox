@@ -82,7 +82,7 @@ public class SearchWrapper extends PhantomResource {
     private static HashMap<String,String> sCTMap;
 
     static {
-        sCTMap = new HashMap<String,String>();
+        sCTMap = new HashMap<>();
         sCTMap.put("ppt",   "application/vnd.ms-powerpoint");
         sCTMap.put("excel", "application/vnd.ms-excel");
         sCTMap.put("word",  "application/msword");
@@ -104,7 +104,7 @@ public class SearchWrapper extends PhantomResource {
 
     @Override
     public Collection<DavResource> getChildren(DavContext ctxt) {
-        ArrayList<DavResource> children = new ArrayList<DavResource>();
+        ArrayList<DavResource> children = new ArrayList<>();
         String user = ctxt.getUser();
         Provisioning prov = Provisioning.getInstance();
         try {

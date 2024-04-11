@@ -74,12 +74,10 @@ public class BrowseWrapper extends PhantomResource {
             case type:
                 return browseByType(ctxt);
             }
-        } catch (ServiceException e) {
-            ZimbraLog.dav.error("can't generate browse resource: uri="+getUri(), e);
-        } catch (IOException e) {
+        } catch (ServiceException | IOException e) {
             ZimbraLog.dav.error("can't generate browse resource: uri="+getUri(), e);
         }
-        return Collections.emptyList();
+      return Collections.emptyList();
     }
 
     private String generateUri(String path) {
@@ -92,7 +90,7 @@ public class BrowseWrapper extends PhantomResource {
     }
 
     private List<DavResource> generateMenu(DavContext ctxt) {
-        ArrayList<DavResource> menu = new ArrayList<DavResource>();
+        ArrayList<DavResource> menu = new ArrayList<>();
         menu.add(new BrowseWrapper(generateUri(BY_DATE), getOwner()));
         menu.add(new BrowseWrapper(generateUri(BY_TYPE), getOwner()));
         menu.add(new BrowseWrapper(generateUri(BY_SENDER), getOwner()));
@@ -100,7 +98,7 @@ public class BrowseWrapper extends PhantomResource {
     }
 
     private List<DavResource> browseByDate(DavContext ctxt) {
-        ArrayList<DavResource> res = new ArrayList<DavResource>();
+        ArrayList<DavResource> res = new ArrayList<>();
         res.add(new SearchWrapper(generateUri(TODAY), getOwner()));
         res.add(new SearchWrapper(generateUri(WEEK), getOwner()));
         res.add(new SearchWrapper(generateUri(MONTH), getOwner()));
@@ -110,7 +108,7 @@ public class BrowseWrapper extends PhantomResource {
     }
 
     private List<DavResource> browseBySender(DavContext ctxt) throws IOException, ServiceException {
-        ArrayList<DavResource> res = new ArrayList<DavResource>();
+        ArrayList<DavResource> res = new ArrayList<>();
         String user = ctxt.getUser();
         Provisioning prov = Provisioning.getInstance();
         Account account = prov.get(AccountBy.name, user);
@@ -128,7 +126,7 @@ public class BrowseWrapper extends PhantomResource {
     }
 
     private List<DavResource> browseByType(DavContext ctxt) throws IOException, ServiceException {
-        ArrayList<DavResource> res = new ArrayList<DavResource>();
+        ArrayList<DavResource> res = new ArrayList<>();
         String user = ctxt.getUser();
         Provisioning prov = Provisioning.getInstance();
         Account account = prov.get(AccountBy.name, user);

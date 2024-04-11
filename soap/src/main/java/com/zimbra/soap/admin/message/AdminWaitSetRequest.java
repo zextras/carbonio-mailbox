@@ -139,7 +139,7 @@ public class AdminWaitSetRequest implements WaitSetReq {
      */
     @SuppressWarnings("unused")
     private AdminWaitSetRequest() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public AdminWaitSetRequest(String waitSetId, String lastKnownSeqNo) {

@@ -16,43 +16,43 @@ public interface MimeTypeInfo {
     /**
      * Returns the associated MIME types.  The MIME type can be a regular expression.
      */
-    public String[] getMimeTypes();
+    String[] getMimeTypes();
     
     /**
      * Gets the name of the extension where the handler class is defined.
      * If it is part of the core, return null.
      * @return
      */
-    public String getExtension();
+    String getExtension();
     
     /**
      * Gets the name of the handler class. If no package is specified, 
      * com.zimbra.cs.mime.handler is assumed. 
      * @return
      */
-    public String getHandlerClass();
+    String getHandlerClass();
     
     /**
      * Whether the content is to be indexed for this mime type.
      * @return
      */
-    public boolean isIndexingEnabled();
+    boolean isIndexingEnabled();
     
     /**
      * Gets the description of the mime type
      * @return
      */
-    public String getDescription();
+    String getDescription();
     
     /**
      * Returns the <tt>Set</tt> of file extensions.  Extensions are returned
      * in lower case.
      */
-    public Set<String> getFileExtensions();
+    Set<String> getFileExtensions();
 
     /**
      * Gets the priority.  In the case where multiple <tt>MimeTypeInfo</tt>s
      * match a search, the one with the highest priority wins.
      */
-    public int getPriority();
+    int getPriority();
 }

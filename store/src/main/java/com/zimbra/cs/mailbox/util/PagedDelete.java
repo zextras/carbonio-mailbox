@@ -115,7 +115,7 @@ public class PagedDelete {
         if (mSequence2ItemIds.size() > limit) {
             this.mDeleteOverFlow = true;
             int size = 0;
-            List<Integer> removeSequences = new ArrayList<Integer>();
+            List<Integer> removeSequences = new ArrayList<>();
             List<Integer> removeItemIds = null;
             int lastSequence = 0;
             int lastItemId = 0;
@@ -124,7 +124,7 @@ public class PagedDelete {
                 if (size <= limit) {
                     currentSize = mSequence2ItemIds.get(sequence).size();
                     if ((size + currentSize) > limit) {
-                        List<Integer> ids =  new ArrayList<Integer>(mSequence2ItemIds.get(sequence));
+                        List<Integer> ids = new ArrayList<>(mSequence2ItemIds.get(sequence));
                         Collections.sort(ids);
                         if (removeItemIds == null) {
                             removeItemIds = new ArrayList<>(ids.size());
@@ -163,13 +163,13 @@ public class PagedDelete {
             if(sequence < preSeq) {
                 removeSequences.add(sequence);
             } else {
-                List<Integer> ids =  new ArrayList<Integer>(mSequence2ItemIds.get(sequence));
+                List<Integer> ids = new ArrayList<>(mSequence2ItemIds.get(sequence));
                 Collections.sort(ids);
                 lastSequence = sequence;
                 for (Integer id : ids) {
                     if(id < itemCutoff) {
                         if (removeItemIds == null) {
-                            removeItemIds = new ArrayList<Integer>(ids.size());
+                            removeItemIds = new ArrayList<>(ids.size());
                         }
                         removeItemIds.add(id);
                     }
@@ -193,7 +193,7 @@ public class PagedDelete {
         if (!removeSequences.isEmpty()) {
             mDeleteOverFlow = true;
             this.mCutOffSequence = removeSequences.get(0);
-            List<Integer> ids =  new ArrayList<Integer>(mSequence2ItemIds.get(this.mCutOffSequence));
+            List<Integer> ids = new ArrayList<>(mSequence2ItemIds.get(this.mCutOffSequence));
             Collections.sort(ids);
             this.mLastItemId = ids.get(0);
             removeSequences(removeSequences);

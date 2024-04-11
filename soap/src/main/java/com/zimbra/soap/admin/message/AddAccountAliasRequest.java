@@ -44,7 +44,7 @@ public class AddAccountAliasRequest {
      */
     @SuppressWarnings("unused")
     private AddAccountAliasRequest() {
-        this((String)null, (String)null);
+        this(null, null);
     }
 
     public AddAccountAliasRequest(String id, String alias) {

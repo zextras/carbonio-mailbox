@@ -32,7 +32,7 @@ public class GetAllAccountLoggers extends AdminDocumentHandler {
     checkRight(zsc, context, localServer, Admin.R_manageAccountLogger);
 
     Provisioning prov = Provisioning.getInstance();
-    Map<String, Element> accountElements = new HashMap<String, Element>();
+    Map<String, Element> accountElements = new HashMap<>();
 
     Element response = zsc.createElement(AdminConstants.GET_ALL_ACCOUNT_LOGGERS_RESPONSE);
     for (AccountLogger al : LogManager.getAllAccountLoggers()) {

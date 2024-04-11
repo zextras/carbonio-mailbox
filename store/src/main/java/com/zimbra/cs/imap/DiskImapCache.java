@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
-import java.util.Comparator;
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.ByteUtil;
@@ -36,11 +35,7 @@ final class DiskImapCache implements ImapSessionManager.Cache<String, ImapFolder
 
         // iterate over all serialized folders and delete all but the most recent
         File[] allCached = CACHE_DIR.listFiles();
-        Arrays.sort(allCached, new Comparator<File>() {
-            @Override public int compare(File o1, File o2)  {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+        Arrays.sort(allCached, (o1, o2) -> o1.getName().compareTo(o2.getName()));
         File previous = null;
         String lastOwner = "", lastId = "";
         for (File cached : allCached) {

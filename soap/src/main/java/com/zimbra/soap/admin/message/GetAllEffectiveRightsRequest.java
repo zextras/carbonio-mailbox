@@ -51,7 +51,7 @@ public class GetAllEffectiveRightsRequest {
     private GranteeSelector grantee;
 
     public GetAllEffectiveRightsRequest() {
-        this((GranteeSelector) null, (Boolean) null, (Boolean) null);
+        this(null, null, null);
     }
 
     public GetAllEffectiveRightsRequest(GranteeSelector grantee,

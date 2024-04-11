@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.service.mail;
 
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -35,7 +34,7 @@ public class GetWorkingHours extends GetFreeBusy {
         String nameParam = request.getAttribute(MailConstants.A_NAME, null); // comma-separated list of account emails
 
         Provisioning prov = Provisioning.getInstance();
-        Map<String /* zimbraId or name */, String /* zimbraId */> idMap = new LinkedHashMap<String, String>();  // preserve iteration order
+        Map<String /* zimbraId or name */, String /* zimbraId */> idMap = new LinkedHashMap<>();  // preserve iteration order
         if (idParam != null) {
             String[] idStrs = idParam.split(",");
             for (String idStr : idStrs) {
@@ -55,24 +54,23 @@ public class GetWorkingHours extends GetFreeBusy {
         }
 
         Element response = getResponseElement(zsc);
-        for (Iterator<Map.Entry<String, String>> entryIter = idMap.entrySet().iterator(); entryIter.hasNext(); ) {
-            Map.Entry<String, String> entry = entryIter.next();
-            String idOrName = entry.getKey();
-            String acctId = entry.getValue();
-            Account acct = acctId != null ? prov.get(AccountBy.id, acctId) : null;
-            FreeBusy workHours;
-            if (acct != null) {
-                String name; 
-                if (!idOrName.equalsIgnoreCase(acctId))  // requested by name; use the same name in the response
-                    name = idOrName;
-                else
-                    name = acct.getName();
-                workHours = WorkingHours.getWorkingHours(authAcct, asAdmin, acct, name, rangeStart, rangeEnd);
-            } else {
-                workHours = FreeBusy.nodataFreeBusy(idOrName, rangeStart, rangeEnd);
-            }
-            ToXML.encodeFreeBusy(response, workHours);
+      for (Map.Entry<String, String> entry : idMap.entrySet()) {
+        String idOrName = entry.getKey();
+        String acctId = entry.getValue();
+        Account acct = acctId != null ? prov.get(AccountBy.id, acctId) : null;
+        FreeBusy workHours;
+        if (acct != null) {
+          String name;
+          if (!idOrName.equalsIgnoreCase(acctId))  // requested by name; use the same name in the response
+            name = idOrName;
+          else
+            name = acct.getName();
+          workHours = WorkingHours.getWorkingHours(authAcct, asAdmin, acct, name, rangeStart, rangeEnd);
+        } else {
+          workHours = FreeBusy.nodataFreeBusy(idOrName, rangeStart, rangeEnd);
         }
+        ToXML.encodeFreeBusy(response, workHours);
+      }
         return response;
     }
 }

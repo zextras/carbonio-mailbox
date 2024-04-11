@@ -63,7 +63,7 @@ public class DBQueryOperation extends QueryOperation {
 
   private int dbHitCount = -1; // count of DB hits
   private List<DbSearch.Result> dbHits;
-  private List<ZimbraHit> nextHits = new ArrayList<ZimbraHit>();
+  private List<ZimbraHit> nextHits = new ArrayList<>();
   private Iterator<DbSearch.Result> dbHitsIter;
   private boolean atStart =
       true; // don't re-fill buffer twice if they call hasNext() then reset() w/o actually getting
@@ -91,16 +91,16 @@ public class DBQueryOperation extends QueryOperation {
    */
   private QueryTarget queryTarget = QueryTarget.UNSPECIFIED;
 
-  private final List<QueryInfo> queryInfo = new ArrayList<QueryInfo>();
+  private final List<QueryInfo> queryInfo = new ArrayList<>();
 
   private DbSearch.FetchMode fetch = null;
   private QueryExecuteMode executeMode = null;
 
-  private static enum QueryExecuteMode {
+  private enum QueryExecuteMode {
     NO_RESULTS,
     NO_LUCENE,
     DB_FIRST,
-    LUCENE_FIRST;
+    LUCENE_FIRST
   }
 
   /**
@@ -121,7 +121,7 @@ public class DBQueryOperation extends QueryOperation {
       return leaf.folders;
     } else if (constraints instanceof DbSearchConstraints.Union) {
       DbSearchConstraints.Union node = (DbSearchConstraints.Union) constraints;
-      Set<Folder> folders = new HashSet<Folder>();
+      Set<Folder> folders = new HashSet<>();
       for (DbSearchConstraints subConstraints : node.getChildren()) {
         if (subConstraints instanceof DbSearchConstraints.Leaf) {
           folders.addAll(((DbSearchConstraints.Leaf) subConstraints).folders);
@@ -191,7 +191,7 @@ public class DBQueryOperation extends QueryOperation {
   QueryOperation ensureSpamTrashSetting(Mailbox mbox, boolean includeTrash, boolean includeSpam)
       throws ServiceException {
     if (!hasSpamTrashSetting()) {
-      ArrayList<Folder> exclude = new ArrayList<Folder>();
+      ArrayList<Folder> exclude = new ArrayList<>();
       if (!includeSpam) {
         Folder spam = mbox.getFolderById(null, Mailbox.ID_FOLDER_SPAM);
         exclude.add(spam);
@@ -584,7 +584,7 @@ public class DBQueryOperation extends QueryOperation {
    * different (since MP is an actual ZimbraHit subclass)....therefore MessageParts are NOT
    * coalesced at this level. That is done at the top level grouper.
    */
-  private final LRUHashMap<ZimbraHit> mSeenHits = new LRUHashMap<ZimbraHit>(2048, 100);
+  private final LRUHashMap<ZimbraHit> mSeenHits = new LRUHashMap<>(2048, 100);
 
   static final class LRUHashMap<T> extends LinkedHashMap<T, T> {
     private static final long serialVersionUID = -8616556084756995676L;
@@ -630,9 +630,6 @@ public class DBQueryOperation extends QueryOperation {
           result.add(MailItem.Type.UNKNOWN);
           break;
         case CONVERSATION:
-          result.add(MailItem.Type.MESSAGE);
-          result.add(MailItem.Type.CHAT);
-          break;
         case MESSAGE:
           result.add(MailItem.Type.MESSAGE);
           result.add(MailItem.Type.CHAT);
@@ -701,7 +698,7 @@ public class DBQueryOperation extends QueryOperation {
 
     do {
       // (1) Get the next chunk of results from the DB
-      List<DbSearch.Result> dbResults = new ArrayList<DbSearch.Result>();
+      List<DbSearch.Result> dbResults = new ArrayList<>();
       dbSearch(dbResults, sort, dbOffset, MAX_HITS_PER_CHUNK);
 
       if (dbResults.size() < MAX_HITS_PER_CHUNK) {
@@ -718,12 +715,12 @@ public class DBQueryOperation extends QueryOperation {
           //    -- remember the indexId in a hash, so we can find the SearchResult later
           //    -- add that indexId to our new booleanquery
           Map<Integer, List<DbSearch.Result>> mailItemToResultsMap =
-              new HashMap<Integer, List<DbSearch.Result>>();
+              new HashMap<>();
 
           for (DbSearch.Result sr : dbResults) {
             List<DbSearch.Result> results = mailItemToResultsMap.get(sr.getIndexId());
             if (results == null) {
-              results = new LinkedList<DbSearch.Result>();
+              results = new LinkedList<>();
               mailItemToResultsMap.put(sr.getIndexId(), results);
             }
             results.add(sr);
@@ -826,7 +823,7 @@ public class DBQueryOperation extends QueryOperation {
       endOfHits = true;
     } else {
       SortBy sort = getSortOrder();
-      dbHits = new ArrayList<DbSearch.Result>();
+      dbHits = new ArrayList<>();
       switch (executeMode) {
         case NO_RESULTS:
           assert (false); // notreached
@@ -1097,7 +1094,7 @@ public class DBQueryOperation extends QueryOperation {
     boolean atFirst = true;
     StringBuilder result = new StringBuilder("<");
     if (luceneOp != null) {
-      result.append(luceneOp.toString());
+      result.append(luceneOp);
       atFirst = false;
     }
     if (!atFirst) {
@@ -1128,7 +1125,7 @@ public class DBQueryOperation extends QueryOperation {
     DBQueryOperation result = (DBQueryOperation) super.clone();
     result.constraints = (DbSearchConstraints) constraints.clone();
     result.excludeTypes.addAll(excludeTypes);
-    result.nextHits = new ArrayList<ZimbraHit>();
+    result.nextHits = new ArrayList<>();
     return result;
   }
 
@@ -1250,7 +1247,7 @@ public class DBQueryOperation extends QueryOperation {
 
   @Override
   public List<QueryInfo> getResultInfo() {
-    List<QueryInfo> toRet = new ArrayList<QueryInfo>(queryInfo);
+    List<QueryInfo> toRet = new ArrayList<>(queryInfo);
     if (luceneOp != null) {
       toRet.addAll(luceneOp.getQueryInfo());
     }

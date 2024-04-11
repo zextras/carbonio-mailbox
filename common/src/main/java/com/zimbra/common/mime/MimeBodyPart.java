@@ -156,16 +156,13 @@ public class MimeBodyPart extends MimePart {
 
     public String getText() throws IOException {
         StringBuilder buffer = new StringBuilder();
-        Reader reader = getTextReader();
-        try {
-            char[] cbuff = new char[8192];
-            int num;
-            while ((num = reader.read(cbuff, 0, cbuff.length)) != -1) {
-                buffer.append(cbuff, 0, num);
-            }
-        } finally {
-            reader.close();
+      try (Reader reader = getTextReader()) {
+        char[] cbuff = new char[8192];
+        int num;
+        while ((num = reader.read(cbuff, 0, cbuff.length)) != -1) {
+          buffer.append(cbuff, 0, num);
         }
+      }
         return buffer.toString();
     }
 

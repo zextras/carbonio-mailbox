@@ -1,0 +1,24 @@
+[Unit]
+Description=Carbonio Milter Daemon
+After=carbonio-configd.service
+Wants=carbonio-configd.service
+PartOf=carbonio-mta.target carbonio-ce.target carbonio.target
+
+[Service]
+User=zextras
+PIDFile=/opt/zextras/log/milter.pid
+EnvironmentFile=-/opt/zextras/data/systemd.env
+ExecStart=/opt/zextras/common/lib/jvm/java/bin/java \
+  -XX:ErrorFile=/opt/zextras/log \
+  -client \
+  $java_options \
+  -Dzimbra.home=/opt/zextras \
+  -Djava.library.path=$java_library_path \
+  -classpath ${java_ext_dirs}:/opt/zextras/lib/jars/*:/opt/zextras/conf \
+  -Dlog4j.configurationFile=file:/opt/zextras/conf/milter.log4j.properties \
+  -Dzimbra.config=/opt/zextras/conf/localconfig.xml \
+  com.zimbra.cs.milter.MilterServer
+Restart=on-failure
+
+[Install]
+WantedBy=carbonio-mta.target carbonio-ce.target carbonio.target

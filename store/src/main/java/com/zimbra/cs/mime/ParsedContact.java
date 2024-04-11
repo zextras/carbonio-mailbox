@@ -111,10 +111,8 @@ public final class ParsedContact {
                     throw ServiceException.INVALID_REQUEST("contact must have fields", null);
                 }
                 initializeSizeAndDigest(); // This didn't happen in init() because there was no stream.
-            } catch (MessagingException me) {
+            } catch (MessagingException | IOException me) {
                 throw MailServiceException.MESSAGE_PARSE_ERROR(me);
-            } catch (IOException ioe) {
-                throw MailServiceException.MESSAGE_PARSE_ERROR(ioe);
             }
         }
     }
@@ -150,7 +148,7 @@ public final class ParsedContact {
         }
 
         // Initialize fields.
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         for (Map.Entry<String, ? extends Object> entry : fields.entrySet()) {
             String key = StringUtil.stripControlCharacters(entry.getKey());
             String value = null;
@@ -194,10 +192,8 @@ public final class ParsedContact {
                     contactFields.remove(attach.getName());
                 }
                 initializeSizeAndDigest();
-            } catch (MessagingException me) {
+            } catch (MessagingException | IOException me) {
                 throw MailServiceException.MESSAGE_PARSE_ERROR(me);
-            } catch (IOException ioe) {
-                throw MailServiceException.MESSAGE_PARSE_ERROR(ioe);
             } finally {
                 ByteUtil.closeStream(contentStream);
             }
@@ -249,7 +245,7 @@ public final class ParsedContact {
             throw ServiceException.FAILURE("MimeMultipart content expected but got " + mm.getContent().toString(), x);
         }
 
-        List<Attachment> attachments = new ArrayList<Attachment>(multi.getCount());
+        List<Attachment> attachments = new ArrayList<>(multi.getCount());
         for (int i = 1; i <= multi.getCount(); i++) {
             MimeBodyPart bp = (MimeBodyPart) multi.getBodyPart(i - 1);
             ContentDisposition cdisp = new ContentDisposition(bp.getHeader("Content-Disposition", null));
@@ -297,7 +293,7 @@ public final class ParsedContact {
     public abstract static class FieldDelta {
         private final Op op;
 
-        public static enum Op {
+        public enum Op {
             ADD,
             REMOVE;
 
@@ -363,7 +359,7 @@ public final class ParsedContact {
     }
 
     public static class FieldDeltaList {
-        private final List<FieldDelta> deltaList = new ArrayList<FieldDelta>();
+        private final List<FieldDelta> deltaList = new ArrayList<>();
 
         public void addAttrDelta(String name, String value, FieldDelta.Op op) {
             // name cannot be null or empty
@@ -434,7 +430,7 @@ public final class ParsedContact {
                 // add the new attachments to the contact
                 removeAttachment(attach.getName());
                 if (contactAttachments == null) {
-                    contactAttachments = new ArrayList<Attachment>(attachDelta.size());
+                    contactAttachments = new ArrayList<>(attachDelta.size());
                 }
                 contactAttachments.add(attach);
             }
@@ -478,10 +474,8 @@ public final class ParsedContact {
                 sharedStream = null;
 
                 initializeSizeAndDigest();
-            } catch (MessagingException me) {
+            } catch (MessagingException | IOException me) {
                 throw MailServiceException.MESSAGE_PARSE_ERROR(me);
-            } catch (IOException e) {
-                throw MailServiceException.MESSAGE_PARSE_ERROR(e);
             }
         } else {
             // No attachments.  Wipe out any previous reference to a blob.
@@ -534,7 +528,7 @@ public final class ParsedContact {
         } else {
             List<String> curValuesList = null;
             try {
-                curValuesList = new ArrayList<String>(Arrays.asList(Contact.parseMultiValueAttr(curValue)));
+                curValuesList = new ArrayList<>(Arrays.asList(Contact.parseMultiValueAttr(curValue)));
             } catch (JSONException e) {
                 // log a warning and continue
                 ZimbraLog.misc.warn("unable to modify contact for: " +
@@ -628,7 +622,7 @@ public final class ParsedContact {
         if (indexDocs != null) {
             return;
         }
-        indexDocs = new ArrayList<IndexDocument>();
+        indexDocs = new ArrayList<>();
         StringBuilder attachContent = new StringBuilder();
 
         ServiceException conversionError = null;
@@ -708,7 +702,7 @@ public final class ParsedContact {
 
         StringBuilder contentText = new StringBuilder();
 
-        String emailFields[] = Contact.getEmailFields(acct);
+        String[] emailFields = Contact.getEmailFields(acct);
 
         FieldTokenStream fields = new FieldTokenStream();
         for (Map.Entry<String, String> entry : getFields().entrySet()) {

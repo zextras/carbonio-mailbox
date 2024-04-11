@@ -17,12 +17,7 @@ import com.zimbra.cs.account.accesscontrol.RightModifier;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.HSQLDB;
-import com.zimbra.cs.mailbox.ACL;
-import com.zimbra.cs.mailbox.DeliveryOptions;
-import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.Message;
-import com.zimbra.cs.mailbox.ScheduledTaskManager;
+import com.zimbra.cs.mailbox.*;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.store.StoreManager;
@@ -44,6 +39,11 @@ public class MailboxTestUtil {
   public static final int LDAP_PORT = 1389;
   public static final String SERVER_NAME = "localhost";
   public static final String DEFAULT_DOMAIN = "test.com";
+
+  public static InMemoryLdapServer getInMemoryLdapServer() {
+    return inMemoryLdapServer;
+  }
+
   private static InMemoryLdapServer inMemoryLdapServer;
 
   private MailboxTestUtil() {}
@@ -75,15 +75,12 @@ public class MailboxTestUtil {
 
     LC.ldap_port.setDefault(LDAP_PORT);
     LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
+    initData();
 
     DbPool.startup();
     HSQLDB.createDatabase("");
 
-    final Provisioning provisioning = Provisioning.getInstance(Provisioning.CacheMode.OFF);
-    provisioning.createServer(
-        SERVER_NAME,
-        new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
-    provisioning.createDomain(DEFAULT_DOMAIN, new HashMap<>());
+
 
     RedoLogProvider.getInstance().startup();
     StoreManager.getInstance().startup();
@@ -99,6 +96,20 @@ public class MailboxTestUtil {
     inMemoryLdapServer.clear();
     RedoLogProvider.getInstance().shutdown();
     inMemoryLdapServer.shutDown(true);
+  }
+
+  public static void clearData() throws Exception {
+    inMemoryLdapServer.clear();
+    HSQLDB.clearDatabase();
+  }
+
+  public static void initData() throws Exception {
+    inMemoryLdapServer.initializeBasicData();
+    final Provisioning provisioning = Provisioning.getInstance(Provisioning.CacheMode.OFF);
+    provisioning.createServer(
+        SERVER_NAME,
+        new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
+    provisioning.createDomain(DEFAULT_DOMAIN, new HashMap<>());
   }
 
   /** Performs actions on an account. Start with {@link #shareWith(Account)} */
@@ -126,6 +137,12 @@ public class MailboxTestUtil {
           .addMessage(null, parsedMessage, deliveryOptions, null);
     }
 
+    public Message saveDraft(ParsedMessage message) throws ServiceException, IOException {
+      return mailboxManager
+          .getMailboxByAccount(account)
+          .saveDraft(new OperationContext(account), message, Mailbox.ID_AUTO_INCREMENT);
+    }
+
     public static class Factory {
       private final MailboxManager mailboxManager;
       private final RightManager rightManager;
@@ -137,6 +154,10 @@ public class MailboxTestUtil {
 
       public AccountAction forAccount(Account account) {
         return new AccountAction(account, mailboxManager, rightManager);
+      }
+
+      public static Factory getDefault() throws ServiceException {
+        return new Factory(MailboxManager.getInstance(), RightManager.getInstance());
       }
     }
 
@@ -198,12 +219,16 @@ public class MailboxTestUtil {
     public static class Factory {
       private final Provisioning provisioning;
 
-      public AccountCreator get() {
-        return new AccountCreator(provisioning);
-      }
-
       public Factory(Provisioning provisioning) {
         this.provisioning = provisioning;
+      }
+
+      public static Factory getDefault() {
+        return new AccountCreator.Factory(Provisioning.getInstance());
+      }
+
+      public AccountCreator get() {
+        return new AccountCreator(provisioning);
       }
     }
 

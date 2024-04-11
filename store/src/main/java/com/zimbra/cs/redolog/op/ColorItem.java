@@ -52,8 +52,8 @@ public class ColorItem extends RedoableOp {
         out.writeLong(mColor);
         out.writeInt(mIds == null ? 0 : mIds.length);
         if (mIds != null) {
-            for (int i = 0; i < mIds.length; i++)
-                out.writeInt(mIds[i]);
+          for (int mId : mIds)
+            out.writeInt(mId);
         }
     }
 

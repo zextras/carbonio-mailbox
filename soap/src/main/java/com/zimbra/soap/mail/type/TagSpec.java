@@ -41,7 +41,7 @@ public class TagSpec {
      */
     @SuppressWarnings("unused")
     private TagSpec() {
-        this((String) null);
+        this(null);
     }
 
     public TagSpec(String name) {

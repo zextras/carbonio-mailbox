@@ -33,7 +33,7 @@ public final class CheckBlobConsistency extends AdminDocumentHandler {
 
 
         // Assemble the list of mailboxes.
-        List<Integer> mailboxIds = new ArrayList<Integer>();
+        List<Integer> mailboxIds = new ArrayList<>();
         List<Element> mboxElementList = request.listElements(AdminConstants.E_MAILBOX);
         if (mboxElementList.isEmpty()) {
             // Get all mailbox id's.
@@ -68,7 +68,7 @@ public final class CheckBlobConsistency extends AdminDocumentHandler {
         } else if (sm instanceof FileBlobStore) {
 
             // Assemble the list of volumes.
-            List<Short> volumeIds = new ArrayList<Short>();
+            List<Short> volumeIds = new ArrayList<>();
             List<Element> volumeElementList = request.listElements(AdminConstants.E_VOLUME);
             if (volumeElementList.isEmpty()) {
                 // Get all message volume id's.

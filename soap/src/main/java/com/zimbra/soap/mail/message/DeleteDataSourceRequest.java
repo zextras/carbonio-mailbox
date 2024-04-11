@@ -25,7 +25,6 @@ import com.zimbra.soap.mail.type.ImapDataSourceNameOrId;
 import com.zimbra.soap.mail.type.NameOrId;
 import com.zimbra.soap.mail.type.Pop3DataSourceNameOrId;
 import com.zimbra.soap.mail.type.RssDataSourceNameOrId;
-import com.zimbra.soap.mail.type.UnknownDataSourceNameOrId;
 import com.zimbra.soap.mail.type.YabDataSourceNameOrId;
 
 /**

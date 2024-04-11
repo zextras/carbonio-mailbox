@@ -56,7 +56,7 @@ public final class TcpLmtpServer extends TcpServer implements LmtpServer, Realti
    */
   @Override
   public Map<String, Object> getStatData() {
-    Map<String, Object> data = new HashMap<String, Object>();
+    Map<String, Object> data = new HashMap<>();
     data.put(ZimbraPerf.RTS_LMTP_CONN, numActiveHandlers());
     data.put(ZimbraPerf.RTS_LMTP_THREADS, numThreads());
     return data;

@@ -11,7 +11,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.common.soap.MailConstants;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class IdAndType {
@@ -33,7 +32,7 @@ public class IdAndType {
      */
     @SuppressWarnings("unused")
     private IdAndType() {
-        this((String) null, (String) null);
+        this(null, null);
     }
 
     public IdAndType(String id, String type) {

@@ -49,7 +49,7 @@ public class RemoveAccountLoggerRequest {
     private LoggerInfo logger;
 
     public RemoveAccountLoggerRequest() {
-        this((AccountSelector) null, (LoggerInfo) null);
+        this(null, null);
     }
 
     public RemoveAccountLoggerRequest(AccountSelector account, LoggerInfo logger) {

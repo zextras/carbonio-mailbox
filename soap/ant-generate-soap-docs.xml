@@ -10,7 +10,7 @@
   <property name="soapdocs.output.dir" location="${build.dir}/docs/soap" />
   <property name="soapdocs.src.dir" location="soap/src/main/java" />
   <property name="soapdocs.apidesc.file" location="${build.dir}/soapapi-desc.json" />
-  <property name="soapdocs.apidesc.baseline.file" location="soap/baseline-soapapi-desc.json.gz" />
+  <property name="soapdocs.apidesc.baseline.file" location="baseline-soapapi-desc.json.gz" />
   <property name="soapapi.changelog.output.dir" location="${soapdocs.output.dir}/api-changelog" />
   <property name="soapapi.doc.file" location="${build.dir}/docs/soapapi-doc.zip" />
   <property name="soapapi.changelog.file" location="${build.dir}/docs/soapapi-changelog.zip" />
@@ -48,6 +48,28 @@
       <arg line="-output.dir ${xml.schema.dir}" />
     </java>
   </target>
+
+
+  <target name="generate-soap-api-changelog" depends="generate-soap-api-doc">
+    <delete dir="${soapapi.changelog.output.dir}" quiet="true"/>
+    <mkdir dir="${soapapi.changelog.output.dir}"/>
+    <copy todir="${soapapi.changelog.output.dir}">
+      <fileset dir="${templates.dir}/changelog">
+        <exclude name="**/*.ftl"/>
+      </fileset>
+    </copy>
+    <java classname="com.zimbra.doc.soap.changelog.SoapApiChangeLog" classpathref="class.path" fork="true" failonerror="true">
+      <arg line="--output-dir ${soapapi.changelog.output.dir}"/>
+      <arg line="--templates-dir ${templates.dir}"/>
+      <arg line="--baseline-apidesc ${soapdocs.apidesc.baseline.file}"/>
+      <arg line="--current-apidesc ${soapdocs.apidesc.file}"/>
+    </java>
+  </target>
+
+  <target name="update-baseline-apidesc" depends="generate-soap-api-doc" description="Update baseline description of SOAP API">
+    <gzip src="${soapdocs.apidesc.file}" destfile="${soapdocs.apidesc.baseline.file}"/>
+  </target>
+
 
   <target name="generate-soap-api-doc" depends="generate-wsdl">
 

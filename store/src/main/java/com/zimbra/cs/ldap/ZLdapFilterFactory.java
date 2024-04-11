@@ -31,7 +31,7 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
     return SINGLETON;
   }
 
-  public static enum FilterId {
+  public enum FilterId {
     ACCOUNT_BY_ID(SINGLETON.accountById("{ACCOUNT-ID}")),
     ACCOUNT_BY_FOREIGN_PRINCIPAL(SINGLETON.accountByForeignPrincipal("{FOREIGN-PRINCIPAL}")),
     ACCOUNT_BY_MEMBEROF(SINGLETON.accountByMemberOf("{DYNAMIC-GROUP-ID}")),
@@ -192,11 +192,11 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
 
     private final String template;
 
-    private FilterId(ZLdapFilter template) {
+    FilterId(ZLdapFilter template) {
       this(template.toFilterString());
     }
 
-    private FilterId(String template) {
+    FilterId(String template) {
       this.template = template;
     }
 

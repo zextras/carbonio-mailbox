@@ -49,7 +49,7 @@ public class UnexpectedBlobInfo {
      */
     @SuppressWarnings("unused")
     private UnexpectedBlobInfo() {
-        this((short)-1, (String) null, (Long) null, false);
+        this((short)-1, null, null, false);
     }
 
     public UnexpectedBlobInfo(short volumeId, String path, Long fileSize, boolean external) {

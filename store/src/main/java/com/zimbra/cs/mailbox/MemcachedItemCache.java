@@ -72,8 +72,8 @@ public class MemcachedItemCache {
 
     MemcachedItemCache() {
         ZimbraMemcachedClient memcachedClient = MemcachedConnector.getClient();
-        memcachedLookup = new MemcachedMap<ItemCacheKey, Metadata>(memcachedClient, new MailItemSerializer(), false);
-        memcachedUuidLookup = new MemcachedMap<ItemCacheUuidKey, Integer>(memcachedClient, new IntegerSerializer(), false);
+        memcachedLookup = new MemcachedMap<>(memcachedClient, new MailItemSerializer(), false);
+        memcachedUuidLookup = new MemcachedMap<>(memcachedClient, new IntegerSerializer(), false);
     }
 
     private static class IntegerSerializer implements MemcachedSerializer<Integer> {

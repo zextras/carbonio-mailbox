@@ -40,14 +40,14 @@ public class ZimbraAuthProvider extends AuthProvider {
     private String getEncodedAuthTokenFromCookie(HttpServletRequest req, boolean isAdminReq) {
         String cookieName = ZimbraCookie.authTokenCookieName(isAdminReq);
         String encodedAuthToken = null;
-        javax.servlet.http.Cookie cookies[] =  req.getCookies();
+        javax.servlet.http.Cookie[] cookies =  req.getCookies();
         if (cookies != null) {
-            for (int i = 0; i < cookies.length; i++) {
-                if (cookies[i].getName().equals(cookieName)) {
-                    encodedAuthToken = cookies[i].getValue();
-                    break;
-                }
+          for (javax.servlet.http.Cookie cookie : cookies) {
+            if (cookie.getName().equals(cookieName)) {
+              encodedAuthToken = cookie.getValue();
+              break;
             }
+          }
         }
         return encodedAuthToken;
     }

@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
 
-import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.soap.type.TargetBy;
 import com.zimbra.soap.type.TargetType;
@@ -44,8 +43,8 @@ public class EffectiveRightsTargetSelector {
      */
     @SuppressWarnings("unused")
     private EffectiveRightsTargetSelector() {
-        this((TargetType) null, (TargetBy) null,
-                (String) null);
+        this(null, null,
+            null);
     }
 
     public EffectiveRightsTargetSelector(TargetType type, TargetBy by, String value) {

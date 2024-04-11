@@ -122,7 +122,7 @@ public class SpamExtract {
         System.exit((errmsg == null) ? 0 : 1);
     }
 
-    private static CommandLine parseArgs(String args[]) {
+    private static CommandLine parseArgs(String[] args) {
         CommandLineParser parser = new GnuParser();
         CommandLine cl = null;
         try {
@@ -263,7 +263,7 @@ public class SpamExtract {
 
                 StringBuilder deleteList = new StringBuilder();
 
-                List<String> ids = new ArrayList<String>();
+                List<String> ids = new ArrayList<>();
                 for (Iterator<Element> iter = searchResp.elementIterator(MailConstants.E_MSG); iter.hasNext();) {
                     offset++;
                     Element e = iter.next();
@@ -276,7 +276,8 @@ public class SpamExtract {
                     LOG.debug("adding id %s", mid);
                     ids.add(mid);
                     if (ids.size() >= BATCH_SIZE || !iter.hasNext()) {
-                        StringBuilder path = new StringBuilder(restURL.toString() + "/service/user/" + account.getName() + "/?fmt=tgz&list=" + StringUtils.join(ids, ","));
+                        StringBuilder path = new StringBuilder(
+                            restURL + "/service/user/" + account.getName() + "/?fmt=tgz&list=" + StringUtils.join(ids, ","));
                         LOG.debug("sending request for path %s", path.toString());
                         List<String> extractedIds = extractMessages(hc, gm, path.toString(), outdir, raw);
                         if (ids.size() > extractedIds.size()) {
@@ -348,7 +349,7 @@ public class SpamExtract {
     private static final int MAX_BUFFER_SIZE = 10 * 1024 * 1024;
 
     private static List<String> extractMessages(HttpClientBuilder hc, HttpGet gm, String path, File outdir, boolean raw) throws HttpException, IOException {
-        List<String> extractedIds = new ArrayList<String>();
+        List<String> extractedIds = new ArrayList<>();
         HttpClient client = hc.build();
       
         if (LOG.isDebugEnabled()) {
@@ -379,23 +380,17 @@ public class SpamExtract {
                     if (raw) {
                         // Write the message as-is.
                         File file = new File(outdir, mOutputPrefix + "-" + mExtractIndex++);
-                        OutputStream os = null;
-                        try {
-                            os = new BufferedOutputStream(new FileOutputStream(file));
-                            byte[] data = readArchiveEntry(tgzStream, entry);
-                            ByteUtil.copy(new ByteArrayInputStream(data), true, os, false);
-                            if (verbose) {
-                                LOG.info("Wrote: " + file);
-                            }
-                            extractedIds.add(ud.id + "");
-                        } catch (java.io.IOException e) {
-                            String fileName = outdir + "/" + mOutputPrefix + "-" + mExtractIndex;
-                            LOG.error("Cannot write to " + fileName, e);
-                        } finally {
-                            if (os != null) {
-                                os.close();
-                            }
+                      try (OutputStream os = new BufferedOutputStream(new FileOutputStream(file))) {
+                        byte[] data = readArchiveEntry(tgzStream, entry);
+                        ByteUtil.copy(new ByteArrayInputStream(data), true, os, false);
+                        if (verbose) {
+                          LOG.info("Wrote: " + file);
                         }
+                        extractedIds.add(ud.id + "");
+                      } catch (IOException e) {
+                        String fileName = outdir + "/" + mOutputPrefix + "-" + mExtractIndex;
+                        LOG.error("Cannot write to " + fileName, e);
+                      }
                     } else {
                         // Write the attached message to the output directory.
                         BufferStream buffer = new BufferStream(entry.getSize(), MAX_BUFFER_SIZE);
@@ -468,19 +463,15 @@ public class SpamExtract {
             foundAtleastOneAttachedMessage = true;
             Part msg = (Part) bp.getContent(); // the actual message
             File file = new File(outdir, mOutputPrefix + "-" + mExtractIndex++);
-            OutputStream os = null;
-            try {
-                os = new BufferedOutputStream(new FileOutputStream(file));
-                if (msg instanceof MimeMessage) {
-                    //bug 74435 clone into newMsg so our parser has a chance to handle headers which choke javamail
-                    ZMimeMessage newMsg = new ZMimeMessage((MimeMessage) msg);
-                    newMsg.writeTo(os);
-                } else {
-                    msg.writeTo(os);
-                }
-            } finally {
-                os.close();
+          try (OutputStream os = new BufferedOutputStream(new FileOutputStream(file))) {
+            if (msg instanceof MimeMessage) {
+              //bug 74435 clone into newMsg so our parser has a chance to handle headers which choke javamail
+              ZMimeMessage newMsg = new ZMimeMessage((MimeMessage) msg);
+              newMsg.writeTo(os);
+            } else {
+              msg.writeTo(os);
             }
+          }
             if (verbose) LOG.info("Wrote: " + file);
         }
 

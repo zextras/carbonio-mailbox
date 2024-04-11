@@ -40,7 +40,7 @@ public class FreeBusyQueueProvider {
      */
     @SuppressWarnings("unused")
     private FreeBusyQueueProvider() {
-        this((String) null);
+        this(null);
     }
 
     public FreeBusyQueueProvider(String name) {

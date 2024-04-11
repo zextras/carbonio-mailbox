@@ -116,10 +116,10 @@ public class AclPushSerializer {
 
     public static ShareInfoData deserialize(String sharedItemInfo) throws ServiceException {
         String[] parts = sharedItemInfo.split(";");
-        Map<String, String> attrs = new HashMap<String, String>();
+        Map<String, String> attrs = new HashMap<>();
         String key = null;
         for (String part : parts) {
-            String x[] = part.split(":", 2);
+            String[] x = part.split(":", 2);
             if (x.length == 2) {
             	attrs.put(x[0], x[1]);
             	key = x[0];
@@ -135,7 +135,7 @@ public class AclPushSerializer {
         String granteeName = attrs.get("granteeName");
         obj.setGranteeName("null".equals(granteeName) ? null : granteeName);
         obj.setGranteeType(ACL.stringToType(attrs.get("granteeType")));
-        obj.setItemId(Integer.valueOf(attrs.get("folderId")));
+        obj.setItemId(Integer.parseInt(attrs.get("folderId")));
         String uuid = attrs.get("folderUuid");
         obj.setItemUuid("null".equals(uuid) ? null : uuid);
         if (attrs.get("folderPath").contains(SEMICOLON_ESCAPE_SEQ)) {

@@ -42,6 +42,8 @@ import com.zimbra.cs.mailbox.calendar.RecurId;
 import com.zimbra.cs.mailbox.calendar.ZAttendee;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.AuthProvider;
+import com.zimbra.cs.service.mail.message.parser.MimeMessageData;
+import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.ItemIdFormatter;
 import com.zimbra.cs.util.AccountUtil;
@@ -362,7 +364,7 @@ public class SendInviteReply extends CalendarRequest {
 
         ZVCalendar iCal = csd.mInvite.newToICalendar(true);
 
-        ParseMimeMessage.MimeMessageData parsedMessageData = new ParseMimeMessage.MimeMessageData();
+        MimeMessageData parsedMessageData = new MimeMessageData();
 
         // did they specify a custom <m> message?  If so, then we don't have to build one...
         Element msgElem = request.getOptionalElement(MailConstants.E_MSG);
@@ -441,8 +443,7 @@ public class SendInviteReply extends CalendarRequest {
         else apptFolderId = Mailbox.ID_FOLDER_CALENDAR;
         MailSendQueue sendQueue = new MailSendQueue();
         try {
-          if (stat != null
-              && IcalXmlStrMap.PARTSTAT_DECLINED.equals(stat)
+          if (IcalXmlStrMap.PARTSTAT_DECLINED.equals(stat)
               && !CalendarMailSender.VERB_DECLINE.equals(verb)) {
             sendCalendarMessage(
                 zsc,

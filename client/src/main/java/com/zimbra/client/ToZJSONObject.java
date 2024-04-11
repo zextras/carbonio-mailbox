@@ -9,5 +9,5 @@ import org.json.JSONException;
 
 
 public interface ToZJSONObject {
-    public ZJSONObject toZJSONObject() throws JSONException;
+    ZJSONObject toZJSONObject() throws JSONException;
 }

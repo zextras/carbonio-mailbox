@@ -26,7 +26,7 @@ public class HtmlElementsBuilder {
     static final String COMMA = "(\\s)?+,(\\s)?+";
     private HtmlAttributesBuilder builder;
     private boolean neuterImages;
-    private Map<String, ElementPolicy> elementSpecificPolicies = new HashMap<String, ElementPolicy>();
+    private Map<String, ElementPolicy> elementSpecificPolicies = new HashMap<>();
 
     public HtmlElementsBuilder(HtmlAttributesBuilder builder, boolean neuterImages) {
         this.builder = builder;

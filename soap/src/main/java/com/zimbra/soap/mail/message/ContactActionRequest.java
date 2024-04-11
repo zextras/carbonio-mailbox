@@ -36,7 +36,7 @@ public class ContactActionRequest {
      */
     @SuppressWarnings("unused")
     private ContactActionRequest() {
-        this((ContactActionSelector) null);
+        this(null);
     }
 
     public ContactActionRequest(ContactActionSelector action) {

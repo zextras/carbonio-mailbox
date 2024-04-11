@@ -197,6 +197,10 @@ package() {
     "${pkgdir}/opt/zextras/conf/rights/rights.xml"
   install -D "store/src/main/resources/conf/rights/user-rights.xml" \
     "${pkgdir}/opt/zextras/conf/rights/user-rights.xml"
+
+  # systemd unit
+  install -Dm 644 packages/common-appserver-conf/carbonio-milter.service \
+    "${pkgdir}/lib/systemd/system/carbonio-milter.service"
 }
 
 postinst__apt() {

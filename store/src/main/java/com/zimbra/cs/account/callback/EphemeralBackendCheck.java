@@ -166,7 +166,7 @@ public class EphemeralBackendCheck extends AttributeCallback {
      */
     public abstract static class MigrationStateHelper {
 
-        public static enum Reason {NO_MIGRATION, MIGRATION_ERROR, URL_MISMATCH }
+        public enum Reason {NO_MIGRATION, MIGRATION_ERROR, URL_MISMATCH }
 
         protected String URL;
 
@@ -178,8 +178,8 @@ public class EphemeralBackendCheck extends AttributeCallback {
         public abstract void warn(Reason reason);
         public abstract void allow();
 
-        public static interface Factory {
-            public MigrationStateHelper getHelper() throws ServiceException;
+        public interface Factory {
+            MigrationStateHelper getHelper() throws ServiceException;
         }
     }
 
@@ -216,7 +216,7 @@ public class EphemeralBackendCheck extends AttributeCallback {
                         + "Ephemeral data will be forwarded to %s until migration info is reset or the backend is changed to match it", URL, info.getURL(), info.getURL());
                 return;
             default:
-                return;
+                break;
             }
         }
 
