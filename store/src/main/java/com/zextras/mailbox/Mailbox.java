@@ -10,7 +10,6 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.webapp.WebAppContext;
 
 public class Mailbox {
 
@@ -33,14 +32,10 @@ public class Mailbox {
       webDescriptor = commandLine.getOptionValue(WEB_DESCRIPTOR);
     }
 
-    WebAppContext webAppContext = new WebAppContext();
-    webAppContext.setDescriptor(webDescriptor);
-    webAppContext.setResourceBase("/");
-    webAppContext.setContextPath("/service");
+    Server server = new LikeXmlJettyServer.Builder()
+        .withWebDescriptor(webDescriptor)
+        .build();
 
-    Server server = new LikeXmlJettyServer.Builder().build();
-
-    server.setHandler(webAppContext);
     server.setStopAtShutdown(true);
     server.setDumpAfterStart(true);
     server.setDumpBeforeStop(true);
