@@ -8,4 +8,5 @@ echo "ok, moving on."
 
 /scripts/carbonio-bootstrap.sh
 
-su - zextras -c "/usr/bin/carbonio-appserver"
+echo "tail -f /dev/null"
+tail -f /dev/null

@@ -37,9 +37,9 @@ import org.eclipse.jetty.webapp.WebAppContext;
 // Plus we adopted the same variables used in https://github.com/zextras/carbonio-appserver/blob/main/appserver/conf/jetty/jetty.xml.production
 public class LikeXmlJettyServer {
 
-  private static final int APP_USER_SERVER_PORT = 8080;
-  private static final int APP_ADMIN_SERVER_PORT = 7071;
-  private static final int MTA_APP_ADMIN_SERVER_PORT = 7073;
+  private static final int USER_SERVER_PORT = 8080;
+  private static final int ADMIN_SERVER_PORT = 7071;
+  private static final int ADMIN_MTA_SERVER_PORT = 7073;
   private static final int EXTENSIONS_SERVER_PORT = 7072;
   private static final int SECURE_PORT = 8443;
 
@@ -193,7 +193,7 @@ public class LikeXmlJettyServer {
 
     private ServerConnector createUserHttpConnector(Server server, HttpConfiguration httpConfig) {
       ServerConnector serverConnector = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
-      serverConnector.setPort(APP_USER_SERVER_PORT);
+      serverConnector.setPort(USER_SERVER_PORT);
       serverConnector.setIdleTimeout(60000);
       return serverConnector;
     }
@@ -211,14 +211,14 @@ public class LikeXmlJettyServer {
 
     private ServerConnector createAdminHttpsConnector(Server server) {
       ServerConnector serverConnector = createHttpsConnector(server);
-      serverConnector.setPort(APP_ADMIN_SERVER_PORT);
+      serverConnector.setPort(ADMIN_SERVER_PORT);
       serverConnector.setIdleTimeout(0);
       return serverConnector;
     }
 
     private ServerConnector createMtaAdminHttpsConnector(Server server) {
       ServerConnector serverConnector = createHttpsConnector(server);
-      serverConnector.setPort(MTA_APP_ADMIN_SERVER_PORT);
+      serverConnector.setPort(ADMIN_MTA_SERVER_PORT);
       serverConnector.setIdleTimeout(0);
       return serverConnector;
     }
