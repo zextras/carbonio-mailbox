@@ -14,25 +14,13 @@
       "name": "appserver-service"
     },
     {
-      "name": "appserver-store-libs"
-    },
-    {
-      "name": "appserver-war"
-    },
-    {
       "name": "common-appserver-conf"
     },
     {
-      "name": "common-appserver-native-lib"
-    },
-    {
-      "name": "common-core-jar"
-    },
-    {
-      "name": "common-core-libs"
-    },
-    {
       "name": "directory-server"
+    },
+    {
+      "name": "mailbox-jar"
     }
   ]
 }

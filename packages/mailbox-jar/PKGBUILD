@@ -1,12 +1,11 @@
-pkgname="carbonio-appserver-war"
+pkgname="carbonio-mailbox-jar"
 pkgver="4.15.0"
 pkgrel="1"
-pkgdesc="Carbonio Mailbox Service War"
+pkgdesc="Carbonio Mailbox Jars"
 arch=('x86_64')
 maintainer="Zextras <packages@zextras.com>"
 copyright=(
   "2022-2024, Zextras <https://www.zextras.com>"
-  "2022, Synacor, Inc."
 )
 license=(
   "GPL-2.0-only"
