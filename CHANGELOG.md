@@ -1,5 +1,20 @@
 
 
+# [4.15.0](https://github.com/Zextras/carbonio-mailbox/compare/4.14.0...4.15.0) (2024-04-11)
+
+
+### Features
+
+* [CO-1014] add carbonioPrefSendAnalytics attribute ([#468](https://github.com/Zextras/carbonio-mailbox/issues/468)) ([0eddb70](https://github.com/Zextras/carbonio-mailbox/commit/0eddb709aa10a257f834c9f69414d97d9c288f22))
+* [CO-982] Enhance ordering of matches in FullAutoComplete ([#473](https://github.com/Zextras/carbonio-mailbox/issues/473)) ([f0481ba](https://github.com/Zextras/carbonio-mailbox/commit/f0481badaab31656ac0d72adee2041cce1808c62))
+* [ZIF-1008] add carbonio send analytics check ([#478](https://github.com/Zextras/carbonio-mailbox/issues/478)) ([896d1b6](https://github.com/Zextras/carbonio-mailbox/commit/896d1b66019c6831351033194f6226a1eceaeb07))
+* [ZIF-1008] add Matomo feature usage tracking for smart link ([#474](https://github.com/Zextras/carbonio-mailbox/issues/474)) ([f352b31](https://github.com/Zextras/carbonio-mailbox/commit/f352b3104ba7524c0bb8ef22f31461ce3d6e8455))
+* [ZIF-970] Convert an attachment into a smart-link ([#466](https://github.com/Zextras/carbonio-mailbox/issues/466)) ([fa650f2](https://github.com/Zextras/carbonio-mailbox/commit/fa650f2bc071d7b2266511444c8b0312996d8e8a)), closes [#454](https://github.com/Zextras/carbonio-mailbox/issues/454)
+* [ZIF-982] remove message size check on save draft ([#471](https://github.com/Zextras/carbonio-mailbox/issues/471)) ([d9114e5](https://github.com/Zextras/carbonio-mailbox/commit/d9114e5c0bb334680003cc358c70c15e84c30462))
+* add systemd units ([#477](https://github.com/Zextras/carbonio-mailbox/issues/477)) ([f210224](https://github.com/Zextras/carbonio-mailbox/commit/f210224f3f76727490d38b0d3858e1c0f21d7132))
+* **CO-954:** define Mailbox Admin Sidecar ([#450](https://github.com/Zextras/carbonio-mailbox/issues/450)) ([23ea121](https://github.com/Zextras/carbonio-mailbox/commit/23ea121066cc79fd409a50985bc52a809d5bf760))
+* **CO-954:** define nslookup sidecar ([#452](https://github.com/Zextras/carbonio-mailbox/issues/452)) ([7adde50](https://github.com/Zextras/carbonio-mailbox/commit/7adde5004f55e4d8382edb8485037a0383845196))
+
 # [4.14.0](https://github.com/Zextras/carbonio-mailbox/compare/4.12.0...4.14.0) (2024-02-15)
 
 
