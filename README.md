@@ -13,8 +13,27 @@ and their roles:
 - **common**: package providing classes of common use, like utilities, clients and common parameters
 - **native**: package to load native libraries
 - **soap**: package describing SOAP APIs and tools to generate wsdl documentation
-- **store**: WAR package that defines the service. It also includes core functionalities like SOAP
-APIs, LDAP, Krb5, IMAP, POP3 and CLI functions
+- **store**: the real mailbox service (SOAP APIs, IMAP, POP3 and CLI)
+
+## Building Carbonio Mailbox from source
+
+### 1. Build using local mvn command
+
+1. Requirements:
+- JDK version 11. Confirm by running:
+   ```shell
+   $ javac -version
+   ```
+- gcc to build `native` module
+
+2. Build the Code by running:
+   ```shell
+   $ mvn clean install -DskipTests
+   ```
+### 2. Build the source code inside a docker container
+```shell
+$ UID=${UID} GID=${GID} docker compose -f './docker/jetty-run/docker-compose.yml' run --rm build
+```
 
 ## Generating Rights and ZAttr classes
 Whenever you make changes to [attrs.xml](store/src/main/resources/conf/attrs/attrs.xml)
@@ -24,40 +43,14 @@ you can generate rights and ZAttr* classes by running:
 ## Generating SOAP DOCS
 > mvn antrun:run@generate-soap-docs
 
-## Building Carbonio Mailbox from source
-
-### 1. Build using local mvn command
-
-1. Build Requirements:
-Ensure you have JDK version 11 installed. Confirm by running:
-   ```shell
-   $ javac -version
-   ```
-  
-2. Clone the Carbonio Mailbox Repository:
-   ```shell
-   $ git clone https://github.com/Zextras/carbonio-mailbox.git
-   ```
-
-3. Navigate to the Source Directory:
-   ```shell
-   $ cd carbonio-mailbox/
-   ```
-
-4. Build the Code:
-   ```shell
-   $ mvn install
-   ```
-
-### 2. Build the source code inside a docker container
-```shell
-$ UID=${UID} GID=${GID} docker compose -f './docker/jetty-run/docker-compose.yml' run --rm build
-```
-
 ## Run Carbonio Mailbox locally (for Development)
 Following guide provides two different ways to run Carbonio Mailbox locally for Development:
 
-### 1. Full Carbonio Mailbox
+### 1. Mailbox with in-memory databases
+Simply run `com.zextras.mailbox.SampleLocalMailbox` main class in store module.
+This will start a Mailbox with in-memory LDAP and an HSQLDB database.
+
+### 2. Full Carbonio Mailbox
 This option compiles the code, packages the artifacts, installs all the built Carbonio Mailbox
 packages, and then starts the services.
 
@@ -81,7 +74,7 @@ packages, and then starts the services.
    ```
    **NB**: don't forget to use the `--build` flag, otherwise it will not load the new changes
 
-### 2. Minimal Jetty Instance
+### 3. Minimal Jetty Instance
 This option compiles the code and launches the mailbox with a minimal setup, ideal for developing
 and testing SOAP and REST APIs exposed by Mailbox.
 
