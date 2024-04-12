@@ -23,6 +23,10 @@ priority="optional"
 package() {
   cd "${srcdir}"/../../staging
 
+  # Appserver
+  install -Dm 750 packages/appserver-service/carbonio-appserver \
+      "${pkgdir}/usr/bin/carbonio-appserver"
+
   # Mailbox
   install -Dm 755 packages/appserver-service/carbonio-mailbox \
     "${pkgdir}/usr/bin/carbonio-mailbox"

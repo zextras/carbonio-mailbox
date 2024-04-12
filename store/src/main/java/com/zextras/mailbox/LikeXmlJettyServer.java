@@ -4,7 +4,10 @@
 
 package com.zextras.mailbox;
 
+import com.zextras.mailbox.config.GlobalConfigProvider;
 import com.zimbra.common.jetty.JettyMonitor;
+import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.account.Config;
 import javax.servlet.DispatcherType;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.rewrite.handler.MsieSslRule;
@@ -42,10 +45,15 @@ public class LikeXmlJettyServer {
 
   public static class Builder {
 
+    private final GlobalConfigProvider globalConfigProvider;
     private String webDescriptor;
     private HttpConfiguration httpsConfig;
     private SslContextFactory sslContextFactory;
     private ContextHandlerCollection contexts;
+
+    public Builder(GlobalConfigProvider globalConfigProvider) {
+      this.globalConfigProvider = globalConfigProvider;
+    }
 
     public Server build() throws Exception {
       ThreadPool threadPool = createThreadPool();
@@ -156,7 +164,7 @@ public class LikeXmlJettyServer {
       return threadPool;
     }
 
-    private HttpConfiguration createHttpConfig() {
+    private HttpConfiguration createHttpConfig() throws ServiceException {
       HttpConfiguration httpConfig = new HttpConfiguration();
       httpConfig.setOutputBufferSize(32768);
       httpConfig.setRequestHeaderSize(8192);
@@ -170,7 +178,8 @@ public class LikeXmlJettyServer {
       forwardedRequestCustomizer.setForwardedForHeader("bogus");
       httpConfig.addCustomizer(forwardedRequestCustomizer);
 
-      final HostHeaderCustomizer hostHeaderCustomizer = new HostHeaderCustomizer("carbonio-ce-proxy.carbonio-system.svc.cluster.local");
+      final Config config = this.globalConfigProvider.get();
+      final HostHeaderCustomizer hostHeaderCustomizer = new HostHeaderCustomizer(config.getPublicServiceHostname());
       httpConfig.addCustomizer(hostHeaderCustomizer);
 
       return httpConfig;

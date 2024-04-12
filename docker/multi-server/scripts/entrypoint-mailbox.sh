@@ -8,8 +8,8 @@ echo "ok, moving on."
 
 /scripts/carbonio-bootstrap.sh
 
-su - zextras -c "/opt/zextras/bin/zmmailboxdctl stop || exit 1"
+#su - zextras -c "/opt/zextras/bin/zmmailboxdctl stop || exit 1"
 
-su - zextras -c "java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -jar /scripts/zm-store-jar-with-dependencies.jar -webDescriptor=/opt/zextras/jetty_base/webapps/service/WEB-INF/web.xml"
+#su - zextras -c "java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -jar /scripts/zm-store-jar-with-dependencies.jar -webDescriptor=/opt/zextras/jetty_base/webapps/service/WEB-INF/web.xml"
 
 tail -f /dev/null

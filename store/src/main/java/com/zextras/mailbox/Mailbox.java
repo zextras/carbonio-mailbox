@@ -4,6 +4,8 @@
 
 package com.zextras.mailbox;
 
+import com.zextras.mailbox.config.GlobalConfigProvider;
+import com.zimbra.cs.account.Provisioning;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -32,7 +34,8 @@ public class Mailbox {
       webDescriptor = commandLine.getOptionValue(WEB_DESCRIPTOR);
     }
 
-    Server server = new LikeXmlJettyServer.Builder()
+    final GlobalConfigProvider globalConfigProvider = new GlobalConfigProvider(Provisioning.getInstance());
+    Server server = new LikeXmlJettyServer.Builder(globalConfigProvider)
         .withWebDescriptor(webDescriptor)
         .build();
 

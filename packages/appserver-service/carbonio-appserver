@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# TODO: add mailboxd_java_options and memory limits
+
+/opt/zextras/common/bin/java \
+  -Djava.io.tmpdir=/opt/zextras/mailboxd/work \
+  -Djava.library.path=/opt/zextras/lib \
+  -Dzimbra.config=/opt/zextras/conf/localconfig.xml \
+  -jar /opt/zextras/mailbox/jars/mailbox.jar \
+  -webDescriptor=/opt/zextras/jetty_base/webapps/service/WEB-INF/web.xml

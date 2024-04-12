@@ -52,5 +52,6 @@ services:
     volumes:
       - ./scripts/:/scripts/
       - ./../../store/target/zm-store-jar-with-dependencies.jar:/scripts/zm-store-jar-with-dependencies.jar
+      - ./../../artifacts/:/artifacts/
     user: root
 
