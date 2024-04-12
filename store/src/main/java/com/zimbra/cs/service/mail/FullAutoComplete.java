@@ -7,11 +7,15 @@ package com.zimbra.cs.service.mail;
 import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
+import com.zimbra.common.soap.Element.XMLElement;
+import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapHttpTransport;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.httpclient.URLUtil;
+import com.zimbra.cs.mailbox.ContactAutoComplete.ContactEntryType;
 import com.zimbra.soap.JaxbUtil;
+import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.AutoCompleteRequest;
 import com.zimbra.soap.mail.message.AutoCompleteResponse;
 import com.zimbra.soap.mail.message.FullAutocompleteRequest;
@@ -25,6 +29,8 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * A variant of {@link AutoComplete} that returns {@link AutoCompleteMatch}es from multiple sources ({@link Account}s)
@@ -74,7 +80,7 @@ public class FullAutoComplete extends MailDocumentHandler {
         .limit(Math.max(contactAutoCompleteMaxResultsLimit - fullAutoCompleteMatches.size(), 0))
         .forEachOrdered(fullAutoCompleteMatches::add);
 
-    return fullAutoCompleteResponseFor(fullAutoCompleteMatches, false);
+    return fullAutoCompleteResponseFor(fullAutoCompleteMatches, false, zsc);
   }
 
   /**
@@ -101,15 +107,88 @@ public class FullAutoComplete extends MailDocumentHandler {
    * @param fullAutoCompleteMatches The list of autocomplete({@link AutoCompleteMatch}) matches.
    * @param canBeCached             A boolean flag indicating whether the response can be cached.
    * @return The XML {@link  Element} representing the {@link FullAutocompleteResponse}.
-   * @throws ServiceException If an error occurs during the generation of the {@link FullAutocompleteResponse}.
    */
   @SuppressWarnings("SameParameterValue")
-  private Element fullAutoCompleteResponseFor(List<AutoCompleteMatch> fullAutoCompleteMatches, boolean canBeCached)
-      throws ServiceException {
-    final var autoCompleteResponse = new FullAutocompleteResponse();
-    autoCompleteResponse.setMatches(fullAutoCompleteMatches);
-    autoCompleteResponse.setCanBeCached(canBeCached);
-    return JaxbUtil.jaxbToElement(autoCompleteResponse);
+  private Element fullAutoCompleteResponseFor(List<AutoCompleteMatch> fullAutoCompleteMatches, boolean canBeCached,
+      ZimbraSoapContext zsc) {
+    final var response = zsc.createElement(MailConstants.FULL_AUTO_COMPLETE_RESPONSE);
+    response.addAttribute(MailConstants.A_CANBECACHED, canBeCached);
+    getElementsForMatches(fullAutoCompleteMatches).forEach(response::addNonUniqueElement);
+    return response;
+  }
+
+  /**
+   * @param fullAutoCompleteMatches List of full {@link AutoCompleteMatch}es
+   * @return List of match {@link Element}s
+   */
+  private ArrayList<Element> getElementsForMatches(List<AutoCompleteMatch> fullAutoCompleteMatches) {
+
+    return fullAutoCompleteMatches.stream().map(match -> {
+      var matchElement = new XMLElement(MailConstants.E_MATCH);
+      matchElement.addAttribute(MailConstants.A_RANKING, Integer.toString(match.getRanking()));
+      matchElement.addAttribute(MailConstants.A_MATCH_TYPE, match.getMatchType());
+      matchElement.addAttribute(MailConstants.A_IS_GROUP, match.getGroup());
+
+      // for contact group, emails of members will be expanded separately on user request
+      if (Boolean.FALSE.equals(match.getGroup())) {
+        matchElement.addAttribute(MailConstants.A_EMAIL, match.getEmail());
+      }
+
+      if (match.getGroup() && match.getCanExpandGroupMembers()) {
+        matchElement.addAttribute(MailConstants.A_EXP, true);
+      }
+
+      final String id = match.getId();
+      if (id != null) {
+        matchElement.addAttribute(MailConstants.A_ID, id);
+      }
+
+      final String folder = match.getFolder();
+      if (folder != null) {
+        matchElement.addAttribute(MailConstants.A_FOLDER, folder);
+      }
+
+      if (Boolean.TRUE.equals(match.getGroup()) || !Objects.equals(match.getMatchType(),
+          ContactEntryType.GAL.getName())) {
+        matchElement.addAttribute(MailConstants.A_DISPLAYNAME, match.getDisplayName());
+      }
+
+      final String firstName = match.getFirstName();
+      if (firstName != null) {
+        matchElement.addAttribute(MailConstants.A_FIRSTNAME, firstName);
+      }
+
+      final String middleName = match.getMiddleName();
+      if (middleName != null) {
+        matchElement.addAttribute(MailConstants.A_MIDDLENAME, middleName);
+      }
+
+      final String lastName = match.getLastName();
+      if (lastName != null) {
+        matchElement.addAttribute(MailConstants.A_LASTNAME, lastName);
+      }
+
+      final String fullName = match.getFullName();
+      if (fullName != null) {
+        matchElement.addAttribute(MailConstants.A_FULLNAME, fullName);
+      }
+
+      final String nickname = match.getNickname();
+      if (nickname != null) {
+        matchElement.addAttribute(MailConstants.A_NICKNAME, nickname);
+      }
+
+      final String company = match.getCompany();
+      if (company != null) {
+        matchElement.addAttribute(MailConstants.A_COMPANY, company);
+      }
+
+      final String fileAs = match.getFileAs();
+      if (fileAs != null) {
+        matchElement.addAttribute(MailConstants.A_FILEAS, fileAs);
+      }
+      return matchElement;
+    }).collect(Collectors.toCollection(ArrayList::new));
   }
 
   /**
