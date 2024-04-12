@@ -86,6 +86,8 @@ postinst() {
   getent passwd 'zextras' >/dev/null ||
     useradd -r -M -d '/opt/zextras' -g 'zextras' -s /bin/bash 'zextras'
 
+  chown zextras:zextras /usr/bin/carbonio-appserver
+
   getent group 'carbonio-mailbox' >/dev/null ||
     groupadd -r 'carbonio-mailbox'
   getent passwd 'carbonio-mailbox' >/dev/null ||

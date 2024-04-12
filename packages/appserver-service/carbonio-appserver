@@ -7,4 +7,4 @@
   -Djava.library.path=/opt/zextras/lib \
   -Dzimbra.config=/opt/zextras/conf/localconfig.xml \
   -jar /opt/zextras/mailbox/jars/mailbox.jar \
-  -webDescriptor=/opt/zextras/jetty_base/webapps/service/WEB-INF/web.xml
+  -webDescriptor=/opt/zextras/conf/web.xml

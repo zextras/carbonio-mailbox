@@ -20,6 +20,9 @@ priority="optional"
 package() {
   cd "${srcdir}"/../../staging
 
-  install -D store/target/zm-store*jar-with-dependencies.jar \
+  install -D store/target/zm-store-jar-with-dependencies.jar \
     "${pkgdir}/opt/zextras/mailbox/jars/mailbox.jar"
+
+  install -D carbonio-jetty-libs/target/dependencies/*.jar \
+    "${pkgdir}/opt/zextras/mailbox/jars/"
 }
