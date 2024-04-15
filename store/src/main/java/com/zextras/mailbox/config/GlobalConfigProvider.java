@@ -16,7 +16,6 @@ public class GlobalConfigProvider {
     this.provisioning = provisioning;
   }
 
-  //TODO: change exception
   public Config get() throws ServiceException {
     return provisioning.getConfig();
   }

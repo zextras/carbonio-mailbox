@@ -9,6 +9,7 @@ import com.zimbra.common.jetty.JettyMonitor;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Config;
+import java.io.IOException;
 import javax.servlet.DispatcherType;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.rewrite.handler.MsieSslRule;
@@ -38,11 +39,23 @@ import org.eclipse.jetty.webapp.WebAppContext;
 // Plus we adopted the same variables used in https://github.com/zextras/carbonio-appserver/blob/main/appserver/conf/jetty/jetty.xml.production
 public class LikeXmlJettyServer {
 
+  public static class InstantiationException extends Exception {
+
+    private static final long serialVersionUID = 3614086690444919273L;
+
+    public InstantiationException(Throwable cause) {
+      super("Failed to create Jetty server", cause);
+    }
+  }
+
   private static final int USER_SERVER_PORT = 8080;
   private static final int ADMIN_SERVER_PORT = 7071;
   private static final int ADMIN_MTA_SERVER_PORT = 7073;
   private static final int EXTENSIONS_SERVER_PORT = 7072;
   private static final int SECURE_PORT = 8443;
+
+  private LikeXmlJettyServer() {
+  }
 
   public static class Builder {
 
@@ -55,8 +68,10 @@ public class LikeXmlJettyServer {
       this.globalConfigProvider = globalConfigProvider;
     }
 
-    public Server build() throws Exception {
-      ThreadPool threadPool = createThreadPool();
+    public Server build() throws InstantiationException {
+      ThreadPool threadPool = null;
+      try {
+        threadPool = createThreadPool();
       Server server = new Server(threadPool);
 
       final HttpConfiguration httpConfig = createHttpConfig();
@@ -80,7 +95,6 @@ public class LikeXmlJettyServer {
       final GzipHandler gzipHandler = new GzipHandler();
       gzipHandler.setHandler(createRewriteHandler());
       gzipHandler.setMinGzipSize(2048);
-      gzipHandler.setCheckGzExists(false);
       gzipHandler.setCompressionLevel(-1);
       gzipHandler.setExcludedAgentPatterns(".*MSIE.6\\.0.*");
       gzipHandler.setIncludedMethods("GET", "POST");
@@ -92,6 +106,9 @@ public class LikeXmlJettyServer {
       adminHttpsConnector.open();
 
       return server;
+      } catch (ServiceException | IOException e) {
+        throw new InstantiationException(e.getCause());
+      }
     }
 
     public Builder withWebDescriptor(String webDescriptor) {
@@ -209,24 +226,24 @@ public class LikeXmlJettyServer {
 
     private SslContextFactory createSSLContextFactory() throws ServiceException {
       final Config config = globalConfigProvider.get();
-      SslContextFactory sslContextFactory = new SslContextFactory.Server();
-      sslContextFactory.setKeyStorePath("/opt/zextras/mailboxd/etc/keystore");
-      sslContextFactory.setKeyStorePassword(LC.mailboxd_keystore_password.value());
-      sslContextFactory.setKeyManagerPassword(LC.mailboxd_keystore_password.value());
-      sslContextFactory.setRenegotiationAllowed(config.isMailboxdSSLRenegotiationAllowed());
+      SslContextFactory localSslContextFactory = new SslContextFactory.Server();
+      localSslContextFactory.setKeyStorePath("/opt/zextras/mailboxd/etc/keystore");
+      localSslContextFactory.setKeyStorePassword(LC.mailboxd_keystore_password.value());
+      localSslContextFactory.setKeyManagerPassword(LC.mailboxd_keystore_password.value());
+      localSslContextFactory.setRenegotiationAllowed(config.isMailboxdSSLRenegotiationAllowed());
 
       for (String protocol : config.getMailboxdSSLProtocols()) {
-        sslContextFactory.setIncludeProtocols(protocol);
+        localSslContextFactory.setIncludeProtocols(protocol);
       }
 
-      sslContextFactory.setExcludeCipherSuites(config.getSSLExcludeCipherSuites());
+      localSslContextFactory.setExcludeCipherSuites(config.getSSLExcludeCipherSuites());
 
       final String[] sslIncludeCipherSuites = config.getSSLIncludeCipherSuites();
       if (sslIncludeCipherSuites.length > 0) {
-        sslContextFactory.setIncludeCipherSuites(sslIncludeCipherSuites);
+        localSslContextFactory.setIncludeCipherSuites(sslIncludeCipherSuites);
       }
 
-      return sslContextFactory;
+      return localSslContextFactory;
     }
 
     private ServerConnector createHttpsConnector(Server server, int port, int idleTimeMillis) {

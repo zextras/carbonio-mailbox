@@ -69,7 +69,7 @@ public class SampleLocalMailbox {
   private static void setUpMockData() throws ServiceException {
     final Provisioning provisioning = Provisioning.getInstance();
     provisioning.createServer(
-        "localhost",
+        APP_SERVER_NAME,
         new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
     provisioning.createDomain("test.com", new HashMap<>());
   }
