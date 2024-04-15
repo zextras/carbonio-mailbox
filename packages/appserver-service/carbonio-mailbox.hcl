@@ -19,7 +19,8 @@ services {
             local_bind_address = "127.78.0.7"
           },
           {
-            destination_name   = "carbonio-mta"
+            destination_type   = "prepared_query"
+            destination_name   = "carbonio-mta-out"
             local_bind_port    = 20025
             local_bind_address = "127.78.0.7"
           },
