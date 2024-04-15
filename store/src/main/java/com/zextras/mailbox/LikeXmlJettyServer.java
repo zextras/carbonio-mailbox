@@ -100,7 +100,7 @@ public class LikeXmlJettyServer {
     }
 
 
-    private Handler createRewriteHandler() {
+    private Handler createRewriteHandler() throws ServiceException {
       final RewriteHandler rewriteHandler = new RewriteHandler();
       rewriteHandler.setRewriteRequestURI(true);
       rewriteHandler.setRewritePathInfo(false);
@@ -109,6 +109,9 @@ public class LikeXmlJettyServer {
       rewriteHandler.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC, DispatcherType.ERROR, DispatcherType.FORWARD);
       rewriteHandler.addRule(new MsieSslRule());
 
+      final Config config = globalConfigProvider.get();
+      final String mailURL = config.getMailURL();
+
       rewriteHandler.addRule(new RewritePatternRule("/Microsoft-Server-ActiveSync/*", "/service/extension/zimbrasync"));
       rewriteHandler.addRule(new RewriteRegexRule("(?i)/ews/Exchange.asmx/*", "/service/extension/zimbraews"));
       rewriteHandler.addRule(new RewritePatternRule("/principals/*", "/service/dav/principals"));
@@ -116,14 +119,14 @@ public class LikeXmlJettyServer {
       rewriteHandler.addRule(new RewritePatternRule("/.well-known/*", "/service/.well-known"));
       rewriteHandler.addRule(new RewritePatternRule("/.well-known/*", "/service/.well-known"));
       rewriteHandler.addRule(new RewritePatternRule("/home/*", "/service/home/"));
-      rewriteHandler.addRule(new RewritePatternRule("//home/*", "/service/home"));
+      rewriteHandler.addRule(new RewritePatternRule(mailURL + "/home/*", "/service/home"));
       rewriteHandler.addRule(new RewritePatternRule("/user/*", "/service/user/"));
-      rewriteHandler.addRule(new RewritePatternRule("//user/*", "/service/user"));
+      rewriteHandler.addRule(new RewritePatternRule(mailURL + "/user/*", "/service/user"));
       rewriteHandler.addRule(new RewritePatternRule("/shf/*", "/service/shf/"));
       rewriteHandler.addRule(new RewritePatternRule("/certauth/*", "/service/certauth"));
       rewriteHandler.addRule(new RewritePatternRule("/spnegoauth/*", "/service/spnego"));
-      rewriteHandler.addRule(new RewritePatternRule("//service/spnego/*", "/service/spnego"));
-      rewriteHandler.addRule(new RewritePatternRule("//service/spnego/*", "/service/spnego"));
+      rewriteHandler.addRule(new RewritePatternRule( "/spnego/*", "/service/spnego"));
+      rewriteHandler.addRule(new RewritePatternRule(mailURL + "/service/spnego/*", "/service/spnego"));
       rewriteHandler.addRule(new RewritePatternRule("/autodiscover/*", "/service/extension/autodiscover"));
       rewriteHandler.addRule(new RewritePatternRule("/Autodiscover/*", "/service/extension/autodiscover"));
 
@@ -139,11 +142,11 @@ public class LikeXmlJettyServer {
       carbonioAdminRule.setTerminating(true);
       rewriteHandler.addRule(carbonioAdminRule);
 
-      final RewritePatternRule rootRule = new RewritePatternRule("//*", "/");
+      final RewritePatternRule rootRule = new RewritePatternRule( mailURL + "/*", "/");
       rootRule.setTerminating(true);
       rewriteHandler.addRule(rootRule);
 
-      final RewritePatternRule rootRule2 = new RewritePatternRule("/*", "/");
+      final RewritePatternRule rootRule2 = new RewritePatternRule("/*", mailURL);
       rootRule2.setTerminating(true);
       rewriteHandler.addRule(rootRule2);
 
@@ -233,7 +236,7 @@ public class LikeXmlJettyServer {
       return serverConnector;
     }
 
-    private ServerConnector createAdminHttpsConnector(Server server) throws ServiceException {
+    private ServerConnector createAdminHttpsConnector(Server server) {
       return createHttpsConnector(server, ADMIN_SERVER_PORT, 0);
     }
 
