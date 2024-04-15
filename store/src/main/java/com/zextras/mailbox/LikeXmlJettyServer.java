@@ -153,11 +153,12 @@ public class LikeXmlJettyServer {
       return rewriteHandler;
     }
 
-    private ThreadPool createThreadPool() {
+    private ThreadPool createThreadPool() throws ServiceException {
       QueuedThreadPool threadPool = new QueuedThreadPool();
+      final Config config = globalConfigProvider.get();
       threadPool.setMinThreads(10);
-      threadPool.setMaxThreads(250);
-      threadPool.setIdleTimeout(10000);
+      threadPool.setMaxThreads(config.getHttpNumThreads());
+      threadPool.setIdleTimeout(config.getHttpThreadPoolMaxIdleTimeMillis());
       threadPool.setDetailedDump(false);
 
       JettyMonitor.setThreadPool(threadPool);
@@ -166,19 +167,19 @@ public class LikeXmlJettyServer {
 
     private HttpConfiguration createHttpConfig() throws ServiceException {
       HttpConfiguration httpConfig = new HttpConfiguration();
-      httpConfig.setOutputBufferSize(32768);
-      httpConfig.setRequestHeaderSize(8192);
-      httpConfig.setResponseHeaderSize(8192);
+      final Config config = globalConfigProvider.get();
+      httpConfig.setOutputBufferSize(config.getHttpOutputBufferSize());
+      httpConfig.setRequestHeaderSize(config.getHttpRequestHeaderSize());
+      httpConfig.setResponseHeaderSize(config.getHttpResponseHeaderSize());
       httpConfig.setSendServerVersion(false);
       httpConfig.setSendDateHeader(true);
-      httpConfig.setHeaderCacheSize(512);
+      httpConfig.setHeaderCacheSize(config.getHttpHeaderCacheSize());
       httpConfig.setSecurePort(SECURE_PORT);
 
       final ForwardedRequestCustomizer forwardedRequestCustomizer = new ForwardedRequestCustomizer();
       forwardedRequestCustomizer.setForwardedForHeader("bogus");
       httpConfig.addCustomizer(forwardedRequestCustomizer);
 
-      final Config config = this.globalConfigProvider.get();
       final HostHeaderCustomizer hostHeaderCustomizer = new HostHeaderCustomizer(config.getPublicServiceHostname());
       httpConfig.addCustomizer(hostHeaderCustomizer);
 
