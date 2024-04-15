@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.cs.mailbox.ContactAutoComplete.ContactEntryType;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -85,7 +86,7 @@ public class AutoComplete extends MailDocumentHandler {
     protected void toXML(Element response, AutoCompleteResult result, String authAccountId) {
         response.addAttribute(MailConstants.A_CANBECACHED, result.canBeCached);
         for (ContactEntry entry : result.entries) {
-            Element cn = response.addElement(MailConstants.E_MATCH);
+            Element cn = response.addNonUniqueElement(MailConstants.E_MATCH);
             
             // for contact group, emails of members will be expanded 
             // separately on user request
@@ -151,10 +152,10 @@ public class AutoComplete extends MailDocumentHandler {
 
     private String getType(ContactEntry entry) {
         if (entry.getFolderId() == ContactAutoComplete.FOLDER_ID_GAL)
-            return "gal";
+            return ContactEntryType.GAL.getName();
         else if (entry.getFolderId() == ContactAutoComplete.FOLDER_ID_UNKNOWN)
-            return "rankingTable";
+            return ContactEntryType.RANKING_TABLE.getName();
         else
-            return "contact";
+            return ContactEntryType.CONTACT.getName();
     }
 }

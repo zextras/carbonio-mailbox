@@ -1,5 +1,17 @@
 
 
+# [4.15.1](https://github.com/Zextras/carbonio-mailbox/compare/4.15.0...4.15.1) (2024-04-12)
+
+
+### Bug Fixes
+
+* FullAutoComplete API response in JSON instead of wrapping xml in JSON ([c602118](https://github.com/Zextras/carbonio-mailbox/commit/c602118e840c8363551edcbac93605fada3df13a))
+
+
+### Features
+
+* introduce ContactEntryType enum replacing type string literal ([cd5e26c](https://github.com/Zextras/carbonio-mailbox/commit/cd5e26cb73dab2a1d11c63382d7334f8799b3b52))
+
 # [4.15.0](https://github.com/Zextras/carbonio-mailbox/compare/4.14.0...4.15.0) (2024-04-11)
 
 
