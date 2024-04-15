@@ -6,6 +6,7 @@ package com.zextras.mailbox;
 
 import com.zextras.mailbox.config.GlobalConfigProvider;
 import com.zimbra.common.jetty.JettyMonitor;
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Config;
 import javax.servlet.DispatcherType;
@@ -49,7 +50,6 @@ public class LikeXmlJettyServer {
     private String webDescriptor;
     private HttpConfiguration httpsConfig;
     private SslContextFactory sslContextFactory;
-    private ContextHandlerCollection contexts;
 
     public Builder(GlobalConfigProvider globalConfigProvider) {
       this.globalConfigProvider = globalConfigProvider;
@@ -73,7 +73,6 @@ public class LikeXmlJettyServer {
       server.addConnector(createExtensionsHttpsConnector(server));
 
       final ContextHandlerCollection contexts = new ContextHandlerCollection();
-      this.contexts = contexts;
       WebAppContext webAppContext = new WebAppContext(contexts, "/opt/zextras/jetty_base/webapps/service", "/service");
       webAppContext.setDescriptor(webDescriptor);
 
@@ -89,7 +88,7 @@ public class LikeXmlJettyServer {
 
       server.setHandler(webAppContext);
 
-//      userHttpConnector.open();
+      userHttpConnector.open();
       adminHttpsConnector.open();
 
       return server;
@@ -180,8 +179,11 @@ public class LikeXmlJettyServer {
       forwardedRequestCustomizer.setForwardedForHeader("bogus");
       httpConfig.addCustomizer(forwardedRequestCustomizer);
 
-      final HostHeaderCustomizer hostHeaderCustomizer = new HostHeaderCustomizer(config.getPublicServiceHostname());
-      httpConfig.addCustomizer(hostHeaderCustomizer);
+      final String publicServiceHostname = config.getPublicServiceHostname();
+      if (publicServiceHostname != null) {
+        final HostHeaderCustomizer hostHeaderCustomizer = new HostHeaderCustomizer(config.getPublicServiceHostname());
+        httpConfig.addCustomizer(hostHeaderCustomizer);
+      }
 
       return httpConfig;
     }
@@ -192,43 +194,56 @@ public class LikeXmlJettyServer {
       return sslHttpConfig;
     }
 
-    private ServerConnector createUserHttpConnector(Server server, HttpConfiguration httpConfig) {
+    private ServerConnector createUserHttpConnector(Server server, HttpConfiguration httpConfig)
+        throws ServiceException {
+      final Config config = globalConfigProvider.get();
       ServerConnector serverConnector = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+      // Use zimbraMailPort or set static?
       serverConnector.setPort(USER_SERVER_PORT);
-      serverConnector.setIdleTimeout(60000);
+      serverConnector.setIdleTimeout(config.getHttpConnectorMaxIdleTimeMillis());
       return serverConnector;
     }
 
-    private static SslContextFactory createSSLContextFactory() {
-      SslContextFactory sslContextFactory = new SslContextFactory();
+    private SslContextFactory createSSLContextFactory() throws ServiceException {
+      final Config config = globalConfigProvider.get();
+      SslContextFactory sslContextFactory = new SslContextFactory.Server();
       sslContextFactory.setKeyStorePath("/opt/zextras/mailboxd/etc/keystore");
-      sslContextFactory.setKeyStorePassword("password");
-      sslContextFactory.setKeyManagerPassword("password");
-      sslContextFactory.setRenegotiationAllowed(true);
-      sslContextFactory.setIncludeProtocols("TLSv1.2");
-      sslContextFactory.setExcludeCipherSuites(".*_RC4_.*", "^.*_(MD5|SHA|SHA1)$", "^TLS_RSA_.*");
+      sslContextFactory.setKeyStorePassword(LC.mailboxd_keystore_password.value());
+      sslContextFactory.setKeyManagerPassword(LC.mailboxd_keystore_password.value());
+      sslContextFactory.setRenegotiationAllowed(config.isMailboxdSSLRenegotiationAllowed());
+
+      for (String protocol : config.getMailboxdSSLProtocols()) {
+        sslContextFactory.setIncludeProtocols(protocol);
+      }
+
+      sslContextFactory.setExcludeCipherSuites(config.getSSLExcludeCipherSuites());
+
+      final String[] sslIncludeCipherSuites = config.getSSLIncludeCipherSuites();
+      if (sslIncludeCipherSuites.length > 0) {
+        sslContextFactory.setIncludeCipherSuites(sslIncludeCipherSuites);
+      }
+
       return sslContextFactory;
     }
 
-    private ServerConnector createAdminHttpsConnector(Server server) {
+    private ServerConnector createHttpsConnector(Server server, int port, int idleTimeMillis) {
       ServerConnector serverConnector = createHttpsConnector(server);
-      serverConnector.setPort(ADMIN_SERVER_PORT);
-      serverConnector.setIdleTimeout(0);
+      serverConnector.setPort(port);
+      serverConnector.setIdleTimeout(idleTimeMillis);
       return serverConnector;
+    }
+
+    private ServerConnector createAdminHttpsConnector(Server server) throws ServiceException {
+      return createHttpsConnector(server, ADMIN_SERVER_PORT, 0);
     }
 
     private ServerConnector createMtaAdminHttpsConnector(Server server) {
-      ServerConnector serverConnector = createHttpsConnector(server);
-      serverConnector.setPort(ADMIN_MTA_SERVER_PORT);
-      serverConnector.setIdleTimeout(0);
-      return serverConnector;
+      return createHttpsConnector(server, ADMIN_MTA_SERVER_PORT, 0);
     }
 
-    private ServerConnector createExtensionsHttpsConnector(Server server) {
-      ServerConnector serverConnector = createHttpsConnector(server);
-      serverConnector.setPort(EXTENSIONS_SERVER_PORT);
-      serverConnector.setIdleTimeout(60000);
-      return serverConnector;
+    private ServerConnector createExtensionsHttpsConnector(Server server) throws ServiceException {
+      final Config config = globalConfigProvider.get();
+      return createHttpsConnector(server, EXTENSIONS_SERVER_PORT, config.getHttpConnectorMaxIdleTimeMillis());
     }
 
     private ServerConnector createHttpsConnector(Server server) {
