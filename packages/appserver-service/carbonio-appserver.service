@@ -6,7 +6,6 @@ PartOf=carbonio-appserver.target carbonio-ce.target carbonio.target
 
 [Service]
 User=zextras
-PIDFile=/opt/zextras/log/zmmailboxd_java.pid
 EnvironmentFile=-/opt/zextras/data/systemd.env
 ExecStartPre=/opt/zextras/bin/zmtlsctl
 ExecStart=/opt/zextras/common/bin/java \
