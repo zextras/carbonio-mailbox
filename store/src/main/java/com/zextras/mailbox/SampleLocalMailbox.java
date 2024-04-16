@@ -6,6 +6,7 @@ package com.zextras.mailbox;
 
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
+import com.zextras.mailbox.config.GlobalConfigProvider;
 import com.zextras.mailbox.ldap.InMemoryLdapServer;
 import com.zextras.mailbox.ldap.InMemoryLdapServer.Builder;
 import com.zimbra.common.account.ZAttrProvisioning;
@@ -14,24 +15,37 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.HSQLDB;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.KeyStore;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.webapp.WebAppContext;
 
 public class SampleLocalMailbox {
 
   private static final int LDAP_PORT = 1389;
   private static final String APP_SERVER_NAME = "localhost";
-  private static final int APP_SERVER_PORT = 7070;
 
 
   public static void main(String[] args) throws Exception {
     System.setProperty("zimbra.native.required", "false");
+
+    final Path keystoreRoot = Files.createTempDirectory("keystore");
+    final Path keystorePath = Path.of(keystoreRoot.toAbsolutePath().toString(), "keystore");
+    KeyStore ks = KeyStore.getInstance("PKCS12");
+    final String keystore_password = "test";
+    ks.load(null, keystore_password.toCharArray());
+    ks.store(Files.newOutputStream(keystorePath), keystore_password.toCharArray());
+
     LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
     LC.ldap_port.setDefault(LDAP_PORT);
     LC.zimbra_home.setDefault("./store");
-    LC.mailboxd_keystore_password.setDefault("zextras");
+    LC.mailboxd_keystore_password.setDefault(keystore_password);
+    LC.mailboxd_truststore_password.setDefault(keystore_password);
+    LC.mailboxd_keystore.setDefault(keystorePath.toAbsolutePath().toString());
+    LC.mailboxd_keystore.setDefault(keystorePath.toAbsolutePath().toString());
     LC.zimbra_server_hostname.setDefault(APP_SERVER_NAME);
     LC.timezone_file.setDefault("store/src/test/resources/timezones-test.ics");
 
@@ -45,23 +59,24 @@ public class SampleLocalMailbox {
 
     DbPool.startup();
     HSQLDB.createDatabase("store/");
-    Provisioning.getInstance()
+    final Provisioning provisioning = Provisioning.getInstance();
+    provisioning
         .getServerByName(APP_SERVER_NAME)
         .modify(
             new HashMap<>(
                 Map.of(
-                    Provisioning.A_zimbraMailPort, String.valueOf(APP_SERVER_PORT),
-                    ZAttrProvisioning.A_zimbraMailMode, "http",
+                    ZAttrProvisioning.A_zimbraMailPort, String.valueOf(8080),
+                    ZAttrProvisioning.A_zimbraMailMode, "both",
                     ZAttrProvisioning.A_zimbraPop3SSLServerEnabled, "FALSE",
                     ZAttrProvisioning.A_zimbraImapSSLServerEnabled, "FALSE")));
 
-    WebAppContext webAppContext = new WebAppContext();
-    webAppContext.setDescriptor("store/conf/web-dev.xml");
-    webAppContext.setResourceBase("/");
-    webAppContext.setContextPath("/service");
+    final String descriptor = new File("./store/conf/web-dev.xml").getAbsolutePath();
+    final String webApp = new File("./store/conf/").getAbsolutePath();
 
-    Server server = new Server(APP_SERVER_PORT);
-    server.setHandler(webAppContext);
+    Server server = new LikeXmlJettyServer.Builder(new GlobalConfigProvider(provisioning))
+        .withWebApp(webApp)
+        .withWebDescriptor(descriptor)
+        .build();
     server.start();
     server.join();
   }

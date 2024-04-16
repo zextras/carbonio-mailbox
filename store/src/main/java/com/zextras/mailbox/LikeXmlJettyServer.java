@@ -60,18 +60,18 @@ public class LikeXmlJettyServer {
   public static class Builder {
 
     private final GlobalConfigProvider globalConfigProvider;
-    private String webDescriptor;
     private HttpConfiguration httpsConfig;
     private SslContextFactory sslContextFactory;
+    private String webDescriptor = "/opt/zextras/conf/web.xml";
+    private String webApp = "/opt/zextras/jetty_base/webapps/service";
 
     public Builder(GlobalConfigProvider globalConfigProvider) {
       this.globalConfigProvider = globalConfigProvider;
     }
 
     public Server build() throws InstantiationException {
-      ThreadPool threadPool = null;
       try {
-        threadPool = createThreadPool();
+        final ThreadPool threadPool = createThreadPool();
       Server server = new Server(threadPool);
 
       final HttpConfiguration httpConfig = createHttpConfig();
@@ -88,8 +88,9 @@ public class LikeXmlJettyServer {
       server.addConnector(createExtensionsHttpsConnector(server));
 
       final ContextHandlerCollection contexts = new ContextHandlerCollection();
-      WebAppContext webAppContext = new WebAppContext(contexts, "/opt/zextras/jetty_base/webapps/service", "/service");
+        WebAppContext webAppContext = new WebAppContext(contexts, webApp, "/service");
       webAppContext.setDescriptor(webDescriptor);
+       webAppContext.setThrowUnavailableOnStartupException(true);
 
 
       final GzipHandler gzipHandler = new GzipHandler();
@@ -105,10 +106,19 @@ public class LikeXmlJettyServer {
       userHttpConnector.open();
       adminHttpsConnector.open();
 
+      server.setStopAtShutdown(true);
+      server.setDumpAfterStart(true);
+      server.setDumpBeforeStop(true);
+
       return server;
       } catch (ServiceException | IOException e) {
         throw new InstantiationException(e.getCause());
       }
+    }
+
+    public Builder withWebApp(String webApp) {
+      this.webApp = webApp;
+      return this;
     }
 
     public Builder withWebDescriptor(String webDescriptor) {
@@ -142,7 +152,7 @@ public class LikeXmlJettyServer {
       rewriteHandler.addRule(new RewritePatternRule("/shf/*", "/service/shf/"));
       rewriteHandler.addRule(new RewritePatternRule("/certauth/*", "/service/certauth"));
       rewriteHandler.addRule(new RewritePatternRule("/spnegoauth/*", "/service/spnego"));
-      rewriteHandler.addRule(new RewritePatternRule( "/spnego/*", "/service/spnego"));
+      rewriteHandler.addRule(new RewritePatternRule( "/spnego/*", "/spnego"));
       rewriteHandler.addRule(new RewritePatternRule(mailURL + "/service/spnego/*", "/service/spnego"));
       rewriteHandler.addRule(new RewritePatternRule("/autodiscover/*", "/service/extension/autodiscover"));
       rewriteHandler.addRule(new RewritePatternRule("/Autodiscover/*", "/service/extension/autodiscover"));
@@ -227,7 +237,7 @@ public class LikeXmlJettyServer {
     private SslContextFactory createSSLContextFactory() throws ServiceException {
       final Config config = globalConfigProvider.get();
       SslContextFactory localSslContextFactory = new SslContextFactory.Server();
-      localSslContextFactory.setKeyStorePath("/opt/zextras/mailboxd/etc/keystore");
+      localSslContextFactory.setKeyStorePath(LC.mailboxd_keystore.value());
       localSslContextFactory.setKeyStorePassword(LC.mailboxd_keystore_password.value());
       localSslContextFactory.setKeyManagerPassword(LC.mailboxd_keystore_password.value());
       localSslContextFactory.setRenegotiationAllowed(config.isMailboxdSSLRenegotiationAllowed());

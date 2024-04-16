@@ -218,7 +218,7 @@ SPDX-License-Identifier: GPL-2.0-only
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
-      <param-value>7070</param-value>
+      <param-value>8080, 7070</param-value>
     </init-param>
     <!-- User command handlers only -->
     <init-param>
@@ -238,7 +238,7 @@ SPDX-License-Identifier: GPL-2.0-only
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
-      <param-value>7070</param-value>
+      <param-value>7070, 7071</param-value>
     </init-param>
     <!-- Admin servlet allows both admin and user commands -->
     <init-param>

@@ -4,6 +4,7 @@
 
 package com.zextras.mailbox;
 
+import com.zextras.mailbox.LikeXmlJettyServer.Builder;
 import com.zextras.mailbox.config.GlobalConfigProvider;
 import com.zimbra.cs.account.Provisioning;
 import org.apache.commons.cli.CommandLine;
@@ -18,6 +19,8 @@ public class Mailbox {
 
   private static final String WEB_DESCRIPTOR = "webDescriptor";
   private static final String LOCALCONFIG = "localconfig";
+  private static final String WEBAPP = "webApp";
+  private static final String DRYRUN = "dryRun";
 
   public static void main(String[] args) throws Exception {
     System.setProperty("zimbra.native.required", "false");
@@ -29,19 +32,22 @@ public class Mailbox {
       System.setProperty("zimbra.config", commandLine.getOptionValue(LOCALCONFIG));
     }
 
-    String webDescriptor = "store/conf/web-dev.xml";
+    final GlobalConfigProvider globalConfigProvider = new GlobalConfigProvider(Provisioning.getInstance());
+    Builder builder = new Builder(globalConfigProvider);
     if (commandLine.hasOption(WEB_DESCRIPTOR)) {
-      webDescriptor = commandLine.getOptionValue(WEB_DESCRIPTOR);
+      builder = builder.withWebDescriptor(commandLine.getOptionValue(WEB_DESCRIPTOR));
     }
 
-    final GlobalConfigProvider globalConfigProvider = new GlobalConfigProvider(Provisioning.getInstance());
-    Server server = new LikeXmlJettyServer.Builder(globalConfigProvider)
-        .withWebDescriptor(webDescriptor)
-        .build();
+    if (commandLine.hasOption(WEBAPP)) {
+      builder = builder.withWebApp(commandLine.getOptionValue(WEBAPP));
+    }
 
-    server.setStopAtShutdown(true);
-    server.setDumpAfterStart(true);
-    server.setDumpBeforeStop(true);
+    final Server server = builder.build();
+
+    if (commandLine.hasOption(DRYRUN)) {
+      return;
+    }
+
     server.start();
     server.join();
   }
@@ -55,6 +61,14 @@ public class Mailbox {
     Option localconfig =  new Option(LOCALCONFIG,true, "Location to localconfig");
     localconfig.setRequired(false);
     options.addOption(localconfig);
+
+    Option webAppDirectory =  new Option(WEBAPP,true, "Location web app directory");
+    webAppDirectory.setRequired(false);
+    options.addOption(webAppDirectory);
+
+    Option dryRun =  new Option(DRYRUN,true, "If set does not start the server");
+    dryRun.setRequired(false);
+    options.addOption(dryRun);
 
     return options;
   }
