@@ -47,7 +47,8 @@ you can generate rights and ZAttr* classes by running:
 Following guide provides two different ways to run Carbonio Mailbox locally for Development:
 
 ### 1. Mailbox with in-memory databases
-Simply run `com.zextras.mailbox.SampleLocalMailbox` main class in store module.
+Run `com.zextras.mailbox.SampleLocalMailbox` main class in store module, 
+test directory.
 This will start a Mailbox with in-memory LDAP and an HSQLDB database.
 
 ### 2. Full Carbonio Mailbox
