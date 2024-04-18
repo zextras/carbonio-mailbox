@@ -6,7 +6,6 @@ package com.zextras.mailbox;
 
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
-import com.zextras.mailbox.config.GlobalConfigProvider;
 import com.zextras.mailbox.util.InMemoryLdapServer;
 import com.zextras.mailbox.util.InMemoryLdapServer.Builder;
 import com.zimbra.common.account.ZAttrProvisioning;
@@ -80,7 +79,7 @@ public class SampleLocalMailbox {
     final String descriptor = new File("./store/conf/web-dev.xml").getAbsolutePath();
     final String webApp = new File("./store/conf/").getAbsolutePath();
 
-    Server server = new LikeXmlJettyServer.Builder(new GlobalConfigProvider(provisioning))
+    Server server = new LikeXmlJettyServer.Builder(provisioning.getConfig())
         .withWebApp(webApp)
         .withWebDescriptor(descriptor)
         .build();

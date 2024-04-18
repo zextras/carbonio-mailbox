@@ -5,7 +5,6 @@
 package com.zextras.mailbox;
 
 import com.zextras.mailbox.LikeXmlJettyServer.Builder;
-import com.zextras.mailbox.config.GlobalConfigProvider;
 import com.zimbra.cs.account.Provisioning;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -31,8 +30,7 @@ public class Mailbox {
       System.setProperty("zimbra.config", commandLine.getOptionValue(LOCALCONFIG));
     }
 
-    final GlobalConfigProvider globalConfigProvider = new GlobalConfigProvider(Provisioning.getInstance());
-    Builder builder = new Builder(globalConfigProvider);
+    Builder builder = new Builder(Provisioning.getInstance().getConfig());
     if (commandLine.hasOption(WEB_DESCRIPTOR)) {
       builder = builder.withWebDescriptor(commandLine.getOptionValue(WEB_DESCRIPTOR));
     }

@@ -4,7 +4,6 @@
 
 package com.zextras.mailbox;
 
-import com.zextras.mailbox.config.GlobalConfigProvider;
 import com.zimbra.common.jetty.JettyMonitor;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -59,14 +58,14 @@ public class LikeXmlJettyServer {
 
   public static class Builder {
 
-    private final GlobalConfigProvider globalConfigProvider;
+    private final Config globalConfig;
     private HttpConfiguration httpsConfig;
     private SslContextFactory sslContextFactory;
     private String webDescriptor = "/opt/zextras/conf/web.xml";
     private String webApp = "/opt/zextras/conf";
 
-    public Builder(GlobalConfigProvider globalConfigProvider) {
-      this.globalConfigProvider = globalConfigProvider;
+    public Builder(Config globalConfig) {
+      this.globalConfig = globalConfig;
     }
 
     public Server build() throws InstantiationException {
@@ -136,8 +135,7 @@ public class LikeXmlJettyServer {
       rewriteHandler.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC, DispatcherType.ERROR, DispatcherType.FORWARD);
       rewriteHandler.addRule(new MsieSslRule());
 
-      final Config config = globalConfigProvider.get();
-      final String mailURL = config.getMailURL();
+      final String mailURL = globalConfig.getMailURL();
 
       rewriteHandler.addRule(new RewritePatternRule("/Microsoft-Server-ActiveSync/*", "/service/extension/zimbrasync"));
       rewriteHandler.addRule(new RewriteRegexRule("(?i)/ews/Exchange.asmx/*", "/service/extension/zimbraews"));
@@ -184,10 +182,9 @@ public class LikeXmlJettyServer {
 
     private ThreadPool createThreadPool() throws ServiceException {
       QueuedThreadPool threadPool = new QueuedThreadPool();
-      final Config config = globalConfigProvider.get();
       threadPool.setMinThreads(10);
-      threadPool.setMaxThreads(config.getHttpNumThreads());
-      threadPool.setIdleTimeout(config.getHttpThreadPoolMaxIdleTimeMillis());
+      threadPool.setMaxThreads(globalConfig.getHttpNumThreads());
+      threadPool.setIdleTimeout(globalConfig.getHttpThreadPoolMaxIdleTimeMillis());
       threadPool.setDetailedDump(false);
 
       JettyMonitor.setThreadPool(threadPool);
@@ -196,22 +193,21 @@ public class LikeXmlJettyServer {
 
     private HttpConfiguration createHttpConfig() throws ServiceException {
       HttpConfiguration httpConfig = new HttpConfiguration();
-      final Config config = globalConfigProvider.get();
-      httpConfig.setOutputBufferSize(config.getHttpOutputBufferSize());
-      httpConfig.setRequestHeaderSize(config.getHttpRequestHeaderSize());
-      httpConfig.setResponseHeaderSize(config.getHttpResponseHeaderSize());
+      httpConfig.setOutputBufferSize(globalConfig.getHttpOutputBufferSize());
+      httpConfig.setRequestHeaderSize(globalConfig.getHttpRequestHeaderSize());
+      httpConfig.setResponseHeaderSize(globalConfig.getHttpResponseHeaderSize());
       httpConfig.setSendServerVersion(false);
       httpConfig.setSendDateHeader(true);
-      httpConfig.setHeaderCacheSize(config.getHttpHeaderCacheSize());
+      httpConfig.setHeaderCacheSize(globalConfig.getHttpHeaderCacheSize());
       httpConfig.setSecurePort(SECURE_PORT);
 
       final ForwardedRequestCustomizer forwardedRequestCustomizer = new ForwardedRequestCustomizer();
       forwardedRequestCustomizer.setForwardedForHeader("bogus");
       httpConfig.addCustomizer(forwardedRequestCustomizer);
 
-      final String publicServiceHostname = config.getPublicServiceHostname();
+      final String publicServiceHostname = globalConfig.getPublicServiceHostname();
       if (publicServiceHostname != null) {
-        final HostHeaderCustomizer hostHeaderCustomizer = new HostHeaderCustomizer(config.getPublicServiceHostname());
+        final HostHeaderCustomizer hostHeaderCustomizer = new HostHeaderCustomizer(globalConfig.getPublicServiceHostname());
         httpConfig.addCustomizer(hostHeaderCustomizer);
       }
 
@@ -226,29 +222,27 @@ public class LikeXmlJettyServer {
 
     private ServerConnector createUserHttpConnector(Server server, HttpConfiguration httpConfig)
         throws ServiceException {
-      final Config config = globalConfigProvider.get();
       ServerConnector serverConnector = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
       // Use zimbraMailPort or set static?
       serverConnector.setPort(USER_SERVER_PORT);
-      serverConnector.setIdleTimeout(config.getHttpConnectorMaxIdleTimeMillis());
+      serverConnector.setIdleTimeout(globalConfig.getHttpConnectorMaxIdleTimeMillis());
       return serverConnector;
     }
 
     private SslContextFactory createSSLContextFactory() throws ServiceException {
-      final Config config = globalConfigProvider.get();
       SslContextFactory localSslContextFactory = new SslContextFactory.Server();
       localSslContextFactory.setKeyStorePath(LC.mailboxd_keystore.value());
       localSslContextFactory.setKeyStorePassword(LC.mailboxd_keystore_password.value());
       localSslContextFactory.setKeyManagerPassword(LC.mailboxd_keystore_password.value());
-      localSslContextFactory.setRenegotiationAllowed(config.isMailboxdSSLRenegotiationAllowed());
+      localSslContextFactory.setRenegotiationAllowed(globalConfig.isMailboxdSSLRenegotiationAllowed());
 
-      for (String protocol : config.getMailboxdSSLProtocols()) {
+      for (String protocol : globalConfig.getMailboxdSSLProtocols()) {
         localSslContextFactory.setIncludeProtocols(protocol);
       }
 
-      localSslContextFactory.setExcludeCipherSuites(config.getSSLExcludeCipherSuites());
+      localSslContextFactory.setExcludeCipherSuites(globalConfig.getSSLExcludeCipherSuites());
 
-      final String[] sslIncludeCipherSuites = config.getSSLIncludeCipherSuites();
+      final String[] sslIncludeCipherSuites = globalConfig.getSSLIncludeCipherSuites();
       if (sslIncludeCipherSuites.length > 0) {
         localSslContextFactory.setIncludeCipherSuites(sslIncludeCipherSuites);
       }
@@ -272,8 +266,7 @@ public class LikeXmlJettyServer {
     }
 
     private ServerConnector createExtensionsHttpsConnector(Server server) throws ServiceException {
-      final Config config = globalConfigProvider.get();
-      return createHttpsConnector(server, EXTENSIONS_SERVER_PORT, config.getHttpConnectorMaxIdleTimeMillis());
+      return createHttpsConnector(server, EXTENSIONS_SERVER_PORT, globalConfig.getHttpConnectorMaxIdleTimeMillis());
     }
 
     private ServerConnector createHttpsConnector(Server server) {
