@@ -23,8 +23,9 @@ import java.util.Map;
 import org.eclipse.jetty.server.Server;
 
 /**
- * A test-only mailbox.
- * Starts also an in memory db using {@link HSQLDB} and in memory LDAP using
+ * A Mailbox that can be used for testing.
+ * You can spin it up and interact with APIs, except it uses
+ * an in memory db {@link HSQLDB} and an in memory LDAP
  * {@link InMemoryLdapServer}.
  *
  * Please run this class with java.library.path pointing to native module target (native/target) so
