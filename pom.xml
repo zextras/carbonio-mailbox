@@ -793,6 +793,7 @@
     <module>store-conf</module>
     <module>carbonio-jetty-libs</module>
     <module>store-extra-runtime-dependencies</module>
+    <module>jython-libs</module>
   </modules>
   <packaging>pom</packaging>
 

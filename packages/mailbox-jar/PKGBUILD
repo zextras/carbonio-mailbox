@@ -20,9 +20,14 @@ priority="optional"
 package() {
   cd "${srcdir}"/../../staging
 
-  install -D store/target/zm-store-jar-with-dependencies.jar \
+  install -D store/target/zm-store.jar \
     "${pkgdir}/opt/zextras/mailbox/jars/mailbox.jar"
 
-  install -D carbonio-jetty-libs/target/dependencies/*.jar \
-    "${pkgdir}/opt/zextras/mailbox/jars/"
+  install -D store/target/dependencies/*.jar \
+     "${pkgdir}/opt/zextras/mailbox/jars/"
+
+  install -Ddm755 "${pkgdir}/opt/zextras/common/lib/jylibs/"
+
+  install -D jython-libs/target/dependencies/*.jar \
+    "${pkgdir}/opt/zextras/common/lib/jylibs/"
 }
