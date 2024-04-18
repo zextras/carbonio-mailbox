@@ -269,12 +269,13 @@
     <dependency>
       <artifactId>hsqldb</artifactId>
       <groupId>org.hsqldb</groupId>
-      <scope>runtime</scope>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
       <artifactId>sqltool</artifactId>
       <groupId>org.hsqldb</groupId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>

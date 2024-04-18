@@ -7,8 +7,8 @@ package com.zextras.mailbox;
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
 import com.zextras.mailbox.config.GlobalConfigProvider;
-import com.zextras.mailbox.ldap.InMemoryLdapServer;
-import com.zextras.mailbox.ldap.InMemoryLdapServer.Builder;
+import com.zextras.mailbox.util.InMemoryLdapServer;
+import com.zextras.mailbox.util.InMemoryLdapServer.Builder;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -23,6 +23,14 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.jetty.server.Server;
 
+/**
+ * A test-only mailbox.
+ * Starts also an in memory db using {@link HSQLDB} and in memory LDAP using
+ * {@link InMemoryLdapServer}.
+ *
+ * Please run this class with java.library.path pointing to native module target (native/target) so
+ * native library is loaded
+ */
 public class SampleLocalMailbox {
 
   private static final int LDAP_PORT = 1389;
@@ -30,7 +38,6 @@ public class SampleLocalMailbox {
 
 
   public static void main(String[] args) throws Exception {
-    System.setProperty("zimbra.native.required", "false");
 
     final Path keystoreRoot = Files.createTempDirectory("keystore");
     final Path keystorePath = Path.of(keystoreRoot.toAbsolutePath().toString(), "keystore");

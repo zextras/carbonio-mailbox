@@ -1,0 +1,28 @@
+pkgname="carbonio-common-appserver-native-lib"
+pkgver="4.15.1"
+pkgrel="1"
+pkgdesc="Carbonio Core Mailbox Native Libs"
+arch=('x86_64')
+maintainer="Zextras <packages@zextras.com>"
+copyright=(
+  "2022-2024, Zextras <https://www.zextras.com>"
+  "2022, Synacor, Inc."
+)
+license=(
+  "GPL-2.0-only"
+)
+url="https://github.com/zextras"
+depends__apt=(
+  "libc6"
+)
+depends__yum=(
+  "glibc"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../staging
+  install -D "native/target/libnative.so" \
+    "${pkgdir}/opt/zextras/lib/libnative.so"
+}

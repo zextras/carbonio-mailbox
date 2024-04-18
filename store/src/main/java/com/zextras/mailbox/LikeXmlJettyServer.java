@@ -63,7 +63,7 @@ public class LikeXmlJettyServer {
     private HttpConfiguration httpsConfig;
     private SslContextFactory sslContextFactory;
     private String webDescriptor = "/opt/zextras/conf/web.xml";
-    private String webApp = "/opt/zextras/jetty_base/webapps/service";
+    private String webApp = "/opt/zextras/conf";
 
     public Builder(GlobalConfigProvider globalConfigProvider) {
       this.globalConfigProvider = globalConfigProvider;

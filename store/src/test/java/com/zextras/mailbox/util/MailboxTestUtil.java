@@ -3,8 +3,7 @@ package com.zextras.mailbox.util;
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
 import com.unboundid.ldap.listener.InMemoryDirectoryServer;
-import com.zextras.mailbox.ldap.InMemoryLdapServer;
-import com.zextras.mailbox.ldap.InMemoryLdapServer.Builder;
+import com.zextras.mailbox.util.InMemoryLdapServer.Builder;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;

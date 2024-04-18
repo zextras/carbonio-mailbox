@@ -1,14 +1,10 @@
-// SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
 //
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.cs.db;
 
-import com.google.common.base.Joiner;
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.db.DbPool.DbConnection;
-import com.zimbra.cs.db.DbPool.PoolConfig;
-import com.zimbra.cs.mailbox.Mailbox;
 import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,10 +12,18 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
+
 import org.hsqldb.cmdline.SqlFile;
 
+import com.google.common.base.Joiner;
+import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.db.DbPool.DbConnection;
+import com.zimbra.cs.db.DbPool.PoolConfig;
+import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.MailboxTestUtil;
+
 /**
- * All data is in memory, not persistent across JVM restarts.
+ * HSQLDB is for unit test. All data is in memory, not persistent across JVM restarts.
  *
  * @author ysasaki
  */
@@ -48,6 +52,7 @@ public class HSQLDB extends Db {
             if (rs.next() && rs.getInt(1) > 0) {
                 return;  // already exists
             }
+            zimbraServerDir = MailboxTestUtil.getZimbraServerDir(zimbraServerDir);
       execute(conn, zimbraServerDir + "src/test/resources/db/hsqldb/db.sql");
       execute(conn, zimbraServerDir + "src/test/resources/db/hsqldb/create_database.sql");
         } finally {
@@ -70,9 +75,10 @@ public class HSQLDB extends Db {
      * @throws Exception
      */
     public static void clearDatabase(String zimbraServerDir) throws Exception {
+        zimbraServerDir = MailboxTestUtil.getZimbraServerDir(zimbraServerDir);
         DbConnection conn = DbPool.getConnection();
         try {
-            execute(conn, zimbraServerDir + "src/test/resources/db/hsqldb/clear.sql");
+      execute(conn, zimbraServerDir + "src/test/resources/db/hsqldb/clear.sql");
         } finally {
             DbPool.quietClose(conn);
         }

@@ -23,7 +23,6 @@ public class Mailbox {
   private static final String DRYRUN = "dryRun";
 
   public static void main(String[] args) throws Exception {
-    System.setProperty("zimbra.native.required", "false");
     Options options = getOptions();
     CommandLineParser parser = new GnuParser();
     CommandLine commandLine = parser.parse(options, args);

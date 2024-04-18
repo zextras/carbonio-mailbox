@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-package com.zextras.mailbox.ldap;
+package com.zextras.mailbox.util;
 
 import com.unboundid.ldap.listener.InMemoryDirectoryServer;
 import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig;
@@ -13,7 +13,7 @@ import com.unboundid.ldap.sdk.ModificationType;
 import com.unboundid.ldif.LDIFReader;
 import com.zimbra.common.localconfig.LC;
 
-/** A simple in meory ldap for testing using carbonio schemas */
+/** A simple in memory ldap for testing using carbonio schemas */
 public class InMemoryLdapServer {
 
   private final InMemoryDirectoryServer inMemoryDirectoryServer;
