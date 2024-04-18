@@ -94,6 +94,10 @@ public class SampleLocalMailbox {
         APP_SERVER_NAME,
         new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
     provisioning.createDomain("test.com", new HashMap<>());
+    provisioning.createAccount("test@test.com", "password", new HashMap<>());
+    provisioning.createAccount("admin@test.com", "password", new HashMap<>(){{
+      put(ZAttrProvisioning.A_zimbraIsAdminAccount, "TRUE");
+    }});
   }
 
 }
