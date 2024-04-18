@@ -113,7 +113,7 @@ public class FullAutoComplete extends MailDocumentHandler {
       ZimbraSoapContext zsc) {
     final var response = zsc.createElement(MailConstants.FULL_AUTO_COMPLETE_RESPONSE);
     response.addAttribute(MailConstants.A_CANBECACHED, canBeCached);
-    getElementsForMatches(fullAutoCompleteMatches).forEach(response::addNonUniqueElement);
+    getElementsForMatches(fullAutoCompleteMatches, zsc).forEach(response::addNonUniqueElement);
     return response;
   }
 
@@ -121,10 +121,10 @@ public class FullAutoComplete extends MailDocumentHandler {
    * @param fullAutoCompleteMatches List of full {@link AutoCompleteMatch}es
    * @return List of match {@link Element}s
    */
-  private ArrayList<Element> getElementsForMatches(List<AutoCompleteMatch> fullAutoCompleteMatches) {
+  private ArrayList<Element> getElementsForMatches(List<AutoCompleteMatch> fullAutoCompleteMatches, ZimbraSoapContext zsc) {
 
     return fullAutoCompleteMatches.stream().map(match -> {
-      var matchElement = new XMLElement(MailConstants.E_MATCH);
+      var matchElement = zsc.createElement(MailConstants.E_MATCH);
       matchElement.addAttribute(MailConstants.A_RANKING, Integer.toString(match.getRanking()));
       matchElement.addAttribute(MailConstants.A_MATCH_TYPE, match.getMatchType());
       matchElement.addAttribute(MailConstants.A_IS_GROUP, match.getGroup());
