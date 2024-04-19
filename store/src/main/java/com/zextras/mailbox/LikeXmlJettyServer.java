@@ -6,7 +6,6 @@ package com.zextras.mailbox;
 
 import com.zimbra.common.jetty.JettyMonitor;
 import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Config;
 import java.io.IOException;
 import javax.servlet.DispatcherType;
@@ -110,7 +109,7 @@ public class LikeXmlJettyServer {
       server.setDumpBeforeStop(true);
 
       return server;
-      } catch (ServiceException | IOException e) {
+      } catch (IOException e) {
         throw new InstantiationException(e.getCause());
       }
     }
@@ -126,7 +125,7 @@ public class LikeXmlJettyServer {
     }
 
 
-    private Handler createRewriteHandler() throws ServiceException {
+    private Handler createRewriteHandler() {
       final RewriteHandler rewriteHandler = new RewriteHandler();
       rewriteHandler.setRewriteRequestURI(true);
       rewriteHandler.setRewritePathInfo(false);
@@ -180,7 +179,7 @@ public class LikeXmlJettyServer {
       return rewriteHandler;
     }
 
-    private ThreadPool createThreadPool() throws ServiceException {
+    private ThreadPool createThreadPool() {
       QueuedThreadPool threadPool = new QueuedThreadPool();
       threadPool.setMinThreads(10);
       threadPool.setMaxThreads(globalConfig.getHttpNumThreads());
@@ -191,7 +190,7 @@ public class LikeXmlJettyServer {
       return threadPool;
     }
 
-    private HttpConfiguration createHttpConfig() throws ServiceException {
+    private HttpConfiguration createHttpConfig() {
       HttpConfiguration httpConfig = new HttpConfiguration();
       httpConfig.setOutputBufferSize(globalConfig.getHttpOutputBufferSize());
       httpConfig.setRequestHeaderSize(globalConfig.getHttpRequestHeaderSize());
@@ -220,8 +219,7 @@ public class LikeXmlJettyServer {
       return sslHttpConfig;
     }
 
-    private ServerConnector createUserHttpConnector(Server server, HttpConfiguration httpConfig)
-        throws ServiceException {
+    private ServerConnector createUserHttpConnector(Server server, HttpConfiguration httpConfig) {
       ServerConnector serverConnector = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
       // Use zimbraMailPort or set static?
       serverConnector.setPort(USER_SERVER_PORT);
@@ -229,7 +227,7 @@ public class LikeXmlJettyServer {
       return serverConnector;
     }
 
-    private SslContextFactory createSSLContextFactory() throws ServiceException {
+    private SslContextFactory createSSLContextFactory() {
       SslContextFactory localSslContextFactory = new SslContextFactory.Server();
       localSslContextFactory.setKeyStorePath(LC.mailboxd_keystore.value());
       localSslContextFactory.setKeyStorePassword(LC.mailboxd_keystore_password.value());
@@ -265,7 +263,7 @@ public class LikeXmlJettyServer {
       return createHttpsConnector(server, ADMIN_MTA_SERVER_PORT, 0);
     }
 
-    private ServerConnector createExtensionsHttpsConnector(Server server) throws ServiceException {
+    private ServerConnector createExtensionsHttpsConnector(Server server) {
       return createHttpsConnector(server, EXTENSIONS_SERVER_PORT, globalConfig.getHttpConnectorMaxIdleTimeMillis());
     }
 
