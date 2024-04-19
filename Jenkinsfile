@@ -28,7 +28,9 @@ def buildDebPackages(String flavor) {
 def getPackages() {
     return ["carbonio-appserver-conf","carbonio-appserver-db",
             "carbonio-appserver-service", "carbonio-common-appserver-conf",
-            "carbonio-common-appserver-native-lib", "carbonio-directory-server"]
+            "carbonio-common-appserver-native-lib", "carbonio-directory-server",
+            "carbonio-mailbox-jar"
+    ]
 }
 def getRpmSpec(String upstream, String version) {
     packages = getPackages()
