@@ -1,11 +1,16 @@
 #!/bin/bash
 
+source zmshutil
+zmsetvars
+java_xms=${mailboxd_java_heap_size:=512}
+java_xmx=${java_xms}
 /opt/zextras/common/bin/java \
   -Dfile.encoding=UTF-8 \
   $mailboxd_java_options \
   -Xms${java_xms}m \
   -Xmx${java_xmx}m \
   -Djava.io.tmpdir=/opt/zextras/mailboxd/work \
+  -Dlog4j.configurationFile=/opt/zextras/conf/log4j.properties \
   -Djava.library.path=/opt/zextras/lib \
   -Dzimbra.config=/opt/zextras/conf/localconfig.xml \
   -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/* \

@@ -26,8 +26,8 @@ package() {
   install -D store/target/dependencies/*.jar \
      "${pkgdir}/opt/zextras/mailbox/jars/"
 
-  install -Ddm755 "${pkgdir}/opt/zextras/common/lib/jylibs/"
+  install -Ddm755 "${pkgdir}/opt/zextras/lib/jars/"
 
   install -D jython-libs/target/dependencies/*.jar \
-    "${pkgdir}/opt/zextras/common/lib/jylibs/"
+    "${pkgdir}/opt/zextras/lib/jars/"
 }
