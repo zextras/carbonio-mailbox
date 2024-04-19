@@ -9,16 +9,7 @@ User=zextras
 PIDFile=/opt/zextras/log/zmmailboxd_java.pid
 EnvironmentFile=-/opt/zextras/data/systemd.env
 ExecStartPre=/opt/zextras/bin/zmtlsctl
-ExecStart=/opt/zextras/common/bin/java \
-  -Dfile.encoding=UTF-8 \
-  $mailboxd_java_options \
-  -Xms${java_xms}m \
-  -Xmx${java_xmx}m \
-  -Djava.io.tmpdir=/opt/zextras/mailboxd/work \
-  -Djava.library.path=/opt/zextras/lib \
-  -Dzimbra.config=/opt/zextras/conf/localconfig.xml \
-  -jar /opt/zextras/mailbox/jars/mailbox.jar \
-  -webDescriptor=/opt/zextras/jetty_base/webapps/service/WEB-INF/web.xml
+ExecStart=/usr/bin/carbonio-appserver
 RestartSec=3
 Restart=on-failure
 SuccessExitStatus=143

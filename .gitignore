@@ -37,3 +37,4 @@ target/
 /artifacts/x86_64/
 /artifacts/
 /store/ldap/generated/
+/data/
