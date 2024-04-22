@@ -4,6 +4,8 @@
 
 package com.zextras.mailbox;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.localconfig.LC;
 import java.io.File;
@@ -43,7 +45,7 @@ class MailboxTest {
   void shouldNotStartMailboxIfDryRun() throws Exception {
     final String webApp = new File("conf/").getAbsolutePath();
     final String webDescriptor = new File("conf/web-dev.xml").getAbsolutePath();
-    Mailbox.main(new String[]{"-webDescriptor", webDescriptor, "-webApp", webApp, "-dryRun", "true"});
+    assertDoesNotThrow(() -> Mailbox.main(new String[]{"-webDescriptor", webDescriptor, "-webApp", webApp, "-dryRun", "true"}));
   }
 
 }
