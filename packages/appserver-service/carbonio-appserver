@@ -4,7 +4,7 @@ source zmshutil
 zmsetvars
 java_xms=${mailboxd_java_heap_size:=512}
 java_xmx=${java_xms}
-/opt/zextras/common/bin/java \
+exec /opt/zextras/common/bin/java \
   -Dfile.encoding=UTF-8 \
   $mailboxd_java_options \
   -Xms${java_xms}m \
