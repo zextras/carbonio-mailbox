@@ -83,6 +83,7 @@ import com.zimbra.cs.account.auth.AuthContext;
 import com.zimbra.cs.account.auth.AuthMechanism;
 import com.zimbra.cs.account.auth.AuthMechanism.AuthMech;
 import com.zimbra.cs.account.auth.PasswordUtil;
+import com.zimbra.cs.account.auth.ZimbraCustomAuth;
 import com.zimbra.cs.account.cache.DomainCache;
 import com.zimbra.cs.account.cache.DomainCache.GetFromDomainCacheOption;
 import com.zimbra.cs.account.cache.IAccountCache;
@@ -5524,9 +5525,12 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   }
 
   private boolean isRecoveryCodeBasedAuth(Map<String, Object> authCtxt) {
-    return authCtxt == null
-        ? false
-        : AuthMode.RECOVERY_CODE == authCtxt.get(Provisioning.AUTH_MODE_KEY);
+    return authCtxt != null && (recoveryCodeBasedAuthRequestFromAdvanced(authCtxt)
+        || AuthMode.RECOVERY_CODE == authCtxt.get(Provisioning.AUTH_MODE_KEY));
+  }
+
+  private boolean recoveryCodeBasedAuthRequestFromAdvanced(Map<String, Object> authCtxt) {
+    return authCtxt != null && (Boolean.TRUE.equals(authCtxt.get("recoveryTokenBasedAuth")));
   }
 
   private void verifyRecoveryCode(Account acct, String recoveryCode, Map<String, Object> authCtxt)
@@ -5984,6 +5988,13 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       Account acct, String password, AuthMechanism authMech, Map<String, Object> context)
       throws ServiceException {
     if (isRecoveryCodeBasedAuth(context)) {
+      if(ZimbraCustomAuth.handlerIsRegistered(AuthMech.carbonioAdvanced.name())
+          && !recoveryCodeBasedAuthRequestFromAdvanced(context)){
+        throw AuthFailedServiceException.AUTH_FAILED(acct.getName(),
+            String.format("Cannot handle recovery token based Authentication request when %s auth mech is enabled.",
+                AuthMech.carbonioAdvanced.name()),
+            (Throwable) null);
+      }
       verifyRecoveryCode(acct, password, context);
     } else {
       Domain domain = Provisioning.getInstance().getDomain(acct);
@@ -5995,8 +6006,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
       try {
         authMech.doAuth(this, domain, acct, password, context);
-        // indicate the authed by mech in the auth context
-        // context.put(AuthContext.AC_AUTHED_BY_MECH, authedByMech); TODO
         return;
       } catch (ServiceException e) {
         if (!allowFallback || authMech.isDefaultAuth()) throw e;
@@ -6010,7 +6019,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
       // fall back to zimbra default auth
       AuthMechanism.doZimbraAuth(this, domain, acct, password, context);
-      // context.put(AuthContext.AC_AUTHED_BY_MECH, Provisioning.AM_ZIMBRA); // TODO
     }
   }
 
