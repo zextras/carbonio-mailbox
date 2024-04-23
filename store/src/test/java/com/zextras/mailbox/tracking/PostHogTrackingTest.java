@@ -1,5 +1,12 @@
 package com.zextras.mailbox.tracking;
 
+import static com.zextras.mailbox.tracking.PostHogTracking.POSTHOG_API_KEY;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
+
+import java.io.IOException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,17 +14,8 @@ import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.verify.VerificationTimes;
 
-import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
-
 class PostHogTrackingTest {
 
-
-    private static final String POSTHOG_API_KEY = "phc_egpFZ14OKByQMK51wCTzYp8tLrg0VA8wa2QDagXCjDG";
     private ClientAndServer postHog;
     private static final int POSTHOG_PORT = 5000;
     private final PostHogTracking postHogTracking = new PostHogTracking("http://localhost:" + POSTHOG_PORT);

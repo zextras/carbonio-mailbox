@@ -1,19 +1,15 @@
 package com.zextras.mailbox.tracking;
 
-import org.apache.http.client.methods.HttpGet;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-
-
-
 public class PostHogTracking implements Tracking {
 
-    private static final String POSTHOG_API_KEY = "phc_egpFZ14OKByQMK51wCTzYp8tLrg0VA8wa2QDagXCjDG";
+    static final String POSTHOG_API_KEY = "phc_egpFZ14OKByQMK51wCTzYp8tLrg0VA8wa2QDagXCjDG";
     private final String endPoint;
 
     public PostHogTracking(String endPoint) {
