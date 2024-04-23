@@ -7,7 +7,6 @@ package com.zimbra.cs.service.mail;
 
 import com.zextras.carbonio.files.FilesClient;
 import com.zextras.mailbox.smartlinks.FilesSmartLinksGenerator;
-import com.zextras.mailbox.tracking.MatomoTracking;
 import com.zextras.mailbox.tracking.PostHogTracking;
 import com.zextras.mailbox.tracking.Tracking;
 import com.zimbra.common.soap.MailConstants;

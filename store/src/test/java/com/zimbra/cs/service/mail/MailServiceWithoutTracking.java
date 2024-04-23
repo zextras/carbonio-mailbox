@@ -6,10 +6,9 @@ package com.zimbra.cs.service.mail;
 
 import com.zextras.mailbox.tracking.Event;
 import com.zextras.mailbox.tracking.Tracking;
-import io.vavr.control.Try;
 
 /**
- * Mail Service registration API that uses a fake tracking to avoid sending data to Matomo.
+ * Mail Service registration API that uses a fake tracking to avoid sending data to real tracking instance.
  *
  */
 public class MailServiceWithoutTracking extends MailService {
