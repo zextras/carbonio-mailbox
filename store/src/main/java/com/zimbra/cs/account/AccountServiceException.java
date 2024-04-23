@@ -20,6 +20,7 @@ import com.zimbra.common.util.Constants;
 public class AccountServiceException extends ServiceException {
 
   public static final String AUTH_FAILED = "account.AUTH_FAILED";
+  public static final String CANNOT_PERFORM_AUTH_WHEN_ADVANCED_AUTH_IS_ENABLED_CODE = "account.CANNOT_PERFORM_AUTH_WHEN_ADVANCED_AUTH_IS_ENABLED";
   public static final String CHANGE_PASSWORD = "account.CHANGE_PASSWORD";
   public static final String RESET_PASSWORD = "account.RESET_PASSWORD";
   public static final String PASSWORD_LOCKED = "account.PASSWORD_LOCKED";
@@ -145,6 +146,13 @@ public class AccountServiceException extends ServiceException {
 
     public static AuthFailedServiceException AUTH_FAILED(String acctName, String namePassedIn) {
       return AUTH_FAILED(acctName, namePassedIn, null, null);
+    }
+
+    public static AuthFailedServiceException CANNOT_PERFORM_AUTH_WHEN_ADVANCED_AUTH_IS_ENABLED(
+        String accId, String acctName) {
+      return new AuthFailedServiceException(accId, acctName,
+          "Cannot handle recovery token based Authentication request when carbonioAdvanced auth mech is enabled.",
+          CANNOT_PERFORM_AUTH_WHEN_ADVANCED_AUTH_IS_ENABLED_CODE, false, null);
     }
 
     public static AuthFailedServiceException AUTH_FAILED(

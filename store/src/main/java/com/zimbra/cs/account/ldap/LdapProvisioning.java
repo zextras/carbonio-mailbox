@@ -5990,10 +5990,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     if (isRecoveryCodeBasedAuth(context)) {
       if(ZimbraCustomAuth.handlerIsRegistered(AuthMech.carbonioAdvanced.name())
           && !recoveryCodeBasedAuthRequestFromAdvanced(context)){
-        throw AuthFailedServiceException.AUTH_FAILED(acct.getName(),
-            String.format("Cannot handle recovery token based Authentication request when %s auth mech is enabled.",
-                AuthMech.carbonioAdvanced.name()),
-            (Throwable) null);
+        throw AuthFailedServiceException.CANNOT_PERFORM_AUTH_WHEN_ADVANCED_AUTH_IS_ENABLED(acct.getId(), acct.getName());
       }
       verifyRecoveryCode(acct, password, context);
     } else {
