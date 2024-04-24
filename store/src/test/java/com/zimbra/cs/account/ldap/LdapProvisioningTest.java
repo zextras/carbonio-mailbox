@@ -14,6 +14,7 @@ import com.zimbra.cs.account.AccountServiceException.AuthFailedServiceException;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Provisioning.AuthMode;
+import com.zimbra.cs.account.auth.AuthContext;
 import com.zimbra.cs.account.auth.AuthContext.Protocol;
 import com.zimbra.cs.account.auth.AuthMechanism.AuthMech;
 import com.zimbra.cs.account.auth.ZimbraCustomAuth;
@@ -145,21 +146,22 @@ public class LdapProvisioningTest {
    */
   @Test
   void shouldNotFallbackAdminAuthWhenFallbackFalse() throws Exception {
+    final String domain = "demo.com";
+    Map<String, Object> domainAttrs = new HashMap<>();
+    domainAttrs.put(Provisioning.A_zimbraAuthFallbackToLocal, "FALSE");
+    domainAttrs.put(Provisioning.A_zimbraAuthMech, AuthMech.ldap.toString());
+    provisioning.createDomain(domain, domainAttrs);
+
+    HashMap<String, Object> exampleAccountAttrs3 = new HashMap<>();
+    exampleAccountAttrs3.put(Provisioning.A_zimbraIsAdminAccount, "TRUE");
+    final String email = "testAdmin@" + domain;
+    final String password = "testPassword";
+    final Account testAdminAccount = provisioning.createAccount(email, password, exampleAccountAttrs3);
+
     assertThrows(ServiceException.class, () -> {
-      // create domain
-      final String domain = "demo.com";
-      Map<String, Object> domainAttrs = new HashMap<>();
-      domainAttrs.put(Provisioning.A_zimbraAuthMech, AuthMech.ldap.toString());
-      provisioning.createDomain(domain, domainAttrs);
-      // create account
-      HashMap<String, Object> exampleAccountAttrs3 = new HashMap<>();
-      exampleAccountAttrs3.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-      exampleAccountAttrs3.put(Provisioning.A_zimbraIsAdminAccount, "TRUE");
-      final String email = "testAdmin@" + domain;
-      final String password = "testPassword";
-      exampleAccountAttrs3.put(Provisioning.A_mail, email);
-      final Account testAdminAccount = provisioning.createAccount(email, password, exampleAccountAttrs3);
-      provisioning.authAccount(testAdminAccount, password, Protocol.soap);
+      final HashMap<String, Object> authContext = new HashMap<>();
+      authContext.put(AuthContext.AC_AS_ADMIN, true);
+      provisioning.authAccount(testAdminAccount, password, Protocol.soap, authContext );
     });
   }
 
@@ -202,10 +204,10 @@ public class LdapProvisioningTest {
   }
 
   @Test
-  void should_throw_exception_when_carbonio_advanced_auth_mechanism_is_registered() throws ServiceException {
+  void should_throw_exception_when_recovery_code_based_auth_and_carbonio_auth_mechanism_is_registered() throws ServiceException {
     ZimbraCustomAuth.register(AuthMech.carbonioAdvanced.name(), new TestCustomAuth());
 
-    var domain = "demo.com";
+    var domain = UUID.randomUUID() + ".com";
     var domainAttrs = new HashMap<String, Object>();
     domainAttrs.put(Provisioning.A_zimbraAuthMech, AuthMech.carbonioAdvanced.name());
     provisioning.createDomain(domain, domainAttrs);
