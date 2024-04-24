@@ -148,7 +148,7 @@ public class AccountServiceException extends ServiceException {
       return AUTH_FAILED(acctName, namePassedIn, null, null);
     }
 
-    public static AuthFailedServiceException CANNOT_PERFORM_AUTH_WHEN_ADVANCED_AUTH_IS_ENABLED(
+    public static AuthFailedServiceException cannotPerformAuthWhenAdvancedAuthIsEnabled(
         String accId, String acctName) {
       return new AuthFailedServiceException(accId, acctName,
           "Cannot handle recovery token based Authentication request when carbonioAdvanced auth mech is enabled.",
