@@ -224,6 +224,28 @@ public class LdapProvisioningTest {
         authFailedServiceException.getCode());
   }
 
+  @Test
+  void should_throw_auth_failed_exception_when_recovery_code_based_auth_and_carbonio_auth_mechanism_is_registered() throws ServiceException {
+    ZimbraCustomAuth.register(AuthMech.carbonioAdvanced.name(), new TestCustomAuth());
+
+    var domain = UUID.randomUUID() + ".com";
+    var domainAttrs = new HashMap<String, Object>();
+    domainAttrs.put(Provisioning.A_zimbraAuthMech, AuthMech.carbonioAdvanced.name());
+    provisioning.createDomain(domain, domainAttrs);
+
+    var wrongRecoveryCode = UUID.randomUUID().toString();
+    var account = provisioning.createAccount(UUID.randomUUID() + "@" + domain, wrongRecoveryCode, new HashMap<>());
+    account.setFeatureResetPasswordStatus(FeatureResetPasswordStatus.enabled);
+
+    var authContext = createAuthContext(AuthMode.RECOVERY_CODE);
+    authContext.put("recoveryTokenBasedAuth", true); // mimic carbonio advanced auth recovery token based authentication request
+
+    var authFailedServiceException = assertThrows(AuthFailedServiceException.class,
+        () -> provisioning.authAccount(account, wrongRecoveryCode, Protocol.http_basic, authContext
+            ));
+    assertEquals(AccountServiceException.AUTH_FAILED, authFailedServiceException.getCode());
+  }
+
   @SuppressWarnings("SameParameterValue")
   private Map<String, Object> createAuthContext(AuthMode authMode) {
     Map<String, Object> authContext = new HashMap<>();
