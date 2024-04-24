@@ -1,5 +1,5 @@
 pkgname="carbonio-mailbox-jar"
-pkgver="4.15.0"
+pkgver="4.16.0"
 pkgrel="1"
 pkgdesc="Carbonio Mailbox Jars"
 arch=('x86_64')
@@ -26,8 +26,8 @@ package() {
   install -D store/target/dependencies/*.jar \
      "${pkgdir}/opt/zextras/mailbox/jars/"
 
-  install -Ddm755 "${pkgdir}/opt/zextras/lib/jars/"
+  install -Ddm755 "${pkgdir}/opt/zextras/jython/jars/"
 
   install -D jython-libs/target/dependencies/*.jar \
-    "${pkgdir}/opt/zextras/lib/jars/"
+    "${pkgdir}/opt/zextras/jython/jars/"
 }
