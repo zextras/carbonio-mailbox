@@ -73,12 +73,14 @@ public class FullAutoComplete extends MailDocumentHandler {
 
     otherAutoCompleteMatches.stream()
         .sorted(Comparator.comparing(AutoCompleteMatch::getRanking).reversed()
-            .thenComparing(AutoCompleteMatch::getEmail, Comparator.nullsFirst(String::compareToIgnoreCase)))
+            .thenComparing(match -> match.getEmail() == null ? "<" + match.getDisplayName() + ">" : match.getEmail(),
+                Comparator.nullsLast(String::compareToIgnoreCase)))
         .filter(autoCompleteMatch -> fullAutoCompleteMatches.stream()
             .noneMatch(match ->
                 match.getEmail() != null && match.getEmail().equalsIgnoreCase(autoCompleteMatch.getEmail())))
         .limit(Math.max(contactAutoCompleteMaxResultsLimit - fullAutoCompleteMatches.size(), 0))
         .forEachOrdered(fullAutoCompleteMatches::add);
+
     return fullAutoCompleteResponseFor(fullAutoCompleteMatches, false, zsc);
   }
 

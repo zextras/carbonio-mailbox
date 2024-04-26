@@ -314,13 +314,14 @@ class FullAutoCompleteTest extends SoapTestSuite {
     String searchTerm = "my";
     String domain = "something.com";
 
-    String contactEmail1 = searchTerm + "_email1@" + domain;
-    String contactEmail2 = searchTerm + "_email2@" + domain;
-    String contactEmail3 = searchTerm + "_email3@" + domain;
-    String contactEmail4 = searchTerm + "_email4@" + domain;
+    String contactEmail1 = searchTerm + "email1@" + domain;
+    String contactEmail2 = searchTerm + "email2@" + domain;
+    String contactEmail3 = searchTerm + "email3@" + domain;
+    String contactEmail4 = searchTerm + "email4@" + domain;
 
-    Account account = createRandomAccountWithContactGroup(searchTerm + "ContactGroup", contactEmail1);
+    Account account = createRandomAccountWithContactGroup(searchTerm + "ContactGroup1", contactEmail1);
     Account account2 = createRandomAccountWithContactGroup(searchTerm + "ContactGroup2", contactEmail1, contactEmail2);
+    createContactGroupForAccount(account2, searchTerm + "ContactGroup1", new String[]{contactEmail1});
     Account account3 = createRandomAccountWithContactGroup(searchTerm + "ContactGroup3", contactEmail3, contactEmail4);
     Account account4 = createRandomAccountWithContacts(contactEmail1, contactEmail4);
 
@@ -335,10 +336,10 @@ class FullAutoCompleteTest extends SoapTestSuite {
     var fullAutocompleteResponse = performFullAutocompleteRequest(searchTerm, account,
         preferredAccounts);
 
-    List<Integer> expectedRanking = List.of(0, 10, 0, 0, 0);
-    List<String> expectedMatchedEmailAddresses = Arrays.asList(null, contactEmail1, null, null, contactEmail4);
+    List<Integer> expectedRanking = List.of(0, 10, 0, 0, 0, 0);
+    List<String> expectedMatchedEmailAddresses = Arrays.asList(null, contactEmail1, null, null, null, contactEmail4);
 
-    assertEquals(5, fullAutocompleteResponse.getMatches().size());
+    assertEquals(6, fullAutocompleteResponse.getMatches().size());
     for (int i = 0; i < fullAutocompleteResponse.getMatches().size(); i++) {
       var autoCompleteMatch = fullAutocompleteResponse.getMatches().get(i);
       if (autoCompleteMatch.getGroup()) {
@@ -379,7 +380,14 @@ class FullAutoCompleteTest extends SoapTestSuite {
 
   private Account createRandomAccountWithContactGroup(String contactGroupName,
       String... membersEmailsForContactGroup) throws Exception {
+    var account = accountCreatorFactory.get().create();
+    createContactGroupForAccount(account, contactGroupName, membersEmailsForContactGroup);
+    return account;
+  }
 
+  private void createContactGroupForAccount(Account account, String contactGroupName,
+      String[] membersEmailsForContactGroup)
+      throws Exception {
     var createContactRequest = new Element.XMLElement(MailConstants.CREATE_CONTACT_REQUEST);
 
     var contactSpecElement = new Element.XMLElement(MailConstants.E_CONTACT);
@@ -397,13 +405,10 @@ class FullAutoCompleteTest extends SoapTestSuite {
     }
 
     createContactRequest.addNonUniqueElement(contactSpecElement);
-
-    var account = accountCreatorFactory.get().create();
     var response = getSoapClient().executeSoap(account, createContactRequest);
-
     assertEquals(200, response.getStatusLine().getStatusCode());
-    return account;
   }
+
 
   private void shareAccountWithPrimary(Account accountToShare, Account primaryAccount) {
     try {
