@@ -7,7 +7,6 @@ package com.zimbra.cs.service.mail;
 import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
-import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapHttpTransport;
 import com.zimbra.common.util.ZimbraLog;
@@ -65,8 +64,8 @@ public class FullAutoComplete extends MailDocumentHandler {
           .map(otherAccountId -> doAutoCompleteOnAccount(authenticatedAccount, zAuthToken, otherAccountId,
               autoCompleteRequest))
           .forEachOrdered(otherAccountAutoCompleteResponse -> otherAccountAutoCompleteResponse.getMatches().stream()
-              .filter(autoCompleteMatch -> fullAutoCompleteMatches.stream()
-                  .noneMatch(m -> m.getEmail().equalsIgnoreCase(autoCompleteMatch.getEmail())))
+              .filter(autoCompleteMatch -> autoCompleteMatch.getEmail() == null || fullAutoCompleteMatches.stream()
+                  .noneMatch(match -> autoCompleteMatch.getEmail().equalsIgnoreCase(match.getEmail())))
               .forEachOrdered(otherAutoCompleteMatches::add));
     } catch (ServiceException e) {
       throw ServiceException.FAILURE(e.getMessage());
@@ -74,12 +73,12 @@ public class FullAutoComplete extends MailDocumentHandler {
 
     otherAutoCompleteMatches.stream()
         .sorted(Comparator.comparing(AutoCompleteMatch::getRanking).reversed()
-            .thenComparing(AutoCompleteMatch::getEmail))
+            .thenComparing(AutoCompleteMatch::getEmail, Comparator.nullsFirst(String::compareToIgnoreCase)))
         .filter(autoCompleteMatch -> fullAutoCompleteMatches.stream()
-            .noneMatch(m -> m.getEmail().equalsIgnoreCase(autoCompleteMatch.getEmail())))
+            .noneMatch(match ->
+                match.getEmail() != null && match.getEmail().equalsIgnoreCase(autoCompleteMatch.getEmail())))
         .limit(Math.max(contactAutoCompleteMaxResultsLimit - fullAutoCompleteMatches.size(), 0))
         .forEachOrdered(fullAutoCompleteMatches::add);
-
     return fullAutoCompleteResponseFor(fullAutoCompleteMatches, false, zsc);
   }
 
@@ -121,7 +120,8 @@ public class FullAutoComplete extends MailDocumentHandler {
    * @param fullAutoCompleteMatches List of full {@link AutoCompleteMatch}es
    * @return List of match {@link Element}s
    */
-  private ArrayList<Element> getElementsForMatches(List<AutoCompleteMatch> fullAutoCompleteMatches, ZimbraSoapContext zsc) {
+  private ArrayList<Element> getElementsForMatches(List<AutoCompleteMatch> fullAutoCompleteMatches,
+      ZimbraSoapContext zsc) {
 
     return fullAutoCompleteMatches.stream().map(match -> {
       var matchElement = zsc.createElement(MailConstants.E_MATCH);

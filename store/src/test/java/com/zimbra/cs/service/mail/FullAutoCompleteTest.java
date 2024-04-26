@@ -5,11 +5,15 @@
 package com.zimbra.cs.service.mail;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
+import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.soap.Element;
+import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Cos;
 import com.zimbra.cs.account.Provisioning;
@@ -305,6 +309,48 @@ class FullAutoCompleteTest extends SoapTestSuite {
     }
   }
 
+  @Test
+  void should_return_contact_group_when_matches() throws Exception {
+    String searchTerm = "my";
+    String domain = "something.com";
+
+    String contactEmail1 = searchTerm + "_email1@" + domain;
+    String contactEmail2 = searchTerm + "_email2@" + domain;
+    String contactEmail3 = searchTerm + "_email3@" + domain;
+    String contactEmail4 = searchTerm + "_email4@" + domain;
+
+    Account account = createRandomAccountWithContactGroup(searchTerm + "ContactGroup", contactEmail1);
+    Account account2 = createRandomAccountWithContactGroup(searchTerm + "ContactGroup2", contactEmail1, contactEmail2);
+    Account account3 = createRandomAccountWithContactGroup(searchTerm + "ContactGroup3", contactEmail3, contactEmail4);
+    Account account4 = createRandomAccountWithContacts(contactEmail1, contactEmail4);
+
+    incrementRankings(account2, contactEmail2, 20);
+    incrementRankings(account4, contactEmail1, 10);
+
+    shareAccountWithPrimary(account2, account);
+    shareAccountWithPrimary(account3, account);
+    shareAccountWithPrimary(account4, account);
+
+    var preferredAccounts = new ArrayList<>(List.of(account, account2, account3, account4));
+    var fullAutocompleteResponse = performFullAutocompleteRequest(searchTerm, account,
+        preferredAccounts);
+
+    List<Integer> expectedRanking = List.of(0, 10, 0, 0, 0);
+    List<String> expectedMatchedEmailAddresses = Arrays.asList(null, contactEmail1, null, null, contactEmail4);
+
+    assertEquals(5, fullAutocompleteResponse.getMatches().size());
+    for (int i = 0; i < fullAutocompleteResponse.getMatches().size(); i++) {
+      var autoCompleteMatch = fullAutocompleteResponse.getMatches().get(i);
+      if (autoCompleteMatch.getGroup()) {
+        assertEquals(0, autoCompleteMatch.getRanking());
+        assertNull(autoCompleteMatch.getEmail());
+      } else {
+        assertEquals("<" + expectedMatchedEmailAddresses.get(i) + ">", autoCompleteMatch.getEmail());
+      }
+      assertEquals(expectedRanking.get(i), autoCompleteMatch.getRanking());
+    }
+  }
+
   @ParameterizedTest
   @MethodSource("parsePreferredAccountsTestData")
   void testParsePreferredAccountsFrom(String input, String expectedPreferredAccount,
@@ -316,10 +362,46 @@ class FullAutoCompleteTest extends SoapTestSuite {
   }
 
   private Account createRandomAccountWithContacts(String... emails) throws Exception {
-    Account account = accountCreatorFactory.get().create();
+    var account = accountCreatorFactory.get().create();
     for (String contactEmail : emails) {
-      getSoapClient().executeSoap(account, new CreateContactRequest(new ContactSpec().addEmail(contactEmail)));
+      var response = getSoapClient().executeSoap(account,
+          new CreateContactRequest(new ContactSpec().addEmail(contactEmail)));
+      assertEquals(200, response.getStatusLine().getStatusCode());
     }
+    return account;
+  }
+
+  private Element createAttributeElement(String attributeName, String attributeText) {
+    var attributeElement = new Element.XMLElement(MailConstants.E_A);
+    attributeElement.addAttribute(MailConstants.A_ATTRIBUTE_NAME, attributeName).setText(attributeText);
+    return attributeElement;
+  }
+
+  private Account createRandomAccountWithContactGroup(String contactGroupName,
+      String... membersEmailsForContactGroup) throws Exception {
+
+    var createContactRequest = new Element.XMLElement(MailConstants.CREATE_CONTACT_REQUEST);
+
+    var contactSpecElement = new Element.XMLElement(MailConstants.E_CONTACT);
+    contactSpecElement.addNonUniqueElement(
+        createAttributeElement(ContactConstants.A_type, ContactConstants.TYPE_GROUP));
+    contactSpecElement.addNonUniqueElement(createAttributeElement(ContactConstants.A_fullName, contactGroupName));
+    contactSpecElement.addNonUniqueElement(createAttributeElement(ContactConstants.A_nickname, contactGroupName));
+    contactSpecElement.addNonUniqueElement(createAttributeElement(ContactConstants.A_fileAs, "8:" + contactGroupName));
+
+    for (String contactEmail : membersEmailsForContactGroup) {
+      var member = new Element.XMLElement(MailConstants.E_CONTACT_GROUP_MEMBER);
+      member.addAttribute(ContactConstants.A_type, ContactConstants.GROUP_MEMBER_TYPE_INLINE);
+      member.addAttribute(MailConstants.A_CONTACT_GROUP_MEMBER_VALUE, contactEmail);
+      contactSpecElement.addNonUniqueElement(member);
+    }
+
+    createContactRequest.addNonUniqueElement(contactSpecElement);
+
+    var account = accountCreatorFactory.get().create();
+    var response = getSoapClient().executeSoap(account, createContactRequest);
+
+    assertEquals(200, response.getStatusLine().getStatusCode());
     return account;
   }
 
