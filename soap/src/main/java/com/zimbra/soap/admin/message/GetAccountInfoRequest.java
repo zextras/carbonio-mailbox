@@ -31,11 +31,10 @@ public class GetAccountInfoRequest {
     /**
      * no-argument constructor wanted by JAXB
      */
-    @SuppressWarnings("unused")
-    private GetAccountInfoRequest() {
+    public GetAccountInfoRequest() {
     }
 
-    public GetAccountInfoRequest(AccountSelector account) {
+    public void setAccount(AccountSelector account) {
         this.account = account;
     }
 

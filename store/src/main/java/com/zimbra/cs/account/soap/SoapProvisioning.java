@@ -1075,9 +1075,9 @@ public class SoapProvisioning extends Provisioning {
   }
 
   public SoapAccountInfo getAccountInfo(AccountBy keyType, String key) throws ServiceException {
-    GetAccountInfoResponse resp =
-        invokeJaxb(
-            new GetAccountInfoRequest(new AccountSelector(SoapProvisioning.toJaxb(keyType), key)));
+    GetAccountInfoRequest request = new GetAccountInfoRequest();
+    request.setAccount(new AccountSelector(SoapProvisioning.toJaxb(keyType), key));
+    GetAccountInfoResponse resp = invokeJaxb(request);
     return new SoapAccountInfo(resp);
   }
 
