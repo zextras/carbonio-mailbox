@@ -1,6 +1,6 @@
 package com.zextras.mailbox.tracking;
 
-import static com.zextras.mailbox.tracking.PostHogTracking.POSTHOG_API_KEY;
+import static com.zextras.mailbox.tracking.PostHogTracking.SITE_KEY;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
@@ -68,7 +68,7 @@ class PostHogTrackingTest {
                 .withPath("/capture/")
                 .withBody("{\n" +
                         "        \"event\": \"" + action + "\",\n" +
-                        "        \"api_key\": \"" + POSTHOG_API_KEY + "\",\n" +
+                        "        \"api_key\": \"" + SITE_KEY + "\",\n" +
                         "        \"distinct_id\": \"" + uid + "\"\n" +
                         "        }");
     }

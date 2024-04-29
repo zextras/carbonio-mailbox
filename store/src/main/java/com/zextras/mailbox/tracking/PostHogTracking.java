@@ -9,7 +9,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 
 public class PostHogTracking implements Tracking {
 
-    static final String POSTHOG_API_KEY = "phc_egpFZ14OKByQMK51wCTzYp8tLrg0VA8wa2QDagXCjDG";
+    static final String SITE_KEY = "phc_egpFZ14OKByQMK51wCTzYp8tLrg0VA8wa2QDagXCjDG";
     private final String endPoint;
 
     public PostHogTracking(String endPoint) {
@@ -29,7 +29,7 @@ public class PostHogTracking implements Tracking {
         String url = endPoint + "/capture/";
         httpPost.setEntity(new StringEntity("{\n" +
                 "        \"event\": \"" + event.getAction() + "\",\n" +
-                "        \"api_key\": \"" + POSTHOG_API_KEY + "\",\n" +
+                "        \"api_key\": \"" + SITE_KEY + "\",\n" +
                 "        \"distinct_id\": \"" + event.getUserId() + "\"\n" +
                 "        }"));
         httpPost.setURI(URI.create(url));
