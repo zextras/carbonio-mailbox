@@ -9,13 +9,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.shaded.com.google.common.annotations.VisibleForTesting;
 
 public class ZimbraCustomAuthTest {
 
   /**
    * A Custom Auth class for testing purposes.
    */
-  private class TestCustomAuth extends ZimbraCustomAuth {
+  @VisibleForTesting
+  public static class TestCustomAuth extends ZimbraCustomAuth {
 
     @Override
     public void authenticate(Account acct, String password, Map<String, Object> context,
