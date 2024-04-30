@@ -1,5 +1,5 @@
 pkgname="carbonio-directory-server"
-pkgver="4.15.3"
+pkgver="4.15.4"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 maintainer="Zextras <packages@zextras.com>"
@@ -93,7 +93,7 @@ postinst__apt() {
   fi
 }
 
-postinst__yum() {
+postinst__rocky_8() {
   mkdir -p /opt/zextras/data/ldap/state/run
   mkdir -p /opt/zextras/data/ldap/config
   mkdir -p /opt/zextras/data/ldap/mdb/db
@@ -108,5 +108,40 @@ postinst__yum() {
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
     su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
     su - zextras -c "/opt/zextras/bin/ldap restart"
+  fi
+}
+
+postinst__rocky_9() {
+  mkdir -p /opt/zextras/data/ldap/state/run
+  mkdir -p /opt/zextras/data/ldap/config
+  mkdir -p /opt/zextras/data/ldap/mdb/db
+  chown -R zextras:zextras /opt/zextras/data/ldap
+
+  chown -R root:root /opt/zextras/common/etc/openldap
+
+  if [ "$1" -eq 2 ]; then
+    echo "*Starting LDAP upgrade..."
+    su - zextras -c "/opt/zextras/bin/ldap stop"
+    su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
+    su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
+    su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
+    su - zextras -c "/opt/zextras/bin/ldap restart"
+  fi
+
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+    systemctl enable carbonio-directory-server.target >/dev/null 2>&1 || :
+  fi
+}
+
+prerm__rocky_9() {
+  if [ -d /run/systemd/system ]; then
+    systemctl --no-reload disable --now carbonio-directory-server.target >/dev/null 2>&1 || :
+  fi
+}
+
+postrm__rocky_9() {
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
   fi
 }
