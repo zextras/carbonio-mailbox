@@ -5,19 +5,9 @@
 
 package com.zimbra.cs.volume;
 
-import java.io.IOException;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionGroup;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.http.HttpException;
-
 import com.google.common.base.Strings;
 import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.SoapFaultException;
 import com.zimbra.common.soap.SoapTransport;
 import com.zimbra.common.util.CliUtil;
 import com.zimbra.cs.util.BuildInfo;
@@ -33,6 +23,12 @@ import com.zimbra.soap.admin.message.GetVolumeResponse;
 import com.zimbra.soap.admin.message.ModifyVolumeRequest;
 import com.zimbra.soap.admin.message.SetCurrentVolumeRequest;
 import com.zimbra.soap.admin.type.VolumeInfo;
+import java.io.IOException;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionGroup;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 public final class VolumeCLI extends SoapCLI {
 
@@ -49,6 +45,7 @@ public final class VolumeCLI extends SoapCLI {
     private static final String O_P = "p";
     private static final String O_C = "c";
     private static final String O_CT = "ct";
+    public static final String ID_IS_MISSING = "id is missing";
 
     private VolumeCLI() throws ServiceException {
         super();
@@ -116,14 +113,14 @@ public final class VolumeCLI extends SoapCLI {
         System.exit(1);
     }
 
-    private void setCurrentVolume() throws ParseException, SoapFaultException, IOException, ServiceException, NumberFormatException, HttpException {
+    private void setCurrentVolume() throws ParseException, IOException, ServiceException, NumberFormatException {
         if (id == null) {
-            throw new ParseException("id is missing");
+            throw new ParseException(ID_IS_MISSING);
         }
 
         auth(auth);
         GetVolumeResponse resp = JaxbUtil.elementToJaxb(getTransport().invokeWithoutSession(
-                JaxbUtil.jaxbToElement(new GetVolumeRequest(Short.valueOf(id)))));
+                JaxbUtil.jaxbToElement(new GetVolumeRequest(Short.parseShort(id)))));
         VolumeInfo vol = resp.getVolume();
         SetCurrentVolumeRequest req = new SetCurrentVolumeRequest(vol.getId(), vol.getType());
         getTransport().invokeWithoutSession(JaxbUtil.jaxbToElement(req));
@@ -131,26 +128,26 @@ public final class VolumeCLI extends SoapCLI {
         System.out.println("Volume " + id + " is now the current " + toTypeName(vol.getType()) + " volume.");
     }
 
-    private void unsetCurrentSecondaryMessageVolume() throws SoapFaultException, IOException, ServiceException, HttpException {
+    private void unsetCurrentSecondaryMessageVolume() throws IOException, ServiceException {
         SetCurrentVolumeRequest req = new SetCurrentVolumeRequest(Volume.ID_NONE, Volume.TYPE_MESSAGE_SECONDARY);
         auth(auth);
         getTransport().invokeWithoutSession(JaxbUtil.jaxbToElement(req));
         System.out.println("Turned off the current secondary message volume.");
     }
 
-    private void getCurrentVolumes() throws SoapFaultException, IOException, ServiceException, HttpException {
+    private void getCurrentVolumes() throws IOException, ServiceException {
         GetAllVolumesRequest req = new GetAllVolumesRequest();
         auth(auth);
         GetAllVolumesResponse all = JaxbUtil.elementToJaxb(getTransport().invokeWithoutSession(
                 JaxbUtil.jaxbToElement(req)));
         for (VolumeInfo vol : all.getVolumes()) {
-            if (vol.isCurrent()) {
+            if (Boolean.TRUE.equals(vol.isCurrent())) {
                 print(vol);
             }
         }
     }
 
-    private void getVolume() throws IOException, ServiceException, HttpException {
+    private void getVolume() throws IOException, ServiceException {
         if (id == null) {
             GetAllVolumesRequest req = new GetAllVolumesRequest();
             auth(auth);
@@ -183,9 +180,9 @@ public final class VolumeCLI extends SoapCLI {
         System.out.println();
     }
 
-    private void deleteVolume() throws ParseException, SoapFaultException, IOException, ServiceException, HttpException {
+    private void deleteVolume() throws ParseException, IOException, ServiceException {
         if (id == null) {
-            throw new ParseException("id is missing");
+            throw new ParseException(ID_IS_MISSING);
         }
 
         DeleteVolumeRequest req = new DeleteVolumeRequest(Short.parseShort(id));
@@ -194,9 +191,9 @@ public final class VolumeCLI extends SoapCLI {
         System.out.println("Deleted volume " + id);
     }
 
-    private void editVolume() throws ParseException, SoapFaultException, IOException, ServiceException, HttpException {
+    private void editVolume() throws ParseException, IOException, ServiceException {
         if (Strings.isNullOrEmpty(id)) {
-            throw new ParseException("id is missing");
+            throw new ParseException(ID_IS_MISSING);
         }
 
         VolumeInfo vol = new VolumeInfo();
@@ -221,7 +218,7 @@ public final class VolumeCLI extends SoapCLI {
         System.out.println("Edited volume " + id);
     }
 
-    private void addVolume() throws ParseException, SoapFaultException, IOException, ServiceException, HttpException {
+    private void addVolume() throws ParseException, IOException, ServiceException {
         if (id != null) {
             throw new ParseException("id cannot be specified when adding a volume");
         }
@@ -239,7 +236,7 @@ public final class VolumeCLI extends SoapCLI {
         vol.setType(toType(type));
         vol.setName(name);
         vol.setRootPath(path);
-        vol.setCompressBlobs(compress != null ? Boolean.parseBoolean(compress) : false);
+        vol.setCompressBlobs(Boolean.parseBoolean(compress));
         vol.setCompressionThreshold(compressThreshold != null ? Long.parseLong(compressThreshold) : 4096L);
         CreateVolumeRequest req = new CreateVolumeRequest(vol);
         auth();
