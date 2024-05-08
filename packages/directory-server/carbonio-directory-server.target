@@ -5,3 +5,6 @@ Requires=multi-user.target
 After=multi-user.target
 PartOf=carbonio-ce.target carbonio.target
 AllowIsolate=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -59,6 +59,11 @@ public class GetAccountInfo extends AccountDocumentHandler {
         account.getAttr(Provisioning.A_displayName),
         AccountConstants.E_ATTR,
         AccountConstants.A_NAME);
+    response.addKeyValuePair(
+        Provisioning.A_zimbraAccountStatus,
+        account.getAttr(Provisioning.A_zimbraAccountStatus),
+        AccountConstants.E_ATTR,
+        AccountConstants.A_NAME);
     addUrls(response, account);
     return response;
   }
