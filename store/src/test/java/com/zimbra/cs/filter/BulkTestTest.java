@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import com.zimbra.common.util.ArrayUtil;
 
+import static com.zimbra.cs.filter.jsieve.BulkTest.AUTO_REPLIED_ZIMBRA_READ_RECEIPT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -42,7 +43,7 @@ public final class BulkTestTest {
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+        prov.createAccount("test@zimbra.com", "secret", new HashMap<>());
         MailboxTestUtil.clearData();
         account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
         RuleManager.clearCachedRules(account);
@@ -51,7 +52,7 @@ public final class BulkTestTest {
     }
 
  @Test
- void precidence() throws Exception {
+ void precedence() throws Exception {
   List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mailbox), mailbox,
     new ParsedMessage("From: sender@zimbra.com\nPrecedence: bulk\nSubject: bulk".getBytes(), false),
     0, account.getName(), new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
@@ -70,6 +71,16 @@ public final class BulkTestTest {
   Message msg = mailbox.getMessageById(null, ids.get(0).getId());
   assertNull(ArrayUtil.getFirstElement(msg.getTags()));
  }
+
+  @Test
+  void shouldFilterOutBulkReadReceiptDeliveryReport() throws Exception {
+    List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mailbox), mailbox,
+        new ParsedMessage(("From: sender@zimbra.com\nPrecedence: bulk\nAuto-Submitted:" + AUTO_REPLIED_ZIMBRA_READ_RECEIPT + "\nSubject: bulk").getBytes(), false),
+        0, account.getName(), new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+    assertEquals(1, ids.size());
+    Message msg = mailbox.getMessageById(null, ids.get(0).getId());
+    assertNull(ArrayUtil.getFirstElement(msg.getTags()));
+  }
 
  @Test
  void abuse() throws Exception {
@@ -109,7 +120,7 @@ public final class BulkTestTest {
  }
 
  @Test
- void proofpoint() throws Exception {
+ void proofPoint() throws Exception {
   List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mailbox), mailbox,
     new ParsedMessage(("To: list@zimbra.com\nX-Proofpoint-Spam-Details: rule=tag_notspam policy=tag " +
       "score=0 spamscore=0 ipscore=0 suspectscore=49 phishscore=0 bulkscore=100 adultscore=0 " +
@@ -120,5 +131,4 @@ public final class BulkTestTest {
   Message msg = mailbox.getMessageById(null, ids.get(0).getId());
   assertEquals("bulk", ArrayUtil.getFirstElement(msg.getTags()));
  }
-
 }
