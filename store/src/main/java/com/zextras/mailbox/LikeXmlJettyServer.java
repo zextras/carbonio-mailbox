@@ -46,25 +46,21 @@ public class LikeXmlJettyServer {
     }
   }
 
-  private static final int USER_SERVER_PORT = 8080;
-  private static final int ADMIN_SERVER_PORT = 7071;
-  private static final int ADMIN_MTA_SERVER_PORT = 7073;
-  private static final int EXTENSIONS_SERVER_PORT = 7072;
-  private static final int SECURE_PORT = 8443;
-
   private LikeXmlJettyServer() {
   }
 
   public static class Builder {
 
-    private final Config globalConfig;
+    private final Config config;
+    private final com.zimbra.cs.account.Server localServer;
     private HttpConfiguration httpsConfig;
     private SslContextFactory sslContextFactory;
     private String webDescriptor = "/opt/zextras/conf/web.xml";
     private String webApp = "/opt/zextras/conf";
 
-    public Builder(Config globalConfig) {
-      this.globalConfig = globalConfig;
+    public Builder(Config config, com.zimbra.cs.account.Server localServer) {
+      this.config = config;
+      this.localServer = localServer;
     }
 
     public Server build() throws InstantiationException {
@@ -134,7 +130,7 @@ public class LikeXmlJettyServer {
       rewriteHandler.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC, DispatcherType.ERROR, DispatcherType.FORWARD);
       rewriteHandler.addRule(new MsieSslRule());
 
-      final String mailURL = globalConfig.getMailURL();
+      final String mailURL = config.getMailURL();
 
       rewriteHandler.addRule(new RewritePatternRule("/Microsoft-Server-ActiveSync/*", "/service/extension/zimbrasync"));
       rewriteHandler.addRule(new RewriteRegexRule("(?i)/ews/Exchange.asmx/*", "/service/extension/zimbraews"));
@@ -182,8 +178,8 @@ public class LikeXmlJettyServer {
     private ThreadPool createThreadPool() {
       QueuedThreadPool threadPool = new QueuedThreadPool();
       threadPool.setMinThreads(10);
-      threadPool.setMaxThreads(globalConfig.getHttpNumThreads());
-      threadPool.setIdleTimeout(globalConfig.getHttpThreadPoolMaxIdleTimeMillis());
+      threadPool.setMaxThreads(config.getHttpNumThreads());
+      threadPool.setIdleTimeout(config.getHttpThreadPoolMaxIdleTimeMillis());
       threadPool.setDetailedDump(false);
 
       JettyMonitor.setThreadPool(threadPool);
@@ -192,21 +188,21 @@ public class LikeXmlJettyServer {
 
     private HttpConfiguration createHttpConfig() {
       HttpConfiguration httpConfig = new HttpConfiguration();
-      httpConfig.setOutputBufferSize(globalConfig.getHttpOutputBufferSize());
-      httpConfig.setRequestHeaderSize(globalConfig.getHttpRequestHeaderSize());
-      httpConfig.setResponseHeaderSize(globalConfig.getHttpResponseHeaderSize());
+      httpConfig.setOutputBufferSize(config.getHttpOutputBufferSize());
+      httpConfig.setRequestHeaderSize(config.getHttpRequestHeaderSize());
+      httpConfig.setResponseHeaderSize(config.getHttpResponseHeaderSize());
       httpConfig.setSendServerVersion(false);
       httpConfig.setSendDateHeader(true);
-      httpConfig.setHeaderCacheSize(globalConfig.getHttpHeaderCacheSize());
-      httpConfig.setSecurePort(SECURE_PORT);
+      httpConfig.setHeaderCacheSize(config.getHttpHeaderCacheSize());
+      httpConfig.setSecurePort(localServer.getMailSSLPort());
 
       final ForwardedRequestCustomizer forwardedRequestCustomizer = new ForwardedRequestCustomizer();
       forwardedRequestCustomizer.setForwardedForHeader("bogus");
       httpConfig.addCustomizer(forwardedRequestCustomizer);
 
-      final String publicServiceHostname = globalConfig.getPublicServiceHostname();
+      final String publicServiceHostname = config.getPublicServiceHostname();
       if (publicServiceHostname != null) {
-        final HostHeaderCustomizer hostHeaderCustomizer = new HostHeaderCustomizer(globalConfig.getPublicServiceHostname());
+        final HostHeaderCustomizer hostHeaderCustomizer = new HostHeaderCustomizer(config.getPublicServiceHostname());
         httpConfig.addCustomizer(hostHeaderCustomizer);
       }
 
@@ -221,9 +217,8 @@ public class LikeXmlJettyServer {
 
     private ServerConnector createUserHttpConnector(Server server, HttpConfiguration httpConfig) {
       ServerConnector serverConnector = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
-      // Use zimbraMailPort or set static?
-      serverConnector.setPort(USER_SERVER_PORT);
-      serverConnector.setIdleTimeout(globalConfig.getHttpConnectorMaxIdleTimeMillis());
+      serverConnector.setPort(localServer.getMailPort());
+      serverConnector.setIdleTimeout(config.getHttpConnectorMaxIdleTimeMillis());
       return serverConnector;
     }
 
@@ -232,15 +227,15 @@ public class LikeXmlJettyServer {
       localSslContextFactory.setKeyStorePath(LC.mailboxd_keystore.value());
       localSslContextFactory.setKeyStorePassword(LC.mailboxd_keystore_password.value());
       localSslContextFactory.setKeyManagerPassword(LC.mailboxd_keystore_password.value());
-      localSslContextFactory.setRenegotiationAllowed(globalConfig.isMailboxdSSLRenegotiationAllowed());
+      localSslContextFactory.setRenegotiationAllowed(config.isMailboxdSSLRenegotiationAllowed());
 
-      for (String protocol : globalConfig.getMailboxdSSLProtocols()) {
+      for (String protocol : config.getMailboxdSSLProtocols()) {
         localSslContextFactory.setIncludeProtocols(protocol);
       }
 
-      localSslContextFactory.setExcludeCipherSuites(globalConfig.getSSLExcludeCipherSuites());
+      localSslContextFactory.setExcludeCipherSuites(config.getSSLExcludeCipherSuites());
 
-      final String[] sslIncludeCipherSuites = globalConfig.getSSLIncludeCipherSuites();
+      final String[] sslIncludeCipherSuites = config.getSSLIncludeCipherSuites();
       if (sslIncludeCipherSuites.length > 0) {
         localSslContextFactory.setIncludeCipherSuites(sslIncludeCipherSuites);
       }
@@ -256,15 +251,15 @@ public class LikeXmlJettyServer {
     }
 
     private ServerConnector createAdminHttpsConnector(Server server) {
-      return createHttpsConnector(server, ADMIN_SERVER_PORT, 0);
+      return createHttpsConnector(server, localServer.getAdminPort(), 0);
     }
 
     private ServerConnector createMtaAdminHttpsConnector(Server server) {
-      return createHttpsConnector(server, ADMIN_MTA_SERVER_PORT, 0);
+      return createHttpsConnector(server, localServer.getMtaAuthPort(), 0);
     }
 
     private ServerConnector createExtensionsHttpsConnector(Server server) {
-      return createHttpsConnector(server, EXTENSIONS_SERVER_PORT, globalConfig.getHttpConnectorMaxIdleTimeMillis());
+      return createHttpsConnector(server, localServer.getExtensionBindPort(), config.getHttpConnectorMaxIdleTimeMillis());
     }
 
     private ServerConnector createHttpsConnector(Server server) {
