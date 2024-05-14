@@ -977,15 +977,6 @@ public class ProxyConfGen {
             ProxyConfOverride.SERVER,
             "Number of worker processes"));
     mConfVars.put(
-        "main.pidfile",
-        new ProxyConfVar(
-            "main.pidfile",
-            null,
-            mWorkingDir + "/log/nginx.pid",
-            ProxyConfValueType.STRING,
-            ProxyConfOverride.NONE,
-            "PID file path (relative to ${core.workdir})"));
-    mConfVars.put(
         "main.logfile",
         new ProxyConfVar(
             "main.logfile",

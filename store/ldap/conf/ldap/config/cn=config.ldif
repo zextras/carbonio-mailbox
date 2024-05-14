@@ -19,7 +19,7 @@ olcLocalSSF: 128
 olcLogLevel: Sync
 olcLogLevel: None
 olcSecurity: ssf=0
-olcPidFile: /opt/zextras/data/ldap/state/run/slapd.pid
+olcPidFile: /run/carbonio/slapd.pid
 olcReadOnly: FALSE
 olcSaslSecProps: noplain,noanonymous
 olcSockbufMaxIncoming: 262143
