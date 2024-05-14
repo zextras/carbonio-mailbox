@@ -71,16 +71,14 @@ public final class BulkTest extends AbstractTest {
             } else if (PRECEDENCE.equals(name)) { // test "Precedence: bulk"
                 boolean shouldInclude = true;
                 for (String precedence : adapter.getHeader(PRECEDENCE)) {
-                    if ("bulk".equalsIgnoreCase(precedence)) {
-                        if (mail.getHeader(AUTO_SUBMITTED).stream()
-                            .anyMatch(autoSubmitted ->
-                                ZIMBRA_OOO_AUTO_REPLY.equals(autoSubmitted)
-                                || AUTO_REPLIED_ZIMBRA_READ_RECEIPT.equals(autoSubmitted)
-                            )) {
-                            shouldInclude = false;
-                            break;
-                        }
-                    }
+                  if ("bulk".equalsIgnoreCase(precedence) && mail.getHeader(AUTO_SUBMITTED).stream()
+                      .anyMatch(autoSubmitted ->
+                          ZIMBRA_OOO_AUTO_REPLY.equals(autoSubmitted)
+                              || AUTO_REPLIED_ZIMBRA_READ_RECEIPT.equals(autoSubmitted)
+                      )) {
+                    shouldInclude = false;
+                    break;
+                  }
                 }
                 return shouldInclude;
             } else if (name.contains("CAMPAIGN")) { // test *CAMPAIGN*
