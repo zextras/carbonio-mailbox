@@ -20,13 +20,14 @@ class LikeXmlJettyServerTest {
   @Test
   void shouldCreateJettyServer() throws InstantiationException {
     final Config config = mock(Config.class);
+    final com.zimbra.cs.account.Server localServer = mock(com.zimbra.cs.account.Server.class);
     when(config.getHttpNumThreads()).thenReturn(20);
     when(config.getMailboxdSSLProtocols()).thenReturn(new String[] {"TLS1.2"});
     when(config.getSSLExcludeCipherSuites()).thenReturn(new String[] {"^TLS_RSA_.*"});
     when(config.getSSLIncludeCipherSuites()).thenReturn(new String[] {});
     when(config.getHttpConnectorMaxIdleTimeMillis()).thenReturn(3000);
 
-    final Server server = new Builder(config).build();
+    final Server server = new Builder(config, localServer).build();
 
     assertEquals(1, server.getHandlers().length);
     final Connector[] connectors = server.getConnectors();

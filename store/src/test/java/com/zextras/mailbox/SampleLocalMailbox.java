@@ -80,7 +80,7 @@ public class SampleLocalMailbox {
     final String descriptor = new File("./store/conf/web-dev.xml").getAbsolutePath();
     final String webApp = new File("./store/conf/").getAbsolutePath();
 
-    Server server = new LikeXmlJettyServer.Builder(provisioning.getConfig())
+    Server server = new LikeXmlJettyServer.Builder(provisioning.getConfig(), provisioning.getLocalServer())
         .withWebApp(webApp)
         .withWebDescriptor(descriptor)
         .build();
