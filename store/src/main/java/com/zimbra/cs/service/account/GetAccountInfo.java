@@ -64,6 +64,11 @@ public class GetAccountInfo extends AccountDocumentHandler {
         account.getAttr(Provisioning.A_zimbraAccountStatus),
         AccountConstants.E_ATTR,
         AccountConstants.A_NAME);
+    response.addKeyValuePair(
+        Provisioning.A_zimbraIsExternalVirtualAccount,
+        Boolean.toString(account.getBooleanAttr(Provisioning.A_zimbraIsExternalVirtualAccount, false)).toUpperCase(),
+        AccountConstants.E_ATTR,
+        AccountConstants.A_NAME);
     addUrls(response, account);
     return response;
   }

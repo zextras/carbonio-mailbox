@@ -67,6 +67,7 @@ public class GetAccountInfo extends AdminDocumentHandler  {
         addAttr(response, Provisioning.A_zimbraId, account.getId());
         addAttr(response, Provisioning.A_zimbraMailHost, account.getAttr(Provisioning.A_zimbraMailHost));
         addAttr(response, Provisioning.A_zimbraAccountStatus, account.getAccountStatus(prov));
+        addAttr(response, Provisioning.A_zimbraIsExternalVirtualAccount, Boolean.toString(account.isIsExternalVirtualAccount()).toUpperCase());
 
         doCos(account, response);
         addUrls(response, account);
