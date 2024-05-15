@@ -54,4 +54,26 @@ class GetAccountInfoTest {
         .collect(Collectors.toList());
     assertEquals(1, attributes.size());
   }
+
+  @Test
+  void shouldContainExternalVirtualInReturnedAttributes() throws Exception {
+    Provisioning prov = Provisioning.getInstance();
+    Domain domain = prov.createDomain(UUID.randomUUID().toString(), Maps.newHashMap());
+    Account account = prov.createAccount(UUID.randomUUID() + "@" + domain.getName(),
+        UUID.randomUUID().toString(), Maps.newHashMap());
+    GetAccountInfoRequest request = new GetAccountInfoRequest();
+    request.setAccount(AccountSelector.fromId(account.getId()));
+    Element requestElement = JaxbUtil.jaxbToElement(request);
+
+    Element handle = new GetAccountInfo()
+        .handle(requestElement, ServiceTestUtil.getRequestContext(account));
+    GetAccountInfoResponse response = JaxbUtil.elementToJaxb(handle);
+
+    List<NamedValue> attributes = Objects.requireNonNull(response).getAttrs()
+        .stream()
+        .filter(namedValue -> namedValue.getName().contains(Provisioning.A_zimbraIsExternalVirtualAccount))
+        .collect(Collectors.toList());
+    assertEquals(1, attributes.size());
+    assertEquals("FALSE", attributes.get(0).getValue());
+  }
 }
