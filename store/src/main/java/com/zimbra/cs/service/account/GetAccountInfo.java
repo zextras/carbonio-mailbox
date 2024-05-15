@@ -10,6 +10,7 @@ package com.zimbra.cs.service.account;
 
 import com.google.common.base.Strings;
 import com.zimbra.common.account.Key.AccountBy;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
@@ -65,8 +66,8 @@ public class GetAccountInfo extends AccountDocumentHandler {
         AccountConstants.E_ATTR,
         AccountConstants.A_NAME);
     response.addKeyValuePair(
-        Provisioning.A_zimbraIsExternalVirtualAccount,
-        Boolean.toString(account.getBooleanAttr(Provisioning.A_zimbraIsExternalVirtualAccount, false)).toUpperCase(),
+        ZAttrProvisioning.A_zimbraIsExternalVirtualAccount,
+        Boolean.toString(account.getBooleanAttr(ZAttrProvisioning.A_zimbraIsExternalVirtualAccount, false)).toUpperCase(),
         AccountConstants.E_ATTR,
         AccountConstants.A_NAME);
     addUrls(response, account);

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.zimbra.common.account.Key.AccountBy;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
@@ -67,7 +68,7 @@ public class GetAccountInfo extends AdminDocumentHandler  {
         addAttr(response, Provisioning.A_zimbraId, account.getId());
         addAttr(response, Provisioning.A_zimbraMailHost, account.getAttr(Provisioning.A_zimbraMailHost));
         addAttr(response, Provisioning.A_zimbraAccountStatus, account.getAccountStatus(prov));
-        addAttr(response, Provisioning.A_zimbraIsExternalVirtualAccount, Boolean.toString(account.isIsExternalVirtualAccount()).toUpperCase());
+        addAttr(response, ZAttrProvisioning.A_zimbraIsExternalVirtualAccount, Boolean.toString(account.isIsExternalVirtualAccount()).toUpperCase());
 
         doCos(account, response);
         addUrls(response, account);
