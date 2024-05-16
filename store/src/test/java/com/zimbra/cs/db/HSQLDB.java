@@ -5,22 +5,21 @@
 
 package com.zimbra.cs.db;
 
-import java.io.File;
+import com.google.common.base.Joiner;
+import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.db.DbPool.DbConnection;
+import com.zimbra.cs.db.DbPool.PoolConfig;
+import com.zimbra.cs.mailbox.Mailbox;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
-
 import org.hsqldb.cmdline.SqlFile;
-
-import com.google.common.base.Joiner;
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.db.DbPool.DbConnection;
-import com.zimbra.cs.db.DbPool.PoolConfig;
-import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 
 /**
  * HSQLDB is for unit test. All data is in memory, not persistent across JVM restarts.
@@ -52,9 +51,8 @@ public class HSQLDB extends Db {
             if (rs.next() && rs.getInt(1) > 0) {
                 return;  // already exists
             }
-            zimbraServerDir = MailboxTestUtil.getZimbraServerDir(zimbraServerDir);
-      execute(conn, zimbraServerDir + "src/test/resources/db/hsqldb/db.sql");
-      execute(conn, zimbraServerDir + "src/test/resources/db/hsqldb/create_database.sql");
+      execute(conn,"db.sql");
+      execute(conn,"create_database.sql");
         } finally {
             DbPool.closeResults(rs);
             DbPool.quietCloseStatement(stmt);
@@ -75,18 +73,19 @@ public class HSQLDB extends Db {
      * @throws Exception
      */
     public static void clearDatabase(String zimbraServerDir) throws Exception {
-        zimbraServerDir = MailboxTestUtil.getZimbraServerDir(zimbraServerDir);
         DbConnection conn = DbPool.getConnection();
         try {
-      execute(conn, zimbraServerDir + "src/test/resources/db/hsqldb/clear.sql");
+      execute(conn, "clear.sql");
         } finally {
             DbPool.quietClose(conn);
         }
     }
 
-    private static void execute(DbConnection conn, String file) throws Exception {
+    private static void execute(DbConnection conn, String resource) throws Exception {
         Map<String, String> vars = Collections.singletonMap("DATABASE_NAME", DbMailbox.getDatabaseName(1));
-        SqlFile sql = new SqlFile(new File(file));
+        final InputStream resourceAsStream = HSQLDB.class.getResourceAsStream(resource);
+        SqlFile sql = new SqlFile(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8),
+            "", System.out, StandardCharsets.UTF_8.toString(), false, null);
         sql.addUserVars(vars);
         sql.setConnection(conn.getConnection());
         sql.execute();
