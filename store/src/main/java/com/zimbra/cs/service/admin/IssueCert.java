@@ -5,6 +5,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
@@ -53,8 +54,14 @@ public class IssueCert extends AdminDocumentHandler {
       throws ServiceException {
 
     final ZimbraSoapContext zsc = getZimbraSoapContext(context);
-
     final Provisioning prov = Provisioning.getInstance();
+    final Account callerAccount = zsc.getAuthToken().getAccount();
+
+    if (!prov.onLocalServer(callerAccount)){
+      ZimbraLog.soap.info("Proxying IssueCert request to " + prov.getServer(callerAccount).getHostname());
+      return proxyRequest(request, context, callerAccount.getId());
+    }
+
     final String domainId = request.getAttribute(AdminConstants.A_DOMAIN);
     final Domain domain =
         Optional.ofNullable(prov.get(DomainBy.id, domainId))
@@ -129,5 +136,9 @@ public class IssueCert extends AdminDocumentHandler {
     responseMessageElement.setText(RESPONSE);
 
     return response;
+  }
+
+  Element proxy(final Element request, final Map<String, Object> context, String accountId) {
+    return null;
   }
 }
