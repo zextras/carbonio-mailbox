@@ -142,7 +142,7 @@ public final class MailboxTestUtil {
 
     LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
     DbPool.startup();
-    HSQLDB.createDatabase(zimbraServerDir);
+    HSQLDB.createDatabase();
 
     MailboxManager.setInstance(null);
     IndexStore.setFactory(LC.zimbra_class_index_store_factory.value());
@@ -153,17 +153,7 @@ public final class MailboxTestUtil {
 
   /** Clears the database and index. */
   public static void clearData() throws Exception {
-    clearData("");
-    MailboxManager.getInstance().clearAdditionalQuotaProviders();
-  }
-
-  /**
-   * Clears the database and index.
-   *
-   * @param zimbraServerDir the directory that contains the ZimbraServer project
-   */
-  public static void clearData(String zimbraServerDir) throws Exception {
-    HSQLDB.clearDatabase(zimbraServerDir);
+    HSQLDB.clearDatabase();
     MailboxManager.getInstance().clearCache();
     MailboxIndex.shutdown();
     File index = new File("build/test/index");
@@ -178,6 +168,7 @@ public final class MailboxTestUtil {
     }
     DocumentHandler.resetLocalHost();
     EphemeralStore.getFactory().shutdown();
+    MailboxManager.getInstance().clearAdditionalQuotaProviders();
   }
 
   private static void deleteDirContents(File dir) throws IOException {
