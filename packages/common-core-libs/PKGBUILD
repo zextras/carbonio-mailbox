@@ -1,5 +1,5 @@
 pkgname="carbonio-common-core-libs"
-pkgver="4.15.4"
+pkgver="4.15.5"
 pkgrel="1"
 pkgdesc="Replace Carbonio core libs"
 arch=('x86_64')
