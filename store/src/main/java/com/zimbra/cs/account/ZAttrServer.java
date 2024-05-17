@@ -10633,106 +10633,48 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * external socks proxy URL to connect to when making outgoing
-     * connections (eg.Zimlet proxy, RSS/ATOM feeds, etc)
+     * URL of the external HTTP proxy to be used for outgoing connections
+     * (warning: only used in certain use cases, see HttpProxyUtil usages)
      *
-     * @return zimbraHttpProxyURL, or empty array if unset
+     * @return zimbraHttpProxyURL, or null if unset
      */
     @ZAttr(id=388)
-    public String[] getHttpProxyURL() {
-        return getMultiAttr(ZAttrProvisioning.A_zimbraHttpProxyURL, true, true);
+    public String getHttpProxyURL() {
+        return getAttr(ZAttrProvisioning.A_zimbraHttpProxyURL, null, true);
     }
 
     /**
-     * external socks proxy URL to connect to when making outgoing
-     * connections (eg.Zimlet proxy, RSS/ATOM feeds, etc)
+     * URL of the external HTTP proxy to be used for outgoing connections
+     * (warning: only used in certain use cases, see HttpProxyUtil usages)
      *
      * @param zimbraHttpProxyURL new value
      * @throws com.zimbra.common.service.ServiceException if error during update
      */
     @ZAttr(id=388)
-    public void setHttpProxyURL(String[] zimbraHttpProxyURL) throws com.zimbra.common.service.ServiceException {
+    public void setHttpProxyURL(String zimbraHttpProxyURL) throws com.zimbra.common.service.ServiceException {
         HashMap<String,Object> attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_zimbraHttpProxyURL, zimbraHttpProxyURL);
         getProvisioning().modifyAttrs(this, attrs);
     }
 
     /**
-     * external socks proxy URL to connect to when making outgoing
-     * connections (eg.Zimlet proxy, RSS/ATOM feeds, etc)
+     * URL of the external HTTP proxy to be used for outgoing connections
+     * (warning: only used in certain use cases, see HttpProxyUtil usages)
      *
      * @param zimbraHttpProxyURL new value
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
      */
     @ZAttr(id=388)
-    public Map<String,Object> setHttpProxyURL(String[] zimbraHttpProxyURL, Map<String,Object> attrs) {
+    public Map<String,Object> setHttpProxyURL(String zimbraHttpProxyURL, Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_zimbraHttpProxyURL, zimbraHttpProxyURL);
         return attrs;
     }
 
     /**
-     * external socks proxy URL to connect to when making outgoing
-     * connections (eg.Zimlet proxy, RSS/ATOM feeds, etc)
-     *
-     * @param zimbraHttpProxyURL new to add to existing values
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     */
-    @ZAttr(id=388)
-    public void addHttpProxyURL(String zimbraHttpProxyURL) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_zimbraHttpProxyURL, zimbraHttpProxyURL);
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * external socks proxy URL to connect to when making outgoing
-     * connections (eg.Zimlet proxy, RSS/ATOM feeds, etc)
-     *
-     * @param zimbraHttpProxyURL new to add to existing values
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     */
-    @ZAttr(id=388)
-    public Map<String,Object> addHttpProxyURL(String zimbraHttpProxyURL, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_zimbraHttpProxyURL, zimbraHttpProxyURL);
-        return attrs;
-    }
-
-    /**
-     * external socks proxy URL to connect to when making outgoing
-     * connections (eg.Zimlet proxy, RSS/ATOM feeds, etc)
-     *
-     * @param zimbraHttpProxyURL existing value to remove
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     */
-    @ZAttr(id=388)
-    public void removeHttpProxyURL(String zimbraHttpProxyURL) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_zimbraHttpProxyURL, zimbraHttpProxyURL);
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * external socks proxy URL to connect to when making outgoing
-     * connections (eg.Zimlet proxy, RSS/ATOM feeds, etc)
-     *
-     * @param zimbraHttpProxyURL existing value to remove
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     */
-    @ZAttr(id=388)
-    public Map<String,Object> removeHttpProxyURL(String zimbraHttpProxyURL, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_zimbraHttpProxyURL, zimbraHttpProxyURL);
-        return attrs;
-    }
-
-    /**
-     * external socks proxy URL to connect to when making outgoing
-     * connections (eg.Zimlet proxy, RSS/ATOM feeds, etc)
+     * URL of the external HTTP proxy to be used for outgoing connections
+     * (warning: only used in certain use cases, see HttpProxyUtil usages)
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      */
@@ -10744,8 +10686,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * external socks proxy URL to connect to when making outgoing
-     * connections (eg.Zimlet proxy, RSS/ATOM feeds, etc)
+     * URL of the external HTTP proxy to be used for outgoing connections
+     * (warning: only used in certain use cases, see HttpProxyUtil usages)
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
