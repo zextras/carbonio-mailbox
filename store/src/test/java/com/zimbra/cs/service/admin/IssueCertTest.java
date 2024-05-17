@@ -4,9 +4,12 @@ import static com.zimbra.common.soap.AdminConstants.A_DOMAIN;
 import static com.zimbra.common.soap.AdminConstants.E_MESSAGE;
 import static com.zimbra.common.soap.AdminConstants.ISSUE_CERT_REQUEST;
 import static com.zimbra.soap.DocumentHandler.getRequestedMailbox;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -38,6 +41,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 public class IssueCertTest {
+
   private static final MockedStatic<RemoteManager> staticRemoteManager =
       mockStatic(RemoteManager.class);
   private static final MockedStatic<RemoteCertbot> staticRemoteCertbot =
@@ -64,6 +68,14 @@ public class IssueCertTest {
 
   private Provisioning provisioning;
   private ZimbraSoapContext zsc;
+  private Account account;
+
+  @AfterAll
+  public static void tearDown() {
+    staticRemoteManager.close();
+    staticRemoteCertbot.close();
+    staticNotificationManager.close();
+  }
 
   @BeforeEach
   public void setUp() throws Exception {
@@ -76,16 +88,15 @@ public class IssueCertTest {
     final String domainId = "domainId";
     final String password = "testPwd";
 
-    final Account account =
-        provisioning.createAccount(
-            mail,
-            password,
-            new HashMap<>() {
-              {
-                put(ZAttrProvisioning.A_zimbraIsAdminAccount, "TRUE");
-                put(ZAttrProvisioning.A_mail, mail);
-              }
-            });
+    account = provisioning.createAccount(
+        mail,
+        password,
+        new HashMap<>() {
+          {
+            put(ZAttrProvisioning.A_zimbraIsAdminAccount, "TRUE");
+            put(ZAttrProvisioning.A_mail, mail);
+          }
+        });
 
     domainAttributes.put(ZAttrProvisioning.A_zimbraDomainName, domainName);
     domainAttributes.put(ZAttrProvisioning.A_zimbraId, domainId);
@@ -110,11 +121,17 @@ public class IssueCertTest {
     }
   }
 
-  @AfterAll
-  public static void tearDown() {
-    staticRemoteManager.close();
-    staticRemoteCertbot.close();
-    staticNotificationManager.close();
+  @Test
+  void shouldProxyRequestIfAccountIsOnAnotherServer() throws Exception {
+    IssueCert issueCert = spy(IssueCert.class);
+    account.setMailHost("google.com");
+
+    ServiceException serviceException = assertThrows(ServiceException.class,
+        () -> issueCert.handle(request, context));
+
+    assertEquals(ServiceException.PROXY_ERROR, serviceException.getCode());
+    assertTrue(serviceException.getMessage().contains("error while proxying request to target server: no such server"));
+    verify(issueCert).proxyRequestToAccountServer(request, context, account);
   }
 
   @Test
@@ -138,11 +155,13 @@ public class IssueCertTest {
     staticRemoteManager
         .when(() -> RemoteManager.getRemoteManager(server))
         .thenReturn(remoteManager);
+    //noinspection ResultOfMethodCallIgnored
     staticRemoteCertbot
         .when(() -> RemoteCertbot.getRemoteCertbot(remoteManager))
         .thenReturn(remoteCertbot);
 
     final Mailbox expectMailbox = getRequestedMailbox(zsc);
+    //noinspection ResultOfMethodCallIgnored
     staticNotificationManager
         .when(
             () ->
@@ -157,12 +176,12 @@ public class IssueCertTest {
             + "-d public.example.com -d virtual.example.com";
 
     when(remoteCertbot.createCommand(
-            RemoteCommands.CERTBOT_CERTONLY,
-            mail,
-            AdminConstants.DEFAULT_CHAIN,
-            domainName,
-            publicServiceHostName,
-            expectedDomain.getVirtualHostname()))
+        RemoteCommands.CERTBOT_CERTONLY,
+        mail,
+        AdminConstants.DEFAULT_CHAIN,
+        domainName,
+        publicServiceHostName,
+        expectedDomain.getVirtualHostname()))
         .thenReturn(expectedCommand);
 
     final Element response = handler.handle(request, context);
