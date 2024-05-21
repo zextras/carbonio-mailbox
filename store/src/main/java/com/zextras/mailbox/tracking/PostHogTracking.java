@@ -1,5 +1,6 @@
 package com.zextras.mailbox.tracking;
 
+import com.zimbra.cs.httpclient.HttpProxyUtil;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import org.apache.http.client.methods.HttpPost;
@@ -18,7 +19,10 @@ public class PostHogTracking implements Tracking {
 
     @Override
     public void sendEventIgnoringFailure(Event event) {
-        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
+        var clientBuilder = HttpClientBuilder.create();
+        HttpProxyUtil.configureProxy(clientBuilder);
+
+        try (CloseableHttpClient client = clientBuilder.build()) {
             client.execute(generateRequest(event));
         } catch (Exception ignored) {
         }

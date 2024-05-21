@@ -6,7 +6,10 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
+import com.zextras.mailbox.util.MailboxTestUtil;
 import java.io.IOException;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,12 +24,14 @@ class PostHogTrackingTest {
     private final PostHogTracking postHogTracking = new PostHogTracking("http://localhost:" + POSTHOG_PORT);
 
     @BeforeEach
-    public void startUp() throws IOException {
+    public void startUp() throws Exception {
+        MailboxTestUtil.setUp();
         postHog = startClientAndServer(POSTHOG_PORT);
     }
 
     @AfterEach
-    public void tearDown() throws IOException {
+    public void tearDown() throws Exception {
+        MailboxTestUtil.tearDown();
         postHog.stop();
     }
 
@@ -62,6 +67,7 @@ class PostHogTrackingTest {
                 .respond(response().withStatusCode(200));
     }
 
+    @SuppressWarnings("SameParameterValue")
     private HttpRequest createRequest(String uid, String action) {
         return request()
                 .withMethod("POST")
