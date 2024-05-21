@@ -11,16 +11,20 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.httpclient.HttpProxyUtil;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -107,8 +111,9 @@ public class CallToHome extends TimerTask {
       ZimbraLog.mailbox.info(
           "CallToHome: started posting data: " + IOUtils.toString(post.getEntity().getContent()));
     }
-    CloseableHttpClient client =
-        ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient().build();
+    final HttpClientBuilder httpClientBuilder = HttpClients.custom();
+    HttpProxyUtil.configureProxy(httpClientBuilder);
+    CloseableHttpClient client = httpClientBuilder.build();
     try {
       CloseableHttpResponse httpResp = client.execute(post);
       int statusCode = httpResp.getStatusLine().getStatusCode();
