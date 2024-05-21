@@ -41,11 +41,13 @@ import com.zimbra.cs.session.SessionCache;
 import com.zimbra.cs.session.WaitSetMgr;
 import com.zimbra.cs.stats.ZimbraPerf;
 import com.zimbra.cs.store.StoreManager;
+import com.zimbra.cs.util.calltohome.CallToHomeRunner;
 import com.zimbra.znative.Util;
 import java.io.File;
 import java.io.IOException;
 import java.security.Security;
 import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.dom4j.DocumentException;
 
@@ -58,8 +60,6 @@ public final class Zimbra {
   private static boolean sIsMailboxd = false;
   private static final String HEAP_DUMP_JAVA_OPTION = "-xx:heapdumppath=";
   public static final Timer sTimer = new Timer("Timer-Zimbra", true);
-  private static final CallToHomeRunner c2hRunner = new CallToHomeRunner();
-
   private Zimbra() {
     throw new IllegalStateException("Utility class");
   }
@@ -359,7 +359,7 @@ public final class Zimbra {
         ZimbraPerf.initialize(ZimbraPerf.ServerID.ZIMBRA);
       }
 
-      c2hRunner.init();
+      CallToHomeRunner.getInstance().init(TimeUnit.MINUTES.toMillis(5));
     }
 
     ExtensionUtil.postInitAll();
