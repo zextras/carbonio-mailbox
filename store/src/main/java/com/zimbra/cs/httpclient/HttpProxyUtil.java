@@ -27,7 +27,8 @@ public class HttpProxyUtil {
 
   public static synchronized void configureProxy(HttpClientBuilder clientBuilder) {
     try {
-      final var httpProxyUrl = Provisioning.getInstance().getLocalServer().getAttr(ZAttrProvisioning.A_zimbraHttpProxyURL, null);
+      final var httpProxyUrl = Provisioning.getInstance().getLocalServer()
+          .getAttr(ZAttrProvisioning.A_zimbraHttpProxyURL, null);
       if (httpProxyUrl == null || httpProxyUrl.isEmpty()) {
         ZimbraLog.misc.info("HttpProxyUtil.configureProxy 'zimbraHttpProxyURL' is null or empty, not using proxy.");
         return;
@@ -67,7 +68,7 @@ public class HttpProxyUtil {
         ZimbraLog.misc.debug("setting proxy: " + httpProxyUrl);
       }
 
-    } catch (ServiceException | URISyntaxException e) {
+    } catch (ServiceException | URISyntaxException | IllegalArgumentException e) {
       ZimbraLog.misc.warn("Unable to configureProxy: " + e.getMessage(), e);
     }
   }
