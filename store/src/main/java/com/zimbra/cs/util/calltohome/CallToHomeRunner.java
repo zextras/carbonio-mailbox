@@ -5,6 +5,7 @@
 package com.zimbra.cs.util.calltohome;
 
 import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.httpclient.HttpClientFactory;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -37,7 +38,7 @@ public class CallToHomeRunner {
         new TimerTask() {
           @Override
           public void run() {
-            CallToHome task = new CallToHome();
+            CallToHome task = new CallToHome(new HttpClientFactory());
             timer.scheduleAtFixedRate(task, 0L, MILLIS_IN_DAY);
             started = true;
             ZimbraLog.misc.debug("CallToHome: Started");

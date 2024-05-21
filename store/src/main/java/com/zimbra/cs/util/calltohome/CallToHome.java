@@ -11,7 +11,7 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.httpclient.HttpProxyUtil;
+import com.zimbra.cs.httpclient.HttpClientFactory;
 import com.zimbra.cs.util.BuildInfo;
 import java.io.IOException;
 import java.util.TimerTask;
@@ -19,7 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClients;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,6 +26,12 @@ public class CallToHome extends TimerTask {
 
   private static final String UPDATE_URL = "https://updates.zextras.com/openchat";
   private final Provisioning prov = Provisioning.getInstance();
+
+  private final HttpClientFactory httpClientFactory;
+
+  public CallToHome(HttpClientFactory httpClientFactory) {
+    this.httpClientFactory = httpClientFactory;
+  }
 
   @Override
   public void run() {
@@ -44,9 +49,7 @@ public class CallToHome extends TimerTask {
     post.setEntity(new StringEntity(data.toString(), "UTF-8"));
     ZimbraLog.misc.debug("CallToHome: Posting data: " + data);
 
-    var httpClientBuilder = HttpClients.custom();
-    HttpProxyUtil.configureProxy(httpClientBuilder);
-    try (var client = httpClientBuilder.build();
+    try (var client = httpClientFactory.createWithProxy();
         var httpResp = client.execute(post)) {
       var statusCode = httpResp.getStatusLine().getStatusCode();
       if (statusCode != HttpStatus.SC_OK) {

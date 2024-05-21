@@ -1,15 +1,15 @@
 package com.zextras.mailbox.tracking;
 
 import static com.zextras.mailbox.tracking.PostHogTracking.SITE_KEY;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
-import com.zextras.mailbox.util.MailboxTestUtil;
-import java.io.IOException;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import com.zimbra.cs.httpclient.HttpClientFactory;
+import org.apache.http.impl.client.HttpClients;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,17 +21,20 @@ class PostHogTrackingTest {
 
     private ClientAndServer postHog;
     private static final int POSTHOG_PORT = 5000;
-    private final PostHogTracking postHogTracking = new PostHogTracking("http://localhost:" + POSTHOG_PORT);
+
+    private final HttpClientFactory httpClientFactoryMock = mock(HttpClientFactory.class);
+
+    private final PostHogTracking postHogTracking = new PostHogTracking("http://localhost:" + POSTHOG_PORT,
+        httpClientFactoryMock);
 
     @BeforeEach
     public void startUp() throws Exception {
-        MailboxTestUtil.setUp();
+        when(httpClientFactoryMock.createWithProxy()).thenReturn(HttpClients.createMinimal());
         postHog = startClientAndServer(POSTHOG_PORT);
     }
 
     @AfterEach
     public void tearDown() throws Exception {
-        MailboxTestUtil.tearDown();
         postHog.stop();
     }
 
