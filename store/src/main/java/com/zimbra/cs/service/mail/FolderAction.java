@@ -128,8 +128,10 @@ public class FolderAction extends ItemAction {
         if (operation.equals(OP_EMPTY)) {
             boolean subfolders = action.getAttributeBool(MailConstants.A_RECURSIVE, true);
             String emptyOpMatchType = action.getAttribute(MailConstants.A_FOLDER_ACTION_EMPTY_OP_MATCH_TYPE);
-            if(emptyOpMatchType == null || emptyOpMatchType.isEmpty()) {
-                throw ServiceException.INVALID_REQUEST("Missing 'type' parameter", null);
+            if(emptyOpMatchType == null
+                || emptyOpMatchType.isEmpty()
+                || !FolderActionEmptyOpTypes.contains(emptyOpMatchType)) {
+                throw ServiceException.INVALID_REQUEST("Missing or invalid 'type' parameter", null);
             }
             mbox.emptyFolder(octxt, iid.getId(), subfolders);
             // empty trash means also to purge all IMAP \Deleted messages

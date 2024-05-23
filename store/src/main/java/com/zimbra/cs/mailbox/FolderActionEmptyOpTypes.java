@@ -7,11 +7,20 @@ public enum FolderActionEmptyOpTypes {
 
   private final String name;
 
-  FolderActionEmptyOpTypes(final String name) {
+  FolderActionEmptyOpTypes(String name) {
     this.name = name;
   }
 
   public String getName() {
     return name;
+  }
+
+  public static boolean contains(String name) {
+    for (FolderActionEmptyOpTypes type : FolderActionEmptyOpTypes.values()) {
+      if (type.getName().equalsIgnoreCase(name)) {
+        return true;
+      }
+    }
+    return false;
   }
 }
