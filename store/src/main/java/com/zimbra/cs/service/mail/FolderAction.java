@@ -30,6 +30,7 @@ import com.zimbra.cs.fb.FreeBusyProvider;
 import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Flag;
+import com.zimbra.cs.mailbox.FolderActionEmptyOpTypes;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -126,10 +127,16 @@ public class FolderAction extends ItemAction {
 
         if (operation.equals(OP_EMPTY)) {
             boolean subfolders = action.getAttributeBool(MailConstants.A_RECURSIVE, true);
+            String emptyOpMatchType = action.getAttribute(MailConstants.A_FOLDER_ACTION_EMPTY_OP_MATCH_TYPE);
+            if(emptyOpMatchType == null || emptyOpMatchType.isEmpty()) {
+                throw ServiceException.INVALID_REQUEST("Missing 'type' parameter", null);
+            }
             mbox.emptyFolder(octxt, iid.getId(), subfolders);
             // empty trash means also to purge all IMAP \Deleted messages
-            if (iid.getId() == Mailbox.ID_FOLDER_TRASH)
+            if (iid.getId() == Mailbox.ID_FOLDER_TRASH
+                && FolderActionEmptyOpTypes.EMAILS.getName().equalsIgnoreCase(emptyOpMatchType)) {
                 mbox.purgeImapDeleted(octxt);
+            }
         } else if (operation.equals(OP_REFRESH)) {
             mbox.synchronizeFolder(octxt, iid.getId());
         } else if (operation.equals(OP_IMPORT)) {
