@@ -393,6 +393,17 @@
     <load-on-startup>7</load-on-startup>
   </servlet>
 
+   <servlet>
+      <servlet-name>ProxyServlet</servlet-name>
+      <servlet-class>com.zimbra.cs.service.servlet.proxy.ProxyServlet</servlet-class>
+      <async-supported>true</async-supported>
+      <init-param>
+        <param-name>allowed.ports</param-name>
+        <param-value>%%zimbraMailPort%%, %%zimbraMailSSLPort%%, 7070</param-value>
+      </init-param>
+      <load-on-startup>8</load-on-startup>
+   </servlet>
+
   <servlet>
     <servlet-name>DavServlet</servlet-name>
     <servlet-class>com.zimbra.cs.dav.service.DavServlet</servlet-class>
@@ -553,6 +564,11 @@
   <servlet-mapping>
     <servlet-name>CollectLDAPConfigZimbra</servlet-name>
     <url-pattern>/collectldapconfig/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>ProxyServlet</servlet-name>
+    <url-pattern>/proxy/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
