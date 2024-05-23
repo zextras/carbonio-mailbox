@@ -887,6 +887,8 @@ public final class MailConstants {
   public static final String A_NEWLY_CREATED_IDS = "nci";
   public static final String E_CONTACT_MEMBER_OF = "memberOf";
 
+  public static final String A_FOLDER_ACTION_EMPTY_OP_MATCH_TYPE = "type";
+
   // contact group
   public static final String E_CONTACT_GROUP_MEMBER = "m";
   public static final String E_CONTACT_GROUP_MEMBER_ATTRIBUTE = "ma";
