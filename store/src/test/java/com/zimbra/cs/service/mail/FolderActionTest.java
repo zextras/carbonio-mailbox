@@ -9,6 +9,7 @@ import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zimbra.common.mailbox.FolderConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
+import com.zimbra.common.soap.Element.JSONElement;
 import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
@@ -20,6 +21,7 @@ import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
+import com.zimbra.soap.mail.message.CreateAppointmentResponse;
 import com.zimbra.soap.mail.message.CreateContactRequest;
 import com.zimbra.soap.mail.message.CreateContactResponse;
 import com.zimbra.soap.mail.message.GetFolderRequest;
@@ -43,15 +45,12 @@ class FolderActionTest extends SoapTestSuite {
   private static Domain defaultDomain;
   private static Account defaultAccount;
 
-  private static HashMap<String, Object> defaultAccountSoapContext;
-
   @BeforeAll
   public static void setUp() throws Exception {
     provisioning = Provisioning.getInstance();
     defaultDomain = provisioning.createDomain(UUID.randomUUID() + ".com", new HashMap<>());
     defaultAccount = provisioning.createAccount(UUID.randomUUID() + "@" + defaultDomain.getName(), "password",
         new HashMap<>());
-    defaultAccountSoapContext = getSoapContextFromAccount(defaultAccount);
   }
 
   private static HashMap<String, Object> getSoapContextFromAccount(Account account)
@@ -70,7 +69,8 @@ class FolderActionTest extends SoapTestSuite {
   }
 
   @Test
-  void emptyFolderActionRequestShouldFailWhenMissesType() {
+  void empty_op_folder_action_request_should_fail_when_misses_type_attribute_in_action_selector()
+      throws ServiceException {
 
     Element actionSelectorElement = new XMLElement(MailConstants.E_ACTION);
     actionSelectorElement.addAttribute(MailConstants.A_ID, FolderConstants.ID_FOLDER_TRASH);
@@ -81,44 +81,49 @@ class FolderActionTest extends SoapTestSuite {
     folderActionRequestElement.addUniqueElement(actionSelectorElement);
 
     var folderActionHandler = new FolderAction();
+    var soapContextForAccount = getSoapContextFromAccount(defaultAccount);
     var serviceException = assertThrows(ServiceException.class,
-        () -> folderActionHandler.handle(folderActionRequestElement, defaultAccountSoapContext));
+        () -> folderActionHandler.handle(folderActionRequestElement, soapContextForAccount));
 
     assertEquals(ServiceException.INVALID_REQUEST, serviceException.getCode());
     assertEquals("invalid request: missing required attribute: type", serviceException.getMessage());
   }
 
   @Test
-  void emptyFolderRequestShouldDeleteOnlySpecifiedItemsByType() throws Exception {
+  void empty_op_folder_action_request_should_only_delete_items_specified_by_type_attribute_in_action_selector()
+      throws Exception {
 
     var contactsInAccount = createContactsInAccount(defaultAccount, "heelo@demo.com",
         "heelo2@demo.com", "heelo3@demo.com");
     moveContactsToTrash(defaultAccount, contactsInAccount);
 
+    var appointmentId = createAppointment(defaultAccount);
+    moveAppointmentToTrash(defaultAccount, appointmentId);
+
     Element actionSelectorElement = new XMLElement(MailConstants.E_ACTION);
     actionSelectorElement.addAttribute(MailConstants.A_ID, FolderConstants.ID_FOLDER_TRASH);
     actionSelectorElement.addAttribute(MailConstants.A_OPERATION, FolderAction.OP_EMPTY);
-    actionSelectorElement.addAttribute(MailConstants.A_RECURSIVE, "true");
+    actionSelectorElement.addAttribute(MailConstants.A_RECURSIVE, Boolean.TRUE.toString());
     actionSelectorElement.addAttribute(MailConstants.A_FOLDER_ACTION_EMPTY_OP_MATCH_TYPE,
-        FolderActionEmptyOpTypes.EMAILS.name());
+        FolderActionEmptyOpTypes.CONTACTS.name());
 
     Element folderActionRequestElement = new XMLElement(MailConstants.E_FOLDER_ACTION_REQUEST);
     folderActionRequestElement.addUniqueElement(actionSelectorElement);
 
     var folderActionHandler = new FolderAction();
-    folderActionHandler.handle(folderActionRequestElement, defaultAccountSoapContext);
+    folderActionHandler.handle(folderActionRequestElement, getSoapContextFromAccount(defaultAccount));
 
     var getFolderResponse = getFolder(defaultAccount,
         String.valueOf(FolderConstants.ID_FOLDER_TRASH));
 
-    if (getFolderResponse.getFolder().getItemCount() == 0) {
+    // will fail right now
+    if (getFolderResponse.getFolder().getItemCount() != 0) {
       fail("deletes all items in the trash folder right now");
     }
   }
 
 
   private void moveContactsToTrash(Account targetAccount, ArrayList<String> contactIds) throws ServiceException {
-
     for (var contactId : contactIds) {
       Element contactActionSelectorElement = new XMLElement(MailConstants.E_ACTION);
       contactActionSelectorElement.addAttribute(MailConstants.A_ID, contactId);
@@ -131,7 +136,6 @@ class FolderActionTest extends SoapTestSuite {
       var contactActionHandler = new ContactAction();
       contactActionHandler.handle(contactActionRequestElement, getSoapContextFromAccount(targetAccount));
     }
-
   }
 
   private ArrayList<String> createContactsInAccount(Account targetAccount, String... emails) throws Exception {
@@ -151,6 +155,36 @@ class FolderActionTest extends SoapTestSuite {
     return contactIds;
   }
 
+  private String createAppointment(Account targetAccount) throws Exception {
+    var createAppointmentElement =
+        Element.parseJSON(
+            new String(
+                Objects.requireNonNull(FolderActionTest.class.getResourceAsStream("SampleAppointmentRequest.json"))
+                    .readAllBytes()),
+            MailConstants.CREATE_APPOINTMENT_REQUEST,
+            JSONElement.mFactory);
+    var createAppointmentHandler = new CreateAppointment();
+    createAppointmentHandler.setResponseQName(MailConstants.CREATE_APPOINTMENT_RESPONSE);
+    var response = createAppointmentHandler.handle(createAppointmentElement,
+        getSoapContextFromAccount(targetAccount));
+
+    CreateAppointmentResponse createCalendarItemResponse = JaxbUtil.elementToJaxb(response);
+    return Objects.requireNonNull(createCalendarItemResponse).getCalItemId();
+  }
+
+  private void moveAppointmentToTrash(Account targetAccount, String appointmentId) throws ServiceException {
+
+    Element itemActionSelectorElement = new XMLElement(MailConstants.E_ACTION);
+    itemActionSelectorElement.addAttribute(MailConstants.A_ID, appointmentId);
+    itemActionSelectorElement.addAttribute(MailConstants.A_OPERATION, FolderAction.OP_MOVE);
+    itemActionSelectorElement.addAttribute(MailConstants.A_FOLDER, FolderConstants.ID_FOLDER_TRASH);
+
+    Element itemActionRequestElement = new XMLElement(MailConstants.E_ITEM_ACTION_REQUEST);
+    itemActionRequestElement.addUniqueElement(itemActionSelectorElement);
+
+    var itemActionHandler = new ItemAction();
+    itemActionHandler.handle(itemActionRequestElement, getSoapContextFromAccount(targetAccount));
+  }
 
   private GetFolderResponse getFolder(Account targetAccount, String folderId) throws Exception {
     var getFolderSpec = new GetFolderSpec();
