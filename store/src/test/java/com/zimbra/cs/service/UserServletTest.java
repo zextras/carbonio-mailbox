@@ -21,6 +21,7 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
+import com.zimbra.cs.service.mail.CreateAppointment;
 import com.zimbra.cs.service.mail.CreateCalendarItem;
 import com.zimbra.cs.servlet.ZimbraServlet;
 import com.zimbra.soap.SoapEngine;
@@ -205,9 +206,9 @@ class UserServletTest {
                     .readAllBytes()),
             MailConstants.CREATE_APPOINTMENT_REQUEST,
             JSONElement.mFactory);
-    final CreateCalendarItem createCalendarItem = new CreateCalendarItem();
-    createCalendarItem.setResponseQName(MailConstants.CREATE_APPOINTMENT_REQUEST);
-    createCalendarItem.handle(createAppointmentElement, context);
+    final CreateAppointment createAppointment = new CreateAppointment();
+    createAppointment.setResponseQName(MailConstants.CREATE_APPOINTMENT_RESPONSE);
+    createAppointment.handle(createAppointmentElement, context);
   }
 
   @Test

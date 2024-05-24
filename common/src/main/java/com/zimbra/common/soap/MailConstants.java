@@ -161,6 +161,8 @@ public final class MailConstants {
   public static final String E_GET_APPOINTMENT_REQUEST = "GetAppointmentRequest";
   public static final String E_SET_APPOINTMENT_REQUEST = "SetAppointmentRequest";
   public static final String E_CREATE_APPOINTMENT_REQUEST = "CreateAppointmentRequest";
+  public static final String E_CREATE_APPOINTMENT_RESPONSE = "CreateAppointmentResponse";
+
   public static final String E_CREATE_APPOINTMENT_EXCEPTION_REQUEST =
       "CreateAppointmentExceptionRequest";
   public static final String E_MODIFY_APPOINTMENT_REQUEST = "ModifyAppointmentRequest";
@@ -447,8 +449,11 @@ public final class MailConstants {
       QName.get(E_GET_APPOINTMENT_REQUEST, NAMESPACE);
   public static final QName SET_APPOINTMENT_REQUEST =
       QName.get(E_SET_APPOINTMENT_REQUEST, NAMESPACE);
+
   public static final QName CREATE_APPOINTMENT_REQUEST =
       QName.get(E_CREATE_APPOINTMENT_REQUEST, NAMESPACE);
+  public static final QName CREATE_APPOINTMENT_RESPONSE =
+      QName.get(E_CREATE_APPOINTMENT_RESPONSE, NAMESPACE);
   public static final QName CREATE_APPOINTMENT_EXCEPTION_REQUEST =
       QName.get(E_CREATE_APPOINTMENT_EXCEPTION_REQUEST, NAMESPACE);
   public static final QName MODIFY_APPOINTMENT_REQUEST =
