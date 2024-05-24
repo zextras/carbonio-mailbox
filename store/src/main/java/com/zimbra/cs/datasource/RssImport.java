@@ -14,7 +14,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import com.zimbra.common.httpclient.HttpClientUtil;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.StringUtil;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.DataSource;
 import com.zimbra.cs.account.DataSource.DataImport;
@@ -59,7 +59,7 @@ public class RssImport implements DataImport {
         }
        HttpGet get = new HttpGet(urlString);
         try {
-            HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getExternalHttpConnMgr().newHttpClient();
+            HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getExternalHttpConnMgr().newHttpClientBuilder();
             HttpProxyUtil.configureProxy(clientBuilder);
             HttpResponse response = HttpClientUtil.executeMethod(clientBuilder.build(), get);
             response.getEntity().getContentLength();

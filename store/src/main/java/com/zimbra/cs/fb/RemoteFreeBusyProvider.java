@@ -6,7 +6,6 @@
 package com.zimbra.cs.fb;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -36,7 +35,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.ByteUtil;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthTokenException;
@@ -120,7 +119,7 @@ public class RemoteFreeBusyProvider extends FreeBusyProvider {
                     targetUrl.append("&").append(ZimbraServlet.QP_ZAUTHTOKEN).append("=");
                   targetUrl.append(URLEncoder.encode(authToken, StandardCharsets.UTF_8));
                 }
-                HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
+                HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder();
                 HttpProxyUtil.configureProxy(clientBuilder);
                 method = new HttpGet(targetUrl.toString());
                 String fbMsg;

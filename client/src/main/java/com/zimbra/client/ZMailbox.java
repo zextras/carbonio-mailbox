@@ -84,7 +84,7 @@ import com.zimbra.common.util.MapUtil;
 import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.SystemUtil;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.common.zclient.ZClientException;
 import com.zimbra.soap.JaxbUtil;
@@ -1020,11 +1020,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     return mTrustedToken;
   }
 
-  /**
-   * @param uri URI of server we want to talk to
-   * @param timeout timeout for HTTP connection or 0 for no timeout
-   * @param retryCount max number of times to retry the call on connection failure
-   */
   private void setSoapURI(Options options) {
     if (mTransport != null) {
       mTransport.shutdown();
@@ -1814,7 +1809,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    * returns the tag the specified name/id, or null if no such tag exists. checks for tag by name
    * first, then by id.
    *
-   * @param name tag name
+   * @param nameOrId tag name or tag id
    * @return the tag, or null if tag not found
    * @throws ServiceException on error
    */
@@ -2125,8 +2120,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    * @param tags tags to set on the contact, or <tt>null</tt>
    * @param attrs contact attributes (key/value)
    * @param attachments contact attachments (key/upload id) or <tt>null</tt>
-   * @param verbose <tt>false</tt> to only initialize the <tt>id</tt> of the return
-   *     <tt>ZContact</tt> object
+   * @param members contact members (type/value)
    * @return the new contact
    * @throws ServiceException
    */
@@ -2986,14 +2980,14 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     BasicCookieStore initialState =
         HttpClientUtil.newHttpState(getAuthToken(), uri.getHost(), isAdmin);
     HttpClientBuilder clientBuilder =
-        ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
+        ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder();
     clientBuilder.setDefaultCookieStore(initialState);
 
     RequestConfig reqConfig =
         RequestConfig.copy(
                 ZimbraHttpConnectionManager.getInternalHttpConnMgr()
                     .getZimbraConnMgrParams()
-                    .getReqConfig())
+                    .getRequestConfig())
             .setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY)
             .build();
 
@@ -3006,14 +3000,14 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     BasicCookieStore initialState =
         HttpClientUtil.newHttpState(getAuthToken(), uri.getHost(), isAdmin);
     HttpClientBuilder clientBuilder =
-        ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
+        ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder();
     clientBuilder.setDefaultCookieStore(initialState);
 
     RequestConfig reqConfig =
         RequestConfig.copy(
                 ZimbraHttpConnectionManager.getInternalHttpConnMgr()
                     .getZimbraConnMgrParams()
-                    .getReqConfig())
+                    .getRequestConfig())
             .setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY)
             .build();
 
@@ -3827,7 +3821,7 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
    * @param ignoreAndContinueOnError if true, set optional ignore=1 query string parameter
    * @param preserveAlarms if true, set optional preserveAlarms=1 query string parameter
    * @param msecTimeout connection timeout in milliseconds, or <tt>-1</tt> for no timeout
-   * @param url alternate url to connect to
+   * @param alternateUrl alternate url to connect to
    * @throws ServiceException on error
    */
   public void postRESTResource(
@@ -6780,16 +6774,16 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
   }
 
   /**
-   * Copies the items identified in {@link idlist} to folder {@link targetFolder}
+   * Copies the items identified in idList to folder targetFolder
    *
-   * @param idlist - list of item ids for items to copy
+   * @param idList - list of item ids for items to copy
    * @param targetFolder - Destination folder
    */
   @Override
   public List<String> copyItemAction(
-      OpContext ctxt, ItemIdentifier targetFolder, List<ItemIdentifier> idlist)
+      OpContext ctxt, ItemIdentifier targetFolder, List<ItemIdentifier> idList)
       throws ServiceException {
-    ItemActionResponse resp = copyItemAction(targetFolder, idlist);
+    ItemActionResponse resp = copyItemAction(targetFolder, idList);
     return Lists.newArrayList(resp.getAction().getNewlyCreatedIds());
   }
 
@@ -7048,20 +7042,22 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     }
   }
 
+
   /**
    * Iterate OpenImapFolderRequests until all results have been returned
    *
-   * @param params
+   * @param folderIdentifier
+   * @param chunkSize
    * @return
    * @throws ServiceException
    */
-  public List<ImapMessageInfo> openImapFolder(ItemIdentifier folderId, int chunkSize)
+  public List<ImapMessageInfo> openImapFolder(ItemIdentifier folderIdentifier, int chunkSize)
       throws ServiceException {
     List<ImapMessageInfo> msgs = new ArrayList<>();
     String cursorId = null;
     OpenIMAPFolderResponse folderInfo = null;
     do {
-      OpenIMAPFolderParams params = new OpenIMAPFolderParams(folderId);
+      OpenIMAPFolderParams params = new OpenIMAPFolderParams(folderIdentifier);
       params.setLimit(chunkSize);
       if (cursorId != null) {
         params.setCursorId(cursorId);

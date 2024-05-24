@@ -54,7 +54,7 @@ import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.soap.W3cDomUtil;
 import com.zimbra.common.soap.XmlParseException;
 import com.zimbra.common.util.Pair;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.dav.DavContext.Depth;
 import com.zimbra.cs.dav.DavElements;
@@ -72,7 +72,7 @@ public class WebDavClient {
 
     public WebDavClient(String baseUrl, String app) {
         mBaseUrl = baseUrl;
-        mClient = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
+        mClient = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder();
         HttpProxyUtil.configureProxy(mClient);
         setAppName(app);
     }
@@ -318,7 +318,7 @@ public class WebDavClient {
             }
             mClient.setDefaultCookieStore(cookieStore);
             RequestConfig reqConfig = RequestConfig.copy(
-                ZimbraHttpConnectionManager.getInternalHttpConnMgr().getZimbraConnMgrParams().getReqConfig())
+                ZimbraHttpConnectionManager.getInternalHttpConnMgr().getZimbraConnMgrParams().getRequestConfig())
                 .setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
 
             mClient.setDefaultRequestConfig(reqConfig);

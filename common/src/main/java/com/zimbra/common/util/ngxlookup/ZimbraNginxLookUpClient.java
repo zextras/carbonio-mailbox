@@ -22,7 +22,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.zimbra.common.httpclient.HttpClientUtil;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 
 public class ZimbraNginxLookUpClient {
@@ -184,7 +184,7 @@ public class ZimbraNginxLookUpClient {
                 method.addHeader("X-Proxy-IP", proxyIP);
                 method.addHeader("Client-IP", clientIP);
                 method.addHeader("X-Proxy-Host", virtualHost);
-                HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient().build();
+                HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder().build();
                 // currently we use default httpclient_internal_connmgr_connection_timeout instead of ngxConnectTimeout
                 method.setProtocolVersion(new ProtocolVersion("HTTP", 1, 1));
                 try {

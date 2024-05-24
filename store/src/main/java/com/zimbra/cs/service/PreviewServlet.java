@@ -18,7 +18,7 @@ import com.zimbra.common.util.L10nUtil;
 import com.zimbra.common.util.L10nUtil.MsgKey;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
@@ -257,7 +257,7 @@ public class PreviewServlet extends ZimbraServlet {
     return Try.of(
         () -> {
           HttpClientBuilder clientBuilder =
-              ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
+              ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder();
           HttpGet getRequest =
               new HttpGet(getContentServletResourceUrl(authToken, messageId, part));
           HttpClient client =

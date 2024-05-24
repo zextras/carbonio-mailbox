@@ -29,7 +29,7 @@ import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.common.util.ListUtil;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.StringUtil;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -187,7 +187,7 @@ public class CheckSpelling extends MailDocumentHandler {
             nvps.add(new BasicNameValuePair("ignoreAllCaps", "on"));
         }
         post.setEntity(new UrlEncodedFormEntity(nvps, "UTF-8"));
-        HttpClient http = ZimbraHttpConnectionManager.getExternalHttpConnMgr().newHttpClient().build();
+        HttpClient http = ZimbraHttpConnectionManager.getExternalHttpConnMgr().newHttpClientBuilder().build();
         ServerResponse response = new ServerResponse();
         HttpResponse httpResp = null;
         try {

@@ -36,7 +36,7 @@ import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.ZimbraCookie;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.account.Provisioning;
@@ -107,7 +107,7 @@ public class StatsImageServlet extends ZimbraServlet {
 		        } catch (AuthTokenException ate) {
 		            throw ServiceException.PROXY_ERROR(ate, url.toString());
 		        }
-		        HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
+		        HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder();
 		        clientBuilder.setDefaultCookieStore(cookieStore);
 		        HttpGet get = new HttpGet(url.toString());
 		        HttpClient client = clientBuilder.build();

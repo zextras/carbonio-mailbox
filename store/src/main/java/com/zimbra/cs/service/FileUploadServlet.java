@@ -26,7 +26,7 @@ import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.MapUtil;
 import com.zimbra.common.util.StringUtil;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
@@ -206,7 +206,7 @@ public class FileUploadServlet extends ZimbraServlet {
 
     // create an HTTP client with auth cookie to fetch the file from the remote ContentServlet
     HttpClientBuilder clientBuilder =
-        ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
+        ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder();
     HttpGet get = new HttpGet(url);
 
     authtoken.encode(clientBuilder, get, false, hostname);

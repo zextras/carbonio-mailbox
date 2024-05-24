@@ -31,7 +31,7 @@ import com.zimbra.common.httpclient.InputStreamRequestHttpRetryHandler;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ByteUtil;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.service.UserServlet;
@@ -139,7 +139,7 @@ public class TritonBlobStoreManager extends SisStore implements ExternalResumabl
 
     @Override
     protected void writeStreamToStore(InputStream in, long actualSize, Mailbox mbox, String locator) throws IOException, ServiceException {
-        HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
+        HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder();
         clientBuilder.setRetryHandler(new InputStreamRequestHttpRetryHandler());
         HttpClient client = clientBuilder.build();
 
@@ -174,7 +174,7 @@ public class TritonBlobStoreManager extends SisStore implements ExternalResumabl
     @Override
     public InputStream readStreamFromStore(String locator, Mailbox mbox)
                     throws IOException {
-        HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient().build();
+        HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder().build();
         HttpGet get = new HttpGet(blobApiUrl + locator);
         get.addHeader(TritonHeaders.HASH_TYPE, hashType.toString());
         ZimbraLog.store.info("getting %s", get.getURI());
@@ -203,7 +203,7 @@ public class TritonBlobStoreManager extends SisStore implements ExternalResumabl
     @Override
     public boolean deleteFromStore(String locator, Mailbox mbox)
                     throws IOException {
-        HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient().build();
+        HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder().build();
         HttpDelete delete = new HttpDelete(blobApiUrl + locator);
         delete.addHeader(TritonHeaders.HASH_TYPE, hashType.toString());
         try {
@@ -232,7 +232,7 @@ public class TritonBlobStoreManager extends SisStore implements ExternalResumabl
         TritonBlob tb = (TritonBlob) blob;
         HttpPost post = new HttpPost(url + tb.getUploadId());
         ZimbraLog.store.info("posting to %s with locator %s", post.getURI(), tb.getLocator());
-        HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient().build();
+        HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder().build();
         try {
             post.addHeader(TritonHeaders.OBJECTID, tb.getLocator());
             post.addHeader(TritonHeaders.HASH_TYPE, hashType.toString());
@@ -261,7 +261,7 @@ public class TritonBlobStoreManager extends SisStore implements ExternalResumabl
      */
     private boolean sisCreate(byte[] hash) throws IOException {
         String locator = getLocator(hash);
-        HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient().build();
+        HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder().build();
         HttpPost post = new HttpPost(blobApiUrl + locator);
         ZimbraLog.store.info("SIS create URL: %s", post.getURI());
         try {

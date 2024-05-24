@@ -26,7 +26,7 @@ import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.HttpUtil;
 import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.WebSplitUtil;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
@@ -237,7 +237,7 @@ public class HtmlFormatter extends Formatter {
         String mailUrl = PATH_MAIN_CONTEXT;
         if (WebSplitUtil.isZimbraServiceSplitEnabled()) {
             mailUrl = Provisioning.getInstance().getLocalServer().getWebClientURL() + PATH_JSP_REST_PAGE;
-            HttpClient httpclient = ZimbraHttpConnectionManager.getInternalHttpConnMgr().getDefaultHttpClient().build();
+            HttpClient httpclient = ZimbraHttpConnectionManager.getInternalHttpConnMgr().getHttpClientBuilder().build();
             /*
              * Retest the code with POST to check whether it works
             HttpPost postMethod = new HttpPost(mailUrl);

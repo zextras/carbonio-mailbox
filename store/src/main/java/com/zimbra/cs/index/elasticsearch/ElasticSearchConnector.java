@@ -22,7 +22,7 @@ import org.json.JSONObject;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.index.IndexStoreException;
 
@@ -47,7 +47,7 @@ public class ElasticSearchConnector {
         }
         HttpResponse response = null;
         try {
-            HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient().build();
+            HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder().build();
             response = client.execute(method);
             statusCode = response.getStatusLine().getStatusCode();
         } catch (ConnectException ce) {

@@ -52,7 +52,7 @@ import com.zimbra.common.soap.XmlParseException;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.DateUtil;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
@@ -368,7 +368,7 @@ public class ExchangeFreeBusyProvider extends FreeBusyProvider {
     private HttpResponse sendRequest(HttpRequestBase method, ServerInfo info) throws IOException, HttpException {
 
         method.addHeader(HEADER_USER_AGENT, USER_AGENT);
-        HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getExternalHttpConnMgr().newHttpClient();
+        HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getExternalHttpConnMgr().newHttpClientBuilder();
         HttpProxyUtil.configureProxy(clientBuilder);
         switch (info.scheme) {
         case basic:

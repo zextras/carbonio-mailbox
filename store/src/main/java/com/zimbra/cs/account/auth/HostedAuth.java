@@ -18,7 +18,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 
 import com.zimbra.common.httpclient.HttpClientUtil;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException.AuthFailedServiceException;
 
@@ -46,7 +46,7 @@ public class HostedAuth extends ZimbraCustomAuth {
 	 **/
 	public void authenticate(Account acct, String password,
 			Map<String, Object> context, List<String> args) throws Exception {
-		HttpClient client = ZimbraHttpConnectionManager.getExternalHttpConnMgr().newHttpClient().build();
+		HttpClient client = ZimbraHttpConnectionManager.getExternalHttpConnMgr().newHttpClientBuilder().build();
 		HttpRequestBase method = null;
 		
 		String targetURL = args.get(0);

@@ -61,11 +61,11 @@ import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.RemoteIP;
 import com.zimbra.common.util.ZimbraCookie;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 
 public class SoapHttpTransport extends SoapTransport {
-    private HttpClientBuilder mClientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().getDefaultHttpClient();
+    private HttpClientBuilder mClientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().getHttpClientBuilder();
     private Map<String, String> mCustomHeaders;
     private ProxyHostConfiguration mHostConfig = null;
     private HttpDebugListener mHttpDebugListener;
@@ -122,7 +122,7 @@ public class SoapHttpTransport extends SoapTransport {
      * Frees any resources such as connection pool held by this transport.
      */
     public void shutdown() {
-        if (mClientBuilder != null && mClientBuilder != ZimbraHttpConnectionManager.getInternalHttpConnMgr().getDefaultHttpClient()) {
+        if (mClientBuilder != null && mClientBuilder != ZimbraHttpConnectionManager.getInternalHttpConnMgr().getHttpClientBuilder()) {
             ZimbraHttpConnectionManager.getInternalHttpConnMgr().closeIdleConnections();
             mClientBuilder = null;
             mHostConfig = null;

@@ -21,7 +21,7 @@ import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.RemoteIP;
 import com.zimbra.common.util.ZimbraCookie;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
@@ -407,7 +407,7 @@ public class ZimbraServlet extends HttpServlet {
       }
     }
     HttpClientBuilder clientBuilder =
-        ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
+        ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder();
     if (state != null) clientBuilder.setDefaultCookieStore(state);
 
     int hopcount = 0;

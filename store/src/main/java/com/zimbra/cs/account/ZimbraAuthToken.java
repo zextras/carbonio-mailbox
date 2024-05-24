@@ -17,7 +17,7 @@ import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.MapUtil;
 import com.zimbra.common.util.ZimbraCookie;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.cs.account.auth.AuthMechanism.AuthMech;
 import com.zimbra.cs.ephemeral.EphemeralInput;
 import com.zimbra.cs.ephemeral.EphemeralInput.AbsoluteExpiration;
@@ -444,14 +444,14 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
     state.addCookie(cookie);
 
     HttpClientBuilder clientBuilder =
-        ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
+        ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder();
     clientBuilder.setDefaultCookieStore(state);
 
     RequestConfig reqConfig =
         RequestConfig.copy(
                 ZimbraHttpConnectionManager.getInternalHttpConnMgr()
                     .getZimbraConnMgrParams()
-                    .getReqConfig())
+                    .getRequestConfig())
             .setCookieSpec(CookieSpecs.DEFAULT)
             .build();
 
@@ -481,7 +481,7 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
         RequestConfig.copy(
                 ZimbraHttpConnectionManager.getInternalHttpConnMgr()
                     .getZimbraConnMgrParams()
-                    .getReqConfig())
+                    .getRequestConfig())
             .setCookieSpec(CookieSpecs.DEFAULT)
             .build();
 

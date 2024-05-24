@@ -23,7 +23,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import com.zimbra.common.httpclient.HttpClientUtil;
 import com.zimbra.common.httpclient.InputStreamRequestHttpRetryHandler;
 import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.store.BlobBuilder;
 import com.zimbra.cs.store.external.ExternalResumableOutputStream;
@@ -78,7 +78,7 @@ public class TritonIncomingOutputStream extends ExternalResumableOutputStream {
     }
 
     private void sendHttpData() throws IOException {
-        HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
+        HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder();
         clientBuilder.setRetryHandler(new InputStreamRequestHttpRetryHandler());
         HttpClient client = clientBuilder.build();
         HttpPost post;

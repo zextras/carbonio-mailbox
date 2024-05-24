@@ -31,7 +31,7 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraCookie;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AccountServiceException.AuthFailedServiceException;
 import com.zimbra.cs.account.auth.AuthMechanism.AuthMech;
@@ -239,11 +239,11 @@ public class ZimbraJWToken extends AuthToken {
         cookie.setPath("/");
         cookie.setSecure(false);
         state.addCookie(cookie);
-        HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
+        HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder();
         clientBuilder.setDefaultCookieStore(state);
 
         RequestConfig reqConfig = RequestConfig.copy(
-            ZimbraHttpConnectionManager.getInternalHttpConnMgr().getZimbraConnMgrParams().getReqConfig())
+            ZimbraHttpConnectionManager.getInternalHttpConnMgr().getZimbraConnMgrParams().getRequestConfig())
             .setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
 
         clientBuilder.setDefaultRequestConfig(reqConfig);
@@ -356,7 +356,7 @@ public class ZimbraJWToken extends AuthToken {
         clientBuilder.setDefaultCookieStore(state);
 
         RequestConfig reqConfig = RequestConfig.copy(
-            ZimbraHttpConnectionManager.getInternalHttpConnMgr().getZimbraConnMgrParams().getReqConfig())
+            ZimbraHttpConnectionManager.getInternalHttpConnMgr().getZimbraConnMgrParams().getRequestConfig())
             .setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
 
         clientBuilder.setDefaultRequestConfig(reqConfig);

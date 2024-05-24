@@ -42,7 +42,6 @@ import com.zimbra.client.ZMailbox;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.httpclient.HttpClientUtil;
-import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.W3cDomUtil;
 import com.zimbra.common.soap.XmlParseException;
@@ -50,7 +49,7 @@ import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.HttpUtil;
 import com.zimbra.common.util.Log.Level;
 import com.zimbra.common.util.Pair;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
@@ -741,7 +740,7 @@ public class DavServlet extends ZimbraServlet {
         String url = getProxyUrl(ctxt.getRequest(), server, DAV_PATH) + HttpUtil.urlEscape("/" + acct.getName() + path + "/" + (extraPath == null ? "" : extraPath));
         BasicCookieStore state = new BasicCookieStore();
         authToken.encode(state, false, server.getAttr(Provisioning.A_zimbraServiceHostname));
-        HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
+        HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder();
         clientBuilder.setDefaultCookieStore(state);
         HttpClient client = clientBuilder.build();
 

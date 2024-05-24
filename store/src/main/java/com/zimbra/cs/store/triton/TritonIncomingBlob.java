@@ -19,7 +19,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.zimbra.common.httpclient.HttpClientUtil;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.store.Blob;
 import com.zimbra.cs.store.BlobBuilder;
@@ -70,7 +70,7 @@ public class TritonIncomingBlob extends ExternalResumableIncomingBlob {
     @Override
     protected long getRemoteSize() throws IOException {
         outStream.flush();
-        HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient().build();
+        HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder().build();
         HttpHead head = new HttpHead(baseUrl + uploadUrl);
         ZimbraLog.store.info("heading %s", head.getURI());
         try {

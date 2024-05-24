@@ -22,7 +22,7 @@ import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.StringUtil;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
@@ -1051,7 +1051,7 @@ public class UserServlet extends ZimbraServlet {
     hostname = method.getURI().getHost();
 
     HttpClientBuilder clientBuilder =
-        ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
+        ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder();
     Map<String, String> cookieMap = authToken.cookieMap(false);
     if (cookieMap != null) {
       BasicCookieStore cookieStore = new BasicCookieStore();
@@ -1068,7 +1068,7 @@ public class UserServlet extends ZimbraServlet {
           RequestConfig.copy(
                   ZimbraHttpConnectionManager.getInternalHttpConnMgr()
                       .getZimbraConnMgrParams()
-                      .getReqConfig())
+                      .getRequestConfig())
               .setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY)
               .build();
 

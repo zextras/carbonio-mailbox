@@ -26,7 +26,7 @@ import com.zimbra.common.httpclient.HttpClientUtil;
 import com.zimbra.common.httpclient.InputStreamRequestHttpRetryHandler;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ByteUtil;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.service.UserServlet;
 import com.zimbra.cs.store.external.ExternalStoreManager;
@@ -49,7 +49,7 @@ public abstract class HttpStoreManager extends ExternalStoreManager {
         }
         ByteUtil.PositionInputStream pin = new ByteUtil.PositionInputStream(new DigestInputStream(in, digest));
 
-        HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
+        HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder();
         clientBuilder.setRetryHandler(new InputStreamRequestHttpRetryHandler());
         HttpClient client = clientBuilder.build();
 
@@ -75,7 +75,7 @@ public abstract class HttpStoreManager extends ExternalStoreManager {
     @Override
     public InputStream readStreamFromStore(String locator, Mailbox mbox)
                     throws IOException {
-        HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient().build();
+        HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder().build();
         HttpGet get = new HttpGet(getGetUrl(mbox, locator));
         HttpResponse httpResp;
         try {
@@ -96,7 +96,7 @@ public abstract class HttpStoreManager extends ExternalStoreManager {
     @Override
     public boolean deleteFromStore(String locator, Mailbox mbox)
                     throws IOException {
-        HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient().build();
+        HttpClient client = ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClientBuilder().build();
         HttpDelete delete = new HttpDelete(getDeleteUrl(mbox, locator));
         try {
             HttpResponse httpResp = HttpClientUtil.executeMethod(client, delete);

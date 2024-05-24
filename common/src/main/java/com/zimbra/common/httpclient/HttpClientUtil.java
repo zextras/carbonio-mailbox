@@ -28,12 +28,12 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 
 import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.net.ProxyHostConfiguration;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 
 public class HttpClientUtil {
 
     public static HttpResponse executeMethod(HttpRequestBase method) throws HttpException, IOException {
-        return executeMethod(ZimbraHttpConnectionManager.getInternalHttpConnMgr().getDefaultHttpClient().build(), method, null);
+        return executeMethod(ZimbraHttpConnectionManager.getInternalHttpConnMgr().getHttpClientBuilder().build(), method, null);
     }
     public static HttpResponse executeMethod(HttpClient client, HttpRequestBase method) throws HttpException, IOException {
         return executeMethod(client, method, null, null);

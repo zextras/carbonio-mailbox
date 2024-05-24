@@ -9,7 +9,7 @@ import com.zimbra.common.httpclient.HttpClientUtil;
 import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.WebSplitUtil;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
+import com.zimbra.common.util.httpconnectionmanager.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
@@ -63,7 +63,7 @@ public class WebClientServiceUtil {
     ZimbraLog.misc.debug("got admin auth token");
     //sequentially flush each node
     HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getExternalHttpConnMgr()
-        .newHttpClient();
+        .newHttpClientBuilder();
     HttpProxyUtil.configureProxy(clientBuilder);
     for (Server server : servers) {
       if (isServerAtLeast8dot5(server)) {
@@ -129,7 +129,7 @@ public class WebClientServiceUtil {
       servers.add(Provisioning.getInstance().getLocalServer());
     }
     HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getExternalHttpConnMgr()
-        .newHttpClient();
+        .newHttpClientBuilder();
     HttpProxyUtil.configureProxy(clientBuilder);
     AuthToken authToken = AuthProvider.getAdminAuthToken();
     ZimbraLog.misc.debug("got admin auth token");
@@ -178,7 +178,7 @@ public class WebClientServiceUtil {
       throws ServiceException {
     if (isServerAtLeast8dot5(server)) {
       HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getExternalHttpConnMgr()
-          .newHttpClient();
+          .newHttpClientBuilder();
       HttpProxyUtil.configureProxy(clientBuilder);
       AuthToken authToken = AuthProvider.getAdminAuthToken();
       ZimbraLog.misc.debug("got admin auth token");
@@ -227,7 +227,7 @@ public class WebClientServiceUtil {
   private static void postToUiNode(Server server, HttpPost method, String authToken)
       throws ServiceException {
     HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getExternalHttpConnMgr()
-        .newHttpClient();
+        .newHttpClientBuilder();
     HttpProxyUtil.configureProxy(clientBuilder);
     try {
       method.addHeader(PARAM_AUTHTOKEN, authToken);
@@ -251,7 +251,7 @@ public class WebClientServiceUtil {
       throws ServiceException {
     if (isServerAtLeast8dot5(server)) {
       HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getExternalHttpConnMgr()
-          .newHttpClient();
+          .newHttpClientBuilder();
       HttpProxyUtil.configureProxy(clientBuilder);
       HttpPost method = new HttpPost(
           URLUtil.getServiceURL(server, "/fromservice/deployzimlet", false));
@@ -273,7 +273,7 @@ public class WebClientServiceUtil {
       throws ServiceException {
     if (isServerAtLeast8dot5(server)) {
       HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getExternalHttpConnMgr()
-          .newHttpClient();
+          .newHttpClientBuilder();
       HttpProxyUtil.configureProxy(clientBuilder);
       HttpPost method = new HttpPost(
           URLUtil.getServiceURL(server, "/fromservice/undeployzimlet", false));
