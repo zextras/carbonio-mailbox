@@ -9625,6 +9625,7 @@ public class Mailbox implements MailboxStore {
         // Delete the items in batches.  (1000 items by default)
         QueryParams params = new QueryParams();
         params
+            //.retvieve only emails message + conver
             .setFolderIds(folderIds)
             .setModifiedSequenceBefore(lastChangeID + 1)
             .setRowLimit(batchSize);
@@ -9679,6 +9680,10 @@ public class Mailbox implements MailboxStore {
         emptyFolderOpLock.unlock();
       }
     }
+  }
+
+  public void emptyFolder(OperationContext octxt, int folderId, boolean removeSubfolders, FolderActionEmptyOpTypes matchType) {
+
   }
 
   public void emptyFolder(OperationContext octxt, int folderId, boolean removeSubfolders)

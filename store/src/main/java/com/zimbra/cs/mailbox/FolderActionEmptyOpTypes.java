@@ -1,23 +1,13 @@
 package com.zimbra.cs.mailbox;
 
 public enum FolderActionEmptyOpTypes {
-  EMAILS("emails"),
-  CONTACTS("contacts"),
-  APPOINTMENTS("appointments");
-
-  private final String name;
-
-  FolderActionEmptyOpTypes(String name) {
-    this.name = name;
-  }
-
-  public String getName() {
-    return name;
-  }
+  EMAILS,
+  CONTACTS,
+  APPOINTMENTS;
 
   public static boolean contains(String name) {
     for (FolderActionEmptyOpTypes type : FolderActionEmptyOpTypes.values()) {
-      if (type.getName().equalsIgnoreCase(name)) {
+      if (type.name().equalsIgnoreCase(name)) {
         return true;
       }
     }
