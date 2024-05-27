@@ -26,6 +26,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <artifactId>mina-core</artifactId>
       <groupId>org.apache.mina</groupId>
     </dependency>
