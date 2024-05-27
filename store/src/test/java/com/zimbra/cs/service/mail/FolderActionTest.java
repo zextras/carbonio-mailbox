@@ -1,9 +1,9 @@
 package com.zimbra.cs.service.mail;
 
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zimbra.common.mailbox.FolderConstants;
@@ -16,10 +16,13 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.FolderActionEmptyOpTypes;
+import com.zimbra.cs.mailbox.MailItem;
+import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.CreateAppointmentResponse;
 import com.zimbra.soap.mail.message.CreateContactRequest;
 import com.zimbra.soap.mail.message.CreateContactResponse;
+import com.zimbra.soap.mail.message.CreateFolderResponse;
 import com.zimbra.soap.mail.message.FolderActionResponse;
 import com.zimbra.soap.mail.message.GetFolderRequest;
 import com.zimbra.soap.mail.message.GetFolderResponse;
@@ -63,26 +66,39 @@ class FolderActionTest extends SoapTestSuite {
   @Test
   void empty_op_folder_action_request_should_only_delete_items_specified_by_type_attribute_in_action_selector()
       throws Exception {
-
-    //create contacts and move to trash
+    // create and move contacts to trash folder
     var contactsInAccount = createContactsForAccount(defaultAccount, "heelo@demo.com",
         "heelo2@demo.com", "heelo3@demo.com");
-    moveContactsToTrashForAccount(defaultAccount, contactsInAccount);
+    moveItemsToFolderForAccount(defaultAccount, contactsInAccount, FolderConstants.ID_FOLDER_TRASH);
 
-    //create appointments and move them to trash
+    // create folder under Contacts, populate it with contacts and move the folder to trash folder
+    var folderUnderContacts = createFolderForAccount(defaultAccount, FolderConstants.ID_FOLDER_CONTACTS, Type.CONTACT,
+        "myContacts");
+    var contactsInAccount2 = createContactsForAccount(defaultAccount, "heelo1@demo.com",
+        "heelo21@demo.com", "heelo31@demo.com");
+    moveItemsToFolderForAccount(defaultAccount, contactsInAccount2, folderUnderContacts);
+    moveItemToTrashForAccount(defaultAccount, String.valueOf(folderUnderContacts));
+    assertDoesNotThrow(() -> getFolderForAccount(defaultAccount, String.valueOf(folderUnderContacts)));
+
+    // create an appointment
     var appointmentId = createAppointmentForAccount(defaultAccount);
-    moveAppointmentToTrashForAccount(defaultAccount, appointmentId);
+    moveItemToTrashForAccount(defaultAccount, appointmentId);
 
-    // empty trash (only items specified by type)
+    // execute empty trash operation for contacts
     folderActionEmptyTrashForAccount(defaultAccount, true, FolderActionEmptyOpTypes.CONTACTS);
 
-    // verify
+    var mailItemNotFoundServiceException = assertThrows(ServiceException.class,
+        () -> getFolderForAccount(defaultAccount, String.valueOf(folderUnderContacts)),
+        "there should be no folder with contact view");
+
+    assertEquals(String.format("no such folder id: %s", folderUnderContacts),
+        mailItemNotFoundServiceException.getMessage());
+
     var getFolderResponse = getFolderForAccount(defaultAccount,
         String.valueOf(FolderConstants.ID_FOLDER_TRASH));
-    // will fail right now
-    if (getFolderResponse.getFolder().getItemCount() != 0) {
-      fail("deletes all items in the trash folder right now");
-    }
+
+    assertEquals(1, getFolderResponse.getFolder().getItemCount(),
+        "there should be only one appointment left after emptying the trash for contacts");
   }
 
   @SuppressWarnings({"SameParameterValue", "UnusedReturnValue"})
@@ -105,20 +121,31 @@ class FolderActionTest extends SoapTestSuite {
     return JaxbUtil.elementToJaxb(response);
   }
 
-  private void moveContactsToTrashForAccount(Account targetAccount, ArrayList<String> contactIds)
+  private void moveItemsToFolderForAccount(Account targetAccount, ArrayList<String> itemIds, int targetFolderId)
       throws ServiceException {
-    for (var contactId : contactIds) {
-      Element contactActionSelectorElement = new XMLElement(MailConstants.E_ACTION);
-      contactActionSelectorElement.addAttribute(MailConstants.A_ID, contactId);
-      contactActionSelectorElement.addAttribute(MailConstants.A_OPERATION, FolderAction.OP_MOVE);
-      contactActionSelectorElement.addAttribute(MailConstants.A_FOLDER, FolderConstants.ID_FOLDER_TRASH);
-
-      Element contactActionRequestElement = new XMLElement(MailConstants.E_CONTACT_ACTION_REQUEST);
-      contactActionRequestElement.addUniqueElement(contactActionSelectorElement);
-
-      var contactActionHandler = new ContactAction();
-      contactActionHandler.handle(contactActionRequestElement, getSoapContextForAccount(targetAccount, false));
+    for (var itemId : itemIds) {
+      moveItemToFolderForAccount(targetAccount, itemId, targetFolderId);
     }
+  }
+
+  @SuppressWarnings("SameParameterValue")
+  private int createFolderForAccount(Account targetAccount, int parentFolderId, MailItem.Type view, String name)
+      throws Exception {
+    var folderElement = new Element.XMLElement(MailConstants.E_FOLDER);
+    folderElement.addAttribute(MailConstants.A_FOLDER, String.valueOf(parentFolderId));
+    folderElement.addAttribute(MailConstants.A_DEFAULT_VIEW, view.name());
+    folderElement.addAttribute(MailConstants.A_NAME, name);
+
+    var createFolderElement = new Element.XMLElement(MailConstants.E_CREATE_FOLDER_REQUEST);
+    createFolderElement.addUniqueElement(folderElement);
+
+    var createFolderHandler = new CreateFolder();
+    createFolderHandler.setResponseQName(MailConstants.CREATE_FOLDER_RESPONSE);
+    var response = createFolderHandler.handle(createFolderElement,
+        getSoapContextForAccount(targetAccount, false));
+
+    CreateFolderResponse createFolderResponse = JaxbUtil.elementToJaxb(response);
+    return Integer.parseInt(Objects.requireNonNull(createFolderResponse).getFolder().getId());
   }
 
   private ArrayList<String> createContactsForAccount(Account targetAccount, String... emails) throws Exception {
@@ -155,12 +182,17 @@ class FolderActionTest extends SoapTestSuite {
     return Objects.requireNonNull(createCalendarItemResponse).getCalItemId();
   }
 
-  private void moveAppointmentToTrashForAccount(Account targetAccount, String appointmentId) throws ServiceException {
+  private void moveItemToTrashForAccount(Account targetAccount, String itemId) throws ServiceException {
+    moveItemToFolderForAccount(targetAccount, itemId, FolderConstants.ID_FOLDER_TRASH);
+  }
 
+  @SuppressWarnings("SameParameterValue")
+  private void moveItemToFolderForAccount(Account targetAccount, String itemId, int targetFolderId)
+      throws ServiceException {
     Element itemActionSelectorElement = new XMLElement(MailConstants.E_ACTION);
-    itemActionSelectorElement.addAttribute(MailConstants.A_ID, appointmentId);
+    itemActionSelectorElement.addAttribute(MailConstants.A_ID, itemId);
     itemActionSelectorElement.addAttribute(MailConstants.A_OPERATION, FolderAction.OP_MOVE);
-    itemActionSelectorElement.addAttribute(MailConstants.A_FOLDER, FolderConstants.ID_FOLDER_TRASH);
+    itemActionSelectorElement.addAttribute(MailConstants.A_FOLDER, targetFolderId);
 
     Element itemActionRequestElement = new XMLElement(MailConstants.E_ITEM_ACTION_REQUEST);
     itemActionRequestElement.addUniqueElement(itemActionSelectorElement);
