@@ -41,7 +41,6 @@ import com.zimbra.cs.service.util.ItemIdFormatter;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.type.RetentionPolicy;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -128,8 +127,10 @@ public class FolderAction extends ItemAction {
         if (operation.equals(OP_EMPTY)) {
             boolean subfolders = action.getAttributeBool(MailConstants.A_RECURSIVE, true);
             String emptyOpMatchType = action.getAttribute(MailConstants.A_FOLDER_ACTION_EMPTY_OP_MATCH_TYPE);
-            if(!FolderActionEmptyOpTypes.contains(emptyOpMatchType)) {
-                throw ServiceException.INVALID_REQUEST("Missing or invalid 'type' parameter", null);
+            if (!FolderActionEmptyOpTypes.contains(emptyOpMatchType)) {
+                throw ServiceException.INVALID_REQUEST(
+                    "Missing or invalid 'type' parameter. Supported parameters are: "
+                        + FolderActionEmptyOpTypes.valueToString(), null);
             }
             final FolderActionEmptyOpTypes matchType = FolderActionEmptyOpTypes.valueOf(
                 emptyOpMatchType.toUpperCase());

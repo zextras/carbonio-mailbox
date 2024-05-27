@@ -1,8 +1,10 @@
 package com.zimbra.cs.mailbox;
 
 import com.zimbra.cs.mailbox.MailItem.Type;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 //Todo add java docs
 public enum FolderActionEmptyOpTypes {
@@ -32,5 +34,13 @@ public enum FolderActionEmptyOpTypes {
       default:
         return Collections.emptyList();
     }
+  }
+
+  /**
+   * @return String of comma separated list of types
+   */
+  public static String valueToString() {
+    return Arrays.stream(
+        values()).map(type -> type.name().toLowerCase()).collect(Collectors.joining(", "));
   }
 }

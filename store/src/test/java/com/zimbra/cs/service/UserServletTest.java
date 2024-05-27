@@ -22,7 +22,6 @@ import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.mail.CreateAppointment;
-import com.zimbra.cs.service.mail.CreateCalendarItem;
 import com.zimbra.cs.servlet.ZimbraServlet;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;

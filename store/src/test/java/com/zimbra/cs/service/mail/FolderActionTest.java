@@ -64,6 +64,29 @@ class FolderActionTest extends SoapTestSuite {
   }
 
   @Test
+  void empty_op_folder_action_request_should_fail_when_wrong_type_attribute_in_action_selector()
+      throws ServiceException {
+    Element actionSelectorElement = new XMLElement(MailConstants.E_ACTION);
+    actionSelectorElement.addAttribute(MailConstants.A_ID, FolderConstants.ID_FOLDER_TRASH);
+    actionSelectorElement.addAttribute(MailConstants.A_OPERATION, FolderAction.OP_EMPTY);
+    actionSelectorElement.addAttribute(MailConstants.A_RECURSIVE, Boolean.valueOf(true).toString());
+    actionSelectorElement.addAttribute(MailConstants.A_FOLDER_ACTION_EMPTY_OP_MATCH_TYPE, "wrongType");
+
+    Element folderActionRequestElement = new XMLElement(MailConstants.E_FOLDER_ACTION_REQUEST);
+    folderActionRequestElement.addUniqueElement(actionSelectorElement);
+
+    var folderActionHandler = new FolderAction();
+    var soapContextForAccount = getSoapContextForAccount(defaultAccount, false);
+
+    var serviceException = assertThrows(ServiceException.class,
+        () -> folderActionHandler.handle(folderActionRequestElement, soapContextForAccount));
+    assertEquals(
+        String.format("invalid request: Missing or invalid 'type' parameter. Supported parameters are: %s",
+            FolderActionEmptyOpTypes.valueToString()),
+        serviceException.getMessage());
+  }
+
+  @Test
   void empty_op_folder_action_request_should_only_delete_items_specified_by_type_attribute_in_action_selector()
       throws Exception {
     // create and move contacts to trash folder
