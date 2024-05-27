@@ -218,7 +218,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.lang.ref.SoftReference;
 import java.nio.charset.StandardCharsets;
@@ -8420,7 +8419,7 @@ public class Mailbox implements MailboxStore {
     }
     for (Integer folderId : folderIds) {
       emptyFolder(
-          octxt, folderId, true /* removeTopLevelFolder */, true /* removeSubfolders */, tcon);
+          octxt, folderId, true /* removeTopLevelFolder */, true /* removeSubfolders */, tcon, null);
     }
   }
 
@@ -9594,7 +9593,8 @@ public class Mailbox implements MailboxStore {
       int folderId,
       boolean removeTopLevelFolder,
       boolean removeSubfolders,
-      TargetConstraint tcon)
+      TargetConstraint tcon,
+      FolderActionEmptyOpTypes itemsType)
       throws ServiceException {
     try {
       if (emptyFolderOpLock.tryLock()
@@ -9611,7 +9611,14 @@ public class Mailbox implements MailboxStore {
         } else {
           List<Folder> folders = getFolderById(octxt, folderId).getSubfolderHierarchy();
           for (Folder folder : folders) {
-            folderIds.add(folder.getId());
+            if (itemsType != null) {
+              if (FolderActionEmptyOpTypes.getIncludedTypesFor(itemsType).contains(folder.getDefaultView())
+                  || folder.getId() == FolderConstants.ID_FOLDER_TRASH) {
+                folderIds.add(folder.getId());
+              }
+            } else {
+              folderIds.add(folder.getId());
+            }
           }
         }
         // Make sure that the user has the delete permission for all folders in the hierarchy.
@@ -9625,10 +9632,14 @@ public class Mailbox implements MailboxStore {
         // Delete the items in batches.  (1000 items by default)
         QueryParams params = new QueryParams();
         params
-            //.retvieve only emails message + conver
             .setFolderIds(folderIds)
             .setModifiedSequenceBefore(lastChangeID + 1)
             .setRowLimit(batchSize);
+
+        if(itemsType != null){
+          params.setIncludedTypes(FolderActionEmptyOpTypes.getIncludedTypesFor(itemsType));
+        }
+
         boolean firstTime = true;
         do {
           // Give other threads a chance to use the mailbox between deletion batches.
@@ -9682,8 +9693,15 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  public void emptyFolder(OperationContext octxt, int folderId, boolean removeSubfolders, FolderActionEmptyOpTypes matchType) {
-
+  public void emptyFolder(OperationContext octxt, int folderId, boolean removeSubfolders,
+      FolderActionEmptyOpTypes matchType)
+      throws ServiceException {
+    emptyFolder(
+        octxt,
+        folderId,
+        false,
+        removeSubfolders,
+        null, matchType);
   }
 
   public void emptyFolder(OperationContext octxt, int folderId, boolean removeSubfolders)
@@ -9693,7 +9711,7 @@ public class Mailbox implements MailboxStore {
         folderId,
         false /* removeTopLevelFolder */,
         removeSubfolders,
-        null /* TargetConstraint */);
+        null /* TargetConstraint */, null);
   }
 
   @Override
