@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.mailbox.FolderConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -30,11 +31,13 @@ import com.zimbra.soap.mail.type.ContactSpec;
 import com.zimbra.soap.mail.type.GetFolderSpec;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nullable;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -48,18 +51,21 @@ class FolderActionTest extends SoapTestSuite {
   private static Account defaultAccount;
 
   @BeforeAll
-  public static void setUp() throws Exception {
+  public static void init() throws Exception {
     provisioning = Provisioning.getInstance();
     defaultDomain = provisioning.createDomain(UUID.randomUUID() + ".com", new HashMap<>());
+  }
+
+  @BeforeEach
+  public void setUp() throws ServiceException {
     defaultAccount = provisioning.createAccount(UUID.randomUUID() + "@" + defaultDomain.getName(), "password",
         new HashMap<>());
   }
 
-  @AfterEach
-  public void tearDown() throws ServiceException {
-    provisioning.deleteAccount(defaultAccount.getId());
-    defaultAccount = provisioning.createAccount(UUID.randomUUID() + "@" + defaultDomain.getName(), "password",
-        new HashMap<>());
+  @AfterAll
+  public static void tearDown() throws Exception {
+    MailboxTestUtil.clearData();
+    MailboxTestUtil.tearDown();
   }
 
   @Test
@@ -90,7 +96,7 @@ class FolderActionTest extends SoapTestSuite {
       throws Exception {
     var contactsInAccount = createContactsForAccount(defaultAccount, "heelo@demo.com",
         "heelo2@demo.com", "heelo3@demo.com");
-    moveItemsToFolderForAccount(defaultAccount, contactsInAccount, FolderConstants.ID_FOLDER_TRASH);
+    moveItemsToTrashForAccount(defaultAccount, contactsInAccount);
 
     var appointmentId = createAppointmentForAccount(defaultAccount);
     moveItemToTrashForAccount(defaultAccount, appointmentId);
@@ -116,7 +122,7 @@ class FolderActionTest extends SoapTestSuite {
     // create and move contacts to trash folder
     var contactsInAccount = createContactsForAccount(defaultAccount, "heelo@demo.com",
         "heelo2@demo.com", "heelo3@demo.com");
-    moveItemsToFolderForAccount(defaultAccount, contactsInAccount, FolderConstants.ID_FOLDER_TRASH);
+    moveItemsToTrashForAccount(defaultAccount, contactsInAccount);
 
     // create folder under Contacts, populate it with contacts and move the folder to trash folder
     var folderUnderContacts = createFolderForAccount(defaultAccount, FolderConstants.ID_FOLDER_CONTACTS, Type.CONTACT,
@@ -231,6 +237,12 @@ class FolderActionTest extends SoapTestSuite {
 
   private void moveItemToTrashForAccount(Account targetAccount, String itemId) throws ServiceException {
     moveItemToFolderForAccount(targetAccount, itemId, FolderConstants.ID_FOLDER_TRASH);
+  }
+
+  private void moveItemsToTrashForAccount(Account targetAccount, List<String> itemIds) throws ServiceException {
+    for (String itemId: itemIds) {
+      moveItemToTrashForAccount(targetAccount, itemId);
+    }
   }
 
   @SuppressWarnings("SameParameterValue")
