@@ -9611,11 +9611,10 @@ public class Mailbox implements MailboxStore {
         } else {
           List<Folder> folders = getFolderById(octxt, folderId).getSubfolderHierarchy();
           for (Folder folder : folders) {
-            if (itemsType == null) {
+            if (itemsType == null || FolderActionEmptyOpTypes.getIncludedTypesFor(itemsType)
+                .contains(folder.getDefaultView())
+                || folder.getId() == FolderConstants.ID_FOLDER_TRASH) {
               folderIds.add(folder.getId());
-            } else if (FolderActionEmptyOpTypes.getIncludedTypesFor(itemsType).contains(folder.getDefaultView())
-                  || folder.getId() == FolderConstants.ID_FOLDER_TRASH) {
-                folderIds.add(folder.getId());
             }
           }
         }
