@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 /**
  * Enum representing different types supported by the empty operation in
- * {@link com.zimbra.cs.service.mail.FolderAction}.
+ * {@link com.zimbra.soap.mail.type.FolderActionSelector}.
  */
 public enum FolderActionEmptyOpTypes {
   EMAILS,
