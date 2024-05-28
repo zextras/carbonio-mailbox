@@ -125,21 +125,7 @@ public class FolderAction extends ItemAction {
         ItemId iid = new ItemId(action.getAttribute(MailConstants.A_ID), zsc);
 
         if (operation.equals(OP_EMPTY)) {
-            boolean subfolders = action.getAttributeBool(MailConstants.A_RECURSIVE, true);
-            String emptyOpMatchType = action.getAttribute(MailConstants.A_FOLDER_ACTION_EMPTY_OP_MATCH_TYPE);
-            if (!FolderActionEmptyOpTypes.contains(emptyOpMatchType)) {
-                throw ServiceException.INVALID_REQUEST(
-                    "Missing or invalid 'type' parameter. Supported parameters are: "
-                        + FolderActionEmptyOpTypes.valueToString(), null);
-            }
-            final FolderActionEmptyOpTypes matchType = FolderActionEmptyOpTypes.valueOf(
-                emptyOpMatchType.toUpperCase());
-            mbox.emptyFolder(octxt, iid.getId(), subfolders, matchType);
-            // empty trash means also to purge all IMAP \Deleted messages
-            if (iid.getId() == Mailbox.ID_FOLDER_TRASH
-                && FolderActionEmptyOpTypes.EMAILS.equals(matchType)) {
-                mbox.purgeImapDeleted(octxt);
-            }
+            handleFolderEmptyOperation(action, mbox, octxt, iid);
         } else if (operation.equals(OP_REFRESH)) {
             mbox.synchronizeFolder(octxt, iid.getId());
         } else if (operation.equals(OP_IMPORT)) {
@@ -301,6 +287,31 @@ public class FolderAction extends ItemAction {
         }
 
         return ifmt.formatItemId(iid);
+    }
+
+    private void handleFolderEmptyOperation(Element action, Mailbox mbox, OperationContext octxt, ItemId iid) throws ServiceException {
+        boolean recursive = action.getAttributeBool(MailConstants.A_RECURSIVE, true);
+        final String typeStr = action.getAttribute(MailConstants.A_FOLDER_ACTION_EMPTY_OP_MATCH_TYPE, null);
+        if (typeStr != null) {
+            try {
+                FolderActionEmptyOpTypes matchType = FolderActionEmptyOpTypes.valueOf(typeStr.toUpperCase());
+                if (FolderActionEmptyOpTypes.contains(typeStr)) {
+                    mbox.emptyFolder(octxt, iid.getId(), recursive, matchType);
+                    if (iid.getId() == Mailbox.ID_FOLDER_TRASH && matchType == FolderActionEmptyOpTypes.EMAILS) {
+                        mbox.purgeImapDeleted(octxt);
+                    }
+                }
+            } catch (IllegalArgumentException e) {
+                throw ServiceException.INVALID_REQUEST(
+                    "Invalid 'type' parameter. Supported parameters are: "
+                        + FolderActionEmptyOpTypes.valueToString(), null);
+            }
+        } else {
+            mbox.emptyFolder(octxt, iid.getId(), recursive);
+            if (iid.getId() == Mailbox.ID_FOLDER_TRASH) {
+                mbox.purgeImapDeleted(octxt);
+            }
+        }
     }
 
     static ACL parseACL(Element eAcl, MailItem.Type folderType, Account account) throws ServiceException {

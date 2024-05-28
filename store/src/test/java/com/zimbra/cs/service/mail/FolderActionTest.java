@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nullable;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -54,13 +55,11 @@ class FolderActionTest extends SoapTestSuite {
         new HashMap<>());
   }
 
-  @Test
-  void empty_op_folder_action_request_should_fail_when_misses_type_attribute_in_action_selector() {
-    var serviceException = assertThrows(ServiceException.class,
-        () -> folderActionEmptyTrashForAccount(defaultAccount, true, null));
-
-    assertEquals(ServiceException.INVALID_REQUEST, serviceException.getCode());
-    assertEquals("invalid request: missing required attribute: type", serviceException.getMessage());
+  @AfterEach
+  public void tearDown() throws ServiceException {
+    provisioning.deleteAccount(defaultAccount.getId());
+    defaultAccount = provisioning.createAccount(UUID.randomUUID() + "@" + defaultDomain.getName(), "password",
+        new HashMap<>());
   }
 
   @Test
@@ -81,9 +80,34 @@ class FolderActionTest extends SoapTestSuite {
     var serviceException = assertThrows(ServiceException.class,
         () -> folderActionHandler.handle(folderActionRequestElement, soapContextForAccount));
     assertEquals(
-        String.format("invalid request: Missing or invalid 'type' parameter. Supported parameters are: %s",
+        String.format("invalid request: Invalid 'type' parameter. Supported parameters are: %s",
             FolderActionEmptyOpTypes.valueToString()),
         serviceException.getMessage());
+  }
+
+  @Test
+  void empty_op_folder_action_request_should_not_fail_when_missed_type_attribute_in_action_selector()
+      throws Exception {
+    var contactsInAccount = createContactsForAccount(defaultAccount, "heelo@demo.com",
+        "heelo2@demo.com", "heelo3@demo.com");
+    moveItemsToFolderForAccount(defaultAccount, contactsInAccount, FolderConstants.ID_FOLDER_TRASH);
+
+    var appointmentId = createAppointmentForAccount(defaultAccount);
+    moveItemToTrashForAccount(defaultAccount, appointmentId);
+
+    var getFolderResponseBeforeEmptyingTrash = getFolderForAccount(defaultAccount,
+        String.valueOf(FolderConstants.ID_FOLDER_TRASH));
+
+    assertEquals(4, getFolderResponseBeforeEmptyingTrash.getFolder().getItemCount(),
+        "there should be items in the trash");
+
+    folderActionEmptyTrashForAccount(defaultAccount, true, null);
+
+    var getFolderResponseAfterEmptyingTrash = getFolderForAccount(defaultAccount,
+        String.valueOf(FolderConstants.ID_FOLDER_TRASH));
+
+    assertEquals(0, getFolderResponseAfterEmptyingTrash.getFolder().getItemCount(),
+        "there should be no items left in the trash after emptying the trash");
   }
 
   @Test
@@ -103,7 +127,7 @@ class FolderActionTest extends SoapTestSuite {
     moveItemToTrashForAccount(defaultAccount, String.valueOf(folderUnderContacts));
     assertDoesNotThrow(() -> getFolderForAccount(defaultAccount, String.valueOf(folderUnderContacts)));
 
-    // create an appointment
+    // create an appointment and move it to the trash folder
     var appointmentId = createAppointmentForAccount(defaultAccount);
     moveItemToTrashForAccount(defaultAccount, appointmentId);
 
