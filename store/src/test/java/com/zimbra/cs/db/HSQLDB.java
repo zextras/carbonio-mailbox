@@ -32,15 +32,6 @@ public class HSQLDB extends Db {
      * Populates ZIMBRA and MBOXGROUP1 schema.
      */
     public static void createDatabase() throws Exception {
-        createDatabase("");
-    }
-
-    /**
-     * Populates ZIMBRA and MBOXGROUP1 schema.
-     * @param zimbraServerDir the directory that contains the ZimbraServer project
-     * @throws Exception
-     */
-    public static void createDatabase(String zimbraServerDir) throws Exception {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         DbConnection conn = DbPool.getConnection();
@@ -51,8 +42,8 @@ public class HSQLDB extends Db {
             if (rs.next() && rs.getInt(1) > 0) {
                 return;  // already exists
             }
-      execute(conn,"db.sql");
-      execute(conn,"create_database.sql");
+            execute(conn,"db.sql");
+            execute(conn,"create_database.sql");
         } finally {
             DbPool.closeResults(rs);
             DbPool.quietCloseStatement(stmt);
@@ -64,18 +55,9 @@ public class HSQLDB extends Db {
      * Deletes all records from all tables.
      */
     public static void clearDatabase() throws Exception {
-        clearDatabase("");
-    }
-
-    /**
-     * Deletes all records from all tables.
-     * @param zimbraServerDir the directory that contains the ZimbraServer project
-     * @throws Exception
-     */
-    public static void clearDatabase(String zimbraServerDir) throws Exception {
         DbConnection conn = DbPool.getConnection();
         try {
-      execute(conn, "clear.sql");
+            execute(conn, "clear.sql");
         } finally {
             DbPool.quietClose(conn);
         }
