@@ -240,8 +240,8 @@ package() {
     "${pkgdir}/opt/zextras/lib/jars/resolver-20050927.jar"
   install -D carbonio-jetty-libs/target/dependencies/javax.annotation-api-1.3.2.jar \
     "${pkgdir}/opt/zextras/lib/jars/javax.annotation-api-1.3.2.jar"
-  install -D carbonio-jetty-libs/target/dependencies/apache-jsp-9.4.48.v20220622.jar \
-    "${pkgdir}/opt/zextras/lib/jars/apache-jsp-9.4.48.v20220622.jar"
+  install -D carbonio-jetty-libs/target/dependencies/apache-jsp-9.4.54.v20240208.jar \
+    "${pkgdir}/opt/zextras/lib/jars/apache-jsp-9.4.54.v20240208.jar"
 
   install -D carbonio-jetty-libs/target/dependencies/UserAgentUtils-1.21.jar \
     "${pkgdir}/opt/zextras/lib/jars/UserAgentUtils-1.21.jar"
