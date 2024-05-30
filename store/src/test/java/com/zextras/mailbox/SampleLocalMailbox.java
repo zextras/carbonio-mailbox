@@ -65,7 +65,7 @@ public class SampleLocalMailbox {
     setUpMockData();
 
     DbPool.startup();
-    HSQLDB.createDatabase("store/");
+    HSQLDB.createDatabase();
     final Provisioning provisioning = Provisioning.getInstance();
     provisioning
         .getServerByName(APP_SERVER_NAME)
