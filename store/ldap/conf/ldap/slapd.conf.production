@@ -24,7 +24,7 @@ threads		8
 # of real CPUs/cores on the box (i.e., do not include Hyper-Threading values).
 tool-threads		1
 
-pidfile		"/opt/zextras/openldap/var/run/slapd.pid"
+pidfile		"/run/carbonio/slapd.pid"
 argsfile	"/opt/zextras/openldap/var/run/slapd.args"
 
 TLSCertificateFile /opt/zextras/conf/slapd.crt

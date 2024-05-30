@@ -11,6 +11,7 @@ import com.zextras.mailbox.tracking.PostHogTracking;
 import com.zextras.mailbox.tracking.Tracking;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.httpclient.HttpClientFactory;
 import com.zimbra.cs.service.MailboxAttachmentService;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
@@ -249,7 +250,7 @@ public class MailService implements DocumentService {
   }
 
   protected Tracking getTracking() {
-    return new PostHogTracking("https://eu.posthog.com");
+    return new PostHogTracking("https://eu.posthog.com", new HttpClientFactory());
   }
 
   protected FilesClient getFilesClient() {

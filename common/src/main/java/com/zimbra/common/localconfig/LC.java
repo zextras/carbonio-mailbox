@@ -433,13 +433,6 @@ public final class LC {
   public static final KnownKey mysql_data_directory =
       KnownKey.newKey("${zimbra_db_directory}/data");
 
-  @Supported
-  public static final KnownKey mysql_socket =
-      KnownKey.newKey("/opt/zextras/data/tmp/mysql/mysql.sock");
-
-  @Supported
-  public static final KnownKey mysql_pidfile = KnownKey.newKey("/opt/zextras/log/mysql.pid");
-
   @Supported public static final KnownKey mysql_mycnf = KnownKey.newKey("/opt/zextras/conf/my.cnf");
 
   @Supported
@@ -468,8 +461,6 @@ public final class LC {
       KnownKey.newKey("${zimbra_home}/logger/db/data");
   public static final KnownKey logger_zmrrdfetch_port = KnownKey.newKey(10663);
 
-  public static final KnownKey cbpolicyd_pid_file =
-      KnownKey.newKey("${zimbra_log_directory}/cbpolicyd.pid");
   public static final KnownKey cbpolicyd_log_file =
       KnownKey.newKey("${zimbra_log_directory}/cbpolicyd.log");
   public static final KnownKey cbpolicyd_db_file =
@@ -1103,12 +1094,8 @@ public final class LC {
       KnownKey.newKey("${zimbra_home}/log/antispam-mysqld.log");
   public static final KnownKey antispam_mysql_mycnf =
       KnownKey.newKey("${zimbra_home}/conf/antispam-my.cnf");
-  public static final KnownKey antispam_mysql_pidfile =
-      KnownKey.newKey("${zimbra_home}/data/amavisd/mysql/mysql.pid");
   public static final KnownKey antispam_mysql_host = KnownKey.newKey(null);
   public static final KnownKey antispam_mysql_port = KnownKey.newKey(7308);
-  public static final KnownKey antispam_mysql_socket =
-      KnownKey.newKey("${zimbra_home}/data/amavisd/mysql/mysql.sock");
   public static final KnownKey antispam_mysql_user = KnownKey.newKey("zimbra");
   public static final KnownKey antispam_mysql_root_password = KnownKey.newKey("");
   public static final KnownKey antispam_mysql_password = KnownKey.newKey("");

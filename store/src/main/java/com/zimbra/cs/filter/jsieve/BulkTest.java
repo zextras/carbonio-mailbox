@@ -25,7 +25,7 @@ import com.zimbra.cs.filter.ZimbraMailAdapter;
 import com.zimbra.cs.util.AccountUtil;
 
 /**
- * SIEVE test whether or not the message is a bulk mail (legitimate mass marketing mail).
+ * SIEVE test whether the message is a bulk mail (legitimate mass marketing mail).
  *
  * @author ysasaki
  */
@@ -37,6 +37,7 @@ public final class BulkTest extends AbstractTest {
     private static final String X_PROOFPOINT_SPAM_DETAILS = "X-PROOFPOINT-SPAM-DETAILS";
     private static final String AUTO_SUBMITTED = "Auto-Submitted";
     private static final String ZIMBRA_OOO_AUTO_REPLY = "auto-replied (zimbra; vacation)";
+    public static final String AUTO_REPLIED_ZIMBRA_READ_RECEIPT = "auto-replied (zimbra; read-receipt)";
 
     @Override
     protected boolean executeBasic(MailAdapter mail, Arguments args, SieveContext ctx) throws SieveException {
@@ -68,20 +69,18 @@ public final class BulkTest extends AbstractTest {
                     ZimbraLog.filter.error("Failed to lookup my addresses", e);
                 }
             } else if (PRECEDENCE.equals(name)) { // test "Precedence: bulk"
+                boolean shouldInclude = true;
                 for (String precedence : adapter.getHeader(PRECEDENCE)) {
-                    if ("bulk".equalsIgnoreCase(precedence)) {
-                        boolean zimbraOOONotif = false;
-                        for (String autoSubmitted : mail.getHeader(AUTO_SUBMITTED)) {
-                            if (ZIMBRA_OOO_AUTO_REPLY.equals(autoSubmitted)) {
-                                zimbraOOONotif = true;
-                                break;
-                            }
-                        }
-                        if (!zimbraOOONotif) {
-                            return true;
-                        }
-                    }
+                  if ("bulk".equalsIgnoreCase(precedence) && mail.getHeader(AUTO_SUBMITTED).stream()
+                      .anyMatch(autoSubmitted ->
+                          ZIMBRA_OOO_AUTO_REPLY.equals(autoSubmitted)
+                              || AUTO_REPLIED_ZIMBRA_READ_RECEIPT.equals(autoSubmitted)
+                      )) {
+                    shouldInclude = false;
+                    break;
+                  }
                 }
+                return shouldInclude;
             } else if (name.contains("CAMPAIGN")) { // test *CAMPAIGN*
                 return true;
             } else if (name.equals(X_PROOFPOINT_SPAM_DETAILS)) { // test Proofpoint bulkscore > 50
@@ -103,5 +102,4 @@ public final class BulkTest extends AbstractTest {
         }
         return false;
     }
-
 }

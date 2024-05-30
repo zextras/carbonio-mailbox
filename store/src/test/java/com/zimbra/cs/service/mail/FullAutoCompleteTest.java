@@ -134,7 +134,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
   void should_return_matches_from_other_preferred_accounts_respecting_account_AutoCompleteMaxResultsLimit()
       throws Exception {
     String searchTerm = "fac";
-    String domain = "something.com";
+    String domain = UUID.randomUUID() + "something.com";
     String contactEmail1 = searchTerm + "email1@" + domain;
     String contactEmail2 = searchTerm + "email2@" + domain;
     String contactEmail3 = searchTerm + "email3@" + domain;
@@ -159,7 +159,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
   @Test
   void should_return_matches_ordered_by_ranking_without_duplicates() throws Exception {
     String searchTerm = "fac";
-    String domain = "something.com";
+    String domain = "something989.com";
     String userName = searchTerm + UUID.randomUUID();
     String contactEmail1 = userName + "_email1@" + domain;
     String contactEmail2 = userName + "_email2@" + domain;
@@ -202,7 +202,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
   void should_return_matches()
       throws Exception {
     String searchTerm = "fac";
-    String domain = "something.com";
+    String domain = "something123.com";
 
     String contactEmail1 = searchTerm + "_email1@" + domain;
     String contactEmail2 = searchTerm + "_email2@" + domain;
@@ -241,7 +241,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
   void should_return_matches_without_duplicates_ordered_by_ranking_and_alphabetically_when_matches_have_same_ranking()
       throws Exception {
     String searchTerm = "fac";
-    String domain = "something.com";
+    String domain = UUID.randomUUID() + "something.com";
 
     String contactEmail1 = searchTerm + "_email1@" + domain;
     String contactEmail2 = searchTerm + "_email2@" + domain;
@@ -283,7 +283,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
   void should_return_matches_from_authenticated_account_when_request_misses_OrderedAccountIds()
       throws Exception {
     String searchTerm = "fac";
-    String domain = "something.com";
+    String domain = UUID.randomUUID() + "something.com";
 
     String contactEmail1 = searchTerm + "_email1@" + domain;
     String contactEmail2 = searchTerm + "_email2@" + domain;
@@ -312,7 +312,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
   @Test
   void should_return_contact_group_when_matches() throws Exception {
     String searchTerm = "my";
-    String domain = "something.com";
+    String domain = UUID.randomUUID() + "something.com";
 
     String contactEmail1 = searchTerm + "email1@" + domain;
     String contactEmail2 = searchTerm + "email2@" + domain;

@@ -26,6 +26,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <artifactId>mina-core</artifactId>
       <groupId>org.apache.mina</groupId>
     </dependency>
@@ -840,6 +846,7 @@
                 <include>com/zimbra/cs/db/HSQLDB*</include>
                 <include>com/zextras/mailbox/util/InMemoryLdapServer*</include>
                 <include>**/*.ldif</include>
+                <include>com/zimbra/cs/db/*.sql</include>
               </includes>
             </configuration>
           </execution>

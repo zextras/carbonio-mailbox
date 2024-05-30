@@ -1,24 +1,26 @@
 package com.zextras.mailbox.tracking;
 
+import com.zimbra.cs.httpclient.HttpClientFactory;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 
 public class PostHogTracking implements Tracking {
 
     static final String SITE_KEY = "phc_egpFZ14OKByQMK51wCTzYp8tLrg0VA8wa2QDagXCjDG";
     private final String endPoint;
 
-    public PostHogTracking(String endPoint) {
+    private final HttpClientFactory httpClientFactory;
+
+    public PostHogTracking(String endPoint, HttpClientFactory httpClientFactory) {
         this.endPoint = endPoint;
+        this.httpClientFactory = httpClientFactory;
     }
 
     @Override
     public void sendEventIgnoringFailure(Event event) {
-        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
+        try (var client = httpClientFactory.createWithProxy()) {
             client.execute(generateRequest(event));
         } catch (Exception ignored) {
         }
