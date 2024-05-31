@@ -6,6 +6,7 @@ package com.zextras.mailbox.util;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
+import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.Account;
@@ -13,6 +14,7 @@ import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.soap.JaxbUtil;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -124,6 +126,14 @@ public class SoapClient {
    */
   public HttpResponse executeSoap(Account account, Object soapBodyPOJO) throws Exception {
     return executeSoap(account, JaxbUtil.jaxbToElement(soapBodyPOJO));
+  }
+
+  public  <T> T execute(Account account, Object soapBodyPOJO, Class<T> clazz) throws Exception {
+    final HttpResponse response = executeSoap(account, JaxbUtil.jaxbToElement(soapBodyPOJO));
+    final String responseBody = new String(response.getEntity().getContent().readAllBytes(),
+        StandardCharsets.UTF_8);
+    return JaxbUtil.elementToJaxb(
+        Element.parseXML(responseBody).getElement("Body").listElements().get(0), clazz);
   }
 
 
