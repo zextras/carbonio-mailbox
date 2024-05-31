@@ -23,10 +23,6 @@ priority="optional"
 package() {
   cd "${srcdir}"/../../staging
 
-  # Appserver
-  install -Dm 750 packages/appserver-service/carbonio-appserver \
-      "${pkgdir}/usr/bin/carbonio-appserver"
-
   # Mailbox
   install -Dm 755 packages/appserver-service/carbonio-mailbox \
     "${pkgdir}/usr/bin/carbonio-mailbox"
@@ -85,8 +81,6 @@ postinst() {
     groupadd -r 'zextras'
   getent passwd 'zextras' >/dev/null ||
     useradd -r -M -d '/opt/zextras' -g 'zextras' -s /bin/bash 'zextras'
-
-  chown zextras:zextras /usr/bin/carbonio-appserver
 
   getent group 'carbonio-mailbox' >/dev/null ||
     groupadd -r 'carbonio-mailbox'
