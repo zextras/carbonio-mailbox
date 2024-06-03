@@ -303,6 +303,12 @@
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk15on</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcmail-jdk15on</artifactId>
+      <version>1.60</version>
+    </dependency>
     <!-- Note this should be provided in container classpath -->
     <dependency>
       <groupId>xerces</groupId>
