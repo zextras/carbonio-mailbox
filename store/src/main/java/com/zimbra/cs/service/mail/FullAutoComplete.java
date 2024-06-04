@@ -4,14 +4,12 @@
 
 package com.zimbra.cs.service.mail;
 
-import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.common.soap.SoapHttpTransport;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.httpclient.URLUtil;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.ContactAutoComplete.ContactEntryType;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -21,7 +19,6 @@ import com.zimbra.soap.mail.message.FullAutocompleteRequest;
 import com.zimbra.soap.mail.message.FullAutocompleteResponse;
 import com.zimbra.soap.mail.type.AutoCompleteMatch;
 import io.vavr.Tuple2;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -44,32 +41,27 @@ public class FullAutoComplete extends MailDocumentHandler {
     final var fullAutoCompleteMatches = new ArrayList<AutoCompleteMatch>();
     final var otherAutoCompleteMatches = new ArrayList<AutoCompleteMatch>();
     final var authenticatedAccount = zsc.getAuthToken().getAccount();
-    final int contactAutoCompleteMaxResultsLimit = authenticatedAccount.getContactAutoCompleteMaxResults();
+    final var contactAutoCompleteMaxResultsLimit = authenticatedAccount.getContactAutoCompleteMaxResults();
 
-    try {
-      final var autoCompleteRequest = fullAutocompleteRequest.getAutoCompleteRequest();
-      final var zAuthToken = zsc.getAuthToken().toZAuthToken();
-      final var parsedAccountIds = parsePreferredAccountsFrom(
-          fullAutocompleteRequest.getOrderedAccountIds());
-      final var preferredAccountId = parsedAccountIds._1();
-      final var otherPreferredAccountIds = parsedAccountIds._2();
+    final var autoCompleteRequest = fullAutocompleteRequest.getAutoCompleteRequest();
+    final var parsedAccountIds = parsePreferredAccountsFrom(
+        fullAutocompleteRequest.getOrderedAccountIds());
+    final var preferredAccountId = parsedAccountIds._1();
+    final var otherPreferredAccountIds = parsedAccountIds._2();
 
-      doAutoCompleteOnAccount(authenticatedAccount, zAuthToken, preferredAccountId, autoCompleteRequest)
-          .getMatches()
-          .stream()
-          .limit(Math.max(contactAutoCompleteMaxResultsLimit, 0))
-          .forEachOrdered(fullAutoCompleteMatches::add);
+    doAutoCompleteOnAccount(authenticatedAccount, preferredAccountId, autoCompleteRequest, context)
+        .getMatches()
+        .stream()
+        .limit(Math.max(contactAutoCompleteMaxResultsLimit, 0))
+        .forEachOrdered(fullAutoCompleteMatches::add);
 
-      otherPreferredAccountIds.stream()
-          .map(otherAccountId -> doAutoCompleteOnAccount(authenticatedAccount, zAuthToken, otherAccountId,
-              autoCompleteRequest))
-          .forEachOrdered(otherAccountAutoCompleteResponse -> otherAccountAutoCompleteResponse.getMatches().stream()
-              .filter(autoCompleteMatch -> autoCompleteMatch.getEmail() == null || fullAutoCompleteMatches.stream()
-                  .noneMatch(match -> autoCompleteMatch.getEmail().equalsIgnoreCase(match.getEmail())))
-              .forEachOrdered(otherAutoCompleteMatches::add));
-    } catch (ServiceException e) {
-      throw ServiceException.FAILURE(e.getMessage());
-    }
+    otherPreferredAccountIds.stream()
+        .map(otherAccountId -> doAutoCompleteOnAccount(authenticatedAccount, otherAccountId,
+            autoCompleteRequest, context))
+        .forEachOrdered(otherAccountAutoCompleteResponse -> otherAccountAutoCompleteResponse.getMatches().stream()
+            .filter(autoCompleteMatch -> autoCompleteMatch.getEmail() == null || fullAutoCompleteMatches.stream()
+                .noneMatch(match -> autoCompleteMatch.getEmail().equalsIgnoreCase(match.getEmail())))
+            .forEachOrdered(otherAutoCompleteMatches::add));
 
     otherAutoCompleteMatches.stream()
         .sorted(Comparator.comparing(AutoCompleteMatch::getRanking).reversed()
@@ -194,33 +186,46 @@ public class FullAutoComplete extends MailDocumentHandler {
   }
 
   /**
+   * Gets AutoComplete matches for passed account.
+   *  <p>If the account is local execute the handler otherwise makes http call to the remote server to retrieve the response
+   *  for SOAP AutoComplete.</p>
+   *
    * @param authenticatedAccount The Authenticated account
-   * @param zAuthToken           The {@link ZAuthToken} that will be used to perform SOAP calls
    * @param requestedAccountId   The account ID for which the {@link AutoComplete} matches will be returned
    * @param autoCompleteRequest  The original {@link AutoCompleteRequest} element that will be used to perform {@link
-   *                             AutoComplete} SOAP call
+   *                             AutoComplete}
    * @return {@link AutoCompleteResponse}
    */
-  private AutoCompleteResponse doAutoCompleteOnAccount(Account authenticatedAccount, ZAuthToken zAuthToken,
-      String requestedAccountId, AutoCompleteRequest autoCompleteRequest) {
+  private AutoCompleteResponse doAutoCompleteOnAccount(Account authenticatedAccount,
+      String requestedAccountId, AutoCompleteRequest autoCompleteRequest, Map<String, Object> context) {
     try {
-      final var soapUrl = URLUtil.getSoapURL(authenticatedAccount.getServer(), true);
-      final var autocompleteRequestElement = JaxbUtil.jaxbToElement(autoCompleteRequest);
-
-      final AutoCompleteResponse autoCompleteResponse;
-      if (authenticatedAccount.getId().equalsIgnoreCase(requestedAccountId)) {
-        autoCompleteResponse = JaxbUtil.elementToJaxb(new SoapHttpTransport(zAuthToken, soapUrl).invoke(
-            autocompleteRequestElement), AutoCompleteResponse.class);
+      if (requestedAccountId == null || authenticatedAccount.getId().equalsIgnoreCase(requestedAccountId)) {
+        return JaxbUtil.elementToJaxb(
+            new AutoComplete().handle(JaxbUtil.jaxbToElement(autoCompleteRequest), context));
       } else {
-        autoCompleteResponse = JaxbUtil.elementToJaxb(new SoapHttpTransport(zAuthToken, soapUrl).invoke(
-            autocompleteRequestElement, requestedAccountId));
+        var requestedAccount = Provisioning.getInstance().getAccountById(requestedAccountId);
+        if (requestedAccount.getServer().isLocalServer()) {
+          var zimbraSoapContext = getZimbraSoapContext(context);
+          var operationContext = getOperationContext(zimbraSoapContext, context);
+          operationContext.setmRequestedAccountId(requestedAccountId);
+          return JaxbUtil.elementToJaxb(
+              new AutoComplete().handle(JaxbUtil.jaxbToElement(autoCompleteRequest), requestedAccount,
+                  operationContext, zimbraSoapContext));
+        }
       }
-      return autoCompleteResponse;
-    } catch (ServiceException | IOException e) {
+      return proxyRequestInternal(requestedAccountId, autoCompleteRequest, context);
+    } catch (ServiceException e) {
       ZimbraLog.misc.warn(e.getMessage());
       return new AutoCompleteResponse();
     }
   }
+
+  AutoCompleteResponse proxyRequestInternal(String requestedAccountId, AutoCompleteRequest autoCompleteRequest,
+      Map<String, Object> context) throws ServiceException {
+    return JaxbUtil.elementToJaxb(proxyRequest(JaxbUtil.jaxbToElement(autoCompleteRequest), context,
+        requestedAccountId));
+  }
+
 
   /**
    * Parses {@link com.zimbra.common.soap.MailConstants#E_ORDERED_ACCOUNT_IDS} into a {@link Tuple2} object containing

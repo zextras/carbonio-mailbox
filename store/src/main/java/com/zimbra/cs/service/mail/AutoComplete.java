@@ -5,51 +5,52 @@
 
 package com.zimbra.cs.service.mail;
 
-import com.zimbra.cs.mailbox.ContactAutoComplete.ContactEntryType;
-import java.util.ArrayList;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.Element;
+import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.ContactAutoComplete;
-import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mailbox.ContactAutoComplete.AutoCompleteResult;
 import com.zimbra.cs.mailbox.ContactAutoComplete.ContactEntry;
+import com.zimbra.cs.mailbox.ContactAutoComplete.ContactEntryType;
+import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.type.GalSearchType;
+import java.util.ArrayList;
+import java.util.Map;
+import org.apache.commons.lang.StringUtils;
 
 public class AutoComplete extends MailDocumentHandler {
 
-    @Override
-    public Element handle(Element request, Map<String, Object> context) throws ServiceException {
-        ZimbraSoapContext zsc = getZimbraSoapContext(context);
-        Account account = getRequestedAccount(getZimbraSoapContext(context));
-        OperationContext octxt = getOperationContext(zsc, context);
+  public Element handle(Element request, Account account, OperationContext octxt, ZimbraSoapContext zsc)
+      throws ServiceException {
+    String name = request.getAttribute(MailConstants.A_NAME);
+    name = name.replace(",", " ").trim();
 
-        String name = request.getAttribute(MailConstants.A_NAME);
-
-        // remove commas (bug 46540)
-        name = name.replace(",", " ").trim();
-
-        if (StringUtils.isEmpty(name)) {
-            throw ServiceException.INVALID_REQUEST("name parameter is empty", null);
-        }
-
-        GalSearchType type = GalSearchType.fromString(request.getAttribute(MailConstants.A_TYPE, "account"));
-        int limit = account.getContactAutoCompleteMaxResults();
-        boolean needCanExpand = request.getAttributeBool(MailConstants.A_NEED_EXP, false);
-
-        AutoCompleteResult result = query(request, zsc, account, false, name, limit, type, needCanExpand, octxt);
-        Element response = zsc.createElement(MailConstants.AUTO_COMPLETE_RESPONSE);
-        toXML(response, result, zsc.getAuthtokenAccountId());
-
-        return response;
+    if (StringUtils.isEmpty(name)) {
+      throw ServiceException.INVALID_REQUEST("name parameter is empty", null);
     }
+
+    GalSearchType type = GalSearchType.fromString(request.getAttribute(MailConstants.A_TYPE, "account"));
+    int limit = account.getContactAutoCompleteMaxResults();
+    boolean needCanExpand = request.getAttributeBool(MailConstants.A_NEED_EXP, false);
+
+    AutoCompleteResult result = query(request, zsc, account, false, name, limit, type, needCanExpand, octxt);
+    Element response = zsc.createElement(MailConstants.AUTO_COMPLETE_RESPONSE);
+    toXML(response, result, zsc.getAuthtokenAccountId());
+
+    return response;
+  }
+
+  @Override
+  public Element handle(Element request, Map<String, Object> context) throws ServiceException {
+    ZimbraSoapContext zimbraSoapContext = getZimbraSoapContext(context);
+    Account account = getRequestedAccount(zimbraSoapContext);
+    OperationContext operationContext = getOperationContext(zimbraSoapContext, context);
+
+    return handle(request, account, operationContext, zimbraSoapContext);
+  }
 
     @Override
     public boolean needsAuth(Map<String, Object> context) {
@@ -87,8 +88,8 @@ public class AutoComplete extends MailDocumentHandler {
         response.addAttribute(MailConstants.A_CANBECACHED, result.canBeCached);
         for (ContactEntry entry : result.entries) {
             Element cn = response.addNonUniqueElement(MailConstants.E_MATCH);
-            
-            // for contact group, emails of members will be expanded 
+
+            // for contact group, emails of members will be expanded
             // separately on user request
             if (!entry.isContactGroup()) {
                 cn.addAttribute(MailConstants.A_EMAIL, entry.getEmail());
@@ -99,12 +100,12 @@ public class AutoComplete extends MailDocumentHandler {
             if (entry.isGroup() && entry.canExpandGroupMembers()) {
                 cn.addAttribute(MailConstants.A_EXP, true);
             }
-            
+
             ItemId id = entry.getId();
             if (id != null) {
                 cn.addAttribute(MailConstants.A_ID, id.toString(authAccountId));
             }
-            
+
             int folderId = entry.getFolderId();
             if (folderId > 0) {
                 cn.addAttribute(MailConstants.A_FOLDER, Integer.toString(folderId));
@@ -158,4 +159,5 @@ public class AutoComplete extends MailDocumentHandler {
         else
             return ContactEntryType.CONTACT.getName();
     }
-}
+  }
+
