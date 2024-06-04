@@ -24,15 +24,9 @@ import com.zimbra.soap.type.GalSearchType;
 
 public class AutoComplete extends MailDocumentHandler {
 
-    @Override
-    public Element handle(Element request, Map<String, Object> context) throws ServiceException {
-        ZimbraSoapContext zsc = getZimbraSoapContext(context);
-        Account account = getRequestedAccount(getZimbraSoapContext(context));
-        OperationContext octxt = getOperationContext(zsc, context);
-
+    public Element handle(Element request, Account account, OperationContext octxt, ZimbraSoapContext zsc)
+        throws ServiceException {
         String name = request.getAttribute(MailConstants.A_NAME);
-
-        // remove commas (bug 46540)
         name = name.replace(",", " ").trim();
 
         if (StringUtils.isEmpty(name)) {
@@ -48,6 +42,15 @@ public class AutoComplete extends MailDocumentHandler {
         toXML(response, result, zsc.getAuthtokenAccountId());
 
         return response;
+    }
+
+    @Override
+    public Element handle(Element request, Map<String, Object> context) throws ServiceException {
+        ZimbraSoapContext zimbraSoapContext = getZimbraSoapContext(context);
+        Account account = getRequestedAccount(zimbraSoapContext);
+        OperationContext operationContext = getOperationContext(zimbraSoapContext, context);
+
+        return handle(request, account, operationContext, zimbraSoapContext);
     }
 
     @Override
