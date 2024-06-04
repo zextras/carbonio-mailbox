@@ -16,7 +16,7 @@ import com.zimbra.soap.mail.message.GetMsgResponse;
 import com.zimbra.soap.mail.message.SaveDraftRequest;
 import com.zimbra.soap.mail.message.SaveDraftResponse;
 import com.zimbra.soap.mail.message.SendMsgRequest;
-import com.zimbra.soap.mail.message.SendMsgResponse;
+import com.zimbra.soap.mail.type.EmailAddrInfo;
 import com.zimbra.soap.mail.type.MessageInfo;
 import com.zimbra.soap.mail.type.MimePartInfo;
 import com.zimbra.soap.mail.type.MsgSpec;
@@ -39,6 +39,7 @@ import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -236,73 +237,102 @@ public class SaveDraftApiTest extends SoapTestSuite {
   public void signMessage() throws Exception {
     final String password = "password";
     Account testAccount = accountCreatorFactory.get().withPassword(password).create();
-    final MsgWithGroupInfo msgWithGroupInfo = saveDraftMessage(testAccount);
+    final MsgWithGroupInfo msgWithGroupInfo = createDraftMessage(testAccount);
     String originalMessage = msgWithGroupInfo.getContent().getValue();
 
     final MimeBodyPart mimeBodyPart = new MimeBodyPart(new ByteArrayInputStream(originalMessage.getBytes(StandardCharsets.UTF_8)));
 
     var smimeSignedGenerator = createSMIMESignedGenerator();
-    MimeMultipart generatedSignedEmail = smimeSignedGenerator.generate(mimeBodyPart);
-    final MimeMessage signedMessage = new MimeMessage(JMSession.getSmtpSession(testAccount));
-    signedMessage.setContent(generatedSignedEmail);
+    MimeMultipart generatedSignedMultiPart = smimeSignedGenerator.generate(mimeBodyPart);
+    /* Set all original MIME headers in the signed message */
+    MimeMessage signedMessage = new MimeMessage(JMSession.getSmtpSession(testAccount));
 
-    final MsgWithGroupInfo draftSignedMessage = saveDraft(testAccount, msgWithGroupInfo.getId(),
-        signedMessage);
-    System.out.println(draftSignedMessage.getContent().getValue());
+    /* Set all original MIME headers in the signed message */
+    Enumeration headers = mimeBodyPart.getAllHeaderLines();
+    while (headers.hasMoreElements())
+    {
+      signedMessage.addHeaderLine((String)headers.nextElement());
+    }
+    /* Set the content of the signed message */
+    signedMessage.setContent(generatedSignedMultiPart);
+    signedMessage.saveChanges();
+
+    final MsgWithGroupInfo draftSignedMessage = saveDraft(testAccount, msgWithGroupInfo.getId(), signedMessage);
+
     final HttpResponse sendMsgResponse = sendMessage(testAccount, draftSignedMessage.getId());
     Assertions.assertEquals(200, sendMsgResponse.getStatusLine().getStatusCode());
-
+    final MimeMessage[] receivedMessages = mta.getReceivedMessages();
+    Assertions.assertEquals(1, receivedMessages.length);
+    final MimeMessage receivedMessage = receivedMessages[0];
+    Assertions.assertTrue(receivedMessage.getContentType().contains("multipart/signed"));
 
   }
 
-  private MsgWithGroupInfo saveDraftMessage(Account testAccount) throws Exception {
+  private MsgWithGroupInfo createDraftMessage(Account testAccount) throws Exception {
     final SaveDraftRequest saveDraftRequest = new SaveDraftRequest();
     final SaveDraftMsg msg = new SaveDraftMsg();
     msg.setSubject("Test SMIME email");
     MimePartInfo partInfo = MimePartInfo.createForContentTypeAndContent("text/plain; charset=UTF-8; format=flowed", "hello there");
 
     msg.setMimePart(partInfo);
+    final EmailAddrInfo rcptAddress = new EmailAddrInfo("external@test123.com");
+    rcptAddress.setAddressType("t");
+    final EmailAddrInfo sender = new EmailAddrInfo(testAccount.getName());
+    sender.setAddressType("f");
+    msg.setEmailAddresses(List.of(sender, rcptAddress));
     saveDraftRequest.setMsg(msg);
 
     final MessageInfo draftMsg = getSoapClient().execute(testAccount, saveDraftRequest, SaveDraftResponse.class)
         .getMessage();
     final String draftId = draftMsg.getId();
 
-    final MsgWithGroupInfo rawMessage = getRawMessage(testAccount, draftId);
-    return rawMessage;
+    return getRawMessage(testAccount, draftId);
   }
 
   private MsgWithGroupInfo saveDraft(Account testAccount, String draftId, MimeMessage message) throws Exception {
     final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     message.writeTo(byteArrayOutputStream);
+
+
+//    final SaveDraftRequest saveDraftRequest = new SaveDraftRequest();
+//    final SaveDraftMsg msg = new SaveDraftMsg();
+//    final String string = byteArrayOutputStream.toString(StandardCharsets.UTF_8);
+//    MimePartInfo partInfo = MimePartInfo.createForContentTypeAndContent(message.getContentType(),
+//        string);
+//    msg.setContent(string);
+//    msg.setId(Integer.valueOf(draftId));
+//    saveDraftRequest.setMsg(msg);
+//
+//    final MessageInfo draftMsg = getSoapClient().execute(testAccount, saveDraftRequest, SaveDraftResponse.class)
+//        .getMessage();
+
     final Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(testAccount);
-    final ParsedMessage parsedMessage = new ParsedMessage(byteArrayOutputStream.toByteArray(),
+    final ParsedMessage parsedMessage = new ParsedMessage(message,
         false);
     mailbox.saveDraft(null, parsedMessage, Integer.parseInt(draftId));
 
-    return getRawMessage(testAccount, draftId);
+    return getMessage(testAccount, draftId);
   }
 
   private MsgWithGroupInfo getRawMessage(Account testAccount, String draftId) throws Exception {
     final MsgSpec msgSpec = new MsgSpec(draftId);
     msgSpec.setRaw(true);
-    final MsgWithGroupInfo gotMsg = getSoapClient().execute(testAccount,
+    return getSoapClient().execute(testAccount,
             new GetMsgRequest(msgSpec), GetMsgResponse.class)
         .getMsg();
-    return gotMsg;
   }
 
   private MsgWithGroupInfo getMessage(Account testAccount, String draftId) throws Exception {
     final MsgSpec msgSpec = new MsgSpec(draftId);
     msgSpec.setRaw(false);
-    final MsgWithGroupInfo gotMsg = getSoapClient().execute(testAccount,
+    return getSoapClient().execute(testAccount,
             new GetMsgRequest(msgSpec), GetMsgResponse.class)
         .getMsg();
-    return gotMsg;
   }
 
   private HttpResponse sendMessage(Account testAccount, String draftId) throws Exception {
     final MsgToSend msgToSend = new MsgToSend();
+
     msgToSend.setDraftId(draftId);
     msgToSend.setSendFromDraft(true);
     final SendMsgRequest soapBodyPOJO = new SendMsgRequest();
