@@ -4,6 +4,9 @@
 
 package com.zimbra.cs.service.mail;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
@@ -11,6 +14,7 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.soap.JaxbUtil;
@@ -20,6 +24,7 @@ import com.zimbra.soap.mail.message.FullAutocompleteRequest;
 import com.zimbra.soap.mail.message.FullAutocompleteResponse;
 import com.zimbra.soap.mail.type.ContactSpec;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.UUID;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -28,6 +33,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 @Tag("api")
 class FullAutoCompleteTest extends SoapTestSuite {
@@ -109,7 +115,24 @@ class FullAutoCompleteTest extends SoapTestSuite {
     Assertions.assertEquals(4, fullAutocompleteResponse.getMatches().size());
   }
 
+  @Test
+  void should_proxy_autocomplete_request_to_server_if_requested_account_is_not_local()
+      throws Exception {
+    String searchTerm = "fac";
 
+    Account account = accountCreatorFactory.get().create();
+    Server server = Provisioning.getInstance().createServer(UUID.randomUUID() + ".com", new HashMap<>());
+    server.setServiceEnabled(new String[]{"service"});
+    Account account2 = accountCreatorFactory.get().withAttribute(Provisioning.A_zimbraMailHost, server.getHostname())
+        .create();
 
+    FullAutocompleteRequest request = new FullAutocompleteRequest(new AutoCompleteRequest(searchTerm));
+    request.addAccount(account2.getId());
+    FullAutoComplete fullAutoComplete = Mockito.spy(FullAutoComplete.class);
+    JaxbUtil.elementToJaxb(
+        fullAutoComplete.handle(JaxbUtil.jaxbToElement(request),
+            ServiceTestUtil.getRequestContext(account)));
 
+    verify(fullAutoComplete, times(1)).proxyRequestInternal(Mockito.any(), Mockito.any(), Mockito.anyMap());
+  }
 }
