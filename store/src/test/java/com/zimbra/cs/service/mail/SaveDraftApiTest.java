@@ -4,6 +4,7 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil;
+import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -11,11 +12,13 @@ import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailclient.smtp.SmtpConfig;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.util.JMSession;
+import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.GetMsgRequest;
 import com.zimbra.soap.mail.message.GetMsgResponse;
 import com.zimbra.soap.mail.message.SaveDraftRequest;
 import com.zimbra.soap.mail.message.SaveDraftResponse;
 import com.zimbra.soap.mail.message.SendMsgRequest;
+import com.zimbra.soap.mail.message.SendMsgResponse;
 import com.zimbra.soap.mail.type.EmailAddrInfo;
 import com.zimbra.soap.mail.type.MessageInfo;
 import com.zimbra.soap.mail.type.MimePartInfo;
@@ -36,6 +39,7 @@ import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -63,6 +67,7 @@ import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoGeneratorBuilder;
+import org.bouncycastle.jce.PKCS12Util;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.mail.smime.SMIMESignedGenerator;
 import org.bouncycastle.operator.OperatorCreationException;
@@ -146,90 +151,45 @@ public class SaveDraftApiTest extends SoapTestSuite {
   }
 
 
+  /**
+   * See: https://github.com/bcgit/bc-java/blob/main/mail/src/main/java/org/bouncycastle/mail/smime/examples/SendSignedAndEncryptedMail.java
+   */
   public SMIMESignedGenerator createSMIMESignedGenerator() throws GeneralSecurityException, IOException, OperatorCreationException {
-    KeyPairGenerator kpg  = KeyPairGenerator.getInstance("RSA", "BC");
+    KeyStore keystore  = KeyStore.getInstance("PKCS12", "BC");
+    final char[] certPassword = "password".toCharArray();
+    keystore.load(this.getClass().getClassLoader().getResourceAsStream("smime_alice.p12"), certPassword);
+    final String alias = keystore.aliases().nextElement();
+    PrivateKey privateKey = (PrivateKey) keystore.getKey(alias, certPassword);
+    Certificate[] chain = keystore.getCertificateChain(alias);
 
-    kpg.initialize(1024);
-    InputStream stream = this.getClass().getResourceAsStream("/smime.p12");
-    KeyStore store = KeyStore.getInstance("PKCS12");
-    store.load(stream, "password".toCharArray());
+    /* Create the SMIMESignedGenerator */
+    SMIMECapabilityVector capabilities = new SMIMECapabilityVector();
+    capabilities.addCapability(SMIMECapability.dES_EDE3_CBC);
+    capabilities.addCapability(SMIMECapability.rC2_CBC, 128);
+    capabilities.addCapability(SMIMECapability.dES_CBC);
 
-    kpg.initialize(1024, new SecureRandom());
+    ASN1EncodableVector attributes = new ASN1EncodableVector();
+    final X509Certificate x509Certificate = (X509Certificate) chain[0];
+    final SMIMEEncryptionKeyPreferenceAttribute asn1Encodable = new SMIMEEncryptionKeyPreferenceAttribute(
+        new IssuerAndSerialNumber(
+            new X500Name(x509Certificate
+                .getIssuerDN().getName()),
+            x509Certificate.getSerialNumber()));
+    attributes.add(asn1Encodable);
+    attributes.add(new SMIMECapabilitiesAttribute(capabilities));
 
-    //
-    // cert that issued the signing certificate (CA Authority, e.g.: Actalis)
-    //
-    String              signDN = "O=Test, C=IT";
-    KeyPair             signKP = kpg.generateKeyPair();
-    X509Certificate     signCert =  makeCertificate(
-        signKP, signDN, signKP, signDN, BigInteger.valueOf(1));
+    SMIMESignedGenerator signer = new SMIMESignedGenerator();
+    signer.addSignerInfoGenerator(new JcaSimpleSignerInfoGeneratorBuilder()
+        .setProvider("BC").setSignedAttributeGenerator(new AttributeTable(attributes))
+        .build("DSA".equals(privateKey.getAlgorithm()) ? "SHA1withDSA" : "MD5withRSA", privateKey,
+            x509Certificate));
 
-    //
-    // cert we sign against
-    // certificato utente
-    //
-    String              origDN = "CN=Test, E=from@test.com, O=Test, C=IT";
-    KeyPair             origKP = kpg.generateKeyPair();
-    X509Certificate     x509Certificate = makeCertificate(
-        origKP, origDN, signKP, signDN, BigInteger.valueOf(2));
-
-    List                certList = new ArrayList();
-
-    certList.add(x509Certificate);
-    certList.add(signCert);
-
-    //
-    // create a CertStore containing the certificates we want carried
-    // in the signature
-    //
+    /* Add the list of certs to the generator */
+    List certList = new ArrayList();
+    certList.add(chain[0]);
     Store certs = new JcaCertStore(certList);
-
-    //
-    // create some smime capabilities in case someone wants to respond
-    //
-    ASN1EncodableVector         signedAttrs = new ASN1EncodableVector();
-    SMIMECapabilityVector       caps = new SMIMECapabilityVector();
-
-    caps.addCapability(SMIMECapability.dES_EDE3_CBC);
-    caps.addCapability(SMIMECapability.rC2_CBC, 128);
-    caps.addCapability(SMIMECapability.dES_CBC);
-
-    signedAttrs.add(new SMIMECapabilitiesAttribute(caps));
-
-    //
-    // add an encryption key preference for encrypted responses -
-    // normally this would be different from the signing certificate...
-    //
-    IssuerAndSerialNumber   issAndSer = new IssuerAndSerialNumber(
-        new X500Name(signDN), x509Certificate.getSerialNumber());
-
-    signedAttrs.add(new SMIMEEncryptionKeyPreferenceAttribute(issAndSer));
-
-    //
-    // create the generator for creating a smime/signed message
-    //
-    SMIMESignedGenerator gen = new SMIMESignedGenerator();
-
-    //
-    // add a signer to the generator - this specifies we are using SHA1 and
-    // adding the smime attributes above to the signed attributes that
-    // will be generated as part of the signature. The encryption algorithm
-    // used is taken from the key - in this RSA with PKCS1Padding
-    //
-    final PrivateKey privateKey = origKP.getPrivate();
-    gen.addSignerInfoGenerator(new JcaSimpleSignerInfoGeneratorBuilder().setProvider("BC").setSignedAttributeGenerator(new AttributeTable(signedAttrs))
-        .build(
-            "SHA1withRSA",
-            privateKey,
-            x509Certificate
-        )
-    );
-
-    //
-    // add our pool of certs and cerls (if any) to go with the signature
-    //
-    gen.addCertificates(certs);
-    return gen;
+    signer.addCertificates(certs);
+    return signer;
   }
 
 
@@ -260,12 +220,17 @@ public class SaveDraftApiTest extends SoapTestSuite {
     final MsgWithGroupInfo draftSignedMessage = saveDraft(testAccount, msgWithGroupInfo.getId(), signedMessage);
 
     final HttpResponse sendMsgResponse = sendMessage(testAccount, draftSignedMessage.getId());
-    Assertions.assertEquals(200, sendMsgResponse.getStatusLine().getStatusCode());
+    final SendMsgResponse body = JaxbUtil.elementToJaxb(
+        Element.parseXML(new String(sendMsgResponse.getEntity().getContent().readAllBytes()))
+            .getElement("Body").listElements().get(0));
+
+        Assertions.assertEquals(200, sendMsgResponse.getStatusLine().getStatusCode());
     final MimeMessage[] receivedMessages = mta.getReceivedMessages();
     Assertions.assertEquals(1, receivedMessages.length);
     final MimeMessage receivedMessage = receivedMessages[0];
     Assertions.assertTrue(receivedMessage.getContentType().contains("multipart/signed"));
-
+//    ((MimeMultipart) receivedMessage.getContent()).writeTo(System.out);
+    System.out.println(getRawMessage(testAccount, body.getMsg().getId()).getContent().getValue());
   }
 
   private MsgWithGroupInfo createDraftMessage(Account testAccount) throws Exception {
