@@ -67,7 +67,7 @@ public class HSQLDB extends Db {
     private static void createZimbraDatabase(DbConnection conn) throws Exception {
         Map<String, String> vars = Map.of(
             "DATABASE_NAME", DbMailbox.getDatabaseName(1),
-            "VOLUME_BASE_DIRECTORY", new File("./build/test/").getAbsolutePath()
+            "VOLUME_BASE_DIRECTORY", new File("build/test/").getAbsolutePath()
         );
         execute(conn, "db.sql", vars);
     }
