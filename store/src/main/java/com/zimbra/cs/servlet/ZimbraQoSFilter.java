@@ -35,26 +35,27 @@ import com.zimbra.soap.SoapServlet;
  * This Servlet {@link Filter} limits the number of concurrent HTTP requests per
  * account.
  * <p>
- * It temporarily suspends the requests if exceeding the limit. The limit is configurable
- * by {@link LC#servlet_max_concurrent_http_requests_per_account}. To disable, set
+ * It temporarily suspends the requests if exceeding the limit. The limit is
+ * configurable
+ * by {@link LC#servlet_max_concurrent_http_requests_per_account}. To disable,
+ * set
  * the LC key to 0 or remove this servlet filter from web.xml.
  *
  */
 
-
 public class ZimbraQoSFilter implements Filter {
 
-    static final int DEFAULT_WAIT_MS=50;
+    static final int DEFAULT_WAIT_MS = 80;
     static final long DEFAULT_SUSPEND_MS = 1000;
-    
-    static final String MAX_WAIT_INIT_PARAM="waitMs";
-    static final String SUSPEND_INIT_PARAM="suspendMs";
+
+    static final String MAX_WAIT_INIT_PARAM = "waitMs";
+    static final String SUSPEND_INIT_PARAM = "suspendMs";
 
     private long waitMs;
     private long suspendMs;
 
     private ConcurrentLinkedHashMap<String, Semaphore> passes = new ConcurrentLinkedHashMap.Builder<String, Semaphore>()
-                                                                .maximumWeightedCapacity(2000).build();
+            .maximumWeightedCapacity(10000).build();
 
     public static String extractUserId(ServletRequest request) {
         try {
@@ -70,38 +71,68 @@ public class ZimbraQoSFilter implements Filter {
                 if (at != null) {
                     return at.getAccountId();
                 }
-                // Check if this is Http Basic Authentication, if so return authorization string.
+                // Check if this is Http Basic Authentication, if so return authorization
+                // string.
                 String auth = req.getHeader("Authorization");
                 if (auth != null) {
                     return auth;
                 }
-            } 
+            }
         } catch (Exception e) {
             // ignore
-            ZimbraLog.misc.debug("error while extracting authtoken" , e);
+            ZimbraLog.misc.debug("error while extracting authtoken", e);
         }
         return null;
     }
-    
+
+    public static String extractUserEmail(ServletRequest request) {
+        try {
+            if (request instanceof HttpServletRequest) {
+                HttpServletRequest req = (HttpServletRequest) request;
+                boolean isAdminRequest = AuthUtil.isAdminRequest(req);
+                AuthToken at = AuthProvider.getAuthToken(req, isAdminRequest);
+                if (at == null) {
+                    Map<Object, Object> engineCtxt = new HashMap<>();
+                    engineCtxt.put(SoapServlet.SERVLET_REQUEST, req);
+                    at = AuthProvider.getJWToken(null, engineCtxt);
+                }
+                if (at != null) {
+                    return at.toString();
+                }
+                // Check if this is Http Basic Authentication, if so return authorization
+                // string.
+                String auth = req.getHeader("Authorization");
+                if (auth != null) {
+                    return auth;
+                }
+            }
+        } catch (Exception e) {
+            // ignore
+            ZimbraLog.misc.debug("error while extracting authtoken", e);
+        }
+        return null;
+    }
+
     public void init(FilterConfig filterConfig) {
         waitMs = DEFAULT_WAIT_MS;
-        if (filterConfig.getInitParameter(MAX_WAIT_INIT_PARAM)!=null) {
-            waitMs=Integer.parseInt(filterConfig.getInitParameter(MAX_WAIT_INIT_PARAM));
+        if (filterConfig.getInitParameter(MAX_WAIT_INIT_PARAM) != null) {
+            waitMs = Integer.parseInt(filterConfig.getInitParameter(MAX_WAIT_INIT_PARAM));
         }
 
         suspendMs = DEFAULT_SUSPEND_MS;
-        if (filterConfig.getInitParameter(SUSPEND_INIT_PARAM)!=null) {
-            suspendMs=Integer.parseInt(filterConfig.getInitParameter(SUSPEND_INIT_PARAM));
+        if (filterConfig.getInitParameter(SUSPEND_INIT_PARAM) != null) {
+            suspendMs = Integer.parseInt(filterConfig.getInitParameter(SUSPEND_INIT_PARAM));
         }
     }
-    
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) 
-    throws IOException, ServletException {
+
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         try {
             String user = extractUserId(request);
+            String email = extractUserEmail(request);
             int max = LC.servlet_max_concurrent_http_requests_per_account.intValue();
             if (user == null || max <= 0) {
-                chain.doFilter(request,response);
+                chain.doFilter(request, response);
                 return;
             }
             Semaphore pass = passes.putIfAbsent(user, new Semaphore(max, true));
@@ -115,17 +146,16 @@ public class ZimbraQoSFilter implements Filter {
                     pass.release();
                 }
             } else {
-                Continuation continuation = ContinuationSupport.getContinuation(request);
                 HttpServletRequest hreq = (HttpServletRequest) request;
                 ZimbraServlet.addRemoteIpToLoggingContext(hreq);
                 ZimbraServlet.addUAToLoggingContext(hreq);
-                ZimbraLog.misc.warn("Exceeded the max requests limit. Suspending " + continuation);
+                ZimbraLog.misc
+                        .warn("User " + email + " exceed the max requests limit. Block next call with 503 errors");
                 ZimbraLog.clearContext();
-                continuation.setTimeout(suspendMs);
-                continuation.suspend();
+                ((HttpServletResponse) response).sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             }
-        } catch(InterruptedException e) {
-            ((HttpServletResponse)response).sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+        } catch (InterruptedException e) {
+            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
         }
     }
 
