@@ -14,7 +14,6 @@ import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.ChannelProvider;
-import com.zimbra.cs.account.EmailChannel;
 import com.zimbra.cs.account.ForgetPasswordException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.service.util.JWEUtil;
@@ -61,7 +60,7 @@ public final class RecoverAccount extends MailDocumentHandler {
       ChannelProvider provider = ChannelProvider.getProviderForChannel(channel);
       String recoveryAccount = provider.getRecoveryAccount(user);
       RecoverAccountResponse resp = new RecoverAccountResponse();
-      Map<String, String> recoveryCode = null;
+      Map<String, String> recoveryCode;
       switch (op) {
         case GET_RECOVERY_ACCOUNT:
           ResetPasswordUtil.validateVerifiedPasswordRecoveryAccount(user);
@@ -72,10 +71,6 @@ public final class RecoverAccount extends MailDocumentHandler {
         case SEND_RECOVERY_CODE:
           recoveryCode = generatePasswordRecoveryCode(user, recoveryAccount, zsc, resp);
           provider.sendAndStoreResetPasswordRecoveryCode(zsc, user, recoveryCode);
-          break;
-        case SEND_RECOVERY_LINK:
-          recoveryCode = generatePasswordRecoveryCode(user, recoveryAccount, zsc, resp);
-          EmailChannel.sendAndStoreResetPasswordURL(zsc, user, recoveryCode);
           break;
         default:
           throw ServiceException.INVALID_REQUEST("Invalid op received", null);
@@ -88,7 +83,7 @@ public final class RecoverAccount extends MailDocumentHandler {
   private static Map<String, String> generatePasswordRecoveryCode(
       Account account, String recoveryAccount, ZimbraSoapContext zsc, RecoverAccountResponse resp)
       throws ServiceException {
-    Map<String, String> recoveryCodeMap = null;
+    Map<String, String> recoveryCodeMap;
     int maxAttempts = account.getPasswordRecoveryMaxAttempts();
     try {
       String encoded = account.getResetPasswordRecoveryCode();
