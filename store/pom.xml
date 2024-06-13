@@ -259,7 +259,11 @@
       <groupId>org.mockito</groupId>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <artifactId>easymock</artifactId>
       <groupId>org.easymock</groupId>
