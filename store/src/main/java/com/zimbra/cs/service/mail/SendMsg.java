@@ -228,7 +228,7 @@ public class SendMsg extends MailDocumentHandler {
       String identityId = msgElem.getAttribute(MailConstants.A_IDENTITY_ID, null);
       String dataSourceId = msgElem.getAttribute(MailConstants.A_DATASOURCE_ID, null);
       String draftId = msgElem.getAttribute(MailConstants.A_DRAFT_ID, null);
-      boolean sendFromDraft = msgElem.getAttributeBool(MailConstants.A_SEND_FROM_DRAFT, false);
+      boolean sendFromDraft = msgElem.getAttributeBool(MailConstants.A_SEND_FROM_DRAFT, true);
       ItemId iidDraft = draftId == null ? null : new ItemId(draftId, authAcct.getId());
 
 

@@ -33,6 +33,8 @@ package() {
     "${pkgdir}/opt/zextras/jetty_base/common/lib/bcpkix-jdk15on-1.60.jar"
   install -D carbonio-jetty-libs/target/dependencies/bcprov-jdk15on-1.60.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/bcprov-jdk15on-1.60.jar"
+  install -D carbonio-jetty-libs/target/dependencies/bcmail-jdk15on-1.60.jar \
+     "${pkgdir}/opt/zextras/jetty_base/common/lib/bcmail-jdk15on-1.60.jar"
   install -D carbonio-jetty-libs/target/dependencies/closure-compiler-v20180204.jar \
     "${pkgdir}/opt/zextras/jetty_base/common/lib/closure-compiler-v20180204.jar"
   install -D carbonio-jetty-libs/target/dependencies/commons-cli-1.2.jar \
