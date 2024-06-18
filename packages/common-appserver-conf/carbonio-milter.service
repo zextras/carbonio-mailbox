@@ -6,7 +6,6 @@ PartOf=carbonio-mta.target carbonio-ce.target carbonio.target
 
 [Service]
 User=zextras
-PIDFile=/opt/zextras/log/milter.pid
 EnvironmentFile=-/opt/zextras/data/systemd.env
 ExecStart=/opt/zextras/common/lib/jvm/java/bin/java \
   -XX:ErrorFile=/opt/zextras/log \

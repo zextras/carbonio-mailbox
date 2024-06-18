@@ -5,9 +5,12 @@
 
 package com.zimbra.cs.httpclient;
 
+import com.zimbra.common.account.ZAttrProvisioning;
+import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.Provisioning;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -16,53 +19,57 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.Provisioning;
-
 public class HttpProxyUtil {
 
-    private static String sProxyUrl = null;
-    private static URI sProxyUri = null;
-    private static AuthScope sProxyAuthScope = null;
-    private static UsernamePasswordCredentials sProxyCreds = null;
+  private HttpProxyUtil() {
+    throw new IllegalStateException("Utility class");
+  }
 
-    public static synchronized void configureProxy(HttpClientBuilder clientBuilder) {
-        try {
-            String url = Provisioning.getInstance().getLocalServer().getAttr(Provisioning.A_zimbraHttpProxyURL, null);
-            if (url == null) return;
+  public static synchronized void configureProxy(HttpClientBuilder clientBuilder) {
+    try {
+      final var httpProxyUrl = Provisioning.getInstance().getLocalServer()
+          .getAttr(ZAttrProvisioning.A_zimbraHttpProxyURL, null);
+      if (httpProxyUrl == null || httpProxyUrl.isEmpty()) {
+        ZimbraLog.misc.info("HttpProxyUtil.configureProxy 'zimbraHttpProxyURL' is null or empty, not using proxy.");
+        return;
+      }
 
-            // need to initializae all the statics
-            if (!url.equals(sProxyUrl)) {
-                sProxyUrl = url;
-                sProxyUri = new URI(url);
-                sProxyAuthScope = null;
-                sProxyCreds = null;
-                String userInfo = sProxyUri.getUserInfo();
-                if (userInfo != null) {
-                    int i = userInfo.indexOf(':');
-                    if (i != -1) {
-                        sProxyAuthScope = new AuthScope(sProxyUri.getHost(), sProxyUri.getPort(), null);
-                        sProxyCreds = new UsernamePasswordCredentials(userInfo.substring(0, i), userInfo.substring(i+1));
-                    }
-                }
-            }
-            if (ZimbraLog.misc.isDebugEnabled()) {
-                ZimbraLog.misc.debug("setting proxy: "+url);
-            }
+      var uri = new URI(httpProxyUrl);
+      var proxyHost = uri.getHost();
+      var proxyPort = uri.getPort();
 
-            HttpHost proxy = new HttpHost(sProxyUri.getHost(), sProxyUri.getPort());
-            RequestConfig config = RequestConfig.custom()
-                    .setProxy(proxy)
-                    .build();
-            clientBuilder.setDefaultRequestConfig(config);
-            if (sProxyAuthScope != null && sProxyCreds != null)  {
-                CredentialsProvider cred = new BasicCredentialsProvider();
-                cred.setCredentials(sProxyAuthScope, sProxyCreds);
-                clientBuilder.setDefaultCredentialsProvider(cred);
-            }
-        } catch (ServiceException | URISyntaxException e) {
-            ZimbraLog.misc.warn("Unable to configureProxy: "+e.getMessage(), e);
+      var userInfo = uri.getUserInfo();
+      String username = null;
+      String password = null;
+      if (userInfo != null) {
+        var credentials = userInfo.split(":");
+        if (credentials.length == 2) {
+          username = credentials[0];
+          password = credentials[1];
         }
+      }
+
+      if (username != null && password != null) {
+        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(
+            new AuthScope(proxyHost, proxyPort),
+            new UsernamePasswordCredentials(username, password)
+        );
+        clientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+      }
+
+      var proxy = new HttpHost(proxyHost, proxyPort);
+      var config = RequestConfig.custom()
+          .setProxy(proxy)
+          .build();
+      clientBuilder.setDefaultRequestConfig(config);
+
+      if (ZimbraLog.misc.isDebugEnabled()) {
+        ZimbraLog.misc.debug("setting proxy: " + httpProxyUrl);
+      }
+
+    } catch (ServiceException | URISyntaxException | IllegalArgumentException e) {
+      ZimbraLog.misc.warn("Unable to configureProxy: " + e.getMessage(), e);
     }
+  }
 }

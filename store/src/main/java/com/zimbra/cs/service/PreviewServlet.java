@@ -22,7 +22,6 @@ import com.zimbra.common.util.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
-import com.zimbra.cs.httpclient.HttpProxyUtil;
 import com.zimbra.cs.servlet.ZimbraServlet;
 import com.zimbra.cs.util.AccountUtil;
 import io.vavr.control.Try;
@@ -259,7 +258,6 @@ public class PreviewServlet extends ZimbraServlet {
         () -> {
           HttpClientBuilder clientBuilder =
               ZimbraHttpConnectionManager.getInternalHttpConnMgr().newHttpClient();
-          HttpProxyUtil.configureProxy(clientBuilder);
           HttpGet getRequest =
               new HttpGet(getContentServletResourceUrl(authToken, messageId, part));
           HttpClient client =

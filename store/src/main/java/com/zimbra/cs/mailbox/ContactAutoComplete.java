@@ -102,6 +102,22 @@ public class ContactAutoComplete {
 
     }
 
+    public enum ContactEntryType {
+        GAL("gal"),
+        RANKING_TABLE("rankingTable"),
+        CONTACT("contact");
+
+        public String getName() {
+            return name;
+        }
+
+        private final String name;
+
+        ContactEntryType(String name) {
+            this.name = name;
+        }
+    }
+
     public static final class ContactEntry implements Comparable<ContactEntry> {
         String mEmail;
         String mDisplayName;

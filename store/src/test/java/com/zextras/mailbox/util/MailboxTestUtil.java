@@ -78,9 +78,7 @@ public class MailboxTestUtil {
     initData();
 
     DbPool.startup();
-    HSQLDB.createDatabase("");
-
-
+    HSQLDB.createDatabase();
 
     RedoLogProvider.getInstance().startup();
     StoreManager.getInstance().startup();

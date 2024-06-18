@@ -10,7 +10,7 @@ import org.dom4j.QName;
 
 public final class MailConstants {
 
-  public static final String E_EXTRA_ACCOUNT_ID = "extraAccountId";
+  public static final String E_ORDERED_ACCOUNT_IDS = "orderedAccountIds";
   public static final String A_REQUIRES_SMART_LINK_CONVERSION = "requiresSmartLinkConversion";
 
   public static final class ShareConstants {
@@ -161,6 +161,8 @@ public final class MailConstants {
   public static final String E_GET_APPOINTMENT_REQUEST = "GetAppointmentRequest";
   public static final String E_SET_APPOINTMENT_REQUEST = "SetAppointmentRequest";
   public static final String E_CREATE_APPOINTMENT_REQUEST = "CreateAppointmentRequest";
+  public static final String E_CREATE_APPOINTMENT_RESPONSE = "CreateAppointmentResponse";
+
   public static final String E_CREATE_APPOINTMENT_EXCEPTION_REQUEST =
       "CreateAppointmentExceptionRequest";
   public static final String E_MODIFY_APPOINTMENT_REQUEST = "ModifyAppointmentRequest";
@@ -447,8 +449,11 @@ public final class MailConstants {
       QName.get(E_GET_APPOINTMENT_REQUEST, NAMESPACE);
   public static final QName SET_APPOINTMENT_REQUEST =
       QName.get(E_SET_APPOINTMENT_REQUEST, NAMESPACE);
+
   public static final QName CREATE_APPOINTMENT_REQUEST =
       QName.get(E_CREATE_APPOINTMENT_REQUEST, NAMESPACE);
+  public static final QName CREATE_APPOINTMENT_RESPONSE =
+      QName.get(E_CREATE_APPOINTMENT_RESPONSE, NAMESPACE);
   public static final QName CREATE_APPOINTMENT_EXCEPTION_REQUEST =
       QName.get(E_CREATE_APPOINTMENT_EXCEPTION_REQUEST, NAMESPACE);
   public static final QName MODIFY_APPOINTMENT_REQUEST =
@@ -886,6 +891,8 @@ public final class MailConstants {
   public static final String A_NON_EXISTENT_IDS = "nei";
   public static final String A_NEWLY_CREATED_IDS = "nci";
   public static final String E_CONTACT_MEMBER_OF = "memberOf";
+
+  public static final String A_FOLDER_ACTION_EMPTY_OP_MATCH_TYPE = "type";
 
   // contact group
   public static final String E_CONTACT_GROUP_MEMBER = "m";

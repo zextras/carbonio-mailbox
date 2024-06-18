@@ -1,5 +1,32 @@
 
 
+# [4.16.0](https://github.com/Zextras/carbonio-mailbox/compare/4.15.5...4.16.0) (2024-06-18)
+
+
+### Bug Fixes
+
+* [CO-1047] serialize matches also into JSON objects in FullAutoComplete ([#496](https://github.com/Zextras/carbonio-mailbox/issues/496)) ([cabd96c](https://github.com/Zextras/carbonio-mailbox/commit/cabd96c1ab5adc1adf1f779f7b8dea0672aef9e1))
+
+
+### Features
+
+* [CO-1023] add ability to empty folder by item type ([#519](https://github.com/Zextras/carbonio-mailbox/issues/519)) ([dee564f](https://github.com/Zextras/carbonio-mailbox/commit/dee564f5974bddad5bb7c1f151bc6d753ef86076))
+* [CO-1040] make account status accessible via GetAccountInfo SOAP API ([#503](https://github.com/Zextras/carbonio-mailbox/issues/503)) ([9fbd316](https://github.com/Zextras/carbonio-mailbox/commit/9fbd316b437e8eb4e3c02837de6de2c4165e19a9))
+* [CO-1045] SetAllowonCurrentSocketFactoryUse to true ([#506](https://github.com/Zextras/carbonio-mailbox/issues/506)) ([6168e4e](https://github.com/Zextras/carbonio-mailbox/commit/6168e4ef803a31ad6e827d1909f59632acec340e))
+* [CO-1061] Support Contact groups ordering in FullAutoComplete ([#504](https://github.com/Zextras/carbonio-mailbox/issues/504)) ([57fd67e](https://github.com/Zextras/carbonio-mailbox/commit/57fd67e7c06d6697f94477b1e1e986e1b83c10d0))
+* [CO-1074] avoid SOAP request to perform AutoComplete if requested account is local ([#521](https://github.com/Zextras/carbonio-mailbox/issues/521)) ([691d0b4](https://github.com/Zextras/carbonio-mailbox/commit/691d0b4d4054d76dbc5ace77dc63240cb101ee69))
+* [CO-959] Filter out read-receipt notification mails from BulkTest Sieve filter ([#509](https://github.com/Zextras/carbonio-mailbox/issues/509)) ([a0ae2a9](https://github.com/Zextras/carbonio-mailbox/commit/a0ae2a97ccce9c99e399fcedb6a0c7dff8ac4e5c))
+* [CO-985] Enhance recovery code based Auth handling when carbonio auth is registered ([#499](https://github.com/Zextras/carbonio-mailbox/issues/499)) ([56b6c29](https://github.com/Zextras/carbonio-mailbox/commit/56b6c299e6d7ffd7ed078c3972f99b8d2d4f94b1))
+* [COR-916] Use proxy config to make outbound connections through internet ([#517](https://github.com/Zextras/carbonio-mailbox/issues/517)) ([fa4be90](https://github.com/Zextras/carbonio-mailbox/commit/fa4be9068e86718597f528630255f900feedda72))
+* [ZIF-1022] Convert the smart-link metrics to send info to posthog (instead of matomo) ([#501](https://github.com/Zextras/carbonio-mailbox/issues/501)) ([fa51599](https://github.com/Zextras/carbonio-mailbox/commit/fa515994e17c1da47cd47765947c7ee35b6a2186))
+* **CO-1121:** export account zimbraIsExternalVirtualAccount attribute in GetAccountInfo request ([2a7cc7d](https://github.com/Zextras/carbonio-mailbox/commit/2a7cc7db544966591ed6fad410b7aa3b4f50db6e))
+* remove sendRecoveryLink operation from RecoverAccountOperation ([#522](https://github.com/Zextras/carbonio-mailbox/issues/522)) ([567adb2](https://github.com/Zextras/carbonio-mailbox/commit/567adb20f944912461f08003a3bcfb25533b53ef))
+
+
+### Reverts
+
+* "revert: [CO-982] Enhance ordering of matches in FullAutoComplete ([#495](https://github.com/Zextras/carbonio-mailbox/issues/495))" ([9f4056b](https://github.com/Zextras/carbonio-mailbox/commit/9f4056b303b81e2f88dd0cd42c356de250f2f8bc))
+
 # [4.15.1](https://github.com/Zextras/carbonio-mailbox/compare/4.15.0...4.15.1) (2024-04-12)
 
 

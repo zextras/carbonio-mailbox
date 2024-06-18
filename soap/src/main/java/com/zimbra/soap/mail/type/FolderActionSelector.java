@@ -99,6 +99,14 @@ public class FolderActionSelector extends ActionSelector {
     @XmlAttribute(name=MailConstants.A_NUM_DAYS /* numDays */, required=false)
     private Integer numDays;
 
+    /**
+     * @zm-api-field-tag empty-folder-op-type
+     * @zm-api-field-description Match type for folder action "op":"empty" <br>
+     *     Legal values are: <b>emails|contacts|appointments</b> <br>
+     */
+    @XmlAttribute(name = MailConstants.A_FOLDER_ACTION_EMPTY_OP_MATCH_TYPE /* type */, required = false)
+    private String type;
+
     public FolderActionSelector() {
         this(null, null);
     }
@@ -131,6 +139,9 @@ public class FolderActionSelector extends ActionSelector {
 
     public void setRetentionPolicy(RetentionPolicy retentionPolicy) { this.retentionPolicy = retentionPolicy; }
     public void setNumDays(Integer numDays) { this.numDays = numDays; }
+    public void setType(final String type) {
+        this.type = type;
+    }
     public Boolean getRecursive() { return ZmBoolean.toBool(recursive); }
     public String getUrl() { return url; }
     public Boolean getExcludeFreebusy() { return ZmBoolean.toBool(excludeFreebusy); }
@@ -143,6 +154,9 @@ public class FolderActionSelector extends ActionSelector {
     }
     public RetentionPolicy getRetentionPolicy() { return retentionPolicy; }
     public Integer getNumDays() { return numDays; }
+    public String getType() {
+        return type;
+    }
 
     @Override
     public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {

@@ -27,17 +27,14 @@ public class GetAccountInfoRequest {
      * @zm-api-field-description Use to identify the account
      */
     @XmlElement(name=AccountConstants.E_ACCOUNT, required=true)
-    private final AccountSelector account;
+    private AccountSelector account;
 
     /**
      * no-argument constructor wanted by JAXB
      */
-    @SuppressWarnings("unused")
-    private GetAccountInfoRequest() {
-        this(null);
-    }
+    public GetAccountInfoRequest() {}
 
-    public GetAccountInfoRequest(AccountSelector account) {
+    public void setAccount(AccountSelector account) {
         this.account = account;
     }
 
