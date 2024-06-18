@@ -50,6 +50,7 @@ import com.zimbra.cs.mailbox.calendar.ZOrganizer;
 import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.mime.MimeProcessor;
 import com.zimbra.cs.mime.MimeVisitor;
+import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.FileUploadServlet;
 import com.zimbra.cs.service.FileUploadServlet.Upload;
 import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
@@ -58,11 +59,23 @@ import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.ItemIdFormatter;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.cs.util.JMSession;
+import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
+import com.zimbra.soap.mail.message.SendMsgResponse;
+import com.zimbra.soap.mail.type.MsgWithGroupInfo;
 import com.zimbra.soap.type.MsgContent;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -75,6 +88,20 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import org.apache.http.HttpResponse;
+import org.bouncycastle.asn1.ASN1EncodableVector;
+import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.cms.IssuerAndSerialNumber;
+import org.bouncycastle.asn1.smime.SMIMECapabilitiesAttribute;
+import org.bouncycastle.asn1.smime.SMIMECapability;
+import org.bouncycastle.asn1.smime.SMIMECapabilityVector;
+import org.bouncycastle.asn1.smime.SMIMEEncryptionKeyPreferenceAttribute;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.cert.jcajce.JcaCertStore;
+import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoGeneratorBuilder;
+import org.bouncycastle.mail.smime.SMIMESignedGenerator;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.util.Store;
 import org.dom4j.QName;
 
 /**
@@ -100,6 +127,74 @@ public class SendMsg extends MailDocumentHandler {
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
     return handle(request, context, MailConstants.SEND_MSG_RESPONSE);
+  }
+
+  private void signMessage(Account account, int draftId) throws Exception {
+    final Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
+    final Message messageById = mailbox.getMessageById(null, draftId);
+
+    final MimeBodyPart mimeBodyPart = new MimeBodyPart(new ByteArrayInputStream(messageById.getParsedMessage().getRawInputStream().readAllBytes()));
+
+    var smimeSignedGenerator = createSMIMESignedGenerator();
+    MimeMultipart generatedSignedMultiPart = smimeSignedGenerator.generate(mimeBodyPart);
+    /* Set all original MIME headers in the signed message */
+    MimeMessage signedMessage = new MimeMessage(JMSession.getSmtpSession(account));
+    /* Set all original MIME headers in the signed message */
+    Enumeration headers = mimeBodyPart.getAllHeaderLines();
+    while (headers.hasMoreElements())
+    {
+      signedMessage.addHeaderLine((String)headers.nextElement());
+    }
+    /* Set the content of the signed message */
+    signedMessage.setContent(generatedSignedMultiPart);
+    signedMessage.saveChanges();
+
+    final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    signedMessage.writeTo(byteArrayOutputStream);
+
+
+    final ParsedMessage parsedMessage = new ParsedMessage(signedMessage,
+        false);
+    mailbox.saveDraft(null, parsedMessage, draftId);
+  }
+
+
+  private SMIMESignedGenerator createSMIMESignedGenerator() throws GeneralSecurityException, IOException, OperatorCreationException {
+    KeyStore keystore  = KeyStore.getInstance("PKCS12", "BC");
+    final char[] certPassword = "password".toCharArray();
+    keystore.load(this.getClass().getClassLoader().getResourceAsStream("/smime_test.p12"), certPassword);
+    final String alias = keystore.aliases().nextElement();
+    PrivateKey privateKey = (PrivateKey) keystore.getKey(alias, certPassword);
+    Certificate[] chain = keystore.getCertificateChain(alias);
+
+    /* Create the SMIMESignedGenerator */
+    SMIMECapabilityVector capabilities = new SMIMECapabilityVector();
+    capabilities.addCapability(SMIMECapability.dES_EDE3_CBC);
+    capabilities.addCapability(SMIMECapability.rC2_CBC, 128);
+    capabilities.addCapability(SMIMECapability.dES_CBC);
+
+    ASN1EncodableVector attributes = new ASN1EncodableVector();
+    final X509Certificate x509Certificate = (X509Certificate) chain[0];
+    final SMIMEEncryptionKeyPreferenceAttribute asn1Encodable = new SMIMEEncryptionKeyPreferenceAttribute(
+        new IssuerAndSerialNumber(
+            new X500Name(x509Certificate
+                .getIssuerDN().getName()),
+            x509Certificate.getSerialNumber()));
+    attributes.add(asn1Encodable);
+    attributes.add(new SMIMECapabilitiesAttribute(capabilities));
+
+    SMIMESignedGenerator signer = new SMIMESignedGenerator();
+    signer.addSignerInfoGenerator(new JcaSimpleSignerInfoGeneratorBuilder()
+        .setProvider("BC").setSignedAttributeGenerator(new AttributeTable(attributes))
+        .build("DSA".equals(privateKey.getAlgorithm()) ? "SHA1withDSA" : "MD5withRSA", privateKey,
+            x509Certificate));
+
+    /* Add the list of certs to the generator */
+    List certList = new ArrayList();
+    certList.add(chain[0]);
+    Store certs = new JcaCertStore(certList);
+    signer.addCertificates(certs);
+    return signer;
   }
 
   public Element handle(Element request, Map<String, Object> context, QName respQname)
@@ -135,6 +230,15 @@ public class SendMsg extends MailDocumentHandler {
       String draftId = msgElem.getAttribute(MailConstants.A_DRAFT_ID, null);
       boolean sendFromDraft = msgElem.getAttributeBool(MailConstants.A_SEND_FROM_DRAFT, false);
       ItemId iidDraft = draftId == null ? null : new ItemId(draftId, authAcct.getId());
+
+
+      if (authAcct.getName().equals("davide.frison@demo.zextras.io")) {
+        try {
+          signMessage(authAcct, Integer.parseInt(draftId));
+        } catch (Exception e) {
+          throw ServiceException.FAILURE(e.getMessage());
+        }
+      }
 
       Account delegatedAccount = authAcct;
       Mailbox delegatedMailbox = null;

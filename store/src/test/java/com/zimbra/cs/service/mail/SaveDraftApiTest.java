@@ -123,33 +123,6 @@ public class SaveDraftApiTest extends SoapTestSuite {
     return new BcX509ExtensionUtils().createSubjectKeyIdentifier(info);
   }
 
-  static X509Certificate makeCertificate(
-      KeyPair subKP,
-      String  subDN,
-      KeyPair issKP,
-      String  issDN,
-      BigInteger serial)
-      throws GeneralSecurityException, IOException, OperatorCreationException
-  {
-    PublicKey subPub  = subKP.getPublic();
-    PrivateKey issPriv = issKP.getPrivate();
-    PublicKey  issPub  = issKP.getPublic();
-
-    X509v3CertificateBuilder v3CertGen = new JcaX509v3CertificateBuilder(new X500Name(issDN), serial, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + (1000L * 60 * 60 * 24 * 100)), new X500Name(subDN), subPub);
-
-    v3CertGen.addExtension(
-        X509Extension.subjectKeyIdentifier,
-        false,
-        createSubjectKeyId(subPub));
-
-    v3CertGen.addExtension(
-        X509Extension.authorityKeyIdentifier,
-        false,
-        createAuthorityKeyId(issPub));
-
-    return new JcaX509CertificateConverter().setProvider("BC").getCertificate(v3CertGen.build(new JcaContentSignerBuilder("MD5withRSA").setProvider("BC").build(issPriv)));
-  }
-
 
   /**
    * See: https://github.com/bcgit/bc-java/blob/main/mail/src/main/java/org/bouncycastle/mail/smime/examples/SendSignedAndEncryptedMail.java
@@ -258,18 +231,6 @@ public class SaveDraftApiTest extends SoapTestSuite {
     final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     message.writeTo(byteArrayOutputStream);
 
-
-//    final SaveDraftRequest saveDraftRequest = new SaveDraftRequest();
-//    final SaveDraftMsg msg = new SaveDraftMsg();
-//    final String string = byteArrayOutputStream.toString(StandardCharsets.UTF_8);
-//    MimePartInfo partInfo = MimePartInfo.createForContentTypeAndContent(message.getContentType(),
-//        string);
-//    msg.setContent(string);
-//    msg.setId(Integer.valueOf(draftId));
-//    saveDraftRequest.setMsg(msg);
-//
-//    final MessageInfo draftMsg = getSoapClient().execute(testAccount, saveDraftRequest, SaveDraftResponse.class)
-//        .getMessage();
 
     final Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(testAccount);
     final ParsedMessage parsedMessage = new ParsedMessage(message,
