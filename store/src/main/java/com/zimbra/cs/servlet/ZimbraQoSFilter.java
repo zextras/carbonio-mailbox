@@ -45,7 +45,7 @@ import com.zimbra.soap.SoapServlet;
 
 public class ZimbraQoSFilter implements Filter {
 
-    static final int DEFAULT_WAIT_MS = 80;
+    static final int DEFAULT_WAIT_MS = 50;
     static final long DEFAULT_SUSPEND_MS = 1000;
 
     static final String MAX_WAIT_INIT_PARAM = "waitMs";
@@ -139,6 +139,8 @@ public class ZimbraQoSFilter implements Filter {
             if (pass == null) {
                 pass = passes.get(user);
             }
+            int numpermit = pass.availablePermits();
+            ZimbraLog.misc.warn("Num of permit avaiable: " + numpermit);
             if (pass.tryAcquire(waitMs, TimeUnit.MILLISECONDS)) {
                 try {
                     chain.doFilter(request, response);
