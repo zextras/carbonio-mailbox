@@ -6,6 +6,8 @@ package com.zimbra.cs.service.mail;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
@@ -17,6 +19,7 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Cos;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.mailbox.ContactRankings;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -34,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +51,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mockito;
 
 @Tag("api")
 class FullAutoCompleteTest extends SoapTestSuite {
@@ -235,6 +240,32 @@ class FullAutoCompleteTest extends SoapTestSuite {
       assertEquals(expectedRanking.get(i), autoCompleteMatch.getRanking());
       assertEquals("<" + expectedMatchedEmailAddresses.get(i) + ">", autoCompleteMatch.getEmail());
     }
+  }
+
+  @Test
+  void should_proxy_autocomplete_request_to_server_if_requested_account_is_not_local()
+      throws Exception {
+    String searchTerm = "fac";
+
+    Account account = accountCreatorFactory.get().create();
+    Server server = Provisioning.getInstance().createServer(UUID.randomUUID() + ".com", new HashMap<>());
+    server.setServiceEnabled(new String[]{"service"});
+    Account account2 = accountCreatorFactory.get().withAttribute(Provisioning.A_zimbraMailHost, server.getHostname())
+        .create();
+
+    shareAccountWithPrimary(account2, account);
+    ArrayList<Account> preferredAccounts = new ArrayList<>(List.of(account2, account));
+
+    String orderedAccountIdsStr = preferredAccounts.stream().map(Account::getId).collect(Collectors.joining(","));
+    FullAutocompleteRequest request = new FullAutocompleteRequest(new AutoCompleteRequest(searchTerm));
+    request.setOrderedAccountIds(orderedAccountIdsStr);
+
+    FullAutoComplete fullAutoComplete = Mockito.spy(FullAutoComplete.class);
+    JaxbUtil.elementToJaxb(
+        fullAutoComplete.handle(JaxbUtil.jaxbToElement(request),
+            ServiceTestUtil.getRequestContext(account)));
+
+    verify(fullAutoComplete, times(1)).proxyRequestInternal(Mockito.any(), Mockito.any(), Mockito.anyMap());
   }
 
   @Test

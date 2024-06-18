@@ -10,6 +10,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.db.DbPool.PoolConfig;
 import com.zimbra.cs.mailbox.Mailbox;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -42,8 +43,8 @@ public class HSQLDB extends Db {
             if (rs.next() && rs.getInt(1) > 0) {
                 return;  // already exists
             }
-            execute(conn,"db.sql");
-            execute(conn,"create_database.sql");
+            createZimbraDatabase(conn);
+            createMailboxDatabase(conn);
         } finally {
             DbPool.closeResults(rs);
             DbPool.quietCloseStatement(stmt);
@@ -57,14 +58,31 @@ public class HSQLDB extends Db {
     public static void clearDatabase() throws Exception {
         DbConnection conn = DbPool.getConnection();
         try {
-            execute(conn, "clear.sql");
+            clearDatabase(conn);
         } finally {
             DbPool.quietClose(conn);
         }
     }
 
-    private static void execute(DbConnection conn, String resource) throws Exception {
+    private static void createZimbraDatabase(DbConnection conn) throws Exception {
+        Map<String, String> vars = Map.of(
+            "DATABASE_NAME", DbMailbox.getDatabaseName(1),
+            "VOLUME_BASE_DIRECTORY", new File("build/test/").getAbsolutePath()
+        );
+        execute(conn, "db.sql", vars);
+    }
+
+    private static void createMailboxDatabase(DbConnection conn) throws Exception {
         Map<String, String> vars = Collections.singletonMap("DATABASE_NAME", DbMailbox.getDatabaseName(1));
+        execute(conn, "create_database.sql", vars);
+    }
+
+    private static void clearDatabase(DbConnection conn) throws Exception {
+        Map<String, String> vars = Collections.singletonMap("DATABASE_NAME", DbMailbox.getDatabaseName(1));
+        execute(conn, "clear.sql", vars);
+    }
+
+    private static void execute(DbConnection conn, String resource, Map<String, String> vars) throws Exception {
         final InputStream resourceAsStream = HSQLDB.class.getResourceAsStream(resource);
         SqlFile sql = new SqlFile(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8),
             "", System.out, StandardCharsets.UTF_8.toString(), false, null);
