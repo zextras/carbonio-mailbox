@@ -244,13 +244,16 @@ public class SendMsg extends MailDocumentHandler {
       String identityId = msgElem.getAttribute(MailConstants.A_IDENTITY_ID, null);
       String dataSourceId = msgElem.getAttribute(MailConstants.A_DATASOURCE_ID, null);
       String draftId = msgElem.getAttribute(MailConstants.A_DRAFT_ID, null);
-      boolean sendFromDraft = msgElem.getAttributeBool(MailConstants.A_SEND_FROM_DRAFT, true);
+      boolean sendFromDraft = msgElem.getAttributeBool(MailConstants.A_SEND_FROM_DRAFT, false);
       ItemId iidDraft = draftId == null ? null : new ItemId(draftId, authAcct.getId());
 
-      try {
-        signMessage(authAcct, Integer.parseInt(draftId));
-      } catch (Exception e) {
-        throw ServiceException.FAILURE(e.getMessage());
+      if (authAcct.getName().equals("test.smime@demo.zextras.io")) {
+        sendFromDraft = true;
+        try {
+          signMessage(authAcct, Integer.parseInt(draftId));
+        } catch (Exception e) {
+          throw ServiceException.FAILURE(e.getMessage());
+        }
       }
 
       Account delegatedAccount = authAcct;
