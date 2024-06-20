@@ -64,6 +64,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.SendMsgResponse;
 import com.zimbra.soap.mail.type.MsgWithGroupInfo;
 import com.zimbra.soap.type.MsgContent;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -89,6 +90,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+
 import org.apache.http.HttpResponse;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.cms.AttributeTable;
@@ -192,11 +194,16 @@ public class SendMsg extends MailDocumentHandler {
     attributes.add(asn1Encodable);
     attributes.add(new SMIMECapabilitiesAttribute(capabilities));
 
+    if (!privateKey.getAlgorithm().equals("RSA")) {
+      throw new RuntimeException("Private key algorithm not handled: " + privateKey.getAlgorithm());
+    }
+
     SMIMESignedGenerator signer = new SMIMESignedGenerator();
-    signer.addSignerInfoGenerator(new JcaSimpleSignerInfoGeneratorBuilder()
-        .setProvider("BC").setSignedAttributeGenerator(new AttributeTable(attributes))
-        .build("DSA".equals(privateKey.getAlgorithm()) ? "SHA1withDSA" : "MD5withRSA", privateKey,
-            x509Certificate));
+    signer.addSignerInfoGenerator(
+        new JcaSimpleSignerInfoGeneratorBuilder()
+            .setProvider("BC").setSignedAttributeGenerator(new AttributeTable(attributes))
+            .build("SHA256withRSA", privateKey, x509Certificate)
+    );
 
     /* Add the list of certs to the generator */
     List certList = new ArrayList();
