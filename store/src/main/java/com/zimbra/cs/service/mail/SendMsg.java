@@ -84,6 +84,7 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.Address;
 import javax.mail.MessagingException;
+import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -110,6 +111,7 @@ import org.dom4j.QName;
  * @since Sep 17, 2004
  */
 public class SendMsg extends MailDocumentHandler {
+
   private static final Log LOG = LogFactory.getLog(SendMsg.class);
 
   private enum SendState {
@@ -132,18 +134,23 @@ public class SendMsg extends MailDocumentHandler {
   private void signMessage(Account account, int draftId) throws Exception {
     final Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
     final Message messageById = mailbox.getMessageById(null, draftId);
+    final Session smtpSession = JMSession.getSmtpSession(account);
 
-    final MimeBodyPart mimeBodyPart = new MimeBodyPart(new ByteArrayInputStream(messageById.getParsedMessage().getRawInputStream().readAllBytes()));
+    final MimeMessage mimeMessage = new MimeMessage(smtpSession, new ByteArrayInputStream(messageById.getContent()));
+    final MimeBodyPart mimeBodyPart = new MimeBodyPart();
+    mimeBodyPart.setContent(
+        mimeMessage.getContent(),
+        mimeMessage.getDataHandler().getContentType()
+    );
 
     var smimeSignedGenerator = createSMIMESignedGenerator();
     MimeMultipart generatedSignedMultiPart = smimeSignedGenerator.generate(mimeBodyPart);
     /* Set all original MIME headers in the signed message */
-    MimeMessage signedMessage = new MimeMessage(JMSession.getSmtpSession(account));
+    MimeMessage signedMessage = new MimeMessage(smtpSession);
     /* Set all original MIME headers in the signed message */
-    Enumeration headers = mimeBodyPart.getAllHeaderLines();
-    while (headers.hasMoreElements())
-    {
-      signedMessage.addHeaderLine((String)headers.nextElement());
+    Enumeration headers = mimeMessage.getAllHeaderLines();
+    while (headers.hasMoreElements()) {
+      signedMessage.addHeaderLine((String) headers.nextElement());
     }
     /* Set the content of the signed message */
     signedMessage.setContent(generatedSignedMultiPart);
@@ -152,17 +159,19 @@ public class SendMsg extends MailDocumentHandler {
     final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     signedMessage.writeTo(byteArrayOutputStream);
 
-
     final ParsedMessage parsedMessage = new ParsedMessage(signedMessage,
         false);
     mailbox.saveDraft(null, parsedMessage, draftId);
   }
 
 
-  private SMIMESignedGenerator createSMIMESignedGenerator() throws GeneralSecurityException, IOException, OperatorCreationException {
-    KeyStore keystore  = KeyStore.getInstance("PKCS12", "BC");
+  private SMIMESignedGenerator createSMIMESignedGenerator()
+      throws GeneralSecurityException, IOException, OperatorCreationException {
+    KeyStore keystore = KeyStore.getInstance("PKCS12", "BC");
     final char[] certPassword = "password".toCharArray();
-    keystore.load(this.getClass().getClassLoader().getResourceAsStream("/smime_test.p12"), certPassword);
+    final InputStream certificateStream = this.getClass().getClassLoader()
+        .getResourceAsStream("smime_test_user.p12");
+    keystore.load(certificateStream, certPassword);
     final String alias = keystore.aliases().nextElement();
     PrivateKey privateKey = (PrivateKey) keystore.getKey(alias, certPassword);
     Certificate[] chain = keystore.getCertificateChain(alias);
@@ -231,13 +240,10 @@ public class SendMsg extends MailDocumentHandler {
       boolean sendFromDraft = msgElem.getAttributeBool(MailConstants.A_SEND_FROM_DRAFT, true);
       ItemId iidDraft = draftId == null ? null : new ItemId(draftId, authAcct.getId());
 
-
-      if (authAcct.getName().equals("davide.frison@demo.zextras.io")) {
-        try {
-          signMessage(authAcct, Integer.parseInt(draftId));
-        } catch (Exception e) {
-          throw ServiceException.FAILURE(e.getMessage());
-        }
+      try {
+        signMessage(authAcct, Integer.parseInt(draftId));
+      } catch (Exception e) {
+        throw ServiceException.FAILURE(e.getMessage());
       }
 
       Account delegatedAccount = authAcct;
@@ -255,7 +261,7 @@ public class SendMsg extends MailDocumentHandler {
             boolean active =
                 delegatedAccount != null
                     && Provisioning.ACCOUNT_STATUS_ACTIVE.equals(
-                        delegatedAccount.getAccountStatus(prov));
+                    delegatedAccount.getAccountStatus(prov));
             if (!active) {
               ZimbraLog.soap.info(
                   "The delegated account:%s is inactive, for mail operations user context will be"
@@ -547,7 +553,9 @@ public class SendMsg extends MailDocumentHandler {
         @Override
         protected void updateHeaders() throws MessagingException {
           setHeader("MIME-Version", "1.0");
-          if (getMessageID() == null) updateMessageID();
+          if (getMessageID() == null) {
+            updateMessageID();
+          }
         }
       };
     } catch (MessagingException e) {
@@ -637,6 +645,7 @@ public class SendMsg extends MailDocumentHandler {
    * @author jhahm
    */
   private static class OutlookICalendarFixupMimeVisitor extends MimeVisitor {
+
     private boolean needFixup;
     private boolean isCalendarForward;
     private boolean isCalendarMessage;
@@ -649,6 +658,7 @@ public class SendMsg extends MailDocumentHandler {
     private Invite origInvite = null;
 
     static class ICalendarModificationCallback implements MimeVisitor.ModificationCallback {
+
       private boolean mWouldModify;
 
       public boolean wouldCauseModification() {
@@ -698,20 +708,32 @@ public class SendMsg extends MailDocumentHandler {
           if (senderAddr != null && fromAddrs != null) {
             // If one of the From's is same as Sender, there is nothing to fixup.
             for (Address from : fromAddrs) {
-              if (from.equals(senderAddr)) return false;
+              if (from.equals(senderAddr)) {
+                return false;
+              }
             }
 
-            if (!(senderAddr instanceof InternetAddress)) return false;
+            if (!(senderAddr instanceof InternetAddress)) {
+              return false;
+            }
             String sender = ((InternetAddress) senderAddr).getAddress();
-            if (sender == null) return false;
+            if (sender == null) {
+              return false;
+            }
 
             String[] froms = new String[fromAddrs.length];
             for (int i = 0; i < fromAddrs.length; i++) {
               Address fromAddr = fromAddrs[i];
-              if (fromAddr == null) return false;
-              if (!(fromAddr instanceof InternetAddress)) return false;
+              if (fromAddr == null) {
+                return false;
+              }
+              if (!(fromAddr instanceof InternetAddress)) {
+                return false;
+              }
               String from = ((InternetAddress) fromAddr).getAddress();
-              if (from == null) return false;
+              if (from == null) {
+                return false;
+              }
               froms[i] = "MAILTO:" + from;
             }
 
@@ -719,7 +741,7 @@ public class SendMsg extends MailDocumentHandler {
             mSentBy = "MAILTO:" + sender;
 
             // Set Reply-To header because Outlook doesn't. (bug 19283)
-            mm.setReplyTo(new Address[] {senderAddr});
+            mm.setReplyTo(new Address[]{senderAddr});
             modified = true;
           }
         }
@@ -738,12 +760,16 @@ public class SendMsg extends MailDocumentHandler {
     @Override
     protected boolean visitBodyPart(MimeBodyPart bp) throws MessagingException {
       // Ignore any forwarded message parts.
-      if (mMsgDepth != 1) return false;
+      if (mMsgDepth != 1) {
+        return false;
+      }
 
       boolean modified = false;
 
       String ct = Mime.getContentType(bp);
-      if (MimeConstants.CT_TEXT_CALENDAR.compareToIgnoreCase(ct) != 0) return false;
+      if (MimeConstants.CT_TEXT_CALENDAR.compareToIgnoreCase(ct) != 0) {
+        return false;
+      }
 
       ZVCalendar ical;
       InputStream is = null;
@@ -758,11 +784,15 @@ public class SendMsg extends MailDocumentHandler {
         }
         isCalendarMessage = true;
 
-        if (!(needFixup || isCalendarForward)) return false;
+        if (!(needFixup || isCalendarForward)) {
+          return false;
+        }
 
         String charset = mDefaultCharset;
         String cs = Mime.getCharset(ctHdr);
-        if (cs != null) charset = cs;
+        if (cs != null) {
+          charset = cs;
+        }
         ical = ZCalendarBuilder.build(is, charset);
 
         if (isCalendarForward) {
@@ -774,7 +804,9 @@ public class SendMsg extends MailDocumentHandler {
               defInvite = cur;
               break;
             }
-            if (defInvite == null) defInvite = cur;
+            if (defInvite == null) {
+              defInvite = cur;
+            }
           }
           origInvite = defInvite;
         }
@@ -807,10 +839,14 @@ public class SendMsg extends MailDocumentHandler {
 
       if (modified) {
         // check to make sure that the caller's OK with altering the message
-        if (mCallback != null && !mCallback.onModification()) return false;
+        if (mCallback != null && !mCallback.onModification()) {
+          return false;
+        }
 
         String filename = bp.getFileName();
-        if (filename == null) filename = "meeting.ics";
+        if (filename == null) {
+          filename = "meeting.ics";
+        }
         bp.setDataHandler(new DataHandler(new CalendarDataSource(ical, filename)));
       }
 
@@ -822,13 +858,17 @@ public class SendMsg extends MailDocumentHandler {
       for (Iterator<ZComponent> compIter = ical.getComponentIterator(); compIter.hasNext(); ) {
         ZComponent comp = compIter.next();
         ICalTok compType = comp.getTok();
-        if (!ICalTok.VEVENT.equals(compType) && !ICalTok.VTODO.equals(compType)) continue;
+        if (!ICalTok.VEVENT.equals(compType) && !ICalTok.VTODO.equals(compType)) {
+          continue;
+        }
 
         boolean isSeries = false;
         for (Iterator<ZProperty> propIter = comp.getPropertyIterator(); propIter.hasNext(); ) {
           ZProperty prop = propIter.next();
           ICalTok token = prop.getToken();
-          if (token == null) continue;
+          if (token == null) {
+            continue;
+          }
           switch (token) {
             case ORGANIZER:
             case ATTENDEE:
@@ -871,7 +911,9 @@ public class SendMsg extends MailDocumentHandler {
         ZOrganizer replyOrg = replyInv.getOrganizer();
         // If ORGANIZER property already has SENT-BY parameter, assume the client sent
         // the correct value.  No need to second guess it.
-        if (replyOrg != null && replyOrg.hasSentBy()) continue;
+        if (replyOrg != null && replyOrg.hasSentBy()) {
+          continue;
+        }
 
         String uid = replyInv.getUid();
         mMailbox.lock.lock();
@@ -911,17 +953,23 @@ public class SendMsg extends MailDocumentHandler {
         }
       }
 
-      if (uidToOrganizer.isEmpty()) return false; // We're not making any changes.
+      if (uidToOrganizer.isEmpty()) {
+        return false; // We're not making any changes.
+      }
 
       // Now go through the components again, this time as ZComponents.  Fixup as necessary.
       for (Iterator<ZComponent> compIter = ical.getComponentIterator(); compIter.hasNext(); ) {
         ZComponent comp = compIter.next();
         ICalTok compType = comp.getTok();
-        if (!ICalTok.VEVENT.equals(compType) && !ICalTok.VTODO.equals(compType)) continue;
+        if (!ICalTok.VEVENT.equals(compType) && !ICalTok.VTODO.equals(compType)) {
+          continue;
+        }
 
         String uid = comp.getPropVal(ICalTok.UID, null);
         ZProperty fixedOrganizer = uidToOrganizer.get(uid);
-        if (fixedOrganizer == null) continue;
+        if (fixedOrganizer == null) {
+          continue;
+        }
 
         // Remove any existing ORGANIZER property.
         for (Iterator<ZProperty> propIter = comp.getPropertyIterator(); propIter.hasNext(); ) {
@@ -953,9 +1001,13 @@ public class SendMsg extends MailDocumentHandler {
     }
 
     private boolean addressMatchesFrom(String addr) {
-      if (addr == null) return false;
+      if (addr == null) {
+        return false;
+      }
       for (String from : mFromEmails) {
-        if (from.compareToIgnoreCase(addr) == 0) return true;
+        if (from.compareToIgnoreCase(addr) == 0) {
+          return true;
+        }
       }
       return false;
     }
