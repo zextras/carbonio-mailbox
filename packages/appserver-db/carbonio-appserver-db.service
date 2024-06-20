@@ -13,6 +13,7 @@ ExecStart=/opt/zextras/common/bin/mysqld_safe \
   --log-error=${mysql_errlogfile} \
   --malloc-lib=/opt/zextras/common/lib/libjemalloc.so \
   --ledir=/opt/zextras/common/sbin
+LimitNOFILE=524288
 
 [Install]
 WantedBy=carbonio-appserver.target carbonio-ce.target carbonio.target
