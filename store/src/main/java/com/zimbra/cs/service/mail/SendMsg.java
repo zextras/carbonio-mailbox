@@ -133,85 +133,6 @@ public class SendMsg extends MailDocumentHandler {
     return handle(request, context, MailConstants.SEND_MSG_RESPONSE);
   }
 
-  private void signMessage(Account account, int draftId) throws Exception {
-    final Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
-    final Message messageById = mailbox.getMessageById(null, draftId);
-    final Session smtpSession = JMSession.getSmtpSession(account);
-
-    final MimeMessage mimeMessage = new MimeMessage(smtpSession, new ByteArrayInputStream(messageById.getContent()));
-    final MimeBodyPart mimeBodyPart = new MimeBodyPart();
-    mimeBodyPart.setContent(
-        mimeMessage.getContent(),
-        mimeMessage.getDataHandler().getContentType()
-    );
-
-    var smimeSignedGenerator = createSMIMESignedGenerator();
-    MimeMultipart generatedSignedMultiPart = smimeSignedGenerator.generate(mimeBodyPart);
-    /* Set all original MIME headers in the signed message */
-    MimeMessage signedMessage = new MimeMessage(smtpSession);
-    /* Set all original MIME headers in the signed message */
-    Enumeration headers = mimeMessage.getAllHeaderLines();
-    while (headers.hasMoreElements()) {
-      signedMessage.addHeaderLine((String) headers.nextElement());
-    }
-    /* Set the content of the signed message */
-    signedMessage.setContent(generatedSignedMultiPart);
-    signedMessage.saveChanges();
-
-    final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    signedMessage.writeTo(byteArrayOutputStream);
-
-    final ParsedMessage parsedMessage = new ParsedMessage(signedMessage,
-        false);
-    mailbox.saveDraft(null, parsedMessage, draftId);
-  }
-
-
-  private SMIMESignedGenerator createSMIMESignedGenerator()
-      throws GeneralSecurityException, IOException, OperatorCreationException {
-    KeyStore keystore = KeyStore.getInstance("PKCS12", "BC");
-    final char[] certPassword = "password".toCharArray();
-    final InputStream certificateStream = this.getClass().getClassLoader()
-        .getResourceAsStream("smime_test_user.p12");
-    keystore.load(certificateStream, certPassword);
-    final String alias = keystore.aliases().nextElement();
-    PrivateKey privateKey = (PrivateKey) keystore.getKey(alias, certPassword);
-    Certificate[] chain = keystore.getCertificateChain(alias);
-
-    /* Create the SMIMESignedGenerator */
-    SMIMECapabilityVector capabilities = new SMIMECapabilityVector();
-    capabilities.addCapability(SMIMECapability.dES_EDE3_CBC);
-    capabilities.addCapability(SMIMECapability.rC2_CBC, 128);
-    capabilities.addCapability(SMIMECapability.dES_CBC);
-
-    ASN1EncodableVector attributes = new ASN1EncodableVector();
-    final X509Certificate x509Certificate = (X509Certificate) chain[0];
-    final SMIMEEncryptionKeyPreferenceAttribute asn1Encodable = new SMIMEEncryptionKeyPreferenceAttribute(
-        new IssuerAndSerialNumber(
-            new X500Name(x509Certificate
-                .getIssuerDN().getName()),
-            x509Certificate.getSerialNumber()));
-    attributes.add(asn1Encodable);
-    attributes.add(new SMIMECapabilitiesAttribute(capabilities));
-
-    if (!privateKey.getAlgorithm().equals("RSA")) {
-      throw new RuntimeException("Private key algorithm not handled: " + privateKey.getAlgorithm());
-    }
-
-    SMIMESignedGenerator signer = new SMIMESignedGenerator();
-    signer.addSignerInfoGenerator(
-        new JcaSimpleSignerInfoGeneratorBuilder()
-            .setProvider("BC").setSignedAttributeGenerator(new AttributeTable(attributes))
-            .build("SHA256withRSA", privateKey, x509Certificate)
-    );
-
-    /* Add the list of certs to the generator */
-    List certList = new ArrayList();
-    certList.add(chain[0]);
-    Store certs = new JcaCertStore(certList);
-    signer.addCertificates(certs);
-    return signer;
-  }
 
   public Element handle(Element request, Map<String, Object> context, QName respQname)
       throws ServiceException {
@@ -246,15 +167,6 @@ public class SendMsg extends MailDocumentHandler {
       String draftId = msgElem.getAttribute(MailConstants.A_DRAFT_ID, null);
       boolean sendFromDraft = msgElem.getAttributeBool(MailConstants.A_SEND_FROM_DRAFT, false);
       ItemId iidDraft = draftId == null ? null : new ItemId(draftId, authAcct.getId());
-
-      if (authAcct.getName().equals("test.smime@demo.zextras.io")) {
-        sendFromDraft = true;
-        try {
-          signMessage(authAcct, Integer.parseInt(draftId));
-        } catch (Exception e) {
-          throw ServiceException.FAILURE(e.getMessage());
-        }
-      }
 
       Account delegatedAccount = authAcct;
       Mailbox delegatedMailbox = null;

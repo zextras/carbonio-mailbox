@@ -10,6 +10,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.sun.mail.smtp.SMTPMessage;
 import com.sun.mail.util.PropUtil;
+import com.zimbra.common.localconfig.LC;
+import com.zimbra.common.localconfig.LocalConfig;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.util.BuildInfo;
 import java.io.IOException;
@@ -96,7 +98,7 @@ public class SmtpTransport extends Transport {
       new Provider(
           Provider.Type.TRANSPORT,
           "smtp",
-          SmtpTransport.class.getName(),
+          LC.smtp_transport_class.value(),
           "Zimbra",
           BuildInfo.VERSION);
 
