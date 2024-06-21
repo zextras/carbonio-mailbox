@@ -9,6 +9,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailclient.smtp.SmtpConfig;
@@ -99,6 +100,11 @@ public class SaveDraftApiTest extends SoapTestSuite {
 
     final MsgWithGroupInfo draftMessage = createDraftMessage(sender);
     markMessageReadyToSign(sender, draftMessage.getId());
+    final Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(sender);
+
+    final com.zimbra.cs.mailbox.Folder sentFolderBefore = mailbox.getFolderById(null,
+        Mailbox.ID_FOLDER_SENT);
+    Assertions.assertEquals(0, sentFolderBefore.getItemCount());
 
     final HttpResponse sendMsgResponse = sendMessage(sender, draftMessage.getId());
     final SendMsgResponse responseBody = JaxbUtil.elementToJaxb(
@@ -113,8 +119,18 @@ public class SaveDraftApiTest extends SoapTestSuite {
     final MimeMessage receivedMessage = receivedMessages[0];
     Assertions.assertTrue(receivedMessage.getContentType().contains("multipart/signed"));
 
-    MsgWithGroupInfo rawMessage = getRawMessage(sender, responseBody.getMsg().getId());
+    final String sentId = responseBody.getMsg().getId();
+    MsgWithGroupInfo rawMessage = getRawMessage(sender, sentId);
     System.out.println(rawMessage.getContent().getValue());
+    final com.zimbra.cs.mailbox.Folder sentFolder = mailbox.getFolderById(null,
+        Mailbox.ID_FOLDER_SENT);
+    Assertions.assertEquals(1, sentFolder.getItemCount());
+    final Integer sentMessageId = mailbox.listItemIds(null, Type.MESSAGE, sentFolder.getId()).get(0);
+    final MsgWithGroupInfo rawSentMessage = getRawMessage(sender, Integer.toString(sentMessageId));
+    // Doubt: the message in "sent" seems to be unsigned
+    System.out.println(rawSentMessage.getContent().getValue());
+
+
   }
 
   private void markMessageReadyToSign(Account testAccount, String draftId) throws Exception {
