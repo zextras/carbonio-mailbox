@@ -45,7 +45,7 @@ class NativeFormatterTest {
   }
 
   @Test
-  void testSendBackOriginalDoc() throws IOException {
+  void should_return_original_doc_with_requested_content_disposition_when_content_is_not_scriptable() throws IOException {
     InputStream is = new ByteArrayInputStream("Test data".getBytes());
     var contentType = "text/plain";
     var defaultCharset = "UTF-8";
