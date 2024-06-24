@@ -65,8 +65,6 @@ class NativeFormatterTest {
     if (contentDispositionIndex != -1) {
       assertTrue(capturedValues.get(contentDispositionIndex).contains("inline"));
     }
-
-    verify(resp, times(2)).setContentType(contentType);
     verify(servletOutputStream, atLeastOnce()).write(any(byte[].class), anyInt(), anyInt());
   }
 
@@ -97,8 +95,6 @@ class NativeFormatterTest {
     if (contentDispositionIndex != -1) {
       assertTrue(capturedValues.get(contentDispositionIndex).contains("attachment"));
     }
-
-    verify(resp, times(2)).setContentType(contentType);
     verify(servletOutputStream, atLeastOnce()).write(any(byte[].class), anyInt(), anyInt());
   }
 

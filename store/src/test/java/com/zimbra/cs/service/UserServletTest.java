@@ -20,6 +20,7 @@ import com.zimbra.common.util.L10nUtil;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTest;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
@@ -254,7 +255,21 @@ class UserServletTest {
 
   @Test
   void should_return404_when_asked_attachment_does_not_exits() throws Exception {
-    var httpResponse = getUserServletRequest(server.getURI().toString() + "~/?auth=co&id=257&part=1");
+    var testAccountMailbox = MailboxManager.getInstance().getMailboxByAccount(testAccount);
+
+    // add message
+    var textAttachmentMsgId = testAccountMailbox.addMessage(null,
+        MailboxTestUtil.generateMessageWithAttachment("find text attachment"),
+        MailboxTest.STANDARD_DELIVERY_OPTIONS, null).getId();
+
+    var part1TextAttachmentHttpResponse = getUserServletRequest(server.getURI()
+        .toString() + "~/?auth=co&id=" + textAttachmentMsgId + "&part=1");
+    assertEquals(HttpStatus.SC_OK, part1TextAttachmentHttpResponse.getStatusLine().getStatusCode());
+
+    // delete message
+    testAccountMailbox.delete(null, textAttachmentMsgId, Type.MESSAGE);
+    var httpResponse = getUserServletRequest(
+        server.getURI().toString() + "~/?auth=co&id=" + textAttachmentMsgId + "&part=1");
 
     assertEquals(HttpStatus.SC_NOT_FOUND, httpResponse.getStatusLine().getStatusCode());
   }
