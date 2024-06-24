@@ -5,37 +5,7 @@
 
 package com.zimbra.cs.service.formatter;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PushbackInputStream;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.MemoryCacheImageInputStream;
-import javax.imageio.stream.MemoryCacheImageOutputStream;
-import javax.mail.MessagingException;
-import javax.mail.Part;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimePart;
-import javax.mail.internet.MimeUtility;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableSet;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.mime.MimeDetect;
@@ -49,8 +19,6 @@ import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.extension.ExtensionUtil;
-import com.zimbra.cs.html.BrowserDefang;
-import com.zimbra.cs.html.DefangFactory;
 import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.mailbox.DeliveryOptions;
@@ -72,6 +40,32 @@ import com.zimbra.cs.service.mail.UploadScanner;
 import com.zimbra.cs.servlet.ETagHeaderFilter;
 import com.zimbra.cs.store.Blob;
 import com.zimbra.cs.store.StoreManager;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PushbackInputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.MemoryCacheImageInputStream;
+import javax.imageio.stream.MemoryCacheImageOutputStream;
+import javax.mail.MessagingException;
+import javax.mail.Part;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimePart;
+import javax.mail.internet.MimeUtility;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public final class NativeFormatter extends Formatter {
 
@@ -87,14 +81,15 @@ public final class NativeFormatter extends Formatter {
 
     private static final Log log = LogFactory.getLog(NativeFormatter.class);
 
-    private static final Set<String> SCRIPTABLE_CONTENT_TYPES = ImmutableSet.of(MimeConstants.CT_TEXT_HTML,
-                                                                                MimeConstants.CT_APPLICATION_XHTML,
-                                                                                MimeConstants.CT_TEXT_XML,
-                                                                                MimeConstants.CT_APPLICATION_ZIMBRA_DOC,
-                                                                                MimeConstants.CT_APPLICATION_ZIMBRA_SLIDES,
-                                                                                MimeConstants.CT_APPLICATION_ZIMBRA_SPREADSHEET,
-                                                                                MimeConstants.CT_IMAGE_SVG,
-                                                                                MimeConstants.CT_TEXT_XML_LEGACY);
+    private final Set<String> SCRIPTABLE_CONTENT_TYPES = Set.of(MimeConstants.CT_TEXT_HTML,
+        MimeConstants.CT_APPLICATION_XHTML,
+        MimeConstants.CT_TEXT_XML,
+        MimeConstants.CT_APPLICATION_ZIMBRA_DOC,
+        MimeConstants.CT_APPLICATION_ZIMBRA_SLIDES,
+        MimeConstants.CT_APPLICATION_ZIMBRA_SPREADSHEET,
+        MimeConstants.CT_IMAGE_SVG,
+        MimeConstants.CT_TEXT_XML_LEGACY,
+        MimeConstants.CT_APPLICATION_SHOCKWAVE_FLASH);
 
     @Override
     public FormatType getType() {
@@ -261,10 +256,10 @@ public final class NativeFormatter extends Formatter {
                     }
                     String defaultCharset = context.targetAccount.getAttr(Provisioning.A_zimbraPrefMailDefaultCharset, null);
                     if (simpleText) {
-                        sendbackBinaryData(context.req, context.resp, in, contentType, Part.INLINE,
+                        sendBackBinaryData(context.req, context.resp, in, contentType, Part.INLINE,
                                 null /* filename */, size, true);
                     } else {
-                        sendbackOriginalDoc(in, contentType, defaultCharset, Mime.getFilename(mp), mp.getDescription(),
+                        sendBackOriginalDoc(in, contentType, defaultCharset, Mime.getFilename(mp), mp.getDescription(),
                                 size, context.req, context.resp);
                     }
                 } else {
@@ -287,7 +282,7 @@ public final class NativeFormatter extends Formatter {
     throws IOException {
         ImageReader reader = null;
         ImageWriter writer = null;
-       
+
         if (maxWidth == null)
             maxWidth = LC.max_image_size_to_resize.intValue();
 
@@ -375,12 +370,12 @@ public final class NativeFormatter extends Formatter {
         return Mime.getMimePart(msg.getMimeMessage(), part);
     }
 
-    public static void sendbackOriginalDoc(InputStream is, String contentType, String defaultCharset, String filename,
+    public void sendBackOriginalDoc(InputStream is, String contentType, String defaultCharset, String filename,
             String desc, HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        sendbackOriginalDoc(is, contentType, defaultCharset, filename, desc, 0, req, resp);
+        sendBackOriginalDoc(is, contentType, defaultCharset, filename, desc, 0, req, resp);
     }
 
-    private static void sendbackOriginalDoc(InputStream is, String contentType, String defaultCharset, String filename,
+    private void sendBackOriginalDoc(InputStream is, String contentType, String defaultCharset, String filename,
             String desc, long size, HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String disp = req.getParameter(UserServlet.QP_DISP);
         disp = (disp == null || disp.toLowerCase().startsWith("i")) ? Part.INLINE : Part.ATTACHMENT;
@@ -390,24 +385,11 @@ public final class NativeFormatter extends Formatter {
             }
             resp.addHeader("Content-Description", desc);
         }
-        // defang when the html and svg attachment was requested with disposition inline
+        resp.setContentType(contentType);
         if (disp.equals(Part.INLINE) && isScriptableContent(contentType)) {
-            BrowserDefang defanger = DefangFactory.getDefanger(contentType);
-            String content = defanger.defang(Mime.getTextReader(is, contentType, defaultCharset), true);
-            resp.setContentType(contentType);
-            String charset = Mime.getCharset(contentType);
-            resp.setCharacterEncoding(Strings.isNullOrEmpty(charset) ? Charsets.UTF_8.name() : charset);
-            if (!content.isEmpty()) {
-                resp.setContentLength(content.getBytes().length);
-            }
-            resp.getWriter().write(content);
+            sendBackBinaryData(req, resp, is, contentType, Part.ATTACHMENT, filename, size);
         } else {
-            // flash attachment may contain a malicious script hence..
-            if (contentType.startsWith(MimeConstants.CT_APPLICATION_SHOCKWAVE_FLASH)) {
-                disp = Part.ATTACHMENT;
-            }
-            resp.setContentType(contentType);
-            sendbackBinaryData(req, resp, is, contentType, disp, filename, size);
+            sendBackBinaryData(req, resp, is, contentType, disp, filename, size);
         }
     }
 
@@ -521,13 +503,13 @@ public final class NativeFormatter extends Formatter {
         { '<', 'S', 'C', 'R', 'I', 'P', 'T' }
     };
 
-    public static void sendbackBinaryData(HttpServletRequest req, HttpServletResponse resp, InputStream in,
+    public void sendBackBinaryData(HttpServletRequest req, HttpServletResponse resp, InputStream in,
                                           String contentType, String disposition, String filename, long size)
     throws IOException {
-        sendbackBinaryData(req, resp, in, contentType, disposition, filename, size, false);
+        sendBackBinaryData(req, resp, in, contentType, disposition, filename, size, false);
     }
 
-    public static void sendbackBinaryData(HttpServletRequest req, HttpServletResponse resp, InputStream in,
+    public void sendBackBinaryData(HttpServletRequest req, HttpServletResponse resp, InputStream in,
                                           String contentType, String disposition, String filename,
                                           long size, boolean ignoreContentDisposition)
     throws IOException {
@@ -585,7 +567,7 @@ public final class NativeFormatter extends Formatter {
      * @param contentType The content type to check
      * @return true if there's a possiblilty that <script> is valid, false if not
      */
-    private static boolean isScriptableContent(String contentType) {
+    private boolean isScriptableContent(String contentType) {
         // Make sure we don't have to worry about a null content type;
         if (Strings.isNullOrEmpty(contentType)) {
             return false;
