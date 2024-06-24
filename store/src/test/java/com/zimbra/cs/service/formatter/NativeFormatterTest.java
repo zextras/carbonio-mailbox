@@ -45,16 +45,16 @@ class NativeFormatterTest {
   }
 
   @Test
-  void should_return_original_doc_with_requested_content_disposition_when_content_is_not_scriptable() throws IOException {
+  void should_return_original_doc_with_requested_content_disposition_when_content_is_not_scriptable()
+      throws IOException {
     InputStream is = new ByteArrayInputStream("Test data".getBytes());
     var contentType = "text/plain";
-    var defaultCharset = "UTF-8";
     var filename = "test.txt";
     var desc = "Test description";
 
     when(req.getParameter("disp")).thenReturn("i");
 
-    new NativeFormatter().sendBackOriginalDoc(is, contentType, defaultCharset, filename, desc, req, resp);
+    new NativeFormatter().sendBackOriginalDoc(is, contentType, filename, desc, req, resp);
 
     verify(resp, times(2)).addHeader(headerCaptor.capture(), valueCaptor.capture());
 
@@ -71,20 +71,19 @@ class NativeFormatterTest {
   @Test
   void should_return_original_doc_with_content_disposition_attachment_when_content_is_scriptable() throws IOException {
     var xmlContent = "<?xml version=\"1.0\"?>\n"
-        + "<Tests xmlns=\"http://www.adatum.com\">\n"
+        + "<Tests xmlns=\"https://www.example.com\">\n"
         + "  <Test TestId=\"0001\" TestType=\"CMD\">\n"
         + "    <Name>Convert number to string</Name>\n"
         + "  </Test>\n"
         + "</Tests>";
     InputStream is = new ByteArrayInputStream(xmlContent.getBytes());
     var contentType = "text/xml";
-    var defaultCharset = "UTF-8";
     var filename = "test.xml";
     var desc = "Test description";
 
     when(req.getParameter("disp")).thenReturn("i");
 
-    new NativeFormatter().sendBackOriginalDoc(is, contentType, defaultCharset, filename, desc, req, resp);
+    new NativeFormatter().sendBackOriginalDoc(is, contentType, filename, desc, req, resp);
 
     verify(resp, times(2)).addHeader(headerCaptor.capture(), valueCaptor.capture());
 
