@@ -120,33 +120,33 @@ public class FullAutoComplete extends MailDocumentHandler {
     return fullAutoCompleteMatches.stream().map(match -> {
       var matchElementBuilder = new AutoCompleteMatchElementBuilder(zsc);
 
-      matchElementBuilder.setIntegerAttribute(MailConstants.A_RANKING, match.getRanking(), 0)
-          .setStringAttribute(MailConstants.A_MATCH_TYPE, match.getMatchType(), null)
-          .setBooleanAttribute(MailConstants.A_IS_GROUP, match.getGroup(), Boolean.FALSE);
+      matchElementBuilder.addIntegerAttribute(MailConstants.A_RANKING, match.getRanking(), 0)
+          .addStringAttribute(MailConstants.A_MATCH_TYPE, match.getMatchType())
+          .addBooleanAttribute(MailConstants.A_IS_GROUP, match.getGroup(), Boolean.FALSE);
 
       if (Boolean.FALSE.equals(match.getGroup())) {
-        matchElementBuilder.setStringAttribute(MailConstants.A_EMAIL, match.getEmail(), null);
+        matchElementBuilder.addStringAttribute(MailConstants.A_EMAIL, match.getEmail());
       }
 
       if (Boolean.TRUE.equals(match.getGroup())) {
-        matchElementBuilder.setBooleanAttribute(MailConstants.A_EXP, match.getCanExpandGroupMembers(), Boolean.FALSE);
+        matchElementBuilder.addBooleanAttribute(MailConstants.A_EXP, match.getCanExpandGroupMembers(), Boolean.FALSE);
       }
 
-      matchElementBuilder.setStringAttribute(MailConstants.A_ID, match.getId(), null)
-          .setStringAttribute(MailConstants.A_FOLDER, match.getFolder(), null);
+      matchElementBuilder.addStringAttribute(MailConstants.A_ID, match.getId())
+          .addStringAttribute(MailConstants.A_FOLDER, match.getFolder());
 
       if (Boolean.TRUE.equals(match.getGroup()) || !Objects.equals(match.getMatchType(),
           ContactEntryType.GAL.getName())) {
-        matchElementBuilder.setStringAttribute(MailConstants.A_DISPLAYNAME, match.getDisplayName(), null);
+        matchElementBuilder.addStringAttribute(MailConstants.A_DISPLAYNAME, match.getDisplayName());
       }
 
-      matchElementBuilder.setStringAttribute(MailConstants.A_FIRSTNAME, match.getFirstName(), null)
-          .setStringAttribute(MailConstants.A_MIDDLENAME, match.getMiddleName(), null)
-          .setStringAttribute(MailConstants.A_LASTNAME, match.getLastName(), null)
-          .setStringAttribute(MailConstants.A_FULLNAME, match.getFullName(), null)
-          .setStringAttribute(MailConstants.A_NICKNAME, match.getNickname(), null)
-          .setStringAttribute(MailConstants.A_COMPANY, match.getCompany(), null)
-          .setStringAttribute(MailConstants.A_FILEAS, match.getFileAs(), null);
+      matchElementBuilder.addStringAttribute(MailConstants.A_FIRSTNAME, match.getFirstName())
+          .addStringAttribute(MailConstants.A_MIDDLENAME, match.getMiddleName())
+          .addStringAttribute(MailConstants.A_LASTNAME, match.getLastName())
+          .addStringAttribute(MailConstants.A_FULLNAME, match.getFullName())
+          .addStringAttribute(MailConstants.A_NICKNAME, match.getNickname())
+          .addStringAttribute(MailConstants.A_COMPANY, match.getCompany())
+          .addStringAttribute(MailConstants.A_FILEAS, match.getFileAs());
 
       return matchElementBuilder.build();
     }).collect(Collectors.toCollection(ArrayList::new));
@@ -233,7 +233,12 @@ public class FullAutoComplete extends MailDocumentHandler {
       this.element = zsc.createElement(MailConstants.E_MATCH);
     }
 
-    public AutoCompleteMatchElementBuilder setStringAttribute(String name, String value, String defaultValue) {
+    public AutoCompleteMatchElementBuilder addStringAttribute(String name, String value) {
+      addStringAttributeWithDefault(name, value, null);
+      return this;
+    }
+
+    public AutoCompleteMatchElementBuilder addStringAttributeWithDefault(String name, String value, String defaultValue) {
       if (value != null) {
         element.addAttribute(name, value);
       } else if (defaultValue != null) {
@@ -242,7 +247,7 @@ public class FullAutoComplete extends MailDocumentHandler {
       return this;
     }
 
-    public AutoCompleteMatchElementBuilder setBooleanAttribute(String name, Boolean value, Boolean defaultValue) {
+    public AutoCompleteMatchElementBuilder addBooleanAttribute(String name, Boolean value, Boolean defaultValue) {
       if (value != null) {
         element.addAttribute(name, value);
       } else if (defaultValue != null) {
@@ -251,7 +256,7 @@ public class FullAutoComplete extends MailDocumentHandler {
       return this;
     }
 
-    public AutoCompleteMatchElementBuilder setIntegerAttribute(String name, Integer value, Integer defaultValue) {
+    public AutoCompleteMatchElementBuilder addIntegerAttribute(String name, Integer value, Integer defaultValue) {
       if (value != null) {
         element.addAttribute(name, value);
       } else if (defaultValue != null) {

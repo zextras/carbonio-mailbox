@@ -427,7 +427,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
   }
 
   @Test
-  void autoCompleteMatchElementBuilder_should_omit_attributes_if_passed_values_are_null() throws Exception {
+  void autoCompleteMatchElementBuilder_should_omit_attributes_if_passed_value_and_default_are_null() throws Exception {
     var searchTerm = "my";
     var domain = UUID.randomUUID() + "something.com";
     var contactEmail1 = searchTerm + "email1@" + domain;
@@ -440,12 +440,12 @@ class FullAutoCompleteTest extends SoapTestSuite {
     autoCompleteMatch.setCompany("HellYeahInc");
 
     var matchElementBuilder = new AutoCompleteMatchElementBuilder(zsc);
-    matchElementBuilder.setIntegerAttribute(MailConstants.A_RANKING, autoCompleteMatch.getRanking(), 0);
-    matchElementBuilder.setStringAttribute(MailConstants.A_COMPANY, autoCompleteMatch.getCompany(), null);
-    matchElementBuilder.setBooleanAttribute(MailConstants.A_IS_GROUP, autoCompleteMatch.getGroup(), Boolean.FALSE);
+    matchElementBuilder.addIntegerAttribute(MailConstants.A_RANKING, autoCompleteMatch.getRanking(), 0);
+    matchElementBuilder.addStringAttributeWithDefault(MailConstants.A_COMPANY, autoCompleteMatch.getCompany(), null);
+    matchElementBuilder.addBooleanAttribute(MailConstants.A_IS_GROUP, autoCompleteMatch.getGroup(), Boolean.FALSE);
 
-    matchElementBuilder.setStringAttribute(MailConstants.A_LASTNAME, autoCompleteMatch.getLastName(), null);
-    matchElementBuilder.setBooleanAttribute(MailConstants.A_EXP, autoCompleteMatch.getCanExpandGroupMembers(), null);
+    matchElementBuilder.addStringAttributeWithDefault(MailConstants.A_LASTNAME, autoCompleteMatch.getLastName(), null);
+    matchElementBuilder.addBooleanAttribute(MailConstants.A_EXP, autoCompleteMatch.getCanExpandGroupMembers(), null);
 
     var matchElement = matchElementBuilder.build();
 
@@ -466,9 +466,9 @@ class FullAutoCompleteTest extends SoapTestSuite {
     var autoCompleteMatch = new AutoCompleteMatch();
     var matchElementBuilder = new AutoCompleteMatchElementBuilder(zsc);
 
-    matchElementBuilder.setIntegerAttribute(MailConstants.A_RANKING, autoCompleteMatch.getRanking(), 20);
-    matchElementBuilder.setBooleanAttribute(MailConstants.A_IS_GROUP, autoCompleteMatch.getGroup(), Boolean.TRUE);
-    matchElementBuilder.setStringAttribute(MailConstants.A_LASTNAME, autoCompleteMatch.getLastName(), "myLastName");
+    matchElementBuilder.addIntegerAttribute(MailConstants.A_RANKING, autoCompleteMatch.getRanking(), 20);
+    matchElementBuilder.addBooleanAttribute(MailConstants.A_IS_GROUP, autoCompleteMatch.getGroup(), Boolean.TRUE);
+    matchElementBuilder.addStringAttributeWithDefault(MailConstants.A_LASTNAME, autoCompleteMatch.getLastName(), "myLastName");
 
     var matchElement2 = matchElementBuilder.build();
 
