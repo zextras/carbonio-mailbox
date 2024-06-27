@@ -22,15 +22,10 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
 
-/**
- * A SoapClient that wraps the Body in an Envelope.
- *
- */
+/** A SoapClient that wraps the Body in an Envelope. */
 public class SoapClient {
 
-  /**
-   * Endpoint in form of http://<host>:<port>/<basePath>
-   */
+  /** Endpoint in form of http://<host>:<port>/<basePath> */
   private String endpoint;
 
   public SoapClient(String endpoint) {
@@ -77,22 +72,23 @@ public class SoapClient {
       cookie.setDomain(caller.getServerName());
       cookie.setPath("/");
       cookieStore.addCookie(cookie);
-      try (CloseableHttpClient client = HttpClientBuilder.create().setDefaultCookieStore(cookieStore)
-          .build()) {
-        final HttpPost httpPost = new HttpPost();
-        Element envelope;
-        if (Objects.isNull(requestedAccount)) {
-          envelope = SoapProtocol.Soap12.soapEnvelope(soapBody);
-        } else {
-          final Element headerXml = Element.parseXML(String.format(
-              "<context xmlns=\"urn:zimbra\"><account by=\"id\">%s</account></context>",
-              requestedAccount.getId()));
-          envelope = SoapProtocol.Soap12.soapEnvelope(soapBody, headerXml);
-        }
-        httpPost.setURI(URI.create(this.url));
-        httpPost.setEntity(new StringEntity(envelope.toString()));
-        return client.execute(httpPost);
+      CloseableHttpClient client =
+          HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build();
+      final HttpPost httpPost = new HttpPost();
+      Element envelope;
+      if (Objects.isNull(requestedAccount)) {
+        envelope = SoapProtocol.Soap12.soapEnvelope(soapBody);
+      } else {
+        final Element headerXml =
+            Element.parseXML(
+                String.format(
+                    "<context xmlns=\"urn:zimbra\"><account by=\"id\">%s</account></context>",
+                    requestedAccount.getId()));
+        envelope = SoapProtocol.Soap12.soapEnvelope(soapBody, headerXml);
       }
+      httpPost.setURI(URI.create(this.url));
+      httpPost.setEntity(new StringEntity(envelope.toString()));
+      return client.execute(httpPost);
     }
 
     private boolean isAdminAccount() {
@@ -113,7 +109,7 @@ public class SoapClient {
    * @throws Exception
    */
   public HttpResponse executeSoap(Account account, Element soapBody) throws Exception {
-      return newRequest().setCaller(account).setSoapBody(soapBody).execute();
+    return newRequest().setCaller(account).setSoapBody(soapBody).execute();
   }
 
   /**
@@ -125,6 +121,4 @@ public class SoapClient {
   public HttpResponse executeSoap(Account account, Object soapBodyPOJO) throws Exception {
     return executeSoap(account, JaxbUtil.jaxbToElement(soapBodyPOJO));
   }
-
-
 }
