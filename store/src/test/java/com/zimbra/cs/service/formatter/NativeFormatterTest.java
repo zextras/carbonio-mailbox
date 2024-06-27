@@ -24,24 +24,24 @@ import org.mockito.MockitoAnnotations;
 class NativeFormatterTest {
 
   @Mock
-  private HttpServletRequest req;
+  private HttpServletRequest servletRequestMock;
 
   @Mock
-  private HttpServletResponse resp;
+  private HttpServletResponse servletResponseMock;
 
   @Mock
-  private ServletOutputStream servletOutputStream;
+  private ServletOutputStream servletOutputStreamMock;
 
   @Captor
-  private ArgumentCaptor<String> headerCaptor;
+  private ArgumentCaptor<String> headerNameCaptor;
 
   @Captor
-  private ArgumentCaptor<String> valueCaptor;
+  private ArgumentCaptor<String> headerValueCaptor;
 
   @BeforeEach
   public void setUp() throws Exception {
     MockitoAnnotations.openMocks(this);
-    when(resp.getOutputStream()).thenReturn(servletOutputStream);
+    when(servletResponseMock.getOutputStream()).thenReturn(servletOutputStreamMock);
   }
 
   @Test
@@ -52,20 +52,20 @@ class NativeFormatterTest {
     var filename = "test.txt";
     var desc = "Test description";
 
-    when(req.getParameter("disp")).thenReturn("i");
+    when(servletRequestMock.getParameter("disp")).thenReturn("i");
 
-    new NativeFormatter().sendBackOriginalDoc(is, contentType, filename, desc, req, resp);
+    new NativeFormatter().sendBackOriginalDoc(is, contentType, filename, desc, servletRequestMock, servletResponseMock);
 
-    verify(resp, times(2)).addHeader(headerCaptor.capture(), valueCaptor.capture());
+    verify(servletResponseMock, times(2)).addHeader(headerNameCaptor.capture(), headerValueCaptor.capture());
 
-    var capturedHeaders = headerCaptor.getAllValues();
-    var capturedValues = valueCaptor.getAllValues();
+    var capturedHeaders = headerNameCaptor.getAllValues();
+    var capturedValues = headerValueCaptor.getAllValues();
 
     var contentDispositionIndex = capturedHeaders.indexOf("Content-Disposition");
     if (contentDispositionIndex != -1) {
       assertTrue(capturedValues.get(contentDispositionIndex).contains("inline"));
     }
-    verify(servletOutputStream, atLeastOnce()).write(any(byte[].class), anyInt(), anyInt());
+    verify(servletOutputStreamMock, atLeastOnce()).write(any(byte[].class), anyInt(), anyInt());
   }
 
   @Test
@@ -81,20 +81,20 @@ class NativeFormatterTest {
     var filename = "test.xml";
     var desc = "Test description";
 
-    when(req.getParameter("disp")).thenReturn("i");
+    when(servletRequestMock.getParameter("disp")).thenReturn("i");
 
-    new NativeFormatter().sendBackOriginalDoc(is, contentType, filename, desc, req, resp);
+    new NativeFormatter().sendBackOriginalDoc(is, contentType, filename, desc, servletRequestMock, servletResponseMock);
 
-    verify(resp, times(2)).addHeader(headerCaptor.capture(), valueCaptor.capture());
+    verify(servletResponseMock, times(2)).addHeader(headerNameCaptor.capture(), headerValueCaptor.capture());
 
-    var capturedHeaders = headerCaptor.getAllValues();
-    var capturedValues = valueCaptor.getAllValues();
+    var capturedHeaders = headerNameCaptor.getAllValues();
+    var capturedValues = headerValueCaptor.getAllValues();
 
     var contentDispositionIndex = capturedHeaders.indexOf("Content-Disposition");
     if (contentDispositionIndex != -1) {
       assertTrue(capturedValues.get(contentDispositionIndex).contains("attachment"));
     }
-    verify(servletOutputStream, atLeastOnce()).write(any(byte[].class), anyInt(), anyInt());
+    verify(servletOutputStreamMock, atLeastOnce()).write(any(byte[].class), anyInt(), anyInt());
   }
 
 }
