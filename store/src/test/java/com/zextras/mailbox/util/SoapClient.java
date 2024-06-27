@@ -10,15 +10,16 @@ import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
+import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.soap.JaxbUtil;
 import java.net.URI;
 import java.util.Objects;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
 
@@ -65,15 +66,8 @@ public class SoapClient {
     private String url = "/";
 
     public HttpResponse execute() throws Exception {
-      AuthToken authToken = AuthProvider.getAuthToken(caller, isAdminAccount());
-      BasicCookieStore cookieStore = new BasicCookieStore();
-      BasicClientCookie cookie =
-          new BasicClientCookie(ZimbraCookie.authTokenCookieName(false), authToken.getEncoded());
-      cookie.setDomain(caller.getServerName());
-      cookie.setPath("/");
-      cookieStore.addCookie(cookie);
-      CloseableHttpClient client =
-          HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build();
+      final var cookieStore = createCookieAuthToken();
+      HttpClient client = HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build();
       final HttpPost httpPost = new HttpPost();
       Element envelope;
       if (Objects.isNull(requestedAccount)) {
@@ -89,6 +83,17 @@ public class SoapClient {
       httpPost.setURI(URI.create(this.url));
       httpPost.setEntity(new StringEntity(envelope.toString()));
       return client.execute(httpPost);
+    }
+
+    private BasicCookieStore createCookieAuthToken() throws AuthTokenException, ServiceException {
+      AuthToken authToken = AuthProvider.getAuthToken(caller, isAdminAccount());
+      BasicCookieStore cookieStore = new BasicCookieStore();
+      BasicClientCookie cookie =
+          new BasicClientCookie(ZimbraCookie.authTokenCookieName(false), authToken.getEncoded());
+      cookie.setDomain(caller.getServerName());
+      cookie.setPath("/");
+      cookieStore.addCookie(cookie);
+      return cookieStore;
     }
 
     private boolean isAdminAccount() {

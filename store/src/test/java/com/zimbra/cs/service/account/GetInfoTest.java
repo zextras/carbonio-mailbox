@@ -67,7 +67,7 @@ class GetInfoTest extends SoapTestSuite {
 
   @Test
   void attributesSectionProvidesAmavisLists() throws Exception {
-    account =
+    final var account =
         accountCreatorFactory
             .get()
             .withAttribute(ZAttrProvisioning.A_amavisWhitelistSender, "foo1@bar.com")
