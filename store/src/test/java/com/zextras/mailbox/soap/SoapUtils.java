@@ -5,10 +5,11 @@
 package com.zextras.mailbox.soap;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 
 public class SoapUtils {
 
   public static String getResponse(HttpResponse response) throws Exception {
-    return new String (response.getEntity().getContent().readAllBytes());
+    return EntityUtils.toString(response.getEntity());
   }
 }
