@@ -34,6 +34,17 @@ import java.util.stream.Collectors;
  */
 public class FullAutoComplete extends MailDocumentHandler {
 
+  /**
+   * Helper method that returns if the {@link AutoCompleteMatch} is a Contact group
+   *
+   * @return true if the {@link AutoCompleteMatch} is a Contact group false otherwise
+   */
+  private static Boolean isContactGroup(AutoCompleteMatch match) {
+    return match != null
+        && Boolean.TRUE.equals(match.getGroup())
+        && ContactEntryType.CONTACT.name().equalsIgnoreCase(match.getMatchType());
+  }
+
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
     final var zsc = getZimbraSoapContext(context);
@@ -124,7 +135,7 @@ public class FullAutoComplete extends MailDocumentHandler {
           .addStringAttribute(MailConstants.A_MATCH_TYPE, match.getMatchType())
           .addBooleanAttribute(MailConstants.A_IS_GROUP, match.getGroup(), Boolean.FALSE);
 
-      if (Boolean.FALSE.equals(match.getGroup())) {
+      if (Boolean.FALSE.equals(isContactGroup(match))) {
         matchElementBuilder.addStringAttribute(MailConstants.A_EMAIL, match.getEmail());
       }
 
@@ -238,7 +249,8 @@ public class FullAutoComplete extends MailDocumentHandler {
       return this;
     }
 
-    public AutoCompleteMatchElementBuilder addStringAttributeWithDefault(String name, String value, String defaultValue) {
+    public AutoCompleteMatchElementBuilder addStringAttributeWithDefault(String name, String value,
+        String defaultValue) {
       if (value != null) {
         element.addAttribute(name, value);
       } else if (defaultValue != null) {
