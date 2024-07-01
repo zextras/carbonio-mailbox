@@ -68,13 +68,14 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
     Assertions.assertEquals(1, greenMail.getReceivedMessages().length);
     greenMail.reset();
 
-    final int calendarId = calendarToShare.getId();
+    final int calendarFolderId = calendarToShare.getFolderId();
     final List<String> attendees = List.of(otherAccount.getName());
-    final Msg msgWithInvitation = createMsgWithInvitation(calendarId, authenticatedAccount.getName(), attendees);
-    final String calInvId = createAppointment(calendarId,
-        authenticatedAccount, msgWithInvitation).getCalInvId();
+    final Msg msgWithInvitation = createMsgWithInvitation(calendarFolderId, authenticatedAccount.getName(), attendees);
+    final CreateAppointmentResponse appointment = createAppointment(authenticatedAccount, msgWithInvitation);
+    final String calInvId = appointment.getCalInvId();
     Assertions.assertEquals(1, greenMail.getReceivedMessages().length);
     greenMail.reset();
+
     msgWithInvitation.setSubject("Modified subject");
     modifyAppointment(authenticatedAccount.getId() + ":" + calInvId, sharedAccount, msgWithInvitation);
     Assertions.assertEquals(1, greenMail.getReceivedMessages().length);
@@ -83,8 +84,7 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
     //TODO: check who is notified of the changes
   }
 
-  private CreateAppointmentResponse createAppointment(int calendarId,
-      Account authenticatedAccount, Msg msg)
+  private CreateAppointmentResponse createAppointment(Account authenticatedAccount, Msg msg)
       throws Exception {
     final CreateAppointmentRequest createAppointmentRequest = new CreateAppointmentRequest();
     createAppointmentRequest.setMsg(msg);
@@ -95,7 +95,7 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
         CreateAppointmentResponse.class);
   }
 
-  private Msg createMsgWithInvitation(int calendarToShare, String organizer, List<String> attendees) {
+  private Msg createMsgWithInvitation(int calendarFolderId, String organizer, List<String> attendees) {
     Msg msg = new Msg();
     InvitationInfo invitationInfo = new InvitationInfo();
 
@@ -112,7 +112,7 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
     emailAddrInfos.add(from);
     msg.setEmailAddresses(emailAddrInfos);
     msg.setInvite(invitationInfo);
-    msg.setFolderId(String.valueOf(calendarToShare));
+    msg.setFolderId(String.valueOf(calendarFolderId));
     msg.setSubject("Test appointment");
     return msg;
   }
