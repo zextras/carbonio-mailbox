@@ -6,8 +6,11 @@ package com.zimbra.cs.service.mail;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
@@ -25,6 +28,7 @@ import com.zimbra.cs.mailbox.ContactRankings;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.OperationContext;
+import com.zimbra.cs.service.mail.FullAutoComplete.AutoCompleteMatchElementBuilder;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.AutoCompleteRequest;
 import com.zimbra.soap.mail.message.CreateContactRequest;
@@ -341,6 +345,45 @@ class FullAutoCompleteTest extends SoapTestSuite {
   }
 
   @Test
+  void should_return_matches_from_other_accounts_when_requested_account_not_found()
+      throws Exception {
+    String searchTerm = "fac";
+    String domain = UUID.randomUUID() + "something.com";
+
+    String contactEmail1 = searchTerm + "_email1@" + domain;
+    String contactEmail2 = searchTerm + "_email2@" + domain;
+    String contactEmail3 = searchTerm + "_email3@" + domain;
+    String contactEmail4 = searchTerm + "_email4@" + domain;
+
+    Account account = createRandomAccountWithContacts(contactEmail1, contactEmail2, contactEmail3, contactEmail4);
+    Account account2 = createRandomAccountWithContacts(contactEmail1, contactEmail2, contactEmail3, contactEmail4);
+
+    shareAccountWithPrimary(account2, account);
+
+    incrementRankings(account2, contactEmail1, 2);
+    incrementRankings(account2, contactEmail3, 2);
+
+    // create preferred account and delete it to simulate the corner case
+    var preferredAccount = createRandomAccountWithContacts();
+    Provisioning.getInstance().deleteAccount(preferredAccount.getId());
+
+    var orderedAccounts = new ArrayList<Account>();
+    orderedAccounts.add(preferredAccount);
+    orderedAccounts.add(account2);
+    var fullAutocompleteResponse = performFullAutocompleteRequest(searchTerm, account, orderedAccounts);
+
+    assertEquals(4, fullAutocompleteResponse.getMatches().size());
+    List<Integer> expectedRanking = List.of(2, 2, 0, 0, 2, 0, 0);
+    List<String> expectedMatchedEmailAddresses = Arrays.asList(contactEmail1, contactEmail3, contactEmail2,
+        contactEmail4);
+    for (int i = 0; i < fullAutocompleteResponse.getMatches().size(); i++) {
+      AutoCompleteMatch autoCompleteMatch = fullAutocompleteResponse.getMatches().get(i);
+      assertEquals(expectedRanking.get(i), autoCompleteMatch.getRanking());
+      assertEquals("<" + expectedMatchedEmailAddresses.get(i) + ">", autoCompleteMatch.getEmail());
+    }
+  }
+
+  @Test
   void should_return_contact_group_when_matches() throws Exception {
     String searchTerm = "my";
     String domain = UUID.randomUUID() + "something.com";
@@ -381,6 +424,73 @@ class FullAutoCompleteTest extends SoapTestSuite {
       }
       assertEquals(expectedRanking.get(i), autoCompleteMatch.getRanking());
     }
+  }
+
+  @Test
+  void autoCompleteMatchElementBuilder_should_omit_attributes_if_passed_value_and_default_are_null() throws Exception {
+    var searchTerm = "my";
+    var domain = UUID.randomUUID() + "something.com";
+    var contactEmail1 = searchTerm + "email1@" + domain;
+
+    var account = createRandomAccountWithContacts(contactEmail1);
+    var zsc = MailDocumentHandler.getZimbraSoapContext(ServiceTestUtil.getRequestContext(account));
+
+    var autoCompleteMatch = new AutoCompleteMatch();
+    autoCompleteMatch.setRanking(10);
+    autoCompleteMatch.setCompany("HellYeahInc");
+
+    var matchElementBuilder = new AutoCompleteMatchElementBuilder(zsc);
+    matchElementBuilder.addIntegerAttribute(MailConstants.A_RANKING, autoCompleteMatch.getRanking(), 0);
+    matchElementBuilder.addStringAttributeWithDefault(MailConstants.A_COMPANY, autoCompleteMatch.getCompany(), null);
+    matchElementBuilder.addBooleanAttribute(MailConstants.A_IS_GROUP, autoCompleteMatch.getGroup(), Boolean.FALSE);
+
+    matchElementBuilder.addStringAttributeWithDefault(MailConstants.A_LASTNAME, autoCompleteMatch.getLastName(), null);
+    matchElementBuilder.addBooleanAttribute(MailConstants.A_EXP, autoCompleteMatch.getCanExpandGroupMembers(), null);
+
+    var matchElement = matchElementBuilder.build();
+
+    assertEquals("<match ranking=\"10\" company=\"HellYeahInc\" isGroup=\"0\"/>", matchElement.toString(),
+        "if the passed values (value and default value) are null, the attribute should be omitted");
+  }
+
+  @Test
+  void autoCompleteMatchElementBuilder_should_add_attributes_with_defaultValues_if_passed_values_are_null()
+      throws Exception {
+    var searchTerm = "my";
+    var domain = UUID.randomUUID() + "something.com";
+    var contactEmail1 = searchTerm + "email1@" + domain;
+
+    var account = createRandomAccountWithContacts(contactEmail1);
+    var zsc = MailDocumentHandler.getZimbraSoapContext(ServiceTestUtil.getRequestContext(account));
+
+    var autoCompleteMatch = new AutoCompleteMatch();
+    var matchElementBuilder = new AutoCompleteMatchElementBuilder(zsc);
+
+    matchElementBuilder.addIntegerAttribute(MailConstants.A_RANKING, autoCompleteMatch.getRanking(), 20);
+    matchElementBuilder.addBooleanAttribute(MailConstants.A_IS_GROUP, autoCompleteMatch.getGroup(), Boolean.TRUE);
+    matchElementBuilder.addStringAttributeWithDefault(MailConstants.A_LASTNAME, autoCompleteMatch.getLastName(), "myLastName");
+
+    var matchElement2 = matchElementBuilder.build();
+
+    assertEquals("<match last=\"myLastName\" ranking=\"20\" isGroup=\"1\"/>",
+        matchElement2.toString(),
+        "if the passed value is null and defaultValue is valid, the attribute should be added with the defaultValue passed");
+  }
+
+  @Test
+  void should_throw_exception_when_request_element_cannot_be_converted_to_fac_request_object() throws Exception {
+    var account = accountCreatorFactory.get().create();
+
+    var mockElement = mock(Element.class);
+    when(JaxbUtil.elementToJaxb(mockElement)).thenReturn(null);
+
+    var fullAutoComplete = Mockito.spy(FullAutoComplete.class);
+    var requestContext = ServiceTestUtil.getRequestContext(account);
+
+    var serviceException = assertThrows(ServiceException.class,
+        () -> fullAutoComplete.handle(mockElement, requestContext));
+
+    assertEquals(ServiceException.FAILURE, serviceException.getCode());
   }
 
   @ParameterizedTest

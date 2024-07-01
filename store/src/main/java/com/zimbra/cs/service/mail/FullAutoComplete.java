@@ -34,6 +34,17 @@ import java.util.stream.Collectors;
  */
 public class FullAutoComplete extends MailDocumentHandler {
 
+  /**
+   * Helper method that returns if the {@link AutoCompleteMatch} is a Contact group
+   *
+   * @return true if the {@link AutoCompleteMatch} is a Contact group false otherwise
+   */
+  private static Boolean isContactGroup(AutoCompleteMatch match) {
+    return match != null
+        && Boolean.TRUE.equals(match.getGroup())
+        && ContactEntryType.CONTACT.name().equalsIgnoreCase(match.getMatchType());
+  }
+
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
     final var zsc = getZimbraSoapContext(context);
@@ -118,77 +129,45 @@ public class FullAutoComplete extends MailDocumentHandler {
       ZimbraSoapContext zsc) {
 
     return fullAutoCompleteMatches.stream().map(match -> {
-      var matchElement = zsc.createElement(MailConstants.E_MATCH);
-      matchElement.addAttribute(MailConstants.A_RANKING, Integer.toString(match.getRanking()));
-      matchElement.addAttribute(MailConstants.A_MATCH_TYPE, match.getMatchType());
-      matchElement.addAttribute(MailConstants.A_IS_GROUP, match.getGroup());
+      var matchElementBuilder = new AutoCompleteMatchElementBuilder(zsc);
 
-      // for contact group, emails of members will be expanded separately on user request
-      if (Boolean.FALSE.equals(match.getGroup())) {
-        matchElement.addAttribute(MailConstants.A_EMAIL, match.getEmail());
+      matchElementBuilder.addIntegerAttribute(MailConstants.A_RANKING, match.getRanking(), 0)
+          .addStringAttribute(MailConstants.A_MATCH_TYPE, match.getMatchType())
+          .addBooleanAttribute(MailConstants.A_IS_GROUP, match.getGroup(), Boolean.FALSE);
+
+      if (Boolean.FALSE.equals(isContactGroup(match))) {
+        matchElementBuilder.addStringAttribute(MailConstants.A_EMAIL, match.getEmail());
       }
 
-      if (match.getGroup() && match.getCanExpandGroupMembers()) {
-        matchElement.addAttribute(MailConstants.A_EXP, true);
+      if (Boolean.TRUE.equals(match.getGroup())) {
+        matchElementBuilder.addBooleanAttribute(MailConstants.A_EXP, match.getCanExpandGroupMembers(), Boolean.FALSE);
       }
 
-      final String id = match.getId();
-      if (id != null) {
-        matchElement.addAttribute(MailConstants.A_ID, id);
-      }
-
-      final String folder = match.getFolder();
-      if (folder != null) {
-        matchElement.addAttribute(MailConstants.A_FOLDER, folder);
-      }
+      matchElementBuilder.addStringAttribute(MailConstants.A_ID, match.getId())
+          .addStringAttribute(MailConstants.A_FOLDER, match.getFolder());
 
       if (Boolean.TRUE.equals(match.getGroup()) || !Objects.equals(match.getMatchType(),
           ContactEntryType.GAL.getName())) {
-        matchElement.addAttribute(MailConstants.A_DISPLAYNAME, match.getDisplayName());
+        matchElementBuilder.addStringAttribute(MailConstants.A_DISPLAYNAME, match.getDisplayName());
       }
 
-      final String firstName = match.getFirstName();
-      if (firstName != null) {
-        matchElement.addAttribute(MailConstants.A_FIRSTNAME, firstName);
-      }
+      matchElementBuilder.addStringAttribute(MailConstants.A_FIRSTNAME, match.getFirstName())
+          .addStringAttribute(MailConstants.A_MIDDLENAME, match.getMiddleName())
+          .addStringAttribute(MailConstants.A_LASTNAME, match.getLastName())
+          .addStringAttribute(MailConstants.A_FULLNAME, match.getFullName())
+          .addStringAttribute(MailConstants.A_NICKNAME, match.getNickname())
+          .addStringAttribute(MailConstants.A_COMPANY, match.getCompany())
+          .addStringAttribute(MailConstants.A_FILEAS, match.getFileAs());
 
-      final String middleName = match.getMiddleName();
-      if (middleName != null) {
-        matchElement.addAttribute(MailConstants.A_MIDDLENAME, middleName);
-      }
-
-      final String lastName = match.getLastName();
-      if (lastName != null) {
-        matchElement.addAttribute(MailConstants.A_LASTNAME, lastName);
-      }
-
-      final String fullName = match.getFullName();
-      if (fullName != null) {
-        matchElement.addAttribute(MailConstants.A_FULLNAME, fullName);
-      }
-
-      final String nickname = match.getNickname();
-      if (nickname != null) {
-        matchElement.addAttribute(MailConstants.A_NICKNAME, nickname);
-      }
-
-      final String company = match.getCompany();
-      if (company != null) {
-        matchElement.addAttribute(MailConstants.A_COMPANY, company);
-      }
-
-      final String fileAs = match.getFileAs();
-      if (fileAs != null) {
-        matchElement.addAttribute(MailConstants.A_FILEAS, fileAs);
-      }
-      return matchElement;
+      return matchElementBuilder.build();
     }).collect(Collectors.toCollection(ArrayList::new));
   }
 
   /**
    * Gets AutoComplete matches for passed account.
-   *  <p>If the account is local execute the handler otherwise makes http call to the remote server to retrieve the response
-   *  for SOAP AutoComplete.</p>
+   * <p>If the account is local execute the handler otherwise makes http call to the remote server to retrieve the
+   * response for SOAP AutoComplete.</p>
+   * <p>If the requested account does not exist, an empty AutoComplete response is returned.
    *
    * @param authenticatedAccount The Authenticated account
    * @param requestedAccountId   The account ID for which the {@link AutoComplete} matches will be returned
@@ -204,7 +183,7 @@ public class FullAutoComplete extends MailDocumentHandler {
             new AutoComplete().handle(JaxbUtil.jaxbToElement(autoCompleteRequest), context));
       } else {
         var requestedAccount = Provisioning.getInstance().getAccountById(requestedAccountId);
-        if (requestedAccount.getServer().isLocalServer()) {
+        if (requestedAccount != null && requestedAccount.getServer().isLocalServer()) {
           var zimbraSoapContext = getZimbraSoapContext(context);
           var operationContext = getOperationContext(zimbraSoapContext, context);
           operationContext.setmRequestedAccountId(requestedAccountId);
@@ -212,8 +191,8 @@ public class FullAutoComplete extends MailDocumentHandler {
               new AutoComplete().handle(JaxbUtil.jaxbToElement(autoCompleteRequest), requestedAccount,
                   operationContext, zimbraSoapContext));
         }
+        return proxyRequestInternal(requestedAccountId, autoCompleteRequest, context);
       }
-      return proxyRequestInternal(requestedAccountId, autoCompleteRequest, context);
     } catch (ServiceException e) {
       ZimbraLog.misc.warn(e.getMessage());
       return new AutoCompleteResponse();
@@ -225,7 +204,6 @@ public class FullAutoComplete extends MailDocumentHandler {
     return JaxbUtil.elementToJaxb(proxyRequest(JaxbUtil.jaxbToElement(autoCompleteRequest), context,
         requestedAccountId));
   }
-
 
   /**
    * Parses {@link com.zimbra.common.soap.MailConstants#E_ORDERED_ACCOUNT_IDS} into a {@link Tuple2} object containing
@@ -256,5 +234,51 @@ public class FullAutoComplete extends MailDocumentHandler {
     }
 
     return new Tuple2<>(preferredAccount, otherAccounts);
+  }
+
+  static class AutoCompleteMatchElementBuilder {
+
+    private final Element element;
+
+    public AutoCompleteMatchElementBuilder(ZimbraSoapContext zsc) {
+      this.element = zsc.createElement(MailConstants.E_MATCH);
+    }
+
+    public AutoCompleteMatchElementBuilder addStringAttribute(String name, String value) {
+      addStringAttributeWithDefault(name, value, null);
+      return this;
+    }
+
+    public AutoCompleteMatchElementBuilder addStringAttributeWithDefault(String name, String value,
+        String defaultValue) {
+      if (value != null) {
+        element.addAttribute(name, value);
+      } else if (defaultValue != null) {
+        element.addAttribute(name, defaultValue);
+      }
+      return this;
+    }
+
+    public AutoCompleteMatchElementBuilder addBooleanAttribute(String name, Boolean value, Boolean defaultValue) {
+      if (value != null) {
+        element.addAttribute(name, value);
+      } else if (defaultValue != null) {
+        element.addAttribute(name, defaultValue);
+      }
+      return this;
+    }
+
+    public AutoCompleteMatchElementBuilder addIntegerAttribute(String name, Integer value, Integer defaultValue) {
+      if (value != null) {
+        element.addAttribute(name, value);
+      } else if (defaultValue != null) {
+        element.addAttribute(name, defaultValue);
+      }
+      return this;
+    }
+
+    public Element build() {
+      return element;
+    }
   }
 }
