@@ -45,7 +45,6 @@ import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.mime.ParsedAddress;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.mime.ParsedMessageOptions;
-import com.zimbra.cs.mime.TnefConverter;
 import com.zimbra.cs.mime.UUEncodeConverter;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.redolog.op.CreateCalendarItemPlayer;
@@ -455,8 +454,8 @@ public class Message extends MailItem {
 
   /**
    * Returns a JavaMail {@link javax.mail.internet.MimeMessage} encapsulating the message content.
-   * If possible, TNEF and uuencoded attachments are expanded and their components are presented as
-   * standard MIME attachments. If TNEF or uuencode decoding fails, the MimeMessage wraps the raw
+   * If possible, uuencoded attachments are expanded and their components are presented as
+   * standard MIME attachments. If uuencode decoding fails, the MimeMessage wraps the raw
    * message content.
    *
    * @return A MimeMessage wrapping the RFC822 content of the Message.
@@ -464,7 +463,6 @@ public class Message extends MailItem {
    *     message file, or when the file does not exist.
    * @see MailItem#getContentStream()
    * @see MailItem#getContent()
-   * @see TnefConverter
    * @see UUEncodeConverter
    */
   public MimeMessage getMimeMessage() throws ServiceException {
@@ -473,9 +471,9 @@ public class Message extends MailItem {
 
   /**
    * Returns a JavaMail {@link javax.mail.internet.MimeMessage} encapsulating the message content.
-   * If <tt>runConverters</tt> is <tt>true</tt>, TNEF and uuencoded attachments are expanded and
+   * If <tt>runConverters</tt> is <tt>true</tt>, uuencoded attachments are expanded and
    * their components are presented as standard MIME attachments. If <tt>runConverters</tt> is
-   * <tt>false</tt> or if TNEF or uuencode decoding fails, the MimeMessage wraps the raw message
+   * <tt>false</tt> or if uuencode decoding fails, the MimeMessage wraps the raw message
    * content.
    *
    * @return A MimeMessage wrapping the RFC822 content of the Message.
@@ -483,7 +481,6 @@ public class Message extends MailItem {
    *     message file, or when the file does not exist.
    * @see #getContentStream()
    * @see #getContent()
-   * @see TnefConverter
    * @see UUEncodeConverter
    */
   public MimeMessage getMimeMessage(boolean runConverters) throws ServiceException {
