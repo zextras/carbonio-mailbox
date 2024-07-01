@@ -20,6 +20,7 @@ import com.zimbra.soap.mail.message.FolderActionRequest;
 import com.zimbra.soap.mail.message.ModifyAppointmentRequest;
 import com.zimbra.soap.mail.message.SendShareNotificationRequest;
 import com.zimbra.soap.mail.type.ActionGrantSelector;
+import com.zimbra.soap.mail.type.CalOrganizer;
 import com.zimbra.soap.mail.type.CalendarAttendee;
 import com.zimbra.soap.mail.type.DtTimeInfo;
 import com.zimbra.soap.mail.type.EmailAddrInfo;
@@ -64,14 +65,20 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
     final Folder calendarToShare = getCalendarToShare(authenticatedAccount);
 
     shareCalendar(authenticatedAccount, sharedAccount, calendarToShare);
+    Assertions.assertEquals(1, greenMail.getReceivedMessages().length);
+    greenMail.reset();
+
     final int calendarId = calendarToShare.getId();
     final List<String> attendees = List.of(otherAccount.getName());
-    final Msg msgWithInvitation = createMsgWithInvitation(calendarId, attendees);
+    final Msg msgWithInvitation = createMsgWithInvitation(calendarId, authenticatedAccount.getName(), attendees);
     final String calInvId = createAppointment(calendarId,
         authenticatedAccount, msgWithInvitation).getCalInvId();
-
+    Assertions.assertEquals(1, greenMail.getReceivedMessages().length);
+    greenMail.reset();
     msgWithInvitation.setSubject("Modified subject");
     modifyAppointment(authenticatedAccount.getId() + ":" + calInvId, sharedAccount, msgWithInvitation);
+    Assertions.assertEquals(1, greenMail.getReceivedMessages().length);
+    greenMail.reset();
 
     //TODO: check who is notified of the changes
   }
@@ -88,17 +95,22 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
         CreateAppointmentResponse.class);
   }
 
-  private static Msg createMsgWithInvitation(int calendarToShare, List<String> attendees) {
+  private Msg createMsgWithInvitation(int calendarToShare, String organizer, List<String> attendees) {
     Msg msg = new Msg();
     InvitationInfo invitationInfo = new InvitationInfo();
 
     final List<CalendarAttendee> calendarAttendees = populateCalendarAttendees(
         attendees);
-
     invitationInfo.setAttendees(calendarAttendees);
+    invitationInfo.setOrganizer(CalOrganizer.createForAddress(organizer));
     final long nowMillis = Instant.now().toEpochMilli();
     invitationInfo.setDateTime(nowMillis);
     invitationInfo.setDtStart(new DtTimeInfo("20250702T120000"));
+    final List<EmailAddrInfo> emailAddrInfos = sendAppointmentTo(attendees);
+    final EmailAddrInfo from = new EmailAddrInfo(organizer);
+    from.setAddressType("f");
+    emailAddrInfos.add(from);
+    msg.setEmailAddresses(emailAddrInfos);
     msg.setInvite(invitationInfo);
     msg.setFolderId(String.valueOf(calendarToShare));
     msg.setSubject("Test appointment");
@@ -116,6 +128,16 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
       calendarAttendees.add(calendarAttendee);
     }
     return calendarAttendees;
+  }
+
+  private static List<EmailAddrInfo> sendAppointmentTo(List<String> attendees) {
+    final List<EmailAddrInfo> emailAddrInfos = new ArrayList<>();
+    for (String address : attendees) {
+      final EmailAddrInfo emailTo = new EmailAddrInfo(address);
+      emailTo.setAddressType("t");
+      emailAddrInfos.add(emailTo);
+    }
+    return emailAddrInfos;
   }
 
   private void modifyAppointment(String appointmentId, Account authenticatedAccount, Msg msg)
