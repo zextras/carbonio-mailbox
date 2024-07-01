@@ -30,16 +30,16 @@ public class Mailbox {
       System.setProperty("zimbra.config", commandLine.getOptionValue(LOCALCONFIG));
     }
 
-    Builder builder = new Builder(Provisioning.getInstance().getConfig(), Provisioning.getInstance().getLocalServer());
+    Builder mailboxServerBuilder = new Builder(Provisioning.getInstance().getConfig(), Provisioning.getInstance().getLocalServer());
     if (commandLine.hasOption(WEB_DESCRIPTOR)) {
-      builder = builder.withWebDescriptor(commandLine.getOptionValue(WEB_DESCRIPTOR));
+      mailboxServerBuilder = mailboxServerBuilder.withWebDescriptor(commandLine.getOptionValue(WEB_DESCRIPTOR));
     }
 
     if (commandLine.hasOption(WEBAPP)) {
-      builder = builder.withWebApp(commandLine.getOptionValue(WEBAPP));
+      mailboxServerBuilder = mailboxServerBuilder.withWebApp(commandLine.getOptionValue(WEBAPP));
     }
 
-    final Server server = builder.build();
+    final Server server = mailboxServerBuilder.build();
 
     if (commandLine.hasOption(DRYRUN)) {
       return;
