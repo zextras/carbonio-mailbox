@@ -16,6 +16,8 @@ import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailclient.smtp.SmtpConfig;
 import com.zimbra.soap.mail.message.CreateAppointmentRequest;
 import com.zimbra.soap.mail.message.CreateAppointmentResponse;
+import com.zimbra.soap.mail.message.CreateMountpointRequest;
+import com.zimbra.soap.mail.message.CreateMountpointResponse;
 import com.zimbra.soap.mail.message.FolderActionRequest;
 import com.zimbra.soap.mail.message.ModifyAppointmentRequest;
 import com.zimbra.soap.mail.message.SendShareNotificationRequest;
@@ -27,10 +29,10 @@ import com.zimbra.soap.mail.type.EmailAddrInfo;
 import com.zimbra.soap.mail.type.FolderActionSelector;
 import com.zimbra.soap.mail.type.InvitationInfo;
 import com.zimbra.soap.mail.type.Msg;
+import com.zimbra.soap.mail.type.NewMountpointSpec;
 import com.zimbra.soap.type.Id;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.mail.Address;
 import javax.mail.internet.MimeMessage;
@@ -60,20 +62,23 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
   }
 
   @Test
-  void shouldNotifyAllAttendeesIfAppointmentModifiedByOtherManagerAccount() throws Exception {
-    final Account mainAccount = accountCreatorFactory.get().withUsername("mainAccount").create();
-    final Account sharedAccount = accountCreatorFactory.get().withUsername("shareTo").create();
+  void shouldNotifyAllAttendeesWhenUpdatingAppointmentOnOtherAccountCalendar() throws Exception {
+    final Account userA = accountCreatorFactory.get().withUsername("userA").create();
+    final Account userB = accountCreatorFactory.get().withUsername("userB").create();
     final List<String> attendees = List.of("attendee@test.com");
 
-    final Folder calendarToShare = getCalendarToShare(mainAccount);
-    shareCalendar(mainAccount, sharedAccount, calendarToShare);
+    final Folder calendarToShare = getCalendarToShare(userA);
+    shareCalendar(userA, userB, calendarToShare);
     Assertions.assertEquals(1, greenMail.getReceivedMessages().length);
     greenMail.reset();
 
-    final int calendarFolderId = calendarToShare.getFolderId();
-    final Msg msgWithInvitation = createMsgWithInvitation(calendarFolderId, mainAccount.getName(), attendees);
+    final CreateMountpointResponse mountpointResponse = createMountpointForSharedCalendar(
+        userA, userB, calendarToShare);
 
-    final CreateAppointmentResponse appointment = createAppointment(mainAccount, msgWithInvitation);
+    final String organizer = userB.getName();
+    final Msg msgWithInvitation = createMsgWithInvitation("1", organizer, attendees);
+
+    final CreateAppointmentResponse appointment = createAppointment(userB, msgWithInvitation);
     final String calInvId = appointment.getCalInvId();
     Assertions.assertEquals(1, greenMail.getReceivedMessages().length);
     final MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
@@ -83,11 +88,31 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
     greenMail.reset();
 
     msgWithInvitation.setSubject("Modified subject");
-    modifyAppointment(mainAccount.getId() + ":" + calInvId, sharedAccount, msgWithInvitation);
+    modifyAppointment(calInvId, userB, msgWithInvitation);
     Assertions.assertEquals(1, greenMail.getReceivedMessages().length);
+    Assertions.assertEquals(1, allRecipients.length);
+    Assertions.assertEquals(attendees.get(0), allRecipients[0].toString());
     greenMail.reset();
+  }
 
-    //TODO: check who is notified of the changes
+  private CreateMountpointResponse createMountpointForSharedCalendar(Account userA, Account userB, Folder calendarToShare)
+      throws Exception {
+    // Example request
+//					<CreateMountpointRequest xmlns="urn:zimbraMail">
+//        <link l="1" name="test " zid="uuid-account" rid="54448" view="appointment" color="0" f="#"/>
+//        </CreateMountpointRequest>
+//				</soap:Body>
+    final NewMountpointSpec newMountpointSpec = new NewMountpointSpec("test shared calendar");
+    newMountpointSpec.setDefaultView("appointment");
+    newMountpointSpec.setRemoteId(calendarToShare.getId());
+    newMountpointSpec.setOwnerId(userA.getId());
+    newMountpointSpec.setFolderId("1");
+    CreateMountpointRequest createMountpointRequest = new CreateMountpointRequest(newMountpointSpec);
+    final HttpResponse response = getSoapClient().executeSoap(userB,
+        createMountpointRequest);
+    Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
+    return SoapUtils.getSoapResponse(response, MailConstants.E_CREATE_MOUNTPOINT_RESPONSE,
+        CreateMountpointResponse.class);
   }
 
   private CreateAppointmentResponse createAppointment(Account authenticatedAccount, Msg msg)
@@ -101,7 +126,7 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
         CreateAppointmentResponse.class);
   }
 
-  private Msg createMsgWithInvitation(int calendarFolderId, String organizer, List<String> attendees) {
+  private Msg createMsgWithInvitation(String calendarFolderId, String organizer, List<String> attendees) {
     Msg msg = new Msg();
     InvitationInfo invitationInfo = new InvitationInfo();
 
@@ -161,7 +186,7 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
   private void shareCalendar(Account authenticatedAccount, Account sharedAccount, Folder calendar)
       throws Exception {
 
-    shareFolder(authenticatedAccount, sharedAccount, calendar.getFolderId());
+    shareFolderAsManager(authenticatedAccount, sharedAccount, calendar.getFolderId());
     final SendShareNotificationRequest shareNotificationRequest = new SendShareNotificationRequest();
     shareNotificationRequest.setItem(new Id(calendar.getId()));
     shareNotificationRequest.setEmailAddresses(new ArrayList<>() {{
@@ -174,7 +199,7 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
     Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
   }
 
-  private void shareFolder(Account authenticatedAccount, Account sharedAccount, int folderId)
+  private void shareFolderAsManager(Account authenticatedAccount, Account sharedAccount, int folderId)
       throws Exception {
     final FolderActionSelector grantRequest = new FolderActionSelector( String.valueOf(folderId), "grant");
     final ActionGrantSelector grant = new ActionGrantSelector("rwidx", "usr");
@@ -188,9 +213,14 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
     Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
   }
 
-  private static Folder getCalendarToShare(Account authenticatedAccount) throws ServiceException {
-    final Mailbox mailbox = mailboxManager.getMailboxByAccount(authenticatedAccount);
-    final List<Folder> calendarFolders = mailbox.getCalendarFolders(null, SortBy.DATE_DESC);
+  private static Folder getCalendarToShare(Account user) throws ServiceException {
+    final List<Folder> calendarFolders = getAllCalendars(
+        user);
     return calendarFolders.get(0);
+  }
+
+  private static List<Folder> getAllCalendars(Account authenticatedAccount) throws ServiceException {
+    final Mailbox mailbox = mailboxManager.getMailboxByAccount(authenticatedAccount);
+    return mailbox.getCalendarFolders(null, SortBy.DATE_DESC);
   }
 }
