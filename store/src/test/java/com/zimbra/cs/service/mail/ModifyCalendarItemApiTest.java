@@ -30,7 +30,10 @@ import com.zimbra.soap.mail.type.Msg;
 import com.zimbra.soap.type.Id;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import javax.mail.Address;
+import javax.mail.internet.MimeMessage;
 import org.apache.http.HttpResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -58,26 +61,29 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
 
   @Test
   void shouldNotifyAllAttendeesIfAppointmentModifiedByOtherManagerAccount() throws Exception {
-    final Account authenticatedAccount = accountCreatorFactory.get().withUsername("mainAccount").create();
+    final Account mainAccount = accountCreatorFactory.get().withUsername("mainAccount").create();
     final Account sharedAccount = accountCreatorFactory.get().withUsername("shareTo").create();
-    final Account otherAccount = accountCreatorFactory.get().withUsername("otherAccount").create();
+    final List<String> attendees = List.of("attendee@test.com");
 
-    final Folder calendarToShare = getCalendarToShare(authenticatedAccount);
-
-    shareCalendar(authenticatedAccount, sharedAccount, calendarToShare);
+    final Folder calendarToShare = getCalendarToShare(mainAccount);
+    shareCalendar(mainAccount, sharedAccount, calendarToShare);
     Assertions.assertEquals(1, greenMail.getReceivedMessages().length);
     greenMail.reset();
 
     final int calendarFolderId = calendarToShare.getFolderId();
-    final List<String> attendees = List.of(otherAccount.getName());
-    final Msg msgWithInvitation = createMsgWithInvitation(calendarFolderId, authenticatedAccount.getName(), attendees);
-    final CreateAppointmentResponse appointment = createAppointment(authenticatedAccount, msgWithInvitation);
+    final Msg msgWithInvitation = createMsgWithInvitation(calendarFolderId, mainAccount.getName(), attendees);
+
+    final CreateAppointmentResponse appointment = createAppointment(mainAccount, msgWithInvitation);
     final String calInvId = appointment.getCalInvId();
     Assertions.assertEquals(1, greenMail.getReceivedMessages().length);
+    final MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
+    final Address[] allRecipients = receivedMessage.getAllRecipients();
+    Assertions.assertEquals(1, allRecipients.length);
+    Assertions.assertEquals(attendees.get(0), allRecipients[0].toString());
     greenMail.reset();
 
     msgWithInvitation.setSubject("Modified subject");
-    modifyAppointment(authenticatedAccount.getId() + ":" + calInvId, sharedAccount, msgWithInvitation);
+    modifyAppointment(mainAccount.getId() + ":" + calInvId, sharedAccount, msgWithInvitation);
     Assertions.assertEquals(1, greenMail.getReceivedMessages().length);
     greenMail.reset();
 
