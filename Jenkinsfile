@@ -122,7 +122,7 @@ pipeline {
             steps {
                 mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
                 sh 'mkdir staging'
-                sh 'cp -r store* milter* native client common packages soap carbonio-jetty-libs staging'
+                sh 'cp -r store* milter* native client common packages soap jython-libs carbonio-jetty-libs staging'
                 script {
                     if (BRANCH_NAME == 'devel') {
                         def packages = getPackages()
