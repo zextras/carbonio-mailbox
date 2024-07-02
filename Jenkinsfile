@@ -26,10 +26,11 @@ def buildDebPackages(String flavor) {
 }
 
 def getPackages() {
-    return ["carbonio-appserver-conf","carbonio-appserver-db", "carbonio-appserver-service",
-            "carbonio-appserver-store-libs", "carbonio-appserver-war", "carbonio-common-appserver-conf",
-            "carbonio-common-appserver-native-lib", "carbonio-common-core-jar",
-            "carbonio-common-core-libs", "carbonio-directory-server"]
+    return ["carbonio-appserver-conf","carbonio-appserver-db",
+            "carbonio-appserver-service", "carbonio-common-appserver-conf",
+            "carbonio-common-appserver-native-lib", "carbonio-directory-server",
+            "carbonio-mailbox-jar"
+    ]
 }
 def getRpmSpec(String upstream, String version) {
     packages = getPackages()
@@ -121,7 +122,7 @@ pipeline {
             steps {
                 mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
                 sh 'mkdir staging'
-                sh 'cp -r store* milter* native client common packages soap carbonio-jetty-libs staging'
+                sh 'cp -r store* milter* native client common packages soap jython-libs carbonio-jetty-libs staging'
                 script {
                     if (BRANCH_NAME == 'devel') {
                         def packages = getPackages()

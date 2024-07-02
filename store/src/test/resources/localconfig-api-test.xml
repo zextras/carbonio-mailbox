@@ -31,9 +31,6 @@
   <key name="timezone_file">
     <value>./src/test/resources/timezones-test.ics</value>
   </key>
-  <key name="mailboxd_keystore_password">
-    <value>zextras</value>
-  </key>
   <key name="ldap_noop_search_supported">
     <value>false</value>
   </key>

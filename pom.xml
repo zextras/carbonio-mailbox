@@ -773,6 +773,12 @@
         <version>${system-lambda.version}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.compendium</artifactId>
+        <version>4.2.0</version>
+        <scope>runtime</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -787,6 +793,7 @@
     <module>store-conf</module>
     <module>carbonio-jetty-libs</module>
     <module>store-extra-runtime-dependencies</module>
+    <module>jython-libs</module>
   </modules>
   <packaging>pom</packaging>
 

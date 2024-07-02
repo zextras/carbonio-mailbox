@@ -32,4 +32,6 @@ package() {
     "${pkgdir}/opt/zextras/conf/contact-fields.xml"
   install -D "store-conf/conf/common-passwords.txt" \
     "${pkgdir}/opt/zextras/conf/common-passwords.txt"
+  install -D "store/conf/web.xml.production" \
+    "${pkgdir}/opt/zextras/conf/web.xml.in"
 }
