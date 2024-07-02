@@ -65,7 +65,7 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
   void shouldNotifyAllAttendeesWhenUpdatingAppointmentOnOtherAccountCalendar() throws Exception {
     final Account userA = accountCreatorFactory.get().withUsername("userA").create();
     final Account userB = accountCreatorFactory.get().withUsername("userB").create();
-    final List<String> attendees = List.of("attendee@test.com");
+    final List<String> attendees = List.of("userC@test.com");
 
     final Folder calendarToShare = getCalendarToShare(userA);
     shareCalendar(userA, userB, calendarToShare);
@@ -75,7 +75,7 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
     final CreateMountpointResponse mountpointResponse = createMountpointForSharedCalendar(
         userA, userB, calendarToShare);
 
-    final Msg msgWithInvitation = createMsgWithInvitation(mountpointResponse.getMount().getId(), userA, userB, attendees);
+    final Msg msgWithInvitation = createMsgOnSharedCalendar(mountpointResponse, userA, userB, attendees);
 
     final CreateAppointmentResponse appointment = createAppointment(userB, msgWithInvitation);
     Assertions.assertEquals(1, greenMail.getReceivedMessages().length);
@@ -123,7 +123,7 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
         CreateAppointmentResponse.class);
   }
 
-  private Msg createMsgWithInvitation(String calendarFolderId, Account userA, Account userB, List<String> attendees) {
+  private Msg createMsgOnSharedCalendar(CreateMountpointResponse mountpointResponse, Account userA, Account userB, List<String> attendees) {
     Msg msg = new Msg();
     InvitationInfo invitationInfo = new InvitationInfo();
 
@@ -148,7 +148,7 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
 
     msg.setEmailAddresses(emailAddrInfos);
     msg.setInvite(invitationInfo);
-    msg.setFolderId(String.valueOf(calendarFolderId));
+    msg.setFolderId(String.valueOf(mountpointResponse.getMount().getId()));
     msg.setSubject("Test appointment");
     return msg;
   }
