@@ -75,11 +75,9 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
     final CreateMountpointResponse mountpointResponse = createMountpointForSharedCalendar(
         userA, userB, calendarToShare);
 
-    final String organizer = userB.getName();
-    final Msg msgWithInvitation = createMsgWithInvitation("1", organizer, attendees);
+    final Msg msgWithInvitation = createMsgWithInvitation(mountpointResponse.getMount().getId(), userA, userB, attendees);
 
     final CreateAppointmentResponse appointment = createAppointment(userB, msgWithInvitation);
-    final String calInvId = appointment.getCalInvId();
     Assertions.assertEquals(1, greenMail.getReceivedMessages().length);
     final MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
     final Address[] allRecipients = receivedMessage.getAllRecipients();
@@ -88,6 +86,9 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
     greenMail.reset();
 
     msgWithInvitation.setSubject("Modified subject");
+    final String calInvId = appointment.getCalInvId();
+    final String[] userIdAndInviteId = calInvId.split(":");
+    Assertions.assertEquals(userA.getId(), userIdAndInviteId[0]);
     modifyAppointment(calInvId, userB, msgWithInvitation);
     Assertions.assertEquals(1, greenMail.getReceivedMessages().length);
     Assertions.assertEquals(1, allRecipients.length);
@@ -97,11 +98,6 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
 
   private CreateMountpointResponse createMountpointForSharedCalendar(Account userA, Account userB, Folder calendarToShare)
       throws Exception {
-    // Example request
-//					<CreateMountpointRequest xmlns="urn:zimbraMail">
-//        <link l="1" name="test " zid="uuid-account" rid="54448" view="appointment" color="0" f="#"/>
-//        </CreateMountpointRequest>
-//				</soap:Body>
     final NewMountpointSpec newMountpointSpec = new NewMountpointSpec("test shared calendar");
     newMountpointSpec.setDefaultView("appointment");
     newMountpointSpec.setRemoteId(calendarToShare.getId());
@@ -121,26 +117,35 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
     createAppointmentRequest.setMsg(msg);
     final HttpResponse response = getSoapClient().executeSoap(authenticatedAccount,
         createAppointmentRequest);
-    Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
-    return SoapUtils.getSoapResponse(response, MailConstants.E_CREATE_APPOINTMENT_RESPONSE,
+    String soapResponse = SoapUtils.getResponse(response);
+    Assertions.assertEquals(200, response.getStatusLine().getStatusCode(), "Create appointment failed with:\n" + soapResponse);
+    return SoapUtils.getSoapResponse(soapResponse, MailConstants.E_CREATE_APPOINTMENT_RESPONSE,
         CreateAppointmentResponse.class);
   }
 
-  private Msg createMsgWithInvitation(String calendarFolderId, String organizer, List<String> attendees) {
+  private Msg createMsgWithInvitation(String calendarFolderId, Account userA, Account userB, List<String> attendees) {
     Msg msg = new Msg();
     InvitationInfo invitationInfo = new InvitationInfo();
 
     final List<CalendarAttendee> calendarAttendees = populateCalendarAttendees(
         attendees);
     invitationInfo.setAttendees(calendarAttendees);
-    invitationInfo.setOrganizer(CalOrganizer.createForAddress(organizer));
+    final CalOrganizer calOrganizer = new CalOrganizer();
+    calOrganizer.setAddress(userA.getName());
+    calOrganizer.setSentBy(userB.getName());
+    invitationInfo.setOrganizer(calOrganizer);
     final long nowMillis = Instant.now().toEpochMilli();
     invitationInfo.setDateTime(nowMillis);
     invitationInfo.setDtStart(new DtTimeInfo("20250702T120000"));
     final List<EmailAddrInfo> emailAddrInfos = sendAppointmentTo(attendees);
-    final EmailAddrInfo from = new EmailAddrInfo(organizer);
+
+    final EmailAddrInfo from = new EmailAddrInfo(userA.getName());
     from.setAddressType("f");
     emailAddrInfos.add(from);
+    final EmailAddrInfo emailAddrInfo = new EmailAddrInfo(userB.getName());
+    emailAddrInfo.setAddressType("s");
+    emailAddrInfos.add(emailAddrInfo);
+
     msg.setEmailAddresses(emailAddrInfos);
     msg.setInvite(invitationInfo);
     msg.setFolderId(String.valueOf(calendarFolderId));
@@ -179,8 +184,8 @@ class ModifyCalendarItemApiTest extends SoapTestSuite {
 
     final HttpResponse response = getSoapClient().executeSoap(authenticatedAccount,
         modifyAppointmentRequest);
-    System.out.println(SoapUtils.getResponse(response));
-    Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
+    final String soapResponse = SoapUtils.getResponse(response);
+    Assertions.assertEquals(200, response.getStatusLine().getStatusCode(), "ModifyAppointment failed with: \n" + soapResponse);
   }
 
   private void shareCalendar(Account authenticatedAccount, Account sharedAccount, Folder calendar)

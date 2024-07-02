@@ -20,4 +20,9 @@ public class SoapUtils {
     return JaxbUtil.elementToJaxb(Element.parseXML(soapResponse).getElement("Body").getElement(
         bodyKey), expected);
   }
+
+  public static <T> T getSoapResponse(String response, String bodyKey, Class<T> expected) throws Exception {
+    return JaxbUtil.elementToJaxb(Element.parseXML(response).getElement("Body").getElement(
+        bodyKey), expected);
+  }
 }
