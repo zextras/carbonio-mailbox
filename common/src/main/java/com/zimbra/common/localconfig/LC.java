@@ -244,6 +244,8 @@ public final class LC {
 
   @Supported public static final KnownKey zimbra_converter_enabled_uuencode = KnownKey.newKey(true);
 
+  @Supported public static final KnownKey zimbra_converter_enabled_tnef = KnownKey.newKey(true);
+
   @Supported public static final KnownKey zimbra_converter_depth_max = KnownKey.newKey(100);
 
   @Supported public static final KnownKey zimbra_ssl_enabled = KnownKey.newKey(true);

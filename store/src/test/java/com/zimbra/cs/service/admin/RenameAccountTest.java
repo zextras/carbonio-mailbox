@@ -84,7 +84,7 @@ class RenameAccountTest extends SoapTestSuite {
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
     Assertions.assertEquals(
-        HttpStatus.SC_UNPROCESSABLE_ENTITY, response.getStatusLine().getStatusCode());
+        HttpStatus.SC_INTERNAL_SERVER_ERROR, response.getStatusLine().getStatusCode());
     final String responseBody = EntityUtils.toString(response.getEntity());
     Assertions.assertTrue(responseBody.contains(ERROR_CODE_NO_SUCH_DOMAIN));
   }

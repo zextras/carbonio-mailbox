@@ -69,7 +69,7 @@ class CreateSystemRetentionPolicyTest extends SoapTestSuite {
     final HttpResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, response.getStatusLine().getStatusCode());
+    Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, response.getStatusLine().getStatusCode());
     final String responseBody = EntityUtils.toString(response.getEntity());
     Assertions.assertTrue(responseBody.contains("no such cos: No such COS"));
   }
@@ -82,7 +82,7 @@ class CreateSystemRetentionPolicyTest extends SoapTestSuite {
     final HttpResponse response =
         getSoapClient().newRequest().setCaller(adminAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, response.getStatusLine().getStatusCode());
+    Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, response.getStatusLine().getStatusCode());
     final String responseBody = EntityUtils.toString(response.getEntity());
     Assertions.assertTrue(responseBody.contains("No purge policy specified."));
   }
@@ -95,7 +95,7 @@ class CreateSystemRetentionPolicyTest extends SoapTestSuite {
     final HttpResponse response =
         getSoapClient().newRequest().setCaller(userAccount).setSoapBody(request).execute();
 
-    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, response.getStatusLine().getStatusCode());
+    Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, response.getStatusLine().getStatusCode());
     final String responseBody = EntityUtils.toString(response.getEntity());
     Assertions.assertTrue(responseBody.contains("permission denied: need adequate admin token"));
   }

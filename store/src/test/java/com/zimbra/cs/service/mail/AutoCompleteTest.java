@@ -53,7 +53,7 @@ public class AutoCompleteTest extends SoapTestSuite {
     request.addAttribute("name", " ");
     final HttpResponse response = getSoapClient().newRequest().setCaller(account).setSoapBody(request)
         .execute();
-    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY,
+    Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR,
         response.getStatusLine().getStatusCode());
     Assertions.assertTrue(new String(response.getEntity().getContent().readAllBytes(),
         StandardCharsets.UTF_8).contains("invalid request: name parameter is empty"));
@@ -76,7 +76,7 @@ public class AutoCompleteTest extends SoapTestSuite {
         .setCaller(account1).setRequestedAccount(account2).setSoapBody(request).execute();
     final String responseBody = new String(execute.getEntity().getContent().readAllBytes(),
         StandardCharsets.UTF_8);
-    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY,
+    Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR,
         execute.getStatusLine().getStatusCode());
     Assertions.assertTrue(
         responseBody.contains("Permission denied: cannot access requested folder"));
@@ -98,7 +98,7 @@ public class AutoCompleteTest extends SoapTestSuite {
         .setRequestedAccount(account2).setSoapBody(new AutoCompleteRequest(prefix)).execute();
     final String responseBody = new String(execute.getEntity().getContent().readAllBytes(),
         StandardCharsets.UTF_8);
-    Assertions.assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY,
+    Assertions.assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR,
         execute.getStatusLine().getStatusCode());
     Assertions.assertTrue(
         responseBody.contains("permission denied: can not access account " + account2.getId()));

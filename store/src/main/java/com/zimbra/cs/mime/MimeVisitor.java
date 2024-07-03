@@ -40,6 +40,13 @@ public abstract class MimeVisitor {
             } catch (Exception e) {
                 ZimbraLog.misc.error("error loading UUENCODE converter", e);
             }
+
+            try {
+                if (LC.zimbra_converter_enabled_tnef.booleanValue())
+                    registerConverter(TnefConverter.class);
+            } catch (Exception e) {
+                ZimbraLog.misc.error("error loading TNEF converter", e);
+            }
         }
 
     /** Adds a MimeVisitor class to the list of converters invoked on the fly
