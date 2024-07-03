@@ -143,7 +143,7 @@ public class FlushCacheTest extends SoapTestSuite {
     }
 
     private void assertFailure(HttpResponse response) {
-        assertStatus(response, HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        assertStatus(response, HttpStatus.SC_UNPROCESSABLE_ENTITY);
     }
 
     private void assertStatus(HttpResponse response, int status) {
