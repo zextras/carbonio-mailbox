@@ -89,7 +89,7 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
     HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
 
     final String xmlResponse = getResponse(resp);
-    assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, resp.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.getStatusLine().getStatusCode());
     assertTrue(xmlResponse.contains("Fault"));
     assertTrue(xmlResponse.contains("<Code>service.NOT_FOUND</Code>"));
   }
@@ -106,7 +106,7 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
     HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
 
     final String xmlResponse = getResponse(resp);
-    assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, resp.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.getStatusLine().getStatusCode());
     assertTrue(xmlResponse.contains("Fault"));
     assertTrue(xmlResponse.contains("<Code>service.NOT_FOUND</Code>"));
   }
@@ -121,7 +121,7 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
     HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
 
     final String xmlResponse = getResponse(resp);
-    assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, resp.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.getStatusLine().getStatusCode());
     assertTrue(xmlResponse.contains("Fault"));
     
     assertTrue(xmlResponse.contains("<Code>service.INVALID_REQUEST</Code>"));
@@ -140,7 +140,7 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
     HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
 
     final String xmlResponse = getResponse(resp);
-    assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, resp.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.getStatusLine().getStatusCode());
     assertTrue(xmlResponse.contains("Fault"));
     assertTrue(xmlResponse.contains("<Code>service.PARSE_ERROR</Code>"));
   }
@@ -158,7 +158,7 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
     HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
 
     final String xmlResponse = getResponse(resp);
-    assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, resp.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.getStatusLine().getStatusCode());
     assertTrue(xmlResponse.contains("Fault"));
     assertTrue(xmlResponse.contains("<Code>service.NOT_FOUND</Code>"));
   }
@@ -179,7 +179,7 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
     assertTrue(xmlResponse.contains("Fault"));
     assertTrue(xmlResponse.contains("<Code>service.FAILURE</Code>"));
     assertTrue(xmlResponse.contains("Files upload failed"));
-    assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, resp.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.getStatusLine().getStatusCode());
   }
 
   @Test
@@ -195,7 +195,7 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
     HttpResponse resp = getSoapClient().executeSoap(account, parseXML(xmlRequest));
 
     final String xmlResponse = getResponse(resp);
-    assertEquals(HttpStatus.SC_INTERNAL_SERVER_ERROR, resp.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, resp.getStatusLine().getStatusCode());
     assertTrue(xmlResponse.contains("Fault"));
     assertTrue(xmlResponse.contains("<Code>service.FAILURE</Code>"));
     assertTrue(xmlResponse.contains("Files CreateLink failed"));
