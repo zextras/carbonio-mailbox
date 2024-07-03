@@ -103,19 +103,12 @@ pipeline {
         stage('Build') {
             steps {
                 mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
+
                 sh 'mkdir staging'
+
                 sh 'cp -r store* milter* native client common packages soap carbonio-jetty-libs staging'
-                script {
-                    if (BRANCH_NAME == 'devel') {
-                        def packages = getPackages()
-                        def timestamp = new Date().format('yyyyMMddHHmmss')
-                        packages.each { packageName ->
-                            def cleanPackageName = packageName.replaceFirst(/^carbonio-/, '')
-                            sh "sed -i \"s!pkgrel=.*!pkgrel=${timestamp}!\" staging/packages/${cleanPackageName}/PKGBUILD"
-                        }
-                    }
-                }
                 stash includes: 'staging/**', name: 'staging'
+
             }
         }
         stage('UT & IT') {
