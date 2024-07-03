@@ -21,10 +21,10 @@ package() {
   cd "${srcdir}"/../../staging
 
   install -D store/target/zm-store.jar \
-    "${pkgdir}/opt/zextras/mailbox/jars/mailbox.jar"
+    "${pkgdir}/opt/zextras/mailboxd/jars/mailbox.jar"
 
   install -D store/target/dependencies/*.jar \
-     "${pkgdir}/opt/zextras/mailbox/jars/"
+     "${pkgdir}/opt/zextras/mailboxd/jars/"
 
   install -Ddm755 "${pkgdir}/opt/zextras/jython/jars/"
 
