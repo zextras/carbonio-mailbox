@@ -97,7 +97,7 @@ public class ZimbraQoSFilter implements Filter {
                     at = AuthProvider.getJWToken(null, engineCtxt);
                 }
                 if (at != null) {
-                    return at.toString();
+                    return at.getAccount().getMail();
                 }
                 // Check if this is Http Basic Authentication, if so return authorization
                 // string.
@@ -140,7 +140,11 @@ public class ZimbraQoSFilter implements Filter {
                 pass = passes.get(user);
             }
             int numpermit = pass.availablePermits();
-            ZimbraLog.misc.warn("Num of permit avaiable: " + numpermit);
+            HttpServletRequest hreq = (HttpServletRequest) request;
+            String reqstring = hreq.getQueryString();
+            ZimbraServlet.addRemoteIpToLoggingContext(hreq);
+            ZimbraServlet.addUAToLoggingContext(hreq);
+            ZimbraLog.misc.warn("Num of permit avaiable for user "+ email + " on request [" + reqstring + "]: " + numpermit);
             if (pass.tryAcquire(waitMs, TimeUnit.MILLISECONDS)) {
                 try {
                     chain.doFilter(request, response);
@@ -148,14 +152,12 @@ public class ZimbraQoSFilter implements Filter {
                     pass.release();
                 }
             } else {
-                HttpServletRequest hreq = (HttpServletRequest) request;
-                ZimbraServlet.addRemoteIpToLoggingContext(hreq);
-                ZimbraServlet.addUAToLoggingContext(hreq);
                 ZimbraLog.misc
                         .warn("User " + email + " exceed the max requests limit. Block next call with 503 errors");
                 ZimbraLog.clearContext();
                 ((HttpServletResponse) response).sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             }
+            ZimbraLog.clearContext();
         } catch (InterruptedException e) {
             ((HttpServletResponse) response).sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
         }
