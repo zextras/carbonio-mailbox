@@ -20,6 +20,9 @@ import com.zimbra.common.util.L10nUtil;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.mailbox.MailItem.Type;
+import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.mailbox.MailboxTest;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.mail.CreateAppointment;
 import com.zimbra.cs.servlet.ZimbraServlet;
@@ -83,7 +86,7 @@ class UserServletTest {
     server.setConnectors(new ServerConnector[] {serverConnector});
     server.start();
     Provisioning prov = Provisioning.getInstance();
-    HashMap<String, Object> attrs = new HashMap<String, Object>();
+    HashMap<String, Object> attrs = new HashMap<>();
     attrs.put(Provisioning.A_zimbraAccountStatus, "pending");
     prov.createAccount("testbug39481@zimbra.com", "secret", attrs);
     testAccount =
@@ -99,13 +102,9 @@ class UserServletTest {
   }
 
   @AfterEach
-  public void tearDown() {
-    try {
+  public void tearDown() throws Exception {
       MailboxTestUtil.clearData();
       server.stop();
-    } catch (Exception e) {
-
-    }
   }
 
   /**
@@ -144,10 +143,7 @@ class UserServletTest {
 
   /**
    * Make a Calendar call to {@link UserServlet} endpoint using {@link #testAccount}
-   *
-   * @return
-   * @throws Exception
-   */
+   **/
   private HttpResponse defaultUserCalendarRequest() throws Exception {
     return getUserServletRequest(server.getURI().toString() + "~/Calendar.json?auth=co");
   }
@@ -168,6 +164,7 @@ class UserServletTest {
     }
   }
 
+  @SuppressWarnings({"UnusedReturnValue", "SameParameterValue"})
   private HttpResponse postUserServletRequest(String userServletEndpoint, String fileToUpload)
       throws Exception {
     final AuthToken authToken = AuthProvider.getAuthToken(testAccount);
@@ -192,7 +189,7 @@ class UserServletTest {
   /** Adds an appointment for {@link #testAccount} */
   private void createDefaultCalendarAppointmentForTestUser() throws Exception {
     final AuthToken authToken = AuthProvider.getAuthToken(testAccount);
-    Map<String, Object> context = new HashMap<String, Object>();
+    Map<String, Object> context = new HashMap<>();
     ZimbraSoapContext zsc =
         new ZimbraSoapContext(
             authToken, testAccount.getId(), SoapProtocol.Soap12, SoapProtocol.Soap12);
@@ -214,10 +211,10 @@ class UserServletTest {
   @DisplayName("User has no appointments, UserServlet should return an empty JSON.")
   void shouldReturnEmptyJsonIfUserHasNoItemsInCalendar() throws Exception {
     final HttpResponse httpCalendarResponse = this.defaultUserCalendarRequest();
-    Assertions.assertEquals(HttpStatus.SC_OK, httpCalendarResponse.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, httpCalendarResponse.getStatusLine().getStatusCode());
     final String calendarResponse =
         new String(httpCalendarResponse.getEntity().getContent().readAllBytes());
-    Assertions.assertEquals("{}", calendarResponse);
+    assertEquals("{}", calendarResponse);
   }
 
   @Test
@@ -227,7 +224,7 @@ class UserServletTest {
     this.createDefaultCalendarAppointmentForTestUser();
 
     final HttpResponse httpUserServletCalResponse = this.defaultUserCalendarRequest();
-    Assertions.assertEquals(
+    assertEquals(
         HttpStatus.SC_OK, httpUserServletCalResponse.getStatusLine().getStatusCode());
 
     final String calendarResponse =
@@ -236,7 +233,7 @@ class UserServletTest {
     Assertions.assertNotEquals("{}", calendarResponse);
     final CalendarJson calendarResponseMap =
         new ObjectMapper().readValue(calendarResponse, CalendarJson.class);
-    Assertions.assertEquals(2, calendarResponseMap.getAppt().size());
+    assertEquals(2, calendarResponseMap.getAppt().size());
   }
 
   @Test
@@ -246,28 +243,113 @@ class UserServletTest {
         server.getURI().toString() + "~/calendar?auth=co&fmt=zip", "UploadCalendar.zip");
 
     final HttpResponse getCalendarsResponse = this.defaultUserCalendarRequest();
-    Assertions.assertEquals(HttpStatus.SC_OK, getCalendarsResponse.getStatusLine().getStatusCode());
+    assertEquals(HttpStatus.SC_OK, getCalendarsResponse.getStatusLine().getStatusCode());
     final String calendarResponse =
         new String(getCalendarsResponse.getEntity().getContent().readAllBytes());
     Assertions.assertNotEquals("{}", calendarResponse);
     final CalendarJson calendarResponseMap =
         new ObjectMapper().readValue(calendarResponse, CalendarJson.class);
 
-    Assertions.assertEquals(1, calendarResponseMap.getAppt().size());
+    assertEquals(1, calendarResponseMap.getAppt().size());
+  }
+
+  @Test
+  void should_return404_when_asked_attachment_does_not_exits() throws Exception {
+    var testAccountMailbox = MailboxManager.getInstance().getMailboxByAccount(testAccount);
+
+    // add message
+    var textAttachmentMsgId = testAccountMailbox.addMessage(null,
+        MailboxTestUtil.generateMessageWithAttachment("find text attachment"),
+        MailboxTest.STANDARD_DELIVERY_OPTIONS, null).getId();
+
+    var part1TextAttachmentHttpResponse = getUserServletRequest(server.getURI()
+        .toString() + "~/?auth=co&id=" + textAttachmentMsgId + "&part=1");
+    assertEquals(HttpStatus.SC_OK, part1TextAttachmentHttpResponse.getStatusLine().getStatusCode());
+
+    // delete message
+    testAccountMailbox.delete(null, textAttachmentMsgId, Type.MESSAGE);
+    var httpResponse = getUserServletRequest(
+        server.getURI().toString() + "~/?auth=co&id=" + textAttachmentMsgId + "&part=1");
+
+    assertEquals(HttpStatus.SC_NOT_FOUND, httpResponse.getStatusLine().getStatusCode());
+  }
+
+  @Test
+  void should_return_attachment_when_asked() throws Exception {
+    var testAccountMailbox = MailboxManager.getInstance().getMailboxByAccount(testAccount);
+
+    var textAttachmentMsgId = testAccountMailbox.addMessage(null,
+        MailboxTestUtil.generateMessageWithAttachment("find text attachment"),
+        MailboxTest.STANDARD_DELIVERY_OPTIONS, null).getId();
+
+    var part1TextAttachmentHttpResponse = getUserServletRequest(server.getURI()
+        .toString() + "~/?auth=co&id=" + textAttachmentMsgId + "&part=1");
+    assertEquals(HttpStatus.SC_OK, part1TextAttachmentHttpResponse.getStatusLine().getStatusCode());
+    assertEquals("Feeling attached.",
+        new String(part1TextAttachmentHttpResponse.getEntity().getContent().readAllBytes()));
+  }
+
+  @Test
+  void should_return_attachment_with_asked_disposition_type_when_asked() throws Exception {
+    var testAccountMailbox = MailboxManager.getInstance().getMailboxByAccount(testAccount);
+
+    var textAttachmentMsgId = testAccountMailbox.addMessage(null,
+        MailboxTestUtil.generateMessageWithAttachment("find text attachment"),
+        MailboxTest.STANDARD_DELIVERY_OPTIONS, null).getId();
+
+    // ask disp=i i.e, inline
+    var part1TextAttachmentHttpResponse = getUserServletRequest(server.getURI()
+        .toString() + "~/?auth=co&id=" + textAttachmentMsgId + "&part=1&disp=i");
+
+    assertEquals(HttpStatus.SC_OK, part1TextAttachmentHttpResponse.getStatusLine().getStatusCode());
+    assertEquals("Feeling attached.",
+        new String(part1TextAttachmentHttpResponse.getEntity().getContent().readAllBytes()));
+    assertEquals("inline; filename=\"fun.txt\"",
+        part1TextAttachmentHttpResponse.getFirstHeader("Content-Disposition").getValue(),
+        "content-disposition should be inline when disp=i or disp=inline");
+
+    // ask disp=a i.e, attachment
+    var part1TextAttachmentHttpResponse2 = getUserServletRequest(server.getURI()
+        .toString() + "~/?auth=co&id=" + textAttachmentMsgId + "&part=1&disp=a");
+
+    assertEquals("attachment; filename=\"fun.txt\"",
+        part1TextAttachmentHttpResponse2.getFirstHeader("Content-Disposition").getValue(),
+        "content-disposition should be attachment when disp=a or disp=attachment");
+  }
+
+  @Test
+  void should_override_content_disposition_for_scriptable_attachment_types() throws Exception {
+    var testAccountMailbox = MailboxManager.getInstance().getMailboxByAccount(testAccount);
+
+    var xmlAttachmentMsgId = testAccountMailbox.addMessage(null,
+        MailboxTestUtil.generateMessageWithXmlAttachment("find xml attachment"),
+        MailboxTest.STANDARD_DELIVERY_OPTIONS, null).getId();
+
+    // ask disp=i i.e, inline
+    var part1XmlAttachmentHttpResponse = getUserServletRequest(server.getURI()
+        .toString() + "~/?auth=co&id=" + xmlAttachmentMsgId + "&part=1&disp=i");
+
+    assertEquals(HttpStatus.SC_OK, part1XmlAttachmentHttpResponse.getStatusLine().getStatusCode());
+    assertEquals("<root><message>Feeling attached.</message></root>",
+        new String(part1XmlAttachmentHttpResponse.getEntity().getContent().readAllBytes()));
+    assertEquals("attachment; filename=\"data.xml\"",
+        part1XmlAttachmentHttpResponse.getFirstHeader("Content-Disposition").getValue(),
+        "content-disposition should be 'attachment' for scriptable mime-types even if disp=i or disp=inline is passed");
   }
 
   /** DTO class for {@link UserServlet} Calendar response */
   private static class CalendarJson {
 
     @JsonProperty("appt")
-    public List<LinkedHashMap> appt;
+    public List<LinkedHashMap<?,?>> appt;
 
-    public List<LinkedHashMap> getAppt() {
+    public List<LinkedHashMap<?,?>> getAppt() {
       return appt;
     }
   }
 
-  public class MockHttpServletResponse implements HttpServletResponse {
+  @SuppressWarnings("RedundantThrows")
+  public static class MockHttpServletResponse implements HttpServletResponse {
 
     private int status = 0;
     private String msg = null;

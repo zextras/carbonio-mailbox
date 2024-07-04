@@ -30,6 +30,7 @@ ExecStart=/opt/zextras/common/bin/java \
 RestartSec=3
 Restart=on-failure
 SuccessExitStatus=143
+LimitNOFILE=524288
 
 [Install]
 WantedBy=carbonio-appserver.target carbonio-ce.target carbonio.target

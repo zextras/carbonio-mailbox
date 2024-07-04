@@ -101,23 +101,6 @@ pipeline {
                 }
             }
         }
-        stage("Generate SBOM and submit"){
-            when {
-                anyOf {
-                    branch 'main'
-                }
-            }
-            steps{
-                sh '''
-                    curl -sSfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b .
-                    ./trivy filesystem . --format cyclonedx --scanners license --output sbom.cyclonedx.json
-                '''
-                dependencyTrackPublisher artifact: 'sbom.cyclonedx.json',
-                        synchronous: false,
-                        projectName: 'carbonio-mailbox',
-                        projectVersion: 'rc'
-            }
-        }
         stage('Build') {
             steps {
                 mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")

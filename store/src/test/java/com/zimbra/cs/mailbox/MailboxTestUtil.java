@@ -42,6 +42,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import javax.activation.DataHandler;
+import javax.activation.DataSource;
 import javax.mail.MessagingException;
 import javax.mail.Part;
 import javax.mail.internet.MimeMessage;
@@ -293,6 +294,38 @@ public final class MailboxTestUtil {
     }
     bp.addHeader("Content-Disposition", cdisp.toString());
     bp.addHeader("Content-Type", "text/plain");
+    bp.addHeader("Content-Transfer-Encoding", MimeConstants.ET_8BIT);
+    multi.addBodyPart(bp);
+
+    mm.setContent(multi);
+    mm.saveChanges();
+
+    return new ParsedMessage(mm, false);
+  }
+
+  public static ParsedMessage generateMessageWithXmlAttachment(String subject) throws Exception {
+    MimeMessage mm = new Mime.FixedMimeMessage(JMSession.getSession());
+    mm.setHeader("From", "Vera Oliphant <oli@example.com>");
+    mm.setHeader("To", "Jimmy Dean <jdean@example.com>");
+    mm.setHeader("Subject", subject);
+    mm.setText("Good as gold");
+
+    MimeMultipart multi = new ZMimeMultipart("mixed");
+    ContentDisposition cdisp = new ContentDisposition(Part.ATTACHMENT);
+    cdisp.setParameter("filename", "data.xml");
+
+    ZMimeBodyPart bp = new ZMimeBodyPart();
+    // MimeBodyPart.setDataHandler() invalidates Content-Type and CTE if there is any, so make sure
+    // it gets called before setting Content-Type and CTE headers.
+    try {
+      String xmlContent = "<root><message>Feeling attached.</message></root>";
+      DataSource ds = new ByteArrayDataSource(xmlContent, "text/xml");
+      bp.setDataHandler(new DataHandler(ds));
+    } catch (IOException e) {
+      throw new MessagingException("could not generate mime part content", e);
+    }
+    bp.addHeader("Content-Disposition", cdisp.toString());
+    bp.addHeader("Content-Type", "text/xml");
     bp.addHeader("Content-Transfer-Encoding", MimeConstants.ET_8BIT);
     multi.addBodyPart(bp);
 

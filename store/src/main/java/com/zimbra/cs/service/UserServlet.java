@@ -442,7 +442,6 @@ public class UserServlet extends ZimbraServlet {
    * Constructs the exteral url for a mount point. This gets the link back to the correct server
    * without need for proxying it
    *
-   * @param authToken
    * @param mpt The mount point to create the url for
    * @return The url for the mountpoint/share that goes back to the original user/share/server
    * @throws ServiceException
@@ -514,8 +513,6 @@ public class UserServlet extends ZimbraServlet {
    * Constructs the exteral url for a mount point. This gets the link back to the correct server
    * without need for proxying it
    *
-   * @param authToken
-   * @param mpt The mount point to create the url for
    * @return The url for the mountpoint/share that goes back to the original user/share/server
    * @throws ServiceException
    */

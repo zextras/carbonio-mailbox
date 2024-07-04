@@ -67,6 +67,8 @@ public class SoapServlet extends ZimbraServlet {
   /** Flag for requests that want to force invalidation of client cookies */
   public static final String INVALIDATE_COOKIES = "zimbra.invalidateCookies";
 
+  static final int SC_UNPROCESSABLE_CONTENT = 422;
+
   /** Keeps track of extra services added by extensions. */
   private static LoadingCache<String, List<DocumentService>> sExtraServices =
       CacheBuilder.newBuilder().build(CacheLoader.from(new ArrayListFactory()));
@@ -370,9 +372,7 @@ public class SoapServlet extends ZimbraServlet {
       throws IOException {
     SoapProtocol soapProto = SoapProtocol.determineProtocol(envelope);
     int statusCode =
-        soapProto.hasFault(envelope)
-            ? HttpServletResponse.SC_INTERNAL_SERVER_ERROR
-            : HttpServletResponse.SC_OK;
+        soapProto.hasFault(envelope) ? SC_UNPROCESSABLE_CONTENT : HttpServletResponse.SC_OK;
 
     boolean chunkingEnabled = LC.soap_response_chunked_transfer_encoding_enabled.booleanValue();
 
