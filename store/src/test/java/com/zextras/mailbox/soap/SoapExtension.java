@@ -23,24 +23,20 @@ import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-/**
- * A Junit 5 extension to start a SOAP server and corresponding SOAP client.
- */
+/** A Junit 5 extension to start a SOAP server and corresponding SOAP client. */
 public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
-
 
   public SoapClient getSoapClient() {
     return soapClient;
   }
 
-  public void clearData() throws Exception{
+  public void clearData() throws Exception {
     MailboxTestUtil.clearData();
   }
 
-  public void initData() throws Exception{
+  public void initData() throws Exception {
     MailboxTestUtil.initData();
   }
-
 
   private final SoapClient soapClient;
   private final Server server;
@@ -74,26 +70,25 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
     private final List<String> engineHandlers = new ArrayList<>();
 
     public SoapExtension create() {
-      final ServletHolder firstServlet = new ServletHolder(FirstServlet.class);
+      final var firstServlet = new ServletHolder(FirstServlet.class);
       firstServlet.setInitOrder(1);
-      final ServletHolder soapServlet = new ServletHolder(SoapServlet.class);
+      final var soapServlet = new ServletHolder(SoapServlet.class);
       int i = 0;
-      for (String engineHandler : engineHandlers) {
+      for (var engineHandler : engineHandlers) {
         soapServlet.setInitParameter("engine.handler." + i, engineHandler);
         i++;
       }
       soapServlet.setInitOrder(2);
-      final Server server =
+      final var server =
           new JettyServerFactory()
               .withPort(port)
               .addServlet("/firstServlet", firstServlet)
               .addServlet(basePath + "*", soapServlet)
               .create();
-      final SoapClient soapClient = new SoapClient("http://localhost:" + port + basePath);
+      final var soapClient = new SoapClient("http://localhost:" + port + basePath);
       return new SoapExtension(port, server, soapClient);
     }
   }
-
 
   @Override
   public void beforeAll(ExtensionContext context) throws Exception {
@@ -115,9 +110,8 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
 
   @Override
   public void afterAll(ExtensionContext context) throws Exception {
+    soapClient.close();
     server.stop();
     MailboxTestUtil.tearDown();
   }
-
 }
-
