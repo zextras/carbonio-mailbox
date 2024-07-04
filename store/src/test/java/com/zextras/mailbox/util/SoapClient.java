@@ -13,27 +13,50 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.soap.JaxbUtil;
+import java.io.Closeable;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Objects;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
 
 /** A SoapClient that wraps the Body in an Envelope. */
-public class SoapClient {
+public class SoapClient implements Closeable {
 
   /** Endpoint in form of http://<host>:<port>/<basePath> */
-  private String endpoint;
+  private final String endpoint;
+
+  private final BasicCookieStore cookieStore;
+  private final CloseableHttpClient client;
 
   public SoapClient(String endpoint) {
     this.endpoint = endpoint;
+    cookieStore = new BasicCookieStore();
+    client = HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build();
+  }
+
+  @Override
+  public void close() throws IOException {
+    client.close();
   }
 
   public static class Request {
+
+    private final BasicCookieStore cookieStore;
+    private final HttpClient client;
+
+    public Request(BasicCookieStore cookieStore, HttpClient client) {
+
+      this.cookieStore = cookieStore;
+      this.client = client;
+    }
 
     public Request setSoapBody(Element soapBody) {
       this.soapBody = soapBody;
@@ -66,9 +89,8 @@ public class SoapClient {
     private String url = "/";
 
     public HttpResponse execute() throws Exception {
-      BasicCookieStore cookieStore = new BasicCookieStore();
-      final var client = HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build();
 
+      cookieStore.clear();
       cookieStore.addCookie(createAuthCookie());
 
       final HttpPost httpPost = new HttpPost();
@@ -107,7 +129,7 @@ public class SoapClient {
   }
 
   public Request newRequest() {
-    return new Request().setBaseURL(this.endpoint);
+    return new Request(cookieStore, client).setBaseURL(this.endpoint);
   }
 
   /**
