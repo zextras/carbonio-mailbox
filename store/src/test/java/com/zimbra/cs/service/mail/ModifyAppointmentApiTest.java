@@ -35,12 +35,13 @@ import com.zimbra.soap.mail.type.Msg;
 import com.zimbra.soap.mail.type.NewMountpointSpec;
 import com.zimbra.soap.type.Id;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.mail.Address;
 import javax.mail.internet.MimeMessage;
 import org.apache.http.HttpResponse;
-import org.joda.time.DateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -162,9 +163,8 @@ class ModifyAppointmentApiTest extends SoapTestSuite {
   }
 
   private static String nextWeek() {
-    final int secondsInAWeek = 7 * 24 * 60 * 60;
-    final long startDateMillis = (Instant.now().getEpochSecond() + secondsInAWeek)*1000;
-    return new DateTime(startDateMillis).toString("YMMdd") + "T120000";
+    final LocalDateTime now = LocalDateTime.now();
+    return now.plusDays(7L).format(DateTimeFormatter.ofPattern("yMMdd"));
   }
 
   private ModifyAppointmentResponse modifyAppointment(String appointmentId, Account authenticatedAccount, Msg msg)
