@@ -68,8 +68,8 @@ public class ModifyCalendarItem extends CalendarRequest {
   @Override
     public Element handle(Element request, Map<String, Object> context) throws ServiceException {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
-        Account acct = getRequestedAccount(zsc);
-        Mailbox mbox = getRequestedMailbox(zsc);
+        Account requestedAccount = getRequestedAccount(zsc);
+        Mailbox requestedMailbox = getRequestedMailbox(zsc);
         OperationContext octxt = getOperationContext(zsc, context);
 
         // proxy handling
@@ -77,7 +77,7 @@ public class ModifyCalendarItem extends CalendarRequest {
         Element msgElem = request.getElement(MailConstants.E_MSG);
         String folderStr = msgElem.getAttribute(MailConstants.A_FOLDER, null);
         ItemId iid = new ItemId(request.getAttribute(MailConstants.A_ID), zsc);
-        if (!iid.belongsTo(acct)) {
+        if (!iid.belongsTo(requestedAccount)) {
             // Proxy it.
             if (folderStr != null) {
                 // make sure that the folder ID is fully qualified
@@ -92,15 +92,15 @@ public class ModifyCalendarItem extends CalendarRequest {
         ItemId iidFolder = null;
         if (folderStr != null) {
             iidFolder = new ItemId(folderStr, zsc);
-            isInterMboxMove = !iidFolder.belongsTo(mbox);
+            isInterMboxMove = !iidFolder.belongsTo(requestedMailbox);
         }
 
         MailSendQueue sendQueue = new MailSendQueue();
         Element response = getResponseElement(zsc);
         int compNum = (int) request.getAttributeLong(MailConstants.A_CAL_COMP, 0);
-        mbox.lock.lock();
+        requestedMailbox.lock.lock();
         try {
-            CalendarItem calItem = mbox.getCalendarItemById(octxt, iid.getId());
+            CalendarItem calItem = requestedMailbox.getCalendarItemById(octxt, iid.getId());
             if (calItem == null) {
                 throw MailServiceException.NO_SUCH_CALITEM(iid.toString(), "Could not find calendar item");
             }
@@ -111,7 +111,7 @@ public class ModifyCalendarItem extends CalendarRequest {
             }
             if (!isInterMboxMove && iidFolder != null) {
                 if (iidFolder.getId() != calItem.getFolderId()) {
-                    Folder destFolder = mbox.getFolderById(octxt, iidFolder.getId());
+                    Folder destFolder = requestedMailbox.getFolderById(octxt, iidFolder.getId());
                     if (destFolder.inTrash()) {
                         throw ServiceException.INVALID_REQUEST("cannot combine with a move to trash", null);
                     }
@@ -135,19 +135,19 @@ public class ModifyCalendarItem extends CalendarRequest {
             if (!isInterMboxMove && iidFolder != null) {
                 folderId = iidFolder.getId();
             }
-            modifyCalendarItem(zsc, octxt, request, acct, mbox, folderId, calItem, inv, seriesInv,
-                               response, isInterMboxMove, sendQueue);
+            modifyCalendarItem(zsc, octxt, request, requestedAccount, requestedMailbox, folderId, calItem, inv, seriesInv,
+                               response, sendQueue);
         } finally {
-            mbox.lock.release();
+            requestedMailbox.lock.release();
             sendQueue.send();
         }
 
         // Inter-mailbox move if necessary.
         if (isInterMboxMove) {
-            CalendarItem calItem = mbox.getCalendarItemById(octxt, iid.getId());
+            CalendarItem calItem = requestedMailbox.getCalendarItemById(octxt, iid.getId());
             List<Integer> ids = new ArrayList<>(1);
             ids.add(calItem.getId());
-            ItemActionHelper.MOVE(octxt, mbox, zsc.getResponseProtocol(), ids, calItem.getType(), null, iidFolder);
+            ItemActionHelper.MOVE(octxt, requestedMailbox, zsc.getResponseProtocol(), ids, calItem.getType(), null, iidFolder);
         }
 
         return response;
@@ -156,7 +156,7 @@ public class ModifyCalendarItem extends CalendarRequest {
     private Element modifyCalendarItem(
             ZimbraSoapContext zsc, OperationContext octxt, Element request,
             Account acct, Mailbox mbox, int folderId,
-            CalendarItem calItem, Invite inv, Invite seriesInv, Element response, boolean isInterMboxMove,
+            CalendarItem calItem, Invite inv, Invite seriesInv, Element response,
             MailSendQueue sendQueue)
     throws ServiceException {
         // <M>
@@ -165,7 +165,7 @@ public class ModifyCalendarItem extends CalendarRequest {
         ModifyCalendarItemParser parser = new ModifyCalendarItemParser(inv, seriesInv);
 
         CalSendData dat = handleMsgElement(zsc, octxt, msgElem, acct, mbox, parser);
-        dat.mDontNotifyAttendees = isInterMboxMove;
+        dat.mDontNotifyAttendees = false;
 
         if (!dat.mInvite.hasRecurId())
             ZimbraLog.calendar.info("<ModifyCalendarItem> id=%d, folderId=%d, subject=\"%s\", UID=%s",
