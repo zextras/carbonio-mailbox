@@ -4,7 +4,7 @@
 #
 # SPDX-License-Identifier: GPL-2.0-only
 #
-OS=$1
+OS=${1:-"ubuntu-jammy"}
 
 if [[ -z $OS ]]
 then
