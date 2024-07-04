@@ -7,16 +7,17 @@ package com.zextras.mailbox.util;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapProtocol;
+import com.zimbra.common.soap.XmlParseException;
 import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.soap.JaxbUtil;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Objects;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -67,8 +68,14 @@ public class SoapClient {
 
     public HttpResponse execute() throws Exception {
       final var cookieStore = createCookieAuthToken();
-      HttpClient client = HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build();
+      final var client = HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build();
       final HttpPost httpPost = new HttpPost();
+      httpPost.setURI(URI.create(this.url));
+      httpPost.setEntity(createEnvelop());
+      return client.execute(httpPost);
+    }
+
+    private StringEntity createEnvelop() throws XmlParseException, UnsupportedEncodingException {
       Element envelope;
       if (Objects.isNull(requestedAccount)) {
         envelope = SoapProtocol.Soap12.soapEnvelope(soapBody);
@@ -80,9 +87,7 @@ public class SoapClient {
                     requestedAccount.getId()));
         envelope = SoapProtocol.Soap12.soapEnvelope(soapBody, headerXml);
       }
-      httpPost.setURI(URI.create(this.url));
-      httpPost.setEntity(new StringEntity(envelope.toString()));
-      return client.execute(httpPost);
+      return new StringEntity(envelope.toString());
     }
 
     private BasicCookieStore createCookieAuthToken() throws AuthTokenException, ServiceException {
