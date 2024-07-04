@@ -19,8 +19,11 @@ import com.zimbra.soap.mail.message.CreateAppointmentResponse;
 import com.zimbra.soap.mail.message.CreateMountpointRequest;
 import com.zimbra.soap.mail.message.CreateMountpointResponse;
 import com.zimbra.soap.mail.message.FolderActionRequest;
+import com.zimbra.soap.mail.message.FolderActionResponse;
 import com.zimbra.soap.mail.message.ModifyAppointmentRequest;
+import com.zimbra.soap.mail.message.ModifyAppointmentResponse;
 import com.zimbra.soap.mail.message.SendShareNotificationRequest;
+import com.zimbra.soap.mail.message.SendShareNotificationResponse;
 import com.zimbra.soap.mail.type.ActionGrantSelector;
 import com.zimbra.soap.mail.type.CalOrganizer;
 import com.zimbra.soap.mail.type.CalendarAttendee;
@@ -37,6 +40,7 @@ import java.util.List;
 import javax.mail.Address;
 import javax.mail.internet.MimeMessage;
 import org.apache.http.HttpResponse;
+import org.joda.time.DateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -67,18 +71,17 @@ class ModifyAppointmentApiTest extends SoapTestSuite {
     final Account userB = accountCreatorFactory.get().withUsername("userB").create();
     final String userC = "userC@test.com";
 
-    final Folder calendarToShare = getCalendarToShare(userA);
-    shareCalendar(userA, userB, calendarToShare);
+    final Folder userACalendar = getFirstCalendar(userA);
+    shareCalendar(userA, userB, userACalendar);
     Assertions.assertEquals(1, greenMail.getReceivedMessages().length);
     greenMail.reset();
 
-    final CreateMountpointResponse mountpointResponse = createMountpointForSharedCalendar(
-        userA, userB, calendarToShare);
+    final CreateMountpointResponse mountpointResponse = createMountpoint(userB, userACalendar);
 
-    final Msg msgWithInvitation = createMsgOnSharedCalendar(mountpointResponse, userA, userB,
+    final Msg invitation = appointmentOnSharedCalendar(mountpointResponse, userA, userB,
         List.of(userC));
 
-    final CreateAppointmentResponse appointment = createAppointment(userB, msgWithInvitation);
+    final CreateAppointmentResponse appointment = createAppointment(userB, invitation);
     Assertions.assertEquals(1, greenMail.getReceivedMessages().length);
     final MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
     final Address[] allRecipients = receivedMessage.getAllRecipients();
@@ -86,28 +89,27 @@ class ModifyAppointmentApiTest extends SoapTestSuite {
     Assertions.assertEquals(userC, allRecipients[0].toString());
     greenMail.reset();
 
-    msgWithInvitation.setSubject("Modified subject");
+    invitation.setSubject("Modified subject");
     final String calInvId = appointment.getCalInvId();
     final String[] userIdAndInviteId = calInvId.split(":");
     Assertions.assertEquals(userA.getId(), userIdAndInviteId[0]);
-    modifyAppointment(calInvId, userB, msgWithInvitation);
+    modifyAppointment(calInvId, userB, invitation);
     Assertions.assertEquals(1, greenMail.getReceivedMessages().length);
     Assertions.assertEquals(1, allRecipients.length);
     Assertions.assertEquals(userC, allRecipients[0].toString());
     greenMail.reset();
   }
 
-  private CreateMountpointResponse createMountpointForSharedCalendar(Account userA, Account userB, Folder calendarToShare)
+  private CreateMountpointResponse createMountpoint(Account onAccount, Folder sharedCalendar)
       throws Exception {
     final NewMountpointSpec newMountpointSpec = new NewMountpointSpec("test shared calendar");
     newMountpointSpec.setDefaultView("appointment");
-    newMountpointSpec.setRemoteId(calendarToShare.getId());
-    newMountpointSpec.setOwnerId(userA.getId());
+    newMountpointSpec.setRemoteId(sharedCalendar.getId());
+    newMountpointSpec.setOwnerId(sharedCalendar.getAccountId());
     newMountpointSpec.setFolderId("1");
     CreateMountpointRequest createMountpointRequest = new CreateMountpointRequest(newMountpointSpec);
-    final HttpResponse response = getSoapClient().executeSoap(userB,
+    final HttpResponse response = getSoapClient().executeSoap(onAccount,
         createMountpointRequest);
-    Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
     return SoapUtils.getSoapResponse(response, MailConstants.E_CREATE_MOUNTPOINT_RESPONSE,
         CreateMountpointResponse.class);
   }
@@ -124,60 +126,48 @@ class ModifyAppointmentApiTest extends SoapTestSuite {
         CreateAppointmentResponse.class);
   }
 
-  private Msg createMsgOnSharedCalendar(CreateMountpointResponse mountpointResponse, Account userA, Account userB, List<String> attendees) {
+  private Msg appointmentOnSharedCalendar(CreateMountpointResponse mountpointResponse, Account userA, Account userB, List<String> attendees) {
     Msg msg = new Msg();
-    InvitationInfo invitationInfo = new InvitationInfo();
-
-    final List<CalendarAttendee> calendarAttendees = populateCalendarAttendees(
-        attendees);
-    invitationInfo.setAttendees(calendarAttendees);
-    final CalOrganizer calOrganizer = new CalOrganizer();
-    calOrganizer.setAddress(userA.getName());
-    calOrganizer.setSentBy(userB.getName());
-    invitationInfo.setOrganizer(calOrganizer);
-    final long nowMillis = Instant.now().toEpochMilli();
-    invitationInfo.setDateTime(nowMillis);
-    invitationInfo.setDtStart(new DtTimeInfo("20250702T120000"));
-    final List<EmailAddrInfo> emailAddrInfos = sendAppointmentTo(attendees);
-
-    final EmailAddrInfo from = new EmailAddrInfo(userA.getName());
-    from.setAddressType("f");
-    emailAddrInfos.add(from);
-    final EmailAddrInfo emailAddrInfo = new EmailAddrInfo(userB.getName());
-    emailAddrInfo.setAddressType("s");
-    emailAddrInfos.add(emailAddrInfo);
-
-    msg.setEmailAddresses(emailAddrInfos);
-    msg.setInvite(invitationInfo);
     msg.setFolderId(String.valueOf(mountpointResponse.getMount().getId()));
     msg.setSubject("Test appointment");
+
+    InvitationInfo invitationInfo = new InvitationInfo();
+    final CalOrganizer organizer = new CalOrganizer();
+    organizer.setAddress(userA.getName());
+    organizer.setSentBy(userB.getName());
+    invitationInfo.setOrganizer(organizer);
+    attendees.forEach(
+        address -> {
+          final CalendarAttendee calendarAttendee = new CalendarAttendee();
+          calendarAttendee.setAddress(address);
+          calendarAttendee.setDisplayName(address);
+          calendarAttendee.setRsvp(true);
+          calendarAttendee.setRole("REQ");
+          invitationInfo.addAttendee(calendarAttendee);
+        }
+    );
+
+    invitationInfo.setDateTime(Instant.now().toEpochMilli());
+    final String dateTime = nextWeek();
+    invitationInfo.setDtStart(new DtTimeInfo(dateTime));
+
+    attendees.forEach(
+        address -> msg.addEmailAddress(new EmailAddrInfo(address, "t"))
+    );
+    msg.addEmailAddress(new EmailAddrInfo(userA.getName(), "f"));
+    msg.addEmailAddress(new EmailAddrInfo(userB.getName(), "s"));
+    msg.setInvite(invitationInfo);
+
     return msg;
   }
 
-  private static List<CalendarAttendee> populateCalendarAttendees(List<String> attendees) {
-    final List<CalendarAttendee> calendarAttendees = new ArrayList<>();
-    for (String address : attendees) {
-      final CalendarAttendee calendarAttendee = new CalendarAttendee();
-      calendarAttendee.setAddress(address);
-      calendarAttendee.setDisplayName(address);
-      calendarAttendee.setRsvp(true);
-      calendarAttendee.setRole("REQ");
-      calendarAttendees.add(calendarAttendee);
-    }
-    return calendarAttendees;
+  private static String nextWeek() {
+    final int secondsInAWeek = 7 * 24 * 60 * 60;
+    final long startDateMillis = (Instant.now().getEpochSecond() + secondsInAWeek)*1000;
+    return new DateTime(startDateMillis).toString("YMMdd") + "T120000";
   }
 
-  private static List<EmailAddrInfo> sendAppointmentTo(List<String> attendees) {
-    final List<EmailAddrInfo> emailAddrInfos = new ArrayList<>();
-    for (String address : attendees) {
-      final EmailAddrInfo emailTo = new EmailAddrInfo(address);
-      emailTo.setAddressType("t");
-      emailAddrInfos.add(emailTo);
-    }
-    return emailAddrInfos;
-  }
-
-  private void modifyAppointment(String appointmentId, Account authenticatedAccount, Msg msg)
+  private ModifyAppointmentResponse modifyAppointment(String appointmentId, Account authenticatedAccount, Msg msg)
       throws Exception {
     final ModifyAppointmentRequest modifyAppointmentRequest = new ModifyAppointmentRequest();
     modifyAppointmentRequest.setId(appointmentId);
@@ -187,46 +177,49 @@ class ModifyAppointmentApiTest extends SoapTestSuite {
         modifyAppointmentRequest);
     final String soapResponse = SoapUtils.getResponse(response);
     Assertions.assertEquals(200, response.getStatusLine().getStatusCode(), "ModifyAppointment failed with: \n" + soapResponse);
+
+    return SoapUtils.getSoapResponse(soapResponse, MailConstants.E_MODIFY_APPOINTMENT_RESPONSE,
+        ModifyAppointmentResponse.class);
   }
 
-  private void shareCalendar(Account authenticatedAccount, Account sharedAccount, Folder calendar)
+  private SendShareNotificationResponse shareCalendar(Account authenticatedAccount, Account shareWith, Folder calendar)
       throws Exception {
 
-    shareFolderAsManager(authenticatedAccount, sharedAccount, calendar.getFolderId());
+    shareFolderAsManager(authenticatedAccount, shareWith, calendar.getFolderId());
     final SendShareNotificationRequest shareNotificationRequest = new SendShareNotificationRequest();
     shareNotificationRequest.setItem(new Id(calendar.getId()));
     shareNotificationRequest.setEmailAddresses(new ArrayList<>() {{
       add(new EmailAddrInfo(
-          sharedAccount.getName()));
+          shareWith.getName()));
     }});
-
     final HttpResponse response = getSoapClient().executeSoap(authenticatedAccount,
         shareNotificationRequest);
     Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
+    return SoapUtils.getSoapResponse(response, MailConstants.E_SEND_SHARE_NOTIFICATION_RESPONSE,
+        SendShareNotificationResponse.class);
   }
 
-  private void shareFolderAsManager(Account authenticatedAccount, Account sharedAccount, int folderId)
+  private FolderActionResponse shareFolderAsManager(Account authenticatedAccount, Account shareWith, int calendarFolderId)
       throws Exception {
-    final FolderActionSelector grantRequest = new FolderActionSelector( String.valueOf(folderId), "grant");
+    final FolderActionSelector grantRequest = new FolderActionSelector(String.valueOf(
+        calendarFolderId),
+        "grant");
     final ActionGrantSelector grant = new ActionGrantSelector("rwidx", "usr");
-    grant.setDisplayName(sharedAccount.getName());
+    grant.setDisplayName(shareWith.getName());
     grant.setPassword("");
     grantRequest.setGrant(grant);
-    final FolderActionRequest folderActionRequest = new FolderActionRequest(grantRequest);
-
+    final FolderActionRequest folderActionRequest = new FolderActionRequest(grantRequest);;
     final HttpResponse response = getSoapClient().executeSoap(authenticatedAccount,
         folderActionRequest);
     Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
+    return SoapUtils.getSoapResponse(response, MailConstants.E_FOLDER_ACTION_RESPONSE,
+        FolderActionResponse.class);
   }
 
-  private static Folder getCalendarToShare(Account user) throws ServiceException {
-    final List<Folder> calendarFolders = getAllCalendars(
-        user);
+  private static Folder getFirstCalendar(Account user) throws ServiceException {
+    final Mailbox mailbox = mailboxManager.getMailboxByAccount(user);
+    final List<Folder> calendarFolders = mailbox.getCalendarFolders(null, SortBy.DATE_DESC);
     return calendarFolders.get(0);
   }
 
-  private static List<Folder> getAllCalendars(Account authenticatedAccount) throws ServiceException {
-    final Mailbox mailbox = mailboxManager.getMailboxByAccount(authenticatedAccount);
-    return mailbox.getCalendarFolders(null, SortBy.DATE_DESC);
-  }
 }
