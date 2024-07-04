@@ -10,7 +10,6 @@ import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.soap.XmlParseException;
 import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.soap.JaxbUtil;
@@ -67,8 +66,11 @@ public class SoapClient {
     private String url = "/";
 
     public HttpResponse execute() throws Exception {
-      final var cookieStore = createCookieAuthToken();
+      BasicCookieStore cookieStore = new BasicCookieStore();
       final var client = HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build();
+
+      cookieStore.addCookie(createAuthCookie());
+
       final HttpPost httpPost = new HttpPost();
       httpPost.setURI(URI.create(this.url));
       httpPost.setEntity(createEnvelop());
@@ -90,15 +92,13 @@ public class SoapClient {
       return new StringEntity(envelope.toString());
     }
 
-    private BasicCookieStore createCookieAuthToken() throws AuthTokenException, ServiceException {
-      AuthToken authToken = AuthProvider.getAuthToken(caller, isAdminAccount());
-      BasicCookieStore cookieStore = new BasicCookieStore();
-      BasicClientCookie cookie =
-          new BasicClientCookie(ZimbraCookie.authTokenCookieName(false), authToken.getEncoded());
+    private BasicClientCookie createAuthCookie() throws AuthTokenException, ServiceException {
+      final var authToken = AuthProvider.getAuthToken(caller, isAdminAccount());
+      final var name = ZimbraCookie.authTokenCookieName(false);
+      final var cookie = new BasicClientCookie(name, authToken.getEncoded());
       cookie.setDomain(caller.getServerName());
       cookie.setPath("/");
-      cookieStore.addCookie(cookie);
-      return cookieStore;
+      return cookie;
     }
 
     private boolean isAdminAccount() {
