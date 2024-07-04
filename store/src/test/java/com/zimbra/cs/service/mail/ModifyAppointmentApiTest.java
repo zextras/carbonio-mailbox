@@ -39,10 +39,9 @@ import javax.mail.internet.MimeMessage;
 import org.apache.http.HttpResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class ModifyCalendarItemApiTest extends SoapTestSuite {
+class ModifyAppointmentApiTest extends SoapTestSuite {
 
   private static MailboxManager mailboxManager;
   private static AccountCreator.Factory accountCreatorFactory;
