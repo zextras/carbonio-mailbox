@@ -7,7 +7,16 @@ PartOf=carbonio-appserver.target carbonio-ce.target carbonio.target
 [Service]
 User=zextras
 EnvironmentFile=-/opt/zextras/data/systemd.env
-ExecStartPre=/opt/zextras/bin/zmtlsctl
+ExecStartPre=echo REWRITE \
+  sasl \
+  webxml \
+  mailbox \
+  service \
+  zextras \
+  zextrasAdmin \
+  zimlet \
+  | netcat -w $configd_rewrite_timeout localhost $configd_listen_port
+ExecStartPre=-/opt/zextras/bin/zmtlsctl
 ExecStart=/opt/zextras/common/bin/java \
             -Dfile.encoding=UTF-8 \
             $mailboxd_java_options \
