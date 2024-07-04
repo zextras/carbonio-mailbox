@@ -91,6 +91,11 @@
       <groupId>org.apache.curator</groupId>
     </dependency>
 
+    <dependency>
+      <groupId>com.zextras.carbonio.message-broker</groupId>
+      <artifactId>carbonio-message-broker-sdk</artifactId>
+    </dependency>
+
     <!-- Must be provided by container -->
     <dependency>
       <artifactId>guava</artifactId>

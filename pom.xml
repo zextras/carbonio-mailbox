@@ -773,6 +773,11 @@
         <version>${system-lambda.version}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>com.zextras.carbonio.message-broker</groupId>
+        <artifactId>carbonio-message-broker-sdk</artifactId>
+        <version>${carbonio-message-broker-sdk.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -811,9 +816,10 @@
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
     <system-lambda.version>1.2.1</system-lambda.version>
+    <carbonio-message-broker-sdk.version>0.0.1-SNAPSHOT</carbonio-message-broker-sdk.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <changelist>-SNAPSHOT</changelist>
-    <revision>24.9.0</revision>
+    <revision>24.9.1</revision>
     <mockserver.version>5.13.0</mockserver.version>
     <mariadb-java-client.version>2.7.3</mariadb-java-client.version>
   </properties>
