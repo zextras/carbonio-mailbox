@@ -70,15 +70,8 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
     private final List<String> engineHandlers = new ArrayList<>();
 
     public SoapExtension create() {
-      final var firstServlet = new ServletHolder(FirstServlet.class);
-      firstServlet.setInitOrder(1);
-      final var soapServlet = new ServletHolder(SoapServlet.class);
-      int i = 0;
-      for (var engineHandler : engineHandlers) {
-        soapServlet.setInitParameter("engine.handler." + i, engineHandler);
-        i++;
-      }
-      soapServlet.setInitOrder(2);
+      final var firstServlet = createFirstServlet();
+      final var soapServlet = createSecondServlet();
       final var server =
           new JettyServerFactory()
               .withPort(port)
@@ -87,6 +80,23 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
               .create();
       final var soapClient = new SoapClient("http://localhost:" + port + basePath);
       return new SoapExtension(port, server, soapClient);
+    }
+
+    private static ServletHolder createFirstServlet() {
+      final var firstServlet = new ServletHolder(FirstServlet.class);
+      firstServlet.setInitOrder(1);
+      return firstServlet;
+    }
+
+    private ServletHolder createSecondServlet() {
+      final var soapServlet = new ServletHolder(SoapServlet.class);
+      int i = 0;
+      for (var engineHandler : engineHandlers) {
+        soapServlet.setInitParameter("engine.handler." + i, engineHandler);
+        i++;
+      }
+      soapServlet.setInitOrder(2);
+      return soapServlet;
     }
   }
 
