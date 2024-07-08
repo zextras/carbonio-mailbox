@@ -21,10 +21,12 @@ import java.util.Objects;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
 
 /** A SoapClient that wraps the Body in an Envelope. */
@@ -39,7 +41,18 @@ public class SoapClient implements Closeable {
   public SoapClient(String endpoint) {
     this.endpoint = endpoint;
     cookieStore = new BasicCookieStore();
-    client = HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build();
+    client =
+        HttpClients.custom()
+            .setConnectionManager(createConnectionManager())
+            .setDefaultCookieStore(cookieStore)
+            .build();
+  }
+
+  private static HttpClientConnectionManager createConnectionManager() {
+    final var connectionManager = new PoolingHttpClientConnectionManager();
+    connectionManager.setMaxTotal(100);
+    connectionManager.setDefaultMaxPerRoute(100);
+    return connectionManager;
   }
 
   @Override
