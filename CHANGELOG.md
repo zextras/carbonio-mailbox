@@ -1,5 +1,12 @@
 
 
+## [4.16.2](https://github.com/zextras/carbonio-mailbox/compare/4.16.1...4.16.2) (2024-07-08)
+
+
+### Bug Fixes
+
+* [CO-1239] always notify attendees when appointment is updated ([#543](https://github.com/zextras/carbonio-mailbox/issues/543)) ([9b4706e](https://github.com/zextras/carbonio-mailbox/commit/9b4706eb313df5880c07a73858b5f89be43b2808))
+
 # [4.16.1](https://github.com/Zextras/carbonio-mailbox/compare/4.16.0...4.16.1) (2024-07-03)
 
 
