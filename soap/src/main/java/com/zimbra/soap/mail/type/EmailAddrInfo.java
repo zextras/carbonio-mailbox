@@ -51,6 +51,11 @@ public class EmailAddrInfo {
         this.address = address;
     }
 
+    public EmailAddrInfo(String address, String type) {
+        this.address = address;
+        this.addressType = type;
+    }
+
     public static EmailAddrInfo createForAddressPersonalAndAddressType(String address,
             String personalName, String addressType) {
         final EmailAddrInfo eai = new EmailAddrInfo(address);
