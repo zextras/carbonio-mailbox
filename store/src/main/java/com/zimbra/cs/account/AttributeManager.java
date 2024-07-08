@@ -252,6 +252,7 @@ public class AttributeManager {
     if (clazz == null) return null;
     if (clazz.indexOf('.') == -1) clazz = "com.zimbra.cs.account.callback." + clazz;
     try {
+      ZimbraLog.misc.info("Loading class from attributemanager " + clazz);
       cb = (AttributeCallback) Class.forName(clazz).getDeclaredConstructor().newInstance();
     } catch (Exception e) {
       ZimbraLog.misc.warn("loadCallback caught exception", e);

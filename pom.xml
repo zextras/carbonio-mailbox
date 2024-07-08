@@ -774,6 +774,12 @@
         <scope>test</scope>
       </dependency>
       <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.compendium</artifactId>
+        <version>4.2.0</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
         <groupId>com.zextras.carbonio.message-broker</groupId>
         <artifactId>carbonio-message-broker-sdk</artifactId>
         <version>${carbonio-message-broker-sdk.version}</version>
@@ -792,6 +798,7 @@
     <module>store-conf</module>
     <module>carbonio-jetty-libs</module>
     <module>store-extra-runtime-dependencies</module>
+    <module>jython-libs</module>
   </modules>
   <packaging>pom</packaging>
 
@@ -819,7 +826,7 @@
     <carbonio-message-broker-sdk.version>0.0.1-SNAPSHOT</carbonio-message-broker-sdk.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <changelist>-SNAPSHOT</changelist>
-    <revision>24.9.1</revision>
+    <revision>24.9.0</revision>
     <mockserver.version>5.13.0</mockserver.version>
     <mariadb-java-client.version>2.7.3</mariadb-java-client.version>
   </properties>
