@@ -1,6 +1,6 @@
-// SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
+// SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
 //
-// SPDX-License-Identifier: GPL-2.0-only
+// SPDX-License-Identifier: AGPL-3.0-only
 
 package com.zextras.mailbox.util;
 
@@ -13,7 +13,7 @@ import com.unboundid.ldap.sdk.ModificationType;
 import com.unboundid.ldif.LDIFReader;
 import com.zimbra.common.localconfig.LC;
 
-/** A simple in meory ldap for testing using carbonio schemas */
+/** A simple in memory ldap for testing using carbonio schemas */
 public class InMemoryLdapServer {
 
   private final InMemoryDirectoryServer inMemoryDirectoryServer;
