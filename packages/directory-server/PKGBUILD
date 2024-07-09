@@ -85,8 +85,18 @@ postinst__apt() {
 
   chown -R root:root /opt/zextras/common/etc/openldap
 
+  TARGET_MODULE_CONF_FILE="/opt/zextras/data/ldap/config/cn=config/cn=module{0}.ldif"
+  SOURCE_MODULE_CONF_FILE="/opt/zextras/common/etc/openldap/zimbra/config/cn=config/cn=module{0}.ldif"
+
   if [ "$1" = "configure" ] && [ ! -z "$2" ]; then
     echo "*Starting LDAP upgrade..."
+
+    #update module conf if required
+    if ! diff "$TARGET_MODULE_CONF_FILE" "$SOURCE_MODULE_CONF_FILE" > /dev/null; then
+      echo "*Updating module config $TARGET_MODULE_CONF_FILE"
+      cp "$SOURCE_MODULE_CONF_FILE" "$TARGET_MODULE_CONF_FILE"
+    fi
+
     su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
@@ -103,8 +113,18 @@ postinst__rocky_8() {
 
   chown -R root:root /opt/zextras/common/etc/openldap
 
+  TARGET_MODULE_CONF_FILE="/opt/zextras/data/ldap/config/cn=config/cn=module{0}.ldif"
+  SOURCE_MODULE_CONF_FILE="/opt/zextras/common/etc/openldap/zimbra/config/cn=config/cn=module{0}.ldif"
+
   if [ "$1" -eq 2 ]; then
     echo "*Starting LDAP upgrade..."
+
+    #update module conf if required
+    if ! diff "$TARGET_MODULE_CONF_FILE" "$SOURCE_MODULE_CONF_FILE" > /dev/null; then
+      echo "*Updating module config $TARGET_MODULE_CONF_FILE"
+      cp "$SOURCE_MODULE_CONF_FILE" "$TARGET_MODULE_CONF_FILE"
+    fi
+
     su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
@@ -121,6 +141,9 @@ postinst__rocky_9() {
 
   chown -R root:root /opt/zextras/common/etc/openldap
 
+  TARGET_MODULE_CONF_FILE="/opt/zextras/data/ldap/config/cn=config/cn=module{0}.ldif"
+  SOURCE_MODULE_CONF_FILE="/opt/zextras/common/etc/openldap/zimbra/config/cn=config/cn=module{0}.ldif"
+
   if [ "$1" -eq 2 ]; then
     if [ -d /run/systemd/system ]; then
       systemctl daemon-reload >/dev/null 2>&1 || :
@@ -130,6 +153,13 @@ postinst__rocky_9() {
 
   if [ "$1" -eq 2 ]; then
     echo "* Starting LDAP upgrade..."
+
+    #update module conf if required
+    if ! diff "$TARGET_MODULE_CONF_FILE" "$SOURCE_MODULE_CONF_FILE" > /dev/null; then
+      echo "*Updating module config $TARGET_MODULE_CONF_FILE"
+      cp "$SOURCE_MODULE_CONF_FILE" "$TARGET_MODULE_CONF_FILE"
+    fi
+
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     # zmldapupdateldif restart slapd out of systemdd domain...
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
