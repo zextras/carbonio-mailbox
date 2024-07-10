@@ -1,5 +1,5 @@
 pkgname="carbonio-directory-server"
-pkgver="4.16.0"
+pkgver="4.16.2"
 pkgrel="1"
 pkgdesc="An open-source, community-driven email server"
 maintainer="Zextras <packages@zextras.com>"
@@ -55,6 +55,8 @@ package() {
     "${pkgdir}/opt/zextras/libexec/scripts/migrate20150930-AddSyncpovSessionlog.pl"
   install -D store/ldap/src/migrations/migrate20230217-AddArgon2.pl \
     "${pkgdir}/opt/zextras/libexec/scripts/migrate20230217-AddArgon2.pl"
+  install -D store/ldap/src/migrations/migrate20240201-AddOpenLDAP25.pl \
+    "${pkgdir}/opt/zextras/libexec/scripts/migrate20240201-AddOpenLDAP25.pl"
   install -D store/ldap/src/migrations/migrate-23.5.0-01-COS-AddFeatures.pl \
     "${pkgdir}/opt/zextras/libexec/scripts/migrate-23.5.0-01-COS-AddFeatures.pl"
 

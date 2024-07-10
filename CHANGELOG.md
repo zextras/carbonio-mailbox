@@ -1,5 +1,20 @@
 
 
+## [4.16.2](https://github.com/zextras/carbonio-mailbox/compare/4.16.1...4.16.2) (2024-07-08)
+
+
+### Bug Fixes
+
+* [CO-1239] always notify attendees when appointment is updated ([#543](https://github.com/zextras/carbonio-mailbox/issues/543)) ([9b4706e](https://github.com/zextras/carbonio-mailbox/commit/9b4706eb313df5880c07a73858b5f89be43b2808))
+
+# [4.16.1](https://github.com/Zextras/carbonio-mailbox/compare/4.16.0...4.16.1) (2024-07-03)
+
+
+### Bug Fixes
+
+* [CO-1244] Return 500 for any error and replace it with 422 ([#531](https://github.com/Zextras/carbonio-mailbox/issues/531) ([7f47d06](https://github.com/zextras/carbonio-mailbox/commit/7f47d06aad850cb6d749c74e1f400cbd56922c2e))
+* [CO-1249] Better handling of GalGroup type matches in FullAutoComplete API ([#532](https://github.com/Zextras/carbonio-mailbox/issues/532)) ([818b57d](https://github.com/Zextras/carbonio-mailbox/commit/818b57d5a4a11fe750dd4790523a5524b375bf28))
+
 # [4.16.0](https://github.com/Zextras/carbonio-mailbox/compare/4.15.5...4.16.0) (2024-06-18)
 
 
