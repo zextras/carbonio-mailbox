@@ -86,7 +86,9 @@ postinst__apt() {
   chown -R root:root /opt/zextras/common/etc/openldap
 
   if [ "$1" = "configure" ] && [ ! -z "$2" ]; then
-    echo "*Starting LDAP upgrade..."
+    echo "* Starting LDAP upgrade..."
+
+    su - zextras -c "/opt/zextras/libexec/ldapmoduleconfupdate"
     su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
@@ -104,7 +106,9 @@ postinst__rocky_8() {
   chown -R root:root /opt/zextras/common/etc/openldap
 
   if [ "$1" -eq 2 ]; then
-    echo "*Starting LDAP upgrade..."
+    echo "* Starting LDAP upgrade..."
+
+    su - zextras -c "/opt/zextras/libexec/ldapmoduleconfupdate"
     su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
@@ -130,6 +134,8 @@ postinst__rocky_9() {
 
   if [ "$1" -eq 2 ]; then
     echo "* Starting LDAP upgrade..."
+
+    su - zextras -c "/opt/zextras/libexec/ldapmoduleconfupdate"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     # zmldapupdateldif restart slapd out of systemdd domain...
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
