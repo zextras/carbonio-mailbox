@@ -117,10 +117,6 @@ public final class LC {
   public static final KnownKey localized_msgs_directory =
       KnownKey.newKey("${zimbra_home}/conf/msgs");
 
-  @Unsupported
-  public static final KnownKey localized_client_msgs_directory =
-      KnownKey.newKey("");
-
   public static final KnownKey zimbra_disk_cache_servlet_flush = KnownKey.newKey(true);
   public static final KnownKey zimbra_disk_cache_servlet_size = KnownKey.newKey(1000);
 
@@ -1448,10 +1444,4 @@ public final class LC {
   @Retention(RetentionPolicy.RUNTIME)
   public @interface Supported {}
 
-  /**
-   * Marks field as unsupported, so it is no longer being used by the system
-   */
-  @Target({ElementType.FIELD})
-  @Retention(RetentionPolicy.RUNTIME)
-  public @interface Unsupported {}
 }

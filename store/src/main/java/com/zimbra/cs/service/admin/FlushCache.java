@@ -19,7 +19,6 @@ import com.zimbra.cs.account.accesscontrol.PermissionCache;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.cs.gal.GalGroup;
 import com.zimbra.cs.httpclient.URLUtil;
-import com.zimbra.cs.util.WebClientL10nUtil;
 import com.zimbra.cs.util.WebClientServiceUtil;
 import com.zimbra.cs.zimlet.ZimletUtil;
 import com.zimbra.soap.SoapServlet;
@@ -115,7 +114,6 @@ public class FlushCache extends AdminDocumentHandler {
         }
         break;
       case locale:
-        WebClientL10nUtil.flushCache();
         break;
       case license:
         flushLdapCache(
