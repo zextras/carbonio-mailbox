@@ -141,10 +141,9 @@ public class ZimbraQoSFilter implements Filter {
             }
             int numpermit = pass.availablePermits();
             HttpServletRequest hreq = (HttpServletRequest) request;
-            String reqstring = hreq.getQueryString();
             ZimbraServlet.addRemoteIpToLoggingContext(hreq);
             ZimbraServlet.addUAToLoggingContext(hreq);
-            ZimbraLog.misc.warn("Num of permit avaiable for user "+ email + " on request [" + reqstring + "]: " + numpermit);
+            ZimbraLog.misc.warn("Num of permit avaiable for user "+ email + " on request [" + hreq.getRequestURL().toString() + "]: " + numpermit);
             if (pass.tryAcquire(waitMs, TimeUnit.MILLISECONDS)) {
                 try {
                     chain.doFilter(request, response);
