@@ -647,46 +647,7 @@ public class ZimletUtil {
      * @throws ZimletException
      */
     public static void installZimletLocally(ZimletFile zf) throws IOException, ZimletException {
-        ZimletDescription zd = zf.getZimletDescription();
-        String zimletName = zd.getName();
-        ZimbraLog.zimlet.info("Installing Zimlet " + zimletName + " on this host.");
-
-        // location for the jar files
-        File libDir = new File(LC.mailboxd_directory.value() + File.separator +
-                                    "webapps" + File.separator +
-                                    "zimlet" + File.separator +
-                                    "WEB-INF" + File.separator +
-                                    "lib");
-        // location for the rest of the files
-        File zimlet = getZimletRootDir(zimletName);
-        String zimletsRootPath = new File(LC.zimlet_directory.value()).getCanonicalPath();
-        zimlet.getParentFile().mkdirs();
-        if (zimlet.exists()) {
-            deleteFile(zimlet);
-        }
-
-        for (ZimletFile.ZimletEntry entry : zf.getAllEntries()) {
-            String fname = entry.getName();
-            File file;
-            if (fname.endsWith(".jar")) {
-                file = new File(libDir, fname);
-                if(!file.getCanonicalPath().startsWith(libDir.getCanonicalPath())) {
-                    ZimbraLog.zimlet.error(String.format("Zimlet %s has an invalid file path %s", zimletName, fname));
-                    throw ZimletException.CANNOT_DEPLOY(zimletName, "Invalid file path " + fname, null);
-                }
-            } else {
-                file = new File(zimlet, fname);
-                if(!file.getCanonicalPath().startsWith(zimletsRootPath)) {
-                    ZimbraLog.zimlet.error(String.format("Zimlet %s has an invalid file path %s", zimletName, fname));
-                    throw ZimletException.CANNOT_DEPLOY(zimletName, "Invalid file path " + fname, null);
-                }
-            }
-
-            file.getParentFile().mkdirs();
-            writeFile(entry.getContents(), file);
-        }
-
-        flushCache();
+        throw new ZimletException("zimlets are not supported anymore");
     }
 
     /**
