@@ -102,7 +102,7 @@ public class PreviewServlet extends ZimbraServlet {
     } finally {
       var end = Instant.now();
       var elapsed = Duration.between(start, end);
-      LOG.info("[" + requestId + "] Handled request for URL: " + fullURL + " in " + elapsed.toMillis() + "ms ");
+      LOG.info("[" + requestId + "] Handled request for URL: " + fullURL + " elapsed=" + elapsed.toMillis());
     }
   }
 }
