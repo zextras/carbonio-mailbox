@@ -286,7 +286,7 @@
 
   <servlet>
     <servlet-name>PreviewServlet</servlet-name>
-    <servlet-class>com.zimbra.cs.service.PreviewServlet</servlet-class>
+    <servlet-class>com.zimbra.cs.service.servlet.preview.PreviewServlet</servlet-class>
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
