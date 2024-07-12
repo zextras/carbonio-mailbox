@@ -34,6 +34,7 @@ import org.eclipse.jetty.util.thread.ThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 // See: https://github.com/jetty/jetty.project/blob/jetty-9.4.x/examples/embedded/src/main/java/org/eclipse/jetty/embedded/LikeJettyXml.java
+// See previous jetty.xml config for reference: https://github.com/zextras/carbonio-appserver/blob/81bce01f4b97efd89ccf89e79c963b40f16ffc81/appserver/conf/jetty/jetty.xml.production
 public class LikeXmlJettyServer {
 
   public static class InstantiationException extends Exception {
@@ -242,23 +243,26 @@ public class LikeXmlJettyServer {
       return localSslContextFactory;
     }
 
-    private ServerConnector createHttpsConnector(Server server, int port, int idleTimeMillis) {
+    private ServerConnector createHttpsConnector(Server server, int port, int idleTimeMillis,
+        String host) {
       ServerConnector serverConnector = createHttpsConnector(server);
       serverConnector.setPort(port);
+      serverConnector.setHost(host);
       serverConnector.setIdleTimeout(idleTimeMillis);
       return serverConnector;
     }
 
     private ServerConnector createAdminHttpsConnector(Server server) {
-      return createHttpsConnector(server, localServer.getAdminPort(), 0);
+      return createHttpsConnector(server, localServer.getAdminPort(), 0, localServer.getAdminBindAddress());
     }
 
     private ServerConnector createMtaAdminHttpsConnector(Server server) {
-      return createHttpsConnector(server, localServer.getMtaAuthPort(), 0);
+      return createHttpsConnector(server, localServer.getMtaAuthPort(), 0, localServer.getMtaAuthBindAddress());
     }
 
     private ServerConnector createExtensionsHttpsConnector(Server server) {
-      return createHttpsConnector(server, localServer.getExtensionBindPort(), config.getHttpConnectorMaxIdleTimeMillis());
+      return createHttpsConnector(server, localServer.getExtensionBindPort(), config.getHttpConnectorMaxIdleTimeMillis(),
+          localServer.getExtensionBindAddress());
     }
 
     private ServerConnector createHttpsConnector(Server server) {

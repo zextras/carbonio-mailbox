@@ -39,6 +39,8 @@ public class SampleLocalMailbox {
 
   public static void main(String[] args) throws Exception {
 
+    System.setProperty("zimbra.native.required", "false");
+
     final Path keystoreRoot = Files.createTempDirectory("keystore");
     final Path keystorePath = Path.of(keystoreRoot.toAbsolutePath().toString(), "keystore");
     KeyStore ks = KeyStore.getInstance("PKCS12");
