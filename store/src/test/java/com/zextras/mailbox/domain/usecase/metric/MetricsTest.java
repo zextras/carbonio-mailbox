@@ -11,6 +11,7 @@ class MetricsTest {
     @Test
     void test_register() {
         Collector collector = Mockito.mock(Collector.class);
+        Metrics.register(collector);
         Assertions.assertDoesNotThrow(() -> Metrics.COLLECTOR_REGISTRY.unregister(collector));
     }
 }
