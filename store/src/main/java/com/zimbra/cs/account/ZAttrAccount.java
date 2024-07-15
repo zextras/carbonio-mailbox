@@ -526,8 +526,8 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Whether OTP management (creation and deletion) is enabled for account
-     * or COS
+     * Whether OTP management (creation, listing and deletion) is enabled for
+     * account or COS
      *
      * @return carbonioFeatureOTPMgmtEnabled, or true if unset
      *
@@ -539,8 +539,8 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Whether OTP management (creation and deletion) is enabled for account
-     * or COS
+     * Whether OTP management (creation, listing and deletion) is enabled for
+     * account or COS
      *
      * @param carbonioFeatureOTPMgmtEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -555,8 +555,8 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Whether OTP management (creation and deletion) is enabled for account
-     * or COS
+     * Whether OTP management (creation, listing and deletion) is enabled for
+     * account or COS
      *
      * @param carbonioFeatureOTPMgmtEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -572,8 +572,8 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Whether OTP management (creation and deletion) is enabled for account
-     * or COS
+     * Whether OTP management (creation, listing and deletion) is enabled for
+     * account or COS
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -587,8 +587,8 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Whether OTP management (creation and deletion) is enabled for account
-     * or COS
+     * Whether OTP management (creation, listing and deletion) is enabled for
+     * account or COS
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

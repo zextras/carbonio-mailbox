@@ -2949,8 +2949,8 @@ public class ZAttrProvisioning {
     public static final String A_carbonioFeatureMeetingEnabled = "carbonioFeatureMeetingEnabled";
 
     /**
-     * Whether OTP management (creation and deletion) is enabled for account
-     * or COS
+     * Whether OTP management (creation, listing and deletion) is enabled for
+     * account or COS
      *
      * @since ZCS 24.9.0
      */

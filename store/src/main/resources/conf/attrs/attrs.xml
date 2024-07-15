@@ -10147,7 +10147,7 @@ TODO: delete them permanently from here
 <attr id="3144" name="carbonioFeatureOTPMgmtEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="24.9.0">
   <defaultCOSValue>TRUE</defaultCOSValue>
   <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
-  <desc>Whether OTP management (creation and deletion) is enabled for account or COS</desc>
+  <desc>Whether OTP management (creation, listing and deletion) is enabled for account or COS</desc>
 </attr>
 
 </attrs>
