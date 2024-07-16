@@ -125,6 +125,7 @@ public class ZimbraQoSFilter implements Filter {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         try {
@@ -151,10 +152,11 @@ public class ZimbraQoSFilter implements Filter {
                     pass.release();
                 }
             } else {
+                Continuation continuation = ContinuationSupport.getContinuation(request);
                 ZimbraLog.misc
-                        .warn("User " + email + " exceed the max requests limit. Block next call with 503 errors");
-                ZimbraLog.clearContext();
-                ((HttpServletResponse) response).sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+                        .warn("User " + email + " exceed the max requests limit.");
+                continuation.setTimeout(suspendMs);
+                continuation.suspend();
             }
             ZimbraLog.clearContext();
         } catch (InterruptedException e) {
