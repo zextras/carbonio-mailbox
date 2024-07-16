@@ -12,7 +12,6 @@ import com.zextras.carbonio.preview.queries.BlobResponse;
 import com.zextras.carbonio.preview.queries.Query;
 import com.zextras.carbonio.preview.queries.Query.QueryBuilder;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
@@ -27,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import javax.mail.MessagingException;
 import javax.mail.internet.MimePart;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -138,7 +138,7 @@ public class PreviewHandler {
     var messageId = requiredQueryParametersMatcher.group(2);
     var partId = requiredQueryParametersMatcher.group(3);
 
-    var itemIdTry = Try.of(() -> new ItemId(messageId, (String) null));
+    var itemIdTry = Try.of(() -> getItemIdFromMessageId(messageId, authTokenTry.get()));
     if (itemIdTry.isFailure() || itemIdTry.get() == null) {
       respondWithError(request, response, HttpServletResponse.SC_BAD_REQUEST, "Invalid MessageId.");
       return;
@@ -147,7 +147,7 @@ public class PreviewHandler {
     try {
       var itemId = itemIdTry.get();
       if (itemId.isLocal()) {
-        handleLocalAttachment(request, response, authTokenTry.get(), messageId, partId);
+        handleLocalAttachment(request, response, authTokenTry.get(), itemId, partId);
       } else {
         proxyServletRequest(request, response, itemId.getAccountId());
       }
@@ -157,16 +157,17 @@ public class PreviewHandler {
   }
 
   private void handleLocalAttachment(HttpServletRequest request, HttpServletResponse response,
-      AuthToken authToken, String messageId, String partNo) {
-    var attachmentTry = getAttachment(authToken, messageId, partNo);
-    if (attachmentTry.isFailure() || attachmentTry.get() == null) {
+      AuthToken authToken, ItemId itemId, String partId) {
+    var mimePartTry = attachmentService.getAttachment(itemId.getAccountId(), authToken, itemId.getId(), partId);
+    if (mimePartTry.isFailure() || mimePartTry.get() == null) {
       respondWithError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-          attachmentTry.failed().get().getMessage());
+          mimePartTry.getCause().getMessage());
       return;
     }
 
-    attachmentTry.flatMap(attachment -> Try.of(() -> getAttachmentPreview(request, attachment)))
-        .onSuccess(preview -> respondWithSuccess(response, request, preview.get()))
+    mimePartTry.mapTry(this::mapMimePartToBlobRequestStore)
+        .flatMapTry(blobRequestStore -> getAttachmentPreview(request, blobRequestStore))
+        .onSuccess(blobPreviewResponseStore -> respondWithSuccess(response, request, blobPreviewResponseStore))
         .onFailure(BadRequest.class,
             ex -> respondWithError(request, response, HttpServletResponse.SC_BAD_REQUEST, ex.getMessage()))
         .onFailure(ItemNotFound.class,
@@ -176,16 +177,26 @@ public class PreviewHandler {
         .onFailure(ex -> respondWithError(request, response, STATUS_UNPROCESSABLE_ENTITY, ex.getMessage()));
   }
 
+  private BlobRequestStore mapMimePartToBlobRequestStore(MimePart mimePart) throws MessagingException, IOException {
+    return new BlobRequestStore(
+        mimePart.getInputStream(),
+        mimePart.getFileName(),
+        (long) mimePart.getSize(),
+        mimePart.getContentType(),
+        "inline"
+    );
+  }
+
   /**
    * This method is used to get the preview of passed attachment from the preview service based on the requestUrl,
    * calling different endpoints of preview service
    *
-   * @param request the {@link HttpServletRequest} object
+   * @param request            the {@link HttpServletRequest} object
+   * @param attachmentMimePart the {@link BlobRequestStore} object
    * @return the {@link BlobResponseStore} object
    */
   private Try<BlobResponseStore> getAttachmentPreview(
-      HttpServletRequest request, BlobResponseStore attachmentMimePart) {
-
+      HttpServletRequest request, BlobRequestStore attachmentMimePart) {
     var requestId = Utils.getRequestIDFromRequest(request);
     var requestUrl = Utils.getFullURLFromRequest(request);
     var dispositionType = Utils.getDispositionTypeFromQueryParams(requestUrl);
@@ -334,63 +345,12 @@ public class PreviewHandler {
         dispositionType));
   }
 
-  /**
-   * This method is used to retrieve the attachment from mailbox
-   *
-   * @param authToken the {@link AuthToken} passed in request
-   * @param messageId {@link String} the messageId that we want to get attachment from
-   * @param partId    {@link String} the part number of the attachment in email
-   * @return the {@link MimePart} object
-   */
-  private Try<BlobResponseStore> getAttachment(AuthToken authToken, String messageId, String partId) {
-    return Try.of(() -> {
-      var accountId = authToken.getAccount().getId();
-
-      final var uuidMsgId = messageId.split(":");
-      var targetAccountId = accountId;
-      var msgId = messageId;
-
-      if (uuidMsgId.length == 2) {
-        targetAccountId = uuidMsgId[0];
-        msgId = uuidMsgId[1];
-      }
-
-      int parsedMsgId;
-      try {
-        parsedMsgId = Integer.parseInt(msgId);
-      } catch (NumberFormatException ex) {
-        LOG.error(ex.getMessage());
-        throw ServiceException.PARSE_ERROR(MailConstants.A_MESSAGE_ID + " must be an integer.", ex);
-      }
-
-      var mimePartTry = attemptToGetAttachment(targetAccountId, parsedMsgId, partId, authToken);
-      if (mimePartTry.isFailure() && !targetAccountId.equals(accountId)) {
-        mimePartTry = attemptToGetAttachment(accountId, parsedMsgId, partId, authToken);
-      }
-      if (mimePartTry.isFailure()) {
-        throw mimePartTry.getCause();
-      }
-
-      var mimePart = mimePartTry.get();
-      return new BlobResponseStore(
-          mimePart.getInputStream(),
-          mimePart.getFileName(),
-          (long) mimePart.getSize(),
-          mimePart.getContentType(),
-          "inline"
-      );
-    });
-  }
-
-  private Try<MimePart> attemptToGetAttachment(String accId, int msgId, String partId, AuthToken authToken) {
-    return Try.of(() -> attachmentService.getAttachment(accId, authToken, msgId, partId)
-        .getOrElseThrow(e -> {
-          if (e instanceof ServiceException) {
-            return (ServiceException) e;
-          } else {
-            return ServiceException.FAILURE(e.getMessage());
-          }
-        }));
+  private ItemId getItemIdFromMessageId(String messageId, AuthToken authToken) throws ServiceException {
+    final var uuidMsgId = messageId.split(":");
+    if (uuidMsgId.length == 2) {
+      return new ItemId(uuidMsgId[1], uuidMsgId[0]);
+    }
+    return new ItemId(messageId, authToken.getAccountId());
   }
 
   /**
