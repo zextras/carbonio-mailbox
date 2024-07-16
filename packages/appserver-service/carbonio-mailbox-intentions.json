@@ -13,10 +13,6 @@
     {
       "name": "carbonio-storages",
       "action": "allow"
-    },
-    {
-      "name": "carbonio-message-broker",
-      "action": "allow"
     }
   ]
 }
