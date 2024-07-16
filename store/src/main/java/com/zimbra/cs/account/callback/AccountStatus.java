@@ -100,8 +100,8 @@ public class AccountStatus extends AttributeCallback {
         MessageBrokerClient messageBrokerClient = MessageBrokerClient.fromConfig(
                 "127.78.0.7",
                 20005,
-                serviceDiscoverHttpClient.getConfig("username").get(),
-                serviceDiscoverHttpClient.getConfig("password").get()
+                serviceDiscoverHttpClient.getConfig("default/username").get(),
+                serviceDiscoverHttpClient.getConfig("default/password").get()
             )
             .withCurrentService(Service.MAILBOX);
 
