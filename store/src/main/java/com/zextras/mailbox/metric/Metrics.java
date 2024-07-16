@@ -10,6 +10,7 @@ import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
+import io.prometheus.client.Collector;
 import io.prometheus.client.CollectorRegistry;
 
 /**
@@ -20,12 +21,21 @@ import io.prometheus.client.CollectorRegistry;
  * @since 23.4.0
  * @author davidefrison
  */
-public class Metrics {
+public final class Metrics {
   public static final CollectorRegistry COLLECTOR_REGISTRY = new CollectorRegistry();
 
+  private Metrics() {}
   /**
    * Binds a Prometheus-compatible registry to the registry
    */
   public static final MeterRegistry METER_REGISTRY =
       new PrometheusMeterRegistry(PrometheusConfig.DEFAULT, COLLECTOR_REGISTRY, Clock.SYSTEM);
+
+  /**
+   * registers collector
+   */
+  public static void register(Collector collector) {
+    COLLECTOR_REGISTRY.register(collector);
+  }
+
 }

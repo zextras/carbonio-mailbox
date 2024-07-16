@@ -33,6 +33,7 @@
     <a n="carbonioFeatureFilesEnabled"/>
     <a n="carbonioFeatureMailsAppEnabled"/>
     <a n="carbonioFeatureMeetingEnabled"/>
+    <a n="carbonioFeatureOTPMgmtEnabled"/>
     <a n="carbonioFeatureTeamEnabled"/>
     <a n="carbonioPrefSendAnalytics"/>
     <a n="carbonioPrefWebUiDarkMode"/>

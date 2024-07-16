@@ -141,17 +141,6 @@ pipeline {
                 mvnCmd("$BUILD_PROPERTIES_PARAMS test -Dgroups=api")
             }
         }
-        stage('Publish Coverage') {
-            when {
-                expression {
-                    params.SKIP_TEST_WITH_COVERAGE == false
-                }
-            }
-            steps {
-                recordCoverage(tools: [[parser: 'JACOCO']],sourceCodeRetention: 'MODIFIED')
-                junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
-            }
-        }
 
         stage('Sonarqube Analysis') {
             environment {
