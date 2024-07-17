@@ -27,10 +27,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Tag("api")
 public class SearchEnabledUsersTest extends SoapTestSuite {
-  public static final String ACCOUNT_NAME = "myaccount";
+  public static final String FIRST_ACCOUNT_NAME = "first.account";
+  public static final String SECOND_ACCOUNT_NAME = "second.account";
   private static MailboxTestUtil.AccountCreator.Factory accountCreatorFactory;
   private static Provisioning provisioning;
   private static Account userAccount;
+  private static Account firstAccount;
+  private static Account secondAccount;
 
   @BeforeAll
   static void setUp() throws Exception {
@@ -39,8 +42,18 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     accountCreatorFactory = new MailboxTestUtil.AccountCreator.Factory(provisioning);
     userAccount = accountCreatorFactory.get()
         .withDomain(DEFAULT_DOMAIN)
-        .withUsername(ACCOUNT_NAME)
+        .withUsername("user")
+        .withAttribute("displayName", "User Account")
+        .create();
+    firstAccount = accountCreatorFactory.get()
+        .withDomain(DEFAULT_DOMAIN)
+        .withUsername(FIRST_ACCOUNT_NAME)
         .withAttribute("displayName", "Test Account")
+        .create();
+    secondAccount = accountCreatorFactory.get()
+        .withDomain(DEFAULT_DOMAIN)
+        .withUsername(SECOND_ACCOUNT_NAME)
+        .withAttribute("displayName", "Other Account")
         .create();
   }
 
@@ -48,30 +61,30 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   void searchUserExact() throws Exception {
     HttpResponse httpResponse = getSoapClient().newRequest()
         .setCaller(userAccount)
-        .setSoapBody(SearchEnabledUsersTest.searchAccountsByName(ACCOUNT_NAME))
+        .setSoapBody(SearchEnabledUsersTest.searchAccountsByName(FIRST_ACCOUNT_NAME))
         .execute();
 
     assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
     SearchEnabledUsersResponse response = parseSoapResponse(httpResponse);
     List<AccountInfo> accounts = response.getAccounts();
     assertEquals(1, accounts.size());
-    assertEquals(userAccount.getId(), accounts.get(0).getId());
-    assertEquals(userAccount.getName(), accounts.get(0).getName());
+    assertEquals(firstAccount.getId(), accounts.get(0).getId());
+    assertEquals(firstAccount.getName(), accounts.get(0).getName());
   }
 
   @Test
   void searchUserPartial() throws Exception {
     HttpResponse httpResponse = getSoapClient().newRequest()
         .setCaller(userAccount)
-        .setSoapBody(SearchEnabledUsersTest.searchAccountsByName("ac"))
+        .setSoapBody(SearchEnabledUsersTest.searchAccountsByName("st"))
         .execute();
 
     assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
     SearchEnabledUsersResponse response = parseSoapResponse(httpResponse);
     List<AccountInfo> accounts = response.getAccounts();
     assertEquals(1, accounts.size());
-    assertEquals(userAccount.getId(), accounts.get(0).getId());
-    assertEquals(userAccount.getName(), accounts.get(0).getName());
+    assertEquals(firstAccount.getId(), accounts.get(0).getId());
+    assertEquals(firstAccount.getName(), accounts.get(0).getName());
   }
 
   @Test
@@ -85,8 +98,8 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     SearchEnabledUsersResponse response = parseSoapResponse(httpResponse);
     List<AccountInfo> accounts = response.getAccounts();
     assertEquals(1, accounts.size());
-    assertEquals(userAccount.getId(), accounts.get(0).getId());
-    assertEquals(userAccount.getName(), accounts.get(0).getName());
+    assertEquals(firstAccount.getId(), accounts.get(0).getId());
+    assertEquals(firstAccount.getName(), accounts.get(0).getName());
   }
 
   private static SearchEnabledUsersResponse parseSoapResponse(HttpResponse httpResponse) throws IOException, ServiceException {
