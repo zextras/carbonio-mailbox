@@ -814,6 +814,8 @@ public final class JaxbUtil {
           com.zimbra.soap.mail.message.SaveIMAPSubscriptionsResponse.class,
           com.zimbra.soap.mail.message.SearchConvRequest.class,
           com.zimbra.soap.mail.message.SearchConvResponse.class,
+          com.zimbra.soap.account.message.SearchEnabledUsersRequest.class,
+          com.zimbra.soap.account.message.SearchEnabledUsersResponse.class,
           com.zimbra.soap.mail.message.SearchRequest.class,
           com.zimbra.soap.mail.message.SearchResponse.class,
           com.zimbra.soap.mail.message.SearchActionRequest.class,

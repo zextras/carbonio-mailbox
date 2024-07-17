@@ -10,13 +10,14 @@ import org.dom4j.QName;
 
 public class AccountConstants {
 
+
+
   private AccountConstants() {
     throw new java.lang.UnsupportedOperationException("Utility class and cannot be instantiated");
   }
 
   public static final String USER_SERVICE_URI = "/service/soap/";
   public static final String CONTENT_SERVLET_PATH = "/service/content";
-
   public static final String NAMESPACE_STR = "urn:zimbraAccount";
   public static final Namespace NAMESPACE = Namespace.get(NAMESPACE_STR);
 
@@ -302,6 +303,14 @@ public class AccountConstants {
       QName.get(E_GET_ADDRESS_LIST_MEMBERS_REQUEST, NAMESPACE);
   public static final QName GET_ADDRESS_LIST_MEMBERS_RESPONSE =
       QName.get(E_GET_ADDRESS_LIST_MEMBERS_RESPONSE, NAMESPACE);
+
+  // Enabled users
+  public static final String E_SEARCH_ENABLED_USERS_REQUEST = "SearchEnabledUsersRequest";
+  public static final QName SEARCH_ENABLED_USERS_REQUEST =
+      QName.get(E_SEARCH_ENABLED_USERS_REQUEST, NAMESPACE);
+  public static final String E_SEARCH_ENABLED_USERS_RESPONSE = "SearchEnabledUsersResponse";
+  public static final QName SEARCH_ENABLED_USERS_RESPONSE =
+      QName.get(E_SEARCH_ENABLED_USERS_RESPONSE, NAMESPACE);
 
   public static final String E_PRODUCT_QUERY = "productQuery";
   public static final String E_ACTION = "action";
