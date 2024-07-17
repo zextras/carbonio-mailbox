@@ -16,7 +16,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class SearchEnabledUsersRequest {
 
   public enum Features {
-    CHATS("carbonioFeatureChatsEnabled");
+    CHATS("carbonioFeatureChatsEnabled"),
+    FILES("carbonioFeatureFilesEnabled"),
+    UNKNOWN("");
 
     private final String feature;
 
@@ -29,13 +31,13 @@ public class SearchEnabledUsersRequest {
     }
   }
   /**
-   * @zm-api-field-description Query string - should be an LDAP-style filter string (RFC 2254)
+   * @zm-api-field-description name to autocomplete (searched in uid and displayName)
    */
   @XmlAttribute(name=AccountConstants.E_NAME, required=false)
   private String name;
 
   /**
-   * @zm-api-field-description Query string - should be an LDAP-style filter string (RFC 2254)
+   * @zm-api-field-description feature to check (only accounts with this feature enabled will be returned).
    */
   @XmlAttribute(name=AccountConstants.E_FEATURE, required=false)
   private Features feature;

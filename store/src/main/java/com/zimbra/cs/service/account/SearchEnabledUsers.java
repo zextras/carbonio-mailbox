@@ -10,9 +10,11 @@ import com.zimbra.cs.account.SearchDirectoryOptions;
 import com.zimbra.cs.ldap.ZLdapFilterFactory;
 import com.zimbra.cs.service.admin.ToXML;
 import com.zimbra.soap.ZimbraSoapContext;
+import com.zimbra.soap.account.message.SearchEnabledUsersRequest;
 
 import java.text.MessageFormat;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SearchEnabledUsers extends AccountDocumentHandler {
   @Override
@@ -24,16 +26,25 @@ public class SearchEnabledUsers extends AccountDocumentHandler {
       throw ServiceException.PERM_DENIED("can not access account");
 
     String query = request.getAttribute(AccountConstants.E_NAME);
-    String feature = request.getAttribute(AccountConstants.E_FEATURE, null);
+    String feature =
+        SearchEnabledUsersRequest.Features.valueOf(request.getAttribute(AccountConstants.E_FEATURE, "UNKNOWN")).getFeature();
 
     var options = new SearchDirectoryOptions();
     options.setTypes(SearchDirectoryOptions.ObjectType.accounts);
 
+    var provisioning = Provisioning.getInstance();
+    String cosFilter = "";
+    if (!StringUtil.isNullOrEmpty(feature)) {
+      cosFilter = provisioning.getAllCos().stream().filter(cos -> cos.getAttr(feature, "FALSE").equals("TRUE"))
+          .map(cos -> MessageFormat.format("(zimbraCOSId={0})", cos.getId())).collect(Collectors.joining());
+    }
+
     var featureFilter = StringUtil.isNullOrEmpty(feature) ? "" : MessageFormat.format("({0}=TRUE)", feature);
-    String filter = MessageFormat.format("&(|(uid=*{0}*)(displayName=*{0}*)){1}", query, featureFilter);
+    String filter = MessageFormat.format("|(&(|(uid=*{0}*)(displayName=*{0}*)){1}){2}", query, featureFilter, cosFilter);
     options.setFilterString(ZLdapFilterFactory.FilterId.ADMIN_SEARCH, filter);
 
-    var entries = Provisioning.getInstance().searchDirectory(options);
+
+    var entries = provisioning.searchDirectory(options);
 
     var response = zsc.createElement(AccountConstants.SEARCH_ENABLED_USERS_RESPONSE);
     entries.forEach(a -> ToXML.encodeAccount(response, (Account) a));

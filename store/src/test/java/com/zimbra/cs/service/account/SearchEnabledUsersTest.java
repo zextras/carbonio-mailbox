@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
@@ -37,6 +38,9 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   @BeforeAll
   static void setUp() throws Exception {
     provisioning = Provisioning.getInstance();
+    var cosAttrs = new HashMap<String, Object>();
+    cosAttrs.put(SearchEnabledUsersRequest.Features.FILES.getFeature(), "TRUE");
+    var cos = provisioning.createCos("cos-with-files", cosAttrs);
     accountCreatorFactory = new MailboxTestUtil.AccountCreator.Factory(provisioning);
     userAccount = accountCreatorFactory.get()
         .withDomain(DEFAULT_DOMAIN)
@@ -47,12 +51,13 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
         .withDomain(DEFAULT_DOMAIN)
         .withUsername(FIRST_ACCOUNT_NAME)
         .withAttribute("displayName", "Test User")
-        .withAttribute(SearchEnabledUsersRequest.Features.CHATS.toString(), "TRUE")
+        .withAttribute(SearchEnabledUsersRequest.Features.CHATS.getFeature(), "TRUE")
         .create();
     secondAccount = accountCreatorFactory.get()
         .withDomain(DEFAULT_DOMAIN)
         .withUsername(SECOND_ACCOUNT_NAME)
         .withAttribute("displayName", "Other User")
+        .withAttribute("zimbraCOSId", cos.getId())
         .create();
   }
 
@@ -132,6 +137,19 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     HttpResponse httpResponse = getSoapClient().newRequest()
         .setCaller(userAccount)
         .setSoapBody(SearchEnabledUsersTest.searchAccounts("account", SearchEnabledUsersRequest.Features.CHATS))
+        .execute();
+
+    assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
+    SearchEnabledUsersResponse response = parseSoapResponse(httpResponse);
+    List<AccountInfo> accounts = response.getAccounts();
+    assertEquals(1, accounts.size());
+  }
+
+  @Test
+  void filterByEnabledInCos() throws Exception {
+    HttpResponse httpResponse = getSoapClient().newRequest()
+        .setCaller(userAccount)
+        .setSoapBody(SearchEnabledUsersTest.searchAccounts("account", SearchEnabledUsersRequest.Features.FILES))
         .execute();
 
     assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
