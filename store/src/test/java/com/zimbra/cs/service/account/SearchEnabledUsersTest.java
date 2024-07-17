@@ -40,14 +40,45 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     userAccount = accountCreatorFactory.get()
         .withDomain(DEFAULT_DOMAIN)
         .withUsername(ACCOUNT_NAME)
+        .withAttribute("displayName", "Test Account")
         .create();
   }
 
   @Test
-  void searchUser() throws Exception {
+  void searchUserExact() throws Exception {
     HttpResponse httpResponse = getSoapClient().newRequest()
         .setCaller(userAccount)
         .setSoapBody(SearchEnabledUsersTest.searchAccountsByName(ACCOUNT_NAME))
+        .execute();
+
+    assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
+    SearchEnabledUsersResponse response = parseSoapResponse(httpResponse);
+    List<AccountInfo> accounts = response.getAccounts();
+    assertEquals(1, accounts.size());
+    assertEquals(userAccount.getId(), accounts.get(0).getId());
+    assertEquals(userAccount.getName(), accounts.get(0).getName());
+  }
+
+  @Test
+  void searchUserPartial() throws Exception {
+    HttpResponse httpResponse = getSoapClient().newRequest()
+        .setCaller(userAccount)
+        .setSoapBody(SearchEnabledUsersTest.searchAccountsByName("ac"))
+        .execute();
+
+    assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
+    SearchEnabledUsersResponse response = parseSoapResponse(httpResponse);
+    List<AccountInfo> accounts = response.getAccounts();
+    assertEquals(1, accounts.size());
+    assertEquals(userAccount.getId(), accounts.get(0).getId());
+    assertEquals(userAccount.getName(), accounts.get(0).getName());
+  }
+
+  @Test
+  void searchUserInDisplayName() throws Exception {
+    HttpResponse httpResponse = getSoapClient().newRequest()
+        .setCaller(userAccount)
+        .setSoapBody(SearchEnabledUsersTest.searchAccountsByName("Test"))
         .execute();
 
     assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
