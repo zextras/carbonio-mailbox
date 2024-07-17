@@ -1,5 +1,12 @@
 
 
+## [4.16.3](https://github.com/Zextras/carbonio-mailbox/compare/4.16.2...4.16.3) (2024-07-17)
+
+
+### Bug Fixes
+
+* [CO-1358] Migrate the slapd PID file location in LDAP config ([#552](https://github.com/Zextras/carbonio-mailbox/issues/552)) ([634f059](https://github.com/Zextras/carbonio-mailbox/commit/634f059830192d9c64b4a7b62bcd78e87aaf5766))
+
 ## [4.16.2](https://github.com/zextras/carbonio-mailbox/compare/4.16.1...4.16.2) (2024-07-08)
 
 
