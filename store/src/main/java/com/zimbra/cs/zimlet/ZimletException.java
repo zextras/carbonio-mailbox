@@ -13,7 +13,7 @@ package com.zimbra.cs.zimlet;
 @SuppressWarnings("serial")
 public class ZimletException extends Exception {
 
-    public ZimletException(String msg) {
+    private ZimletException(String msg) {
         super(msg);
     }
 
