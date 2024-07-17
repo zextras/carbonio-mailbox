@@ -38,22 +38,21 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   @BeforeAll
   static void setUp() throws Exception {
     provisioning = Provisioning.getInstance();
-    provisioning.createDomain("different.com", new HashMap<>());
     accountCreatorFactory = new MailboxTestUtil.AccountCreator.Factory(provisioning);
     userAccount = accountCreatorFactory.get()
         .withDomain(DEFAULT_DOMAIN)
         .withUsername("user")
-        .withAttribute("displayName", "User Account")
+        .withAttribute("displayName", "User")
         .create();
     firstAccount = accountCreatorFactory.get()
         .withDomain(DEFAULT_DOMAIN)
         .withUsername(FIRST_ACCOUNT_NAME)
-        .withAttribute("displayName", "Test Account")
+        .withAttribute("displayName", "Test User")
         .create();
     secondAccount = accountCreatorFactory.get()
         .withDomain(DEFAULT_DOMAIN)
         .withUsername(SECOND_ACCOUNT_NAME)
-        .withAttribute("displayName", "Other Account")
+        .withAttribute("displayName", "Other User")
         .create();
   }
 
@@ -100,6 +99,32 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     assertEquals(1, accounts.size());
     assertEquals(firstAccount.getId(), accounts.get(0).getId());
     assertEquals(firstAccount.getName(), accounts.get(0).getName());
+  }
+
+  @Test
+  void multipleMatches() throws Exception {
+    HttpResponse httpResponse = getSoapClient().newRequest()
+        .setCaller(userAccount)
+        .setSoapBody(SearchEnabledUsersTest.searchAccountsByName("account"))
+        .execute();
+
+    assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
+    SearchEnabledUsersResponse response = parseSoapResponse(httpResponse);
+    List<AccountInfo> accounts = response.getAccounts();
+    assertEquals(2, accounts.size());
+  }
+
+  @Test
+  void multipleMatchesCaseInsensitive() throws Exception {
+    HttpResponse httpResponse = getSoapClient().newRequest()
+        .setCaller(userAccount)
+        .setSoapBody(SearchEnabledUsersTest.searchAccountsByName("ACCOUNT"))
+        .execute();
+
+    assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
+    SearchEnabledUsersResponse response = parseSoapResponse(httpResponse);
+    List<AccountInfo> accounts = response.getAccounts();
+    assertEquals(2, accounts.size());
   }
 
   private static SearchEnabledUsersResponse parseSoapResponse(HttpResponse httpResponse) throws IOException, ServiceException {
