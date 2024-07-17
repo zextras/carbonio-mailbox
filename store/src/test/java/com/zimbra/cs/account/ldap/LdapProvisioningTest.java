@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -31,12 +32,12 @@ import org.junit.jupiter.api.Test;
  */
 public class LdapProvisioningTest {
 
-  private static Provisioning provisioning;
+  private static LdapProvisioning provisioning;
 
   @BeforeAll
   public static void init() throws Exception {
     MailboxTestUtil.setUp();
-    provisioning = Provisioning.getInstance();
+    provisioning = (LdapProvisioning) Provisioning.getInstance();
 
     provisioning.createDomain("example.com", new HashMap<>());
 
@@ -138,6 +139,25 @@ public class LdapProvisioningTest {
         LdapProvisioning.validatePasswordEntropyForPersonalData(passwordLower, acct);
       }
     });
+  }
+
+  @Test
+  void shouldCreateAccountWithMailHostEqualToServer() throws ServiceException {
+    final Account account = provisioning.createAccount("testAccount@example.com", "password",
+        new HashMap<>());
+
+    Assertions.assertEquals("localhost", account.getAttr(Provisioning.A_zimbraMailHost));
+  }
+
+  @Test
+  void shouldFailWhenCreatingADomainWithNonExistingMailHost() {
+    final ServiceException serviceException = assertThrows(ServiceException.class,
+        () -> provisioning.createDomain("my-domain.com", new HashMap<>() {{
+          put(Provisioning.A_zimbraMailHost, "my-domain.com");
+        }}));
+    Assertions.assertEquals("system failure: unable to create domain: my-domain.com", serviceException.getMessage());
+    Assertions.assertEquals("invalid request: specified zimbraMailHost does not correspond to a valid server service hostname: my-domain.com",
+        serviceException.getCause().getMessage());
   }
 
   /**
