@@ -57,6 +57,8 @@ package() {
     "${pkgdir}/opt/zextras/libexec/scripts/migrate20230217-AddArgon2.pl"
   install -D store/ldap/src/migrations/migrate-23.5.0-01-COS-AddFeatures.pl \
     "${pkgdir}/opt/zextras/libexec/scripts/migrate-23.5.0-01-COS-AddFeatures.pl"
+  install -D store/ldap/src/migrations/migrate20240716-UpdatePidFilePath.pl \
+    "${pkgdir}/opt/zextras/libexec/scripts/migrate20240716-UpdatePidFilePath.pl"
 
   install -Ddm755 store/ldap/generated/ \
     "${pkgdir}/opt/zextras/common/etc/openldap/zimbra/"
@@ -85,6 +87,10 @@ postinst__apt() {
 
   if [ "$1" = "configure" ] && [ ! -z "$2" ]; then
     echo "*Starting LDAP upgrade..."
+    # this script will start LDAP to perform migration
+    su - zextras -c "/opt/zextras/libexec/scripts/migrate20240716-UpdatePidFilePath.pl"
+    # we need to stop LDAP to make sure the schema changes are loaded on next start this
+    # ensures zmldapupdateldif and ldapattributeupdate work
     su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
@@ -103,6 +109,10 @@ postinst__rocky_8() {
 
   if [ "$1" -eq 2 ]; then
     echo "*Starting LDAP upgrade..."
+    # this script will start LDAP to perform migration
+    su - zextras -c "/opt/zextras/libexec/scripts/migrate20240716-UpdatePidFilePath.pl"
+    # we need to stop LDAP to make sure the schema changes are loaded on next start this
+    # ensures zmldapupdateldif and ldapattributeupdate work
     su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
@@ -128,6 +138,11 @@ postinst__rocky_9() {
 
   if [ "$1" -eq 2 ]; then
     echo "* Starting LDAP upgrade..."
+    # this script will start LDAP to perform migration
+    su - zextras -c "/opt/zextras/libexec/scripts/migrate20240716-UpdatePidFilePath.pl"
+    # we need to stop LDAP to make sure the schema changes are loaded on next start this
+    # ensures zmldapupdateldif and ldapattributeupdate work
+    su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     # zmldapupdateldif restart slapd out of systemdd domain...
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
