@@ -142,7 +142,7 @@ public class LdapProvisioningTest {
   }
 
   @Test
-  void shouldCreateAccountWithMailHostEqualToServer() throws ServiceException {
+  void shouldCreateAccount_WithMailHostEqualToServer() throws ServiceException {
     final Account account = provisioning.createAccount("testAccount@example.com", "password",
         new HashMap<>());
 
@@ -150,7 +150,7 @@ public class LdapProvisioningTest {
   }
 
   @Test
-  void shouldFailWhenCreatingADomainWithNonExistingMailHost() {
+  void shouldFailCreatingDomain_WhenServerWIthMailHostDoesNotExist() {
     final ServiceException serviceException = assertThrows(ServiceException.class,
         () -> provisioning.createDomain("my-domain.com", new HashMap<>() {{
           put(Provisioning.A_zimbraMailHost, "my-domain.com");
