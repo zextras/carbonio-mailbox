@@ -3,6 +3,7 @@ package com.zimbra.cs.service.account;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
+import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.SearchDirectoryOptions;
@@ -23,10 +24,13 @@ public class SearchEnabledUsers extends AccountDocumentHandler {
       throw ServiceException.PERM_DENIED("can not access account");
 
     String query = request.getAttribute(AccountConstants.E_NAME);
+    String feature = request.getAttribute(AccountConstants.E_FEATURE, null);
 
     var options = new SearchDirectoryOptions();
     options.setTypes(SearchDirectoryOptions.ObjectType.accounts);
-    String filter = MessageFormat.format("|(uid=*{0}*)(displayName=*{0}*)", query);
+
+    var featureFilter = StringUtil.isNullOrEmpty(feature) ? "" : MessageFormat.format("({0}=TRUE)", feature);
+    String filter = MessageFormat.format("&(|(uid=*{0}*)(displayName=*{0}*)){1}", query, featureFilter);
     options.setFilterString(ZLdapFilterFactory.FilterId.ADMIN_SEARCH, filter);
 
     var entries = Provisioning.getInstance().searchDirectory(options);

@@ -1,8 +1,6 @@
 package com.zimbra.soap.account.message;
 
 import com.zimbra.common.soap.AccountConstants;
-import com.zimbra.common.soap.AdminConstants;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -16,11 +14,31 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name= AccountConstants.E_SEARCH_ENABLED_USERS_REQUEST)
 public class SearchEnabledUsersRequest {
+
+  public enum Features {
+    CHATS("carbonioFeatureChatsEnabled");
+
+    private final String feature;
+
+    Features(String feature) {
+      this.feature = feature;
+    }
+
+    public String getFeature() {
+      return feature;
+    }
+  }
   /**
    * @zm-api-field-description Query string - should be an LDAP-style filter string (RFC 2254)
    */
   @XmlAttribute(name=AccountConstants.E_NAME, required=false)
   private String name;
+
+  /**
+   * @zm-api-field-description Query string - should be an LDAP-style filter string (RFC 2254)
+   */
+  @XmlAttribute(name=AccountConstants.E_FEATURE, required=false)
+  private Features feature;
   /**
    * @zm-api-field-description The maximum number of accounts to return (0 is default and means all)
    */
@@ -55,5 +73,13 @@ public class SearchEnabledUsersRequest {
 
   public void setOffset(Integer offset) {
     this.offset = offset;
+  }
+
+  public Features getFeature() {
+    return feature;
+  }
+
+  public void setFeature(Features feature) {
+    this.feature = feature;
   }
 }

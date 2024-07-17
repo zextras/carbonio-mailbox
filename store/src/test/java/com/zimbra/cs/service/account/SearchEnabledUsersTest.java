@@ -18,7 +18,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
 import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
@@ -48,6 +47,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
         .withDomain(DEFAULT_DOMAIN)
         .withUsername(FIRST_ACCOUNT_NAME)
         .withAttribute("displayName", "Test User")
+        .withAttribute(SearchEnabledUsersRequest.Features.CHATS.toString(), "TRUE")
         .create();
     secondAccount = accountCreatorFactory.get()
         .withDomain(DEFAULT_DOMAIN)
@@ -60,7 +60,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   void searchUserExact() throws Exception {
     HttpResponse httpResponse = getSoapClient().newRequest()
         .setCaller(userAccount)
-        .setSoapBody(SearchEnabledUsersTest.searchAccountsByName(FIRST_ACCOUNT_NAME))
+        .setSoapBody(SearchEnabledUsersTest.searchAccounts(FIRST_ACCOUNT_NAME))
         .execute();
 
     assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
@@ -75,7 +75,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   void searchUserPartial() throws Exception {
     HttpResponse httpResponse = getSoapClient().newRequest()
         .setCaller(userAccount)
-        .setSoapBody(SearchEnabledUsersTest.searchAccountsByName("st"))
+        .setSoapBody(SearchEnabledUsersTest.searchAccounts("st"))
         .execute();
 
     assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
@@ -90,7 +90,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   void searchUserInDisplayName() throws Exception {
     HttpResponse httpResponse = getSoapClient().newRequest()
         .setCaller(userAccount)
-        .setSoapBody(SearchEnabledUsersTest.searchAccountsByName("Test"))
+        .setSoapBody(SearchEnabledUsersTest.searchAccounts("Test"))
         .execute();
 
     assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
@@ -105,7 +105,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   void multipleMatches() throws Exception {
     HttpResponse httpResponse = getSoapClient().newRequest()
         .setCaller(userAccount)
-        .setSoapBody(SearchEnabledUsersTest.searchAccountsByName("account"))
+        .setSoapBody(SearchEnabledUsersTest.searchAccounts("account"))
         .execute();
 
     assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
@@ -118,7 +118,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   void multipleMatchesCaseInsensitive() throws Exception {
     HttpResponse httpResponse = getSoapClient().newRequest()
         .setCaller(userAccount)
-        .setSoapBody(SearchEnabledUsersTest.searchAccountsByName("ACCOUNT"))
+        .setSoapBody(SearchEnabledUsersTest.searchAccounts("ACCOUNT"))
         .execute();
 
     assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
@@ -127,27 +127,34 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     assertEquals(2, accounts.size());
   }
 
+  @Test
+  void filterByEnabled() throws Exception {
+    HttpResponse httpResponse = getSoapClient().newRequest()
+        .setCaller(userAccount)
+        .setSoapBody(SearchEnabledUsersTest.searchAccounts("account", SearchEnabledUsersRequest.Features.CHATS))
+        .execute();
+
+    assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
+    SearchEnabledUsersResponse response = parseSoapResponse(httpResponse);
+    List<AccountInfo> accounts = response.getAccounts();
+    assertEquals(1, accounts.size());
+  }
+
   private static SearchEnabledUsersResponse parseSoapResponse(HttpResponse httpResponse) throws IOException, ServiceException {
     final String responseBody = EntityUtils.toString(httpResponse.getEntity());
     final Element rootElement = parseXML(responseBody).getElement("Body").getElement("SearchEnabledUsersResponse");
     return JaxbUtil.elementToJaxb(rootElement, SearchEnabledUsersResponse.class);
   }
 
-  private static SearchEnabledUsersRequest searchAccountsByName(String name) {
-    return searchAccountsByName(name, null, null);
+  private static SearchEnabledUsersRequest searchAccounts(String name) {
+    return searchAccounts(name, null);
   }
 
-  private static SearchEnabledUsersRequest searchAccountsByName(String name, Integer limit, Integer offset) {
+  private static SearchEnabledUsersRequest searchAccounts(String name, SearchEnabledUsersRequest.Features feature) {
     SearchEnabledUsersRequest request = new SearchEnabledUsersRequest();
     request.setName(name);
+    request.setFeature(feature);
 
-    if (limit != null) {
-      request.setLimit(limit);
-    }
-
-    if (offset != null) {
-      request.setOffset(offset);
-    }
     return request;
   }
 }

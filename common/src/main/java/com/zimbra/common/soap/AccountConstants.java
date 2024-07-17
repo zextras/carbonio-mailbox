@@ -332,6 +332,7 @@ public class AccountConstants {
   public static final String E_EMAIL = "email";
   public static final String E_EMAIL2 = "email2";
   public static final String E_EMAIL3 = "email3";
+  public static final String E_FEATURE = "feature";
   public static final String E_VERSION = "version";
   public static final String E_NAME = "name";
   public static final String E_NEW_NAME = "newName";
