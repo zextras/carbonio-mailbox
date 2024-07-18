@@ -40,7 +40,12 @@ public class SearchEnabledUsers extends AccountDocumentHandler {
     }
 
     var featureFilter = StringUtil.isNullOrEmpty(feature) ? "" : MessageFormat.format("({0}=TRUE)", feature);
-    String filter = MessageFormat.format("|(&(|(uid=*{0}*)(displayName=*{0}*)){1}){2}", query, featureFilter, cosFilter);
+    var autoCompleteFilter = MessageFormat.format("|{0}{1}{2}",
+        getWildcardFilter(query, "uid"),
+        getWildcardFilter(query, "displayName"),
+        getWildcardFilter(query, "mail")
+    );
+    String filter = MessageFormat.format("|(&({0}){1}){2}", autoCompleteFilter, featureFilter, cosFilter);
     options.setFilterString(ZLdapFilterFactory.FilterId.ADMIN_SEARCH, filter);
 
 
@@ -49,5 +54,9 @@ public class SearchEnabledUsers extends AccountDocumentHandler {
     var response = zsc.createElement(AccountConstants.SEARCH_ENABLED_USERS_RESPONSE);
     entries.forEach(a -> ToXML.encodeAccount(response, (Account) a));
     return response;
+  }
+
+  private static String getWildcardFilter(String query, String field) {
+    return MessageFormat.format("({0}=*{1}*)", field, query);
   }
 }

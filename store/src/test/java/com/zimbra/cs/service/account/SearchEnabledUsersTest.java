@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,17 +41,6 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     provisioning = Provisioning.getInstance();
     accountCreatorFactory = new MailboxTestUtil.AccountCreator.Factory(provisioning);
     userAccount = createAccount("user", "User");
-    /*
-    var cosAttrs = new HashMap<String, Object>();
-    cosAttrs.put(SearchEnabledUsersRequest.Features.FILES.getFeature(), "TRUE");
-    var cos = provisioning.createCos("cos-with-files", cosAttrs);
-    firstAccount = createAccount(FIRST_ACCOUNT_NAME, "Test User", SearchEnabledUsersRequest.Features.CHATS);
-    secondAccount = accountCreatorFactory.get()
-        .withDomain(DEFAULT_DOMAIN)
-        .withUsername(SECOND_ACCOUNT_NAME)
-        .withAttribute("displayName", "Other User")
-        .withAttribute("zimbraCOSId", cos.getId())
-        .create();*/
   }
 
   @AfterAll
@@ -96,7 +86,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     try {
       HttpResponse httpResponse = getSoapClient().newRequest()
           .setCaller(userAccount)
-          .setSoapBody(SearchEnabledUsersTest.searchAccounts(ACCOUNT_UID.substring(3, 5)))
+          .setSoapBody(SearchEnabledUsersTest.searchAccounts(ACCOUNT_UID.substring(0, 2)))
           .execute();
 
       assertSuccessWithSingleAccount(httpResponse, account);
@@ -113,6 +103,22 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
       HttpResponse httpResponse = getSoapClient().newRequest()
           .setCaller(userAccount)
           .setSoapBody(SearchEnabledUsersTest.searchAccounts(ACCOUNT_NAME))
+          .execute();
+
+      assertSuccessWithSingleAccount(httpResponse, account);
+    } finally {
+      cleanUp(account);
+    }
+  }
+
+  @Test
+  void searchUserInEmail() throws Exception {
+    var account = createAccount(ACCOUNT_UID, ACCOUNT_NAME);
+
+    try {
+      HttpResponse httpResponse = getSoapClient().newRequest()
+          .setCaller(userAccount)
+          .setSoapBody(SearchEnabledUsersTest.searchAccounts(getEmailAddress(ACCOUNT_UID, DEFAULT_DOMAIN)))
           .execute();
 
       assertSuccessWithSingleAccount(httpResponse, account);
@@ -209,10 +215,10 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     return createAccount(accountName, fullName, feature, null);
   }
 
-  private static Account createAccount(String accountName, String fullName, SearchEnabledUsersRequest.Features feature, Cos cos) throws ServiceException {
+  private static Account createAccount(String uid, String fullName, SearchEnabledUsersRequest.Features feature, Cos cos) throws ServiceException {
     var account = accountCreatorFactory.get()
         .withDomain(DEFAULT_DOMAIN)
-        .withUsername(accountName)
+        .withUsername(uid)
         .withAttribute("displayName", fullName);
     if (feature != null) {
       return account
@@ -225,6 +231,10 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
           .create();
     }
     return account.create();
+  }
+
+  private static String getEmailAddress(String uid, String domain) {
+    return MessageFormat.format("{0}@{1}", uid, domain);
   }
 
   private static void assertSuccessWithSingleAccount(HttpResponse httpResponse, Account account) throws IOException, ServiceException {
