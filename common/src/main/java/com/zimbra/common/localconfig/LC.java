@@ -117,6 +117,14 @@ public final class LC {
   public static final KnownKey localized_msgs_directory =
       KnownKey.newKey("${zimbra_home}/conf/msgs");
 
+  @Supported
+  public static final KnownKey localized_client_msgs_directory =
+      KnownKey.newKey("${mailboxd_directory}/webapps/zimbraAdmin/WEB-INF/classes/messages");
+
+  @Supported
+  public static final KnownKey skins_directory =
+      KnownKey.newKey("${mailboxd_directory}/webapps/zimbra/skins");
+
   public static final KnownKey zimbra_disk_cache_servlet_flush = KnownKey.newKey(true);
   public static final KnownKey zimbra_disk_cache_servlet_size = KnownKey.newKey(1000);
 
@@ -466,7 +474,9 @@ public final class LC {
   public static final KnownKey sqlite_page_size = KnownKey.newKey(4096);
   public static final KnownKey sqlite_sync_mode = KnownKey.newKey("NORMAL");
 
-  public static final KnownKey create_db_sql_file = KnownKey.newKey("${zimbra_home}/db/create_database.sql");
+  @Supported
+  public static final KnownKey mailboxd_directory = KnownKey.newKey("${zimbra_home}/mailboxd");
+  public static final KnownKey create_db_sql_file = KnownKey.newKey("${mailboxd_directory}/../db/create_database.sql");
 
   @Supported public static final KnownKey mailboxd_java_heap_size = KnownKey.newKey(null);
 
@@ -494,7 +504,7 @@ public final class LC {
 
   @Supported
   public static final KnownKey mailboxd_keystore =
-      KnownKey.newKey("${zimbra_home}/conf/keystore");
+      KnownKey.newKey("${mailboxd_directory}/etc/keystore");
 
   @Supported public static final KnownKey mailboxd_keystore_password = KnownKey.newKey("zimbra");
 
@@ -577,6 +587,11 @@ public final class LC {
   public static final KnownKey calendar_item_get_max_retries = KnownKey.newKey(100);
   public static final KnownKey zimbraPrefCalenderScaling = KnownKey.newKey(false);
 
+  public static final KnownKey spnego_java_options =
+      KnownKey.newKey(
+          "-Djava.security.krb5.conf=${mailboxd_directory}/etc/krb5.ini "
+              + "-Djava.security.auth.login.config=${mailboxd_directory}/etc/spnego.conf "
+              + "-Djavax.security.auth.useSubjectCredsOnly=false");
 
   public static final KnownKey text_attachments_base64 = KnownKey.newKey(true);
 
@@ -1443,5 +1458,4 @@ public final class LC {
   @Target({ElementType.FIELD})
   @Retention(RetentionPolicy.RUNTIME)
   public @interface Supported {}
-
 }
