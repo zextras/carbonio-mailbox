@@ -17,7 +17,6 @@ public class SearchEnabledUsersRequest {
 
   public enum Features {
     CHATS("carbonioFeatureChatsEnabled"),
-    FILES("carbonioFeatureFilesEnabled"),
     UNKNOWN("");
 
     private final String feature;
