@@ -146,7 +146,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   }
 
   @Test
-  void filterByEnabled() throws Exception {
+  void featureEnabledInAccountNotInCos() throws Exception {
     var account1 = createAccount("first.account", "Test1", SearchEnabledUsersRequest.Features.CHATS);
     var account2 = createAccount("second.account", "Test2");
 
@@ -164,7 +164,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   }
 
   @Test
-  void filterByEnabledInCos() throws Exception {
+  void featureEnabledInCosNotInAccount() throws Exception {
     var cosAttrs = new HashMap<String, Object>();
     cosAttrs.put(SearchEnabledUsersRequest.Features.CHATS.getFeature(), "TRUE");
     var cos = provisioning.createCos("cos-with-chats", cosAttrs);
@@ -182,6 +182,47 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     } finally {
       cleanUp(account1);
       cleanUp(account2);
+      cleanUp(cos);
+    }
+  }
+
+  @Test
+  void featureEnabledInCosDisabledInAccount() throws Exception {
+    var cosAttrs = new HashMap<String, Object>();
+    cosAttrs.put(SearchEnabledUsersRequest.Features.CHATS.getFeature(), "TRUE");
+    var cos = provisioning.createCos("cos-with-chats", cosAttrs);
+    var account = createAccount("first.account", "Test1", SearchEnabledUsersRequest.Features.CHATS, false, cos);
+
+    try {
+      HttpResponse httpResponse = getSoapClient().newRequest()
+          .setCaller(userAccount)
+          .setSoapBody(SearchEnabledUsersTest.searchAccounts("account", SearchEnabledUsersRequest.Features.CHATS))
+          .execute();
+
+      assertEquals(0, getResponse(httpResponse).getAccounts().size());
+    } finally {
+      cleanUp(account);
+      cleanUp(cos);
+    }
+  }
+
+  @Test
+  void featureEnabledBothCosAndAccount() throws Exception {
+    var cosAttrs = new HashMap<String, Object>();
+    cosAttrs.put(SearchEnabledUsersRequest.Features.CHATS.getFeature(), "TRUE");
+    var cos = provisioning.createCos("cos-with-chats", cosAttrs);
+    var account = createAccount("first.account", "Test1", SearchEnabledUsersRequest.Features.CHATS, true, cos);
+
+    try {
+      HttpResponse httpResponse = getSoapClient().newRequest()
+          .setCaller(userAccount)
+          .setSoapBody(SearchEnabledUsersTest.searchAccounts("account", SearchEnabledUsersRequest.Features.CHATS))
+          .execute();
+
+      assertSuccessWithSingleAccount(httpResponse, account);
+    } finally {
+      cleanUp(account);
+      cleanUp(cos);
     }
   }
 
@@ -204,25 +245,29 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   }
 
   private static Account createAccount(String accountName, String fullName) throws ServiceException {
-    return createAccount(accountName, fullName, null, null);
+    return createAccount(accountName, fullName, null, false, null);
   }
 
   private static Account createAccount(String accountName, String fullName, Cos cos) throws ServiceException {
-    return createAccount(accountName, fullName, null, cos);
+    return createAccount(accountName, fullName, null, false, cos);
+  }
+
+  private static Account createAccount(String accountName, String fullName, SearchEnabledUsersRequest.Features feature, boolean enabled) throws ServiceException {
+    return createAccount(accountName, fullName, feature, enabled, null);
   }
 
   private static Account createAccount(String accountName, String fullName, SearchEnabledUsersRequest.Features feature) throws ServiceException {
-    return createAccount(accountName, fullName, feature, null);
+    return createAccount(accountName, fullName, feature, true, null);
   }
 
-  private static Account createAccount(String uid, String fullName, SearchEnabledUsersRequest.Features feature, Cos cos) throws ServiceException {
+  private static Account createAccount(String uid, String fullName, SearchEnabledUsersRequest.Features feature, boolean enabled, Cos cos) throws ServiceException {
     var account = accountCreatorFactory.get()
         .withDomain(DEFAULT_DOMAIN)
         .withUsername(uid)
         .withAttribute("displayName", fullName);
     if (feature != null) {
       return account
-          .withAttribute(feature.getFeature(), "TRUE")
+          .withAttribute(feature.getFeature(), enabled ? "TRUE" : "FALSE")
           .create();
     }
     if (cos != null) {
@@ -247,6 +292,10 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
   private static void cleanUp(Account account) throws ServiceException {
     provisioning.deleteAccount(account.getId());
+  }
+
+  private static void cleanUp(Cos cos) throws ServiceException {
+    provisioning.deleteCos(cos.getId());
   }
 
   private static SearchEnabledUsersResponse getResponse(HttpResponse httpResponse) throws IOException, ServiceException {

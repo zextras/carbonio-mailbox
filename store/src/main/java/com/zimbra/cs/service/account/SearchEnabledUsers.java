@@ -36,7 +36,7 @@ public class SearchEnabledUsers extends AccountDocumentHandler {
     String cosFilter = "";
     if (!StringUtil.isNullOrEmpty(feature)) {
       cosFilter = provisioning.getAllCos().stream().filter(cos -> cos.getAttr(feature, "FALSE").equals("TRUE"))
-          .map(cos -> MessageFormat.format("(zimbraCOSId={0})", cos.getId())).collect(Collectors.joining());
+          .map(cos -> MessageFormat.format("(&(zimbraCOSId={0})(!({1}=FALSE)))", cos.getId(), feature)).collect(Collectors.joining());
     }
 
     var featureFilter = StringUtil.isNullOrEmpty(feature) ? "" : MessageFormat.format("({0}=TRUE)", feature);
@@ -47,7 +47,6 @@ public class SearchEnabledUsers extends AccountDocumentHandler {
     );
     String filter = MessageFormat.format("|(&({0}){1}){2}", autoCompleteFilter, featureFilter, cosFilter);
     options.setFilterString(ZLdapFilterFactory.FilterId.ADMIN_SEARCH, filter);
-
 
     var entries = provisioning.searchDirectory(options);
 
