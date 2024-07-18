@@ -13,6 +13,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.account.message.SearchEnabledUsersRequest;
 
 import java.text.MessageFormat;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -45,13 +46,18 @@ public class SearchEnabledUsers extends AccountDocumentHandler {
         getWildcardFilter(query, "displayName"),
         getWildcardFilter(query, "mail")
     );
+    // TODO: zimbraHideInGAL <> TRUE
     String filter = MessageFormat.format("|(&({0}){1}){2}", autoCompleteFilter, featureFilter, cosFilter);
     options.setFilterString(ZLdapFilterFactory.FilterId.ADMIN_SEARCH, filter);
 
     var entries = provisioning.searchDirectory(options);
 
     var response = zsc.createElement(AccountConstants.SEARCH_ENABLED_USERS_RESPONSE);
-    entries.forEach(a -> ToXML.encodeAccount(response, (Account) a));
+    var attributes = new HashSet<String>();
+    attributes.add("mail");
+    attributes.add("uid");
+    attributes.add("displayName");
+    entries.forEach(a -> ToXML.encodeAccount(response, (Account) a, true, attributes, null));
     return response;
   }
 

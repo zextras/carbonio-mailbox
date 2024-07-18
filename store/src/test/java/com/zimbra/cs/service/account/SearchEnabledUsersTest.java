@@ -242,6 +242,18 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
   }
 
+  @Disabled
+  @Test
+  public void testIncludedAttributes() {
+
+  }
+
+  @Disabled
+  @Test
+  public void testMaxResults() {
+
+  }
+
   private static SearchEnabledUsersResponse parseSoapResponse(HttpResponse httpResponse) throws IOException, ServiceException {
     final String responseBody = EntityUtils.toString(httpResponse.getEntity());
     final Element rootElement = parseXML(responseBody).getElement("Body").getElement("SearchEnabledUsersResponse");
