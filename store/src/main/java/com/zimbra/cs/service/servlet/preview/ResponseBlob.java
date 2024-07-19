@@ -3,11 +3,15 @@ package com.zimbra.cs.service.servlet.preview;
 import java.io.InputStream;
 
 /**
- * {@link BlobResponseStore} class is used to store responses we get from preview service It
- * basically act as intermediate object with all metadata we get from attachment and preview
- * service.
+ * Represents a response containing a blob (binary large object).
+ * <p>
+ * This class encapsulates the details of a blob, including its size,
+ * MIME type, filename, disposition type, and input stream. It is used
+ * to facilitate the transfer of binary data, such as attachment or response
+ * from preview service.
+ * </p>
  */
-class BlobResponseStore {
+class ResponseBlob {
 
   private final String filename;
   private final Long size;
@@ -15,7 +19,7 @@ class BlobResponseStore {
   private final InputStream blobInputStream;
   private final String dispositionType;
 
-  public BlobResponseStore(
+  public ResponseBlob(
       InputStream blobInputStream, String filename, Long size, String mimeType, String disposition) {
     this.blobInputStream = blobInputStream;
     this.filename = filename;

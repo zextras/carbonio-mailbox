@@ -64,18 +64,14 @@ import javax.servlet.http.HttpServletResponse;
 
 public class PreviewServlet extends ZimbraServlet {
 
-  @SuppressWarnings("squid:S1075")
-  public static final String SERVLET_PATH = "/preview";
-  private static final long serialVersionUID = -4834966842520538743L;
-  private static final String PREVIEW_SERVICE_BASE_URL = "http://127.78.0.7:20001/";
+  private static final long serialVersionUID = 35984059L;
   private static final Log LOG = LogFactory.getLog(PreviewServlet.class);
-
   private final PreviewClient previewClient;
   private final PreviewHandler previewHandler;
 
   public PreviewServlet() {
     super();
-    this.previewClient = PreviewClient.atURL(PREVIEW_SERVICE_BASE_URL);
+    this.previewClient = PreviewClient.atURL(Constants.PREVIEW_SERVICE_BASE_URL);
     this.previewHandler = new PreviewHandler(previewClient, new MailboxAttachmentService(), new ItemIdFactory());
   }
 

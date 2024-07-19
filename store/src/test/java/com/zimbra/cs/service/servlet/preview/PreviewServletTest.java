@@ -14,6 +14,7 @@ import static org.mockito.Mockito.when;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.servlet.ZimbraServlet;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -58,12 +59,12 @@ class PreviewServletTest {
 
     when(ZimbraServlet.getAuthTokenFromCookie(request, response)).thenReturn(authToken);
     when(request.getRequestURL()).thenReturn(new StringBuffer(REQUEST_URL_BASE));
-    when(request.getAttribute(Utils.REQUEST_ID_KEY)).thenReturn(requestId);
+    when(request.getAttribute(Constants.REQUEST_ID_KEY)).thenReturn(requestId);
     doNothing().when(previewHandler).handle(any(HttpServletRequest.class), any(HttpServletResponse.class));
 
     previewServlet.doGet(request, response);
 
-    verify(request, never()).setAttribute(Utils.REQUEST_ID_KEY, requestId);
+    verify(request, never()).setAttribute(Constants.REQUEST_ID_KEY, requestId);
     verify(previewHandler).handle(request, response);
     verify(response, never()).sendError(anyInt(), anyString());
   }
@@ -78,7 +79,6 @@ class PreviewServletTest {
 
     verify(previewHandler).handle(request, response);
     verify(response, never()).sendError(anyInt(), anyString());
-    verify(request, atLeastOnce()).setAttribute(eq(Utils.REQUEST_ID_KEY), anyString());
+    verify(request, atLeastOnce()).setAttribute(eq(Constants.REQUEST_ID_KEY), anyString());
   }
-
 }

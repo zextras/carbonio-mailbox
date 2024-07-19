@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 import com.zextras.carbonio.preview.PreviewClient;
 import com.zextras.carbonio.preview.exceptions.InternalServerError;
 import com.zextras.carbonio.preview.exceptions.ItemNotFound;
-import com.zextras.carbonio.preview.queries.BlobResponse;
 import com.zextras.carbonio.preview.queries.Query;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.AuthToken;
@@ -61,7 +60,7 @@ class PreviewHandlerTest {
   @Mock
   private ItemIdFactory itemIdFactory;
   @Mock
-  private BlobResponse blobResponse;
+  private com.zextras.carbonio.preview.queries.BlobResponse blobResponse;
   @InjectMocks
   private PreviewHandler previewHandler;
 
@@ -96,18 +95,18 @@ class PreviewHandlerTest {
   @Test
   void should_return_error_when_preview_service_is_down() throws IOException {
     when(previewClient.healthReady()).thenReturn(false);
-    when(request.getAttribute(Utils.REQUEST_ID_KEY)).thenReturn("requestId");
+    when(request.getAttribute(Constants.REQUEST_ID_KEY)).thenReturn("requestId");
 
     previewHandler.handle(request, response);
 
-    verify(response).sendError(PreviewHandler.STATUS_UNPROCESSABLE_ENTITY,
+    verify(response).sendError(Constants.STATUS_UNPROCESSABLE_ENTITY,
         "Preview service is down or not available to take request");
   }
 
   @Test
   void should_return_error_when_missing_auth_token() throws IOException {
     when(previewClient.healthReady()).thenReturn(true);
-    when(request.getAttribute(Utils.REQUEST_ID_KEY)).thenReturn("requestId");
+    when(request.getAttribute(Constants.REQUEST_ID_KEY)).thenReturn("requestId");
 
     previewHandler.handle(request, response);
 
@@ -118,7 +117,7 @@ class PreviewHandlerTest {
   @Test
   void should_return_error_when_missing_required_parameters() throws IOException {
     when(previewClient.healthReady()).thenReturn(true);
-    when(request.getAttribute(Utils.REQUEST_ID_KEY)).thenReturn("requestId");
+    when(request.getAttribute(Constants.REQUEST_ID_KEY)).thenReturn("requestId");
     when(request.getRequestURL()).thenReturn(new StringBuffer(REQUEST_URL_BASE));
     when(request.getQueryString()).thenReturn("service/preview/image/"); // misses: 27310/2/0x0/?quality=high
     when(ZimbraServlet.getAuthTokenFromCookie(request, response)).thenReturn(authToken);
@@ -131,7 +130,7 @@ class PreviewHandlerTest {
   @Test
   void should_return_error_when_missing_message_id_is_invalid() throws IOException {
     when(previewClient.healthReady()).thenReturn(true);
-    when(request.getAttribute(Utils.REQUEST_ID_KEY)).thenReturn("requestId");
+    when(request.getAttribute(Constants.REQUEST_ID_KEY)).thenReturn("requestId");
     when(request.getRequestURL()).thenReturn(new StringBuffer(REQUEST_URL_BASE));
     when(request.getQueryString()).thenReturn("service/preview/image/27310_invalid/2/0x0/?quality=high");
     when(ZimbraServlet.getAuthTokenFromCookie(request, response)).thenReturn(authToken);
@@ -145,7 +144,7 @@ class PreviewHandlerTest {
   @MethodSource("pathAndQueryParamsVariants")
   void should_call_getAttachment_with_supported_params(String itemIdStr, String queryString) throws IOException, ServiceException {
     when(previewClient.healthReady()).thenReturn(true);
-    when(request.getAttribute(Utils.REQUEST_ID_KEY)).thenReturn("requestId");
+    when(request.getAttribute(Constants.REQUEST_ID_KEY)).thenReturn("requestId");
     when(authToken.getAccountId()).thenReturn("accountId");
     when(ZimbraServlet.getAuthTokenFromCookie(request, response)).thenReturn(authToken);
     when(request.getRequestURL()).thenReturn(new StringBuffer(REQUEST_URL_BASE));
@@ -166,7 +165,7 @@ class PreviewHandlerTest {
   @MethodSource("pathAndQueryParamsVariants")
   void should_call_getAttachmentPreview_with_supported_params(String itemIdStr, String queryString) throws IOException, ServiceException {
     when(previewClient.healthReady()).thenReturn(true);
-    when(request.getAttribute(Utils.REQUEST_ID_KEY)).thenReturn("requestId");
+    when(request.getAttribute(Constants.REQUEST_ID_KEY)).thenReturn("requestId");
     when(authToken.getAccountId()).thenReturn("accountId");
     when(request.getRequestURL()).thenReturn(new StringBuffer(REQUEST_URL_BASE));
     when(request.getQueryString()).thenReturn(queryString);
@@ -181,14 +180,13 @@ class PreviewHandlerTest {
     var previewHandlerSpy = spy(previewHandler);
     previewHandlerSpy.handle(request, response);
 
-    verify(previewHandlerSpy).getAttachmentPreview(any(HttpServletRequest.class), any(BlobRequestStore.class));
+    verify(previewHandlerSpy).getAttachmentPreview(any(HttpServletRequest.class), any(ResponseBlob.class));
   }
-
 
   @Test
   void should_return_error_when_fails_to_create_item_id() throws IOException, ServiceException {
     when(previewClient.healthReady()).thenReturn(true);
-    when(request.getAttribute(Utils.REQUEST_ID_KEY)).thenReturn("requestId");
+    when(request.getAttribute(Constants.REQUEST_ID_KEY)).thenReturn("requestId");
     when(request.getRequestURL()).thenReturn(new StringBuffer(REQUEST_URL_BASE));
     when(request.getQueryString()).thenReturn("service/preview/image/27310/2/0x0/?quality=high");
     when(authToken.getAccountId()).thenReturn("accountId");
@@ -203,7 +201,7 @@ class PreviewHandlerTest {
   @Test
   void should_return_error_when_unsupported_attachments() throws IOException, ServiceException {
     when(previewClient.healthReady()).thenReturn(true);
-    when(request.getAttribute(Utils.REQUEST_ID_KEY)).thenReturn("requestId");
+    when(request.getAttribute(Constants.REQUEST_ID_KEY)).thenReturn("requestId");
     when(request.getRequestURL()).thenReturn(new StringBuffer(REQUEST_URL_BASE));
     when(request.getQueryString()).thenReturn("service/preview/unsupported/27310/2/0x0/?quality=high");
     when(authToken.getAccountId()).thenReturn("accountId");
@@ -217,7 +215,7 @@ class PreviewHandlerTest {
 
     previewHandler.handle(request, response);
 
-    verify(response).sendError(PreviewHandler.STATUS_UNPROCESSABLE_ENTITY,
+    verify(response).sendError(Constants.STATUS_UNPROCESSABLE_ENTITY,
         "invalid request: [requestId] Cannot handle request");
   }
 
@@ -225,7 +223,7 @@ class PreviewHandlerTest {
   void should_proxy_request_when_attachment_is_not_local() throws IOException, ServiceException, HttpException {
     when(previewClient.healthReady()).thenReturn(true);
     when(authToken.getAccountId()).thenReturn("accountId");
-    when(request.getAttribute(Utils.REQUEST_ID_KEY)).thenReturn("requestId");
+    when(request.getAttribute(Constants.REQUEST_ID_KEY)).thenReturn("requestId");
     when(request.getRequestURL()).thenReturn(new StringBuffer(REQUEST_URL_BASE));
     when(request.getQueryString()).thenReturn("service/preview/image/27310/2/0x0/?quality=high");
     when(ZimbraServlet.getAuthTokenFromCookie(request, response)).thenReturn(authToken);
@@ -247,7 +245,7 @@ class PreviewHandlerTest {
       throws ServiceException, IOException {
     when(previewClient.healthReady()).thenReturn(true);
     when(authToken.getAccountId()).thenReturn("accountId");
-    when(request.getAttribute(Utils.REQUEST_ID_KEY)).thenReturn("requestId");
+    when(request.getAttribute(Constants.REQUEST_ID_KEY)).thenReturn("requestId");
     when(request.getRequestURL()).thenReturn(new StringBuffer(REQUEST_URL_BASE));
     when(request.getQueryString()).thenReturn("service/preview/image/27310/2/0x0/?quality=high");
     when(ZimbraServlet.getAuthTokenFromCookie(request, response)).thenReturn(authToken);
@@ -267,7 +265,7 @@ class PreviewHandlerTest {
   @Test
   void should_return_error_if_not_able_to_get_preview_from_preview_service() throws ServiceException, IOException {
     when(previewClient.healthReady()).thenReturn(true);
-    when(request.getAttribute(Utils.REQUEST_ID_KEY)).thenReturn("requestId");
+    when(request.getAttribute(Constants.REQUEST_ID_KEY)).thenReturn("requestId");
     when(request.getRequestURL()).thenReturn(new StringBuffer(REQUEST_URL_BASE));
     when(request.getQueryString()).thenReturn("service/preview/image/27310/2/0x0/?quality=high");
     when(authToken.getAccountId()).thenReturn("accountId");
@@ -284,13 +282,13 @@ class PreviewHandlerTest {
     var previewHandlerSyp = spy(previewHandler);
     previewHandlerSyp.handle(request, response);
 
-    verify(previewHandlerSyp).respondWithError(request, response, PreviewHandler.STATUS_UNPROCESSABLE_ENTITY, null);
+    verify(previewHandlerSyp).respondWithError(request, response, Constants.STATUS_UNPROCESSABLE_ENTITY, null);
   }
 
   @Test
   void should_respond_with_success_when_everything_ok() throws IOException, ServiceException, MessagingException {
     when(previewClient.healthReady()).thenReturn(true);
-    when(request.getAttribute(Utils.REQUEST_ID_KEY)).thenReturn("requestId");
+    when(request.getAttribute(Constants.REQUEST_ID_KEY)).thenReturn("requestId");
     when(request.getRequestURL()).thenReturn(new StringBuffer(REQUEST_URL_BASE));
     when(request.getQueryString()).thenReturn("service/preview/image/27310/2/0x0/?quality=high");
     when(authToken.getAccountId()).thenReturn("accountId");
@@ -311,6 +309,6 @@ class PreviewHandlerTest {
     var previewHandlerSpy = spy(previewHandler);
     previewHandlerSpy.handle(request, response);
 
-    verify(previewHandlerSpy).respondWithSuccess(eq(response), eq(request), any(BlobResponseStore.class));
+    verify(previewHandlerSpy).respondWithSuccess(eq(response), eq(request), any(ResponseBlob.class));
   }
 }

@@ -49,7 +49,7 @@ class UtilsTest {
     var request = mock(HttpServletRequest.class);
     var expectedRequestId = "12345";
 
-    when(request.getAttribute(Utils.REQUEST_ID_KEY)).thenReturn(expectedRequestId);
+    when(request.getAttribute(Constants.REQUEST_ID_KEY)).thenReturn(expectedRequestId);
 
     var requestId = Utils.getRequestIdFromRequest(request);
 
@@ -61,7 +61,7 @@ class UtilsTest {
     var request = mock(HttpServletRequest.class);
     var expectedRequestId = "12345";
 
-    when(request.getParameter(Utils.REQUEST_ID_KEY)).thenReturn(expectedRequestId);
+    when(request.getParameter(Constants.REQUEST_ID_KEY)).thenReturn(expectedRequestId);
 
     var requestId = Utils.getRequestIdFromRequest(request);
 
@@ -78,8 +78,8 @@ class UtilsTest {
   void should_return_null_if_attribute_and_query_param_missing() {
     var request = mock(HttpServletRequest.class);
 
-    when(request.getAttribute(Utils.REQUEST_ID_KEY)).thenReturn(null);
-    when(request.getParameter(Utils.REQUEST_ID_KEY)).thenReturn(null);
+    when(request.getAttribute(Constants.REQUEST_ID_KEY)).thenReturn(null);
+    when(request.getParameter(Constants.REQUEST_ID_KEY)).thenReturn(null);
 
     assertNull(Utils.getRequestIdFromRequest(request),
         "should return null if request do not contain attribute or query param with request id key");
