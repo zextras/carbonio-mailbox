@@ -10,7 +10,6 @@ import com.zextras.carbonio.preview.PreviewClient;
 import com.zextras.carbonio.preview.exceptions.BadRequest;
 import com.zextras.carbonio.preview.exceptions.ItemNotFound;
 import com.zextras.carbonio.preview.exceptions.ValidationError;
-import com.zextras.carbonio.preview.queries.BlobResponse;
 import com.zextras.carbonio.preview.queries.Query;
 import com.zextras.carbonio.preview.queries.Query.QueryBuilder;
 import com.zimbra.common.service.ServiceException;

@@ -66,18 +66,18 @@ class PreviewHandlerTest {
 
   private MockedStatic<ZimbraServlet> zimbraServletMockedStatic;
 
-  private static Stream<Object[]> pathAndQueryParamsVariants() {
+  private static Stream<String> pathAndQueryParamsVariants() {
     return Stream.of(
-        new Object[]{"service/preview/image/27310/2/0x0/?quality=high"},
-        new Object[]{"service/preview/pdf/27310/2/0x0/?quality=high"},
-        new Object[]{"service/preview/document/27310/2/0x0/?quality=high"},
-        new Object[]{"service/preview/image/27310/2/0x0/thumbnail/?quality=high"},
-        new Object[]{"service/preview/pdf/27310/2/0x0/thumbnail/?quality=high"},
-        new Object[]{"service/preview/document/27310/2/0x0/thumbnail/?quality=high"},
-        new Object[]{"service/preview/image/27310/2/0x0/thumbnail?quality=high"},
-        new Object[]{"service/preview/pdf/27310/2/0x0/thumbnail?quality=high"},
-        new Object[]{"service/preview/document/27310/2/0x0/thumbnail?quality=high"},
-        new Object[]{"service/preview/document/accountId:27310/2/0x0/thumbnail?quality=high"}
+        "service/preview/image/27310/2/0x0/?quality=high",
+        "service/preview/pdf/27310/2/0x0/?quality=high",
+        "service/preview/document/27310/2/0x0/?quality=high",
+        "service/preview/image/27310/2/0x0/thumbnail/?quality=high",
+        "service/preview/pdf/27310/2/0x0/thumbnail/?quality=high",
+        "service/preview/document/27310/2/0x0/thumbnail/?quality=high",
+        "service/preview/image/27310/2/0x0/thumbnail?quality=high",
+        "service/preview/pdf/27310/2/0x0/thumbnail?quality=high",
+        "service/preview/document/27310/2/0x0/thumbnail?quality=high",
+        "service/preview/document/accountId:27310/2/0x0/thumbnail?quality=high"
     );
   }
 
