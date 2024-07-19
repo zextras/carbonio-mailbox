@@ -1,13 +1,17 @@
 package com.zimbra.cs.service.servlet.preview;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
 
 /** This Utility class contains common utility methods to be used by the Preview Servlet. */
 class Utils {
 
-  public static final String REQUEST_ID_ATTRIBUTE_KEY = "requestId";
+  public static final String REQUEST_ID_KEY = "tRequestId";
+  public static final String REQUEST_PARAM_DISP = "disp";
 
   private Utils() {
     // Private constructor to prevent instantiation
@@ -32,39 +36,65 @@ class Utils {
 
   /**
    * Retrieves the request ID from the given HttpServletRequest.
-   * The request ID is obtained from the request attribute specified by REQUEST_ID_ATTRIBUTE_KEY.
+   * The request ID is obtained first from the request attribute specified by {@link #REQUEST_ID_KEY} key.
+   * If the attribute is not set then falls back to get the request ID from the request's query parameter.
+   * If the query parameter do not contain query param with key {@link #REQUEST_ID_KEY} then returns null.
+   *
    *
    * @param req the HttpServletRequest object from which to retrieve the request ID
    * @return the request ID as a String
    * @throws IllegalArgumentException if the HttpServletRequest is null
    */
-  static String getRequestIDFromRequest(HttpServletRequest req) {
+  public static String getRequestIdFromRequest(HttpServletRequest req) {
     if (req == null) {
       throw new IllegalArgumentException("HttpServletRequest cannot be null");
     }
-    return req.getAttribute(REQUEST_ID_ATTRIBUTE_KEY).toString();
+
+    var requestId = req.getAttribute(REQUEST_ID_KEY);
+    if (requestId != null) {
+      return requestId.toString();
+    }
+
+    var requestIdFromQuery = req.getParameter(REQUEST_ID_KEY);
+    if (requestIdFromQuery != null && !requestIdFromQuery.isEmpty()) {
+      return requestIdFromQuery;
+    }
+
+    return null;
   }
 
-  /**
-   * removes the disposition query parameter from the url
-   *
-   * @param requestUrl      the requestUrl ({@link String})
-   * @param dispositionType disposition type ({@link String})
-   * @return Request Url for Preview ({@link String})
-   */
-  static String getRequestUrlForPreview(String requestUrl, String dispositionType) {
-    var dispQueryParam = "\\?disp=" + dispositionType;
-    var possibleDisposition =
-        Arrays.asList(dispQueryParam, "\\&disp=" + dispositionType);
+  public static String getOrSetRequestId(HttpServletRequest request) {
+    var requestId = getRequestIdFromRequest(request);
+    if (requestId == null || requestId.isEmpty()) {
+      requestId = UUID.randomUUID().toString();
+      request.setAttribute(Utils.REQUEST_ID_KEY, requestId);
+    }
+    return requestId;
+  }
 
-    return possibleDisposition.stream()
-        .reduce(
-            requestUrl,
-            (str, toRem) ->
-                str.replaceAll(
-                        toRem.contains("\\?") ? dispQueryParam + "&" : toRem,
-                        toRem.contains("\\?") ? "\\?" : "")
-                    .replaceAll(toRem.contains("\\?") ? dispQueryParam : toRem, ""));
+  public static String removeQueryParams(String requestUrl, List<String> paramsToRemove)
+      {
+        int queryIndex = requestUrl.indexOf('?');
+        if (queryIndex == -1) {
+          return requestUrl;
+        }
+
+        String baseUrl = requestUrl.substring(0, queryIndex);
+        String query = requestUrl.substring(queryIndex + 1);
+
+        List<String> queryPairs = Arrays.stream(query.split("&"))
+            .filter(param -> {
+              String paramName = param.contains("=") ? param.substring(0, param.indexOf('=')) : param;
+              return !paramsToRemove.contains(paramName);
+            })
+            .collect(Collectors.toList());
+
+        if (queryPairs.isEmpty()) {
+          return baseUrl;
+        }
+
+        String newQuery = String.join("&", queryPairs);
+        return baseUrl + "?" + newQuery;
   }
 
   /**
@@ -74,17 +104,21 @@ class Utils {
    * @return disposition value if found else the default "i"(inline)
    */
   static String getDispositionTypeFromQueryParams(String requestUrl) {
-    if (requestUrl.split("\\?").length > 1) {
-      return Stream.of(requestUrl.split("\\?")[1].split("&"))
-          .map(kv -> kv.split("="))
-          .filter(kv -> "disp".equalsIgnoreCase(kv[0]))
-          .map(kv -> kv[1])
+    if (requestUrl == null || requestUrl.isEmpty()) {
+      return "i";
+    }
+
+    var parts = requestUrl.split("\\?");
+    if (parts.length > 1) {
+      return Stream.of(parts[1].split("&"))
+          .map(kv -> kv.split("=", 2))
+          .filter(kv -> REQUEST_PARAM_DISP.equalsIgnoreCase(kv[0]))
+          .map(kv -> kv.length > 1 && !kv[1].isEmpty() ? kv[1] : "i")
           .findFirst()
           .orElse("i");
     } else {
       return "i";
     }
   }
-
 
 }
