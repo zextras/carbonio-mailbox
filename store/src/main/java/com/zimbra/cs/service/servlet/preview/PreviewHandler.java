@@ -5,13 +5,10 @@ import static com.zimbra.cs.service.servlet.preview.Utils.REQUEST_ID_KEY;
 import static com.zimbra.cs.service.servlet.preview.Utils.REQUEST_PARAM_DISP;
 import static com.zimbra.cs.servlet.ZimbraServlet.proxyServletRequest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.carbonio.preview.PreviewClient;
 import com.zextras.carbonio.preview.exceptions.BadRequest;
 import com.zextras.carbonio.preview.exceptions.ItemNotFound;
 import com.zextras.carbonio.preview.exceptions.ValidationError;
-import com.zextras.carbonio.preview.queries.Query;
-import com.zextras.carbonio.preview.queries.Query.QueryBuilder;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.Log;
@@ -24,13 +21,9 @@ import io.vavr.control.Try;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimePart;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpException;
@@ -81,44 +74,6 @@ public class PreviewHandler {
     this.itemIdFactory = itemIdFactory;
   }
 
-  /**
-   * This method generates the final query {@link Query} from passed Optional area string and {@link
-   * PreviewQueryParameters}
-   *
-   * @param optArea         the optional area {@link String} parameter
-   * @param queryParameters the {@link PreviewQueryParameters} object
-   * @return {@link Query}
-   */
-  private static Query generateQuery(String optArea, PreviewQueryParameters queryParameters) {
-    var parameterBuilder = new QueryBuilder();
-    if (optArea != null) {
-      parameterBuilder.setPreviewArea(optArea);
-    }
-    queryParameters.getQuality().ifPresent(parameterBuilder::setQuality);
-    queryParameters.getOutputFormat().ifPresent(parameterBuilder::setOutputFormat);
-    queryParameters.getCrop().ifPresent(parameterBuilder::setCrop);
-    queryParameters.getShape().ifPresent(parameterBuilder::setShape);
-    queryParameters.getFirstPage().ifPresent(parameterBuilder::setFirstPage);
-    queryParameters.getLastPage().ifPresent(parameterBuilder::setLastPage);
-    return parameterBuilder.build();
-  }
-
-
-  /**
-   * This method parses the passed queryParamString into {@link PreviewQueryParameters} object
-   *
-   * @param queryParameters {@link String}
-   * @return {@link PreviewQueryParameters}
-   */
-  private static PreviewQueryParameters parseQueryParameters(String queryParameters) {
-    var parameters =
-        Arrays.stream(queryParameters.replace("?", "").split("&"))
-            .map(parameter -> parameter.split("="))
-            .filter(parameter -> parameter.length == 2)
-            .collect(Collectors.toMap(parameter -> parameter[0], parameter -> parameter[1]));
-    return new ObjectMapper().convertValue(parameters, PreviewQueryParameters.class);
-  }
-
   public void handle(HttpServletRequest request, HttpServletResponse response) {
     if (!previewClient.healthReady()) {
       respondWithError(request, response, STATUS_UNPROCESSABLE_ENTITY,
@@ -160,14 +115,23 @@ public class PreviewHandler {
     }
   }
 
-  void proxyRequestToTargetMailHost(HttpServletRequest request, HttpServletResponse response, String targetAccountId)
-      throws IOException, ServiceException, HttpException {
-    var requestId = Utils.getRequestIdFromRequest(request);
-    LOG.info("[" + requestId + "] Proxying request to target account(" + targetAccountId + ")'s mail host.");
-    proxyServletRequest(request, response, targetAccountId,
-        Map.of(REQUEST_ID_KEY, requestId != null ? requestId : "N/A"));
-  }
-
+  /**
+   * Handles the processing of a local attachment preview request.
+   *
+   * <p>This method retrieves an attachment based on the provided {@link ItemId} and {@code partId}.
+   * If the attachment is found, it is mapped to a {@link BlobRequestStore} and further processed to generate an
+   * attachment preview. The method then responds with the appropriate status and information based on the success or
+   * failure of the processing.</p>
+   *
+   * <p>If the attachment cannot be retrieved or processed, the method responds with an error message
+   * and the corresponding HTTP status code.</p>
+   *
+   * @param request   the {@link HttpServletRequest} object containing the request details
+   * @param response  the {@link HttpServletResponse} object used to send the response
+   * @param authToken the {@link AuthToken} used for authentication and authorization
+   * @param itemId    the {@link ItemId} identifying the attachment to be retrieved
+   * @param partId    the ID of the specific part of the attachment to be retrieved
+   */
   private void handleLocalAttachment(HttpServletRequest request, HttpServletResponse response,
       AuthToken authToken, ItemId itemId, String partId) {
     var mimePartTry = attachmentService.getAttachment(itemId.getAccountId(), authToken, itemId.getId(), partId);
@@ -177,7 +141,7 @@ public class PreviewHandler {
       return;
     }
 
-    mimePartTry.mapTry(this::mapMimePartToBlobRequestStore)
+    mimePartTry.mapTry(Utils::mapMimePartToBlobRequestStore)
         .flatMapTry(blobRequestStore -> getAttachmentPreview(request, blobRequestStore))
         .onSuccess(blobPreviewResponseStore -> respondWithSuccess(response, request, blobPreviewResponseStore))
         .onFailure(BadRequest.class,
@@ -189,14 +153,26 @@ public class PreviewHandler {
         .onFailure(ex -> respondWithError(request, response, STATUS_UNPROCESSABLE_ENTITY, ex.getMessage()));
   }
 
-  private BlobRequestStore mapMimePartToBlobRequestStore(MimePart mimePart) throws MessagingException, IOException {
-    return new BlobRequestStore(
-        mimePart.getInputStream(),
-        mimePart.getFileName(),
-        (long) mimePart.getSize(),
-        mimePart.getContentType(),
-        "inline"
-    );
+  /**
+   * Proxies an HTTP request to the mail host associated with the specified target account.
+   *
+   * <p>This method extracts the request ID from the provided {@link HttpServletRequest} object,
+   * logs the action of proxying the request along with the target account ID, and then invokes the {@link
+   * ZimbraServlet#proxyServletRequest} method to handle the actual request forwarding.</p>
+   *
+   * @param request         the {@link HttpServletRequest} object containing the request to be proxied
+   * @param response        the {@link HttpServletResponse} object used to send the response
+   * @param targetAccountId the ID of the target account whose mail host will receive the request
+   * @throws IOException      if an I/O error occurs during the processing of the request or response
+   * @throws ServiceException if a service-related error occurs while proxying the request
+   * @throws HttpException    if an HTTP error occurs during the proxying process
+   */
+  void proxyRequestToTargetMailHost(HttpServletRequest request, HttpServletResponse response, String targetAccountId)
+      throws IOException, ServiceException, HttpException {
+    var requestId = Utils.getRequestIdFromRequest(request);
+    LOG.info("[" + requestId + "] Proxying request to target account(" + targetAccountId + ")'s mail host.");
+    proxyServletRequest(request, response, targetAccountId,
+        Map.of(REQUEST_ID_KEY, requestId != null ? requestId : "N/A"));
   }
 
   /**
@@ -239,12 +215,12 @@ public class PreviewHandler {
     if (imageThumbnailMatcher.find()) {
       var previewArea = imageThumbnailMatcher.group(3);
       var queryParameters =
-          parseQueryParameters(imageThumbnailMatcher.group(4));
+          Utils.parseQueryParameters(imageThumbnailMatcher.group(4));
       return Try.of(
               () ->
                   previewClient.postThumbnailOfImage(
                       attachmentMimePartInputStream,
-                      generateQuery(previewArea, queryParameters),
+                      Utils.generateQuery(previewArea, queryParameters),
                       attachmentFileName))
           .flatMapTry(
               thumbnailOfImage ->
@@ -256,12 +232,12 @@ public class PreviewHandler {
     if (pdfThumbnailMatcher.find()) {
       var previewArea = pdfThumbnailMatcher.group(3);
       var queryParameters =
-          parseQueryParameters(pdfThumbnailMatcher.group(4));
+          Utils.parseQueryParameters(pdfThumbnailMatcher.group(4));
       return Try.of(
               () ->
                   previewClient.postThumbnailOfPdf(
                       attachmentMimePartInputStream,
-                      generateQuery(previewArea, queryParameters),
+                      Utils.generateQuery(previewArea, queryParameters),
                       attachmentFileName))
           .flatMapTry(
               thumbnailOfPdf ->
@@ -273,12 +249,12 @@ public class PreviewHandler {
     if (documentThumbnailMatcher.find()) {
       var previewArea = documentThumbnailMatcher.group(3);
       var queryParameters =
-          parseQueryParameters(documentThumbnailMatcher.group(4));
+          Utils.parseQueryParameters(documentThumbnailMatcher.group(4));
       return Try.of(
               () ->
                   previewClient.postThumbnailOfDocument(
                       attachmentMimePartInputStream,
-                      generateQuery(previewArea, queryParameters),
+                      Utils.generateQuery(previewArea, queryParameters),
                       attachmentFileName))
           .flatMapTry(
               thumbnailOfDocument ->
@@ -290,12 +266,12 @@ public class PreviewHandler {
     if (imagePreviewMatcher.find()) {
       var previewArea = imagePreviewMatcher.group(3);
       var queryParameters =
-          parseQueryParameters(imagePreviewMatcher.group(5));
+          Utils.parseQueryParameters(imagePreviewMatcher.group(5));
       return Try.of(
               () ->
                   previewClient.postPreviewOfImage(
                       attachmentMimePartInputStream,
-                      generateQuery(previewArea, queryParameters),
+                      Utils.generateQuery(previewArea, queryParameters),
                       attachmentFileName))
           .flatMapTry(
               previewOfImage ->
@@ -306,12 +282,12 @@ public class PreviewHandler {
     // Handle Preview PDF request
     if (pdfPreviewMatcher.find()) {
       var queryParameters =
-          parseQueryParameters(pdfPreviewMatcher.group(4));
+          Utils.parseQueryParameters(pdfPreviewMatcher.group(4));
       return Try.of(
               () ->
                   previewClient.postPreviewOfPdf(
                       attachmentMimePartInputStream,
-                      generateQuery(null, queryParameters),
+                      Utils.generateQuery(null, queryParameters),
                       attachmentFileName))
           .flatMapTry(
               previewOfPdf ->
@@ -322,12 +298,12 @@ public class PreviewHandler {
     // Handle Preview Document request
     if (documentPreviewMatcher.find()) {
       var queryParameters =
-          parseQueryParameters(documentPreviewMatcher.group(4));
+          Utils.parseQueryParameters(documentPreviewMatcher.group(4));
       return Try.of(
               () ->
                   previewClient.postPreviewOfDocument(
                       attachmentMimePartInputStream,
-                      generateQuery(null, queryParameters),
+                      Utils.generateQuery(null, queryParameters),
                       attachmentFileName))
           .flatMapTry(
               previewOfDocument ->

@@ -1,15 +1,21 @@
 package com.zimbra.cs.service.servlet.preview;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.carbonio.preview.queries.BlobResponse;
+import com.zextras.carbonio.preview.queries.Query;
+import com.zextras.carbonio.preview.queries.Query.QueryBuilder;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.service.util.ItemId;
 import io.vavr.control.Try;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimePart;
 import javax.servlet.http.HttpServletRequest;
 
 /** This Utility class contains common utility methods to be used by the Preview Servlet. */
@@ -150,6 +156,65 @@ class Utils {
         response.getLength(),
         response.getMimeType(),
         dispositionType));
+  }
+
+  /**
+   * Maps a {@link MimePart} to a {@link BlobRequestStore}.
+   *
+   * <p>This method converts a {@link MimePart} object into a {@link BlobRequestStore} object
+   * by extracting the input stream, file name, size, content type, and a fixed disposition value.</p>
+   *
+   * @param mimePart the {@link MimePart} to be mapped
+   * @return a {@link BlobRequestStore} containing the details extracted from the {@link MimePart}
+   * @throws MessagingException if there is an error retrieving information from the {@link MimePart}
+   * @throws IOException if an I/O error occurs while accessing the input stream of the {@link MimePart}
+   */
+  static BlobRequestStore mapMimePartToBlobRequestStore(MimePart mimePart) throws MessagingException, IOException {
+    return new BlobRequestStore(
+        mimePart.getInputStream(),
+        mimePart.getFileName(),
+        (long) mimePart.getSize(),
+        mimePart.getContentType(),
+        "inline"
+    );
+  }
+
+  /**
+   * This method generates the final query {@link Query} from passed Optional area string and {@link
+   * PreviewQueryParameters}
+   *
+   * @param optArea         the optional area {@link String} parameter
+   * @param queryParameters the {@link PreviewQueryParameters} object
+   * @return {@link Query}
+   */
+  static Query generateQuery(String optArea, PreviewQueryParameters queryParameters) {
+    var parameterBuilder = new QueryBuilder();
+    if (optArea != null) {
+      parameterBuilder.setPreviewArea(optArea);
+    }
+    queryParameters.getQuality().ifPresent(parameterBuilder::setQuality);
+    queryParameters.getOutputFormat().ifPresent(parameterBuilder::setOutputFormat);
+    queryParameters.getCrop().ifPresent(parameterBuilder::setCrop);
+    queryParameters.getShape().ifPresent(parameterBuilder::setShape);
+    queryParameters.getFirstPage().ifPresent(parameterBuilder::setFirstPage);
+    queryParameters.getLastPage().ifPresent(parameterBuilder::setLastPage);
+    return parameterBuilder.build();
+  }
+
+
+  /**
+   * This method parses the passed queryParamString into {@link PreviewQueryParameters} object
+   *
+   * @param queryParameters {@link String}
+   * @return {@link PreviewQueryParameters}
+   */
+  static PreviewQueryParameters parseQueryParameters(String queryParameters) {
+    var parameters =
+        Arrays.stream(queryParameters.replace("?", "").split("&"))
+            .map(parameter -> parameter.split("="))
+            .filter(parameter -> parameter.length == 2)
+            .collect(Collectors.toMap(parameter -> parameter[0], parameter -> parameter[1]));
+    return new ObjectMapper().convertValue(parameters, PreviewQueryParameters.class);
   }
 
 }
