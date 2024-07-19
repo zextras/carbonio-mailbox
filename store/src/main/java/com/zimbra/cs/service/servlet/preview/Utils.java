@@ -50,7 +50,7 @@ class Utils {
    * @return the request ID as a String
    * @throws IllegalArgumentException if the HttpServletRequest is null
    */
-  public static String getRequestIdFromRequest(HttpServletRequest req) {
+  static String getRequestIdFromRequest(HttpServletRequest req) {
     if (req == null) {
       throw new IllegalArgumentException("HttpServletRequest cannot be null");
     }
@@ -68,7 +68,7 @@ class Utils {
     return null;
   }
 
-  public static String getOrSetRequestId(HttpServletRequest request) {
+  static String getOrSetRequestId(HttpServletRequest request) {
     var requestId = getRequestIdFromRequest(request);
     if (requestId == null || requestId.isEmpty()) {
       requestId = UUID.randomUUID().toString();
@@ -77,7 +77,7 @@ class Utils {
     return requestId;
   }
 
-  public static String removeQueryParams(String requestUrl, List<String> paramsToRemove)
+  static String removeQueryParams(String requestUrl, List<String> paramsToRemove)
       {
         int queryIndex = requestUrl.indexOf('?');
         if (queryIndex == -1) {
