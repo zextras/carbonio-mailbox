@@ -9,7 +9,6 @@ import com.zimbra.cs.servlet.ZimbraServlet;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.UUID;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -64,14 +63,26 @@ import javax.servlet.http.HttpServletResponse;
  */
 
 public class PreviewServlet extends ZimbraServlet {
+
   @SuppressWarnings("squid:S1075")
   public static final String SERVLET_PATH = "/preview";
   private static final long serialVersionUID = -4834966842520538743L;
   private static final String PREVIEW_SERVICE_BASE_URL = "http://127.78.0.7:20001/";
-  private static final PreviewClient PREVIEW_CLIENT = PreviewClient.atURL(PREVIEW_SERVICE_BASE_URL);
-  private static final PreviewHandler PREVIEW_HANDLER = new PreviewHandler(PREVIEW_CLIENT,
-      new MailboxAttachmentService());
   private static final Log LOG = LogFactory.getLog(PreviewServlet.class);
+
+  private final PreviewClient previewClient;
+  private final PreviewHandler previewHandler;
+
+  public PreviewServlet() {
+    super();
+    this.previewClient = PreviewClient.atURL(PREVIEW_SERVICE_BASE_URL);
+    this.previewHandler = new PreviewHandler(previewClient, new MailboxAttachmentService(), new ItemIdFactory());
+  }
+
+  public PreviewServlet(PreviewClient previewClient, PreviewHandler previewHandler) {
+    this.previewClient = previewClient;
+    this.previewHandler = previewHandler;
+  }
 
   @Override
   public void init() throws ServletException {
@@ -92,13 +103,12 @@ public class PreviewServlet extends ZimbraServlet {
     addRemoteIpToLoggingContext(request);
 
     var start = Instant.now();
-    var requestId = UUID.randomUUID().toString();
-    request.setAttribute(Utils.REQUEST_ID_ATTRIBUTE_KEY, requestId);
+    var requestId = Utils.getOrSetRequestId(request);
     var fullURL = Utils.getFullURLFromRequest(request);
     LOG.info("[" + requestId + "] Received GET request for URL: " + fullURL);
 
     try {
-      PREVIEW_HANDLER.handle(request, response);
+      previewHandler.handle(request, response);
     } finally {
       var end = Instant.now();
       var elapsed = Duration.between(start, end);
