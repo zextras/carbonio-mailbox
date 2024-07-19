@@ -1,5 +1,8 @@
 package com.zimbra.cs.service.servlet.preview;
 
+import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.account.AuthToken;
+import com.zimbra.cs.service.util.ItemId;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -119,6 +122,14 @@ class Utils {
     } else {
       return "i";
     }
+  }
+
+  public static ItemId getItemIdFromMessageId(ItemIdFactory itemIdFactory, String messageId, AuthToken authToken) throws ServiceException {
+    final var uuidMsgId = messageId.split(":");
+    if (uuidMsgId.length == 2) {
+      return itemIdFactory.create(uuidMsgId[1], uuidMsgId[0]);
+    }
+    return itemIdFactory.create(messageId, authToken.getAccountId());
   }
 
 }

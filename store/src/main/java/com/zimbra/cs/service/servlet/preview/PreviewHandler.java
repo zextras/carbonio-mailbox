@@ -1,6 +1,8 @@
 package com.zimbra.cs.service.servlet.preview;
 
 import static com.zimbra.cs.service.servlet.preview.PreviewServlet.SERVLET_PATH;
+import static com.zimbra.cs.service.servlet.preview.Utils.REQUEST_ID_KEY;
+import static com.zimbra.cs.service.servlet.preview.Utils.REQUEST_PARAM_DISP;
 import static com.zimbra.cs.servlet.ZimbraServlet.proxyServletRequest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +26,8 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.mail.MessagingException;
@@ -63,18 +67,19 @@ public class PreviewHandler {
           + MESSAGE_ID_REGEXP
           + PART_NUMBER_REGEXP
           + "/?((?=(?!thumbnail))(?=([^/ ]*)))";
-
+  public static final int STATUS_UNPROCESSABLE_ENTITY = 422;
   private static final Log LOG = LogFactory.getLog(PreviewHandler.class);
   private static final Pattern requiredQueryParametersPattern = Pattern.compile(
       SERVLET_PATH + "/([a-zA-Z]+)/" + MESSAGE_ID_REGEXP + PART_NUMBER_REGEXP);
-  private static final int STATUS_UNPROCESSABLE_ENTITY = 422;
   private final PreviewClient previewClient;
   private final AttachmentService attachmentService;
+  private final ItemIdFactory itemIdFactory;
 
   public PreviewHandler(PreviewClient previewClient,
-      AttachmentService attachmentService) {
+      AttachmentService attachmentService, ItemIdFactory itemIdFactory) {
     this.previewClient = previewClient;
     this.attachmentService = attachmentService;
+    this.itemIdFactory = itemIdFactory;
   }
 
   /**
@@ -138,7 +143,7 @@ public class PreviewHandler {
     var messageId = requiredQueryParametersMatcher.group(2);
     var partId = requiredQueryParametersMatcher.group(3);
 
-    var itemIdTry = Try.of(() -> getItemIdFromMessageId(messageId, authTokenTry.get()));
+    var itemIdTry = Try.of(() -> Utils.getItemIdFromMessageId(itemIdFactory, messageId, authTokenTry.get()));
     if (itemIdTry.isFailure() || itemIdTry.get() == null) {
       respondWithError(request, response, HttpServletResponse.SC_BAD_REQUEST, "Invalid MessageId.");
       return;
@@ -149,18 +154,26 @@ public class PreviewHandler {
       if (itemId.isLocal()) {
         handleLocalAttachment(request, response, authTokenTry.get(), itemId, partId);
       } else {
-        proxyServletRequest(request, response, itemId.getAccountId());
+        proxyRequestToTargetMailHost(request, response, itemId.getAccountId());
       }
     } catch (ServiceException | HttpException | IOException e) {
       respondWithError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
 
+  void proxyRequestToTargetMailHost(HttpServletRequest request, HttpServletResponse response, String targetAccountId)
+      throws IOException, ServiceException, HttpException {
+    var requestId = Utils.getRequestIdFromRequest(request);
+    LOG.info("[" + requestId + "] Proxying request to target account(" + targetAccountId + ")'s mail host.");
+    proxyServletRequest(request, response, targetAccountId,
+        Map.of(REQUEST_ID_KEY, requestId != null ? requestId : "N/A"));
+  }
+
   private void handleLocalAttachment(HttpServletRequest request, HttpServletResponse response,
       AuthToken authToken, ItemId itemId, String partId) {
     var mimePartTry = attachmentService.getAttachment(itemId.getAccountId(), authToken, itemId.getId(), partId);
     if (mimePartTry.isFailure() || mimePartTry.get() == null) {
-      respondWithError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+      respondWithError(request, response, HttpServletResponse.SC_NOT_FOUND,
           mimePartTry.getCause().getMessage());
       return;
     }
@@ -195,12 +208,12 @@ public class PreviewHandler {
    * @param attachmentMimePart the {@link BlobRequestStore} object
    * @return the {@link BlobResponseStore} object
    */
-  private Try<BlobResponseStore> getAttachmentPreview(
+  Try<BlobResponseStore> getAttachmentPreview(
       HttpServletRequest request, BlobRequestStore attachmentMimePart) {
-    var requestId = Utils.getRequestIDFromRequest(request);
+    var requestId = Utils.getRequestIdFromRequest(request);
     var requestUrl = Utils.getFullURLFromRequest(request);
     var dispositionType = Utils.getDispositionTypeFromQueryParams(requestUrl);
-    var requestUrlForPreview = Utils.getRequestUrlForPreview(requestUrl, dispositionType);
+    var requestUrlForPreview = Utils.removeQueryParams(requestUrl, List.of(REQUEST_PARAM_DISP, REQUEST_ID_KEY));
     var attachmentFileName = Try.of(attachmentMimePart::getFilename).getOrElse("unknown");
     var attachmentMimePartInputStream = attachmentMimePart.getBlobInputStream();
 
@@ -345,14 +358,6 @@ public class PreviewHandler {
         dispositionType));
   }
 
-  private ItemId getItemIdFromMessageId(String messageId, AuthToken authToken) throws ServiceException {
-    final var uuidMsgId = messageId.split(":");
-    if (uuidMsgId.length == 2) {
-      return new ItemId(uuidMsgId[1], uuidMsgId[0]);
-    }
-    return new ItemId(messageId, authToken.getAccountId());
-  }
-
   /**
    * This method is used to send error response for {@link HttpServletRequest}
    *
@@ -361,9 +366,9 @@ public class PreviewHandler {
    * @param errCode  error code for {@link HttpServletResponse}
    * @param reason   message string for {@link HttpServletResponse}
    */
-  private void respondWithError(HttpServletRequest request, HttpServletResponse response,
+  void respondWithError(HttpServletRequest request, HttpServletResponse response,
       int errCode, String reason) {
-    var requestId = Utils.getRequestIDFromRequest(request);
+    var requestId = Utils.getRequestIdFromRequest(request);
     LOG.info("[" + requestId + "] Error: Code: " + errCode + ", Reason: " + reason);
     response.setContentType("text/html; charset=UTF-8");
     try {
@@ -400,7 +405,7 @@ public class PreviewHandler {
               + URLEncoder.encode(attachmentFilename, StandardCharsets.UTF_8));
       ByteUtil.copy(blobResponseStore.getBlobInputStream(), true, response.getOutputStream(), false);
     } catch (Exception e) {
-      var requestId = Utils.getRequestIDFromRequest(request);
+      var requestId = Utils.getRequestIdFromRequest(request);
       LOG.warn("[" + requestId + "] Failed to send error response. Reason: " + e.getMessage() + ", Exception: " + e);
     }
   }
