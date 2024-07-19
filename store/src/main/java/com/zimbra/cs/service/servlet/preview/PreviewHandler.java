@@ -249,7 +249,7 @@ public class PreviewHandler {
                       attachmentFileName))
           .flatMapTry(
               thumbnailOfImage ->
-                  mapResponseToBlobResponseStore(
+                  Utils.mapResponseToBlobResponseStore(
                       thumbnailOfImage.get(), attachmentFileName, dispositionType));
     }
 
@@ -266,7 +266,7 @@ public class PreviewHandler {
                       attachmentFileName))
           .flatMapTry(
               thumbnailOfPdf ->
-                  mapResponseToBlobResponseStore(
+                  Utils.mapResponseToBlobResponseStore(
                       thumbnailOfPdf.get(), attachmentFileName, dispositionType));
     }
 
@@ -283,7 +283,7 @@ public class PreviewHandler {
                       attachmentFileName))
           .flatMapTry(
               thumbnailOfDocument ->
-                  mapResponseToBlobResponseStore(
+                  Utils.mapResponseToBlobResponseStore(
                       thumbnailOfDocument.get(), attachmentFileName, dispositionType));
     }
 
@@ -300,7 +300,7 @@ public class PreviewHandler {
                       attachmentFileName))
           .flatMapTry(
               previewOfImage ->
-                  mapResponseToBlobResponseStore(
+                  Utils.mapResponseToBlobResponseStore(
                       previewOfImage.get(), attachmentFileName, dispositionType));
     }
 
@@ -316,7 +316,7 @@ public class PreviewHandler {
                       attachmentFileName))
           .flatMapTry(
               previewOfPdf ->
-                  mapResponseToBlobResponseStore(
+                  Utils.mapResponseToBlobResponseStore(
                       previewOfPdf.get(), attachmentFileName, dispositionType));
     }
 
@@ -332,7 +332,7 @@ public class PreviewHandler {
                       attachmentFileName))
           .flatMapTry(
               previewOfDocument ->
-                  mapResponseToBlobResponseStore(
+                  Utils.mapResponseToBlobResponseStore(
                       previewOfDocument.get(), attachmentFileName, dispositionType));
     }
     // End Preview API Controller=================================================================
@@ -340,23 +340,6 @@ public class PreviewHandler {
     return Try.failure(ServiceException.INVALID_REQUEST("[" + requestId + "] Cannot handle request", null));
   }
 
-  /**
-   * This method is used to map the preview service's {@link BlobResponse} to our {@link BlobResponseStore} object
-   *
-   * @param response        preview service's {@link BlobResponse}
-   * @param fileName        filename that we want to assign to our {@link BlobResponseStore} object
-   * @param dispositionType disposition will be: attachment or inline(default)
-   * @return mapped {@link BlobResponseStore} object
-   */
-  private Try<BlobResponseStore> mapResponseToBlobResponseStore(
-      BlobResponse response, String fileName, String dispositionType) {
-    return Try.of(() -> new BlobResponseStore(
-        response.getContent(),
-        fileName,
-        response.getLength(),
-        response.getMimeType(),
-        dispositionType));
-  }
 
   /**
    * This method is used to send error response for {@link HttpServletRequest}

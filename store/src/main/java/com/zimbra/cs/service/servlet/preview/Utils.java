@@ -1,8 +1,10 @@
 package com.zimbra.cs.service.servlet.preview;
 
+import com.zextras.carbonio.preview.queries.BlobResponse;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.service.util.ItemId;
+import io.vavr.control.Try;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -124,12 +126,30 @@ class Utils {
     }
   }
 
-  public static ItemId getItemIdFromMessageId(ItemIdFactory itemIdFactory, String messageId, AuthToken authToken) throws ServiceException {
+  static ItemId getItemIdFromMessageId(ItemIdFactory itemIdFactory, String messageId, AuthToken authToken) throws ServiceException {
     final var uuidMsgId = messageId.split(":");
     if (uuidMsgId.length == 2) {
       return itemIdFactory.create(uuidMsgId[1], uuidMsgId[0]);
     }
     return itemIdFactory.create(messageId, authToken.getAccountId());
+  }
+
+  /**
+   * This method is used to map the preview service's {@link BlobResponse} to our {@link BlobResponseStore} object
+   *
+   * @param response        preview service's {@link BlobResponse}
+   * @param fileName        filename that we want to assign to our {@link BlobResponseStore} object
+   * @param dispositionType disposition will be: attachment or inline(default)
+   * @return mapped {@link BlobResponseStore} object
+   */
+  static Try<BlobResponseStore> mapResponseToBlobResponseStore(
+      BlobResponse response, String fileName, String dispositionType) {
+    return Try.of(() -> new BlobResponseStore(
+        response.getContent(),
+        fileName,
+        response.getLength(),
+        response.getMimeType(),
+        dispositionType));
   }
 
 }

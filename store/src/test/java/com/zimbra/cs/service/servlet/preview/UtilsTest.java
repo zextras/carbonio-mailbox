@@ -95,7 +95,7 @@ class UtilsTest {
       "https://test.mail.com/resource?disp=preview, https://test.mail.com/resource",
       "https://test.mail.com/resource?disp=, https://test.mail.com/resource",
       "https://test.mail.com/resource?disp, https://test.mail.com/resource"})
-  void testGetRequestUrlForPreview(String requestUrl, String expectedUrl) {
+  void should_remove_query_params_from_given_url(String requestUrl, String expectedUrl) {
     var result = Utils.removeQueryParams(requestUrl, List.of("disp"));
 
     assertEquals(expectedUrl, result, "should remove requested query parameters from the URL string");
@@ -112,7 +112,7 @@ class UtilsTest {
       "https://test.mail.com/resource, i",
       ", i"
   })
-  void testGetDispositionTypeFromQueryParams(String requestUrl, String expectedDisposition) {
+  void should_return_disposition_type_from_given_request_url(String requestUrl, String expectedDisposition) {
     var result = Utils.getDispositionTypeFromQueryParams(requestUrl);
 
     assertEquals(expectedDisposition, result, "should return disposition type from query params with name 'disp', "
