@@ -41,6 +41,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import javax.mail.MessagingException;
 import javax.mail.Part;
 import javax.mail.internet.MimeMessage;
@@ -268,7 +269,7 @@ public class ContentServlet extends ZimbraServlet {
         // wrong server; proxy to the right one...
         String serverId = FileUploadServlet.getUploadServerId(uploadId);
         Server server = Provisioning.getInstance().get(Key.ServerBy.id, serverId);
-        proxyServletRequest(req, resp, server, null);
+        proxyServletRequest(req, resp, server, null, Map.of());
         return;
       }
 
