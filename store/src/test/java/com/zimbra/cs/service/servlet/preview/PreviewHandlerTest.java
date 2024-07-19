@@ -32,6 +32,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -66,18 +67,18 @@ class PreviewHandlerTest {
 
   private MockedStatic<ZimbraServlet> zimbraServletMockedStatic;
 
-  private static Stream<String> pathAndQueryParamsVariants() {
+  private static Stream<Arguments> pathAndQueryParamsVariants() {
     return Stream.of(
-        "service/preview/image/27310/2/0x0/?quality=high",
-        "service/preview/pdf/27310/2/0x0/?quality=high",
-        "service/preview/document/27310/2/0x0/?quality=high",
-        "service/preview/image/27310/2/0x0/thumbnail/?quality=high",
-        "service/preview/pdf/27310/2/0x0/thumbnail/?quality=high",
-        "service/preview/document/27310/2/0x0/thumbnail/?quality=high",
-        "service/preview/image/27310/2/0x0/thumbnail?quality=high",
-        "service/preview/pdf/27310/2/0x0/thumbnail?quality=high",
-        "service/preview/document/27310/2/0x0/thumbnail?quality=high",
-        "service/preview/document/accountId:27310/2/0x0/thumbnail?quality=high"
+        Arguments.of("27310", "service/preview/image/27310/2/0x0/?quality=high"),
+        Arguments.of("27310", "service/preview/pdf/27310/2/0x0/?quality=high"),
+        Arguments.of("27310", "service/preview/document/27310/2/0x0/?quality=high"),
+        Arguments.of("27310", "service/preview/image/27310/2/0x0/thumbnail/?quality=high"),
+        Arguments.of("27310", "service/preview/pdf/27310/2/0x0/thumbnail/?quality=high"),
+        Arguments.of("27310", "service/preview/document/27310/2/0x0/thumbnail/?quality=high"),
+        Arguments.of("27310", "service/preview/image/27310/2/0x0/thumbnail?quality=high"),
+        Arguments.of("27310", "service/preview/pdf/27310/2/0x0/thumbnail?quality=high"),
+        Arguments.of("27310", "service/preview/document/27310/2/0x0/thumbnail?quality=high"),
+        Arguments.of("27310", "service/preview/document/accountId:27310/2/0x0/thumbnail?quality=high")
     );
   }
 
@@ -142,7 +143,7 @@ class PreviewHandlerTest {
 
   @ParameterizedTest
   @MethodSource("pathAndQueryParamsVariants")
-  void should_call_getAttachment_with_supported_params(String queryString) throws IOException, ServiceException {
+  void should_call_getAttachment_with_supported_params(String itemIdStr, String queryString) throws IOException, ServiceException {
     when(previewClient.healthReady()).thenReturn(true);
     when(request.getAttribute(Utils.REQUEST_ID_KEY)).thenReturn("requestId");
     when(authToken.getAccountId()).thenReturn("accountId");
@@ -150,9 +151,9 @@ class PreviewHandlerTest {
     when(request.getRequestURL()).thenReturn(new StringBuffer(REQUEST_URL_BASE));
     when(request.getQueryString()).thenReturn(queryString);
     when(itemId.getAccountId()).thenReturn("accountId");
-    when(itemId.getId()).thenReturn(27310);
+    when(itemId.getId()).thenReturn(Integer.parseInt(itemIdStr));
     when(itemId.isLocal()).thenReturn(true);
-    when(itemIdFactory.create("27310", "accountId")).thenReturn(itemId);
+    when(itemIdFactory.create(itemIdStr, "accountId")).thenReturn(itemId);
     when(attachmentService.getAttachment(itemId.getAccountId(), authToken, itemId.getId(), "2"))
         .thenReturn(Try.success(mimePart));
 
@@ -163,7 +164,7 @@ class PreviewHandlerTest {
 
   @ParameterizedTest
   @MethodSource("pathAndQueryParamsVariants")
-  void should_call_getAttachmentPreview_with_supported_params(String queryString) throws IOException, ServiceException {
+  void should_call_getAttachmentPreview_with_supported_params(String itemIdStr, String queryString) throws IOException, ServiceException {
     when(previewClient.healthReady()).thenReturn(true);
     when(request.getAttribute(Utils.REQUEST_ID_KEY)).thenReturn("requestId");
     when(authToken.getAccountId()).thenReturn("accountId");
@@ -171,9 +172,9 @@ class PreviewHandlerTest {
     when(request.getQueryString()).thenReturn(queryString);
     when(ZimbraServlet.getAuthTokenFromCookie(request, response)).thenReturn(authToken);
     when(itemId.getAccountId()).thenReturn("accountId");
-    when(itemId.getId()).thenReturn(27310);
+    when(itemId.getId()).thenReturn(Integer.parseInt(itemIdStr));
     when(itemId.isLocal()).thenReturn(true);
-    when(itemIdFactory.create("27310", "accountId")).thenReturn(itemId);
+    when(itemIdFactory.create(itemIdStr, "accountId")).thenReturn(itemId);
     when(attachmentService.getAttachment(itemId.getAccountId(), authToken, itemId.getId(), "2"))
         .thenReturn(Try.success(mimePart));
 
