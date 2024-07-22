@@ -6,6 +6,8 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Cos;
+import com.zimbra.cs.account.DistributionList;
+import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.account.message.SearchEnabledUsersRequest;
@@ -269,15 +271,27 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     }
   }
 
+  @Test
+  public void distributionListsAndGroupsNotIncluded() throws Exception {
+    var dl = provisioning.createDistributionList("accounts-dl@" + DEFAULT_DOMAIN, new HashMap<>());
+    var group = provisioning.createGroup("accounts-group@" + DEFAULT_DOMAIN, new HashMap<>(), false);
+
+    try {
+      HttpResponse httpResponse = getSoapClient().newRequest()
+          .setCaller(userAccount)
+          .setSoapBody(SearchEnabledUsersTest.searchAccounts("account"))
+          .execute();
+
+      assertEquals(0, getResponse(httpResponse).getAccounts().size());
+    } finally {
+      cleanUp(dl);
+      cleanUp(group);
+    }
+  }
+
   /*
    * TODO: Implement the following test cases
    */
-  @Disabled
-  @Test
-  public void distributionListsAndGroupsNotIncluded() {
-
-  }
-
   @Disabled
   @Test
   public void testIncludedAttributes() {
@@ -347,6 +361,14 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
   private static void cleanUp(Account account) throws ServiceException {
     provisioning.deleteAccount(account.getId());
+  }
+
+  private static void cleanUp(DistributionList dl) throws ServiceException {
+    provisioning.deleteDistributionList(dl.getId());
+  }
+
+  private static void cleanUp(Group group) throws ServiceException {
+    provisioning.deleteGroup(group.getId());
   }
 
   private static void cleanUp(Cos cos) throws ServiceException {
