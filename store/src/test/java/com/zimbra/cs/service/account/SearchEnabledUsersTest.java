@@ -189,6 +189,31 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   }
 
   @Test
+  void multipleCos() throws Exception {
+    var cosAttrs = new HashMap<String, Object>();
+    cosAttrs.put(SearchEnabledUsersRequest.Features.CHATS.getFeature(), "TRUE");
+    var cos1 = provisioning.createCos("cos-with-chats", cosAttrs);
+    var cos2 = provisioning.createCos("another-cos-with-chats", cosAttrs);
+
+    var account1 = createAccount("first.account", "Test1", cos1);
+    var account2 = createAccount("second.account", "Test2", cos2);
+
+    try {
+      HttpResponse httpResponse = getSoapClient().newRequest()
+          .setCaller(userAccount)
+          .setSoapBody(SearchEnabledUsersTest.searchAccounts("account", SearchEnabledUsersRequest.Features.CHATS))
+          .execute();
+
+      assertEquals(2, getResponse(httpResponse).getAccounts().size());
+    } finally {
+      cleanUp(account1);
+      cleanUp(account2);
+      cleanUp(cos1);
+      cleanUp(cos2);
+    }
+  }
+
+  @Test
   void featureEnabledInCosDisabledInAccount() throws Exception {
     var cosAttrs = new HashMap<String, Object>();
     cosAttrs.put(SearchEnabledUsersRequest.Features.CHATS.getFeature(), "TRUE");
@@ -230,9 +255,8 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
   @Test
   public void hiddenInGalNotIncluded() throws Exception {
-    var attrs = new HashMap<String, Object>();
-    attrs.put("zimbraHideInGal", "TRUE");
-    var account = createAccount("first.account", "Test1", attrs);
+    var account = buildAccount("first.account", "Test1")
+        .withAttribute("zimbraHideInGal", "TRUE").create();
 
     try {
       HttpResponse httpResponse = getSoapClient().newRequest()
@@ -286,26 +310,26 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   }
 
   private static Account createAccount(String accountName, String fullName) throws ServiceException {
-    return createAccount(accountName, fullName, null, false, null, new HashMap<>());
+    return buildAccount(accountName, fullName, null, false, null).create();
   }
 
-  private static Account createAccount(String accountName, String fullName, Map<String, Object> attributes) throws ServiceException {
-    return createAccount(accountName, fullName, null, false, null, attributes);
+  private static MailboxTestUtil.AccountCreator buildAccount(String accountName, String fullName) throws ServiceException {
+    return buildAccount(accountName, fullName, null, false, null);
   }
 
   private static Account createAccount(String accountName, String fullName, Cos cos) throws ServiceException {
-    return createAccount(accountName, fullName, null, false, cos, new HashMap<>());
+    return buildAccount(accountName, fullName, null, false, cos).create();
   }
 
   private static Account createAccount(String accountName, String fullName, SearchEnabledUsersRequest.Features feature) throws ServiceException {
-    return createAccount(accountName, fullName, feature, true, null, new HashMap<>());
+    return buildAccount(accountName, fullName, feature, true, null).create();
   }
 
   private static Account createAccount(String uid, String fullName, SearchEnabledUsersRequest.Features feature, boolean enabled, Cos cos) throws ServiceException {
-    return createAccount(uid, fullName, feature, enabled, cos, new HashMap<>());
+    return buildAccount(uid, fullName, feature, enabled, cos).create();
   }
 
-  private static Account createAccount(String uid, String fullName, SearchEnabledUsersRequest.Features feature, boolean enabled, Cos cos, Map<String, Object> attributes) throws ServiceException {
+  private static MailboxTestUtil.AccountCreator buildAccount(String uid, String fullName, SearchEnabledUsersRequest.Features feature, boolean enabled, Cos cos) throws ServiceException {
     var account = accountCreatorFactory.get()
         .withDomain(DEFAULT_DOMAIN)
         .withUsername(uid)
@@ -318,8 +342,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
       account = account
           .withAttribute("zimbraCOSId", cos.getId());
     }
-    account = attributes.entrySet().stream().reduce(account, (acc, entry) -> acc.withAttribute(entry.getKey(), entry.getValue()), (acc1, acc2) -> acc1);
-    return account.create();
+    return account;
   }
 
   private static String getEmailAddress(String uid, String domain) {
