@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
 import static com.zimbra.common.soap.Element.parseXML;
@@ -169,9 +170,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
   @Test
   void featureEnabledInCosNotInAccount() throws Exception {
-    var cosAttrs = new HashMap<String, Object>();
-    cosAttrs.put(SearchEnabledUsersRequest.Features.CHATS.getFeature(), "TRUE");
-    var cos = provisioning.createCos("cos-with-chats", cosAttrs);
+    var cos = createCos(SearchEnabledUsersRequest.Features.CHATS, true);
 
     var account1 = withCos(cos, buildAccount("first.account", "Test1")).create();
     var account2 = buildAccount("second.account", "Test2").create();
@@ -192,10 +191,8 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
   @Test
   void multipleCos() throws Exception {
-    var cosAttrs = new HashMap<String, Object>();
-    cosAttrs.put(SearchEnabledUsersRequest.Features.CHATS.getFeature(), "TRUE");
-    var cos1 = provisioning.createCos("cos-with-chats", cosAttrs);
-    var cos2 = provisioning.createCos("another-cos-with-chats", cosAttrs);
+    var cos1 = createCos(SearchEnabledUsersRequest.Features.CHATS, true);
+    var cos2 = createCos(SearchEnabledUsersRequest.Features.CHATS, true);
 
     var account1 = withCos(cos1, buildAccount("first.account", "Test1")).create();
     var account2 = withCos(cos2, buildAccount("second.account", "Test2")).create();
@@ -217,9 +214,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
   @Test
   void featureEnabledInCosDisabledInAccount() throws Exception {
-    var cosAttrs = new HashMap<String, Object>();
-    cosAttrs.put(SearchEnabledUsersRequest.Features.CHATS.getFeature(), "TRUE");
-    var cos = provisioning.createCos("cos-with-chats", cosAttrs);
+    var cos = createCos(SearchEnabledUsersRequest.Features.CHATS, true);
     var account = withFeature(SearchEnabledUsersRequest.Features.CHATS, false,
         withCos(cos, buildAccount("first.account", "Test1"))
     ).create();
@@ -239,9 +234,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
   @Test
   void featureEnabledBothCosAndAccount() throws Exception {
-    var cosAttrs = new HashMap<String, Object>();
-    cosAttrs.put(SearchEnabledUsersRequest.Features.CHATS.getFeature(), "TRUE");
-    var cos = provisioning.createCos("cos-with-chats", cosAttrs);
+    var cos = createCos(SearchEnabledUsersRequest.Features.CHATS, true);
     var account = withFeature(SearchEnabledUsersRequest.Features.CHATS, true,
         withCos(cos, buildAccount("first.account", "Test1"))
     ).create();
@@ -363,5 +356,12 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   private static SearchEnabledUsersResponse getResponse(HttpResponse httpResponse) throws IOException, ServiceException {
     assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
     return parseSoapResponse(httpResponse);
+  }
+
+
+  private static Cos createCos(SearchEnabledUsersRequest.Features feature, boolean enabled) throws ServiceException {
+    var cosAttrs = new HashMap<String, Object>();
+    cosAttrs.put(feature.getFeature(), enabled ? "TRUE" : "FALSE");
+    return provisioning.createCos(UUID.randomUUID().toString(), cosAttrs);
   }
 }
