@@ -14,6 +14,7 @@ import com.zextras.carbonio.preview.exceptions.InternalServerError;
 import com.zextras.carbonio.preview.exceptions.ItemNotFound;
 import com.zextras.carbonio.preview.queries.Query;
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.service.AttachmentService;
 import com.zimbra.cs.service.util.ItemId;
@@ -142,7 +143,8 @@ class PreviewHandlerTest {
 
   @ParameterizedTest
   @MethodSource("pathAndQueryParamsVariants")
-  void should_call_getAttachment_with_supported_params(String itemIdStr, String queryString) throws IOException, ServiceException {
+  void should_call_getAttachment_with_supported_params(String itemIdStr, String queryString)
+      throws IOException, ServiceException {
     when(previewClient.healthReady()).thenReturn(true);
     when(request.getAttribute(Constants.REQUEST_ID_KEY)).thenReturn("requestId");
     when(authToken.getAccountId()).thenReturn("accountId");
@@ -163,7 +165,8 @@ class PreviewHandlerTest {
 
   @ParameterizedTest
   @MethodSource("pathAndQueryParamsVariants")
-  void should_call_getAttachmentPreview_with_supported_params(String itemIdStr, String queryString) throws IOException, ServiceException {
+  void should_call_getAttachmentPreview_with_supported_params(String itemIdStr, String queryString)
+      throws IOException, ServiceException {
     when(previewClient.healthReady()).thenReturn(true);
     when(request.getAttribute(Constants.REQUEST_ID_KEY)).thenReturn("requestId");
     when(authToken.getAccountId()).thenReturn("accountId");
@@ -180,7 +183,7 @@ class PreviewHandlerTest {
     var previewHandlerSpy = spy(previewHandler);
     previewHandlerSpy.handle(request, response);
 
-    verify(previewHandlerSpy).getAttachmentPreview(any(HttpServletRequest.class), any(ResponseBlob.class));
+    verify(previewHandlerSpy).getAttachmentPreview(any(HttpServletRequest.class), any(DataBlob.class));
   }
 
   @Test
@@ -195,7 +198,8 @@ class PreviewHandlerTest {
 
     previewHandler.handle(request, response);
 
-    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid MessageId.");
+    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST,
+        "Error processing requested attachment. Ensure message ID or account are correct.");
   }
 
   @Test
@@ -256,10 +260,10 @@ class PreviewHandlerTest {
     when(attachmentService.getAttachment(itemId.getAccountId(), authToken, itemId.getId(), "2"))
         .thenReturn(Try.failure(new ItemNotFound()));
 
-    var previewHandlerSyp = spy(previewHandler);
-    previewHandlerSyp.handle(request, response);
+    previewHandler.handle(request, response);
 
-    verify(previewHandlerSyp).respondWithError(request, response, HttpServletResponse.SC_NOT_FOUND, null);
+    verify(response).sendError(Constants.STATUS_UNPROCESSABLE_ENTITY,
+        "Something went wrong while accessing attachment.");
   }
 
   @Test
@@ -279,10 +283,11 @@ class PreviewHandlerTest {
     when(previewClient.postPreviewOfImage(any(InputStream.class), any(Query.class), any(String.class)))
         .thenReturn(Try.failure(new InternalServerError()));
 
-    var previewHandlerSyp = spy(previewHandler);
-    previewHandlerSyp.handle(request, response);
+//    var previewHandlerSyp = spy(previewHandler);
+    previewHandler.handle(request, response);
 
-    verify(previewHandlerSyp).respondWithError(request, response, Constants.STATUS_UNPROCESSABLE_ENTITY, null);
+    verify(response).sendError(Constants.STATUS_UNPROCESSABLE_ENTITY,
+        "Something went wrong while processing preview of attachment.");
   }
 
   @Test
@@ -309,6 +314,54 @@ class PreviewHandlerTest {
     var previewHandlerSpy = spy(previewHandler);
     previewHandlerSpy.handle(request, response);
 
-    verify(previewHandlerSpy).respondWithSuccess(eq(response), eq(request), any(ResponseBlob.class));
+    verify(previewHandlerSpy).respondWithSuccess(eq(response), eq(request), any(DataBlob.class));
+  }
+
+  @Test
+  void should_map_server_errors_to_unprocessable_entity_error()
+      throws IOException, ServiceException, MessagingException {
+    when(previewClient.healthReady()).thenReturn(true);
+    when(request.getAttribute(Constants.REQUEST_ID_KEY)).thenReturn("requestId");
+    when(request.getRequestURL()).thenReturn(new StringBuffer(REQUEST_URL_BASE));
+    when(request.getQueryString()).thenReturn("service/preview/image/27310/2/0x0/?quality=high");
+    when(authToken.getAccountId()).thenReturn("accountId");
+    when(ZimbraServlet.getAuthTokenFromCookie(request, response)).thenReturn(authToken);
+    when(itemId.getAccountId()).thenReturn("accountId");
+    when(itemId.getId()).thenReturn(27310);
+    when(itemId.isLocal()).thenReturn(true);
+    when(itemIdFactory.create("27310", "accountId")).thenReturn(itemId);
+    when(mimePart.getFileName()).thenReturn("filename");
+    when(mimePart.getInputStream()).thenReturn(Mockito.mock(InputStream.class));
+    when(mimePart.getContentType()).thenReturn("text/plain");
+    when(mimePart.getSize()).thenReturn(200);
+    when(attachmentService.getAttachment(itemId.getAccountId(), authToken, itemId.getId(), "2"))
+        .thenReturn(Try.success(mimePart));
+    when(previewClient.postPreviewOfImage(any(InputStream.class), any(Query.class), anyString())).thenReturn(
+        Try.failure(new InternalServerError()));
+
+    previewHandler.handle(request, response);
+
+    verify(response).sendError(Constants.STATUS_UNPROCESSABLE_ENTITY,
+        "Something went wrong while processing preview of attachment.");
+  }
+
+  @Test
+  void should_map_account_errors_to_custom_errors()
+      throws IOException, ServiceException {
+    when(previewClient.healthReady()).thenReturn(true);
+    when(request.getAttribute(Constants.REQUEST_ID_KEY)).thenReturn("requestId");
+    when(request.getRequestURL()).thenReturn(new StringBuffer(REQUEST_URL_BASE));
+    when(request.getQueryString()).thenReturn("service/preview/image/27310/2/0x0/?quality=high");
+    when(authToken.getAccountId()).thenReturn("accountId");
+    when(ZimbraServlet.getAuthTokenFromCookie(request, response)).thenReturn(authToken);
+    when(itemId.getAccountId()).thenReturn("accountId");
+    when(itemId.getId()).thenReturn(27310);
+    when(itemId.isLocal()).thenReturn(true);
+    when(itemIdFactory.create("27310", "accountId")).thenThrow(AccountServiceException.NO_SUCH_ACCOUNT("AccountId"));
+
+    previewHandler.handle(request, response);
+
+    verify(response).sendError(HttpServletResponse.SC_BAD_REQUEST,
+        "Error processing requested attachment. Ensure message ID or account are correct.");
   }
 }

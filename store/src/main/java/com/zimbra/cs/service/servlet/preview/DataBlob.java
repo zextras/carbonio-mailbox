@@ -11,7 +11,7 @@ import java.io.InputStream;
  * from preview service.
  * </p>
  */
-class ResponseBlob {
+class DataBlob {
 
   private final String filename;
   private final Long size;
@@ -19,7 +19,7 @@ class ResponseBlob {
   private final InputStream blobInputStream;
   private final String dispositionType;
 
-  public ResponseBlob(
+  public DataBlob(
       InputStream blobInputStream, String filename, Long size, String mimeType, String disposition) {
     this.blobInputStream = blobInputStream;
     this.filename = filename;

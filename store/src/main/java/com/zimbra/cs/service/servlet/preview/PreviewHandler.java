@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpException;
 import org.apache.http.HttpHeaders;
 import org.apache.http.protocol.HTTP;
+import org.eclipse.jetty.http.HttpStatus;
 
 /**
  * Handles preview and thumbnail operations for attachments.
@@ -97,7 +98,11 @@ public class PreviewHandler {
 
     var itemIdTry = Try.of(() -> Utils.getItemIdFromMessageId(itemIdFactory, messageId, authTokenTry.get()));
     if (itemIdTry.isFailure() || itemIdTry.get() == null) {
-      respondWithError(request, response, HttpServletResponse.SC_BAD_REQUEST, "Invalid MessageId.");
+      var message = itemIdTry.getCause().getMessage();
+      if (message == null || message.trim().isEmpty() || message.toLowerCase().contains("account")) {
+        message = "Error processing requested attachment. Ensure message ID or account are correct.";
+      }
+      respondWithError(request, response, HttpServletResponse.SC_BAD_REQUEST, message);
       return;
     }
 
@@ -123,7 +128,7 @@ public class PreviewHandler {
    * preview request.
    *
    * <p>This method retrieves an attachment based on the provided {@link ItemId} and {@code partId}.
-   * If the attachment is found, it is mapped to a {@link ResponseBlob} and further processed to generate an attachment
+   * If the attachment is found, it is mapped to a {@link DataBlob} and further processed to generate an attachment
    * preview. The method then responds with the appropriate status and information based on the success or failure of
    * the processing.</p>
    *
@@ -140,21 +145,30 @@ public class PreviewHandler {
       AuthToken authToken, ItemId itemId, String partId) {
     var mimePartTry = attachmentService.getAttachment(itemId.getAccountId(), authToken, itemId.getId(), partId);
     if (mimePartTry.isFailure() || mimePartTry.get() == null) {
-      respondWithError(request, response, HttpServletResponse.SC_NOT_FOUND,
-          mimePartTry.getCause().getMessage());
+      var message = mimePartTry.getCause().getMessage();
+      if (message == null || message.trim().isEmpty() || message.toLowerCase().contains("account")) {
+        message = "Something went wrong while accessing attachment.";
+      }
+      respondWithError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message);
       return;
     }
 
-    mimePartTry.mapTry(Utils::mapMimePartToBlobRequestStore)
-        .flatMapTry(blobRequestStore -> getAttachmentPreview(request, blobRequestStore))
-        .onSuccess(blobPreviewResponseStore -> respondWithSuccess(response, request, blobPreviewResponseStore))
+    mimePartTry.mapTry(Utils::mapMimePartResponseToDataBlob)
+        .flatMapTry(attachmentDataBlob -> getAttachmentPreview(request, attachmentDataBlob))
+        .onSuccess(previewDataBlob -> respondWithSuccess(response, request, previewDataBlob))
         .onFailure(BadRequest.class,
             ex -> respondWithError(request, response, HttpServletResponse.SC_BAD_REQUEST, ex.getMessage()))
         .onFailure(ItemNotFound.class,
             ex -> respondWithError(request, response, HttpServletResponse.SC_NOT_FOUND, ex.getMessage()))
         .onFailure(ValidationError.class,
             ex -> respondWithError(request, response, HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage()))
-        .onFailure(ex -> respondWithError(request, response, Constants.STATUS_UNPROCESSABLE_ENTITY, ex.getMessage()));
+        .onFailure(ex -> {
+          var message = ex.getMessage();
+          if (message == null || message.trim().isEmpty()) {
+            message = "Something went wrong while processing preview of attachment.";
+          }
+          respondWithError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message);
+        });
   }
 
   /**
@@ -180,15 +194,15 @@ public class PreviewHandler {
   }
 
   /**
-   * Gets the preview of passed attachment from the preview service based on the requestUrl,
-   * calling different endpoints of preview service
+   * Gets the preview of passed attachment from the preview service based on the requestUrl, calling different endpoints
+   * of preview service
    *
    * @param request            the {@link HttpServletRequest} object
-   * @param attachmentMimePart the {@link ResponseBlob} object
-   * @return the {@link ResponseBlob} object
+   * @param attachmentMimePart the {@link DataBlob} object
+   * @return the {@link DataBlob} object
    */
-  Try<ResponseBlob> getAttachmentPreview(
-      HttpServletRequest request, ResponseBlob attachmentMimePart) {
+  Try<DataBlob> getAttachmentPreview(
+      HttpServletRequest request, DataBlob attachmentMimePart) {
     var requestId = Utils.getRequestIdFromRequest(request);
     var requestUrl = Utils.getFullURLFromRequest(request);
     var dispositionType = Utils.getDispositionTypeFromQueryParams(requestUrl);
@@ -197,7 +211,6 @@ public class PreviewHandler {
     var attachmentFileName = Try.of(attachmentMimePart::getFilename).getOrElse("unknown");
     var attachmentMimePartInputStream = attachmentMimePart.getBlobInputStream();
 
-    // Start Preview API Controller=================================================================
     var imagePreviewMatcher =
         Pattern.compile(Constants.IMG_PREVIEW_REGEX).matcher(requestUrlForPreview);
 
@@ -216,7 +229,6 @@ public class PreviewHandler {
     var documentThumbnailMatcher =
         Pattern.compile(Constants.DOC_THUMBNAIL_REGEX).matcher((requestUrlForPreview));
 
-    // Handle Image thumbnail request
     if (imageThumbnailMatcher.find()) {
       var previewArea = imageThumbnailMatcher.group(3);
       var queryParameters =
@@ -229,11 +241,10 @@ public class PreviewHandler {
                       attachmentFileName))
           .flatMapTry(
               thumbnailOfImage ->
-                  Utils.mapPreviewResponseToBlobResponse(
+                  Utils.mapPreviewResponseToDataBlob(
                       thumbnailOfImage.get(), attachmentFileName, dispositionType));
     }
 
-    // Handle PDF thumbnail request
     if (pdfThumbnailMatcher.find()) {
       var previewArea = pdfThumbnailMatcher.group(3);
       var queryParameters =
@@ -246,11 +257,10 @@ public class PreviewHandler {
                       attachmentFileName))
           .flatMapTry(
               thumbnailOfPdf ->
-                  Utils.mapPreviewResponseToBlobResponse(
+                  Utils.mapPreviewResponseToDataBlob(
                       thumbnailOfPdf.get(), attachmentFileName, dispositionType));
     }
 
-    // Handle Document thumbnail request
     if (documentThumbnailMatcher.find()) {
       var previewArea = documentThumbnailMatcher.group(3);
       var queryParameters =
@@ -263,11 +273,10 @@ public class PreviewHandler {
                       attachmentFileName))
           .flatMapTry(
               thumbnailOfDocument ->
-                  Utils.mapPreviewResponseToBlobResponse(
+                  Utils.mapPreviewResponseToDataBlob(
                       thumbnailOfDocument.get(), attachmentFileName, dispositionType));
     }
 
-    // Handle Preview Image request
     if (imagePreviewMatcher.find()) {
       var previewArea = imagePreviewMatcher.group(3);
       var queryParameters =
@@ -280,11 +289,10 @@ public class PreviewHandler {
                       attachmentFileName))
           .flatMapTry(
               previewOfImage ->
-                  Utils.mapPreviewResponseToBlobResponse(
+                  Utils.mapPreviewResponseToDataBlob(
                       previewOfImage.get(), attachmentFileName, dispositionType));
     }
 
-    // Handle Preview PDF request
     if (pdfPreviewMatcher.find()) {
       var queryParameters =
           Utils.parseQueryParameters(pdfPreviewMatcher.group(4));
@@ -296,11 +304,10 @@ public class PreviewHandler {
                       attachmentFileName))
           .flatMapTry(
               previewOfPdf ->
-                  Utils.mapPreviewResponseToBlobResponse(
+                  Utils.mapPreviewResponseToDataBlob(
                       previewOfPdf.get(), attachmentFileName, dispositionType));
     }
 
-    // Handle Preview Document request
     if (documentPreviewMatcher.find()) {
       var queryParameters =
           Utils.parseQueryParameters(documentPreviewMatcher.group(4));
@@ -312,53 +319,57 @@ public class PreviewHandler {
                       attachmentFileName))
           .flatMapTry(
               previewOfDocument ->
-                  Utils.mapPreviewResponseToBlobResponse(
+                  Utils.mapPreviewResponseToDataBlob(
                       previewOfDocument.get(), attachmentFileName, dispositionType));
     }
-    // End Preview API Controller=================================================================
 
     return Try.failure(ServiceException.INVALID_REQUEST("[" + requestId + "] Cannot handle request", null));
   }
 
 
   /**
-   * Sends error response for {@link HttpServletRequest}
+   * Sends error response for {@link HttpServletRequest} Convert any ServerError or 5xx error to {@link
+   * Constants#STATUS_UNPROCESSABLE_ENTITY}
    *
    * @param request  the {@link HttpServletRequest} object
    * @param response the {@link HttpServletResponse} object
    * @param errCode  error code for {@link HttpServletResponse}
    * @param reason   message string for {@link HttpServletResponse}
    */
-  void respondWithError(HttpServletRequest request, HttpServletResponse response, int errCode, String reason) {
+  void respondWithError(HttpServletRequest request, HttpServletResponse response,
+      int errCode, String reason) {
     var requestId = Utils.getRequestIdFromRequest(request);
     LOG.info("[" + requestId + "] Error: Code: " + errCode + ", Reason: " + reason);
     response.setContentType("text/html; charset=UTF-8");
     try {
-      response.sendError(errCode, reason);
+      if (HttpStatus.isServerError(response.getStatus()) || HttpStatus.isServerError(errCode)) {
+        response.sendError(Constants.STATUS_UNPROCESSABLE_ENTITY, reason);
+      } else {
+        response.sendError(errCode, reason);
+      }
     } catch (IOException e) {
       LOG.warn("[" + requestId + "] Failed to send error response. Reason: " + e.getMessage() + ", Exception: " + e);
     }
   }
 
   /**
-   * Sends success response for {@link HttpServletRequest} with the blob we got from preview
-   * service
+   * Sends success response for {@link HttpServletRequest} with the blob we got from preview service
    *
-   * @param response     the {@link HttpServletResponse} object
-   * @param request      the {@link HttpServletRequest} object
-   * @param responseBlob the {@link ResponseBlob} object
+   * @param response the {@link HttpServletResponse} object
+   * @param request  the {@link HttpServletRequest} object
+   * @param dataBlob the {@link DataBlob} object
    */
-  void respondWithSuccess(HttpServletResponse response, HttpServletRequest request, ResponseBlob responseBlob) {
+  void respondWithSuccess(HttpServletResponse response, HttpServletRequest request, DataBlob dataBlob) {
     response.addHeader(HttpHeaders.CONNECTION, HTTP.CONN_CLOSE);
-    response.addHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(responseBlob.getSize()));
-    response.addHeader(HttpHeaders.CONTENT_TYPE, responseBlob.getMimeType());
-    var dispositionType = responseBlob.getDispositionType();
-    var attachmentFilename = responseBlob.getFilename();
+    response.addHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(dataBlob.getSize()));
+    response.addHeader(HttpHeaders.CONTENT_TYPE, dataBlob.getMimeType());
+    var dispositionType = dataBlob.getDispositionType();
+    var attachmentFilename = dataBlob.getFilename();
     try {
       response.addHeader("content-disposition",
           (dispositionType.startsWith("a") ? "attachment;" : "inline;") + " filename*=UTF-8''" + URLEncoder.encode(
               attachmentFilename, StandardCharsets.UTF_8));
-      ByteUtil.copy(responseBlob.getBlobInputStream(), true, response.getOutputStream(), false);
+      ByteUtil.copy(dataBlob.getBlobInputStream(), true, response.getOutputStream(), false);
     } catch (Exception e) {
       var requestId = Utils.getRequestIdFromRequest(request);
       LOG.warn("[" + requestId + "] Failed to send success response. Reason: " + e.getMessage() + ", Exception: " + e);

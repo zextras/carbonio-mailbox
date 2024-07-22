@@ -166,16 +166,16 @@ class Utils {
   }
 
   /**
-   * Maps preview service's {@link com.zextras.carbonio.preview.queries.BlobResponse} to {@link ResponseBlob}.
+   * Maps preview service's {@link com.zextras.carbonio.preview.queries.BlobResponse} to {@link DataBlob}.
    *
    * @param response        preview service's {@link com.zextras.carbonio.preview.queries.BlobResponse}
-   * @param fileName        filename that we want to assign to our {@link ResponseBlob} object
+   * @param fileName        filename that we want to assign to our {@link DataBlob} object
    * @param dispositionType disposition will be: attachment or inline(default)
-   * @return mapped {@link ResponseBlob} object
+   * @return mapped {@link DataBlob} object
    */
-  static Try<ResponseBlob> mapPreviewResponseToBlobResponse(
+  static Try<DataBlob> mapPreviewResponseToDataBlob(
       com.zextras.carbonio.preview.queries.BlobResponse response, String fileName, String dispositionType) {
-    return Try.of(() -> new ResponseBlob(
+    return Try.of(() -> new DataBlob(
         response.getContent(),
         fileName,
         response.getLength(),
@@ -184,18 +184,18 @@ class Utils {
   }
 
   /**
-   * Maps a {@link MimePart} to a {@link ResponseBlob}.
+   * Maps a {@link MimePart} to a {@link DataBlob}.
    *
-   * <p>This method converts a {@link MimePart} object into a {@link ResponseBlob} object
+   * <p>This method converts a {@link MimePart} object into a {@link DataBlob} object
    * by extracting the input stream, file name, size, content type, and a fixed disposition value.</p>
    *
    * @param mimePart the {@link MimePart} to be mapped
-   * @return a {@link ResponseBlob} containing the details extracted from the {@link MimePart}
+   * @return a {@link DataBlob} containing the details extracted from the {@link MimePart}
    * @throws MessagingException if there is an error retrieving information from the {@link MimePart}
    * @throws IOException        if an I/O error occurs while accessing the input stream of the {@link MimePart}
    */
-  static ResponseBlob mapMimePartToBlobRequestStore(MimePart mimePart) throws MessagingException, IOException {
-    return new ResponseBlob(
+  static DataBlob mapMimePartResponseToDataBlob(MimePart mimePart) throws MessagingException, IOException {
+    return new DataBlob(
         mimePart.getInputStream(),
         mimePart.getFileName(),
         (long) mimePart.getSize(),
