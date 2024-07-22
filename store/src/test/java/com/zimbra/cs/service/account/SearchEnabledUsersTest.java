@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
 import static com.zimbra.common.soap.Element.parseXML;
@@ -227,18 +228,30 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     }
   }
 
+  @Test
+  public void hiddenInGalNotIncluded() throws Exception {
+    var attrs = new HashMap<String, Object>();
+    attrs.put("zimbraHideInGal", "TRUE");
+    var account = createAccount("first.account", "Test1", attrs);
+
+    try {
+      HttpResponse httpResponse = getSoapClient().newRequest()
+          .setCaller(userAccount)
+          .setSoapBody(SearchEnabledUsersTest.searchAccounts("account"))
+          .execute();
+
+      assertEquals(0, getResponse(httpResponse).getAccounts().size());
+    } finally {
+      cleanUp(account);
+    }
+  }
+
   /*
    * TODO: Implement the following test cases
    */
   @Disabled
   @Test
   public void distributionListsAndGroupsNotIncluded() {
-
-  }
-
-  @Disabled
-  @Test
-  public void hiddenInGalNotIncluded() {
 
   }
 
@@ -273,36 +286,39 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   }
 
   private static Account createAccount(String accountName, String fullName) throws ServiceException {
-    return createAccount(accountName, fullName, null, false, null);
+    return createAccount(accountName, fullName, null, false, null, new HashMap<>());
+  }
+
+  private static Account createAccount(String accountName, String fullName, Map<String, Object> attributes) throws ServiceException {
+    return createAccount(accountName, fullName, null, false, null, attributes);
   }
 
   private static Account createAccount(String accountName, String fullName, Cos cos) throws ServiceException {
-    return createAccount(accountName, fullName, null, false, cos);
-  }
-
-  private static Account createAccount(String accountName, String fullName, SearchEnabledUsersRequest.Features feature, boolean enabled) throws ServiceException {
-    return createAccount(accountName, fullName, feature, enabled, null);
+    return createAccount(accountName, fullName, null, false, cos, new HashMap<>());
   }
 
   private static Account createAccount(String accountName, String fullName, SearchEnabledUsersRequest.Features feature) throws ServiceException {
-    return createAccount(accountName, fullName, feature, true, null);
+    return createAccount(accountName, fullName, feature, true, null, new HashMap<>());
   }
 
   private static Account createAccount(String uid, String fullName, SearchEnabledUsersRequest.Features feature, boolean enabled, Cos cos) throws ServiceException {
+    return createAccount(uid, fullName, feature, enabled, cos, new HashMap<>());
+  }
+
+  private static Account createAccount(String uid, String fullName, SearchEnabledUsersRequest.Features feature, boolean enabled, Cos cos, Map<String, Object> attributes) throws ServiceException {
     var account = accountCreatorFactory.get()
         .withDomain(DEFAULT_DOMAIN)
         .withUsername(uid)
         .withAttribute("displayName", fullName);
     if (feature != null) {
-      return account
-          .withAttribute(feature.getFeature(), enabled ? "TRUE" : "FALSE")
-          .create();
+      account = account
+          .withAttribute(feature.getFeature(), enabled ? "TRUE" : "FALSE");
     }
     if (cos != null) {
-      return account
-          .withAttribute("zimbraCOSId", cos.getId())
-          .create();
+      account = account
+          .withAttribute("zimbraCOSId", cos.getId());
     }
+    account = attributes.entrySet().stream().reduce(account, (acc, entry) -> acc.withAttribute(entry.getKey(), entry.getValue()), (acc1, acc2) -> acc1);
     return account.create();
   }
 

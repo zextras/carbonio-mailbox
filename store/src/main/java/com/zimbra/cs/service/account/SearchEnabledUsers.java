@@ -34,20 +34,22 @@ public class SearchEnabledUsers extends AccountDocumentHandler {
     options.setTypes(SearchDirectoryOptions.ObjectType.accounts);
 
     var provisioning = Provisioning.getInstance();
+    var autoCompleteFilter = MessageFormat.format("(|{0}{1}{2})",
+        getWildcardFilter(query, "uid"),
+        getWildcardFilter(query, "displayName"),
+        getWildcardFilter(query, "mail")
+    );
+    var notHiddenInGalFilter = "(!(zimbraHideInGal=TRUE))";
+
+    var accountFeatureFilter = StringUtil.isNullOrEmpty(feature) ? "" : MessageFormat.format("({0}=TRUE)", feature);
     String cosFilter = "";
     if (!StringUtil.isNullOrEmpty(feature)) {
       cosFilter = provisioning.getAllCos().stream().filter(cos -> cos.getAttr(feature, "FALSE").equals("TRUE"))
           .map(cos -> MessageFormat.format("(&(zimbraCOSId={0})(!({1}=FALSE)))", cos.getId(), feature)).collect(Collectors.joining());
     }
+    var featureFilter = StringUtil.isNullOrEmpty(feature) ? "" : MessageFormat.format("(|{0}{1})", accountFeatureFilter, cosFilter);
 
-    var featureFilter = StringUtil.isNullOrEmpty(feature) ? "" : MessageFormat.format("({0}=TRUE)", feature);
-    var autoCompleteFilter = MessageFormat.format("|{0}{1}{2}",
-        getWildcardFilter(query, "uid"),
-        getWildcardFilter(query, "displayName"),
-        getWildcardFilter(query, "mail")
-    );
-    // TODO: zimbraHideInGAL <> TRUE
-    String filter = MessageFormat.format("|(&({0}){1}){2}", autoCompleteFilter, featureFilter, cosFilter);
+    var filter = MessageFormat.format("&{0}{1}{2}", autoCompleteFilter, notHiddenInGalFilter, featureFilter);
     options.setFilterString(ZLdapFilterFactory.FilterId.ADMIN_SEARCH, filter);
 
     var entries = provisioning.searchDirectory(options);
