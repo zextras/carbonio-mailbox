@@ -98,17 +98,16 @@ public class PreviewHandler {
 
     var itemIdTry = Try.of(() -> Utils.getItemIdFromMessageId(itemIdFactory, messageId, authTokenTry.get()));
     if (itemIdTry.isFailure() || itemIdTry.get() == null) {
-      var message = itemIdTry.getCause().getMessage();
-      if (message == null || message.trim().isEmpty() || message.toLowerCase().contains("account")) {
-        message = "Error processing requested attachment. Ensure message ID or account are correct.";
-      }
-      respondWithError(request, response, HttpServletResponse.SC_BAD_REQUEST, message);
+      var cause = itemIdTry.getCause();
+      var transformedException = Utils.remapAccountRelatedException(cause);
+      respondWithError(request, response, HttpServletResponse.SC_BAD_REQUEST, transformedException.getMessage());
       return;
     }
 
     Try.of(itemIdTry::get)
         .flatMap(itemId ->
             Try.of(itemId::isLocal)
+                .recoverWith(ex -> Try.failure(Utils.remapAccountRelatedException(ex)))
                 .flatMap(isLocal ->
                     Try.run(() -> {
                       if (Boolean.TRUE.equals(isLocal)) {

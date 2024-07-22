@@ -45,8 +45,8 @@ class Utils {
 
   /**
    * Retrieves the request ID from the given HttpServletRequest. The request ID is obtained first from the request
-   * attribute specified by {@link Constants#REQUEST_ID_KEY} key. If the attribute is not set then falls back to get the request
-   * ID from the request's query parameter. If the query parameter do not contain query param with key {@link
+   * attribute specified by {@link Constants#REQUEST_ID_KEY} key. If the attribute is not set then falls back to get the
+   * request ID from the request's query parameter. If the query parameter do not contain query param with key {@link
    * Constants#REQUEST_ID_KEY} then returns null.
    *
    * @param req the HttpServletRequest object from which to retrieve the request ID
@@ -72,12 +72,11 @@ class Utils {
   }
 
   /**
-   * Get request ID using {@link Utils#getRequestIdFromRequest(HttpServletRequest)} method
-   * if not found sets on using {@code UUID.randomUUID().toString()}
+   * Get request ID using {@link Utils#getRequestIdFromRequest(HttpServletRequest)} method if not found sets on using
+   * {@code UUID.randomUUID().toString()}
    *
    * <p>The unique requestId is added to the request as attribute with key {@link Constants#REQUEST_ID_KEY}
-   * Which can be retrieved using {@link  Utils#getRequestIdFromRequest(HttpServletRequest)}.
-   * * </p>
+   * Which can be retrieved using {@link  Utils#getRequestIdFromRequest(HttpServletRequest)}. * </p>
    *
    * @param request the {@link HttpServletRequest} from which the requestId has to be retrieved
    * @return requestId {@link String}
@@ -94,22 +93,22 @@ class Utils {
   /**
    * Removes given query parameters from the supplied requestUrl {@link String}
    *
-   * @param requestUrl URL from which query parameters are to be removed
+   * @param requestUrl     URL from which query parameters are to be removed
    * @param paramsToRemove {@link List} of query parameters to be removed
    * @return cleaned up URL {@link String} without passed query parameters
    */
   static String removeQueryParams(String requestUrl, List<String> paramsToRemove) {
-    int queryIndex = requestUrl.indexOf('?');
+    var queryIndex = requestUrl.indexOf('?');
     if (queryIndex == -1) {
       return requestUrl;
     }
 
-    String baseUrl = requestUrl.substring(0, queryIndex);
-    String query = requestUrl.substring(queryIndex + 1);
+    var baseUrl = requestUrl.substring(0, queryIndex);
+    var query = requestUrl.substring(queryIndex + 1);
 
-    List<String> queryPairs = Arrays.stream(query.split("&"))
+    var queryPairs = Arrays.stream(query.split("&"))
         .filter(param -> {
-          String paramName = param.contains("=") ? param.substring(0, param.indexOf('=')) : param;
+          var paramName = param.contains("=") ? param.substring(0, param.indexOf('=')) : param;
           return !paramsToRemove.contains(paramName);
         })
         .collect(Collectors.toList());
@@ -118,7 +117,7 @@ class Utils {
       return baseUrl;
     }
 
-    String newQuery = String.join("&", queryPairs);
+    var newQuery = String.join("&", queryPairs);
     return baseUrl + "?" + newQuery;
   }
 
@@ -150,8 +149,8 @@ class Utils {
    * Returns {@link ItemId} object created using passed {@link ItemIdFactory} instance
    *
    * @param itemIdFactory the factory to create the {@link ItemId} object from {@code messageId} and {@code authToken}
-   * @param messageId the message id {@link String}
-   * @param authToken the {@link AuthToken}
+   * @param messageId     the message id {@link String}
+   * @param authToken     the {@link AuthToken}
    * @return the {@link ItemId} object created
    */
   static ItemId getItemIdFromMessageId(ItemIdFactory itemIdFactory, String messageId, AuthToken authToken)
@@ -159,7 +158,7 @@ class Utils {
     var uuidMsgId = messageId.split(":");
     if (uuidMsgId.length == 2) {
       var itemId = uuidMsgId[1];
-      var accountId =uuidMsgId[0];
+      var accountId = uuidMsgId[0];
       return itemIdFactory.create(itemId, accountId);
     }
     return itemIdFactory.create(messageId, authToken.getAccountId());
@@ -246,13 +245,14 @@ class Utils {
    * Extracts and validates the required query parameters from the given HTTP request URL.
    *
    * <p>This static method uses a regular expression pattern to match and extract the necessary
-   * query parameters from the full URL of the provided {@link HttpServletRequest} object. It expects
-   * the URL to contain exactly three groups as defined by the pattern. If successful, it returns
-   * the extracted parameters in a {@link Try} object. If the parameters are missing or do not match
-   * the expected format, it returns a {@link Try} failure with an appropriate exception.</p>
+   * query parameters from the full URL of the provided {@link HttpServletRequest} object. It expects the URL to contain
+   * exactly three groups as defined by the pattern. If successful, it returns the extracted parameters in a {@link Try}
+   * object. If the parameters are missing or do not match the expected format, it returns a {@link Try} failure with an
+   * appropriate exception.</p>
    *
    * @param request the {@link HttpServletRequest} object containing the request details
-   * @return a {@link Try} containing an array of strings with the extracted query parameters, or a failure if the parameters are invalid
+   * @return a {@link Try} containing an array of strings with the extracted query parameters, or a failure if the
+   * parameters are invalid
    * @throws IllegalArgumentException if the query parameters do not match the expected pattern
    */
   static Try<String[]> extractRequiredQueryParameters(HttpServletRequest request) {
@@ -262,6 +262,15 @@ class Utils {
     } else {
       return Try.failure(new IllegalArgumentException("Invalid query parameters"));
     }
+  }
+
+
+  static RuntimeException remapAccountRelatedException(Throwable ex) {
+    var message = ex.getMessage();
+    if (message == null || message.trim().isEmpty() || message.toLowerCase().contains("account")) {
+      message = "Error processing requested attachment. Ensure message ID or account are correct.";
+    }
+    return new RuntimeException(message, ex);
   }
 
 }
