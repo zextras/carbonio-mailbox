@@ -41,16 +41,10 @@ public class SearchEnabledUsersRequest {
   @XmlAttribute(name=AccountConstants.E_FEATURE, required=false)
   private Features feature;
   /**
-   * @zm-api-field-description The maximum number of accounts to return (0 is default and means all)
+   * @zm-api-field-description The maximum number of accounts to return (0 is default and means 10)
    */
   @XmlAttribute(name=AccountConstants.A_LIMIT, required=false)
   private Integer limit;
-
-  /**
-   * @zm-api-field-description The starting offset (0, 25, etc)
-   */
-  @XmlAttribute(name=AccountConstants.A_OFFSET, required=false)
-  private Integer offset;
 
   public String getName() {
     return name;
@@ -60,27 +54,19 @@ public class SearchEnabledUsersRequest {
     this.name = name;
   }
 
-  public Integer getLimit() {
-    return limit;
-  }
-
-  public void setLimit(Integer limit) {
-    this.limit = limit;
-  }
-
-  public Integer getOffset() {
-    return offset;
-  }
-
-  public void setOffset(Integer offset) {
-    this.offset = offset;
-  }
-
   public Features getFeature() {
     return feature;
   }
 
   public void setFeature(Features feature) {
     this.feature = feature;
+  }
+
+  public Integer getLimit() {
+    return limit;
+  }
+
+  public void setLimit(Integer limit) {
+    this.limit = limit;
   }
 }

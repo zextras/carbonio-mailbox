@@ -290,18 +290,30 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     }
   }
 
+  @Test
+  void testMaxResults() throws Exception {
+    var account1 = withFeature(SearchEnabledUsersRequest.Features.CHATS, true, buildAccount("first.account", "Test1")).create();
+    var account2 = withFeature(SearchEnabledUsersRequest.Features.CHATS, true, buildAccount("second.account", "Test2")).create();
+
+    try {
+      HttpResponse httpResponse = getSoapClient().newRequest()
+          .setCaller(userAccount)
+          .setSoapBody(SearchEnabledUsersTest.searchAccounts("account", SearchEnabledUsersRequest.Features.CHATS, 1))
+          .execute();
+
+      assertEquals(1, getResponse(httpResponse).getAccounts().size());
+    } finally {
+      cleanUp(account1);
+      cleanUp(account2);
+    }
+  }
+
   /*
    * TODO: Implement the following test cases
    */
   @Disabled("Not implemented")
   @Test
   void testIncludedAttributes() {
-    assertTrue(false);
-  }
-
-  @Disabled("Not implemented")
-  @Test
-  void testMaxResults() {
     assertTrue(false);
   }
 
@@ -322,9 +334,16 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   }
 
   private static SearchEnabledUsersRequest searchAccounts(String name, SearchEnabledUsersRequest.Features feature) {
+    return searchAccounts(name, feature, 0);
+  }
+
+  private static SearchEnabledUsersRequest searchAccounts(String name, SearchEnabledUsersRequest.Features feature, int maxResults) {
     SearchEnabledUsersRequest request = new SearchEnabledUsersRequest();
     request.setName(name);
     request.setFeature(feature);
+    if (maxResults > 0) {
+      request.setLimit(maxResults);
+    }
 
     return request;
   }

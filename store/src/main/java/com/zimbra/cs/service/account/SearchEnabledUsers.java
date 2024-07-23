@@ -25,6 +25,8 @@ import static com.zimbra.cs.ldap.LdapConstants.LDAP_FALSE;
 
 public class SearchEnabledUsers extends AccountDocumentHandler {
 
+  public static final int DEFAULT_MAX_RESULTS = 10;
+
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
     ZimbraSoapContext zsc = getZimbraSoapContext(context);
@@ -56,7 +58,7 @@ public class SearchEnabledUsers extends AccountDocumentHandler {
     var filter = featureFilter == null ? Filter.createANDFilter(autoCompleteFilter, notHiddenInGalFilter) : Filter.createANDFilter(autoCompleteFilter, notHiddenInGalFilter, featureFilter);
     options.setFilterString(ZLdapFilterFactory.FilterId.ADMIN_SEARCH, filter.toString());
 
-    var entries = provisioning.searchDirectory(options);
+    var entries = provisioning.searchDirectory(options).stream().limit(request.getAttributeInt(AccountConstants.A_LIMIT, DEFAULT_MAX_RESULTS));
 
     var response = zsc.createElement(AccountConstants.SEARCH_ENABLED_USERS_RESPONSE);
     var attributes = new HashSet<String>();
