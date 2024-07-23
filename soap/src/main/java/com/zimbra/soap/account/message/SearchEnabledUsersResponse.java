@@ -17,13 +17,10 @@ import java.util.List;
 @XmlType(propOrder = {})
 public class SearchEnabledUsersResponse {
   /**
-   * @zm-api-field-description Contacts matching the autocomplete request
+   * @zm-api-field-description Accounts matching the autocomplete request
    */
   @XmlElement(name=AccountConstants.E_ACCOUNT /* cn */, required=false)
   private List<EnabledUserInfo> accounts = Lists.newArrayList();
-
-  // Believe that GalSearchResultCallback.handleDeleted(ItemId id) is not used for AutoCompleteGal
-  // If it were used - it would matter what order as it would probably be a list of Id
 
   public SearchEnabledUsersResponse() {
   }

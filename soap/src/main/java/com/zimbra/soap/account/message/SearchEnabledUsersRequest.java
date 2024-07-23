@@ -30,7 +30,7 @@ public class SearchEnabledUsersRequest {
     }
   }
   /**
-   * @zm-api-field-description name to autocomplete (searched in uid and displayName)
+   * @zm-api-field-description name to autocomplete (searched in uid, mail and displayName)
    */
   @XmlAttribute(name=AccountConstants.E_NAME, required=false)
   private String name;

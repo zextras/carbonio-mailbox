@@ -8,6 +8,7 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Cos;
+import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.SearchDirectoryOptions;
 import com.zimbra.cs.ldap.ZLdapFilterFactory;
@@ -39,15 +40,38 @@ public class SearchEnabledUsers extends AccountDocumentHandler {
     String feature =
         SearchEnabledUsersRequest.Features.valueOf(request.getAttribute(AccountConstants.E_FEATURE, "UNKNOWN")).getFeature();
 
+    var provisioning = Provisioning.getInstance();
+
+    var options = buildSearchOptions(provisioning, account);
+    options.setFilterString(ZLdapFilterFactory.FilterId.ADMIN_SEARCH, getSearchFilter(query, feature, provisioning).toString());
+
+    var entries = provisioning.searchDirectory(options).stream().limit(request.getAttributeInt(AccountConstants.A_LIMIT, DEFAULT_MAX_RESULTS));
+
+    return buildResponse(zsc, entries);
+  }
+
+  private static SearchDirectoryOptions buildSearchOptions(Provisioning provisioning,
+                                                                  Account account) throws ServiceException {
     var options = new SearchDirectoryOptions();
     options.setTypes(SearchDirectoryOptions.ObjectType.accounts);
-    var domain = Provisioning.getInstance().getDomainById(account.getDomainId());
+    var domain = provisioning.getDomainById(account.getDomainId());
     options.setDomain(domain);
     options.setSortAttr(ZAttrProvisioning.A_uid);
     options.setSortOpt(SearchDirectoryOptions.SortOpt.SORT_ASCENDING);
+    return options;
+  }
 
-    var provisioning = Provisioning.getInstance();
+  private static Element buildResponse(ZimbraSoapContext zsc, Stream<NamedEntry> entries) {
+    var response = zsc.createElement(AccountConstants.SEARCH_ENABLED_USERS_RESPONSE);
+    var attributes = new HashSet<String>();
+    attributes.add(ZAttrProvisioning.A_mail);
+    attributes.add(ZAttrProvisioning.A_uid);
+    attributes.add(ZAttrProvisioning.A_displayName);
+    entries.forEach(a -> ToXML.encodeAccount(response, (Account) a, true, attributes, null));
+    return response;
+  }
 
+  private static Filter getSearchFilter(String query, String feature, Provisioning provisioning) throws ServiceException {
     var autoCompleteFilter = Filter.createORFilter(
         getWildcardFilter(ZAttrProvisioning.A_uid, query),
         getWildcardFilter(ZAttrProvisioning.A_displayName, query),
@@ -59,18 +83,9 @@ public class SearchEnabledUsers extends AccountDocumentHandler {
 
     var featureFilter = getFeatureFilter(feature, provisioning);
 
-    var filter = featureFilter == null ? Filter.createANDFilter(autoCompleteFilter, notHiddenInGalFilter) : Filter.createANDFilter(autoCompleteFilter, notHiddenInGalFilter, featureFilter);
-    options.setFilterString(ZLdapFilterFactory.FilterId.ADMIN_SEARCH, filter.toString());
-
-    var entries = provisioning.searchDirectory(options).stream().limit(request.getAttributeInt(AccountConstants.A_LIMIT, DEFAULT_MAX_RESULTS));
-
-    var response = zsc.createElement(AccountConstants.SEARCH_ENABLED_USERS_RESPONSE);
-    var attributes = new HashSet<String>();
-    attributes.add(ZAttrProvisioning.A_mail);
-    attributes.add(ZAttrProvisioning.A_uid);
-    attributes.add(ZAttrProvisioning.A_displayName);
-    entries.forEach(a -> ToXML.encodeAccount(response, (Account) a, true, attributes, null));
-    return response;
+    return featureFilter == null
+        ? Filter.createANDFilter(autoCompleteFilter, notHiddenInGalFilter)
+        : Filter.createANDFilter(autoCompleteFilter, notHiddenInGalFilter, featureFilter);
   }
 
   private static Filter getFeatureFilter(String feature, Provisioning provisioning) throws ServiceException {

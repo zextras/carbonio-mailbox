@@ -2,6 +2,7 @@ package com.zimbra.cs.service.account;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil;
+import com.zextras.mailbox.util.SoapClient;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
@@ -14,7 +15,6 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.account.message.EnabledUserInfo;
 import com.zimbra.soap.account.message.SearchEnabledUsersRequest;
 import com.zimbra.soap.account.message.SearchEnabledUsersResponse;
-import com.zimbra.soap.admin.type.Attr;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
@@ -58,8 +58,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     var account = buildAccount(ACCOUNT_UID, ACCOUNT_NAME).create();
 
     try {
-      HttpResponse httpResponse = getSoapClient().newRequest()
-          .setCaller(userAccount)
+      HttpResponse httpResponse = buildRequest()
           .setSoapBody(SearchEnabledUsersTest.searchAccounts(ACCOUNT_UID))
           .execute();
 
@@ -74,8 +73,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     var account = buildAccount(ACCOUNT_UID.toLowerCase(), ACCOUNT_NAME).create();
 
     try {
-      HttpResponse httpResponse = getSoapClient().newRequest()
-          .setCaller(userAccount)
+      HttpResponse httpResponse = buildRequest()
           .setSoapBody(SearchEnabledUsersTest.searchAccounts(ACCOUNT_UID.toUpperCase()))
           .execute();
 
@@ -89,8 +87,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   void searchUserPartialUid() throws Exception {
     var account = buildAccount(ACCOUNT_UID, ACCOUNT_NAME).create();
     try {
-      HttpResponse httpResponse = getSoapClient().newRequest()
-          .setCaller(userAccount)
+      HttpResponse httpResponse = buildRequest()
           .setSoapBody(SearchEnabledUsersTest.searchAccounts(ACCOUNT_UID.substring(0, 2)))
           .execute();
 
@@ -105,8 +102,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     var account = buildAccount(ACCOUNT_UID, ACCOUNT_NAME).create();
 
     try {
-      HttpResponse httpResponse = getSoapClient().newRequest()
-          .setCaller(userAccount)
+      HttpResponse httpResponse = buildRequest()
           .setSoapBody(SearchEnabledUsersTest.searchAccounts(ACCOUNT_NAME))
           .execute();
 
@@ -121,9 +117,8 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     var account = buildAccount(ACCOUNT_UID, ACCOUNT_NAME).create();
 
     try {
-      HttpResponse httpResponse = getSoapClient().newRequest()
-          .setCaller(userAccount)
-          .setSoapBody(SearchEnabledUsersTest.searchAccounts(getEmailAddress(ACCOUNT_UID, DEFAULT_DOMAIN)))
+      HttpResponse httpResponse = buildRequest()
+          .setSoapBody(SearchEnabledUsersTest.searchAccounts(MessageFormat.format("{0}@{1}", ACCOUNT_UID, DEFAULT_DOMAIN)))
           .execute();
 
       assertSuccessWithSingleAccount(httpResponse, account);
@@ -138,8 +133,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     var account2 = buildAccount("second.account", "Test2").create();
 
     try {
-      HttpResponse httpResponse = getSoapClient().newRequest()
-          .setCaller(userAccount)
+      HttpResponse httpResponse = buildRequest()
           .setSoapBody(SearchEnabledUsersTest.searchAccounts("account"))
           .execute();
 
@@ -152,15 +146,14 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
   @Test
   void featureEnabledInAccountNotInCos() throws Exception {
-    var account1 = withFeature(
-        SearchEnabledUsersRequest.Features.CHATS, true,
+    var account1 = withChatsFeature(
+        true,
         buildAccount("first.account", "Test1")
     ).create();
     var account2 = buildAccount("second.account", "Test2").create();
 
     try {
-      HttpResponse httpResponse = getSoapClient().newRequest()
-          .setCaller(userAccount)
+      HttpResponse httpResponse = buildRequest()
           .setSoapBody(SearchEnabledUsersTest.searchAccounts("account", SearchEnabledUsersRequest.Features.CHATS))
           .execute();
 
@@ -173,14 +166,13 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
   @Test
   void featureEnabledInCosNotInAccount() throws Exception {
-    var cos = createCos(SearchEnabledUsersRequest.Features.CHATS, true);
+    var cos = createCosWithChatsEnabled();
 
     var account1 = withCos(cos, buildAccount("first.account", "Test1")).create();
     var account2 = buildAccount("second.account", "Test2").create();
 
     try {
-      HttpResponse httpResponse = getSoapClient().newRequest()
-          .setCaller(userAccount)
+      HttpResponse httpResponse = buildRequest()
           .setSoapBody(SearchEnabledUsersTest.searchAccounts("account", SearchEnabledUsersRequest.Features.CHATS))
           .execute();
 
@@ -194,15 +186,14 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
   @Test
   void multipleCos() throws Exception {
-    var cos1 = createCos(SearchEnabledUsersRequest.Features.CHATS, true);
-    var cos2 = createCos(SearchEnabledUsersRequest.Features.CHATS, true);
+    var cos1 = createCosWithChatsEnabled();
+    var cos2 = createCosWithChatsEnabled();
 
     var account1 = withCos(cos1, buildAccount("first.account", "Test1")).create();
     var account2 = withCos(cos2, buildAccount("second.account", "Test2")).create();
 
     try {
-      HttpResponse httpResponse = getSoapClient().newRequest()
-          .setCaller(userAccount)
+      HttpResponse httpResponse = buildRequest()
           .setSoapBody(SearchEnabledUsersTest.searchAccounts("account", SearchEnabledUsersRequest.Features.CHATS))
           .execute();
 
@@ -217,14 +208,13 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
   @Test
   void featureEnabledInCosDisabledInAccount() throws Exception {
-    var cos = createCos(SearchEnabledUsersRequest.Features.CHATS, true);
-    var account = withFeature(SearchEnabledUsersRequest.Features.CHATS, false,
+    var cos = createCosWithChatsEnabled();
+    var account = withChatsFeature(false,
         withCos(cos, buildAccount("first.account", "Test1"))
     ).create();
 
     try {
-      HttpResponse httpResponse = getSoapClient().newRequest()
-          .setCaller(userAccount)
+      HttpResponse httpResponse = buildRequest()
           .setSoapBody(SearchEnabledUsersTest.searchAccounts("account", SearchEnabledUsersRequest.Features.CHATS))
           .execute();
 
@@ -237,14 +227,13 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
   @Test
   void featureEnabledBothCosAndAccount() throws Exception {
-    var cos = createCos(SearchEnabledUsersRequest.Features.CHATS, true);
-    var account = withFeature(SearchEnabledUsersRequest.Features.CHATS, true,
+    var cos = createCosWithChatsEnabled();
+    var account = withChatsFeature(true,
         withCos(cos, buildAccount("first.account", "Test1"))
     ).create();
 
     try {
-      HttpResponse httpResponse = getSoapClient().newRequest()
-          .setCaller(userAccount)
+      HttpResponse httpResponse = buildRequest()
           .setSoapBody(SearchEnabledUsersTest.searchAccounts("account", SearchEnabledUsersRequest.Features.CHATS))
           .execute();
 
@@ -261,8 +250,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
         .withAttribute("zimbraHideInGal", "TRUE").create();
 
     try {
-      HttpResponse httpResponse = getSoapClient().newRequest()
-          .setCaller(userAccount)
+      HttpResponse httpResponse = buildRequest()
           .setSoapBody(SearchEnabledUsersTest.searchAccounts("account"))
           .execute();
 
@@ -278,8 +266,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     var group = provisioning.createGroup("accounts-group@" + DEFAULT_DOMAIN, new HashMap<>(), false);
 
     try {
-      HttpResponse httpResponse = getSoapClient().newRequest()
-          .setCaller(userAccount)
+      HttpResponse httpResponse = buildRequest()
           .setSoapBody(SearchEnabledUsersTest.searchAccounts("account"))
           .execute();
 
@@ -292,12 +279,11 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
   @Test
   void testMaxResults() throws Exception {
-    var account1 = withFeature(SearchEnabledUsersRequest.Features.CHATS, true, buildAccount("first.account", "Test1")).create();
-    var account2 = withFeature(SearchEnabledUsersRequest.Features.CHATS, true, buildAccount("second.account", "Test2")).create();
+    var account1 = withChatsFeature(true, buildAccount("first.account", "Test1")).create();
+    var account2 = withChatsFeature(true, buildAccount("second.account", "Test2")).create();
 
     try {
-      HttpResponse httpResponse = getSoapClient().newRequest()
-          .setCaller(userAccount)
+      HttpResponse httpResponse = buildRequest()
           .setSoapBody(SearchEnabledUsersTest.searchAccounts("account", SearchEnabledUsersRequest.Features.CHATS, 1))
           .execute();
 
@@ -315,8 +301,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     var account2 = buildAccount("second.account", "Test2", "anotherdomain.com").create();
 
     try {
-      HttpResponse httpResponse = getSoapClient().newRequest()
-          .setCaller(userAccount)
+      HttpResponse httpResponse = buildRequest()
           .setSoapBody(SearchEnabledUsersTest.searchAccounts("account"))
           .execute();
 
@@ -333,8 +318,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     var account = buildAccount(ACCOUNT_UID, ACCOUNT_NAME).create();
 
     try {
-      HttpResponse httpResponse = getSoapClient().newRequest()
-          .setCaller(userAccount)
+      HttpResponse httpResponse = buildRequest()
           .setSoapBody(SearchEnabledUsersTest.searchAccounts(ACCOUNT_UID))
           .execute();
 
@@ -352,8 +336,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     var account2 = buildAccount("aaa.account", ACCOUNT_NAME).create();
 
     try {
-      HttpResponse httpResponse = getSoapClient().newRequest()
-          .setCaller(userAccount)
+      HttpResponse httpResponse = buildRequest()
           .setSoapBody(SearchEnabledUsersTest.searchAccounts("account"))
           .execute();
 
@@ -366,7 +349,6 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
       cleanUp(account2);
     }
   }
-
 
   private static SearchEnabledUsersResponse parseSoapResponse(HttpResponse httpResponse) throws IOException, ServiceException {
     final String responseBody = EntityUtils.toString(httpResponse.getEntity());
@@ -404,14 +386,10 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
         .withAttribute("displayName", fullName);
   }
 
-  private static MailboxTestUtil.AccountCreator withFeature(SearchEnabledUsersRequest.Features feature,
-                                                                  boolean enabled,
-                                                                  MailboxTestUtil.AccountCreator account) {
-    if (feature != null) {
-      account = account
-          .withAttribute(feature.getFeature(), enabled ? "TRUE" : "FALSE");
-    }
-    return account;
+  private static MailboxTestUtil.AccountCreator withChatsFeature(boolean enabled,
+                                                                 MailboxTestUtil.AccountCreator account) {
+    return account
+        .withAttribute(SearchEnabledUsersRequest.Features.CHATS.getFeature(), enabled ? "TRUE" : "FALSE");
   }
 
   private static MailboxTestUtil.AccountCreator withCos(Cos cos, MailboxTestUtil.AccountCreator account) {
@@ -422,18 +400,14 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     return account;
   }
 
-  private static String getEmailAddress(String uid, String domain) {
-    return MessageFormat.format("{0}@{1}", uid, domain);
-  }
-
   private static EnabledUserInfo assertSuccessWithSingleAccount(HttpResponse httpResponse, Account account) throws IOException, ServiceException {
     SearchEnabledUsersResponse response = getResponse(httpResponse);
     List<EnabledUserInfo> accounts = response.getAccounts();
     assertEquals(1, accounts.size());
-    var firstAcount = accounts.get(0);
-    assertEquals(account.getId(), firstAcount.getId());
-    assertEquals(account.getName(), firstAcount.getName());
-    return firstAcount;
+    var firstAccount = accounts.get(0);
+    assertEquals(account.getId(), firstAccount.getId());
+    assertEquals(account.getName(), firstAccount.getName());
+    return firstAccount;
   }
 
   private static void cleanUp(Account account) throws ServiceException {
@@ -462,9 +436,14 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   }
 
 
-  private static Cos createCos(SearchEnabledUsersRequest.Features feature, boolean enabled) throws ServiceException {
+  private static Cos createCosWithChatsEnabled() throws ServiceException {
     var cosAttrs = new HashMap<String, Object>();
-    cosAttrs.put(feature.getFeature(), enabled ? "TRUE" : "FALSE");
+    cosAttrs.put(SearchEnabledUsersRequest.Features.CHATS.getFeature(), "TRUE");
     return provisioning.createCos(UUID.randomUUID().toString(), cosAttrs);
+  }
+
+  private SoapClient.Request buildRequest() {
+    return getSoapClient().newRequest()
+        .setCaller(userAccount);
   }
 }

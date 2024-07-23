@@ -10,8 +10,6 @@ import org.dom4j.QName;
 
 public class AccountConstants {
 
-
-
   private AccountConstants() {
     throw new java.lang.UnsupportedOperationException("Utility class and cannot be instantiated");
   }
