@@ -31,6 +31,7 @@ import java.util.UUID;
 import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
 import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("api")
 public class SearchEnabledUsersTest extends SoapTestSuite {
@@ -255,7 +256,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   }
 
   @Test
-  public void hiddenInGalNotIncluded() throws Exception {
+  void hiddenInGalNotIncluded() throws Exception {
     var account = buildAccount("first.account", "Test1")
         .withAttribute("zimbraHideInGal", "TRUE").create();
 
@@ -272,7 +273,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   }
 
   @Test
-  public void distributionListsAndGroupsNotIncluded() throws Exception {
+  void distributionListsAndGroupsNotIncluded() throws Exception {
     var dl = provisioning.createDistributionList("accounts-dl@" + DEFAULT_DOMAIN, new HashMap<>());
     var group = provisioning.createGroup("accounts-group@" + DEFAULT_DOMAIN, new HashMap<>(), false);
 
@@ -292,16 +293,22 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   /*
    * TODO: Implement the following test cases
    */
-  @Disabled
+  @Disabled("Not implemented")
   @Test
-  public void testIncludedAttributes() {
-
+  void testIncludedAttributes() {
+    assertTrue(false);
   }
 
-  @Disabled
+  @Disabled("Not implemented")
   @Test
-  public void testMaxResults() {
+  void testMaxResults() {
+    assertTrue(false);
+  }
 
+  @Disabled("Not implemented")
+  @Test
+  void testResultsOnlyInAccountDomain() {
+    assertTrue(false);
   }
 
   private static SearchEnabledUsersResponse parseSoapResponse(HttpResponse httpResponse) throws IOException, ServiceException {
@@ -322,7 +329,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     return request;
   }
 
-  private static MailboxTestUtil.AccountCreator buildAccount(String uid, String fullName) throws ServiceException {
+  private static MailboxTestUtil.AccountCreator buildAccount(String uid, String fullName) {
     return accountCreatorFactory.get()
         .withDomain(DEFAULT_DOMAIN)
         .withUsername(uid)
