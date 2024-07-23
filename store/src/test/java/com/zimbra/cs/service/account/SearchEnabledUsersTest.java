@@ -346,6 +346,27 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     }
   }
 
+  @Test
+  void testSortByUid() throws Exception {
+    var account1 = buildAccount("zzz.account", ACCOUNT_NAME).create();
+    var account2 = buildAccount("aaa.account", ACCOUNT_NAME).create();
+
+    try {
+      HttpResponse httpResponse = getSoapClient().newRequest()
+          .setCaller(userAccount)
+          .setSoapBody(SearchEnabledUsersTest.searchAccounts("account"))
+          .execute();
+
+      var returnedAccounts = getResponse(httpResponse).getAccounts();
+      assertEquals(2, returnedAccounts.size());
+      assertEquals("aaa.account@" + DEFAULT_DOMAIN, returnedAccounts.get(0).getName());
+      assertEquals("zzz.account@" + DEFAULT_DOMAIN, returnedAccounts.get(1).getName());
+    } finally {
+      cleanUp(account1);
+      cleanUp(account2);
+    }
+  }
+
 
   private static SearchEnabledUsersResponse parseSoapResponse(HttpResponse httpResponse) throws IOException, ServiceException {
     final String responseBody = EntityUtils.toString(httpResponse.getEntity());
