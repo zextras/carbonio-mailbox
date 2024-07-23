@@ -11,15 +11,15 @@ import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.JaxbUtil;
+import com.zimbra.soap.account.message.EnabledUserInfo;
 import com.zimbra.soap.account.message.SearchEnabledUsersRequest;
 import com.zimbra.soap.account.message.SearchEnabledUsersResponse;
-import com.zimbra.soap.admin.type.AccountInfo;
+import com.zimbra.soap.admin.type.Attr;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -32,7 +32,6 @@ import java.util.UUID;
 import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
 import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("api")
 public class SearchEnabledUsersTest extends SoapTestSuite {
@@ -329,13 +328,22 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     }
   }
 
-  /*
-   * TODO: Implement the following test cases
-   */
-  @Disabled("Not implemented")
   @Test
-  void testIncludedAttributes() {
-    assertTrue(false);
+  void testIncludedAttributes() throws Exception {
+    var account = buildAccount(ACCOUNT_UID, ACCOUNT_NAME).create();
+
+    try {
+      HttpResponse httpResponse = getSoapClient().newRequest()
+          .setCaller(userAccount)
+          .setSoapBody(SearchEnabledUsersTest.searchAccounts(ACCOUNT_UID))
+          .execute();
+
+      var returnedAccount = assertSuccessWithSingleAccount(httpResponse, account);
+      var attributes = returnedAccount.getAttrList();
+      assertEquals(3, attributes.size());
+    } finally {
+      cleanUp(account);
+    }
   }
 
 
@@ -397,12 +405,14 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     return MessageFormat.format("{0}@{1}", uid, domain);
   }
 
-  private static void assertSuccessWithSingleAccount(HttpResponse httpResponse, Account account) throws IOException, ServiceException {
+  private static EnabledUserInfo assertSuccessWithSingleAccount(HttpResponse httpResponse, Account account) throws IOException, ServiceException {
     SearchEnabledUsersResponse response = getResponse(httpResponse);
-    List<AccountInfo> accounts = response.getAccounts();
+    List<EnabledUserInfo> accounts = response.getAccounts();
     assertEquals(1, accounts.size());
-    assertEquals(account.getId(), accounts.get(0).getId());
-    assertEquals(account.getName(), accounts.get(0).getName());
+    var firstAcount = accounts.get(0);
+    assertEquals(account.getId(), firstAcount.getId());
+    assertEquals(account.getName(), firstAcount.getName());
+    return firstAcount;
   }
 
   private static void cleanUp(Account account) throws ServiceException {
