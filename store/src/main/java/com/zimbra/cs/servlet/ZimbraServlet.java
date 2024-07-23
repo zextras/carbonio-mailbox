@@ -38,13 +38,17 @@ import com.zimbra.soap.SoapServlet;
 import io.vavr.control.Try;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -289,8 +293,13 @@ public class ZimbraServlet extends HttpServlet {
     }
   }
 
+  public static void proxyServletRequest(HttpServletRequest req, HttpServletResponse resp, String accountId)
+      throws ServiceException, HttpException, IOException {
+    proxyServletRequest(req, resp, accountId, Map.of());
+  }
+
   public static void proxyServletRequest(
-      HttpServletRequest req, HttpServletResponse resp, String accountId)
+      HttpServletRequest req, HttpServletResponse resp, String accountId, Map<String, Object> additionalQueryParams)
       throws IOException, ServiceException, HttpException {
     Provisioning prov = Provisioning.getInstance();
     Account acct = prov.get(AccountBy.id, accountId);
@@ -298,17 +307,29 @@ public class ZimbraServlet extends HttpServlet {
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "no such user");
       return;
     }
-    proxyServletRequest(req, resp, prov.getServer(acct), null);
+    proxyServletRequest(req, resp, prov.getServer(acct), null, additionalQueryParams);
   }
 
   public static void proxyServletRequest(
-      HttpServletRequest req, HttpServletResponse resp, Server server, AuthToken authToken)
+      HttpServletRequest req, HttpServletResponse resp, Server server, AuthToken authToken, Map<String, Object> additionalQueryParams)
       throws IOException, ServiceException, HttpException {
     String uri = req.getRequestURI();
     String qs = req.getQueryString();
+    String additionalParamsQueryString = mapToQueryString(additionalQueryParams);
+
     if (qs != null) {
       uri += '?' + qs;
     }
+
+    if (!additionalParamsQueryString.isEmpty()) {
+      mLog.debug("Adding additional  query params to uri: " + additionalParamsQueryString);
+      if (qs != null) {
+        uri += '&' + additionalParamsQueryString;
+      } else {
+        uri += '?' + additionalParamsQueryString;
+      }
+    }
+
     proxyServletRequest(req, resp, server, uri, authToken);
   }
 
@@ -355,6 +376,22 @@ public class ZimbraServlet extends HttpServlet {
     } finally {
       method.releaseConnection();
     }
+  }
+
+  private static String mapToQueryString(Map<String, Object> params) {
+    StringBuilder queryString = new StringBuilder();
+    if (params != null && !params.isEmpty()) {
+      Set<Entry<String, Object>> entrySet = params.entrySet();
+      for (Map.Entry<String, Object> entry : entrySet) {
+        if (queryString.length() > 0) {
+          queryString.append('&');
+        }
+        queryString.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8))
+            .append('=')
+            .append(URLEncoder.encode(String.valueOf(entry.getValue()), StandardCharsets.UTF_8));
+      }
+    }
+    return queryString.toString();
   }
 
   private static boolean hasZimbraAuthCookie(BasicCookieStore state) {
