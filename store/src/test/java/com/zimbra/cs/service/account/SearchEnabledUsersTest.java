@@ -7,6 +7,7 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Cos;
 import com.zimbra.cs.account.DistributionList;
+import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.JaxbUtil;
@@ -308,6 +309,26 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     }
   }
 
+  @Test
+  void testResultsOnlyInAccountDomain() throws Exception {
+    var domain = provisioning.createDomain("anotherdomain.com", new HashMap<>());
+    var account1 = buildAccount("first.account", "Test1").create();
+    var account2 = buildAccount("second.account", "Test2", "anotherdomain.com").create();
+
+    try {
+      HttpResponse httpResponse = getSoapClient().newRequest()
+          .setCaller(userAccount)
+          .setSoapBody(SearchEnabledUsersTest.searchAccounts("account"))
+          .execute();
+
+      assertEquals(1, getResponse(httpResponse).getAccounts().size());
+    } finally {
+      cleanUp(account1);
+      cleanUp(account2);
+      cleanUp(domain);
+    }
+  }
+
   /*
    * TODO: Implement the following test cases
    */
@@ -317,11 +338,6 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     assertTrue(false);
   }
 
-  @Disabled("Not implemented")
-  @Test
-  void testResultsOnlyInAccountDomain() {
-    assertTrue(false);
-  }
 
   private static SearchEnabledUsersResponse parseSoapResponse(HttpResponse httpResponse) throws IOException, ServiceException {
     final String responseBody = EntityUtils.toString(httpResponse.getEntity());
@@ -349,8 +365,12 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   }
 
   private static MailboxTestUtil.AccountCreator buildAccount(String uid, String fullName) {
+    return buildAccount(uid, fullName, DEFAULT_DOMAIN);
+  }
+
+  private static MailboxTestUtil.AccountCreator buildAccount(String uid, String fullName, String domain) {
     return accountCreatorFactory.get()
-        .withDomain(DEFAULT_DOMAIN)
+        .withDomain(domain)
         .withUsername(uid)
         .withAttribute("displayName", fullName);
   }
@@ -387,6 +407,10 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
   private static void cleanUp(Account account) throws ServiceException {
     provisioning.deleteAccount(account.getId());
+  }
+
+  private static void cleanUp(Domain domain) throws ServiceException {
+    provisioning.deleteDomain(domain.getId());
   }
 
   private static void cleanUp(DistributionList dl) throws ServiceException {

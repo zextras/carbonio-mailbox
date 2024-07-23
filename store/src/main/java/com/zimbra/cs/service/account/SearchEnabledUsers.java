@@ -41,6 +41,8 @@ public class SearchEnabledUsers extends AccountDocumentHandler {
 
     var options = new SearchDirectoryOptions();
     options.setTypes(SearchDirectoryOptions.ObjectType.accounts);
+    var domain = Provisioning.getInstance().getDomainById(account.getDomainId());
+    options.setDomain(domain);
 
     var provisioning = Provisioning.getInstance();
 
