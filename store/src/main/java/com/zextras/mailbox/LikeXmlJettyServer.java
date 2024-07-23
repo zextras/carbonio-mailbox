@@ -214,13 +214,6 @@ public class LikeXmlJettyServer {
       return sslHttpConfig;
     }
 
-    private ServerConnector createUserHttpConnector(Server server, HttpConfiguration httpConfig) {
-      ServerConnector serverConnector = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
-      serverConnector.setPort(localServer.getMailPort());
-      serverConnector.setIdleTimeout(config.getHttpConnectorMaxIdleTimeMillis());
-      return serverConnector;
-    }
-
     private SslContextFactory createSSLContextFactory() {
       SslContextFactory localSslContextFactory = new SslContextFactory.Server();
       localSslContextFactory.setKeyStorePath(LC.mailboxd_keystore.value());
@@ -246,6 +239,13 @@ public class LikeXmlJettyServer {
       ServerConnector serverConnector = createHttpsConnector(server);
       serverConnector.setPort(port);
       serverConnector.setIdleTimeout(idleTimeMillis);
+      return serverConnector;
+    }
+
+    private ServerConnector createUserHttpConnector(Server server, HttpConfiguration httpConfig) {
+      ServerConnector serverConnector = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+      serverConnector.setPort(localServer.getMailPort());
+      serverConnector.setIdleTimeout(config.getHttpConnectorMaxIdleTimeMillis());
       return serverConnector;
     }
 
