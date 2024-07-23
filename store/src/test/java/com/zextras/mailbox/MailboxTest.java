@@ -8,10 +8,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.localconfig.LC;
+import com.zimbra.cs.account.Provisioning;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyStore;
+import java.util.HashMap;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,9 @@ class MailboxTest {
   @BeforeAll
   static void setUp() throws Exception {
     MailboxTestUtil.setUp();
+    Provisioning.getInstance().getLocalServer().modify(new HashMap<>(){{
+      put(Provisioning.A_zimbraMailPort, "8080");
+    }});
     final Path keystorePath = Path.of(folder.getAbsolutePath(), "keystore");
     KeyStore ks = KeyStore.getInstance("PKCS12");
     final String password = "test";
