@@ -12,9 +12,9 @@ import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.JaxbUtil;
-import com.zimbra.soap.account.message.EnabledUserInfo;
-import com.zimbra.soap.account.message.SearchEnabledUsersRequest;
-import com.zimbra.soap.account.message.SearchEnabledUsersResponse;
+import com.zimbra.soap.account.message.UserInfo;
+import com.zimbra.soap.account.message.SearchdUsersByFeatureRequest;
+import com.zimbra.soap.account.message.SearchUsersByFeatureResponse;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
@@ -34,7 +34,7 @@ import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Tag("api")
-public class SearchEnabledUsersTest extends SoapTestSuite {
+public class SearchdUsersByFeatureTest extends SoapTestSuite {
   public static final String ACCOUNT_UID = "first.account";
   public static final String ACCOUNT_NAME = "name";
   private static MailboxTestUtil.AccountCreator.Factory accountCreatorFactory;
@@ -59,7 +59,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchEnabledUsersTest.searchAccounts(ACCOUNT_UID))
+          .setSoapBody(SearchdUsersByFeatureTest.searchAccounts(ACCOUNT_UID))
           .execute();
 
       assertSuccessWithSingleAccount(httpResponse, account);
@@ -74,7 +74,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchEnabledUsersTest.searchAccounts(ACCOUNT_UID.toUpperCase()))
+          .setSoapBody(SearchdUsersByFeatureTest.searchAccounts(ACCOUNT_UID.toUpperCase()))
           .execute();
 
       assertSuccessWithSingleAccount(httpResponse, account);
@@ -88,7 +88,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     var account = buildAccount(ACCOUNT_UID, ACCOUNT_NAME).create();
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchEnabledUsersTest.searchAccounts(ACCOUNT_UID.substring(0, 2)))
+          .setSoapBody(SearchdUsersByFeatureTest.searchAccounts(ACCOUNT_UID.substring(0, 2)))
           .execute();
 
       assertSuccessWithSingleAccount(httpResponse, account);
@@ -103,7 +103,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchEnabledUsersTest.searchAccounts(ACCOUNT_NAME))
+          .setSoapBody(SearchdUsersByFeatureTest.searchAccounts(ACCOUNT_NAME))
           .execute();
 
       assertSuccessWithSingleAccount(httpResponse, account);
@@ -118,7 +118,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchEnabledUsersTest.searchAccounts(MessageFormat.format("{0}@{1}", ACCOUNT_UID, DEFAULT_DOMAIN)))
+          .setSoapBody(SearchdUsersByFeatureTest.searchAccounts(MessageFormat.format("{0}@{1}", ACCOUNT_UID, DEFAULT_DOMAIN)))
           .execute();
 
       assertSuccessWithSingleAccount(httpResponse, account);
@@ -134,7 +134,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchEnabledUsersTest.searchAccounts("account"))
+          .setSoapBody(SearchdUsersByFeatureTest.searchAccounts("account"))
           .execute();
 
       assertEquals(2, getResponse(httpResponse).getAccounts().size());
@@ -154,7 +154,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchEnabledUsersTest.searchAccounts("account", SearchEnabledUsersRequest.Features.CHATS))
+          .setSoapBody(SearchdUsersByFeatureTest.searchAccounts("account", SearchdUsersByFeatureRequest.Features.CHATS))
           .execute();
 
       assertEquals(1, getResponse(httpResponse).getAccounts().size());
@@ -173,7 +173,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchEnabledUsersTest.searchAccounts("account", SearchEnabledUsersRequest.Features.CHATS))
+          .setSoapBody(SearchdUsersByFeatureTest.searchAccounts("account", SearchdUsersByFeatureRequest.Features.CHATS))
           .execute();
 
       assertEquals(1, getResponse(httpResponse).getAccounts().size());
@@ -194,7 +194,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchEnabledUsersTest.searchAccounts("account", SearchEnabledUsersRequest.Features.CHATS))
+          .setSoapBody(SearchdUsersByFeatureTest.searchAccounts("account", SearchdUsersByFeatureRequest.Features.CHATS))
           .execute();
 
       assertEquals(2, getResponse(httpResponse).getAccounts().size());
@@ -215,7 +215,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchEnabledUsersTest.searchAccounts("account", SearchEnabledUsersRequest.Features.CHATS))
+          .setSoapBody(SearchdUsersByFeatureTest.searchAccounts("account", SearchdUsersByFeatureRequest.Features.CHATS))
           .execute();
 
       assertEquals(0, getResponse(httpResponse).getAccounts().size());
@@ -234,7 +234,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchEnabledUsersTest.searchAccounts("account", SearchEnabledUsersRequest.Features.CHATS))
+          .setSoapBody(SearchdUsersByFeatureTest.searchAccounts("account", SearchdUsersByFeatureRequest.Features.CHATS))
           .execute();
 
       assertSuccessWithSingleAccount(httpResponse, account);
@@ -251,7 +251,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchEnabledUsersTest.searchAccounts("account"))
+          .setSoapBody(SearchdUsersByFeatureTest.searchAccounts("account"))
           .execute();
 
       assertEquals(0, getResponse(httpResponse).getAccounts().size());
@@ -267,7 +267,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchEnabledUsersTest.searchAccounts("account"))
+          .setSoapBody(SearchdUsersByFeatureTest.searchAccounts("account"))
           .execute();
 
       assertEquals(0, getResponse(httpResponse).getAccounts().size());
@@ -284,7 +284,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchEnabledUsersTest.searchAccounts("account", SearchEnabledUsersRequest.Features.CHATS, 1))
+          .setSoapBody(SearchdUsersByFeatureTest.searchAccounts("account", SearchdUsersByFeatureRequest.Features.CHATS, 1))
           .execute();
 
       assertEquals(1, getResponse(httpResponse).getAccounts().size());
@@ -302,7 +302,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchEnabledUsersTest.searchAccounts("account"))
+          .setSoapBody(SearchdUsersByFeatureTest.searchAccounts("account"))
           .execute();
 
       assertEquals(1, getResponse(httpResponse).getAccounts().size());
@@ -319,7 +319,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchEnabledUsersTest.searchAccounts(ACCOUNT_UID))
+          .setSoapBody(SearchdUsersByFeatureTest.searchAccounts(ACCOUNT_UID))
           .execute();
 
       var returnedAccount = assertSuccessWithSingleAccount(httpResponse, account);
@@ -337,7 +337,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchEnabledUsersTest.searchAccounts("account"))
+          .setSoapBody(SearchdUsersByFeatureTest.searchAccounts("account"))
           .execute();
 
       var returnedAccounts = getResponse(httpResponse).getAccounts();
@@ -350,22 +350,22 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     }
   }
 
-  private static SearchEnabledUsersResponse parseSoapResponse(HttpResponse httpResponse) throws IOException, ServiceException {
+  private static SearchUsersByFeatureResponse parseSoapResponse(HttpResponse httpResponse) throws IOException, ServiceException {
     final String responseBody = EntityUtils.toString(httpResponse.getEntity());
-    final Element rootElement = parseXML(responseBody).getElement("Body").getElement("SearchEnabledUsersResponse");
-    return JaxbUtil.elementToJaxb(rootElement, SearchEnabledUsersResponse.class);
+    final Element rootElement = parseXML(responseBody).getElement("Body").getElement("SearchUsersByFeatureResponse");
+    return JaxbUtil.elementToJaxb(rootElement, SearchUsersByFeatureResponse.class);
   }
 
-  private static SearchEnabledUsersRequest searchAccounts(String name) {
+  private static SearchdUsersByFeatureRequest searchAccounts(String name) {
     return searchAccounts(name, null);
   }
 
-  private static SearchEnabledUsersRequest searchAccounts(String name, SearchEnabledUsersRequest.Features feature) {
+  private static SearchdUsersByFeatureRequest searchAccounts(String name, SearchdUsersByFeatureRequest.Features feature) {
     return searchAccounts(name, feature, 0);
   }
 
-  private static SearchEnabledUsersRequest searchAccounts(String name, SearchEnabledUsersRequest.Features feature, int maxResults) {
-    SearchEnabledUsersRequest request = new SearchEnabledUsersRequest();
+  private static SearchdUsersByFeatureRequest searchAccounts(String name, SearchdUsersByFeatureRequest.Features feature, int maxResults) {
+    SearchdUsersByFeatureRequest request = new SearchdUsersByFeatureRequest();
     request.setName(name);
     request.setFeature(feature);
     if (maxResults > 0) {
@@ -389,7 +389,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
   private static MailboxTestUtil.AccountCreator withChatsFeature(boolean enabled,
                                                                  MailboxTestUtil.AccountCreator account) {
     return account
-        .withAttribute(SearchEnabledUsersRequest.Features.CHATS.getFeature(), enabled ? "TRUE" : "FALSE");
+        .withAttribute(SearchdUsersByFeatureRequest.Features.CHATS.getFeature(), enabled ? "TRUE" : "FALSE");
   }
 
   private static MailboxTestUtil.AccountCreator withCos(Cos cos, MailboxTestUtil.AccountCreator account) {
@@ -400,9 +400,9 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     return account;
   }
 
-  private static EnabledUserInfo assertSuccessWithSingleAccount(HttpResponse httpResponse, Account account) throws IOException, ServiceException {
-    SearchEnabledUsersResponse response = getResponse(httpResponse);
-    List<EnabledUserInfo> accounts = response.getAccounts();
+  private static UserInfo assertSuccessWithSingleAccount(HttpResponse httpResponse, Account account) throws IOException, ServiceException {
+    SearchUsersByFeatureResponse response = getResponse(httpResponse);
+    List<UserInfo> accounts = response.getAccounts();
     assertEquals(1, accounts.size());
     var firstAccount = accounts.get(0);
     assertEquals(account.getId(), firstAccount.getId());
@@ -430,7 +430,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
     provisioning.deleteCos(cos.getId());
   }
 
-  private static SearchEnabledUsersResponse getResponse(HttpResponse httpResponse) throws IOException, ServiceException {
+  private static SearchUsersByFeatureResponse getResponse(HttpResponse httpResponse) throws IOException, ServiceException {
     assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
     return parseSoapResponse(httpResponse);
   }
@@ -438,7 +438,7 @@ public class SearchEnabledUsersTest extends SoapTestSuite {
 
   private static Cos createCosWithChatsEnabled() throws ServiceException {
     var cosAttrs = new HashMap<String, Object>();
-    cosAttrs.put(SearchEnabledUsersRequest.Features.CHATS.getFeature(), "TRUE");
+    cosAttrs.put(SearchdUsersByFeatureRequest.Features.CHATS.getFeature(), "TRUE");
     return provisioning.createCos(UUID.randomUUID().toString(), cosAttrs);
   }
 

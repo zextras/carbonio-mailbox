@@ -15,13 +15,13 @@ import java.util.List;
 
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlType(propOrder = {})
-public class EnabledUserInfo {
+public class UserInfo {
 
-  public EnabledUserInfo() {
+  public UserInfo() {
     this(null, null, null);
   }
 
-  public EnabledUserInfo(String id, String name, Collection<Attr> attrs) {
+  public UserInfo(String id, String name, Collection<Attr> attrs) {
     this.id = id;
     this.name = name;
     this.attrList = new ArrayList<>();

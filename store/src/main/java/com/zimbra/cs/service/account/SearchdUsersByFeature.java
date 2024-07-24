@@ -14,7 +14,7 @@ import com.zimbra.cs.account.SearchDirectoryOptions;
 import com.zimbra.cs.ldap.ZLdapFilterFactory;
 import com.zimbra.cs.service.admin.ToXML;
 import com.zimbra.soap.ZimbraSoapContext;
-import com.zimbra.soap.account.message.SearchEnabledUsersRequest;
+import com.zimbra.soap.account.message.SearchdUsersByFeatureRequest;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 import static com.zimbra.cs.ldap.LdapConstants.LDAP_TRUE;
 import static com.zimbra.cs.ldap.LdapConstants.LDAP_FALSE;
 
-public class SearchEnabledUsers extends AccountDocumentHandler {
+public class SearchdUsersByFeature extends AccountDocumentHandler {
 
   public static final int DEFAULT_MAX_RESULTS = 10;
 
@@ -38,7 +38,7 @@ public class SearchEnabledUsers extends AccountDocumentHandler {
 
     String query = request.getAttribute(AccountConstants.E_NAME);
     String feature =
-        SearchEnabledUsersRequest.Features.valueOf(request.getAttribute(AccountConstants.E_FEATURE, "UNKNOWN")).getFeature();
+        SearchdUsersByFeatureRequest.Features.valueOf(request.getAttribute(AccountConstants.E_FEATURE, "UNKNOWN")).getFeature();
 
     var provisioning = Provisioning.getInstance();
 
@@ -62,7 +62,7 @@ public class SearchEnabledUsers extends AccountDocumentHandler {
   }
 
   private static Element buildResponse(ZimbraSoapContext zsc, Stream<NamedEntry> entries) {
-    var response = zsc.createElement(AccountConstants.SEARCH_ENABLED_USERS_RESPONSE);
+    var response = zsc.createElement(AccountConstants.SEARCH_USERS_BY_FEATURE_RESPONSE);
     var attributes = new HashSet<String>();
     attributes.add(ZAttrProvisioning.A_mail);
     attributes.add(ZAttrProvisioning.A_uid);

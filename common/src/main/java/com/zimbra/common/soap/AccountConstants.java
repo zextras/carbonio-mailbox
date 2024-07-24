@@ -302,13 +302,13 @@ public class AccountConstants {
   public static final QName GET_ADDRESS_LIST_MEMBERS_RESPONSE =
       QName.get(E_GET_ADDRESS_LIST_MEMBERS_RESPONSE, NAMESPACE);
 
-  // Enabled users
-  public static final String E_SEARCH_ENABLED_USERS_REQUEST = "SearchEnabledUsersRequest";
-  public static final QName SEARCH_ENABLED_USERS_REQUEST =
-      QName.get(E_SEARCH_ENABLED_USERS_REQUEST, NAMESPACE);
-  public static final String E_SEARCH_ENABLED_USERS_RESPONSE = "SearchEnabledUsersResponse";
-  public static final QName SEARCH_ENABLED_USERS_RESPONSE =
-      QName.get(E_SEARCH_ENABLED_USERS_RESPONSE, NAMESPACE);
+  // users enabled to a particular feature
+  public static final String E_SEARCH_USERS_BY_FEATURE_REQUEST = "SearchUsersByFeatureRequest";
+  public static final QName SEARCH_USERS_BY_FEATURE_REQUEST =
+      QName.get(E_SEARCH_USERS_BY_FEATURE_REQUEST, NAMESPACE);
+  public static final String E_SEARCH_USERS_BY_FEATURE_RESPONSE = "SearchUsersByFeatureResponse";
+  public static final QName SEARCH_USERS_BY_FEATURE_RESPONSE =
+      QName.get(E_SEARCH_USERS_BY_FEATURE_RESPONSE, NAMESPACE);
 
   public static final String E_PRODUCT_QUERY = "productQuery";
   public static final String E_ACTION = "action";

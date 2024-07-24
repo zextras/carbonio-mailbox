@@ -13,30 +13,30 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name= AccountConstants.E_SEARCH_ENABLED_USERS_RESPONSE)
+@XmlRootElement(name= AccountConstants.E_SEARCH_USERS_BY_FEATURE_RESPONSE)
 @XmlType(propOrder = {})
-public class SearchEnabledUsersResponse {
+public class SearchUsersByFeatureResponse {
   /**
    * @zm-api-field-description Accounts matching the autocomplete request
    */
   @XmlElement(name=AccountConstants.E_ACCOUNT /* cn */, required=false)
-  private List<EnabledUserInfo> accounts = Lists.newArrayList();
+  private List<UserInfo> accounts = Lists.newArrayList();
 
-  public SearchEnabledUsersResponse() {
+  public SearchUsersByFeatureResponse() {
   }
 
-  public void setAccounts(Iterable <EnabledUserInfo> accounts) {
+  public void setAccounts(Iterable <UserInfo> accounts) {
     this.accounts.clear();
     if (accounts != null) {
       Iterables.addAll(this.accounts,accounts);
     }
   }
 
-  public void addAccount(EnabledUserInfo account) {
+  public void addAccount(UserInfo account) {
     this.accounts.add(account);
   }
 
-  public List<EnabledUserInfo> getAccounts() {
+  public List<UserInfo> getAccounts() {
     return accounts;
   }
 

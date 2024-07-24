@@ -8,12 +8,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @zm-api-command-auth-required true
- * @zm-api-command-description Search Users Enabled to a particular feature
+ * @zm-api-command-description Search Users enabled to a particular Feature
  * <br />
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name= AccountConstants.E_SEARCH_ENABLED_USERS_REQUEST)
-public class SearchEnabledUsersRequest {
+@XmlRootElement(name= AccountConstants.E_SEARCH_USERS_BY_FEATURE_REQUEST)
+public class SearchdUsersByFeatureRequest {
 
   public enum Features {
     CHATS("carbonioFeatureChatsEnabled"),
