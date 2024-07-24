@@ -56,7 +56,7 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
     options.setTypes(SearchDirectoryOptions.ObjectType.accounts);
     var domain = provisioning.getDomainById(account.getDomainId());
     options.setDomain(domain);
-    options.setSortAttr(ZAttrProvisioning.A_uid);
+    options.setSortAttr(ZAttrProvisioning.A_displayName);
     options.setSortOpt(SearchDirectoryOptions.SortOpt.SORT_ASCENDING);
     return options;
   }

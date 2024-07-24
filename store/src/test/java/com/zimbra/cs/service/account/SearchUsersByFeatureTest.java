@@ -378,9 +378,9 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
   }
 
   @Test
-  void testSortByUid() throws Exception {
-    var account1 = buildAccount("zzz.account", ACCOUNT_NAME).create();
-    var account2 = buildAccount("aaa.account", ACCOUNT_NAME).create();
+  void testSortByDisplayName() throws Exception {
+    var account1 = buildAccount("zzz.account", "AAA").create();
+    var account2 = buildAccount("aaa.account", "ZZZ").create();
 
     try {
       HttpResponse httpResponse = buildRequest()
@@ -389,8 +389,8 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
       var returnedAccounts = getResponse(httpResponse).getAccounts();
       assertEquals(2, returnedAccounts.size());
-      assertEquals("aaa.account@" + DEFAULT_DOMAIN, returnedAccounts.get(0).getName());
-      assertEquals("zzz.account@" + DEFAULT_DOMAIN, returnedAccounts.get(1).getName());
+      assertEquals("zzz.account@" + DEFAULT_DOMAIN, returnedAccounts.get(0).getName());
+      assertEquals("aaa.account@" + DEFAULT_DOMAIN, returnedAccounts.get(1).getName());
     } finally {
       cleanUp(account1);
       cleanUp(account2);
