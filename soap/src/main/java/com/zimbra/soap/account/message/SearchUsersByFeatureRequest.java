@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name= AccountConstants.E_SEARCH_USERS_BY_FEATURE_REQUEST)
-public class SearchdUsersByFeatureRequest {
+public class SearchUsersByFeatureRequest {
 
   public enum Features {
     CHATS("carbonioFeatureChatsEnabled"),

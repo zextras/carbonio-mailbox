@@ -108,7 +108,7 @@ public class AccountService implements DocumentService {
 
     // users by feature
     dispatcher.registerHandler(
-        AccountConstants.SEARCH_USERS_BY_FEATURE_REQUEST, new SearchdUsersByFeature());
+        AccountConstants.SEARCH_USERS_BY_FEATURE_REQUEST, new SearchUsersByFeature());
   }
 
   /**

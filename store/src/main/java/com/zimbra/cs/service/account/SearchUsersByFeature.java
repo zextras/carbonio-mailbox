@@ -14,7 +14,7 @@ import com.zimbra.cs.account.SearchDirectoryOptions;
 import com.zimbra.cs.ldap.ZLdapFilterFactory;
 import com.zimbra.cs.service.admin.ToXML;
 import com.zimbra.soap.ZimbraSoapContext;
-import com.zimbra.soap.account.message.SearchdUsersByFeatureRequest;
+import com.zimbra.soap.account.message.SearchUsersByFeatureRequest;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 import static com.zimbra.cs.ldap.LdapConstants.LDAP_TRUE;
 import static com.zimbra.cs.ldap.LdapConstants.LDAP_FALSE;
 
-public class SearchdUsersByFeature extends AccountDocumentHandler {
+public class SearchUsersByFeature extends AccountDocumentHandler {
 
   public static final int DEFAULT_MAX_RESULTS = 10;
 
@@ -38,7 +38,7 @@ public class SearchdUsersByFeature extends AccountDocumentHandler {
 
     String query = request.getAttribute(AccountConstants.E_NAME);
     String feature =
-        SearchdUsersByFeatureRequest.Features.valueOf(request.getAttribute(AccountConstants.E_FEATURE, "UNKNOWN")).getFeature();
+        SearchUsersByFeatureRequest.Features.valueOf(request.getAttribute(AccountConstants.E_FEATURE, "UNKNOWN")).getFeature();
 
     var provisioning = Provisioning.getInstance();
 
@@ -112,6 +112,6 @@ public class SearchdUsersByFeature extends AccountDocumentHandler {
   }
 
   private static Filter getWildcardFilter(String field, String query) {
-    return Filter.createSubstringFilter(field, null, new String[] {query}, null);
+    return Filter.createSubstringFilter(field, null, new String[] {StringUtil.isNullOrEmpty(query) ? "." : query}, null);
   }
 }
