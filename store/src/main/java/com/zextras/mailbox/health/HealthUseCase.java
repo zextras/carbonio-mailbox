@@ -18,9 +18,7 @@ public class HealthUseCase {
   }
 
   public boolean isReady() {
-    return serviceDependencies.stream()
-        .filter(dep -> dep.getType().equals(ServiceDependency.ServiceType.REQUIRED))
-        .allMatch(ServiceDependency::isReady);
+    return serviceDependencies.stream().allMatch(ServiceDependency::isReady);
   }
 
   public List<DependencyHealthResult> dependenciesHealthSummary() {
@@ -30,9 +28,7 @@ public class HealthUseCase {
   }
 
   public boolean isLive() {
-    return serviceDependencies.stream()
-        .filter(dep -> dep.getType().equals(ServiceDependency.ServiceType.REQUIRED))
-        .allMatch(ServiceDependency::isLive);
+    return serviceDependencies.stream().allMatch(ServiceDependency::isLive);
   }
 
   private DependencyHealthResult createHealthResult(ServiceDependency x) {
