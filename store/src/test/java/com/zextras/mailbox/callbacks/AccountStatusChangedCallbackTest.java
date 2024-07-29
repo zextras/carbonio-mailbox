@@ -9,9 +9,7 @@ import com.zextras.carbonio.message_broker.config.enums.Service;
 import com.zextras.carbonio.message_broker.events.services.mailbox.UserStatusChanged;
 import com.zextras.mailbox.client.ServiceDiscoverHttpClient;
 import com.zextras.mailbox.util.MailboxTestUtil;
-import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.callback.AccountStatus;
 import com.zimbra.cs.account.callback.CallbackContext;
@@ -75,7 +73,7 @@ class AccountStatusChangedCallbackTest {
       )).thenReturn(messageBrokerClient);
 
       Mockito.when(messageBrokerClient.withCurrentService(Service.MAILBOX)).thenReturn(messageBrokerClient);
-      Mockito.doNothing().when(messageBrokerClient).publish(any(UserStatusChanged.class));
+      Mockito.when(messageBrokerClient.publish(any(UserStatusChanged.class))).thenReturn(true);
 
       accountStatus.postModify(context, attrName, entry);
 

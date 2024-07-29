@@ -8,7 +8,11 @@ import com.google.inject.Provides;
 import com.google.inject.servlet.ServletModule;
 import com.zextras.mailbox.health.DatabaseServiceDependency;
 import com.zextras.mailbox.health.HealthUseCase;
+import com.zextras.mailbox.health.MessageBrokerDependency;
+import com.zextras.mailbox.health.ServiceDependency;
 import com.zimbra.cs.db.DbPool;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Singleton;
 
@@ -28,7 +32,10 @@ public class HealthServletModule extends ServletModule {
   @Provides
   @Singleton
   HealthUseCase provideHealthService(DbPool dbPool) {
-    return new HealthUseCase(
-        List.of(new DatabaseServiceDependency(dbPool, System::currentTimeMillis)));
+    List <ServiceDependency> serviceDependencies = new ArrayList<>();
+    serviceDependencies.add(new DatabaseServiceDependency(dbPool, System::currentTimeMillis));
+    serviceDependencies.add(new MessageBrokerDependency());
+
+    return new HealthUseCase(serviceDependencies);
   }
 }
