@@ -72,9 +72,8 @@ public class AccountStatus extends AttributeCallback {
                 try {
                     publishStatusChangedEvent((Account)entry);
                     handleAccountStatusClosed((Account)entry);
-                } catch (ServiceException se) {
-                    // all exceptions are already swallowed by LdapProvisioning, just to be safe here.
-                    ZimbraLog.account.warn("unable to remove account address and aliases from all DLs for closed account", se);
+                } catch (Exception e) {
+                    ZimbraLog.account.warn("Exception thrown on account status changed callback", e);
                 }
             }
         }
@@ -97,15 +96,24 @@ public class AccountStatus extends AttributeCallback {
             ServiceDiscoverHttpClient.defaultURL("carbonio-message-broker")
                 .withToken(token);
 
-        MessageBrokerClient messageBrokerClient = MessageBrokerClient.fromConfig(
-                "127.78.0.7",
-                20005,
-                serviceDiscoverHttpClient.getConfig("default/username").get(),
-                serviceDiscoverHttpClient.getConfig("default/password").get()
-            )
-            .withCurrentService(Service.MAILBOX);
+        try {
+            MessageBrokerClient messageBrokerClient = MessageBrokerClient.fromConfig(
+                    "127.78.0.7",
+                    20005,
+                    serviceDiscoverHttpClient.getConfig("default/username").get(),
+                    serviceDiscoverHttpClient.getConfig("default/password").get()
+                )
+                .withCurrentService(Service.MAILBOX);
 
-        messageBrokerClient.publish(new UserStatusChanged(userId, status.toUpperCase()));
+            boolean result = messageBrokerClient.publish(new UserStatusChanged(userId, status.toUpperCase()));
+            if (result) {
+                ZimbraLog.account.info("Published status changed event for user: " + userId);
+            } else {
+                ZimbraLog.account.error("Failed to publish status changed event for user: " + userId);
+            }
+        } catch (Exception e){
+            ZimbraLog.account.error("Exception while publishing status changed event for user: " + userId, e);
+        }
     }
 
     private void handleAccountStatusClosed(Account account)  throws ServiceException {
