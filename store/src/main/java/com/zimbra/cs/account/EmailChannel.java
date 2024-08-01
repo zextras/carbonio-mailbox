@@ -52,8 +52,12 @@ public class EmailChannel extends ChannelProvider {
     @Override
     public void sendAndStoreResetPasswordRecoveryCode(ZimbraSoapContext zsc, Account account,
             Map<String, String> recoveryCodeMap) throws ServiceException {
+        String accountTimeZone = account.getAttr(Provisioning.A_zimbraPrefTimeZoneId);
+        if (accountTimeZone == null || accountTimeZone.length() == 0) {
+            accountTimeZone = "GMT";
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT)
-                .withZone(ZoneId.of("GMT"));
+                .withZone(ZoneId.of(accountTimeZone));
         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
         Locale locale = account.getLocale();
         String displayName = account.getDisplayName();
@@ -61,7 +65,7 @@ public class EmailChannel extends ChannelProvider {
             displayName = account.getName();
         }
         long expiryLong = Long.parseLong(recoveryCodeMap.get(CodeConstants.EXPIRY_TIME.toString()));
-        ZonedDateTime mailDate = Instant.ofEpochMilli(expiryLong).atZone(ZoneId.of("GMT"));
+        ZonedDateTime mailDate = Instant.ofEpochMilli(expiryLong).atZone(ZoneId.of(accountTimeZone));
         String subject = L10nUtil.getMessage(MsgKey.sendPasswordRecoveryEmailSubject, locale, account.getDomainName());
         String charset = account.getAttr(ZAttrProvisioning.A_zimbraPrefMailDefaultCharset, MimeConstants.P_CHARSET_UTF8);
         String mimePartText = L10nUtil.getMessage(MsgKey.sendPasswordRecoveryEmailBodyText, locale, displayName,
@@ -98,10 +102,14 @@ public class EmailChannel extends ChannelProvider {
             throw ForgetPasswordException.CODE_NOT_FOUND("Verification code for recovery email address not found on server.");
         }
         String code = recoveryDataMap.get(CodeConstants.CODE.toString());
+        String accountTimeZone = account.getAttr(Provisioning.A_zimbraPrefTimeZoneId);
+        if (accountTimeZone == null || accountTimeZone.length() == 0) {
+            accountTimeZone = "GMT";
+        }
         long expiryTime = Long.parseLong(recoveryDataMap.get(CodeConstants.EXPIRY_TIME.toString()));
         if (ZimbraLog.passwordreset.isDebugEnabled()) {
             DateFormat format = new SimpleDateFormat(DATE_TIME_FORMAT);
-            format.setTimeZone(TimeZone.getTimeZone("GMT"));
+            format.setTimeZone(TimeZone.getTimeZone(accountTimeZone));
             String gmtDate = format.format(expiryTime);
             ZimbraLog.passwordreset.debug("validateCode: expiryTime for code: %s", gmtDate);
             ZimbraLog.passwordreset.debug("ValidateCode: last 3 characters of recovery code: %s", code.substring(5));
@@ -126,6 +134,10 @@ public class EmailChannel extends ChannelProvider {
     public void sendAndStoreSetRecoveryAccountCode(Account account, Mailbox mbox, Map<String, String> recoveryCodeMap,
             ZimbraSoapContext zsc, OperationContext octxt, HashMap<String, Object> prefs) throws ServiceException {
         Locale locale = account.getLocale();
+        String accountTimeZone = account.getAttr(Provisioning.A_zimbraPrefTimeZoneId);
+        if (accountTimeZone == null || accountTimeZone.length() == 0) {
+            accountTimeZone = "GMT";
+        }
         String ownerAcctDisplayName = account.getDisplayName();
         if (ownerAcctDisplayName == null) {
             ownerAcctDisplayName = account.getName();
@@ -134,7 +146,7 @@ public class EmailChannel extends ChannelProvider {
         String charset = account.getAttr(ZAttrProvisioning.A_zimbraPrefMailDefaultCharset, MimeConstants.P_CHARSET_UTF8);
         try {
             DateFormat format = new SimpleDateFormat(DATE_TIME_FORMAT);
-            format.setTimeZone(TimeZone.getTimeZone("GMT"));
+            format.setTimeZone(TimeZone.getTimeZone(accountTimeZone));
             String gmtDate = format.format(Long.valueOf(recoveryCodeMap.get(CodeConstants.EXPIRY_TIME.toString())));
             if (ZimbraLog.passwordreset.isDebugEnabled()) {
                 ZimbraLog.passwordreset.debug(
@@ -173,15 +185,19 @@ public class EmailChannel extends ChannelProvider {
             Map<String, String> recoveryCodeMap) throws ServiceException {
         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
         Locale locale = account.getLocale();
+        String accountTimeZone = account.getAttr(Provisioning.A_zimbraPrefTimeZoneId);
+        if (accountTimeZone == null || accountTimeZone.length() == 0) {
+            accountTimeZone = "GMT";
+        }
         String accountName = account.getName();
         String userDisplayName = account.getDisplayName() != null ? String.join("", " ", account.getDisplayName()) : "";
         String subject = L10nUtil.getMessage(MsgKey.sendPasswordResetEmailSubject, locale, userDisplayName);
         String charset = account.getAttr(ZAttrProvisioning.A_zimbraPrefMailDefaultCharset, MimeConstants.P_CHARSET_UTF8);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).withZone(ZoneId.of("GMT"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).withZone(ZoneId.of(accountTimeZone));
         try {
             long expiryTimeLong = Long.parseLong(
                 recoveryCodeMap.get(CodeConstants.EXPIRY_TIME.toString()));
-            ZonedDateTime expiryDate = Instant.ofEpochMilli(expiryTimeLong).atZone(ZoneId.of("GMT"));
+            ZonedDateTime expiryDate = Instant.ofEpochMilli(expiryTimeLong).atZone(ZoneId.of(accountTimeZone));
             // add a code to the URL too which can be verified later on
             recoveryCodeMap.put(CodeConstants.ACCOUNT_ID.toString(), account.getId());
 
