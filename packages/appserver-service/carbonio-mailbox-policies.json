@@ -3,6 +3,9 @@
     {
       "carbonio-mailbox/": {
         "policy": "read"
+      },
+      "carbonio-message-broker/": {
+        "policy": "read"
       }
     }
   ],

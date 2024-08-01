@@ -5,9 +5,17 @@
 
 package com.zimbra.cs.account.callback;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Set;
 
+import com.zextras.carbonio.message_broker.MessageBrokerClient;
+import com.zextras.carbonio.message_broker.config.enums.Service;
+import com.zextras.carbonio.message_broker.events.services.mailbox.UserStatusChanged;
+import com.zextras.mailbox.client.ServiceDiscoverHttpClient;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
@@ -55,7 +63,6 @@ public class AccountStatus extends AttributeCallback {
 
     @Override
     public void postModify(CallbackContext context, String attrName, Entry entry) {
-
         if (context.isDoneAndSetIfNot(AccountStatus.class)) {
             return;
         }
@@ -63,12 +70,49 @@ public class AccountStatus extends AttributeCallback {
         if (!context.isCreate()) {
             if (entry instanceof Account) {
                 try {
+                    publishStatusChangedEvent((Account)entry);
                     handleAccountStatusClosed((Account)entry);
-                } catch (ServiceException se) {
-                    // all exceptions are already swallowed by LdapProvisioning, just to be safe here.
-                    ZimbraLog.account.warn("unable to remove account address and aliases from all DLs for closed account", se);
+                } catch (Exception e) {
+                    ZimbraLog.account.warn("Exception thrown on account status changed callback", e);
                 }
             }
+        }
+    }
+
+    private void publishStatusChangedEvent(Account account) {
+        Provisioning prov = Provisioning.getInstance();
+        String status = account.getAccountStatus(prov);
+        String userId = account.getId();
+
+        Path filePath = Paths.get("/etc/carbonio/mailbox/service-discover/token");
+        String token;
+        try {
+            token = Files.readString(filePath);
+        } catch (IOException e) {
+            throw new RuntimeException("Can't read consul token from file", e);
+        }
+
+        ServiceDiscoverHttpClient serviceDiscoverHttpClient =
+            ServiceDiscoverHttpClient.defaultURL("carbonio-message-broker")
+                .withToken(token);
+
+        try {
+            MessageBrokerClient messageBrokerClient = MessageBrokerClient.fromConfig(
+                    "127.78.0.7",
+                    20005,
+                    serviceDiscoverHttpClient.getConfig("default/username").get(),
+                    serviceDiscoverHttpClient.getConfig("default/password").get()
+                )
+                .withCurrentService(Service.MAILBOX);
+
+            boolean result = messageBrokerClient.publish(new UserStatusChanged(userId, status.toUpperCase()));
+            if (result) {
+                ZimbraLog.account.info("Published status changed event for user: " + userId);
+            } else {
+                ZimbraLog.account.error("Failed to publish status changed event for user: " + userId);
+            }
+        } catch (Exception e){
+            ZimbraLog.account.error("Exception while publishing status changed event for user: " + userId, e);
         }
     }
 
