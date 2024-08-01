@@ -52,6 +52,7 @@ public class EmailChannel extends ChannelProvider {
     @Override
     public void sendAndStoreResetPasswordRecoveryCode(ZimbraSoapContext zsc, Account account,
             Map<String, String> recoveryCodeMap) throws ServiceException {
+        String requestIp = zsc.getRequestIP();
         String accountTimeZone = account.getAttr(Provisioning.A_zimbraPrefTimeZoneId);
         if (accountTimeZone == null || accountTimeZone.length() == 0) {
             accountTimeZone = "GMT";
@@ -69,9 +70,9 @@ public class EmailChannel extends ChannelProvider {
         String subject = L10nUtil.getMessage(MsgKey.sendPasswordRecoveryEmailSubject, locale, account.getDomainName());
         String charset = account.getAttr(ZAttrProvisioning.A_zimbraPrefMailDefaultCharset, MimeConstants.P_CHARSET_UTF8);
         String mimePartText = L10nUtil.getMessage(MsgKey.sendPasswordRecoveryEmailBodyText, locale, displayName,
-                recoveryCodeMap.get(CodeConstants.CODE.toString()), mailDate.format(formatter));
+                recoveryCodeMap.get(CodeConstants.CODE.toString()), mailDate.format(formatter), requestIp);
         String mimePartHtml = L10nUtil.getMessage(MsgKey.sendPasswordRecoveryEmailBodyHtml, locale, displayName,
-                recoveryCodeMap.get(CodeConstants.CODE.toString()), mailDate.format(formatter));
+                recoveryCodeMap.get(CodeConstants.CODE.toString()), mailDate.format(formatter), requestIp);
         try {
             MimeMultipart mmp = AccountUtil.generateMimeMultipart(mimePartText, mimePartHtml, null);
             MimeMessage mm = AccountUtil.generateMimeMessage(account, account, subject, charset, null, null,
@@ -134,6 +135,7 @@ public class EmailChannel extends ChannelProvider {
     public void sendAndStoreSetRecoveryAccountCode(Account account, Mailbox mbox, Map<String, String> recoveryCodeMap,
             ZimbraSoapContext zsc, OperationContext octxt, HashMap<String, Object> prefs) throws ServiceException {
         Locale locale = account.getLocale();
+        String requestIp = zsc.getRequestIP();
         String accountTimeZone = account.getAttr(Provisioning.A_zimbraPrefTimeZoneId);
         if (accountTimeZone == null || accountTimeZone.length() == 0) {
             accountTimeZone = "GMT";
@@ -158,9 +160,9 @@ public class EmailChannel extends ChannelProvider {
                         recoveryCodeMap.get(CodeConstants.CODE.toString()).substring(5));
             }
             String mimePartText = L10nUtil.getMessage(MsgKey.verifyRecoveryEmailBodyText, locale,
-                    recoveryCodeMap.get(CodeConstants.CODE.toString()), gmtDate);
+                    recoveryCodeMap.get(CodeConstants.CODE.toString()), gmtDate, requestIp);
             String mimePartHtml = L10nUtil.getMessage(MsgKey.verifyRecoveryEmailBodyHtml, locale,
-                    recoveryCodeMap.get(CodeConstants.CODE.toString()), gmtDate);
+                    recoveryCodeMap.get(CodeConstants.CODE.toString()), gmtDate, requestIp);
             MimeMultipart mmp = AccountUtil.generateMimeMultipart(mimePartText, mimePartHtml, null);
             MimeMessage mm = AccountUtil.generateMimeMessage(account, account, subject, charset, null, null,
                     recoveryCodeMap.get(CodeConstants.EMAIL.toString()), mmp);
@@ -185,6 +187,7 @@ public class EmailChannel extends ChannelProvider {
             Map<String, String> recoveryCodeMap) throws ServiceException {
         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
         Locale locale = account.getLocale();
+        String requestIp = zsc.getRequestIP();
         String accountTimeZone = account.getAttr(Provisioning.A_zimbraPrefTimeZoneId);
         if (accountTimeZone == null || accountTimeZone.length() == 0) {
             accountTimeZone = "GMT";
@@ -206,9 +209,9 @@ public class EmailChannel extends ChannelProvider {
             ZimbraLog.account.debug("Expiry of Password Reset link sent to %s is %s", recoveryCodeMap.get(CodeConstants.EMAIL.toString()), expiryDate.format(formatter));
             ZimbraLog.account.debug("Password Reset verification URL sent to %s is %s", recoveryCodeMap.get(CodeConstants.EMAIL.toString()), url);
             String mimePartText = L10nUtil.getMessage(MsgKey.sendPasswordResetEmailBodyText, locale, userDisplayName,
-                    accountName, url, expiryDate.format(formatter));
+                    accountName, url, expiryDate.format(formatter), requestIp);
             String mimePartHtml = L10nUtil.getMessage(MsgKey.sendPasswordResetEmailBodyHtml, locale, userDisplayName,
-                    accountName, url, expiryDate.format(formatter));
+                    accountName, url, expiryDate.format(formatter), requestIp);
             MimeMultipart mmp = AccountUtil.generateMimeMultipart(mimePartText, mimePartHtml, null);
             MimeMessage mm = AccountUtil.generateMimeMessage(account, account, subject, charset, null, null,
                     recoveryCodeMap.get(CodeConstants.EMAIL.toString()), mmp);
