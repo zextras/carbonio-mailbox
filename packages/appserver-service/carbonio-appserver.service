@@ -27,10 +27,11 @@ ExecStart=/opt/zextras/common/bin/java \
   -Dzimbra.config=/opt/zextras/conf/localconfig.xml \
   -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/* \
   com.zextras.mailbox.Mailbox
+LimitNOFILE=524288
 RestartSec=3
 Restart=on-failure
 SuccessExitStatus=143
-LimitNOFILE=524288
+StandardError=append:/opt/zextras/log/zmmailboxd.out
 
 [Install]
 WantedBy=carbonio-appserver.target carbonio-ce.target carbonio.target
