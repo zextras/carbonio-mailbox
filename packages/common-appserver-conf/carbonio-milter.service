@@ -17,8 +17,9 @@ ExecStart=/opt/zextras/common/lib/jvm/java/bin/java \
   -Dlog4j.configurationFile=file:/opt/zextras/conf/milter.log4j.properties \
   -Dzimbra.config=/opt/zextras/conf/localconfig.xml \
   com.zimbra.cs.milter.MilterServer
-Restart=on-failure
 LimitNOFILE=524288
+Restart=on-failure
+SuccessExitStatus=143
 
 [Install]
 WantedBy=carbonio-mta.target carbonio-ce.target carbonio.target
