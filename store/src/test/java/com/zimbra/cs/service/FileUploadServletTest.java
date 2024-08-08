@@ -18,7 +18,6 @@ import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mime.HeaderUtils.ByteBuilder;
 import com.zimbra.common.soap.AccountConstants;
-import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.CharsetUtil;
@@ -39,7 +38,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -53,18 +51,15 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.CookieStore;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.FormBodyPart;
 import org.apache.http.entity.mime.FormBodyPartBuilder;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MIME;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.util.EntityUtils;
@@ -72,7 +67,6 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,7 +82,7 @@ public class FileUploadServletTest {
   public static String content1 =
       "3 \u6708 11 \u65e5\u5348\u5f8c 2 \u6642 46"
           + " \u5206\u3054\u308d\u3001\u30de\u30b0\u30cb\u30c1\u30e5\u30fc\u30c9 9.0";
-  private static String content2 =
+  private static final String content2 =
       "\u884c\u65b9\u4e0d\u660e\u8005\u76f8\u8ac7\u30c0\u30a4\u30e4\u30eb: \u5ca9\u624b\u770c:"
           + " 0120-801-471";
   private static FileUploadServlet servlet;
@@ -453,86 +447,40 @@ public class FileUploadServletTest {
           + "Content-Disposition header with extended filename param as defined in RFC-6266")
   void handleMultipartUpload_should_parseExtendedFileNameFromContentDisposition() throws Exception {
     var authToken = AuthProvider.getAuthToken(testAccount);
-    var filePath =
-        Paths.get(
-            Objects.requireNonNull(
-                    getClass().getResource("\u0421\u043e\u0431\u044b\u0442\u0438\u044f.txt"))
-                .toURI()); // События.txt
+    var filePath = Paths.get(
+        Objects.requireNonNull(getClass().getResource("\u0421\u043e\u0431\u044b\u0442\u0438\u044f.txt")).toURI());
     var fileName = Paths.get(filePath.toUri()).getFileName().toString();
     var asciiFileName = "Events.txt";
     var asciiFileName1 = "Fruten Fraten.txt";
     var utf8EncodeFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
-    var utf8EncodeFileName1 =
-        URLEncoder.encode("Фрутен Фриат.txt", StandardCharsets.UTF_8);
+    var utf8EncodeFileName1 = URLEncoder.encode("Фрутен Фриат.txt", StandardCharsets.UTF_8);
 
     var contentDispositionForPart =
-        "form-data; name=\"file\"; filename=\""
-            + asciiFileName
-            + "\"; filename*=utf-8''"
-            + utf8EncodeFileName;
-    var part1 =
-        FormBodyPartBuilder.create()
-            .setName("file")
-            .setBody(new FileBody(filePath.toFile()))
-            .setField(MIME.CONTENT_DISPOSITION, contentDispositionForPart) // this is necessary
-            .setField(MIME.CONTENT_TYPE, ContentType.TEXT_PLAIN.toString())
-            .build();
+        "form-data; name=\"file\"; filename=\"" + asciiFileName + "\"; filename*=utf-8''" + utf8EncodeFileName;
+    var part1 = FormBodyPartBuilder.create()
+        .setName("file")
+        .setBody(new FileBody(filePath.toFile()))
+        .setField(MIME.CONTENT_DISPOSITION, contentDispositionForPart)
+        .setField(MIME.CONTENT_TYPE, ContentType.TEXT_PLAIN.toString())
+        .build();
 
     var contentDispositionForPart1 =
-        "form-data; name=\"file\"; filename=\""
-            + asciiFileName1
-            + "\"; filename*=utf-8''"
-            + utf8EncodeFileName1;
-    var part2 =
-        FormBodyPartBuilder.create()
-            .setName("file2")
-            .setBody(new FileBody(filePath.toFile()))
-            .setField(MIME.CONTENT_DISPOSITION, contentDispositionForPart1) // this is necessary
-            .setField(MIME.CONTENT_TYPE, ContentType.TEXT_PLAIN.toString())
-            .build();
+        "form-data; name=\"file\"; filename=\"" + asciiFileName1 + "\"; filename*=utf-8''" + utf8EncodeFileName1;
+    var part2 = FormBodyPartBuilder.create()
+        .setName("file2")
+        .setBody(new FileBody(filePath.toFile()))
+        .setField(MIME.CONTENT_DISPOSITION, contentDispositionForPart1)
+        .setField(MIME.CONTENT_TYPE, ContentType.TEXT_PLAIN.toString())
+        .build();
 
-    var multipartEntityBuilder = MultipartEntityBuilder.create();
-    var multipartEntity =
-        multipartEntityBuilder
-            .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
-            .addPart(part1)
-            .addPart(part2)
-            .build();
-    var httpPost =
-        new HttpPost(URI.create(server.getURI().toString() + "upload?fmt=extended,raw"));
-    httpPost.setEntity(multipartEntity);
+    var multipartEntity = MultipartEntityBuilder.create()
+        .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+        .addPart(part1)
+        .addPart(part2)
+        .build();
 
-    try (var httpClient =
-        HttpClientBuilder.create()
-            .setDefaultCookieStore(
-                createCookieStoreWithAuthToken(authToken, server.getURI().getHost(), "/"))
-            .build()) {
-      var httpResponse = httpClient.execute(httpPost);
-
-      var statusCode = httpResponse.getStatusLine().getStatusCode();
-      assertEquals(HttpStatus.SC_OK, statusCode);
-
-      var responseContent =
-          EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
-
-      var jsonArray = new JSONArray("[" + responseContent + "]");
-      assertEquals(200, jsonArray.getInt(0));
-      assertEquals("null", jsonArray.getString(1));
-
-      var responseDataArray = jsonArray.getJSONArray(2);
-      assertEquals(2, responseDataArray.length());
-
-      var firstItem = responseDataArray.getJSONObject(0);
-      assertNotNull(firstItem.getString("aid"));
-
-      var contentType = firstItem.getString("ct");
-      assertNotNull(contentType);
-      assertTrue(contentType.toLowerCase().contains("text/plain"));
-
-      var filenameInResponse = firstItem.getString("filename");
-      assertNotNull(filenameInResponse);
-      assertEquals(fileName, filenameInResponse);
-    }
+    var httpResponse = executeUploadRequest(multipartEntity, authToken);
+    validateResponse(httpResponse, HttpStatus.SC_OK, fileName);
   }
 
   @Test
@@ -541,56 +489,19 @@ public class FileUploadServletTest {
           + "MultipartEntityBuilder and charset set to UTF-8")
   void handleMultipartUpload_should_parseFileNameFromContentDisposition() throws Exception {
     var authToken = AuthProvider.getAuthToken(testAccount);
-    var filePath =
-        Paths.get(
-            Objects.requireNonNull(
-                    getClass().getResource("\u0421\u043e\u0431\u044b\u0442\u0438\u044f.txt"))
-                .toURI()); // События.txt
+    var filePath = Paths.get(
+        Objects.requireNonNull(getClass().getResource("\u0421\u043e\u0431\u044b\u0442\u0438\u044f.txt")).toURI());
     var fileName = Paths.get(filePath.toUri()).getFileName().toString();
-    var multipartEntityBuilder = MultipartEntityBuilder.create();
-    multipartEntityBuilder.setCharset(StandardCharsets.UTF_8); // this is necessary
-    var multipartEntity =
-        multipartEntityBuilder
-            .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
-            .addBinaryBody("file", filePath.toFile(), ContentType.TEXT_PLAIN, fileName)
-            .addBinaryBody("file2", filePath.toFile(), ContentType.TEXT_PLAIN, fileName)
-            .build();
 
-    var httpPost =
-        new HttpPost(URI.create(server.getURI().toString() + "upload?fmt=extended,raw"));
-    httpPost.setEntity(multipartEntity);
+    var multipartEntity = MultipartEntityBuilder.create()
+        .setCharset(StandardCharsets.UTF_8)
+        .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+        .addBinaryBody("file", filePath.toFile(), ContentType.TEXT_PLAIN, fileName)
+        .addBinaryBody("file2", filePath.toFile(), ContentType.TEXT_PLAIN, fileName)
+        .build();
 
-    try (var httpClient =
-        HttpClientBuilder.create()
-            .setDefaultCookieStore(
-                createCookieStoreWithAuthToken(authToken, server.getURI().getHost(), "/"))
-            .build()) {
-      var httpResponse = httpClient.execute(httpPost);
-
-      var statusCode = httpResponse.getStatusLine().getStatusCode();
-      assertEquals(HttpStatus.SC_OK, statusCode);
-
-      var responseContent =
-          EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
-
-      var jsonArray = new JSONArray("[" + responseContent + "]");
-      assertEquals(200, jsonArray.getInt(0));
-      assertEquals("null", jsonArray.getString(1));
-
-      var responseDataArray = jsonArray.getJSONArray(2);
-      assertEquals(2, responseDataArray.length());
-
-      var firstItem = responseDataArray.getJSONObject(0);
-      assertNotNull(firstItem.getString("aid"));
-
-      var contentType = firstItem.getString("ct");
-      assertNotNull(contentType);
-      assertTrue(contentType.toLowerCase().contains("text/plain"));
-
-      var filenameInResponse = firstItem.getString("filename");
-      assertNotNull(filenameInResponse);
-      assertEquals(fileName, filenameInResponse);
-    }
+    var httpResponse = executeUploadRequest(multipartEntity, authToken);
+    validateResponse(httpResponse, HttpStatus.SC_OK, fileName);
   }
 
   @Test
@@ -621,30 +532,7 @@ public class FileUploadServletTest {
                 createCookieStoreWithAuthToken(authToken, server.getURI().getHost(), "/"))
             .build()) {
       var httpResponse = httpClient.execute(httpPost);
-
-      var statusCode = httpResponse.getStatusLine().getStatusCode();
-      assertEquals(HttpStatus.SC_OK, statusCode);
-
-      var responseContent =
-          EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
-
-      var jsonArray = new JSONArray("[" + responseContent + "]");
-      assertEquals(200, jsonArray.getInt(0));
-      assertEquals("null", jsonArray.getString(1));
-
-      var responseDataArray = jsonArray.getJSONArray(2);
-      assertTrue(responseDataArray.length() > 0);
-
-      var firstItem = responseDataArray.getJSONObject(0);
-      assertNotNull(firstItem.getString("aid"));
-
-      var contentType = firstItem.getString("ct");
-      assertNotNull(contentType);
-      assertEquals("text/plain", contentType);
-
-      var filenameInResponse = firstItem.getString("filename");
-      assertNotNull(filenameInResponse);
-      assertEquals(fileName, filenameInResponse);
+      validateResponse(httpResponse, HttpStatus.SC_OK, fileName);
     }
   }
 
@@ -656,11 +544,10 @@ public class FileUploadServletTest {
     var asciiFileName = "Events.txt";
     var utf8EncodeFileName = URLEncoder.encode(asciiFileName, StandardCharsets.UTF_8);
 
-    var httpResponse = performUpload(authToken, fileSize, asciiFileName, utf8EncodeFileName, true);
-
+    var httpResponse = executeUploadRequestWithDummyData(authToken, fileSize, asciiFileName, utf8EncodeFileName, true);
     var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
-
     var jsonArray = new JSONArray("[" + responseContent + "]");
+
     assertEquals(200, jsonArray.getInt(0));
     assertEquals("null", jsonArray.getString(1));
 
@@ -679,14 +566,50 @@ public class FileUploadServletTest {
     var asciiFileName = "Events.txt";
     var utf8EncodeFileName = URLEncoder.encode(asciiFileName, StandardCharsets.UTF_8);
 
-    var httpResponse = performUpload(authToken, fileSize, asciiFileName, utf8EncodeFileName, false);
-
+    var httpResponse = executeUploadRequestWithDummyData(authToken, fileSize, asciiFileName, utf8EncodeFileName, false);
     var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
-
     var jsonArray = new JSONArray("[" + responseContent + "]");
+
     assertEquals(413, jsonArray.getInt(0));
     assertEquals("null", jsonArray.getString(1));
     assertFalse(responseContent.contains("aid"));
+  }
+
+  private HttpResponse executeUploadRequest(HttpEntity entity, AuthToken authToken) throws Exception {
+    var httpPost = new HttpPost(URI.create(server.getURI().toString() + "upload?fmt=extended,raw"));
+    httpPost.setEntity(entity);
+
+    try (var httpClient = HttpClientBuilder.create()
+        .setDefaultCookieStore(createCookieStoreWithAuthToken(authToken, server.getURI().getHost(), "/"))
+        .build()) {
+      return httpClient.execute(httpPost);
+    }
+  }
+
+  private void validateResponse(HttpResponse httpResponse, int expectedStatusCode, String expectedFileName)
+      throws Exception {
+    var statusCode = httpResponse.getStatusLine().getStatusCode();
+    assertEquals(expectedStatusCode, statusCode);
+
+    var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+    var jsonArray = new JSONArray("[" + responseContent + "]");
+
+    assertEquals(200, jsonArray.getInt(0));
+    assertEquals("null", jsonArray.getString(1));
+
+    var responseDataArray = jsonArray.getJSONArray(2);
+    assertTrue(responseDataArray.length() > 0);
+
+    var firstItem = responseDataArray.getJSONObject(0);
+    assertNotNull(firstItem.getString("aid"));
+
+    var contentType = firstItem.getString("ct");
+    assertNotNull(contentType);
+    assertTrue(contentType.toLowerCase().contains("text/plain"));
+
+    var filenameInResponse = firstItem.getString("filename");
+    assertNotNull(filenameInResponse);
+    assertEquals(expectedFileName, filenameInResponse);
   }
 
   private byte[] createSyntheticData(int size) {
@@ -695,8 +618,10 @@ public class FileUploadServletTest {
     return syntheticData;
   }
 
-  private HttpResponse performUpload(AuthToken authToken, int fileSize, String asciiFileName, String utf8EncodeFileName, boolean withLbfums) throws Exception {
-    var httpPost = new HttpPost(URI.create(server.getURI().toString() + "upload?fmt=extended,raw" + (withLbfums ? "&lbfums" : "")));
+  private HttpResponse executeUploadRequestWithDummyData(AuthToken authToken, int fileSize, String asciiFileName, String utf8EncodeFileName,
+      boolean withLbfums) throws Exception {
+    var httpPost = new HttpPost(
+        URI.create(server.getURI().toString() + "upload?fmt=extended,raw" + (withLbfums ? "&lbfums" : "")));
     httpPost.setEntity(new ByteArrayEntity(createSyntheticData(fileSize)));
     httpPost.setHeader(
         "Content-Disposition",
