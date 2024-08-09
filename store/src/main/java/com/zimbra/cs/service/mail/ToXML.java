@@ -163,7 +163,7 @@ public final class ToXML {
     PUT_RECIPIENTS(1),
     PUT_BOTH(2);
 
-    private int value;
+    private final int value;
 
     OutputParticipants(int value) {
       this.value = value;
@@ -1997,6 +1997,36 @@ public final class ToXML {
     }
   }
 
+  private static long getSmartLinkAwareMimeMessageSize(Message message) throws ServiceException {
+    long size = 0L;
+    int totalSmartLinks = 0;
+    long approximateSizeOfOneSmartLink = 250L;
+    try {
+        var mimeMessage = message.getMimeMessage();
+        if (mimeMessage == null) {
+          return size;
+        }
+
+        var parts = Mime.getParts(mimeMessage);
+        for (MPartInfo partInfo : parts) {
+          if (partInfo.isMultipart()) {
+            continue;
+          }
+          var part = partInfo.getMimePart();
+          var smartLinkHeader = part.getHeader(ParseMimeMessage.SMART_LINK_HEADER, null);
+          var requiresSmartLinkConversion = Boolean.parseBoolean(smartLinkHeader);
+          if (requiresSmartLinkConversion) {
+            totalSmartLinks += 1;
+          } else {
+            size += part.getSize();
+          }
+        }
+    } catch (MessagingException | IOException e) {
+      throw ServiceException.FAILURE("Failed to parse MimeMessage", e);
+    }
+    return size + (totalSmartLinks * approximateSizeOfOneSmartLink);
+  }
+
   private static Element encodeMsgCommonAndIdInfo(
       Element parent,
       ItemIdFormatter ifmt,
@@ -2511,14 +2541,30 @@ public final class ToXML {
       int fields,
       boolean serializeType)
       throws ServiceException {
+
+    if (item instanceof Message) {
+      Message msg = (Message) item;
+      try{
+        msg.getMimeMessage();
+      }catch (ServiceException e){
+        return parent;
+      }
+    }
+
     String name =
         serializeType && item instanceof Chat ? MailConstants.E_CHAT : MailConstants.E_MSG;
     Element elem = parent.addNonUniqueElement(name);
     // DO NOT encode the item-id here, as some Invite-Messages-In-CalendarItems have special
     // item-id's
     if (needToOutput(fields, Change.SIZE)) {
-      elem.addAttribute(MailConstants.A_SIZE, item.getSize());
+      if (item instanceof Message) {
+        Message msg = (Message) item;
+        elem.addAttribute(MailConstants.A_SIZE, getSmartLinkAwareMimeMessageSize(msg));
+      }else{
+        elem.addAttribute(MailConstants.A_SIZE, item.getSize());
+      }
     }
+
     if (needToOutput(fields, Change.DATE)) {
       elem.addAttribute(MailConstants.A_DATE, item.getDate());
     }
