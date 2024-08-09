@@ -109,6 +109,7 @@ public class FileUploadServletTest {
     prov.createAccount("test2@zimbra.com", "secret", attrs);
   }
 
+  @SuppressWarnings("UnusedReturnValue")
   public static ByteBuilder addFormField(ByteBuilder bb, String name, String value) {
     bb.append("--").append(boundary).append("\r\n");
     bb.append("Content-Disposition: form-data; name=\"").append(name).append("\"\r\n");
@@ -117,6 +118,7 @@ public class FileUploadServletTest {
     return bb;
   }
 
+  @SuppressWarnings("UnusedReturnValue")
   public static ByteBuilder addFormFile(
       ByteBuilder bb, String filename, String ctype, String contents) {
     bb.append("--").append(boundary).append("\r\n");
@@ -131,6 +133,7 @@ public class FileUploadServletTest {
     return bb;
   }
 
+  @SuppressWarnings("UnusedReturnValue")
   public static ByteBuilder endForm(ByteBuilder bb) {
     return bb.append("--").append(boundary).append("--\r\n");
   }
@@ -195,6 +198,7 @@ public class FileUploadServletTest {
 
     var uploads = uploadForm(bb.toByteArray());
     assertEquals(2, uploads == null ? 0 : uploads.size());
+    assertNotNull(uploads);
     compareUploads(uploads.get(0), filename1, content1.getBytes(CharsetUtil.UTF_8));
     compareUploads(uploads.get(1), filename2, content2.getBytes(CharsetUtil.UTF_8));
   }
@@ -214,6 +218,7 @@ public class FileUploadServletTest {
 
     var uploads = uploadForm(bb.toByteArray());
     assertEquals(2, uploads == null ? 0 : uploads.size());
+    assertNotNull(uploads);
     compareUploads(uploads.get(0), filename1, content1.getBytes(CharsetUtil.UTF_8));
     compareUploads(uploads.get(1), filename2, content2.getBytes(CharsetUtil.UTF_8));
   }
@@ -232,6 +237,7 @@ public class FileUploadServletTest {
 
     var uploads = uploadForm(bb.toByteArray());
     assertEquals(2, uploads == null ? 0 : uploads.size());
+    assertNotNull(uploads);
     compareUploads(uploads.get(0), filename1, content1.getBytes(CharsetUtil.UTF_8));
     compareUploads(uploads.get(1), filename2, content2.getBytes(CharsetUtil.UTF_8));
   }
@@ -251,6 +257,7 @@ public class FileUploadServletTest {
 
     var uploads = uploadForm(bb.toByteArray());
     assertEquals(2, uploads == null ? 0 : uploads.size());
+    assertNotNull(uploads);
     compareUploads(uploads.get(0), "x", content1.getBytes(CharsetUtil.UTF_8));
     compareUploads(uploads.get(1), "y", content2.getBytes(CharsetUtil.UTF_8));
   }
@@ -430,6 +437,7 @@ public class FileUploadServletTest {
     assertTrue(respStrg.contains("200"));
   }
 
+  @SuppressWarnings("SameParameterValue")
   private CookieStore createCookieStoreWithAuthToken(
       AuthToken authToken, String domain, String path) throws AuthTokenException {
     CookieStore cookieStore = new BasicCookieStore();
@@ -586,6 +594,7 @@ public class FileUploadServletTest {
     }
   }
 
+  @SuppressWarnings("SameParameterValue")
   private void validateResponse(HttpResponse httpResponse, int expectedStatusCode, String expectedFileName)
       throws Exception {
     var statusCode = httpResponse.getStatusLine().getStatusCode();
