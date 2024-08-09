@@ -287,6 +287,12 @@ public class FileUploadServlet extends ZimbraServlet {
     }
   }
 
+  public static Upload saveUploadForSmartLink(
+      InputStream is, String filename, String contentType, String accountId)
+      throws ServiceException, IOException {
+    return saveUpload(is, filename, contentType, accountId, true);
+  }
+
   public static Upload saveUpload(
       InputStream is, String filename, String contentType, String accountId)
       throws ServiceException, IOException {
