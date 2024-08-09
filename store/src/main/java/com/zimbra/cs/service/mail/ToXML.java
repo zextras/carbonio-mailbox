@@ -2542,13 +2542,8 @@ public final class ToXML {
       boolean serializeType)
       throws ServiceException {
 
-    if (item instanceof Message) {
-      Message msg = (Message) item;
-      try{
-        msg.getMimeMessage();
-      }catch (ServiceException e){
-        return parent;
-      }
+    if (item instanceof Message && isMimeMessageInvalid((Message) item)) {
+      return parent;
     }
 
     String name =
@@ -2600,6 +2595,15 @@ public final class ToXML {
       elem.addAttribute(MailConstants.A_IMAP_UID, item.getImapUid());
     }
     return elem;
+  }
+
+  private static boolean isMimeMessageInvalid(Message msg) {
+    try {
+      msg.getMimeMessage();
+      return false;
+    } catch (ServiceException e) {
+      return true;
+    }
   }
 
   private static void encodeTimeZoneMap(Element parent, TimeZoneMap tzmap) {
@@ -2881,7 +2885,7 @@ public final class ToXML {
     return Collections.unmodifiableList(xprops);
   }
 
-  /** Use {@link jaxbXProps} where possible instead of this */
+  /** Use {@link ToXML#jaxbXProps} where possible instead of this */
   public static void encodeXProps(Element parent, Iterator<ZProperty> xpropsIterator) {
     while (xpropsIterator.hasNext()) {
       ZProperty xprop = xpropsIterator.next();
