@@ -759,8 +759,14 @@ public final class ParseMimeMessage {
     // bug 70015: two concurrent SaveDrafts each reference the same attachment in the original draft
     //   -- avoid race condition by copying attached part to FileUploadServlet, so
     //      deleting original blob doesn't lead to stale BlobInputStream references
-    Upload up = FileUploadServlet.saveUpload(mp.getInputStream(), filename, contentType,
-        DocumentHandler.getRequestedAccount(ctxt.getZsc()).getId());
+    Upload up;
+    if(requiresSmartLinkConversion){
+      up = FileUploadServlet.saveUploadForSmartLink(mp.getInputStream(), filename, contentType,
+          DocumentHandler.getRequestedAccount(ctxt.getZsc()).getId());
+    }else{
+      up = FileUploadServlet.saveUpload(mp.getInputStream(), filename, contentType,
+          DocumentHandler.getRequestedAccount(ctxt.getZsc()).getId());
+    }
     ctxt.getOut().addFetch(up);
     String[] contentDesc = mp.getHeader("Content-Description");
     attachUpload(mmp, up, contentID, ctxt, null,
