@@ -10150,4 +10150,10 @@ TODO: delete them permanently from here
   <desc>Whether OTP management (creation, listing and deletion) is enabled for account or COS</desc>
 </attr>
 
+<attr id="3145" name="carbonioFeatureWscEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="24.9.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
+  <desc>Whether the WS-Collaboration feature enabled for account or COS</desc>
+</attr>
+
 </attrs>
