@@ -18,6 +18,7 @@ public class SearchUsersByFeatureRequest {
 
   public enum Features {
     CHATS(ZAttrProvisioning.A_carbonioFeatureChatsEnabled),
+    WSC(ZAttrProvisioning.A_carbonioFeatureWscEnabled),
     UNKNOWN("");
 
     private final String feature;
