@@ -10,6 +10,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.io.Closeables;
+import com.zextras.mailbox.smartlinks.SmartLinkUtils;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.calendar.CalendarUtil;
 import com.zimbra.common.calendar.Geo;
@@ -163,7 +164,7 @@ public final class ToXML {
     PUT_RECIPIENTS(1),
     PUT_BOTH(2);
 
-    private int value;
+    private final int value;
 
     OutputParticipants(int value) {
       this.value = value;
@@ -1997,6 +1998,8 @@ public final class ToXML {
     }
   }
 
+
+
   private static Element encodeMsgCommonAndIdInfo(
       Element parent,
       ItemIdFormatter ifmt,
@@ -2511,14 +2514,25 @@ public final class ToXML {
       int fields,
       boolean serializeType)
       throws ServiceException {
+
+    if (item instanceof Message && isMimeMessageInvalid((Message) item)) {
+      return parent;
+    }
+
     String name =
         serializeType && item instanceof Chat ? MailConstants.E_CHAT : MailConstants.E_MSG;
     Element elem = parent.addNonUniqueElement(name);
     // DO NOT encode the item-id here, as some Invite-Messages-In-CalendarItems have special
     // item-id's
     if (needToOutput(fields, Change.SIZE)) {
-      elem.addAttribute(MailConstants.A_SIZE, item.getSize());
+      if (item instanceof Message) {
+        Message msg = (Message) item;
+        elem.addAttribute(MailConstants.A_SIZE, SmartLinkUtils.getSmartLinkAwareMimeMessageSize(msg));
+      }else{
+        elem.addAttribute(MailConstants.A_SIZE, item.getSize());
+      }
     }
+
     if (needToOutput(fields, Change.DATE)) {
       elem.addAttribute(MailConstants.A_DATE, item.getDate());
     }
@@ -2554,6 +2568,15 @@ public final class ToXML {
       elem.addAttribute(MailConstants.A_IMAP_UID, item.getImapUid());
     }
     return elem;
+  }
+
+  private static boolean isMimeMessageInvalid(Message msg) {
+    try {
+      msg.getMimeMessage();
+      return false;
+    } catch (ServiceException e) {
+      return true;
+    }
   }
 
   private static void encodeTimeZoneMap(Element parent, TimeZoneMap tzmap) {
@@ -2835,7 +2858,7 @@ public final class ToXML {
     return Collections.unmodifiableList(xprops);
   }
 
-  /** Use {@link jaxbXProps} where possible instead of this */
+  /** Use {@link ToXML#jaxbXProps} where possible instead of this */
   public static void encodeXProps(Element parent, Iterator<ZProperty> xpropsIterator) {
     while (xpropsIterator.hasNext()) {
       ZProperty xprop = xpropsIterator.next();
