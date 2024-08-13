@@ -2966,6 +2966,14 @@ public class ZAttrProvisioning {
     public static final String A_carbonioFeatureTeamEnabled = "carbonioFeatureTeamEnabled";
 
     /**
+     * Whether the WS-Collaboration feature enabled for account or COS
+     *
+     * @since ZCS 24.9.0
+     */
+    @ZAttr(id=3145)
+    public static final String A_carbonioFeatureWscEnabled = "carbonioFeatureWscEnabled";
+
+    /**
      * Logo URL for domain
      *
      * @since ZCS 23.2.0
