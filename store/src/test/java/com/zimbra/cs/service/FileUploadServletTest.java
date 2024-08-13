@@ -10,7 +10,9 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.Maps;
 import com.zimbra.common.account.Key;
@@ -47,9 +49,10 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
@@ -488,7 +491,7 @@ public class FileUploadServletTest {
         .build();
 
     var httpResponse = executeUploadRequest(multipartEntity, authToken);
-    validateResponse(httpResponse, HttpStatus.SC_OK, fileName);
+    validateResponse(httpResponse, HttpServletResponse.SC_OK, fileName);
   }
 
   @Test
@@ -509,7 +512,7 @@ public class FileUploadServletTest {
         .build();
 
     var httpResponse = executeUploadRequest(multipartEntity, authToken);
-    validateResponse(httpResponse, HttpStatus.SC_OK, fileName);
+    validateResponse(httpResponse, HttpServletResponse.SC_OK, fileName);
   }
 
   @Test
@@ -540,7 +543,7 @@ public class FileUploadServletTest {
                 createCookieStoreWithAuthToken(authToken, server.getURI().getHost(), "/"))
             .build()) {
       var httpResponse = httpClient.execute(httpPost);
-      validateResponse(httpResponse, HttpStatus.SC_OK, fileName);
+      validateResponse(httpResponse, HttpServletResponse.SC_OK, fileName);
     }
   }
 
@@ -556,7 +559,7 @@ public class FileUploadServletTest {
     var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
     var jsonArray = new JSONArray("[" + responseContent + "]");
 
-    assertEquals(200, jsonArray.getInt(0));
+    assertEquals(HttpServletResponse.SC_OK, jsonArray.getInt(0));
     assertEquals("null", jsonArray.getString(1));
 
     var responseDataArray = jsonArray.getJSONArray(2);
@@ -578,7 +581,7 @@ public class FileUploadServletTest {
     var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
     var jsonArray = new JSONArray("[" + responseContent + "]");
 
-    assertEquals(413, jsonArray.getInt(0));
+    assertEquals(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, jsonArray.getInt(0));
     assertEquals("null", jsonArray.getString(1));
     assertFalse(responseContent.contains("aid"));
   }
@@ -594,6 +597,38 @@ public class FileUploadServletTest {
     }
   }
 
+  @SuppressWarnings("ConstantConditions")
+  @Test
+  void getFileItemsFromMultipartUploadRequest_should_throw_exception_when_account_is_null() {
+    var mockRequest = mock(HttpServletRequest.class);
+    var mockResponse = mock(HttpServletResponse.class);
+
+    var format = "extended";
+    Account mockAccount = null; // simulate null account
+    var mockAuthToken = mock(AuthToken.class);
+    var limitByFileUploadMaxSize = true;
+    var csrfCheckComplete = false;
+
+    assertThrows(NullPointerException.class, () -> servlet.getFileItemsFromMultipartUploadRequest(
+        mockRequest, mockResponse, format, mockAccount,
+        limitByFileUploadMaxSize, mockAuthToken, csrfCheckComplete), "Account must not be null");
+  }
+
+  @SuppressWarnings("ConstantConditions")
+  @Test
+  void handlePlainUpload_should_throw_exception_when_account_is_null() {
+    var mockRequest = mock(HttpServletRequest.class);
+    var mockResponse = mock(HttpServletResponse.class);
+
+    var format = "extended";
+    Account mockAccount = null; // simulate null account
+    var limitByFileUploadMaxSize = true;
+
+    assertThrows(NullPointerException.class, () -> servlet.handlePlainUpload(
+        mockRequest, mockResponse, format, mockAccount,
+        limitByFileUploadMaxSize), "Account must not be null");
+  }
+
   @SuppressWarnings("SameParameterValue")
   private void validateResponse(HttpResponse httpResponse, int expectedStatusCode, String expectedFileName)
       throws Exception {
@@ -603,7 +638,7 @@ public class FileUploadServletTest {
     var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
     var jsonArray = new JSONArray("[" + responseContent + "]");
 
-    assertEquals(200, jsonArray.getInt(0));
+    assertEquals(HttpServletResponse.SC_OK, jsonArray.getInt(0));
     assertEquals("null", jsonArray.getString(1));
 
     var responseDataArray = jsonArray.getJSONArray(2);
