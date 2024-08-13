@@ -121,11 +121,11 @@ public class FileUploadServlet extends ZimbraServlet {
    * @throws ServiceException if the upload id is malformed.
    */
   static String getUploadServerId(String uploadId) throws ServiceException {
-    String[] parts = uploadId.split(UPLOAD_PART_DELIMITER);
-    if (parts.length != 2) {
+    if (uploadId == null || uploadId.split(UPLOAD_PART_DELIMITER).length != 2) {
       throw ServiceException.INVALID_REQUEST("invalid upload ID: " + uploadId, null);
     }
-    return parts[0];
+
+    return uploadId.split(UPLOAD_PART_DELIMITER)[0];
   }
 
   /**
