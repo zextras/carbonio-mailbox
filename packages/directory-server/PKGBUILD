@@ -18,9 +18,6 @@ depends=(
   "carbonio-core"
   "carbonio-prometheus-openldap-exporter"
 )
-makedepends=(
-  "rsync"
-)
 
 package() {
   cd "${srcdir}"/../../staging
@@ -83,7 +80,7 @@ postinst__apt() {
 
   chown -R root:root /opt/zextras/common/etc/openldap
 
-  if [ "$1" = "configure" ] && [ ! -z "$2" ]; then
+  if [ "$1" = "configure" ] && [ -n "$2" ]; then
     echo "* Starting LDAP upgrade..."
 
     su - zextras -c "/opt/zextras/libexec/ldapmoduleconfupdate"
@@ -92,6 +89,45 @@ postinst__apt() {
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
     su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
     su - zextras -c "/opt/zextras/bin/ldap restart"
+  fi
+}
+
+postinst__ubuntu_noble() {
+  mkdir -p /opt/zextras/data/ldap/state/run
+  mkdir -p /opt/zextras/data/ldap/config
+  mkdir -p /opt/zextras/data/ldap/mdb/db
+  chown -R zextras:zextras /opt/zextras/data/ldap
+
+  chown -R root:root /opt/zextras/common/etc/openldap
+
+  if [ "$1" = "configure" ] && [ -n "$2" ]; then
+    if [ -d /run/systemd/system ]; then
+      systemctl daemon-reload >/dev/null 2>&1 || :
+      systemctl stop carbonio-openldap.service >/dev/null 2>&1 || :
+    fi
+  fi
+
+  if [ "$1" = "configure" ] && [ -n "$2" ]; then
+    echo "* Starting LDAP upgrade..."
+
+    su - zextras -c "/opt/zextras/libexec/ldapmoduleconfupdate"
+    su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
+    # zmldapupdateldif restart slapd out of systemd domain...
+    su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
+    su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
+    # ... for this reason a forced kill is needed
+    kill "$(pidof /opt/zextras/common/libexec/slapd)"
+  fi
+
+  if [ "$1" = "configure" ] && [ -n "$2" ]; then
+    if [ -d /run/systemd/system ]; then
+      systemctl start carbonio-openldap.service >/dev/null 2>&1 || :
+    fi
+  fi
+
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+    systemctl enable carbonio-directory-server.target >/dev/null 2>&1 || :
   fi
 }
 
@@ -135,7 +171,7 @@ postinst__rocky_9() {
 
     su - zextras -c "/opt/zextras/libexec/ldapmoduleconfupdate"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
-    # zmldapupdateldif restart slapd out of systemdd domain...
+    # zmldapupdateldif restart slapd out of systemd domain...
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
     su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
     # ... for this reason a forced kill is needed
@@ -154,9 +190,21 @@ postinst__rocky_9() {
   fi
 }
 
+prerm__ubuntu_noble() {
+  if [ -d /run/systemd/system ]; then
+    systemctl --no-reload disable --now carbonio-directory-server.target >/dev/null 2>&1 || :
+  fi
+}
+
 prerm__rocky_9() {
   if [ -d /run/systemd/system ]; then
     systemctl --no-reload disable --now carbonio-directory-server.target >/dev/null 2>&1 || :
+  fi
+}
+
+postrm__ubuntu_noble() {
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
   fi
 }
 
