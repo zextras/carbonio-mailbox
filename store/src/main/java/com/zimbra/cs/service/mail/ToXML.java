@@ -10,6 +10,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.io.Closeables;
+import com.zextras.mailbox.smartlinks.SmartLinkUtils;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.calendar.CalendarUtil;
 import com.zimbra.common.calendar.Geo;
@@ -1997,35 +1998,7 @@ public final class ToXML {
     }
   }
 
-  private static long getSmartLinkAwareMimeMessageSize(Message message) throws ServiceException {
-    long size = 0L;
-    int totalSmartLinks = 0;
-    long approximateSizeOfOneSmartLink = 250L;
-    try {
-        var mimeMessage = message.getMimeMessage();
-        if (mimeMessage == null) {
-          return size;
-        }
 
-        var parts = Mime.getParts(mimeMessage);
-        for (MPartInfo partInfo : parts) {
-          if (partInfo.isMultipart()) {
-            continue;
-          }
-          var part = partInfo.getMimePart();
-          var smartLinkHeader = part.getHeader(ParseMimeMessage.SMART_LINK_HEADER, null);
-          var requiresSmartLinkConversion = Boolean.parseBoolean(smartLinkHeader);
-          if (requiresSmartLinkConversion) {
-            totalSmartLinks += 1;
-          } else {
-            size += part.getSize();
-          }
-        }
-    } catch (MessagingException | IOException e) {
-      throw ServiceException.FAILURE("Failed to parse MimeMessage", e);
-    }
-    return size + (totalSmartLinks * approximateSizeOfOneSmartLink);
-  }
 
   private static Element encodeMsgCommonAndIdInfo(
       Element parent,
@@ -2554,7 +2527,7 @@ public final class ToXML {
     if (needToOutput(fields, Change.SIZE)) {
       if (item instanceof Message) {
         Message msg = (Message) item;
-        elem.addAttribute(MailConstants.A_SIZE, getSmartLinkAwareMimeMessageSize(msg));
+        elem.addAttribute(MailConstants.A_SIZE, SmartLinkUtils.getSmartLinkAwareMimeMessageSize(msg));
       }else{
         elem.addAttribute(MailConstants.A_SIZE, item.getSize());
       }

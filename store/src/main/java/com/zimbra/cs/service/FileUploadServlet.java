@@ -108,7 +108,7 @@ public class FileUploadServlet extends ZimbraServlet {
   private static final String UPLOAD_PART_DELIMITER = ":";
 
   /** Purge uploads once every minute. */
-  private static final long REAPER_INTERVAL_MSEC = 1L * Constants.MILLIS_PER_MINUTE;
+  private static final long REAPER_INTERVAL_MSEC = Constants.MILLIS_PER_MINUTE;
 
   static Map<String, String> mProxiedUploadIds = MapUtil.newLruMap(100);
   static Log mLog = LogFactory.getLog(FileUploadServlet.class);
