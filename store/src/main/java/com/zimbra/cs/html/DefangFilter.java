@@ -8,6 +8,7 @@ package com.zimbra.cs.html;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.zimbra.common.localconfig.DebugConfig;
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.servlet.ZThreadLocal;
@@ -773,7 +774,8 @@ public class DefangFilter extends DefaultFilter {
 
   public static String sanitize(String result, boolean isAllowedScript) {
     result = removeAnySpacesAndEncodedChars(result);
-    if (!(IMG_SKIP_OWASPSANITIZE.matcher(result).find())) {
+    boolean isOwaspEnabled = LC.zimbra_use_owasp_html_sanitizer.booleanValue();
+    if (!(IMG_SKIP_OWASPSANITIZE.matcher(result).find()) && isOwaspEnabled) {
       result = sanitizer.sanitize(result);
     }
     result = AV_JS_ENTITY.matcher(result).replaceAll("JS-ENTITY-BLOCKED");
