@@ -1,5 +1,6 @@
 package com.zimbra.soap.account.message;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.soap.AccountConstants;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -16,7 +17,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class SearchUsersByFeatureRequest {
 
   public enum Features {
-    CHATS("carbonioFeatureChatsEnabled"),
+    CHATS(ZAttrProvisioning.A_carbonioFeatureChatsEnabled),
+    WSC(ZAttrProvisioning.A_carbonioFeatureWscEnabled),
     UNKNOWN("");
 
     private final String feature;
