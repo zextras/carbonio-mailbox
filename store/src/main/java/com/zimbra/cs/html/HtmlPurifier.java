@@ -13,6 +13,7 @@ import org.owasp.html.PolicyFactory;
 import org.owasp.html.Sanitizers;
 
 import com.zimbra.common.localconfig.DebugConfig;
+import com.zimbra.common.localconfig.LC;
 
 
 /**
@@ -36,19 +37,18 @@ public class HtmlPurifier extends Purifier {
     protected XMLString purifyText(XMLString text) {
         String temp = text.toString();
 
+        boolean isOwaspEnabled = LC.zimbra_use_owasp_html_sanitizer.booleanValue();
 
-        if (IMG_SKIP_OWASPSANITIZE.matcher(temp).find()) {
-            return text;
-        }
-
-
-        if (VALID_IMG_TAG.matcher(temp).find()) {
-            temp = sanitizer.sanitize(temp);
-        }
-
-
-        if (VALID_ONLOAD_METHOD.matcher(temp).find()) {
-            temp = sanitizer.sanitize(temp);
+        if (isOwaspEnabled) {
+            if (IMG_SKIP_OWASPSANITIZE.matcher(temp).find()) {
+                return text;
+            }
+            if (VALID_IMG_TAG.matcher(temp).find()) {
+                temp = sanitizer.sanitize(temp);
+            }
+            if (VALID_ONLOAD_METHOD.matcher(temp).find()) {
+                temp = sanitizer.sanitize(temp);
+            }
         }
 
         XMLString n = new XMLString();
