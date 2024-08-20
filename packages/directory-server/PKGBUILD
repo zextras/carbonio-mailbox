@@ -55,6 +55,12 @@ package() {
     "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-stats.service"
 }
 
+preinst() {
+  if [ "$1" = "upgrade" ] && [ -n "$2" ]; then
+    su - zextras -c "/opt/zextras/bin/ldap start"
+  fi
+}
+
 postinst__apt() {
   mkdir -p /opt/zextras/data/ldap/state/run
   mkdir -p /opt/zextras/data/ldap/config
