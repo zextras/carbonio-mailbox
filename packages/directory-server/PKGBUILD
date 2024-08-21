@@ -66,7 +66,7 @@ package() {
 
 preinst__apt() {
   if [ "$1" = "upgrade" ] && [ -n "$2" ]; then
-    su - zextras -c "/opt/zextras/bin/ldap start"
+     su - zextras -c "/opt/zextras/bin/ldap start || true"
   fi
 }
 postinst__apt() {
@@ -90,7 +90,7 @@ postinst__apt() {
 
 preinst__ubuntu_noble() {
   if [ "$1" = "upgrade" ] && [ -n "$2" ]; then
-    su - zextras -c "/opt/zextras/bin/ldap start"
+    su - zextras -c "/opt/zextras/bin/ldap start || true"
   fi
 }
 postinst__ubuntu_noble() {
@@ -132,7 +132,7 @@ postinst__ubuntu_noble() {
 
 preinst__rocky_8() {
   if [ "$1" -eq 2 ]; then
-    su - zextras -c "/opt/zextras/bin/ldap start"
+    su - zextras -c "/opt/zextras/bin/ldap start || true"
   fi
 }
 postinst__rocky_8() {
@@ -156,7 +156,7 @@ postinst__rocky_8() {
 
 preinst__rocky_9() {
   if [ "$1" -eq 2 ]; then
-    su - zextras -c "/opt/zextras/bin/ldap start"
+    su - zextras -c "/opt/zextras/bin/ldap start || true"
   fi
 }
 postinst__rocky_9() {
