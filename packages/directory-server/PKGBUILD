@@ -64,12 +64,11 @@ package() {
     "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-stats.service"
 }
 
-preinst() {
+preinst__apt() {
   if [ "$1" = "upgrade" ] && [ -n "$2" ]; then
     su - zextras -c "/opt/zextras/bin/ldap start"
   fi
 }
-
 postinst__apt() {
   mkdir -p /opt/zextras/data/ldap/state/run
   mkdir -p /opt/zextras/data/ldap/config
@@ -89,6 +88,11 @@ postinst__apt() {
   fi
 }
 
+preinst__ubuntu_noble() {
+  if [ "$1" = "upgrade" ] && [ -n "$2" ]; then
+    su - zextras -c "/opt/zextras/bin/ldap start"
+  fi
+}
 postinst__ubuntu_noble() {
   mkdir -p /opt/zextras/data/ldap/state/run
   mkdir -p /opt/zextras/data/ldap/config
@@ -126,6 +130,11 @@ postinst__ubuntu_noble() {
   fi
 }
 
+preinst__rocky_8() {
+  if [ "$1" -eq 2 ]; then
+    su - zextras -c "/opt/zextras/bin/ldap start"
+  fi
+}
 postinst__rocky_8() {
   mkdir -p /opt/zextras/data/ldap/state/run
   mkdir -p /opt/zextras/data/ldap/config
@@ -145,6 +154,11 @@ postinst__rocky_8() {
   fi
 }
 
+preinst__rocky_9() {
+  if [ "$1" -eq 2 ]; then
+    su - zextras -c "/opt/zextras/bin/ldap start"
+  fi
+}
 postinst__rocky_9() {
   mkdir -p /opt/zextras/data/ldap/state/run
   mkdir -p /opt/zextras/data/ldap/config
