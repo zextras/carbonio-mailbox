@@ -43,8 +43,8 @@ package() {
   rsync -a store/ldap/src/migrations/ "${pkgdir}/opt/zextras/libexec/scripts/LDAP/migrations/"
   install -D store/ldap/src/LdapMigrationUtils.pm \
     "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/LdapMigrationUtils.pm"
-  install -D store/ldap/src/LdapPreSchemaMigrationRunner.pl \
-    "${pkgdir}/opt/zextras/libexec/scripts/LDAP/LdapPreSchemaMigrationRunner.pl"
+  install -D store/ldap/src/LdapPreFlight.pl \
+    "${pkgdir}/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
 
   # schema
   install -Ddm755 store/ldap/generated/ \
@@ -79,7 +79,7 @@ postinst__apt() {
 
   if [ "$1" = "configure" ] && [ -n "$2" ]; then
     echo "* Starting LDAP upgrade..."
-    su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreSchemaMigrationRunner.pl"
+    su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
     su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
@@ -110,7 +110,7 @@ postinst__ubuntu_noble() {
 
   if [ "$1" = "configure" ] && [ -n "$2" ]; then
     echo "* Starting LDAP upgrade..."
-    su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreSchemaMigrationRunner.pl"
+    su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
     su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
@@ -145,7 +145,7 @@ postinst__rocky_8() {
 
   if [ "$1" -eq 2 ]; then
     echo "* Starting LDAP upgrade..."
-    su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreSchemaMigrationRunner.pl"
+    su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
     su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
@@ -176,7 +176,7 @@ postinst__rocky_9() {
 
   if [ "$1" -eq 2 ]; then
     echo "* Starting LDAP upgrade..."
-    su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreSchemaMigrationRunner.pl"
+    su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
     su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     # zmldapupdateldif restart slapd out of systemd domain...

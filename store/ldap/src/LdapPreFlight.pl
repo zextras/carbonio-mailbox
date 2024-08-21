@@ -11,7 +11,7 @@ use Zextras::LdapMigrationUtils;
 
 Zextras::LdapMigrationUtils::ensure_zextras_user();
 
-my $scenario = 'pre_schema_migrations';
+my $scenario = 'pre_flight';
 
 my $migration_dir = "/opt/zextras/libexec/scripts/LDAP/migrations/$scenario/";
 my $track_file = "/opt/zextras/log/ldap_${scenario}_tracker.txt";

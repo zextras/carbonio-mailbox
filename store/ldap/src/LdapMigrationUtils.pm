@@ -115,8 +115,6 @@ sub write_applied_migration {
 sub apply_migration_scripts {
     my ($dir, $applied_migrations, $track_file) = @_;
 
-    my $all_success = 1;
-
     find(sub {
         return unless -f $_ && /\.pl$/;
 
@@ -124,29 +122,25 @@ sub apply_migration_scripts {
 
         my $script_name = (File::Spec->splitpath($script))[-1];
         if ($applied_migrations->{$script_name}) {
-            print "** Skipping already applied migration: $script\n";
             return;
         }
 
-        print "** Applying migration $script\n";
+        print "** Applying changes from $script...\n";
 
         my $output = `perl "$script" 2>&1`;
         if ($?) {
-            print "** Error applying migration script $script: $output\n";
-            $all_success = 0;
+            print " * Error applying changes from $script: $output\n";
+            exit(1);
         } else {
-            print "\t$output\n";
-            print "** Applied migration $script successfully.\n\n";
+            $output =~ s/^\s+|\s+$//g;
+            if ($output) {
+                print "\t$output\n";
+            }
+            print " * done.\n\n";
 
             write_applied_migration($script_name, $track_file);
         }
     }, $dir);
-
-    if ($all_success) {
-        print "** All migrations applied successfully.\n";
-    } else {
-        print "** Some migrations failed. Check the logs for details.\n";
-    }
 }
 
 1;
