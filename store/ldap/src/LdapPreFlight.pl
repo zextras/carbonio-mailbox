@@ -11,11 +11,33 @@ use Zextras::LdapMigrationUtils;
 
 Zextras::LdapMigrationUtils::ensure_zextras_user();
 
-my $scenario = 'pre_flight';
+sub apply_scripts {
+    my ($base_dir, @scripts) = @_;
 
-my $migration_dir = "/opt/zextras/libexec/scripts/LDAP/migrations/$scenario/";
-my $track_file = "/opt/zextras/log/ldap_${scenario}_tracker.txt";
+    foreach my $script (@scripts) {
+        my $script_path = $base_dir . "/" . $script;
+        print "** Applying changes from $script_path...\n";
 
-my %applied_migrations = Zextras::LdapMigrationUtils::read_applied_migrations($track_file);
+        my $output = `$script_path 2>&1`;
+        if ($?) {
+            print " * Error applying changes from $script_path: $output\n";
+            exit(1);
+        }
+        else {
+            $output =~ s/^\s+|\s+$//g;
+            if ($output) {
+                print "\t$output\n";
+            }
+            print " * done.\n\n";
+        }
+    }
+}
 
-Zextras::LdapMigrationUtils::apply_migration_scripts($migration_dir, \%applied_migrations, $track_file);
+my $base_dir = "/opt/zextras/libexec/scripts/LDAP/migrations/pre_flight/";
+
+my @scripts = (
+    "01_olcPidFile_path_update.pl",
+    "02_ldap_module_conf_update.sh"
+);
+
+apply_scripts($base_dir, @scripts);
