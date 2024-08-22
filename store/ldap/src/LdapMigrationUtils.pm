@@ -116,7 +116,7 @@ sub apply_migration_scripts {
     my ($dir, $applied_migrations, $track_file) = @_;
 
     find(sub {
-        return unless -f $_ && /\.pl$/;
+        return unless -f $_;
 
         my $script = $File::Find::name;
 
@@ -127,7 +127,7 @@ sub apply_migration_scripts {
 
         print "** Applying changes from $script...\n";
 
-        my $output = `perl "$script" 2>&1`;
+        my $output = `$script 2>&1`;
         if ($?) {
             print " * Error applying changes from $script: $output\n";
             exit(1);

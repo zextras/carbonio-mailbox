@@ -41,6 +41,7 @@ package() {
   # migrations
   mkdir -p "${pkgdir}/opt/zextras/libexec/scripts/LDAP/migrations/"
   rsync -a store/ldap/src/migrations/ "${pkgdir}/opt/zextras/libexec/scripts/LDAP/migrations/"
+  chmod -R +x "${pkgdir}/opt/zextras/libexec/scripts/LDAP/migrations/"
   install -D store/ldap/src/LdapMigrationUtils.pm \
     "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/LdapMigrationUtils.pm"
   install -D store/ldap/src/LdapPreFlight.pl \
