@@ -70,6 +70,7 @@ preinst__apt() {
      su - zextras -c "/opt/zextras/bin/ldap start || true"
   fi
 }
+
 postinst__apt() {
   mkdir -p /opt/zextras/data/ldap/state/run
   mkdir -p /opt/zextras/data/ldap/config
@@ -91,7 +92,9 @@ postinst__apt() {
 
 preinst__ubuntu_noble() {
   if [ "$1" = "upgrade" ] && [ -n "$2" ]; then
-    su - zextras -c "/opt/zextras/bin/ldap start || true"
+    if [ -d /run/systemd/system ]; then
+      systemctl start carbonio-openldap.service >/dev/null 2>&1 || :
+    fi
   fi
 }
 postinst__ubuntu_noble() {
@@ -103,20 +106,18 @@ postinst__ubuntu_noble() {
   chown -R root:root /opt/zextras/common/etc/openldap
 
   if [ "$1" = "configure" ] && [ -n "$2" ]; then
+    echo "* Starting LDAP upgrade..."
+    su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
     if [ -d /run/systemd/system ]; then
       systemctl daemon-reload >/dev/null 2>&1 || :
       systemctl stop carbonio-openldap.service >/dev/null 2>&1 || :
     fi
-  fi
-
-  if [ "$1" = "configure" ] && [ -n "$2" ]; then
-    echo "* Starting LDAP upgrade..."
-    su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
-    su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
+    # zmldapupdateldif restart slapd out of systemd domain...
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
     su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
-    su - zextras -c "/opt/zextras/bin/ldap restart"
+    # ... for this reason a forced kill is needed
+    kill "$(pidof /opt/zextras/common/libexec/slapd)"
   fi
 
   if [ "$1" = "configure" ] && [ -n "$2" ]; then
@@ -157,7 +158,9 @@ postinst__rocky_8() {
 
 preinst__rocky_9() {
   if [ "$1" -eq 2 ]; then
-    su - zextras -c "/opt/zextras/bin/ldap start || true"
+    if [ -d /run/systemd/system ]; then
+      systemctl start carbonio-openldap.service >/dev/null 2>&1 || :
+    fi
   fi
 }
 postinst__rocky_9() {
@@ -169,16 +172,12 @@ postinst__rocky_9() {
   chown -R root:root /opt/zextras/common/etc/openldap
 
   if [ "$1" -eq 2 ]; then
+    echo "* Starting LDAP upgrade..."
+    su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
     if [ -d /run/systemd/system ]; then
       systemctl daemon-reload >/dev/null 2>&1 || :
       systemctl stop carbonio-openldap.service >/dev/null 2>&1 || :
     fi
-  fi
-
-  if [ "$1" -eq 2 ]; then
-    echo "* Starting LDAP upgrade..."
-    su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
-    su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     # zmldapupdateldif restart slapd out of systemd domain...
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
