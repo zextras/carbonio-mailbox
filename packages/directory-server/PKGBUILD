@@ -37,29 +37,17 @@ package() {
     "${pkgdir}/opt/zextras/conf/externaldirsync/novellGroupWise.xml"
   install -D store/ldap/conf/externaldirsync/openldap.xml \
     "${pkgdir}/opt/zextras/conf/externaldirsync/openldap.xml"
-  install -D store/ldap/src/migrations/migrate20110615-AddDynlist.pl \
-    "${pkgdir}/opt/zextras/libexec/scripts/migrate20110615-AddDynlist.pl"
-  install -D store/ldap/src/migrations/migrate20110721-AddUnique.pl \
-    "${pkgdir}/opt/zextras/libexec/scripts/migrate20110721-AddUnique.pl"
-  install -D store/ldap/src/migrations/migrate20111019-UniqueZimbraId.pl \
-    "${pkgdir}/opt/zextras/libexec/scripts/migrate20111019-UniqueZimbraId.pl"
-  install -D store/ldap/src/migrations/migrate20120210-AddSearchNoOp.pl \
-    "${pkgdir}/opt/zextras/libexec/scripts/migrate20120210-AddSearchNoOp.pl"
-  install -D store/ldap/src/migrations/migrate20120507-UniqueDKIMSelector.pl \
-    "${pkgdir}/opt/zextras/libexec/scripts/migrate20120507-UniqueDKIMSelector.pl"
-  install -D store/ldap/src/migrations/migrate20140728-AddSSHA512.pl \
-    "${pkgdir}/opt/zextras/libexec/scripts/migrate20140728-AddSSHA512.pl"
-  install -D store/ldap/src/migrations/migrate20141022-AddTLSBits.pl \
-    "${pkgdir}/opt/zextras/libexec/scripts/migrate20141022-AddTLSBits.pl"
-  install -D store/ldap/src/migrations/migrate20150930-AddSyncpovSessionlog.pl \
-    "${pkgdir}/opt/zextras/libexec/scripts/migrate20150930-AddSyncpovSessionlog.pl"
-  install -D store/ldap/src/migrations/migrate20230217-AddArgon2.pl \
-    "${pkgdir}/opt/zextras/libexec/scripts/migrate20230217-AddArgon2.pl"
-  install -D store/ldap/src/migrations/migrate-23.5.0-01-COS-AddFeatures.pl \
-    "${pkgdir}/opt/zextras/libexec/scripts/migrate-23.5.0-01-COS-AddFeatures.pl"
-  install -D store/ldap/src/migrations/migrate20240716-UpdatePidFilePath.pl \
-    "${pkgdir}/opt/zextras/libexec/scripts/migrate20240716-UpdatePidFilePath.pl"
 
+  # migrations
+  mkdir -p "${pkgdir}/opt/zextras/libexec/scripts/LDAP/migrations/"
+  rsync -a store/ldap/src/migrations/ "${pkgdir}/opt/zextras/libexec/scripts/LDAP/migrations/"
+  chmod -R +x "${pkgdir}/opt/zextras/libexec/scripts/LDAP/migrations/"
+  install -D store/ldap/src/LdapMigrationUtils.pm \
+    "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/LdapMigrationUtils.pm"
+  install -D store/ldap/src/LdapPreFlight.pl \
+    "${pkgdir}/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
+
+  # schema
   install -Ddm755 store/ldap/generated/ \
     "${pkgdir}/opt/zextras/common/etc/openldap/zimbra/"
   rsync -a store/ldap/generated/ "${pkgdir}/opt/zextras/common/etc/openldap/zimbra/"
@@ -77,6 +65,12 @@ package() {
     "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-stats.service"
 }
 
+preinst__apt() {
+  if [ "$1" = "upgrade" ] && [ -n "$2" ]; then
+     su - zextras -c "/opt/zextras/bin/ldap start || true"
+  fi
+}
+
 postinst__apt() {
   mkdir -p /opt/zextras/data/ldap/state/run
   mkdir -p /opt/zextras/data/ldap/config
@@ -87,12 +81,7 @@ postinst__apt() {
 
   if [ "$1" = "configure" ] && [ -n "$2" ]; then
     echo "* Starting LDAP upgrade..."
-
-    # this script will start LDAP to perform migration
-    su - zextras -c "/opt/zextras/libexec/scripts/migrate20240716-UpdatePidFilePath.pl"
-    # we need to stop LDAP to make sure the schema changes are loaded on next start this
-    # ensures zmldapupdateldif and ldapattributeupdate work
-    su - zextras -c "/opt/zextras/libexec/ldapmoduleconfupdate"
+    su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
     su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
@@ -101,6 +90,13 @@ postinst__apt() {
   fi
 }
 
+preinst__ubuntu_noble() {
+  if [ "$1" = "upgrade" ] && [ -n "$2" ]; then
+    if [ -d /run/systemd/system ]; then
+      systemctl start carbonio-openldap.service >/dev/null 2>&1 || :
+    fi
+  fi
+}
 postinst__ubuntu_noble() {
   mkdir -p /opt/zextras/data/ldap/state/run
   mkdir -p /opt/zextras/data/ldap/config
@@ -110,25 +106,18 @@ postinst__ubuntu_noble() {
   chown -R root:root /opt/zextras/common/etc/openldap
 
   if [ "$1" = "configure" ] && [ -n "$2" ]; then
+    echo "* Starting LDAP upgrade..."
+    su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
     if [ -d /run/systemd/system ]; then
       systemctl daemon-reload >/dev/null 2>&1 || :
       systemctl stop carbonio-openldap.service >/dev/null 2>&1 || :
     fi
-  fi
-
-  if [ "$1" = "configure" ] && [ -n "$2" ]; then
-    echo "* Starting LDAP upgrade..."
-
-    # this script will start LDAP to perform migration
-    su - zextras -c "/opt/zextras/libexec/scripts/migrate20240716-UpdatePidFilePath.pl"
-    # we need to stop LDAP to make sure the schema changes are loaded on next start this
-    # ensures zmldapupdateldif and ldapattributeupdate work
-    su - zextras -c "/opt/zextras/libexec/ldapmoduleconfupdate"
-    su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
+    # zmldapupdateldif restart slapd out of systemd domain...
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
     su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
-    su - zextras -c "/opt/zextras/bin/ldap restart"
+    # ... for this reason a forced kill is needed
+    kill "$(pidof /opt/zextras/common/libexec/slapd)"
   fi
 
   if [ "$1" = "configure" ] && [ -n "$2" ]; then
@@ -143,6 +132,11 @@ postinst__ubuntu_noble() {
   fi
 }
 
+preinst__rocky_8() {
+  if [ "$1" -eq 2 ]; then
+    su - zextras -c "/opt/zextras/bin/ldap start || true"
+  fi
+}
 postinst__rocky_8() {
   mkdir -p /opt/zextras/data/ldap/state/run
   mkdir -p /opt/zextras/data/ldap/config
@@ -153,12 +147,7 @@ postinst__rocky_8() {
 
   if [ "$1" -eq 2 ]; then
     echo "* Starting LDAP upgrade..."
-
-    # this script will start LDAP to perform migration
-    su - zextras -c "/opt/zextras/libexec/scripts/migrate20240716-UpdatePidFilePath.pl"
-    # we need to stop LDAP to make sure the schema changes are loaded on next start this
-    # ensures zmldapupdateldif and ldapattributeupdate work
-    su - zextras -c "/opt/zextras/libexec/ldapmoduleconfupdate"
+    su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
     su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
@@ -167,6 +156,13 @@ postinst__rocky_8() {
   fi
 }
 
+preinst__rocky_9() {
+  if [ "$1" -eq 2 ]; then
+    if [ -d /run/systemd/system ]; then
+      systemctl start carbonio-openldap.service >/dev/null 2>&1 || :
+    fi
+  fi
+}
 postinst__rocky_9() {
   mkdir -p /opt/zextras/data/ldap/state/run
   mkdir -p /opt/zextras/data/ldap/config
@@ -176,21 +172,12 @@ postinst__rocky_9() {
   chown -R root:root /opt/zextras/common/etc/openldap
 
   if [ "$1" -eq 2 ]; then
+    echo "* Starting LDAP upgrade..."
+    su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
     if [ -d /run/systemd/system ]; then
       systemctl daemon-reload >/dev/null 2>&1 || :
       systemctl stop carbonio-openldap.service >/dev/null 2>&1 || :
     fi
-  fi
-
-  if [ "$1" -eq 2 ]; then
-    echo "* Starting LDAP upgrade..."
-
-    # this script will start LDAP to perform migration
-    su - zextras -c "/opt/zextras/libexec/scripts/migrate20240716-UpdatePidFilePath.pl"
-    # we need to stop LDAP to make sure the schema changes are loaded on next start this
-    # ensures zmldapupdateldif and ldapattributeupdate work
-    su - zextras -c "/opt/zextras/libexec/ldapmoduleconfupdate"
-    su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     # zmldapupdateldif restart slapd out of systemd domain...
     su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
