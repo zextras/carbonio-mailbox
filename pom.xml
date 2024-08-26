@@ -817,7 +817,7 @@
     <log4j.version>2.20.0</log4j.version>
     <dom4j.version>2.1.4</dom4j.version>
     <hsqldb.version>2.2.9</hsqldb.version>
-    <mockito.version>4.4.0</mockito.version>
+    <mockito.version>5.2.0</mockito.version>
     <unboundid-ldapsdk.version>2.3.5</unboundid-ldapsdk.version>
     <jsr305.version>3.0.2</jsr305.version>
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>

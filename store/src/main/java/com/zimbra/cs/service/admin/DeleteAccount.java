@@ -95,7 +95,7 @@ public class DeleteAccount extends AdminDocumentHandler {
      * so mail delivery and any user action is blocked.
      */
     deleteUserUseCase.delete(account.getId());
-    publishAccountDeletedEvent(account);
+    //publishAccountDeletedEvent(account);
 
     ZimbraLog.security.info(
         ZimbraLog.encodeAttrs(
