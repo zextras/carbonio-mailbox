@@ -124,9 +124,9 @@ public class MessageCache {
     }
 
     /** Returns a JavaMail {@link javax.mail.internet.MimeMessage}
-     *  encapsulating the message content.  If possible, TNEF and uuencoded
+     *  encapsulating the message content.  If possible, uuencoded
      *  attachments are expanded and their components are presented as
-     *  standard MIME attachments.  If TNEF or uuencode decoding fails, the
+     *  standard MIME attachments.  If uuencode decoding fails, the
      *  MimeMessage wraps the raw message content.
      *
      * @return A MimeMessage wrapping the RFC822 content of the Message.
@@ -135,7 +135,6 @@ public class MessageCache {
      *                          or when the file does not exist.
      * @see #getRawContent()
      * @see #getItemContent()
-     * @see com.zimbra.cs.mime.TnefConverter
      * @see com.zimbra.cs.mime.UUEncodeConverter */
     static MimeMessage getMimeMessage(MailItem item, boolean expand) throws ServiceException {
         String digest = item.getDigest();

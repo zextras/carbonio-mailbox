@@ -26,10 +26,11 @@ def buildDebPackages(String flavor) {
 }
 
 def getPackages() {
-    return ["carbonio-appserver-conf","carbonio-appserver-db", "carbonio-appserver-service",
-            "carbonio-appserver-store-libs", "carbonio-appserver-war", "carbonio-common-appserver-conf",
-            "carbonio-common-appserver-native-lib", "carbonio-common-core-jar",
-            "carbonio-common-core-libs", "carbonio-directory-server"]
+    return ["carbonio-appserver-conf","carbonio-appserver-db",
+            "carbonio-appserver-service", "carbonio-common-appserver-conf",
+            "carbonio-common-appserver-native-lib", "carbonio-directory-server",
+            "carbonio-mailbox-jar"
+    ]
 }
 def getRpmSpec(String upstream, String version) {
     packages = getPackages()
@@ -103,12 +104,19 @@ pipeline {
         stage('Build') {
             steps {
                 mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
-
                 sh 'mkdir staging'
-
-                sh 'cp -r store* milter* native client common packages soap carbonio-jetty-libs staging'
+                sh 'cp -r store* milter* native client common packages soap jython-libs carbonio-jetty-libs staging'
+                script {
+                    if (BRANCH_NAME == 'devel') {
+                        def packages = getPackages()
+                        def timestamp = new Date().format('yyyyMMddHHmmss')
+                        packages.each { packageName ->
+                            def cleanPackageName = packageName.replaceFirst(/^carbonio-/, '')
+                            sh "sed -i \"s!pkgrel=.*!pkgrel=${timestamp}!\" staging/packages/${cleanPackageName}/PKGBUILD"
+                        }
+                    }
+                }
                 stash includes: 'staging/**', name: 'staging'
-
             }
         }
         stage('UT & IT') {
@@ -131,17 +139,6 @@ pipeline {
             }
             steps {
                 mvnCmd("$BUILD_PROPERTIES_PARAMS test -Dgroups=api")
-            }
-        }
-        stage('Publish Coverage') {
-            when {
-                expression {
-                    params.SKIP_TEST_WITH_COVERAGE == false
-                }
-            }
-            steps {
-                recordCoverage(tools: [[parser: 'JACOCO']],sourceCodeRetention: 'MODIFIED')
-                junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
             }
         }
 
@@ -212,6 +209,21 @@ pipeline {
                                 }
                             }
                         }
+                        stage('Ubuntu 24.04') {
+                            agent {
+                                node {
+                                    label 'yap-agent-ubuntu-24.04-v2'
+                                }
+                            }
+                            steps {
+                                buildDebPackages("ubuntu-noble")
+                            }
+                            post {
+                                always {
+                                    archiveArtifacts artifacts: 'artifacts/*.deb', fingerprint: true
+                                }
+                            }
+                        }
                         stage('Rocky 8') {
                             agent {
                                 node {
@@ -255,6 +267,7 @@ pipeline {
             steps {
                 unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-ubuntu-jammy'
+                unstash 'artifacts-ubuntu-noble'
                 unstash 'artifacts-rocky-8'
                 unstash 'artifacts-rocky-9'
 
@@ -273,6 +286,11 @@ pipeline {
                             "pattern": "artifacts/*jammy*.deb",
                             "target": "ubuntu-devel/pool/",
                             "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
+                        },
+                        {
+                            "pattern": "artifacts/*noble*.deb",
+                            "target": "ubuntu-devel/pool/",
+                            "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64"
                         },''' + getRpmSpec("centos8-devel", "8") + ''',''' + getRpmSpec("rhel9-devel", "9") + '''
                         ]
                     }'''
@@ -291,6 +309,7 @@ pipeline {
             steps {
                 unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-ubuntu-jammy'
+                unstash 'artifacts-ubuntu-noble'
                 unstash 'artifacts-rocky-8'
                 unstash 'artifacts-rocky-9'
 
@@ -310,6 +329,11 @@ pipeline {
                             "target": "ubuntu-playground/pool/",
                             "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
                         },
+                        {
+                            "pattern": "artifacts/*noble*.deb",
+                            "target": "ubuntu-playground/pool/",
+                            "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64"
+                        },
                         ''' + getRpmSpec("centos8-playground", "8") + ''',''' + getRpmSpec("rhel9-playground", "9") + ''']
                     }'''
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
@@ -326,6 +350,7 @@ pipeline {
             steps {
                 unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-ubuntu-jammy'
+                unstash 'artifacts-ubuntu-noble'
                 unstash 'artifacts-rocky-8'
                 unstash 'artifacts-rocky-9'
 
@@ -348,6 +373,11 @@ pipeline {
                             "pattern": "artifacts/*jammy*.deb",
                             "target": "ubuntu-rc/pool/",
                             "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
+                        },
+                        {
+                            "pattern": "artifacts/*noble*.deb",
+                            "target": "ubuntu-rc/pool/",
+                            "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64"
                         }]
                         }'''
                     server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false

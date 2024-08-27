@@ -463,6 +463,83 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
+     * Whether OTP management (creation, listing and deletion) is enabled for
+     * account or COS
+     *
+     * @return carbonioFeatureOTPMgmtEnabled, or true if unset
+     *
+     * @since ZCS 24.9.0
+     */
+    @ZAttr(id=3144)
+    public boolean isCarbonioFeatureOTPMgmtEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_carbonioFeatureOTPMgmtEnabled, true, true);
+    }
+
+    /**
+     * Whether OTP management (creation, listing and deletion) is enabled for
+     * account or COS
+     *
+     * @param carbonioFeatureOTPMgmtEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 24.9.0
+     */
+    @ZAttr(id=3144)
+    public void setCarbonioFeatureOTPMgmtEnabled(boolean carbonioFeatureOTPMgmtEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioFeatureOTPMgmtEnabled, carbonioFeatureOTPMgmtEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether OTP management (creation, listing and deletion) is enabled for
+     * account or COS
+     *
+     * @param carbonioFeatureOTPMgmtEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 24.9.0
+     */
+    @ZAttr(id=3144)
+    public Map<String,Object> setCarbonioFeatureOTPMgmtEnabled(boolean carbonioFeatureOTPMgmtEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioFeatureOTPMgmtEnabled, carbonioFeatureOTPMgmtEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether OTP management (creation, listing and deletion) is enabled for
+     * account or COS
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 24.9.0
+     */
+    @ZAttr(id=3144)
+    public void unsetCarbonioFeatureOTPMgmtEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioFeatureOTPMgmtEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether OTP management (creation, listing and deletion) is enabled for
+     * account or COS
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 24.9.0
+     */
+    @ZAttr(id=3144)
+    public Map<String,Object> unsetCarbonioFeatureOTPMgmtEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioFeatureOTPMgmtEnabled, "");
+        return attrs;
+    }
+
+    /**
      * Whether the Team feature enabled for account or COS
      *
      * @return carbonioFeatureTeamEnabled, or false if unset
@@ -531,6 +608,78 @@ public abstract class ZAttrCos extends NamedEntry {
     public Map<String,Object> unsetCarbonioFeatureTeamEnabled(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_carbonioFeatureTeamEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Whether the WS-Collaboration feature enabled for account or COS
+     *
+     * @return carbonioFeatureWscEnabled, or false if unset
+     *
+     * @since ZCS 24.9.0
+     */
+    @ZAttr(id=3145)
+    public boolean isCarbonioFeatureWscEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_carbonioFeatureWscEnabled, false, true);
+    }
+
+    /**
+     * Whether the WS-Collaboration feature enabled for account or COS
+     *
+     * @param carbonioFeatureWscEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 24.9.0
+     */
+    @ZAttr(id=3145)
+    public void setCarbonioFeatureWscEnabled(boolean carbonioFeatureWscEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioFeatureWscEnabled, carbonioFeatureWscEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether the WS-Collaboration feature enabled for account or COS
+     *
+     * @param carbonioFeatureWscEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 24.9.0
+     */
+    @ZAttr(id=3145)
+    public Map<String,Object> setCarbonioFeatureWscEnabled(boolean carbonioFeatureWscEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioFeatureWscEnabled, carbonioFeatureWscEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether the WS-Collaboration feature enabled for account or COS
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 24.9.0
+     */
+    @ZAttr(id=3145)
+    public void unsetCarbonioFeatureWscEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioFeatureWscEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether the WS-Collaboration feature enabled for account or COS
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 24.9.0
+     */
+    @ZAttr(id=3145)
+    public Map<String,Object> unsetCarbonioFeatureWscEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioFeatureWscEnabled, "");
         return attrs;
     }
 

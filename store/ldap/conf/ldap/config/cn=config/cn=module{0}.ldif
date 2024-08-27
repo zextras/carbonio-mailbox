@@ -10,7 +10,7 @@ olcModuleLoad: {4}dynlist.la
 olcModuleLoad: {5}unique.la
 olcModuleLoad: {6}noopsrch.la
 olcModuleLoad: {7}pw-sha2.la
-olcModuleLoad: {8}pw-argon2.la
+olcModuleLoad: {8}argon2
 structuralObjectClass: olcModuleList
 entryUUID: 1525c980-333e-102d-86f6-d562901af228
 creatorsName: cn=config

@@ -1,0 +1,33 @@
+pkgname="carbonio-mailbox-jar"
+pkgver="4.17.0"
+pkgrel="1"
+pkgdesc="Carbonio Mailbox Jars"
+arch=('x86_64')
+maintainer="Zextras <packages@zextras.com>"
+copyright=(
+  "2022-2024, Zextras <https://www.zextras.com>"
+)
+license=(
+  "GPL-2.0-only"
+)
+url="https://github.com/zextras"
+makedepends=(
+  "unzip"
+)
+section="mail"
+priority="optional"
+
+package() {
+  cd "${srcdir}"/../../staging
+
+  install -D store/target/zm-store.jar \
+    "${pkgdir}/opt/zextras/mailbox/jars/mailbox.jar"
+
+  install -D store/target/dependencies/*.jar \
+     "${pkgdir}/opt/zextras/mailbox/jars/"
+
+  install -Ddm755 "${pkgdir}/opt/zextras/jython/jars/"
+
+  install -D jython-libs/target/dependencies/*.jar \
+    "${pkgdir}/opt/zextras/jython/jars/"
+}

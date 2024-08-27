@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-
 <!--
-Copyright (C) 2004, 2005, 2006, 2007, 2008, 2009, 2010 Zimbra, Inc.
-SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
-
-SPDX-License-Identifier: GPL-2.0-only
--->
+  ~ SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
+  ~
+  ~ SPDX-License-Identifier: AGPL-3.0-only
+  -->
 
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-    version="3.0">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+  version="3.0">
 
   <display-name>Carbonio SOAP Service</display-name>
   <description>SOAP Service</description>
@@ -29,6 +27,7 @@ SPDX-License-Identifier: GPL-2.0-only
   <listener>
     <listener-class>com.zextras.mailbox.servlet.GuiceMailboxServletConfig</listener-class>
   </listener>
+
   <filter>
     <filter-name>DoSFilter</filter-name>
     <filter-class>com.zimbra.cs.servlet.DoSFilter</filter-class>
@@ -36,12 +35,12 @@ SPDX-License-Identifier: GPL-2.0-only
 
     <init-param>
       <param-name>delayMs</param-name>
-      <param-value>-1</param-value>
+      <param-value>%%zimbraHttpDosFilterDelayMillis%%</param-value>
     </init-param>
 
     <init-param>
       <param-name>maxRequestsPerSec</param-name>
-      <param-value>30</param-value>
+      <param-value>%%zimbraHttpDosFilterMaxRequestsPerSec%%</param-value>
     </init-param>
 
     <init-param>
@@ -92,7 +91,7 @@ SPDX-License-Identifier: GPL-2.0-only
     </init-param>
     <init-param>
       <param-name>Rules</param-name>
-      <param-value>/service:max=10%, /soap:max=40%, /zimbra:max=40%</param-value>
+      <param-value>%%list VAR:zimbraHttpContextPathBasedThreadPoolBalancingFilterRules , %%</param-value>
     </init-param>
   </filter>
 
@@ -208,8 +207,14 @@ SPDX-License-Identifier: GPL-2.0-only
     <load-on-startup>2</load-on-startup>
     <init-param>
       <param-name>allowed.ports</param-name>
-      <param-value>80, 443, 7070, 7071, 7072, 7443</param-value>
+      <param-value>%%zimbraMailPort%%, %%zimbraMailSSLPort%%, %%zimbraAdminPort%%, 7070, 7072, 7443</param-value>
     </init-param>
+    <multipart-config>
+      <location>/opt/zextras/data/tmp</location>
+      <max-file-size>%%zimbraFileUploadMaxSize%%</max-file-size>
+      <max-request-size>%%zimbraMailContentMaxSize%%</max-request-size>
+      <file-size-threshold>%%zimbraFileUploadMaxSize%%</file-size-threshold>
+    </multipart-config>
   </servlet>
 
   <servlet>
@@ -218,7 +223,7 @@ SPDX-License-Identifier: GPL-2.0-only
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
-      <param-value>80, 443, 7070, 7443</param-value>
+      <param-value>%%zimbraMailPort%%, %%zimbraMailSSLPort%%, 7070, 7443</param-value>
     </init-param>
     <!-- User command handlers only -->
     <init-param>
@@ -238,7 +243,7 @@ SPDX-License-Identifier: GPL-2.0-only
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
-      <param-value>7071, 7073</param-value>
+      <param-value>%%zimbraAdminPort%%, %%zimbraMtaAuthPort%%, 7071, 7073</param-value>
     </init-param>
     <!-- Admin servlet allows both admin and user commands -->
     <init-param>
@@ -262,7 +267,7 @@ SPDX-License-Identifier: GPL-2.0-only
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
-      <param-value>80, 443, 7070, 7443, 7071</param-value>
+      <param-value>%%zimbraMailPort%%, %%zimbraMailSSLPort%%, %%zimbraAdminPort%%, 7070, 7443, 7071</param-value>
     </init-param>
   </servlet>
 
@@ -272,7 +277,7 @@ SPDX-License-Identifier: GPL-2.0-only
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
-      <param-value>80, 443, 7070, 7443, 7071</param-value>
+      <param-value>%%zimbraMailPort%%, %%zimbraMailSSLPort%%, %%zimbraAdminPort%%, 7070, 7443, 7071</param-value>
     </init-param>
     <init-param>
       <param-name>errorpage.attachment.blocked</param-name>
@@ -282,12 +287,23 @@ SPDX-License-Identifier: GPL-2.0-only
   </servlet>
 
   <servlet>
+    <servlet-name>PreviewServlet</servlet-name>
+    <servlet-class>com.zimbra.cs.service.PreviewServlet</servlet-class>
+    <async-supported>true</async-supported>
+    <init-param>
+      <param-name>allowed.ports</param-name>
+      <param-value>%%zimbraMailPort%%, %%zimbraMailSSLPort%%, %%zimbraAdminPort%%, 7070, 7443, 7071</param-value>
+    </init-param>
+    <load-on-startup>13</load-on-startup>
+  </servlet>
+
+  <servlet>
     <servlet-name>UserServlet</servlet-name>
     <servlet-class>com.zimbra.cs.service.UserServlet</servlet-class>
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
-      <param-value>80, 443, 7070, 7443, 7071</param-value>
+      <param-value>%%zimbraMailPort%%, %%zimbraMailSSLPort%%, %%zimbraAdminPort%%, 7070, 7443, 7071</param-value>
     </init-param>
     <init-param>
       <param-name>errorpage.attachment.blocked</param-name>
@@ -302,7 +318,7 @@ SPDX-License-Identifier: GPL-2.0-only
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
-      <param-value>80, 443, 7070, 7443, 7071</param-value>
+      <param-value>%%zimbraMailPort%%, %%zimbraMailSSLPort%%, %%zimbraAdminPort%%, 7070, 7443, 7071</param-value>
     </init-param>
     <load-on-startup>5</load-on-startup>
   </servlet>
@@ -313,18 +329,19 @@ SPDX-License-Identifier: GPL-2.0-only
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
-      <param-value>80, 443, 7070, 7443, 7071</param-value>
+      <param-value>%%zimbraMailPort%%, %%zimbraMailSSLPort%%, %%zimbraAdminPort%%, 7070, 7443, 7071</param-value>
     </init-param>
     <load-on-startup>5</load-on-startup>
   </servlet>
 
+  <!-- HTTPSCLIENTCERTBEGIN %%uncomment VAR:zimbraMailSSLClientCertPort,-->,0%%
   <servlet>
     <servlet-name>CertAuthServlet</servlet-name>
     <servlet-class>com.zimbra.cs.service.CertAuthServlet</servlet-class>
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
-      <param-value>9443</param-value>
+      <param-value>%%zimbraMailSSLClientCertPort%%, 9443</param-value>
     </init-param>
     <init-param>
       <param-name>errorpage.forbidden</param-name>
@@ -332,6 +349,7 @@ SPDX-License-Identifier: GPL-2.0-only
     </init-param>
     <load-on-startup>5</load-on-startup>
   </servlet>
+  %%uncomment VAR:zimbraMailSSLClientCertPort,<!--,0%% HTTPSCLIENTCERTEND -->
 
   <servlet>
     <servlet-name>SpnegoAuthServlet</servlet-name>
@@ -339,7 +357,7 @@ SPDX-License-Identifier: GPL-2.0-only
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
-      <param-value>80, 443, 7070, 7443, 7071</param-value>
+      <param-value>%%zimbraMailPort%%, %%zimbraMailSSLPort%%, %%zimbraAdminPort%%, 7070, 7443, 7071</param-value>
     </init-param>
     <load-on-startup>5</load-on-startup>
   </servlet>
@@ -350,7 +368,7 @@ SPDX-License-Identifier: GPL-2.0-only
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
-      <param-value>80, 443, 7070, 7443, 7071</param-value>
+      <param-value>%%zimbraMailPort%%, %%zimbraMailSSLPort%%, %%zimbraAdminPort%%, 7070, 7443, 7071</param-value>
     </init-param>
     <load-on-startup>5</load-on-startup>
   </servlet>
@@ -361,7 +379,7 @@ SPDX-License-Identifier: GPL-2.0-only
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
-      <param-value>80, 443, 7070, 7443, 7071</param-value>
+      <param-value>%%zimbraMailPort%%, %%zimbraMailSSLPort%%, %%zimbraAdminPort%%, 7070, 7443, 7071</param-value>
     </init-param>
     <load-on-startup>6</load-on-startup>
   </servlet>
@@ -372,7 +390,7 @@ SPDX-License-Identifier: GPL-2.0-only
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
-      <param-value>7071</param-value>
+      <param-value>%%zimbraAdminPort%%, 7071</param-value>
     </init-param>
     <load-on-startup>7</load-on-startup>
   </servlet>
@@ -383,7 +401,7 @@ SPDX-License-Identifier: GPL-2.0-only
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
-      <param-value>443, 7070, 7071, 7443</param-value>
+      <param-value>%%zimbraMailPort%%, %%zimbraMailSSLPort%%, 7070</param-value>
     </init-param>
     <load-on-startup>9</load-on-startup>
   </servlet>
@@ -394,7 +412,7 @@ SPDX-License-Identifier: GPL-2.0-only
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
-      <param-value>443, 7070, 7071, 7443</param-value>
+      <param-value>%%zimbraMailPort%%, %%zimbraMailSSLPort%%, 7070</param-value>
     </init-param>
     <load-on-startup>9</load-on-startup>
   </servlet>
@@ -405,7 +423,7 @@ SPDX-License-Identifier: GPL-2.0-only
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
-      <param-value>7071</param-value>
+      <param-value>%%zimbraAdminPort%%, 7071</param-value>
     </init-param>
   </servlet>
 
@@ -415,7 +433,7 @@ SPDX-License-Identifier: GPL-2.0-only
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
-      <param-value>7071</param-value>
+      <param-value>%%zimbraAdminPort%%, 7071</param-value>
     </init-param>
   </servlet>
 
@@ -432,7 +450,7 @@ SPDX-License-Identifier: GPL-2.0-only
     <async-supported>true</async-supported>
     <init-param>
       <param-name>allowed.ports</param-name>
-      <param-value>80, 443, 7070, 7071, 7443</param-value>
+      <param-value>%%zimbraMailPort%%, %%zimbraMailSSLPort%%, %%zimbraAdminPort%%, 7070, 7443</param-value>
     </init-param>
     <load-on-startup>12</load-on-startup>
   </servlet>
@@ -460,6 +478,11 @@ SPDX-License-Identifier: GPL-2.0-only
   <servlet-mapping>
     <servlet-name>ContentServlet</servlet-name>
     <url-pattern>/content/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>PreviewServlet</servlet-name>
+    <url-pattern>/preview/*</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
@@ -492,6 +515,7 @@ SPDX-License-Identifier: GPL-2.0-only
     <url-pattern>/extuserprov/*</url-pattern>
   </servlet-mapping>
 
+  <!-- HTTPSCLIENTCERTBEGIN %%uncomment VAR:zimbraMailSSLClientCertPort,-->,0%%
   <servlet-mapping>
     <servlet-name>CertAuthServlet</servlet-name>
     <url-pattern>/certauth/*</url-pattern>
@@ -501,6 +525,7 @@ SPDX-License-Identifier: GPL-2.0-only
     <servlet-name>CertAuthServlet</servlet-name>
     <url-pattern>/certauth</url-pattern>
   </servlet-mapping>
+  %%uncomment VAR:zimbraMailSSLClientCertPort,<!--,0%% HTTPSCLIENTCERTEND -->
 
   <servlet-mapping>
     <servlet-name>SpnegoAuthServlet</servlet-name>
@@ -587,11 +612,58 @@ SPDX-License-Identifier: GPL-2.0-only
   </servlet-mapping>
   <env-entry>
     <description>
-        Carbonio Services Installed on the server.
+      Carbonio Services Installed on the server.
     </description>
     <env-entry-name>zimbraServicesEnabled</env-entry-name>
     <env-entry-type>java.lang.String</env-entry-type>
-    <env-entry-value>service,mailbox</env-entry-value>
+    <env-entry-value>%%list VAR:zimbraServiceEnabled ,%%</env-entry-value>
   </env-entry>
-  <!--  additional servlets -->
+
+  <!-- HTTPSBEGIN %%comment VAR:zimbraMailMode,-->,https,redirect%%
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>force https</web-resource-name>
+      <url-pattern>/service/user/*</url-pattern>
+    </web-resource-collection>
+    <user-data-constraint>
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>force https</web-resource-name>
+      <url-pattern>/user/*</url-pattern>
+    </web-resource-collection>
+    <user-data-constraint>
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>force https</web-resource-name>
+      <url-pattern>/service/home/*</url-pattern>
+    </web-resource-collection>
+    <user-data-constraint>
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>force https</web-resource-name>
+      <url-pattern>/home/*</url-pattern>
+    </web-resource-collection>
+    <user-data-constraint>
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>force https</web-resource-name>
+      <url-pattern>/dav/*</url-pattern>
+    </web-resource-collection>
+    <user-data-constraint>
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+  %%comment VAR:zimbraMailMode,<!--,https,redirect%% HTTPSEND -->
 </web-app>

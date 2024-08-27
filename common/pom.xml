@@ -48,7 +48,6 @@
     <dependency>
       <artifactId>javax.servlet-api</artifactId>
       <groupId>javax.servlet</groupId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -144,7 +143,10 @@
       <artifactId>commons-lang</artifactId>
       <groupId>commons-lang</groupId>
     </dependency>
-
+    <dependency>
+      <groupId>io.prometheus</groupId>
+      <artifactId>simpleclient</artifactId>
+    </dependency>
     <dependency>
       <!-- TODO: this is also defined in zm-zcs-lib -->
       <artifactId>nekohtml</artifactId>

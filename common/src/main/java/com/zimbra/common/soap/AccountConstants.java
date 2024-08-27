@@ -16,7 +16,6 @@ public class AccountConstants {
 
   public static final String USER_SERVICE_URI = "/service/soap/";
   public static final String CONTENT_SERVLET_PATH = "/service/content";
-
   public static final String NAMESPACE_STR = "urn:zimbraAccount";
   public static final Namespace NAMESPACE = Namespace.get(NAMESPACE_STR);
 
@@ -303,6 +302,14 @@ public class AccountConstants {
   public static final QName GET_ADDRESS_LIST_MEMBERS_RESPONSE =
       QName.get(E_GET_ADDRESS_LIST_MEMBERS_RESPONSE, NAMESPACE);
 
+  // users enabled to a particular feature
+  public static final String E_SEARCH_USERS_BY_FEATURE_REQUEST = "SearchUsersByFeatureRequest";
+  public static final QName SEARCH_USERS_BY_FEATURE_REQUEST =
+      QName.get(E_SEARCH_USERS_BY_FEATURE_REQUEST, NAMESPACE);
+  public static final String E_SEARCH_USERS_BY_FEATURE_RESPONSE = "SearchUsersByFeatureResponse";
+  public static final QName SEARCH_USERS_BY_FEATURE_RESPONSE =
+      QName.get(E_SEARCH_USERS_BY_FEATURE_RESPONSE, NAMESPACE);
+
   public static final String E_PRODUCT_QUERY = "productQuery";
   public static final String E_ACTION = "action";
   public static final String E_ALIAS = "alias";
@@ -323,6 +330,7 @@ public class AccountConstants {
   public static final String E_EMAIL = "email";
   public static final String E_EMAIL2 = "email2";
   public static final String E_EMAIL3 = "email3";
+  public static final String E_FEATURE = "feature";
   public static final String E_VERSION = "version";
   public static final String E_NAME = "name";
   public static final String E_NEW_NAME = "newName";

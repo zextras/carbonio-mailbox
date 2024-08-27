@@ -21,6 +21,8 @@ import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.soap.account.message.SearchUsersByFeatureResponse;
+import com.zimbra.soap.account.message.SearchUsersByFeatureRequest;
 import com.zimbra.soap.json.JacksonUtil;
 import com.zimbra.soap.mail.message.CopyToFilesRequest;
 import com.zimbra.soap.mail.message.CopyToFilesResponse;
@@ -814,6 +816,8 @@ public final class JaxbUtil {
           com.zimbra.soap.mail.message.SaveIMAPSubscriptionsResponse.class,
           com.zimbra.soap.mail.message.SearchConvRequest.class,
           com.zimbra.soap.mail.message.SearchConvResponse.class,
+          SearchUsersByFeatureRequest.class,
+          SearchUsersByFeatureResponse.class,
           com.zimbra.soap.mail.message.SearchRequest.class,
           com.zimbra.soap.mail.message.SearchResponse.class,
           com.zimbra.soap.mail.message.SearchActionRequest.class,
