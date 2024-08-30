@@ -1,5 +1,13 @@
 
 
+## [4.17.1](https://github.com/zextras/carbonio-mailbox/compare/4.17.0...4.17.1) (2024-08-30)
+
+
+### Bug Fixes
+
+* CO-1443 access log ([edfdcd8](https://github.com/zextras/carbonio-mailbox/commit/edfdcd84a921ecab2d860dbea811c78d34e5b8aa))
+* rearrange handlers ([a63b0a6](https://github.com/zextras/carbonio-mailbox/commit/a63b0a629ef29d8a6ad525786d63ad8ff8e16b92))
+
 # [4.17.0](https://github.com/zextras/carbonio-mailbox/compare/4.16.3...4.17.0) (2024-08-26)
 
 
