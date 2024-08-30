@@ -19,6 +19,7 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HostHeaderCustomizer;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.NCSARequestLog;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -173,7 +174,21 @@ public class LikeXmlJettyServer {
       webAppContext.setDescriptor(webDescriptor);
       webAppContext.setThrowUnavailableOnStartupException(true);
 
-      rewriteHandler.setHandler(new HandlerCollection(contexts, new DefaultHandler(), webAppContext, new RequestLogHandler()));
+      final String accessLogFileName = LC.zimbra_log_directory.value() + "/access_log.yyyy_mm_dd";
+      final NCSARequestLog ncsaRequestLog = new NCSARequestLog(accessLogFileName);
+      ncsaRequestLog.setLogDateFormat("dd/MMM/yyyy:HH:mm:ss:ms Z");
+      ncsaRequestLog.setRetainDays(30);
+      ncsaRequestLog.setAppend(true);
+      ncsaRequestLog.setExtended(true);
+      ncsaRequestLog.setFilenameDateFormat("yyyy-MM-dd");
+      ncsaRequestLog.setPreferProxiedForAddress(true);
+      ncsaRequestLog.setLogLatency(true);
+
+      final RequestLogHandler requestLogHandler = new RequestLogHandler();
+      requestLogHandler.setRequestLog(ncsaRequestLog);
+
+      rewriteHandler.setHandler(new HandlerCollection(contexts, new DefaultHandler(), webAppContext,
+          requestLogHandler));
 
       return rewriteHandler;
     }
