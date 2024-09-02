@@ -1,5 +1,12 @@
 
 
+## [4.17.2](https://github.com/zextras/carbonio-mailbox/compare/4.17.1...4.17.2) (2024-09-02)
+
+
+### Bug Fixes
+
+* [CO-1442] remove Log4J2Plugins.dat from common ([#575](https://github.com/zextras/carbonio-mailbox/issues/575)) ([d3d5bab](https://github.com/zextras/carbonio-mailbox/commit/d3d5babda5a9e990c8afbc34f4c977f4895a74ca))
+
 ## [4.17.1](https://github.com/zextras/carbonio-mailbox/compare/4.17.0...4.17.1) (2024-08-30)
 
 
