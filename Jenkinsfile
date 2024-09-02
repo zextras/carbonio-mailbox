@@ -169,7 +169,9 @@ pipeline {
         }
         stage('Publish to maven') {
             when {
-                isBuildingTag()
+                expression {
+                    return isBuildingTag()
+                }
             }
             steps {
                 mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true')
@@ -342,9 +344,8 @@ pipeline {
         }
         stage('Upload & Promotion Config') {
             when {
-                anyOf {
-                    branch 'release/*'
-                    isBuildingTag()
+                expression {
+                    return isBuildingTag()
                 }
             }
             steps {
