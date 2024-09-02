@@ -370,45 +370,45 @@
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-common</artifactId>
-        <version>${revision}${changelist}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-client</artifactId>
-        <version>${revision}${changelist}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-soap</artifactId>
-        <version>${revision}${changelist}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-native</artifactId>
-        <version>${revision}${changelist}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-store</artifactId>
-        <version>${revision}${changelist}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-store</artifactId>
-        <version>${revision}${changelist}</version>
+        <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>store-extra-runtime-dependencies</artifactId>
         <type>pom</type>
-        <version>${revision}${changelist}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>carbonio-jetty-libs</artifactId>
         <type>pom</type>
-        <version>${revision}${changelist}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <artifactId>*</artifactId>
@@ -820,7 +820,7 @@
     <system-lambda.version>1.2.1</system-lambda.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <changelist>-SNAPSHOT</changelist>
-    <revision>24.9.1</revision>
+    <revision>24.12.0</revision>
     <mockserver.version>5.13.0</mockserver.version>
     <mariadb-java-client.version>2.7.3</mariadb-java-client.version>
   </properties>

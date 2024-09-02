@@ -9,13 +9,7 @@ def mvnCmd(String cmd) {
     sh 'mvn -B -s settings-jenkins.xml ' + profile + ' ' + cmd
 }
 def isBuildingTag() {
-    def changeSet = currentBuild.changeSets[0]
-    if (changeSet != null) {
-        return changeSet.getItems().any { item ->
-            item.comment.contains('refs/tags/')
-        }
-    }
-    return false
+    return buildingTag()
 }
 
 def buildDebPackages(String flavor) {
