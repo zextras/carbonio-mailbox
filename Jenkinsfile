@@ -9,7 +9,13 @@ def mvnCmd(String cmd) {
     sh 'mvn -B -s settings-jenkins.xml ' + profile + ' ' + cmd
 }
 def isBuildingTag() {
-    return buildingTag()
+    def changeSet = currentBuild.changeSets[0]
+    if (changeSet != null) {
+        return changeSet.getItems().any { item ->
+            item.comment.contains('refs/tags/')
+        }
+    }
+    return false
 }
 
 def buildDebPackages(String flavor) {
@@ -158,7 +164,7 @@ pipeline {
                 branch 'devel';
             }
             steps {
-                mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true -Pdev')
+                mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true')
             }
         }
         stage('Publish to maven') {
@@ -166,7 +172,7 @@ pipeline {
                 buildingTag()
             }
             steps {
-                mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true -Pprod')
+                mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true')
             }
         }
         stage('Build deb/rpm') {
