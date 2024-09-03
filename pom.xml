@@ -370,45 +370,45 @@
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-common</artifactId>
-        <version>${revision}${changelist}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-client</artifactId>
-        <version>${revision}${changelist}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-soap</artifactId>
-        <version>${revision}${changelist}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-native</artifactId>
-        <version>${revision}${changelist}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-store</artifactId>
-        <version>${revision}${changelist}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>zm-store</artifactId>
-        <version>${revision}${changelist}</version>
+        <version>${project.version}</version>
         <classifier>classes</classifier>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>store-extra-runtime-dependencies</artifactId>
         <type>pom</type>
-        <version>${revision}${changelist}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
         <artifactId>carbonio-jetty-libs</artifactId>
         <type>pom</type>
-        <version>${revision}${changelist}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <artifactId>*</artifactId>
