@@ -1,5 +1,12 @@
 
 
+## [4.17.3](https://github.com/zextras/carbonio-mailbox/compare/4.17.2...4.17.3) (2024-09-03)
+
+
+### Bug Fixes
+
+* versioning ([#577](https://github.com/zextras/carbonio-mailbox/issues/577)) ([c6982c1](https://github.com/zextras/carbonio-mailbox/commit/c6982c1108b9fa0c8d59a18f4c9115220275dd1c))
+
 ## [4.17.2](https://github.com/zextras/carbonio-mailbox/compare/4.17.1...4.17.2) (2024-09-02)
 
 
