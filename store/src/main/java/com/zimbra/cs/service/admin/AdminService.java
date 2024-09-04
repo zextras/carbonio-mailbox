@@ -400,7 +400,7 @@ public class AdminService implements DocumentService {
     return result;
   }
 
-  private MessageBrokerClient getMessageBrokerClientInstance() {
+  public static MessageBrokerClient getMessageBrokerClientInstance() {
     Path filePath = Paths.get("/etc/carbonio/mailbox/service-discover/token");
     String token;
     try {

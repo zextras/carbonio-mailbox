@@ -97,7 +97,7 @@ public class DeleteAccount extends AdminDocumentHandler {
      * so mail delivery and any user action is blocked.
      */
     deleteUserUseCase.delete(account.getId());
-    //publishAccountDeletedEvent(account);
+    publishAccountDeletedEvent(account);
 
     ZimbraLog.security.info(
         ZimbraLog.encodeAttrs(
@@ -115,28 +115,7 @@ public class DeleteAccount extends AdminDocumentHandler {
 
   private void publishAccountDeletedEvent(Account account) {
     String userId = account.getId();
-
-    Path filePath = Paths.get("/etc/carbonio/mailbox/service-discover/token");
-    String token;
     try {
-      token = Files.readString(filePath);
-    } catch (IOException e) {
-      throw new RuntimeException("Can't read consul token from file", e);
-    }
-
-    ServiceDiscoverHttpClient serviceDiscoverHttpClient =
-        ServiceDiscoverHttpClient.defaultURL("carbonio-message-broker")
-            .withToken(token);
-
-    try {
-      MessageBrokerClient messageBrokerClient = MessageBrokerClient.fromConfig(
-              "127.78.0.7",
-              20005,
-              serviceDiscoverHttpClient.getConfig("default/username").get(),
-              serviceDiscoverHttpClient.getConfig("default/password").get()
-          )
-          .withCurrentService(Service.MAILBOX);
-
       boolean result = messageBrokerClient.publish(new UserDeleted(userId));
       if (result) {
         ZimbraLog.account.info("Published deleted account event for user: " + userId);

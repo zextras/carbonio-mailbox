@@ -5,11 +5,9 @@
 package com.zimbra.cs.service.admin;
 
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
-import com.zextras.carbonio.message_broker.config.enums.Service;
 import com.zextras.carbonio.message_broker.events.services.mailbox.UserDeleted;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
-import com.zextras.mailbox.client.ServiceDiscoverHttpClient;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.account.ZAttrProvisioning;
@@ -32,8 +30,6 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import io.vavr.control.Try;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -45,7 +41,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -71,7 +66,7 @@ class DeleteAccountTest {
     final MailboxManager mailboxManager = MailboxManager.getInstance();
     provisioning = Provisioning.getInstance();
     accountCreatorFactory = new AccountCreator.Factory(provisioning);
-    mockMessageBrokerClient = getMockedMessageBrokerClient();
+    mockMessageBrokerClient = AdminService.getMessageBrokerClientInstance();
     deleteAccount =
         new DeleteAccount(
             new DeleteUserUseCase(
@@ -241,21 +236,6 @@ class DeleteAccountTest {
     context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
     return deleteAccount.handle(
         JaxbUtil.jaxbToElement(new DeleteAccountRequest(toDeleteId)), context);
-  }
-
-  private static MessageBrokerClient getMockedMessageBrokerClient() {
-    MessageBrokerClient messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
-    try (MockedStatic<MessageBrokerClient> mockedMessageBrokerClientStatic = Mockito.mockStatic(MessageBrokerClient.class)) {
-      mockedMessageBrokerClientStatic.when(() -> MessageBrokerClient.fromConfig(
-          "127.78.0.7",
-          20005,
-          "fake-username",
-          "fake-password"
-      )).thenReturn(messageBrokerClient);
-
-      Mockito.when(messageBrokerClient.withCurrentService(Service.MAILBOX)).thenReturn(messageBrokerClient);
-      return messageBrokerClient;
-    }
   }
 
   @ParameterizedTest
