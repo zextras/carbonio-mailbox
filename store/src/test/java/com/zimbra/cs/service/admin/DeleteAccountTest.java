@@ -55,6 +55,7 @@ class DeleteAccountTest {
   private static final String OTHER_DOMAIN = "other.com";
   private static Provisioning provisioning;
   private static DeleteAccount deleteAccount;
+  private static MessageBrokerClient mockMessageBrokerClient;
   private static AccountCreator.Factory accountCreatorFactory;
 
   /**
@@ -70,13 +71,15 @@ class DeleteAccountTest {
     final MailboxManager mailboxManager = MailboxManager.getInstance();
     provisioning = Provisioning.getInstance();
     accountCreatorFactory = new AccountCreator.Factory(provisioning);
+    mockMessageBrokerClient = getMockedMessageBrokerClient();
     deleteAccount =
         new DeleteAccount(
             new DeleteUserUseCase(
                 provisioning,
                 mailboxManager,
                 new AclService(mailboxManager, provisioning),
-                ZimbraLog.security));
+                ZimbraLog.security),
+            mockMessageBrokerClient);
     provisioning.createDomain(OTHER_DOMAIN, new HashMap<>());
   }
 
@@ -240,23 +243,9 @@ class DeleteAccountTest {
         JaxbUtil.jaxbToElement(new DeleteAccountRequest(toDeleteId)), context);
   }
 
-  @ParameterizedTest
-  @MethodSource("getHappyPathCases")
-  void shouldDeleteUser(Account caller, Account toDelete) throws Exception {
-    ServiceDiscoverHttpClient serviceDiscoverHttpClient = Mockito.mock(ServiceDiscoverHttpClient.class);
+  private static MessageBrokerClient getMockedMessageBrokerClient() {
     MessageBrokerClient messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
-    try (MockedStatic<Files> mockedFiles = Mockito.mockStatic(Files.class, Mockito.CALLS_REAL_METHODS);
-         MockedStatic<ServiceDiscoverHttpClient> mockedServiceDiscoverStatic = Mockito.mockStatic(ServiceDiscoverHttpClient.class);
-         MockedStatic<MessageBrokerClient> mockedMessageBrokerClientStatic = Mockito.mockStatic(MessageBrokerClient.class)) {
-
-      mockedFiles.when(() -> Files.readString(any(Path.class))).thenReturn("fake-token");
-      mockedServiceDiscoverStatic.when(() -> ServiceDiscoverHttpClient.defaultURL("carbonio-message-broker"))
-          .thenReturn(serviceDiscoverHttpClient);
-      Mockito.when(serviceDiscoverHttpClient.withToken("fake-token")).thenReturn(serviceDiscoverHttpClient);
-
-      Mockito.when(serviceDiscoverHttpClient.getConfig("default/username")).thenReturn(Try.success("fake-username"));
-      Mockito.when(serviceDiscoverHttpClient.getConfig("default/password")).thenReturn(Try.success("fake-password"));
-
+    try (MockedStatic<MessageBrokerClient> mockedMessageBrokerClientStatic = Mockito.mockStatic(MessageBrokerClient.class)) {
       mockedMessageBrokerClientStatic.when(() -> MessageBrokerClient.fromConfig(
           "127.78.0.7",
           20005,
@@ -265,12 +254,18 @@ class DeleteAccountTest {
       )).thenReturn(messageBrokerClient);
 
       Mockito.when(messageBrokerClient.withCurrentService(Service.MAILBOX)).thenReturn(messageBrokerClient);
-      Mockito.when(messageBrokerClient.publish(any(UserDeleted.class))).thenReturn(true);
+      return messageBrokerClient;
+    }
+  }
+
+  @ParameterizedTest
+  @MethodSource("getHappyPathCases")
+  void shouldDeleteUser(Account caller, Account toDelete) throws Exception {
+      Mockito.when(mockMessageBrokerClient.publish(any(UserDeleted.class))).thenReturn(true);
 
       final String toDeleteId = toDelete.getId();
       this.doDeleteAccount(caller, toDeleteId);
       Assertions.assertNull(provisioning.getAccountById(toDeleteId));
-    }
   }
 
   private static Stream<Arguments> getPermissionDeniedCases() throws ServiceException {
@@ -317,29 +312,7 @@ class DeleteAccountTest {
   @ParameterizedTest
   @MethodSource("getPermissionDeniedCases")
   void shouldGetPermissionDenied(Account caller, Account toDelete) throws ServiceException {
-    ServiceDiscoverHttpClient serviceDiscoverHttpClient = Mockito.mock(ServiceDiscoverHttpClient.class);
-    MessageBrokerClient messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
-    try (MockedStatic<Files> mockedFiles = Mockito.mockStatic(Files.class, Mockito.CALLS_REAL_METHODS);
-         MockedStatic<ServiceDiscoverHttpClient> mockedServiceDiscoverStatic = Mockito.mockStatic(ServiceDiscoverHttpClient.class);
-         MockedStatic<MessageBrokerClient> mockedMessageBrokerClientStatic = Mockito.mockStatic(MessageBrokerClient.class)) {
-
-      mockedFiles.when(() -> Files.readString(any(Path.class))).thenReturn("fake-token");
-      mockedServiceDiscoverStatic.when(() -> ServiceDiscoverHttpClient.defaultURL("carbonio-message-broker"))
-          .thenReturn(serviceDiscoverHttpClient);
-      Mockito.when(serviceDiscoverHttpClient.withToken("fake-token")).thenReturn(serviceDiscoverHttpClient);
-
-      Mockito.when(serviceDiscoverHttpClient.getConfig("default/username")).thenReturn(Try.success("fake-username"));
-      Mockito.when(serviceDiscoverHttpClient.getConfig("default/password")).thenReturn(Try.success("fake-password"));
-
-      mockedMessageBrokerClientStatic.when(() -> MessageBrokerClient.fromConfig(
-          "127.78.0.7",
-          20005,
-          "fake-username",
-          "fake-password"
-      )).thenReturn(messageBrokerClient);
-
-      Mockito.when(messageBrokerClient.withCurrentService(Service.MAILBOX)).thenReturn(messageBrokerClient);
-      Mockito.when(messageBrokerClient.publish(any(UserDeleted.class))).thenReturn(true);
+      Mockito.when(mockMessageBrokerClient.publish(any(UserDeleted.class))).thenReturn(true);
 
       final String toDeleteId = toDelete.getId();
       final ServiceException serviceException =
@@ -347,6 +320,5 @@ class DeleteAccountTest {
               ServiceException.class, () -> this.doDeleteAccount(caller, toDeleteId));
       Assertions.assertEquals(ServiceException.PERM_DENIED, serviceException.getCode());
       Assertions.assertNotNull(provisioning.getAccountById(toDeleteId));
-    }
   }
 }

@@ -41,9 +41,11 @@ public class DeleteAccount extends AdminDocumentHandler {
   private static final String[] TARGET_ACCOUNT_PATH = new String[] {AdminConstants.E_ID};
 
   private final DeleteUserUseCase deleteUserUseCase;
+  private final MessageBrokerClient messageBrokerClient;
 
-  public DeleteAccount(DeleteUserUseCase deleteUserUseCase) {
+  public DeleteAccount(DeleteUserUseCase deleteUserUseCase, MessageBrokerClient messageBrokerClient) {
     this.deleteUserUseCase = deleteUserUseCase;
+    this.messageBrokerClient = messageBrokerClient;
   }
 
   @Override
