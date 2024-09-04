@@ -52,6 +52,8 @@ public class MailboxTestUtil {
 
   private static InMemoryLdapServer inMemoryLdapServer;
 
+  private static MessageBrokerClient mockedMessageBrokerClient;
+
   private MailboxTestUtil() {}
 
   /**
@@ -118,9 +120,12 @@ public class MailboxTestUtil {
   }
 
   private static void mockMessageBrokerClient() {
-    MessageBrokerClient messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
-    MockedStatic<AdminService> mockedAdminServiceStatic = Mockito.mockStatic(AdminService.class, Mockito.CALLS_REAL_METHODS);
-    mockedAdminServiceStatic.when(AdminService::getMessageBrokerClientInstance).thenReturn(messageBrokerClient);
+    if(mockedMessageBrokerClient == null) {
+      MessageBrokerClient messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
+      MockedStatic<AdminService> mockedAdminServiceStatic = Mockito.mockStatic(AdminService.class, Mockito.CALLS_REAL_METHODS);
+      mockedAdminServiceStatic.when(AdminService::getMessageBrokerClientInstance).thenReturn(messageBrokerClient);
+      mockedMessageBrokerClient = messageBrokerClient;
+    }
   }
 
   /** Performs actions on an account. Start with {@link #shareWith(Account)} */
