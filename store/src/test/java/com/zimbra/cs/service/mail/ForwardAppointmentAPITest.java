@@ -1,5 +1,7 @@
 package com.zimbra.cs.service.mail;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,8 +23,10 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.mailbox.Folder;
+import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.soap.mail.message.CreateAppointmentRequest;
 import com.zimbra.soap.mail.message.CreateAppointmentResponse;
 import com.zimbra.soap.mail.type.CalOrganizer;
@@ -111,6 +115,10 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
     final CreateAppointmentResponse appointment = createAppointment(userA, invitation);
 
     // B forwards the appointment to C
+    List<MailItem> userBAppointments = MailboxManager.getInstance().getMailboxByAccount(userB).getItemList(null,
+        Type.APPOINTMENT);
+    assertEquals(1, userBAppointments.size());
+
     // get the appointment from B's calendar
     // assert that C received the appointment
     // assert that C is the only attendee
