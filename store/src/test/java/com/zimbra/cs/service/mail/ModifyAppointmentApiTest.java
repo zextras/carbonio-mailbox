@@ -115,18 +115,6 @@ class ModifyAppointmentApiTest extends SoapTestSuite {
         CreateMountpointResponse.class);
   }
 
-  private CreateAppointmentResponse createAppointment(Account authenticatedAccount, Msg msg)
-      throws Exception {
-    final CreateAppointmentRequest createAppointmentRequest = new CreateAppointmentRequest();
-    createAppointmentRequest.setMsg(msg);
-    final HttpResponse response = getSoapClient().executeSoap(authenticatedAccount,
-        createAppointmentRequest);
-    String soapResponse = SoapUtils.getResponse(response);
-    Assertions.assertEquals(200, response.getStatusLine().getStatusCode(), "Create appointment failed with:\n" + soapResponse);
-    return SoapUtils.getSoapResponse(soapResponse, MailConstants.E_CREATE_APPOINTMENT_RESPONSE,
-        CreateAppointmentResponse.class);
-  }
-
   private Msg appointmentOnSharedCalendar(CreateMountpointResponse mountpointResponse, Account userA, Account userB, List<String> attendees) {
     Msg msg = new Msg();
     msg.setFolderId(String.valueOf(mountpointResponse.getMount().getId()));
