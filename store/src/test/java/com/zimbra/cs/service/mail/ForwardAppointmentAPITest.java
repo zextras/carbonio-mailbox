@@ -76,16 +76,21 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		final Account userC = accountCreatorFactory.get().withUsername("userC").create();
 		final Account userD = accountCreatorFactory.get().withUsername("userD").create();
 		createAppointment(userA, List.of(userB, userD));
+		final MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
+		MimeMessage receivedMessage1 = receivedMessages[0];
+		final String ics1 = extractIcsFromMessage(receivedMessage1, 1);
+		Assertions.assertTrue(ics1.contains("ATTENDEE;CN=userb@test.com;ROLE=REQ-PARTICIPANT:mailto:userb@test.com"));
+		Assertions.assertTrue(ics1.contains("ATTENDEE;CN=userd@test.com;ROLE=REQ-PARTICIPANT:mailto:userd@test.com"));
 		greenMail.reset();
 		final List<CalendarItem> calendarItems = getCalendarAppointments(userB);
 		final CalendarItem userBAppointment = calendarItems.get(0);
 		forwardAppointment(userB, String.valueOf(userBAppointment.getId()), userC.getName());
 
 		MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
-		final String ics = extractIcsFromMessage(receivedMessage);
+		final String ics = extractIcsFromMessage(receivedMessage, 2);
 		Assertions.assertTrue(ics.contains("ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:userc@test.com"));
-		Assertions.assertFalse(ics.contains("ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:userb@test.com"));
-		Assertions.assertFalse(ics.contains("ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:userd@test.com"));
+		Assertions.assertFalse(ics.contains("ATTENDEE;CN=userb@test.com;ROLE=REQ-PARTICIPANT:mailto:userb@test.com"));
+		Assertions.assertFalse(ics.contains("ATTENDEE;CN=userd@test.com;ROLE=REQ-PARTICIPANT:mailto:userd@test.com"));
 	}
 
 	private static List<CalendarItem> getCalendarAppointments(Account userB) throws ServiceException {
@@ -110,10 +115,10 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		}
 		return appointmentResponse;
 	}
-	private static String extractIcsFromMessage(MimeMessage receivedMessage)
+	private static String extractIcsFromMessage(MimeMessage receivedMessage, int bodyPart)
 			throws IOException, MessagingException {
 		return new String(
-				((MimeMultipart) receivedMessage.getContent()).getBodyPart(2).getInputStream()
+				((MimeMultipart) receivedMessage.getContent()).getBodyPart(bodyPart).getInputStream()
 						.readAllBytes());
 	}
 
