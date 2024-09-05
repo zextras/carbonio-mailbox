@@ -169,6 +169,7 @@ public final class MailConstants {
   public static final String E_MODIFY_APPOINTMENT_RESPONSE = "ModifyAppointmentResponse";
   public static final String E_CANCEL_APPOINTMENT_REQUEST = "CancelAppointmentRequest";
   public static final String E_FORWARD_APPOINTMENT_REQUEST = "ForwardAppointmentRequest";
+  public static final String E_FORWARD_APPOINTMENT_RESPONSE = "ForwardAppointmentResponse";
   public static final String E_FORWARD_APPOINTMENT_INVITE_REQUEST =
       "ForwardAppointmentInviteRequest";
   public static final String E_ADD_APPOINTMENT_INVITE_REQUEST = "AddAppointmentInviteRequest";
