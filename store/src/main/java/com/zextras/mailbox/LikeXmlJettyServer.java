@@ -19,6 +19,7 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HostHeaderCustomizer;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.NCSARequestLog;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -81,21 +82,19 @@ public class LikeXmlJettyServer {
       server.addConnector(createMtaAdminHttpsConnector(server));
       server.addConnector(createExtensionsHttpsConnector(server));
 
-      final ContextHandlerCollection contexts = new ContextHandlerCollection();
-        WebAppContext webAppContext = new WebAppContext(contexts, webApp, "/service");
-      webAppContext.setDescriptor(webDescriptor);
-       webAppContext.setThrowUnavailableOnStartupException(true);
 
-
-      final GzipHandler gzipHandler = new GzipHandler();
-      gzipHandler.setHandler(createRewriteHandler());
-      gzipHandler.setMinGzipSize(2048);
-      gzipHandler.setCompressionLevel(-1);
-      gzipHandler.setExcludedAgentPatterns(".*MSIE.6\\.0.*");
-      gzipHandler.setIncludedMethods("GET", "POST");
-      server.setHandler(gzipHandler);
-
-      server.setHandler(webAppContext);
+      final Handler webAppHandler = createWebAppHandler();
+       if (localServer.isHttpCompressionEnabled()) {
+         final GzipHandler gzipHandler = new GzipHandler();
+         gzipHandler.setHandler(webAppHandler);
+         gzipHandler.setMinGzipSize(2048);
+         gzipHandler.setCompressionLevel(-1);
+         gzipHandler.setExcludedAgentPatterns(".*MSIE.6\\.0.*");
+         gzipHandler.setIncludedMethods("GET", "POST");
+         server.setHandler(gzipHandler);
+       } else {
+         server.setHandler(webAppHandler);
+       }
 
       userHttpConnector.open();
       adminHttpsConnector.open();
@@ -121,7 +120,7 @@ public class LikeXmlJettyServer {
     }
 
 
-    private Handler createRewriteHandler() {
+    private Handler createWebAppHandler() {
       final RewriteHandler rewriteHandler = new RewriteHandler();
       rewriteHandler.setRewriteRequestURI(true);
       rewriteHandler.setRewritePathInfo(false);
@@ -170,7 +169,26 @@ public class LikeXmlJettyServer {
       rootRule2.setTerminating(true);
       rewriteHandler.addRule(rootRule2);
 
-      rewriteHandler.setHandler(new HandlerCollection(new ContextHandlerCollection(), new DefaultHandler(), new RequestLogHandler()));
+      final ContextHandlerCollection contexts = new ContextHandlerCollection();
+      WebAppContext webAppContext = new WebAppContext(contexts, webApp, "/service");
+      webAppContext.setDescriptor(webDescriptor);
+      webAppContext.setThrowUnavailableOnStartupException(true);
+
+      final String accessLogFileName = LC.zimbra_log_directory.value() + "/access_log.yyyy_mm_dd";
+      final NCSARequestLog ncsaRequestLog = new NCSARequestLog(accessLogFileName);
+      ncsaRequestLog.setLogDateFormat("dd/MMM/yyyy:HH:mm:ss:ms Z");
+      ncsaRequestLog.setRetainDays(30);
+      ncsaRequestLog.setAppend(true);
+      ncsaRequestLog.setExtended(true);
+      ncsaRequestLog.setFilenameDateFormat("yyyy-MM-dd");
+      ncsaRequestLog.setPreferProxiedForAddress(true);
+      ncsaRequestLog.setLogLatency(true);
+
+      final RequestLogHandler requestLogHandler = new RequestLogHandler();
+      requestLogHandler.setRequestLog(ncsaRequestLog);
+
+      rewriteHandler.setHandler(new HandlerCollection(contexts, new DefaultHandler(), webAppContext,
+          requestLogHandler));
 
       return rewriteHandler;
     }

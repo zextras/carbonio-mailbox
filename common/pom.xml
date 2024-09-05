@@ -207,6 +207,18 @@
 
   <build>
     <plugins>
+      <!-- Fix for log4j: https://issues.apache.org/jira/browse/LOG4J2-673 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.4.2</version>
+        <configuration>
+          <excludes>
+            <exclude>**/Log4j2Plugins.dat</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>

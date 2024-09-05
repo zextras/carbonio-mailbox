@@ -1,5 +1,55 @@
 
 
+## [4.17.3](https://github.com/zextras/carbonio-mailbox/compare/4.17.2...4.17.3) (2024-09-03)
+
+
+### Bug Fixes
+
+* versioning ([#577](https://github.com/zextras/carbonio-mailbox/issues/577)) ([c6982c1](https://github.com/zextras/carbonio-mailbox/commit/c6982c1108b9fa0c8d59a18f4c9115220275dd1c))
+
+## [4.17.2](https://github.com/zextras/carbonio-mailbox/compare/4.17.1...4.17.2) (2024-09-02)
+
+
+### Bug Fixes
+
+* [CO-1442] remove Log4J2Plugins.dat from common ([#575](https://github.com/zextras/carbonio-mailbox/issues/575)) ([d3d5bab](https://github.com/zextras/carbonio-mailbox/commit/d3d5babda5a9e990c8afbc34f4c977f4895a74ca))
+
+## [4.17.1](https://github.com/zextras/carbonio-mailbox/compare/4.17.0...4.17.1) (2024-08-30)
+
+
+### Bug Fixes
+
+* CO-1443 access log ([edfdcd8](https://github.com/zextras/carbonio-mailbox/commit/edfdcd84a921ecab2d860dbea811c78d34e5b8aa))
+* rearrange handlers ([a63b0a6](https://github.com/zextras/carbonio-mailbox/commit/a63b0a629ef29d8a6ad525786d63ad8ff8e16b92))
+
+# [4.17.0](https://github.com/zextras/carbonio-mailbox/compare/4.16.3...4.17.0) (2024-08-26)
+
+
+### Bug Fixes
+
+* [CO-1179] UserServlet to properly return XML and scriptable attachments without defanging ([#530](https://github.com/zextras/carbonio-mailbox/issues/530)) ([2708e4d](https://github.com/zextras/carbonio-mailbox/commit/2708e4dab90ae71d6c2afb4d3a82d43551a970e5))
+* [CO-1180] Remove TNEF converter to prevent .dat attachment duplication ([#528](https://github.com/zextras/carbonio-mailbox/issues/528)) ([e36d1d9](https://github.com/zextras/carbonio-mailbox/commit/e36d1d960ee00ccb8b7fbd01e0f43ddb85597201))
+* [CO-1348] PreviewServlet avoid HTTP call to get attachment when available locally ([#555](https://github.com/zextras/carbonio-mailbox/issues/555)) ([1e222df](https://github.com/zextras/carbonio-mailbox/commit/1e222df6c0862d4f46ae3b950e86740242d22bfe))
+* carbonio-milter.service: class not found cause of classpath edits ([6b9a584](https://github.com/zextras/carbonio-mailbox/commit/6b9a58446a3ccf8cbf62b31848d5c08dfbf95f15))
+* **CO-1133:** fix amavis ldap attrs definition ([#533](https://github.com/zextras/carbonio-mailbox/issues/533)) ([5f75ce3](https://github.com/zextras/carbonio-mailbox/commit/5f75ce3ed893cb78d97112051819d5d79a9266d7))
+
+
+### Features
+
+* [CO-1089] Add carbonioFeatureOTPMgmtEnabled Attribute ([#538](https://github.com/zextras/carbonio-mailbox/issues/538)) ([faad780](https://github.com/zextras/carbonio-mailbox/commit/faad7805ffb5bb20f40422a8e595c3aa6d1c69cd))
+* [CO-1258] FileUploadServlet allow uploading huge attachments ([#563](https://github.com/zextras/carbonio-mailbox/issues/563)) ([d139f66](https://github.com/zextras/carbonio-mailbox/commit/d139f667ad5cd59ee0884671c1e5337e089b3dda))
+* [CO-1343] Update LDAP Module Configuration on upgrade ([#548](https://github.com/zextras/carbonio-mailbox/issues/548)) ([44cc588](https://github.com/zextras/carbonio-mailbox/commit/44cc5887f152cfa447411ec86be52c7c5ca92c0a))
+* [CO-1350] export http connection pool statistics to prometheus ([#551](https://github.com/zextras/carbonio-mailbox/issues/551)) ([ea87abb](https://github.com/zextras/carbonio-mailbox/commit/ea87abb3d7d0bd88627372441b0e6138e7280e2f))
+* [CO-1425] Improve argon2 and PID file migration for LDAP ([#567](https://github.com/zextras/carbonio-mailbox/issues/567)) ([fbdea5f](https://github.com/zextras/carbonio-mailbox/commit/fbdea5f708e1b7371f835fa3057db71f938bca99))
+* add ubuntu 24.04 (ubuntu-noble) support ([3f03e11](https://github.com/zextras/carbonio-mailbox/commit/3f03e11c4c48a0155eca806dfea3c0a8803bad83))
+* **CO-1295:** define new carbonioFeatureWscEnabled attribute ([#564](https://github.com/zextras/carbonio-mailbox/issues/564)) ([8ae839a](https://github.com/zextras/carbonio-mailbox/commit/8ae839a9395f76c527add7d0b6edf2a33c687194))
+* properly close soap client in tests ([#544](https://github.com/zextras/carbonio-mailbox/issues/544)) ([d6b5e66](https://github.com/zextras/carbonio-mailbox/commit/d6b5e66f16bd4d05e1752c7a0c78cafa0b4d2a60))
+
+
+### Reverts
+
+* Revert "refactor: remove mailboxd_directory (#549)" (#554) ([2b7d7ef](https://github.com/zextras/carbonio-mailbox/commit/2b7d7ef920ec9c36c57f0de00578a1eb795db8fb)), closes [#549](https://github.com/zextras/carbonio-mailbox/issues/549) [#554](https://github.com/zextras/carbonio-mailbox/issues/554) [#549](https://github.com/zextras/carbonio-mailbox/issues/549)
+
 ## [4.16.3](https://github.com/Zextras/carbonio-mailbox/compare/4.16.2...4.16.3) (2024-07-17)
 
 
