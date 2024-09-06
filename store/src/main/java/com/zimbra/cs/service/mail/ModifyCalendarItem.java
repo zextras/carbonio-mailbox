@@ -5,9 +5,12 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.common.calendar.ParsedDateTime;
+import com.zimbra.cs.mailbox.calendar.IcalXmlStrMap;
 import com.zimbra.cs.service.mail.message.parser.InviteParser;
 import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -183,6 +186,18 @@ public class ModifyCalendarItem extends CalendarRequest {
         } catch (MessagingException e) {
             throw ServiceException.FAILURE("Checking recipients of outgoing msg ", e);
         }
+
+        final var startTime = inv.getStartTime();
+        final var endTime = inv.getEndTime();
+
+        final var newStartTime = dat.mInvite.getStartTime();
+        final var newEndTime = dat.mInvite.getEndTime();
+
+        if(!startTime.equals(newStartTime) || !endTime.equals(newEndTime)){
+            // reset ptst
+            dat.mInvite.getAttendees().forEach(zAttendee -> zAttendee.setPartStat(IcalXmlStrMap.PARTSTAT_NEEDS_ACTION));
+        }
+
         // If we are sending this to other people, then we MUST be the organizer!
         if (!dat.mInvite.isOrganizer() && hasRecipients)
             throw MailServiceException.MUST_BE_ORGANIZER("ModifyCalendarItem");
