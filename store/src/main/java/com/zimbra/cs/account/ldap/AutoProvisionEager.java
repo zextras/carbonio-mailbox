@@ -160,8 +160,8 @@ public class AutoProvisionEager extends AutoProvision {
                     stuckAcctNum++;
                 }
 
-                String createTimestampString = externalAttrs.getAttrString(LdapConstants.ATTR_createTimestamp);
-                lastCreateTimestamp = getLastCreateTimestamp(createTimestampString, lastCreateTimestamp, serverTime);
+                lastCreateTimestamp = getLastCreateTimestamp(externalAttrs.getAttrString(
+                        LdapConstants.ATTR_createTimestamp), lastCreateTimestamp, serverTime);
 
             } catch (ServiceException e) {
                 // log and continue with next entry
