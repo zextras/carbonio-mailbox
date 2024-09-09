@@ -218,7 +218,6 @@
 50:application/x-gnucash:*.xac
 50:image/vnd.djvu:*.djvu
 50:application/vnd.sun.xml.math:*.sxm
-50:application/vnd.ms-tnef:winmail.dat
 50:application/x-bzip:*.bz2
 50:image/ief:*.ief
 50:application/x-tzo:*.tzo
@@ -294,7 +293,6 @@
 50:application/x-siag:*.siag
 50:application/x-java-pack200:*.pack
 50:application/x-gnumeric:*.gnumeric
-50:application/vnd.ms-tnef:*.tnef
 50:image/x-tga:*.tpic
 50:video/quicktime:*.mov
 50:application/smil:*.smil
@@ -669,7 +667,6 @@
 50:application/x-hwt:*.hwt
 50:text/x-credits:CREDITS
 50:application/vnd.oasis.opendocument.presentation:*.odp
-50:application/vnd.ms-tnef:*.tnf
 50:application/x-font-type1:*.pfa
 50:application/vnd.oasis.opendocument.spreadsheet:*.ods
 50:application/vnd.oasis.opendocument.text:*.odt
