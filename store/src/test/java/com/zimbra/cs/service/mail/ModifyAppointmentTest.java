@@ -40,12 +40,9 @@ import com.zimbra.soap.mail.type.CalendarAttendee;
 import com.zimbra.soap.mail.type.DtTimeInfo;
 import com.zimbra.soap.mail.type.EmailAddrInfo;
 import com.zimbra.soap.mail.type.FolderActionSelector;
-import com.zimbra.soap.mail.type.IntervalRule;
 import com.zimbra.soap.mail.type.InvitationInfo;
 import com.zimbra.soap.mail.type.Msg;
 import com.zimbra.soap.mail.type.NewMountpointSpec;
-import com.zimbra.soap.mail.type.RecurrenceInfo;
-import com.zimbra.soap.mail.type.SimpleRepeatingRule;
 import com.zimbra.soap.type.Id;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -196,7 +193,7 @@ class ModifyAppointmentTest extends SoapTestSuite {
         CreateAppointmentResponse.class);
   }
 
-  public Element createSimpleAppointment(AppointmentData appointmentData) throws Exception {
+  private Element createSimpleAppointment(AppointmentData appointmentData) throws Exception {
     var authToken = AuthProvider.getAuthToken(appointmentData.organiser);
     Map<String, Object> context = new HashMap<>();
     var zsc = new ZimbraSoapContext(
@@ -358,7 +355,7 @@ class ModifyAppointmentTest extends SoapTestSuite {
         FolderActionResponse.class);
   }
 
-  private static class AppointmentData {
+  static class AppointmentData {
 
     public String eventTitle;
     public Account organiser;
