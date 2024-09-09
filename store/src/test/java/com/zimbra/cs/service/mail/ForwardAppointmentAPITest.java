@@ -1,6 +1,6 @@
 package com.zimbra.cs.service.mail;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
@@ -15,6 +15,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import java.util.stream.Collectors;
+import javax.mail.Address;
+import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
@@ -91,6 +93,49 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		Assertions.assertTrue(ics.contains("ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:userc@test.com"));
 		Assertions.assertTrue(ics.contains("ATTENDEE;CN=userb@test.com;ROLE=REQ-PARTICIPANT:mailto:userb@test.com"));
 		Assertions.assertTrue(ics.contains("ATTENDEE;CN=userd@test.com;ROLE=REQ-PARTICIPANT:mailto:userd@test.com"));
+	}
+
+	@Test
+	void shouldSendEmailOnlyToNewAttendeeWhenForwarding() throws Exception {
+		final Account userA = accountCreatorFactory.get().withUsername("userA").create();
+		final Account userB = accountCreatorFactory.get().withUsername("userB").create();
+		final Account userC = accountCreatorFactory.get().withUsername("userC").create();
+		createAppointment(userA, List.of(userB, userC));
+		greenMail.reset();
+
+		final Account userD = accountCreatorFactory.get().withUsername("userD").create();
+		final List<CalendarItem> calendarItems = getCalendarAppointments(userB);
+		final CalendarItem userBAppointment = calendarItems.get(0);
+
+		forwardAppointment(userB, String.valueOf(userBAppointment.getId()), userD.getName());
+
+		MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
+		final Address[] recipients = receivedMessage.getRecipients(RecipientType.TO);
+		assertEquals(1, recipients.length);
+		assertEquals(userD.getName(), recipients[0].toString());
+	}
+
+	@Test
+	void shouldNotifyOrganizerThatItsAppointmentHasBeenForwarded() throws Exception {
+		final Account userA = accountCreatorFactory.get().withUsername("userA").create();
+		final Account userB = accountCreatorFactory.get().withUsername("userB").create();
+		final Account userC = accountCreatorFactory.get().withUsername("userC").create();
+		createAppointment(userA, List.of(userB, userC));
+		greenMail.reset();
+
+		final Account userD = accountCreatorFactory.get().withUsername("userD").create();
+		final List<CalendarItem> calendarItems = getCalendarAppointments(userB);
+		final CalendarItem userBAppointment = calendarItems.get(0);
+
+		forwardAppointment(userB, String.valueOf(userBAppointment.getId()), userD.getName());
+
+		MimeMessage forwardedNotification = greenMail.getReceivedMessages()[1];
+		final Address[] recipients = forwardedNotification.getRecipients(RecipientType.TO);
+		assertEquals(1, recipients.length);
+		assertEquals(userA.getName(), recipients[0].toString());
+		final String messageContent = new String(forwardedNotification.getRawInputStream().readAllBytes());
+		assertTrue(messageContent.contains("Your meeting was forwarded"));
+		assertTrue(messageContent.contains("userb <userb@test.com>  has forwarded your meeting request to additional recipients."));
 	}
 
 	private static List<CalendarItem> getCalendarAppointments(Account userB) throws ServiceException {
