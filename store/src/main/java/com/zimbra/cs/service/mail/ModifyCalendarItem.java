@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.common.calendar.ParsedDateTime;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -185,15 +186,12 @@ public class ModifyCalendarItem extends CalendarRequest {
 
         final var startTime = inv.getStartTime();
         final var endTime = inv.getEndTime();
-
         final var newStartTime = dat.mInvite.getStartTime();
         final var newEndTime = dat.mInvite.getEndTime();
 
-        if (startTime != null && newStartTime != null && endTime != null && newEndTime != null) {
-            if(!startTime.equals(newStartTime) || !endTime.equals(newEndTime)){
-                // reset ptst
-                dat.mInvite.getAttendees().forEach(zAttendee -> zAttendee.setPartStat(IcalXmlStrMap.PARTSTAT_NEEDS_ACTION));
-            }
+        if (Utils.isValidDateTimeChange(startTime, newStartTime, endTime, newEndTime)) {
+            // reset ptst
+            dat.mInvite.getAttendees().forEach(zAttendee -> zAttendee.setPartStat(IcalXmlStrMap.PARTSTAT_NEEDS_ACTION));
         }
 
         // If we are sending this to other people, then we MUST be the organizer!
