@@ -422,11 +422,6 @@
         <version>0.7.0</version>
       </dependency>
       <dependency>
-        <groupId>net.freeutils</groupId>
-        <artifactId>jtnef</artifactId>
-        <version>1.9.0</version>
-      </dependency>
-      <dependency>
         <groupId>com.unboundid</groupId>
         <artifactId>unboundid-ldapsdk</artifactId>
         <version>${unboundid-ldapsdk.version}</version>
@@ -820,7 +815,7 @@
     <system-lambda.version>1.2.1</system-lambda.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <changelist>-SNAPSHOT</changelist>
-    <revision>24.9.3</revision>
+    <revision>24.12.0</revision>
     <mockserver.version>5.13.0</mockserver.version>
     <mariadb-java-client.version>2.7.3</mariadb-java-client.version>
   </properties>
@@ -955,7 +950,6 @@
               <exclude>qa.**</exclude>
               <!-- Exclude classes that starts with Test but were previously in src/main -->
               <exclude>com.zimbra.cs.util.yauth.**</exclude>
-              <exclude>com.zimbra.cs.util.tnef.mapi.TestTnefTimeZone.java</exclude>
               <!-- Exclude classes that were already excluded before maven migration -->
               <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
               <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>

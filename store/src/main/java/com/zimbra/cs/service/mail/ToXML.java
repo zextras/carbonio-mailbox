@@ -3180,8 +3180,7 @@ public final class ToXML {
       // we'll be replacing text/enriched with text/html
       ctype = MimeConstants.CT_TEXT_HTML;
     } else if (fname != null
-        && (MimeConstants.CT_APPLICATION_OCTET_STREAM.equals(ctype)
-            || MimeConstants.CT_APPLICATION_TNEF.equals(ctype))) {
+        && (MimeConstants.CT_APPLICATION_OCTET_STREAM.equals(ctype))) {
       String guess = MimeDetect.getMimeDetect().detect(fname);
       if (guess != null) {
         ctype = guess;

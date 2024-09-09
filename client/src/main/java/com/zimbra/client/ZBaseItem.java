@@ -132,7 +132,7 @@ public class ZBaseItem implements ZItem, ZimbraMailItem {
         return MailItemType.UNKNOWN;
     }
     /** Returns an {@link InputStream} of the raw, uncompressed content of the message.  This is the message body as
-     * received via SMTP; no postprocessing has been performed to make opaque attachments (e.g. TNEF) visible.
+     * received via SMTP; no postprocessing has been performed to make opaque attachments visible.
      *
      * @return The data stream, or <tt>null</tt> if the item has no blob
      * @throws ServiceException when the message file does not exist.

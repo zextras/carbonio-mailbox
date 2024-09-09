@@ -139,8 +139,6 @@ public final class DebugConfig {
     public static final boolean disableCalendarTZMatchByRule = value("debug_disable_calendar_tz_match_by_rule", false);
     public static final boolean disableMimeConvertersForCalendarBlobs =
             value("debug_force_mime_converters_for_calendar_blobs", false);
-    public static final boolean enableTnefToICalendarConversion =
-            value("debug_enable_tnef_to_icalendar_conversion", true);
 
     /** If true, disable the memcached-based folders/tags cache of mailboxes. */
     public static final boolean disableFoldersTagsCache = value("debug_disable_folders_tags_cache", false);

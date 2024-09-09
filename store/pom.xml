@@ -146,11 +146,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>jtnef</artifactId>
-      <groupId>net.freeutils</groupId>
-    </dependency>
-
-    <dependency>
       <artifactId>unboundid-ldapsdk</artifactId>
       <groupId>com.unboundid</groupId>
     </dependency>
