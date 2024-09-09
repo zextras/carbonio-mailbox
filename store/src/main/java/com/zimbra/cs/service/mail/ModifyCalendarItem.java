@@ -5,23 +5,6 @@
 
 package com.zimbra.cs.service.mail;
 
-import com.zimbra.common.calendar.ParsedDateTime;
-import com.zimbra.cs.mailbox.calendar.IcalXmlStrMap;
-import com.zimbra.cs.service.mail.message.parser.InviteParser;
-import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.mail.Address;
-import javax.mail.Message.RecipientType;
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -32,12 +15,25 @@ import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.OperationContext;
+import com.zimbra.cs.mailbox.calendar.IcalXmlStrMap;
 import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mailbox.calendar.InviteChanges;
 import com.zimbra.cs.mailbox.calendar.ZAttendee;
+import com.zimbra.cs.service.mail.message.parser.InviteParser;
+import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.ItemIdFormatter;
 import com.zimbra.soap.ZimbraSoapContext;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.mail.Address;
+import javax.mail.Message.RecipientType;
+import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 
 public class ModifyCalendarItem extends CalendarRequest {
@@ -193,9 +189,11 @@ public class ModifyCalendarItem extends CalendarRequest {
         final var newStartTime = dat.mInvite.getStartTime();
         final var newEndTime = dat.mInvite.getEndTime();
 
-        if(!startTime.equals(newStartTime) || !endTime.equals(newEndTime)){
-            // reset ptst
-            dat.mInvite.getAttendees().forEach(zAttendee -> zAttendee.setPartStat(IcalXmlStrMap.PARTSTAT_NEEDS_ACTION));
+        if (startTime != null && newStartTime != null && endTime != null && newEndTime != null) {
+            if(!startTime.equals(newStartTime) || !endTime.equals(newEndTime)){
+                // reset ptst
+                dat.mInvite.getAttendees().forEach(zAttendee -> zAttendee.setPartStat(IcalXmlStrMap.PARTSTAT_NEEDS_ACTION));
+            }
         }
 
         // If we are sending this to other people, then we MUST be the organizer!
