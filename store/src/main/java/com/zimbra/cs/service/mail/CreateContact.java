@@ -465,7 +465,7 @@ public class CreateContact extends MailDocumentHandler  {
                 MimePart mp = Mime.getMimePart(msg.getMimeMessage(), part);
                 String ctype = new ContentType(mp.getContentType()).getContentType();
                 String fname = mp.getFileName();
-                if (fname != null && (MimeConstants.CT_APPLICATION_OCTET_STREAM.equals(ctype) || MimeConstants.CT_APPLICATION_TNEF.equals(ctype))) {
+                if (fname != null && (MimeConstants.CT_APPLICATION_OCTET_STREAM.equals(ctype))) {
                     String guess = MimeDetect.getMimeDetect().detect(fname);
                     if (guess != null) {
                         ctype = guess;

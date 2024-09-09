@@ -71,8 +71,6 @@ public final class AttachmentQuery extends LuceneQuery {
             .putAll("ppt", MS_POWERPOINT_TYPES)
             .putAll("powerpoint", MS_POWERPOINT_TYPES)
             .putAll("application/vnd.ms-powerpoint", MS_POWERPOINT_TYPES)
-            .put("ms-tnef", "application/ms-tnef")
-            .put("application/ms-tnef", "application/ms-tnef")
             .putAll("word", MS_WORD_TYPES)
             .putAll("application/msword", MS_WORD_TYPES)
             .putAll("msword", MS_WORD_TYPES)
