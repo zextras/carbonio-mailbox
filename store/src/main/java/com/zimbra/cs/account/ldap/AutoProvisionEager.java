@@ -23,6 +23,7 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ldap.entry.LdapEntry;
 import com.zimbra.cs.ldap.IAttributes;
 import com.zimbra.cs.ldap.LdapClient;
+import com.zimbra.cs.ldap.LdapConstants;
 import com.zimbra.cs.ldap.LdapDateUtil;
 import com.zimbra.cs.ldap.LdapServerType;
 import com.zimbra.cs.ldap.LdapUsage;
@@ -35,6 +36,7 @@ import com.zimbra.cs.ldap.ZLdapFilterFactory;
 import com.zimbra.cs.util.Zimbra;
 
 public class AutoProvisionEager extends AutoProvision {
+    public static final long DELTA_FOR_LAST_TIME = 1000L;
     private EagerAutoProvisionScheduler scheduler;
 
     private AutoProvisionEager(LdapProv prov, Domain domain, EagerAutoProvisionScheduler scheduler) {
@@ -135,7 +137,8 @@ public class AutoProvisionEager extends AutoProvision {
 
     private void createAccountBatch() throws ServiceException {
 
-        long polledAt = System.currentTimeMillis();
+        long serverTime = System.currentTimeMillis();
+        long lastCreateTimestamp = 0L;
 
         List<ExternalEntry> entries = new ArrayList<>();
         boolean hitSizeLimitExceededException = searchAccounts(entries, domain.getAutoProvBatchSize());
@@ -156,6 +159,10 @@ public class AutoProvisionEager extends AutoProvision {
                 if (acct == null) {
                     stuckAcctNum++;
                 }
+
+                String createTimestampString = externalAttrs.getAttrString(LdapConstants.ATTR_createTimestamp);
+                lastCreateTimestamp = getLastCreateTimestamp(createTimestampString, lastCreateTimestamp, serverTime);
+
             } catch (ServiceException e) {
                 // log and continue with next entry
                 ZimbraLog.autoprov.warn("unable to auto create account, dn=\"" + entry.getDN() + "\"", e);
@@ -185,11 +192,34 @@ public class AutoProvisionEager extends AutoProvision {
         //
         //       See how TestLdapProvAutoProvision.eagerMode() does it.
         //
-        if (!hitSizeLimitExceededException) {
-            String lastPolledAt = LdapDateUtil.toGeneralizedTime(new Date(polledAt), domain.getCarbonioAutoProvTimestampFormat());
+        if (!hitSizeLimitExceededException && lastCreateTimestamp > 0) {
+            String lastPolledAt = LdapDateUtil.toGeneralizedTime(new Date(lastCreateTimestamp), domain.getCarbonioAutoProvTimestampFormat());
             ZimbraLog.autoprov.info("Auto Provisioning has finished for now, setting last polled timestamp: " + lastPolledAt);
             domain.setAutoProvLastPolledTimestampAsString(lastPolledAt);
         }
+    }
+
+    static long getLastCreateTimestamp(final String createTimestampString, final long lastCreateTimestamp, final long serverTime) {
+        if (lastCreateTimestamp >= serverTime) {
+            return lastCreateTimestamp;
+        }
+
+        if (createTimestampString != null && !createTimestampString.trim().isEmpty()) {
+
+            try {
+                Date date = LdapDateUtil.parseGeneralizedTime(createTimestampString);
+
+                if (date != null) {
+                    long createTimestamp = date.getTime();
+                    return Math.min(createTimestamp, serverTime) + DELTA_FOR_LAST_TIME;
+                }
+
+            } catch (NumberFormatException e) {
+                ZimbraLog.autoprov.warn("Can not convert createTimestamp to date: %s", createTimestampString);
+            }
+
+        }
+        return lastCreateTimestamp;
     }
 
     private boolean lockDomain(ZLdapContext zlc) throws ServiceException {
