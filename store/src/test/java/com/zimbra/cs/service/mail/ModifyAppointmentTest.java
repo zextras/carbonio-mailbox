@@ -1,5 +1,7 @@
 package com.zimbra.cs.service.mail;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.icegreen.greenmail.util.GreenMail;
@@ -7,9 +9,11 @@ import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.soap.SoapUtils;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
+import com.zimbra.common.mailbox.FolderConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.JSONElement;
+import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
@@ -17,6 +21,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Folder;
+import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.calendar.IcalXmlStrMap;
 import com.zimbra.cs.mailclient.smtp.SmtpConfig;
@@ -128,6 +133,53 @@ class ModifyAppointmentTest extends SoapTestSuite {
     assertTrue(
         calendarItemModified.getInvite(0).getAttendees().get(0).getPartStat()
             .equalsIgnoreCase(IcalXmlStrMap.PARTSTAT_NEEDS_ACTION));
+  }
+
+  @Test
+  void modify_appointment_should_throw_no_such_item_exception_when_item_not_found() throws Exception {
+    var organizer = accountCreatorFactory.get().withUsername(UUID.randomUUID().toString()).create();
+    var attendee = accountCreatorFactory.get().withUsername(UUID.randomUUID().toString()).create();
+    var eventTitle = "Event Title";
+    var timezone = "Asia/Calcutta";
+    var startTime = "20250907T163000";
+    var endTime = "20250907T180000";
+    var location = "";
+
+    var appointmentData = new AppointmentData(eventTitle, organizer, attendee, timezone, startTime,
+        endTime, location);
+
+    var mailServiceException = assertThrows(MailServiceException.class,
+        () -> modifyCalendarAppointment(appointmentData, "456"));
+
+    assertTrue(mailServiceException.getMessage().contains("no such item: 456"));
+    assertSame(MailServiceException.NO_SUCH_ITEM, mailServiceException.getCode());
+  }
+
+  @Test
+  void modify_appointment_should_throw_invalid_reuqest_exception_when_item_is_in_trash() throws Exception {
+    var organizer = accountCreatorFactory.get().withUsername(UUID.randomUUID().toString()).create();
+    var attendee = accountCreatorFactory.get().withUsername(UUID.randomUUID().toString()).create();
+    var eventTitle = "Event Title";
+    var timezone = "Asia/Calcutta";
+    var startTime = "20250907T163000";
+    var endTime = "20250907T180000";
+    var location = "";
+
+    var appointmentData = new AppointmentData(eventTitle, organizer, attendee, timezone, startTime,
+        endTime, location);
+
+    CreateAppointmentResponse createAppointmentResponse = JaxbUtil.elementToJaxb(
+        createSimpleAppointment(appointmentData));
+
+    assert createAppointmentResponse != null;
+    var calendarItem = getCalendarItemById(organizer, createAppointmentResponse.getCalItemId());
+    moveItemToFolderForAccount(organizer, String.valueOf(calendarItem.getId()), FolderConstants.ID_FOLDER_TRASH );
+
+    var serviceException = assertThrows(ServiceException.class,
+        () -> modifyCalendarAppointment(appointmentData, createAppointmentResponse.getCalInvId()));
+
+    assertTrue(serviceException.getMessage().contains("cannot modify a calendar item under trash"));
+    assertSame(ServiceException.INVALID_REQUEST, serviceException.getCode());
   }
 
   @Test
@@ -363,7 +415,6 @@ class ModifyAppointmentTest extends SoapTestSuite {
     public String timezone;
     public String startTime;
     public String endTime;
-
     public String location;
 
     public AppointmentData(String eventTitle, Account organiser, Account attendee, String timezone,
@@ -376,6 +427,21 @@ class ModifyAppointmentTest extends SoapTestSuite {
       this.endTime = endTime;
       this.location = location;
     }
+  }
+
+  @SuppressWarnings("SameParameterValue")
+  private void moveItemToFolderForAccount(Account targetAccount, String itemId, int targetFolderId)
+      throws ServiceException {
+    Element itemActionSelectorElement = new XMLElement(MailConstants.E_ACTION);
+    itemActionSelectorElement.addAttribute(MailConstants.A_ID, itemId);
+    itemActionSelectorElement.addAttribute(MailConstants.A_OPERATION, FolderAction.OP_MOVE);
+    itemActionSelectorElement.addAttribute(MailConstants.A_FOLDER, targetFolderId);
+
+    Element itemActionRequestElement = new XMLElement(MailConstants.E_ITEM_ACTION_REQUEST);
+    itemActionRequestElement.addUniqueElement(itemActionSelectorElement);
+
+    var itemActionHandler = new ItemAction();
+    itemActionHandler.handle(itemActionRequestElement, getSoapContextForAccount(targetAccount, false));
   }
 
 }
