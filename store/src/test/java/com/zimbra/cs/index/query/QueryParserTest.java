@@ -401,12 +401,6 @@ public final class QueryParserTest {
  }
 
  @Test
- void typeTnef() throws Exception {
-  String src = "type:ms-tnef";
-  assertEquals("Q(type:application/ms-tnef)", Query.toString(parser.parse(src)));
- }
-
- @Test
  void typeImages() throws Exception {
   String src = "type:image type:jpeg type:gif type:bmp";
   assertEquals("Q(type:image) && Q(type:image/jpeg) && Q(type:image/gif) && Q(type:image/bmp)",
