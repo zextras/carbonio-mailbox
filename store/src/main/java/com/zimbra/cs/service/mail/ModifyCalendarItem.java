@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.service.mail;
 
-import com.zimbra.common.calendar.ParsedDateTime;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -41,10 +40,10 @@ public class ModifyCalendarItem extends CalendarRequest {
 
     // very simple: generate a new UID and send a REQUEST
     protected class ModifyCalendarItemParser extends InviteParser {
-        private Invite mInv;
-        private Invite mSeriesInv;
-        private List<ZAttendee> mAttendeesAdded;
-        private List<ZAttendee> mAttendeesCanceled;
+        private final Invite mInv;
+        private final Invite mSeriesInv;
+        private final List<ZAttendee> mAttendeesAdded;
+        private final List<ZAttendee> mAttendeesCanceled;
 
         ModifyCalendarItemParser(Invite inv, Invite seriesInv) {
             mInv = inv;
@@ -59,9 +58,8 @@ public class ModifyCalendarItem extends CalendarRequest {
         @Override
         public InviteParserResult parseInviteElement(ZimbraSoapContext lc, OperationContext octxt,
                 Account account, Element inviteElem) throws ServiceException {
-            InviteParserResult toRet = CalendarUtils.parseInviteForModify(account, getItemType(),
+            return CalendarUtils.parseInviteForModify(account, getItemType(),
                     inviteElem, mInv, mSeriesInv, mAttendeesAdded, mAttendeesCanceled, !mInv.hasRecurId());
-            return toRet;
         }
     }
 
@@ -231,10 +229,8 @@ public class ModifyCalendarItem extends CalendarRequest {
         if (inv.isOrganizer()) {
             // Notify removed attendees before making any changes to the appointment.
             List<ZAttendee> atsCanceled = parser.getAttendeesCanceled();
-            if (!inv.isNeverSent()) {  // No need to notify for a draft appointment.
-                if (!atsCanceled.isEmpty()) {
-                    notifyRemovedAttendees(zsc, octxt, acct, mbox, inv.getCalendarItem(), inv, atsCanceled, sendQueue);
-                }
+            if (!inv.isNeverSent() && !atsCanceled.isEmpty()) {  // No need to notify for a draft appointment.
+                notifyRemovedAttendees(zsc, octxt, acct, mbox, inv.getCalendarItem(), inv, atsCanceled, sendQueue);
             }
 
             List<ZAttendee> atsAdded = parser.getAttendeesAdded();
