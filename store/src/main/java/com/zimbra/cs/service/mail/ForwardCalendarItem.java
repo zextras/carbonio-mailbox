@@ -306,6 +306,7 @@ public class ForwardCalendarItem extends CalendarRequest {
           if (name != null && name.length() > 0) att.addParameter(new ZParameter(ICalTok.CN, name));
           att.addParameter(new ZParameter(ICalTok.PARTSTAT, ICalTok.NEEDS_ACTION.toString()));
           att.addParameter(new ZParameter(ICalTok.RSVP, "TRUE"));
+          att.addParameter(new ZParameter(ICalTok.ROLE, ICalTok.REQ_PARTICIPANT.toString()));
           comp.addProperty(att);
         }
       }

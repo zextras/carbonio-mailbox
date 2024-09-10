@@ -90,7 +90,9 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 
 		MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
 		final String ics = extractIcsFromMessage(receivedMessage, 2);
-		Assertions.assertTrue(ics.contains("ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:userc@test.com"));
+		
+		Assertions.assertTrue(ics.contains("ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;" +
+				"ROLE=REQ-PARTICIPANT:mailto:userc@t\r\n est.com"));
 		Assertions.assertTrue(ics.contains("ATTENDEE;CN=userb@test.com;ROLE=REQ-PARTICIPANT:mailto:userb@test.com"));
 		Assertions.assertTrue(ics.contains("ATTENDEE;CN=userd@test.com;ROLE=REQ-PARTICIPANT:mailto:userd@test.com"));
 	}
