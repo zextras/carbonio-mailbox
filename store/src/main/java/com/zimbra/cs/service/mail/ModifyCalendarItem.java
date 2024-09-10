@@ -5,20 +5,6 @@
 
 package com.zimbra.cs.service.mail;
 
-import com.zimbra.cs.service.mail.message.parser.InviteParser;
-import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.mail.Address;
-import javax.mail.Message.RecipientType;
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -29,22 +15,35 @@ import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.OperationContext;
+import com.zimbra.cs.mailbox.calendar.IcalXmlStrMap;
 import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mailbox.calendar.InviteChanges;
 import com.zimbra.cs.mailbox.calendar.ZAttendee;
+import com.zimbra.cs.service.mail.message.parser.InviteParser;
+import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.ItemIdFormatter;
 import com.zimbra.soap.ZimbraSoapContext;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.mail.Address;
+import javax.mail.Message.RecipientType;
+import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 
 public class ModifyCalendarItem extends CalendarRequest {
 
     // very simple: generate a new UID and send a REQUEST
     protected class ModifyCalendarItemParser extends InviteParser {
-        private Invite mInv;
-        private Invite mSeriesInv;
-        private List<ZAttendee> mAttendeesAdded;
-        private List<ZAttendee> mAttendeesCanceled;
+        private final Invite mInv;
+        private final Invite mSeriesInv;
+        private final List<ZAttendee> mAttendeesAdded;
+        private final List<ZAttendee> mAttendeesCanceled;
 
         ModifyCalendarItemParser(Invite inv, Invite seriesInv) {
             mInv = inv;
@@ -59,9 +58,8 @@ public class ModifyCalendarItem extends CalendarRequest {
         @Override
         public InviteParserResult parseInviteElement(ZimbraSoapContext lc, OperationContext octxt,
                 Account account, Element inviteElem) throws ServiceException {
-            InviteParserResult toRet = CalendarUtils.parseInviteForModify(account, getItemType(),
+            return CalendarUtils.parseInviteForModify(account, getItemType(),
                     inviteElem, mInv, mSeriesInv, mAttendeesAdded, mAttendeesCanceled, !mInv.hasRecurId());
-            return toRet;
         }
     }
 
@@ -183,6 +181,17 @@ public class ModifyCalendarItem extends CalendarRequest {
         } catch (MessagingException e) {
             throw ServiceException.FAILURE("Checking recipients of outgoing msg ", e);
         }
+
+        final var startTime = inv.getStartTime();
+        final var endTime = inv.getEndTime();
+        final var newStartTime = dat.mInvite.getStartTime();
+        final var newEndTime = dat.mInvite.getEndTime();
+
+        if (Utils.isValidDateTimeChange(startTime, newStartTime, endTime, newEndTime)) {
+            // reset ptst
+            dat.mInvite.getAttendees().forEach(zAttendee -> zAttendee.setPartStat(IcalXmlStrMap.PARTSTAT_NEEDS_ACTION));
+        }
+
         // If we are sending this to other people, then we MUST be the organizer!
         if (!dat.mInvite.isOrganizer() && hasRecipients)
             throw MailServiceException.MUST_BE_ORGANIZER("ModifyCalendarItem");
@@ -220,10 +229,8 @@ public class ModifyCalendarItem extends CalendarRequest {
         if (inv.isOrganizer()) {
             // Notify removed attendees before making any changes to the appointment.
             List<ZAttendee> atsCanceled = parser.getAttendeesCanceled();
-            if (!inv.isNeverSent()) {  // No need to notify for a draft appointment.
-                if (!atsCanceled.isEmpty()) {
-                    notifyRemovedAttendees(zsc, octxt, acct, mbox, inv.getCalendarItem(), inv, atsCanceled, sendQueue);
-                }
+            if (!inv.isNeverSent() && !atsCanceled.isEmpty()) {  // No need to notify for a draft appointment.
+                notifyRemovedAttendees(zsc, octxt, acct, mbox, inv.getCalendarItem(), inv, atsCanceled, sendQueue);
             }
 
             List<ZAttendee> atsAdded = parser.getAttendeesAdded();
