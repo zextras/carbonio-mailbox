@@ -185,6 +185,7 @@ public class WsdlDocGenerator {
     Map<Package, String> pkgToNamespace = Maps.newHashMap();
     Root root = new Root();
     for (Class<?> jaxbClass : classes) {
+      System.out.println("Wsdl generate for class: " + jaxbClass);
       JaxbInfo jaxbInfo = JaxbInfo.getFromCache(jaxbClass);
       String namespace = getNamespace(jaxbClass, pkgToNamespace);
       Service svc = root.getServiceForNamespace(namespace);

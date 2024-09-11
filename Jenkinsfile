@@ -59,7 +59,7 @@ def buildRpmPackages(String flavor) {
 pipeline {
     agent {
         node {
-            label 'carbonio-agent-v2'
+            label 'zextras-agent-v4'
         }
     }
 
@@ -74,8 +74,6 @@ pipeline {
     }
 
     environment {
-        JAVA_HOME='/usr/lib/jvm/java-11-openjdk-amd64'
-        JAVA_PATH='${JAVA_HOME}/bin'
         JAVA_OPTS='-Dfile.encoding=UTF8'
         LC_ALL='C.UTF-8'
         MAVEN_OPTS = "-Xmx4g"
