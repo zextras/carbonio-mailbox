@@ -141,10 +141,6 @@ pipeline {
         }
 
         stage('Sonarqube Analysis') {
-            environment {
-                JAVA_HOME='/usr/lib/jvm/java-17-openjdk-amd64'
-                JAVA_PATH='${JAVA_HOME}/bin'
-            }
             when {
                 allOf {
                     expression { params.SKIP_SONARQUBE == false }
