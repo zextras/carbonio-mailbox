@@ -6,6 +6,7 @@ package com.zimbra.doc.soap.doclet;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
@@ -77,7 +78,8 @@ public class CarbonioApiListener {
             for (DocTree tag : docCommentTree.getBlockTags()) {
                 if (tag instanceof UnknownBlockTagTree customTag) {
                     String tagName = customTag.getTagName();
-                    String tagContent = customTag.getContent().toString();
+                    String tagContent = getContent(customTag);
+                    System.out.println(classElement.getSimpleName() + " " + tagName + " " + tagContent);
                     switch (tagName) {
                         case ZmApiTags.TAG_COMMAND_DESCRIPTION:
                             doc.setCommandDescription(tagContent);
@@ -108,6 +110,12 @@ public class CarbonioApiListener {
 
     }
 
+    private String getContent(UnknownBlockTagTree customTag) {
+        return customTag.getContent().stream()
+                .map(DocTree::toString)
+                .collect(Collectors.joining());
+    }
+
     /**
      * Process class-level tags (represented as comments or annotations).
      */
@@ -117,7 +125,7 @@ public class CarbonioApiListener {
             for (DocTree tag : docCommentTree.getBlockTags()) {
                 if (tag instanceof UnknownBlockTagTree customTag) {
                     String tagName = customTag.getTagName();
-                    String tagContent = customTag.getContent().toString();
+                    String tagContent = getContent(customTag);
                     if (ZmApiTags.TAG_FIELD_DESCRIPTION.equals(tagName)) {
                         doc.addFieldDescription(fieldElement.getSimpleName().toString(), tagContent);
                     } else if (ZmApiTags.TAG_FIELD_TAG.equals(tagName)) {
@@ -140,7 +148,7 @@ public class CarbonioApiListener {
             for (DocTree tag : docCommentTree.getBlockTags()) {
                 if (tag instanceof UnknownBlockTagTree customTag) {
                     String tagName = customTag.getTagName();
-                    String tagContent = customTag.getContent().toString();
+                    String tagContent = getContent(customTag);
                     if (ZmApiTags.TAG_FIELD_DESCRIPTION.equals(tagName)) {
                         doc.addFieldDescription(fieldName, tagContent);
                     } else if (ZmApiTags.TAG_FIELD_TAG.equals(tagName)) {
