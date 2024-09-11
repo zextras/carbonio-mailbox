@@ -588,7 +588,7 @@ public class FileUploadServletTest {
 
     Provisioning.getInstance().getConfig().setMtaMaxMessageSize(0);
 
-    //note that lbfums is false
+    //set lbfums to false to enforce limit using zimbraMtaMaxMessageSize
     var httpResponse = executeUploadRequestWithDummyData(authToken, fileSize, asciiFileName, utf8EncodeFileName, false);
     var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
     var jsonArray = new JSONArray("[" + responseContent + "]");
@@ -614,7 +614,7 @@ public class FileUploadServletTest {
 
     account.setFileUploadMaxSizePerFile(0);
 
-    //note that lbfums is true
+    //set lbfums to true to enforce limit using zimbraFileUploadMaxSizePerFile
     var httpResponse = executeUploadRequestWithDummyData(authToken, fileSize, asciiFileName, utf8EncodeFileName, true);
     var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
     var jsonArray = new JSONArray("[" + responseContent + "]");
@@ -640,7 +640,7 @@ public class FileUploadServletTest {
 
     Provisioning.getInstance().getConfig().setMtaMaxMessageSize(10);
 
-    //note that lbfums is false
+    //set lbfums to false to enforce limit using zimbraMtaMaxMessageSize
     var httpResponse = executeUploadRequestWithDummyData(authToken, fileSize, asciiFileName, utf8EncodeFileName, false);
     var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
     var jsonArray = new JSONArray("[" + responseContent + "]");
@@ -660,7 +660,7 @@ public class FileUploadServletTest {
 
     account.setFileUploadMaxSizePerFile(10);
 
-    //note that lbfums is true
+    //set lbfums to true to enforce limit using zimbraFileUploadMaxSizePerFile
     var httpResponse = executeUploadRequestWithDummyData(authToken, fileSize, asciiFileName, utf8EncodeFileName, true);
     var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
     var jsonArray = new JSONArray("[" + responseContent + "]");
@@ -680,6 +680,7 @@ public class FileUploadServletTest {
 
     Provisioning.getInstance().getConfig().setMtaMaxMessageSize(10);
 
+    //set lbfums to false to enforce limit using zimbraMtaMaxMessageSize
     var httpResponse = executeUploadRequestWithDummyData(authToken, fileSize, asciiFileName, utf8EncodeFileName, false);
     var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
     var jsonArray = new JSONArray("[" + responseContent + "]");
