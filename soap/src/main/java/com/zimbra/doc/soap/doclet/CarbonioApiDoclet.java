@@ -8,6 +8,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.ElementScanner9;
 
+import com.sun.source.util.DocTrees;
 import com.zimbra.doc.soap.Root;
 import com.zimbra.doc.soap.SoapDocException;
 import com.zimbra.doc.soap.WsdlDocGenerator;
@@ -158,6 +159,7 @@ public class CarbonioApiDoclet implements Doclet {
 
     @Override
     public boolean run(DocletEnvironment docEnv) {
+        DocTrees docTrees = docEnv.getDocTrees();
         try {
             // Ensure output directory exists
             File dir = new File(outputDir);
@@ -180,14 +182,15 @@ public class CarbonioApiDoclet implements Doclet {
 
                 // Iterate over all classes and document them
 
-                CarbonioApiListener  listener = new CarbonioApiListener(reporter);
+                CarbonioApiListener  listener = new CarbonioApiListener(reporter, docTrees);
 
                 listener.processJavadocResults(docEnv);
 
 
                 Thread.currentThread().setContextClassLoader(JaxbUtil.class.getClassLoader());
-
+                System.out.println(listener.getDocMap().isEmpty());
                 Root soapApiDataModelRoot = WsdlDocGenerator.processJaxbClasses(listener.getDocMap());
+                System.out.println(listener.getDocMap());
                 Properties templateContext = new Properties();
                 templateContext.setProperty(TemplateHandler.PROP_TEMPLATES_DIR, templatesDir);
                 templateContext.setProperty(TemplateHandler.PROP_OUTPUT_DIR, outputDir);

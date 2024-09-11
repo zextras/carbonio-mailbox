@@ -7,14 +7,16 @@ package com.zimbra.doc.soap.doclet;
 import java.util.Map;
 import java.util.HashMap;
 
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.ElementKind;
 
+import com.sun.source.doctree.DocCommentTree;
+import com.sun.source.doctree.DocTree;
+import com.sun.source.doctree.UnknownBlockTagTree;
+import com.sun.source.util.DocTrees;
 import jdk.javadoc.doclet.DocletEnvironment;
 
 import com.zimbra.doc.soap.ApiClassDocumentation;
@@ -29,21 +31,22 @@ public class CarbonioApiListener {
     /**
      * Maps class names to related documentation
      */
-    private Map<String, ApiClassDocumentation> docMap = new HashMap<>();
-    private Reporter reporter;
+    private final Map<String, ApiClassDocumentation> docMap = new HashMap<>();
+    private final DocTrees docTrees;
 
-    CarbonioApiListener(Reporter reporter) {
-        this.reporter = reporter;
+    CarbonioApiListener(Reporter reporter, DocTrees docTrees) {
+        this.docTrees = docTrees;
     }
 
     /**
      * Processes the Javadoc results using the new Doclet API
      */
     public void processJavadocResults(DocletEnvironment docEnv) {
-        for (Element element : docEnv.getIncludedElements()) {
-            System.out.println("CarbonioApiListener element: " + element.getSimpleName());
-            if (element.getKind() == ElementKind.CLASS) {
-                processClass((TypeElement) element);
+        for (Element elementSpecified : docEnv.getSpecifiedElements()) {
+            for (Element element : elementSpecified.getEnclosedElements()) {
+                if (element.getKind() == ElementKind.CLASS) {
+                    processClass((TypeElement) element);
+                }
             }
         }
     }
@@ -54,10 +57,8 @@ public class CarbonioApiListener {
     private void processClass(TypeElement classElement) {
         ApiClassDocumentation doc = new ApiClassDocumentation();
 
-        // Process class-level tags (annotations or comments)
         processClassTags(doc, classElement);
 
-        // Process fields
         for (Element enclosedElement : classElement.getEnclosedElements()) {
             if (enclosedElement.getKind() == ElementKind.FIELD) {
                 processFieldTags(doc, (VariableElement) enclosedElement);
@@ -65,47 +66,66 @@ public class CarbonioApiListener {
                 processMethodTags(doc, (ExecutableElement) enclosedElement);
             }
         }
-
         if (doc.hasDocumentation()) {
             docMap.put(classElement.getQualifiedName().toString(), doc);
         }
     }
 
     private void processClassTags(ApiClassDocumentation doc, TypeElement classElement) {
-        for (AnnotationMirror annotationMirror : classElement.getAnnotationMirrors()) {
-            String annotationName = annotationMirror.getAnnotationType().toString();
-            // Process the annotation based on its name
-            if (ZmApiTags.TAG_COMMAND_DESCRIPTION.equals(annotationName)) {
-                doc.setCommandDescription(getAnnotationValue(annotationMirror));
-            } else if (ZmApiTags.TAG_COMMAND_REQUEST_DESCRIPTION.equals(annotationName)) {
-                doc.setClassDescription(getAnnotationValue(annotationMirror));
-            } else if (ZmApiTags.TAG_COMMAND_NETWORK_ONLY.equals(annotationName)) {
-                doc.setNetworkEdition(true);
-            } else if (ZmApiTags.TAG_COMMAND_DEPRECATION_INFO.equals(annotationName)) {
-                doc.setDeprecationDescription(getAnnotationValue(annotationMirror));
-            } else if (ZmApiTags.TAG_COMMAND_AUTH_REQUIRED.equals(annotationName)) {
-                doc.setAuthRequiredDescription(getAnnotationValue(annotationMirror));
-            } else if (ZmApiTags.TAG_COMMAND_ADMIN_AUTH_REQUIRED.equals(annotationName)) {
-                doc.setAdminAuthRequiredDescription(getAnnotationValue(annotationMirror));
-            } else if (ZmApiTags.TAG_COMMAND_RESPONSE_DESCRIPTION.equals(annotationName)) {
-                doc.setClassDescription(getAnnotationValue(annotationMirror));
+        DocCommentTree docCommentTree = docTrees.getDocCommentTree(classElement);
+        if (docCommentTree != null) {
+            for (DocTree tag : docCommentTree.getBlockTags()) {
+                if (tag instanceof UnknownBlockTagTree customTag) {
+                    String tagName = customTag.getTagName();
+                    String tagContent = customTag.getContent().toString();
+                    switch (tagName) {
+                        case ZmApiTags.TAG_COMMAND_DESCRIPTION:
+                            doc.setCommandDescription(tagContent);
+                            break;
+                        case ZmApiTags.TAG_COMMAND_REQUEST_DESCRIPTION:
+                        case ZmApiTags.TAG_COMMAND_RESPONSE_DESCRIPTION:
+                            doc.setClassDescription(tagContent);
+                            break;
+                        case ZmApiTags.TAG_COMMAND_NETWORK_ONLY:
+                            doc.setNetworkEdition(true);
+                            break;
+                        case ZmApiTags.TAG_COMMAND_DEPRECATION_INFO:
+                            doc.setDeprecationDescription(tagContent);
+                            break;
+                        case ZmApiTags.TAG_COMMAND_AUTH_REQUIRED:
+                            doc.setAuthRequiredDescription(tagContent);
+                            break;
+                        case ZmApiTags.TAG_COMMAND_ADMIN_AUTH_REQUIRED:
+                            doc.setAdminAuthRequiredDescription(tagContent);
+                            break;
+                        default:
+                            // Handle any other cases if needed
+                            break;
+                    }
+                }
             }
         }
-    }
 
+    }
 
     /**
      * Process class-level tags (represented as comments or annotations).
      */
     private void processFieldTags(ApiClassDocumentation doc, VariableElement fieldElement) {
-        for (AnnotationMirror annotationMirror : fieldElement.getAnnotationMirrors()) {
-            String annotationName = annotationMirror.getAnnotationType().toString();
-            // Process the annotation based on its name
-            if (ZmApiTags.TAG_FIELD_DESCRIPTION.equals(annotationName)) {
-                doc.addFieldDescription(fieldElement.getSimpleName().toString(), getAnnotationValue(annotationMirror));
-            } else if (ZmApiTags.TAG_FIELD_TAG.equals(annotationName)) {
-                doc.addFieldTag(fieldElement.getSimpleName().toString(), getAnnotationValue(annotationMirror));
+        DocCommentTree docCommentTree = docTrees.getDocCommentTree(fieldElement);
+        if (docCommentTree != null) {
+            for (DocTree tag : docCommentTree.getBlockTags()) {
+                if (tag instanceof UnknownBlockTagTree customTag) {
+                    String tagName = customTag.getTagName();
+                    String tagContent = customTag.getContent().toString();
+                    if (ZmApiTags.TAG_FIELD_DESCRIPTION.equals(tagName)) {
+                        doc.addFieldDescription(fieldElement.getSimpleName().toString(), tagContent);
+                    } else if (ZmApiTags.TAG_FIELD_TAG.equals(tagName)) {
+                        doc.addFieldTag(fieldElement.getSimpleName().toString(), tagContent);
+                    }
+                }
             }
+
         }
     }
 
@@ -115,25 +135,20 @@ public class CarbonioApiListener {
             return;
         }
 
-        for (AnnotationMirror annotationMirror : methodElement.getAnnotationMirrors()) {
-            String annotationName = annotationMirror.getAnnotationType().toString();
-            if (ZmApiTags.TAG_FIELD_DESCRIPTION.equals(annotationName)) {
-                doc.addFieldDescription(fieldName, getAnnotationValue(annotationMirror));
-            } else if (ZmApiTags.TAG_FIELD_TAG.equals(annotationName)) {
-                doc.addFieldTag(fieldName, getAnnotationValue(annotationMirror));
+        DocCommentTree docCommentTree = docTrees.getDocCommentTree(methodElement);
+        if (docCommentTree != null) {
+            for (DocTree tag : docCommentTree.getBlockTags()) {
+                if (tag instanceof UnknownBlockTagTree customTag) {
+                    String tagName = customTag.getTagName();
+                    String tagContent = customTag.getContent().toString();
+                    if (ZmApiTags.TAG_FIELD_DESCRIPTION.equals(tagName)) {
+                        doc.addFieldDescription(fieldName, tagContent);
+                    } else if (ZmApiTags.TAG_FIELD_TAG.equals(tagName)) {
+                        doc.addFieldTag(fieldName, tagContent);
+                    }
+                }
             }
         }
-    }
-
-    private String getAnnotationValue(AnnotationMirror annotationMirror) {
-        // You can extract values from AnnotationMirror if necessary
-        for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry :
-                annotationMirror.getElementValues().entrySet()) {
-            String elementName = entry.getKey().getSimpleName().toString();
-            Object value = entry.getValue().getValue();
-            return value != null ? value.toString() : "";
-        }
-        return "";
     }
 
     /**
