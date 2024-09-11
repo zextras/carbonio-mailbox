@@ -5,8 +5,6 @@
 package com.zimbra.doc.soap.doclet;
 import javax.tools.*;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.ElementScanner9;
 
 import com.sun.source.util.DocTrees;
 import com.zimbra.doc.soap.Root;
@@ -182,15 +180,13 @@ public class CarbonioApiDoclet implements Doclet {
 
                 // Iterate over all classes and document them
 
-                CarbonioApiListener  listener = new CarbonioApiListener(reporter, docTrees);
+                CarbonioApiListener  listener = new CarbonioApiListener(docTrees);
 
                 listener.processJavadocResults(docEnv);
 
 
                 Thread.currentThread().setContextClassLoader(JaxbUtil.class.getClassLoader());
-                System.out.println(listener.getDocMap().isEmpty());
                 Root soapApiDataModelRoot = WsdlDocGenerator.processJaxbClasses(listener.getDocMap());
-                System.out.println(listener.getDocMap());
                 Properties templateContext = new Properties();
                 templateContext.setProperty(TemplateHandler.PROP_TEMPLATES_DIR, templatesDir);
                 templateContext.setProperty(TemplateHandler.PROP_OUTPUT_DIR, outputDir);
@@ -218,24 +214,6 @@ public class CarbonioApiDoclet implements Doclet {
         }
         return true;
     }
-
-    private void scanClass(TypeElement classElement, FileWriter writer) throws IOException {
-        writer.write("  Methods:\n");
-        ElementScanner9<Void, FileWriter> scanner = new ElementScanner9<>() {
-            @Override
-            public Void visitExecutable(javax.lang.model.element.ExecutableElement e, FileWriter writer) {
-                try {
-                    writer.write("    " + e.getSimpleName() + "\n");
-                } catch (IOException ex) {
-                    reporter.print(Diagnostic.Kind.ERROR, "Error generating API documentation: " + ex.getMessage());
-                    ex.printStackTrace();
-                }
-                return null;
-            }
-        };
-        scanner.scan(classElement, writer);
-    }
-
 
     @Override
     public String getName() {

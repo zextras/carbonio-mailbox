@@ -22,7 +22,6 @@ import jdk.javadoc.doclet.DocletEnvironment;
 
 import com.zimbra.doc.soap.ApiClassDocumentation;
 import com.zimbra.doc.soap.ZmApiTags;
-import jdk.javadoc.doclet.Reporter;
 
 /**
  * This class listens to and processes the doclet API to extract annotations and tags.
@@ -35,7 +34,7 @@ public class CarbonioApiListener {
     private final Map<String, ApiClassDocumentation> docMap = new HashMap<>();
     private final DocTrees docTrees;
 
-    CarbonioApiListener(Reporter reporter, DocTrees docTrees) {
+    CarbonioApiListener(DocTrees docTrees) {
         this.docTrees = docTrees;
     }
 
@@ -79,13 +78,11 @@ public class CarbonioApiListener {
                 if (tag instanceof UnknownBlockTagTree customTag) {
                     String tagName = customTag.getTagName();
                     String tagContent = getContent(customTag);
-                    System.out.println(classElement.getSimpleName() + " " + tagName + " " + tagContent);
                     switch (tagName) {
                         case ZmApiTags.TAG_COMMAND_DESCRIPTION:
                             doc.setCommandDescription(tagContent);
                             break;
-                        case ZmApiTags.TAG_COMMAND_REQUEST_DESCRIPTION:
-                        case ZmApiTags.TAG_COMMAND_RESPONSE_DESCRIPTION:
+                        case ZmApiTags.TAG_COMMAND_REQUEST_DESCRIPTION, ZmApiTags.TAG_COMMAND_RESPONSE_DESCRIPTION:
                             doc.setClassDescription(tagContent);
                             break;
                         case ZmApiTags.TAG_COMMAND_NETWORK_ONLY:
