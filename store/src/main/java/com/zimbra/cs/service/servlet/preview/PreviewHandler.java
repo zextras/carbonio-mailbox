@@ -163,7 +163,7 @@ public class PreviewHandler {
             ex -> respondWithError(request, response, HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage()))
         .onFailure(ex -> {
           var message = ex.getMessage();
-          if (message == null || message.trim().isEmpty()) {
+          if (ex instanceof NullPointerException || message == null || message.trim().isEmpty()) {
             message = "Something went wrong while processing preview of attachment.";
           }
           respondWithError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message);
