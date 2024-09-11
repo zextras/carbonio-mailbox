@@ -578,7 +578,7 @@ public class FileUploadServletTest {
   }
 
   @Test
-  void should_be_able_upload_unlimited_when_zimbraMtaMaxMessageSize()
+  void should_be_able_upload_unlimited_when_zimbraMtaMaxMessageSize_is_set_to_zero()
       throws Exception {
     var account = accountCreatorFactory.get().create();
     var authToken = AuthProvider.getAuthToken(account);
@@ -604,7 +604,7 @@ public class FileUploadServletTest {
   }
 
   @Test
-  void should_be_able_upload_unlimited_when_FileUploadMaxSizePerFile_is_zero()
+  void should_be_able_upload_unlimited_when_FileUploadMaxSizePerFile_is_set_to_zero()
       throws Exception {
     var account = accountCreatorFactory.get().create();
     var authToken = AuthProvider.getAuthToken(account);
