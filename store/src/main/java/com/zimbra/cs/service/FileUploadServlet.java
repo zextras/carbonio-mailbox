@@ -465,12 +465,12 @@ public class FileUploadServlet extends ZimbraServlet {
         }
       } else {
         maxSize = Provisioning.getInstance().getConfig().getMtaMaxMessageSize();
-        if (maxSize == 0) {
-          /* zimbraMtaMaxMessageSize=0 means "no limit".  The return value from this function gets used
-           * by FileUploadBase "sizeMax" where "-1" means "no limit"
-           */
-          maxSize = -1;
-        }
+      }
+      if (maxSize == 0) {
+        /* zimbraMtaMaxMessageSize=0 means "no limit".  The return value from this function gets used
+         * by FileUploadBase "sizeMax" where "-1" means "no limit"
+         */
+        maxSize = -1;
       }
     } catch (ServiceException e) {
       mLog.error(
