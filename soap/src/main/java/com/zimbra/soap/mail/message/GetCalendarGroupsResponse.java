@@ -21,7 +21,7 @@ public class GetCalendarGroupsResponse {
   /**
    * @zm-api-field-description Calendar groups list
    */
-  @XmlElement(name = "groups" /* groups */, required = true)
+  @XmlElement(name = "group" /* group */, required = true)
   private List<CalendarGroupInfo> groups;
 
   /** no-argument constructor wanted by JAXB */
@@ -57,7 +57,7 @@ public class GetCalendarGroupsResponse {
      * @zm-api-field-tag calendarIds
      * @zm-api-field-description Calendar IDs
      */
-    @XmlAttribute(name = "calendarIds" /* calendarIds */, required = true)
+    @XmlElement(name = "calendarId" /* calendarId */, required = true)
     private List<String> calendarIds;
 
     /** no-argument constructor wanted by JAXB */
