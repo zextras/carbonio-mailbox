@@ -523,7 +523,8 @@ public final class SearchParams implements Cloneable, ZimbraSearchParams {
     params.setHopCount(zsc.getHopCount());
     params.setCalItemExpandStart(MoreObjects.firstNonNull(soapParams.getCalItemExpandStart(), -1L));
     params.setCalItemExpandEnd(MoreObjects.firstNonNull(soapParams.getCalItemExpandEnd(), -1L));
-    String query = soapParams.getQuery() == null ? defaultQueryStr : soapParams.getQuery();
+    String query = soapParams.getQuery() == null || soapParams.getQuery().trim().isEmpty() ?
+            defaultQueryStr : soapParams.getQuery();
     if (query == null) {
       throw ServiceException.INVALID_REQUEST("no query submitted and no default query found", null);
     }

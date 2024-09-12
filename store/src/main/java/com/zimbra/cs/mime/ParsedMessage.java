@@ -1022,7 +1022,7 @@ public final class ParsedMessage {
                     getMessageID(), getSubject(), e);
         }
 
-        // Get the list of attachment content types from this message and any TNEF attachments
+        // Get the list of attachment content types from this message
         doc.addAttachments(new MimeTypeTokenStream(Mime.getAttachmentTypeList(messageParts)));
         return doc;
     }
