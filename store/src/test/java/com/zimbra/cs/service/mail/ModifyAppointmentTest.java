@@ -231,20 +231,6 @@ class ModifyAppointmentTest extends SoapTestSuite {
         CreateMountpointResponse.class);
   }
 
-  private CreateAppointmentResponse createAppointment(Account authenticatedAccount, Msg msg)
-      throws Exception {
-    var createAppointmentRequest = new CreateAppointmentRequest();
-    createAppointmentRequest.setMsg(msg);
-    createAppointmentRequest.setEcho(true);
-    var response = getSoapClient().executeSoap(authenticatedAccount,
-        createAppointmentRequest);
-    var soapResponse = SoapUtils.getResponse(response);
-    Assertions.assertEquals(200, response.getStatusLine().getStatusCode(),
-        "Create appointment failed with:\n" + soapResponse);
-    return SoapUtils.getSoapResponse(soapResponse, MailConstants.E_CREATE_APPOINTMENT_RESPONSE,
-        CreateAppointmentResponse.class);
-  }
-
   private Element createSimpleAppointment(AppointmentData appointmentData) throws Exception {
     var authToken = AuthProvider.getAuthToken(appointmentData.organiser);
     Map<String, Object> context = new HashMap<>();
