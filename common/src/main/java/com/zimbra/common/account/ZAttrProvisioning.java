@@ -7747,7 +7747,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFileUploadMaxSize = "zimbraFileUploadMaxSize";
 
     /**
-     * Maximum size in bytes for each attachment.
+     * The maximum size for each attachment, in bytes. A value of 0 indicates
+     * no size limit.
      *
      * @since ZCS 8.0.0
      */

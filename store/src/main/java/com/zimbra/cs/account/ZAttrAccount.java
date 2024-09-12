@@ -22169,7 +22169,8 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Maximum size in bytes for each attachment.
+     * The maximum size for each attachment, in bytes. A value of 0 indicates
+     * no size limit.
      *
      * @return zimbraFileUploadMaxSizePerFile, or 2147483648 if unset
      *
@@ -22181,7 +22182,8 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Maximum size in bytes for each attachment.
+     * The maximum size for each attachment, in bytes. A value of 0 indicates
+     * no size limit.
      *
      * @param zimbraFileUploadMaxSizePerFile new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -22196,7 +22198,8 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Maximum size in bytes for each attachment.
+     * The maximum size for each attachment, in bytes. A value of 0 indicates
+     * no size limit.
      *
      * @param zimbraFileUploadMaxSizePerFile new value
      * @param attrs existing map to populate, or null to create a new map
@@ -22212,7 +22215,8 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Maximum size in bytes for each attachment.
+     * The maximum size for each attachment, in bytes. A value of 0 indicates
+     * no size limit.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -22226,7 +22230,8 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Maximum size in bytes for each attachment.
+     * The maximum size for each attachment, in bytes. A value of 0 indicates
+     * no size limit.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
