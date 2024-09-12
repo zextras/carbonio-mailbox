@@ -279,6 +279,8 @@ public final class MailConstants {
   public static final String E_GET_IMAP_RECENT_CUTOFF_RESPONSE = "GetIMAPRecentCutoffResponse";
   public static final String E_IMAP_COPY_REQUEST = "IMAPCopyRequest";
   public static final String E_IMAP_COPY_RESPONSE = "IMAPCopyResponse";
+  public static final String E_GET_CALENDAR_GROUPS_REQUEST = "GetCalendarGroupsRequest";
+  public static final String E_GET_CALENDAR_GROUPS_RESPONSE = "GetCalendarGroupsResponse";
 
   // noop
   public static final QName NO_OP_REQUEST = QName.get(E_NO_OP_REQUEST, NAMESPACE);
@@ -448,6 +450,10 @@ public final class MailConstants {
       QName.get(E_APPLY_OUTGOING_FILTER_RULES_RESPONSE, NAMESPACE);
 
   // Calendar
+  public static final QName GET_CALENDAR_GROUPS_REQUEST =
+      QName.get(E_GET_CALENDAR_GROUPS_REQUEST, NAMESPACE);
+  public static final QName GET_CALENDAR_GROUPS_RESPONSE =
+      QName.get(E_GET_CALENDAR_GROUPS_RESPONSE, NAMESPACE);
   public static final QName GET_APPT_SUMMARIES_REQUEST =
       QName.get(E_GET_APPT_SUMMARIES_REQUEST, NAMESPACE);
   public static final QName GET_APPOINTMENT_REQUEST =
@@ -607,8 +613,10 @@ public final class MailConstants {
   public static final QName AUTO_COMPLETE_REQUEST = QName.get(E_AUTO_COMPLETE_REQUEST, NAMESPACE);
   public static final QName AUTO_COMPLETE_RESPONSE = QName.get(E_AUTO_COMPLETE_RESPONSE, NAMESPACE);
 
-  public static final QName FULL_AUTO_COMPLETE_REQUEST = QName.get(E_FULL_AUTO_COMPLETE_REQUEST, NAMESPACE);
-  public static final QName FULL_AUTO_COMPLETE_RESPONSE = QName.get(E_FULL_AUTO_COMPLETE_RESPONSE, NAMESPACE);
+  public static final QName FULL_AUTO_COMPLETE_REQUEST =
+      QName.get(E_FULL_AUTO_COMPLETE_REQUEST, NAMESPACE);
+  public static final QName FULL_AUTO_COMPLETE_RESPONSE =
+      QName.get(E_FULL_AUTO_COMPLETE_RESPONSE, NAMESPACE);
 
   // contact ranking mgmt
   public static final QName RANKING_ACTION_REQUEST = QName.get(E_RANKING_ACTION_REQUEST, NAMESPACE);
@@ -1459,5 +1467,4 @@ public final class MailConstants {
   public static final String E_COPY_TO_FILES_RESPONSE = "CopyToFilesResponse";
   public static final QName COPY_TO_DRIVE_REQUEST = QName.get(E_COPY_TO_FILES_REQUEST, NAMESPACE);
   public static final QName COPY_TO_DRIVE_RESPONSE = QName.get(E_COPY_TO_FILES_RESPONSE, NAMESPACE);
-
 }
