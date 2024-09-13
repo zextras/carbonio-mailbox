@@ -91,6 +91,11 @@
       <groupId>org.apache.curator</groupId>
     </dependency>
 
+    <dependency>
+      <groupId>com.zextras.carbonio.message-broker</groupId>
+      <artifactId>carbonio-message-broker-sdk</artifactId>
+    </dependency>
+
     <!-- Must be provided by container -->
     <dependency>
       <artifactId>guava</artifactId>
@@ -123,6 +128,12 @@
       <groupId>org.testcontainers</groupId>
       <artifactId>mariadb</artifactId>
       <version>1.17.6</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>rabbitmq</artifactId>
+      <version>1.19.8</version>
       <scope>test</scope>
     </dependency>
 

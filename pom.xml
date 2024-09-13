@@ -774,6 +774,11 @@
         <version>4.2.0</version>
         <scope>runtime</scope>
       </dependency>
+      <dependency>
+        <groupId>com.zextras.carbonio.message-broker</groupId>
+        <artifactId>carbonio-message-broker-sdk</artifactId>
+        <version>${carbonio-message-broker-sdk.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -813,6 +818,7 @@
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
     <system-lambda.version>1.2.1</system-lambda.version>
+    <carbonio-message-broker-sdk.version>0.0.3</carbonio-message-broker-sdk.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <changelist>-SNAPSHOT</changelist>
     <revision>24.12.0</revision>
