@@ -8,7 +8,11 @@
  */
 package com.zimbra.cs.service.admin;
 
+import com.zextras.carbonio.message_broker.MessageBrokerClient;
+import com.zextras.carbonio.message_broker.config.enums.Service;
+import com.zextras.carbonio.message_broker.events.services.mailbox.UserDeleted;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
+import com.zextras.mailbox.client.ServiceDiscoverHttpClient;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
@@ -21,6 +25,11 @@ import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import com.zimbra.soap.admin.message.DeleteAccountResponse;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -32,9 +41,11 @@ public class DeleteAccount extends AdminDocumentHandler {
   private static final String[] TARGET_ACCOUNT_PATH = new String[] {AdminConstants.E_ID};
 
   private final DeleteUserUseCase deleteUserUseCase;
+  private final MessageBrokerClient messageBrokerClient;
 
-  public DeleteAccount(DeleteUserUseCase deleteUserUseCase) {
+  public DeleteAccount(DeleteUserUseCase deleteUserUseCase, MessageBrokerClient messageBrokerClient) {
     this.deleteUserUseCase = deleteUserUseCase;
+    this.messageBrokerClient = messageBrokerClient;
   }
 
   @Override
@@ -86,6 +97,7 @@ public class DeleteAccount extends AdminDocumentHandler {
      * so mail delivery and any user action is blocked.
      */
     deleteUserUseCase.delete(account.getId());
+    publishAccountDeletedEvent(account);
 
     ZimbraLog.security.info(
         ZimbraLog.encodeAttrs(
@@ -99,5 +111,19 @@ public class DeleteAccount extends AdminDocumentHandler {
   @Override
   public void docRights(List<AdminRight> relatedRights, List<String> notes) {
     relatedRights.add(Admin.R_deleteAccount);
+  }
+
+  private void publishAccountDeletedEvent(Account account) {
+    String userId = account.getId();
+    try {
+      boolean result = messageBrokerClient.publish(new UserDeleted(userId));
+      if (result) {
+        ZimbraLog.account.info("Published deleted account event for user: " + userId);
+      } else {
+        ZimbraLog.account.error("Failed to publish deleted account event for user: " + userId);
+      }
+    } catch (Exception e){
+      ZimbraLog.account.error("Exception while publishing deleted account event for user: " + userId, e);
+    }
   }
 }

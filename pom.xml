@@ -812,13 +812,13 @@
     <log4j.version>2.20.0</log4j.version>
     <dom4j.version>2.1.4</dom4j.version>
     <hsqldb.version>2.2.9</hsqldb.version>
-    <mockito.version>4.4.0</mockito.version>
+    <mockito.version>5.2.0</mockito.version>
     <unboundid-ldapsdk.version>2.3.5</unboundid-ldapsdk.version>
     <jsr305.version>3.0.2</jsr305.version>
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
     <system-lambda.version>1.2.1</system-lambda.version>
-    <carbonio-message-broker-sdk.version>0.0.3</carbonio-message-broker-sdk.version>
+    <carbonio-message-broker-sdk.version>0.0.4-SNAPSHOT</carbonio-message-broker-sdk.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <changelist>-SNAPSHOT</changelist>
     <revision>24.12.0</revision>

@@ -5,8 +5,12 @@
 
 package com.zimbra.cs.service.admin;
 
+import com.zextras.carbonio.message_broker.MessageBrokerClient;
+import com.zextras.carbonio.message_broker.config.enums.Service;
+import com.zextras.carbonio.message_broker.events.services.mailbox.UserDeleted;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
+import com.zextras.mailbox.client.ServiceDiscoverHttpClient;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
@@ -16,6 +20,11 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,7 +63,8 @@ public class AdminService implements DocumentService {
                 Provisioning.getInstance(),
                 MailboxManager.getInstance(),
                 new AclService(MailboxManager.getInstance(), Provisioning.getInstance()),
-                ZimbraLog.security)));
+                ZimbraLog.security),
+        getMessageBrokerClientInstance()));
     dispatcher.registerHandler(AdminConstants.SET_PASSWORD_REQUEST, new SetPassword());
     dispatcher.registerHandler(
         AdminConstants.CHECK_PASSWORD_STRENGTH_REQUEST, new CheckPasswordStrength());
@@ -389,5 +399,27 @@ public class AdminService implements DocumentService {
         StringUtil.addToMultiMap(result, name, value);
     }
     return result;
+  }
+
+  public static MessageBrokerClient getMessageBrokerClientInstance() {
+    Path filePath = Paths.get("/etc/carbonio/mailbox/service-discover/token");
+    String token;
+    try {
+      token = Files.readString(filePath);
+    } catch (IOException e) {
+      throw new RuntimeException("Can't read consul token from file", e);
+    }
+
+    ServiceDiscoverHttpClient serviceDiscoverHttpClient =
+        ServiceDiscoverHttpClient.defaultURL("carbonio-message-broker")
+            .withToken(token);
+
+    return MessageBrokerClient.fromConfig(
+            "127.78.0.7",
+            20005,
+            serviceDiscoverHttpClient.getConfig("default/username").get(),
+            serviceDiscoverHttpClient.getConfig("default/password").get()
+        )
+        .withCurrentService(Service.MAILBOX);
   }
 }

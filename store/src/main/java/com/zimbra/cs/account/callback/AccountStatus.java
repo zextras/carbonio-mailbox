@@ -5,17 +5,11 @@
 
 package com.zimbra.cs.account.callback;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Set;
 
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
-import com.zextras.carbonio.message_broker.config.enums.Service;
 import com.zextras.carbonio.message_broker.events.services.mailbox.UserStatusChanged;
-import com.zextras.mailbox.client.ServiceDiscoverHttpClient;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
@@ -25,6 +19,7 @@ import com.zimbra.cs.account.AttributeCallback;
 import com.zimbra.cs.account.DistributionList;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.service.admin.AdminService;
 
 public class AccountStatus extends AttributeCallback {
 
@@ -84,27 +79,8 @@ public class AccountStatus extends AttributeCallback {
         String status = account.getAccountStatus(prov);
         String userId = account.getId();
 
-        Path filePath = Paths.get("/etc/carbonio/mailbox/service-discover/token");
-        String token;
         try {
-            token = Files.readString(filePath);
-        } catch (IOException e) {
-            throw new RuntimeException("Can't read consul token from file", e);
-        }
-
-        ServiceDiscoverHttpClient serviceDiscoverHttpClient =
-            ServiceDiscoverHttpClient.defaultURL("carbonio-message-broker")
-                .withToken(token);
-
-        try {
-            MessageBrokerClient messageBrokerClient = MessageBrokerClient.fromConfig(
-                    "127.78.0.7",
-                    20005,
-                    serviceDiscoverHttpClient.getConfig("default/username").get(),
-                    serviceDiscoverHttpClient.getConfig("default/password").get()
-                )
-                .withCurrentService(Service.MAILBOX);
-
+            MessageBrokerClient messageBrokerClient = AdminService.getMessageBrokerClientInstance();
             boolean result = messageBrokerClient.publish(new UserStatusChanged(userId, status.toUpperCase()));
             if (result) {
                 ZimbraLog.account.info("Published status changed event for user: " + userId);
