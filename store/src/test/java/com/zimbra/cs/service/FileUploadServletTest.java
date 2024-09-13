@@ -8,16 +8,19 @@ package com.zimbra.cs.service;
 import static com.zimbra.common.util.ZimbraCookie.COOKIE_ZM_AUTH_TOKEN;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.Maps;
+import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mime.HeaderUtils.ByteBuilder;
 import com.zimbra.common.soap.AccountConstants;
-import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.CharsetUtil;
@@ -38,8 +41,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,21 +50,20 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpStatus;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.CookieStore;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.FormBodyPart;
 import org.apache.http.entity.mime.FormBodyPartBuilder;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MIME;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.util.EntityUtils;
@@ -69,7 +71,6 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -78,11 +79,11 @@ import org.junit.jupiter.api.Test;
 
 public class FileUploadServletTest {
 
-  public static final String boundary = "----WebKitFormBoundaryBf0g3B57jaNA7SC6";
-  public static final String filename1 = "\u6771\u65e5\u672c\u5927\u9707\u707d.txt";
-  public static final String filename2 =
+  public static String boundary = "----WebKitFormBoundaryBf0g3B57jaNA7SC6";
+  public static String filename1 = "\u6771\u65e5\u672c\u5927\u9707\u707d.txt";
+  public static String filename2 =
       "\u6771\u5317\u5730\u65b9\u592a\u5e73\u6d0b\u6c96\u5730\u9707.txt";
-  public static final String content1 =
+  public static String content1 =
       "3 \u6708 11 \u65e5\u5348\u5f8c 2 \u6642 46"
           + " \u5206\u3054\u308d\u3001\u30de\u30b0\u30cb\u30c1\u30e5\u30fc\u30c9 9.0";
   private static final String content2 =
@@ -90,7 +91,7 @@ public class FileUploadServletTest {
           + " 0120-801-471";
   private static FileUploadServlet servlet;
   private static Account testAccount;
-
+  private static AccountCreator.Factory accountCreatorFactory;
   private Server server;
 
   @BeforeAll
@@ -101,17 +102,20 @@ public class FileUploadServletTest {
     servlet = new FileUploadServlet();
 
     MailboxTestUtil.initServer();
-    Provisioning prov = Provisioning.getInstance();
+    var provisioning = Provisioning.getInstance();
+
+    accountCreatorFactory = new AccountCreator.Factory(provisioning);
 
     Map<String, Object> attrs = Maps.newHashMap();
-    prov.createAccount("test@zimbra.com", "secret", attrs);
-    testAccount = prov.get(Key.AccountBy.name, "test@zimbra.com");
+    provisioning.createAccount("test@zimbra.com", "secret", attrs);
+    testAccount = provisioning.get(Key.AccountBy.name, "test@zimbra.com");
 
     attrs = Maps.newHashMap();
     attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-    prov.createAccount("test2@zimbra.com", "secret", attrs);
+    provisioning.createAccount("test2@zimbra.com", "secret", attrs);
   }
 
+  @SuppressWarnings("UnusedReturnValue")
   public static ByteBuilder addFormField(ByteBuilder bb, String name, String value) {
     bb.append("--").append(boundary).append("\r\n");
     bb.append("Content-Disposition: form-data; name=\"").append(name).append("\"\r\n");
@@ -120,6 +124,7 @@ public class FileUploadServletTest {
     return bb;
   }
 
+  @SuppressWarnings("UnusedReturnValue")
   public static ByteBuilder addFormFile(
       ByteBuilder bb, String filename, String ctype, String contents) {
     bb.append("--").append(boundary).append("\r\n");
@@ -134,21 +139,22 @@ public class FileUploadServletTest {
     return bb;
   }
 
+  @SuppressWarnings("UnusedReturnValue")
   public static ByteBuilder endForm(ByteBuilder bb) {
     return bb.append("--").append(boundary).append("--\r\n");
   }
 
   @BeforeEach
   public void setUp() throws Exception {
-    final InetSocketAddress address = new InetSocketAddress("localhost", 8080);
+    var address = new InetSocketAddress("localhost", 8080);
     server = new Server(address);
-    final ServletHolder servletHolder = new ServletHolder(FileUploadServlet.class);
-    final ServletContextHandler servletContextHandler = new ServletContextHandler();
+    var servletHolder = new ServletHolder(FileUploadServlet.class);
+    var servletContextHandler = new ServletContextHandler();
     servletContextHandler.addServlet(servletHolder, "/*");
     server.setHandler(servletContextHandler);
     server.start();
 
-    Provisioning prov = Provisioning.getInstance();
+    var prov = Provisioning.getInstance();
     testAccount =
         prov.createAccount(
             "test@test.com",
@@ -163,18 +169,19 @@ public class FileUploadServletTest {
 
   @AfterEach
   public void tearDown() throws Exception {
+    Provisioning.getInstance().getConfig().setMtaMaxMessageSize(10240000L);
     MailboxTestUtil.clearData();
     server.stop();
   }
 
   private List<Upload> uploadForm(byte[] form) throws Exception {
-    URL url = new URL("http://localhost:7070/service/upload?fmt=extended");
-    MockHttpServletRequest req =
+    var url = new URL("http://localhost:7070/service/upload?fmt=extended");
+    var req =
         new MockHttpServletRequest(form, url, "multipart/form-data; boundary=" + boundary);
-    HashMap<String, String> headersMap = new HashMap<String, String>();
+    var headersMap = new HashMap<String, String>();
     headersMap.put("Content-length", Integer.toString(form.length));
     req.headers = headersMap;
-    MockHttpServletResponse resp = new MockHttpServletResponse();
+    var resp = new MockHttpServletResponse();
     return servlet.handleMultipartUpload(req, resp, "extended", testAccount, false, null, true);
   }
 
@@ -186,7 +193,7 @@ public class FileUploadServletTest {
 
   @Test
   void testFilenames() throws Exception {
-    ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
+    var bb = new ByteBuilder(CharsetUtil.UTF_8);
     addFormField(bb, "_charset_", "");
     addFormField(bb, "filename1", filename1);
     addFormFile(bb, filename1, "text/plain", content1);
@@ -196,15 +203,16 @@ public class FileUploadServletTest {
     addFormFile(bb, "", null, null);
     endForm(bb);
 
-    List<Upload> uploads = uploadForm(bb.toByteArray());
+    var uploads = uploadForm(bb.toByteArray());
     assertEquals(2, uploads == null ? 0 : uploads.size());
+    assertNotNull(uploads);
     compareUploads(uploads.get(0), filename1, content1.getBytes(CharsetUtil.UTF_8));
     compareUploads(uploads.get(1), filename2, content2.getBytes(CharsetUtil.UTF_8));
   }
 
   @Test
   void testConsecutiveFilenames() throws Exception {
-    ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
+    var bb = new ByteBuilder(CharsetUtil.UTF_8);
     addFormField(bb, "_charset_", "");
     addFormField(bb, "filename1", filename1 + "\r\n" + filename2);
     addFormFile(bb, filename1, "text/plain", content1);
@@ -215,15 +223,16 @@ public class FileUploadServletTest {
     addFormFile(bb, "", null, null);
     endForm(bb);
 
-    List<Upload> uploads = uploadForm(bb.toByteArray());
+    var uploads = uploadForm(bb.toByteArray());
     assertEquals(2, uploads == null ? 0 : uploads.size());
+    assertNotNull(uploads);
     compareUploads(uploads.get(0), filename1, content1.getBytes(CharsetUtil.UTF_8));
     compareUploads(uploads.get(1), filename2, content2.getBytes(CharsetUtil.UTF_8));
   }
 
   @Test
   void testExtraFilenames() throws Exception {
-    ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
+    var bb = new ByteBuilder(CharsetUtil.UTF_8);
     addFormField(bb, "_charset_", "");
     addFormField(bb, "filename1", filename1 + "\r\nextra\r\ndata.txt");
     addFormFile(bb, filename1, "text/plain", content1);
@@ -233,15 +242,16 @@ public class FileUploadServletTest {
     addFormFile(bb, "", null, null);
     endForm(bb);
 
-    List<Upload> uploads = uploadForm(bb.toByteArray());
+    var uploads = uploadForm(bb.toByteArray());
     assertEquals(2, uploads == null ? 0 : uploads.size());
+    assertNotNull(uploads);
     compareUploads(uploads.get(0), filename1, content1.getBytes(CharsetUtil.UTF_8));
     compareUploads(uploads.get(1), filename2, content2.getBytes(CharsetUtil.UTF_8));
   }
 
   @Test
   void testMissingFilenames() throws Exception {
-    ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
+    var bb = new ByteBuilder(CharsetUtil.UTF_8);
     addFormField(bb, "_charset_", "");
     addFormField(bb, "filename1", "");
     addFormFile(bb, "x", "text/plain", content1);
@@ -252,165 +262,164 @@ public class FileUploadServletTest {
     addFormFile(bb, "", null, null);
     endForm(bb);
 
-    List<Upload> uploads = uploadForm(bb.toByteArray());
+    var uploads = uploadForm(bb.toByteArray());
     assertEquals(2, uploads == null ? 0 : uploads.size());
+    assertNotNull(uploads);
     compareUploads(uploads.get(0), "x", content1.getBytes(CharsetUtil.UTF_8));
     compareUploads(uploads.get(1), "y", content2.getBytes(CharsetUtil.UTF_8));
   }
 
   @Test
   void testFileUploadAuthTokenNotCsrfEnabled() throws Exception {
-    URL url = new URL("http://localhost:7070/service/upload?lbfums=");
-    ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
+    var url = new URL("http://localhost:7070/service/upload?lbfums=");
+    var bb = new ByteBuilder(CharsetUtil.UTF_8);
     addFormField(bb, "_charset_", "");
     addFormField(bb, "filename1", filename1);
     addFormFile(bb, filename1, "text/plain", content1);
 
     endForm(bb);
 
-    byte[] form = bb.toByteArray();
-    HashMap<String, String> headers = new HashMap<String, String>();
-    Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
-    XMLElement req = new XMLElement(AccountConstants.AUTH_REQUEST);
-    com.zimbra.common.soap.Element a = req.addUniqueElement(AccountConstants.E_ACCOUNT);
+    var form = bb.toByteArray();
+    var headers = new HashMap<String, String>();
+    var acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
+    var req = new XMLElement(AccountConstants.AUTH_REQUEST);
+    var a = req.addUniqueElement(AccountConstants.E_ACCOUNT);
     a.addAttribute(AccountConstants.A_BY, "name");
     a.setText(acct.getName());
     req.addUniqueElement(AccountConstants.E_PASSWORD).setText("secret");
-    Element response = new Auth().handle(req, ServiceTestUtil.getRequestContext(acct));
-    String authToken = response.getElement(AccountConstants.E_AUTH_TOKEN).getText();
+    var response = new Auth().handle(req, ServiceTestUtil.getRequestContext(acct));
+    var authToken = response.getElement(AccountConstants.E_AUTH_TOKEN).getText();
 
-    MockHttpServletRequest mockreq =
+    var mockreq =
         new MockHttpServletRequest(
             form, url, "multipart/form-data; boundary=" + boundary, 7070, "test", headers);
     mockreq.setAttribute(CsrfFilter.CSRF_TOKEN_CHECK, Boolean.FALSE);
 
-    Cookie cookie = new Cookie("ZM_AUTH_TOKEN", authToken);
+    var cookie = new Cookie("ZM_AUTH_TOKEN", authToken);
     mockreq.setCookies(cookie);
 
-    MockHttpServletResponse resp = new MockHttpServletResponse();
+    var resp = new MockHttpServletResponse();
     servlet.doPost(mockreq, resp);
-    String respStrg = resp.output.toString();
-    System.out.println(respStrg);
+    var respStrg = resp.output.toString();
     assertTrue(respStrg.contains("200"));
   }
 
   @Test
   void testFileUploadAuthTokenCsrfEnabled() throws Exception {
-    URL url = new URL("http://localhost:7070/service/upload?lbfums=");
-    ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
+    var url = new URL("http://localhost:7070/service/upload?lbfums=");
+    var bb = new ByteBuilder(CharsetUtil.UTF_8);
     addFormField(bb, "_charset_", "");
     addFormField(bb, "filename1", filename1);
     addFormFile(bb, filename1, "text/plain", content1);
 
     endForm(bb);
 
-    byte[] form = bb.toByteArray();
-    HashMap<String, String> headers = new HashMap<String, String>();
-    Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
+    var form = bb.toByteArray();
+    var headers = new HashMap<String, String>();
+    var acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
 
-    XMLElement req = new XMLElement(AccountConstants.AUTH_REQUEST);
+    var req = new XMLElement(AccountConstants.AUTH_REQUEST);
     req.addAttribute(AccountConstants.A_CSRF_SUPPORT, "1");
-    com.zimbra.common.soap.Element a = req.addUniqueElement(AccountConstants.E_ACCOUNT);
+    var a = req.addUniqueElement(AccountConstants.E_ACCOUNT);
     a.addAttribute(AccountConstants.A_BY, "name");
     a.setText(acct.getName());
     req.addUniqueElement(AccountConstants.E_PASSWORD).setText("secret");
-    Map<String, Object> context = ServiceTestUtil.getRequestContext(acct);
-    MockHttpServletRequest authReq =
+    var context = ServiceTestUtil.getRequestContext(acct);
+    var authReq =
         (MockHttpServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
     authReq.setAttribute(Provisioning.A_zimbraCsrfTokenCheckEnabled, Boolean.TRUE);
-    Random nonceGen = new Random();
+    var nonceGen = new Random();
     authReq.setAttribute(CsrfFilter.CSRF_SALT, nonceGen.nextInt() + 1);
-    Element response = new Auth().handle(req, context);
-    String authToken = response.getElement(AccountConstants.E_AUTH_TOKEN).getText();
-    String csrfToken = response.getElement("csrfToken").getText();
+    var response = new Auth().handle(req, context);
+    var authToken = response.getElement(AccountConstants.E_AUTH_TOKEN).getText();
+    var csrfToken = response.getElement("csrfToken").getText();
     headers.put(Constants.CSRF_TOKEN, csrfToken);
 
-    MockHttpServletRequest mockreq =
+    var mockreq =
         new MockHttpServletRequest(
             form, url, "multipart/form-data; boundary=" + boundary, 7070, "test", headers);
     mockreq.setAttribute(CsrfFilter.CSRF_TOKEN_CHECK, Boolean.TRUE);
 
-    Cookie cookie = new Cookie("ZM_AUTH_TOKEN", authToken);
+    var cookie = new Cookie("ZM_AUTH_TOKEN", authToken);
     mockreq.setCookies(cookie);
 
-    MockHttpServletResponse resp = new MockHttpServletResponse();
+    var resp = new MockHttpServletResponse();
 
     servlet.doPost(mockreq, resp);
-    String respStrg = resp.output.toString();
-    System.out.println(respStrg);
+    var respStrg = resp.output.toString();
     assertTrue(respStrg.contains("200"));
   }
 
   @Test
   void testFileUploadAuthTokenCsrfEnabledButNoCsrfToken() throws Exception {
-    URL url = new URL("http://localhost:7070/service/upload?lbfums=");
-    ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
+    var url = new URL("http://localhost:7070/service/upload?lbfums=");
+    var bb = new ByteBuilder(CharsetUtil.UTF_8);
     addFormField(bb, "_charset_", "");
     addFormField(bb, "filename1", filename1);
     addFormFile(bb, filename1, "text/plain", content1);
 
     endForm(bb);
 
-    byte[] form = bb.toByteArray();
-    HashMap<String, String> headers = new HashMap<String, String>();
-    Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
-    XMLElement req = new XMLElement(AccountConstants.AUTH_REQUEST);
+    var form = bb.toByteArray();
+    var headers = new HashMap<String, String>();
+    var acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
+    var req = new XMLElement(AccountConstants.AUTH_REQUEST);
     req.addAttribute(AccountConstants.A_CSRF_SUPPORT, "1");
-    com.zimbra.common.soap.Element a = req.addUniqueElement(AccountConstants.E_ACCOUNT);
+    var a = req.addUniqueElement(AccountConstants.E_ACCOUNT);
     a.addAttribute(AccountConstants.A_BY, "name");
     a.setText(acct.getName());
     req.addUniqueElement(AccountConstants.E_PASSWORD).setText("secret");
-    Map<String, Object> context = ServiceTestUtil.getRequestContext(acct);
-    MockHttpServletRequest authReq =
+    var context = ServiceTestUtil.getRequestContext(acct);
+    var authReq =
         (MockHttpServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
     authReq.setAttribute(Provisioning.A_zimbraCsrfTokenCheckEnabled, Boolean.TRUE);
-    Random nonceGen = new Random();
+    var nonceGen = new Random();
     authReq.setAttribute(CsrfFilter.CSRF_SALT, nonceGen.nextInt() + 1);
-    Element response = new Auth().handle(req, context);
-    String authToken = response.getElement(AccountConstants.E_AUTH_TOKEN).getText();
+    var response = new Auth().handle(req, context);
+    var authToken = response.getElement(AccountConstants.E_AUTH_TOKEN).getText();
 
-    MockHttpServletRequest mockreq =
+    var mockreq =
         new MockHttpServletRequest(
             form, url, "multipart/form-data; boundary=" + boundary, 7070, "test", headers);
     mockreq.setAttribute(CsrfFilter.CSRF_TOKEN_CHECK, Boolean.TRUE);
 
-    Cookie cookie = new Cookie("ZM_AUTH_TOKEN", authToken);
+    var cookie = new Cookie("ZM_AUTH_TOKEN", authToken);
     mockreq.setCookies(cookie);
 
-    MockHttpServletResponse resp = new MockHttpServletResponse();
+    var resp = new MockHttpServletResponse();
 
     servlet.doPost(mockreq, resp);
     // <html><head><script language='javascript'>function doit() {
     // window.parent._uploadManager.loaded(401,'null'); }
     // </script></head><body onload='doit()'></body></html>
-    String respStrg = resp.output.toString();
+    var respStrg = resp.output.toString();
     assertTrue(respStrg.contains("401"));
   }
 
   @Test
   void testFileUploadAuthTokenCsrfEnabled2() throws Exception {
 
-    HashMap<String, String> headers = new HashMap<String, String>();
-    Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test2@zimbra.com");
+    var headers = new HashMap<String, String>();
+    var acct = Provisioning.getInstance().get(Key.AccountBy.name, "test2@zimbra.com");
 
-    XMLElement req = new XMLElement(AccountConstants.AUTH_REQUEST);
+    var req = new XMLElement(AccountConstants.AUTH_REQUEST);
     req.addAttribute(AccountConstants.A_CSRF_SUPPORT, "1");
-    com.zimbra.common.soap.Element a = req.addUniqueElement(AccountConstants.E_ACCOUNT);
+    var a = req.addUniqueElement(AccountConstants.E_ACCOUNT);
     a.addAttribute(AccountConstants.A_BY, "name");
     a.setText(acct.getName());
     req.addUniqueElement(AccountConstants.E_PASSWORD).setText("secret");
-    Map<String, Object> context = ServiceTestUtil.getRequestContext(acct);
-    MockHttpServletRequest authReq =
+    var context = ServiceTestUtil.getRequestContext(acct);
+    var authReq =
         (MockHttpServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
     authReq.setAttribute(Provisioning.A_zimbraCsrfTokenCheckEnabled, Boolean.TRUE);
-    Random nonceGen = new Random();
+    var nonceGen = new Random();
     authReq.setAttribute(CsrfFilter.CSRF_SALT, nonceGen.nextInt() + 1);
-    Element response = new Auth().handle(req, context);
-    String authToken = response.getElement(AccountConstants.E_AUTH_TOKEN).getText();
-    String csrfToken = response.getElement("csrfToken").getText();
+    var response = new Auth().handle(req, context);
+    var authToken = response.getElement(AccountConstants.E_AUTH_TOKEN).getText();
+    var csrfToken = response.getElement("csrfToken").getText();
 
-    URL url = new URL("http://localhost:7070/service/upload?lbfums=");
-    ByteBuilder bb = new ByteBuilder(CharsetUtil.UTF_8);
+    var url = new URL("http://localhost:7070/service/upload?lbfums=");
+    var bb = new ByteBuilder(CharsetUtil.UTF_8);
     addFormField(bb, "_charset_", "");
     addFormField(bb, "filename1", filename1);
     addFormField(bb, "csrfToken", csrfToken);
@@ -418,35 +427,28 @@ public class FileUploadServletTest {
 
     endForm(bb);
 
-    byte[] form = bb.toByteArray();
+    var form = bb.toByteArray();
 
-    MockHttpServletRequest mockreq =
+    var mockreq =
         new MockHttpServletRequest(
             form, url, "multipart/form-data; boundary=" + boundary, 7070, "test", headers);
     mockreq.setAttribute(CsrfFilter.CSRF_TOKEN_CHECK, Boolean.TRUE);
 
-    Cookie cookie = new Cookie("ZM_AUTH_TOKEN", authToken);
+    var cookie = new Cookie("ZM_AUTH_TOKEN", authToken);
     mockreq.setCookies(cookie);
 
-    MockHttpServletResponse resp = new MockHttpServletResponse();
+    var resp = new MockHttpServletResponse();
 
     servlet.doPost(mockreq, resp);
-    String respStrg = resp.output.toString();
+    var respStrg = resp.output.toString();
     assertTrue(respStrg.contains("200"));
   }
 
-  /**
-   * Helper method to create {@link CookieStore} instance with {@link AuthToken} cookie for given
-   * host and path.
-   *
-   * @param authToken
-   * @return
-   * @throws AuthTokenException
-   */
+  @SuppressWarnings("SameParameterValue")
   private CookieStore createCookieStoreWithAuthToken(
       AuthToken authToken, String domain, String path) throws AuthTokenException {
-    final CookieStore cookieStore = new BasicCookieStore();
-    final BasicClientCookie cookie =
+    CookieStore cookieStore = new BasicCookieStore();
+    var cookie =
         new BasicClientCookie(COOKIE_ZM_AUTH_TOKEN, authToken.getEncoded());
     cookie.setDomain(domain);
     cookie.setPath(path);
@@ -459,87 +461,42 @@ public class FileUploadServletTest {
       "Extended filename should be preferred if the multipart upload request contains "
           + "Content-Disposition header with extended filename param as defined in RFC-6266")
   void handleMultipartUpload_should_parseExtendedFileNameFromContentDisposition() throws Exception {
-    final AuthToken authToken = AuthProvider.getAuthToken(testAccount);
-    final Path filePath =
-        Paths.get(
-            Objects.requireNonNull(
-                    getClass().getResource("\u0421\u043e\u0431\u044b\u0442\u0438\u044f.txt"))
-                .toURI()); // События.txt
-    final String fileName = Paths.get(filePath.toUri()).getFileName().toString();
-    final String asciiFileName = "Events.txt";
-    final String asciiFileName1 = "Fruten Fraten.txt";
-    final String utf8EncodeFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
-    final String utf8EncodeFileName1 =
-        URLEncoder.encode("Фрутен Фриат.txt", StandardCharsets.UTF_8);
+    var account = accountCreatorFactory.get().create();
+    var authToken = AuthProvider.getAuthToken(account);
+    var filePath = Paths.get(
+        Objects.requireNonNull(getClass().getResource("\u0421\u043e\u0431\u044b\u0442\u0438\u044f.txt")).toURI());
+    var fileName = Paths.get(filePath.toUri()).getFileName().toString();
+    var asciiFileName = "Events.txt";
+    var asciiFileName1 = "Fruten Fraten.txt";
+    var utf8EncodeFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+    var utf8EncodeFileName1 = URLEncoder.encode("Фрутен Фриат.txt", StandardCharsets.UTF_8);
 
-    final String contentDispositionForPart =
-        "form-data; name=\"file\"; filename=\""
-            + asciiFileName
-            + "\"; filename*=utf-8''"
-            + utf8EncodeFileName;
-    final FormBodyPart part1 =
-        FormBodyPartBuilder.create()
-            .setName("file")
-            .setBody(new FileBody(filePath.toFile()))
-            .setField(MIME.CONTENT_DISPOSITION, contentDispositionForPart) // this is necessary
-            .setField(MIME.CONTENT_TYPE, ContentType.TEXT_PLAIN.toString())
-            .build();
+    var contentDispositionForPart =
+        "form-data; name=\"file\"; filename=\"" + asciiFileName + "\"; filename*=utf-8''" + utf8EncodeFileName;
+    var part1 = FormBodyPartBuilder.create()
+        .setName("file")
+        .setBody(new FileBody(filePath.toFile()))
+        .setField(MIME.CONTENT_DISPOSITION, contentDispositionForPart)
+        .setField(MIME.CONTENT_TYPE, ContentType.TEXT_PLAIN.toString())
+        .build();
 
-    final String contentDispositionForPart1 =
-        "form-data; name=\"file\"; filename=\""
-            + asciiFileName1
-            + "\"; filename*=utf-8''"
-            + utf8EncodeFileName1;
-    final FormBodyPart part2 =
-        FormBodyPartBuilder.create()
-            .setName("file2")
-            .setBody(new FileBody(filePath.toFile()))
-            .setField(MIME.CONTENT_DISPOSITION, contentDispositionForPart1) // this is necessary
-            .setField(MIME.CONTENT_TYPE, ContentType.TEXT_PLAIN.toString())
-            .build();
+    var contentDispositionForPart1 =
+        "form-data; name=\"file\"; filename=\"" + asciiFileName1 + "\"; filename*=utf-8''" + utf8EncodeFileName1;
+    var part2 = FormBodyPartBuilder.create()
+        .setName("file2")
+        .setBody(new FileBody(filePath.toFile()))
+        .setField(MIME.CONTENT_DISPOSITION, contentDispositionForPart1)
+        .setField(MIME.CONTENT_TYPE, ContentType.TEXT_PLAIN.toString())
+        .build();
 
-    final MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
-    final HttpEntity multipartEntity =
-        multipartEntityBuilder
-            .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
-            .addPart(part1)
-            .addPart(part2)
-            .build();
-    final HttpPost httpPost =
-        new HttpPost(URI.create(server.getURI().toString() + "upload?fmt=extended,raw"));
-    httpPost.setEntity(multipartEntity);
+    var multipartEntity = MultipartEntityBuilder.create()
+        .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+        .addPart(part1)
+        .addPart(part2)
+        .build();
 
-    try (CloseableHttpClient httpClient =
-        HttpClientBuilder.create()
-            .setDefaultCookieStore(
-                createCookieStoreWithAuthToken(authToken, server.getURI().getHost(), "/"))
-            .build()) {
-      final CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
-
-      final int statusCode = httpResponse.getStatusLine().getStatusCode();
-      assertEquals(HttpStatus.SC_OK, statusCode);
-
-      final String responseContent =
-          EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
-
-      final JSONArray jsonArray = new JSONArray("[" + responseContent + "]");
-      assertEquals(200, jsonArray.getInt(0));
-      assertEquals("null", jsonArray.getString(1));
-
-      final JSONArray responseDataArray = jsonArray.getJSONArray(2);
-      assertEquals(2, responseDataArray.length());
-
-      final JSONObject firstItem = responseDataArray.getJSONObject(0);
-      assertNotNull(firstItem.getString("aid"));
-
-      final String contentType = firstItem.getString("ct");
-      assertNotNull(contentType);
-      assertTrue(contentType.toLowerCase().contains("text/plain"));
-
-      final String filenameInResponse = firstItem.getString("filename");
-      assertNotNull(filenameInResponse);
-      assertEquals(fileName, filenameInResponse);
-    }
+    var httpResponse = executeUploadRequest(multipartEntity, authToken);
+    validateResponse(httpResponse, HttpServletResponse.SC_OK, fileName);
   }
 
   @Test
@@ -547,57 +504,21 @@ public class FileUploadServletTest {
       "Filename should be parsed correctly when multipart upload is composed with "
           + "MultipartEntityBuilder and charset set to UTF-8")
   void handleMultipartUpload_should_parseFileNameFromContentDisposition() throws Exception {
-    final AuthToken authToken = AuthProvider.getAuthToken(testAccount);
-    final Path filePath =
-        Paths.get(
-            Objects.requireNonNull(
-                    getClass().getResource("\u0421\u043e\u0431\u044b\u0442\u0438\u044f.txt"))
-                .toURI()); // События.txt
-    final String fileName = Paths.get(filePath.toUri()).getFileName().toString();
-    final MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
-    multipartEntityBuilder.setCharset(StandardCharsets.UTF_8); // this is necessary
-    final HttpEntity multipartEntity =
-        multipartEntityBuilder
-            .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
-            .addBinaryBody("file", filePath.toFile(), ContentType.TEXT_PLAIN, fileName)
-            .addBinaryBody("file2", filePath.toFile(), ContentType.TEXT_PLAIN, fileName)
-            .build();
+    var account = accountCreatorFactory.get().create();
+    var authToken = AuthProvider.getAuthToken(account);
+    var filePath = Paths.get(
+        Objects.requireNonNull(getClass().getResource("\u0421\u043e\u0431\u044b\u0442\u0438\u044f.txt")).toURI());
+    var fileName = Paths.get(filePath.toUri()).getFileName().toString();
 
-    final HttpPost httpPost =
-        new HttpPost(URI.create(server.getURI().toString() + "upload?fmt=extended,raw"));
-    httpPost.setEntity(multipartEntity);
+    var multipartEntity = MultipartEntityBuilder.create()
+        .setCharset(StandardCharsets.UTF_8)
+        .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+        .addBinaryBody("file", filePath.toFile(), ContentType.TEXT_PLAIN, fileName)
+        .addBinaryBody("file2", filePath.toFile(), ContentType.TEXT_PLAIN, fileName)
+        .build();
 
-    try (CloseableHttpClient httpClient =
-        HttpClientBuilder.create()
-            .setDefaultCookieStore(
-                createCookieStoreWithAuthToken(authToken, server.getURI().getHost(), "/"))
-            .build()) {
-      final CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
-
-      final int statusCode = httpResponse.getStatusLine().getStatusCode();
-      assertEquals(HttpStatus.SC_OK, statusCode);
-
-      final String responseContent =
-          EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
-
-      final JSONArray jsonArray = new JSONArray("[" + responseContent + "]");
-      assertEquals(200, jsonArray.getInt(0));
-      assertEquals("null", jsonArray.getString(1));
-
-      final JSONArray responseDataArray = jsonArray.getJSONArray(2);
-      assertEquals(2, responseDataArray.length());
-
-      final JSONObject firstItem = responseDataArray.getJSONObject(0);
-      assertNotNull(firstItem.getString("aid"));
-
-      final String contentType = firstItem.getString("ct");
-      assertNotNull(contentType);
-      assertTrue(contentType.toLowerCase().contains("text/plain"));
-
-      final String filenameInResponse = firstItem.getString("filename");
-      assertNotNull(filenameInResponse);
-      assertEquals(fileName, filenameInResponse);
-    }
+    var httpResponse = executeUploadRequest(multipartEntity, authToken);
+    validateResponse(httpResponse, HttpServletResponse.SC_OK, fileName);
   }
 
   @Test
@@ -605,53 +526,262 @@ public class FileUploadServletTest {
       "Extended filename should be preferred if the plain upload request contains "
           + "Content-Disposition header with extended filename param as defined in RFC-6266")
   void handlePlainUpload_should_parseExtendedFileNameFromContentDisposition() throws Exception {
-    final AuthToken authToken = AuthProvider.getAuthToken(testAccount);
-    final Path filePath =
+    var account = accountCreatorFactory.get().create();
+    var authToken = AuthProvider.getAuthToken(account);
+    var filePath =
         Paths.get(
             Objects.requireNonNull(
                     getClass().getResource("\u0421\u043e\u0431\u044b\u0442\u0438\u044f.txt"))
                 .toURI()); // События.txt
-    final String fileName = Paths.get(filePath.toUri()).getFileName().toString();
-    final String asciiFileName = "Events.txt";
-    final String utf8EncodeFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+    var fileName = Paths.get(filePath.toUri()).getFileName().toString();
+    var asciiFileName = "Events.txt";
+    var utf8EncodeFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
 
-    final HttpPost httpPost =
+    var httpPost =
         new HttpPost(URI.create(server.getURI().toString() + "upload?fmt=extended,raw"));
     httpPost.setEntity(new ByteArrayEntity(Files.readAllBytes(filePath)));
     httpPost.setHeader(
         "Content-Disposition",
         "attachment; filename=" + asciiFileName + "; filename*=utf-8''" + utf8EncodeFileName);
 
-    try (CloseableHttpClient httpClient =
+    try (var httpClient =
         HttpClientBuilder.create()
             .setDefaultCookieStore(
                 createCookieStoreWithAuthToken(authToken, server.getURI().getHost(), "/"))
             .build()) {
-      final CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
-
-      final int statusCode = httpResponse.getStatusLine().getStatusCode();
-      assertEquals(HttpStatus.SC_OK, statusCode);
-
-      final String responseContent =
-          EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
-
-      final JSONArray jsonArray = new JSONArray("[" + responseContent + "]");
-      assertEquals(200, jsonArray.getInt(0));
-      assertEquals("null", jsonArray.getString(1));
-
-      final JSONArray responseDataArray = jsonArray.getJSONArray(2);
-      assertTrue(responseDataArray.length() > 0);
-
-      final JSONObject firstItem = responseDataArray.getJSONObject(0);
-      assertNotNull(firstItem.getString("aid"));
-
-      final String contentType = firstItem.getString("ct");
-      assertNotNull(contentType);
-      assertEquals("text/plain", contentType);
-
-      final String filenameInResponse = firstItem.getString("filename");
-      assertNotNull(filenameInResponse);
-      assertEquals(fileName, filenameInResponse);
+      var httpResponse = httpClient.execute(httpPost);
+      validateResponse(httpResponse, HttpServletResponse.SC_OK, fileName);
     }
   }
+
+  @Test
+  void handlePlainUpload_should_ignore_zimbraMtaMaxSIze_when_lbfums_param_in_request_url()
+      throws Exception {
+    var account = accountCreatorFactory.get().create();
+    var authToken = AuthProvider.getAuthToken(account);
+    var fileSize = 30 * 1024 * 1024;
+    var asciiFileName = "Events.txt";
+    var utf8EncodeFileName = URLEncoder.encode(asciiFileName, StandardCharsets.UTF_8);
+
+    var httpResponse = executeUploadRequestWithDummyData(authToken, fileSize, asciiFileName, utf8EncodeFileName, true);
+    var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+    var jsonArray = new JSONArray("[" + responseContent + "]");
+
+    assertEquals(HttpServletResponse.SC_OK, jsonArray.getInt(0));
+    assertEquals("null", jsonArray.getString(1));
+
+    var responseDataArray = jsonArray.getJSONArray(2);
+    assertTrue(responseDataArray.length() > 0);
+
+    var firstItem = responseDataArray.getJSONObject(0);
+    assertNotNull(firstItem.getString("aid"));
+  }
+
+  @Test
+  void should_be_able_upload_unlimited_when_zimbraMtaMaxMessageSize_is_set_to_zero()
+      throws Exception {
+    var account = accountCreatorFactory.get().create();
+    var authToken = AuthProvider.getAuthToken(account);
+    var fileSize = 1024 * 1024;
+    var asciiFileName = "Events.txt";
+    var utf8EncodeFileName = URLEncoder.encode(asciiFileName, StandardCharsets.UTF_8);
+
+    Provisioning.getInstance().getConfig().setMtaMaxMessageSize(0);
+
+    //set lbfums to false to enforce limit using zimbraMtaMaxMessageSize
+    var httpResponse = executeUploadRequestWithDummyData(authToken, fileSize, asciiFileName, utf8EncodeFileName, false);
+    var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+    var jsonArray = new JSONArray("[" + responseContent + "]");
+
+    assertEquals(HttpServletResponse.SC_OK, jsonArray.getInt(0));
+    assertEquals("null", jsonArray.getString(1));
+
+    var responseDataArray = jsonArray.getJSONArray(2);
+    assertTrue(responseDataArray.length() > 0);
+
+    var firstItem = responseDataArray.getJSONObject(0);
+    assertNotNull(firstItem.getString("aid"));
+  }
+
+  @Test
+  void should_be_able_upload_unlimited_when_FileUploadMaxSizePerFile_is_set_to_zero()
+      throws Exception {
+    var account = accountCreatorFactory.get().create();
+    var authToken = AuthProvider.getAuthToken(account);
+    var fileSize = 1024 * 1024;
+    var asciiFileName = "Events.txt";
+    var utf8EncodeFileName = URLEncoder.encode(asciiFileName, StandardCharsets.UTF_8);
+
+    account.setFileUploadMaxSizePerFile(0);
+
+    //set lbfums to true to enforce limit using zimbraFileUploadMaxSizePerFile
+    var httpResponse = executeUploadRequestWithDummyData(authToken, fileSize, asciiFileName, utf8EncodeFileName, true);
+    var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+    var jsonArray = new JSONArray("[" + responseContent + "]");
+
+    assertEquals(HttpServletResponse.SC_OK, jsonArray.getInt(0));
+    assertEquals("null", jsonArray.getString(1));
+
+    var responseDataArray = jsonArray.getJSONArray(2);
+    assertTrue(responseDataArray.length() > 0);
+
+    var firstItem = responseDataArray.getJSONObject(0);
+    assertNotNull(firstItem.getString("aid"));
+  }
+
+  @Test
+  void should_not_be_able_upload_file_greater_then_limit_set_by_zimbraMtaMaxMessageSize()
+      throws Exception {
+    var account = accountCreatorFactory.get().create();
+    var authToken = AuthProvider.getAuthToken(account);
+    var fileSize = 1024 * 1024;
+    var asciiFileName = "Events.txt";
+    var utf8EncodeFileName = URLEncoder.encode(asciiFileName, StandardCharsets.UTF_8);
+
+    Provisioning.getInstance().getConfig().setMtaMaxMessageSize(10);
+
+    //set lbfums to false to enforce limit using zimbraMtaMaxMessageSize
+    var httpResponse = executeUploadRequestWithDummyData(authToken, fileSize, asciiFileName, utf8EncodeFileName, false);
+    var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+    var jsonArray = new JSONArray("[" + responseContent + "]");
+
+    assertEquals(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, jsonArray.getInt(0));
+    assertEquals("null", jsonArray.getString(1));
+  }
+
+  @Test
+  void should_not_be_able_upload_file_greater_then_limit_set_by_zimbraFileUploadMaxSizePerFile()
+      throws Exception {
+    var account = accountCreatorFactory.get().create();
+    var authToken = AuthProvider.getAuthToken(account);
+    var fileSize = 1024 * 1024;
+    var asciiFileName = "Events.txt";
+    var utf8EncodeFileName = URLEncoder.encode(asciiFileName, StandardCharsets.UTF_8);
+
+    account.setFileUploadMaxSizePerFile(10);
+
+    //set lbfums to true to enforce limit using zimbraFileUploadMaxSizePerFile
+    var httpResponse = executeUploadRequestWithDummyData(authToken, fileSize, asciiFileName, utf8EncodeFileName, true);
+    var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+    var jsonArray = new JSONArray("[" + responseContent + "]");
+
+    assertEquals(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, jsonArray.getInt(0));
+    assertEquals("null", jsonArray.getString(1));
+  }
+
+  @Test
+  void handlePlainUpload_should_return_413_when_upload_file_size_is_greater_then_zimbraMtaMaxSIze()
+      throws Exception {
+    var account = accountCreatorFactory.get().create();
+    var authToken = AuthProvider.getAuthToken(account);
+    var fileSize = 30 * 1024 * 1024;
+    var asciiFileName = "Events.txt";
+    var utf8EncodeFileName = URLEncoder.encode(asciiFileName, StandardCharsets.UTF_8);
+
+    Provisioning.getInstance().getConfig().setMtaMaxMessageSize(10);
+
+    //set lbfums to false to enforce limit using zimbraMtaMaxMessageSize
+    var httpResponse = executeUploadRequestWithDummyData(authToken, fileSize, asciiFileName, utf8EncodeFileName, false);
+    var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+    var jsonArray = new JSONArray("[" + responseContent + "]");
+
+    assertEquals(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, jsonArray.getInt(0));
+    assertEquals("null", jsonArray.getString(1));
+    assertFalse(responseContent.contains("aid"));
+  }
+
+  private HttpResponse executeUploadRequest(HttpEntity entity, AuthToken authToken) throws Exception {
+    var httpPost = new HttpPost(URI.create(server.getURI().toString() + "upload?fmt=extended,raw"));
+    httpPost.setEntity(entity);
+
+    try (var httpClient = HttpClientBuilder.create()
+        .setDefaultCookieStore(createCookieStoreWithAuthToken(authToken, server.getURI().getHost(), "/"))
+        .build()) {
+      return httpClient.execute(httpPost);
+    }
+  }
+
+  @SuppressWarnings("ConstantConditions")
+  @Test
+  void getFileItemsFromMultipartUploadRequest_should_throw_exception_when_account_is_null() {
+    var mockRequest = mock(HttpServletRequest.class);
+    var mockResponse = mock(HttpServletResponse.class);
+
+    var format = "extended";
+    Account mockAccount = null; // simulate null account
+    var mockAuthToken = mock(AuthToken.class);
+    var limitByFileUploadMaxSize = true;
+    var csrfCheckComplete = false;
+
+    assertThrows(NullPointerException.class, () -> servlet.getFileItemsFromMultipartUploadRequest(
+        mockRequest, mockResponse, format, mockAccount,
+        limitByFileUploadMaxSize, mockAuthToken, csrfCheckComplete), "Account must not be null");
+  }
+
+  @SuppressWarnings("ConstantConditions")
+  @Test
+  void handlePlainUpload_should_throw_exception_when_account_is_null() {
+    var mockRequest = mock(HttpServletRequest.class);
+    var mockResponse = mock(HttpServletResponse.class);
+
+    var format = "extended";
+    Account mockAccount = null; // simulate null account
+    var limitByFileUploadMaxSize = true;
+
+    assertThrows(NullPointerException.class, () -> servlet.handlePlainUpload(
+        mockRequest, mockResponse, format, mockAccount,
+        limitByFileUploadMaxSize), "Account must not be null");
+  }
+
+  @SuppressWarnings("SameParameterValue")
+  private void validateResponse(HttpResponse httpResponse, int expectedStatusCode, String expectedFileName)
+      throws Exception {
+    var statusCode = httpResponse.getStatusLine().getStatusCode();
+    assertEquals(expectedStatusCode, statusCode);
+
+    var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+    var jsonArray = new JSONArray("[" + responseContent + "]");
+
+    assertEquals(HttpServletResponse.SC_OK, jsonArray.getInt(0));
+    assertEquals("null", jsonArray.getString(1));
+
+    var responseDataArray = jsonArray.getJSONArray(2);
+    assertTrue(responseDataArray.length() > 0);
+
+    var firstItem = responseDataArray.getJSONObject(0);
+    assertNotNull(firstItem.getString("aid"));
+
+    var contentType = firstItem.getString("ct");
+    assertNotNull(contentType);
+    assertTrue(contentType.toLowerCase().contains("text/plain"));
+
+    var filenameInResponse = firstItem.getString("filename");
+    assertNotNull(filenameInResponse);
+    assertEquals(expectedFileName, filenameInResponse);
+  }
+
+  private byte[] createSyntheticData(int size) {
+    var syntheticData = new byte[size];
+    Arrays.fill(syntheticData, (byte) 0xFF);
+    return syntheticData;
+  }
+
+  private HttpResponse executeUploadRequestWithDummyData(AuthToken authToken, int fileSize, String asciiFileName, String utf8EncodeFileName,
+      boolean withLbfums) throws Exception {
+    var httpPost = new HttpPost(
+        URI.create(server.getURI().toString() + "upload?fmt=extended,raw" + (withLbfums ? "&lbfums" : "")));
+    httpPost.setEntity(new ByteArrayEntity(createSyntheticData(fileSize)));
+    httpPost.setHeader(
+        "Content-Disposition",
+        "attachment; filename=" + asciiFileName + "; filename*=utf-8''" + utf8EncodeFileName);
+
+    try (var httpClient =
+        HttpClientBuilder.create()
+            .setDefaultCookieStore(
+                createCookieStoreWithAuthToken(authToken, server.getURI().getHost(), "/"))
+            .build()) {
+      return httpClient.execute(httpPost);
+    }
+  }
+
 }

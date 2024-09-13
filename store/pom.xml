@@ -157,11 +157,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>jtnef</artifactId>
-      <groupId>net.freeutils</groupId>
-    </dependency>
-
-    <dependency>
       <artifactId>unboundid-ldapsdk</artifactId>
       <groupId>com.unboundid</groupId>
     </dependency>
@@ -547,12 +542,12 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
-      <version>9.4.48.v20220622</version>
+      <version>9.4.55.v20240627</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-rewrite</artifactId>
-      <version>9.4.48.v20220622</version>
+      <version>9.4.55.v20240627</version>
     </dependency>
   </dependencies>
 
@@ -918,8 +913,6 @@
   </build>
   <properties>
     <build.dir>target</build.dir>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
     <maven-exec-plugin.version>3.1.0</maven-exec-plugin.version>
     <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
     <config.dir>${project.basedir}/conf</config.dir>

@@ -53,6 +53,10 @@ public class AccountService implements DocumentService {
     dispatcher.registerHandler(AccountConstants.MODIFY_PROPERTIES_REQUEST, new ModifyProperties());
     dispatcher.registerHandler(
         AccountConstants.MODIFY_ZIMLET_PREFS_REQUEST, new ModifyZimletPrefs());
+
+    dispatcher.registerHandler(AccountConstants.GET_ALL_LOCALES_REQUEST, new GetAllLocales());
+    dispatcher.registerHandler(
+        AccountConstants.GET_AVAILABLE_LOCALES_REQUEST, new GetAvailableLocales());
     dispatcher.registerHandler(
         AccountConstants.GET_AVAILABLE_CSV_FORMATS_REQUEST, new GetAvailableCsvFormats());
 
@@ -101,6 +105,10 @@ public class AccountService implements DocumentService {
 
     // reset password
     dispatcher.registerHandler(AccountConstants.RESET_PASSWORD_REQUEST, new ResetPassword());
+
+    // users by feature
+    dispatcher.registerHandler(
+        AccountConstants.SEARCH_USERS_BY_FEATURE_REQUEST, new SearchUsersByFeature());
   }
 
   /**

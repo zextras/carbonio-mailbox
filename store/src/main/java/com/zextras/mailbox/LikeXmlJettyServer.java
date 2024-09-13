@@ -19,6 +19,7 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HostHeaderCustomizer;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.NCSARequestLog;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -34,6 +35,7 @@ import org.eclipse.jetty.util.thread.ThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 // See: https://github.com/jetty/jetty.project/blob/jetty-9.4.x/examples/embedded/src/main/java/org/eclipse/jetty/embedded/LikeJettyXml.java
+// See previous jetty.xml config for reference: https://github.com/zextras/carbonio-appserver/blob/81bce01f4b97efd89ccf89e79c963b40f16ffc81/appserver/conf/jetty/jetty.xml.production
 public class LikeXmlJettyServer {
 
   public static class InstantiationException extends Exception {
@@ -80,21 +82,19 @@ public class LikeXmlJettyServer {
       server.addConnector(createMtaAdminHttpsConnector(server));
       server.addConnector(createExtensionsHttpsConnector(server));
 
-      final ContextHandlerCollection contexts = new ContextHandlerCollection();
-        WebAppContext webAppContext = new WebAppContext(contexts, webApp, "/service");
-      webAppContext.setDescriptor(webDescriptor);
-       webAppContext.setThrowUnavailableOnStartupException(true);
 
-
-      final GzipHandler gzipHandler = new GzipHandler();
-      gzipHandler.setHandler(createRewriteHandler());
-      gzipHandler.setMinGzipSize(2048);
-      gzipHandler.setCompressionLevel(-1);
-      gzipHandler.setExcludedAgentPatterns(".*MSIE.6\\.0.*");
-      gzipHandler.setIncludedMethods("GET", "POST");
-      server.setHandler(gzipHandler);
-
-      server.setHandler(webAppContext);
+      final Handler webAppHandler = createWebAppHandler();
+       if (localServer.isHttpCompressionEnabled()) {
+         final GzipHandler gzipHandler = new GzipHandler();
+         gzipHandler.setHandler(webAppHandler);
+         gzipHandler.setMinGzipSize(2048);
+         gzipHandler.setCompressionLevel(-1);
+         gzipHandler.setExcludedAgentPatterns(".*MSIE.6\\.0.*");
+         gzipHandler.setIncludedMethods("GET", "POST");
+         server.setHandler(gzipHandler);
+       } else {
+         server.setHandler(webAppHandler);
+       }
 
       userHttpConnector.open();
       adminHttpsConnector.open();
@@ -120,7 +120,7 @@ public class LikeXmlJettyServer {
     }
 
 
-    private Handler createRewriteHandler() {
+    private Handler createWebAppHandler() {
       final RewriteHandler rewriteHandler = new RewriteHandler();
       rewriteHandler.setRewriteRequestURI(true);
       rewriteHandler.setRewritePathInfo(false);
@@ -169,7 +169,26 @@ public class LikeXmlJettyServer {
       rootRule2.setTerminating(true);
       rewriteHandler.addRule(rootRule2);
 
-      rewriteHandler.setHandler(new HandlerCollection(new ContextHandlerCollection(), new DefaultHandler(), new RequestLogHandler()));
+      final ContextHandlerCollection contexts = new ContextHandlerCollection();
+      WebAppContext webAppContext = new WebAppContext(contexts, webApp, "/service");
+      webAppContext.setDescriptor(webDescriptor);
+      webAppContext.setThrowUnavailableOnStartupException(true);
+
+      final String accessLogFileName = LC.zimbra_log_directory.value() + "/access_log.yyyy_mm_dd";
+      final NCSARequestLog ncsaRequestLog = new NCSARequestLog(accessLogFileName);
+      ncsaRequestLog.setLogDateFormat("dd/MMM/yyyy:HH:mm:ss:ms Z");
+      ncsaRequestLog.setRetainDays(30);
+      ncsaRequestLog.setAppend(true);
+      ncsaRequestLog.setExtended(true);
+      ncsaRequestLog.setFilenameDateFormat("yyyy-MM-dd");
+      ncsaRequestLog.setPreferProxiedForAddress(true);
+      ncsaRequestLog.setLogLatency(true);
+
+      final RequestLogHandler requestLogHandler = new RequestLogHandler();
+      requestLogHandler.setRequestLog(ncsaRequestLog);
+
+      rewriteHandler.setHandler(new HandlerCollection(contexts, new DefaultHandler(), webAppContext,
+          requestLogHandler));
 
       return rewriteHandler;
     }
@@ -214,13 +233,6 @@ public class LikeXmlJettyServer {
       return sslHttpConfig;
     }
 
-    private ServerConnector createUserHttpConnector(Server server, HttpConfiguration httpConfig) {
-      ServerConnector serverConnector = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
-      serverConnector.setPort(localServer.getMailPort());
-      serverConnector.setIdleTimeout(config.getHttpConnectorMaxIdleTimeMillis());
-      return serverConnector;
-    }
-
     private SslContextFactory createSSLContextFactory() {
       SslContextFactory localSslContextFactory = new SslContextFactory.Server();
       localSslContextFactory.setKeyStorePath(LC.mailboxd_keystore.value());
@@ -242,23 +254,33 @@ public class LikeXmlJettyServer {
       return localSslContextFactory;
     }
 
-    private ServerConnector createHttpsConnector(Server server, int port, int idleTimeMillis) {
+    private ServerConnector createHttpsConnector(Server server, int port, int idleTimeMillis,
+        String host) {
       ServerConnector serverConnector = createHttpsConnector(server);
       serverConnector.setPort(port);
+      serverConnector.setHost(host);
       serverConnector.setIdleTimeout(idleTimeMillis);
       return serverConnector;
     }
 
+    private ServerConnector createUserHttpConnector(Server server, HttpConfiguration httpConfig) {
+      ServerConnector serverConnector = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+      serverConnector.setPort(localServer.getMailPort());
+      serverConnector.setIdleTimeout(config.getHttpConnectorMaxIdleTimeMillis());
+      return serverConnector;
+    }
+
     private ServerConnector createAdminHttpsConnector(Server server) {
-      return createHttpsConnector(server, localServer.getAdminPort(), 0);
+      return createHttpsConnector(server, localServer.getAdminPort(), 0, localServer.getAdminBindAddress());
     }
 
     private ServerConnector createMtaAdminHttpsConnector(Server server) {
-      return createHttpsConnector(server, localServer.getMtaAuthPort(), 0);
+      return createHttpsConnector(server, localServer.getMtaAuthPort(), 0, localServer.getMtaAuthBindAddress());
     }
 
     private ServerConnector createExtensionsHttpsConnector(Server server) {
-      return createHttpsConnector(server, localServer.getExtensionBindPort(), config.getHttpConnectorMaxIdleTimeMillis());
+      return createHttpsConnector(server, localServer.getExtensionBindPort(), config.getHttpConnectorMaxIdleTimeMillis(),
+          localServer.getExtensionBindAddress());
     }
 
     private ServerConnector createHttpsConnector(Server server) {

@@ -82,7 +82,7 @@
     <mkdir dir="${soapdocs.output.dir}" />
 
     <javadoc sourcepath="${src.dir}/main/java" access="private" docletpathref="class.path" classpathref="class.path">
-      <doclet name="com.zimbra.doc.soap.doclet.ZmApiDoclet">
+      <doclet name="com.zimbra.doc.soap.doclet.CarbonioApiDoclet">
         <param name="--templates-dir" value="${templates.dir}" />
         <param name="--output-dir" value="${soapdocs.output.dir}" />
         <param name="--apidesc-json" value="${soapdocs.apidesc.file}" />

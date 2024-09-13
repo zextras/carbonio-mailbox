@@ -2966,6 +2966,14 @@ public class ZAttrProvisioning {
     public static final String A_carbonioFeatureTeamEnabled = "carbonioFeatureTeamEnabled";
 
     /**
+     * Whether the WS-Collaboration feature enabled for account or COS
+     *
+     * @since ZCS 24.9.0
+     */
+    @ZAttr(id=3145)
+    public static final String A_carbonioFeatureWscEnabled = "carbonioFeatureWscEnabled";
+
+    /**
      * Logo URL for domain
      *
      * @since ZCS 23.2.0
@@ -7739,7 +7747,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFileUploadMaxSize = "zimbraFileUploadMaxSize";
 
     /**
-     * Maximum size in bytes for each attachment.
+     * The maximum size for each attachment, in bytes. A value of 0 indicates
+     * no size limit.
      *
      * @since ZCS 8.0.0
      */

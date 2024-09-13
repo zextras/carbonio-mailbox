@@ -35,6 +35,7 @@
     <a n="carbonioFeatureMeetingEnabled"/>
     <a n="carbonioFeatureOTPMgmtEnabled"/>
     <a n="carbonioFeatureTeamEnabled"/>
+    <a n="carbonioFeatureWscEnabled"/>
     <a n="carbonioPrefSendAnalytics"/>
     <a n="carbonioPrefWebUiDarkMode"/>
     <a n="cn"/>
@@ -143,6 +144,7 @@
     <a n="zimbraFeatureTwoFactorAuthRequired"/>
     <a n="zimbraFeatureVoiceUpsellURL"/>
     <a n="zimbraFeatureWebClientEnabled"/>
+    <a n="zimbraFileUploadMaxSizePerFile"/>
     <a n="zimbraFilterBatchSize"/>
     <a n="zimbraFilterSleepInterval"/>
     <a n="zimbraForceClearCookies"/>
@@ -545,6 +547,7 @@
     <a n="zimbraExternalShareWhitelistDomain"/>
     <a n="zimbraExternalSharingEnabled"/>
     <a n="zimbraFeatureDistributionListFolderEnabled"/>
+    <a n="zimbraFileUploadMaxSizePerFile"/>
     <a n="zimbraForceClearCookies"/>
     <a n="zimbraFreebusyExchangeServerType"/>
     <a n="zimbraGalAlwaysIncludeLocalCalendarResources"/>

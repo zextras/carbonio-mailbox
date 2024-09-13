@@ -269,9 +269,6 @@ public final class ZimbraLog {
   /** the "zimbra.mbxmgr" logger is used to track mailbox loading/maintenance mode */
   public static final Log mbxmgr = LogFactory.getLog("zimbra.mbxmgr");
 
-  /** "zimbra.tnef" logger. Logs TNEF conversion operations. */
-  public static final Log tnef = LogFactory.getLog("zimbra.tnef");
-
   public static final Log nginxlookup = LogFactory.getLog("zimbra.nginxlookup");
 
   /** the "zimbra.contact" logger. Logs contact operations. */

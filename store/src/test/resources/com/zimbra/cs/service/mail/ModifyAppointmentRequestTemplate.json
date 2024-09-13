@@ -1,0 +1,75 @@
+{
+  "echo": "1",
+  "id": "${id}",
+  "comp": "0",
+  "m": {
+    "e": [
+      {
+        "a": "${organizer_email}",
+        "p": "${organizer_name}",
+        "t": "f"
+      }
+    ],
+    "inv": {
+      "comp": [
+        {
+          "alarm": [
+            {
+              "action": "DISPLAY",
+              "trigger": {
+                "rel": {
+                  "m": 5,
+                  "related": "START",
+                  "neg": "1"
+                }
+              }
+            }
+          ],
+          "at": [
+            {
+              "a": "${invitee1_email}",
+              "d": "${invitee1_email}",
+              "role": "REQ",
+              "rsvp": "1"
+            }
+          ],
+          "allDay": "0",
+          "fb": "B",
+          "loc": "${location}",
+          "name": "${event_title}",
+          "or": {
+            "a": "${organizer_email}",
+            "d": "${organizer_name}"
+          },
+          "status": "CONF",
+          "s": {
+            "d": "${start_time}",
+            "tz": "${timezone}"
+          },
+          "e": {
+            "d": "${end_time}",
+            "tz": "${timezone}"
+          },
+          "class": "PUB",
+          "draft": 0
+        }
+      ]
+    },
+    "l": "10",
+    "mp": {
+      "ct": "multipart/alternative",
+      "mp": [
+        {
+          "ct": "text/html",
+          "content": "<html><body id='htmlmode'>-:::_::_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_::_:_::-<h3>${organizer_name} have invited you to a new meeting!</h3><p>Subject: ${event_title}</p><p>Organizer: ${organizer_name}</p><p>Location: ${location}</p><p>Time: start_time_formatted - end_time_formatted</p><p>Invitees: ${invitee1_email}, ${invitee2_email}</p><br/>-:::_::_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_::_:_::-<p>This is event body/description.</p></body></html>"
+        },
+        {
+          "ct": "text/plain",
+          "content": "-:::_::_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_::_:_::-\n${organizer_name} have invited you to a new meeting!\n\nSubject: ${event_title} \nOrganizer: ${organizer_name}\n\nTime: start_time_formatted - end_time_formatted\n \nInvitees: ${invitee1_email}, ${invitee2_email}\n\n\n-:::_::_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_:_::_:_::-\nThis is event body/description."
+        }
+      ]
+    },
+    "su": "${event_title}"
+  },
+  "_jsns": "urn:zimbraMail"
+}

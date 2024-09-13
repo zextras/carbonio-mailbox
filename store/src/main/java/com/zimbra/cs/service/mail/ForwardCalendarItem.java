@@ -276,11 +276,10 @@ public class ForwardCalendarItem extends CalendarRequest {
       ZComponent comp = compIter.next();
       ICalTok compName = ICalTok.lookup(comp.getName());
       if (ICalTok.VEVENT.equals(compName) || ICalTok.VTODO.equals(compName)) {
-        // Remove existing ATTENDEEs and X-MS-OLK-SENDER.
+        // Remove existing X-MS-OLK-SENDER.
         for (Iterator<ZProperty> propIter = comp.getPropertyIterator(); propIter.hasNext(); ) {
           ZProperty prop = propIter.next();
-          if (ICalTok.ATTENDEE.equals(prop.getToken())
-              || "X-MS-OLK-SENDER".equalsIgnoreCase(prop.getName())) propIter.remove();
+          if ("X-MS-OLK-SENDER".equalsIgnoreCase(prop.getName())) propIter.remove();
         }
         // SENT-BY
         ZProperty orgProp = comp.getProperty(ICalTok.ORGANIZER);
@@ -307,6 +306,7 @@ public class ForwardCalendarItem extends CalendarRequest {
           if (name != null && name.length() > 0) att.addParameter(new ZParameter(ICalTok.CN, name));
           att.addParameter(new ZParameter(ICalTok.PARTSTAT, ICalTok.NEEDS_ACTION.toString()));
           att.addParameter(new ZParameter(ICalTok.RSVP, "TRUE"));
+          att.addParameter(new ZParameter(ICalTok.ROLE, ICalTok.REQ_PARTICIPANT.toString()));
           comp.addProperty(att);
         }
       }

@@ -428,7 +428,7 @@ public class UserServlet extends ZimbraServlet {
             req,
             resp,
             Provisioning.getInstance().getServer(context.targetAccount),
-            getProxyAuthToken(context));
+            getProxyAuthToken(context), Map.of());
       } catch (HttpException e) {
         throw new IOException("Unknown error", e);
       }
