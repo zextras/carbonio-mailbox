@@ -9,10 +9,8 @@
 package com.zimbra.cs.service.admin;
 
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
-import com.zextras.carbonio.message_broker.config.enums.Service;
 import com.zextras.carbonio.message_broker.events.services.mailbox.UserDeleted;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
-import com.zextras.mailbox.client.ServiceDiscoverHttpClient;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
@@ -26,10 +24,6 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import com.zimbra.soap.admin.message.DeleteAccountResponse;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -96,7 +90,9 @@ public class DeleteAccount extends AdminDocumentHandler {
      * To prevent this race condition, put the account in "maintenance" mode
      * so mail delivery and any user action is blocked.
      */
-    deleteUserUseCase.delete(account.getId());
+    deleteUserUseCase.delete(account.getId()).getOrElseThrow(ex -> ServiceException.FAILURE("Delete account "
+            + account.getMail() + " has an error: "
+            + ex.getMessage(), ex));
     publishAccountDeletedEvent(account);
 
     ZimbraLog.security.info(

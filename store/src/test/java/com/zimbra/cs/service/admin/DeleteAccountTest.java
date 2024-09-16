@@ -58,7 +58,6 @@ class DeleteAccountTest {
    * to start the SoapServlet with {@link AdminService}. The reason is some code calls
    * System.exit(1) presumably, so the VM exits and maven fails.
    *
-   * @throws Exception
    */
   @BeforeAll
   static void setUp() throws Exception {
@@ -225,7 +224,7 @@ class DeleteAccountTest {
             .get());
   }
 
-  private Element doDeleteAccount(Account caller, String toDeleteId) throws ServiceException {
+  private void doDeleteAccount(Account caller, String toDeleteId) throws ServiceException {
     Map<String, Object> context = new HashMap<String, Object>();
     ZimbraSoapContext zsc =
         new ZimbraSoapContext(
@@ -234,7 +233,7 @@ class DeleteAccountTest {
             SoapProtocol.Soap12,
             SoapProtocol.Soap12);
     context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
-    return deleteAccount.handle(
+    deleteAccount.handle(
         JaxbUtil.jaxbToElement(new DeleteAccountRequest(toDeleteId)), context);
   }
 
@@ -301,4 +300,34 @@ class DeleteAccountTest {
       Assertions.assertEquals(ServiceException.PERM_DENIED, serviceException.getCode());
       Assertions.assertNotNull(provisioning.getAccountById(toDeleteId));
   }
+
+    @ParameterizedTest
+    @MethodSource("getHappyPathCases")
+    void shouldDeleteUserThrowsException(Account caller, Account toDelete) throws Exception {
+        Mockito.when(mockMessageBrokerClient.publish(any(UserDeleted.class))).thenReturn(true);
+        DeleteUserUseCase deleteUserUseCase = Mockito.mock(DeleteUserUseCase.class);
+
+        final String toDeleteId = toDelete.getId();
+        Map<String, Object> context = new HashMap<String, Object>();
+        ZimbraSoapContext zsc =
+                new ZimbraSoapContext(
+                        AuthProvider.getAuthToken(caller),
+                        caller.getId(),
+                        SoapProtocol.Soap12,
+                        SoapProtocol.Soap12);
+        context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+        DeleteAccount deleteAccountHandler =
+                new DeleteAccount(
+                        deleteUserUseCase,
+                        mockMessageBrokerClient);
+        Mockito.when(deleteUserUseCase.delete(toDeleteId)).thenReturn(Try.failure(new RuntimeException("message")));
+        DeleteAccountRequest deleteAccountRequest = new DeleteAccountRequest(toDeleteId);
+        Element request = JaxbUtil.jaxbToElement(deleteAccountRequest);
+        final ServiceException serviceException =
+                Assertions.assertThrows(ServiceException.class, () -> deleteAccountHandler.handle(request, context));
+        Assertions.assertEquals("service.FAILURE", serviceException.getCode());
+        Assertions.assertTrue(serviceException.getMessage().startsWith("system failure: Delete account "));
+        Assertions.assertTrue(serviceException.getMessage().endsWith("has an error: message"));
+    }
+
 }
