@@ -263,6 +263,31 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
   }
 
   @Test
+  void featureEnabledInDefaultCosForAnotherDomain() throws Exception {
+    provisioning.getConfig().setCarbonioSearchAllDomainsByFeature(true);
+    var cos = createCosWithChatsEnabled();
+    var anotherDomain = provisioning.createDomain("anotherdomain.com", new HashMap<>());
+
+    var account1 = buildAccount("first.account", "Test1").create();
+    var account2 = buildAccount("second.account", "Test2", "anotherdomain.com").create();
+
+    anotherDomain.setDomainDefaultCOSId(cos.getId());
+
+    try {
+      HttpResponse httpResponse = buildRequest()
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS))
+          .execute();
+
+      assertEquals(1, getResponse(httpResponse).getAccounts().size());
+    } finally {
+      cleanUp(account1);
+      cleanUp(account2);
+      cleanUp(cos);
+      cleanUp(anotherDomain);
+    }
+  }
+
+  @Test
   void multipleCos() throws Exception {
     var cos1 = createCosWithChatsEnabled();
     var cos2 = createCosWithChatsEnabled();

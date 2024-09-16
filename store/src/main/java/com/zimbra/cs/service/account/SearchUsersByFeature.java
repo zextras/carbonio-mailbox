@@ -17,6 +17,7 @@ import com.zimbra.cs.service.admin.ToXML;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.account.message.SearchUsersByFeatureRequest;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -46,7 +47,8 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
     var domain = provisioning.getDomainById(account.getDomainId());
 
     var options = buildSearchOptions(domain, allDomains);
-    options.setFilterString(ZLdapFilterFactory.FilterId.ADMIN_SEARCH, getSearchFilter(query, feature, provisioning, provisioning.getDefaultCOS(domain)).toString());
+
+    options.setFilterString(ZLdapFilterFactory.FilterId.ADMIN_SEARCH, getSearchFilter(query, feature, provisioning, allDomains, domain).toString());
 
     var entries = provisioning.searchDirectory(options).stream().limit(request.getAttributeInt(AccountConstants.A_LIMIT, DEFAULT_MAX_RESULTS));
 
@@ -74,7 +76,7 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
     return response;
   }
 
-  private static Filter getSearchFilter(String query, String feature, Provisioning provisioning, Cos defaultCos) throws ServiceException {
+  private static Filter getSearchFilter(String query, String feature, Provisioning provisioning, boolean allDomains, Domain userDomain) throws ServiceException {
     var autoCompleteFilter = Filter.createORFilter(
         getWildcardFilter(ZAttrProvisioning.A_uid, query),
         getWildcardFilter(ZAttrProvisioning.A_displayName, query),
@@ -84,25 +86,33 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
         Filter.createEqualityFilter(ZAttrProvisioning.A_zimbraHideInGal, LDAP_TRUE)
     );
 
-    var featureFilter = getFeatureFilter(feature, provisioning, defaultCos);
+    var featureFilter = getFeatureFilter(feature, provisioning, allDomains, userDomain);
 
     return featureFilter == null
         ? Filter.createANDFilter(autoCompleteFilter, notHiddenInGalFilter)
         : Filter.createANDFilter(autoCompleteFilter, notHiddenInGalFilter, featureFilter);
   }
 
-  private static Filter getFeatureFilter(String feature, Provisioning provisioning, Cos defaultCos) throws ServiceException {
+  private static Filter getFeatureFilter(String feature, Provisioning provisioning, boolean allDomains, Domain userDomain) throws ServiceException {
     if (StringUtil.isNullOrEmpty(feature)) {
       return null;
     }
     var accountFeatureFilter = Filter.createEqualityFilter(feature, LDAP_TRUE);
 
+    Map<String, Cos> defaultCOSes = allDomains
+        ? provisioning.getAllDomains().stream().filter(d -> getDefaultCOS(provisioning, d) != null)
+          .collect(Collectors.toMap(Domain::getId, d -> getDefaultCOS(provisioning, d)))
+        : Collections.singletonMap(userDomain.getId(), provisioning.getDefaultCOS(userDomain));
+
     var cosWithFeature = provisioning.getAllCos().stream().filter(cos -> cos.getAttr(feature, LDAP_FALSE).equals(LDAP_TRUE)).collect(Collectors.toList());
     if (!cosWithFeature.isEmpty()) {
       var cosFilters = cosWithFeature.stream()
           .map(cos -> getCosFeatureFilter(cos, feature)).collect(Collectors.toList());
-      if (defaultCos != null && defaultCos.getAttr(feature, LDAP_FALSE).equals(LDAP_TRUE)) {
-        cosFilters.add(getDefaultCosFeatureFilter(feature));
+      for (var domain : provisioning.getAllDomains()) {
+        var defaultCos = defaultCOSes.get(domain.getId());
+        if (defaultCos != null && defaultCos.getAttr(feature, LDAP_FALSE).equals(LDAP_TRUE)) {
+          cosFilters.add(getDefaultCosFeatureFilter(allDomains, domain, feature));
+        }
       }
       return Filter.createORFilter(Stream.concat(Stream.of(accountFeatureFilter), cosFilters.stream()).toArray(Filter[]::new));
     } else {
@@ -110,7 +120,22 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
     }
   }
 
-  private static Filter getDefaultCosFeatureFilter(String feature) {
+  private static Cos getDefaultCOS(Provisioning provisioning, Domain d) {
+    try {
+      return provisioning.getDefaultCOS(d);
+    } catch (ServiceException e) {
+      return null;
+    }
+  }
+
+  private static Filter getDefaultCosFeatureFilter(boolean allDomains, Domain domain, String feature) {
+    if (allDomains) {
+      return Filter.createANDFilter(
+          Filter.createSubstringFilter(ZAttrProvisioning.A_mail, null, null, "@" + domain.getName()),
+          Filter.createNOTFilter(Filter.createPresenceFilter(ZAttrProvisioning.A_zimbraCOSId)),
+          Filter.createNOTFilter(Filter.createEqualityFilter(feature, LDAP_FALSE))
+      );
+    }
     return Filter.createANDFilter(
         Filter.createNOTFilter(Filter.createPresenceFilter(ZAttrProvisioning.A_zimbraCOSId)),
         Filter.createNOTFilter(Filter.createEqualityFilter(feature, LDAP_FALSE))
