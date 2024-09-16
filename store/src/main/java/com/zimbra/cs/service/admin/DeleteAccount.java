@@ -49,7 +49,7 @@ public class DeleteAccount extends AdminDocumentHandler {
 
   /** must be careful and only allow deletes domain admin has access to */
   @Override
-  public boolean domainAuthSufficient(Map<String, Object> context) {
+  public boolean domainAuthSufficient(Map context) {
     return true;
   }
 

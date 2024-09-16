@@ -12,6 +12,7 @@ import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
@@ -315,15 +316,15 @@ class DeleteAccountTest {
                         SoapProtocol.Soap12,
                         SoapProtocol.Soap12);
         context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
-        DeleteAccount deleteAccount =
+        DeleteAccount deleteAccountHandler =
                 new DeleteAccount(
                         deleteUserUseCase,
                         mockMessageBrokerClient);
         Mockito.when(deleteUserUseCase.delete(toDeleteId)).thenReturn(Try.failure(new RuntimeException("message")));
+        DeleteAccountRequest deleteAccountRequest = new DeleteAccountRequest(toDeleteId);
+        Element request = JaxbUtil.jaxbToElement(deleteAccountRequest);
         final ServiceException serviceException =
-                Assertions.assertThrows(
-                        ServiceException.class, () -> deleteAccount.handle(
-                                JaxbUtil.jaxbToElement(new DeleteAccountRequest(toDeleteId)), context));
+                Assertions.assertThrows(ServiceException.class, () -> deleteAccountHandler.handle(request, context));
         Assertions.assertEquals("service.FAILURE", serviceException.getCode());
         Assertions.assertTrue(serviceException.getMessage().startsWith("system failure: Delete account "));
         Assertions.assertTrue(serviceException.getMessage().endsWith("has an error: message"));
