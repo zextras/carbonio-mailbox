@@ -232,6 +232,30 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
   }
 
   @Test
+  void featureEnabledInDefaultCosNotInAccount() throws Exception {
+    var cos = createCosWithChatsEnabled();
+    provisioning.createDomain("anotherdomain.com", new HashMap<>());
+
+    var account1 = buildAccount("first.account", "Test1").create();
+    var account2 = buildAccount("second.account", "Test2", "anotherdomain.com").create();
+
+    var domain = provisioning.getDomain(account1);
+    domain.setDomainDefaultCOSId(cos.getId());
+
+    try {
+      HttpResponse httpResponse = buildRequest()
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS))
+          .execute();
+
+      assertEquals(1, getResponse(httpResponse).getAccounts().size());
+    } finally {
+      cleanUp(account1);
+      cleanUp(account2);
+      cleanUp(cos);
+    }
+  }
+
+  @Test
   void multipleCos() throws Exception {
     var cos1 = createCosWithChatsEnabled();
     var cos2 = createCosWithChatsEnabled();

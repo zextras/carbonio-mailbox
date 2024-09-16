@@ -8,6 +8,7 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Cos;
+import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.SearchDirectoryOptions;
@@ -41,20 +42,19 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
         SearchUsersByFeatureRequest.Features.valueOf(request.getAttribute(AccountConstants.E_FEATURE, "UNKNOWN")).getFeature();
 
     var provisioning = Provisioning.getInstance();
+    var domain = provisioning.getDomainById(account.getDomainId());
 
-    var options = buildSearchOptions(provisioning, account);
-    options.setFilterString(ZLdapFilterFactory.FilterId.ADMIN_SEARCH, getSearchFilter(query, feature, provisioning).toString());
+    var options = buildSearchOptions(domain);
+    options.setFilterString(ZLdapFilterFactory.FilterId.ADMIN_SEARCH, getSearchFilter(query, feature, provisioning, provisioning.getDefaultCOS(domain)).toString());
 
     var entries = provisioning.searchDirectory(options).stream().limit(request.getAttributeInt(AccountConstants.A_LIMIT, DEFAULT_MAX_RESULTS));
 
     return buildResponse(zsc, entries);
   }
 
-  private static SearchDirectoryOptions buildSearchOptions(Provisioning provisioning,
-                                                                  Account account) throws ServiceException {
+  private static SearchDirectoryOptions buildSearchOptions(Domain domain) throws ServiceException {
     var options = new SearchDirectoryOptions();
     options.setTypes(SearchDirectoryOptions.ObjectType.accounts);
-    var domain = provisioning.getDomainById(account.getDomainId());
     options.setDomain(domain);
     options.setSortAttr(ZAttrProvisioning.A_displayName);
     options.setSortOpt(SearchDirectoryOptions.SortOpt.SORT_ASCENDING);
@@ -71,7 +71,7 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
     return response;
   }
 
-  private static Filter getSearchFilter(String query, String feature, Provisioning provisioning) throws ServiceException {
+  private static Filter getSearchFilter(String query, String feature, Provisioning provisioning, Cos defaultCos) throws ServiceException {
     var autoCompleteFilter = Filter.createORFilter(
         getWildcardFilter(ZAttrProvisioning.A_uid, query),
         getWildcardFilter(ZAttrProvisioning.A_displayName, query),
@@ -81,14 +81,14 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
         Filter.createEqualityFilter(ZAttrProvisioning.A_zimbraHideInGal, LDAP_TRUE)
     );
 
-    var featureFilter = getFeatureFilter(feature, provisioning);
+    var featureFilter = getFeatureFilter(feature, provisioning, defaultCos);
 
     return featureFilter == null
         ? Filter.createANDFilter(autoCompleteFilter, notHiddenInGalFilter)
         : Filter.createANDFilter(autoCompleteFilter, notHiddenInGalFilter, featureFilter);
   }
 
-  private static Filter getFeatureFilter(String feature, Provisioning provisioning) throws ServiceException {
+  private static Filter getFeatureFilter(String feature, Provisioning provisioning, Cos defaultCos) throws ServiceException {
     if (StringUtil.isNullOrEmpty(feature)) {
       return null;
     }
@@ -98,10 +98,20 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
     if (!cosWithFeature.isEmpty()) {
       var cosFilters = cosWithFeature.stream()
           .map(cos -> getCosFeatureFilter(cos, feature)).collect(Collectors.toList());
+      if (defaultCos != null && defaultCos.getAttr(feature, LDAP_FALSE).equals(LDAP_TRUE)) {
+        cosFilters.add(getDefaultCosFeatureFilter(feature));
+      }
       return Filter.createORFilter(Stream.concat(Stream.of(accountFeatureFilter), cosFilters.stream()).toArray(Filter[]::new));
     } else {
       return accountFeatureFilter;
     }
+  }
+
+  private static Filter getDefaultCosFeatureFilter(String feature) {
+    return Filter.createANDFilter(
+        Filter.createNOTFilter(Filter.createPresenceFilter(ZAttrProvisioning.A_zimbraCOSId)),
+        Filter.createNOTFilter(Filter.createEqualityFilter(feature, LDAP_FALSE))
+    );
   }
 
   private static Filter getCosFeatureFilter(Cos cos, String feature) {
