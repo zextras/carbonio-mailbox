@@ -25,12 +25,12 @@ public class GetCalendarGroups extends MailDocumentHandler {
 
     final var response = zsc.createElement(MailConstants.GET_CALENDAR_GROUPS_RESPONSE);
 
-    final var group1 = response.addNonUniqueElement("group");
-    group1.addAttribute("id", ALL_CALENDARS_GROUP_ID);
-    group1.addAttribute("name", ALL_CALENDARS_GROUP_NAME);
+    final var allCalendarsGroup = response.addNonUniqueElement("group");
+    allCalendarsGroup.addAttribute("id", ALL_CALENDARS_GROUP_ID);
+    allCalendarsGroup.addAttribute("name", ALL_CALENDARS_GROUP_NAME);
 
     for (final var calendarFolder : calendarFolders) {
-      final var calendarId = group1.addNonUniqueElement("calendarId");
+      final var calendarId = allCalendarsGroup.addNonUniqueElement("calendarId");
       calendarId.setText(calendarFolder.getFolderIdAsString());
     }
 
