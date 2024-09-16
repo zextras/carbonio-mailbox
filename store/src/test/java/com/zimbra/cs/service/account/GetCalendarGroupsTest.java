@@ -6,12 +6,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.JaxbUtil;
+import com.zimbra.soap.mail.message.CreateFolderRequest;
 import com.zimbra.soap.mail.message.GetCalendarGroupsRequest;
 import com.zimbra.soap.mail.message.GetCalendarGroupsResponse;
+import com.zimbra.soap.mail.type.NewFolderSpec;
 import java.io.IOException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -40,14 +41,8 @@ class GetCalendarGroupsTest extends SoapTestSuite {
     account = accountCreatorFactory.get().create();
   }
 
-  /*
-   Tests:
-   - add a calendar, assert that it is in the "All Calendars" group
-   - assert that an account cannot see another account's calendar groups
-  */
-
   @Test
-  void alwaysReturnsAllCalendarsDefaultGroup() throws Exception {
+  void justAllCalendarsDefaultGroup() throws Exception {
     final var request = new GetCalendarGroupsRequest();
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
@@ -59,11 +54,38 @@ class GetCalendarGroupsTest extends SoapTestSuite {
     assertEquals(1, response.getGroups().get(0).getCalendarIds().size());
   }
 
+  @Test
+  void allCalendarsGroupWithMoreCalendars() throws Exception {
+    addCalendarTo(account, "test-calendar-1");
+    addCalendarTo(account, "test-calendar-2");
+
+    final var request = new GetCalendarGroupsRequest();
+
+    final var soapResponse = getSoapClient().executeSoap(account, request);
+
+    assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+    final var response = parseSoapResponse(soapResponse);
+    assertEquals(1, response.getGroups().size());
+    assertEquals("All Calendars", response.getGroups().get(0).getName());
+    assertEquals(3, response.getGroups().get(0).getCalendarIds().size());
+  }
+
+  private void addCalendarTo(Account account, String name) throws Exception {
+    final var folder = new NewFolderSpec(name);
+    folder.setParentFolderId("1");
+    folder.setDefaultView("appointment");
+    final var createFolderRequest = new CreateFolderRequest(folder);
+    final var createFolderResponse = getSoapClient().executeSoap(account, createFolderRequest);
+    assertEquals(HttpStatus.SC_OK, createFolderResponse.getStatusLine().getStatusCode());
+  }
+
   private static GetCalendarGroupsResponse parseSoapResponse(HttpResponse httpResponse)
       throws IOException, ServiceException {
-    final String responseBody = EntityUtils.toString(httpResponse.getEntity());
-    final Element rootElement =
-        parseXML(responseBody).getElement("Body").getElement("GetCalendarGroupsResponse");
+    final var responseBody = EntityUtils.toString(httpResponse.getEntity());
+    final var rootElement =
+        parseXML(responseBody)
+            .getElement("Body")
+            .getElement(GetCalendarGroupsResponse.class.getSimpleName());
     return JaxbUtil.elementToJaxb(rootElement, GetCalendarGroupsResponse.class);
   }
 }
