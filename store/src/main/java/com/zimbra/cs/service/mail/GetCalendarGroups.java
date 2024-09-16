@@ -3,16 +3,20 @@ package com.zimbra.cs.service.mail;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.soap.ZimbraSoapContext;
 import java.util.Map;
 
 public class GetCalendarGroups extends MailDocumentHandler {
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
-    ZimbraSoapContext zsc = getZimbraSoapContext(context);
-    Element response = zsc.createElement(MailConstants.GET_CALENDAR_GROUPS_RESPONSE);
+    final var zsc = getZimbraSoapContext(context);
+    final var account = getRequestedAccount(getZimbraSoapContext(context));
 
-    Element group1 = response.addNonUniqueElement("group");
+    if (!canAccessAccount(zsc, account))
+      throw ServiceException.PERM_DENIED("can not access account");
+
+    final var response = zsc.createElement(MailConstants.GET_CALENDAR_GROUPS_RESPONSE);
+
+    final var group1 = response.addNonUniqueElement("group");
     // TODO: use real group id
     group1.addAttribute("id", "123");
     group1.addAttribute("name", "All Calendars");
