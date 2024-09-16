@@ -20,6 +20,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -51,6 +52,11 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
   @AfterAll
   static void tearDown() throws ServiceException {
     provisioning.deleteAccount(userAccount.getId());
+  }
+
+  @BeforeEach
+  void setUpTest() throws ServiceException {
+    provisioning.getConfig().setCarbonioSearchAllDomainsByFeature(false);
   }
 
   @Test
@@ -234,7 +240,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
   @Test
   void featureEnabledInDefaultCosNotInAccount() throws Exception {
     var cos = createCosWithChatsEnabled();
-    provisioning.createDomain("anotherdomain.com", new HashMap<>());
+    var anotherDomain = provisioning.createDomain("anotherdomain.com", new HashMap<>());
 
     var account1 = buildAccount("first.account", "Test1").create();
     var account2 = buildAccount("second.account", "Test2", "anotherdomain.com").create();
@@ -252,6 +258,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
       cleanUp(account1);
       cleanUp(account2);
       cleanUp(cos);
+      cleanUp(anotherDomain);
     }
   }
 
@@ -377,6 +384,26 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
           .execute();
 
       assertEquals(1, getResponse(httpResponse).getAccounts().size());
+    } finally {
+      cleanUp(account1);
+      cleanUp(account2);
+      cleanUp(domain);
+    }
+  }
+
+  @Test
+  void testResultsInAllDomains() throws Exception {
+    var domain = provisioning.createDomain("anotherdomain.com", new HashMap<>());
+    provisioning.getConfig().setCarbonioSearchAllDomainsByFeature(true);
+    var account1 = buildAccount("first.account", "Test1").create();
+    var account2 = buildAccount("second.account", "Test2", "anotherdomain.com").create();
+
+    try {
+      HttpResponse httpResponse = buildRequest()
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account"))
+          .execute();
+
+      assertEquals(2, getResponse(httpResponse).getAccounts().size());
     } finally {
       cleanUp(account1);
       cleanUp(account2);

@@ -42,9 +42,10 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
         SearchUsersByFeatureRequest.Features.valueOf(request.getAttribute(AccountConstants.E_FEATURE, "UNKNOWN")).getFeature();
 
     var provisioning = Provisioning.getInstance();
+    var allDomains = provisioning.getConfig().isCarbonioSearchAllDomainsByFeature();
     var domain = provisioning.getDomainById(account.getDomainId());
 
-    var options = buildSearchOptions(domain);
+    var options = buildSearchOptions(domain, allDomains);
     options.setFilterString(ZLdapFilterFactory.FilterId.ADMIN_SEARCH, getSearchFilter(query, feature, provisioning, provisioning.getDefaultCOS(domain)).toString());
 
     var entries = provisioning.searchDirectory(options).stream().limit(request.getAttributeInt(AccountConstants.A_LIMIT, DEFAULT_MAX_RESULTS));
@@ -52,10 +53,12 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
     return buildResponse(zsc, entries);
   }
 
-  private static SearchDirectoryOptions buildSearchOptions(Domain domain) throws ServiceException {
+  private static SearchDirectoryOptions buildSearchOptions(Domain domain, boolean allDomains) throws ServiceException {
     var options = new SearchDirectoryOptions();
     options.setTypes(SearchDirectoryOptions.ObjectType.accounts);
-    options.setDomain(domain);
+    if (!allDomains) {
+      options.setDomain(domain);
+    }
     options.setSortAttr(ZAttrProvisioning.A_displayName);
     options.setSortOpt(SearchDirectoryOptions.SortOpt.SORT_ASCENDING);
     return options;
