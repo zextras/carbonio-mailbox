@@ -4,6 +4,9 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.index.SortBy;
+import com.zimbra.cs.mailbox.Folder;
+import com.zimbra.soap.ZimbraSoapContext;
+import java.util.List;
 import java.util.Map;
 
 public class GetCalendarGroups extends MailDocumentHandler {
@@ -21,19 +24,28 @@ public class GetCalendarGroups extends MailDocumentHandler {
     if (!canAccessAccount(zsc, account))
       throw ServiceException.PERM_DENIED("can not access account");
 
-    final var calendarFolders = mbox.getCalendarFolders(octxt, SortBy.NAME_ASC);
+    final var calendars = mbox.getCalendarFolders(octxt, SortBy.NAME_ASC);
+    // TODO: load all calendar groups from datastore
 
+    return buildResponse(zsc, calendars);
+  }
+
+  private static Element buildResponse(ZimbraSoapContext zsc, List<Folder> calendars) {
     final var response = zsc.createElement(MailConstants.GET_CALENDAR_GROUPS_RESPONSE);
 
+    addAllCalendarsGroup(calendars, response);
+    // TODO: add other groups loaded from datastore
+    return response;
+  }
+
+  private static void addAllCalendarsGroup(List<Folder> calendars, Element response) {
     final var allCalendarsGroup = response.addNonUniqueElement("group");
     allCalendarsGroup.addAttribute("id", ALL_CALENDARS_GROUP_ID);
     allCalendarsGroup.addAttribute("name", ALL_CALENDARS_GROUP_NAME);
 
-    for (final var calendarFolder : calendarFolders) {
+    for (final var calendarFolder : calendars) {
       final var calendarId = allCalendarsGroup.addNonUniqueElement("calendarId");
       calendarId.setText(calendarFolder.getFolderIdAsString());
     }
-
-    return response;
   }
 }
