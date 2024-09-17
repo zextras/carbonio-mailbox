@@ -108,10 +108,10 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
     if (!cosWithFeature.isEmpty()) {
       var cosFilters = cosWithFeature.stream()
           .map(cos -> getCosFeatureFilter(cos, feature)).collect(Collectors.toList());
-      for (var domain : provisioning.getAllDomains()) {
-        var defaultCos = defaultCOSes.get(domain.getId());
+      for (var domainId : defaultCOSes.keySet()) {
+        var defaultCos = defaultCOSes.get(domainId);
         if (defaultCos != null && defaultCos.getAttr(feature, LDAP_FALSE).equals(LDAP_TRUE)) {
-          cosFilters.add(getDefaultCosFeatureFilter(allDomains, domain, feature));
+          cosFilters.add(getDefaultCosFeatureFilter(allDomains, provisioning.getDomainById(domainId), feature));
         }
       }
       return Filter.createORFilter(Stream.concat(Stream.of(accountFeatureFilter), cosFilters.stream()).toArray(Filter[]::new));
