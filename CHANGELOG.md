@@ -1,5 +1,21 @@
 
 
+## [4.17.5](https://github.com/zextras/carbonio-mailbox/compare/4.17.4...4.17.5) (2024-09-10)
+
+
+### Bug Fixes
+
+* [CO-1446] Searching a mail in shared mailbox when in conversation view not working ([#590](https://github.com/zextras/carbonio-mailbox/issues/590)) ([c1f5788](https://github.com/zextras/carbonio-mailbox/commit/c1f5788934b0da89a1e557884ea00b0c2da3b0d1))
+
+
+## [4.17.4](https://github.com/zextras/carbonio-mailbox/compare/4.17.3...4.17.4) (2024-09-09)
+
+
+### Bug Fixes
+
+* [CO-1462] AD zimbraAutoProvLastPolledTimestamp ([#584](https://github.com/zextras/carbonio-mailbox/issues/584)) ([0a39116](https://github.com/zextras/carbonio-mailbox/commit/0a391167c4497d5fe7c2e611da71be9d82e7afba))
+
+
 ## [4.17.3](https://github.com/zextras/carbonio-mailbox/compare/4.17.2...4.17.3) (2024-09-03)
 
 
