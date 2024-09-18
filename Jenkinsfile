@@ -41,8 +41,8 @@ def getRpmSpec(String upstream, String version) {
 
 def generateRpmSpec(String packageName, String version, String upstream) {
     return """{
-        "pattern": "artifacts/x86_64/(''' + packageName + ''')-(*).el''' + version + '''.x86_64.rpm",
-        "target": "''' + upstream + '''/zextras/{1}/{1}-{2}.el''' + version + '''.x86_64.rpm",
+        "pattern": "artifacts/x86_64/(${packageName})-(*).el${version}.x86_64.rpm",
+        "target": "${upstream}/zextras/{1}/{1}-{2}.el${version}.x86_64.rpm",
         "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
     }
     """
