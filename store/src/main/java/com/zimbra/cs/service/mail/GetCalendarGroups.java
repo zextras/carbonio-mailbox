@@ -13,8 +13,7 @@ public class GetCalendarGroups extends MailDocumentHandler {
 
   // TODO: use UUID or a fixed string like "all-calendars-id"?
   private static final String ALL_CALENDARS_GROUP_ID = "a970bb9528c94c40bd51bfede60fcb31";
-  // TODO: rename in "All calendars" (with lowercase "c")
-  private static final String ALL_CALENDARS_GROUP_NAME = "All Calendars";
+  private static final String ALL_CALENDARS_GROUP_NAME = "All calendars";
 
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
