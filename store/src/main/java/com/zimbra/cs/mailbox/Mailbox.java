@@ -127,6 +127,7 @@ import com.zimbra.cs.pop3.Pop3Message;
 import com.zimbra.cs.redolog.op.AlterItemTag;
 import com.zimbra.cs.redolog.op.ColorItem;
 import com.zimbra.cs.redolog.op.CopyItem;
+import com.zimbra.cs.redolog.op.CreateCalendarGroup;
 import com.zimbra.cs.redolog.op.CreateCalendarItemPlayer;
 import com.zimbra.cs.redolog.op.CreateCalendarItemRecorder;
 import com.zimbra.cs.redolog.op.CreateChat;
@@ -8889,8 +8890,22 @@ public class Mailbox implements MailboxStore {
     return createFolder(octxt, name, parentId, fopt);
   }
 
-  public CalendarGroup createCalendarGroup(String name, List<String> calendarIds) {
-    return new CalendarGroup(UUID.randomUUID().toString(), name, calendarIds.stream().map(Integer::parseInt).collect(Collectors.toSet()));
+  public CalendarGroup createCalendarGroup(OperationContext octxt, String name, List<String> calendarIds) throws ServiceException {
+    var id = UUID.randomUUID().toString();
+    // TODO: implement redo logic
+    // var redoRecorder = new CreateCalendarGroup(mId, id, name, calendarIds);
+    boolean success = false;
+    try {
+      beginTransaction("createContactGroup", octxt);
+      // var redoPlayer = (CreateCalendarGroup) currentChange().getRedoPlayer();
+
+      var group = new CalendarGroup(id, name, calendarIds.stream().map(Integer::parseInt).collect(Collectors.toSet()));
+      updateCalendarGroupDataSource(group);
+      success = true;
+      return group;
+    } finally {
+      endTransaction(success);
+    }
   }
 
   public Folder createFolder(
@@ -9272,6 +9287,13 @@ public class Mailbox implements MailboxStore {
     } finally {
       endTransaction(success);
     }
+  }
+
+  /**
+   * Updates the data source for a calendar group.
+   */
+  protected void updateCalendarGroupDataSource(CalendarGroup group) {
+
   }
 
   /**
