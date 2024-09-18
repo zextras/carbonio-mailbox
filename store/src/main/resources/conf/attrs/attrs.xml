@@ -10151,5 +10151,8 @@ TODO: delete them permanently from here
   <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
   <desc>Whether the WS-Collaboration feature enabled for account or COS</desc>
 </attr>
-
+<attr id="3146" name="carbonioSearchAllDomainsByFeature" type="boolean" cardinality="single" optionalIn="globalConfig" since="24.9.0">
+  <globalConfigValue>FALSE</globalConfigValue>
+  <desc>Whether the SearchUserByFeature API should search on all domains or only the current user domain</desc>
+</attr>
 </attrs>

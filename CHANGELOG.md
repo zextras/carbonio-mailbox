@@ -1,5 +1,19 @@
 
 
+# [4.17.6](https://github.com/zextras/carbonio-mailbox/compare/4.17.5...4.17.6) (2024-09-18)
+
+
+### Bug Fixes
+
+* [CO-1453] added filter for default cos in SearchUserByFeature ([f8f3927](https://github.com/zextras/carbonio-mailbox/commit/f8f392743b6b55a216d3a7766f9cd3b8ef2446a3))
+
+
+### Features
+
+* [CO-1453] added allDomains search to SearchUsersByFeature ([64a19fc](https://github.com/zextras/carbonio-mailbox/commit/64a19fc5f6dcd9cfa6d468fe9b7f87e2e7e61e1c))
+* [CO-1453] added default cos support for multiple domains in SearchUsersByFeature ([5e78a06](https://github.com/zextras/carbonio-mailbox/commit/5e78a067b01459615341d6581c06e96a4a2f4269))
+* [CO-1453] added global attribute to configure SearchUsersByFeature behaviour with domains ([b4b4dd7](https://github.com/zextras/carbonio-mailbox/commit/b4b4dd7604e97195f69fdf17e140cec9908cb293))
+
 ## [4.17.5](https://github.com/zextras/carbonio-mailbox/compare/4.17.4...4.17.5) (2024-09-10)
 
 
