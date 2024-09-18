@@ -8,8 +8,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CreateCalendarGroupRequest;
 
 import java.util.Map;
-
-import static java.util.stream.Collectors.toSet;
+import java.util.UUID;
 
 public class CreateCalendarGroup extends MailDocumentHandler {
 
@@ -18,13 +17,16 @@ public class CreateCalendarGroup extends MailDocumentHandler {
     final var zsc = getZimbraSoapContext(context);
     final var account = getRequestedAccount(getZimbraSoapContext(context));
     final var mbox = getRequestedMailbox(zsc);
+    final var octxt = getOperationContext(zsc, context);
 
     if (!canAccessAccount(zsc, account))
       throw ServiceException.PERM_DENIED("can not access account");
 
     CreateCalendarGroupRequest req = zsc.elementToJaxb(request);
 
-    final var group = mbox.createCalendarGroup(req.getName(), req.getCalendarIds());
+    // TODO: implement duplicated calendar name check logic
+
+    final var group = mbox.createCalendarGroup(octxt, req.getName(), req.getCalendarIds());
 
     return buildResponse(zsc, group);
   }
