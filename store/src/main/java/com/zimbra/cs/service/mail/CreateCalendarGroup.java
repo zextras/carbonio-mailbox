@@ -30,7 +30,7 @@ public class CreateCalendarGroup extends MailDocumentHandler {
   }
 
   private static Element buildResponse(ZimbraSoapContext zsc, CalendarGroup group) {
-    final var response = zsc.createElement(MailConstants.E_CREATE_CALENDAR_GROUP_RESPONSE);
+    final var response = zsc.createElement(MailConstants.CREATE_CALENDAR_GROUP_RESPONSE);
     final var groupInfo = response.addUniqueElement("group");
     groupInfo.addAttribute("id", group.id());
     groupInfo.addAttribute("name", group.name());

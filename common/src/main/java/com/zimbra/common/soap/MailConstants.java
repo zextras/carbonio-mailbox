@@ -454,8 +454,12 @@ public final class MailConstants {
   // Calendar
   public static final QName GET_CALENDAR_GROUPS_REQUEST =
       QName.get(E_GET_CALENDAR_GROUPS_REQUEST, NAMESPACE);
-  public static final QName GET_CALENDAR_GROUPS_RESPONSE =
+    public static final QName GET_CALENDAR_GROUPS_RESPONSE =
       QName.get(E_GET_CALENDAR_GROUPS_RESPONSE, NAMESPACE);
+  public static final QName CREATE_CALENDAR_GROUP_REQUEST =
+      QName.get(E_CREATE_CALENDAR_GROUP_REQUEST, NAMESPACE);
+  public static final QName CREATE_CALENDAR_GROUP_RESPONSE =
+      QName.get(E_CREATE_CALENDAR_GROUP_RESPONSE, NAMESPACE);
   public static final QName GET_APPT_SUMMARIES_REQUEST =
       QName.get(E_GET_APPT_SUMMARIES_REQUEST, NAMESPACE);
   public static final QName GET_APPOINTMENT_REQUEST =

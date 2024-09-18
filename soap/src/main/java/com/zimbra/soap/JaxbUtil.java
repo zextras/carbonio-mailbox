@@ -704,6 +704,8 @@ public final class JaxbUtil {
           com.zimbra.soap.mail.message.GetApptSummariesResponse.class,
           com.zimbra.soap.mail.message.GetCalendarGroupsRequest.class,
           com.zimbra.soap.mail.message.GetCalendarGroupsResponse.class,
+          com.zimbra.soap.mail.message.CreateCalendarGroupRequest.class,
+          com.zimbra.soap.mail.message.CreateCalendarGroupResponse.class,
           com.zimbra.soap.mail.message.GetCalendarItemSummariesRequest.class,
           com.zimbra.soap.mail.message.GetCalendarItemSummariesResponse.class,
           com.zimbra.soap.mail.message.GetContactsRequest.class,
