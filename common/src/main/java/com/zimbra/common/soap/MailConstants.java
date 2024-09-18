@@ -281,6 +281,8 @@ public final class MailConstants {
   public static final String E_IMAP_COPY_RESPONSE = "IMAPCopyResponse";
   public static final String E_GET_CALENDAR_GROUPS_REQUEST = "GetCalendarGroupsRequest";
   public static final String E_GET_CALENDAR_GROUPS_RESPONSE = "GetCalendarGroupsResponse";
+  public static final String E_CREATE_CALENDAR_GROUP_REQUEST = "CreateCalendarGroupRequest";
+  public static final String E_CREATE_CALENDAR_GROUP_RESPONSE = "CreateCalendarGroupResponse";
 
   // noop
   public static final QName NO_OP_REQUEST = QName.get(E_NO_OP_REQUEST, NAMESPACE);

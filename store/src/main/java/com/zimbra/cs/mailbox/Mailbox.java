@@ -243,6 +243,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.mail.Address;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -8886,6 +8887,10 @@ public class Mailbox implements MailboxStore {
         .setColor(color)
         .setUrl(url);
     return createFolder(octxt, name, parentId, fopt);
+  }
+
+  public CalendarGroup createCalendarGroup(String name, List<String> calendarIds) {
+    return new CalendarGroup(UUID.randomUUID().toString(), name, calendarIds.stream().map(Integer::parseInt).collect(Collectors.toSet()));
   }
 
   public Folder createFolder(
