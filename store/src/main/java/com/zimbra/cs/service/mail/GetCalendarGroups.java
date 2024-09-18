@@ -11,7 +11,9 @@ import java.util.Map;
 
 public class GetCalendarGroups extends MailDocumentHandler {
 
+  // TODO: use UUID or a fixed string like "all-calendars-id"?
   private static final String ALL_CALENDARS_GROUP_ID = "a970bb9528c94c40bd51bfede60fcb31";
+  // TODO: rename in "All calendars" (with lowercase "c")
   private static final String ALL_CALENDARS_GROUP_NAME = "All Calendars";
 
   @Override
@@ -34,6 +36,7 @@ public class GetCalendarGroups extends MailDocumentHandler {
     final var response = zsc.createElement(MailConstants.GET_CALENDAR_GROUPS_RESPONSE);
 
     addAllCalendarsGroup(calendars, response);
+    addFakeCalendarGroup(calendars, response);
     // TODO: add other groups loaded from datastore
     return response;
   }
@@ -47,5 +50,15 @@ public class GetCalendarGroups extends MailDocumentHandler {
       final var calendarId = allCalendarsGroup.addNonUniqueElement("calendarId");
       calendarId.setText(calendarFolder.getFolderIdAsString());
     }
+  }
+
+  private static void addFakeCalendarGroup(List<Folder> calendars, Element response) {
+    final var allCalendarsGroup = response.addNonUniqueElement("group");
+    allCalendarsGroup.addAttribute("id", "aec527e27fd543ee88a1d72ebf38d63f");
+    allCalendarsGroup.addAttribute("name", "Fake");
+
+    final var calendarFolder = calendars.get(0);
+    final var calendarId = allCalendarsGroup.addNonUniqueElement("calendarId");
+    calendarId.setText(calendarFolder.getFolderIdAsString());
   }
 }
