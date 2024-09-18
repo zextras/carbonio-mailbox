@@ -3037,6 +3037,15 @@ public class ZAttrProvisioning {
     public static final String A_carbonioReverseProxyResponseCSPHeader = "carbonioReverseProxyResponseCSPHeader";
 
     /**
+     * Whether the SearchUserByFeature API should search on all domains or
+     * only the current user domain
+     *
+     * @since ZCS 24.9.0
+     */
+    @ZAttr(id=3146)
+    public static final String A_carbonioSearchAllDomainsByFeature = "carbonioSearchAllDomainsByFeature";
+
+    /**
      * Whether Carbonio can send analytics reports
      *
      * @since ZCS 9.0.0

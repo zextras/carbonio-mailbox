@@ -1990,6 +1990,83 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Whether the SearchUserByFeature API should search on all domains or
+     * only the current user domain
+     *
+     * @return carbonioSearchAllDomainsByFeature, or false if unset
+     *
+     * @since ZCS 24.9.0
+     */
+    @ZAttr(id=3146)
+    public boolean isCarbonioSearchAllDomainsByFeature() {
+        return getBooleanAttr(ZAttrProvisioning.A_carbonioSearchAllDomainsByFeature, false, true);
+    }
+
+    /**
+     * Whether the SearchUserByFeature API should search on all domains or
+     * only the current user domain
+     *
+     * @param carbonioSearchAllDomainsByFeature new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 24.9.0
+     */
+    @ZAttr(id=3146)
+    public void setCarbonioSearchAllDomainsByFeature(boolean carbonioSearchAllDomainsByFeature) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioSearchAllDomainsByFeature, carbonioSearchAllDomainsByFeature ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether the SearchUserByFeature API should search on all domains or
+     * only the current user domain
+     *
+     * @param carbonioSearchAllDomainsByFeature new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 24.9.0
+     */
+    @ZAttr(id=3146)
+    public Map<String,Object> setCarbonioSearchAllDomainsByFeature(boolean carbonioSearchAllDomainsByFeature, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioSearchAllDomainsByFeature, carbonioSearchAllDomainsByFeature ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether the SearchUserByFeature API should search on all domains or
+     * only the current user domain
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 24.9.0
+     */
+    @ZAttr(id=3146)
+    public void unsetCarbonioSearchAllDomainsByFeature() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioSearchAllDomainsByFeature, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether the SearchUserByFeature API should search on all domains or
+     * only the current user domain
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 24.9.0
+     */
+    @ZAttr(id=3146)
+    public Map<String,Object> unsetCarbonioSearchAllDomainsByFeature(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioSearchAllDomainsByFeature, "");
+        return attrs;
+    }
+
+    /**
      * Whether Carbonio can send analytics reports
      *
      * @return carbonioSendAnalytics, or true if unset
