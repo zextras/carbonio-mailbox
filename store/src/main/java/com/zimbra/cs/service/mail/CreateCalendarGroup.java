@@ -3,12 +3,12 @@ package com.zimbra.cs.service.mail;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.cs.mailbox.CalendarGroup;
+import com.zimbra.cs.mailbox.Folder;
+import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CreateCalendarGroupRequest;
-
+import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class CreateCalendarGroup extends MailDocumentHandler {
 
@@ -24,23 +24,29 @@ public class CreateCalendarGroup extends MailDocumentHandler {
 
     CreateCalendarGroupRequest req = zsc.elementToJaxb(request);
 
-    // TODO: implement duplicated calendar name check logic
+    // TODO - double: implement duplicated calendar name check logic
 
-    final var group = mbox.createCalendarGroup(octxt, req.getName(), req.getCalendarIds());
+    // TODO - double: use 1 (ROOT?) or -1 as parent folder id?
+    final var fopt = new Folder.FolderOptions();
+    fopt.setDefaultView(MailItem.Type.APPOINTMENT);
+
+    final var group = mbox.createFolder(octxt, req.getName(), 1, fopt);
 
     return buildResponse(zsc, group);
   }
 
-  private static Element buildResponse(ZimbraSoapContext zsc, CalendarGroup group) {
+  private static Element buildResponse(ZimbraSoapContext zsc, Folder group) {
     final var response = zsc.createElement(MailConstants.CREATE_CALENDAR_GROUP_RESPONSE);
     final var groupInfo = response.addUniqueElement("group");
-    groupInfo.addAttribute("id", group.id());
-    groupInfo.addAttribute("name", group.name());
-    for (final var calendarId : group.calendarIds()) {
+    groupInfo.addAttribute("id", group.getId());
+    groupInfo.addAttribute("name", group.getName());
+    // TODO - double: read from metadata?
+    //    final var calendarIds = group.calendarIds();
+    final var calendarIds = List.of("10", "420", "421");
+    for (final var calendarId : calendarIds) {
       final var calendarIdElement = groupInfo.addNonUniqueElement("calendarId");
       calendarIdElement.setText(calendarId.toString());
     }
     return response;
   }
-
 }
