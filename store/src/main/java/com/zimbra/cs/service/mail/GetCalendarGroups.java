@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class GetCalendarGroups extends MailDocumentHandler {
 
-  // TODO: use UUID or a fixed string like "all-calendars-id"?
+  // TODO - double: use UUID or a fixed string like "all-calendars-id"?
   private static final String ALL_CALENDARS_GROUP_ID = "a970bb9528c94c40bd51bfede60fcb31";
   private static final String ALL_CALENDARS_GROUP_NAME = "All calendars";
 
@@ -26,7 +26,7 @@ public class GetCalendarGroups extends MailDocumentHandler {
       throw ServiceException.PERM_DENIED("can not access account");
 
     final var calendars = mbox.getCalendarFolders(octxt, SortBy.NAME_ASC);
-    // TODO: load all calendar groups from datastore
+    // TODO - double: load all calendar groups from datastore
 
     return buildResponse(zsc, calendars);
   }
@@ -36,7 +36,7 @@ public class GetCalendarGroups extends MailDocumentHandler {
 
     addAllCalendarsGroup(calendars, response);
     addFakeCalendarGroup(calendars, response);
-    // TODO: add other groups loaded from datastore
+    // TODO - double: add other groups loaded from datastore
     return response;
   }
 

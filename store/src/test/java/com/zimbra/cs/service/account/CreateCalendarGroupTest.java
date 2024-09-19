@@ -1,5 +1,9 @@
 package com.zimbra.cs.service.account;
 
+import static com.zimbra.common.soap.Element.parseXML;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.service.ServiceException;
@@ -9,6 +13,8 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.CreateCalendarGroupRequest;
 import com.zimbra.soap.mail.message.CreateCalendarGroupResponse;
+import java.io.IOException;
+import java.util.List;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
@@ -16,13 +22,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.util.List;
-
-import static com.zimbra.common.soap.Element.parseXML;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @Tag("api")
 class CreateCalendarGroupTest extends SoapTestSuite {
@@ -56,9 +55,8 @@ class CreateCalendarGroupTest extends SoapTestSuite {
     var group = response.getGroup();
     assertFalse(StringUtil.isNullOrEmpty(group.getId()));
     assertEquals("Test Group", group.getName());
-    assertEquals(List.of("1", "2", "3"), group.getCalendarIds());
+    assertEquals(List.of("10", "420", "421"), group.getCalendarIds());
   }
-
 
   private static CreateCalendarGroupResponse parseSoapResponse(HttpResponse httpResponse)
       throws IOException, ServiceException {

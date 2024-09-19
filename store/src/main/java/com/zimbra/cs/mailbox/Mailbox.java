@@ -127,7 +127,6 @@ import com.zimbra.cs.pop3.Pop3Message;
 import com.zimbra.cs.redolog.op.AlterItemTag;
 import com.zimbra.cs.redolog.op.ColorItem;
 import com.zimbra.cs.redolog.op.CopyItem;
-import com.zimbra.cs.redolog.op.CreateCalendarGroup;
 import com.zimbra.cs.redolog.op.CreateCalendarItemPlayer;
 import com.zimbra.cs.redolog.op.CreateCalendarItemRecorder;
 import com.zimbra.cs.redolog.op.CreateChat;
@@ -244,7 +243,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import javax.mail.Address;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -2668,18 +2666,19 @@ public class Mailbox implements MailboxStore {
 
   /**
    * mark mailbox deleted
+   *
    * @throws ServiceException
    */
   public void markMailboxDeleted() throws ServiceException {
     MailboxManager.getInstance().markMailboxDeleted(this);
-      Provisioning provisioning = Provisioning.getInstance();
-      if (provisioning instanceof ProvisioningCache) {
-        String accountId = getAccountId();
-        Account acct = Provisioning.getInstance().get(AccountBy.id, accountId);
-        if (acct != null) {
-          ((ProvisioningCache) provisioning).removeFromCache(acct);
-        }
+    Provisioning provisioning = Provisioning.getInstance();
+    if (provisioning instanceof ProvisioningCache) {
+      String accountId = getAccountId();
+      Account acct = Provisioning.getInstance().get(AccountBy.id, accountId);
+      if (acct != null) {
+        ((ProvisioningCache) provisioning).removeFromCache(acct);
       }
+    }
   }
 
   public void renameMailbox(String oldName, String newName) throws ServiceException {
@@ -4244,8 +4243,7 @@ public class Mailbox implements MailboxStore {
     lock.lock(false);
     try {
       if (lastSync >= getLastChangeID()) {
-        return new Pair<>(
-            Collections.<Integer>emptyList(), new TypedIdList());
+        return new Pair<>(Collections.<Integer>emptyList(), new TypedIdList());
       }
       boolean success = false;
       try {
@@ -5550,13 +5548,14 @@ public class Mailbox implements MailboxStore {
           assert false : browseBy;
       }
 
-      result.sort((o1, o2) -> {
-        int retVal = o2.getFreq() - o1.getFreq();
-        if (retVal == 0) {
-          retVal = o1.getText().compareTo(o2.getText());
-        }
-        return retVal;
-      });
+      result.sort(
+          (o1, o2) -> {
+            int retVal = o2.getFreq() - o1.getFreq();
+            if (retVal == 0) {
+              retVal = o1.getText().compareTo(o2.getText());
+            }
+            return retVal;
+          });
 
       if (max > 0 && result.size() > max) {
         result = result.subList(0, max);
@@ -7179,7 +7178,8 @@ public class Mailbox implements MailboxStore {
   }
 
   public static String getHash(String subject) {
-    return ByteUtil.getSHA1Digest(Strings.nullToEmpty(subject).getBytes(StandardCharsets.UTF_8), true);
+    return ByteUtil.getSHA1Digest(
+        Strings.nullToEmpty(subject).getBytes(StandardCharsets.UTF_8), true);
   }
 
   // please keep this package-visible but not public
@@ -8421,7 +8421,12 @@ public class Mailbox implements MailboxStore {
     }
     for (Integer folderId : folderIds) {
       emptyFolder(
-          octxt, folderId, true /* removeTopLevelFolder */, true /* removeSubfolders */, tcon, null);
+          octxt,
+          folderId,
+          true /* removeTopLevelFolder */,
+          true /* removeSubfolders */,
+          tcon,
+          null);
     }
   }
 
@@ -8890,24 +8895,6 @@ public class Mailbox implements MailboxStore {
     return createFolder(octxt, name, parentId, fopt);
   }
 
-  public CalendarGroup createCalendarGroup(OperationContext octxt, String name, List<String> calendarIds) throws ServiceException {
-    var id = UUID.randomUUID().toString();
-    // TODO: implement redo logic
-    // var redoRecorder = new CreateCalendarGroup(mId, id, name, calendarIds);
-    boolean success = false;
-    try {
-      beginTransaction("createContactGroup", octxt);
-      // var redoPlayer = (CreateCalendarGroup) currentChange().getRedoPlayer();
-
-      var group = new CalendarGroup(id, name, calendarIds.stream().map(Integer::parseInt).collect(Collectors.toSet()));
-      updateCalendarGroupDataSource(group);
-      success = true;
-      return group;
-    } finally {
-      endTransaction(success);
-    }
-  }
-
   public Folder createFolder(
       OperationContext octxt, String name, int parentId, Folder.FolderOptions fopt)
       throws ServiceException {
@@ -9290,13 +9277,6 @@ public class Mailbox implements MailboxStore {
   }
 
   /**
-   * Updates the data source for a calendar group.
-   */
-  protected void updateCalendarGroupDataSource(CalendarGroup group) {
-
-  }
-
-  /**
    * Updates the data source for an RSS folder. If the folder URL is set, checks or creates a data
    * source that updates the folder. If the URL is not set, deletes the data source if necessary.
    */
@@ -9638,8 +9618,9 @@ public class Mailbox implements MailboxStore {
         } else {
           List<Folder> folders = getFolderById(octxt, folderId).getSubfolderHierarchy();
           for (Folder folder : folders) {
-            if (itemsType == null || FolderActionEmptyOpTypes.getIncludedTypesFor(itemsType)
-                .contains(folder.getDefaultView())
+            if (itemsType == null
+                || FolderActionEmptyOpTypes.getIncludedTypesFor(itemsType)
+                    .contains(folder.getDefaultView())
                 || folder.getId() == FolderConstants.ID_FOLDER_TRASH) {
               folderIds.add(folder.getId());
             }
@@ -9660,7 +9641,7 @@ public class Mailbox implements MailboxStore {
             .setModifiedSequenceBefore(lastChangeID + 1)
             .setRowLimit(batchSize);
 
-        if(itemsType != null){
+        if (itemsType != null) {
           params.setIncludedTypes(FolderActionEmptyOpTypes.getIncludedTypesFor(itemsType));
         }
 
@@ -9717,15 +9698,13 @@ public class Mailbox implements MailboxStore {
     }
   }
 
-  public void emptyFolder(OperationContext octxt, int folderId, boolean removeSubfolders,
+  public void emptyFolder(
+      OperationContext octxt,
+      int folderId,
+      boolean removeSubfolders,
       FolderActionEmptyOpTypes matchType)
       throws ServiceException {
-    emptyFolder(
-        octxt,
-        folderId,
-        false,
-        removeSubfolders,
-        null, matchType);
+    emptyFolder(octxt, folderId, false, removeSubfolders, null, matchType);
   }
 
   public void emptyFolder(OperationContext octxt, int folderId, boolean removeSubfolders)
@@ -9735,7 +9714,8 @@ public class Mailbox implements MailboxStore {
         folderId,
         false /* removeTopLevelFolder */,
         removeSubfolders,
-        null /* TargetConstraint */, null);
+        null /* TargetConstraint */,
+        null);
   }
 
   @Override
