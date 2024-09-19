@@ -30,6 +30,8 @@ public enum MailItemType {
   /** Item is a memory-only, 1-message VirtualConversation. */
   MOUNTPOINT,
   /** Item is a Mountpoint pointing to a Folder, possibly in another user's Mailbox. */
-  CHAT
+  CHAT,
   /** Item is a Chat */
+  CALENDAR_GROUP
+  /** Item is a Calendar Group */
 }

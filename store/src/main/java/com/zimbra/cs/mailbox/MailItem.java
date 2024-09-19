@@ -90,7 +90,8 @@ public abstract class MailItem
      */
     MOUNTPOINT(13, MailItemType.MOUNTPOINT),
     /** Item is a {@link Chat} */
-    CHAT(16, MailItemType.CHAT);
+    CHAT(16, MailItemType.CHAT),
+    CALENDAR_GROUP(17, MailItemType.CALENDAR_GROUP);
 
     private static final Map<Byte, Type> BYTE2TYPE;
 
@@ -3232,9 +3233,7 @@ public abstract class MailItem
         blobDigests.addAll(other.blobDigests);
 
         if (other.cascadeIds != null) {
-          (cascadeIds == null
-                  ? cascadeIds = new ArrayList<>(other.cascadeIds.size())
-                  : cascadeIds)
+          (cascadeIds == null ? cascadeIds = new ArrayList<>(other.cascadeIds.size()) : cascadeIds)
               .addAll(other.cascadeIds);
         }
         if (other.sharedIndex != null) {
