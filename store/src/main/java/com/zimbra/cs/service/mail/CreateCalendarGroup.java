@@ -26,10 +26,8 @@ public class CreateCalendarGroup extends MailDocumentHandler {
 
     // TODO - double: implement duplicated calendar name check logic
 
-    // TODO - double: use 1 (ROOT?) or -1 as parent folder id?
     final var fopt = new Folder.FolderOptions();
-    fopt.setDefaultView(MailItem.Type.APPOINTMENT);
-
+    fopt.setDefaultView(MailItem.Type.CALENDAR_GROUP);
     final var group = mbox.createFolder(octxt, req.getName(), 1, fopt);
 
     return buildResponse(zsc, group);
