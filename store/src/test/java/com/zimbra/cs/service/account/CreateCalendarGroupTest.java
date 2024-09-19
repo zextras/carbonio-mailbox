@@ -46,7 +46,7 @@ class CreateCalendarGroupTest extends SoapTestSuite {
   void createGroup() throws Exception {
     final var request = new CreateCalendarGroupRequest();
     request.setName("Test Group");
-    request.setCalendarIds(List.of("1", "2", "3"));
+    request.setCalendarIds(List.of("10", "420", "421"));
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
 
