@@ -64,7 +64,7 @@ public class AdminService implements DocumentService {
                 MailboxManager.getInstance(),
                 new AclService(MailboxManager.getInstance(), Provisioning.getInstance()),
                 ZimbraLog.security),
-        getMessageBrokerClientInstance()));
+        getMessageBroker()));
     dispatcher.registerHandler(AdminConstants.SET_PASSWORD_REQUEST, new SetPassword());
     dispatcher.registerHandler(
         AdminConstants.CHECK_PASSWORD_STRENGTH_REQUEST, new CheckPasswordStrength());
@@ -399,6 +399,10 @@ public class AdminService implements DocumentService {
         StringUtil.addToMultiMap(result, name, value);
     }
     return result;
+  }
+
+  protected MessageBrokerClient getMessageBroker() {
+      return getMessageBrokerClientInstance();
   }
 
   public static MessageBrokerClient getMessageBrokerClientInstance() {
