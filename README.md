@@ -30,10 +30,6 @@ and their roles:
    ```shell
    $ mvn clean install -DskipTests
    ```
-### 2. Build the source code inside a docker container
-```shell
-$ UID=${UID} GID=${GID} docker compose -f './docker/jetty-run/docker-compose.yml' run --rm build
-```
 
 ## Generating Rights and ZAttr classes
 Whenever you make changes to [attrs.xml](store/src/main/resources/conf/attrs/attrs.xml)
@@ -74,31 +70,6 @@ packages, and then starts the services.
    $ docker compose --profile ubuntu-focal up --build
    ```
    **NB**: don't forget to use the `--build` flag, otherwise it will not load the new changes
-
-### 3. Minimal Jetty Instance
-This option compiles the code and launches the mailbox with a minimal setup, ideal for developing
-and testing SOAP and REST APIs exposed by Mailbox.
-
-1. Build the project using local mvn command (skipping tests `-DskipTests`):
-   ```shell
-   $ mvn install -DskipTests
-   ```
-   or build the project using docker container:
-   ```shell
-   $ UID=${UID} GID=${GID} docker compose -f './docker/jetty-run/docker-compose.yml' run --rm build
-   ```
-2. Navigate to the [docker/jetty-run](docker/jetty-run) directory:
-    ```shell
-    $ cd ./docker/jetty-run
-    ```
-3. Run it:
-    ```shell
-    $ docker compose up
-    ```
-4. Check if the mailbox is up and running:
-   ```shell
-   $ curl localhost:7070/service/health
-    ```
 ## Contribute to Carbonio Mailbox
 
 All contributions are accepted! Please refer to the CONTRIBUTING file (if present in this repository)
