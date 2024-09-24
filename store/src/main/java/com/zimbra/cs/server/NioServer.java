@@ -118,8 +118,8 @@ public abstract class NioServer implements Server {
      * Our cipher config attribute zimbraSSLExcludeCipherSuites specifies a list of ciphers that should be
      * disabled instead of enabled.  This is because we want the same attribute to control all SSL protocols
      * running on mailbox servers.  For https, Jetty configuration only supports an excluded list.
-     * Therefore we adapted the same scheme for zimbraSSLExcludeCipherSuites, which is written to jetty.xml
-     * by config rewrite, and will be used for protocols (imaps/pop3s) handled by Zimbra code.
+     * Therefore we adapted the same scheme for zimbraSSLExcludeCipherSuites, which is defined in {@link com.zextras.mailbox.Mailbox}
+     * and will be used for protocols (imaps/pop3s) handled by Zimbra code.
      *
      * For MINA based servers/handlers, NioTcpServer uses SSLFilter for SSL communication.  SSLFilter wraps
      * an SSLEngine that actually does all the work.  SSLFilter.setEnabledCipherSuites() sets the list of
