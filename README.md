@@ -20,7 +20,7 @@ and their roles:
 ### 1. Build using local mvn command
 
 1. Requirements:
-- JDK version 11. Confirm by running:
+- JDK version 17. Confirm by running:
    ```shell
    $ javac -version
    ```
