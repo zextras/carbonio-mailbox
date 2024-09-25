@@ -43,7 +43,7 @@ function windowTitle()
 
 <div style="margin-top: 62px;">
     <h2>
-        <a href="./service-summary.html">Service: ${service.name}</a>
+        <a href="./service-summary.html">Service: ${service.name?replace('zimbra', '')}</a>
     </h2>
 </div>
 

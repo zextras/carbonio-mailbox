@@ -41,7 +41,7 @@ Overview (Carbonio SOAP API Reference ${build.version})
         <div class="FrameHeadingFont">Services:</div>
 
         <#list root.services as service>
-        <font class="FrameItemFont"><a href="./${service.name}/service-frame.html" target="serviceFrame">${service.name}</a></font>
+        <font class="FrameItemFont"><a href="./${service.name}/service-frame.html" target="serviceFrame">${service.name?replace('zimbra', '')}</a></font>
         <br>
         </#list>
         </td>

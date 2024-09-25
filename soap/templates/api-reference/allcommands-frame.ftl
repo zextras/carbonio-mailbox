@@ -32,7 +32,7 @@ All Commands (Carbonio SOAP API Reference ${build.version})
         <td NOWRAP>
             <div CLASS="FrameItemFont">
                 <#list allcommands as command>
-                <a HREF="./${command.service.name}/${command.name}.html" title="command in ${command.service.name}" target="commandFrame">${command.name}</a>
+                <a HREF="./${command.service.name}/${command.name}.html" title="command in service ${command.service.name?replace('zimbra', '')}" target="commandFrame">${command.name}</a>
                 <br>
                 </#list>
             </div>
