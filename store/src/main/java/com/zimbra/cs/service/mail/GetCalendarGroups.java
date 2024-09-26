@@ -39,7 +39,6 @@ public class GetCalendarGroups extends MailDocumentHandler {
 
     final var calendars = mbox.getCalendarFolders(octxt, SortBy.NAME_ASC);
     final var groups = mbox.getCalendarGroups(octxt, SortBy.NAME_ASC);
-    // TODO - double: load all calendar groups from datastore
 
     return buildResponse(zsc, calendars, groups);
   }
@@ -49,16 +48,14 @@ public class GetCalendarGroups extends MailDocumentHandler {
 
     addAllCalendarsGroup(calendars, response);
     addFakeCalendarGroup(calendars, response);
-    addGroups(groups, response);
-    // TODO - double: add other groups loaded from datastore
+    addStoredGroups(groups, response);
+
     return response;
   }
 
-  private static void addGroups(List<Folder> groups, Element response) throws ServiceException {
+  private static void addStoredGroups(List<Folder> groups, Element response) throws ServiceException {
     for (final var group : groups) {
-      final var groupElement = response.addNonUniqueElement(GROUP_ELEMENT_NAME);
-      groupElement.addAttribute(ID_ELEMENT_NAME, group.getId());
-      groupElement.addAttribute(NAME_ELEMENT_NAME, group.getName());
+      final var groupElement = createGroupElement(group, response);
       for (final var calendarId : decodeCustomMetadata(group)) {
         final var calendarIdElement = groupElement.addNonUniqueElement(CALENDAR_ID_ELEMENT_NAME);
         calendarIdElement.setText(calendarId);
@@ -85,6 +82,13 @@ public class GetCalendarGroups extends MailDocumentHandler {
     final var calendarFolder = calendars.get(0);
     final var calendarId = allCalendarsGroup.addNonUniqueElement(CALENDAR_ID_ELEMENT_NAME);
     calendarId.setText(calendarFolder.getFolderIdAsString());
+  }
+
+  private static Element createGroupElement(Folder group, Element response) {
+    final var groupElement = response.addNonUniqueElement(GetCalendarGroups.GROUP_ELEMENT_NAME);
+    groupElement.addAttribute(ID_ELEMENT_NAME, group.getId());
+    groupElement.addAttribute(NAME_ELEMENT_NAME, group.getName());
+    return groupElement;
   }
 
   private static List<String> decodeCustomMetadata(Folder group) throws ServiceException {
