@@ -27,12 +27,13 @@ public class CreateCalendarGroup extends MailDocumentHandler {
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
     final var zsc = getZimbraSoapContext(context);
-    final var account = getRequestedAccount(getZimbraSoapContext(context));
-    final var mbox = getRequestedMailbox(zsc);
-    final var octxt = getOperationContext(zsc, context);
+    final var account = getRequestedAccount(zsc);
 
     if (!canAccessAccount(zsc, account))
       throw ServiceException.PERM_DENIED("can not access account");
+
+    final var mbox = getRequestedMailbox(zsc);
+    final var octxt = getOperationContext(zsc, context);
 
     CreateCalendarGroupRequest req = zsc.elementToJaxb(request);
 
