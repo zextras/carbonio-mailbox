@@ -3,9 +3,12 @@ package com.zimbra.cs.service.mail;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
+import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Metadata;
+import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CreateCalendarGroupRequest;
 import java.util.Arrays;
@@ -37,11 +40,14 @@ public class CreateCalendarGroup extends MailDocumentHandler {
 
     CreateCalendarGroupRequest req = zsc.elementToJaxb(request);
 
-    // TODO - double: implement duplicated calendar name check logic
+    // TODO - double: ServiceException.OPERATION_DENIED | ServiceException.FAILURE | ServiceException.PERM_DENIED
+    if (existsGroupName(mbox, octxt, req.getName()))
+      throw ServiceException.OPERATION_DENIED("Calendar group with name " + req.getName() + " already exists");
 
     final var fopt = new Folder.FolderOptions();
     fopt.setDefaultView(MailItem.Type.CALENDAR_GROUP);
     fopt.setCustomMetadata(encodeCustomMetadata(req));
+
     final var group = mbox.createFolder(octxt, req.getName(), 1, fopt);
 
     return buildResponse(zsc, group);
@@ -60,6 +66,13 @@ public class CreateCalendarGroup extends MailDocumentHandler {
       calendarIdElement.setText(calendarId.toString());
     }
     return response;
+  }
+
+  private static boolean existsGroupName(Mailbox mbox, OperationContext octxt, String groupName) throws ServiceException {
+    return mbox.getCalendarGroups(octxt, SortBy.NAME_ASC).stream()
+            .map(Folder::getName)
+            .toList()
+            .contains(groupName);
   }
 
   private static MailItem.CustomMetadata encodeCustomMetadata(CreateCalendarGroupRequest req)
