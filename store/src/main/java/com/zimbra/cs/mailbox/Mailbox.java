@@ -4739,6 +4739,11 @@ public class Mailbox implements MailboxStore {
     return (view == MailItem.Type.APPOINTMENT);
   }
 
+  public static boolean isGroupFolder(Folder f) {
+    MailItem.Type view = f.getDefaultView();
+    return (view == MailItem.Type.CALENDAR_GROUP);
+  }
+
   public List<Mountpoint> getCalendarMountpoints(OperationContext octxt, SortBy sort)
       throws ServiceException {
     lock.lock();
@@ -4767,6 +4772,22 @@ public class Mailbox implements MailboxStore {
       }
       for (MailItem item : getItemList(octxt, MailItem.Type.MOUNTPOINT, -1, sort)) {
         if (isCalendarFolder((Folder) item)) {
+          calFolders.add((Folder) item);
+        }
+      }
+      return calFolders;
+    } finally {
+      lock.release();
+    }
+  }
+
+  public List<Folder> getCalendarGroups(OperationContext octxt, SortBy sort)
+          throws ServiceException {
+    lock.lock(false);
+    try {
+      List<Folder> calFolders = new ArrayList<>();
+      for (MailItem item : getItemList(octxt, MailItem.Type.FOLDER, -1, sort)) {
+        if (isGroupFolder((Folder) item)) {
           calFolders.add((Folder) item);
         }
       }
