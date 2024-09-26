@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 
 @Tag("api")
 class GetCalendarGroupsTest extends SoapTestSuite {
+  private static final String ALL_CALENDARS_GROUP_NAME = "All calendars";
 
   private static MailboxTestUtil.AccountCreator.Factory accountCreatorFactory;
   private static Provisioning provisioning;
@@ -31,7 +32,7 @@ class GetCalendarGroupsTest extends SoapTestSuite {
   private Account account;
 
   @BeforeAll
-  static void init() throws Exception {
+  static void init() {
     provisioning = Provisioning.getInstance();
     accountCreatorFactory = new MailboxTestUtil.AccountCreator.Factory(provisioning);
   }
@@ -50,7 +51,7 @@ class GetCalendarGroupsTest extends SoapTestSuite {
     assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
     final var response = parseSoapResponse(soapResponse);
     assertEquals(1, response.getGroups().size());
-    assertEquals("All Calendars", response.getGroups().get(0).getName());
+    assertEquals(ALL_CALENDARS_GROUP_NAME, response.getGroups().get(0).getName());
     assertEquals(1, response.getGroups().get(0).getCalendarIds().size());
   }
 
@@ -66,7 +67,7 @@ class GetCalendarGroupsTest extends SoapTestSuite {
     assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
     final var response = parseSoapResponse(soapResponse);
     assertEquals(1, response.getGroups().size());
-    assertEquals("All Calendars", response.getGroups().get(0).getName());
+    assertEquals(ALL_CALENDARS_GROUP_NAME, response.getGroups().get(0).getName());
     assertEquals(3, response.getGroups().get(0).getCalendarIds().size());
   }
 
