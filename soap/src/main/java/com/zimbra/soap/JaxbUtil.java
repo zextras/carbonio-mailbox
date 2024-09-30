@@ -35,17 +35,6 @@ import com.zimbra.soap.mail.type.ModifyNotification;
 import com.zimbra.soap.mail.type.ModifyNotification.ModifyItemNotification;
 import com.zimbra.soap.mail.type.PendingFolderModifications;
 import com.zimbra.soap.util.JaxbInfo;
-import java.io.ByteArrayInputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
 import org.dom4j.Document;
 import org.dom4j.Namespace;
 import org.dom4j.io.DocumentResult;
@@ -54,6 +43,18 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
+import java.io.ByteArrayInputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public final class JaxbUtil {
 
@@ -708,6 +709,8 @@ public final class JaxbUtil {
           com.zimbra.soap.mail.message.CreateCalendarGroupResponse.class,
           com.zimbra.soap.mail.message.DeleteCalendarGroupRequest.class,
           com.zimbra.soap.mail.message.DeleteCalendarGroupResponse.class,
+          com.zimbra.soap.mail.message.ModifyCalendarGroupRequest.class,
+          com.zimbra.soap.mail.message.ModifyCalendarGroupResponse.class,
           com.zimbra.soap.mail.message.GetCalendarItemSummariesRequest.class,
           com.zimbra.soap.mail.message.GetCalendarItemSummariesResponse.class,
           com.zimbra.soap.mail.message.GetContactsRequest.class,
