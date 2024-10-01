@@ -1,4 +1,4 @@
-package com.zimbra.cs.service.account;
+package com.zimbra.cs.service.mail;
 
 import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.*;
