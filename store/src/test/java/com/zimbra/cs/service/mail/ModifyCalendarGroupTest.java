@@ -45,33 +45,36 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
 
   @Test
   void addOneCalendarToExistingGroup() throws Exception {
-    var res = addGroupFor(account, "Ranocchia Group Calendar", List.of("101", "420"));
+    var res = addGroupFor(account, "Group Calendar", List.of("101", "420"));
     var request = new ModifyCalendarGroupRequest();
-    String id = res.getGroup().getId();
+    var id = res.getGroup().getId();
     request.setId(id);
-    request.setCalendarIds(List.of("101", "420", "421"));
+    var modifiedCalendarList = List.of("101", "420", "421");
+    request.setCalendarIds(modifiedCalendarList);
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
     assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
     var response = parseSoapResponse(soapResponse, ModifyCalendarGroupResponse.class);
     var group = response.getGroup();
-    assertEquals(List.of("101", "420", "421"), group.getCalendarIds());
+    assertEquals(modifiedCalendarList, group.getCalendarIds());
   }
 
   @Test
   void renameGroup() throws Exception {
-    var res = addGroupFor(account, "Ranocchia Group Calendar", List.of("101", "420"));
+    var calendarIds = List.of("101", "420");
+    var res = addGroupFor(account, "Group Calendar", calendarIds);
     var request = new ModifyCalendarGroupRequest();
-    String id = res.getGroup().getId();
+    var id = res.getGroup().getId();
     request.setId(id);
-    request.setName("Ranocchia Group Calendar Renamed");
+    String groupNameModified = "Modified - Group Calendar";
+    request.setName(groupNameModified);
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
     assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
     var response = parseSoapResponse(soapResponse, ModifyCalendarGroupResponse.class);
     var group = response.getGroup();
-    assertEquals("Ranocchia Group Calendar Renamed", group.getName());
-    assertEquals(List.of("101", "420"), group.getCalendarIds());
+    assertEquals(groupNameModified, group.getName());
+    assertEquals(calendarIds, group.getCalendarIds());
   }
 
   private CreateCalendarGroupResponse addGroupFor(Account acc, String groupName, List<String> calendarIds) throws Exception {
