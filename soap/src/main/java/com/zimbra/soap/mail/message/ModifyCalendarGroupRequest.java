@@ -30,6 +30,13 @@ public class ModifyCalendarGroupRequest {
   private String id;
 
   /**
+   * @zm-api-field-tag name
+   * @zm-api-field-description Calendar Group Name
+   */
+  @XmlAttribute(name = "name" /* name */)
+  private String name;
+
+  /**
    * @zm-api-field-tag calendarIds
    * @zm-api-field-description Calendar IDs
    */
@@ -42,6 +49,14 @@ public class ModifyCalendarGroupRequest {
 
   public void setId(String id) {
     this.id = id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   public List<String> getCalendarIds() {
