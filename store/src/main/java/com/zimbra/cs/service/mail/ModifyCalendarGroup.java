@@ -47,18 +47,24 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
     var group = getFolderById(mbox, octxt, id)
             .orElseThrow(() -> ServiceException.OPERATION_DENIED("Calendar group with ID " + req.getId() + " does NOT exist"));
 
-    if (needsRename(req))
-      tryToRenameGroup(mbox, octxt, group, req.getName());
+    if (shouldRenameGroup(req))
+      tryRenameGroup(mbox, octxt, group, req.getName());
+
     // TODO: I was expecting to work with MailItem.Type.CALENDAR_GROUP. Understand why it works with MailItem.Type.UNKNOWN
-    mbox.setCustomData(octxt, group.getId(), MailItem.Type.UNKNOWN, encodeCustomMetadata(req));
+    if (shouldModifyListCalendar(req))
+      mbox.setCustomData(octxt, group.getId(), MailItem.Type.UNKNOWN, encodeCustomMetadata(req));
+
     return buildResponse(zsc, group);
   }
 
-  private static boolean needsRename(ModifyCalendarGroupRequest req) {
+  private static boolean shouldRenameGroup(ModifyCalendarGroupRequest req) {
     return req.getName() != null && !req.getName().isBlank();
   }
+  private static boolean shouldModifyListCalendar(ModifyCalendarGroupRequest req) {
+    return req.getCalendarIds() != null && !req.getCalendarIds().isEmpty();
+  }
 
-  private static void tryToRenameGroup(Mailbox mbox, OperationContext octxt, Folder group, String groupName) throws ServiceException {
+  private static void tryRenameGroup(Mailbox mbox, OperationContext octxt, Folder group, String groupName) throws ServiceException {
     if (existsGroupName(mbox, octxt, groupName))
       throw ServiceException.OPERATION_DENIED("Calendar group with name " + groupName + " already exists");
     mbox.renameFolder(octxt, group, groupName);
