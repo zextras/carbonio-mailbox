@@ -49,15 +49,29 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
     var request = new ModifyCalendarGroupRequest();
     String id = res.getGroup().getId();
     request.setId(id);
-    request.setName("Modified Group Calendar");
     request.setCalendarIds(List.of("101", "420", "421"));
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
     assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
     var response = parseSoapResponse(soapResponse, ModifyCalendarGroupResponse.class);
     var group = response.getGroup();
-    assertEquals("Modified Group Calendar", group.getName());
     assertEquals(List.of("101", "420", "421"), group.getCalendarIds());
+  }
+
+  @Test
+  void renameGroup() throws Exception {
+    var res = addGroupFor(account, "Ranocchia Group Calendar", List.of("101", "420"));
+    var request = new ModifyCalendarGroupRequest();
+    String id = res.getGroup().getId();
+    request.setId(id);
+    request.setName("Ranocchia Group Calendar Renamed");
+
+    final var soapResponse = getSoapClient().executeSoap(account, request);
+    assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+    var response = parseSoapResponse(soapResponse, ModifyCalendarGroupResponse.class);
+    var group = response.getGroup();
+    assertEquals("Ranocchia Group Calendar Renamed", group.getName());
+    assertEquals(List.of("101", "420"), group.getCalendarIds());
   }
 
   private CreateCalendarGroupResponse addGroupFor(Account acc, String groupName, List<String> calendarIds) throws Exception {

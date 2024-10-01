@@ -47,9 +47,21 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
     var group = getFolderById(mbox, octxt, id)
             .orElseThrow(() -> ServiceException.OPERATION_DENIED("Calendar group with ID " + req.getId() + " does NOT exist"));
 
+    if (needsRename(req))
+      tryToRenameGroup(mbox, octxt, group, req.getName());
     // TODO: I was expecting to work with MailItem.Type.CALENDAR_GROUP. Understand why it works with MailItem.Type.UNKNOWN
     mbox.setCustomData(octxt, group.getId(), MailItem.Type.UNKNOWN, encodeCustomMetadata(req));
     return buildResponse(zsc, group);
+  }
+
+  private static boolean needsRename(ModifyCalendarGroupRequest req) {
+    return req.getName() != null && !req.getName().isBlank();
+  }
+
+  private static void tryToRenameGroup(Mailbox mbox, OperationContext octxt, Folder group, String groupName) throws ServiceException {
+    if (existsGroupName(mbox, octxt, groupName))
+      throw ServiceException.OPERATION_DENIED("Calendar group with name " + groupName + " already exists");
+    mbox.renameFolder(octxt, group, groupName);
   }
 
   private static Element buildResponse(ZimbraSoapContext zsc, Folder group)
@@ -65,6 +77,13 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
       calendarIdElement.setText(calendarId);
     }
     return response;
+  }
+
+  private static boolean existsGroupName(Mailbox mbox, OperationContext octxt, String groupName) throws ServiceException {
+    return mbox.getCalendarGroups(octxt, SortBy.NAME_ASC).stream()
+            .map(Folder::getName)
+            .toList()
+            .contains(groupName);
   }
 
   private static Optional<Folder> getFolderById(Mailbox mbox, OperationContext octxt, int id) throws ServiceException {
