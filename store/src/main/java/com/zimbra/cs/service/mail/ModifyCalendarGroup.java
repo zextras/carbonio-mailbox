@@ -47,7 +47,8 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
     var group = getFolderById(mbox, octxt, id)
             .orElseThrow(() -> ServiceException.OPERATION_DENIED("Calendar group with ID " + req.getId() + " does NOT exist"));
 
-    mbox.setCustomData(octxt, group.getId(), MailItem.Type.CALENDAR_GROUP, encodeCustomMetadata(req));
+    // TODO: I was expecting to work with MailItem.Type.CALENDAR_GROUP. Understeand why it works with MailItem.Type.UNKNOWN
+    mbox.setCustomData(octxt, group.getId(), MailItem.Type.UNKNOWN, encodeCustomMetadata(req));
     return buildResponse(zsc, group);
   }
 
