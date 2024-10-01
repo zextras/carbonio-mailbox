@@ -1,4 +1,4 @@
-package com.zimbra.cs.service.account;
+package com.zimbra.cs.service.mail;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil;
