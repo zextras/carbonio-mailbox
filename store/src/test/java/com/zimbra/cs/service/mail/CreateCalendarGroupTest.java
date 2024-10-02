@@ -60,7 +60,7 @@ class CreateCalendarGroupTest extends SoapTestSuite {
   }
 
   @Test
-  void cannotCreateExistingGroup() throws Exception {
+  void shouldNotCreateGroupWhenGroupNameAlreadyExists() throws Exception {
     var sameGroupName = "Test Group";
     createGroupFor(account, sameGroupName, List.of("10", "420", "421"));
 

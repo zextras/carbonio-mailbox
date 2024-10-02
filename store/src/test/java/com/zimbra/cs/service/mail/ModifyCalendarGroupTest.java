@@ -44,7 +44,7 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
   }
 
   @Test
-  void addOneCalendarToExistingGroup() throws Exception {
+  void addOneCalendar() throws Exception {
     var res = addGroupFor(account, "Group Calendar", List.of("101", "420"));
     var request = new ModifyCalendarGroupRequest();
     var id = res.getGroup().getId();
