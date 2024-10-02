@@ -63,7 +63,7 @@ class DeleteCalendarGroupTest extends SoapTestSuite {
     }
 
     @Test
-    void noIdToDeleteFound() throws Exception {
+    void noIdToDelete() throws Exception {
         final var request = new DeleteCalendarGroupRequest();
         request.setId("thisiddoesnotexist");
 
