@@ -50,9 +50,8 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
     if (shouldRenameGroup(req))
       tryRenameGroup(mbox, octxt, group, req.getName());
 
-    // TODO: I was expecting to work with MailItem.Type.CALENDAR_GROUP. Understand why it works with MailItem.Type.UNKNOWN
     if (shouldModifyListCalendar(req))
-      mbox.setCustomData(octxt, group.getId(), MailItem.Type.UNKNOWN, encodeCustomMetadata(req));
+      mbox.setCustomData(octxt, group.getId(), MailItem.Type.FOLDER, encodeCustomMetadata(req));
 
     return buildResponse(zsc, group);
   }
