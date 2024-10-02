@@ -47,7 +47,6 @@ public class GetCalendarGroups extends MailDocumentHandler {
     final var response = zsc.createElement(MailConstants.GET_CALENDAR_GROUPS_RESPONSE);
 
     addAllCalendarsGroup(calendars, response);
-    addFakeCalendarGroup(calendars, response);
     addStoredGroups(groups, response);
 
     return response;
@@ -72,16 +71,6 @@ public class GetCalendarGroups extends MailDocumentHandler {
       final var calendarId = allCalendarsGroup.addNonUniqueElement(CALENDAR_ID_ELEMENT_NAME);
       calendarId.setText(calendarFolder.getFolderIdAsString());
     }
-  }
-
-  private static void addFakeCalendarGroup(List<Folder> calendars, Element response) {
-    final var allCalendarsGroup = response.addNonUniqueElement(GROUP_ELEMENT_NAME);
-    allCalendarsGroup.addAttribute("id", "aec527e27fd543ee88a1d72ebf38d63f");
-    allCalendarsGroup.addAttribute("name", "Fake");
-
-    final var calendarFolder = calendars.get(0);
-    final var calendarId = allCalendarsGroup.addNonUniqueElement(CALENDAR_ID_ELEMENT_NAME);
-    calendarId.setText(calendarFolder.getFolderIdAsString());
   }
 
   private static Element createGroupElement(Folder group, Element response) {
