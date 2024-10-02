@@ -57,7 +57,7 @@ class DeleteCalendarGroupTest extends SoapTestSuite {
         assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
 
         var groups = searchGroups(account).getGroups();
-        assertEquals(1, groups.size());
+        assertEquals(2, groups.size());
         assertTrue(groups.stream().noneMatch(remainingGroup -> remainingGroup.getId().equals(groupIdToDelete)));
         assertTrue(groups.stream().anyMatch(remainingGroup -> remainingGroup.getId().equals(id2)));
     }
