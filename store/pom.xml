@@ -205,7 +205,7 @@
     <dependency>
       <artifactId>zm-charset</artifactId>
       <groupId>zimbra</groupId>
-      <scope>test</scope>
+      <scope>runtime</scope>
     </dependency>
 
     <dependency>
