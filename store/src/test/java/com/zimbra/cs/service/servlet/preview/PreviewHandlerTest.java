@@ -155,12 +155,12 @@ class PreviewHandlerTest {
     when(itemId.getId()).thenReturn(Integer.parseInt(itemIdStr));
     when(itemId.isLocal()).thenReturn(true);
     when(itemIdFactory.create(itemIdStr, "accountId")).thenReturn(itemId);
-    when(attachmentService.getAttachment(itemId.getAccountId(), authToken, itemId.getId(), "2"))
+    when(attachmentService.getAttachmentByItemId(itemId.getAccountId(), authToken, itemId, "2"))
         .thenReturn(Try.success(mimePart));
 
     previewHandler.handle(request, response);
 
-    verify(attachmentService).getAttachment(itemId.getAccountId(), authToken, itemId.getId(), "2");
+    verify(attachmentService).getAttachmentByItemId(itemId.getAccountId(), authToken, itemId, "2");
   }
 
   @ParameterizedTest
@@ -177,7 +177,7 @@ class PreviewHandlerTest {
     when(itemId.getId()).thenReturn(Integer.parseInt(itemIdStr));
     when(itemId.isLocal()).thenReturn(true);
     when(itemIdFactory.create(itemIdStr, "accountId")).thenReturn(itemId);
-    when(attachmentService.getAttachment(itemId.getAccountId(), authToken, itemId.getId(), "2"))
+    when(attachmentService.getAttachmentByItemId(itemId.getAccountId(), authToken, itemId, "2"))
         .thenReturn(Try.success(mimePart));
 
     var previewHandlerSpy = spy(previewHandler);
@@ -214,7 +214,7 @@ class PreviewHandlerTest {
     when(itemId.getId()).thenReturn(27310);
     when(itemId.isLocal()).thenReturn(true);
     when(itemIdFactory.create("27310", "accountId")).thenReturn(itemId);
-    when(attachmentService.getAttachment(itemId.getAccountId(), authToken, itemId.getId(), "2"))
+    when(attachmentService.getAttachmentByItemId(itemId.getAccountId(), authToken, itemId, "2"))
         .thenReturn(Try.success(mimePart));
 
     previewHandler.handle(request, response);
@@ -257,7 +257,7 @@ class PreviewHandlerTest {
     when(itemId.getId()).thenReturn(27310);
     when(itemId.isLocal()).thenReturn(true);
     when(itemIdFactory.create("27310", "accountId")).thenReturn(itemId);
-    when(attachmentService.getAttachment(itemId.getAccountId(), authToken, itemId.getId(), "2"))
+    when(attachmentService.getAttachmentByItemId(itemId.getAccountId(), authToken, itemId, "2"))
         .thenReturn(Try.failure(new ItemNotFound()));
 
     previewHandler.handle(request, response);
@@ -278,12 +278,11 @@ class PreviewHandlerTest {
     when(itemId.getId()).thenReturn(27310);
     when(itemId.isLocal()).thenReturn(true);
     when(itemIdFactory.create("27310", "accountId")).thenReturn(itemId);
-    when(attachmentService.getAttachment(itemId.getAccountId(), authToken, itemId.getId(), "2"))
+    when(attachmentService.getAttachmentByItemId(itemId.getAccountId(), authToken, itemId, "2"))
         .thenReturn(Try.success(mimePart));
     when(previewClient.postPreviewOfImage(any(InputStream.class), any(Query.class), any(String.class)))
         .thenReturn(Try.failure(new InternalServerError()));
 
-//    var previewHandlerSyp = spy(previewHandler);
     previewHandler.handle(request, response);
 
     verify(response).sendError(Constants.STATUS_UNPROCESSABLE_ENTITY,
@@ -306,7 +305,7 @@ class PreviewHandlerTest {
     when(mimePart.getInputStream()).thenReturn(Mockito.mock(InputStream.class));
     when(mimePart.getContentType()).thenReturn("text/plain");
     when(mimePart.getSize()).thenReturn(200);
-    when(attachmentService.getAttachment(itemId.getAccountId(), authToken, itemId.getId(), "2"))
+    when(attachmentService.getAttachmentByItemId(itemId.getAccountId(), authToken, itemId, "2"))
         .thenReturn(Try.success(mimePart));
     when(previewClient.postPreviewOfImage(any(InputStream.class), any(Query.class), anyString())).thenReturn(
         Try.success(blobResponse));
@@ -334,7 +333,7 @@ class PreviewHandlerTest {
     when(mimePart.getInputStream()).thenReturn(Mockito.mock(InputStream.class));
     when(mimePart.getContentType()).thenReturn("text/plain");
     when(mimePart.getSize()).thenReturn(200);
-    when(attachmentService.getAttachment(itemId.getAccountId(), authToken, itemId.getId(), "2"))
+    when(attachmentService.getAttachmentByItemId(itemId.getAccountId(), authToken, itemId, "2"))
         .thenReturn(Try.success(mimePart));
     when(previewClient.postPreviewOfImage(any(InputStream.class), any(Query.class), anyString())).thenReturn(
         Try.failure(new InternalServerError()));
