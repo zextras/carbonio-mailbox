@@ -11,6 +11,7 @@ import com.zimbra.cs.mailbox.Metadata;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CreateCalendarGroupRequest;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -40,9 +41,10 @@ public class CreateCalendarGroup extends MailDocumentHandler {
 
     CreateCalendarGroupRequest req = zsc.elementToJaxb(request);
 
-    // TODO - double: ServiceException.OPERATION_DENIED | ServiceException.FAILURE | ServiceException.PERM_DENIED
     if (existsGroupName(mbox, octxt, req.getName()))
       throw ServiceException.OPERATION_DENIED("Calendar group with name " + req.getName() + " already exists");
+
+    assertCalendarsExist(mbox, octxt, req.getCalendarIds());
 
     final var fopt = new Folder.FolderOptions();
     fopt.setDefaultView(MailItem.Type.CALENDAR_GROUP);
@@ -52,6 +54,7 @@ public class CreateCalendarGroup extends MailDocumentHandler {
 
     return buildResponse(zsc, group);
   }
+
 
   private static Element buildResponse(ZimbraSoapContext zsc, Folder group)
       throws ServiceException {
@@ -63,9 +66,18 @@ public class CreateCalendarGroup extends MailDocumentHandler {
 
     for (final var calendarId : decodeCustomMetadata(group)) {
       final var calendarIdElement = groupInfo.addNonUniqueElement(CALENDAR_ID_ELEMENT_NAME);
-      calendarIdElement.setText(calendarId.toString());
+      calendarIdElement.setText(calendarId);
     }
     return response;
+  }
+
+  private void assertCalendarsExist(Mailbox mbox, OperationContext octxt, List<String> calendarIds) throws ServiceException {
+    var existingCalendarIds = mbox.getCalendarFolders(octxt, SortBy.NAME_ASC).stream().map(Folder::getId).toList();
+    for (String calendarId : calendarIds) {
+        if (!existingCalendarIds.contains(Integer.parseInt(calendarId))) {
+        throw ServiceException.FAILURE("Calendar with ID " + calendarId + " does NOT exist");
+      }
+    }
   }
 
   private static boolean existsGroupName(Mailbox mbox, OperationContext octxt, String groupName) throws ServiceException {

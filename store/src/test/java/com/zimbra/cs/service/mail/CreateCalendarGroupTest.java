@@ -9,6 +9,10 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.CreateCalendarGroupRequest;
 import com.zimbra.soap.mail.message.CreateCalendarGroupResponse;
+import com.zimbra.soap.mail.message.CreateFolderRequest;
+import com.zimbra.soap.mail.message.CreateFolderResponse;
+import com.zimbra.soap.mail.type.Folder;
+import com.zimbra.soap.mail.type.NewFolderSpec;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
@@ -45,9 +49,13 @@ class CreateCalendarGroupTest extends SoapTestSuite {
 
   @Test
   void createGroup() throws Exception {
+    var firstId = createCalendar(account, "Test Calendar 1").getId();
+    var secondId = createCalendar(account, "Test Calendar 2").getId();
+    var thirdId = createCalendar(account, "Test Calendar 3").getId();
+
     final var request = new CreateCalendarGroupRequest();
     request.setName("Test Group");
-    request.setCalendarIds(List.of("10", "420", "421"));
+    request.setCalendarIds(List.of(firstId, secondId, thirdId));
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
 
@@ -56,7 +64,23 @@ class CreateCalendarGroupTest extends SoapTestSuite {
     var group = response.getGroup();
     assertFalse(StringUtil.isNullOrEmpty(group.getId()));
     assertEquals("Test Group", group.getName());
-    assertEquals(List.of("10", "420", "421"), group.getCalendarIds());
+    assertEquals(List.of(firstId, secondId, thirdId), group.getCalendarIds());
+  }
+
+
+  @Test
+  void idDoesNotExists() throws Exception {
+    createCalendar(account, "Test Calendar 1").getId();
+    var lastCreated = createCalendar(account, "Test Calendar 2").getId();
+    var notExistingId = lastCreated + 1;
+
+    final var request = new CreateCalendarGroupRequest();
+    request.setName("Test Group");
+    request.setCalendarIds(List.of(notExistingId));
+
+    final var soapResponse = getSoapClient().executeSoap(account, request);
+
+    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, soapResponse.getStatusLine().getStatusCode());
   }
 
   @Test
@@ -79,6 +103,26 @@ class CreateCalendarGroupTest extends SoapTestSuite {
     request.setCalendarIds(calendarIds);
 
     getSoapClient().executeSoap(acc, request);
+  }
+
+  private Folder createCalendar(Account account, String name) throws Exception {
+    final var folder = new NewFolderSpec(name);
+    folder.setParentFolderId("1");
+    folder.setDefaultView("appointment");
+    final var createFolderRequest = new CreateFolderRequest(folder);
+    final var createFolderResponse = getSoapClient().executeSoap(account, createFolderRequest);
+    assertEquals(HttpStatus.SC_OK, createFolderResponse.getStatusLine().getStatusCode());
+    return parseSoapResponse(createFolderResponse, CreateFolderResponse.class).getFolder();
+  }
+
+  private static <T> T parseSoapResponse(HttpResponse httpResponse, Class<T> clazz)
+          throws IOException, ServiceException {
+    final var responseBody = EntityUtils.toString(httpResponse.getEntity());
+    final var rootElement =
+            parseXML(responseBody)
+                    .getElement("Body")
+                    .getElement(clazz.getSimpleName());
+    return JaxbUtil.elementToJaxb(rootElement, clazz);
   }
 
   private static CreateCalendarGroupResponse parseSoapResponse(HttpResponse httpResponse)
