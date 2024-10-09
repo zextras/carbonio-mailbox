@@ -1,5 +1,5 @@
 pkgname="carbonio-common-appserver-native-lib"
-pkgver="4.17.6"
+pkgver="4.17.7"
 pkgrel="1"
 pkgdesc="Carbonio Core Mailbox Native Libs"
 arch=('x86_64')

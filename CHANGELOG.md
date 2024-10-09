@@ -1,5 +1,12 @@
 
 
+# [4.17.7](https://github.com/Zextras/carbonio-mailbox/compare/4.17.6...4.17.7) (2024-10-09)
+
+
+### Bug Fixes
+
+* [CO-1529] Add carbonio-charset runtime dependency in store module ([#606](https://github.com/Zextras/carbonio-mailbox/issues/606)) ([d738c32](https://github.com/Zextras/carbonio-mailbox/commit/d738c327d80866e3984f9f19079b76960dd5ef22))
+
 # [4.17.6](https://github.com/zextras/carbonio-mailbox/compare/4.17.5...4.17.6) (2024-09-18)
 
 
