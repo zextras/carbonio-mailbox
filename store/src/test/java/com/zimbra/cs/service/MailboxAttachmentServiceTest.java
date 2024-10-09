@@ -4,81 +4,273 @@
 
 package com.zimbra.cs.service;
 
-import com.zextras.mailbox.util.MailMessageBuilder;
-import com.zextras.mailbox.util.MailboxTestUtil;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
-import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.ZimbraAuthToken;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
+
+import com.zimbra.cs.account.AuthToken;
+import com.zimbra.cs.mailbox.Appointment;
+import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Message;
-import com.zimbra.cs.mime.ParsedMessage;
+import com.zimbra.cs.mailbox.OperationContext;
+import com.zimbra.cs.mime.Mime;
+import com.zimbra.cs.service.MailboxAttachmentService.AttachmentNotFound;
+import com.zimbra.cs.service.MailboxAttachmentService.MessageNotFound;
+import com.zimbra.cs.service.MailboxAttachmentService.OperationContextFactory;
+import com.zimbra.cs.service.util.ItemId;
 import io.vavr.control.Try;
+import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimePart;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.MockitoAnnotations;
 
 class MailboxAttachmentServiceTest {
 
-  private static AccountCreator.Factory accountCreatorFactory;
-  private static AccountAction.Factory accountActionFactory;
+  private MailboxAttachmentService mailboxAttachmentService;
 
-  @BeforeAll
-  static void setUp() throws Exception {
-    MailboxTestUtil.setUp();
-    accountCreatorFactory = AccountCreator.Factory.getDefault();
-    accountActionFactory = AccountAction.Factory.getDefault();
-  }
+  @Mock
+  private MailboxManager mailboxManager;
+  @Mock
+  private Mailbox mailbox;
+  @Mock
+  private Message message;
+  @Mock
+  private Appointment appointment;
+  @Mock
+  private AuthToken authToken;
+  @Mock
+  private MimeMessage mimeMessage;
+  @Mock
+  private MimePart mimePart;
+  @Mock
+  private OperationContextFactory operationContextFactory;
+  @Mock
+  private OperationContext context;
 
-  @AfterAll
-  static void tearDown() throws Exception {
-    MailboxTestUtil.tearDown();
-  }
-
-  @Test
-  void shouldThrowMessageNotFoundWhenNoSuchMessage() throws Exception {
-    final Account account = accountCreatorFactory.get().create();
-
-    final Try<MimePart> attachment = new MailboxAttachmentService()
-        .getAttachment(account.getId(), new ZimbraAuthToken(account), 1, "123");
-
-    Assertions.assertTrue(attachment.isFailure());
-    Assertions.assertEquals("Message not found.", attachment.getCause().getMessage());
-  }
-
-  @Test
-  void shouldThrowAttachmentNotFoundWhenNoAttachmentPart() throws Exception {
-    final Account account = accountCreatorFactory.get().create();
-    final ParsedMessage message = new MailMessageBuilder().build();
-    final Message draft = accountActionFactory.forAccount(account).saveDraft(message);
-
-    final Try<MimePart> attachment = new MailboxAttachmentService()
-        .getAttachment(account.getId(), new ZimbraAuthToken(account), draft.getId(), "123");
-
-    Assertions.assertTrue(attachment.isFailure());
-    Assertions.assertEquals("Missing part 123.", attachment.getCause().getMessage());
+  @BeforeEach
+  void setUp() {
+    MockitoAnnotations.openMocks(this);
+    mailboxAttachmentService = new MailboxAttachmentService(operationContextFactory);
   }
 
   @Test
-  void shouldReturnAttachment() throws Exception {
-    final Account account = accountCreatorFactory.get().create();
-    final String attachmentContent = "Hello there. This is a PDF.";
-    final String fileName = "hello_there.pdf";
-    final String contentType = "application/pdf";
-    final ParsedMessage message = new MailMessageBuilder()
-        .addAttachment(attachmentContent, fileName, contentType)
-        .build();
-    final Message draft = accountActionFactory.forAccount(account).saveDraft(message);
+  void getAttachment_should_return_success_when_message_and_part_are_found() throws Exception {
+    try (MockedStatic<MailboxManager> mockedStatic = mockStatic(MailboxManager.class);
+        MockedStatic<Mime> mockedMime = mockStatic(Mime.class)) {
 
-    final Try<MimePart> attachment = new MailboxAttachmentService()
-        .getAttachment(account.getId(), new ZimbraAuthToken(account), draft.getId(), "2");
+      String accountId = "testAccountId";
+      int messageId = 1;
+      String part = "1";
 
-    Assertions.assertTrue(attachment.isSuccess());
-    final MimePart mimePart = attachment.get();
-    Assertions.assertEquals(contentType + "; name=" + fileName, mimePart.getContentType());
-    Assertions.assertEquals(fileName, mimePart.getFileName());
-    Assertions.assertEquals(attachmentContent, new String(mimePart.getInputStream().readAllBytes()));
+      when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(mailbox);
+      mockedStatic.when(MailboxManager::getInstance).thenReturn(mailboxManager);
+
+      when(operationContextFactory.createOperationContext(authToken)).thenReturn(context);
+      when(mailbox.getMessageById(any(OperationContext.class), eq(messageId))).thenReturn(message);
+      when(message.getMimeMessage()).thenReturn(mimeMessage);
+      mockedMime.when(() -> Mime.getMimePart(mimeMessage, part)).thenReturn(mimePart);
+
+      Try<MimePart> result = mailboxAttachmentService.getAttachment(accountId, authToken, messageId, part);
+
+      assertTrue(result.isSuccess());
+      assertEquals(mimePart, result.get());
+    }
   }
 
+  @Test
+  void getAttachment_should_return_failure_when_message_is_not_found() throws Exception {
+    try (MockedStatic<MailboxManager> mockedStatic = mockStatic(MailboxManager.class)) {
+
+      String accountId = "testAccountId";
+      int messageId = 1;
+      String part = "1";
+
+      when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(mailbox);
+      mockedStatic.when(MailboxManager::getInstance).thenReturn(mailboxManager);
+
+      when(operationContextFactory.createOperationContext(authToken)).thenReturn(context);
+      when(mailbox.getMessageById(any(OperationContext.class), eq(messageId)))
+          .thenThrow(new RuntimeException());
+
+      Try<MimePart> result = mailboxAttachmentService.getAttachment(accountId, authToken, messageId, part);
+
+      assertTrue(result.isFailure());
+      assertTrue(result.getCause() instanceof MessageNotFound);
+    }
+  }
+
+  @Test
+  void getAttachment_should_return_failure_when_mime_part_is_not_found() throws Exception {
+    try (MockedStatic<MailboxManager> mockedStatic = mockStatic(MailboxManager.class);
+        MockedStatic<Mime> mockedMime = mockStatic(Mime.class)) {
+
+      String accountId = "testAccountId";
+      int messageId = 1;
+      String part = "1";
+
+      when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(mailbox);
+      mockedStatic.when(MailboxManager::getInstance).thenReturn(mailboxManager);
+
+      when(operationContextFactory.createOperationContext(authToken)).thenReturn(context);
+      when(mailbox.getMessageById(any(OperationContext.class), eq(messageId))).thenReturn(message);
+      when(message.getMimeMessage()).thenReturn(mimeMessage);
+      mockedMime.when(() -> Mime.getMimePart(mimeMessage, part)).thenReturn(null);
+
+      Try<MimePart> result = mailboxAttachmentService.getAttachment(accountId, authToken, messageId, part);
+
+      assertTrue(result.isFailure());
+      assertTrue(result.getCause() instanceof MailboxAttachmentService.AttachmentNotFound);
+    }
+  }
+
+  @Test
+  void getAttachment_should_return_failure_when_mime_message_is_null() throws Exception {
+    try (MockedStatic<MailboxManager> mockedStatic = mockStatic(MailboxManager.class)) {
+
+      String accountId = "testAccountId";
+      int messageId = 1;
+      String part = "1";
+
+      when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(mailbox);
+      mockedStatic.when(MailboxManager::getInstance).thenReturn(mailboxManager);
+
+      when(operationContextFactory.createOperationContext(authToken)).thenReturn(context);
+      when(mailbox.getMessageById(any(OperationContext.class), eq(messageId))).thenReturn(message);
+      when(message.getMimeMessage()).thenReturn(null);
+
+      Try<MimePart> result = mailboxAttachmentService.getAttachment(accountId, authToken, messageId, part);
+
+      assertTrue(result.isFailure());
+      assertTrue(result.getCause() instanceof AttachmentNotFound);
+    }
+  }
+
+  @Test
+  void getAttachmentByItemId_should_return_attachment_when_getting_message_by_itemId_successfully() throws Exception {
+    try (MockedStatic<MailboxManager> mockedStatic = mockStatic(MailboxManager.class);
+        MockedStatic<Mime> mockedMime = mockStatic(Mime.class)) {
+
+      ItemId itemId = mock(ItemId.class);
+      String accountId = "testAccountId";
+      String part = "1";
+
+      when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(mailbox);
+      mockedStatic.when(MailboxManager::getInstance).thenReturn(mailboxManager);
+      when(itemId.getId()).thenReturn(1);
+      when(operationContextFactory.createOperationContext(authToken)).thenReturn(context);
+      when(mailbox.getMessageById(any(OperationContext.class), eq(1))).thenReturn(message);
+      when(message.getMimeMessage()).thenReturn(mimeMessage);
+      mockedMime.when(() -> Mime.getMimePart(mimeMessage, part)).thenReturn(mimePart);
+
+      Try<MimePart> result = mailboxAttachmentService.getAttachmentByItemId(accountId, authToken, itemId, part);
+
+      assertTrue(result.isSuccess());
+      assertEquals(mimePart, result.get());
+    }
+  }
+
+  @Test
+  void getAttachmentByItemId_should_fail_when_message_by_itemId_is_not_found() throws Exception {
+    try (MockedStatic<MailboxManager> mockedStatic = mockStatic(MailboxManager.class)) {
+      ItemId itemId = mock(ItemId.class);
+      String accountId = "testAccountId";
+      String part = "1";
+
+      when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(mailbox);
+      mockedStatic.when(MailboxManager::getInstance).thenReturn(mailboxManager);
+      when(itemId.getId()).thenReturn(1);
+      when(operationContextFactory.createOperationContext(authToken)).thenReturn(context);
+      when(mailbox.getMessageById(any(OperationContext.class), eq(1))).thenReturn(null);
+
+      Try<MimePart> result = mailboxAttachmentService.getAttachmentByItemId(accountId, authToken, itemId, part);
+
+      assertTrue(result.isFailure());
+      assertTrue(result.getCause() instanceof MessageNotFound);
+    }
+  }
+
+  @Test
+  void getAttachmentByItemId_should_fail_when_mimePart_is_null() throws Exception {
+    try (MockedStatic<MailboxManager> mockedStatic = mockStatic(MailboxManager.class);
+        MockedStatic<Mime> mockedMime = mockStatic(Mime.class)) {
+
+      ItemId itemId = mock(ItemId.class);
+      String accountId = "testAccountId";
+      String part = "1";
+
+      when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(mailbox);
+      mockedStatic.when(MailboxManager::getInstance).thenReturn(mailboxManager);
+      when(itemId.getId()).thenReturn(1);
+      when(operationContextFactory.createOperationContext(authToken)).thenReturn(context);
+      when(mailbox.getMessageById(any(OperationContext.class), eq(1))).thenReturn(message);
+      when(message.getMimeMessage()).thenReturn(mimeMessage);
+      mockedMime.when(() -> Mime.getMimePart(mimeMessage, part)).thenReturn(null);
+
+      Try<MimePart> result = mailboxAttachmentService.getAttachmentByItemId(accountId, authToken, itemId, part);
+
+      assertTrue(result.isFailure());
+      assertTrue(result.getCause() instanceof MailboxAttachmentService.AttachmentNotFound);
+    }
+  }
+
+  @Test
+  void getAttachmentByItemId_should_return_attachment_when_getting_calendar_item_by_itemId_successfully()
+      throws Exception {
+    try (MockedStatic<MailboxManager> mockedStatic = mockStatic(MailboxManager.class);
+        MockedStatic<Mime> mockedMime = mockStatic(Mime.class)) {
+
+      ItemId itemId = mock(ItemId.class);
+      String accountId = "testAccountId";
+      String part = "1";
+
+      when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(mailbox);
+      mockedStatic.when(MailboxManager::getInstance).thenReturn(mailboxManager);
+      when(itemId.getId()).thenReturn(1);
+      when(itemId.hasSubpart()).thenReturn(true);
+      when(operationContextFactory.createOperationContext(authToken)).thenReturn(context);
+      when(mailbox.getAppointmentById(any(OperationContext.class), eq(1))).thenReturn(appointment);
+      when(appointment.getMimeMessage()).thenReturn(mimeMessage);
+      when(appointment.getSubpartMessage(itemId.getSubpartId())).thenReturn(mimeMessage);
+      mockedMime.when(() -> Mime.getMimePart(mimeMessage, part)).thenReturn(mimePart);
+
+      Try<MimePart> result = mailboxAttachmentService.getAttachmentByItemId(accountId, authToken, itemId, part);
+
+      assertTrue(result.isSuccess());
+      assertEquals(mimePart, result.get());
+    }
+  }
+
+  @Test
+  void getAttachmentByItemId_should_fail_when_attachment_not_found_in_calendar_item() throws Exception {
+    try (MockedStatic<MailboxManager> mockedStatic = mockStatic(MailboxManager.class);
+        MockedStatic<Mime> mockedMime = mockStatic(Mime.class)) {
+
+      ItemId itemId = mock(ItemId.class);
+      String accountId = "testAccountId";
+      String part = "1";
+
+      when(mailboxManager.getMailboxByAccountId(accountId)).thenReturn(mailbox);
+      mockedStatic.when(MailboxManager::getInstance).thenReturn(mailboxManager);
+      when(itemId.getId()).thenReturn(1);
+      when(itemId.hasSubpart()).thenReturn(true);
+      when(operationContextFactory.createOperationContext(authToken)).thenReturn(context);
+      when(mailbox.getAppointmentById(any(OperationContext.class), eq(1))).thenReturn(appointment);
+      when(appointment.getMimeMessage()).thenReturn(mimeMessage);
+      when(appointment.getSubpartMessage(itemId.getSubpartId())).thenReturn(mimeMessage);
+      mockedMime.when(() -> Mime.getMimePart(mimeMessage, part)).thenReturn(null);
+
+      Try<MimePart> result = mailboxAttachmentService.getAttachmentByItemId(accountId, authToken, itemId, part);
+
+      assertTrue(result.isFailure());
+      assertTrue(result.getCause() instanceof AttachmentNotFound);
+    }
+  }
 }
