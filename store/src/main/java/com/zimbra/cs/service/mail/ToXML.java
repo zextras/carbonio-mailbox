@@ -116,8 +116,8 @@ import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.ItemIdFormatter;
 import com.zimbra.cs.session.PendingModifications.Change;
-import com.zimbra.cs.smime.SMIMESignatureVerifier;
 import com.zimbra.cs.smime.SmimeHandler;
+import com.zimbra.cs.smime.SmimeHandlerImpl;
 import com.zimbra.soap.admin.type.DataSourceType;
 import com.zimbra.soap.mail.type.AlarmDataInfo;
 import com.zimbra.soap.mail.type.CalendarReply;
@@ -1969,14 +1969,10 @@ public final class ToXML {
       // if the mime is signed, verify SMIME signature
       if (Mime.isMultipartSigned(mimeMessage.getContentType())
           || Mime.isPKCS7Signed(mimeMessage.getContentType())) {
-        ZimbraLog.mailbox.info(
-            "The message is signed. Verifying SMIME signature.");
-        MimeMessage originalMimeMessage = msg.getMimeMessage(false);
-        try {
-          SMIMESignatureVerifier.verifySMIMESignature(originalMimeMessage);
-        } catch (Exception e) {
-          ZimbraLog.mailbox.info(
-              "Error during SMIME signature verification. " + e.getMessage());
+        ZimbraLog.smime.debug(
+                "The message is signed. Forwarding it to SmimeHandler for signature verification.");
+        if (SmimeHandler.getHandler() != null) {
+          SmimeHandler.getHandler().verifyMessageSignature(msg, messageElement, mimeMessage, octxt);
         }
       } else {
         // if the original mime message was PKCS7-signed, and it was
