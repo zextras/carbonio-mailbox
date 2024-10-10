@@ -1,9 +1,8 @@
 package com.zimbra.cs.smime;
 
 import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
-import com.zimbra.common.soap.SmimeConstants;
+import com.zimbra.common.soap.SignatureConstants;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.ZimbraLog;
@@ -11,8 +10,6 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
-import com.zimbra.cs.mime.Mime;
-import com.zimbra.soap.account.type.CertificateInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cms.SignerInformation;
@@ -45,78 +42,58 @@ public class SmimeHandlerImpl extends SmimeHandler {
     private static final Log LOG = ZimbraLog.smime;
 
     private static final String RESOURCE_NAME = "org.bouncycastle.mail.smime.validator.SignedMailValidatorMessages";
-    public static final int TITLE = 0;
-    public static final int TEXT = 1;
-    public static final int SUMMARY = 2;
     public static final int DETAIL = 3;
-    public static final String SMIME_SIGNATURE_VALID = "smime_signature_valid";
-    public static final String SMIME_ERROR = "smime_error";
-    public static final String CERTIFICATE_AUTHORITY_VALID = "smime_authority_valid";
-    public static final String VALID = "valid";
     static int dbgLvl = DETAIL;
 
     /**
      * Verify the signature of the message
      * {
-     *  "signature":
-     *      {
-     *          "valid": true,
-     *          "error": "error message",
-     *          "issuer_valid": true,
-     *          "issuer_name": "actalis"
-     *          "not_before": 123456789,
-     *          "not_after": "123456789"
-     *      },
-     *   cert,
-     * }
+     *  "signature": {
+     *             "valid": false,
+     *             "message": "issuer is not trusted",
+     *             "certificate": {
+     *               "email": "email@xx.com",
+     *               "notBefore": 12321312312,
+     *               "notAfter": 12321231,
+     *               "issuer": {
+     *                 "trusted": false,
+     *                 "name": "Actalis"
+     *               }
+     *             },
+     *           }
      */
     @Override
     public boolean verifyMessageSignature(Message msg, Element element, MimeMessage mimeMessage, OperationContext octxt) {
+        Element signatureElement = null;
         try {
-            Element smime = element.getElement(SmimeConstants.E_SIGNATURE);
-            if (smime != null) {
-                return smime.getAttributeBool(VALID, false);
+            Element optionalElement = element.getOptionalElement(SignatureConstants.SIGNATURE);
+            if (optionalElement != null) {
+                return optionalElement.getAttributeBool(SignatureConstants.VALID, false);
             }
             if (mimeMessage.isMimeType("multipart/signed")) {
                 // Extract and validate the signature
                 MimeMultipart content = (MimeMultipart) mimeMessage.getContent();
 
                 SMIMESigned signed = new SMIMESigned(content);
-
+                element.addUniqueElement(SignatureConstants.SIGNATURE).addUniqueElement(SignatureConstants.CERTIFICATE).addUniqueElement(SignatureConstants.ISSUER);
+                signatureElement = element.getElement(SignatureConstants.SIGNATURE);
+                        Element signerCert = element.getElement(SignatureConstants.SIGNATURE).getElement(SignatureConstants.CERTIFICATE);
+                Element issuerElement = element.getElement(SignatureConstants.SIGNATURE).getElement(SignatureConstants.CERTIFICATE).getElement(SignatureConstants.ISSUER);
                 // Get the certificates from the signed email
                 Collection<X509CertificateHolder> certHolders = signed.getCertificates().getMatches(null);
                 List<X509Certificate> certList = new ArrayList<>();
-                Mime.FixedMimeMessage m = null;
-                if (mimeMessage instanceof Mime.FixedMimeMessage) {
-                    m = (Mime.FixedMimeMessage) mimeMessage;
-                    m.setPKCS7Signed(true);
-                }
-                List<CertificateInfo> signerCerts = new ArrayList<>();
                 for (X509CertificateHolder certHolder : certHolders) {
-                    certList.add(new JcaX509CertificateConverter().setProvider(new BouncyCastleProvider()).getCertificate(certHolder));
-                    if (m != null) {
-                        CertificateInfo certInfo = new CertificateInfo();
-                        certInfo.setPubCertId("123");
-                        certInfo.setEmailAddr("dasdas");
-                        m.setSignerCerts(signerCerts);
-                        Element soner2 = element.addUniqueElement("soner");
-                        soner2.addAttribute("abc","123");
-                        Element soner1 = element.addUniqueElement("soner");
-                        soner1.addAttribute("abc","1233");
-                        Element soner = element.addUniqueElement("soner");
-                        soner.addAttribute("abc","1234");
-                    }
+                    X509Certificate certificate = new JcaX509CertificateConverter().setProvider(new BouncyCastleProvider()).getCertificate(certHolder);
+                    certList.add(certificate);
+
                 }
-
-
-                // Assuming the first certificate is the signing certificate
 
                 // Load the trust store (containing trusted CA certificates)
                 KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
                 trustStore.load(new FileInputStream(LC.get(LC.mailboxd_truststore.key())), LC.get(LC.mailboxd_truststore_password.key()).toCharArray());
 
                 // Build the certificate chain
-                CertificateFactory certFactory = CertificateFactory.getInstance("X.509", new BouncyCastleProvider());
+                CertificateFactory certFactory = CertificateFactory.getInstance(SignatureConstants.X_509, new BouncyCastleProvider());
                 CertPath certPath = certFactory.generateCertPath(certList);
 
                 // Set up the PKIX parameters with the trust anchors (trusted root certificates)
@@ -124,71 +101,95 @@ public class SmimeHandlerImpl extends SmimeHandler {
                 pkixParams.setRevocationEnabled(false);  // Set this to true if you want to check for CRLs or OCSP
 
                 // Create a CertPathValidator instance
-                CertPathValidator certPathValidator = CertPathValidator.getInstance("PKIX");
+                CertPathValidator certPathValidator = CertPathValidator.getInstance(SignatureConstants.PKIX);
 
                 // Validate the certificate chain (CertPath)
                 try {
                     certPathValidator.validate(certPath, pkixParams);
-                    element.addAttribute(CERTIFICATE_AUTHORITY_VALID, true);
+                    issuerElement.addAttribute(SignatureConstants.TRUSTED, true);
                 } catch (CertPathValidatorException e) {
-                    element.addAttribute(CERTIFICATE_AUTHORITY_VALID, false);
+                    issuerElement.addAttribute(SignatureConstants.TRUSTED, false);
+                    signatureElement.addAttribute(SignatureConstants.MESSAGE, "issuer is not trusted. Detail: " + e.getMessage());
+                    certList.forEach(certificate -> {
+                        if(msg.getSender().equals(extractCN(certificate.getSubjectX500Principal()))) {
+                            signerCert.addAttribute(SignatureConstants.EMAIL, extractCN(certificate.getSubjectX500Principal()));
+                            signerCert.addAttribute(SignatureConstants.NOT_BEFORE, certificate.getNotBefore().getTime());
+                            signerCert.addAttribute(SignatureConstants.NOT_AFTER, certificate.getNotAfter().getTime());
+                            issuerElement.addAttribute(SignatureConstants.NAME, extractCN(certificate.getIssuerX500Principal()));
+                        }
+                    });
                     LOG.warn("Smime Authority certificate is not valid: " + e.getMessage());
                     return false;
                 }
 
-
-
                 SignedMailValidator validator = new SignedMailValidator(mimeMessage, pkixParams);
                 Locale loc = Locale.ENGLISH;
                 for (SignerInformation signer : validator.getSignerInformationStore().getSigners()) {
-                    X509Certificate signingCert = null;
-                    for (X509Certificate cert : certList) {
-                        if (cert.getSubjectDN().equals(signer.getSID().getIssuer())) {
-                            signingCert = cert;
-                            break;
+                    certList.forEach(certificate -> {
+                        if (signer.getSID().getSerialNumber().equals(certificate.getSerialNumber())) {
+                            signerCert.addAttribute(SignatureConstants.EMAIL, extractCN(certificate.getSubjectX500Principal()));
+                            signerCert.addAttribute(SignatureConstants.NOT_BEFORE, certificate.getNotBefore().getTime());
+                            signerCert.addAttribute(SignatureConstants.NOT_AFTER, certificate.getNotAfter().getTime());
+                            issuerElement.addAttribute(SignatureConstants.NAME, extractCN(certificate.getIssuerX500Principal()));
                         }
-                    }
-                    X500Principal issuer = signingCert.getIssuerX500Principal();
-                    issuer.getName();
-                    SignedMailValidator.ValidationResult result2 = validator
-                            .getValidationResult(signer);
-                    if (result2.isValidSignature()) {
+                    });
+                    SignedMailValidator.ValidationResult validationResult = validator.getValidationResult(signer);
+                    if (validationResult.isValidSignature()) {
+                        signatureElement.addAttribute(SignatureConstants.MESSAGE, "Valid");
                         LOG.info("valid");
                     } else {
                         ErrorBundle errMsg = new ErrorBundle(RESOURCE_NAME,
                                 "SignedMailValidator.sigInvalid");
                         errMsg.setClassLoader(SignedMailValidator.class.getClassLoader());
-                        LOG.error(errMsg.getText(loc));
+                        String error = errMsg.getText(loc);
+                        LOG.error(error);
                         // print errors
-                        for (Object o : result2.getErrors()) {
+                        for (Object o : validationResult.getErrors()) {
                             ErrorBundle errorMsg = (ErrorBundle) o;
                             if (dbgLvl == DETAIL) {
                                 LOG.error(errorMsg.getDetail(loc));
+                                signatureElement.addAttribute(SignatureConstants.MESSAGE, error + " " + errorMsg.getDetail(loc));
                             } else {
                                 LOG.error(errorMsg.getText(loc));
+                                signatureElement.addAttribute(SignatureConstants.MESSAGE, error + " " + errorMsg.getText(loc));
                             }
                         }
-                        if (!result2.getErrors().isEmpty()) {
-                            element.addAttribute(SMIME_SIGNATURE_VALID, false);
+                        if (!validationResult.getErrors().isEmpty()) {
+                            signatureElement.addAttribute(SignatureConstants.VALID, false);
                             return false;
                         }
                     }
+                    signatureElement.addAttribute(SignatureConstants.VALID, true);
+                    return true;
                 }
-
             }
-            element.addAttribute(SMIME_SIGNATURE_VALID, true);
-            return true;
 
         } catch (Exception e) {
-            element.addAttribute(SMIME_SIGNATURE_VALID, false);
-            element.addAttribute(SMIME_ERROR, e.getMessage());
+            LOG.error(e);
+            if (signatureElement != null) {
+                signatureElement.addAttribute(SignatureConstants.MESSAGE, e.getMessage());
+            }
         }
-        element.addAttribute(SMIME_SIGNATURE_VALID, false);
+
+        if (signatureElement != null) {
+            signatureElement.addAttribute(SignatureConstants.VALID, false);
+        }
         return false;
     }
 
+    private String extractCN(X500Principal principal) {
+        String name = principal.getName();
+        String[] parts = name.split(",");
+        for (String part : parts) {
+            if (part.startsWith("CN=")) {
+                return part.substring(3);
+            }
+        }
+        return null;
+    }
+
     @Override
-    public MimeMessage decryptMessage(Mailbox mailbox, MimeMessage mimeMessage, int itemId) throws ServiceException {
+    public MimeMessage decryptMessage(Mailbox mailbox, MimeMessage mimeMessage, int itemId) {
         return mimeMessage;
     }
 

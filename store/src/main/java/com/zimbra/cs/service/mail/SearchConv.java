@@ -54,6 +54,7 @@ public final class SearchConv extends Search {
         OperationContext octxt = getOperationContext(zsc, context);
         ItemIdFormatter ifmt = new ItemIdFormatter(zsc);
         SearchConvRequest req = zsc.elementToJaxb(request);
+        req.getIsSignatureRequired();
         boolean nest = ZmBoolean.toBool(req.getNestMessages(), false);
         Account acct = getRequestedAccount(zsc);
         SearchParams params = SearchParams.parse(req, zsc, acct.getPrefMailInitialSearch());
