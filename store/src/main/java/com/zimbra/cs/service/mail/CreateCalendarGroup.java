@@ -13,6 +13,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CreateCalendarGroupRequest;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,11 +45,13 @@ public class CreateCalendarGroup extends MailDocumentHandler {
     if (existsGroupName(mbox, octxt, req.getName()))
       throw ServiceException.OPERATION_DENIED("Calendar group with name " + req.getName() + " already exists");
 
-    assertCalendarsExist(mbox, octxt, req.getCalendarIds());
+    // avoiding duplicates from request
+    var calendarIds = new HashSet<>(req.getCalendarIds()).stream().toList();
+    assertCalendarsExist(mbox, octxt, calendarIds);
 
     final var fopt = new Folder.FolderOptions();
     fopt.setDefaultView(MailItem.Type.CALENDAR_GROUP);
-    fopt.setCustomMetadata(encodeCustomMetadata(req));
+    fopt.setCustomMetadata(encodeCustomMetadata(calendarIds));
 
     final var group = mbox.createFolder(octxt, req.getName(), 1, fopt);
 
@@ -87,10 +90,10 @@ public class CreateCalendarGroup extends MailDocumentHandler {
             .contains(groupName);
   }
 
-  private static MailItem.CustomMetadata encodeCustomMetadata(CreateCalendarGroupRequest req)
+  private static MailItem.CustomMetadata encodeCustomMetadata(List<String> calendarIds)
       throws ServiceException {
     final var encodedList =
-        req.getCalendarIds().stream()
+        calendarIds.stream()
             .map(String::valueOf)
             .collect(Collectors.joining(LIST_SEPARATOR));
     final var metadata = new Metadata().put(CALENDAR_IDS_METADATA_KEY, encodedList).toString();

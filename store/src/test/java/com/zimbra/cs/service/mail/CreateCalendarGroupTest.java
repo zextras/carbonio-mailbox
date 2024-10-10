@@ -69,6 +69,25 @@ class CreateCalendarGroupTest extends SoapTestSuite {
 
 
   @Test
+  void noDuplicateCalendarInGroup() throws Exception {
+    var firstId = createCalendar(account, "Test Calendar 1").getId();
+
+    final var request = new CreateCalendarGroupRequest();
+    request.setName("Test Group");
+    request.setCalendarIds(List.of(firstId, firstId));
+
+    final var soapResponse = getSoapClient().executeSoap(account, request);
+
+    assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+    final var response = parseSoapResponse(soapResponse);
+    var group = response.getGroup();
+    assertFalse(StringUtil.isNullOrEmpty(group.getId()));
+    assertEquals("Test Group", group.getName());
+    assertEquals(List.of(firstId), group.getCalendarIds());
+  }
+
+
+  @Test
   void idDoesNotExists() throws Exception {
     createCalendar(account, "Test Calendar 1").getId();
     var lastCreated = createCalendar(account, "Test Calendar 2").getId();
