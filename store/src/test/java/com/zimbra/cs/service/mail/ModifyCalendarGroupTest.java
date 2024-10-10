@@ -8,8 +8,12 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.CreateCalendarGroupRequest;
 import com.zimbra.soap.mail.message.CreateCalendarGroupResponse;
+import com.zimbra.soap.mail.message.CreateFolderRequest;
+import com.zimbra.soap.mail.message.CreateFolderResponse;
 import com.zimbra.soap.mail.message.ModifyCalendarGroupRequest;
 import com.zimbra.soap.mail.message.ModifyCalendarGroupResponse;
+import com.zimbra.soap.mail.type.Folder;
+import com.zimbra.soap.mail.type.NewFolderSpec;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
@@ -45,11 +49,14 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
 
   @Test
   void addOneCalendar() throws Exception {
-    var res = addGroupFor(account, "Group Calendar", List.of("101", "420"));
+    var firstCalendar = createCalendar(account, "Test Calendar 1");
+    var secondCalendar = createCalendar(account, "Test Calendar 2");
+    var thirdCalendar = createCalendar(account, "Test Calendar 3");
+    var res = addGroupFor(account, "Group Calendar", List.of(firstCalendar.getId(), secondCalendar.getId()));
     var request = new ModifyCalendarGroupRequest();
     var id = res.getGroup().getId();
     request.setId(id);
-    var modifiedCalendarList = List.of("101", "420", "421");
+    var modifiedCalendarList = List.of(firstCalendar.getId(), secondCalendar.getId(), thirdCalendar.getId());
     request.setCalendarIds(modifiedCalendarList);
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
@@ -61,7 +68,10 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
 
   @Test
   void renameGroup() throws Exception {
-    var calendarIds = List.of("101", "420");
+    var calendarIds = List.of(
+            createCalendar(account, "Test Calendar 1").getId(),
+            createCalendar(account, "Test Calendar 2").getId()
+    );
     var res = addGroupFor(account, "Group Calendar", calendarIds);
     var request = new ModifyCalendarGroupRequest();
     var id = res.getGroup().getId();
@@ -75,6 +85,16 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
     var group = response.getGroup();
     assertEquals(groupNameModified, group.getName());
     assertEquals(calendarIds, group.getCalendarIds());
+  }
+
+  private Folder createCalendar(Account account, String name) throws Exception {
+    final var folder = new NewFolderSpec(name);
+    folder.setParentFolderId("1");
+    folder.setDefaultView("appointment");
+    final var createFolderRequest = new CreateFolderRequest(folder);
+    final var createFolderResponse = getSoapClient().executeSoap(account, createFolderRequest);
+    assertEquals(HttpStatus.SC_OK, createFolderResponse.getStatusLine().getStatusCode());
+    return parseSoapResponse(createFolderResponse, CreateFolderResponse.class).getFolder();
   }
 
   private CreateCalendarGroupResponse addGroupFor(Account acc, String groupName, List<String> calendarIds) throws Exception {
