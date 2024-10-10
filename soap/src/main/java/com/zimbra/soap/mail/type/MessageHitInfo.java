@@ -17,6 +17,8 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.common.soap.SignatureConstants;
+import com.zimbra.soap.account.type.MailSignature;
 import com.zimbra.soap.type.SearchHit;
 import com.zimbra.soap.type.ZmBoolean;
 
@@ -39,6 +41,9 @@ implements SearchHit {
     @XmlAttribute(name=MailConstants.A_CONTENTMATCHED /* cm */, required=false)
     private ZmBoolean contentMatched;
 
+    @XmlElement(name= SignatureConstants.SIGNATURE /* signature */, required=false)
+    private MailSignature signature;
+
     /**
      * @zm-api-field-description Hit Parts -- indicators that the named parts matched the search string
      */
@@ -58,6 +63,13 @@ implements SearchHit {
     }
     public void setContentMatched(Boolean contentMatched) {
         this.contentMatched = ZmBoolean.fromBool(contentMatched);
+    }
+    public void setSignature(MailSignature signature) {
+        this.signature = signature;
+    }
+
+    public MailSignature getSignature() {
+        return signature;
     }
     public void setMessagePartHits(Iterable <Part> messagePartHits) {
         this.messagePartHits.clear();
