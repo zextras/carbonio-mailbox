@@ -8,9 +8,13 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.CreateCalendarGroupRequest;
 import com.zimbra.soap.mail.message.CreateCalendarGroupResponse;
+import com.zimbra.soap.mail.message.CreateFolderRequest;
+import com.zimbra.soap.mail.message.CreateFolderResponse;
 import com.zimbra.soap.mail.message.DeleteCalendarGroupRequest;
 import com.zimbra.soap.mail.message.GetCalendarGroupsRequest;
 import com.zimbra.soap.mail.message.GetCalendarGroupsResponse;
+import com.zimbra.soap.mail.type.Folder;
+import com.zimbra.soap.mail.type.NewFolderSpec;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
@@ -44,8 +48,11 @@ class DeleteCalendarGroupTest extends SoapTestSuite {
 
     @Test
     void deleteGroup() throws Exception {
-        var groupToDelete = addGroupTo(account, "Group1", List.of("101", "420"));
-        var group2 = addGroupTo(account, "Group2", List.of("127"));
+        var groupToDelete = addGroupTo(account, "Group1", List.of(
+                createCalendar(account, "My Calendar").getId(),
+                createCalendar(account, "Fake Calendar").getId())
+        );
+        var group2 = addGroupTo(account, "Group2", List.of(createCalendar(account, "Other Calendar").getId()));
         String groupIdToDelete = groupToDelete.getGroup().getId();
         String id2 = group2.getGroup().getId();
 
@@ -81,6 +88,16 @@ class DeleteCalendarGroupTest extends SoapTestSuite {
 
         assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
         return parseSoapResponse(soapResponse, CreateCalendarGroupResponse.class);
+    }
+
+    private Folder createCalendar(Account account, String name) throws Exception {
+        final var folder = new NewFolderSpec(name);
+        folder.setParentFolderId("1");
+        folder.setDefaultView("appointment");
+        final var createFolderRequest = new CreateFolderRequest(folder);
+        final var createFolderResponse = getSoapClient().executeSoap(account, createFolderRequest);
+        assertEquals(HttpStatus.SC_OK, createFolderResponse.getStatusLine().getStatusCode());
+        return parseSoapResponse(createFolderResponse, CreateFolderResponse.class).getFolder();
     }
 
     private static <T> T parseSoapResponse(HttpResponse httpResponse, Class<T> clazz)
