@@ -75,7 +75,7 @@ public class GetCalendarGroups extends MailDocumentHandler {
 
   private static Element createGroupElement(Folder group, Element response) {
     final var groupElement = response.addNonUniqueElement(GetCalendarGroups.GROUP_ELEMENT_NAME);
-    groupElement.addAttribute(ID_ELEMENT_NAME, group.getId());
+    groupElement.addAttribute(ID_ELEMENT_NAME, String.valueOf(group.getId()));
     groupElement.addAttribute(NAME_ELEMENT_NAME, group.getName());
     return groupElement;
   }
