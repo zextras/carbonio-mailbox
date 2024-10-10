@@ -105,23 +105,27 @@ class CreateCalendarGroupTest extends SoapTestSuite {
   @Test
   void shouldNotCreateGroupWhenGroupNameAlreadyExists() throws Exception {
     var sameGroupName = "Test Group";
-    createGroupFor(account, sameGroupName, List.of("10", "420", "421"));
+    var firstCalendar = createCalendar(account, "Test Calendar 1");
+    var secondCalendar = createCalendar(account, "Test Calendar 2");
+    var thirdCalendar = createCalendar(account, "Test Calendar 3");
+    createGroup(account, sameGroupName, List.of(firstCalendar.getId(), secondCalendar.getId(), thirdCalendar.getId()));
 
     final var request = new CreateCalendarGroupRequest();
     request.setName(sameGroupName);
-    request.setCalendarIds(List.of("10", "420", "421"));
+    request.setCalendarIds(List.of(firstCalendar.getId(), secondCalendar.getId(), thirdCalendar.getId()));
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
 
     assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, soapResponse.getStatusLine().getStatusCode());
   }
 
-  private void createGroupFor(Account acc, String groupName, List<String> calendarIds) throws Exception {
+  private void createGroup(Account acc, String groupName, List<String> calendarIds) throws Exception {
     final var request = new CreateCalendarGroupRequest();
     request.setName(groupName);
     request.setCalendarIds(calendarIds);
 
-    getSoapClient().executeSoap(acc, request);
+    var response = getSoapClient().executeSoap(acc, request);
+    assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
   }
 
   private Folder createCalendar(Account account, String name) throws Exception {
