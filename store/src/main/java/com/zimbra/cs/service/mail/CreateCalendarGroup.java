@@ -64,7 +64,7 @@ public class CreateCalendarGroup extends MailDocumentHandler {
     final var response = zsc.createElement(MailConstants.CREATE_CALENDAR_GROUP_RESPONSE);
 
     final var groupInfo = response.addUniqueElement(GROUP_ELEMENT_NAME);
-    groupInfo.addAttribute(ID_ELEMENT_NAME, group.getId());
+    groupInfo.addAttribute(ID_ELEMENT_NAME, String.valueOf(group.getId()));
     groupInfo.addAttribute(NAME_ELEMENT_NAME, group.getName());
 
     for (final var calendarId : decodeCustomMetadata(group)) {
