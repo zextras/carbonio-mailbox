@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.common.soap.SignatureConstants;
 import com.zimbra.soap.mail.type.MailSearchParams;
 import com.zimbra.soap.type.ZmBoolean;
 
@@ -42,6 +43,14 @@ public class SearchConvRequest extends MailSearchParams {
     private ZmBoolean nestMessages;
 
     /**
+     * @zm-api-field-tag isSignatureRequired
+     * @zm-api-field-description If set then the response will contain signature details info if it exists
+     * <br />
+     */
+    @XmlAttribute(name= SignatureConstants.IS_SIGNATURE_REQUIRED /* isSignatureRequired */)
+    private ZmBoolean isSignatureRequired;
+
+    /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
@@ -54,6 +63,15 @@ public class SearchConvRequest extends MailSearchParams {
     }
 
     public void setNestMessages(Boolean nestMessages) { this.nestMessages = ZmBoolean.fromBool(nestMessages); }
+
+    public Boolean getIsSignatureRequired() {
+        return ZmBoolean.toBool(isSignatureRequired);
+    }
+
+    public void setIsSignatureRequired(Boolean isSignatureRequired) {
+        this.isSignatureRequired = ZmBoolean.fromBool(isSignatureRequired);
+    }
+
     public Boolean getNestMessages() { return ZmBoolean.toBool(nestMessages); }
     public String getConversationId() { return conversationId; }
 
@@ -61,6 +79,7 @@ public class SearchConvRequest extends MailSearchParams {
         helper = super.addToStringInfo(helper);
         return helper
             .add("nestMessages", nestMessages)
+            .add("isSignatureRequired", isSignatureRequired)
             .add("conversationId", conversationId);
     }
 

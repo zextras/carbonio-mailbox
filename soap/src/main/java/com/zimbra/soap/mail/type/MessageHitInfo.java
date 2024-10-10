@@ -41,7 +41,11 @@ implements SearchHit {
     @XmlAttribute(name=MailConstants.A_CONTENTMATCHED /* cm */, required=false)
     private ZmBoolean contentMatched;
 
-    @XmlElement(name= SignatureConstants.SIGNATURE /* signature */, required=false)
+    /**
+     * @zm-api-field-tag signature
+     * @zm-api-field-description MailSignature signature
+     */
+    @XmlElement(name= SignatureConstants.SIGNATURE /* signature */)
     private MailSignature signature;
 
     /**
