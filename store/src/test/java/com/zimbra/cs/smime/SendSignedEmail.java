@@ -31,11 +31,14 @@ import java.util.List;
 import java.util.Properties;
 
 public class SendSignedEmail {
+
+    public static final String PASSWORD = "password";
+
     public static void main(String[] args) throws Exception {
 // Step 1: Set up mail session
         Security.addProvider(new BouncyCastleProvider());
         Properties props = new Properties();
-        props.put("mail.smtp.host", "kc-dev5-u22-ce.demo.zextras.io");
+        props.put("mail.smtp.host", "smtp.host");
         props.put("mail.smtp.port", "587");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -62,12 +65,12 @@ public class SendSignedEmail {
         props.put("mail.smtp.ssl.socketFactory", sslSocketFactory);
         // Step 2: Load private key and certificate (from a .p12 file)
         KeyStore keystore = KeyStore.getInstance("PKCS12");
-        FileInputStream fis = new FileInputStream("/Users/soner/zextras/carbonio-mani/carbonio-mailbox/store/gmail_92=gVYk?15lACBdJoE.p12");
-        keystore.load(fis, "92=gVYk?15lACBdJoE".toCharArray());
+        FileInputStream fis = new FileInputStream("path/to/keystore.p12");
+        keystore.load(fis, PASSWORD.toCharArray());
 
-        String alias = "sonersivri@gmail.com";
+        String alias = "user@demo.zextras.io";
         keystore.aliases().asIterator().forEachRemaining(System.out::println);
-        PrivateKey privateKey = (PrivateKey) keystore.getKey(alias, "92=gVYk?15lACBdJoE".toCharArray());
+        PrivateKey privateKey = (PrivateKey) keystore.getKey(alias, PASSWORD.toCharArray());
         X509Certificate certificate = (X509Certificate) keystore.getCertificate(alias);
         List<Certificate> certList = new ArrayList<>();
         certList.add(certificate);
@@ -109,9 +112,6 @@ public class SendSignedEmail {
         body.setSubject("example signed message");
         body.setContent(mm, mm.getContentType());
         body.saveChanges();
-        //body.writeTo(new FileOutputStream("carbonio-mailbox/store/gmailsigned"));
-
-        // Step 7: Send the email
         Transport.send(body);
         System.out.println("Email sent successfully with S/MIME2 signature.");
     }
