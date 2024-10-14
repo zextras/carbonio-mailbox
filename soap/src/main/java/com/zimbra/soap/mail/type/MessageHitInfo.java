@@ -43,7 +43,7 @@ implements SearchHit {
 
     /**
      * @zm-api-field-tag signature
-     * @zm-api-field-description MailSignature signature
+     * @zm-api-field-description MailSignature signature if email is signed and carbonioSMIMESignatureVerificationEnabled true then output signature
      */
     @XmlElement(name= SignatureConstants.SIGNATURE /* signature */)
     private MailSignature signature;
