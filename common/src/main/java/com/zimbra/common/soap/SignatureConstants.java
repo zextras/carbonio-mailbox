@@ -18,7 +18,7 @@ public final class SignatureConstants {
     public static final String PKIX = "PKIX";
     public static final String IS_SIGNATURE_REQUIRED = "isSignatureRequired";
 
-    public enum MESSAGE_CODE_ENUM {
+    public enum MessageCodeEnum {
         VALID,
         INVALID,
         UNTRUSTED,
