@@ -131,7 +131,7 @@ public class SmimeHandlerImpl extends SmimeHandler {
             if (signatureElement != null) {
                 signatureElement.addAttribute(SignatureConstants.MESSAGE, e.getMessage());
                 signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE,
-                        SignatureConstants.MESSAGE_CODE_ENUM.ERROR.toString());
+                        SignatureConstants.MessageCodeEnum.ERROR.toString());
             }
         }
 
@@ -156,7 +156,7 @@ public class SmimeHandlerImpl extends SmimeHandler {
         } catch (CertPathValidatorException e) {
             issuerElement.addAttribute(SignatureConstants.TRUSTED, false);
             signatureElement.addAttribute(SignatureConstants.MESSAGE, "issuer is not trusted. Detail: " + e.getMessage());
-            signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE, SignatureConstants.MESSAGE_CODE_ENUM.UNTRUSTED.toString());
+            signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE, SignatureConstants.MessageCodeEnum.UNTRUSTED.toString());
             certList.stream()
                     .filter(certificate -> msg.getSender().equals(extractCN(certificate.getSubjectX500Principal())))
                     .findFirst()
@@ -182,7 +182,7 @@ public class SmimeHandlerImpl extends SmimeHandler {
             if (validationResult.isValidSignature()) {
                 signatureElement.addAttribute(SignatureConstants.MESSAGE, SignatureConstants.VALID);
                 signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE,
-                        SignatureConstants.MESSAGE_CODE_ENUM.VALID.toString());
+                        SignatureConstants.MessageCodeEnum.VALID.toString());
                 LOG.debug("valid");
             } else {
                 ErrorBundle errMsg = new ErrorBundle(RESOURCE_NAME, "SignedMailValidator.sigInvalid");
@@ -195,7 +195,7 @@ public class SmimeHandlerImpl extends SmimeHandler {
                     LOG.error(errorMsg.getDetail(Locale.ENGLISH));
                     signatureElement.addAttribute(SignatureConstants.MESSAGE, error + " " + errorMsg.getDetail(Locale.ENGLISH));
                     signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE,
-                            SignatureConstants.MESSAGE_CODE_ENUM.INVALID.toString());
+                            SignatureConstants.MessageCodeEnum.INVALID.toString());
 
                     signatureElement.addAttribute(SignatureConstants.VALID, false);
                     return false;
@@ -204,7 +204,7 @@ public class SmimeHandlerImpl extends SmimeHandler {
             signatureElement.addAttribute(SignatureConstants.VALID, true);
             signatureElement.addAttribute(SignatureConstants.MESSAGE, SignatureConstants.VALID);
             signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE,
-                    SignatureConstants.MESSAGE_CODE_ENUM.VALID.toString());
+                    SignatureConstants.MessageCodeEnum.VALID.toString());
             return true;
         }
         return false;
