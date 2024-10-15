@@ -340,7 +340,7 @@
       <dependency>
         <groupId>org.json</groupId>
         <artifactId>json</artifactId>
-        <version>20090211</version>
+        <version>20230227</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -444,7 +444,7 @@
       <dependency>
         <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
         <artifactId>owasp-java-html-sanitizer</artifactId>
-        <version>20191001.1</version>
+        <version>20211018.1</version>
       </dependency>
       <dependency>
         <groupId>com.zextras.carbonio.preview</groupId>
