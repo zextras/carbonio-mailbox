@@ -46,7 +46,7 @@ implements SearchHit {
      * @zm-api-field-description MailSignature signature if email is signed and carbonioSMIMESignatureVerificationEnabled true then output signature
      */
     @XmlElement(name= SignatureConstants.SIGNATURE /* signature */)
-    private MailSignature signature;
+    private List<MailSignature> signature;
 
     /**
      * @zm-api-field-description Hit Parts -- indicators that the named parts matched the search string
@@ -68,11 +68,11 @@ implements SearchHit {
     public void setContentMatched(Boolean contentMatched) {
         this.contentMatched = ZmBoolean.fromBool(contentMatched);
     }
-    public void setSignature(MailSignature signature) {
+    public void setSignature(List<MailSignature> signature) {
         this.signature = signature;
     }
 
-    public MailSignature getSignature() {
+    public List<MailSignature> getSignature() {
         return signature;
     }
     public void setMessagePartHits(Iterable <Part> messagePartHits) {
