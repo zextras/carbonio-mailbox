@@ -421,8 +421,8 @@ public class AdminService implements DocumentService {
     return MessageBrokerClient.fromConfig(
             "127.78.0.7",
             20005,
-            serviceDiscoverHttpClient.getConfig("default/username").get(),
-            serviceDiscoverHttpClient.getConfig("default/password").get()
+            serviceDiscoverHttpClient.getConfig("default/username").getOrElse("carbonio-message-broker"),
+            serviceDiscoverHttpClient.getConfig("default/password").getOrElse("")
         )
         .withCurrentService(Service.MAILBOX);
   }
