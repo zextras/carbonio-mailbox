@@ -18,6 +18,8 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.common.soap.SignatureConstants;
+import com.zimbra.soap.account.type.MailSignature;
 import com.zimbra.soap.json.jackson.annotate.ZimbraJsonAttribute;
 import com.zimbra.soap.json.jackson.annotate.ZimbraUniqueElement;
 import com.zimbra.soap.type.KeyValuePair;
@@ -152,6 +154,13 @@ public class MsgWithGroupInfo extends MessageCommon {
     private final List<KeyValuePair> headers = Lists.newArrayList();
 
     /**
+     * @zm-api-field-tag signature
+     * @zm-api-field-description MailSignature signature if email is signed and carbonioSMIMESignatureVerificationEnabled true then output signature
+     */
+    @XmlElement(name= SignatureConstants.SIGNATURE /* signature */)
+    private MailSignature signature;
+
+    /**
      * @zm-api-field-description Content elements
      */
     @XmlElements({
@@ -215,6 +224,14 @@ public class MsgWithGroupInfo extends MessageCommon {
         if (headers != null) {
             Iterables.addAll(this.headers,headers);
         }
+    }
+
+    public MailSignature getSignature() {
+        return signature;
+    }
+
+    public void setSignature(MailSignature signature) {
+        this.signature = signature;
     }
 
     public void addHeader(KeyValuePair header) {
