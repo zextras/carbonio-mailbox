@@ -23,6 +23,8 @@ public final class SignatureConstants {
         INVALID,
         UNTRUSTED,
         SIGNER_CERT_EXPIRED,
+        SIGNER_CERT_NOT_FOUND,
+        ISSUER_CERT_NOT_FOUND,
         ERROR
     }
 

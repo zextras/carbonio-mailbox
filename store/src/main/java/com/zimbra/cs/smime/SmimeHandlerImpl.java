@@ -21,6 +21,7 @@ import org.bouncycastle.mail.smime.validator.SignedMailValidator;
 import org.bouncycastle.mail.smime.validator.SignedMailValidatorException;
 
 import java.security.NoSuchProviderException;
+import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -115,17 +116,36 @@ public class SmimeHandlerImpl extends SmimeHandler {
                 signatureElement = element.addNonUniqueElement(SignatureConstants.SIGNATURE);
                 signatureElement.addAttribute(SignatureConstants.TYPE, SignatureConstants.SMIME);
                 dummy.detach();
-                Element signerCert = signatureElement.addUniqueElement(SignatureConstants.CERTIFICATE);
-                Element issuerElement = signerCert.addUniqueElement(SignatureConstants.ISSUER);
+                Element signerCertElement = signatureElement.addUniqueElement(SignatureConstants.CERTIFICATE);
+                Element issuerElement = signerCertElement.addUniqueElement(SignatureConstants.ISSUER);
                 // Get the certificates from the signed email
                 List<X509Certificate> certList = getX509Certificates(signed);
 
                 // Set up the PKIX parameters with the trust anchors (trusted root certificates)
                 PKIXParameters pkixParams = new PKIXParameters(getKeyStore());
                 pkixParams.setRevocationEnabled(false);  // Set this to true if you want to check for CRLs or OCSP
+                SignedMailValidator validator = new SignedMailValidator(mimeMessage, pkixParams);
+                Optional<X509Certificate> signerCertificate = getSignerCertificate(certList, validator);
+                if (signerCertificate.isEmpty()) {
+                    signatureElement.addAttribute(SignatureConstants.MESSAGE, "Cannot find signer certificate");
+                    signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE,
+                            SignatureConstants.MessageCodeEnum.SIGNER_CERT_NOT_FOUND.toString());
+                    signatureElement.addAttribute(SignatureConstants.VALID, false);
+                    return false;
+                }
 
-                return validateIssuer(msg, pkixParams, issuerElement, signatureElement, certList, signerCert)
-                        && validateSignature(mimeMessage,pkixParams,certList, signatureElement, signerCert, issuerElement);
+                X509Certificate signerCert = signerCertificate.get();
+                Optional<X509Certificate> issuerCertificate = getIssuerCertificate(certList, signerCert);
+                setCertDetails(signerCert, signerCertElement, issuerElement);
+                if (issuerCertificate.isEmpty()) {
+                    signatureElement.addAttribute(SignatureConstants.MESSAGE, "Cannot find issuer certificate");
+                    signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE,
+                            SignatureConstants.MessageCodeEnum.ISSUER_CERT_NOT_FOUND.toString());
+                    signatureElement.addAttribute(SignatureConstants.VALID, false);
+                    return false;
+                }
+                return validateCertificate(pkixParams, issuerElement, signatureElement, issuerCertificate.get())
+                        && validateSignature(pkixParams, signerCert, signatureElement, validator);
             }
 
         } catch (Exception e) {
@@ -143,12 +163,14 @@ public class SmimeHandlerImpl extends SmimeHandler {
         return false;
     }
 
-    private boolean validateIssuer(Message msg, PKIXParameters pkixParams, Element issuerElement, Element signatureElement,
-                                   List<X509Certificate> certList, Element signerCert)
+    private boolean validateCertificate(PKIXParameters pkixParams, Element issuerElement, Element signatureElement,
+                                   X509Certificate certificate)
             throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, CertificateException, NoSuchProviderException {
-        CertPath certPath = CertificateFactory.getInstance(SignatureConstants.X_509, BouncyCastleProvider.PROVIDER_NAME)
-                .generateCertPath(certList);
+
         CertPathValidator certPathValidator = CertPathValidator.getInstance(SignatureConstants.PKIX);
+
+        CertPath certPath = CertificateFactory.getInstance(SignatureConstants.X_509, BouncyCastleProvider.PROVIDER_NAME)
+                .generateCertPath(List.of(certificate));
 
         // Validate the certificate chain (CertPath)
         try {
@@ -159,27 +181,40 @@ public class SmimeHandlerImpl extends SmimeHandler {
             issuerElement.addAttribute(SignatureConstants.TRUSTED, false);
             signatureElement.addAttribute(SignatureConstants.MESSAGE, "issuer is not trusted. Detail: " + e.getMessage());
             signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE, SignatureConstants.MessageCodeEnum.UNTRUSTED.toString());
-            certList.stream()
-                    .filter(certificate -> msg.getSender().equals(extractCN(certificate.getSubjectX500Principal())))
-                    .findFirst()
-                    .ifPresent(certificate -> setCertDetails(certificate, signerCert, issuerElement));
             LOG.warn("Smime Authority certificate is not valid: " + e.getMessage());
             return false;
         }
 
     }
 
-    private boolean validateSignature(MimeMessage mimeMessage, PKIXParameters pkixParams, List<X509Certificate> certList,
-                                      Element signatureElement, Element signerCert, Element issuerElement)
-            throws SignedMailValidatorException {
-        SignedMailValidator validator = new SignedMailValidator(mimeMessage, pkixParams);
+    private Optional<X509Certificate> getIssuerCertificate(List<X509Certificate> certList,  X509Certificate signerCertificate) {
+        return certList.stream()
+                .filter(certificate -> signerCertificate.getIssuerX500Principal().equals(certificate.getSubjectX500Principal()))
+                .findFirst();
+    }
+
+    private Optional<X509Certificate> getSignerCertificate(List<X509Certificate> certList, SignedMailValidator validator) {
+        for (SignerInformation signer : validator.getSignerInformationStore().getSigners()){
+            return certList.stream()
+                    .filter(certificate -> signer.getSID().getSerialNumber().equals(certificate.getSerialNumber()))
+                    .findFirst();
+        }
+        return Optional.empty();
+    }
+
+    private boolean validateSignature(PKIXParameters pkixParams, X509Certificate signerCertificate, Element signatureElement, SignedMailValidator validator)
+            throws SignedMailValidatorException, InvalidAlgorithmParameterException, CertificateException, NoSuchAlgorithmException, NoSuchProviderException {
 
         for (SignerInformation signer : validator.getSignerInformationStore().getSigners()) {
-            certList.stream()
-                    .filter(certificate -> signer.getSID().getSerialNumber().equals(certificate.getSerialNumber()))
-                    .findFirst()
-                    .ifPresent(certificate -> setCertDetails(certificate, signerCert, issuerElement));
-
+            if (signerCertificate.getNotAfter().getTime() < System.currentTimeMillis()) {
+                signatureElement.addAttribute(SignatureConstants.MESSAGE,
+                        SignatureConstants.MessageCodeEnum.SIGNER_CERT_EXPIRED.toString());
+                signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE,
+                        SignatureConstants.MessageCodeEnum.SIGNER_CERT_EXPIRED.toString());
+                signatureElement.addAttribute(SignatureConstants.VALID, false);
+                return false;
+            }
+            validateCertificate(pkixParams, signatureElement, signatureElement, signerCertificate);
             SignedMailValidator.ValidationResult validationResult = validator.getValidationResult(signer);
             if (validationResult.isValidSignature()) {
                 signatureElement.addAttribute(SignatureConstants.MESSAGE, SignatureConstants.VALID);
@@ -203,6 +238,7 @@ public class SmimeHandlerImpl extends SmimeHandler {
                     return false;
                 }
             }
+
             signatureElement.addAttribute(SignatureConstants.VALID, true);
             signatureElement.addAttribute(SignatureConstants.MESSAGE, SignatureConstants.VALID);
             signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE,

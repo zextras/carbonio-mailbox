@@ -41,6 +41,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 import javax.mail.Address;
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -56,6 +58,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.security.auth.x500.X500Principal;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -81,7 +84,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SmimeHandlerImplTest {
 
-    public static final String ISSUER_DN = "CN=MyCA, O=MyOrganization, C=US";
+    private static final String ISSUER_DN = "CN=MyCA, O=MyOrganization, C=US";
     private static MimeMessage message;
     private static KeyPair keyPair;
     private static ContentSigner signerIssuer;
@@ -112,9 +115,43 @@ class SmimeHandlerImplTest {
         ContentSigner issuerSigner = new JcaContentSignerBuilder("SHA256WithRSAEncryption").build(issuerKeyPair.getPrivate());
         X509CertificateHolder issuerCertHolder = issuerCertBuilder.build(issuerSigner);
         issuerCert = new JcaX509CertificateConverter().setProvider("BC").getCertificate(issuerCertHolder);
-
         signerIssuer = new JcaContentSignerBuilder("SHA256WithRSAEncryption").build(issuerKeyPair.getPrivate());
 
+    }
+
+    @BeforeEach
+    void setUp() throws Exception {
+        Field trustStore = SmimeHandlerImpl.class.getDeclaredField("trustStore");
+        trustStore.setAccessible(true);
+        trustStore.set(null, null);
+        Method method = LocalConfig.class.getDeclaredMethod("getInstance");
+        method.setAccessible(true);
+        LocalConfig localConfig = (LocalConfig) method.invoke(null);
+        localConfig.remove(LC.mailboxd_truststore.key());
+        localConfig.save();
+
+        LC.get(LC.mailboxd_truststore.key());
+        Method load = LocalConfig.class.getDeclaredMethod("load", String.class);
+        load.setAccessible(true);
+        load.invoke(localConfig, localConfig.getConfigFile());
+        Provisioning provisioning = Mockito.mock();
+        Field singleton = Provisioning.class.getDeclaredField("singleton");
+        singleton.setAccessible(true);
+        singleton.set(null, provisioning);
+        server = Mockito.mock();
+        Mockito.when(provisioning.getLocalServer()).thenReturn(server);
+        Date notBefore = new Date(System.currentTimeMillis() - 1000L * 60 * 60 * 24 * 30);
+        Date notAfter = new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 365);
+        setX509Certificate(notBefore, notAfter);
+        createSignedMimeMessage(false);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        setUp();
+        Field singleton = Provisioning.class.getDeclaredField("singleton");
+        singleton.setAccessible(true);
+        singleton.set(null, null);
     }
 
     private static void setX509Certificate(Date notBefore, Date notAfter) throws Exception {
@@ -129,7 +166,7 @@ class SmimeHandlerImplTest {
                 .getCertificate(certBuilder.build(signerIssuer));
     }
 
-    private static void createSignedMimeMessage() throws Exception {
+    private static void createSignedMimeMessage(boolean multipart) throws Exception {
         Properties props = new Properties();
 
         Session session = Session.getInstance(props, new Authenticator() {
@@ -181,11 +218,25 @@ class SmimeHandlerImplTest {
                 .setSignedAttributeGenerator(new AttributeTable(signedAttrs))
                 .build("SHA1withRSA", keyPair.getPrivate(), certificate));
         gen.addCertificates(certs);
-
         MimeBodyPart msg = new MimeBodyPart();
+        if (multipart) {
+            msg.setText("Hello world!");
+        } else {
+            MimeBodyPart    msg1 = new MimeBodyPart();
 
-        msg.setText("Hello world!");
+            msg1.setText("Hello part 1!");
 
+            MimeBodyPart    msg2 = new MimeBodyPart();
+            msg2.setDataHandler(new DataHandler(new FileDataSource(new File("pom.xml"))));
+            msg2.setHeader("Content-Type", "application/octet-stream");
+            msg2.setHeader("Content-Transfer-Encoding", "base64");
+
+            MimeMultipart mp = new MimeMultipart();
+
+            mp.addBodyPart(msg1);
+            mp.addBodyPart(msg2);
+            msg.setContent(mp);
+        }
         MimeMultipart mm = gen.generate(msg);
         message = new MimeMessage(session);
         Address fromUser = new InternetAddress("user@demo.zextras.io");
@@ -195,41 +246,6 @@ class SmimeHandlerImplTest {
         message.setSubject("example signed message");
         message.setContent(mm, mm.getContentType());
         message.saveChanges();
-    }
-
-    @BeforeEach
-    void setUp() throws Exception {
-        Field trustStore = SmimeHandlerImpl.class.getDeclaredField("trustStore");
-        trustStore.setAccessible(true);
-        trustStore.set(null, null);
-        Method method = LocalConfig.class.getDeclaredMethod("getInstance");
-        method.setAccessible(true);
-        LocalConfig localConfig = (LocalConfig) method.invoke(null);
-        localConfig.remove(LC.mailboxd_truststore.key());
-        localConfig.save();
-
-        LC.get(LC.mailboxd_truststore.key());
-        Method load = LocalConfig.class.getDeclaredMethod("load", String.class);
-        load.setAccessible(true);
-        load.invoke(localConfig, localConfig.getConfigFile());
-        Provisioning provisioning = Mockito.mock();
-        Field singleton = Provisioning.class.getDeclaredField("singleton");
-        singleton.setAccessible(true);
-        singleton.set(null, provisioning);
-        server = Mockito.mock();
-        Mockito.when(provisioning.getLocalServer()).thenReturn(server);
-        Date notBefore = new Date(System.currentTimeMillis() - 1000L * 60 * 60 * 24 * 30);
-        Date notAfter = new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 365);
-        setX509Certificate(notBefore, notAfter);
-        createSignedMimeMessage();
-    }
-
-    @AfterEach
-    void tearDown() throws Exception {
-        setUp();
-        Field singleton = Provisioning.class.getDeclaredField("singleton");
-        singleton.setAccessible(true);
-        singleton.set(null, null);
     }
 
     @ParameterizedTest
@@ -435,6 +451,124 @@ class SmimeHandlerImplTest {
         System.out.println(element);
         Assertions.assertTrue(condition);
         Assertions.assertEquals("VALID", element.getElement("signature").getAttribute("messageCode"));
+        System.out.println(element);
+    }
+
+    @Test
+    void test_verifyMessageSignature_when_isCarbonioSMIMESignatureVerificationEnabled_is_true_and_cacert_exist_and_multipart_but_issuer_is_trusted_then_return_true()
+            throws Exception {
+        createSignedMimeMessage(true);
+        SmimeHandlerImpl smimeHandler = new SmimeHandlerImpl();
+        Method method = LocalConfig.class.getDeclaredMethod("getInstance");
+        method.setAccessible(true);
+        LocalConfig localConfig = (LocalConfig) method.invoke(null);
+        Files.copy(Path.of(System.getProperty("java.home") + "/lib/security/cacerts"), Path.of("cacerts_trusted"), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        localConfig.set(LC.mailboxd_truststore.key(), "cacerts_trusted");
+        localConfig.save();
+        Method load = LocalConfig.class.getDeclaredMethod("load", String.class);
+        load.setAccessible(true);
+        load.invoke(localConfig, localConfig.getConfigFile());
+        Mockito.when(server.isCarbonioSMIMESignatureVerificationEnabled()).thenReturn(true);
+        Element.JSONElement element = new Element.JSONElement("test");
+        com.zimbra.cs.mailbox.Message msg = Mockito.mock();
+        Mockito.when(msg.getSender()).thenReturn("user@demo.zextras.io");
+        KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+        try (FileInputStream fis = new FileInputStream("cacerts_trusted")) {
+            keystore.load(fis, "changeit".toCharArray());
+        }
+        keystore.setCertificateEntry("my-ca", issuerCert);
+        var alias = "my-ca";
+        if (keystore.containsAlias(alias)) {
+            System.out.println("Alias '" + alias + "' found in cacerts.");
+            X509Certificate cert = (X509Certificate) keystore.getCertificate(alias);
+            System.out.println("Certificate for alias '" + alias + "':");
+            System.out.println(cert);
+        } else {
+            System.out.println("Alias '" + alias + "' not found in cacerts.");
+        }
+        // Save the updated keystore
+        try (FileOutputStream fos = new FileOutputStream("cacerts_trusted")) {
+            keystore.store(fos, "changeit".toCharArray());
+        }
+        keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+        try (FileInputStream fis = new FileInputStream("cacerts_trusted")) {
+            keystore.load(fis, "changeit".toCharArray());
+        }
+        if (keystore.containsAlias(alias)) {
+            System.out.println("Alias '" + alias + "' found in cacerts.");
+            X509Certificate cert = (X509Certificate) keystore.getCertificate(alias);
+            System.out.println("Certificate for alias '" + alias + "':");
+            System.out.println(cert);
+        } else {
+            System.out.println("Alias '" + alias + "' not found in cacerts.");
+        }
+        boolean condition = smimeHandler.verifyMessageSignature(msg,
+                element,
+                SmimeHandlerImplTest.message, Mockito.mock(OperationContext.class));
+        System.out.println(element);
+        Assertions.assertTrue(condition);
+        Assertions.assertEquals("VALID", element.getElement("signature").getAttribute("messageCode"));
+        System.out.println(element);
+    }
+
+    @Test
+    void test_verifyMessageSignature_when_certificate_is_expired_then_expired()
+            throws Exception {
+
+        Date notBefore = new Date(System.currentTimeMillis() - 1000L * 60 * 60 * 24 * 30);
+        Date notAfter = new Date(System.currentTimeMillis() - 1000L * 60 * 60 * 24 * 2);
+        setX509Certificate(notBefore, notAfter);
+        createSignedMimeMessage(false);
+        SmimeHandlerImpl smimeHandler = new SmimeHandlerImpl();
+        Method method = LocalConfig.class.getDeclaredMethod("getInstance");
+        method.setAccessible(true);
+        LocalConfig localConfig = (LocalConfig) method.invoke(null);
+        Files.copy(Path.of(System.getProperty("java.home") + "/lib/security/cacerts"), Path.of("cacerts_trusted"), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        localConfig.set(LC.mailboxd_truststore.key(), "cacerts_trusted");
+        localConfig.save();
+        Method load = LocalConfig.class.getDeclaredMethod("load", String.class);
+        load.setAccessible(true);
+        load.invoke(localConfig, localConfig.getConfigFile());
+        Mockito.when(server.isCarbonioSMIMESignatureVerificationEnabled()).thenReturn(true);
+        Element.JSONElement element = new Element.JSONElement("test");
+        com.zimbra.cs.mailbox.Message msg = Mockito.mock();
+        Mockito.when(msg.getSender()).thenReturn("user@demo.zextras.io");
+        KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+        try (FileInputStream fis = new FileInputStream("cacerts_trusted")) {
+            keystore.load(fis, "changeit".toCharArray());
+        }
+        keystore.setCertificateEntry("my-ca", issuerCert);
+        var alias = "my-ca";
+        if (keystore.containsAlias(alias)) {
+            System.out.println("Alias '" + alias + "' found in cacerts.");
+            X509Certificate cert = (X509Certificate) keystore.getCertificate(alias);
+            System.out.println("Certificate for alias '" + alias + "':");
+            System.out.println(cert);
+        } else {
+            System.out.println("Alias '" + alias + "' not found in cacerts.");
+        }
+        // Save the updated keystore
+        try (FileOutputStream fos = new FileOutputStream("cacerts_trusted")) {
+            keystore.store(fos, "changeit".toCharArray());
+        }
+        keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+        try (FileInputStream fis = new FileInputStream("cacerts_trusted")) {
+            keystore.load(fis, "changeit".toCharArray());
+        }
+        if (keystore.containsAlias(alias)) {
+            System.out.println("Alias '" + alias + "' found in cacerts.");
+            X509Certificate cert = (X509Certificate) keystore.getCertificate(alias);
+            System.out.println("Certificate for alias '" + alias + "':");
+            System.out.println(cert);
+        } else {
+            System.out.println("Alias '" + alias + "' not found in cacerts.");
+        }
+        boolean condition = smimeHandler.verifyMessageSignature(msg,
+                element,
+                SmimeHandlerImplTest.message, Mockito.mock(OperationContext.class));
+        System.out.println(element);
+        Assertions.assertFalse(condition);
+        Assertions.assertEquals("SIGNER_CERT_EXPIRED", element.getElement("signature").getAttribute("messageCode"));
         System.out.println(element);
     }
 
