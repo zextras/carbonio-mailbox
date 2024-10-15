@@ -1,0 +1,41 @@
+From: alice@example.com
+To: bob@example.com
+Subject: Example of PGP Signed Email
+Date: Tue, 15 Oct 2024 10:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/signed; protocol="application/pgp-signature"; micalg=pgp-sha256; boundary="signature-boundary"
+
+--signature-boundary
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+Hi Bob,
+
+This is an example of a PGP signed email. The body of the email goes here, and below is the PGP signature attached.
+
+Thanks,
+Alice
+
+--signature-boundary
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE3Z0eYiRcI1cZrP7GXmkA/Kibn1wFAmJS9qAACgkQXmkA/Kib
+n1wAWg//c9h35HBu1ef0Q5KZ/RkF2JWXpQVw2xTlvPfIjfJXJZlSdp2gCbP/WtvH
+kRqZ+W6ZcRaaEav/2GG07AYaGc2rDOxMhUt6mRd/EXmAem1q8IcQbWsnStSn//ks
+8DzBssy25fpdlscgvHgKcZ4FTiTG7OKbD7Kg6+NX68Z/CsnOMn7nDdNCVXtMQvMU
+mr/eFuTPqZTF7Ytb9fy2evfYyW+xZbO7BNKw94BRs3mAarK+qprbihOUnm1FtE3n
+bJqUwlDNOUrhXXmZ/63d8JxfuHsEJTeXjHdR1lx0IbMY5dxv1tQGsKwl1lFfZUJ+
+YqlT2DoIuj/kCCFy5np12mK9meNOMBUqkXBRUuJYRVYuxopJD5waVkME5IWME55L
+f+/iZVQwL5YH8+MdEPOB4y94T8t5sUOrFTdMRsJirJW/f9PnmB44g56klrkZMR2r
+5hZaSKtx8sPZbRcJkhJFtApBB3X7AgFPCqtM5UXGh2d7MUWmFxDFMLZLVVNsCQON
+5rhErIH2HnXE/FdT+8sjr8xgH9aYTWls//hAEslj9vXHTFK9YfwTr/W8HgL5+rfV
+uh82EM/LoDxQnDpB4SNjTKaSu7HTwzxhQ9XwTlfc5N2nt20JNBRCybDJq3N1hOga
+QoEofXqtAXcNN7a8zddJz01rIBFyePePmOHpMNFnXarBPPcmxiw=
+=GBt4
+-----END PGP SIGNATURE-----
+
+--signature-boundary--

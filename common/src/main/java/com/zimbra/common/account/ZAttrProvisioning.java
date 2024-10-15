@@ -3062,6 +3062,14 @@ public class ZAttrProvisioning {
     public static final String A_carbonioSendFullErrorStack = "carbonioSendFullErrorStack";
 
     /**
+     * whether S/MIME signature verification is enabled.
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3147)
+    public static final String A_carbonioSMIMESignatureVerificationEnabled = "carbonioSMIMESignatureVerificationEnabled";
+
+    /**
      * Link to the Carbonio User Documentation
      *
      * @since ZCS 23.9.0
