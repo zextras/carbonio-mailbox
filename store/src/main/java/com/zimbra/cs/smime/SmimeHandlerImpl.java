@@ -19,6 +19,8 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.mail.smime.SMIMESigned;
 import org.bouncycastle.mail.smime.validator.SignedMailValidator;
 import org.bouncycastle.mail.smime.validator.SignedMailValidatorException;
+
+import java.security.NoSuchProviderException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -143,8 +145,8 @@ public class SmimeHandlerImpl extends SmimeHandler {
 
     private boolean validateIssuer(Message msg, PKIXParameters pkixParams, Element issuerElement, Element signatureElement,
                                    List<X509Certificate> certList, Element signerCert)
-            throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, CertificateException {
-        CertPath certPath = CertificateFactory.getInstance(SignatureConstants.X_509, new BouncyCastleProvider())
+            throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, CertificateException, NoSuchProviderException {
+        CertPath certPath = CertificateFactory.getInstance(SignatureConstants.X_509, BouncyCastleProvider.PROVIDER_NAME)
                 .generateCertPath(certList);
         CertPathValidator certPathValidator = CertPathValidator.getInstance(SignatureConstants.PKIX);
 
@@ -220,7 +222,7 @@ public class SmimeHandlerImpl extends SmimeHandler {
     static List<X509Certificate> getX509Certificates(SMIMESigned signed) throws CertificateException {
         Collection<X509CertificateHolder> certHolders = signed.getCertificates().getMatches(null);
         List<X509Certificate> certList = new ArrayList<>();
-        JcaX509CertificateConverter jcaX509CertificateConverter = new JcaX509CertificateConverter().setProvider(new BouncyCastleProvider());
+        JcaX509CertificateConverter jcaX509CertificateConverter = new JcaX509CertificateConverter().setProvider(BouncyCastleProvider.PROVIDER_NAME);
         for (X509CertificateHolder certHolder : certHolders) {
             X509Certificate certificate = jcaX509CertificateConverter.getCertificate(certHolder);
             certList.add(certificate);

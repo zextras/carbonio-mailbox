@@ -327,7 +327,7 @@ class SmimeHandlerImplTest {
         Store<X509CertificateHolder> holders = Mockito.mock();
         Mockito.when(signed.getCertificates()).thenReturn(holders);
         X509CertificateHolder x509CertificateHolder = Mockito.mock();
-        Mockito.when(x509CertificateHolder.getEncoded()).thenReturn("test".getBytes());
+        Mockito.when(x509CertificateHolder.getEncoded()).thenReturn(certificate.getEncoded());
         Mockito.when(holders.getMatches(null)).thenReturn(List.of(x509CertificateHolder));
         Assertions.assertEquals(1, SmimeHandlerImpl.getX509Certificates(signed).size());
     }
@@ -429,9 +429,11 @@ class SmimeHandlerImplTest {
         } else {
             System.out.println("Alias '" + alias + "' not found in cacerts.");
         }
-        Assertions.assertTrue(smimeHandler.verifyMessageSignature(msg,
+        boolean condition = smimeHandler.verifyMessageSignature(msg,
                 element,
-                SmimeHandlerImplTest.message, Mockito.mock(OperationContext.class)));
+                SmimeHandlerImplTest.message, Mockito.mock(OperationContext.class));
+        System.out.println(element);
+        Assertions.assertTrue(condition);
         Assertions.assertEquals("VALID", element.getElement("signature").getAttribute("messageCode"));
         System.out.println(element);
     }
