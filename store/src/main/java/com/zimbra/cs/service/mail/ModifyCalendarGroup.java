@@ -43,7 +43,7 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
     ModifyCalendarGroupRequest req = zsc.elementToJaxb(request);
 
     int id = Integer.parseInt(req.getId());
-    var group = getFolderById(mbox, octxt, id)
+    var group = getCalendarGroupById(mbox, octxt, id)
             .orElseThrow(() -> ServiceException.FAILURE("Calendar group with ID " + req.getId() + " does NOT exist"));
 
     if (shouldRenameGroup(req))
@@ -90,7 +90,7 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
             .contains(groupName);
   }
 
-  private static Optional<Folder> getFolderById(Mailbox mbox, OperationContext octxt, int id) throws ServiceException {
+  private static Optional<Folder> getCalendarGroupById(Mailbox mbox, OperationContext octxt, int id) throws ServiceException {
     return mbox.getCalendarGroups(octxt, SortBy.NAME_ASC).stream()
             .filter(group -> group.getId() == id).findFirst();
   }
