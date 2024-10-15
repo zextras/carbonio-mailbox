@@ -269,9 +269,11 @@ public class SmimeHandlerImpl extends SmimeHandler {
             try {
                 if (trustStore == null || (System.currentTimeMillis() - trustStoreRefreshTime > CACHE_TIMEOUT_MILLIS)) {
                     trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-                    trustStore.load(new FileInputStream(LC.get(LC.mailboxd_truststore.key())),
-                            LC.get(LC.mailboxd_truststore_password.key()).toCharArray());
-                    trustStoreRefreshTime = System.currentTimeMillis();
+                    try (FileInputStream fis = new FileInputStream(LC.get(LC.mailboxd_truststore.key()))) {
+                        trustStore.load(fis,
+                                LC.get(LC.mailboxd_truststore_password.key()).toCharArray());
+                        trustStoreRefreshTime = System.currentTimeMillis();
+                    }
                 }
             } finally {
                 LOCK.unlock();  // Releases the lock
