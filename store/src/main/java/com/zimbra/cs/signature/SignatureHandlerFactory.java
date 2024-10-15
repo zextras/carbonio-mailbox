@@ -13,6 +13,8 @@ import java.util.Optional;
 
 public final class SignatureHandlerFactory {
 
+    private SignatureHandlerFactory() {}
+
     public static Optional<SignatureHandler> getHandler(MimeMessage mimeMessage) {
         if (SmimeHandler.getHandler() == null && PgpHandler.getHandler() == null) {
             return Optional.empty();
