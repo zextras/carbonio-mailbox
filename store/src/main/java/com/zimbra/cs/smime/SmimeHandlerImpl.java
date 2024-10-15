@@ -107,46 +107,43 @@ public class SmimeHandlerImpl extends SmimeHandler {
                 return false;
             }
 
-            if (mimeMessage.isMimeType("multipart/signed")) {
-                // Extract and validate the signature
-                MimeMultipart content = (MimeMultipart) mimeMessage.getContent();
+            MimeMultipart content = (MimeMultipart) mimeMessage.getContent();
 
-                SMIMESigned signed = new SMIMESigned(content);
-                Element dummy = element.addNonUniqueElement(SignatureConstants.SIGNATURE);
-                signatureElement = element.addNonUniqueElement(SignatureConstants.SIGNATURE);
-                signatureElement.addAttribute(SignatureConstants.TYPE, SignatureConstants.SMIME);
-                dummy.detach();
-                Element signerCertElement = signatureElement.addUniqueElement(SignatureConstants.CERTIFICATE);
-                Element issuerElement = signerCertElement.addUniqueElement(SignatureConstants.ISSUER);
-                // Get the certificates from the signed email
-                List<X509Certificate> certList = getX509Certificates(signed);
+            SMIMESigned signed = new SMIMESigned(content);
+            Element dummy = element.addNonUniqueElement(SignatureConstants.SIGNATURE);
+            signatureElement = element.addNonUniqueElement(SignatureConstants.SIGNATURE);
+            signatureElement.addAttribute(SignatureConstants.TYPE, SignatureConstants.SMIME);
+            dummy.detach();
+            Element signerCertElement = signatureElement.addUniqueElement(SignatureConstants.CERTIFICATE);
+            Element issuerElement = signerCertElement.addUniqueElement(SignatureConstants.ISSUER);
+            // Get the certificates from the signed email
+            List<X509Certificate> certList = getX509Certificates(signed);
 
-                // Set up the PKIX parameters with the trust anchors (trusted root certificates)
-                PKIXParameters pkixParams = new PKIXParameters(getKeyStore());
-                pkixParams.setRevocationEnabled(false);  // Set this to true if you want to check for CRLs or OCSP
-                SignedMailValidator validator = new SignedMailValidator(mimeMessage, pkixParams);
-                Optional<X509Certificate> signerCertificate = getSignerCertificate(certList, validator);
-                if (signerCertificate.isEmpty()) {
-                    signatureElement.addAttribute(SignatureConstants.MESSAGE, "Cannot find signer certificate");
-                    signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE,
-                            SignatureConstants.MessageCodeEnum.SIGNER_CERT_NOT_FOUND.toString());
-                    signatureElement.addAttribute(SignatureConstants.VALID, false);
-                    return false;
-                }
-
-                X509Certificate signerCert = signerCertificate.get();
-                Optional<X509Certificate> issuerCertificate = getIssuerCertificate(certList, signerCert);
-                setCertDetails(signerCert, signerCertElement, issuerElement);
-                if (issuerCertificate.isEmpty()) {
-                    signatureElement.addAttribute(SignatureConstants.MESSAGE, "Cannot find issuer certificate");
-                    signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE,
-                            SignatureConstants.MessageCodeEnum.ISSUER_CERT_NOT_FOUND.toString());
-                    signatureElement.addAttribute(SignatureConstants.VALID, false);
-                    return false;
-                }
-                return validateCertificate(pkixParams, issuerElement, signatureElement, issuerCertificate.get())
-                        && validateSignature(pkixParams, signerCert, signatureElement, validator);
+            // Set up the PKIX parameters with the trust anchors (trusted root certificates)
+            PKIXParameters pkixParams = new PKIXParameters(getKeyStore());
+            pkixParams.setRevocationEnabled(false);  // Set this to true if you want to check for CRLs or OCSP
+            SignedMailValidator validator = new SignedMailValidator(mimeMessage, pkixParams);
+            Optional<X509Certificate> signerCertificate = getSignerCertificate(certList, validator);
+            if (signerCertificate.isEmpty()) {
+                signatureElement.addAttribute(SignatureConstants.MESSAGE, "Cannot find signer certificate");
+                signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE,
+                        SignatureConstants.MessageCodeEnum.SIGNER_CERT_NOT_FOUND.toString());
+                signatureElement.addAttribute(SignatureConstants.VALID, false);
+                return false;
             }
+
+            X509Certificate signerCert = signerCertificate.get();
+            Optional<X509Certificate> issuerCertificate = getIssuerCertificate(certList, signerCert);
+            setCertDetails(signerCert, signerCertElement, issuerElement);
+            if (issuerCertificate.isEmpty()) {
+                signatureElement.addAttribute(SignatureConstants.MESSAGE, "Cannot find issuer certificate");
+                signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE,
+                        SignatureConstants.MessageCodeEnum.ISSUER_CERT_NOT_FOUND.toString());
+                signatureElement.addAttribute(SignatureConstants.VALID, false);
+                return false;
+            }
+            return validateCertificate(pkixParams, issuerElement, signatureElement, issuerCertificate.get())
+                    && validateSignature(pkixParams, signerCert, signatureElement, validator);
 
         } catch (Exception e) {
             LOG.error(e);
@@ -312,6 +309,7 @@ public class SmimeHandlerImpl extends SmimeHandler {
     @Override
     public void addPKCS7SignedMessageSignatureDetails(Account account, Element m, MimeMessage mm,
                                                       SoapProtocol mResponseProtocol) {
+        verifyMessageSignature(null, m, mm, null);
     }
 
     @Override

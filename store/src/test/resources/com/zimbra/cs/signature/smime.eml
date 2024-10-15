@@ -1,0 +1,31 @@
+From: alice@example.com
+To: bob@example.com
+Subject: Example of S/MIME Signed Email
+Date: Tue, 15 Oct 2024 10:00:00 +0000
+MIME-Version: 1.0
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="boundary42"
+
+--boundary42
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+Hi Bob,
+
+This is an example of an S/MIME signed email. The body of the email goes here, and below is the S/MIME signature attached.
+
+Thanks,
+Alice
+
+--boundary42
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIGYgYJKoZIhvcNAQcCoIIGUzCCBl8CAQExDzANBglghkgBZQMEAgEFADB5Bgor
+BgEEAYI3AgEEoGswaTBlMGMxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0
+YXRlMRowGAYDVQQHDBFTb21lIENpdHkgLSBGYWtlMRAwDgYDVQQKDAdFeGFtcGxl
+MRowGAYDVQQDDBFTb21lIENvbXBhbnkgLSBGYWtlMA0GCSqGSIb3DQEBAQUAA4IB
+...
+
+--boundary42--

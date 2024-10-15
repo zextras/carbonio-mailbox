@@ -14,8 +14,9 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
+import com.zimbra.cs.signature.SignatureHandler;
 
-public abstract class SmimeHandler {
+public abstract class SmimeHandler implements SignatureHandler {
 
     private static SmimeHandler instance = null;
 
@@ -26,9 +27,6 @@ public abstract class SmimeHandler {
     public static SmimeHandler getHandler() {
         return instance;
     }
-
-    public abstract boolean verifyMessageSignature(Message msg, Element m, MimeMessage mm,
-            OperationContext octxt);
 
     public abstract MimeMessage decryptMessage(Mailbox mailbox, MimeMessage mime, int itemId) throws ServiceException;
 
