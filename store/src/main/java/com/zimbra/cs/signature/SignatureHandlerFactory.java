@@ -24,31 +24,32 @@ public final class SignatureHandlerFactory {
             if (content instanceof Multipart multipart) {
                 int partCount = multipart.getCount();
 
-                if (partCount > 0) {
-                    BodyPart lastPart = multipart.getBodyPart(partCount - 1);
+                if (partCount <= 0) {
+                    return Optional.empty();
+                }
 
-                    if (lastPart != null && lastPart.getContentType() != null) {
+                BodyPart lastPart = multipart.getBodyPart(partCount - 1);
+                if (lastPart == null || lastPart.getContentType() == null) {
+                    return Optional.empty();
+                }
 
-                        if (SmimeHandler.getHandler() != null
-                                && (lastPart.getContentType().toLowerCase(Locale.US).contains(MimeConstants.CT_APPLICATION_SMIME_SIGNATURE)
-                                || lastPart.getContentType().toLowerCase(Locale.US).contains(MimeConstants.CT_APPLICATION_SMIME)
-                                || lastPart.getContentType().toLowerCase(Locale.US).contains(MimeConstants.CT_APPLICATION_SMIME_OLD))) {
-                            return Optional.of(SmimeHandler.getHandler());
+                if (SmimeHandler.getHandler() != null
+                        && (lastPart.getContentType().toLowerCase(Locale.US).contains(MimeConstants.CT_APPLICATION_SMIME_SIGNATURE)
+                        || lastPart.getContentType().toLowerCase(Locale.US).contains(MimeConstants.CT_APPLICATION_SMIME)
+                        || lastPart.getContentType().toLowerCase(Locale.US).contains(MimeConstants.CT_APPLICATION_SMIME_OLD))) {
+                    return Optional.of(SmimeHandler.getHandler());
 
-                        } else if (PgpHandler.getHandler() != null
-                                && lastPart.getContentType().toLowerCase(Locale.US).contains("application/pgp-signature")) {
-                            return Optional.of(PgpHandler.getHandler());
-                        }
+                }
 
-                    }
-
+                if (PgpHandler.getHandler() != null
+                        && lastPart.getContentType().toLowerCase(Locale.US).contains("application/pgp-signature")) {
+                    return Optional.of(PgpHandler.getHandler());
                 }
 
             }
 
         } catch (Exception e) {
             ZimbraLog.smime.error("Error getting handler", e);
-            return Optional.empty();
         }
 
         return Optional.empty();

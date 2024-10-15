@@ -3,17 +3,8 @@
 // SPDX-License-Identifier: Zimbra-1.3
 package com.zimbra.cs.pgp;
 
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.Element;
-import com.zimbra.common.soap.SoapProtocol;
-import com.zimbra.cs.account.Account;
-import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.mailbox.Message;
-import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.signature.SignatureHandler;
 
-import javax.mail.internet.MimeMessage;
-import java.util.List;
 
 public abstract class PgpHandler implements SignatureHandler {
 

@@ -5,6 +5,8 @@ import com.zimbra.cs.smime.SmimeHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 
 import javax.mail.BodyPart;
@@ -106,47 +108,21 @@ class SignatureHandlerFactoryTest {
         Assertions.assertTrue(SignatureHandlerFactory.getHandler(mimeMessage).isEmpty());
     }
 
-    @Test
-    void test_getHandler_when_content_is_Multipart_and_last_part_content_is_pkcs7signed_but_smimeHandler_is_not_null_then_return_handler() throws MessagingException, IOException {
+    @ParameterizedTest
+    @ValueSource(strings = {"application/pkcs7-mime", "application/pkcs7-signature", "application/x-pkcs7-mime"}) // six numbers
+    void test_getHandler_when_content_is_Multipart_and_last_part_content_is_pkcs7signed_but_smimeHandler_is_not_null_then_return_handler(String mime) throws MessagingException, IOException {
         MimeMessage mimeMessage = Mockito.mock();
         Multipart multipart = Mockito.mock();
         Mockito.when(multipart.getCount()).thenReturn(1);
         Mockito.when(mimeMessage.getContent()).thenReturn(multipart);
         BodyPart lastPart = Mockito.mock();
         Mockito.when(multipart.getBodyPart(0)).thenReturn(lastPart);
-        Mockito.when(lastPart.getContentType()).thenReturn("application/pkcs7-mime");
+        Mockito.when(lastPart.getContentType()).thenReturn(mime);
         SmimeHandler smimeHandler = Mockito.mock();
         SmimeHandler.registerHandler(smimeHandler);
         Assertions.assertEquals(smimeHandler, SignatureHandlerFactory.getHandler(mimeMessage).get());
     }
 
-    @Test
-    void test_getHandler_when_content_is_Multipart_and_last_part_content_is_pkcs7signature_but_smimeHandler_is_not_null_then_return_handler() throws MessagingException, IOException {
-        MimeMessage mimeMessage = Mockito.mock();
-        Multipart multipart = Mockito.mock();
-        Mockito.when(multipart.getCount()).thenReturn(1);
-        Mockito.when(mimeMessage.getContent()).thenReturn(multipart);
-        BodyPart lastPart = Mockito.mock();
-        Mockito.when(multipart.getBodyPart(0)).thenReturn(lastPart);
-        Mockito.when(lastPart.getContentType()).thenReturn("application/pkcs7-signature");
-        SmimeHandler smimeHandler = Mockito.mock();
-        SmimeHandler.registerHandler(smimeHandler);
-        Assertions.assertEquals(smimeHandler, SignatureHandlerFactory.getHandler(mimeMessage).get());
-    }
-
-    @Test
-    void test_getHandler_when_content_is_Multipart_and_last_part_content_is_old_pkcs7signed_but_smimeHandler_is_not_null_then_return_handler() throws MessagingException, IOException {
-        MimeMessage mimeMessage = Mockito.mock();
-        Multipart multipart = Mockito.mock();
-        Mockito.when(multipart.getCount()).thenReturn(1);
-        Mockito.when(mimeMessage.getContent()).thenReturn(multipart);
-        BodyPart lastPart = Mockito.mock();
-        Mockito.when(multipart.getBodyPart(0)).thenReturn(lastPart);
-        Mockito.when(lastPart.getContentType()).thenReturn("application/x-pkcs7-mime");
-        SmimeHandler smimeHandler = Mockito.mock();
-        SmimeHandler.registerHandler(smimeHandler);
-        Assertions.assertEquals(smimeHandler, SignatureHandlerFactory.getHandler(mimeMessage).get());
-    }
 
     @Test
     void test_getHandler_when_content_is_Multipart_and_last_part_content_is_pgpsigned_but_smimeHandler_is_null_then_return_empty() throws MessagingException, IOException {
