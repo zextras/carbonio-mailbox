@@ -230,22 +230,22 @@
       </dependency>
       <dependency>
         <groupId>org.bouncycastle</groupId>
-        <artifactId>bcpkix-jdk15on</artifactId>
+        <artifactId>bcpkix-jdk18on</artifactId>
         <version>${bouncycastle.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bouncycastle</groupId>
-        <artifactId>bcprov-jdk15on</artifactId>
+        <artifactId>bcprov-jdk18on</artifactId>
         <version>${bouncycastle.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bouncycastle</groupId>
-        <artifactId>bcmail-jdk15on</artifactId>
+        <artifactId>bcmail-jdk18on</artifactId>
         <version>${bouncycastle.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bouncycastle</groupId>
-        <artifactId>bcutil-jdk15on</artifactId>
+        <artifactId>bcutil-jdk18on</artifactId>
         <version>${bouncycastle.version}</version>
       </dependency>
       <dependency>
@@ -814,7 +814,7 @@
     <jetty.version>9.4.56.v20240826</jetty.version>
     <lucene.version>3.5.0</lucene.version>
     <jackson.version>2.8.9</jackson.version>
-    <bouncycastle.version>1.70</bouncycastle.version>
+    <bouncycastle.version>1.78.1</bouncycastle.version>
     <asm.version>8.0.1</asm.version>
     <guava.version>28.1-jre</guava.version>
     <jython.version>2.7.4</jython.version>
