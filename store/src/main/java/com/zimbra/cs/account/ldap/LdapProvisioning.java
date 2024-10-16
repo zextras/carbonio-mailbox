@@ -1832,10 +1832,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   public String[] getSearchBases(List<Domain> domains, Set<ObjectType> types) throws ServiceException {
     List<String> bases = new ArrayList<>();
     for (Domain domain : domains) {
-      String[] domainBases = getSearchBases(domain, types); // Call the second method for each domain
+      String[] domainBases = getSearchBases(domain, types);
       if (domainBases != null) {
-        // Add all strings from domainBases to the bases list
-        bases.addAll(Arrays.asList(domainBases)); // Use Arrays.asList to convert array to a list
+        bases.addAll(Arrays.asList(domainBases));
       }
     }
     return bases.toArray(new String[0]);
