@@ -49,7 +49,8 @@ public class CalItemSmsReminderTask extends CalItemReminderTaskBase {
         MimeMessage mm = new Mime.FixedMimeMessage(JMSession.getSmtpSession(account));
         String to = account.getAttr(Provisioning.A_zimbraCalendarReminderDeviceEmail);
         if (to == null) {
-            ZimbraLog.scheduler.info("Unable to send calendar reminder sms since %s is not set", Provisioning.A_zimbraCalendarReminderDeviceEmail);
+            ZimbraLog.scheduler.info("Unable to send calendar reminder sms since %s is not set",
+                    Provisioning.A_zimbraCalendarReminderDeviceEmail);
             return;
         }
         mm.setRecipient(javax.mail.Message.RecipientType.TO, new JavaMailInternetAddress(to));
@@ -69,13 +70,14 @@ public class CalItemSmsReminderTask extends CalItemReminderTaskBase {
         String formattedStart;
         String formattedEnd;
         if (calItem.getType() == MailItem.Type.APPOINTMENT) {
-            Date start = new Date(new Long(getProperty(NEXT_INST_START_PROP_NAME)));
+            Date start = new Date(Long.valueOf(getProperty(NEXT_INST_START_PROP_NAME)));
             formattedStart = dateTimeFormat.format(start);
             Date end = invite.getEffectiveDuration().addToDate(start);
             formattedEnd = dateTimeFormat.format(end);
         } else {
             // start date and due date is optional for tasks
-            formattedStart = invite.getStartTime() == null ? "" : onlyDateFormat.format(invite.getStartTime().getDate());
+            formattedStart = invite.getStartTime() == null ? ""
+                    : onlyDateFormat.format(invite.getStartTime().getDate());
             formattedEnd = invite.getEndTime() == null ? "" : onlyDateFormat.format(invite.getEndTime().getDate());
         }
 
@@ -87,12 +89,14 @@ public class CalItemSmsReminderTask extends CalItemReminderTaskBase {
         ZOrganizer zOrganizer = invite.getOrganizer();
         if (zOrganizer != null)
             organizer = zOrganizer.hasCn() ? zOrganizer.getCn() : zOrganizer.getAddress();
-        if (organizer == null) organizer = "";
+        if (organizer == null)
+            organizer = "";
 
         String folder = calItem.getMailbox().getFolderById(null, calItem.getFolderId()).getName();
 
-        return L10nUtil.getMessage(calItem.getType() == MailItem.Type.APPOINTMENT ?
-                                           L10nUtil.MsgKey.apptReminderSmsText : L10nUtil.MsgKey.taskReminderSmsText,
-                                   locale, calItem.getSubject(), formattedStart, formattedEnd, location, organizer, folder);
+        return L10nUtil.getMessage(
+                calItem.getType() == MailItem.Type.APPOINTMENT ? L10nUtil.MsgKey.apptReminderSmsText
+                        : L10nUtil.MsgKey.taskReminderSmsText,
+                locale, calItem.getSubject(), formattedStart, formattedEnd, location, organizer, folder);
     }
 }

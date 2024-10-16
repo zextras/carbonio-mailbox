@@ -48,7 +48,7 @@
             <configuration>
               <target>
                 <ant antfile="${basedir}/ant-native.xml">
-                  <target name="generate-native-headers"/>
+                  <target name="generate-native-headers" />
                 </ant>
               </target>
             </configuration>
@@ -67,6 +67,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
+        <version>3.3.1</version>
         <executions>
           <execution>
             <id>attach-sources</id>

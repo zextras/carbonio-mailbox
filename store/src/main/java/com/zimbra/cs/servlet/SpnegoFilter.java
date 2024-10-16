@@ -19,7 +19,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.jetty.security.SpnegoLoginService;
+import org.eclipse.jetty.security.ConfigurableSpnegoLoginService;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 import com.zimbra.common.service.ServiceException;
@@ -35,7 +35,7 @@ public class SpnegoFilter implements Filter {
     private static String error401Page ;
 
     private URI passThruOnFailureUri = null;
-    private SpnegoLoginService spnegoUserRealm = null;
+    private ConfigurableSpnegoLoginService spnegoUserRealm = null;
     
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -114,14 +114,14 @@ public class SpnegoFilter implements Filter {
         authenticator.authenticate();
     }
     
-    private SpnegoLoginService getSpnegoUserRealm(FilterConfig filterConfig) {
+    private ConfigurableSpnegoLoginService getSpnegoUserRealm(FilterConfig filterConfig) {
         // ServletContext servletContext = getServletContext(); 
         ServletContext servletContext = filterConfig.getServletContext();
         if (servletContext instanceof ServletContextHandler.Context) {
         	ServletContextHandler.Context sContext = (ServletContextHandler.Context)servletContext;
             // get the WebAppContext
             ServletContextHandler contextHandler = (ServletContextHandler) sContext.getContextHandler();
-            SpnegoLoginService realm = contextHandler.getServer().getBean(SpnegoLoginService.class);
+            ConfigurableSpnegoLoginService realm = contextHandler.getServer().getBean(ConfigurableSpnegoLoginService.class);
             if (realm != null) {
                 ZimbraLog.account.debug("Found spnego user realm: [" + realm.getName() + "]");
             }

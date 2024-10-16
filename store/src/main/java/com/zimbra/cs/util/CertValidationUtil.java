@@ -77,14 +77,14 @@ public class CertValidationUtil {
             X509Certificate rootCACert = (X509Certificate)ks.getCertificate(alias);
             TrustAnchor ta = new TrustAnchor(rootCACert, null);
             trustedCertsSet.add(ta);
-            ZimbraLog.account.debug("adding certificate with issuer DN: %s , signature name: %s", rootCACert.getIssuerDN().toString(), rootCACert.getSigAlgName());
+            ZimbraLog.account.debug("adding certificate with issuer DN: %s , signature name: %s", rootCACert.getIssuerX500Principal().toString(), rootCACert.getSigAlgName());
         }
         return trustedCertsSet;
     }
 
     public static String getSubjectDN(X509Certificate cert) {
         String subjectDn = null;
-        Principal principal = cert.getSubjectDN();
+        Principal principal = cert.getSubjectX500Principal();
         if (principal != null) {
             subjectDn = principal.getName();
         }

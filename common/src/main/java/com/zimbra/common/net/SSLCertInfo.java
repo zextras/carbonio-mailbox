@@ -68,7 +68,7 @@ public class SSLCertInfo {
 
         serialNumber = cert.getSerialNumber().toString(16).toUpperCase();
 
-        String issuerDn = cert.getIssuerDN().getName();
+        String issuerDn = cert.getIssuerX500Principal().getName();
         issuerCommonName = getComponent(issuerDn, COMMON_NAME);
         issuerOrganizationUnit = getComponent(issuerDn, ORGANIZATION_UNIT);
         issuerOrganization = getComponent(issuerDn, ORGANIZATION);
