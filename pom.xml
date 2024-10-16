@@ -439,7 +439,7 @@
       <dependency>
         <groupId>org.owasp.antisamy</groupId>
         <artifactId>antisamy</artifactId>
-        <version>1.7.4</version>
+        <version>1.7.6</version>
       </dependency>
       <dependency>
         <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
