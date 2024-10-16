@@ -14,7 +14,7 @@ import com.zimbra.cs.mailbox.OperationContext;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cms.SignerInformation;
-import org.bouncycastle.i18n.ErrorBundle;
+import org.bouncycastle.pkix.util.ErrorBundle;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.mail.smime.SMIMESigned;
 import org.bouncycastle.mail.smime.validator.SignedMailValidator;
@@ -146,7 +146,7 @@ public class SmimeHandlerImpl extends SmimeHandler {
                     && validateSignature(pkixParams, signerCert, signatureElement, validator);
 
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error(e.getMessage(), e);
             if (signatureElement != null) {
                 signatureElement.addAttribute(SignatureConstants.MESSAGE, e.getMessage());
                 signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE,
@@ -224,10 +224,14 @@ public class SmimeHandlerImpl extends SmimeHandler {
                 String error = errMsg.getText(Locale.ENGLISH);
                 LOG.error(error);
                 // print errors
-                for (Object o : validationResult.getErrors()) {
-                    ErrorBundle errorMsg = (ErrorBundle) o;
-                    LOG.error(errorMsg.getDetail(Locale.ENGLISH));
-                    signatureElement.addAttribute(SignatureConstants.MESSAGE, error + " " + errorMsg.getDetail(Locale.ENGLISH));
+                for (Object validationError : validationResult.getErrors()) {
+                    if (validationError instanceof ErrorBundle errorMsg) {
+                        LOG.error(errorMsg.getDetail(Locale.ENGLISH));
+                        signatureElement.addAttribute(SignatureConstants.MESSAGE, error + " " + errorMsg.getDetail(Locale.ENGLISH));
+                    } else {
+                        LOG.error(validationError.toString());
+                        signatureElement.addAttribute(SignatureConstants.MESSAGE, error + " " + validationError);
+                    }
                     signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE,
                             SignatureConstants.MessageCodeEnum.INVALID.toString());
 
