@@ -36,6 +36,7 @@ import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1TaggedObject;
+import org.bouncycastle.asn1.ASN1UTF8String;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
@@ -163,8 +164,9 @@ public class CertUtil {
                     String value = null;
                     ASN1TaggedObject otherNameValue = ASN1TaggedObject.getInstance(derSeq.getObjectAt(1));
                     if (OID_UPN.equals(oid)) {
-                        ASN1TaggedObject upnValue = ASN1TaggedObject.getInstance(otherNameValue.getObject());
-                        DERUTF8String str = DERUTF8String.getInstance(upnValue.getObject());
+                        ASN1TaggedObject upnValue = ASN1TaggedObject.getInstance(otherNameValue.getExplicitBaseTagged());
+                        ASN1UTF8String utf8String = ASN1UTF8String.getInstance(upnValue.getExplicitBaseTagged());
+                        DERUTF8String str = new DERUTF8String(utf8String.getString());
                         value= str.getString();
                         return value;
                     }
@@ -228,7 +230,8 @@ public class CertUtil {
                         try {
                             decoder = new ASN1InputStream(bytes);
                             ASN1Encodable encoded = decoder.readObject();
-                            DERIA5String str = DERIA5String.getInstance(encoded);
+                            ASN1UTF8String utf8String = ASN1UTF8String.getInstance(encoded);
+                            DERUTF8String str = new DERUTF8String(utf8String.getString());
                             return str.getString();
                         } catch (IOException e) {
                             ZimbraLog.account.warn(LOG_PREFIX + "unable to decode " + type, e);
@@ -398,8 +401,9 @@ public class CertUtil {
                     String value = null;
                     ASN1TaggedObject otherNameValue = ASN1TaggedObject.getInstance(derSeq.getObjectAt(1));
                     if (OID_UPN.equals(oid)) {
-                        ASN1TaggedObject upnValue = ASN1TaggedObject.getInstance(otherNameValue.getObject());
-                        DERUTF8String str = DERUTF8String.getInstance(upnValue.getObject());
+                        ASN1TaggedObject upnValue = ASN1TaggedObject.getInstance(otherNameValue.getExplicitBaseTagged());
+                        ASN1UTF8String utf8String = ASN1UTF8String.getInstance(upnValue);
+                        DERUTF8String str = new DERUTF8String(utf8String.getString());
                         value= str.getString();
                     }
 
@@ -465,7 +469,8 @@ public class CertUtil {
                     int tag = generalname.getTagNo();
                     if (GeneralName.uniformResourceIdentifier == tag) {
                         ASN1Encodable name = generalname.getName();
-                        DERIA5String str = DERIA5String.getInstance(name);
+                        ASN1UTF8String utf8String = ASN1UTF8String.getInstance(name);
+                        DERUTF8String str = new DERUTF8String(utf8String.getString());
                         String value = str.getString();
                         outStream.format("    %s\n", value);
                     } else {

@@ -11,7 +11,8 @@
     <version>${revision}${changelist}</version>
   </parent>
 
-  <!-- To sort out dependencies take a look at: https://wiki.eclipse.org/Jetty/Reference/Dependencies -->
+  <!-- To sort out dependencies take a look at:
+  https://wiki.eclipse.org/Jetty/Reference/Dependencies -->
   <dependencies>
     <!-- Must be provided to avoid collision -->
     <dependency>
@@ -295,15 +296,15 @@
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcpkix-jdk15on</artifactId>
+      <artifactId>bcpkix-jdk18on</artifactId>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcmail-jdk15on</artifactId>
+      <artifactId>bcmail-jdk18on</artifactId>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcutil-jdk15on</artifactId>
+      <artifactId>bcutil-jdk18on</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -316,7 +317,7 @@
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk15on</artifactId>
+      <artifactId>bcprov-jdk18on</artifactId>
     </dependency>
     <!-- Note this should be provided in container classpath -->
     <dependency>
@@ -534,6 +535,19 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- required by bouncycastle 18on -->
+    <dependency>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>2.3.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.activation</groupId>
+      <artifactId>jakarta.activation-api</artifactId>
+      <version>1.2.2</version>
+      <scope>test</scope>
+    </dependency>
 
     <!-- https://mvnrepository.com/artifact/com.icegreen/greenmail -->
     <dependency>
@@ -551,12 +565,12 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
-      <version>9.4.55.v20240627</version>
+      <version>9.4.56.v20240826</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-rewrite</artifactId>
-      <version>9.4.55.v20240627</version>
+      <version>9.4.56.v20240826</version>
     </dependency>
   </dependencies>
 
@@ -596,7 +610,8 @@
             </goals>
             <configuration>
               <sources>
-                <source>${project.build.directory}/generated-sources/buildinfo</source><!-- adjust folder name to your needs -->
+                <source>${project.build.directory}/generated-sources/buildinfo</source><!-- adjust
+                folder name to your needs -->
               </sources>
             </configuration>
           </execution>
@@ -627,11 +642,11 @@
           <execution>
             <configuration>
               <target>
-                <property name="maven_compile_classpath" refid="maven.compile.classpath"/>
+                <property name="maven_compile_classpath" refid="maven.compile.classpath" />
                 <taskdef classpathref="maven.plugin.classpath"
-                  resource="net/sf/antcontrib/antlib.xml"/>
+                  resource="net/sf/antcontrib/antlib.xml" />
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-buildinfo"/>
+                  <target name="generate-buildinfo" />
                 </ant>
               </target>
             </configuration>
@@ -645,11 +660,11 @@
           <execution>
             <configuration>
               <target>
-                <property name="maven_compile_classpath" refid="maven.compile.classpath"/>
+                <property name="maven_compile_classpath" refid="maven.compile.classpath" />
                 <taskdef classpathref="maven.plugin.classpath"
-                  resource="net/sf/antcontrib/antlib.xml"/>
+                  resource="net/sf/antcontrib/antlib.xml" />
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-sql-ldap-versions"/>
+                  <target name="generate-sql-ldap-versions" />
                 </ant>
               </target>
             </configuration>
@@ -663,11 +678,11 @@
           <execution>
             <configuration>
               <target>
-                <property name="maven_compile_classpath" refid="maven.compile.classpath"/>
+                <property name="maven_compile_classpath" refid="maven.compile.classpath" />
                 <taskdef classpathref="maven.plugin.classpath"
-                  resource="net/sf/antcontrib/antlib.xml"/>
+                  resource="net/sf/antcontrib/antlib.xml" />
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-zattr-rights"/>
+                  <target name="generate-zattr-rights" />
                 </ant>
               </target>
             </configuration>
@@ -680,11 +695,11 @@
           <execution>
             <configuration>
               <target>
-                <property name="maven_compile_classpath" refid="maven.compile.classpath"/>
+                <property name="maven_compile_classpath" refid="maven.compile.classpath" />
                 <taskdef classpathref="maven.plugin.classpath"
-                  resource="net/sf/antcontrib/antlib.xml"/>
+                  resource="net/sf/antcontrib/antlib.xml" />
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-ldap-config"/>
+                  <target name="generate-ldap-config" />
                 </ant>
               </target>
             </configuration>
@@ -701,7 +716,7 @@
             <configuration>
               <target>
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="copy-msgs-bundle"/>
+                  <target name="copy-msgs-bundle" />
                 </ant>
               </target>
             </configuration>
@@ -715,7 +730,7 @@
             <configuration>
               <target>
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="clean"/>
+                  <target name="clean" />
                 </ant>
               </target>
             </configuration>
