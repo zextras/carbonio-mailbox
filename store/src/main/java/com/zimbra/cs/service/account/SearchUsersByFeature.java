@@ -6,6 +6,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.StringUtil;
+import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Cos;
 import com.zimbra.cs.account.Domain;
@@ -18,9 +19,13 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.account.message.SearchUsersByFeatureRequest;
 import io.vavr.control.Option;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -46,21 +51,23 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
     var provisioning = Provisioning.getInstance();
     var allDomains = provisioning.getConfig().isCarbonioSearchAllDomainsByFeature();
     var domain = provisioning.getDomainById(account.getDomainId());
+    var specifiedDomains = getDomainsListToSearchIn(domain, provisioning);
 
-    var options = buildSearchOptions(domain, allDomains);
+    var options = buildSearchOptions(domain, specifiedDomains, allDomains);
 
     options.setFilterString(ZLdapFilterFactory.FilterId.ADMIN_SEARCH, getSearchFilter(query, feature, provisioning, allDomains, domain).toString());
 
     var entries = provisioning.searchDirectory(options).stream().limit(request.getAttributeInt(AccountConstants.A_LIMIT, DEFAULT_MAX_RESULTS));
-
     return buildResponse(zsc, entries);
   }
 
-  private static SearchDirectoryOptions buildSearchOptions(Domain domain, boolean allDomains) throws ServiceException {
+  private static SearchDirectoryOptions buildSearchOptions(Domain userDomain, List<Domain> specifiedDomains, boolean allDomains) throws ServiceException {
     var options = new SearchDirectoryOptions();
     options.setTypes(SearchDirectoryOptions.ObjectType.accounts);
-    if (!allDomains) {
-      options.setDomain(domain);
+    if (!allDomains && specifiedDomains.isEmpty()) {
+      options.setDomain(userDomain);
+    } else if (!specifiedDomains.isEmpty()) {
+      options.setMultipleBases(specifiedDomains);
     }
     options.setSortAttr(ZAttrProvisioning.A_displayName);
     options.setSortOpt(SearchDirectoryOptions.SortOpt.SORT_ASCENDING);
@@ -157,5 +164,19 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
 
   private static Filter getWildcardFilter(String field, String query) {
     return Filter.createSubstringFilter(field, null, new String[] {StringUtil.isNullOrEmpty(query) ? "." : query}, null);
+  }
+
+  private List<Domain> getDomainsListToSearchIn(Domain domain, Provisioning provisioning) {
+    return Arrays.stream(domain.getCarbonioSearchUsersInDomainsByFeature())
+        .map(domainName -> {
+          try {
+            return provisioning.getDomainByName(domainName);
+          } catch (Exception e) {
+            ZimbraLog.mailbox.debug("Error fetching domain: " + domainName + " - " + e.getMessage());
+            return null;
+          }
+        })
+        .filter(Objects::nonNull)
+        .collect(Collectors.toCollection(ArrayList::new));
   }
 }

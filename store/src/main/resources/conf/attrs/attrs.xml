@@ -10155,4 +10155,7 @@ TODO: delete them permanently from here
   <globalConfigValue>FALSE</globalConfigValue>
   <desc>Whether the SearchUserByFeature API should search on all domains or only the current user domain</desc>
 </attr>
+<attr id="3148" name="carbonioSearchUsersInDomainsByFeature" type="string" max="256" cardinality="multi" optionalIn="domain" since="24.12.0">
+  <desc>List of domain names in which the SearchUserByFeature API should perform users searches</desc>
+</attr>
 </attrs>

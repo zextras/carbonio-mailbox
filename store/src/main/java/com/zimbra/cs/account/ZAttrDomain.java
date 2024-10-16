@@ -1540,6 +1540,149 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
+     * List of domain names in which the SearchUserByFeature API should
+     * perform users searches
+     *
+     * @return carbonioSearchUsersInDomainsByFeature, or empty array if unset
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3148)
+    public String[] getCarbonioSearchUsersInDomainsByFeature() {
+        return getMultiAttr(ZAttrProvisioning.A_carbonioSearchUsersInDomainsByFeature, true, true);
+    }
+
+    /**
+     * List of domain names in which the SearchUserByFeature API should
+     * perform users searches
+     *
+     * @param carbonioSearchUsersInDomainsByFeature new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3148)
+    public void setCarbonioSearchUsersInDomainsByFeature(String[] carbonioSearchUsersInDomainsByFeature) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioSearchUsersInDomainsByFeature, carbonioSearchUsersInDomainsByFeature);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * List of domain names in which the SearchUserByFeature API should
+     * perform users searches
+     *
+     * @param carbonioSearchUsersInDomainsByFeature new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3148)
+    public Map<String,Object> setCarbonioSearchUsersInDomainsByFeature(String[] carbonioSearchUsersInDomainsByFeature, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioSearchUsersInDomainsByFeature, carbonioSearchUsersInDomainsByFeature);
+        return attrs;
+    }
+
+    /**
+     * List of domain names in which the SearchUserByFeature API should
+     * perform users searches
+     *
+     * @param carbonioSearchUsersInDomainsByFeature new to add to existing values
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3148)
+    public void addCarbonioSearchUsersInDomainsByFeature(String carbonioSearchUsersInDomainsByFeature) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_carbonioSearchUsersInDomainsByFeature, carbonioSearchUsersInDomainsByFeature);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * List of domain names in which the SearchUserByFeature API should
+     * perform users searches
+     *
+     * @param carbonioSearchUsersInDomainsByFeature new to add to existing values
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3148)
+    public Map<String,Object> addCarbonioSearchUsersInDomainsByFeature(String carbonioSearchUsersInDomainsByFeature, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_carbonioSearchUsersInDomainsByFeature, carbonioSearchUsersInDomainsByFeature);
+        return attrs;
+    }
+
+    /**
+     * List of domain names in which the SearchUserByFeature API should
+     * perform users searches
+     *
+     * @param carbonioSearchUsersInDomainsByFeature existing value to remove
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3148)
+    public void removeCarbonioSearchUsersInDomainsByFeature(String carbonioSearchUsersInDomainsByFeature) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_carbonioSearchUsersInDomainsByFeature, carbonioSearchUsersInDomainsByFeature);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * List of domain names in which the SearchUserByFeature API should
+     * perform users searches
+     *
+     * @param carbonioSearchUsersInDomainsByFeature existing value to remove
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3148)
+    public Map<String,Object> removeCarbonioSearchUsersInDomainsByFeature(String carbonioSearchUsersInDomainsByFeature, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_carbonioSearchUsersInDomainsByFeature, carbonioSearchUsersInDomainsByFeature);
+        return attrs;
+    }
+
+    /**
+     * List of domain names in which the SearchUserByFeature API should
+     * perform users searches
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3148)
+    public void unsetCarbonioSearchUsersInDomainsByFeature() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioSearchUsersInDomainsByFeature, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * List of domain names in which the SearchUserByFeature API should
+     * perform users searches
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3148)
+    public Map<String,Object> unsetCarbonioSearchUsersInDomainsByFeature(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioSearchUsersInDomainsByFeature, "");
+        return attrs;
+    }
+
+    /**
      * Link to the Carbonio User Documentation
      *
      * @return carbonioUserDocumentationUrl, or "https://docs.zextras.com/carbonio/html/usage.html" if unset

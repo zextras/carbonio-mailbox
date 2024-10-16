@@ -437,6 +437,50 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
   }
 
   @Test
+  void testResultsInOneSpecifiedDomain() throws Exception {
+    var domain = provisioning.createDomain("anotherdomain.com", new HashMap<>());
+    provisioning.getConfig().setCarbonioSearchAllDomainsByFeature(false);
+    provisioning.getDomain(userAccount).setCarbonioSearchUsersInDomainsByFeature(new String[] {"anotherdomain.com"});
+    var account1 = buildAccount("first.account", "Test1").create();
+    var account2 = buildAccount("second.account", "Test2", "anotherdomain.com").create();
+
+    try {
+      HttpResponse httpResponse = buildRequest()
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account"))
+          .execute();
+
+      assertEquals(1, getResponse(httpResponse).getAccounts().size());
+    } finally {
+      cleanUp(account1);
+      cleanUp(account2);
+      cleanUp(domain);
+    }
+  }
+
+  @Test
+  void testResultsInMultipleSpecifiedDomains() throws Exception {
+    var domain1 = provisioning.createDomain("domain1.com", new HashMap<>());
+    var domain2 = provisioning.createDomain("domain2.com", new HashMap<>());
+    provisioning.getConfig().setCarbonioSearchAllDomainsByFeature(false);
+    provisioning.getDomain(userAccount).setCarbonioSearchUsersInDomainsByFeature(new String[] {"domain1.com", "domain2.com"});
+    var account1 = buildAccount("first.account", "Test1", "domain1.com").create();
+    var account2 = buildAccount("second.account", "Test2", "domain2.com").create();
+
+    try {
+      HttpResponse httpResponse = buildRequest()
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account"))
+          .execute();
+
+      assertEquals(2, getResponse(httpResponse).getAccounts().size());
+    } finally {
+      cleanUp(account1);
+      cleanUp(account2);
+      cleanUp(domain1);
+      cleanUp(domain2);
+    }
+  }
+
+  @Test
   void testIncludedAttributes() throws Exception {
     var account = buildAccount(ACCOUNT_UID, ACCOUNT_NAME).create();
 
