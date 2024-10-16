@@ -3052,7 +3052,7 @@ public class ZAttrProvisioning {
      * @since ZCS 24.12.0
      */
     @ZAttr(id=3148)
-    public static final String A_carbonioSearchUsersInDomainsByFeature = "carbonioSearchUsersInDomainsByFeature";
+    public static final String A_carbonioSearchSpecifiedDomainsByFeature = "carbonioSearchSpecifiedDomainsByFeature";
 
     /**
      * Whether Carbonio can send analytics reports
