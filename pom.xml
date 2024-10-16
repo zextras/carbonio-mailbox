@@ -832,7 +832,7 @@
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <changelist>-SNAPSHOT</changelist>
     <revision>24.12.0</revision>
-    <mockserver.version>5.15.0</mockserver.version>
+    <mockserver.version>5.13.0</mockserver.version>
     <mariadb-java-client.version>2.7.3</mariadb-java-client.version>
   </properties>
   <version>${revision}${changelist}</version>
