@@ -17,6 +17,8 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.common.soap.SignatureConstants;
+import com.zimbra.soap.account.type.MailSignature;
 import com.zimbra.soap.type.SearchHit;
 import com.zimbra.soap.type.ZmBoolean;
 
@@ -40,6 +42,13 @@ implements SearchHit {
     private ZmBoolean contentMatched;
 
     /**
+     * @zm-api-field-tag signature
+     * @zm-api-field-description MailSignature signature if email is signed and carbonioSMIMESignatureVerificationEnabled true then output signature
+     */
+    @XmlElement(name= SignatureConstants.SIGNATURE /* signature */)
+    private List<MailSignature> signature;
+
+    /**
      * @zm-api-field-description Hit Parts -- indicators that the named parts matched the search string
      */
     @XmlElement(name=MailConstants.E_HIT_MIMEPART /* hp */, required=false)
@@ -58,6 +67,13 @@ implements SearchHit {
     }
     public void setContentMatched(Boolean contentMatched) {
         this.contentMatched = ZmBoolean.fromBool(contentMatched);
+    }
+    public void setSignature(List<MailSignature> signature) {
+        this.signature = signature;
+    }
+
+    public List<MailSignature> getSignature() {
+        return signature;
     }
     public void setMessagePartHits(Iterable <Part> messagePartHits) {
         this.messagePartHits.clear();

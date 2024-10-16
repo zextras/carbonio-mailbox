@@ -13,6 +13,7 @@ import com.zimbra.cs.mailbox.Mailbox;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,7 +24,8 @@ import java.util.Properties;
 import org.hsqldb.cmdline.SqlFile;
 
 /**
- * HSQLDB is for unit test. All data is in memory, not persistent across JVM restarts.
+ * HSQLDB is for unit test. All data is in memory, not persistent across JVM
+ * restarts.
  *
  * @author ysasaki
  */
@@ -41,7 +43,7 @@ public class HSQLDB extends Db {
             stmt.setString(1, "ZIMBRA");
             rs = stmt.executeQuery();
             if (rs.next() && rs.getInt(1) > 0) {
-                return;  // already exists
+                return; // already exists
             }
             createZimbraDatabase(conn);
             createMailboxDatabase(conn);
@@ -66,9 +68,8 @@ public class HSQLDB extends Db {
 
     private static void createZimbraDatabase(DbConnection conn) throws Exception {
         Map<String, String> vars = Map.of(
-            "DATABASE_NAME", DbMailbox.getDatabaseName(1),
-            "VOLUME_BASE_DIRECTORY", new File("build/test/").getAbsolutePath()
-        );
+                "DATABASE_NAME", DbMailbox.getDatabaseName(1),
+                "VOLUME_BASE_DIRECTORY", new File("build/test/").getAbsolutePath());
         execute(conn, "db.sql", vars);
     }
 
@@ -84,8 +85,10 @@ public class HSQLDB extends Db {
 
     private static void execute(DbConnection conn, String resource, Map<String, String> vars) throws Exception {
         final InputStream resourceAsStream = HSQLDB.class.getResourceAsStream(resource);
-        SqlFile sql = new SqlFile(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8),
-            "", System.out, StandardCharsets.UTF_8.toString(), false, null);
+        URL url = null;
+        SqlFile sql = new SqlFile(new InputStreamReader(resourceAsStream,
+                StandardCharsets.UTF_8),
+                "", System.out, StandardCharsets.UTF_8.toString(), false, url);
         sql.addUserVars(vars);
         sql.setConnection(conn.getConnection());
         sql.execute();
@@ -188,7 +191,7 @@ public class HSQLDB extends Db {
     }
 
     public void useMVCC(Mailbox mbox) throws ServiceException, SQLException {
-        //tell HSQLDB to use multiversion so our asserts can read while write is open
+        // tell HSQLDB to use multiversion so our asserts can read while write is open
         PreparedStatement stmt = null;
         ResultSet rs = null;
         DbConnection conn = DbPool.getConnection(mbox);
