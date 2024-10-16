@@ -21,6 +21,7 @@ import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -440,7 +441,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
   void testResultsInOneSpecifiedDomain() throws Exception {
     var domain = provisioning.createDomain("anotherdomain.com", new HashMap<>());
     provisioning.getConfig().setCarbonioSearchAllDomainsByFeature(false);
-    provisioning.getDomain(userAccount).setCarbonioSearchUsersInDomainsByFeature(new String[] {"anotherdomain.com"});
+    provisioning.getDomain(userAccount).setCarbonioSearchSpecifiedDomainsByFeature(new String[] {"anotherdomain.com"});
     var account1 = buildAccount("first.account", "Test1").create();
     var account2 = buildAccount("second.account", "Test2", "anotherdomain.com").create();
 
@@ -462,7 +463,33 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     var domain1 = provisioning.createDomain("domain1.com", new HashMap<>());
     var domain2 = provisioning.createDomain("domain2.com", new HashMap<>());
     provisioning.getConfig().setCarbonioSearchAllDomainsByFeature(false);
-    provisioning.getDomain(userAccount).setCarbonioSearchUsersInDomainsByFeature(new String[] {"domain1.com", "domain2.com"});
+    provisioning.getDomain(userAccount).setCarbonioSearchSpecifiedDomainsByFeature(new String[] {"domain1.com", "domain2.com"});
+    var account1 = buildAccount("first.account", "Test1", "domain1.com").create();
+    var account2 = buildAccount("second.account", "Test2", "domain2.com").create();
+
+    try {
+      HttpResponse httpResponse = buildRequest()
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account"))
+          .execute();
+
+      assertEquals(2, getResponse(httpResponse).getAccounts().size());
+    } finally {
+      cleanUp(account1);
+      cleanUp(account2);
+      cleanUp(domain1);
+      cleanUp(domain2);
+    }
+  }
+
+  @Test
+  @DisplayName("testResultsAlwaysInAllDomains")
+  void shouldAlwaysSearchInAllDomainsWhenGlobalConfigAttributeTrue() throws Exception {
+    var domain1 = provisioning.createDomain("domain1.com", new HashMap<>());
+    var domain2 = provisioning.createDomain("domain2.com", new HashMap<>());
+    provisioning.getConfig().setCarbonioSearchAllDomainsByFeature(true);
+    //domain attribute specifying the domain for searching, but global config value for
+    //carbonioSearchAllDomainsByFeature is true, so should search in all domains
+    provisioning.getDomain(userAccount).setCarbonioSearchSpecifiedDomainsByFeature(new String[] {"domain1.com"});
     var account1 = buildAccount("first.account", "Test1", "domain1.com").create();
     var account2 = buildAccount("second.account", "Test2", "domain2.com").create();
 
