@@ -66,7 +66,7 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
     options.setTypes(SearchDirectoryOptions.ObjectType.accounts);
     if (!allDomains && specifiedDomains.isEmpty()) {
       options.setDomain(userDomain);
-    } else if (!specifiedDomains.isEmpty()) {
+    } else if (!allDomains && !specifiedDomains.isEmpty()) {
       options.setMultipleBases(specifiedDomains);
     }
     options.setSortAttr(ZAttrProvisioning.A_displayName);
@@ -167,7 +167,7 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
   }
 
   private List<Domain> getDomainsListToSearchIn(Domain domain, Provisioning provisioning) {
-    return Arrays.stream(domain.getCarbonioSearchUsersInDomainsByFeature())
+    return Arrays.stream(domain.getCarbonioSearchSpecifiedDomainsByFeature())
         .map(domainName -> {
           try {
             return provisioning.getDomainByName(domainName);
