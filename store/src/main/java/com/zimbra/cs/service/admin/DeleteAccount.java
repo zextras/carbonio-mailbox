@@ -111,6 +111,10 @@ public class DeleteAccount extends AdminDocumentHandler {
 
   private void publishAccountDeletedEvent(Account account) {
     String userId = account.getId();
+    if (!messageBrokerClient.healthCheck()) {
+      ZimbraLog.account.warn("Message broker is not reachable, this can happen if message broker is not installed");
+      return;
+    }
     try {
       boolean result = messageBrokerClient.publish(new UserDeleted(userId));
       if (result) {
