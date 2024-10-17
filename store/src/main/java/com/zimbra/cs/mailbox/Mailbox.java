@@ -4739,7 +4739,7 @@ public class Mailbox implements MailboxStore {
     return (view == MailItem.Type.APPOINTMENT);
   }
 
-  public static boolean isGroupFolder(Folder f) {
+  public static boolean isCalendarGroupFolder(Folder f) {
     MailItem.Type view = f.getDefaultView();
     return (view == MailItem.Type.CALENDAR_GROUP);
   }
@@ -4787,7 +4787,7 @@ public class Mailbox implements MailboxStore {
     try {
       List<Folder> calFolders = new ArrayList<>();
       for (MailItem item : getItemList(octxt, MailItem.Type.FOLDER, -1, sort)) {
-        if (isGroupFolder((Folder) item)) {
+        if (isCalendarGroupFolder((Folder) item)) {
           calFolders.add((Folder) item);
         }
       }
