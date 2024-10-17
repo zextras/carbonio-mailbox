@@ -23,7 +23,8 @@ public class AutoSendDraftTask extends ScheduledTask<Object> {
     /**
      * Returns the task name.
      */
-    @Override public String getName() {
+    @Override
+    public String getName() {
         return TASK_NAME_PREFIX + getProperty(DRAFT_ID_PROP_NAME);
     }
 
@@ -33,14 +34,15 @@ public class AutoSendDraftTask extends ScheduledTask<Object> {
      * @return computed result
      * @throws Exception if unable to compute a result
      */
-    @Override public Void call() throws Exception {
+    @Override
+    public Void call() throws Exception {
         ZimbraLog.scheduler.debug("Running task %s", this);
         Mailbox mbox = MailboxManager.getInstance().getMailboxById(getMailboxId());
         if (mbox == null) {
             ZimbraLog.scheduler.error("Mailbox for id %s does not exist", getMailboxId());
             return null;
         }
-        Integer draftId = new Integer(getProperty(DRAFT_ID_PROP_NAME));
+        Integer draftId = Integer.valueOf(getProperty(DRAFT_ID_PROP_NAME));
         Message msg;
         try {
             msg = (Message) mbox.getItemById(null, draftId, MailItem.Type.MESSAGE);
@@ -59,9 +61,11 @@ public class AutoSendDraftTask extends ScheduledTask<Object> {
         }
         // send draft
         MailSender mailSender = mbox.getMailSender();
-        mailSender.setOriginalMessageId(StringUtil.isNullOrEmpty(msg.getDraftOrigId()) ? null : new ItemId(msg.getDraftOrigId(), mbox.getAccountId()));
+        mailSender.setOriginalMessageId(StringUtil.isNullOrEmpty(msg.getDraftOrigId()) ? null
+                : new ItemId(msg.getDraftOrigId(), mbox.getAccountId()));
         mailSender.setReplyType(StringUtil.isNullOrEmpty(msg.getDraftReplyType()) ? null : msg.getDraftReplyType());
-        mailSender.setIdentity(StringUtil.isNullOrEmpty(msg.getDraftIdentityId()) ? null : mbox.getAccount().getIdentityById(msg.getDraftIdentityId()));
+        mailSender.setIdentity(StringUtil.isNullOrEmpty(msg.getDraftIdentityId()) ? null
+                : mbox.getAccount().getIdentityById(msg.getDraftIdentityId()));
         mailSender.sendMimeMessage(new OperationContext(mbox), mbox, msg.getMimeMessage());
         // now delete the draft
         mbox.delete(null, draftId, MailItem.Type.MESSAGE);
@@ -77,9 +81,9 @@ public class AutoSendDraftTask extends ScheduledTask<Object> {
      */
     public static void cancelTask(int draftId, int mailboxId) throws ServiceException {
         ScheduledTaskManager.cancel(AutoSendDraftTask.class.getName(),
-                                    TASK_NAME_PREFIX + draftId,
-                                    mailboxId,
-                                    true);
+                TASK_NAME_PREFIX + draftId,
+                mailboxId,
+                true);
 
     }
 

@@ -56,13 +56,15 @@ public class CalItemEmailReminderTask extends CalItemReminderTaskBase {
 
         String to = account.getAttr(Provisioning.A_zimbraPrefCalendarReminderEmail);
         if (to == null) {
-            ZimbraLog.scheduler.info("Unable to send calendar reminder email since %s is not set", Provisioning.A_zimbraPrefCalendarReminderEmail);
+            ZimbraLog.scheduler.info("Unable to send calendar reminder email since %s is not set",
+                    Provisioning.A_zimbraPrefCalendarReminderEmail);
             return;
         }
         mm.setRecipient(javax.mail.Message.RecipientType.TO, new JavaMailInternetAddress(to));
 
-        mm.setSubject(L10nUtil.getMessage(calItem.getType() == MailItem.Type.APPOINTMENT ?
-                L10nUtil.MsgKey.apptReminderEmailSubject : L10nUtil.MsgKey.taskReminderEmailSubject,
+        mm.setSubject(L10nUtil.getMessage(
+                calItem.getType() == MailItem.Type.APPOINTMENT ? L10nUtil.MsgKey.apptReminderEmailSubject
+                        : L10nUtil.MsgKey.taskReminderEmailSubject,
                 locale, calItem.getSubject()), MimeConstants.P_CHARSET_UTF8);
 
         if (invite.getDescriptionHtml() == null) {
@@ -76,7 +78,8 @@ public class CalItemEmailReminderTask extends CalItemReminderTaskBase {
             mmp.addBodyPart(textPart);
 
             MimeBodyPart htmlPart = new ZMimeBodyPart();
-            htmlPart.setContent(getBody(calItem, invite, true, locale, tz), MimeConstants.CT_TEXT_HTML + "; " + MimeConstants.P_CHARSET + "=" + MimeConstants.P_CHARSET_UTF8);
+            htmlPart.setContent(getBody(calItem, invite, true, locale, tz),
+                    MimeConstants.CT_TEXT_HTML + "; " + MimeConstants.P_CHARSET + "=" + MimeConstants.P_CHARSET_UTF8);
             mmp.addBodyPart(htmlPart);
         }
 
@@ -88,7 +91,8 @@ public class CalItemEmailReminderTask extends CalItemReminderTaskBase {
         mailSender.sendMimeMessage(null, calItem.getMailbox(), mm);
     }
 
-    private String getBody(CalendarItem calItem, Invite invite, boolean html, Locale locale, TimeZone tz) throws ServiceException {
+    private String getBody(CalendarItem calItem, Invite invite, boolean html, Locale locale, TimeZone tz)
+            throws ServiceException {
         DateFormat dateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
         dateTimeFormat.setTimeZone(tz);
         DateFormat onlyDateFormat = DateFormat.getDateInstance(DateFormat.SHORT, locale);
@@ -99,13 +103,15 @@ public class CalItemEmailReminderTask extends CalItemReminderTaskBase {
         String formattedStart;
         String formattedEnd;
         if (calItem.getType() == MailItem.Type.APPOINTMENT) {
-            Date start = new Date(new Long(getProperty(NEXT_INST_START_PROP_NAME)));
+            Date start = new Date(Long.valueOf(getProperty(NEXT_INST_START_PROP_NAME)));
             formattedStart = dateTimeFormat.format(start);
             Date end = invite.getEffectiveDuration().addToDate(start);
-            formattedEnd = onlyDateFormat.format(start).equals(onlyDateFormat.format(end)) ? onlyTimeFormat.format(end) : dateTimeFormat.format(end);
+            formattedEnd = onlyDateFormat.format(start).equals(onlyDateFormat.format(end)) ? onlyTimeFormat.format(end)
+                    : dateTimeFormat.format(end);
         } else {
             // start date and due date is optional for tasks
-            formattedStart = invite.getStartTime() == null ? "" : onlyDateFormat.format(invite.getStartTime().getDate());
+            formattedStart = invite.getStartTime() == null ? ""
+                    : onlyDateFormat.format(invite.getStartTime().getDate());
             formattedEnd = invite.getEndTime() == null ? "" : onlyDateFormat.format(invite.getEndTime().getDate());
         }
 
@@ -120,18 +126,20 @@ public class CalItemEmailReminderTask extends CalItemReminderTaskBase {
             organizer = "";
         }
 
-
         String folder = calItem.getMailbox().getFolderById(null, calItem.getFolderId()).getName();
 
         String description = html ? invite.getDescriptionHtml() : invite.getDescription();
-        if (description == null) description = "";
+        if (description == null)
+            description = "";
 
-        return html ?
-                L10nUtil.getMessage(calItem.getType() == MailItem.Type.APPOINTMENT ?
-                                            L10nUtil.MsgKey.apptReminderEmailBodyHtml : L10nUtil.MsgKey.taskReminderEmailBodyHtml,
-                                    locale, formattedStart, formattedEnd, location, organizer, folder, description) :
-                L10nUtil.getMessage(calItem.getType() == MailItem.Type.APPOINTMENT ?
-                                            L10nUtil.MsgKey.apptReminderEmailBody : L10nUtil.MsgKey.taskReminderEmailBody,
-                                    locale, formattedStart, formattedEnd, location, organizer, folder, description);
+        return html
+                ? L10nUtil.getMessage(
+                        calItem.getType() == MailItem.Type.APPOINTMENT ? L10nUtil.MsgKey.apptReminderEmailBodyHtml
+                                : L10nUtil.MsgKey.taskReminderEmailBodyHtml,
+                        locale, formattedStart, formattedEnd, location, organizer, folder, description)
+                : L10nUtil.getMessage(
+                        calItem.getType() == MailItem.Type.APPOINTMENT ? L10nUtil.MsgKey.apptReminderEmailBody
+                                : L10nUtil.MsgKey.taskReminderEmailBody,
+                        locale, formattedStart, formattedEnd, location, organizer, folder, description);
     }
 }

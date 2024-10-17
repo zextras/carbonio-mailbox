@@ -156,7 +156,7 @@
       <dependency>
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
-        <version>1.4</version>
+        <version>1.5</version>
       </dependency>
       <dependency>
         <groupId>com.zextras.carbonio.files</groupId>
@@ -191,7 +191,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>1.20</version>
+        <version>1.21</version>
       </dependency>
       <dependency>
         <groupId>ant-1.7.0-ziputil-patched</groupId>
@@ -261,7 +261,7 @@
       <dependency>
         <groupId>xerces</groupId>
         <artifactId>xercesImpl</artifactId>
-        <version>2.12.0</version>
+        <version>2.12.2</version>
       </dependency>
       <dependency>
         <groupId>javax.mail</groupId>
@@ -340,7 +340,7 @@
       <dependency>
         <groupId>org.json</groupId>
         <artifactId>json</artifactId>
-        <version>20230227</version>
+        <version>20240303</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -439,7 +439,7 @@
       <dependency>
         <groupId>org.owasp.antisamy</groupId>
         <artifactId>antisamy</artifactId>
-        <version>1.7.4</version>
+        <version>1.7.6</version>
       </dependency>
       <dependency>
         <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
@@ -816,7 +816,7 @@
     <jackson.version>2.8.11</jackson.version>
     <bouncycastle.version>1.78.1</bouncycastle.version>
     <asm.version>8.0.1</asm.version>
-    <guava.version>28.1-jre</guava.version>
+    <guava.version>33.3.1-jre</guava.version>
     <jython.version>2.7.4</jython.version>
     <nekohtml.version>1.9.22</nekohtml.version>
     <log4j.version>2.20.0</log4j.version>
@@ -925,21 +925,24 @@
               <phase>validate</phase>
               <configuration>
                 <target>
-                  <pathconvert property="compile_classpath_value" refid="maven.compile.classpath"/>
-                  <pathconvert property="runtime_classpath_value" refid="maven.runtime.classpath"/>
-                  <pathconvert property="test_classpath_value" refid="maven.test.classpath"/>
-                  <!--mvn properties shared with all modules while building project-->
+                  <pathconvert property="compile_classpath_value" refid="maven.compile.classpath" />
+                  <pathconvert property="runtime_classpath_value" refid="maven.runtime.classpath" />
+                  <pathconvert property="test_classpath_value" refid="maven.test.classpath" />
+                  <!--mvn
+                  properties shared with all modules while building project-->
                   <propertyfile file="${project.build.directory}/mvn-ant-shared-build.properties">
-                    <!--required to set carbonio.buildinfo.version-->
-                    <entry key="mvn_revision" value="${revision}"/>
+                    <!--required
+                    to set carbonio.buildinfo.version-->
+                    <entry key="mvn_revision" value="${revision}" />
 
-                    <!--properties needed by some ant tasks-->
-                    <entry key="compile_classpath" value="${compile_classpath_value}"/>
-                    <entry key="runtime_classpath" value="${runtime_classpath_value}"/>
-                    <entry key="test_classpath" value="${test_classpath_value}"/>
+                    <!--properties
+                    needed by some ant tasks-->
+                    <entry key="compile_classpath" value="${compile_classpath_value}" />
+                    <entry key="runtime_classpath" value="${runtime_classpath_value}" />
+                    <entry key="test_classpath" value="${test_classpath_value}" />
                   </propertyfile>
                   <propertyfile file="${project.build.directory}/mvn-ant-shared-build.properties">
-                    <entry key="mvn_revision" value="${revision}"/>
+                    <entry key="mvn_revision" value="${revision}" />
                   </propertyfile>
                 </target>
               </configuration>
@@ -1053,7 +1056,8 @@
           <artifactId>maven-enforcer-plugin</artifactId>
           <version>3.1.0</version>
           <dependencies>
-            <!-- https://github-wiki-see.page/m/GoogleCloudPlatform/cloud-opensource-java/wiki/Linkage-Checker-Enforcer-Rule -->
+            <!--
+            https://github-wiki-see.page/m/GoogleCloudPlatform/cloud-opensource-java/wiki/Linkage-Checker-Enforcer-Rule -->
             <dependency>
               <groupId>com.google.cloud.tools</groupId>
               <artifactId>linkage-checker-enforcer-rules</artifactId>
@@ -1075,10 +1079,10 @@
               <configuration>
                 <rules>
                   <!-- No duplicate version of dependency in POM -->
-                  <banDuplicatePomDependencyVersions/>
+                  <banDuplicatePomDependencyVersions />
                   <!-- Dependencies must converge.
                   If it fails use dependency management to declare which one to use. -->
-                  <dependencyConvergence/>
+                  <dependencyConvergence />
                 </rules>
               </configuration>
             </execution>

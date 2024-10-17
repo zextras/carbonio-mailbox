@@ -36,7 +36,7 @@ public abstract class CalItemReminderTaskBase extends ScheduledTask {
             ZimbraLog.scheduler.error("Mailbox with id %s does not exist", getMailboxId());
             return null;
         }
-        Integer calItemId = new Integer(getProperty(CAL_ITEM_ID_PROP_NAME));
+        Integer calItemId = Integer.valueOf(getProperty(CAL_ITEM_ID_PROP_NAME));
         CalendarItem calItem;
         try {
             calItem = mbox.getCalendarItemById(null, calItemId);
@@ -48,8 +48,8 @@ public abstract class CalItemReminderTaskBase extends ScheduledTask {
             ZimbraLog.scheduler.debug("Calendar item with id %s is in Trash", calItemId);
             return null;
         }
-        Integer invId = new Integer(getProperty(INV_ID_PROP_NAME));
-        Integer compNum = new Integer(getProperty(COMP_NUM_PROP_NAME));
+        Integer invId = Integer.valueOf(getProperty(INV_ID_PROP_NAME));
+        Integer compNum = Integer.valueOf(getProperty(COMP_NUM_PROP_NAME));
         Invite invite = calItem.getInvite(invId, compNum);
         if (invite == null) {
             ZimbraLog.scheduler.warn("Invite with id %s and comp num %s does not exist", invId, compNum);
