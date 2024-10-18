@@ -21,7 +21,6 @@ import io.vavr.control.Option;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -53,20 +52,18 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
     var domain = provisioning.getDomainById(account.getDomainId());
     var specifiedDomains = getDomainsListToSearchIn(domain, provisioning);
 
-    var options = buildSearchOptions(domain, specifiedDomains, allDomains);
+    var options = buildSearchOptions(specifiedDomains, allDomains);
 
-    options.setFilterString(ZLdapFilterFactory.FilterId.ADMIN_SEARCH, getSearchFilter(query, feature, provisioning, allDomains, domain).toString());
+    options.setFilterString(ZLdapFilterFactory.FilterId.ADMIN_SEARCH, getSearchFilter(query, feature, provisioning, allDomains, specifiedDomains).toString());
 
     var entries = provisioning.searchDirectory(options).stream().limit(request.getAttributeInt(AccountConstants.A_LIMIT, DEFAULT_MAX_RESULTS));
     return buildResponse(zsc, entries);
   }
 
-  private static SearchDirectoryOptions buildSearchOptions(Domain userDomain, List<Domain> specifiedDomains, boolean allDomains) throws ServiceException {
+  private static SearchDirectoryOptions buildSearchOptions(List<Domain> specifiedDomains, boolean allDomains) throws ServiceException {
     var options = new SearchDirectoryOptions();
     options.setTypes(SearchDirectoryOptions.ObjectType.accounts);
-    if (!allDomains && specifiedDomains.isEmpty()) {
-      options.setDomain(userDomain);
-    } else if (!allDomains && !specifiedDomains.isEmpty()) {
+    if (!allDomains) {
       options.setMultipleBases(specifiedDomains);
     }
     options.setSortAttr(ZAttrProvisioning.A_displayName);
@@ -84,7 +81,7 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
     return response;
   }
 
-  private static Filter getSearchFilter(String query, String feature, Provisioning provisioning, boolean allDomains, Domain userDomain) throws ServiceException {
+  private static Filter getSearchFilter(String query, String feature, Provisioning provisioning, boolean allDomains, List<Domain> domains) throws ServiceException {
     var autoCompleteFilter = Filter.createORFilter(
         getWildcardFilter(ZAttrProvisioning.A_uid, query),
         getWildcardFilter(ZAttrProvisioning.A_displayName, query),
@@ -94,7 +91,7 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
         Filter.createEqualityFilter(ZAttrProvisioning.A_zimbraHideInGal, LDAP_TRUE)
     );
 
-    var featureFilter = getFeatureFilter(feature, provisioning, allDomains, userDomain);
+    var featureFilter = getFeatureFilter(feature, provisioning, allDomains, domains);
 
     return featureFilter
         .map(f ->  Filter.createANDFilter(autoCompleteFilter, notHiddenInGalFilter, f))
@@ -102,29 +99,37 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
 
   }
 
-  private static Option<Filter> getFeatureFilter(String feature, Provisioning provisioning, boolean allDomains, Domain userDomain) throws ServiceException {
+  private static Option<Filter> getFeatureFilter(String feature, Provisioning provisioning, boolean allDomains, List<Domain> domains) throws ServiceException {
     if (StringUtil.isNullOrEmpty(feature)) {
       return Option.none();
     }
     var accountFeatureFilter = Filter.createEqualityFilter(feature, LDAP_TRUE);
 
-    Map<String, Cos> defaultCOSes = allDomains
-        ? provisioning.getAllDomains().stream().filter(d -> getDefaultCOS(provisioning, d) != null)
+    Map<String, Cos> defaultCOSes = allDomains //  default COSes for specified domains
+        ? provisioning.getAllDomains().stream()
+          .filter(d -> getDefaultCOS(provisioning, d) != null)
           .collect(Collectors.toMap(Domain::getId, d -> getDefaultCOS(provisioning, d)))
-        : Collections.singletonMap(userDomain.getId(), provisioning.getDefaultCOS(userDomain));
+        : domains.stream()
+          .filter(d -> getDefaultCOS(provisioning, d) != null)
+          .collect(Collectors.toMap(Domain::getId, d -> getDefaultCOS(provisioning, d)));
 
-    var cosWithFeature = provisioning.getAllCos().stream().filter(cos -> cos.getAttr(feature, LDAP_FALSE).equals(LDAP_TRUE)).collect(Collectors.toList());
+
+    var cosWithFeature = provisioning.getAllCos().stream() // all COSes where feature is enabled
+        .filter(cos -> cos.getAttr(feature, LDAP_FALSE).equals(LDAP_TRUE))
+        .collect(Collectors.toList());
+
     if (!cosWithFeature.isEmpty()) {
-      var cosFilters = cosWithFeature.stream()
+      var cosFilters = cosWithFeature.stream()  // create filter for each COS where feature is enabled
           .map(cos -> getCosFeatureFilter(cos, feature)).collect(Collectors.toList());
-      for (var pair : defaultCOSes.entrySet()) {
+
+      for (var pair : defaultCOSes.entrySet()) { // for each default COS in all/specified domains
         var defaultCos = pair.getValue();
         if (defaultCos != null && defaultCos.getAttr(feature, LDAP_FALSE).equals(LDAP_TRUE)) {
-          if (allDomains) {
-            cosFilters.add(getDefaultCosFeatureFilterForDomain(provisioning.getDomainById(pair.getKey()), feature));
-          } else {
-            cosFilters.add(getDefaultCosFeatureFilter(feature));
-          }
+          //if (allDomains) { // for each default cos (all/specified domains)
+          cosFilters.add(getDefaultCosFeatureFilterForDomain(provisioning.getDomainById(pair.getKey()), feature)); //email is under domain and feature is enabled for default COS
+          //} else {
+          //  cosFilters.add(getDefaultCosFeatureFilter(feature));
+          //}
         }
       }
       return Option.of(Filter.createORFilter(Stream.concat(Stream.of(accountFeatureFilter), cosFilters.stream()).toArray(Filter[]::new)));
@@ -167,7 +172,8 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
   }
 
   private List<Domain> getDomainsListToSearchIn(Domain domain, Provisioning provisioning) {
-    return Arrays.stream(domain.getCarbonioSearchSpecifiedDomainsByFeature())
+    var domainsToSearchIn = Arrays
+        .stream(domain.getCarbonioSearchSpecifiedDomainsByFeature())
         .map(domainName -> {
           try {
             return provisioning.getDomainByName(domainName);
@@ -177,6 +183,10 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
           }
         })
         .filter(Objects::nonNull)
-        .collect(Collectors.toCollection(ArrayList::new));
+        .collect(Collectors.toCollection(HashSet::new));
+
+    domainsToSearchIn.add(domain);
+
+    return new ArrayList<>(domainsToSearchIn);
   }
 }
