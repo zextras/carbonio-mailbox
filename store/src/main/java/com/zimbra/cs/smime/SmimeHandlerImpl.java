@@ -113,6 +113,8 @@ public class SmimeHandlerImpl extends SmimeHandler {
             Element dummy = element.addNonUniqueElement(SignatureConstants.SIGNATURE);
             signatureElement = element.addNonUniqueElement(SignatureConstants.SIGNATURE);
             signatureElement.addAttribute(SignatureConstants.TYPE, SignatureConstants.SignatureType.SMIME.value());
+            signatureElement.addAttribute(SignatureConstants.TRUSTED, false);
+            signatureElement.addAttribute(SignatureConstants.VALID, false);
             dummy.detach();
             // Get the certificates from the signed email
             List<X509Certificate> certList = getX509Certificates(signed);
@@ -126,18 +128,16 @@ public class SmimeHandlerImpl extends SmimeHandler {
                 signatureElement.addAttribute(SignatureConstants.MESSAGE, "Cannot find signer certificate");
                 signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE,
                         SignatureConstants.MessageCodeEnum.SIGNER_CERT_NOT_FOUND.toString());
-                signatureElement.addAttribute(SignatureConstants.VALID, false);
                 return false;
             }
 
             X509Certificate signerCert = signerCertificate.get();
-            Optional<X509Certificate> issuerCertificate = getIssuerCertificate(certList, signerCert);
             setCertDetails(signerCert, signatureElement);
+            Optional<X509Certificate> issuerCertificate = getIssuerCertificate(certList, signerCert);
             if (issuerCertificate.isEmpty()) {
                 signatureElement.addAttribute(SignatureConstants.MESSAGE, "Cannot find issuer certificate");
                 signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE,
                         SignatureConstants.MessageCodeEnum.ISSUER_CERT_NOT_FOUND.toString());
-                signatureElement.addAttribute(SignatureConstants.VALID, false);
                 return false;
             }
             return validateIssuerCertificate(pkixParams, signatureElement, issuerCertificate.get())
@@ -152,9 +152,6 @@ public class SmimeHandlerImpl extends SmimeHandler {
             }
         }
 
-        if (signatureElement != null) {
-            signatureElement.addAttribute(SignatureConstants.VALID, false);
-        }
         return false;
     }
 
@@ -172,7 +169,6 @@ public class SmimeHandlerImpl extends SmimeHandler {
             signatureElement.addAttribute(SignatureConstants.TRUSTED, true);
             return true;
         } catch (CertPathValidatorException e) {
-            signatureElement.addAttribute(SignatureConstants.TRUSTED, false);
             signatureElement.addAttribute(SignatureConstants.MESSAGE, "issuer is not trusted. Detail: " + e.getMessage());
             signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE, SignatureConstants.MessageCodeEnum.UNTRUSTED.toString());
             LOG.warn("Smime Authority certificate is not valid: " + e.getMessage());
@@ -205,7 +201,6 @@ public class SmimeHandlerImpl extends SmimeHandler {
                         SignatureConstants.MessageCodeEnum.SIGNER_CERT_EXPIRED.toString());
                 signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE,
                         SignatureConstants.MessageCodeEnum.SIGNER_CERT_EXPIRED.toString());
-                signatureElement.addAttribute(SignatureConstants.VALID, false);
                 return false;
             }
 
@@ -232,7 +227,6 @@ public class SmimeHandlerImpl extends SmimeHandler {
                     signatureElement.addAttribute(SignatureConstants.MESSAGE_CODE,
                             SignatureConstants.MessageCodeEnum.INVALID.toString());
 
-                    signatureElement.addAttribute(SignatureConstants.VALID, false);
                     return false;
                 }
             }
