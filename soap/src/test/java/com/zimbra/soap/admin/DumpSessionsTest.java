@@ -29,8 +29,10 @@ import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 /**
- * Unit test for {@link DumpSessionsResponse}. Mostly checking the handling of @XmlAnyElement in
- * {@link SessionInfo} test xml files are hand generated and are not taken from real world data.
+ * Unit test for {@link DumpSessionsResponse}. Mostly checking the handling
+ * of @XmlAnyElement in
+ * {@link SessionInfo} test xml files are hand generated and are not taken from
+ * real world data.
  */
 public class DumpSessionsTest {
 
@@ -43,32 +45,32 @@ public class DumpSessionsTest {
     com.zimbra.common.util.LogManager.setThisLogAndRootToLevel(LOG, Level.INFO);
   }
 
-    @BeforeAll
+  @BeforeAll
   public static void init() throws Exception {
     JAXBContext jaxb = JAXBContext.newInstance(DumpSessionsResponse.class);
     unmarshaller = jaxb.createUnmarshaller();
     marshaller = jaxb.createMarshaller();
   }
 
-    private static void checkImapSession(SessionInfo session,
-            boolean nameAndIdPresent) {
-        assertEquals(1300295279211L, session.getCreatedDate(), "Create Date");
-        assertEquals(1300295279212L, session.getLastAccessedDate(), "Last Access Date");
+  private static void checkImapSession(SessionInfo session,
+      boolean nameAndIdPresent) {
+    assertEquals(1300295279211L, session.getCreatedDate(), "Create Date");
+    assertEquals(1300295279212L, session.getLastAccessedDate(), "Last Access Date");
     if (nameAndIdPresent) {
-            assertEquals("user1@gren-elliots-macbook-pro.local", session.getName(), "Session Name");
-            assertEquals("006584ae-cba0-400a-8414-f764ba3c7418", session.getZimbraId(), "Session Zimbra Id");
+      assertEquals("user1@gren-elliots-macbook-pro.local", session.getName(), "Session Name");
+      assertEquals("006584ae-cba0-400a-8414-f764ba3c7418", session.getZimbraId(), "Session Zimbra Id");
     } else {
-            assertNull(session.getName(), "Session Name");
-            assertNull(session.getZimbraId(), "Session Zimbra Id");
+      assertNull(session.getName(), "Session Name");
+      assertNull(session.getZimbraId(), "Session Zimbra Id");
     }
-        assertEquals("223", session.getSessionId(), "Session Id");
+    assertEquals("223", session.getSessionId(), "Session Id");
     Map<QName, Object> extraAttribs = session.getExtraAttributes();
-        assertEquals(0, extraAttribs.size(), "Number of extra Attribs");
+    assertEquals(0, extraAttribs.size(), "Number of extra Attribs");
     List<Element> extraElements = session.getExtraElements();
-        assertNotNull(extraElements, "Extra Elements");
-        assertEquals(1, extraElements.size(), "Number of extra Elements");
+    assertNotNull(extraElements, "Extra Elements");
+    assertEquals(1, extraElements.size(), "Number of extra Elements");
     Element elem = extraElements.get(0);
-        assertEquals("imap", elem.getNodeName(), "imap Element nodeName");
+    assertEquals("imap", elem.getNodeName(), "imap Element nodeName");
   }
 
   @Test
@@ -83,7 +85,7 @@ public class DumpSessionsTest {
     assertNull(resp.getWikiSessions(), "Wiki Sessions");
     assertNull(resp.getWaitsetSessions(), "Waitset Sessions");
     InfoForSessionType imapInfo = resp.getImapSessions();
-    assertEquals(new Integer(1), imapInfo.getActiveAccounts(), "Imap active accounts");
+    assertEquals(Integer.valueOf(1), imapInfo.getActiveAccounts(), "Imap active accounts");
     assertEquals(1, imapInfo.getActiveSessions(), "Imap active sessions");
     List<SessionInfo> sessions = imapInfo.getSessions();
     List<AccountSessionInfo> accts = imapInfo.getAccounts();
@@ -105,7 +107,7 @@ public class DumpSessionsTest {
     assertNull(resp.getWikiSessions(), "Wiki Sessions");
     assertNull(resp.getWaitsetSessions(), "Waitset Sessions");
     InfoForSessionType imapInfo = resp.getImapSessions();
-    assertEquals(new Integer(1), imapInfo.getActiveAccounts(), "Imap active accounts");
+    assertEquals(Integer.valueOf(1), imapInfo.getActiveAccounts(), "Imap active accounts");
     assertEquals(1, imapInfo.getActiveSessions(), "Imap active sessions");
     List<SessionInfo> sessions = imapInfo.getSessions();
     assertEquals(0, sessions.size(), "Number of top level sessionInfos");
@@ -120,13 +122,12 @@ public class DumpSessionsTest {
 
   @Test
   void marshallDumpSessionsResponse() throws Exception {
-    javax.xml.parsers.DocumentBuilder w3DomBuilder =
-        javax.xml.parsers.DocumentBuilderFactory.newInstance().newDocumentBuilder();
+    javax.xml.parsers.DocumentBuilder w3DomBuilder = javax.xml.parsers.DocumentBuilderFactory.newInstance()
+        .newDocumentBuilder();
     DumpSessionsResponse gsr = new DumpSessionsResponse(1);
     InfoForSessionType imapSessions = new InfoForSessionType(1, 1);
-    AccountSessionInfo account =
-        new AccountSessionInfo(
-            "user1@gren-elliots-macbook-pro.local", "006584ae-cba0-400a-8414-f764ba3c7418");
+    AccountSessionInfo account = new AccountSessionInfo(
+        "user1@gren-elliots-macbook-pro.local", "006584ae-cba0-400a-8414-f764ba3c7418");
     SessionInfo session = new SessionInfo(null, null, "223", 1300295279211L, 1300295279212L);
     org.w3c.dom.Document doc = w3DomBuilder.newDocument();
     org.w3c.dom.Element extraElement = doc.createElementNS("urn:zimbraAdmin", "imap");

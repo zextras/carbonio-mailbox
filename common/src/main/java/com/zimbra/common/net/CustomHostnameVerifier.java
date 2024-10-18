@@ -24,12 +24,11 @@ import org.bouncycastle.est.jcajce.JsseDefaultHostnameAuthorizer;
 import com.google.common.collect.Sets;
 import com.zimbra.common.util.ZimbraLog;
 
-
 public class CustomHostnameVerifier implements HostnameVerifier {
 
-
     public static void verifyHostname(String hostname, SSLSession session) throws IOException {
-        if (NetConfig.getInstance().isAllowMismatchedCerts()) return;
+        if (NetConfig.getInstance().isAllowMismatchedCerts())
+            return;
 
         try {
             InetAddress.getByName(hostname);
@@ -37,7 +36,7 @@ public class CustomHostnameVerifier implements HostnameVerifier {
             throw new UnknownHostException("Could not resolve SSL sessions server hostname: " + hostname);
         }
 
-        javax.security.cert.X509Certificate[] certs = session.getPeerCertificateChain();
+        java.security.cert.Certificate[] certs = session.getPeerCertificates();
         if (certs == null || certs.length == 0)
             throw new SSLPeerUnverifiedException("No server certificates found: " + hostname);
 
@@ -52,14 +51,14 @@ public class CustomHostnameVerifier implements HostnameVerifier {
 
     }
 
-    private static java.security.cert.X509Certificate certJavax2Java(javax.security.cert.X509Certificate cert) {
+    private static java.security.cert.X509Certificate certJavax2Java(java.security.cert.Certificate cert) {
         try {
             ByteArrayInputStream bis = new ByteArrayInputStream(cert.getEncoded());
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
             return (java.security.cert.X509Certificate) cf.generateCertificate(bis);
-        } catch (CertificateException | CertificateEncodingException e) {
+        } catch (CertificateException e) {
         }
-      return null;
+        return null;
     }
 
     @Override
@@ -68,7 +67,7 @@ public class CustomHostnameVerifier implements HostnameVerifier {
             verifyHostname(hostname, session);
         } catch (IOException e) {
             ZimbraLog.security.debug(
-                "Hostname verification failed: hostname = " + hostname, e);
+                    "Hostname verification failed: hostname = " + hostname, e);
             return false;
         }
         return true;

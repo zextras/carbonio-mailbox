@@ -152,9 +152,10 @@
             </goals>
             <configuration>
               <target>
-                <taskdef classpathref="maven.plugin.classpath" resource="net/sf/antcontrib/antlib.xml"/>
+                <taskdef classpathref="maven.plugin.classpath"
+                  resource="net/sf/antcontrib/antlib.xml" />
                 <ant antfile="${basedir}/ant-generate-soap-docs.xml">
-                  <target name="generate-soap-api-doc"/>
+                  <target name="generate-soap-api-doc" />
                 </ant>
               </target>
             </configuration>
@@ -166,9 +167,10 @@
             </goals>
             <configuration>
               <target>
-                <taskdef classpathref="maven.plugin.classpath" resource="net/sf/antcontrib/antlib.xml"/>
+                <taskdef classpathref="maven.plugin.classpath"
+                  resource="net/sf/antcontrib/antlib.xml" />
                 <ant antfile="${basedir}/ant-generate-soap-docs.xml">
-                  <target name="generate-soap-api-changelog"/>
+                  <target name="generate-soap-api-changelog" />
                 </ant>
               </target>
             </configuration>
@@ -181,9 +183,10 @@
             </goals>
             <configuration>
               <target>
-                <taskdef classpathref="maven.plugin.classpath" resource="net/sf/antcontrib/antlib.xml"/>
+                <taskdef classpathref="maven.plugin.classpath"
+                  resource="net/sf/antcontrib/antlib.xml" />
                 <ant antfile="${basedir}/ant-generate-soap-docs.xml">
-                  <target name="generate-wsdl"/>
+                  <target name="generate-wsdl" />
                 </ant>
               </target>
             </configuration>
@@ -193,6 +196,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
+        <version>3.3.1</version>
         <executions>
           <execution>
             <id>attach-sources</id>

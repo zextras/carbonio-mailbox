@@ -25,15 +25,15 @@ public class BEncodingTest {
   @Test
   void test() throws Exception {
     List<Object> list = new ArrayList<Object>();
-    list.add(new Integer(654));
+    list.add(Integer.valueOf(654));
     list.add("hwhergk");
     list.add(new StringBuilder("74x"));
 
     Map<String, Object> map = new HashMap<String, Object>();
-    map.put("testing", new Long(5));
+    map.put("testing", Long.valueOf(5));
     map.put("foo2", "bar");
     map.put("herp", list);
-    map.put("Foo", new Float(6.7));
+    map.put("Foo", Float.valueOf((float) 6.7));
     map.put("yy", new TreeMap<Object, Object>());
 
     String encoded = BEncoding.encode(map);

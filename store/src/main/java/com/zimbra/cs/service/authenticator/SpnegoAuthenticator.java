@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.security.DefaultUserIdentity;
 import org.eclipse.jetty.security.LoginService;
-import org.eclipse.jetty.security.SpnegoLoginService;
+import org.eclipse.jetty.security.ConfigurableSpnegoLoginService;
 import org.eclipse.jetty.security.SpnegoUserIdentity;
 import org.eclipse.jetty.security.SpnegoUserPrincipal;
 import org.eclipse.jetty.security.UserAuthentication;
@@ -40,15 +40,15 @@ import com.zimbra.cs.servlet.util.AuthUtil;
 
 public class SpnegoAuthenticator extends SSOAuthenticator {
 
-    private final SpnegoLoginService spnegoUserRealm;
+    private final ConfigurableSpnegoLoginService spnegoUserRealm;
     private String error401Page;
 
-    public SpnegoAuthenticator(HttpServletRequest req, HttpServletResponse resp, SpnegoLoginService spnegoUserRealm) {
+    public SpnegoAuthenticator(HttpServletRequest req, HttpServletResponse resp, ConfigurableSpnegoLoginService spnegoUserRealm) {
         super(req, resp);
         this.spnegoUserRealm = spnegoUserRealm;
     }
 
-    public SpnegoAuthenticator(HttpServletRequest req, HttpServletResponse resp, SpnegoLoginService spnegoUserRealm, String error401Page) {
+    public SpnegoAuthenticator(HttpServletRequest req, HttpServletResponse resp, ConfigurableSpnegoLoginService spnegoUserRealm, String error401Page) {
         this(req, resp, spnegoUserRealm);
         this.error401Page = error401Page;
     }

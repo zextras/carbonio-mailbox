@@ -46,7 +46,7 @@ public class SaveDraft extends MailDocumentHandler {
 
     private static final String[] TARGET_DRAFT_PATH = new String[] { MailConstants.E_MSG, MailConstants.A_ID };
     private static final String[] TARGET_FOLDER_PATH = new String[] { MailConstants.E_MSG, MailConstants.A_FOLDER };
-    private static final String[] RESPONSE_ITEM_PATH = new String[] { };
+    private static final String[] RESPONSE_ITEM_PATH = new String[] {};
 
     @Override
     protected String[] getProxiedIdPath(Element request) {
@@ -59,7 +59,9 @@ public class SaveDraft extends MailDocumentHandler {
     }
 
     @Override
-    protected String[] getResponseItemPath()  { return RESPONSE_ITEM_PATH; }
+    protected String[] getResponseItemPath() {
+        return RESPONSE_ITEM_PATH;
+    }
 
     @Override
     public Element handle(Element request, Map<String, Object> context) throws ServiceException {
@@ -79,7 +81,8 @@ public class SaveDraft extends MailDocumentHandler {
         String identity = msgElem.getAttribute(MailConstants.A_IDENTITY_ID, null);
         String account = msgElem.getAttribute(MailConstants.A_FOR_ACCOUNT, null);
 
-        // allow the caller to update the draft's metadata at the same time as they save the draft
+        // allow the caller to update the draft's metadata at the same time as they save
+        // the draft
         String folderId = msgElem.getAttribute(MailConstants.A_FOLDER, null);
         ItemId iidFolder = new ItemId(folderId == null ? "-1" : folderId, zsc);
         if (!iidFolder.belongsTo(mbox)) {
@@ -91,9 +94,10 @@ public class SaveDraft extends MailDocumentHandler {
         String[] tags = TagUtil.parseTags(msgElem, mbox, octxt);
         Color color = ItemAction.getColor(msgElem);
 
-        // check to see whether the entire message has been uploaded under separate cover
+        // check to see whether the entire message has been uploaded under separate
+        // cover
         String attachment = msgElem.getAttribute(MailConstants.A_ATTACHMENT_ID, null);
-        long autoSendTime = new Long(msgElem.getAttribute(MailConstants.A_AUTO_SEND_TIME, "0"));
+        long autoSendTime = Long.valueOf(msgElem.getAttribute(MailConstants.A_AUTO_SEND_TIME, "0"));
 
         MimeMessageData mimeData = new MimeMessageData();
         Message msg;
@@ -110,7 +114,8 @@ public class SaveDraft extends MailDocumentHandler {
                 Date d = new Date();
                 mm.setSentDate(d);
                 date = d.getTime();
-            } catch (Exception ignored) { }
+            } catch (Exception ignored) {
+            }
 
             try {
                 mm.saveChanges();
@@ -124,7 +129,8 @@ public class SaveDraft extends MailDocumentHandler {
                 AccountUtil.checkQuotaWhenSendMail(mbox);
             }
 
-            String origid = iidOrigid == null ? null : iidOrigid.toString(account == null ? mbox.getAccountId() : account);
+            String origid = iidOrigid == null ? null
+                    : iidOrigid.toString(account == null ? mbox.getAccountId() : account);
 
             msg = mbox.saveDraft(octxt, pm, id, origid, replyType, identity, account, autoSendTime);
         } catch (IOException e) {

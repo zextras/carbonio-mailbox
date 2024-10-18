@@ -37,7 +37,6 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1TaggedObject;
 import org.bouncycastle.asn1.ASN1UTF8String;
-import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERUTF8String;
@@ -46,7 +45,7 @@ import org.bouncycastle.asn1.x509.DistributionPoint;
 import org.bouncycastle.asn1.x509.DistributionPointName;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
-import org.bouncycastle.asn1.x509.X509Extension;
+import org.bouncycastle.asn1.x509.Extension;
 
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.ZimbraLog;
@@ -430,7 +429,7 @@ public class CertUtil {
 
         outStream.format("X509v3 CRL Distribution Points: \n");
 
-        String extOid = X509Extension.cRLDistributionPoints.getId(); // 2.5.29.31
+        String extOid = Extension.cRLDistributionPoints.getId(); // 2.5.29.31
         byte[] extVal = cert.getExtensionValue(extOid);
         if (extVal == null) {
             return;

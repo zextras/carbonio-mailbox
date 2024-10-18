@@ -20,7 +20,8 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.service.util.ItemId;
 
 /**
- * Base class for a search "hit". Generally one iterates over a {@link ZimbraQueryResults}
+ * Base class for a search "hit". Generally one iterates over a
+ * {@link ZimbraQueryResults}
  * to get the hits for a given query.
  *
  * @since Oct 15, 2004
@@ -63,7 +64,7 @@ public abstract class ZimbraHit implements ZimbraQueryHit {
             return (Long) value;
         } else if (value instanceof String) {
             try {
-                return new Long((String) value);
+                return Long.valueOf((String) value);
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException(String.format("Argument='%s' of class String", value));
             }
@@ -99,7 +100,8 @@ public abstract class ZimbraHit implements ZimbraQueryHit {
     abstract int getConversationId() throws ServiceException;
 
     /**
-     * Returns the {@link MailItem} corresponding to this hit, or NULL if one is not available (e.g. for a ProxiedHit).
+     * Returns the {@link MailItem} corresponding to this hit, or NULL if one is not
+     * available (e.g. for a ProxiedHit).
      */
     public abstract MailItem getMailItem() throws ServiceException;
 
@@ -109,12 +111,14 @@ public abstract class ZimbraHit implements ZimbraQueryHit {
     abstract void setItem(MailItem item) throws ServiceException;
 
     /**
-     * Returns TRUE if our associated {@link MailItem} is already loaded (or we don't have one, ie ProxiedHit).
+     * Returns TRUE if our associated {@link MailItem} is already loaded (or we
+     * don't have one, ie ProxiedHit).
      */
     abstract boolean itemIsLoaded() throws ServiceException;
 
     /**
-     * Returns the "name" for sorting purposes. Only guaranteed to work if the search is sort-by-name.
+     * Returns the "name" for sorting purposes. Only guaranteed to work if the
+     * search is sort-by-name.
      */
     abstract String getName() throws ServiceException;
 
@@ -129,10 +133,10 @@ public abstract class ZimbraHit implements ZimbraQueryHit {
     public String toString() {
         try {
             return MoreObjects.toStringHelper(this)
-                .add("mbox", mailbox.getId())
-                .add("item", getItemId())
-                .add("name", getName())
-                .toString();
+                    .add("mbox", mailbox.getId())
+                    .add("item", getItemId())
+                    .add("name", getName())
+                    .toString();
         } catch (ServiceException e) {
             return e.toString();
         }
@@ -175,10 +179,13 @@ public abstract class ZimbraHit implements ZimbraQueryHit {
     /**
      * Compare this hit to other using the sort field only.
      *
-     * TODO: For string sort values, we compare(toUpper()) instead of compareIgnoreCase() or using a collator because
-     * that's the only method that seems to give us the same results as the sorts from SQL server.
+     * TODO: For string sort values, we compare(toUpper()) instead of
+     * compareIgnoreCase() or using a collator because
+     * that's the only method that seems to give us the same results as the sorts
+     * from SQL server.
      *
-     * @return {@code <0} if "this" is BEFORE other, {@code 0} if EQUAL, {@code >0} if this AFTER other
+     * @return {@code <0} if "this" is BEFORE other, {@code 0} if EQUAL, {@code >0}
+     *         if this AFTER other
      * @throws ServiceException failed to compare
      */
     int compareTo(SortBy sort, ZimbraHit other) throws ServiceException {
@@ -288,7 +295,8 @@ public abstract class ZimbraHit implements ZimbraQueryHit {
     }
 
     /**
-     * Return a comparator which sorts by the sort field, and THEN by the mail-item-id
+     * Return a comparator which sorts by the sort field, and THEN by the
+     * mail-item-id
      *
      * @param sortOrder
      */
@@ -299,7 +307,7 @@ public abstract class ZimbraHit implements ZimbraQueryHit {
     private static class ZimbraHitSortAndIdComparator implements Comparator<ZimbraHit> {
         private final SortBy sort;
 
-        ZimbraHitSortAndIdComparator(SortBy sort){
+        ZimbraHitSortAndIdComparator(SortBy sort) {
             this.sort = sort;
         }
 
@@ -330,7 +338,7 @@ public abstract class ZimbraHit implements ZimbraQueryHit {
             }
         }
     }
-    
+
     /**
      * 
      * @param ascending
@@ -352,7 +360,7 @@ public abstract class ZimbraHit implements ZimbraQueryHit {
                 retVal = 0;
         } catch (ServiceException e) {
             ZimbraLog.index.info("Caught ServiceException trying to compare ZimbraHit %s to ZimbraHit %s",
-                lhs, rhs);
+                    lhs, rhs);
             ZimbraLog.index.debug(e);
         }
         if (ascending)
@@ -360,31 +368,30 @@ public abstract class ZimbraHit implements ZimbraQueryHit {
         else
             return retVal;
     }
-    
+
     /**
      * @param lhs
      * @return
-     * @throws ServiceException 
+     * @throws ServiceException
      */
     public static int getReadStatus(ZimbraHit zh) throws ServiceException {
         if (zh instanceof ProxiedHit) {
             try {
                 return ((ProxiedHit) zh).getElement().getAttributeInt(MailConstants.A_UNREAD);
             } catch (ServiceException e) {
-                // This is  message hit
+                // This is message hit
                 Element msgHit = null;
                 try {
                     msgHit = ((ProxiedHit) zh).getElement();
-                    ZimbraLog.index.debug("Message hit element:%s " , msgHit.toString()) ;
+                    ZimbraLog.index.debug("Message hit element:%s ", msgHit.toString());
                     String flagValue = msgHit.getAttribute(MailConstants.A_FLAGS);
                     return (flagValue.contains("u")) ? 1 : 0;
                 } catch (ServiceException e2) {
-                    ZimbraLog.index.debug("Error reading unread flag. :%s for hit:%s", e2.getMessage(), msgHit) ;
+                    ZimbraLog.index.debug("Error reading unread flag. :%s for hit:%s", e2.getMessage(), msgHit);
                     return 1;
                 }
             }
-        }
-        else {
+        } else {
             return zh.getMailItem().isUnread() ? 1 : 0;
         }
     }

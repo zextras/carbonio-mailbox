@@ -3,7 +3,6 @@ package com.zimbra.common.soap;
 public final class SignatureConstants {
     public static final String CERTIFICATE = "certificate";
     public static final String SIGNATURE = "signature";
-    public static final String SMIME = "S/MIME";
     public static final String TYPE = "type";
     public static final String VALID = "valid";
     public static final String MESSAGE_CODE = "messageCode";
@@ -13,7 +12,6 @@ public final class SignatureConstants {
     public static final String NOT_AFTER = "notAfter";
     public static final String ISSUER = "issuer";
     public static final String TRUSTED = "trusted";
-    public static final String NAME = "name";
     public static final String X_509 = "X.509";
     public static final String PKIX = "PKIX";
 
@@ -25,6 +23,18 @@ public final class SignatureConstants {
         SIGNER_CERT_NOT_FOUND,
         ISSUER_CERT_NOT_FOUND,
         ERROR
+    }
+
+    public enum SignatureType {
+        SMIME("S/MIME"),
+        PGP("PGP");
+        private final String value;
+        SignatureType(String value) {
+            this.value = value;
+        }
+        public String value() {
+            return value;
+        }
     }
 
     private SignatureConstants() {

@@ -5,7 +5,6 @@
 
 package qa.unittest;
 
-
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Lists;
@@ -71,7 +70,6 @@ import java.util.TreeSet;
 import javax.mail.MessagingException;
 import org.junit.jupiter.api.Assertions;
 
-
 /**
  * @author bburtin
  */
@@ -82,8 +80,10 @@ public class TestUtil {
     private static boolean sIsCliInitialized = false;
 
     /**
-     * @return the <code>Account</code>, or <code>null</code> if account does not exist.
-     * @throws ServiceException if name is invalid or can't determine the default domain
+     * @return the <code>Account</code>, or <code>null</code> if account does not
+     *         exist.
+     * @throws ServiceException if name is invalid or can't determine the default
+     *                          domain
      */
     public static Account getAccount(String userName) throws ServiceException {
         return AccountTestUtil.getAccount(userName);
@@ -113,7 +113,7 @@ public class TestUtil {
     public static String getBaseUrl(Server server) throws ServiceException {
         String scheme;
         Provisioning prov = Provisioning.getInstance();
-        if(server == null) {
+        if (server == null) {
             server = prov.getLocalServer();
         }
         String hostname = server.getServiceHostname();
@@ -241,10 +241,10 @@ public class TestUtil {
     public static List<Integer> search(Mailbox mbox, String query, Set<MailItem.Type> types) throws ServiceException {
         List<Integer> ids = new ArrayList<Integer>();
         try (ZimbraQueryResults r = mbox.index.search(new OperationContext(mbox), query, types,
-            SortBy.DATE_DESC, 100)) {
+                SortBy.DATE_DESC, 100)) {
             while (r.hasNext()) {
                 ZimbraHit hit = r.getNext();
-                ids.add(new Integer(hit.getItemId()));
+                ids.add(Integer.valueOf(hit.getItemId()));
             }
         } catch (IOException e) {
         }
@@ -277,7 +277,6 @@ public class TestUtil {
         }
         return msgs;
     }
-
 
     /**
      * Gets the raw content of a message.
@@ -327,7 +326,8 @@ public class TestUtil {
     public static void cliSetup() throws ServiceException {
         if (!sIsCliInitialized) {
             if (TestUtil.fromRunUnitTests) {
-                // Don't want to re-initialise log4j etc as results in redirecting away from mailbox.log
+                // Don't want to re-initialise log4j etc as results in redirecting away from
+                // mailbox.log
                 CliUtil.toolSetup();
                 Provisioning.setInstance(newSoapProvisioning());
             }
@@ -343,9 +343,9 @@ public class TestUtil {
         return sp;
     }
 
-
     /**
-     * Creates an account for the given username, with password set to {@link #DEFAULT_PASSWORD}.
+     * Creates an account for the given username, with password set to
+     * {@link #DEFAULT_PASSWORD}.
      */
     public static Account createAccount(String username) throws ServiceException {
         Map<String, Object> attrs = new HashMap<String, Object>();
@@ -355,21 +355,23 @@ public class TestUtil {
 
     /** Creates an account for the given username, and password. */
     public static Account createAccount(String username, String password, Map<String, Object> attrs)
-    throws ServiceException {
+            throws ServiceException {
         Provisioning prov = Provisioning.getInstance();
         String address = getAddress(username);
         return prov.createAccount(address, password, attrs);
     }
 
     /**
-     * Creates an account for the given username, with password set to {@link #DEFAULT_PASSWORD}.
+     * Creates an account for the given username, with password set to
+     * {@link #DEFAULT_PASSWORD}.
      */
     public static Account createAccount(String username, Map<String, Object> attrs) throws ServiceException {
         return createAccount(username, DEFAULT_PASSWORD, attrs);
     }
 
     /**
-     * Deletes the account for the given username. Consider using {@link deleteAccountIfExists} as alternative
+     * Deletes the account for the given username. Consider using
+     * {@link deleteAccountIfExists} as alternative
      * to reduce logging where the account may not exist.
      */
     public static void deleteAccount(String username) throws ServiceException {
@@ -465,7 +467,8 @@ public class TestUtil {
         List<Element> actualChildren = actual.listElements();
         String context = String.format("Element %s, expected:\n%s\nactual:\n%s", expected.getName(), expectedDump,
                 actualDump);
-        Assertions.assertEquals(getElementNames(expectedChildren), getElementNames(actualChildren), context + " children");
+        Assertions.assertEquals(getElementNames(expectedChildren), getElementNames(actualChildren),
+                context + " children");
 
         // Compare child elements
         for (int i = 0; i < expectedChildren.size(); i++) {
@@ -478,7 +481,8 @@ public class TestUtil {
         // Compare attributes
         Set<Attribute> expectedAttrs = expected.listAttributes();
         Set<Attribute> actualAttrs = actual.listAttributes();
-        Assertions.assertEquals(getAttributesAsString(expectedAttrs), getAttributesAsString(actualAttrs), context + " attributes");
+        Assertions.assertEquals(getAttributesAsString(expectedAttrs), getAttributesAsString(actualAttrs),
+                context + " attributes");
     }
 
     /**
@@ -568,6 +572,7 @@ public class TestUtil {
     public static class UserInfo {
         private final String name;
         private Account acct;
+
         private UserInfo(String acctName) {
             try {
                 acctName = AccountTestUtil.getAddress(acctName);
@@ -604,7 +609,7 @@ public class TestUtil {
 
         public void cleanup() {
             if (null == acct) {
-                return;  // Assumes only user UserInfo for creation/deletion of accounts
+                return; // Assumes only user UserInfo for creation/deletion of accounts
             }
             try {
                 TestUtil.deleteAccount(name);
