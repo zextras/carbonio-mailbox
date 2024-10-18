@@ -820,7 +820,7 @@
     <system-lambda.version>1.2.1</system-lambda.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <changelist>-SNAPSHOT</changelist>
-    <revision>24.9.6</revision>
+    <revision>24.9.7</revision>
     <mockserver.version>5.13.0</mockserver.version>
     <mariadb-java-client.version>2.7.3</mariadb-java-client.version>
   </properties>
