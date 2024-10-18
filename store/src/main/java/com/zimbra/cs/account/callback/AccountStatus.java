@@ -81,6 +81,10 @@ public class AccountStatus extends AttributeCallback {
 
         try {
             MessageBrokerClient messageBrokerClient = AdminService.getMessageBrokerClientInstance();
+            if (!messageBrokerClient.healthCheck()) {
+              ZimbraLog.account.warn("Message broker is not reachable, this can happen if message broker is not installed");
+              return;
+            }
             boolean result = messageBrokerClient.publish(new UserStatusChanged(userId, status.toUpperCase()));
             if (result) {
                 ZimbraLog.account.info("Published status changed event for user: " + userId);
