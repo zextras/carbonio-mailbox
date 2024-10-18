@@ -1,5 +1,12 @@
 
 
+# [](https://github.com/Zextras/carbonio-mailbox/compare/4.17.7...null) (2024-10-18)
+
+
+### Bug Fixes
+
+* [CO-1570] Remove logic of smartlinkAwareSize calculation from ToXML class ([7c105bb](https://github.com/Zextras/carbonio-mailbox/commit/7c105bb47e47623e796c85652e50e129c1d597cd))
+
 # [4.17.7](https://github.com/Zextras/carbonio-mailbox/compare/4.17.6...4.17.7) (2024-10-09)
 
 
