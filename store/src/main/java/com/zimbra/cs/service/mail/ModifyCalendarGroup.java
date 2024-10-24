@@ -12,10 +12,7 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.ModifyCalendarGroupRequest;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ModifyCalendarGroup extends MailDocumentHandler {
@@ -46,20 +43,32 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
     var group = getCalendarGroupById(mbox, octxt, id)
             .orElseThrow(() -> ServiceException.FAILURE("Calendar group with ID " + req.getId() + " does NOT exist"));
 
-    if (shouldRenameGroup(req))
+    if (shouldRenameGroup(group, req))
       tryRenameGroup(mbox, octxt, group, req.getName());
 
-    if (shouldModifyListCalendar(req))
+    if (shouldModifyListCalendar(group, req))
       mbox.setCustomData(octxt, group.getId(), MailItem.Type.FOLDER, encodeCustomMetadata(req));
 
     return buildResponse(zsc, group);
   }
 
-  private static boolean shouldRenameGroup(ModifyCalendarGroupRequest req) {
-    return req.getName() != null && !req.getName().isBlank();
+  private static boolean shouldRenameGroup(Folder group, ModifyCalendarGroupRequest req) {
+    return req.getName() != null && !req.getName().isBlank() && !req.getName().equals(group.getName());
   }
-  private static boolean shouldModifyListCalendar(ModifyCalendarGroupRequest req) {
-    return req.getCalendarIds() != null && !req.getCalendarIds().isEmpty();
+
+  private static boolean shouldModifyListCalendar(Folder group, ModifyCalendarGroupRequest req) throws ServiceException {
+    if (req.getCalendarIds() == null) {
+      return false;
+    }
+
+    Set<String> groupCalendarsIds = new HashSet<>(decodeCustomMetadata(group));
+    Set<String> reqCalendarsIds = new HashSet<>(req.getCalendarIds());
+
+    if (reqCalendarsIds.size() != groupCalendarsIds.size()) {
+      return true;
+    }
+
+    return reqCalendarsIds.containsAll(groupCalendarsIds);
   }
 
   private static void tryRenameGroup(Mailbox mbox, OperationContext octxt, Folder group, String groupName) throws ServiceException {
