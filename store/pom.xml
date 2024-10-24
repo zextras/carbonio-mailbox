@@ -197,13 +197,6 @@
       <groupId>org.apache.commons</groupId>
     </dependency>
 
-    <!-- Brings in guava, so it is provided -->
-    <dependency>
-      <artifactId>closure-compiler</artifactId>
-      <groupId>com.google.javascript</groupId>
-      <scope>runtime</scope>
-    </dependency>
-
     <dependency>
       <artifactId>junixsocket-common</artifactId>
       <groupId>com.kohlschutter.junixsocket</groupId>
