@@ -105,7 +105,7 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
     }
     var accountFeatureFilter = Filter.createEqualityFilter(feature, LDAP_TRUE);
 
-    Map<String, Cos> defaultCOSes = allDomains //  default COSes for specified domains
+    Map<String, Cos> defaultCOSes = allDomains
         ? provisioning.getAllDomains().stream()
           .filter(d -> getDefaultCOS(provisioning, d) != null)
           .collect(Collectors.toMap(Domain::getId, d -> getDefaultCOS(provisioning, d)))
@@ -114,22 +114,18 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
           .collect(Collectors.toMap(Domain::getId, d -> getDefaultCOS(provisioning, d)));
 
 
-    var cosWithFeature = provisioning.getAllCos().stream() // all COSes where feature is enabled
+    var cosWithFeature = provisioning.getAllCos().stream()
         .filter(cos -> cos.getAttr(feature, LDAP_FALSE).equals(LDAP_TRUE))
         .collect(Collectors.toList());
 
     if (!cosWithFeature.isEmpty()) {
-      var cosFilters = cosWithFeature.stream()  // create filter for each COS where feature is enabled
+      var cosFilters = cosWithFeature.stream()
           .map(cos -> getCosFeatureFilter(cos, feature)).collect(Collectors.toList());
 
-      for (var pair : defaultCOSes.entrySet()) { // for each default COS in all/specified domains
+      for (var pair : defaultCOSes.entrySet()) {
         var defaultCos = pair.getValue();
         if (defaultCos != null && defaultCos.getAttr(feature, LDAP_FALSE).equals(LDAP_TRUE)) {
-          //if (allDomains) { // for each default cos (all/specified domains)
-          cosFilters.add(getDefaultCosFeatureFilterForDomain(provisioning.getDomainById(pair.getKey()), feature)); //email is under domain and feature is enabled for default COS
-          //} else {
-          //  cosFilters.add(getDefaultCosFeatureFilter(feature));
-          //}
+          cosFilters.add(getDefaultCosFeatureFilterForDomain(provisioning.getDomainById(pair.getKey()), feature));
         }
       }
       return Option.of(Filter.createORFilter(Stream.concat(Stream.of(accountFeatureFilter), cosFilters.stream()).toArray(Filter[]::new)));
