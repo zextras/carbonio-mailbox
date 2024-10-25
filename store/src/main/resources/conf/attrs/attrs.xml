@@ -10151,12 +10151,18 @@ TODO: delete them permanently from here
   <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
   <desc>Whether the WS-Collaboration feature enabled for account or COS</desc>
 </attr>
+
 <attr id="3146" name="carbonioSearchAllDomainsByFeature" type="boolean" cardinality="single" optionalIn="globalConfig" since="24.9.0">
   <globalConfigValue>FALSE</globalConfigValue>
   <desc>Whether the SearchUserByFeature API should search on all domains or only the current user domain</desc>
 </attr>
-  <attr id="3147" name="carbonioSMIMESignatureVerificationEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited"  since="24.12.0">
-    <globalConfigValue>FALSE</globalConfigValue>
-    <desc>whether S/MIME signature verification is enabled.</desc>
-  </attr>
+
+<attr id="3147" name="carbonioSMIMESignatureVerificationEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited"  since="24.12.0">
+  <globalConfigValue>FALSE</globalConfigValue>
+  <desc>whether S/MIME signature verification is enabled.</desc>
+</attr>
+
+<attr id="3148" name="carbonioSearchSpecifiedDomainsByFeature" type="string" max="256" cardinality="multi" optionalIn="domain" since="24.12.0">
+  <desc>List of domain names in which the SearchUserByFeature API should perform users searches</desc>
+</attr>
 </attrs>

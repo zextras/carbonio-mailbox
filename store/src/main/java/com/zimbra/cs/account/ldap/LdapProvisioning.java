@@ -1829,6 +1829,17 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     return searchDirectoryInternal(options, null);
   }
 
+  public String[] getSearchBases(List<Domain> domains, Set<ObjectType> types) throws ServiceException {
+    List<String> bases = new ArrayList<>();
+    for (Domain domain : domains) {
+      String[] domainBases = getSearchBases(domain, types);
+      if (domainBases != null) {
+        bases.addAll(Arrays.asList(domainBases));
+      }
+    }
+    return bases.toArray(new String[0]);
+  }
+
   public String[] getSearchBases(Domain domain, Set<ObjectType> types) throws ServiceException {
     String[] bases;
 
@@ -1956,6 +1967,8 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     if (options.getTypes().contains(ObjectType.habgroups)) {
       bases = new String[1];
       bases[0] = options.getHabRootGroupDn();
+    } else if (options.getMultipleBases()!= null) {
+      bases = getSearchBases(options.getMultipleBases(), types);
     } else {
       bases = getSearchBases(domain, types);
     }
