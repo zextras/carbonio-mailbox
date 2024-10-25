@@ -116,11 +116,12 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
 
     var cosWithFeature = provisioning.getAllCos().stream()
         .filter(cos -> cos.getAttr(feature, LDAP_FALSE).equals(LDAP_TRUE))
-        .collect(Collectors.toList());
+        .toList();
 
     if (!cosWithFeature.isEmpty()) {
       var cosFilters = cosWithFeature.stream()
-          .map(cos -> getCosFeatureFilter(cos, feature)).collect(Collectors.toList());
+          .map(cos -> getCosFeatureFilter(cos, feature))
+          .toList();
 
       for (var pair : defaultCOSes.entrySet()) {
         var defaultCos = pair.getValue();
