@@ -64,11 +64,7 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
     Set<String> groupCalendarsIds = new HashSet<>(decodeCustomMetadata(group));
     Set<String> reqCalendarsIds = new HashSet<>(req.getCalendarIds());
 
-    if (reqCalendarsIds.size() != groupCalendarsIds.size()) {
-      return true;
-    }
-
-    return !reqCalendarsIds.containsAll(groupCalendarsIds);
+    return !reqCalendarsIds.equals(groupCalendarsIds);
   }
 
   private static void tryRenameGroup(Mailbox mbox, OperationContext octxt, Folder group, String groupName) throws ServiceException {
