@@ -68,7 +68,7 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
       return true;
     }
 
-    return reqCalendarsIds.containsAll(groupCalendarsIds);
+    return !reqCalendarsIds.containsAll(groupCalendarsIds);
   }
 
   private static void tryRenameGroup(Mailbox mbox, OperationContext octxt, Folder group, String groupName) throws ServiceException {
