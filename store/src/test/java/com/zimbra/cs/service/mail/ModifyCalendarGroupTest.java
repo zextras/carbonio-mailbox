@@ -6,7 +6,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.JaxbUtil;
-import com.zimbra.soap.mail.message.CalendarGroupInfo;
 import com.zimbra.soap.mail.message.CreateCalendarGroupRequest;
 import com.zimbra.soap.mail.message.CreateCalendarGroupResponse;
 import com.zimbra.soap.mail.message.CreateFolderRequest;
@@ -59,6 +58,27 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
     request.setId(id);
     var addedCalendar = createCalendar(account, "Added Calendar");
     var modifiedCalendarList = List.of(firstCalendar.getId(), secondCalendar.getId(), addedCalendar.getId());
+    request.setCalendarIds(modifiedCalendarList);
+
+    final var soapResponse = getSoapClient().executeSoap(account, request);
+
+    assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+    var response = parseSoapResponse(soapResponse, ModifyCalendarGroupResponse.class);
+    var group = response.getGroup();
+    assertEquals(modifiedCalendarList, group.getCalendarIds());
+  }
+
+  @Test
+  void modifyListCalendar() throws Exception {
+    var firstCalendar = createCalendar(account, "Test Calendar 1");
+    var secondCalendar = createCalendar(account, "Test Calendar 2");
+    var res = addGroupFor(account, "Group Calendar", List.of(firstCalendar.getId(), secondCalendar.getId()));
+    // Request
+    var request = new ModifyCalendarGroupRequest();
+    var id = res.getGroup().getId();
+    request.setId(id);
+    var otherCalendar = createCalendar(account, "Other Calendar");
+    var modifiedCalendarList = List.of(firstCalendar.getId(), otherCalendar.getId());
     request.setCalendarIds(modifiedCalendarList);
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
