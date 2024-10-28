@@ -37,8 +37,6 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
     final var mbox = getRequestedMailbox(zsc);
     final var octxt = getOperationContext(zsc, context);
 
-    // TODO: set for groups
-
     ModifyCalendarGroupRequest req = zsc.elementToJaxb(request);
 
     int id = Integer.parseInt(req.getId());
@@ -49,7 +47,7 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
       tryRenameGroup(mbox, octxt, group, req.getName());
 
     if (shouldModifyListCalendar(group, req))
-      mbox.setCustomData(octxt, group.getId(), MailItem.Type.FOLDER, encodeCustomMetadata(req));
+      mbox.setCustomData(octxt, group.getId(), MailItem.Type.FOLDER, encodeCustomMetadata(new HashSet<>(req.getCalendarIds())));
 
     return buildResponse(zsc, group);
   }
@@ -102,10 +100,10 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
             .filter(group -> group.getId() == id).findFirst();
   }
 
-  private static MailItem.CustomMetadata encodeCustomMetadata(ModifyCalendarGroupRequest req)
+  private static MailItem.CustomMetadata encodeCustomMetadata(HashSet<String> calendars)
       throws ServiceException {
     final var encodedList =
-        req.getCalendarIds().stream()
+            calendars.stream()
             .map(String::valueOf)
             .collect(Collectors.joining(LIST_SEPARATOR));
     final var metadata = new Metadata().put(CALENDAR_IDS_METADATA_KEY, encodedList).toString();
