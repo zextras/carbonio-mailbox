@@ -37,6 +37,8 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
     final var mbox = getRequestedMailbox(zsc);
     final var octxt = getOperationContext(zsc, context);
 
+    // TODO: set for groups
+
     ModifyCalendarGroupRequest req = zsc.elementToJaxb(request);
 
     int id = Integer.parseInt(req.getId());
@@ -57,10 +59,10 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
   }
 
   private static boolean shouldModifyListCalendar(Folder group, ModifyCalendarGroupRequest req) throws ServiceException {
-    if (req.getCalendarIds() == null) {
-      return false;
-    }
+    return req.getCalendarIds() != null && notEquals(group, req);
+  }
 
+  private static boolean notEquals(Folder group, ModifyCalendarGroupRequest req) throws ServiceException {
     Set<String> groupCalendarsIds = new HashSet<>(decodeCustomMetadata(group));
     Set<String> reqCalendarsIds = new HashSet<>(req.getCalendarIds());
 
