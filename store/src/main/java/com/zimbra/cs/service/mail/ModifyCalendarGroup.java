@@ -12,7 +12,12 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.ModifyCalendarGroupRequest;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ModifyCalendarGroup extends MailDocumentHandler {
@@ -43,24 +48,24 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
     var group = getCalendarGroupById(mbox, octxt, id)
             .orElseThrow(() -> ServiceException.FAILURE("Calendar group with ID " + req.getId() + " does NOT exist"));
 
-    if (shouldRenameGroup(group, req))
+    if (shouldRenameGroup(req, group))
       tryRenameGroup(mbox, octxt, group, req.getName());
 
-    if (shouldModifyListCalendar(group, req))
+    if (shouldModifyListCalendar(req, group))
       mbox.setCustomData(octxt, group.getId(), MailItem.Type.FOLDER, encodeCustomMetadata(new HashSet<>(req.getCalendarIds())));
 
     return buildResponse(zsc, group);
   }
 
-  private static boolean shouldRenameGroup(Folder group, ModifyCalendarGroupRequest req) {
+  private static boolean shouldRenameGroup(ModifyCalendarGroupRequest req, Folder group) {
     return req.getName() != null && !req.getName().isBlank() && !req.getName().equals(group.getName());
   }
 
-  private static boolean shouldModifyListCalendar(Folder group, ModifyCalendarGroupRequest req) throws ServiceException {
-    return req.getCalendarIds() != null && notEquals(group, req);
+  private static boolean shouldModifyListCalendar(ModifyCalendarGroupRequest req, Folder group) throws ServiceException {
+    return req.getCalendarIds() != null && notEquals(req, group);
   }
 
-  private static boolean notEquals(Folder group, ModifyCalendarGroupRequest req) throws ServiceException {
+  private static boolean notEquals(ModifyCalendarGroupRequest req, Folder group) throws ServiceException {
     Set<String> groupCalendarsIds = new HashSet<>(decodeCustomMetadata(group));
     Set<String> reqCalendarsIds = new HashSet<>(req.getCalendarIds());
 
