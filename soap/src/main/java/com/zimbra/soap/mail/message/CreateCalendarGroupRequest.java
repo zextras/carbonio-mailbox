@@ -33,7 +33,7 @@ public class CreateCalendarGroupRequest {
    * @zm-api-field-tag calendarIds
    * @zm-api-field-description Calendar IDs
    */
-  @XmlElement(name = "calendarId" /* calendarId */, required = true)
+  @XmlElement(name = "calendarId" /* calendarId */)
   private List<String> calendarIds;
 
   public String getName() {

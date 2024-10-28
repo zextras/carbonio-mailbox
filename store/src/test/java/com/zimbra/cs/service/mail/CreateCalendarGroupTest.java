@@ -27,6 +27,7 @@ import java.util.List;
 import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Tag("api")
 class CreateCalendarGroupTest extends SoapTestSuite {
@@ -48,6 +49,22 @@ class CreateCalendarGroupTest extends SoapTestSuite {
   }
 
   @Test
+  void emptyGroup() throws Exception {
+    final var request = new CreateCalendarGroupRequest();
+    var groupName = "Empty Group";
+    request.setName(groupName);
+
+    final var soapResponse = getSoapClient().executeSoap(account, request);
+
+    assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+    final var response = parseSoapResponse(soapResponse);
+    var group = response.getGroup();
+    assertFalse(StringUtil.isNullOrEmpty(group.getId()));
+    assertEquals(groupName, group.getName());
+    assertNull(group.getCalendarIds());
+  }
+
+  @Test
   void createGroup() throws Exception {
     var firstId = createCalendar(account, "Test Calendar 1").getId();
     var secondId = createCalendar(account, "Test Calendar 2").getId();
@@ -66,7 +83,6 @@ class CreateCalendarGroupTest extends SoapTestSuite {
     assertEquals("Test Group", group.getName());
     assertEquals(List.of(firstId, secondId, thirdId), group.getCalendarIds());
   }
-
 
   @Test
   void noDuplicateCalendarInGroup() throws Exception {
