@@ -6,6 +6,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.JaxbUtil;
+import com.zimbra.soap.mail.message.CalendarGroupInfo;
 import com.zimbra.soap.mail.message.CreateCalendarGroupRequest;
 import com.zimbra.soap.mail.message.CreateCalendarGroupResponse;
 import com.zimbra.soap.mail.message.CreateFolderRequest;
@@ -51,15 +52,17 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
   void addOneCalendar() throws Exception {
     var firstCalendar = createCalendar(account, "Test Calendar 1");
     var secondCalendar = createCalendar(account, "Test Calendar 2");
-    var thirdCalendar = createCalendar(account, "Test Calendar 3");
     var res = addGroupFor(account, "Group Calendar", List.of(firstCalendar.getId(), secondCalendar.getId()));
+    // Request
     var request = new ModifyCalendarGroupRequest();
     var id = res.getGroup().getId();
     request.setId(id);
-    var modifiedCalendarList = List.of(firstCalendar.getId(), secondCalendar.getId(), thirdCalendar.getId());
+    var addedCalendar = createCalendar(account, "Added Calendar");
+    var modifiedCalendarList = List.of(firstCalendar.getId(), secondCalendar.getId(), addedCalendar.getId());
     request.setCalendarIds(modifiedCalendarList);
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
+
     assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
     var response = parseSoapResponse(soapResponse, ModifyCalendarGroupResponse.class);
     var group = response.getGroup();
@@ -73,6 +76,7 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
             createCalendar(account, "Test Calendar 2").getId()
     );
     var res = addGroupFor(account, "Group Calendar", calendarIds);
+    // Request
     var request = new ModifyCalendarGroupRequest();
     var id = res.getGroup().getId();
     request.setId(id);
@@ -80,6 +84,7 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
     request.setName(groupNameModified);
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
+
     assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
     var response = parseSoapResponse(soapResponse, ModifyCalendarGroupResponse.class);
     var group = response.getGroup();
@@ -116,4 +121,6 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
                     .getElement(clazz.getSimpleName());
     return JaxbUtil.elementToJaxb(rootElement, clazz);
   }
+
+//  private record CalendarGroupInfoMock(String id, String name, List<String> calendarIds) {}
 }
