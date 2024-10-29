@@ -4,7 +4,7 @@ import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
 import com.unboundid.ldap.listener.InMemoryDirectoryServer;
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
-import com.zextras.carbonio.message_broker.config.enums.Service;
+import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zextras.mailbox.util.InMemoryLdapServer.Builder;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
@@ -122,8 +122,8 @@ public class MailboxTestUtil {
   private static void mockMessageBrokerClient() {
     if(mockedMessageBrokerClient == null) {
       MessageBrokerClient messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
-      MockedStatic<AdminService> mockedAdminServiceStatic = Mockito.mockStatic(AdminService.class, Mockito.CALLS_REAL_METHODS);
-      mockedAdminServiceStatic.when(AdminService::getMessageBrokerClientInstance).thenReturn(messageBrokerClient);
+      MockedStatic<MessageBrokerFactory> mockedMessageBrokerFactory = Mockito.mockStatic(MessageBrokerFactory.class, Mockito.CALLS_REAL_METHODS);
+      mockedMessageBrokerFactory.when(MessageBrokerFactory::getMessageBrokerClientInstance).thenReturn(messageBrokerClient);
       mockedMessageBrokerClient = messageBrokerClient;
     }
   }

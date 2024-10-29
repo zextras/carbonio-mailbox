@@ -6,12 +6,12 @@ package com.zextras.mailbox.callbacks;
 
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.carbonio.message_broker.events.services.mailbox.UserStatusChanged;
+import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.callback.AccountStatus;
 import com.zimbra.cs.account.callback.CallbackContext;
-import com.zimbra.cs.service.admin.AdminService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -33,7 +33,7 @@ class AccountStatusChangedCallbackTest {
    * This just tests that if calls are successful no other exceptions are thrown.
    */
   @Test
-  void shouldNotFailWhenExecutingUserStatusChangedCallback(){
+  void shouldNotFailWhenExecutingUserStatusChangedCallback() throws Exception {
     CallbackContext context = Mockito.mock(CallbackContext.class);
     String attrName = "fake";
     Account entry = Mockito.mock(Account.class);
@@ -43,7 +43,7 @@ class AccountStatusChangedCallbackTest {
     Mockito.when(entry.getAccountStatus(any(Provisioning.class))).thenReturn("active");
     Mockito.when(entry.getId()).thenReturn("fake-account-id");
 
-    MessageBrokerClient mockedMessageBrokerClient = AdminService.getMessageBrokerClientInstance();
+    MessageBrokerClient mockedMessageBrokerClient = MessageBrokerFactory.getMessageBrokerClientInstance();
     Mockito.when(mockedMessageBrokerClient.publish(any(UserStatusChanged.class))).thenReturn(true);
 
     accountStatus.postModify(context, attrName, entry);

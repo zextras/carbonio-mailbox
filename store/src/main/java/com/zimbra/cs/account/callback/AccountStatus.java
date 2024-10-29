@@ -5,11 +5,9 @@
 
 package com.zimbra.cs.account.callback;
 
-import java.util.Map;
-import java.util.Set;
-
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.carbonio.message_broker.events.services.mailbox.UserStatusChanged;
+import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
@@ -19,7 +17,8 @@ import com.zimbra.cs.account.AttributeCallback;
 import com.zimbra.cs.account.DistributionList;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.service.admin.AdminService;
+import java.util.Map;
+import java.util.Set;
 
 public class AccountStatus extends AttributeCallback {
 
@@ -80,11 +79,7 @@ public class AccountStatus extends AttributeCallback {
         String userId = account.getId();
 
         try {
-            MessageBrokerClient messageBrokerClient = AdminService.getMessageBrokerClientInstance();
-            if (!messageBrokerClient.healthCheck()) {
-              ZimbraLog.account.warn("Message broker is not reachable, this can happen if message broker is not installed");
-              return;
-            }
+            MessageBrokerClient messageBrokerClient = MessageBrokerFactory.getMessageBrokerClientInstance();
             boolean result = messageBrokerClient.publish(new UserStatusChanged(userId, status.toUpperCase()));
             if (result) {
                 ZimbraLog.account.info("Published status changed event for user: " + userId);

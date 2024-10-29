@@ -6,11 +6,9 @@
 package com.zimbra.cs.service.admin;
 
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
-import com.zextras.carbonio.message_broker.config.enums.Service;
-import com.zextras.carbonio.message_broker.events.services.mailbox.UserDeleted;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
-import com.zextras.mailbox.client.ServiceDiscoverHttpClient;
+import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
@@ -20,11 +18,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import io.vavr.control.Try;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -401,29 +395,7 @@ public class AdminService implements DocumentService {
     return result;
   }
 
-  protected MessageBrokerClient getMessageBroker() {
-      return getMessageBrokerClientInstance();
-  }
-
-  public static MessageBrokerClient getMessageBrokerClientInstance() {
-    Path filePath = Paths.get("/etc/carbonio/mailbox/service-discover/token");
-    String token;
-    try {
-      token = Files.readString(filePath);
-    } catch (IOException e) {
-      throw new RuntimeException("Can't read consul token from file", e);
-    }
-
-    ServiceDiscoverHttpClient serviceDiscoverHttpClient =
-        ServiceDiscoverHttpClient.defaultURL("carbonio-message-broker")
-            .withToken(token);
-
-    return MessageBrokerClient.fromConfig(
-            "127.78.0.7",
-            20005,
-            serviceDiscoverHttpClient.getConfig("default/username").getOrElse("carbonio-message-broker"),
-            serviceDiscoverHttpClient.getConfig("default/password").getOrElse("")
-        )
-        .withCurrentService(Service.MAILBOX);
+  protected Try<MessageBrokerClient> getMessageBroker() {
+      return Try.of(MessageBrokerFactory::getMessageBrokerClientInstance);
   }
 }

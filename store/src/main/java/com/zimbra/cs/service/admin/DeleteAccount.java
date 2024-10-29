@@ -24,6 +24,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import com.zimbra.soap.admin.message.DeleteAccountResponse;
 
+import io.vavr.control.Try;
 import java.util.List;
 import java.util.Map;
 
@@ -35,11 +36,11 @@ public class DeleteAccount extends AdminDocumentHandler {
   private static final String[] TARGET_ACCOUNT_PATH = new String[] {AdminConstants.E_ID};
 
   private final DeleteUserUseCase deleteUserUseCase;
-  private final MessageBrokerClient messageBrokerClient;
+  private final Try<MessageBrokerClient> messageBrokerClientTry;
 
-  public DeleteAccount(DeleteUserUseCase deleteUserUseCase, MessageBrokerClient messageBrokerClient) {
+  public DeleteAccount(DeleteUserUseCase deleteUserUseCase, Try<MessageBrokerClient> messageBrokerClientTry) {
     this.deleteUserUseCase = deleteUserUseCase;
-    this.messageBrokerClient = messageBrokerClient;
+    this.messageBrokerClientTry = messageBrokerClientTry;
   }
 
   @Override
@@ -111,12 +112,9 @@ public class DeleteAccount extends AdminDocumentHandler {
 
   private void publishAccountDeletedEvent(Account account) {
     String userId = account.getId();
-    if (!messageBrokerClient.healthCheck()) {
-      ZimbraLog.account.warn("Message broker is not reachable, this can happen if message broker is not installed");
-      return;
-    }
     try {
-      boolean result = messageBrokerClient.publish(new UserDeleted(userId));
+			final MessageBrokerClient messageBrokerClient = messageBrokerClientTry.get();
+			boolean result = messageBrokerClient.publish(new UserDeleted(userId));
       if (result) {
         ZimbraLog.account.info("Published deleted account event for user: " + userId);
       } else {

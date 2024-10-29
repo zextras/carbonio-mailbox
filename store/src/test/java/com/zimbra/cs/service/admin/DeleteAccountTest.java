@@ -8,6 +8,7 @@ import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.carbonio.message_broker.events.services.mailbox.UserDeleted;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
+import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.account.ZAttrProvisioning;
@@ -65,7 +66,7 @@ class DeleteAccountTest {
     final MailboxManager mailboxManager = MailboxManager.getInstance();
     provisioning = Provisioning.getInstance();
     accountCreatorFactory = new AccountCreator.Factory(provisioning);
-    mockMessageBrokerClient = AdminService.getMessageBrokerClientInstance();
+    mockMessageBrokerClient = MessageBrokerFactory.getMessageBrokerClientInstance();
     deleteAccount =
         new DeleteAccount(
             new DeleteUserUseCase(
@@ -73,7 +74,7 @@ class DeleteAccountTest {
                 mailboxManager,
                 new AclService(mailboxManager, provisioning),
                 ZimbraLog.security),
-            mockMessageBrokerClient);
+            Try.of(() -> mockMessageBrokerClient));
     provisioning.createDomain(OTHER_DOMAIN, new HashMap<>());
   }
 
@@ -319,7 +320,7 @@ class DeleteAccountTest {
         DeleteAccount deleteAccountHandler =
                 new DeleteAccount(
                         deleteUserUseCase,
-                        mockMessageBrokerClient);
+                        Try.of(() -> mockMessageBrokerClient));
         Mockito.when(deleteUserUseCase.delete(toDeleteId)).thenReturn(Try.failure(new RuntimeException("message")));
         DeleteAccountRequest deleteAccountRequest = new DeleteAccountRequest(toDeleteId);
         Element request = JaxbUtil.jaxbToElement(deleteAccountRequest);
