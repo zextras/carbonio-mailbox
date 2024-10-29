@@ -25,8 +25,7 @@ public class MessageBrokerProvider {
 		final String token = consulTokenProvider.getToken()
 				.getOrElseThrow(CreateMessageBrokerException::new);
 		ServiceDiscoverHttpClient serviceDiscoverHttpClient =
-				ServiceDiscoverHttpClient.defaultURL("carbonio-message-broker")
-						.withToken(token);
+				ServiceDiscoverHttpClient.defaultURL(token, "carbonio-message-broker");
 
 		return MessageBrokerClient.fromConfig(
 						"127.78.0.7",

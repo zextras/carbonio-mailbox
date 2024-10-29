@@ -26,27 +26,15 @@ public class ServiceDiscoverHttpClient {
   private final Logger logger = LoggerFactory.getLogger(ServiceDiscoverHttpClient.class);
 
   private final String serviceDiscoverURL;
-  private String token;
+  private final String token;
 
-  ServiceDiscoverHttpClient(String serviceDiscoverURL) {
+  ServiceDiscoverHttpClient(String token, String serviceDiscoverURL) {
     this.serviceDiscoverURL = serviceDiscoverURL;
-    this.token = System.getenv("CONSUL_HTTP_TOKEN"); // default: get from env
-  }
-
-  public static ServiceDiscoverHttpClient atURL(
-    String url,
-    String serviceName
-  ) {
-    return new ServiceDiscoverHttpClient(url + "/v1/kv/" + serviceName + "/");
-  }
-
-  public static ServiceDiscoverHttpClient defaultURL(String serviceName) {
-    return new ServiceDiscoverHttpClient("http://localhost:8500/v1/kv/" + serviceName + "/");
-  }
-
-  public ServiceDiscoverHttpClient withToken(String token) {
     this.token = token;
-    return this;
+  }
+
+  public static ServiceDiscoverHttpClient defaultURL(String token, String serviceName) {
+    return new ServiceDiscoverHttpClient(token,"http://localhost:8500/v1/kv/" + serviceName + "/");
   }
 
   public Try<String> getConfig(String configKey) {
