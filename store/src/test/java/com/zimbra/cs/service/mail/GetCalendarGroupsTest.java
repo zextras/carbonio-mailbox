@@ -18,6 +18,8 @@ import com.zimbra.soap.mail.message.GetCalendarGroupsResponse;
 import com.zimbra.soap.mail.type.Folder;
 import com.zimbra.soap.mail.type.NewFolderSpec;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -98,6 +100,18 @@ class GetCalendarGroupsTest extends SoapTestSuite {
     assertEquals(ALL_CALENDARS_GROUP_NAME, response.getGroups().get(0).getName());
     List<String> groupNames = response.getGroups().stream().map(CalendarGroupInfo::getName).toList();
     assertTrue(groupNames.containsAll(List.of(groupName1, groupName2)));
+  }
+
+  @Test
+  void groupWithNoCalendars() throws Exception {
+    String groupName = "Empty Group";
+    createGroupFor(account, groupName, Collections.emptyList());
+    final var request = new GetCalendarGroupsRequest();
+
+    final var soapResponse = getSoapClient().executeSoap(account, request);
+
+    final var response = parseSoapResponse(soapResponse);
+    assertNull(response.getGroups().get(1).getCalendarIds());
   }
 
   private void addCalendarTo(Account account, String name) throws Exception {
