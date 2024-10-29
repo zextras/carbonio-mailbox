@@ -9,6 +9,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class MessageBrokerFactory {
+	private MessageBrokerFactory() {
+		// empty
+	};
 
 	public static MessageBrokerClient getMessageBrokerClientInstance()
 			throws CreateMessageBrokerException {
