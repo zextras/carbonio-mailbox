@@ -126,7 +126,7 @@ public class DeleteCalendarRequest {
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
-    private DeleteCalendarRequest() {
+    public DeleteCalendarRequest() {
         this(null);
     }
 
