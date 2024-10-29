@@ -34,7 +34,6 @@ public class SoapTestSuite {
 
   @RegisterExtension
   static SoapExtension soapExtension = new SoapExtension.Builder()
-      .addEngineHandler("com.zimbra.cs.service.admin.AdminServiceWithFakeBrokerClient")
       .addEngineHandler("com.zimbra.cs.service.account.AccountService")
       .addEngineHandler("com.zimbra.cs.service.mail.MailServiceWithoutTracking")
       .create();

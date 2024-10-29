@@ -6,7 +6,7 @@ package com.zextras.mailbox.callbacks;
 
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.carbonio.message_broker.events.services.mailbox.UserStatusChanged;
-import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
+import com.zextras.mailbox.messageBroker.MessageBrokerProvider;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -43,7 +43,7 @@ class AccountStatusChangedCallbackTest {
     Mockito.when(entry.getAccountStatus(any(Provisioning.class))).thenReturn("active");
     Mockito.when(entry.getId()).thenReturn("fake-account-id");
 
-    MessageBrokerClient mockedMessageBrokerClient = MessageBrokerFactory.getMessageBrokerClientInstance();
+    MessageBrokerClient mockedMessageBrokerClient = Mockito.mock(MessageBrokerClient.class);
     Mockito.when(mockedMessageBrokerClient.publish(any(UserStatusChanged.class))).thenReturn(true);
 
     accountStatus.postModify(context, attrName, entry);

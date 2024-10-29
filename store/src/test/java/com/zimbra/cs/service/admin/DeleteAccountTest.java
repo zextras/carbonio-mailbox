@@ -8,7 +8,7 @@ import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.carbonio.message_broker.events.services.mailbox.UserDeleted;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
-import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
+import com.zextras.mailbox.messageBroker.MessageBrokerProvider;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.account.ZAttrProvisioning;
@@ -66,7 +66,7 @@ class DeleteAccountTest {
     final MailboxManager mailboxManager = MailboxManager.getInstance();
     provisioning = Provisioning.getInstance();
     accountCreatorFactory = new AccountCreator.Factory(provisioning);
-    mockMessageBrokerClient = MessageBrokerFactory.getMessageBrokerClientInstance();
+    mockMessageBrokerClient = Mockito.mock(MessageBrokerClient.class);
     deleteAccount =
         new DeleteAccount(
             new DeleteUserUseCase(

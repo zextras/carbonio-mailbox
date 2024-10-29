@@ -8,7 +8,7 @@ package com.zimbra.cs.service.admin;
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
-import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
+import com.zextras.mailbox.messageBroker.MessageBrokerProvider;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
@@ -396,6 +396,6 @@ public class AdminService implements DocumentService {
   }
 
   protected Try<MessageBrokerClient> getMessageBroker() {
-      return Try.of(MessageBrokerFactory::getMessageBrokerClientInstance);
+      return Try.of(() -> MessageBrokerProvider.getDefault().getMessageBrokerClientInstance());
   }
 }
