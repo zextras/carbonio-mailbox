@@ -83,8 +83,10 @@ class GetCalendarGroupsTest extends SoapTestSuite {
     var secondCalendar = createCalendar(account, "test-calendar-2");
     var thirdCalendar = createCalendar(account, "test-calendar-3");
 
-    createGroupFor(account, "Test Group 1", List.of(firstCalendar.getId(), secondCalendar.getId()));
-    createGroupFor(account, "Test Group 2", List.of(thirdCalendar.getId()));
+    String groupName1 = "Test Group 1";
+    createGroupFor(account, groupName1, List.of(firstCalendar.getId(), secondCalendar.getId()));
+    String groupName2 = "Test Group 2";
+    createGroupFor(account, groupName2, List.of(thirdCalendar.getId()));
 
     final var request = new GetCalendarGroupsRequest();
 
@@ -95,7 +97,7 @@ class GetCalendarGroupsTest extends SoapTestSuite {
     assertEquals(3, response.getGroups().size());
     assertEquals(ALL_CALENDARS_GROUP_NAME, response.getGroups().get(0).getName());
     List<String> groupNames = response.getGroups().stream().map(CalendarGroupInfo::getName).toList();
-    assertTrue(groupNames.containsAll(List.of("Test Group 1", "Test Group 2")));
+    assertTrue(groupNames.containsAll(List.of(groupName1, groupName2)));
   }
 
   private void addCalendarTo(Account account, String name) throws Exception {

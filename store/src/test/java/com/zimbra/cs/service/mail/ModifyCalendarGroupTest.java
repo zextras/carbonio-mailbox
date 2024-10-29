@@ -141,6 +141,4 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
                     .getElement(clazz.getSimpleName());
     return JaxbUtil.elementToJaxb(rootElement, clazz);
   }
-
-//  private record CalendarGroupInfoMock(String id, String name, List<String> calendarIds) {}
 }

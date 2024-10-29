@@ -71,7 +71,8 @@ class CreateCalendarGroupTest extends SoapTestSuite {
     var thirdId = createCalendar(account, "Test Calendar 3").getId();
 
     final var request = new CreateCalendarGroupRequest();
-    request.setName("Test Group");
+    String groupName = "Test Group";
+    request.setName(groupName);
     request.setCalendarIds(List.of(firstId, secondId, thirdId));
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
@@ -80,7 +81,7 @@ class CreateCalendarGroupTest extends SoapTestSuite {
     final var response = parseSoapResponse(soapResponse);
     var group = response.getGroup();
     assertFalse(StringUtil.isNullOrEmpty(group.getId()));
-    assertEquals("Test Group", group.getName());
+    assertEquals(groupName, group.getName());
     assertEquals(List.of(firstId, secondId, thirdId), group.getCalendarIds());
   }
 
@@ -89,7 +90,8 @@ class CreateCalendarGroupTest extends SoapTestSuite {
     var firstId = createCalendar(account, "Test Calendar 1").getId();
 
     final var request = new CreateCalendarGroupRequest();
-    request.setName("Test Group");
+    String groupName = "Test Group";
+    request.setName(groupName);
     request.setCalendarIds(List.of(firstId, firstId));
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
@@ -98,14 +100,14 @@ class CreateCalendarGroupTest extends SoapTestSuite {
     final var response = parseSoapResponse(soapResponse);
     var group = response.getGroup();
     assertFalse(StringUtil.isNullOrEmpty(group.getId()));
-    assertEquals("Test Group", group.getName());
+    assertEquals(groupName, group.getName());
     assertEquals(List.of(firstId), group.getCalendarIds());
   }
 
 
   @Test
   void idDoesNotExists() throws Exception {
-    createCalendar(account, "Test Calendar 1").getId();
+    createCalendar(account, "Test Calendar 1");
     var lastCreated = createCalendar(account, "Test Calendar 2").getId();
     var notExistingId = lastCreated + 1;
 
