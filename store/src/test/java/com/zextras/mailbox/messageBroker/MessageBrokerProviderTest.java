@@ -11,20 +11,19 @@ import com.zimbra.cs.httpclient.HttpClientFactory;
 import io.vavr.control.Try;
 import org.apache.http.impl.client.HttpClients;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.integration.ClientAndServer;
 
 class MessageBrokerProviderTest {
 
-	private ClientAndServer consulServer;
+	private static ClientAndServer consulServer;
 	private static final int CONSUL_PORT = 8500;
 
-	private final HttpClientFactory httpClientFactoryMock = mock(HttpClientFactory.class);
 
-	@BeforeEach
-	public void startUp() throws Exception {
-		when(httpClientFactoryMock.createWithProxy()).thenReturn(HttpClients.createMinimal());
+	@BeforeAll
+	public static void startUp() throws Exception {
 		consulServer = startClientAndServer(CONSUL_PORT);
 	}
 
