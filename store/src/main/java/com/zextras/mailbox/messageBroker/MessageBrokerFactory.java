@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-only
 package com.zextras.mailbox.messageBroker;
 
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
@@ -10,7 +13,6 @@ import java.nio.file.Paths;
 
 public class MessageBrokerFactory {
 	private MessageBrokerFactory() {
-		// empty
 	};
 
 	public static MessageBrokerClient getMessageBrokerClientInstance()
