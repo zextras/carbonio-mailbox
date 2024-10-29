@@ -23,39 +23,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DeleteCalendar extends ItemAction {
-//    @Override
-//    protected String[] getProxiedIdPath(Element request) {
-//        String operation = getXPath(request, OPERATION_PATH);
-//        if (operation != null && FOLDER_OPS.contains(operation.toLowerCase()))
-//            return TARGET_ITEM_PATH;
-//        return super.getProxiedIdPath(request);
-//    }
-
-//    private static final String OP_EMPTY = "empty";
-//    private static final String OP_REFRESH = "sync";
-//    private static final String OP_FREEBUSY = "fb";
-//    private static final String OP_CHECK = "check";
-//    private static final String OP_UNCHECK = '!' + OP_CHECK;
-//    private static final String OP_SET_URL = "url";
-//    private static final String OP_IMPORT = "import";
-//    private static final String OP_GRANT = "grant";
-//    private static final String OP_REVOKE = '!' + OP_GRANT;
-//    private static final String OP_REVOKEORPHANGRANTS = "revokeorphangrants";
-//    private static final String OP_SYNCON = "syncon";
-//    private static final String OP_SYNCOFF = '!' + OP_SYNCON;
-//    private static final String OP_RETENTIONPOLICY = "retentionpolicy";
-//    private static final String OP_DISABLE_ACTIVESYNC = "disableactivesync";
-//    private static final String OP_ENABLE_ACTIVESYNC = '!' + OP_DISABLE_ACTIVESYNC;
-//    private static final String OP_WEBOFFLINESYNCDAYS = "webofflinesyncdays";
-//
-//
-//    private static final Set<String> FOLDER_OPS = ImmutableSet.of(
-//            OP_EMPTY, OP_REFRESH, OP_SET_URL, OP_IMPORT, OP_FREEBUSY, OP_CHECK, OP_UNCHECK, OP_GRANT,
-//            OP_REVOKE, OP_REVOKEORPHANGRANTS, OP_UPDATE, OP_SYNCON, OP_SYNCOFF, OP_RETENTIONPOLICY,
-//            OP_DISABLE_ACTIVESYNC, OP_ENABLE_ACTIVESYNC, OP_WEBOFFLINESYNCDAYS
-//    );
-
-
     private static final String LIST_SEPARATOR = "#";
     private static final String CALENDAR_IDS_SECTION_KEY = "calendarIds";
     private static final String CALENDAR_IDS_METADATA_KEY = "cids";
@@ -117,13 +84,24 @@ public class DeleteCalendar extends ItemAction {
     }
 
     private void updateGroups(ItemActionResult result, Mailbox mbox, OperationContext octxt) throws ServiceException {
-        groupCalendarsByUpdatedIds(mbox.getCalendarGroups(octxt, SortBy.NAME_ASC), result.getSuccessIds())
-                .forEach((group, calendarList) -> Try.run(() -> mbox.setCustomData(octxt, group.getId(), group.getType(), encodeCalendarList(calendarList)))
-                .onFailure(e -> ZimbraLog.mailbox.error("Failed to update group with id: " + group.getId(), e)));
+        var deletedCalendarIds = result.getSuccessIds();
+        groupsByDeletedCalendars(mbox.getCalendarGroups(octxt, SortBy.NAME_ASC), deletedCalendarIds)
+                .forEach((group, calendarList) ->
+                        tryUpdateCalendarList(mbox, octxt, group, calendarList)
+                        .onFailure(e -> ZimbraLog.mailbox.error("Failed to update group with id: " + group.getId(), e))
+                );
+    }
+
+    private Try<Void> tryUpdateCalendarList(Mailbox mbox, OperationContext octxt, Folder group, List<String> calendarList) {
+        return Try.run(() -> updateCalendarList(mbox, octxt, group, calendarList));
+    }
+
+    private void updateCalendarList(Mailbox mbox, OperationContext octxt, Folder group, List<String> calendarList) throws ServiceException {
+        mbox.setCustomData(octxt, group.getId(), group.getType(), encodeCalendarList(calendarList));
     }
 
 
-    private static Map<Folder, List<String>> groupCalendarsByUpdatedIds(List<Folder> groups, List<String> deletedCalendarIds) throws ServiceException {
+    private static Map<Folder, List<String>> groupsByDeletedCalendars(List<Folder> groups, List<String> deletedCalendarIds) throws ServiceException {
         var groupToUpdatedIds = new HashMap<Folder, List<String>>();
         for (Folder group : groups) {
             List<String> calendarList = decodeCalendarList(group);
