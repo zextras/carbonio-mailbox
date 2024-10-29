@@ -12,6 +12,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.ldap.ZLdapFilter;
 import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 public class SearchDirectoryOptions {
@@ -25,6 +26,14 @@ public class SearchDirectoryOptions {
    * honored only for Alias entries
    */
   public static final String SORT_BY_TARGET_NAME = "targetName";
+
+  public List<Domain> getMultipleBases() {
+    return multipleBases;
+  }
+
+  public void setMultipleBases(final List<Domain> multipleBases) {
+    this.multipleBases = multipleBases;
+  }
 
   /*
    * Option to not set account defaults or secondard defaults.
@@ -132,6 +141,8 @@ public class SearchDirectoryOptions {
    * Note: this does NOT affect the search filter not the return attrs
    */
   private Domain domain = null;
+
+  private List<Domain> multipleBases;
 
   /*
    * search filter

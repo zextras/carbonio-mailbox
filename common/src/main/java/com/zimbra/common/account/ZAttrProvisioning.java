@@ -3046,6 +3046,15 @@ public class ZAttrProvisioning {
     public static final String A_carbonioSearchAllDomainsByFeature = "carbonioSearchAllDomainsByFeature";
 
     /**
+     * List of domain names in which the SearchUserByFeature API should
+     * perform users searches
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3148)
+    public static final String A_carbonioSearchSpecifiedDomainsByFeature = "carbonioSearchSpecifiedDomainsByFeature";
+
+    /**
      * Whether Carbonio can send analytics reports
      *
      * @since ZCS 9.0.0
