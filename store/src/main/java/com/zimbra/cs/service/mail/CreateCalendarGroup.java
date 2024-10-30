@@ -99,7 +99,7 @@ public class CreateCalendarGroup extends MailDocumentHandler {
   private static void setCustomMetadata(List<String> calendarIds, Folder.FolderOptions fopt) throws ServiceException {
     if (!calendarIds.isEmpty()) {
       // TODO: convertion to set is performed before, change request structure
-      fopt.setCustomMetadata(encodeCalendarIds(new HashSet<>(calendarIds)));
+      fopt.setCustomMetadata(encodeCalendarIds(calendarIds));
     } else {
       setEmptyCustomMetadata(fopt);
     }
