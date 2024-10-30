@@ -5,24 +5,19 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
-import com.zimbra.cs.mailbox.Metadata;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.ModifyCalendarGroupRequest;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.zimbra.cs.mailbox.Mailbox.getCalendarGroupById;
 import static com.zimbra.cs.mailbox.Mailbox.tryRenameCalendarGroup;
 import static com.zimbra.cs.service.mail.CalendarGroupCodec.decodeCalendarIds;
+import static com.zimbra.cs.service.mail.CalendarGroupCodec.encodeCalendarIds;
 
 public class ModifyCalendarGroup extends MailDocumentHandler {
-
-  private static final String LIST_SEPARATOR = "#";
-  private static final String CALENDAR_IDS_SECTION_KEY = "calendarIds";
-  private static final String CALENDAR_IDS_METADATA_KEY = "cids";
 
   private static final String GROUP_ELEMENT_NAME = "group";
   private static final String ID_ELEMENT_NAME = "id";
@@ -50,7 +45,7 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
       tryRenameCalendarGroup(octxt, mbox, group, req.getName());
 
     if (shouldModifyListCalendar(req, group))
-      mbox.setCustomData(octxt, group.getId(), MailItem.Type.FOLDER, encodeCustomMetadata(new HashSet<>(req.getCalendarIds())));
+      mbox.setCustomData(octxt, group.getId(), MailItem.Type.FOLDER, encodeCalendarIds(new HashSet<>(req.getCalendarIds())));
 
     return buildResponse(zsc, group);
   }
@@ -84,15 +79,5 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
       calendarIdElement.setText(calendarId);
     }
     return response;
-  }
-
-  private static MailItem.CustomMetadata encodeCustomMetadata(HashSet<String> calendars)
-      throws ServiceException {
-    final var encodedList =
-            calendars.stream()
-            .map(String::valueOf)
-            .collect(Collectors.joining(LIST_SEPARATOR));
-    final var metadata = new Metadata().put(CALENDAR_IDS_METADATA_KEY, encodedList).toString();
-    return new MailItem.CustomMetadata(CALENDAR_IDS_SECTION_KEY, metadata);
   }
 }
