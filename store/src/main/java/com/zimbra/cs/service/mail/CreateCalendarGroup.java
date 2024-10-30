@@ -19,16 +19,14 @@ import java.util.Map;
 import static com.zimbra.cs.mailbox.Mailbox.existsCalendarGroupByName;
 import static com.zimbra.cs.service.mail.CalendarGroupCodec.decodeCalendarIds;
 import static com.zimbra.cs.service.mail.CalendarGroupCodec.encodeCalendarIds;
+import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.addCalendarIdsToGroupElement;
+import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.createGroupElement;
 
 public class CreateCalendarGroup extends MailDocumentHandler {
 
   private static final String CALENDAR_IDS_SECTION_KEY = "calendarIds";
   private static final String CALENDAR_IDS_METADATA_KEY = "cids";
 
-  private static final String GROUP_ELEMENT_NAME = "group";
-  private static final String ID_ELEMENT_NAME = "id";
-  private static final String NAME_ELEMENT_NAME = "name";
-  private static final String CALENDAR_ID_ELEMENT_NAME = "calendarId";
   public static final List<String> EMPTY_CALENDAR_LIST = List.of();
 
   @Override
@@ -66,7 +64,7 @@ public class CreateCalendarGroup extends MailDocumentHandler {
     final var response = zsc.createElement(MailConstants.CREATE_CALENDAR_GROUP_RESPONSE);
     final var groupElement = createGroupElement(response, group);
 
-    addCalendarIdsToResponse(groupElement, decodeCalendarIds(group));
+    addCalendarIdsToGroupElement(groupElement, decodeCalendarIds(group));
 
     return response;
   }
@@ -80,25 +78,8 @@ public class CreateCalendarGroup extends MailDocumentHandler {
     }
   }
 
-  private static Element createGroupElement(Element response, Folder group) {
-    final var groupInfo = response.addUniqueElement(GROUP_ELEMENT_NAME);
-    groupInfo.addAttribute(ID_ELEMENT_NAME, String.valueOf(group.getId()));
-    groupInfo.addAttribute(NAME_ELEMENT_NAME, group.getName());
-    return groupInfo;
-  }
-
-  private static void addCalendarIdsToResponse(Element groupElement, List<String> calendarIds) {
-    if (calendarIds.isEmpty()) return;
-
-    calendarIds.forEach(calendarId ->
-            groupElement.addNonUniqueElement(CALENDAR_ID_ELEMENT_NAME)
-                    .setText(calendarId));
-
-  }
-
   private static void setCustomMetadata(List<String> calendarIds, Folder.FolderOptions fopt) throws ServiceException {
     if (!calendarIds.isEmpty()) {
-      // TODO: convertion to set is performed before, change request structure
       fopt.setCustomMetadata(encodeCalendarIds(calendarIds));
     } else {
       setEmptyCustomMetadata(fopt);
