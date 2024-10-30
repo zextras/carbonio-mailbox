@@ -63,10 +63,10 @@ public class CreateCalendarGroup extends MailDocumentHandler {
   private static Element buildResponse(ZimbraSoapContext zsc, Folder group)
       throws ServiceException {
     final var response = zsc.createElement(MailConstants.CREATE_CALENDAR_GROUP_RESPONSE);
-    final var groupInfo = createGroupInfoElement(response, group);
+    final var groupElement = createGroupElement(response, group);
 
     var calendarIds = decodeCustomMetadata(group);
-    addCalendarIdsToResponse(groupInfo, calendarIds);
+    addCalendarIdsToResponse(groupElement, calendarIds);
 
     return response;
   }
@@ -105,18 +105,18 @@ public class CreateCalendarGroup extends MailDocumentHandler {
             : List.of();
   }
 
-  private static Element createGroupInfoElement(Element response, Folder group) {
+  private static Element createGroupElement(Element response, Folder group) {
     final var groupInfo = response.addUniqueElement(GROUP_ELEMENT_NAME);
     groupInfo.addAttribute(ID_ELEMENT_NAME, String.valueOf(group.getId()));
     groupInfo.addAttribute(NAME_ELEMENT_NAME, group.getName());
     return groupInfo;
   }
 
-  private static void addCalendarIdsToResponse(Element groupInfo, List<String> calendarIds) {
+  private static void addCalendarIdsToResponse(Element groupElement, List<String> calendarIds) {
     if (calendarIds.isEmpty()) return;
 
     calendarIds.forEach(calendarId ->
-            groupInfo.addNonUniqueElement(CALENDAR_ID_ELEMENT_NAME)
+            groupElement.addNonUniqueElement(CALENDAR_ID_ELEMENT_NAME)
                     .setText(calendarId));
 
   }
