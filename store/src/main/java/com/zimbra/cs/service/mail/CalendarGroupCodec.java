@@ -6,7 +6,7 @@ import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Metadata;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +26,7 @@ public class CalendarGroupCodec {
                 : List.of();
     }
 
-    protected static MailItem.CustomMetadata encodeCalendarIds(HashSet<String> calendars)
+    protected static MailItem.CustomMetadata encodeCalendarIds(Collection<String> calendars)
             throws ServiceException {
         final var encodedList =
                 calendars.stream()
