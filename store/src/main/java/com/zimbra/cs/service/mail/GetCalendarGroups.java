@@ -54,12 +54,23 @@ public class GetCalendarGroups extends MailDocumentHandler {
 
   private static void addStoredGroups(List<Folder> groups, Element response) throws ServiceException {
     for (final var group : groups) {
-      final var groupElement = createGroupElement(group, response);
-      for (final var calendarId : decodeCustomMetadata(group)) {
-        final var calendarIdElement = groupElement.addNonUniqueElement(CALENDAR_ID_ELEMENT_NAME);
-        calendarIdElement.setText(calendarId);
-      }
+      addGroupToResponse(response, group);
     }
+  }
+
+  private static void addGroupToResponse(Element response, Folder group) throws ServiceException {
+    final var groupElement = createGroupElement(group, response);
+    var calendarIds = decodeCustomMetadata(group);
+    addCalendarIdsToResponse(groupElement, calendarIds);
+  }
+
+  private static void addCalendarIdsToResponse(Element groupElement, List<String> calendarIds) {
+    if (calendarIds.isEmpty()) return;
+
+    calendarIds.forEach(calendarId ->
+            groupElement.addNonUniqueElement(CALENDAR_ID_ELEMENT_NAME)
+                    .setText(calendarId));
+
   }
 
   private static void addAllCalendarsGroup(List<Folder> calendars, Element response) {
