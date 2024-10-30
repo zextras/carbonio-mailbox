@@ -7,19 +7,16 @@ import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.soap.ZimbraSoapContext;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import static com.zimbra.cs.service.mail.CalendarGroupCodec.decodeCalendarIds;
 
 public class GetCalendarGroups extends MailDocumentHandler {
 
   // TODO - double: use UUID or a fixed string like "all-calendars-id"?
   private static final String ALL_CALENDARS_GROUP_ID = "a970bb9528c94c40bd51bfede60fcb31";
   private static final String ALL_CALENDARS_GROUP_NAME = "All calendars";
-
-  private static final String LIST_SEPARATOR = "#";
-  private static final String CALENDAR_IDS_SECTION_KEY = "calendarIds";
-  private static final String CALENDAR_IDS_METADATA_KEY = "cids";
 
   private static final String GROUP_ELEMENT_NAME = "group";
   private static final String ID_ELEMENT_NAME = "id";
@@ -60,7 +57,7 @@ public class GetCalendarGroups extends MailDocumentHandler {
 
   private static void addGroupToResponse(Element response, Folder group) throws ServiceException {
     final var groupElement = createGroupElement(group, response);
-    var calendarIds = decodeCustomMetadata(group);
+    var calendarIds = decodeCalendarIds(group);
     addCalendarIdsToResponse(groupElement, calendarIds);
   }
 
@@ -89,13 +86,5 @@ public class GetCalendarGroups extends MailDocumentHandler {
     groupElement.addAttribute(ID_ELEMENT_NAME, String.valueOf(group.getId()));
     groupElement.addAttribute(NAME_ELEMENT_NAME, group.getName());
     return groupElement;
-  }
-
-  private static List<String> decodeCustomMetadata(Folder group) throws ServiceException {
-    final var encodedList =
-            group.getCustomData(CALENDAR_IDS_SECTION_KEY).get(CALENDAR_IDS_METADATA_KEY);
-    return !encodedList.isEmpty()
-            ? Arrays.stream(encodedList.split(LIST_SEPARATOR)).toList()
-            : List.of();
   }
 }
