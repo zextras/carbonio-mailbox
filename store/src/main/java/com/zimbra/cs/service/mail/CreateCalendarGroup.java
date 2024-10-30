@@ -100,9 +100,9 @@ public class CreateCalendarGroup extends MailDocumentHandler {
   private static List<String> decodeCustomMetadata(Folder group) throws ServiceException {
     final var encodedList =
             group.getCustomData(CALENDAR_IDS_SECTION_KEY).get(CALENDAR_IDS_METADATA_KEY);
-    return encodedList.isEmpty() ?
-            List.of() :
-            Arrays.stream(encodedList.split(LIST_SEPARATOR)).toList();
+    return !encodedList.isEmpty()
+            ? Arrays.stream(encodedList.split(LIST_SEPARATOR)).toList()
+            : List.of();
   }
 
   private static Element createGroupInfoElement(Element response, Folder group) {

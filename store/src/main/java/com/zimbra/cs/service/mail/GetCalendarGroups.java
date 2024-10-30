@@ -8,7 +8,6 @@ import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.soap.ZimbraSoapContext;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -86,6 +85,6 @@ public class GetCalendarGroups extends MailDocumentHandler {
             group.getCustomData(CALENDAR_IDS_SECTION_KEY).get(CALENDAR_IDS_METADATA_KEY);
     return !encodedList.isEmpty()
             ? Arrays.stream(encodedList.split(LIST_SEPARATOR)).toList()
-            : Collections.emptyList();
+            : List.of();
   }
 }
