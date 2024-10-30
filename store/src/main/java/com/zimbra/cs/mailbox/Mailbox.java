@@ -4805,6 +4805,12 @@ public class Mailbox implements MailboxStore {
             .contains(groupName);
   }
 
+  public static void tryRenameCalendarGroup(OperationContext octxt, Mailbox mbox, Folder group, String groupName) throws ServiceException {
+    if (existsCalendarGroupByName(octxt, mbox, groupName))
+      throw ServiceException.OPERATION_DENIED("Calendar group with name " + groupName + " already exists");
+    mbox.renameFolder(octxt, group, groupName);
+  }
+
   public static Optional<Folder> getCalendarGroupById(OperationContext octxt, Mailbox mbox, int id) throws ServiceException {
     return mbox.getCalendarGroups(octxt, SortBy.NAME_ASC).stream()
             .filter(group -> group.getId() == id).findFirst();

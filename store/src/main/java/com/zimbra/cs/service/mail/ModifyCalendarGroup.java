@@ -5,9 +5,7 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
-import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Metadata;
-import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.ModifyCalendarGroupRequest;
 
@@ -18,8 +16,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.zimbra.cs.mailbox.Mailbox.existsCalendarGroupByName;
 import static com.zimbra.cs.mailbox.Mailbox.getCalendarGroupById;
+import static com.zimbra.cs.mailbox.Mailbox.tryRenameCalendarGroup;
 
 public class ModifyCalendarGroup extends MailDocumentHandler {
 
@@ -50,7 +48,7 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
             .orElseThrow(() -> ServiceException.FAILURE("Calendar group with ID " + req.getId() + " does NOT exist"));
 
     if (shouldRenameGroup(req, group))
-      tryRenameGroup(mbox, octxt, group, req.getName());
+      tryRenameCalendarGroup(octxt, mbox, group, req.getName());
 
     if (shouldModifyListCalendar(req, group))
       mbox.setCustomData(octxt, group.getId(), MailItem.Type.FOLDER, encodeCustomMetadata(new HashSet<>(req.getCalendarIds())));
@@ -71,12 +69,6 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
     Set<String> reqCalendarsIds = new HashSet<>(req.getCalendarIds());
 
     return !reqCalendarsIds.equals(groupCalendarsIds);
-  }
-
-  private static void tryRenameGroup(Mailbox mbox, OperationContext octxt, Folder group, String groupName) throws ServiceException {
-    if (existsCalendarGroupByName(octxt, mbox, groupName))
-      throw ServiceException.OPERATION_DENIED("Calendar group with name " + groupName + " already exists");
-    mbox.renameFolder(octxt, group, groupName);
   }
 
   private static Element buildResponse(ZimbraSoapContext zsc, Folder group)
