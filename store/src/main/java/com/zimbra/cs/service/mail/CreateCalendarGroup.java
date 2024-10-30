@@ -12,13 +12,13 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CreateCalendarGroupRequest;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.zimbra.cs.mailbox.Mailbox.existsCalendarGroupByName;
+import static com.zimbra.cs.service.mail.CalendarGroupCodec.*;
 
 public class CreateCalendarGroup extends MailDocumentHandler {
 
@@ -67,8 +67,7 @@ public class CreateCalendarGroup extends MailDocumentHandler {
     final var response = zsc.createElement(MailConstants.CREATE_CALENDAR_GROUP_RESPONSE);
     final var groupElement = createGroupElement(response, group);
 
-    var calendarIds = decodeCustomMetadata(group);
-    addCalendarIdsToResponse(groupElement, calendarIds);
+    addCalendarIdsToResponse(groupElement, decodeCalendarIds(group));
 
     return response;
   }
@@ -90,14 +89,6 @@ public class CreateCalendarGroup extends MailDocumentHandler {
                     .collect(Collectors.joining(LIST_SEPARATOR));
     final var metadata = new Metadata().put(CALENDAR_IDS_METADATA_KEY, encodedList).toString();
     return new MailItem.CustomMetadata(CALENDAR_IDS_SECTION_KEY, metadata);
-  }
-
-  private static List<String> decodeCustomMetadata(Folder group) throws ServiceException {
-    final var encodedList =
-            group.getCustomData(CALENDAR_IDS_SECTION_KEY).get(CALENDAR_IDS_METADATA_KEY);
-    return !encodedList.isEmpty()
-            ? Arrays.stream(encodedList.split(LIST_SEPARATOR)).toList()
-            : List.of();
   }
 
   private static Element createGroupElement(Element response, Folder group) {
