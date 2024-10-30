@@ -3,7 +3,6 @@ package com.zimbra.cs.service.mail;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -16,11 +15,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.zimbra.cs.mailbox.Mailbox.existsCalendarGroupByName;
+import static com.zimbra.cs.mailbox.Mailbox.getCalendarGroupById;
 
 public class ModifyCalendarGroup extends MailDocumentHandler {
 
@@ -47,7 +46,7 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
     ModifyCalendarGroupRequest req = zsc.elementToJaxb(request);
 
     int id = Integer.parseInt(req.getId());
-    var group = getCalendarGroupById(mbox, octxt, id)
+    var group = getCalendarGroupById(octxt, mbox, id)
             .orElseThrow(() -> ServiceException.FAILURE("Calendar group with ID " + req.getId() + " does NOT exist"));
 
     if (shouldRenameGroup(req, group))
@@ -93,11 +92,6 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
       calendarIdElement.setText(calendarId);
     }
     return response;
-  }
-
-  private static Optional<Folder> getCalendarGroupById(Mailbox mbox, OperationContext octxt, int id) throws ServiceException {
-    return mbox.getCalendarGroups(octxt, SortBy.NAME_ASC).stream()
-            .filter(group -> group.getId() == id).findFirst();
   }
 
   private static MailItem.CustomMetadata encodeCustomMetadata(HashSet<String> calendars)

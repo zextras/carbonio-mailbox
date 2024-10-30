@@ -234,6 +234,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -4802,6 +4803,11 @@ public class Mailbox implements MailboxStore {
             .map(Folder::getName)
             .toList()
             .contains(groupName);
+  }
+
+  public static Optional<Folder> getCalendarGroupById(OperationContext octxt, Mailbox mbox, int id) throws ServiceException {
+    return mbox.getCalendarGroups(octxt, SortBy.NAME_ASC).stream()
+            .filter(group -> group.getId() == id).findFirst();
   }
 
   public SearchFolder getSearchFolderById(OperationContext octxt, int searchId)
