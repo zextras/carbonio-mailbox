@@ -11,6 +11,9 @@ public class CalendarGroupXMLHelper {
     private static final String NAME_ELEMENT_NAME = "name";
     private static final String CALENDAR_ID_ELEMENT_NAME = "calendarId";
 
+    private CalendarGroupXMLHelper() {
+    }
+
     protected static Element createGroupElement(Element response, Folder group) {
         final var groupElement = response.addUniqueElement(GROUP_ELEMENT_NAME);
         groupElement.addAttribute(ID_ELEMENT_NAME, String.valueOf(group.getId()));
@@ -18,7 +21,7 @@ public class CalendarGroupXMLHelper {
         return groupElement;
     }
 
-    protected static void addCalendarIdsToResponse(Element groupElement, List<String> calendarIds) {
+    protected static void addCalendarIdsToGroupElement(Element groupElement, List<String> calendarIds) {
         if (calendarIds.isEmpty()) return;
 
         calendarIds.forEach(calendarId ->
