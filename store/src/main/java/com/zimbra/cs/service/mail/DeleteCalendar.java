@@ -9,7 +9,6 @@ import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.mailbox.Metadata;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.soap.ZimbraSoapContext;
 import io.vavr.control.Try;
@@ -19,14 +18,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.zimbra.cs.service.mail.CalendarGroupCodec.decodeCalendarIds;
+import static com.zimbra.cs.service.mail.CalendarGroupCodec.encodeCalendarIds;
 
 public class DeleteCalendar extends ItemAction {
-    private static final String LIST_SEPARATOR = "#";
-    private static final String CALENDAR_IDS_SECTION_KEY = "calendarIds";
-    private static final String CALENDAR_IDS_METADATA_KEY = "cids";
 
     @Override
     public Element handle(Element request, Map<String, Object> context) throws ServiceException {
@@ -108,7 +104,7 @@ public class DeleteCalendar extends ItemAction {
     }
 
     private void updateCalendarList(Mailbox mbox, OperationContext octxt, Folder group, List<String> calendarList) throws ServiceException {
-        mbox.setCustomData(octxt, group.getId(), group.getType(), encodeCalendarList(calendarList));
+        mbox.setCustomData(octxt, group.getId(), group.getType(), encodeCalendarIds(new HashSet<>(calendarList)));
     }
 
 
@@ -129,14 +125,5 @@ public class DeleteCalendar extends ItemAction {
 
     private static boolean hasCalendarsBeenRemoved(List<String> updatedList, List<String> calendarList) {
         return updatedList.size() < calendarList.size();
-    }
-
-    private MailItem.CustomMetadata encodeCalendarList(List<String> calendarList) throws ServiceException {
-        final var encodedList =
-                calendarList.stream()
-                        .map(String::valueOf)
-                        .collect(Collectors.joining(LIST_SEPARATOR));
-        final var metadata = new Metadata().put(CALENDAR_IDS_METADATA_KEY, encodedList).toString();
-        return new MailItem.CustomMetadata(CALENDAR_IDS_SECTION_KEY, metadata);
     }
 }
