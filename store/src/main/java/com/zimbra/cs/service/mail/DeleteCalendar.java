@@ -121,11 +121,11 @@ public class DeleteCalendar extends ItemAction {
     }
 
     private static List<String> decodeCalendarList(Folder group) throws ServiceException {
-        return Arrays.stream(group
-                        .getCustomData(CALENDAR_IDS_SECTION_KEY)
-                        .get(CALENDAR_IDS_METADATA_KEY)
-                        .split(LIST_SEPARATOR))
-                .toList();
+        final var encodedList =
+                group.getCustomData(CALENDAR_IDS_SECTION_KEY).get(CALENDAR_IDS_METADATA_KEY);
+        return !encodedList.isEmpty()
+                ? Arrays.stream(encodedList.split(LIST_SEPARATOR)).toList()
+                : List.of();
     }
 
     private MailItem.CustomMetadata encodeCalendarList(List<String> calendarList) throws ServiceException {
