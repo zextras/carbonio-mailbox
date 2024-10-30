@@ -12,6 +12,7 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CreateCalendarGroupRequest;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -69,15 +70,6 @@ public class CreateCalendarGroup extends MailDocumentHandler {
     return response;
   }
 
-  private void assertCalendarsExist(Mailbox mbox, OperationContext octxt, List<String> calendarIds) throws ServiceException {
-    var existingCalendarIds = mbox.getCalendarFolders(octxt, SortBy.NAME_ASC).stream().map(Folder::getId).toList();
-    for (String calendarId : calendarIds) {
-        if (!existingCalendarIds.contains(Integer.parseInt(calendarId))) {
-        throw ServiceException.FAILURE("Calendar with ID " + calendarId + " does NOT exist");
-      }
-    }
-  }
-
   private static void setCustomMetadata(List<String> calendarIds, Folder.FolderOptions fopt) throws ServiceException {
     if (!calendarIds.isEmpty()) {
       fopt.setCustomMetadata(encodeCalendarIds(calendarIds));
@@ -98,7 +90,15 @@ public class CreateCalendarGroup extends MailDocumentHandler {
   private List<String> getValidatedUniqueCalendarIds(CreateCalendarGroupRequest req, Mailbox mbox, OperationContext octxt) throws ServiceException {
     // avoiding duplicates from request
     var calendarIds = new HashSet<>(req.getCalendarIds()).stream().toList();
-    assertCalendarsExist(mbox, octxt, calendarIds);
+    validateCalendarIds(octxt, mbox, calendarIds.stream().map(Integer::parseInt).toList());
     return calendarIds;
+  }
+
+  private void validateCalendarIds(OperationContext octxt, Mailbox mbox, List<Integer> calendarIds) throws ServiceException {
+    for (int id : calendarIds) {
+      if (mbox.getFolderById(octxt, id).getDefaultView() != MailItem.Type.APPOINTMENT) {
+        throw ServiceException.FAILURE("Item with ID " + id + " is NOT a calendar");
+      }
+    }
   }
 }
