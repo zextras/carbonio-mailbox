@@ -15,14 +15,13 @@ import com.zimbra.soap.mail.message.CreateCalendarGroupRequest;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.zimbra.cs.mailbox.Mailbox.existsCalendarGroupByName;
-import static com.zimbra.cs.service.mail.CalendarGroupCodec.*;
+import static com.zimbra.cs.service.mail.CalendarGroupCodec.decodeCalendarIds;
+import static com.zimbra.cs.service.mail.CalendarGroupCodec.encodeCalendarIds;
 
 public class CreateCalendarGroup extends MailDocumentHandler {
 
-  private static final String LIST_SEPARATOR = "#";
   private static final String CALENDAR_IDS_SECTION_KEY = "calendarIds";
   private static final String CALENDAR_IDS_METADATA_KEY = "cids";
 
@@ -81,16 +80,6 @@ public class CreateCalendarGroup extends MailDocumentHandler {
     }
   }
 
-  private static MailItem.CustomMetadata encodeCustomMetadata(List<String> calendarIds)
-          throws ServiceException {
-    final var encodedList =
-            calendarIds.stream()
-                    .map(String::valueOf)
-                    .collect(Collectors.joining(LIST_SEPARATOR));
-    final var metadata = new Metadata().put(CALENDAR_IDS_METADATA_KEY, encodedList).toString();
-    return new MailItem.CustomMetadata(CALENDAR_IDS_SECTION_KEY, metadata);
-  }
-
   private static Element createGroupElement(Element response, Folder group) {
     final var groupInfo = response.addUniqueElement(GROUP_ELEMENT_NAME);
     groupInfo.addAttribute(ID_ELEMENT_NAME, String.valueOf(group.getId()));
@@ -109,7 +98,8 @@ public class CreateCalendarGroup extends MailDocumentHandler {
 
   private static void setCustomMetadata(List<String> calendarIds, Folder.FolderOptions fopt) throws ServiceException {
     if (!calendarIds.isEmpty()) {
-      fopt.setCustomMetadata(encodeCustomMetadata(calendarIds));
+      // TODO: convertion to set is performed before, change request structure
+      fopt.setCustomMetadata(encodeCalendarIds(new HashSet<>(calendarIds)));
     } else {
       setEmptyCustomMetadata(fopt);
     }
