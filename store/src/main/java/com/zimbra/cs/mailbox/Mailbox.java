@@ -4740,6 +4740,14 @@ public class Mailbox implements MailboxStore {
     return (view == MailItem.Type.APPOINTMENT);
   }
 
+  public void validateCalendarIds(OperationContext octxt, Mailbox mbox, List<Integer> calendarIds) throws ServiceException {
+    for (int id : calendarIds) {
+      if (!isCalendarFolder(mbox.getFolderById(octxt, id))) {
+        throw ServiceException.FAILURE("Item with ID " + id + " is NOT a calendar");
+      }
+    }
+  }
+
   public static boolean isCalendarGroupFolder(Folder f) {
     MailItem.Type view = f.getDefaultView();
     return (view == MailItem.Type.CALENDAR_GROUP);

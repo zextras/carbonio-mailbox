@@ -61,7 +61,7 @@ public class DeleteCalendar extends ItemAction {
         // handle referenced items living on this server
         if (!local.isEmpty()) {
             // Check that the IDs belong to calendars
-            validateCalendarIds(octxt, mbox, local);
+            mbox.validateCalendarIds(octxt, mbox, local);
             String constraint = action.getAttribute(MailConstants.A_TARGET_CONSTRAINT, null);
             MailItem.TargetConstraint tcon = MailItem.TargetConstraint.parseConstraint(mbox, constraint);
 
@@ -80,14 +80,6 @@ public class DeleteCalendar extends ItemAction {
             mbox.resetDefaultCalendarId();
         }
         return result;
-    }
-
-    private void validateCalendarIds(OperationContext octxt, Mailbox mbox, List<Integer> calendarIds) throws ServiceException {
-        for (int id : calendarIds) {
-            if (mbox.getFolderById(octxt, id).getDefaultView() != MailItem.Type.APPOINTMENT) {
-                throw ServiceException.FAILURE("Item with ID " + id + " is NOT a calendar");
-            }
-        }
     }
 
     private void updateGroups(ItemActionResult result, Mailbox mbox, OperationContext octxt) throws ServiceException {

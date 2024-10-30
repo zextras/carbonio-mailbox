@@ -3,7 +3,6 @@ package com.zimbra.cs.service.mail;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -12,7 +11,6 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CreateCalendarGroupRequest;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -90,15 +88,7 @@ public class CreateCalendarGroup extends MailDocumentHandler {
   private List<String> getValidatedUniqueCalendarIds(CreateCalendarGroupRequest req, Mailbox mbox, OperationContext octxt) throws ServiceException {
     // avoiding duplicates from request
     var calendarIds = new HashSet<>(req.getCalendarIds()).stream().toList();
-    validateCalendarIds(octxt, mbox, calendarIds.stream().map(Integer::parseInt).toList());
+    mbox.validateCalendarIds(octxt, mbox, calendarIds.stream().map(Integer::parseInt).toList());
     return calendarIds;
-  }
-
-  private void validateCalendarIds(OperationContext octxt, Mailbox mbox, List<Integer> calendarIds) throws ServiceException {
-    for (int id : calendarIds) {
-      if (mbox.getFolderById(octxt, id).getDefaultView() != MailItem.Type.APPOINTMENT) {
-        throw ServiceException.FAILURE("Item with ID " + id + " is NOT a calendar");
-      }
-    }
   }
 }
