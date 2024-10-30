@@ -9,15 +9,14 @@ import com.zimbra.cs.mailbox.Metadata;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.ModifyCalendarGroupRequest;
 
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.zimbra.cs.mailbox.Mailbox.getCalendarGroupById;
 import static com.zimbra.cs.mailbox.Mailbox.tryRenameCalendarGroup;
+import static com.zimbra.cs.service.mail.CalendarGroupCodec.decodeCalendarIds;
 
 public class ModifyCalendarGroup extends MailDocumentHandler {
 
@@ -65,7 +64,7 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
   }
 
   private static boolean notEquals(ModifyCalendarGroupRequest req, Folder group) throws ServiceException {
-    Set<String> groupCalendarsIds = new HashSet<>(decodeCustomMetadata(group));
+    Set<String> groupCalendarsIds = new HashSet<>(decodeCalendarIds(group));
     Set<String> reqCalendarsIds = new HashSet<>(req.getCalendarIds());
 
     return !reqCalendarsIds.equals(groupCalendarsIds);
@@ -79,7 +78,8 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
     groupInfo.addAttribute(ID_ELEMENT_NAME, String.valueOf(group.getId()));
     groupInfo.addAttribute(NAME_ELEMENT_NAME, group.getName());
 
-    for (final var calendarId : decodeCustomMetadata(group)) {
+    // TODO: this decode is performed twice, try to do once
+    for (final var calendarId : decodeCalendarIds(group)) {
       final var calendarIdElement = groupInfo.addNonUniqueElement(CALENDAR_ID_ELEMENT_NAME);
       calendarIdElement.setText(calendarId);
     }
@@ -94,11 +94,5 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
             .collect(Collectors.joining(LIST_SEPARATOR));
     final var metadata = new Metadata().put(CALENDAR_IDS_METADATA_KEY, encodedList).toString();
     return new MailItem.CustomMetadata(CALENDAR_IDS_SECTION_KEY, metadata);
-  }
-
-  private static List<String> decodeCustomMetadata(Folder group) throws ServiceException {
-    final var encodedList =
-        group.getCustomData(CALENDAR_IDS_SECTION_KEY).get(CALENDAR_IDS_METADATA_KEY);
-    return Arrays.stream(encodedList.split(LIST_SEPARATOR)).toList();
   }
 }
