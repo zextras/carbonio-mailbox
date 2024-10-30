@@ -12,18 +12,10 @@ import java.util.Map;
 
 import static com.zimbra.cs.service.mail.CalendarGroupCodec.decodeCalendarIds;
 import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.addCalendarIdsToGroupElement;
+import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.createAllCalendarElement;
 import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.createGroupElement;
 
 public class GetCalendarGroups extends MailDocumentHandler {
-
-  // TODO - double: use UUID or a fixed string like "all-calendars-id"?
-  private static final String ALL_CALENDARS_GROUP_ID = "a970bb9528c94c40bd51bfede60fcb31";
-  private static final String ALL_CALENDARS_GROUP_NAME = "All calendars";
-
-  private static final String GROUP_ELEMENT_NAME = "group";
-  private static final String ID_ELEMENT_NAME = "id";
-  private static final String NAME_ELEMENT_NAME = "name";
-  private static final String CALENDAR_ID_ELEMENT_NAME = "calendarId";
 
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
@@ -64,13 +56,7 @@ public class GetCalendarGroups extends MailDocumentHandler {
   }
 
   private static void addAllCalendarsGroup(List<Folder> calendars, Element response) {
-    final var allCalendarsGroup = response.addNonUniqueElement(GROUP_ELEMENT_NAME);
-    allCalendarsGroup.addAttribute(ID_ELEMENT_NAME, ALL_CALENDARS_GROUP_ID);
-    allCalendarsGroup.addAttribute(NAME_ELEMENT_NAME, ALL_CALENDARS_GROUP_NAME);
-
-    for (final var calendarFolder : calendars) {
-      final var calendarId = allCalendarsGroup.addNonUniqueElement(CALENDAR_ID_ELEMENT_NAME);
-      calendarId.setText(calendarFolder.getFolderIdAsString());
-    }
+    var calendarIds = calendars.stream().map(Folder::getFolderIdAsString).toList();
+    addCalendarIdsToGroupElement(createAllCalendarElement(response), calendarIds);
   }
 }
