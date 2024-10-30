@@ -5,10 +5,13 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
+import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.ModifyCalendarGroupRequest;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,8 +44,10 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
     if (shouldRenameGroup(req, group))
       tryRenameCalendarGroup(octxt, mbox, group, req.getName());
 
-    if (shouldModifyListCalendar(req, group))
+    if (shouldModifyListCalendar(req, group)) {
+      validateCalendarIds(octxt, mbox, req.getCalendarIds().stream().map(Integer::parseInt).toList());
       mbox.setCustomData(octxt, group.getId(), MailItem.Type.FOLDER, encodeCalendarIds(new HashSet<>(req.getCalendarIds())));
+    }
 
     return buildResponse(zsc, group);
   }
@@ -69,5 +74,13 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
     // TODO: this decode is performed twice, try to do once
     addCalendarIdsToElement(groupElement, decodeCalendarIds(group));
     return response;
+  }
+
+  private void validateCalendarIds(OperationContext octxt, Mailbox mbox, List<Integer> calendarIds) throws ServiceException {
+    for (int id : calendarIds) {
+      if (mbox.getFolderById(octxt, id).getDefaultView() != MailItem.Type.APPOINTMENT) {
+        throw ServiceException.FAILURE("Item with ID " + id + " is NOT a calendar");
+      }
+    }
   }
 }
