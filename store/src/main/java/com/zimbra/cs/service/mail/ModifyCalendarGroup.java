@@ -16,13 +16,10 @@ import static com.zimbra.cs.mailbox.Mailbox.getCalendarGroupById;
 import static com.zimbra.cs.mailbox.Mailbox.tryRenameCalendarGroup;
 import static com.zimbra.cs.service.mail.CalendarGroupCodec.decodeCalendarIds;
 import static com.zimbra.cs.service.mail.CalendarGroupCodec.encodeCalendarIds;
+import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.addCalendarIdsToGroupElement;
+import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.createGroupElement;
 
 public class ModifyCalendarGroup extends MailDocumentHandler {
-
-  private static final String GROUP_ELEMENT_NAME = "group";
-  private static final String ID_ELEMENT_NAME = "id";
-  private static final String NAME_ELEMENT_NAME = "name";
-  private static final String CALENDAR_ID_ELEMENT_NAME = "calendarId";
 
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
@@ -68,16 +65,9 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
   private static Element buildResponse(ZimbraSoapContext zsc, Folder group)
       throws ServiceException {
     final var response = zsc.createElement(MailConstants.MODIFY_CALENDAR_GROUP_RESPONSE);
-
-    final var groupInfo = response.addUniqueElement(GROUP_ELEMENT_NAME);
-    groupInfo.addAttribute(ID_ELEMENT_NAME, String.valueOf(group.getId()));
-    groupInfo.addAttribute(NAME_ELEMENT_NAME, group.getName());
-
+    var groupElement = createGroupElement(response, group);
     // TODO: this decode is performed twice, try to do once
-    for (final var calendarId : decodeCalendarIds(group)) {
-      final var calendarIdElement = groupInfo.addNonUniqueElement(CALENDAR_ID_ELEMENT_NAME);
-      calendarIdElement.setText(calendarId);
-    }
+    addCalendarIdsToGroupElement(groupElement, decodeCalendarIds(group));
     return response;
   }
 }
