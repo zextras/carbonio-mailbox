@@ -73,7 +73,7 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
   }
 
   private static void tryRenameGroup(Mailbox mbox, OperationContext octxt, Folder group, String groupName) throws ServiceException {
-    if (existsGroupName(mbox, octxt, groupName))
+    if (existsGroupByName(octxt, mbox, groupName))
       throw ServiceException.OPERATION_DENIED("Calendar group with name " + groupName + " already exists");
     mbox.renameFolder(octxt, group, groupName);
   }
@@ -93,7 +93,7 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
     return response;
   }
 
-  private static boolean existsGroupName(Mailbox mbox, OperationContext octxt, String groupName) throws ServiceException {
+  private static boolean existsGroupByName(OperationContext octxt, Mailbox mbox, String groupName) throws ServiceException {
     return mbox.getCalendarGroups(octxt, SortBy.NAME_ASC).stream()
             .map(Folder::getName)
             .toList()
