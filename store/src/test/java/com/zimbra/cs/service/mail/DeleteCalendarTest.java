@@ -5,6 +5,7 @@ import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -36,6 +37,7 @@ import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("api")
 class DeleteCalendarTest extends SoapTestSuite {
@@ -56,6 +58,20 @@ class DeleteCalendarTest extends SoapTestSuite {
   void setUp() throws Exception {
     account = accountCreatorFactory.get().create();
     mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
+  }
+
+  @Test
+  void deletingNonCalendarFolderRaisesException() throws Exception {
+    Folder folder = createFolder(account, "i-am-not-a-calendar");
+    String folderId = folder.getId();
+    var folderActionSelector = new FolderActionSelector(folderId, FolderAction.OP_HARD_DELETE);
+    final var request = new DeleteCalendarRequest(folderActionSelector);
+
+    var soapResponse = getSoapClient().executeSoap(account, request);
+    
+    assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, soapResponse.getStatusLine().getStatusCode());
+    var responseBody = EntityUtils.toString(soapResponse.getEntity());
+    assertTrue(responseBody.contains("Item with ID " + folderId + " does NOT exist or is NOT a calendar"));
   }
 
   @Test
@@ -110,9 +126,17 @@ class DeleteCalendarTest extends SoapTestSuite {
   }
 
   private Folder createCalendar(Account account, String name) throws Exception {
+    return createItem(account, name, MailItem.Type.APPOINTMENT);
+  }
+
+  private Folder createFolder(Account account, String name) throws Exception {
+    return createItem(account, name, MailItem.Type.FOLDER);
+  }
+
+  private Folder createItem(Account account, String name, MailItem.Type type) throws Exception {
     final var folder = new NewFolderSpec(name);
     folder.setParentFolderId("1");
-    folder.setDefaultView("appointment");
+    folder.setDefaultView(type.toString());
     final var createFolderRequest = new CreateFolderRequest(folder);
     final var createFolderResponse = getSoapClient().executeSoap(account, createFolderRequest);
     assertEquals(HttpStatus.SC_OK, createFolderResponse.getStatusLine().getStatusCode());
