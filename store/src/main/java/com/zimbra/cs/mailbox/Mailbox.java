@@ -4797,6 +4797,13 @@ public class Mailbox implements MailboxStore {
     }
   }
 
+  public static boolean existsCalendarGroupByName(OperationContext octxt, Mailbox mbox, String groupName) throws ServiceException {
+    return mbox.getCalendarGroups(octxt, SortBy.NAME_ASC).stream()
+            .map(Folder::getName)
+            .toList()
+            .contains(groupName);
+  }
+
   public SearchFolder getSearchFolderById(OperationContext octxt, int searchId)
       throws ServiceException {
     return (SearchFolder) getItemById(octxt, searchId, MailItem.Type.SEARCHFOLDER);

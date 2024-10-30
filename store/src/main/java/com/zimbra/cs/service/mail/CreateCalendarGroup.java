@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.zimbra.cs.mailbox.Mailbox.existsCalendarGroupByName;
+
 public class CreateCalendarGroup extends MailDocumentHandler {
 
   private static final String LIST_SEPARATOR = "#";
@@ -43,7 +45,7 @@ public class CreateCalendarGroup extends MailDocumentHandler {
 
     CreateCalendarGroupRequest req = zsc.elementToJaxb(request);
 
-    if (existsGroupName(mbox, octxt, req.getName()))
+    if (existsCalendarGroupByName(octxt, mbox, req.getName()))
       throw ServiceException.OPERATION_DENIED("Calendar group with name " + req.getName() + " already exists");
 
     var calendarIds = shouldAddCalendars(req)
@@ -78,13 +80,6 @@ public class CreateCalendarGroup extends MailDocumentHandler {
         throw ServiceException.FAILURE("Calendar with ID " + calendarId + " does NOT exist");
       }
     }
-  }
-
-  private static boolean existsGroupName(Mailbox mbox, OperationContext octxt, String groupName) throws ServiceException {
-    return mbox.getCalendarGroups(octxt, SortBy.NAME_ASC).stream()
-            .map(Folder::getName)
-            .toList()
-            .contains(groupName);
   }
 
   private static MailItem.CustomMetadata encodeCustomMetadata(List<String> calendarIds)

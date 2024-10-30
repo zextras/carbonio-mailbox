@@ -20,6 +20,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.zimbra.cs.mailbox.Mailbox.existsCalendarGroupByName;
+
 public class ModifyCalendarGroup extends MailDocumentHandler {
 
   private static final String LIST_SEPARATOR = "#";
@@ -73,7 +75,7 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
   }
 
   private static void tryRenameGroup(Mailbox mbox, OperationContext octxt, Folder group, String groupName) throws ServiceException {
-    if (existsGroupByName(octxt, mbox, groupName))
+    if (existsCalendarGroupByName(octxt, mbox, groupName))
       throw ServiceException.OPERATION_DENIED("Calendar group with name " + groupName + " already exists");
     mbox.renameFolder(octxt, group, groupName);
   }
@@ -91,13 +93,6 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
       calendarIdElement.setText(calendarId);
     }
     return response;
-  }
-
-  private static boolean existsGroupByName(OperationContext octxt, Mailbox mbox, String groupName) throws ServiceException {
-    return mbox.getCalendarGroups(octxt, SortBy.NAME_ASC).stream()
-            .map(Folder::getName)
-            .toList()
-            .contains(groupName);
   }
 
   private static Optional<Folder> getCalendarGroupById(Mailbox mbox, OperationContext octxt, int id) throws ServiceException {
