@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.zimbra.cs.service.mail.CalendarGroupCodec.decodeCalendarIds;
+import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.addCalendarIdsToGroupElement;
+import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.createGroupElement;
 
 public class GetCalendarGroups extends MailDocumentHandler {
 
@@ -56,18 +58,9 @@ public class GetCalendarGroups extends MailDocumentHandler {
   }
 
   private static void addGroupToResponse(Element response, Folder group) throws ServiceException {
-    final var groupElement = createGroupElement(group, response);
+    final var groupElement = createGroupElement(response, group);
     var calendarIds = decodeCalendarIds(group);
-    addCalendarIdsToResponse(groupElement, calendarIds);
-  }
-
-  private static void addCalendarIdsToResponse(Element groupElement, List<String> calendarIds) {
-    if (calendarIds.isEmpty()) return;
-
-    calendarIds.forEach(calendarId ->
-            groupElement.addNonUniqueElement(CALENDAR_ID_ELEMENT_NAME)
-                    .setText(calendarId));
-
+    addCalendarIdsToGroupElement(groupElement, calendarIds);
   }
 
   private static void addAllCalendarsGroup(List<Folder> calendars, Element response) {
@@ -79,12 +72,5 @@ public class GetCalendarGroups extends MailDocumentHandler {
       final var calendarId = allCalendarsGroup.addNonUniqueElement(CALENDAR_ID_ELEMENT_NAME);
       calendarId.setText(calendarFolder.getFolderIdAsString());
     }
-  }
-
-  private static Element createGroupElement(Folder group, Element response) {
-    final var groupElement = response.addNonUniqueElement(GetCalendarGroups.GROUP_ELEMENT_NAME);
-    groupElement.addAttribute(ID_ELEMENT_NAME, String.valueOf(group.getId()));
-    groupElement.addAttribute(NAME_ELEMENT_NAME, group.getName());
-    return groupElement;
   }
 }
