@@ -32,11 +32,11 @@ public class CalendarGroupXMLHelper {
         return allCalendarsGroup;
     }
 
-    protected static void addCalendarIdsToGroupElement(Element groupElement, List<String> calendarIds) {
+    protected static void addCalendarIdsToElement(Element element, List<String> calendarIds) {
         if (calendarIds.isEmpty()) return;
 
         calendarIds.forEach(calendarId ->
-                groupElement.addNonUniqueElement(CALENDAR_ID_ELEMENT_NAME)
+                element.addNonUniqueElement(CALENDAR_ID_ELEMENT_NAME)
                         .setText(calendarId));
 
     }

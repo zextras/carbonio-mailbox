@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.zimbra.cs.service.mail.CalendarGroupCodec.decodeCalendarIds;
-import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.addCalendarIdsToGroupElement;
+import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.addCalendarIdsToElement;
 import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.createAllCalendarElement;
 import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.createGroupElement;
 
@@ -52,11 +52,11 @@ public class GetCalendarGroups extends MailDocumentHandler {
   private static void addGroupToResponse(Element response, Folder group) throws ServiceException {
     final var groupElement = createGroupElement(response, group);
     var calendarIds = decodeCalendarIds(group);
-    addCalendarIdsToGroupElement(groupElement, calendarIds);
+    addCalendarIdsToElement(groupElement, calendarIds);
   }
 
   private static void addAllCalendarsGroup(List<Folder> calendars, Element response) {
     var calendarIds = calendars.stream().map(Folder::getFolderIdAsString).toList();
-    addCalendarIdsToGroupElement(createAllCalendarElement(response), calendarIds);
+    addCalendarIdsToElement(createAllCalendarElement(response), calendarIds);
   }
 }

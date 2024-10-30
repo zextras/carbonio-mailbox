@@ -19,7 +19,7 @@ import java.util.Map;
 import static com.zimbra.cs.mailbox.Mailbox.existsCalendarGroupByName;
 import static com.zimbra.cs.service.mail.CalendarGroupCodec.decodeCalendarIds;
 import static com.zimbra.cs.service.mail.CalendarGroupCodec.encodeCalendarIds;
-import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.addCalendarIdsToGroupElement;
+import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.addCalendarIdsToElement;
 import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.createGroupElement;
 
 public class CreateCalendarGroup extends MailDocumentHandler {
@@ -64,7 +64,7 @@ public class CreateCalendarGroup extends MailDocumentHandler {
     final var response = zsc.createElement(MailConstants.CREATE_CALENDAR_GROUP_RESPONSE);
     final var groupElement = createGroupElement(response, group);
 
-    addCalendarIdsToGroupElement(groupElement, decodeCalendarIds(group));
+    addCalendarIdsToElement(groupElement, decodeCalendarIds(group));
 
     return response;
   }
