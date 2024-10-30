@@ -15,12 +15,13 @@ import com.zimbra.soap.ZimbraSoapContext;
 import io.vavr.control.Try;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.zimbra.cs.service.mail.CalendarGroupCodec.decodeCalendarIds;
 
 public class DeleteCalendar extends ItemAction {
     private static final String LIST_SEPARATOR = "#";
@@ -87,10 +88,8 @@ public class DeleteCalendar extends ItemAction {
 
     private void validateCalendarIds(OperationContext octxt, Mailbox mbox, List<Integer> calendarIds) throws ServiceException {
         for (int id : calendarIds) {
-            try {
-                mbox.getCalendarItemById(octxt, id);
-            } catch (ServiceException e) {
-                throw ServiceException.FAILURE("Item with ID " + id + " does NOT exist or is NOT a calendar");
+            if (mbox.getFolderById(octxt, id).getDefaultView() != MailItem.Type.APPOINTMENT) {
+                throw ServiceException.FAILURE("Item with ID " + id + " is NOT a calendar");
             }
         }
     }
@@ -116,7 +115,7 @@ public class DeleteCalendar extends ItemAction {
     private static Map<Folder, List<String>> groupsByDeletedCalendars(List<Folder> groups, List<String> deletedCalendarIds) throws ServiceException {
         var groupToUpdatedIds = new HashMap<Folder, List<String>>();
         for (Folder group : groups) {
-            List<String> calendarList = decodeCalendarList(group);
+            List<String> calendarList = decodeCalendarIds(group);
             var deleted = new HashSet<>(deletedCalendarIds);
             List<String> updatedList = calendarList.stream()
                     .filter(id -> !deleted.contains(id))
@@ -130,14 +129,6 @@ public class DeleteCalendar extends ItemAction {
 
     private static boolean hasCalendarsBeenRemoved(List<String> updatedList, List<String> calendarList) {
         return updatedList.size() < calendarList.size();
-    }
-
-    private static List<String> decodeCalendarList(Folder group) throws ServiceException {
-        final var encodedList =
-                group.getCustomData(CALENDAR_IDS_SECTION_KEY).get(CALENDAR_IDS_METADATA_KEY);
-        return !encodedList.isEmpty()
-                ? Arrays.stream(encodedList.split(LIST_SEPARATOR)).toList()
-                : List.of();
     }
 
     private MailItem.CustomMetadata encodeCalendarList(List<String> calendarList) throws ServiceException {

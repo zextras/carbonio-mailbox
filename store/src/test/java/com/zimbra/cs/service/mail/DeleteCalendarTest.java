@@ -71,7 +71,7 @@ class DeleteCalendarTest extends SoapTestSuite {
     
     assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, soapResponse.getStatusLine().getStatusCode());
     var responseBody = EntityUtils.toString(soapResponse.getEntity());
-    assertTrue(responseBody.contains("Item with ID " + folderId + " does NOT exist or is NOT a calendar"));
+    assertTrue(responseBody.contains("Item with ID " + folderId + " is NOT a calendar"));
   }
 
   @Test
