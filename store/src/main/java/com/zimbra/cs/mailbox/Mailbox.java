@@ -214,6 +214,11 @@ import com.zimbra.cs.util.Zimbra;
 import com.zimbra.soap.admin.type.DataSourceType;
 import com.zimbra.soap.mail.type.Policy;
 import com.zimbra.soap.mail.type.RetentionPolicy;
+
+import javax.mail.Address;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimePart;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -244,10 +249,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
-import javax.mail.Address;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimePart;
 
 /**
  * @since Jun 13, 2004
@@ -4815,7 +4816,7 @@ public class Mailbox implements MailboxStore {
 
   public static void tryRenameCalendarGroup(OperationContext octxt, Mailbox mbox, Folder group, String groupName) throws ServiceException {
     if (existsCalendarGroupByName(octxt, mbox, groupName))
-      throw ServiceException.OPERATION_DENIED("Calendar group with name " + groupName + " already exists");
+      throw ServiceException.GROUP_NAME_ALREADY_EXIST(groupName);
     mbox.renameFolder(octxt, group, groupName);
   }
 

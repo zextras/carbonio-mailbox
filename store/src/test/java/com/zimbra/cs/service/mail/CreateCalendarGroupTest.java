@@ -24,10 +24,12 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.List;
 
+import static com.zimbra.common.service.ServiceException.GROUP_NAME_ALREADY_EXIST;
 import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("api")
 class CreateCalendarGroupTest extends SoapTestSuite {
@@ -135,6 +137,7 @@ class CreateCalendarGroupTest extends SoapTestSuite {
     final var soapResponse = getSoapClient().executeSoap(account, request);
 
     assertEquals(HttpStatus.SC_UNPROCESSABLE_ENTITY, soapResponse.getStatusLine().getStatusCode());
+    assertTrue(EntityUtils.toString(soapResponse.getEntity()).contains(GROUP_NAME_ALREADY_EXIST));
   }
 
   private void createGroup(Account acc, String groupName, List<String> calendarIds) throws Exception {

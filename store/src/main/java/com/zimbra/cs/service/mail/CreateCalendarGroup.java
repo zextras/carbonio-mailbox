@@ -42,7 +42,7 @@ public class CreateCalendarGroup extends MailDocumentHandler {
     CreateCalendarGroupRequest req = zsc.elementToJaxb(request);
 
     if (existsCalendarGroupByName(octxt, mbox, req.getName()))
-      throw ServiceException.OPERATION_DENIED("Calendar group with name " + req.getName() + " already exists");
+      throw ServiceException.GROUP_NAME_ALREADY_EXIST(req.getName());
 
     var calendarIds = shouldAddCalendars(req)
             ? getValidatedUniqueCalendarIds(req, mbox, octxt)
