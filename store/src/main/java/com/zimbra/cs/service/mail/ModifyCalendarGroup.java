@@ -17,7 +17,7 @@ import static com.zimbra.cs.mailbox.Mailbox.tryRenameCalendarGroup;
 import static com.zimbra.cs.service.mail.CalendarGroupCodec.decodeCalendarIds;
 import static com.zimbra.cs.service.mail.CalendarGroupCodec.encodeCalendarIds;
 import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.addCalendarIdsToElement;
-import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.createGroupElement;
+import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.createUniqueGroupElement;
 
 public class ModifyCalendarGroup extends MailDocumentHandler {
 
@@ -67,7 +67,7 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
   private static Element buildResponse(ZimbraSoapContext zsc, Folder group)
       throws ServiceException {
     final var response = zsc.createElement(MailConstants.MODIFY_CALENDAR_GROUP_RESPONSE);
-    var groupElement = createGroupElement(response, group);
+    var groupElement = createUniqueGroupElement(response, group);
     // TODO: this decode is performed twice, try to do once
     addCalendarIdsToElement(groupElement, decodeCalendarIds(group));
     return response;

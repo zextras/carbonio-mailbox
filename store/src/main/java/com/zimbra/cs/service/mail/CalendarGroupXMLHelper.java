@@ -19,6 +19,13 @@ public class CalendarGroupXMLHelper {
     }
 
     protected static Element createGroupElement(Element response, Folder group) {
+        final var groupElement = response.addNonUniqueElement(GROUP_ELEMENT_NAME);
+        groupElement.addAttribute(ID_ELEMENT_NAME, String.valueOf(group.getId()));
+        groupElement.addAttribute(NAME_ELEMENT_NAME, group.getName());
+        return groupElement;
+    }
+
+    protected static Element createUniqueGroupElement(Element response, Folder group) {
         final var groupElement = response.addUniqueElement(GROUP_ELEMENT_NAME);
         groupElement.addAttribute(ID_ELEMENT_NAME, String.valueOf(group.getId()));
         groupElement.addAttribute(NAME_ELEMENT_NAME, group.getName());

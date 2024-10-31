@@ -19,7 +19,7 @@ import static com.zimbra.cs.mailbox.Mailbox.existsCalendarGroupByName;
 import static com.zimbra.cs.service.mail.CalendarGroupCodec.decodeCalendarIds;
 import static com.zimbra.cs.service.mail.CalendarGroupCodec.encodeCalendarIds;
 import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.addCalendarIdsToElement;
-import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.createGroupElement;
+import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.createUniqueGroupElement;
 
 public class CreateCalendarGroup extends MailDocumentHandler {
 
@@ -61,7 +61,7 @@ public class CreateCalendarGroup extends MailDocumentHandler {
   private static Element buildResponse(ZimbraSoapContext zsc, Folder group)
       throws ServiceException {
     final var response = zsc.createElement(MailConstants.CREATE_CALENDAR_GROUP_RESPONSE);
-    final var groupElement = createGroupElement(response, group);
+    final var groupElement = createUniqueGroupElement(response, group);
 
     addCalendarIdsToElement(groupElement, decodeCalendarIds(group));
 
