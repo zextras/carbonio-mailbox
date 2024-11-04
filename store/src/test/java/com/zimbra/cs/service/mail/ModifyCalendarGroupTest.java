@@ -27,6 +27,7 @@ import java.util.List;
 
 import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Tag("api")
 class ModifyCalendarGroupTest extends SoapTestSuite {
@@ -102,6 +103,7 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
     request.setId(id);
     String groupNameModified = "Modified - Group Calendar";
     request.setName(groupNameModified);
+    request.setCalendarIds(calendarIds);
 
     final var soapResponse = getSoapClient().executeSoap(account, request);
 
@@ -109,7 +111,28 @@ class ModifyCalendarGroupTest extends SoapTestSuite {
     var response = parseSoapResponse(soapResponse, ModifyCalendarGroupResponse.class);
     var group = response.getGroup();
     assertEquals(groupNameModified, group.getName());
-    assertEquals(calendarIds, group.getCalendarIds());
+  }
+  @Test
+  void emptyCalendarIds() throws Exception {
+    var calendarIds = List.of(
+            createCalendar(account, "Test Calendar 1").getId(),
+            createCalendar(account, "Test Calendar 2").getId()
+    );
+    var groupName = "Group Calendar";
+    var res = addGroupFor(account, groupName, calendarIds);
+    // Request
+    var request = new ModifyCalendarGroupRequest();
+    var id = res.getGroup().getId();
+    request.setId(id);
+    request.setName(groupName);
+    request.setCalendarIds(null);
+
+    final var soapResponse = getSoapClient().executeSoap(account, request);
+
+    assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
+    var response = parseSoapResponse(soapResponse, ModifyCalendarGroupResponse.class);
+    var group = response.getGroup();
+    assertNull(group.getCalendarIds());
   }
 
   private Folder createCalendar(Account account, String name) throws Exception {

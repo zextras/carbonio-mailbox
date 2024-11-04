@@ -5,12 +5,14 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
+import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.ModifyCalendarGroupRequest;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static com.zimbra.cs.mailbox.Mailbox.getCalendarGroupById;
 import static com.zimbra.cs.mailbox.Mailbox.tryRenameCalendarGroup;
@@ -20,6 +22,8 @@ import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.addCalendarIdsTo
 import static com.zimbra.cs.service.mail.CalendarGroupXMLHelper.createUniqueGroupElement;
 
 public class ModifyCalendarGroup extends MailDocumentHandler {
+
+  public static final List<String> EMPTY_LIST = List.of();
 
   @Override
   public Element handle(Element request, Map<String, Object> context) throws ServiceException {
@@ -38,30 +42,41 @@ public class ModifyCalendarGroup extends MailDocumentHandler {
     var group = getCalendarGroupById(octxt, mbox, id)
             .orElseThrow(() -> ServiceException.FAILURE("Calendar group with ID " + req.getId() + " does NOT exist"));
 
-    if (shouldRenameGroup(req, group))
-      tryRenameCalendarGroup(octxt, mbox, group, req.getName());
+    String nameFromRequest = req.getName();
+    if (shouldRename(nameFromRequest, group.getName()))
+      tryRenameCalendarGroup(octxt, mbox, group, nameFromRequest);
 
-    if (shouldModifyListCalendar(req, group)) {
-      mbox.validateCalendarIds(octxt, mbox, req.getCalendarIds().stream().map(Integer::parseInt).toList());
-      mbox.setCustomData(octxt, group.getId(), MailItem.Type.FOLDER, encodeCalendarIds(new HashSet<>(req.getCalendarIds())));
-    }
+    modifyCalendarIds(mbox, octxt, group, req.getCalendarIds());
 
     return buildResponse(zsc, group);
   }
 
-  private static boolean shouldRenameGroup(ModifyCalendarGroupRequest req, Folder group) {
-    return req.getName() != null && !req.getName().isBlank() && !req.getName().equals(group.getName());
+  private void modifyCalendarIds(Mailbox mbox, OperationContext octxt, Folder group, List<String> idsFromRequest) throws ServiceException {
+    int groupId = group.getId();
+    if (haveNoIds(idsFromRequest)) {
+      modifyListCalendar(octxt, mbox, groupId, EMPTY_LIST);
+      return;
+    }
+    if (haveDifferentIds(decodeCalendarIds(group), idsFromRequest)) {
+      mbox.validateCalendarIds(octxt, mbox, idsFromRequest.stream().map(Integer::parseInt).toList());
+      modifyListCalendar(octxt, mbox, groupId, idsFromRequest);
+    }
   }
 
-  private static boolean shouldModifyListCalendar(ModifyCalendarGroupRequest req, Folder group) throws ServiceException {
-    return req.getCalendarIds() != null && notEquals(req, group);
+  private static void modifyListCalendar(OperationContext octxt, Mailbox mbox, int groupId, List<String> calendarIds) throws ServiceException {
+    mbox.setCustomData(octxt, groupId, MailItem.Type.FOLDER, encodeCalendarIds(new HashSet<>(calendarIds)));
   }
 
-  private static boolean notEquals(ModifyCalendarGroupRequest req, Folder group) throws ServiceException {
-    Set<String> groupCalendarsIds = new HashSet<>(decodeCalendarIds(group));
-    Set<String> reqCalendarsIds = new HashSet<>(req.getCalendarIds());
+  private boolean haveNoIds(List<String> calendarIds) {
+    return calendarIds == null || calendarIds.isEmpty();
+  }
 
-    return !reqCalendarsIds.equals(groupCalendarsIds);
+  private static boolean shouldRename(String nameFromRequest, String nameFromGroup) {
+    return nameFromRequest != null && !nameFromRequest.isBlank() && !nameFromRequest.equals(nameFromGroup);
+  }
+
+  private static boolean haveDifferentIds(List<String> idsFromGroup, List<String> idsFromRequest) {
+    return !new HashSet<>(idsFromRequest).equals(new HashSet<>(idsFromGroup));
   }
 
   private static Element buildResponse(ZimbraSoapContext zsc, Folder group)
