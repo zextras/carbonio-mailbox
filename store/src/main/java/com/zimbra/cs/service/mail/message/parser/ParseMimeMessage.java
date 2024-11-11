@@ -704,8 +704,8 @@ public final class ParseMimeMessage {
   }
 
   private static String sanitizeFileName(String filename) {
-    return new String(URLCodec.encodeUrl(new BitSet(256), filename.getBytes(Charsets.UTF_8)),
-            Charsets.ISO_8859_1);
+    return new String(URLCodec.encodeUrl(new BitSet(256), filename.getBytes(StandardCharsets.UTF_8)),
+        StandardCharsets.ISO_8859_1);
   }
 
   private static void attachContact(MimeMultipart mmp, ItemId iid, String contentID,
