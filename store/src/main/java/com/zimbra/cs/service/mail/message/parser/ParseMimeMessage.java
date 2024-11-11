@@ -4,6 +4,7 @@
 
 package com.zimbra.cs.service.mail.message.parser;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
@@ -48,6 +49,8 @@ import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.util.JMSession;
 import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.ZimbraSoapContext;
+import org.apache.commons.codec.net.URLCodec;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -55,6 +58,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -693,10 +697,15 @@ public final class ParseMimeMessage {
     } else {
       mbp.setDataHandler(new DataHandler(new MailboxBlobDataSource(msg.getBlob())));
       mbp.setHeader("Content-Type", MimeConstants.CT_MESSAGE_RFC822);
-      mbp.setHeader("Content-Disposition", Part.ATTACHMENT);
+      mbp.setHeader("Content-Disposition", Part.ATTACHMENT + ";filename*=UTF-8''" + sanitizeFileName(msg.getSubject() + ".eml\""));
     }
     mbp.setContentID(contentID);
     mmp.addBodyPart(mbp);
+  }
+
+  private static String sanitizeFileName(String filename) {
+    return new String(URLCodec.encodeUrl(new BitSet(256), filename.getBytes(Charsets.UTF_8)),
+            Charsets.ISO_8859_1);
   }
 
   private static void attachContact(MimeMultipart mmp, ItemId iid, String contentID,
