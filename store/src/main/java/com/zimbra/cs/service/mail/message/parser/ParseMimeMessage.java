@@ -4,7 +4,6 @@
 
 package com.zimbra.cs.service.mail.message.parser;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
@@ -697,7 +696,7 @@ public final class ParseMimeMessage {
     } else {
       mbp.setDataHandler(new DataHandler(new MailboxBlobDataSource(msg.getBlob())));
       mbp.setHeader("Content-Type", MimeConstants.CT_MESSAGE_RFC822);
-      mbp.setHeader("Content-Disposition", Part.ATTACHMENT + ";filename*=UTF-8''" + sanitizeFileName(msg.getSubject() + ".eml\""));
+      mbp.setHeader("Content-Disposition", Part.ATTACHMENT + ";filename*=UTF-8''" + sanitizeFileName(msg.getSubject() + ".eml"));
     }
     mbp.setContentID(contentID);
     mmp.addBodyPart(mbp);
