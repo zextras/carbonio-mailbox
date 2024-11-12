@@ -18,7 +18,10 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ZimbraAuthToken;
+import com.zimbra.cs.mailbox.DeliveryContext;
+import com.zimbra.cs.mailbox.DeliveryOptions;
 import com.zimbra.cs.mailbox.MailServiceException;
+import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
@@ -91,6 +94,52 @@ public final class ParseMimeMessageTest {
   assertEquals("rcpt@zimbra.com", mm.getHeader("To", ","));
   assertEquals("7bit", mm.getHeader("Content-Transfer-Encoding", ","));
   assertEquals("foo bar", mm.getContent());
+ }
+
+ @Test
+  void parseMimeMsgSoap_withMsgAttachment() throws Exception {
+   Account acct = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   OperationContext octxt = new OperationContext(acct);
+   var mbox = MailboxManager.getInstance().createMailbox(octxt, acct);
+   final ParsedMessage message = new MailMessageBuilder()
+       .from(acct.getName())
+       .addRecipient(acct.getName())
+       .subject("Test email")
+       .body("Hello there")
+       .addAttachmentFromResources("/test-save-to-files.txt")
+       .build();
+   var deliveryOptions = new DeliveryOptions();
+   deliveryOptions.setFolderId(mbox.getId());
+   var msg = mbox.addMessage(octxt, message, deliveryOptions, new DeliveryContext());
+
+   Element rootEl = new Element.JSONElement(MailConstants.E_SEND_MSG_REQUEST);
+   Element el = new Element.JSONElement(MailConstants.E_MSG);
+   el.addAttribute(MailConstants.E_SUBJECT, "dinner appt");
+   el.addUniqueElement(MailConstants.E_MIMEPART)
+       .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
+       .addAttribute(MailConstants.E_CONTENT, "foo bar");
+   el.addElement(MailConstants.E_EMAIL)
+       .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
+       .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
+   el.addUniqueElement(MailConstants.E_ATTACH)
+       .addElement(MailConstants.E_MSG)
+       .addAttribute(MailConstants.A_ID, acct.getId() + ":" + msg.getId());
+
+   rootEl.addUniqueElement(el);
+
+
+   ZimbraSoapContext zsc = getMockSoapContext();
+
+   var messageData = new MimeMessageData();
+   MimeMessage mm =
+       ParseMimeMessage.parseMimeMsgSoap(
+           zsc, octxt, null, el, messageData);
+   assertTrue(mm.getContent() instanceof ZMimeMultipart);
+   var multiPartContent = (ZMimeMultipart) mm.getContent();
+   var attachedEmail = multiPartContent.getBodyPart(1);
+   assertEquals("message/rfc822", attachedEmail.getContentType());
+   assertEquals("attachment", attachedEmail.getDisposition());
+   assertEquals("Test email.eml", attachedEmail.getFileName());
  }
 
   @Test
