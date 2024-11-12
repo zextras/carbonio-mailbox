@@ -118,11 +118,11 @@ public final class ParseMimeMessageTest {
    el.addUniqueElement(MailConstants.E_MIMEPART)
        .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
        .addAttribute(MailConstants.E_CONTENT, "foo bar");
-   el.addElement(MailConstants.E_EMAIL)
+   el.addUniqueElement(MailConstants.E_EMAIL)
        .addAttribute(MailConstants.A_ADDRESS_TYPE, EmailType.TO.toString())
        .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
    el.addUniqueElement(MailConstants.E_ATTACH)
-       .addElement(MailConstants.E_MSG)
+       .addUniqueElement(MailConstants.E_MSG)
        .addAttribute(MailConstants.A_ID, acct.getId() + ":" + msg.getId());
 
    rootEl.addUniqueElement(el);
