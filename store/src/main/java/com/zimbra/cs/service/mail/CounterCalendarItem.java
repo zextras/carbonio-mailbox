@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.cs.mime.MimeProcessor;
+import com.zimbra.cs.mime.MimeProcessorUtil;
 import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
 import java.util.Map;
 
@@ -77,8 +79,8 @@ public class CounterCalendarItem extends CalendarRequest {
         CalSendData dat = handleMsgElement(zsc, octxt, msgElem, acct, mbox, parser);
 
         MailSender mailSender = mbox.getMailSender();
-        mailSender.sendMimeMessage(octxt, mbox, dat.mMm);
-        Element response = getResponseElement(zsc);
-        return response;
+        MimeProcessor mimeProcessor = MimeProcessorUtil.getMimeProcessor(request, context);
+        mailSender.sendMimeMessage(octxt, mbox, dat.mMm, mimeProcessor);
+        return getResponseElement(zsc);
     }
 }
