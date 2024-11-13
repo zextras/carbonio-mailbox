@@ -1154,64 +1154,6 @@ public class CalendarMailSender {
     senderThread.start();
   }
 
-  /**
-   * Sends a message with partial send enabled. If a partial send error occurs, logs an info
-   * message.
-   */
-  public static ItemId sendPartial(
-      OperationContext octxt,
-      Mailbox mbox,
-      MimeMessage mm,
-      List<Upload> uploads,
-      ItemId origMsgId,
-      String replyType,
-      String identityId,
-      boolean replyToSender)
-      throws ServiceException {
-    return sendPartial(
-        octxt, mbox, mm, uploads, origMsgId, replyType, identityId, replyToSender, false);
-  }
-
-  public static ItemId sendPartial(
-      OperationContext octxt,
-      Mailbox mbox,
-      MimeMessage mm,
-      List<Upload> uploads,
-      ItemId origMsgId,
-      String replyType,
-      String identityId,
-      boolean replyToSender,
-      boolean asAdmin)
-      throws ServiceException {
-    return sendPartial(
-        octxt, mbox, mm, uploads, origMsgId, replyType, identityId, null, replyToSender, asAdmin);
-  }
-
-  public static ItemId sendPartial(
-          OperationContext octxt,
-          Mailbox mbox,
-          MimeMessage mm,
-          List<Upload> uploads,
-          ItemId origMsgId,
-          String replyType,
-          String identityId,
-          com.zimbra.cs.account.DataSource dataSource,
-          boolean replyToSender,
-          boolean asAdmin)
-          throws ServiceException {
-    return sendPartial(octxt,
-            mbox,
-            mm,
-            uploads,
-            origMsgId,
-            replyType,
-            identityId,
-            dataSource,
-            replyToSender,
-            asAdmin,
-            null);
-  }
-
   public static ItemId sendPartial(
       OperationContext octxt,
       Mailbox mbox,

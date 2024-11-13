@@ -368,7 +368,7 @@ public class SendMsg extends MailDocumentHandler {
                     mm.getAllRecipients(),
                     mv.getOriginalInvite());
             CalendarMailSender.sendPartial(
-                oc, mbox, notifyMimeMsg, null, null, null, null, false, true);
+                oc, mbox, notifyMimeMsg, null, null, null, null, null, false, true, processor);
           }
         }
       }
