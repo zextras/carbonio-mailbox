@@ -433,10 +433,10 @@ public class ProvUtil implements HttpDebugListener {
     CREATE_BULK_ACCOUNTS(
         "createBulkAccounts",
         "cabulk",
-        "{domain} {namemask} {number of accounts to create}",
+        "{domain} {namemask} {number of accounts to create} {password}",
         Category.MISC,
-        3,
-        3),
+        4,
+        4),
     CREATE_CALENDAR_RESOURCE(
         "createCalendarResource",
         "ccr",
@@ -2306,7 +2306,7 @@ public class ProvUtil implements HttpDebugListener {
       usage();
     } else {
       String domain = args[1];
-      String password = "test123";
+      String password =  args[4];
       String nameMask = args[2];
       int numAccounts = Integer.parseInt(args[3]);
       for (int ix = 0; ix < numAccounts; ix++) {
