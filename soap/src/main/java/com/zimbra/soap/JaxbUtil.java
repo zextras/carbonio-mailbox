@@ -711,6 +711,8 @@ public final class JaxbUtil {
           com.zimbra.soap.mail.message.CreateCalendarGroupResponse.class,
           com.zimbra.soap.mail.message.DeleteCalendarGroupRequest.class,
           com.zimbra.soap.mail.message.DeleteCalendarGroupResponse.class,
+          com.zimbra.soap.mail.message.EmptyCalendarTrashRequest.class,
+          com.zimbra.soap.mail.message.EmptyCalendarTrashResponse.class,
           com.zimbra.soap.mail.message.ModifyCalendarGroupRequest.class,
           com.zimbra.soap.mail.message.ModifyCalendarGroupResponse.class,
           com.zimbra.soap.mail.message.GetCalendarItemSummariesRequest.class,

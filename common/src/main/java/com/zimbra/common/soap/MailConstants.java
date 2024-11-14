@@ -289,6 +289,8 @@ public final class MailConstants {
   public static final String E_MODIFY_CALENDAR_GROUP_RESPONSE = "ModifyCalendarGroupResponse";
   public static final String E_DELETE_CALENDAR_REQUEST = "DeleteCalendarRequest";
   public static final String E_DELETE_CALENDAR_RESPONSE = "DeleteCalendarResponse";
+  public static final String E_EMPTY_CALENDAR_TRASH_REQUEST = "EmptyCalendarTrashRequest";
+  public static final String E_EMPTY_CALENDAR_TRASH_RESPONSE = "EmptyCalendarTrashResponse";
 
   // noop
   public static final QName NO_OP_REQUEST = QName.get(E_NO_OP_REQUEST, NAMESPACE);
@@ -479,6 +481,11 @@ public final class MailConstants {
           QName.get(E_DELETE_CALENDAR_REQUEST, NAMESPACE);
   public static final QName DELETE_CALENDAR_RESPONSE =
           QName.get(E_DELETE_CALENDAR_RESPONSE, NAMESPACE);
+
+  public static final QName EMPTY_CALENDAR_TRASH_REQUEST =
+          QName.get(E_EMPTY_CALENDAR_TRASH_REQUEST, NAMESPACE);
+  public static final QName EMPTY_CALENDAR_TRASH_RESPONSE =
+          QName.get(E_EMPTY_CALENDAR_TRASH_RESPONSE, NAMESPACE);
 
   public static final QName GET_APPT_SUMMARIES_REQUEST =
       QName.get(E_GET_APPT_SUMMARIES_REQUEST, NAMESPACE);

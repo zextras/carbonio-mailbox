@@ -9615,6 +9615,18 @@ public class Mailbox implements MailboxStore {
     }
   }
 
+  public List<Folder> getCalendarsInTrash(OperationContext octxt) throws ServiceException {
+      return getTrashFolder(octxt)
+              .getSubfolders(octxt)
+              .stream()
+              .filter(Mailbox::isCalendarFolder)
+              .toList();
+  }
+
+  private Folder getTrashFolder(OperationContext octxt) throws ServiceException {
+    return getFolderById(octxt, FolderConstants.ID_FOLDER_TRASH);
+  }
+
   private boolean deletedBatchOfItemsInFolder(
       OperationContext octxt, QueryParams params, TargetConstraint tcon) throws ServiceException {
     // Lock this mailbox to make sure that no one modifies the items we're about to delete.

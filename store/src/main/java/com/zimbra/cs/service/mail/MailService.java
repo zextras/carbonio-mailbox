@@ -121,6 +121,7 @@ public class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.DELETE_CALENDAR_GROUP_REQUEST, new DeleteCalendarGroup());
     dispatcher.registerHandler(MailConstants.MODIFY_CALENDAR_GROUP_REQUEST, new ModifyCalendarGroup());
     dispatcher.registerHandler(MailConstants.DELETE_CALENDAR_REQUEST, new DeleteCalendar());
+    dispatcher.registerHandler(MailConstants.EMPTY_CALENDAR_TRASH_REQUEST, new EmptyCalendarTrash());
     dispatcher.registerHandler(MailConstants.GET_APPT_SUMMARIES_REQUEST, new GetApptSummaries());
     dispatcher.registerHandler(MailConstants.GET_APPOINTMENT_REQUEST, new GetAppointment());
     dispatcher.registerHandler(MailConstants.SET_APPOINTMENT_REQUEST, new SetAppointment());
