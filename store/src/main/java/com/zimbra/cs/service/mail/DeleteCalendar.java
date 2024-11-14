@@ -69,7 +69,7 @@ public class DeleteCalendar extends ItemAction {
 
             result.appendSuccessIds(localResults.getSuccessIds());
             result.appendNonExistentIds(localResults);
-            updateGroups(result, mbox, octxt);
+            updateGroups(mbox, octxt, localResults.getSuccessIds());
         }
 
         // check if default calendar is deleted, if yes, reset default calendar id
@@ -82,8 +82,7 @@ public class DeleteCalendar extends ItemAction {
         return result;
     }
 
-    private void updateGroups(ItemActionResult result, Mailbox mbox, OperationContext octxt) throws ServiceException {
-        var deletedCalendarIds = result.getSuccessIds();
+    private void updateGroups(Mailbox mbox, OperationContext octxt, List<String> deletedCalendarIds) throws ServiceException {
         groupsByDeletedCalendars(mbox.getCalendarGroups(octxt, SortBy.NAME_ASC), deletedCalendarIds)
                 .forEach((group, calendarList) ->
                         tryUpdateCalendarList(mbox, octxt, group, calendarList)
