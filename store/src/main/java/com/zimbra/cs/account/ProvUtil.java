@@ -2302,9 +2302,6 @@ public class ProvUtil implements HttpDebugListener {
   }
 
   private void doCreateAccountsBulk(String[] args) throws ServiceException {
-    if (args.length < 3) {
-      usage();
-    } else {
       String domain = args[1];
       String password =  args[4];
       String nameMask = args[2];
@@ -2317,7 +2314,6 @@ public class ProvUtil implements HttpDebugListener {
         Account account = prov.createAccount(name, password, attrs);
         console.println(account.getId());
       }
-    }
   }
 
   private Domain doCreateAliasDomain(
