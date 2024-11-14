@@ -10,10 +10,12 @@ import com.zextras.mailbox.soap.SoapExtension;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.account.ProvUtil.Category;
 import com.zimbra.cs.account.ProvUtil.Console;
+
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.UUID;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -428,17 +430,63 @@ class ProvUtilTest {
     Assertions.assertEquals(expected, stdErr.toString());
   }
 
-  @Test
-  void searchGal_fails_when_using_ldap_backend_and_unsupported_arguments_passed2() throws Exception {
-    final String domain = "testDomain.com";
-    runCommand(new String[]{"cd", domain});
+  @Test void createBulkAccounts() throws Exception {
+    var stdErr = new ByteArrayOutputStream();
+    var outputStream = new ByteArrayOutputStream();
+    runCommand(new String[] { "cd", "demo.zextras.io"});
+    String password = "passwd";
+    runCommand(outputStream, stdErr,
+            new String[]{"createBulkAccounts", "demo.zextras.io", "ntestuser", "4", password});
+    var ids = new String(outputStream.toByteArray()).split("\n");
+    for (var id : ids) {
+      var out = new ByteArrayOutputStream();
+      runCommand(out, new ByteArrayOutputStream(),
+              new String[] { "-l", "ga", id, "userPassword" });
+      Assertions.assertTrue(out.toString("UTF-8").endsWith(String.format("%s\n\n", password)));
+    }
+  }
 
+  @Test void whenNumberOfArgumentsAreExcessiveAnErrorIsDisplayed() throws Exception {
     OutputStream stdErr = new ByteArrayOutputStream();
     catchSystemExit(
-        () -> runCommand(new ByteArrayOutputStream(), stdErr,
-            new String[]{"--ldap", "sg", domain, "search_term", "sortBy", "fullName"}));
+            () -> {
+              runCommand(new ByteArrayOutputStream(), stdErr,
+              new String[]{"createBulkAccounts", "demo.zextras.io", "ntestuser", "4", "passwd", "other"});
+            });
+    String expected = "createBulkAccounts is expecting 4 arguments but 5 arguments have been provided\n";
+    Assertions.assertEquals(expected, stdErr.toString());
+  }
 
-    String expected = "ERROR: service.INVALID_REQUEST (invalid request: sortBy is not supported with -l)\n";
+  @Test void whenNumberOfArgumentsAreLackingAnErrorIsDisplayed() throws Exception {
+    OutputStream stdErr = new ByteArrayOutputStream();
+    catchSystemExit(
+            () -> {
+              runCommand(new ByteArrayOutputStream(), stdErr,
+              new String[]{"createBulkAccounts", "demo.zextras.io"});
+            });
+    String expected = "createBulkAccounts is expecting 4 arguments but 1 argument has been provided\n";
+    Assertions.assertEquals(expected, stdErr.toString());
+  }
+
+  @Test void variadicCommandArgumentsNumberMismatchMaxInt() throws Exception {
+    OutputStream stdErr = new ByteArrayOutputStream();
+    catchSystemExit(
+            () -> {
+              runCommand(new ByteArrayOutputStream(), stdErr,
+              new String[]{"createDynamicDistributionList"});
+            });
+    String expected = "createDynamicDistributionList is expecting at least 1 arguments but 0 arguments have been provided\n";
+    Assertions.assertEquals(expected, stdErr.toString());
+  }
+
+  @Test void variadicCommandArgumentsNumberMismatchZero() throws Exception {
+    OutputStream stdErr = new ByteArrayOutputStream();
+    catchSystemExit(
+            () -> {
+              runCommand(new ByteArrayOutputStream(), stdErr,
+                      new String[]{"getAllCos", "p1", "p2", "p3"});
+            });
+    String expected = "getAllCos is expecting at most 1 arguments but 3 arguments have been provided\n";
     Assertions.assertEquals(expected, stdErr.toString());
   }
 

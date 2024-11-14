@@ -1034,6 +1034,10 @@ public class ProvUtil implements HttpDebugListener {
     String getArgumentsCountDescription() {
       if (mMinArgLength == mMaxArgLength) {
         return String.valueOf(mMinArgLength);
+      } else if (mMaxArgLength == Integer.MAX_VALUE) {
+        return String.format("at least %s", mMinArgLength);
+      } else if (mMinArgLength <= 0) {
+        return String.format("at most %s", mMaxArgLength);
       } else {
         return String.format("%s to %s", mMinArgLength, mMaxArgLength == Integer.MAX_VALUE ? "infinite" : mMaxArgLength);
       }
