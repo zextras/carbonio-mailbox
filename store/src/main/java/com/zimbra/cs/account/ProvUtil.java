@@ -1031,6 +1031,22 @@ public class ProvUtil implements HttpDebugListener {
     private Via mVia;
     private boolean mNeedsSchemaExtension = false;
 
+    String getArgumentsCountDescription() {
+      if (mMinArgLength == mMaxArgLength) {
+        return String.valueOf(mMinArgLength);
+      } else {
+        return String.format("%s to %s", mMinArgLength, mMaxArgLength == Integer.MAX_VALUE ? "infinite" : mMaxArgLength);
+      }
+    }
+
+    public int getMinArgLength() {
+      return mMinArgLength;
+    }
+
+    public int getMaxArgLength() {
+      return mMaxArgLength;
+    }
+
     public enum Via {
       soap,
       ldap
@@ -1240,7 +1256,6 @@ public class ProvUtil implements HttpDebugListener {
     return null;
   }
 
-
   private boolean execute(String[] args)
       throws ServiceException, ArgException, IOException, HttpException {
     String[] members;
@@ -1256,6 +1271,15 @@ public class ProvUtil implements HttpDebugListener {
       return true;
     }
     if (!command.checkArgsLength(args)) {
+      int length = args.length - 1;
+      console.printError(String.format(
+              "%s is expecting %s arguments but %s %s %s been provided",
+              command.getName(),
+              command.getArgumentsCountDescription(),
+              length,
+              length == 1 ? "argument" : "arguments",
+              length == 1 ? "has" : "have"
+      ));
       usage();
       return true;
     }
