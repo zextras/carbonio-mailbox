@@ -49,6 +49,7 @@ import com.zimbra.cs.mailbox.calendar.RecurId;
 import com.zimbra.cs.mailbox.calendar.ZOrganizer;
 import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.mime.MimeProcessor;
+import com.zimbra.cs.mime.MimeProcessorUtil;
 import com.zimbra.cs.mime.MimeVisitor;
 import com.zimbra.cs.service.FileUploadServlet;
 import com.zimbra.cs.service.FileUploadServlet.Upload;
@@ -67,6 +68,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.Address;
@@ -93,7 +95,6 @@ public class SendMsg extends MailDocumentHandler {
 
   private static final long MAX_IN_FLIGHT_DELAY_MSECS = 4 * Constants.MILLIS_PER_SECOND;
   private static final long RETRY_CHECK_PERIOD_MSECS = 500;
-  protected static MimeProcessor processor = null;
 
   private static final ItemId NO_MESSAGE_SAVED_TO_SENT = new ItemId((String) null, -1);
 
@@ -104,7 +105,6 @@ public class SendMsg extends MailDocumentHandler {
 
   public Element handle(Element request, Map<String, Object> context, QName respQname)
       throws ServiceException {
-    try {
       ZimbraSoapContext zsc = getZimbraSoapContext(context);
       Mailbox mbox = getRequestedMailbox(zsc);
       AccountUtil.checkQuotaWhenSendMail(mbox);
@@ -136,7 +136,7 @@ public class SendMsg extends MailDocumentHandler {
       boolean sendFromDraft = msgElem.getAttributeBool(MailConstants.A_SEND_FROM_DRAFT, false);
       ItemId iidDraft = draftId == null ? null : new ItemId(draftId, authAcct.getId());
 
-      Account delegatedAccount = authAcct;
+      Account delegatedAccount;
       Mailbox delegatedMailbox = null;
       if (!StringUtil.isNullOrEmpty(identityId) && !identityId.equals(authAcct.getId())) {
 
@@ -149,8 +149,7 @@ public class SendMsg extends MailDocumentHandler {
 
             Provisioning prov = Provisioning.getInstance();
             boolean active =
-                delegatedAccount != null
-                    && Provisioning.ACCOUNT_STATUS_ACTIVE.equals(
+                    Provisioning.ACCOUNT_STATUS_ACTIVE.equals(
                         delegatedAccount.getAccountStatus(prov));
             if (!active) {
               ZimbraLog.soap.info(
@@ -189,7 +188,7 @@ public class SendMsg extends MailDocumentHandler {
             try {
               delay -= RETRY_CHECK_PERIOD_MSECS;
               Thread.sleep(RETRY_CHECK_PERIOD_MSECS);
-            } catch (InterruptedException ie) {
+            } catch (InterruptedException ignored) {
             }
           }
 
@@ -227,11 +226,11 @@ public class SendMsg extends MailDocumentHandler {
             }
           }
 
-          if (delegatedMailbox != null) {
+          MimeProcessor processor = MimeProcessorUtil.getMimeProcessor(request, context);
             savedMsgId =
                 doSendMessage(
                     octxt,
-                    delegatedMailbox,
+                    Objects.requireNonNullElse(delegatedMailbox, mbox),
                     mm,
                     mimeData.uploads,
                     iidOrigId,
@@ -240,22 +239,9 @@ public class SendMsg extends MailDocumentHandler {
                     dataSourceId,
                     noSaveToSent,
                     needCalendarSentByFixup,
-                    isCalendarForward);
-          } else {
-            savedMsgId =
-                doSendMessage(
-                    octxt,
-                    mbox,
-                    mm,
-                    mimeData.uploads,
-                    iidOrigId,
-                    replyType,
-                    identityId,
-                    dataSourceId,
-                    noSaveToSent,
-                    needCalendarSentByFixup,
-                    isCalendarForward);
-          }
+                    isCalendarForward,
+                    processor);
+
 
           // (need to make sure that *something* gets recorded, because caching
           //   a null ItemId makes the send appear to still be PENDING)
@@ -308,9 +294,6 @@ public class SendMsg extends MailDocumentHandler {
         response.addElement(MailConstants.E_MSG);
       }
       return response;
-    } finally {
-      processor = null;
-    }
   }
 
   public static ItemId doSendMessage(
@@ -324,7 +307,8 @@ public class SendMsg extends MailDocumentHandler {
       String dataSourceId,
       boolean noSaveToSent,
       boolean needCalendarSentByFixup,
-      boolean isCalendarForward)
+      boolean isCalendarForward,
+      MimeProcessor processor)
       throws ServiceException {
 
     boolean isCalendarMessage = false;
@@ -366,7 +350,7 @@ public class SendMsg extends MailDocumentHandler {
         throw ServiceException.INVALID_REQUEST("Data source SMTP is not enabled", null);
       }
       sender = mbox.getDataSourceMailSender(dataSource, isCalendarMessage);
-      id = sender.sendDataSourceMimeMessage(oc, mbox, mm, uploads, origMsgId, replyType);
+      id = sender.sendDataSourceMimeMessage(oc, mbox, mm, uploads, origMsgId, replyType, processor);
     }
     // Send Calendar Forward Invitation notification if applicable
     try {
@@ -384,7 +368,7 @@ public class SendMsg extends MailDocumentHandler {
                     mm.getAllRecipients(),
                     mv.getOriginalInvite());
             CalendarMailSender.sendPartial(
-                oc, mbox, notifyMimeMsg, null, null, null, null, false, true);
+                oc, mbox, notifyMimeMsg, null, null, null, null, null, false, true, processor);
           }
         }
       }
@@ -431,7 +415,7 @@ public class SendMsg extends MailDocumentHandler {
                 .setCallback(callback);
         try {
           mv.accept(mm);
-        } catch (MessagingException e) {
+        } catch (MessagingException ignored) {
         }
         if (callback.wouldCauseModification()) {
           return mm;

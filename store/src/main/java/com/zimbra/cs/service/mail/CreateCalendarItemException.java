@@ -6,6 +6,7 @@
 package com.zimbra.cs.service.mail;
 
 import com.zimbra.cs.mailbox.calendar.IcalXmlStrMap;
+import com.zimbra.cs.mime.MimeProcessorUtil;
 import com.zimbra.cs.service.mail.message.parser.InviteParser;
 import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
 import java.util.ArrayList;
@@ -197,6 +198,7 @@ public class CreateCalendarItemException extends CalendarRequest {
             }
         } finally {
             mbox.lock.release();
+            sendQueue.setMimeProcessor(MimeProcessorUtil.getMimeProcessor(request, context));
             sendQueue.send();
         }
 

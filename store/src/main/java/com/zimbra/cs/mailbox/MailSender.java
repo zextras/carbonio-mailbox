@@ -81,7 +81,7 @@ public class MailSender {
   private static Map<String, PreSendMailListener> mPreSendMailListeners =
       new ConcurrentHashMap<>();
 
-  private Boolean mSaveToSent;
+  private Boolean mSaveToSent ;
   private Collection<Upload> mUploads;
   private ItemId mOriginalMessageId;
   private String mReplyType;
@@ -574,6 +574,11 @@ public class MailSender {
         octxt, mbox, saveToSent, mm, uploads, origMsgId, replyType, identity, replyToSender, null);
   }
 
+  public ItemId sendMimeMessage(OperationContext octxt, Mailbox mbox, MimeMessage mm, MimeProcessor mimeProcessor)
+        throws ServiceException {
+        this.mimeProcessor = mimeProcessor;
+        return sendMimeMessage(octxt, mbox, mm);
+    }
   /**
    * Sends a message. If request is delegated, save to sent behavior follows {@link
    * Provisioning#A_zimbraPrefDelegatedSendSaveTarget}: - owner: saves the email only to delegated

@@ -17,6 +17,7 @@ import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.OperationContext;
+import com.zimbra.cs.mime.MimeProcessorUtil;
 import com.zimbra.cs.service.mail.message.parser.InviteParser;
 import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
 import com.zimbra.cs.service.util.ItemId;
@@ -128,6 +129,7 @@ public class CreateCalendarItem extends CalendarRequest {
       sendCalendarMessage(
           zsc, octxt, iidFolder.getId(), acct, mbox, dat, response, true, forceSend, sendQueue);
     } finally {
+      sendQueue.setMimeProcessor(MimeProcessorUtil.getMimeProcessor(request, context));
       sendQueue.send();
     }
     boolean echo = request.getAttributeBool(MailConstants.A_CAL_ECHO, false);

@@ -21,6 +21,8 @@ import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.Message.CalendarItemInfo;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mailbox.calendar.Invite;
+import com.zimbra.cs.mime.MimeProcessor;
+import com.zimbra.cs.mime.MimeProcessorUtil;
 import com.zimbra.cs.mime.MimeVisitor;
 import com.zimbra.cs.service.mail.message.parser.MimeMessageData;
 import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
@@ -74,20 +76,21 @@ public class ForwardAppointmentInvite extends ForwardAppointment {
     }
 
     Pair<MimeMessage, MimeMessage> msgPair = getMessagePair(mbox, senderAcct, msg, mmFwdWrapper);
-    forwardMessages(mbox, octxt, msgPair);
+    MimeProcessor mimeProcessor = MimeProcessorUtil.getMimeProcessor(request, context);
+    forwardMessages(mbox, octxt, msgPair, mimeProcessor);
 
     Element response = getResponseElement(zsc);
     return response;
   }
 
   public static void forwardMessages(
-      Mailbox mbox, OperationContext octxt, Pair<MimeMessage, MimeMessage> msgPair)
+          Mailbox mbox, OperationContext octxt, Pair<MimeMessage, MimeMessage> msgPair, MimeProcessor mimeProcessor)
       throws ServiceException {
     if (msgPair.getFirst() != null) {
-      sendFwdMsg(octxt, mbox, msgPair.getFirst());
+      sendFwdMsg(octxt, mbox, msgPair.getFirst(), mimeProcessor);
     }
     if (msgPair.getSecond() != null) {
-      sendFwdNotifyMsg(octxt, mbox, msgPair.getSecond());
+      sendFwdNotifyMsg(octxt, mbox, msgPair.getSecond(), mimeProcessor);
     }
   }
 
