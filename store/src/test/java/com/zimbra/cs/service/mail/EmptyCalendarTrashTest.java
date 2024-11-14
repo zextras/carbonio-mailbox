@@ -17,12 +17,9 @@ import com.zimbra.soap.mail.message.CreateCalendarGroupRequest;
 import com.zimbra.soap.mail.message.CreateCalendarGroupResponse;
 import com.zimbra.soap.mail.message.CreateFolderRequest;
 import com.zimbra.soap.mail.message.CreateFolderResponse;
-import com.zimbra.soap.mail.message.DeleteCalendarRequest;
-import com.zimbra.soap.mail.message.DeleteCalendarResponse;
 import com.zimbra.soap.mail.message.EmptyCalendarTrashRequest;
 import com.zimbra.soap.mail.message.GetCalendarGroupsRequest;
 import com.zimbra.soap.mail.message.GetCalendarGroupsResponse;
-import com.zimbra.soap.mail.type.FolderActionSelector;
 import com.zimbra.soap.mail.type.NewFolderSpec;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -141,23 +138,6 @@ class EmptyCalendarTrashTest extends SoapTestSuite {
         assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
         final var response = parseSoapResponse(soapResponse, CreateCalendarGroupResponse.class);
         return response.getGroup();
-    }
-
-    private DeleteCalendarResponse deleteCalendar(Account acc, String calendarId) throws Exception {
-        var folderActionSelector = new FolderActionSelector(calendarId, FolderAction.OP_HARD_DELETE);
-
-        final var request = new DeleteCalendarRequest(folderActionSelector);
-        var soapResponse = getSoapClient().executeSoap(acc, request);
-        assertEquals(HttpStatus.SC_OK, soapResponse.getStatusLine().getStatusCode());
-        return parseSoapResponse(soapResponse, DeleteCalendarResponse.class);
-    }
-
-    private String createCalendar(Account account, String name) throws Exception {
-        return createItem(account, name, MailItem.Type.APPOINTMENT);
-    }
-
-    private String createFolder(Account account, String name) throws Exception {
-        return createItem(account, name, MailItem.Type.FOLDER);
     }
 
     private String createItem(Account account, String name, MailItem.Type type) throws Exception {
