@@ -24,8 +24,6 @@ import static com.zimbra.cs.service.mail.CalendarGroupCodec.encodeCalendarIds;
 
 public class EmptyCalendarTrash extends ItemAction {
 
-    private static final String OP_EMPTY = "empty";
-
     @Override
     public Element handle(Element request, Map<String, Object> context) throws ServiceException {
         ZimbraSoapContext zsc = getZimbraSoapContext(context);
