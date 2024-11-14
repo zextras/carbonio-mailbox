@@ -67,9 +67,11 @@ public class DeleteCalendar extends ItemAction {
 
             ItemActionResult localResults = ItemActionHelper.HARD_DELETE(octxt, mbox, responseProto, local, MailItem.Type.FOLDER, tcon).getResult();
 
-            result.appendSuccessIds(localResults.getSuccessIds());
+            var deletedCalendarIds = localResults.getSuccessIds();
+            removeCalendarsFromGroups(mbox, octxt, deletedCalendarIds);
+
+            result.appendSuccessIds(deletedCalendarIds);
             result.appendNonExistentIds(localResults);
-            updateGroups(mbox, octxt, localResults.getSuccessIds());
         }
 
         // check if default calendar is deleted, if yes, reset default calendar id
@@ -82,8 +84,8 @@ public class DeleteCalendar extends ItemAction {
         return result;
     }
 
-    private void updateGroups(Mailbox mbox, OperationContext octxt, List<String> deletedCalendarIds) throws ServiceException {
-        groupsByDeletedCalendars(mbox.getCalendarGroups(octxt, SortBy.NAME_ASC), deletedCalendarIds)
+    private void removeCalendarsFromGroups(Mailbox mbox, OperationContext octxt, List<String> calendarIds) throws ServiceException {
+        groupsByDeletedCalendars(mbox.getCalendarGroups(octxt, SortBy.NAME_ASC), calendarIds)
                 .forEach((group, calendarList) ->
                         tryUpdateCalendarList(mbox, octxt, group, calendarList)
                         .onFailure(e -> ZimbraLog.mailbox.error("Failed to update group with id: " + group.getId(), e))

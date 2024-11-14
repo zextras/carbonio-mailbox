@@ -37,7 +37,7 @@ public class EmptyCalendarTrash extends ItemAction {
 
         emptyTrash(mbox, octxt, zsc);
 
-        updateGroups(mbox, octxt, idsFrom(calendarsInTrash));
+        removeCalendarsFromGroups(mbox, octxt, idsFrom(calendarsInTrash));
 
         return zsc.createElement(MailConstants.EMPTY_CALENDAR_TRASH_RESPONSE);
     }
@@ -52,8 +52,8 @@ public class EmptyCalendarTrash extends ItemAction {
         mbox.purgeImapDeleted(octxt);
     }
 
-    private void updateGroups(Mailbox mbox, OperationContext octxt, List<String> deletedCalendarIds) throws ServiceException {
-        groupsByDeletedCalendars(mbox.getCalendarGroups(octxt, SortBy.NAME_ASC), deletedCalendarIds)
+    private void removeCalendarsFromGroups(Mailbox mbox, OperationContext octxt, List<String> calendarIds) throws ServiceException {
+        groupsByDeletedCalendars(mbox.getCalendarGroups(octxt, SortBy.NAME_ASC), calendarIds)
                 .forEach((group, calendarList) ->
                         tryUpdateCalendarList(mbox, octxt, group, calendarList)
                         .onFailure(e -> ZimbraLog.mailbox.error("Failed to update group with id: " + group.getId(), e))
