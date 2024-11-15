@@ -442,7 +442,7 @@ class ProvUtilTest {
       var out = new ByteArrayOutputStream();
       runCommand(out, new ByteArrayOutputStream(),
               new String[] { "-l", "ga", id, "userPassword" });
-      Assertions.assertTrue(out.toString("UTF-8").endsWith(String.format("%s\n\n", password)));
+      Assertions.assertTrue(out.toString("UTF-8").endsWith(String.format("%s%n%n", password)));
     }
   }
 

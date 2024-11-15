@@ -2331,7 +2331,7 @@ public class ProvUtil implements HttpDebugListener {
 
   private void doCreateAccountsBulk(String[] args) throws ServiceException {
       String domain = args[1];
-      String password =  args[4];
+      String userPassword =  args[4];
       String nameMask = args[2];
       int numAccounts = Integer.parseInt(args[3]);
       for (int ix = 0; ix < numAccounts; ix++) {
@@ -2339,7 +2339,7 @@ public class ProvUtil implements HttpDebugListener {
         Map<String, Object> attrs = new HashMap<>();
         String displayName = nameMask + " N. " + ix;
         StringUtil.addToMultiMap(attrs, "displayName", displayName);
-        Account account = prov.createAccount(name, password, attrs);
+        Account account = prov.createAccount(name, userPassword, attrs);
         console.println(account.getId());
       }
   }
