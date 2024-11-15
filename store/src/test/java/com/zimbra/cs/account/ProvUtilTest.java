@@ -10,14 +10,12 @@ import com.zextras.mailbox.soap.SoapExtension;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.account.ProvUtil.Category;
 import com.zimbra.cs.account.ProvUtil.Console;
-
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -442,6 +440,20 @@ class ProvUtilTest {
             new String[]{"--ldap", "sg", domain, "search_term", "offset", "10"}));
 
     String expected = "ERROR: service.INVALID_REQUEST (invalid request: offset is not supported with -l)\n";
+    Assertions.assertEquals(expected, stdErr.toString());
+  }
+
+  @Test
+  void searchGal_fails_when_using_ldap_backend_and_unsupported_arguments_passed2() throws Exception {
+    final String domain = "testDomain.com";
+    runCommand(new String[]{"cd", domain});
+
+    OutputStream stdErr = new ByteArrayOutputStream();
+    catchSystemExit(
+        () -> runCommand(new ByteArrayOutputStream(), stdErr,
+            new String[]{"--ldap", "sg", domain, "search_term", "sortBy", "fullName"}));
+
+    String expected = "ERROR: service.INVALID_REQUEST (invalid request: sortBy is not supported with -l)\n";
     Assertions.assertEquals(expected, stdErr.toString());
   }
 
