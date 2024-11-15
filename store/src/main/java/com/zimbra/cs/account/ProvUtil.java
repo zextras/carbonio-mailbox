@@ -1039,7 +1039,7 @@ public class ProvUtil implements HttpDebugListener {
       } else if (mMinArgLength <= 0) {
         return String.format("at most %s", mMaxArgLength);
       } else {
-        return String.format("%s to %s", mMinArgLength, mMaxArgLength == Integer.MAX_VALUE ? "infinite" : mMaxArgLength);
+        return String.format("%s to %s", mMinArgLength, mMaxArgLength);
       }
     }
 
@@ -2339,8 +2339,8 @@ public class ProvUtil implements HttpDebugListener {
         Map<String, Object> attrs = new HashMap<>();
         String displayName = nameMask + " N. " + ix;
         StringUtil.addToMultiMap(attrs, "displayName", displayName);
-        Account account = prov.createAccount(name, userPassword, attrs);
-        console.println(account.getId());
+        Account createdAccount = prov.createAccount(name, userPassword, attrs);
+        console.println(createdAccount.getId());
       }
   }
 
