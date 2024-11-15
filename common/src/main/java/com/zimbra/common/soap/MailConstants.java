@@ -84,6 +84,8 @@ public final class MailConstants {
   public static final String E_MSG_ACTION_RESPONSE = "MsgActionResponse";
   public static final String E_SEND_MSG_REQUEST = "SendMsgRequest";
   public static final String E_SEND_MSG_RESPONSE = "SendMsgResponse";
+  public static final String E_SEND_SECURE_MSG_REQUEST = "SendSecureMsgRequest";
+  public static final String E_SEND_SECURE_MSG_RESPONSE = "SendSecureMsgResponse";
   public static final String E_SEND_REPORT_REQUEST = "SendDeliveryReportRequest";
   public static final String E_SEND_REPORT_RESPONSE = "SendDeliveryReportResponse";
   public static final String E_SEND_SHARE_NOTIFICATION_REQUEST = "SendShareNotificationRequest";
@@ -340,6 +342,8 @@ public final class MailConstants {
   //   SendMsg/AddMsg/SaveDraft
   public static final QName SEND_MSG_REQUEST = QName.get(E_SEND_MSG_REQUEST, NAMESPACE);
   public static final QName SEND_MSG_RESPONSE = QName.get(E_SEND_MSG_RESPONSE, NAMESPACE);
+  public static final QName SEND_SECURE_MSG_REQUEST = QName.get(E_SEND_SECURE_MSG_REQUEST, NAMESPACE);
+  public static final QName SEND_SECURE_MSG_RESPONSE = QName.get(E_SEND_SECURE_MSG_RESPONSE, NAMESPACE);
   public static final QName SEND_REPORT_REQUEST = QName.get(E_SEND_REPORT_REQUEST, NAMESPACE);
   public static final QName SEND_REPORT_RESPONSE = QName.get(E_SEND_REPORT_RESPONSE, NAMESPACE);
   public static final QName SEND_SHARE_NOTIFICATION_REQUEST =
@@ -1021,6 +1025,7 @@ public final class MailConstants {
   public static final String A_DELETE_LIMIT = "deleteLimit";
   public static final String A_CHANGE_LIMIT = "changeLimit";
   public static final String A_REMAIN = "remain";
+  public static final String A_MIME_PROCESSOR = "mimeProcessor";
 
   // filter rules
   public static final String A_LHS = "k0";

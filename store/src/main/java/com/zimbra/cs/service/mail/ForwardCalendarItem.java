@@ -32,6 +32,8 @@ import com.zimbra.cs.mailbox.calendar.CalendarMailSender;
 import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mailbox.calendar.RecurId;
 import com.zimbra.cs.mailbox.calendar.ZOrganizer;
+import com.zimbra.cs.mime.MimeProcessor;
+import com.zimbra.cs.mime.MimeProcessorUtil;
 import com.zimbra.cs.mime.MimeVisitor;
 import com.zimbra.cs.service.mail.message.parser.MimeMessageData;
 import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
@@ -105,25 +107,26 @@ public class ForwardCalendarItem extends CalendarRequest {
     }
     Pair<List<MimeMessage>, List<MimeMessage>> mimePair =
         forwardCalItem(mbox, octxt, calItem, rid, mm, senderAcct);
-    sendForwardMessages(mbox, octxt, mimePair);
+    MimeProcessor mimeProcessor = MimeProcessorUtil.getMimeProcessor(request, context);
+    sendForwardMessages(mbox, octxt, mimePair, mimeProcessor);
     Element response = getResponseElement(zsc);
     return response;
   }
 
   public static void sendForwardMessages(
-      Mailbox mbox, OperationContext octxt, Pair<List<MimeMessage>, List<MimeMessage>> pair)
+          Mailbox mbox, OperationContext octxt, Pair<List<MimeMessage>, List<MimeMessage>> pair, MimeProcessor mimeProcessor)
       throws ServiceException {
     List<MimeMessage> fwdMsgs = pair.getFirst();
     List<MimeMessage> notifyMsgs = pair.getSecond();
     if (fwdMsgs != null) {
       for (MimeMessage mmFwd : fwdMsgs) {
-        sendFwdMsg(octxt, mbox, mmFwd);
+        sendFwdMsg(octxt, mbox, mmFwd, mimeProcessor);
       }
     }
     if (notifyMsgs != null) {
       for (MimeMessage mmNotify : notifyMsgs) {
         // Send Forward notification as Admin
-        sendFwdNotifyMsg(octxt, mbox, mmNotify);
+        sendFwdNotifyMsg(octxt, mbox, mmNotify, mimeProcessor);
       }
     }
   }
@@ -190,14 +193,14 @@ public class ForwardCalendarItem extends CalendarRequest {
     return pair;
   }
 
-  protected static ItemId sendFwdMsg(OperationContext octxt, Mailbox mbox, MimeMessage mmFwd)
+  protected static ItemId sendFwdMsg(OperationContext octxt, Mailbox mbox, MimeMessage mmFwd, MimeProcessor mimeProcessor)
       throws ServiceException {
-    return CalendarMailSender.sendPartial(octxt, mbox, mmFwd, null, null, null, null, false);
+    return CalendarMailSender.sendPartial(octxt, mbox, mmFwd, null, null, null, null, null, false, false, mimeProcessor);
   }
 
-  protected static ItemId sendFwdNotifyMsg(OperationContext octxt, Mailbox mbox, MimeMessage mmFwd)
+  protected static ItemId sendFwdNotifyMsg(OperationContext octxt, Mailbox mbox, MimeMessage mmFwd, MimeProcessor mimeProcessor)
       throws ServiceException {
-    return CalendarMailSender.sendPartial(octxt, mbox, mmFwd, null, null, null, null, false, true);
+    return CalendarMailSender.sendPartial(octxt, mbox, mmFwd, null, null, null, null, null,false, true, mimeProcessor);
   }
 
   private static Pair<List<MimeMessage>, List<MimeMessage>> getSeriesFwdMsgs(

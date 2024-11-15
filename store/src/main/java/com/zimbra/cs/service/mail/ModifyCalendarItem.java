@@ -19,6 +19,7 @@ import com.zimbra.cs.mailbox.calendar.IcalXmlStrMap;
 import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mailbox.calendar.InviteChanges;
 import com.zimbra.cs.mailbox.calendar.ZAttendee;
+import com.zimbra.cs.mime.MimeProcessorUtil;
 import com.zimbra.cs.service.mail.message.parser.InviteParser;
 import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
 import com.zimbra.cs.service.util.ItemId;
@@ -137,6 +138,7 @@ public class ModifyCalendarItem extends CalendarRequest {
                                response, sendQueue);
         } finally {
             requestedMailbox.lock.release();
+            sendQueue.setMimeProcessor(MimeProcessorUtil.getMimeProcessor(request, context));
             sendQueue.send();
         }
 

@@ -53,7 +53,9 @@ import java.util.Locale;
 public class SmimeHandlerImpl extends SmimeHandler {
 
     static {
-        Security.addProvider(new BouncyCastleProvider());
+        if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+            Security.addProvider(new BouncyCastleProvider());
+        }
     }
 
     private static final int CACHE_TIMEOUT_MILLIS = 600000;
