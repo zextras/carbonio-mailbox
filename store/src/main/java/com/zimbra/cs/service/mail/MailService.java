@@ -117,7 +117,12 @@ public class MailService implements DocumentService {
         MailConstants.APPLY_OUTGOING_FILTER_RULES_REQUEST, new ApplyOutgoingFilterRules());
 
     // Calendar
-
+    dispatcher.registerHandler(MailConstants.GET_CALENDAR_GROUPS_REQUEST, new GetCalendarGroups());
+    dispatcher.registerHandler(MailConstants.CREATE_CALENDAR_GROUP_REQUEST, new CreateCalendarGroup());
+    dispatcher.registerHandler(MailConstants.DELETE_CALENDAR_GROUP_REQUEST, new DeleteCalendarGroup());
+    dispatcher.registerHandler(MailConstants.MODIFY_CALENDAR_GROUP_REQUEST, new ModifyCalendarGroup());
+    dispatcher.registerHandler(MailConstants.DELETE_CALENDAR_REQUEST, new DeleteCalendar());
+    dispatcher.registerHandler(MailConstants.EMPTY_CALENDAR_TRASH_REQUEST, new EmptyCalendarTrash());
     dispatcher.registerHandler(MailConstants.GET_APPT_SUMMARIES_REQUEST, new GetApptSummaries());
     dispatcher.registerHandler(MailConstants.GET_APPOINTMENT_REQUEST, new GetAppointment());
     dispatcher.registerHandler(MailConstants.SET_APPOINTMENT_REQUEST, new SetAppointment());
@@ -232,18 +237,17 @@ public class MailService implements DocumentService {
     dispatcher.registerHandler(MailConstants.SET_RECOVERY_EMAIL_REQUEST, new SetRecoveryAccount());
 
     // Drive attachment upload
-    FilesCopyHandlerImpl filesCopyHandler = new FilesCopyHandlerImpl(new MailboxAttachmentService(), getFilesClient());
+    FilesCopyHandlerImpl filesCopyHandler =
+        new FilesCopyHandlerImpl(new MailboxAttachmentService(), getFilesClient());
     dispatcher.registerHandler(
-        MailConstants.COPY_TO_DRIVE_REQUEST,
-        new CopyToFiles(filesCopyHandler));
+        MailConstants.COPY_TO_DRIVE_REQUEST, new CopyToFiles(filesCopyHandler));
 
     dispatcher.registerHandler(
         QName.get("CreateSmartLinksRequest", MailConstants.NAMESPACE),
-        new CreateSmartLinks(getProvisioning(),
+        new CreateSmartLinks(
+            getProvisioning(),
             new FilesSmartLinksGenerator(getFilesClient(), filesCopyHandler),
-            getTracking()
-        )
-    );
+            getTracking()));
   }
 
   protected Provisioning getProvisioning() {
