@@ -18,13 +18,6 @@ import com.zimbra.soap.type.ZmBoolean;
 public class SendSecureMsgRequest extends SendMsgRequest {
 
     /**
-     * @zm-api-field-tag sign
-     * @zm-api-field-description Sign mime
-     */
-    @XmlAttribute(name=SmimeConstants.A_SIGN, required=false)
-    private ZmBoolean sign;
-
-    /**
      * @zm-api-field-tag encrypt
      * @zm-api-field-description Encrypt mime
      */
@@ -37,14 +30,6 @@ public class SendSecureMsgRequest extends SendMsgRequest {
      */
     @XmlAttribute(name=SmimeConstants.A_CERT_ID, required=false)
     private String certId;
-
-    public Boolean getSign() {
-        return ZmBoolean.toBool(sign, false);
-    }
-
-    public void setSign(Boolean sign) {
-        this.sign = ZmBoolean.fromBool(sign, false);
-    }
 
     public Boolean getEncrypt() {
         return ZmBoolean.toBool(encrypt, false);
