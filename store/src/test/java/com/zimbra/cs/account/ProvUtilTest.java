@@ -86,13 +86,13 @@ class ProvUtilTest {
     return runCommand(new String[]{"ca", accountMail, "password"});
   }
 
-  String runCommand(String[] commandWithArgs) throws Exception {
+  String runCommand(String... commandWithArgs) throws Exception {
     OutputStream outputStream = new ByteArrayOutputStream();
     runCommand(outputStream, new ByteArrayOutputStream(), commandWithArgs);
     return outputStream.toString();
   }
 
-  private void runCommand(OutputStream outputStream, OutputStream errorStream, String[] commandWithArgs)
+  private void runCommand(OutputStream outputStream, OutputStream errorStream, String... commandWithArgs)
       throws Exception {
     ProvUtil.main(new Console(outputStream, errorStream), commandWithArgs);
   }
@@ -460,12 +460,12 @@ class ProvUtilTest {
   @Test void createBulkAccounts() throws Exception {
     var stdErr = new ByteArrayOutputStream();
     var outputStream = new ByteArrayOutputStream();
-    runCommand(new String[] { "cd", "demo.zextras.io"});
+    runCommand("cd", "demo.zextras.io");
     String password = "passwd";
-    runCommand(outputStream, stdErr, new String[]{"createBulkAccounts", "demo.zextras.io", "ntestuser", "4", password});
+    runCommand(outputStream, stdErr, "createBulkAccounts", "demo.zextras.io", "ntestuser", "4", password);
     var ids = new String(outputStream.toByteArray()).split("\n");
     for (var id : ids) {
-      var out = runCommand(new String[] { "-l", "ga", id });
+      var out = runCommand("-l", "ga", id);
       Assertions.assertEquals(password, parseZmprovKeyValue(out).get("userPassword"));
     }
   }
@@ -474,7 +474,7 @@ class ProvUtilTest {
     OutputStream stdErr = new ByteArrayOutputStream();
     catchSystemExit(
             () -> runCommand(new ByteArrayOutputStream(), stdErr,
-                    new String[]{"createBulkAccounts", "demo.zextras.io", "ntestuser", "4", "passwd", "other"}));
+                    "createBulkAccounts", "demo.zextras.io", "ntestuser", "4", "passwd", "other"));
     String expected = "createBulkAccounts is expecting 4 arguments but 5 arguments have been provided\n";
     Assertions.assertEquals(expected, stdErr.toString());
   }
@@ -482,7 +482,7 @@ class ProvUtilTest {
   @Test void whenNumberOfArgumentsAreLackingAnErrorIsDisplayed() throws Exception {
     OutputStream stdErr = new ByteArrayOutputStream();
     catchSystemExit(
-            () -> runCommand(new ByteArrayOutputStream(), stdErr, new String[]{"createBulkAccounts", "demo.zextras.io"}));
+            () -> runCommand(new ByteArrayOutputStream(), stdErr, "createBulkAccounts", "demo.zextras.io"));
     String expected = "createBulkAccounts is expecting 4 arguments but 1 argument has been provided\n";
     Assertions.assertEquals(expected, stdErr.toString());
   }
@@ -490,7 +490,7 @@ class ProvUtilTest {
   @Test void variadicCommandArgumentsNumberMismatchMaxInt() throws Exception {
     OutputStream stdErr = new ByteArrayOutputStream();
     catchSystemExit(
-            () -> runCommand(new ByteArrayOutputStream(), stdErr, new String[]{"createDynamicDistributionList"}));
+            () -> runCommand(new ByteArrayOutputStream(), stdErr, "createDynamicDistributionList"));
     String expected = "createDynamicDistributionList is expecting at least 1 arguments but 0 arguments have been provided\n";
     Assertions.assertEquals(expected, stdErr.toString());
   }
@@ -498,7 +498,7 @@ class ProvUtilTest {
   @Test void variadicCommandArgumentsNumberMismatchZero() throws Exception {
     OutputStream stdErr = new ByteArrayOutputStream();
     catchSystemExit(
-            () -> runCommand(new ByteArrayOutputStream(), stdErr, new String[]{"getAllCos", "p1", "p2", "p3"}));
+            () -> runCommand(new ByteArrayOutputStream(), stdErr, "getAllCos", "p1", "p2", "p3"));
     String expected = "getAllCos is expecting at most 1 arguments but 3 arguments have been provided\n";
     Assertions.assertEquals(expected, stdErr.toString());
   }
