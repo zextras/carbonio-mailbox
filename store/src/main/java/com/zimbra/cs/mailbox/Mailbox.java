@@ -105,6 +105,7 @@ import com.zimbra.cs.mailbox.MailItem.UnderlyingData;
 import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
 import com.zimbra.cs.mailbox.MailboxListener.ChangeNotification;
 import com.zimbra.cs.mailbox.Tag.NormalizedTags;
+import com.zimbra.cs.mailbox.acl.EffectiveACLCache;
 import com.zimbra.cs.mailbox.calendar.CalendarMailSender;
 import com.zimbra.cs.mailbox.calendar.IcalXmlStrMap;
 import com.zimbra.cs.mailbox.calendar.Invite;
@@ -2059,6 +2060,22 @@ public class Mailbox implements MailboxStore {
     }
   }
 
+  private void clearAppointmentCache() {
+    try {
+      CalendarCacheManager.getInstance().purgeMailbox(this);
+    } catch (ServiceException e) {
+      ZimbraLog.mailbox.warn("error deleting Appointment cache from Memcached.");
+    }
+  }
+
+  private void clearEffectiveACLCache() {
+    try {
+      EffectiveACLCache.getInstance().purgeMailbox(this);
+    } catch (ServiceException e) {
+      ZimbraLog.mailbox.warn("error deleting EffectiveACL cache from Memcached.");
+    }
+  }
+
   private void clearTagCache() {
     mTagCache = null;
     requiresWriteLock = true;
@@ -2070,6 +2087,18 @@ public class Mailbox implements MailboxStore {
     }
   }
 
+  public void purgeCache() {
+    lock.lock();
+    try {
+      clearFolderCache();
+      clearTagCache();
+      clearItemCache();
+      clearAppointmentCache();
+      clearEffectiveACLCache();
+    } finally {
+      lock.release();
+    }
+  }
   /**
    * Removes all items of a specified type from the <tt>Mailbox</tt>'s caches. There may be some
    * collateral damage: purging non-tag, non-folder types will drop the entire item cache.
@@ -2090,12 +2119,12 @@ public class Mailbox implements MailboxStore {
         case TAG:
           clearTagCache();
           break;
-        default:
-          clearItemCache();
-          break;
         case UNKNOWN:
           clearFolderCache();
           clearTagCache();
+          clearItemCache();
+          break;
+        default:
           clearItemCache();
           break;
       }
