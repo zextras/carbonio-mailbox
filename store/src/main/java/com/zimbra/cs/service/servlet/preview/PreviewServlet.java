@@ -7,6 +7,7 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.service.MailboxAttachmentService;
 import com.zimbra.cs.servlet.ZimbraServlet;
 import java.io.IOException;
+import java.io.Serial;
 import java.time.Duration;
 import java.time.Instant;
 import javax.servlet.ServletException;
@@ -64,7 +65,8 @@ import javax.servlet.http.HttpServletResponse;
 
 public class PreviewServlet extends ZimbraServlet {
 
-  private static final long serialVersionUID = 35984059L;
+  @Serial
+  private static final long serialVersionUID = 359840598568L;
   private static final Log LOG = LogFactory.getLog(PreviewServlet.class);
   private final PreviewClient previewClient;
   private final PreviewHandler previewHandler;

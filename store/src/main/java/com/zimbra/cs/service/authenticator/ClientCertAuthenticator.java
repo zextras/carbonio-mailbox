@@ -5,14 +5,12 @@
 
 package com.zimbra.cs.service.authenticator;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStoreException;
@@ -35,11 +33,6 @@ import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.DEROctetString;
-import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
-import org.bouncycastle.asn1.x509.X509Extension;
 
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.localconfig.DebugConfig;
@@ -210,25 +203,4 @@ public class ClientCertAuthenticator extends SSOAuthenticator {
             } 
 
     }
-
-    // examine the certificate's AuthorityInfoAccess extension
-    private boolean IsAIAInfoPresent(X509Certificate cert) {
-        try {
-            byte[] authInfoAccessExtensionValue = cert
-                .getExtensionValue(X509Extension.authorityInfoAccess.getId());
-            ASN1InputStream ais1 = new ASN1InputStream(
-                new ByteArrayInputStream(authInfoAccessExtensionValue));
-            DEROctetString oct = (DEROctetString) (ais1.readObject());
-            ASN1InputStream ais2 = new ASN1InputStream(oct.getOctets());
-            AuthorityInformationAccess aia = AuthorityInformationAccess
-                .getInstance(ais2.readObject());
-            ais1.close();
-            ais2.close();
-            return (aia != null);
-        } catch (IOException ce) {
-            // treat this case as if the cert had no extension
-            return false;
-        }
-    }
-
 }

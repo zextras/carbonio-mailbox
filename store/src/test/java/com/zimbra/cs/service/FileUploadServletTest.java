@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.Maps;
+import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
@@ -90,7 +91,7 @@ public class FileUploadServletTest {
           + " 0120-801-471";
   private static FileUploadServlet servlet;
   private static Account testAccount;
-
+  private static AccountCreator.Factory accountCreatorFactory;
   private Server server;
 
   @BeforeAll
@@ -101,15 +102,17 @@ public class FileUploadServletTest {
     servlet = new FileUploadServlet();
 
     MailboxTestUtil.initServer();
-    var prov = Provisioning.getInstance();
+    var provisioning = Provisioning.getInstance();
+
+    accountCreatorFactory = new AccountCreator.Factory(provisioning);
 
     Map<String, Object> attrs = Maps.newHashMap();
-    prov.createAccount("test@zimbra.com", "secret", attrs);
-    testAccount = prov.get(Key.AccountBy.name, "test@zimbra.com");
+    provisioning.createAccount("test@zimbra.com", "secret", attrs);
+    testAccount = provisioning.get(Key.AccountBy.name, "test@zimbra.com");
 
     attrs = Maps.newHashMap();
     attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-    prov.createAccount("test2@zimbra.com", "secret", attrs);
+    provisioning.createAccount("test2@zimbra.com", "secret", attrs);
   }
 
   @SuppressWarnings("UnusedReturnValue")
@@ -166,6 +169,7 @@ public class FileUploadServletTest {
 
   @AfterEach
   public void tearDown() throws Exception {
+    Provisioning.getInstance().getConfig().setMtaMaxMessageSize(10240000L);
     MailboxTestUtil.clearData();
     server.stop();
   }
@@ -457,7 +461,8 @@ public class FileUploadServletTest {
       "Extended filename should be preferred if the multipart upload request contains "
           + "Content-Disposition header with extended filename param as defined in RFC-6266")
   void handleMultipartUpload_should_parseExtendedFileNameFromContentDisposition() throws Exception {
-    var authToken = AuthProvider.getAuthToken(testAccount);
+    var account = accountCreatorFactory.get().create();
+    var authToken = AuthProvider.getAuthToken(account);
     var filePath = Paths.get(
         Objects.requireNonNull(getClass().getResource("\u0421\u043e\u0431\u044b\u0442\u0438\u044f.txt")).toURI());
     var fileName = Paths.get(filePath.toUri()).getFileName().toString();
@@ -499,7 +504,8 @@ public class FileUploadServletTest {
       "Filename should be parsed correctly when multipart upload is composed with "
           + "MultipartEntityBuilder and charset set to UTF-8")
   void handleMultipartUpload_should_parseFileNameFromContentDisposition() throws Exception {
-    var authToken = AuthProvider.getAuthToken(testAccount);
+    var account = accountCreatorFactory.get().create();
+    var authToken = AuthProvider.getAuthToken(account);
     var filePath = Paths.get(
         Objects.requireNonNull(getClass().getResource("\u0421\u043e\u0431\u044b\u0442\u0438\u044f.txt")).toURI());
     var fileName = Paths.get(filePath.toUri()).getFileName().toString();
@@ -520,7 +526,8 @@ public class FileUploadServletTest {
       "Extended filename should be preferred if the plain upload request contains "
           + "Content-Disposition header with extended filename param as defined in RFC-6266")
   void handlePlainUpload_should_parseExtendedFileNameFromContentDisposition() throws Exception {
-    var authToken = AuthProvider.getAuthToken(testAccount);
+    var account = accountCreatorFactory.get().create();
+    var authToken = AuthProvider.getAuthToken(account);
     var filePath =
         Paths.get(
             Objects.requireNonNull(
@@ -550,7 +557,8 @@ public class FileUploadServletTest {
   @Test
   void handlePlainUpload_should_ignore_zimbraMtaMaxSIze_when_lbfums_param_in_request_url()
       throws Exception {
-    var authToken = AuthProvider.getAuthToken(testAccount);
+    var account = accountCreatorFactory.get().create();
+    var authToken = AuthProvider.getAuthToken(account);
     var fileSize = 30 * 1024 * 1024;
     var asciiFileName = "Events.txt";
     var utf8EncodeFileName = URLEncoder.encode(asciiFileName, StandardCharsets.UTF_8);
@@ -570,13 +578,109 @@ public class FileUploadServletTest {
   }
 
   @Test
+  void should_be_able_upload_unlimited_when_zimbraMtaMaxMessageSize_is_set_to_zero()
+      throws Exception {
+    var account = accountCreatorFactory.get().create();
+    var authToken = AuthProvider.getAuthToken(account);
+    var fileSize = 1024 * 1024;
+    var asciiFileName = "Events.txt";
+    var utf8EncodeFileName = URLEncoder.encode(asciiFileName, StandardCharsets.UTF_8);
+
+    Provisioning.getInstance().getConfig().setMtaMaxMessageSize(0);
+
+    //set lbfums to false to enforce limit using zimbraMtaMaxMessageSize
+    var httpResponse = executeUploadRequestWithDummyData(authToken, fileSize, asciiFileName, utf8EncodeFileName, false);
+    var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+    var jsonArray = new JSONArray("[" + responseContent + "]");
+
+    assertEquals(HttpServletResponse.SC_OK, jsonArray.getInt(0));
+    assertEquals("null", jsonArray.getString(1));
+
+    var responseDataArray = jsonArray.getJSONArray(2);
+    assertTrue(responseDataArray.length() > 0);
+
+    var firstItem = responseDataArray.getJSONObject(0);
+    assertNotNull(firstItem.getString("aid"));
+  }
+
+  @Test
+  void should_be_able_upload_unlimited_when_FileUploadMaxSizePerFile_is_set_to_zero()
+      throws Exception {
+    var account = accountCreatorFactory.get().create();
+    var authToken = AuthProvider.getAuthToken(account);
+    var fileSize = 1024 * 1024;
+    var asciiFileName = "Events.txt";
+    var utf8EncodeFileName = URLEncoder.encode(asciiFileName, StandardCharsets.UTF_8);
+
+    account.setFileUploadMaxSizePerFile(0);
+
+    //set lbfums to true to enforce limit using zimbraFileUploadMaxSizePerFile
+    var httpResponse = executeUploadRequestWithDummyData(authToken, fileSize, asciiFileName, utf8EncodeFileName, true);
+    var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+    var jsonArray = new JSONArray("[" + responseContent + "]");
+
+    assertEquals(HttpServletResponse.SC_OK, jsonArray.getInt(0));
+    assertEquals("null", jsonArray.getString(1));
+
+    var responseDataArray = jsonArray.getJSONArray(2);
+    assertTrue(responseDataArray.length() > 0);
+
+    var firstItem = responseDataArray.getJSONObject(0);
+    assertNotNull(firstItem.getString("aid"));
+  }
+
+  @Test
+  void should_not_be_able_upload_file_greater_then_limit_set_by_zimbraMtaMaxMessageSize()
+      throws Exception {
+    var account = accountCreatorFactory.get().create();
+    var authToken = AuthProvider.getAuthToken(account);
+    var fileSize = 1024 * 1024;
+    var asciiFileName = "Events.txt";
+    var utf8EncodeFileName = URLEncoder.encode(asciiFileName, StandardCharsets.UTF_8);
+
+    Provisioning.getInstance().getConfig().setMtaMaxMessageSize(10);
+
+    //set lbfums to false to enforce limit using zimbraMtaMaxMessageSize
+    var httpResponse = executeUploadRequestWithDummyData(authToken, fileSize, asciiFileName, utf8EncodeFileName, false);
+    var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+    var jsonArray = new JSONArray("[" + responseContent + "]");
+
+    assertEquals(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, jsonArray.getInt(0));
+    assertEquals("null", jsonArray.getString(1));
+  }
+
+  @Test
+  void should_not_be_able_upload_file_greater_then_limit_set_by_zimbraFileUploadMaxSizePerFile()
+      throws Exception {
+    var account = accountCreatorFactory.get().create();
+    var authToken = AuthProvider.getAuthToken(account);
+    var fileSize = 1024 * 1024;
+    var asciiFileName = "Events.txt";
+    var utf8EncodeFileName = URLEncoder.encode(asciiFileName, StandardCharsets.UTF_8);
+
+    account.setFileUploadMaxSizePerFile(10);
+
+    //set lbfums to true to enforce limit using zimbraFileUploadMaxSizePerFile
+    var httpResponse = executeUploadRequestWithDummyData(authToken, fileSize, asciiFileName, utf8EncodeFileName, true);
+    var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
+    var jsonArray = new JSONArray("[" + responseContent + "]");
+
+    assertEquals(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, jsonArray.getInt(0));
+    assertEquals("null", jsonArray.getString(1));
+  }
+
+  @Test
   void handlePlainUpload_should_return_413_when_upload_file_size_is_greater_then_zimbraMtaMaxSIze()
       throws Exception {
-    var authToken = AuthProvider.getAuthToken(testAccount);
+    var account = accountCreatorFactory.get().create();
+    var authToken = AuthProvider.getAuthToken(account);
     var fileSize = 30 * 1024 * 1024;
     var asciiFileName = "Events.txt";
     var utf8EncodeFileName = URLEncoder.encode(asciiFileName, StandardCharsets.UTF_8);
 
+    Provisioning.getInstance().getConfig().setMtaMaxMessageSize(10);
+
+    //set lbfums to false to enforce limit using zimbraMtaMaxMessageSize
     var httpResponse = executeUploadRequestWithDummyData(authToken, fileSize, asciiFileName, utf8EncodeFileName, false);
     var responseContent = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
     var jsonArray = new JSONArray("[" + responseContent + "]");

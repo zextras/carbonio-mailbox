@@ -5,9 +5,9 @@
 
 package com.zimbra.cs.account.callback;
 
-import java.util.Map;
-import java.util.Set;
-
+import com.zextras.carbonio.message_broker.MessageBrokerClient;
+import com.zextras.carbonio.message_broker.events.services.mailbox.UserStatusChanged;
+import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
@@ -17,6 +17,8 @@ import com.zimbra.cs.account.AttributeCallback;
 import com.zimbra.cs.account.DistributionList;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Provisioning;
+import java.util.Map;
+import java.util.Set;
 
 public class AccountStatus extends AttributeCallback {
 
@@ -55,7 +57,6 @@ public class AccountStatus extends AttributeCallback {
 
     @Override
     public void postModify(CallbackContext context, String attrName, Entry entry) {
-
         if (context.isDoneAndSetIfNot(AccountStatus.class)) {
             return;
         }
@@ -63,12 +64,30 @@ public class AccountStatus extends AttributeCallback {
         if (!context.isCreate()) {
             if (entry instanceof Account) {
                 try {
+                    publishStatusChangedEvent((Account)entry);
                     handleAccountStatusClosed((Account)entry);
-                } catch (ServiceException se) {
-                    // all exceptions are already swallowed by LdapProvisioning, just to be safe here.
-                    ZimbraLog.account.warn("unable to remove account address and aliases from all DLs for closed account", se);
+                } catch (Exception e) {
+                    ZimbraLog.account.warn("Exception thrown on account status changed callback", e);
                 }
             }
+        }
+    }
+
+    private void publishStatusChangedEvent(Account account) {
+        Provisioning prov = Provisioning.getInstance();
+        String status = account.getAccountStatus(prov);
+        String userId = account.getId();
+
+        try {
+            MessageBrokerClient messageBrokerClient = MessageBrokerFactory.getMessageBrokerClientInstance();
+            boolean result = messageBrokerClient.publish(new UserStatusChanged(userId, status.toUpperCase()));
+            if (result) {
+                ZimbraLog.account.info("Published status changed event for user: " + userId);
+            } else {
+                ZimbraLog.account.error("Failed to publish status changed event for user: " + userId);
+            }
+        } catch (Exception e){
+            ZimbraLog.account.error("Exception while publishing status changed event for user: " + userId, e);
         }
     }
 

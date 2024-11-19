@@ -4,8 +4,11 @@
 
 package com.zimbra.cs.service.admin;
 
+import com.zextras.carbonio.message_broker.MessageBrokerClient;
+import com.zextras.carbonio.message_broker.events.services.mailbox.UserDeleted;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
+import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.account.ZAttrProvisioning;
@@ -27,6 +30,7 @@ import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import io.vavr.control.Try;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -38,12 +42,16 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mockito;
+
+import static org.mockito.ArgumentMatchers.any;
 
 class DeleteAccountTest {
 
   private static final String OTHER_DOMAIN = "other.com";
   private static Provisioning provisioning;
   private static DeleteAccount deleteAccount;
+  private static MessageBrokerClient mockMessageBrokerClient;
   private static AccountCreator.Factory accountCreatorFactory;
 
   /**
@@ -51,7 +59,6 @@ class DeleteAccountTest {
    * to start the SoapServlet with {@link AdminService}. The reason is some code calls
    * System.exit(1) presumably, so the VM exits and maven fails.
    *
-   * @throws Exception
    */
   @BeforeAll
   static void setUp() throws Exception {
@@ -59,13 +66,15 @@ class DeleteAccountTest {
     final MailboxManager mailboxManager = MailboxManager.getInstance();
     provisioning = Provisioning.getInstance();
     accountCreatorFactory = new AccountCreator.Factory(provisioning);
+    mockMessageBrokerClient = MessageBrokerFactory.getMessageBrokerClientInstance();
     deleteAccount =
         new DeleteAccount(
             new DeleteUserUseCase(
                 provisioning,
                 mailboxManager,
                 new AclService(mailboxManager, provisioning),
-                ZimbraLog.security));
+                ZimbraLog.security),
+            Try.of(() -> mockMessageBrokerClient));
     provisioning.createDomain(OTHER_DOMAIN, new HashMap<>());
   }
 
@@ -216,7 +225,7 @@ class DeleteAccountTest {
             .get());
   }
 
-  private Element doDeleteAccount(Account caller, String toDeleteId) throws ServiceException {
+  private void doDeleteAccount(Account caller, String toDeleteId) throws ServiceException {
     Map<String, Object> context = new HashMap<String, Object>();
     ZimbraSoapContext zsc =
         new ZimbraSoapContext(
@@ -225,16 +234,18 @@ class DeleteAccountTest {
             SoapProtocol.Soap12,
             SoapProtocol.Soap12);
     context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
-    return deleteAccount.handle(
+    deleteAccount.handle(
         JaxbUtil.jaxbToElement(new DeleteAccountRequest(toDeleteId)), context);
   }
 
   @ParameterizedTest
   @MethodSource("getHappyPathCases")
   void shouldDeleteUser(Account caller, Account toDelete) throws Exception {
-    final String toDeleteId = toDelete.getId();
-    this.doDeleteAccount(caller, toDeleteId);
-    Assertions.assertNull(provisioning.getAccountById(toDeleteId));
+      Mockito.when(mockMessageBrokerClient.publish(any(UserDeleted.class))).thenReturn(true);
+
+      final String toDeleteId = toDelete.getId();
+      this.doDeleteAccount(caller, toDeleteId);
+      Assertions.assertNull(provisioning.getAccountById(toDeleteId));
   }
 
   private static Stream<Arguments> getPermissionDeniedCases() throws ServiceException {
@@ -281,11 +292,43 @@ class DeleteAccountTest {
   @ParameterizedTest
   @MethodSource("getPermissionDeniedCases")
   void shouldGetPermissionDenied(Account caller, Account toDelete) throws ServiceException {
-    final String toDeleteId = toDelete.getId();
-    final ServiceException serviceException =
-        Assertions.assertThrows(
-            ServiceException.class, () -> this.doDeleteAccount(caller, toDeleteId));
-    Assertions.assertEquals(ServiceException.PERM_DENIED, serviceException.getCode());
-    Assertions.assertNotNull(provisioning.getAccountById(toDeleteId));
+      Mockito.when(mockMessageBrokerClient.publish(any(UserDeleted.class))).thenReturn(true);
+
+      final String toDeleteId = toDelete.getId();
+      final ServiceException serviceException =
+          Assertions.assertThrows(
+              ServiceException.class, () -> this.doDeleteAccount(caller, toDeleteId));
+      Assertions.assertEquals(ServiceException.PERM_DENIED, serviceException.getCode());
+      Assertions.assertNotNull(provisioning.getAccountById(toDeleteId));
   }
+
+    @ParameterizedTest
+    @MethodSource("getHappyPathCases")
+    void shouldDeleteUserThrowsException(Account caller, Account toDelete) throws Exception {
+        Mockito.when(mockMessageBrokerClient.publish(any(UserDeleted.class))).thenReturn(true);
+        DeleteUserUseCase deleteUserUseCase = Mockito.mock(DeleteUserUseCase.class);
+
+        final String toDeleteId = toDelete.getId();
+        Map<String, Object> context = new HashMap<String, Object>();
+        ZimbraSoapContext zsc =
+                new ZimbraSoapContext(
+                        AuthProvider.getAuthToken(caller),
+                        caller.getId(),
+                        SoapProtocol.Soap12,
+                        SoapProtocol.Soap12);
+        context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+        DeleteAccount deleteAccountHandler =
+                new DeleteAccount(
+                        deleteUserUseCase,
+                        Try.of(() -> mockMessageBrokerClient));
+        Mockito.when(deleteUserUseCase.delete(toDeleteId)).thenReturn(Try.failure(new RuntimeException("message")));
+        DeleteAccountRequest deleteAccountRequest = new DeleteAccountRequest(toDeleteId);
+        Element request = JaxbUtil.jaxbToElement(deleteAccountRequest);
+        final ServiceException serviceException =
+                Assertions.assertThrows(ServiceException.class, () -> deleteAccountHandler.handle(request, context));
+        Assertions.assertEquals("service.FAILURE", serviceException.getCode());
+        Assertions.assertTrue(serviceException.getMessage().startsWith("system failure: Delete account "));
+        Assertions.assertTrue(serviceException.getMessage().endsWith("has an error: message"));
+    }
+
 }

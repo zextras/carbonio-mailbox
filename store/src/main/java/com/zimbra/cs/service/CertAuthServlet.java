@@ -28,7 +28,7 @@ import com.zimbra.cs.service.authenticator.ClientCertAuthenticator;
 
 public class CertAuthServlet extends SSOServlet {
     
-    // The clientCertPortRule in jetty.xml ensure only the certauth URLs can land on the 
+    // The clientCertPortRule in com.zextras.mailbox.Mailbox.java ensure only the certauth URLs can land on the
     // SSL client cert port.  
     // The regex here is to ensure that this servlet is only serving the URLs it recognizes,
     private static final Pattern allowedUrl = Pattern.compile("^(/service/certauth)(/|/(admin)(/)?)?$");

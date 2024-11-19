@@ -36,6 +36,7 @@ import com.zimbra.cs.mailbox.calendar.ZAttendee;
 import com.zimbra.cs.mime.MPartInfo;
 import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.mime.Mime.FixedMimeMessage;
+import com.zimbra.cs.mime.MimeProcessor;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.mail.message.parser.InviteParser;
 import com.zimbra.cs.service.mail.message.parser.MimeMessageData;
@@ -880,11 +881,12 @@ public abstract class CalendarRequest extends MailDocumentHandler {
       this.file = file;
     }
 
-    public void send() throws ServiceException {
+    public void send(MimeProcessor mimeProcessor) throws ServiceException {
       try {
         // All calendar-related emails are sent in sendpartial mode.
         CalendarMailSender.sendPartial(
-            octxt, mbox, csd.mMm, csd.uploads, csd.mOrigId, csd.mReplyType, csd.mIdentityId, false);
+                octxt, mbox, csd.mMm, csd.uploads, csd.mOrigId, csd.mReplyType, csd.mIdentityId,
+                null,false, false, mimeProcessor);
       } finally {
         if (file != null) {
           file.delete();
@@ -895,9 +897,14 @@ public abstract class CalendarRequest extends MailDocumentHandler {
 
   protected static class MailSendQueue {
     Queue<MailSendQueueEntry> queue = new LinkedList<>();
+    MimeProcessor mimeProcessor;
 
     public void add(MailSendQueueEntry entry) {
       queue.add(entry);
+    }
+
+    public void setMimeProcessor(MimeProcessor mimeProcessor) {
+      this.mimeProcessor = mimeProcessor;
     }
 
     public void send() {
@@ -905,12 +912,13 @@ public abstract class CalendarRequest extends MailDocumentHandler {
         MailSendQueueEntry entry = queue.remove();
         if (entry != null) {
           try {
-            entry.send();
+            entry.send(mimeProcessor);
           } catch (ServiceException e) {
             ZimbraLog.calendar.warn("ignoring error while sending calendar email", e);
           }
         }
       }
     }
+
   }
 }

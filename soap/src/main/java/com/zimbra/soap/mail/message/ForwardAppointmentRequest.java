@@ -13,9 +13,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.common.soap.SmimeConstants;
 import com.zimbra.soap.mail.type.Msg;
 import com.zimbra.soap.mail.type.CalTZInfo;
 import com.zimbra.soap.mail.type.DtTimeInfo;
+import com.zimbra.soap.type.ZmBoolean;
 
 /**
  * @zm-api-command-auth-required true
@@ -53,6 +55,13 @@ public class ForwardAppointmentRequest {
     @XmlElement(name=MailConstants.E_MSG /* m */, required=false)
     private Msg msg;
 
+    /**
+     * @zm-api-field-tag sign
+     * @zm-api-field-description Sign mime
+     */
+    @XmlAttribute(name= SmimeConstants.A_SIGN, required=false)
+    private ZmBoolean sign;
+
     public ForwardAppointmentRequest() {
     }
 
@@ -67,12 +76,21 @@ public class ForwardAppointmentRequest {
     public CalTZInfo getTimezone() { return timezone; }
     public Msg getMsg() { return msg; }
 
+    public Boolean getSign() {
+        return ZmBoolean.toBool(sign, false);
+    }
+
+    public void setSign(Boolean sign) {
+        this.sign = ZmBoolean.fromBool(sign, false);
+    }
+
     public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
         return helper
             .add("id", id)
             .add("exceptionId", exceptionId)
             .add("timezone", timezone)
-            .add("msg", msg);
+            .add("msg", msg)
+            .add("sign", sign);
     }
 
     @Override

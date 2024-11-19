@@ -90,7 +90,8 @@ public abstract class MailItem
      */
     MOUNTPOINT(13, MailItemType.MOUNTPOINT),
     /** Item is a {@link Chat} */
-    CHAT(16, MailItemType.CHAT);
+    CHAT(16, MailItemType.CHAT),
+    CALENDAR_GROUP(17, MailItemType.CALENDAR_GROUP);
 
     private static final Map<Byte, Type> BYTE2TYPE;
 
@@ -1417,7 +1418,7 @@ public abstract class MailItem
   /**
    * Returns an {@link InputStream} of the raw, uncompressed content of the message. This is the
    * message body as received via SMTP; no postprocessing has been performed to make opaque
-   * attachments (e.g. TNEF) visible.
+   * attachments visible.
    *
    * @return The data stream, or <tt>null</tt> if the item has no blob
    * @throws ServiceException when the message file does not exist.
@@ -1447,7 +1448,7 @@ public abstract class MailItem
   /**
    * Returns the raw, uncompressed content of the item's blob as a byte array. For messages, this is
    * the message body as received via SMTP; no postprocessing has been performed to make opaque
-   * attachments (e.g. TNEF) visible. When possible, this content is cached in the
+   * attachments visible. When possible, this content is cached in the
    *
    * @return The blob content, or <tt>null</tt> if the item has no blob.
    * @throws ServiceException when the blob file does not exist.
@@ -3232,9 +3233,7 @@ public abstract class MailItem
         blobDigests.addAll(other.blobDigests);
 
         if (other.cascadeIds != null) {
-          (cascadeIds == null
-                  ? cascadeIds = new ArrayList<>(other.cascadeIds.size())
-                  : cascadeIds)
+          (cascadeIds == null ? cascadeIds = new ArrayList<>(other.cascadeIds.size()) : cascadeIds)
               .addAll(other.cascadeIds);
         }
         if (other.sharedIndex != null) {

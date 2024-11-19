@@ -5,6 +5,8 @@
 
 package com.zimbra.cs.service.mail;
 
+import com.zimbra.cs.mailbox.calendar.IcalXmlStrMap;
+import com.zimbra.cs.mime.MimeProcessorUtil;
 import com.zimbra.cs.service.mail.message.parser.InviteParser;
 import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
 import java.util.ArrayList;
@@ -155,6 +157,17 @@ public class CreateCalendarItemException extends CalendarRequest {
             } catch (MessagingException e) {
                 throw ServiceException.FAILURE("Checking recipients of outgoing msg ", e);
             }
+
+            final var startTime = inv.getStartTime();
+            final var endTime = inv.getEndTime();
+            final var newStartTime = dat.mInvite.getStartTime();
+            final var newEndTime = dat.mInvite.getEndTime();
+
+            if (Utils.isValidDateTimeChange(startTime, newStartTime, endTime, newEndTime)) {
+                // reset ptst
+                dat.mInvite.getAttendees().forEach(zAttendee -> zAttendee.setPartStat(IcalXmlStrMap.PARTSTAT_NEEDS_ACTION));
+            }
+
             // If we are sending this to other people, then we MUST be the organizer!
             if (!dat.mInvite.isOrganizer() && hasRecipients)
                 throw MailServiceException.MUST_BE_ORGANIZER("CreateCalendarItemException");
@@ -185,6 +198,7 @@ public class CreateCalendarItemException extends CalendarRequest {
             }
         } finally {
             mbox.lock.release();
+            sendQueue.setMimeProcessor(MimeProcessorUtil.getMimeProcessor(request, context));
             sendQueue.send();
         }
 

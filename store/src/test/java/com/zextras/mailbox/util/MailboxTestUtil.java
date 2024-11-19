@@ -3,6 +3,8 @@ package com.zextras.mailbox.util;
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
 import com.unboundid.ldap.listener.InMemoryDirectoryServer;
+import com.zextras.carbonio.message_broker.MessageBrokerClient;
+import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zextras.mailbox.util.InMemoryLdapServer.Builder;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
@@ -20,7 +22,11 @@ import com.zimbra.cs.db.HSQLDB;
 import com.zimbra.cs.mailbox.*;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.redolog.RedoLogProvider;
+import com.zimbra.cs.service.admin.AdminService;
 import com.zimbra.cs.store.StoreManager;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -45,6 +51,8 @@ public class MailboxTestUtil {
   }
 
   private static InMemoryLdapServer inMemoryLdapServer;
+
+  private static MessageBrokerClient mockedMessageBrokerClient;
 
   private MailboxTestUtil() {}
 
@@ -108,6 +116,16 @@ public class MailboxTestUtil {
         SERVER_NAME,
         new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
     provisioning.createDomain(DEFAULT_DOMAIN, new HashMap<>());
+    mockMessageBrokerClient();
+  }
+
+  private static void mockMessageBrokerClient() {
+    if(mockedMessageBrokerClient == null) {
+      MessageBrokerClient messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
+      MockedStatic<MessageBrokerFactory> mockedMessageBrokerFactory = Mockito.mockStatic(MessageBrokerFactory.class, Mockito.CALLS_REAL_METHODS);
+      mockedMessageBrokerFactory.when(MessageBrokerFactory::getMessageBrokerClientInstance).thenReturn(messageBrokerClient);
+      mockedMessageBrokerClient = messageBrokerClient;
+    }
   }
 
   /** Performs actions on an account. Start with {@link #shareWith(Account)} */

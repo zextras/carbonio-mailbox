@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.common.soap.SmimeConstants;
 import com.zimbra.soap.mail.type.MsgToSend;
 import com.zimbra.soap.type.ZmBoolean;
 
@@ -96,6 +97,13 @@ public class SendMsgRequest {
     public SendMsgRequest() {
     }
 
+    /**
+     * @zm-api-field-tag sign
+     * @zm-api-field-description Sign mime
+     */
+    @XmlAttribute(name= SmimeConstants.A_SIGN, required=false)
+    protected ZmBoolean sign;
+
     public void setNeedCalendarSentbyFixup(Boolean needCalendarSentbyFixup) {
         this.needCalendarSentbyFixup = ZmBoolean.fromBool(needCalendarSentbyFixup);
     }
@@ -122,6 +130,14 @@ public class SendMsgRequest {
     public String getSendUid() { return sendUid; }
     public MsgToSend getMsg() { return msg; }
 
+    public Boolean getSign() {
+        return ZmBoolean.toBool(sign, false);
+    }
+
+    public void setSign(Boolean sign) {
+        this.sign = ZmBoolean.fromBool(sign, false);
+    }
+
     public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
         return helper
             .add("needCalendarSentbyFixup", needCalendarSentbyFixup)
@@ -129,7 +145,8 @@ public class SendMsgRequest {
             .add("noSaveToSent", noSaveToSent)
             .add("fetchSavedMsg", fetchSavedMsg)
             .add("sendUid", sendUid)
-            .add("msg", msg);
+            .add("msg", msg)
+            .add("sign", sign);
     }
 
     @Override

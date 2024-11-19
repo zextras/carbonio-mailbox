@@ -56,8 +56,8 @@ This document is the reference specification for the Carbonio SOAP API.
 </TR>
 <#list root.services as service>
 <TR >
-<TD WIDTH="20%"><B><A HREF="./${service.name}/service-summary.html">${service.name}</A></B></TD>
-<TD>${service.description}</TD>
+<TD WIDTH="20%"><B><A HREF="./${service.name}/service-summary.html">${service.name?replace('zimbra', '')}</A></B></TD>
+<TD>${service.description?replace('Zimbra', 'Carbonio')}</TD>
 </TR>
 </#list>
 </TABLE>

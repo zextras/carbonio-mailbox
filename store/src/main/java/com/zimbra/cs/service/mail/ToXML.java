@@ -115,6 +115,8 @@ import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.service.util.ItemIdFormatter;
 import com.zimbra.cs.session.PendingModifications.Change;
+import com.zimbra.cs.signature.SignatureHandler;
+import com.zimbra.cs.signature.SignatureHandlerFactory;
 import com.zimbra.cs.smime.SmimeHandler;
 import com.zimbra.soap.admin.type.DataSourceType;
 import com.zimbra.soap.mail.type.AlarmDataInfo;
@@ -141,6 +143,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
@@ -1809,6 +1812,7 @@ public final class ToXML {
         }
         throw e;
       }
+
       if (!wholeMessage) {
         MimePart mimePart = Mime.getMimePart(mimeMessage, part);
         if (mimePart == null) {
@@ -1963,26 +1967,23 @@ public final class ToXML {
         }
       }
 
-      // if the mime it is signed
+      // if the mime is signed, verify SMIME signature
       if (Mime.isMultipartSigned(mimeMessage.getContentType())
           || Mime.isPKCS7Signed(mimeMessage.getContentType())) {
-        ZimbraLog.mailbox.debug(
-            "The message is signed. Forwarding it to SmimeHandler for signature verification.");
-        if (SmimeHandler.getHandler() != null) {
-          SmimeHandler.getHandler().verifyMessageSignature(msg, messageElement, mimeMessage, octxt);
+        ZimbraLog.smime.debug(
+                "The message is signed. Forwarding it to SmimeHandler for signature verification.");
+        Optional<SignatureHandler> signatureHandler = SignatureHandlerFactory.getHandler(mimeMessage);
+        if (signatureHandler.isPresent()) {
+          signatureHandler.get().verifyMessageSignature(msg, messageElement, mimeMessage, octxt);
         }
       } else {
         // if the original mime message was PKCS7-signed, and it was
         // decoded and stored in cache as plain mime
         if ((mimeMessage instanceof Mime.FixedMimeMessage)
             && ((Mime.FixedMimeMessage) mimeMessage).isPKCS7Signed()) {
-          if (SmimeHandler.getHandler() != null) {
-            SmimeHandler.getHandler()
-                .addPKCS7SignedMessageSignatureDetails(
-                    msg.getMailbox().getAccount(),
-                    messageElement,
-                    mimeMessage,
-                    octxt.getmResponseProtocol());
+          Optional<SignatureHandler> signatureHandler = SignatureHandlerFactory.getHandler(mimeMessage);
+          if (signatureHandler.isPresent()) {
+            signatureHandler.get().verifyMessageSignature(messageElement, mimeMessage);
           }
         }
       }
@@ -3161,8 +3162,7 @@ public final class ToXML {
       // we'll be replacing text/enriched with text/html
       ctype = MimeConstants.CT_TEXT_HTML;
     } else if (fname != null
-        && (MimeConstants.CT_APPLICATION_OCTET_STREAM.equals(ctype)
-            || MimeConstants.CT_APPLICATION_TNEF.equals(ctype))) {
+        && (MimeConstants.CT_APPLICATION_OCTET_STREAM.equals(ctype))) {
       String guess = MimeDetect.getMimeDetect().detect(fname);
       if (guess != null) {
         ctype = guess;

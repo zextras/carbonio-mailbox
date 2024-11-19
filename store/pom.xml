@@ -11,7 +11,8 @@
     <version>${revision}${changelist}</version>
   </parent>
 
-  <!-- To sort out dependencies take a look at: https://wiki.eclipse.org/Jetty/Reference/Dependencies -->
+  <!-- To sort out dependencies take a look at:
+  https://wiki.eclipse.org/Jetty/Reference/Dependencies -->
   <dependencies>
     <!-- Must be provided to avoid collision -->
     <dependency>
@@ -91,6 +92,11 @@
       <groupId>org.apache.curator</groupId>
     </dependency>
 
+    <dependency>
+      <groupId>com.zextras.carbonio.message-broker</groupId>
+      <artifactId>carbonio-message-broker-sdk</artifactId>
+    </dependency>
+
     <!-- Must be provided by container -->
     <dependency>
       <artifactId>guava</artifactId>
@@ -125,6 +131,12 @@
       <version>1.17.6</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>rabbitmq</artifactId>
+      <version>1.19.8</version>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>com.github.docker-java</groupId>
@@ -143,11 +155,6 @@
       <artifactId>hamcrest</artifactId>
       <version>2.2</version>
       <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <artifactId>jtnef</artifactId>
-      <groupId>net.freeutils</groupId>
     </dependency>
 
     <dependency>
@@ -188,13 +195,6 @@
     <dependency>
       <artifactId>commons-text</artifactId>
       <groupId>org.apache.commons</groupId>
-    </dependency>
-
-    <!-- Brings in guava, so it is provided -->
-    <dependency>
-      <artifactId>closure-compiler</artifactId>
-      <groupId>com.google.javascript</groupId>
-      <scope>runtime</scope>
     </dependency>
 
     <dependency>
@@ -289,7 +289,16 @@
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcpkix-jdk15on</artifactId>
+      <artifactId>bcpkix-jdk18on</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcmail-jdk18on</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcutil-jdk18on</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.ibm.icu</groupId>
@@ -301,7 +310,7 @@
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk15on</artifactId>
+      <artifactId>bcprov-jdk18on</artifactId>
     </dependency>
     <!-- Note this should be provided in container classpath -->
     <dependency>
@@ -519,6 +528,19 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- required by bouncycastle 18on -->
+    <dependency>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>2.3.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.activation</groupId>
+      <artifactId>jakarta.activation-api</artifactId>
+      <version>1.2.2</version>
+      <scope>test</scope>
+    </dependency>
 
     <!-- https://mvnrepository.com/artifact/com.icegreen/greenmail -->
     <dependency>
@@ -536,12 +558,12 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
-      <version>9.4.55.v20240627</version>
+      <version>9.4.56.v20240826</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-rewrite</artifactId>
-      <version>9.4.55.v20240627</version>
+      <version>9.4.56.v20240826</version>
     </dependency>
   </dependencies>
 
@@ -581,7 +603,8 @@
             </goals>
             <configuration>
               <sources>
-                <source>${project.build.directory}/generated-sources/buildinfo</source><!-- adjust folder name to your needs -->
+                <source>${project.build.directory}/generated-sources/buildinfo</source><!-- adjust
+                folder name to your needs -->
               </sources>
             </configuration>
           </execution>
@@ -612,11 +635,11 @@
           <execution>
             <configuration>
               <target>
-                <property name="maven_compile_classpath" refid="maven.compile.classpath"/>
+                <property name="maven_compile_classpath" refid="maven.compile.classpath" />
                 <taskdef classpathref="maven.plugin.classpath"
-                  resource="net/sf/antcontrib/antlib.xml"/>
+                  resource="net/sf/antcontrib/antlib.xml" />
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-buildinfo"/>
+                  <target name="generate-buildinfo" />
                 </ant>
               </target>
             </configuration>
@@ -630,11 +653,11 @@
           <execution>
             <configuration>
               <target>
-                <property name="maven_compile_classpath" refid="maven.compile.classpath"/>
+                <property name="maven_compile_classpath" refid="maven.compile.classpath" />
                 <taskdef classpathref="maven.plugin.classpath"
-                  resource="net/sf/antcontrib/antlib.xml"/>
+                  resource="net/sf/antcontrib/antlib.xml" />
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-sql-ldap-versions"/>
+                  <target name="generate-sql-ldap-versions" />
                 </ant>
               </target>
             </configuration>
@@ -648,11 +671,11 @@
           <execution>
             <configuration>
               <target>
-                <property name="maven_compile_classpath" refid="maven.compile.classpath"/>
+                <property name="maven_compile_classpath" refid="maven.compile.classpath" />
                 <taskdef classpathref="maven.plugin.classpath"
-                  resource="net/sf/antcontrib/antlib.xml"/>
+                  resource="net/sf/antcontrib/antlib.xml" />
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-zattr-rights"/>
+                  <target name="generate-zattr-rights" />
                 </ant>
               </target>
             </configuration>
@@ -665,11 +688,11 @@
           <execution>
             <configuration>
               <target>
-                <property name="maven_compile_classpath" refid="maven.compile.classpath"/>
+                <property name="maven_compile_classpath" refid="maven.compile.classpath" />
                 <taskdef classpathref="maven.plugin.classpath"
-                  resource="net/sf/antcontrib/antlib.xml"/>
+                  resource="net/sf/antcontrib/antlib.xml" />
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-ldap-config"/>
+                  <target name="generate-ldap-config" />
                 </ant>
               </target>
             </configuration>
@@ -686,7 +709,7 @@
             <configuration>
               <target>
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="copy-msgs-bundle"/>
+                  <target name="copy-msgs-bundle" />
                 </ant>
               </target>
             </configuration>
@@ -700,7 +723,7 @@
             <configuration>
               <target>
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="clean"/>
+                  <target name="clean" />
                 </ant>
               </target>
             </configuration>
@@ -728,96 +751,6 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-      </plugin>
-
-      <!-- Analyze dependencies -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-      </plugin>
-
-      <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-maven-plugin -->
-      <!-- Doc: https://wiki.eclipse.org/Jetty/Feature/Jetty_Maven_Plugin -->
-      <!-- Allows to run the mailbox for test purposes.
-      In order to start it there are some requirements:
-      - WebRoot content must be in src/main/webapp (TODO: change base dir of web.xml)
-      - run local ldap + mysql (can use docker-compose with utils/docker/)
-      - db version and index version must have same value as received from db
-      - must have a keystore in etc/mailboxd/keystore
-      - must have conf files (log4j + timezone.ics) in conf directory
-      -->
-      <plugin>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-        <version>${jetty.version}</version>
-        <configuration>
-          <jettyXml>jetty.xml</jettyXml>
-          <scanIntervalSeconds>30</scanIntervalSeconds>
-          <dumpOnStart>true</dumpOnStart>
-          <webApp>
-            <descriptor>${project.basedir}/conf/web.xml</descriptor>
-            <contextPath>/service/</contextPath>
-          </webApp>
-          <systemProperties>
-            <systemProperty>
-              <name>webapp</name>
-              <value>service</value>
-            </systemProperty>
-            <systemProperty>
-              <name>zimbra.config</name>
-              <value>${project.basedir}/conf/localconfig-jetty-test.xml</value>
-            </systemProperty>
-            <systemProperty>
-              <name>zimbra.native.required</name>
-              <value>false</value>
-            </systemProperty>
-          </systemProperties>
-        </configuration>
-        <!-- Put here libraries that are provided -->
-        <dependencies>
-          <dependency>
-            <groupId>org.dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-            <version>2.1.4</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.13</version>
-          </dependency>
-          <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>28.1-jre</version>
-          </dependency>
-          <dependency>
-            <artifactId>xercesImpl</artifactId>
-            <groupId>xerces</groupId>
-            <version>2.9.1-patch-01</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.20.0</version>
-          </dependency>
-
-          <!-- Some of these dependencies are the same of carbonio-jetty-libs.
-          In production they are provided on installation by packages carbonio-common-core-libs and carbonio-appserver-store-libs
-          and are needed to startup the WebApp with Jetty
-          Only these few strictly needed have been selected, else with maven jetty plugin the startup does not work.
-          This because of some complex logic in mailbox startup that calls itself.
-          -->
-          <dependency>
-            <groupId>org.mariadb.jdbc</groupId>
-            <artifactId>mariadb-java-client</artifactId>
-            <version>${mariadb-java-client.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>apache-log4j-extras</artifactId>
-            <version>1.0</version>
-          </dependency>
-        </dependencies>
       </plugin>
 
       <plugin>
@@ -902,13 +835,26 @@
           </filesets>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.3.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar-no-fork</goal>
+              <goal>test-jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
 
   </build>
   <properties>
     <build.dir>target</build.dir>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
     <maven-exec-plugin.version>3.1.0</maven-exec-plugin.version>
     <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
     <config.dir>${project.basedir}/conf</config.dir>

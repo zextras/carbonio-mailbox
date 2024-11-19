@@ -131,7 +131,7 @@
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.11.0</version>
+        <version>2.14.0</version>
       </dependency>
       <dependency>
         <groupId>io.vavr</groupId>
@@ -156,7 +156,7 @@
       <dependency>
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
-        <version>1.4</version>
+        <version>1.5</version>
       </dependency>
       <dependency>
         <groupId>com.zextras.carbonio.files</groupId>
@@ -179,11 +179,6 @@
         <version>1.1</version>
       </dependency>
       <dependency>
-        <groupId>com.google.javascript</groupId>
-        <artifactId>closure-compiler</artifactId>
-        <version>v20180204</version>
-      </dependency>
-      <dependency>
         <groupId>com.kohlschutter.junixsocket</groupId>
         <artifactId>junixsocket-common</artifactId>
         <version>2.4.0</version>
@@ -191,7 +186,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>1.20</version>
+        <version>1.21</version>
       </dependency>
       <dependency>
         <groupId>ant-1.7.0-ziputil-patched</groupId>
@@ -211,7 +206,7 @@
       <dependency>
         <groupId>org.apache.sshd</groupId>
         <artifactId>sshd-core</artifactId>
-        <version>2.7.0</version>
+        <version>2.12.0</version>
       </dependency>
       <dependency>
         <groupId>commons-collections</groupId>
@@ -230,12 +225,22 @@
       </dependency>
       <dependency>
         <groupId>org.bouncycastle</groupId>
-        <artifactId>bcpkix-jdk15on</artifactId>
+        <artifactId>bcpkix-jdk18on</artifactId>
         <version>${bouncycastle.version}</version>
       </dependency>
       <dependency>
         <groupId>org.bouncycastle</groupId>
-        <artifactId>bcprov-jdk15on</artifactId>
+        <artifactId>bcprov-jdk18on</artifactId>
+        <version>${bouncycastle.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcmail-jdk18on</artifactId>
+        <version>${bouncycastle.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcutil-jdk18on</artifactId>
         <version>${bouncycastle.version}</version>
       </dependency>
       <dependency>
@@ -251,7 +256,7 @@
       <dependency>
         <groupId>xerces</groupId>
         <artifactId>xercesImpl</artifactId>
-        <version>2.9.1-patch-01</version>
+        <version>2.12.2</version>
       </dependency>
       <dependency>
         <groupId>javax.mail</groupId>
@@ -310,7 +315,7 @@
       <dependency>
         <groupId>org.apache.sshd</groupId>
         <artifactId>sshd-common</artifactId>
-        <version>2.7.0</version>
+        <version>2.12.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -330,7 +335,7 @@
       <dependency>
         <groupId>org.json</groupId>
         <artifactId>json</artifactId>
-        <version>20090211</version>
+        <version>20240303</version>
       </dependency>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -422,11 +427,6 @@
         <version>0.7.0</version>
       </dependency>
       <dependency>
-        <groupId>net.freeutils</groupId>
-        <artifactId>jtnef</artifactId>
-        <version>1.9.0</version>
-      </dependency>
-      <dependency>
         <groupId>com.unboundid</groupId>
         <artifactId>unboundid-ldapsdk</artifactId>
         <version>${unboundid-ldapsdk.version}</version>
@@ -434,12 +434,12 @@
       <dependency>
         <groupId>org.owasp.antisamy</groupId>
         <artifactId>antisamy</artifactId>
-        <version>1.5.13</version>
+        <version>1.7.6</version>
       </dependency>
       <dependency>
         <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
         <artifactId>owasp-java-html-sanitizer</artifactId>
-        <version>20191001.1</version>
+        <version>20211018.1</version>
       </dependency>
       <dependency>
         <groupId>com.zextras.carbonio.preview</groupId>
@@ -464,7 +464,7 @@
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-core</artifactId>
-        <version>2.3.0</version>
+        <version>2.10.0</version>
       </dependency>
       <dependency>
         <groupId>org.hsqldb</groupId>
@@ -494,7 +494,7 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>${jackson.version}</version>
+        <version>${jackson.version}.6</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
@@ -779,6 +779,11 @@
         <version>4.2.0</version>
         <scope>runtime</scope>
       </dependency>
+      <dependency>
+        <groupId>com.zextras.carbonio.message-broker</groupId>
+        <artifactId>carbonio-message-broker-sdk</artifactId>
+        <version>${carbonio-message-broker-sdk.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -798,29 +803,30 @@
   <packaging>pom</packaging>
 
   <properties>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jetty.version>9.4.55.v20240627</jetty.version>
+    <jetty.version>9.4.56.v20240826</jetty.version>
     <lucene.version>3.5.0</lucene.version>
-    <jackson.version>2.8.9</jackson.version>
-    <bouncycastle.version>1.60</bouncycastle.version>
+    <jackson.version>2.8.11</jackson.version>
+    <bouncycastle.version>1.78.1</bouncycastle.version>
     <asm.version>8.0.1</asm.version>
-    <guava.version>28.1-jre</guava.version>
-    <jython.version>2.5.2</jython.version>
+    <guava.version>33.3.1-jre</guava.version>
+    <jython.version>2.5.3</jython.version>
     <nekohtml.version>1.9.22</nekohtml.version>
     <log4j.version>2.20.0</log4j.version>
     <dom4j.version>2.1.4</dom4j.version>
-    <hsqldb.version>2.2.9</hsqldb.version>
-    <mockito.version>4.4.0</mockito.version>
+    <hsqldb.version>2.7.1</hsqldb.version>
+    <mockito.version>5.2.0</mockito.version>
     <unboundid-ldapsdk.version>2.3.5</unboundid-ldapsdk.version>
     <jsr305.version>3.0.2</jsr305.version>
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
     <system-lambda.version>1.2.1</system-lambda.version>
+    <carbonio-message-broker-sdk.version>0.0.4-SNAPSHOT</carbonio-message-broker-sdk.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <changelist>-SNAPSHOT</changelist>
-    <revision>24.9.7</revision>
+    <revision>24.12.0</revision>
     <mockserver.version>5.13.0</mockserver.version>
     <mariadb-java-client.version>2.7.3</mariadb-java-client.version>
   </properties>
@@ -914,21 +920,24 @@
               <phase>validate</phase>
               <configuration>
                 <target>
-                  <pathconvert property="compile_classpath_value" refid="maven.compile.classpath"/>
-                  <pathconvert property="runtime_classpath_value" refid="maven.runtime.classpath"/>
-                  <pathconvert property="test_classpath_value" refid="maven.test.classpath"/>
-                  <!--mvn properties shared with all modules while building project-->
+                  <pathconvert property="compile_classpath_value" refid="maven.compile.classpath" />
+                  <pathconvert property="runtime_classpath_value" refid="maven.runtime.classpath" />
+                  <pathconvert property="test_classpath_value" refid="maven.test.classpath" />
+                  <!--mvn
+                  properties shared with all modules while building project-->
                   <propertyfile file="${project.build.directory}/mvn-ant-shared-build.properties">
-                    <!--required to set carbonio.buildinfo.version-->
-                    <entry key="mvn_revision" value="${revision}"/>
+                    <!--required
+                    to set carbonio.buildinfo.version-->
+                    <entry key="mvn_revision" value="${revision}" />
 
-                    <!--properties needed by some ant tasks-->
-                    <entry key="compile_classpath" value="${compile_classpath_value}"/>
-                    <entry key="runtime_classpath" value="${runtime_classpath_value}"/>
-                    <entry key="test_classpath" value="${test_classpath_value}"/>
+                    <!--properties
+                    needed by some ant tasks-->
+                    <entry key="compile_classpath" value="${compile_classpath_value}" />
+                    <entry key="runtime_classpath" value="${runtime_classpath_value}" />
+                    <entry key="test_classpath" value="${test_classpath_value}" />
                   </propertyfile>
                   <propertyfile file="${project.build.directory}/mvn-ant-shared-build.properties">
-                    <entry key="mvn_revision" value="${revision}"/>
+                    <entry key="mvn_revision" value="${revision}" />
                   </propertyfile>
                 </target>
               </configuration>
@@ -955,7 +964,6 @@
               <exclude>qa.**</exclude>
               <!-- Exclude classes that starts with Test but were previously in src/main -->
               <exclude>com.zimbra.cs.util.yauth.**</exclude>
-              <exclude>com.zimbra.cs.util.tnef.mapi.TestTnefTimeZone.java</exclude>
               <!-- Exclude classes that were already excluded before maven migration -->
               <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
               <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
@@ -1043,7 +1051,8 @@
           <artifactId>maven-enforcer-plugin</artifactId>
           <version>3.1.0</version>
           <dependencies>
-            <!-- https://github-wiki-see.page/m/GoogleCloudPlatform/cloud-opensource-java/wiki/Linkage-Checker-Enforcer-Rule -->
+            <!--
+            https://github-wiki-see.page/m/GoogleCloudPlatform/cloud-opensource-java/wiki/Linkage-Checker-Enforcer-Rule -->
             <dependency>
               <groupId>com.google.cloud.tools</groupId>
               <artifactId>linkage-checker-enforcer-rules</artifactId>
@@ -1065,10 +1074,10 @@
               <configuration>
                 <rules>
                   <!-- No duplicate version of dependency in POM -->
-                  <banDuplicatePomDependencyVersions/>
+                  <banDuplicatePomDependencyVersions />
                   <!-- Dependencies must converge.
                   If it fails use dependency management to declare which one to use. -->
-                  <dependencyConvergence/>
+                  <dependencyConvergence />
                 </rules>
               </configuration>
             </execution>

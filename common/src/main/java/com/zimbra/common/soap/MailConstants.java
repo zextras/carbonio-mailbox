@@ -84,6 +84,8 @@ public final class MailConstants {
   public static final String E_MSG_ACTION_RESPONSE = "MsgActionResponse";
   public static final String E_SEND_MSG_REQUEST = "SendMsgRequest";
   public static final String E_SEND_MSG_RESPONSE = "SendMsgResponse";
+  public static final String E_SEND_SECURE_MSG_REQUEST = "SendSecureMsgRequest";
+  public static final String E_SEND_SECURE_MSG_RESPONSE = "SendSecureMsgResponse";
   public static final String E_SEND_REPORT_REQUEST = "SendDeliveryReportRequest";
   public static final String E_SEND_REPORT_RESPONSE = "SendDeliveryReportResponse";
   public static final String E_SEND_SHARE_NOTIFICATION_REQUEST = "SendShareNotificationRequest";
@@ -165,10 +167,14 @@ public final class MailConstants {
 
   public static final String E_CREATE_APPOINTMENT_EXCEPTION_REQUEST =
       "CreateAppointmentExceptionRequest";
+  public static final String E_CREATE_APPOINTMENT_EXCEPTION_RESPONSE =
+      "CreateAppointmentExceptionResponse";
+
   public static final String E_MODIFY_APPOINTMENT_REQUEST = "ModifyAppointmentRequest";
   public static final String E_MODIFY_APPOINTMENT_RESPONSE = "ModifyAppointmentResponse";
   public static final String E_CANCEL_APPOINTMENT_REQUEST = "CancelAppointmentRequest";
   public static final String E_FORWARD_APPOINTMENT_REQUEST = "ForwardAppointmentRequest";
+  public static final String E_FORWARD_APPOINTMENT_RESPONSE = "ForwardAppointmentResponse";
   public static final String E_FORWARD_APPOINTMENT_INVITE_REQUEST =
       "ForwardAppointmentInviteRequest";
   public static final String E_ADD_APPOINTMENT_INVITE_REQUEST = "AddAppointmentInviteRequest";
@@ -275,6 +281,18 @@ public final class MailConstants {
   public static final String E_GET_IMAP_RECENT_CUTOFF_RESPONSE = "GetIMAPRecentCutoffResponse";
   public static final String E_IMAP_COPY_REQUEST = "IMAPCopyRequest";
   public static final String E_IMAP_COPY_RESPONSE = "IMAPCopyResponse";
+  public static final String E_GET_CALENDAR_GROUPS_REQUEST = "GetCalendarGroupsRequest";
+  public static final String E_GET_CALENDAR_GROUPS_RESPONSE = "GetCalendarGroupsResponse";
+  public static final String E_CREATE_CALENDAR_GROUP_REQUEST = "CreateCalendarGroupRequest";
+  public static final String E_CREATE_CALENDAR_GROUP_RESPONSE = "CreateCalendarGroupResponse";
+  public static final String E_DELETE_CALENDAR_GROUP_REQUEST = "DeleteCalendarGroupRequest";
+  public static final String E_DELETE_CALENDAR_GROUP_RESPONSE = "DeleteCalendarGroupResponse";
+  public static final String E_MODIFY_CALENDAR_GROUP_REQUEST = "ModifyCalendarGroupRequest";
+  public static final String E_MODIFY_CALENDAR_GROUP_RESPONSE = "ModifyCalendarGroupResponse";
+  public static final String E_DELETE_CALENDAR_REQUEST = "DeleteCalendarRequest";
+  public static final String E_DELETE_CALENDAR_RESPONSE = "DeleteCalendarResponse";
+  public static final String E_EMPTY_CALENDAR_TRASH_REQUEST = "EmptyCalendarTrashRequest";
+  public static final String E_EMPTY_CALENDAR_TRASH_RESPONSE = "EmptyCalendarTrashResponse";
 
   // noop
   public static final QName NO_OP_REQUEST = QName.get(E_NO_OP_REQUEST, NAMESPACE);
@@ -336,6 +354,8 @@ public final class MailConstants {
   //   SendMsg/AddMsg/SaveDraft
   public static final QName SEND_MSG_REQUEST = QName.get(E_SEND_MSG_REQUEST, NAMESPACE);
   public static final QName SEND_MSG_RESPONSE = QName.get(E_SEND_MSG_RESPONSE, NAMESPACE);
+  public static final QName SEND_SECURE_MSG_REQUEST = QName.get(E_SEND_SECURE_MSG_REQUEST, NAMESPACE);
+  public static final QName SEND_SECURE_MSG_RESPONSE = QName.get(E_SEND_SECURE_MSG_RESPONSE, NAMESPACE);
   public static final QName SEND_REPORT_REQUEST = QName.get(E_SEND_REPORT_REQUEST, NAMESPACE);
   public static final QName SEND_REPORT_RESPONSE = QName.get(E_SEND_REPORT_RESPONSE, NAMESPACE);
   public static final QName SEND_SHARE_NOTIFICATION_REQUEST =
@@ -444,6 +464,33 @@ public final class MailConstants {
       QName.get(E_APPLY_OUTGOING_FILTER_RULES_RESPONSE, NAMESPACE);
 
   // Calendar
+  public static final QName GET_CALENDAR_GROUPS_REQUEST =
+      QName.get(E_GET_CALENDAR_GROUPS_REQUEST, NAMESPACE);
+    public static final QName GET_CALENDAR_GROUPS_RESPONSE =
+      QName.get(E_GET_CALENDAR_GROUPS_RESPONSE, NAMESPACE);
+  public static final QName CREATE_CALENDAR_GROUP_REQUEST =
+      QName.get(E_CREATE_CALENDAR_GROUP_REQUEST, NAMESPACE);
+  public static final QName CREATE_CALENDAR_GROUP_RESPONSE =
+      QName.get(E_CREATE_CALENDAR_GROUP_RESPONSE, NAMESPACE);
+  public static final QName DELETE_CALENDAR_GROUP_REQUEST =
+          QName.get(E_DELETE_CALENDAR_GROUP_REQUEST, NAMESPACE);
+  public static final QName DELETE_CALENDAR_GROUP_RESPONSE =
+          QName.get(E_DELETE_CALENDAR_GROUP_RESPONSE, NAMESPACE);
+  public static final QName MODIFY_CALENDAR_GROUP_REQUEST =
+          QName.get(E_MODIFY_CALENDAR_GROUP_REQUEST, NAMESPACE);
+  public static final QName MODIFY_CALENDAR_GROUP_RESPONSE =
+          QName.get(E_MODIFY_CALENDAR_GROUP_RESPONSE, NAMESPACE);
+
+  public static final QName DELETE_CALENDAR_REQUEST =
+          QName.get(E_DELETE_CALENDAR_REQUEST, NAMESPACE);
+  public static final QName DELETE_CALENDAR_RESPONSE =
+          QName.get(E_DELETE_CALENDAR_RESPONSE, NAMESPACE);
+
+  public static final QName EMPTY_CALENDAR_TRASH_REQUEST =
+          QName.get(E_EMPTY_CALENDAR_TRASH_REQUEST, NAMESPACE);
+  public static final QName EMPTY_CALENDAR_TRASH_RESPONSE =
+          QName.get(E_EMPTY_CALENDAR_TRASH_RESPONSE, NAMESPACE);
+
   public static final QName GET_APPT_SUMMARIES_REQUEST =
       QName.get(E_GET_APPT_SUMMARIES_REQUEST, NAMESPACE);
   public static final QName GET_APPOINTMENT_REQUEST =
@@ -457,8 +504,12 @@ public final class MailConstants {
       QName.get(E_CREATE_APPOINTMENT_RESPONSE, NAMESPACE);
   public static final QName CREATE_APPOINTMENT_EXCEPTION_REQUEST =
       QName.get(E_CREATE_APPOINTMENT_EXCEPTION_REQUEST, NAMESPACE);
+  public static final QName CREATE_APPOINTMENT_EXCEPTION_RESPONSE =
+      QName.get(E_CREATE_APPOINTMENT_EXCEPTION_RESPONSE, NAMESPACE);
   public static final QName MODIFY_APPOINTMENT_REQUEST =
       QName.get(E_MODIFY_APPOINTMENT_REQUEST, NAMESPACE);
+  public static final QName MODIFY_APPOINTMENT_RESPONSE =
+      QName.get(E_MODIFY_APPOINTMENT_RESPONSE, NAMESPACE);
   public static final QName CANCEL_APPOINTMENT_REQUEST =
       QName.get(E_CANCEL_APPOINTMENT_REQUEST, NAMESPACE);
   public static final QName FORWARD_APPOINTMENT_REQUEST =
@@ -599,8 +650,10 @@ public final class MailConstants {
   public static final QName AUTO_COMPLETE_REQUEST = QName.get(E_AUTO_COMPLETE_REQUEST, NAMESPACE);
   public static final QName AUTO_COMPLETE_RESPONSE = QName.get(E_AUTO_COMPLETE_RESPONSE, NAMESPACE);
 
-  public static final QName FULL_AUTO_COMPLETE_REQUEST = QName.get(E_FULL_AUTO_COMPLETE_REQUEST, NAMESPACE);
-  public static final QName FULL_AUTO_COMPLETE_RESPONSE = QName.get(E_FULL_AUTO_COMPLETE_RESPONSE, NAMESPACE);
+  public static final QName FULL_AUTO_COMPLETE_REQUEST =
+      QName.get(E_FULL_AUTO_COMPLETE_REQUEST, NAMESPACE);
+  public static final QName FULL_AUTO_COMPLETE_RESPONSE =
+      QName.get(E_FULL_AUTO_COMPLETE_RESPONSE, NAMESPACE);
 
   // contact ranking mgmt
   public static final QName RANKING_ACTION_REQUEST = QName.get(E_RANKING_ACTION_REQUEST, NAMESPACE);
@@ -1013,6 +1066,7 @@ public final class MailConstants {
   public static final String A_DELETE_LIMIT = "deleteLimit";
   public static final String A_CHANGE_LIMIT = "changeLimit";
   public static final String A_REMAIN = "remain";
+  public static final String A_MIME_PROCESSOR = "mimeProcessor";
 
   // filter rules
   public static final String A_LHS = "k0";
@@ -1451,5 +1505,4 @@ public final class MailConstants {
   public static final String E_COPY_TO_FILES_RESPONSE = "CopyToFilesResponse";
   public static final QName COPY_TO_DRIVE_REQUEST = QName.get(E_COPY_TO_FILES_REQUEST, NAMESPACE);
   public static final QName COPY_TO_DRIVE_RESPONSE = QName.get(E_COPY_TO_FILES_RESPONSE, NAMESPACE);
-
 }

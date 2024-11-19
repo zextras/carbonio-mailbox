@@ -32,6 +32,8 @@ import com.zimbra.cs.mailbox.calendar.CalendarMailSender;
 import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mailbox.calendar.RecurId;
 import com.zimbra.cs.mailbox.calendar.ZOrganizer;
+import com.zimbra.cs.mime.MimeProcessor;
+import com.zimbra.cs.mime.MimeProcessorUtil;
 import com.zimbra.cs.mime.MimeVisitor;
 import com.zimbra.cs.service.mail.message.parser.MimeMessageData;
 import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
@@ -105,25 +107,26 @@ public class ForwardCalendarItem extends CalendarRequest {
     }
     Pair<List<MimeMessage>, List<MimeMessage>> mimePair =
         forwardCalItem(mbox, octxt, calItem, rid, mm, senderAcct);
-    sendForwardMessages(mbox, octxt, mimePair);
+    MimeProcessor mimeProcessor = MimeProcessorUtil.getMimeProcessor(request, context);
+    sendForwardMessages(mbox, octxt, mimePair, mimeProcessor);
     Element response = getResponseElement(zsc);
     return response;
   }
 
   public static void sendForwardMessages(
-      Mailbox mbox, OperationContext octxt, Pair<List<MimeMessage>, List<MimeMessage>> pair)
+          Mailbox mbox, OperationContext octxt, Pair<List<MimeMessage>, List<MimeMessage>> pair, MimeProcessor mimeProcessor)
       throws ServiceException {
     List<MimeMessage> fwdMsgs = pair.getFirst();
     List<MimeMessage> notifyMsgs = pair.getSecond();
     if (fwdMsgs != null) {
       for (MimeMessage mmFwd : fwdMsgs) {
-        sendFwdMsg(octxt, mbox, mmFwd);
+        sendFwdMsg(octxt, mbox, mmFwd, mimeProcessor);
       }
     }
     if (notifyMsgs != null) {
       for (MimeMessage mmNotify : notifyMsgs) {
         // Send Forward notification as Admin
-        sendFwdNotifyMsg(octxt, mbox, mmNotify);
+        sendFwdNotifyMsg(octxt, mbox, mmNotify, mimeProcessor);
       }
     }
   }
@@ -190,14 +193,14 @@ public class ForwardCalendarItem extends CalendarRequest {
     return pair;
   }
 
-  protected static ItemId sendFwdMsg(OperationContext octxt, Mailbox mbox, MimeMessage mmFwd)
+  protected static ItemId sendFwdMsg(OperationContext octxt, Mailbox mbox, MimeMessage mmFwd, MimeProcessor mimeProcessor)
       throws ServiceException {
-    return CalendarMailSender.sendPartial(octxt, mbox, mmFwd, null, null, null, null, false);
+    return CalendarMailSender.sendPartial(octxt, mbox, mmFwd, null, null, null, null, null, false, false, mimeProcessor);
   }
 
-  protected static ItemId sendFwdNotifyMsg(OperationContext octxt, Mailbox mbox, MimeMessage mmFwd)
+  protected static ItemId sendFwdNotifyMsg(OperationContext octxt, Mailbox mbox, MimeMessage mmFwd, MimeProcessor mimeProcessor)
       throws ServiceException {
-    return CalendarMailSender.sendPartial(octxt, mbox, mmFwd, null, null, null, null, false, true);
+    return CalendarMailSender.sendPartial(octxt, mbox, mmFwd, null, null, null, null, null,false, true, mimeProcessor);
   }
 
   private static Pair<List<MimeMessage>, List<MimeMessage>> getSeriesFwdMsgs(
@@ -276,11 +279,10 @@ public class ForwardCalendarItem extends CalendarRequest {
       ZComponent comp = compIter.next();
       ICalTok compName = ICalTok.lookup(comp.getName());
       if (ICalTok.VEVENT.equals(compName) || ICalTok.VTODO.equals(compName)) {
-        // Remove existing ATTENDEEs and X-MS-OLK-SENDER.
+        // Remove existing X-MS-OLK-SENDER.
         for (Iterator<ZProperty> propIter = comp.getPropertyIterator(); propIter.hasNext(); ) {
           ZProperty prop = propIter.next();
-          if (ICalTok.ATTENDEE.equals(prop.getToken())
-              || "X-MS-OLK-SENDER".equalsIgnoreCase(prop.getName())) propIter.remove();
+          if ("X-MS-OLK-SENDER".equalsIgnoreCase(prop.getName())) propIter.remove();
         }
         // SENT-BY
         ZProperty orgProp = comp.getProperty(ICalTok.ORGANIZER);
@@ -307,6 +309,7 @@ public class ForwardCalendarItem extends CalendarRequest {
           if (name != null && name.length() > 0) att.addParameter(new ZParameter(ICalTok.CN, name));
           att.addParameter(new ZParameter(ICalTok.PARTSTAT, ICalTok.NEEDS_ACTION.toString()));
           att.addParameter(new ZParameter(ICalTok.RSVP, "TRUE"));
+          att.addParameter(new ZParameter(ICalTok.ROLE, ICalTok.REQ_PARTICIPANT.toString()));
           comp.addProperty(att);
         }
       }

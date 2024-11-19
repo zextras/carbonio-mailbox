@@ -36,6 +36,7 @@ import org.eclipse.jetty.http.HttpStatus;
  * validating query parameters, and handling requests for local or remote attachments.
  * </p>
  */
+@SuppressWarnings("ClassCanBeRecord")
 public class PreviewHandler {
 
   private static final Log LOG = LogFactory.getLog(PreviewHandler.class);
@@ -142,7 +143,7 @@ public class PreviewHandler {
    */
   private void handleLocalAttachment(HttpServletRequest request, HttpServletResponse response,
       AuthToken authToken, ItemId itemId, String partId) {
-    var mimePartTry = attachmentService.getAttachment(itemId.getAccountId(), authToken, itemId.getId(), partId);
+    var mimePartTry = attachmentService.getAttachmentByItemId(itemId.getAccountId(), authToken, itemId, partId);
     if (mimePartTry.isFailure() || mimePartTry.get() == null) {
       var message = mimePartTry.getCause().getMessage();
       if (message == null || message.trim().isEmpty() || message.toLowerCase().contains("account")) {
@@ -163,7 +164,7 @@ public class PreviewHandler {
             ex -> respondWithError(request, response, HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage()))
         .onFailure(ex -> {
           var message = ex.getMessage();
-          if (message == null || message.trim().isEmpty()) {
+          if (ex instanceof NullPointerException || message == null || message.trim().isEmpty()) {
             message = "Something went wrong while processing preview of attachment.";
           }
           respondWithError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message);
@@ -171,7 +172,7 @@ public class PreviewHandler {
   }
 
   /**
-   * Proxies preview HTTP request to the mail host associated with the specified account ID.
+   * Proxies preview HTTP requests to the mail host associated with the specified account ID.
    *
    * <p>This method extracts the request ID from the provided {@link HttpServletRequest} object,
    * logs the action of proxying the request along with the target account ID, and then invokes the {@link

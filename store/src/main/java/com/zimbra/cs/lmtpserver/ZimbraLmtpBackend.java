@@ -72,8 +72,7 @@ public class ZimbraLmtpBackend implements LmtpBackend {
 
   private static List<LmtpCallback> callbacks = new CopyOnWriteArrayList<>();
   private static Map<String, Set<Integer>> receivedMessageIDs;
-  private static final LoadingCache<Integer, ReentrantLock> mailboxDeliveryLocks =
-      createMailboxDeliveryLocks();
+  private static final LoadingCache<Integer, ReentrantLock> mailboxDeliveryLocks = createMailboxDeliveryLocks();
 
   private final LmtpConfig config;
 
@@ -83,7 +82,8 @@ public class ZimbraLmtpBackend implements LmtpBackend {
   }
 
   /**
-   * Adds an instance of an LMTP callback class that will be triggered before and after a message is
+   * Adds an instance of an LMTP callback class that will be triggered before and
+   * after a message is
    * added to a user mailbox.
    */
   public static void addCallback(LmtpCallback callback) {
@@ -101,10 +101,8 @@ public class ZimbraLmtpBackend implements LmtpBackend {
   }
 
   private static LoadingCache<Integer, ReentrantLock> createMailboxDeliveryLocks() {
-    Function<Integer, ReentrantLock> lockCreator =
-        from -> new ReentrantLock();
-    LoadingCache<Integer, ReentrantLock> cache =
-        CacheBuilder.newBuilder().build(CacheLoader.from(lockCreator));
+    Function<Integer, ReentrantLock> lockCreator = from -> new ReentrantLock();
+    LoadingCache<Integer, ReentrantLock> cache = CacheBuilder.newBuilder().build(CacheLoader.from(lockCreator));
     return cache;
   }
 
@@ -177,7 +175,8 @@ public class ZimbraLmtpBackend implements LmtpBackend {
 
     checkDedupeCacheSize();
     String msgid = getMessageID(pm);
-    if (msgid == null || msgid.equals("")) return false;
+    if (msgid == null || msgid.equals(""))
+      return false;
 
     synchronized (ZimbraLmtpBackend.class) {
       Set<Integer> mboxIds = receivedMessageIDs.get(msgid);
@@ -208,7 +207,8 @@ public class ZimbraLmtpBackend implements LmtpBackend {
   }
 
   /**
-   * If the configured Message-ID cache size has changed, create a new cache and copy values from
+   * If the configured Message-ID cache size has changed, create a new cache and
+   * copy values from
    * the old one.
    */
   private void checkDedupeCacheSize() {
@@ -219,11 +219,11 @@ public class ZimbraLmtpBackend implements LmtpBackend {
       synchronized (ZimbraLmtpBackend.class) {
         Map<String, Set<Integer>> newMap = null;
         if (receivedMessageIDs == null) {
-          // if non-zero entry timeout is specified then use a timeout map, else use an lru map
-          receivedMessageIDs =
-              entryTimeout == 0
-                  ? new LruMap<>(cacheSize)
-                  : new TimeoutMap<>(entryTimeout);
+          // if non-zero entry timeout is specified then use a timeout map, else use an
+          // lru map
+          receivedMessageIDs = entryTimeout == 0
+              ? new LruMap<>(cacheSize)
+              : new TimeoutMap<>(entryTimeout);
         } else if (receivedMessageIDs instanceof LruMap) {
           if (entryTimeout != 0) {
             // change to a timeout map
@@ -241,7 +241,7 @@ public class ZimbraLmtpBackend implements LmtpBackend {
           }
         }
         if (newMap != null) {
-          // Copy entries from the old map to the new one.  The old map
+          // Copy entries from the old map to the new one. The old map
           // is iterated in order from least-recently accessed to last accessed.
           // If the new map size is smaller, we'll get the latest entries.
           newMap.putAll(receivedMessageIDs);
@@ -260,9 +260,11 @@ public class ZimbraLmtpBackend implements LmtpBackend {
   }
 
   private void addToDedupeCache(ParsedMessage pm, Mailbox mbox) {
-    if (pm == null || mbox == null) return;
+    if (pm == null || mbox == null)
+      return;
     String msgid = getMessageID(pm);
-    if (msgid == null || msgid.equals("")) return;
+    if (msgid == null || msgid.equals(""))
+      return;
 
     synchronized (ZimbraLmtpBackend.class) {
       Set<Integer> mboxIds = receivedMessageIDs.get(msgid);
@@ -275,7 +277,8 @@ public class ZimbraLmtpBackend implements LmtpBackend {
   }
 
   private void removeFromDedupeCache(String msgid, Mailbox mbox) {
-    if (mbox == null || Strings.isNullOrEmpty(msgid)) return;
+    if (mbox == null || Strings.isNullOrEmpty(msgid))
+      return;
 
     synchronized (ZimbraLmtpBackend.class) {
       Set<Integer> mboxIds = receivedMessageIDs.get(msgid);
@@ -318,11 +321,11 @@ public class ZimbraLmtpBackend implements LmtpBackend {
       cis = new CopyInputStream(in, sizeHint, bufLen, bufLen);
       in = cis;
 
-      //            MimeParserInputStream mpis = null;
-      //            if (ZMimeMessage.usingZimbraParser()) {
-      //                mpis = new MimeParserInputStream(in);
-      //                in = mpis;
-      //            }
+      // MimeParserInputStream mpis = null;
+      // if (ZMimeMessage.usingZimbraParser()) {
+      // mpis = new MimeParserInputStream(in);
+      // in = mpis;
+      // }
 
       Rfc822ValidationInputStream validator = null;
       if (LC.zimbra_lmtp_validate_messages.booleanValue()) {
@@ -351,21 +354,21 @@ public class ZimbraLmtpBackend implements LmtpBackend {
 
       BlobInputStream bis = null;
       MimeMessage mm = null;
-      //            if (mpis != null) {
-      //                try {
-      //                    if (data == null) {
-      //                        bis = new BlobInputStream(blob);
-      //                        mpis.setSource(bis);
-      //                    } else {
-      //                        mpis.setSource(data);
-      //                    }
-      //                } catch (IOException ioe) {
-      //                    throw new UnrecoverableLmtpException("Error in accessing incoming
+      // if (mpis != null) {
+      // try {
+      // if (data == null) {
+      // bis = new BlobInputStream(blob);
+      // mpis.setSource(bis);
+      // } else {
+      // mpis.setSource(data);
+      // }
+      // } catch (IOException ioe) {
+      // throw new UnrecoverableLmtpException("Error in accessing incoming
       // message", ioe);
-      //                }
+      // }
       //
-      //                mm = new ZMimeMessage(mpis.getMessage(null));
-      //            }
+      // mm = new ZMimeMessage(mpis.getMessage(null));
+      // }
 
       try {
         deliverMessageToLocalMailboxes(blob, bis, data, mm, env);
@@ -409,12 +412,11 @@ public class ZimbraLmtpBackend implements LmtpBackend {
     boolean shared = recipients.size() > 1;
     List<Integer> targetMailboxIds = new ArrayList<>(recipients.size());
 
-    Map<LmtpAddress, RecipientDetail> rcptMap =
-        new HashMap<>(recipients.size());
+    Map<LmtpAddress, RecipientDetail> rcptMap = new HashMap<>(recipients.size());
     try {
       // Examine attachments indexing option for all recipients and
-      // prepare ParsedMessage versions needed.  Parsing is done before
-      // attempting delivery to any recipient.  Therefore, parse error
+      // prepare ParsedMessage versions needed. Parsing is done before
+      // attempting delivery to any recipient. Therefore, parse error
       // will result in non-delivery to all recipients.
 
       // ParsedMessage for users with attachments indexing
@@ -457,11 +459,10 @@ public class ZimbraLmtpBackend implements LmtpBackend {
         if (account != null && mbox != null) {
           ParsedMessageOptions pmo;
           if (mm != null) {
-            pmo =
-                new ParsedMessageOptions()
-                    .setContent(mm)
-                    .setDigest(blob.getDigest())
-                    .setSize(blob.getRawSize());
+            pmo = new ParsedMessageOptions()
+                .setContent(mm)
+                .setDigest(blob.getDigest())
+                .setSize(blob.getRawSize());
           } else {
             pmo = new ParsedMessageOptions(blob, data);
           }
@@ -529,7 +530,7 @@ public class ZimbraLmtpBackend implements LmtpBackend {
       sharedDeliveryCtxt.setIncomingBlob(blob);
 
       // We now know which addresses are valid and which ParsedMessage
-      // version each recipient needs.  Deliver!
+      // version each recipient needs. Deliver!
       for (LmtpAddress recipient : recipients) {
         String rcptEmail = recipient.getEmailAddress();
         LmtpReply reply = LmtpReply.TEMPORARY_FAILURE;
@@ -574,8 +575,7 @@ public class ZimbraLmtpBackend implements LmtpBackend {
               boolean acquiredLock;
               try {
                 // Wait for the lock, up to the timeout
-                acquiredLock =
-                    lock.tryLock(LC.zimbra_mailbox_lock_timeout.intValue(), TimeUnit.SECONDS);
+                acquiredLock = lock.tryLock(LC.zimbra_mailbox_lock_timeout.intValue(), TimeUnit.SECONDS);
               } catch (InterruptedException e) {
                 acquiredLock = false;
               }
@@ -605,11 +605,10 @@ public class ZimbraLmtpBackend implements LmtpBackend {
                       folderId = folder.getId();
                     } catch (ServiceException se) {
                       if (se.getCode().equals(MailServiceException.NO_SUCH_FOLDER)) {
-                        Folder folder =
-                            mbox.createFolder(
-                                null,
-                                recipient.getFolder(),
-                                new Folder.FolderOptions().setDefaultView(MailItem.Type.MESSAGE));
+                        Folder folder = mbox.createFolder(
+                            null,
+                            recipient.getFolder(),
+                            new Folder.FolderOptions().setDefaultView(MailItem.Type.MESSAGE));
                         folderId = folder.getId();
                       } else {
                         throw se;
@@ -628,18 +627,17 @@ public class ZimbraLmtpBackend implements LmtpBackend {
                   // Get msgid first, to avoid having to reopen and reparse the blob
                   // file if Mailbox.addMessageInternal() closes it.
                   pm.getMessageID();
-                  addedMessageIds =
-                      RuleManager.applyRulesToIncomingMessage(
-                          null,
-                          mbox,
-                          pm,
-                          (int) blob.getRawSize(),
-                          rcptEmail,
-                          env,
-                          sharedDeliveryCtxt,
-                          Mailbox.ID_FOLDER_INBOX,
-                          false,
-                          true);
+                  addedMessageIds = RuleManager.applyRulesToIncomingMessage(
+                      null,
+                      mbox,
+                      pm,
+                      (int) blob.getRawSize(),
+                      rcptEmail,
+                      env,
+                      sharedDeliveryCtxt,
+                      Mailbox.ID_FOLDER_INBOX,
+                      false,
+                      true);
                 } else {
                   pm.getMessageID();
                   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
@@ -677,7 +675,7 @@ public class ZimbraLmtpBackend implements LmtpBackend {
               reply = LmtpReply.DELIVERY_OK;
               break;
             case defer:
-              // Delivery to mailbox skipped.  Let MTA retry again later.
+              // Delivery to mailbox skipped. Let MTA retry again later.
               // This case happens for shared delivery to a mailbox in
               // backup mode.
               ZimbraLog.lmtp.info(
@@ -709,7 +707,7 @@ public class ZimbraLmtpBackend implements LmtpBackend {
           ZimbraLog.lmtp.warn("try again for message from=%s,to=%s", envSender, rcptEmail, e);
         } finally {
           if (rd.action == DeliveryAction.deliver && !success) {
-            // Message was not delivered.  Remove it from the dedupe
+            // Message was not delivered. Remove it from the dedupe
             // cache so we don't dedupe it on LMTP retry.
             removeFromDedupeCache(msgId, rd.mbox);
           }
@@ -747,7 +745,8 @@ public class ZimbraLmtpBackend implements LmtpBackend {
       // called, we check and fix those here.
       if (shared) {
         for (RecipientDetail rd : rcptMap.values()) {
-          if (rd.esd && rd.mbox != null) rd.mbox.endSharedDelivery();
+          if (rd.esd && rd.mbox != null)
+            rd.mbox.endSharedDelivery();
         }
       }
     }
@@ -761,17 +760,15 @@ public class ZimbraLmtpBackend implements LmtpBackend {
       Collection<LmtpAddress> serverRecipients = serverToRecipientsMap.get(server);
       try {
         Server serverObj = Provisioning.getInstance().getServerByName(server);
-        lmtpClient =
-            new LmtpClient(
-                server, new Integer(serverObj.getAttr(Provisioning.A_zimbraLmtpBindPort)));
+        lmtpClient = new LmtpClient(
+            server, Integer.valueOf(serverObj.getAttr(Provisioning.A_zimbraLmtpBindPort)));
         in = data == null ? blob.getInputStream() : new ByteArrayInputStream(data);
-        boolean success =
-            lmtpClient.sendMessage(
-                in,
-                getRecipientsEmailAddress(serverRecipients),
-                env.getSender().getEmailAddress(),
-                blob.getFile().getName(),
-                blob.getRawSize());
+        boolean success = lmtpClient.sendMessage(
+            in,
+            getRecipientsEmailAddress(serverRecipients),
+            env.getSender().getEmailAddress(),
+            blob.getFile().getName(),
+            blob.getRawSize());
         if (success) {
           setDeliveryStatuses(serverRecipients, LmtpReply.DELIVERY_OK);
         } else {
@@ -805,6 +802,7 @@ public class ZimbraLmtpBackend implements LmtpBackend {
   }
 
   private void setDeliveryStatuses(Collection<LmtpAddress> recipients, LmtpReply reply) {
-    for (LmtpAddress recipient : recipients) recipient.setDeliveryStatus(reply);
+    for (LmtpAddress recipient : recipients)
+      recipient.setDeliveryStatus(reply);
   }
 }

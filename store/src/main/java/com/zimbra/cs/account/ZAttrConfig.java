@@ -1990,6 +1990,78 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * whether S/MIME signature verification is enabled.
+     *
+     * @return carbonioSMIMESignatureVerificationEnabled, or false if unset
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3147)
+    public boolean isCarbonioSMIMESignatureVerificationEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_carbonioSMIMESignatureVerificationEnabled, false, true);
+    }
+
+    /**
+     * whether S/MIME signature verification is enabled.
+     *
+     * @param carbonioSMIMESignatureVerificationEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3147)
+    public void setCarbonioSMIMESignatureVerificationEnabled(boolean carbonioSMIMESignatureVerificationEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioSMIMESignatureVerificationEnabled, carbonioSMIMESignatureVerificationEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * whether S/MIME signature verification is enabled.
+     *
+     * @param carbonioSMIMESignatureVerificationEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3147)
+    public Map<String,Object> setCarbonioSMIMESignatureVerificationEnabled(boolean carbonioSMIMESignatureVerificationEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioSMIMESignatureVerificationEnabled, carbonioSMIMESignatureVerificationEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * whether S/MIME signature verification is enabled.
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3147)
+    public void unsetCarbonioSMIMESignatureVerificationEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioSMIMESignatureVerificationEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * whether S/MIME signature verification is enabled.
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3147)
+    public Map<String,Object> unsetCarbonioSMIMESignatureVerificationEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioSMIMESignatureVerificationEnabled, "");
+        return attrs;
+    }
+
+    /**
      * Whether the SearchUserByFeature API should search on all domains or
      * only the current user domain
      *
@@ -19585,7 +19657,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Maximum size in bytes for each attachment.
+     * The maximum size for each attachment, in bytes. A value of 0 indicates
+     * no size limit.
      *
      * @return zimbraFileUploadMaxSizePerFile, or 2147483648 if unset
      *
@@ -19597,7 +19670,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Maximum size in bytes for each attachment.
+     * The maximum size for each attachment, in bytes. A value of 0 indicates
+     * no size limit.
      *
      * @param zimbraFileUploadMaxSizePerFile new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -19612,7 +19686,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Maximum size in bytes for each attachment.
+     * The maximum size for each attachment, in bytes. A value of 0 indicates
+     * no size limit.
      *
      * @param zimbraFileUploadMaxSizePerFile new value
      * @param attrs existing map to populate, or null to create a new map
@@ -19628,7 +19703,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Maximum size in bytes for each attachment.
+     * The maximum size for each attachment, in bytes. A value of 0 indicates
+     * no size limit.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -19642,7 +19718,8 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * Maximum size in bytes for each attachment.
+     * The maximum size for each attachment, in bytes. A value of 0 indicates
+     * no size limit.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

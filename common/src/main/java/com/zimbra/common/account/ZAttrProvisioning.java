@@ -3046,6 +3046,15 @@ public class ZAttrProvisioning {
     public static final String A_carbonioSearchAllDomainsByFeature = "carbonioSearchAllDomainsByFeature";
 
     /**
+     * List of domain names in which the SearchUserByFeature API should
+     * perform users searches
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3148)
+    public static final String A_carbonioSearchSpecifiedDomainsByFeature = "carbonioSearchSpecifiedDomainsByFeature";
+
+    /**
      * Whether Carbonio can send analytics reports
      *
      * @since ZCS 9.0.0
@@ -3060,6 +3069,14 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=3092)
     public static final String A_carbonioSendFullErrorStack = "carbonioSendFullErrorStack";
+
+    /**
+     * whether S/MIME signature verification is enabled.
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3147)
+    public static final String A_carbonioSMIMESignatureVerificationEnabled = "carbonioSMIMESignatureVerificationEnabled";
 
     /**
      * Link to the Carbonio User Documentation
@@ -7756,7 +7773,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFileUploadMaxSize = "zimbraFileUploadMaxSize";
 
     /**
-     * Maximum size in bytes for each attachment.
+     * The maximum size for each attachment, in bytes. A value of 0 indicates
+     * no size limit.
      *
      * @since ZCS 8.0.0
      */

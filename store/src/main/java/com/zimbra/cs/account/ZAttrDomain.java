@@ -1540,6 +1540,149 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
+     * List of domain names in which the SearchUserByFeature API should
+     * perform users searches
+     *
+     * @return carbonioSearchSpecifiedDomainsByFeature, or empty array if unset
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3148)
+    public String[] getCarbonioSearchSpecifiedDomainsByFeature() {
+        return getMultiAttr(ZAttrProvisioning.A_carbonioSearchSpecifiedDomainsByFeature, true, true);
+    }
+
+    /**
+     * List of domain names in which the SearchUserByFeature API should
+     * perform users searches
+     *
+     * @param carbonioSearchSpecifiedDomainsByFeature new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3148)
+    public void setCarbonioSearchSpecifiedDomainsByFeature(String[] carbonioSearchSpecifiedDomainsByFeature) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioSearchSpecifiedDomainsByFeature, carbonioSearchSpecifiedDomainsByFeature);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * List of domain names in which the SearchUserByFeature API should
+     * perform users searches
+     *
+     * @param carbonioSearchSpecifiedDomainsByFeature new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3148)
+    public Map<String,Object> setCarbonioSearchSpecifiedDomainsByFeature(String[] carbonioSearchSpecifiedDomainsByFeature, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioSearchSpecifiedDomainsByFeature, carbonioSearchSpecifiedDomainsByFeature);
+        return attrs;
+    }
+
+    /**
+     * List of domain names in which the SearchUserByFeature API should
+     * perform users searches
+     *
+     * @param carbonioSearchSpecifiedDomainsByFeature new to add to existing values
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3148)
+    public void addCarbonioSearchSpecifiedDomainsByFeature(String carbonioSearchSpecifiedDomainsByFeature) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_carbonioSearchSpecifiedDomainsByFeature, carbonioSearchSpecifiedDomainsByFeature);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * List of domain names in which the SearchUserByFeature API should
+     * perform users searches
+     *
+     * @param carbonioSearchSpecifiedDomainsByFeature new to add to existing values
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3148)
+    public Map<String,Object> addCarbonioSearchSpecifiedDomainsByFeature(String carbonioSearchSpecifiedDomainsByFeature, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_carbonioSearchSpecifiedDomainsByFeature, carbonioSearchSpecifiedDomainsByFeature);
+        return attrs;
+    }
+
+    /**
+     * List of domain names in which the SearchUserByFeature API should
+     * perform users searches
+     *
+     * @param carbonioSearchSpecifiedDomainsByFeature existing value to remove
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3148)
+    public void removeCarbonioSearchSpecifiedDomainsByFeature(String carbonioSearchSpecifiedDomainsByFeature) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_carbonioSearchSpecifiedDomainsByFeature, carbonioSearchSpecifiedDomainsByFeature);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * List of domain names in which the SearchUserByFeature API should
+     * perform users searches
+     *
+     * @param carbonioSearchSpecifiedDomainsByFeature existing value to remove
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3148)
+    public Map<String,Object> removeCarbonioSearchSpecifiedDomainsByFeature(String carbonioSearchSpecifiedDomainsByFeature, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_carbonioSearchSpecifiedDomainsByFeature, carbonioSearchSpecifiedDomainsByFeature);
+        return attrs;
+    }
+
+    /**
+     * List of domain names in which the SearchUserByFeature API should
+     * perform users searches
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3148)
+    public void unsetCarbonioSearchSpecifiedDomainsByFeature() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioSearchSpecifiedDomainsByFeature, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * List of domain names in which the SearchUserByFeature API should
+     * perform users searches
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 24.12.0
+     */
+    @ZAttr(id=3148)
+    public Map<String,Object> unsetCarbonioSearchSpecifiedDomainsByFeature(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioSearchSpecifiedDomainsByFeature, "");
+        return attrs;
+    }
+
+    /**
      * Link to the Carbonio User Documentation
      *
      * @return carbonioUserDocumentationUrl, or "https://docs.zextras.com/carbonio/html/usage.html" if unset
@@ -12216,7 +12359,8 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Maximum size in bytes for each attachment.
+     * The maximum size for each attachment, in bytes. A value of 0 indicates
+     * no size limit.
      *
      * @return zimbraFileUploadMaxSizePerFile, or 2147483648 if unset
      *
@@ -12228,7 +12372,8 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Maximum size in bytes for each attachment.
+     * The maximum size for each attachment, in bytes. A value of 0 indicates
+     * no size limit.
      *
      * @param zimbraFileUploadMaxSizePerFile new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -12243,7 +12388,8 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Maximum size in bytes for each attachment.
+     * The maximum size for each attachment, in bytes. A value of 0 indicates
+     * no size limit.
      *
      * @param zimbraFileUploadMaxSizePerFile new value
      * @param attrs existing map to populate, or null to create a new map
@@ -12259,7 +12405,8 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Maximum size in bytes for each attachment.
+     * The maximum size for each attachment, in bytes. A value of 0 indicates
+     * no size limit.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -12273,7 +12420,8 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
-     * Maximum size in bytes for each attachment.
+     * The maximum size for each attachment, in bytes. A value of 0 indicates
+     * no size limit.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

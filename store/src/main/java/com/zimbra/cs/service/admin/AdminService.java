@@ -5,8 +5,10 @@
 
 package com.zimbra.cs.service.admin;
 
+import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
+import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
@@ -16,6 +18,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
+import io.vavr.control.Try;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,7 +57,8 @@ public class AdminService implements DocumentService {
                 Provisioning.getInstance(),
                 MailboxManager.getInstance(),
                 new AclService(MailboxManager.getInstance(), Provisioning.getInstance()),
-                ZimbraLog.security)));
+                ZimbraLog.security),
+        getMessageBroker()));
     dispatcher.registerHandler(AdminConstants.SET_PASSWORD_REQUEST, new SetPassword());
     dispatcher.registerHandler(
         AdminConstants.CHECK_PASSWORD_STRENGTH_REQUEST, new CheckPasswordStrength());
@@ -389,5 +393,9 @@ public class AdminService implements DocumentService {
         StringUtil.addToMultiMap(result, name, value);
     }
     return result;
+  }
+
+  protected Try<MessageBrokerClient> getMessageBroker() {
+      return Try.of(MessageBrokerFactory::getMessageBrokerClientInstance);
   }
 }

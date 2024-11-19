@@ -43,6 +43,7 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mailbox.calendar.Recurrence.IRecurrence;
 import com.zimbra.cs.mime.Mime;
+import com.zimbra.cs.mime.MimeProcessor;
 import com.zimbra.cs.mime.MimeVisitor;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.redolog.op.RedoableOp;
@@ -1153,39 +1154,6 @@ public class CalendarMailSender {
     senderThread.start();
   }
 
-  /**
-   * Sends a message with partial send enabled. If a partial send error occurs, logs an info
-   * message.
-   */
-  public static ItemId sendPartial(
-      OperationContext octxt,
-      Mailbox mbox,
-      MimeMessage mm,
-      List<Upload> uploads,
-      ItemId origMsgId,
-      String replyType,
-      String identityId,
-      boolean replyToSender)
-      throws ServiceException {
-    return sendPartial(
-        octxt, mbox, mm, uploads, origMsgId, replyType, identityId, replyToSender, false);
-  }
-
-  public static ItemId sendPartial(
-      OperationContext octxt,
-      Mailbox mbox,
-      MimeMessage mm,
-      List<Upload> uploads,
-      ItemId origMsgId,
-      String replyType,
-      String identityId,
-      boolean replyToSender,
-      boolean asAdmin)
-      throws ServiceException {
-    return sendPartial(
-        octxt, mbox, mm, uploads, origMsgId, replyType, identityId, null, replyToSender, asAdmin);
-  }
-
   public static ItemId sendPartial(
       OperationContext octxt,
       Mailbox mbox,
@@ -1196,7 +1164,8 @@ public class CalendarMailSender {
       String identityId,
       com.zimbra.cs.account.DataSource dataSource,
       boolean replyToSender,
-      boolean asAdmin)
+      boolean asAdmin,
+      MimeProcessor mimeProcessor)
       throws ServiceException {
     ItemId id = null;
     try {
@@ -1214,15 +1183,16 @@ public class CalendarMailSender {
                   origMsgId,
                   replyType,
                   null,
-                  replyToSender);
+                  replyToSender,
+                  mimeProcessor);
         } else {
           id =
               mailSender.sendMimeMessage(
-                  octxt, mbox, mm, uploads, origMsgId, replyType, identityId, replyToSender);
+                  octxt, mbox, mm, uploads, origMsgId, replyType, identityId, replyToSender, mimeProcessor);
         }
       } else {
         MailSender mailSender = mbox.getDataSourceMailSender(dataSource, true).setSendPartial(true);
-        id = mailSender.sendDataSourceMimeMessage(octxt, mbox, mm, uploads, origMsgId, replyType);
+        id = mailSender.sendDataSourceMimeMessage(octxt, mbox, mm, uploads, origMsgId, replyType, mimeProcessor);
       }
     } catch (MailServiceException e) {
       if (e.getCode().equals(MailServiceException.SEND_PARTIAL_ADDRESS_FAILURE)) {

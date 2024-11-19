@@ -18,8 +18,8 @@ public class ApiClassDocumentation {
     private String deprecationDescription;
     private String authRequiredDescription;
     private String adminAuthRequiredDescription;
-    private Map <String, String> fieldDescriptions = Maps.newHashMap();
-    private Map <String, String> fieldTags = Maps.newHashMap();
+    private final Map <String, String> fieldDescriptions = Maps.newHashMap();
+    private final Map <String, String> fieldTags = Maps.newHashMap();
 
     public ApiClassDocumentation() {
     }
@@ -31,10 +31,7 @@ public class ApiClassDocumentation {
         if (classDescription != null) {
             return true;
         }
-        if (!fieldDescriptions.isEmpty()) {
-            return true;
-        }
-        return false;
+        return !fieldDescriptions.isEmpty();
     }
 
     public void setCommandDescription(String commandDescription) {

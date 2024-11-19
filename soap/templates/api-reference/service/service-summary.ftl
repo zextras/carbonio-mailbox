@@ -23,7 +23,7 @@ Carbonio SOAP API Reference ${build.version}
 <script type="text/javascript">
 function windowTitle()
 {
-    parent.document.title="Service ${service.name} (Carbonio SOAP API Reference ${build.version})";
+    parent.document.title="Service ${service.name?replace('zimbra', '')} (Carbonio SOAP API Reference ${build.version})";
 }
 </script>
 
@@ -42,7 +42,7 @@ function windowTitle()
 </table>
 
 <div style="margin-top: 62px;">
-  <H2>Service ${service.name}</H2>
+  <H2>Service: ${service.name?replace('zimbra', '')}</H2>
 </div>
 
 
