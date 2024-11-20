@@ -1,0 +1,848 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] zm-mailbox                                                         [pom]
+[INFO] zm-native                                                          [jar]
+[INFO] zm-common                                                          [jar]
+[INFO] zm-soap                                                            [jar]
+[INFO] zm-client                                                          [jar]
+[INFO] store-extra-runtime-dependencies                                   [pom]
+[INFO] zm-store                                                           [jar]
+[INFO] zm-store-conf                                                      [jar]
+[INFO] carbonio-jetty-libs                                                [pom]
+[INFO] jython-libraries                                                   [pom]
+[INFO] 
+[INFO] -------------------------< zextras:zm-mailbox >-------------------------
+[INFO] Building zm-mailbox 24.12.0-SNAPSHOT                              [1/10]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- dependency:3.3.0:tree (default-cli) @ zm-mailbox ---
+[INFO] zextras:zm-mailbox:pom:24.12.0-SNAPSHOT
+[INFO] 
+[INFO] -------------------------< zextras:zm-native >--------------------------
+[INFO] Building zm-native 24.12.0-SNAPSHOT                               [2/10]
+[INFO]   from native/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- dependency:3.3.0:tree (default-cli) @ zm-native ---
+[INFO] zextras:zm-native:jar:24.12.0-SNAPSHOT
+[INFO] 
+[INFO] -------------------------< zextras:zm-common >--------------------------
+[INFO] Building zm-common 24.12.0-SNAPSHOT                               [3/10]
+[INFO]   from common/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] Downloading from central: https://repo1.maven.org/maven2/zextras/zm-native/24.12.0-SNAPSHOT/maven-metadata.xml
+[INFO] 
+[INFO] --- dependency:3.3.0:tree (default-cli) @ zm-common ---
+[INFO] zextras:zm-common:jar:24.12.0-SNAPSHOT
+[INFO] +- org.mockito:mockito-core:jar:5.2.0:test
+[INFO] |  +- net.bytebuddy:byte-buddy:jar:1.14.1:test
+[INFO] |  +- net.bytebuddy:byte-buddy-agent:jar:1.14.1:test
+[INFO] |  \- org.objenesis:objenesis:jar:2.1:test
+[INFO] +- xml-apis:xml-apis:jar:1.3.04:compile
+[INFO] +- org.apache.httpcomponents:httpcore:jar:4.4.16:compile
+[INFO] +- javax.mail:mail:jar:1.4.5:compile
+[INFO] +- javax.activation:activation:jar:1.1.1:compile
+[INFO] +- com.google.guava:guava:jar:33.3.1-jre:compile
+[INFO] |  +- com.google.guava:failureaccess:jar:1.0.2:compile
+[INFO] |  +- com.google.guava:listenablefuture:jar:9999.0-empty-to-avoid-conflict-with-guava:compile
+[INFO] |  +- com.google.code.findbugs:jsr305:jar:3.0.2:compile
+[INFO] |  +- org.checkerframework:checker-qual:jar:3.43.0:compile
+[INFO] |  +- com.google.errorprone:error_prone_annotations:jar:2.3.2:compile
+[INFO] |  \- com.google.j2objc:j2objc-annotations:jar:3.0.0:compile
+[INFO] +- commons-codec:commons-codec:jar:1.11:compile
+[INFO] +- javax.servlet:javax.servlet-api:jar:3.1.0:compile
+[INFO] +- org.apache.logging.log4j:log4j-core:jar:2.20.0:compile
+[INFO] +- org.apache.logging.log4j:log4j-api:jar:2.20.0:compile
+[INFO] +- org.bouncycastle:bcpkix-jdk18on:jar:1.78.1:compile
+[INFO] |  +- org.bouncycastle:bcprov-jdk18on:jar:1.78.1:compile
+[INFO] |  \- org.bouncycastle:bcutil-jdk18on:jar:1.78.1:compile
+[INFO] +- ical4j:ical4j:jar:0.9.16-patched:compile
+[INFO] |  \- ant-contrib:ant-contrib:jar:1.0b3:compile
+[INFO] |     \- ant:ant:jar:1.6.5:compile
+[INFO] +- com.ibm.icu:icu4j:jar:4.8.1.1:compile
+[INFO] +- org.json:json:jar:20240303:compile
+[INFO] +- org.dom4j:dom4j:jar:2.1.4:compile
+[INFO] +- org.apache.httpcomponents:httpclient:jar:4.5.13:compile
+[INFO] |  \- commons-logging:commons-logging:jar:1.2:compile
+[INFO] +- javax.xml.bind:jaxb-api:jar:2.3.0:compile
+[INFO] +- org.apache.httpcomponents:httpasyncclient:jar:4.1.4:compile
+[INFO] |  \- org.apache.httpcomponents:httpcore-nio:jar:4.4.10:compile
+[INFO] +- commons-cli:commons-cli:jar:1.2:compile
+[INFO] +- net.spy:spymemcached:jar:2.12.3:compile
+[INFO] +- javax.annotation:javax.annotation-api:jar:1.3.2:compile
+[INFO] +- jline:jline:jar:0.9.93:compile
+[INFO] +- org.eclipse.jetty:jetty-rewrite:jar:9.4.56.v20240826:compile
+[INFO] |  \- org.eclipse.jetty:jetty-server:jar:9.4.56.v20240826:compile
+[INFO] |     +- org.eclipse.jetty:jetty-http:jar:9.4.56.v20240826:compile
+[INFO] |     \- org.eclipse.jetty:jetty-io:jar:9.4.56.v20240826:compile
+[INFO] +- org.eclipse.jetty:jetty-util:jar:9.4.56.v20240826:compile
+[INFO] +- commons-lang:commons-lang:jar:2.6:compile
+[INFO] +- io.prometheus:simpleclient:jar:0.16.0:compile
+[INFO] |  +- io.prometheus:simpleclient_tracer_otel:jar:0.16.0:compile
+[INFO] |  |  \- io.prometheus:simpleclient_tracer_common:jar:0.16.0:compile
+[INFO] |  \- io.prometheus:simpleclient_tracer_otel_agent:jar:0.16.0:compile
+[INFO] +- net.sourceforge.nekohtml:nekohtml:jar:1.9.22:provided
+[INFO] |  \- xerces:xercesImpl:jar:2.12.2:provided
+[INFO] +- org.jfree:jfreechart:jar:1.0.19:compile
+[INFO] |  \- org.jfree:jcommon:jar:1.0.23:compile
+[INFO] +- org.junit.jupiter:junit-jupiter-api:jar:5.9.3:test
+[INFO] |  +- org.opentest4j:opentest4j:jar:1.2.0:test
+[INFO] |  +- org.junit.platform:junit-platform-commons:jar:1.9.3:test
+[INFO] |  \- org.apiguardian:apiguardian-api:jar:1.1.2:test
+[INFO] +- org.junit.jupiter:junit-jupiter-params:jar:5.9.3:test
+[INFO] +- org.python:jython-standalone:jar:2.5.3:test
+[INFO] +- org.easymock:easymock:jar:3.0:test
+[INFO] |  \- cglib:cglib-nodep:jar:2.2:test
+[INFO] +- zextras:zm-native:jar:24.12.0-SNAPSHOT:compile
+[INFO] \- com.github.stefanbirkner:system-lambda:jar:1.2.1:test
+[INFO] 
+[INFO] --------------------------< zextras:zm-soap >---------------------------
+[INFO] Building zm-soap 24.12.0-SNAPSHOT                                 [4/10]
+[INFO]   from soap/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] Downloading from central: https://repo1.maven.org/maven2/zextras/zm-common/24.12.0-SNAPSHOT/maven-metadata.xml
+[INFO] 
+[INFO] --- dependency:3.3.0:tree (default-cli) @ zm-soap ---
+[INFO] zextras:zm-soap:jar:24.12.0-SNAPSHOT
+[INFO] +- zextras:zm-common:jar:24.12.0-SNAPSHOT:compile
+[INFO] |  +- org.apache.httpcomponents:httpcore:jar:4.4.16:compile
+[INFO] |  +- javax.mail:mail:jar:1.4.5:compile
+[INFO] |  +- javax.activation:activation:jar:1.1.1:compile
+[INFO] |  +- commons-codec:commons-codec:jar:1.11:compile
+[INFO] |  +- javax.servlet:javax.servlet-api:jar:3.1.0:compile
+[INFO] |  +- org.apache.logging.log4j:log4j-core:jar:2.20.0:compile
+[INFO] |  +- org.bouncycastle:bcpkix-jdk18on:jar:1.78.1:compile
+[INFO] |  |  +- org.bouncycastle:bcprov-jdk18on:jar:1.78.1:compile
+[INFO] |  |  \- org.bouncycastle:bcutil-jdk18on:jar:1.78.1:compile
+[INFO] |  +- ical4j:ical4j:jar:0.9.16-patched:compile
+[INFO] |  |  \- ant-contrib:ant-contrib:jar:1.0b3:compile
+[INFO] |  |     \- ant:ant:jar:1.6.5:compile
+[INFO] |  +- com.ibm.icu:icu4j:jar:4.8.1.1:compile
+[INFO] |  +- org.json:json:jar:20240303:compile
+[INFO] |  +- org.apache.httpcomponents:httpclient:jar:4.5.13:compile
+[INFO] |  +- org.apache.httpcomponents:httpasyncclient:jar:4.1.4:compile
+[INFO] |  |  \- org.apache.httpcomponents:httpcore-nio:jar:4.4.10:compile
+[INFO] |  +- net.spy:spymemcached:jar:2.12.3:compile
+[INFO] |  +- javax.annotation:javax.annotation-api:jar:1.3.2:compile
+[INFO] |  +- jline:jline:jar:0.9.93:compile
+[INFO] |  +- org.eclipse.jetty:jetty-rewrite:jar:9.4.56.v20240826:compile
+[INFO] |  |  \- org.eclipse.jetty:jetty-server:jar:9.4.56.v20240826:compile
+[INFO] |  |     +- org.eclipse.jetty:jetty-http:jar:9.4.56.v20240826:compile
+[INFO] |  |     \- org.eclipse.jetty:jetty-io:jar:9.4.56.v20240826:compile
+[INFO] |  +- org.eclipse.jetty:jetty-util:jar:9.4.56.v20240826:compile
+[INFO] |  +- commons-lang:commons-lang:jar:2.6:compile
+[INFO] |  +- io.prometheus:simpleclient:jar:0.16.0:compile
+[INFO] |  |  +- io.prometheus:simpleclient_tracer_otel:jar:0.16.0:compile
+[INFO] |  |  |  \- io.prometheus:simpleclient_tracer_common:jar:0.16.0:compile
+[INFO] |  |  \- io.prometheus:simpleclient_tracer_otel_agent:jar:0.16.0:compile
+[INFO] |  +- org.jfree:jfreechart:jar:1.0.19:compile
+[INFO] |  |  \- org.jfree:jcommon:jar:1.0.23:compile
+[INFO] |  \- zextras:zm-native:jar:24.12.0-SNAPSHOT:compile
+[INFO] +- com.google.guava:guava:jar:33.3.1-jre:compile
+[INFO] |  +- com.google.guava:failureaccess:jar:1.0.2:compile
+[INFO] |  +- com.google.guava:listenablefuture:jar:9999.0-empty-to-avoid-conflict-with-guava:compile
+[INFO] |  +- com.google.code.findbugs:jsr305:jar:3.0.2:compile
+[INFO] |  +- org.checkerframework:checker-qual:jar:3.43.0:compile
+[INFO] |  +- com.google.errorprone:error_prone_annotations:jar:2.3.2:compile
+[INFO] |  \- com.google.j2objc:j2objc-annotations:jar:3.0.0:compile
+[INFO] +- commons-cli:commons-cli:jar:1.2:compile
+[INFO] +- javax.xml.bind:jaxb-api:jar:2.3.0:compile
+[INFO] +- com.fasterxml.jackson.module:jackson-module-jaxb-annotations:jar:2.8.11:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-core:jar:2.8.11:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-databind:jar:2.8.11.6:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-annotations:jar:2.8.11:compile
+[INFO] +- org.apache.james:apache-jsieve-core:jar:0.5:compile
+[INFO] |  \- commons-logging:commons-logging:jar:1.2:compile
+[INFO] +- org.apache.logging.log4j:log4j-api:jar:2.20.0:compile
+[INFO] +- xml-apis:xml-apis:jar:1.3.04:compile
+[INFO] +- org.dom4j:dom4j:jar:2.1.4:compile
+[INFO] +- org.freemarker:freemarker:jar:2.3.19:compile
+[INFO] +- org.junit.jupiter:junit-jupiter-api:jar:5.9.3:test
+[INFO] |  +- org.opentest4j:opentest4j:jar:1.2.0:test
+[INFO] |  +- org.junit.platform:junit-platform-commons:jar:1.9.3:test
+[INFO] |  \- org.apiguardian:apiguardian-api:jar:1.1.2:test
+[INFO] +- org.xmlunit:xmlunit-core:jar:2.10.0:test
+[INFO] |  \- jakarta.xml.bind:jakarta.xml.bind-api:jar:2.3.3:test
+[INFO] |     \- jakarta.activation:jakarta.activation-api:jar:1.2.2:test
+[INFO] +- com.sun.xml.bind:jaxb-core:jar:2.3.0.1:runtime
+[INFO] \- com.sun.xml.bind:jaxb-impl:jar:2.3.1:runtime
+[INFO] 
+[INFO] -------------------------< zextras:zm-client >--------------------------
+[INFO] Building zm-client 24.12.0-SNAPSHOT                               [5/10]
+[INFO]   from client/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] Downloading from central: https://repo1.maven.org/maven2/zextras/zm-soap/24.12.0-SNAPSHOT/maven-metadata.xml
+[INFO] 
+[INFO] --- dependency:3.3.0:tree (default-cli) @ zm-client ---
+[INFO] zextras:zm-client:jar:24.12.0-SNAPSHOT
+[INFO] +- com.google.guava:guava:jar:33.3.1-jre:compile
+[INFO] |  +- com.google.guava:failureaccess:jar:1.0.2:compile
+[INFO] |  +- com.google.guava:listenablefuture:jar:9999.0-empty-to-avoid-conflict-with-guava:compile
+[INFO] |  +- com.google.code.findbugs:jsr305:jar:3.0.2:compile
+[INFO] |  +- org.checkerframework:checker-qual:jar:3.43.0:compile
+[INFO] |  +- com.google.errorprone:error_prone_annotations:jar:2.3.2:compile
+[INFO] |  \- com.google.j2objc:j2objc-annotations:jar:3.0.0:compile
+[INFO] +- org.json:json:jar:20240303:compile
+[INFO] +- org.apache.httpcomponents:httpmime:jar:4.5.14:compile
+[INFO] +- org.junit.jupiter:junit-jupiter-api:jar:5.9.3:test
+[INFO] |  +- org.opentest4j:opentest4j:jar:1.2.0:test
+[INFO] |  +- org.junit.platform:junit-platform-commons:jar:1.9.3:test
+[INFO] |  \- org.apiguardian:apiguardian-api:jar:1.1.2:test
+[INFO] +- commons-lang:commons-lang:jar:2.6:compile
+[INFO] +- javax.servlet:javax.servlet-api:jar:3.1.0:compile
+[INFO] +- org.apache.httpcomponents:httpclient:jar:4.5.13:compile
+[INFO] |  +- commons-logging:commons-logging:jar:1.2:compile
+[INFO] |  \- commons-codec:commons-codec:jar:1.11:compile
+[INFO] +- org.apache.httpcomponents:httpcore:jar:4.4.16:compile
+[INFO] +- javax.mail:mail:jar:1.4.5:compile
+[INFO] |  \- javax.activation:activation:jar:1.1.1:compile
+[INFO] +- org.dom4j:dom4j:jar:2.1.4:compile
+[INFO] +- zextras:zm-common:jar:24.12.0-SNAPSHOT:compile
+[INFO] |  +- xml-apis:xml-apis:jar:1.3.04:compile
+[INFO] |  +- org.apache.logging.log4j:log4j-core:jar:2.20.0:compile
+[INFO] |  +- org.apache.logging.log4j:log4j-api:jar:2.20.0:compile
+[INFO] |  +- org.bouncycastle:bcpkix-jdk18on:jar:1.78.1:compile
+[INFO] |  |  +- org.bouncycastle:bcprov-jdk18on:jar:1.78.1:compile
+[INFO] |  |  \- org.bouncycastle:bcutil-jdk18on:jar:1.78.1:compile
+[INFO] |  +- ical4j:ical4j:jar:0.9.16-patched:compile
+[INFO] |  |  \- ant-contrib:ant-contrib:jar:1.0b3:compile
+[INFO] |  |     \- ant:ant:jar:1.6.5:compile
+[INFO] |  +- com.ibm.icu:icu4j:jar:4.8.1.1:compile
+[INFO] |  +- javax.xml.bind:jaxb-api:jar:2.3.0:compile
+[INFO] |  +- org.apache.httpcomponents:httpasyncclient:jar:4.1.4:compile
+[INFO] |  |  \- org.apache.httpcomponents:httpcore-nio:jar:4.4.10:compile
+[INFO] |  +- commons-cli:commons-cli:jar:1.2:compile
+[INFO] |  +- net.spy:spymemcached:jar:2.12.3:compile
+[INFO] |  +- javax.annotation:javax.annotation-api:jar:1.3.2:compile
+[INFO] |  +- jline:jline:jar:0.9.93:compile
+[INFO] |  +- org.eclipse.jetty:jetty-rewrite:jar:9.4.56.v20240826:compile
+[INFO] |  |  \- org.eclipse.jetty:jetty-server:jar:9.4.56.v20240826:compile
+[INFO] |  |     +- org.eclipse.jetty:jetty-http:jar:9.4.56.v20240826:compile
+[INFO] |  |     \- org.eclipse.jetty:jetty-io:jar:9.4.56.v20240826:compile
+[INFO] |  +- org.eclipse.jetty:jetty-util:jar:9.4.56.v20240826:compile
+[INFO] |  +- io.prometheus:simpleclient:jar:0.16.0:compile
+[INFO] |  |  +- io.prometheus:simpleclient_tracer_otel:jar:0.16.0:compile
+[INFO] |  |  |  \- io.prometheus:simpleclient_tracer_common:jar:0.16.0:compile
+[INFO] |  |  \- io.prometheus:simpleclient_tracer_otel_agent:jar:0.16.0:compile
+[INFO] |  +- org.jfree:jfreechart:jar:1.0.19:compile
+[INFO] |  |  \- org.jfree:jcommon:jar:1.0.23:compile
+[INFO] |  \- zextras:zm-native:jar:24.12.0-SNAPSHOT:compile
+[INFO] \- zextras:zm-soap:jar:24.12.0-SNAPSHOT:compile
+[INFO]    +- com.fasterxml.jackson.module:jackson-module-jaxb-annotations:jar:2.8.11:compile
+[INFO]    +- com.fasterxml.jackson.core:jackson-core:jar:2.8.11:compile
+[INFO]    +- com.fasterxml.jackson.core:jackson-databind:jar:2.8.11.6:compile
+[INFO]    +- com.fasterxml.jackson.core:jackson-annotations:jar:2.8.11:compile
+[INFO]    +- org.apache.james:apache-jsieve-core:jar:0.5:compile
+[INFO]    +- org.freemarker:freemarker:jar:2.3.19:compile
+[INFO]    +- com.sun.xml.bind:jaxb-core:jar:2.3.0.1:runtime
+[INFO]    \- com.sun.xml.bind:jaxb-impl:jar:2.3.1:runtime
+[INFO] 
+[INFO] --------------< zextras:store-extra-runtime-dependencies >--------------
+[INFO] Building store-extra-runtime-dependencies 24.12.0-SNAPSHOT        [6/10]
+[INFO]   from store-extra-runtime-dependencies/pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- dependency:3.3.0:tree (default-cli) @ store-extra-runtime-dependencies ---
+[INFO] zextras:store-extra-runtime-dependencies:pom:24.12.0-SNAPSHOT
+[INFO] +- org.apache.lucene:lucene-smartcn:jar:3.5.0:compile
+[INFO] |  +- org.apache.lucene:lucene-core:jar:3.5.0:compile
+[INFO] |  \- org.apache.lucene:lucene-analyzers:jar:3.5.0:compile
+[INFO] +- org.apache.xmlgraphics:batik-i18n:jar:1.9:compile
+[INFO] +- org.apache.ws.xmlschema:xmlschema-core:jar:2.0.3:compile
+[INFO] +- org.codehaus.woodstox:stax2-api:jar:3.1.1:compile
+[INFO] |  \- javax.xml.stream:stax-api:jar:1.0-2:compile
+[INFO] +- javax.ws.rs:javax.ws.rs-api:jar:2.0-m10:compile
+[INFO] +- org.apache.neethi:neethi:jar:3.0.2:compile
+[INFO] +- org.codehaus.woodstox:woodstox-core-asl:jar:4.2.0:compile
+[INFO] +- wsdl4j:wsdl4j:jar:1.6.3:compile
+[INFO] +- org.objenesis:objenesis:jar:2.1:compile
+[INFO] +- com.sun.jersey:jersey-client:jar:1.11:compile
+[INFO] +- com.sun.jersey:jersey-core:jar:1.11:compile
+[INFO] +- com.sun.jersey:jersey-json:jar:1.11:compile
+[INFO] |  +- org.codehaus.jettison:jettison:jar:1.1:compile
+[INFO] |  |  \- stax:stax-api:jar:1.0.1:compile
+[INFO] |  +- com.sun.xml.bind:jaxb-impl:jar:2.3.1:compile
+[INFO] |  +- org.codehaus.jackson:jackson-core-asl:jar:1.9.2:compile
+[INFO] |  +- org.codehaus.jackson:jackson-mapper-asl:jar:1.9.2:compile
+[INFO] |  +- org.codehaus.jackson:jackson-jaxrs:jar:1.9.2:compile
+[INFO] |  \- org.codehaus.jackson:jackson-xc:jar:1.9.2:compile
+[INFO] +- com.sun.jersey:jersey-servlet:jar:1.11:compile
+[INFO] +- com.sun.jersey:jersey-server:jar:1.11:compile
+[INFO] |  \- asm:asm:jar:3.1:compile
+[INFO] +- com.sun.jersey.contribs:jersey-multipart:jar:1.12:compile
+[INFO] |  \- org.jvnet:mimepull:jar:1.6:compile
+[INFO] +- javax.jws:jsr181-api:jar:1.0-MR1:compile
+[INFO] +- javax.ws.rs:jsr311-api:jar:1.1.1:compile
+[INFO] +- com.fasterxml.jackson.dataformat:jackson-dataformat-smile:jar:2.8.11:compile
+[INFO] |  \- com.fasterxml.jackson.core:jackson-core:jar:2.8.11:compile
+[INFO] \- org.tukaani:xz:jar:1.8:compile
+[INFO] 
+[INFO] --------------------------< zextras:zm-store >--------------------------
+[INFO] Building zm-store 24.12.0-SNAPSHOT                                [7/10]
+[INFO]   from store/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] Downloading from central: https://repo1.maven.org/maven2/com/zextras/carbonio/message-broker/carbonio-message-broker-sdk/0.0.4-SNAPSHOT/maven-metadata.xml
+[INFO] Downloading from central: https://repo1.maven.org/maven2/zextras/zm-client/24.12.0-SNAPSHOT/maven-metadata.xml
+[INFO] 
+[INFO] --- dependency:3.3.0:tree (default-cli) @ zm-store ---
+[INFO] zextras:zm-store:jar:24.12.0-SNAPSHOT
+[INFO] +- org.apache.httpcomponents:httpclient:jar:4.5.13:compile
+[INFO] |  \- commons-logging:commons-logging:jar:1.2:compile
+[INFO] +- org.apache.httpcomponents:httpmime:jar:4.5.14:compile
+[INFO] +- com.google.code.findbugs:jsr305:jar:3.0.2:test
+[INFO] +- org.apache.mina:mina-core:jar:2.1.6:compile
+[INFO] +- com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:jar:1.3.1:compile
+[INFO] +- commons-dbcp:commons-dbcp:jar:1.4:compile
+[INFO] +- commons-io:commons-io:jar:2.14.0:compile
+[INFO] +- io.vavr:vavr:jar:0.10.4:compile
+[INFO] |  \- io.vavr:vavr-match:jar:0.10.4:compile
+[INFO] +- io.micrometer:micrometer-registry-prometheus:jar:1.10.5:compile
+[INFO] |  \- io.prometheus:simpleclient_common:jar:0.16.0:compile
+[INFO] +- io.micrometer:micrometer-core:jar:1.10.5:compile
+[INFO] |  +- io.micrometer:micrometer-commons:jar:1.10.5:compile
+[INFO] |  +- io.micrometer:micrometer-observation:jar:1.10.5:compile
+[INFO] |  +- org.hdrhistogram:HdrHistogram:jar:2.1.12:runtime
+[INFO] |  \- org.latencyutils:LatencyUtils:jar:2.0.3:runtime
+[INFO] +- org.apache.lucene:lucene-core:jar:3.5.0:compile
+[INFO] +- org.apache.lucene:lucene-analyzers:jar:3.5.0:test
+[INFO] +- io.jsonwebtoken:jjwt:jar:0.7.0:compile
+[INFO] +- commons-fileupload:commons-fileupload:jar:1.5:compile
+[INFO] +- org.apache.curator:curator-recipes:jar:5.5.0:compile
+[INFO] |  \- org.apache.curator:curator-framework:jar:5.5.0:compile
+[INFO] |     \- org.apache.curator:curator-client:jar:5.5.0:compile
+[INFO] |        \- org.apache.zookeeper:zookeeper:jar:3.7.1:compile
+[INFO] |           +- org.apache.zookeeper:zookeeper-jute:jar:3.7.1:compile
+[INFO] |           +- org.apache.yetus:audience-annotations:jar:0.12.0:compile
+[INFO] |           \- io.netty:netty-transport-native-epoll:jar:4.1.76.Final:compile
+[INFO] |              +- io.netty:netty-transport-native-unix-common:jar:4.1.76.Final:compile
+[INFO] |              \- io.netty:netty-transport-classes-epoll:jar:4.1.76.Final:compile
+[INFO] +- com.zextras.carbonio.message-broker:carbonio-message-broker-sdk:jar:0.0.4-SNAPSHOT:compile
+[INFO] |  \- com.rabbitmq:amqp-client:jar:5.21.0:compile
+[INFO] +- com.google.guava:guava:jar:33.3.1-jre:compile
+[INFO] |  +- com.google.guava:failureaccess:jar:1.0.2:compile
+[INFO] |  +- com.google.guava:listenablefuture:jar:9999.0-empty-to-avoid-conflict-with-guava:compile
+[INFO] |  +- org.checkerframework:checker-qual:jar:3.43.0:compile
+[INFO] |  +- com.google.errorprone:error_prone_annotations:jar:2.3.2:compile
+[INFO] |  \- com.google.j2objc:j2objc-annotations:jar:3.0.0:compile
+[INFO] +- org.junit.jupiter:junit-jupiter-api:jar:5.9.3:test
+[INFO] |  +- org.opentest4j:opentest4j:jar:1.2.0:test
+[INFO] |  +- org.junit.platform:junit-platform-commons:jar:1.9.3:test
+[INFO] |  \- org.apiguardian:apiguardian-api:jar:1.1.2:test
+[INFO] +- org.junit.jupiter:junit-jupiter-params:jar:5.9.3:test
+[INFO] +- org.testcontainers:testcontainers:jar:1.17.6:test
+[INFO] |  +- junit:junit:jar:4.13.2:test
+[INFO] |  +- org.rnorth.duct-tape:duct-tape:jar:1.0.8:test
+[INFO] |  |  \- org.jetbrains:annotations:jar:17.0.0:test
+[INFO] |  \- com.github.docker-java:docker-java-transport-zerodep:jar:3.2.13:test
+[INFO] |     +- com.github.docker-java:docker-java-transport:jar:3.2.13:test
+[INFO] |     \- net.java.dev.jna:jna:jar:5.8.0:test
+[INFO] +- org.mariadb.jdbc:mariadb-java-client:jar:2.7.3:runtime
+[INFO] +- org.testcontainers:mariadb:jar:1.17.6:test
+[INFO] |  \- org.testcontainers:jdbc:jar:1.17.6:test
+[INFO] |     \- org.testcontainers:database-commons:jar:1.17.6:test
+[INFO] +- org.testcontainers:rabbitmq:jar:1.19.8:test
+[INFO] +- com.github.docker-java:docker-java-api:jar:3.2.13:test
+[INFO] +- org.hamcrest:hamcrest-library:jar:2.2:test
+[INFO] |  \- org.hamcrest:hamcrest-core:jar:2.2:test
+[INFO] +- org.hamcrest:hamcrest:jar:2.2:test
+[INFO] +- com.unboundid:unboundid-ldapsdk:jar:2.3.5:compile
+[INFO] +- org.owasp.antisamy:antisamy:jar:1.7.6:compile
+[INFO] |  +- org.apache.httpcomponents.client5:httpclient5:jar:5.3.1:compile
+[INFO] |  |  \- org.apache.httpcomponents.core5:httpcore5-h2:jar:5.2.4:compile
+[INFO] |  +- org.apache.httpcomponents.core5:httpcore5:jar:5.2.5:compile
+[INFO] |  +- org.apache.xmlgraphics:batik-css:jar:1.7:compile
+[INFO] |  |  +- org.apache.xmlgraphics:batik-ext:jar:1.7:compile
+[INFO] |  |  \- org.apache.xmlgraphics:batik-util:jar:1.8:compile
+[INFO] |  +- org.htmlunit:neko-htmlunit:jar:4.3.0:compile
+[INFO] |  \- xml-apis:xml-apis-ext:jar:1.3.04:compile
+[INFO] +- com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:jar:20211018.1:compile
+[INFO] +- com.zextras.carbonio.preview:carbonio-preview-sdk:jar:1.0.2:compile
+[INFO] +- com.zextras.carbonio.files:carbonio-files-sdk:jar:0.0.4:compile
+[INFO] +- org.apache.commons:commons-csv:jar:1.2:compile
+[INFO] +- org.apache.commons:commons-rng-simple:jar:1.0:compile
+[INFO] |  \- org.apache.commons:commons-rng-core:jar:1.0:compile
+[INFO] +- org.apache.commons:commons-text:jar:1.1:compile
+[INFO] |  \- org.apache.commons:commons-lang3:jar:3.7:compile
+[INFO] +- com.kohlschutter.junixsocket:junixsocket-common:jar:2.4.0:compile
+[INFO] +- zimbra:zm-charset:jar:22.5.0:runtime
+[INFO] |  \- ant-contrib:ant-contrib:jar:1.0b3:compile
+[INFO] |     \- ant:ant:jar:1.6.5:compile
+[INFO] +- org.apache.commons:commons-compress:jar:1.21:compile
+[INFO] +- ant-1.7.0-ziputil-patched:ant-1.7.0-ziputil-patched:jar:1.0:compile
+[INFO] +- ant-tar-patched:ant-tar-patched:jar:1.0:compile
+[INFO] +- org.ehcache:ehcache:jar:3.1.2:compile
+[INFO] +- org.apache.sshd:sshd-core:jar:2.12.0:compile
+[INFO] |  \- org.slf4j:jcl-over-slf4j:jar:1.7.32:compile
+[INFO] +- commons-collections:commons-collections:jar:3.2.2:compile
+[INFO] +- org.gnu.inet:libidn:jar:1.24:compile
+[INFO] +- com.github.zafarkhaja:java-semver:jar:0.9.0:compile
+[INFO] +- org.mockito:mockito-core:jar:5.2.0:test
+[INFO] |  +- net.bytebuddy:byte-buddy:jar:1.14.1:test
+[INFO] |  +- net.bytebuddy:byte-buddy-agent:jar:1.14.1:test
+[INFO] |  \- org.objenesis:objenesis:jar:2.1:runtime
+[INFO] +- org.mockito:mockito-inline:jar:5.2.0:test
+[INFO] +- org.easymock:easymock:jar:3.0:test
+[INFO] |  \- cglib:cglib-nodep:jar:2.2:test
+[INFO] +- org.xmlunit:xmlunit-core:jar:2.10.0:test
+[INFO] +- org.hsqldb:hsqldb:jar:2.7.1:test
+[INFO] +- org.hsqldb:sqltool:jar:2.7.1:test
+[INFO] +- com.fasterxml.jackson.core:jackson-annotations:jar:2.8.11:compile
+[INFO] +- org.bouncycastle:bcpkix-jdk18on:jar:1.78.1:compile
+[INFO] +- org.bouncycastle:bcmail-jdk18on:jar:1.78.1:compile
+[INFO] +- org.bouncycastle:bcutil-jdk18on:jar:1.78.1:runtime
+[INFO] +- com.ibm.icu:icu4j:jar:4.8.1.1:compile
+[INFO] +- net.spy:spymemcached:jar:2.12.3:compile
+[INFO] +- org.bouncycastle:bcprov-jdk18on:jar:1.78.1:compile
+[INFO] +- xerces:xercesImpl:jar:2.12.2:compile
+[INFO] +- javax.mail:mail:jar:1.4.5:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-databind:jar:2.8.11.6:compile
+[INFO] |  \- com.fasterxml.jackson.core:jackson-core:jar:2.8.11:compile
+[INFO] +- commons-lang:commons-lang:jar:2.6:compile
+[INFO] +- commons-pool:commons-pool:jar:1.5.4:compile
+[INFO] +- org.apache.james:apache-jsieve-core:jar:0.5:compile
+[INFO] +- xml-apis:xml-apis:jar:1.3.04:compile
+[INFO] +- ical4j:ical4j:jar:0.9.16-patched:compile
+[INFO] +- javax.activation:activation:jar:1.1.1:compile
+[INFO] +- commons-cli:commons-cli:jar:1.2:compile
+[INFO] +- javax.xml.bind:jaxb-api:jar:2.3.0:compile
+[INFO] +- javax.xml.stream:stax-api:jar:1.0-2:runtime
+[INFO] +- org.eclipse.jetty:jetty-continuation:jar:9.4.56.v20240826:compile
+[INFO] +- org.eclipse.jetty:jetty-security:jar:9.4.56.v20240826:compile
+[INFO] +- org.eclipse.jetty:jetty-servlets:jar:9.4.56.v20240826:compile
+[INFO] +- org.eclipse.jetty:jetty-servlet:jar:9.4.56.v20240826:compile
+[INFO] |  \- org.eclipse.jetty:jetty-util-ajax:jar:9.4.56.v20240826:compile
+[INFO] +- org.eclipse.jetty:jetty-http:jar:9.4.56.v20240826:compile
+[INFO] +- org.eclipse.jetty:jetty-io:jar:9.4.56.v20240826:compile
+[INFO] +- org.eclipse.jetty:jetty-server:jar:9.4.56.v20240826:compile
+[INFO] +- org.eclipse.jetty:jetty-util:jar:9.4.56.v20240826:compile
+[INFO] +- org.apache.sshd:sshd-common:jar:2.12.0:compile
+[INFO] +- org.apache.commons:commons-rng-client-api:jar:1.0:compile
+[INFO] +- commons-codec:commons-codec:jar:1.11:compile
+[INFO] +- net.sourceforge.nekohtml:nekohtml:jar:1.9.22:compile
+[INFO] +- org.apache.httpcomponents:httpcore:jar:4.4.16:compile
+[INFO] +- org.json:json:jar:20240303:compile
+[INFO] +- org.apache.logging.log4j:log4j-core:jar:2.20.0:compile
+[INFO] +- org.apache.logging.log4j:log4j-api:jar:2.20.0:compile
+[INFO] +- org.slf4j:slf4j-api:jar:1.7.36:compile
+[INFO] +- com.github.stefanbirkner:system-lambda:jar:1.2.1:test
+[INFO] +- org.apache.logging.log4j:log4j-slf4j-impl:jar:2.20.0:runtime
+[INFO] +- org.dom4j:dom4j:jar:2.1.4:compile
+[INFO] +- javax.servlet:javax.servlet-api:jar:3.1.0:compile
+[INFO] +- zextras:zm-common:jar:24.12.0-SNAPSHOT:compile
+[INFO] |  +- org.apache.httpcomponents:httpasyncclient:jar:4.1.4:compile
+[INFO] |  |  \- org.apache.httpcomponents:httpcore-nio:jar:4.4.10:compile
+[INFO] |  +- javax.annotation:javax.annotation-api:jar:1.3.2:compile
+[INFO] |  +- jline:jline:jar:0.9.93:compile
+[INFO] |  \- org.jfree:jfreechart:jar:1.0.19:compile
+[INFO] |     \- org.jfree:jcommon:jar:1.0.23:compile
+[INFO] +- zextras:zm-client:jar:24.12.0-SNAPSHOT:compile
+[INFO] +- zextras:zm-soap:jar:24.12.0-SNAPSHOT:compile
+[INFO] |  +- com.fasterxml.jackson.module:jackson-module-jaxb-annotations:jar:2.8.11:compile
+[INFO] |  +- org.freemarker:freemarker:jar:2.3.19:compile
+[INFO] |  +- com.sun.xml.bind:jaxb-core:jar:2.3.0.1:runtime
+[INFO] |  \- com.sun.xml.bind:jaxb-impl:jar:2.3.1:runtime
+[INFO] +- zextras:zm-native:jar:24.12.0-SNAPSHOT:compile
+[INFO] +- zextras:store-extra-runtime-dependencies:pom:24.12.0-SNAPSHOT:runtime
+[INFO] |  +- org.apache.lucene:lucene-smartcn:jar:3.5.0:runtime
+[INFO] |  +- org.apache.xmlgraphics:batik-i18n:jar:1.9:runtime
+[INFO] |  +- org.apache.ws.xmlschema:xmlschema-core:jar:2.0.3:runtime
+[INFO] |  +- org.codehaus.woodstox:stax2-api:jar:3.1.1:runtime
+[INFO] |  +- javax.ws.rs:javax.ws.rs-api:jar:2.0-m10:runtime
+[INFO] |  +- org.apache.neethi:neethi:jar:3.0.2:runtime
+[INFO] |  +- org.codehaus.woodstox:woodstox-core-asl:jar:4.2.0:runtime
+[INFO] |  +- wsdl4j:wsdl4j:jar:1.6.3:runtime
+[INFO] |  +- com.sun.jersey:jersey-client:jar:1.11:runtime
+[INFO] |  +- com.sun.jersey:jersey-core:jar:1.11:runtime
+[INFO] |  +- com.sun.jersey:jersey-json:jar:1.11:runtime
+[INFO] |  |  +- org.codehaus.jettison:jettison:jar:1.1:runtime
+[INFO] |  |  |  \- stax:stax-api:jar:1.0.1:runtime
+[INFO] |  |  +- org.codehaus.jackson:jackson-core-asl:jar:1.9.2:runtime
+[INFO] |  |  +- org.codehaus.jackson:jackson-mapper-asl:jar:1.9.2:runtime
+[INFO] |  |  +- org.codehaus.jackson:jackson-jaxrs:jar:1.9.2:runtime
+[INFO] |  |  \- org.codehaus.jackson:jackson-xc:jar:1.9.2:runtime
+[INFO] |  +- com.sun.jersey:jersey-servlet:jar:1.11:runtime
+[INFO] |  +- com.sun.jersey:jersey-server:jar:1.11:runtime
+[INFO] |  |  \- asm:asm:jar:3.1:runtime
+[INFO] |  +- com.sun.jersey.contribs:jersey-multipart:jar:1.12:runtime
+[INFO] |  |  \- org.jvnet:mimepull:jar:1.6:runtime
+[INFO] |  +- javax.jws:jsr181-api:jar:1.0-MR1:runtime
+[INFO] |  +- javax.ws.rs:jsr311-api:jar:1.1.1:runtime
+[INFO] |  +- com.fasterxml.jackson.dataformat:jackson-dataformat-smile:jar:2.8.11:runtime
+[INFO] |  \- org.tukaani:xz:jar:1.8:runtime
+[INFO] +- javax.inject:javax.inject:jar:1:compile
+[INFO] +- com.google.inject:guice:jar:5.0.1:compile
+[INFO] |  \- aopalliance:aopalliance:jar:1.0:compile
+[INFO] +- com.google.inject.extensions:guice-servlet:jar:5.0.1:compile
+[INFO] +- io.prometheus:simpleclient:jar:0.16.0:compile
+[INFO] |  +- io.prometheus:simpleclient_tracer_otel:jar:0.16.0:compile
+[INFO] |  |  \- io.prometheus:simpleclient_tracer_common:jar:0.16.0:compile
+[INFO] |  \- io.prometheus:simpleclient_tracer_otel_agent:jar:0.16.0:compile
+[INFO] +- io.prometheus:simpleclient_servlet:jar:0.16.0:compile
+[INFO] |  \- io.prometheus:simpleclient_servlet_common:jar:0.16.0:compile
+[INFO] +- io.prometheus:simpleclient_hotspot:jar:0.16.0:compile
+[INFO] +- org.mock-server:mockserver-netty:jar:5.13.0:test
+[INFO] |  +- io.netty:netty-buffer:jar:4.1.75.Final:compile
+[INFO] |  +- io.netty:netty-codec:jar:4.1.75.Final:compile
+[INFO] |  +- io.netty:netty-codec-http:jar:4.1.75.Final:test
+[INFO] |  +- io.netty:netty-common:jar:4.1.75.Final:compile
+[INFO] |  +- io.netty:netty-handler:jar:4.1.75.Final:compile
+[INFO] |  |  \- io.netty:netty-resolver:jar:4.1.75.Final:compile
+[INFO] |  +- io.netty:netty-transport:jar:4.1.75.Final:compile
+[INFO] |  \- io.netty:netty-tcnative-boringssl-static:jar:2.0.51.Final:test
+[INFO] |     +- io.netty:netty-tcnative-classes:jar:2.0.51.Final:test
+[INFO] |     +- io.netty:netty-tcnative-boringssl-static:jar:linux-x86_64:2.0.51.Final:test
+[INFO] |     +- io.netty:netty-tcnative-boringssl-static:jar:linux-aarch_64:2.0.51.Final:test
+[INFO] |     +- io.netty:netty-tcnative-boringssl-static:jar:osx-x86_64:2.0.51.Final:test
+[INFO] |     +- io.netty:netty-tcnative-boringssl-static:jar:osx-aarch_64:2.0.51.Final:test
+[INFO] |     \- io.netty:netty-tcnative-boringssl-static:jar:windows-x86_64:2.0.51.Final:test
+[INFO] +- org.mock-server:mockserver-client-java:jar:5.13.0:test
+[INFO] +- org.mock-server:mockserver-core:jar:5.13.0:test
+[INFO] |  +- com.lmax:disruptor:jar:3.4.4:test
+[INFO] |  +- io.netty:netty-codec-socks:jar:4.1.75.Final:test
+[INFO] |  +- io.netty:netty-handler-proxy:jar:4.1.75.Final:test
+[INFO] |  +- com.jcraft:jzlib:jar:1.1.3:test
+[INFO] |  +- com.fasterxml.uuid:java-uuid-generator:jar:4.0.1:test
+[INFO] |  +- org.bouncycastle:bcprov-jdk15on:jar:1.70:test
+[INFO] |  +- org.bouncycastle:bcpkix-jdk15on:jar:1.70:test
+[INFO] |  |  \- org.bouncycastle:bcutil-jdk15on:jar:1.70:test
+[INFO] |  +- com.nimbusds:nimbus-jose-jwt:jar:9.21:test
+[INFO] |  |  \- com.github.stephenc.jcip:jcip-annotations:jar:1.0-1:test
+[INFO] |  +- org.apache.velocity:velocity-engine-scripting:jar:2.3:test
+[INFO] |  +- org.apache.velocity:velocity-engine-core:jar:2.3:test
+[INFO] |  +- org.apache.velocity.tools:velocity-tools-generic:jar:3.1:test
+[INFO] |  |  +- commons-beanutils:commons-beanutils:jar:1.9.4:test
+[INFO] |  |  +- org.apache.commons:commons-digester3:jar:3.2:test
+[INFO] |  |  \- com.github.cliftonlabs:json-simple:jar:3.0.2:test
+[INFO] |  +- com.samskivert:jmustache:jar:1.15:test
+[INFO] |  +- net.javacrumbs.json-unit:json-unit-core:jar:2.32.0:test
+[INFO] |  +- com.networknt:json-schema-validator:jar:1.0.67:test
+[INFO] |  |  \- com.ethlo.time:itu:jar:1.5.1:test
+[INFO] |  +- com.jayway.jsonpath:json-path:jar:2.7.0:test
+[INFO] |  |  \- net.minidev:json-smart:jar:2.4.7:test
+[INFO] |  |     \- net.minidev:accessors-smart:jar:2.4.7:test
+[INFO] |  |        \- org.ow2.asm:asm:jar:8.0.1:test
+[INFO] |  +- io.swagger.parser.v3:swagger-parser:jar:2.0.31:test
+[INFO] |  |  +- io.swagger.parser.v3:swagger-parser-v2-converter:jar:2.0.31:test
+[INFO] |  |  |  +- io.swagger:swagger-core:jar:1.6.5:test
+[INFO] |  |  |  |  \- io.swagger:swagger-models:jar:1.6.5:test
+[INFO] |  |  |  |     \- io.swagger:swagger-annotations:jar:1.6.5:test
+[INFO] |  |  |  +- io.swagger:swagger-parser:jar:1.0.57:test
+[INFO] |  |  |  +- io.swagger:swagger-compat-spec-parser:jar:1.0.57:test
+[INFO] |  |  |  |  +- com.github.java-json-tools:json-schema-validator:jar:2.2.14:test
+[INFO] |  |  |  |  |  +- com.github.java-json-tools:jackson-coreutils-equivalence:jar:1.0:test
+[INFO] |  |  |  |  |  +- com.github.java-json-tools:json-schema-core:jar:1.2.14:test
+[INFO] |  |  |  |  |  |  +- com.github.java-json-tools:uri-template:jar:0.10:test
+[INFO] |  |  |  |  |  |  \- org.mozilla:rhino:jar:1.7.7.2:test
+[INFO] |  |  |  |  |  +- com.sun.mail:mailapi:jar:1.6.2:test
+[INFO] |  |  |  |  |  +- joda-time:joda-time:jar:2.10.5:test
+[INFO] |  |  |  |  |  +- com.googlecode.libphonenumber:libphonenumber:jar:8.11.1:test
+[INFO] |  |  |  |  |  \- net.sf.jopt-simple:jopt-simple:jar:5.0.4:test
+[INFO] |  |  |  |  \- com.github.java-json-tools:json-patch:jar:1.13:test
+[INFO] |  |  |  |     +- com.github.java-json-tools:msg-simple:jar:1.2:test
+[INFO] |  |  |  |     |  \- com.github.java-json-tools:btf:jar:1.3:test
+[INFO] |  |  |  |     \- com.github.java-json-tools:jackson-coreutils:jar:2.0:test
+[INFO] |  |  |  +- io.swagger.core.v3:swagger-models:jar:2.1.13:test
+[INFO] |  |  |  \- io.swagger.parser.v3:swagger-parser-core:jar:2.0.31:test
+[INFO] |  |  \- io.swagger.parser.v3:swagger-parser-v3:jar:2.0.31:test
+[INFO] |  |     +- io.swagger.core.v3:swagger-core:jar:2.1.13:test
+[INFO] |  |     |  +- com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.12.1:test
+[INFO] |  |     |  +- io.swagger.core.v3:swagger-annotations:jar:2.1.13:test
+[INFO] |  |     |  \- jakarta.validation:jakarta.validation-api:jar:2.0.2:test
+[INFO] |  |     \- com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:2.12.6:test
+[INFO] |  |        \- org.yaml:snakeyaml:jar:1.27:test
+[INFO] |  +- org.xmlunit:xmlunit-placeholders:jar:2.9.0:test
+[INFO] |  \- io.github.classgraph:classgraph:jar:4.8.141:test
+[INFO] +- jakarta.xml.bind:jakarta.xml.bind-api:jar:2.3.3:test
+[INFO] +- jakarta.activation:jakarta.activation-api:jar:1.2.2:test
+[INFO] +- com.icegreen:greenmail:jar:1.6.14:test
+[INFO] |  \- com.sun.mail:jakarta.mail:jar:1.6.7:test
+[INFO] |     \- com.sun.activation:jakarta.activation:jar:1.2.1:test
+[INFO] +- org.testcontainers:junit-jupiter:jar:1.19.0:test
+[INFO] +- org.eclipse.jetty:jetty-webapp:jar:9.4.56.v20240826:compile
+[INFO] |  \- org.eclipse.jetty:jetty-xml:jar:9.4.56.v20240826:compile
+[INFO] \- org.eclipse.jetty:jetty-rewrite:jar:9.4.56.v20240826:compile
+[INFO] 
+[INFO] -----------------------< zextras:zm-store-conf >------------------------
+[INFO] Building zm-store-conf 24.12.0-SNAPSHOT                           [8/10]
+[INFO]   from store-conf/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- dependency:3.3.0:tree (default-cli) @ zm-store-conf ---
+[INFO] zextras:zm-store-conf:jar:24.12.0-SNAPSHOT
+[INFO] 
+[INFO] --------------------< zextras:carbonio-jetty-libs >---------------------
+[INFO] Building carbonio-jetty-libs 24.12.0-SNAPSHOT                     [9/10]
+[INFO]   from carbonio-jetty-libs/pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[WARNING] 2 problems were encountered while building the effective model for org.apache.yetus:audience-annotations:jar:0.5.0 during dependency collection step for project (use -X to see details)
+[INFO] 
+[INFO] --- dependency:3.3.0:tree (default-cli) @ carbonio-jetty-libs ---
+[INFO] zextras:carbonio-jetty-libs:pom:24.12.0-SNAPSHOT
+[INFO] +- ant:ant:jar:1.6.5:compile
+[INFO] +- ant-1.7.0-ziputil-patched:ant-1.7.0-ziputil-patched:jar:1.0:compile
+[INFO] +- ant-contrib:ant-contrib:jar:1.0b3:compile
+[INFO] +- ant-tar-patched:ant-tar-patched:jar:1.0:compile
+[INFO] +- org.ow2.asm:asm:jar:8.0.1:compile
+[INFO] +- com.auth0:java-jwt:jar:3.2.0:compile
+[INFO] |  \- org.bouncycastle:bcprov-jdk15on:jar:1.55:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-annotations:jar:2.8.11:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-core:jar:2.8.11:compile
+[INFO] +- com.fasterxml.jackson.core:jackson-databind:jar:2.8.11.6:compile
+[INFO] +- com.fasterxml.jackson.dataformat:jackson-dataformat-smile:jar:2.8.11:compile
+[INFO] +- com.fasterxml.jackson.module:jackson-module-jaxb-annotations:jar:2.8.11:compile
+[INFO] +- com.github.stephenc:jamm:jar:0.2.5:compile
+[INFO] +- com.github.zafarkhaja:java-semver:jar:0.9.0:compile
+[INFO] +- com.google.guava:guava:jar:33.3.1-jre:compile
+[INFO] |  +- com.google.guava:failureaccess:jar:1.0.2:compile
+[INFO] |  +- com.google.guava:listenablefuture:jar:9999.0-empty-to-avoid-conflict-with-guava:compile
+[INFO] |  +- com.google.code.findbugs:jsr305:jar:3.0.2:compile
+[INFO] |  +- org.checkerframework:checker-qual:jar:3.43.0:compile
+[INFO] |  +- com.google.errorprone:error_prone_annotations:jar:2.3.2:compile
+[INFO] |  \- com.google.j2objc:j2objc-annotations:jar:3.0.0:compile
+[INFO] +- com.googlecode.concurrentlinkedhashmap:concurrentlinkedhashmap-lru:jar:1.3.1:compile
+[INFO] +- com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:jar:20211018.1:compile
+[INFO] +- com.ibm.icu:icu4j:jar:4.8.1.1:compile
+[INFO] +- com.jcraft:jzlib:jar:1.0.7:compile
+[INFO] +- com.kohlschutter.junixsocket:junixsocket-common:jar:2.4.0:compile
+[INFO] +- com.kohlschutter.junixsocket:junixsocket-demo:jar:2.4.0:compile
+[INFO] |  +- com.kohlschutter.junixsocket:junixsocket-core:pom:2.4.0:compile
+[INFO] |  +- com.kohlschutter.junixsocket:junixsocket-server:jar:2.4.0:compile
+[INFO] |  +- mysql:mysql-connector-java:jar:8.0.23:compile
+[INFO] |  |  \- com.google.protobuf:protobuf-java:jar:3.11.4:compile
+[INFO] |  +- org.eclipse.jdt:org.eclipse.jdt.annotation:jar:2.2.600:compile
+[INFO] |  +- com.kohlschutter:kohlschutter-util:jar:1.4.2:compile
+[INFO] |  +- org.nanohttpd:nanohttpd:jar:2.3.1:compile
+[INFO] |  \- com.squareup.okhttp3:okhttp:jar:4.9.1:compile
+[INFO] |     +- com.squareup.okio:okio:jar:2.8.0:compile
+[INFO] |     |  \- org.jetbrains.kotlin:kotlin-stdlib-common:jar:1.4.0:compile
+[INFO] |     \- org.jetbrains.kotlin:kotlin-stdlib:jar:1.4.10:compile
+[INFO] |        \- org.jetbrains:annotations:jar:13.0:compile
+[INFO] +- com.kohlschutter.junixsocket:junixsocket-mysql:jar:2.4.0:compile
+[INFO] +- com.kohlschutter.junixsocket:junixsocket-native-common:jar:2.4.0:compile
+[INFO] +- com.kohlschutter.junixsocket:junixsocket-rmi:jar:2.4.0:compile
+[INFO] +- com.liferay:net.jmge.gif.gif89:jar:1.0:compile
+[INFO] +- com.sun.istack:istack-commons-runtime:jar:3.0.8:compile
+[INFO] |  \- jakarta.activation:jakarta.activation-api:jar:1.2.1:compile
+[INFO] +- com.sun.jersey:jersey-client:jar:1.11:compile
+[INFO] +- com.sun.jersey:jersey-core:jar:1.11:compile
+[INFO] +- com.sun.jersey:jersey-json:jar:1.11:compile
+[INFO] |  +- org.codehaus.jettison:jettison:jar:1.1:compile
+[INFO] |  |  \- stax:stax-api:jar:1.0.1:compile
+[INFO] |  +- org.codehaus.jackson:jackson-core-asl:jar:1.9.2:compile
+[INFO] |  +- org.codehaus.jackson:jackson-mapper-asl:jar:1.9.2:compile
+[INFO] |  +- org.codehaus.jackson:jackson-jaxrs:jar:1.9.2:compile
+[INFO] |  \- org.codehaus.jackson:jackson-xc:jar:1.9.2:compile
+[INFO] +- com.sun.jersey:jersey-server:jar:1.11:compile
+[INFO] |  \- asm:asm:jar:3.1:compile
+[INFO] +- com.sun.jersey:jersey-servlet:jar:1.11:compile
+[INFO] +- com.sun.jersey.contribs:jersey-multipart:jar:1.12:compile
+[INFO] |  \- org.jvnet:mimepull:jar:1.6:compile
+[INFO] +- com.sun.org.apache.xml.internal:resolver:jar:20050927:compile
+[INFO] +- com.sun.xml.bind:jaxb-core:jar:2.3.0.1:compile
+[INFO] +- com.sun.xml.bind:jaxb-impl:jar:2.3.1:compile
+[INFO] +- com.sun.xml.messaging.saaj:saaj-impl:jar:1.5.1:compile
+[INFO] |  +- jakarta.xml.bind:jakarta.xml.bind-api:jar:2.3.2:compile
+[INFO] |  +- jakarta.xml.soap:jakarta.xml.soap-api:jar:1.4.1:compile
+[INFO] |  \- org.jvnet.mimepull:mimepull:jar:1.9.11:compile
+[INFO] +- com.sun.xml.stream.buffer:streambuffer:jar:1.4:compile
+[INFO] |  \- javax.xml.stream:stax-api:jar:1.0-2:compile
+[INFO] +- com.sun.xml.ws:jaxws-rt:jar:2.2.6:compile
+[INFO] |  +- javax.xml.ws:jaxws-api:jar:2.2.8:compile
+[INFO] |  |  +- javax.xml.soap:saaj-api:jar:1.3.4:compile
+[INFO] |  |  \- org.glassfish:javax.annotation:jar:3.1.1:runtime
+[INFO] |  \- org.glassfish.ha:ha-api:jar:3.1.8:compile
+[INFO] +- com.sun.xml.ws:policy:jar:2.3:compile
+[INFO] |  +- com.sun.xml.txw2:txw2:jar:20110809:compile
+[INFO] |  |  \- relaxngDatatype:relaxngDatatype:jar:20020414:compile
+[INFO] |  \- org.codehaus.woodstox:wstx-asl:jar:3.2.3:runtime
+[INFO] +- com.unboundid:unboundid-ldapsdk:jar:2.3.5:compile
+[INFO] +- commons-cli:commons-cli:jar:1.2:compile
+[INFO] +- commons-codec:commons-codec:jar:1.11:compile
+[INFO] +- commons-collections:commons-collections:jar:3.2.2:compile
+[INFO] +- commons-dbcp:commons-dbcp:jar:1.4:compile
+[INFO] +- commons-fileupload:commons-fileupload:jar:1.5:compile
+[INFO] +- commons-io:commons-io:jar:2.14.0:compile
+[INFO] +- commons-lang:commons-lang:jar:2.6:compile
+[INFO] +- commons-logging:commons-logging:jar:1.2:compile
+[INFO] +- commons-net:commons-net:jar:3.3:compile
+[INFO] +- commons-pool:commons-pool:jar:1.5.4:compile
+[INFO] +- eu.bitwalker:UserAgentUtils:jar:1.21:compile
+[INFO] +- ical4j:ical4j:jar:0.9.16-patched:compile
+[INFO] +- io.jsonwebtoken:jjwt:jar:0.7.0:compile
+[INFO] +- javax.activation:activation:jar:1.1.1:compile
+[INFO] +- javax.annotation:javax.annotation-api:jar:1.3.2:compile
+[INFO] +- javax.jws:jsr181-api:jar:1.0-MR1:compile
+[INFO] +- javax.mail:mail:jar:1.4.5:compile
+[INFO] +- javax.servlet:javax.servlet-api:jar:3.1.0:compile
+[INFO] +- javax.ws.rs:javax.ws.rs-api:jar:2.0-m10:compile
+[INFO] +- javax.ws.rs:jsr311-api:jar:1.1.1:compile
+[INFO] +- javax.xml.bind:jaxb-api:jar:2.3.0:compile
+[INFO] +- javax.xml.soap:javax.xml.soap-api:jar:1.4.0:compile
+[INFO] +- jaxen:jaxen:jar:1.1.3:compile
+[INFO] |  +- dom4j:dom4j:jar:1.6.1:compile
+[INFO] |  +- jdom:jdom:jar:1.0:compile
+[INFO] |  +- xml-apis:xml-apis:jar:1.3.04:compile
+[INFO] |  \- xom:xom:jar:1.0:compile
+[INFO] |     +- xerces:xmlParserAPIs:jar:2.6.2:compile
+[INFO] |     \- xalan:xalan:jar:2.6.0:compile
+[INFO] +- jcs:jcs:jar:1.3:compile
+[INFO] |  +- commons-configuration:commons-configuration:jar:1.4:compile
+[INFO] |  |  +- commons-logging:commons-logging-api:jar:1.0.4:compile
+[INFO] |  |  +- commons-digester:commons-digester:jar:1.8:compile
+[INFO] |  |  |  \- commons-beanutils:commons-beanutils:jar:1.7.0:compile
+[INFO] |  |  +- commons-beanutils:commons-beanutils-core:jar:1.7.0:compile
+[INFO] |  |  \- commons-jxpath:commons-jxpath:jar:1.2:compile
+[INFO] |  |     +- xerces:xerces:jar:1.2.3:compile
+[INFO] |  |     \- ant:ant-optional:jar:1.5.1:compile
+[INFO] |  +- concurrent:concurrent:jar:1.0:compile
+[INFO] |  +- hsqldb:hsqldb:jar:1.7.3.3:compile
+[INFO] |  +- log4j:log4j:jar:1.2.12:compile
+[INFO] |  +- javax.servlet:servlet-api:jar:2.3:compile
+[INFO] |  +- tomcat:tomcat-util:jar:3.2.1:compile
+[INFO] |  +- velocity:velocity:jar:1.5:compile
+[INFO] |  |  \- oro:oro:jar:2.0.8:compile
+[INFO] |  +- xmlrpc:xmlrpc:jar:2.0:compile
+[INFO] |  \- berkeleydb:berkeleydb:jar:1.5.1:compile
+[INFO] +- jline:jline:jar:0.9.93:compile
+[INFO] +- log4j:apache-log4j-extras:jar:1.0:compile
+[INFO] +- net.freeutils:jcharset:jar:2.0:compile
+[INFO] +- net.i2p.crypto:eddsa:jar:0.3.0:compile
+[INFO] +- net.sf.ehcache:ehcache-core:jar:2.5.1:compile
+[INFO] +- net.sourceforge.nekohtml:nekohtml:jar:1.9.22:compile
+[INFO] +- net.spy:spymemcached:jar:2.12.3:compile
+[INFO] +- org.antlr:antlr:jar:3.2:compile
+[INFO] |  \- org.antlr:antlr-runtime:jar:3.2:compile
+[INFO] |     \- org.antlr:stringtemplate:jar:3.2:compile
+[INFO] |        \- antlr:antlr:jar:2.7.7:compile
+[INFO] +- org.apache.commons:commons-compress:jar:1.21:compile
+[INFO] +- org.apache.commons:commons-csv:jar:1.2:compile
+[INFO] +- org.apache.commons:commons-lang3:jar:3.7:compile
+[INFO] +- org.apache.commons:commons-pool2:jar:2.4.2:compile
+[INFO] +- org.apache.commons:commons-rng-client-api:jar:1.0:compile
+[INFO] +- org.apache.commons:commons-rng-core:jar:1.0:compile
+[INFO] +- org.apache.commons:commons-rng-simple:jar:1.0:compile
+[INFO] +- org.apache.commons:commons-text:jar:1.1:compile
+[INFO] +- org.apache.curator:curator-recipes:jar:5.5.0:compile
+[INFO] |  \- org.apache.curator:curator-framework:jar:5.5.0:compile
+[INFO] |     \- org.apache.curator:curator-client:jar:5.5.0:compile
+[INFO] |        \- org.apache.zookeeper:zookeeper:jar:3.7.1:compile
+[INFO] |           +- org.apache.zookeeper:zookeeper-jute:jar:3.7.1:compile
+[INFO] |           +- org.apache.yetus:audience-annotations:jar:0.12.0:compile
+[INFO] |           +- io.netty:netty-handler:jar:4.1.76.Final:compile
+[INFO] |           |  +- io.netty:netty-common:jar:4.1.76.Final:compile
+[INFO] |           |  +- io.netty:netty-resolver:jar:4.1.76.Final:compile
+[INFO] |           |  +- io.netty:netty-buffer:jar:4.1.76.Final:compile
+[INFO] |           |  +- io.netty:netty-transport:jar:4.1.76.Final:compile
+[INFO] |           |  \- io.netty:netty-codec:jar:4.1.76.Final:compile
+[INFO] |           \- io.netty:netty-transport-native-epoll:jar:4.1.76.Final:compile
+[INFO] |              +- io.netty:netty-transport-native-unix-common:jar:4.1.76.Final:compile
+[INFO] |              \- io.netty:netty-transport-classes-epoll:jar:4.1.76.Final:compile
+[INFO] +- org.apache.helix:helix-core:jar:1.3.0:compile
+[INFO] |  +- org.apache.helix:helix-common:jar:1.3.0:compile
+[INFO] |  |  +- org.apache.helix:metrics-common:jar:1.3.0:compile
+[INFO] |  |  \- org.apache.helix:zookeeper-api:jar:1.3.0:compile
+[INFO] |  |     \- org.apache.helix:metadata-store-directory-common:jar:1.3.0:compile
+[INFO] |  +- org.apache.logging.log4j:log4j-core:jar:2.20.0:compile
+[INFO] |  +- org.apache.commons:commons-math:jar:2.1:compile
+[INFO] |  +- org.apache.commons:commons-math3:jar:3.6.1:compile
+[INFO] |  +- org.yaml:snakeyaml:jar:2.0:compile
+[INFO] |  +- io.dropwizard.metrics:metrics-core:jar:4.1.14:compile
+[INFO] |  \- org.xerial.snappy:snappy-java:jar:1.1.7:compile
+[INFO] +- org.apache.httpcomponents:httpasyncclient:jar:4.1.4:compile
+[INFO] +- org.apache.httpcomponents:httpclient:jar:4.5.13:compile
+[INFO] +- org.apache.httpcomponents:httpcore:jar:4.4.16:compile
+[INFO] +- org.apache.httpcomponents:httpcore-nio:jar:4.4.11:compile
+[INFO] +- org.apache.httpcomponents:httpmime:jar:4.5.14:compile
+[INFO] +- org.apache.james:apache-jsieve-core:jar:0.5:compile
+[INFO] +- org.apache.lucene:lucene-analyzers:jar:3.5.0:compile
+[INFO] +- org.apache.lucene:lucene-core:jar:3.5.0:compile
+[INFO] +- org.apache.lucene:lucene-smartcn:jar:3.5.0:compile
+[INFO] +- org.apache.mina:mina-core:jar:2.1.6:compile
+[INFO] +- org.apache.neethi:neethi:jar:3.0.2:compile
+[INFO] +- org.apache.sshd:sshd-common:jar:2.12.0:compile
+[INFO] |  \- org.slf4j:jcl-over-slf4j:jar:1.7.32:compile
+[INFO] +- org.apache.sshd:sshd-core:jar:2.12.0:compile
+[INFO] +- org.apache.ws.xmlschema:xmlschema-core:jar:2.0.3:compile
+[INFO] +- org.apache.xmlgraphics:batik-css:jar:1.7:compile
+[INFO] |  +- org.apache.xmlgraphics:batik-ext:jar:1.7:compile
+[INFO] |  \- xml-apis:xml-apis-ext:jar:1.3.04:compile
+[INFO] +- org.apache.xmlgraphics:batik-i18n:jar:1.9:compile
+[INFO] +- org.apache.xmlgraphics:batik-util:jar:1.8:compile
+[INFO] +- org.bouncycastle:bcmail-jdk18on:jar:1.78.1:compile
+[INFO] |  \- org.bouncycastle:bcutil-jdk18on:jar:1.78.1:compile
+[INFO] +- org.bouncycastle:bcpkix-jdk18on:jar:1.78.1:compile
+[INFO] +- org.bouncycastle:bcprov-jdk18on:jar:1.78.1:compile
+[INFO] +- org.codehaus.woodstox:stax2-api:jar:3.1.1:compile
+[INFO] +- org.codehaus.woodstox:woodstox-core-asl:jar:4.2.0:compile
+[INFO] +- org.dom4j:dom4j:jar:2.1.4:compile
+[INFO] +- org.eclipse.jetty:jetty-continuation:jar:9.4.56.v20240826:compile
+[INFO] +- org.eclipse.jetty:jetty-http:jar:9.4.56.v20240826:compile
+[INFO] +- org.eclipse.jetty:jetty-io:jar:9.4.56.v20240826:compile
+[INFO] +- org.eclipse.jetty:jetty-rewrite:jar:9.4.56.v20240826:compile
+[INFO] +- org.eclipse.jetty:jetty-security:jar:9.4.56.v20240826:compile
+[INFO] +- org.eclipse.jetty:jetty-server:jar:9.4.56.v20240826:compile
+[INFO] +- org.eclipse.jetty:jetty-servlet:jar:9.4.56.v20240826:compile
+[INFO] |  \- org.eclipse.jetty:jetty-util-ajax:jar:9.4.56.v20240826:compile
+[INFO] +- org.eclipse.jetty:jetty-servlets:jar:9.4.56.v20240826:compile
+[INFO] +- org.eclipse.jetty:jetty-util:jar:9.4.56.v20240826:compile
+[INFO] +- org.ehcache:ehcache:jar:3.1.2:compile
+[INFO] +- org.freemarker:freemarker:jar:2.3.19:compile
+[INFO] +- org.glassfish.gmbal:gmbal-api-only:jar:3.1.0-b001:compile
+[INFO] |  \- org.glassfish.external:management-api:jar:3.0.0-b012:compile
+[INFO] +- org.gnu.inet:libidn:jar:1.24:compile
+[INFO] +- org.jdom:jdom2:jar:2.0.6.1:compile
+[INFO] +- org.jfree:jcommon:jar:1.0.21:compile
+[INFO] +- org.jfree:jfreechart:jar:1.0.19:compile
+[INFO] +- org.json:json:jar:20240303:compile
+[INFO] +- org.jvnet.staxex:stax-ex:jar:1.8.1:compile
+[INFO] +- org.mariadb.jdbc:mariadb-java-client:jar:2.7.3:compile
+[INFO] +- org.owasp.antisamy:antisamy:jar:1.7.6:compile
+[INFO] |  +- org.apache.httpcomponents.client5:httpclient5:jar:5.3.1:compile
+[INFO] |  |  \- org.apache.httpcomponents.core5:httpcore5-h2:jar:5.2.4:compile
+[INFO] |  +- org.apache.httpcomponents.core5:httpcore5:jar:5.2.5:compile
+[INFO] |  \- org.htmlunit:neko-htmlunit:jar:4.3.0:compile
+[INFO] +- org.scijava:native-lib-loader:jar:2.3.5:compile
+[INFO] +- org.slf4j:slf4j-api:jar:1.7.36:compile
+[INFO] +- org.apache.logging.log4j:log4j-slf4j-impl:jar:2.20.0:compile
+[INFO] |  \- org.apache.logging.log4j:log4j-api:jar:2.20.0:compile
+[INFO] +- redis.clients:jedis:jar:2.9.0:compile
+[INFO] +- wsdl4j:wsdl4j:jar:1.6.3:compile
+[INFO] +- xerces:xercesImpl:jar:2.12.2:compile
+[INFO] \- zimbra:zm-charset:jar:22.5.0:compile
+[INFO] 
+[INFO] ----------------------< zextras:jython-libraries >----------------------
+[INFO] Building jython-libraries 24.12.0-SNAPSHOT                       [10/10]
+[INFO]   from jython-libs/pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- dependency:3.3.0:tree (default-cli) @ jython-libraries ---
+[INFO] zextras:jython-libraries:pom:24.12.0-SNAPSHOT
+[INFO] +- org.python:jython-standalone:jar:2.5.3:compile
+[INFO] +- org.apache.logging.log4j:log4j-api:jar:2.20.0:compile
+[INFO] +- org.apache.logging.log4j:log4j-core:jar:2.20.0:compile
+[INFO] +- org.graylog2:syslog4j:jar:0.9.60:compile
+[INFO] |  +- joda-time:joda-time:jar:2.9.9:compile
+[INFO] |  \- org.apache.commons:commons-lang3:jar:3.7:compile
+[INFO] \- net.java.dev.jna:jna:jar:3.4.0:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for zm-mailbox 24.12.0-SNAPSHOT:
+[INFO] 
+[INFO] zm-mailbox ......................................... SUCCESS [  0.449 s]
+[INFO] zm-native .......................................... SUCCESS [  0.017 s]
+[INFO] zm-common .......................................... SUCCESS [  0.535 s]
+[INFO] zm-soap ............................................ SUCCESS [  0.207 s]
+[INFO] zm-client .......................................... SUCCESS [  0.181 s]
+[INFO] store-extra-runtime-dependencies ................... SUCCESS [  0.019 s]
+[INFO] zm-store ........................................... SUCCESS [  0.694 s]
+[INFO] zm-store-conf ...................................... SUCCESS [  0.002 s]
+[INFO] carbonio-jetty-libs ................................ SUCCESS [  0.119 s]
+[INFO] jython-libraries ................................... SUCCESS [  0.010 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.471 s
+[INFO] Finished at: 2024-11-20T17:05:18+01:00
+[INFO] ------------------------------------------------------------------------
