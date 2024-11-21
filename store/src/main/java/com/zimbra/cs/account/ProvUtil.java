@@ -433,10 +433,10 @@ public class ProvUtil implements HttpDebugListener {
     CREATE_BULK_ACCOUNTS(
         "createBulkAccounts",
         "cabulk",
-        "{domain} {namemask} {number of accounts to create}",
+        "{domain} {namemask} {number of accounts to create} {password}",
         Category.MISC,
-        3,
-        3),
+        4,
+        4),
     CREATE_CALENDAR_RESOURCE(
         "createCalendarResource",
         "ccr",
@@ -1031,6 +1031,26 @@ public class ProvUtil implements HttpDebugListener {
     private Via mVia;
     private boolean mNeedsSchemaExtension = false;
 
+    String getArgumentsCountDescription() {
+      if (mMinArgLength == mMaxArgLength) {
+        return String.valueOf(mMinArgLength);
+      } else if (mMaxArgLength == Integer.MAX_VALUE) {
+        return String.format("at least %s", mMinArgLength);
+      } else if (mMinArgLength <= 0) {
+        return String.format("at most %s", mMaxArgLength);
+      } else {
+        return String.format("%s to %s", mMinArgLength, mMaxArgLength);
+      }
+    }
+
+    public int getMinArgLength() {
+      return mMinArgLength;
+    }
+
+    public int getMaxArgLength() {
+      return mMaxArgLength;
+    }
+
     public enum Via {
       soap,
       ldap
@@ -1240,7 +1260,6 @@ public class ProvUtil implements HttpDebugListener {
     return null;
   }
 
-
   private boolean execute(String[] args)
       throws ServiceException, ArgException, IOException, HttpException {
     String[] members;
@@ -1256,6 +1275,15 @@ public class ProvUtil implements HttpDebugListener {
       return true;
     }
     if (!command.checkArgsLength(args)) {
+      int length = args.length - 1;
+      console.printError(String.format(
+              "%s is expecting %s arguments but %s %s %s been provided",
+              command.getName(),
+              command.getArgumentsCountDescription(),
+              length,
+              length == 1 ? "argument" : "arguments",
+              length == 1 ? "has" : "have"
+      ));
       usage();
       return true;
     }
@@ -2302,11 +2330,8 @@ public class ProvUtil implements HttpDebugListener {
   }
 
   private void doCreateAccountsBulk(String[] args) throws ServiceException {
-    if (args.length < 3) {
-      usage();
-    } else {
       String domain = args[1];
-      String password = "test123";
+      String userPassword =  args[4];
       String nameMask = args[2];
       int numAccounts = Integer.parseInt(args[3]);
       for (int ix = 0; ix < numAccounts; ix++) {
@@ -2314,10 +2339,9 @@ public class ProvUtil implements HttpDebugListener {
         Map<String, Object> attrs = new HashMap<>();
         String displayName = nameMask + " N. " + ix;
         StringUtil.addToMultiMap(attrs, "displayName", displayName);
-        Account account = prov.createAccount(name, password, attrs);
-        console.println(account.getId());
+        Account createdAccount = prov.createAccount(name, userPassword, attrs);
+        console.println(createdAccount.getId());
       }
-    }
   }
 
   private Domain doCreateAliasDomain(

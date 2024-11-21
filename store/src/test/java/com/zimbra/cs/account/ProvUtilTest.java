@@ -13,6 +13,8 @@ import com.zimbra.cs.account.ProvUtil.Console;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -62,6 +64,19 @@ class ProvUtilTest {
     soapExtension.clearData();
   }
 
+  static Map<String, String> parseZmprovKeyValue(String content) {
+    var lines = content.split("\n");
+    Map<String, String> res = new HashMap<>();
+    for (var line: lines) {
+      if (!line.isEmpty() && !line.startsWith("\\s#")) {
+          var kv = line.split(": ");
+          var v = kv.length == 1 ? "" : kv[1];
+          res.put(kv[0], v);
+      }
+    }
+    return res;
+  }
+
   @SuppressWarnings("UnusedReturnValue")
   String createAccountForDomain(String domain) throws Exception {
     return createAccount(UUID.randomUUID() + "@" + domain);
@@ -71,13 +86,13 @@ class ProvUtilTest {
     return runCommand(new String[]{"ca", accountMail, "password"});
   }
 
-  String runCommand(String[] commandWithArgs) throws Exception {
+  String runCommand(String... commandWithArgs) throws Exception {
     OutputStream outputStream = new ByteArrayOutputStream();
     runCommand(outputStream, new ByteArrayOutputStream(), commandWithArgs);
     return outputStream.toString();
   }
 
-  private void runCommand(OutputStream outputStream, OutputStream errorStream, String[] commandWithArgs)
+  private void runCommand(OutputStream outputStream, OutputStream errorStream, String... commandWithArgs)
       throws Exception {
     ProvUtil.main(new Console(outputStream, errorStream), commandWithArgs);
   }
@@ -439,6 +454,52 @@ class ProvUtilTest {
             new String[]{"--ldap", "sg", domain, "search_term", "sortBy", "fullName"}));
 
     String expected = "ERROR: service.INVALID_REQUEST (invalid request: sortBy is not supported with -l)\n";
+    Assertions.assertEquals(expected, stdErr.toString());
+  }
+
+  @Test void createBulkAccounts() throws Exception {
+    var stdErr = new ByteArrayOutputStream();
+    var outputStream = new ByteArrayOutputStream();
+    runCommand("cd", "demo.zextras.io");
+    String password = "passwd";
+    runCommand(outputStream, stdErr, "createBulkAccounts", "demo.zextras.io", "ntestuser", "4", password);
+    var ids = new String(outputStream.toByteArray()).split("\n");
+    for (var id : ids) {
+      var out = runCommand("-l", "ga", id);
+      Assertions.assertEquals(password, parseZmprovKeyValue(out).get("userPassword"));
+    }
+  }
+
+  @Test void whenNumberOfArgumentsAreExcessiveAnErrorIsDisplayed() throws Exception {
+    OutputStream stdErr = new ByteArrayOutputStream();
+    catchSystemExit(
+            () -> runCommand(new ByteArrayOutputStream(), stdErr,
+                    "createBulkAccounts", "demo.zextras.io", "ntestuser", "4", "passwd", "other"));
+    String expected = "createBulkAccounts is expecting 4 arguments but 5 arguments have been provided\n";
+    Assertions.assertEquals(expected, stdErr.toString());
+  }
+
+  @Test void whenNumberOfArgumentsAreLackingAnErrorIsDisplayed() throws Exception {
+    OutputStream stdErr = new ByteArrayOutputStream();
+    catchSystemExit(
+            () -> runCommand(new ByteArrayOutputStream(), stdErr, "createBulkAccounts", "demo.zextras.io"));
+    String expected = "createBulkAccounts is expecting 4 arguments but 1 argument has been provided\n";
+    Assertions.assertEquals(expected, stdErr.toString());
+  }
+
+  @Test void variadicCommandArgumentsNumberMismatchMaxInt() throws Exception {
+    OutputStream stdErr = new ByteArrayOutputStream();
+    catchSystemExit(
+            () -> runCommand(new ByteArrayOutputStream(), stdErr, "createDynamicDistributionList"));
+    String expected = "createDynamicDistributionList is expecting at least 1 arguments but 0 arguments have been provided\n";
+    Assertions.assertEquals(expected, stdErr.toString());
+  }
+
+  @Test void variadicCommandArgumentsNumberMismatchZero() throws Exception {
+    OutputStream stdErr = new ByteArrayOutputStream();
+    catchSystemExit(
+            () -> runCommand(new ByteArrayOutputStream(), stdErr, "getAllCos", "p1", "p2", "p3"));
+    String expected = "getAllCos is expecting at most 1 arguments but 3 arguments have been provided\n";
     Assertions.assertEquals(expected, stdErr.toString());
   }
 

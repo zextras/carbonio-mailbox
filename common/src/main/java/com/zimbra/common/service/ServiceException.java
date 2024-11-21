@@ -58,6 +58,9 @@ public class ServiceException extends Exception {
   public static final String OPERATION_DENIED = "smime.OPERATION_DENIED";
   public static final String FEATURE_SMIME_DISABLED = "smime.FEATURE_SMIME_DISABLED";
 
+  // calendar group
+  public static final String GROUP_NAME_ALREADY_EXIST = "calendargroup.GROUP_NAME_ALREADY_EXIST";
+
   public static final String ZIMBRA_NETWORK_MODULES_NG_ENABLED =
       "extension.ZIMBRA_NETWORK_MODULES_NG_ENABLED";
 
@@ -502,6 +505,10 @@ public class ServiceException extends Exception {
 
   public static ServiceException OPERATION_DENIED(String message) {
     return new ServiceException("operation denied: " + message, OPERATION_DENIED, SENDERS_FAULT);
+  }
+
+  public static ServiceException GROUP_NAME_ALREADY_EXIST(String name) {
+    return new ServiceException("operation denied: calendar group with name" + name + " already exists", GROUP_NAME_ALREADY_EXIST, SENDERS_FAULT);
   }
 
   public static ServiceException NETWORK_MODULES_NG_ENABLED(String str) {

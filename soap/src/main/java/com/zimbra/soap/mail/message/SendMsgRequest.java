@@ -102,7 +102,7 @@ public class SendMsgRequest {
      * @zm-api-field-description Sign mime
      */
     @XmlAttribute(name= SmimeConstants.A_SIGN, required=false)
-    private ZmBoolean sign;
+    protected ZmBoolean sign;
 
     public void setNeedCalendarSentbyFixup(Boolean needCalendarSentbyFixup) {
         this.needCalendarSentbyFixup = ZmBoolean.fromBool(needCalendarSentbyFixup);

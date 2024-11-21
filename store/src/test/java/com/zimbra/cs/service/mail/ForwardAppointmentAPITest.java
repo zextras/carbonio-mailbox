@@ -14,14 +14,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import java.util.stream.Collectors;
 import javax.mail.Address;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import org.junit.Before;
 import org.junit.jupiter.api.*;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
@@ -84,8 +82,8 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		final MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
 		MimeMessage receivedMessage1 = receivedMessages[0];
 		final String ics1 = extractIcsFromMessage(receivedMessage1, 1);
-		Assertions.assertTrue(ics1.contains("ATTENDEE;CN=userb@test.com;ROLE=REQ-PARTICIPANT:mailto:userb@test.com"));
-		Assertions.assertTrue(ics1.contains("ATTENDEE;CN=userd@test.com;ROLE=REQ-PARTICIPANT:mailto:userd@test.com"));
+		assertTrue(ics1.contains("ATTENDEE;CN=userb@test.com;ROLE=REQ-PARTICIPANT:mailto:userb@test.com"));
+		assertTrue(ics1.contains("ATTENDEE;CN=userd@test.com;ROLE=REQ-PARTICIPANT:mailto:userd@test.com"));
 		greenMail.reset();
 		final List<CalendarItem> calendarItems = getCalendarAppointments(userB);
 		final CalendarItem userBAppointment = calendarItems.get(0);
@@ -94,10 +92,10 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
 		final String ics = extractIcsFromMessage(receivedMessage, 2);
 		
-		Assertions.assertTrue(ics.contains("ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;" +
+		assertTrue(ics.contains("ATTENDEE;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;" +
 				"ROLE=REQ-PARTICIPANT:mailto:userc@t\r\n est.com"));
-		Assertions.assertTrue(ics.contains("ATTENDEE;CN=userb@test.com;ROLE=REQ-PARTICIPANT:mailto:userb@test.com"));
-		Assertions.assertTrue(ics.contains("ATTENDEE;CN=userd@test.com;ROLE=REQ-PARTICIPANT:mailto:userd@test.com"));
+		assertTrue(ics.contains("ATTENDEE;CN=userb@test.com;ROLE=REQ-PARTICIPANT:mailto:userb@test.com"));
+		assertTrue(ics.contains("ATTENDEE;CN=userd@test.com;ROLE=REQ-PARTICIPANT:mailto:userd@test.com"));
 	}
 
 	@Test
@@ -120,8 +118,13 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		assertEquals(userD.getName(), recipients[0].toString());
 	}
 
+	/**
+	 * Since CO-1668 we don't notify the organizer that its appointment has been forwarded
+	 * All the notifications logic was removed in this process
+	 * @throws Exception if any
+	 */
 	@Test
-	void shouldNotifyOrganizerThatItsAppointmentHasBeenForwarded() throws Exception {
+	void shouldNotNotifyOrganizerThatItsAppointmentHasBeenForwarded() throws Exception {
 		final Account userA = accountCreatorFactory.get().create();
 		final Account userB = accountCreatorFactory.get().create();
 		final Account userC = accountCreatorFactory.get().create();
@@ -133,15 +136,14 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		final CalendarItem userBAppointment = calendarItems.get(0);
 
 		forwardAppointment(userB, String.valueOf(userBAppointment.getId()), userD.getName());
+		final MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
+		MimeMessage receivedMessage = receivedMessages[0];
+		assertEquals(1, receivedMessages.length);
 
-		MimeMessage forwardedNotification = greenMail.getReceivedMessages()[1];
-		final Address[] recipients = forwardedNotification.getRecipients(RecipientType.TO);
-		assertEquals(1, recipients.length);
-		assertEquals(userA.getName(), recipients[0].toString());
-		final String messageContent = new String(forwardedNotification.getRawInputStream().readAllBytes());
-		assertTrue(messageContent.contains("Your meeting was forwarded"));
-		assertTrue(messageContent.contains("<"+userB.getName()+">  has forwarded your meeting request " +
-				"to additional recipients."));
+		final String messageContent = new String(receivedMessage.getRawInputStream().readAllBytes());
+    assertFalse(messageContent.contains("Your meeting was forwarded"));
+    assertFalse(messageContent.contains("<" + userB.getName() + ">  has forwarded your meeting request " +
+        "to additional recipients."));
 	}
 
 	private static List<CalendarItem> getCalendarAppointments(Account userB) throws ServiceException {
@@ -155,9 +157,9 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 				.getCalendarItemById(null, Integer.parseInt(appointmentResponse.getCalItemId()));
 	}
 
-	private CreateAppointmentResponse createAppointment(Account organizer, List<Account> attendees) throws Exception {
-		final Msg invitation = newAppointmentMessage(organizer, attendees.stream().map(Account::getName).collect(
-				Collectors.toList()));
+	@SuppressWarnings("UnusedReturnValue")
+  private CreateAppointmentResponse createAppointment(Account organizer, List<Account> attendees) throws Exception {
+		final Msg invitation = newAppointmentMessage(organizer, attendees.stream().map(Account::getName).toList());
 		final CreateAppointmentResponse appointmentResponse = createAppointment(organizer, invitation);
 		final Invite invite = getCalendarItemById(organizer, appointmentResponse).getInvite(0);
 		for(Account attendee: attendees) {

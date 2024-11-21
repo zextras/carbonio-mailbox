@@ -75,29 +75,26 @@ public class ForwardAppointmentInvite extends ForwardAppointment {
       throw MailServiceException.NO_SUCH_MSG(iid.getId());
     }
 
-    Pair<MimeMessage, MimeMessage> msgPair = getMessagePair(mbox, senderAcct, msg, mmFwdWrapper);
+    final MimeMessage message = getMessagePair(mbox, senderAcct, msg, mmFwdWrapper);
     MimeProcessor mimeProcessor = MimeProcessorUtil.getMimeProcessor(request, context);
-    forwardMessages(mbox, octxt, msgPair, mimeProcessor);
+    forwardMessages(mbox, octxt, message, mimeProcessor);
 
     Element response = getResponseElement(zsc);
     return response;
   }
 
   public static void forwardMessages(
-          Mailbox mbox, OperationContext octxt, Pair<MimeMessage, MimeMessage> msgPair, MimeProcessor mimeProcessor)
+          Mailbox mbox, OperationContext octxt, MimeMessage message, MimeProcessor mimeProcessor)
       throws ServiceException {
-    if (msgPair.getFirst() != null) {
-      sendFwdMsg(octxt, mbox, msgPair.getFirst(), mimeProcessor);
-    }
-    if (msgPair.getSecond() != null) {
-      sendFwdNotifyMsg(octxt, mbox, msgPair.getSecond(), mimeProcessor);
+    if (message != null) {
+      sendFwdMsg(octxt, mbox, message, mimeProcessor);
     }
   }
 
-  public static Pair<MimeMessage, MimeMessage> getMessagePair(
+  public static MimeMessage getMessagePair(
       Mailbox mbox, Account senderAcct, Message msg, MimeMessage mmFwdWrapper)
       throws ServiceException {
-    Pair<MimeMessage, MimeMessage> msgPair;
+    MimeMessage mimeMsg;
     mbox.lock.lock();
     try {
       MimeMessage mmInv = msg.getMimeMessage();
@@ -154,12 +151,12 @@ public class ForwardAppointmentInvite extends ForwardAppointment {
         }
       }
 
-      msgPair = getInstanceFwdMsg(senderAcct, firstInv, cal, mmInv, mmFwdWrapper);
+      mimeMsg = getInstanceFwdMsg(senderAcct, firstInv, cal, mmInv, mmFwdWrapper);
 
     } finally {
       mbox.lock.release();
     }
-    return msgPair;
+    return mimeMsg;
   }
 
   // MimeVisitor that finds text/calendar part.
