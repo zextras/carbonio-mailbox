@@ -23,12 +23,11 @@ public sealed interface CommandArgumentType {
     return new Seq(arguments);
   }
 
-  static CommandArgumentType union(CommandArgumentType... members) {
+  static Union union(CommandArgumentType... members) {
     return union(Arrays.asList(members));
   }
 
-  static CommandArgumentType union(List<CommandArgumentType> members) {
-    if (members.size() == 1) return members.get(0);
+  static Union union(List<CommandArgumentType> members) {
     return new Union(members);
   }
 

@@ -433,7 +433,7 @@ public class ProvUtil implements HttpDebugListener {
     CREATE_BULK_ACCOUNTS(
         "createBulkAccounts",
         "cabulk",
-        "{domain} {namemask} {number of accounts to create} {password}",
+        "{domain} {namemask} {number-of-accounts-to-create} {password}",
         Category.MISC,
         4,
         4),
@@ -535,7 +535,7 @@ public class ProvUtil implements HttpDebugListener {
     FLUSH_CACHE(
         "flushCache",
         "fc",
-        "[-a] {" + CacheEntryType.names() + "|<extension-cache-type>} [name1|id1 [name2|id2...]]",
+        "[-a] {" + CacheEntryType.names() + "|extension-cache-type} [name1|id1 [name2|id2...]]",
         Category.MISC,
         1,
         Integer.MAX_VALUE),

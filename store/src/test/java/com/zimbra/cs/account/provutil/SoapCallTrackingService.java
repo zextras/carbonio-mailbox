@@ -10,6 +10,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.cs.service.admin.Auth;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 import io.vavr.control.Try;
@@ -18,12 +19,12 @@ import org.dom4j.QName;
 import java.util.Arrays;
 import java.util.List;
 
-public class TrackingAdminService implements DocumentService {
+public class SoapCallTrackingService implements DocumentService {
 
   static final List<QName> handlerNames = Arrays.asList(AdminConstants.PING_REQUEST
           , AdminConstants.CHECK_HEALTH_REQUEST
           , AdminConstants.GET_ALL_LOCALES_REQUEST
-          , AdminConstants.AUTH_REQUEST
+//          , AdminConstants.AUTH_REQUEST
           , AdminConstants.CREATE_ACCOUNT_REQUEST
           , AdminConstants.CREATE_GAL_SYNC_ACCOUNT_REQUEST
           , AdminConstants.ADD_GAL_SYNC_DATASOURCE_REQUEST
@@ -361,38 +362,10 @@ public class TrackingAdminService implements DocumentService {
 
   @Override
   public void registerHandlers(DocumentDispatcher dispatcher) throws ServiceException {
-    handlerNames.forEach(qname -> dispatcher.registerHandler(qname, new TrackCommandRequest(qname)));
+    TrackCommandRequestHandler handler = new TrackCommandRequestHandler();
+    handlerNames.forEach(qname -> dispatcher.registerHandler(qname, handler));
+    dispatcher.registerHandler(AdminConstants.AUTH_REQUEST, new Auth());
   }
-
-//  /**
-//   * @param request
-//   * @return
-//   * @throws ServiceException
-//   */
-//  public static Map<String, Object> getAttrs(Element request) throws ServiceException {
-//    return getAttrs(request, false);
-//  }
-//
-//  /**
-//   * Given: <request> <a n="name">VALUE</a> <a n="name2">VALUE</a> ... <request>
-//   *
-//   * <p>Return a map of name,value pairs
-//   *
-//   * @param request
-//   * @return
-//   * @throws ServiceException
-//   */
-//  public static Map<String, Object> getAttrs(Element request, boolean ignoreEmptyValues)
-//          throws ServiceException {
-//    Map<String, Object> result = new HashMap<>();
-//    for (Element a : request.listElements(AdminConstants.E_A)) {
-//      String name = a.getAttribute(AdminConstants.A_N);
-//      String value = a.getText();
-//      if (!ignoreEmptyValues || (value != null && value.length() > 0))
-//        StringUtil.addToMultiMap(result, name, value);
-//    }
-//    return result;
-//  }
 
   protected Try<MessageBrokerClient> getMessageBroker() {
     return Try.failure(new RuntimeException("Message broker is not available"));

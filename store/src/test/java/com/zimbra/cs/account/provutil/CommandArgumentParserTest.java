@@ -5,25 +5,25 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-class CommandHelpParserTest {
+class CommandArgumentParserTest {
 
   @Test
   void testId() {
-    var v = CommandHelpParser.parse("aaa");
+    var v = CommandArgumentParser.parse("aaa");
     Assertions.assertEquals(1, v.arguments().size());
     Assertions.assertEquals(CommandArgumentType.of("aaa"), v.arguments().get(0));
   }
 
   @Test
   void testRequired() {
-    var v = CommandHelpParser.parse("{aaa}");
+    var v = CommandArgumentParser.parse("{aaa}");
     Assertions.assertEquals(1, v.arguments().size());
     Assertions.assertEquals(CommandArgumentType.of("aaa"), v.arguments().get(0));
   }
 
   @Test
   void testRequiredAlt() {
-    var v = CommandHelpParser.parse("{aaa|bbb}");
+    var v = CommandArgumentParser.parse("{aaa|bbb}");
     Assertions.assertEquals(1, v.arguments().size());
     CommandArgumentType  arg = v.arguments().get(0);
     assertThat(arg, instanceOf(CommandArgumentType.Union.class));
@@ -34,7 +34,7 @@ class CommandHelpParserTest {
 
   @Test
   void testRequiredAltRep() {
-    var v = CommandHelpParser.parse("{aaa|bbb}+");
+    var v = CommandArgumentParser.parse("{aaa|bbb}+");
     Assertions.assertEquals(1, v.arguments().size());
     CommandArgumentType  arg = v.arguments().get(0);
     assertThat(arg, instanceOf(CommandArgumentType.Rep.class));
@@ -47,7 +47,7 @@ class CommandHelpParserTest {
 
   @Test
   void testRequiredSeq() {
-    var v = CommandHelpParser.parse("{aaa} {bbb}");
+    var v = CommandArgumentParser.parse("{aaa} {bbb}");
     Assertions.assertEquals(2, v.arguments().size());
     CommandArgumentType  arg0 = v.arguments().get(0);
     CommandArgumentType  arg1 = v.arguments().get(1);
@@ -57,7 +57,7 @@ class CommandHelpParserTest {
 
   @Test
   void testRequiredRepSeq() {
-    var v = CommandHelpParser.parse("{aaa} {bbb}+");
+    var v = CommandArgumentParser.parse("{aaa} {bbb}+");
     Assertions.assertEquals(2, v.arguments().size());
     CommandArgumentType  arg0 = v.arguments().get(0);
     CommandArgumentType  arg1 = v.arguments().get(1);
@@ -69,7 +69,7 @@ class CommandHelpParserTest {
   void test1() {
 //    System.out.println(new Input("[attr value1 [attr2 value2...]]").expect("[attr value1 [attr2 value2...]]"));
 //    System.out.println(new Input("[attr value1 [attr2 value2...]]").expect("[attr1 value1 [attr2 value2...]]"));
-    var v = CommandHelpParser.parse("[-v] {ldap-query} [limit {limit}] [offset {offset}] [sortBy {attr}] [sortAscending 0|1*] [domain {domain}]");
+    var v = CommandArgumentParser.parse("[-v] {ldap-query} [limit {limit}] [offset {offset}] [sortBy {attr}] [sortAscending 0|1*] [domain {domain}]");
     System.out.println(v);
   }
 
