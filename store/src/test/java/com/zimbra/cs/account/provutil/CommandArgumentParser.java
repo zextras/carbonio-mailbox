@@ -177,17 +177,17 @@ public class CommandArgumentParser {
 
   static Map<String, Supplier<Stream<Stream<String>>>> bindings() {
     Map<String, Supplier<Stream<Stream<String>>>> res = new HashMap<String, Supplier<Stream<Stream<String>>>>();
-    res.put("--server", () -> Stream.of(Stream.of("--server")));
-    res.put("-a", () -> Stream.of(Stream.of("-a")));
-    res.put("-c", () -> Stream.of(Stream.of("-c")));
-    res.put("-d", () -> Stream.of(Stream.of("-d")));
-    res.put("-e", () -> Stream.of(Stream.of("-e")));
-    res.put("-f", () -> Stream.of(Stream.of("-f")));
-    res.put("-g", () -> Stream.of(Stream.of("-g")));
-    res.put("-ni", () -> Stream.of(Stream.of("-ni")));
-    res.put("-s", () -> Stream.of(Stream.of("-s")));
-    res.put("-t", () -> Stream.of(Stream.of("-t")));
-    res.put("-v", () -> Stream.of(Stream.of("-v")));
+    res.put("--server", () -> Stream.of(Stream.of("server-host.example.com")));
+    res.put("-a", () -> Stream.of(Stream.of("account-name@example.com")));
+    res.put("-c", () -> Stream.of(Stream.of("--category")));
+    res.put("-d", () -> Stream.of(Stream.of("--debug")));
+    res.put("-e", () -> Stream.of(Stream.of("--expand")));
+    res.put("-f", () -> Stream.of(Stream.of("--file")));
+    res.put("-g", () -> Stream.of(Stream.of("usr"), Stream.of("grp"), Stream.of("egp"), Stream.of("all"), Stream.of("dom"), Stream.of("edom"), Stream.of("gst"), Stream.of("key"), Stream.of("pub"), Stream.of("email")));
+    res.put("-ni", () -> Stream.of(Stream.of("--non-inherited")));
+    res.put("-s", () -> Stream.of(Stream.of("server-hostname.example.com")));
+    res.put("-t", () -> Stream.of(Stream.of("account"), Stream.of("calresource"), Stream.of("cos"), Stream.of("dl"), Stream.of("group"), Stream.of("domain"), Stream.of("server"), Stream.of("xmppcomponent"), Stream.of("zimlet"), Stream.of("config"), Stream.of("global")));
+    res.put("-v", () -> Stream.of(Stream.of("--verbose")));
     res.put("0", () -> Stream.of(Stream.of("0")));
     res.put("1", () -> Stream.of(Stream.of("1")));
     res.put("ADMIN", () -> Stream.of(Stream.of("ADMIN")));
@@ -195,9 +195,9 @@ public class CommandArgumentParser {
     res.put("FALSE", () -> Stream.of(Stream.of("FALSE")));
     res.put("TRUE", () -> Stream.of(Stream.of("TRUE")));
     res.put("USER", () -> Stream.of(Stream.of("USER")));
-    res.put("account", () -> Stream.of(Stream.of("d3175941-9d69-46de-83e7-0c191b7e0953")));
-    res.put("account-id", () -> Stream.of(Stream.of("301c1dab-c07d-478c-b5db-eaffcc64b593")));
-    res.put("acl", () -> Stream.of(Stream.of("mailing.list@example.com")));
+    res.put("account", () -> Stream.of(Stream.of("account-d3175941-9d69-46de-83e7-0c191b7e0953")));
+    res.put("account-id", () -> Stream.of(Stream.of("account-301c1dab-c07d-478c-b5db-eaffcc64b593")));
+    res.put("acl", () -> Stream.of(Stream.of("mailing.list@example.com"))); // ??
     res.put("alias", () -> Stream.of(Stream.of("alias@example.com")));
     res.put("alias-domain-name", () -> Stream.of(Stream.of("example-alias.com")));
     res.put("alias@domain", () -> Stream.of(Stream.of("alias@example.com")));
@@ -205,15 +205,15 @@ public class CommandArgumentParser {
     // *******
     res.put("argument", () -> Stream.of(Stream.of("argument")));
     // *******
-    res.put("attr", () -> Stream.of(Stream.of("attr")));
+    res.put("attr", () -> Stream.of(Stream.of("attribute")));
     // *******
     res.put("attribute-name", () -> Stream.of(Stream.of("zimbraId"), Stream.of("zimbraImapBindPort")));
-    res.put("attribute-value", () -> Stream.of(Stream.of("\"value\"", "1")));
+    res.put("attribute-value", () -> Stream.of(Stream.of("\"attribute-value\"", "1")));
     res.put("auth-token", () -> Stream.of(Stream.of("0_2b6c930a7ca1a02daad5f27528d6c9986317204e_69643d33363a62333134613231652d666137392d346533352d613765352d6437666637303834333866363b6578703d31333a313733323535383437303239303b76763d323a31363b747970653d363a7a696d6272613b753d313a613b7469643d31303a313131353331313832383b")));
     // *******
     res.put("by", () -> Stream.of(Stream.of("by")));
     // *******
-    res.put("calresource", () -> Stream.of(Stream.of("calresource")));
+    res.put("calresource", () -> Stream.of(Stream.of("calendar-resource")));
     // *******
     res.put("cancel", () -> Stream.of(Stream.of("cancel")));
     // *******
@@ -222,23 +222,23 @@ public class CommandArgumentParser {
     res.put("classname", () -> Stream.of(Stream.of("classname")));
     // *******
     res.put("commands", () -> Stream.of(Stream.of("commands")));
-    res.put("config", () -> Stream.of(Stream.of("account"), Stream.of("cos"), Stream.of("domain")));
-    res.put("configName", () -> Stream.of(Stream.of("account"), Stream.of("cos"), Stream.of("domain")));
+    res.put("config", () -> Stream.of(Stream.of("global-config")));
+    res.put("configName", () -> Stream.of(Stream.of("config-name")));
     res.put("cos", () -> Stream.of(Stream.of("cos")));
-    res.put("cos-id", () -> Stream.of(Stream.of("1829acc8-2fd3-45cf-aac5-f3b3078daaa8")));
+    res.put("cos-id", () -> Stream.of(Stream.of("cos-1829acc8-2fd3-45cf-aac5-f3b3078daaa8")));
     res.put("cos-name", () -> Stream.of(Stream.of("cos-name")));
-    res.put("debug", () -> Stream.of(Stream.of("debug")));
+    res.put("debug", () -> Stream.of(Stream.of("--debug")));
     res.put("dest-cos-name", () -> Stream.of(Stream.of("cos")));
-    res.put("dl", () -> Stream.of(Stream.of("dl")));
+    res.put("dl", () -> Stream.of(Stream.of("distribution-list")));
     res.put("domain", () -> Stream.of(Stream.of("example.com")));
-    res.put("domain-id", () -> Stream.of(Stream.of("36f01e27-88de-4495-bb4b-9b05443aa8f7")));
+    res.put("domain-id", () -> Stream.of(Stream.of("domain-36f01e27-88de-4495-bb4b-9b05443aa8f7")));
     res.put("domain-name", () -> Stream.of(Stream.of("example.com")));
-    res.put("ds-id", () -> Stream.of(Stream.of("5bfd9bc4-d359-4a2c-8424-1101dffba0ee")));
+    res.put("ds-id", () -> Stream.of(Stream.of("data-source-5bfd9bc4-d359-4a2c-8424-1101dffba0ee")));
     res.put("ds-name", () -> Stream.of(Stream.of("datasource")));
     // *************
-    res.put("ds-type", () -> Stream.of(Stream.of("pop3"), Stream.of("imap"), Stream.of("contacts")));
+    res.put("ds-type", () -> Stream.of(Stream.of("pop3"), Stream.of("imap"), Stream.of("gal")));
     // *************
-    res.put("entry-type", () -> Stream.of(Stream.of("account"), Stream.of("cos"), Stream.of("account")));
+    res.put("entry-type", () -> Stream.of(Stream.of("account"), Stream.of("cos"), Stream.of("domain"), Stream.of("globalConfig"), Stream.of("identity"), Stream.of("dataSource"), Stream.of("galDataSource"), Stream.of("distributionList"), Stream.of("group"), Stream.of("server"), Stream.of("mailRecipient"), Stream.of("timeZone"), Stream.of("zimletEntry")));
     res.put("error", () -> Stream.of(Stream.of("error")));
     // *************
     res.put("expandGetAttrs", () -> Stream.of(Stream.of("expandGetAttrs")));
@@ -249,20 +249,20 @@ public class CommandArgumentParser {
     // *************
     res.put("extension-cache-type", () -> Stream.of(Stream.of("extension-cache-type")));
     res.put("false", () -> Stream.of(Stream.of("false")));
-    res.put("folder-id", () -> Stream.of(Stream.of("eb15a846-21ed-4f1f-bf21-2759f282c237")));
+    res.put("folder-id", () -> Stream.of(Stream.of("folder-eb15a846-21ed-4f1f-bf21-2759f282c237")));
     res.put("foreignPrincipal", () -> Stream.of(Stream.of("foreign.pricipal@example.com")));
     res.put("galgroup", () -> Stream.of(Stream.of("galgroup")));
     res.put("globalgrant", () -> Stream.of(Stream.of("globalgrant")));
-    res.put("grantee-id", () -> Stream.of(Stream.of("75aca60e-8616-4165-a3ba-a6b96d529c97")));
+    res.put("grantee-id", () -> Stream.of(Stream.of("grantee-75aca60e-8616-4165-a3ba-a6b96d529c97")));
     res.put("grantee-name", () -> Stream.of(Stream.of("grantee.name@example.com")));
-    res.put("grantee-type", () -> Stream.of(Stream.of("usr"), Stream.of("grp"), Stream.of("dom")));
+    res.put("grantee-type", () -> Stream.of(Stream.of("usr"), Stream.of("grp"), Stream.of("egp"), Stream.of("all"), Stream.of("dom"), Stream.of("edom"), Stream.of("gst"), Stream.of("key"), Stream.of("pub"), Stream.of("email")));
     res.put("group", () -> Stream.of(Stream.of("group")));
     res.put("groupName", () -> Stream.of(Stream.of("groupName")));
-    res.put("habGrpId", () -> Stream.of(Stream.of("ba8aab08-31d7-48c1-ad38-c2e436590782")));
-    res.put("habParentGrpId", () -> Stream.of(Stream.of("2452819a-ca92-4d50-8294-a10564624b8e")));
-    res.put("habRootGrpId", () -> Stream.of(Stream.of("faa9ff15-7d84-45a4-92e9-eb2fee744013")));
+    res.put("habGrpId", () -> Stream.of(Stream.of("hab-group-ba8aab08-31d7-48c1-ad38-c2e436590782"))); //Hierarchical Address Book
+    res.put("habParentGrpId", () -> Stream.of(Stream.of("parent-hab-2452819a-ca92-4d50-8294-a10564624b8e")));
+    res.put("habRootGrpId", () -> Stream.of(Stream.of("hab-root-faa9ff15-7d84-45a4-92e9-eb2fee744013")));
     res.put("hostname", () -> Stream.of(Stream.of("host.example.com")));
-    res.put("id", () -> Stream.of(Stream.of("8a64a712-cceb-4e03-b5ce-c131481bb455")));
+    res.put("id", () -> Stream.of(Stream.of("id-8a64a712-cceb-4e03-b5ce-c131481bb455")));
     res.put("identity-name", () -> Stream.of(Stream.of("identity-name")));
     res.put("info", () -> Stream.of(Stream.of("info")));
     res.put("internalArchivingAccount", () -> Stream.of(Stream.of("internal.archiving.user@example.com")));
@@ -283,12 +283,12 @@ public class CommandArgumentParser {
     res.put("namemask", () -> Stream.of(Stream.of("namemask")));
     res.put("newDomain", () -> Stream.of(Stream.of("new.example.com")));
     res.put("newName", () -> Stream.of(Stream.of("newName")));
-    res.put("newName@domain", () -> Stream.of(Stream.of("newName@domain")));
-    res.put("number-of-accounts-to-create", () -> Stream.of(Stream.of("number-of-accounts-to-create")));
-    res.put("offset", () -> Stream.of(Stream.of("offset")));
+    res.put("newName@domain", () -> Stream.of(Stream.of("newName@example.com")));
+    res.put("number-of-accounts-to-create", () -> Stream.of(Stream.of("10")));
+    res.put("offset", () -> Stream.of(Stream.of("0")));
     res.put("op", () -> Stream.of(Stream.of("op")));
     res.put("ouName", () -> Stream.of(Stream.of("ouName")));
-    res.put("owner-id", () -> Stream.of(Stream.of("owner-id")));
+    res.put("owner-id", () -> Stream.of(Stream.of("owner-8a64a712-cceb-4e03-yhu6-c131481bb455")));
     res.put("owner-name", () -> Stream.of(Stream.of("owner-name")));
     res.put("packages", () -> Stream.of(Stream.of("packages")));
     res.put("password", () -> Stream.of(Stream.of("password")));
@@ -298,7 +298,7 @@ public class CommandArgumentParser {
     res.put("secret", () -> Stream.of(Stream.of("secret")));
     res.put("seniorityIndex", () -> Stream.of(Stream.of("seniorityIndex")));
     res.put("server", () -> Stream.of(Stream.of("server")));
-    res.put("server-id", () -> Stream.of(Stream.of("server-id")));
+    res.put("server-id", () -> Stream.of(Stream.of("server-22c6754a-ea39-4b65-a1c2-88447b30000f")));
     res.put("service", () -> Stream.of(Stream.of("service")));
     res.put("short-name", () -> Stream.of(Stream.of("short-name")));
     res.put("signature-id", () -> Stream.of(Stream.of("signature-id")));
@@ -309,10 +309,10 @@ public class CommandArgumentParser {
     res.put("start", () -> Stream.of(Stream.of("start")));
     res.put("status", () -> Stream.of(Stream.of("status")));
     res.put("stop", () -> Stream.of(Stream.of("stop")));
-    res.put("target-id", () -> Stream.of(Stream.of("22c3163a-ea39-4b65-a1c2-88447b30000f"), Stream.of("grantee@example.com") ));
+    res.put("target-id", () -> Stream.of(Stream.of("target-22c3163a-ea39-4b65-a1c2-88447b30000f")));
     res.put("target-name", () -> Stream.of(Stream.of("target-name")));
-    res.put("target-type", () -> Stream.of(Stream.of("account"), Stream.of("cos"), Stream.of("domain")));
-    res.put("targetHabParentGrpId", () -> Stream.of(Stream.of("targetHabParentGrpId")));
+    res.put("target-type", () -> Stream.of(Stream.of("account"), Stream.of("calresource"), Stream.of("cos"), Stream.of("dl"), Stream.of("group"), Stream.of("domain"), Stream.of("server"), Stream.of("xmppcomponent"), Stream.of("zimlet"), Stream.of("config"), Stream.of("global")));
+    res.put("targetHabParentGrpId", () -> Stream.of(Stream.of("targetHabParentGrpId-56tr163a-ea39-4b65-a1c2-88447b30000f")));
     res.put("timestamp", () -> Stream.of(Stream.of("timestamp")));
     res.put("token", () -> Stream.of(Stream.of("token")));
     res.put("trace", () -> Stream.of(Stream.of("trace")));
