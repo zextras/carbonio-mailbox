@@ -1,5 +1,12 @@
 
 
+# [4.19.0](https://github.com/Zextras/carbonio-mailbox/compare/4.18.0...4.19.0) (2024-11-25)
+
+
+### Features
+
+* [CO-1668] Do not notify the organizer when attendees forward an appointment ([#633](https://github.com/Zextras/carbonio-mailbox/issues/633)) ([4d5cd86](https://github.com/Zextras/carbonio-mailbox/commit/4d5cd8638db0feb0e2a3db18a87124a21e935a9b))
+
 # [](https://github.com/Zextras/carbonio-mailbox/compare/4.17.8...null) (2024-11-19)
 
 
