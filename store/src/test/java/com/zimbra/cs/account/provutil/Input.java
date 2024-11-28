@@ -5,7 +5,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Input {
+class Input {
 
   private final String text;
   private final int index;
@@ -48,13 +48,13 @@ public class Input {
     return consume(rg).map(Result::rest);
   }
 
-  public Result<Optional<String>> consumeOpt(String rg) {
+  Result<Optional<String>> consumeOpt(String rg) {
     return consume(rg)
             .map( res -> new Result<>(Optional.of(res.value), res.rest()))
             .orElseGet( () -> new Result<>(Optional.empty(), this));
   }
 
-  public Optional<Result<String>> consume(String rg) {
+  Optional<Result<String>> consume(String rg) {
     Pattern pattern = Pattern.compile(rg);
     Matcher matcher = pattern.matcher(getValue());
     if (matcher.lookingAt()) {
@@ -65,7 +65,7 @@ public class Input {
     }
   }
 
-  public Optional<Input> expect(String literalValue) {
+  Optional<Input> expect(String literalValue) {
     var v = getValue();
     if (v.startsWith(literalValue)) {
       return Optional.of(new Input(text, index + literalValue.length()));
@@ -74,7 +74,7 @@ public class Input {
     }
   }
 
-  public String getValue() {
+  String getValue() {
     return text.substring(index);
   }
 

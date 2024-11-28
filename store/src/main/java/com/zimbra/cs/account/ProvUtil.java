@@ -710,7 +710,7 @@ public class ProvUtil implements HttpDebugListener {
         Category.RIGHT,
         1,
         2),
-    GET_RIGHTS_DOC("getRightsDoc", "grd", "[java packages]", Category.RIGHT, 0, Integer.MAX_VALUE),
+    GET_RIGHTS_DOC("getRightsDoc", "grd", "[java-packages]", Category.RIGHT, 0, Integer.MAX_VALUE),
     GET_SERVER(
         "getServer",
         "gs",

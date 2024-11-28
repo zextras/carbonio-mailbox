@@ -67,9 +67,7 @@ class CommandArgumentParserTest {
 
   @Test
   void test1() {
-//    System.out.println(new Input("[attr value1 [attr2 value2...]]").expect("[attr value1 [attr2 value2...]]"));
-//    System.out.println(new Input("[attr value1 [attr2 value2...]]").expect("[attr1 value1 [attr2 value2...]]"));
-    var v = CommandArgumentParser.parse("[-v] {ldap-query} [limit {limit}] [offset {offset}] [sortBy {attr}] [sortAscending 0|1*] [domain {domain}]");
+    var v = CommandArgumentParser.parse("[-a] {acl|locale|uistrings|license|all|account|config|globalgrant|cos|domain|galgroup|group|mime|server|zimlet|extension-cache-type} [name1|id1 [name2|id2...]]");
     System.out.println(v);
   }
 

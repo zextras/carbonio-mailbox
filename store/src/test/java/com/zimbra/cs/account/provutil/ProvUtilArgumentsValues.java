@@ -1,0 +1,154 @@
+package com.zimbra.cs.account.provutil;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+
+public class ProvUtilArgumentsValues {
+  public static Map<String, Supplier<List<List<String>>>> getValues() {
+    Map<String, Supplier<List<List<String>>>> res = new HashMap<String, Supplier<List<List<String>>>>();
+    res.put("--server", () -> List.of(List.of("--server")));
+    res.put("-a", () -> List.of(List.of("-a")));
+    res.put("-c", () -> List.of(List.of("-c")));
+    res.put("-d", () -> List.of(List.of("-d")));
+    res.put("-e", () -> List.of(List.of("-e")));
+    res.put("-f", () -> List.of(List.of("-f")));
+    res.put("-g", () -> List.of(List.of("-g")));
+    res.put("-ni", () -> List.of(List.of("-ni")));
+    res.put("-s", () -> List.of(List.of("-s")));
+    res.put("-t", () -> List.of(List.of("-t")));
+    res.put("-v", () -> List.of(List.of("-v")));
+    res.put("0", () -> List.of(List.of("0")));
+    res.put("1", () -> List.of(List.of("1")));
+    res.put("ADMIN", () -> List.of(List.of("ADMIN")));
+    res.put("ALL", () -> List.of(List.of("ALL")));
+    res.put("FALSE", () -> List.of(List.of("FALSE")));
+    res.put("TRUE", () -> List.of(List.of("TRUE")));
+    res.put("USER", () -> List.of(List.of("USER")));
+    res.put("account", () -> List.of(List.of("301c1dab-c07d-478c-b5db-eaffcc64b593")));
+    res.put("account-id", () -> List.of(List.of("301c1dab-c07d-478c-b5db-eaffcc64b593")));
+    res.put("acl", () -> List.of(List.of("mailing.list@example.com")));
+    res.put("alias", () -> List.of(List.of("alias@example.com")));
+    res.put("alias-domain-name", () -> List.of(List.of("example-alias.com")));
+    res.put("alias@domain", () -> List.of(List.of("alias@example.com")));
+    res.put("all", () -> List.of(List.of("all")));
+    res.put("argument", () -> List.of(List.of("argument1"), List.of("argument2")));
+    res.put("attr", () -> List.of(List.of("attr")));
+    res.put("attribute-name", () -> List.of(List.of("zimbraId"), List.of("zimbraImapBindPort")));
+    res.put("attribute-value", () -> List.of(List.of("\"value\"", "1")));
+    res.put("auth-token", () -> List.of(List.of("0_2b6c930a7ca1a02daad5f27528d6c9986317204e_69643d33363a62333134613231652d666137392d346533352d613765352d6437666637303834333866363b6578703d31333a313733323535383437303239303b76763d323a31363b747970653d363a7a696d6272613b753d313a613b7469643d31303a313131353331313832383b")));
+    res.put("by", () -> List.of(List.of("by")));
+    res.put("calresource", () -> List.of(List.of("calresource")));
+    res.put("cancel", () -> List.of(List.of("cancel")));
+    res.put("category", () -> List.of(List.of("category")));
+    res.put("classname", () -> List.of(List.of("org.example.MyClass")));
+    res.put("commands", () -> List.of(List.of("commands")));
+    res.put("config", () -> List.of(List.of("account"), List.of("group"), List.of("config"), List.of("cos"), List.of("domain"), List.of("server")));
+    res.put("configName", () -> List.of(List.of("account"), List.of("group"), List.of("config"), List.of("cos"), List.of("domain"), List.of("server")));
+    res.put("cos", () -> List.of(List.of("cos"), List.of("1829acc8-2fd3-45cf-aac5-f3b3078daaa8")));
+    res.put("cos-id", () -> List.of(List.of("1829acc8-2fd3-45cf-aac5-f3b3078daaa8")));
+    res.put("cos-name", () -> List.of(List.of("cos-name")));
+    res.put("debug", () -> List.of(List.of("debug")));
+    res.put("dest-cos-name", () -> List.of(List.of("cos")));
+    res.put("dl", () -> List.of(List.of("dl")));
+    res.put("domain", () -> List.of(List.of("example.com")));
+    res.put("domain-id", () -> List.of(List.of("36f01e27-88de-4495-bb4b-9b05443aa8f7")));
+    res.put("domain-name", () -> List.of(List.of("example.com")));
+    res.put("ds-id", () -> List.of(List.of("5bfd9bc4-d359-4a2c-8424-1101dffba0ee")));
+    res.put("ds-name", () -> List.of(List.of("databaseName")));
+    res.put("ds-type", () -> List.of(List.of("pop3"), List.of("imap"), List.of("contacts")));
+    res.put("entry-type", () -> List.of(List.of("account"), List.of("group"), List.of("config"), List.of("cos"), List.of("domain"), List.of("server")));
+    res.put("error", () -> List.of(List.of("error")));
+    res.put("expandGetAttrs", () -> List.of(List.of("expandGetAttrs")));
+    res.put("expandSetAttrs", () -> List.of(List.of("expandSetAttrs")));
+    res.put("expires", () -> List.of(List.of("1729944652")));
+    res.put("extension-cache-type", () -> List.of(List.of("extensionCacheType")));
+    res.put("false", () -> List.of(List.of("false")));
+    res.put("folder-id", () -> List.of(List.of("eb15a846-21ed-4f1f-bf21-2759f282c237")));
+    res.put("foreignPrincipal", () -> List.of(List.of("foreign.pricipal@example.com")));
+    res.put("galgroup", () -> List.of(List.of("galgroup")));
+    res.put("globalgrant", () -> List.of(List.of("globalgrant")));
+    res.put("grantee-id", () -> List.of(List.of("75aca60e-8616-4165-a3ba-a6b96d529c97")));
+    res.put("grantee-name", () -> List.of(List.of("grantee.name@example.com")));
+    res.put("grantee-type", () -> List.of(List.of("usr"), List.of("grp"),
+            List.of("egp"),
+            List.of("all"),
+            List.of("dom"),
+            List.of("gst"),
+            List.of("key"),
+            List.of("pub"),
+            List.of("email")));
+    res.put("group", () -> List.of(List.of("group")));
+    res.put("groupName", () -> List.of(List.of("groupName")));
+    res.put("habGrpId", () -> List.of(List.of("ba8aab08-31d7-48c1-ad38-c2e436590782")));
+    res.put("habParentGrpId", () -> List.of(List.of("2452819a-ca92-4d50-8294-a10564624b8e")));
+    res.put("habRootGrpId", () -> List.of(List.of("faa9ff15-7d84-45a4-92e9-eb2fee744013")));
+    res.put("hostname", () -> List.of(List.of("host.example.com")));
+    res.put("id", () -> List.of(List.of("8a64a712-cceb-4e03-b5ce-c131481bb455")));
+    res.put("identity-name", () -> List.of(List.of("identityName")));
+    res.put("info", () -> List.of(List.of("info")));
+    res.put("internalArchivingAccount", () -> List.of(List.of("internal.archiving.user@example.com")));
+    res.put("internalUserAccount", () -> List.of(List.of("internal.user@example.com")));
+    res.put("internalUserAccountX", () -> List.of(List.of("internalx.user@example.com")));
+    res.put("java-packages", () -> List.of(List.of("org.example.mypackage")));
+    res.put("ldap-query", () -> List.of(List.of("(&(zimbraVirtualIPAddress=192.168.0.58)(objectClass=zimbraDomain))")));
+    res.put("license", () -> List.of(List.of("license")));
+    res.put("limit", () -> List.of(List.of("1"), List.of("10")));
+    res.put("list@domain", () -> List.of(List.of("list@example.com")));
+    res.put("locale", () -> List.of(List.of("locale")));
+    res.put("local-domain-name", () -> List.of(List.of("local-example.com")));
+    res.put("logging-category", () -> List.of(List.of("zimbra.soap"), List.of("zimbra.lmtp")));
+    res.put("member@domain", () -> List.of(List.of("member@example.com")));
+    res.put("mime", () -> List.of(List.of("mime")));
+    res.put("name", () -> List.of(List.of("someName")));
+    res.put("name@domain", () -> List.of(List.of("user@example.com")));
+    res.put("namemask", () -> List.of(List.of("namemask")));
+    res.put("newDomain", () -> List.of(List.of("new.example.com")));
+    res.put("newName", () -> List.of(List.of("newName")));
+    res.put("newName@domain", () -> List.of(List.of("newName@domain")));
+    res.put("number-of-accounts-to-create", () -> List.of(List.of("1"), List.of("4")));
+    res.put("offset", () -> List.of(List.of("0"), List.of("1"), List.of("42")));
+    res.put("op", () -> List.of(List.of("op")));
+    res.put("ouName", () -> List.of(List.of("ouName")));
+    res.put("owner-id", () -> List.of(List.of("ed56a2de-1418-4ff6-a790-988c19c6004d")));
+    res.put("owner-name", () -> List.of(List.of("ownerName")));
+    res.put("password", () -> List.of(List.of("password")));
+    res.put("provider-name", () -> List.of(List.of("provider-name")));
+    res.put("right", () -> List.of(List.of("invite"), List.of("viewFreeBusy"), List.of("getAccount")));
+    res.put("secret", () -> List.of(List.of("secret")));
+    res.put("seniorityIndex", () -> List.of(List.of("90"), List.of("100")));
+    res.put("server", () -> List.of(List.of("server.example.com")));
+    res.put("server-id", () -> List.of(List.of("f129be06-86bd-4123-8232-be39a96c2105")));
+    res.put("service", () -> List.of(List.of("mta"), List.of("antispam"), List.of("spell") ));
+    res.put("short-name", () -> List.of(List.of("short")));
+    res.put("signature-id", () -> List.of(List.of("55da11a3-154f-4271-880d-642423563dde")));
+    res.put("signature-name", () -> List.of(List.of("signature-name")));
+    res.put("sortAscending", () -> List.of(List.of("sortAscending")));
+    res.put("sortBy", () -> List.of(List.of("sortBy")));
+    res.put("src-cos-name", () -> List.of(List.of("srcCosName")));
+    res.put("start", () -> List.of(List.of("start")));
+    res.put("status", () -> List.of(List.of("status")));
+    res.put("stop", () -> List.of(List.of("stop")));
+    res.put("target-id", () -> List.of(List.of("22c3163a-ea39-4b65-a1c2-88447b30000f"), List.of("target@example.com") ));
+    res.put("target-name", () -> List.of(List.of("target@example.com")));
+    res.put("target-type", () -> List.of(List.of("account"), List.of("cos"), List.of("domain")));
+    res.put("targetHabParentGrpId", () -> List.of(List.of("d9e7ac72-7a95-4590-913d-4756e49826a3")));
+    /** */
+    res.put("timestamp", () -> List.of(List.of("1732623357")));
+    res.put("token", () -> List.of(List.of("1732621757")));
+    res.put("trace", () -> List.of(List.of("trace")));
+    res.put("true", () -> List.of(List.of("true")));
+    res.put("type", () -> List.of(List.of("type")));
+    res.put("uistrings", () -> List.of(List.of("uistrings")));
+    res.put("userAccount", () -> List.of(List.of("userAccount")));
+    res.put("value", () -> List.of(List.of("value"), List.of("42"), List.of("true")));
+    res.put("virtualHostname", () -> List.of(List.of("host.example.org")));
+    res.put("warn", () -> List.of(List.of("warn")));
+    res.put("xmpp-component-name", () -> List.of(List.of("xmppComponentName")));
+    res.put("zimbraDataSourceEnabled", () -> List.of(List.of("zimbraDataSourceEnabled")));
+    res.put("zimbraDataSourceFolderId", () -> List.of(List.of("zimbraDataSourceFolderId")));
+    res.put("zimlet", () -> List.of(List.of("zimlet")));
+    return res;
+  }
+}

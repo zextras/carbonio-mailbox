@@ -19,7 +19,7 @@ import org.dom4j.QName;
 import java.util.Arrays;
 import java.util.List;
 
-public class SoapCallTrackingService implements DocumentService {
+public class TrackCommandRequestService implements DocumentService {
 
   static final List<QName> handlerNames = Arrays.asList(AdminConstants.PING_REQUEST
           , AdminConstants.CHECK_HEALTH_REQUEST
