@@ -30,6 +30,10 @@ import com.zimbra.soap.admin.message.GetAccountLoggersResponse;
 import com.zimbra.soap.admin.message.GetAccountMembershipResponse;
 import com.zimbra.soap.admin.message.GetAccountResponse;
 import com.zimbra.soap.admin.message.GetAllAccountLoggersResponse;
+import com.zimbra.soap.admin.message.GetAllConfigResponse;
+import com.zimbra.soap.admin.message.GetAllCosResponse;
+import com.zimbra.soap.admin.message.GetAllDistributionListsResponse;
+import com.zimbra.soap.admin.message.GetAllDomainsResponse;
 import com.zimbra.soap.admin.message.GetCalendarResourceResponse;
 import com.zimbra.soap.admin.message.GetCosResponse;
 import com.zimbra.soap.admin.message.GetDistributionListResponse;
@@ -174,6 +178,22 @@ public class TrackCommandRequestHandler extends DocumentHandler {
     responseMapping.put("GetAllAccountLoggersRequest", () -> {
       GetAllAccountLoggersResponse resp = new GetAllAccountLoggersResponse();
       resp.setLoggers(List.of(new AccountLoggerInfo("accountName", "accountId")));
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("GetAllConfigRequest", () -> {
+      GetAllConfigResponse resp = new GetAllConfigResponse();
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("GetAllCosRequest", () -> {
+      GetAllCosResponse resp = new GetAllCosResponse();
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("GetAllDomainsRequest", () -> {
+      GetAllDomainsResponse resp = new GetAllDomainsResponse();
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("GetAllDistributionListsRequest", () -> {
+      GetAllDistributionListsResponse resp = new GetAllDistributionListsResponse();
       return jaxbToElement(resp);
     });
     responseMapping.put("GetCalendarResourceRequest", () -> {
