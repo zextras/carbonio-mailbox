@@ -55,22 +55,6 @@ public class ProvUtilRegressionTest {
     //noinspection HttpUrlsUsage
     LC.zimbra_admin_service_scheme.setDefault("http://");
     LC.zimbra_admin_service_port.setDefault(SOAP_PORT);
-    final Provisioning provisioning = Provisioning.getInstance();
-
-//    var server = provisioning.createServer("localhost", Map.of(
-//            ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT
-//    ));
-    // Provisioning.A_zimbraMailHost
-    var server = provisioning.getServerByName("localhost");
-    var account = provisioning.createAccount(ACCOUNT_NAME, "password", new HashMap<>(Map.of(
-            Provisioning.A_zimbraId, ACCOUNT_UUID,
-            Provisioning.A_zimbraMailHost, server.getName()
-    )));
-//    var signature = provisioning.createSignature(account, "signature-name", new HashMap<>(Map.of(
-//    )));
-//    signature.setId(SIGNATURE_UUID);
-//    provisioning.createDataSource(account, DataSourceType.pop3, "existing-datasource", new HashMap<>());
-    //provisioning.createServer("host.example.com", Map.of());
   }
 
   @AfterAll
@@ -98,18 +82,6 @@ public class ProvUtilRegressionTest {
 
   void createAccountCommand() throws Exception {
     commandRunner.runCommand("ca", ACCOUNT_NAME, "password");
-  }
-
-  @Test
-  void test1() throws Exception {
-//    TrackCommandRequestHandler.setCustomResponseMapping(Map.of(
-//            "GetAccountRequest", () -> {
-//              GetAccountResponse resp = new GetAccountResponse();
-//              resp.setAccount(new AccountInfo(ACCOUNT_UUID, ACCOUNT_NAME));
-//              return jaxbToElement(resp);
-//            }
-//    ));
-    commandRunner.runCommandString("getAllAccountLoggers");
   }
 
   private void run(String cmd) throws IOException, TemplateException {
@@ -140,6 +112,18 @@ public class ProvUtilRegressionTest {
               requestsFile.getActualFilePath(args)
       ));
     }
+  }
+
+  @Test
+  void test1() throws Exception {
+//    TrackCommandRequestHandler.setCustomResponseMapping(Map.of(
+//            "GetAccountRequest", () -> {
+//              GetAccountResponse resp = new GetAccountResponse();
+//              resp.setAccount(new AccountInfo(ACCOUNT_UUID, ACCOUNT_NAME));
+//              return jaxbToElement(resp);
+//            }
+//    ));
+    commandRunner.runCommandString("");
   }
 
   @ParameterizedTest
@@ -313,25 +297,25 @@ public class ProvUtilRegressionTest {
           "getAccountLoggers -s localhost 8a64a712-cceb-4e03-b5ce-c131481bb455",
           "getAccountMembership user@example.com",
           "getAccountMembership 8a64a712-cceb-4e03-b5ce-c131481bb455",
-          //"getAllAccountLoggers",
+          "getAllAccountLoggers",
           "getAllAccountLoggers -s localhost",
           "getAllAccountLoggers --server localhost",
-          "getAllAccounts -e -s server.example.com example.com",
-          "getAllAccounts -s server.example.com",
-          "getAllAccounts -v -e example.com",
-          "getAllAccounts -v",
-          "getAllAccounts -s server.example.com example.com",
-          "getAllAdminAccounts -e attr attr attr",
-          "getAllAdminAccounts attr attr",
-          "getAllAdminAccounts -v -e",
-          "getAllAdminAccounts -v",
-          "getAllAdminAccounts attr attr attr",
-          "getAllCalendarResources -e -s server.example.com example.com",
-          "getAllCalendarResources -s server.example.com",
-          "getAllCalendarResources -v -e example.com",
+      // requires ldap
+//          "getAllAccounts -e -s localhost example.com",
+//          "getAllAccounts -s localhost",
+//          "getAllAccounts -v -e example.com",
+//          "getAllAccounts -v",
+//          "getAllAccounts -s localhost example.com",
+//          "getAllAdminAccounts -e attr attr attr",
+//          "getAllAdminAccounts attr attr",
+//          "getAllAdminAccounts -v -e",
+//          "getAllAdminAccounts -v",
+//          "getAllAdminAccounts attr attr attr",
+          "getAllCalendarResources -e -v -s localhost test.com",
+          "getAllCalendarResources -s localhost",
+          "getAllCalendarResources -v -e test.com",
           "getAllCalendarResources -v",
-          "getAllCalendarResources -s server.example.com example.com",
-          "getAllConfig",
+          "getAllCalendarResources -s localhost test.com",
           "getAllConfig",
           "getAllConfig attr attr",
           "getAllConfig attr attr attr",

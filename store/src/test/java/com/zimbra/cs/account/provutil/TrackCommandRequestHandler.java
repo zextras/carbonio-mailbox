@@ -192,7 +192,8 @@ public class TrackCommandRequestHandler extends DocumentHandler {
       return jaxbToElement(resp);
     });
     responseMapping.put("GetServerRequest", () -> {
-      GetServerResponse resp = new GetServerResponse(new ServerInfo(ACCOUNT_UUID, "name"));
+      GetServerResponse resp = new GetServerResponse(new ServerInfo(ACCOUNT_UUID, "localhost",
+          Arrays.asList(new Attr(ZAttrProvisioning.A_zimbraServiceHostname, "localhost"))));
       return jaxbToElement(resp);
     });
     responseMapping.put("GetDistributionListRequest", () -> {
