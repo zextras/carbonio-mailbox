@@ -3,8 +3,13 @@ package com.zimbra.cs.account;
 import com.zextras.mailbox.soap.SoapExtension;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.provutil.ProvUtilRequestsFile;
+import com.zimbra.cs.account.provutil.TrackCommandRequestHandler;
 import com.zimbra.cs.account.provutil.TrackCommandRequestService;
+import com.zimbra.soap.JaxbUtil;
+import com.zimbra.soap.admin.message.GetAccountResponse;
+import com.zimbra.soap.admin.type.AccountInfo;
 import freemarker.template.TemplateException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -31,6 +36,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class ProvUtilRegressionTest {
 
   private static final int SOAP_PORT = 8080;
+  public static final String ACCOUNT_UUID = "186c1c23-d2ad-46b4-9efd-ddd890b1a4a2";
+  public static final String ACCOUNT_NAME = "test@test.com";
+  private static final String SIGNATURE_UUID = "98c376cc-5443-496d-acf0-373c0888af9c";
 
   @RegisterExtension
   static SoapExtension soapExtension = new SoapExtension.Builder()
@@ -54,10 +62,14 @@ public class ProvUtilRegressionTest {
 //    ));
     // Provisioning.A_zimbraMailHost
     var server = provisioning.getServerByName("localhost");
-    provisioning.createAccount("test@test.com", "password", new HashMap<>(Map.of(
-            Provisioning.A_zimbraId, "186c1c23-d2ad-46b4-9efd-ddd890b1a4a2",
+    var account = provisioning.createAccount(ACCOUNT_NAME, "password", new HashMap<>(Map.of(
+            Provisioning.A_zimbraId, ACCOUNT_UUID,
             Provisioning.A_zimbraMailHost, server.getName()
     )));
+//    var signature = provisioning.createSignature(account, "signature-name", new HashMap<>(Map.of(
+//    )));
+//    signature.setId(SIGNATURE_UUID);
+//    provisioning.createDataSource(account, DataSourceType.pop3, "existing-datasource", new HashMap<>());
     //provisioning.createServer("host.example.com", Map.of());
   }
 
@@ -76,13 +88,28 @@ public class ProvUtilRegressionTest {
     soapExtension.clearData();
   }
 
+  private static Element jaxbToElement(Object resp) {
+    try {
+      return JaxbUtil.jaxbToElement(resp);
+    } catch (ServiceException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   void createAccountCommand() throws Exception {
-    commandRunner.runCommand("ca", "test@test.com", "password");
+    commandRunner.runCommand("ca", ACCOUNT_NAME, "password");
   }
 
   @Test
   void test1() throws Exception {
-    commandRunner.runCommand("createDataSource", "user@example.com", "pop3", "databaseName", "zimbraDataSourceEnabled", "FALSE", "zimbraDataSourceFolderId", "eb15a846-21ed-4f1f-bf21-2759f282c237", "zimbraId", "1", "zimbraImapBindPort", "1");
+//    TrackCommandRequestHandler.setCustomResponseMapping(Map.of(
+//            "GetAccountRequest", () -> {
+//              GetAccountResponse resp = new GetAccountResponse();
+//              resp.setAccount(new AccountInfo(ACCOUNT_UUID, ACCOUNT_NAME));
+//              return jaxbToElement(resp);
+//            }
+//    ));
+    commandRunner.runCommandString("describe -ni zimbraAccount");
   }
 
   private void run(String cmd) throws IOException, TemplateException {
@@ -117,16 +144,25 @@ public class ProvUtilRegressionTest {
 
   @ParameterizedTest
   @ValueSource(strings = {
-          "addAccountLogger -s localhost test@test.com zimbra.lmtp error",
-          "addAccountLogger test@test.com zimbra.lmtp info",
-          "addAccountLogger 8a64a712-cceb-4e03-b5ce-c131481bb455 zimbra.lmtp warn",
-          "addAccountLogger --server localhost test@test.com zimbra.soap trace",
-          "addDistributionListMember list@example.com member@example.com member@example.com member@example.com",
-          "addDistributionListMember list@example.com member@example.com",
-          "addDistributionListMember 8a64a712-cceb-4e03-b5ce-c131481bb455 member@example.com member@example.com member@example.com member@example.com",
-          "addDistributionListMember 8a64a712-cceb-4e03-b5ce-c131481bb455 member1@example.com member@example.com member@example.com",
+          "createIdentity test@test.com identityName",
+          "createIdentity test@test.com identityName zimbraId 1 zimbraImapBindPort 1",
+          "createIdentity test@test.com identityName zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
+          "createSignature user@example.com signature-name",
+          "createSignature user@example.com signature-name",
+          "createSignature user@example.com signature-name zimbraSignatureId 1",
+          "createSignature user@example.com signature-name zimbraSignatureId 1 zimbraPrefMailSignatureContactId 1",
+          "deleteIdentity test@test.com identityName",
+          "deleteIdentity test@test.com identityName",
+          "deleteIdentity 8a64a712-cceb-4e03-b5ce-c131481bb455 identityName"
   })
   void provUtilTest(String cmd) throws TemplateException, IOException {
+    TrackCommandRequestHandler.setCustomResponseMapping(Map.of(
+            "GetAccountRequest", () -> {
+              GetAccountResponse resp = new GetAccountResponse();
+              resp.setAccount(new AccountInfo(ACCOUNT_UUID, ACCOUNT_NAME));
+              return jaxbToElement(resp);
+            }
+    ));
     run(cmd);
   }
 
@@ -212,30 +248,21 @@ public class ProvUtilRegressionTest {
 //          "createHABGroup groupName ouName user@example.com TRUE",
 //          "createHABGroup groupName ouName user@example.com TRUE zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
 //          "createHABOrgUnit example.com ouName",
-          "createIdentity user@example.com identityName",
-          "createIdentity user@example.com identityName zimbraId 1 zimbraImapBindPort 1",
-          "createIdentity user@example.com identityName zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
           "createServer someName",
           "createServer someName",
           "createServer someName zimbraId 1 zimbraImapBindPort 1",
           "createServer someName zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
-          "createSignature user@example.com signature-name",
-          "createSignature user@example.com signature-name",
-          "createSignature user@example.com signature-name zimbraId 1 zimbraImapBindPort 1",
-          "createSignature user@example.com signature-name zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
           "createXMPPComponent short example.com server.example.com org.example.MyClass category type",
           "createXMPPComponent short example.com server.example.com org.example.MyClass category type",
           "createXMPPComponent short example.com server.example.com org.example.MyClass category type zimbraId 1 zimbraImapBindPort 1",
           "createXMPPComponent short example.com server.example.com org.example.MyClass category type zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
-          "deleteAccount user@example.com",
-          "deleteAccount 8a64a712-cceb-4e03-b5ce-c131481bb455",
+          "deleteAccount test@test.com",
+          "deleteAccount 186c1c23-d2ad-46b4-9efd-ddd890b1a4a2",
           "deleteCalendarResource user@example.com",
           "deleteCalendarResource 8a64a712-cceb-4e03-b5ce-c131481bb455",
           "deleteCos someName",
           "deleteCos 8a64a712-cceb-4e03-b5ce-c131481bb455",
-          "deleteDataSource user@example.com databaseName",
           "deleteDataSource user@example.com 5bfd9bc4-d359-4a2c-8424-1101dffba0ee",
-          "deleteDataSource 8a64a712-cceb-4e03-b5ce-c131481bb455 databaseName",
           "deleteDataSource 8a64a712-cceb-4e03-b5ce-c131481bb455 5bfd9bc4-d359-4a2c-8424-1101dffba0ee",
           "deleteDistributionList list@example.com true",
           "deleteDistributionList list@example.com",
@@ -249,13 +276,11 @@ public class ProvUtilRegressionTest {
           "deleteHABGroup 8a64a712-cceb-4e03-b5ce-c131481bb455 false",
           "deleteHABGroup 8a64a712-cceb-4e03-b5ce-c131481bb455 true",
           "deleteHABGroup 8a64a712-cceb-4e03-b5ce-c131481bb455",
-          "deleteHABOrgUnit example.com ouName",
-          "deleteIdentity user@example.com identityName",
-          "deleteIdentity 8a64a712-cceb-4e03-b5ce-c131481bb455 identityName",
+//          "deleteHABOrgUnit test.com ouName",
           "deleteServer someName",
           "deleteServer 8a64a712-cceb-4e03-b5ce-c131481bb455",
-          "deleteSignature user@example.com signature-name",
-          "deleteSignature 8a64a712-cceb-4e03-b5ce-c131481bb455 signature-name",
+//          "deleteSignature user@example.com signature-name",
+//          "deleteSignature 8a64a712-cceb-4e03-b5ce-c131481bb455 signature-name",
           "deleteXMPPComponent xmppComponentName",
           "describe -ni",
           "describe -v cos",

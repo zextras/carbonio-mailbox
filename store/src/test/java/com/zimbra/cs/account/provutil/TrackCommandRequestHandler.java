@@ -8,8 +8,11 @@ import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.account.message.CreateIdentityResponse;
 import com.zimbra.soap.account.message.CreateSignatureResponse;
+import com.zimbra.soap.account.message.GetSignaturesResponse;
 import com.zimbra.soap.account.type.Identity;
 import com.zimbra.soap.account.type.NameId;
+import com.zimbra.soap.account.type.Signature;
+import com.zimbra.soap.account.type.SignatureContent;
 import com.zimbra.soap.admin.message.AddAccountLoggerResponse;
 import com.zimbra.soap.admin.message.CheckRightResponse;
 import com.zimbra.soap.admin.message.CopyCosResponse;
@@ -23,10 +26,12 @@ import com.zimbra.soap.admin.message.CreateDomainResponse;
 import com.zimbra.soap.admin.message.CreateServerResponse;
 import com.zimbra.soap.admin.message.CreateXMPPComponentResponse;
 import com.zimbra.soap.admin.message.GetAccountResponse;
+import com.zimbra.soap.admin.message.GetCalendarResourceResponse;
 import com.zimbra.soap.admin.message.GetCosResponse;
 import com.zimbra.soap.admin.message.GetDistributionListResponse;
 import com.zimbra.soap.admin.message.GetDomainResponse;
 import com.zimbra.soap.admin.message.GetServerResponse;
+import com.zimbra.soap.admin.message.GetXMPPComponentResponse;
 import com.zimbra.soap.admin.type.AccountInfo;
 import com.zimbra.soap.admin.type.Attr;
 import com.zimbra.soap.admin.type.CalendarResourceInfo;
@@ -55,16 +60,16 @@ import java.util.function.Supplier;
 public class TrackCommandRequestHandler extends DocumentHandler {
   private static final String ACCOUNT_UUID = "186c1c23-d2ad-46b4-9efd-ddd890b1a4a2";
   private static final String ACCOUNT_NAME = "test@test.com";
-  private static List<String> command;
   private static List<String> requests = new ArrayList<>();
-
-  public static void setCommand(List<String> cmd) {
-      command = new ArrayList<>(cmd);
-  }
+  private static Map<String, Supplier<Element>> customResponseMapping;
 
   public static void reset() {
-    command = null;
+    customResponseMapping = null;
     requests = new ArrayList<>();
+  }
+
+  public static void setCustomResponseMapping(Map<String, Supplier<Element>> customResponseMapping) {
+    TrackCommandRequestHandler.customResponseMapping = customResponseMapping;
   }
 
   public static List<String> getRequestString() {
@@ -145,7 +150,15 @@ public class TrackCommandRequestHandler extends DocumentHandler {
     });
     responseMapping.put("GetAccountRequest", () -> {
       GetAccountResponse resp = new GetAccountResponse();
-      resp.setAccount(new AccountInfo(ACCOUNT_UUID, ACCOUNT_NAME));
+      resp.setAccount(new AccountInfo(ACCOUNT_UUID, ACCOUNT_NAME, false, Arrays.asList(
+              new Attr(ZAttrProvisioning.A_zimbraId, ACCOUNT_UUID)
+      )));
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("GetCalendarResourceRequest", () -> {
+      GetCalendarResourceResponse resp = new GetCalendarResourceResponse(
+              new CalendarResourceInfo("calendarResourceId", "calendarResourceName")
+      );
       return jaxbToElement(resp);
     });
     responseMapping.put("GetDomainRequest", () -> {
@@ -170,6 +183,18 @@ public class TrackCommandRequestHandler extends DocumentHandler {
       resp.setCos(CosInfo.createForIdAndName("cos-id", "cos-name"));
       return jaxbToElement(resp);
     });
+//    responseMapping.put("GetSignaturesRequest", () -> {
+//      var resp = new GetSignaturesResponse();
+//      resp.setSignatures(Arrays.asList(new Signature("98c376cc-5443-496d-acf0-373c0888af9c", "signature-name", List.of(
+//              new SignatureContent("signatureContent", "text/plain")
+//      ), "signatureCid")));
+//      return jaxbToElement(resp);
+//    });
+    //GetXMPPComponentRequest
+    responseMapping.put("GetXMPPComponentRequest", () -> {
+      var resp = new GetXMPPComponentResponse(new XMPPComponentInfo("xmppComponentInfoName", "xmppComponentInfoId"));
+      return jaxbToElement(resp);
+    });
   }
 
   private static Element jaxbToElement(Object resp) {
@@ -179,7 +204,6 @@ public class TrackCommandRequestHandler extends DocumentHandler {
       throw new RuntimeException(e);
     }
   }
-
 
   public TrackCommandRequestHandler() {
     super();
@@ -195,8 +219,14 @@ public class TrackCommandRequestHandler extends DocumentHandler {
 
   @Override public Element handle(Element request, Map<String, Object> context) throws ServiceException {
     requests.add(request.toString());
-    if (command == null) throw new NullPointerException("command");
-    Supplier<Element> elementSupplier = responseMapping.get(request.getName());
+    Supplier<Element> elementSupplier = null;
+    if (customResponseMapping != null) {
+      elementSupplier = customResponseMapping.get(request.getName());
+    }
+    if (elementSupplier == null)  {
+      elementSupplier =
+              responseMapping.get(request.getName());
+    }
     if (elementSupplier != null) {
       return elementSupplier.get();
     } else {

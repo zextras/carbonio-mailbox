@@ -16,12 +16,17 @@ public class ProvUtilCommandRunner {
   public record CommandOutput(String stdout, String stderr, List<String> requests) {
   }
 
+  CommandOutput runCommandString(String command) throws ServiceException, IOException {
+    String[] commandWithArgs = command.split("\s+");
+    return runCommand(Arrays.asList(commandWithArgs));
+  }
+
   CommandOutput runCommand(String... commandWithArgs) throws ServiceException, IOException {
     return runCommand(Arrays.asList(commandWithArgs));
   }
 
   CommandOutput runCommand(List<String> commandWithArgs) throws ServiceException, IOException {
-    TrackCommandRequestHandler.setCommand(commandWithArgs);
+//    TrackCommandRequestHandler.setCommand(commandWithArgs);
     try {
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
