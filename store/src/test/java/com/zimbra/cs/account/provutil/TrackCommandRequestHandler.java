@@ -4,6 +4,7 @@ import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.account.message.CreateIdentityResponse;
@@ -25,7 +26,10 @@ import com.zimbra.soap.admin.message.CreateDistributionListResponse;
 import com.zimbra.soap.admin.message.CreateDomainResponse;
 import com.zimbra.soap.admin.message.CreateServerResponse;
 import com.zimbra.soap.admin.message.CreateXMPPComponentResponse;
+import com.zimbra.soap.admin.message.GetAccountLoggersResponse;
+import com.zimbra.soap.admin.message.GetAccountMembershipResponse;
 import com.zimbra.soap.admin.message.GetAccountResponse;
+import com.zimbra.soap.admin.message.GetAllAccountLoggersResponse;
 import com.zimbra.soap.admin.message.GetCalendarResourceResponse;
 import com.zimbra.soap.admin.message.GetCosResponse;
 import com.zimbra.soap.admin.message.GetDistributionListResponse;
@@ -33,11 +37,13 @@ import com.zimbra.soap.admin.message.GetDomainResponse;
 import com.zimbra.soap.admin.message.GetServerResponse;
 import com.zimbra.soap.admin.message.GetXMPPComponentResponse;
 import com.zimbra.soap.admin.type.AccountInfo;
+import com.zimbra.soap.admin.type.AccountLoggerInfo;
 import com.zimbra.soap.admin.type.Attr;
 import com.zimbra.soap.admin.type.CalendarResourceInfo;
 import com.zimbra.soap.admin.type.CheckedRight;
 import com.zimbra.soap.admin.type.CosCountInfo;
 import com.zimbra.soap.admin.type.CosInfo;
+import com.zimbra.soap.admin.type.DLInfo;
 import com.zimbra.soap.admin.type.DataSourceInfo;
 import com.zimbra.soap.admin.type.DataSourceType;
 import com.zimbra.soap.admin.type.DistributionListInfo;
@@ -155,6 +161,21 @@ public class TrackCommandRequestHandler extends DocumentHandler {
       )));
       return jaxbToElement(resp);
     });
+    responseMapping.put("GetAccountLoggersRequest", () -> {
+      GetAccountLoggersResponse resp = new GetAccountLoggersResponse();
+      resp.setLoggers(List.of(LoggerInfo.createForCategoryAndLevel("category", LoggingLevel.info)));
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("GetAccountMembershipRequest", () -> {
+      GetAccountMembershipResponse resp = new GetAccountMembershipResponse();
+      resp.setDlList(List.of(new DLInfo("DlId", "DlName")));
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("GetAllAccountLoggersRequest", () -> {
+      GetAllAccountLoggersResponse resp = new GetAllAccountLoggersResponse();
+      resp.setLoggers(List.of(new AccountLoggerInfo("accountName", "accountId")));
+      return jaxbToElement(resp);
+    });
     responseMapping.put("GetCalendarResourceRequest", () -> {
       GetCalendarResourceResponse resp = new GetCalendarResourceResponse(
               new CalendarResourceInfo("calendarResourceId", "calendarResourceName")
@@ -164,7 +185,8 @@ public class TrackCommandRequestHandler extends DocumentHandler {
     responseMapping.put("GetDomainRequest", () -> {
       GetDomainResponse resp = new GetDomainResponse(
               new DomainInfo(MailboxTestUtil.DEFAULT_DOMAIN_ID, MailboxTestUtil.DEFAULT_DOMAIN, Arrays.asList(
-                      new Attr(ZAttrProvisioning.A_zimbraDomainType, "local")
+                      new Attr(ZAttrProvisioning.A_zimbraDomainType, "local"),
+                      new Attr(Provisioning.A_zimbraPreAuthKey, "PreAuthkey")
               ))
       );
       return jaxbToElement(resp);

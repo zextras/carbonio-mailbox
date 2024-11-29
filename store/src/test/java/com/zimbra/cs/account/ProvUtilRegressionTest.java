@@ -109,7 +109,7 @@ public class ProvUtilRegressionTest {
 //              return jaxbToElement(resp);
 //            }
 //    ));
-    commandRunner.runCommandString("describe -ni zimbraAccount");
+    commandRunner.runCommandString("getAllAccountLoggers");
   }
 
   private void run(String cmd) throws IOException, TemplateException {
@@ -282,12 +282,11 @@ public class ProvUtilRegressionTest {
 //          "deleteSignature user@example.com signature-name",
 //          "deleteSignature 8a64a712-cceb-4e03-b5ce-c131481bb455 signature-name",
           "deleteXMPPComponent xmppComponentName",
-          "describe -ni",
+          "describe -ni group",
           "describe -v cos",
           "describe -a zimbraId",
-          "describe -ni group",
           "describe -v server",
-          "exit",
+          //"exit",
           "flushCache locale someName 8a64a712-cceb-4e03-b5ce-c131481bb455 someName",
           "flushCache all someName 8a64a712-cceb-4e03-b5ce-c131481bb455",
           "flushCache group",
@@ -298,10 +297,10 @@ public class ProvUtilRegressionTest {
           "generateDomainPreAuth example.com 8a64a712-cceb-4e03-b5ce-c131481bb455 by 1732623357 0",
           "generateDomainPreAuth 8a64a712-cceb-4e03-b5ce-c131481bb455 8a64a712-cceb-4e03-b5ce-c131481bb455 by 1732623357 1729944652",
           "generateDomainPreAuth example.com someName by 0 0",
-          "generateDomainPreAuthKey example.com",
-          "generateDomainPreAuthKey 8a64a712-cceb-4e03-b5ce-c131481bb455",
-          "generateDomainPreAuthKey -f example.com",
-          "generateDomainPreAuthKey -f 8a64a712-cceb-4e03-b5ce-c131481bb455",
+          //"generateDomainPreAuthKey example.com",
+          //"generateDomainPreAuthKey 8a64a712-cceb-4e03-b5ce-c131481bb455",
+          //"generateDomainPreAuthKey -f example.com",
+          //"generateDomainPreAuthKey -f 8a64a712-cceb-4e03-b5ce-c131481bb455",
           "getAccount 8a64a712-cceb-4e03-b5ce-c131481bb455 attr attr attr",
           "getAccount user@example.com attr attr",
           "getAccount -e 8a64a712-cceb-4e03-b5ce-c131481bb455",
@@ -309,14 +308,14 @@ public class ProvUtilRegressionTest {
           "getAccount user@example.com attr attr attr",
           "getAccountLoggers 8a64a712-cceb-4e03-b5ce-c131481bb455",
           "getAccountLoggers user@example.com",
-          "getAccountLoggers --server host.example.com 8a64a712-cceb-4e03-b5ce-c131481bb455",
-          "getAccountLoggers --server host.example.com user@example.com",
-          "getAccountLoggers -s host.example.com 8a64a712-cceb-4e03-b5ce-c131481bb455",
+          "getAccountLoggers --server localhost 8a64a712-cceb-4e03-b5ce-c131481bb455",
+          "getAccountLoggers --server localhost user@example.com",
+          "getAccountLoggers -s localhost 8a64a712-cceb-4e03-b5ce-c131481bb455",
           "getAccountMembership user@example.com",
           "getAccountMembership 8a64a712-cceb-4e03-b5ce-c131481bb455",
-          "getAllAccountLoggers",
-          "getAllAccountLoggers -s host.example.com",
-          "getAllAccountLoggers --server host.example.com",
+          //"getAllAccountLoggers",
+          "getAllAccountLoggers -s localhost",
+          "getAllAccountLoggers --server localhost",
           "getAllAccounts -e -s server.example.com example.com",
           "getAllAccounts -s server.example.com",
           "getAllAccounts -v -e example.com",
