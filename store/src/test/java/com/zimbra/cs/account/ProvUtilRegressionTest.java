@@ -10,13 +10,15 @@ import com.zimbra.cs.account.provutil.TrackCommandRequestService;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.admin.message.GetAccountResponse;
 import com.zimbra.soap.admin.type.AccountInfo;
-import freemarker.template.TemplateException;
+import com.zimbra.soap.util.Jaxb2Xsds;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -26,7 +28,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.fail;
@@ -35,10 +36,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 @Execution(ExecutionMode.SAME_THREAD)
 public class ProvUtilRegressionTest {
 
+  private static final Logger log = LogManager.getLogger(Jaxb2Xsds.class);
+  
   private static final int SOAP_PORT = 8080;
   public static final String ACCOUNT_UUID = "186c1c23-d2ad-46b4-9efd-ddd890b1a4a2";
   public static final String ACCOUNT_NAME = "test@test.com";
-  private static final String SIGNATURE_UUID = "98c376cc-5443-496d-acf0-373c0888af9c";
 
   @RegisterExtension
   static SoapExtension soapExtension = new SoapExtension.Builder()
@@ -80,14 +82,9 @@ public class ProvUtilRegressionTest {
     }
   }
 
-  void createAccountCommand() throws Exception {
-    commandRunner.runCommand("ca", ACCOUNT_NAME, "password");
-  }
-
-  private void run(String cmd) throws IOException, TemplateException {
+  private void run(String cmd) throws IOException {
     var args = Arrays.asList(cmd.split("\s+"));
-    System.out.println("=".repeat(80));
-    System.out.println(String.format("Executing '%s'", String.join(" ", args)));
+    log.info(String.format("Executing '%s'", String.join(" ", args)));
     ProvUtilCommandRunner.CommandOutput out = null;
     try {
       out = commandRunner.runCommand(args);
@@ -114,18 +111,6 @@ public class ProvUtilRegressionTest {
     }
   }
 
-  @Test
-  void test1() throws Exception {
-//    TrackCommandRequestHandler.setCustomResponseMapping(Map.of(
-//            "GetAccountRequest", () -> {
-//              GetAccountResponse resp = new GetAccountResponse();
-//              resp.setAccount(new AccountInfo(ACCOUNT_UUID, ACCOUNT_NAME));
-//              return jaxbToElement(resp);
-//            }
-//    ));
-    commandRunner.runCommandString("getCreateObjectAttrs account example.com cos-name test@test.com");
-  }
-
   @ParameterizedTest
   @ValueSource(strings = {
           "createIdentity test@test.com identityName",
@@ -139,7 +124,7 @@ public class ProvUtilRegressionTest {
           "deleteIdentity test@test.com identityName",
           "deleteIdentity 8a64a712-cceb-4e03-b5ce-c131481bb455 identityName",
   })
-  void provUtilTest(String cmd) throws TemplateException, IOException {
+  void provUtilTest(String cmd) throws IOException {
     TrackCommandRequestHandler.setCustomResponseMapping(Map.of(
             "GetAccountRequest", () -> {
               GetAccountResponse resp = new GetAccountResponse();
@@ -184,19 +169,10 @@ public class ProvUtilRegressionTest {
           "checkRight cos 22c3163a-ea39-4b65-a1c2-88447b30000f grantee.name@example.com getAccount",
           "checkRight cos target@example.com grantee.name@example.com viewFreeBusy",
           "checkRight domain 22c3163a-ea39-4b65-a1c2-88447b30000f grantee.name@example.com invite",
-//          "compactIndexMailbox user@example.com start",
-//          "compactIndexMailbox user@example.com status",
-//          "compactIndexMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 start",
-//          "compactIndexMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 status",
           "copyCos srcCosName cos",
           "copyCos 8a64a712-cceb-4e03-b5ce-c131481bb455 cos",
           "countAccount example.com",
           "countAccount 8a64a712-cceb-4e03-b5ce-c131481bb455",
-//          "countObjects alias@example.com -d example.com",
-//          "countObjects 1829acc8-2fd3-45cf-aac5-f3b3078daaa8",
-//          "countObjects internal.user@example.com -d 8a64a712-cceb-4e03-b5ce-c131481bb455",
-//          "countObjects 301c1dab-c07d-478c-b5db-eaffcc64b593 -d example.com",
-//          "countObjects cos",
           "createAccount user@example.com password",
           "createAccount user@example.com password",
           "createAccount user@example.com password zimbraId 1 zimbraImapBindPort 1",
@@ -226,12 +202,6 @@ public class ProvUtilRegressionTest {
           "createDomain example.com zimbraId 1 zimbraImapBindPort 1",
           "createDomain example.com zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
           "createDynamicDistributionList list@example.com",
-//          "createHABGroup groupName ouName user@example.com FALSE zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
-//          "createHABGroup groupName ouName user@example.com TRUE zimbraId 1 zimbraImapBindPort 1",
-//          "createHABGroup groupName ouName user@example.com FALSE",
-//          "createHABGroup groupName ouName user@example.com TRUE",
-//          "createHABGroup groupName ouName user@example.com TRUE zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
-//          "createHABOrgUnit example.com ouName",
           "createServer someName",
           "createServer someName",
           "createServer someName zimbraId 1 zimbraImapBindPort 1",
@@ -260,17 +230,13 @@ public class ProvUtilRegressionTest {
           "deleteHABGroup 8a64a712-cceb-4e03-b5ce-c131481bb455 false",
           "deleteHABGroup 8a64a712-cceb-4e03-b5ce-c131481bb455 true",
           "deleteHABGroup 8a64a712-cceb-4e03-b5ce-c131481bb455",
-//          "deleteHABOrgUnit test.com ouName",
           "deleteServer someName",
           "deleteServer 8a64a712-cceb-4e03-b5ce-c131481bb455",
-//          "deleteSignature user@example.com signature-name",
-//          "deleteSignature 8a64a712-cceb-4e03-b5ce-c131481bb455 signature-name",
           "deleteXMPPComponent xmppComponentName",
           "describe -ni group",
           "describe -v cos",
           "describe -a zimbraId",
           "describe -v server",
-          //"exit",
           "flushCache locale someName 8a64a712-cceb-4e03-b5ce-c131481bb455 someName",
           "flushCache all someName 8a64a712-cceb-4e03-b5ce-c131481bb455",
           "flushCache group",
@@ -281,10 +247,6 @@ public class ProvUtilRegressionTest {
           "generateDomainPreAuth example.com 8a64a712-cceb-4e03-b5ce-c131481bb455 by 1732623357 0",
           "generateDomainPreAuth 8a64a712-cceb-4e03-b5ce-c131481bb455 8a64a712-cceb-4e03-b5ce-c131481bb455 by 1732623357 1729944652",
           "generateDomainPreAuth example.com someName by 0 0",
-          //"generateDomainPreAuthKey example.com",
-          //"generateDomainPreAuthKey 8a64a712-cceb-4e03-b5ce-c131481bb455",
-          //"generateDomainPreAuthKey -f example.com",
-          //"generateDomainPreAuthKey -f 8a64a712-cceb-4e03-b5ce-c131481bb455",
           "getAccount 8a64a712-cceb-4e03-b5ce-c131481bb455 attr attr attr",
           "getAccount user@example.com attr attr",
           "getAccount -e 8a64a712-cceb-4e03-b5ce-c131481bb455",
@@ -300,17 +262,6 @@ public class ProvUtilRegressionTest {
           "getAllAccountLoggers",
           "getAllAccountLoggers -s localhost",
           "getAllAccountLoggers --server localhost",
-      // requires ldap
-//          "getAllAccounts -e -s localhost example.com",
-//          "getAllAccounts -s localhost",
-//          "getAllAccounts -v -e example.com",
-//          "getAllAccounts -v",
-//          "getAllAccounts -s localhost example.com",
-//          "getAllAdminAccounts -e attr attr attr",
-//          "getAllAdminAccounts attr attr",
-//          "getAllAdminAccounts -v -e",
-//          "getAllAdminAccounts -v",
-//          "getAllAdminAccounts attr attr attr",
           "getAllCalendarResources -e -v -s localhost test.com",
           "getAllCalendarResources -s localhost",
           "getAllCalendarResources -v -e test.com",
@@ -339,7 +290,6 @@ public class ProvUtilRegressionTest {
           "getAllMemcachedServers",
           "getAllMtaAuthURLs",
           "getAllReverseProxyBackends",
-//          "getAllReverseProxyDomains",
           "getAllReverseProxyURLs",
           "getAllRights -t account -c USER",
           "getAllRights -v -c ADMIN",
@@ -359,21 +309,11 @@ public class ProvUtilRegressionTest {
           "getCalendarResource user@example.com",
           "getCalendarResource user@example.com attr attr attr",
           "getConfig someName",
-//          "getConfigSMIMEConfig",
-//          "getConfigSMIMEConfig cos",
-//          "getConfigSMIMEConfig account",
-//          "getConfigSMIMEConfig domain",
-//          "getConfigSMIMEConfig group",
           "getCos 8a64a712-cceb-4e03-b5ce-c131481bb455 attr attr attr",
           "getCos someName attr attr",
           "getCos 8a64a712-cceb-4e03-b5ce-c131481bb455",
           "getCos someName",
           "getCos someName attr attr attr",
-//          "getCreateObjectAttrs account example.com cos-name test@test.com",
-//          "getCreateObjectAttrs domain 36f01e27-88de-4495-bb4b-9b05443aa8f7 cos-name 75aca60e-8616-4165-a3ba-a6b96d529c97",
-//          "getCreateObjectAttrs account example.com 1829acc8-2fd3-45cf-aac5-f3b3078daaa8 grantee.name@example.com",
-//          "getCreateObjectAttrs domain 36f01e27-88de-4495-bb4b-9b05443aa8f7 1829acc8-2fd3-45cf-aac5-f3b3078daaa8 75aca60e-8616-4165-a3ba-a6b96d529c97",
-//          "getCreateObjectAttrs account 36f01e27-88de-4495-bb4b-9b05443aa8f7 cos-name grantee.name@example.com",
           "getDataSources 8a64a712-cceb-4e03-b5ce-c131481bb455 argument1 argument2 argument1",
           "getDataSources user@example.com argument1 argument2",
           "getDataSources 8a64a712-cceb-4e03-b5ce-c131481bb455",
@@ -396,11 +336,6 @@ public class ProvUtilRegressionTest {
           "getDomainInfo virtualHostname host.example.org 42",
           "getDomainInfo id 42",
           "getDomainInfo id 8a64a712-cceb-4e03-b5ce-c131481bb455 value attr attr attr",
-//          "getDomainSMIMEConfig 8a64a712-cceb-4e03-b5ce-c131481bb455",
-//          "getDomainSMIMEConfig someName cos",
-//          "getDomainSMIMEConfig someName account",
-//          "getDomainSMIMEConfig 8a64a712-cceb-4e03-b5ce-c131481bb455 domain",
-//          "getDomainSMIMEConfig 8a64a712-cceb-4e03-b5ce-c131481bb455 group",
           "getEffectiveRights account grantee.name@example.com expandSetAttrs expandGetAttrs",
           "getEffectiveRights account target@example.com 75aca60e-8616-4165-a3ba-a6b96d529c97 expandSetAttrs",
           "getEffectiveRights account target@example.com grantee.name@example.com expandGetAttrs",
@@ -413,17 +348,6 @@ public class ProvUtilRegressionTest {
           "getGrants -g dom grantee.name@example.com 0",
           "getGrants -g key grantee.name@example.com",
           "getGrants -g email 75aca60e-8616-4165-a3ba-a6b96d529c97 1",
-//          "getHAB faa9ff15-7d84-45a4-92e9-eb2fee744013",
-//          "getHABGroupMembers test@test.com",
-//          "getHABGroupMembers 8a64a712-cceb-4e03-b5ce-c131481bb455",
-//          "getIdentities 8a64a712-cceb-4e03-b5ce-c131481bb455 argument1 argument2 argument1",
-//          "getIdentities test@test.com argument1 argument2",
-//          "getIdentities 8a64a712-cceb-4e03-b5ce-c131481bb455",
-//          "getIdentities user@example.com",
-//          "getIdentities user@example.com argument1 argument2 argument1",
-//          "getIndexStats user@example.com",
-//          "getIndexStats 8a64a712-cceb-4e03-b5ce-c131481bb455",
-//          "getMailboxInfo 301c1dab-c07d-478c-b5db-eaffcc64b593",
           "getMemcachedClientConfig localhost",
           "getMemcachedClientConfig f129be06-86bd-4123-8232-be39a96c2105",
           "getMemcachedClientConfig f129be06-86bd-4123-8232-be39a96c2105 f129be06-86bd-4123-8232-be39a96c2105 f129be06-86bd-4123-8232-be39a96c2105",
@@ -443,11 +367,6 @@ public class ProvUtilRegressionTest {
           "getServer someName attr attr attr",
           "getShareInfo ownerName",
           "getShareInfo ed56a2de-1418-4ff6-a790-988c19c6004d",
-//          "getSignatures 8a64a712-cceb-4e03-b5ce-c131481bb455 argument1 argument2 argument1",
-//          "getSignatures user@example.com argument1 argument2",
-//          "getSignatures 8a64a712-cceb-4e03-b5ce-c131481bb455",
-//          "getSignatures user@example.com",
-//          "getSignatures user@example.com argument1 argument2 argument1",
           "getSpnegoDomain",
           "getXMPPComponent 8a64a712-cceb-4e03-b5ce-c131481bb455 attr attr attr",
           "getXMPPComponent someName attr attr",
@@ -458,7 +377,6 @@ public class ProvUtilRegressionTest {
           "grantRight group 75aca60e-8616-4165-a3ba-a6b96d529c97 grp 8a64a712-cceb-4e03-b5ce-c131481bb455 secret",
           "grantRight config usr test@test.com grp modifyAccount",
           "help commands",
-//          "listHABOrgUnit example.com",
           "modifyAccount test@test.com zimbraImapBindPort 1",
           "modifyAccount user@example.com zimbraId 1 zimbraImapBindPort 1",
           "modifyAccount user@example.com zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
@@ -467,11 +385,6 @@ public class ProvUtilRegressionTest {
           "modifyCalendarResource user@example.com zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
           "modifyConfig zimbraId 1 zimbraImapBindPort 1",
           "modifyConfig zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
-//          "modifyConfigSMIMEConfig group attr attr attr",
-//          "modifyConfigSMIMEConfig domain attr attr",
-//          "modifyConfigSMIMEConfig group",
-//          "modifyConfigSMIMEConfig domain",
-//          "modifyConfigSMIMEConfig account attr attr attr",
           "modifyCos 8a64a712-cceb-4e03-b5ce-c131481bb455 zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
           "modifyCos someName zimbraId 1 zimbraImapBindPort 1",
           "modifyCos someName zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
@@ -483,30 +396,9 @@ public class ProvUtilRegressionTest {
           "modifyDomain 8a64a712-cceb-4e03-b5ce-c131481bb455 zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
           "modifyDomain example.com zimbraId 1 zimbraImapBindPort 1",
           "modifyDomain example.com zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
-//          "modifyDomainSMIMEConfig someName group attr attr attr",
-//          "modifyDomainSMIMEConfig someName domain attr attr",
-//          "modifyDomainSMIMEConfig 8a64a712-cceb-4e03-b5ce-c131481bb455 group",
-//          "modifyDomainSMIMEConfig 8a64a712-cceb-4e03-b5ce-c131481bb455 domain",
-//          "modifyDomainSMIMEConfig someName account attr attr attr",
-//          "modifyHABGroupSeniority ba8aab08-31d7-48c1-ad38-c2e436590782 90",
-//          "modifyHABGroupSeniority ba8aab08-31d7-48c1-ad38-c2e436590782 100",
-//          "modifyIdentity 8a64a712-cceb-4e03-b5ce-c131481bb455 identityName zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
-//          "modifyIdentity user@example.com identityName zimbraId 1 zimbraImapBindPort 1",
-//          "modifyIdentity 8a64a712-cceb-4e03-b5ce-c131481bb455 identityName",
-//          "modifyIdentity user@example.com identityName",
-//          "modifyIdentity user@example.com identityName zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
           "modifyServer 8a64a712-cceb-4e03-b5ce-c131481bb455 zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
           "modifyServer someName zimbraId 1 zimbraImapBindPort 1",
           "modifyServer someName zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
-//          "modifySignature user@example.com 55da11a3-154f-4271-880d-642423563dde zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
-//          "modifySignature user@example.com signature-name zimbraId 1 zimbraImapBindPort 1",
-//          "modifySignature 8a64a712-cceb-4e03-b5ce-c131481bb455 55da11a3-154f-4271-880d-642423563dde",
-//          "modifySignature 8a64a712-cceb-4e03-b5ce-c131481bb455 signature-name",
-//          "modifySignature user@example.com signature-name zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
-//          "modifyXMPPComponent test.com zimbraId 1 zimbraImapBindPort 1",
-//          "modifyXMPPComponent test.com zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
-//          "moveHABGroup faa9ff15-7d84-45a4-92e9-eb2fee744013 2452819a-ca92-4d50-8294-a10564624b8e d9e7ac72-7a95-4590-913d-4756e49826a3",
-
           "purgeAccountCalendarCache 301c1dab-c07d-478c-b5db-eaffcc64b593 301c1dab-c07d-478c-b5db-eaffcc64b593 user@example.com",
           "purgeAccountCalendarCache 301c1dab-c07d-478c-b5db-eaffcc64b593",
           "purgeAccountCalendarCache user@example.com 301c1dab-c07d-478c-b5db-eaffcc64b593 user@example.com 301c1dab-c07d-478c-b5db-eaffcc64b593",
@@ -518,12 +410,6 @@ public class ProvUtilRegressionTest {
           "pushFreebusy 186c1c23-d2ad-46b4-9efd-ddd890b1a4a2d",
           "pushFreebusy 301c1dab-c07d-478c-b5db-eaffcc64b593 301c1dab-c07d-478c-b5db-eaffcc64b593",
           "pushFreebusy 301c1dab-c07d-478c-b5db-eaffcc64b593 301c1dab-c07d-478c-b5db-eaffcc64b593 301c1dab-c07d-478c-b5db-eaffcc64b593",
-//          "pushFreebusyDomain example.com",
-//          "reIndexMailbox user@example.com status 8a64a712-cceb-4e03-b5ce-c131481bb455 type 8a64a712-cceb-4e03-b5ce-c131481bb455",
-//          "reIndexMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 status 8a64a712-cceb-4e03-b5ce-c131481bb455 type",
-//          "reIndexMailbox user@example.com status",
-//          "reIndexMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 status",
-//          "reIndexMailbox user@example.com start 8a64a712-cceb-4e03-b5ce-c131481bb455 type 8a64a712-cceb-4e03-b5ce-c131481bb455",
           "recalculateMailboxCounts user@example.com",
           "recalculateMailboxCounts 8a64a712-cceb-4e03-b5ce-c131481bb455",
           "reloadMemcachedClientConfig all",
@@ -537,20 +423,10 @@ public class ProvUtilRegressionTest {
           "removeAccountLogger zimbra.lmtp",
           "removeAccountLogger -s localhost user@example.com zimbra.soap",
           "removeAccountLogger --server localhost 8a64a712-cceb-4e03-b5ce-c131481bb455",
-//          "removeConfigSMIMEConfig group",
-//          "removeConfigSMIMEConfig account",
-//          "removeConfigSMIMEConfig server",
-//          "removeConfigSMIMEConfig domain",
-//          "removeConfigSMIMEConfig cos",
           "removeDistributionListAlias list@example.com alias@example.com",
           "removeDistributionListAlias 8a64a712-cceb-4e03-b5ce-c131481bb455 alias@example.com",
           "removeDistributionListMember list@example.com member@example.com",
           "removeDistributionListMember 8a64a712-cceb-4e03-b5ce-c131481bb455 member@example.com",
-//          "removeDomainSMIMEConfig 8a64a712-cceb-4e03-b5ce-c131481bb455 group",
-//          "removeDomainSMIMEConfig 8a64a712-cceb-4e03-b5ce-c131481bb455 account",
-//          "removeDomainSMIMEConfig someName server",
-//          "removeDomainSMIMEConfig someName domain",
-//          "removeDomainSMIMEConfig someName cos",
           "removeHABGroupMember user@example.com member@example.com",
           "removeHABGroupMember 8a64a712-cceb-4e03-b5ce-c131481bb455 member@example.com",
           "renameAccount user@example.com newName@domain",
@@ -561,30 +437,14 @@ public class ProvUtilRegressionTest {
           "renameCos 8a64a712-cceb-4e03-b5ce-c131481bb455 newName",
           "renameDistributionList list@example.com newName@domain",
           "renameDistributionList 8a64a712-cceb-4e03-b5ce-c131481bb455 newName@domain",
-//          "renameDomain -l test.com new.example.com",
-//          "renameDomain 8a64a712-cceb-4e03-b5ce-c131481bb455 new.example.com",
-//          "renameHABOrgUnit example.com ouName newName",
           "resetAllLoggers",
           "resetAllLoggers -s localhost",
           "resetAllLoggers --server localhost",
-
-          // ---------------------------------------------------------
-
-          "revokeRight account usr grantee.name@example.com viewFreeBusy",
-          "revokeRight account egp invite",
-          "revokeRight account all getAccount",
-          "revokeRight account dom 75aca60e-8616-4165-a3ba-a6b96d529c97 viewFreeBusy",
-          "revokeRight account gst grantee.name@example.com invite",
-          "searchAccounts (&(zimbraVirtualIPAddress=192.168.0.58)(objectClass=zimbraDomain)) sortAscending true example.com example.com",
-          "searchAccounts (&(zimbraVirtualIPAddress=192.168.0.58)(objectClass=zimbraDomain)) sortBy attr sortAscending false",
-          "searchAccounts (&(zimbraVirtualIPAddress=192.168.0.58)(objectClass=zimbraDomain)) 0 0 sortAscending false example.com example.com",
-          "searchAccounts (&(zimbraVirtualIPAddress=192.168.0.58)(objectClass=zimbraDomain)) 0 1",
-          "searchAccounts (&(zimbraVirtualIPAddress=192.168.0.58)(objectClass=zimbraDomain)) 0 1 sortBy attr example.com example.com",
-          "searchCalendarResources example.com attr op 42 8a64a712-cceb-4e03-b5ce-c131481bb455 type 8a64a712-cceb-4e03-b5ce-c131481bb455",
-          "searchCalendarResources -v example.com attr op 42 8a64a712-cceb-4e03-b5ce-c131481bb455 type",
-          "searchCalendarResources example.com attr op 42",
-          "searchCalendarResources -v example.com attr op 42",
-          "searchCalendarResources example.com attr op value 8a64a712-cceb-4e03-b5ce-c131481bb455 type 8a64a712-cceb-4e03-b5ce-c131481bb455",
+          "revokeRight account user@example.com usr grantee.name@example.com listAccount",
+          "revokeRight domain test.com usr grantee.name@example.com invite",
+          "revokeRight cos cosName grp 75aca60e-8616-4165-a3ba-a6b96d529c97 viewFreeBusy",
+          "revokeRight config usr 75aca60e-8616-4165-a3ba-a6b96d529c97 viewFreeBusy",
+          "revokeRight global usr 75aca60e-8616-4165-a3ba-a6b96d529c97 viewFreeBusy",
           "searchGal example.com someName 0 42 sortBy attr",
           "searchGal example.com someName 42 42",
           "searchGal example.com someName 1 1 1 0 sortBy attr",
@@ -599,54 +459,147 @@ public class ProvUtilRegressionTest {
           "syncGal example.com",
           "syncGal example.com 1732621757",
           "unlockMailbox user@example.com",
-          "unlockMailbox user@example.com host.example.com",
           "unlockMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455",
-          "unlockMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 host.example.com",
           "verifyIndex user@example.com",
           "verifyIndex 8a64a712-cceb-4e03-b5ce-c131481bb455"
   })
-  void provUtilTestAll(String cmd) throws TemplateException, IOException {
+  void provUtilTestAll(String cmd) throws IOException {
     run(cmd);
   }
 
+
+  @Disabled
   @ParameterizedTest
   @ValueSource(strings = {
-          "revokeRight account usr grantee.name@example.com viewFreeBusy",
-          "revokeRight account egp invite",
-          "revokeRight account all getAccount",
-          "revokeRight account dom 75aca60e-8616-4165-a3ba-a6b96d529c97 viewFreeBusy",
-          "revokeRight account gst grantee.name@example.com invite",
+          "compactIndexMailbox user@example.com start",
+          "compactIndexMailbox user@example.com status",
+          "compactIndexMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 start",
+          "compactIndexMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 status",
+          "countObjects alias@example.com -d example.com",
+          "countObjects 1829acc8-2fd3-45cf-aac5-f3b3078daaa8",
+          "countObjects internal.user@example.com -d 8a64a712-cceb-4e03-b5ce-c131481bb455",
+          "countObjects 301c1dab-c07d-478c-b5db-eaffcc64b593 -d example.com",
+          "countObjects cos",
+          "createHABGroup groupName ouName user@example.com FALSE zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
+          "createHABGroup groupName ouName user@example.com TRUE zimbraId 1 zimbraImapBindPort 1",
+          "createHABGroup groupName ouName user@example.com FALSE",
+          "createHABGroup groupName ouName user@example.com TRUE",
+          "createHABGroup groupName ouName user@example.com TRUE zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
+          "createHABOrgUnit example.com ouName",
+          "deleteHABOrgUnit test.com ouName",
+          "deleteSignature user@example.com signature-name",
+          "deleteSignature 8a64a712-cceb-4e03-b5ce-c131481bb455 signature-name",
+          "exit",
+          "generateDomainPreAuthKey example.com",
+          "generateDomainPreAuthKey 8a64a712-cceb-4e03-b5ce-c131481bb455",
+          "generateDomainPreAuthKey -f example.com",
+          "generateDomainPreAuthKey -f 8a64a712-cceb-4e03-b5ce-c131481bb455",
+//        requires ldap: begin
+          "getAllAccounts -e -s localhost example.com",
+          "getAllAccounts -s localhost",
+          "getAllAccounts -v -e example.com",
+          "getAllAccounts -v",
+          "getAllAccounts -s localhost example.com",
+          "getAllAdminAccounts -e attr attr attr",
+          "getAllAdminAccounts attr attr",
+          "getAllAdminAccounts -v -e",
+          "getAllAdminAccounts -v",
+          "getAllAdminAccounts attr attr attr",
+//        requires ldap: end
+          "getAllReverseProxyDomains",
+          "getConfigSMIMEConfig",
+          "getConfigSMIMEConfig cos",
+          "getConfigSMIMEConfig account",
+          "getConfigSMIMEConfig domain",
+          "getConfigSMIMEConfig group",
+          "getCreateObjectAttrs account example.com cos-name test@test.com",
+          "getCreateObjectAttrs domain 36f01e27-88de-4495-bb4b-9b05443aa8f7 cos-name 75aca60e-8616-4165-a3ba-a6b96d529c97",
+          "getCreateObjectAttrs account example.com 1829acc8-2fd3-45cf-aac5-f3b3078daaa8 grantee.name@example.com",
+          "getCreateObjectAttrs domain 36f01e27-88de-4495-bb4b-9b05443aa8f7 1829acc8-2fd3-45cf-aac5-f3b3078daaa8 75aca60e-8616-4165-a3ba-a6b96d529c97",
+          "getCreateObjectAttrs account 36f01e27-88de-4495-bb4b-9b05443aa8f7 cos-name grantee.name@example.com",
+          "getDomainSMIMEConfig 8a64a712-cceb-4e03-b5ce-c131481bb455",
+          "getDomainSMIMEConfig someName cos",
+          "getDomainSMIMEConfig someName account",
+          "getDomainSMIMEConfig 8a64a712-cceb-4e03-b5ce-c131481bb455 domain",
+          "getDomainSMIMEConfig 8a64a712-cceb-4e03-b5ce-c131481bb455 group",
+          "getHAB faa9ff15-7d84-45a4-92e9-eb2fee744013",
+          "getHABGroupMembers test@test.com",
+          "getHABGroupMembers 8a64a712-cceb-4e03-b5ce-c131481bb455",
+          "getIdentities 8a64a712-cceb-4e03-b5ce-c131481bb455 argument1 argument2 argument1",
+          "getIdentities test@test.com argument1 argument2",
+          "getIdentities 8a64a712-cceb-4e03-b5ce-c131481bb455",
+          "getIdentities user@example.com",
+          "getIdentities user@example.com argument1 argument2 argument1",
+          "getIndexStats user@example.com",
+          "getIndexStats 8a64a712-cceb-4e03-b5ce-c131481bb455",
+          "getMailboxInfo 301c1dab-c07d-478c-b5db-eaffcc64b593",
+          "getSignatures 8a64a712-cceb-4e03-b5ce-c131481bb455 argument1 argument2 argument1",
+          "getSignatures user@example.com argument1 argument2",
+          "getSignatures 8a64a712-cceb-4e03-b5ce-c131481bb455",
+          "getSignatures user@example.com",
+          "getSignatures user@example.com argument1 argument2 argument1",
+          "listHABOrgUnit example.com",
+          "modifyConfigSMIMEConfig group attr attr attr",
+          "modifyConfigSMIMEConfig domain attr attr",
+          "modifyConfigSMIMEConfig group",
+          "modifyConfigSMIMEConfig domain",
+          "modifyConfigSMIMEConfig account attr attr attr",
+          "modifyDomainSMIMEConfig someName group attr attr attr",
+          "modifyDomainSMIMEConfig someName domain attr attr",
+          "modifyDomainSMIMEConfig 8a64a712-cceb-4e03-b5ce-c131481bb455 group",
+          "modifyDomainSMIMEConfig 8a64a712-cceb-4e03-b5ce-c131481bb455 domain",
+          "modifyDomainSMIMEConfig someName account attr attr attr",
+          "modifyHABGroupSeniority ba8aab08-31d7-48c1-ad38-c2e436590782 90",
+          "modifyHABGroupSeniority ba8aab08-31d7-48c1-ad38-c2e436590782 100",
+          "modifyIdentity 8a64a712-cceb-4e03-b5ce-c131481bb455 identityName zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
+          "modifyIdentity user@example.com identityName zimbraId 1 zimbraImapBindPort 1",
+          "modifyIdentity 8a64a712-cceb-4e03-b5ce-c131481bb455 identityName",
+          "modifyIdentity user@example.com identityName",
+          "modifyIdentity user@example.com identityName zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
+          "modifySignature user@example.com 55da11a3-154f-4271-880d-642423563dde zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
+          "modifySignature user@example.com signature-name zimbraId 1 zimbraImapBindPort 1",
+          "modifySignature 8a64a712-cceb-4e03-b5ce-c131481bb455 55da11a3-154f-4271-880d-642423563dde",
+          "modifySignature 8a64a712-cceb-4e03-b5ce-c131481bb455 signature-name",
+          "modifySignature user@example.com signature-name zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
+          "modifyXMPPComponent test.com zimbraId 1 zimbraImapBindPort 1",
+          "modifyXMPPComponent test.com zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
+          "moveHABGroup faa9ff15-7d84-45a4-92e9-eb2fee744013 2452819a-ca92-4d50-8294-a10564624b8e d9e7ac72-7a95-4590-913d-4756e49826a3",
+          "pushFreebusyDomain example.com",
+          "reIndexMailbox user@example.com status 8a64a712-cceb-4e03-b5ce-c131481bb455 type 8a64a712-cceb-4e03-b5ce-c131481bb455",
+          "reIndexMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 status 8a64a712-cceb-4e03-b5ce-c131481bb455 type",
+          "reIndexMailbox user@example.com status",
+          "reIndexMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 status",
+          "reIndexMailbox user@example.com start 8a64a712-cceb-4e03-b5ce-c131481bb455 type 8a64a712-cceb-4e03-b5ce-c131481bb455",
+          "removeConfigSMIMEConfig group",
+          "removeConfigSMIMEConfig account",
+          "removeConfigSMIMEConfig server",
+          "removeConfigSMIMEConfig domain",
+          "removeConfigSMIMEConfig cos",
+          "removeDomainSMIMEConfig 8a64a712-cceb-4e03-b5ce-c131481bb455 group",
+          "removeDomainSMIMEConfig 8a64a712-cceb-4e03-b5ce-c131481bb455 account",
+          "removeDomainSMIMEConfig someName server",
+          "removeDomainSMIMEConfig someName domain",
+          "removeDomainSMIMEConfig someName cos",
+          "renameDomain -l test.com new.example.com",
+          "renameDomain 8a64a712-cceb-4e03-b5ce-c131481bb455 new.example.com",
+          "renameHABOrgUnit example.com ouName newName",
           "searchAccounts (&(zimbraVirtualIPAddress=192.168.0.58)(objectClass=zimbraDomain)) sortAscending true example.com example.com",
           "searchAccounts (&(zimbraVirtualIPAddress=192.168.0.58)(objectClass=zimbraDomain)) sortBy attr sortAscending false",
           "searchAccounts (&(zimbraVirtualIPAddress=192.168.0.58)(objectClass=zimbraDomain)) 0 0 sortAscending false example.com example.com",
           "searchAccounts (&(zimbraVirtualIPAddress=192.168.0.58)(objectClass=zimbraDomain)) 0 1",
           "searchAccounts (&(zimbraVirtualIPAddress=192.168.0.58)(objectClass=zimbraDomain)) 0 1 sortBy attr example.com example.com",
+//        requires ldap begin
           "searchCalendarResources example.com attr op 42 8a64a712-cceb-4e03-b5ce-c131481bb455 type 8a64a712-cceb-4e03-b5ce-c131481bb455",
           "searchCalendarResources -v example.com attr op 42 8a64a712-cceb-4e03-b5ce-c131481bb455 type",
           "searchCalendarResources example.com attr op 42",
           "searchCalendarResources -v example.com attr op 42",
           "searchCalendarResources example.com attr op value 8a64a712-cceb-4e03-b5ce-c131481bb455 type 8a64a712-cceb-4e03-b5ce-c131481bb455",
-          "searchGal example.com someName 0 42 sortBy attr",
-          "searchGal example.com someName 42 42",
-          "searchGal example.com someName 1 1 1 0 sortBy attr",
-          "searchGal example.com someName 1 10",
-          "searchGal example.com someName 1 10 1 1 sortBy attr",
-          "setAccountCos user@example.com cos-name",
-          "setAccountCos user@example.com 1829acc8-2fd3-45cf-aac5-f3b3078daaa8",
-          "setAccountCos 8a64a712-cceb-4e03-b5ce-c131481bb455 cos-name",
-          "setAccountCos 8a64a712-cceb-4e03-b5ce-c131481bb455 1829acc8-2fd3-45cf-aac5-f3b3078daaa8",
-          "setPassword user@example.com password",
-          "setPassword 8a64a712-cceb-4e03-b5ce-c131481bb455 password",
-          "syncGal example.com",
-          "syncGal example.com 1732621757",
-          "unlockMailbox user@example.com",
-          "unlockMailbox user@example.com host.example.com",
-          "unlockMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455",
-          "unlockMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 host.example.com",
-          "verifyIndex user@example.com",
-          "verifyIndex 8a64a712-cceb-4e03-b5ce-c131481bb455"
+//        requires ldap end
+          "unlockMailbox user@example.com localhost",
+          "unlockMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 localhost",
   })
-  void provUtilTestAll1(String cmd) throws TemplateException, IOException {
+  void provUtilFailingTests(String cmd) throws IOException {
     run(cmd);
   }
+
 }

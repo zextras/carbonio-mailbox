@@ -10,6 +10,7 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.account.message.CreateIdentityResponse;
 import com.zimbra.soap.account.message.CreateSignatureResponse;
 import com.zimbra.soap.account.message.GetDistributionListMembersResponse;
+import com.zimbra.soap.account.message.RevokeRightsResponse;
 import com.zimbra.soap.account.type.Identity;
 import com.zimbra.soap.account.type.NameId;
 import com.zimbra.soap.admin.message.AddAccountLoggerResponse;
@@ -60,6 +61,10 @@ import com.zimbra.soap.admin.message.ModifyServerResponse;
 import com.zimbra.soap.admin.message.PushFreeBusyResponse;
 import com.zimbra.soap.admin.message.ReIndexResponse;
 import com.zimbra.soap.admin.message.RecalculateMailboxCountsResponse;
+import com.zimbra.soap.admin.message.SearchDirectoryResponse;
+import com.zimbra.soap.admin.message.SetPasswordResponse;
+import com.zimbra.soap.admin.message.UnregisterMailboxMoveOutResponse;
+import com.zimbra.soap.admin.message.VerifyIndexResponse;
 import com.zimbra.soap.admin.type.AccountInfo;
 import com.zimbra.soap.admin.type.AccountLoggerInfo;
 import com.zimbra.soap.admin.type.AccountQuotaInfo;
@@ -199,7 +204,8 @@ public class TrackCommandRequestHandler extends DocumentHandler {
       GetAccountResponse resp = new GetAccountResponse();
       resp.setAccount(new AccountInfo(ACCOUNT_UUID, ACCOUNT_NAME, false, Arrays.asList(
               new Attr(ZAttrProvisioning.A_zimbraId, ACCOUNT_UUID),
-              new Attr(ZAttrProvisioning.A_zimbraMailHost, "localhost")
+              new Attr(ZAttrProvisioning.A_zimbraMailHost, "localhost"),
+              new Attr(ZAttrProvisioning.A_zimbraAccountStatus, "active")
       )));
       return jaxbToElement(resp);
     });
@@ -395,7 +401,22 @@ public class TrackCommandRequestHandler extends DocumentHandler {
       resp.setMailbox(new MailboxQuotaInfo(ACCOUNT_UUID, 42));
       return jaxbToElement(resp);
     });
-
+    responseMapping.put("RevokeRightsRequest", () -> {
+      var resp = new RevokeRightsResponse();
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("SetPasswordRequest", () -> {
+      var resp = new SetPasswordResponse("SetPasswordRequest message");
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("UnregisterMailboxMoveOutRequest", () -> {
+      var resp = new UnregisterMailboxMoveOutResponse();
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("VerifyIndexRequest", () -> {
+      var resp = new VerifyIndexResponse(true, "VerifyIndexResponse message");
+      return jaxbToElement(resp);
+    });
   }
 
   private static Element jaxbToElement(Object resp) {
