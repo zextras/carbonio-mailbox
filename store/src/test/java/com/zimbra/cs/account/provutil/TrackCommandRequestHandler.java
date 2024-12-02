@@ -59,9 +59,7 @@ import com.zimbra.soap.admin.message.ModifyDistributionListResponse;
 import com.zimbra.soap.admin.message.ModifyDomainResponse;
 import com.zimbra.soap.admin.message.ModifyServerResponse;
 import com.zimbra.soap.admin.message.PushFreeBusyResponse;
-import com.zimbra.soap.admin.message.ReIndexResponse;
 import com.zimbra.soap.admin.message.RecalculateMailboxCountsResponse;
-import com.zimbra.soap.admin.message.SearchDirectoryResponse;
 import com.zimbra.soap.admin.message.SetPasswordResponse;
 import com.zimbra.soap.admin.message.UnregisterMailboxMoveOutResponse;
 import com.zimbra.soap.admin.message.VerifyIndexResponse;
@@ -122,7 +120,7 @@ public class TrackCommandRequestHandler extends DocumentHandler {
     return requests;
   }
 
-  Map<String, Supplier<Element>> responseMapping = new HashMap<>();
+  final Map<String, Supplier<Element>> responseMapping = new HashMap<>();
   {
     responseMapping.put("AuthRequest", () -> {
       var resp = new AuthResponse();
@@ -146,7 +144,7 @@ public class TrackCommandRequestHandler extends DocumentHandler {
     });
     responseMapping.put("CopyCosRequest", () -> {
       var resp = new CopyCosResponse();
-      resp.setCos(CosInfo.createForIdAndName("cos-id", "cos-name"));
+      resp.setCos(createCosInfo());
       return jaxbToElement(resp);
     });
     responseMapping.put("CountAccountRequest", () -> {
@@ -156,7 +154,7 @@ public class TrackCommandRequestHandler extends DocumentHandler {
     });
     responseMapping.put("CreateAccountRequest", () -> {
       CreateAccountResponse resp = new CreateAccountResponse();
-      resp.setAccount(new AccountInfo(ACCOUNT_UUID, ACCOUNT_NAME));
+      resp.setAccount(createAccountInfo());
       return jaxbToElement(resp);
     });
     responseMapping.put("CreateCalendarResourceRequest", () -> {
@@ -165,7 +163,7 @@ public class TrackCommandRequestHandler extends DocumentHandler {
     });
     responseMapping.put("CreateCosRequest", () -> {
       var resp = new CreateCosResponse();
-      resp.setCos(CosInfo.createDefaultCosForIdNameAndAttrs("cos-id", "cos-name", List.of()));
+      resp.setCos(createCosInfo());
       return jaxbToElement(resp);
     });
     responseMapping.put("CreateDataSourceRequest", () -> {
@@ -178,9 +176,7 @@ public class TrackCommandRequestHandler extends DocumentHandler {
     });
     responseMapping.put("CreateDomainRequest", () -> {
       var resp = new CreateDomainResponse();
-      resp.setDomain(new DomainInfo(MailboxTestUtil.DEFAULT_DOMAIN_ID, MailboxTestUtil.DEFAULT_DOMAIN, Arrays.asList(
-              new Attr(ZAttrProvisioning.A_zimbraDomainType, "local")
-      )));
+      resp.setDomain(createDomainInfo());
       return jaxbToElement(resp);
     });
     responseMapping.put("CreateIdentityRequest", () -> {
@@ -202,11 +198,7 @@ public class TrackCommandRequestHandler extends DocumentHandler {
     });
     responseMapping.put("GetAccountRequest", () -> {
       GetAccountResponse resp = new GetAccountResponse();
-      resp.setAccount(new AccountInfo(ACCOUNT_UUID, ACCOUNT_NAME, false, Arrays.asList(
-              new Attr(ZAttrProvisioning.A_zimbraId, ACCOUNT_UUID),
-              new Attr(ZAttrProvisioning.A_zimbraMailHost, "localhost"),
-              new Attr(ZAttrProvisioning.A_zimbraAccountStatus, "active")
-      )));
+      resp.setAccount(createAccountInfo());
       return jaxbToElement(resp);
     });
     responseMapping.put("GetAccountLoggersRequest", () -> {
@@ -246,27 +238,17 @@ public class TrackCommandRequestHandler extends DocumentHandler {
       );
       return jaxbToElement(resp);
     });
-    //GetDomainInfoResponse
     responseMapping.put("GetDomainInfoRequest", () -> {
       var resp = new GetDomainInfoResponse();
-      resp.setDomain(new DomainInfo(MailboxTestUtil.DEFAULT_DOMAIN_ID, MailboxTestUtil.DEFAULT_DOMAIN, Arrays.asList(
-              new Attr(ZAttrProvisioning.A_zimbraDomainType, "local"),
-              new Attr(Provisioning.A_zimbraPreAuthKey, "PreAuthkey")
-      )));
+      resp.setDomain(createDomainInfo());
       return jaxbToElement(resp);
     });
     responseMapping.put("GetDomainRequest", () -> {
-      GetDomainResponse resp = new GetDomainResponse(
-              new DomainInfo(MailboxTestUtil.DEFAULT_DOMAIN_ID, MailboxTestUtil.DEFAULT_DOMAIN, Arrays.asList(
-                      new Attr(ZAttrProvisioning.A_zimbraDomainType, "local"),
-                      new Attr(Provisioning.A_zimbraPreAuthKey, "PreAuthkey")
-              ))
-      );
+      GetDomainResponse resp = new GetDomainResponse(createDomainInfo());
       return jaxbToElement(resp);
     });
     responseMapping.put("GetServerRequest", () -> {
-      GetServerResponse resp = new GetServerResponse(new ServerInfo(ACCOUNT_UUID, "localhost",
-          Arrays.asList(new Attr(ZAttrProvisioning.A_zimbraServiceHostname, "localhost"))));
+      GetServerResponse resp = new GetServerResponse(createServerInfo());
       return jaxbToElement(resp);
     });
     responseMapping.put("GetDistributionListRequest", () -> {
@@ -276,7 +258,7 @@ public class TrackCommandRequestHandler extends DocumentHandler {
     });
     responseMapping.put("GetCosRequest", () -> {
       var resp = new GetCosResponse();
-      resp.setCos(CosInfo.createForIdAndName("cos-id", "cos-name"));
+      resp.setCos(createCosInfo());
       return jaxbToElement(resp);
     });
     responseMapping.put("GetXMPPComponentRequest", () -> {
@@ -289,7 +271,7 @@ public class TrackCommandRequestHandler extends DocumentHandler {
     });
     responseMapping.put("GetAllServersRequest", () -> {
       var resp = new GetAllServersResponse();
-      resp.addServer(new ServerInfo("serverId", "serverName"));
+      resp.addServer(createServerInfo());
       return jaxbToElement(resp);
     });
     responseMapping.put("GetAllRightsRequest", () -> {
@@ -357,7 +339,7 @@ public class TrackCommandRequestHandler extends DocumentHandler {
     });
     responseMapping.put("ModifyAccountRequest", () -> {
       var resp = new ModifyAccountResponse();
-      resp.setAccount(new AccountInfo(ACCOUNT_UUID, ACCOUNT_NAME));
+      resp.setAccount(createAccountInfo());
       return jaxbToElement(resp);
     });
     responseMapping.put("ModifyCalendarResourceRequest", () -> {
@@ -368,7 +350,7 @@ public class TrackCommandRequestHandler extends DocumentHandler {
     });
     responseMapping.put("ModifyCosRequest", () -> {
       var resp = new ModifyCosResponse();
-      resp.setCos(CosInfo.createForIdAndName("cos-id", "cos-name"));
+      resp.setCos(createCosInfo());
       return jaxbToElement(resp);
     });
     responseMapping.put("ModifyDataSourceRequest", () -> {
@@ -382,14 +364,12 @@ public class TrackCommandRequestHandler extends DocumentHandler {
     });
     responseMapping.put("ModifyDomainRequest", () -> {
       var resp = new ModifyDomainResponse();
-      resp.setDomain(new DomainInfo(MailboxTestUtil.DEFAULT_DOMAIN_ID, MailboxTestUtil.DEFAULT_DOMAIN, Arrays.asList(
-              new Attr(ZAttrProvisioning.A_zimbraDomainType, "local")
-      )));
+      resp.setDomain(createDomainInfo());
       return jaxbToElement(resp);
     });
     responseMapping.put("ModifyServerRequest", () -> {
       var resp = new ModifyServerResponse();
-      resp.setServer(new ServerInfo("server-id", "server-name"));
+      resp.setServer(createServerInfo());
       return jaxbToElement(resp);
     });
     responseMapping.put("PushFreeBusyRequest", () -> {
@@ -417,6 +397,30 @@ public class TrackCommandRequestHandler extends DocumentHandler {
       var resp = new VerifyIndexResponse(true, "VerifyIndexResponse message");
       return jaxbToElement(resp);
     });
+  }
+
+  private static ServerInfo createServerInfo() {
+    return new ServerInfo(ACCOUNT_UUID, "localhost",
+            Arrays.asList(new Attr(ZAttrProvisioning.A_zimbraServiceHostname, "localhost")));
+  }
+
+  private static DomainInfo createDomainInfo() {
+    return new DomainInfo(MailboxTestUtil.DEFAULT_DOMAIN_ID, MailboxTestUtil.DEFAULT_DOMAIN, Arrays.asList(
+            new Attr(ZAttrProvisioning.A_zimbraDomainType, "local"),
+            new Attr(Provisioning.A_zimbraPreAuthKey, "PreAuthkey")
+    ));
+  }
+
+  private static AccountInfo createAccountInfo() {
+    return new AccountInfo(ACCOUNT_UUID, ACCOUNT_NAME, false, Arrays.asList(
+            new Attr(ZAttrProvisioning.A_zimbraId, ACCOUNT_UUID),
+            new Attr(ZAttrProvisioning.A_zimbraMailHost, "localhost"),
+            new Attr(ZAttrProvisioning.A_zimbraAccountStatus, "active")
+    ));
+  }
+
+  private static CosInfo createCosInfo() {
+    return CosInfo.createForIdAndName("cos-id", "cos-name");
   }
 
   private static Element jaxbToElement(Object resp) {

@@ -10,7 +10,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.cs.service.admin.Auth;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 import io.vavr.control.Try;
@@ -364,7 +363,6 @@ public class TrackCommandRequestService implements DocumentService {
   public void registerHandlers(DocumentDispatcher dispatcher) throws ServiceException {
     TrackCommandRequestHandler handler = new TrackCommandRequestHandler();
     handlerNames.forEach(qname -> dispatcher.registerHandler(qname, handler));
-//    dispatcher.registerHandler(AdminConstants.AUTH_REQUEST, new Auth());
   }
 
   protected Try<MessageBrokerClient> getMessageBroker() {
