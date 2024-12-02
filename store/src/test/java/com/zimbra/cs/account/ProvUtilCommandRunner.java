@@ -27,10 +27,20 @@ public class ProvUtilCommandRunner {
 
   CommandOutput runCommand(List<String> commandWithArgs) throws ServiceException, IOException {
 //    TrackCommandRequestHandler.setCommand(commandWithArgs);
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
+    Thread hook = new Thread(() -> {
+      if (outputStream != null) {
+        System.out.println("stdout");
+        System.out.println(outputStream.toString(StandardCharsets.UTF_8));
+        System.out.println("stderr");
+        System.out.println(errorStream.toString(StandardCharsets.UTF_8));
+      }
+    });
+    Runtime.getRuntime().addShutdownHook(hook);
     try {
-      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
       ProvUtil.main(new ProvUtil.Console(outputStream, errorStream), commandWithArgs.toArray(new String[] {}));
+      Runtime.getRuntime().removeShutdownHook(hook);
       return new CommandOutput(
           outputStream.toString(StandardCharsets.UTF_8),
           errorStream.toString(StandardCharsets.UTF_8),

@@ -15,7 +15,12 @@ public class ProvUtilRequestsFile {
   }
 
   static String getFileName(String cmd) {
-    return cmd.replaceAll("\"\\s@\\.", "_");
+    String fileName = cmd.replaceAll("\"\\s@\\.", "_");
+    if (fileName.length() >= 255) {
+      return fileName.substring(0, 255);
+    } else {
+      return fileName;
+    }
   }
 
   public Path getFilePath(List<String> args) {

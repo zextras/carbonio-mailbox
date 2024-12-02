@@ -9,12 +9,11 @@ import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.account.message.CreateIdentityResponse;
 import com.zimbra.soap.account.message.CreateSignatureResponse;
-import com.zimbra.soap.account.message.GetSignaturesResponse;
+import com.zimbra.soap.account.message.GetDistributionListMembersResponse;
 import com.zimbra.soap.account.type.Identity;
 import com.zimbra.soap.account.type.NameId;
-import com.zimbra.soap.account.type.Signature;
-import com.zimbra.soap.account.type.SignatureContent;
 import com.zimbra.soap.admin.message.AddAccountLoggerResponse;
+import com.zimbra.soap.admin.message.AuthResponse;
 import com.zimbra.soap.admin.message.CheckRightResponse;
 import com.zimbra.soap.admin.message.CopyCosResponse;
 import com.zimbra.soap.admin.message.CountAccountResponse;
@@ -34,14 +33,36 @@ import com.zimbra.soap.admin.message.GetAllConfigResponse;
 import com.zimbra.soap.admin.message.GetAllCosResponse;
 import com.zimbra.soap.admin.message.GetAllDistributionListsResponse;
 import com.zimbra.soap.admin.message.GetAllDomainsResponse;
+import com.zimbra.soap.admin.message.GetAllEffectiveRightsResponse;
+import com.zimbra.soap.admin.message.GetAllRightsResponse;
+import com.zimbra.soap.admin.message.GetAllServersResponse;
 import com.zimbra.soap.admin.message.GetCalendarResourceResponse;
+import com.zimbra.soap.admin.message.GetConfigResponse;
 import com.zimbra.soap.admin.message.GetCosResponse;
 import com.zimbra.soap.admin.message.GetDistributionListResponse;
+import com.zimbra.soap.admin.message.GetDomainInfoResponse;
 import com.zimbra.soap.admin.message.GetDomainResponse;
+import com.zimbra.soap.admin.message.GetEffectiveRightsResponse;
+import com.zimbra.soap.admin.message.GetQuotaUsageResponse;
+import com.zimbra.soap.admin.message.GetRightResponse;
+import com.zimbra.soap.admin.message.GetRightsDocResponse;
+import com.zimbra.soap.admin.message.GetSMIMEConfigResponse;
 import com.zimbra.soap.admin.message.GetServerResponse;
+import com.zimbra.soap.admin.message.GetShareInfoResponse;
 import com.zimbra.soap.admin.message.GetXMPPComponentResponse;
+import com.zimbra.soap.admin.message.ModifyAccountResponse;
+import com.zimbra.soap.admin.message.ModifyCalendarResourceResponse;
+import com.zimbra.soap.admin.message.ModifyCosResponse;
+import com.zimbra.soap.admin.message.ModifyDataSourceResponse;
+import com.zimbra.soap.admin.message.ModifyDistributionListResponse;
+import com.zimbra.soap.admin.message.ModifyDomainResponse;
+import com.zimbra.soap.admin.message.ModifyServerResponse;
+import com.zimbra.soap.admin.message.PushFreeBusyResponse;
+import com.zimbra.soap.admin.message.ReIndexResponse;
+import com.zimbra.soap.admin.message.RecalculateMailboxCountsResponse;
 import com.zimbra.soap.admin.type.AccountInfo;
 import com.zimbra.soap.admin.type.AccountLoggerInfo;
+import com.zimbra.soap.admin.type.AccountQuotaInfo;
 import com.zimbra.soap.admin.type.Attr;
 import com.zimbra.soap.admin.type.CalendarResourceInfo;
 import com.zimbra.soap.admin.type.CheckedRight;
@@ -52,13 +73,23 @@ import com.zimbra.soap.admin.type.DataSourceInfo;
 import com.zimbra.soap.admin.type.DataSourceType;
 import com.zimbra.soap.admin.type.DistributionListInfo;
 import com.zimbra.soap.admin.type.DomainInfo;
+import com.zimbra.soap.admin.type.EffectiveAttrsInfo;
+import com.zimbra.soap.admin.type.EffectiveRightsTargetInfo;
+import com.zimbra.soap.admin.type.GranteeInfo;
 import com.zimbra.soap.admin.type.GranteeWithType;
 import com.zimbra.soap.admin.type.LoggerInfo;
+import com.zimbra.soap.admin.type.MailboxQuotaInfo;
+import com.zimbra.soap.admin.type.PackageRightsInfo;
+import com.zimbra.soap.admin.type.RightInfo;
 import com.zimbra.soap.admin.type.RightViaInfo;
+import com.zimbra.soap.admin.type.SMIMEConfigInfo;
 import com.zimbra.soap.admin.type.ServerInfo;
 import com.zimbra.soap.admin.type.TargetWithType;
 import com.zimbra.soap.admin.type.XMPPComponentInfo;
+import com.zimbra.soap.type.GranteeType;
 import com.zimbra.soap.type.LoggingLevel;
+import com.zimbra.soap.type.ShareInfo;
+import com.zimbra.soap.type.TargetType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,6 +119,12 @@ public class TrackCommandRequestHandler extends DocumentHandler {
 
   Map<String, Supplier<Element>> responseMapping = new HashMap<>();
   {
+    responseMapping.put("AuthRequest", () -> {
+      var resp = new AuthResponse();
+      resp.setLifetime(803400943);
+      resp.setAuthToken("0_2b6c930a7ca1a02daad5f27528d6c9986317204e_69643d33363a62333134613231652d666137392d346533352d613765352d6437666637303834333866363b6578703d31333a313733323535383437303239303b76763d323a31363b747970653d363a7a696d6272613b753d313a613b7469643d31303a313131353331313832383b");
+      return jaxbToElement(resp);
+    });
     responseMapping.put("AddAccountLoggerRequest", () -> {
       AddAccountLoggerResponse resp = AddAccountLoggerResponse.create(Arrays.asList(
               LoggerInfo.createForCategoryAndLevel("mycat", LoggingLevel.debug)
@@ -161,7 +198,8 @@ public class TrackCommandRequestHandler extends DocumentHandler {
     responseMapping.put("GetAccountRequest", () -> {
       GetAccountResponse resp = new GetAccountResponse();
       resp.setAccount(new AccountInfo(ACCOUNT_UUID, ACCOUNT_NAME, false, Arrays.asList(
-              new Attr(ZAttrProvisioning.A_zimbraId, ACCOUNT_UUID)
+              new Attr(ZAttrProvisioning.A_zimbraId, ACCOUNT_UUID),
+              new Attr(ZAttrProvisioning.A_zimbraMailHost, "localhost")
       )));
       return jaxbToElement(resp);
     });
@@ -202,6 +240,15 @@ public class TrackCommandRequestHandler extends DocumentHandler {
       );
       return jaxbToElement(resp);
     });
+    //GetDomainInfoResponse
+    responseMapping.put("GetDomainInfoRequest", () -> {
+      var resp = new GetDomainInfoResponse();
+      resp.setDomain(new DomainInfo(MailboxTestUtil.DEFAULT_DOMAIN_ID, MailboxTestUtil.DEFAULT_DOMAIN, Arrays.asList(
+              new Attr(ZAttrProvisioning.A_zimbraDomainType, "local"),
+              new Attr(Provisioning.A_zimbraPreAuthKey, "PreAuthkey")
+      )));
+      return jaxbToElement(resp);
+    });
     responseMapping.put("GetDomainRequest", () -> {
       GetDomainResponse resp = new GetDomainResponse(
               new DomainInfo(MailboxTestUtil.DEFAULT_DOMAIN_ID, MailboxTestUtil.DEFAULT_DOMAIN, Arrays.asList(
@@ -226,18 +273,129 @@ public class TrackCommandRequestHandler extends DocumentHandler {
       resp.setCos(CosInfo.createForIdAndName("cos-id", "cos-name"));
       return jaxbToElement(resp);
     });
-//    responseMapping.put("GetSignaturesRequest", () -> {
-//      var resp = new GetSignaturesResponse();
-//      resp.setSignatures(Arrays.asList(new Signature("98c376cc-5443-496d-acf0-373c0888af9c", "signature-name", List.of(
-//              new SignatureContent("signatureContent", "text/plain")
-//      ), "signatureCid")));
-//      return jaxbToElement(resp);
-//    });
-    //GetXMPPComponentRequest
     responseMapping.put("GetXMPPComponentRequest", () -> {
       var resp = new GetXMPPComponentResponse(new XMPPComponentInfo("xmppComponentInfoName", "xmppComponentInfoId"));
       return jaxbToElement(resp);
     });
+    responseMapping.put("GetAllEffectiveRightsRequest", () -> {
+      var resp = new GetAllEffectiveRightsResponse(new GranteeInfo(GranteeType.usr, "granteeId", "granteeName"));
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("GetAllServersRequest", () -> {
+      var resp = new GetAllServersResponse();
+      resp.addServer(new ServerInfo("serverId", "serverName"));
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("GetAllRightsRequest", () -> {
+      var resp = new GetAllRightsResponse();
+      RightInfo rightInfo = new RightInfo();
+      rightInfo.setName("getAccount");
+      resp.setRights(Arrays.asList(rightInfo));
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("GetConfigRequest", () -> {
+      var resp = new GetConfigResponse();
+      resp.setAttrs(Arrays.asList(new Attr(ZAttrProvisioning.A_zimbraId, "attrId")));
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("GetSMIMEConfigRequest", () -> {
+      var resp = new GetSMIMEConfigResponse();
+      resp.setConfigs(Arrays.asList(new SMIMEConfigInfo("smimeConfigInfoName")));
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("GetDistributionListMembersRequest", () -> {
+      var resp = new GetDistributionListMembersResponse();
+      resp.addDlMember("test@test.com");
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("GetEffectiveRightsRequest", () -> {
+      var resp = new GetEffectiveRightsResponse(
+              new GranteeInfo(GranteeType.usr, "granteeId", "granteeName"),
+              new EffectiveRightsTargetInfo(
+                      TargetType.account,
+                      "targetTypeId", "targetTypeName",
+                      new EffectiveAttrsInfo(true),
+                      new EffectiveAttrsInfo(true)
+              )
+      );
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("GetQuotaUsageRequest", () -> {
+      var resp = new GetQuotaUsageResponse(false, 1,
+              Arrays.asList(new AccountQuotaInfo(
+                      ACCOUNT_UUID, ACCOUNT_NAME, 500, 1000
+              ))
+      );
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("GetRightRequest", () -> {
+      RightInfo rightInfo = new RightInfo();
+      rightInfo.setName("getAccount");
+      var resp = new GetRightResponse(rightInfo);
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("GetRightsDocRequest", () -> {
+      var resp = new GetRightsDocResponse();
+      resp.setPackages(List.of(new PackageRightsInfo("packageRightsInfoName")));
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("GetShareInfoRequest", () -> {
+      var resp = new GetShareInfoResponse();
+      ShareInfo shareInfo = new ShareInfo();
+      shareInfo.setOwnerDisplayName("ownerDisplayName");
+      shareInfo.setOwnerEmail(ACCOUNT_NAME);
+      shareInfo.setOwnerId(ACCOUNT_UUID);
+      shareInfo.setGranteeType("usr");
+      resp.setShares(List.of(shareInfo));
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("ModifyAccountRequest", () -> {
+      var resp = new ModifyAccountResponse();
+      resp.setAccount(new AccountInfo(ACCOUNT_UUID, ACCOUNT_NAME));
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("ModifyCalendarResourceRequest", () -> {
+      var resp = new ModifyCalendarResourceResponse(
+              new CalendarResourceInfo("calendarResourceId", "calendarResourceName")
+      );
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("ModifyCosRequest", () -> {
+      var resp = new ModifyCosResponse();
+      resp.setCos(CosInfo.createForIdAndName("cos-id", "cos-name"));
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("ModifyDataSourceRequest", () -> {
+      var resp = new ModifyDataSourceResponse();
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("ModifyDistributionListRequest", () -> {
+      var resp = new ModifyDistributionListResponse();
+      resp.setDl(new DistributionListInfo("dlId", "dlName"));
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("ModifyDomainRequest", () -> {
+      var resp = new ModifyDomainResponse();
+      resp.setDomain(new DomainInfo(MailboxTestUtil.DEFAULT_DOMAIN_ID, MailboxTestUtil.DEFAULT_DOMAIN, Arrays.asList(
+              new Attr(ZAttrProvisioning.A_zimbraDomainType, "local")
+      )));
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("ModifyServerRequest", () -> {
+      var resp = new ModifyServerResponse();
+      resp.setServer(new ServerInfo("server-id", "server-name"));
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("PushFreeBusyRequest", () -> {
+      var resp = new PushFreeBusyResponse();
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("RecalculateMailboxCountsRequest", () -> {
+      var resp = new RecalculateMailboxCountsResponse();
+      resp.setMailbox(new MailboxQuotaInfo(ACCOUNT_UUID, 42));
+      return jaxbToElement(resp);
+    });
+
   }
 
   private static Element jaxbToElement(Object resp) {

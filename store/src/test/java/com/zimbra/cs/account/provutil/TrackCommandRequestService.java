@@ -24,7 +24,7 @@ public class TrackCommandRequestService implements DocumentService {
   static final List<QName> handlerNames = Arrays.asList(AdminConstants.PING_REQUEST
           , AdminConstants.CHECK_HEALTH_REQUEST
           , AdminConstants.GET_ALL_LOCALES_REQUEST
-//          , AdminConstants.AUTH_REQUEST
+          , AdminConstants.AUTH_REQUEST
           , AdminConstants.CREATE_ACCOUNT_REQUEST
           , AdminConstants.CREATE_GAL_SYNC_ACCOUNT_REQUEST
           , AdminConstants.ADD_GAL_SYNC_DATASOURCE_REQUEST
@@ -364,7 +364,7 @@ public class TrackCommandRequestService implements DocumentService {
   public void registerHandlers(DocumentDispatcher dispatcher) throws ServiceException {
     TrackCommandRequestHandler handler = new TrackCommandRequestHandler();
     handlerNames.forEach(qname -> dispatcher.registerHandler(qname, handler));
-    dispatcher.registerHandler(AdminConstants.AUTH_REQUEST, new Auth());
+//    dispatcher.registerHandler(AdminConstants.AUTH_REQUEST, new Auth());
   }
 
   protected Try<MessageBrokerClient> getMessageBroker() {
