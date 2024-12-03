@@ -5,6 +5,10 @@
 package com.zimbra.cs.account;
 
 import static com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
 
 import com.zextras.mailbox.soap.SoapExtension;
 import com.zimbra.common.localconfig.LC;
@@ -13,6 +17,7 @@ import com.zimbra.cs.account.ProvUtil.Console;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -27,6 +32,9 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.mockserver.integration.ClientAndServer;
 
 @Tag("api")
 class ProvUtilTest {
@@ -210,6 +218,25 @@ class ProvUtilTest {
 
   @Test
   void deleteAccount() throws Exception {
+    // Mock service discover to return 404 when checking if carbonio-files is installed
+    ClientAndServer consulServer = startClientAndServer(8500);
+    MockedStatic<Files> mockFileSystem = Mockito.mockStatic(Files.class, Mockito.CALLS_REAL_METHODS);
+		mockFileSystem.when(() -> Files.readString(any())).thenReturn("");
+
+		consulServer
+        .when(request().withPath("/v1/kv/carbonio-message-broker/default/username"))
+				.respond(response().withStatusCode(200).withBody("[" +
+						"{\"Value\": \"test\"}" +
+						"]"));
+    consulServer
+        .when(request().withPath("/v1/kv/carbonio-message-broker/default/password"))
+				.respond(response().withStatusCode(200).withBody("[" +
+						"{\"Value\": \"test\"}" +
+						"]"));
+    consulServer
+        .when(request().withPath("/v1/health/checks/carbonio-files"))
+        .respond(response().withStatusCode(404));
+
     final String accountName = UUID.randomUUID() + "@test.com";
     runCommand(new String[]{"ca", accountName, "password"});
 
