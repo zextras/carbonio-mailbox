@@ -9,11 +9,9 @@
 package com.zimbra.cs.service.admin;
 
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
-import com.zextras.carbonio.message_broker.config.enums.Service;
 import com.zextras.carbonio.message_broker.events.services.mailbox.DeleteUserRequested;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.client.ServiceDiscoverHttpClient;
-import com.zextras.mailbox.messageBroker.CreateMessageBrokerException;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
@@ -91,21 +89,22 @@ public class DeleteAccount extends AdminDocumentHandler {
     // If files is installed, mailbox must emit an event so files will delete user's files and blobs and only then
     // send another event back to mailbox to delete the account (see DeletedUserFilesConsumer)
     // If files is not installed, mailbox can delete the account directly as it always did
+    boolean isFilesInstalled;
 
     Path filePath = Paths.get("/etc/carbonio/mailbox/service-discover/token");
 		String token;
 		try {
 			token = Files.readString(filePath);
 			ServiceDiscoverHttpClient serviceDiscoverHttpClient =
-					ServiceDiscoverHttpClient.defaultURL("carbonio-files")
+					ServiceDiscoverHttpClient.defaultUrl()
 							.withToken(token);
 
-		} catch (IOException e) {
+      isFilesInstalled = serviceDiscoverHttpClient.isServiceInstalled("carbonio-files").get();
+
+		} catch (Exception e) {
       // Throw if it can't get if files is installed or not since we don't know what to do
 			throw ServiceException.FAILURE("Delete account " + account.getMail() + " has an error: " + e.getMessage(), e);
 		}
-
-    boolean isFilesInstalled = false; //TODO how to get this? using consul maybe
 
     if (isFilesInstalled) {
       publishDeleteUserRequestedEvent(account);
