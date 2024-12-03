@@ -17,6 +17,7 @@ public enum Category {
   SEARCH("help on search-related commands"),
   SERVER("help on server-related commands"),
   SHARE("help on share related commands"),
+  //FIXME check usage of this category
   HAB("help on HAB commands");
 
   private final String description;

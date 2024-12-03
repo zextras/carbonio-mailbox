@@ -71,7 +71,6 @@ import com.zimbra.cs.util.BuildInfo;
 import com.zimbra.cs.util.SoapCLI;
 import com.zimbra.cs.zclient.ZMailboxUtil;
 import com.zimbra.soap.JaxbUtil;
-import com.zimbra.soap.account.type.HABGroupMember;
 import com.zimbra.soap.admin.message.LockoutMailboxRequest;
 import com.zimbra.soap.admin.message.UnregisterMailboxMoveOutRequest;
 import com.zimbra.soap.admin.type.CountObjectsType;
@@ -718,15 +717,12 @@ public class ProvUtil implements HttpDebugListener {
         prov.modifyAttrs(lookupGroup(args[1]), getMapAndCheck(args, 2, false), true);
         break;
       case DELETE_DISTRIBUTION_LIST:
-      case DELETE_HAB_GROUP:
         doDeleteDistributionList(args);
         break;
       case ADD_DISTRIBUTION_LIST_MEMBER:
-      case ADD_HAB_GROUP_MEMBER:
         doAddMember(args);
         break;
       case REMOVE_DISTRIBUTION_LIST_MEMBER:
-      case REMOVE_HAB_GROUP_MEMBER:
         doRemoveMember(args);
         break;
       case CREATE_BULK_ACCOUNTS:
@@ -872,33 +868,6 @@ public class ProvUtil implements HttpDebugListener {
       case UNLOCK_MAILBOX:
         doUnlockMailbox(args);
         break;
-      case CREATE_HAB_OU:
-        doCreateHabOrgUnit(args);
-        break;
-      case LIST_HAB_OU:
-        doListHabOrgUnit(args);
-        break;
-      case RENAME_HAB_OU:
-        doRenameHabOrgUnit(args);
-        break;
-      case DELETE_HAB_OU:
-        doDeleteHabOrgUnit(args);
-        break;
-      case CREATE_HAB_GROUP:
-        doCreateHabGroup(args);
-        break;
-      case GET_HAB:
-        doGetHab(args);
-        break;
-      case MOVE_HAB_GROUP:
-        modifyHabGroup(args);
-        break;
-      case MODIFY_HAB_GROUP_SENIORITY:
-        modifyHabGroupSeniority(args);
-        break;
-      case GET_HAB_GROUP_MEMBERS:
-        doGetHABGroupMembers(args);
-        break;
       default:
         return false;
     }
@@ -915,11 +884,6 @@ public class ProvUtil implements HttpDebugListener {
     String[] members = new String[args.length - 2];
     System.arraycopy(args, 2, members, 0, args.length - 2);
     prov.removeGroupMembers(lookupGroup(args[1]), members);
-  }
-
-  private void doGetHABGroupMembers(String[] args) throws ServiceException {
-    List<HABGroupMember> groupMembers = prov.getHABGroupMembers(lookupGroup(args[1]));
-    groupMembers.forEach(console::println);
   }
 
   private void sendMailboxLockoutRequest(String acctName, String server, String operation)
@@ -1056,102 +1020,6 @@ public class ProvUtil implements HttpDebugListener {
         }
       }
     }
-  }
-
-  private void doCreateHabOrgUnit(String[] args) throws ServiceException {
-    if (args.length != 3) {
-      usage();
-      return;
-    }
-    Domain domain = lookupDomain(args[1], prov, Boolean.FALSE);
-    prov.createHabOrgUnit(domain, args[2]);
-  }
-
-  private void doListHabOrgUnit(String[] args) throws ServiceException {
-    if (args.length != 2) {
-      usage();
-      return;
-    }
-    Domain domain = lookupDomain(args[1], prov, Boolean.FALSE);
-    Set<String> resultSet;
-    resultSet = prov.listHabOrgUnit(domain);
-    for (String result : resultSet) {
-      console.println(String.format("%s", result));
-    }
-  }
-
-  private void doRenameHabOrgUnit(String[] args) throws ServiceException {
-    if (args.length != 4) {
-      usage();
-      return;
-    }
-    Domain domain = lookupDomain(args[1], prov, Boolean.FALSE);
-    prov.renameHabOrgUnit(domain, args[2], args[3]);
-  }
-
-  private void doDeleteHabOrgUnit(String[] args) throws ServiceException {
-    if (args.length != 3) {
-      usage();
-      return;
-    }
-    Domain domain = lookupDomain(args[1], prov, Boolean.FALSE);
-    prov.deleteHabOrgUnit(domain, args[2]);
-  }
-
-  private void doGetHab(String[] args) throws ServiceException {
-    if (args.length != 2) {
-      usage();
-      return;
-    }
-    if (!(prov instanceof SoapProvisioning)) {
-      throwSoapOnly();
-    }
-    SoapProvisioning sp = (SoapProvisioning) prov;
-    Element response = sp.getHab(args[1]);
-    console.printOutput(response.prettyPrint());
-  }
-
-  private void modifyHabGroup(String[] args) throws ServiceException {
-    if (!(prov instanceof SoapProvisioning)) {
-      throwSoapOnly();
-    }
-    // {habRootGrpId} {habParentGrpId} {targetHabParentGrpId}
-    if (args.length == 4) {
-      ((SoapProvisioning) prov).modifyHabGroup(args[1], args[2], args[3]);
-    } else if (args.length == 3) {
-      ((SoapProvisioning) prov).modifyHabGroup(args[1], null, args[2]);
-    } else {
-      usage();
-    }
-  }
-
-  private void modifyHabGroupSeniority(String[] args) throws ServiceException {
-    if (!(prov instanceof SoapProvisioning)) {
-      throwSoapOnly();
-    }
-
-    // {habGrpId} {seniorityIndex}
-    if (args.length == 3) {
-      ((SoapProvisioning) prov).modifyHabGroupSeniority(args[1], args[2]);
-    } else {
-      usage();
-    }
-  }
-
-  private void doCreateHabGroup(String[] args) throws ServiceException, ArgException {
-    if (!(prov instanceof SoapProvisioning)) {
-      throwSoapOnly();
-    }
-    if (args.length < 4) {
-      usage();
-      return;
-    }
-    String isDynamic = "false";
-    if (args.length > 4) {
-      isDynamic = args[4];
-    }
-    ((SoapProvisioning) prov)
-        .createHabGroup(args[1], args[2], args[3], isDynamic, getMapAndCheck(args, 5, false));
   }
 
   private void doGetDomain(String[] args) throws ServiceException {

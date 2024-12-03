@@ -595,44 +595,7 @@ public enum Command {
       Category.MAILBOX,
       1,
       2,
-      Via.soap),
-  CREATE_HAB_OU("createHABOrgUnit", "chou", "{domain} {ouName}", Category.HAB, 2, 2),
-  LIST_HAB_OU("listHABOrgUnit", "lhou", "{domain}", Category.HAB, 1, 1),
-  RENAME_HAB_OU("renameHABOrgUnit", "rhou", "{domain} {ouName} {newName}", Category.HAB, 3, 3),
-  DELETE_HAB_OU("deleteHABOrgUnit", "dhou", "{domain} {ouName}", Category.HAB, 2, 2),
-  CREATE_HAB_GROUP(
-      "createHABGroup",
-      "chg",
-      "{groupName} {ouName} {name@domain} {TRUE|FALSE} [attr1 value1 [attr2 value2...]]",
-      Category.HAB,
-      3,
-      Integer.MAX_VALUE),
-  GET_HAB("getHAB", "ghab", "{habRootGrpId}", Category.HAB, 1, 1),
-  MOVE_HAB_GROUP(
-      "moveHABGroup",
-      "mhg",
-      "{habRootGrpId} {habParentGrpId} {targetHabParentGrpId}",
-      Category.HAB,
-      3,
-      3),
-  ADD_HAB_GROUP_MEMBER(
-      "addHABGroupMember",
-      "ahgm",
-      "{name@domain|id} {member@domain}+",
-      Category.HAB,
-      2,
-      Integer.MAX_VALUE),
-  REMOVE_HAB_GROUP_MEMBER(
-      "removeHABGroupMember",
-      "rhgm",
-      "{name@domain|id} {member@domain}",
-      Category.HAB,
-      2,
-      Integer.MAX_VALUE),
-  DELETE_HAB_GROUP("deleteHABGroup", "dhg", "{name@domain|id} [true|false]", Category.HAB, 1, 2),
-  MODIFY_HAB_GROUP_SENIORITY(
-      "modifyHABGroupSeniority", "mhgs", "{habGrpId} {seniorityIndex} ", Category.HAB, 2, 2),
-  GET_HAB_GROUP_MEMBERS("getHABGroupMembers", "ghgm", "{name@domain|id}", Category.HAB, 1, 1);
+      Via.soap);
 
   private final String mName;
   private final String mAlias;

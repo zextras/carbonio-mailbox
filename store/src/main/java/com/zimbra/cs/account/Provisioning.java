@@ -2282,17 +2282,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
 
   public abstract void deleteXMPPComponent(XMPPComponent comp) throws ServiceException;
 
-  public abstract Set<String> createHabOrgUnit(Domain domain, String habOrgUnitName)
-      throws ServiceException;
-
-  public abstract Set<String> listHabOrgUnit(Domain domain) throws ServiceException;
-
-  public abstract Set<String> renameHabOrgUnit(
-      Domain domain, String habOrgUnitName, String newHabOrgUnitName) throws ServiceException;
-
-  public abstract void deleteHabOrgUnit(Domain domain, String habOrgUnitName)
-      throws ServiceException;
-
   public static class RightsDoc {
     private final String mCmd;
     private final List<String> mRights;
@@ -2703,24 +2692,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
     for (ProvisioningValidator validator : validators) {
       validator.refresh();
     }
-  }
-
-  /**
-   * @param domain
-   * @param rootDn
-   * @return
-   */
-  public List<LdapDistributionList> getAllHabGroups(Domain domain, String rootDn)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
-  /**
-   * @param oldDn
-   * @param parentDn
-   */
-  public void changeHABGroupParent(String oldDn, String parentDn) throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
   }
 
   /**
