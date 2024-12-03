@@ -300,9 +300,6 @@ public enum Command {
       Category.DOMAIN,
       2,
       Integer.MAX_VALUE),
-  GET_CONFIG_SMIME_CONFIG("getConfigSMIMEConfig", "gcsc", "[configName]", Category.DOMAIN, 0, 1),
-  GET_DOMAIN_SMIME_CONFIG(
-      "getDomainSMIMEConfig", "gdsc", "name|id [configName]", Category.DOMAIN, 1, 2),
   GET_EFFECTIVE_RIGHTS(
       "getEffectiveRights",
       "ger",
@@ -422,20 +419,6 @@ public enum Command {
       Category.DOMAIN,
       3,
       Integer.MAX_VALUE),
-  MODIFY_CONFIG_SMIME_CONFIG(
-      "modifyConfigSMIMEConfig",
-      "mcsc",
-      "configName [attr2 value2...]]",
-      Category.DOMAIN,
-      1,
-      Integer.MAX_VALUE),
-  MODIFY_DOMAIN_SMIME_CONFIG(
-      "modifyDomainSMIMEConfig",
-      "mdsc",
-      "name|id configName [attr2 value2...]]",
-      Category.DOMAIN,
-      2,
-      Integer.MAX_VALUE),
   MODIFY_IDENTITY(
       "modifyIdentity",
       "mid",
@@ -501,10 +484,6 @@ public enum Command {
       Category.LIST,
       2,
       Integer.MAX_VALUE),
-  REMOVE_CONFIG_SMIME_CONFIG(
-      "removeConfigSMIMEConfig", "rcsc", "configName", Category.DOMAIN, 1, 1),
-  REMOVE_DOMAIN_SMIME_CONFIG(
-      "removeDomainSMIMEConfig", "rdsc", "name|id configName", Category.DOMAIN, 2, 2),
   RENAME_ACCOUNT(
       "renameAccount", "ra", "{name@domain|id} {newName@domain}", Category.ACCOUNT, 2, 2),
   CHANGE_PRIMARY_EMAIL(

@@ -541,12 +541,6 @@ public class ProvUtil implements HttpDebugListener {
       case GET_DOMAIN_INFO:
         doGetDomainInfo(args);
         break;
-      case GET_CONFIG_SMIME_CONFIG:
-        doGetConfigSMIMEConfig(args);
-        break;
-      case GET_DOMAIN_SMIME_CONFIG:
-        doGetDomainSMIMEConfig(args);
-        break;
       case GET_FREEBUSY_QUEUE_INFO:
         doGetFreeBusyQueueInfo(args);
         break;
@@ -612,12 +606,6 @@ public class ProvUtil implements HttpDebugListener {
       case MODIFY_DOMAIN:
         prov.modifyAttrs(lookupDomain(args[1]), getMapAndCheck(args, 2, false), true);
         break;
-      case MODIFY_CONFIG_SMIME_CONFIG:
-        doModifyConfigSMIMEConfig(args);
-        break;
-      case MODIFY_DOMAIN_SMIME_CONFIG:
-        doModifyDomainSMIMEConfig(args);
-        break;
       case MODIFY_SERVER:
         prov.modifyAttrs(lookupServer(args[1]), getMapAndCheck(args, 2, false), true);
         break;
@@ -676,12 +664,6 @@ public class ProvUtil implements HttpDebugListener {
           return true;
         }
         doRemoveAccountLogger(alo);
-        break;
-      case REMOVE_CONFIG_SMIME_CONFIG:
-        doRemoveConfigSMIMEConfig(args);
-        break;
-      case REMOVE_DOMAIN_SMIME_CONFIG:
-        doRemoveDomainSMIMEConfig(args);
         break;
       case RENAME_ACCOUNT:
         doRenameAccount(args);
@@ -4412,75 +4394,6 @@ public class ProvUtil implements HttpDebugListener {
     }
     FbCli fbcli = new FbCli();
     fbcli.purgeFreeBusyQueue(provider);
-  }
-
-  private void dumpSMIMEConfigs(Map<String, Map<String, Object>> smimeConfigs)
-      throws ServiceException {
-    for (Map.Entry<String, Map<String, Object>> smimeConfig : smimeConfigs.entrySet()) {
-      String configName = smimeConfig.getKey();
-      Map<String, Object> configAttrs = smimeConfig.getValue();
-
-      console.println("# name " + configName);
-      dumpAttrs(configAttrs, null);
-      console.println();
-    }
-  }
-
-  private void doGetConfigSMIMEConfig(String[] args) throws ServiceException {
-    String configName = null;
-    if (args.length > 1) {
-      configName = args[1];
-    }
-
-    Map<String, Map<String, Object>> smimeConfigs = prov.getConfigSMIMEConfig(configName);
-    dumpSMIMEConfigs(smimeConfigs);
-  }
-
-  private void doGetDomainSMIMEConfig(String[] args) throws ServiceException {
-    String domainName = args[1];
-    Domain domain = lookupDomain(domainName);
-
-    String configName = null;
-    if (args.length > 2) {
-      configName = args[2];
-    }
-
-    Map<String, Map<String, Object>> smimeConfigs = prov.getDomainSMIMEConfig(domain, configName);
-    dumpSMIMEConfigs(smimeConfigs);
-  }
-
-  private void doModifyConfigSMIMEConfig(String[] args) throws ServiceException, ArgException {
-    String configName = args[1];
-    prov.modifyConfigSMIMEConfig(configName, getMapAndCheck(args, 2, false));
-  }
-
-  private void doModifyDomainSMIMEConfig(String[] args) throws ServiceException, ArgException {
-    String domainName = args[1];
-    Domain domain = lookupDomain(domainName);
-
-    String configName = args[2];
-    prov.modifyDomainSMIMEConfig(domain, configName, getMapAndCheck(args, 3, false));
-  }
-
-  private void doRemoveConfigSMIMEConfig(String[] args) throws ServiceException {
-    String configName = null;
-    if (args.length > 1) {
-      configName = args[1];
-    }
-
-    prov.removeConfigSMIMEConfig(configName);
-  }
-
-  private void doRemoveDomainSMIMEConfig(String[] args) throws ServiceException {
-    String domainName = args[1];
-    Domain domain = lookupDomain(domainName);
-
-    String configName = null;
-    if (args.length > 2) {
-      configName = args[2];
-    }
-
-    prov.removeDomainSMIMEConfig(domain, configName);
   }
 
   private void doHelp(String[] args) {

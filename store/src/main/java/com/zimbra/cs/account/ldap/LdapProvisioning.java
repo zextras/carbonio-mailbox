@@ -9681,46 +9681,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   }
 
   @Override
-  public Map<String, Map<String, Object>> getDomainSMIMEConfig(Domain domain, String configName)
-      throws ServiceException {
-    LdapSMIMEConfig smime = LdapSMIMEConfig.getInstance(domain);
-    return smime.get(configName);
-  }
-
-  @Override
-  public void modifyDomainSMIMEConfig(Domain domain, String configName, Map<String, Object> attrs)
-      throws ServiceException {
-    LdapSMIMEConfig smime = LdapSMIMEConfig.getInstance(domain);
-    smime.modify(configName, attrs);
-  }
-
-  @Override
-  public void removeDomainSMIMEConfig(Domain domain, String configName) throws ServiceException {
-    LdapSMIMEConfig smime = LdapSMIMEConfig.getInstance(domain);
-    smime.remove(configName);
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getConfigSMIMEConfig(String configName)
-      throws ServiceException {
-    LdapSMIMEConfig smime = LdapSMIMEConfig.getInstance(getConfig());
-    return smime.get(configName);
-  }
-
-  @Override
-  public void modifyConfigSMIMEConfig(String configName, Map<String, Object> attrs)
-      throws ServiceException {
-    LdapSMIMEConfig smime = LdapSMIMEConfig.getInstance(getConfig());
-    smime.modify(configName, attrs);
-  }
-
-  @Override
-  public void removeConfigSMIMEConfig(String configName) throws ServiceException {
-    LdapSMIMEConfig smime = LdapSMIMEConfig.getInstance(getConfig());
-    smime.remove(configName);
-  }
-
-  @Override
   public void searchLdapOnMaster(
       String base, String filter, String[] returnAttrs, SearchLdapVisitor visitor)
       throws ServiceException {
