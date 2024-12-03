@@ -96,10 +96,6 @@ public abstract class Group extends MailTarget implements AliasedEntry {
         return Collections.unmodifiableSet(addrs);
     }
 
-    public boolean isHABGroup() {
-        return isHABGroup;
-    }
-
     public void setHABGroup(boolean isHabGroup) {
         this.isHABGroup = isHabGroup;
     }

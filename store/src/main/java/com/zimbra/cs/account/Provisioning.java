@@ -1734,10 +1734,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
     return group.getAllMembers();
   }
 
-  public List<HABGroupMember> getHABGroupMembers(Group group) throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
   /**
    * @return set of all the zimbraId's of groups this account belongs to, including dynamic groups
    *     and direct/nested static distribution lists.

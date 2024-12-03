@@ -73,12 +73,9 @@ import com.zimbra.soap.account.message.CreateIdentityRequest;
 import com.zimbra.soap.account.message.CreateIdentityResponse;
 import com.zimbra.soap.account.message.DeleteIdentityRequest;
 import com.zimbra.soap.account.message.EndSessionRequest;
-import com.zimbra.soap.account.message.GetDistributionListMembersRequest;
-import com.zimbra.soap.account.message.GetDistributionListMembersResponse;
 import com.zimbra.soap.account.message.GetIdentitiesRequest;
 import com.zimbra.soap.account.message.GetIdentitiesResponse;
 import com.zimbra.soap.account.message.ModifyIdentityRequest;
-import com.zimbra.soap.account.type.HABGroupMember;
 import com.zimbra.soap.account.type.NameId;
 import com.zimbra.soap.admin.message.AddAccountAliasRequest;
 import com.zimbra.soap.admin.message.AddAccountLoggerRequest;
@@ -109,8 +106,6 @@ import com.zimbra.soap.admin.message.CreateDistributionListRequest;
 import com.zimbra.soap.admin.message.CreateDistributionListResponse;
 import com.zimbra.soap.admin.message.CreateDomainRequest;
 import com.zimbra.soap.admin.message.CreateDomainResponse;
-import com.zimbra.soap.admin.message.CreateHABGroupRequest;
-import com.zimbra.soap.admin.message.CreateHABGroupResponse;
 import com.zimbra.soap.admin.message.CreateServerRequest;
 import com.zimbra.soap.admin.message.CreateServerResponse;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
@@ -181,10 +176,6 @@ import com.zimbra.soap.admin.message.GetServerRequest;
 import com.zimbra.soap.admin.message.GetServerResponse;
 import com.zimbra.soap.admin.message.GetShareInfoRequest;
 import com.zimbra.soap.admin.message.GetShareInfoResponse;
-import com.zimbra.soap.admin.message.HABOrgUnitRequest;
-import com.zimbra.soap.admin.message.HABOrgUnitRequest.HabOp;
-import com.zimbra.soap.admin.message.HABOrgUnitResponse;
-import com.zimbra.soap.admin.message.ModifyHABGroupRequest;
 import com.zimbra.soap.admin.message.PurgeMessagesRequest;
 import com.zimbra.soap.admin.message.PurgeMessagesResponse;
 import com.zimbra.soap.admin.message.ReIndexRequest;
@@ -233,8 +224,6 @@ import com.zimbra.soap.admin.type.DomainSelector;
 import com.zimbra.soap.admin.type.EffectiveRightsTargetSelector;
 import com.zimbra.soap.admin.type.GranteeSelector;
 import com.zimbra.soap.admin.type.GranteeSelector.GranteeBy;
-import com.zimbra.soap.admin.type.HABGroupOperation;
-import com.zimbra.soap.admin.type.HABGroupOperation.HabGroupOp;
 import com.zimbra.soap.admin.type.LoggerInfo;
 import com.zimbra.soap.admin.type.MailboxByAccountIdSelector;
 import com.zimbra.soap.admin.type.MailboxWithMailboxId;
@@ -2851,17 +2840,6 @@ public class SoapProvisioning extends Provisioning {
   public void refreshUserCredentials(Account account) {
     throw new UnsupportedOperationException(
         "Currently no way to refresh required attributes over SOAP");
-  }
-
-  /**
-   * @param group HAB group whose members will be returned
-   * @throws ServiceException if an error occurs while getting the HAB group members
-   */
-  @Override
-  public List<HABGroupMember> getHABGroupMembers(Group group) throws ServiceException {
-    GetDistributionListMembersResponse resp =
-        invokeJaxb(new GetDistributionListMembersRequest(0, 0, group.getName()));
-    return resp.getHABGroupMembers();
   }
 
   @Override

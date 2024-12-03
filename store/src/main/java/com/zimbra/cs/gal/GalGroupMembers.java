@@ -227,46 +227,6 @@ public class GalGroupMembers {
 
     }
 
-    public static class LdapHABMembers extends DLMembers {
-        private Group group;
-        private List<HABGroupMember> habMembers;
-
-        public LdapHABMembers(Group group) throws ServiceException {
-            this.group = group;
-            this.habMembers = Provisioning.getInstance().getHABGroupMembers(group);
-        }
-
-        @Override
-        public void encodeMembers(int beginIndex, int endIndex, Element resp) {
-            if (endIndex <= getTotal() && getTotal() != 0) {
-                Element habGroupMembers = resp.addNonUniqueElement(AccountConstants.E_HAB_GROUP_MEMBERS);
-                for (int i = beginIndex; i < endIndex; i++) {
-                    Element habGroupMember = habGroupMembers.addNonUniqueElement(AccountConstants.E_HAB_GROUP_MEMBER);
-                    habGroupMember.addAttribute(AccountConstants.A_NAME, habMembers.get(i).getName());
-                    for (NamedValue nv : habMembers.get(i).getAttrs()) {
-                        habGroupMember.addKeyValuePair(nv.getName(), nv.getValue(), AccountConstants.E_ATTR, AccountConstants.A_NAME);
-                    }
-                }
-            }
-        }
-
-        @Override
-        public String getDLZimbraId() {
-            return group.getId();
-        }
-
-        @Override
-        public int getTotal() {
-            return habMembers.size();
-        }
-
-        @Override
-        protected Set<String> getAllMembers() throws ServiceException {
-            return group.getAllMembersSet();
-        }
-
-    }
-
     public static class ProxiedDLMembers extends DLMembersResult {
         private Element mResponse;
         Set<String> mMembersSet;
