@@ -5,7 +5,8 @@
 package com.zimbra.cs.service.admin;
 
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
-import com.zextras.carbonio.message_broker.events.services.mailbox.UserDeleted;
+import com.zextras.carbonio.message_broker.events.services.mailbox.DeleteUserRequested;
+import com.zextras.carbonio.message_broker.events.services.mailbox.DeleteUserRequested;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
 import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
@@ -241,7 +242,7 @@ class DeleteAccountTest {
   @ParameterizedTest
   @MethodSource("getHappyPathCases")
   void shouldDeleteUser(Account caller, Account toDelete) throws Exception {
-      Mockito.when(mockMessageBrokerClient.publish(any(UserDeleted.class))).thenReturn(true);
+      Mockito.when(mockMessageBrokerClient.publish(any(DeleteUserRequested.class))).thenReturn(true);
 
       final String toDeleteId = toDelete.getId();
       this.doDeleteAccount(caller, toDeleteId);
@@ -292,7 +293,7 @@ class DeleteAccountTest {
   @ParameterizedTest
   @MethodSource("getPermissionDeniedCases")
   void shouldGetPermissionDenied(Account caller, Account toDelete) throws ServiceException {
-      Mockito.when(mockMessageBrokerClient.publish(any(UserDeleted.class))).thenReturn(true);
+      Mockito.when(mockMessageBrokerClient.publish(any(DeleteUserRequested.class))).thenReturn(true);
 
       final String toDeleteId = toDelete.getId();
       final ServiceException serviceException =
@@ -305,7 +306,7 @@ class DeleteAccountTest {
     @ParameterizedTest
     @MethodSource("getHappyPathCases")
     void shouldDeleteUserThrowsException(Account caller, Account toDelete) throws Exception {
-        Mockito.when(mockMessageBrokerClient.publish(any(UserDeleted.class))).thenReturn(true);
+        Mockito.when(mockMessageBrokerClient.publish(any(DeleteUserRequested.class))).thenReturn(true);
         DeleteUserUseCase deleteUserUseCase = Mockito.mock(DeleteUserUseCase.class);
 
         final String toDeleteId = toDelete.getId();
