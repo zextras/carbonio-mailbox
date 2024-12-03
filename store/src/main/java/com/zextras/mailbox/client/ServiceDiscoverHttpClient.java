@@ -33,15 +33,8 @@ public class ServiceDiscoverHttpClient {
     this.token = System.getenv("CONSUL_HTTP_TOKEN"); // default: get from env
   }
 
-  public static ServiceDiscoverHttpClient atURL(
-    String url,
-    String serviceName
-  ) {
-    return new ServiceDiscoverHttpClient(url + "/v1/kv/" + serviceName + "/");
-  }
-
-  public static ServiceDiscoverHttpClient defaultURL(String serviceName) {
-    return new ServiceDiscoverHttpClient("http://localhost:8500/v1/kv/" + serviceName + "/");
+  public static ServiceDiscoverHttpClient defaultUrl() {
+    return new ServiceDiscoverHttpClient("http://localhost:8500");
   }
 
   public ServiceDiscoverHttpClient withToken(String token) {
@@ -49,9 +42,10 @@ public class ServiceDiscoverHttpClient {
     return this;
   }
 
-  public Try<String> getConfig(String configKey) {
+  public Try<String> getConfig(String serviceName, String configKey) {
     try (CloseableHttpClient httpClient = HttpClients.createMinimal()) {
-      HttpGet request = new HttpGet(serviceDiscoverURL + configKey);
+      String url = serviceDiscoverURL + "/v1/kv/" + serviceName + "/" + configKey;
+      HttpGet request = new HttpGet(url);
       request.setHeader("X-Consul-Token", token);
       try(CloseableHttpResponse response = httpClient.execute(request)) {
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
@@ -72,6 +66,27 @@ public class ServiceDiscoverHttpClient {
       }
     } catch (IOException exception) {
       logger.error("Exception trying to get config from service discover: ", exception);
+      return Try.failure(new InternalServerError(exception));
+    }
+  }
+
+  public Try<Boolean> isServiceInstalled(String serviceName) {
+    String url = serviceDiscoverURL + "/v1/health/checks/" + serviceName;
+    try (CloseableHttpClient httpClient = HttpClients.createMinimal()) {
+      HttpGet request = new HttpGet(url);
+      request.setHeader("X-Consul-Token", token);
+      try (CloseableHttpResponse response = httpClient.execute(request)) {
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+          return Try.success(true);
+        } else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+          return Try.success(false);
+        } else {
+          logger.error("Unexpected response status: {}", response.getStatusLine().getStatusCode());
+          return Try.failure(new InternalServerError(new Exception("Unexpected response status: " + response.getStatusLine().getStatusCode())));
+        }
+      }
+    } catch (IOException exception) {
+      logger.error("Exception trying to check if service is installed: ", exception);
       return Try.failure(new InternalServerError(exception));
     }
   }
