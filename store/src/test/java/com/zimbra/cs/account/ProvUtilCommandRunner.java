@@ -39,7 +39,7 @@ public class ProvUtilCommandRunner {
     });
     Runtime.getRuntime().addShutdownHook(hook);
     try {
-      ProvUtil.main(new ProvUtil.Console(outputStream, errorStream), commandWithArgs.toArray(new String[] {}));
+      ProvUtil.main(new Console(outputStream, errorStream), commandWithArgs.toArray(new String[] {}));
       Runtime.getRuntime().removeShutdownHook(hook);
       return new CommandOutput(
           outputStream.toString(StandardCharsets.UTF_8),

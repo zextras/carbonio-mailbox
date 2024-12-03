@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.account;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Sets;
@@ -30,13 +29,11 @@ import com.zimbra.common.util.FileUtil;
 import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.SetUtil;
 import com.zimbra.common.util.StringUtil;
-import com.zimbra.common.util.Version;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.common.zclient.ZClientException;
 import com.zimbra.cs.account.Provisioning.CacheEntry;
 import com.zimbra.cs.account.Provisioning.CountAccountResult;
 import com.zimbra.cs.account.Provisioning.MailMode;
-import com.zimbra.cs.account.Provisioning.PublishedShareInfoVisitor;
 import com.zimbra.cs.account.Provisioning.RightsDoc;
 import com.zimbra.cs.account.Provisioning.SearchGalResult;
 import com.zimbra.cs.account.Provisioning.SetPasswordResult;
@@ -51,7 +48,6 @@ import com.zimbra.cs.account.accesscontrol.GranteeType;
 import com.zimbra.cs.account.accesscontrol.Help;
 import com.zimbra.cs.account.accesscontrol.Right;
 import com.zimbra.cs.account.accesscontrol.Right.RightType;
-import com.zimbra.cs.account.accesscontrol.RightClass;
 import com.zimbra.cs.account.accesscontrol.RightCommand;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.accesscontrol.RightModifier;
@@ -78,7 +74,6 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.account.type.HABGroupMember;
 import com.zimbra.soap.admin.message.LockoutMailboxRequest;
 import com.zimbra.soap.admin.message.UnregisterMailboxMoveOutRequest;
-import com.zimbra.soap.admin.type.CacheEntryType;
 import com.zimbra.soap.admin.type.CountObjectsType;
 import com.zimbra.soap.admin.type.DataSourceType;
 import com.zimbra.soap.admin.type.GranteeSelector.GranteeBy;
@@ -87,15 +82,11 @@ import com.zimbra.soap.type.AccountNameSelector;
 import com.zimbra.soap.type.GalSearchType;
 import com.zimbra.soap.type.TargetBy;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
@@ -294,900 +285,6 @@ public class ProvUtil implements HttpDebugListener {
     System.exit(1);
   }
 
-  public enum Category {
-    ACCOUNT("help on account-related commands"),
-    CALENDAR("help on calendar resource-related commands"),
-    COMMANDS("help on all commands"),
-    CONFIG("help on config-related commands"),
-    COS("help on COS-related commands"),
-    DOMAIN("help on domain-related commands"),
-    FREEBUSY("help on free/busy-related commands"),
-    LIST("help on distribution list-related commands"),
-    LOG("help on logging commands"),
-    MISC("help on misc commands"),
-    MAILBOX("help on mailbox-related commands"),
-    REVERSEPROXY("help on reverse proxy related commands"),
-    RIGHT("help on right-related commands"),
-    SEARCH("help on search-related commands"),
-    SERVER("help on server-related commands"),
-    SHARE("help on share related commands"),
-    HAB("help on HAB commands");
-
-    private final String description;
-
-    public String getDescription() {
-      return description;
-    }
-
-    Category(String desc) {
-      description = desc;
-    }
-  }
-
-  // TODO: refactor to own class
-  interface CommandHelp {
-    String getExtraHelp();
-  }
-
-  static class RightCommandHelp implements CommandHelp {
-    boolean printRights;
-    boolean secretPossible;
-    boolean modifierPossible;
-
-    RightCommandHelp(boolean printRights, boolean secretPossible, boolean modifierPossible) {
-      this.printRights = printRights;
-      this.secretPossible = secretPossible;
-      this.modifierPossible = modifierPossible;
-    }
-
-    @Override
-    public String getExtraHelp() {
-      return helpRIGHTCommand(secretPossible, modifierPossible);
-    }
-  }
-
-  static class ReindexCommandHelp implements CommandHelp {
-
-    @Override
-    public String getExtraHelp() {
-      /*
-       * copied from soap-admin.txt Not exactly match all types in MailboxIndex TODO: cleanup
-       */
-      return System.lineSeparator()
-          + "Valid types:"
-          + System.lineSeparator()
-          + "    appointment"
-          + System.lineSeparator()
-          + "    contact"
-          + System.lineSeparator()
-          + "    conversation"
-          + System.lineSeparator()
-          + "    document"
-          + System.lineSeparator()
-          + "    message"
-          + System.lineSeparator()
-          + "    note"
-          + System.lineSeparator()
-          + "    task"
-          + System.lineSeparator();
-    }
-  }
-
-  public enum Command {
-    ADD_ACCOUNT_ALIAS(
-        "addAccountAlias", "aaa", "{name@domain|id} {alias@domain}", Category.ACCOUNT, 2, 2),
-    ADD_ACCOUNT_LOGGER(
-        "addAccountLogger",
-        "aal",
-        "[-s/--server hostname] {name@domain|id} {logging-category}"
-            + " {trace|debug|info|warn|error}",
-        Category.LOG,
-        3,
-        5),
-    ADD_DISTRIBUTION_LIST_ALIAS(
-        "addDistributionListAlias", "adla", "{list@domain|id} {alias@domain}", Category.LIST, 2, 2),
-    ADD_DISTRIBUTION_LIST_MEMBER(
-        "addDistributionListMember",
-        "adlm",
-        "{list@domain|id} {member@domain}+",
-        Category.LIST,
-        2,
-        Integer.MAX_VALUE),
-    AUTO_COMPLETE_GAL("autoCompleteGal", "acg", "{domain} {name}", Category.SEARCH, 2, 2),
-    AUTO_PROV_CONTROL("autoProvControl", "apc", "{start|status|stop}", Category.COMMANDS, 1, 1),
-    CHECK_PASSWORD_STRENGTH(
-        "checkPasswordStrength", "cps", "{name@domain|id} {password}", Category.ACCOUNT, 2, 2),
-    CHECK_RIGHT(
-        "checkRight",
-        "ckr",
-        "{target-type} [{target-id|target-name}] {grantee-id|grantee-name (note:can only"
-            + " check internal user)} {right}",
-        Category.RIGHT,
-        3,
-        4,
-        null,
-        new RightCommandHelp(false, false, true)),
-    COPY_COS("copyCos", "cpc", "{src-cos-name|id} {dest-cos-name}", Category.COS, 2, 2),
-    COUNT_ACCOUNT("countAccount", "cta", "{domain|id}", Category.DOMAIN, 1, 1),
-    COUNT_OBJECTS(
-        "countObjects",
-        "cto",
-        "{" + CountObjectsType.names("|") + "} [-d {domain|id}]",
-        Category.MISC,
-        1,
-        4),
-    CREATE_ACCOUNT(
-        "createAccount",
-        "ca",
-        "{name@domain} {password} [attr1 value1 [attr2 value2...]]",
-        Category.ACCOUNT,
-        2,
-        Integer.MAX_VALUE),
-    CREATE_ALIAS_DOMAIN(
-        "createAliasDomain",
-        "cad",
-        "{alias-domain-name} {local-domain-name|id} [attr1 value1 [attr2 value2...]]",
-        Category.DOMAIN,
-        2,
-        Integer.MAX_VALUE),
-    CREATE_BULK_ACCOUNTS(
-        "createBulkAccounts",
-        "cabulk",
-        "{domain} {namemask} {number-of-accounts-to-create} {password}",
-        Category.MISC,
-        4,
-        4),
-    CREATE_CALENDAR_RESOURCE(
-        "createCalendarResource",
-        "ccr",
-        "{name@domain} {password} [attr1 value1 [attr2 value2...]]",
-        Category.CALENDAR,
-        2,
-        Integer.MAX_VALUE),
-    CREATE_COS(
-        "createCos",
-        "cc",
-        "{name} [attr1 value1 [attr2 value2...]]",
-        Category.COS,
-        1,
-        Integer.MAX_VALUE),
-    CREATE_DATA_SOURCE(
-        "createDataSource",
-        "cds",
-        "{name@domain} {ds-type} {ds-name} zimbraDataSourceEnabled {TRUE|FALSE}"
-            + " zimbraDataSourceFolderId {folder-id} [attr1 value1 [attr2 value2...]]",
-        Category.ACCOUNT,
-        3,
-        Integer.MAX_VALUE),
-    CREATE_DISTRIBUTION_LIST(
-        "createDistributionList", "cdl", "{list@domain}", Category.LIST, 1, Integer.MAX_VALUE),
-    CREATE_DYNAMIC_DISTRIBUTION_LIST(
-        "createDynamicDistributionList",
-        "cddl",
-        "{list@domain}",
-        Category.LIST,
-        1,
-        Integer.MAX_VALUE),
-    CREATE_DISTRIBUTION_LISTS_BULK("createDistributionListsBulk", "cdlbulk"),
-    CREATE_DOMAIN(
-        "createDomain",
-        "cd",
-        "{domain} [attr1 value1 [attr2 value2...]]",
-        Category.DOMAIN,
-        1,
-        Integer.MAX_VALUE),
-    CREATE_SERVER(
-        "createServer",
-        "cs",
-        "{name} [attr1 value1 [attr2 value2...]]",
-        Category.SERVER,
-        1,
-        Integer.MAX_VALUE),
-    CREATE_IDENTITY(
-        "createIdentity",
-        "cid",
-        "{name@domain} {identity-name} [attr1 value1 [attr2 value2...]]",
-        Category.ACCOUNT,
-        2,
-        Integer.MAX_VALUE),
-    CREATE_SIGNATURE(
-        "createSignature",
-        "csig",
-        "{name@domain} {signature-name} [attr1 value1 [attr2 value2...]]",
-        Category.ACCOUNT,
-        2,
-        Integer.MAX_VALUE),
-    CREATE_XMPP_COMPONENT(
-        "createXMPPComponent",
-        "cxc",
-        "{short-name} {domain}  {server} {classname} {category} {type} [attr value1 [attr2"
-            + " value2...]]",
-        Category.CONFIG,
-        6,
-        Integer.MAX_VALUE),
-    DELETE_ACCOUNT("deleteAccount", "da", "{name@domain|id}", Category.ACCOUNT, 1, 1),
-    DELETE_CALENDAR_RESOURCE(
-        "deleteCalendarResource", "dcr", "{name@domain|id}", Category.CALENDAR, 1, 1),
-    DELETE_COS("deleteCos", "dc", "{name|id}", Category.COS, 1, 1),
-    DELETE_DATA_SOURCE(
-        "deleteDataSource", "dds", "{name@domain|id} {ds-name|ds-id}", Category.ACCOUNT, 2, 2),
-    DELETE_DISTRIBUTION_LIST(
-        "deleteDistributionList", "ddl", "{list@domain|id} [true|false]", Category.LIST, 1, 2),
-    DELETE_DOMAIN("deleteDomain", "dd", "{domain|id}", Category.DOMAIN, 1, 1),
-    DELETE_IDENTITY(
-        "deleteIdentity", "did", "{name@domain|id} {identity-name}", Category.ACCOUNT, 2, 2),
-    DELETE_SIGNATURE(
-        "deleteSignature", "dsig", "{name@domain|id} {signature-name}", Category.ACCOUNT, 2, 2),
-    DELETE_SERVER("deleteServer", "ds", "{name|id}", Category.SERVER, 1, 1),
-    DELETE_XMPP_COMPONENT(
-        "deleteXMPPComponent", "dxc", "{xmpp-component-name}", Category.CONFIG, 1, 1),
-    DESCRIBE(
-        "describe",
-        "desc",
-        "[[-v] [-ni] [{entry-type}]] | [-a {attribute-name}]",
-        Category.MISC,
-        0,
-        Integer.MAX_VALUE,
-        null,
-        null,
-        true),
-    EXIT("exit", "quit", "", Category.MISC, 0, 0),
-    FLUSH_CACHE(
-        "flushCache",
-        "fc",
-        "[-a] {" + CacheEntryType.names() + "|extension-cache-type} [name1|id1 [name2|id2...]]",
-        Category.MISC,
-        1,
-        Integer.MAX_VALUE),
-    GENERATE_DOMAIN_PRE_AUTH(
-        "generateDomainPreAuth",
-        "gdpa",
-        "{domain|id} {name|id|foreignPrincipal} {by} {timestamp|0} {expires|0}",
-        Category.MISC,
-        5,
-        6),
-    GENERATE_DOMAIN_PRE_AUTH_KEY(
-        "generateDomainPreAuthKey", "gdpak", "[-f] {domain|id}", Category.MISC, 1, 2),
-    GET_ACCOUNT(
-        "getAccount",
-        "ga",
-        "[-e] {name@domain|id} [attr1 [attr2...]]",
-        Category.ACCOUNT,
-        1,
-        Integer.MAX_VALUE),
-    GET_DATA_SOURCES(
-        "getDataSources",
-        "gds",
-        "{name@domain|id} [arg1 [arg2...]]",
-        Category.ACCOUNT,
-        1,
-        Integer.MAX_VALUE),
-    GET_IDENTITIES(
-        "getIdentities",
-        "gid",
-        "{name@domain|id} [arg1 [arg...]]",
-        Category.ACCOUNT,
-        1,
-        Integer.MAX_VALUE),
-    GET_SIGNATURES(
-        "getSignatures",
-        "gsig",
-        "{name@domain|id} [arg1 [arg...]]",
-        Category.ACCOUNT,
-        1,
-        Integer.MAX_VALUE),
-    GET_ACCOUNT_MEMBERSHIP(
-        "getAccountMembership", "gam", "{name@domain|id}", Category.ACCOUNT, 1, 2),
-    GET_ALL_ACCOUNTS(
-        "getAllAccounts",
-        "gaa",
-        "[-v] [-e] [-s server] [{domain}]",
-        Category.ACCOUNT,
-        0,
-        5,
-        Via.ldap),
-    GET_ACCOUNT_LOGGERS(
-        "getAccountLoggers", "gal", "[-s/--server hostname] {name@domain|id}", Category.LOG, 1, 3),
-    GET_ALL_ACCOUNT_LOGGERS(
-        "getAllAccountLoggers", "gaal", "[-s/--server hostname]", Category.LOG, 0, 2),
-    GET_ALL_ADMIN_ACCOUNTS(
-        "getAllAdminAccounts",
-        "gaaa",
-        "[-v] [-e] [attr1 [attr2...]]",
-        Category.ACCOUNT,
-        0,
-        Integer.MAX_VALUE),
-    GET_ALL_CALENDAR_RESOURCES(
-        "getAllCalendarResources",
-        "gacr",
-        "[-v] [-e] [-s server] [{domain}]",
-        Category.CALENDAR,
-        0,
-        5),
-    GET_ALL_CONFIG(
-        "getAllConfig", "gacf", "[attr1 [attr2...]]", Category.CONFIG, 0, Integer.MAX_VALUE),
-    GET_ALL_COS("getAllCos", "gac", "[-v]", Category.COS, 0, 1),
-    GET_ALL_DISTRIBUTION_LISTS(
-        "getAllDistributionLists", "gadl", "[-v] [{domain}]", Category.LIST, 0, 2),
-    GET_ALL_DOMAINS(
-        "getAllDomains",
-        "gad",
-        "[-v] [-e] [attr1 [attr2...]]",
-        Category.DOMAIN,
-        0,
-        Integer.MAX_VALUE),
-    GET_ALL_EFFECTIVE_RIGHTS(
-        "getAllEffectiveRights",
-        "gaer",
-        "{grantee-type} {grantee-id|grantee-name} [expandSetAttrs] [expandGetAttrs]",
-        Category.RIGHT,
-        2,
-        4),
-    GET_ALL_FREEBUSY_PROVIDERS("getAllFbp", "gafbp", "[-v]", Category.FREEBUSY, 0, 1),
-    GET_ALL_RIGHTS(
-        "getAllRights",
-        "gar",
-        "[-v] [-t {target-type}] [-c " + RightClass.allValuesInString("|") + "]",
-        Category.RIGHT,
-        0,
-        5),
-    GET_ALL_SERVERS("getAllServers", "gas", "[-v] [-e] [service]", Category.SERVER, 0, 3),
-    GET_ALL_XMPP_COMPONENTS("getAllXMPPComponents", "gaxcs", "", Category.CONFIG, 0, 0),
-    GET_AUTH_TOKEN_INFO("getAuthTokenInfo", "gati", "{auth-token}", Category.MISC, 1, 1),
-    GET_CALENDAR_RESOURCE(
-        "getCalendarResource",
-        "gcr",
-        "{name@domain|id} [attr1 [attr2...]]",
-        Category.CALENDAR,
-        1,
-        Integer.MAX_VALUE),
-    GET_CONFIG("getConfig", "gcf", "{name}", Category.CONFIG, 1, 1),
-    GET_COS("getCos", "gc", "{name|id} [attr1 [attr2...]]", Category.COS, 1, Integer.MAX_VALUE),
-    GET_DISTRIBUTION_LIST(
-        "getDistributionList",
-        "gdl",
-        "{list@domain|id} [attr1 [attr2...]]",
-        Category.LIST,
-        1,
-        Integer.MAX_VALUE),
-    GET_DISTRIBUTION_LIST_MEMBERSHIP(
-        "getDistributionListMembership", "gdlm", "{name@domain|id}", Category.LIST, 1, 1),
-    GET_DOMAIN(
-        "getDomain",
-        "gd",
-        "[-e] {domain|id} [attr1 [attr2...]]",
-        Category.DOMAIN,
-        1,
-        Integer.MAX_VALUE),
-    GET_DOMAIN_INFO(
-        "getDomainInfo",
-        "gdi",
-        "name|id|virtualHostname {value} [attr1 [attr2...]]",
-        Category.DOMAIN,
-        2,
-        Integer.MAX_VALUE),
-    GET_CONFIG_SMIME_CONFIG("getConfigSMIMEConfig", "gcsc", "[configName]", Category.DOMAIN, 0, 1),
-    GET_DOMAIN_SMIME_CONFIG(
-        "getDomainSMIMEConfig", "gdsc", "name|id [configName]", Category.DOMAIN, 1, 2),
-    GET_EFFECTIVE_RIGHTS(
-        "getEffectiveRights",
-        "ger",
-        "{target-type} [{target-id|target-name}] {grantee-id|grantee-name} [expandSetAttrs]"
-            + " [expandGetAttrs]",
-        Category.RIGHT,
-        1,
-        5,
-        null,
-        new RightCommandHelp(false, false, false)),
-    // for testing the provisioning interface only, comment out after testing, the soap is only
-    // used by admin console
-    GET_CREATE_OBJECT_ATTRS(
-        "getCreateObjectAttrs",
-        "gcoa",
-        "{target-type} {domain-id|domain-name} {cos-id|cos-name} {grantee-id|grantee-name}",
-        Category.RIGHT,
-        3,
-        4),
-    GET_FREEBUSY_QUEUE_INFO(
-        "getFreebusyQueueInfo", "gfbqi", "[{provider-name}]", Category.FREEBUSY, 0, 1),
-    GET_GRANTS(
-        "getGrants",
-        "gg",
-        "[-t {target-type} [{target-id|target-name}]] [-g {grantee-type}"
-            + " {grantee-id|grantee-name} [{0|1 (whether to include grants granted to"
-            + " groups the grantee belongs)}]]",
-        Category.RIGHT,
-        2,
-        7,
-        null,
-        new RightCommandHelp(false, false, false)),
-    GET_MAILBOX_INFO("getMailboxInfo", "gmi", "{account}", Category.MAILBOX, 1, 1),
-    GET_QUOTA_USAGE("getQuotaUsage", "gqu", "{server}", Category.MAILBOX, 1, 1),
-    GET_RIGHT(
-        "getRight",
-        "gr",
-        "{right} [-e] (whether to expand combo rights recursively)",
-        Category.RIGHT,
-        1,
-        2),
-    GET_RIGHTS_DOC("getRightsDoc", "grd", "[java-packages]", Category.RIGHT, 0, Integer.MAX_VALUE),
-    GET_SERVER(
-        "getServer",
-        "gs",
-        "[-e] {name|id} [attr1 [attr2...]]",
-        Category.SERVER,
-        1,
-        Integer.MAX_VALUE),
-    GET_SHARE_INFO("getShareInfo", "gsi", "{owner-name|owner-id}", Category.SHARE, 1, 1),
-    GET_SPNEGO_DOMAIN("getSpnegoDomain", "gsd", "", Category.MISC, 0, 0),
-    GET_XMPP_COMPONENT(
-        "getXMPPComponent",
-        "gxc",
-        "{name|id} [attr1 [attr2...]]",
-        Category.CONFIG,
-        1,
-        Integer.MAX_VALUE),
-    GRANT_RIGHT(
-        "grantRight",
-        "grr",
-        "{target-type} [{target-id|target-name}] {grantee-type} [{grantee-id|grantee-name}"
-            + " [secret]] {right}",
-        Category.RIGHT,
-        3,
-        6,
-        null,
-        new RightCommandHelp(false, true, true)),
-    HELP("help", "?", "commands", Category.MISC, 0, 1),
-    LDAP(".ldap", ".l"),
-    MODIFY_ACCOUNT(
-        "modifyAccount",
-        "ma",
-        "{name@domain|id} [attr1 value1 [attr2 value2...]]",
-        Category.ACCOUNT,
-        3,
-        Integer.MAX_VALUE),
-    MODIFY_CALENDAR_RESOURCE(
-        "modifyCalendarResource",
-        "mcr",
-        "{name@domain|id} [attr1 value1 [attr2 value2...]]",
-        Category.CALENDAR,
-        3,
-        Integer.MAX_VALUE),
-    MODIFY_CONFIG(
-        "modifyConfig",
-        "mcf",
-        "attr1 value1 [attr2 value2...]",
-        Category.CONFIG,
-        2,
-        Integer.MAX_VALUE),
-    MODIFY_COS(
-        "modifyCos",
-        "mc",
-        "{name|id} [attr1 value1 [attr2 value2...]]",
-        Category.COS,
-        3,
-        Integer.MAX_VALUE),
-    MODIFY_DATA_SOURCE(
-        "modifyDataSource",
-        "mds",
-        "{name@domain|id} {ds-name|ds-id} [attr1 value1 [attr2 value2...]]",
-        Category.ACCOUNT,
-        4,
-        Integer.MAX_VALUE),
-    MODIFY_DISTRIBUTION_LIST(
-        "modifyDistributionList",
-        "mdl",
-        "{list@domain|id} attr1 value1 [attr2 value2...]",
-        Category.LIST,
-        3,
-        Integer.MAX_VALUE),
-    MODIFY_DOMAIN(
-        "modifyDomain",
-        "md",
-        "{domain|id} [attr1 value1 [attr2 value2...]]",
-        Category.DOMAIN,
-        3,
-        Integer.MAX_VALUE),
-    MODIFY_CONFIG_SMIME_CONFIG(
-        "modifyConfigSMIMEConfig",
-        "mcsc",
-        "configName [attr2 value2...]]",
-        Category.DOMAIN,
-        1,
-        Integer.MAX_VALUE),
-    MODIFY_DOMAIN_SMIME_CONFIG(
-        "modifyDomainSMIMEConfig",
-        "mdsc",
-        "name|id configName [attr2 value2...]]",
-        Category.DOMAIN,
-        2,
-        Integer.MAX_VALUE),
-    MODIFY_IDENTITY(
-        "modifyIdentity",
-        "mid",
-        "{name@domain|id} {identity-name} [attr1 value1 [attr2 value2...]]",
-        Category.ACCOUNT,
-        4,
-        Integer.MAX_VALUE),
-    MODIFY_SIGNATURE(
-        "modifySignature",
-        "msig",
-        "{name@domain|id} {signature-name|signature-id} [attr1 value1 [attr2 value2...]]",
-        Category.ACCOUNT,
-        4,
-        Integer.MAX_VALUE),
-    MODIFY_SERVER(
-        "modifyServer",
-        "ms",
-        "{name|id} [attr1 value1 [attr2 value2...]]",
-        Category.SERVER,
-        3,
-        Integer.MAX_VALUE),
-    MODIFY_XMPP_COMPONENT(
-        "modifyXMPPComponent",
-        "mxc",
-        "{name@domain} [attr1 value1 [attr value2...]]",
-        Category.CONFIG,
-        3,
-        Integer.MAX_VALUE),
-    PUSH_FREEBUSY(
-        "pushFreebusy", "pfb", "[account-id ...]", Category.FREEBUSY, 1, Integer.MAX_VALUE),
-    PUSH_FREEBUSY_DOMAIN("pushFreebusyDomain", "pfbd", "{domain}", Category.FREEBUSY, 1, 1),
-    PURGE_ACCOUNT_CALENDAR_CACHE(
-        "purgeAccountCalendarCache",
-        "pacc",
-        "{name@domain|id} [...]",
-        Category.CALENDAR,
-        1,
-        Integer.MAX_VALUE),
-    PURGE_FREEBUSY_QUEUE(
-        "purgeFreebusyQueue", "pfbq", "[{provider-name}]", Category.FREEBUSY, 0, 1),
-    RECALCULATE_MAILBOX_COUNTS(
-        "recalculateMailboxCounts", "rmc", "{name@domain|id}", Category.MAILBOX, 1, 1),
-    REMOVE_ACCOUNT_ALIAS(
-        "removeAccountAlias", "raa", "{name@domain|id} {alias@domain}", Category.ACCOUNT, 2, 2),
-    REMOVE_ACCOUNT_LOGGER(
-        "removeAccountLogger",
-        "ral",
-        "[-s/--server hostname] [{name@domain|id}] [{logging-category}]",
-        Category.LOG,
-        0,
-        4),
-    REMOVE_DISTRIBUTION_LIST_ALIAS(
-        "removeDistributionListAlias",
-        "rdla",
-        "{list@domain|id} {alias@domain}",
-        Category.LIST,
-        2,
-        2),
-    REMOVE_DISTRIBUTION_LIST_MEMBER(
-        "removeDistributionListMember",
-        "rdlm",
-        "{list@domain|id} {member@domain}",
-        Category.LIST,
-        2,
-        Integer.MAX_VALUE),
-    REMOVE_CONFIG_SMIME_CONFIG(
-        "removeConfigSMIMEConfig", "rcsc", "configName", Category.DOMAIN, 1, 1),
-    REMOVE_DOMAIN_SMIME_CONFIG(
-        "removeDomainSMIMEConfig", "rdsc", "name|id configName", Category.DOMAIN, 2, 2),
-    RENAME_ACCOUNT(
-        "renameAccount", "ra", "{name@domain|id} {newName@domain}", Category.ACCOUNT, 2, 2),
-    CHANGE_PRIMARY_EMAIL(
-        "changePrimaryEmail", "cpe", "{name@domain|id} {newName@domain}", Category.ACCOUNT, 2, 2),
-    RENAME_CALENDAR_RESOURCE(
-        "renameCalendarResource",
-        "rcr",
-        "{name@domain|id} {newName@domain}",
-        Category.CALENDAR,
-        2,
-        2),
-    RENAME_COS("renameCos", "rc", "{name|id} {newName}", Category.COS, 2, 2),
-    RENAME_DISTRIBUTION_LIST(
-        "renameDistributionList", "rdl", "{list@domain|id} {newName@domain}", Category.LIST, 2, 2),
-    RENAME_DOMAIN("renameDomain", "rd", "{domain|id} {newDomain}", Category.DOMAIN, 2, 2, Via.ldap),
-    REINDEX_MAILBOX(
-        "reIndexMailbox",
-        "rim",
-        "{name@domain|id} {start|status|cancel} [{types|ids} {type or id} [,type or" + " id...]]",
-        Category.MAILBOX,
-        2,
-        Integer.MAX_VALUE,
-        null,
-        new ReindexCommandHelp()),
-    COMPACT_INBOX_MAILBOX(
-        "compactIndexMailbox",
-        "cim",
-        "{name@domain|id} {start|status}",
-        Category.MAILBOX,
-        2,
-        Integer.MAX_VALUE),
-    VERIFY_INDEX("verifyIndex", "vi", "{name@domain|id}", Category.MAILBOX, 1, 1),
-    GET_INDEX_STATS("getIndexStats", "gis", "{name@domain|id}", Category.MAILBOX, 1, 1),
-    REVOKE_RIGHT(
-        "revokeRight",
-        "rvr",
-        "{target-type} [{target-id|target-name}] {grantee-type} [{grantee-id|grantee-name}]"
-            + " {right}",
-        Category.RIGHT,
-        3,
-        5,
-        null,
-        new RightCommandHelp(false, false, true)),
-    SEARCH_ACCOUNTS(
-        "searchAccounts",
-        "sa",
-        "[-v] {ldap-query} [limit {limit}] [offset {offset}] [sortBy {attr}] [sortAscending"
-            + " 0|1*] [domain {domain}]",
-        Category.SEARCH,
-        1,
-        Integer.MAX_VALUE),
-    SEARCH_CALENDAR_RESOURCES(
-        "searchCalendarResources",
-        "scr",
-        "[-v] domain attr op value [attr op value...]",
-        Category.SEARCH,
-        1,
-        Integer.MAX_VALUE,
-        Via.ldap),
-    SEARCH_GAL(
-        "searchGal",
-        "sg",
-        "{domain} {name} [limit {limit}] [offset {offset}] [sortBy {attr}]",
-        Category.SEARCH,
-        2,
-        Integer.MAX_VALUE),
-    SELECT_MAILBOX(
-        "selectMailbox",
-        "sm",
-        "{account-name} [{zmmailbox commands}]",
-        Category.MAILBOX,
-        1,
-        Integer.MAX_VALUE),
-    SET_ACCOUNT_COS(
-        "setAccountCos", "sac", "{name@domain|id} {cos-name|cos-id}", Category.ACCOUNT, 2, 2),
-    SET_PASSWORD("setPassword", "sp", "{name@domain|id} {password}", Category.ACCOUNT, 2, 2),
-    GET_ALL_MTA_AUTH_URLS("getAllMtaAuthURLs", "gamau", "", Category.SERVER, 0, 0),
-    GET_ALL_REVERSE_PROXY_URLS("getAllReverseProxyURLs", "garpu", "", Category.REVERSEPROXY, 0, 0),
-    GET_ALL_REVERSE_PROXY_BACKENDS(
-        "getAllReverseProxyBackends", "garpb", "", Category.REVERSEPROXY, 0, 0),
-    GET_ALL_REVERSE_PROXY_DOMAINS(
-        "getAllReverseProxyDomains", "garpd", "", Category.REVERSEPROXY, 0, 0, Via.ldap),
-    GET_ALL_MEMCACHED_SERVERS("getAllMemcachedServers", "gamcs", "", Category.SERVER, 0, 0),
-    RELOAD_MEMCACHED_CLIENT_CONFIG(
-        "reloadMemcachedClientConfig",
-        "rmcc",
-        "all | mailbox-server [...]",
-        Category.MISC,
-        1,
-        Integer.MAX_VALUE,
-        Via.soap),
-    GET_MEMCACHED_CLIENT_CONFIG(
-        "getMemcachedClientConfig",
-        "gmcc",
-        "all | mailbox-server [...]",
-        Category.MISC,
-        1,
-        Integer.MAX_VALUE,
-        Via.soap),
-    SOAP(".soap", ".s"),
-    SYNC_GAL("syncGal", "syg", "{domain} [{token}]", Category.MISC, 1, 2),
-    RESET_ALL_LOGGERS("resetAllLoggers", "rlog", "[-s/--server hostname]", Category.LOG, 0, 2),
-    UNLOCK_MAILBOX(
-        "unlockMailbox",
-        "ulm",
-        "{name@domain|id} [hostname (When unlocking a mailbox after a failed move attempt"
-            + " provide the hostname of the server that was the target for the failed move."
-            + " Otherwise, do not include hostname parameter)]",
-        Category.MAILBOX,
-        1,
-        2,
-        Via.soap),
-    CREATE_HAB_OU("createHABOrgUnit", "chou", "{domain} {ouName}", Category.HAB, 2, 2),
-    LIST_HAB_OU("listHABOrgUnit", "lhou", "{domain}", Category.HAB, 1, 1),
-    RENAME_HAB_OU("renameHABOrgUnit", "rhou", "{domain} {ouName} {newName}", Category.HAB, 3, 3),
-    DELETE_HAB_OU("deleteHABOrgUnit", "dhou", "{domain} {ouName}", Category.HAB, 2, 2),
-    CREATE_HAB_GROUP(
-        "createHABGroup",
-        "chg",
-        "{groupName} {ouName} {name@domain} {TRUE|FALSE} [attr1 value1 [attr2 value2...]]",
-        Category.HAB,
-        3,
-        Integer.MAX_VALUE),
-    GET_HAB("getHAB", "ghab", "{habRootGrpId}", Category.HAB, 1, 1),
-    MOVE_HAB_GROUP(
-        "moveHABGroup",
-        "mhg",
-        "{habRootGrpId} {habParentGrpId} {targetHabParentGrpId}",
-        Category.HAB,
-        3,
-        3),
-    ADD_HAB_GROUP_MEMBER(
-        "addHABGroupMember",
-        "ahgm",
-        "{name@domain|id} {member@domain}+",
-        Category.HAB,
-        2,
-        Integer.MAX_VALUE),
-    REMOVE_HAB_GROUP_MEMBER(
-        "removeHABGroupMember",
-        "rhgm",
-        "{name@domain|id} {member@domain}",
-        Category.HAB,
-        2,
-        Integer.MAX_VALUE),
-    DELETE_HAB_GROUP("deleteHABGroup", "dhg", "{name@domain|id} [true|false]", Category.HAB, 1, 2),
-    MODIFY_HAB_GROUP_SENIORITY(
-        "modifyHABGroupSeniority", "mhgs", "{habGrpId} {seniorityIndex} ", Category.HAB, 2, 2),
-    GET_HAB_GROUP_MEMBERS("getHABGroupMembers", "ghgm", "{name@domain|id}", Category.HAB, 1, 1);
-
-    private final String mName;
-    private final String mAlias;
-    private String mHelp;
-    private CommandHelp mExtraHelp;
-    private Category mCat;
-    private int mMinArgLength = 0;
-    private int mMaxArgLength = Integer.MAX_VALUE;
-    private Via mVia;
-    private boolean mNeedsSchemaExtension = false;
-
-    String getArgumentsCountDescription() {
-      if (mMinArgLength == mMaxArgLength) {
-        return String.valueOf(mMinArgLength);
-      } else if (mMaxArgLength == Integer.MAX_VALUE) {
-        return String.format("at least %s", mMinArgLength);
-      } else if (mMinArgLength <= 0) {
-        return String.format("at most %s", mMaxArgLength);
-      } else {
-        return String.format("%s to %s", mMinArgLength, mMaxArgLength);
-      }
-    }
-
-    public int getMinArgLength() {
-      return mMinArgLength;
-    }
-
-    public int getMaxArgLength() {
-      return mMaxArgLength;
-    }
-
-    public enum Via {
-      soap,
-      ldap
-    }
-
-    private static Map<String, Command> getCommandMap() {
-      final Map<String, Command> commandMap = new HashMap<>();
-      for (Command c : Command.values()) {
-        String name = c.getName().toLowerCase();
-        if (commandMap.get(name) != null) {
-          throw new RuntimeException("duplicate command: " + name);
-        }
-        String alias = c.getAlias().toLowerCase();
-        if (commandMap.get(alias) != null) {
-          throw new RuntimeException("duplicate command: " + alias);
-        }
-        commandMap.put(name, c);
-        commandMap.put(alias, c);
-      }
-      return commandMap;
-    }
-
-    public String getName() {
-      return mName;
-    }
-
-    public String getAlias() {
-      return mAlias;
-    }
-
-    public String getHelp() {
-      return mHelp;
-    }
-
-    public CommandHelp getExtraHelp() {
-      return mExtraHelp;
-    }
-
-    public Category getCategory() {
-      return mCat;
-    }
-
-    public boolean hasHelp() {
-      return mHelp != null;
-    }
-
-    public boolean checkArgsLength(String[] args) {
-      int len = args == null ? 0 : args.length - 1;
-      return len >= mMinArgLength && len <= mMaxArgLength;
-    }
-
-    public Via getVia() {
-      return mVia;
-    }
-
-    public boolean needsSchemaExtension() {
-      return mNeedsSchemaExtension || (mCat == Category.RIGHT);
-    }
-
-    public boolean isDeprecated() {
-      return false; // Used to return true if mCat was Category.NOTEBOOK - which has now been
-      // removed
-    }
-
-    Command(String name, String alias) {
-      mName = name;
-      mAlias = alias;
-    }
-
-    Command(String name, String alias, String help, Category cat) {
-      mName = name;
-      mAlias = alias;
-      mHelp = help;
-      mCat = cat;
-    }
-
-    Command(
-        String name, String alias, String help, Category cat, int minArgLength, int maxArgLength) {
-      mName = name;
-      mAlias = alias;
-      mHelp = help;
-      mCat = cat;
-      mMinArgLength = minArgLength;
-      mMaxArgLength = maxArgLength;
-    }
-
-    Command(
-        String name,
-        String alias,
-        String help,
-        Category cat,
-        int minArgLength,
-        int maxArgLength,
-        Via via) {
-      mName = name;
-      mAlias = alias;
-      mHelp = help;
-      mCat = cat;
-      mMinArgLength = minArgLength;
-      mMaxArgLength = maxArgLength;
-      mVia = via;
-    }
-
-    Command(
-        String name,
-        String alias,
-        String help,
-        Category cat,
-        int minArgLength,
-        int maxArgLength,
-        Via via,
-        CommandHelp extraHelp) {
-      mName = name;
-      mAlias = alias;
-      mHelp = help;
-      mCat = cat;
-      mMinArgLength = minArgLength;
-      mMaxArgLength = maxArgLength;
-      mVia = via;
-      mExtraHelp = extraHelp;
-    }
-
-    Command(
-        String name,
-        String alias,
-        String help,
-        Category cat,
-        int minArgLength,
-        int maxArgLength,
-        Via via,
-        CommandHelp extraHelp,
-        boolean needsSchemaExtension) {
-      this(name, alias, help, cat, minArgLength, maxArgLength, via, extraHelp);
-      mNeedsSchemaExtension = needsSchemaExtension;
-    }
-  }
-
   private Command lookupCommand(String command) {
     return commandIndex.get(command.toLowerCase());
   }
@@ -1295,7 +392,7 @@ public class ProvUtil implements HttpDebugListener {
         prov.addAlias(lookupAccount(args[1]), args[2]);
         break;
       case ADD_ACCOUNT_LOGGER:
-        alo = parseAccountLoggerOptions(args);
+        alo = AccountLoggerOptions.parseAccountLoggerOptions(args);
         if (!command.checkArgsLength(alo.args)) {
           usage();
           return true;
@@ -1390,7 +487,7 @@ public class ProvUtil implements HttpDebugListener {
         doGetAccountDataSources(args);
         break;
       case GET_ACCOUNT_LOGGERS:
-        alo = parseAccountLoggerOptions(args);
+        alo = AccountLoggerOptions.parseAccountLoggerOptions(args);
         if (!command.checkArgsLength(alo.args)) {
           usage();
           return true;
@@ -1398,7 +495,7 @@ public class ProvUtil implements HttpDebugListener {
         doGetAccountLoggers(alo);
         break;
       case GET_ALL_ACCOUNT_LOGGERS:
-        alo = parseAccountLoggerOptions(args);
+        alo = AccountLoggerOptions.parseAccountLoggerOptions(args);
         if (!command.checkArgsLength(alo.args)) {
           usage();
           return true;
@@ -1573,7 +670,7 @@ public class ProvUtil implements HttpDebugListener {
         }
         break;
       case REMOVE_ACCOUNT_LOGGER:
-        alo = parseAccountLoggerOptions(args);
+        alo = AccountLoggerOptions.parseAccountLoggerOptions(args);
         if (!command.checkArgsLength(alo.args)) {
           usage();
           return true;
@@ -2231,34 +1328,6 @@ public class ProvUtil implements HttpDebugListener {
     console.print("account: " + account.getName() + "\nquotaUsed: " + quotaUsed + "\n");
   }
 
-  private static class AccountLoggerOptions {
-    String server;
-    String[] args;
-  }
-
-  /**
-   * Handles an optional <tt>-s</tt> or <tt>--server</tt> argument that may be passed to the logging
-   * commands. Returns an <tt>AccountLogggerOptions</tt> object that contains all arguments except
-   * the server option and value.
-   */
-  private AccountLoggerOptions parseAccountLoggerOptions(String[] args) throws ServiceException {
-    AccountLoggerOptions alo = new AccountLoggerOptions();
-    if (args.length > 1 && (args[1].equals("-s") || args[1].equals("--server"))) {
-      if (args.length == 2) {
-        throw ServiceException.FAILURE("Server name not specified.", null);
-      }
-      alo.server = args[2];
-
-      int numArgs = args.length - 2;
-      alo.args = new String[numArgs];
-      alo.args[0] = args[0];
-      System.arraycopy(args, 3, alo.args, 1, numArgs - 1);
-    } else {
-      alo.args = args;
-    }
-    return alo;
-  }
-
   private void doAddAccountLogger(AccountLoggerOptions alo) throws ServiceException {
     if (!(prov instanceof SoapProvisioning)) {
       throwSoapOnly();
@@ -2403,77 +1472,6 @@ public class ProvUtil implements HttpDebugListener {
       }
     }
   }
-
-  private static class ShareInfoVisitor implements PublishedShareInfoVisitor {
-
-    private final Console console;
-
-    private static final String mFormat =
-        "%-36.36s %-15.15s %-15.15s %-5.5s %-20.20s %-10.10s %-10.10s %-10.10s %-5.5s"
-            + " %-5.5s %-36.36s %-15.15s %-15.15s\n";
-
-    private ShareInfoVisitor(Console console) {
-      this.console = console;
-    }
-
-    private static String getPrintHeadings(){
-
-      final String heading = String.format(
-          mFormat,
-          "owner id",
-          "owner email",
-          "owner display",
-          "id",
-          "path",
-          "view",
-          "type",
-          "rights",
-          "mid",
-          "gt",
-          "grantee id",
-          "grantee name",
-          "grantee display"
-      );
-
-      final String heading2 = String.format(
-          mFormat,
-          "------------------------------------", // owner id
-          "---------------", // owner email
-          "---------------", // owner display
-          "-----", // id
-          "--------------------", // path
-          "----------", // default view
-          "----------", // type
-          "----------", // rights
-          "-----", // mountpoint id if mounted
-          "-----", // grantee type
-          "------------------------------------", // grantee id
-          "---------------", // grantee name
-          "---------------"
-      );
-      return heading + heading2;
-    }
-
-    @Override
-    public void visit(ShareInfoData shareInfoData) throws ServiceException {
-      console.print(String.format(
-          mFormat,
-          shareInfoData.getOwnerAcctId(),
-          shareInfoData.getOwnerAcctEmail(),
-          shareInfoData.getOwnerAcctDisplayName(),
-          shareInfoData.getItemId(),
-          shareInfoData.getPath(),
-          shareInfoData.getFolderDefaultView(),
-          shareInfoData.getType().name(),
-          shareInfoData.getRights(),
-          shareInfoData.getMountpointId_zmprov_only(),
-          shareInfoData.getGranteeType(),
-          shareInfoData.getGranteeId(),
-          shareInfoData.getGranteeName(),
-          shareInfoData.getGranteeDisplayName()));
-    }
-  }
-
 
   private void doGetShareInfo(String[] args) throws ServiceException {
     if (!(prov instanceof SoapProvisioning)) {
@@ -4123,80 +3121,6 @@ public class ProvUtil implements HttpDebugListener {
     }
   }
 
-  public static class ErrorWriter {
-
-    public ErrorWriter(PrintStream errConsole) {
-      this.errConsole = errConsole;
-    }
-
-    private final PrintStream errConsole;
-
-    private void printError(String text) {
-      PrintStream ps = errConsole;
-      try {
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ps, Charsets.UTF_8));
-        writer.write(text + "\n");
-        writer.flush();
-      } catch (IOException e) {
-        ps.println(text);
-      }
-    }
-  }
-
-  static class Console {
-
-    final PrintStream stdOut;
-    final PrintStream stdError;
-
-    public Console(PrintStream stdOut, PrintStream stdError) {
-      this.stdOut = stdOut;
-      this.stdError = stdError;
-    }
-
-    public Console(OutputStream outputStream, OutputStream errorStream) {
-      this.stdOut = new PrintStream(outputStream);
-      this.stdError = new PrintStream(errorStream);
-    }
-
-    public void print(String data) {
-      this.stdOut.print(data);
-    }
-
-    public void println(Object obj) {
-      this.stdOut.println(obj);
-    }
-
-    public void println() {
-      this.stdOut.println();
-    }
-
-    public void printStacktrace(Exception exception) {
-      exception.printStackTrace(this.stdError);
-    }
-
-    public void printError(String text) {
-      PrintStream ps = this.stdError;
-      try {
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ps, Charsets.UTF_8));
-        writer.write(text + "\n");
-        writer.flush();
-      } catch (IOException e) {
-        ps.println(text);
-      }
-    }
-
-    public void printOutput(String text) {
-      try {
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(this.stdOut, Charsets.UTF_8));
-        writer.write(text + "\n");
-        writer.flush();
-      } catch (IOException e) {
-        this.stdOut.println(text);
-      }
-    }
-
-  }
-
   public static void main(String[] args) throws IOException, ServiceException {
 
     main(new Console(System.out, System.err), args);
@@ -4421,190 +3345,6 @@ public class ProvUtil implements HttpDebugListener {
     return args;
   }
 
-  static class ArgException extends Exception {
-    ArgException(String msg) {
-      super(msg);
-    }
-  }
-
-  private static class DescribeArgs {
-
-    enum Field {
-      type, // attribute type
-      value, // value for enum or regex attributes
-      callback, // class name of AttributeCallback object to invoke on changes to attribute.
-      immutable, // whether this attribute can be modified directly
-      cardinality, // single or multi
-      requiredIn, // comma-seperated list containing classes in which this attribute is
-      // required
-      optionalIn, // comma-seperated list containing classes in which this attribute can
-      // appear
-      flags, // attribute flags
-      defaults, // default value on global config or default COS(for new install) and all
-      // upgraded COS's
-      min, // min value for integers and durations. defaults to Integer.MIN_VALUE"
-      max, // max value for integers and durations, max length for strings/email, defaults to
-      // Integer.MAX_VALUE
-      id, // leaf OID of the attribute
-      requiresRestart, // server(s) need be to restarted after changing this attribute
-      since, // version since which the attribute had been introduced
-      deprecatedSince; // version since which the attribute had been deprecaed
-
-      static String formatDefaults(AttributeInfo ai) {
-        StringBuilder sb = new StringBuilder();
-        for (String d : ai.getDefaultCosValues()) {
-          sb.append(d).append(",");
-        }
-        for (String d : ai.getGlobalConfigValues()) {
-          sb.append(d).append(",");
-        }
-        return sb.length() == 0 ? "" : sb.substring(0, sb.length() - 1); // trim the ending ,
-      }
-
-      static String formatRequiredIn(AttributeInfo ai) {
-        Set<AttributeClass> requiredIn = ai.getRequiredIn();
-        if (requiredIn == null) {
-          return "";
-        }
-        StringBuilder sb = new StringBuilder();
-
-        for (AttributeClass ac : requiredIn) {
-          sb.append(ac.name()).append(",");
-        }
-        return sb.substring(0, sb.length() - 1); // trim the ending ,
-      }
-
-      static String formatOptionalIn(AttributeInfo ai) {
-        Set<AttributeClass> optionalIn = ai.getOptionalIn();
-        if (optionalIn == null) {
-          return "";
-        }
-        StringBuilder sb = new StringBuilder();
-        for (AttributeClass ac : optionalIn) {
-          sb.append(ac.name()).append(",");
-        }
-        return sb.substring(0, sb.length() - 1); // trim the ending ,
-      }
-
-      static String formatFlags(AttributeInfo ai) {
-        StringBuilder sb = new StringBuilder();
-        for (AttributeFlag f : AttributeFlag.values()) {
-          if (ai.hasFlag(f)) {
-            sb.append(f.name()).append(",");
-          }
-        }
-        return sb.length() == 0 ? "" : sb.substring(0, sb.length() - 1); // trim the ending ,
-      }
-
-      static String formatRequiresRestart(AttributeInfo ai) {
-        StringBuilder sb = new StringBuilder();
-        List<AttributeServerType> requiresRetstart = ai.getRequiresRestart();
-        if (requiresRetstart != null) {
-          for (AttributeServerType ast : requiresRetstart) {
-            sb.append(ast.name()).append(",");
-          }
-        }
-        return sb.length() == 0 ? "" : sb.substring(0, sb.length() - 1); // trim the ending ,
-      }
-
-      static String print(Field field, AttributeInfo ai) {
-        String out = null;
-
-        switch (field) {
-          case type:
-            out = ai.getType().getName();
-            break;
-          case value:
-            out = ai.getValue();
-            break;
-          case callback:
-            AttributeCallback acb = ai.getCallback();
-            if (acb != null) {
-              out = acb.getClass().getSimpleName();
-            }
-            break;
-          case immutable:
-            out = Boolean.toString(ai.isImmutable());
-            break;
-          case cardinality:
-            AttributeCardinality card = ai.getCardinality();
-            if (card != null) {
-              out = card.name();
-            }
-            break;
-          case requiredIn:
-            out = formatRequiredIn(ai);
-            break;
-          case optionalIn:
-            out = formatOptionalIn(ai);
-            break;
-          case flags:
-            out = formatFlags(ai);
-            break;
-          case defaults:
-            out = formatDefaults(ai);
-            break;
-          case min:
-            long min = ai.getMin();
-            if (min != Long.MIN_VALUE && min != Integer.MIN_VALUE) {
-              out = Long.toString(min);
-            }
-            break;
-          case max:
-            long max = ai.getMax();
-            if (max != Long.MAX_VALUE && max != Integer.MAX_VALUE) {
-              out = Long.toString(max);
-            }
-            break;
-          case id:
-            int id = ai.getId();
-            if (id != -1) {
-              out = Integer.toString(ai.getId());
-            }
-            break;
-          case requiresRestart:
-            out = formatRequiresRestart(ai);
-            break;
-          case since:
-            List<Version> since = ai.getSince();
-            if (since != null) {
-              StringBuilder sb = new StringBuilder();
-              for (Version version : since) {
-                sb.append(version.toString()).append(",");
-              }
-              sb.setLength(sb.length() - 1);
-              out = sb.toString();
-            }
-            break;
-          case deprecatedSince:
-            Version depreSince = ai.getDeprecatedSince();
-            if (depreSince != null) {
-              out = depreSince.toString();
-            }
-            break;
-        }
-
-        if (out == null) {
-          out = "";
-        }
-        return out;
-      }
-    }
-
-    /*
-     * args when an object class is specified
-     */
-    boolean mNonInheritedOnly;
-    boolean mOnThisObjectTypeOnly;
-    AttributeClass mAttrClass;
-    boolean mVerbose;
-
-    /*
-     * args when a specific attribute is specified
-     */
-    String mAttr;
-  }
-
   static String formatLine(int width) {
     StringBuilder sb = new StringBuilder();
     sb.append("-".repeat(Math.max(0, width)));
@@ -4667,71 +3407,10 @@ public class ProvUtil implements HttpDebugListener {
     usage();
   }
 
-  private DescribeArgs parseDescribeArgs(String[] args) throws ServiceException {
-    DescribeArgs descArgs = new DescribeArgs();
-
-    int i = 1;
-    while (i < args.length) {
-      if ("-v".equals(args[i])) {
-        if (descArgs.mAttr != null) {
-          throw ServiceException.INVALID_REQUEST("cannot specify -v when -a is specified", null);
-        }
-        descArgs.mVerbose = true;
-      } else if (args[i].startsWith("-ni")) {
-        if (descArgs.mAttr != null) {
-          throw ServiceException.INVALID_REQUEST("cannot specify -ni when -a is specified", null);
-        }
-        descArgs.mNonInheritedOnly = true;
-      } else if (args[i].startsWith("-only")) {
-        if (descArgs.mAttr != null) {
-          throw ServiceException.INVALID_REQUEST("cannot specify -only when -a is specified", null);
-        }
-        descArgs.mOnThisObjectTypeOnly = true;
-      } else if (args[i].startsWith("-a")) {
-        if (descArgs.mAttrClass != null) {
-          throw ServiceException.INVALID_REQUEST(
-              "cannot specify -a when entry type is specified", null);
-        }
-        if (descArgs.mAttr != null) {
-          throw ServiceException.INVALID_REQUEST(
-              "attribute is already specified as " + descArgs.mAttr, null);
-        }
-        if (args.length <= i + 1) {
-          throw ServiceException.INVALID_REQUEST("not enough args", null);
-        }
-        i++;
-        descArgs.mAttr = args[i];
-
-      } else {
-        if (descArgs.mAttr != null) {
-          throw ServiceException.INVALID_REQUEST("too many args", null);
-        }
-        if (descArgs.mAttrClass != null) {
-          throw ServiceException.INVALID_REQUEST(
-              "entry type is already specified as " + descArgs.mAttrClass, null);
-        }
-        AttributeClass ac = AttributeClass.fromString(args[i]);
-        if (ac == null || !ac.isProvisionable()) {
-          throw ServiceException.INVALID_REQUEST("invalid entry type " + ac.name(), null);
-        }
-        descArgs.mAttrClass = ac;
-      }
-      i++;
-    }
-
-    if ((descArgs.mNonInheritedOnly == true || descArgs.mOnThisObjectTypeOnly == true)
-        && descArgs.mAttrClass == null) {
-      throw ServiceException.INVALID_REQUEST(
-          "-ni -only must be specified with an entry type", null);
-    }
-
-    return descArgs;
-  }
-
   private void doDescribe(String[] args) throws ServiceException {
     DescribeArgs descArgs = null;
     try {
-      descArgs = parseDescribeArgs(args);
+      descArgs = DescribeArgs.parseDescribeArgs(args);
     } catch (ServiceException | NumberFormatException e) {
       descAttrsUsage(e);
       return;
@@ -5247,104 +3926,9 @@ public class ProvUtil implements HttpDebugListener {
     dumpXMPPComponent(lookupXMPPComponent(args[1]), getArgNameSet(args, 2));
   }
 
-  private static class RightArgs {
-    String mTargetType;
-    String mTargetIdOrName;
-    String mGranteeType;
-    String mGranteeIdOrName;
-    String mSecret;
-    String mRight;
-    RightModifier mRightModifier;
-
-    String[] mArgs;
-    int mCurPos = 1;
-
-    RightArgs(String[] args) {
-      mArgs = args;
-      mCurPos = 1;
-    }
-
-    String getNextArg() throws ServiceException {
-      if (hasNext()) {
-        return mArgs[mCurPos++];
-      } else {
-        throw ServiceException.INVALID_REQUEST("not enough arguments", null);
-      }
-    }
-
-    boolean hasNext() {
-      return (mCurPos < mArgs.length);
-    }
-  }
-
-  private void getRightArgsTarget(RightArgs ra) throws ServiceException, ArgException {
-    if (ra.mCurPos >= ra.mArgs.length) {
-      throw new ArgException("not enough arguments");
-    }
-    ra.mTargetType = ra.mArgs[ra.mCurPos++];
-    TargetType tt = TargetType.fromCode(ra.mTargetType);
-    if (tt.needsTargetIdentity()) {
-      if (ra.mCurPos >= ra.mArgs.length) {
-        throw new ArgException("not enough arguments");
-      }
-      ra.mTargetIdOrName = ra.mArgs[ra.mCurPos++];
-    } else {
-      ra.mTargetIdOrName = null;
-    }
-  }
-
-  private void getRightArgsGrantee(RightArgs ra, boolean needGranteeType, boolean needSecret)
-      throws ServiceException, ArgException {
-    if (ra.mCurPos >= ra.mArgs.length) {
-      throw new ArgException("not enough arguments");
-    }
-    GranteeType gt = null;
-    if (needGranteeType) {
-      ra.mGranteeType = ra.mArgs[ra.mCurPos++];
-      gt = GranteeType.fromCode(ra.mGranteeType);
-    } else {
-      ra.mGranteeType = null;
-    }
-    if (gt == GranteeType.GT_AUTHUSER || gt == GranteeType.GT_PUBLIC) {
-      return;
-    }
-    if (ra.mCurPos >= ra.mArgs.length) {
-      throw new ArgException("not enough arguments");
-    }
-    ra.mGranteeIdOrName = ra.mArgs[ra.mCurPos++];
-
-    if (needSecret && gt != null) {
-      if (gt.allowSecret()) {
-        if (ra.mCurPos >= ra.mArgs.length) {
-          throw new ArgException("not enough arguments");
-        }
-        ra.mSecret = ra.mArgs[ra.mCurPos++];
-      }
-    }
-  }
-
-  private void getRightArgsRight(RightArgs ra) throws ServiceException, ArgException {
-    if (ra.mCurPos >= ra.mArgs.length) {
-      throw new ArgException("not enough arguments");
-    }
-
-    ra.mRight = ra.mArgs[ra.mCurPos++];
-    ra.mRightModifier = RightModifier.fromChar(ra.mRight.charAt(0));
-    if (ra.mRightModifier != null) {
-      ra.mRight = ra.mRight.substring(1);
-    }
-  }
-
-  private void getRightArgs(RightArgs ra, boolean needGranteeType, boolean needSecret)
-      throws ServiceException, ArgException {
-    getRightArgsTarget(ra);
-    getRightArgsGrantee(ra, needGranteeType, needSecret);
-    getRightArgsRight(ra);
-  }
-
   private void doCheckRight(String[] args) throws ServiceException, ArgException {
     RightArgs ra = new RightArgs(args);
-    getRightArgs(ra, false, false); // todo, handle secret
+    RightArgs.getRightArgs(ra, false, false); // todo, handle secret
 
     Map<String, Object> attrs = getMap(args, ra.mCurPos);
 
@@ -5381,11 +3965,11 @@ public class ProvUtil implements HttpDebugListener {
 
     if (prov instanceof LdapProv) {
       // must provide grantee info
-      getRightArgsGrantee(ra, true, false);
+      RightArgs.getRightArgsGrantee(ra, true, false);
     } else {
       // has more args, use it for the requested grantee
       if (ra.mCurPos < args.length) {
-        getRightArgsGrantee(ra, true, false);
+        RightArgs.getRightArgsGrantee(ra, true, false);
       }
     }
 
@@ -5478,15 +4062,15 @@ public class ProvUtil implements HttpDebugListener {
 
   private void doGetEffectiveRights(String[] args) throws ServiceException, ArgException {
     RightArgs ra = new RightArgs(args);
-    getRightArgsTarget(ra);
+    RightArgs.getRightArgsTarget(ra);
 
     if (prov instanceof LdapProv) {
       // must provide grantee info
-      getRightArgsGrantee(ra, false, false);
+      RightArgs.getRightArgsGrantee(ra, false, false);
     } else {
       // has more args, use it for the requested grantee
       if (ra.mCurPos < args.length) {
-        getRightArgsGrantee(ra, false, false);
+        RightArgs.getRightArgsGrantee(ra, false, false);
       }
     }
 
@@ -5633,9 +4217,9 @@ public class ProvUtil implements HttpDebugListener {
     while (ra.hasNext()) {
       String arg = ra.getNextArg();
       if ("-t".equals(arg)) {
-        getRightArgsTarget(ra);
+        RightArgs.getRightArgsTarget(ra);
       } else if ("-g".equals(arg)) {
-        getRightArgsGrantee(ra, true, false);
+        RightArgs.getRightArgsGrantee(ra, true, false);
         if (ra.hasNext()) {
           String includeGroups = ra.getNextArg();
           if ("1".equals(includeGroups)) {
@@ -5703,7 +4287,7 @@ public class ProvUtil implements HttpDebugListener {
 
   private void doGrantRight(String[] args) throws ServiceException, ArgException {
     RightArgs ra = new RightArgs(args);
-    getRightArgs(ra, true, true);
+    RightArgs.getRightArgs(ra, true, true);
 
     TargetBy targetBy = (ra.mTargetIdOrName == null) ? null : guessTargetBy(ra.mTargetIdOrName);
     GranteeBy granteeBy =
@@ -5723,7 +4307,7 @@ public class ProvUtil implements HttpDebugListener {
 
   private void doRevokeRight(String[] args) throws ServiceException, ArgException {
     RightArgs ra = new RightArgs(args);
-    getRightArgs(ra, true, false);
+    RightArgs.getRightArgs(ra, true, false);
 
     TargetBy targetBy = (ra.mTargetIdOrName == null) ? null : guessTargetBy(ra.mTargetIdOrName);
     GranteeBy granteeBy =
