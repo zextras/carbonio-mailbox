@@ -6,7 +6,6 @@
 package com.zimbra.cs.gal;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -29,9 +28,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Contact;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.soap.ZimbraSoapContext;
-import com.zimbra.soap.account.type.HABGroupMember;
 import com.zimbra.soap.type.GalSearchType;
-import com.zimbra.soap.type.NamedValue;
 
 public class GalGroupMembers {
 

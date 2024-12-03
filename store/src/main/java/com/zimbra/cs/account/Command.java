@@ -696,13 +696,6 @@ public enum Command {
     mAlias = alias;
   }
 
-  Command(String name, String alias, String help, Category cat) {
-    mName = name;
-    mAlias = alias;
-    mHelp = help;
-    mCat = cat;
-  }
-
   Command(
       String name, String alias, String help, Category cat, int minArgLength, int maxArgLength) {
     mName = name;

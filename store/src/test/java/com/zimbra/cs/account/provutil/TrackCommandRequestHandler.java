@@ -47,7 +47,6 @@ import com.zimbra.soap.admin.message.GetEffectiveRightsResponse;
 import com.zimbra.soap.admin.message.GetQuotaUsageResponse;
 import com.zimbra.soap.admin.message.GetRightResponse;
 import com.zimbra.soap.admin.message.GetRightsDocResponse;
-import com.zimbra.soap.admin.message.GetSMIMEConfigResponse;
 import com.zimbra.soap.admin.message.GetServerResponse;
 import com.zimbra.soap.admin.message.GetShareInfoResponse;
 import com.zimbra.soap.admin.message.GetXMPPComponentResponse;
@@ -85,7 +84,6 @@ import com.zimbra.soap.admin.type.MailboxQuotaInfo;
 import com.zimbra.soap.admin.type.PackageRightsInfo;
 import com.zimbra.soap.admin.type.RightInfo;
 import com.zimbra.soap.admin.type.RightViaInfo;
-import com.zimbra.soap.admin.type.SMIMEConfigInfo;
 import com.zimbra.soap.admin.type.ServerInfo;
 import com.zimbra.soap.admin.type.TargetWithType;
 import com.zimbra.soap.admin.type.XMPPComponentInfo;
@@ -129,7 +127,7 @@ public class TrackCommandRequestHandler extends DocumentHandler {
       return jaxbToElement(resp);
     });
     responseMapping.put("AddAccountLoggerRequest", () -> {
-      AddAccountLoggerResponse resp = AddAccountLoggerResponse.create(Arrays.asList(
+      AddAccountLoggerResponse resp = AddAccountLoggerResponse.create(List.of(
               LoggerInfo.createForCategoryAndLevel("mycat", LoggingLevel.debug)
       ));
       return jaxbToElement(resp);
@@ -278,17 +276,12 @@ public class TrackCommandRequestHandler extends DocumentHandler {
       var resp = new GetAllRightsResponse();
       RightInfo rightInfo = new RightInfo();
       rightInfo.setName("getAccount");
-      resp.setRights(Arrays.asList(rightInfo));
+      resp.setRights(List.of(rightInfo));
       return jaxbToElement(resp);
     });
     responseMapping.put("GetConfigRequest", () -> {
       var resp = new GetConfigResponse();
-      resp.setAttrs(Arrays.asList(new Attr(ZAttrProvisioning.A_zimbraId, "attrId")));
-      return jaxbToElement(resp);
-    });
-    responseMapping.put("GetSMIMEConfigRequest", () -> {
-      var resp = new GetSMIMEConfigResponse();
-      resp.setConfigs(Arrays.asList(new SMIMEConfigInfo("smimeConfigInfoName")));
+      resp.setAttrs(List.of(new Attr(ZAttrProvisioning.A_zimbraId, "attrId")));
       return jaxbToElement(resp);
     });
     responseMapping.put("GetDistributionListMembersRequest", () -> {
@@ -310,7 +303,7 @@ public class TrackCommandRequestHandler extends DocumentHandler {
     });
     responseMapping.put("GetQuotaUsageRequest", () -> {
       var resp = new GetQuotaUsageResponse(false, 1,
-              Arrays.asList(new AccountQuotaInfo(
+              List.of(new AccountQuotaInfo(
                       ACCOUNT_UUID, ACCOUNT_NAME, 500, 1000
               ))
       );
@@ -401,18 +394,18 @@ public class TrackCommandRequestHandler extends DocumentHandler {
 
   private static ServerInfo createServerInfo() {
     return new ServerInfo(ACCOUNT_UUID, "localhost",
-            Arrays.asList(new Attr(ZAttrProvisioning.A_zimbraServiceHostname, "localhost")));
+            List.of(new Attr(ZAttrProvisioning.A_zimbraServiceHostname, "localhost")));
   }
 
   private static DomainInfo createDomainInfo() {
-    return new DomainInfo(MailboxTestUtil.DEFAULT_DOMAIN_ID, MailboxTestUtil.DEFAULT_DOMAIN, Arrays.asList(
+    return new DomainInfo(MailboxTestUtil.DEFAULT_DOMAIN_ID, MailboxTestUtil.DEFAULT_DOMAIN, List.of(
             new Attr(ZAttrProvisioning.A_zimbraDomainType, "local"),
             new Attr(Provisioning.A_zimbraPreAuthKey, "PreAuthkey")
     ));
   }
 
   private static AccountInfo createAccountInfo() {
-    return new AccountInfo(ACCOUNT_UUID, ACCOUNT_NAME, false, Arrays.asList(
+    return new AccountInfo(ACCOUNT_UUID, ACCOUNT_NAME, false, List.of(
             new Attr(ZAttrProvisioning.A_zimbraId, ACCOUNT_UUID),
             new Attr(ZAttrProvisioning.A_zimbraMailHost, "localhost"),
             new Attr(ZAttrProvisioning.A_zimbraAccountStatus, "active")

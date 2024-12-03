@@ -1,6 +1,5 @@
 package com.zimbra.doc.soap;
 
-import com.zimbra.soap.account.message.GetSMIMEPublicCertsRequest;
 import com.zimbra.soap.admin.message.AbortHsmRequest;
 import com.zimbra.soap.admin.message.AbortXMbxSearchRequest;
 import com.zimbra.soap.admin.message.BackupAccountQueryRequest;
@@ -18,11 +17,9 @@ import com.zimbra.soap.admin.message.GetClusterStatusRequest;
 import com.zimbra.soap.admin.message.GetHsmStatusRequest;
 import com.zimbra.soap.admin.message.GetMailboxVersionRequest;
 import com.zimbra.soap.admin.message.GetMailboxVolumesRequest;
-import com.zimbra.soap.admin.message.GetSMIMEConfigRequest;
 import com.zimbra.soap.admin.message.GetXMbxSearchesListRequest;
 import com.zimbra.soap.admin.message.HsmRequest;
 import com.zimbra.soap.admin.message.InstallCertRequest;
-import com.zimbra.soap.admin.message.ModifySMIMEConfigRequest;
 import com.zimbra.soap.admin.message.MoveBlobsRequest;
 import com.zimbra.soap.admin.message.MoveMailboxRequest;
 import com.zimbra.soap.admin.message.PurgeMovedMailboxRequest;
@@ -46,7 +43,6 @@ public final class DocExcludedServices {
 
     static {
         SERVICE_SET = new HashSet<>(63);
-        SERVICE_SET.add(removeRequest(GetSMIMEPublicCertsRequest.class));
         SERVICE_SET.add(removeRequest(AbortHsmRequest.class));
         SERVICE_SET.add(removeRequest(AbortXMbxSearchRequest.class));
         SERVICE_SET.add(removeRequest(BackupRequest.class));
@@ -64,11 +60,9 @@ public final class DocExcludedServices {
         SERVICE_SET.add(removeRequest(GetHsmStatusRequest.class));
         SERVICE_SET.add(removeRequest(GetMailboxVersionRequest.class));
         SERVICE_SET.add(removeRequest(GetMailboxVolumesRequest.class));
-        SERVICE_SET.add(removeRequest(GetSMIMEConfigRequest.class));
         SERVICE_SET.add(removeRequest(GetXMbxSearchesListRequest.class));
         SERVICE_SET.add(removeRequest(HsmRequest.class));
         SERVICE_SET.add(removeRequest(InstallCertRequest.class));
-        SERVICE_SET.add(removeRequest(ModifySMIMEConfigRequest.class));
         SERVICE_SET.add(removeRequest(MoveBlobsRequest.class));
         SERVICE_SET.add(removeRequest(MoveMailboxRequest.class));
         SERVICE_SET.add(removeRequest(PurgeMovedMailboxRequest.class));

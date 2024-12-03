@@ -708,11 +708,6 @@ public class SoapProvisioning extends Provisioning {
     }
   }
 
-  public Future<HttpResponse> invokeJaxbAsync(Object jaxbObject, FutureCallback<HttpResponse> cb)
-      throws ServiceException {
-    return invokeAsync(JaxbUtil.jaxbToElement(jaxbObject), cb);
-  }
-
   public Future<HttpResponse> invokeJaxbAsync(
       Object jaxbObject, String serverName, FutureCallback<HttpResponse> cb)
       throws ServiceException {
@@ -2116,31 +2111,6 @@ public class SoapProvisioning extends Provisioning {
     reload(group);
   }
 
-  static void addAttrElementsMailService(Element req, Map<String, ? extends Object> attrs)
-      throws ServiceException {
-    if (attrs == null) return;
-
-    for (Entry<String, ? extends Object> entry : attrs.entrySet()) {
-      String key = entry.getKey();
-      Object value = entry.getValue();
-      if (value instanceof String) {
-        Element a = req.addElement(MailConstants.E_ATTRIBUTE);
-        a.addAttribute(MailConstants.A_NAME, key);
-        a.setText((String) value);
-      } else if (value instanceof String[]) {
-        String[] values = (String[]) value;
-        for (String v : values) {
-          Element a = req.addElement(MailConstants.E_ATTRIBUTE);
-          a.addAttribute(MailConstants.A_NAME, key);
-          a.setText(v);
-        }
-      } else {
-        throw ZClientException.CLIENT_ERROR(
-            "invalid attr type: " + key + " " + value.getClass().getName(), null);
-      }
-    }
-  }
-
   @Override
   public Identity createIdentity(Account account, String identityName, Map<String, Object> attrs)
       throws ServiceException {
@@ -2411,10 +2381,6 @@ public class SoapProvisioning extends Provisioning {
       default:
         return null;
     }
-  }
-
-  public void deleteMailbox(String accountId) throws ServiceException {
-    invokeJaxb(new DeleteMailboxRequest(accountId));
   }
 
   public MailboxWithMailboxId purgeMessages(Account account) throws ServiceException {

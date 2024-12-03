@@ -23,7 +23,6 @@ import com.zimbra.cs.account.accesscontrol.RightCommand;
 import com.zimbra.cs.account.accesscontrol.RightModifier;
 import com.zimbra.cs.account.auth.AuthContext;
 import com.zimbra.cs.account.gal.GalOp;
-import com.zimbra.cs.account.ldap.entry.LdapDistributionList;
 import com.zimbra.cs.account.names.NameUtil;
 import com.zimbra.cs.extension.ExtensionUtil;
 import com.zimbra.cs.gal.GalSearchParams;
@@ -31,7 +30,6 @@ import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 import com.zimbra.cs.mime.MimeTypeInfo;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.account.type.AddressListInfo;
-import com.zimbra.soap.account.type.HABGroupMember;
 import com.zimbra.soap.admin.type.CacheEntryType;
 import com.zimbra.soap.admin.type.CmdRightsInfo;
 import com.zimbra.soap.admin.type.CountObjectsType;
@@ -2688,17 +2686,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
     for (ProvisioningValidator validator : validators) {
       validator.refresh();
     }
-  }
-
-  /**
-   * @param group Dynamic group
-   * @param dlsToCheck list of dl to be checked for membership of dynamic group
-   * @return true if one of the dl is a member of dynamic group
-   * @throws ServiceException
-   */
-  public boolean dlIsInDynamicHABGroup(DynamicGroup group, List<String> dlsToCheck)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
   }
 
   // address list

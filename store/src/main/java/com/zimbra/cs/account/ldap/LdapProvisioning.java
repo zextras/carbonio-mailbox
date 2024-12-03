@@ -167,24 +167,20 @@ import com.zimbra.cs.listeners.AuthListener;
 import com.zimbra.cs.mime.MimeTypeInfo;
 import com.zimbra.cs.service.util.JWEUtil;
 import com.zimbra.cs.service.util.ResetPasswordUtil;
-import com.zimbra.cs.service.util.SortBySeniorityIndexThenName;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.cs.util.Zimbra;
 import com.zimbra.cs.zimlet.ZimletException;
 import com.zimbra.cs.zimlet.ZimletUtil;
 import com.zimbra.soap.account.type.AddressListInfo;
-import com.zimbra.soap.account.type.HABGroupMember;
 import com.zimbra.soap.admin.type.CacheEntryType;
 import com.zimbra.soap.admin.type.CountObjectsType;
 import com.zimbra.soap.admin.type.DataSourceType;
 import com.zimbra.soap.admin.type.GranteeSelector.GranteeBy;
 import com.zimbra.soap.type.AutoProvPrincipalBy;
 import com.zimbra.soap.type.GalSearchType;
-import com.zimbra.soap.type.NamedValue;
 import com.zimbra.soap.type.TargetBy;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -204,9 +200,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -2415,10 +2409,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     return list.toArray(new String[0]);
   }
 
-  String[] addMultiValue(NamedEntry acct, String attr, String value) {
-    return addMultiValue(acct.getMultiAttr(attr), value);
-  }
-
   @Override
   public void addAlias(Account acct, String alias) throws ServiceException {
     addAliasInternal(acct, alias);
@@ -3607,15 +3597,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     }
   }
 
-  private Account createDummyAccount(Map<String, Object> attrs, String password, Domain domain)
-      throws ServiceException {
-    SecureRandom random = new SecureRandom();
-    byte[] keyBytes = new byte[10];
-    random.nextBytes(keyBytes);
-    String dummyEmailAddr = String.valueOf(Hex.encodeHex(keyBytes)) + "@" + domain.getName();
-    return createAccount(dummyEmailAddr, password, attrs);
-  }
-
   private void deleteDomain(String zimbraId, boolean deleteDomainAliases) throws ServiceException {
     ZLdapContext zlc = null;
     try {
@@ -4385,7 +4366,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
   private DistributionList createDistributionList(
       String listAddress, Map<String, Object> listAttrs, Account creator) throws ServiceException {
-    boolean isHabGroup = false;
     SpecialAttrs specialAttrs = mDIT.handleSpecialAttrs(listAttrs);
     String baseDn = specialAttrs.getLdapBaseDn();
 
@@ -4418,10 +4398,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       }
 
       ZMutableEntry entry = LdapClient.createMutableEntry();
-      isHabGroup = false;
       entry.mapToAttrs(listAttrs);
 
-      Set<String> ocs = LdapObjectClass.getDistributionListObjectClasses(this, isHabGroup);
+      Set<String> ocs = LdapObjectClass.getDistributionListObjectClasses(this, false);
       entry.addAttr(A_objectClass, ocs);
 
       String zimbraIdStr = LdapUtil.generateUUID();
@@ -4441,7 +4420,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       }
 
       String displayName = entry.getAttrString(Provisioning.A_displayName);
-      if (displayName != null && !isHabGroup) {
+      if (displayName != null) {
         entry.setAttr(A_cn, displayName);
       }
 
@@ -4449,10 +4428,8 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
       setGroupHomeServer(entry, creator);
 
-      if (!isHabGroup) {
-        entry.setDN(
-            mDIT.distributionListDNCreate(baseDn, entry.getAttributes(), localPart, domain));
-      }
+      entry.setDN(
+              mDIT.distributionListDNCreate(baseDn, entry.getAttributes(), localPart, domain));
 
       zlc.createEntry(entry);
 
@@ -4710,32 +4687,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   private void deleteDistributionList(LdapDistributionList dl, boolean cascadeDelete)
       throws ServiceException {
     // check if cascadeDelete is true. If it's true, delete all subgroups.
-    if (false) {
-      if (cascadeDelete) {
-        Set<String> members = dl.getAllMembersSet();
-        for (String member : members) {
-          LdapDistributionList subDl =
-              (LdapDistributionList) getDistributionListByNameInternal(member);
-          if (subDl != null && false) {
-            deleteDistributionList(subDl, cascadeDelete);
-          } else {
-            DynamicGroup dg =
-                getDynamicGroupBasic(
-                    DistributionListBy.name,
-                    member,
-                    LdapClient.getContext(LdapServerType.MASTER, LdapUsage.DELETE_DYNAMICGROUP));
-            if (dg != null && false) {
-              deleteDynamicGroup((LdapDynamicGroup) dg);
-            }
-          }
-        }
-      } else {
-        if (dl.getAllMembers().length > 0) {
-          throw ServiceException.INVALID_REQUEST(
-              "Can not delete hab group when members are present in group.", null);
-        }
-      }
-    }
 
     String zimbraId = dl.getId();
 
@@ -7624,7 +7575,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     // all addrs of this DL
     AddrsOfEntry addrsOfDL = getAllAddressesOfEntry(dl.getName());
-    String dlOU = null;
 
     for (String member : members) {
       String memberName = member.toLowerCase();
@@ -7678,42 +7628,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     Map<String, String[]> modmap = new HashMap<>();
     modmap.put("+" + Provisioning.A_zimbraMailForwardingAddress, mods.toArray(new String[0]));
     modifyAttrs(dl, modmap, true);
-  }
-
-  /**
-   * returns true if group belongs to the org unit given in input
-   *
-   * @param group
-   * @param orgUnit
-   * @return
-   */
-  public static boolean isGroupInOU(Group group, String orgUnit) {
-    boolean result = Boolean.FALSE;
-    String groupDN = null;
-    if (group instanceof LdapDistributionList) {
-      groupDN = ((LdapDistributionList) group).getDN();
-    } else if (group instanceof LdapDynamicGroup) {
-      groupDN = ((LdapDynamicGroup) group).getDN();
-    }
-    String groupOU = getGroupOU(groupDN);
-    if (StringUtils.isNotEmpty(orgUnit) && orgUnit.equalsIgnoreCase(groupOU)) {
-      result = Boolean.TRUE;
-    }
-    return result;
-  }
-
-  /**
-   * returns dn of org unit in which group belongs
-   *
-   * @param groupDN
-   * @return
-   */
-  public static String getGroupOU(String groupDN) {
-    if (StringUtils.isNotEmpty(groupDN) && groupDN.contains("ou=")) {
-      return groupDN.substring(groupDN.indexOf("ou=") + 3);
-    } else {
-      return null;
-    }
   }
 
   private void removeDistributionListMembers(DistributionList dl, String[] members)
@@ -9888,24 +9802,17 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   public String[] getGroupMembers(Group group) throws ServiceException {
     EntryCacheDataKey cacheKey = EntryCacheDataKey.GROUP_MEMBERS;
     String[] members = null;
-    if (false && group instanceof DynamicGroup) {
-      DynamicGroup dynGroup =
-          getDynamicGroup(Key.DistributionListBy.name, group.getName(), null, Boolean.FALSE);
-      members = dynGroup.getAllMembers(true);
-      Arrays.sort(members);
-    } else {
-      members = (String[]) group.getCachedData(cacheKey);
-      if (members != null) {
-        return members;
-      }
-
-      members = group.getAllMembers(); // should never be null
-      assert (members != null);
-      Arrays.sort(members);
-
-      // catch it
-      group.setCachedData(cacheKey, members);
+    members = (String[]) group.getCachedData(cacheKey);
+    if (members != null) {
+      return members;
     }
+
+    members = group.getAllMembers(); // should never be null
+    assert (members != null);
+    Arrays.sort(members);
+
+    // catch it
+    group.setCachedData(cacheKey, members);
 
     return members;
   }
@@ -10084,10 +9991,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
   private String dynamicGroupDynamicUnitLocalpart(String dynamicGroupLocalpart) {
     return dynamicGroupLocalpart + ".__internal__";
-  }
-
-  private String dynamicGroupStaticUnitLocalpart(String dynamicGroupLocalpart) {
-    return dynamicGroupLocalpart + ".__external__";
   }
 
   private DynamicGroup createDynamicGroup(
@@ -11045,33 +10948,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     return members.toArray(new String[0]);
   }
 
-  @Override
-  public boolean dlIsInDynamicHABGroup(DynamicGroup group, List<String> dlsToCheck) {
-    ZLdapContext zlc = null;
-    try {
-      zlc = LdapClient.getContext(LdapServerType.REPLICA, LdapUsage.GET_GROUP_MEMBER);
-      String[] memberDNs = group.getMultiAttr(Provisioning.A_member);
-      final String[] attrsToGet =
-          new String[] {Provisioning.A_mail, Provisioning.A_zimbraMailAlias};
-      for (String memberDN : memberDNs) {
-        ZAttributes memberAttrs = zlc.getAttributes(memberDN, attrsToGet);
-        if (memberAttrs != null && dlsToCheck != null) {
-          for (String dlToCheck : dlsToCheck) {
-            if (memberAttrs.hasAttributeValue(Provisioning.A_mail, dlToCheck)
-                || memberAttrs.hasAttributeValue(Provisioning.A_zimbraMailAlias, dlToCheck)) {
-              return Boolean.TRUE;
-            }
-          }
-        }
-      }
-    } catch (ServiceException e) {
-      ZimbraLog.account.warn("unable to get dynamic group members", e);
-    } finally {
-      LdapClient.closeContext(zlc);
-    }
-    return Boolean.FALSE;
-  }
-
   public String[] getDynamicGroupMembers(DynamicGroup group) throws ServiceException {
     List<String> members = searchDynamicGroupMembers(group);
     return members.toArray(new String[0]);
@@ -11113,21 +10989,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     } finally {
       LdapClient.closeContext(zlc);
     }
-  }
-
-  /**
-   * @param ouName organizational unit name
-   * @param baseDn distinguishedd name
-   * @return the dn with ou
-   */
-  public static String createOuDn(String ouName, String baseDn) {
-    StringBuilder sb = new StringBuilder();
-    sb.append("ou=");
-    sb.append(ouName);
-    sb.append(",");
-    sb.append(baseDn);
-
-    return sb.toString();
   }
 
   @Override

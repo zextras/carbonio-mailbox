@@ -60,7 +60,7 @@ class DescribeArgs {
       i++;
     }
 
-    if ((descArgs.mNonInheritedOnly == true || descArgs.mOnThisObjectTypeOnly == true)
+    if ((descArgs.mNonInheritedOnly || descArgs.mOnThisObjectTypeOnly)
         && descArgs.mAttrClass == null) {
       throw ServiceException.INVALID_REQUEST(
           "-ni -only must be specified with an entry type", null);
