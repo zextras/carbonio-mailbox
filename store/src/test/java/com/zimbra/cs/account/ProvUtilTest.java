@@ -503,4 +503,30 @@ class ProvUtilTest {
     Assertions.assertEquals(expected, stdErr.toString());
   }
 
+  @Test void getAllAccounts() throws Exception {
+    runCommand("ca", "user1@test.com", "password");
+    runCommand("ca", "user2@test.com", "password");
+    runCommand("ca", "user3@test.com", "password");
+
+    var getAllAccountOutput = runCommand("-l", "getAllAccounts");
+    String expectedOutput = """
+            user1@test.com
+            user2@test.com
+            user3@test.com
+            """;
+    Assertions.assertEquals(expectedOutput, getAllAccountOutput);
+  }
+
+  @Test void getAllAccountsVerbose() throws Exception {
+    var usr1 = runCommand("ca", "user1@test.com", "password", "zimbraMailHost", "localhost");
+    var usr2 = runCommand("ca", "user2@test.com", "password", "zimbraMailHost", "localhost");
+    var usr3 = runCommand("ca", "user3@test.com", "password", "zimbraMailHost", "localhost");
+
+    var getAllAccountOutput = runCommand("--ldap", "getAllAccounts", "-v", "test.com", "-s", "localhost");
+
+    Assertions.assertTrue(getAllAccountOutput.contains(String.format("zimbraId: %s", usr1)));
+    Assertions.assertTrue(getAllAccountOutput.contains(String.format("zimbraId: %s", usr2)));
+    Assertions.assertTrue(getAllAccountOutput.contains(String.format("zimbraId: %s", usr3)));
+  }
+
 }
