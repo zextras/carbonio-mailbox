@@ -1,41 +1,45 @@
 package com.zimbra.cs.account;
 
-import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.provutil.TrackCommandRequestHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ProvUtilCommandRunner {
 
+  private static final Logger log = LogManager.getLogger(ProvUtilCommandRunner.class);
+
   public record CommandOutput(String stdout, String stderr, List<String> requests) {
   }
 
-  CommandOutput runCommandString(String command) throws ServiceException, IOException {
-    String[] commandWithArgs = command.split("\s+");
-    return runCommand(Arrays.asList(commandWithArgs));
-  }
-
-  CommandOutput runCommand(String... commandWithArgs) throws ServiceException, IOException {
-    return runCommand(Arrays.asList(commandWithArgs));
-  }
-
-  CommandOutput runCommand(List<String> commandWithArgs) {
+  static CommandOutput runCommand(String... commandWithArgs) {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
     Thread hook = new Thread(() -> {
-      System.out.println("stdout");
-      System.out.println(outputStream.toString(StandardCharsets.UTF_8));
-      System.out.println("stderr");
-      System.out.println(errorStream.toString(StandardCharsets.UTF_8));
+      log.error("""
+          Error running command
+          
+          {}
+          
+          # STDOUT
+          
+          {}
+          # STDERR
+          
+          {}""",
+              String.join(" ", commandWithArgs),
+              outputStream.toString(StandardCharsets.UTF_8),
+              errorStream.toString(StandardCharsets.UTF_8));
     });
+    /** Install a shutdown hook that prints stdout and stderr if command calls System.exit()*/
     Runtime.getRuntime().addShutdownHook(hook);
     try {
-      ProvUtil.main(new Console(outputStream, errorStream), commandWithArgs.toArray(new String[] {}));
+      ProvUtil.main(new Console(outputStream, errorStream), commandWithArgs);
+      /** Remove the 'prints stdout and stderr' shutdown hook if command completes successfully */
       Runtime.getRuntime().removeShutdownHook(hook);
       return new CommandOutput(
           outputStream.toString(StandardCharsets.UTF_8),
