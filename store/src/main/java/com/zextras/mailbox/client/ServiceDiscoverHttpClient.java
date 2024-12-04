@@ -7,6 +7,7 @@ package com.zextras.mailbox.client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.carbonio.files.exceptions.InternalServerError;
 import com.zextras.carbonio.files.exceptions.UnAuthorized;
+import com.zimbra.common.util.ZimbraLog;
 import io.vavr.control.Try;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
@@ -81,6 +82,7 @@ public class ServiceDiscoverHttpClient {
           return Try.failure(new InternalServerError(new Exception("Unexpected response status: " + response.getStatusLine().getStatusCode())));
         }
         String bodyResponse = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+        ZimbraLog.mailbox.info("[DELETE] Service discover response: {}", bodyResponse);
         if (bodyResponse.equals("[]")) {
           return Try.success(false);
         } else {
