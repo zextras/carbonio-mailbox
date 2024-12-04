@@ -542,4 +542,16 @@ class ProvUtilTest {
     Assertions.assertEquals(expectedOutput, output);
   }
 
+  @ParameterizedTest
+  @ValueSource(strings = {"test1.com", "dev.io"})
+  void renameDomain(String targetDomain) throws Exception {
+    var output = runCommand("-l", "renameDomain", "test.com", targetDomain);
+    Assertions.assertTrue(output.contains(String.format("domain test.com renamed to %s", targetDomain)));
+  }
+
+  @Test void renameInvalidDomain() throws Exception {
+    catchSystemExit( () ->
+            runCommand("-l", "renameDomain", "test1.com", "test2.com") );
+  }
+
 }
