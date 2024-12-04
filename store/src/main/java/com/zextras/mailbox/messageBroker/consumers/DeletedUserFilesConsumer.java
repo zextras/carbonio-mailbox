@@ -64,7 +64,7 @@ public class DeletedUserFilesConsumer extends BaseConsumer {
               "cmd", "DeleteAccount", "id", deletedUserFiles.getUserId()
             }));
 
-    ZimbraLog.store.info(
+    ZimbraLog.store.error(
         "[DELETE] user deleted for real");
   }
 }
