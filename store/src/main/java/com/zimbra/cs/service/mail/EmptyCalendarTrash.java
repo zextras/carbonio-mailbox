@@ -47,7 +47,6 @@ public class EmptyCalendarTrash extends ItemAction {
     private void emptyTrash(Mailbox mbox, OperationContext octxt, ZimbraSoapContext zsc) throws ServiceException {
         var trashItemId = new ItemId(String.valueOf(FolderConstants.ID_FOLDER_TRASH), zsc);
         mbox.emptyFolder(octxt, trashItemId.getId(), true, FolderActionEmptyOpTypes.APPOINTMENTS);
-        mbox.purgeImapDeleted(octxt);
     }
 
     private void removeCalendarsFromGroups(Mailbox mbox, OperationContext octxt, List<String> calendarIds) throws ServiceException {
