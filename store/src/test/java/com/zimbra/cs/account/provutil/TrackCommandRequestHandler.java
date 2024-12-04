@@ -18,6 +18,7 @@ import com.zimbra.soap.admin.message.AuthResponse;
 import com.zimbra.soap.admin.message.CheckRightResponse;
 import com.zimbra.soap.admin.message.CopyCosResponse;
 import com.zimbra.soap.admin.message.CountAccountResponse;
+import com.zimbra.soap.admin.message.CountObjectsResponse;
 import com.zimbra.soap.admin.message.CreateAccountResponse;
 import com.zimbra.soap.admin.message.CreateCalendarResourceResponse;
 import com.zimbra.soap.admin.message.CreateCosResponse;
@@ -388,6 +389,10 @@ public class TrackCommandRequestHandler extends DocumentHandler {
     });
     responseMapping.put("VerifyIndexRequest", () -> {
       var resp = new VerifyIndexResponse(true, "VerifyIndexResponse message");
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("CountObjectsRequest", () -> {
+      var resp = new CountObjectsResponse(42, "account");
       return jaxbToElement(resp);
     });
   }

@@ -116,7 +116,8 @@ public class MailboxTestUtil {
     provisioning.createServer(
         SERVER_NAME,
         new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
-    provisioning.createDomain(DEFAULT_DOMAIN, new HashMap<>());
+    var domain = provisioning.createDomain(DEFAULT_DOMAIN, new HashMap<>());
+    domain.setId(DEFAULT_DOMAIN_ID);
     mockMessageBrokerClient();
   }
 
