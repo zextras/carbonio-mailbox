@@ -529,4 +529,17 @@ class ProvUtilTest {
     Assertions.assertTrue(getAllAccountOutput.contains(String.format("zimbraId: %s", usr3)));
   }
 
+  @Test void getAllAdminAccounts() throws Exception {
+    runCommand("ca", "user1@test.com", "password", "zimbraIsAdminAccount", "TRUE");
+    runCommand("ca", "user2@test.com", "password", "zimbraIsDelegatedAdminAccount", "TRUE");
+    runCommand("ca", "user3@test.com", "password");
+
+    var output = runCommand("-l", "getAllAdminAccounts");
+    String expectedOutput = """
+            user1@test.com
+            user2@test.com
+            """;
+    Assertions.assertEquals(expectedOutput, output);
+  }
+
 }
