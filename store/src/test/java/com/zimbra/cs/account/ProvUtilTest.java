@@ -13,6 +13,7 @@ import com.zimbra.cs.account.ProvUtil.Console;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -87,9 +88,32 @@ class ProvUtilTest {
   }
 
   String runCommand(String... commandWithArgs) throws Exception {
-    OutputStream outputStream = new ByteArrayOutputStream();
-    runCommand(outputStream, new ByteArrayOutputStream(), commandWithArgs);
-    return outputStream.toString();
+    ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+    ByteArrayOutputStream stderr = new ByteArrayOutputStream();
+    Thread printStdoutAndStderr = new Thread(() -> {
+      System.out.printf("""
+                      Error running 
+                      
+                      %s
+                      
+                      # STDOUT
+                      
+                      %s
+                      # STDERR
+                      
+                      %s
+                      
+                      """,
+              String.join(" ", commandWithArgs),
+              stdout.toString(StandardCharsets.UTF_8),
+              stderr.toString(StandardCharsets.UTF_8));
+    });
+    /** Add a shutdown hook that prints stdout and stderr that is invoked when command ends calling System.exit() */
+    Runtime.getRuntime().addShutdownHook(printStdoutAndStderr);
+    runCommand(stdout, stderr, commandWithArgs);
+    /** Remove the previously installed shutdown hook if command completes successfully */
+    Runtime.getRuntime().removeShutdownHook(printStdoutAndStderr);
+    return stdout.toString();
   }
 
   private void runCommand(OutputStream outputStream, OutputStream errorStream, String... commandWithArgs)
@@ -553,5 +577,151 @@ class ProvUtilTest {
     catchSystemExit( () ->
             runCommand("-l", "renameDomain", "test1.com", "test2.com") );
   }
+
+  @Test
+  void createAndGetDistributionList() throws Exception {
+    var distributionList = "list@test.com";
+    runCommand("createDistributionList", distributionList);
+    var out = parseZmprovKeyValue(runCommand( "getDistributionList", distributionList));
+    Assertions.assertEquals(distributionList, out.get("mail"));
+
+    var out1 = parseZmprovKeyValue(runCommand( "getDistributionList", out.get("zimbraId")));
+    Assertions.assertEquals(distributionList, out1.get("mail"));
+  }
+
+  @Test
+  void createAndGetDistributionListAlias() throws Exception {
+    var aliasDistributionList = "alias@test.com";
+    var originalDistributionList = "original@test.com";
+    runCommand("createDistributionList", originalDistributionList);
+    runCommand("addDistributionListAlias", originalDistributionList, aliasDistributionList);
+    var out = parseZmprovKeyValue(runCommand( "getDistributionList", aliasDistributionList));
+    Assertions.assertEquals(aliasDistributionList, out.get("mail"));
+
+    var out1 = parseZmprovKeyValue(runCommand( "getDistributionList", out.get("zimbraId")));
+    Assertions.assertEquals(aliasDistributionList, out1.get("mail"));
+  }
+
+  @Test
+  void createDynamicDistributionList() throws Exception {
+    var distributionList = "list@test.com";
+    runCommand("createDynamicDistributionList", distributionList);
+    var out = parseZmprovKeyValue(runCommand( "getDistributionList", distributionList));
+    Assertions.assertEquals(distributionList, out.get("mail"));
+
+    var out1 = parseZmprovKeyValue(runCommand( "getDistributionList", out.get("zimbraId")));
+    Assertions.assertEquals(distributionList, out1.get("mail"));
+  }
+
+  @Test
+  void renameDistributionList() throws Exception {
+    var newDistributionList = "alias@test.com";
+    var oldDistributionList = "original@test.com";
+    runCommand("createDistributionList", oldDistributionList);
+    runCommand("renameDistributionList", oldDistributionList, newDistributionList);
+
+    var out = parseZmprovKeyValue(runCommand( "getDistributionList", newDistributionList));
+    Assertions.assertEquals(newDistributionList, out.get("mail"));
+
+    catchSystemExit( () -> {
+      runCommand( "getDistributionList", oldDistributionList);
+    });
+
+    var out1 = parseZmprovKeyValue(runCommand( "getDistributionList", out.get("zimbraId")));
+    Assertions.assertEquals(newDistributionList, out1.get("mail"));
+
+    catchSystemExit( () -> {
+      runCommand( "getDistributionList", out.get("zimbraId"));
+    });
+
+  }
+
+
+  @Test
+  void distributionListMembership() throws Exception {
+    runCommand("ca", "user1@test.com", "password");
+    runCommand("ca", "user2@test.com", "password");
+
+    var distributionList = "list@test.com";
+    runCommand("createDistributionList", distributionList);
+    runCommand("addDistributionListMember", distributionList, "user1@test.com");
+    runCommand("addDistributionListMember", distributionList, "user2@test.com");
+    Assertions.assertTrue(runCommand("getDistributionListMembership", distributionList).contains("""
+            members
+            user1@test.com
+            user2@test.com
+            """));
+  }
+
+  @Test
+  void distributionListAliasMembership() throws Exception {
+    var aliasDistributionList = "alias@test.com";
+    var originalDistributionList = "original@test.com";
+
+    runCommand("ca", "user1@test.com", "password");
+    runCommand("ca", "user2@test.com", "password");
+
+    runCommand("createDistributionList", originalDistributionList);
+    runCommand("addDistributionListAlias", originalDistributionList, aliasDistributionList);
+    runCommand("addDistributionListMember", aliasDistributionList, "user1@test.com");
+    runCommand("addDistributionListMember", aliasDistributionList, "user2@test.com");
+    Assertions.assertTrue(runCommand("getDistributionListMembership", aliasDistributionList).contains("""
+            members
+            user1@test.com
+            user2@test.com
+            """));
+    runCommand("removeDistributionListMember", aliasDistributionList, "user1@test.com");
+    Assertions.assertTrue(runCommand("getDistributionListMembership", aliasDistributionList).contains("""
+            members
+            user2@test.com
+            """));
+  }
+
+  @Test
+  void removeDistributionListMembership() throws Exception {
+    runCommand("ca", "user1@test.com", "password");
+    runCommand("ca", "user2@test.com", "password");
+
+    var distributionList = "list@test.com";
+    runCommand("createDistributionList", distributionList);
+    runCommand("addDistributionListMember", distributionList, "user1@test.com");
+    runCommand("addDistributionListMember", distributionList, "user2@test.com");
+    runCommand("removeDistributionListMember", distributionList, "user1@test.com");
+    Assertions.assertTrue(runCommand("getDistributionListMembership", distributionList).contains("""
+            members
+            user2@test.com
+            """));
+  }
+
+  @Test
+  void deleteDistributionList() throws Exception {
+    var distributionList = "list@test.com";
+    runCommand("createDistributionList", distributionList);
+    runCommand( "deleteDistributionList", distributionList);
+
+    catchSystemExit( () -> {
+      runCommand( "getDistributionList", distributionList);
+    });
+  }
+
+  @Test
+  void removeDistributionListAlias() throws Exception {
+    var aliasDistributionList = "alias@test.com";
+    var originalDistributionList = "original@test.com";
+
+    runCommand("ca", "user1@test.com", "password");
+
+    runCommand("createDistributionList", originalDistributionList);
+    runCommand("addDistributionListAlias", originalDistributionList, aliasDistributionList);
+    runCommand( "removeDistributionListAlias", originalDistributionList, aliasDistributionList);
+
+    catchSystemExit( () -> {
+      runCommand( "getDistributionList", aliasDistributionList);
+    });
+    catchSystemExit( () -> {
+      runCommand("addDistributionListMember", aliasDistributionList, "user1@test.com");
+    });
+  }
+
 
 }
