@@ -27,8 +27,6 @@ import com.zimbra.cs.account.accesscontrol.ZimbraACE;
  */
 public abstract class Group extends MailTarget implements AliasedEntry {
 
-    private boolean isHABGroup = Boolean.FALSE;
-
     public Group(String name, String id, Map<String, Object> attrs, Provisioning prov) {
         super(name, id, attrs, null, prov);
     }
@@ -89,10 +87,6 @@ public abstract class Group extends MailTarget implements AliasedEntry {
         addrs.add(getName());
         addrs.addAll(getMultiAttrSet(Provisioning.A_zimbraMailAlias));
         return Collections.unmodifiableSet(addrs);
-    }
-
-    public void setHABGroup(boolean isHabGroup) {
-        this.isHABGroup = isHabGroup;
     }
 
     public static class GroupOwner {

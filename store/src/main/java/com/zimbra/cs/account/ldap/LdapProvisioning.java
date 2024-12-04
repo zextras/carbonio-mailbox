@@ -4400,7 +4400,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       ZMutableEntry entry = LdapClient.createMutableEntry();
       entry.mapToAttrs(listAttrs);
 
-      Set<String> ocs = LdapObjectClass.getDistributionListObjectClasses(this, false);
+      Set<String> ocs = LdapObjectClass.getDistributionListObjectClasses(this);
       entry.addAttr(A_objectClass, ocs);
 
       String zimbraIdStr = LdapUtil.generateUUID();
@@ -4479,14 +4479,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       if (ne.hasMore()) {
         ZSearchResultEntry sr = ne.next();
         dl = makeDistributionList(sr.getDN(), sr.getAttributes(), basicAttrsOnly);
-        List<String> objectclass =
-            sr.getAttributes()
-                .getMultiAttrStringAsList(Provisioning.A_objectClass, CheckBinary.NOCHECK);
-        if (dl != null
-            && objectclass != null
-            && objectclass.contains(AttributeClass.OC_zimbraHabGroup)) {
-          dl.setHABGroup(Boolean.TRUE);
-        }
       }
       ne.close();
     } catch (ServiceException e) {
@@ -9940,11 +9932,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         } else if (objectclass.contains(AttributeClass.OC_zimbraGroup)) {
           grp = makeDynamicGroup(initZlc, sr.getDN(), attrs);
         }
-        if (grp != null
-            && objectclass != null
-            && objectclass.contains(AttributeClass.OC_zimbraHabGroup)) {
-          grp.setHABGroup(Boolean.TRUE);
-        }
         return grp;
       }
     } catch (LdapMultipleEntriesMatchedException e) {
@@ -10048,7 +10035,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       ZMutableEntry entry = LdapClient.createMutableEntry();
       entry.mapToAttrs(groupAttrs);
 
-      Set<String> ocs = LdapObjectClass.getGroupObjectClasses(this, false);
+      Set<String> ocs = LdapObjectClass.getGroupObjectClasses(this);
       entry.addAttr(A_objectClass, ocs);
 
       String zimbraId = LdapUtil.generateUUID();
@@ -10522,16 +10509,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       ZSearchResultEntry sr =
           helper.searchForEntry(mDIT.mailBranchBaseDN(), filter, initZlc, false, returnAttrs);
       if (sr != null) {
-        DynamicGroup grp = makeDynamicGroup(initZlc, sr.getDN(), sr.getAttributes());
-        List<String> objectclass =
-            sr.getAttributes()
-                .getMultiAttrStringAsList(Provisioning.A_objectClass, CheckBinary.NOCHECK);
-        if (grp != null
-            && objectclass != null
-            && objectclass.contains(AttributeClass.OC_zimbraHabGroup)) {
-          grp.setHABGroup(Boolean.TRUE);
-        }
-        return grp;
+        return makeDynamicGroup(initZlc, sr.getDN(), sr.getAttributes());
       }
     } catch (LdapMultipleEntriesMatchedException e) {
       throw AccountServiceException.MULTIPLE_ENTRIES_MATCHED("getDynamicGroupByQuery", e);
