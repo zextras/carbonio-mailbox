@@ -1,5 +1,12 @@
 
 
+## [4.19.1](https://github.com/zextras/carbonio-mailbox/compare/4.19.0...4.19.1) (2024-12-04)
+
+
+### Bug Fixes
+
+* remove purgeImapDeleted. ([6444022](https://github.com/zextras/carbonio-mailbox/commit/6444022b78636e2d699e163df4d96000a91d5c12))
+
 # [4.19.0](https://github.com/Zextras/carbonio-mailbox/compare/4.18.0...4.19.0) (2024-11-25)
 
 
