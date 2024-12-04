@@ -76,13 +76,15 @@ public class ServiceDiscoverHttpClient {
       HttpGet request = new HttpGet(url);
       request.setHeader("X-Consul-Token", token);
       try (CloseableHttpResponse response = httpClient.execute(request)) {
-        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-          return Try.success(true);
-        } else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
-          return Try.success(false);
-        } else {
+        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
           logger.error("Unexpected response status: {}", response.getStatusLine().getStatusCode());
           return Try.failure(new InternalServerError(new Exception("Unexpected response status: " + response.getStatusLine().getStatusCode())));
+        }
+        String bodyResponse = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+        if (bodyResponse.equals("[]")) {
+          return Try.success(false);
+        } else {
+          return Try.success(true);
         }
       }
     } catch (IOException exception) {

@@ -101,7 +101,7 @@ class DeleteAccountTest {
 						"]"));
     consulServer
         .when(request().withPath("/v1/health/checks/carbonio-files"))
-        .respond(response().withStatusCode(404));
+        .respond(response().withStatusCode(200).withBody("[]"));
   }
 
   @AfterAll
