@@ -65,6 +65,6 @@ public class DeletedUserFilesConsumer extends BaseConsumer {
             }));
 
     ZimbraLog.security.info(
-        "DELETE_OPERATION user deleted for real");
+        "DELETE_OPERATION user deleted for real from the consumer");
   }
 }
