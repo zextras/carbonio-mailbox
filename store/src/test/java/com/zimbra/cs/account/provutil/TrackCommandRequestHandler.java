@@ -16,6 +16,7 @@ import com.zimbra.soap.account.type.NameId;
 import com.zimbra.soap.admin.message.AddAccountLoggerResponse;
 import com.zimbra.soap.admin.message.AuthResponse;
 import com.zimbra.soap.admin.message.CheckRightResponse;
+import com.zimbra.soap.admin.message.CompactIndexResponse;
 import com.zimbra.soap.admin.message.CopyCosResponse;
 import com.zimbra.soap.admin.message.CountAccountResponse;
 import com.zimbra.soap.admin.message.CountObjectsResponse;
@@ -45,6 +46,8 @@ import com.zimbra.soap.admin.message.GetDistributionListResponse;
 import com.zimbra.soap.admin.message.GetDomainInfoResponse;
 import com.zimbra.soap.admin.message.GetDomainResponse;
 import com.zimbra.soap.admin.message.GetEffectiveRightsResponse;
+import com.zimbra.soap.admin.message.GetIndexStatsResponse;
+import com.zimbra.soap.admin.message.GetMailboxResponse;
 import com.zimbra.soap.admin.message.GetQuotaUsageResponse;
 import com.zimbra.soap.admin.message.GetRightResponse;
 import com.zimbra.soap.admin.message.GetRightsDocResponse;
@@ -80,8 +83,10 @@ import com.zimbra.soap.admin.type.EffectiveAttrsInfo;
 import com.zimbra.soap.admin.type.EffectiveRightsTargetInfo;
 import com.zimbra.soap.admin.type.GranteeInfo;
 import com.zimbra.soap.admin.type.GranteeWithType;
+import com.zimbra.soap.admin.type.IndexStats;
 import com.zimbra.soap.admin.type.LoggerInfo;
 import com.zimbra.soap.admin.type.MailboxQuotaInfo;
+import com.zimbra.soap.admin.type.MailboxWithMailboxId;
 import com.zimbra.soap.admin.type.PackageRightsInfo;
 import com.zimbra.soap.admin.type.RightInfo;
 import com.zimbra.soap.admin.type.RightViaInfo;
@@ -393,6 +398,19 @@ public class TrackCommandRequestHandler extends DocumentHandler {
     });
     responseMapping.put("CountObjectsRequest", () -> {
       var resp = new CountObjectsResponse(42, "account");
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("CompactIndexRequest", () -> {
+      var resp = new CompactIndexResponse("OK");
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("GetIndexStatsRequest", () -> {
+      var resp = new GetIndexStatsResponse();
+      resp.setStats(new IndexStats(100,100));
+      return jaxbToElement(resp);
+    });
+    responseMapping.put("GetMailboxRequest", () -> {
+      var resp = new GetMailboxResponse(new MailboxWithMailboxId(0, "id", 0L));
       return jaxbToElement(resp);
     });
   }

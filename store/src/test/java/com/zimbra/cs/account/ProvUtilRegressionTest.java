@@ -12,6 +12,7 @@ import com.zimbra.soap.admin.message.GetAccountResponse;
 import com.zimbra.soap.admin.type.AccountInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -584,18 +585,9 @@ public class ProvUtilRegressionTest {
   @Disabled
   @ParameterizedTest
   @ValueSource(strings = {
-          "compactIndexMailbox user@example.com start",
-          "compactIndexMailbox user@example.com status",
-          "compactIndexMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 start",
-          "compactIndexMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 status",
           "deleteSignature user@example.com signature-name",
           "deleteSignature 8a64a712-cceb-4e03-b5ce-c131481bb455 signature-name",
           "exit",
-          "generateDomainPreAuthKey example.com",
-          "generateDomainPreAuthKey 8a64a712-cceb-4e03-b5ce-c131481bb455",
-          "generateDomainPreAuthKey -f example.com",
-          "generateDomainPreAuthKey -f 8a64a712-cceb-4e03-b5ce-c131481bb455",
-          "getAllReverseProxyDomains",
           "getCreateObjectAttrs account example.com cos-name test@test.com",
           "getCreateObjectAttrs domain 36f01e27-88de-4495-bb4b-9b05443aa8f7 cos-name 75aca60e-8616-4165-a3ba-a6b96d529c97",
           "getCreateObjectAttrs account example.com 1829acc8-2fd3-45cf-aac5-f3b3078daaa8 grantee.name@example.com",
@@ -606,9 +598,6 @@ public class ProvUtilRegressionTest {
           "getIdentities 8a64a712-cceb-4e03-b5ce-c131481bb455",
           "getIdentities user@example.com",
           "getIdentities user@example.com argument1 argument2 argument1",
-          "getIndexStats user@example.com",
-          "getIndexStats 8a64a712-cceb-4e03-b5ce-c131481bb455",
-          "getMailboxInfo 301c1dab-c07d-478c-b5db-eaffcc64b593",
           "getSignatures 8a64a712-cceb-4e03-b5ce-c131481bb455 argument1 argument2 argument1",
           "getSignatures user@example.com argument1 argument2",
           "getSignatures 8a64a712-cceb-4e03-b5ce-c131481bb455",
@@ -637,5 +626,23 @@ public class ProvUtilRegressionTest {
   void provUtilFailingTests(String cmd) throws IOException {
     run(cmd);
   }
-
+  @ParameterizedTest
+  @ValueSource(strings = {
+      "compactIndexMailbox user@example.com start",
+      "compactIndexMailbox user@example.com status",
+      "compactIndexMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 start",
+      "compactIndexMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 status",
+      "-l generateDomainPreAuthKey test.com",
+      "-l generateDomainPreAuthKey f4806430-b434-4e93-9357-a02d9dd796b8",
+      "-l generateDomainPreAuthKey -f test.com",
+      "-l generateDomainPreAuthKey -f f4806430-b434-4e93-9357-a02d9dd796b8",
+      "-l getAllReverseProxyDomains",
+      "getIndexStats user@example.com",
+      "getIndexStats user@example.com",
+      "getIndexStats 8a64a712-cceb-4e03-b5ce-c131481bb455",
+      "getMailboxInfo 301c1dab-c07d-478c-b5db-eaffcc64b593"
+  })
+  void notRunningBefore(String cmd) throws IOException {
+    run(cmd);
+  }
 }
