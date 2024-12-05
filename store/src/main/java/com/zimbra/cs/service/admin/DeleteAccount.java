@@ -141,7 +141,7 @@ public class DeleteAccount extends AdminDocumentHandler {
       ZimbraLog.security.info(
           ZimbraLog.encodeAttrs(
               new String[] {
-                "cmd", "DeleteAccount", "TEST_LOG DeleteAccount"
+                "cmd", "DeleteAccount", "TEST_LOG", "DeleteAccount"
               }));
 
       ZimbraLog.security.info(

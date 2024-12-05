@@ -67,7 +67,7 @@ public class DeleteUserUseCase {
               log.info(
                   ZimbraLog.encodeAttrs(
                       new String[] {
-                        "cmd", "DeleteAccount", "TEST_LOG DeleteUserUseCase"
+                        "cmd", "DeleteAccount", "TEST_LOG", "DeleteUserUseCase"
                       }));
 
               return null;
