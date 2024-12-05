@@ -56,7 +56,7 @@ public class AdminService implements DocumentService {
     ZimbraLog.security.info(
                   ZimbraLog.encodeAttrs(
                       new String[] {
-                        "cmd", "DeleteAccount", "TEST_LOG AdminService"
+                        "cmd", "DeleteAccount", "TEST_LOG", "AdminService"
                       }));
     DeleteUserUseCase deleteUserUseCase =
         new DeleteUserUseCase(
