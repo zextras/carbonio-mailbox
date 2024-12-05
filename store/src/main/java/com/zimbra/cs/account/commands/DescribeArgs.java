@@ -1,7 +1,13 @@
-package com.zimbra.cs.account;
+package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Version;
+import com.zimbra.cs.account.AttributeCallback;
+import com.zimbra.cs.account.AttributeCardinality;
+import com.zimbra.cs.account.AttributeClass;
+import com.zimbra.cs.account.AttributeFlag;
+import com.zimbra.cs.account.AttributeInfo;
+import com.zimbra.cs.account.AttributeServerType;
 
 import java.util.List;
 import java.util.Set;

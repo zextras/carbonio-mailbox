@@ -7,7 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 
-class Console {
+public class Console {
 
   final PrintStream stdOut;
   final PrintStream stdError;

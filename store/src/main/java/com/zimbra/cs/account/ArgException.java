@@ -1,7 +1,7 @@
 package com.zimbra.cs.account;
 
-class ArgException extends Exception {
-  ArgException(String msg) {
+public class ArgException extends Exception {
+  public ArgException(String msg) {
     super(msg);
   }
 }
