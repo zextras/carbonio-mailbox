@@ -138,6 +138,11 @@ public class DeleteAccount extends AdminDocumentHandler {
               new String[] {
                 "cmd", "DeleteAccount", "name", account.getName(), "id", account.getId()
               }));
+      ZimbraLog.security.info(
+          ZimbraLog.encodeAttrs(
+              new String[] {
+                "cmd", "DeleteAccount", "TEST_LOG DeleteAccount"
+              }));
 
       ZimbraLog.security.info(
         "DELETE_OPERATION user deleted for real");

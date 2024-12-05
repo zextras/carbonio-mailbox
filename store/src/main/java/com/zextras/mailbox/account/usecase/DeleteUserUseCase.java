@@ -64,6 +64,12 @@ public class DeleteUserUseCase {
                         "cmd", "DeleteAccount", "name", account.getName(), "id", account.getId()
                       }));
 
+              log.info(
+                  ZimbraLog.encodeAttrs(
+                      new String[] {
+                        "cmd", "DeleteAccount", "TEST_LOG DeleteUserUseCase"
+                      }));
+
               return null;
             });
   }
