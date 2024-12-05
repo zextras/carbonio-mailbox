@@ -81,9 +81,6 @@ public class ServiceDiscoverHttpClient {
           logger.error("Unexpected response status: {}", response.getStatusLine().getStatusCode());
           return Try.failure(new InternalServerError(new Exception("Unexpected response status: " + response.getStatusLine().getStatusCode())));
         }
-        ZimbraLog.security.info("DELETE_OPERATION Service discover response: " + response);
-        ZimbraLog.security.info("DELETE_OPERATION Service discover response: " + response.getEntity());
-        ZimbraLog.security.info("DELETE_OPERATION Service discover response: " + response.getEntity().getContent());
         String bodyResponse = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
         ZimbraLog.security.info("DELETE_OPERATION Service discover response: " + bodyResponse);
         if (bodyResponse.equals("[]")) {
