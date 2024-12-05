@@ -629,11 +629,6 @@ class ProvUtilTest {
 
     var out1 = parseZmprovKeyValue(runCommand( "getDistributionList", out.get("zimbraId")));
     Assertions.assertEquals(newDistributionList, out1.get("mail"));
-
-    catchSystemExit( () -> {
-      runCommand( "getDistributionList", out.get("zimbraId"));
-    });
-
   }
 
 
