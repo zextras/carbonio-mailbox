@@ -89,7 +89,7 @@ public class DeleteAccount extends AdminDocumentHandler {
     // If files is installed, mailbox must emit an event so files will delete user's files and blobs and only then
     // send another event back to mailbox to delete the account (see DeletedUserFilesConsumer)
     // If files is not installed, mailbox can delete the account directly as it always did
-    ZimbraLog.store.warn(
+    ZimbraLog.security.info(
         "DELETE_OPERATION account requested for user: " + account.getMail() + " with id: " + account.getId());
     boolean isFilesInstalled;
 
@@ -108,14 +108,14 @@ public class DeleteAccount extends AdminDocumentHandler {
 			throw ServiceException.FAILURE("Delete account " + account.getMail() + " has an error: " + e.getMessage(), e);
 		}
 
-    ZimbraLog.store.warn(
+    ZimbraLog.security.info(
         "DELETE_OPERATION files installed?: " + "isFilesInstalled: " + (isFilesInstalled ? "true" : "false"));
 
     if (isFilesInstalled) {
-      ZimbraLog.store.warn(
+      ZimbraLog.security.info(
         "DELETE_OPERATION sending event to delete user files for user: " + account.getMail() + " with id: " + account.getId());
       publishDeleteUserRequestedEvent(account);
-      ZimbraLog.store.warn(
+      ZimbraLog.security.info(
         "DELETE_OPERATION sent event to delete user files for user: " + account.getMail() + " with id: " + account.getId());
     } else {
       /*
@@ -139,7 +139,7 @@ public class DeleteAccount extends AdminDocumentHandler {
                 "cmd", "DeleteAccount", "name", account.getName(), "id", account.getId()
               }));
 
-      ZimbraLog.store.warn(
+      ZimbraLog.security.info(
         "DELETE_OPERATION user deleted for real");
     }
 
