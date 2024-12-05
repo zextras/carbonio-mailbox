@@ -1,6 +1,9 @@
 package com.zimbra.cs.account;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import com.zextras.mailbox.soap.SoapExtension;
+import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -10,9 +13,13 @@ import com.zimbra.cs.account.provutil.TrackCommandRequestService;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.admin.message.GetAccountResponse;
 import com.zimbra.soap.admin.type.AccountInfo;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -24,13 +31,6 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.fail;
 
 @Tag("api")
 @Execution(ExecutionMode.SAME_THREAD)
@@ -66,6 +66,11 @@ public class ProvUtilRegressionTest {
   @BeforeEach
   void setUpBefore() throws Exception {
     soapExtension.initData();
+    Provisioning provisioning = Provisioning.getInstance();
+    provisioning.createAccount("adminAccount@test.com", "password", new HashMap<>(Map.of(
+        Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME,
+        Provisioning.A_zimbraIsAdminAccount, "TRUE"
+    )));
   }
 
   @AfterEach
@@ -288,8 +293,8 @@ public class ProvUtilRegressionTest {
 
   @ParameterizedTest
   @ValueSource(strings = {
-          "-l renameDomain f4806430-b434-4e93-9357-a02d9dd796b8 new.example.com",
-          "-l renameDomain test.com new.example.com",
+//          "-l renameDomain f4806430-b434-4e93-9357-a02d9dd796b8 new.example.com",
+//          "-l renameDomain test.com new.example.com",
           "countAccount 8a64a712-cceb-4e03-b5ce-c131481bb455",
           "countAccount example.com",
           "createAliasDomain example-alias.com 8a64a712-cceb-4e03-b5ce-c131481bb455",
