@@ -53,6 +53,11 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(AdminConstants.MODIFY_ACCOUNT_REQUEST, new ModifyAccount());
 
     Try<MessageBrokerClient> messageBrokerClientTry = getMessageBroker();
+    ZimbraLog.security.info(
+                  ZimbraLog.encodeAttrs(
+                      new String[] {
+                        "cmd", "DeleteAccount", "TEST_LOG AdminService"
+                      }));
     DeleteUserUseCase deleteUserUseCase =
         new DeleteUserUseCase(
                 Provisioning.getInstance(),
