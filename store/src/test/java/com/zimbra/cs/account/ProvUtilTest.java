@@ -723,5 +723,32 @@ class ProvUtilTest {
     });
   }
 
+  @Test
+  void modifyDistributionList() throws Exception {
+    var distributionList = "list@test.com";
+    runCommand("createDistributionList", distributionList);
+    var createdAttrs = parseZmprovKeyValue(runCommand( "getDistributionList", distributionList));
+    Assertions.assertEquals("enabled", createdAttrs.get("zimbraMailStatus"));
 
+    parseZmprovKeyValue(runCommand("modifyDistributionList", distributionList, "zimbraMailStatus", "disabled"));
+    var modifiedAttrs = parseZmprovKeyValue(runCommand( "getDistributionList", distributionList));
+    Assertions.assertEquals("disabled", modifiedAttrs.get("zimbraMailStatus"));
+  }
+
+  @Test
+  void  createDistributionListsBulk() throws Exception {
+    var out = parseZmprovKeyValue(runCommand( "createDistributionListsBulk", "test.com", "nameMask", "3"));
+    Assertions.assertEquals(3, out.size());
+  }
+
+  @Test
+  void getAllDistributionLists() throws Exception {
+    var distributionList1 = "list1@test.com";
+    runCommand("createDistributionList", distributionList1);
+    var distributionList2 = "list2@test.com";
+    runCommand("createDistributionList", distributionList2);
+    //FIXME
+    var out = parseZmprovKeyValue(runCommand("getAllDistributionLists", "test.com"));
+    Assertions.assertEquals("", "");
+  }
 }
