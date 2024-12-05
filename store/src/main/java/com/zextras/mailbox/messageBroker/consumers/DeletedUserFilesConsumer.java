@@ -11,12 +11,8 @@ import com.zextras.carbonio.message_broker.events.services.files.DeletedUserFile
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DeletedUserFilesConsumer extends BaseConsumer {
-
-  private static final Logger logger = LoggerFactory.getLogger(DeletedUserFilesConsumer.class);
 
   private final DeleteUserUseCase deleteUserUseCase;
 
@@ -32,7 +28,6 @@ public class DeletedUserFilesConsumer extends BaseConsumer {
   @Override
   public void doHandle(BaseEvent baseMessageBrokerEvent) {
     DeletedUserFiles deletedUserFiles = (DeletedUserFiles) baseMessageBrokerEvent;
-    logger.info("Received DeletedUserFiles({})", deletedUserFiles.getUserId());
 
     // Delete account from Mailbox.
     // Here, the user's files and blobs have already been deleted, so it's safe to delete the account.
@@ -63,8 +58,5 @@ public class DeletedUserFilesConsumer extends BaseConsumer {
             new String[] {
               "cmd", "DeleteAccount", "id", deletedUserFiles.getUserId()
             }));
-
-    ZimbraLog.security.info(
-        "DELETE_OPERATION user deleted for real from the consumer");
   }
 }

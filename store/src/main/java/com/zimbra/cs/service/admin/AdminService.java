@@ -53,11 +53,6 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(AdminConstants.MODIFY_ACCOUNT_REQUEST, new ModifyAccount());
 
     Try<MessageBrokerClient> messageBrokerClientTry = getMessageBroker();
-    ZimbraLog.security.info(
-                  ZimbraLog.encodeAttrs(
-                      new String[] {
-                        "cmd", "DeleteAccount", "TEST_LOG", "AdminService"
-                      }));
     DeleteUserUseCase deleteUserUseCase =
         new DeleteUserUseCase(
                 Provisioning.getInstance(),
@@ -71,8 +66,9 @@ public class AdminService implements DocumentService {
             deleteUserUseCase,
             messageBrokerClientTry));
 
-    // If message broker client is available, register the consumer here (not really a handler to register, but needed
-    // to consume the event related to the user deletion, so I put that here to reuse deleteUserUseCase)
+    // If message broker client is available, register the consumer here (not really a handler in a strict sense, but needed
+    // to consume the event related to the user deletion, so I put that here to reuse deleteUserUseCase; don't know if
+    // it is the best place)
     messageBrokerClientTry.onSuccess(client -> client.consume(new DeletedUserFilesConsumer(deleteUserUseCase)));
 
     dispatcher.registerHandler(AdminConstants.SET_PASSWORD_REQUEST, new SetPassword());
