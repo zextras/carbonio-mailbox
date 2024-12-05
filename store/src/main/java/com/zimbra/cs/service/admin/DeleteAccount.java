@@ -89,8 +89,8 @@ public class DeleteAccount extends AdminDocumentHandler {
     // If files is installed, mailbox must emit an event so files will delete user's files and blobs and only then
     // send another event back to mailbox to delete the account (see DeletedUserFilesConsumer)
     // If files is not installed, mailbox can delete the account directly as it always did
-    ZimbraLog.store.info(
-        "[DELETE] account requested for user: " + account.getMail() + " with id: " + account.getId());
+    ZimbraLog.store.warn(
+        "DELETE_OPERATION account requested for user: " + account.getMail() + " with id: " + account.getId());
     boolean isFilesInstalled;
 
     Path filePath = Paths.get("/etc/carbonio/mailbox/service-discover/token");
@@ -108,15 +108,15 @@ public class DeleteAccount extends AdminDocumentHandler {
 			throw ServiceException.FAILURE("Delete account " + account.getMail() + " has an error: " + e.getMessage(), e);
 		}
 
-    ZimbraLog.store.info(
-        "[DELETE] files installed?: " + "isFilesInstalled: " + (isFilesInstalled ? "true" : "false"));
+    ZimbraLog.store.warn(
+        "DELETE_OPERATION files installed?: " + "isFilesInstalled: " + (isFilesInstalled ? "true" : "false"));
 
     if (isFilesInstalled) {
-      ZimbraLog.store.info(
-        "[DELETE] sending event to delete user files for user: " + account.getMail() + " with id: " + account.getId());
+      ZimbraLog.store.warn(
+        "DELETE_OPERATION sending event to delete user files for user: " + account.getMail() + " with id: " + account.getId());
       publishDeleteUserRequestedEvent(account);
-      ZimbraLog.store.info(
-        "[DELETE] sent event to delete user files for user: " + account.getMail() + " with id: " + account.getId());
+      ZimbraLog.store.warn(
+        "DELETE_OPERATION sent event to delete user files for user: " + account.getMail() + " with id: " + account.getId());
     } else {
       /*
        * bug 69009
@@ -139,8 +139,8 @@ public class DeleteAccount extends AdminDocumentHandler {
                 "cmd", "DeleteAccount", "name", account.getName(), "id", account.getId()
               }));
 
-      ZimbraLog.store.info(
-        "[DELETE] user deleted for real");
+      ZimbraLog.store.warn(
+        "DELETE_OPERATION user deleted for real");
     }
 
     return zsc.jaxbToElement(new DeleteAccountResponse());
