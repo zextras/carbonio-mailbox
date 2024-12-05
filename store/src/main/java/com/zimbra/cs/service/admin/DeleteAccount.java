@@ -89,8 +89,6 @@ public class DeleteAccount extends AdminDocumentHandler {
     // If files is installed, mailbox must emit an event so files will delete user's files and blobs and only then
     // send another event back to mailbox to delete the account (see DeletedUserFilesConsumer)
     // If files is not installed, mailbox can delete the account directly as it always did
-    ZimbraLog.security.info(
-        "DELETE_OPERATION account requested for user: " + account.getMail() + " with id: " + account.getId());
     boolean isFilesInstalled;
 
     Path filePath = Paths.get("/etc/carbonio/mailbox/service-discover/token");
@@ -108,15 +106,8 @@ public class DeleteAccount extends AdminDocumentHandler {
 			throw ServiceException.FAILURE("Delete account " + account.getMail() + " has an error: " + e.getMessage(), e);
 		}
 
-    ZimbraLog.security.info(
-        "DELETE_OPERATION files installed?: " + "isFilesInstalled: " + (isFilesInstalled ? "true" : "false"));
-
     if (isFilesInstalled) {
-      ZimbraLog.security.info(
-        "DELETE_OPERATION sending event to delete user files for user: " + account.getMail() + " with id: " + account.getId());
       publishDeleteUserRequestedEvent(account);
-      ZimbraLog.security.info(
-        "DELETE_OPERATION sent event to delete user files for user: " + account.getMail() + " with id: " + account.getId());
     } else {
       /*
        * bug 69009
@@ -138,14 +129,6 @@ public class DeleteAccount extends AdminDocumentHandler {
               new String[] {
                 "cmd", "DeleteAccount", "name", account.getName(), "id", account.getId()
               }));
-      ZimbraLog.security.info(
-          ZimbraLog.encodeAttrs(
-              new String[] {
-                "cmd", "DeleteAccount", "TEST_LOG", "DeleteAccount"
-              }));
-
-      ZimbraLog.security.info(
-        "DELETE_OPERATION user deleted for real");
     }
 
     return zsc.jaxbToElement(new DeleteAccountResponse());
