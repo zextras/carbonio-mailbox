@@ -83,7 +83,7 @@ public class ServiceDiscoverHttpClient {
         }
         String bodyResponse = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
         ZimbraLog.security.info("DELETE_OPERATION Service discover response: {}", bodyResponse);
-        if (bodyResponse.equals("[]")) {
+        if (bodyResponse.equals("{}")) {
           return Try.success(false);
         } else {
           return Try.success(true);
