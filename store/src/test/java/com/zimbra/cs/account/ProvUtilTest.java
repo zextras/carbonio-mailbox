@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterAll;
@@ -76,6 +77,33 @@ class ProvUtilTest {
       }
     }
     return res;
+  }
+
+  static Map<String, Map<String, String>> parseEntries(String content) {
+    var lines = content.split("\n");
+    Map<String, Map<String, String>> result = new LinkedHashMap<>();
+    Map<String, String> currentEntry = null;
+    String currentName;
+
+    for (var line : lines) {
+      line = line.trim();
+      if (line.isEmpty()) continue;
+
+      if (line.startsWith("# name")) {
+        // New entry begins
+        currentName = line.substring("# name".length()).trim();
+        currentEntry = new LinkedHashMap<>();
+        result.put(currentName, currentEntry);
+      } else if (currentEntry != null) {
+        // Parse key-value pair
+        var kv = line.split(": ", 2);
+        var key = kv[0];
+        var value = kv.length > 1 ? kv[1] : "";
+        currentEntry.put(key, value);
+      }
+    }
+
+    return result;
   }
 
   @SuppressWarnings("UnusedReturnValue")
@@ -737,13 +765,34 @@ class ProvUtilTest {
   }
 
   @Test
-  void getAllDistributionLists() throws Exception {
-    var distributionList1 = "list1@test.com";
-    runCommand("createDistributionList", distributionList1);
-    var distributionList2 = "list2@test.com";
-    runCommand("createDistributionList", distributionList2);
-    //FIXME
-    var out = parseZmprovKeyValue(runCommand("getAllDistributionLists", "test.com"));
-    Assertions.assertEquals("", "");
+  void  signatureCommands() throws Exception {
+    createAccount("user@test.com");
+    runCommand( "createSignature", "user@test.com", "signatureName");
+    var getCreated = parseEntries(runCommand( "getSignatures", "user@test.com"));
+    Assertions.assertEquals("signatureName", getCreated.get("signatureName").get("zimbraSignatureName"));
+
+    runCommand( "modifySignature", "user@test.com", "signatureName", "zimbraSignatureName", "modifiedSignatureName");
+    var getModified = parseEntries(runCommand( "getSignatures", "user@test.com"));
+    Assertions.assertEquals("modifiedSignatureName", getModified.get("modifiedSignatureName").get("zimbraSignatureName"));
+
+    runCommand( "deleteSignature", "user@test.com", "modifiedSignatureName");
+    var getDeleted = parseEntries(runCommand( "getSignatures", "user@test.com"));
+    Assertions.assertFalse(getDeleted.containsKey("modifiedSignatureName"));
+  }
+
+  @Test
+  void  identityCommands() throws Exception {
+    createAccount("user@test.com");
+    runCommand( "createIdentity", "user@test.com", "identityName", "zimbraPrefSaveToSent", "TRUE");
+    var getCreated = parseEntries(runCommand( "getIdentities", "user@test.com"));
+    Assertions.assertEquals("TRUE", getCreated.get("identityName").get("zimbraPrefSaveToSent"));
+
+    runCommand( "modifyIdentity", "user@test.com", "identityName", "zimbraPrefSaveToSent", "FALSE");
+    var getModified = parseEntries(runCommand( "getIdentities", "user@test.com"));
+    Assertions.assertEquals("FALSE", getModified.get("identityName").get("zimbraPrefSaveToSent"));
+
+    runCommand( "deleteIdentity", "user@test.com", "identityName");
+    var getDeleted = parseEntries(runCommand( "getIdentities", "user@test.com"));
+    Assertions.assertFalse(getDeleted.containsKey("identityName"));
   }
 }
