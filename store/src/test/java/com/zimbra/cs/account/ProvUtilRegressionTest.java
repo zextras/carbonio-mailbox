@@ -587,7 +587,6 @@ public class ProvUtilRegressionTest {
     run(cmd);
   }
 
-  @Disabled
   @ParameterizedTest
   @ValueSource(strings = {
           "deleteSignature user@example.com signature-name",
@@ -631,6 +630,14 @@ public class ProvUtilRegressionTest {
   void provUtilFailingTests(String cmd) throws IOException {
     run(cmd);
   }
+  @ParameterizedTest
+  @ValueSource(strings = {
+      "-l modifySignature adminAccount@test.com 55da11a3-154f-4271-880d-642423563dde zimbraId 1 zimbraImapBindPort 1 zimbraId 1"})
+  void provUtilFailingTest(String cmd) throws IOException {
+
+    run(cmd);
+  }
+
   @ParameterizedTest
   @ValueSource(strings = {
       "compactIndexMailbox user@example.com start",

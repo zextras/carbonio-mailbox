@@ -104,6 +104,10 @@ import com.zimbra.cs.account.commands.GetSignaturesCommandHandler;
 import com.zimbra.cs.account.commands.GetXMPPComponentCommandHandler;
 import com.zimbra.cs.account.commands.GrantRightCommandHandler;
 import com.zimbra.cs.account.commands.HelpCommandHandler;
+import com.zimbra.cs.account.commands.ModifyAccountCommandHandler;
+import com.zimbra.cs.account.commands.ModifyDataSourceCommandHandler;
+import com.zimbra.cs.account.commands.ModifyIdentityCommandHandler;
+import com.zimbra.cs.account.commands.ModifySignatureCommandHandler;
 import com.zimbra.cs.account.commands.RevokeRightCommandHandler;
 import com.zimbra.cs.account.ldap.LdapEntrySearchFilter;
 import com.zimbra.cs.account.ldap.LdapProv;
@@ -459,16 +463,16 @@ public class ProvUtil implements HttpDebugListener {
     map.put(Command.GRANT_RIGHT, new GrantRightCommandHandler(this));
     map.put(Command.HELP, new HelpCommandHandler(this));
 //    map.put(Command.LDAP, new .ldapCommandHandler(this));
-//    map.put(Command.MODIFY_ACCOUNT, new ModifyAccountCommandHandler(this));
+    map.put(Command.MODIFY_ACCOUNT, new ModifyAccountCommandHandler(this));
 //    map.put(Command.MODIFY_CALENDAR_RESOURCE, new ModifyCalendarResourceCommandHandler(this));
 //    map.put(Command.MODIFY_CONFIG, new ModifyConfigCommandHandler(this));
 //    map.put(Command.MODIFY_COS, new ModifyCosCommandHandler(this));
-//    map.put(Command.MODIFY_DATA_SOURCE, new ModifyDataSourceCommandHandler(this));
+    map.put(Command.MODIFY_DATA_SOURCE, new ModifyDataSourceCommandHandler(this));
 //    map.put(Command.MODIFY_DISTRIBUTION_LIST, new ModifyDistributionListCommandHandler(this));
 //    map.put(Command.MODIFY_DOMAIN, new ModifyDomainCommandHandler(this));
-//    map.put(Command.MODIFY_IDENTITY, new ModifyIdentityCommandHandler(this));
+    map.put(Command.MODIFY_IDENTITY, new ModifyIdentityCommandHandler(this));
 //    map.put(Command.MODIFY_SERVER, new ModifyServerCommandHandler(this));
-//    map.put(Command.MODIFY_SIGNATURE, new ModifySignatureCommandHandler(this));
+    map.put(Command.MODIFY_SIGNATURE, new ModifySignatureCommandHandler(this));
 //    map.put(Command.MODIFY_XMPP_COMPONENT, new ModifyXMPPComponentCommandHandler(this));
 //    map.put(Command.PURGE_ACCOUNT_CALENDAR_CACHE, new PurgeAccountCalendarCacheCommandHandler(this));
 //    map.put(Command.PURGE_FREEBUSY_QUEUE, new PurgeFreebusyQueueCommandHandler(this));
@@ -629,24 +633,11 @@ public class ProvUtil implements HttpDebugListener {
       case GRANT_RIGHT:
       case REVOKE_RIGHT:
       case HELP:
-        handlersMap.get(command).handle(args);
-        break;
       case MODIFY_ACCOUNT:
-        prov.modifyAttrs(lookupAccount(args[1]), getMapAndCheck(args, 2, false), true);
-        break;
       case MODIFY_DATA_SOURCE:
-        account = lookupAccount(args[1]);
-        prov.modifyDataSource(
-            account, lookupDataSourceId(account, args[2]), getMapAndCheck(args, 3, false));
-        break;
       case MODIFY_IDENTITY:
-        account = lookupAccount(args[1]);
-        prov.modifyIdentity(account, args[2], getMapAndCheck(args, 3, false));
-        break;
       case MODIFY_SIGNATURE:
-        account = lookupAccount(args[1]);
-        prov.modifySignature(
-            account, lookupSignatureId(account, args[2]), getMapAndCheck(args, 3, false));
+        handlersMap.get(command).handle(args);
         break;
       case MODIFY_COS:
         prov.modifyAttrs(lookupCos(args[1]), getMapAndCheck(args, 2, false), true);
@@ -2051,7 +2042,7 @@ public class ProvUtil implements HttpDebugListener {
     }
   }
 
-  private String lookupDataSourceId(Account account, String key) throws ServiceException {
+  public String lookupDataSourceId(Account account, String key) throws ServiceException {
     if (Provisioning.isUUID(key)) {
       return key;
     }
@@ -2063,7 +2054,7 @@ public class ProvUtil implements HttpDebugListener {
     }
   }
 
-  private String lookupSignatureId(Account account, String key) throws ServiceException {
+  public String lookupSignatureId(Account account, String key) throws ServiceException {
     Signature sig = prov.get(account, guessSignatureBy(key), key);
     if (sig == null) {
       throw AccountServiceException.NO_SUCH_SIGNATURE(key);
