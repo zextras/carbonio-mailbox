@@ -31,7 +31,6 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import io.vavr.control.Try;
 
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -43,7 +42,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockserver.integration.ClientAndServer;
 
@@ -86,8 +84,6 @@ class DeleteAccountTest {
     provisioning.createDomain(OTHER_DOMAIN, new HashMap<>());
 
     consulServer = startClientAndServer(8500);
-    MockedStatic<Files> mockFileSystem = Mockito.mockStatic(Files.class, Mockito.CALLS_REAL_METHODS);
-		mockFileSystem.when(() -> Files.readString(any())).thenReturn("");
 
 		consulServer
         .when(request().withPath("/v1/kv/carbonio-message-broker/default/username"))

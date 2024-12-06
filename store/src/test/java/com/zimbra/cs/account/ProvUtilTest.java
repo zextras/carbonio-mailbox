@@ -5,10 +5,6 @@
 package com.zimbra.cs.account;
 
 import static com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
 
 import com.zextras.mailbox.soap.SoapExtension;
 import com.zimbra.common.localconfig.LC;
@@ -17,24 +13,15 @@ import com.zimbra.cs.account.ProvUtil.Console;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import org.mockserver.integration.ClientAndServer;
 
 @Tag("api")
 class ProvUtilTest {
@@ -216,12 +203,15 @@ class ProvUtilTest {
     Assertions.assertEquals(expectedOutput, getOperationResult.trim());
   }
 
-  /*@Test
+  // Static mock of Files doesn't work here, it should probably go inside ProvUtils since runCommand calls its main method,
+  // but that is not a test class so for now I just disable the test.
+  @Disabled("This test is failing because of the static call to Files.exists() in the deleteAccount method")
+  @Test
   void deleteAccount() throws Exception {
     final String accountName = UUID.randomUUID() + "@test.com";
     runCommand(new String[]{"ca", accountName, "password"});
 
-    final String deleteOperationResult = runCommand(new String[]{"da", accountName}); //this fails but without logs
+    final String deleteOperationResult = runCommand(new String[]{"da", accountName});
     Assertions.assertTrue(deleteOperationResult.isEmpty());
 
     OutputStream outputStream = new ByteArrayOutputStream();
@@ -230,7 +220,7 @@ class ProvUtilTest {
     final String expectedError =
         "ERROR: account.NO_SUCH_ACCOUNT (no such account: " + accountName + ")\n";
     Assertions.assertEquals(expectedError, errorStream.toString());
-  }*/
+  }
 
   //////////////////////////////// DOMAIN
 
