@@ -8,8 +8,7 @@ import static com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit
 
 import com.zextras.mailbox.soap.SoapExtension;
 import com.zimbra.common.localconfig.LC;
-import com.zimbra.cs.account.ProvUtil.Category;
-import com.zimbra.cs.account.ProvUtil.Console;
+
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -114,7 +113,7 @@ class ProvUtilTest {
   }
 
   @ParameterizedTest
-  @EnumSource(ProvUtil.Category.class)
+  @EnumSource(Category.class)
   void testHelpSubCommands(Category command) {
     try {
       runCommand(new String[]{"help", command.name().toLowerCase()});
