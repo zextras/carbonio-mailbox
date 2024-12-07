@@ -502,4 +502,16 @@ class ProvUtilTest {
     Assertions.assertEquals(expected, stdErr.toString());
   }
 
+  @ParameterizedTest
+  @ValueSource(strings = {
+          "addAccountLogger",
+          "addAccountLogger test@test.com status",
+          "addAccountLogger test@test.com zimbra.lmtp warn anotherParam par4 par5 par6",
+  })
+  void addAccountLoggerFailsOnInvalidParameterCount(String cmd) throws Exception {
+    runCommand("ca", "test@test.com", "password");
+    catchSystemExit( () -> {
+      runCommand(cmd.split(" +"));
+    });
+  }
 }
