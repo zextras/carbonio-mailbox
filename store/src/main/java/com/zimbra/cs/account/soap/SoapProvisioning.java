@@ -73,12 +73,9 @@ import com.zimbra.soap.account.message.CreateIdentityRequest;
 import com.zimbra.soap.account.message.CreateIdentityResponse;
 import com.zimbra.soap.account.message.DeleteIdentityRequest;
 import com.zimbra.soap.account.message.EndSessionRequest;
-import com.zimbra.soap.account.message.GetDistributionListMembersRequest;
-import com.zimbra.soap.account.message.GetDistributionListMembersResponse;
 import com.zimbra.soap.account.message.GetIdentitiesRequest;
 import com.zimbra.soap.account.message.GetIdentitiesResponse;
 import com.zimbra.soap.account.message.ModifyIdentityRequest;
-import com.zimbra.soap.account.type.HABGroupMember;
 import com.zimbra.soap.account.type.NameId;
 import com.zimbra.soap.admin.message.AddAccountAliasRequest;
 import com.zimbra.soap.admin.message.AddAccountLoggerRequest;
@@ -109,8 +106,6 @@ import com.zimbra.soap.admin.message.CreateDistributionListRequest;
 import com.zimbra.soap.admin.message.CreateDistributionListResponse;
 import com.zimbra.soap.admin.message.CreateDomainRequest;
 import com.zimbra.soap.admin.message.CreateDomainResponse;
-import com.zimbra.soap.admin.message.CreateHABGroupRequest;
-import com.zimbra.soap.admin.message.CreateHABGroupResponse;
 import com.zimbra.soap.admin.message.CreateServerRequest;
 import com.zimbra.soap.admin.message.CreateServerResponse;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
@@ -181,10 +176,6 @@ import com.zimbra.soap.admin.message.GetServerRequest;
 import com.zimbra.soap.admin.message.GetServerResponse;
 import com.zimbra.soap.admin.message.GetShareInfoRequest;
 import com.zimbra.soap.admin.message.GetShareInfoResponse;
-import com.zimbra.soap.admin.message.HABOrgUnitRequest;
-import com.zimbra.soap.admin.message.HABOrgUnitRequest.HabOp;
-import com.zimbra.soap.admin.message.HABOrgUnitResponse;
-import com.zimbra.soap.admin.message.ModifyHABGroupRequest;
 import com.zimbra.soap.admin.message.PurgeMessagesRequest;
 import com.zimbra.soap.admin.message.PurgeMessagesResponse;
 import com.zimbra.soap.admin.message.ReIndexRequest;
@@ -233,8 +224,6 @@ import com.zimbra.soap.admin.type.DomainSelector;
 import com.zimbra.soap.admin.type.EffectiveRightsTargetSelector;
 import com.zimbra.soap.admin.type.GranteeSelector;
 import com.zimbra.soap.admin.type.GranteeSelector.GranteeBy;
-import com.zimbra.soap.admin.type.HABGroupOperation;
-import com.zimbra.soap.admin.type.HABGroupOperation.HabGroupOp;
 import com.zimbra.soap.admin.type.LoggerInfo;
 import com.zimbra.soap.admin.type.MailboxByAccountIdSelector;
 import com.zimbra.soap.admin.type.MailboxWithMailboxId;
@@ -717,11 +706,6 @@ public class SoapProvisioning extends Provisioning {
         soapSetURI(oldUri);
       }
     }
-  }
-
-  public Future<HttpResponse> invokeJaxbAsync(Object jaxbObject, FutureCallback<HttpResponse> cb)
-      throws ServiceException {
-    return invokeAsync(JaxbUtil.jaxbToElement(jaxbObject), cb);
   }
 
   public Future<HttpResponse> invokeJaxbAsync(
@@ -2127,31 +2111,6 @@ public class SoapProvisioning extends Provisioning {
     reload(group);
   }
 
-  static void addAttrElementsMailService(Element req, Map<String, ? extends Object> attrs)
-      throws ServiceException {
-    if (attrs == null) return;
-
-    for (Entry<String, ? extends Object> entry : attrs.entrySet()) {
-      String key = entry.getKey();
-      Object value = entry.getValue();
-      if (value instanceof String) {
-        Element a = req.addElement(MailConstants.E_ATTRIBUTE);
-        a.addAttribute(MailConstants.A_NAME, key);
-        a.setText((String) value);
-      } else if (value instanceof String[]) {
-        String[] values = (String[]) value;
-        for (String v : values) {
-          Element a = req.addElement(MailConstants.E_ATTRIBUTE);
-          a.addAttribute(MailConstants.A_NAME, key);
-          a.setText(v);
-        }
-      } else {
-        throw ZClientException.CLIENT_ERROR(
-            "invalid attr type: " + key + " " + value.getClass().getName(), null);
-      }
-    }
-  }
-
   @Override
   public Identity createIdentity(Account account, String identityName, Map<String, Object> attrs)
       throws ServiceException {
@@ -2422,10 +2381,6 @@ public class SoapProvisioning extends Provisioning {
       default:
         return null;
     }
-  }
-
-  public void deleteMailbox(String accountId) throws ServiceException {
-    invokeJaxb(new DeleteMailboxRequest(accountId));
   }
 
   public MailboxWithMailboxId purgeMessages(Account account) throws ServiceException {
@@ -2787,103 +2742,6 @@ public class SoapProvisioning extends Provisioning {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getDomainSMIMEConfig(Domain domain, String configName)
-      throws ServiceException {
-    XMLElement req = new XMLElement(AdminConstants.GET_SMIME_CONFIG_REQUEST);
-
-    Element eDomain = req.addElement(AdminConstants.E_DOMAIN);
-    eDomain.addAttribute(AdminConstants.A_BY, AdminConstants.BY_ID).setText(domain.getId());
-
-    if (configName != null) {
-      Element eConfig = req.addElement(AdminConstants.E_CONFIG);
-      eConfig.addAttribute(AdminConstants.A_NAME, configName);
-    }
-
-    Element resp = invoke(req);
-    Map<String, Map<String, Object>> result = new HashMap<>();
-    for (Element eConfig : resp.listElements(AdminConstants.E_CONFIG)) {
-      result.put(eConfig.getAttribute(AdminConstants.A_NAME), getAttrs(eConfig));
-    }
-
-    return result;
-  }
-
-  @Override
-  public void modifyDomainSMIMEConfig(Domain domain, String configName, Map<String, Object> attrs)
-      throws ServiceException {
-    XMLElement req = new XMLElement(AdminConstants.MODIFY_SMIME_CONFIG_REQUEST);
-
-    Element eDomain = req.addElement(AdminConstants.E_DOMAIN);
-    eDomain.addAttribute(AdminConstants.A_BY, AdminConstants.BY_ID).setText(domain.getId());
-
-    Element eConfig = req.addElement(AdminConstants.E_CONFIG);
-    eConfig.addAttribute(AdminConstants.A_NAME, configName);
-    eConfig.addAttribute(AdminConstants.A_OP, AdminConstants.OP_MODIFY);
-
-    addAttrElements(eConfig, attrs);
-
-    invoke(req);
-  }
-
-  @Override
-  public void removeDomainSMIMEConfig(Domain domain, String configName) throws ServiceException {
-    XMLElement req = new XMLElement(AdminConstants.MODIFY_SMIME_CONFIG_REQUEST);
-
-    Element eDomain = req.addElement(AdminConstants.E_DOMAIN);
-    eDomain.addAttribute(AdminConstants.A_BY, AdminConstants.BY_ID).setText(domain.getId());
-
-    Element eConfig = req.addElement(AdminConstants.E_CONFIG);
-    eConfig.addAttribute(AdminConstants.A_NAME, configName);
-    eConfig.addAttribute(AdminConstants.A_OP, AdminConstants.OP_REMOVE);
-
-    invoke(req);
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getConfigSMIMEConfig(String configName)
-      throws ServiceException {
-    XMLElement req = new XMLElement(AdminConstants.GET_SMIME_CONFIG_REQUEST);
-
-    if (configName != null) {
-      Element eConfig = req.addElement(AdminConstants.E_CONFIG);
-      eConfig.addAttribute(AdminConstants.A_NAME, configName);
-    }
-
-    Element resp = invoke(req);
-    Map<String, Map<String, Object>> result = new HashMap<>();
-    for (Element eConfig : resp.listElements(AdminConstants.E_CONFIG)) {
-      result.put(eConfig.getAttribute(AdminConstants.A_NAME), getAttrs(eConfig));
-    }
-
-    return result;
-  }
-
-  @Override
-  public void modifyConfigSMIMEConfig(String configName, Map<String, Object> attrs)
-      throws ServiceException {
-    XMLElement req = new XMLElement(AdminConstants.MODIFY_SMIME_CONFIG_REQUEST);
-
-    Element eConfig = req.addElement(AdminConstants.E_CONFIG);
-    eConfig.addAttribute(AdminConstants.A_NAME, configName);
-    eConfig.addAttribute(AdminConstants.A_OP, AdminConstants.OP_MODIFY);
-
-    addAttrElements(eConfig, attrs);
-
-    invoke(req);
-  }
-
-  @Override
-  public void removeConfigSMIMEConfig(String configName) throws ServiceException {
-    XMLElement req = new XMLElement(AdminConstants.MODIFY_SMIME_CONFIG_REQUEST);
-
-    Element eConfig = req.addElement(AdminConstants.E_CONFIG);
-    eConfig.addAttribute(AdminConstants.A_NAME, configName);
-    eConfig.addAttribute(AdminConstants.A_OP, AdminConstants.OP_REMOVE);
-
-    invoke(req);
-  }
-
-  @Override
   public ShareLocator get(ShareLocatorBy keyType, String key) throws ServiceException {
     throw new UnsupportedOperationException();
   }
@@ -2948,114 +2806,6 @@ public class SoapProvisioning extends Provisioning {
   public void refreshUserCredentials(Account account) {
     throw new UnsupportedOperationException(
         "Currently no way to refresh required attributes over SOAP");
-  }
-
-  @Override
-  public Set<String> createHabOrgUnit(Domain domain, String habOrgUnitName)
-      throws ServiceException {
-    DomainSelector domSel = new DomainSelector(toJaxb(DomainBy.name), domain.getName());
-    HABOrgUnitResponse resp =
-        invokeJaxb(new HABOrgUnitRequest(domSel, habOrgUnitName, HabOp.create));
-    Set<String> habOrgList = new HashSet<>(resp.getHabOrgList());
-    return habOrgList;
-  }
-
-  @Override
-  public Set<String> listHabOrgUnit(Domain domain) throws ServiceException {
-    DomainSelector domSel = new DomainSelector(toJaxb(DomainBy.name), domain.getName());
-    HABOrgUnitResponse resp = invokeJaxb(new HABOrgUnitRequest(domSel, HabOp.list));
-    Set<String> habOrgList = new HashSet<>(resp.getHabOrgList());
-    return habOrgList;
-  }
-
-  @Override
-  public Set<String> renameHabOrgUnit(
-      Domain domain, String habOrgUnitName, String newHabOrgUnitName) throws ServiceException {
-    DomainSelector domSel = new DomainSelector(toJaxb(DomainBy.name), domain.getName());
-    HABOrgUnitResponse resp =
-        invokeJaxb(new HABOrgUnitRequest(domSel, habOrgUnitName, newHabOrgUnitName, HabOp.rename));
-    Set<String> habOrgList = new HashSet<>(resp.getHabOrgList());
-    return habOrgList;
-  }
-
-  @Override
-  public void deleteHabOrgUnit(Domain domain, String habOrgUnitName) throws ServiceException {
-    DomainSelector domSel = new DomainSelector(toJaxb(DomainBy.name), domain.getName());
-    invokeJaxb(new HABOrgUnitRequest(domSel, habOrgUnitName, HabOp.delete));
-  }
-
-  /**
-   * @param habGroupName name of HAB group
-   * @param ouName name of HAB Org Unit
-   * @param aName HAB account name
-   * @param dynamic set as dynamic or not
-   * @param listAttrs distributionListInfo Attrbutes
-   * @throws ServiceException if an error occurs while fetching hierarchy from ldap
-   */
-  public DistributionList createHabGroup(
-      String habGroupName,
-      String ouName,
-      String aName,
-      String dynamic,
-      Map<String, Object> listAttrs)
-      throws ServiceException {
-    Boolean isDynamic = Boolean.valueOf(dynamic);
-    CreateHABGroupRequest req =
-        new CreateHABGroupRequest(
-            habGroupName, ouName, aName, Attr.mapToList(listAttrs), isDynamic);
-    CreateHABGroupResponse resp = invokeJaxb(req);
-    return new SoapDistributionList(resp.getDl(), this);
-  }
-
-  /**
-   * @param rootHabGroupId the group for which HAB is required
-   * @return GetHabResponse object
-   * @throws ServiceException if an error occurs while fetching hierarchy from ldap
-   */
-  public Element getHab(String rootHabGroupId) throws ServiceException {
-    XMLElement req = new XMLElement(AccountConstants.GET_HAB_REQUEST);
-    req.addAttribute(AccountConstants.A_HAB_ROOT_GROUP_ID, rootHabGroupId);
-    Element resp = invoke(req);
-    return resp;
-  }
-
-  /**
-   * @param habGroupId HAB group to be moved
-   * @param currentParentGroupId current HAB parent id
-   * @param targetParentGroupId target parent id
-   * @throws ServiceException
-   */
-  public void modifyHabGroup(
-      String habGroupId, String currentParentGroupId, String targetParentGroupId)
-      throws ServiceException {
-    HABGroupOperation operation =
-        new HABGroupOperation(
-            habGroupId, currentParentGroupId, targetParentGroupId, HabGroupOp.move);
-    invokeJaxb(new ModifyHABGroupRequest(operation));
-  }
-
-  /**
-   * @param habGroupId HAB group to be modified
-   * @param seniorityIndex seniority index
-   * @throws ServiceException if an error occurs while modifying the HAB group
-   */
-  public void modifyHabGroupSeniority(String habGroupId, String seniorityIndex)
-      throws ServiceException {
-    HABGroupOperation operation =
-        new HABGroupOperation(
-            habGroupId, Integer.parseInt(seniorityIndex), HabGroupOp.assignSeniority);
-    invokeJaxb(new ModifyHABGroupRequest(operation));
-  }
-
-  /**
-   * @param group HAB group whose members will be returned
-   * @throws ServiceException if an error occurs while getting the HAB group members
-   */
-  @Override
-  public List<HABGroupMember> getHABGroupMembers(Group group) throws ServiceException {
-    GetDistributionListMembersResponse resp =
-        invokeJaxb(new GetDistributionListMembersRequest(0, 0, group.getName()));
-    return resp.getHABGroupMembers();
   }
 
   @Override

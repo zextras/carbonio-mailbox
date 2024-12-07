@@ -660,10 +660,6 @@ public class LdapDIT {
     return ZLdapFilterFactory.getInstance().allGroups();
   }
 
-  public ZLdapFilter filterHabGroupsByDn() {
-    return ZLdapFilterFactory.getInstance().allHabGroups();
-  }
-
   /*
    * ========================================================================================
    */

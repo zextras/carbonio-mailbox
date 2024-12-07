@@ -43,7 +43,7 @@ public enum AttributeType {
         return TM.sTypeMap.get(name);
     }
     
-    String getName() {
+    public String getName() {
         return mName;
     }
 }

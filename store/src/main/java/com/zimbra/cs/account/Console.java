@@ -1,12 +1,11 @@
 package com.zimbra.cs.account;
 
-import com.google.common.base.Charsets;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 
 public class Console {
 
@@ -42,7 +41,7 @@ public class Console {
   public void printError(String text) {
     PrintStream ps = this.stdError;
     try {
-      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ps, Charsets.UTF_8));
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ps, StandardCharsets.UTF_8));
       writer.write(text + "\n");
       writer.flush();
     } catch (IOException e) {
@@ -52,7 +51,7 @@ public class Console {
 
   public void printOutput(String text) {
     try {
-      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(this.stdOut, Charsets.UTF_8));
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(this.stdOut, StandardCharsets.UTF_8));
       writer.write(text + "\n");
       writer.flush();
     } catch (IOException e) {

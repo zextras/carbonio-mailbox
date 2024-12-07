@@ -459,8 +459,6 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
 
   public abstract ZLdapFilter groupByName(String name);
 
-  public abstract ZLdapFilter allHabGroups();
-
   /*
    * domain
    */

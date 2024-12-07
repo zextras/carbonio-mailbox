@@ -86,25 +86,13 @@ public class LdapObjectClass {
 
   public static Set<String> getDistributionListObjectClasses(Provisioning prov)
       throws ServiceException {
-    return getDistributionListObjectClasses(prov, false);
-  }
-
-  public static Set<String> getDistributionListObjectClasses(Provisioning prov, boolean isHabGroup)
-      throws ServiceException {
     Set<String> ocs = new LinkedHashSet<>();
     ocs.add(AttributeClass.OC_zimbraDistributionList);
     ocs.add(AttributeClass.OC_zimbraMailRecipient);
-    if (isHabGroup) {
-      ocs.add(AttributeClass.OC_zimbraHabGroup);
-    }
     return ocs;
   }
 
-  public static Set<String> getGroupObjectClasses(Provisioning prov) throws ServiceException {
-    return getGroupObjectClasses(prov, false);
-  }
-
-  public static Set<String> getGroupObjectClasses(Provisioning prov, boolean isHabGroup)
+  public static Set<String> getGroupObjectClasses(Provisioning prov)
       throws ServiceException {
     Set<String> ocs = new LinkedHashSet<>();
 
@@ -112,9 +100,6 @@ public class LdapObjectClass {
     ocs.add("dgIdentityAux");
     ocs.add(AttributeClass.OC_zimbraGroup);
     // ocs.add(AttributeClass.OC_zimbraMailRecipient);  // should we?
-    if (isHabGroup) {
-      ocs.add(AttributeClass.OC_zimbraHabGroup);
-    }
     return ocs;
   }
 

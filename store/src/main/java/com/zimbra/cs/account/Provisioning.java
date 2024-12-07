@@ -23,7 +23,6 @@ import com.zimbra.cs.account.accesscontrol.RightCommand;
 import com.zimbra.cs.account.accesscontrol.RightModifier;
 import com.zimbra.cs.account.auth.AuthContext;
 import com.zimbra.cs.account.gal.GalOp;
-import com.zimbra.cs.account.ldap.entry.LdapDistributionList;
 import com.zimbra.cs.account.names.NameUtil;
 import com.zimbra.cs.extension.ExtensionUtil;
 import com.zimbra.cs.gal.GalSearchParams;
@@ -31,7 +30,6 @@ import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 import com.zimbra.cs.mime.MimeTypeInfo;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.account.type.AddressListInfo;
-import com.zimbra.soap.account.type.HABGroupMember;
 import com.zimbra.soap.admin.type.CacheEntryType;
 import com.zimbra.soap.admin.type.CmdRightsInfo;
 import com.zimbra.soap.admin.type.CountObjectsType;
@@ -1734,10 +1732,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
     return group.getAllMembers();
   }
 
-  public List<HABGroupMember> getHABGroupMembers(Group group) throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
   /**
    * @return set of all the zimbraId's of groups this account belongs to, including dynamic groups
    *     and direct/nested static distribution lists.
@@ -2282,17 +2276,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
 
   public abstract void deleteXMPPComponent(XMPPComponent comp) throws ServiceException;
 
-  public abstract Set<String> createHabOrgUnit(Domain domain, String habOrgUnitName)
-      throws ServiceException;
-
-  public abstract Set<String> listHabOrgUnit(Domain domain) throws ServiceException;
-
-  public abstract Set<String> renameHabOrgUnit(
-      Domain domain, String habOrgUnitName, String newHabOrgUnitName) throws ServiceException;
-
-  public abstract void deleteHabOrgUnit(Domain domain, String habOrgUnitName)
-      throws ServiceException;
-
   public static class RightsDoc {
     private final String mCmd;
     private final List<String> mRights;
@@ -2660,41 +2643,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
     throw ServiceException.UNSUPPORTED();
   }
 
-  //
-  //
-  // SMIME config
-  //
-  //
-  // SMIME config on domain
-  public Map<String, Map<String, Object>> getDomainSMIMEConfig(Domain domain, String configName)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
-  public void modifyDomainSMIMEConfig(Domain domain, String configName, Map<String, Object> attrs)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
-  public void removeDomainSMIMEConfig(Domain domain, String configName) throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
-  // SMIME config on globalconfig
-  public Map<String, Map<String, Object>> getConfigSMIMEConfig(String configName)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
-  public void modifyConfigSMIMEConfig(String configName, Map<String, Object> attrs)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
-  public void removeConfigSMIMEConfig(String configName) throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
   public AddressList getAddressList(String id) throws ServiceException {
     throw ServiceException.UNSUPPORTED();
   }
@@ -2738,35 +2686,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
     for (ProvisioningValidator validator : validators) {
       validator.refresh();
     }
-  }
-
-  /**
-   * @param domain
-   * @param rootDn
-   * @return
-   */
-  public List<LdapDistributionList> getAllHabGroups(Domain domain, String rootDn)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
-  /**
-   * @param oldDn
-   * @param parentDn
-   */
-  public void changeHABGroupParent(String oldDn, String parentDn) throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
-  }
-
-  /**
-   * @param group Dynamic group
-   * @param dlsToCheck list of dl to be checked for membership of dynamic group
-   * @return true if one of the dl is a member of dynamic group
-   * @throws ServiceException
-   */
-  public boolean dlIsInDynamicHABGroup(DynamicGroup group, List<String> dlsToCheck)
-      throws ServiceException {
-    throw ServiceException.UNSUPPORTED();
   }
 
   // address list
