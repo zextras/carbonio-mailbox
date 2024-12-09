@@ -2,7 +2,6 @@ package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.AccountLogger;
-import com.zimbra.cs.account.AccountLoggerOptions;
 import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
@@ -11,7 +10,7 @@ import com.zimbra.cs.account.soap.SoapProvisioning;
 import java.util.List;
 import java.util.Map;
 
-public class GetAllAccountLoggersCommandHandler implements CommandHandler {
+class GetAllAccountLoggersCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetAllAccountLoggersCommandHandler(ProvUtil provUtil) {

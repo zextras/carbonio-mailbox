@@ -8,7 +8,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class DeleteIdentityCommandHandler implements CommandHandler {
+class DeleteIdentityCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public DeleteIdentityCommandHandler(ProvUtil provUtil) {

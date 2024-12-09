@@ -9,7 +9,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class ResetAllLoggersCommandHandler implements CommandHandler {
+class ResetAllLoggersCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public ResetAllLoggersCommandHandler(ProvUtil provUtil) {

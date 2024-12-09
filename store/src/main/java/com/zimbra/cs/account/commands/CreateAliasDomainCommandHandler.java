@@ -9,7 +9,7 @@ import com.zimbra.cs.account.Provisioning;
 
 import java.util.Map;
 
-public class CreateAliasDomainCommandHandler implements CommandHandler {
+class CreateAliasDomainCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public CreateAliasDomainCommandHandler(ProvUtil provUtil) {

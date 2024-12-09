@@ -10,7 +10,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class GrantRightCommandHandler implements CommandHandler {
+class GrantRightCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GrantRightCommandHandler(ProvUtil provUtil) {

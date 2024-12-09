@@ -5,7 +5,7 @@ import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 
-public class ChangePrimaryEmailCommandHandler implements CommandHandler {
+class ChangePrimaryEmailCommandHandler implements CommandHandler {
   final ProvUtil provUtil;
 
   public ChangePrimaryEmailCommandHandler(ProvUtil provUtil) {

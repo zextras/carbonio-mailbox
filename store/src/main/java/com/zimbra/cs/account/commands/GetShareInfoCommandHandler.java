@@ -10,7 +10,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class GetShareInfoCommandHandler implements CommandHandler {
+class GetShareInfoCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetShareInfoCommandHandler(ProvUtil provUtil) {

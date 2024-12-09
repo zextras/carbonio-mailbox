@@ -6,7 +6,7 @@ import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.account.Provisioning;
 
-public class CountAccountCommandHandler implements CommandHandler {
+class CountAccountCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public CountAccountCommandHandler(ProvUtil provUtil) {

@@ -10,7 +10,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class PushFreebusyDomainCommandHandler implements CommandHandler {
+class PushFreebusyDomainCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public PushFreebusyDomainCommandHandler(ProvUtil provUtil) {

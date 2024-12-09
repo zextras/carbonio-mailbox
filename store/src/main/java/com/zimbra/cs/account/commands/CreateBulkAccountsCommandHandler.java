@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CreateBulkAccountsCommandHandler implements CommandHandler {
+class CreateBulkAccountsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public CreateBulkAccountsCommandHandler(ProvUtil provUtil) {

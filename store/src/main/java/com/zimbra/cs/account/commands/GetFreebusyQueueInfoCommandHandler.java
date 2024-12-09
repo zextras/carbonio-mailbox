@@ -9,7 +9,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class GetFreebusyQueueInfoCommandHandler implements CommandHandler {
+class GetFreebusyQueueInfoCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetFreebusyQueueInfoCommandHandler(ProvUtil provUtil) {

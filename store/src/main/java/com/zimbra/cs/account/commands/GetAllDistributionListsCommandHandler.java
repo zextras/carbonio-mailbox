@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
-public class GetAllDistributionListsCommandHandler implements CommandHandler {
+class GetAllDistributionListsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetAllDistributionListsCommandHandler(ProvUtil provUtil) {

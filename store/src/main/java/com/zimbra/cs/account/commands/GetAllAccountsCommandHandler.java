@@ -15,7 +15,7 @@ import com.zimbra.cs.ldap.ZLdapFilterFactory;
 
 import java.util.Set;
 
-public class GetAllAccountsCommandHandler implements CommandHandler {
+class GetAllAccountsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetAllAccountsCommandHandler(ProvUtil provUtil) {

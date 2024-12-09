@@ -8,7 +8,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class DeleteDataSourceCommandHandler implements CommandHandler {
+class DeleteDataSourceCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public DeleteDataSourceCommandHandler(ProvUtil provUtil) {

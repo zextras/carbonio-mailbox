@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
-public class GetAllEffectiveRightsCommandHandler implements CommandHandler {
+class GetAllEffectiveRightsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetAllEffectiveRightsCommandHandler(ProvUtil provUtil) {

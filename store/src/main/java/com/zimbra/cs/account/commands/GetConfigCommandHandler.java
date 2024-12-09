@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class GetConfigCommandHandler implements CommandHandler {
+class GetConfigCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetConfigCommandHandler(ProvUtil provUtil) {

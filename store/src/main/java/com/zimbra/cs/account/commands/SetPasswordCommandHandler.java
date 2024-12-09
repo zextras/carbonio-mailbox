@@ -9,7 +9,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class SetPasswordCommandHandler implements CommandHandler {
+class SetPasswordCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public SetPasswordCommandHandler(ProvUtil provUtil) {

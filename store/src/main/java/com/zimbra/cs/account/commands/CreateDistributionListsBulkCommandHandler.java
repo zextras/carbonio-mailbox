@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CreateDistributionListsBulkCommandHandler implements CommandHandler {
+class CreateDistributionListsBulkCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public CreateDistributionListsBulkCommandHandler(ProvUtil provUtil) {

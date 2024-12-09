@@ -8,7 +8,7 @@ import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 
-public class FlushCacheCommandHandler implements CommandHandler {
+class FlushCacheCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public FlushCacheCommandHandler(ProvUtil provUtil) {

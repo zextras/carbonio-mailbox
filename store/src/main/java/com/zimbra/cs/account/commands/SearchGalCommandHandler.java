@@ -15,7 +15,7 @@ import org.apache.http.HttpException;
 import java.io.IOException;
 import java.util.Map;
 
-public class SearchGalCommandHandler implements CommandHandler {
+class SearchGalCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public SearchGalCommandHandler(ProvUtil provUtil) {

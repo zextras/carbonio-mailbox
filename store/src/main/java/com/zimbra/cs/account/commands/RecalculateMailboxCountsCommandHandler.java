@@ -10,7 +10,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class RecalculateMailboxCountsCommandHandler implements CommandHandler {
+class RecalculateMailboxCountsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public RecalculateMailboxCountsCommandHandler(ProvUtil provUtil) {

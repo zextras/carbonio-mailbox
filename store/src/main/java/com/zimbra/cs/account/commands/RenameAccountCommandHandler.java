@@ -9,7 +9,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class RenameAccountCommandHandler implements CommandHandler {
+class RenameAccountCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public RenameAccountCommandHandler(ProvUtil provUtil) {

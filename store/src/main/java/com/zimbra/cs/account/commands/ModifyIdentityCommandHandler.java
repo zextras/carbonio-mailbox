@@ -7,7 +7,7 @@ import com.zimbra.cs.account.ProvUtil;
 import java.io.IOException;
 import org.apache.http.HttpException;
 
-public class ModifyIdentityCommandHandler implements CommandHandler {
+class ModifyIdentityCommandHandler implements CommandHandler {
 
   private ProvUtil provUtil;
 

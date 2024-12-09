@@ -8,7 +8,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class DeleteSignatureCommandHandler implements CommandHandler {
+class DeleteSignatureCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public DeleteSignatureCommandHandler(ProvUtil provUtil) {

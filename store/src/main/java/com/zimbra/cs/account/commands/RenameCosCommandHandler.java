@@ -8,7 +8,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class RenameCosCommandHandler implements CommandHandler {
+class RenameCosCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public RenameCosCommandHandler(ProvUtil provUtil) {

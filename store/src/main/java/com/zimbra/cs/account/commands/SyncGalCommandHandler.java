@@ -14,7 +14,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class SyncGalCommandHandler implements CommandHandler {
+class SyncGalCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public SyncGalCommandHandler(ProvUtil provUtil) {

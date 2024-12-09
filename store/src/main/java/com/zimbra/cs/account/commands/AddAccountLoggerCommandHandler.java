@@ -2,13 +2,12 @@ package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.AccountLoggerOptions;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 
-public class AddAccountLoggerCommandHandler implements CommandHandler {
+class AddAccountLoggerCommandHandler implements CommandHandler {
   final ProvUtil provUtil;
 
   public AddAccountLoggerCommandHandler(ProvUtil provUtil) {

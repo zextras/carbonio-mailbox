@@ -9,7 +9,6 @@ import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Sets;
 import com.zimbra.common.account.Key;
-import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.net.SocketFactories;
@@ -35,135 +34,7 @@ import com.zimbra.cs.account.accesscontrol.RightCommand;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.accesscontrol.RightModifier;
 import com.zimbra.cs.account.accesscontrol.TargetType;
-import com.zimbra.cs.account.commands.AddAccountAliasCommandHandler;
-import com.zimbra.cs.account.commands.AddAccountLoggerCommandHandler;
-import com.zimbra.cs.account.commands.AddDistributionListAliasCommandHandler;
-import com.zimbra.cs.account.commands.AddDistributionListMemberCommandHandler;
-import com.zimbra.cs.account.commands.AutoCompleteGalCommandHandler;
-import com.zimbra.cs.account.commands.AutoProvControlCommandHandler;
-import com.zimbra.cs.account.commands.ChangePrimaryEmailCommandHandler;
-import com.zimbra.cs.account.commands.CheckPasswordStrengthCommandHandler;
-import com.zimbra.cs.account.commands.CheckRightCommandHandler;
-import com.zimbra.cs.account.commands.CompactIndexMailboxCommandHandler;
-import com.zimbra.cs.account.commands.CopyCosCommandHandler;
-import com.zimbra.cs.account.commands.CountAccountCommandHandler;
-import com.zimbra.cs.account.commands.CountObjectsCommandHandler;
-import com.zimbra.cs.account.commands.CreateAccountCommandHandler;
-import com.zimbra.cs.account.commands.CreateAliasDomainCommandHandler;
-import com.zimbra.cs.account.commands.CreateBulkAccountsCommandHandler;
-import com.zimbra.cs.account.commands.CreateCalendarResourceCommandHandler;
-import com.zimbra.cs.account.commands.CreateCosCommandHandler;
-import com.zimbra.cs.account.commands.CreateDataSourceCommandHandler;
-import com.zimbra.cs.account.commands.CreateDistributionListCommandHandler;
-import com.zimbra.cs.account.commands.CreateDistributionListsBulkCommandHandler;
-import com.zimbra.cs.account.commands.CreateDomainCommandHandler;
-import com.zimbra.cs.account.commands.CreateDynamicDistributionListCommandHandler;
-import com.zimbra.cs.account.commands.CreateIdentityCommandHandler;
-import com.zimbra.cs.account.commands.CreateServerCommandHandler;
-import com.zimbra.cs.account.commands.CreateSignatureCommandHandler;
-import com.zimbra.cs.account.commands.CreateXMPPComponentCommandHandler;
-import com.zimbra.cs.account.commands.DeleteAccountCommandHandler;
-import com.zimbra.cs.account.commands.DeleteCalendarResourceCommandHandler;
-import com.zimbra.cs.account.commands.DeleteCosCommandHandler;
-import com.zimbra.cs.account.commands.DeleteDataSourceCommandHandler;
-import com.zimbra.cs.account.commands.DeleteDistributionListCommandHandler;
-import com.zimbra.cs.account.commands.DeleteDomainCommandHandler;
-import com.zimbra.cs.account.commands.DeleteIdentityCommandHandler;
-import com.zimbra.cs.account.commands.DeleteServerCommandHandler;
-import com.zimbra.cs.account.commands.DeleteSignatureCommandHandler;
-import com.zimbra.cs.account.commands.DeleteXMPPComponentCommandHandler;
-import com.zimbra.cs.account.commands.DescribeCommandHandler;
-import com.zimbra.cs.account.commands.ExitCommandHandler;
-import com.zimbra.cs.account.commands.FlushCacheCommandHandler;
-import com.zimbra.cs.account.commands.GenerateDomainPreAuthCommandHandler;
-import com.zimbra.cs.account.commands.GenerateDomainPreAuthKeyCommandHandler;
-import com.zimbra.cs.account.commands.GetAccountCommandHandler;
-import com.zimbra.cs.account.commands.GetAccountLoggersCommandHandler;
-import com.zimbra.cs.account.commands.GetAccountMembershipCommandHandler;
-import com.zimbra.cs.account.commands.GetAllAccountLoggersCommandHandler;
-import com.zimbra.cs.account.commands.GetAllAccountsCommandHandler;
-import com.zimbra.cs.account.commands.GetAllAdminAccountsCommandHandler;
-import com.zimbra.cs.account.commands.GetAllCalendarResourcesCommandHandler;
-import com.zimbra.cs.account.commands.GetAllConfigCommandHandler;
-import com.zimbra.cs.account.commands.GetAllCosCommandHandler;
-import com.zimbra.cs.account.commands.GetAllDistributionListsCommandHandler;
-import com.zimbra.cs.account.commands.GetAllDomainsCommandHandler;
-import com.zimbra.cs.account.commands.GetAllEffectiveRightsCommandHandler;
-import com.zimbra.cs.account.commands.GetAllFbpCommandHandler;
-import com.zimbra.cs.account.commands.GetAllMemcachedServersCommandHandler;
-import com.zimbra.cs.account.commands.GetAllMtaAuthURLsCommandHandler;
-import com.zimbra.cs.account.commands.GetAllReverseProxyBackendsCommandHandler;
-import com.zimbra.cs.account.commands.GetAllReverseProxyDomainsCommandHandler;
-import com.zimbra.cs.account.commands.GetAllReverseProxyURLsCommandHandler;
-import com.zimbra.cs.account.commands.GetAllRightsCommandHandler;
-import com.zimbra.cs.account.commands.GetAllServersCommandHandler;
-import com.zimbra.cs.account.commands.GetAllXMPPComponentsCommandHandler;
-import com.zimbra.cs.account.commands.GetAuthTokenInfoCommandHandler;
-import com.zimbra.cs.account.commands.GetCalendarResourceCommandHandler;
-import com.zimbra.cs.account.commands.GetConfigCommandHandler;
-import com.zimbra.cs.account.commands.GetCosCommandHandler;
-import com.zimbra.cs.account.commands.GetCreateObjectAttrsCommandHandler;
-import com.zimbra.cs.account.commands.GetDataSourcesCommandHandler;
-import com.zimbra.cs.account.commands.GetDistributionListCommandHandler;
-import com.zimbra.cs.account.commands.GetDistributionListMembershipCommandHandler;
-import com.zimbra.cs.account.commands.GetDomainCommandHandler;
-import com.zimbra.cs.account.commands.GetDomainInfoCommandHandler;
-import com.zimbra.cs.account.commands.GetEffectiveRightsCommandHandler;
-import com.zimbra.cs.account.commands.GetFreebusyQueueInfoCommandHandler;
-import com.zimbra.cs.account.commands.GetGrantsCommandHandler;
-import com.zimbra.cs.account.commands.GetIdentitiesCommandHandler;
-import com.zimbra.cs.account.commands.GetIndexStatsCommandHandler;
-import com.zimbra.cs.account.commands.GetMailboxInfoCommandHandler;
-import com.zimbra.cs.account.commands.GetMemcachedClientConfigCommandHandler;
-import com.zimbra.cs.account.commands.GetQuotaUsageCommandHandler;
-import com.zimbra.cs.account.commands.GetRightCommandHandler;
-import com.zimbra.cs.account.commands.GetRightsDocCommandHandler;
-import com.zimbra.cs.account.commands.GetServerCommandHandler;
-import com.zimbra.cs.account.commands.GetShareInfoCommandHandler;
-import com.zimbra.cs.account.commands.GetSignaturesCommandHandler;
-import com.zimbra.cs.account.commands.GetSpnegoDomainCommandHandler;
-import com.zimbra.cs.account.commands.GetXMPPComponentCommandHandler;
-import com.zimbra.cs.account.commands.GrantRightCommandHandler;
-import com.zimbra.cs.account.commands.HelpCommandHandler;
-import com.zimbra.cs.account.commands.LdapCommandHandler;
-import com.zimbra.cs.account.commands.ModifyAccountCommandHandler;
-import com.zimbra.cs.account.commands.ModifyCalendarResourceCommandHandler;
-import com.zimbra.cs.account.commands.ModifyConfigCommandHandler;
-import com.zimbra.cs.account.commands.ModifyCosCommandHandler;
-import com.zimbra.cs.account.commands.ModifyDataSourceCommandHandler;
-import com.zimbra.cs.account.commands.ModifyDistributionListCommandHandler;
-import com.zimbra.cs.account.commands.ModifyDomainCommandHandler;
-import com.zimbra.cs.account.commands.ModifyIdentityCommandHandler;
-import com.zimbra.cs.account.commands.ModifyServerCommandHandler;
-import com.zimbra.cs.account.commands.ModifySignatureCommandHandler;
-import com.zimbra.cs.account.commands.PurgeAccountCalendarCacheCommandHandler;
-import com.zimbra.cs.account.commands.PurgeFreebusyQueueCommandHandler;
-import com.zimbra.cs.account.commands.PushFreebusyCommandHandler;
-import com.zimbra.cs.account.commands.PushFreebusyDomainCommandHandler;
-import com.zimbra.cs.account.commands.ReIndexMailboxCommandHandler;
-import com.zimbra.cs.account.commands.RecalculateMailboxCountsCommandHandler;
-import com.zimbra.cs.account.commands.ReloadMemcachedClientConfigCommandHandler;
-import com.zimbra.cs.account.commands.RemoveAccountAliasCommandHandler;
-import com.zimbra.cs.account.commands.RemoveAccountLoggerCommandHandler;
-import com.zimbra.cs.account.commands.RemoveDistributionListAliasCommandHandler;
-import com.zimbra.cs.account.commands.RemoveDistributionListMemberCommandHandler;
-import com.zimbra.cs.account.commands.RenameAccountCommandHandler;
-import com.zimbra.cs.account.commands.RenameCalendarResourceCommandHandler;
-import com.zimbra.cs.account.commands.RenameCosCommandHandler;
-import com.zimbra.cs.account.commands.RenameDistributionListCommandHandler;
-import com.zimbra.cs.account.commands.RenameDomainCommandHandler;
-import com.zimbra.cs.account.commands.ResetAllLoggersCommandHandler;
-import com.zimbra.cs.account.commands.RevokeRightCommandHandler;
-import com.zimbra.cs.account.commands.SearchAccountsCommandHandler;
-import com.zimbra.cs.account.commands.SearchCalendarResourcesCommandHandler;
-import com.zimbra.cs.account.commands.SearchGalCommandHandler;
-import com.zimbra.cs.account.commands.SelectMailboxCommandHandler;
-import com.zimbra.cs.account.commands.SetAccountCosCommandHandler;
-import com.zimbra.cs.account.commands.SetPasswordCommandHandler;
-import com.zimbra.cs.account.commands.SoapCommandHandler;
-import com.zimbra.cs.account.commands.SyncGalCommandHandler;
-import com.zimbra.cs.account.commands.UnlockMailboxCommandHandler;
-import com.zimbra.cs.account.commands.VerifyIndexCommandHandler;
+import com.zimbra.cs.account.commands.ProvUtilCommandHandlersFactory;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.ldap.LdapClient;
@@ -236,7 +107,7 @@ public class ProvUtil implements HttpDebugListener {
   private boolean allowMultiValuedAttrReplacement;
   private long sendStart;
   private boolean forceDisplayAttrValue;
-  private Map<Command, CommandHandler> handlersMap;
+  private final Map<Command, CommandHandler> handlersMap;
 
   private boolean errorOccursDuringInteraction = false; // bug 58554
 
@@ -399,142 +270,7 @@ public class ProvUtil implements HttpDebugListener {
   ProvUtil(Console console, Map<String, Command> commands) {
     this.console = console;
     this.commandIndex = commands;
-    handlersMap = getCommandHandlersMap(this);
-  }
-
-  public static Map<Command, CommandHandler> getCommandHandlersMap(ProvUtil provUtil) {
-    var map = new HashMap<Command, CommandHandler>();
-    map.put(Command.ADD_ACCOUNT_ALIAS, new AddAccountAliasCommandHandler(provUtil));
-    map.put(Command.ADD_ACCOUNT_LOGGER, new AddAccountLoggerCommandHandler(provUtil));
-    map.put(Command.ADD_DISTRIBUTION_LIST_ALIAS, new AddDistributionListAliasCommandHandler(provUtil));
-    map.put(Command.ADD_DISTRIBUTION_LIST_MEMBER, new AddDistributionListMemberCommandHandler(provUtil));
-    map.put(Command.AUTO_COMPLETE_GAL, new AutoCompleteGalCommandHandler(provUtil));
-    map.put(Command.AUTO_PROV_CONTROL, new AutoProvControlCommandHandler(provUtil));
-    map.put(Command.CHANGE_PRIMARY_EMAIL, new ChangePrimaryEmailCommandHandler(provUtil));
-    map.put(Command.CHECK_PASSWORD_STRENGTH, new CheckPasswordStrengthCommandHandler(provUtil));
-    map.put(Command.CHECK_RIGHT, new CheckRightCommandHandler(provUtil));
-    map.put(Command.COMPACT_INBOX_MAILBOX, new CompactIndexMailboxCommandHandler(provUtil));
-    map.put(Command.COPY_COS, new CopyCosCommandHandler(provUtil));
-    map.put(Command.COUNT_ACCOUNT, new CountAccountCommandHandler(provUtil));
-    map.put(Command.COUNT_OBJECTS, new CountObjectsCommandHandler(provUtil));
-    map.put(Command.CREATE_ACCOUNT, new CreateAccountCommandHandler(provUtil));
-    map.put(Command.CREATE_ALIAS_DOMAIN, new CreateAliasDomainCommandHandler(provUtil));
-    map.put(Command.CREATE_BULK_ACCOUNTS, new CreateBulkAccountsCommandHandler(provUtil));
-    map.put(Command.CREATE_CALENDAR_RESOURCE, new CreateCalendarResourceCommandHandler(provUtil));
-    map.put(Command.CREATE_COS, new CreateCosCommandHandler(provUtil));
-    map.put(Command.CREATE_DATA_SOURCE, new CreateDataSourceCommandHandler(provUtil));
-    map.put(Command.CREATE_DISTRIBUTION_LIST, new CreateDistributionListCommandHandler(provUtil));
-    map.put(Command.CREATE_DISTRIBUTION_LISTS_BULK, new CreateDistributionListsBulkCommandHandler(provUtil));
-    map.put(Command.CREATE_DOMAIN, new CreateDomainCommandHandler(provUtil));
-    map.put(Command.CREATE_DYNAMIC_DISTRIBUTION_LIST, new CreateDynamicDistributionListCommandHandler(provUtil));
-    map.put(Command.CREATE_IDENTITY, new CreateIdentityCommandHandler(provUtil));
-    map.put(Command.CREATE_SERVER, new CreateServerCommandHandler(provUtil));
-    map.put(Command.CREATE_SIGNATURE, new CreateSignatureCommandHandler(provUtil));
-    map.put(Command.CREATE_XMPP_COMPONENT, new CreateXMPPComponentCommandHandler(provUtil));
-    map.put(Command.DELETE_ACCOUNT, new DeleteAccountCommandHandler(provUtil));
-    map.put(Command.DELETE_CALENDAR_RESOURCE, new DeleteCalendarResourceCommandHandler(provUtil));
-    map.put(Command.DELETE_COS, new DeleteCosCommandHandler(provUtil));
-    map.put(Command.DELETE_DATA_SOURCE, new DeleteDataSourceCommandHandler(provUtil));
-    map.put(Command.DELETE_DISTRIBUTION_LIST, new DeleteDistributionListCommandHandler(provUtil));
-    map.put(Command.DELETE_DOMAIN, new DeleteDomainCommandHandler(provUtil));
-    map.put(Command.DELETE_IDENTITY, new DeleteIdentityCommandHandler(provUtil));
-    map.put(Command.DELETE_SERVER, new DeleteServerCommandHandler(provUtil));
-    map.put(Command.DELETE_SIGNATURE, new DeleteSignatureCommandHandler(provUtil));
-    map.put(Command.DELETE_XMPP_COMPONENT, new DeleteXMPPComponentCommandHandler(provUtil));
-    map.put(Command.DESCRIBE, new DescribeCommandHandler(provUtil));
-    map.put(Command.EXIT, new ExitCommandHandler(provUtil));
-    map.put(Command.FLUSH_CACHE, new FlushCacheCommandHandler(provUtil));
-    map.put(Command.GENERATE_DOMAIN_PRE_AUTH, new GenerateDomainPreAuthCommandHandler(provUtil));
-    map.put(Command.GENERATE_DOMAIN_PRE_AUTH_KEY, new GenerateDomainPreAuthKeyCommandHandler(provUtil));
-    map.put(Command.GET_ACCOUNT, new GetAccountCommandHandler(provUtil));
-    map.put(Command.GET_ACCOUNT_LOGGERS, new GetAccountLoggersCommandHandler(provUtil));
-    map.put(Command.GET_ACCOUNT_MEMBERSHIP, new GetAccountMembershipCommandHandler(provUtil));
-    map.put(Command.GET_ALL_ACCOUNTS, new GetAllAccountsCommandHandler(provUtil));
-    map.put(Command.GET_ALL_ACCOUNT_LOGGERS, new GetAllAccountLoggersCommandHandler(provUtil));
-    map.put(Command.GET_ALL_ADMIN_ACCOUNTS, new GetAllAdminAccountsCommandHandler(provUtil));
-    map.put(Command.GET_ALL_CALENDAR_RESOURCES, new GetAllCalendarResourcesCommandHandler(provUtil));
-    map.put(Command.GET_ALL_CONFIG, new GetAllConfigCommandHandler(provUtil));
-    map.put(Command.GET_ALL_COS, new GetAllCosCommandHandler(provUtil));
-    map.put(Command.GET_ALL_DISTRIBUTION_LISTS, new GetAllDistributionListsCommandHandler(provUtil));
-    map.put(Command.GET_ALL_DOMAINS, new GetAllDomainsCommandHandler(provUtil));
-    map.put(Command.GET_ALL_EFFECTIVE_RIGHTS, new GetAllEffectiveRightsCommandHandler(provUtil));
-    map.put(Command.GET_ALL_FREEBUSY_PROVIDERS, new GetAllFbpCommandHandler(provUtil));
-    map.put(Command.GET_ALL_MEMCACHED_SERVERS, new GetAllMemcachedServersCommandHandler(provUtil));
-    map.put(Command.GET_ALL_MTA_AUTH_URLS, new GetAllMtaAuthURLsCommandHandler(provUtil));
-    map.put(Command.GET_ALL_REVERSE_PROXY_BACKENDS, new GetAllReverseProxyBackendsCommandHandler(provUtil));
-    map.put(Command.GET_ALL_REVERSE_PROXY_DOMAINS, new GetAllReverseProxyDomainsCommandHandler(provUtil));
-    map.put(Command.GET_ALL_REVERSE_PROXY_URLS, new GetAllReverseProxyURLsCommandHandler(provUtil));
-    map.put(Command.GET_ALL_RIGHTS, new GetAllRightsCommandHandler(provUtil));
-    map.put(Command.GET_ALL_SERVERS, new GetAllServersCommandHandler(provUtil));
-    map.put(Command.GET_ALL_XMPP_COMPONENTS, new GetAllXMPPComponentsCommandHandler(provUtil));
-    map.put(Command.GET_AUTH_TOKEN_INFO, new GetAuthTokenInfoCommandHandler(provUtil));
-    map.put(Command.GET_CALENDAR_RESOURCE, new GetCalendarResourceCommandHandler(provUtil));
-    map.put(Command.GET_CONFIG, new GetConfigCommandHandler(provUtil));
-    map.put(Command.GET_COS, new GetCosCommandHandler(provUtil));
-    map.put(Command.GET_CREATE_OBJECT_ATTRS, new GetCreateObjectAttrsCommandHandler(provUtil));
-    map.put(Command.GET_DATA_SOURCES, new GetDataSourcesCommandHandler(provUtil));
-    map.put(Command.GET_DISTRIBUTION_LIST, new GetDistributionListCommandHandler(provUtil));
-    map.put(Command.GET_DISTRIBUTION_LIST_MEMBERSHIP, new GetDistributionListMembershipCommandHandler(provUtil));
-    map.put(Command.GET_DOMAIN, new GetDomainCommandHandler(provUtil));
-    map.put(Command.GET_DOMAIN_INFO, new GetDomainInfoCommandHandler(provUtil));
-    map.put(Command.GET_EFFECTIVE_RIGHTS, new GetEffectiveRightsCommandHandler(provUtil));
-    map.put(Command.GET_FREEBUSY_QUEUE_INFO, new GetFreebusyQueueInfoCommandHandler(provUtil));
-    map.put(Command.GET_GRANTS, new GetGrantsCommandHandler(provUtil));
-    map.put(Command.GET_IDENTITIES, new GetIdentitiesCommandHandler(provUtil));
-    map.put(Command.GET_INDEX_STATS, new GetIndexStatsCommandHandler(provUtil));
-    map.put(Command.GET_MAILBOX_INFO, new GetMailboxInfoCommandHandler(provUtil));
-    map.put(Command.GET_MEMCACHED_CLIENT_CONFIG, new GetMemcachedClientConfigCommandHandler(provUtil));
-    map.put(Command.GET_QUOTA_USAGE, new GetQuotaUsageCommandHandler(provUtil));
-    map.put(Command.GET_RIGHT, new GetRightCommandHandler(provUtil));
-    map.put(Command.GET_RIGHTS_DOC, new GetRightsDocCommandHandler(provUtil));
-    map.put(Command.GET_SERVER, new GetServerCommandHandler(provUtil));
-    map.put(Command.GET_SHARE_INFO, new GetShareInfoCommandHandler(provUtil));
-    map.put(Command.GET_SIGNATURES, new GetSignaturesCommandHandler(provUtil));
-    map.put(Command.GET_SPNEGO_DOMAIN, new GetSpnegoDomainCommandHandler(provUtil));
-    map.put(Command.GET_XMPP_COMPONENT, new GetXMPPComponentCommandHandler(provUtil));
-    map.put(Command.GRANT_RIGHT, new GrantRightCommandHandler(provUtil));
-    map.put(Command.HELP, new HelpCommandHandler(provUtil));
-    map.put(Command.LDAP, new LdapCommandHandler(provUtil));
-    map.put(Command.MODIFY_ACCOUNT, new ModifyAccountCommandHandler(provUtil));
-    map.put(Command.MODIFY_CALENDAR_RESOURCE, new ModifyCalendarResourceCommandHandler(provUtil));
-    map.put(Command.MODIFY_CONFIG, new ModifyConfigCommandHandler(provUtil));
-    map.put(Command.MODIFY_COS, new ModifyCosCommandHandler(provUtil));
-    map.put(Command.MODIFY_DATA_SOURCE, new ModifyDataSourceCommandHandler(provUtil));
-    map.put(Command.MODIFY_DISTRIBUTION_LIST, new ModifyDistributionListCommandHandler(provUtil));
-    map.put(Command.MODIFY_DOMAIN, new ModifyDomainCommandHandler(provUtil));
-    map.put(Command.MODIFY_IDENTITY, new ModifyIdentityCommandHandler(provUtil));
-    map.put(Command.MODIFY_SERVER, new ModifyServerCommandHandler(provUtil));
-    map.put(Command.MODIFY_SIGNATURE, new ModifySignatureCommandHandler(provUtil));
-//    map.put(Command.MODIFY_XMPP_COMPONENT, new ModifyXMPPComponentCommandHandler(provUtil));
-    map.put(Command.PURGE_ACCOUNT_CALENDAR_CACHE, new PurgeAccountCalendarCacheCommandHandler(provUtil));
-    map.put(Command.PURGE_FREEBUSY_QUEUE, new PurgeFreebusyQueueCommandHandler());
-    map.put(Command.PUSH_FREEBUSY, new PushFreebusyCommandHandler(provUtil));
-    map.put(Command.PUSH_FREEBUSY_DOMAIN, new PushFreebusyDomainCommandHandler(provUtil));
-    map.put(Command.RECALCULATE_MAILBOX_COUNTS, new RecalculateMailboxCountsCommandHandler(provUtil));
-    map.put(Command.REINDEX_MAILBOX, new ReIndexMailboxCommandHandler(provUtil));
-    map.put(Command.RELOAD_MEMCACHED_CLIENT_CONFIG, new ReloadMemcachedClientConfigCommandHandler(provUtil));
-    map.put(Command.REMOVE_ACCOUNT_ALIAS, new RemoveAccountAliasCommandHandler(provUtil));
-    map.put(Command.REMOVE_ACCOUNT_LOGGER, new RemoveAccountLoggerCommandHandler(provUtil));
-    map.put(Command.REMOVE_DISTRIBUTION_LIST_ALIAS, new RemoveDistributionListAliasCommandHandler(provUtil));
-    map.put(Command.REMOVE_DISTRIBUTION_LIST_MEMBER, new RemoveDistributionListMemberCommandHandler(provUtil));
-    map.put(Command.RENAME_ACCOUNT, new RenameAccountCommandHandler(provUtil));
-    map.put(Command.RENAME_CALENDAR_RESOURCE, new RenameCalendarResourceCommandHandler(provUtil));
-    map.put(Command.RENAME_COS, new RenameCosCommandHandler(provUtil));
-    map.put(Command.RENAME_DISTRIBUTION_LIST, new RenameDistributionListCommandHandler(provUtil));
-    map.put(Command.RENAME_DOMAIN, new RenameDomainCommandHandler(provUtil));
-    map.put(Command.RESET_ALL_LOGGERS, new ResetAllLoggersCommandHandler(provUtil));
-    map.put(Command.REVOKE_RIGHT, new RevokeRightCommandHandler(provUtil));
-    map.put(Command.SEARCH_ACCOUNTS, new SearchAccountsCommandHandler(provUtil));
-    map.put(Command.SEARCH_CALENDAR_RESOURCES, new SearchCalendarResourcesCommandHandler(provUtil));
-    map.put(Command.SEARCH_GAL, new SearchGalCommandHandler(provUtil));
-    map.put(Command.SELECT_MAILBOX, new SelectMailboxCommandHandler(provUtil));
-    map.put(Command.SET_ACCOUNT_COS, new SetAccountCosCommandHandler(provUtil));
-    map.put(Command.SET_PASSWORD, new SetPasswordCommandHandler(provUtil));
-    map.put(Command.SOAP, new SoapCommandHandler(provUtil));
-    map.put(Command.SYNC_GAL, new SyncGalCommandHandler(provUtil));
-    map.put(Command.UNLOCK_MAILBOX, new UnlockMailboxCommandHandler(provUtil));
-    map.put(Command.VERIFY_INDEX, new VerifyIndexCommandHandler(provUtil));
-    return map;
+    handlersMap = ProvUtilCommandHandlersFactory.getCommandHandlersMap(this);
   }
 
   public void initProvisioning() throws ServiceException {
@@ -581,9 +317,6 @@ public class ProvUtil implements HttpDebugListener {
 
   boolean execute(String[] args)
       throws ServiceException, ArgException, IOException, HttpException {
-    String[] members;
-    Account account;
-    AccountLoggerOptions alo;
     command = lookupCommand(args[0]);
     if (command == null) {
       return false;
@@ -609,145 +342,11 @@ public class ProvUtil implements HttpDebugListener {
     if (command.needsSchemaExtension()) {
       loadLdapSchemaExtensionAttrs();
     }
-    switch (command) {
-      case ADD_ACCOUNT_ALIAS:
-      case ADD_ACCOUNT_LOGGER:
-      case AUTO_COMPLETE_GAL:
-      case AUTO_PROV_CONTROL:
-      case CHANGE_PRIMARY_EMAIL:
-      case COPY_COS:
-      case COUNT_ACCOUNT:
-      case CREATE_ACCOUNT:
-      case CREATE_ALIAS_DOMAIN:
-      case CREATE_COS:
-      case CREATE_DOMAIN:
-      case CREATE_IDENTITY:
-      case CREATE_SIGNATURE:
-      case CREATE_DATA_SOURCE:
-      case CREATE_SERVER:
-      case COUNT_OBJECTS:
-      case CREATE_XMPP_COMPONENT:
-      case DESCRIBE:
-      case EXIT:
-      case FLUSH_CACHE:
-      case GENERATE_DOMAIN_PRE_AUTH_KEY:
-      case GENERATE_DOMAIN_PRE_AUTH:
-      case GET_ACCOUNT:
-      case GET_ACCOUNT_MEMBERSHIP:
-      case GET_IDENTITIES:
-      case GET_SIGNATURES:
-      case GET_DATA_SOURCES:
-      case GET_ACCOUNT_LOGGERS:
-      case GET_ALL_ACCOUNT_LOGGERS:
-      case GET_ALL_ACCOUNTS:
-      case GET_ALL_ADMIN_ACCOUNTS:
-      case GET_ALL_CONFIG:
-      case GET_ALL_COS:
-      case GET_ALL_DOMAINS:
-      case GET_ALL_FREEBUSY_PROVIDERS:
-      case GET_ALL_RIGHTS:
-      case GET_ALL_SERVERS:
-      case GET_CONFIG:
-      case GET_COS:
-      case GET_DISTRIBUTION_LIST_MEMBERSHIP:
-      case GET_DOMAIN:
-      case GET_DOMAIN_INFO:
-      case GET_FREEBUSY_QUEUE_INFO:
-      case GET_RIGHT:
-      case GET_RIGHTS_DOC:
-      case GET_SERVER:
-      case GET_XMPP_COMPONENT:
-      case CHECK_RIGHT:
-      case GET_ALL_EFFECTIVE_RIGHTS:
-      case GET_EFFECTIVE_RIGHTS:
-      case GET_CREATE_OBJECT_ATTRS:
-      case GET_GRANTS:
-      case GRANT_RIGHT:
-      case REVOKE_RIGHT:
-      case HELP:
-      case MODIFY_ACCOUNT:
-      case MODIFY_DATA_SOURCE:
-      case MODIFY_IDENTITY:
-      case MODIFY_SIGNATURE:
-      case MODIFY_COS:
-      case MODIFY_CONFIG:
-      case MODIFY_DOMAIN:
-      case MODIFY_SERVER:
-      case DELETE_ACCOUNT:
-      case DELETE_COS:
-      case DELETE_DOMAIN:
-      case DELETE_IDENTITY:
-      case DELETE_SIGNATURE:
-      case DELETE_DATA_SOURCE:
-      case DELETE_SERVER:
-      case DELETE_XMPP_COMPONENT:
-      case PUSH_FREEBUSY:
-      case PUSH_FREEBUSY_DOMAIN:
-      case PURGE_FREEBUSY_QUEUE:
-      case PURGE_ACCOUNT_CALENDAR_CACHE:
-      case REMOVE_ACCOUNT_ALIAS:
-      case REMOVE_ACCOUNT_LOGGER:
-      case RENAME_ACCOUNT:
-      case RENAME_COS:
-      case RENAME_DOMAIN:
-      case SET_ACCOUNT_COS:
-      case SEARCH_ACCOUNTS:
-      case SEARCH_GAL:
-      case SYNC_GAL:
-      case SET_PASSWORD:
-      case CHECK_PASSWORD_STRENGTH:
-      case CREATE_DISTRIBUTION_LIST:
-      case CREATE_DYNAMIC_DISTRIBUTION_LIST:
-      case CREATE_DISTRIBUTION_LISTS_BULK:
-      case GET_ALL_DISTRIBUTION_LISTS:
-      case GET_DISTRIBUTION_LIST:
-      case GET_ALL_XMPP_COMPONENTS:
-      case MODIFY_DISTRIBUTION_LIST:
-      case DELETE_DISTRIBUTION_LIST:
-      case ADD_DISTRIBUTION_LIST_MEMBER:
-      case REMOVE_DISTRIBUTION_LIST_MEMBER:
-      case CREATE_BULK_ACCOUNTS:
-      case ADD_DISTRIBUTION_LIST_ALIAS:
-      case REMOVE_DISTRIBUTION_LIST_ALIAS:
-      case RENAME_DISTRIBUTION_LIST:
-      case CREATE_CALENDAR_RESOURCE:
-      case DELETE_CALENDAR_RESOURCE:
-      case MODIFY_CALENDAR_RESOURCE:
-      case RENAME_CALENDAR_RESOURCE:
-      case GET_CALENDAR_RESOURCE:
-      case GET_ALL_CALENDAR_RESOURCES:
-      case SEARCH_CALENDAR_RESOURCES:
-      case GET_SHARE_INFO:
-      case GET_SPNEGO_DOMAIN:
-      case GET_QUOTA_USAGE:
-      case GET_MAILBOX_INFO:
-      case REINDEX_MAILBOX:
-      case COMPACT_INBOX_MAILBOX:
-      case VERIFY_INDEX:
-      case GET_INDEX_STATS:
-      case RECALCULATE_MAILBOX_COUNTS:
-      case SELECT_MAILBOX:
-      case GET_ALL_MTA_AUTH_URLS:
-      case GET_ALL_REVERSE_PROXY_URLS:
-      case GET_ALL_REVERSE_PROXY_BACKENDS:
-      case GET_ALL_REVERSE_PROXY_DOMAINS:
-      case GET_ALL_MEMCACHED_SERVERS:
-      case RELOAD_MEMCACHED_CLIENT_CONFIG:
-      case GET_MEMCACHED_CLIENT_CONFIG:
-      case GET_AUTH_TOKEN_INFO:
-      case SOAP:
-      case LDAP:
-      case RESET_ALL_LOGGERS:
-      case UNLOCK_MAILBOX:
-        var handler = handlersMap.get(command);
-        if (handler == null) {
-          throw new UnsupportedOperationException(String.format("Command %s is not handled", command));
-        }
-        handler.handle(args);
-        break;
-      default:
-        return false;
+    var handler = handlersMap.get(command);
+    if (handler == null) {
+      return false;
     }
+    handler.handle(args);
     return true;
   }
 
@@ -1039,7 +638,7 @@ public class ProvUtil implements HttpDebugListener {
   public Account lookupAccount(String key, boolean mustFind, boolean applyDefault)
       throws ServiceException {
     Account account;
-    if (applyDefault == true || (prov instanceof LdapProv)) {
+    if (applyDefault || (prov instanceof LdapProv)) {
       account = prov.getAccount(key);
     } else {
       /*
@@ -1151,20 +750,6 @@ public class ProvUtil implements HttpDebugListener {
     }
   }
 
-  private DistributionList lookupDistributionList(String key, boolean mustFind)
-      throws ServiceException {
-    DistributionList dl = prov.get(guessDistributionListBy(key), key);
-    if (mustFind && dl == null) {
-      throw AccountServiceException.NO_SUCH_DISTRIBUTION_LIST(key);
-    } else {
-      return dl;
-    }
-  }
-
-  private DistributionList lookupDistributionList(String key) throws ServiceException {
-    return lookupDistributionList(key, true);
-  }
-
   public Group lookupGroup(String key, boolean mustFind) throws ServiceException {
     Group dl = prov.getGroup(guessDistributionListBy(key), key);
     if (mustFind && dl == null) {
@@ -1184,13 +769,6 @@ public class ProvUtil implements HttpDebugListener {
     } else {
       return prov.get(Key.XMPPComponentBy.name, value);
     }
-  }
-
-  public static AccountBy guessAccountBy(String value) {
-    if (Provisioning.isUUID(value)) {
-      return AccountBy.id;
-    }
-    return AccountBy.name;
   }
 
   public static Key.CosBy guessCosBy(String value) {
@@ -1877,10 +1455,6 @@ public class ProvUtil implements HttpDebugListener {
 
   public void throwSoapOnly() throws ServiceException {
     throw ServiceException.INVALID_REQUEST(ERR_VIA_SOAP_ONLY, null);
-  }
-
-  private void throwLdapOnly() throws ServiceException {
-    throw ServiceException.INVALID_REQUEST(ERR_VIA_LDAP_ONLY, null);
   }
 
   private void loadLdapSchemaExtensionAttrs() {

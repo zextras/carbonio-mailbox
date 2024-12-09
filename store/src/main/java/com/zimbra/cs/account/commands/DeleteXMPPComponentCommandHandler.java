@@ -8,7 +8,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class DeleteXMPPComponentCommandHandler implements CommandHandler {
+class DeleteXMPPComponentCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public DeleteXMPPComponentCommandHandler(ProvUtil provUtil) {

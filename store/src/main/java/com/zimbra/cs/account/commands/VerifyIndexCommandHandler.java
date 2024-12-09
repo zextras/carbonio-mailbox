@@ -9,7 +9,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class VerifyIndexCommandHandler implements CommandHandler {
+class VerifyIndexCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public VerifyIndexCommandHandler(ProvUtil provUtil) {

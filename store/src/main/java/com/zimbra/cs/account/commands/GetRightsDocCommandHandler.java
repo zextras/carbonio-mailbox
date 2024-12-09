@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class GetRightsDocCommandHandler implements CommandHandler {
+class GetRightsDocCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetRightsDocCommandHandler(ProvUtil provUtil) {

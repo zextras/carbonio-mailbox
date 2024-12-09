@@ -10,7 +10,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class GetDistributionListMembershipCommandHandler implements CommandHandler {
+class GetDistributionListMembershipCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetDistributionListMembershipCommandHandler(ProvUtil provUtil) {

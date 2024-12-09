@@ -12,7 +12,7 @@ import org.apache.http.HttpException;
 import java.io.IOException;
 import java.util.Map;
 
-public class CheckRightCommandHandler implements CommandHandler {
+class CheckRightCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public CheckRightCommandHandler(ProvUtil provUtil) {

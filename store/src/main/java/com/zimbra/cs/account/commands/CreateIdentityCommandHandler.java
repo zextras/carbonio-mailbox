@@ -5,7 +5,7 @@ import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 
-public class CreateIdentityCommandHandler implements CommandHandler {
+class CreateIdentityCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public CreateIdentityCommandHandler(ProvUtil provUtil) {

@@ -9,7 +9,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class GetAllFbpCommandHandler implements CommandHandler {
+class GetAllFbpCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetAllFbpCommandHandler(ProvUtil provUtil) {

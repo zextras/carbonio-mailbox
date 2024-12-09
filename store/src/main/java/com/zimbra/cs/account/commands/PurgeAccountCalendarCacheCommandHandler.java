@@ -10,7 +10,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class PurgeAccountCalendarCacheCommandHandler implements CommandHandler {
+class PurgeAccountCalendarCacheCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public PurgeAccountCalendarCacheCommandHandler(ProvUtil provUtil) {

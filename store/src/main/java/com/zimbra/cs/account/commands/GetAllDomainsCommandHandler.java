@@ -10,7 +10,7 @@ import com.zimbra.cs.account.soap.SoapProvisioning;
 import java.util.List;
 import java.util.Set;
 
-public class GetAllDomainsCommandHandler implements CommandHandler {
+class GetAllDomainsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetAllDomainsCommandHandler(ProvUtil provUtil) {

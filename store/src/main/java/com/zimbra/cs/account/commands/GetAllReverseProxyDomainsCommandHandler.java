@@ -10,7 +10,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class GetAllReverseProxyDomainsCommandHandler implements CommandHandler {
+class GetAllReverseProxyDomainsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetAllReverseProxyDomainsCommandHandler(ProvUtil provUtil) {

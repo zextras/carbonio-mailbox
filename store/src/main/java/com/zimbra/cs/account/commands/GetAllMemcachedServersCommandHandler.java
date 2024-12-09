@@ -11,7 +11,7 @@ import org.apache.http.HttpException;
 import java.io.IOException;
 import java.util.List;
 
-public class GetAllMemcachedServersCommandHandler implements CommandHandler {
+class GetAllMemcachedServersCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetAllMemcachedServersCommandHandler(ProvUtil provUtil) {

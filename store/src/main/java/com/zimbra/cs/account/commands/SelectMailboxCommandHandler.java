@@ -11,7 +11,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class SelectMailboxCommandHandler implements CommandHandler {
+class SelectMailboxCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public SelectMailboxCommandHandler(ProvUtil provUtil) {

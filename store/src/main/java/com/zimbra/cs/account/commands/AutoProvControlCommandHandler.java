@@ -4,7 +4,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 
-public class AutoProvControlCommandHandler implements CommandHandler {
+class AutoProvControlCommandHandler implements CommandHandler {
   final ProvUtil provUtil;
 
   public AutoProvControlCommandHandler(ProvUtil provUtil) {

@@ -8,7 +8,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class ModifyDistributionListCommandHandler implements CommandHandler {
+class ModifyDistributionListCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public ModifyDistributionListCommandHandler(ProvUtil provUtil) {

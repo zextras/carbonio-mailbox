@@ -8,7 +8,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class DeleteCalendarResourceCommandHandler implements CommandHandler {
+class DeleteCalendarResourceCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public DeleteCalendarResourceCommandHandler(ProvUtil provUtil) {

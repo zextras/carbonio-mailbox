@@ -10,7 +10,7 @@ import com.zimbra.cs.account.Provisioning;
 
 import java.util.HashMap;
 
-public class GenerateDomainPreAuthCommandHandler implements CommandHandler {
+class GenerateDomainPreAuthCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GenerateDomainPreAuthCommandHandler(ProvUtil provUtil) {

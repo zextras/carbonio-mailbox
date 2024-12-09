@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-public class GetAccountMembershipCommandHandler implements CommandHandler {
+class GetAccountMembershipCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetAccountMembershipCommandHandler(ProvUtil provUtil) {

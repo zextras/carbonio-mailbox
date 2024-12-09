@@ -9,7 +9,7 @@ import com.zimbra.cs.account.ProvUtil;
 import java.util.List;
 import java.util.Set;
 
-public class GetAllCosCommandHandler implements CommandHandler {
+class GetAllCosCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetAllCosCommandHandler(ProvUtil provUtil) {

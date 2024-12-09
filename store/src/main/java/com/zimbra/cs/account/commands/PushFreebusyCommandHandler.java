@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-public class PushFreebusyCommandHandler implements CommandHandler {
+class PushFreebusyCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public PushFreebusyCommandHandler(ProvUtil provUtil) {

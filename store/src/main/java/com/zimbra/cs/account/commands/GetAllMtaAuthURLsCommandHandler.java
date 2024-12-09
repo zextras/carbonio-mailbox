@@ -12,7 +12,7 @@ import org.apache.http.HttpException;
 import java.io.IOException;
 import java.util.List;
 
-public class GetAllMtaAuthURLsCommandHandler implements CommandHandler {
+class GetAllMtaAuthURLsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetAllMtaAuthURLsCommandHandler(ProvUtil provUtil) {

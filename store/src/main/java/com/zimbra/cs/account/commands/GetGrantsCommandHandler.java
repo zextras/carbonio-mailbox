@@ -12,7 +12,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class GetGrantsCommandHandler implements CommandHandler {
+class GetGrantsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetGrantsCommandHandler(ProvUtil provUtil) {

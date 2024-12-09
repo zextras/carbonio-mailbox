@@ -1,14 +1,8 @@
-package com.zimbra.cs.account;
+package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
 
-/**
- * FIXME: move this class inside subpackage commands
- */
-public class AccountLoggerOptions {
-  /*
-  FIXME make fields package visible once class is moved inside commands subpackage
-   */
+class AccountLoggerOptions {
   public String server;
   public String[] args;
 

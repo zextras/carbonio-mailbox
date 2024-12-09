@@ -5,7 +5,7 @@ import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 
-public class CreateSignatureCommandHandler implements CommandHandler {
+class CreateSignatureCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public CreateSignatureCommandHandler(ProvUtil provUtil) {

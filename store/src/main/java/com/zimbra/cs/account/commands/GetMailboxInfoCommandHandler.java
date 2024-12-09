@@ -10,7 +10,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class GetMailboxInfoCommandHandler implements CommandHandler {
+class GetMailboxInfoCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetMailboxInfoCommandHandler(ProvUtil provUtil) {

@@ -9,7 +9,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class PurgeFreebusyQueueCommandHandler implements CommandHandler {
+class PurgeFreebusyQueueCommandHandler implements CommandHandler {
 
   @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
     doPurgeFreeBusyQueue(args);

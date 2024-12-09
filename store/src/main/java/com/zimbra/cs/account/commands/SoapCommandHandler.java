@@ -10,7 +10,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class SoapCommandHandler implements CommandHandler {
+class SoapCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public SoapCommandHandler(ProvUtil provUtil) {

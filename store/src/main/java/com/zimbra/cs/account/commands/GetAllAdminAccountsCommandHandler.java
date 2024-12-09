@@ -11,7 +11,7 @@ import com.zimbra.cs.account.soap.SoapProvisioning;
 import java.util.List;
 import java.util.Set;
 
-public class GetAllAdminAccountsCommandHandler implements CommandHandler {
+class GetAllAdminAccountsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetAllAdminAccountsCommandHandler(ProvUtil provUtil) {

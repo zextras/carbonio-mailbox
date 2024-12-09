@@ -8,7 +8,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class CheckPasswordStrengthCommandHandler implements CommandHandler {
+class CheckPasswordStrengthCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public CheckPasswordStrengthCommandHandler(ProvUtil provUtil) {

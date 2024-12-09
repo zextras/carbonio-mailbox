@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class DescribeCommandHandler implements CommandHandler {
+class DescribeCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
   private static final Command command = Command.DESCRIBE;
 

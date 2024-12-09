@@ -11,7 +11,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class GetSpnegoDomainCommandHandler implements CommandHandler {
+class GetSpnegoDomainCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetSpnegoDomainCommandHandler(ProvUtil provUtil) {

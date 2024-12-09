@@ -13,7 +13,7 @@ import org.apache.http.HttpException;
 import java.io.IOException;
 import java.util.List;
 
-public class ReloadMemcachedClientConfigCommandHandler implements CommandHandler {
+class ReloadMemcachedClientConfigCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public ReloadMemcachedClientConfigCommandHandler(ProvUtil provUtil) {

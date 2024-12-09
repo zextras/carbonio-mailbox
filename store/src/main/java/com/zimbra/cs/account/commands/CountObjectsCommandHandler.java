@@ -6,7 +6,7 @@ import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.soap.admin.type.CountObjectsType;
 
-public class CountObjectsCommandHandler implements CommandHandler {
+class CountObjectsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public CountObjectsCommandHandler(ProvUtil provUtil) {

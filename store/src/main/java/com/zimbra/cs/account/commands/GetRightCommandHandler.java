@@ -9,7 +9,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class GetRightCommandHandler implements CommandHandler {
+class GetRightCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetRightCommandHandler(ProvUtil provUtil) {

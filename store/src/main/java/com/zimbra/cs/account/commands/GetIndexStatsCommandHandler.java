@@ -10,7 +10,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class GetIndexStatsCommandHandler implements CommandHandler {
+class GetIndexStatsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetIndexStatsCommandHandler(ProvUtil provUtil) {

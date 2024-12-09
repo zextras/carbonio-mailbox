@@ -10,7 +10,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class ReIndexMailboxCommandHandler implements CommandHandler {
+class ReIndexMailboxCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public ReIndexMailboxCommandHandler(ProvUtil provUtil) {

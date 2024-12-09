@@ -10,7 +10,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class RemoveDistributionListAliasCommandHandler implements CommandHandler {
+class RemoveDistributionListAliasCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public RemoveDistributionListAliasCommandHandler(ProvUtil provUtil) {

@@ -8,7 +8,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class CreateCalendarResourceCommandHandler implements CommandHandler {
+class CreateCalendarResourceCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public CreateCalendarResourceCommandHandler(ProvUtil provUtil) {

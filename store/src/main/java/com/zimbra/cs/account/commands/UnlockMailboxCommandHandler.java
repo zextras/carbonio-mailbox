@@ -22,7 +22,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class UnlockMailboxCommandHandler implements CommandHandler {
+class UnlockMailboxCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public UnlockMailboxCommandHandler(ProvUtil provUtil) {

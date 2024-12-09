@@ -6,7 +6,7 @@ import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.soap.admin.type.DataSourceType;
 
-public class CreateDataSourceCommandHandler implements CommandHandler {
+class CreateDataSourceCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public CreateDataSourceCommandHandler(ProvUtil provUtil) {

@@ -10,7 +10,7 @@ import com.zimbra.cs.account.Signature;
 import java.util.Map;
 import java.util.Set;
 
-public class GetSignaturesCommandHandler implements CommandHandler {
+class GetSignaturesCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetSignaturesCommandHandler(ProvUtil provUtil) {

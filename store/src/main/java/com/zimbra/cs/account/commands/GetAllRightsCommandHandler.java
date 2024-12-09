@@ -10,7 +10,7 @@ import org.apache.http.HttpException;
 import java.io.IOException;
 import java.util.List;
 
-public class GetAllRightsCommandHandler implements CommandHandler {
+class GetAllRightsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetAllRightsCommandHandler(ProvUtil provUtil) {

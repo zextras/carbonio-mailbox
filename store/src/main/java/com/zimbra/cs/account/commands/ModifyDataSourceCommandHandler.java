@@ -7,7 +7,7 @@ import com.zimbra.cs.account.ProvUtil;
 import java.io.IOException;
 import org.apache.http.HttpException;
 
-public class ModifyDataSourceCommandHandler implements CommandHandler {
+class ModifyDataSourceCommandHandler implements CommandHandler {
 
   private ProvUtil provUtil;
 

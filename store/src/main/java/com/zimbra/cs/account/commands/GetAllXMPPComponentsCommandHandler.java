@@ -10,7 +10,7 @@ import org.apache.http.HttpException;
 import java.io.IOException;
 import java.util.List;
 
-public class GetAllXMPPComponentsCommandHandler implements CommandHandler {
+class GetAllXMPPComponentsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetAllXMPPComponentsCommandHandler(ProvUtil provUtil) {

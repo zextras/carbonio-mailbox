@@ -11,7 +11,7 @@ import org.apache.http.HttpException;
 import java.io.IOException;
 import java.util.List;
 
-public class GetAllServersCommandHandler implements CommandHandler {
+class GetAllServersCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetAllServersCommandHandler(ProvUtil provUtil) {

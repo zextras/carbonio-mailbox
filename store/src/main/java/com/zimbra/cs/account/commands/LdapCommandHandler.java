@@ -9,7 +9,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class LdapCommandHandler implements CommandHandler {
+class LdapCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public LdapCommandHandler(ProvUtil provUtil) {

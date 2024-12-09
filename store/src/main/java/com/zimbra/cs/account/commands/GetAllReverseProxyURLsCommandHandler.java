@@ -12,7 +12,7 @@ import org.apache.http.HttpException;
 import java.io.IOException;
 import java.util.List;
 
-public class GetAllReverseProxyURLsCommandHandler implements CommandHandler {
+class GetAllReverseProxyURLsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetAllReverseProxyURLsCommandHandler(ProvUtil provUtil) {

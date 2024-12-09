@@ -12,7 +12,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class GetCreateObjectAttrsCommandHandler implements CommandHandler {
+class GetCreateObjectAttrsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetCreateObjectAttrsCommandHandler(ProvUtil provUtil) {

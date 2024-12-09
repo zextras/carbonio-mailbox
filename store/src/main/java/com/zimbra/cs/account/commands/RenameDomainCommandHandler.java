@@ -10,7 +10,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class RenameDomainCommandHandler implements CommandHandler {
+class RenameDomainCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public RenameDomainCommandHandler(ProvUtil provUtil) {

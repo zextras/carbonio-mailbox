@@ -8,7 +8,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class GetCosCommandHandler implements CommandHandler {
+class GetCosCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetCosCommandHandler(ProvUtil provUtil) {

@@ -4,7 +4,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 
-public class CopyCosCommandHandler implements CommandHandler {
+class CopyCosCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public CopyCosCommandHandler(ProvUtil provUtil) {

@@ -10,7 +10,7 @@ import com.zimbra.cs.account.ProvUtil;
 import java.util.Map;
 import java.util.Set;
 
-public class GetDataSourcesCommandHandler implements CommandHandler {
+class GetDataSourcesCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetDataSourcesCommandHandler(ProvUtil provUtil) {

@@ -14,7 +14,7 @@ import org.apache.http.HttpException;
 import java.io.IOException;
 import java.util.List;
 
-public class GetAllCalendarResourcesCommandHandler implements CommandHandler {
+class GetAllCalendarResourcesCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetAllCalendarResourcesCommandHandler(ProvUtil provUtil) {

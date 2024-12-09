@@ -2,7 +2,6 @@ package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.AccountLoggerOptions;
 import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.Command;
 import com.zimbra.cs.account.CommandHandler;
@@ -12,7 +11,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class RemoveAccountLoggerCommandHandler implements CommandHandler {
+class RemoveAccountLoggerCommandHandler implements CommandHandler {
   private static final Command command = Command.REMOVE_ACCOUNT_LOGGER;
   private final ProvUtil provUtil;
 

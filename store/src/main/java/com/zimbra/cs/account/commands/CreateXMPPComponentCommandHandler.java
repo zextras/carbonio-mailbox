@@ -9,7 +9,7 @@ import com.zimbra.cs.account.Provisioning;
 
 import java.util.Map;
 
-public class CreateXMPPComponentCommandHandler implements CommandHandler {
+class CreateXMPPComponentCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public CreateXMPPComponentCommandHandler(ProvUtil provUtil) {

@@ -10,7 +10,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class DeleteAccountCommandHandler implements CommandHandler {
+class DeleteAccountCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public DeleteAccountCommandHandler(ProvUtil provUtil) {

@@ -12,7 +12,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class GetDomainInfoCommandHandler implements CommandHandler {
+class GetDomainInfoCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetDomainInfoCommandHandler(ProvUtil provUtil) {

@@ -10,7 +10,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class CompactIndexMailboxCommandHandler implements CommandHandler {
+class CompactIndexMailboxCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public CompactIndexMailboxCommandHandler(ProvUtil provUtil) {

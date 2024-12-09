@@ -12,7 +12,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class GetEffectiveRightsCommandHandler implements CommandHandler {
+class GetEffectiveRightsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetEffectiveRightsCommandHandler(ProvUtil provUtil) {

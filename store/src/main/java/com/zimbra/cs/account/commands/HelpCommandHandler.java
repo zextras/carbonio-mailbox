@@ -10,7 +10,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class HelpCommandHandler implements CommandHandler {
+class HelpCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public HelpCommandHandler(ProvUtil provUtil) {

@@ -7,7 +7,7 @@ import com.zimbra.cs.account.GalContact;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.soap.type.GalSearchType;
 
-public class AutoCompleteGalCommandHandler implements CommandHandler {
+class AutoCompleteGalCommandHandler implements CommandHandler {
   final ProvUtil provUtil;
 
   public AutoCompleteGalCommandHandler(ProvUtil provUtil) {

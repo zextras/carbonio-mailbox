@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class GetAuthTokenInfoCommandHandler implements CommandHandler {
+class GetAuthTokenInfoCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public GetAuthTokenInfoCommandHandler(ProvUtil provUtil) {

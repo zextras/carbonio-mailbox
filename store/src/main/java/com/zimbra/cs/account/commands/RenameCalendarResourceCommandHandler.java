@@ -8,7 +8,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class RenameCalendarResourceCommandHandler implements CommandHandler {
+class RenameCalendarResourceCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public RenameCalendarResourceCommandHandler(ProvUtil provUtil) {

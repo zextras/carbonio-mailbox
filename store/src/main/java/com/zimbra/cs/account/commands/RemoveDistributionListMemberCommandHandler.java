@@ -8,7 +8,7 @@ import org.apache.http.HttpException;
 
 import java.io.IOException;
 
-public class RemoveDistributionListMemberCommandHandler implements CommandHandler {
+class RemoveDistributionListMemberCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
 
   public RemoveDistributionListMemberCommandHandler(ProvUtil provUtil) {
