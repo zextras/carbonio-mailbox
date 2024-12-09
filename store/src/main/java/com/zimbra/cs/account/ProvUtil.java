@@ -30,13 +30,6 @@ import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.common.zclient.ZClientException;
 import com.zimbra.cs.account.Provisioning.MailMode;
-import com.zimbra.cs.account.Provisioning.RightsDoc;
-import com.zimbra.cs.account.Provisioning.SearchGalResult;
-import com.zimbra.cs.account.Provisioning.SetPasswordResult;
-import com.zimbra.cs.account.SearchAccountsOptions.IncludeType;
-import com.zimbra.cs.account.SearchDirectoryOptions.MakeObjectOpt;
-import com.zimbra.cs.account.SearchDirectoryOptions.ObjectType;
-import com.zimbra.cs.account.SearchDirectoryOptions.SortOpt;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.AttrRight;
 import com.zimbra.cs.account.accesscontrol.ComboRight;
@@ -50,22 +43,41 @@ import com.zimbra.cs.account.accesscontrol.RightModifier;
 import com.zimbra.cs.account.accesscontrol.TargetType;
 import com.zimbra.cs.account.commands.AddAccountAliasCommandHandler;
 import com.zimbra.cs.account.commands.AddAccountLoggerCommandHandler;
+import com.zimbra.cs.account.commands.AddDistributionListAliasCommandHandler;
+import com.zimbra.cs.account.commands.AddDistributionListMemberCommandHandler;
 import com.zimbra.cs.account.commands.AutoCompleteGalCommandHandler;
 import com.zimbra.cs.account.commands.AutoProvControlCommandHandler;
 import com.zimbra.cs.account.commands.ChangePrimaryEmailCommandHandler;
+import com.zimbra.cs.account.commands.CheckPasswordStrengthCommandHandler;
 import com.zimbra.cs.account.commands.CheckRightCommandHandler;
+import com.zimbra.cs.account.commands.CompactIndexMailboxCommandHandler;
 import com.zimbra.cs.account.commands.CopyCosCommandHandler;
 import com.zimbra.cs.account.commands.CountAccountCommandHandler;
 import com.zimbra.cs.account.commands.CountObjectsCommandHandler;
 import com.zimbra.cs.account.commands.CreateAccountCommandHandler;
 import com.zimbra.cs.account.commands.CreateAliasDomainCommandHandler;
+import com.zimbra.cs.account.commands.CreateBulkAccountsCommandHandler;
+import com.zimbra.cs.account.commands.CreateCalendarResourceCommandHandler;
 import com.zimbra.cs.account.commands.CreateCosCommandHandler;
 import com.zimbra.cs.account.commands.CreateDataSourceCommandHandler;
+import com.zimbra.cs.account.commands.CreateDistributionListCommandHandler;
+import com.zimbra.cs.account.commands.CreateDistributionListsBulkCommandHandler;
 import com.zimbra.cs.account.commands.CreateDomainCommandHandler;
+import com.zimbra.cs.account.commands.CreateDynamicDistributionListCommandHandler;
 import com.zimbra.cs.account.commands.CreateIdentityCommandHandler;
 import com.zimbra.cs.account.commands.CreateServerCommandHandler;
 import com.zimbra.cs.account.commands.CreateSignatureCommandHandler;
 import com.zimbra.cs.account.commands.CreateXMPPComponentCommandHandler;
+import com.zimbra.cs.account.commands.DeleteAccountCommandHandler;
+import com.zimbra.cs.account.commands.DeleteCalendarResourceCommandHandler;
+import com.zimbra.cs.account.commands.DeleteCosCommandHandler;
+import com.zimbra.cs.account.commands.DeleteDataSourceCommandHandler;
+import com.zimbra.cs.account.commands.DeleteDistributionListCommandHandler;
+import com.zimbra.cs.account.commands.DeleteDomainCommandHandler;
+import com.zimbra.cs.account.commands.DeleteIdentityCommandHandler;
+import com.zimbra.cs.account.commands.DeleteServerCommandHandler;
+import com.zimbra.cs.account.commands.DeleteSignatureCommandHandler;
+import com.zimbra.cs.account.commands.DeleteXMPPComponentCommandHandler;
 import com.zimbra.cs.account.commands.DescribeCommandHandler;
 import com.zimbra.cs.account.commands.ExitCommandHandler;
 import com.zimbra.cs.account.commands.FlushCacheCommandHandler;
@@ -77,17 +89,27 @@ import com.zimbra.cs.account.commands.GetAccountMembershipCommandHandler;
 import com.zimbra.cs.account.commands.GetAllAccountLoggersCommandHandler;
 import com.zimbra.cs.account.commands.GetAllAccountsCommandHandler;
 import com.zimbra.cs.account.commands.GetAllAdminAccountsCommandHandler;
+import com.zimbra.cs.account.commands.GetAllCalendarResourcesCommandHandler;
 import com.zimbra.cs.account.commands.GetAllConfigCommandHandler;
 import com.zimbra.cs.account.commands.GetAllCosCommandHandler;
+import com.zimbra.cs.account.commands.GetAllDistributionListsCommandHandler;
 import com.zimbra.cs.account.commands.GetAllDomainsCommandHandler;
 import com.zimbra.cs.account.commands.GetAllEffectiveRightsCommandHandler;
 import com.zimbra.cs.account.commands.GetAllFbpCommandHandler;
+import com.zimbra.cs.account.commands.GetAllMemcachedServersCommandHandler;
+import com.zimbra.cs.account.commands.GetAllMtaAuthURLsCommandHandler;
+import com.zimbra.cs.account.commands.GetAllReverseProxyBackendsCommandHandler;
+import com.zimbra.cs.account.commands.GetAllReverseProxyDomainsCommandHandler;
+import com.zimbra.cs.account.commands.GetAllReverseProxyURLsCommandHandler;
 import com.zimbra.cs.account.commands.GetAllRightsCommandHandler;
 import com.zimbra.cs.account.commands.GetAllServersCommandHandler;
+import com.zimbra.cs.account.commands.GetAllXMPPComponentsCommandHandler;
+import com.zimbra.cs.account.commands.GetCalendarResourceCommandHandler;
 import com.zimbra.cs.account.commands.GetConfigCommandHandler;
 import com.zimbra.cs.account.commands.GetCosCommandHandler;
 import com.zimbra.cs.account.commands.GetCreateObjectAttrsCommandHandler;
 import com.zimbra.cs.account.commands.GetDataSourcesCommandHandler;
+import com.zimbra.cs.account.commands.GetDistributionListCommandHandler;
 import com.zimbra.cs.account.commands.GetDistributionListMembershipCommandHandler;
 import com.zimbra.cs.account.commands.GetDomainCommandHandler;
 import com.zimbra.cs.account.commands.GetDomainInfoCommandHandler;
@@ -95,33 +117,60 @@ import com.zimbra.cs.account.commands.GetEffectiveRightsCommandHandler;
 import com.zimbra.cs.account.commands.GetFreebusyQueueInfoCommandHandler;
 import com.zimbra.cs.account.commands.GetGrantsCommandHandler;
 import com.zimbra.cs.account.commands.GetIdentitiesCommandHandler;
+import com.zimbra.cs.account.commands.GetIndexStatsCommandHandler;
+import com.zimbra.cs.account.commands.GetMailboxInfoCommandHandler;
+import com.zimbra.cs.account.commands.GetMemcachedClientConfigCommandHandler;
+import com.zimbra.cs.account.commands.GetQuotaUsageCommandHandler;
 import com.zimbra.cs.account.commands.GetRightCommandHandler;
 import com.zimbra.cs.account.commands.GetRightsDocCommandHandler;
 import com.zimbra.cs.account.commands.GetServerCommandHandler;
+import com.zimbra.cs.account.commands.GetShareInfoCommandHandler;
 import com.zimbra.cs.account.commands.GetSignaturesCommandHandler;
+import com.zimbra.cs.account.commands.GetSpnegoDomainCommandHandler;
 import com.zimbra.cs.account.commands.GetXMPPComponentCommandHandler;
 import com.zimbra.cs.account.commands.GrantRightCommandHandler;
 import com.zimbra.cs.account.commands.HelpCommandHandler;
 import com.zimbra.cs.account.commands.ModifyAccountCommandHandler;
+import com.zimbra.cs.account.commands.ModifyCalendarResourceCommandHandler;
+import com.zimbra.cs.account.commands.ModifyConfigCommandHandler;
+import com.zimbra.cs.account.commands.ModifyCosCommandHandler;
 import com.zimbra.cs.account.commands.ModifyDataSourceCommandHandler;
+import com.zimbra.cs.account.commands.ModifyDistributionListCommandHandler;
+import com.zimbra.cs.account.commands.ModifyDomainCommandHandler;
 import com.zimbra.cs.account.commands.ModifyIdentityCommandHandler;
+import com.zimbra.cs.account.commands.ModifyServerCommandHandler;
 import com.zimbra.cs.account.commands.ModifySignatureCommandHandler;
+import com.zimbra.cs.account.commands.PurgeAccountCalendarCacheCommandHandler;
+import com.zimbra.cs.account.commands.PurgeFreebusyQueueCommandHandler;
+import com.zimbra.cs.account.commands.PushFreebusyCommandHandler;
+import com.zimbra.cs.account.commands.PushFreebusyDomainCommandHandler;
+import com.zimbra.cs.account.commands.ReIndexMailboxCommandHandler;
+import com.zimbra.cs.account.commands.RecalculateMailboxCountsCommandHandler;
+import com.zimbra.cs.account.commands.ReloadMemcachedClientConfigCommandHandler;
+import com.zimbra.cs.account.commands.RemoveAccountAliasCommandHandler;
+import com.zimbra.cs.account.commands.RemoveAccountLoggerCommandHandler;
+import com.zimbra.cs.account.commands.RemoveDistributionListAliasCommandHandler;
+import com.zimbra.cs.account.commands.RemoveDistributionListMemberCommandHandler;
+import com.zimbra.cs.account.commands.RenameAccountCommandHandler;
+import com.zimbra.cs.account.commands.RenameCalendarResourceCommandHandler;
+import com.zimbra.cs.account.commands.RenameCosCommandHandler;
+import com.zimbra.cs.account.commands.RenameDistributionListCommandHandler;
+import com.zimbra.cs.account.commands.RenameDomainCommandHandler;
 import com.zimbra.cs.account.commands.RevokeRightCommandHandler;
-import com.zimbra.cs.account.ldap.LdapEntrySearchFilter;
+import com.zimbra.cs.account.commands.SearchAccountsCommandHandler;
+import com.zimbra.cs.account.commands.SearchCalendarResourcesCommandHandler;
+import com.zimbra.cs.account.commands.SearchGalCommandHandler;
+import com.zimbra.cs.account.commands.SelectMailboxCommandHandler;
+import com.zimbra.cs.account.commands.SetAccountCosCommandHandler;
+import com.zimbra.cs.account.commands.SetPasswordCommandHandler;
+import com.zimbra.cs.account.commands.SyncGalCommandHandler;
+import com.zimbra.cs.account.commands.VerifyIndexCommandHandler;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.account.soap.SoapProvisioning;
-import com.zimbra.cs.account.soap.SoapProvisioning.IndexStatsInfo;
-import com.zimbra.cs.account.soap.SoapProvisioning.MailboxInfo;
 import com.zimbra.cs.account.soap.SoapProvisioning.MemcachedClientConfig;
-import com.zimbra.cs.account.soap.SoapProvisioning.QuotaUsage;
-import com.zimbra.cs.account.soap.SoapProvisioning.ReIndexBy;
-import com.zimbra.cs.account.soap.SoapProvisioning.ReIndexInfo;
 import com.zimbra.cs.extension.ExtensionDispatcherServlet;
-import com.zimbra.cs.fb.FbCli;
 import com.zimbra.cs.httpclient.URLUtil;
 import com.zimbra.cs.ldap.LdapClient;
-import com.zimbra.cs.ldap.ZLdapFilterFactory;
-import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 import com.zimbra.cs.util.BuildInfo;
 import com.zimbra.cs.util.SoapCLI;
 import com.zimbra.cs.zclient.ZMailboxUtil;
@@ -131,7 +180,6 @@ import com.zimbra.soap.admin.message.UnregisterMailboxMoveOutRequest;
 import com.zimbra.soap.admin.type.GranteeSelector.GranteeBy;
 import com.zimbra.soap.admin.type.MailboxMoveSpec;
 import com.zimbra.soap.type.AccountNameSelector;
-import com.zimbra.soap.type.GalSearchType;
 import com.zimbra.soap.type.TargetBy;
 import net.spy.memcached.DefaultHashAlgorithm;
 import org.apache.commons.cli.CommandLine;
@@ -153,11 +201,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -177,7 +223,7 @@ public class ProvUtil implements HttpDebugListener {
   private static final String ERR_VIA_LDAP_ONLY = "can only be used with  \"zmprov -l/--ldap\"";
   public static final String ERR_INVALID_ARG_EV = "arg -e is invalid unless -v is also specified";
   private final Console console;
-  enum SoapDebugLevel {
+  public enum SoapDebugLevel {
     none, // no SOAP debug
     normal, // SOAP request and response payload
     high // SOAP payload and http transport header
@@ -372,41 +418,41 @@ public class ProvUtil implements HttpDebugListener {
     var map = new HashMap<Command, CommandHandler>();
     map.put(Command.ADD_ACCOUNT_ALIAS, new AddAccountAliasCommandHandler(this));
     map.put(Command.ADD_ACCOUNT_LOGGER, new AddAccountLoggerCommandHandler(this));
-//    map.put(Command.ADD_DISTRIBUTION_LIST_ALIAS, new AddDistributionListAliasCommandHandler(this));
-//    map.put(Command.ADD_DISTRIBUTION_LIST_MEMBER, new AddDistributionListMemberCommandHandler(this));
+    map.put(Command.ADD_DISTRIBUTION_LIST_ALIAS, new AddDistributionListAliasCommandHandler(this));
+    map.put(Command.ADD_DISTRIBUTION_LIST_MEMBER, new AddDistributionListMemberCommandHandler(this));
     map.put(Command.AUTO_COMPLETE_GAL, new AutoCompleteGalCommandHandler(this));
     map.put(Command.AUTO_PROV_CONTROL, new AutoProvControlCommandHandler(this));
     map.put(Command.CHANGE_PRIMARY_EMAIL, new ChangePrimaryEmailCommandHandler(this));
-//    map.put(Command.CHECK_PASSWORD_STRENGTH, new CheckPasswordStrengthCommandHandler(this));
+    map.put(Command.CHECK_PASSWORD_STRENGTH, new CheckPasswordStrengthCommandHandler(this));
     map.put(Command.CHECK_RIGHT, new CheckRightCommandHandler(this));
-//    map.put(Command.COMPACT_INBOX_MAILBOX, new CompactIndexMailboxCommandHandler(this));
+    map.put(Command.COMPACT_INBOX_MAILBOX, new CompactIndexMailboxCommandHandler(this));
     map.put(Command.COPY_COS, new CopyCosCommandHandler(this));
     map.put(Command.COUNT_ACCOUNT, new CountAccountCommandHandler(this));
     map.put(Command.COUNT_OBJECTS, new CountObjectsCommandHandler(this));
     map.put(Command.CREATE_ACCOUNT, new CreateAccountCommandHandler(this));
     map.put(Command.CREATE_ALIAS_DOMAIN, new CreateAliasDomainCommandHandler(this));
-//    map.put(Command.CREATE_BULK_ACCOUNTS, new CreateBulkAccountsCommandHandler(this));
-//    map.put(Command.CREATE_CALENDAR_RESOURCE, new CreateCalendarResourceCommandHandler(this));
+    map.put(Command.CREATE_BULK_ACCOUNTS, new CreateBulkAccountsCommandHandler(this));
+    map.put(Command.CREATE_CALENDAR_RESOURCE, new CreateCalendarResourceCommandHandler(this));
     map.put(Command.CREATE_COS, new CreateCosCommandHandler(this));
     map.put(Command.CREATE_DATA_SOURCE, new CreateDataSourceCommandHandler(this));
-//    map.put(Command.CREATE_DISTRIBUTION_LIST, new CreateDistributionListCommandHandler(this));
-//    map.put(Command.CREATE_DISTRIBUTION_LISTS_BULK, new CreateDistributionListsBulkCommandHandler(this));
+    map.put(Command.CREATE_DISTRIBUTION_LIST, new CreateDistributionListCommandHandler(this));
+    map.put(Command.CREATE_DISTRIBUTION_LISTS_BULK, new CreateDistributionListsBulkCommandHandler(this));
     map.put(Command.CREATE_DOMAIN, new CreateDomainCommandHandler(this));
-//    map.put(Command.CREATE_DYNAMIC_DISTRIBUTION_LIST, new CreateDynamicDistributionListCommandHandler(this));
+    map.put(Command.CREATE_DYNAMIC_DISTRIBUTION_LIST, new CreateDynamicDistributionListCommandHandler(this));
     map.put(Command.CREATE_IDENTITY, new CreateIdentityCommandHandler(this));
     map.put(Command.CREATE_SERVER, new CreateServerCommandHandler(this));
     map.put(Command.CREATE_SIGNATURE, new CreateSignatureCommandHandler(this));
     map.put(Command.CREATE_XMPP_COMPONENT, new CreateXMPPComponentCommandHandler(this));
-//    map.put(Command.DELETE_ACCOUNT, new DeleteAccountCommandHandler(this));
-//    map.put(Command.DELETE_CALENDAR_RESOURCE, new DeleteCalendarResourceCommandHandler(this));
-//    map.put(Command.DELETE_COS, new DeleteCosCommandHandler(this));
-//    map.put(Command.DELETE_DATA_SOURCE, new DeleteDataSourceCommandHandler(this));
-//    map.put(Command.DELETE_DISTRIBUTION_LIST, new DeleteDistributionListCommandHandler(this));
-//    map.put(Command.DELETE_DOMAIN, new DeleteDomainCommandHandler(this));
-//    map.put(Command.DELETE_IDENTITY, new DeleteIdentityCommandHandler(this));
-//    map.put(Command.DELETE_SERVER, new DeleteServerCommandHandler(this));
-//    map.put(Command.DELETE_SIGNATURE, new DeleteSignatureCommandHandler(this));
-//    map.put(Command.DELETE_XMPP_COMPONENT, new DeleteXMPPComponentCommandHandler(this));
+    map.put(Command.DELETE_ACCOUNT, new DeleteAccountCommandHandler(this));
+    map.put(Command.DELETE_CALENDAR_RESOURCE, new DeleteCalendarResourceCommandHandler(this));
+    map.put(Command.DELETE_COS, new DeleteCosCommandHandler(this));
+    map.put(Command.DELETE_DATA_SOURCE, new DeleteDataSourceCommandHandler(this));
+    map.put(Command.DELETE_DISTRIBUTION_LIST, new DeleteDistributionListCommandHandler(this));
+    map.put(Command.DELETE_DOMAIN, new DeleteDomainCommandHandler(this));
+    map.put(Command.DELETE_IDENTITY, new DeleteIdentityCommandHandler(this));
+    map.put(Command.DELETE_SERVER, new DeleteServerCommandHandler(this));
+    map.put(Command.DELETE_SIGNATURE, new DeleteSignatureCommandHandler(this));
+    map.put(Command.DELETE_XMPP_COMPONENT, new DeleteXMPPComponentCommandHandler(this));
     map.put(Command.DESCRIBE, new DescribeCommandHandler(this));
     map.put(Command.EXIT, new ExitCommandHandler(this));
     map.put(Command.FLUSH_CACHE, new FlushCacheCommandHandler(this));
@@ -418,28 +464,28 @@ public class ProvUtil implements HttpDebugListener {
     map.put(Command.GET_ALL_ACCOUNTS, new GetAllAccountsCommandHandler(this));
     map.put(Command.GET_ALL_ACCOUNT_LOGGERS, new GetAllAccountLoggersCommandHandler(this));
     map.put(Command.GET_ALL_ADMIN_ACCOUNTS, new GetAllAdminAccountsCommandHandler(this));
-//    map.put(Command.GET_ALL_CALENDAR_RESOURCES, new GetAllCalendarResourcesCommandHandler(this));
+    map.put(Command.GET_ALL_CALENDAR_RESOURCES, new GetAllCalendarResourcesCommandHandler(this));
     map.put(Command.GET_ALL_CONFIG, new GetAllConfigCommandHandler(this));
     map.put(Command.GET_ALL_COS, new GetAllCosCommandHandler(this));
-//    map.put(Command.GET_ALL_DISTRIBUTION_LISTS, new GetAllDistributionListsCommandHandler(this));
+    map.put(Command.GET_ALL_DISTRIBUTION_LISTS, new GetAllDistributionListsCommandHandler(this));
     map.put(Command.GET_ALL_DOMAINS, new GetAllDomainsCommandHandler(this));
     map.put(Command.GET_ALL_EFFECTIVE_RIGHTS, new GetAllEffectiveRightsCommandHandler(this));
     map.put(Command.GET_ALL_FREEBUSY_PROVIDERS, new GetAllFbpCommandHandler(this));
-//    map.put(Command.GET_ALL_MEMCACHED_SERVERS, new GetAllMemcachedServersCommandHandler(this));
-//    map.put(Command.GET_ALL_MTA_AUTH_URLS, new GetAllMtaAuthURLsCommandHandler(this));
-//    map.put(Command.GET_ALL_REVERSE_PROXY_BACKENDS, new GetAllReverseProxyBackendsCommandHandler(this));
-//    map.put(Command.GET_ALL_REVERSE_PROXY_DOMAINS, new GetAllReverseProxyDomainsCommandHandler(this));
-//    map.put(Command.GET_ALL_REVERSE_PROXY_URLS, new GetAllReverseProxyURLsCommandHandler(this));
+    map.put(Command.GET_ALL_MEMCACHED_SERVERS, new GetAllMemcachedServersCommandHandler(this));
+    map.put(Command.GET_ALL_MTA_AUTH_URLS, new GetAllMtaAuthURLsCommandHandler(this));
+    map.put(Command.GET_ALL_REVERSE_PROXY_BACKENDS, new GetAllReverseProxyBackendsCommandHandler(this));
+    map.put(Command.GET_ALL_REVERSE_PROXY_DOMAINS, new GetAllReverseProxyDomainsCommandHandler(this));
+    map.put(Command.GET_ALL_REVERSE_PROXY_URLS, new GetAllReverseProxyURLsCommandHandler(this));
     map.put(Command.GET_ALL_RIGHTS, new GetAllRightsCommandHandler(this));
     map.put(Command.GET_ALL_SERVERS, new GetAllServersCommandHandler(this));
-//    map.put(Command.GET_ALL_XMPP_COMPONENTS, new GetAllXMPPComponentsCommandHandler(this));
+    map.put(Command.GET_ALL_XMPP_COMPONENTS, new GetAllXMPPComponentsCommandHandler(this));
 //    map.put(Command.GET_AUTH_TOKEN_INFO, new GetAuthTokenInfoCommandHandler(this));
-//    map.put(Command.GET_CALENDAR_RESOURCE, new GetCalendarResourceCommandHandler(this));
+    map.put(Command.GET_CALENDAR_RESOURCE, new GetCalendarResourceCommandHandler(this));
     map.put(Command.GET_CONFIG, new GetConfigCommandHandler(this));
     map.put(Command.GET_COS, new GetCosCommandHandler(this));
     map.put(Command.GET_CREATE_OBJECT_ATTRS, new GetCreateObjectAttrsCommandHandler(this));
     map.put(Command.GET_DATA_SOURCES, new GetDataSourcesCommandHandler(this));
-//    map.put(Command.GET_DISTRIBUTION_LIST, new GetDistributionListCommandHandler(this));
+    map.put(Command.GET_DISTRIBUTION_LIST, new GetDistributionListCommandHandler(this));
     map.put(Command.GET_DISTRIBUTION_LIST_MEMBERSHIP, new GetDistributionListMembershipCommandHandler(this));
     map.put(Command.GET_DOMAIN, new GetDomainCommandHandler(this));
     map.put(Command.GET_DOMAIN_INFO, new GetDomainInfoCommandHandler(this));
@@ -447,59 +493,59 @@ public class ProvUtil implements HttpDebugListener {
     map.put(Command.GET_FREEBUSY_QUEUE_INFO, new GetFreebusyQueueInfoCommandHandler(this));
     map.put(Command.GET_GRANTS, new GetGrantsCommandHandler(this));
     map.put(Command.GET_IDENTITIES, new GetIdentitiesCommandHandler(this));
-//    map.put(Command.GET_INDEX_STATS, new GetIndexStatsCommandHandler(this));
-//    map.put(Command.GET_MAILBOX_INFO, new GetMailboxInfoCommandHandler(this));
-//    map.put(Command.GET_MEMCACHED_CLIENT_CONFIG, new GetMemcachedClientConfigCommandHandler(this));
-//    map.put(Command.GET_QUOTA_USAGE, new GetQuotaUsageCommandHandler(this));
+    map.put(Command.GET_INDEX_STATS, new GetIndexStatsCommandHandler(this));
+    map.put(Command.GET_MAILBOX_INFO, new GetMailboxInfoCommandHandler(this));
+    map.put(Command.GET_MEMCACHED_CLIENT_CONFIG, new GetMemcachedClientConfigCommandHandler(this));
+    map.put(Command.GET_QUOTA_USAGE, new GetQuotaUsageCommandHandler(this));
     map.put(Command.GET_RIGHT, new GetRightCommandHandler(this));
     map.put(Command.GET_RIGHTS_DOC, new GetRightsDocCommandHandler(this));
     map.put(Command.GET_SERVER, new GetServerCommandHandler(this));
-//    map.put(Command.GET_SHARE_INFO, new GetShareInfoCommandHandler(this));
+    map.put(Command.GET_SHARE_INFO, new GetShareInfoCommandHandler(this));
     map.put(Command.GET_SIGNATURES, new GetSignaturesCommandHandler(this));
-//    map.put(Command.GET_SPNEGO_DOMAIN, new GetSpnegoDomainCommandHandler(this));
+    map.put(Command.GET_SPNEGO_DOMAIN, new GetSpnegoDomainCommandHandler(this));
     map.put(Command.GET_XMPP_COMPONENT, new GetXMPPComponentCommandHandler(this));
     map.put(Command.GRANT_RIGHT, new GrantRightCommandHandler(this));
     map.put(Command.HELP, new HelpCommandHandler(this));
 //    map.put(Command.LDAP, new .ldapCommandHandler(this));
     map.put(Command.MODIFY_ACCOUNT, new ModifyAccountCommandHandler(this));
-//    map.put(Command.MODIFY_CALENDAR_RESOURCE, new ModifyCalendarResourceCommandHandler(this));
-//    map.put(Command.MODIFY_CONFIG, new ModifyConfigCommandHandler(this));
-//    map.put(Command.MODIFY_COS, new ModifyCosCommandHandler(this));
+    map.put(Command.MODIFY_CALENDAR_RESOURCE, new ModifyCalendarResourceCommandHandler(this));
+    map.put(Command.MODIFY_CONFIG, new ModifyConfigCommandHandler(this));
+    map.put(Command.MODIFY_COS, new ModifyCosCommandHandler(this));
     map.put(Command.MODIFY_DATA_SOURCE, new ModifyDataSourceCommandHandler(this));
-//    map.put(Command.MODIFY_DISTRIBUTION_LIST, new ModifyDistributionListCommandHandler(this));
-//    map.put(Command.MODIFY_DOMAIN, new ModifyDomainCommandHandler(this));
+    map.put(Command.MODIFY_DISTRIBUTION_LIST, new ModifyDistributionListCommandHandler(this));
+    map.put(Command.MODIFY_DOMAIN, new ModifyDomainCommandHandler(this));
     map.put(Command.MODIFY_IDENTITY, new ModifyIdentityCommandHandler(this));
-//    map.put(Command.MODIFY_SERVER, new ModifyServerCommandHandler(this));
+    map.put(Command.MODIFY_SERVER, new ModifyServerCommandHandler(this));
     map.put(Command.MODIFY_SIGNATURE, new ModifySignatureCommandHandler(this));
 //    map.put(Command.MODIFY_XMPP_COMPONENT, new ModifyXMPPComponentCommandHandler(this));
-//    map.put(Command.PURGE_ACCOUNT_CALENDAR_CACHE, new PurgeAccountCalendarCacheCommandHandler(this));
-//    map.put(Command.PURGE_FREEBUSY_QUEUE, new PurgeFreebusyQueueCommandHandler(this));
-//    map.put(Command.PUSH_FREEBUSY, new PushFreebusyCommandHandler(this));
-//    map.put(Command.PUSH_FREEBUSY_DOMAIN, new PushFreebusyDomainCommandHandler(this));
-//    map.put(Command.RECALCULATE_MAILBOX_COUNTS, new RecalculateMailboxCountsCommandHandler(this));
-//    map.put(Command.REINDEX_MAILBOX, new ReIndexMailboxCommandHandler(this));
-//    map.put(Command.RELOAD_MEMCACHED_CLIENT_CONFIG, new ReloadMemcachedClientConfigCommandHandler(this));
-//    map.put(Command.REMOVE_ACCOUNT_ALIAS, new RemoveAccountAliasCommandHandler(this));
-//    map.put(Command.REMOVE_ACCOUNT_LOGGER, new RemoveAccountLoggerCommandHandler(this));
-//    map.put(Command.REMOVE_DISTRIBUTION_LIST_ALIAS, new RemoveDistributionListAliasCommandHandler(this));
-//    map.put(Command.REMOVE_DISTRIBUTION_LIST_MEMBER, new RemoveDistributionListMemberCommandHandler(this));
-//    map.put(Command.RENAME_ACCOUNT, new RenameAccountCommandHandler(this));
-//    map.put(Command.RENAME_CALENDAR_RESOURCE, new RenameCalendarResourceCommandHandler(this));
-//    map.put(Command.RENAME_COS, new RenameCosCommandHandler(this));
-//    map.put(Command.RENAME_DISTRIBUTION_LIST, new RenameDistributionListCommandHandler(this));
-//    map.put(Command.RENAME_DOMAIN, new RenameDomainCommandHandler(this));
+    map.put(Command.PURGE_ACCOUNT_CALENDAR_CACHE, new PurgeAccountCalendarCacheCommandHandler(this));
+    map.put(Command.PURGE_FREEBUSY_QUEUE, new PurgeFreebusyQueueCommandHandler());
+    map.put(Command.PUSH_FREEBUSY, new PushFreebusyCommandHandler(this));
+    map.put(Command.PUSH_FREEBUSY_DOMAIN, new PushFreebusyDomainCommandHandler(this));
+    map.put(Command.RECALCULATE_MAILBOX_COUNTS, new RecalculateMailboxCountsCommandHandler(this));
+    map.put(Command.REINDEX_MAILBOX, new ReIndexMailboxCommandHandler(this));
+    map.put(Command.RELOAD_MEMCACHED_CLIENT_CONFIG, new ReloadMemcachedClientConfigCommandHandler(this));
+    map.put(Command.REMOVE_ACCOUNT_ALIAS, new RemoveAccountAliasCommandHandler(this));
+    map.put(Command.REMOVE_ACCOUNT_LOGGER, new RemoveAccountLoggerCommandHandler(this));
+    map.put(Command.REMOVE_DISTRIBUTION_LIST_ALIAS, new RemoveDistributionListAliasCommandHandler(this));
+    map.put(Command.REMOVE_DISTRIBUTION_LIST_MEMBER, new RemoveDistributionListMemberCommandHandler(this));
+    map.put(Command.RENAME_ACCOUNT, new RenameAccountCommandHandler(this));
+    map.put(Command.RENAME_CALENDAR_RESOURCE, new RenameCalendarResourceCommandHandler(this));
+    map.put(Command.RENAME_COS, new RenameCosCommandHandler(this));
+    map.put(Command.RENAME_DISTRIBUTION_LIST, new RenameDistributionListCommandHandler(this));
+    map.put(Command.RENAME_DOMAIN, new RenameDomainCommandHandler(this));
 //    map.put(Command.RESET_ALL_LOGGERS, new ResetAllLoggersCommandHandler(this));
     map.put(Command.REVOKE_RIGHT, new RevokeRightCommandHandler(this));
-//    map.put(Command.SEARCH_ACCOUNTS, new SearchAccountsCommandHandler(this));
-//    map.put(Command.SEARCH_CALENDAR_RESOURCES, new SearchCalendarResourcesCommandHandler(this));
-//    map.put(Command.SEARCH_GAL, new SearchGalCommandHandler(this));
-//    map.put(Command.SELECT_MAILBOX, new SelectMailboxCommandHandler(this));
-//    map.put(Command.SET_ACCOUNT_COS, new SetAccountCosCommandHandler(this));
-//    map.put(Command.SET_PASSWORD, new SetPasswordCommandHandler(this));
+    map.put(Command.SEARCH_ACCOUNTS, new SearchAccountsCommandHandler(this));
+    map.put(Command.SEARCH_CALENDAR_RESOURCES, new SearchCalendarResourcesCommandHandler(this));
+    map.put(Command.SEARCH_GAL, new SearchGalCommandHandler(this));
+    map.put(Command.SELECT_MAILBOX, new SelectMailboxCommandHandler(this));
+    map.put(Command.SET_ACCOUNT_COS, new SetAccountCosCommandHandler(this));
+    map.put(Command.SET_PASSWORD, new SetPasswordCommandHandler(this));
 //    map.put(Command.SOAP, new .soapCommandHandler(this));
-//    map.put(Command.SYNC_GAL, new SyncGalCommandHandler(this));
+    map.put(Command.SYNC_GAL, new SyncGalCommandHandler(this));
 //    map.put(Command.UNLOCK_MAILBOX, new UnlockMailboxCommandHandler(this));
-//    map.put(Command.VERIFY_INDEX, new VerifyIndexCommandHandler(this));
+    map.put(Command.VERIFY_INDEX, new VerifyIndexCommandHandler(this));
     return map;
   }
 
@@ -635,259 +681,76 @@ public class ProvUtil implements HttpDebugListener {
       case MODIFY_DATA_SOURCE:
       case MODIFY_IDENTITY:
       case MODIFY_SIGNATURE:
-        handlersMap.get(command).handle(args);
-        break;
       case MODIFY_COS:
-        prov.modifyAttrs(lookupCos(args[1]), getMapAndCheck(args, 2, false), true);
-        break;
       case MODIFY_CONFIG:
-        prov.modifyAttrs(prov.getConfig(), getMapAndCheck(args, 1, false), true);
-        break;
       case MODIFY_DOMAIN:
-        prov.modifyAttrs(lookupDomain(args[1]), getMapAndCheck(args, 2, false), true);
-        break;
       case MODIFY_SERVER:
-        prov.modifyAttrs(lookupServer(args[1]), getMapAndCheck(args, 2, false), true);
-        break;
       case DELETE_ACCOUNT:
-        doDeleteAccount(args);
-        break;
       case DELETE_COS:
-        prov.deleteCos(lookupCos(args[1]).getId());
-        break;
       case DELETE_DOMAIN:
-        prov.deleteDomain(lookupDomain(args[1]).getId());
-        break;
       case DELETE_IDENTITY:
-        prov.deleteIdentity(lookupAccount(args[1]), args[2]);
-        break;
       case DELETE_SIGNATURE:
-        account = lookupAccount(args[1]);
-        prov.deleteSignature(account, lookupSignatureId(account, args[2]));
-        break;
       case DELETE_DATA_SOURCE:
-        account = lookupAccount(args[1]);
-        prov.deleteDataSource(account, lookupDataSourceId(account, args[2]));
-        break;
       case DELETE_SERVER:
-        prov.deleteServer(lookupServer(args[1]).getId());
-        break;
       case DELETE_XMPP_COMPONENT:
-        prov.deleteXMPPComponent(lookupXMPPComponent(args[1]));
-        break;
       case PUSH_FREEBUSY:
-        doPushFreeBusy(args);
-        break;
       case PUSH_FREEBUSY_DOMAIN:
-        doPushFreeBusyForDomain(args);
-        break;
       case PURGE_FREEBUSY_QUEUE:
-        doPurgeFreeBusyQueue(args);
-        break;
       case PURGE_ACCOUNT_CALENDAR_CACHE:
-        doPurgeAccountCalendarCache(args);
-        break;
       case REMOVE_ACCOUNT_ALIAS:
-        Account acct = lookupAccount(args[1], false);
-        prov.removeAlias(acct, args[2]);
-        // even if acct is null, we still invoke removeAlias and throw an exception
-        // afterwards.
-        // this is so dangling aliases can be cleaned up as much as possible
-        if (acct == null) {
-          throw AccountServiceException.NO_SUCH_ACCOUNT(args[1]);
-        }
-        break;
       case REMOVE_ACCOUNT_LOGGER:
-        alo = AccountLoggerOptions.parseAccountLoggerOptions(args);
-        if (!command.checkArgsLength(alo.args)) {
-          usage();
-          return true;
-        }
-        doRemoveAccountLogger(alo);
-        break;
       case RENAME_ACCOUNT:
-        doRenameAccount(args);
-        break;
       case RENAME_COS:
-        prov.renameCos(lookupCos(args[1]).getId(), args[2]);
-        break;
       case RENAME_DOMAIN:
-        doRenameDomain(args);
-        break;
       case SET_ACCOUNT_COS:
-        prov.setCOS(lookupAccount(args[1]), lookupCos(args[2]));
-        break;
       case SEARCH_ACCOUNTS:
-        doSearchAccounts(args);
-        break;
       case SEARCH_GAL:
-        doSearchGal(args);
-        break;
       case SYNC_GAL:
-        doSyncGal(args);
-        break;
       case SET_PASSWORD:
-        SetPasswordResult result = prov.setPassword(lookupAccount(args[1]), args[2]);
-        if (result.hasMessage()) {
-          console.println(result.getMessage());
-        }
-        break;
       case CHECK_PASSWORD_STRENGTH:
-        prov.checkPasswordStrength(lookupAccount(args[1]), args[2]);
-        console.println("Password passed strength check.");
-        break;
       case CREATE_DISTRIBUTION_LIST:
-        console.println(prov.createGroup(args[1], getMapAndCheck(args, 2, true), false).getId());
-        break;
       case CREATE_DYNAMIC_DISTRIBUTION_LIST:
-        console.println(prov.createGroup(args[1], getMapAndCheck(args, 2, true), true).getId());
-        break;
       case CREATE_DISTRIBUTION_LISTS_BULK:
-        doCreateDistributionListsBulk(args);
-        break;
       case GET_ALL_DISTRIBUTION_LISTS:
-        doGetAllDistributionLists(args);
-        break;
       case GET_DISTRIBUTION_LIST:
-        dumpGroup(lookupGroup(args[1]), getArgNameSet(args, 2));
-        break;
       case GET_ALL_XMPP_COMPONENTS:
-        doGetAllXMPPComponents();
-        break;
       case MODIFY_DISTRIBUTION_LIST:
-        prov.modifyAttrs(lookupGroup(args[1]), getMapAndCheck(args, 2, false), true);
-        break;
       case DELETE_DISTRIBUTION_LIST:
-        doDeleteDistributionList(args);
-        break;
       case ADD_DISTRIBUTION_LIST_MEMBER:
-        doAddMember(args);
-        break;
       case REMOVE_DISTRIBUTION_LIST_MEMBER:
-        doRemoveMember(args);
-        break;
       case CREATE_BULK_ACCOUNTS:
-        doCreateAccountsBulk(args);
-        break;
       case ADD_DISTRIBUTION_LIST_ALIAS:
-        prov.addGroupAlias(lookupGroup(args[1]), args[2]);
-        break;
       case REMOVE_DISTRIBUTION_LIST_ALIAS:
-        Group dl = lookupGroup(args[1], false);
-        // Even if dl is null, we still invoke removeAlias.
-        // This is so dangling aliases can be cleaned up as much as possible.
-        // If dl is null, the NO_SUCH_DISTRIBUTION_LIST thrown by SOAP will contain
-        // null as the dl identity, because SoapProvisioning sends no id to the server.
-        // In this case, we catch the NO_SUCH_DISTRIBUTION_LIST and throw another one
-        // with the named/id entered on the comand line.
-        try {
-          prov.removeGroupAlias(dl, args[2]);
-        } catch (ServiceException e) {
-          if (!(dl == null
-              && AccountServiceException.NO_SUCH_DISTRIBUTION_LIST.equals(e.getCode()))) {
-            throw e;
-          }
-          // else eat the exception, we will throw below
-        }
-        if (dl == null) {
-          throw AccountServiceException.NO_SUCH_DISTRIBUTION_LIST(args[1]);
-        }
-        break;
       case RENAME_DISTRIBUTION_LIST:
-        prov.renameGroup(lookupGroup(args[1]).getId(), args[2]);
-        break;
       case CREATE_CALENDAR_RESOURCE:
-        console.println(
-            prov.createCalendarResource(
-                    args[1], args[2].isEmpty() ? null : args[2], getMapAndCheck(args, 3, true))
-                .getId());
-        break;
       case DELETE_CALENDAR_RESOURCE:
-        prov.deleteCalendarResource(lookupCalendarResource(args[1]).getId());
-        break;
       case MODIFY_CALENDAR_RESOURCE:
-        prov.modifyAttrs(lookupCalendarResource(args[1]), getMapAndCheck(args, 2, false), true);
-        break;
       case RENAME_CALENDAR_RESOURCE:
-        prov.renameCalendarResource(lookupCalendarResource(args[1]).getId(), args[2]);
-        break;
       case GET_CALENDAR_RESOURCE:
-        dumpCalendarResource(lookupCalendarResource(args[1]), true, getArgNameSet(args, 2));
-        break;
       case GET_ALL_CALENDAR_RESOURCES:
-        doGetAllCalendarResources(args);
-        break;
       case SEARCH_CALENDAR_RESOURCES:
-        doSearchCalendarResources(args);
-        break;
       case GET_SHARE_INFO:
-        doGetShareInfo(args);
-        break;
       case GET_SPNEGO_DOMAIN:
-        doGetSpnegoDomain();
-        break;
       case GET_QUOTA_USAGE:
-        doGetQuotaUsage(args);
-        break;
       case GET_MAILBOX_INFO:
-        doGetMailboxInfo(args);
-        break;
       case REINDEX_MAILBOX:
-        doReIndexMailbox(args);
-        break;
       case COMPACT_INBOX_MAILBOX:
-        doCompactIndexMailbox(args);
-        break;
       case VERIFY_INDEX:
-        doVerifyIndex(args);
-        break;
       case GET_INDEX_STATS:
-        doGetIndexStats(args);
-        break;
       case RECALCULATE_MAILBOX_COUNTS:
-        doRecalculateMailboxCounts(args);
-        break;
       case SELECT_MAILBOX:
-        if (!(prov instanceof SoapProvisioning)) {
-          throwSoapOnly();
-        }
-        ZMailboxUtil util = new ZMailboxUtil();
-        util.setVerbose(verboseMode);
-        util.setDebug(debugLevel != SoapDebugLevel.none);
-        boolean smInteractive = interactiveMode && args.length < 3;
-        util.setInteractive(smInteractive);
-        util.selectMailbox(args[1], (SoapProvisioning) prov);
-        if (smInteractive) {
-          util.interactive(cliReader);
-        } else if (args.length > 2) {
-          String[] newArgs = new String[args.length - 2];
-          System.arraycopy(args, 2, newArgs, 0, newArgs.length);
-          util.execute(newArgs);
-        } else {
-          throw ZClientException.CLIENT_ERROR(
-              "command only valid in interactive mode or with arguments", null);
-        }
-        break;
       case GET_ALL_MTA_AUTH_URLS:
-        doGetAllMtaAuthURLs();
-        break;
       case GET_ALL_REVERSE_PROXY_URLS:
-        doGetAllReverseProxyURLs();
-        break;
       case GET_ALL_REVERSE_PROXY_BACKENDS:
-        doGetAllReverseProxyBackends();
-        break;
       case GET_ALL_REVERSE_PROXY_DOMAINS:
-        doGetAllReverseProxyDomains();
-        break;
       case GET_ALL_MEMCACHED_SERVERS:
-        doGetAllMemcachedServers();
-        break;
       case RELOAD_MEMCACHED_CLIENT_CONFIG:
-        doReloadMemcachedClientConfig(args);
-        break;
       case GET_MEMCACHED_CLIENT_CONFIG:
-        doGetMemcachedClientConfig(args);
+        var handler = handlersMap.get(command);
+        if (handler == null) {
+          throw new UnsupportedOperationException(String.format("Command %s is not handled", command));
+        }
+        handler.handle(args);
         break;
       case GET_AUTH_TOKEN_INFO:
         doGetAuthTokenInfo(args);
@@ -913,18 +776,6 @@ public class ProvUtil implements HttpDebugListener {
         return false;
     }
     return true;
-  }
-
-  private void doAddMember(String[] args) throws ServiceException {
-    String[] members = new String[args.length - 2];
-    System.arraycopy(args, 2, members, 0, args.length - 2);
-    prov.addGroupMembers(lookupGroup(args[1]), members);
-  }
-
-  private void doRemoveMember(String[] args) throws ServiceException {
-    String[] members = new String[args.length - 2];
-    System.arraycopy(args, 2, members, 0, args.length - 2);
-    prov.removeGroupMembers(lookupGroup(args[1]), members);
   }
 
   private void sendMailboxLockoutRequest(String acctName, String server, String operation)
@@ -1063,150 +914,6 @@ public class ProvUtil implements HttpDebugListener {
     }
   }
 
-  private void doRenameDomain(String[] args) throws ServiceException {
-
-    // bug 56768
-    // if we are not already using master only, force it to use master.
-    // Note: after rename domain, the zmprov instance will stay in "master only" mode.
-    if (!useLdapMaster) {
-      ((LdapProv) prov).alwaysUseMaster();
-    }
-
-    LdapProv lp = (LdapProv) prov;
-    Domain domain = lookupDomain(args[1]);
-    lp.renameDomain(domain.getId(), args[2]);
-    console.printOutput("domain " + args[1] + " renamed to " + args[2]);
-    console.printOutput(
-        "Note: use zmlocalconfig to check and update any localconfig settings referencing"
-            + " domain '"
-            + args[1]
-            + "' on all servers.");
-    console.printOutput(
-        "Use /opt/zextras/libexec/zmdkimkeyutil to recreate the DKIM entries for new domain"
-            + " name if required.");
-  }
-
-  private void doGetQuotaUsage(String[] args) throws ServiceException {
-    if (!(prov instanceof SoapProvisioning)) {
-      throwSoapOnly();
-    }
-    SoapProvisioning sp = (SoapProvisioning) prov;
-    List<QuotaUsage> result = sp.getQuotaUsage(args[1]);
-    for (QuotaUsage u : result) {
-      console.println(String.format("%s %d %d", u.getName(), u.getLimit(), u.getUsed()));
-    }
-  }
-
-  private void doGetMailboxInfo(String[] args) throws ServiceException {
-    if (!(prov instanceof SoapProvisioning)) {
-      throwSoapOnly();
-    }
-    SoapProvisioning sp = (SoapProvisioning) prov;
-    Account acct = lookupAccount(args[1]);
-    MailboxInfo info = sp.getMailbox(acct);
-    console.println(String.format("mailboxId: %s\nquotaUsed: %d", info.getMailboxId(), info.getUsed()));
-  }
-
-  private void doReIndexMailbox(String[] args) throws ServiceException {
-    if (!(prov instanceof SoapProvisioning)) {
-      throwSoapOnly();
-    }
-    SoapProvisioning sp = (SoapProvisioning) prov;
-    Account acct = lookupAccount(args[1]);
-    ReIndexBy by = null;
-    String[] values = null;
-    if (args.length > 3) {
-      try {
-        by = ReIndexBy.valueOf(args[3]);
-      } catch (IllegalArgumentException e) {
-        throw ServiceException.INVALID_REQUEST("invalid reindex-by", null);
-      }
-      if (args.length > 4) {
-        values = new String[args.length - 4];
-        System.arraycopy(args, 4, values, 0, args.length - 4);
-      } else {
-        throw ServiceException.INVALID_REQUEST("missing reindex-by values", null);
-      }
-    }
-    ReIndexInfo info = sp.reIndex(acct, args[2], by, values);
-    ReIndexInfo.Progress progress = info.getProgress();
-    console.println(String.format("status: %s\n", info.getStatus()));
-    if (progress != null) {
-      console.println(String.format(
-          "progress: numSucceeded=%d, numFailed=%d, numRemaining=%d\n",
-          progress.getNumSucceeded(), progress.getNumFailed(), progress.getNumRemaining()));
-    }
-  }
-
-  private void doCompactIndexMailbox(String[] args) throws ServiceException {
-    if (!(prov instanceof SoapProvisioning)) {
-      throwSoapOnly();
-    }
-    SoapProvisioning sp = (SoapProvisioning) prov;
-    Account acct = lookupAccount(args[1]);
-    String status = sp.compactIndex(acct, args[2]);
-    console.println(String.format("status: %s", status));
-  }
-
-  private void doVerifyIndex(String[] args) throws ServiceException {
-    if (!(prov instanceof SoapProvisioning)) {
-      throwSoapOnly();
-    }
-    console.println("Verifying, on a large index it can take quite a long time...");
-    SoapProvisioning soap = (SoapProvisioning) prov;
-    SoapProvisioning.VerifyIndexResult result = soap.verifyIndex(lookupAccount(args[1]));
-    console.println();
-    console.print(result.message);
-    if (!result.status) {
-      throw ServiceException.FAILURE(
-          "The index may be corrupted. Run reIndexMailbox(rim) to repair.", null);
-    }
-  }
-
-  private void doGetIndexStats(String[] args) throws ServiceException {
-    if (!(prov instanceof SoapProvisioning)) {
-      throwSoapOnly();
-    }
-    SoapProvisioning sp = (SoapProvisioning) prov;
-    Account acct = lookupAccount(args[1]);
-    IndexStatsInfo stats = sp.getIndexStats(acct);
-    console.println(String.format(
-        "stats: maxDocs:%d numDeletedDocs:%d", stats.getMaxDocs(), stats.getNumDeletedDocs()));
-  }
-
-  private void doRecalculateMailboxCounts(String[] args) throws ServiceException {
-    if (!(prov instanceof SoapProvisioning)) {
-      throwSoapOnly();
-    }
-    SoapProvisioning sp = (SoapProvisioning) prov;
-    Account account = lookupAccount(args[1]);
-    long quotaUsed = sp.recalculateMailboxCounts(account);
-    console.print("account: " + account.getName() + "\nquotaUsed: " + quotaUsed + "\n");
-  }
-
-  private void doRemoveAccountLogger(AccountLoggerOptions alo) throws ServiceException {
-    if (!(prov instanceof SoapProvisioning)) {
-      throwSoapOnly();
-    }
-    SoapProvisioning sp = (SoapProvisioning) prov;
-    Account acct = null;
-    String category = null;
-    if (alo.args.length == 2) {
-      // Hack: determine if it's an account or category, based on the name.
-      String arg = alo.args[1];
-      if (arg.startsWith("zimbra.") || arg.startsWith("com.zimbra")) {
-        category = arg;
-      } else {
-        acct = lookupAccount(alo.args[1]);
-      }
-    }
-    if (alo.args.length == 3) {
-      acct = lookupAccount(alo.args[1]);
-      category = alo.args[2];
-    }
-    sp.removeAccountLoggers(acct, category, alo.server);
-  }
-
   private void doResetAllLoggers(String[] args) throws ServiceException {
     if (!(prov instanceof SoapProvisioning)) {
       throwSoapOnly();
@@ -1219,43 +926,7 @@ public class ProvUtil implements HttpDebugListener {
     sprov.resetAllLoggers(server);
   }
 
-  private void doCreateAccountsBulk(String[] args) throws ServiceException {
-      String domain = args[1];
-      String userPassword =  args[4];
-      String nameMask = args[2];
-      int numAccounts = Integer.parseInt(args[3]);
-      for (int ix = 0; ix < numAccounts; ix++) {
-        String name = nameMask + ix + "@" + domain;
-        Map<String, Object> attrs = new HashMap<>();
-        String displayName = nameMask + " N. " + ix;
-        StringUtil.addToMultiMap(attrs, "displayName", displayName);
-        Account createdAccount = prov.createAccount(name, userPassword, attrs);
-        console.println(createdAccount.getId());
-      }
-  }
-
-  private void doGetShareInfo(String[] args) throws ServiceException {
-    if (!(prov instanceof SoapProvisioning)) {
-      throwSoapOnly();
-    }
-    Account owner = lookupAccount(args[1]);
-
-    console.println(ShareInfoVisitor.getPrintHeadings());
-    prov.getShareInfo(owner, new ShareInfoVisitor(console));
-  }
-
-  private void doGetSpnegoDomain() throws ServiceException {
-    Config config = prov.getConfig();
-    String spnegoAuthRealm = config.getSpnegoAuthRealm();
-    if (spnegoAuthRealm != null) {
-      Domain domain = prov.get(Key.DomainBy.krb5Realm, spnegoAuthRealm);
-      if (domain != null) {
-        console.println(domain.getName());
-      }
-    }
-  }
-
-  private boolean confirm(String msg) {
+  public boolean confirm(String msg) {
     if (batchMode) {
       return true;
     }
@@ -1277,198 +948,6 @@ public class ProvUtil implements HttpDebugListener {
     return false;
   }
 
-  private void doDeleteAccount(String[] args) throws ServiceException {
-    if (prov instanceof LdapProv) {
-      boolean confirmed =
-          confirm(
-              "-l option is specified.  Only the LDAP entry of the account will be"
-                  + " deleted.\n"
-                  + "DB data of the account and associated blobs will not be"
-                  + " deleted.\n");
-
-      if (!confirmed) {
-        console.println("aborted");
-        return;
-      }
-    }
-
-    String key = args[1];
-    Account acct = lookupAccount(key);
-    if (key.equalsIgnoreCase(acct.getId())
-        || key.equalsIgnoreCase(acct.getName())
-        || acct.getName().equalsIgnoreCase(key + "@" + acct.getDomainName())) {
-      prov.deleteAccount(acct.getId());
-    } else {
-      throw ServiceException.INVALID_REQUEST(
-          "argument to deleteAccount must be an account id or the account's primary name", null);
-    }
-  }
-
-  private void doRenameAccount(String[] args) throws ServiceException {
-    if (prov instanceof LdapProv) {
-      boolean confirmed =
-          confirm(
-              "-l option is specified.  "
-                  + "Only the LDAP portion of the account will be deleted.\n"
-                  + "DB data of the account will not be renamed.\n");
-
-      if (!confirmed) {
-        console.println("aborted");
-        return;
-      }
-    }
-
-    prov.renameAccount(lookupAccount(args[1]).getId(), args[2]);
-  }
-
-  private void doSearchAccounts(String[] args) throws ServiceException, ArgException {
-    boolean verbose = false;
-    int i = 1;
-
-    if (args[i].equals("-v")) {
-      verbose = true;
-      i++;
-      if (args.length < i - 1) {
-        usage();
-        return;
-      }
-    }
-
-    if (args.length < i + 1) {
-      usage();
-      return;
-    }
-
-    String query = args[i];
-
-    Map<String, Object> attrs = getMap(args, i + 1);
-    String limitStr = (String) attrs.get("limit");
-    int limit = limitStr == null ? Integer.MAX_VALUE : Integer.parseInt(limitStr);
-
-    String offsetStr = (String) attrs.get("offset");
-    int offset = offsetStr == null ? 0 : Integer.parseInt(offsetStr);
-
-    String sortBy = (String) attrs.get("sortBy");
-    String sortAscending = (String) attrs.get("sortAscending");
-    boolean isSortAscending = sortAscending == null || "1".equalsIgnoreCase(sortAscending);
-
-    String[] attrsToGet = null;
-
-    String typesStr = (String) attrs.get("types");
-    if (typesStr == null) {
-      typesStr =
-          SearchDirectoryOptions.ObjectType.accounts.name()
-              + ","
-              + SearchDirectoryOptions.ObjectType.aliases.name()
-              + ","
-              + SearchDirectoryOptions.ObjectType.distributionlists.name()
-              + ","
-              + SearchDirectoryOptions.ObjectType.dynamicgroups.name()
-              + ","
-              + SearchDirectoryOptions.ObjectType.resources.name();
-    }
-
-    String domainStr = (String) attrs.get("domain");
-
-    SearchDirectoryOptions searchOpts = new SearchDirectoryOptions(attrsToGet);
-    if (domainStr != null) {
-      Domain d = lookupDomain(domainStr, prov);
-      searchOpts.setDomain(d);
-    }
-    searchOpts.setTypes(typesStr);
-    searchOpts.setSortOpt(isSortAscending ? SortOpt.SORT_ASCENDING : SortOpt.SORT_DESCENDING);
-    searchOpts.setSortAttr(sortBy);
-
-    // if LdapClient is not initialized(the case for SoapProvisioning), FilterId
-    // is not initialized. Use null for SoapProvisioning, it will be set to
-    // FilterId.ADMIN_SEARCH in SearchDirectory soap handler.
-    FilterId filterId = (prov instanceof LdapProv) ? FilterId.ADMIN_SEARCH : null;
-    searchOpts.setFilterString(filterId, query);
-    searchOpts.setConvertIDNToAscii(true); // query must be already RFC 2254 escaped
-
-    List<NamedEntry> accounts = prov.searchDirectory(searchOpts);
-
-    for (int j = offset; j < offset + limit && j < accounts.size(); j++) {
-      NamedEntry account = accounts.get(j);
-      if (verbose) {
-        if (account instanceof Account) {
-          dumpAccount((Account) account, true, null);
-        } else if (account instanceof Alias) {
-          dumpAlias((Alias) account);
-        } else if (account instanceof DistributionList) {
-          dumpGroup((DistributionList) account, null);
-        } else if (account instanceof Domain) {
-          dumpDomain((Domain) account, null);
-        }
-      } else {
-        console.println(account.getName());
-      }
-    }
-  }
-
-  private void doSyncGal(String[] args) throws ServiceException {
-    String domain = args[1];
-    String token = args.length == 3 ? args[2] : "";
-
-    Domain d = lookupDomain(domain);
-
-    SearchGalResult result = null;
-    if (prov instanceof LdapProv) {
-      GalContact.Visitor visitor =
-          gc -> dumpContact(gc);
-      result = prov.syncGal(d, token, visitor);
-    } else {
-      result = ((SoapProvisioning) prov).searchGal(d, "", GalSearchType.all, token, 0, 0, null);
-      for (GalContact contact : result.getMatches()) {
-        dumpContact(contact);
-      }
-    }
-
-    if (result.getToken() != null) {
-      console.println("\n# token = " + result.getToken() + "\n");
-    }
-  }
-
-  private void doSearchGal(String[] args) throws ServiceException, ArgException {
-    if (args.length < 3) {
-      usage();
-      return;
-    }
-    String domain = args[1];
-    String query = args[2];
-    Map<String, Object> attrs = getMap(args, 3);
-    String limitStr = (String) attrs.get("limit");
-    int limit = limitStr == null ? 0 : Integer.parseInt(limitStr);
-    String offsetStr = (String) attrs.get("offset");
-    int offset = offsetStr == null ? 0 : Integer.parseInt(offsetStr);
-    String sortBy = (String) attrs.get("sortBy");
-    Domain d = lookupDomain(domain);
-
-    SearchGalResult result;
-
-    if (prov instanceof LdapProv) {
-      if (offsetStr != null) {
-        throw ServiceException.INVALID_REQUEST("offset is not supported with -l", null);
-      }
-
-      if (sortBy != null) {
-        throw ServiceException.INVALID_REQUEST("sortBy is not supported with -l", null);
-      }
-
-      GalContact.Visitor visitor =
-          gc -> dumpContact(gc);
-      result = prov.searchGal(d, query, GalSearchType.all, limit, visitor);
-
-    } else {
-      result =
-          ((SoapProvisioning) prov)
-              .searchGal(d, query, GalSearchType.all, null, limit, offset, sortBy);
-      for (GalContact contact : result.getMatches()) {
-        dumpContact(contact);
-      }
-    }
-  }
-
   public void dumpCos(Cos cos, Set<String> attrNames) throws ServiceException {
     console.println("# name " + cos.getName());
     Map<String, Object> attrs = cos.getAttrs();
@@ -1488,7 +967,7 @@ public class ProvUtil implements HttpDebugListener {
     console.println();
   }
 
-  private void dumpGroup(Group group, Set<String> attrNames) throws ServiceException {
+  public void dumpGroup(Group group, Set<String> attrNames) throws ServiceException {
 
     String[] members;
     if (group instanceof DynamicGroup) {
@@ -1508,7 +987,7 @@ public class ProvUtil implements HttpDebugListener {
     }
   }
 
-  private void dumpAlias(Alias alias) throws ServiceException {
+  public void dumpAlias(Alias alias) throws ServiceException {
     console.println("# alias " + alias.getName());
     Map<String, Object> attrs = alias.getAttrs();
     dumpAttrs(attrs, null);
@@ -1611,13 +1090,6 @@ public class ProvUtil implements HttpDebugListener {
     console.println();
   }
 
-  private void doGetAllXMPPComponents() throws ServiceException {
-    List<XMPPComponent> components = prov.getAllXMPPComponents();
-    for (XMPPComponent comp : components) {
-      dumpXMPPComponent(comp, null);
-    }
-  }
-
   public void dumpAccount(Account account, boolean expandCos, Set<String> attrNames)
       throws ServiceException {
     console.println("# name " + account.getName());
@@ -1626,8 +1098,8 @@ public class ProvUtil implements HttpDebugListener {
     console.println();
   }
 
-  private void dumpCalendarResource(
-      CalendarResource resource, boolean expandCos, Set<String> attrNames) throws ServiceException {
+  public void dumpCalendarResource(
+          CalendarResource resource, boolean expandCos, Set<String> attrNames) throws ServiceException {
     console.println("# name " + resource.getName());
     Map<String, Object> attrs = resource.getAttrs(expandCos);
     dumpAttrs(attrs, attrNames);
@@ -1739,213 +1211,6 @@ public class ProvUtil implements HttpDebugListener {
     }
   }
 
-  private void doCreateDistributionListsBulk(String[] args) throws ServiceException {
-    if (args.length < 3) {
-      usage();
-    } else {
-      String domain = args[1];
-      String nameMask = args[2];
-      int numAccounts = Integer.parseInt(args[3]);
-      for (int i = 0; i < numAccounts; i++) {
-        String name = nameMask + i + "@" + domain;
-        Map<String, Object> attrs = new HashMap<>();
-        String displayName = nameMask + " N. " + i;
-        StringUtil.addToMultiMap(attrs, "displayName", displayName);
-        DistributionList dl = prov.createDistributionList(name, attrs);
-        console.println(dl.getId());
-      }
-    }
-  }
-
-  private void doGetAllDistributionLists(String[] args) throws ServiceException {
-    String d = null;
-    boolean verbose = false;
-    int i = 1;
-    while (i < args.length) {
-      String arg = args[i];
-      if (arg.equals("-v")) {
-        verbose = true;
-      } else {
-        if (d == null) {
-          d = arg;
-        } else {
-          console.println("invalid arg: " + arg + ", already specified domain: " + d);
-          usage();
-          return;
-        }
-      }
-      i++;
-    }
-
-    if (d == null) {
-      List<Domain> domains = prov.getAllDomains();
-      for (Domain domain : domains) {
-        Collection<?> dls = prov.getAllGroups(domain);
-        for (Object obj : dls) {
-          Group dl = (Group) obj;
-          if (verbose) {
-            dumpGroup(dl, null);
-          } else {
-            console.println(dl.getName());
-          }
-        }
-      }
-    } else {
-      Domain domain = lookupDomain(d);
-      Collection<?> dls = prov.getAllGroups(domain);
-      for (Object obj : dls) {
-        Group dl = (Group) obj;
-        if (verbose) {
-          dumpGroup(dl, null);
-        } else {
-          console.println(dl.getName());
-        }
-      }
-    }
-  }
-
-  private void doGetAllCalendarResources(String[] args) throws ServiceException {
-    boolean verbose = false;
-    boolean applyDefault = true;
-    String d = null;
-    String s = null;
-
-    int i = 1;
-    while (i < args.length) {
-      String arg = args[i];
-      if (arg.equals("-v")) {
-        verbose = true;
-      } else if (arg.equals("-e")) {
-        applyDefault = false;
-      } else if (arg.equals("-s")) {
-        i++;
-        if (i < args.length) {
-          if (s == null) {
-            s = args[i];
-          } else {
-            console.println("invalid arg: " + args[i] + ", already specified -s with " + s);
-            usage();
-            return;
-          }
-        } else {
-          usage();
-          return;
-        }
-      } else {
-        if (d == null) {
-          d = arg;
-        } else {
-          console.println("invalid arg: " + arg + ", already specified domain: " + d);
-          usage();
-          return;
-        }
-      }
-      i++;
-    }
-
-    if (!applyDefault && !verbose) {
-      console.println(ERR_INVALID_ARG_EV);
-      usage();
-      return;
-    }
-
-    // always use LDAP
-    Provisioning prov = Provisioning.getInstance();
-
-    Server server = null;
-    if (s != null) {
-      server = lookupServer(s);
-    }
-    if (d == null) {
-      List<Domain> domains = prov.getAllDomains();
-      for (Domain domain : domains) {
-        doGetAllCalendarResources(prov, domain, server, verbose, applyDefault);
-      }
-    } else {
-      Domain domain = lookupDomain(d, prov);
-      doGetAllCalendarResources(prov, domain, server, verbose, applyDefault);
-    }
-  }
-
-  private void doGetAllCalendarResources(
-      Provisioning prov,
-      Domain domain,
-      Server server,
-      final boolean verbose,
-      final boolean applyDefault)
-      throws ServiceException {
-    NamedEntry.Visitor visitor =
-        entry -> {
-          if (verbose) {
-            dumpCalendarResource((CalendarResource) entry, applyDefault, null);
-          } else {
-            console.println(entry.getName());
-          }
-        };
-    prov.getAllCalendarResources(domain, server, visitor);
-  }
-
-  private void doSearchCalendarResources(String[] args) throws ServiceException {
-
-    boolean verbose = false;
-    int i = 1;
-
-    if (args.length < i + 1) {
-      usage();
-      return;
-    }
-    if (args[i].equals("-v")) {
-      verbose = true;
-      i++;
-    }
-    if (args.length < i + 1) {
-      usage();
-      return;
-    }
-    Domain d = lookupDomain(args[i++]);
-
-    if ((args.length - i) % 3 != 0) {
-      usage();
-      return;
-    }
-
-    EntrySearchFilter.Multi multi = new EntrySearchFilter.Multi(false, EntrySearchFilter.AndOr.and);
-    for (; i < args.length; ) {
-      String attr = args[i++];
-      String op = args[i++];
-      String value = args[i++];
-      try {
-        EntrySearchFilter.Single single = new EntrySearchFilter.Single(false, attr, op, value);
-        multi.add(single);
-      } catch (IllegalArgumentException e) {
-        console.printError("Bad search op in: " + attr + " " + op + " '" + value + "'");
-        e.printStackTrace();
-        usage();
-        return;
-      }
-    }
-    EntrySearchFilter filter = new EntrySearchFilter(multi);
-    String filterStr = LdapEntrySearchFilter.toLdapCalendarResourcesFilter(filter);
-
-    SearchDirectoryOptions searchOpts = new SearchDirectoryOptions();
-    searchOpts.setDomain(d);
-    searchOpts.setTypes(ObjectType.resources);
-    searchOpts.setSortOpt(SortOpt.SORT_ASCENDING);
-    searchOpts.setFilterString(FilterId.ADMIN_SEARCH, filterStr);
-
-    List<NamedEntry> resources = prov.searchDirectory(searchOpts);
-
-    // List<NamedEntry> resources = prov.searchCalendarResources(d, filter, null, null, true);
-    for (NamedEntry entry : resources) {
-      CalendarResource resource = (CalendarResource) entry;
-      if (verbose) {
-        dumpCalendarResource(resource, true, null);
-      } else {
-        console.println(resource.getName());
-      }
-    }
-  }
-
   public Account lookupAccount(String key, boolean mustFind, boolean applyDefault)
       throws ServiceException {
     Account account;
@@ -1975,11 +1240,11 @@ public class ProvUtil implements HttpDebugListener {
     return lookupAccount(key, true, true);
   }
 
-  private Account lookupAccount(String key, boolean mustFind) throws ServiceException {
+  public Account lookupAccount(String key, boolean mustFind) throws ServiceException {
     return lookupAccount(key, mustFind, true);
   }
 
-  private CalendarResource lookupCalendarResource(String key) throws ServiceException {
+  public CalendarResource lookupCalendarResource(String key) throws ServiceException {
     CalendarResource res = prov.get(guessCalendarResourceBy(key), key);
     if (res == null) {
       throw AccountServiceException.NO_SUCH_CALENDAR_RESOURCE(key);
@@ -2075,7 +1340,7 @@ public class ProvUtil implements HttpDebugListener {
     return lookupDistributionList(key, true);
   }
 
-  private Group lookupGroup(String key, boolean mustFind) throws ServiceException {
+  public Group lookupGroup(String key, boolean mustFind) throws ServiceException {
     Group dl = prov.getGroup(guessDistributionListBy(key), key);
     if (mustFind && dl == null) {
       throw AccountServiceException.NO_SUCH_DISTRIBUTION_LIST(key);
@@ -2611,113 +1876,7 @@ public class ProvUtil implements HttpDebugListener {
     return args;
   }
 
-  private void doGetAllMtaAuthURLs() throws ServiceException {
-    List<Server> servers = prov.getAllServers();
-    for (Server server : servers) {
-      boolean isTarget = server.getBooleanAttr(Provisioning.A_zimbraMtaAuthTarget, false);
-      if (isTarget) {
-        String url = URLUtil.getMtaAuthURL(server) + " ";
-        console.print(url);
-      }
-    }
-    console.println();
-  }
-
-  private void doGetAllReverseProxyURLs() throws ServiceException {
-    String REVERSE_PROXY_PROTO = ""; // don't need proto for nginx.conf
-    String REVERSE_PROXY_PATH = ExtensionDispatcherServlet.EXTENSION_PATH + "/nginx-lookup";
-
-    List<Server> servers = prov.getAllMailClientServers();
-    for (Server server : servers) {
-      int port = server.getIntAttr(Provisioning.A_zimbraExtensionBindPort, 7072);
-      boolean isTarget =
-          server.getBooleanAttr(Provisioning.A_zimbraReverseProxyLookupTarget, false);
-      if (isTarget) {
-        String serviceName = server.getAttr(Provisioning.A_zimbraServiceHostname, "");
-        console.print(REVERSE_PROXY_PROTO + serviceName + ":" + port + REVERSE_PROXY_PATH + " ");
-      }
-    }
-    console.println();
-  }
-
-  private void doGetAllReverseProxyBackends() throws ServiceException {
-    List<Server> servers = prov.getAllServers();
-    boolean atLeastOne = false;
-    for (Server server : servers) {
-      boolean isTarget =
-          server.getBooleanAttr(Provisioning.A_zimbraReverseProxyLookupTarget, false);
-      if (!isTarget) {
-        continue;
-      }
-
-      // (For now) assume HTTP can be load balanced to...
-      String mode = server.getAttr(Provisioning.A_zimbraMailMode, null);
-      if (mode == null) {
-        continue;
-      }
-      MailMode mailMode = Provisioning.MailMode.fromString(mode);
-
-      boolean isPlain =
-          (mailMode == Provisioning.MailMode.http
-              || (!LC.zimbra_require_interprocess_security.booleanValue()
-                  && (mailMode == Provisioning.MailMode.mixed
-                      || mailMode == Provisioning.MailMode.both)));
-
-      int backendPort;
-      if (isPlain) {
-        backendPort = server.getIntAttr(Provisioning.A_zimbraMailPort, 0);
-      } else {
-        backendPort = server.getIntAttr(Provisioning.A_zimbraMailSSLPort, 0);
-      }
-
-      String serviceName = server.getAttr(Provisioning.A_zimbraServiceHostname, "");
-      console.println("    server " + serviceName + ":" + backendPort + ";");
-      atLeastOne = true;
-    }
-
-    if (!atLeastOne) {
-      // workaround zmmtaconfig not being able to deal with empty output
-      console.println("    server localhost:8080;");
-    }
-  }
-
-  private void doGetAllReverseProxyDomains() throws ServiceException {
-
-    NamedEntry.Visitor visitor =
-        entry -> {
-          if (entry.getAttr(Provisioning.A_zimbraVirtualHostname) != null
-              && entry.getAttr(Provisioning.A_zimbraSSLPrivateKey) != null
-              && entry.getAttr(Provisioning.A_zimbraSSLCertificate) != null) {
-            StringBuilder virtualHosts = new StringBuilder();
-            for (String vh : entry.getMultiAttr(Provisioning.A_zimbraVirtualHostname)) {
-              virtualHosts.append(vh).append(" ");
-            }
-            console.println(entry.getName() + " " + virtualHosts);
-          }
-        };
-
-    prov.getAllDomains(
-        visitor,
-        new String[] {
-          Provisioning.A_zimbraVirtualHostname,
-          Provisioning.A_zimbraSSLPrivateKey,
-          Provisioning.A_zimbraSSLCertificate
-        });
-  }
-
-  private void doGetAllMemcachedServers() throws ServiceException {
-    List<Server> servers = prov.getAllServers(Provisioning.SERVICE_MEMCACHED);
-    for (Server server : servers) {
-      console.print(
-          server.getAttr(Provisioning.A_zimbraMemcachedBindAddress, "")
-              + ":"
-              + server.getAttr(Provisioning.A_zimbraMemcachedBindPort, "")
-              + " ");
-    }
-    console.println();
-  }
-
-  private List<Pair<String /* hostname */, Integer /* port */>> getMailboxServersFromArgs(
+  public List<Pair<String /* hostname */, Integer /* port */>> getMailboxServersFromArgs(
       String[] args) throws ServiceException {
     List<Pair<String, Integer>> entries = new ArrayList<>();
     if (args.length == 2 && "all".equalsIgnoreCase(args[1])) {
@@ -2747,138 +1906,6 @@ public class ProvUtil implements HttpDebugListener {
       }
     }
     return entries;
-  }
-
-  private void doReloadMemcachedClientConfig(String[] args) throws ServiceException {
-    List<Pair<String, Integer>> servers = getMailboxServersFromArgs(args);
-    // Send command to each server.
-    for (Pair<String, Integer> server : servers) {
-      String hostname = server.getFirst();
-      int port = server.getSecond();
-      if (verboseMode) {
-        console.print("Updating " + hostname + " ... ");
-      }
-      boolean success = false;
-      try {
-        SoapProvisioning sp = new SoapProvisioning();
-        sp.soapSetURI(
-            LC.zimbra_admin_service_scheme.value()
-                + hostname
-                + ":"
-                + port
-                + AdminConstants.ADMIN_SERVICE_URI);
-        if (debugLevel != SoapDebugLevel.none) {
-          sp.soapSetHttpTransportDebugListener(this);
-        }
-        if (account != null && password != null) {
-          sp.soapAdminAuthenticate(account, password);
-        } else if (authToken != null) {
-          sp.soapAdminAuthenticate(authToken);
-        } else {
-          sp.soapZimbraAdminAuthenticate();
-        }
-        sp.reloadMemcachedClientConfig();
-        success = true;
-      } catch (ServiceException e) {
-        if (verboseMode) {
-          console.println("fail");
-          console.printStacktrace(e);
-        } else {
-          console.println("Error updating " + hostname + ": " + e.getMessage());
-        }
-      } finally {
-        if (verboseMode && success) {
-          console.println("ok");
-        }
-      }
-    }
-  }
-
-  private void doGetMemcachedClientConfig(String[] args) throws ServiceException {
-    List<Pair<String, Integer>> servers = getMailboxServersFromArgs(args);
-    // Send command to each server.
-    int longestHostname = 0;
-    for (Pair<String, Integer> server : servers) {
-      String hostname = server.getFirst();
-      longestHostname = Math.max(longestHostname, hostname.length());
-    }
-    String hostnameFormat = String.format("%%-%ds", longestHostname);
-    boolean consistent = true;
-    String prevConf = null;
-    for (Pair<String, Integer> server : servers) {
-      String hostname = server.getFirst();
-      int port = server.getSecond();
-      try {
-        SoapProvisioning sp = new SoapProvisioning();
-        sp.soapSetURI(
-            LC.zimbra_admin_service_scheme.value()
-                + hostname
-                + ":"
-                + port
-                + AdminConstants.ADMIN_SERVICE_URI);
-        if (debugLevel != SoapDebugLevel.none) {
-          sp.soapSetHttpTransportDebugListener(this);
-        }
-        if (account != null && password != null) {
-          sp.soapAdminAuthenticate(account, password);
-        } else if (authToken != null) {
-          sp.soapAdminAuthenticate(authToken);
-        } else {
-          sp.soapZimbraAdminAuthenticate();
-        }
-        MemcachedClientConfig config = sp.getMemcachedClientConfig();
-        String serverList = config.serverList != null ? config.serverList : "none";
-        if (verboseMode) {
-          console.print(String.format(
-              hostnameFormat
-                  + " => serverList=[%s], hashAlgo=%s, binaryProto=%s,"
-                  + " expiry=%ds, timeout=%dms\n",
-              hostname,
-              serverList,
-              config.hashAlgorithm,
-              config.binaryProtocol,
-              config.defaultExpirySeconds,
-              config.defaultTimeoutMillis));
-        } else if (config.serverList != null) {
-          if (DefaultHashAlgorithm.KETAMA_HASH.toString().equals(config.hashAlgorithm)) {
-            // Don't print the default hash algorithm to keep the output clutter-free.
-            console.print(String.format(hostnameFormat + " => %s\n", hostname, serverList));
-          } else {
-            console.print(String.format(
-                hostnameFormat + " => %s (%S)\n", hostname, serverList, config.hashAlgorithm));
-          }
-        } else {
-          console.print(String.format(hostnameFormat + " => none\n", hostname));
-        }
-
-        String listAndAlgo = serverList + "/" + config.hashAlgorithm;
-        if (prevConf == null) {
-          prevConf = listAndAlgo;
-        } else if (!prevConf.equals(listAndAlgo)) {
-          consistent = false;
-        }
-      } catch (ServiceException e) {
-        console.print(String.format(hostnameFormat + " => ERROR: unable to get configuration\n", hostname));
-        if (verboseMode) {
-          console.printStacktrace(e);
-        }
-      }
-    }
-    if (!consistent) {
-      console.println("Inconsistency detected!");
-    }
-  }
-
-  private void doPurgeAccountCalendarCache(String[] args) throws ServiceException {
-    if (!(prov instanceof SoapProvisioning)) {
-      throwSoapOnly();
-    }
-    if (args.length > 1) {
-      for (int i = 1; i < args.length; i++) {
-        Account acct = lookupAccount(args[i], true);
-        prov.purgeAccountCalendarCache(acct.getId());
-      }
-    }
   }
 
   public void dumpEffectiveRight(
@@ -2964,51 +1991,6 @@ public class ProvUtil implements HttpDebugListener {
     }
 
     console.println();
-  }
-
-  private void doPushFreeBusy(String[] args) throws ServiceException, IOException, HttpException {
-    FbCli fbcli = new FbCli();
-    Map<String, HashSet<String>> accountMap = new HashMap<>();
-    for (int i = 1; i < args.length; i++) {
-      String acct = args[i];
-      Account account = prov.getAccountById(acct);
-      if (account == null) {
-        throw AccountServiceException.NO_SUCH_ACCOUNT(acct);
-      }
-      String host = account.getMailHost();
-      HashSet<String> accountSet = accountMap.get(host);
-      if (accountSet == null) {
-        accountSet = new HashSet<>();
-        accountMap.put(host, accountSet);
-      }
-      accountSet.add(acct);
-    }
-    for (String host : accountMap.keySet()) {
-      console.println("pushing to server " + host);
-      fbcli.setServer(host);
-      fbcli.pushFreeBusyForAccounts(accountMap.get(host));
-    }
-  }
-
-  private void doPushFreeBusyForDomain(String[] args)
-      throws ServiceException, IOException, HttpException {
-    lookupDomain(args[1]);
-    FbCli fbcli = new FbCli();
-    for (Server server : prov.getAllMailClientServers()) {
-      console.println("pushing to server " + server.getName());
-      fbcli.setServer(server.getName());
-      fbcli.pushFreeBusyForDomain(args[1]);
-    }
-  }
-
-  private void doPurgeFreeBusyQueue(String[] args)
-      throws ServiceException, IOException, HttpException {
-    String provider = null;
-    if (args.length > 1) {
-      provider = args[1];
-    }
-    FbCli fbcli = new FbCli();
-    fbcli.purgeFreeBusyQueue(provider);
   }
 
   private void doHelp(String[] args) {
@@ -3155,15 +2137,6 @@ public class ProvUtil implements HttpDebugListener {
       }
     }
     return newArgs.toArray(new String[0]);
-  }
-
-  private void doDeleteDistributionList(String[] args) throws ServiceException {
-    String groupId = lookupGroup(args[1]).getId();
-    Boolean cascadeDelete = false;
-    if (args.length > 2) {
-      cascadeDelete = Boolean.valueOf(args[2]) != null ? Boolean.valueOf(args[2]) : false;
-    }
-    prov.deleteGroup(groupId, cascadeDelete);
   }
 
   public String helpCategory(Category cat) {
@@ -3357,5 +2330,37 @@ public class ProvUtil implements HttpDebugListener {
 
   public boolean getErrorOccursDuringInteraction() {
     return errorOccursDuringInteraction;
+  }
+
+  public boolean getUseLdapMaster() {
+    return useLdapMaster;
+  }
+
+  public boolean getInteractiveMode() {
+    return interactiveMode;
+  }
+
+  public boolean getVerboseMode() {
+    return verboseMode;
+  }
+
+  public SoapDebugLevel getDebugLevel() {
+    return debugLevel;
+  }
+
+  public BufferedReader getCliReader() {
+    return cliReader;
+  }
+
+  public String getAccount() {
+    return account;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public ZAuthToken getAuthToken() {
+    return authToken;
   }
 }
