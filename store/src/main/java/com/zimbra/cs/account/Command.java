@@ -440,6 +440,7 @@ public enum Command {
       Category.SERVER,
       3,
       Integer.MAX_VALUE),
+  /** FIXME: never used, check if we can remove it */
   MODIFY_XMPP_COMPONENT(
       "modifyXMPPComponent",
       "mxc",
