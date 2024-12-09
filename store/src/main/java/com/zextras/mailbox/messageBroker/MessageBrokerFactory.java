@@ -22,15 +22,15 @@ public class MessageBrokerFactory {
 		try {
 			token = Files.readString(filePath);
 			ServiceDiscoverHttpClient serviceDiscoverHttpClient =
-					ServiceDiscoverHttpClient.defaultURL("carbonio-message-broker")
+					ServiceDiscoverHttpClient.defaultUrl()
 							.withToken(token);
 
 			return MessageBrokerClient.fromConfig(
 							"127.78.0.7",
 							20005,
-							serviceDiscoverHttpClient.getConfig("default/username")
+							serviceDiscoverHttpClient.getConfig("carbonio-message-broker","default/username")
 									.getOrElse("carbonio-message-broker"),
-							serviceDiscoverHttpClient.getConfig("default/password").getOrElse("")
+							serviceDiscoverHttpClient.getConfig("carbonio-message-broker","default/password").getOrElse("")
 					)
 					.withCurrentService(Service.MAILBOX);
 		} catch (IOException e) {

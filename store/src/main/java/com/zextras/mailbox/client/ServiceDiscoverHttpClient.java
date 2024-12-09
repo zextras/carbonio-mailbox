@@ -7,6 +7,7 @@ package com.zextras.mailbox.client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.carbonio.files.exceptions.InternalServerError;
 import com.zextras.carbonio.files.exceptions.UnAuthorized;
+import com.zimbra.common.util.ZimbraLog;
 import io.vavr.control.Try;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
@@ -33,15 +34,8 @@ public class ServiceDiscoverHttpClient {
     this.token = System.getenv("CONSUL_HTTP_TOKEN"); // default: get from env
   }
 
-  public static ServiceDiscoverHttpClient atURL(
-    String url,
-    String serviceName
-  ) {
-    return new ServiceDiscoverHttpClient(url + "/v1/kv/" + serviceName + "/");
-  }
-
-  public static ServiceDiscoverHttpClient defaultURL(String serviceName) {
-    return new ServiceDiscoverHttpClient("http://localhost:8500/v1/kv/" + serviceName + "/");
+  public static ServiceDiscoverHttpClient defaultUrl() {
+    return new ServiceDiscoverHttpClient("http://localhost:8500");
   }
 
   public ServiceDiscoverHttpClient withToken(String token) {
@@ -49,9 +43,10 @@ public class ServiceDiscoverHttpClient {
     return this;
   }
 
-  public Try<String> getConfig(String configKey) {
+  public Try<String> getConfig(String serviceName, String configKey) {
     try (CloseableHttpClient httpClient = HttpClients.createMinimal()) {
-      HttpGet request = new HttpGet(serviceDiscoverURL + configKey);
+      String url = serviceDiscoverURL + "/v1/kv/" + serviceName + "/" + configKey;
+      HttpGet request = new HttpGet(url);
       request.setHeader("X-Consul-Token", token);
       try(CloseableHttpResponse response = httpClient.execute(request)) {
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
@@ -72,6 +67,29 @@ public class ServiceDiscoverHttpClient {
       }
     } catch (IOException exception) {
       logger.error("Exception trying to get config from service discover: ", exception);
+      return Try.failure(new InternalServerError(exception));
+    }
+  }
+
+  public Try<Boolean> isServiceInstalled(String serviceName) {
+    String url = serviceDiscoverURL + "/v1/health/checks/" + serviceName;
+    try (CloseableHttpClient httpClient = HttpClients.createMinimal()) {
+      HttpGet request = new HttpGet(url);
+      request.setHeader("X-Consul-Token", token);
+      try (CloseableHttpResponse response = httpClient.execute(request)) {
+        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+          logger.error("Unexpected response status: {}", response.getStatusLine().getStatusCode());
+          return Try.failure(new InternalServerError(new Exception("Unexpected response status: " + response.getStatusLine().getStatusCode())));
+        }
+        String bodyResponse = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+        if (bodyResponse.equals("[]")) {
+          return Try.success(false);
+        } else {
+          return Try.success(true);
+        }
+      }
+    } catch (IOException exception) {
+      logger.error("Exception trying to check if service is installed: ", exception);
       return Try.failure(new InternalServerError(exception));
     }
   }
