@@ -31,6 +31,7 @@ import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import io.vavr.control.Try;
 
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -42,6 +43,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockserver.integration.ClientAndServer;
 
@@ -263,11 +265,14 @@ class DeleteAccountTest {
   @ParameterizedTest
   @MethodSource("getHappyPathCases")
   void shouldDeleteUser(Account caller, Account toDelete) throws Exception {
+    try (MockedStatic<Files> mockFileSystem = Mockito.mockStatic(Files.class, Mockito.CALLS_REAL_METHODS)) {
+      mockFileSystem.when(() -> Files.readString(any())).thenReturn("");
       Mockito.when(mockMessageBrokerClient.publish(any(DeleteUserRequested.class))).thenReturn(true);
 
       final String toDeleteId = toDelete.getId();
       this.doDeleteAccount(caller, toDeleteId);
       Assertions.assertNull(provisioning.getAccountById(toDeleteId));
+    }
   }
 
   private static Stream<Arguments> getPermissionDeniedCases() throws ServiceException {
@@ -327,30 +332,32 @@ class DeleteAccountTest {
     @ParameterizedTest
     @MethodSource("getHappyPathCases")
     void shouldDeleteUserThrowsException(Account caller, Account toDelete) throws Exception {
+      try (MockedStatic<Files> mockFileSystem = Mockito.mockStatic(Files.class, Mockito.CALLS_REAL_METHODS)) {
+        mockFileSystem.when(() -> Files.readString(any())).thenReturn("");
         Mockito.when(mockMessageBrokerClient.publish(any(DeleteUserRequested.class))).thenReturn(true);
         DeleteUserUseCase deleteUserUseCase = Mockito.mock(DeleteUserUseCase.class);
 
         final String toDeleteId = toDelete.getId();
         Map<String, Object> context = new HashMap<String, Object>();
         ZimbraSoapContext zsc =
-                new ZimbraSoapContext(
-                        AuthProvider.getAuthToken(caller),
-                        caller.getId(),
-                        SoapProtocol.Soap12,
-                        SoapProtocol.Soap12);
+            new ZimbraSoapContext(
+                AuthProvider.getAuthToken(caller),
+                caller.getId(),
+                SoapProtocol.Soap12,
+                SoapProtocol.Soap12);
         context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
         DeleteAccount deleteAccountHandler =
-                new DeleteAccount(
-                        deleteUserUseCase,
-                        Try.of(() -> mockMessageBrokerClient));
+            new DeleteAccount(
+                deleteUserUseCase,
+                Try.of(() -> mockMessageBrokerClient));
         Mockito.when(deleteUserUseCase.delete(toDeleteId)).thenReturn(Try.failure(new RuntimeException("message")));
         DeleteAccountRequest deleteAccountRequest = new DeleteAccountRequest(toDeleteId);
         Element request = JaxbUtil.jaxbToElement(deleteAccountRequest);
         final ServiceException serviceException =
-                Assertions.assertThrows(ServiceException.class, () -> deleteAccountHandler.handle(request, context));
+            Assertions.assertThrows(ServiceException.class, () -> deleteAccountHandler.handle(request, context));
         Assertions.assertEquals("service.FAILURE", serviceException.getCode());
         Assertions.assertTrue(serviceException.getMessage().startsWith("system failure: Delete account "));
         Assertions.assertTrue(serviceException.getMessage().endsWith("has an error: message"));
+      }
     }
-
 }
