@@ -264,6 +264,10 @@ public class ProvUtilRegressionTest {
           "generateDomainPreAuth example.com 8a64a712-cceb-4e03-b5ce-c131481bb455 by 0 0",
           "generateDomainPreAuth example.com 8a64a712-cceb-4e03-b5ce-c131481bb455 by 1732623357 0",
           "generateDomainPreAuth example.com someName by 0 0",
+          "-l generateDomainPreAuthKey test.com",
+          "-l generateDomainPreAuthKey f4806430-b434-4e93-9357-a02d9dd796b8",
+          "-l generateDomainPreAuthKey -f test.com",
+          "-l generateDomainPreAuthKey -f f4806430-b434-4e93-9357-a02d9dd796b8",
           "getAuthTokenInfo 0_2b6c930a7ca1a02daad5f27528d6c9986317204e_69643d33363a62333134613231652d666137392d346533352d613765352d6437666637303834333866363b6578703d31333a313733323535383437303239303b76763d323a31363b747970653d363a7a696d6272613b753d313a613b7469643d31303a313131353331313832383b",
           "getMemcachedClientConfig f129be06-86bd-4123-8232-be39a96c2105",
           "getMemcachedClientConfig f129be06-86bd-4123-8232-be39a96c2105 f129be06-86bd-4123-8232-be39a96c2105 f129be06-86bd-4123-8232-be39a96c2105",
@@ -284,6 +288,7 @@ public class ProvUtilRegressionTest {
 
   @ParameterizedTest
   @ValueSource(strings = {
+          "-l getAllReverseProxyDomains",
           "getAllReverseProxyBackends",
           "getAllReverseProxyURLs"
   })
@@ -406,6 +411,14 @@ public class ProvUtilRegressionTest {
 
   @ParameterizedTest
   @ValueSource(strings = {
+          "compactIndexMailbox user@example.com start",
+          "compactIndexMailbox user@example.com status",
+          "compactIndexMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 start",
+          "compactIndexMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 status",
+          "getIndexStats user@example.com",
+          "getIndexStats user@example.com",
+          "getIndexStats 8a64a712-cceb-4e03-b5ce-c131481bb455",
+          "getMailboxInfo 301c1dab-c07d-478c-b5db-eaffcc64b593",
           "getQuotaUsage localhost",
           "recalculateMailboxCounts 8a64a712-cceb-4e03-b5ce-c131481bb455",
           "recalculateMailboxCounts user@example.com",
@@ -629,25 +642,6 @@ public class ProvUtilRegressionTest {
           "unlockMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 localhost",
   })
   void provUtilFailingTests(String cmd) throws IOException {
-    run(cmd);
-  }
-  @ParameterizedTest
-  @ValueSource(strings = {
-      "compactIndexMailbox user@example.com start",
-      "compactIndexMailbox user@example.com status",
-      "compactIndexMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 start",
-      "compactIndexMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 status",
-      "-l generateDomainPreAuthKey test.com",
-      "-l generateDomainPreAuthKey f4806430-b434-4e93-9357-a02d9dd796b8",
-      "-l generateDomainPreAuthKey -f test.com",
-      "-l generateDomainPreAuthKey -f f4806430-b434-4e93-9357-a02d9dd796b8",
-      "-l getAllReverseProxyDomains",
-      "getIndexStats user@example.com",
-      "getIndexStats user@example.com",
-      "getIndexStats 8a64a712-cceb-4e03-b5ce-c131481bb455",
-      "getMailboxInfo 301c1dab-c07d-478c-b5db-eaffcc64b593"
-  })
-  void notRunningBefore(String cmd) throws IOException {
     run(cmd);
   }
 }
