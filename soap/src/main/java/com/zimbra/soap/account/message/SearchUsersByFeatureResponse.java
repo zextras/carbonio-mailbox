@@ -4,6 +4,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.zimbra.common.soap.AccountConstants;
+import com.zimbra.soap.type.ZmBoolean;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -26,14 +27,14 @@ public class SearchUsersByFeatureResponse {
   /**
    * @zm-api-field-description The total number of accounts matching the request
    */
-  @XmlAttribute(name=AccountConstants.A_TOTAL, required=true)
+  @XmlAttribute(name=AccountConstants.A_TOTAL, required=false)
   private Integer total;
 
   /**
    * @zm-api-field-description Whether there are more accounts to fetch (for pagination)
    */
-  @XmlAttribute(name=AccountConstants.A_MORE, required=true)
-  private Boolean more;
+  @XmlAttribute(name=AccountConstants.A_MORE, required=false)
+  private ZmBoolean more;
 
   public SearchUsersByFeatureResponse() {
   }
@@ -62,10 +63,10 @@ public class SearchUsersByFeatureResponse {
   }
 
   public void setMore(boolean more) {
-    this.more = more;
+    this.more = ZmBoolean.fromBool(more);
   }
 
-  public boolean getMore() {
+  public ZmBoolean getMore() {
     return more;
   }
 

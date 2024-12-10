@@ -15,6 +15,7 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.account.message.UserInfo;
 import com.zimbra.soap.account.message.SearchUsersByFeatureRequest;
 import com.zimbra.soap.account.message.SearchUsersByFeatureResponse;
+import com.zimbra.soap.type.ZmBoolean;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
@@ -395,7 +396,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
       var response = getResponse(httpResponse);
       assertEquals(1, response.getAccounts().size());
       assertEquals(2, response.getTotal());
-      assertTrue(response.getMore());
+      assertTrue(ZmBoolean.toBool(response.getMore()));
     } finally {
       cleanUp(account1);
       cleanUp(account2);
@@ -417,7 +418,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
       var response = getResponse(httpResponse);
       assertEquals(1, response.getAccounts().size());
       assertEquals(4, response.getTotal());
-      assertFalse(response.getMore());
+      assertFalse(ZmBoolean.toBool(response.getMore()));
     } finally {
       cleanUp(account1);
       cleanUp(account2);
