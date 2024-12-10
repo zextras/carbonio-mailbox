@@ -387,13 +387,34 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS, 1))
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS, 1, 0))
           .execute();
 
       assertEquals(1, getResponse(httpResponse).getAccounts().size());
     } finally {
       cleanUp(account1);
       cleanUp(account2);
+    }
+  }
+
+  @Test
+  void testOffset() throws Exception {
+    var account1 = withChatsFeature(true, buildAccount("first.account", "Test1")).create();
+    var account2 = withChatsFeature(true, buildAccount("second.account", "Test2")).create();
+    var account3 = withChatsFeature(true, buildAccount("third.account", "Test3")).create();
+    var account4 = withChatsFeature(true, buildAccount("fourth.account", "Test4")).create();
+
+    try {
+      HttpResponse httpResponse = buildRequest()
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS, 10, 3))
+          .execute();
+
+      assertEquals(1, getResponse(httpResponse).getAccounts().size());
+    } finally {
+      cleanUp(account1);
+      cleanUp(account2);
+      cleanUp(account3);
+      cleanUp(account4);
     }
   }
 
@@ -484,13 +505,14 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
   }
 
   private static SearchUsersByFeatureRequest searchAccounts(String name, SearchUsersByFeatureRequest.Features feature) {
-    return searchAccounts(name, feature, 0);
+    return searchAccounts(name, feature, 0, 0);
   }
 
-  private static SearchUsersByFeatureRequest searchAccounts(String name, SearchUsersByFeatureRequest.Features feature, int maxResults) {
+  private static SearchUsersByFeatureRequest searchAccounts(String name, SearchUsersByFeatureRequest.Features feature, int maxResults, int offset) {
     SearchUsersByFeatureRequest request = new SearchUsersByFeatureRequest();
     request.setName(name);
     request.setFeature(feature);
+    request.setOffset(offset);
     if (maxResults > 0) {
       request.setLimit(maxResults);
     }

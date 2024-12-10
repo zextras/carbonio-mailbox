@@ -51,7 +51,9 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
 
     options.setFilterString(ZLdapFilterFactory.FilterId.ADMIN_SEARCH, getSearchFilter(query, feature, provisioning, allDomains, domain).toString());
 
-    var entries = provisioning.searchDirectory(options).stream().limit(request.getAttributeInt(AccountConstants.A_LIMIT, DEFAULT_MAX_RESULTS));
+    var entries = provisioning.searchDirectory(options).stream()
+        .skip(request.getAttributeInt(AccountConstants.A_OFFSET, 0))
+        .limit(request.getAttributeInt(AccountConstants.A_LIMIT, DEFAULT_MAX_RESULTS));
 
     return buildResponse(zsc, entries);
   }
