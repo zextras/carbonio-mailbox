@@ -11,9 +11,11 @@ import java.util.Set;
 
 class GetAllCosCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetAllCosCommandHandler(ProvUtil provUtil) {
+  public GetAllCosCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException {
@@ -26,7 +28,7 @@ class GetAllCosCommandHandler implements CommandHandler {
     List<Cos> allcos = provUtil.getProvisioning().getAllCos();
     for (Cos cos : allcos) {
       if (verbose) {
-        provUtil.dumpCos(cos, attrNames);
+        dumper.dumpCos(cos, attrNames);
       } else {
         provUtil.getConsole().println(cos.getName());
       }

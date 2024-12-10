@@ -12,9 +12,11 @@ import java.util.List;
 
 class GetAllXMPPComponentsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetAllXMPPComponentsCommandHandler(ProvUtil provUtil) {
+  public GetAllXMPPComponentsCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
@@ -24,7 +26,7 @@ class GetAllXMPPComponentsCommandHandler implements CommandHandler {
   private void doGetAllXMPPComponents() throws ServiceException {
     List<XMPPComponent> components = provUtil.getProvisioning().getAllXMPPComponents();
     for (XMPPComponent comp : components) {
-      provUtil.dumpXMPPComponent(comp, null);
+      dumper.dumpXMPPComponent(comp, null);
     }
   }
 }

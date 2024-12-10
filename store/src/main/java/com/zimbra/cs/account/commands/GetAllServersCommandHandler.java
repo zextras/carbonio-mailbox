@@ -13,9 +13,11 @@ import java.util.List;
 
 class GetAllServersCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetAllServersCommandHandler(ProvUtil provUtil) {
+  public GetAllServersCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
@@ -61,7 +63,7 @@ class GetAllServersCommandHandler implements CommandHandler {
     }
     for (Server server : servers) {
       if (verbose) {
-        provUtil.dumpServer(server, applyDefault, null);
+        dumper.dumpServer(server, applyDefault, null);
       } else {
         console.println(server.getName());
       }

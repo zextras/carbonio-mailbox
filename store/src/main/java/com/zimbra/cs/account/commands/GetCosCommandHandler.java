@@ -10,12 +10,14 @@ import java.io.IOException;
 
 class GetCosCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetCosCommandHandler(ProvUtil provUtil) {
+  public GetCosCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
-    provUtil.dumpCos(provUtil.lookupCos(args[1]), provUtil.getArgNameSet(args, 2));
+    dumper.dumpCos(provUtil.lookupCos(args[1]), provUtil.getArgNameSet(args, 2));
   }
 }

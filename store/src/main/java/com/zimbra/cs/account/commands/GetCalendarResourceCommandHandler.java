@@ -10,12 +10,14 @@ import java.io.IOException;
 
 class GetCalendarResourceCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetCalendarResourceCommandHandler(ProvUtil provUtil) {
+  public GetCalendarResourceCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
-    provUtil.dumpCalendarResource(provUtil.lookupCalendarResource(args[1]), true, provUtil.getArgNameSet(args, 2));
+    dumper.dumpCalendarResource(provUtil.lookupCalendarResource(args[1]), true, provUtil.getArgNameSet(args, 2));
   }
 }

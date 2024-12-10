@@ -16,9 +16,11 @@ import java.util.List;
 
 class GetAllCalendarResourcesCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetAllCalendarResourcesCommandHandler(ProvUtil provUtil) {
+  public GetAllCalendarResourcesCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
@@ -99,7 +101,7 @@ class GetAllCalendarResourcesCommandHandler implements CommandHandler {
     NamedEntry.Visitor visitor =
             entry -> {
               if (verbose) {
-                provUtil.dumpCalendarResource((CalendarResource) entry, applyDefault, null);
+                dumper.dumpCalendarResource((CalendarResource) entry, applyDefault, null);
               } else {
                 provUtil.getConsole().println(entry.getName());
               }

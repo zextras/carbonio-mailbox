@@ -10,9 +10,11 @@ import java.io.IOException;
 
 class GetXMPPComponentCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetXMPPComponentCommandHandler(ProvUtil provUtil) {
+  public GetXMPPComponentCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
@@ -20,6 +22,6 @@ class GetXMPPComponentCommandHandler implements CommandHandler {
   }
 
   private void doGetXMPPComponent(String[] args) throws ServiceException {
-    provUtil.dumpXMPPComponent(provUtil.lookupXMPPComponent(args[1]), provUtil.getArgNameSet(args, 2));
+    dumper.dumpXMPPComponent(provUtil.lookupXMPPComponent(args[1]), provUtil.getArgNameSet(args, 2));
   }
 }

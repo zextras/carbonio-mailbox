@@ -10,12 +10,14 @@ import java.io.IOException;
 
 class GetDistributionListCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetDistributionListCommandHandler(ProvUtil provUtil) {
+  public GetDistributionListCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
-    provUtil.dumpGroup(provUtil.lookupGroup(args[1]), provUtil.getArgNameSet(args, 2));
+    dumper.dumpGroup(provUtil.lookupGroup(args[1]), provUtil.getArgNameSet(args, 2));
   }
 }

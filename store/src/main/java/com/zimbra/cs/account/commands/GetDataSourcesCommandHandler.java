@@ -12,9 +12,11 @@ import java.util.Set;
 
 class GetDataSourcesCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetDataSourcesCommandHandler(ProvUtil provUtil) {
+  public GetDataSourcesCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException {
@@ -35,7 +37,7 @@ class GetDataSourcesCommandHandler implements CommandHandler {
     console.println("# name " + dataSource.getName());
     console.println("# type " + dataSource.getType());
     Map<String, Object> attrs = dataSource.getAttrs();
-    provUtil.dumpAttrs(attrs, argNameSet);
+    dumper.dumpAttrs(attrs, argNameSet);
     console.println();
   }
 }

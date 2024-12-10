@@ -10,9 +10,11 @@ import java.io.IOException;
 
 class GetDomainCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetDomainCommandHandler(ProvUtil provUtil) {
+  public GetDomainCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
@@ -36,7 +38,7 @@ class GetDomainCommandHandler implements CommandHandler {
       provUtil.usage();
       return;
     }
-    provUtil.dumpDomain(provUtil.lookupDomain(args[i], provUtil.getProvisioning(), applyDefault), applyDefault, provUtil.getArgNameSet(args, i + 1));
+    dumper.dumpDomain(provUtil.lookupDomain(args[i], provUtil.getProvisioning(), applyDefault), applyDefault, provUtil.getArgNameSet(args, i + 1));
   }
 
 }

@@ -13,9 +13,11 @@ import java.util.Set;
 
 class GetAllAdminAccountsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetAllAdminAccountsCommandHandler(ProvUtil provUtil) {
+  public GetAllAdminAccountsCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException {
@@ -57,7 +59,7 @@ class GetAllAdminAccountsCommandHandler implements CommandHandler {
     Set<String> attrNames = provUtil.getArgNameSet(args, i);
     for (Account account : accounts) {
       if (verbose) {
-        provUtil.dumpAccount(account, applyDefault, attrNames);
+        dumper.dumpAccount(account, applyDefault, attrNames);
       } else {
         console.println(account.getName());
       }

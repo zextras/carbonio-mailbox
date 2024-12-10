@@ -7,12 +7,14 @@ import com.zimbra.cs.account.ProvUtil;
 
 class GetAllConfigCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetAllConfigCommandHandler(ProvUtil provUtil) {
+  public GetAllConfigCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException {
-    provUtil.dumpAttrs(provUtil.getProvisioning().getConfig().getAttrs(), provUtil.getArgNameSet(args, 1));
+    dumper.dumpAttrs(provUtil.getProvisioning().getConfig().getAttrs(), provUtil.getArgNameSet(args, 1));
   }
 }

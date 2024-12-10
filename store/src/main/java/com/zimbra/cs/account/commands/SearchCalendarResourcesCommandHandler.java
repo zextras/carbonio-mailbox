@@ -18,9 +18,11 @@ import java.util.List;
 
 class SearchCalendarResourcesCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public SearchCalendarResourcesCommandHandler(ProvUtil provUtil) {
+  public SearchCalendarResourcesCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
@@ -81,7 +83,7 @@ class SearchCalendarResourcesCommandHandler implements CommandHandler {
     for (NamedEntry entry : resources) {
       CalendarResource resource = (CalendarResource) entry;
       if (verbose) {
-        provUtil.dumpCalendarResource(resource, true, null);
+        dumper.dumpCalendarResource(resource, true, null);
       } else {
         provUtil.getConsole().println(resource.getName());
       }

@@ -20,9 +20,11 @@ import java.util.Map;
 
 class SearchAccountsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public SearchAccountsCommandHandler(ProvUtil provUtil) {
+  public SearchAccountsCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
@@ -102,13 +104,13 @@ class SearchAccountsCommandHandler implements CommandHandler {
       NamedEntry account = accounts.get(j);
       if (verbose) {
         if (account instanceof Account) {
-          provUtil.dumpAccount((Account) account, true, null);
+          dumper.dumpAccount((Account) account, true, null);
         } else if (account instanceof Alias) {
-          provUtil.dumpAlias((Alias) account);
+          dumper.dumpAlias((Alias) account);
         } else if (account instanceof DistributionList) {
-          provUtil.dumpGroup((DistributionList) account, null);
+          dumper.dumpGroup((DistributionList) account, null);
         } else if (account instanceof Domain) {
-          provUtil.dumpDomain((Domain) account, null);
+          dumper.dumpDomain((Domain) account, null);
         }
       } else {
         provUtil.getConsole().println(account.getName());

@@ -12,9 +12,11 @@ import java.util.List;
 
 class GetAllRightsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetAllRightsCommandHandler(ProvUtil provUtil) {
+  public GetAllRightsCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
@@ -62,6 +64,6 @@ class GetAllRightsCommandHandler implements CommandHandler {
   }
 
   private void dumpRight(Right right) {
-    provUtil.dumpRight(right, true);
+    dumper.dumpRight(right, true);
   }
 }

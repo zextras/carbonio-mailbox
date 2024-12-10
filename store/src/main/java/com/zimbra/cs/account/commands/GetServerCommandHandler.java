@@ -10,9 +10,11 @@ import java.io.IOException;
 
 class GetServerCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetServerCommandHandler(ProvUtil provUtil) {
+  public GetServerCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
@@ -36,7 +38,7 @@ class GetServerCommandHandler implements CommandHandler {
       provUtil.usage();
       return;
     }
-    provUtil.dumpServer(provUtil.lookupServer(args[i], applyDefault), applyDefault, provUtil.getArgNameSet(args, i + 1));
+    dumper.dumpServer(provUtil.lookupServer(args[i], applyDefault), applyDefault, provUtil.getArgNameSet(args, i + 1));
   }
 
 }

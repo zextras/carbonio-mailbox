@@ -17,9 +17,11 @@ import java.util.Set;
 
 class GetAllAccountsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetAllAccountsCommandHandler(ProvUtil provUtil) {
+  public GetAllAccountsCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
 
@@ -100,7 +102,7 @@ class GetAllAccountsCommandHandler implements CommandHandler {
     NamedEntry.Visitor visitor =
             entry -> {
               if (verbose) {
-                provUtil.dumpAccount((Account) entry, applyDefault, attrNames);
+                dumper.dumpAccount((Account) entry, applyDefault, attrNames);
               } else {
                 provUtil.getConsole().println(entry.getName());
               }

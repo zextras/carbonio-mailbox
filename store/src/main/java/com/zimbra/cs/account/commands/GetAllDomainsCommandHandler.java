@@ -12,9 +12,11 @@ import java.util.Set;
 
 class GetAllDomainsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetAllDomainsCommandHandler(ProvUtil provUtil) {
+  public GetAllDomainsCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException {
@@ -55,7 +57,7 @@ class GetAllDomainsCommandHandler implements CommandHandler {
     }
     for (Domain domain : domains) {
       if (verbose) {
-        provUtil.dumpDomain(domain, attrNames);
+        dumper.dumpDomain(domain, attrNames);
       } else {
         console.println(domain.getName());
       }

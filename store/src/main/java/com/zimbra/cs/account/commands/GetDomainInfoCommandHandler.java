@@ -14,9 +14,11 @@ import java.io.IOException;
 
 class GetDomainInfoCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetDomainInfoCommandHandler(ProvUtil provUtil) {
+  public GetDomainInfoCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
@@ -34,7 +36,7 @@ class GetDomainInfoCommandHandler implements CommandHandler {
     if (domain == null) {
       throw AccountServiceException.NO_SUCH_DOMAIN(key);
     } else {
-      provUtil.dumpDomain(domain, provUtil.getArgNameSet(args, 3));
+      dumper.dumpDomain(domain, provUtil.getArgNameSet(args, 3));
     }
   }
 }

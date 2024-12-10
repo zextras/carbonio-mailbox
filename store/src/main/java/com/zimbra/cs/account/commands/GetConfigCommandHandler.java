@@ -12,9 +12,11 @@ import java.util.Set;
 
 class GetConfigCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetConfigCommandHandler(ProvUtil provUtil) {
+  public GetConfigCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
@@ -25,6 +27,6 @@ class GetConfigCommandHandler implements CommandHandler {
     String key = args[1];
     Set<String> needAttr = new HashSet<>();
     needAttr.add(key);
-    provUtil.dumpAttrs(provUtil.getProvisioning().getConfig(key).getAttrs(), needAttr);
+    dumper.dumpAttrs(provUtil.getProvisioning().getConfig(key).getAttrs(), needAttr);
   }
 }

@@ -17,9 +17,11 @@ import java.util.Map;
 
 class SearchGalCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public SearchGalCommandHandler(ProvUtil provUtil) {
+  public SearchGalCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
@@ -54,7 +56,7 @@ class SearchGalCommandHandler implements CommandHandler {
       }
 
       GalContact.Visitor visitor =
-              gc -> provUtil.dumpContact(gc);
+              gc -> dumper.dumpContact(gc);
       result = prov.searchGal(d, query, GalSearchType.all, limit, visitor);
 
     } else {
@@ -62,7 +64,7 @@ class SearchGalCommandHandler implements CommandHandler {
               ((SoapProvisioning) prov)
                       .searchGal(d, query, GalSearchType.all, null, limit, offset, sortBy);
       for (GalContact contact : result.getMatches()) {
-        provUtil.dumpContact(contact);
+        dumper.dumpContact(contact);
       }
     }
   }

@@ -12,9 +12,11 @@ import java.util.Set;
 
 class GetSignaturesCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetSignaturesCommandHandler(ProvUtil provUtil) {
+  public GetSignaturesCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException {
@@ -33,7 +35,7 @@ class GetSignaturesCommandHandler implements CommandHandler {
     var console = provUtil.getConsole();
     console.println("# name " + signature.getName());
     Map<String, Object> attrs = signature.getAttrs();
-    provUtil.dumpAttrs(attrs, attrNameSet);
+    dumper.dumpAttrs(attrs, attrNameSet);
     console.println();
   }
 }

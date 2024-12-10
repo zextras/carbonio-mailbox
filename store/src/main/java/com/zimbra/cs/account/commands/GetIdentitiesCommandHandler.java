@@ -11,9 +11,11 @@ import java.util.Set;
 
 class GetIdentitiesCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetIdentitiesCommandHandler(ProvUtil provUtil) {
+  public GetIdentitiesCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException {
@@ -24,7 +26,7 @@ class GetIdentitiesCommandHandler implements CommandHandler {
     Account account = provUtil.lookupAccount(args[1]);
     Set<String> argNameSet = provUtil.getArgNameSet(args, 2);
     for (Identity identity : provUtil.getProvisioning().getAllIdentities(account)) {
-      provUtil.dumpIdentity(identity, argNameSet);
+      dumper.dumpIdentity(identity, argNameSet);
     }
   }
 

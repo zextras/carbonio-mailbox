@@ -16,9 +16,11 @@ import java.io.IOException;
 
 class SyncGalCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public SyncGalCommandHandler(ProvUtil provUtil) {
+  public SyncGalCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
@@ -35,12 +37,12 @@ class SyncGalCommandHandler implements CommandHandler {
     Provisioning.SearchGalResult result = null;
     if (prov instanceof LdapProv) {
       GalContact.Visitor visitor =
-              gc -> provUtil.dumpContact(gc);
+              gc -> dumper.dumpContact(gc);
       result = prov.syncGal(d, token, visitor);
     } else {
       result = ((SoapProvisioning) prov).searchGal(d, "", GalSearchType.all, token, 0, 0, null);
       for (GalContact contact : result.getMatches()) {
-        provUtil.dumpContact(contact);
+        dumper.dumpContact(contact);
       }
     }
 

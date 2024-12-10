@@ -9,9 +9,11 @@ import com.zimbra.soap.type.GalSearchType;
 
 class AutoCompleteGalCommandHandler implements CommandHandler {
   final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public AutoCompleteGalCommandHandler(ProvUtil provUtil) {
+  public AutoCompleteGalCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException {
@@ -26,7 +28,7 @@ class AutoCompleteGalCommandHandler implements CommandHandler {
     Domain d = provUtil.lookupDomain(domain);
 
     GalContact.Visitor visitor =
-            gc -> provUtil.dumpContact(gc);
+            gc -> dumper.dumpContact(gc);
     provUtil.getProvisioning().autoCompleteGal(d, query, GalSearchType.all, limit, visitor);
   }
 }

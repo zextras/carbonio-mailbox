@@ -7,9 +7,11 @@ import com.zimbra.cs.account.ProvUtil;
 
 class GetAccountCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetAccountCommandHandler(ProvUtil provUtil) {
+  public GetAccountCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException {
@@ -30,7 +32,7 @@ class GetAccountCommandHandler implements CommandHandler {
       }
     }
 
-    provUtil.dumpAccount(
+    dumper.dumpAccount(
             provUtil.lookupAccount(args[acctPos], true, applyDefault),
             applyDefault,
             provUtil.getArgNameSet(args, acctPos + 1));

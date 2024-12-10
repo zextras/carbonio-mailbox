@@ -14,9 +14,11 @@ import java.util.List;
 
 class GetAllDistributionListsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetAllDistributionListsCommandHandler(ProvUtil provUtil) {
+  public GetAllDistributionListsCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
@@ -52,7 +54,7 @@ class GetAllDistributionListsCommandHandler implements CommandHandler {
         for (Object obj : dls) {
           Group dl = (Group) obj;
           if (verbose) {
-            provUtil.dumpGroup(dl, null);
+            dumper.dumpGroup(dl, null);
           } else {
             console.println(dl.getName());
           }
@@ -64,7 +66,7 @@ class GetAllDistributionListsCommandHandler implements CommandHandler {
       for (Object obj : dls) {
         Group dl = (Group) obj;
         if (verbose) {
-          provUtil.dumpGroup(dl, null);
+          dumper.dumpGroup(dl, null);
         } else {
           console.println(dl.getName());
         }

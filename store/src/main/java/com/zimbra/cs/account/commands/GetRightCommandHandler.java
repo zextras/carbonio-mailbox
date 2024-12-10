@@ -11,9 +11,11 @@ import java.io.IOException;
 
 class GetRightCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
+  private final ProvUtilDumper dumper;
 
-  public GetRightCommandHandler(ProvUtil provUtil) {
+  public GetRightCommandHandler(ProvUtil provUtil, ProvUtilDumper dumper) {
     this.provUtil = provUtil;
+    this.dumper = dumper;
   }
 
   @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
@@ -30,7 +32,7 @@ class GetRightCommandHandler implements CommandHandler {
         throw new ArgException("invalid arguments");
       }
     }
-    provUtil.dumpRight(lookupRight(right), expandComboRight);
+    dumper.dumpRight(lookupRight(right), expandComboRight);
   }
 
   private Right lookupRight(String rightName) throws ServiceException {
