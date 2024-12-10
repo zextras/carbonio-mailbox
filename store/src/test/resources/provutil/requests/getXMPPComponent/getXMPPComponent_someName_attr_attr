@@ -1,0 +1,3 @@
+getXMPPComponent someName attr attr
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetXMPPComponentRequest xmlns="urn:zimbraAdmin"><xmppcomponent by="name">someName</xmppcomponent></GetXMPPComponentRequest>

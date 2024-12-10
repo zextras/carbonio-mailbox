@@ -1,0 +1,3 @@
+createDomain example.com zimbraId 1 zimbraImapBindPort 1
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<CreateDomainRequest name="example.com" xmlns="urn:zimbraAdmin"><a n="zimbraId">1</a><a n="zimbraImapBindPort">1</a></CreateDomainRequest>

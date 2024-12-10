@@ -1,0 +1,6 @@
+pushFreebusy 301c1dab-c07d-478c-b5db-eaffcc64b593 301c1dab-c07d-478c-b5db-eaffcc64b593
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetAccountRequest applyCos="1" xmlns="urn:zimbraAdmin"><account by="id">301c1dab-c07d-478c-b5db-eaffcc64b593</account></GetAccountRequest>
+<GetAccountRequest applyCos="1" xmlns="urn:zimbraAdmin"><account by="id">301c1dab-c07d-478c-b5db-eaffcc64b593</account></GetAccountRequest>
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<PushFreeBusyRequest xmlns="urn:zimbraAdmin"><account id="301c1dab-c07d-478c-b5db-eaffcc64b593"/></PushFreeBusyRequest>

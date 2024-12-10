@@ -1,0 +1,3 @@
+getConfig someName
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetConfigRequest xmlns="urn:zimbraAdmin"><a n="someName"/></GetConfigRequest>

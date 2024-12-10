@@ -1,0 +1,3 @@
+getAllDistributionLists -v
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetAllDomainsRequest applyConfig="1" xmlns="urn:zimbraAdmin"/>

@@ -1,0 +1,3 @@
+grantRight config usr test@test.com grp modifyAccount
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GrantRightRequest xmlns="urn:zimbraAdmin"><target type="config"/><grantee by="name" type="usr">test@test.com</grantee><right>grp</right></GrantRightRequest>

@@ -1,0 +1,3 @@
+revokeRight domain test.com usr grantee.name@example.com invite
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<RevokeRightRequest xmlns="urn:zimbraAdmin"><target by="name" type="domain">test.com</target><grantee by="name" type="usr">grantee.name@example.com</grantee><right>invite</right></RevokeRightRequest>

@@ -1,0 +1,4 @@
+deleteIdentity test@test.com identityName
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetAccountRequest applyCos="1" xmlns="urn:zimbraAdmin"><account by="name">test@test.com</account></GetAccountRequest>
+<DeleteIdentityRequest xmlns="urn:zimbraAccount"><identity name="identityName"/></DeleteIdentityRequest>

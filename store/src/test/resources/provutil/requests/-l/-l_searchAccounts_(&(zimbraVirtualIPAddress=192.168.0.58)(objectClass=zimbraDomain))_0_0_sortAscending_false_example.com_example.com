@@ -1,0 +1,1 @@
+-l searchAccounts (&(zimbraVirtualIPAddress=192.168.0.58)(objectClass=zimbraDomain)) 0 0 sortAscending false example.com example.com

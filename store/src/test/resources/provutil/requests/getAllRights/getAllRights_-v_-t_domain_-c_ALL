@@ -1,0 +1,3 @@
+getAllRights -v -t domain -c ALL
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetAllRightsRequest expandAllAttrs="0" rightClass="ALL" targetType="domain" xmlns="urn:zimbraAdmin"/>

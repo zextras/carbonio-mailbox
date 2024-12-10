@@ -1,0 +1,4 @@
+getAllFbp
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetAllFreeBusyProvidersRequest xmlns="urn:zimbraAdmin"/>

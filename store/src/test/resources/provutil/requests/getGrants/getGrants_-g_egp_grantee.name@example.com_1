@@ -1,0 +1,3 @@
+getGrants -g egp grantee.name@example.com 1
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetGrantsRequest xmlns="urn:zimbraAdmin"><grantee all="1" by="name" type="egp">grantee.name@example.com</grantee></GetGrantsRequest>
