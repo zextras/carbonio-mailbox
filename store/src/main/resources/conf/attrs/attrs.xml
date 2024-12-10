@@ -9817,15 +9817,16 @@ TODO: delete them permanently from here
   <desc>whether or not the user has accepted the client's terms of service</desc>
 </attr>
 
-<attr id="3071" name="zimbraHABSeniorityIndex" type="integer" cardinality="single" optionalIn="habGroup,account" since="8.8.10">
+<attr id="3071" name="zimbraHABSeniorityIndex" type="integer" cardinality="single" optionalIn="habGroup,account" since="8.8.10" deprecatedSince="25.3.0">
   <desc>seniority index of the group or group member which will determine the sorting order in the hierarchical address book</desc>
+  <deprecateDesc>HAB is not supported anymore</deprecateDesc>
 </attr>
 
 <attr id="3072" name="zimbraHierarchicalAddressBookRoot" type="string" cardinality="multi" optionalIn="domain" flags="domainInfo" since="8.8.10">
   <desc>root group id of hierarchical address book</desc>
 </attr>
 
-<attr id="3073" name="zimbraHABMemberLdapAttrMap" type="string" max="4096" cardinality="multi" optionalIn="globalConfig" since="8.8.10">
+<attr id="3073" name="zimbraHABMemberLdapAttrMap" type="string" max="4096" cardinality="multi" optionalIn="globalConfig" since="8.8.10" deprecatedSince="25.3.0">
   <globalConfigValue>firstName=givenName</globalConfigValue>
   <globalConfigValue>lastName=sn</globalConfigValue>
   <globalConfigValue>displayName=displayName</globalConfigValue>
@@ -9842,6 +9843,7 @@ TODO: delete them permanently from here
   <globalConfigValue>office=physicalDeliveryOfficeName</globalConfigValue>
   <globalConfigValue>alias=zimbraMailAlias</globalConfigValue>
   <desc>LDAP attribute to HAB Group Member attribute mapping</desc>
+  <deprecateDesc>HAB is not supported anymore</deprecateDesc>
 </attr>
 
 <attr id="3074" name="zimbraAddressListGalFilter" type="string" cardinality="single" requiredIn="addressList" flags="domainAdminModifiable" since="8.8.10">

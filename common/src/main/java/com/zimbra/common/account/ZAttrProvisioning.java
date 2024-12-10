@@ -8384,6 +8384,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraGroupId = "zimbraGroupId";
 
     /**
+     * Deprecated since: 25.3.0. HAB is not supported anymore. Orig desc:
      * LDAP attribute to HAB Group Member attribute mapping
      *
      * @since ZCS 8.8.10
@@ -8392,6 +8393,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraHABMemberLdapAttrMap = "zimbraHABMemberLdapAttrMap";
 
     /**
+     * Deprecated since: 25.3.0. HAB is not supported anymore. Orig desc:
      * seniority index of the group or group member which will determine the
      * sorting order in the hierarchical address book
      *

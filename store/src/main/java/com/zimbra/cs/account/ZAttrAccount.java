@@ -23635,6 +23635,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Deprecated since: 25.3.0. HAB is not supported anymore. Orig desc:
      * seniority index of the group or group member which will determine the
      * sorting order in the hierarchical address book
      *
@@ -23648,6 +23649,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Deprecated since: 25.3.0. HAB is not supported anymore. Orig desc:
      * seniority index of the group or group member which will determine the
      * sorting order in the hierarchical address book
      *
@@ -23664,6 +23666,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Deprecated since: 25.3.0. HAB is not supported anymore. Orig desc:
      * seniority index of the group or group member which will determine the
      * sorting order in the hierarchical address book
      *
@@ -23681,6 +23684,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Deprecated since: 25.3.0. HAB is not supported anymore. Orig desc:
      * seniority index of the group or group member which will determine the
      * sorting order in the hierarchical address book
      *
@@ -23696,6 +23700,7 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Deprecated since: 25.3.0. HAB is not supported anymore. Orig desc:
      * seniority index of the group or group member which will determine the
      * sorting order in the hierarchical address book
      *

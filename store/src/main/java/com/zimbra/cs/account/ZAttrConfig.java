@@ -22804,6 +22804,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.3.0. HAB is not supported anymore. Orig desc:
      * LDAP attribute to HAB Group Member attribute mapping
      *
      * @return zimbraHABMemberLdapAttrMap, or empty array if unset
@@ -22816,6 +22817,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.3.0. HAB is not supported anymore. Orig desc:
      * LDAP attribute to HAB Group Member attribute mapping
      *
      * @param zimbraHABMemberLdapAttrMap new value
@@ -22831,6 +22833,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.3.0. HAB is not supported anymore. Orig desc:
      * LDAP attribute to HAB Group Member attribute mapping
      *
      * @param zimbraHABMemberLdapAttrMap new value
@@ -22847,6 +22850,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.3.0. HAB is not supported anymore. Orig desc:
      * LDAP attribute to HAB Group Member attribute mapping
      *
      * @param zimbraHABMemberLdapAttrMap new to add to existing values
@@ -22862,6 +22866,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.3.0. HAB is not supported anymore. Orig desc:
      * LDAP attribute to HAB Group Member attribute mapping
      *
      * @param zimbraHABMemberLdapAttrMap new to add to existing values
@@ -22878,6 +22883,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.3.0. HAB is not supported anymore. Orig desc:
      * LDAP attribute to HAB Group Member attribute mapping
      *
      * @param zimbraHABMemberLdapAttrMap existing value to remove
@@ -22893,6 +22899,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.3.0. HAB is not supported anymore. Orig desc:
      * LDAP attribute to HAB Group Member attribute mapping
      *
      * @param zimbraHABMemberLdapAttrMap existing value to remove
@@ -22909,6 +22916,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.3.0. HAB is not supported anymore. Orig desc:
      * LDAP attribute to HAB Group Member attribute mapping
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -22923,6 +22931,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.3.0. HAB is not supported anymore. Orig desc:
      * LDAP attribute to HAB Group Member attribute mapping
      *
      * @param attrs existing map to populate, or null to create a new map
