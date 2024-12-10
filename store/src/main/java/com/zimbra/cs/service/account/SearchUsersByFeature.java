@@ -51,11 +51,15 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
 
     options.setFilterString(ZLdapFilterFactory.FilterId.ADMIN_SEARCH, getSearchFilter(query, feature, provisioning, allDomains, domain).toString());
 
-    var entries = provisioning.searchDirectory(options).stream()
-        .skip(request.getAttributeInt(AccountConstants.A_OFFSET, 0))
-        .limit(request.getAttributeInt(AccountConstants.A_LIMIT, DEFAULT_MAX_RESULTS));
+    var searchResult = provisioning.searchDirectory(options);
+    var offset = request.getAttributeInt(AccountConstants.A_OFFSET, 0);
+    var limit = request.getAttributeInt(AccountConstants.A_LIMIT, DEFAULT_MAX_RESULTS);
+    var entries = searchResult.stream()
+        .skip(offset)
+        .limit(limit);
 
-    return buildResponse(zsc, entries);
+    boolean more = searchResult.size() > offset + limit;
+    return buildResponse(zsc, entries, searchResult.size(), more);
   }
 
   private static SearchDirectoryOptions buildSearchOptions(Domain domain, boolean allDomains) throws ServiceException {
@@ -69,12 +73,14 @@ public class SearchUsersByFeature extends AccountDocumentHandler {
     return options;
   }
 
-  private static Element buildResponse(ZimbraSoapContext zsc, Stream<NamedEntry> entries) {
+  private static Element buildResponse(ZimbraSoapContext zsc, Stream<NamedEntry> entries, int total, boolean more) {
     var response = zsc.createElement(AccountConstants.SEARCH_USERS_BY_FEATURE_RESPONSE);
     var attributes = new HashSet<String>();
     attributes.add(ZAttrProvisioning.A_mail);
     attributes.add(ZAttrProvisioning.A_uid);
     attributes.add(ZAttrProvisioning.A_displayName);
+    response.addAttribute(AccountConstants.A_TOTAL, total);
+    response.addAttribute(AccountConstants.A_MORE, more);
     entries.forEach(a -> ToXML.encodeAccount(response, (Account) a, true, attributes, null));
     return response;
   }
