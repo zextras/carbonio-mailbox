@@ -1,0 +1,3 @@
+getAllDomains -v -e
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetAllDomainsRequest applyConfig="0" xmlns="urn:zimbraAdmin"/>

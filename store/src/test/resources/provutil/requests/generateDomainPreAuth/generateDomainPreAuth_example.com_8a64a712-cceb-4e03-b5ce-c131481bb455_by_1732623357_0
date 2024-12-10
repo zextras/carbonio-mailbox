@@ -1,0 +1,3 @@
+generateDomainPreAuth example.com 8a64a712-cceb-4e03-b5ce-c131481bb455 by 1732623357 0
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetDomainRequest applyConfig="1" xmlns="urn:zimbraAdmin"><domain by="name">example.com</domain></GetDomainRequest>

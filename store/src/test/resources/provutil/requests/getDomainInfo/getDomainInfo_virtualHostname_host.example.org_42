@@ -1,0 +1,3 @@
+getDomainInfo virtualHostname host.example.org 42
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetDomainInfoRequest xmlns="urn:zimbraAdmin"><domain by="virtualHostname">host.example.org</domain></GetDomainInfoRequest>

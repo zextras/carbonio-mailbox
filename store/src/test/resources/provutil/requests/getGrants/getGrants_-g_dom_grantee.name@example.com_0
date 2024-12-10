@@ -1,0 +1,3 @@
+getGrants -g dom grantee.name@example.com 0
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetGrantsRequest xmlns="urn:zimbraAdmin"><grantee all="0" by="name" type="dom">grantee.name@example.com</grantee></GetGrantsRequest>

@@ -1,0 +1,4 @@
+renameCos someName newName
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetCosRequest xmlns="urn:zimbraAdmin"><cos by="name">someName</cos></GetCosRequest>
+<RenameCosRequest xmlns="urn:zimbraAdmin"><newName>newName</newName></RenameCosRequest>

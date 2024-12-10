@@ -1,0 +1,3 @@
+checkRight domain 22c3163a-ea39-4b65-a1c2-88447b30000f grantee.name@example.com invite
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<CheckRightRequest xmlns="urn:zimbraAdmin"><target by="id" type="domain">22c3163a-ea39-4b65-a1c2-88447b30000f</target><grantee by="name">grantee.name@example.com</grantee><right>invite</right></CheckRightRequest>

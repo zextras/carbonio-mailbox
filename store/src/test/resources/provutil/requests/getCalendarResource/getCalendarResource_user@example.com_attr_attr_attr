@@ -1,0 +1,3 @@
+getCalendarResource user@example.com attr attr attr
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetCalendarResourceRequest xmlns="urn:zimbraAdmin"><calresource by="name">user@example.com</calresource></GetCalendarResourceRequest>

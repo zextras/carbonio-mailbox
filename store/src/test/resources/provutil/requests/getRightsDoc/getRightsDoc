@@ -1,0 +1,3 @@
+getRightsDoc
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetRightsDocRequest xmlns="urn:zimbraAdmin"><package name="com.zimbra.cs.service.admin"/><package name="com.zimbra.bp"/><package name="com.zimbra.cert"/><package name="com.zimbra.cs.network"/><package name="com.zimbra.cs.network.license.service"/><package name="com.zimbra.cs.service.backup"/><package name="com.zimbra.cs.service.hsm"/><package name="com.zimbra.xmbxsearch"/></GetRightsDocRequest>

@@ -1,0 +1,4 @@
+modifyServer someName zimbraId 1 zimbraImapBindPort 1 zimbraId 1
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetServerRequest applyConfig="1" xmlns="urn:zimbraAdmin"><server by="name">someName</server></GetServerRequest>
+<ModifyServerRequest xmlns="urn:zimbraAdmin"><id/><a n="zimbraId">1</a><a n="zimbraId">1</a><a n="zimbraImapBindPort">1</a></ModifyServerRequest>

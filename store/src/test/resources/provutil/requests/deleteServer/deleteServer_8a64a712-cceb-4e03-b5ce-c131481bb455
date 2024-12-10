@@ -1,0 +1,4 @@
+deleteServer 8a64a712-cceb-4e03-b5ce-c131481bb455
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetServerRequest applyConfig="1" xmlns="urn:zimbraAdmin"><server by="id">8a64a712-cceb-4e03-b5ce-c131481bb455</server></GetServerRequest>
+<DeleteServerRequest xmlns="urn:zimbraAdmin"/>

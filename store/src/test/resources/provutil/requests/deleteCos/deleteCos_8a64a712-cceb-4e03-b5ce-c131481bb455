@@ -1,0 +1,4 @@
+deleteCos 8a64a712-cceb-4e03-b5ce-c131481bb455
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetCosRequest xmlns="urn:zimbraAdmin"><cos by="id">8a64a712-cceb-4e03-b5ce-c131481bb455</cos></GetCosRequest>
+<DeleteCosRequest xmlns="urn:zimbraAdmin"/>

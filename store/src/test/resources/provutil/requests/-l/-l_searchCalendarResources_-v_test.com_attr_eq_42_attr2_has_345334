@@ -1,0 +1,1 @@
+-l searchCalendarResources -v test.com attr eq 42 attr2 has 345334
