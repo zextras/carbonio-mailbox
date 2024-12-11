@@ -16,7 +16,6 @@ import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ShareLocator;
-import com.zimbra.cs.account.XMPPComponent;
 import com.zimbra.cs.account.cache.AccountCache;
 import com.zimbra.cs.account.cache.DomainCache;
 import com.zimbra.cs.account.cache.DomainCache.GetFromDomainCacheOption;
@@ -94,11 +93,6 @@ abstract class LdapCache {
             LC.ldap_cache_group_maxsize.intValue(),
             LC.ldap_cache_group_maxage.intValue() * Constants.MILLIS_PER_MINUTE);
 
-    private final INamedEntryCache<XMPPComponent> xmppComponentCache =
-        new NamedEntryCache<>(
-            LC.ldap_cache_xmppcomponent_maxsize.intValue(),
-            LC.ldap_cache_xmppcomponent_maxage.intValue() * Constants.MILLIS_PER_MINUTE);
-
     @Override
     IAccountCache accountCache() {
       return accountCache;
@@ -152,8 +146,6 @@ abstract class LdapCache {
     private final INamedEntryCache<Server> serverCache = new NoopNamedEntryCache<>();
     private final INamedEntryCache<LdapZimlet> zimletCache = new NoopNamedEntryCache<>();
     private final INamedEntryCache<Group> groupCache = new NoopNamedEntryCache<>();
-    private final INamedEntryCache<XMPPComponent> xmppComponentCache =
-        new NoopNamedEntryCache<>();
 
     static class NoopAccountCache implements IAccountCache {
       @Override

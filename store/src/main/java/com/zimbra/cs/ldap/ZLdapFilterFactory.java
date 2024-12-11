@@ -64,7 +64,6 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
     ALL_NON_SYSTEM_INTERNAL_ACCOUNTS(SINGLETON.allNonSystemInternalAccounts()),
     ALL_SERVERS(SINGLETON.allServers()),
     ALL_SIGNATURES(SINGLETON.allSignatures()),
-    ALL_XMPP_COMPONENTS(SINGLETON.allXMPPComponents()),
     ALL_ZIMLETS(SINGLETON.allZimlets()),
     ANY_ENTRY(SINGLETON.anyEntry()),
     CALENDAR_RESOURCE_BY_FOREIGN_PRINCIPAL(
@@ -125,9 +124,6 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
     SERVER_BY_SERVICE(SINGLETON.serverByService("{SERVICE}")),
     SHARE_LOCATOR_BY_ID(SINGLETON.shareLocatorById("{SHARE-LOCATOR-ID}")),
     SIGNATURE_BY_ID(SINGLETON.signatureById("{SIGNATURE-ID}")),
-    XMPP_COMPONENT_BY_ID(SINGLETON.xmppComponentById("{XMPP-COMPOMENT-ID}")),
-    XMPP_COMPONENT_BY_ZIMBRA_XMPP_COMPONENT_ID(
-        SINGLETON.imComponentById("{ZIMBRA-XMPP-COMPOMENT-ID}")),
 
     // filters only used in the Velodrome DIT
     VELODROME_ALL_ACCOUNTS_BY_DOMAIN(SINGLETON.velodromeAllAccountsByDomain("{DOMAIN-NAME}")),
@@ -147,8 +143,6 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
     VELODROME_ALL_DISTRIBUTION_LISTS_BY_DOMAIN(
         SINGLETON.velodromeAllDistributionListsByDomain("{DOMAIN-NAME}")),
     VELODROME_ALL_GROUPS_BY_DOMAIN(SINGLETON.velodromeAllGroupsByDomain("{DOMAIN-NAME}")),
-
-    HAB_ORG_UNIT_BY_NAME(SINGLETON.habOrgUnitByName("{ORG-UNIT-NAME}")),
 
     // address lists
     ALL_ADDRESS_LISTS(SINGLETON.allAddressLists()),
@@ -523,15 +517,6 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
   public abstract ZLdapFilter signatureById(String id);
 
   /*
-   * XMPPComponent
-   */
-  public abstract ZLdapFilter allXMPPComponents();
-
-  public abstract ZLdapFilter imComponentById(String id);
-
-  public abstract ZLdapFilter xmppComponentById(String id);
-
-  /*
    * zimlet
    */
   public abstract ZLdapFilter allZimlets();
@@ -576,6 +561,4 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
    */
   public abstract ZLdapFilter dnSubtreeMatch(String... dns);
 
-  /** HAB */
-  public abstract ZLdapFilter habOrgUnitByName(String name);
 }

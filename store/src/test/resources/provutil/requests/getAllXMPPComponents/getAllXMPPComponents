@@ -1,3 +1,0 @@
-getAllXMPPComponents
-<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
-<GetAllXMPPComponentsRequest xmlns="urn:zimbraAdmin"/>

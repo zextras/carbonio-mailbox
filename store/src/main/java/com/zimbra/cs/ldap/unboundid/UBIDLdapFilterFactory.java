@@ -50,7 +50,6 @@ public class UBIDLdapFilterFactory extends ZLdapFilterFactory {
   private static Filter FILTER_ALL_SERVERS;
   private static Filter FILTER_ALL_SHARE_LOCATORS;
   private static Filter FILTER_ALL_SIGNATURES;
-  private static Filter FILTER_ALL_XMPP_COMPONENTS;
   private static Filter FILTER_ALL_ZIMLETS;
   private static Filter FILTER_ANY_ENTRY;
   private static Filter FILTER_DOMAIN_LABEL;
@@ -143,10 +142,6 @@ public class UBIDLdapFilterFactory extends ZLdapFilterFactory {
     FILTER_ALL_SIGNATURES =
         Filter.createEqualityFilter(
             LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraSignature);
-
-    FILTER_ALL_XMPP_COMPONENTS =
-        Filter.createEqualityFilter(
-            LdapConstants.ATTR_objectClass, AttributeClass.OC_zimbraXMPPComponent);
 
     FILTER_ALL_ZIMLETS =
         Filter.createEqualityFilter(
@@ -919,30 +914,6 @@ public class UBIDLdapFilterFactory extends ZLdapFilterFactory {
   }
 
   /*
-   * XMPPComponent
-   */
-  @Override
-  public ZLdapFilter allXMPPComponents() {
-    return new UBIDLdapFilter(FilterId.ALL_XMPP_COMPONENTS, FILTER_ALL_XMPP_COMPONENTS);
-  }
-
-  @Override
-  public ZLdapFilter imComponentById(String id) {
-    return new UBIDLdapFilter(
-        FilterId.XMPP_COMPONENT_BY_ZIMBRA_XMPP_COMPONENT_ID,
-        Filter.createANDFilter(
-            FILTER_ALL_XMPP_COMPONENTS, Filter.createEqualityFilter("zimbraXMPPComponentId", id)));
-  }
-
-  @Override
-  public ZLdapFilter xmppComponentById(String id) {
-    return new UBIDLdapFilter(
-        FilterId.XMPP_COMPONENT_BY_ID,
-        Filter.createANDFilter(
-            Filter.createEqualityFilter(Provisioning.A_zimbraId, id), FILTER_ALL_XMPP_COMPONENTS));
-  }
-
-  /*
    * zimlet
    */
   @Override
@@ -1070,15 +1041,6 @@ public class UBIDLdapFilterFactory extends ZLdapFilterFactory {
     }
 
     return new UBIDLdapFilter(FilterId.DN_SUBTREE_MATCH, Filter.createORFilter(filters));
-  }
-
-  @Override
-  public ZLdapFilter habOrgUnitByName(String name) {
-    return new UBIDLdapFilter(
-        FilterId.HAB_ORG_UNIT_BY_NAME,
-        Filter.createANDFilter(
-            Filter.createEqualityFilter(Provisioning.A_ou, name),
-            Filter.createEqualityFilter(LdapConstants.ATTR_objectClass, "organizationalUnit")));
   }
 
   /*
