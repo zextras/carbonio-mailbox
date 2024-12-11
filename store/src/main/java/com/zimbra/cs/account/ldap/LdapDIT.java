@@ -392,18 +392,6 @@ public class LdapDIT {
   }
 
   /*
-   * =====================
-   *   hab group
-   * =====================
-   */
-  public String habGroupDNCreate(String orgUnitDN, String localPart) throws ServiceException {
-    if (localPart == null || orgUnitDN == null) {
-      throw ServiceException.INVALID_REQUEST("localPart and orgUnitDN cannot be null", null);
-    }
-    return NAMING_RDN_ATTR_HAB + "=" + LdapUtil.escapeRDNValue(localPart) + "," + orgUnitDN;
-  }
-
-  /*
    * ==========
    *   domain
    * ==========
@@ -471,10 +459,6 @@ public class LdapDIT {
    *   dynamic group
    * ==============
    */
-  public String globalDynamicGroupBaseDN() {
-    return BASE_DN_GLOBAL_DYNAMICGROUP;
-  }
-
   public String dynamicGroupNamingRdnAttr() {
     return NAMING_RDN_ATTR_DYNAMICGROUP;
   }
@@ -490,11 +474,6 @@ public class LdapDIT {
 
   public String dynamicGroupUnitNameToDN(String unitName, String parentDN) throws ServiceException {
     return NAMING_RDN_ATTR_DYNAMICGROUP + "=" + LdapUtil.escapeRDNValue(unitName) + "," + parentDN;
-  }
-
-  public String filterDynamicGroupsByDomain(Domain domain, boolean includeObjectClass) {
-    if (includeObjectClass) return "(objectclass=zimbraGroup)";
-    else return "";
   }
 
   public String dynamicGroupDNRename(String oldDn, String newLocalPart, String newDomain)
