@@ -227,7 +227,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   private final IMimeTypeCache mimeTypeCache;
   private final INamedEntryCache<Server> serverCache;
   private final INamedEntryCache<ShareLocator> shareLocatorCache;
-  private final INamedEntryCache<XMPPComponent> xmppComponentCache;
   private final INamedEntryCache<LdapZimlet> zimletCache;
 
   private final UnmodifiableBloomFilter<String> commonPasswordFilter;
@@ -276,7 +275,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     mimeTypeCache = cache.mimeTypeCache();
     serverCache = cache.serverCache();
     shareLocatorCache = cache.shareLocatorCache();
-    xmppComponentCache = cache.xmppComponentCache();
     zimletCache = cache.zimletCache();
 
     commonPasswordFilter =
@@ -358,16 +356,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   @Override
   public double getGroupCacheHitRate() {
     return groupCache.getHitRate();
-  }
-
-  @Override
-  public int getXMPPCacheSize() {
-    return xmppComponentCache.getSize();
-  }
-
-  @Override
-  public double getXMPPCacheHitRate() {
-    return xmppComponentCache.getHitRate();
   }
 
   private String[] getBasicDLAttrs() throws ServiceException {
@@ -799,8 +787,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       domainCache.replace((Domain) entry);
     } else if (entry instanceof Server) {
       serverCache.replace((Server) entry);
-    } else if (entry instanceof XMPPComponent) {
-      xmppComponentCache.replace((XMPPComponent) entry);
     } else if (entry instanceof LdapZimlet) {
       zimletCache.replace((LdapZimlet) entry);
     } else if (entry instanceof Group) {
@@ -3884,12 +3870,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             @Override
             public void renameAddressesInAllDistributionLists(Map<String, String> changedPairs) {
               ((LdapProvisioning) mProv).renameAddressesInAllDistributionLists(changedPairs);
-            }
-
-            @Override
-            public void renameXMPPComponent(String zimbraId, String newName)
-                throws ServiceException {
-              ((LdapProvisioning) mProv).renameXMPPComponent(zimbraId, newName);
             }
 
             @Override
@@ -8727,186 +8707,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         // return getDataSourceByName(ldapEntry, key, null);
       default:
         return null;
-    }
-  }
-
-  private XMPPComponent getXMPPComponentByQuery(ZLdapFilter filter, ZLdapContext initZlc)
-      throws ServiceException {
-    try {
-      ZSearchResultEntry sr =
-          helper.searchForEntry(mDIT.xmppcomponentBaseDN(), filter, initZlc, false);
-      if (sr != null) {
-        return new LdapXMPPComponent(sr.getDN(), sr.getAttributes(), this);
-      }
-    } catch (LdapMultipleEntriesMatchedException e) {
-      throw AccountServiceException.MULTIPLE_ENTRIES_MATCHED("getXMPPComponentByQuery", e);
-    } catch (ServiceException e) {
-      throw ServiceException.FAILURE(
-          "unable to lookup XMPP component via query: "
-              + filter.toFilterString()
-              + " message:"
-              + e.getMessage(),
-          e);
-    }
-    return null;
-  }
-
-  private XMPPComponent getXMPPComponentByName(String name, boolean nocache)
-      throws ServiceException {
-    if (!nocache) {
-      XMPPComponent x = xmppComponentCache.getByName(name);
-      if (x != null) return x;
-    }
-
-    try {
-      String dn = mDIT.xmppcomponentNameToDN(name);
-      ZAttributes attrs = helper.getAttributes(LdapUsage.GET_XMPPCOMPONENT, dn);
-      XMPPComponent x = new LdapXMPPComponent(dn, attrs, this);
-      xmppComponentCache.put(x);
-      return x;
-    } catch (LdapEntryNotFoundException e) {
-      return null;
-    } catch (ServiceException e) {
-      throw ServiceException.FAILURE(
-          "unable to lookup xmpp component by name: " + name + " message: " + e.getMessage(), e);
-    }
-  }
-
-  private XMPPComponent getXMPPComponentById(String zimbraId, ZLdapContext zlc, boolean nocache)
-      throws ServiceException {
-    if (zimbraId == null) return null;
-    XMPPComponent x = null;
-    if (!nocache) x = xmppComponentCache.getById(zimbraId);
-    if (x == null) {
-      x = getXMPPComponentByQuery(filterFactory.xmppComponentById(zimbraId), zlc);
-      xmppComponentCache.put(x);
-    }
-    return x;
-  }
-
-  @Override
-  public List<XMPPComponent> getAllXMPPComponents() throws ServiceException {
-    List<XMPPComponent> result = new ArrayList<>();
-
-    try {
-      String base = mDIT.xmppcomponentBaseDN();
-      ZLdapFilter filter = filterFactory.allXMPPComponents();
-
-      ZSearchResultEnumeration ne =
-          helper.searchDir(base, filter, ZSearchControls.SEARCH_CTLS_SUBTREE());
-      while (ne.hasMore()) {
-        ZSearchResultEntry sr = ne.next();
-        LdapXMPPComponent x = new LdapXMPPComponent(sr.getDN(), sr.getAttributes(), this);
-        result.add(x);
-      }
-      ne.close();
-    } catch (ServiceException e) {
-      throw ServiceException.FAILURE("unable to list all XMPPComponents", e);
-    }
-
-    if (result.size() > 0) {
-      xmppComponentCache.put(result, true);
-    }
-    Collections.sort(result);
-    return result;
-  }
-
-  @Override
-  public XMPPComponent createXMPPComponent(
-      String name, Domain domain, Server server, Map<String, Object> inAttrs)
-      throws ServiceException {
-    name = name.toLowerCase().trim();
-
-    // sanity checking
-    removeAttrIgnoreCase("objectclass", inAttrs);
-    removeAttrIgnoreCase(A_zimbraDomainId, inAttrs);
-    removeAttrIgnoreCase(A_zimbraServerId, inAttrs);
-
-    CallbackContext callbackContext = new CallbackContext(CallbackContext.Op.CREATE);
-    AttributeManager.getInstance().preModify(inAttrs, null, callbackContext, true);
-
-    ZLdapContext zlc = null;
-    try {
-      zlc = LdapClient.getContext(LdapServerType.MASTER, LdapUsage.CREATE_XMPPCOMPONENT);
-
-      ZMutableEntry entry = LdapClient.createMutableEntry();
-      entry.mapToAttrs(inAttrs);
-
-      entry.setAttr(A_objectClass, "zimbraXMPPComponent");
-
-      String compId = LdapUtil.generateUUID();
-      entry.setAttr(A_zimbraId, compId);
-      entry.setAttr(A_zimbraCreateTimestamp, LdapDateUtil.toGeneralizedTime(new Date()));
-      entry.setAttr(A_cn, name);
-      String dn = mDIT.xmppcomponentNameToDN(name);
-      entry.setDN(dn);
-
-      entry.setAttr(A_zimbraDomainId, domain.getId());
-      entry.setAttr(A_zimbraServerId, server.getId());
-
-      zlc.createEntry(entry);
-
-      XMPPComponent comp = getXMPPComponentById(compId, zlc, true);
-      AttributeManager.getInstance().postModify(inAttrs, comp, callbackContext);
-      return comp;
-    } catch (LdapEntryAlreadyExistException nabe) {
-      throw AccountServiceException.IM_COMPONENT_EXISTS(name);
-    } finally {
-      LdapClient.closeContext(zlc);
-    }
-  }
-
-  @Override
-  public XMPPComponent get(Key.XMPPComponentBy keyType, String key) throws ServiceException {
-    switch (keyType) {
-      case name:
-        return getXMPPComponentByName(key, false);
-      case id:
-        return getXMPPComponentById(key, null, false);
-      case serviceHostname:
-        throw new UnsupportedOperationException("Writeme!");
-      default:
-    }
-    return null;
-  }
-
-  @Override
-  public void deleteXMPPComponent(XMPPComponent comp) throws ServiceException {
-    String zimbraId = comp.getId();
-    ZLdapContext zlc = null;
-    LdapXMPPComponent l = (LdapXMPPComponent) get(Key.XMPPComponentBy.id, zimbraId);
-    try {
-      zlc = LdapClient.getContext(LdapServerType.MASTER, LdapUsage.DELETE_XMPPCOMPONENT);
-      zlc.deleteEntry(l.getDN());
-      xmppComponentCache.remove(l);
-    } catch (ServiceException e) {
-      throw ServiceException.FAILURE("unable to purge XMPPComponent : " + zimbraId, e);
-    } finally {
-      LdapClient.closeContext(zlc);
-    }
-  }
-
-  // Only called from renameDomain for now
-  void renameXMPPComponent(String zimbraId, String newName) throws ServiceException {
-    LdapXMPPComponent comp = (LdapXMPPComponent) get(Key.XMPPComponentBy.id, zimbraId);
-    if (comp == null) throw AccountServiceException.NO_SUCH_XMPP_COMPONENT(zimbraId);
-
-    newName = newName.toLowerCase().trim();
-    ZLdapContext zlc = null;
-    try {
-      zlc = LdapClient.getContext(LdapServerType.MASTER, LdapUsage.RENAME_XMPPCOMPONENT);
-      String newDn = mDIT.xmppcomponentNameToDN(newName);
-      zlc.renameEntry(comp.getDN(), newDn);
-      // remove old comp from cache
-      xmppComponentCache.remove(comp);
-    } catch (LdapEntryAlreadyExistException nabe) {
-      throw AccountServiceException.IM_COMPONENT_EXISTS(newName);
-    } catch (LdapException | AccountServiceException e) {
-      throw e;
-    } catch (ServiceException e) {
-      throw ServiceException.FAILURE("unable to rename XMPPComponent: " + zimbraId, e);
-    } finally {
-      LdapClient.closeContext(zlc);
     }
   }
 

@@ -2265,17 +2265,6 @@ public abstract class Provisioning extends ZAttrProvisioning {
   public abstract DataSource get(Account account, Key.DataSourceBy keyType, String key)
       throws ServiceException;
 
-  // XMPPComponents
-  public abstract XMPPComponent createXMPPComponent(
-      String name, Domain domain, Server server, Map<String, Object> attrs) throws ServiceException;
-
-  public abstract XMPPComponent get(Key.XMPPComponentBy keyName, String key)
-      throws ServiceException;
-
-  public abstract List<XMPPComponent> getAllXMPPComponents() throws ServiceException;
-
-  public abstract void deleteXMPPComponent(XMPPComponent comp) throws ServiceException;
-
   public static class RightsDoc {
     private final String mCmd;
     private final List<String> mRights;

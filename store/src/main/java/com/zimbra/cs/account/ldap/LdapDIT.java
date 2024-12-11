@@ -587,23 +587,6 @@ public class LdapDIT {
 
   /*
    * ==========
-   *   xmppcomponent
-   * ==========
-   */
-  public String xmppcomponentBaseDN() {
-    return BASE_DN_XMPPCOMPONENT;
-  }
-
-  public String xmppcomponentNameToDN(String name) {
-    return NAMING_RDN_ATTR_XMPPCOMPONENT
-        + "="
-        + LdapUtil.escapeRDNValue(name)
-        + ","
-        + BASE_DN_XMPPCOMPONENT;
-  }
-
-  /*
-   * ==========
    *   zimlet
    * ==========
    */

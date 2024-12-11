@@ -43,8 +43,6 @@ public class ServerStatsCallback implements RealtimeStatsCallback {
       data.put(ZimbraPerf.RTS_ZIMLET_CACHE_HIT_RATE, ldap.getZimletCacheHitRate());
       data.put(ZimbraPerf.RTS_GROUP_CACHE_SIZE, ldap.getGroupCacheSize());
       data.put(ZimbraPerf.RTS_GROUP_CACHE_HIT_RATE, ldap.getGroupCacheHitRate());
-      data.put(ZimbraPerf.RTS_XMPP_CACHE_SIZE, ldap.getXMPPCacheSize());
-      data.put(ZimbraPerf.RTS_XMPP_CACHE_HIT_RATE, ldap.getXMPPCacheHitRate());
     }
     return data;
   }

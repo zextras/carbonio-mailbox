@@ -52,8 +52,6 @@ abstract class LdapCache {
 
   abstract INamedEntryCache<Group> groupCache();
 
-  abstract INamedEntryCache<XMPPComponent> xmppComponentCache();
-
   /** LRUMapCache */
   static class LRUMapCache extends LdapCache {
 
@@ -134,11 +132,6 @@ abstract class LdapCache {
     @Override
     INamedEntryCache<ShareLocator> shareLocatorCache() {
       return shareLocatorCache;
-    }
-
-    @Override
-    INamedEntryCache<XMPPComponent> xmppComponentCache() {
-      return xmppComponentCache;
     }
 
     @Override
@@ -348,11 +341,6 @@ abstract class LdapCache {
     @Override
     INamedEntryCache<ShareLocator> shareLocatorCache() {
       return shareLocatorCache;
-    }
-
-    @Override
-    INamedEntryCache<XMPPComponent> xmppComponentCache() {
-      return xmppComponentCache;
     }
 
     @Override

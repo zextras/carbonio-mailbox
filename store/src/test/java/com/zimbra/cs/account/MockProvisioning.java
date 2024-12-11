@@ -842,27 +842,6 @@ public final class MockProvisioning extends Provisioning implements Provisioning
   }
 
   @Override
-  public XMPPComponent createXMPPComponent(
-      String name, Domain domain, Server server, Map<String, Object> attrs) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public XMPPComponent get(Key.XMPPComponentBy keyName, String key) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public List<XMPPComponent> getAllXMPPComponents() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public void deleteXMPPComponent(XMPPComponent comp) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
   public void flushCache(CacheEntryType type, CacheEntry[] entries) {
     // do nothing
   }

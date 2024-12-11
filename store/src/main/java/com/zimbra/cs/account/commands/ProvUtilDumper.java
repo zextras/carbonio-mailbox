@@ -18,7 +18,6 @@ import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.Identity;
 import com.zimbra.cs.account.ProvUtilDumperOptions;
 import com.zimbra.cs.account.Server;
-import com.zimbra.cs.account.XMPPComponent;
 import com.zimbra.cs.account.accesscontrol.AttrRight;
 import com.zimbra.cs.account.accesscontrol.ComboRight;
 import com.zimbra.cs.account.accesscontrol.Help;
@@ -176,14 +175,6 @@ class ProvUtilDumper {
           throws ServiceException {
     console.println("# name " + server.getName());
     Map<String, Object> attrs = server.getAttrs(expandConfig);
-    dumpAttrs(attrs, attrNames);
-    console.println();
-  }
-
-  public void dumpXMPPComponent(XMPPComponent comp, Set<String> attrNames)
-          throws ServiceException {
-    console.println("# name " + comp.getName());
-    Map<String, Object> attrs = comp.getAttrs();
     dumpAttrs(attrs, attrNames);
     console.println();
   }

@@ -17,7 +17,6 @@ import com.zimbra.common.account.Key.IdentityBy;
 import com.zimbra.common.account.Key.ServerBy;
 import com.zimbra.common.account.Key.ShareLocatorBy;
 import com.zimbra.common.account.Key.SignatureBy;
-import com.zimbra.common.account.Key.XMPPComponentBy;
 import com.zimbra.common.auth.ZAuthToken;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -25,7 +24,6 @@ import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.XMLElement;
-import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapFaultException;
 import com.zimbra.common.soap.SoapHttpTransport;
 import com.zimbra.common.soap.SoapHttpTransport.HttpDebugListener;
@@ -58,7 +56,6 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ShareInfoData;
 import com.zimbra.cs.account.ShareLocator;
 import com.zimbra.cs.account.Signature;
-import com.zimbra.cs.account.XMPPComponent;
 import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.account.accesscontrol.Right;
 import com.zimbra.cs.account.accesscontrol.RightCommand;
@@ -113,7 +110,6 @@ import com.zimbra.soap.admin.message.DeleteCalendarResourceRequest;
 import com.zimbra.soap.admin.message.DeleteCosRequest;
 import com.zimbra.soap.admin.message.DeleteDistributionListRequest;
 import com.zimbra.soap.admin.message.DeleteDomainRequest;
-import com.zimbra.soap.admin.message.DeleteMailboxRequest;
 import com.zimbra.soap.admin.message.DeleteServerRequest;
 import com.zimbra.soap.admin.message.FlushCacheRequest;
 import com.zimbra.soap.admin.message.GetAccountInfoRequest;
@@ -2290,63 +2286,6 @@ public class SoapProvisioning extends Provisioning {
       default:
         return null;
     }
-  }
-
-  @Override
-  public List<XMPPComponent> getAllXMPPComponents() throws ServiceException {
-    XMLElement req = new XMLElement(AdminConstants.GET_ALL_XMPPCOMPONENTS_REQUEST);
-    Element response = invoke(req);
-
-    List<XMPPComponent> toRet = new ArrayList<>();
-    for (Element e : response.listElements(AdminConstants.E_XMPP_COMPONENT)) {
-      toRet.add(new SoapXMPPComponent(e, this));
-    }
-    return toRet;
-  }
-
-  @Override
-  public XMPPComponent createXMPPComponent(
-      String name, Domain domain, Server server, Map<String, Object> attrs)
-      throws ServiceException {
-    XMLElement req = new XMLElement(AdminConstants.CREATE_XMPPCOMPONENT_REQUEST);
-
-    Element c = req.addElement(AccountConstants.E_XMPP_COMPONENT);
-    c.addAttribute(AdminConstants.A_NAME, name);
-
-    Element domainElt = c.addElement(AdminConstants.E_DOMAIN);
-    domainElt.addAttribute(AdminConstants.A_BY, "id");
-    domainElt.setText(domain.getId());
-
-    Element serverElt = c.addElement(AdminConstants.E_SERVER);
-    serverElt.addAttribute(AdminConstants.A_BY, "id");
-    serverElt.setText(server.getId());
-
-    addAttrElements(c, attrs);
-    Element response = invoke(req);
-    response = response.getElement(AccountConstants.E_XMPP_COMPONENT);
-    return new SoapXMPPComponent(response, this);
-  }
-
-  @Override
-  public XMPPComponent get(XMPPComponentBy keyType, String key) throws ServiceException {
-    XMLElement req = new XMLElement(AdminConstants.GET_XMPPCOMPONENT_REQUEST);
-
-    Element c = req.addElement(AccountConstants.E_XMPP_COMPONENT);
-    c.addAttribute(AdminConstants.A_BY, keyType.name());
-    c.setText(key);
-    Element response = invoke(req);
-    response = response.getElement(AccountConstants.E_XMPP_COMPONENT);
-    return new SoapXMPPComponent(response, this);
-  }
-
-  @Override
-  public void deleteXMPPComponent(XMPPComponent comp) throws ServiceException {
-    XMLElement req = new XMLElement(AdminConstants.DELETE_XMPPCOMPONENT_REQUEST);
-
-    Element c = req.addElement(AccountConstants.E_XMPP_COMPONENT);
-    c.addAttribute(AdminConstants.A_BY, "id");
-    c.setText(comp.getId());
-    invoke(req);
   }
 
   @Override

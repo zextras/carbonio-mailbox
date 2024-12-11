@@ -131,14 +131,6 @@ public enum Command {
       Category.ACCOUNT,
       2,
       Integer.MAX_VALUE),
-  CREATE_XMPP_COMPONENT(
-      "createXMPPComponent",
-      "cxc",
-      "{short-name} {domain}  {server} {classname} {category} {type} [attr value1 [attr2"
-          + " value2...]]",
-      Category.CONFIG,
-      6,
-      Integer.MAX_VALUE),
   DELETE_ACCOUNT("deleteAccount", "da", "{name@domain|id}", Category.ACCOUNT, 1, 1),
   DELETE_CALENDAR_RESOURCE(
       "deleteCalendarResource", "dcr", "{name@domain|id}", Category.CALENDAR, 1, 1),
@@ -153,8 +145,6 @@ public enum Command {
   DELETE_SIGNATURE(
       "deleteSignature", "dsig", "{name@domain|id} {signature-name}", Category.ACCOUNT, 2, 2),
   DELETE_SERVER("deleteServer", "ds", "{name|id}", Category.SERVER, 1, 1),
-  DELETE_XMPP_COMPONENT(
-      "deleteXMPPComponent", "dxc", "{xmpp-component-name}", Category.CONFIG, 1, 1),
   DESCRIBE(
       "describe",
       "desc",
@@ -266,7 +256,6 @@ public enum Command {
       0,
       5),
   GET_ALL_SERVERS("getAllServers", "gas", "[-v] [-e] [service]", Category.SERVER, 0, 3),
-  GET_ALL_XMPP_COMPONENTS("getAllXMPPComponents", "gaxcs", "", Category.CONFIG, 0, 0),
   GET_AUTH_TOKEN_INFO("getAuthTokenInfo", "gati", "{auth-token}", Category.MISC, 1, 1),
   GET_CALENDAR_RESOURCE(
       "getCalendarResource",
@@ -351,13 +340,6 @@ public enum Command {
       Integer.MAX_VALUE),
   GET_SHARE_INFO("getShareInfo", "gsi", "{owner-name|owner-id}", Category.SHARE, 1, 1),
   GET_SPNEGO_DOMAIN("getSpnegoDomain", "gsd", "", Category.MISC, 0, 0),
-  GET_XMPP_COMPONENT(
-      "getXMPPComponent",
-      "gxc",
-      "{name|id} [attr1 [attr2...]]",
-      Category.CONFIG,
-      1,
-      Integer.MAX_VALUE),
   GRANT_RIGHT(
       "grantRight",
       "grr",
@@ -438,14 +420,6 @@ public enum Command {
       "ms",
       "{name|id} [attr1 value1 [attr2 value2...]]",
       Category.SERVER,
-      3,
-      Integer.MAX_VALUE),
-  /** FIXME: never used, check if we can remove it */
-  MODIFY_XMPP_COMPONENT(
-      "modifyXMPPComponent",
-      "mxc",
-      "{name@domain} [attr1 value1 [attr value2...]]",
-      Category.CONFIG,
       3,
       Integer.MAX_VALUE),
   PUSH_FREEBUSY(

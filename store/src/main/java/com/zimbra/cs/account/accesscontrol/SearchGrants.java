@@ -151,8 +151,6 @@ public final class SearchGrants {
         tt = TargetType.domain;
       } else if (sgr.objectClass.contains(AttributeClass.OC_zimbraServer)) {
         tt = TargetType.server;
-      } else if (sgr.objectClass.contains(AttributeClass.OC_zimbraXMPPComponent)) {
-        tt = TargetType.xmppcomponent;
       } else if (sgr.objectClass.contains(AttributeClass.OC_zimbraZimletEntry)) {
         tt = TargetType.zimlet;
       } else if (sgr.objectClass.contains(AttributeClass.OC_zimbraGlobalConfig)) {

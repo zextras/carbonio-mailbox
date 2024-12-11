@@ -67,7 +67,6 @@ public class RenameDomain {
         throws ServiceException;
 
         public abstract void renameAddressesInAllDistributionLists(Map<String, String> changedPairs);
-        public abstract void renameXMPPComponent(String zimbraId, String newName) throws ServiceException;
     }
 
     private static final Log sRenameDomainLog = LogFactory.getLog("zimbra.provisioning.renamedomain");
@@ -190,12 +189,7 @@ public class RenameDomain {
         endRenameDomain(newDomain, mOldDomainId);
 
         /*
-         * 6. fixup ZMPPComponments pointing to the renamed domain
-         */
-        fixupXMPPComponents();
-
-        /*
-         * 7. flush account cache on all servers
+         * 6. flush account cache on all servers
          */
         flushCacheOnAllServers(CacheEntryType.account);
     }
@@ -1015,22 +1009,6 @@ public class RenameDomain {
         } catch (ServiceException e) {
             // just log it an continue
             warn("failed to update system accounts on global config", e);
-        }
-    }
-
-    private void fixupXMPPComponents() throws ServiceException{
-
-        int domainLen = mOldDomainName.length();
-
-        for (XMPPComponent xmpp : mProv.getAllXMPPComponents()) {
-            if (mOldDomainId.equals(xmpp.getDomainId())) {
-                String curName = xmpp.getName();
-                if (curName.endsWith(mOldDomainName)) {
-                    String newName = curName.substring(0, curName.length() - domainLen) + mNewDomainName;
-                    debug("Renaming XMPP component " + curName + " to " + newName);
-                    mLdapHelper.renameXMPPComponent(xmpp.getId(), newName);
-                }
-            }
         }
     }
 

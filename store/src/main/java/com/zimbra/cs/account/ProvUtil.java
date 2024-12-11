@@ -491,14 +491,6 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
     return lookupGroup(key, true);
   }
 
-  public XMPPComponent lookupXMPPComponent(String value) throws ServiceException {
-    if (Provisioning.isUUID(value)) {
-      return prov.get(Key.XMPPComponentBy.id, value);
-    } else {
-      return prov.get(Key.XMPPComponentBy.name, value);
-    }
-  }
-
   public static Key.CosBy guessCosBy(String value) {
     if (Provisioning.isUUID(value)) {
       return Key.CosBy.id;

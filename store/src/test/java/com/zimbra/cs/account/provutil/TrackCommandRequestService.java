@@ -178,10 +178,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.ADMIN_WAIT_SET_REQUEST
           , AdminConstants.ADMIN_DESTROY_WAIT_SET_REQUEST
           , AdminConstants.QUERY_WAIT_SET_REQUEST
-          , AdminConstants.CREATE_XMPPCOMPONENT_REQUEST
-          , AdminConstants.GET_XMPPCOMPONENT_REQUEST
-          , AdminConstants.GET_ALL_XMPPCOMPONENTS_REQUEST
-          , AdminConstants.DELETE_XMPPCOMPONENT_REQUEST
           , AdminConstants.GET_SERVER_STATS_REQUEST
           , AdminConstants.GET_LOGGER_STATS_REQUEST
           , AdminConstants.SYNC_GAL_ACCOUNT_REQUEST

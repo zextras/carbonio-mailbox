@@ -37,7 +37,6 @@ public class ProvUtilCommandHandlersFactory {
     map.put(Command.CREATE_IDENTITY, new CreateIdentityCommandHandler(provUtil));
     map.put(Command.CREATE_SERVER, new CreateServerCommandHandler(provUtil));
     map.put(Command.CREATE_SIGNATURE, new CreateSignatureCommandHandler(provUtil));
-    map.put(Command.CREATE_XMPP_COMPONENT, new CreateXMPPComponentCommandHandler(provUtil));
     map.put(Command.DELETE_ACCOUNT, new DeleteAccountCommandHandler(provUtil));
     map.put(Command.DELETE_CALENDAR_RESOURCE, new DeleteCalendarResourceCommandHandler(provUtil));
     map.put(Command.DELETE_COS, new DeleteCosCommandHandler(provUtil));
@@ -47,7 +46,6 @@ public class ProvUtilCommandHandlersFactory {
     map.put(Command.DELETE_IDENTITY, new DeleteIdentityCommandHandler(provUtil));
     map.put(Command.DELETE_SERVER, new DeleteServerCommandHandler(provUtil));
     map.put(Command.DELETE_SIGNATURE, new DeleteSignatureCommandHandler(provUtil));
-    map.put(Command.DELETE_XMPP_COMPONENT, new DeleteXMPPComponentCommandHandler(provUtil));
     map.put(Command.DESCRIBE, new DescribeCommandHandler(provUtil));
     map.put(Command.EXIT, new ExitCommandHandler(provUtil));
     map.put(Command.FLUSH_CACHE, new FlushCacheCommandHandler(provUtil));
@@ -73,7 +71,6 @@ public class ProvUtilCommandHandlersFactory {
     map.put(Command.GET_ALL_REVERSE_PROXY_URLS, new GetAllReverseProxyURLsCommandHandler(provUtil));
     map.put(Command.GET_ALL_RIGHTS, new GetAllRightsCommandHandler(provUtil, dumper));
     map.put(Command.GET_ALL_SERVERS, new GetAllServersCommandHandler(provUtil, dumper));
-    map.put(Command.GET_ALL_XMPP_COMPONENTS, new GetAllXMPPComponentsCommandHandler(provUtil, dumper));
     map.put(Command.GET_AUTH_TOKEN_INFO, new GetAuthTokenInfoCommandHandler(provUtil));
     map.put(Command.GET_CALENDAR_RESOURCE, new GetCalendarResourceCommandHandler(provUtil, dumper));
     map.put(Command.GET_CONFIG, new GetConfigCommandHandler(provUtil, dumper));
@@ -98,7 +95,6 @@ public class ProvUtilCommandHandlersFactory {
     map.put(Command.GET_SHARE_INFO, new GetShareInfoCommandHandler(provUtil));
     map.put(Command.GET_SIGNATURES, new GetSignaturesCommandHandler(provUtil, dumper));
     map.put(Command.GET_SPNEGO_DOMAIN, new GetSpnegoDomainCommandHandler(provUtil));
-    map.put(Command.GET_XMPP_COMPONENT, new GetXMPPComponentCommandHandler(provUtil, dumper));
     map.put(Command.GRANT_RIGHT, new GrantRightCommandHandler(provUtil));
     map.put(Command.HELP, new HelpCommandHandler(provUtil));
     map.put(Command.LDAP, new LdapCommandHandler(provUtil));
@@ -112,7 +108,6 @@ public class ProvUtilCommandHandlersFactory {
     map.put(Command.MODIFY_IDENTITY, new ModifyIdentityCommandHandler(provUtil));
     map.put(Command.MODIFY_SERVER, new ModifyServerCommandHandler(provUtil));
     map.put(Command.MODIFY_SIGNATURE, new ModifySignatureCommandHandler(provUtil));
-//    map.put(Command.MODIFY_XMPP_COMPONENT, new ModifyXMPPComponentCommandHandler(provUtil));
     map.put(Command.PURGE_ACCOUNT_CALENDAR_CACHE, new PurgeAccountCalendarCacheCommandHandler(provUtil));
     map.put(Command.PURGE_FREEBUSY_QUEUE, new PurgeFreebusyQueueCommandHandler());
     map.put(Command.PUSH_FREEBUSY, new PushFreebusyCommandHandler(provUtil));
