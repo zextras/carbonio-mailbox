@@ -48864,7 +48864,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * enable OCSP support for SMIME.
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: enable OCSP support for SMIME.
      *
      * @return zimbraSmimeOCSPEnabled, or true if unset
      *
@@ -48876,7 +48877,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * enable OCSP support for SMIME.
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: enable OCSP support for SMIME.
      *
      * @param zimbraSmimeOCSPEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -48891,7 +48893,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * enable OCSP support for SMIME.
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: enable OCSP support for SMIME.
      *
      * @param zimbraSmimeOCSPEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -48907,7 +48910,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * enable OCSP support for SMIME.
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: enable OCSP support for SMIME.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -48921,7 +48925,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * enable OCSP support for SMIME.
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: enable OCSP support for SMIME.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

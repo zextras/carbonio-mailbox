@@ -3447,7 +3447,9 @@ public class ZAttrProvisioning {
     public static final String A_userPassword = "userPassword";
 
     /**
-     * RFC2798: PKCS#7 SignedData used to support S/MIME
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: RFC2798: PKCS#7 SignedData used to support
+     * S/MIME
      */
     @ZAttr()
     public static final String A_userSMIMECertificate = "userSMIMECertificate";
@@ -7246,8 +7248,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureMailUpsellURL = "zimbraFeatureMailUpsellURL";
 
     /**
-     * whether to allow end user to publish and remove S/MIME certificates to
-     * their GAL entry in the web UI
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether to allow end user to publish and
+     * remove S/MIME certificates to their GAL entry in the web UI
      *
      * @since ZCS 7.1.0
      */
@@ -7452,8 +7455,10 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureSkinChangeEnabled = "zimbraFeatureSkinChangeEnabled";
 
     /**
-     * whether S/MIME feature is enabled. Note: SMIME is a Network feature,
-     * this attribute is effective only if SMIME is permitted by license.
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether S/MIME feature is enabled. Note:
+     * SMIME is a Network feature, this attribute is effective only if SMIME
+     * is permitted by license.
      *
      * @since ZCS 7.1.0
      */
@@ -8379,6 +8384,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraGroupId = "zimbraGroupId";
 
     /**
+     * Deprecated since: 25.3.0. HAB is not supported anymore. Orig desc:
      * LDAP attribute to HAB Group Member attribute mapping
      *
      * @since ZCS 8.8.10
@@ -8387,6 +8393,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraHABMemberLdapAttrMap = "zimbraHABMemberLdapAttrMap";
 
     /**
+     * Deprecated since: 25.3.0. HAB is not supported anymore. Orig desc:
      * seniority index of the group or group member which will determine the
      * sorting order in the hierarchical address book
      *
@@ -10646,11 +10653,13 @@ public class ZAttrProvisioning {
     public static final String A_zimbraMobilePolicyAllowSimpleDevicePassword = "zimbraMobilePolicyAllowSimpleDevicePassword";
 
     /**
-     * whether the messaging application on the device can negotiate the
-     * encryption algorithm if a recipient&#039;s certificate doesn&#039;t
-     * support the specified encryption algorithm; 0 - BlockNegotiation 1 -
-     * OnlyStrongAlgorithmNegotiation 2 - AllowAnyAlgorithmNegotiation
-     * ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether the messaging application on the
+     * device can negotiate the encryption algorithm if a recipient&#039;s
+     * certificate doesn&#039;t support the specified encryption algorithm; 0
+     * - BlockNegotiation 1 - OnlyStrongAlgorithmNegotiation 2 -
+     * AllowAnyAlgorithmNegotiation ignored if
+     * zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyAllowSMIMEEncryptionAlgorithmNegotiation value is
      * set to -1
      *
@@ -10660,8 +10669,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraMobilePolicyAllowSMIMEEncryptionAlgorithmNegotiation = "zimbraMobilePolicyAllowSMIMEEncryptionAlgorithmNegotiation";
 
     /**
-     * whether S/MIME software certificates are allowed; ignored if
-     * zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether S/MIME software certificates are
+     * allowed; ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyAllowSMIMESoftCerts value is set to -1
      *
      * @since ZCS 8.0.0
@@ -10904,8 +10914,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraMobilePolicyRequireDeviceEncryption = "zimbraMobilePolicyRequireDeviceEncryption";
 
     /**
-     * whether you must encrypt S/MIME messages; ignored if
-     * zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether you must encrypt S/MIME messages;
+     * ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyRequireEncryptedSMIMEMessages value is set to -1
      *
      * @since ZCS 8.0.0
@@ -10914,8 +10925,10 @@ public class ZAttrProvisioning {
     public static final String A_zimbraMobilePolicyRequireEncryptedSMIMEMessages = "zimbraMobilePolicyRequireEncryptedSMIMEMessages";
 
     /**
-     * what required algorithm must be used when encrypting a message;
-     * ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: what required algorithm must be used when
+     * encrypting a message; ignored if
+     * zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyRequireEncryptionSMIMEAlgorithm value is set to -1
      *
      * @since ZCS 8.0.0
@@ -10934,9 +10947,10 @@ public class ZAttrProvisioning {
     public static final String A_zimbraMobilePolicyRequireManualSyncWhenRoaming = "zimbraMobilePolicyRequireManualSyncWhenRoaming";
 
     /**
-     * what required algorithm must be used when signing a message; ignored
-     * if zimbraFeatureMobilePolicyEnabled=FALSE or
-     * zimbraMobilePolicyRequireSignedSMIMEAlgorithm value is set to -1
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: what required algorithm must be used when
+     * signing a message; ignored if zimbraFeatureMobilePolicyEnabled=FALSE
+     * or zimbraMobilePolicyRequireSignedSMIMEAlgorithm value is set to -1
      *
      * @since ZCS 8.0.0
      */
@@ -10944,8 +10958,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraMobilePolicyRequireSignedSMIMEAlgorithm = "zimbraMobilePolicyRequireSignedSMIMEAlgorithm";
 
     /**
-     * whether the device must send signed S/MIME messages; ignored if
-     * zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether the device must send signed S/MIME
+     * messages; ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyRequireSignedSMIMEMessages value is set to -1
      *
      * @since ZCS 8.0.0
@@ -16673,27 +16688,10 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSkinSelectionColor = "zimbraSkinSelectionColor";
 
     /**
-     * LDAP attribute(s) for public key lookup for S/MIME via external LDAP.
-     * Multiple attributes can be separated by comma. All SMIME attributes
-     * are in the format of {config-name}:{value}. A &#039;SMIME config&#039;
-     * is a set of SMIME attribute values with the same {config-name}.
-     * Multiple SMIME configs can be configured on a domain or on
-     * globalconfig. Note: SMIME attributes on domains do not inherited
-     * values from globalconfig, they are not domain-inherited attributes.
-     * During SMIME public key lookup, if there are any SMIME config on the
-     * domain of the account, they are used. SMIME configs on globalconfig
-     * will be used only when there is no SMIME config on the domain. SMIME
-     * attributes cannot be modified directly with zmprov md/mcf commands.
-     * Use zmprov gcsc/gdsc/mcsc/mdsc/rcsc/rdsc command instead.
-     *
-     * @since ZCS 7.1.0
-     */
-    @ZAttr(id=1182)
-    public static final String A_zimbraSMIMELdapAttribute = "zimbraSMIMELdapAttribute";
-
-    /**
-     * LDAP bind DN for public key lookup for S/MIME via external LDAP. Can
-     * be empty for anonymous bind. All SMIME attributes are in the format of
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: LDAP attribute(s) for public key lookup for
+     * S/MIME via external LDAP. Multiple attributes can be separated by
+     * comma. All SMIME attributes are in the format of
      * {config-name}:{value}. A &#039;SMIME config&#039; is a set of SMIME
      * attribute values with the same {config-name}. Multiple SMIME configs
      * can be configured on a domain or on globalconfig. Note: SMIME
@@ -16707,22 +16705,44 @@ public class ZAttrProvisioning {
      *
      * @since ZCS 7.1.0
      */
+    @ZAttr(id=1182)
+    public static final String A_zimbraSMIMELdapAttribute = "zimbraSMIMELdapAttribute";
+
+    /**
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: LDAP bind DN for public key lookup for
+     * S/MIME via external LDAP. Can be empty for anonymous bind. All SMIME
+     * attributes are in the format of {config-name}:{value}. A &#039;SMIME
+     * config&#039; is a set of SMIME attribute values with the same
+     * {config-name}. Multiple SMIME configs can be configured on a domain or
+     * on globalconfig. Note: SMIME attributes on domains do not inherited
+     * values from globalconfig, they are not domain-inherited attributes.
+     * During SMIME public key lookup, if there are any SMIME config on the
+     * domain of the account, they are used. SMIME configs on globalconfig
+     * will be used only when there is no SMIME config on the domain. SMIME
+     * attributes cannot be modified directly with zmprov md/mcf commands.
+     * Use zmprov gcsc/gdsc/mcsc/mdsc/rcsc/rdsc command instead.
+     *
+     * @since ZCS 7.1.0
+     */
     @ZAttr(id=1178)
     public static final String A_zimbraSMIMELdapBindDn = "zimbraSMIMELdapBindDn";
 
     /**
-     * LDAP bind password for public key lookup for S/MIME via external LDAP.
-     * Can be empty for anonymous bind. All SMIME attributes are in the
-     * format of {config-name}:{value}. A &#039;SMIME config&#039; is a set
-     * of SMIME attribute values with the same {config-name}. Multiple SMIME
-     * configs can be configured on a domain or on globalconfig. Note: SMIME
-     * attributes on domains do not inherited values from globalconfig, they
-     * are not domain-inherited attributes. During SMIME public key lookup,
-     * if there are any SMIME config on the domain of the account, they are
-     * used. SMIME configs on globalconfig will be used only when there is no
-     * SMIME config on the domain. SMIME attributes cannot be modified
-     * directly with zmprov md/mcf commands. Use zmprov
-     * gcsc/gdsc/mcsc/mdsc/rcsc/rdsc command instead.
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: LDAP bind password for public key lookup
+     * for S/MIME via external LDAP. Can be empty for anonymous bind. All
+     * SMIME attributes are in the format of {config-name}:{value}. A
+     * &#039;SMIME config&#039; is a set of SMIME attribute values with the
+     * same {config-name}. Multiple SMIME configs can be configured on a
+     * domain or on globalconfig. Note: SMIME attributes on domains do not
+     * inherited values from globalconfig, they are not domain-inherited
+     * attributes. During SMIME public key lookup, if there are any SMIME
+     * config on the domain of the account, they are used. SMIME configs on
+     * globalconfig will be used only when there is no SMIME config on the
+     * domain. SMIME attributes cannot be modified directly with zmprov
+     * md/mcf commands. Use zmprov gcsc/gdsc/mcsc/mdsc/rcsc/rdsc command
+     * instead.
      *
      * @since ZCS 7.1.0
      */
@@ -16730,8 +16750,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSMIMELdapBindPassword = "zimbraSMIMELdapBindPassword";
 
     /**
-     * Whether or not to discover search base DNs if
-     * zimbraSMIMELdapSearchBase is not set. Allowed values are TRUE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: Whether or not to discover search base DNs
+     * if zimbraSMIMELdapSearchBase is not set. Allowed values are TRUE or
      * FALSE. If zimbraSMIMELdapSearchBase is set for a config, this
      * attribute is ignored for the config. If not set, default for the
      * config is FALSE. In that case, if zimbraSMIMELdapSearchBase is not
@@ -16755,10 +16776,31 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSMIMELdapDiscoverSearchBaseEnabled = "zimbraSMIMELdapDiscoverSearchBaseEnabled";
 
     /**
-     * LDAP search filter for public key lookup for S/MIME via external LDAP.
-     * Can contain the following conversion variables for expansion: %n -
-     * search key with @ (or without, if no @ was specified) %u - with @
-     * removed e.g. (mail=%n) All SMIME attributes are in the format of
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: LDAP search filter for public key lookup
+     * for S/MIME via external LDAP. Can contain the following conversion
+     * variables for expansion: %n - search key with @ (or without, if no @
+     * was specified) %u - with @ removed e.g. (mail=%n) All SMIME attributes
+     * are in the format of {config-name}:{value}. A &#039;SMIME config&#039;
+     * is a set of SMIME attribute values with the same {config-name}.
+     * Multiple SMIME configs can be configured on a domain or on
+     * globalconfig. Note: SMIME attributes on domains do not inherited
+     * values from globalconfig, they are not domain-inherited attributes.
+     * During SMIME public key lookup, if there are any SMIME config on the
+     * domain of the account, they are used. SMIME configs on globalconfig
+     * will be used only when there is no SMIME config on the domain. SMIME
+     * attributes cannot be modified directly with zmprov md/mcf commands.
+     * Use zmprov gcsc/gdsc/mcsc/mdsc/rcsc/rdsc command instead.
+     *
+     * @since ZCS 7.1.0
+     */
+    @ZAttr(id=1181)
+    public static final String A_zimbraSMIMELdapFilter = "zimbraSMIMELdapFilter";
+
+    /**
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: LDAP search base for public key lookup for
+     * S/MIME via external LDAP. All SMIME attributes are in the format of
      * {config-name}:{value}. A &#039;SMIME config&#039; is a set of SMIME
      * attribute values with the same {config-name}. Multiple SMIME configs
      * can be configured on a domain or on globalconfig. Note: SMIME
@@ -16772,41 +16814,23 @@ public class ZAttrProvisioning {
      *
      * @since ZCS 7.1.0
      */
-    @ZAttr(id=1181)
-    public static final String A_zimbraSMIMELdapFilter = "zimbraSMIMELdapFilter";
-
-    /**
-     * LDAP search base for public key lookup for S/MIME via external LDAP.
-     * All SMIME attributes are in the format of {config-name}:{value}. A
-     * &#039;SMIME config&#039; is a set of SMIME attribute values with the
-     * same {config-name}. Multiple SMIME configs can be configured on a
-     * domain or on globalconfig. Note: SMIME attributes on domains do not
-     * inherited values from globalconfig, they are not domain-inherited
-     * attributes. During SMIME public key lookup, if there are any SMIME
-     * config on the domain of the account, they are used. SMIME configs on
-     * globalconfig will be used only when there is no SMIME config on the
-     * domain. SMIME attributes cannot be modified directly with zmprov
-     * md/mcf commands. Use zmprov gcsc/gdsc/mcsc/mdsc/rcsc/rdsc command
-     * instead.
-     *
-     * @since ZCS 7.1.0
-     */
     @ZAttr(id=1180)
     public static final String A_zimbraSMIMELdapSearchBase = "zimbraSMIMELdapSearchBase";
 
     /**
-     * Whether to use startTLS for public key lookup for S/MIME via external
-     * LDAP. All SMIME attributes are in the format of {config-name}:{value}.
-     * A &#039;SMIME config&#039; is a set of SMIME attribute values with the
-     * same {config-name}. Multiple SMIME configs can be configured on a
-     * domain or on globalconfig. Note: SMIME attributes on domains do not
-     * inherited values from globalconfig, they are not domain-inherited
-     * attributes. During SMIME public key lookup, if there are any SMIME
-     * config on the domain of the account, they are used. SMIME configs on
-     * globalconfig will be used only when there is no SMIME config on the
-     * domain. SMIME attributes cannot be modified directly with zmprov
-     * md/mcf commands. Use zmprov gcsc/gdsc/mcsc/mdsc/rcsc/rdsc command
-     * instead.
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: Whether to use startTLS for public key
+     * lookup for S/MIME via external LDAP. All SMIME attributes are in the
+     * format of {config-name}:{value}. A &#039;SMIME config&#039; is a set
+     * of SMIME attribute values with the same {config-name}. Multiple SMIME
+     * configs can be configured on a domain or on globalconfig. Note: SMIME
+     * attributes on domains do not inherited values from globalconfig, they
+     * are not domain-inherited attributes. During SMIME public key lookup,
+     * if there are any SMIME config on the domain of the account, they are
+     * used. SMIME configs on globalconfig will be used only when there is no
+     * SMIME config on the domain. SMIME attributes cannot be modified
+     * directly with zmprov md/mcf commands. Use zmprov
+     * gcsc/gdsc/mcsc/mdsc/rcsc/rdsc command instead.
      *
      * @since ZCS 7.1.0
      */
@@ -16814,19 +16838,20 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSMIMELdapStartTlsEnabled = "zimbraSMIMELdapStartTlsEnabled";
 
     /**
-     * LDAP URL(s) for public key lookup for S/MIME via external LDAP.
-     * Multiple URLs for error fallback purpose can be separated by space.
-     * All SMIME attributes are in the format of {config-name}:{value}. A
-     * &#039;SMIME config&#039; is a set of SMIME attribute values with the
-     * same {config-name}. Multiple SMIME configs can be configured on a
-     * domain or on globalconfig. Note: SMIME attributes on domains do not
-     * inherited values from globalconfig, they are not domain-inherited
-     * attributes. During SMIME public key lookup, if there are any SMIME
-     * config on the domain of the account, they are used. SMIME configs on
-     * globalconfig will be used only when there is no SMIME config on the
-     * domain. SMIME attributes cannot be modified directly with zmprov
-     * md/mcf commands. Use zmprov gcsc/gdsc/mcsc/mdsc/rcsc/rdsc command
-     * instead.
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: LDAP URL(s) for public key lookup for
+     * S/MIME via external LDAP. Multiple URLs for error fallback purpose can
+     * be separated by space. All SMIME attributes are in the format of
+     * {config-name}:{value}. A &#039;SMIME config&#039; is a set of SMIME
+     * attribute values with the same {config-name}. Multiple SMIME configs
+     * can be configured on a domain or on globalconfig. Note: SMIME
+     * attributes on domains do not inherited values from globalconfig, they
+     * are not domain-inherited attributes. During SMIME public key lookup,
+     * if there are any SMIME config on the domain of the account, they are
+     * used. SMIME configs on globalconfig will be used only when there is no
+     * SMIME config on the domain. SMIME attributes cannot be modified
+     * directly with zmprov md/mcf commands. Use zmprov
+     * gcsc/gdsc/mcsc/mdsc/rcsc/rdsc command instead.
      *
      * @since ZCS 7.1.0
      */
@@ -16834,7 +16859,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSMIMELdapURL = "zimbraSMIMELdapURL";
 
     /**
-     * enable OCSP support for SMIME.
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: enable OCSP support for SMIME.
      *
      * @since ZCS 8.7.5
      */
@@ -16842,7 +16868,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSmimeOCSPEnabled = "zimbraSmimeOCSPEnabled";
 
     /**
-     * The supported smime public certificate file extensions
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: The supported smime public certificate file
+     * extensions
      *
      * @since ZCS 8.7.5
      */
@@ -16850,7 +16878,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSmimePublicCertificateExtensions = "zimbraSmimePublicCertificateExtensions";
 
     /**
-     * The supported smime user certificate file extensions
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: The supported smime user certificate file
+     * extensions
      *
      * @since ZCS 8.7.5
      */

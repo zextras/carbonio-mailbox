@@ -12044,8 +12044,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether to allow end user to publish and remove S/MIME certificates to
-     * their GAL entry in the web UI
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether to allow end user to publish and
+     * remove S/MIME certificates to their GAL entry in the web UI
      *
      * @return zimbraFeatureManageSMIMECertificateEnabled, or false if unset
      *
@@ -12057,8 +12058,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether to allow end user to publish and remove S/MIME certificates to
-     * their GAL entry in the web UI
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether to allow end user to publish and
+     * remove S/MIME certificates to their GAL entry in the web UI
      *
      * @param zimbraFeatureManageSMIMECertificateEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -12073,8 +12075,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether to allow end user to publish and remove S/MIME certificates to
-     * their GAL entry in the web UI
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether to allow end user to publish and
+     * remove S/MIME certificates to their GAL entry in the web UI
      *
      * @param zimbraFeatureManageSMIMECertificateEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -12090,8 +12093,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether to allow end user to publish and remove S/MIME certificates to
-     * their GAL entry in the web UI
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether to allow end user to publish and
+     * remove S/MIME certificates to their GAL entry in the web UI
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -12105,8 +12109,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether to allow end user to publish and remove S/MIME certificates to
-     * their GAL entry in the web UI
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether to allow end user to publish and
+     * remove S/MIME certificates to their GAL entry in the web UI
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -13630,8 +13635,10 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether S/MIME feature is enabled. Note: SMIME is a Network feature,
-     * this attribute is effective only if SMIME is permitted by license.
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether S/MIME feature is enabled. Note:
+     * SMIME is a Network feature, this attribute is effective only if SMIME
+     * is permitted by license.
      *
      * @return zimbraFeatureSMIMEEnabled, or false if unset
      *
@@ -13643,8 +13650,10 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether S/MIME feature is enabled. Note: SMIME is a Network feature,
-     * this attribute is effective only if SMIME is permitted by license.
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether S/MIME feature is enabled. Note:
+     * SMIME is a Network feature, this attribute is effective only if SMIME
+     * is permitted by license.
      *
      * @param zimbraFeatureSMIMEEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -13659,8 +13668,10 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether S/MIME feature is enabled. Note: SMIME is a Network feature,
-     * this attribute is effective only if SMIME is permitted by license.
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether S/MIME feature is enabled. Note:
+     * SMIME is a Network feature, this attribute is effective only if SMIME
+     * is permitted by license.
      *
      * @param zimbraFeatureSMIMEEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -13676,8 +13687,10 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether S/MIME feature is enabled. Note: SMIME is a Network feature,
-     * this attribute is effective only if SMIME is permitted by license.
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether S/MIME feature is enabled. Note:
+     * SMIME is a Network feature, this attribute is effective only if SMIME
+     * is permitted by license.
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -13691,8 +13704,10 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether S/MIME feature is enabled. Note: SMIME is a Network feature,
-     * this attribute is effective only if SMIME is permitted by license.
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether S/MIME feature is enabled. Note:
+     * SMIME is a Network feature, this attribute is effective only if SMIME
+     * is permitted by license.
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -23669,11 +23684,13 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether the messaging application on the device can negotiate the
-     * encryption algorithm if a recipient&#039;s certificate doesn&#039;t
-     * support the specified encryption algorithm; 0 - BlockNegotiation 1 -
-     * OnlyStrongAlgorithmNegotiation 2 - AllowAnyAlgorithmNegotiation
-     * ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether the messaging application on the
+     * device can negotiate the encryption algorithm if a recipient&#039;s
+     * certificate doesn&#039;t support the specified encryption algorithm; 0
+     * - BlockNegotiation 1 - OnlyStrongAlgorithmNegotiation 2 -
+     * AllowAnyAlgorithmNegotiation ignored if
+     * zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyAllowSMIMEEncryptionAlgorithmNegotiation value is
      * set to -1
      *
@@ -23687,11 +23704,13 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether the messaging application on the device can negotiate the
-     * encryption algorithm if a recipient&#039;s certificate doesn&#039;t
-     * support the specified encryption algorithm; 0 - BlockNegotiation 1 -
-     * OnlyStrongAlgorithmNegotiation 2 - AllowAnyAlgorithmNegotiation
-     * ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether the messaging application on the
+     * device can negotiate the encryption algorithm if a recipient&#039;s
+     * certificate doesn&#039;t support the specified encryption algorithm; 0
+     * - BlockNegotiation 1 - OnlyStrongAlgorithmNegotiation 2 -
+     * AllowAnyAlgorithmNegotiation ignored if
+     * zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyAllowSMIMEEncryptionAlgorithmNegotiation value is
      * set to -1
      *
@@ -23708,11 +23727,13 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether the messaging application on the device can negotiate the
-     * encryption algorithm if a recipient&#039;s certificate doesn&#039;t
-     * support the specified encryption algorithm; 0 - BlockNegotiation 1 -
-     * OnlyStrongAlgorithmNegotiation 2 - AllowAnyAlgorithmNegotiation
-     * ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether the messaging application on the
+     * device can negotiate the encryption algorithm if a recipient&#039;s
+     * certificate doesn&#039;t support the specified encryption algorithm; 0
+     * - BlockNegotiation 1 - OnlyStrongAlgorithmNegotiation 2 -
+     * AllowAnyAlgorithmNegotiation ignored if
+     * zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyAllowSMIMEEncryptionAlgorithmNegotiation value is
      * set to -1
      *
@@ -23730,11 +23751,13 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether the messaging application on the device can negotiate the
-     * encryption algorithm if a recipient&#039;s certificate doesn&#039;t
-     * support the specified encryption algorithm; 0 - BlockNegotiation 1 -
-     * OnlyStrongAlgorithmNegotiation 2 - AllowAnyAlgorithmNegotiation
-     * ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether the messaging application on the
+     * device can negotiate the encryption algorithm if a recipient&#039;s
+     * certificate doesn&#039;t support the specified encryption algorithm; 0
+     * - BlockNegotiation 1 - OnlyStrongAlgorithmNegotiation 2 -
+     * AllowAnyAlgorithmNegotiation ignored if
+     * zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyAllowSMIMEEncryptionAlgorithmNegotiation value is
      * set to -1
      *
@@ -23750,11 +23773,13 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether the messaging application on the device can negotiate the
-     * encryption algorithm if a recipient&#039;s certificate doesn&#039;t
-     * support the specified encryption algorithm; 0 - BlockNegotiation 1 -
-     * OnlyStrongAlgorithmNegotiation 2 - AllowAnyAlgorithmNegotiation
-     * ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether the messaging application on the
+     * device can negotiate the encryption algorithm if a recipient&#039;s
+     * certificate doesn&#039;t support the specified encryption algorithm; 0
+     * - BlockNegotiation 1 - OnlyStrongAlgorithmNegotiation 2 -
+     * AllowAnyAlgorithmNegotiation ignored if
+     * zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyAllowSMIMEEncryptionAlgorithmNegotiation value is
      * set to -1
      *
@@ -23771,8 +23796,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether S/MIME software certificates are allowed; ignored if
-     * zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether S/MIME software certificates are
+     * allowed; ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyAllowSMIMESoftCerts value is set to -1
      *
      * @return zimbraMobilePolicyAllowSMIMESoftCerts, or 1 if unset
@@ -23785,8 +23811,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether S/MIME software certificates are allowed; ignored if
-     * zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether S/MIME software certificates are
+     * allowed; ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyAllowSMIMESoftCerts value is set to -1
      *
      * @param zimbraMobilePolicyAllowSMIMESoftCerts new value
@@ -23802,8 +23829,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether S/MIME software certificates are allowed; ignored if
-     * zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether S/MIME software certificates are
+     * allowed; ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyAllowSMIMESoftCerts value is set to -1
      *
      * @param zimbraMobilePolicyAllowSMIMESoftCerts new value
@@ -23820,8 +23848,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether S/MIME software certificates are allowed; ignored if
-     * zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether S/MIME software certificates are
+     * allowed; ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyAllowSMIMESoftCerts value is set to -1
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -23836,8 +23865,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether S/MIME software certificates are allowed; ignored if
-     * zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether S/MIME software certificates are
+     * allowed; ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyAllowSMIMESoftCerts value is set to -1
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -25989,8 +26019,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether you must encrypt S/MIME messages; ignored if
-     * zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether you must encrypt S/MIME messages;
+     * ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyRequireEncryptedSMIMEMessages value is set to -1
      *
      * @return zimbraMobilePolicyRequireEncryptedSMIMEMessages, or 0 if unset
@@ -26003,8 +26034,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether you must encrypt S/MIME messages; ignored if
-     * zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether you must encrypt S/MIME messages;
+     * ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyRequireEncryptedSMIMEMessages value is set to -1
      *
      * @param zimbraMobilePolicyRequireEncryptedSMIMEMessages new value
@@ -26020,8 +26052,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether you must encrypt S/MIME messages; ignored if
-     * zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether you must encrypt S/MIME messages;
+     * ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyRequireEncryptedSMIMEMessages value is set to -1
      *
      * @param zimbraMobilePolicyRequireEncryptedSMIMEMessages new value
@@ -26038,8 +26071,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether you must encrypt S/MIME messages; ignored if
-     * zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether you must encrypt S/MIME messages;
+     * ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyRequireEncryptedSMIMEMessages value is set to -1
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -26054,8 +26088,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether you must encrypt S/MIME messages; ignored if
-     * zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether you must encrypt S/MIME messages;
+     * ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyRequireEncryptedSMIMEMessages value is set to -1
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -26071,8 +26106,10 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * what required algorithm must be used when encrypting a message;
-     * ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: what required algorithm must be used when
+     * encrypting a message; ignored if
+     * zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyRequireEncryptionSMIMEAlgorithm value is set to -1
      *
      * @return zimbraMobilePolicyRequireEncryptionSMIMEAlgorithm, or 0 if unset
@@ -26085,8 +26122,10 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * what required algorithm must be used when encrypting a message;
-     * ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: what required algorithm must be used when
+     * encrypting a message; ignored if
+     * zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyRequireEncryptionSMIMEAlgorithm value is set to -1
      *
      * @param zimbraMobilePolicyRequireEncryptionSMIMEAlgorithm new value
@@ -26102,8 +26141,10 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * what required algorithm must be used when encrypting a message;
-     * ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: what required algorithm must be used when
+     * encrypting a message; ignored if
+     * zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyRequireEncryptionSMIMEAlgorithm value is set to -1
      *
      * @param zimbraMobilePolicyRequireEncryptionSMIMEAlgorithm new value
@@ -26120,8 +26161,10 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * what required algorithm must be used when encrypting a message;
-     * ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: what required algorithm must be used when
+     * encrypting a message; ignored if
+     * zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyRequireEncryptionSMIMEAlgorithm value is set to -1
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -26136,8 +26179,10 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * what required algorithm must be used when encrypting a message;
-     * ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: what required algorithm must be used when
+     * encrypting a message; ignored if
+     * zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyRequireEncryptionSMIMEAlgorithm value is set to -1
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -26235,9 +26280,10 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * what required algorithm must be used when signing a message; ignored
-     * if zimbraFeatureMobilePolicyEnabled=FALSE or
-     * zimbraMobilePolicyRequireSignedSMIMEAlgorithm value is set to -1
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: what required algorithm must be used when
+     * signing a message; ignored if zimbraFeatureMobilePolicyEnabled=FALSE
+     * or zimbraMobilePolicyRequireSignedSMIMEAlgorithm value is set to -1
      *
      * @return zimbraMobilePolicyRequireSignedSMIMEAlgorithm, or 0 if unset
      *
@@ -26249,9 +26295,10 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * what required algorithm must be used when signing a message; ignored
-     * if zimbraFeatureMobilePolicyEnabled=FALSE or
-     * zimbraMobilePolicyRequireSignedSMIMEAlgorithm value is set to -1
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: what required algorithm must be used when
+     * signing a message; ignored if zimbraFeatureMobilePolicyEnabled=FALSE
+     * or zimbraMobilePolicyRequireSignedSMIMEAlgorithm value is set to -1
      *
      * @param zimbraMobilePolicyRequireSignedSMIMEAlgorithm new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -26266,9 +26313,10 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * what required algorithm must be used when signing a message; ignored
-     * if zimbraFeatureMobilePolicyEnabled=FALSE or
-     * zimbraMobilePolicyRequireSignedSMIMEAlgorithm value is set to -1
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: what required algorithm must be used when
+     * signing a message; ignored if zimbraFeatureMobilePolicyEnabled=FALSE
+     * or zimbraMobilePolicyRequireSignedSMIMEAlgorithm value is set to -1
      *
      * @param zimbraMobilePolicyRequireSignedSMIMEAlgorithm new value
      * @param attrs existing map to populate, or null to create a new map
@@ -26284,9 +26332,10 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * what required algorithm must be used when signing a message; ignored
-     * if zimbraFeatureMobilePolicyEnabled=FALSE or
-     * zimbraMobilePolicyRequireSignedSMIMEAlgorithm value is set to -1
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: what required algorithm must be used when
+     * signing a message; ignored if zimbraFeatureMobilePolicyEnabled=FALSE
+     * or zimbraMobilePolicyRequireSignedSMIMEAlgorithm value is set to -1
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -26300,9 +26349,10 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * what required algorithm must be used when signing a message; ignored
-     * if zimbraFeatureMobilePolicyEnabled=FALSE or
-     * zimbraMobilePolicyRequireSignedSMIMEAlgorithm value is set to -1
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: what required algorithm must be used when
+     * signing a message; ignored if zimbraFeatureMobilePolicyEnabled=FALSE
+     * or zimbraMobilePolicyRequireSignedSMIMEAlgorithm value is set to -1
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -26317,8 +26367,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether the device must send signed S/MIME messages; ignored if
-     * zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether the device must send signed S/MIME
+     * messages; ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyRequireSignedSMIMEMessages value is set to -1
      *
      * @return zimbraMobilePolicyRequireSignedSMIMEMessages, or 0 if unset
@@ -26331,8 +26382,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether the device must send signed S/MIME messages; ignored if
-     * zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether the device must send signed S/MIME
+     * messages; ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyRequireSignedSMIMEMessages value is set to -1
      *
      * @param zimbraMobilePolicyRequireSignedSMIMEMessages new value
@@ -26348,8 +26400,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether the device must send signed S/MIME messages; ignored if
-     * zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether the device must send signed S/MIME
+     * messages; ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyRequireSignedSMIMEMessages value is set to -1
      *
      * @param zimbraMobilePolicyRequireSignedSMIMEMessages new value
@@ -26366,8 +26419,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether the device must send signed S/MIME messages; ignored if
-     * zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether the device must send signed S/MIME
+     * messages; ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyRequireSignedSMIMEMessages value is set to -1
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -26382,8 +26436,9 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * whether the device must send signed S/MIME messages; ignored if
-     * zimbraFeatureMobilePolicyEnabled=FALSE or
+     * Deprecated since: 25.3.0. deprecated in favor of new SMIME
+     * implementation. Orig desc: whether the device must send signed S/MIME
+     * messages; ignored if zimbraFeatureMobilePolicyEnabled=FALSE or
      * zimbraMobilePolicyRequireSignedSMIMEMessages value is set to -1
      *
      * @param attrs existing map to populate, or null to create a new map

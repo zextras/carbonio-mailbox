@@ -335,8 +335,9 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
     <desc>RFC2256/2307: password of user.</desc>
 </attr>
 
-<attr name="userSMIMECertificate" type="binary" cardinality="multi" optionalIn="account">
+<attr name="userSMIMECertificate" type="binary" cardinality="multi" optionalIn="account" deprecatedSince="25.3.0">
     <desc>RFC2798: PKCS#7 SignedData used to support S/MIME</desc>
+    <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
 <attr name="x121Address" type="string" optionalIn="account" flags="domainAdminModifiable">
@@ -5570,7 +5571,7 @@ TODO: delete them permanently from here
   <desc>temp directory for mailbox move</desc>
 </attr>
 
-<attr id="1176" name="zimbraSMIMELdapURL" type="string" max="256" cardinality="multi" optionalIn="domain,globalConfig" immutable="1"  since="7.1.0">
+<attr id="1176" name="zimbraSMIMELdapURL" type="string" max="256" cardinality="multi" optionalIn="domain,globalConfig" immutable="1"  since="7.1.0" deprecatedSince="25.3.0">
   <desc>
     LDAP URL(s) for public key lookup for S/MIME via external LDAP.  Multiple URLs for error fallback purpose can be separated by space.
     
@@ -5580,9 +5581,10 @@ TODO: delete them permanently from here
     SMIME configs on globalconfig will be used only when there is no SMIME config on the domain.
     SMIME attributes cannot be modified directly with zmprov md/mcf commands.  Use zmprov gcsc/gdsc/mcsc/mdsc/rcsc/rdsc command instead.
   </desc>
+  <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
-<attr id="1177" name="zimbraSMIMELdapStartTlsEnabled" type="string" cardinality="multi" optionalIn="domain,globalConfig" immutable="1" since="7.1.0">
+<attr id="1177" name="zimbraSMIMELdapStartTlsEnabled" type="string" cardinality="multi" optionalIn="domain,globalConfig" immutable="1" since="7.1.0" deprecatedSince="25.3.0">
   <desc>
     Whether to use startTLS for public key lookup for S/MIME via external LDAP.
     
@@ -5592,9 +5594,10 @@ TODO: delete them permanently from here
     SMIME configs on globalconfig will be used only when there is no SMIME config on the domain.
     SMIME attributes cannot be modified directly with zmprov md/mcf commands.  Use zmprov gcsc/gdsc/mcsc/mdsc/rcsc/rdsc command instead.
   </desc>
+  <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
-<attr id="1178" name="zimbraSMIMELdapBindDn" type="string" max="256" cardinality="multi" optionalIn="domain,globalConfig" immutable="1" since="7.1.0">
+<attr id="1178" name="zimbraSMIMELdapBindDn" type="string" max="256" cardinality="multi" optionalIn="domain,globalConfig" immutable="1" since="7.1.0" deprecatedSince="25.3.0">
   <desc>
     LDAP bind DN for public key lookup for S/MIME via external LDAP.  Can be empty for anonymous bind.
     
@@ -5604,9 +5607,10 @@ TODO: delete them permanently from here
     SMIME configs on globalconfig will be used only when there is no SMIME config on the domain.
     SMIME attributes cannot be modified directly with zmprov md/mcf commands.  Use zmprov gcsc/gdsc/mcsc/mdsc/rcsc/rdsc command instead.
   </desc>
+  <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
-<attr id="1179" name="zimbraSMIMELdapBindPassword" type="string" max="256" cardinality="multi" optionalIn="domain,globalConfig" immutable="1" since="7.1.0">
+<attr id="1179" name="zimbraSMIMELdapBindPassword" type="string" max="256" cardinality="multi" optionalIn="domain,globalConfig" immutable="1" since="7.1.0" deprecatedSince="25.3.0">
   <desc>
     LDAP bind password for public key lookup for S/MIME via external LDAP.  Can be empty for anonymous bind.
     
@@ -5616,9 +5620,10 @@ TODO: delete them permanently from here
     SMIME configs on globalconfig will be used only when there is no SMIME config on the domain.
     SMIME attributes cannot be modified directly with zmprov md/mcf commands.  Use zmprov gcsc/gdsc/mcsc/mdsc/rcsc/rdsc command instead.
   </desc>
+  <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
-<attr id="1180" name="zimbraSMIMELdapSearchBase"  type="string" max="256" cardinality="multi" optionalIn="domain,globalConfig" immutable="1" since="7.1.0">
+<attr id="1180" name="zimbraSMIMELdapSearchBase"  type="string" max="256" cardinality="multi" optionalIn="domain,globalConfig" immutable="1" since="7.1.0" deprecatedSince="25.3.0">
   <desc>
     LDAP search base for public key lookup for S/MIME via external LDAP.
   
@@ -5628,9 +5633,10 @@ TODO: delete them permanently from here
     SMIME configs on globalconfig will be used only when there is no SMIME config on the domain.
     SMIME attributes cannot be modified directly with zmprov md/mcf commands.  Use zmprov gcsc/gdsc/mcsc/mdsc/rcsc/rdsc command instead.
   </desc>
+  <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
-<attr id="1181" name="zimbraSMIMELdapFilter" type="string" max="1024" cardinality="multi" optionalIn="domain,globalConfig" immutable="1" since="7.1.0">
+<attr id="1181" name="zimbraSMIMELdapFilter" type="string" max="1024" cardinality="multi" optionalIn="domain,globalConfig" immutable="1" since="7.1.0" deprecatedSince="25.3.0">
   <desc>
     LDAP search filter for public key lookup for S/MIME via external LDAP.
     Can contain the following conversion variables for expansion:
@@ -5644,9 +5650,10 @@ TODO: delete them permanently from here
     SMIME configs on globalconfig will be used only when there is no SMIME config on the domain.
     SMIME attributes cannot be modified directly with zmprov md/mcf commands.  Use zmprov gcsc/gdsc/mcsc/mdsc/rcsc/rdsc command instead.
   </desc>
+  <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
-<attr id="1182" name="zimbraSMIMELdapAttribute" type="string" max="256" cardinality="multi" optionalIn="domain,globalConfig" immutable="1" since="7.1.0">
+<attr id="1182" name="zimbraSMIMELdapAttribute" type="string" max="256" cardinality="multi" optionalIn="domain,globalConfig" immutable="1" since="7.1.0" deprecatedSince="25.3.0">
   <desc>
     LDAP attribute(s) for public key lookup for S/MIME via external LDAP.  Multiple attributes can be separated by comma.
   
@@ -5656,11 +5663,13 @@ TODO: delete them permanently from here
     SMIME configs on globalconfig will be used only when there is no SMIME config on the domain.
     SMIME attributes cannot be modified directly with zmprov md/mcf commands.  Use zmprov gcsc/gdsc/mcsc/mdsc/rcsc/rdsc command instead.
   </desc>
+  <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
-<attr id="1183" name="zimbraFeatureManageSMIMECertificateEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited"  since="7.1.0">
+<attr id="1183" name="zimbraFeatureManageSMIMECertificateEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited"  since="7.1.0" deprecatedSince="25.3.0">
   <defaultCOSValue>FALSE</defaultCOSValue>
   <desc>whether to allow end user to publish and remove S/MIME certificates to their GAL entry in the web UI</desc>
+  <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
 <attr id="1184" name="zimbraFeatureImportFolderEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited" since="7.1.0">
@@ -5674,9 +5683,10 @@ TODO: delete them permanently from here
   <desc>whether export folder feature is enabled</desc>
 </attr>
 
-<attr id="1186" name="zimbraFeatureSMIMEEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited"  since="7.1.0">
+<attr id="1186" name="zimbraFeatureSMIMEEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited"  since="7.1.0" deprecatedSince="25.3.0">
   <defaultCOSValue>FALSE</defaultCOSValue>
   <desc>whether S/MIME feature is enabled.  Note: SMIME is a Network feature, this attribute is effective only if SMIME is permitted by license.</desc>
+  <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
 <attr id="1187" name="zimbraPrefCalendarDefaultApptDuration" type="duration" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="8.0.0">
@@ -5798,7 +5808,7 @@ TODO: delete them permanently from here
   <deprecateDesc>Empty folder operation now always deletes items in batches, hence a threshold is no longer applicable.</deprecateDesc>
 </attr>
 
-<attr id="1209" name="zimbraSMIMELdapDiscoverSearchBaseEnabled"  type="string" max="32" cardinality="multi" optionalIn="domain,globalConfig" immutable="1" since="7.1.1">
+<attr id="1209" name="zimbraSMIMELdapDiscoverSearchBaseEnabled"  type="string" max="32" cardinality="multi" optionalIn="domain,globalConfig" immutable="1" since="7.1.1" deprecatedSince="25.3.0">
   <desc>
     Whether or not to discover search base DNs if zimbraSMIMELdapSearchBase is not set. Allowed values are TRUE or FALSE.
     If zimbraSMIMELdapSearchBase is set for a config, this attribute is ignored for the config.
@@ -5813,6 +5823,7 @@ TODO: delete them permanently from here
     SMIME configs on globalconfig will be used only when there is no SMIME config on the domain.
     SMIME attributes cannot be modified directly with zmprov md/mcf commands.  Use zmprov gcsc/gdsc/mcsc/mdsc/rcsc/rdsc command instead.
   </desc>
+  <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
 <attr id="1210" name="zimbraDefaultFolderFlags" type="string" cardinality="single" min="0" max="32" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="7.1.1">
@@ -6492,39 +6503,43 @@ TODO: delete them permanently from here
   </desc>
 </attr>
 
-<attr id="1294" name="zimbraMobilePolicyRequireSignedSMIMEMessages" type="integer" min="-1" max="1" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="8.0.0">
+<attr id="1294" name="zimbraMobilePolicyRequireSignedSMIMEMessages" type="integer" min="-1" max="1" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="8.0.0" deprecatedSince="25.3.0">
   <defaultCOSValue>0</defaultCOSValue>
   <desc>
     whether the device must send signed S/MIME messages;
     ignored if zimbraFeatureMobilePolicyEnabled=FALSE or zimbraMobilePolicyRequireSignedSMIMEMessages value is set to -1
   </desc>
+  <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
-<attr id="1295" name="zimbraMobilePolicyRequireEncryptedSMIMEMessages" type="integer" min="-1" max="1" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="8.0.0">
+<attr id="1295" name="zimbraMobilePolicyRequireEncryptedSMIMEMessages" type="integer" min="-1" max="1" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="8.0.0" deprecatedSince="25.3.0">
   <defaultCOSValue>0</defaultCOSValue>
   <desc>
     whether you must encrypt S/MIME messages;
     ignored if zimbraFeatureMobilePolicyEnabled=FALSE or zimbraMobilePolicyRequireEncryptedSMIMEMessages value is set to -1
   </desc>
+  <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
-<attr id="1296" name="zimbraMobilePolicyRequireSignedSMIMEAlgorithm" type="integer" min="-1" max="1" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="8.0.0">
+<attr id="1296" name="zimbraMobilePolicyRequireSignedSMIMEAlgorithm" type="integer" min="-1" max="1" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="8.0.0" deprecatedSince="25.3.0">
   <defaultCOSValue>0</defaultCOSValue>
   <desc>
     what required algorithm must be used when signing a message;
     ignored if zimbraFeatureMobilePolicyEnabled=FALSE or zimbraMobilePolicyRequireSignedSMIMEAlgorithm value is set to -1
   </desc>
+  <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
-<attr id="1297" name="zimbraMobilePolicyRequireEncryptionSMIMEAlgorithm" type="integer" min="-1" max="1" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="8.0.0">
+<attr id="1297" name="zimbraMobilePolicyRequireEncryptionSMIMEAlgorithm" type="integer" min="-1" max="1" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="8.0.0" deprecatedSince="25.3.0">
   <defaultCOSValue>0</defaultCOSValue>
   <desc>
     what required algorithm must be used when encrypting a message;
     ignored if zimbraFeatureMobilePolicyEnabled=FALSE or zimbraMobilePolicyRequireEncryptionSMIMEAlgorithm value is set to -1
   </desc>
+  <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
-<attr id="1298" name="zimbraMobilePolicyAllowSMIMEEncryptionAlgorithmNegotiation" type="integer" min="-1" max="2" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="8.0.0">
+<attr id="1298" name="zimbraMobilePolicyAllowSMIMEEncryptionAlgorithmNegotiation" type="integer" min="-1" max="2" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="8.0.0" deprecatedSince="25.3.0">
   <defaultCOSValue>2</defaultCOSValue>
   <desc>
     whether the messaging application on the device can negotiate the encryption algorithm if a 
@@ -6534,14 +6549,16 @@ TODO: delete them permanently from here
     2 - AllowAnyAlgorithmNegotiation
     ignored if zimbraFeatureMobilePolicyEnabled=FALSE or zimbraMobilePolicyAllowSMIMEEncryptionAlgorithmNegotiation value is set to -1
   </desc>
+  <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
-<attr id="1299" name="zimbraMobilePolicyAllowSMIMESoftCerts" type="integer" min="-1" max="1" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="8.0.0">
+<attr id="1299" name="zimbraMobilePolicyAllowSMIMESoftCerts" type="integer" min="-1" max="1" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="8.0.0" deprecatedSince="25.3.0">
   <defaultCOSValue>1</defaultCOSValue>
   <desc>
     whether S/MIME software certificates are allowed;
     ignored if zimbraFeatureMobilePolicyEnabled=FALSE or zimbraMobilePolicyAllowSMIMESoftCerts value is set to -1
   </desc>
+  <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
 <attr id="1300" name="zimbraMobilePolicyAllowBrowser" type="integer" min="-1" max="1" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="8.0.0">
@@ -9352,13 +9369,14 @@ TODO: delete them permanently from here
   <deprecateDesc>Variable feature is always enabled, hence this attribute has been deprecated</deprecateDesc>
 </attr>
 
-<attr id="2099" name="zimbraSmimeUserCertificateExtensions" type="string" cardinality="multi" optionalIn="globalConfig" flags="accountInfo" since="8.7.5">
+<attr id="2099" name="zimbraSmimeUserCertificateExtensions" type="string" cardinality="multi" optionalIn="globalConfig" flags="accountInfo" since="8.7.5" deprecatedSince="25.3.0">
   <globalConfigValue>p12</globalConfigValue>
   <globalConfigValue>pfx</globalConfigValue>
   <desc>The supported smime user certificate file extensions</desc>
+  <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
-<attr id="2100" name="zimbraSmimePublicCertificateExtensions" type="string" cardinality="multi" optionalIn="globalConfig" flags="accountInfo" since="8.7.5">
+<attr id="2100" name="zimbraSmimePublicCertificateExtensions" type="string" cardinality="multi" optionalIn="globalConfig" flags="accountInfo" since="8.7.5" deprecatedSince="25.3.0">
   <globalConfigValue>cer</globalConfigValue>
   <globalConfigValue>crt</globalConfigValue>
   <globalConfigValue>der</globalConfigValue>
@@ -9369,11 +9387,13 @@ TODO: delete them permanently from here
   <globalConfigValue>sto</globalConfigValue>
   <globalConfigValue>pem</globalConfigValue>
   <desc>The supported smime public certificate file extensions</desc>
+  <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
-<attr id="2101" name="zimbraSmimeOCSPEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.5">
+<attr id="2101" name="zimbraSmimeOCSPEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.5" deprecatedSince="25.3.0">
   <globalConfigValue>TRUE</globalConfigValue>
   <desc>enable OCSP support for SMIME.</desc>
+  <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
 <attr id="2102" name="zimbraChatServiceEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" requiresRestart="mailbox" flags="serverInherited" since="8.7.6">
@@ -9797,15 +9817,16 @@ TODO: delete them permanently from here
   <desc>whether or not the user has accepted the client's terms of service</desc>
 </attr>
 
-<attr id="3071" name="zimbraHABSeniorityIndex" type="integer" cardinality="single" optionalIn="habGroup,account" since="8.8.10">
+<attr id="3071" name="zimbraHABSeniorityIndex" type="integer" cardinality="single" optionalIn="habGroup,account" since="8.8.10" deprecatedSince="25.3.0">
   <desc>seniority index of the group or group member which will determine the sorting order in the hierarchical address book</desc>
+  <deprecateDesc>HAB is not supported anymore</deprecateDesc>
 </attr>
 
 <attr id="3072" name="zimbraHierarchicalAddressBookRoot" type="string" cardinality="multi" optionalIn="domain" flags="domainInfo" since="8.8.10">
   <desc>root group id of hierarchical address book</desc>
 </attr>
 
-<attr id="3073" name="zimbraHABMemberLdapAttrMap" type="string" max="4096" cardinality="multi" optionalIn="globalConfig" since="8.8.10">
+<attr id="3073" name="zimbraHABMemberLdapAttrMap" type="string" max="4096" cardinality="multi" optionalIn="globalConfig" since="8.8.10" deprecatedSince="25.3.0">
   <globalConfigValue>firstName=givenName</globalConfigValue>
   <globalConfigValue>lastName=sn</globalConfigValue>
   <globalConfigValue>displayName=displayName</globalConfigValue>
@@ -9822,6 +9843,7 @@ TODO: delete them permanently from here
   <globalConfigValue>office=physicalDeliveryOfficeName</globalConfigValue>
   <globalConfigValue>alias=zimbraMailAlias</globalConfigValue>
   <desc>LDAP attribute to HAB Group Member attribute mapping</desc>
+  <deprecateDesc>HAB is not supported anymore</deprecateDesc>
 </attr>
 
 <attr id="3074" name="zimbraAddressListGalFilter" type="string" cardinality="single" requiredIn="addressList" flags="domainAdminModifiable" since="8.8.10">
