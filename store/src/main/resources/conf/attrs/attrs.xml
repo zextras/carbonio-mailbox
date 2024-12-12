@@ -3685,8 +3685,9 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>list view columns in web client</desc>
 </attr>
 
-<attr id="695" name="zimbraXMPPServerDialbackKey" type="ostring" max="128" immutable="1" cardinality="multi" optionalIn="globalConfig" since="5.0.9">
+<attr id="695" name="zimbraXMPPServerDialbackKey" type="ostring" max="128" immutable="1" cardinality="multi" optionalIn="globalConfig" since="5.0.9" deprecatedSince="25.3.0">
   <desc>Shared Secret for XMPP Server Dialback Protocol</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
 <attr id="696" name="zimbraAdminConsoleLoginURL" type="string" max="256" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited,domainInfo,domainAdminModifiable" since="5.0.9">
@@ -3901,20 +3902,24 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>whether NGINX mail proxy will pass upstream server errors back to the downstream email clients</desc>
 </attr>
 
-<attr id="737" name="zimbraXMPPComponentCategory" type="string" cardinality="single" requiredIn="xmppComponent" since="6.0.0_BETA1">
+<attr id="737" name="zimbraXMPPComponentCategory" type="string" cardinality="single" requiredIn="xmppComponent" since="6.0.0_BETA1" deprecatedSince="25.3.0">
   <desc>XMPP Category of the component</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
-<attr id="738" name="zimbraXMPPComponentType" type="string" cardinality="single" requiredIn="xmppComponent" since="6.0.0_BETA1">
+<attr id="738" name="zimbraXMPPComponentType" type="string" cardinality="single" requiredIn="xmppComponent" since="6.0.0_BETA1" deprecatedSince="25.3.0">
   <desc>XMPP Type of the component</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
-<attr id="739" name="zimbraXMPPComponentFeatures" type="string" cardinality="multi" optionalIn="xmppComponent" since="6.0.0_BETA1">
+<attr id="739" name="zimbraXMPPComponentFeatures" type="string" cardinality="multi" optionalIn="xmppComponent" since="6.0.0_BETA1" deprecatedSince="25.3.0">
   <desc>XMPP Type of the component</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
-<attr id="740" name="zimbraXMPPComponentName" type="string" cardinality="single" optionalIn="xmppComponent" since="6.0.0_BETA1">
+<attr id="740" name="zimbraXMPPComponentName" type="string" cardinality="single" optionalIn="xmppComponent" since="6.0.0_BETA1" deprecatedSince="25.3.0">
   <desc>Name of the XMPP Component</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
 <attr id="741" name="zimbraDomainId" type="id" cardinality="single" requiredIn="xmppComponent" since="6.0.0_BETA1">
@@ -4044,8 +4049,9 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <deprecateDesc>deprecated per bug 40069</deprecateDesc>
 </attr>
 
-<attr id="763" name="zimbraXMPPComponentClassName" type="string" cardinality="single" requiredIn="xmppComponent" since="6.0.0_BETA1">
+<attr id="763" name="zimbraXMPPComponentClassName" type="string" cardinality="single" requiredIn="xmppComponent" since="6.0.0_BETA1" deprecatedSince="25.3.0">
   <desc>class name of the XMPP component</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
 <attr id="764" name="zimbraMailRedirectSetEnvelopeSender" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="6.0.0_BETA1">
@@ -8914,21 +8920,25 @@ TODO: delete them permanently from here
   <desc>Google Server API key used by sever to push notifications to GCM</desc>
 </attr>
 
-<attr id="1957" name="zimbraReverseProxyXmppBoshLocalHttpBindURL" type="string" max="1024" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.0,9.0.0">
+<attr id="1957" name="zimbraReverseProxyXmppBoshLocalHttpBindURL" type="string" max="1024" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.0,9.0.0" deprecatedSince="25.3.0">
   <globalConfigValue>/http-bind</globalConfigValue>
   <desc>Local HTTP-BIND URL prefix where ZWC sends XMPP over BOSH requests</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
-<attr id="1958" name="zimbraReverseProxyXmppBoshRemoteHttpBindURL" type="string" max="1024" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.0,9.0.0">
+<attr id="1958" name="zimbraReverseProxyXmppBoshRemoteHttpBindURL" type="string" max="1024" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.0,9.0.0" deprecatedSince="25.3.0">
   <desc>Remote HTTP-BIND URL prefix for an external XMPP server where XMPP over BOSH requests need to be proxied. This needs to be configured only if its different from zimbraReverseProxyXmppBoshLocalHttpBindURL</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
-<attr id="1959" name="zimbraReverseProxyXmppBoshHostname" type="string" max="1024" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.0,9.0.0">
+<attr id="1959" name="zimbraReverseProxyXmppBoshHostname" type="string" max="1024" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.0,9.0.0" deprecatedSince="25.3.0">
   <desc>Hostname of the external XMPP server where XMPP over BOSH requests need to be proxied</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
-<attr id="1960" name="zimbraReverseProxyXmppBoshPort" type="port" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.0,9.0.0">
+<attr id="1960" name="zimbraReverseProxyXmppBoshPort" type="port" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.0,9.0.0" deprecatedSince="25.3.0">
   <desc>Port number of the external XMPP server where XMPP over BOSH requests need to be proxied</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
 <attr id="1964" name="zimbraTwoFactorAuthTrustedDeviceTokenKey" type="ostring" max="128" immutable="1" cardinality="multi" optionalIn="globalConfig" requiresRestart="mailbox" since="8.7.0,9.0.0">
@@ -9194,19 +9204,22 @@ TODO: delete them permanently from here
   <defaultCOSValue>FALSE</defaultCOSValue>
 </attr>
 
-<attr id="2064" name="zimbraReverseProxyXmppBoshTimeout" type="duration" min="0" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited"  since="8.7.0,9.0.0">
+<attr id="2064" name="zimbraReverseProxyXmppBoshTimeout" type="duration" min="0" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited"  since="8.7.0,9.0.0" deprecatedSince="25.3.0">
   <globalConfigValue>90s</globalConfigValue>
   <desc>the response timeout for an external XMPP/BOSH server</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
-<attr id="2065" name="zimbraReverseProxyXmppBoshEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="nginxproxy" since="8.7.0,9.0.0">
+<attr id="2065" name="zimbraReverseProxyXmppBoshEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="nginxproxy" since="8.7.0,9.0.0" deprecatedSince="25.3.0">
    <globalConfigValue>FALSE</globalConfigValue>
    <desc>Whether to enable XMPP/BOSH proxy</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
  </attr>
 
-<attr id="2066" name="zimbraReverseProxyXmppBoshSSL" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="nginxproxy" since="8.7.0,9.0.0">
+<attr id="2066" name="zimbraReverseProxyXmppBoshSSL" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" requiresRestart="nginxproxy" since="8.7.0,9.0.0" deprecatedSince="25.3.0">
    <globalConfigValue>FALSE</globalConfigValue>
    <desc>Whether to use SSL to connect to upstream XMPP/Bosh server</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
 <attr id="2067" name="zimbraScheduledTaskRetry" type="boolean" cardinality="single" optionalIn="globalConfig" since="8.7.0,9.0.0">
@@ -9396,9 +9409,10 @@ TODO: delete them permanently from here
   <deprecateDesc>deprecated in favor of new SMIME implementation</deprecateDesc>
 </attr>
 
-<attr id="2102" name="zimbraChatServiceEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" requiresRestart="mailbox" flags="serverInherited" since="8.7.6">
+<attr id="2102" name="zimbraChatServiceEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" requiresRestart="mailbox" flags="serverInherited" since="8.7.6" deprecatedSince="25.3.0">
   <globalConfigValue>TRUE</globalConfigValue>
   <desc>enable XMPP server</desc>
+  <deprecateDesc>no longer in use</deprecateDesc>
 </attr>
 
 <attr id="2103" name="zimbraChatHistoryEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInherited" since="8.7.6">
@@ -9411,24 +9425,28 @@ TODO: delete them permanently from here
   <desc>enable dedicated log for the chat conversation (needed by some jurisdictions)</desc>
 </attr>
 
-<attr id="2105" name="zimbraChatXmppSslPortEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" requiresRestart="mailbox" flags="serverInherited" since="8.7.6">
+<attr id="2105" name="zimbraChatXmppSslPortEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,server" requiresRestart="mailbox" flags="serverInherited" since="8.7.6" deprecatedSince="25.3.0">
   <globalConfigValue>FALSE</globalConfigValue>
   <desc>enable XMPP legacy SSL port</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
-<attr id="2106" name="zimbraChatAllowUnencryptedPassword" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.6">
+<attr id="2106" name="zimbraChatAllowUnencryptedPassword" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.6" deprecatedSince="25.3.0">
   <globalConfigValue>FALSE</globalConfigValue>
   <desc>allow unencrypted password login via XMPP</desc>
+  <deprecateDesc>no longer in use</deprecateDesc>
 </attr>
 
-<attr id="2107" name="zimbraChatXmppPort" type="port" cardinality="single" optionalIn="globalConfig,server" requiresRestart="mailbox" flags="serverInherited" since="8.7.6">
+<attr id="2107" name="zimbraChatXmppPort" type="port" cardinality="single" optionalIn="globalConfig,server" requiresRestart="mailbox" flags="serverInherited" since="8.7.6" deprecatedSince="25.3.0">
   <globalConfigValue>5222</globalConfigValue>
   <desc>XMPP plain port, usually used with startTLS</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
-<attr id="2108" name="zimbraChatXmppSslPort" type="port" cardinality="single" optionalIn="globalConfig,server" requiresRestart="mailbox" flags="serverInherited" since="8.7.6">
+<attr id="2108" name="zimbraChatXmppSslPort" type="port" cardinality="single" optionalIn="globalConfig,server" requiresRestart="mailbox" flags="serverInherited" since="8.7.6" deprecatedSince="25.3.0">
   <globalConfigValue>5223</globalConfigValue>
   <desc>XMPP legacy SSL port</desc>
+  <deprecateDesc>Feature removed</deprecateDesc>
 </attr>
 
 <attr id="2109" name="zimbraChatAllowDlMemberAddAsFriend" type="boolean" cardinality="single" optionalIn="distributionList" since="8.7.6">

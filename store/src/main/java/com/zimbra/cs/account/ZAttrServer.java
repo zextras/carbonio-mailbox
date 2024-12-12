@@ -6270,7 +6270,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * allow unencrypted password login via XMPP
+     * Deprecated since: 25.3.0. no longer in use. Orig desc: allow
+     * unencrypted password login via XMPP
      *
      * @return zimbraChatAllowUnencryptedPassword, or false if unset
      *
@@ -6282,7 +6283,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * allow unencrypted password login via XMPP
+     * Deprecated since: 25.3.0. no longer in use. Orig desc: allow
+     * unencrypted password login via XMPP
      *
      * @param zimbraChatAllowUnencryptedPassword new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -6297,7 +6299,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * allow unencrypted password login via XMPP
+     * Deprecated since: 25.3.0. no longer in use. Orig desc: allow
+     * unencrypted password login via XMPP
      *
      * @param zimbraChatAllowUnencryptedPassword new value
      * @param attrs existing map to populate, or null to create a new map
@@ -6313,7 +6316,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * allow unencrypted password login via XMPP
+     * Deprecated since: 25.3.0. no longer in use. Orig desc: allow
+     * unencrypted password login via XMPP
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -6327,7 +6331,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * allow unencrypted password login via XMPP
+     * Deprecated since: 25.3.0. no longer in use. Orig desc: allow
+     * unencrypted password login via XMPP
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -6342,7 +6347,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * enable XMPP server
+     * Deprecated since: 25.3.0. no longer in use. Orig desc: enable XMPP
+     * server
      *
      * @return zimbraChatServiceEnabled, or true if unset
      *
@@ -6354,7 +6360,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * enable XMPP server
+     * Deprecated since: 25.3.0. no longer in use. Orig desc: enable XMPP
+     * server
      *
      * @param zimbraChatServiceEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -6369,7 +6376,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * enable XMPP server
+     * Deprecated since: 25.3.0. no longer in use. Orig desc: enable XMPP
+     * server
      *
      * @param zimbraChatServiceEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -6385,7 +6393,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * enable XMPP server
+     * Deprecated since: 25.3.0. no longer in use. Orig desc: enable XMPP
+     * server
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -6399,7 +6408,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * enable XMPP server
+     * Deprecated since: 25.3.0. no longer in use. Orig desc: enable XMPP
+     * server
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -6414,7 +6424,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * XMPP plain port, usually used with startTLS
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP plain port,
+     * usually used with startTLS
      *
      * <p>Use getChatXmppPortAsString to access value as a string.
      *
@@ -6430,7 +6441,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * XMPP plain port, usually used with startTLS
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP plain port,
+     * usually used with startTLS
      *
      * @return zimbraChatXmppPort, or "5222" if unset
      *
@@ -6442,7 +6454,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * XMPP plain port, usually used with startTLS
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP plain port,
+     * usually used with startTLS
      *
      * @param zimbraChatXmppPort new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -6457,7 +6470,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * XMPP plain port, usually used with startTLS
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP plain port,
+     * usually used with startTLS
      *
      * @param zimbraChatXmppPort new value
      * @param attrs existing map to populate, or null to create a new map
@@ -6473,7 +6487,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * XMPP plain port, usually used with startTLS
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP plain port,
+     * usually used with startTLS
      *
      * @param zimbraChatXmppPort new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -6488,7 +6503,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * XMPP plain port, usually used with startTLS
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP plain port,
+     * usually used with startTLS
      *
      * @param zimbraChatXmppPort new value
      * @param attrs existing map to populate, or null to create a new map
@@ -6504,7 +6520,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * XMPP plain port, usually used with startTLS
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP plain port,
+     * usually used with startTLS
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -6518,7 +6535,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * XMPP plain port, usually used with startTLS
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP plain port,
+     * usually used with startTLS
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -6533,7 +6551,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * XMPP legacy SSL port
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP legacy SSL
+     * port
      *
      * <p>Use getChatXmppSslPortAsString to access value as a string.
      *
@@ -6549,7 +6568,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * XMPP legacy SSL port
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP legacy SSL
+     * port
      *
      * @return zimbraChatXmppSslPort, or "5223" if unset
      *
@@ -6561,7 +6581,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * XMPP legacy SSL port
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP legacy SSL
+     * port
      *
      * @param zimbraChatXmppSslPort new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -6576,7 +6597,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * XMPP legacy SSL port
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP legacy SSL
+     * port
      *
      * @param zimbraChatXmppSslPort new value
      * @param attrs existing map to populate, or null to create a new map
@@ -6592,7 +6614,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * XMPP legacy SSL port
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP legacy SSL
+     * port
      *
      * @param zimbraChatXmppSslPort new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -6607,7 +6630,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * XMPP legacy SSL port
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP legacy SSL
+     * port
      *
      * @param zimbraChatXmppSslPort new value
      * @param attrs existing map to populate, or null to create a new map
@@ -6623,7 +6647,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * XMPP legacy SSL port
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP legacy SSL
+     * port
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -6637,7 +6662,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * XMPP legacy SSL port
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP legacy SSL
+     * port
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -6652,7 +6678,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * enable XMPP legacy SSL port
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: enable XMPP
+     * legacy SSL port
      *
      * @return zimbraChatXmppSslPortEnabled, or false if unset
      *
@@ -6664,7 +6691,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * enable XMPP legacy SSL port
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: enable XMPP
+     * legacy SSL port
      *
      * @param zimbraChatXmppSslPortEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -6679,7 +6707,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * enable XMPP legacy SSL port
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: enable XMPP
+     * legacy SSL port
      *
      * @param zimbraChatXmppSslPortEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -6695,7 +6724,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * enable XMPP legacy SSL port
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: enable XMPP
+     * legacy SSL port
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -6709,7 +6739,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * enable XMPP legacy SSL port
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: enable XMPP
+     * legacy SSL port
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -45481,7 +45512,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Whether to enable XMPP/BOSH proxy
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Whether to
+     * enable XMPP/BOSH proxy
      *
      * @return zimbraReverseProxyXmppBoshEnabled, or false if unset
      *
@@ -45493,7 +45525,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Whether to enable XMPP/BOSH proxy
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Whether to
+     * enable XMPP/BOSH proxy
      *
      * @param zimbraReverseProxyXmppBoshEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -45508,7 +45541,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Whether to enable XMPP/BOSH proxy
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Whether to
+     * enable XMPP/BOSH proxy
      *
      * @param zimbraReverseProxyXmppBoshEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -45524,7 +45558,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Whether to enable XMPP/BOSH proxy
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Whether to
+     * enable XMPP/BOSH proxy
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -45538,7 +45573,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Whether to enable XMPP/BOSH proxy
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Whether to
+     * enable XMPP/BOSH proxy
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -45553,8 +45589,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Hostname of the external XMPP server where XMPP over BOSH requests
-     * need to be proxied
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Hostname of the
+     * external XMPP server where XMPP over BOSH requests need to be proxied
      *
      * @return zimbraReverseProxyXmppBoshHostname, or null if unset
      *
@@ -45566,8 +45602,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Hostname of the external XMPP server where XMPP over BOSH requests
-     * need to be proxied
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Hostname of the
+     * external XMPP server where XMPP over BOSH requests need to be proxied
      *
      * @param zimbraReverseProxyXmppBoshHostname new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -45582,8 +45618,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Hostname of the external XMPP server where XMPP over BOSH requests
-     * need to be proxied
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Hostname of the
+     * external XMPP server where XMPP over BOSH requests need to be proxied
      *
      * @param zimbraReverseProxyXmppBoshHostname new value
      * @param attrs existing map to populate, or null to create a new map
@@ -45599,8 +45635,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Hostname of the external XMPP server where XMPP over BOSH requests
-     * need to be proxied
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Hostname of the
+     * external XMPP server where XMPP over BOSH requests need to be proxied
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -45614,8 +45650,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Hostname of the external XMPP server where XMPP over BOSH requests
-     * need to be proxied
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Hostname of the
+     * external XMPP server where XMPP over BOSH requests need to be proxied
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -45630,7 +45666,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Local HTTP-BIND URL prefix where ZWC sends XMPP over BOSH requests
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Local HTTP-BIND
+     * URL prefix where ZWC sends XMPP over BOSH requests
      *
      * @return zimbraReverseProxyXmppBoshLocalHttpBindURL, or "/http-bind" if unset
      *
@@ -45642,7 +45679,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Local HTTP-BIND URL prefix where ZWC sends XMPP over BOSH requests
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Local HTTP-BIND
+     * URL prefix where ZWC sends XMPP over BOSH requests
      *
      * @param zimbraReverseProxyXmppBoshLocalHttpBindURL new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -45657,7 +45695,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Local HTTP-BIND URL prefix where ZWC sends XMPP over BOSH requests
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Local HTTP-BIND
+     * URL prefix where ZWC sends XMPP over BOSH requests
      *
      * @param zimbraReverseProxyXmppBoshLocalHttpBindURL new value
      * @param attrs existing map to populate, or null to create a new map
@@ -45673,7 +45712,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Local HTTP-BIND URL prefix where ZWC sends XMPP over BOSH requests
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Local HTTP-BIND
+     * URL prefix where ZWC sends XMPP over BOSH requests
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -45687,7 +45727,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Local HTTP-BIND URL prefix where ZWC sends XMPP over BOSH requests
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Local HTTP-BIND
+     * URL prefix where ZWC sends XMPP over BOSH requests
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -45702,8 +45743,9 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Port number of the external XMPP server where XMPP over BOSH requests
-     * need to be proxied
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Port number of
+     * the external XMPP server where XMPP over BOSH requests need to be
+     * proxied
      *
      * <p>Use getReverseProxyXmppBoshPortAsString to access value as a string.
      *
@@ -45719,8 +45761,9 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Port number of the external XMPP server where XMPP over BOSH requests
-     * need to be proxied
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Port number of
+     * the external XMPP server where XMPP over BOSH requests need to be
+     * proxied
      *
      * @return zimbraReverseProxyXmppBoshPort, or null if unset
      *
@@ -45732,8 +45775,9 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Port number of the external XMPP server where XMPP over BOSH requests
-     * need to be proxied
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Port number of
+     * the external XMPP server where XMPP over BOSH requests need to be
+     * proxied
      *
      * @param zimbraReverseProxyXmppBoshPort new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -45748,8 +45792,9 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Port number of the external XMPP server where XMPP over BOSH requests
-     * need to be proxied
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Port number of
+     * the external XMPP server where XMPP over BOSH requests need to be
+     * proxied
      *
      * @param zimbraReverseProxyXmppBoshPort new value
      * @param attrs existing map to populate, or null to create a new map
@@ -45765,8 +45810,9 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Port number of the external XMPP server where XMPP over BOSH requests
-     * need to be proxied
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Port number of
+     * the external XMPP server where XMPP over BOSH requests need to be
+     * proxied
      *
      * @param zimbraReverseProxyXmppBoshPort new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -45781,8 +45827,9 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Port number of the external XMPP server where XMPP over BOSH requests
-     * need to be proxied
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Port number of
+     * the external XMPP server where XMPP over BOSH requests need to be
+     * proxied
      *
      * @param zimbraReverseProxyXmppBoshPort new value
      * @param attrs existing map to populate, or null to create a new map
@@ -45798,8 +45845,9 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Port number of the external XMPP server where XMPP over BOSH requests
-     * need to be proxied
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Port number of
+     * the external XMPP server where XMPP over BOSH requests need to be
+     * proxied
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -45813,8 +45861,9 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Port number of the external XMPP server where XMPP over BOSH requests
-     * need to be proxied
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Port number of
+     * the external XMPP server where XMPP over BOSH requests need to be
+     * proxied
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -45829,9 +45878,10 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Remote HTTP-BIND URL prefix for an external XMPP server where XMPP
-     * over BOSH requests need to be proxied. This needs to be configured
-     * only if its different from zimbraReverseProxyXmppBoshLocalHttpBindURL
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Remote HTTP-BIND
+     * URL prefix for an external XMPP server where XMPP over BOSH requests
+     * need to be proxied. This needs to be configured only if its different
+     * from zimbraReverseProxyXmppBoshLocalHttpBindURL
      *
      * @return zimbraReverseProxyXmppBoshRemoteHttpBindURL, or null if unset
      *
@@ -45843,9 +45893,10 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Remote HTTP-BIND URL prefix for an external XMPP server where XMPP
-     * over BOSH requests need to be proxied. This needs to be configured
-     * only if its different from zimbraReverseProxyXmppBoshLocalHttpBindURL
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Remote HTTP-BIND
+     * URL prefix for an external XMPP server where XMPP over BOSH requests
+     * need to be proxied. This needs to be configured only if its different
+     * from zimbraReverseProxyXmppBoshLocalHttpBindURL
      *
      * @param zimbraReverseProxyXmppBoshRemoteHttpBindURL new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -45860,9 +45911,10 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Remote HTTP-BIND URL prefix for an external XMPP server where XMPP
-     * over BOSH requests need to be proxied. This needs to be configured
-     * only if its different from zimbraReverseProxyXmppBoshLocalHttpBindURL
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Remote HTTP-BIND
+     * URL prefix for an external XMPP server where XMPP over BOSH requests
+     * need to be proxied. This needs to be configured only if its different
+     * from zimbraReverseProxyXmppBoshLocalHttpBindURL
      *
      * @param zimbraReverseProxyXmppBoshRemoteHttpBindURL new value
      * @param attrs existing map to populate, or null to create a new map
@@ -45878,9 +45930,10 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Remote HTTP-BIND URL prefix for an external XMPP server where XMPP
-     * over BOSH requests need to be proxied. This needs to be configured
-     * only if its different from zimbraReverseProxyXmppBoshLocalHttpBindURL
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Remote HTTP-BIND
+     * URL prefix for an external XMPP server where XMPP over BOSH requests
+     * need to be proxied. This needs to be configured only if its different
+     * from zimbraReverseProxyXmppBoshLocalHttpBindURL
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -45894,9 +45947,10 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Remote HTTP-BIND URL prefix for an external XMPP server where XMPP
-     * over BOSH requests need to be proxied. This needs to be configured
-     * only if its different from zimbraReverseProxyXmppBoshLocalHttpBindURL
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Remote HTTP-BIND
+     * URL prefix for an external XMPP server where XMPP over BOSH requests
+     * need to be proxied. This needs to be configured only if its different
+     * from zimbraReverseProxyXmppBoshLocalHttpBindURL
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -45911,7 +45965,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Whether to use SSL to connect to upstream XMPP/Bosh server
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Whether to use
+     * SSL to connect to upstream XMPP/Bosh server
      *
      * @return zimbraReverseProxyXmppBoshSSL, or false if unset
      *
@@ -45923,7 +45978,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Whether to use SSL to connect to upstream XMPP/Bosh server
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Whether to use
+     * SSL to connect to upstream XMPP/Bosh server
      *
      * @param zimbraReverseProxyXmppBoshSSL new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -45938,7 +45994,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Whether to use SSL to connect to upstream XMPP/Bosh server
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Whether to use
+     * SSL to connect to upstream XMPP/Bosh server
      *
      * @param zimbraReverseProxyXmppBoshSSL new value
      * @param attrs existing map to populate, or null to create a new map
@@ -45954,7 +46011,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Whether to use SSL to connect to upstream XMPP/Bosh server
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Whether to use
+     * SSL to connect to upstream XMPP/Bosh server
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -45968,7 +46026,8 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * Whether to use SSL to connect to upstream XMPP/Bosh server
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Whether to use
+     * SSL to connect to upstream XMPP/Bosh server
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -45983,11 +46042,11 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * the response timeout for an external XMPP/BOSH server. Must be in
-     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
-     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
-     * milliseconds. If time unit is not specified, the default is
-     * s(seconds).
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: the response
+     * timeout for an external XMPP/BOSH server. Must be in valid duration
+     * format: {digits}{time-unit}. digits: 0-9, time-unit: [hmsd]|ms. h -
+     * hours, m - minutes, s - seconds, d - days, ms - milliseconds. If time
+     * unit is not specified, the default is s(seconds).
      *
      * <p>Use getReverseProxyXmppBoshTimeoutAsString to access value as a string.
      *
@@ -46003,11 +46062,11 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * the response timeout for an external XMPP/BOSH server. Must be in
-     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
-     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
-     * milliseconds. If time unit is not specified, the default is
-     * s(seconds).
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: the response
+     * timeout for an external XMPP/BOSH server. Must be in valid duration
+     * format: {digits}{time-unit}. digits: 0-9, time-unit: [hmsd]|ms. h -
+     * hours, m - minutes, s - seconds, d - days, ms - milliseconds. If time
+     * unit is not specified, the default is s(seconds).
      *
      * @return zimbraReverseProxyXmppBoshTimeout, or "90s" if unset
      *
@@ -46019,11 +46078,11 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * the response timeout for an external XMPP/BOSH server. Must be in
-     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
-     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
-     * milliseconds. If time unit is not specified, the default is
-     * s(seconds).
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: the response
+     * timeout for an external XMPP/BOSH server. Must be in valid duration
+     * format: {digits}{time-unit}. digits: 0-9, time-unit: [hmsd]|ms. h -
+     * hours, m - minutes, s - seconds, d - days, ms - milliseconds. If time
+     * unit is not specified, the default is s(seconds).
      *
      * @param zimbraReverseProxyXmppBoshTimeout new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -46038,11 +46097,11 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * the response timeout for an external XMPP/BOSH server. Must be in
-     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
-     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
-     * milliseconds. If time unit is not specified, the default is
-     * s(seconds).
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: the response
+     * timeout for an external XMPP/BOSH server. Must be in valid duration
+     * format: {digits}{time-unit}. digits: 0-9, time-unit: [hmsd]|ms. h -
+     * hours, m - minutes, s - seconds, d - days, ms - milliseconds. If time
+     * unit is not specified, the default is s(seconds).
      *
      * @param zimbraReverseProxyXmppBoshTimeout new value
      * @param attrs existing map to populate, or null to create a new map
@@ -46058,11 +46117,11 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * the response timeout for an external XMPP/BOSH server. Must be in
-     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
-     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
-     * milliseconds. If time unit is not specified, the default is
-     * s(seconds).
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: the response
+     * timeout for an external XMPP/BOSH server. Must be in valid duration
+     * format: {digits}{time-unit}. digits: 0-9, time-unit: [hmsd]|ms. h -
+     * hours, m - minutes, s - seconds, d - days, ms - milliseconds. If time
+     * unit is not specified, the default is s(seconds).
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -46076,11 +46135,11 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * the response timeout for an external XMPP/BOSH server. Must be in
-     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
-     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
-     * milliseconds. If time unit is not specified, the default is
-     * s(seconds).
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: the response
+     * timeout for an external XMPP/BOSH server. Must be in valid duration
+     * format: {digits}{time-unit}. digits: 0-9, time-unit: [hmsd]|ms. h -
+     * hours, m - minutes, s - seconds, d - days, ms - milliseconds. If time
+     * unit is not specified, the default is s(seconds).
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

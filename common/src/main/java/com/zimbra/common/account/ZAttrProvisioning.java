@@ -5154,7 +5154,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraChatAllowDlMemberAddAsFriend = "zimbraChatAllowDlMemberAddAsFriend";
 
     /**
-     * allow unencrypted password login via XMPP
+     * Deprecated since: 25.3.0. no longer in use. Orig desc: allow
+     * unencrypted password login via XMPP
      *
      * @since ZCS 8.7.6
      */
@@ -5179,7 +5180,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraChatHistoryEnabled = "zimbraChatHistoryEnabled";
 
     /**
-     * enable XMPP server
+     * Deprecated since: 25.3.0. no longer in use. Orig desc: enable XMPP
+     * server
      *
      * @since ZCS 8.7.6
      */
@@ -5187,7 +5189,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraChatServiceEnabled = "zimbraChatServiceEnabled";
 
     /**
-     * XMPP plain port, usually used with startTLS
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP plain port,
+     * usually used with startTLS
      *
      * @since ZCS 8.7.6
      */
@@ -5195,7 +5198,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraChatXmppPort = "zimbraChatXmppPort";
 
     /**
-     * XMPP legacy SSL port
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP legacy SSL
+     * port
      *
      * @since ZCS 8.7.6
      */
@@ -5203,7 +5207,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraChatXmppSslPort = "zimbraChatXmppSslPort";
 
     /**
-     * enable XMPP legacy SSL port
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: enable XMPP
+     * legacy SSL port
      *
      * @since ZCS 8.7.6
      */
@@ -16105,7 +16110,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraReverseProxyWorkerProcesses = "zimbraReverseProxyWorkerProcesses";
 
     /**
-     * Whether to enable XMPP/BOSH proxy
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Whether to
+     * enable XMPP/BOSH proxy
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -16113,8 +16119,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraReverseProxyXmppBoshEnabled = "zimbraReverseProxyXmppBoshEnabled";
 
     /**
-     * Hostname of the external XMPP server where XMPP over BOSH requests
-     * need to be proxied
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Hostname of the
+     * external XMPP server where XMPP over BOSH requests need to be proxied
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -16122,7 +16128,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraReverseProxyXmppBoshHostname = "zimbraReverseProxyXmppBoshHostname";
 
     /**
-     * Local HTTP-BIND URL prefix where ZWC sends XMPP over BOSH requests
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Local HTTP-BIND
+     * URL prefix where ZWC sends XMPP over BOSH requests
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -16130,8 +16137,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraReverseProxyXmppBoshLocalHttpBindURL = "zimbraReverseProxyXmppBoshLocalHttpBindURL";
 
     /**
-     * Port number of the external XMPP server where XMPP over BOSH requests
-     * need to be proxied
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Port number of
+     * the external XMPP server where XMPP over BOSH requests need to be
+     * proxied
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -16139,9 +16147,10 @@ public class ZAttrProvisioning {
     public static final String A_zimbraReverseProxyXmppBoshPort = "zimbraReverseProxyXmppBoshPort";
 
     /**
-     * Remote HTTP-BIND URL prefix for an external XMPP server where XMPP
-     * over BOSH requests need to be proxied. This needs to be configured
-     * only if its different from zimbraReverseProxyXmppBoshLocalHttpBindURL
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Remote HTTP-BIND
+     * URL prefix for an external XMPP server where XMPP over BOSH requests
+     * need to be proxied. This needs to be configured only if its different
+     * from zimbraReverseProxyXmppBoshLocalHttpBindURL
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -16149,7 +16158,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraReverseProxyXmppBoshRemoteHttpBindURL = "zimbraReverseProxyXmppBoshRemoteHttpBindURL";
 
     /**
-     * Whether to use SSL to connect to upstream XMPP/Bosh server
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Whether to use
+     * SSL to connect to upstream XMPP/Bosh server
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -16157,11 +16167,11 @@ public class ZAttrProvisioning {
     public static final String A_zimbraReverseProxyXmppBoshSSL = "zimbraReverseProxyXmppBoshSSL";
 
     /**
-     * the response timeout for an external XMPP/BOSH server. Must be in
-     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
-     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
-     * milliseconds. If time unit is not specified, the default is
-     * s(seconds).
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: the response
+     * timeout for an external XMPP/BOSH server. Must be in valid duration
+     * format: {digits}{time-unit}. digits: 0-9, time-unit: [hmsd]|ms. h -
+     * hours, m - minutes, s - seconds, d - days, ms - milliseconds. If time
+     * unit is not specified, the default is s(seconds).
      *
      * @since ZCS 8.7.0,9.0.0
      */
@@ -18019,7 +18029,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraWebGzipEnabled = "zimbraWebGzipEnabled";
 
     /**
-     * XMPP Category of the component
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP Category of
+     * the component
      *
      * @since ZCS 6.0.0_BETA1
      */
@@ -18027,7 +18038,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraXMPPComponentCategory = "zimbraXMPPComponentCategory";
 
     /**
-     * class name of the XMPP component
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: class name of
+     * the XMPP component
      *
      * @since ZCS 6.0.0_BETA1
      */
@@ -18035,7 +18047,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraXMPPComponentClassName = "zimbraXMPPComponentClassName";
 
     /**
-     * XMPP Type of the component
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP Type of the
+     * component
      *
      * @since ZCS 6.0.0_BETA1
      */
@@ -18043,7 +18056,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraXMPPComponentFeatures = "zimbraXMPPComponentFeatures";
 
     /**
-     * Name of the XMPP Component
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Name of the XMPP
+     * Component
      *
      * @since ZCS 6.0.0_BETA1
      */
@@ -18051,7 +18065,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraXMPPComponentName = "zimbraXMPPComponentName";
 
     /**
-     * XMPP Type of the component
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: XMPP Type of the
+     * component
      *
      * @since ZCS 6.0.0_BETA1
      */
@@ -18066,7 +18081,8 @@ public class ZAttrProvisioning {
     public static final String A_zimbraXMPPEnabled = "zimbraXMPPEnabled";
 
     /**
-     * Shared Secret for XMPP Server Dialback Protocol
+     * Deprecated since: 25.3.0. Feature removed. Orig desc: Shared Secret
+     * for XMPP Server Dialback Protocol
      *
      * @since ZCS 5.0.9
      */
