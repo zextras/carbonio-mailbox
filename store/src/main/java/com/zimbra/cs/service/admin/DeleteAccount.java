@@ -27,7 +27,6 @@ import com.zimbra.soap.admin.message.DeleteAccountResponse;
 
 import io.vavr.control.Try;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;

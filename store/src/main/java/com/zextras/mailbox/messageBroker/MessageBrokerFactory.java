@@ -12,6 +12,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class MessageBrokerFactory {
+	private static final String SERVICE_NAME = "carbonio-message-broker";
+
 	private MessageBrokerFactory() {
 	};
 
@@ -28,9 +30,10 @@ public class MessageBrokerFactory {
 			return MessageBrokerClient.fromConfig(
 							"127.78.0.7",
 							20005,
-							serviceDiscoverHttpClient.getConfig("carbonio-message-broker","default/username")
+							serviceDiscoverHttpClient.getConfig(SERVICE_NAME,"default/username")
 									.getOrElse("carbonio-message-broker"),
-							serviceDiscoverHttpClient.getConfig("carbonio-message-broker","default/password").getOrElse("")
+							serviceDiscoverHttpClient.getConfig(SERVICE_NAME,"default/password")
+									.getOrElse("")
 					)
 					.withCurrentService(Service.MAILBOX);
 		} catch (IOException e) {
