@@ -9,6 +9,7 @@ import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
 import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
+import com.zextras.mailbox.messageBroker.consumers.DeletedUserFilesConsumer;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
@@ -50,15 +51,26 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(
         AdminConstants.GET_ALL_ADMIN_ACCOUNTS_REQUEST, new GetAllAdminAccounts());
     dispatcher.registerHandler(AdminConstants.MODIFY_ACCOUNT_REQUEST, new ModifyAccount());
-    dispatcher.registerHandler(
-        AdminConstants.DELETE_ACCOUNT_REQUEST,
-        new DeleteAccount(
-            new DeleteUserUseCase(
+
+    Try<MessageBrokerClient> messageBrokerClientTry = getMessageBroker();
+    DeleteUserUseCase deleteUserUseCase =
+        new DeleteUserUseCase(
                 Provisioning.getInstance(),
                 MailboxManager.getInstance(),
                 new AclService(MailboxManager.getInstance(), Provisioning.getInstance()),
-                ZimbraLog.security),
-        getMessageBroker()));
+                ZimbraLog.security);
+
+    dispatcher.registerHandler(
+        AdminConstants.DELETE_ACCOUNT_REQUEST,
+        new DeleteAccount(
+            deleteUserUseCase,
+            messageBrokerClientTry));
+
+    // If message broker client is available, register the consumer here (not really a handler in a strict sense, but needed
+    // to consume the event related to the user deletion, so I put that here to reuse deleteUserUseCase; don't know if
+    // it is the best place)
+    messageBrokerClientTry.onSuccess(client -> client.consume(new DeletedUserFilesConsumer(deleteUserUseCase)));
+
     dispatcher.registerHandler(AdminConstants.SET_PASSWORD_REQUEST, new SetPassword());
     dispatcher.registerHandler(
         AdminConstants.CHECK_PASSWORD_STRENGTH_REQUEST, new CheckPasswordStrength());
