@@ -3,7 +3,7 @@
     "requireUpstream": false,
     "commitMessage": "chore: release ${version}",
     "tagName": "${version}",
-    "tag": false,
+    "tag": true,
     "push": true
   },
   "plugins": {
