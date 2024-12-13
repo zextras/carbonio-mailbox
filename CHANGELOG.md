@@ -1,5 +1,12 @@
 
 
+## [4.19.2](https://github.com/Zextras/carbonio-mailbox/compare/4.19.1...4.19.2) (2024-12-13)
+
+
+### Bug Fixes
+
+* [CO-1720] delete account from mailbox only after files finished deleting blobs from powerstore ([#637](https://github.com/Zextras/carbonio-mailbox/issues/637)) ([a7e029b](https://github.com/Zextras/carbonio-mailbox/commit/a7e029b827fba5510178be8d74f0195f99505294))
+
 ## [4.19.1](https://github.com/zextras/carbonio-mailbox/compare/4.19.0...4.19.1) (2024-12-04)
 
 
