@@ -68,7 +68,11 @@ public class AdminService implements DocumentService {
     // If message broker client is available, register the consumer here (not really a handler in a strict sense, but needed
     // to consume the event related to the user deletion, so I put that here to reuse deleteUserUseCase; don't know if
     // it is the best place)
-    messageBrokerClientTry.onSuccess(client -> client.consume(new DeletedUserFilesConsumer(deleteUserUseCase)));
+    messageBrokerClientTry.onSuccess(client -> {
+      if (!client.consume(new DeletedUserFilesConsumer(deleteUserUseCase))) {
+        ZimbraLog.security.warn("Failed to start consumer for DeletedUserFilesConsumer");
+      }
+    });
 
     dispatcher.registerHandler(AdminConstants.SET_PASSWORD_REQUEST, new SetPassword());
     dispatcher.registerHandler(
