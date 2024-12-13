@@ -6,7 +6,7 @@ package com.zextras.mailbox.messageBroker;
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.carbonio.message_broker.config.enums.Service;
 import com.zextras.mailbox.client.ServiceDiscoverHttpClient;
-import java.io.IOException;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,6 +17,7 @@ public class MessageBrokerFactory {
 	private MessageBrokerFactory() {
 	};
 
+	// Returns a working and healthy MessageBrokerClient instance or throws an exception
 	public static MessageBrokerClient getMessageBrokerClientInstance()
 			throws CreateMessageBrokerException {
 		Path filePath = Paths.get("/etc/carbonio/mailbox/service-discover/token");

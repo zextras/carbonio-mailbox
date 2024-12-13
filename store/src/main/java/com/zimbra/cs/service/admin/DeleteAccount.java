@@ -106,7 +106,12 @@ public class DeleteAccount extends AdminDocumentHandler {
 		}
 
     if (isFilesInstalled) {
-      publishDeleteUserRequestedEvent(account);
+      // Since Files is installed, this will throw an exception if it fails to publish the event, both if message broker
+      // is down or if it is not installed, to avoid deleting the account without deleting the files.
+      boolean success = publishDeleteUserRequestedEvent(account);
+      if (!success) {
+        throw ServiceException.FAILURE("Delete account " + account.getMail() + " has an error: Failed to publish delete user requested event", null);
+      }
     } else {
       /*
        * bug 69009
@@ -138,7 +143,7 @@ public class DeleteAccount extends AdminDocumentHandler {
     relatedRights.add(Admin.R_deleteAccount);
   }
 
-  private void publishDeleteUserRequestedEvent(Account account) {
+  private boolean publishDeleteUserRequestedEvent(Account account) {
     String userId = account.getId();
     try {
 			final MessageBrokerClient messageBrokerClient = messageBrokerClientTry.get();
@@ -148,8 +153,10 @@ public class DeleteAccount extends AdminDocumentHandler {
       } else {
         ZimbraLog.account.error("Failed to publish deleted account event for user: " + userId);
       }
+      return result;
     } catch (Exception e){
       ZimbraLog.account.error("Exception while publishing deleted account event for user: " + userId, e);
+      return false;
     }
   }
 }
