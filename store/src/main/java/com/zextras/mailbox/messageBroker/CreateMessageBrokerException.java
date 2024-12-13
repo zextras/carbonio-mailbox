@@ -10,4 +10,8 @@ public class CreateMessageBrokerException extends Exception {
 		super("Cannot create message broker client", e);
 	}
 
+	public CreateMessageBrokerException(String msg) {
+		super("Cannot create message broker client: " + msg);
+	}
+
 }

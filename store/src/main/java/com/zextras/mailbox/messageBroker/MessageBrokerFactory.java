@@ -20,6 +20,9 @@ public class MessageBrokerFactory {
 	// Returns a working and healthy MessageBrokerClient instance or throws an exception
 	public static MessageBrokerClient getMessageBrokerClientInstance()
 			throws CreateMessageBrokerException {
+
+		MessageBrokerClient client;
+
 		Path filePath = Paths.get("/etc/carbonio/mailbox/service-discover/token");
 		String token;
 		try {
@@ -28,7 +31,7 @@ public class MessageBrokerFactory {
 					ServiceDiscoverHttpClient.defaultUrl()
 							.withToken(token);
 
-			MessageBrokerClient client =
+			client =
 					MessageBrokerClient.fromConfig(
 							"127.78.0.7",
 							20005,
@@ -39,11 +42,11 @@ public class MessageBrokerFactory {
 					)
 					.withCurrentService(Service.MAILBOX);
 
-			if (!client.healthCheck()) throw new RuntimeException("Message broker healthcheck failed");
-
-			return client;
 		} catch (Exception e) {
 			throw new CreateMessageBrokerException(e);
 		}
+
+		if (!client.healthCheck()) throw new CreateMessageBrokerException("Message broker healthcheck failed");
+		return client;
 	}
 }
