@@ -12,6 +12,7 @@ import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.carbonio.message_broker.events.services.mailbox.DeleteUserRequested;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.client.ServiceDiscoverHttpClient;
+import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
@@ -41,11 +42,9 @@ public class DeleteAccount extends AdminDocumentHandler {
   private static final String[] TARGET_ACCOUNT_PATH = new String[] {AdminConstants.E_ID};
 
   private final DeleteUserUseCase deleteUserUseCase;
-  private final Try<MessageBrokerClient> messageBrokerClientTry;
 
-  public DeleteAccount(DeleteUserUseCase deleteUserUseCase, Try<MessageBrokerClient> messageBrokerClientTry) {
+  public DeleteAccount(DeleteUserUseCase deleteUserUseCase) {
     this.deleteUserUseCase = deleteUserUseCase;
-    this.messageBrokerClientTry = messageBrokerClientTry;
   }
 
   @Override
@@ -146,7 +145,7 @@ public class DeleteAccount extends AdminDocumentHandler {
   private boolean publishDeleteUserRequestedEvent(Account account) {
     String userId = account.getId();
     try {
-			final MessageBrokerClient messageBrokerClient = messageBrokerClientTry.get();
+      MessageBrokerClient messageBrokerClient = MessageBrokerFactory.getMessageBrokerClientInstance();
 			boolean result = messageBrokerClient.publish(new DeleteUserRequested(userId));
       if (result) {
         ZimbraLog.account.info("Published deleted account event for user: " + userId);

@@ -63,8 +63,7 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(
         AdminConstants.DELETE_ACCOUNT_REQUEST,
         new DeleteAccount(
-            deleteUserUseCase,
-            messageBrokerClientTry));
+            deleteUserUseCase));
 
     // If message broker client is available, register the consumer here (not really a handler in a strict sense, but needed
     // to consume the event related to the user deletion, so I put that here to reuse deleteUserUseCase; don't know if

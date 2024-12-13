@@ -81,8 +81,7 @@ class DeleteAccountTest {
                 provisioning,
                 mailboxManager,
                 new AclService(mailboxManager, provisioning),
-                ZimbraLog.security),
-            Try.of(() -> mockMessageBrokerClient));
+                ZimbraLog.security));
     provisioning.createDomain(OTHER_DOMAIN, new HashMap<>());
 
     consulServer = startClientAndServer(8500);
@@ -348,8 +347,7 @@ class DeleteAccountTest {
         context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
         DeleteAccount deleteAccountHandler =
             new DeleteAccount(
-                deleteUserUseCase,
-                Try.of(() -> mockMessageBrokerClient));
+                deleteUserUseCase);
         Mockito.when(deleteUserUseCase.delete(toDeleteId)).thenReturn(Try.failure(new RuntimeException("message")));
         DeleteAccountRequest deleteAccountRequest = new DeleteAccountRequest(toDeleteId);
         Element request = JaxbUtil.jaxbToElement(deleteAccountRequest);
