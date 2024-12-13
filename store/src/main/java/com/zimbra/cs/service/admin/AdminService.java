@@ -69,13 +69,7 @@ public class AdminService implements DocumentService {
     // Start the consumer with retry (not really a handler in a strict sense, but needed
     // to consume the event related to the user deletion, so I put that here to reuse deleteUserUseCase; don't know if
     // it is the best place)
-    Try<MessageBrokerClient> messageBrokerClientTry = getMessageBroker();
-    messageBrokerClientTry.onSuccess(client -> {
-      scheduleConsumer(client, deleteUserUseCase);
-    }).onFailure(throwable -> {
-      ZimbraLog.security.warn("Failed to get MessageBrokerClient, retrying in 30 seconds", throwable);
-      scheduleRetry(deleteUserUseCase);
-    });
+    scheduleRetry(deleteUserUseCase);
 
     dispatcher.registerHandler(AdminConstants.SET_PASSWORD_REQUEST, new SetPassword());
     dispatcher.registerHandler(
@@ -428,6 +422,7 @@ public class AdminService implements DocumentService {
     Executors.newSingleThreadScheduledExecutor().schedule(() -> {
       Try<MessageBrokerClient> retryClientTry = getMessageBroker();
       retryClientTry.onSuccess(client -> {
+        ZimbraLog.security.info("Starting deleted user files consumer");
         scheduleConsumer(client, deleteUserUseCase);
       }).onFailure(throwable -> {
         ZimbraLog.security.warn("Failed to get MessageBrokerClient on retry, retrying in 30 seconds", throwable);
