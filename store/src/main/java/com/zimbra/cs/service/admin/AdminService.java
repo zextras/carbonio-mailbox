@@ -22,6 +22,8 @@ import com.zimbra.soap.DocumentService;
 import io.vavr.control.Try;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @zm-service-description The Admin Service includes commands for server, account and mailbox
@@ -52,7 +54,6 @@ public class AdminService implements DocumentService {
         AdminConstants.GET_ALL_ADMIN_ACCOUNTS_REQUEST, new GetAllAdminAccounts());
     dispatcher.registerHandler(AdminConstants.MODIFY_ACCOUNT_REQUEST, new ModifyAccount());
 
-    Try<MessageBrokerClient> messageBrokerClientTry = getMessageBroker();
     DeleteUserUseCase deleteUserUseCase =
         new DeleteUserUseCase(
                 Provisioning.getInstance(),
@@ -65,13 +66,15 @@ public class AdminService implements DocumentService {
         new DeleteAccount(
             deleteUserUseCase));
 
-    // If message broker client is available, register the consumer here (not really a handler in a strict sense, but needed
+    // Start the consumer with retry (not really a handler in a strict sense, but needed
     // to consume the event related to the user deletion, so I put that here to reuse deleteUserUseCase; don't know if
     // it is the best place)
+    Try<MessageBrokerClient> messageBrokerClientTry = getMessageBroker();
     messageBrokerClientTry.onSuccess(client -> {
-      if (!client.consume(new DeletedUserFilesConsumer(deleteUserUseCase))) {
-        ZimbraLog.security.warn("Failed to start consumer for DeletedUserFilesConsumer");
-      }
+      scheduleConsumer(client, deleteUserUseCase);
+    }).onFailure(throwable -> {
+      ZimbraLog.security.warn("Failed to get MessageBrokerClient, retrying in 30 seconds", throwable);
+      scheduleRetry(deleteUserUseCase);
     });
 
     dispatcher.registerHandler(AdminConstants.SET_PASSWORD_REQUEST, new SetPassword());
@@ -412,5 +415,24 @@ public class AdminService implements DocumentService {
 
   protected Try<MessageBrokerClient> getMessageBroker() {
       return Try.of(MessageBrokerFactory::getMessageBrokerClientInstance);
+  }
+
+  private void scheduleConsumer(MessageBrokerClient client, DeleteUserUseCase deleteUserUseCase) {
+    if (!client.consume(new DeletedUserFilesConsumer(deleteUserUseCase))) {
+      ZimbraLog.security.warn("Failed to start consumer for DeletedUserFilesConsumer, retrying in 30 seconds");
+      scheduleRetry(deleteUserUseCase);
+    }
+  }
+
+  private void scheduleRetry(DeleteUserUseCase deleteUserUseCase) {
+    Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+      Try<MessageBrokerClient> retryClientTry = getMessageBroker();
+      retryClientTry.onSuccess(client -> {
+        scheduleConsumer(client, deleteUserUseCase);
+      }).onFailure(throwable -> {
+        ZimbraLog.security.warn("Failed to get MessageBrokerClient on retry, retrying in 30 seconds", throwable);
+        scheduleRetry(deleteUserUseCase);
+      });
+    }, 30, TimeUnit.SECONDS);
   }
 }
