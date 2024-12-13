@@ -1,4 +1,5 @@
 {
+  "npm": false,
   "git": {
     "requireUpstream": false,
     "commitMessage": "chore: release ${version}",
