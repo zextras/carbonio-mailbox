@@ -27,7 +27,8 @@ public class MessageBrokerFactory {
 					ServiceDiscoverHttpClient.defaultUrl()
 							.withToken(token);
 
-			return MessageBrokerClient.fromConfig(
+			MessageBrokerClient client =
+					MessageBrokerClient.fromConfig(
 							"127.78.0.7",
 							20005,
 							serviceDiscoverHttpClient.getConfig(SERVICE_NAME,"default/username")
@@ -36,7 +37,11 @@ public class MessageBrokerFactory {
 									.getOrElse("")
 					)
 					.withCurrentService(Service.MAILBOX);
-		} catch (IOException e) {
+
+			if (!client.healthCheck()) throw new RuntimeException("Message broker healthcheck failed");
+
+			return client;
+		} catch (Exception e) {
 			throw new CreateMessageBrokerException(e);
 		}
 	}
