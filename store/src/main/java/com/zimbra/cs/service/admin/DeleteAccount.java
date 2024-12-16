@@ -12,6 +12,7 @@ import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.carbonio.message_broker.events.services.mailbox.DeleteUserRequested;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.client.ServiceDiscoverHttpClient;
+import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
@@ -24,8 +25,6 @@ import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import com.zimbra.soap.admin.message.DeleteAccountResponse;
-
-import io.vavr.control.Try;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,11 +40,9 @@ public class DeleteAccount extends AdminDocumentHandler {
   private static final String[] TARGET_ACCOUNT_PATH = new String[] {AdminConstants.E_ID};
 
   private final DeleteUserUseCase deleteUserUseCase;
-  private final Try<MessageBrokerClient> messageBrokerClientTry;
 
-  public DeleteAccount(DeleteUserUseCase deleteUserUseCase, Try<MessageBrokerClient> messageBrokerClientTry) {
+  public DeleteAccount(DeleteUserUseCase deleteUserUseCase) {
     this.deleteUserUseCase = deleteUserUseCase;
-    this.messageBrokerClientTry = messageBrokerClientTry;
   }
 
   @Override
@@ -106,7 +103,12 @@ public class DeleteAccount extends AdminDocumentHandler {
 		}
 
     if (isFilesInstalled) {
-      publishDeleteUserRequestedEvent(account);
+      // Since Files is installed, this will throw an exception if it fails to publish the event, both if message broker
+      // is down or if it is not installed, to avoid deleting the account without deleting the files.
+      boolean success = publishDeleteUserRequestedEvent(account);
+      if (!success) {
+        throw ServiceException.FAILURE("Delete account " + account.getMail() + " has an error: Failed to publish delete user requested event", null);
+      }
     } else {
       /*
        * bug 69009
@@ -138,18 +140,20 @@ public class DeleteAccount extends AdminDocumentHandler {
     relatedRights.add(Admin.R_deleteAccount);
   }
 
-  private void publishDeleteUserRequestedEvent(Account account) {
+  private boolean publishDeleteUserRequestedEvent(Account account) {
     String userId = account.getId();
     try {
-			final MessageBrokerClient messageBrokerClient = messageBrokerClientTry.get();
+      MessageBrokerClient messageBrokerClient = MessageBrokerFactory.getMessageBrokerClientInstance();
 			boolean result = messageBrokerClient.publish(new DeleteUserRequested(userId));
       if (result) {
         ZimbraLog.account.info("Published deleted account event for user: " + userId);
       } else {
         ZimbraLog.account.error("Failed to publish deleted account event for user: " + userId);
       }
+      return result;
     } catch (Exception e){
       ZimbraLog.account.error("Exception while publishing deleted account event for user: " + userId, e);
+      return false;
     }
   }
 }
