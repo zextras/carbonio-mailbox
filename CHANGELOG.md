@@ -1,5 +1,12 @@
 
 
+## [4.19.3](https://github.com/zextras/carbonio-mailbox/compare/4.19.2...4.19.3) (2024-12-16)
+
+
+### Bug Fixes
+
+* retry consumer init if failed and handle message broker factory exceptions ([#643](https://github.com/zextras/carbonio-mailbox/issues/643)) ([cfff2ec](https://github.com/zextras/carbonio-mailbox/commit/cfff2ec66bbb3dc324a2ec9218eb92cc4b580d55))
+
 ## [4.19.2](https://github.com/Zextras/carbonio-mailbox/compare/4.19.1...4.19.2) (2024-12-13)
 
 
