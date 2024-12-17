@@ -86,7 +86,9 @@ class ProvUtilTest {
 
     for (var line : lines) {
       line = line.trim();
-      if (line.isEmpty()) continue;
+      if (line.isEmpty()) {
+        continue;
+      }
 
       if (line.startsWith("# name")) {
         // New entry begins
@@ -530,27 +532,30 @@ class ProvUtilTest {
     Assertions.assertEquals(expected, stdErr.toString());
   }
 
-  @Test void whenNumberOfArgumentsAreLackingAnErrorIsDisplayed() throws Exception {
+  @Test
+  void whenNumberOfArgumentsAreLackingAnErrorIsDisplayed() throws Exception {
     OutputStream stdErr = new ByteArrayOutputStream();
     catchSystemExit(
             () -> runCommand(new ByteArrayOutputStream(), stdErr, "createBulkAccounts", "demo.zextras.io"));
-    String expected = "createBulkAccounts is expecting 4 arguments but 1 argument has been provided\n";
+    var expected = "createBulkAccounts is expecting 4 arguments but 1 argument has been provided\n";
     Assertions.assertEquals(expected, stdErr.toString());
   }
 
-  @Test void variadicCommandArgumentsNumberMismatchMaxInt() throws Exception {
-    OutputStream stdErr = new ByteArrayOutputStream();
+  @Test
+  void variadicCommandArgumentsNumberMismatchMaxInt() throws Exception {
+    var stdErr = new ByteArrayOutputStream();
     catchSystemExit(
             () -> runCommand(new ByteArrayOutputStream(), stdErr, "createDynamicDistributionList"));
-    String expected = "createDynamicDistributionList is expecting at least 1 arguments but 0 arguments have been provided\n";
+    var expected = "createDynamicDistributionList is expecting at least 1 arguments but 0 arguments have been provided\n";
     Assertions.assertEquals(expected, stdErr.toString());
   }
 
-  @Test void variadicCommandArgumentsNumberMismatchZero() throws Exception {
-    OutputStream stdErr = new ByteArrayOutputStream();
+  @Test
+  void variadicCommandArgumentsNumberMismatchZero() throws Exception {
+    var stdErr = new ByteArrayOutputStream();
     catchSystemExit(
             () -> runCommand(new ByteArrayOutputStream(), stdErr, "getAllCos", "p1", "p2", "p3"));
-    String expected = "getAllCos is expecting at most 1 arguments but 3 arguments have been provided\n";
+    var expected = "getAllCos is expecting at most 1 arguments but 3 arguments have been provided\n";
     Assertions.assertEquals(expected, stdErr.toString());
   }
 
@@ -562,11 +567,17 @@ class ProvUtilTest {
   })
   void addAccountLoggerFailsOnInvalidParameterCount(String cmd) throws Exception {
     runCommand("ca", "test@test.com", "password");
+
+    var stdErr = new ByteArrayOutputStream();
     catchSystemExit( () -> {
-      runCommand(cmd.split(" +"));
+      runCommand(new ByteArrayOutputStream(), stdErr, cmd.split(" +"));
     });
+    var expected = "addAccountLogger is expecting 3 to 5 arguments but ";
+    Assertions.assertTrue(stdErr.toString().contains(expected));
   }
-  @Test void getAllAccounts() throws Exception {
+
+  @Test
+  void getAllAccounts() throws Exception {
     runCommand("ca", "user1@test.com", "password");
     runCommand("ca", "user2@test.com", "password");
     runCommand("ca", "user3@test.com", "password");
@@ -612,9 +623,15 @@ class ProvUtilTest {
     Assertions.assertTrue(output.contains(String.format("domain test.com renamed to %s", targetDomain)));
   }
 
-  @Test void renameInvalidDomain() throws Exception {
-    catchSystemExit( () ->
-            runCommand("-l", "renameDomain", "test1.com", "test2.com") );
+  @Test
+  void renameInvalidDomain() throws Exception {
+    var stdErr = new ByteArrayOutputStream();
+    catchSystemExit( () -> {
+      runCommand(new ByteArrayOutputStream(), stdErr, "-l", "renameDomain", "test1.com",
+          "test2.com");
+    });
+    var expected = "ERROR: account.NO_SUCH_DOMAIN (no such domain: test1.com)\n";
+    Assertions.assertEquals(expected, stdErr.toString());
   }
 
   @Test
@@ -733,9 +750,11 @@ class ProvUtilTest {
     runCommand("createDistributionList", distributionList);
     runCommand( "deleteDistributionList", distributionList);
 
+    var stdErr = new ByteArrayOutputStream();
     catchSystemExit( () -> {
-      runCommand( "getDistributionList", distributionList);
+      runCommand(new ByteArrayOutputStream(), stdErr, "getDistributionList", distributionList);
     });
+    Assertions.assertEquals("ERROR: account.NO_SUCH_DISTRIBUTION_LIST (no such distribution list: list@test.com)\n", stdErr.toString());
   }
 
   @Test
@@ -749,12 +768,12 @@ class ProvUtilTest {
     runCommand("addDistributionListAlias", originalDistributionList, aliasDistributionList);
     runCommand( "removeDistributionListAlias", originalDistributionList, aliasDistributionList);
 
+    var stdErr = new ByteArrayOutputStream();
     catchSystemExit( () -> {
-      runCommand( "getDistributionList", aliasDistributionList);
+      runCommand(new ByteArrayOutputStream(), stdErr, "getDistributionList", aliasDistributionList);
     });
-    catchSystemExit( () -> {
-      runCommand("addDistributionListMember", aliasDistributionList, "user1@test.com");
-    });
+    var expected = "ERROR: account.NO_SUCH_DISTRIBUTION_LIST (no such distribution list: alias@test.com)\n";
+    Assertions.assertEquals(expected, stdErr.toString());
   }
 
   @Test
