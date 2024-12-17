@@ -71,7 +71,7 @@ pipeline {
         booleanParam defaultValue: false, description: 'Upload packages in playground repositories.', name: 'PLAYGROUND'
         booleanParam defaultValue: false, description: 'Skip test and sonar analysis.', name: 'SKIP_TEST_WITH_COVERAGE'
         booleanParam defaultValue: false, description: 'Skip sonar analysis.', name: 'SKIP_SONARQUBE'
-        booleanParam defaultValue: false, description: 'Perform RC', name: 'RC'
+        booleanParam defaultValue: true, description: 'Perform RC', name: 'RC'
     }
 
     environment {
