@@ -109,7 +109,6 @@ pipeline {
                 steps {
                     withCredentials([gitUsernamePassword(credentialsId: 'jenkins-integration-with-github-account',
                             gitToolName: 'git-tool')]) {
-                        sh 'npm install'
                         sh 'git config user.name $GITHUB_BOT_PR_CREDS_USR'
                         sh 'git config user.email bot@zextras.com'
                         sh 'git config user.password $GITHUB_BOT_PR_CREDS_PSW'
