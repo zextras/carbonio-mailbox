@@ -20,6 +20,11 @@
           "path": "pkgrel="
         },
         {
+          "file": "pom.xml",
+          "type": "text/plain",
+          "path": "<revision>"
+        },
+        {
           "file": "version.txt",
           "type": "text/plain"
         }
