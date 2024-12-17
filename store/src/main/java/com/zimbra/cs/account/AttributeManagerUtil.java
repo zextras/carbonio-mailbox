@@ -450,7 +450,7 @@ public class AttributeManagerUtil {
     result.append(String.format("     * @return %s%s%n", name, javaDocReturns));
     if (ai.getSince() != null) {
       result.append("     *\n");
-      result.append(String.format("     * @since ZCS %s%n", versionListAsString(ai.getSince())));
+      result.append(String.format("     * @since Carbonio %s%n", versionListAsString(ai.getSince())));
     }
     result.append("     */\n");
     result.append(String.format("    @ZAttr(id=%d)%n", ai.getId()));
@@ -662,7 +662,7 @@ public class AttributeManagerUtil {
     if (attributeInfo.getSince() != null) {
       result.append("     *\n");
       result.append(
-          String.format("     * @since ZCS %s%n", versionListAsString(attributeInfo.getSince())));
+          String.format("     * @since Carbonio %s%n", versionListAsString(attributeInfo.getSince())));
     }
     result.append("     */\n");
     result.append(String.format("    @ZAttr(id=%d)%n", attributeInfo.getId()));
@@ -1712,7 +1712,7 @@ public class AttributeManagerUtil {
       if (attributeInfo.getSince() != null) {
         result.append("     *\n");
         result.append(
-            String.format("     * @since ZCS %s%n", versionListAsString(attributeInfo.getSince())));
+            String.format("     * @since Carbonio %s%n", versionListAsString(attributeInfo.getSince())));
       }
       result.append("     */\n");
 
