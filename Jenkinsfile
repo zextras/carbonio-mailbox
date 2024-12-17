@@ -59,7 +59,7 @@ def buildRpmPackages(String flavor) {
 pipeline {
     agent {
         node {
-            label 'carbonio-agent-v1'
+            label 'carbonio-agent-v2'
         }
     }
 
