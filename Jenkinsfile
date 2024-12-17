@@ -124,6 +124,7 @@ pipeline {
                         params.RC == false
                     }
                 }
+            stages {
                 stage('Build') {
                     steps {
                         mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
@@ -164,7 +165,6 @@ pipeline {
                         mvnCmd("$BUILD_PROPERTIES_PARAMS test -Dgroups=api")
                     }
                 }
-
                 stage('Sonarqube Analysis') {
                     when {
                         allOf {
@@ -461,5 +461,6 @@ pipeline {
                     }
                 }
             }
+        }
     }
 }
