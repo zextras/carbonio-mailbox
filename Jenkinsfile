@@ -71,6 +71,7 @@ pipeline {
         booleanParam defaultValue: false, description: 'Upload packages in playground repositories.', name: 'PLAYGROUND'
         booleanParam defaultValue: false, description: 'Skip test and sonar analysis.', name: 'SKIP_TEST_WITH_COVERAGE'
         booleanParam defaultValue: false, description: 'Skip sonar analysis.', name: 'SKIP_SONARQUBE'
+        booleanParam defaultValue: false, description: 'Perform RC', name: 'RC'
     }
 
     environment {
@@ -96,6 +97,22 @@ pipeline {
                 }
                 script {
                     env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+                }
+            }
+        }
+        stage('RC') {
+            when {
+                expression {
+                    params.RC == true
+                }
+                withCredentials([gitUsernamePassword(credentialsId: 'jenkins-integration-with-github-account',
+                        gitToolName: 'git-tool')]) {
+                    sh 'git config user.name $GITHUB_BOT_PR_CREDS_USR'
+                    sh 'git config user.email bot@zextras.com'
+                    sh 'git config user.password $GITHUB_BOT_PR_CREDS_PSW'
+                    sh 'git checkout main' //avoid detached head
+                    sh 'git checkout -b RC'
+                    sh 'release-it --ci'
                 }
             }
         }
