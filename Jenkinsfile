@@ -112,8 +112,7 @@ pipeline {
                         sh 'git config user.name $GITHUB_BOT_PR_CREDS_USR'
                         sh 'git config user.email bot@zextras.com'
                         sh 'git config user.password $GITHUB_BOT_PR_CREDS_PSW'
-                        sh 'git checkout main' //avoid detached head
-                        sh 'git checkout -b RC'
+                        sh 'git checkout -b test/RC'
                         sh 'release-it --ci'
                     }
                 }
