@@ -105,7 +105,8 @@ pipeline {
                 expression {
                     params.RC == true
                 }
-                steps {
+            }
+            steps {
                     withCredentials([gitUsernamePassword(credentialsId: 'jenkins-integration-with-github-account',
                             gitToolName: 'git-tool')]) {
                         sh 'git config user.name $GITHUB_BOT_PR_CREDS_USR'
@@ -116,7 +117,6 @@ pipeline {
                         sh 'release-it --ci'
                     }
                 }
-            }
         }
         stage('Build') {
             steps {
