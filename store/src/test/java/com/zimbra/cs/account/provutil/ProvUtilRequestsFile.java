@@ -41,10 +41,8 @@ public class ProvUtilRequestsFile {
   }
 
   private static void createParentFolder(File file) throws IOException {
-    if (!file.getParentFile().exists()) {
-      if (!file.getParentFile().mkdirs()) {
-        throw new IOException(String.format("Could not create folder %s", file.getParentFile().getAbsolutePath()));
-      }
+    if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
+      throw new IOException(String.format("Could not create folder %s", file.getParentFile().getAbsolutePath()));
     }
   }
 
