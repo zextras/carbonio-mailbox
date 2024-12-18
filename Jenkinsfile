@@ -62,7 +62,7 @@ def buildRpmPackages(String flavor) {
 pipeline {
     agent {
         node {
-            label 'zextras-agent-v4'
+            label 'base-agent-v1'
         }
     }
 
