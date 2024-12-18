@@ -45,6 +45,7 @@ public class MailboxTestUtil {
   public static final int LDAP_PORT = 1389;
   public static final String SERVER_NAME = "localhost";
   public static final String DEFAULT_DOMAIN = "test.com";
+  public static final String DEFAULT_DOMAIN_ID = "f4806430-b434-4e93-9357-a02d9dd796b8";
 
   public static InMemoryLdapServer getInMemoryLdapServer() {
     return inMemoryLdapServer;
@@ -115,7 +116,8 @@ public class MailboxTestUtil {
     provisioning.createServer(
         SERVER_NAME,
         new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
-    provisioning.createDomain(DEFAULT_DOMAIN, new HashMap<>());
+    var domain = provisioning.createDomain(DEFAULT_DOMAIN, new HashMap<>());
+    domain.setId(DEFAULT_DOMAIN_ID);
     mockMessageBrokerClient();
   }
 

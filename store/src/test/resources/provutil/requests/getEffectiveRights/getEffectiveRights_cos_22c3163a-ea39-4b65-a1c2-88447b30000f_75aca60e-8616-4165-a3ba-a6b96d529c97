@@ -1,0 +1,3 @@
+getEffectiveRights cos 22c3163a-ea39-4b65-a1c2-88447b30000f 75aca60e-8616-4165-a3ba-a6b96d529c97
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetEffectiveRightsRequest xmlns="urn:zimbraAdmin"><target by="id" type="cos">22c3163a-ea39-4b65-a1c2-88447b30000f</target><grantee by="id">75aca60e-8616-4165-a3ba-a6b96d529c97</grantee></GetEffectiveRightsRequest>

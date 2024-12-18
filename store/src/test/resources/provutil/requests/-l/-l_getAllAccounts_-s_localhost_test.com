@@ -1,0 +1,1 @@
+-l getAllAccounts -s localhost test.com

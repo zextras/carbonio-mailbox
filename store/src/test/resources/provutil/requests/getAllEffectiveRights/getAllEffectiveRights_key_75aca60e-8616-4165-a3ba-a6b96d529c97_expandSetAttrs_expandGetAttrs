@@ -1,0 +1,3 @@
+getAllEffectiveRights key 75aca60e-8616-4165-a3ba-a6b96d529c97 expandSetAttrs expandGetAttrs
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetAllEffectiveRightsRequest expandAllAttrs="setAttrs,getAttrs" xmlns="urn:zimbraAdmin"><grantee by="id" type="key">75aca60e-8616-4165-a3ba-a6b96d529c97</grantee></GetAllEffectiveRightsRequest>

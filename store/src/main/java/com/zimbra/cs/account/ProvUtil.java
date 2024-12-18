@@ -93,7 +93,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.net.URI;
@@ -292,36 +291,6 @@ public class ProvUtil implements HttpDebugListener {
     console.println("");
     doHelp(null);
     System.exit(1);
-  }
-
-  public enum Category {
-    ACCOUNT("help on account-related commands"),
-    CALENDAR("help on calendar resource-related commands"),
-    COMMANDS("help on all commands"),
-    CONFIG("help on config-related commands"),
-    COS("help on COS-related commands"),
-    DOMAIN("help on domain-related commands"),
-    FREEBUSY("help on free/busy-related commands"),
-    LIST("help on distribution list-related commands"),
-    LOG("help on logging commands"),
-    MISC("help on misc commands"),
-    MAILBOX("help on mailbox-related commands"),
-    REVERSEPROXY("help on reverse proxy related commands"),
-    RIGHT("help on right-related commands"),
-    SEARCH("help on search-related commands"),
-    SERVER("help on server-related commands"),
-    SHARE("help on share related commands"),
-    HAB("help on HAB commands");
-
-    private final String description;
-
-    public String getDescription() {
-      return description;
-    }
-
-    Category(String desc) {
-      description = desc;
-    }
   }
 
   // TODO: refactor to own class
@@ -4141,60 +4110,6 @@ public class ProvUtil implements HttpDebugListener {
         ps.println(text);
       }
     }
-  }
-
-  static class Console {
-
-    final PrintStream stdOut;
-    final PrintStream stdError;
-
-    public Console(PrintStream stdOut, PrintStream stdError) {
-      this.stdOut = stdOut;
-      this.stdError = stdError;
-    }
-
-    public Console(OutputStream outputStream, OutputStream errorStream) {
-      this.stdOut = new PrintStream(outputStream);
-      this.stdError = new PrintStream(errorStream);
-    }
-
-    public void print(String data) {
-      this.stdOut.print(data);
-    }
-
-    public void println(Object obj) {
-      this.stdOut.println(obj);
-    }
-
-    public void println() {
-      this.stdOut.println();
-    }
-
-    public void printStacktrace(Exception exception) {
-      exception.printStackTrace(this.stdError);
-    }
-
-    public void printError(String text) {
-      PrintStream ps = this.stdError;
-      try {
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ps, Charsets.UTF_8));
-        writer.write(text + "\n");
-        writer.flush();
-      } catch (IOException e) {
-        ps.println(text);
-      }
-    }
-
-    public void printOutput(String text) {
-      try {
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(this.stdOut, Charsets.UTF_8));
-        writer.write(text + "\n");
-        writer.flush();
-      } catch (IOException e) {
-        this.stdOut.println(text);
-      }
-    }
-
   }
 
   public static void main(String[] args) throws IOException, ServiceException {

@@ -1,0 +1,3 @@
+removeAccountLogger --server localhost
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<RemoveAccountLoggerRequest xmlns="urn:zimbraAdmin"/>

@@ -1,0 +1,4 @@
+getMemcachedClientConfig localhost
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetMemcachedClientConfigRequest xmlns="urn:zimbraAdmin"/>

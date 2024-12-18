@@ -1,0 +1,3 @@
+getRight getAccount -e
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetRightRequest expandAllAttrs="0" xmlns="urn:zimbraAdmin"><right>getAccount</right></GetRightRequest>

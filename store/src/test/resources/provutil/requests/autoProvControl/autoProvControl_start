@@ -1,0 +1,3 @@
+autoProvControl start
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<AutoProvTaskControlRequest action="start" xmlns="urn:zimbraAdmin"/>

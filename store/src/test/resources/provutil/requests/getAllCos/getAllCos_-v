@@ -1,0 +1,3 @@
+getAllCos -v
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetAllCosRequest xmlns="urn:zimbraAdmin"/>

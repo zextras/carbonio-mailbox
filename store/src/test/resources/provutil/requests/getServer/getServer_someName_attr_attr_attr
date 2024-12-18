@@ -1,0 +1,3 @@
+getServer someName attr attr attr
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetServerRequest applyConfig="1" xmlns="urn:zimbraAdmin"><server by="name">someName</server></GetServerRequest>
