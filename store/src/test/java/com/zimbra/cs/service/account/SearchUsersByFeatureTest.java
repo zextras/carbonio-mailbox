@@ -15,6 +15,7 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.account.message.UserInfo;
 import com.zimbra.soap.account.message.SearchUsersByFeatureRequest;
 import com.zimbra.soap.account.message.SearchUsersByFeatureResponse;
+import com.zimbra.soap.type.ZmBoolean;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
@@ -33,6 +34,8 @@ import java.util.UUID;
 import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
 import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("api")
 public class SearchUsersByFeatureTest extends SoapTestSuite {
@@ -387,13 +390,40 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS, 1))
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS, 1, 0))
           .execute();
 
-      assertEquals(1, getResponse(httpResponse).getAccounts().size());
+      var response = getResponse(httpResponse);
+      assertEquals(1, response.getAccounts().size());
+      assertEquals(2, response.getTotal());
+      assertTrue(ZmBoolean.toBool(response.getMore()));
     } finally {
       cleanUp(account1);
       cleanUp(account2);
+    }
+  }
+
+  @Test
+  void testOffset() throws Exception {
+    var account1 = withChatsFeature(true, buildAccount("first.account", "Test1")).create();
+    var account2 = withChatsFeature(true, buildAccount("second.account", "Test2")).create();
+    var account3 = withChatsFeature(true, buildAccount("third.account", "Test3")).create();
+    var account4 = withChatsFeature(true, buildAccount("fourth.account", "Test4")).create();
+
+    try {
+      HttpResponse httpResponse = buildRequest()
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts("account", SearchUsersByFeatureRequest.Features.CHATS, 10, 3))
+          .execute();
+
+      var response = getResponse(httpResponse);
+      assertEquals(1, response.getAccounts().size());
+      assertEquals(4, response.getTotal());
+      assertFalse(ZmBoolean.toBool(response.getMore()));
+    } finally {
+      cleanUp(account1);
+      cleanUp(account2);
+      cleanUp(account3);
+      cleanUp(account4);
     }
   }
 
@@ -484,13 +514,14 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
   }
 
   private static SearchUsersByFeatureRequest searchAccounts(String name, SearchUsersByFeatureRequest.Features feature) {
-    return searchAccounts(name, feature, 0);
+    return searchAccounts(name, feature, 0, 0);
   }
 
-  private static SearchUsersByFeatureRequest searchAccounts(String name, SearchUsersByFeatureRequest.Features feature, int maxResults) {
+  private static SearchUsersByFeatureRequest searchAccounts(String name, SearchUsersByFeatureRequest.Features feature, int maxResults, int offset) {
     SearchUsersByFeatureRequest request = new SearchUsersByFeatureRequest();
     request.setName(name);
     request.setFeature(feature);
+    request.setOffset(offset);
     if (maxResults > 0) {
       request.setLimit(maxResults);
     }
