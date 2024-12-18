@@ -92,47 +92,49 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
+        stage('RC') {
+            agent {
+                node {
+                    label 'nodejs-agent-v2'
+                }
+            }
+            when {
+                expression {
+                    params.RC == true
+                }
+            }
             steps {
                 checkout scm
-                withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
-                    sh "cp ${SETTINGS_PATH} settings-jenkins.xml"
-                }
-                script {
-                    env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+                withCredentials([gitUsernamePassword(credentialsId: 'jenkins-integration-with-github-account',
+                        gitToolName: 'git-tool')]) {
+                    nodeCmd 'npm install'
+                    sh 'git config user.name $GITHUB_BOT_PR_CREDS_USR'
+                    sh 'git config user.email bot@zextras.com'
+                    sh 'git config user.password $GITHUB_BOT_PR_CREDS_PSW'
+                    sh 'git checkout -b test/RC'
+                    sh 'release-it --ci'
                 }
             }
         }
-        stage('RC') {
-                agent {
-                    node {
-                        label 'nodejs-agent-v2'
-                    }
-                }
-                when {
-                    expression {
-                        params.RC == true
-                    }
-                }
-                steps {
-                    withCredentials([gitUsernamePassword(credentialsId: 'jenkins-integration-with-github-account',
-                            gitToolName: 'git-tool')]) {
-                        nodeCmd 'npm install'
-                        sh 'git config user.name $GITHUB_BOT_PR_CREDS_USR'
-                        sh 'git config user.email bot@zextras.com'
-                        sh 'git config user.password $GITHUB_BOT_PR_CREDS_PSW'
-                        sh 'git checkout -b test/RC'
-                        sh 'release-it --ci'
-                    }
+
+        stage('Normal pipeline') {
+            when {
+                expression {
+                    params.RC == false
                 }
             }
-        stage('Normal pipeline') {
-                when {
-                    expression {
-                        params.RC == false
+            stages {
+                stage('Checkout') {
+                    steps {
+                        checkout scm
+                        withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
+                            sh "cp ${SETTINGS_PATH} settings-jenkins.xml"
+                        }
+                        script {
+                            env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+                        }
                     }
                 }
-            stages {
                 stage('Build') {
                     steps {
                         mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
