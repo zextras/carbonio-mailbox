@@ -8,6 +8,9 @@ def mvnCmd(String cmd) {
     }
     sh 'mvn -B -s settings-jenkins.xml ' + profile + ' ' + cmd
 }
+def nodeCmd(String cmd) {
+    sh '. load_nvm && nvm install && nvm use && ' + cmd
+}
 def isBuildingTag() {
     if (env.TAG_NAME) {
         return true
@@ -59,7 +62,7 @@ def buildRpmPackages(String flavor) {
 pipeline {
     agent {
         node {
-            label 'base-agent-v1'
+            label 'zextras-agent-v4'
         }
     }
 
