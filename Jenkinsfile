@@ -59,7 +59,7 @@ def buildRpmPackages(String flavor) {
 pipeline {
     agent {
         node {
-            label 'carbonio-agent-v2'
+            label 'zextras-agent-v4'
         }
     }
 
@@ -101,6 +101,11 @@ pipeline {
             }
         }
         stage('RC') {
+                agent {
+                    node {
+                        label 'nodejs-agent-v2'
+                    }
+                }
                 when {
                     expression {
                         params.RC == true
@@ -109,6 +114,7 @@ pipeline {
                 steps {
                     withCredentials([gitUsernamePassword(credentialsId: 'jenkins-integration-with-github-account',
                             gitToolName: 'git-tool')]) {
+                        sh 'npm install'
                         sh 'git config user.name $GITHUB_BOT_PR_CREDS_USR'
                         sh 'git config user.email bot@zextras.com'
                         sh 'git config user.password $GITHUB_BOT_PR_CREDS_PSW'
