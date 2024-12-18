@@ -48,6 +48,12 @@ public class SearchUsersByFeatureRequest {
   @XmlAttribute(name=AccountConstants.A_LIMIT, required=false)
   private Integer limit;
 
+  /**
+   * @zm-api-field-description The accounts to skip, for pagination
+   */
+  @XmlAttribute(name=AccountConstants.A_OFFSET, required=false)
+  private Integer offset;
+
   public String getName() {
     return name;
   }
@@ -70,5 +76,13 @@ public class SearchUsersByFeatureRequest {
 
   public void setLimit(Integer limit) {
     this.limit = limit;
+  }
+
+  public Integer getOffset() {
+    return offset;
+  }
+
+  public void setOffset(Integer offset) {
+    this.offset = offset;
   }
 }
