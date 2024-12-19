@@ -1,5 +1,6 @@
 package com.zimbra.cs.account.commands;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
@@ -27,8 +28,8 @@ class CreateAliasDomainCommandHandler implements CommandHandler {
     if (!local.isLocal()) {
       throw ServiceException.INVALID_REQUEST("target domain must be a local domain", null);
     }
-    attrs.put(Provisioning.A_zimbraDomainType, Provisioning.DomainType.alias.name());
-    attrs.put(Provisioning.A_zimbraDomainAliasTargetId, local.getId());
+    attrs.put(ZAttrProvisioning.A_zimbraDomainType, Provisioning.DomainType.alias.name());
+    attrs.put(ZAttrProvisioning.A_zimbraDomainAliasTargetId, local.getId());
     return provUtil.getProvisioning().createDomain(aliasDomain, attrs);
   }
 }

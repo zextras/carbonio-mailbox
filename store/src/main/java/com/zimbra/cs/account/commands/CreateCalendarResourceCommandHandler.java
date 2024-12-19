@@ -15,7 +15,7 @@ class CreateCalendarResourceCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException, ArgException {
     provUtil.getConsole().println(
             provUtil.getProvisioning().createCalendarResource(
                             args[1], args[2].isEmpty() ? null : args[2], provUtil.getMapAndCheck(args, 3, true))

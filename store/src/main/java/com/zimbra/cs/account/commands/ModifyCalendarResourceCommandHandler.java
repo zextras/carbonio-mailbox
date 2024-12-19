@@ -15,7 +15,7 @@ class ModifyCalendarResourceCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException, ArgException {
     provUtil.getProvisioning().modifyAttrs(provUtil.lookupCalendarResource(args[1]), provUtil.getMapAndCheck(args, 2, false), true);
   }
 }

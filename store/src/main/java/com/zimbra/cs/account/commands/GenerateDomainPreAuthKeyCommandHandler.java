@@ -1,12 +1,12 @@
 package com.zimbra.cs.account.commands;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.PreAuthKey;
 import com.zimbra.cs.account.ProvUtil;
-import com.zimbra.cs.account.Provisioning;
 
 import java.util.HashMap;
 
@@ -17,7 +17,7 @@ class GenerateDomainPreAuthKeyCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException {
+  @Override public void handle(String[] args) throws ServiceException {
     doGenerateDomainPreAuthKey(args);
   }
 
@@ -37,7 +37,7 @@ class GenerateDomainPreAuthKeyCommandHandler implements CommandHandler {
     }
 
     Domain domain = provUtil.lookupDomain(key);
-    String curPreAuthKey = domain.getAttr(Provisioning.A_zimbraPreAuthKey);
+    String curPreAuthKey = domain.getAttr(ZAttrProvisioning.A_zimbraPreAuthKey);
     if (curPreAuthKey != null && !force) {
       throw ServiceException.INVALID_REQUEST(
               "pre auth key exists for domain "
@@ -47,12 +47,12 @@ class GenerateDomainPreAuthKeyCommandHandler implements CommandHandler {
     }
     String preAuthKey = PreAuthKey.generateRandomPreAuthKey();
     HashMap<String, String> attrs = new HashMap<>();
-    attrs.put(Provisioning.A_zimbraPreAuthKey, preAuthKey);
+    attrs.put(ZAttrProvisioning.A_zimbraPreAuthKey, preAuthKey);
     provUtil.getProvisioning().modifyAttrs(domain, attrs);
     var console = provUtil.getConsole();
-    console.print(String.format("preAuthKey: %s\n", preAuthKey));
+    console.print(String.format("preAuthKey: %s%n", preAuthKey));
     if (curPreAuthKey != null) {
-      console.print(String.format("previous preAuthKey: %s\n", curPreAuthKey));
+      console.print(String.format("previous preAuthKey: %s%n", curPreAuthKey));
     }
   }
 }

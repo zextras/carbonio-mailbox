@@ -20,7 +20,7 @@ class GetAllAdminAccountsCommandHandler implements CommandHandler {
     this.dumper = dumper;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException {
+  @Override public void handle(String[] args) throws ServiceException {
     doGetAllAdminAccounts(args);
   }
 
@@ -50,8 +50,7 @@ class GetAllAdminAccountsCommandHandler implements CommandHandler {
 
     List<Account> accounts;
     Provisioning prov = provUtil.getProvisioning();
-    if (prov instanceof SoapProvisioning) {
-      SoapProvisioning soapProv = (SoapProvisioning) prov;
+    if (prov instanceof SoapProvisioning soapProv) {
       accounts = soapProv.getAllAdminAccounts(applyDefault);
     } else {
       accounts = prov.getAllAdminAccounts();

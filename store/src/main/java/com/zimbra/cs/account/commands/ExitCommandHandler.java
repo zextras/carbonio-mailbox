@@ -12,7 +12,7 @@ class ExitCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException {
+  @Override public void handle(String[] args) {
     System.exit(provUtil.getErrorOccursDuringInteraction() ? 2 : 0);
   }
 }

@@ -59,7 +59,8 @@ class DescribeArgs {
         }
         AttributeClass ac = AttributeClass.fromString(args[i]);
         if (ac == null || !ac.isProvisionable()) {
-          throw ServiceException.INVALID_REQUEST("invalid entry type " + ac.name(), null);
+          String name = ac == null ? "null" : ac.name();
+          throw ServiceException.INVALID_REQUEST("invalid entry type " + name, null);
         }
         descArgs.mAttrClass = ac;
       }

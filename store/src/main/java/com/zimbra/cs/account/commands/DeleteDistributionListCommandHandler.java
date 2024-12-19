@@ -15,15 +15,15 @@ class DeleteDistributionListCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     doDeleteDistributionList(args);
   }
 
   private void doDeleteDistributionList(String[] args) throws ServiceException {
     String groupId = provUtil.lookupGroup(args[1]).getId();
-    Boolean cascadeDelete = false;
+    boolean cascadeDelete = false;
     if (args.length > 2) {
-      cascadeDelete = Boolean.valueOf(args[2]) != null ? Boolean.valueOf(args[2]) : false;
+      cascadeDelete = Boolean.parseBoolean(args[2]);
     }
     provUtil.getProvisioning().deleteGroup(groupId, cascadeDelete);
   }

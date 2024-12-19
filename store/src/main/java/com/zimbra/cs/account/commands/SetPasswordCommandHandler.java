@@ -16,7 +16,7 @@ class SetPasswordCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     Provisioning.SetPasswordResult result = provUtil.getProvisioning().setPassword(provUtil.lookupAccount(args[1]), args[2]);
     if (result.hasMessage()) {
       provUtil.getConsole().println(result.getMessage());

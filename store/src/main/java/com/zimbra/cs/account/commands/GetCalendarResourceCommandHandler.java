@@ -17,7 +17,7 @@ class GetCalendarResourceCommandHandler implements CommandHandler {
     this.dumper = dumper;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     dumper.dumpCalendarResource(provUtil.lookupCalendarResource(args[1]), true, provUtil.getArgNameSet(args, 2));
   }
 }

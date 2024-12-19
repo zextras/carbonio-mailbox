@@ -15,7 +15,7 @@ class ModifyDistributionListCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException, ArgException {
     provUtil.getProvisioning().modifyAttrs(provUtil.lookupGroup(args[1]), provUtil.getMapAndCheck(args, 2, false), true);
   }
 }

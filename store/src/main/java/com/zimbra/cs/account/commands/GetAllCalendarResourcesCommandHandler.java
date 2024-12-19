@@ -23,7 +23,7 @@ class GetAllCalendarResourcesCommandHandler implements CommandHandler {
     this.dumper = dumper;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     doGetAllCalendarResources(args);
   }
 

@@ -15,7 +15,7 @@ class DeleteCalendarResourceCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     provUtil.getProvisioning().deleteCalendarResource(provUtil.lookupCalendarResource(args[1]).getId());
   }
 }

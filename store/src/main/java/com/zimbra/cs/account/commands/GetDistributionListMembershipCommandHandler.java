@@ -17,14 +17,14 @@ class GetDistributionListMembershipCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     doGetDistributionListMembership(provUtil.lookupGroup(args[1]));
   }
 
   private void doGetDistributionListMembership(Group group) throws ServiceException {
     String[] members;
-    if (group instanceof DynamicGroup) {
-      members = ((DynamicGroup) group).getAllMembers(true);
+    if (group instanceof DynamicGroup dynamicGroup) {
+      members = dynamicGroup.getAllMembers(true);
     } else {
       members = group.getAllMembers();
     }

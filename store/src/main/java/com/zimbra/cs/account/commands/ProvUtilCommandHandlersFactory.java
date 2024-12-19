@@ -4,12 +4,13 @@ import com.zimbra.cs.account.Command;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ProvUtilCommandHandlersFactory {
   public static Map<Command, CommandHandler> getCommandHandlersMap(ProvUtil provUtil) {
-    var map = new HashMap<Command, CommandHandler>();
+    var map = new EnumMap<Command, CommandHandler>(Command.class);
     var dumper = new ProvUtilDumper(provUtil.getConsole(), provUtil);
     map.put(Command.ADD_ACCOUNT_ALIAS, new AddAccountAliasCommandHandler(provUtil));
     map.put(Command.ADD_ACCOUNT_LOGGER, new AddAccountLoggerCommandHandler(provUtil));

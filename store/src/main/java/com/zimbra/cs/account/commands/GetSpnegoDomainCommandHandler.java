@@ -18,7 +18,7 @@ class GetSpnegoDomainCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     doGetSpnegoDomain();
   }
 

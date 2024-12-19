@@ -9,7 +9,7 @@ import org.apache.http.HttpException;
 
 class ModifyIdentityCommandHandler implements CommandHandler {
 
-  private ProvUtil provUtil;
+  private final ProvUtil provUtil;
 
   public ModifyIdentityCommandHandler(final ProvUtil provUtil) {
     this.provUtil = provUtil;
@@ -17,7 +17,7 @@ class ModifyIdentityCommandHandler implements CommandHandler {
 
   @Override
   public void handle(final String[] args)
-      throws ServiceException, ArgException, HttpException, IOException {
+      throws ServiceException, ArgException {
     var account = provUtil.lookupAccount(args[1]);
     provUtil.getProvisioning().modifyIdentity(account, args[2], provUtil.getMapAndCheck(args, 3, false));
   }

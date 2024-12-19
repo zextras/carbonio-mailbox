@@ -14,7 +14,7 @@ class GetAccountCommandHandler implements CommandHandler {
     this.dumper = dumper;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException {
+  @Override public void handle(String[] args) throws ServiceException {
     doGetAccount(args);
   }
 
@@ -23,13 +23,8 @@ class GetAccountCommandHandler implements CommandHandler {
     int acctPos = 1;
 
     if (args[1].equals("-e")) {
-      if (args.length > 1) {
-        applyDefault = false;
-        acctPos = 2;
-      } else {
-        provUtil.usage();
-        return;
-      }
+      applyDefault = false;
+      acctPos = 2;
     }
 
     dumper.dumpAccount(

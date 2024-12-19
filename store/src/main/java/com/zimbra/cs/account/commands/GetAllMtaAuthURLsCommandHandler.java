@@ -1,10 +1,10 @@
 package com.zimbra.cs.account.commands;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.httpclient.URLUtil;
 import org.apache.http.HttpException;
@@ -19,7 +19,7 @@ class GetAllMtaAuthURLsCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     doGetAllMtaAuthURLs();
   }
 
@@ -28,7 +28,7 @@ class GetAllMtaAuthURLsCommandHandler implements CommandHandler {
     List<Server> servers = prov.getAllServers();
     var console = provUtil.getConsole();
     for (Server server : servers) {
-      boolean isTarget = server.getBooleanAttr(Provisioning.A_zimbraMtaAuthTarget, false);
+      boolean isTarget = server.getBooleanAttr(ZAttrProvisioning.A_zimbraMtaAuthTarget, false);
       if (isTarget) {
         String url = URLUtil.getMtaAuthURL(server) + " ";
         console.print(url);

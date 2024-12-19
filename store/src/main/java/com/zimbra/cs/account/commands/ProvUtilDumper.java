@@ -135,7 +135,6 @@ class ProvUtilDumper {
       console.println(help.getDesc());
       List<String> helpItems = help.getItems();
       for (String helpItem : helpItems) {
-        // console.println(FileGenUtil.wrapComments(helpItem, 70, prefix) + "\n");
         console.println("- " + helpItem.trim());
         console.println();
       }
@@ -157,8 +156,6 @@ class ProvUtilDumper {
     for (Right r : comboRight.getRights()) {
       String tt = r.getTargetTypeStr();
       tt = tt == null ? "" : " (" + tt + ")";
-      // console.format("%s%10.10s: %s %s\n", indent2, r.getRightType().name(), r.getName(),
-      // tt);
       console.print(String.format("%s %s: %s %s\n", indent2, r.getRightType().name(), r.getName(), tt));
 
       seen.add(comboRight.getName());
@@ -261,8 +258,7 @@ class ProvUtilDumper {
 
         Object value = entry.getValue();
 
-        if (value instanceof String[]) {
-          String[] sv = (String[]) value;
+        if (value instanceof String[] sv) {
           for (int i = 0; i < sv.length; i++) {
             String aSv = sv[i];
             // don't print permission denied attr
@@ -274,10 +270,10 @@ class ProvUtilDumper {
               printAttr(name, aSv, i, isBinary, timestamp);
             }
           }
-        } else if (value instanceof String) {
+        } else if (value instanceof String string) {
           // don't print permission denied attr
           if (this.options.getForceDisplayAttrValue()
-                  || ((String) value).length() > 0
+                  || string.length() > 0
                   && (specificValues == null
                   || specificValues.isEmpty()
                   || specificValues.contains(value))) {

@@ -15,7 +15,7 @@ class DeleteServerCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     provUtil.getProvisioning().deleteServer(provUtil.lookupServer(args[1]).getId());
   }
 }

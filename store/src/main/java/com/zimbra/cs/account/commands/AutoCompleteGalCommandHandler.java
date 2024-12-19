@@ -28,7 +28,7 @@ class AutoCompleteGalCommandHandler implements CommandHandler {
     Domain d = provUtil.lookupDomain(domain);
 
     GalContact.Visitor visitor =
-            gc -> dumper.dumpContact(gc);
+            dumper::dumpContact;
     provUtil.getProvisioning().autoCompleteGal(d, query, GalSearchType.all, limit, visitor);
   }
 }

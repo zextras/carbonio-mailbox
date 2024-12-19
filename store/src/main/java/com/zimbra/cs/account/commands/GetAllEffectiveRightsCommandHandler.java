@@ -21,7 +21,7 @@ class GetAllEffectiveRightsCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException, ArgException {
     doGetAllEffectiveRights(args);
   }
 
@@ -95,10 +95,7 @@ class GetAllEffectiveRightsCommandHandler implements CommandHandler {
       provUtil.dumpEffectiveRight(er, expandSetAttrs, expandGetAttrs);
     }
 
-    if (rbtt instanceof RightCommand.DomainedRightsByTargetType) {
-      RightCommand.DomainedRightsByTargetType domainedRights =
-              (RightCommand.DomainedRightsByTargetType) rbtt;
-
+    if (rbtt instanceof RightCommand.DomainedRightsByTargetType domainedRights) {
       for (RightCommand.RightAggregation rightsByDomains : domainedRights.domains()) {
         dumpRightAggregation(targetType, rightsByDomains, true, expandSetAttrs, expandGetAttrs);
       }

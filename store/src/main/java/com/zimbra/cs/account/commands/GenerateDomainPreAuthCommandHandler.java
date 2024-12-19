@@ -1,12 +1,12 @@
 package com.zimbra.cs.account.commands;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.PreAuthKey;
 import com.zimbra.cs.account.ProvUtil;
-import com.zimbra.cs.account.Provisioning;
 
 import java.util.HashMap;
 
@@ -17,14 +17,14 @@ class GenerateDomainPreAuthCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException {
+  @Override public void handle(String[] args) throws ServiceException {
     doGenerateDomainPreAuth(args);
   }
 
   private void doGenerateDomainPreAuth(String[] args) throws ServiceException {
     String key = args[1];
     Domain domain = provUtil.lookupDomain(key);
-    String preAuthKey = domain.getAttr(Provisioning.A_zimbraPreAuthKey, null);
+    String preAuthKey = domain.getAttr(ZAttrProvisioning.A_zimbraPreAuthKey, null);
     if (preAuthKey == null) {
       throw ServiceException.INVALID_REQUEST("domain not configured for preauth", null);
     }
@@ -44,7 +44,7 @@ class GenerateDomainPreAuthCommandHandler implements CommandHandler {
       params.put("admin", args[6]);
     }
     provUtil.getConsole().print(String.format(
-            "account: %s\nby: %s\ntimestamp: %s\nexpires: %s\npreauth: %s\n",
+            "account: %s\nby: %s\ntimestamp: %s\nexpires: %s\npreauth: %s%n",
             name, by, timestamp, expires, PreAuthKey.computePreAuth(params, preAuthKey)));
   }
 }

@@ -15,7 +15,7 @@ class FlushCacheCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException {
+  @Override public void handle(String[] args) throws ServiceException {
     doFlushCache(args);
   }
 

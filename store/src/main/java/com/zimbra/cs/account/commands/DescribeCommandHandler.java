@@ -24,7 +24,7 @@ class DescribeCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException {
+  @Override public void handle(String[] args) throws ServiceException {
     doDescribe(args);
   }
 
@@ -119,7 +119,7 @@ class DescribeCommandHandler implements CommandHandler {
         console.println();
 
         for (DescribeArgs.Field f : DescribeArgs.Field.values()) {
-          console.print(String.format("    %15s : %s\n", f.name(), DescribeArgs.Field.print(f, ai)));
+          console.print(String.format("    %15s : %s%n", f.name(), DescribeArgs.Field.print(f, ai)));
         }
       }
       console.println();
@@ -155,7 +155,7 @@ class DescribeCommandHandler implements CommandHandler {
     var console = provUtil.getConsole();
     console.println(e.getMessage() + "\n");
 
-    console.print(String.format("usage:  %s(%s) %s\n", command.getName(), command.getAlias(), command.getHelp()));
+    console.print(String.format("usage:  %s(%s) %s%n", command.getName(), command.getAlias(), command.getHelp()));
 
     console.println();
     console.println("Valid entry types: " + formatAllEntryTypes() + "\n");

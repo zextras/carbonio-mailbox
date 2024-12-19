@@ -7,7 +7,6 @@ import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
-import com.zimbra.cs.ldap.ZLdapElement;
 import org.apache.http.HttpException;
 
 import java.io.IOException;
@@ -24,7 +23,7 @@ class GetAuthTokenInfoCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) {
     doGetAuthTokenInfo(args);
   }
 
@@ -43,9 +42,9 @@ class GetAuthTokenInfoCommandHandler implements CommandHandler {
 
         if ("exp".equals(key)) {
           long exp = Long.parseLong(value);
-          console.print(String.format("%s: %s (%s)\n", key, value, DateUtil.toRFC822Date(new Date(exp))));
+          console.print(String.format("%s: %s (%s)%n", key, value, DateUtil.toRFC822Date(new Date(exp))));
         } else {
-          console.print(String.format("%s: %s\n", key, value));
+          console.print(String.format("%s: %s%n", key, value));
         }
       }
     } catch (AuthTokenException e) {

@@ -17,7 +17,7 @@ class DeleteAccountCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     doDeleteAccount(args);
   }
 
@@ -26,12 +26,9 @@ class DeleteAccountCommandHandler implements CommandHandler {
     var console = provUtil.getConsole();
     if (prov instanceof LdapProv) {
       boolean confirmed =
-              provUtil.confirm(
-                      "-l option is specified.  Only the LDAP entry of the account will be"
-                              + " deleted.\n"
-                              + "DB data of the account and associated blobs will not be"
-                              + " deleted.\n");
-
+              provUtil.confirm("""
+                              -l option is specified.  Only the LDAP entry of the account will be deleted.
+                              DB data of the account and associated blobs will not be deleted.\n""");
       if (!confirmed) {
         console.println("aborted");
         return;

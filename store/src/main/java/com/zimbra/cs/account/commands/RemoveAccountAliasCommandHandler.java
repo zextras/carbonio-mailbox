@@ -17,7 +17,7 @@ class RemoveAccountAliasCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     Account acct = provUtil.lookupAccount(args[1], false);
     provUtil.getProvisioning().removeAlias(acct, args[2]);
     // even if acct is null, we still invoke removeAlias and throw an exception

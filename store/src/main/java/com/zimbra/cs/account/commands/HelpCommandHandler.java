@@ -17,7 +17,7 @@ class HelpCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) {
     doHelp(args);
   }
 
@@ -42,7 +42,7 @@ class HelpCommandHandler implements CommandHandler {
       console.println(" zmprov is used for provisioning. Try:");
       console.println("");
       for (Category c : Category.values()) {
-        console.print(String.format("     zmprov help %-15s %s\n", c.name().toLowerCase(), c.getDescription()));
+        console.print(String.format("     zmprov help %-15s %s%n", c.name().toLowerCase(), c.getDescription()));
       }
     }
 
@@ -54,10 +54,10 @@ class HelpCommandHandler implements CommandHandler {
         }
         if (cat == Category.COMMANDS || cat == c.getCategory()) {
           Command.Via via = c.getVia();
-          console.print(String.format("  %s(%s) %s\n", c.getName(), c.getAlias(), c.getHelp()));
+          console.print(String.format("  %s(%s) %s%n", c.getName(), c.getAlias(), c.getHelp()));
           if (via == Command.Via.ldap) {
             console.print(String.format(
-                    "    -- NOTE: %s can only be used with \"zmprov -l/--ldap\"\n", c.getName()));
+                    "    -- NOTE: %s can only be used with \"zmprov -l/--ldap\"%n", c.getName()));
           }
           console.println();
         }

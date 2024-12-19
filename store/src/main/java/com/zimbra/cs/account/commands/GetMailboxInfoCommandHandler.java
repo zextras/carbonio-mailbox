@@ -17,7 +17,7 @@ class GetMailboxInfoCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     doGetMailboxInfo(args);
   }
 
@@ -29,6 +29,6 @@ class GetMailboxInfoCommandHandler implements CommandHandler {
     SoapProvisioning sp = (SoapProvisioning) prov;
     Account acct = provUtil.lookupAccount(args[1]);
     SoapProvisioning.MailboxInfo info = sp.getMailbox(acct);
-    provUtil.getConsole().println(String.format("mailboxId: %s\nquotaUsed: %d", info.getMailboxId(), info.getUsed()));
+    provUtil.getConsole().println(String.format("mailboxId: %s%nquotaUsed: %d", info.getMailboxId(), info.getUsed()));
   }
 }

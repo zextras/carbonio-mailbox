@@ -19,7 +19,7 @@ class GetGrantsCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException, ArgException {
     doGetGrants(args);
   }
 
@@ -84,7 +84,6 @@ class GetGrantsCommandHandler implements CommandHandler {
             "--------------------"));
 
     for (RightCommand.ACE ace : grants.getACEs()) {
-      // String deny = ace.deny()?"-":"";
       RightModifier rightModifier = ace.rightModifier();
       String rm = (rightModifier == null) ? "" : String.valueOf(rightModifier.getModifier());
       console.print(String.format(

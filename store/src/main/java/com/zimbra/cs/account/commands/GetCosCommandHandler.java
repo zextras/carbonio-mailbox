@@ -17,7 +17,7 @@ class GetCosCommandHandler implements CommandHandler {
     this.dumper = dumper;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     dumper.dumpCos(provUtil.lookupCos(args[1]), provUtil.getArgNameSet(args, 2));
   }
 }

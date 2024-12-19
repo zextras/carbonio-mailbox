@@ -8,7 +8,7 @@ import java.io.IOException;
 import org.apache.http.HttpException;
 
 class ModifyAccountCommandHandler implements CommandHandler {
-  private ProvUtil provUtil;
+  private final ProvUtil provUtil;
 
   public ModifyAccountCommandHandler(final ProvUtil provUtil) {
     this.provUtil = provUtil;
@@ -16,7 +16,7 @@ class ModifyAccountCommandHandler implements CommandHandler {
 
   @Override
   public void handle(final String[] args)
-      throws ServiceException, ArgException, HttpException, IOException {
+      throws ServiceException, ArgException {
     provUtil.getProvisioning().modifyAttrs(provUtil.lookupAccount(args[1]), provUtil.getMapAndCheck(args, 2, false), true);
   }
 }

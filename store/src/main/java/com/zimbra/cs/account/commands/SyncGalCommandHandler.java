@@ -23,7 +23,7 @@ class SyncGalCommandHandler implements CommandHandler {
     this.dumper = dumper;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     doSyncGal(args);
   }
 
@@ -37,7 +37,7 @@ class SyncGalCommandHandler implements CommandHandler {
     Provisioning.SearchGalResult result = null;
     if (prov instanceof LdapProv) {
       GalContact.Visitor visitor =
-              gc -> dumper.dumpContact(gc);
+              dumper::dumpContact;
       result = prov.syncGal(d, token, visitor);
     } else {
       result = ((SoapProvisioning) prov).searchGal(d, "", GalSearchType.all, token, 0, 0, null);

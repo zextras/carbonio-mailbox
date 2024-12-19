@@ -17,7 +17,7 @@ class SoapCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     // HACK FOR NOW
     SoapProvisioning sp = new SoapProvisioning();
     var serverPort = provUtil.getServerPort();

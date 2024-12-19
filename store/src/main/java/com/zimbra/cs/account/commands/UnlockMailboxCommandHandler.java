@@ -29,7 +29,7 @@ class UnlockMailboxCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     doUnlockMailbox(args);
   }
 
@@ -69,7 +69,7 @@ class UnlockMailboxCommandHandler implements CommandHandler {
         } else {
           throw e;
         }
-      } catch (IOException | HttpException e) {
+      } catch (IOException e) {
         throw ServiceException.FAILURE(
                 String.format(
                         "Error sending %s (operation = %s) request for %s to %s",
@@ -83,7 +83,7 @@ class UnlockMailboxCommandHandler implements CommandHandler {
         acct.setAccountStatus(ZAttrProvisioning.AccountStatus.maintenance);
         try {
           sendMailboxLockoutRequest(accName, server, AdminConstants.A_START);
-        } catch (IOException | HttpException e) {
+        } catch (IOException e) {
           throw ServiceException.FAILURE(
                   String.format(
                           "Error sending %s (opertion = %s) request for %s to %s.\n"
@@ -141,7 +141,7 @@ class UnlockMailboxCommandHandler implements CommandHandler {
                               "Error: failed to unregister mailbox moveout.\n" + " Exception: %s.",
                               e.getMessage()));
             }
-          } catch (IOException | HttpException e) {
+          } catch (IOException e) {
             console.printError(
                     String.format(
                             "Error sending %s (operation = %s) request for %s to %s"
@@ -160,7 +160,7 @@ class UnlockMailboxCommandHandler implements CommandHandler {
   }
 
   private void sendMailboxLockoutRequest(String acctName, String server, String operation)
-          throws ServiceException, IOException, HttpException {
+          throws ServiceException, IOException {
     LockoutMailboxRequest req =
             LockoutMailboxRequest.create(AccountNameSelector.fromName(acctName));
     req.setOperation(operation);

@@ -24,7 +24,7 @@ class SearchGalCommandHandler implements CommandHandler {
     this.dumper = dumper;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException, ArgException {
     doSearchGal(args);
   }
 
@@ -56,7 +56,7 @@ class SearchGalCommandHandler implements CommandHandler {
       }
 
       GalContact.Visitor visitor =
-              gc -> dumper.dumpContact(gc);
+              dumper::dumpContact;
       result = prov.searchGal(d, query, GalSearchType.all, limit, visitor);
 
     } else {

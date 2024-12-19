@@ -1,5 +1,6 @@
 package com.zimbra.cs.account.commands;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
@@ -18,7 +19,7 @@ class GetAllMemcachedServersCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     doGetAllMemcachedServers();
   }
 
@@ -28,9 +29,9 @@ class GetAllMemcachedServersCommandHandler implements CommandHandler {
     List<Server> servers = prov.getAllServers(Provisioning.SERVICE_MEMCACHED);
     for (Server server : servers) {
       console.print(
-              server.getAttr(Provisioning.A_zimbraMemcachedBindAddress, "")
+              server.getAttr(ZAttrProvisioning.A_zimbraMemcachedBindAddress, "")
                       + ":"
-                      + server.getAttr(Provisioning.A_zimbraMemcachedBindPort, "")
+                      + server.getAttr(ZAttrProvisioning.A_zimbraMemcachedBindPort, "")
                       + " ");
     }
     console.println();

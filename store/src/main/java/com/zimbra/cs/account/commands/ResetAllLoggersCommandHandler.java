@@ -16,7 +16,7 @@ class ResetAllLoggersCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     doResetAllLoggers(args);
   }
 
@@ -28,7 +28,7 @@ class ResetAllLoggersCommandHandler implements CommandHandler {
     SoapProvisioning sprov = (SoapProvisioning) prov;
     String server = null;
     if (args.length > 1 && ("-s".equals(args[1]) || "--server".equals(args[1]))) {
-      server = args.length > 0 ? args[2] : null;
+      server = args[2];
     }
     sprov.resetAllLoggers(server);
   }

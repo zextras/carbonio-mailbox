@@ -56,7 +56,7 @@ class ShareInfoVisitor implements Provisioning.PublishedShareInfoVisitor {
   }
 
   @Override
-  public void visit(ShareInfoData shareInfoData) throws ServiceException {
+  public void visit(ShareInfoData shareInfoData) {
     console.print(String.format(
         mFormat,
         shareInfoData.getOwnerAcctId(),

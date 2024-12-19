@@ -15,7 +15,7 @@ class DeleteSignatureCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     var account = provUtil.lookupAccount(args[1]);
     provUtil.getProvisioning().deleteSignature(account, provUtil.lookupSignatureId(account, args[2]));
   }

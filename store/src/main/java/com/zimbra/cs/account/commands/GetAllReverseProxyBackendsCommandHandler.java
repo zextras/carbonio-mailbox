@@ -1,5 +1,6 @@
 package com.zimbra.cs.account.commands;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.ArgException;
@@ -19,7 +20,7 @@ class GetAllReverseProxyBackendsCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     doGetAllReverseProxyBackends();
   }
 
@@ -29,13 +30,13 @@ class GetAllReverseProxyBackendsCommandHandler implements CommandHandler {
     var console = provUtil.getConsole();
     for (Server server : servers) {
       boolean isTarget =
-              server.getBooleanAttr(Provisioning.A_zimbraReverseProxyLookupTarget, false);
+              server.getBooleanAttr(ZAttrProvisioning.A_zimbraReverseProxyLookupTarget, false);
       if (!isTarget) {
         continue;
       }
 
       // (For now) assume HTTP can be load balanced to...
-      String mode = server.getAttr(Provisioning.A_zimbraMailMode, null);
+      String mode = server.getAttr(ZAttrProvisioning.A_zimbraMailMode, null);
       if (mode == null) {
         continue;
       }
@@ -49,12 +50,12 @@ class GetAllReverseProxyBackendsCommandHandler implements CommandHandler {
 
       int backendPort;
       if (isPlain) {
-        backendPort = server.getIntAttr(Provisioning.A_zimbraMailPort, 0);
+        backendPort = server.getIntAttr(ZAttrProvisioning.A_zimbraMailPort, 0);
       } else {
-        backendPort = server.getIntAttr(Provisioning.A_zimbraMailSSLPort, 0);
+        backendPort = server.getIntAttr(ZAttrProvisioning.A_zimbraMailSSLPort, 0);
       }
 
-      String serviceName = server.getAttr(Provisioning.A_zimbraServiceHostname, "");
+      String serviceName = server.getAttr(ZAttrProvisioning.A_zimbraServiceHostname, "");
       console.println("    server " + serviceName + ":" + backendPort + ";");
       atLeastOne = true;
     }

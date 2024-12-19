@@ -18,7 +18,7 @@ class GetAllCosCommandHandler implements CommandHandler {
     this.dumper = dumper;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException {
+  @Override public void handle(String[] args) throws ServiceException {
     doGetAllCos(args);
   }
 

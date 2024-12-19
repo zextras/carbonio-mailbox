@@ -9,7 +9,7 @@ import org.apache.http.HttpException;
 
 class ModifySignatureCommandHandler implements CommandHandler {
 
-  private ProvUtil provUtil;
+  private final ProvUtil provUtil;
 
   public ModifySignatureCommandHandler(final ProvUtil provUtil) {
     this.provUtil = provUtil;
@@ -17,7 +17,7 @@ class ModifySignatureCommandHandler implements CommandHandler {
 
   @Override
   public void handle(final String[] args)
-      throws ServiceException, ArgException, HttpException, IOException {
+      throws ServiceException, ArgException {
     var account = provUtil.lookupAccount(args[1]);
     provUtil.getProvisioning().modifySignature(
         account, provUtil.lookupSignatureId(account, args[2]), provUtil.getMapAndCheck(args, 3, false));

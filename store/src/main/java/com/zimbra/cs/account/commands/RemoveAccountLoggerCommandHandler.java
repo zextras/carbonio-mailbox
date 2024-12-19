@@ -19,7 +19,7 @@ class RemoveAccountLoggerCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     var alo = AccountLoggerOptions.parseAccountLoggerOptions(args);
     if (!command.checkArgsLength(alo.args)) {
       provUtil.usage();

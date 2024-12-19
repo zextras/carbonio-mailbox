@@ -15,7 +15,7 @@ class RenameCosCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     provUtil.getProvisioning().renameCos(provUtil.lookupCos(args[1]).getId(), args[2]);
   }
 }

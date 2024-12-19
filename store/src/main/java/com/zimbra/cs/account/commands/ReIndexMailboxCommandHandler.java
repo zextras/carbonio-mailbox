@@ -17,7 +17,7 @@ class ReIndexMailboxCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     doReIndexMailbox(args);
   }
 
@@ -46,10 +46,10 @@ class ReIndexMailboxCommandHandler implements CommandHandler {
     SoapProvisioning.ReIndexInfo info = sp.reIndex(acct, args[2], by, values);
     SoapProvisioning.ReIndexInfo.Progress progress = info.getProgress();
     var console = provUtil.getConsole();
-    console.println(String.format("status: %s\n", info.getStatus()));
+    console.println(String.format("status: %s%n", info.getStatus()));
     if (progress != null) {
       console.println(String.format(
-              "progress: numSucceeded=%d, numFailed=%d, numRemaining=%d\n",
+              "progress: numSucceeded=%d, numFailed=%d, numRemaining=%d%n",
               progress.getNumSucceeded(), progress.getNumFailed(), progress.getNumRemaining()));
     }
   }

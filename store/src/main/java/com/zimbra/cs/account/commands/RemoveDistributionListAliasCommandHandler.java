@@ -17,7 +17,7 @@ class RemoveDistributionListAliasCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, HttpException, IOException {
+  @Override public void handle(String[] args) throws ServiceException {
     Group dl = provUtil.lookupGroup(args[1], false);
     // Even if dl is null, we still invoke removeAlias.
     // This is so dangling aliases can be cleaned up as much as possible.
