@@ -612,30 +612,6 @@
 
 <!--
 ========================================================
-                    XMPP component rights
-========================================================
--->
-
-<right name="getXMPPComponent" type="getAttrs" targetType="xmppcomponent">
-  <desc>get all XMPP component attributes</desc>
-</right>
-
-<right name="modifyXMPPComponent" type="setAttrs" targetType="xmppcomponent">
-  <desc>set all XMPP component attributes</desc>
-</right>
-
-<right name="listXMPPComponent" type="preset" targetType="xmppcomponent">
-  <desc>see XMPP component in GetAllXMPPComponents</desc>
-</right>
-
-<right name="deleteXMPPComponent" type="preset" targetType="xmppcomponent">
-  <desc>delete XMPP component</desc>
-</right>
-
-
-
-<!--
-========================================================
                     zimlet rights
 ========================================================
 -->

@@ -166,22 +166,6 @@ public class Key {
     }
   }
 
-  public enum XMPPComponentBy {
-
-    // case must match protocol
-    id,
-    name,
-    serviceHostname;
-
-    public static XMPPComponentBy fromString(String s) throws ServiceException {
-      try {
-        return XMPPComponentBy.valueOf(s);
-      } catch (IllegalArgumentException e) {
-        throw ServiceException.INVALID_REQUEST("unknown key: " + s, e);
-      }
-    }
-  }
-
   public enum DistributionListBy {
 
     // case must match protocol

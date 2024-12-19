@@ -842,27 +842,6 @@ public final class MockProvisioning extends Provisioning implements Provisioning
   }
 
   @Override
-  public XMPPComponent createXMPPComponent(
-      String name, Domain domain, Server server, Map<String, Object> attrs) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public XMPPComponent get(Key.XMPPComponentBy keyName, String key) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public List<XMPPComponent> getAllXMPPComponents() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public void deleteXMPPComponent(XMPPComponent comp) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
   public void flushCache(CacheEntryType type, CacheEntry[] entries) {
     // do nothing
   }
@@ -890,44 +869,9 @@ public final class MockProvisioning extends Provisioning implements Provisioning
     // Does nothing
   }
 
-  /* (non-Javadoc)
-   * @see com.zimbra.cs.account.Provisioning#createHabOrgUnit(com.zimbra.cs.account.Domain, java.lang.String)
-   */
-  @Override
-  public Set<String> createHabOrgUnit(Domain domain, String habOrgUnitName)
-      throws ServiceException {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  /* (non-Javadoc)
-   * @see com.zimbra.cs.account.Provisioning#renameHabOrgUnit(com.zimbra.cs.account.Domain, java.lang.String, java.lang.String)
-   */
-  @Override
-  public Set<String> renameHabOrgUnit(
-      Domain domain, String habOrgUnitName, String newHabOrgUnitName) throws ServiceException {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  /* (non-Javadoc)
-   * @see com.zimbra.cs.account.Provisioning#deleteHabOrgUnit(com.zimbra.cs.account.Domain, java.lang.String)
-   */
-  @Override
-  public void deleteHabOrgUnit(Domain domain, String habOrgUnitName) throws ServiceException {
-    // TODO Auto-generated method stub
-
-  }
-
   @Override
   public void deleteGroup(String zimbraId, boolean cascadeDelete) throws ServiceException {
     // do nothing
-  }
-
-  @Override
-  public Set<String> listHabOrgUnit(Domain domain) throws ServiceException {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   @Override

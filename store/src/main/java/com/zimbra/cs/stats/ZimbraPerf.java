@@ -153,11 +153,6 @@ public class ZimbraPerf {
   @Description("LDAP group cache hit rate")
   public static final String RTS_GROUP_CACHE_HIT_RATE = "group_cache_hit_rate";
 
-  @Description("LDAP XMPP cache size")
-  public static final String RTS_XMPP_CACHE_SIZE = "xmpp_cache_size";
-
-  @Description("LDAP XMPP cache hit rate")
-  public static final String RTS_XMPP_CACHE_HIT_RATE = "xmpp_cache_hit_rate";
   // Accumulators.  To add a new accumulator, create a static instance here and
   // add it to sAccumulators.
   public static final Counter COUNTER_LMTP_RCVD_MSGS = new Counter();
@@ -232,9 +227,7 @@ public class ZimbraPerf {
         RTS_ZIMLET_CACHE_SIZE,
         RTS_ZIMLET_CACHE_HIT_RATE,
         RTS_GROUP_CACHE_SIZE,
-        RTS_GROUP_CACHE_HIT_RATE,
-        RTS_XMPP_CACHE_SIZE,
-        RTS_XMPP_CACHE_HIT_RATE
+        RTS_GROUP_CACHE_HIT_RATE
       };
 
   @Description("Number of messages received over LMTP")

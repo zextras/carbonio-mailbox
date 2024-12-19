@@ -16,8 +16,7 @@ public enum Category {
   RIGHT("help on right-related commands"),
   SEARCH("help on search-related commands"),
   SERVER("help on server-related commands"),
-  SHARE("help on share related commands"),
-  HAB("help on HAB commands");
+  SHARE("help on share related commands");
 
   private final String description;
 

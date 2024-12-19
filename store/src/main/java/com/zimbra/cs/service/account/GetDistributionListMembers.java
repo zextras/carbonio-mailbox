@@ -5,8 +5,6 @@
 
 package com.zimbra.cs.service.account;
 
-import java.util.Map;
-
 import com.zimbra.common.account.Key.DistributionListBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
@@ -24,10 +22,10 @@ import com.zimbra.cs.gal.GalGroupMembers;
 import com.zimbra.cs.gal.GalGroupMembers.DLMembers;
 import com.zimbra.cs.gal.GalGroupMembers.DLMembersResult;
 import com.zimbra.cs.gal.GalGroupMembers.LdapDLMembers;
-import com.zimbra.cs.gal.GalGroupMembers.LdapHABMembers;
 import com.zimbra.cs.gal.GalGroupMembers.ProxiedDLMembers;
 import com.zimbra.cs.gal.GalSearchControl;
 import com.zimbra.soap.ZimbraSoapContext;
+import java.util.Map;
 
 /**
  * @author pshao
@@ -195,24 +193,19 @@ public class GetDistributionListMembers extends GalDocumentHandler {
 
     private DLMembersResult getMembersFromLdap(Account account, Group group)
     throws ServiceException {
-        if (group.isHABGroup()) {
-            ZimbraLog.account.debug("Retrieving hab group members from LDAP for group %s", group.getName());
-            return new LdapHABMembers(group);
+        boolean allow = false;
+        if (group.hideInGal()) {
+            allow = GroupOwner.isOwner(account, group);
         } else {
-            boolean allow = false;
-            if (group.hideInGal()) {
-                allow = GroupOwner.isOwner(account, group);
-            } else {
-                allow = GroupOwner.isOwner(account, group) || group.isMemberOf(account);
-            }
-            if (allow) {
-                ZimbraLog.account.debug("Retrieving group members from LDAP for group %s", group.getName());
-                return new LdapDLMembers(group);
-            } else {
-                ZimbraLog.account.debug("account %s is not allowed to get members from ldap for group %s",
-                        account.getName(), group.getName());
-                return null;
-            }
+            allow = GroupOwner.isOwner(account, group) || group.isMemberOf(account);
+        }
+        if (allow) {
+            ZimbraLog.account.debug("Retrieving group members from LDAP for group %s", group.getName());
+            return new LdapDLMembers(group);
+        } else {
+            ZimbraLog.account.debug("account %s is not allowed to get members from ldap for group %s",
+                    account.getName(), group.getName());
+            return null;
         }
     }
 

@@ -308,15 +308,6 @@ public class AdminService implements DocumentService {
         AdminConstants.ADMIN_DESTROY_WAIT_SET_REQUEST, new AdminDestroyWaitSetRequest());
     dispatcher.registerHandler(AdminConstants.QUERY_WAIT_SET_REQUEST, new QueryWaitSet());
 
-    // zimbraXMPPComponent object class
-    dispatcher.registerHandler(
-        AdminConstants.CREATE_XMPPCOMPONENT_REQUEST, new CreateXMPPComponent());
-    dispatcher.registerHandler(AdminConstants.GET_XMPPCOMPONENT_REQUEST, new GetXMPPComponent());
-    dispatcher.registerHandler(
-        AdminConstants.GET_ALL_XMPPCOMPONENTS_REQUEST, new GetAllXMPPComponents());
-    dispatcher.registerHandler(
-        AdminConstants.DELETE_XMPPCOMPONENT_REQUEST, new DeleteXMPPComponent());
-
     dispatcher.registerHandler(AdminConstants.GET_SERVER_STATS_REQUEST, new GetServerStats());
     dispatcher.registerHandler(AdminConstants.GET_LOGGER_STATS_REQUEST, new GetLoggerStats());
     dispatcher.registerHandler(AdminConstants.SYNC_GAL_ACCOUNT_REQUEST, new SyncGalAccount());

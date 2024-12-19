@@ -832,11 +832,6 @@ public class RightConsts {
     public static final String RT_deleteServer = "deleteServer";
 
     /**
-     * delete XMPP component
-     */
-    public static final String RT_deleteXMPPComponent = "deleteXMPPComponent";
-
-    /**
      * delete zimlet
      */
     public static final String RT_deleteZimlet = "deleteZimlet";
@@ -1128,11 +1123,6 @@ public class RightConsts {
     public static final String RT_getSessions = "getSessions";
 
     /**
-     * get all XMPP component attributes
-     */
-    public static final String RT_getXMPPComponent = "getXMPPComponent";
-
-    /**
      * get all zimlet attributes
      */
     public static final String RT_getZimlet = "getZimlet";
@@ -1187,11 +1177,6 @@ public class RightConsts {
      * see server in GetAllServers/SearchDirectoryResponse
      */
     public static final String RT_listServer = "listServer";
-
-    /**
-     * see XMPP component in GetAllXMPPComponents
-     */
-    public static final String RT_listXMPPComponent = "listXMPPComponent";
 
     /**
      * see zimlet in GetAllZimlets
@@ -1287,11 +1272,6 @@ public class RightConsts {
      * set all server attributes
      */
     public static final String RT_modifyServer = "modifyServer";
-
-    /**
-     * set all XMPP component attributes
-     */
-    public static final String RT_modifyXMPPComponent = "modifyXMPPComponent";
 
     /**
      * set all zimlet attributes

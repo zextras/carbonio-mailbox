@@ -19,7 +19,6 @@ import com.zimbra.cs.account.GlobalGrant;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Provisioning.GroupMembership;
 import com.zimbra.cs.account.Server;
-import com.zimbra.cs.account.XMPPComponent;
 import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.ldap.LdapTODO.ACLTODO;
 import java.util.ArrayList;
@@ -95,8 +94,6 @@ public abstract class TargetIterator {
       iter = new TargetIterator.GlobalGrantTargetIterator(prov, target);
     } else if (target instanceof Zimlet) {
       iter = new TargetIterator.ZimletTargetIterator(prov, target);
-    } else if (target instanceof XMPPComponent) {
-      iter = new TargetIterator.XMPPComponentTargetIterator(prov, target);
     } else {
       throw ServiceException.FAILURE(
           new StringBuilder("internal error - no TargetIterator for ")
@@ -355,13 +352,6 @@ public abstract class TargetIterator {
 
     ServerTargetIterator(Provisioning prov, Entry target) {
       super(prov, TargetType.server, target);
-    }
-  }
-
-  public static class XMPPComponentTargetIterator extends TargetIterator {
-
-    XMPPComponentTargetIterator(Provisioning prov, Entry target) {
-      super(prov, TargetType.xmppcomponent, target);
     }
   }
 

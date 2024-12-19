@@ -203,11 +203,6 @@ public final class AdminConstants {
   public static final String E_RENAME_DISTRIBUTION_LIST_REQUEST = "RenameDistributionListRequest";
   public static final String E_RENAME_DISTRIBUTION_LIST_RESPONSE = "RenameDistributionListResponse";
 
-  public static final String E_CREATE_HAB_GROUP_REQUEST = "CreateHABGroupRequest";
-  public static final String E_CREATE_HAB_GROUP_RESPONSE = "CreateHABGroupResponse";
-  public static final String E_MODIFY_HAB_GROUP_REQUEST = "ModifyHABGroupRequest";
-  public static final String E_MODIFY_HAB_GROUP_RESPONSE = "ModifyHABGroupResponse";
-
   public static final String E_GET_VERSION_INFO_REQUEST = "GetVersionInfoRequest";
   public static final String E_GET_VERSION_INFO_RESPONSE = "GetVersionInfoResponse";
 
@@ -400,16 +395,6 @@ public final class AdminConstants {
   public static final String E_QUERY_WAIT_SET_REQUEST = "QueryWaitSetRequest";
   public static final String E_QUERY_WAIT_SET_RESPONSE = "QueryWaitSetResponse";
 
-  // XMPPComponent
-  public static final String E_CREATE_XMPPCOMPONENT_REQUEST = "CreateXMPPComponentRequest";
-  public static final String E_CREATE_XMPPCOMPONENT_RESPONSE = "CreateXMPPComponentResponse";
-  public static final String E_GET_XMPPCOMPONENT_REQUEST = "GetXMPPComponentRequest";
-  public static final String E_GET_XMPPCOMPONENT_RESPONSE = "GetXMPPComponentResponse";
-  public static final String E_GET_ALL_XMPPCOMPONENTS_REQUEST = "GetAllXMPPComponentsRequest";
-  public static final String E_GET_ALL_XMPPCOMPONENTS_RESPONSE = "GetAllXMPPComponentsResponse";
-  public static final String E_DELETE_XMPPCOMPONENT_REQUEST = "DeleteXMPPComponentRequest";
-  public static final String E_DELETE_XMPPCOMPONENT_RESPONSE = "DeleteXMPPComponentResponse";
-
   // rights
   public static final String E_GET_RIGHT_REQUEST = "GetRightRequest";
   public static final String E_GET_RIGHT_RESPONSE = "GetRightResponse";
@@ -481,12 +466,6 @@ public final class AdminConstants {
       "RefreshRegisteredAuthTokensRequest";
   public static final String E_REFRESH_REGISTERED_AUTHTOKENS_RESPONSE =
       "RefreshRegisteredAuthTokensResponse";
-
-  // SMIME config
-  public static final String E_GET_SMIME_CONFIG_REQUEST = "GetSMIMEConfigRequest";
-  public static final String E_GET_SMIME_CONFIG_RESPONSE = "GetSMIMEConfigResponse";
-  public static final String E_MODIFY_SMIME_CONFIG_REQUEST = "ModifySMIMEConfigRequest";
-  public static final String E_MODIFY_SMIME_CONFIG_RESPONSE = "ModifySMIMEConfigResponse";
 
   // Auto Provision
   public static final String E_AUTO_PROV_ACCOUNT_REQUEST = "AutoProvAccountRequest";
@@ -782,15 +761,6 @@ public final class AdminConstants {
   public static final QName RENAME_DISTRIBUTION_LIST_RESPONSE =
       QName.get(E_RENAME_DISTRIBUTION_LIST_RESPONSE, NAMESPACE);
 
-  public static final QName CREATE_HAB_GROUP_REQUEST =
-      QName.get(E_CREATE_HAB_GROUP_REQUEST, NAMESPACE);
-  public static final QName CREATE_HAB_GROUP_RESPONSE =
-      QName.get(E_CREATE_HAB_GROUP_RESPONSE, NAMESPACE);
-  public static final QName MODIFY_HAB_GROUP_REQUEST =
-      QName.get(E_MODIFY_HAB_GROUP_REQUEST, NAMESPACE);
-  public static final QName MODIFY_HAB_GROUP_RESPONSE =
-      QName.get(E_MODIFY_HAB_GROUP_RESPONSE, NAMESPACE);
-
   public static final QName GET_VERSION_INFO_REQUEST =
       QName.get(E_GET_VERSION_INFO_REQUEST, NAMESPACE);
   public static final QName GET_VERSION_INFO_RESPONSE =
@@ -1063,24 +1033,6 @@ public final class AdminConstants {
   public static final QName QUERY_WAIT_SET_RESPONSE =
       QName.get(E_QUERY_WAIT_SET_RESPONSE, NAMESPACE);
 
-  // XMPPComponent
-  public static final QName CREATE_XMPPCOMPONENT_REQUEST =
-      QName.get(E_CREATE_XMPPCOMPONENT_REQUEST, NAMESPACE);
-  public static final QName CREATE_XMPPCOMPONENT_RESPONSE =
-      QName.get(E_CREATE_XMPPCOMPONENT_RESPONSE, NAMESPACE);
-  public static final QName GET_XMPPCOMPONENT_REQUEST =
-      QName.get(E_GET_XMPPCOMPONENT_REQUEST, NAMESPACE);
-  public static final QName GET_XMPPCOMPONENT_RESPONSE =
-      QName.get(E_GET_XMPPCOMPONENT_RESPONSE, NAMESPACE);
-  public static final QName GET_ALL_XMPPCOMPONENTS_REQUEST =
-      QName.get(E_GET_ALL_XMPPCOMPONENTS_REQUEST, NAMESPACE);
-  public static final QName GET_ALL_XMPPCOMPONENTS_RESPONSE =
-      QName.get(E_GET_ALL_XMPPCOMPONENTS_RESPONSE, NAMESPACE);
-  public static final QName DELETE_XMPPCOMPONENT_REQUEST =
-      QName.get(E_DELETE_XMPPCOMPONENT_REQUEST, NAMESPACE);
-  public static final QName DELETE_XMPPCOMPONENT_RESPONSE =
-      QName.get(E_DELETE_XMPPCOMPONENT_RESPONSE, NAMESPACE);
-
   // rights
   public static final QName GET_RIGHT_REQUEST = QName.get(E_GET_RIGHT_REQUEST, NAMESPACE);
   public static final QName GET_RIGHT_RESPONSE = QName.get(E_GET_RIGHT_RESPONSE, NAMESPACE);
@@ -1173,15 +1125,6 @@ public final class AdminConstants {
   public static final QName REFRESH_REGISTERED_AUTHTOKENS_RESPONSE =
       QName.get(E_REFRESH_REGISTERED_AUTHTOKENS_RESPONSE, NAMESPACE);
 
-  public static final QName GET_SMIME_CONFIG_REQUEST =
-      QName.get(E_GET_SMIME_CONFIG_REQUEST, NAMESPACE);
-  public static final QName GET_SMIME_CONFIG_RESPONSE =
-      QName.get(E_GET_SMIME_CONFIG_RESPONSE, NAMESPACE);
-  public static final QName MODIFY_SMIME_CONFIG_REQUEST =
-      QName.get(E_MODIFY_SMIME_CONFIG_REQUEST, NAMESPACE);
-  public static final QName MODIFY_SMIME_CONFIG_RESPONSE =
-      QName.get(E_MODIFY_SMIME_CONFIG_RESPONSE, NAMESPACE);
-
   // Auto provision
   public static final QName AUTO_PROV_ACCOUNT_REQUEST =
       QName.get(E_AUTO_PROV_ACCOUNT_REQUEST, NAMESPACE);
@@ -1246,15 +1189,6 @@ public final class AdminConstants {
   public static final QName CONTACT_BACKUP_REQUEST = QName.get(E_CONTACT_BACKUP_REQUEST, NAMESPACE);
   public static final QName CONTACT_BACKUP_RESPONSE =
       QName.get(E_CONTACT_BACKUP_RESPONSE, NAMESPACE);
-
-  // HAB
-  public static final String E_HAB_ORG_UNIT_REQUEST = "HABOrgUnitRequest";
-  public static final String E_HAB_ORG_UNIT_RESPONSE = "HABOrgUnitResponse";
-  public static final QName HAB_ORG_UNIT_REQUEST = QName.get(E_HAB_ORG_UNIT_REQUEST, NAMESPACE);
-  public static final QName HAB_ORG_UNIT_RESPONSE = QName.get(E_HAB_ORG_UNIT_RESPONSE, NAMESPACE);
-  public static final String E_HAB_ORG_UNIT_NAME = "habOrgUnitName";
-  public static final String E_HAB_PARENT_GROUP = "parentHABGroup";
-  public static final String E_MEMBER = "member";
 
   // AddressList
   public static final String E_GET_ALL_ADDRESS_LISTS_REQUEST = "GetAllAddressListsRequest";
@@ -1332,7 +1266,6 @@ public final class AdminConstants {
   public static final String E_QUEUE = "queue";
   public static final String E_ACTION = "action";
   public static final String E_SERVER = "server";
-  public static final String E_XMPP_COMPONENT = "xmppcomponent";
   public static final String E_STATUS = "status";
   public static final String E_END_TIME = "endTime";
   public static final String E_START_TIME = "startTime";
@@ -1368,15 +1301,6 @@ public final class AdminConstants {
   public static final String E_KEY = "key";
   public static final String E_PRINCIPAL = "principal";
   public static final String E_TOKEN = "token";
-
-  // HAB
-  public static final String E_HAB_GROUP_OPERATION = "habGroupOperation";
-
-  public static final String A_HAB_DISPLAY_NAME = "habDisplayName";
-  public static final String A_HAB_ORG_UNIT = "habOrgUnit";
-  public static final String A_HAB_GROUP_ID = "habGroupId";
-  public static final String A_CURRENT_PARENT_HAB_GROUP_ID = "currentParentHabGroupId";
-  public static final String A_TARGET_PARENT_HAB_GROUP_ID = "targetParentHabGroupId";
 
   public static final String A_ACCOUNT = "account";
   public static final String A_CALENDAR_RESOURCE = "calresource";
@@ -1713,7 +1637,6 @@ public final class AdminConstants {
   public static final String A_CHAIN_TYPE = "chainType";
   public static final String DEFAULT_CHAIN = "long";
 
-  // HAB
   public static final String A_NEW_NAME = "newName";
   public static final String A_FORCE_DELETE = "forceDelete";
   public static final String E_MEMBERS = "members";

@@ -170,7 +170,6 @@ public class AdminRights {
     public static AdminRight R_deleteDomain;
     public static AdminRight R_deleteGroup;
     public static AdminRight R_deleteServer;
-    public static AdminRight R_deleteXMPPComponent;
     public static AdminRight R_deleteZimlet;
     public static AdminRight R_deployZimlet;
     public static AdminRight R_domainAdminAccountRights;
@@ -229,7 +228,6 @@ public class AdminRights {
     public static AdminRight R_getServerStats;
     public static AdminRight R_getServiceStatus;
     public static AdminRight R_getSessions;
-    public static AdminRight R_getXMPPComponent;
     public static AdminRight R_getZimlet;
     public static AdminRight R_installCertificate;
     public static AdminRight R_installZCSLicense;
@@ -241,7 +239,6 @@ public class AdminRights {
     public static AdminRight R_listDomain;
     public static AdminRight R_listGroup;
     public static AdminRight R_listServer;
-    public static AdminRight R_listXMPPComponent;
     public static AdminRight R_listZimlet;
     public static AdminRight R_mailQueueRights;
     public static AdminRight R_manageAccountArchives;
@@ -261,7 +258,6 @@ public class AdminRights {
     public static AdminRight R_modifyGlobalConfig;
     public static AdminRight R_modifyGroup;
     public static AdminRight R_modifyServer;
-    public static AdminRight R_modifyXMPPComponent;
     public static AdminRight R_modifyZimlet;
     public static AdminRight R_moveAccountMailbox;
     public static AdminRight R_moveBlobs;
@@ -596,7 +592,6 @@ public class AdminRights {
         R_deleteDomain                         = rm.getAdminRight(Right.RT_deleteDomain);
         R_deleteGroup                          = rm.getAdminRight(Right.RT_deleteGroup);
         R_deleteServer                         = rm.getAdminRight(Right.RT_deleteServer);
-        R_deleteXMPPComponent                  = rm.getAdminRight(Right.RT_deleteXMPPComponent);
         R_deleteZimlet                         = rm.getAdminRight(Right.RT_deleteZimlet);
         R_deployZimlet                         = rm.getAdminRight(Right.RT_deployZimlet);
         R_domainAdminAccountRights             = rm.getAdminRight(Right.RT_domainAdminAccountRights);
@@ -655,7 +650,6 @@ public class AdminRights {
         R_getServerStats                       = rm.getAdminRight(Right.RT_getServerStats);
         R_getServiceStatus                     = rm.getAdminRight(Right.RT_getServiceStatus);
         R_getSessions                          = rm.getAdminRight(Right.RT_getSessions);
-        R_getXMPPComponent                     = rm.getAdminRight(Right.RT_getXMPPComponent);
         R_getZimlet                            = rm.getAdminRight(Right.RT_getZimlet);
         R_installCertificate                   = rm.getAdminRight(Right.RT_installCertificate);
         R_installZCSLicense                    = rm.getAdminRight(Right.RT_installZCSLicense);
@@ -667,7 +661,6 @@ public class AdminRights {
         R_listDomain                           = rm.getAdminRight(Right.RT_listDomain);
         R_listGroup                            = rm.getAdminRight(Right.RT_listGroup);
         R_listServer                           = rm.getAdminRight(Right.RT_listServer);
-        R_listXMPPComponent                    = rm.getAdminRight(Right.RT_listXMPPComponent);
         R_listZimlet                           = rm.getAdminRight(Right.RT_listZimlet);
         R_mailQueueRights                      = rm.getAdminRight(Right.RT_mailQueueRights);
         R_manageAccountArchives                = rm.getAdminRight(Right.RT_manageAccountArchives);
@@ -687,7 +680,6 @@ public class AdminRights {
         R_modifyGlobalConfig                   = rm.getAdminRight(Right.RT_modifyGlobalConfig);
         R_modifyGroup                          = rm.getAdminRight(Right.RT_modifyGroup);
         R_modifyServer                         = rm.getAdminRight(Right.RT_modifyServer);
-        R_modifyXMPPComponent                  = rm.getAdminRight(Right.RT_modifyXMPPComponent);
         R_modifyZimlet                         = rm.getAdminRight(Right.RT_modifyZimlet);
         R_moveAccountMailbox                   = rm.getAdminRight(Right.RT_moveAccountMailbox);
         R_moveBlobs                            = rm.getAdminRight(Right.RT_moveBlobs);

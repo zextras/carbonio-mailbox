@@ -38,8 +38,6 @@ import com.zimbra.cs.account.Signature;
 import com.zimbra.cs.account.Signature.SignatureContent;
 import com.zimbra.cs.account.accesscontrol.GranteeType;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE;
-import com.zimbra.soap.account.type.Attr;
-import com.zimbra.soap.account.type.HABGroup;
 
 public class ToXML {
 
@@ -307,32 +305,4 @@ public class ToXML {
         return eACE;
     }
     
-    /**
-     * 
-     * @param parent parent element of XML response
-     * @param grp the group to encode
-     * @param parentId id of the parent group
-     */
-    public static void encodeHabGroup(Element parent, HABGroup grp, String parentId) {
-        Element habGroup = parent.addNonUniqueElement(AccountConstants.E_HAB_GROUP);
-        habGroup.addAttribute(AccountConstants.A_NAME, grp.getName());
-        for (Attr attr : grp.getAttrs()) {
-            if (!skipAttrs.contains(attr.getKey())) {
-                ToXML.encodeAttr(habGroup, attr.getKey(), attr.getValue());
-            }
-        }
-        if (parentId != null) {
-            habGroup.addAttribute(AccountConstants.A_PARENT_HAB_GROUP_ID, parentId);
-        }
-
-        habGroup.addAttribute(AdminConstants.A_ID, grp.getId());
-        habGroup.addAttribute(AccountConstants.A_HAB_SENIORITY_INDEX, grp.getSeniorityIndex());
-        for (HABGroup habGrp : grp.getChildGroups()) {
-            if (habGrp.getId() != null) {
-                encodeHabGroup(habGroup, habGrp, grp.getId());
-            }
-        }
-
-    }
-
 }

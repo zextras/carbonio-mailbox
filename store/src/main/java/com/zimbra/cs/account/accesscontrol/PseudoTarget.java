@@ -19,7 +19,6 @@ import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Provisioning.GroupMembership;
 import com.zimbra.cs.account.Server;
-import com.zimbra.cs.account.XMPPComponent;
 import com.zimbra.cs.account.Zimlet;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +52,6 @@ public class PseudoTarget {
         || entry instanceof PseudoCos
         || entry instanceof PseudoDomain
         || entry instanceof PseudoServer
-        || entry instanceof PseudoXMPPComponent
         || entry instanceof PseudoZimlet;
   }
 
@@ -183,13 +181,6 @@ public class PseudoTarget {
         Map<String, Object> defaults,
         Provisioning prov) {
       super(name, id, attrs, defaults, prov);
-    }
-  }
-
-  static class PseudoXMPPComponent extends XMPPComponent {
-    private PseudoXMPPComponent(
-        String name, String id, Map<String, Object> attrs, Provisioning prov) {
-      super(name, id, attrs, prov);
     }
   }
 
@@ -364,9 +355,6 @@ public class PseudoTarget {
       case server:
         targetEntry =
             new PseudoServer("pseudo.pseudo", zimbraId, attrMap, config.getServerDefaults(), prov);
-        break;
-      case xmppcomponent:
-        targetEntry = new PseudoXMPPComponent("pseudo", zimbraId, attrMap, prov);
         break;
       case zimlet:
         targetEntry = new PseudoZimlet("pseudo", zimbraId, attrMap, prov);
