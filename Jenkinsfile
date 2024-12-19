@@ -107,11 +107,12 @@ pipeline {
                 checkout scm
                 withCredentials([gitUsernamePassword(credentialsId: 'jenkins-integration-with-github-account',
                         gitToolName: 'git-tool')]) {
+                    nodeCmd 'npm install'
                     sh 'git config user.name $GITHUB_BOT_PR_CREDS_USR'
                     sh 'git config user.email bot@zextras.com'
                     sh 'git config user.password $GITHUB_BOT_PR_CREDS_PSW'
                     sh 'git checkout -b test/RC'
-                    nodeCmd 'npm install && npm run release -- --ci'
+                    nodeCmd 'npm run release -- --ci'
                 }
             }
         }
