@@ -93,6 +93,11 @@ pipeline {
 
     stages {
         stage('RC') {
+            agent {
+                node {
+                    label 'nodejs-agent-v4'
+                }
+            }
             when {
                 expression {
                     params.RC == true
@@ -106,7 +111,7 @@ pipeline {
                     sh 'git config user.email bot@zextras.com'
                     sh 'git config user.password $GITHUB_BOT_PR_CREDS_PSW'
                     sh 'git checkout -b test/RC'
-                    sh 'release-it --ci'
+                    nodeCmd 'npm install && npm run release -- --ci'
                 }
             }
         }
