@@ -8,6 +8,9 @@ def mvnCmd(String cmd) {
     }
     sh 'mvn -B -s settings-jenkins.xml ' + profile + ' ' + cmd
 }
+def nodeCmd(String cmd) {
+    sh '. load_nvm && nvm install && nvm use && ' + cmd
+}
 def isBuildingTag() {
     if (env.TAG_NAME) {
         return true
@@ -71,13 +74,14 @@ pipeline {
         booleanParam defaultValue: false, description: 'Upload packages in playground repositories.', name: 'PLAYGROUND'
         booleanParam defaultValue: false, description: 'Skip test and sonar analysis.', name: 'SKIP_TEST_WITH_COVERAGE'
         booleanParam defaultValue: false, description: 'Skip sonar analysis.', name: 'SKIP_SONARQUBE'
+        booleanParam defaultValue: false, description: 'Perform RC', name: 'RC'
     }
 
     environment {
-        JAVA_OPTS='-Dfile.encoding=UTF8'
-        LC_ALL='C.UTF-8'
+        JAVA_OPTS = '-Dfile.encoding=UTF8'
+        LC_ALL = 'C.UTF-8'
         MAVEN_OPTS = "-Xmx4g"
-        BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1'
+        BUILD_PROPERTIES_PARAMS = '-Ddebug=0 -Dis-production=1'
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
     }
 
@@ -88,191 +92,222 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
+        stage('RC') {
+            agent {
+                node {
+                    label 'nodejs-agent-v4'
+                }
+            }
+            when {
+                expression {
+                    params.RC == true
+                }
+            }
             steps {
                 checkout scm
-                withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
-                    sh "cp ${SETTINGS_PATH} settings-jenkins.xml"
+                withCredentials([gitUsernamePassword(credentialsId: 'jenkins-integration-with-github-account',
+                        gitToolName: 'git-tool')]) {
+                    nodeCmd 'npm install'
+                    sh 'git config user.name $GITHUB_BOT_PR_CREDS_USR'
+                    sh 'git config user.email bot@zextras.com'
+                    sh 'git config user.password $GITHUB_BOT_PR_CREDS_PSW'
+                    sh 'git checkout -b test/RC'
+                    nodeCmd 'npm run release -- --ci'
                 }
-                script {
-                    env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
-                }
-            }
-        }
-        stage('Build') {
-            steps {
-                mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
-                sh 'mkdir staging'
-                sh 'cp -r store* milter* native client common packages soap jython-libs carbonio-jetty-libs staging'
-                script {
-                    if (BRANCH_NAME == 'devel') {
-                        def packages = getPackages()
-                        def timestamp = new Date().format('yyyyMMddHHmmss')
-                        packages.each { packageName ->
-                            def cleanPackageName = packageName.replaceFirst(/^carbonio-/, '')
-                            sh "sed -i \"s!pkgrel=.*!pkgrel=${timestamp}!\" staging/packages/${cleanPackageName}/PKGBUILD"
-                        }
-                    }
-                }
-                stash includes: 'staging/**', name: 'staging'
-            }
-        }
-        stage('UT & IT') {
-            when {
-                expression {
-                    params.SKIP_TEST_WITH_COVERAGE == false
-                }
-            }
-            steps {
-
-                mvnCmd("$BUILD_PROPERTIES_PARAMS verify -Dexcludegroups=api")
-                junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
-            }
-        }
-        stage('API Testing') {
-            when {
-                expression {
-                    params.SKIP_TEST_WITH_COVERAGE == false
-                }
-            }
-            steps {
-                mvnCmd("$BUILD_PROPERTIES_PARAMS test -Dgroups=api")
             }
         }
 
-        stage('Sonarqube Analysis') {
-            when {
-                allOf {
-                    expression { params.SKIP_SONARQUBE == false }
-                    expression { params.SKIP_TEST_WITH_COVERAGE == false }
-                }
-            }
-            steps {
-                withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                    mvnCmd("$BUILD_PROPERTIES_PARAMS sonar:sonar -Dsonar.exclusions=**/com/zimbra/soap/mail/type/*.java,**/com/zimbra/soap/mail/message/*.java,**/com/zimbra/cs/account/ZAttr*.java,**/com/zimbra/common/account/ZAttr*.java")
-                }
-            }
-        }
-        stage('Publish SNAPSHOT to maven') {
-            when {
-                branch 'devel';
-            }
-            steps {
-                mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true')
-            }
-        }
-        stage('Publish to maven') {
+        stage('Normal pipeline') {
             when {
                 expression {
-                    return isBuildingTag()
+                    params.RC == false
                 }
             }
-            steps {
-                mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true')
-            }
-        }
-        stage('Build deb/rpm') {
             stages {
-                stage('yap') {
-                    parallel {
-                        stage('Ubuntu 20.04') {
-                            agent {
-                                node {
-                                    label 'yap-agent-ubuntu-20.04-v2'
-                                }
-                            }
-                            steps {
-                                buildDebPackages("ubuntu-focal")
-                            }
-                            post {
-                                always {
-                                    archiveArtifacts artifacts: 'artifacts/*focal*.deb', fingerprint: true
+                stage('Checkout') {
+                    steps {
+                        checkout scm
+                        withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
+                            sh "cp ${SETTINGS_PATH} settings-jenkins.xml"
+                        }
+                        script {
+                            env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+                        }
+                    }
+                }
+                stage('Build') {
+                    steps {
+                        mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
+                        sh 'mkdir staging'
+                        sh 'cp -r store* milter* native client common packages soap jython-libs carbonio-jetty-libs staging'
+                        script {
+                            if (BRANCH_NAME == 'devel') {
+                                def packages = getPackages()
+                                def timestamp = new Date().format('yyyyMMddHHmmss')
+                                packages.each { packageName ->
+                                    def cleanPackageName = packageName.replaceFirst(/^carbonio-/, '')
+                                    sh "sed -i \"s!pkgrel=.*!pkgrel=${timestamp}!\" staging/packages/${cleanPackageName}/PKGBUILD"
                                 }
                             }
                         }
-                        stage('Ubuntu 22.04') {
-                            agent {
-                                node {
-                                    label 'yap-agent-ubuntu-22.04-v2'
-                                }
-                            }
-                            steps {
-                                buildDebPackages("ubuntu-jammy")
-                            }
-                            post {
-                                always {
-                                    archiveArtifacts artifacts: 'artifacts/*.deb', fingerprint: true
-                                }
-                            }
+                        stash includes: 'staging/**', name: 'staging'
+                    }
+                }
+                stage('UT & IT') {
+                    when {
+                        expression {
+                            params.SKIP_TEST_WITH_COVERAGE == false
                         }
-                        stage('Ubuntu 24.04') {
-                            agent {
-                                node {
-                                    label 'yap-agent-ubuntu-24.04-v2'
-                                }
-                            }
-                            steps {
-                                buildDebPackages("ubuntu-noble")
-                            }
-                            post {
-                                always {
-                                    archiveArtifacts artifacts: 'artifacts/*.deb', fingerprint: true
-                                }
-                            }
+                    }
+                    steps {
+
+                        mvnCmd("$BUILD_PROPERTIES_PARAMS verify -Dexcludegroups=api")
+                        junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
+                    }
+                }
+                stage('API Testing') {
+                    when {
+                        expression {
+                            params.SKIP_TEST_WITH_COVERAGE == false
                         }
-                        stage('Rocky 8') {
-                            agent {
-                                node {
-                                    label 'yap-agent-rocky-8-v2'
-                                }
-                            }
-                            steps {
-                                buildRpmPackages("rocky-8")
-                            }
-                            post {
-                                always {
-                                    archiveArtifacts artifacts: 'artifacts/x86_64/*.rpm', fingerprint: true
-                                }
-                            }
+                    }
+                    steps {
+                        mvnCmd("$BUILD_PROPERTIES_PARAMS test -Dgroups=api")
+                    }
+                }
+                stage('Sonarqube Analysis') {
+                    when {
+                        allOf {
+                            expression { params.SKIP_SONARQUBE == false }
+                            expression { params.SKIP_TEST_WITH_COVERAGE == false }
                         }
-                        stage('Rocky 9') {
-                            agent {
-                                node {
-                                    label 'yap-agent-rocky-9-v2'
+                    }
+                    steps {
+                        withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
+                            mvnCmd("$BUILD_PROPERTIES_PARAMS sonar:sonar -Dsonar.exclusions=**/com/zimbra/soap/mail/type/*.java,**/com/zimbra/soap/mail/message/*.java,**/com/zimbra/cs/account/ZAttr*.java,**/com/zimbra/common/account/ZAttr*.java")
+                        }
+                    }
+                }
+                stage('Publish SNAPSHOT to maven') {
+                    when {
+                        branch 'devel';
+                    }
+                    steps {
+                        mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true')
+                    }
+                }
+                stage('Publish to maven') {
+                    when {
+                        expression {
+                            return isBuildingTag()
+                        }
+                    }
+                    steps {
+                        mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true')
+                    }
+                }
+                stage('Build deb/rpm') {
+                    stages {
+                        stage('yap') {
+                            parallel {
+                                stage('Ubuntu 20.04') {
+                                    agent {
+                                        node {
+                                            label 'yap-agent-ubuntu-20.04-v2'
+                                        }
+                                    }
+                                    steps {
+                                        buildDebPackages("ubuntu-focal")
+                                    }
+                                    post {
+                                        always {
+                                            archiveArtifacts artifacts: 'artifacts/*focal*.deb', fingerprint: true
+                                        }
+                                    }
                                 }
-                            }
-                            steps {
-                                buildRpmPackages("rocky-9")
-                            }
-                            post {
-                                always {
-                                    archiveArtifacts artifacts: 'artifacts/x86_64/*.rpm', fingerprint: true
+                                stage('Ubuntu 22.04') {
+                                    agent {
+                                        node {
+                                            label 'yap-agent-ubuntu-22.04-v2'
+                                        }
+                                    }
+                                    steps {
+                                        buildDebPackages("ubuntu-jammy")
+                                    }
+                                    post {
+                                        always {
+                                            archiveArtifacts artifacts: 'artifacts/*.deb', fingerprint: true
+                                        }
+                                    }
+                                }
+                                stage('Ubuntu 24.04') {
+                                    agent {
+                                        node {
+                                            label 'yap-agent-ubuntu-24.04-v2'
+                                        }
+                                    }
+                                    steps {
+                                        buildDebPackages("ubuntu-noble")
+                                    }
+                                    post {
+                                        always {
+                                            archiveArtifacts artifacts: 'artifacts/*.deb', fingerprint: true
+                                        }
+                                    }
+                                }
+                                stage('Rocky 8') {
+                                    agent {
+                                        node {
+                                            label 'yap-agent-rocky-8-v2'
+                                        }
+                                    }
+                                    steps {
+                                        buildRpmPackages("rocky-8")
+                                    }
+                                    post {
+                                        always {
+                                            archiveArtifacts artifacts: 'artifacts/x86_64/*.rpm', fingerprint: true
+                                        }
+                                    }
+                                }
+                                stage('Rocky 9') {
+                                    agent {
+                                        node {
+                                            label 'yap-agent-rocky-9-v2'
+                                        }
+                                    }
+                                    steps {
+                                        buildRpmPackages("rocky-9")
+                                    }
+                                    post {
+                                        always {
+                                            archiveArtifacts artifacts: 'artifacts/x86_64/*.rpm', fingerprint: true
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-        }
-        stage('Upload To Devel') {
-            when {
-                anyOf {
-                    branch 'devel'
-                }
-            }
-            steps {
-                unstash 'artifacts-ubuntu-focal'
-                unstash 'artifacts-ubuntu-jammy'
-                unstash 'artifacts-ubuntu-noble'
-                unstash 'artifacts-rocky-8'
-                unstash 'artifacts-rocky-9'
+                stage('Upload To Devel') {
+                    when {
+                        anyOf {
+                            branch 'devel'
+                        }
+                    }
+                    steps {
+                        unstash 'artifacts-ubuntu-focal'
+                        unstash 'artifacts-ubuntu-jammy'
+                        unstash 'artifacts-ubuntu-noble'
+                        unstash 'artifacts-rocky-8'
+                        unstash 'artifacts-rocky-9'
 
-                script {
-                    def server = Artifactory.server 'zextras-artifactory'
-                    def buildInfo
-                    def uploadSpec
-                    buildInfo = Artifactory.newBuildInfo()
-                    uploadSpec ="""{
+                        script {
+                            def server = Artifactory.server 'zextras-artifactory'
+                            def buildInfo
+                            def uploadSpec
+                            buildInfo = Artifactory.newBuildInfo()
+                            uploadSpec = """{
                         "files": [{
                             "pattern": "artifacts/*focal*.deb",
                             "target": "ubuntu-devel/pool/",
@@ -290,31 +325,31 @@ pipeline {
                         },""" + getRpmSpec("centos8-devel", "8") + """,""" + getRpmSpec("rhel9-devel", "9") + """
                         ]
                     }"""
-                    server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
-                }
-            }
-        }
-        stage('Upload To Playground') {
-            when {
-                anyOf {
-                    expression {
-                        params.PLAYGROUND == true
+                            server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
+                        }
                     }
                 }
-            }
-            steps {
-                unstash 'artifacts-ubuntu-focal'
-                unstash 'artifacts-ubuntu-jammy'
-                unstash 'artifacts-ubuntu-noble'
-                unstash 'artifacts-rocky-8'
-                unstash 'artifacts-rocky-9'
+                stage('Upload To Playground') {
+                    when {
+                        anyOf {
+                            expression {
+                                params.PLAYGROUND == true
+                            }
+                        }
+                    }
+                    steps {
+                        unstash 'artifacts-ubuntu-focal'
+                        unstash 'artifacts-ubuntu-jammy'
+                        unstash 'artifacts-ubuntu-noble'
+                        unstash 'artifacts-rocky-8'
+                        unstash 'artifacts-rocky-9'
 
-                script {
-                    def server = Artifactory.server 'zextras-artifactory'
-                    def buildInfo
-                    def uploadSpec
-                    buildInfo = Artifactory.newBuildInfo()
-                    uploadSpec ="""{
+                        script {
+                            def server = Artifactory.server 'zextras-artifactory'
+                            def buildInfo
+                            def uploadSpec
+                            buildInfo = Artifactory.newBuildInfo()
+                            uploadSpec = """{
                         "files": [{
                             "pattern": "artifacts/*focal*.deb",
                             "target": "ubuntu-playground/pool/",
@@ -332,33 +367,33 @@ pipeline {
                         },
                         """ + getRpmSpec("centos8-playground", "8") + """,""" + getRpmSpec("rhel9-playground", "9") + """]
                     }"""
-                    server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
+                            server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
+                        }
+                    }
                 }
-            }
-        }
-        stage('Upload & Promotion Config') {
-            when {
-                expression {
-                    return isBuildingTag()
-                }
-            }
-            steps {
-                unstash 'artifacts-ubuntu-focal'
-                unstash 'artifacts-ubuntu-jammy'
-                unstash 'artifacts-ubuntu-noble'
-                unstash 'artifacts-rocky-8'
-                unstash 'artifacts-rocky-9'
+                stage('Upload & Promotion Config') {
+                    when {
+                        expression {
+                            return isBuildingTag()
+                        }
+                    }
+                    steps {
+                        unstash 'artifacts-ubuntu-focal'
+                        unstash 'artifacts-ubuntu-jammy'
+                        unstash 'artifacts-ubuntu-noble'
+                        unstash 'artifacts-rocky-8'
+                        unstash 'artifacts-rocky-9'
 
-                script {
-                    def server = Artifactory.server 'zextras-artifactory'
-                    def buildInfo
-                    def uploadSpec
-                    def config
+                        script {
+                            def server = Artifactory.server 'zextras-artifactory'
+                            def buildInfo
+                            def uploadSpec
+                            def config
 
-                    //ubuntu
-                    buildInfo = Artifactory.newBuildInfo()
-                    buildInfo.name += '-ubuntu'
-                    uploadSpec = """{
+                            //ubuntu
+                            buildInfo = Artifactory.newBuildInfo()
+                            buildInfo.name += '-ubuntu'
+                            uploadSpec = """{
                         "files": [{
                             "pattern": "artifacts/*focal*.deb",
                             "target": "ubuntu-rc/pool/",
@@ -375,63 +410,65 @@ pipeline {
                             "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
                         }]
                         }"""
-                    server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
-                    config = [
-                            'buildName': buildInfo.name,
-                            'buildNumber': buildInfo.number,
-                            'sourceRepo': 'ubuntu-rc',
-                            'targetRepo': 'ubuntu-release',
-                            'comment': 'Do not change anything! Just press the button',
-                            'status': 'Released',
-                            'includeDependencies': false,
-                            'copy': true,
-                            'failFast': true
-                    ]
-                    Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: "Ubuntu Promotion to Release"
-                    server.publishBuildInfo buildInfo
+                            server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
+                            config = [
+                                    'buildName'          : buildInfo.name,
+                                    'buildNumber'        : buildInfo.number,
+                                    'sourceRepo'         : 'ubuntu-rc',
+                                    'targetRepo'         : 'ubuntu-release',
+                                    'comment'            : 'Do not change anything! Just press the button',
+                                    'status'             : 'Released',
+                                    'includeDependencies': false,
+                                    'copy'               : true,
+                                    'failFast'           : true
+                            ]
+                            Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: "Ubuntu Promotion to Release"
+                            server.publishBuildInfo buildInfo
 
-                    //centos8
-                    buildInfo = Artifactory.newBuildInfo()
-                    buildInfo.name += '-centos8'
-                    uploadSpec = """{
+                            //centos8
+                            buildInfo = Artifactory.newBuildInfo()
+                            buildInfo.name += '-centos8'
+                            uploadSpec = """{
                         "files": [""" + getRpmSpec("centos8-rc", "8") + """]
                     }"""
-                    server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
-                    config = [
-                            'buildName': buildInfo.name,
-                            'buildNumber': buildInfo.number,
-                            'sourceRepo': 'centos8-rc',
-                            'targetRepo': 'centos8-release',
-                            'comment': 'Do not change anything! Just press the button',
-                            'status': 'Released',
-                            'includeDependencies': false,
-                            'copy': true,
-                            'failFast': true
-                    ]
-                    Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: 'Centos8 Promotion to Release'
-                    server.publishBuildInfo buildInfo
+                            server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
+                            config = [
+                                    'buildName'          : buildInfo.name,
+                                    'buildNumber'        : buildInfo.number,
+                                    'sourceRepo'         : 'centos8-rc',
+                                    'targetRepo'         : 'centos8-release',
+                                    'comment'            : 'Do not change anything! Just press the button',
+                                    'status'             : 'Released',
+                                    'includeDependencies': false,
+                                    'copy'               : true,
+                                    'failFast'           : true
+                            ]
+                            Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: 'Centos8 Promotion to Release'
+                            server.publishBuildInfo buildInfo
 
-                    //rhel9
-                    buildInfo = Artifactory.newBuildInfo()
-                    buildInfo.name += '-rhel9'
-                    uploadSpec = """{
+                            //rhel9
+                            buildInfo = Artifactory.newBuildInfo()
+                            buildInfo.name += '-rhel9'
+                            uploadSpec = """{
                         "files": [""" + getRpmSpec("rhel9-rc", "9") + """
                         ]
                     }"""
-                    server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
-                    config = [
-                            'buildName': buildInfo.name,
-                            'buildNumber': buildInfo.number,
-                            'sourceRepo': 'rhel9-rc',
-                            'targetRepo': 'rhel9-release',
-                            'comment': 'Do not change anything! Just press the button',
-                            'status': 'Released',
-                            'includeDependencies': false,
-                            'copy': true,
-                            'failFast': true
-                    ]
-                    Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: 'RHEL9 Promotion to Release'
-                    server.publishBuildInfo buildInfo
+                            server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
+                            config = [
+                                    'buildName'          : buildInfo.name,
+                                    'buildNumber'        : buildInfo.number,
+                                    'sourceRepo'         : 'rhel9-rc',
+                                    'targetRepo'         : 'rhel9-release',
+                                    'comment'            : 'Do not change anything! Just press the button',
+                                    'status'             : 'Released',
+                                    'includeDependencies': false,
+                                    'copy'               : true,
+                                    'failFast'           : true
+                            ]
+                            Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: 'RHEL9 Promotion to Release'
+                            server.publishBuildInfo buildInfo
+                        }
+                    }
                 }
             }
         }
