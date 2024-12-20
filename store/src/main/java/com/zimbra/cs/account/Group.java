@@ -21,14 +21,11 @@ import com.zimbra.cs.account.accesscontrol.GranteeType;
 import com.zimbra.cs.account.accesscontrol.Right;
 import com.zimbra.cs.account.accesscontrol.Rights.User;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE;
-import com.zimbra.soap.account.type.HABGroupMember;
 
 /**
  * @author pshao
  */
 public abstract class Group extends MailTarget implements AliasedEntry {
-
-    private boolean isHABGroup = Boolean.FALSE;
 
     public Group(String name, String id, Map<String, Object> attrs, Provisioning prov) {
         super(name, id, attrs, null, prov);
@@ -43,10 +40,6 @@ public abstract class Group extends MailTarget implements AliasedEntry {
      * Use Provisioning.getGroupMembers() to get cached results.
      */
     public abstract String[] getAllMembers() throws ServiceException;
-
-    public List<HABGroupMember> getHABMembers() throws ServiceException {
-        throw ServiceException.UNSUPPORTED(); 
-    }
 
     /**
      * Ldap implementation of Group will cost a LDAP search.
@@ -94,14 +87,6 @@ public abstract class Group extends MailTarget implements AliasedEntry {
         addrs.add(getName());
         addrs.addAll(getMultiAttrSet(Provisioning.A_zimbraMailAlias));
         return Collections.unmodifiableSet(addrs);
-    }
-
-    public boolean isHABGroup() {
-        return isHABGroup;
-    }
-
-    public void setHABGroup(boolean isHabGroup) {
-        this.isHABGroup = isHabGroup;
     }
 
     public static class GroupOwner {

@@ -433,20 +433,10 @@ public class ProvUtilRegressionTest {
 
   @ParameterizedTest
   @ValueSource(strings = {
-          "createXMPPComponent short example.com server.example.com org.example.MyClass category type",
-          "createXMPPComponent short example.com server.example.com org.example.MyClass category type zimbraId 1 zimbraImapBindPort 1",
-          "createXMPPComponent short example.com server.example.com org.example.MyClass category type zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
-          "deleteXMPPComponent xmppComponentName",
           "getAllConfig",
           "getAllConfig attr attr",
           "getAllConfig attr attr attr",
-          "getAllXMPPComponents",
           "getConfig someName",
-          "getXMPPComponent 8a64a712-cceb-4e03-b5ce-c131481bb455",
-          "getXMPPComponent 8a64a712-cceb-4e03-b5ce-c131481bb455 attr attr attr",
-          "getXMPPComponent someName",
-          "getXMPPComponent someName attr attr",
-          "getXMPPComponent someName attr attr attr",
           "modifyConfig zimbraId 1 zimbraImapBindPort 1",
           "modifyConfig zimbraId 1 zimbraImapBindPort 1 zimbraId 1"
   })
@@ -631,8 +621,6 @@ public class ProvUtilRegressionTest {
           "modifySignature 8a64a712-cceb-4e03-b5ce-c131481bb455 55da11a3-154f-4271-880d-642423563dde",
           "modifySignature 8a64a712-cceb-4e03-b5ce-c131481bb455 signature-name",
           "modifySignature user@example.com signature-name zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
-          "modifyXMPPComponent test.com zimbraId 1 zimbraImapBindPort 1",
-          "modifyXMPPComponent test.com zimbraId 1 zimbraImapBindPort 1 zimbraId 1",
           "reIndexMailbox user@example.com status 8a64a712-cceb-4e03-b5ce-c131481bb455 type 8a64a712-cceb-4e03-b5ce-c131481bb455",
           "reIndexMailbox 8a64a712-cceb-4e03-b5ce-c131481bb455 status 8a64a712-cceb-4e03-b5ce-c131481bb455 type",
           "reIndexMailbox user@example.com status",

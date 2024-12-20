@@ -27,7 +27,6 @@ import com.zimbra.soap.admin.message.CreateDataSourceResponse;
 import com.zimbra.soap.admin.message.CreateDistributionListResponse;
 import com.zimbra.soap.admin.message.CreateDomainResponse;
 import com.zimbra.soap.admin.message.CreateServerResponse;
-import com.zimbra.soap.admin.message.CreateXMPPComponentResponse;
 import com.zimbra.soap.admin.message.GetAccountLoggersResponse;
 import com.zimbra.soap.admin.message.GetAccountMembershipResponse;
 import com.zimbra.soap.admin.message.GetAccountResponse;
@@ -53,7 +52,6 @@ import com.zimbra.soap.admin.message.GetRightResponse;
 import com.zimbra.soap.admin.message.GetRightsDocResponse;
 import com.zimbra.soap.admin.message.GetServerResponse;
 import com.zimbra.soap.admin.message.GetShareInfoResponse;
-import com.zimbra.soap.admin.message.GetXMPPComponentResponse;
 import com.zimbra.soap.admin.message.ModifyAccountResponse;
 import com.zimbra.soap.admin.message.ModifyCalendarResourceResponse;
 import com.zimbra.soap.admin.message.ModifyCosResponse;
@@ -92,7 +90,6 @@ import com.zimbra.soap.admin.type.RightInfo;
 import com.zimbra.soap.admin.type.RightViaInfo;
 import com.zimbra.soap.admin.type.ServerInfo;
 import com.zimbra.soap.admin.type.TargetWithType;
-import com.zimbra.soap.admin.type.XMPPComponentInfo;
 import com.zimbra.soap.type.GranteeType;
 import com.zimbra.soap.type.LoggingLevel;
 import com.zimbra.soap.type.ShareInfo;
@@ -194,10 +191,6 @@ public class TrackCommandRequestHandler extends DocumentHandler {
       var resp = new CreateSignatureResponse(new NameId("signature-name", "signature-id"));
       return jaxbToElement(resp);
     });
-    responseMapping.put("CreateXMPPComponentRequest", () -> {
-      CreateXMPPComponentResponse resp = new CreateXMPPComponentResponse(new XMPPComponentInfo(ACCOUNT_UUID, "name"));
-      return jaxbToElement(resp);
-    });
     responseMapping.put("GetAccountRequest", () -> {
       GetAccountResponse resp = new GetAccountResponse();
       resp.setAccount(createAccountInfo());
@@ -261,10 +254,6 @@ public class TrackCommandRequestHandler extends DocumentHandler {
     responseMapping.put("GetCosRequest", () -> {
       var resp = new GetCosResponse();
       resp.setCos(createCosInfo());
-      return jaxbToElement(resp);
-    });
-    responseMapping.put("GetXMPPComponentRequest", () -> {
-      var resp = new GetXMPPComponentResponse(new XMPPComponentInfo("xmppComponentInfoName", "xmppComponentInfoId"));
       return jaxbToElement(resp);
     });
     responseMapping.put("GetAllEffectiveRightsRequest", () -> {

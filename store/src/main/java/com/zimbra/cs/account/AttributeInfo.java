@@ -454,15 +454,15 @@ public class AttributeInfo {
         }
     }
 
-    AttributeCallback getCallback() {
+    public AttributeCallback getCallback() {
         return mCallback;
     }
 
-    String getName() {
+    public String getName() {
         return mName;
     }
 
-    boolean hasFlag(AttributeFlag flag) {
+    public boolean hasFlag(AttributeFlag flag) {
         if (mFlags == null) {
             return false;
         }
@@ -470,7 +470,7 @@ public class AttributeInfo {
         return result;
     }
 
-    int getId() {
+    public int getId() {
         return mId;
     }
 
@@ -486,7 +486,7 @@ public class AttributeInfo {
         return mGroupId;
     }
 
-    AttributeType getType() {
+    public AttributeType getType() {
         return mType;
     }
 
@@ -501,11 +501,11 @@ public class AttributeInfo {
             return mDescription;
     }
 
-    long getMax() {
+    public long getMax() {
         return mMax;
     }
 
-    long getMin() {
+    public long getMin() {
         return mMin;
     }
 
@@ -517,11 +517,11 @@ public class AttributeInfo {
         return mOptionalInClasses != null && mOptionalInClasses.contains(cls);
     }
 
-    Set<AttributeClass> getRequiredIn() {
+    public Set<AttributeClass> getRequiredIn() {
         return mRequiredInClasses;
     }
 
-    Set<AttributeClass> getOptionalIn() {
+    public Set<AttributeClass> getOptionalIn() {
         return mOptionalInClasses;
     }
 
@@ -549,11 +549,11 @@ public class AttributeInfo {
         return mDefaultCOSValuesUpgrade;
     }
 
-    boolean isImmutable() {
+    public boolean isImmutable() {
         return mImmutable;
     }
 
-    String getValue() {
+    public String getValue() {
         return mValue;
     }
 

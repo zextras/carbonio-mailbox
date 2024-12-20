@@ -14,6 +14,7 @@ import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 import io.vavr.control.Try;
 import org.dom4j.QName;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.List;
@@ -178,10 +179,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.ADMIN_WAIT_SET_REQUEST
           , AdminConstants.ADMIN_DESTROY_WAIT_SET_REQUEST
           , AdminConstants.QUERY_WAIT_SET_REQUEST
-          , AdminConstants.CREATE_XMPPCOMPONENT_REQUEST
-          , AdminConstants.GET_XMPPCOMPONENT_REQUEST
-          , AdminConstants.GET_ALL_XMPPCOMPONENTS_REQUEST
-          , AdminConstants.DELETE_XMPPCOMPONENT_REQUEST
           , AdminConstants.GET_SERVER_STATS_REQUEST
           , AdminConstants.GET_LOGGER_STATS_REQUEST
           , AdminConstants.SYNC_GAL_ACCOUNT_REQUEST
@@ -366,6 +363,6 @@ public class TrackCommandRequestService implements DocumentService {
   }
 
   protected Try<MessageBrokerClient> getMessageBroker() {
-    return Try.failure(new RuntimeException("Message broker is not available"));
+    return Try.of(() -> Mockito.mock(MessageBrokerClient.class));
   }
 }

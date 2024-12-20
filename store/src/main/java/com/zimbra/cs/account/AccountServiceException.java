@@ -45,7 +45,6 @@ public class AccountServiceException extends ServiceException {
   public static final String NO_SUCH_UC_SERVICE = "account.NO_SUCH_UC_SERVICE";
   public static final String NO_SUCH_SHARE_LOCATOR = "account.NO_SUCH_SHARE_LOCATOR";
   public static final String NO_SUCH_ZIMLET = "account.NO_SUCH_ZIMLET";
-  public static final String NO_SUCH_XMPP_COMPONENT = "account.NO_SUCH_XMPP_COMPONENT";
   public static final String NO_SUCH_DISTRIBUTION_LIST = "account.NO_SUCH_DISTRIBUTION_LIST";
   public static final String NO_SUCH_ADDRESS_LIST = "account.NO_SUCH_ADDRESS_LIST";
   public static final String NO_SUCH_GROUP = "account.NO_SUCH_GROUP";
@@ -313,11 +312,6 @@ public class AccountServiceException extends ServiceException {
   public static AccountServiceException NO_SUCH_ZIMLET(String name) {
     return new AccountServiceException(
         "no such zimlet: " + name, NO_SUCH_ZIMLET, SENDERS_FAULT, null);
-  }
-
-  public static AccountServiceException NO_SUCH_XMPP_COMPONENT(String name) {
-    return new AccountServiceException(
-        "no such xmpp component: " + name, NO_SUCH_XMPP_COMPONENT, SENDERS_FAULT, null);
   }
 
   public static AccountServiceException NO_SUCH_DISTRIBUTION_LIST(String name) {
