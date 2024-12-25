@@ -97,7 +97,7 @@ class SignatureHandlerFactoryTest {
     }
 
     @Test
-    void test_getHandler_when_content_is_Multipart_and_last_part_content_is_pkcs7signed_but_smimeHandler_is_null_then_return_empty() throws MessagingException, IOException {
+    void test_getHandler_when_content_is_Multipart_and_last_part_content_is_pkcs7signed_but_smimeHandler_is_null_then_return_smime() throws MessagingException, IOException {
         MimeMessage mimeMessage = Mockito.mock();
         Multipart multipart = Mockito.mock();
         Mockito.when(multipart.getCount()).thenReturn(1);
@@ -105,7 +105,7 @@ class SignatureHandlerFactoryTest {
         BodyPart lastPart = Mockito.mock();
         Mockito.when(multipart.getBodyPart(0)).thenReturn(lastPart);
         Mockito.when(lastPart.getContentType()).thenReturn("application/pkcs7-mime");
-        Assertions.assertTrue(SignatureHandlerFactory.getHandler(mimeMessage).isEmpty());
+        Assertions.assertTrue(SignatureHandlerFactory.getHandler(mimeMessage).isPresent());
     }
 
     @ParameterizedTest

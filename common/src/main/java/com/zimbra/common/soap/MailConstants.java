@@ -1039,6 +1039,7 @@ public final class MailConstants {
   public static final String A_WARMUP = "warmup";
   public static final String A_QUICK = "quick";
   public static final String A_SCORE = "score";
+  public static final String A_CERTIFICATE_PASSWORD = "certificatePassword";
   public static final String E_HIT = "hit";
 
   // search-result paging

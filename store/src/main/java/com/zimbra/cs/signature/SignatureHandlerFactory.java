@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.cs.signature;
 
 import com.zimbra.common.mime.MimeConstants;

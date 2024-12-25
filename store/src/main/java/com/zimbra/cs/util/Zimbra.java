@@ -39,8 +39,6 @@ import com.zimbra.cs.server.ServerManager;
 import com.zimbra.cs.servlet.FirstServlet;
 import com.zimbra.cs.session.SessionCache;
 import com.zimbra.cs.session.WaitSetMgr;
-import com.zimbra.cs.smime.SmimeHandler;
-import com.zimbra.cs.smime.SmimeHandlerImpl;
 import com.zimbra.cs.stats.ZimbraPerf;
 import com.zimbra.cs.store.StoreManager;
 import com.zimbra.cs.util.calltohome.CallToHomeRunner;
@@ -293,7 +291,6 @@ public final class Zimbra {
 
     MailboxManager.getInstance().startup();
 
-    SmimeHandler.registerHandler(new SmimeHandlerImpl());
     app.initialize(sIsMailboxd);
     if (sIsMailboxd) {
       SessionCache.startup();

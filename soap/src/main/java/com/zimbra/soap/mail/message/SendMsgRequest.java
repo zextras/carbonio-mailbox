@@ -104,6 +104,20 @@ public class SendMsgRequest {
     @XmlAttribute(name= SmimeConstants.A_SIGN, required=false)
     protected ZmBoolean sign;
 
+    /**
+     * @zm-api-field-tag encrypt
+     * @zm-api-field-description Encrypt mime
+     */
+    @XmlAttribute(name=SmimeConstants.A_ENCRYPT, required=false)
+    protected ZmBoolean encrypt;
+
+    /**
+     * @zm-api-field-tag certificatePassword
+     * @zm-api-field-description Certificate password can be used for smime or pgp certificate password.
+     */
+    @XmlAttribute(name=MailConstants.A_CERTIFICATE_PASSWORD /* certificatePassword */, required=false)
+    protected String certificatePassword;
+
     public void setNeedCalendarSentbyFixup(Boolean needCalendarSentbyFixup) {
         this.needCalendarSentbyFixup = ZmBoolean.fromBool(needCalendarSentbyFixup);
     }
@@ -138,6 +152,23 @@ public class SendMsgRequest {
         this.sign = ZmBoolean.fromBool(sign, false);
     }
 
+
+    public Boolean getEncrypt() {
+        return ZmBoolean.toBool(encrypt, false);
+    }
+
+    public void setEncrypt(Boolean encrypt) {
+        this.encrypt = ZmBoolean.fromBool(encrypt, false);;
+    }
+
+    public String getCertificatePassword() {
+        return certificatePassword;
+    }
+
+    public void setCertificatePassword(String certificatePassword) {
+        this.certificatePassword = certificatePassword;
+    }
+
     public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
         return helper
             .add("needCalendarSentbyFixup", needCalendarSentbyFixup)
@@ -146,7 +177,9 @@ public class SendMsgRequest {
             .add("fetchSavedMsg", fetchSavedMsg)
             .add("sendUid", sendUid)
             .add("msg", msg)
-            .add("sign", sign);
+            .add("sign", sign)
+            .add("encrypt", encrypt)
+            .add("certificatePassword", certificatePassword);
     }
 
     @Override

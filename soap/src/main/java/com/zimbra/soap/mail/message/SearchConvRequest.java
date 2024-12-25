@@ -42,6 +42,13 @@ public class SearchConvRequest extends MailSearchParams {
     private ZmBoolean nestMessages;
 
     /**
+     * @zm-api-field-tag certificatePassword
+     * @zm-api-field-description Certificate password can be used for smime or pgp certificate password.
+     */
+    @XmlAttribute(name=MailConstants.A_CERTIFICATE_PASSWORD /* certificatePassword */, required=false)
+    private String certificatePassword;
+
+    /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
@@ -57,11 +64,20 @@ public class SearchConvRequest extends MailSearchParams {
     public Boolean getNestMessages() { return ZmBoolean.toBool(nestMessages); }
     public String getConversationId() { return conversationId; }
 
+    public String getCertificatePassword() {
+        return certificatePassword;
+    }
+
+    public void setCertificatePassword(String certificatePassword) {
+        this.certificatePassword = certificatePassword;
+    }
+
     public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
         helper = super.addToStringInfo(helper);
         return helper
             .add("nestMessages", nestMessages)
-            .add("conversationId", conversationId);
+            .add("conversationId", conversationId)
+            .add("certificatePassword", certificatePassword);
     }
 
     @Override

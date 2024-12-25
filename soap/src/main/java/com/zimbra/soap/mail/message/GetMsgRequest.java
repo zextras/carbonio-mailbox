@@ -8,6 +8,7 @@ package com.zimbra.soap.mail.message;
 import com.google.common.base.MoreObjects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -32,6 +33,13 @@ public class GetMsgRequest {
     private final MsgSpec msg;
 
     /**
+     * @zm-api-field-tag certificatePassword
+     * @zm-api-field-description Certificate password can be used for smime or pgp certificate password.
+     */
+    @XmlAttribute(name=MailConstants.A_CERTIFICATE_PASSWORD /* certificatePassword */, required=false)
+    private String certificatePassword;
+
+    /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
@@ -45,9 +53,19 @@ public class GetMsgRequest {
 
     public MsgSpec getMsg() { return msg; }
 
+
+    public String getCertificatePassword() {
+        return certificatePassword;
+    }
+
+    public void setCertificatePassword(String certificatePassword) {
+        this.certificatePassword = certificatePassword;
+    }
+
     public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
         return helper
-            .add("msg", msg);
+            .add("msg", msg)
+            .add("certificatePassword", certificatePassword);
     }
 
     @Override

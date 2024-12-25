@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -23,6 +24,8 @@ import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbMailItem;
+import com.zextras.mailbox.encryption.EncryptionHandler;
+import com.zextras.mailbox.encryption.EncryptionHandlerFactory;
 import com.zimbra.cs.mime.ExpandMimeMessage;
 import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.smime.SmimeHandler;
@@ -35,7 +38,7 @@ public class MessageCache {
 
     private static final Log sLog = LogFactory.getLog(MessageCache.class);
 
-    private static final class CacheNode {
+    static final class CacheNode {
         CacheNode()  { }
         MimeMessage message;
         MimeMessage expanded;
@@ -133,8 +136,6 @@ public class MessageCache {
      * @throws ServiceException when errors occur opening, reading,
      *                          uncompressing, or parsing the message file,
      *                          or when the file does not exist.
-     * @see #getRawContent()
-     * @see #getItemContent()
      * @see com.zimbra.cs.mime.UUEncodeConverter */
     static MimeMessage getMimeMessage(MailItem item, boolean expand) throws ServiceException {
         String digest = item.getDigest();
@@ -279,15 +280,16 @@ public class MessageCache {
         }
     }
 
-    private static MimeMessage doDecryption(MailItem item, CacheNode cnode, int mboxId) {
+    static MimeMessage doDecryption(MailItem item, CacheNode cnode, int mboxId) {
         MimeMessage decryptedMimeMessage = null;
-        if (SmimeHandler.getHandler() != null) {
+        Optional<EncryptionHandler> encryptionHandler = EncryptionHandlerFactory.getHandler(cnode.message);
+        if (encryptionHandler.isPresent()) {
             sLog.debug(
                 "The message %d is encrypted. Forwarding it to SmimeHandler for decryption.",
                 item.getId());
             String decryptionError = null;
             try {
-                decryptedMimeMessage = SmimeHandler.getHandler().decryptMessage(
+                decryptedMimeMessage = encryptionHandler.get().decryptMessage(
                     item.getMailbox(), cnode.message, item.getId());
                 if (decryptedMimeMessage == null) {
                     decryptionError = MimeConstants.ERR_DECRYPTION_FAILED;
