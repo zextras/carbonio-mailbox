@@ -43,11 +43,11 @@ public class SearchConvRequest extends MailSearchParams {
     private ZmBoolean nestMessages;
 
     /**
-     * @zm-api-field-tag secureEmailPassword
-     * @zm-api-field-description secure email password can be used for smime or pgp certificate password.
+     * @zm-api-field-tag encryptionPassword
+     * @zm-api-field-description encryption email password can be used for smime or pgp certificate password.
      */
-    @XmlAttribute(name= SmimeConstants.A_SECURE_EMAIL_PASSWORD /* secureEmailPassword */, required=false)
-    private String secureEmailPassword;
+    @XmlAttribute(name= SmimeConstants.A_ENCRYPTION_PASSWORD /* encryptionPassword */, required=false)
+    private String encryptionPassword;
 
     /**
      * no-argument constructor wanted by JAXB
@@ -65,12 +65,12 @@ public class SearchConvRequest extends MailSearchParams {
     public Boolean getNestMessages() { return ZmBoolean.toBool(nestMessages); }
     public String getConversationId() { return conversationId; }
 
-    public String getSecureEmailPassword() {
-        return secureEmailPassword;
+    public String getEncryptionPassword() {
+        return encryptionPassword;
     }
 
-    public void setSecureEmailPassword(String secureEmailPassword) {
-        this.secureEmailPassword = secureEmailPassword;
+    public void setEncryptionPassword(String encryptionPassword) {
+        this.encryptionPassword = encryptionPassword;
     }
 
     public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
@@ -78,7 +78,7 @@ public class SearchConvRequest extends MailSearchParams {
         return helper
             .add("nestMessages", nestMessages)
             .add("conversationId", conversationId)
-            .add(SmimeConstants.A_SECURE_EMAIL_PASSWORD, secureEmailPassword);
+            .add(SmimeConstants.A_ENCRYPTION_PASSWORD, encryptionPassword);
     }
 
     @Override

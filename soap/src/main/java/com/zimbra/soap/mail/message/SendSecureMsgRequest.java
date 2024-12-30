@@ -38,7 +38,7 @@ public class SendSecureMsgRequest extends SendMsgRequest {
             .add(SmimeConstants.A_ENCRYPT, encrypt)
             .add(SmimeConstants.A_ENCRYPTION_TYPE, encryptionType)
             .add("certId", certId)
-            .add(SmimeConstants.A_SECURE_EMAIL_PASSWORD, secureEmailPassword);
+            .add(SmimeConstants.A_ENCRYPTION_PASSWORD, encryptionPassword);
     }
 
     @Override

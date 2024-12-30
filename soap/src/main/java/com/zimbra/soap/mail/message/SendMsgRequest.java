@@ -116,18 +116,18 @@ public class SendMsgRequest {
     protected ZmBoolean encrypt;
 
     /**
-     * @zm-api-field-tag secureEmailPassword
-     * @zm-api-field-description Secure email password can be used for smime or pgp certificate password.
-     */
-    @XmlAttribute(name=SmimeConstants.A_SECURE_EMAIL_PASSWORD /* secureEmailPassword */, required=false)
-    protected String secureEmailPassword;
-
-    /**
      * @zm-api-field-tag encryptionType
      * @zm-api-field-description smime / pgp.
      */
-    @XmlAttribute(name=SmimeConstants.A_ENCRYPTION_TYPE /* action */, required=false)
+    @XmlAttribute(name=SmimeConstants.A_ENCRYPTION_TYPE /* encryptionType */, required=false)
     protected EncryptionType encryptionType;
+
+    /**
+     * @zm-api-field-tag encryptionPassword
+     * @zm-api-field-description Secure email password can be used for smime or pgp certificate password.
+     */
+    @XmlAttribute(name=SmimeConstants.A_ENCRYPTION_PASSWORD /* encryptionPassword */, required=false)
+    protected String encryptionPassword;
 
     public void setNeedCalendarSentbyFixup(Boolean needCalendarSentbyFixup) {
         this.needCalendarSentbyFixup = ZmBoolean.fromBool(needCalendarSentbyFixup);
@@ -172,20 +172,20 @@ public class SendMsgRequest {
         this.encrypt = ZmBoolean.fromBool(encrypt, false);;
     }
 
-    public String getSecureEmailPassword() {
-        return secureEmailPassword;
-    }
-
-    public void setSecureEmailPassword(String secureEmailPassword) {
-        this.secureEmailPassword = secureEmailPassword;
-    }
-
     public EncryptionType getEncryptionType() {
         return encryptionType;
     }
 
     public void setEncryptionType(EncryptionType encryptionType) {
         this.encryptionType = encryptionType;
+    }
+
+    public String getEncryptionPassword() {
+        return encryptionPassword;
+    }
+
+    public void setEncryptionPassword(String encryptionPassword) {
+        this.encryptionPassword = encryptionPassword;
     }
 
     public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
@@ -198,7 +198,7 @@ public class SendMsgRequest {
             .add("msg", msg)
             .add(SmimeConstants.A_SIGN, sign)
             .add(SmimeConstants.A_ENCRYPT, encrypt)
-            .add(SmimeConstants.A_SECURE_EMAIL_PASSWORD, secureEmailPassword);
+            .add(SmimeConstants.A_ENCRYPTION_PASSWORD, encryptionPassword);
     }
 
     @Override

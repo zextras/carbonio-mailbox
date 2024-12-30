@@ -34,11 +34,11 @@ public class GetMsgRequest {
     private final MsgSpec msg;
 
     /**
-     * @zm-api-field-tag secureEmailPassword
+     * @zm-api-field-tag encryptionPassword
      * @zm-api-field-description Secure email password can be used for smime or pgp certificate password.
      */
-    @XmlAttribute(name= SmimeConstants.A_SECURE_EMAIL_PASSWORD /* secureEmailPassword */, required=false)
-    private String secureEmailPassword;
+    @XmlAttribute(name= SmimeConstants.A_ENCRYPTION_PASSWORD /* encryptionPassword */, required=false)
+    private String encryptionPassword;
 
     /**
      * no-argument constructor wanted by JAXB
@@ -54,18 +54,18 @@ public class GetMsgRequest {
 
     public MsgSpec getMsg() { return msg; }
 
-    public String getSecureEmailPassword() {
-        return secureEmailPassword;
+    public String getEncryptionPassword() {
+        return encryptionPassword;
     }
 
-    public void setSecureEmailPassword(String secureEmailPassword) {
-        this.secureEmailPassword = secureEmailPassword;
+    public void setEncryptionPassword(String encryptionPassword) {
+        this.encryptionPassword = encryptionPassword;
     }
 
     public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
         return helper
             .add("msg", msg)
-            .add(SmimeConstants.A_SECURE_EMAIL_PASSWORD, secureEmailPassword);
+            .add(SmimeConstants.A_ENCRYPTION_PASSWORD, encryptionPassword);
     }
 
     @Override

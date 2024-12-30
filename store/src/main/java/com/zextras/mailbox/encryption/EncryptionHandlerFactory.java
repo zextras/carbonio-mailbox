@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
+// SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
 //
 // SPDX-License-Identifier: GPL-2.0-only
 
