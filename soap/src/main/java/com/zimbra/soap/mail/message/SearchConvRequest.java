@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.common.soap.SmimeConstants;
 import com.zimbra.soap.mail.type.MailSearchParams;
 import com.zimbra.soap.type.ZmBoolean;
 
@@ -45,7 +46,7 @@ public class SearchConvRequest extends MailSearchParams {
      * @zm-api-field-tag certificatePassword
      * @zm-api-field-description Certificate password can be used for smime or pgp certificate password.
      */
-    @XmlAttribute(name=MailConstants.A_CERTIFICATE_PASSWORD /* certificatePassword */, required=false)
+    @XmlAttribute(name= SmimeConstants.A_CERTIFICATE_PASSWORD /* certificatePassword */, required=false)
     private String certificatePassword;
 
     /**

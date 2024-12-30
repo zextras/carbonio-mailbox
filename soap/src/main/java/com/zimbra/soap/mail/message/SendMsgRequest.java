@@ -10,12 +10,16 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SmimeConstants;
 import com.zimbra.soap.mail.type.MsgToSend;
 import com.zimbra.soap.type.ZmBoolean;
+
+import java.util.Arrays;
 
 // TODO: indicate whether to save in SentMail (or some other folder)
 /**
@@ -115,8 +119,15 @@ public class SendMsgRequest {
      * @zm-api-field-tag certificatePassword
      * @zm-api-field-description Certificate password can be used for smime or pgp certificate password.
      */
-    @XmlAttribute(name=MailConstants.A_CERTIFICATE_PASSWORD /* certificatePassword */, required=false)
+    @XmlAttribute(name=SmimeConstants.A_CERTIFICATE_PASSWORD /* certificatePassword */, required=false)
     protected String certificatePassword;
+
+    /**
+     * @zm-api-field-tag encryptionType
+     * @zm-api-field-description smime / pgp.
+     */
+    @XmlAttribute(name=SmimeConstants.A_ENCRYPTION_TYPE /* action */, required=false)
+    private EncryptionType encryptionType;
 
     public void setNeedCalendarSentbyFixup(Boolean needCalendarSentbyFixup) {
         this.needCalendarSentbyFixup = ZmBoolean.fromBool(needCalendarSentbyFixup);
@@ -169,6 +180,14 @@ public class SendMsgRequest {
         this.certificatePassword = certificatePassword;
     }
 
+    public EncryptionType getEncryptionType() {
+        return encryptionType;
+    }
+
+    public void setEncryptionType(EncryptionType encryptionType) {
+        this.encryptionType = encryptionType;
+    }
+
     public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
         return helper
             .add("needCalendarSentbyFixup", needCalendarSentbyFixup)
@@ -185,5 +204,23 @@ public class SendMsgRequest {
     @Override
     public String toString() {
         return addToStringInfo(MoreObjects.toStringHelper(this)).toString();
+    }
+
+    @XmlEnum
+    public enum EncryptionType {
+        smime,
+        pgp;
+
+        public static EncryptionType fromString(String value) throws ServiceException {
+            if (value == null) {
+                return null;
+            }
+            try {
+                return EncryptionType.valueOf(value);
+            } catch (IllegalArgumentException e) {
+                throw ServiceException.INVALID_REQUEST(
+                        "Invalid value: " + value + ", valid values: " + Arrays.asList(EncryptionType.values()), null);
+            }
+        }
     }
 }
