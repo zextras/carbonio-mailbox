@@ -34,10 +34,11 @@ public class SendSecureMsgRequest extends SendMsgRequest {
     public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
         helper = super.addToStringInfo(helper);
         return helper
-            .add("sign", sign)
-            .add("encrypt", encrypt)
+            .add(SmimeConstants.A_SIGN, sign)
+            .add(SmimeConstants.A_ENCRYPT, encrypt)
+            .add(SmimeConstants.A_ENCRYPTION_TYPE, encryptionType)
             .add("certId", certId)
-            .add("certificatePassword", certificatePassword);
+            .add(SmimeConstants.A_SECURE_EMAIL_PASSWORD, secureEmailPassword);
     }
 
     @Override

@@ -116,18 +116,18 @@ public class SendMsgRequest {
     protected ZmBoolean encrypt;
 
     /**
-     * @zm-api-field-tag certificatePassword
-     * @zm-api-field-description Certificate password can be used for smime or pgp certificate password.
+     * @zm-api-field-tag secureEmailPassword
+     * @zm-api-field-description Secure email password can be used for smime or pgp certificate password.
      */
-    @XmlAttribute(name=SmimeConstants.A_CERTIFICATE_PASSWORD /* certificatePassword */, required=false)
-    protected String certificatePassword;
+    @XmlAttribute(name=SmimeConstants.A_SECURE_EMAIL_PASSWORD /* secureEmailPassword */, required=false)
+    protected String secureEmailPassword;
 
     /**
      * @zm-api-field-tag encryptionType
      * @zm-api-field-description smime / pgp.
      */
     @XmlAttribute(name=SmimeConstants.A_ENCRYPTION_TYPE /* action */, required=false)
-    private EncryptionType encryptionType;
+    protected EncryptionType encryptionType;
 
     public void setNeedCalendarSentbyFixup(Boolean needCalendarSentbyFixup) {
         this.needCalendarSentbyFixup = ZmBoolean.fromBool(needCalendarSentbyFixup);
@@ -172,12 +172,12 @@ public class SendMsgRequest {
         this.encrypt = ZmBoolean.fromBool(encrypt, false);;
     }
 
-    public String getCertificatePassword() {
-        return certificatePassword;
+    public String getSecureEmailPassword() {
+        return secureEmailPassword;
     }
 
-    public void setCertificatePassword(String certificatePassword) {
-        this.certificatePassword = certificatePassword;
+    public void setSecureEmailPassword(String secureEmailPassword) {
+        this.secureEmailPassword = secureEmailPassword;
     }
 
     public EncryptionType getEncryptionType() {
@@ -196,9 +196,9 @@ public class SendMsgRequest {
             .add("fetchSavedMsg", fetchSavedMsg)
             .add("sendUid", sendUid)
             .add("msg", msg)
-            .add("sign", sign)
-            .add("encrypt", encrypt)
-            .add("certificatePassword", certificatePassword);
+            .add(SmimeConstants.A_SIGN, sign)
+            .add(SmimeConstants.A_ENCRYPT, encrypt)
+            .add(SmimeConstants.A_SECURE_EMAIL_PASSWORD, secureEmailPassword);
     }
 
     @Override
