@@ -10,12 +10,16 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SmimeConstants;
 import com.zimbra.soap.mail.type.MsgToSend;
 import com.zimbra.soap.type.ZmBoolean;
+
+import java.util.Arrays;
 
 // TODO: indicate whether to save in SentMail (or some other folder)
 /**
@@ -104,6 +108,27 @@ public class SendMsgRequest {
     @XmlAttribute(name= SmimeConstants.A_SIGN, required=false)
     protected ZmBoolean sign;
 
+    /**
+     * @zm-api-field-tag encrypt
+     * @zm-api-field-description Encrypt mime
+     */
+    @XmlAttribute(name=SmimeConstants.A_ENCRYPT, required=false)
+    protected ZmBoolean encrypt;
+
+    /**
+     * @zm-api-field-tag encryptionType
+     * @zm-api-field-description smime / pgp.
+     */
+    @XmlAttribute(name=SmimeConstants.A_ENCRYPTION_TYPE /* encryptionType */, required=false)
+    protected EncryptionType encryptionType;
+
+    /**
+     * @zm-api-field-tag encryptionPassword
+     * @zm-api-field-description Secure email password can be used for smime or pgp certificate password.
+     */
+    @XmlAttribute(name=SmimeConstants.A_ENCRYPTION_PASSWORD /* encryptionPassword */, required=false)
+    protected String encryptionPassword;
+
     public void setNeedCalendarSentbyFixup(Boolean needCalendarSentbyFixup) {
         this.needCalendarSentbyFixup = ZmBoolean.fromBool(needCalendarSentbyFixup);
     }
@@ -138,6 +163,31 @@ public class SendMsgRequest {
         this.sign = ZmBoolean.fromBool(sign, false);
     }
 
+
+    public Boolean getEncrypt() {
+        return ZmBoolean.toBool(encrypt, false);
+    }
+
+    public void setEncrypt(Boolean encrypt) {
+        this.encrypt = ZmBoolean.fromBool(encrypt, false);;
+    }
+
+    public EncryptionType getEncryptionType() {
+        return encryptionType;
+    }
+
+    public void setEncryptionType(EncryptionType encryptionType) {
+        this.encryptionType = encryptionType;
+    }
+
+    public String getEncryptionPassword() {
+        return encryptionPassword;
+    }
+
+    public void setEncryptionPassword(String encryptionPassword) {
+        this.encryptionPassword = encryptionPassword;
+    }
+
     public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
         return helper
             .add("needCalendarSentbyFixup", needCalendarSentbyFixup)
@@ -146,11 +196,31 @@ public class SendMsgRequest {
             .add("fetchSavedMsg", fetchSavedMsg)
             .add("sendUid", sendUid)
             .add("msg", msg)
-            .add("sign", sign);
+            .add(SmimeConstants.A_SIGN, sign)
+            .add(SmimeConstants.A_ENCRYPT, encrypt)
+            .add(SmimeConstants.A_ENCRYPTION_PASSWORD, encryptionPassword);
     }
 
     @Override
     public String toString() {
         return addToStringInfo(MoreObjects.toStringHelper(this)).toString();
+    }
+
+    @XmlEnum
+    public enum EncryptionType {
+        smime,
+        pgp;
+
+        public static EncryptionType fromString(String value) throws ServiceException {
+            if (value == null) {
+                return null;
+            }
+            try {
+                return EncryptionType.valueOf(value);
+            } catch (IllegalArgumentException e) {
+                throw ServiceException.INVALID_REQUEST(
+                        "Invalid value: " + value + ", valid values: " + Arrays.asList(EncryptionType.values()), null);
+            }
+        }
     }
 }

@@ -11,18 +11,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.google.common.base.MoreObjects;
 import com.zimbra.common.soap.SmimeConstants;
-import com.zimbra.soap.type.ZmBoolean;
 
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name=SmimeConstants.E_SEND_SECURE_MSG_REQUEST)
 public class SendSecureMsgRequest extends SendMsgRequest {
-
-    /**
-     * @zm-api-field-tag encrypt
-     * @zm-api-field-description Encrypt mime
-     */
-    @XmlAttribute(name=SmimeConstants.A_ENCRYPT, required=false)
-    private ZmBoolean encrypt;
 
     /**
      * @zm-api-field-tag certId
@@ -30,14 +22,6 @@ public class SendSecureMsgRequest extends SendMsgRequest {
      */
     @XmlAttribute(name=SmimeConstants.A_CERT_ID, required=false)
     private String certId;
-
-    public Boolean getEncrypt() {
-        return ZmBoolean.toBool(encrypt, false);
-    }
-
-    public void setEncrypt(Boolean encrypt) {
-        this.encrypt = ZmBoolean.fromBool(encrypt, false);
-    }
 
     public String getCertId() {
         return certId;
@@ -50,9 +34,11 @@ public class SendSecureMsgRequest extends SendMsgRequest {
     public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
         helper = super.addToStringInfo(helper);
         return helper
-            .add("sign", sign)
-            .add("encrypt", encrypt)
-            .add("certId", certId);
+            .add(SmimeConstants.A_SIGN, sign)
+            .add(SmimeConstants.A_ENCRYPT, encrypt)
+            .add(SmimeConstants.A_ENCRYPTION_TYPE, encryptionType)
+            .add("certId", certId)
+            .add(SmimeConstants.A_ENCRYPTION_PASSWORD, encryptionPassword);
     }
 
     @Override

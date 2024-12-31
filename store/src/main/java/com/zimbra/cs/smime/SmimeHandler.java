@@ -7,16 +7,15 @@ import java.util.List;
 
 import javax.mail.internet.MimeMessage;
 
-import com.zimbra.common.service.ServiceException;
+import com.zextras.mailbox.encryption.smime.SmimeHandlerImpl;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.mailbox.Mailbox;
+import com.zextras.mailbox.encryption.EncryptionHandler;
 import com.zimbra.cs.mailbox.Message;
-import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.signature.SignatureHandler;
 
-public abstract class SmimeHandler implements SignatureHandler {
+public abstract class SmimeHandler implements SignatureHandler, EncryptionHandler {
 
     private static SmimeHandler instance = null;
 
@@ -25,18 +24,25 @@ public abstract class SmimeHandler implements SignatureHandler {
     }
 
     public static SmimeHandler getHandler() {
+
+        if (instance != null) {
+            return instance;
+        }
+
+        synchronized (SmimeHandler.class) {
+            if (instance == null) {
+                instance = new SmimeHandlerImpl();
+            }
+        }
+
         return instance;
     }
-
-    public abstract MimeMessage decryptMessage(Mailbox mailbox, MimeMessage mime, int itemId) throws ServiceException;
 
     public abstract void updateCryptoFlags(Message msg, Element m,
         MimeMessage originalMimeMessage, MimeMessage decryptedMimeMessage);
 
     public abstract MimeMessage decodePKCS7Message(Account account, MimeMessage pkcs7MimeMessage);
 
-    public abstract void addPKCS7SignedMessageSignatureDetails(Account account, Element m,
-        MimeMessage mm, SoapProtocol mResponseProtocol);
 
     public abstract void encodeCertificate(Account account, Element elem, String certData,
             SoapProtocol mResponseProtocol, List<String> emailAddresses);

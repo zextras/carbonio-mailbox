@@ -27,7 +27,8 @@ public class SmimeConstants {
     public static final String A_IS_ENCRYPTED = "isEncrypted";
     public static final String A_ENCRYPT = "encrypt";
     public static final String A_CERT_ID = "certId";
-    public static final String A_CERTIFICATE_PASSWORD = "password";
+    public static final String A_ENCRYPTION_TYPE = "encryptionType";
+    public static final String A_ENCRYPTION_PASSWORD = "encryptionPassword";
     public static final String A_REPLACE_ID = "replaceId";
     public static final String A_PUB_CERT_ID = "pubCertId";
     public static final String A_PVT_KEY_ID = "pvtKeyId";

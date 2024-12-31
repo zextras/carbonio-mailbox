@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
 package com.zimbra.cs.signature;
 
 import com.zimbra.common.soap.Element;
@@ -11,7 +15,9 @@ import javax.mail.internet.MimeMessage;
 public interface SignatureHandler {
     boolean verifyMessageSignature(Message msg, Element m, MimeMessage mm, OperationContext octxt);
 
-    default boolean verifyMessageSignature(Element m, MimeMessage mm) {
-        return verifyMessageSignature(null, m, mm, null);
+    default void verifyMessageSignature(Element m, MimeMessage mm) {
+        verifyMessageSignature(null, m, mm, null);
     }
+
+    boolean signatureEnabled();
 }

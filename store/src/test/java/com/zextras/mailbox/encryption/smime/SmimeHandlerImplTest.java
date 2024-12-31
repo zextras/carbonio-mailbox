@@ -1,4 +1,4 @@
-package com.zimbra.cs.smime;
+package com.zextras.mailbox.encryption.smime;
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.localconfig.LocalConfig;

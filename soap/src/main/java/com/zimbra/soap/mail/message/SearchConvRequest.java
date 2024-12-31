@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.common.soap.SmimeConstants;
 import com.zimbra.soap.mail.type.MailSearchParams;
 import com.zimbra.soap.type.ZmBoolean;
 
@@ -42,6 +43,13 @@ public class SearchConvRequest extends MailSearchParams {
     private ZmBoolean nestMessages;
 
     /**
+     * @zm-api-field-tag encryptionPassword
+     * @zm-api-field-description encryption email password can be used for smime or pgp certificate password.
+     */
+    @XmlAttribute(name= SmimeConstants.A_ENCRYPTION_PASSWORD /* encryptionPassword */, required=false)
+    private String encryptionPassword;
+
+    /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
@@ -57,11 +65,20 @@ public class SearchConvRequest extends MailSearchParams {
     public Boolean getNestMessages() { return ZmBoolean.toBool(nestMessages); }
     public String getConversationId() { return conversationId; }
 
+    public String getEncryptionPassword() {
+        return encryptionPassword;
+    }
+
+    public void setEncryptionPassword(String encryptionPassword) {
+        this.encryptionPassword = encryptionPassword;
+    }
+
     public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
         helper = super.addToStringInfo(helper);
         return helper
             .add("nestMessages", nestMessages)
-            .add("conversationId", conversationId);
+            .add("conversationId", conversationId)
+            .add(SmimeConstants.A_ENCRYPTION_PASSWORD, encryptionPassword);
     }
 
     @Override

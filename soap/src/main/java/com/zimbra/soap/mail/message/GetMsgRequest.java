@@ -8,10 +8,12 @@ package com.zimbra.soap.mail.message;
 import com.google.common.base.MoreObjects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.zimbra.common.soap.MailConstants;
+import com.zimbra.common.soap.SmimeConstants;
 import com.zimbra.soap.mail.type.MsgSpec;
 import com.zimbra.soap.json.jackson.annotate.ZimbraUniqueElement;
 
@@ -32,6 +34,13 @@ public class GetMsgRequest {
     private final MsgSpec msg;
 
     /**
+     * @zm-api-field-tag encryptionPassword
+     * @zm-api-field-description Secure email password can be used for smime or pgp certificate password.
+     */
+    @XmlAttribute(name= SmimeConstants.A_ENCRYPTION_PASSWORD /* encryptionPassword */, required=false)
+    private String encryptionPassword;
+
+    /**
      * no-argument constructor wanted by JAXB
      */
     @SuppressWarnings("unused")
@@ -45,9 +54,18 @@ public class GetMsgRequest {
 
     public MsgSpec getMsg() { return msg; }
 
+    public String getEncryptionPassword() {
+        return encryptionPassword;
+    }
+
+    public void setEncryptionPassword(String encryptionPassword) {
+        this.encryptionPassword = encryptionPassword;
+    }
+
     public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
         return helper
-            .add("msg", msg);
+            .add("msg", msg)
+            .add(SmimeConstants.A_ENCRYPTION_PASSWORD, encryptionPassword);
     }
 
     @Override
