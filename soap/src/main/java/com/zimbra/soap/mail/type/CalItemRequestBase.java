@@ -67,13 +67,6 @@ public abstract class CalItemRequestBase {
     @XmlAttribute(name=MailConstants.A_CAL_FORCESEND /* forcesend */, required=false)
     private ZmBoolean forceSend;
 
-    /**
-     * @zm-api-field-tag sign
-     * @zm-api-field-description Sign mime
-     */
-    @XmlAttribute(name= SmimeConstants.A_SIGN, required=false)
-    private ZmBoolean sign;
-
     protected CalItemRequestBase() {
     }
 
@@ -94,23 +87,13 @@ public abstract class CalItemRequestBase {
     public Msg getMsg() { return msg; }
     public Boolean getForceSend() { return ZmBoolean.toBool(forceSend); }
 
-    public Boolean getSign() {
-        return ZmBoolean.toBool(sign, false);
-    }
-
-    public void setSign(Boolean sign) {
-        this.sign = ZmBoolean.fromBool(sign, false);
-    }
-
-
     public MoreObjects.ToStringHelper addToStringInfo(MoreObjects.ToStringHelper helper) {
         return helper
             .add("echo", echo)
             .add("maxSize", maxSize)
             .add("wantHtml", wantHtml)
             .add("neuter", neuter)
-            .add("msg", msg)
-            .add("sign", sign);
+            .add("msg", msg);
     }
 
     @Override

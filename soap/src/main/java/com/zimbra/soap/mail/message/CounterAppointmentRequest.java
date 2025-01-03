@@ -69,13 +69,6 @@ public class CounterAppointmentRequest {
     @XmlElement(name=MailConstants.E_MSG /* m */, required=false)
     private Msg msg;
 
-    /**
-     * @zm-api-field-tag sign
-     * @zm-api-field-description Sign mime
-     */
-    @XmlAttribute(name= SmimeConstants.A_SIGN, required=false)
-    private ZmBoolean sign;
-
     public CounterAppointmentRequest() {
     }
 
@@ -102,14 +95,6 @@ public class CounterAppointmentRequest {
     public void setMsg(Msg msg) { this.msg = msg; }
     public Msg getMsg() { return msg; }
 
-    public Boolean getSign() {
-        return ZmBoolean.toBool(sign, false);
-    }
-
-    public void setSign(Boolean sign) {
-        this.sign = ZmBoolean.fromBool(sign, false);
-    }
-
     public MoreObjects.ToStringHelper addToStringInfo(
                 MoreObjects.ToStringHelper helper) {
         return helper
@@ -117,8 +102,7 @@ public class CounterAppointmentRequest {
             .add("id", id)
             .add("componentNum", componentNum)
             .add("modifiedSequence", modifiedSequence)
-            .add("revision", revision)
-            .add("sign", sign);
+            .add("revision", revision);
     }
 
     @Override
