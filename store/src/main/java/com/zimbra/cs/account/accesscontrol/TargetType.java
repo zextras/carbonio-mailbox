@@ -666,4 +666,11 @@ public enum TargetType {
 
     return sb.toString();
   }
+
+  public static TargetType[] valuesWithoutXmppComponent() {
+    TargetType[] values = values();
+    return Arrays.stream(values)
+            .filter(targetType -> !targetType.equals(TargetType.xmppcomponent))
+            .toArray( TargetType[]::new );
+  }
 }

@@ -1259,7 +1259,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
     targetTypes.append("\n");
     StringBuilder ttNeedsTargetIdentity = new StringBuilder();
     StringBuilder ttNoTargetId = new StringBuilder();
-    TargetType[] tts = TargetType.values();
+    TargetType[] tts = TargetType.valuesWithoutXmppComponent();
     for (int i = 0; i < tts.length; i++) {
       if (i > 0) {
         targetTypes.append(", ");
