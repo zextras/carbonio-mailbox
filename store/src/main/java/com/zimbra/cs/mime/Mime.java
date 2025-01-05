@@ -1605,9 +1605,10 @@ public class Mime {
     }
 
     public static boolean isEncrypted(String contentType) {
-        if (contentType.contains(MimeConstants.CT_SMIME_TYPE_ENVELOPED_DATA))
-            return true;
-        else
-            return false;
+        return contentType.contains("application/pkcs7-mime")
+                && contentType.contains("smime-type=enveloped-data")
+                && contentType.contains("name=\"smime.p7m\"")
+                || contentType.contains("multipart/encrypted")
+                && contentType.contains("protocol=\"application/pgp-encrypted\"");
     }
 }
