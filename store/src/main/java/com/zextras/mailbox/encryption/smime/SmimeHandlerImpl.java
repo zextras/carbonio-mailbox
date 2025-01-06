@@ -338,17 +338,14 @@ public class SmimeHandlerImpl extends SmimeHandler {
     String getEmail(X509Certificate certificate) {
         try {
             Collection<List<?>> alternativeNames = certificate.getSubjectAlternativeNames();
-
             if (alternativeNames != null) {
-
                 for (List<?> alternativeNameList : alternativeNames) {
-
-                    if ((Integer) alternativeNameList.get(0) == 1) {
+                    if (alternativeNameList.size() >= 2
+                            && alternativeNameList.get(0) instanceof Integer type
+                            && type == 1) {
                         return alternativeNameList.get(1).toString();
                     }
-
                 }
-
             }
 
             X500Name x500Name = new JcaX509CertificateHolder(certificate).getSubject();
@@ -356,7 +353,7 @@ public class SmimeHandlerImpl extends SmimeHandler {
             return rdNs.length > 0
                     ? rdNs[0].getFirst().getValue().toString()
                     : "";
-        } catch (CertificateParsingException | CertificateEncodingException e) {
+        } catch (Exception e) {
             ZimbraLog.smime.warn("can not get email: " + e.getMessage(), e);
         }
         return "Can not get email from certificate";
