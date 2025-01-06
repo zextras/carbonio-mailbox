@@ -172,7 +172,7 @@ public class SmimeHandlerImpl extends SmimeHandler {
     }
 
     @Override
-    public MimeMessage decryptMessage(Mailbox mailbox, MimeMessage mimeMessage, int itemId) {
+    public MimeMessage decryptMessage(Mailbox mailbox, MimeMessage mimeMessage, int itemId) throws ServiceException {
         return mimeMessage;
     }
 
