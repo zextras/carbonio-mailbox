@@ -16,6 +16,9 @@ import java.util.Optional;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import com.zextras.mailbox.encryption.EncryptionHandler;
+import com.zextras.mailbox.encryption.EncryptionHandlerFactory;
+
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ByteUtil;
@@ -24,8 +27,6 @@ import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbMailItem;
-import com.zextras.mailbox.encryption.EncryptionHandler;
-import com.zextras.mailbox.encryption.EncryptionHandlerFactory;
 import com.zimbra.cs.mime.ExpandMimeMessage;
 import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.smime.SmimeHandler;
@@ -189,7 +190,9 @@ public class MessageCache {
                                     mboxId, item.getDigest());
                                 cnode.smimeAccessInfo.remove(mboxId);
                             }
-                            if (cnode.expanded == null || !cnode.smimeAccessInfo.containsKey(mboxId)) {
+                            if (cnode.expanded == null
+                                    || cnode.message == cnode.expanded
+                                    || !cnode.smimeAccessInfo.containsKey(mboxId)) {
                                 cacheHit = false;
                                 decryptedMimeMessage = doDecryption(item, cnode, mboxId);
                             }

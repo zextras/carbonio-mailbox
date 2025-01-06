@@ -36,7 +36,7 @@ public final class EncryptionHandlerFactory {
             }
 
             if (pgpHandler != null
-                    && contentType.contains("multipart/encrypted;")
+                    && contentType.contains("multipart/encrypted")
                     && contentType.contains("protocol=\"application/pgp-encrypted\"")) {
                 return Optional.of(pgpHandler);
             }
