@@ -17,8 +17,12 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.smime.SmimeHandler;
+import org.bouncycastle.asn1.x500.RDN;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.pkix.util.ErrorBundle;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -27,6 +31,8 @@ import org.bouncycastle.mail.smime.validator.SignedMailValidator;
 import org.bouncycastle.mail.smime.validator.SignedMailValidatorException;
 
 import java.security.NoSuchProviderException;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateParsingException;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -284,7 +290,7 @@ public class SmimeHandlerImpl extends SmimeHandler {
     }
 
     private void setCertDetails(X509Certificate certificate, Element signatureElement) {
-        signatureElement.addAttribute(SignatureConstants.EMAIL, extractCN(certificate.getSubjectX500Principal()));
+        signatureElement.addAttribute(SignatureConstants.EMAIL, getEmail(certificate));
         signatureElement.addAttribute(SignatureConstants.NOT_BEFORE, certificate.getNotBefore().getTime());
         signatureElement.addAttribute(SignatureConstants.NOT_AFTER, certificate.getNotAfter().getTime());
         signatureElement.addAttribute(SignatureConstants.ISSUER, extractCN(certificate.getIssuerX500Principal()));
@@ -327,6 +333,34 @@ public class SmimeHandlerImpl extends SmimeHandler {
         }
 
         return trustStore;
+    }
+
+    String getEmail(X509Certificate certificate) {
+        try {
+            Collection<List<?>> alternativeNames = certificate.getSubjectAlternativeNames();
+
+            if (alternativeNames != null) {
+
+                for (List<?> alternativeNameList : alternativeNames) {
+
+                    if ((Integer) alternativeNameList.get(0) == 1) {
+                        return alternativeNameList.get(1).toString();
+                    }
+
+                }
+
+            }
+
+            X500Name x500Name = new JcaX509CertificateHolder(certificate).getSubject();
+            RDN[] rdNs = x500Name.getRDNs(BCStyle.EmailAddress);
+            return rdNs.length > 0
+                    ? rdNs[0].getFirst().getValue().toString()
+                    : "";
+        } catch (CertificateParsingException | CertificateEncodingException e) {
+            ZimbraLog.smime.warn("can not get email: " + e.getMessage(), e);
+        }
+        return "Can not get email from certificate";
+
     }
 
     String extractCN(X500Principal principal) {
