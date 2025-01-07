@@ -1,5 +1,12 @@
 
 
+## [4.19.4](https://github.com/zextras/carbonio-mailbox/compare/4.19.3...4.19.4) (2025-01-07)
+
+
+### Bug Fixes
+
+* [CF-924] point to web.xml wqhen specifying webappcontext webapp parameter ([#651](https://github.com/zextras/carbonio-mailbox/issues/651)) ([10e40f9](https://github.com/zextras/carbonio-mailbox/commit/10e40f9817519194b7494d9f158e5ce117d601c8))
+
 ## [4.19.3](https://github.com/zextras/carbonio-mailbox/compare/4.19.2...4.19.3) (2024-12-16)
 
 
