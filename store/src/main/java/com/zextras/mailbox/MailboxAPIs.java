@@ -228,12 +228,16 @@ public class MailboxAPIs {
 		servletContextHandler.addServlet(autoDiscoverServlet, "/autodiscover/*");
 		servletContextHandler.addServlet(autoDiscoverServlet, "/Autodiscover/*");
 		servletContextHandler.addServlet(autoDiscoverServlet, "/AutoDiscover/*");
+		//TODO: add jsp servlet: do we still need it?
 	}
 
 	public ServletContextHandler createServletContextHandler() {
 		ServletContextHandler servletContextHandler = new ServletContextHandler();
 		addListeners(servletContextHandler);
 		addFilters(servletContextHandler);
+		addServlets(servletContextHandler);
+		//TODO: add env-entry
+		//TODO: add security-constraint
 		return servletContextHandler;
 	}
 
