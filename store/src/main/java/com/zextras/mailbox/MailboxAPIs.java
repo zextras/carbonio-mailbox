@@ -10,10 +10,12 @@ import com.google.inject.servlet.GuiceFilter;
 import com.zextras.mailbox.servlet.GuiceMailboxServletConfig;
 import com.zimbra.common.filters.Base64Filter;
 import com.zimbra.cs.account.Config;
+import com.zimbra.cs.extension.ExtensionDispatcherServlet;
 import com.zimbra.cs.servlet.ContextPathBasedThreadPoolBalancerFilter;
 import com.zimbra.cs.servlet.CsrfFilter;
 import com.zimbra.cs.servlet.DoSFilter;
 import com.zimbra.cs.servlet.ETagHeaderFilter;
+import com.zimbra.cs.servlet.FirstServlet;
 import com.zimbra.cs.servlet.RequestStringFilter;
 import com.zimbra.cs.servlet.SetHeaderFilter;
 import com.zimbra.cs.servlet.SpnegoFilter;
@@ -21,8 +23,10 @@ import com.zimbra.cs.servlet.ZimbraInvalidLoginFilter;
 import com.zimbra.cs.servlet.ZimbraQoSFilter;
 import java.util.EnumSet;
 import javax.servlet.DispatcherType;
+import javax.servlet.MultipartConfigElement;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 
 public class MailboxAPIs {
 
@@ -77,6 +81,21 @@ public class MailboxAPIs {
 	}
 	private void addListeners(ServletContextHandler servletContextHandler) {
 		servletContextHandler.addEventListener(new GuiceMailboxServletConfig());
+	}
+
+	private void addServlets(ServletContextHandler servletContextHandler) {
+		final var firstServlet = new ServletHolder(FirstServlet.class);
+		firstServlet.setInitOrder(1);
+		servletContextHandler.addServlet(firstServlet, "/*");
+
+		final var extensionDispatcherServlet = new ServletHolder(ExtensionDispatcherServlet.class);
+		extensionDispatcherServlet.setInitOrder(2);
+		extensionDispatcherServlet.setInitParameter("allowed.ports", configuration.getMailPort() + ", " + configuration.getMailSSLPort());
+		extensionDispatcherServlet.setInitParameter("allowed.ports", configuration.getMailPort() + ", " + configuration.getMailSSLPort());
+		// Be careful about long to int conversion, however I just reported the old behavior
+		MultipartConfigElement multipartConfig = new MultipartConfigElement("/opt/zextras/data/tmp", configuration.getFileUploadMaxSize(), configuration.getMailContentMaxSize(), (int) configuration.getFileUploadMaxSize());
+		extensionDispatcherServlet.getRegistration().setMultipartConfig(multipartConfig);
+		servletContextHandler.addServlet(extensionDispatcherServlet, "/*");
 	}
 
 	public ServletContextHandler createServletContextHandler() {
