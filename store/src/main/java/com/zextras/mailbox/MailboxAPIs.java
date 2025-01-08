@@ -43,12 +43,18 @@ import com.zimbra.cs.servlet.ZimbraInvalidLoginFilter;
 import com.zimbra.cs.servlet.ZimbraQoSFilter;
 import com.zimbra.soap.SoapServlet;
 import com.zimbra.soap.WsdlServlet;
+import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import javax.servlet.DispatcherType;
 import javax.servlet.MultipartConfigElement;
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.security.Constraint;
 
 public class MailboxAPIs {
 
@@ -228,16 +234,44 @@ public class MailboxAPIs {
 		servletContextHandler.addServlet(autoDiscoverServlet, "/autodiscover/*");
 		servletContextHandler.addServlet(autoDiscoverServlet, "/Autodiscover/*");
 		servletContextHandler.addServlet(autoDiscoverServlet, "/AutoDiscover/*");
-		//TODO: add jsp servlet: do we still need it?
 	}
 
+	private static ConstraintMapping buildSecurityMapping(String path, Constraint constraint) {
+		// this configures jetty to require HTTPS for all requests
+		ConstraintMapping mapping = new ConstraintMapping();
+		mapping.setPathSpec(path);
+		mapping.setConstraint(constraint);
+		return mapping;
+	}
+
+
+	private void addSecurityConstraints(ServletContextHandler servletContextHandler) {
+		Constraint constraint = new Constraint();
+		constraint.setDataConstraint(Constraint.DC_CONFIDENTIAL);
+		ConstraintSecurityHandler security = new ConstraintSecurityHandler();
+		security.setConstraintMappings(List.of(
+				buildSecurityMapping("/service/user/*", constraint),
+				buildSecurityMapping("/user/*", constraint),
+				buildSecurityMapping("/service/home/*", constraint),
+				buildSecurityMapping("/home/*", constraint),
+				buildSecurityMapping("/dav/*", constraint)
+		));
+		servletContextHandler.setSecurityHandler(security);
+	}
+	/**
+	NOTE: JSP is not available anymore, plus
+	 the old env-entry is used to setup zimbraServicesEnabled
+	 and this is used only in {@link com.zimbra.common.util.WebSplitUtil}
+	 */
 	public ServletContextHandler createServletContextHandler() {
 		ServletContextHandler servletContextHandler = new ServletContextHandler();
 		addListeners(servletContextHandler);
 		addFilters(servletContextHandler);
 		addServlets(servletContextHandler);
-		//TODO: add env-entry
-		//TODO: add security-constraint
+
+		if("https, redirect".equals(configuration.getMailModeAsString())) {
+			addSecurityConstraints(servletContextHandler);
+		}
 		return servletContextHandler;
 	}
 
