@@ -11,6 +11,9 @@ import com.zextras.mailbox.servlet.GuiceMailboxServletConfig;
 import com.zimbra.common.filters.Base64Filter;
 import com.zimbra.cs.account.Config;
 import com.zimbra.cs.extension.ExtensionDispatcherServlet;
+import com.zimbra.cs.service.account.AccountService;
+import com.zimbra.cs.service.admin.AdminService;
+import com.zimbra.cs.service.mail.MailService;
 import com.zimbra.cs.servlet.ContextPathBasedThreadPoolBalancerFilter;
 import com.zimbra.cs.servlet.CsrfFilter;
 import com.zimbra.cs.servlet.DoSFilter;
@@ -21,6 +24,7 @@ import com.zimbra.cs.servlet.SetHeaderFilter;
 import com.zimbra.cs.servlet.SpnegoFilter;
 import com.zimbra.cs.servlet.ZimbraInvalidLoginFilter;
 import com.zimbra.cs.servlet.ZimbraQoSFilter;
+import com.zimbra.soap.SoapServlet;
 import java.util.EnumSet;
 import javax.servlet.DispatcherType;
 import javax.servlet.MultipartConfigElement;
@@ -96,6 +100,21 @@ public class MailboxAPIs {
 		MultipartConfigElement multipartConfig = new MultipartConfigElement("/opt/zextras/data/tmp", configuration.getFileUploadMaxSize(), configuration.getMailContentMaxSize(), (int) configuration.getFileUploadMaxSize());
 		extensionDispatcherServlet.getRegistration().setMultipartConfig(multipartConfig);
 		servletContextHandler.addServlet(extensionDispatcherServlet, "/*");
+
+		final var soapServlet = new ServletHolder(SoapServlet.class);
+		soapServlet.setInitOrder(2);
+		soapServlet.setInitParameter("allowed.ports", configuration.getMailPort() + ", " + configuration.getMailSSLPort() + ", 7070, 7443");
+		soapServlet.setInitParameter("engine.handler.0", AccountService.class.getName());
+		soapServlet.setInitParameter("engine.handler.1", MailService.class.getName());
+		servletContextHandler.addServlet(soapServlet, "/*");
+
+		final var adminServlet = new ServletHolder(SoapServlet.class);
+		soapServlet.setInitOrder(3);
+		soapServlet.setInitParameter("allowed.ports", configuration.getAdminPort() + ", " + configuration.getMtaAuthPort() + ", 7071, 7073");
+		soapServlet.setInitParameter("engine.handler.0", AdminService.class.getName());
+		soapServlet.setInitParameter("engine.handler.1", AccountService.class.getName());
+		soapServlet.setInitParameter("engine.handler.2", AdminService.class.getName());
+		servletContextHandler.addServlet(soapServlet, "/*");
 	}
 
 	public ServletContextHandler createServletContextHandler() {
