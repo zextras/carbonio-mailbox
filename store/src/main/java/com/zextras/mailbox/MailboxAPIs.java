@@ -13,14 +13,18 @@ import com.zimbra.cs.account.Config;
 import com.zimbra.cs.dav.service.DavServlet;
 import com.zimbra.cs.dav.service.DavWellKnownServlet;
 import com.zimbra.cs.extension.ExtensionDispatcherServlet;
+import com.zimbra.cs.service.AutoDiscoverServlet;
 import com.zimbra.cs.service.CertAuthServlet;
 import com.zimbra.cs.service.ContentServlet;
 import com.zimbra.cs.service.ExternalUserProvServlet;
 import com.zimbra.cs.service.FileUploadServlet;
+import com.zimbra.cs.service.PublicICalServlet;
 import com.zimbra.cs.service.SpnegoAuthServlet;
 import com.zimbra.cs.service.UserServlet;
 import com.zimbra.cs.service.account.AccountService;
 import com.zimbra.cs.service.admin.AdminService;
+import com.zimbra.cs.service.admin.CollectConfigFiles;
+import com.zimbra.cs.service.admin.CollectLDAPConfigZimbra;
 import com.zimbra.cs.service.admin.StatsImageServlet;
 import com.zimbra.cs.service.mail.MailService;
 import com.zimbra.cs.service.servlet.preauth.PreAuthServlet;
@@ -32,6 +36,7 @@ import com.zimbra.cs.servlet.DoSFilter;
 import com.zimbra.cs.servlet.ETagHeaderFilter;
 import com.zimbra.cs.servlet.FirstServlet;
 import com.zimbra.cs.servlet.RequestStringFilter;
+import com.zimbra.cs.servlet.RobotsServlet;
 import com.zimbra.cs.servlet.SetHeaderFilter;
 import com.zimbra.cs.servlet.SpnegoFilter;
 import com.zimbra.cs.servlet.ZimbraInvalidLoginFilter;
@@ -112,14 +117,14 @@ public class MailboxAPIs {
 		// Be careful about long to int conversion, however I just reported the old behavior
 		MultipartConfigElement multipartConfig = new MultipartConfigElement("/opt/zextras/data/tmp", configuration.getFileUploadMaxSize(), configuration.getMailContentMaxSize(), (int) configuration.getFileUploadMaxSize());
 		extensionDispatcherServlet.getRegistration().setMultipartConfig(multipartConfig);
-		servletContextHandler.addServlet(extensionDispatcherServlet, "/*");
+		servletContextHandler.addServlet(extensionDispatcherServlet, "/extension/*");
 
 		final var soapServlet = new ServletHolder(SoapServlet.class);
 		soapServlet.setInitOrder(2);
 		soapServlet.setInitParameter("allowed.ports", configuration.getMailPort() + ", " + configuration.getMailSSLPort() + ", 7070, 7443");
 		soapServlet.setInitParameter("engine.handler.0", AccountService.class.getName());
 		soapServlet.setInitParameter("engine.handler.1", MailService.class.getName());
-		servletContextHandler.addServlet(soapServlet, "/*");
+		servletContextHandler.addServlet(soapServlet, "/soap/*");
 
 		final var adminServlet = new ServletHolder(SoapServlet.class);
 		adminServlet.setInitOrder(3);
@@ -127,76 +132,102 @@ public class MailboxAPIs {
 		adminServlet.setInitParameter("engine.handler.0", AdminService.class.getName());
 		adminServlet.setInitParameter("engine.handler.1", AccountService.class.getName());
 		adminServlet.setInitParameter("engine.handler.2", MailService.class.getName());
-		servletContextHandler.addServlet(adminServlet, "/*");
+		servletContextHandler.addServlet(adminServlet, "/admin/soap/*");
 
 		final var wsdlServlet = new ServletHolder(WsdlServlet.class);
 		wsdlServlet.setInitParameter("allowed.ports",  configuration.getMailPort() + ", " + configuration.getMailSSLPort() + ", " +  configuration.getAdminPort() + ", 7070, 7443, 7071");
-		servletContextHandler.addServlet(wsdlServlet, "/*");
+		servletContextHandler.addServlet(wsdlServlet, "/wsdl/*");
 
 		final var contentServlet = new ServletHolder(ContentServlet.class);
 		contentServlet.setInitOrder(5);
 		contentServlet.setInitParameter("allowed.ports",  configuration.getMailPort() + ", " + configuration.getMailSSLPort() + ", " +  configuration.getAdminPort() + ", 7070, 7443, 7071");
 		contentServlet.setInitParameter("errorpage.attachment.blocked",  "/error/attachment_blocked.jsp");
-		servletContextHandler.addServlet(contentServlet, "/*");
+		servletContextHandler.addServlet(contentServlet, "/content/*");
 
 		final var previewServlet = new ServletHolder(PreviewServlet.class);
 		previewServlet.setInitOrder(13);
 		previewServlet.setInitParameter("allowed.ports",  configuration.getMailPort() + ", " + configuration.getMailSSLPort() + ", " +  configuration.getAdminPort() + ", 7070, 7443, 7071");
-		servletContextHandler.addServlet(previewServlet, "/*");
+		servletContextHandler.addServlet(previewServlet, "/preview/*");
+
+		final var pubCalServlet = new ServletHolder(PublicICalServlet.class);
+		servletContextHandler.addServlet(pubCalServlet, "/pubcal/*");
 
 		final var userServlet = new ServletHolder(UserServlet.class);
 		userServlet.setInitOrder(5);
 		userServlet.setInitParameter("allowed.ports",  configuration.getMailPort() + ", " + configuration.getMailSSLPort() + ", " +  configuration.getAdminPort() + ", 7070, 7443, 7071");
 		userServlet.setInitParameter("errorpage.attachment.blocked",  "/error/attachment_blocked.jsp");
-		servletContextHandler.addServlet(userServlet, "/*");
+		servletContextHandler.addServlet(userServlet, "/user/*");
+		servletContextHandler.addServlet(userServlet, "/home/*");
 
 		final var preAuthServlet = new ServletHolder(PreAuthServlet.class);
 		preAuthServlet.setInitOrder(5);
 		preAuthServlet.setInitParameter("allowed.ports",  configuration.getMailPort() + ", " + configuration.getMailSSLPort() + ", " +  configuration.getAdminPort() + ", 7070, 7443, 7071");
-		servletContextHandler.addServlet(preAuthServlet, "/*");
+		servletContextHandler.addServlet(preAuthServlet, "/preauth/*");
+		servletContextHandler.addServlet(preAuthServlet, "/preauth");
 
 		final var externalUserProvServlet = new ServletHolder(ExternalUserProvServlet.class);
 		externalUserProvServlet.setInitOrder(5);
 		externalUserProvServlet.setInitParameter("allowed.ports",  configuration.getMailPort() + ", " + configuration.getMailSSLPort() + ", " +  configuration.getAdminPort() + ", 7070, 7443, 7071");
-		servletContextHandler.addServlet(externalUserProvServlet, "/*");
+		servletContextHandler.addServlet(externalUserProvServlet, "/extuserprov/*");
 
 		if (configuration.getMailSSLClientCertPort() > 0) {
 			final var certAuthServlet = new ServletHolder(CertAuthServlet.class);
 			certAuthServlet.setInitOrder(5);
 			certAuthServlet.setInitParameter("allowed.ports",  configuration.getMailSSLClientCertPortAsString() + ", 9443");
 			certAuthServlet.setInitParameter("errorpage.forbidden",  "/error/403.jsp");
-			servletContextHandler.addServlet(externalUserProvServlet, "/*");
+			servletContextHandler.addServlet(externalUserProvServlet, "/certauth/*");
+			servletContextHandler.addServlet(externalUserProvServlet, "/certauth");
 		}
 
 		final var spnegoAuthServlet = new ServletHolder(SpnegoAuthServlet.class);
 		spnegoAuthServlet.setInitOrder(5);
 		spnegoAuthServlet.setInitParameter("allowed.ports",  configuration.getMailPort() + ", " + configuration.getMailSSLPort() + ", " +  configuration.getAdminPort() + ", 7070, 7443, 7071");
-		servletContextHandler.addServlet(spnegoAuthServlet, "/*");
+		servletContextHandler.addServlet(spnegoAuthServlet, "/spnego/");
+		servletContextHandler.addServlet(spnegoAuthServlet, "/spnego");
 
 		final var fileUploadServlet = new ServletHolder(FileUploadServlet.class);
 		fileUploadServlet.setInitOrder(6);
 		fileUploadServlet.setInitParameter("allowed.ports",  configuration.getMailPort() + ", " + configuration.getMailSSLPort() + ", " +  configuration.getAdminPort() + ", 7070, 7443, 7071");
-		servletContextHandler.addServlet(fileUploadServlet, "/*");
+		servletContextHandler.addServlet(fileUploadServlet, "/upload");
 
 		final var statsImageServlet = new ServletHolder(StatsImageServlet.class);
 		statsImageServlet.setInitOrder(7);
 		statsImageServlet.setInitParameter("allowed.ports",   configuration.getAdminPort() + ", 7071");
-		servletContextHandler.addServlet(statsImageServlet, "/*");
+		servletContextHandler.addServlet(statsImageServlet, "/statsimg/*");
 
 		final var proxyServlet = new ServletHolder(ProxyServlet.class);
 		proxyServlet.setInitOrder(8);
 		proxyServlet.setInitParameter("allowed.ports",  configuration.getMailPort() + ", " + configuration.getMailSSLPort() + ", 7070");
-		servletContextHandler.addServlet(proxyServlet, "/*");
+		servletContextHandler.addServlet(proxyServlet, "/proxy/*");
 
 		final var davServlet = new ServletHolder(DavServlet.class);
 		davServlet.setInitOrder(9);
 		davServlet.setInitParameter("allowed.ports",  configuration.getMailPort() + ", " + configuration.getMailSSLPort() + ", 7070");
-		servletContextHandler.addServlet(davServlet, "/*");
+		servletContextHandler.addServlet(davServlet, "/dav/*");
 
 		final var davWellKnownServlet = new ServletHolder(DavWellKnownServlet.class);
 		davWellKnownServlet.setInitOrder(9);
 		davWellKnownServlet.setInitParameter("allowed.ports",  configuration.getMailPort() + ", " + configuration.getMailSSLPort() + ", 7070");
-		servletContextHandler.addServlet(davWellKnownServlet, "/*");
+		servletContextHandler.addServlet(davWellKnownServlet, "/.well-known/*");
+
+		final var collectLDAPConfigServlet = new ServletHolder(CollectLDAPConfigZimbra.class);
+		collectLDAPConfigServlet.setInitParameter("allowed.ports",  configuration.getAdminPort() + ", 7071");
+		servletContextHandler.addServlet(collectLDAPConfigServlet, "/collectldapconfig/*");
+
+		final var collectConfigFilesServlet = new ServletHolder(CollectConfigFiles.class);
+		collectConfigFilesServlet.setInitParameter("allowed.ports",  configuration.getAdminPort() + ", 7071");
+		servletContextHandler.addServlet(collectConfigFilesServlet, "/collectconfig/*");
+
+		final var robotsServlet = new ServletHolder(RobotsServlet.class);
+		robotsServlet.setInitOrder(11);
+		servletContextHandler.addServlet(robotsServlet, "/robots.txt");
+
+		final var autoDiscoverServlet = new ServletHolder(AutoDiscoverServlet.class);
+		autoDiscoverServlet.setInitOrder(12);
+		autoDiscoverServlet.setInitParameter("allowed.ports",  configuration.getMailPort() + ", " + configuration.getMailSSLPort() + ", " + configuration.getAdminPort() + ", 7070, 7443");
+		servletContextHandler.addServlet(autoDiscoverServlet, "/autodiscover/*");
+		servletContextHandler.addServlet(autoDiscoverServlet, "/Autodiscover/*");
+		servletContextHandler.addServlet(autoDiscoverServlet, "/AutoDiscover/*");
 	}
 
 	public ServletContextHandler createServletContextHandler() {
