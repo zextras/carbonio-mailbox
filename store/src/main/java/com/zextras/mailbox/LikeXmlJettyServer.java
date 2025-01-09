@@ -58,7 +58,7 @@ public class LikeXmlJettyServer {
     private HttpConfiguration httpsConfig;
     private SslContextFactory sslContextFactory;
     private String webDescriptor = "/opt/zextras/conf/web.xml";
-    private String webApp = "/opt/zextras/conf";
+    private String webApp = "/opt/zextras/conf/web.xml";
 
     public Builder(Config config, com.zimbra.cs.account.Server localServer) {
       this.config = config;
@@ -171,6 +171,7 @@ public class LikeXmlJettyServer {
 
       final ContextHandlerCollection contexts = new ContextHandlerCollection();
       WebAppContext webAppContext = new WebAppContext(contexts, webApp, "/service");
+      webAppContext.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
       webAppContext.setDescriptor(webDescriptor);
       webAppContext.setThrowUnavailableOnStartupException(true);
 

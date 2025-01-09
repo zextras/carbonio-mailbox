@@ -265,7 +265,7 @@ public class CollectAllEffectiveRights {
     private void collect() throws ServiceException {
 
         if (mRightBearer instanceof GlobalAdmin) {
-            for (TargetType tt : TargetType.values()) {
+            for (TargetType tt : TargetType.valuesWithoutXmppComponent()) {
                 EffectiveRights er = new EffectiveRights(
                         tt.getCode(), null, null,
                         mRightBearer.getId(), mRightBearer.getName());
@@ -285,7 +285,7 @@ public class CollectAllEffectiveRights {
         }
 
         // we want all target types
-        Set<TargetType> targetTypesToSearch = new HashSet<>(Arrays.asList(TargetType.values()));
+        Set<TargetType> targetTypesToSearch = new HashSet<>(Arrays.asList(TargetType.valuesWithoutXmppComponent()));
 
         // get the set of zimbraId of the grantees to search for
         Set<String> granteeIdsToSearch = mGrantee.getIdAndGroupIds();
@@ -546,7 +546,7 @@ public class CollectAllEffectiveRights {
 
     private void computeRightsInheritedFromGlobalGrant() throws ServiceException {
 
-        for (TargetType tt : TargetType.values()) {
+        for (TargetType tt : TargetType.valuesWithoutXmppComponent()) {
             Entry targetEntry;
             if (tt == TargetType.global) {
                 targetEntry = mProv.getGlobalGrant();
