@@ -29,6 +29,7 @@ import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
@@ -83,19 +84,18 @@ public class LikeXmlJettyServer {
       server.addConnector(createExtensionsHttpsConnector(server));
 
 
-      final Handler webAppHandler = createWebAppHandler();
-       if (localServer.isHttpCompressionEnabled()) {
-         final GzipHandler gzipHandler = new GzipHandler();
-         gzipHandler.setHandler(webAppHandler);
-         gzipHandler.setMinGzipSize(2048);
-         gzipHandler.setCompressionLevel(-1);
-         gzipHandler.setExcludedAgentPatterns(".*MSIE.6\\.0.*");
-         gzipHandler.setIncludedMethods("GET", "POST");
-         server.setHandler(gzipHandler);
-       } else {
-         server.setHandler(webAppHandler);
-       }
-
+      ServletContextHandler webAppHandler = new MailboxAPIs(config).createServletContextHandler();
+      if (localServer.isHttpCompressionEnabled()) {
+        final GzipHandler gzipHandler = new GzipHandler();
+        gzipHandler.setHandler(webAppHandler);
+        gzipHandler.setMinGzipSize(2048);
+        gzipHandler.setCompressionLevel(-1);
+        gzipHandler.setExcludedAgentPatterns(".*MSIE.6\\.0.*");
+        gzipHandler.setIncludedMethods("GET", "POST");
+        server.setHandler(gzipHandler);
+      } else {
+        server.setHandler(webAppHandler);
+      }
       userHttpConnector.open();
       adminHttpsConnector.open();
 
