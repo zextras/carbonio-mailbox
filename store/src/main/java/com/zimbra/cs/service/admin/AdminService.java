@@ -9,6 +9,7 @@ import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
 import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
+import com.zextras.mailbox.messageBroker.consumers.DeletedUserFilesConsumer;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
@@ -21,6 +22,8 @@ import com.zimbra.soap.DocumentService;
 import io.vavr.control.Try;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @zm-service-description The Admin Service includes commands for server, account and mailbox
@@ -50,15 +53,24 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(
         AdminConstants.GET_ALL_ADMIN_ACCOUNTS_REQUEST, new GetAllAdminAccounts());
     dispatcher.registerHandler(AdminConstants.MODIFY_ACCOUNT_REQUEST, new ModifyAccount());
-    dispatcher.registerHandler(
-        AdminConstants.DELETE_ACCOUNT_REQUEST,
-        new DeleteAccount(
-            new DeleteUserUseCase(
+
+    DeleteUserUseCase deleteUserUseCase =
+        new DeleteUserUseCase(
                 Provisioning.getInstance(),
                 MailboxManager.getInstance(),
                 new AclService(MailboxManager.getInstance(), Provisioning.getInstance()),
-                ZimbraLog.security),
-        getMessageBroker()));
+                ZimbraLog.security);
+
+    dispatcher.registerHandler(
+        AdminConstants.DELETE_ACCOUNT_REQUEST,
+        new DeleteAccount(
+            deleteUserUseCase));
+
+    // Start the consumer with retry (not really a handler in a strict sense, but needed
+    // to consume the event related to the user deletion, so I put that here to reuse deleteUserUseCase; don't know if
+    // it is the best place)
+    scheduleRetry(deleteUserUseCase);
+
     dispatcher.registerHandler(AdminConstants.SET_PASSWORD_REQUEST, new SetPassword());
     dispatcher.registerHandler(
         AdminConstants.CHECK_PASSWORD_STRENGTH_REQUEST, new CheckPasswordStrength());
@@ -388,5 +400,25 @@ public class AdminService implements DocumentService {
 
   protected Try<MessageBrokerClient> getMessageBroker() {
       return Try.of(MessageBrokerFactory::getMessageBrokerClientInstance);
+  }
+
+  private void scheduleConsumer(MessageBrokerClient client, DeleteUserUseCase deleteUserUseCase) {
+    if (!client.consume(new DeletedUserFilesConsumer(deleteUserUseCase))) {
+      ZimbraLog.security.warn("Failed to start consumer for DeletedUserFilesConsumer, retrying in 30 seconds");
+      scheduleRetry(deleteUserUseCase);
+    }
+  }
+
+  private void scheduleRetry(DeleteUserUseCase deleteUserUseCase) {
+    Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+      Try<MessageBrokerClient> retryClientTry = getMessageBroker();
+      retryClientTry.onSuccess(client -> {
+        ZimbraLog.security.info("Starting deleted user files consumer");
+        scheduleConsumer(client, deleteUserUseCase);
+      }).onFailure(throwable -> {
+        ZimbraLog.security.warn("Failed to get MessageBrokerClient on retry, retrying in 30 seconds", throwable);
+        scheduleRetry(deleteUserUseCase);
+      });
+    }, 30, TimeUnit.SECONDS);
   }
 }

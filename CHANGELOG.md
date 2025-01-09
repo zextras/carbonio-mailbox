@@ -1,5 +1,33 @@
 
 
+## [4.19.4](https://github.com/zextras/carbonio-mailbox/compare/4.19.3...4.19.4) (2025-01-07)
+
+
+### Bug Fixes
+
+* [CF-924] point to web.xml wqhen specifying webappcontext webapp parameter ([#651](https://github.com/zextras/carbonio-mailbox/issues/651)) ([10e40f9](https://github.com/zextras/carbonio-mailbox/commit/10e40f9817519194b7494d9f158e5ce117d601c8))
+
+## [4.19.3](https://github.com/zextras/carbonio-mailbox/compare/4.19.2...4.19.3) (2024-12-16)
+
+
+### Bug Fixes
+
+* retry consumer init if failed and handle message broker factory exceptions ([#643](https://github.com/zextras/carbonio-mailbox/issues/643)) ([cfff2ec](https://github.com/zextras/carbonio-mailbox/commit/cfff2ec66bbb3dc324a2ec9218eb92cc4b580d55))
+
+## [4.19.2](https://github.com/Zextras/carbonio-mailbox/compare/4.19.1...4.19.2) (2024-12-13)
+
+
+### Bug Fixes
+
+* [CO-1720] delete account from mailbox only after files finished deleting blobs from powerstore ([#637](https://github.com/Zextras/carbonio-mailbox/issues/637)) ([a7e029b](https://github.com/Zextras/carbonio-mailbox/commit/a7e029b827fba5510178be8d74f0195f99505294))
+
+## [4.19.1](https://github.com/zextras/carbonio-mailbox/compare/4.19.0...4.19.1) (2024-12-04)
+
+
+### Bug Fixes
+
+* remove purgeImapDeleted. ([6444022](https://github.com/zextras/carbonio-mailbox/commit/6444022b78636e2d699e163df4d96000a91d5c12))
+
 # [4.19.0](https://github.com/Zextras/carbonio-mailbox/compare/4.18.0...4.19.0) (2024-11-25)
 
 
