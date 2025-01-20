@@ -22,7 +22,6 @@ import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 import io.vavr.control.Try;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
