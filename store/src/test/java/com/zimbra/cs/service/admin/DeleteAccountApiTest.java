@@ -1,7 +1,5 @@
 package com.zimbra.cs.service.admin;
 
-import com.zextras.carbonio.message_broker.MessageBrokerClient;
-import com.zextras.mailbox.client.ServiceInstalledProvider;
 import com.zextras.mailbox.soap.SoapExtension;
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.soap.SoapUtils;
@@ -17,17 +15,15 @@ import com.zimbra.cs.service.mail.MailServiceWithoutTracking;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import com.zimbra.soap.admin.message.GetAccountRequest;
 import com.zimbra.soap.type.AccountSelector;
-import io.vavr.control.Try;
 import org.apache.http.HttpResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.mockito.Mockito;
 
 @Tag("api")
-public class DeleteAccountApiTest extends SoapTestSuite {
+class DeleteAccountApiTest extends SoapTestSuite {
 
 	@RegisterExtension
 	static SoapExtension soapExtension = new SoapExtension.Builder()
