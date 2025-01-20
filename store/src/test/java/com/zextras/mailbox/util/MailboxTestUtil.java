@@ -1,5 +1,6 @@
 package com.zextras.mailbox.util;
 
+import static com.zimbra.cs.account.GuestAccount.GUID_PUBLIC;
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
 import com.unboundid.ldap.listener.InMemoryDirectoryServer;
@@ -217,6 +218,15 @@ public class MailboxTestUtil {
               RightModifier.RM_CAN_DELEGATE,
               null));
       ACLUtil.grantRight(Provisioning.getInstance(), target, aces);
+      return this;
+    }
+
+
+    public AccountAction grantPublicFolderRight( int folderId, String rights) throws ServiceException {
+      mailboxManager
+              .getMailboxByAccount(account)
+              .grantAccess(
+                      null, folderId, GUID_PUBLIC, ACL.GRANTEE_PUBLIC, ACL.stringToRights(rights), null);
       return this;
     }
   }
