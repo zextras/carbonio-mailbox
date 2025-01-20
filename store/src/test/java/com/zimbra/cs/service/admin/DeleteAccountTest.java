@@ -8,6 +8,7 @@ import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.carbonio.message_broker.events.services.mailbox.DeleteUserRequested;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
+import com.zextras.mailbox.client.ServiceInstalledProvider;
 import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
@@ -61,6 +62,20 @@ class DeleteAccountTest {
   private static AccountCreator.Factory accountCreatorFactory;
   private static ClientAndServer consulServer;
 
+  private static class MockFilesInstalledProvider implements ServiceInstalledProvider {
+
+    private final boolean isInstalled;
+
+		private MockFilesInstalledProvider(boolean isInstalled) {
+			this.isInstalled = isInstalled;
+		}
+
+		@Override
+    public boolean isInstalled() {
+      return isInstalled;
+    }
+  }
+
 
   /**
    * Sets up the environment using {@link MailboxTestUtil}. Note: unfortunately it is not possible
@@ -81,7 +96,7 @@ class DeleteAccountTest {
                 provisioning,
                 mailboxManager,
                 new AclService(mailboxManager, provisioning),
-                ZimbraLog.security));
+                ZimbraLog.security), new MockFilesInstalledProvider(false));
     provisioning.createDomain(OTHER_DOMAIN, new HashMap<>());
 
     consulServer = startClientAndServer(8500);
@@ -347,7 +362,7 @@ class DeleteAccountTest {
         context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
         DeleteAccount deleteAccountHandler =
             new DeleteAccount(
-                deleteUserUseCase);
+                deleteUserUseCase, new MockFilesInstalledProvider(false));
         Mockito.when(deleteUserUseCase.delete(toDeleteId)).thenReturn(Try.failure(new RuntimeException("message")));
         DeleteAccountRequest deleteAccountRequest = new DeleteAccountRequest(toDeleteId);
         Element request = JaxbUtil.jaxbToElement(deleteAccountRequest);

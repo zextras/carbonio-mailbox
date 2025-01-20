@@ -1,6 +1,7 @@
 package com.zimbra.cs.service.admin;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.soap.SoapUtils;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -32,12 +33,12 @@ public class DeleteAccountApiTest extends SoapTestSuite {
     void shouldDeleteAccountWithPublicSharedFolder () throws Exception {
        final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
        final Account accountWithPublicSharedFolder = accountCreatorFactory.get().create();
-
        accountActionFactory.forAccount(accountWithPublicSharedFolder).grantPublicFolderRight(Mailbox.ID_FOLDER_CALENDAR, "r");
+
         final HttpResponse response = getSoapClient().newRequest()
                 .setCaller(adminAccount).setSoapBody(new DeleteAccountRequest(accountWithPublicSharedFolder.getId())).execute();
 
-        final String pippo = new String(response.getEntity().getContent().readAllBytes());
+        final String pippo = SoapUtils.getResponse(response);
         System.out.println(pippo);
 
         Assertions.assertEquals(200, response.getStatusLine().getStatusCode());

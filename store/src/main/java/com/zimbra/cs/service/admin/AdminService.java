@@ -8,6 +8,8 @@ package com.zimbra.cs.service.admin;
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
+import com.zextras.mailbox.client.FilesInstalledProvider;
+import com.zextras.mailbox.client.ServiceInstalledProvider;
 import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zextras.mailbox.messageBroker.consumers.DeletedUserFilesConsumer;
 import com.zimbra.common.service.ServiceException;
@@ -20,6 +22,8 @@ import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 import io.vavr.control.Try;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -63,8 +67,7 @@ public class AdminService implements DocumentService {
 
     dispatcher.registerHandler(
         AdminConstants.DELETE_ACCOUNT_REQUEST,
-        new DeleteAccount(
-            deleteUserUseCase));
+        new DeleteAccount(deleteUserUseCase, getFilesInstalledServiceProvider()));
 
     // Start the consumer with retry (not really a handler in a strict sense, but needed
     // to consume the event related to the user deletion, so I put that here to reuse deleteUserUseCase; don't know if
@@ -400,6 +403,10 @@ public class AdminService implements DocumentService {
 
   protected Try<MessageBrokerClient> getMessageBroker() {
       return Try.of(MessageBrokerFactory::getMessageBrokerClientInstance);
+  }
+
+  protected ServiceInstalledProvider getFilesInstalledServiceProvider() {
+    return new FilesInstalledProvider(Paths.get("/etc/carbonio/mailbox/service-discover/token"));
   }
 
   private void scheduleConsumer(MessageBrokerClient client, DeleteUserUseCase deleteUserUseCase) {
