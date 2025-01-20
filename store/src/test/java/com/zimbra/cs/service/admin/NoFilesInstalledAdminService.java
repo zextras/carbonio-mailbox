@@ -10,16 +10,8 @@ import com.zextras.mailbox.client.ServiceInstalledProvider;
 
 public class NoFilesInstalledAdminService extends AdminServiceWithFakeBrokerClient {
 
-	private static class FilesNotInstalledProvider implements ServiceInstalledProvider {
-
-		@Override
-		public boolean isInstalled() {
-			return false;
-		}
-	}
-
 	@Override
 	protected ServiceInstalledProvider getFilesInstalledServiceProvider() {
-		return new FilesNotInstalledProvider();
+		return () -> false;
 	}
 }

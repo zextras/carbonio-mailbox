@@ -62,18 +62,8 @@ class DeleteAccountTest {
   private static AccountCreator.Factory accountCreatorFactory;
   private static ClientAndServer consulServer;
 
-  private static class MockFilesInstalledProvider implements ServiceInstalledProvider {
-
-    private final boolean isInstalled;
-
-		private MockFilesInstalledProvider(boolean isInstalled) {
-			this.isInstalled = isInstalled;
-		}
-
-		@Override
-    public boolean isInstalled() {
-      return isInstalled;
-    }
+  private record MockFilesInstalledProvider(boolean isInstalled) implements
+      ServiceInstalledProvider {
   }
 
 
@@ -360,9 +350,11 @@ class DeleteAccountTest {
                 SoapProtocol.Soap12,
                 SoapProtocol.Soap12);
         context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+        final MockFilesInstalledProvider filesInstalledProvider = new MockFilesInstalledProvider(
+            false);
         DeleteAccount deleteAccountHandler =
             new DeleteAccount(
-                deleteUserUseCase, new MockFilesInstalledProvider(false));
+                deleteUserUseCase, filesInstalledProvider);
         Mockito.when(deleteUserUseCase.delete(toDeleteId)).thenReturn(Try.failure(new RuntimeException("message")));
         DeleteAccountRequest deleteAccountRequest = new DeleteAccountRequest(toDeleteId);
         Element request = JaxbUtil.jaxbToElement(deleteAccountRequest);
