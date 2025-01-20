@@ -79,6 +79,12 @@ public class DeleteAccount extends AdminDocumentHandler {
           "missing required attribute: " + AdminConstants.E_ID, null);
     }
 
+    ZimbraLog.security.info(
+          ZimbraLog.encodeAttrs(
+              new String[] {
+                "cmd", "delete account request", "token", zsc.getAuthToken().toString(), "isadmin", String.valueOf(zsc.getAuthToken().isAdmin())
+              }));
+
     // Confirm that the account exists and that the mailbox is located on the current host
     Account account = prov.get(AccountBy.id, id, zsc.getAuthToken());
     defendAgainstAccountHarvesting(account, AccountBy.id, id, zsc, Admin.R_deleteAccount);
