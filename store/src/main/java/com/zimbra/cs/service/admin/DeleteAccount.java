@@ -11,8 +11,6 @@ package com.zimbra.cs.service.admin;
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.carbonio.message_broker.events.services.mailbox.DeleteUserRequested;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
-import com.zextras.mailbox.client.FilesInstalledProvider;
-import com.zextras.mailbox.client.ServiceDiscoverHttpClient;
 import com.zextras.mailbox.client.ServiceInstalledProvider;
 import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zimbra.common.account.Key.AccountBy;
@@ -27,10 +25,6 @@ import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import com.zimbra.soap.admin.message.DeleteAccountResponse;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
