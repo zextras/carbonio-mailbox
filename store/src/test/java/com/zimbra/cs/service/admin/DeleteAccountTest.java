@@ -4,6 +4,7 @@
 
 package com.zimbra.cs.service.admin;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
@@ -19,7 +20,6 @@ import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
@@ -43,7 +43,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -275,7 +274,7 @@ class DeleteAccountTest {
 
 			final String toDeleteId = toDelete.getId();
 			this.doDeleteAccount(deleteAccount, caller, toDeleteId);
-			Assertions.assertNull(provisioning.getAccountById(toDeleteId));
+			assertNull(provisioning.getAccountById(toDeleteId));
 		}
 	}
 
@@ -328,69 +327,48 @@ class DeleteAccountTest {
 		final String toDeleteId = toDelete.getId();
 
 		final ServiceException serviceException =
-				Assertions.assertThrows(
+				assertThrows(
 						ServiceException.class, () -> this.doDeleteAccount(deleteAccount, caller, toDeleteId));
-		Assertions.assertEquals(ServiceException.PERM_DENIED, serviceException.getCode());
-		Assertions.assertNotNull(provisioning.getAccountById(toDeleteId));
+		assertEquals(ServiceException.PERM_DENIED, serviceException.getCode());
+		assertNotNull(provisioning.getAccountById(toDeleteId));
 	}
 
-	@ParameterizedTest
-	@MethodSource("getHappyPathCases")
-	void shouldDeleteUserThrowsException(Account caller, Account toDelete) throws Exception {
-		try (MockedStatic<Files> mockFileSystem = Mockito.mockStatic(Files.class,
-				Mockito.CALLS_REAL_METHODS)) {
-			mockFileSystem.when(() -> Files.readString(any())).thenReturn("");
-			Mockito.when(mockMessageBrokerClient.publish(any(DeleteUserRequested.class)))
-					.thenReturn(true);
-			DeleteUserUseCase deleteUserUseCase = Mockito.mock(DeleteUserUseCase.class);
 
-			final String toDeleteId = toDelete.getId();
-			Map<String, Object> context = new HashMap<String, Object>();
-			ZimbraSoapContext zsc =
-					new ZimbraSoapContext(
-							AuthProvider.getAuthToken(caller),
-							caller.getId(),
-							SoapProtocol.Soap12,
-							SoapProtocol.Soap12);
-			context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
-			DeleteAccount deleteAccountHandler =
-					new DeleteAccount(
-							deleteUserUseCase, () -> false);
-			Mockito.when(deleteUserUseCase.delete(toDeleteId))
-					.thenReturn(Try.failure(new RuntimeException("message")));
-			DeleteAccountRequest deleteAccountRequest = new DeleteAccountRequest(toDeleteId);
-			Element request = JaxbUtil.jaxbToElement(deleteAccountRequest);
-			final ServiceException serviceException =
-					Assertions.assertThrows(ServiceException.class,
-							() -> deleteAccountHandler.handle(request, context));
-			Assertions.assertEquals("service.FAILURE", serviceException.getCode());
-			Assertions.assertTrue(
-					serviceException.getMessage().startsWith("system failure: Delete account "));
-			Assertions.assertTrue(serviceException.getMessage().endsWith("has an error: message"));
-		}
+	@Test
+	void shouldDeleteUserThrowsException() throws Exception {
+		final Account admin = accountCreatorFactory.get().asGlobalAdmin().create();
+		final Account user = accountCreatorFactory.get().create();
+		DeleteUserUseCase deleteUserUseCase = Mockito.mock(DeleteUserUseCase.class);
+		final String toDeleteId = user.getId();
+		Mockito.when(deleteUserUseCase.delete(toDeleteId))
+				.thenReturn(Try.failure(new RuntimeException("message")));
+		DeleteAccount deleteAccountHandler =
+				new DeleteAccount(
+						deleteUserUseCase, () -> false);
+
+		final ServiceException serviceException =
+				assertThrows(ServiceException.class,
+						() -> this.doDeleteAccount(deleteAccountHandler, admin, toDeleteId));
+
+		assertEquals("service.FAILURE", serviceException.getCode());
+		assertTrue(
+				serviceException.getMessage().startsWith("system failure: Delete account "));
+		assertTrue(serviceException.getMessage().endsWith("has an error: message"));
 	}
 
 	@Test
-	void shouldReturnSoapErrorWhenNotAbleToCheckIfFilesInstalled() throws Exception {
+	void shouldReturnSoapError_WhenNotAbleToCheckIfFilesInstalled() throws Exception {
 		final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
 		final Account userAccount = accountCreatorFactory.get().create();
-
-		final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(), () -> {
+		final ServiceInstalledProvider failedToCheckIfFilesInstalled = () -> {
 			throw new Exception("failed to retrieve if files is installed");
-		});
-		Map<String, Object> context = new HashMap<String, Object>();
-		ZimbraSoapContext zsc =
-				new ZimbraSoapContext(
-						AuthProvider.getAuthToken(adminAccount),
-						adminAccount.getId(),
-						SoapProtocol.Soap12,
-						SoapProtocol.Soap12);
-		context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+		};
+		final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(),
+				failedToCheckIfFilesInstalled);
 
-		final ServiceException serviceException = Assertions.assertThrows(ServiceException.class,
-				() -> deleteAccount.handle(
-						JaxbUtil.jaxbToElement(new DeleteAccountRequest(userAccount.getId())), context));
-		Assertions.assertEquals("system failure: Delete account " + userAccount.getName()
+		final ServiceException serviceException = assertThrows(ServiceException.class,
+				() -> this.doDeleteAccount(deleteAccount, adminAccount, userAccount.getId()));
+		assertEquals("system failure: Delete account " + userAccount.getName()
 						+ " has an error: failed to retrieve if files is installed",
 				serviceException.getMessage());
 	}
