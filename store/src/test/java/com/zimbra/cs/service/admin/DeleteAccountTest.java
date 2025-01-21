@@ -4,6 +4,11 @@
 
 package com.zimbra.cs.service.admin;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
+
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.carbonio.message_broker.events.services.mailbox.DeleteUserRequested;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
@@ -31,7 +36,6 @@ import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import io.vavr.control.Try;
-
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +45,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -48,322 +53,353 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockserver.integration.ClientAndServer;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
-
 class DeleteAccountTest {
 
-  private static final String OTHER_DOMAIN = "other.com";
-  private static Provisioning provisioning;
-  private static DeleteAccount deleteAccount;
-  private static MessageBrokerClient mockMessageBrokerClient;
-  private static AccountCreator.Factory accountCreatorFactory;
-  private static ClientAndServer consulServer;
+	private static final String OTHER_DOMAIN = "other.com";
+	private static Provisioning provisioning;
+	private static MailboxManager mailboxManager;
+	private static MessageBrokerClient mockMessageBrokerClient;
+	private static AccountCreator.Factory accountCreatorFactory;
+	private static ClientAndServer consulServer;
 
-  private record MockFilesInstalledProvider(boolean isInstalled) implements
-      ServiceInstalledProvider {
-  }
+	private record MockFilesInstalledProvider(boolean isInstalled) implements
+			ServiceInstalledProvider {
+
+	}
 
 
-  /**
-   * Sets up the environment using {@link MailboxTestUtil}. Note: unfortunately it is not possible
-   * to start the SoapServlet with {@link AdminService}. The reason is some code calls
-   * System.exit(1) presumably, so the VM exits and maven fails.
-   *
-   */
-  @BeforeAll
-  static void setUp() throws Exception {
-    MailboxTestUtil.setUp();
-    final MailboxManager mailboxManager = MailboxManager.getInstance();
-    provisioning = Provisioning.getInstance();
-    accountCreatorFactory = new AccountCreator.Factory(provisioning);
-    mockMessageBrokerClient = MessageBrokerFactory.getMessageBrokerClientInstance();
-    deleteAccount =
-        new DeleteAccount(
-            new DeleteUserUseCase(
-                provisioning,
-                mailboxManager,
-                new AclService(mailboxManager, provisioning),
-                ZimbraLog.security), new MockFilesInstalledProvider(false));
-    provisioning.createDomain(OTHER_DOMAIN, new HashMap<>());
+	/**
+	 * Sets up the environment using {@link MailboxTestUtil}. Note: unfortunately it is not possible
+	 * to start the SoapServlet with {@link AdminService}. The reason is some code calls
+	 * System.exit(1) presumably, so the VM exits and maven fails.
+	 */
+	@BeforeAll
+	static void setUp() throws Exception {
+		MailboxTestUtil.setUp();
+		mailboxManager = MailboxManager.getInstance();
+		provisioning = Provisioning.getInstance();
+		accountCreatorFactory = new AccountCreator.Factory(provisioning);
+		mockMessageBrokerClient = MessageBrokerFactory.getMessageBrokerClientInstance();
+		provisioning.createDomain(OTHER_DOMAIN, new HashMap<>());
 
-    consulServer = startClientAndServer(8500);
+		consulServer = startClientAndServer(8500);
 
 		consulServer
-        .when(request().withPath("/v1/kv/carbonio-message-broker/default/username"))
+				.when(request().withPath("/v1/kv/carbonio-message-broker/default/username"))
 				.respond(response().withStatusCode(200).withBody("[" +
 						"{\"Value\": \"test\"}" +
 						"]"));
-    consulServer
-        .when(request().withPath("/v1/kv/carbonio-message-broker/default/password"))
+		consulServer
+				.when(request().withPath("/v1/kv/carbonio-message-broker/default/password"))
 				.respond(response().withStatusCode(200).withBody("[" +
 						"{\"Value\": \"test\"}" +
 						"]"));
-    consulServer
-        .when(request().withPath("/v1/health/checks/carbonio-files"))
-        .respond(response().withStatusCode(200).withBody("[]"));
-  }
+		consulServer
+				.when(request().withPath("/v1/health/checks/carbonio-files"))
+				.respond(response().withStatusCode(200).withBody("[]"));
+	}
 
-  @AfterAll
-  static void tearDown() throws Exception {
-    MailboxTestUtil.tearDown();
-    consulServer.stop();
-  }
+	@AfterAll
+	static void tearDown() throws Exception {
+		MailboxTestUtil.tearDown();
+		consulServer.stop();
+	}
 
-  private static Stream<Arguments> getHappyPathCases() throws ServiceException {
-    return Stream.of(
-        Arguments.of(accountCreatorFactory.get().asGlobalAdmin().create(),
-            accountCreatorFactory.get().create()),
-        Try.of(
-                () -> {
-                  final Account delegatedAdminWithDomainAdminRight =
-                      accountCreatorFactory.get()
-                          .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
-                          .create();
-                  ACLUtil.grantRight(
-                      Provisioning.getInstance(),
-                      provisioning.getDomainByName(MailboxTestUtil.DEFAULT_DOMAIN),
-                      Set.of(
-                          new ZimbraACE(
-                              delegatedAdminWithDomainAdminRight.getId(),
-                              GranteeType.GT_USER,
-                              AdminRights.R_domainAdminRights,
-                              RightModifier.RM_CAN_DELEGATE,
-                              null)));
-                  return Arguments.of(
-                      delegatedAdminWithDomainAdminRight,
-                      accountCreatorFactory.get().create());
-                })
-            .get(),
-        Try.of(
-                () -> {
-                  final Account toDelete = accountCreatorFactory.get().create();
-                  final Account admin = accountCreatorFactory.get()
-                      .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
-                      .create();
-                  ACLUtil.grantRight(
-                      Provisioning.getInstance(),
-                      provisioning.getDomainByName(MailboxTestUtil.DEFAULT_DOMAIN),
-                      Set.of(
-                          new ZimbraACE(
-                              admin.getId(),
-                              GranteeType.GT_USER,
-                              AdminRights.R_deleteAccount,
-                              RightModifier.RM_CAN_DELEGATE,
-                              null)));
-                  return Arguments.of(admin, toDelete);
-                })
-            .get(),
-        Try.of(
-                () -> {
-                  final Account toDelete = accountCreatorFactory.get().create();
-                  final Account admin = accountCreatorFactory.get()
-                      .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
-                      .create();
-                  ACLUtil.grantRight(
-                      Provisioning.getInstance(),
-                      toDelete,
-                      Set.of(
-                          new ZimbraACE(
-                              admin.getId(),
-                              GranteeType.GT_USER,
-                              AdminRights.R_deleteAccount,
-                              RightModifier.RM_CAN_DELEGATE,
-                              null)));
-                  return Arguments.of(admin, toDelete);
-                })
-            .get(),
-        Try.of(
-                () -> {
-                  final Account admin =
-                      provisioning.createAccount(
-                          UUID.randomUUID() + "@" + OTHER_DOMAIN,
-                          "password",
-                          new HashMap<>(
-                              Map.of(
-                                  ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount,
-                                  "TRUE",
-                                  Provisioning.A_zimbraMailHost,
-                                  MailboxTestUtil.SERVER_NAME)));
-                  ACLUtil.grantRight(
-                      Provisioning.getInstance(),
-                      provisioning.getDomainByName(MailboxTestUtil.DEFAULT_DOMAIN),
-                      Set.of(
-                          new ZimbraACE(
-                              admin.getId(),
-                              GranteeType.GT_USER,
-                              AdminRights.R_domainAdminRights,
-                              RightModifier.RM_CAN_DELEGATE,
-                              null)));
-                  return Arguments.of(admin, accountCreatorFactory.get().create());
-                })
-            .get(),
-        Try.of(
-                () -> {
-                  final Account toDelete = accountCreatorFactory.get().create();
-                  final Account admin =
-                      provisioning.createAccount(
-                          UUID.randomUUID() + "@" + OTHER_DOMAIN,
-                          "password",
-                          new HashMap<>(
-                              Map.of(
-                                  ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount,
-                                  "TRUE",
-                                  Provisioning.A_zimbraMailHost,
-                                  MailboxTestUtil.SERVER_NAME)));
-                  ACLUtil.grantRight(
-                      Provisioning.getInstance(),
-                      provisioning.getDomainByName(MailboxTestUtil.DEFAULT_DOMAIN),
-                      Set.of(
-                          new ZimbraACE(
-                              admin.getId(),
-                              GranteeType.GT_USER,
-                              AdminRights.R_deleteAccount,
-                              RightModifier.RM_CAN_DELEGATE,
-                              null)));
-                  return Arguments.of(admin, toDelete);
-                })
-            .get(),
-        Try.of(
-                () -> {
-                  final Account toDelete = accountCreatorFactory.get().create();
-                  final Account admin =
-                      provisioning.createAccount(
-                          UUID.randomUUID() + "@" + OTHER_DOMAIN,
-                          "password",
-                          new HashMap<>(
-                              Map.of(
-                                  ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount,
-                                  "TRUE",
-                                  Provisioning.A_zimbraMailHost,
-                                  MailboxTestUtil.SERVER_NAME)));
-                  ACLUtil.grantRight(
-                      Provisioning.getInstance(),
-                      toDelete,
-                      Set.of(
-                          new ZimbraACE(
-                              admin.getId(),
-                              GranteeType.GT_USER,
-                              AdminRights.R_deleteAccount,
-                              RightModifier.RM_CAN_DELEGATE,
-                              null)));
-                  return Arguments.of(admin, toDelete);
-                })
-            .get());
-  }
+	private static Stream<Arguments> getHappyPathCases() throws ServiceException {
+		return Stream.of(
+				Arguments.of(accountCreatorFactory.get().asGlobalAdmin().create(),
+						accountCreatorFactory.get().create()),
+				Try.of(
+								() -> {
+									final Account delegatedAdminWithDomainAdminRight =
+											accountCreatorFactory.get()
+													.withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
+													.create();
+									ACLUtil.grantRight(
+											Provisioning.getInstance(),
+											provisioning.getDomainByName(MailboxTestUtil.DEFAULT_DOMAIN),
+											Set.of(
+													new ZimbraACE(
+															delegatedAdminWithDomainAdminRight.getId(),
+															GranteeType.GT_USER,
+															AdminRights.R_domainAdminRights,
+															RightModifier.RM_CAN_DELEGATE,
+															null)));
+									return Arguments.of(
+											delegatedAdminWithDomainAdminRight,
+											accountCreatorFactory.get().create());
+								})
+						.get(),
+				Try.of(
+								() -> {
+									final Account toDelete = accountCreatorFactory.get().create();
+									final Account admin = accountCreatorFactory.get()
+											.withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
+											.create();
+									ACLUtil.grantRight(
+											Provisioning.getInstance(),
+											provisioning.getDomainByName(MailboxTestUtil.DEFAULT_DOMAIN),
+											Set.of(
+													new ZimbraACE(
+															admin.getId(),
+															GranteeType.GT_USER,
+															AdminRights.R_deleteAccount,
+															RightModifier.RM_CAN_DELEGATE,
+															null)));
+									return Arguments.of(admin, toDelete);
+								})
+						.get(),
+				Try.of(
+								() -> {
+									final Account toDelete = accountCreatorFactory.get().create();
+									final Account admin = accountCreatorFactory.get()
+											.withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
+											.create();
+									ACLUtil.grantRight(
+											Provisioning.getInstance(),
+											toDelete,
+											Set.of(
+													new ZimbraACE(
+															admin.getId(),
+															GranteeType.GT_USER,
+															AdminRights.R_deleteAccount,
+															RightModifier.RM_CAN_DELEGATE,
+															null)));
+									return Arguments.of(admin, toDelete);
+								})
+						.get(),
+				Try.of(
+								() -> {
+									final Account admin =
+											provisioning.createAccount(
+													UUID.randomUUID() + "@" + OTHER_DOMAIN,
+													"password",
+													new HashMap<>(
+															Map.of(
+																	ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount,
+																	"TRUE",
+																	Provisioning.A_zimbraMailHost,
+																	MailboxTestUtil.SERVER_NAME)));
+									ACLUtil.grantRight(
+											Provisioning.getInstance(),
+											provisioning.getDomainByName(MailboxTestUtil.DEFAULT_DOMAIN),
+											Set.of(
+													new ZimbraACE(
+															admin.getId(),
+															GranteeType.GT_USER,
+															AdminRights.R_domainAdminRights,
+															RightModifier.RM_CAN_DELEGATE,
+															null)));
+									return Arguments.of(admin, accountCreatorFactory.get().create());
+								})
+						.get(),
+				Try.of(
+								() -> {
+									final Account toDelete = accountCreatorFactory.get().create();
+									final Account admin =
+											provisioning.createAccount(
+													UUID.randomUUID() + "@" + OTHER_DOMAIN,
+													"password",
+													new HashMap<>(
+															Map.of(
+																	ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount,
+																	"TRUE",
+																	Provisioning.A_zimbraMailHost,
+																	MailboxTestUtil.SERVER_NAME)));
+									ACLUtil.grantRight(
+											Provisioning.getInstance(),
+											provisioning.getDomainByName(MailboxTestUtil.DEFAULT_DOMAIN),
+											Set.of(
+													new ZimbraACE(
+															admin.getId(),
+															GranteeType.GT_USER,
+															AdminRights.R_deleteAccount,
+															RightModifier.RM_CAN_DELEGATE,
+															null)));
+									return Arguments.of(admin, toDelete);
+								})
+						.get(),
+				Try.of(
+								() -> {
+									final Account toDelete = accountCreatorFactory.get().create();
+									final Account admin =
+											provisioning.createAccount(
+													UUID.randomUUID() + "@" + OTHER_DOMAIN,
+													"password",
+													new HashMap<>(
+															Map.of(
+																	ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount,
+																	"TRUE",
+																	Provisioning.A_zimbraMailHost,
+																	MailboxTestUtil.SERVER_NAME)));
+									ACLUtil.grantRight(
+											Provisioning.getInstance(),
+											toDelete,
+											Set.of(
+													new ZimbraACE(
+															admin.getId(),
+															GranteeType.GT_USER,
+															AdminRights.R_deleteAccount,
+															RightModifier.RM_CAN_DELEGATE,
+															null)));
+									return Arguments.of(admin, toDelete);
+								})
+						.get());
+	}
 
-  private void doDeleteAccount(Account caller, String toDeleteId) throws ServiceException {
-    Map<String, Object> context = new HashMap<String, Object>();
-    ZimbraSoapContext zsc =
-        new ZimbraSoapContext(
-            AuthProvider.getAuthToken(caller),
-            caller.getId(),
-            SoapProtocol.Soap12,
-            SoapProtocol.Soap12);
-    context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
-    deleteAccount.handle(
-        JaxbUtil.jaxbToElement(new DeleteAccountRequest(toDeleteId)), context);
-  }
+	private void doDeleteAccount(DeleteAccount deleteAccount, Account caller,
+			String accountToDeleteId) throws ServiceException {
+		Map<String, Object> context = new HashMap<String, Object>();
+		ZimbraSoapContext zsc =
+				new ZimbraSoapContext(
+						AuthProvider.getAuthToken(caller),
+						caller.getId(),
+						SoapProtocol.Soap12,
+						SoapProtocol.Soap12);
+		context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+		deleteAccount.handle(
+				JaxbUtil.jaxbToElement(new DeleteAccountRequest(accountToDeleteId)), context);
+	}
 
-  @ParameterizedTest
-  @MethodSource("getHappyPathCases")
-  void shouldDeleteUser(Account caller, Account toDelete) throws Exception {
-    try (MockedStatic<Files> mockFileSystem = Mockito.mockStatic(Files.class, Mockito.CALLS_REAL_METHODS)) {
-      mockFileSystem.when(() -> Files.readString(any())).thenReturn("");
-      Mockito.when(mockMessageBrokerClient.publish(any(DeleteUserRequested.class))).thenReturn(true);
+	@ParameterizedTest
+	@MethodSource("getHappyPathCases")
+	void shouldDeleteUser(Account caller, Account toDelete) throws Exception {
+		try (MockedStatic<Files> mockFileSystem = Mockito.mockStatic(Files.class,
+				Mockito.CALLS_REAL_METHODS)) {
+			mockFileSystem.when(() -> Files.readString(any())).thenReturn("");
+			Mockito.when(mockMessageBrokerClient.publish(any(DeleteUserRequested.class)))
+					.thenReturn(true);
 
-      final String toDeleteId = toDelete.getId();
-      this.doDeleteAccount(caller, toDeleteId);
-      Assertions.assertNull(provisioning.getAccountById(toDeleteId));
-    }
-  }
+			final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(),
+					new MockFilesInstalledProvider(false));
 
-  private static Stream<Arguments> getPermissionDeniedCases() throws ServiceException {
-    return Stream.of(
-        Arguments.of(
-            accountCreatorFactory.get()
-                .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
-                .create(),
-            accountCreatorFactory.get().create()),
-        Try.of(
-                () -> {
-                  final Account standardUser = accountCreatorFactory.get().create();
-                  final Account toDelete = accountCreatorFactory.get().create();
-                  ACLUtil.grantRight(
-                      Provisioning.getInstance(),
-                      provisioning.getDomainByName(MailboxTestUtil.DEFAULT_DOMAIN),
-                      Set.of(
-                          new ZimbraACE(
-                              standardUser.getId(),
-                              GranteeType.GT_USER,
-                              AdminRights.R_deleteAccount,
-                              RightModifier.RM_CAN_DELEGATE,
-                              null)));
-                  ACLUtil.grantRight(
-                      Provisioning.getInstance(),
-                      toDelete,
-                      Set.of(
-                          new ZimbraACE(
-                              standardUser.getId(),
-                              GranteeType.GT_USER,
-                              AdminRights.R_deleteAccount,
-                              RightModifier.RM_CAN_DELEGATE,
-                              null)));
-                  return Arguments.of(standardUser, toDelete);
-                })
-            .get(),
-        Arguments.of(
-            accountCreatorFactory.get()
-                .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
-                .create(),
-            accountCreatorFactory.get().create()));
-  }
+			final String toDeleteId = toDelete.getId();
+			this.doDeleteAccount(deleteAccount, caller, toDeleteId);
+			Assertions.assertNull(provisioning.getAccountById(toDeleteId));
+		}
+	}
 
-  @ParameterizedTest
-  @MethodSource("getPermissionDeniedCases")
-  void shouldGetPermissionDenied(Account caller, Account toDelete) throws ServiceException {
-      Mockito.when(mockMessageBrokerClient.publish(any(DeleteUserRequested.class))).thenReturn(true);
+	private static Stream<Arguments> getPermissionDeniedCases() throws ServiceException {
+		return Stream.of(
+				Arguments.of(
+						accountCreatorFactory.get()
+								.withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
+								.create(),
+						accountCreatorFactory.get().create()),
+				Try.of(
+								() -> {
+									final Account standardUser = accountCreatorFactory.get().create();
+									final Account toDelete = accountCreatorFactory.get().create();
+									ACLUtil.grantRight(
+											Provisioning.getInstance(),
+											provisioning.getDomainByName(MailboxTestUtil.DEFAULT_DOMAIN),
+											Set.of(
+													new ZimbraACE(
+															standardUser.getId(),
+															GranteeType.GT_USER,
+															AdminRights.R_deleteAccount,
+															RightModifier.RM_CAN_DELEGATE,
+															null)));
+									ACLUtil.grantRight(
+											Provisioning.getInstance(),
+											toDelete,
+											Set.of(
+													new ZimbraACE(
+															standardUser.getId(),
+															GranteeType.GT_USER,
+															AdminRights.R_deleteAccount,
+															RightModifier.RM_CAN_DELEGATE,
+															null)));
+									return Arguments.of(standardUser, toDelete);
+								})
+						.get(),
+				Arguments.of(
+						accountCreatorFactory.get()
+								.withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
+								.create(),
+						accountCreatorFactory.get().create()));
+	}
 
-      final String toDeleteId = toDelete.getId();
-      final ServiceException serviceException =
-          Assertions.assertThrows(
-              ServiceException.class, () -> this.doDeleteAccount(caller, toDeleteId));
-      Assertions.assertEquals(ServiceException.PERM_DENIED, serviceException.getCode());
-      Assertions.assertNotNull(provisioning.getAccountById(toDeleteId));
-  }
+	@ParameterizedTest
+	@MethodSource("getPermissionDeniedCases")
+	void shouldGetPermissionDenied(Account caller, Account toDelete) throws ServiceException {
+		Mockito.when(mockMessageBrokerClient.publish(any(DeleteUserRequested.class))).thenReturn(true);
+		final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(), () -> false);
+		final String toDeleteId = toDelete.getId();
 
-    @ParameterizedTest
-    @MethodSource("getHappyPathCases")
-    void shouldDeleteUserThrowsException(Account caller, Account toDelete) throws Exception {
-      try (MockedStatic<Files> mockFileSystem = Mockito.mockStatic(Files.class, Mockito.CALLS_REAL_METHODS)) {
-        mockFileSystem.when(() -> Files.readString(any())).thenReturn("");
-        Mockito.when(mockMessageBrokerClient.publish(any(DeleteUserRequested.class))).thenReturn(true);
-        DeleteUserUseCase deleteUserUseCase = Mockito.mock(DeleteUserUseCase.class);
+		final ServiceException serviceException =
+				Assertions.assertThrows(
+						ServiceException.class, () -> this.doDeleteAccount(deleteAccount, caller, toDeleteId));
+		Assertions.assertEquals(ServiceException.PERM_DENIED, serviceException.getCode());
+		Assertions.assertNotNull(provisioning.getAccountById(toDeleteId));
+	}
 
-        final String toDeleteId = toDelete.getId();
-        Map<String, Object> context = new HashMap<String, Object>();
-        ZimbraSoapContext zsc =
-            new ZimbraSoapContext(
-                AuthProvider.getAuthToken(caller),
-                caller.getId(),
-                SoapProtocol.Soap12,
-                SoapProtocol.Soap12);
-        context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
-        final MockFilesInstalledProvider filesInstalledProvider = new MockFilesInstalledProvider(
-            false);
-        DeleteAccount deleteAccountHandler =
-            new DeleteAccount(
-                deleteUserUseCase, filesInstalledProvider);
-        Mockito.when(deleteUserUseCase.delete(toDeleteId)).thenReturn(Try.failure(new RuntimeException("message")));
-        DeleteAccountRequest deleteAccountRequest = new DeleteAccountRequest(toDeleteId);
-        Element request = JaxbUtil.jaxbToElement(deleteAccountRequest);
-        final ServiceException serviceException =
-            Assertions.assertThrows(ServiceException.class, () -> deleteAccountHandler.handle(request, context));
-        Assertions.assertEquals("service.FAILURE", serviceException.getCode());
-        Assertions.assertTrue(serviceException.getMessage().startsWith("system failure: Delete account "));
-        Assertions.assertTrue(serviceException.getMessage().endsWith("has an error: message"));
-      }
-    }
+	@ParameterizedTest
+	@MethodSource("getHappyPathCases")
+	void shouldDeleteUserThrowsException(Account caller, Account toDelete) throws Exception {
+		try (MockedStatic<Files> mockFileSystem = Mockito.mockStatic(Files.class,
+				Mockito.CALLS_REAL_METHODS)) {
+			mockFileSystem.when(() -> Files.readString(any())).thenReturn("");
+			Mockito.when(mockMessageBrokerClient.publish(any(DeleteUserRequested.class)))
+					.thenReturn(true);
+			DeleteUserUseCase deleteUserUseCase = Mockito.mock(DeleteUserUseCase.class);
+
+			final String toDeleteId = toDelete.getId();
+			Map<String, Object> context = new HashMap<String, Object>();
+			ZimbraSoapContext zsc =
+					new ZimbraSoapContext(
+							AuthProvider.getAuthToken(caller),
+							caller.getId(),
+							SoapProtocol.Soap12,
+							SoapProtocol.Soap12);
+			context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+			DeleteAccount deleteAccountHandler =
+					new DeleteAccount(
+							deleteUserUseCase, () -> false);
+			Mockito.when(deleteUserUseCase.delete(toDeleteId))
+					.thenReturn(Try.failure(new RuntimeException("message")));
+			DeleteAccountRequest deleteAccountRequest = new DeleteAccountRequest(toDeleteId);
+			Element request = JaxbUtil.jaxbToElement(deleteAccountRequest);
+			final ServiceException serviceException =
+					Assertions.assertThrows(ServiceException.class,
+							() -> deleteAccountHandler.handle(request, context));
+			Assertions.assertEquals("service.FAILURE", serviceException.getCode());
+			Assertions.assertTrue(
+					serviceException.getMessage().startsWith("system failure: Delete account "));
+			Assertions.assertTrue(serviceException.getMessage().endsWith("has an error: message"));
+		}
+	}
+
+	@Test
+	void shouldReturnSoapErrorWhenNotAbleToCheckIfFilesInstalled() throws Exception {
+		final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
+		final Account userAccount = accountCreatorFactory.get().create();
+
+		final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(), () -> {
+			throw new Exception("failed to retrieve if files is installed");
+		});
+		Map<String, Object> context = new HashMap<String, Object>();
+		ZimbraSoapContext zsc =
+				new ZimbraSoapContext(
+						AuthProvider.getAuthToken(adminAccount),
+						adminAccount.getId(),
+						SoapProtocol.Soap12,
+						SoapProtocol.Soap12);
+		context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+
+		final ServiceException serviceException = Assertions.assertThrows(ServiceException.class,
+				() -> deleteAccount.handle(
+						JaxbUtil.jaxbToElement(new DeleteAccountRequest(userAccount.getId())), context));
+		Assertions.assertEquals("system failure: Delete account " + userAccount.getName()
+						+ " has an error: failed to retrieve if files is installed",
+				serviceException.getMessage());
+	}
+
+	private DeleteUserUseCase getDefaultUseCase() {
+		return new DeleteUserUseCase(
+				provisioning,
+				mailboxManager,
+				new AclService(mailboxManager, provisioning),
+				ZimbraLog.security);
+	}
 }
