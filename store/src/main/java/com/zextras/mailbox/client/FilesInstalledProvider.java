@@ -11,23 +11,27 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class FilesInstalledProvider implements ServiceInstalledProvider {
-	private final Path consulTokenFilePath;
-	public FilesInstalledProvider(Path consulTokenFilePath) {
-		this.consulTokenFilePath = consulTokenFilePath;
-	}
+    private final Path consulTokenFilePath;
 
-	public boolean isInstalled() throws UnableToCheckServiceInstalledException {
+    public FilesInstalledProvider(Path consulTokenFilePath) {
+        this.consulTokenFilePath = consulTokenFilePath;
+    }
+
+    public boolean isInstalled() throws UnableToCheckServiceInstalledException {
         final String consulToken;
         try {
             consulToken = Files.readString(consulTokenFilePath);
         } catch (IOException e) {
             throw new UnableToCheckServiceInstalledException(e.getMessage());
         }
-        ServiceDiscoverHttpClient serviceDiscoverHttpClient =
-				ServiceDiscoverHttpClient.defaultUrl()
-						.withToken(consulToken);
 
-		return serviceDiscoverHttpClient.isServiceInstalled("carbonio-files").get();
-	}
+        try {
+            ServiceDiscoverHttpClient serviceDiscoverHttpClient = ServiceDiscoverHttpClient.defaultUrl().withToken(consulToken);
+            return serviceDiscoverHttpClient.isServiceInstalled("carbonio-files").get();
+
+        } catch (Exception e) {
+            throw new UnableToCheckServiceInstalledException(e.getMessage());
+        }
+    }
 
 }

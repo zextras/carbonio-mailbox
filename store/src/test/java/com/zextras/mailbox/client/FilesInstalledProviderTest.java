@@ -10,4 +10,13 @@ class FilesInstalledProviderTest {
         FilesInstalledProvider filesInstalledProvider = new FilesInstalledProvider(Paths.get("/wrongpath"));
         Assertions.assertThrows(UnableToCheckServiceInstalledException.class, filesInstalledProvider::isInstalled);
     }
+
+
+    @Test
+    void shouldThrowExceptionWhenNotAbleToContactConsul() throws Exception {
+        var consulToken = FilesInstalledProviderTest.class.getResource("consulToken").toURI();
+
+        FilesInstalledProvider filesInstalledProvider = new FilesInstalledProvider(Paths.get(consulToken));
+        Assertions.assertThrows(UnableToCheckServiceInstalledException.class, filesInstalledProvider::isInstalled);
+    }
 }
