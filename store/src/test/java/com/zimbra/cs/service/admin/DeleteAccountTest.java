@@ -44,7 +44,6 @@ import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Named;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -103,7 +102,8 @@ class DeleteAccountTest {
 
 	private static Stream<Arguments> getHappyPathCases() throws ServiceException {
 		return Stream.of(
-				Arguments.of(accountCreatorFactory.get().asGlobalAdmin().create(),
+				Arguments.of("when deleting an account as global admin",
+						accountCreatorFactory.get().asGlobalAdmin().create(),
 						accountCreatorFactory.get().create()),
 				Try.of(
 								() -> {
@@ -122,6 +122,7 @@ class DeleteAccountTest {
 															RightModifier.RM_CAN_DELEGATE,
 															null)));
 									return Arguments.of(
+											"when deleting an account as delegated admin with domain admin rights",
 											delegatedAdminWithDomainAdminRight,
 											accountCreatorFactory.get().create());
 								})
@@ -142,7 +143,9 @@ class DeleteAccountTest {
 															AdminRights.R_deleteAccount,
 															RightModifier.RM_CAN_DELEGATE,
 															null)));
-									return Arguments.of(admin, toDelete);
+									return Arguments.of(
+											"when deleting an account as delegated admin with only right to delete on account",
+											admin, toDelete);
 								})
 						.get(),
 				Try.of(
@@ -161,7 +164,9 @@ class DeleteAccountTest {
 															AdminRights.R_deleteAccount,
 															RightModifier.RM_CAN_DELEGATE,
 															null)));
-									return Arguments.of(admin, toDelete);
+									return Arguments.of(
+											"when deleting an account as delegated admin with right to delete only the specific user",
+											admin, toDelete);
 								})
 						.get(),
 				Try.of(
@@ -186,7 +191,9 @@ class DeleteAccountTest {
 															AdminRights.R_domainAdminRights,
 															RightModifier.RM_CAN_DELEGATE,
 															null)));
-									return Arguments.of(admin, accountCreatorFactory.get().create());
+									return Arguments.of(
+											"when deleting an account as delegated admin from another domain with domain admin rights on the domain of the account to delete",
+											admin, accountCreatorFactory.get().create());
 								})
 						.get(),
 				Try.of(
@@ -212,7 +219,8 @@ class DeleteAccountTest {
 															AdminRights.R_deleteAccount,
 															RightModifier.RM_CAN_DELEGATE,
 															null)));
-									return Arguments.of(admin, toDelete);
+									return Arguments.of("when deleting an account as delegated admin from another domain with delete right on the domain of the account to delete",
+											admin, toDelete);
 								})
 						.get(),
 				Try.of(
@@ -238,7 +246,7 @@ class DeleteAccountTest {
 															AdminRights.R_deleteAccount,
 															RightModifier.RM_CAN_DELEGATE,
 															null)));
-									return Arguments.of(admin, toDelete);
+									return Arguments.of("when deleting an account as delegated admin from another domain with delete right on the specific account to delete", admin, toDelete);
 								})
 						.get());
 	}
@@ -257,9 +265,9 @@ class DeleteAccountTest {
 				JaxbUtil.jaxbToElement(new DeleteAccountRequest(accountToDeleteId)), context);
 	}
 
-	@ParameterizedTest
+	@ParameterizedTest(name = "{0}")
 	@MethodSource("getHappyPathCases")
-	void shouldDeleteUser(Account caller, Account toDelete) throws Exception {
+	void shouldDeleteUser(String testCaseName, Account caller, Account toDelete) throws Exception {
 		try (MockedStatic<Files> mockFileSystem = Mockito.mockStatic(Files.class,
 				Mockito.CALLS_REAL_METHODS)) {
 			mockFileSystem.when(() -> Files.readString(any())).thenReturn("");
@@ -277,7 +285,8 @@ class DeleteAccountTest {
 
 	private static Stream<Arguments> getPermissionDeniedCases() throws ServiceException {
 		return Stream.of(
-				Arguments.of("when deleting an account as delegated admin",
+				Arguments.of(
+						"when deleting an account as user with delegated admin attribute but without delegated admin permissions",
 						accountCreatorFactory.get()
 								.withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
 								.create(),
@@ -306,14 +315,17 @@ class DeleteAccountTest {
 															AdminRights.R_deleteAccount,
 															RightModifier.RM_CAN_DELEGATE,
 															null)));
-									return Arguments.of("when deleting an account as standard user with delete permission on domain and the account to delete", standardUser, toDelete);
+									return Arguments.of(
+											"when deleting an account as standard user with delete permission on domain and the account to delete",
+											standardUser, toDelete);
 								})
 						.get());
 	}
 
-	@ParameterizedTest(name= "{0}")
+	@ParameterizedTest(name = "{0}")
 	@MethodSource("getPermissionDeniedCases")
-	void shouldGetPermissionDenied(String testCaseName, Account caller, Account toDelete) throws ServiceException {
+	void shouldGetPermissionDenied(String testCaseName, Account caller, Account toDelete)
+			throws ServiceException {
 		Mockito.when(mockMessageBrokerClient.publish(any(DeleteUserRequested.class))).thenReturn(true);
 		final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(),
 				filesNotInstalledProvider);
@@ -328,7 +340,7 @@ class DeleteAccountTest {
 
 
 	@Test
-	void shouldDeleteUserThrowsException() throws Exception {
+	void shouldDeleteUserThrowsExceptionWhenUseCaseThrowsRuntimeException() throws Exception {
 		final Account admin = accountCreatorFactory.get().asGlobalAdmin().create();
 		final Account user = accountCreatorFactory.get().create();
 		DeleteUserUseCase deleteUserUseCase = Mockito.mock(DeleteUserUseCase.class);
