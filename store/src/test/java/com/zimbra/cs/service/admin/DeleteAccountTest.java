@@ -44,6 +44,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Named;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -60,11 +61,7 @@ class DeleteAccountTest {
 	private static MessageBrokerClient mockMessageBrokerClient;
 	private static AccountCreator.Factory accountCreatorFactory;
 	private static ClientAndServer consulServer;
-
-	private record MockFilesInstalledProvider(boolean isInstalled) implements
-			ServiceInstalledProvider {
-
-	}
+	private final static ServiceInstalledProvider filesNotInstalledProvider = () -> false;
 
 
 	/**
@@ -248,7 +245,7 @@ class DeleteAccountTest {
 
 	private void doDeleteAccount(DeleteAccount deleteAccount, Account caller,
 			String accountToDeleteId) throws ServiceException {
-		Map<String, Object> context = new HashMap<String, Object>();
+		Map<String, Object> context = new HashMap<>();
 		ZimbraSoapContext zsc =
 				new ZimbraSoapContext(
 						AuthProvider.getAuthToken(caller),
@@ -270,7 +267,7 @@ class DeleteAccountTest {
 					.thenReturn(true);
 
 			final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(),
-					new MockFilesInstalledProvider(false));
+					filesNotInstalledProvider);
 
 			final String toDeleteId = toDelete.getId();
 			this.doDeleteAccount(deleteAccount, caller, toDeleteId);
@@ -280,7 +277,7 @@ class DeleteAccountTest {
 
 	private static Stream<Arguments> getPermissionDeniedCases() throws ServiceException {
 		return Stream.of(
-				Arguments.of(
+				Arguments.of("when deleting an account as delegated admin",
 						accountCreatorFactory.get()
 								.withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
 								.create(),
@@ -309,21 +306,17 @@ class DeleteAccountTest {
 															AdminRights.R_deleteAccount,
 															RightModifier.RM_CAN_DELEGATE,
 															null)));
-									return Arguments.of(standardUser, toDelete);
+									return Arguments.of("when deleting an account as standard user with delete permission on domain and the account to delete", standardUser, toDelete);
 								})
-						.get(),
-				Arguments.of(
-						accountCreatorFactory.get()
-								.withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
-								.create(),
-						accountCreatorFactory.get().create()));
+						.get());
 	}
 
-	@ParameterizedTest
+	@ParameterizedTest(name= "{0}")
 	@MethodSource("getPermissionDeniedCases")
-	void shouldGetPermissionDenied(Account caller, Account toDelete) throws ServiceException {
+	void shouldGetPermissionDenied(String testCaseName, Account caller, Account toDelete) throws ServiceException {
 		Mockito.when(mockMessageBrokerClient.publish(any(DeleteUserRequested.class))).thenReturn(true);
-		final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(), () -> false);
+		final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(),
+				filesNotInstalledProvider);
 		final String toDeleteId = toDelete.getId();
 
 		final ServiceException serviceException =
@@ -344,7 +337,7 @@ class DeleteAccountTest {
 				.thenReturn(Try.failure(new RuntimeException("message")));
 		DeleteAccount deleteAccountHandler =
 				new DeleteAccount(
-						deleteUserUseCase, () -> false);
+						deleteUserUseCase, filesNotInstalledProvider);
 
 		final ServiceException serviceException =
 				assertThrows(ServiceException.class,
