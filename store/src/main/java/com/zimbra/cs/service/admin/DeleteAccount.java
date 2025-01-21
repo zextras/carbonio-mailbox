@@ -113,6 +113,13 @@ public class DeleteAccount extends AdminDocumentHandler {
         if (success.isFailure() || !success.get()) {
           throw ServiceException.FAILURE("Delete all nodes request to Files failed", null);
         }
+
+        ZimbraLog.security.info(
+        ZimbraLog.encodeAttrs(
+            new String[] {
+              "cmd", "DeleteAccount", "delete nodes sent to Files for account ", account.getId()
+            }));
+
       } catch (Exception e) {
         throw ServiceException.FAILURE("Can't delete nodes on Files: ", e);
       }
