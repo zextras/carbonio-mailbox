@@ -56,7 +56,7 @@ import org.mockserver.integration.ClientAndServer;
 class DeleteAccountTest {
 
 	private static final String OTHER_DOMAIN = "other.com";
-	private final static ServiceInstalledProvider filesNotInstalledProvider = () -> false;
+	private static final ServiceInstalledProvider filesNotInstalledProvider = () -> false;
 	private static Provisioning provisioning;
 	private static MailboxManager mailboxManager;
 	private static MessageBrokerClient mockMessageBrokerClient;
