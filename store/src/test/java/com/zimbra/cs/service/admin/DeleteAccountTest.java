@@ -57,12 +57,12 @@ import org.mockserver.integration.ClientAndServer;
 class DeleteAccountTest {
 
 	private static final String OTHER_DOMAIN = "other.com";
+	private final static ServiceInstalledProvider filesNotInstalledProvider = () -> false;
 	private static Provisioning provisioning;
 	private static MailboxManager mailboxManager;
 	private static MessageBrokerClient mockMessageBrokerClient;
 	private static AccountCreator.Factory accountCreatorFactory;
 	private static ClientAndServer consulServer;
-	private final static ServiceInstalledProvider filesNotInstalledProvider = () -> false;
 
 
 	private static void addGrantToUserForDomain(Account account, String domainName, Right right)
