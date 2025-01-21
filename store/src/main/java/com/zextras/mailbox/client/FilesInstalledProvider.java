@@ -6,32 +6,26 @@
 
 package com.zextras.mailbox.client;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class FilesInstalledProvider implements ServiceInstalledProvider {
-    private final Path consulTokenFilePath;
 
-    public FilesInstalledProvider(Path consulTokenFilePath) {
-        this.consulTokenFilePath = consulTokenFilePath;
-    }
+	private final Path consulTokenFilePath;
 
-    public boolean isInstalled() throws UnableToCheckServiceInstalledException {
-        final String consulToken;
-        try {
-            consulToken = Files.readString(consulTokenFilePath);
-        } catch (IOException e) {
-            throw new UnableToCheckServiceInstalledException(e.getMessage());
-        }
+	public FilesInstalledProvider(Path consulTokenFilePath) {
+		this.consulTokenFilePath = consulTokenFilePath;
+	}
 
-        try {
-            ServiceDiscoverHttpClient serviceDiscoverHttpClient = ServiceDiscoverHttpClient.defaultUrl().withToken(consulToken);
-            return serviceDiscoverHttpClient.isServiceInstalled("carbonio-files").get();
-
-        } catch (Exception e) {
-            throw new UnableToCheckServiceInstalledException(e.getMessage());
-        }
-    }
+	public boolean isInstalled() throws UnableToCheckServiceInstalledException {
+		try {
+			final String consulToken = Files.readString(consulTokenFilePath);
+			ServiceDiscoverHttpClient serviceDiscoverHttpClient = ServiceDiscoverHttpClient.defaultUrl()
+					.withToken(consulToken);
+			return serviceDiscoverHttpClient.isServiceInstalled("carbonio-files").get();
+		} catch (Exception e) {
+			throw new UnableToCheckServiceInstalledException(e.getMessage());
+		}
+	}
 
 }
