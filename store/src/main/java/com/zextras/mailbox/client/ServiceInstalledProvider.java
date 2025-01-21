@@ -7,5 +7,5 @@
 package com.zextras.mailbox.client;
 
 public interface ServiceInstalledProvider {
-	boolean isInstalled() throws UnableToCheckServiceInstalledException;
+	boolean isInstalled();
 }

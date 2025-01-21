@@ -87,8 +87,7 @@ public class DeleteAccount extends AdminDocumentHandler {
 		try {
 			isFilesInstalled = filesInstalledProvider.isInstalled();
 		} catch (Exception e) {
-      // Throw if it can't get if files is installed or not since we don't know what to do
-			throw ServiceException.FAILURE("Delete account " + account.getMail() + " has an error: " + e.getMessage(), e);
+			throw ServiceException.FAILURE("Delete account " + account.getMail() + " has an error: Unable to check if files is installed", e);
 		}
 
     if (isFilesInstalled) {

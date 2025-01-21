@@ -6,6 +6,7 @@
 
 package com.zextras.mailbox.client;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -17,15 +18,16 @@ public class FilesInstalledProvider implements ServiceInstalledProvider {
 		this.consulTokenFilePath = consulTokenFilePath;
 	}
 
-	public boolean isInstalled() throws UnableToCheckServiceInstalledException {
+	public boolean isInstalled() {
+		final String consulToken;
 		try {
-			final String consulToken = Files.readString(consulTokenFilePath);
-			ServiceDiscoverHttpClient serviceDiscoverHttpClient = ServiceDiscoverHttpClient.defaultUrl()
+			consulToken = Files.readString(consulTokenFilePath);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		ServiceDiscoverHttpClient serviceDiscoverHttpClient = ServiceDiscoverHttpClient.defaultUrl()
 					.withToken(consulToken);
 			return serviceDiscoverHttpClient.isServiceInstalled("carbonio-files").get();
-		} catch (Exception e) {
-			throw new UnableToCheckServiceInstalledException(e.getMessage());
-		}
 	}
 
 }
