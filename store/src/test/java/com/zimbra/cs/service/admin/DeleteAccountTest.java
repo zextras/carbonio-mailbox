@@ -15,6 +15,7 @@ import com.zextras.carbonio.message_broker.events.services.mailbox.DeleteUserReq
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
 import com.zextras.mailbox.client.ServiceInstalledProvider;
+import com.zextras.mailbox.client.UnableToCheckServiceInstalledException;
 import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
@@ -366,7 +367,7 @@ class DeleteAccountTest {
 		final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
 		final Account userAccount = accountCreatorFactory.get().create();
 		final ServiceInstalledProvider failedToCheckIfFilesInstalled = () -> {
-			throw new Exception("failed to retrieve if files is installed");
+			throw new UnableToCheckServiceInstalledException("failed to retrieve if files is installed");
 		};
 		final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(),
 				failedToCheckIfFilesInstalled);
