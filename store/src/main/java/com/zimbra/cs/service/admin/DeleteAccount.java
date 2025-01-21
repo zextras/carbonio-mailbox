@@ -11,7 +11,7 @@ package com.zimbra.cs.service.admin;
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.carbonio.message_broker.events.services.mailbox.DeleteUserRequested;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
-import com.zextras.mailbox.client.ServiceDiscoverHttpClient;
+import com.zextras.mailbox.client.ServiceInstalledProvider;
 import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
@@ -25,10 +25,6 @@ import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import com.zimbra.soap.admin.message.DeleteAccountResponse;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -40,9 +36,11 @@ public class DeleteAccount extends AdminDocumentHandler {
   private static final String[] TARGET_ACCOUNT_PATH = new String[] {AdminConstants.E_ID};
 
   private final DeleteUserUseCase deleteUserUseCase;
+  private final ServiceInstalledProvider filesInstalledProvider;
 
-  public DeleteAccount(DeleteUserUseCase deleteUserUseCase) {
+  public DeleteAccount(DeleteUserUseCase deleteUserUseCase, ServiceInstalledProvider filesInstalledProvider) {
     this.deleteUserUseCase = deleteUserUseCase;
+    this.filesInstalledProvider = filesInstalledProvider;
   }
 
   @Override
@@ -86,20 +84,10 @@ public class DeleteAccount extends AdminDocumentHandler {
     // send another event back to mailbox to delete the account (see DeletedUserFilesConsumer)
     // If files is not installed, mailbox can delete the account directly as it always did
     boolean isFilesInstalled;
-
-    Path filePath = Paths.get("/etc/carbonio/mailbox/service-discover/token");
-		String token;
 		try {
-			token = Files.readString(filePath);
-			ServiceDiscoverHttpClient serviceDiscoverHttpClient =
-					ServiceDiscoverHttpClient.defaultUrl()
-							.withToken(token);
-
-      isFilesInstalled = serviceDiscoverHttpClient.isServiceInstalled("carbonio-files").get();
-
+			isFilesInstalled = filesInstalledProvider.isInstalled();
 		} catch (Exception e) {
-      // Throw if it can't get if files is installed or not since we don't know what to do
-			throw ServiceException.FAILURE("Delete account " + account.getMail() + " has an error: " + e.getMessage(), e);
+			throw ServiceException.FAILURE("Delete account " + account.getMail() + " has an error: Unable to check if files is installed", e);
 		}
 
     if (isFilesInstalled) {
