@@ -109,6 +109,7 @@ class DeleteAccountTest {
   @AfterAll
   static void tearDown() throws Exception {
     MailboxTestUtil.tearDown();
+    consulServer.stop();
   }
 
   private static Stream<Arguments> getHappyPathCases() throws ServiceException {
