@@ -5,10 +5,8 @@
 package com.zimbra.cs.service.admin;
 
 import com.zextras.carbonio.files.FilesClient;
-import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
-import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.account.ZAttrProvisioning;
@@ -57,9 +55,9 @@ class DeleteAccountTest {
   private static final String OTHER_DOMAIN = "other.com";
   private static Provisioning provisioning;
   private static DeleteAccount deleteAccount;
-  private static MessageBrokerClient mockMessageBrokerClient;
   private static AccountCreator.Factory accountCreatorFactory;
   private static ClientAndServer consulServer;
+  private static FilesClient filesClientMock;
 
 
   /**
@@ -74,7 +72,7 @@ class DeleteAccountTest {
     final MailboxManager mailboxManager = MailboxManager.getInstance();
     provisioning = Provisioning.getInstance();
     accountCreatorFactory = new AccountCreator.Factory(provisioning);
-    mockMessageBrokerClient = MessageBrokerFactory.getMessageBrokerClientInstance();
+    filesClientMock = Mockito.mock(FilesClient.class);
     deleteAccount =
         new DeleteAccount(
             new DeleteUserUseCase(
@@ -82,21 +80,11 @@ class DeleteAccountTest {
                 mailboxManager,
                 new AclService(mailboxManager, provisioning),
                 ZimbraLog.security),
-            FilesClient.atURL("test"));
+            filesClientMock);
     provisioning.createDomain(OTHER_DOMAIN, new HashMap<>());
 
     consulServer = startClientAndServer(8500);
 
-		consulServer
-        .when(request().withPath("/v1/kv/carbonio-message-broker/default/username"))
-				.respond(response().withStatusCode(200).withBody("[" +
-						"{\"Value\": \"test\"}" +
-						"]"));
-    consulServer
-        .when(request().withPath("/v1/kv/carbonio-message-broker/default/password"))
-				.respond(response().withStatusCode(200).withBody("[" +
-						"{\"Value\": \"test\"}" +
-						"]"));
     consulServer
         .when(request().withPath("/v1/health/checks/carbonio-files"))
         .respond(response().withStatusCode(200).withBody("[]"));
@@ -267,7 +255,6 @@ class DeleteAccountTest {
   void shouldDeleteUser(Account caller, Account toDelete) throws Exception {
     try (MockedStatic<Files> mockFileSystem = Mockito.mockStatic(Files.class, Mockito.CALLS_REAL_METHODS)) {
       mockFileSystem.when(() -> Files.readString(any())).thenReturn("");
-      //Mockito.when(mockMessageBrokerClient.publish(any(DeleteUserRequested.class))).thenReturn(true);
 
       final String toDeleteId = toDelete.getId();
       this.doDeleteAccount(caller, toDeleteId);
@@ -319,8 +306,6 @@ class DeleteAccountTest {
   @ParameterizedTest
   @MethodSource("getPermissionDeniedCases")
   void shouldGetPermissionDenied(Account caller, Account toDelete) throws ServiceException {
-      //Mockito.when(mockMessageBrokerClient.publish(any(DeleteUserRequested.class))).thenReturn(true);
-
       final String toDeleteId = toDelete.getId();
       final ServiceException serviceException =
           Assertions.assertThrows(
@@ -334,7 +319,6 @@ class DeleteAccountTest {
     void shouldDeleteUserThrowsException(Account caller, Account toDelete) throws Exception {
       try (MockedStatic<Files> mockFileSystem = Mockito.mockStatic(Files.class, Mockito.CALLS_REAL_METHODS)) {
         mockFileSystem.when(() -> Files.readString(any())).thenReturn("");
-        //Mockito.when(mockMessageBrokerClient.publish(any(DeleteUserRequested.class))).thenReturn(true);
         DeleteUserUseCase deleteUserUseCase = Mockito.mock(DeleteUserUseCase.class);
 
         final String toDeleteId = toDelete.getId();
