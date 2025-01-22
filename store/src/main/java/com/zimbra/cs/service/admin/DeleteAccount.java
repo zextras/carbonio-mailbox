@@ -10,7 +10,6 @@ package com.zimbra.cs.service.admin;
 
 import com.zextras.carbonio.files.FilesClient;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
-import com.zextras.mailbox.client.ServiceDiscoverHttpClient;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
@@ -26,9 +25,6 @@ import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import com.zimbra.soap.admin.message.DeleteAccountResponse;
 import io.vavr.control.Try;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -85,44 +81,24 @@ public class DeleteAccount extends AdminDocumentHandler {
     Account account = prov.get(AccountBy.id, id, zsc.getAuthToken());
     defendAgainstAccountHarvesting(account, AccountBy.id, id, zsc, Admin.R_deleteAccount);
 
-    // If files is installed, mailbox must emit an event so files will delete user's files and blobs and only then
-    // send another event back to mailbox to delete the account (see DeletedUserFilesConsumer)
-    // If files is not installed, mailbox can delete the account directly as it always did
-    boolean isFilesInstalled;
+    try {
+      final String cookie = ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + zsc.getAuthToken().getEncoded();
+      Try<Boolean> success = this.filesClient.deleteAllNodesAndBlobs(cookie, account.getId());
 
-    Path filePath = Paths.get("/etc/carbonio/mailbox/service-discover/token");
-		String token;
-		try {
-			token = Files.readString(filePath);
-			ServiceDiscoverHttpClient serviceDiscoverHttpClient =
-					ServiceDiscoverHttpClient.defaultUrl()
-							.withToken(token);
-
-      isFilesInstalled = serviceDiscoverHttpClient.isServiceInstalled("carbonio-files").get();
-
-		} catch (Exception e) {
-      // Throw if it can't get if files is installed or not since we don't know what to do
-			throw ServiceException.FAILURE("Delete account " + account.getMail() + " has an error: " + e.getMessage(), e);
-		}
-
-    if (isFilesInstalled) {
-      try {
-        final String cookie = ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + zsc.getAuthToken().getEncoded();
-        Try<Boolean> success = this.filesClient.deleteAllNodesAndBlobs(cookie, account.getId());
-
-        if (success.isFailure() || !success.get()) {
-          throw ServiceException.FAILURE("Delete all nodes request to Files failed", null);
-        }
-
+      if (success.isFailure() || !success.get()) {
         ZimbraLog.security.info(
-        ZimbraLog.encodeAttrs(
+          ZimbraLog.encodeAttrs(
             new String[] {
-              "cmd", "DeleteAccount", "delete nodes sent to Files for account ", account.getId()
+              "cmd", "DeleteAccount", "call to deleteAllNodesAndBlob returned an error ", account.getId()
             }));
-
-      } catch (Exception e) {
-        throw ServiceException.FAILURE("Can't delete nodes on Files: ", e);
       }
+
+    } catch (Exception e) {
+      ZimbraLog.security.info(
+        ZimbraLog.encodeAttrs(
+          new String[] {
+            "cmd", "DeleteAccount", "error while trying to call deleteAllNodesAndBlobs ", account.getId()
+          }));
     }
 
     /*
