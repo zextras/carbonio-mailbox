@@ -1,5 +1,12 @@
 
 
+## [4.19.5](https://github.com/zextras/carbonio-mailbox/compare/4.19.4...4.19.5) (2025-01-23)
+
+
+### Bug Fixes
+
+* [CO-1783] remove mailbox permission to access files healthcheck ([#658](https://github.com/zextras/carbonio-mailbox/issues/658)) ([5df3228](https://github.com/zextras/carbonio-mailbox/commit/5df3228bebfdc8fc9f384f10f5f7ebc98492bd00))
+
 ## [4.19.4](https://github.com/zextras/carbonio-mailbox/compare/4.19.3...4.19.4) (2025-01-07)
 
 

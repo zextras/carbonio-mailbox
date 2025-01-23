@@ -23,9 +23,6 @@
       },
       "carbonio-mailbox-sidecar-proxy": {
         "policy": "write"
-      },
-      "carbonio-files": {
-        "policy": "read"
       }
     }
   ]

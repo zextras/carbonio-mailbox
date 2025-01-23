@@ -1,5 +1,5 @@
 pkgname="carbonio-mailbox-jar"
-pkgver="4.19.4"
+pkgver="4.19.5"
 pkgrel="1"
 pkgdesc="Carbonio Mailbox Jars"
 arch=('x86_64')
