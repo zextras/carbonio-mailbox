@@ -380,4 +380,39 @@ class DeleteAccountTest {
 					Mockito.any(DeleteUserRequested.class)
 			);
 	}
+
+	@Test
+	void shouldFail_WhenSendingEventToMessageBrokerReturnsFalse() throws Exception {
+		final ServiceInstalledProvider filesIsInstalledProvider = () -> true;
+		final MessageBrokerClient messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
+		Mockito.when(messageBrokerClient.publish(any(DeleteUserRequested.class))).thenReturn(false);
+		final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
+		final Account userAccount = accountCreatorFactory.get().create();
+
+		final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(),
+				filesIsInstalledProvider, () -> messageBrokerClient);
+
+		final Exception exception = assertThrows(Exception.class,
+				() -> this.doDeleteAccount(deleteAccount, adminAccount, userAccount.getId()));
+		assertTrue(exception.getMessage().contains("Failed to publish delete user requested event"));
+	}
+
+	@Test
+	void shouldFail_WhenSendingEventToMessageBrokerThrows() throws Exception {
+		final ServiceInstalledProvider filesIsInstalledProvider = () -> true;
+		final MessageBrokerClient messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
+		Mockito
+				.doThrow(new RuntimeException("Something went wrong while connect to the message broker"))
+				.when(messageBrokerClient)
+				.publish(any(DeleteUserRequested.class));
+		final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
+		final Account userAccount = accountCreatorFactory.get().create();
+
+		final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(),
+				filesIsInstalledProvider, () -> messageBrokerClient);
+
+		final Exception exception = assertThrows(Exception.class,
+				() -> this.doDeleteAccount(deleteAccount, adminAccount, userAccount.getId()));
+		assertTrue(exception.getMessage().contains("Failed to publish delete user requested event"));
+	}
 }
