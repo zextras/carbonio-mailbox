@@ -14,7 +14,6 @@ import java.util.function.Supplier;
 public class AdminServiceWithFilesInstalled extends AdminService {
 
 	public static final int MESSAGE_BROKER_PORT = 20005;
-	public static final String MESSAGE_BROKER_USERNAME = "test";
 	public static final String MESSAGE_BROKER_PASSWORD = "test";
 	public static final String MESSAGE_BROKER_IMAGE = "rabbitmq:3.7.25-management-alpine";
 
