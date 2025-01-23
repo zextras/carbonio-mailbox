@@ -47,7 +47,7 @@ class MailboxTest {
   }
 
   @Test
-  void shouldNotStartMailboxIfDryRun() throws Exception {
+  void shouldNotStartMailboxIfDryRun() {
     final String webApp = new File("conf/").getAbsolutePath();
     final String webDescriptor = new File("conf/web-dev.xml").getAbsolutePath();
     assertDoesNotThrow(() -> Mailbox.main(new String[]{"-webDescriptor", webDescriptor, "-webApp", webApp, "-dryRun", "true"}));

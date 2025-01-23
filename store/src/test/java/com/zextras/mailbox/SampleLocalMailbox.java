@@ -14,7 +14,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.HSQLDB;
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyStore;
@@ -79,12 +78,7 @@ public class SampleLocalMailbox {
                     ZAttrProvisioning.A_zimbraPop3SSLServerEnabled, "FALSE",
                     ZAttrProvisioning.A_zimbraImapSSLServerEnabled, "FALSE")));
 
-    final String descriptor = new File("./store/conf/web-dev.xml").getAbsolutePath();
-    final String webApp = new File("./store/conf/").getAbsolutePath();
-
     Server server = new LikeXmlJettyServer.Builder(provisioning.getConfig(), provisioning.getLocalServer())
-        .withWebApp(webApp)
-        .withWebDescriptor(descriptor)
         .build();
     server.start();
     server.join();
