@@ -14,12 +14,9 @@ import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.service.account.AccountService;
-import com.zimbra.cs.service.mail.MailServiceWithoutTracking;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import com.zimbra.soap.admin.message.GetAccountRequest;
 import com.zimbra.soap.type.AccountSelector;
-import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -32,8 +29,6 @@ class DeleteAccountApiWithFilesInstalledTest extends SoapTestSuite {
 	@RegisterExtension
 	static SoapExtension soapExtension = new SoapExtension.Builder()
 			.addEngineHandler(AdminServiceWithFilesInstalled.class.getName())
-			.addEngineHandler(AccountService.class.getName())
-			.addEngineHandler(MailServiceWithoutTracking.class.getName())
 			.create();
 
 	private static MailboxTestUtil.AccountCreator.Factory accountCreatorFactory;
@@ -47,11 +42,9 @@ class DeleteAccountApiWithFilesInstalledTest extends SoapTestSuite {
 	@Test
 	void shouldNotDeleteAccountImmediately_WhenFilesIsInstalled() throws Exception {
 		try (RabbitMQContainer messageBroker = new RabbitMQContainer(DockerImageName.parse(
-				AdminServiceWithFilesInstalled.MESSAGE_BROKER_IMAGE))
-				.withAdminPassword(AdminServiceWithFilesInstalled.MESSAGE_BROKER_PASSWORD)) {
-			messageBroker.setPortBindings(
-					List.of(AdminServiceWithFilesInstalled.MESSAGE_BROKER_PORT + ":5672"));
+				AdminServiceWithFilesInstalled.MESSAGE_BROKER_IMAGE))) {
 			messageBroker.start();
+			AdminServiceWithFilesInstalled.setMessageBrokerPort(messageBroker.getAmqpPort());
 			final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
 			final Account userAccount = accountCreatorFactory.get().create();
 			final String accountWithPublicShareId = userAccount.getId();

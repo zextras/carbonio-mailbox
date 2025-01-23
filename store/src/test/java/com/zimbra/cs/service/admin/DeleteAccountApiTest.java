@@ -10,8 +10,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.service.account.AccountService;
-import com.zimbra.cs.service.mail.MailServiceWithoutTracking;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import com.zimbra.soap.admin.message.GetAccountRequest;
 import com.zimbra.soap.type.AccountSelector;
@@ -27,8 +25,6 @@ class DeleteAccountApiTest extends SoapTestSuite {
 	@RegisterExtension
 	static SoapExtension soapExtension = new SoapExtension.Builder()
 			.addEngineHandler(NoFilesInstalledAdminService.class.getName())
-			.addEngineHandler(AccountService.class.getName())
-			.addEngineHandler(MailServiceWithoutTracking.class.getName())
 			.create();
 
 	private static MailboxTestUtil.AccountCreator.Factory accountCreatorFactory;
