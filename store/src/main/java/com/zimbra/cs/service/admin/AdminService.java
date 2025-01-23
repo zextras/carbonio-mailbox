@@ -66,7 +66,7 @@ public class AdminService implements DocumentService {
 
     dispatcher.registerHandler(
         AdminConstants.DELETE_ACCOUNT_REQUEST,
-        new DeleteAccount(deleteUserUseCase, getFilesInstalledServiceProvider()));
+        new DeleteAccount(deleteUserUseCase, getFilesInstalledServiceProvider(), () -> Try.of(MessageBrokerFactory::getMessageBrokerClientInstance).get()));
 
     // Start the consumer with retry (not really a handler in a strict sense, but needed
     // to consume the event related to the user deletion, so I put that here to reuse deleteUserUseCase; don't know if

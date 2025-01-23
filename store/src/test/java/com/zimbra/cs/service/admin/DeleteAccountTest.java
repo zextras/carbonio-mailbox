@@ -52,6 +52,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockserver.integration.ClientAndServer;
+import org.testcontainers.containers.RabbitMQContainer;
+import org.testcontainers.utility.DockerImageName;
 
 class DeleteAccountTest {
 
@@ -259,7 +261,7 @@ class DeleteAccountTest {
 					.thenReturn(true);
 
 			final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(),
-					filesNotInstalledProvider);
+					filesNotInstalledProvider, () -> Mockito.mock(MessageBrokerClient.class));
 
 			final String toDeleteId = toDelete.getId();
 			this.doDeleteAccount(deleteAccount, caller, toDeleteId);
@@ -305,7 +307,7 @@ class DeleteAccountTest {
 			throws ServiceException {
 		Mockito.when(mockMessageBrokerClient.publish(any(DeleteUserRequested.class))).thenReturn(true);
 		final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(),
-				filesNotInstalledProvider);
+				filesNotInstalledProvider, () -> Mockito.mock(MessageBrokerClient.class));
 		final String toDeleteId = toDelete.getId();
 
 		final ServiceException serviceException =
@@ -326,7 +328,7 @@ class DeleteAccountTest {
 				.thenReturn(Try.failure(new RuntimeException("message")));
 		DeleteAccount deleteAccountHandler =
 				new DeleteAccount(
-						deleteUserUseCase, filesNotInstalledProvider);
+						deleteUserUseCase, filesNotInstalledProvider, () -> Mockito.mock(MessageBrokerClient.class));
 
 		final ServiceException serviceException =
 				assertThrows(ServiceException.class,
@@ -346,7 +348,7 @@ class DeleteAccountTest {
 			throw new RuntimeException("failed to retrieve if files is installed");
 		};
 		final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(),
-				failedToCheckIfFilesInstalled);
+				failedToCheckIfFilesInstalled, () -> Mockito.mock(MessageBrokerClient.class));
 
 		final ServiceException serviceException = assertThrows(ServiceException.class,
 				() -> this.doDeleteAccount(deleteAccount, adminAccount, userAccount.getId()));
@@ -361,5 +363,24 @@ class DeleteAccountTest {
 				mailboxManager,
 				new AclService(mailboxManager, provisioning),
 				ZimbraLog.security);
+	}
+
+	@Test
+	void shouldSendMessageToRabbit_WhenFilesIsInstalled() throws Exception {
+		final DockerImageName dockerImageName = DockerImageName.parse("rabbitmq:3.7.25-management-alpine");
+		try (RabbitMQContainer container = new RabbitMQContainer(dockerImageName)) {
+			container.withExposedPorts(5672, 20005);
+			container.start();
+			final ServiceInstalledProvider filesIsInstalledProvider = () -> true;
+			final MessageBrokerClient messageBrokerClient = MessageBrokerClient.fromConfig("localhost", 20005, "", "");
+			final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
+			final Account userAccount = accountCreatorFactory.get().create();
+			final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(),
+					filesIsInstalledProvider, () -> messageBrokerClient);
+
+			this.doDeleteAccount(deleteAccount, adminAccount, userAccount.getId());
+
+			assertEquals("guest", container.getAdminPassword());
+		}
 	}
 }
