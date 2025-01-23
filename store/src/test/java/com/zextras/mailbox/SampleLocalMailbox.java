@@ -78,7 +78,7 @@ public class SampleLocalMailbox {
                     ZAttrProvisioning.A_zimbraPop3SSLServerEnabled, "FALSE",
                     ZAttrProvisioning.A_zimbraImapSSLServerEnabled, "FALSE")));
 
-    Server server = new LikeXmlJettyServer.Builder(provisioning.getConfig(), provisioning.getLocalServer())
+    Server server = new MailboxServer.Builder(provisioning.getConfig(), provisioning.getLocalServer())
         .build();
     server.start();
     server.join();

@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.zextras.mailbox.LikeXmlJettyServer.Builder;
-import com.zextras.mailbox.LikeXmlJettyServer.InstantiationException;
+import com.zextras.mailbox.MailboxServer.Builder;
+import com.zextras.mailbox.MailboxServer.InstantiationException;
 import com.zimbra.cs.account.Config;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;

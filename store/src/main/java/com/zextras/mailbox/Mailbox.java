@@ -4,7 +4,7 @@
 
 package com.zextras.mailbox;
 
-import com.zextras.mailbox.LikeXmlJettyServer.Builder;
+import com.zextras.mailbox.MailboxServer.Builder;
 import com.zimbra.cs.account.Provisioning;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;

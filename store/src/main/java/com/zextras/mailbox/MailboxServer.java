@@ -25,7 +25,6 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
@@ -35,7 +34,7 @@ import org.eclipse.jetty.util.thread.ThreadPool;
 
 // See: https://github.com/jetty/jetty.project/blob/jetty-9.4.x/examples/embedded/src/main/java/org/eclipse/jetty/embedded/LikeJettyXml.java
 // See previous jetty.xml config for reference: https://github.com/zextras/carbonio-appserver/blob/81bce01f4b97efd89ccf89e79c963b40f16ffc81/appserver/conf/jetty/jetty.xml.production
-public class LikeXmlJettyServer {
+public class MailboxServer {
 
   public static class InstantiationException extends Exception {
 
@@ -46,7 +45,7 @@ public class LikeXmlJettyServer {
     }
   }
 
-  private LikeXmlJettyServer() {
+  private MailboxServer() {
   }
 
   public static class Builder {
@@ -95,10 +94,10 @@ public class LikeXmlJettyServer {
       server.addConnector(createMtaAdminHttpsConnector(server));
       server.addConnector(createExtensionsHttpsConnector(server));
       final ContextHandlerCollection contexts = new ContextHandlerCollection();
-				Handler webAppHandler = new MailboxAPIs(config).createServletContextHandler();
+				Handler webAppHandler = new MailboxAPIs(localServer).createServletContextHandler();
 
       final RewriteHandler mainHandler = createRewriteHandler();
-      mainHandler.setHandler(new HandlerCollection(contexts, new DefaultHandler(), webAppHandler,
+      mainHandler.setHandler(new HandlerCollection(contexts, webAppHandler,
 					createRequestLogHandler()));
 
       if (localServer.isHttpCompressionEnabled()) {
