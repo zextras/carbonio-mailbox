@@ -397,7 +397,7 @@ public class AdminService implements DocumentService {
     return result;
   }
 
-  protected Try<MessageBrokerClient> getMessageBroker() {
+  protected Try<MessageBrokerClient> tryGetMessageBroker() {
       return Try.of(MessageBrokerFactory::getMessageBrokerClientInstance);
   }
 
@@ -406,7 +406,7 @@ public class AdminService implements DocumentService {
   }
 
   protected Supplier<MessageBrokerClient> getMessageBrokerClientProvider() {
-    return () -> Try.of(MessageBrokerFactory::getMessageBrokerClientInstance).get();
+    return () -> tryGetMessageBroker().get();
   }
 
   private void scheduleConsumer(MessageBrokerClient client, DeleteUserUseCase deleteUserUseCase) {
@@ -418,7 +418,7 @@ public class AdminService implements DocumentService {
 
   private void scheduleRetry(DeleteUserUseCase deleteUserUseCase) {
     Executors.newSingleThreadScheduledExecutor().schedule(() -> {
-      Try<MessageBrokerClient> retryClientTry = getMessageBroker();
+      Try<MessageBrokerClient> retryClientTry = tryGetMessageBroker();
       retryClientTry.onSuccess(client -> {
         ZimbraLog.security.info("Starting deleted user files consumer");
         scheduleConsumer(client, deleteUserUseCase);
