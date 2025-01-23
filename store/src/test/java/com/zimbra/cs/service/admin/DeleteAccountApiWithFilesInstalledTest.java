@@ -1,57 +1,68 @@
+/*
+ * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 package com.zimbra.cs.service.admin;
+
+import static com.zimbra.cs.account.AccountServiceException.NO_SUCH_ACCOUNT;
 
 import com.zextras.mailbox.soap.SoapExtension;
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.accesscontrol.RightManager;
-import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.service.account.AccountService;
 import com.zimbra.cs.service.mail.MailServiceWithoutTracking;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import com.zimbra.soap.admin.message.GetAccountRequest;
 import com.zimbra.soap.type.AccountSelector;
+import java.util.List;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.testcontainers.containers.RabbitMQContainer;
+import org.testcontainers.utility.DockerImageName;
 
-@Tag("api")
-class DeleteAccountApiTest extends SoapTestSuite {
+class DeleteAccountApiWithFilesInstalledTest extends SoapTestSuite {
 
 	@RegisterExtension
 	static SoapExtension soapExtension = new SoapExtension.Builder()
-			.addEngineHandler(NoFilesInstalledAdminService.class.getName())
+			.addEngineHandler(AdminServiceWithFilesInstalled.class.getName())
 			.addEngineHandler(AccountService.class.getName())
 			.addEngineHandler(MailServiceWithoutTracking.class.getName())
 			.create();
 
 	private static MailboxTestUtil.AccountCreator.Factory accountCreatorFactory;
-	private static MailboxTestUtil.AccountAction.Factory accountActionFactory;
-
-
+	private static RabbitMQContainer messageBroker;
 
 	@BeforeAll
-	static void beforeAll() throws Exception {
+	static void beforeAll() {
 		Provisioning provisioning = Provisioning.getInstance();
-		final MailboxManager mailboxManager = MailboxManager.getInstance();
 		accountCreatorFactory = new MailboxTestUtil.AccountCreator.Factory(provisioning);
-		accountActionFactory = new MailboxTestUtil.AccountAction.Factory(mailboxManager,
-				RightManager.getInstance());
+		final DockerImageName dockerImageName = DockerImageName.parse(
+				AdminServiceWithFilesInstalled.MESSAGE_BROKER_IMAGE);
+		messageBroker = new RabbitMQContainer(dockerImageName);
+		messageBroker.withAdminPassword(AdminServiceWithFilesInstalled.MESSAGE_BROKER_PASSWORD);
+		messageBroker.setPortBindings(
+				List.of(AdminServiceWithFilesInstalled.MESSAGE_BROKER_PORT + ":5672"));
+		messageBroker.start();
+	}
+
+	@AfterAll
+	static void afterAll() {
+		messageBroker.close();
 	}
 
 	@Test
-	void shouldDeleteAccountWithPublicSharedFolder() throws Exception {
+	void shouldNotDeleteAccountImmediately_WhenFilesIsInstalled() throws Exception {
 		final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
-		final Account accountWithPublicSharedFolder = accountCreatorFactory.get().create();
-		accountActionFactory.forAccount(accountWithPublicSharedFolder)
-				.grantPublicFolderRight(Mailbox.ID_FOLDER_CALENDAR, "r");
-		final String accountWithPublicShareId = accountWithPublicSharedFolder.getId();
+		final Account userAccount = accountCreatorFactory.get().create();
+		final String accountWithPublicShareId = userAccount.getId();
 
 		final SoapResponse deleteAccountResponse = getSoapClient().newRequest()
 				.setCaller(adminAccount).setSoapBody(new DeleteAccountRequest(accountWithPublicShareId))
@@ -62,8 +73,7 @@ class DeleteAccountApiTest extends SoapTestSuite {
 				.setCaller(adminAccount)
 				.setSoapBody(new GetAccountRequest(AccountSelector.fromId(accountWithPublicShareId)))
 				.call();
-
-		Assertions.assertTrue(getAccountResponse.body()
-				.contains(AccountServiceException.NO_SUCH_ACCOUNT));
+		Assertions.assertEquals(200, getAccountResponse.statusCode());
+		Assertions.assertFalse(getAccountResponse.body().contains(NO_SUCH_ACCOUNT));
 	}
 }

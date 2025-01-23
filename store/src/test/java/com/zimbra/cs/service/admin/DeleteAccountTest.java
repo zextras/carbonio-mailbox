@@ -11,7 +11,6 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
-import com.zextras.carbonio.message_broker.config.enums.Service;
 import com.zextras.carbonio.message_broker.events.services.mailbox.DeleteUserRequested;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
@@ -53,8 +52,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockserver.integration.ClientAndServer;
-import org.testcontainers.containers.RabbitMQContainer;
-import org.testcontainers.utility.DockerImageName;
 
 class DeleteAccountTest {
 
@@ -329,7 +326,8 @@ class DeleteAccountTest {
 				.thenReturn(Try.failure(new RuntimeException("message")));
 		DeleteAccount deleteAccountHandler =
 				new DeleteAccount(
-						deleteUserUseCase, filesNotInstalledProvider, () -> Mockito.mock(MessageBrokerClient.class));
+						deleteUserUseCase, filesNotInstalledProvider,
+						() -> Mockito.mock(MessageBrokerClient.class));
 
 		final ServiceException serviceException =
 				assertThrows(ServiceException.class,
@@ -367,20 +365,19 @@ class DeleteAccountTest {
 	}
 
 	@Test
-	void shouldSendMessageToMessageBroker_WhenFilesIsInstalled() throws Exception {
-		final DockerImageName dockerImageName = DockerImageName.parse("rabbitmq:3.7.25-management-alpine");
-		try (RabbitMQContainer messageBroker = new RabbitMQContainer(dockerImageName)) {
-			messageBroker.start();
+	void shouldSendDeleteUserRequestedEventToMessageBroker_WhenFilesIsInstalled() throws Exception {
 			final ServiceInstalledProvider filesIsInstalledProvider = () -> true;
-			final MessageBrokerClient messageBrokerClient = MessageBrokerClient.
-					fromConfig("127.0.0.1", messageBroker.getAmqpPort(), messageBroker.getAdminUsername(), messageBroker.getAdminPassword())
-					.withCurrentService(Service.MAILBOX);
+			final MessageBrokerClient messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
+			Mockito.when(messageBrokerClient.publish(any(DeleteUserRequested.class))).thenReturn(true);
 			final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
 			final Account userAccount = accountCreatorFactory.get().create();
 			final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(),
 					filesIsInstalledProvider, () -> messageBrokerClient);
 
-			assertDoesNotThrow(() -> this.doDeleteAccount(deleteAccount, adminAccount, userAccount.getId()));
-		}
+			this.doDeleteAccount(deleteAccount, adminAccount, userAccount.getId());
+
+			Mockito.verify(messageBrokerClient, Mockito.times(1)).publish(
+					Mockito.any(DeleteUserRequested.class)
+			);
 	}
 }

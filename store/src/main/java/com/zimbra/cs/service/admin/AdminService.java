@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 /**
  * @zm-service-description The Admin Service includes commands for server, account and mailbox
@@ -66,7 +67,7 @@ public class AdminService implements DocumentService {
 
     dispatcher.registerHandler(
         AdminConstants.DELETE_ACCOUNT_REQUEST,
-        new DeleteAccount(deleteUserUseCase, getFilesInstalledServiceProvider(), () -> Try.of(MessageBrokerFactory::getMessageBrokerClientInstance).get()));
+        new DeleteAccount(deleteUserUseCase, getFilesInstalledServiceProvider(), getMessageBrokerClientProvider()));
 
     // Start the consumer with retry (not really a handler in a strict sense, but needed
     // to consume the event related to the user deletion, so I put that here to reuse deleteUserUseCase; don't know if
@@ -125,10 +126,6 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(AdminConstants.PURGE_MESSAGES_REQUEST, new PurgeMessages());
     dispatcher.registerHandler(AdminConstants.DELETE_MAILBOX_REQUEST, new DeleteMailbox());
     dispatcher.registerHandler(AdminConstants.GET_MAILBOX_REQUEST, new GetMailbox());
-
-    // TODO: check if this is required here, we have moved it to package com.zimbra.qa.service.admin
-    // for now to remove dependency of qa package from store module
-    // dispatcher.registerHandler(AdminConstants.RUN_UNIT_TESTS_REQUEST, new RunUnitTests());
 
     dispatcher.registerHandler(AdminConstants.CHECK_AUTH_CONFIG_REQUEST, new CheckAuthConfig());
     dispatcher.registerHandler(AdminConstants.CHECK_GAL_CONFIG_REQUEST, new CheckGalConfig());
@@ -406,6 +403,10 @@ public class AdminService implements DocumentService {
 
   protected ServiceInstalledProvider getFilesInstalledServiceProvider() {
     return new FilesInstalledProvider(Paths.get("/etc/carbonio/mailbox/service-discover/token"));
+  }
+
+  protected Supplier<MessageBrokerClient> getMessageBrokerClientProvider() {
+    return () -> Try.of(MessageBrokerFactory::getMessageBrokerClientInstance).get();
   }
 
   private void scheduleConsumer(MessageBrokerClient client, DeleteUserUseCase deleteUserUseCase) {
