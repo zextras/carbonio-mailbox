@@ -20,7 +20,6 @@ import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import com.zimbra.soap.admin.message.GetAccountRequest;
 import com.zimbra.soap.type.AccountSelector;
 import java.util.List;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -38,42 +37,36 @@ class DeleteAccountApiWithFilesInstalledTest extends SoapTestSuite {
 			.create();
 
 	private static MailboxTestUtil.AccountCreator.Factory accountCreatorFactory;
-	private static RabbitMQContainer messageBroker;
 
 	@BeforeAll
 	static void beforeAll() {
 		Provisioning provisioning = Provisioning.getInstance();
 		accountCreatorFactory = new MailboxTestUtil.AccountCreator.Factory(provisioning);
-		final DockerImageName dockerImageName = DockerImageName.parse(
-				AdminServiceWithFilesInstalled.MESSAGE_BROKER_IMAGE);
-		messageBroker = new RabbitMQContainer(dockerImageName);
-		messageBroker.withAdminPassword(AdminServiceWithFilesInstalled.MESSAGE_BROKER_PASSWORD);
-		messageBroker.setPortBindings(
-				List.of(AdminServiceWithFilesInstalled.MESSAGE_BROKER_PORT + ":5672"));
-		messageBroker.start();
-	}
-
-	@AfterAll
-	static void afterAll() {
-		messageBroker.close();
 	}
 
 	@Test
 	void shouldNotDeleteAccountImmediately_WhenFilesIsInstalled() throws Exception {
-		final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
-		final Account userAccount = accountCreatorFactory.get().create();
-		final String accountWithPublicShareId = userAccount.getId();
+		try (RabbitMQContainer messageBroker = new RabbitMQContainer(DockerImageName.parse(
+				AdminServiceWithFilesInstalled.MESSAGE_BROKER_IMAGE))
+				.withAdminPassword(AdminServiceWithFilesInstalled.MESSAGE_BROKER_PASSWORD)) {
+			messageBroker.setPortBindings(
+					List.of(AdminServiceWithFilesInstalled.MESSAGE_BROKER_PORT + ":5672"));
+			messageBroker.start();
+			final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
+			final Account userAccount = accountCreatorFactory.get().create();
+			final String accountWithPublicShareId = userAccount.getId();
 
-		final SoapResponse deleteAccountResponse = getSoapClient().newRequest()
-				.setCaller(adminAccount).setSoapBody(new DeleteAccountRequest(accountWithPublicShareId))
-				.call();
-		Assertions.assertEquals(200, deleteAccountResponse.statusCode());
+			final SoapResponse deleteAccountResponse = getSoapClient().newRequest()
+					.setCaller(adminAccount).setSoapBody(new DeleteAccountRequest(accountWithPublicShareId))
+					.call();
+			Assertions.assertEquals(200, deleteAccountResponse.statusCode());
 
-		final SoapResponse getAccountResponse = getSoapClient().newRequest()
-				.setCaller(adminAccount)
-				.setSoapBody(new GetAccountRequest(AccountSelector.fromId(accountWithPublicShareId)))
-				.call();
-		Assertions.assertEquals(200, getAccountResponse.statusCode());
-		Assertions.assertFalse(getAccountResponse.body().contains(NO_SUCH_ACCOUNT));
+			final SoapResponse getAccountResponse = getSoapClient().newRequest()
+					.setCaller(adminAccount)
+					.setSoapBody(new GetAccountRequest(AccountSelector.fromId(accountWithPublicShareId)))
+					.call();
+			Assertions.assertEquals(200, getAccountResponse.statusCode());
+			Assertions.assertFalse(getAccountResponse.body().contains(NO_SUCH_ACCOUNT));
+		}
 	}
 }
