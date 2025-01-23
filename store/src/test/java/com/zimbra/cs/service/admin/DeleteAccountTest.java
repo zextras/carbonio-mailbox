@@ -11,6 +11,7 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
+import com.zextras.carbonio.message_broker.config.enums.Service;
 import com.zextras.carbonio.message_broker.events.services.mailbox.DeleteUserRequested;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
@@ -366,21 +367,20 @@ class DeleteAccountTest {
 	}
 
 	@Test
-	void shouldSendMessageToRabbit_WhenFilesIsInstalled() throws Exception {
+	void shouldSendMessageToMessageBroker_WhenFilesIsInstalled() throws Exception {
 		final DockerImageName dockerImageName = DockerImageName.parse("rabbitmq:3.7.25-management-alpine");
-		try (RabbitMQContainer container = new RabbitMQContainer(dockerImageName)) {
-			container.withExposedPorts(5672, 20005);
-			container.start();
+		try (RabbitMQContainer messageBroker = new RabbitMQContainer(dockerImageName)) {
+			messageBroker.start();
 			final ServiceInstalledProvider filesIsInstalledProvider = () -> true;
-			final MessageBrokerClient messageBrokerClient = MessageBrokerClient.fromConfig("localhost", 20005, "", "");
+			final MessageBrokerClient messageBrokerClient = MessageBrokerClient.
+					fromConfig("127.0.0.1", messageBroker.getAmqpPort(), messageBroker.getAdminUsername(), messageBroker.getAdminPassword())
+					.withCurrentService(Service.MAILBOX);
 			final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
 			final Account userAccount = accountCreatorFactory.get().create();
 			final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(),
 					filesIsInstalledProvider, () -> messageBrokerClient);
 
-			this.doDeleteAccount(deleteAccount, adminAccount, userAccount.getId());
-
-			assertEquals("guest", container.getAdminPassword());
+			assertDoesNotThrow(() -> this.doDeleteAccount(deleteAccount, adminAccount, userAccount.getId()));
 		}
 	}
 }
