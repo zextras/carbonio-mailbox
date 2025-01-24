@@ -10,4 +10,7 @@
   <key name="zimbra_home">
     <value>build/zimbra</value>
   </key>
+  <key name="zimbra_log/directory">
+    <value>build/zimbra</value>
+  </key>
 </localconfig>

@@ -103,16 +103,11 @@ public class SoapClient implements Closeable {
 
     public HttpResponse execute() throws Exception {
 
-      cookieStore.clear();
-      cookieStore.addCookie(createAuthCookie());
+      if (!Objects.isNull(caller)) {
+        cookieStore.clear();
+        cookieStore.addCookie(createAuthCookie());
+      }
 
-      final HttpPost httpPost = new HttpPost();
-      httpPost.setURI(URI.create(this.url));
-      httpPost.setEntity(createEnvelop());
-      return client.execute(httpPost);
-    }
-
-    public HttpResponse directCall() throws Exception {
       final HttpPost httpPost = new HttpPost();
       httpPost.setURI(URI.create(this.url));
       httpPost.setEntity(createEnvelop());
