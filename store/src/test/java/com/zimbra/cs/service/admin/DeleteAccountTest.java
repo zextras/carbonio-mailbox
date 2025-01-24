@@ -20,7 +20,6 @@ import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -31,11 +30,12 @@ import com.zimbra.cs.account.accesscontrol.RightModifier;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE;
 import com.zimbra.cs.account.accesscontrol.generated.AdminRights;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.service.AuthProvider;
+import com.zimbra.cs.service.mail.ServiceTestUtil;
 import com.zimbra.soap.JaxbUtil;
-import com.zimbra.soap.SoapEngine;
-import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
+import com.zimbra.soap.admin.message.GetAccountRequest;
+import com.zimbra.soap.admin.message.GetAccountResponse;
+import com.zimbra.soap.type.AccountSelector;
 import io.vavr.control.Try;
 import java.nio.file.Files;
 import java.util.HashMap;
@@ -44,6 +44,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -57,6 +58,7 @@ class DeleteAccountTest {
 
 	private static final String OTHER_DOMAIN = "other.com";
 	private static final ServiceInstalledProvider filesNotInstalledProvider = () -> false;
+	private static final ServiceInstalledProvider filesIsInstalledProvider = () -> true;
 	private static Provisioning provisioning;
 	private static MailboxManager mailboxManager;
 	private static MessageBrokerClient mockMessageBrokerClient;
@@ -236,17 +238,19 @@ class DeleteAccountTest {
 	}
 
 	private void doDeleteAccount(DeleteAccount deleteAccount, Account caller,
-			String accountToDeleteId) throws ServiceException {
-		Map<String, Object> context = new HashMap<>();
-		ZimbraSoapContext zsc =
-				new ZimbraSoapContext(
-						AuthProvider.getAuthToken(caller),
-						caller.getId(),
-						SoapProtocol.Soap12,
-						SoapProtocol.Soap12);
-		context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
+			String accountToDeleteId) throws Exception {
 		deleteAccount.handle(
-				JaxbUtil.jaxbToElement(new DeleteAccountRequest(accountToDeleteId)), context);
+				JaxbUtil.jaxbToElement(new DeleteAccountRequest(accountToDeleteId)),
+				ServiceTestUtil.getRequestContext(caller));
+	}
+
+	private GetAccountResponse doGetAccount(GetAccount getAccount, Account caller,
+			String accountId) throws Exception {
+
+		final GetAccountRequest request = new GetAccountRequest();
+		request.setAccount(AccountSelector.fromId(accountId));
+		return JaxbUtil.elementToJaxb(getAccount.handle(
+				JaxbUtil.jaxbToElement(request), ServiceTestUtil.getRequestContext(caller)), GetAccountResponse.class);
 	}
 
 	@ParameterizedTest(name = "{0}")
@@ -366,7 +370,6 @@ class DeleteAccountTest {
 
 	@Test
 	void shouldSendDeleteUserRequestedEventToMessageBroker_WhenFilesIsInstalled() throws Exception {
-			final ServiceInstalledProvider filesIsInstalledProvider = () -> true;
 			final MessageBrokerClient messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
 			Mockito.when(messageBrokerClient.publish(any(DeleteUserRequested.class))).thenReturn(true);
 			final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
@@ -383,36 +386,51 @@ class DeleteAccountTest {
 
 	@Test
 	void shouldFail_WhenSendingEventToMessageBrokerReturnsFalse() throws Exception {
-		final ServiceInstalledProvider filesIsInstalledProvider = () -> true;
 		final MessageBrokerClient messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
 		Mockito.when(messageBrokerClient.publish(any(DeleteUserRequested.class))).thenReturn(false);
 		final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
-		final Account userAccount = accountCreatorFactory.get().create();
+		final Account accountToDelete = accountCreatorFactory.get().create();
 
 		final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(),
 				filesIsInstalledProvider, () -> messageBrokerClient);
 
 		final Exception exception = assertThrows(Exception.class,
-				() -> this.doDeleteAccount(deleteAccount, adminAccount, userAccount.getId()));
+				() -> this.doDeleteAccount(deleteAccount, adminAccount, accountToDelete.getId()));
 		assertTrue(exception.getMessage().contains("Failed to publish delete user requested event"));
 	}
 
 	@Test
 	void shouldFail_WhenSendingEventToMessageBrokerThrows() throws Exception {
-		final ServiceInstalledProvider filesIsInstalledProvider = () -> true;
 		final MessageBrokerClient messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
 		Mockito
 				.doThrow(new RuntimeException("Something went wrong while connect to the message broker"))
 				.when(messageBrokerClient)
 				.publish(any(DeleteUserRequested.class));
 		final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
-		final Account userAccount = accountCreatorFactory.get().create();
+		final Account accountToDelete = accountCreatorFactory.get().create();
 
 		final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(),
 				filesIsInstalledProvider, () -> messageBrokerClient);
 
 		final Exception exception = assertThrows(Exception.class,
-				() -> this.doDeleteAccount(deleteAccount, adminAccount, userAccount.getId()));
+				() -> this.doDeleteAccount(deleteAccount, adminAccount, accountToDelete.getId()));
 		assertTrue(exception.getMessage().contains("Failed to publish delete user requested event"));
+	}
+
+	@Test
+	void shouldNotDeleteAccountImmediately_WhenFilesIsInstalled() throws Exception {
+		final MessageBrokerClient messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
+		Mockito.when(messageBrokerClient.publish(any(DeleteUserRequested.class))).thenReturn(true);
+		final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
+		final Account accountToDelete = accountCreatorFactory.get().create();
+		final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(),
+				filesIsInstalledProvider, () -> messageBrokerClient);
+
+		this.doDeleteAccount(deleteAccount, adminAccount, accountToDelete.getId());
+
+		final GetAccountResponse getAccountResponse = this.doGetAccount(new GetAccount(), adminAccount,
+				accountToDelete.getId());
+
+		Assertions.assertEquals(accountToDelete.getId(), getAccountResponse.getAccount().getId());
 	}
 }
