@@ -35,7 +35,7 @@ class MailboxServerTest {
 	}
 
 	@Test
-	void shouldStartMailboxServerListeningOnPort() throws Exception {
+	void shouldAuthenticateStandardUser() throws Exception {
 		try(SoapClient soapClient = new SoapClient("http://localhost:8080/service/soap")) {
 			final HttpResponse httpResponse =  soapClient.newRequest()
 					.setSoapBody(new AuthRequest(AccountSelector.fromName("test@test.com"), "password"))
