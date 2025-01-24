@@ -321,7 +321,7 @@ class DeleteAccountTest {
 
 
 	@Test
-	void shouldDeleteUserThrowsExceptionWhenUseCaseThrowsRuntimeException() throws Exception {
+	void shouldThrowException_WhenUseCaseThrowsRuntimeException() throws Exception {
 		final Account admin = accountCreatorFactory.get().asGlobalAdmin().create();
 		final Account user = accountCreatorFactory.get().create();
 		DeleteUserUseCase deleteUserUseCase = Mockito.mock(DeleteUserUseCase.class);
