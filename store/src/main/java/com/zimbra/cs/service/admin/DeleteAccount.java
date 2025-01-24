@@ -12,7 +12,6 @@ import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.carbonio.message_broker.events.services.mailbox.DeleteUserRequested;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.client.ServiceInstalledProvider;
-import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
@@ -27,6 +26,7 @@ import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import com.zimbra.soap.admin.message.DeleteAccountResponse;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * @author schemers
@@ -37,10 +37,13 @@ public class DeleteAccount extends AdminDocumentHandler {
 
   private final DeleteUserUseCase deleteUserUseCase;
   private final ServiceInstalledProvider filesInstalledProvider;
+  private final Supplier<MessageBrokerClient> messageBrokerClientSupplier;
 
-  public DeleteAccount(DeleteUserUseCase deleteUserUseCase, ServiceInstalledProvider filesInstalledProvider) {
+  public DeleteAccount(DeleteUserUseCase deleteUserUseCase,
+      ServiceInstalledProvider filesInstalledProvider, Supplier<MessageBrokerClient> messageBrokerClientSupplier) {
     this.deleteUserUseCase = deleteUserUseCase;
     this.filesInstalledProvider = filesInstalledProvider;
+    this.messageBrokerClientSupplier = messageBrokerClientSupplier;
   }
 
   @Override
@@ -131,7 +134,7 @@ public class DeleteAccount extends AdminDocumentHandler {
   private boolean publishDeleteUserRequestedEvent(Account account) {
     String userId = account.getId();
     try {
-      MessageBrokerClient messageBrokerClient = MessageBrokerFactory.getMessageBrokerClientInstance();
+      MessageBrokerClient messageBrokerClient = messageBrokerClientSupplier.get();
 			boolean result = messageBrokerClient.publish(new DeleteUserRequested(userId));
       if (result) {
         ZimbraLog.account.info("Published deleted account event for user: " + userId);

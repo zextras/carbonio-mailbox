@@ -4,6 +4,7 @@
 
 package com.zextras.mailbox.util;
 
+import com.zextras.mailbox.soap.SoapUtils;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapProtocol;
@@ -60,6 +61,9 @@ public class SoapClient implements Closeable {
     client.close();
   }
 
+  public record SoapResponse(int statusCode, String body) {
+  }
+
   public static class Request {
 
     private final BasicCookieStore cookieStore;
@@ -110,6 +114,11 @@ public class SoapClient implements Closeable {
       httpPost.setURI(URI.create(this.url));
       httpPost.setEntity(createEnvelop());
       return client.execute(httpPost);
+    }
+
+    public SoapResponse call() throws Exception {
+      final HttpResponse httpResponse = this.execute();
+      return new SoapResponse(httpResponse.getStatusLine().getStatusCode(),SoapUtils.getResponse(httpResponse));
     }
 
     private StringEntity createEnvelop() throws XmlParseException, UnsupportedEncodingException {
