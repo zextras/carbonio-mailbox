@@ -58,6 +58,7 @@ public class SampleLocalMailbox {
 			LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
 			LC.ldap_port.setDefault(LDAP_PORT);
 			LC.zimbra_home.setDefault(mailboxHome);
+			LC.zimbra_log_directory.setDefault(mailboxHome);
 			LC.mailboxd_keystore_password.setDefault(keystore_password);
 			LC.mailboxd_truststore_password.setDefault(keystore_password);
 			LC.mailboxd_keystore.setDefault(keystorePath.toAbsolutePath().toString());
@@ -101,15 +102,12 @@ public class SampleLocalMailbox {
 				put(ZAttrProvisioning.A_zimbraIsAdminAccount, "TRUE");
 			}});
 		}
+	}
 
-
-		public static void main(String[] args) throws Exception {
-			final Server server = new ServerSetup(8080, "./store", "store/src/test/resources/timezones-test.ics").create();
-			server.start();
-			server.join();
-		}
-
-
+	public static void main(String[] args) throws Exception {
+		final Server server = new ServerSetup(8080, "./store", "store/src/test/resources/timezones-test.ics").create();
+		server.start();
+		server.join();
 	}
 
 }
