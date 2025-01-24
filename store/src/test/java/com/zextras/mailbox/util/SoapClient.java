@@ -112,6 +112,13 @@ public class SoapClient implements Closeable {
       return client.execute(httpPost);
     }
 
+    public HttpResponse directCall() throws Exception {
+      final HttpPost httpPost = new HttpPost();
+      httpPost.setURI(URI.create(this.url));
+      httpPost.setEntity(createEnvelop());
+      return client.execute(httpPost);
+    }
+
     private StringEntity createEnvelop() throws XmlParseException, UnsupportedEncodingException {
       Element envelope;
       if (Objects.isNull(requestedAccount)) {
