@@ -246,7 +246,6 @@ class DeleteAccountTest {
 
 	private GetAccountResponse doGetAccount(GetAccount getAccount, Account caller,
 			String accountId) throws Exception {
-
 		final GetAccountRequest request = new GetAccountRequest();
 		request.setAccount(AccountSelector.fromId(accountId));
 		return JaxbUtil.elementToJaxb(getAccount.handle(
@@ -432,5 +431,26 @@ class DeleteAccountTest {
 				accountToDelete.getId());
 
 		Assertions.assertEquals(accountToDelete.getId(), getAccountResponse.getAccount().getId());
+	}
+
+	@Test
+	void shouldDeleteAccountImmediately_WhenFilesIsNotInstalled() throws Exception {
+		final MessageBrokerClient messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
+		final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
+		final Account accountToDelete = accountCreatorFactory.get().create();
+		final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(),
+				filesNotInstalledProvider, () -> messageBrokerClient);
+
+		final GetAccountResponse checkAccountBeforeDeletingIt = this.doGetAccount(new GetAccount(), adminAccount,
+				accountToDelete.getId());
+		Assertions.assertEquals(accountToDelete.getId(), checkAccountBeforeDeletingIt.getAccount().getId());
+
+		this.doDeleteAccount(deleteAccount, adminAccount, accountToDelete.getId());
+
+		assertThrows(ServiceException.class, () -> this.doGetAccount(new GetAccount(), adminAccount,
+				accountToDelete.getId()));
+
+
+
 	}
 }
