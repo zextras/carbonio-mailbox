@@ -332,7 +332,7 @@ class DeleteAccountTest {
 							SoapProtocol.Soap12);
 			context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
 			DeleteAccount deleteAccountHandler =
-					new DeleteAccount(deleteUserUseCase, FilesClient.atURL("http://127.78.0.7:20002"));
+					new DeleteAccount(deleteUserUseCase, filesClientMock);
 			Mockito.when(deleteUserUseCase.delete(toDeleteId)).thenReturn(Try.failure(new RuntimeException("message")));
 			DeleteAccountRequest deleteAccountRequest = new DeleteAccountRequest(toDeleteId);
 			Element request = JaxbUtil.jaxbToElement(deleteAccountRequest);
