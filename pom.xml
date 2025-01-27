@@ -410,18 +410,6 @@
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>zextras</groupId>
-        <artifactId>carbonio-jetty-libs</artifactId>
-        <type>pom</type>
-        <version>${project.version}</version>
-        <exclusions>
-          <exclusion>
-            <artifactId>*</artifactId>
-            <groupId>maven-plugins</groupId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
         <groupId>io.jsonwebtoken</groupId>
         <artifactId>jjwt</artifactId>
         <version>0.7.0</version>
@@ -796,7 +784,6 @@
     <module>common</module>
     <module>native</module>
     <module>store-conf</module>
-    <module>carbonio-jetty-libs</module>
     <module>store-extra-runtime-dependencies</module>
     <module>jython-libs</module>
   </modules>
