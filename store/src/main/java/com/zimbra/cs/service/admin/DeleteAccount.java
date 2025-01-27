@@ -85,11 +85,17 @@ public class DeleteAccount extends AdminDocumentHandler {
       final String cookie = ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + zsc.getAuthToken().getEncoded();
       Try<Boolean> success = this.filesClient.deleteAllNodesAndBlobs(cookie, account.getId());
 
-      if (success.isFailure() || !success.get()) {
+      if (success == null || !success.get() || success.isFailure()) {
         ZimbraLog.security.info(
           ZimbraLog.encodeAttrs(
             new String[] {
-              "cmd", "DeleteAccount", "call to deleteAllNodesAndBlob returned an error, this account should be manually deleted from Files: ", account.getId()
+              "cmd", "DeleteAccount", "deleteAllNodesAndBlob returned an error, this account should be manually deleted from Files: ", account.getId()
+            }));
+      } else {
+        ZimbraLog.security.info(
+          ZimbraLog.encodeAttrs(
+            new String[] {
+              "cmd", "DeleteAccount", "deleteAllNodesAndBlob succeeded, account deleted from Files: ", account.getId()
             }));
       }
 
@@ -97,7 +103,7 @@ public class DeleteAccount extends AdminDocumentHandler {
       ZimbraLog.security.info(
         ZimbraLog.encodeAttrs(
           new String[] {
-            "cmd", "DeleteAccount", "error while trying to call deleteAllNodesAndBlobs, this account should be manually deleted from Files: ", account.getId()
+            "cmd", "DeleteAccount", "deleteAllNodesAndBlobs error while calling, this account should be manually deleted from Files: ", account.getId()
           }));
     }
 

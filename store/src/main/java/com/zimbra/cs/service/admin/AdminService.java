@@ -9,6 +9,8 @@ import com.zextras.carbonio.files.FilesClient;
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
+import com.zextras.mailbox.client.FilesInstalledProvider;
+import com.zextras.mailbox.client.ServiceInstalledProvider;
 import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
@@ -20,8 +22,11 @@ import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.soap.DocumentDispatcher;
 import com.zimbra.soap.DocumentService;
 import io.vavr.control.Try;
+
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * @zm-service-description The Admin Service includes commands for server, account and mailbox
@@ -390,7 +395,15 @@ public class AdminService implements DocumentService {
     return FilesClient.atURL("http://127.78.0.7:20002");
   }
 
-  protected Try<MessageBrokerClient> getMessageBroker() {
+  protected Try<MessageBrokerClient> tryGetMessageBroker() {
       return Try.of(MessageBrokerFactory::getMessageBrokerClientInstance);
+  }
+
+  protected ServiceInstalledProvider getFilesInstalledServiceProvider() {
+    return new FilesInstalledProvider(Paths.get("/etc/carbonio/mailbox/service-discover/token"));
+  }
+
+  protected Supplier<MessageBrokerClient> getMessageBrokerClientProvider() {
+    return () -> tryGetMessageBroker().get();
   }
 }
