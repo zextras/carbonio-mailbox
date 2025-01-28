@@ -89,13 +89,13 @@ public class DeleteAccount extends AdminDocumentHandler {
         ZimbraLog.security.info(
           ZimbraLog.encodeAttrs(
             new String[] {
-              "cmd", "DeleteAccount", "deleteAllNodesAndBlob returned an error, this account should be manually deleted from Files: ", account.getId()
+              "cmd", "DeleteAccount", "deleteAllNodesAndBlob returned an error, this account should be manually deleted from Files: id", account.getId()
             }));
       } else {
         ZimbraLog.security.info(
           ZimbraLog.encodeAttrs(
             new String[] {
-              "cmd", "DeleteAccount", "deleteAllNodesAndBlob succeeded, account deleted from Files: ", account.getId()
+              "cmd", "DeleteAccount", "deleteAllNodesAndBlob succeeded, account deleted from Files: id", account.getId()
             }));
       }
 
@@ -103,7 +103,7 @@ public class DeleteAccount extends AdminDocumentHandler {
       ZimbraLog.security.info(
         ZimbraLog.encodeAttrs(
           new String[] {
-            "cmd", "DeleteAccount", "deleteAllNodesAndBlobs error while calling, this account should be manually deleted from Files: ", account.getId()
+            "cmd", "DeleteAccount", "deleteAllNodesAndBlobs error while calling, this account should be manually deleted from Files: id", account.getId()
           }));
     }
 
