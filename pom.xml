@@ -161,7 +161,7 @@
       <dependency>
         <groupId>com.zextras.carbonio.files</groupId>
         <artifactId>carbonio-files-sdk</artifactId>
-        <version>0.0.7-SNAPSHOT</version>
+        <version>0.0.7</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -810,7 +810,7 @@
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
     <system-lambda.version>1.2.1</system-lambda.version>
-    <carbonio-message-broker-sdk.version>0.1.2-SNAPSHOT</carbonio-message-broker-sdk.version>
+    <carbonio-message-broker-sdk.version>0.1.2</carbonio-message-broker-sdk.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <changelist>-SNAPSHOT</changelist>
     <revision>25.3.0</revision>
