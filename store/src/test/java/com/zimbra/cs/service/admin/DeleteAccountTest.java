@@ -39,6 +39,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -120,6 +121,11 @@ class DeleteAccountTest {
 	static void tearDown() throws Exception {
 		MailboxTestUtil.tearDown();
 		consulServer.stop();
+	}
+
+	@BeforeEach
+	void setUpTest() {
+		Mockito.reset(filesClientMock);
 	}
 
 	private static Stream<Arguments> getHappyPathCases() throws ServiceException {
@@ -257,8 +263,30 @@ class DeleteAccountTest {
 
   @ParameterizedTest(name = "{0}")
 	@MethodSource("getHappyPathCases")
-	void shouldDeleteUserWhenFilesReturnsError(String testCaseName, Account caller, Account toDelete) throws Exception {
+	void shouldDeleteUserWhenFilesReturnsFalse(String testCaseName, Account caller, Account toDelete) throws Exception {
     Mockito.when(filesClientMock.deleteAllNodesAndBlobs(any(), any())).thenReturn(Try.success(false));
+    final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(), filesClientMock);
+
+    final String toDeleteId = toDelete.getId();
+    this.doDeleteAccount(deleteAccount, caller, toDeleteId);
+    assertNull(provisioning.getAccountById(toDeleteId));
+	}
+
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("getHappyPathCases")
+	void shouldDeleteUserWhenFilesThrows(String testCaseName, Account caller, Account toDelete) throws Exception {
+    Mockito.when(filesClientMock.deleteAllNodesAndBlobs(any(), any())).thenThrow(new RuntimeException("Fake exception"));
+    final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(), filesClientMock);
+
+    final String toDeleteId = toDelete.getId();
+    this.doDeleteAccount(deleteAccount, caller, toDeleteId);
+    assertNull(provisioning.getAccountById(toDeleteId));
+	}
+
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("getHappyPathCases")
+	void shouldDeleteUserWhenFilesReturnsFailure(String testCaseName, Account caller, Account toDelete) throws Exception {
+    Mockito.when(filesClientMock.deleteAllNodesAndBlobs(any(), any())).thenReturn(Try.failure(new RuntimeException("Fake exception")));
     final DeleteAccount deleteAccount = new DeleteAccount(getDefaultUseCase(), filesClientMock);
 
     final String toDeleteId = toDelete.getId();
