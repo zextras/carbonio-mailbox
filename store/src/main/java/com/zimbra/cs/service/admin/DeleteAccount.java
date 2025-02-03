@@ -81,6 +81,33 @@ public class DeleteAccount extends AdminDocumentHandler {
     Account account = prov.get(AccountBy.id, id, zsc.getAuthToken());
     defendAgainstAccountHarvesting(account, AccountBy.id, id, zsc, Admin.R_deleteAccount);
 
+    deleteFilesNodesAndBlob(zsc, account);
+
+    /*
+     * bug 69009
+     *
+     * We delete the mailbox before deleting the LDAP entry.
+     * It's possible that a message delivery or other user action could
+     * cause the mailbox to be recreated between the mailbox delete step
+     * and the LDAP delete step.
+     *
+     * To prevent this race condition, put the account in "maintenance" mode
+     * so mail delivery and any user action is blocked.
+    */
+    deleteUserUseCase.delete(account.getId()).getOrElseThrow(ex -> ServiceException.FAILURE("Delete account "
+            + account.getMail() + " has an error: "
+            + ex.getMessage(), ex));
+
+    ZimbraLog.security.info(
+        ZimbraLog.encodeAttrs(
+            new String[] {
+              "cmd", "DeleteAccount", "name", account.getName(), "id", account.getId()
+            }));
+
+    return zsc.jaxbToElement(new DeleteAccountResponse());
+  }
+
+  private void deleteFilesNodesAndBlob(ZimbraSoapContext zsc, Account account) {
     try {
       final String cookie = ZimbraCookie.COOKIE_ZM_AUTH_TOKEN + "=" + zsc.getAuthToken().getEncoded();
       Try<Boolean> success = this.filesClient.deleteAllNodesAndBlobs(cookie, account.getId());
@@ -106,29 +133,6 @@ public class DeleteAccount extends AdminDocumentHandler {
             "cmd", "DeleteAccount", "deleteAllNodesAndBlobs error while calling, this account should be manually deleted from Files: id", account.getId()
           }));
     }
-
-    /*
-     * bug 69009
-     *
-     * We delete the mailbox before deleting the LDAP entry.
-     * It's possible that a message delivery or other user action could
-     * cause the mailbox to be recreated between the mailbox delete step
-     * and the LDAP delete step.
-     *
-     * To prevent this race condition, put the account in "maintenance" mode
-     * so mail delivery and any user action is blocked.
-    */
-    deleteUserUseCase.delete(account.getId()).getOrElseThrow(ex -> ServiceException.FAILURE("Delete account "
-            + account.getMail() + " has an error: "
-            + ex.getMessage(), ex));
-
-    ZimbraLog.security.info(
-        ZimbraLog.encodeAttrs(
-            new String[] {
-              "cmd", "DeleteAccount", "name", account.getName(), "id", account.getId()
-            }));
-
-    return zsc.jaxbToElement(new DeleteAccountResponse());
   }
 
   @Override
