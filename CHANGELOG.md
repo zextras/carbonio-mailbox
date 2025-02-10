@@ -1,5 +1,18 @@
 
 
+# [1.0.0](https://github.com/zextras/carbonio-mailbox/compare/4.19.5...null) (2025-02-10)
+
+
+### Bug Fixes
+
+* [CO-1574] delete account with public share ([#655](https://github.com/zextras/carbonio-mailbox/issues/655)) ([446a0c6](https://github.com/zextras/carbonio-mailbox/commit/446a0c6edf2deb29b6db9086bd722eeb968c501f))
+
+
+### Features
+
+* [CO-1668] Do not notify the organizer when attendees forward an appointment ([#633](https://github.com/zextras/carbonio-mailbox/issues/633)) ([59c85d1](https://github.com/zextras/carbonio-mailbox/commit/59c85d1b3ad59b5e19e74037cc3fdcc4829a62b9))
+* remove event driven account deletion from mailbox and replace it with http call ([#664](https://github.com/zextras/carbonio-mailbox/issues/664)) ([ae79492](https://github.com/zextras/carbonio-mailbox/commit/ae79492960c71198cd29dd2046714b1228d97fea))
+
 ## [4.19.5](https://github.com/zextras/carbonio-mailbox/compare/4.19.4...4.19.5) (2025-01-23)
 
 
