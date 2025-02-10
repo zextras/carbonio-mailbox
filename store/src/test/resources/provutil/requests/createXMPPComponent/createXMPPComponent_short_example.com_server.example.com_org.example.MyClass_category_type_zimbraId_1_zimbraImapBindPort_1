@@ -1,0 +1,6 @@
+createXMPPComponent short example.com server.example.com org.example.MyClass category type zimbraId 1 zimbraImapBindPort 1
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetDomainRequest applyConfig="1" xmlns="urn:zimbraAdmin"><domain by="name">example.com</domain></GetDomainRequest>
+<GetDomainRequest applyConfig="1" xmlns="urn:zimbraAdmin"><domain by="name">example.com</domain></GetDomainRequest>
+<GetServerRequest applyConfig="1" xmlns="urn:zimbraAdmin"><server by="name">server.example.com</server></GetServerRequest>
+<CreateXMPPComponentRequest xmlns="urn:zimbraAdmin"><xmppcomponent name="short.test.com"><domain by="id"/><server by="id"/><a n="zimbraXMPPComponentClassName">org.example.MyClass</a><a n="zimbraId">1</a><a n="zimbraImapBindPort">1</a><a n="zimbraXMPPComponentCategory">category</a><a n="zimbraXMPPComponentType">type</a></xmppcomponent></CreateXMPPComponentRequest>

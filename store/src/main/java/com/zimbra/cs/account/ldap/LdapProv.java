@@ -83,10 +83,6 @@ public abstract class LdapProv extends Provisioning implements ProvisioningCache
 
   public abstract double getGroupCacheHitRate();
 
-  public abstract int getXMPPCacheSize();
-
-  public abstract double getXMPPCacheHitRate();
-
   public abstract void waitForLdapServer();
 
   public abstract void alwaysUseMaster();

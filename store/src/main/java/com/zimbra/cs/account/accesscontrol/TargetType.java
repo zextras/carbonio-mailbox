@@ -387,12 +387,6 @@ public enum TargetType {
           throw AccountServiceException.NO_SUCH_SERVER(target);
         }
         break;
-      case xmppcomponent:
-        targetEntry = prov.get(Key.XMPPComponentBy.fromString(targetBy.name()), target);
-        if (targetEntry == null && mustFind) {
-          throw AccountServiceException.NO_SUCH_XMPP_COMPONENT(target);
-        }
-        break;
       case zimlet:
         Key.ZimletBy zimletBy = Key.ZimletBy.fromString(targetBy.name());
         if (zimletBy != Key.ZimletBy.name) {
@@ -515,9 +509,6 @@ public enum TargetType {
         break;
       case server:
         base = dit.serverBaseDN();
-        break;
-      case xmppcomponent:
-        base = dit.xmppcomponentBaseDN();
         break;
       case zimlet:
         base = dit.zimletBaseDN();
@@ -674,5 +665,12 @@ public enum TargetType {
     }
 
     return sb.toString();
+  }
+
+  public static TargetType[] valuesWithoutXmppComponent() {
+    TargetType[] values = values();
+    return Arrays.stream(values)
+            .filter(targetType -> !targetType.equals(TargetType.xmppcomponent))
+            .toArray( TargetType[]::new );
   }
 }

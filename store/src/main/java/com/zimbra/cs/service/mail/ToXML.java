@@ -1773,18 +1773,10 @@ public final class ToXML {
       messageElement =
           encodeMsgCommonAndIdInfo(parent, ifmt, octxt, msg, part, serializeType, fields);
       MimeMessage mimeMessage;
+
       try {
-        String requestedAccountId = octxt.getmRequestedAccountId();
-        String authtokenAccountId = octxt.getmAuthTokenAccountId();
-        boolean isDecryptionNotAllowed =
-            StringUtils.isNotEmpty(authtokenAccountId)
-                && !authtokenAccountId.equalsIgnoreCase(requestedAccountId);
-        if (isDecryptionNotAllowed
-            && Mime.isEncrypted(msg.getMimeMessage(false).getContentType())) {
-          mimeMessage = msg.getMimeMessage(false);
-        } else {
           mimeMessage = msg.getMimeMessage();
-        }
+
       } catch (MailServiceException e) {
         if (encodeMissingBlobs && MailServiceException.NO_SUCH_BLOB.equals(e.getCode())) {
           ZimbraLog.mailbox.error("Unable to get blob while encoding message", e);

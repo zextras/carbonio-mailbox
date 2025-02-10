@@ -1,0 +1,3 @@
+getQuotaUsage localhost
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetQuotaUsageRequest xmlns="urn:zimbraAdmin"/>

@@ -46,7 +46,7 @@ public class EffectiveAttrsInfo {
         this(null);
     }
 
-    private EffectiveAttrsInfo(Boolean all) {
+    public EffectiveAttrsInfo(Boolean all) {
         this.all = ZmBoolean.fromBool(all);
     }
 

@@ -1,0 +1,4 @@
+modifyDataSource user@example.com 5bfd9bc4-d359-4a2c-8424-1101dffba0ee zimbraId 1 zimbraImapBindPort 1 zimbraId 1
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetAccountRequest applyCos="1" xmlns="urn:zimbraAdmin"><account by="name">user@example.com</account></GetAccountRequest>
+<ModifyDataSourceRequest xmlns="urn:zimbraAdmin"><id>186c1c23-d2ad-46b4-9efd-ddd890b1a4a2</id><dataSource id="5bfd9bc4-d359-4a2c-8424-1101dffba0ee"><a n="zimbraId">1</a><a n="zimbraId">1</a><a n="zimbraImapBindPort">1</a></dataSource></ModifyDataSourceRequest>

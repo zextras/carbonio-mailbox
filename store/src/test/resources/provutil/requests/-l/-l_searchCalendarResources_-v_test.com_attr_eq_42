@@ -1,0 +1,1 @@
+-l searchCalendarResources -v test.com attr eq 42

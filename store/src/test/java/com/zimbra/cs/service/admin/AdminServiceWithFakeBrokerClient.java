@@ -7,7 +7,7 @@ import org.mockito.Mockito;
 public class AdminServiceWithFakeBrokerClient extends AdminService {
 
 	@Override
-	protected Try<MessageBrokerClient> getMessageBroker() {
+	protected Try<MessageBrokerClient> tryGetMessageBroker() {
 		return Try.of(() -> Mockito.mock(MessageBrokerClient.class));
 	}
 }

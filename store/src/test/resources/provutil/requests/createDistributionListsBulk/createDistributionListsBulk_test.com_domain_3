@@ -1,0 +1,5 @@
+createDistributionListsBulk test.com domain 3
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<CreateDistributionListRequest name="domain0@test.com" dynamic="0" xmlns="urn:zimbraAdmin"><a n="displayName">domain N. 0</a></CreateDistributionListRequest>
+<CreateDistributionListRequest name="domain1@test.com" dynamic="0" xmlns="urn:zimbraAdmin"><a n="displayName">domain N. 1</a></CreateDistributionListRequest>
+<CreateDistributionListRequest name="domain2@test.com" dynamic="0" xmlns="urn:zimbraAdmin"><a n="displayName">domain N. 2</a></CreateDistributionListRequest>

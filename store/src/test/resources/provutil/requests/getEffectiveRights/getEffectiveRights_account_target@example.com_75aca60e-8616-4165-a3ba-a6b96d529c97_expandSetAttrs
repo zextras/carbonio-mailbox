@@ -1,0 +1,3 @@
+getEffectiveRights account target@example.com 75aca60e-8616-4165-a3ba-a6b96d529c97 expandSetAttrs
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetEffectiveRightsRequest expandAllAttrs="setAttrs" xmlns="urn:zimbraAdmin"><target by="name" type="account">target@example.com</target><grantee by="id">75aca60e-8616-4165-a3ba-a6b96d529c97</grantee></GetEffectiveRightsRequest>

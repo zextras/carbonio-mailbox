@@ -1,0 +1,3 @@
+checkRight cos target@example.com grantee.name@example.com viewFreeBusy
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<CheckRightRequest xmlns="urn:zimbraAdmin"><target by="name" type="cos">target@example.com</target><grantee by="name">grantee.name@example.com</grantee><right>viewFreeBusy</right></CheckRightRequest>

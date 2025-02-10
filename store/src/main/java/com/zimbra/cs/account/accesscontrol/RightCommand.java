@@ -1184,7 +1184,7 @@ public class RightCommand {
 
             // we want all target types
             Set<TargetType> targetTypesToSearch =
-                new HashSet<>(Arrays.asList(TargetType.values()));
+                new HashSet<>(Arrays.asList(TargetType.valuesWithoutXmppComponent()));
 
             SearchGrants searchGrants = new SearchGrants(prov, targetTypesToSearch, granteeFilter);
             Set<GrantsOnTarget> grantsOnTargets = searchGrants.doSearch().getResults();

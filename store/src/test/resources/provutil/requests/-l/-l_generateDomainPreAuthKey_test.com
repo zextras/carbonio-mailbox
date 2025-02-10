@@ -1,0 +1,1 @@
+-l generateDomainPreAuthKey test.com

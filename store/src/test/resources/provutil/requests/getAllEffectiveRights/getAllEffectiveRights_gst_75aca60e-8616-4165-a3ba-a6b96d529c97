@@ -1,0 +1,3 @@
+getAllEffectiveRights gst 75aca60e-8616-4165-a3ba-a6b96d529c97
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetAllEffectiveRightsRequest xmlns="urn:zimbraAdmin"><grantee by="id" type="gst">75aca60e-8616-4165-a3ba-a6b96d529c97</grantee></GetAllEffectiveRightsRequest>

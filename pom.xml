@@ -161,7 +161,7 @@
       <dependency>
         <groupId>com.zextras.carbonio.files</groupId>
         <artifactId>carbonio-files-sdk</artifactId>
-        <version>0.0.4</version>
+        <version>0.0.7</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -408,18 +408,6 @@
         <artifactId>store-extra-runtime-dependencies</artifactId>
         <type>pom</type>
         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>zextras</groupId>
-        <artifactId>carbonio-jetty-libs</artifactId>
-        <type>pom</type>
-        <version>${project.version}</version>
-        <exclusions>
-          <exclusion>
-            <artifactId>*</artifactId>
-            <groupId>maven-plugins</groupId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>io.jsonwebtoken</groupId>
@@ -796,7 +784,6 @@
     <module>common</module>
     <module>native</module>
     <module>store-conf</module>
-    <module>carbonio-jetty-libs</module>
     <module>store-extra-runtime-dependencies</module>
     <module>jython-libs</module>
   </modules>
@@ -823,10 +810,10 @@
     <error_prone_annotations.version>2.3.2</error_prone_annotations.version>
     <jersey.version>1.11</jersey.version>
     <system-lambda.version>1.2.1</system-lambda.version>
-    <carbonio-message-broker-sdk.version>0.1.0</carbonio-message-broker-sdk.version>
+    <carbonio-message-broker-sdk.version>0.1.2</carbonio-message-broker-sdk.version>
     <!-- Maven revision: https://maven.apache.org/maven-ci-friendly.html -->
     <changelist>-SNAPSHOT</changelist>
-    <revision>24.12.4</revision>
+    <revision>25.3.0</revision>
     <mockserver.version>5.13.0</mockserver.version>
     <mariadb-java-client.version>2.7.3</mariadb-java-client.version>
   </properties>

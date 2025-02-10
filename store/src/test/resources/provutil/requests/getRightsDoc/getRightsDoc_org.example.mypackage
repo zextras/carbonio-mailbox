@@ -1,0 +1,3 @@
+getRightsDoc org.example.mypackage
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetRightsDocRequest xmlns="urn:zimbraAdmin"><package name="org.example.mypackage"/></GetRightsDocRequest>

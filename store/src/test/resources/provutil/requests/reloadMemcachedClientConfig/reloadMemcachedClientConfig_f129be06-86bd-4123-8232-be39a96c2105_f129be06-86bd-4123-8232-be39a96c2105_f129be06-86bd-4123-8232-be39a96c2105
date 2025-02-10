@@ -1,0 +1,5 @@
+reloadMemcachedClientConfig f129be06-86bd-4123-8232-be39a96c2105 f129be06-86bd-4123-8232-be39a96c2105 f129be06-86bd-4123-8232-be39a96c2105
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetServerRequest applyConfig="1" xmlns="urn:zimbraAdmin"><server by="serviceHostname">f129be06-86bd-4123-8232-be39a96c2105</server></GetServerRequest>
+<GetServerRequest applyConfig="1" xmlns="urn:zimbraAdmin"><server by="serviceHostname">f129be06-86bd-4123-8232-be39a96c2105</server></GetServerRequest>
+<GetServerRequest applyConfig="1" xmlns="urn:zimbraAdmin"><server by="serviceHostname">f129be06-86bd-4123-8232-be39a96c2105</server></GetServerRequest>

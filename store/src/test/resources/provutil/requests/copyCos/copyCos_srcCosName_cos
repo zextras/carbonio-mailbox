@@ -1,0 +1,4 @@
+copyCos srcCosName cos
+<AuthRequest xmlns="urn:zimbraAdmin"><name>zimbra</name><password>password</password></AuthRequest>
+<GetCosRequest xmlns="urn:zimbraAdmin"><cos by="name">srcCosName</cos></GetCosRequest>
+<CopyCosRequest xmlns="urn:zimbraAdmin"><name>cos</name><cos by="id"/></CopyCosRequest>
