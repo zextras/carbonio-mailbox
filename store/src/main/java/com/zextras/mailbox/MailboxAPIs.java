@@ -66,6 +66,7 @@ public class MailboxAPIs {
 		servletContextHandler.addFilter(new FilterHolder(GuiceFilter.class),"/*", EnumSet.of(DispatcherType.REQUEST));
 
 		final FilterHolder dosFilter = new FilterHolder(DoSFilter.class);
+		dosFilter.setAsyncSupported(true);
 		dosFilter.setInitParameter("delayMs", Integer.toString(server.getHttpDosFilterDelayMillis()));
 		dosFilter.setInitParameter("maxRequestsPerSec", Integer.toString(server.getHttpDosFilterMaxRequestsPerSec()));
 		dosFilter.setInitParameter("remotePort", "true");
@@ -76,27 +77,38 @@ public class MailboxAPIs {
 		servletContextHandler.addFilter(new FilterHolder(ZimbraQoSFilter.class),"/*", EnumSet.of(DispatcherType.REQUEST));
 
 		final FilterHolder contextPathBasedThreadPoolBalancerFilter = new FilterHolder(ContextPathBasedThreadPoolBalancerFilter.class);
+		contextPathBasedThreadPoolBalancerFilter.setAsyncSupported(true);
 		contextPathBasedThreadPoolBalancerFilter.setInitParameter("suspendMs", "1000");
 		contextPathBasedThreadPoolBalancerFilter.setInitParameter("Rules", String.join(",", server.getHttpContextPathBasedThreadPoolBalancingFilterRules()));
 		servletContextHandler.addFilter(contextPathBasedThreadPoolBalancerFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
 
-		servletContextHandler.addFilter(new FilterHolder(ETagHeaderFilter.class),"/*", EnumSet.of(DispatcherType.REQUEST));
+		final FilterHolder eTageFilter = new FilterHolder(ETagHeaderFilter.class);
+		eTageFilter.setAsyncSupported(true);
+		servletContextHandler.addFilter(eTageFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
 
 		final FilterHolder spnegoFilter = new FilterHolder(SpnegoFilter.class);
+		spnegoFilter.setAsyncSupported(true);
 		spnegoFilter.setInitParameter("passThruOnFailureUri", "/service/spnego");
 		spnegoFilter.setInitParameter("error401Page", "/spnego/error401.jsp");
 		servletContextHandler.addFilter(spnegoFilter,"/spnego/*", EnumSet.of(DispatcherType.REQUEST));
 
-		servletContextHandler.addFilter(new FilterHolder(SetHeaderFilter.class),"/*", EnumSet.of(DispatcherType.REQUEST));
+		final FilterHolder setHeaderFilter = new FilterHolder(SetHeaderFilter.class);
+		setHeaderFilter.setAsyncSupported(true);
+		servletContextHandler.addFilter(setHeaderFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
 
 		final FilterHolder base64Filter = new FilterHolder(Base64Filter.class);
+		base64Filter.setAsyncSupported(true);
 		final String userPath = "/user/*";
 		servletContextHandler.addFilter(base64Filter, userPath, EnumSet.of(DispatcherType.REQUEST));
 		final String homePath = "/home/*";
 		servletContextHandler.addFilter(base64Filter, homePath, EnumSet.of(DispatcherType.REQUEST));
 
-		servletContextHandler.addFilter(new FilterHolder(RequestStringFilter.class),"/*", EnumSet.of(DispatcherType.REQUEST));
+		final FilterHolder requestStringFilter = new FilterHolder(RequestStringFilter.class);
+		requestStringFilter.setAsyncSupported(true);
+		servletContextHandler.addFilter(requestStringFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
+
 		final FilterHolder csrfFilter = new FilterHolder(CsrfFilter.class);
+		csrfFilter.setAsyncSupported(true);
 		csrfFilter.setInitParameter("csrf.req.check", "true");
 		csrfFilter.setInitParameter("allowed.referrer.host", "");
 		servletContextHandler.addFilter(csrfFilter,"/admin/soap/*", EnumSet.of(DispatcherType.REQUEST));
