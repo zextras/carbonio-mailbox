@@ -126,9 +126,11 @@ public class MailboxAPIs {
 	private void addServlets(ServletContextHandler servletContextHandler) {
 		final var firstServlet = new ServletHolder(FirstServlet.class);
 		firstServlet.setInitOrder(1);
+		firstServlet.setAsyncSupported(true);
 		servletContextHandler.addServlet(firstServlet, "/*");
 
 		final var extensionDispatcherServlet = new ServletHolder(ExtensionDispatcherServlet.class);
+		extensionDispatcherServlet.setAsyncSupported(true);
 		extensionDispatcherServlet.setInitOrder(2);
 		final String allowedPortsParameter = "allowed.ports";
 		extensionDispatcherServlet.setInitParameter(allowedPortsParameter, server.getMailPort() + ", " + server.getMailSSLPort());
@@ -139,6 +141,7 @@ public class MailboxAPIs {
 		servletContextHandler.addServlet(extensionDispatcherServlet, "/extension/*");
 
 		final var soapServlet = new ServletHolder(SoapServlet.class);
+		soapServlet.setAsyncSupported(true);
 		soapServlet.setInitOrder(2);
 		soapServlet.setInitParameter(
 				allowedPortsParameter, server.getMailPort() + ", " + server.getMailSSLPort() + ", 7070, 7443");
@@ -147,6 +150,7 @@ public class MailboxAPIs {
 		servletContextHandler.addServlet(soapServlet, "/soap/*");
 
 		final var adminServlet = new ServletHolder(SoapServlet.class);
+		adminServlet.setAsyncSupported(true);
 		adminServlet.setInitOrder(3);
 		adminServlet.setInitParameter(
 				allowedPortsParameter, server.getAdminPort() + ", " + server.getMtaAuthPort() + ", 7071, 7073");
@@ -156,12 +160,14 @@ public class MailboxAPIs {
 		servletContextHandler.addServlet(adminServlet, "/admin/soap/*");
 
 		final var wsdlServlet = new ServletHolder(WsdlServlet.class);
+		wsdlServlet.setAsyncSupported(true);
 		final String defaultPorts = ", 7070, 7443, 7071";
 		wsdlServlet.setInitParameter(
 				allowedPortsParameter,  server.getMailPort() + ", " + server.getMailSSLPort() + ", " +  server.getAdminPort() + defaultPorts);
 		servletContextHandler.addServlet(wsdlServlet, "/wsdl/*");
 
 		final var contentServlet = new ServletHolder(ContentServlet.class);
+		contentServlet.setAsyncSupported(true);
 		contentServlet.setInitOrder(5);
 		contentServlet.setInitParameter(
 				allowedPortsParameter,  server.getMailPort() + ", " + server.getMailSSLPort() + ", " +  server.getAdminPort() + defaultPorts);
@@ -169,15 +175,14 @@ public class MailboxAPIs {
 		servletContextHandler.addServlet(contentServlet, "/content/*");
 
 		final var previewServlet = new ServletHolder(PreviewServlet.class);
+		previewServlet.setAsyncSupported(true);
 		previewServlet.setInitOrder(13);
 		previewServlet.setInitParameter(
 				allowedPortsParameter,  server.getMailPort() + ", " + server.getMailSSLPort() + ", " +  server.getAdminPort() + defaultPorts);
 		servletContextHandler.addServlet(previewServlet, "/preview/*");
 
-		final var pubCalServlet = new ServletHolder(PublicICalServlet.class);
-		servletContextHandler.addServlet(pubCalServlet, "/pubcal/*");
-
 		final var userServlet = new ServletHolder(UserServlet.class);
+		userServlet.setAsyncSupported(true);
 		userServlet.setInitOrder(5);
 		userServlet.setInitParameter(
 				allowedPortsParameter,  server.getMailPort() + ", " + server.getMailSSLPort() + ", " +  server.getAdminPort() + defaultPorts);
@@ -186,6 +191,7 @@ public class MailboxAPIs {
 		servletContextHandler.addServlet(userServlet, "/home/*");
 
 		final var preAuthServlet = new ServletHolder(PreAuthServlet.class);
+		preAuthServlet.setAsyncSupported(true);
 		preAuthServlet.setInitOrder(5);
 		preAuthServlet.setInitParameter(
 				allowedPortsParameter,  server.getMailPort() + ", " + server.getMailSSLPort() + ", " +  server.getAdminPort() + defaultPorts);
@@ -193,6 +199,7 @@ public class MailboxAPIs {
 		servletContextHandler.addServlet(preAuthServlet, "/preauth");
 
 		final var externalUserProvServlet = new ServletHolder(ExternalUserProvServlet.class);
+		externalUserProvServlet.setAsyncSupported(true);
 		externalUserProvServlet.setInitOrder(5);
 		externalUserProvServlet.setInitParameter(
 				allowedPortsParameter,  server.getMailPort() + ", " + server.getMailSSLPort() + ", " +  server.getAdminPort() + defaultPorts);
@@ -200,6 +207,7 @@ public class MailboxAPIs {
 
 		if (server.getMailSSLClientCertPort() > 0) {
 			final var certAuthServlet = new ServletHolder(CertAuthServlet.class);
+			certAuthServlet.setAsyncSupported(true);
 			certAuthServlet.setInitOrder(5);
 			certAuthServlet.setInitParameter(allowedPortsParameter,  server.getMailSSLClientCertPortAsString() + ", 9443");
 			certAuthServlet.setInitParameter("errorpage.forbidden",  "/error/403.jsp");
@@ -208,25 +216,33 @@ public class MailboxAPIs {
 		}
 
 		final var spnegoAuthServlet = new ServletHolder(SpnegoAuthServlet.class);
+		spnegoAuthServlet.setAsyncSupported(true);
 		spnegoAuthServlet.setInitOrder(5);
 		spnegoAuthServlet.setInitParameter(
 				allowedPortsParameter,  server.getMailPort() + ", " + server.getMailSSLPort() + ", " +  server.getAdminPort() + defaultPorts);
 		servletContextHandler.addServlet(spnegoAuthServlet, "/spnego/");
 		servletContextHandler.addServlet(spnegoAuthServlet, "/spnego");
 
+		final var pubCalServlet = new ServletHolder(PublicICalServlet.class);
+		pubCalServlet.setAsyncSupported(true);
+		servletContextHandler.addServlet(pubCalServlet, "/pubcal/*");
+
 		final var fileUploadServlet = new ServletHolder(FileUploadServlet.class);
+		fileUploadServlet.setAsyncSupported(true);
 		fileUploadServlet.setInitOrder(6);
 		fileUploadServlet.setInitParameter(
 				allowedPortsParameter,  server.getMailPort() + ", " + server.getMailSSLPort() + ", " +  server.getAdminPort() + defaultPorts);
 		servletContextHandler.addServlet(fileUploadServlet, "/upload");
 
 		final var statsImageServlet = new ServletHolder(StatsImageServlet.class);
+		statsImageServlet.setAsyncSupported(true);
 		statsImageServlet.setInitOrder(7);
 		final String defaultAdminPort = ", 7071";
 		statsImageServlet.setInitParameter(allowedPortsParameter,   server.getAdminPort() + defaultAdminPort);
 		servletContextHandler.addServlet(statsImageServlet, "/statsimg/*");
 
 		final var proxyServlet = new ServletHolder(ProxyServlet.class);
+		proxyServlet.setAsyncSupported(true);
 		proxyServlet.setInitOrder(8);
 		final String defaultMailPort = ", 7070";
 		proxyServlet.setInitParameter(
@@ -234,30 +250,36 @@ public class MailboxAPIs {
 		servletContextHandler.addServlet(proxyServlet, "/proxy/*");
 
 		final var davServlet = new ServletHolder(DavServlet.class);
+		davServlet.setAsyncSupported(true);
 		davServlet.setInitOrder(9);
 		davServlet.setInitParameter(
 				allowedPortsParameter,  server.getMailPort() + ", " + server.getMailSSLPort() + defaultMailPort);
 		servletContextHandler.addServlet(davServlet, "/dav/*");
 
 		final var davWellKnownServlet = new ServletHolder(DavWellKnownServlet.class);
+		davWellKnownServlet.setAsyncSupported(true);
 		davWellKnownServlet.setInitOrder(9);
 		davWellKnownServlet.setInitParameter(
 				allowedPortsParameter,  server.getMailPort() + ", " + server.getMailSSLPort() + defaultMailPort);
 		servletContextHandler.addServlet(davWellKnownServlet, "/.well-known/*");
 
 		final var collectLDAPConfigServlet = new ServletHolder(CollectLDAPConfigZimbra.class);
+		collectLDAPConfigServlet.setAsyncSupported(true);
 		collectLDAPConfigServlet.setInitParameter(allowedPortsParameter,  server.getAdminPort() + defaultAdminPort);
 		servletContextHandler.addServlet(collectLDAPConfigServlet, "/collectldapconfig/*");
 
 		final var collectConfigFilesServlet = new ServletHolder(CollectConfigFiles.class);
+		collectConfigFilesServlet.setAsyncSupported(true);
 		collectConfigFilesServlet.setInitParameter(allowedPortsParameter,  server.getAdminPort() + defaultAdminPort);
 		servletContextHandler.addServlet(collectConfigFilesServlet, "/collectconfig/*");
 
 		final var robotsServlet = new ServletHolder(RobotsServlet.class);
+		robotsServlet.setAsyncSupported(true);
 		robotsServlet.setInitOrder(11);
 		servletContextHandler.addServlet(robotsServlet, "/robots.txt");
 
 		final var autoDiscoverServlet = new ServletHolder(AutoDiscoverServlet.class);
+		autoDiscoverServlet.setAsyncSupported(true);
 		autoDiscoverServlet.setInitOrder(12);
 		autoDiscoverServlet.setInitParameter(
 				allowedPortsParameter,  server.getMailPort() + ", " + server.getMailSSLPort() + ", " + server.getAdminPort() + ", 7070, 7443");
