@@ -15,9 +15,11 @@ import org.eclipse.jetty.server.Server;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-class MailboxServerIT {
+@Tag("api")
+class MailboxServerAPITest {
 
 	private static Server mailboxServer;
 	private static final int USER_PORT = 8080;
@@ -25,8 +27,8 @@ class MailboxServerIT {
 
 	@BeforeAll
 	static void setUp() throws Exception {
-		final String mailboxHome = MailboxServerIT.class.getResource("/").getFile();
-		final String timezoneFile = MailboxServerIT.class.getResource("/timezones-test.ics")
+		final String mailboxHome = MailboxServerAPITest.class.getResource("/").getFile();
+		final String timezoneFile = MailboxServerAPITest.class.getResource("/timezones-test.ics")
 				.getFile();
 		mailboxServer = new ServerSetup(USER_PORT, ADMIN_PORT,  mailboxHome, timezoneFile).create();
 		mailboxServer.start();
