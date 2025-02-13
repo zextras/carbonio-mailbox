@@ -21,13 +21,14 @@ class MailboxServerIT {
 
 	private static Server mailboxServer;
 	private static final int USER_PORT = 8080;
+	private static final int ADMIN_PORT = 7071;
 
 	@BeforeAll
 	static void setUp() throws Exception {
 		final String mailboxHome = MailboxServerIT.class.getResource("/").getFile();
 		final String timezoneFile = MailboxServerIT.class.getResource("/timezones-test.ics")
 				.getFile();
-		mailboxServer = new ServerSetup(USER_PORT, mailboxHome, timezoneFile).create();
+		mailboxServer = new ServerSetup(USER_PORT, ADMIN_PORT,  mailboxHome, timezoneFile).create();
 		mailboxServer.start();
 	}
 
@@ -39,11 +40,26 @@ class MailboxServerIT {
 	private String getUserEndpoint() {
 		return "http://localhost:" + USER_PORT + "/service/soap";
 	}
+
+	private String getAdminEndpoint() {
+		return "https://localhost:" + ADMIN_PORT + "/service/admin/soap";
+	}
 	@Test
 	void shouldAuthenticateStandardUser() throws Exception {
 		try(SoapClient soapClient = new SoapClient(getUserEndpoint())) {
 			final HttpResponse httpResponse =  soapClient.newRequest()
 					.setSoapBody(new AuthRequest(AccountSelector.fromName("test@test.com"), "password"))
+					.execute();
+
+			Assertions.assertEquals(200, httpResponse.getStatusLine().getStatusCode());
+		}
+	}
+
+	@Test
+	void shouldAuthenticateAdminUser() throws Exception {
+		try(SoapClient soapClient = new SoapClient(getAdminEndpoint())) {
+			final HttpResponse httpResponse =  soapClient.newRequest()
+					.setSoapBody(new AuthRequest(AccountSelector.fromName("admin@test.com"), "password"))
 					.execute();
 
 			Assertions.assertEquals(200, httpResponse.getStatusLine().getStatusCode());

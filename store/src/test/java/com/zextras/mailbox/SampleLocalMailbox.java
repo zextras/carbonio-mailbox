@@ -14,11 +14,26 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.HSQLDB;
+import java.io.FileOutputStream;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.KeyStore;
+import java.security.Security;
+import java.security.cert.X509Certificate;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import javax.security.auth.x500.X500Principal;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.cert.X509v3CertificateBuilder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.eclipse.jetty.server.Server;
 
 /**
@@ -36,11 +51,13 @@ public class SampleLocalMailbox {
 	public static class ServerSetup {
 
 		private final int userPort;
+		private final int adminPort;
 		private final String mailboxHome;
 		private final String timeZoneFile;
 
-		public ServerSetup(int userPort, String mailboxHome, String timeZoneFile) {
+		public ServerSetup(int userPort, int adminPort, String mailboxHome, String timeZoneFile) {
 			this.userPort = userPort;
+			this.adminPort = adminPort;
 			this.mailboxHome = mailboxHome;
 			this.timeZoneFile = timeZoneFile;
 		}
@@ -48,21 +65,13 @@ public class SampleLocalMailbox {
 		public Server create() throws Exception {
 			System.setProperty("zimbra.native.required", "false");
 
-			final Path keystoreRoot = Files.createTempDirectory("keystore");
-			final Path keystorePath = Path.of(keystoreRoot.toAbsolutePath().toString(), "keystore");
-			KeyStore ks = KeyStore.getInstance("PKCS12");
-			final String keystore_password = "test";
-			ks.load(null, keystore_password.toCharArray());
-			ks.store(Files.newOutputStream(keystorePath), keystore_password.toCharArray());
+			setupTestKeyStore();
 
 			LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
 			LC.ldap_port.setDefault(LDAP_PORT);
 			LC.zimbra_home.setDefault(mailboxHome);
 			LC.zimbra_log_directory.setDefault(mailboxHome);
-			LC.mailboxd_keystore_password.setDefault(keystore_password);
-			LC.mailboxd_truststore_password.setDefault(keystore_password);
-			LC.mailboxd_keystore.setDefault(keystorePath.toAbsolutePath().toString());
-			LC.mailboxd_keystore.setDefault(keystorePath.toAbsolutePath().toString());
+
 			LC.zimbra_server_hostname.setDefault(APP_SERVER_NAME);
 			LC.timezone_file.setDefault(timeZoneFile);
 
@@ -83,12 +92,57 @@ public class SampleLocalMailbox {
 							new HashMap<>(
 									Map.of(
 											ZAttrProvisioning.A_zimbraMailPort, String.valueOf(userPort),
+											ZAttrProvisioning.A_zimbraAdminPort, String.valueOf(adminPort),
 											ZAttrProvisioning.A_zimbraMailMode, "both",
 											ZAttrProvisioning.A_zimbraPop3SSLServerEnabled, "FALSE",
 											ZAttrProvisioning.A_zimbraImapSSLServerEnabled, "FALSE")));
 
 			return new MailboxServer.Builder(provisioning.getConfig(), provisioning.getLocalServer())
 					.build();
+		}
+
+		private static void setupTestKeyStore() throws Exception {
+			final Path keystoreRoot = Files.createTempDirectory("keystore");
+			final Path keystorePath = Path.of(keystoreRoot.toAbsolutePath().toString(), "keystore");
+
+			Security.addProvider(new BouncyCastleProvider());
+			// Generate RSA Key Pair
+			KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA");
+			keyPairGen.initialize(2048);  // key size 2048 bits
+			KeyPair keyPair = keyPairGen.generateKeyPair();
+
+			// Create a self-signed certificate using BouncyCastle
+			X500Principal issuer = new X500Principal("CN=Test");
+			Date startDate = new Date();
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(startDate);
+			calendar.add(Calendar.YEAR, 1);
+			Date endDate = calendar.getTime();
+
+			BigInteger serial = BigInteger.valueOf(System.currentTimeMillis());
+
+			X509v3CertificateBuilder certBuilder = new JcaX509v3CertificateBuilder(
+					new X500Name(issuer.getName()), serial, startDate, endDate, new X500Name(issuer.getName()), keyPair.getPublic());
+
+			final X509Certificate certificate1 = new JcaX509CertificateConverter().setProvider("BC")
+					.getCertificate(certBuilder.build(new JcaContentSignerBuilder("SHA256withRSA")
+							.build(keyPair.getPrivate())));
+
+			KeyStore keyStore = KeyStore.getInstance("JKS");
+			keyStore.load(null, null);
+
+			final String keyStoreAbsolutePath = keystorePath.toAbsolutePath().toString();
+			final String keyStorePassword = "test123";
+
+			keyStore.setKeyEntry("bmc", keyPair.getPrivate(), keyStorePassword.toCharArray(),
+					new java.security.cert.Certificate[]{certificate1});
+
+			try (FileOutputStream fos = new FileOutputStream(keyStoreAbsolutePath)) {
+				keyStore.store(fos, keyStorePassword.toCharArray());
+			}
+
+			LC.mailboxd_keystore.setDefault(keyStoreAbsolutePath);
+			LC.mailboxd_keystore_password.setDefault(keyStorePassword);
 		}
 
 		private static void setUpMockData() throws ServiceException {
@@ -105,7 +159,8 @@ public class SampleLocalMailbox {
 	}
 
 	public static void main(String[] args) throws Exception {
-		final Server server = new ServerSetup(8080, "./store", "store/src/test/resources/timezones-test.ics").create();
+		final Server server = new ServerSetup(8080, 7071, "./store",
+				"store/src/test/resources/timezones-test.ics").create();
 		server.start();
 		server.join();
 	}
