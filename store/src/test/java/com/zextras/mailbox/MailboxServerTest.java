@@ -25,6 +25,7 @@ class MailboxServerTest {
     config = mock(Config.class);
     localServer = mock(com.zimbra.cs.account.Server.class);
     when(localServer.getHttpContextPathBasedThreadPoolBalancingFilterRules()).thenReturn(new String[]{});
+    when(localServer.getMailModeAsString()).thenReturn("http");
     when(config.getHttpNumThreads()).thenReturn(20);
     when(config.getMailboxdSSLProtocols()).thenReturn(new String[] {"TLS1.2"});
     when(config.getSSLExcludeCipherSuites()).thenReturn(new String[] {"^TLS_RSA_.*"});
