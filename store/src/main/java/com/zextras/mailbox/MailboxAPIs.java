@@ -8,6 +8,7 @@ package com.zextras.mailbox;
 
 import com.google.inject.servlet.GuiceFilter;
 import com.zextras.mailbox.servlet.GuiceMailboxServletConfig;
+import com.zimbra.common.account.ZAttrProvisioning.MailMode;
 import com.zimbra.common.filters.Base64Filter;
 import com.zimbra.cs.account.ZAttrServer;
 import com.zimbra.cs.dav.service.DavServlet;
@@ -322,7 +323,8 @@ public class MailboxAPIs {
 		addFilters(servletContextHandler);
 		addServlets(servletContextHandler);
 
-		if("https, redirect".equals(server.getMailModeAsString())) {
+		final String mailModeAsString = server.getMailModeAsString();
+		if(mailModeAsString.equals(MailMode.https.name()) ||  mailModeAsString.equals(MailMode.redirect.name())) {
 			addSecurityConstraints(servletContextHandler);
 		}
 		return servletContextHandler;
