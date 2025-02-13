@@ -44,21 +44,24 @@ public class SoapClient implements Closeable {
 	private final BasicCookieStore cookieStore;
 	private final CloseableHttpClient client;
 
-	private static final X509TrustManager TRUST_X509_CERTS =
+	private static final X509TrustManager TRUST_ALL_CERTS =
 			new X509TrustManager() {
 				@Override
 				public void checkClientTrusted(java.security.cert.X509Certificate[] chain,
 						String authType) {
+					// Allow all
 				}
 
 				@Override
 				public void checkServerTrusted(java.security.cert.X509Certificate[] chain,
 						String authType) {
+					// Allow all
 				}
 
 				@Override
 				public java.security.cert.X509Certificate[] getAcceptedIssuers() {
 					return new java.security.cert.X509Certificate[]{};
+					// Allow all
 				}
 			};
 
@@ -67,7 +70,7 @@ public class SoapClient implements Closeable {
 		cookieStore = new BasicCookieStore();
 		try {
 			final SSLContext sslContext = SSLContext.getInstance("SSL");
-			sslContext.init(null, new TrustManager[]{TRUST_X509_CERTS}, new java.security.SecureRandom());
+			sslContext.init(null, new TrustManager[]{TRUST_ALL_CERTS}, new java.security.SecureRandom());
 
 			client =
 					HttpClients.custom()
