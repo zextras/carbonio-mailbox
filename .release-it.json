@@ -22,6 +22,11 @@
         {
           "file": "version.txt",
           "type": "text/plain"
+        },
+        {
+          "file": "pom.xml",
+          "type": "xml",
+          "path": "<revision>"
         }
       ]
     },
