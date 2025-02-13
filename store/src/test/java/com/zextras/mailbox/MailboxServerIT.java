@@ -8,9 +8,9 @@ package com.zextras.mailbox;
 
 import com.zextras.mailbox.SampleLocalMailbox.ServerSetup;
 import com.zextras.mailbox.util.SoapClient;
+import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.soap.account.message.AuthRequest;
 import com.zimbra.soap.type.AccountSelector;
-import org.apache.http.HttpResponse;
 import org.eclipse.jetty.server.Server;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -47,22 +47,22 @@ class MailboxServerIT {
 	@Test
 	void shouldAuthenticateStandardUser() throws Exception {
 		try(SoapClient soapClient = new SoapClient(getUserEndpoint())) {
-			final HttpResponse httpResponse =  soapClient.newRequest()
+			final SoapResponse soapResponse = soapClient.newRequest()
 					.setSoapBody(new AuthRequest(AccountSelector.fromName("test@test.com"), "password"))
-					.execute();
+					.call();
 
-			Assertions.assertEquals(200, httpResponse.getStatusLine().getStatusCode());
+			Assertions.assertEquals(200, soapResponse.statusCode());
 		}
 	}
 
 	@Test
 	void shouldAuthenticateAdminUser() throws Exception {
 		try(SoapClient soapClient = new SoapClient(getAdminEndpoint())) {
-			final HttpResponse httpResponse =  soapClient.newRequest()
+			final SoapResponse soapResponse =  soapClient.newRequest()
 					.setSoapBody(new AuthRequest(AccountSelector.fromName("admin@test.com"), "password"))
-					.execute();
+					.call();
 
-			Assertions.assertEquals(200, httpResponse.getStatusLine().getStatusCode());
+			Assertions.assertEquals(200, soapResponse.statusCode());
 		}
 	}
 

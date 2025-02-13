@@ -87,10 +87,10 @@ public class SoapClient implements Closeable {
 		client.close();
 	}
 
-  public record SoapResponse(int statusCode, String body) {
-  }
+	public record SoapResponse(int statusCode, String body) {
+	}
 
-  public static class Request {
+	public static class Request {
 
 		private final BasicCookieStore cookieStore;
 		private final HttpClient client;
@@ -145,9 +145,12 @@ public class SoapClient implements Closeable {
 		}
 
 		public SoapResponse call() throws Exception {
-      final HttpResponse httpResponse = this.execute();
-      return new SoapResponse(httpResponse.getStatusLine().getStatusCode(),SoapUtils.getResponse(httpResponse));
-    }private StringEntity createEnvelop() throws XmlParseException, UnsupportedEncodingException {
+			final HttpResponse httpResponse = this.execute();
+			return new SoapResponse(httpResponse.getStatusLine().getStatusCode(),
+					SoapUtils.getResponse(httpResponse));
+		}
+
+		private StringEntity createEnvelop() throws XmlParseException, UnsupportedEncodingException {
 			Element envelope;
 			if (Objects.isNull(requestedAccount)) {
 				envelope = SoapProtocol.Soap12.soapEnvelope(soapBody);
