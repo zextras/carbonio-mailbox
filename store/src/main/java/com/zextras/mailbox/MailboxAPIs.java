@@ -58,6 +58,8 @@ import org.eclipse.jetty.util.security.Constraint;
 public class MailboxAPIs {
 
 	private final ZAttrServer server;
+	private static final String USER_PATH = "/user/*";
+	private static final String HOME_PATH = "/home/*";
 
 	public MailboxAPIs(ZAttrServer server) {
 		this.server = server;
@@ -99,10 +101,8 @@ public class MailboxAPIs {
 
 		final FilterHolder base64Filter = new FilterHolder(Base64Filter.class);
 		base64Filter.setAsyncSupported(true);
-		final String userPath = "/user/*";
-		servletContextHandler.addFilter(base64Filter, userPath, EnumSet.of(DispatcherType.REQUEST));
-		final String homePath = "/home/*";
-		servletContextHandler.addFilter(base64Filter, homePath, EnumSet.of(DispatcherType.REQUEST));
+		servletContextHandler.addFilter(base64Filter, USER_PATH, EnumSet.of(DispatcherType.REQUEST));
+		servletContextHandler.addFilter(base64Filter, HOME_PATH, EnumSet.of(DispatcherType.REQUEST));
 
 		final FilterHolder requestStringFilter = new FilterHolder(RequestStringFilter.class);
 		requestStringFilter.setAsyncSupported(true);
@@ -114,8 +114,8 @@ public class MailboxAPIs {
 		csrfFilter.setInitParameter("allowed.referrer.host", "");
 		servletContextHandler.addFilter(csrfFilter,"/admin/soap/*", EnumSet.of(DispatcherType.REQUEST));
 		servletContextHandler.addFilter(csrfFilter,"/soap/*", EnumSet.of(DispatcherType.REQUEST));
-		servletContextHandler.addFilter(csrfFilter, userPath, EnumSet.of(DispatcherType.REQUEST));
-		servletContextHandler.addFilter(csrfFilter, homePath, EnumSet.of(DispatcherType.REQUEST));
+		servletContextHandler.addFilter(csrfFilter, USER_PATH, EnumSet.of(DispatcherType.REQUEST));
+		servletContextHandler.addFilter(csrfFilter, HOME_PATH, EnumSet.of(DispatcherType.REQUEST));
 		servletContextHandler.addFilter(csrfFilter,"/upload/*", EnumSet.of(DispatcherType.REQUEST));
 		servletContextHandler.addFilter(csrfFilter,"/extension/*", EnumSet.of(DispatcherType.REQUEST));
 
@@ -188,8 +188,8 @@ public class MailboxAPIs {
 		userServlet.setInitParameter(
 				allowedPortsParameter,  server.getMailPort() + ", " + server.getMailSSLPort() + ", " +  server.getAdminPort() + defaultPorts);
 		userServlet.setInitParameter("errorpage.attachment.blocked",  "/error/attachment_blocked.jsp");
-		servletContextHandler.addServlet(userServlet, "/user/*");
-		servletContextHandler.addServlet(userServlet, "/home/*");
+		servletContextHandler.addServlet(userServlet, USER_PATH);
+		servletContextHandler.addServlet(userServlet, HOME_PATH);
 
 		final var preAuthServlet = new ServletHolder(PreAuthServlet.class);
 		preAuthServlet.setAsyncSupported(true);
@@ -304,9 +304,9 @@ public class MailboxAPIs {
 		ConstraintSecurityHandler security = new ConstraintSecurityHandler();
 		security.setConstraintMappings(List.of(
 				buildSecurityMapping("/service/user/*", constraint),
-				buildSecurityMapping("/user/*", constraint),
+				buildSecurityMapping(USER_PATH, constraint),
 				buildSecurityMapping("/service/home/*", constraint),
-				buildSecurityMapping("/home/*", constraint),
+				buildSecurityMapping(HOME_PATH, constraint),
 				buildSecurityMapping("/dav/*", constraint)
 		));
 		servletContextHandler.setSecurityHandler(security);
