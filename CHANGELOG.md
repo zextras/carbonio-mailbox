@@ -1,5 +1,28 @@
 
 
+# [4.20.0](https://github.com/zextras/carbonio-mailbox/compare/4.19.5...4.20.0) (2025-02-10)
+
+
+### Bug Fixes
+
+* [CO-1574] delete account with public share ([#655](https://github.com/zextras/carbonio-mailbox/issues/655)) ([446a0c6](https://github.com/zextras/carbonio-mailbox/commit/446a0c6edf2deb29b6db9086bd722eeb968c501f))
+
+
+### Features
+
+* [CO-1337] Email encryption s/mime (#646) ([af2807f](https://github.com/zextras/carbonio-mailbox/commit/af2807fd03494f1dba104cd9da7bf5b3e68f50a4))
+* [CO-1661] Modularize ProvUtil ([59c85d1](https://github.com/zextras/carbonio-mailbox/commit/59c85d1b3ad59b5e19e74037cc3fdcc4829a62b9))
+* [CO-1489] added pagination support to search users by feature [#638] ([59c85d1](https://github.com/zextras/carbonio-mailbox/commit/59c85d1b3ad59b5e19e74037cc3fdcc4829a62b9))
+* [CO-1668] Do not notify the organizer when attendees forward an appointment ([#633](https://github.com/zextras/carbonio-mailbox/issues/633)) ([2e26480](https://github.com/zextras/carbonio-mailbox/commit/2e2648075ecea080a2cbc9b5ddd44c1cd763f22a))
+* remove event driven account deletion from mailbox and replace it with http call ([#664](https://github.com/zextras/carbonio-mailbox/issues/664)) ([ae79492](https://github.com/zextras/carbonio-mailbox/commit/ae79492960c71198cd29dd2046714b1228d97fea))
+
+## [4.19.5](https://github.com/zextras/carbonio-mailbox/compare/4.19.4...4.19.5) (2025-01-23)
+
+
+### Bug Fixes
+
+* [CO-1783] remove mailbox permission to access files healthcheck ([#658](https://github.com/zextras/carbonio-mailbox/issues/658)) ([5df3228](https://github.com/zextras/carbonio-mailbox/commit/5df3228bebfdc8fc9f384f10f5f7ebc98492bd00))
+
 ## [4.19.4](https://github.com/zextras/carbonio-mailbox/compare/4.19.3...4.19.4) (2025-01-07)
 
 

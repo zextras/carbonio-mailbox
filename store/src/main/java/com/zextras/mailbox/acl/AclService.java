@@ -10,6 +10,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.RightCommand.Grants;
 import com.zimbra.cs.account.accesscontrol.TargetType;
+import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Mailbox.FolderNode;
@@ -75,8 +76,7 @@ public class AclService {
                 .forEach(
                     grant -> {
                       try {
-                        targetMailbox.revokeAccess(
-                            operationContext, folder.getId(), grant.getGranteeId());
+                        revokeAccess(operationContext, folder, grant, targetMailbox);
                       } catch (ServiceException e) {
                         logger.error(
                             "Cannot revoke grant for target {}: {}",
@@ -84,6 +84,15 @@ public class AclService {
                             e.getMessage());
                       }
                     }));
+  }
+
+  private static void revokeAccess(OperationContext operationContext, Folder folder, ACLGrant grant,
+      Mailbox targetMailbox) throws ServiceException {
+    if (grant.getGrantGranteeType().asByte() != ACL.GRANTEE_PUBLIC) {
+      final String granteeId = grant.getGranteeId();
+      targetMailbox.revokeAccess(
+          operationContext, folder.getId(), granteeId);
+    }
   }
 
   /**
