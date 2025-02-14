@@ -153,6 +153,7 @@ public class MailboxServer {
       rewriteHandler.addRule(new RewritePatternRule(mailURL + "/service/spnego/*", "/service/spnego"));
       rewriteHandler.addRule(new RewritePatternRule("/autodiscover/*", "/service/extension/autodiscover"));
       rewriteHandler.addRule(new RewritePatternRule("/Autodiscover/*", "/service/extension/autodiscover"));
+      rewriteHandler.addRule(new RewritePatternRule("/AutoDiscover/*", "/service/extension/autodiscover"));
 
       final RewritePatternRule serviceRule = new RewritePatternRule("/service/*", "/service");
       serviceRule.setTerminating(true);
