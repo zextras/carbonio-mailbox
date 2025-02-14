@@ -25,18 +25,16 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
-import org.eclipse.jetty.webapp.WebAppContext;
 
 // See: https://github.com/jetty/jetty.project/blob/jetty-9.4.x/examples/embedded/src/main/java/org/eclipse/jetty/embedded/LikeJettyXml.java
 // See previous jetty.xml config for reference: https://github.com/zextras/carbonio-appserver/blob/81bce01f4b97efd89ccf89e79c963b40f16ffc81/appserver/conf/jetty/jetty.xml.production
-public class LikeXmlJettyServer {
+public class MailboxServer {
 
   public static class InstantiationException extends Exception {
 
@@ -47,7 +45,7 @@ public class LikeXmlJettyServer {
     }
   }
 
-  private LikeXmlJettyServer() {
+  private MailboxServer() {
   }
 
   public static class Builder {
@@ -56,12 +54,26 @@ public class LikeXmlJettyServer {
     private final com.zimbra.cs.account.Server localServer;
     private HttpConfiguration httpsConfig;
     private SslContextFactory sslContextFactory;
-    private String webDescriptor = "/opt/zextras/conf/web.xml";
-    private String webApp = "/opt/zextras/conf/web.xml";
 
     public Builder(Config config, com.zimbra.cs.account.Server localServer) {
       this.config = config;
       this.localServer = localServer;
+    }
+
+    private static RequestLogHandler createRequestLogHandler() {
+      final String accessLogFileName = LC.zimbra_log_directory.value() + "/access_log.yyyy_mm_dd";
+      final NCSARequestLog ncsaRequestLog = new NCSARequestLog(accessLogFileName);
+      ncsaRequestLog.setLogDateFormat("dd/MMM/yyyy:HH:mm:ss:ms Z");
+      ncsaRequestLog.setRetainDays(30);
+      ncsaRequestLog.setAppend(true);
+      ncsaRequestLog.setExtended(true);
+      ncsaRequestLog.setFilenameDateFormat("yyyy-MM-dd");
+      ncsaRequestLog.setPreferProxiedForAddress(true);
+      ncsaRequestLog.setLogLatency(true);
+
+      final RequestLogHandler requestLogHandler = new RequestLogHandler();
+      requestLogHandler.setRequestLog(ncsaRequestLog);
+      return requestLogHandler;
     }
 
     public Server build() throws InstantiationException {
@@ -81,21 +93,24 @@ public class LikeXmlJettyServer {
 
       server.addConnector(createMtaAdminHttpsConnector(server));
       server.addConnector(createExtensionsHttpsConnector(server));
+      final ContextHandlerCollection contexts = new ContextHandlerCollection();
+				Handler webAppHandler = new MailboxAPIs(localServer).createServletContextHandler();
 
+      final RewriteHandler mainHandler = createRewriteHandler();
+      mainHandler.setHandler(new HandlerCollection(contexts, webAppHandler,
+					createRequestLogHandler()));
 
-      final Handler webAppHandler = createWebAppHandler();
-       if (localServer.isHttpCompressionEnabled()) {
-         final GzipHandler gzipHandler = new GzipHandler();
-         gzipHandler.setHandler(webAppHandler);
-         gzipHandler.setMinGzipSize(2048);
-         gzipHandler.setCompressionLevel(-1);
-         gzipHandler.setExcludedAgentPatterns(".*MSIE.6\\.0.*");
-         gzipHandler.setIncludedMethods("GET", "POST");
-         server.setHandler(gzipHandler);
-       } else {
-         server.setHandler(webAppHandler);
-       }
-
+      if (localServer.isHttpCompressionEnabled()) {
+        final GzipHandler gzipHandler = new GzipHandler();
+        gzipHandler.setHandler(mainHandler);
+        gzipHandler.setMinGzipSize(2048);
+        gzipHandler.setCompressionLevel(-1);
+        gzipHandler.setExcludedAgentPatterns(".*MSIE.6\\.0.*");
+        gzipHandler.setIncludedMethods("GET", "POST");
+        server.setHandler(gzipHandler);
+      } else {
+        server.setHandler(mainHandler);
+      }
       userHttpConnector.open();
       adminHttpsConnector.open();
 
@@ -109,18 +124,8 @@ public class LikeXmlJettyServer {
       }
     }
 
-    public Builder withWebApp(String webApp) {
-      this.webApp = webApp;
-      return this;
-    }
 
-    public Builder withWebDescriptor(String webDescriptor) {
-      this.webDescriptor = webDescriptor;
-      return this;
-    }
-
-
-    private Handler createWebAppHandler() {
+    private RewriteHandler createRewriteHandler() {
       final RewriteHandler rewriteHandler = new RewriteHandler();
       rewriteHandler.setRewriteRequestURI(true);
       rewriteHandler.setRewritePathInfo(false);
@@ -148,6 +153,7 @@ public class LikeXmlJettyServer {
       rewriteHandler.addRule(new RewritePatternRule(mailURL + "/service/spnego/*", "/service/spnego"));
       rewriteHandler.addRule(new RewritePatternRule("/autodiscover/*", "/service/extension/autodiscover"));
       rewriteHandler.addRule(new RewritePatternRule("/Autodiscover/*", "/service/extension/autodiscover"));
+      rewriteHandler.addRule(new RewritePatternRule("/AutoDiscover/*", "/service/extension/autodiscover"));
 
       final RewritePatternRule serviceRule = new RewritePatternRule("/service/*", "/service");
       serviceRule.setTerminating(true);
@@ -168,29 +174,6 @@ public class LikeXmlJettyServer {
       final RewritePatternRule rootRule2 = new RewritePatternRule("/*", mailURL);
       rootRule2.setTerminating(true);
       rewriteHandler.addRule(rootRule2);
-
-      final ContextHandlerCollection contexts = new ContextHandlerCollection();
-      WebAppContext webAppContext = new WebAppContext(contexts, webApp, "/service");
-      webAppContext.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
-      webAppContext.setDescriptor(webDescriptor);
-      webAppContext.setThrowUnavailableOnStartupException(true);
-
-      final String accessLogFileName = LC.zimbra_log_directory.value() + "/access_log.yyyy_mm_dd";
-      final NCSARequestLog ncsaRequestLog = new NCSARequestLog(accessLogFileName);
-      ncsaRequestLog.setLogDateFormat("dd/MMM/yyyy:HH:mm:ss:ms Z");
-      ncsaRequestLog.setRetainDays(30);
-      ncsaRequestLog.setAppend(true);
-      ncsaRequestLog.setExtended(true);
-      ncsaRequestLog.setFilenameDateFormat("yyyy-MM-dd");
-      ncsaRequestLog.setPreferProxiedForAddress(true);
-      ncsaRequestLog.setLogLatency(true);
-
-      final RequestLogHandler requestLogHandler = new RequestLogHandler();
-      requestLogHandler.setRequestLog(ncsaRequestLog);
-
-      rewriteHandler.setHandler(new HandlerCollection(contexts, new DefaultHandler(), webAppContext,
-          requestLogHandler));
-
       return rewriteHandler;
     }
 

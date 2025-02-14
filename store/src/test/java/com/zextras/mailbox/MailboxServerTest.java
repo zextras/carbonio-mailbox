@@ -8,15 +8,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.zextras.mailbox.LikeXmlJettyServer.Builder;
-import com.zextras.mailbox.LikeXmlJettyServer.InstantiationException;
+import com.zextras.mailbox.MailboxServer.Builder;
+import com.zextras.mailbox.MailboxServer.InstantiationException;
 import com.zimbra.cs.account.Config;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class LikeXmlJettyServerTest {
+class MailboxServerTest {
   private Config config;
   private com.zimbra.cs.account.Server localServer;
 
@@ -24,6 +24,8 @@ class LikeXmlJettyServerTest {
   void setUp() {
     config = mock(Config.class);
     localServer = mock(com.zimbra.cs.account.Server.class);
+    when(localServer.getHttpContextPathBasedThreadPoolBalancingFilterRules()).thenReturn(new String[]{});
+    when(localServer.getMailModeAsString()).thenReturn("http");
     when(config.getHttpNumThreads()).thenReturn(20);
     when(config.getMailboxdSSLProtocols()).thenReturn(new String[] {"TLS1.2"});
     when(config.getSSLExcludeCipherSuites()).thenReturn(new String[] {"^TLS_RSA_.*"});
