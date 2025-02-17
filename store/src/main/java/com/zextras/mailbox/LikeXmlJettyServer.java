@@ -39,6 +39,9 @@ import org.eclipse.jetty.webapp.WebAppContext;
 // See previous jetty.xml config for reference: https://github.com/zextras/carbonio-appserver/blob/81bce01f4b97efd89ccf89e79c963b40f16ffc81/appserver/conf/jetty/jetty.xml.production
 public class LikeXmlJettyServer {
 
+  private LikeXmlJettyServer() {
+  }
+
   public static class InstantiationException extends Exception {
 
     @Serial
@@ -47,9 +50,6 @@ public class LikeXmlJettyServer {
     public InstantiationException(Throwable cause) {
       super("Failed to create Jetty server", cause);
     }
-  }
-
-  private LikeXmlJettyServer() {
   }
 
   public static class Builder {
@@ -69,46 +69,46 @@ public class LikeXmlJettyServer {
     public Server build() throws InstantiationException {
       try {
         final ThreadPool threadPool = createThreadPool();
-      Server server = new Server(threadPool);
+        Server server = new Server(threadPool);
 
-      final HttpConfiguration httpConfig = createHttpConfig();
-      this.httpsConfig = createHttpsConfig(httpConfig);
-      this.sslContextFactory = createSSLContextFactory();
+        final HttpConfiguration httpConfig = createHttpConfig();
+        this.httpsConfig = createHttpsConfig(httpConfig);
+        this.sslContextFactory = createSSLContextFactory();
 
-      final ServerConnector userHttpConnector = createUserHttpConnector(server, httpConfig);
-      server.addConnector(userHttpConnector);
+        final ServerConnector userHttpConnector = createUserHttpConnector(server, httpConfig);
+        server.addConnector(userHttpConnector);
 
-      final ServerConnector userHttpsConnector = createUserHttpsConnector(server);
-      server.addConnector(userHttpsConnector);
+        final ServerConnector userHttpsConnector = createUserHttpsConnector(server);
+        userHttpsConnector.setName("userHttpsConnector");
+        server.addConnector(userHttpsConnector);
 
-      final ServerConnector adminHttpsConnector = createAdminHttpsConnector(server);
-      server.addConnector(adminHttpsConnector);
+        final ServerConnector adminHttpsConnector = createAdminHttpsConnector(server);
+        server.addConnector(adminHttpsConnector);
 
-      server.addConnector(createMtaAdminHttpsConnector(server));
-      server.addConnector(createExtensionsHttpsConnector(server));
+        server.addConnector(createMtaAdminHttpsConnector(server));
+        server.addConnector(createExtensionsHttpsConnector(server));
 
+        final Handler webAppHandler = createWebAppHandler();
+        if (localServer.isHttpCompressionEnabled()) {
+          final GzipHandler gzipHandler = new GzipHandler();
+          gzipHandler.setHandler(webAppHandler);
+          gzipHandler.setMinGzipSize(2048);
+          gzipHandler.setCompressionLevel(-1);
+          gzipHandler.setExcludedAgentPatterns(".*MSIE.6\\.0.*");
+          gzipHandler.setIncludedMethods("GET", "POST");
+          server.setHandler(gzipHandler);
+        } else {
+          server.setHandler(webAppHandler);
+        }
 
-      final Handler webAppHandler = createWebAppHandler();
-       if (localServer.isHttpCompressionEnabled()) {
-         final GzipHandler gzipHandler = new GzipHandler();
-         gzipHandler.setHandler(webAppHandler);
-         gzipHandler.setMinGzipSize(2048);
-         gzipHandler.setCompressionLevel(-1);
-         gzipHandler.setExcludedAgentPatterns(".*MSIE.6\\.0.*");
-         gzipHandler.setIncludedMethods("GET", "POST");
-         server.setHandler(gzipHandler);
-       } else {
-         server.setHandler(webAppHandler);
-       }
+        userHttpConnector.open();
+        adminHttpsConnector.open();
 
-      userHttpConnector.open();
-      adminHttpsConnector.open();
+        server.setStopAtShutdown(true);
+        server.setDumpAfterStart(true);
+        server.setDumpBeforeStop(true);
 
-      server.setStopAtShutdown(true);
-      server.setDumpAfterStart(true);
-      server.setDumpBeforeStop(true);
-
-      return server;
+        return server;
       } catch (IOException e) {
         throw new InstantiationException(e.getCause());
       }
@@ -124,6 +124,43 @@ public class LikeXmlJettyServer {
       return this;
     }
 
+    private ServerConnector createHttpsConnector(Server server, int port, int idleTimeMillis,
+        String host) {
+      ServerConnector serverConnector = new ServerConnector(server,
+          new SslConnectionFactory(this.sslContextFactory, HttpVersion.HTTP_1_1.asString()),
+          new HttpConnectionFactory(this.httpsConfig));
+      serverConnector.setPort(port);
+      serverConnector.setHost(host);
+      serverConnector.setIdleTimeout(idleTimeMillis);
+      return serverConnector;
+    }
+
+    private ServerConnector createUserHttpConnector(Server server, HttpConfiguration httpConfig) {
+      ServerConnector serverConnector = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+      serverConnector.setPort(localServer.getMailPort());
+      serverConnector.setHost(localServer.getMailBindAddress());
+      serverConnector.setIdleTimeout(localServer.getHttpConnectorMaxIdleTimeMillis());
+      return serverConnector;
+    }
+
+    private ServerConnector createUserHttpsConnector(Server server) {
+      return createHttpsConnector(server, localServer.getMailSSLPort(), localServer.getHttpConnectorMaxIdleTimeMillis(),
+          localServer.getMailBindAddress());
+    }
+
+    private ServerConnector createAdminHttpsConnector(Server server) {
+      return createHttpsConnector(server, localServer.getAdminPort(), 0, localServer.getAdminBindAddress());
+    }
+
+    private ServerConnector createMtaAdminHttpsConnector(Server server) {
+      return createHttpsConnector(server, localServer.getMtaAuthPort(), 0, localServer.getMtaAuthBindAddress());
+    }
+
+    private ServerConnector createExtensionsHttpsConnector(Server server) {
+      return createHttpsConnector(server, localServer.getExtensionBindPort(),
+          localServer.getHttpConnectorMaxIdleTimeMillis(),
+          localServer.getExtensionBindAddress());
+    }
 
     private Handler createWebAppHandler() {
       final RewriteHandler rewriteHandler = new RewriteHandler();
@@ -131,7 +168,8 @@ public class LikeXmlJettyServer {
       rewriteHandler.setRewritePathInfo(false);
       rewriteHandler.setOriginalPathAttribute("requestedPath");
 
-      rewriteHandler.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC, DispatcherType.ERROR, DispatcherType.FORWARD);
+      rewriteHandler.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC, DispatcherType.ERROR,
+          DispatcherType.FORWARD);
       rewriteHandler.addRule(new MsieSslRule());
 
       final String mailURL = localServer.getMailURL();
@@ -149,7 +187,7 @@ public class LikeXmlJettyServer {
       rewriteHandler.addRule(new RewritePatternRule("/shf/*", "/service/shf/"));
       rewriteHandler.addRule(new RewritePatternRule("/certauth/*", "/service/certauth"));
       rewriteHandler.addRule(new RewritePatternRule("/spnegoauth/*", "/service/spnego"));
-      rewriteHandler.addRule(new RewritePatternRule( "/spnego/*", "/spnego"));
+      rewriteHandler.addRule(new RewritePatternRule("/spnego/*", "/spnego"));
       rewriteHandler.addRule(new RewritePatternRule(mailURL + "/service/spnego/*", "/service/spnego"));
       rewriteHandler.addRule(new RewritePatternRule("/autodiscover/*", "/service/extension/autodiscover"));
       rewriteHandler.addRule(new RewritePatternRule("/Autodiscover/*", "/service/extension/autodiscover"));
@@ -166,7 +204,7 @@ public class LikeXmlJettyServer {
       carbonioAdminRule.setTerminating(true);
       rewriteHandler.addRule(carbonioAdminRule);
 
-      final RewritePatternRule rootRule = new RewritePatternRule( mailURL + "/*", "/");
+      final RewritePatternRule rootRule = new RewritePatternRule(mailURL + "/*", "/");
       rootRule.setTerminating(true);
       rewriteHandler.addRule(rootRule);
 
@@ -259,48 +297,5 @@ public class LikeXmlJettyServer {
 
       return localSslContextFactory;
     }
-
-    private ServerConnector createHttpsConnector(Server server, int port, int idleTimeMillis,
-        String host) {
-      ServerConnector serverConnector = createHttpsConnector(server);
-      serverConnector.setPort(port);
-      serverConnector.setHost(host);
-      serverConnector.setIdleTimeout(idleTimeMillis);
-      return serverConnector;
-    }
-
-    private ServerConnector createUserHttpConnector(Server server, HttpConfiguration httpConfig) {
-      ServerConnector serverConnector = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
-      serverConnector.setPort(localServer.getMailPort());
-      serverConnector.setHost(localServer.getMailBindAddress());
-      serverConnector.setIdleTimeout(localServer.getHttpConnectorMaxIdleTimeMillis());
-      return serverConnector;
-    }
-
-    private ServerConnector createUserHttpsConnector(Server server) {
-      return createHttpsConnector(server, localServer.getMailSSLPort(), localServer.getHttpConnectorMaxIdleTimeMillis(),
-          localServer.getMailBindAddress());
-    }
-
-    private ServerConnector createAdminHttpsConnector(Server server) {
-      return createHttpsConnector(server, localServer.getAdminPort(), 0, localServer.getAdminBindAddress());
-    }
-
-    private ServerConnector createMtaAdminHttpsConnector(Server server) {
-      return createHttpsConnector(server, localServer.getMtaAuthPort(), 0, localServer.getMtaAuthBindAddress());
-    }
-
-    private ServerConnector createExtensionsHttpsConnector(Server server) {
-      return createHttpsConnector(server, localServer.getExtensionBindPort(), localServer.getHttpConnectorMaxIdleTimeMillis(),
-          localServer.getExtensionBindAddress());
-    }
-
-    private ServerConnector createHttpsConnector(Server server) {
-      return new ServerConnector(server,
-          new SslConnectionFactory(this.sslContextFactory, HttpVersion.HTTP_1_1.asString()),
-          new HttpConnectionFactory(this.httpsConfig));
-    }
   }
-
-
 }
