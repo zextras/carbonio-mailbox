@@ -24,11 +24,11 @@ class LikeXmlJettyServerTest {
   void setUp() {
     config = mock(Config.class);
     localServer = mock(com.zimbra.cs.account.Server.class);
-    when(config.getHttpNumThreads()).thenReturn(20);
-    when(config.getMailboxdSSLProtocols()).thenReturn(new String[] {"TLS1.2"});
-    when(config.getSSLExcludeCipherSuites()).thenReturn(new String[] {"^TLS_RSA_.*"});
-    when(config.getSSLIncludeCipherSuites()).thenReturn(new String[] {});
-    when(config.getHttpConnectorMaxIdleTimeMillis()).thenReturn(3000);
+    when(localServer.getHttpNumThreads()).thenReturn(20);
+    when(localServer.getMailboxdSSLProtocols()).thenReturn(new String[] {"TLS1.2"});
+    when(localServer.getSSLExcludeCipherSuites()).thenReturn(new String[] {"^TLS_RSA_.*"});
+    when(localServer.getSSLIncludeCipherSuites()).thenReturn(new String[] {});
+    when(localServer.getHttpConnectorMaxIdleTimeMillis()).thenReturn(3000);
   }
 
   @Test

@@ -8,6 +8,7 @@ import com.zimbra.common.jetty.JettyMonitor;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.account.Config;
 import java.io.IOException;
+import java.io.Serial;
 import javax.servlet.DispatcherType;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.rewrite.handler.MsieSslRule;
@@ -40,6 +41,7 @@ public class LikeXmlJettyServer {
 
   public static class InstantiationException extends Exception {
 
+    @Serial
     private static final long serialVersionUID = 3614086690444919273L;
 
     public InstantiationException(Throwable cause) {
@@ -132,7 +134,7 @@ public class LikeXmlJettyServer {
       rewriteHandler.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC, DispatcherType.ERROR, DispatcherType.FORWARD);
       rewriteHandler.addRule(new MsieSslRule());
 
-      final String mailURL = config.getMailURL();
+      final String mailURL = localServer.getMailURL();
 
       rewriteHandler.addRule(new RewritePatternRule("/Microsoft-Server-ActiveSync/*", "/service/extension/zimbrasync"));
       rewriteHandler.addRule(new RewriteRegexRule("(?i)/ews/Exchange.asmx/*", "/service/extension/zimbraews"));
@@ -200,8 +202,8 @@ public class LikeXmlJettyServer {
     private ThreadPool createThreadPool() {
       QueuedThreadPool threadPool = new QueuedThreadPool();
       threadPool.setMinThreads(10);
-      threadPool.setMaxThreads(config.getHttpNumThreads());
-      threadPool.setIdleTimeout(config.getHttpThreadPoolMaxIdleTimeMillis());
+      threadPool.setMaxThreads(localServer.getHttpNumThreads());
+      threadPool.setIdleTimeout(localServer.getHttpThreadPoolMaxIdleTimeMillis());
       threadPool.setDetailedDump(false);
 
       JettyMonitor.setThreadPool(threadPool);
@@ -210,12 +212,12 @@ public class LikeXmlJettyServer {
 
     private HttpConfiguration createHttpConfig() {
       HttpConfiguration httpConfig = new HttpConfiguration();
-      httpConfig.setOutputBufferSize(config.getHttpOutputBufferSize());
-      httpConfig.setRequestHeaderSize(config.getHttpRequestHeaderSize());
-      httpConfig.setResponseHeaderSize(config.getHttpResponseHeaderSize());
+      httpConfig.setOutputBufferSize(localServer.getHttpOutputBufferSize());
+      httpConfig.setRequestHeaderSize(localServer.getHttpRequestHeaderSize());
+      httpConfig.setResponseHeaderSize(localServer.getHttpResponseHeaderSize());
       httpConfig.setSendServerVersion(false);
       httpConfig.setSendDateHeader(true);
-      httpConfig.setHeaderCacheSize(config.getHttpHeaderCacheSize());
+      httpConfig.setHeaderCacheSize(localServer.getHttpHeaderCacheSize());
       httpConfig.setSecurePort(localServer.getMailSSLPort());
 
       final ForwardedRequestCustomizer forwardedRequestCustomizer = new ForwardedRequestCustomizer();
@@ -242,15 +244,15 @@ public class LikeXmlJettyServer {
       localSslContextFactory.setKeyStorePath(LC.mailboxd_keystore.value());
       localSslContextFactory.setKeyStorePassword(LC.mailboxd_keystore_password.value());
       localSslContextFactory.setKeyManagerPassword(LC.mailboxd_keystore_password.value());
-      localSslContextFactory.setRenegotiationAllowed(config.isMailboxdSSLRenegotiationAllowed());
+      localSslContextFactory.setRenegotiationAllowed(localServer.isMailboxdSSLRenegotiationAllowed());
 
-      for (String protocol : config.getMailboxdSSLProtocols()) {
+      for (String protocol : localServer.getMailboxdSSLProtocols()) {
         localSslContextFactory.setIncludeProtocols(protocol);
       }
 
-      localSslContextFactory.setExcludeCipherSuites(config.getSSLExcludeCipherSuites());
+      localSslContextFactory.setExcludeCipherSuites(localServer.getSSLExcludeCipherSuites());
 
-      final String[] sslIncludeCipherSuites = config.getSSLIncludeCipherSuites();
+      final String[] sslIncludeCipherSuites = localServer.getSSLIncludeCipherSuites();
       if (sslIncludeCipherSuites.length > 0) {
         localSslContextFactory.setIncludeCipherSuites(sslIncludeCipherSuites);
       }
@@ -271,7 +273,7 @@ public class LikeXmlJettyServer {
       ServerConnector serverConnector = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
       serverConnector.setPort(localServer.getMailPort());
       serverConnector.setHost(localServer.getMailBindAddress());
-      serverConnector.setIdleTimeout(config.getHttpConnectorMaxIdleTimeMillis());
+      serverConnector.setIdleTimeout(localServer.getHttpConnectorMaxIdleTimeMillis());
       return serverConnector;
     }
 
@@ -289,7 +291,7 @@ public class LikeXmlJettyServer {
     }
 
     private ServerConnector createExtensionsHttpsConnector(Server server) {
-      return createHttpsConnector(server, localServer.getExtensionBindPort(), config.getHttpConnectorMaxIdleTimeMillis(),
+      return createHttpsConnector(server, localServer.getExtensionBindPort(), localServer.getHttpConnectorMaxIdleTimeMillis(),
           localServer.getExtensionBindAddress());
     }
 
