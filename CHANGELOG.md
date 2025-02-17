@@ -1,5 +1,13 @@
 
 
+## [4.20.1](https://github.com/zextras/carbonio-mailbox/compare/4.20.0...4.20.1) (2025-02-17)
+
+
+### Bug Fixes
+
+* [CO-1817] refactor LikeXmlJettyServer to use localServer for configuration values where required ([#668](https://github.com/zextras/carbonio-mailbox/issues/668)) ([940bc0f](https://github.com/zextras/carbonio-mailbox/commit/940bc0f71f9a4fcc21db20f45084631c1b76f181))
+* [CO-1818] add user https connector on mailSSLPort ([#669](https://github.com/zextras/carbonio-mailbox/issues/669)) ([e53aa16](https://github.com/zextras/carbonio-mailbox/commit/e53aa16b45afc5b98fd90bfd616d656638d72ebd))
+
 # [4.20.0](https://github.com/zextras/carbonio-mailbox/compare/4.19.5...4.20.0) (2025-02-10)
 
 
