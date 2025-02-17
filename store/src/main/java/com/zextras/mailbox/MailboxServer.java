@@ -37,7 +37,7 @@ import org.eclipse.jetty.util.thread.ThreadPool;
 // See previous jetty.xml config for reference: https://github.com/zextras/carbonio-appserver/blob/81bce01f4b97efd89ccf89e79c963b40f16ffc81/appserver/conf/jetty/jetty.xml.production
 public class MailboxServer {
 
-  private LikeXmlJettyServer() {
+  private MailboxServer() {
   }
 
   public static class InstantiationException extends Exception {
@@ -48,9 +48,6 @@ public class MailboxServer {
     public InstantiationException(Throwable cause) {
       super("Failed to create Jetty server", cause);
     }
-  }
-
-  private MailboxServer() {
   }
 
   public static class Builder {
@@ -172,7 +169,7 @@ public class MailboxServer {
           localServer.getExtensionBindAddress());
     }
 
-    private Handler createWebAppHandler() {
+    private RewriteHandler createRewriteHandler() {
       final RewriteHandler rewriteHandler = new RewriteHandler();
       rewriteHandler.setRewriteRequestURI(true);
       rewriteHandler.setRewritePathInfo(false);
