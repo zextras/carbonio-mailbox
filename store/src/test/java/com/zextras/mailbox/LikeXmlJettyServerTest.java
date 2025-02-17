@@ -37,7 +37,7 @@ class LikeXmlJettyServerTest {
 
     final Connector[] connectors = server.getConnectors();
 
-    assertEquals(4, connectors.length);
+    assertEquals(5, connectors.length);
   }
 
   @Test

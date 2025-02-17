@@ -76,6 +76,9 @@ public class LikeXmlJettyServer {
       final ServerConnector userHttpConnector = createUserHttpConnector(server, httpConfig);
       server.addConnector(userHttpConnector);
 
+      final ServerConnector userHttpsConnector = createUserHttpsConnector(server);
+      server.addConnector(userHttpsConnector);
+
       final ServerConnector adminHttpsConnector = createAdminHttpsConnector(server);
       server.addConnector(adminHttpsConnector);
 
@@ -267,8 +270,14 @@ public class LikeXmlJettyServer {
     private ServerConnector createUserHttpConnector(Server server, HttpConfiguration httpConfig) {
       ServerConnector serverConnector = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
       serverConnector.setPort(localServer.getMailPort());
+      serverConnector.setHost(localServer.getMailBindAddress());
       serverConnector.setIdleTimeout(config.getHttpConnectorMaxIdleTimeMillis());
       return serverConnector;
+    }
+
+    private ServerConnector createUserHttpsConnector(Server server) {
+      return createHttpsConnector(server, localServer.getMailSSLPort(), localServer.getHttpConnectorMaxIdleTimeMillis(),
+          localServer.getMailBindAddress());
     }
 
     private ServerConnector createAdminHttpsConnector(Server server) {
