@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import com.zextras.mailbox.LikeXmlJettyServer.Builder;
 import com.zextras.mailbox.LikeXmlJettyServer.InstantiationException;
 import com.zimbra.cs.account.Config;
+import java.util.Arrays;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +38,7 @@ class LikeXmlJettyServerTest {
 
     final Connector[] connectors = server.getConnectors();
 
-    assertEquals(4, connectors.length);
+    assertEquals(5, connectors.length);
   }
 
   @Test
@@ -59,12 +60,26 @@ class LikeXmlJettyServerTest {
   }
 
   @Test
+  void shouldCreateJettyServer_withUserHttpsConnector() throws InstantiationException {
+    final Server server = new Builder(config, localServer).build();
+
+    final Connector[] connectors = server.getConnectors();
+
+    final Connector userHttpsConnector = Arrays.stream(connectors)
+        .filter(connector -> "userHttpsConnector".equals(connector.getName())).findFirst().get();
+
+    assertEquals("ssl", userHttpsConnector.getProtocols().get(0));
+    assertEquals("http/1.1", userHttpsConnector.getProtocols().get(1));
+    assertEquals(3000, userHttpsConnector.getIdleTimeout());
+  }
+
+  @Test
   void shouldCreateJettyServer_withAdminConnector() throws InstantiationException {
     final Server server = new Builder(config, localServer).build();
 
     final Connector[] connectors = server.getConnectors();
 
-    final Connector adminConnector = connectors[1];
+    final Connector adminConnector = connectors[2];
     assertEquals(2, adminConnector.getProtocols().size());
     assertEquals("ssl", adminConnector.getProtocols().get(0));
     assertEquals("http/1.1", adminConnector.getProtocols().get(1));
@@ -77,7 +92,7 @@ class LikeXmlJettyServerTest {
 
     final Connector[] connectors = server.getConnectors();
 
-    final Connector adminMtaConnector = connectors[2];
+    final Connector adminMtaConnector = connectors[3];
     assertEquals(2, adminMtaConnector.getProtocols().size());
     assertEquals("ssl", adminMtaConnector.getProtocols().get(0));
     assertEquals("http/1.1", adminMtaConnector.getProtocols().get(1));
@@ -90,7 +105,7 @@ class LikeXmlJettyServerTest {
 
     final Connector[] connectors = server.getConnectors();
 
-    final Connector extensionConnector = connectors[3];
+    final Connector extensionConnector = connectors[4];
     assertEquals(2, extensionConnector.getProtocols().size());
     assertEquals("ssl", extensionConnector.getProtocols().get(0));
     assertEquals("http/1.1", extensionConnector.getProtocols().get(1));
