@@ -125,13 +125,10 @@ public class MailboxAPIs {
 	}
 
 	private void addServlets(ServletContextHandler servletContextHandler) {
-		// See for example: https://github.com/zextras/carbonio-mailbox/blob/1b5290416ccb6298f3504c2736b8f0587910150d/store/conf/web.xml.production#L244
-		// user ports: 7070, 7443 (default) + customMailPort, customMailSSLPort
-		// admin ports: 7071 (admin), 7073 (mtaAuth) + customAdminPort, customMtaAuthPort
 		final String adminPortOnly = String.valueOf(server.getAdminPort());
 		final String adminAndMTAPort = adminPortOnly + ", " + server.getMtaAuthPort();
-		final String userAndAdminPorts = server.getMailPort() + ", " + server.getMailSSLPort() + ", " + adminPortOnly;
 		final String userOnlyPorts = server.getMailPort() + ", " + server.getMailSSLPort();
+		final String userAndAdminPorts = server.getMailPort() + ", " + server.getMailSSLPort() + ", " + adminPortOnly;
 
 		final var firstServlet = new ServletHolder(FirstServlet.class);
 		firstServlet.setInitOrder(1);
@@ -152,8 +149,6 @@ public class MailboxAPIs {
 		final var soapServlet = new ServletHolder(SoapServlet.class);
 		soapServlet.setAsyncSupported(true);
 		soapServlet.setInitOrder(2);
-
-
 		soapServlet.setInitParameter(
 				allowedPortsParameter, userOnlyPorts);
 		soapServlet.setInitParameter("engine.handler.0", AccountService.class.getName());
