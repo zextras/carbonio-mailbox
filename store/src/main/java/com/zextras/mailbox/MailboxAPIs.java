@@ -159,7 +159,7 @@ public class MailboxAPIs {
 
 
 		soapServlet.setInitParameter(
-				allowedPortsParameter, mailPort + ", " + mailSSLPort + ", " + defaultUserHttpPor
+				allowedPortsParameter, mailPort + ", " + mailSSLPort + ", " + defaultUserHttpPort
 						+ ", " + defaultUserHttpsPort);
 		soapServlet.setInitParameter("engine.handler.0", AccountService.class.getName());
 		soapServlet.setInitParameter("engine.handler.1", MailService.class.getName());
