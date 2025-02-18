@@ -112,17 +112,28 @@ public class TextQuery extends Query {
             // a stop word like "a" or "an" or "the".
             return new NoTermQueryOperation();
         } else if (tokens.size() == 1) {
+            // Single term text
+            TermQuery query = new TermQuery(new Term(field, tokens.get(0)));
+
+            //
+            String queryString = toQueryString(field, text);
+
             LuceneQueryOperation op = new LuceneQueryOperation();
-            op.addClause(toQueryString(field, text), new TermQuery(new Term(field, tokens.get(0))), evalBool(bool));
+            op.addClause(queryString, query, evalBool(bool));
             return op;
         } else {
+            // Multi terms text (aka Phrase)
             assert tokens.size() > 1 : tokens.size();
             PhraseQuery query = new PhraseQuery();
             for (String token : tokens) {
                 query.add(new Term(field, token));
             }
+
+            // Quote text in case of phrase
+            String queryString = toQueryString(field, "\"%s\"".formatted(text));
+
             LuceneQueryOperation op = new LuceneQueryOperation();
-            op.addClause(toQueryString(field, text), query, evalBool(bool));
+            op.addClause(queryString, query, evalBool(bool));
             return op;
         }
     }
