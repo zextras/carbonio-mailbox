@@ -22,7 +22,8 @@ import org.junit.jupiter.api.Test;
 class MailboxServerAPITest {
 
 	private static Server mailboxServer;
-	private static final int USER_PORT = 8080;
+	private static final int USER_HTTP_PORT = 8080;
+	private static final int USER_HTTPS_PORT = 8443;
 	private static final int ADMIN_PORT = 7071;
 
 	@BeforeAll
@@ -30,7 +31,11 @@ class MailboxServerAPITest {
 		final String mailboxHome = MailboxServerAPITest.class.getResource("/").getFile();
 		final String timezoneFile = MailboxServerAPITest.class.getResource("/timezones-test.ics")
 				.getFile();
-		mailboxServer = new ServerSetup(USER_PORT, ADMIN_PORT,  mailboxHome, timezoneFile).create();
+		mailboxServer = new ServerSetup(mailboxHome, timezoneFile)
+				.withAdminPort(ADMIN_PORT)
+				.withUserPort(USER_HTTP_PORT)
+				.withUserHttpsPort(USER_HTTPS_PORT)
+				.create();
 		mailboxServer.start();
 	}
 
@@ -40,15 +45,31 @@ class MailboxServerAPITest {
 	}
 
 	private String getUserEndpoint() {
-		return "http://localhost:" + USER_PORT + "/service/soap";
+		return "http://localhost:" + USER_HTTP_PORT + "/service/soap";
+	}
+
+	private String getUserHttpsEndpoint() {
+		return "https://localhost:" + USER_HTTPS_PORT + "/service/soap";
 	}
 
 	private String getAdminEndpoint() {
 		return "https://localhost:" + ADMIN_PORT + "/service/admin/soap";
 	}
+
 	@Test
 	void shouldAuthenticateStandardUser() throws Exception {
 		try(SoapClient soapClient = new SoapClient(getUserEndpoint())) {
+			final SoapResponse soapResponse = soapClient.newRequest()
+					.setSoapBody(new AuthRequest(AccountSelector.fromName("test@test.com"), "password"))
+					.call();
+
+			Assertions.assertEquals(200, soapResponse.statusCode());
+		}
+	}
+
+	@Test
+	void shouldAuthenticateStandardUser_OnHttpsPort() throws Exception {
+		try(SoapClient soapClient = new SoapClient(getUserHttpsEndpoint())) {
 			final SoapResponse soapResponse = soapClient.newRequest()
 					.setSoapBody(new AuthRequest(AccountSelector.fromName("test@test.com"), "password"))
 					.call();
