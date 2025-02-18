@@ -5,17 +5,6 @@
 
 package com.zimbra.cs.index.query;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.List;
-
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.PhraseQuery;
-import org.apache.lucene.search.TermQuery;
-
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
@@ -27,6 +16,16 @@ import com.zimbra.cs.index.LuceneQueryOperation;
 import com.zimbra.cs.index.NoTermQueryOperation;
 import com.zimbra.cs.index.QueryOperation;
 import com.zimbra.cs.mailbox.Mailbox;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.PhraseQuery;
+import org.apache.lucene.search.TermQuery;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.List;
 
 /**
  * Query by text.

@@ -5,23 +5,14 @@
 
 package com.zimbra.cs.index.query;
 
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import com.zimbra.common.soap.Element;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
+import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.index.SearchParams;
 import com.zimbra.cs.index.SortBy;
+import com.zimbra.cs.index.ZimbraQuery;
 import com.zimbra.cs.index.ZimbraQueryResults;
 import com.zimbra.cs.mailbox.DeliveryOptions;
 import com.zimbra.cs.mailbox.Flag;
@@ -37,6 +28,16 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.SearchRequest;
 import com.zimbra.soap.mail.message.SearchResponse;
 import com.zimbra.soap.type.SearchHit;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Unit test for {@link TextQuery}.
@@ -55,6 +56,36 @@ public final class TextQueryTest {
     @BeforeEach
     public void setUp() throws Exception {
         MailboxTestUtil.clearData();
+    }
+
+    @Test
+    void toQueryStringSingleTerm() throws Exception {
+        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        MailboxTestUtil.index(mbox);
+
+        SearchParams params = new SearchParams();
+        params.setQueryString("content:one");
+        params.setTypes(EnumSet.of(MailItem.Type.MESSAGE));
+        params.setSortBy(SortBy.NONE);
+
+        ZimbraQuery query = new ZimbraQuery(new OperationContext(mbox), SoapProtocol.Soap12, mbox, params);
+
+        assertEquals("(content:one)", query.toQueryString());
+    }
+
+    @Test
+    void toQueryStringMultiTerms() throws Exception {
+        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        MailboxTestUtil.index(mbox);
+
+        SearchParams params = new SearchParams();
+        params.setQueryString("content:\"one two three\"");
+        params.setTypes(EnumSet.of(MailItem.Type.MESSAGE));
+        params.setSortBy(SortBy.NONE);
+
+        ZimbraQuery query = new ZimbraQuery(new OperationContext(mbox), SoapProtocol.Soap12, mbox, params);
+
+        assertEquals("(content:\"one two three\")", query.toQueryString());
     }
 
     @Test

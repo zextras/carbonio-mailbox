@@ -5,19 +5,7 @@
 
 package com.zimbra.cs.index;
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import com.google.common.collect.Lists;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
@@ -29,6 +17,18 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Unit test for {@link LuceneQueryOperation}.
@@ -159,21 +159,6 @@ public final class LuceneQueryOperationTest {
   results = query.execute();
   assertFalse(results.hasNext());
   results.close();
- }
-
- @Test
- void toQueryStringPhrase() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
-  MailboxTestUtil.index(mbox);
-
-  SearchParams params = new SearchParams();
-  params.setQueryString("content:\"one two three\"");
-  params.setTypes(EnumSet.of(MailItem.Type.MESSAGE));
-  params.setSortBy(SortBy.NONE);
-
-  ZimbraQuery query = new ZimbraQuery(new OperationContext(mbox), SoapProtocol.Soap12, mbox, params);
-
-  assertEquals("(content:\"one two three\")", query.toQueryString());
  }
 
  @Test
