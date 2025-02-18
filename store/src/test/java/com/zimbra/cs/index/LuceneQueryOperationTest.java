@@ -161,4 +161,64 @@ public final class LuceneQueryOperationTest {
   results.close();
  }
 
+ @Test
+ void toQueryStringPhrase() throws Exception {
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  MailboxTestUtil.index(mbox);
+
+  SearchParams params = new SearchParams();
+  params.setQueryString("content:\"one two three\"");
+  params.setTypes(EnumSet.of(MailItem.Type.MESSAGE));
+  params.setSortBy(SortBy.NONE);
+
+  ZimbraQuery query = new ZimbraQuery(new OperationContext(mbox), SoapProtocol.Soap12, mbox, params);
+
+  assertEquals("(content:\"one two three\")", query.toQueryString());
+ }
+
+ @Test
+ void subjectQueryPhrase() throws Exception {
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
+  Message msg1 = mbox.addMessage(null, new ParsedMessage("Subject: one two three".getBytes(), false), dopt, null);
+  Message msg2 = mbox.addMessage(null, new ParsedMessage("Subject: one three two".getBytes(), false), dopt, null);
+  MailboxTestUtil.index(mbox);
+
+  SearchParams params = new SearchParams();
+  params.setQueryString("subject:\"one two three\"");
+  params.setTypes(EnumSet.of(MailItem.Type.MESSAGE));
+  params.setSortBy(SortBy.NONE);
+
+  ZimbraQuery query = new ZimbraQuery(new OperationContext(mbox), SoapProtocol.Soap12, mbox, params);
+  ZimbraQueryResults results = query.execute();
+
+  assertTrue(results.hasNext());
+  assertEquals(msg1.getId(), results.getNext().getItemId());
+
+  assertFalse(results.hasNext());
+ }
+
+ @Test
+ void subjectQueryPhraseMultiMatches() throws Exception {
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
+  Message msg1 = mbox.addMessage(null, new ParsedMessage("Subject: one two three".getBytes(), false), dopt, null);
+  Message msg2 = mbox.addMessage(null, new ParsedMessage("Subject: one two three".getBytes(), false), dopt, null);
+  MailboxTestUtil.index(mbox);
+
+  SearchParams params = new SearchParams();
+  params.setQueryString("subject:\"one two three\"");
+  params.setTypes(EnumSet.of(MailItem.Type.MESSAGE));
+  params.setSortBy(SortBy.NONE);
+
+  ZimbraQuery query = new ZimbraQuery(new OperationContext(mbox), SoapProtocol.Soap12, mbox, params);
+  ZimbraQueryResults results = query.execute();
+
+  assertTrue(results.hasNext());
+  assertEquals(msg1.getId(), results.getNext().getItemId());
+
+  assertTrue(results.hasNext());
+  assertEquals(msg2.getId(), results.getNext().getItemId());
+  results.close();
+ }
 }
