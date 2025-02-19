@@ -38,6 +38,7 @@ import com.zimbra.cs.servlet.ETagHeaderFilter;
 import com.zimbra.cs.servlet.FirstServlet;
 import com.zimbra.cs.servlet.RequestStringFilter;
 import com.zimbra.cs.servlet.RobotsServlet;
+import com.zimbra.cs.servlet.SessionHijackingPreventionFilter;
 import com.zimbra.cs.servlet.SetHeaderFilter;
 import com.zimbra.cs.servlet.SpnegoFilter;
 import com.zimbra.cs.servlet.ZimbraInvalidLoginFilter;
@@ -67,6 +68,10 @@ public class MailboxAPIs {
 
 	private void addFilters(ServletContextHandler servletContextHandler) {
 		servletContextHandler.addFilter(new FilterHolder(GuiceFilter.class),"/*", EnumSet.of(DispatcherType.REQUEST));
+
+		final FilterHolder sessionHijackingPreventionFilter = new FilterHolder(SessionHijackingPreventionFilter.class);
+		sessionHijackingPreventionFilter.setAsyncSupported(true);
+		servletContextHandler.addFilter(sessionHijackingPreventionFilter, "/*", EnumSet.of(DispatcherType.REQUEST));
 
 		final FilterHolder dosFilter = new FilterHolder(DoSFilter.class);
 		dosFilter.setAsyncSupported(true);
