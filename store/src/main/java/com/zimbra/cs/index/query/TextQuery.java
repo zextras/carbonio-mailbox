@@ -5,17 +5,6 @@
 
 package com.zimbra.cs.index.query;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.List;
-
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.PhraseQuery;
-import org.apache.lucene.search.TermQuery;
-
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
@@ -27,6 +16,16 @@ import com.zimbra.cs.index.LuceneQueryOperation;
 import com.zimbra.cs.index.NoTermQueryOperation;
 import com.zimbra.cs.index.QueryOperation;
 import com.zimbra.cs.mailbox.Mailbox;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.PhraseQuery;
+import org.apache.lucene.search.TermQuery;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.List;
 
 /**
  * Query by text.
@@ -112,17 +111,28 @@ public class TextQuery extends Query {
             // a stop word like "a" or "an" or "the".
             return new NoTermQueryOperation();
         } else if (tokens.size() == 1) {
+            // Single term text
+            TermQuery query = new TermQuery(new Term(field, tokens.get(0)));
+
+            //
+            String queryString = toQueryString(field, text);
+
             LuceneQueryOperation op = new LuceneQueryOperation();
-            op.addClause(toQueryString(field, text), new TermQuery(new Term(field, tokens.get(0))), evalBool(bool));
+            op.addClause(queryString, query, evalBool(bool));
             return op;
         } else {
+            // Multi terms text (aka Phrase)
             assert tokens.size() > 1 : tokens.size();
             PhraseQuery query = new PhraseQuery();
             for (String token : tokens) {
                 query.add(new Term(field, token));
             }
+
+            // Quote text in case of phrase
+            String queryString = toQueryString(field, "\"%s\"".formatted(text));
+
             LuceneQueryOperation op = new LuceneQueryOperation();
-            op.addClause(toQueryString(field, text), query, evalBool(bool));
+            op.addClause(queryString, query, evalBool(bool));
             return op;
         }
     }
