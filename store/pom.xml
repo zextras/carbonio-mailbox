@@ -253,12 +253,6 @@
       <groupId>org.mockito</groupId>
       <scope>test</scope>
     </dependency>
-    <!-- Mockito inline required to mock static methods -->
-    <dependency>
-      <artifactId>mockito-inline</artifactId>
-      <groupId>org.mockito</groupId>
-      <scope>test</scope>
-    </dependency>
 
     <dependency>
       <artifactId>easymock</artifactId>

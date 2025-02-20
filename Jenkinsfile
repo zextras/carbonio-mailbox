@@ -74,6 +74,7 @@ pipeline {
     }
 
     environment {
+        JAVA_HOME = "/usr/lib/jvm/java-21-openjdk-amd64/"
         JAVA_OPTS='-Dfile.encoding=UTF8'
         LC_ALL='C.UTF-8'
         MAVEN_OPTS = "-Xmx4g"
