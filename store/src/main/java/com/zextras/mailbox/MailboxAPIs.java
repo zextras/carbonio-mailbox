@@ -66,7 +66,9 @@ public class MailboxAPIs {
 	}
 
 	private void addFilters(ServletContextHandler servletContextHandler) {
-		servletContextHandler.addFilter(new FilterHolder(GuiceFilter.class),"/*", EnumSet.of(DispatcherType.REQUEST));
+		final FilterHolder guiceFilter = new FilterHolder(GuiceFilter.class);
+		guiceFilter.setAsyncSupported(true);
+		servletContextHandler.addFilter(guiceFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
 
 		final FilterHolder dosFilter = new FilterHolder(DoSFilter.class);
 		dosFilter.setAsyncSupported(true);
@@ -76,8 +78,13 @@ public class MailboxAPIs {
 		dosFilter.setInitParameter("maxRequestMs", "9223372036854775807");
 		servletContextHandler.addFilter(dosFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
 
-		servletContextHandler.addFilter(new FilterHolder(ZimbraInvalidLoginFilter.class),"/*", EnumSet.of(DispatcherType.REQUEST));
-		servletContextHandler.addFilter(new FilterHolder(ZimbraQoSFilter.class),"/*", EnumSet.of(DispatcherType.REQUEST));
+		final FilterHolder invalidLoginFilter = new FilterHolder(ZimbraInvalidLoginFilter.class);
+		invalidLoginFilter.setAsyncSupported(true);
+		servletContextHandler.addFilter(invalidLoginFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
+
+		final FilterHolder qosFilter = new FilterHolder(ZimbraQoSFilter.class);
+		qosFilter.setAsyncSupported(true);
+		servletContextHandler.addFilter(qosFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
 
 		final FilterHolder contextPathBasedThreadPoolBalancerFilter = new FilterHolder(ContextPathBasedThreadPoolBalancerFilter.class);
 		contextPathBasedThreadPoolBalancerFilter.setAsyncSupported(true);
@@ -216,8 +223,8 @@ public class MailboxAPIs {
 			certAuthServlet.setInitOrder(5);
 			certAuthServlet.setInitParameter(allowedPortsParameter,  server.getMailSSLClientCertPortAsString() + ", 9443");
 			certAuthServlet.setInitParameter("errorpage.forbidden",  "/error/403.jsp");
-			servletContextHandler.addServlet(externalUserProvServlet, "/certauth/*");
-			servletContextHandler.addServlet(externalUserProvServlet, "/certauth");
+			servletContextHandler.addServlet(certAuthServlet, "/certauth/*");
+			servletContextHandler.addServlet(certAuthServlet, "/certauth");
 		}
 
 		final var spnegoAuthServlet = new ServletHolder(SpnegoAuthServlet.class);
@@ -230,6 +237,9 @@ public class MailboxAPIs {
 
 		final var pubCalServlet = new ServletHolder(PublicICalServlet.class);
 		pubCalServlet.setAsyncSupported(true);
+		pubCalServlet.setInitOrder(5);
+		pubCalServlet.setInitParameter(
+				allowedPortsParameter, userAndAdminPorts);
 		servletContextHandler.addServlet(pubCalServlet, "/pubcal/*");
 
 		final var fileUploadServlet = new ServletHolder(FileUploadServlet.class);
