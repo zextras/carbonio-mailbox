@@ -10205,4 +10205,22 @@ TODO: delete them permanently from here
 <attr id="3148" name="carbonioSearchSpecifiedDomainsByFeature" type="string" max="256" cardinality="multi" optionalIn="domain" since="24.12.0">
   <desc>List of domain names in which the SearchUserByFeature API should perform users searches</desc>
 </attr>
+
+<attr id="3149" name="carbonioIpBoundSessionFilterEnabled" type="boolean" cardinality="single" optionalIn="globalConfig,domain,cos,account" flags="accountInfo,accountCosDomainInherited,domainInherited,domainAdminModifiable" since="25.6.0">
+  <globalConfigValue>FALSE</globalConfigValue>
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
+  <desc>Whether IP-bound session hijacking detection/protection is enabled for global configuration, domain, COS, or account.</desc>
+</attr>
+
+<attr id="3150" name="carbonioIpBoundSessionTrustedIPs" type="string" cardinality="multi" optionalIn="globalConfig,domain,cos,account" flags="accountCosDomainInherited,domainInherited,domainAdminModifiable" since="25.6.0">
+  <desc>
+    List of trusted IP addresses or CIDR ranges that are exempt from IP-bound session enforcement.
+    Requests from these IPs will not trigger session hijacking detection, allowing flexibility for known secure environments.
+    Example values:
+    - "192.168.1.100" (Single trusted IP)
+    - "10.0.0.0/24" (All IPs in the 10.0.0.x range)
+    - "2001:db8::/32" (IPv6 CIDR range)
+  </desc>
+</attr>
 </attrs>

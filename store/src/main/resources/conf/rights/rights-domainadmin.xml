@@ -36,6 +36,8 @@
     <a n="carbonioFeatureOTPMgmtEnabled"/>
     <a n="carbonioFeatureTeamEnabled"/>
     <a n="carbonioFeatureWscEnabled"/>
+    <a n="carbonioIpBoundSessionFilterEnabled"/>
+    <a n="carbonioIpBoundSessionTrustedIPs"/>
     <a n="carbonioPrefSendAnalytics"/>
     <a n="carbonioPrefWebUiDarkMode"/>
     <a n="cn"/>
@@ -511,6 +513,8 @@
     <a n="carbonioAdminUiLoginLogo"/>
     <a n="carbonioAdminUiTitle"/>
     <a n="carbonioAdminWebUiBannerText"/>
+    <a n="carbonioIpBoundSessionFilterEnabled"/>
+    <a n="carbonioIpBoundSessionTrustedIPs"/>
     <a n="carbonioLogoUrl"/>
     <a n="carbonioNotificationFrom"/>
     <a n="carbonioNotificationRecipients"/>

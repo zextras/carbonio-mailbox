@@ -2974,6 +2974,28 @@ public class ZAttrProvisioning {
     public static final String A_carbonioFeatureWscEnabled = "carbonioFeatureWscEnabled";
 
     /**
+     * Whether IP-bound session hijacking detection/protection is enabled for
+     * global configuration, domain, COS, or account.
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3149)
+    public static final String A_carbonioIpBoundSessionFilterEnabled = "carbonioIpBoundSessionFilterEnabled";
+
+    /**
+     * List of trusted IP addresses or CIDR ranges that are exempt from
+     * IP-bound session enforcement. Requests from these IPs will not trigger
+     * session hijacking detection, allowing flexibility for known secure
+     * environments. Example values: - &quot;192.168.1.100&quot; (Single
+     * trusted IP) - &quot;10.0.0.0/24&quot; (All IPs in the 10.0.0.x range)
+     * - &quot;2001:db8::/32&quot; (IPv6 CIDR range)
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3150)
+    public static final String A_carbonioIpBoundSessionTrustedIPs = "carbonioIpBoundSessionTrustedIPs";
+
+    /**
      * Logo URL for domain
      *
      * @since ZCS 23.2.0
