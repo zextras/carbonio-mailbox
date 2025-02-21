@@ -39,10 +39,10 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class SessionHijackingPreventionFilterTest {
+class IpBoundSessionFilterTest {
 
   @InjectMocks
-  private SessionHijackingPreventionFilter filter;
+  private IpBoundSessionFilter filter;
 
   @Mock
   private HttpServletRequest request;

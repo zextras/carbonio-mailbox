@@ -29,7 +29,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class SessionHijackingPreventionFilter implements Filter {
+public class IpBoundSessionFilter implements Filter {
 
   // List of session token names to check, we may pass this in configuration
   private static final List<String> SESSION_TOKENS = Arrays.asList("ZM_AUTH_TOKEN", "ZM_ADMIN_AUTH_TOKEN");
