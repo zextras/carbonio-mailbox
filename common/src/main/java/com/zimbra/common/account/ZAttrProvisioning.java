@@ -3217,6 +3217,127 @@ public class ZAttrProvisioning {
     public static final String A_carbonioWebUiTitle = "carbonioWebUiTitle";
 
     /**
+     * Whether users can upload attachments in the chat
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3156)
+    public static final String A_carbonioWscAttachmentUpload = "carbonioWscAttachmentUpload";
+
+    /**
+     * Whether users can create group chats
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3154)
+    public static final String A_carbonioWscGroupChatCreation = "carbonioWscGroupChatCreation";
+
+    /**
+     * The maximum allowed size for an attachment in Mb
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3161)
+    public static final String A_carbonioWscMaxAttachmentSize = "carbonioWscMaxAttachmentSize";
+
+    /**
+     * The maximum number of users that can be part of a group
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3159)
+    public static final String A_carbonioWscMaxGroupMembers = "carbonioWscMaxGroupMembers";
+
+    /**
+     * The maximum allowed size for a room picture in Kb
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3160)
+    public static final String A_carbonioWscMaxRoomPictureSize = "carbonioWscMaxRoomPictureSize";
+
+    /**
+     * How long after a message can be deleted after being sent. Must be in
+     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
+     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
+     * milliseconds. If time unit is not specified, the default is
+     * s(seconds).
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3157)
+    public static final String A_carbonioWscMessageDeleteTimeLimit = "carbonioWscMessageDeleteTimeLimit";
+
+    /**
+     * How long after a message can be edited after being sent. Must be in
+     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
+     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
+     * milliseconds. If time unit is not specified, the default is
+     * s(seconds).
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3158)
+    public static final String A_carbonioWscMessageEditTimeLimit = "carbonioWscMessageEditTimeLimit";
+
+    /**
+     * Whether users can create private chats
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3155)
+    public static final String A_carbonioWscPrivateChatCreation = "carbonioWscPrivateChatCreation";
+
+    /**
+     * Whether users can record video call meetings
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3153)
+    public static final String A_carbonioWscRecordingEnabled = "carbonioWscRecordingEnabled";
+
+    /**
+     * Whether users can see the list of people who have read the message
+     * sent in the chat
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3149)
+    public static final String A_carbonioWscShowMessageReads = "carbonioWscShowMessageReads";
+
+    /**
+     * Whether users can see the presence status of other people
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3150)
+    public static final String A_carbonioWscShowUsersPresence = "carbonioWscShowUsersPresence";
+
+    /**
+     * Whether users can make video call meetings
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3152)
+    public static final String A_carbonioWscVideoCallEnabled = "carbonioWscVideoCallEnabled";
+
+    /**
+     * Whether users can use virtual backgrounds in video call meetings
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3151)
+    public static final String A_carbonioWscVirtualBackgroundEnabled = "carbonioWscVirtualBackgroundEnabled";
+
+    /**
+     * The path to the folder containing the virtual backgrounds
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3162)
+    public static final String A_carbonioWscVirtualBackgroundPath = "carbonioWscVirtualBackgroundPath";
+
+    /**
      * RFC2256: common name(s) for which the entity is known by
      */
     @ZAttr()
