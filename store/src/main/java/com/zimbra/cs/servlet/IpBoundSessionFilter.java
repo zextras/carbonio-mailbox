@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 public class IpBoundSessionFilter implements Filter {
 
   // List of session token names to check, we may pass this in configuration
-  private static final List<String> SESSION_TOKENS = Arrays.asList("ZM_AUTH_TOKEN", "ZM_ADMIN_AUTH_TOKEN");
+  private static final List<String> SESSION_TOKENS = Arrays.asList("ZM_AUTH_TOKEN", "ZM_ADMIN_AUTH_TOKEN", "ZX_AUTH_TOKEN");
 
   // Map to track session tokens and their associated IPs
   private final Map<String, String> sessionIpMap = new ConcurrentHashMap<>();
