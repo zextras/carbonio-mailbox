@@ -14,7 +14,6 @@
     "carbonioWscMaxRoomPictureSize",
     "carbonioWscMaxAttachmentSize",
     "carbonioWscVirtualBackgroundPath"
-
   ],
   "zimbra_defaultexternalcos": [
     "carbonioWscShowMessageReads",
@@ -31,6 +30,5 @@
     "carbonioWscMaxRoomPictureSize",
     "carbonioWscMaxAttachmentSize",
     "carbonioWscVirtualBackgroundPath"
-
   ]
 }
