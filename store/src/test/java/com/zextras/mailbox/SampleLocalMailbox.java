@@ -50,16 +50,28 @@ public class SampleLocalMailbox {
 
 	public static class ServerSetup {
 
-		private final int userPort;
-		private final int adminPort;
+		private int userHttpPort = 8080;
+		private int userHttpsPort = 8443;
+		private int adminPort = 7071;
 		private final String mailboxHome;
 		private final String timeZoneFile;
 
-		public ServerSetup(int userPort, int adminPort, String mailboxHome, String timeZoneFile) {
-			this.userPort = userPort;
-			this.adminPort = adminPort;
+		public ServerSetup(String mailboxHome, String timeZoneFile) {
 			this.mailboxHome = mailboxHome;
 			this.timeZoneFile = timeZoneFile;
+		}
+
+		public ServerSetup withUserPort(int userPort) {
+			this.userHttpPort = userPort;
+			return this;
+		}
+		public ServerSetup withUserHttpsPort(int userHttpsPort) {
+			this.userHttpsPort = userHttpsPort;
+			return this;
+		}
+		public ServerSetup withAdminPort(int adminPort) {
+			this.adminPort = adminPort;
+			return this;
 		}
 
 		public Server create() throws Exception {
@@ -91,7 +103,8 @@ public class SampleLocalMailbox {
 					.modify(
 							new HashMap<>(
 									Map.of(
-											ZAttrProvisioning.A_zimbraMailPort, String.valueOf(userPort),
+											ZAttrProvisioning.A_zimbraMailPort, String.valueOf(userHttpPort),
+											ZAttrProvisioning.A_zimbraMailSSLPort, String.valueOf(userHttpsPort),
 											ZAttrProvisioning.A_zimbraAdminPort, String.valueOf(adminPort),
 											ZAttrProvisioning.A_zimbraMailMode, "both",
 											ZAttrProvisioning.A_zimbraPop3SSLServerEnabled, "FALSE",
@@ -159,7 +172,7 @@ public class SampleLocalMailbox {
 	}
 
 	public static void main(String[] args) throws Exception {
-		final Server server = new ServerSetup(8080, 7071, "./store",
+		final Server server = new ServerSetup("./store",
 				"store/src/test/resources/timezones-test.ics").create();
 		server.start();
 		server.join();
