@@ -3055,6 +3055,14 @@ public class ZAttrProvisioning {
     public static final String A_carbonioSearchSpecifiedDomainsByFeature = "carbonioSearchSpecifiedDomainsByFeature";
 
     /**
+     * Whether a domain is initialized for delegation
+     *
+     * @since ZCS 25.3.0
+     */
+    @ZAttr(id=3149)
+    public static final String A_carbonioIsInitializedForDelegation = "carbonioIsInitializedForDelegation";
+
+    /**
      * Whether Carbonio can send analytics reports
      *
      * @since ZCS 9.0.0

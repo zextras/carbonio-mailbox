@@ -1755,6 +1755,33 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
+     * Whether a domain is initialized for delegation.
+     *
+     * @return carbonioIsInitializedForDelegation
+     *
+     * @since ZCS 25.3.0
+     */
+    @ZAttr(id=3149)
+    public boolean isInitializedForDelegation() {
+        return getBooleanAttr(ZAttrProvisioning.A_carbonioIsInitializedForDelegation, false, true);
+    }
+
+    /**
+     * set a domain as initialized/not initialized for delegation.
+     *
+     * @param isInitializedForDelegation, new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.3.0
+     */
+    @ZAttr(id=3149)
+    public void setIsInitializedForDelegation(boolean isInitializedForDelegation) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioIsInitializedForDelegation, isInitializedForDelegation ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
      * Enable video server recording for Carbonio
      *
      * @return carbonioVideoServerRecordingEnabled, or false if unset

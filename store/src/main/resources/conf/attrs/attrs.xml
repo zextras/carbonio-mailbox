@@ -10205,4 +10205,8 @@ TODO: delete them permanently from here
 <attr id="3148" name="carbonioSearchSpecifiedDomainsByFeature" type="string" max="256" cardinality="multi" optionalIn="domain" since="24.12.0">
   <desc>List of domain names in which the SearchUserByFeature API should perform users searches</desc>
 </attr>
+<attr id="3149" name="carbonioIsInitializedForDelegation" type="boolean" cardinality="single" optionalIn="globalConfig,domain" flags="domainInherited" since="25.3.0">
+  <globalConfigValue>FALSE</globalConfigValue>
+  <desc>Whether a domain is initialized for delegation</desc>
+</attr>
 </attrs>
