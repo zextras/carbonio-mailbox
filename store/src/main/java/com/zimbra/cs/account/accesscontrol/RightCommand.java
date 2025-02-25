@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.account.accesscontrol;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -40,6 +41,7 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.Right.RightType;
 import com.zimbra.cs.account.accesscontrol.RightBearer.Grantee;
 import com.zimbra.cs.account.accesscontrol.SearchGrants.GrantsOnTarget;
+import com.zimbra.cs.account.ldap.RefreshMilter;
 import com.zimbra.soap.admin.message.GetAllEffectiveRightsResponse;
 import com.zimbra.soap.admin.message.GetEffectiveRightsResponse;
 import com.zimbra.soap.admin.type.EffectiveAttrInfo;
@@ -56,6 +58,8 @@ import com.zimbra.soap.admin.type.RightWithName;
 import com.zimbra.soap.admin.type.RightsEntriesInfo;
 import com.zimbra.soap.type.NamedElement;
 import com.zimbra.soap.type.TargetBy;
+
+import static com.zimbra.cs.account.accesscontrol.generated.UserRights.R_sendToDistList;
 
 public class RightCommand {
 
@@ -1370,6 +1374,16 @@ public class RightCommand {
                 GranteeType.fromCode(granteeType), granteeBy, grantee, secret, right, rightModifier, false);
     }
 
+    private static void refreshMilter(Entry targetEntry, Right right) {
+        if (targetEntry.getEntryType().equals(Entry.EntryType.DISTRIBUTIONLIST) && right.equals(R_sendToDistList) ) {
+            try {
+                RefreshMilter.instance.refresh();
+            } catch (InterruptedException | IOException e) {
+                ZimbraLog.mailbox.warn("Error while refreshing distribution list milter ", e);
+            }
+        }
+    }
+
     private static void grantRightInternal(
             Provisioning prov, Account authedAcct,
             TargetType tt, TargetBy targetBy, String target,
@@ -1418,6 +1432,7 @@ public class RightCommand {
         aces.add(ace);
 
         ACLUtil.grantRight(prov, targetEntry, aces);
+        refreshMilter(targetEntry, r);
     }
 
     public static void revokeRight(Provisioning prov, Account authedAcct, EffectiveRightsTargetSelector targSel,
@@ -1503,6 +1518,7 @@ public class RightCommand {
         List<ZimbraACE> revoked = ACLUtil.revokeRight(prov, targetEntry, aces);
         if (revoked.isEmpty())
             throw AccountServiceException.NO_SUCH_GRANT(ace.dump(true));
+        refreshMilter(targetEntry, r);
     }
 
     /**

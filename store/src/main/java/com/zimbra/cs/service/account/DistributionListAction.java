@@ -24,14 +24,11 @@ import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.accesscontrol.TargetType;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE.ExternalGroupInfo;
-import com.zimbra.cs.account.ldap.RefreshMilter;
 import com.zimbra.cs.account.names.NameUtil.EmailAddress;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.account.type.DistributionListAction.Operation;
 import com.zimbra.soap.admin.type.GranteeSelector.GranteeBy;
 import com.zimbra.soap.type.TargetBy;
-
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -56,14 +53,6 @@ public class DistributionListAction extends DistributionListDocumentHandler {
 
     Element response = zsc.createElement(AccountConstants.DISTRIBUTION_LIST_ACTION_RESPONSE);
     return response;
-  }
-
-  static void refreshMilter() {
-    try {
-      RefreshMilter.instance.refresh();
-    } catch (InterruptedException | IOException e) {
-      ZimbraLog.mailbox.warn("Error while refreshing distribution list milter ", e);
-    }
   }
 
   private static class DistributionListActionHandler extends SynchronizedGroupHandler {
@@ -132,9 +121,6 @@ public class DistributionListAction extends DistributionListDocumentHandler {
       }
 
       handler.handle();
-      if (op.equals(Operation.setRights)) {
-        refreshMilter();
-      }
     }
   }
 
