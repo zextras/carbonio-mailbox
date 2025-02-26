@@ -2778,6 +2778,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       domainAttrs.put(A_zimbraSMIMELdapSearchBase, smimeLdapSearchBase);
       domainAttrs.put(A_zimbraSMIMELdapFilter, smimeLdapFilter);
       domainAttrs.put(A_zimbraSMIMELdapAttribute, smimeLdapAttribute);
+      domainAttrs.put(A_carbonioIsInitializedForDelegation, "FALSE");
 
       String[] parts = name.split("\\.");
       String[] dns = mDIT.domainToDNs(parts);
