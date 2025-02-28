@@ -91,10 +91,9 @@ pipeline {
         MAVEN_OPTS = "-Xmx4g"
         BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1'
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
-        JF_GIT_PROVIDER='github'
-        JF_URL='https://zextras.jfrog.io/artifactory'
-        JF_ACCESS_TOKEN = credentials("artifactory-df")
-        JF_GIT_TOKEN = credentials('jenkins-integration-with-github-account')
+        JF_GIT_USERNAME="ZxBot"
+        JF_GIT_OWNER = ""
+        JF_GIT_REPO = ""
     }
 
     options {
@@ -117,7 +116,6 @@ pipeline {
         }
         stage('Scan for vulnerabilities') {
             environment {
-                JF_GIT_OWNER = 'zextras'
                 JF_URL = 'https://zextras.jfrog.io'
                 JF_ACCESS_TOKEN = credentials("jfrog-frogbot-token")
                 JF_GIT_PROVIDER='github'
