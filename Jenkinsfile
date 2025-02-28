@@ -55,14 +55,6 @@ def buildRpmPackages(String flavor) {
     stash includes: 'artifacts/x86_64/*.rpm', name: 'artifacts-' + flavor
 }
 
-def getBranchName() {
-    // Attempt to get the current branch from Git
-    def branch = sh(
-        script: 'git rev-parse --abbrev-ref HEAD',
-        returnStdout: true
-    ).trim()
-}
-
 pipeline {
     agent {
         node {
@@ -107,7 +99,7 @@ pipeline {
         JF_ACCESS_TOKEN = credentials("jfrog-frogbot-token")
         JF_GIT_PROVIDER='github'
         JF_GIT_TOKEN = credentials("jfrog-frogbot-gh-token")
-        JF_GIT_BASE_BRANCH = getBranchName()
+        JF_GIT_BASE_BRANCH = 'chore/frogbot'
     }
 
     options {
