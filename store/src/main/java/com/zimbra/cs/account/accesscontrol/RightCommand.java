@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.account.accesscontrol;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -40,6 +41,7 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.Right.RightType;
 import com.zimbra.cs.account.accesscontrol.RightBearer.Grantee;
 import com.zimbra.cs.account.accesscontrol.SearchGrants.GrantsOnTarget;
+import com.zimbra.cs.account.ldap.RefreshMilter;
 import com.zimbra.soap.admin.message.GetAllEffectiveRightsResponse;
 import com.zimbra.soap.admin.message.GetEffectiveRightsResponse;
 import com.zimbra.soap.admin.type.EffectiveAttrInfo;
@@ -57,8 +59,9 @@ import com.zimbra.soap.admin.type.RightsEntriesInfo;
 import com.zimbra.soap.type.NamedElement;
 import com.zimbra.soap.type.TargetBy;
 
-public class RightCommand {
+import static com.zimbra.cs.account.accesscontrol.generated.UserRights.R_sendToDistList;
 
+public class RightCommand {
     /*
      * Grants and ACE are aux classes for ProvUtil.
      *
@@ -404,9 +407,7 @@ public class RightCommand {
             Boolean getAll = eGetAttrs.getAll();
             er.mCanGetAllAttrs = (getAll != null && getAll);
             er.mCanGetAttrs = from_attrs(eGetAttrs);
-            if (eRights instanceof EffectiveRightsTargetInfo) {
-                EffectiveRightsTargetInfo eTargInfo =
-                    (EffectiveRightsTargetInfo) eRights;
+            if (eRights instanceof EffectiveRightsTargetInfo eTargInfo) {
                 er.mTargetType = eTargInfo.getType().toString();
                 er.mTargetId = eTargInfo.getId();
                 er.mTargetName= eTargInfo.getName();
@@ -795,9 +796,7 @@ public class RightCommand {
                     rbtt.mAll = EffectiveRights.fromJaxb(allR);
                 }
 
-                if (rbtt instanceof DomainedRightsByTargetType) {
-                    DomainedRightsByTargetType drbtt =
-                        (DomainedRightsByTargetType)rbtt;
+                if (rbtt instanceof DomainedRightsByTargetType drbtt) {
                     for (InDomainInfo inDomInfo : target.getInDomainLists()) {
                         Set<String> domains = new HashSet<>();
                         for (NamedElement dom : inDomInfo.getDomains())
@@ -845,10 +844,7 @@ public class RightCommand {
                     er.toXML(eAll);
                 }
 
-                if (rbtt instanceof DomainedRightsByTargetType) {
-                    DomainedRightsByTargetType domainedRights =
-                        (RightCommand.DomainedRightsByTargetType)rbtt;
-
+                if (rbtt instanceof DomainedRightsByTargetType domainedRights) {
                     for (RightAggregation rightsByDomains : domainedRights.domains()) {
                         Element eInDomains = eTarget.addNonUniqueElement(AdminConstants.E_IN_DOMAINS);
                         for (String domain : rightsByDomains.entries()) {
@@ -939,8 +935,7 @@ public class RightCommand {
     }
 
     private static void getAllRights(TargetType targetType,
-            Map<String, ? extends Right> rights, List<Right> result)
-    throws ServiceException {
+            Map<String, ? extends Right> rights, List<Right> result) {
 
         for (Map.Entry<String, ? extends Right> right : rights.entrySet()) {
             Right r = right.getValue();
@@ -1370,6 +1365,21 @@ public class RightCommand {
                 GranteeType.fromCode(granteeType), granteeBy, grantee, secret, right, rightModifier, false);
     }
 
+    private static final String MILTER_REFRESH_ERROR_MESSAGE = "Error while refreshing distribution list milter";
+
+    private static void refreshMilter(Entry targetEntry, Right right) {
+        if (targetEntry.getEntryType().equals(Entry.EntryType.DISTRIBUTIONLIST) && right.equals(R_sendToDistList) ) {
+            try {
+                RefreshMilter.instance.refresh();
+            } catch (IOException e) {
+                ZimbraLog.mailbox.warn(MILTER_REFRESH_ERROR_MESSAGE, e);
+            } catch (InterruptedException e) {
+                ZimbraLog.mailbox.warn(MILTER_REFRESH_ERROR_MESSAGE, e);
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
     private static void grantRightInternal(
             Provisioning prov, Account authedAcct,
             TargetType tt, TargetBy targetBy, String target,
@@ -1418,6 +1428,7 @@ public class RightCommand {
         aces.add(ace);
 
         ACLUtil.grantRight(prov, targetEntry, aces);
+        refreshMilter(targetEntry, r);
     }
 
     public static void revokeRight(Provisioning prov, Account authedAcct, EffectiveRightsTargetSelector targSel,
@@ -1503,6 +1514,7 @@ public class RightCommand {
         List<ZimbraACE> revoked = ACLUtil.revokeRight(prov, targetEntry, aces);
         if (revoked.isEmpty())
             throw AccountServiceException.NO_SUCH_GRANT(ace.dump(true));
+        refreshMilter(targetEntry, r);
     }
 
     /**
@@ -1515,7 +1527,7 @@ public class RightCommand {
      *
      */
     public static void revokeAllRights(Provisioning prov,
-            GranteeType granteeType, String granteeId) throws ServiceException {
+                                       String granteeId) throws ServiceException {
 
         AdminConsoleCapable acc = verifyAdminConsoleCapable();
 
@@ -1610,15 +1622,6 @@ public class RightCommand {
         }
 
         return eRight;
-    }
-
-    /*
-     * Hack.  We do *not* parse the SOAP response.   Instead we just get the right from
-     * right manager.  The Right object is only used by zmprov, not by generic SOAP clients.
-     */
-    public static Right XMLToRight(Element eRight) throws ServiceException  {
-        String rightName = eRight.getAttribute(AdminConstants.E_NAME);
-        return RightNameToRight(rightName);
     }
 
     public static Right RightNameToRight(String rightName)
