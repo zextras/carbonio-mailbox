@@ -98,6 +98,7 @@ pipeline {
         JF_ACCESS_TOKEN = credentials("jfrog-frogbot-token")
         JF_GIT_PROVIDER='github'
         JF_GIT_TOKEN = credentials("jfrog-frogbot-gh-token")
+        JF_GIT_BASE_BRANCH = "${env.BRANCH_NAME}"
     }
 
     options {
