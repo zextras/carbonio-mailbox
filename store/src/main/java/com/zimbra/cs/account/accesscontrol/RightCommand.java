@@ -62,7 +62,6 @@ import com.zimbra.soap.type.TargetBy;
 import static com.zimbra.cs.account.accesscontrol.generated.UserRights.R_sendToDistList;
 
 public class RightCommand {
-
     /*
      * Grants and ACE are aux classes for ProvUtil.
      *
@@ -1374,12 +1373,17 @@ public class RightCommand {
                 GranteeType.fromCode(granteeType), granteeBy, grantee, secret, right, rightModifier, false);
     }
 
+    private static final String MILTER_REFRESH_ERROR_MESSAGE = "Error while refreshing distribution list milter";
+
     private static void refreshMilter(Entry targetEntry, Right right) {
         if (targetEntry.getEntryType().equals(Entry.EntryType.DISTRIBUTIONLIST) && right.equals(R_sendToDistList) ) {
             try {
                 RefreshMilter.instance.refresh();
-            } catch (InterruptedException | IOException e) {
-                ZimbraLog.mailbox.warn("Error while refreshing distribution list milter ", e);
+            } catch (IOException e) {
+                ZimbraLog.mailbox.warn(MILTER_REFRESH_ERROR_MESSAGE, e);
+            } catch (InterruptedException e) {
+                ZimbraLog.mailbox.warn(MILTER_REFRESH_ERROR_MESSAGE, e);
+                Thread.currentThread().interrupt();
             }
         }
     }

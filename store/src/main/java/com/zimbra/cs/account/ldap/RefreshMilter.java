@@ -14,7 +14,7 @@ public class RefreshMilter {
   public static final String ZMMILTERCTL = "zmmilterctl";
   public static final String CMD_PATH = ("%s/bin/%s").formatted(LC.zimbra_home.value(), ZMMILTERCTL);
 
-  public static RefreshMilter instance = new RefreshMilter();
+  public static final RefreshMilter instance = new RefreshMilter();
 
   private RefreshMilter(){}
 
@@ -22,7 +22,7 @@ public class RefreshMilter {
     Process process = new ProcessBuilder(CMD_PATH, "refresh").start();
     int exitCode = process.waitFor();
     if (exitCode != 0) {
-      ZimbraLog.mailbox.warn("Error refreshing milter, exit code %s\nstdout:\n%s\nstderr\n%s".formatted(
+      ZimbraLog.mailbox.warn("Error refreshing milter, exit code %s%nstdout:%n%s%nstderr%n%s".formatted(
               exitCode,
               readOutput(process.getInputStream()),
               readOutput(process.getErrorStream())
