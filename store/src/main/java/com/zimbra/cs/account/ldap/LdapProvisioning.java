@@ -3373,7 +3373,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     }
     // delete all grants granted to the account
     try {
-      RightCommand.revokeAllRights(this, GranteeType.GT_USER, zimbraId);
+      RightCommand.revokeAllRights(this, zimbraId);
     } catch (ServiceException e) {
       // eat the exception and continue
       ZimbraLog.account.warn("cannot revoke grants", e);
@@ -4683,7 +4683,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     // delete all grants granted to the DL
     try {
-      RightCommand.revokeAllRights(this, GranteeType.GT_GROUP, zimbraId);
+      RightCommand.revokeAllRights(this, zimbraId);
     } catch (ServiceException e) {
       // eat the exception and continue
       ZimbraLog.account.warn("cannot revoke grants", e);

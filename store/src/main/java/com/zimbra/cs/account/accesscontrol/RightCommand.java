@@ -407,9 +407,7 @@ public class RightCommand {
             Boolean getAll = eGetAttrs.getAll();
             er.mCanGetAllAttrs = (getAll != null && getAll);
             er.mCanGetAttrs = from_attrs(eGetAttrs);
-            if (eRights instanceof EffectiveRightsTargetInfo) {
-                EffectiveRightsTargetInfo eTargInfo =
-                    (EffectiveRightsTargetInfo) eRights;
+            if (eRights instanceof EffectiveRightsTargetInfo eTargInfo) {
                 er.mTargetType = eTargInfo.getType().toString();
                 er.mTargetId = eTargInfo.getId();
                 er.mTargetName= eTargInfo.getName();
@@ -798,9 +796,7 @@ public class RightCommand {
                     rbtt.mAll = EffectiveRights.fromJaxb(allR);
                 }
 
-                if (rbtt instanceof DomainedRightsByTargetType) {
-                    DomainedRightsByTargetType drbtt =
-                        (DomainedRightsByTargetType)rbtt;
+                if (rbtt instanceof DomainedRightsByTargetType drbtt) {
                     for (InDomainInfo inDomInfo : target.getInDomainLists()) {
                         Set<String> domains = new HashSet<>();
                         for (NamedElement dom : inDomInfo.getDomains())
@@ -848,10 +844,7 @@ public class RightCommand {
                     er.toXML(eAll);
                 }
 
-                if (rbtt instanceof DomainedRightsByTargetType) {
-                    DomainedRightsByTargetType domainedRights =
-                        (RightCommand.DomainedRightsByTargetType)rbtt;
-
+                if (rbtt instanceof DomainedRightsByTargetType domainedRights) {
                     for (RightAggregation rightsByDomains : domainedRights.domains()) {
                         Element eInDomains = eTarget.addNonUniqueElement(AdminConstants.E_IN_DOMAINS);
                         for (String domain : rightsByDomains.entries()) {
@@ -942,8 +935,7 @@ public class RightCommand {
     }
 
     private static void getAllRights(TargetType targetType,
-            Map<String, ? extends Right> rights, List<Right> result)
-    throws ServiceException {
+            Map<String, ? extends Right> rights, List<Right> result) {
 
         for (Map.Entry<String, ? extends Right> right : rights.entrySet()) {
             Right r = right.getValue();
@@ -1535,7 +1527,7 @@ public class RightCommand {
      *
      */
     public static void revokeAllRights(Provisioning prov,
-            GranteeType granteeType, String granteeId) throws ServiceException {
+                                       String granteeId) throws ServiceException {
 
         AdminConsoleCapable acc = verifyAdminConsoleCapable();
 
@@ -1630,15 +1622,6 @@ public class RightCommand {
         }
 
         return eRight;
-    }
-
-    /*
-     * Hack.  We do *not* parse the SOAP response.   Instead we just get the right from
-     * right manager.  The Right object is only used by zmprov, not by generic SOAP clients.
-     */
-    public static Right XMLToRight(Element eRight) throws ServiceException  {
-        String rightName = eRight.getAttribute(AdminConstants.E_NAME);
-        return RightNameToRight(rightName);
     }
 
     public static Right RightNameToRight(String rightName)
