@@ -71,6 +71,8 @@ pipeline {
                 [key: 'JF_GIT_PULL_REQUEST_ID', value: '$.number'],
                 [key: 'JF_GIT_OWNER', value: '$.pull_request.user.login'],
                 [key: 'TRIGGER_KEY', value: '$.action'],
+                [key: 'JF_GIT_BASE_BRANCH', value: '$.head.ref'],
+
             ],
             causeString: 'Pull Request Trigger',
             printContributedVariables: false,
@@ -92,13 +94,12 @@ pipeline {
         BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1'
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
         JF_GIT_USERNAME="ZxBot"
-        JF_GIT_OWNER = "zextras"
-        JF_GIT_REPO = "carbonio-mailbox"
+        JF_GIT_OWNER = ""
+        JF_GIT_REPO = ""
         JF_URL = 'https://zextras.jfrog.io'
         JF_ACCESS_TOKEN = credentials("jfrog-frogbot-token")
         JF_GIT_PROVIDER='github'
         JF_GIT_TOKEN = credentials("jfrog-frogbot-gh-token")
-        JF_GIT_BASE_BRANCH = "${env.BRANCH_NAME}"
     }
 
     options {
