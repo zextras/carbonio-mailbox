@@ -97,7 +97,7 @@ pipeline {
         JF_URL = 'https://zextras.jfrog.io'
         JF_ACCESS_TOKEN = credentials("jfrog-frogbot-token")
         JF_GIT_PROVIDER='github'
-        JF_GIT_TOKEN = credentials('jenkins-integration-with-github-account')
+        JF_GIT_TOKEN = credentials("jfrog-frogbot-gh-token")
     }
 
     options {
