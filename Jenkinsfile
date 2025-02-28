@@ -25,8 +25,34 @@ pipeline {
         MVN_OPTS = "-Ddebug=0 -Dis-production=1 ${profile}"
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
         JAVA_OPTS = '-Dfile.encoding=UTF8'
+        JF_ACCESS_TOKEN = credentials("jfrog-frogbot-token")
+        JF_GIT_BASE_BRANCH = 'chore/frogbot'
+        JF_GIT_OWNER = "zextras"
+        JF_GIT_PROVIDER ='github'
+        JF_GIT_REPO = "carbonio-mailbox"
+        JF_GIT_TOKEN = credentials("github-pat")
+        JF_GIT_USERNAME = "ZxBot"
+        JF_URL = credentials("jfrog-url")
         LC_ALL = 'C.UTF-8'
         MAVEN_OPTS = '-Xmx4g'
+    }
+
+    triggers {
+        GenericTrigger(
+            genericVariables: [
+                // GitHub
+                [key: 'JF_GIT_OWNER', value: '$.pull_request.user.login'],
+                [key: 'JF_GIT_PULL_REQUEST_ID', value: '$.head.ref'],
+                [key: 'JF_GIT_PULL_REQUEST_ID', value: '$.number'],
+                [key: 'JF_GIT_REPO', value: '$.repository.name'],
+                [key: 'TRIGGER_KEY', value: '$.action'],
+
+            ],
+            causeString: 'Pull Request Trigger',
+            printContributedVariables: true,
+            token: 'MyJobToken'
+        )
+        cron(env.BRANCH_NAME == 'devel' ? 'H 5 * * *' : '')
     }
 
     options {
@@ -44,10 +70,6 @@ pipeline {
                 name: 'SKIP_SONARQUBE'
     }
 
-    triggers {
-        cron(env.BRANCH_NAME == 'devel' ? 'H 5 * * *' : '')
-    }
-
     stages {
         stage('Setup') {
             steps {
@@ -55,6 +77,18 @@ pipeline {
                 script {
                     gitMetadata()
                     properties(defaultPipelineProperties())
+                }
+            }
+        }
+
+        stage('Scan for vulnerabilities') {
+            steps {
+                container('jfrog') {
+                    script{
+                        sh 'curl -fLg "https://releases.jfrog.io/artifactory/frogbot/v2/[RELEASE]/getFrogbot.sh" | sh'
+                        sh './frogbot scan-repository'
+                        // sh './frogbot scan-pull-request'
+                    }
                 }
             }
         }
