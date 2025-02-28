@@ -79,6 +79,10 @@ pipeline {
         MAVEN_OPTS = "-Xmx4g"
         BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1'
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
+        JF_GIT_PROVIDER='github'
+        JF_URL='https://zextras.jfrog.io/artifactory'
+        JF_ACCESS_TOKEN = credentials("artifactory-df")
+        JF_GIT_TOKEN = credentials('jenkins-integration-with-github-account')
     }
 
     options {
@@ -96,6 +100,20 @@ pipeline {
                 }
                 script {
                     env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+                }
+            }
+        }
+        stage('Scan for vulnerabilities') {
+            environment {
+                JF_URL = 'https://zextras.jfrog.io'
+                JF_ACCESS_TOKEN = credentials("jfrog-frogbot-token")
+                JF_GIT_PROVIDER='github'
+                JF_GIT_TOKEN = credentials('jenkins-integration-with-github-account')
+            }
+            steps {
+                script{
+                    sh 'curl -fLg "https://releases.jfrog.io/artifactory/frogbot/v2/[RELEASE]/getFrogbot.sh" | sh'
+                    sh './frogbot scan-pull-request'
                 }
             }
         }
