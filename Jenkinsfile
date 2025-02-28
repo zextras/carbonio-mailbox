@@ -92,8 +92,12 @@ pipeline {
         BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1'
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
         JF_GIT_USERNAME="ZxBot"
-        JF_GIT_OWNER = ""
-        JF_GIT_REPO = ""
+        JF_GIT_OWNER = "zextras"
+        JF_GIT_REPO = "carbonio-mailbox"
+        JF_URL = 'https://zextras.jfrog.io'
+        JF_ACCESS_TOKEN = credentials("jfrog-frogbot-token")
+        JF_GIT_PROVIDER='github'
+        JF_GIT_TOKEN = credentials('jenkins-integration-with-github-account')
     }
 
     options {
@@ -115,15 +119,10 @@ pipeline {
             }
         }
         stage('Scan for vulnerabilities') {
-            environment {
-                JF_URL = 'https://zextras.jfrog.io'
-                JF_ACCESS_TOKEN = credentials("jfrog-frogbot-token")
-                JF_GIT_PROVIDER='github'
-                JF_GIT_TOKEN = credentials('jenkins-integration-with-github-account')
-            }
             steps {
                 script{
                     sh 'curl -fLg "https://releases.jfrog.io/artifactory/frogbot/v2/[RELEASE]/getFrogbot.sh" | sh'
+                    sh './frogbot scan-repository'
                     sh './frogbot scan-pull-request'
                 }
             }
