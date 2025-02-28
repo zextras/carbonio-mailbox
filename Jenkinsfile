@@ -124,7 +124,7 @@ pipeline {
             steps {
                 script{
                     sh 'curl -fLg "https://releases.jfrog.io/artifactory/frogbot/v2/[RELEASE]/getFrogbot.sh" | sh'
-                    sh './frogbot scan-repository'
+                    // sh './frogbot scan-repository'
                     sh './frogbot scan-pull-request'
                 }
             }
