@@ -93,7 +93,7 @@ pipeline {
         BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1'
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
         JF_GIT_USERNAME="ZxBot"
-        JF_GIT_OWNER = "M0Rf30"
+        JF_GIT_OWNER = "zextras"
         JF_GIT_REPO = "carbonio-mailbox"
         JF_URL = 'https://zextras.jfrog.io'
         JF_ACCESS_TOKEN = credentials("jfrog-frogbot-token")
