@@ -1,0 +1,19 @@
+- params:
+    git:
+      repoName: carbonio-mailbox
+      branches:
+        - devel
+        - main
+        - chore/frogbot
+    scan:
+      projects:
+        - workingDirs:
+            - client
+            - jython-libs
+            - store
+            - common
+            - store-extra-runtime-dependencies
+            - soap
+            - pom.xml
+            - native
+            - store-conf
