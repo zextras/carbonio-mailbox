@@ -75,8 +75,7 @@ pipeline {
 
             ],
             causeString: 'Pull Request Trigger',
-            printContributedVariables: false,
-            token: 'MyJobToken'
+            printContributedVariables: true,
         )
         cron(env.BRANCH_NAME == 'devel' ? 'H 5 * * *' : '')
     }
