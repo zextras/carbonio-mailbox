@@ -64,6 +64,18 @@ pipeline {
     }
 
     triggers {
+        GenericTrigger(
+            genericVariables: [
+                // GitHub
+                [key: 'JF_GIT_REPO', value: '$.repository.name'],
+                [key: 'JF_GIT_PULL_REQUEST_ID', value: '$.number'],
+                [key: 'JF_GIT_OWNER', value: '$.pull_request.user.login'],
+                [key: 'TRIGGER_KEY', value: '$.action'],
+            ],
+            causeString: 'Pull Request Trigger',
+            printContributedVariables: false,
+            token: 'MyJobToken'
+        )
         cron(env.BRANCH_NAME == 'devel' ? 'H 5 * * *' : '')
     }
 
@@ -105,6 +117,7 @@ pipeline {
         }
         stage('Scan for vulnerabilities') {
             environment {
+                JF_GIT_OWNER = 'zextras'
                 JF_URL = 'https://zextras.jfrog.io'
                 JF_ACCESS_TOKEN = credentials("jfrog-frogbot-token")
                 JF_GIT_PROVIDER='github'
