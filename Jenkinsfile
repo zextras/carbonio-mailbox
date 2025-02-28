@@ -55,7 +55,6 @@ def buildRpmPackages(String flavor) {
     stash includes: 'artifacts/x86_64/*.rpm', name: 'artifacts-' + flavor
 }
 
-
 pipeline {
     agent {
         node {
@@ -64,6 +63,20 @@ pipeline {
     }
 
     triggers {
+        GenericTrigger(
+            genericVariables: [
+                // GitHub
+                [key: 'JF_GIT_REPO', value: '$.repository.name'],
+                [key: 'JF_GIT_PULL_REQUEST_ID', value: '$.number'],
+                [key: 'JF_GIT_OWNER', value: '$.pull_request.user.login'],
+                [key: 'TRIGGER_KEY', value: '$.action'],
+                [key: 'JF_GIT_PULL_REQUEST_ID', value: '$.head.ref'],
+
+            ],
+            causeString: 'Pull Request Trigger',
+            printContributedVariables: true,
+            token: 'MyJobToken'
+        )
         cron(env.BRANCH_NAME == 'devel' ? 'H 5 * * *' : '')
     }
 
@@ -79,6 +92,14 @@ pipeline {
         MAVEN_OPTS = "-Xmx4g"
         BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1'
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
+        JF_GIT_USERNAME="ZxBot"
+        JF_GIT_OWNER = "zextras"
+        JF_GIT_REPO = "carbonio-mailbox"
+        JF_URL = 'https://zextras.jfrog.io'
+        JF_ACCESS_TOKEN = credentials("jfrog-frogbot-token")
+        JF_GIT_PROVIDER='github'
+        JF_GIT_TOKEN = credentials("jfrog-frogbot-gh-token")
+        JF_GIT_BASE_BRANCH = 'chore/frogbot'
     }
 
     options {
@@ -96,6 +117,15 @@ pipeline {
                 }
                 script {
                     env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+                }
+            }
+        }
+        stage('Scan for vulnerabilities') {
+            steps {
+                script{
+                    sh 'curl -fLg "https://releases.jfrog.io/artifactory/frogbot/v2/[RELEASE]/getFrogbot.sh" | sh'
+                    sh './frogbot scan-repository'
+                    sh './frogbot scan-pull-request'
                 }
             }
         }
