@@ -10217,7 +10217,7 @@ TODO: delete them permanently from here
 </attr>
 
 <attr id="3151" name="carbonioWscVirtualBackgroundEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
-  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultCOSValue>FALSE</defaultCOSValue>
   <desc>Whether users can use virtual backgrounds in video call meetings</desc>
 </attr>
 
@@ -10227,7 +10227,7 @@ TODO: delete them permanently from here
 </attr>
 
 <attr id="3153" name="carbonioWscRecordingEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
-  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultCOSValue>FALSE</defaultCOSValue>
   <desc>Whether users can record video call meetings</desc>
 </attr>
 
@@ -10257,17 +10257,17 @@ TODO: delete them permanently from here
 </attr>
 
 <attr id="3159" name="carbonioWscMaxGroupMembers" type="integer" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
-  <defaultCOSValue>128</defaultCOSValue>
+  <defaultCOSValue>32</defaultCOSValue>
   <desc>The maximum number of users that can be part of a group</desc>
 </attr>
 
 <attr id="3160" name="carbonioWscMaxRoomPictureSize" type="integer" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
-  <defaultCOSValue>512</defaultCOSValue>
-  <desc>The maximum allowed size for a room picture in Kb</desc>
+  <defaultCOSValue>2</defaultCOSValue>
+  <desc>The maximum allowed size for a room picture in Mb</desc>
 </attr>
 
 <attr id="3161" name="carbonioWscMaxAttachmentSize" type="integer" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
-  <defaultCOSValue>1024</defaultCOSValue>
+  <defaultCOSValue>128</defaultCOSValue>
   <desc>The maximum allowed size for an attachment in Mb</desc>
 </attr>
 

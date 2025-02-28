@@ -3249,7 +3249,7 @@ public class ZAttrProvisioning {
     public static final String A_carbonioWscMaxGroupMembers = "carbonioWscMaxGroupMembers";
 
     /**
-     * The maximum allowed size for a room picture in Kb
+     * The maximum allowed size for a room picture in Mb
      *
      * @since ZCS 25.6.0
      */

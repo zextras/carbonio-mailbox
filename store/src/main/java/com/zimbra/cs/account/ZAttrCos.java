@@ -1046,13 +1046,13 @@ public abstract class ZAttrCos extends NamedEntry {
     /**
      * The maximum allowed size for an attachment in Mb
      *
-     * @return carbonioWscMaxAttachmentSize, or 1024 if unset
+     * @return carbonioWscMaxAttachmentSize, or 128 if unset
      *
      * @since ZCS 25.6.0
      */
     @ZAttr(id=3161)
     public int getCarbonioWscMaxAttachmentSize() {
-        return getIntAttr(ZAttrProvisioning.A_carbonioWscMaxAttachmentSize, 1024, true);
+        return getIntAttr(ZAttrProvisioning.A_carbonioWscMaxAttachmentSize, 128, true);
     }
 
     /**
@@ -1118,13 +1118,13 @@ public abstract class ZAttrCos extends NamedEntry {
     /**
      * The maximum number of users that can be part of a group
      *
-     * @return carbonioWscMaxGroupMembers, or 128 if unset
+     * @return carbonioWscMaxGroupMembers, or 32 if unset
      *
      * @since ZCS 25.6.0
      */
     @ZAttr(id=3159)
     public int getCarbonioWscMaxGroupMembers() {
-        return getIntAttr(ZAttrProvisioning.A_carbonioWscMaxGroupMembers, 128, true);
+        return getIntAttr(ZAttrProvisioning.A_carbonioWscMaxGroupMembers, 32, true);
     }
 
     /**
@@ -1188,19 +1188,19 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * The maximum allowed size for a room picture in Kb
+     * The maximum allowed size for a room picture in Mb
      *
-     * @return carbonioWscMaxRoomPictureSize, or 512 if unset
+     * @return carbonioWscMaxRoomPictureSize, or 2 if unset
      *
      * @since ZCS 25.6.0
      */
     @ZAttr(id=3160)
     public int getCarbonioWscMaxRoomPictureSize() {
-        return getIntAttr(ZAttrProvisioning.A_carbonioWscMaxRoomPictureSize, 512, true);
+        return getIntAttr(ZAttrProvisioning.A_carbonioWscMaxRoomPictureSize, 2, true);
     }
 
     /**
-     * The maximum allowed size for a room picture in Kb
+     * The maximum allowed size for a room picture in Mb
      *
      * @param carbonioWscMaxRoomPictureSize new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -1215,7 +1215,7 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * The maximum allowed size for a room picture in Kb
+     * The maximum allowed size for a room picture in Mb
      *
      * @param carbonioWscMaxRoomPictureSize new value
      * @param attrs existing map to populate, or null to create a new map
@@ -1231,7 +1231,7 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * The maximum allowed size for a room picture in Kb
+     * The maximum allowed size for a room picture in Mb
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -1245,7 +1245,7 @@ public abstract class ZAttrCos extends NamedEntry {
     }
 
     /**
-     * The maximum allowed size for a room picture in Kb
+     * The maximum allowed size for a room picture in Mb
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -1558,13 +1558,13 @@ public abstract class ZAttrCos extends NamedEntry {
     /**
      * Whether users can record video call meetings
      *
-     * @return carbonioWscRecordingEnabled, or true if unset
+     * @return carbonioWscRecordingEnabled, or false if unset
      *
      * @since ZCS 25.6.0
      */
     @ZAttr(id=3153)
     public boolean isCarbonioWscRecordingEnabled() {
-        return getBooleanAttr(ZAttrProvisioning.A_carbonioWscRecordingEnabled, true, true);
+        return getBooleanAttr(ZAttrProvisioning.A_carbonioWscRecordingEnabled, false, true);
     }
 
     /**
@@ -1851,13 +1851,13 @@ public abstract class ZAttrCos extends NamedEntry {
     /**
      * Whether users can use virtual backgrounds in video call meetings
      *
-     * @return carbonioWscVirtualBackgroundEnabled, or true if unset
+     * @return carbonioWscVirtualBackgroundEnabled, or false if unset
      *
      * @since ZCS 25.6.0
      */
     @ZAttr(id=3151)
     public boolean isCarbonioWscVirtualBackgroundEnabled() {
-        return getBooleanAttr(ZAttrProvisioning.A_carbonioWscVirtualBackgroundEnabled, true, true);
+        return getBooleanAttr(ZAttrProvisioning.A_carbonioWscVirtualBackgroundEnabled, false, true);
     }
 
     /**
