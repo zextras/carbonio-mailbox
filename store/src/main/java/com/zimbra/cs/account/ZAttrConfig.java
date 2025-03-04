@@ -1532,13 +1532,13 @@ public abstract class ZAttrConfig extends Entry {
      * Whether IP-bound session hijacking detection/protection is enabled for
      * global configuration, domain, COS, or account.
      *
-     * @return carbonioIpBoundSessionFilterEnabled, or false if unset
+     * @return carbonioIpBoundSessionFilterEnabled, or true if unset
      *
      * @since ZCS 25.6.0
      */
     @ZAttr(id=3149)
     public boolean isCarbonioIpBoundSessionFilterEnabled() {
-        return getBooleanAttr(ZAttrProvisioning.A_carbonioIpBoundSessionFilterEnabled, false, true);
+        return getBooleanAttr(ZAttrProvisioning.A_carbonioIpBoundSessionFilterEnabled, true, true);
     }
 
     /**
@@ -1602,185 +1602,6 @@ public abstract class ZAttrConfig extends Entry {
     public Map<String,Object> unsetCarbonioIpBoundSessionFilterEnabled(Map<String,Object> attrs) {
         if (attrs == null) attrs = new HashMap<>();
         attrs.put(ZAttrProvisioning.A_carbonioIpBoundSessionFilterEnabled, "");
-        return attrs;
-    }
-
-    /**
-     * List of trusted IP addresses or CIDR ranges that are exempt from
-     * IP-bound session enforcement. Requests from these IPs will not trigger
-     * session hijacking detection, allowing flexibility for known secure
-     * environments. Example values: - &quot;192.168.1.100&quot; (Single
-     * trusted IP) - &quot;10.0.0.0/24&quot; (All IPs in the 10.0.0.x range)
-     * - &quot;2001:db8::/32&quot; (IPv6 CIDR range)
-     *
-     * @return carbonioIpBoundSessionTrustedIPs, or empty array if unset
-     *
-     * @since ZCS 25.6.0
-     */
-    @ZAttr(id=3150)
-    public String[] getCarbonioIpBoundSessionTrustedIPs() {
-        return getMultiAttr(ZAttrProvisioning.A_carbonioIpBoundSessionTrustedIPs, true, true);
-    }
-
-    /**
-     * List of trusted IP addresses or CIDR ranges that are exempt from
-     * IP-bound session enforcement. Requests from these IPs will not trigger
-     * session hijacking detection, allowing flexibility for known secure
-     * environments. Example values: - &quot;192.168.1.100&quot; (Single
-     * trusted IP) - &quot;10.0.0.0/24&quot; (All IPs in the 10.0.0.x range)
-     * - &quot;2001:db8::/32&quot; (IPv6 CIDR range)
-     *
-     * @param carbonioIpBoundSessionTrustedIPs new value
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     *
-     * @since ZCS 25.6.0
-     */
-    @ZAttr(id=3150)
-    public void setCarbonioIpBoundSessionTrustedIPs(String[] carbonioIpBoundSessionTrustedIPs) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_carbonioIpBoundSessionTrustedIPs, carbonioIpBoundSessionTrustedIPs);
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * List of trusted IP addresses or CIDR ranges that are exempt from
-     * IP-bound session enforcement. Requests from these IPs will not trigger
-     * session hijacking detection, allowing flexibility for known secure
-     * environments. Example values: - &quot;192.168.1.100&quot; (Single
-     * trusted IP) - &quot;10.0.0.0/24&quot; (All IPs in the 10.0.0.x range)
-     * - &quot;2001:db8::/32&quot; (IPv6 CIDR range)
-     *
-     * @param carbonioIpBoundSessionTrustedIPs new value
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     *
-     * @since ZCS 25.6.0
-     */
-    @ZAttr(id=3150)
-    public Map<String,Object> setCarbonioIpBoundSessionTrustedIPs(String[] carbonioIpBoundSessionTrustedIPs, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_carbonioIpBoundSessionTrustedIPs, carbonioIpBoundSessionTrustedIPs);
-        return attrs;
-    }
-
-    /**
-     * List of trusted IP addresses or CIDR ranges that are exempt from
-     * IP-bound session enforcement. Requests from these IPs will not trigger
-     * session hijacking detection, allowing flexibility for known secure
-     * environments. Example values: - &quot;192.168.1.100&quot; (Single
-     * trusted IP) - &quot;10.0.0.0/24&quot; (All IPs in the 10.0.0.x range)
-     * - &quot;2001:db8::/32&quot; (IPv6 CIDR range)
-     *
-     * @param carbonioIpBoundSessionTrustedIPs new to add to existing values
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     *
-     * @since ZCS 25.6.0
-     */
-    @ZAttr(id=3150)
-    public void addCarbonioIpBoundSessionTrustedIPs(String carbonioIpBoundSessionTrustedIPs) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_carbonioIpBoundSessionTrustedIPs, carbonioIpBoundSessionTrustedIPs);
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * List of trusted IP addresses or CIDR ranges that are exempt from
-     * IP-bound session enforcement. Requests from these IPs will not trigger
-     * session hijacking detection, allowing flexibility for known secure
-     * environments. Example values: - &quot;192.168.1.100&quot; (Single
-     * trusted IP) - &quot;10.0.0.0/24&quot; (All IPs in the 10.0.0.x range)
-     * - &quot;2001:db8::/32&quot; (IPv6 CIDR range)
-     *
-     * @param carbonioIpBoundSessionTrustedIPs new to add to existing values
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     *
-     * @since ZCS 25.6.0
-     */
-    @ZAttr(id=3150)
-    public Map<String,Object> addCarbonioIpBoundSessionTrustedIPs(String carbonioIpBoundSessionTrustedIPs, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "+"  + ZAttrProvisioning.A_carbonioIpBoundSessionTrustedIPs, carbonioIpBoundSessionTrustedIPs);
-        return attrs;
-    }
-
-    /**
-     * List of trusted IP addresses or CIDR ranges that are exempt from
-     * IP-bound session enforcement. Requests from these IPs will not trigger
-     * session hijacking detection, allowing flexibility for known secure
-     * environments. Example values: - &quot;192.168.1.100&quot; (Single
-     * trusted IP) - &quot;10.0.0.0/24&quot; (All IPs in the 10.0.0.x range)
-     * - &quot;2001:db8::/32&quot; (IPv6 CIDR range)
-     *
-     * @param carbonioIpBoundSessionTrustedIPs existing value to remove
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     *
-     * @since ZCS 25.6.0
-     */
-    @ZAttr(id=3150)
-    public void removeCarbonioIpBoundSessionTrustedIPs(String carbonioIpBoundSessionTrustedIPs) throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_carbonioIpBoundSessionTrustedIPs, carbonioIpBoundSessionTrustedIPs);
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * List of trusted IP addresses or CIDR ranges that are exempt from
-     * IP-bound session enforcement. Requests from these IPs will not trigger
-     * session hijacking detection, allowing flexibility for known secure
-     * environments. Example values: - &quot;192.168.1.100&quot; (Single
-     * trusted IP) - &quot;10.0.0.0/24&quot; (All IPs in the 10.0.0.x range)
-     * - &quot;2001:db8::/32&quot; (IPv6 CIDR range)
-     *
-     * @param carbonioIpBoundSessionTrustedIPs existing value to remove
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     *
-     * @since ZCS 25.6.0
-     */
-    @ZAttr(id=3150)
-    public Map<String,Object> removeCarbonioIpBoundSessionTrustedIPs(String carbonioIpBoundSessionTrustedIPs, Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<>();
-        StringUtil.addToMultiMap(attrs, "-"  + ZAttrProvisioning.A_carbonioIpBoundSessionTrustedIPs, carbonioIpBoundSessionTrustedIPs);
-        return attrs;
-    }
-
-    /**
-     * List of trusted IP addresses or CIDR ranges that are exempt from
-     * IP-bound session enforcement. Requests from these IPs will not trigger
-     * session hijacking detection, allowing flexibility for known secure
-     * environments. Example values: - &quot;192.168.1.100&quot; (Single
-     * trusted IP) - &quot;10.0.0.0/24&quot; (All IPs in the 10.0.0.x range)
-     * - &quot;2001:db8::/32&quot; (IPv6 CIDR range)
-     *
-     * @throws com.zimbra.common.service.ServiceException if error during update
-     *
-     * @since ZCS 25.6.0
-     */
-    @ZAttr(id=3150)
-    public void unsetCarbonioIpBoundSessionTrustedIPs() throws com.zimbra.common.service.ServiceException {
-        HashMap<String,Object> attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_carbonioIpBoundSessionTrustedIPs, "");
-        getProvisioning().modifyAttrs(this, attrs);
-    }
-
-    /**
-     * List of trusted IP addresses or CIDR ranges that are exempt from
-     * IP-bound session enforcement. Requests from these IPs will not trigger
-     * session hijacking detection, allowing flexibility for known secure
-     * environments. Example values: - &quot;192.168.1.100&quot; (Single
-     * trusted IP) - &quot;10.0.0.0/24&quot; (All IPs in the 10.0.0.x range)
-     * - &quot;2001:db8::/32&quot; (IPv6 CIDR range)
-     *
-     * @param attrs existing map to populate, or null to create a new map
-     * @return populated map to pass into Provisioning.modifyAttrs
-     *
-     * @since ZCS 25.6.0
-     */
-    @ZAttr(id=3150)
-    public Map<String,Object> unsetCarbonioIpBoundSessionTrustedIPs(Map<String,Object> attrs) {
-        if (attrs == null) attrs = new HashMap<>();
-        attrs.put(ZAttrProvisioning.A_carbonioIpBoundSessionTrustedIPs, "");
         return attrs;
     }
 

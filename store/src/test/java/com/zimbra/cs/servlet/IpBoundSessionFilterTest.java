@@ -128,7 +128,6 @@ class IpBoundSessionFilterTest {
 
       mockedAuthUtil.when(() -> AuthUtil.getAuthTokenFromHttpReq(request, false)).thenReturn(authToken);
       when(authToken.getAccount()).thenReturn(account);
-      when(account.getCarbonioIpBoundSessionTrustedIPs()).thenReturn(new String[0]);
       when(account.getMail()).thenReturn("user@test.com");
       when(account.getDomainName()).thenReturn("test.com");
       when(account.getAttr(ZAttrProvisioning.A_zimbraNewMailNotificationFrom))
@@ -197,7 +196,6 @@ class IpBoundSessionFilterTest {
 
       mockedAuthUtil.when(() -> AuthUtil.getAuthTokenFromHttpReq(request, false)).thenReturn(authToken);
       when(authToken.getAccount()).thenReturn(account);
-      when(account.getCarbonioIpBoundSessionTrustedIPs()).thenReturn(new String[0]);
       when(account.getMail()).thenReturn("user@test.com");
       when(account.getDomainName()).thenReturn("test.com");
       when(account.getAttr(ZAttrProvisioning.A_zimbraNewMailNotificationFrom))
@@ -253,7 +251,6 @@ class IpBoundSessionFilterTest {
 
       mockedAuthUtil.when(() -> AuthUtil.getAuthTokenFromHttpReq(request, false)).thenReturn(authToken);
       when(authToken.getAccount()).thenReturn(account);
-      when(account.getCarbonioIpBoundSessionTrustedIPs()).thenReturn(new String[0]);
       when(account.getMail()).thenReturn("user@test.com");
       when(account.getDomainName()).thenReturn("test.com");
       when(account.getAttr(ZAttrProvisioning.A_zimbraNewMailNotificationFrom))

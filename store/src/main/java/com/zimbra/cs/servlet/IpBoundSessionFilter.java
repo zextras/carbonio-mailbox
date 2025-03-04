@@ -3,7 +3,6 @@ package com.zimbra.cs.servlet;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.RemoteIP;
-import com.zimbra.common.util.RemoteIP.TrustedIPs;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
@@ -20,7 +19,6 @@ import io.vavr.Tuple2;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -107,7 +105,7 @@ public class IpBoundSessionFilter implements Filter {
 
                 if (authToken != null) {
                   AccountMailbox accountAndMailbox = getAccountAndMailboxFromAuthToken(authToken);
-                  String clientOriginalIP = getClientOriginalIP(request, accountAndMailbox.account());
+                  String clientOriginalIP = getClientOriginalIP(request);
 
                   if (!validateSessionToken(tokenValue, clientOriginalIP)) {
                     String messageTitle = "Session hijacking attempt detected for token: " + tokenName +
@@ -184,8 +182,8 @@ public class IpBoundSessionFilter implements Filter {
     return Provisioning.getInstance().getConfig().isCarbonioIpBoundSessionFilterEnabled();
   }
 
-  private String getClientOriginalIP(HttpServletRequest request, Account account) {
-    var trustedIPs = getAllTrustedIPs(account, ZimbraServlet.getTrustedIPs());
+  private String getClientOriginalIP(HttpServletRequest request) {
+    var trustedIPs = ZimbraServlet.getTrustedIPs();
     return new RemoteIP(request, trustedIPs).getOrigIP();
   }
 
@@ -218,15 +216,6 @@ public class IpBoundSessionFilter implements Filter {
     var mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
     var mailSender = mailbox.getMailSender();
     return new AccountMailbox(account, mailbox, mailSender);
-  }
-
-  private TrustedIPs getAllTrustedIPs(Account account, TrustedIPs existingTrustedIPs) {
-    List<String> trustedIPs = new ArrayList<>();
-    if (existingTrustedIPs != null) {
-      trustedIPs.addAll(existingTrustedIPs.getTrustedIPs());
-    }
-    trustedIPs.addAll(Arrays.asList(account.getCarbonioIpBoundSessionTrustedIPs()));
-    return new TrustedIPs(trustedIPs.toArray(new String[0]));
   }
 
   @Override
