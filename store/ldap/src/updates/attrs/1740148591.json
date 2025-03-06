@@ -12,8 +12,7 @@
     "carbonioWscMessageEditTimeLimit",
     "carbonioWscMaxGroupMembers",
     "carbonioWscMaxRoomPictureSize",
-    "carbonioWscMaxAttachmentSize",
-    "carbonioWscVirtualBackgroundPath"
+    "carbonioWscMaxAttachmentSize"
   ],
   "zimbra_defaultexternalcos": [
     "carbonioWscShowMessageReads",
@@ -28,7 +27,6 @@
     "carbonioWscMessageEditTimeLimit",
     "carbonioWscMaxGroupMembers",
     "carbonioWscMaxRoomPictureSize",
-    "carbonioWscMaxAttachmentSize",
-    "carbonioWscVirtualBackgroundPath"
+    "carbonioWscMaxAttachmentSize"
   ]
 }
