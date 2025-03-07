@@ -963,6 +963,1099 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Whether users can upload attachments in the chat
+     *
+     * @return carbonioWscAttachmentUpload, or true if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3156)
+    public boolean isCarbonioWscAttachmentUpload() {
+        return getBooleanAttr(ZAttrProvisioning.A_carbonioWscAttachmentUpload, true, true);
+    }
+
+    /**
+     * Whether users can upload attachments in the chat
+     *
+     * @param carbonioWscAttachmentUpload new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3156)
+    public void setCarbonioWscAttachmentUpload(boolean carbonioWscAttachmentUpload) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscAttachmentUpload, carbonioWscAttachmentUpload ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether users can upload attachments in the chat
+     *
+     * @param carbonioWscAttachmentUpload new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3156)
+    public Map<String,Object> setCarbonioWscAttachmentUpload(boolean carbonioWscAttachmentUpload, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscAttachmentUpload, carbonioWscAttachmentUpload ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether users can upload attachments in the chat
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3156)
+    public void unsetCarbonioWscAttachmentUpload() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscAttachmentUpload, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether users can upload attachments in the chat
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3156)
+    public Map<String,Object> unsetCarbonioWscAttachmentUpload(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscAttachmentUpload, "");
+        return attrs;
+    }
+
+    /**
+     * Whether users can create group chats
+     *
+     * @return carbonioWscGroupChatCreation, or true if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3154)
+    public boolean isCarbonioWscGroupChatCreation() {
+        return getBooleanAttr(ZAttrProvisioning.A_carbonioWscGroupChatCreation, true, true);
+    }
+
+    /**
+     * Whether users can create group chats
+     *
+     * @param carbonioWscGroupChatCreation new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3154)
+    public void setCarbonioWscGroupChatCreation(boolean carbonioWscGroupChatCreation) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscGroupChatCreation, carbonioWscGroupChatCreation ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether users can create group chats
+     *
+     * @param carbonioWscGroupChatCreation new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3154)
+    public Map<String,Object> setCarbonioWscGroupChatCreation(boolean carbonioWscGroupChatCreation, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscGroupChatCreation, carbonioWscGroupChatCreation ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether users can create group chats
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3154)
+    public void unsetCarbonioWscGroupChatCreation() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscGroupChatCreation, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether users can create group chats
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3154)
+    public Map<String,Object> unsetCarbonioWscGroupChatCreation(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscGroupChatCreation, "");
+        return attrs;
+    }
+
+    /**
+     * The maximum allowed size for an attachment in Mb
+     *
+     * @return carbonioWscMaxAttachmentSize, or 128 if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3161)
+    public int getCarbonioWscMaxAttachmentSize() {
+        return getIntAttr(ZAttrProvisioning.A_carbonioWscMaxAttachmentSize, 128, true);
+    }
+
+    /**
+     * The maximum allowed size for an attachment in Mb
+     *
+     * @param carbonioWscMaxAttachmentSize new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3161)
+    public void setCarbonioWscMaxAttachmentSize(int carbonioWscMaxAttachmentSize) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscMaxAttachmentSize, Integer.toString(carbonioWscMaxAttachmentSize));
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * The maximum allowed size for an attachment in Mb
+     *
+     * @param carbonioWscMaxAttachmentSize new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3161)
+    public Map<String,Object> setCarbonioWscMaxAttachmentSize(int carbonioWscMaxAttachmentSize, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscMaxAttachmentSize, Integer.toString(carbonioWscMaxAttachmentSize));
+        return attrs;
+    }
+
+    /**
+     * The maximum allowed size for an attachment in Mb
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3161)
+    public void unsetCarbonioWscMaxAttachmentSize() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscMaxAttachmentSize, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * The maximum allowed size for an attachment in Mb
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3161)
+    public Map<String,Object> unsetCarbonioWscMaxAttachmentSize(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscMaxAttachmentSize, "");
+        return attrs;
+    }
+
+    /**
+     * The maximum number of users that can be part of a group
+     *
+     * @return carbonioWscMaxGroupMembers, or 32 if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3159)
+    public int getCarbonioWscMaxGroupMembers() {
+        return getIntAttr(ZAttrProvisioning.A_carbonioWscMaxGroupMembers, 32, true);
+    }
+
+    /**
+     * The maximum number of users that can be part of a group
+     *
+     * @param carbonioWscMaxGroupMembers new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3159)
+    public void setCarbonioWscMaxGroupMembers(int carbonioWscMaxGroupMembers) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscMaxGroupMembers, Integer.toString(carbonioWscMaxGroupMembers));
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * The maximum number of users that can be part of a group
+     *
+     * @param carbonioWscMaxGroupMembers new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3159)
+    public Map<String,Object> setCarbonioWscMaxGroupMembers(int carbonioWscMaxGroupMembers, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscMaxGroupMembers, Integer.toString(carbonioWscMaxGroupMembers));
+        return attrs;
+    }
+
+    /**
+     * The maximum number of users that can be part of a group
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3159)
+    public void unsetCarbonioWscMaxGroupMembers() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscMaxGroupMembers, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * The maximum number of users that can be part of a group
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3159)
+    public Map<String,Object> unsetCarbonioWscMaxGroupMembers(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscMaxGroupMembers, "");
+        return attrs;
+    }
+
+    /**
+     * The maximum allowed size for a room picture in Mb
+     *
+     * @return carbonioWscMaxRoomPictureSize, or 2 if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3160)
+    public int getCarbonioWscMaxRoomPictureSize() {
+        return getIntAttr(ZAttrProvisioning.A_carbonioWscMaxRoomPictureSize, 2, true);
+    }
+
+    /**
+     * The maximum allowed size for a room picture in Mb
+     *
+     * @param carbonioWscMaxRoomPictureSize new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3160)
+    public void setCarbonioWscMaxRoomPictureSize(int carbonioWscMaxRoomPictureSize) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscMaxRoomPictureSize, Integer.toString(carbonioWscMaxRoomPictureSize));
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * The maximum allowed size for a room picture in Mb
+     *
+     * @param carbonioWscMaxRoomPictureSize new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3160)
+    public Map<String,Object> setCarbonioWscMaxRoomPictureSize(int carbonioWscMaxRoomPictureSize, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscMaxRoomPictureSize, Integer.toString(carbonioWscMaxRoomPictureSize));
+        return attrs;
+    }
+
+    /**
+     * The maximum allowed size for a room picture in Mb
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3160)
+    public void unsetCarbonioWscMaxRoomPictureSize() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscMaxRoomPictureSize, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * The maximum allowed size for a room picture in Mb
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3160)
+    public Map<String,Object> unsetCarbonioWscMaxRoomPictureSize(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscMaxRoomPictureSize, "");
+        return attrs;
+    }
+
+    /**
+     * How long after a message can be deleted after being sent. Must be in
+     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
+     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
+     * milliseconds. If time unit is not specified, the default is
+     * s(seconds).
+     *
+     * <p>Use getCarbonioWscMessageDeleteTimeLimitAsString to access value as a string.
+     *
+     * @see #getCarbonioWscMessageDeleteTimeLimitAsString()
+     *
+     * @return carbonioWscMessageDeleteTimeLimit in millseconds, or 600000 (10m)  if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3157)
+    public long getCarbonioWscMessageDeleteTimeLimit() {
+        return getTimeInterval(ZAttrProvisioning.A_carbonioWscMessageDeleteTimeLimit, 600000L, true);
+    }
+
+    /**
+     * How long after a message can be deleted after being sent. Must be in
+     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
+     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
+     * milliseconds. If time unit is not specified, the default is
+     * s(seconds).
+     *
+     * @return carbonioWscMessageDeleteTimeLimit, or "10m" if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3157)
+    public String getCarbonioWscMessageDeleteTimeLimitAsString() {
+        return getAttr(ZAttrProvisioning.A_carbonioWscMessageDeleteTimeLimit, "10m", true);
+    }
+
+    /**
+     * How long after a message can be deleted after being sent. Must be in
+     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
+     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
+     * milliseconds. If time unit is not specified, the default is
+     * s(seconds).
+     *
+     * @param carbonioWscMessageDeleteTimeLimit new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3157)
+    public void setCarbonioWscMessageDeleteTimeLimit(String carbonioWscMessageDeleteTimeLimit) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscMessageDeleteTimeLimit, carbonioWscMessageDeleteTimeLimit);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * How long after a message can be deleted after being sent. Must be in
+     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
+     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
+     * milliseconds. If time unit is not specified, the default is
+     * s(seconds).
+     *
+     * @param carbonioWscMessageDeleteTimeLimit new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3157)
+    public Map<String,Object> setCarbonioWscMessageDeleteTimeLimit(String carbonioWscMessageDeleteTimeLimit, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscMessageDeleteTimeLimit, carbonioWscMessageDeleteTimeLimit);
+        return attrs;
+    }
+
+    /**
+     * How long after a message can be deleted after being sent. Must be in
+     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
+     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
+     * milliseconds. If time unit is not specified, the default is
+     * s(seconds).
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3157)
+    public void unsetCarbonioWscMessageDeleteTimeLimit() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscMessageDeleteTimeLimit, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * How long after a message can be deleted after being sent. Must be in
+     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
+     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
+     * milliseconds. If time unit is not specified, the default is
+     * s(seconds).
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3157)
+    public Map<String,Object> unsetCarbonioWscMessageDeleteTimeLimit(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscMessageDeleteTimeLimit, "");
+        return attrs;
+    }
+
+    /**
+     * How long after a message can be edited after being sent. Must be in
+     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
+     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
+     * milliseconds. If time unit is not specified, the default is
+     * s(seconds).
+     *
+     * <p>Use getCarbonioWscMessageEditTimeLimitAsString to access value as a string.
+     *
+     * @see #getCarbonioWscMessageEditTimeLimitAsString()
+     *
+     * @return carbonioWscMessageEditTimeLimit in millseconds, or 600000 (10m)  if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3158)
+    public long getCarbonioWscMessageEditTimeLimit() {
+        return getTimeInterval(ZAttrProvisioning.A_carbonioWscMessageEditTimeLimit, 600000L, true);
+    }
+
+    /**
+     * How long after a message can be edited after being sent. Must be in
+     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
+     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
+     * milliseconds. If time unit is not specified, the default is
+     * s(seconds).
+     *
+     * @return carbonioWscMessageEditTimeLimit, or "10m" if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3158)
+    public String getCarbonioWscMessageEditTimeLimitAsString() {
+        return getAttr(ZAttrProvisioning.A_carbonioWscMessageEditTimeLimit, "10m", true);
+    }
+
+    /**
+     * How long after a message can be edited after being sent. Must be in
+     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
+     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
+     * milliseconds. If time unit is not specified, the default is
+     * s(seconds).
+     *
+     * @param carbonioWscMessageEditTimeLimit new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3158)
+    public void setCarbonioWscMessageEditTimeLimit(String carbonioWscMessageEditTimeLimit) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscMessageEditTimeLimit, carbonioWscMessageEditTimeLimit);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * How long after a message can be edited after being sent. Must be in
+     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
+     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
+     * milliseconds. If time unit is not specified, the default is
+     * s(seconds).
+     *
+     * @param carbonioWscMessageEditTimeLimit new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3158)
+    public Map<String,Object> setCarbonioWscMessageEditTimeLimit(String carbonioWscMessageEditTimeLimit, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscMessageEditTimeLimit, carbonioWscMessageEditTimeLimit);
+        return attrs;
+    }
+
+    /**
+     * How long after a message can be edited after being sent. Must be in
+     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
+     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
+     * milliseconds. If time unit is not specified, the default is
+     * s(seconds).
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3158)
+    public void unsetCarbonioWscMessageEditTimeLimit() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscMessageEditTimeLimit, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * How long after a message can be edited after being sent. Must be in
+     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
+     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
+     * milliseconds. If time unit is not specified, the default is
+     * s(seconds).
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3158)
+    public Map<String,Object> unsetCarbonioWscMessageEditTimeLimit(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscMessageEditTimeLimit, "");
+        return attrs;
+    }
+
+    /**
+     * Whether users can create private chats
+     *
+     * @return carbonioWscPrivateChatCreation, or true if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3155)
+    public boolean isCarbonioWscPrivateChatCreation() {
+        return getBooleanAttr(ZAttrProvisioning.A_carbonioWscPrivateChatCreation, true, true);
+    }
+
+    /**
+     * Whether users can create private chats
+     *
+     * @param carbonioWscPrivateChatCreation new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3155)
+    public void setCarbonioWscPrivateChatCreation(boolean carbonioWscPrivateChatCreation) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscPrivateChatCreation, carbonioWscPrivateChatCreation ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether users can create private chats
+     *
+     * @param carbonioWscPrivateChatCreation new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3155)
+    public Map<String,Object> setCarbonioWscPrivateChatCreation(boolean carbonioWscPrivateChatCreation, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscPrivateChatCreation, carbonioWscPrivateChatCreation ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether users can create private chats
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3155)
+    public void unsetCarbonioWscPrivateChatCreation() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscPrivateChatCreation, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether users can create private chats
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3155)
+    public Map<String,Object> unsetCarbonioWscPrivateChatCreation(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscPrivateChatCreation, "");
+        return attrs;
+    }
+
+    /**
+     * Whether users can record video call meetings
+     *
+     * @return carbonioWscRecordingEnabled, or false if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3153)
+    public boolean isCarbonioWscRecordingEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_carbonioWscRecordingEnabled, false, true);
+    }
+
+    /**
+     * Whether users can record video call meetings
+     *
+     * @param carbonioWscRecordingEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3153)
+    public void setCarbonioWscRecordingEnabled(boolean carbonioWscRecordingEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscRecordingEnabled, carbonioWscRecordingEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether users can record video call meetings
+     *
+     * @param carbonioWscRecordingEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3153)
+    public Map<String,Object> setCarbonioWscRecordingEnabled(boolean carbonioWscRecordingEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscRecordingEnabled, carbonioWscRecordingEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether users can record video call meetings
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3153)
+    public void unsetCarbonioWscRecordingEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscRecordingEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether users can record video call meetings
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3153)
+    public Map<String,Object> unsetCarbonioWscRecordingEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscRecordingEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Whether users can see the list of people who have read the message
+     * sent in the chat
+     *
+     * @return carbonioWscShowMessageReads, or true if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3149)
+    public boolean isCarbonioWscShowMessageReads() {
+        return getBooleanAttr(ZAttrProvisioning.A_carbonioWscShowMessageReads, true, true);
+    }
+
+    /**
+     * Whether users can see the list of people who have read the message
+     * sent in the chat
+     *
+     * @param carbonioWscShowMessageReads new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3149)
+    public void setCarbonioWscShowMessageReads(boolean carbonioWscShowMessageReads) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscShowMessageReads, carbonioWscShowMessageReads ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether users can see the list of people who have read the message
+     * sent in the chat
+     *
+     * @param carbonioWscShowMessageReads new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3149)
+    public Map<String,Object> setCarbonioWscShowMessageReads(boolean carbonioWscShowMessageReads, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscShowMessageReads, carbonioWscShowMessageReads ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether users can see the list of people who have read the message
+     * sent in the chat
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3149)
+    public void unsetCarbonioWscShowMessageReads() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscShowMessageReads, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether users can see the list of people who have read the message
+     * sent in the chat
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3149)
+    public Map<String,Object> unsetCarbonioWscShowMessageReads(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscShowMessageReads, "");
+        return attrs;
+    }
+
+    /**
+     * Whether users can see the presence status of other people
+     *
+     * @return carbonioWscShowUsersPresence, or true if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3150)
+    public boolean isCarbonioWscShowUsersPresence() {
+        return getBooleanAttr(ZAttrProvisioning.A_carbonioWscShowUsersPresence, true, true);
+    }
+
+    /**
+     * Whether users can see the presence status of other people
+     *
+     * @param carbonioWscShowUsersPresence new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3150)
+    public void setCarbonioWscShowUsersPresence(boolean carbonioWscShowUsersPresence) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscShowUsersPresence, carbonioWscShowUsersPresence ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether users can see the presence status of other people
+     *
+     * @param carbonioWscShowUsersPresence new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3150)
+    public Map<String,Object> setCarbonioWscShowUsersPresence(boolean carbonioWscShowUsersPresence, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscShowUsersPresence, carbonioWscShowUsersPresence ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether users can see the presence status of other people
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3150)
+    public void unsetCarbonioWscShowUsersPresence() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscShowUsersPresence, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether users can see the presence status of other people
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3150)
+    public Map<String,Object> unsetCarbonioWscShowUsersPresence(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscShowUsersPresence, "");
+        return attrs;
+    }
+
+    /**
+     * Whether users can make video call meetings
+     *
+     * @return carbonioWscVideoCallEnabled, or true if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3152)
+    public boolean isCarbonioWscVideoCallEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_carbonioWscVideoCallEnabled, true, true);
+    }
+
+    /**
+     * Whether users can make video call meetings
+     *
+     * @param carbonioWscVideoCallEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3152)
+    public void setCarbonioWscVideoCallEnabled(boolean carbonioWscVideoCallEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscVideoCallEnabled, carbonioWscVideoCallEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether users can make video call meetings
+     *
+     * @param carbonioWscVideoCallEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3152)
+    public Map<String,Object> setCarbonioWscVideoCallEnabled(boolean carbonioWscVideoCallEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscVideoCallEnabled, carbonioWscVideoCallEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether users can make video call meetings
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3152)
+    public void unsetCarbonioWscVideoCallEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscVideoCallEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether users can make video call meetings
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3152)
+    public Map<String,Object> unsetCarbonioWscVideoCallEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscVideoCallEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * Whether users can use virtual backgrounds in video call meetings
+     *
+     * @return carbonioWscVirtualBackgroundEnabled, or false if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3151)
+    public boolean isCarbonioWscVirtualBackgroundEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_carbonioWscVirtualBackgroundEnabled, false, true);
+    }
+
+    /**
+     * Whether users can use virtual backgrounds in video call meetings
+     *
+     * @param carbonioWscVirtualBackgroundEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3151)
+    public void setCarbonioWscVirtualBackgroundEnabled(boolean carbonioWscVirtualBackgroundEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscVirtualBackgroundEnabled, carbonioWscVirtualBackgroundEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether users can use virtual backgrounds in video call meetings
+     *
+     * @param carbonioWscVirtualBackgroundEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3151)
+    public Map<String,Object> setCarbonioWscVirtualBackgroundEnabled(boolean carbonioWscVirtualBackgroundEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscVirtualBackgroundEnabled, carbonioWscVirtualBackgroundEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether users can use virtual backgrounds in video call meetings
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3151)
+    public void unsetCarbonioWscVirtualBackgroundEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscVirtualBackgroundEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether users can use virtual backgrounds in video call meetings
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3151)
+    public Map<String,Object> unsetCarbonioWscVirtualBackgroundEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscVirtualBackgroundEnabled, "");
+        return attrs;
+    }
+
+    /**
+     * The path to the folder containing the virtual backgrounds
+     *
+     * @return carbonioWscVirtualBackgroundPath, or null if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3162)
+    public String getCarbonioWscVirtualBackgroundPath() {
+        return getAttr(ZAttrProvisioning.A_carbonioWscVirtualBackgroundPath, null, true);
+    }
+
+    /**
+     * The path to the folder containing the virtual backgrounds
+     *
+     * @param carbonioWscVirtualBackgroundPath new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3162)
+    public void setCarbonioWscVirtualBackgroundPath(String carbonioWscVirtualBackgroundPath) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscVirtualBackgroundPath, carbonioWscVirtualBackgroundPath);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * The path to the folder containing the virtual backgrounds
+     *
+     * @param carbonioWscVirtualBackgroundPath new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3162)
+    public Map<String,Object> setCarbonioWscVirtualBackgroundPath(String carbonioWscVirtualBackgroundPath, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscVirtualBackgroundPath, carbonioWscVirtualBackgroundPath);
+        return attrs;
+    }
+
+    /**
+     * The path to the folder containing the virtual backgrounds
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3162)
+    public void unsetCarbonioWscVirtualBackgroundPath() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscVirtualBackgroundPath, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * The path to the folder containing the virtual backgrounds
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3162)
+    public Map<String,Object> unsetCarbonioWscVirtualBackgroundPath(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioWscVirtualBackgroundPath, "");
+        return attrs;
+    }
+
+    /**
      * RFC2256: common name(s) for which the entity is known by
      *
      * @return cn, or null if unset

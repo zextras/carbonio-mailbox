@@ -1,0 +1,32 @@
+{
+  "zimbra_defaultcos": [
+    "carbonioWscShowMessageReads",
+    "carbonioWscShowUsersPresence",
+    "carbonioWscVirtualBackgroundEnabled",
+    "carbonioWscVideoCallEnabled",
+    "carbonioWscRecordingEnabled",
+    "carbonioWscGroupChatCreation",
+    "carbonioWscPrivateChatCreation",
+    "carbonioWscAttachmentUpload",
+    "carbonioWscMessageDeleteTimeLimit",
+    "carbonioWscMessageEditTimeLimit",
+    "carbonioWscMaxGroupMembers",
+    "carbonioWscMaxRoomPictureSize",
+    "carbonioWscMaxAttachmentSize"
+  ],
+  "zimbra_defaultexternalcos": [
+    "carbonioWscShowMessageReads",
+    "carbonioWscShowUsersPresence",
+    "carbonioWscVirtualBackgroundEnabled",
+    "carbonioWscVideoCallEnabled",
+    "carbonioWscRecordingEnabled",
+    "carbonioWscGroupChatCreation",
+    "carbonioWscPrivateChatCreation",
+    "carbonioWscAttachmentUpload",
+    "carbonioWscMessageDeleteTimeLimit",
+    "carbonioWscMessageEditTimeLimit",
+    "carbonioWscMaxGroupMembers",
+    "carbonioWscMaxRoomPictureSize",
+    "carbonioWscMaxAttachmentSize"
+  ]
+}

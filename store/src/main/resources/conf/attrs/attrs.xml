@@ -10205,4 +10205,86 @@ TODO: delete them permanently from here
 <attr id="3148" name="carbonioSearchSpecifiedDomainsByFeature" type="string" max="256" cardinality="multi" optionalIn="domain" since="24.12.0">
   <desc>List of domain names in which the SearchUserByFeature API should perform users searches</desc>
 </attr>
+
+<attr id="3149" name="carbonioWscShowMessageReads" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultExternalCOSValue>TRUE</defaultExternalCOSValue>
+  <desc>Whether users can see the list of people who have read the message sent in the chat</desc>
+</attr>
+
+<attr id="3150" name="carbonioWscShowUsersPresence" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultExternalCOSValue>TRUE</defaultExternalCOSValue>
+  <desc>Whether users can see the presence status of other people</desc>
+</attr>
+
+<attr id="3151" name="carbonioWscVirtualBackgroundEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
+  <desc>Whether users can use virtual backgrounds in video call meetings</desc>
+</attr>
+
+<attr id="3152" name="carbonioWscVideoCallEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultExternalCOSValue>TRUE</defaultExternalCOSValue>
+  <desc>Whether users can make video call meetings</desc>
+</attr>
+
+<attr id="3153" name="carbonioWscRecordingEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
+  <desc>Whether users can record video call meetings</desc>
+</attr>
+
+<attr id="3154" name="carbonioWscGroupChatCreation" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultExternalCOSValue>TRUE</defaultExternalCOSValue>
+  <desc>Whether users can create group chats</desc>
+</attr>
+
+<attr id="3155" name="carbonioWscPrivateChatCreation" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultExternalCOSValue>TRUE</defaultExternalCOSValue>
+  <desc>Whether users can create private chats</desc>
+</attr>
+
+<attr id="3156" name="carbonioWscAttachmentUpload" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultExternalCOSValue>TRUE</defaultExternalCOSValue>
+  <desc>Whether users can upload attachments in the chat</desc>
+</attr>
+
+<attr id="3157" name="carbonioWscMessageDeleteTimeLimit" type="duration" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>10m</defaultCOSValue>
+  <defaultExternalCOSValue>10m</defaultExternalCOSValue>
+  <desc>How long after a message can be deleted after being sent</desc>
+</attr>
+
+<attr id="3158" name="carbonioWscMessageEditTimeLimit" type="duration" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>10m</defaultCOSValue>
+  <defaultExternalCOSValue>10m</defaultExternalCOSValue>
+  <desc>How long after a message can be edited after being sent</desc>
+</attr>
+
+<attr id="3159" name="carbonioWscMaxGroupMembers" type="integer" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>32</defaultCOSValue>
+  <defaultExternalCOSValue>32</defaultExternalCOSValue>
+  <desc>The maximum number of users that can be part of a group</desc>
+</attr>
+
+<attr id="3160" name="carbonioWscMaxRoomPictureSize" type="integer" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>2</defaultCOSValue>
+  <defaultExternalCOSValue>2</defaultExternalCOSValue>
+  <desc>The maximum allowed size for a room picture in Mb</desc>
+</attr>
+
+<attr id="3161" name="carbonioWscMaxAttachmentSize" type="integer" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>128</defaultCOSValue>
+  <defaultExternalCOSValue>128</defaultExternalCOSValue>
+  <desc>The maximum allowed size for an attachment in Mb</desc>
+</attr>
+
+<attr id="3162" name="carbonioWscVirtualBackgroundPath" type="string" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <desc>The path to the folder containing the virtual backgrounds</desc>
+</attr>
 </attrs>
