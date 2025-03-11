@@ -89,12 +89,10 @@ postinst() {
 
   usermod -a -G 'carbonio-mailbox' 'zextras'
 
-  if [ -d /run/systemd/system ]; then
-    systemctl daemon-reload >/dev/null 2>&1 || :
-    systemctl enable carbonio-mailbox-sidecar.service >/dev/null 2>&1 || :
-    systemctl enable carbonio-mailbox-admin-sidecar.service >/dev/null 2>&1 || :
-    systemctl enable carbonio-mailbox-nslookup-sidecar.service >/dev/null 2>&1 || :
-  fi
+  systemctl daemon-reload &>/dev/null || :
+  systemctl enable carbonio-mailbox-sidecar.service &>/dev/null || :
+  systemctl enable carbonio-mailbox-admin-sidecar.service &>/dev/null || :
+  systemctl enable carbonio-mailbox-nslookup-sidecar.service &>/dev/null || :
 
   echo "======================================================"
   echo "Carbonio Mailbox Service installed successfully!"
@@ -103,14 +101,12 @@ postinst() {
 }
 
 prerm() {
-  if [ -d /run/systemd/system ]; then
-    systemctl --no-reload disable carbonio-mailbox-sidecar.service >/dev/null 2>&1 || :
-    systemctl --no-reload disable carbonio-mailbox-admin-sidecar.service >/dev/null 2>&1 || :
-    systemctl --no-reload disable carbonio-mailbox-nslookup-sidecar.service >/dev/null 2>&1 || :
-    systemctl stop carbonio-mailbox-sidecar.service >/dev/null 2>&1 || :
-    systemctl stop carbonio-mailbox-admin-sidecar.service >/dev/null 2>&1 || :
-    systemctl stop carbonio-mailbox-nslookup-sidecar.service >/dev/null 2>&1 || :
-  fi
+  systemctl --no-reload disable carbonio-mailbox-sidecar.service &>/dev/null || :
+  systemctl --no-reload disable carbonio-mailbox-admin-sidecar.service &>/dev/null || :
+  systemctl --no-reload disable carbonio-mailbox-nslookup-sidecar.service &>/dev/null || :
+  systemctl stop carbonio-mailbox-sidecar.service &>/dev/null || :
+  systemctl stop carbonio-mailbox-admin-sidecar.service &>/dev/null || :
+  systemctl stop carbonio-mailbox-nslookup-sidecar.service &>/dev/null || :
 }
 
 postrm() {
@@ -118,7 +114,5 @@ postrm() {
   rm -f /etc/carbonio/mailbox-admin/service-discover/token
   rm -f /etc/carbonio/mailbox-nslookup/service-discover/token
 
-  if [ -d /run/systemd/system ]; then
-    systemctl daemon-reload >/dev/null 2>&1 || :
-  fi
+  systemctl daemon-reload &>/dev/null || :
 }

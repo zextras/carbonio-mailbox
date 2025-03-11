@@ -86,17 +86,15 @@ postinst__apt() {
     su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
     su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
-    su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
-    su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
+    /opt/zextras/libexec/zmldapupdateldif
+    /opt/zextras/libexec/ldapattributeupdate
     su - zextras -c "/opt/zextras/bin/ldap restart"
   fi
 }
 
 preinst__ubuntu_noble() {
   if [ "$1" = "upgrade" ] && [ -n "$2" ]; then
-    if [ -d /run/systemd/system ]; then
-      systemctl start carbonio-openldap.service >/dev/null 2>&1 || :
-    fi
+    systemctl start carbonio-openldap.service &>/dev/null || :
   fi
 }
 postinst__ubuntu_noble() {
@@ -110,28 +108,20 @@ postinst__ubuntu_noble() {
   if [ "$1" = "configure" ] && [ -n "$2" ]; then
     echo "* Starting LDAP upgrade..."
     su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
-    if [ -d /run/systemd/system ]; then
-      systemctl daemon-reload >/dev/null 2>&1 || :
-      systemctl stop carbonio-openldap.service >/dev/null 2>&1 || :
-    fi
+    systemctl daemon-reload &>/dev/null || :
+    systemctl stop carbonio-openldap.service &>/dev/null || :
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
-    # zmldapupdateldif restart slapd out of systemd domain...
-    su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
-    su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
-    # ... for this reason a forced kill is needed
-    kill "$(pidof /opt/zextras/common/libexec/slapd)"
+    /opt/zextras/libexec/zmldapupdateldif
+    /opt/zextras/libexec/ldapattributeupdate
+    systemctl restart carbonio-openldap.service &>/dev/null || :
   fi
 
   if [ "$1" = "configure" ] && [ -n "$2" ]; then
-    if [ -d /run/systemd/system ]; then
-      systemctl start carbonio-openldap.service >/dev/null 2>&1 || :
-    fi
+    systemctl start carbonio-openldap.service &>/dev/null || :
   fi
 
-  if [ -d /run/systemd/system ]; then
-    systemctl daemon-reload >/dev/null 2>&1 || :
-    systemctl enable carbonio-directory-server.target >/dev/null 2>&1 || :
-  fi
+  systemctl daemon-reload &>/dev/null || :
+  systemctl enable carbonio-directory-server.target &>/dev/null || :
 }
 
 preinst__rocky_8() {
@@ -152,17 +142,15 @@ postinst__rocky_8() {
     su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
     su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
-    su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
-    su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
+    /opt/zextras/libexec/zmldapupdateldif
+    /opt/zextras/libexec/ldapattributeupdate
     su - zextras -c "/opt/zextras/bin/ldap restart"
   fi
 }
 
 preinst__rocky_9() {
   if [ "$1" -eq 2 ]; then
-    if [ -d /run/systemd/system ]; then
-      systemctl start carbonio-openldap.service >/dev/null 2>&1 || :
-    fi
+    systemctl start carbonio-openldap.service &>/dev/null || :
   fi
 }
 postinst__rocky_9() {
@@ -176,50 +164,34 @@ postinst__rocky_9() {
   if [ "$1" -eq 2 ]; then
     echo "* Starting LDAP upgrade..."
     su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
-    if [ -d /run/systemd/system ]; then
-      systemctl daemon-reload >/dev/null 2>&1 || :
-      systemctl stop carbonio-openldap.service >/dev/null 2>&1 || :
-    fi
+    systemctl daemon-reload &>/dev/null || :
+    systemctl stop carbonio-openldap.service &>/dev/null || :
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
-    # zmldapupdateldif restart slapd out of systemd domain...
-    su - zextras -c "/opt/zextras/libexec/zmldapupdateldif"
-    su - zextras -c "/opt/zextras/libexec/ldapattributeupdate"
-    # ... for this reason a forced kill is needed
-    kill "$(pidof /opt/zextras/common/libexec/slapd)"
+    /opt/zextras/libexec/zmldapupdateldif
+    /opt/zextras/libexec/ldapattributeupdate
+    systemctl restart carbonio-openldap.service &>/dev/null || :
   fi
 
   if [ "$1" -eq 2 ]; then
-    if [ -d /run/systemd/system ]; then
-      systemctl start carbonio-openldap.service >/dev/null 2>&1 || :
-    fi
+    systemctl start carbonio-openldap.service &>/dev/null || :
   fi
 
-  if [ -d /run/systemd/system ]; then
-    systemctl daemon-reload >/dev/null 2>&1 || :
-    systemctl enable carbonio-directory-server.target >/dev/null 2>&1 || :
-  fi
+  systemctl daemon-reload &>/dev/null
+  systemctl enable carbonio-directory-server.target &>/dev/null || :
 }
 
 prerm__ubuntu_noble() {
-  if [ -d /run/systemd/system ]; then
-    systemctl --no-reload disable --now carbonio-directory-server.target >/dev/null 2>&1 || :
-  fi
+  systemctl --no-reload disable --now carbonio-directory-server.target &>/dev/null || :
 }
 
 prerm__rocky_9() {
-  if [ -d /run/systemd/system ]; then
-    systemctl --no-reload disable --now carbonio-directory-server.target >/dev/null 2>&1 || :
-  fi
+  systemctl --no-reload disable --now carbonio-directory-server.target &>/dev/null || :
 }
 
 postrm__ubuntu_noble() {
-  if [ -d /run/systemd/system ]; then
-    systemctl daemon-reload >/dev/null 2>&1 || :
-  fi
+  systemctl daemon-reload &>/dev/null || :
 }
 
 postrm__rocky_9() {
-  if [ -d /run/systemd/system ]; then
-    systemctl daemon-reload >/dev/null 2>&1 || :
-  fi
+  systemctl daemon-reload &>/dev/null || :
 }
