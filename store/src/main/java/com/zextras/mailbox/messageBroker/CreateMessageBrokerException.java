@@ -4,7 +4,7 @@
 
 package com.zextras.mailbox.messageBroker;
 
-public class CreateMessageBrokerException extends Exception {
+public class CreateMessageBrokerException extends RuntimeException {
 
 	public CreateMessageBrokerException(Exception e) {
 		super("Cannot create message broker client", e);
