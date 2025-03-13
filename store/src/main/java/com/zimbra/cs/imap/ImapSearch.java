@@ -26,7 +26,6 @@ abstract class ImapSearch {
     protected boolean requiresMODSEQ()  { return false; }
     // Pattern to match UID range search in the format "1:x,y:*", e.g., "1:100,200:*"
     private static final String UID_SEARCH_PATTERN = "^1:(\\d+),(\\d+):\\*$";
-    private static final boolean isUidRangeSearchIgnored = LC.ignore_imap_uid_range_search.booleanValue();
 
     protected static boolean isAllMessages(ImapFolder i4folder, Set<ImapMessage> i4set) {
         int size = i4set.size() - (i4set.contains(null) ? 1 : 0);
@@ -162,9 +161,10 @@ abstract class ImapSearch {
         protected String toZimbraSearch(ImapFolder i4folder) throws ImapParseException {
             StringBuilder search = new StringBuilder("(");
             Pattern compiledUidPattern = Pattern.compile(UID_SEARCH_PATTERN);
+            boolean ignoreImapUidRangeSearch = LC.ignore_imap_uid_range_search.booleanValue();
             for (ImapSearch i4search : mChildren) {
                 if (i4search instanceof SequenceSearch
-                        && isUidRangeSearchIgnored
+                        && ignoreImapUidRangeSearch
                         && null != ((SequenceSearch) i4search).mSubSequence
                         && compiledUidPattern.matcher(((SequenceSearch) i4search).mSubSequence).find()) {
                     continue;
