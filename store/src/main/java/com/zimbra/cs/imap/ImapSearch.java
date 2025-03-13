@@ -163,10 +163,10 @@ abstract class ImapSearch {
             Pattern compiledUidPattern = Pattern.compile(UID_SEARCH_PATTERN);
             boolean ignoreImapUidRangeSearch = LC.ignore_imap_uid_range_search.booleanValue();
             for (ImapSearch i4search : mChildren) {
-                if (i4search instanceof SequenceSearch
+                if (i4search instanceof SequenceSearch sequenceSearch
                         && ignoreImapUidRangeSearch
-                        && null != ((SequenceSearch) i4search).mSubSequence
-                        && compiledUidPattern.matcher(((SequenceSearch) i4search).mSubSequence).find()) {
+                        && null != sequenceSearch.mSubSequence
+                        && compiledUidPattern.matcher(sequenceSearch.mSubSequence).find()) {
                     continue;
                 }
                 search.append(search.length() == 1 ? "" : " ").append(i4search.toZimbraSearch(i4folder));
