@@ -10,27 +10,36 @@ import com.zextras.mailbox.client.ServiceDiscoverHttpClient;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class MessageBrokerFactory {
   private static final String SERVICE_NAME = "carbonio-message-broker";
 
-  private static final Map<Boolean, MessageBrokerClient> clientMap = new ConcurrentHashMap<>();
+  private static MessageBrokerClient instance;
 
   private MessageBrokerFactory() {
   }
 
-  public static MessageBrokerClient getMessageBrokerClientInstance() {
-    return clientMap.computeIfAbsent(true, _key -> createMessageBrokerClientInstance());
+  public static MessageBrokerClient getMessageBrokerClientInstance() throws CreateMessageBrokerException {
+    if (instance != null) {
+      return instance;
+    }
+    synchronized (MessageBrokerFactory.class) {
+      if (instance == null) {
+        instance = createMessageBrokerClientInstance();
+      }
+    }
+    return instance;
   }
 
   // Returns a working and healthy MessageBrokerClient instance or throws an exception
-  private static MessageBrokerClient createMessageBrokerClientInstance() {
+  private static MessageBrokerClient createMessageBrokerClientInstance() throws CreateMessageBrokerException {
     try {
       String token = getToken();
       var client = createMessageBrokerClientInstance(token);
-      if (!client.healthCheck()) throw new CreateMessageBrokerException("Message broker healthcheck failed");
+      if (!client.healthCheck()) {
+        throw new CreateMessageBrokerException("Message broker healthcheck failed");
+      }
+      return client;
     } catch (IOException e) {
       throw new CreateMessageBrokerException(e);
     }
