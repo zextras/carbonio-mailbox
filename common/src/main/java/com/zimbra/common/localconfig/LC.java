@@ -1345,6 +1345,8 @@ public final class LC {
   public static final KnownKey zimbra_imap_folder_pagination_enabled = KnownKey.newKey(false);
   // imap different message size than postfix mta ( useful for import )
   public static final KnownKey imap_max_message_size = KnownKey.newKey(null);
+  // imap uid range search
+  public static final KnownKey ignore_imap_uid_range_search = KnownKey.newKey(true);
   // unsubscribe folder creation enabled
   public static final KnownKey zimbra_feature_safe_unsubscribe_folder_enabled =
       KnownKey.newKey(false);
