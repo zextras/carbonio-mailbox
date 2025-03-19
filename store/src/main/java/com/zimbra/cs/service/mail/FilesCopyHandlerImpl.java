@@ -6,6 +6,7 @@ import static io.vavr.API.Case;
 import static io.vavr.API.For;
 import static java.util.function.Function.identity;
 
+import com.sun.mail.util.MimeUtil;
 import com.zextras.carbonio.files.FilesClient;
 import com.zextras.carbonio.files.entities.NodeId;
 import com.zimbra.common.service.ServiceException;
@@ -13,6 +14,7 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.ZimbraCookie;
+import com.zimbra.common.zmime.ZInternetHeader;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.service.AttachmentService;
 import com.zimbra.soap.mail.message.CopyToFilesRequest;
@@ -23,7 +25,11 @@ import java.io.InputStream;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import javax.mail.MessagingException;
+import javax.mail.internet.ContentDisposition;
+import javax.mail.internet.ContentType;
 import javax.mail.internet.MimePart;
+import javax.mail.internet.ParseException;
 
 public class FilesCopyHandlerImpl implements FilesCopyHandler {
 
@@ -164,9 +170,32 @@ public class FilesCopyHandlerImpl implements FilesCopyHandler {
    * @return attachment file name
    */
   private Try<String> getAttachmentName(MimePart attachment) {
-    return Try.of(attachment::getFileName)
+    return Try.of(() -> getRawFileName(attachment))
         .onFailure(ex -> mLog.error(ex.getMessage()))
         .recoverWith(ex -> Try.failure(ServiceException.FAILURE("Cannot get file name.", ex)));
+  }
+
+  private static String getRawFileName(MimePart part) throws MessagingException {
+    String filename = null;
+    String s = part.getHeader("Content-Disposition", (String)null);
+    if (s != null) {
+      ContentDisposition cd = new ContentDisposition(s);
+      filename = cd.getParameter("filename");
+    }
+
+    if (filename == null) {
+      s = part.getHeader("Content-Type", (String)null);
+      s = MimeUtil.cleanContentType(part, s);
+      if (s != null) {
+        try {
+          ContentType ct = new ContentType(s);
+          filename = ct.getParameter("name");
+        } catch (ParseException var5) {
+        }
+      }
+    }
+
+    return ZInternetHeader.decode(filename);
   }
 
   /**
