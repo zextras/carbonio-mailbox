@@ -247,7 +247,7 @@ class CopyToFilesIT {
     Element element = JaxbUtil.jaxbToElement(up);
     final ServiceException receivedException =
         assertThrows(ServiceException.class, () -> copyToFiles.handle(element, context));
-    assertEquals("system failure: Files upload failed", receivedException.getMessage());
+    assertEquals("system failure: Cannot get file name.", receivedException.getMessage());
   }
 
   @Test
@@ -272,7 +272,7 @@ class CopyToFilesIT {
     final ServiceException receivedException = assertThrows(
         ServiceException.class,
         () -> copyToFiles.handle(element, context));
-    assertEquals("system failure: got null response from Files server.", receivedException.getMessage());
+    assertEquals("system failure: Cannot get file name.", receivedException.getMessage());
   }
 
   @ParameterizedTest

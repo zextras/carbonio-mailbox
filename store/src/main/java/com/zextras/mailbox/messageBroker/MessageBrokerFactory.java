@@ -7,46 +7,58 @@ import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.carbonio.message_broker.config.enums.Service;
 import com.zextras.mailbox.client.ServiceDiscoverHttpClient;
 
+import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class MessageBrokerFactory {
-	private static final String SERVICE_NAME = "carbonio-message-broker";
+  private static final String SERVICE_NAME = "carbonio-message-broker";
 
-	private MessageBrokerFactory() {
-	};
+  private static MessageBrokerClient instance;
 
-	// Returns a working and healthy MessageBrokerClient instance or throws an exception
-	public static MessageBrokerClient getMessageBrokerClientInstance()
-			throws CreateMessageBrokerException {
+  private MessageBrokerFactory() {
+  }
 
-		MessageBrokerClient client;
+  public static MessageBrokerClient getMessageBrokerClientInstance() throws CreateMessageBrokerException {
+    if (instance != null) {
+      return instance;
+    }
+    synchronized (MessageBrokerFactory.class) {
+      if (instance == null) {
+        instance = createMessageBrokerClientInstance();
+      }
+    }
+    return instance;
+  }
 
-		Path filePath = Paths.get("/etc/carbonio/mailbox/service-discover/token");
-		String token;
-		try {
-			token = Files.readString(filePath);
-			ServiceDiscoverHttpClient serviceDiscoverHttpClient =
-					ServiceDiscoverHttpClient.defaultUrl()
-							.withToken(token);
+  // Returns a working and healthy MessageBrokerClient instance or throws an exception
+  private static MessageBrokerClient createMessageBrokerClientInstance() throws CreateMessageBrokerException {
+    try {
+      String token = getToken();
+      var client = createMessageBrokerClientInstance(token);
+      if (!client.healthCheck()) {
+        throw new CreateMessageBrokerException("Message broker healthcheck failed");
+      }
+      return client;
+    } catch (IOException e) {
+      throw new CreateMessageBrokerException(e);
+    }
+  }
 
-			client =
-					MessageBrokerClient.fromConfig(
-							"127.78.0.7",
-							20005,
-							serviceDiscoverHttpClient.getConfig(SERVICE_NAME,"default/username")
-									.getOrElse("carbonio-message-broker"),
-							serviceDiscoverHttpClient.getConfig(SERVICE_NAME,"default/password")
-									.getOrElse("")
-					)
-					.withCurrentService(Service.MAILBOX);
+  private static String getToken() throws IOException {
+    return Files.readString(Paths.get("/etc/carbonio/mailbox/service-discover/token"));
+  }
 
-		} catch (Exception e) {
-			throw new CreateMessageBrokerException(e);
-		}
-
-		if (!client.healthCheck()) throw new CreateMessageBrokerException("Message broker healthcheck failed");
-		return client;
-	}
+  private static MessageBrokerClient createMessageBrokerClientInstance(String token) {
+    ServiceDiscoverHttpClient serviceDiscoverHttpClient = ServiceDiscoverHttpClient.defaultUrl().withToken(token);
+    return MessageBrokerClient.fromConfig(
+                    "127.78.0.7",
+                    20005,
+                    serviceDiscoverHttpClient.getConfig(SERVICE_NAME, "default/username")
+                            .getOrElse("carbonio-message-broker"),
+                    serviceDiscoverHttpClient.getConfig(SERVICE_NAME, "default/password")
+                            .getOrElse("")
+            )
+            .withCurrentService(Service.MAILBOX);
+  }
 }

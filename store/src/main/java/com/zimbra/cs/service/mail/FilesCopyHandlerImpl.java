@@ -22,6 +22,7 @@ import com.zimbra.soap.mail.message.CopyToFilesResponse;
 import io.vavr.API.Match.Pattern0;
 import io.vavr.control.Try;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -29,6 +30,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.ContentDisposition;
 import javax.mail.internet.ContentType;
 import javax.mail.internet.MimePart;
+import javax.mail.internet.MimeUtility;
 import javax.mail.internet.ParseException;
 
 public class FilesCopyHandlerImpl implements FilesCopyHandler {
@@ -195,7 +197,11 @@ public class FilesCopyHandlerImpl implements FilesCopyHandler {
       }
     }
 
-    return ZInternetHeader.decode(filename);
+    try {
+      return MimeUtility.decodeText(filename);
+    } catch (UnsupportedEncodingException e) {
+      throw new MessagingException("Can't decode filename", e);
+    }
   }
 
   /**
