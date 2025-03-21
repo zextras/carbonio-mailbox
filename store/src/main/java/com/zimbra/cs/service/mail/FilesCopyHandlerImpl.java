@@ -14,7 +14,6 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.ZimbraCookie;
-import com.zimbra.common.zmime.ZInternetHeader;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.service.AttachmentService;
 import com.zimbra.soap.mail.message.CopyToFilesRequest;
@@ -31,7 +30,6 @@ import javax.mail.internet.ContentDisposition;
 import javax.mail.internet.ContentType;
 import javax.mail.internet.MimePart;
 import javax.mail.internet.MimeUtility;
-import javax.mail.internet.ParseException;
 
 public class FilesCopyHandlerImpl implements FilesCopyHandler {
 
@@ -186,13 +184,15 @@ public class FilesCopyHandlerImpl implements FilesCopyHandler {
     }
 
     if (filename == null) {
-      s = part.getHeader("Content-Type", (String)null);
-      s = MimeUtil.cleanContentType(part, s);
-      if (s != null) {
-        try {
-          ContentType ct = new ContentType(s);
-          filename = ct.getParameter("name");
-        } catch (ParseException var5) {
+      var ctHeader = part.getHeader("Content-Type", (String)null);
+      var cct = MimeUtil.cleanContentType(part, ctHeader);
+      if (cct != null) {
+        var tryFileName = Try.of( () -> {
+          ContentType ct = new ContentType(cct);
+          return ct.getParameter("name");
+        });
+        if (tryFileName.isSuccess()) {
+          filename = tryFileName.get();
         }
       }
     }
