@@ -5,15 +5,14 @@
 
 package com.zimbra.cs.html.owasp;
 
+import com.zimbra.common.util.StringUtil;
+import com.zimbra.cs.html.owasp.policies.StyleTagReceiver;
 import java.util.concurrent.Callable;
-
 import org.owasp.html.Handler;
 import org.owasp.html.HtmlSanitizer;
 import org.owasp.html.HtmlSanitizer.Policy;
 import org.owasp.html.HtmlStreamRenderer;
 import org.owasp.html.PolicyFactory;
-import com.zimbra.common.util.StringUtil;
-import com.zimbra.cs.html.owasp.policies.StyleTagReceiver;
 
 /*
  * Task to sanitize HTML code
@@ -62,12 +61,17 @@ public class OwaspHtmlSanitizer implements Callable<String> {
         // create a thread-specific policy
         instantiatePolicy();
 
+//        final Cleaner jsoupCleaner = new Cleaner(Safelist.basicWithImages());
+//        final Document document = Jsoup.parse(html);
+//        final Document cleanedDocument = jsoupCleaner.clean(document);
+
         final StyleTagReceiver styleTagReceiver = new StyleTagReceiver(renderer);
         final Policy policy = POLICY_DEFINITION.apply(styleTagReceiver);
         // run the html through the sanitizer
         HtmlSanitizer.sanitize(html, policy);
         // return the resulting HTML from the builder
         OwaspHtmlSanitizer.zThreadLocal.remove();
+//        return cleanedDocument.html();
         return htmlBuilder.toString();
     }
 
