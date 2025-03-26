@@ -61,7 +61,9 @@ public class OwaspHtmlSanitizer implements Callable<String> {
             });
         // create a thread-specific policy
         instantiatePolicy();
-        final Policy policy = POLICY_DEFINITION.apply(new StyleTagReceiver(renderer));
+
+        final StyleTagReceiver styleTagReceiver = new StyleTagReceiver(renderer);
+        final Policy policy = POLICY_DEFINITION.apply(styleTagReceiver);
         // run the html through the sanitizer
         HtmlSanitizer.sanitize(html, policy);
         // return the resulting HTML from the builder
