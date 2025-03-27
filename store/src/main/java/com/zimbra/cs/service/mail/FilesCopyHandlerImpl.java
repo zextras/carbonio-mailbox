@@ -13,9 +13,11 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
+import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.service.AttachmentService;
+import com.zimbra.cs.service.util.ContentDispositionParser;
 import com.zimbra.soap.mail.message.CopyToFilesRequest;
 import com.zimbra.soap.mail.message.CopyToFilesResponse;
 import io.vavr.API.Match.Pattern0;
@@ -26,7 +28,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import javax.mail.MessagingException;
-import javax.mail.internet.ContentDisposition;
 import javax.mail.internet.ContentType;
 import javax.mail.internet.MimePart;
 import javax.mail.internet.MimeUtility;
@@ -175,21 +176,36 @@ public class FilesCopyHandlerImpl implements FilesCopyHandler {
         .recoverWith(ex -> Try.failure(ServiceException.FAILURE("Cannot get file name.", ex)));
   }
 
-  private static String getRawFileName(MimePart part) throws MessagingException {
-    String filename = null;
-    String s = part.getHeader("Content-Disposition", (String)null);
-    if (s != null) {
-      ContentDisposition cd = new ContentDisposition(s);
-      filename = cd.getParameter("filename");
-    }
+  /**
+   * Retrieves the raw filename from the given {@link MimePart} by first attempting to extract the filename
+   * from the "Content-Disposition" header. If that fails, the method attempts to retrieve the filename from
+   * the "Content-Type" header.
+   * <p>
+   * This method first checks the "Content-Disposition" header to extract the filename. If the filename is not
+   * found or is empty, it proceeds to parse the "Content-Type" header to extract the filename from its "name"
+   * parameter. If both methods fail to provide a filename, an empty string will be returned.
+   * </p>
+   * <p>
+   * The extracted filename is then decoded using the MIME utility. If the decoding fails due to an
+   * unsupported encoding, a {@link MessagingException} is thrown.
+   * </p>
+   *
+   * @param part The {@link MimePart} object containing the headers from which the filename will be extracted.
+   * @return The decoded filename extracted from the "Content-Disposition" or "Content-Type" header.
+   *         If neither header provides a valid filename, an empty string will be returned.
+   * @throws MessagingException If the filename cannot be decoded properly due to unsupported encoding.
+   */
+  static String getRawFileName(MimePart part) throws MessagingException {
+    String filename = ContentDispositionParser.getFileNameFromContentDisposition(
+        part.getHeader("Content-Disposition", null));
 
-    if (filename == null) {
-      var ctHeader = part.getHeader("Content-Type", (String)null);
-      var cct = MimeUtil.cleanContentType(part, ctHeader);
-      if (cct != null) {
+    if (StringUtil.isNullOrEmpty(filename)) {
+      String contentTypeHeader = part.getHeader("Content-Type", null);
+      String cleanContentType = MimeUtil.cleanContentType(part, contentTypeHeader);
+      if (cleanContentType != null) {
         var tryFileName = Try.of( () -> {
-          ContentType ct = new ContentType(cct);
-          return ct.getParameter("name");
+          ContentType contentType = new ContentType(cleanContentType);
+          return contentType.getParameter("name");
         });
         if (tryFileName.isSuccess()) {
           filename = tryFileName.get();
