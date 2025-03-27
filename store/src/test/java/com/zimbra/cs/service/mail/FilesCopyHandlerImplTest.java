@@ -29,6 +29,17 @@ class FilesCopyHandlerImplTest {
   }
 
   @Test
+  void shouldReturnExtendedFileNameForValidContentDispositionEncoding()
+      throws MessagingException {
+    String contentDispositionHeader = "attachment; filename*=UTF-8''%E6%96%87%E4%BB%B6.txt";
+    when(mimePart.getHeader("Content-Disposition", null)).thenReturn(contentDispositionHeader);
+
+    String filename = FilesCopyHandlerImpl.getRawFileName(mimePart);
+
+    assertEquals("文件.txt", filename);
+  }
+
+  @Test
   void shouldReturnFileNameFromContentTypeHeader() throws MessagingException {
     when(mimePart.getHeader("Content-Disposition", null)).thenReturn(null);
 
