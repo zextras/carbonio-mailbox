@@ -52,7 +52,7 @@ Run step 1.
 Now go to [docker/proxy-webui](docker/proxy-webui) and build the docker file
 e.g. `docker build . -t carbonio-webui`. \
 Then run the image with host network `docker run --net=host carbonio-webui`. \
-At localhost:9000/static/login you will be able to login and interact with 
+At localhost/static/login you will be able to login and interact with 
 your local mailbox instance.
 
 ### 3. Full Carbonio Mailbox
