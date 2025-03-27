@@ -47,7 +47,15 @@ Run `com.zextras.mailbox.SampleLocalMailbox` main class in store module,
 test directory.
 This will start a Mailbox with in-memory LDAP and an HSQLDB database.
 
-### 2. Full Carbonio Mailbox
+### 2. Local sample Mailbox with UI
+Run step 1.
+Now go to [docker/proxy-webui](docker/proxy-webui) and build the docker file
+e.g. `docker build . -t carbonio-webui`. \
+Then run the image with host network `docker run --net=host carbonio-webui`. \
+At localhost:9000/static/login you will be able to login and interact with 
+your local mailbox instance.
+
+### 3. Full Carbonio Mailbox
 This option compiles the code, packages the artifacts, installs all the built Carbonio Mailbox
 packages, and then starts the services.
 
