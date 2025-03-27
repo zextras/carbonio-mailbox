@@ -1,5 +1,7 @@
+
 package org.owasp.html;
 
+import com.google.common.collect.Lists;
 import java.util.LinkedList;
 import java.util.List;
 import org.owasp.html.HtmlStreamEventProcessor.Processors;
@@ -8,16 +10,16 @@ public final class HtmlSanitizer {
   public HtmlSanitizer() {
   }
 
-  public static void sanitize(String html, org.owasp.html.HtmlSanitizer.Policy policy) {
+  public static void sanitize(String html, Policy policy) {
     sanitize(html, policy, Processors.IDENTITY);
   }
 
-  public static void sanitize(String html, org.owasp.html.HtmlSanitizer.Policy policy, HtmlStreamEventProcessor preprocessor) {
+  public static void sanitize(String html, Policy policy, HtmlStreamEventProcessor preprocessor) {
     String htmlContent = html != null ? html : "";
     HtmlStreamEventReceiver receiver = initializePolicy(policy, preprocessor);
     receiver.openDocument();
     HtmlLexer lexer = new HtmlLexer(htmlContent);
-    LinkedList<String> attrs = new LinkedList();
+    LinkedList<String> attrs = Lists.newLinkedList();
 
     while(true) {
       while(true) {
@@ -25,7 +27,7 @@ public final class HtmlSanitizer {
           HtmlToken token = lexer.next();
           switch (token.type) {
             case TEXT:
-              receiver.text(Encoding.decodeHtml(htmlContent.substring(token.start, token.end), false));
+              receiver.text(Encoding.decodeHtml(htmlContent.substring(token.start, token.end)));
               break;
             case UNESCAPED:
               receiver.text(Encoding.stripBannedCodeunits(htmlContent.substring(token.start, token.end)));
@@ -46,7 +48,7 @@ public final class HtmlSanitizer {
                   switch (tagBodyToken.type) {
                     case ATTRNAME:
                       if (!attrsReadyForName) {
-                        attrs.add((String)attrs.getLast());
+                        attrs.add(attrs.getLast());
                       } else {
                         attrsReadyForName = false;
                       }
@@ -54,8 +56,7 @@ public final class HtmlSanitizer {
                       attrs.add(HtmlLexer.canonicalAttributeName(htmlContent.substring(tagBodyToken.start, tagBodyToken.end)));
                       break;
                     case ATTRVALUE:
-                      String attributeContentRaw = stripQuotes(htmlContent.substring(tagBodyToken.start, tagBodyToken.end));
-                      attrs.add(Encoding.decodeHtml(attributeContentRaw, true));
+                      attrs.add(Encoding.decodeHtml(stripQuotes(htmlContent.substring(tagBodyToken.start, tagBodyToken.end))));
                       attrsReadyForName = true;
                       break;
                     case TAGEND:
@@ -64,7 +65,7 @@ public final class HtmlSanitizer {
                 }
 
                 if (!attrsReadyForName) {
-                  attrs.add((String)attrs.getLast());
+                  attrs.add(attrs.getLast());
                 }
 
                 receiver.openTag(HtmlLexer.canonicalElementName(htmlContent.substring(token.start + 1, token.end)), attrs);
@@ -95,7 +96,7 @@ public final class HtmlSanitizer {
     return encodedAttributeValue;
   }
 
-  private static HtmlStreamEventReceiver initializePolicy(org.owasp.html.HtmlSanitizer.Policy policy, HtmlStreamEventProcessor preprocessor) {
+  private static HtmlStreamEventReceiver initializePolicy(Policy policy, HtmlStreamEventProcessor preprocessor) {
     TagBalancingHtmlStreamEventReceiver balancer = new TagBalancingHtmlStreamEventReceiver(policy);
     balancer.setNestingLimit(512);
     return preprocessor.wrap(balancer);
