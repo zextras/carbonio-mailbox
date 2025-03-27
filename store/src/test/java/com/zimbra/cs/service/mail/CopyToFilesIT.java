@@ -240,14 +240,14 @@ class CopyToFilesIT {
     CopyToFiles copyToFiles = copyToFiles(mockAttachmentService, mockFilesClient);
     when(mockFilesClient.uploadFile(
             anyString(), anyString(), anyString(), anyString(), any(), anyLong()))
-        .thenReturn(Try.failure(new RuntimeException("Ooops, Files failed")));
+        .thenReturn(Try.failure(new RuntimeException("Files upload failed")));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("1");
     up.setPart("2");
     Element element = JaxbUtil.jaxbToElement(up);
     final ServiceException receivedException =
         assertThrows(ServiceException.class, () -> copyToFiles.handle(element, context));
-    assertEquals("system failure: Cannot get file name.", receivedException.getMessage());
+    assertEquals("system failure: Files upload failed", receivedException.getMessage());
   }
 
   @Test
@@ -272,7 +272,7 @@ class CopyToFilesIT {
     final ServiceException receivedException = assertThrows(
         ServiceException.class,
         () -> copyToFiles.handle(element, context));
-    assertEquals("system failure: Cannot get file name.", receivedException.getMessage());
+    assertEquals("system failure: got null response from Files server.", receivedException.getMessage());
   }
 
   @ParameterizedTest
