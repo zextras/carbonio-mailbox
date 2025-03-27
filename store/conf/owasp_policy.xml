@@ -89,9 +89,6 @@
   <element name="span">
     <attributes>CORE,LANG</attributes>
   </element>
-  <element name="style">
-    <attributes>CORE,LANG</attributes>
-  </element>
   <element name="sub">
     <attributes>CORE,LANG</attributes>
   </element>

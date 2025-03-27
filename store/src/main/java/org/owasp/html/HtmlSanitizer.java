@@ -1,6 +1,5 @@
 package org.owasp.html;
 
-import io.micrometer.common.lang.Nullable;
 import java.util.LinkedList;
 import java.util.List;
 import org.owasp.html.HtmlStreamEventProcessor.Processors;
@@ -9,11 +8,11 @@ public final class HtmlSanitizer {
   public HtmlSanitizer() {
   }
 
-  public static void sanitize(@Nullable String html, org.owasp.html.HtmlSanitizer.Policy policy) {
+  public static void sanitize(String html, org.owasp.html.HtmlSanitizer.Policy policy) {
     sanitize(html, policy, Processors.IDENTITY);
   }
 
-  public static void sanitize(@Nullable String html, org.owasp.html.HtmlSanitizer.Policy policy, HtmlStreamEventProcessor preprocessor) {
+  public static void sanitize(String html, org.owasp.html.HtmlSanitizer.Policy policy, HtmlStreamEventProcessor preprocessor) {
     String htmlContent = html != null ? html : "";
     HtmlStreamEventReceiver receiver = initializePolicy(policy, preprocessor);
     receiver.openDocument();

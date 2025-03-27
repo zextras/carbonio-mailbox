@@ -161,16 +161,6 @@
       <artifactId>unboundid-ldapsdk</artifactId>
       <groupId>com.unboundid</groupId>
     </dependency>
-    <dependency>
-      <groupId>org.jsoup</groupId>
-      <artifactId>jsoup</artifactId>
-      <version>1.19.1</version>
-    </dependency>
-
-    <dependency>
-      <artifactId>antisamy</artifactId>
-      <groupId>org.owasp.antisamy</groupId>
-    </dependency>
 
     <dependency>
       <artifactId>owasp-java-html-sanitizer</artifactId>

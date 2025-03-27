@@ -420,11 +420,6 @@
         <version>${unboundid-ldapsdk.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.owasp.antisamy</groupId>
-        <artifactId>antisamy</artifactId>
-        <version>1.7.7</version>
-      </dependency>
-      <dependency>
         <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
         <artifactId>owasp-java-html-sanitizer</artifactId>
         <version>20240325.1</version>
