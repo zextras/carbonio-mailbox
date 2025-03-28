@@ -432,7 +432,7 @@
       <dependency>
         <groupId>com.zextras.carbonio.preview</groupId>
         <artifactId>carbonio-preview-sdk</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.4</version>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
