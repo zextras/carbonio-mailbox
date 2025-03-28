@@ -55,29 +55,6 @@ Then run the image with host network `docker run --net=host carbonio-webui`. \
 At localhost/static/login you will be able to login and interact with 
 your local mailbox instance.
 
-### 3. Full Carbonio Mailbox
-This option compiles the code, packages the artifacts, installs all the built Carbonio Mailbox
-packages, and then starts the services.
-
-1. Build the project:
-   ```shell
-   $ mvn install -DskipTests
-   ```
-2. Build packages using [build_packages.sh](build_packages.sh):
-   The following commands will build the packages for ubuntu-focal, see 
-   [build_packages.sh](build_packages.sh) for other supported targets.
-   ```shell
-    $ ./build_packages.sh ubuntu-focal
-    ```
-3. Navigate to the [docker/single-server](docker/single-server) directory:
-    ```shell
-    $ cd ./docker/single-server
-    ```
-4. Start Carbonio-CE `Ubuntu Focal` docker image with built Carbonio Mailbox packages:
-   ```shell
-   $ docker compose --profile ubuntu-focal up --build
-   ```
-   **NB**: don't forget to use the `--build` flag, otherwise it will not load the new changes
 ## Contribute to Carbonio Mailbox
 
 All contributions are accepted! Please refer to the CONTRIBUTING file (if present in this repository)
