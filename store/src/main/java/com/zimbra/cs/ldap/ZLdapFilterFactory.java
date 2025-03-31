@@ -162,7 +162,7 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
     ADMIN_SEARCH("Admin search"),
     AUTO_PROVISION_ADMIN_SEARCH("Admin entered filter"),
     AUTO_PROVISION_SEARCH("Filter in " + Provisioning.A_zimbraAutoProvLdapSearchFilter),
-    AUTO_PROVISION_SEARCH_CREATED_LATERTHAN(
+    AUTO_PROVISION_SEARCH_LATER_THAN_EQUAL(
         "Filter in "
             + Provisioning.A_zimbraAutoProvLdapSearchFilter
             + " AND "
@@ -266,6 +266,8 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
   public abstract ZLdapFilter hasSubordinates();
 
   public abstract ZLdapFilter createdLaterOrEqual(String generalizedTime);
+
+  public abstract ZLdapFilter timeLaterOrEqual(String column, String generalizedTime) ;
 
   /*
    * general

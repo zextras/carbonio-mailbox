@@ -10287,4 +10287,12 @@ TODO: delete them permanently from here
 <attr id="3162" name="carbonioWscVirtualBackgroundPath" type="string" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
   <desc>The path to the folder containing the virtual backgrounds</desc>
 </attr>
+
+<attr id="3163" name="carbonioAutoProvTimeCheckColumn" type="string" max="256" cardinality="single" optionalIn="domain" since="25.6.0">
+  <desc>
+    Column name for time check in filter
+    createTimestamp (Default)
+    modifyTimestamp
+  </desc>
+</attr>
 </attrs>

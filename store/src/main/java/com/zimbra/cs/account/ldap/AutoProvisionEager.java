@@ -138,7 +138,7 @@ public class AutoProvisionEager extends AutoProvision {
     private void createAccountBatch() throws ServiceException {
 
         long serverTime = System.currentTimeMillis();
-        long lastCreateTimestamp = 0L;
+        long lastTimestamp = 0L;
 
         List<ExternalEntry> entries = new ArrayList<>();
         boolean hitSizeLimitExceededException = searchAccounts(entries, domain.getAutoProvBatchSize());
@@ -160,8 +160,9 @@ public class AutoProvisionEager extends AutoProvision {
                     stuckAcctNum++;
                 }
 
-                lastCreateTimestamp = getLastCreateTimestamp(externalAttrs.getAttrString(
-                        LdapConstants.ATTR_createTimestamp), lastCreateTimestamp, serverTime);
+                String timeCheckColumn = getCarbonioAutoProvTimeCheckColumn(domain);
+                lastTimestamp = getLastTimestamp(externalAttrs.getAttrString(
+                        timeCheckColumn), lastTimestamp, serverTime);
 
             } catch (ServiceException e) {
                 // log and continue with next entry
@@ -192,14 +193,14 @@ public class AutoProvisionEager extends AutoProvision {
         //
         //       See how TestLdapProvAutoProvision.eagerMode() does it.
         //
-        if (!hitSizeLimitExceededException && lastCreateTimestamp > 0) {
-            String lastPolledAt = LdapDateUtil.toGeneralizedTime(new Date(lastCreateTimestamp), domain.getCarbonioAutoProvTimestampFormat());
+        if (!hitSizeLimitExceededException && lastTimestamp > 0) {
+            String lastPolledAt = LdapDateUtil.toGeneralizedTime(new Date(lastTimestamp), domain.getCarbonioAutoProvTimestampFormat());
             ZimbraLog.autoprov.info("Auto Provisioning has finished for now, setting last polled timestamp: " + lastPolledAt);
             domain.setAutoProvLastPolledTimestampAsString(lastPolledAt);
         }
     }
 
-    static long getLastCreateTimestamp(final String createTimestampString, final long lastCreateTimestamp, final long serverTime) {
+    static long getLastTimestamp(final String createTimestampString, final long lastCreateTimestamp, final long serverTime) {
         if (lastCreateTimestamp >= serverTime) {
             return lastCreateTimestamp;
         }

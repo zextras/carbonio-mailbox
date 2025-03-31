@@ -1074,6 +1074,83 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
+     * Column name for time check in filter createTimestamp (Default)
+     * modifyTimestamp
+     *
+     * @return carbonioAutoProvTimeCheckColumn, or null if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3163)
+    public String getCarbonioAutoProvTimeCheckColumn() {
+        return getAttr(ZAttrProvisioning.A_carbonioAutoProvTimeCheckColumn, null, true);
+    }
+
+    /**
+     * Column name for time check in filter createTimestamp (Default)
+     * modifyTimestamp
+     *
+     * @param carbonioAutoProvTimeCheckColumn new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3163)
+    public void setCarbonioAutoProvTimeCheckColumn(String carbonioAutoProvTimeCheckColumn) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvTimeCheckColumn, carbonioAutoProvTimeCheckColumn);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Column name for time check in filter createTimestamp (Default)
+     * modifyTimestamp
+     *
+     * @param carbonioAutoProvTimeCheckColumn new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3163)
+    public Map<String,Object> setCarbonioAutoProvTimeCheckColumn(String carbonioAutoProvTimeCheckColumn, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvTimeCheckColumn, carbonioAutoProvTimeCheckColumn);
+        return attrs;
+    }
+
+    /**
+     * Column name for time check in filter createTimestamp (Default)
+     * modifyTimestamp
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3163)
+    public void unsetCarbonioAutoProvTimeCheckColumn() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvTimeCheckColumn, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Column name for time check in filter createTimestamp (Default)
+     * modifyTimestamp
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3163)
+    public Map<String,Object> unsetCarbonioAutoProvTimeCheckColumn(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvTimeCheckColumn, "");
+        return attrs;
+    }
+
+    /**
      * AD/LDAP timestamp format. For example:
      * yyyyMMddHHmmss.SSS&#039;Z&#039;, yyyyMMddHHmmss&#039;Z&#039;
      *
