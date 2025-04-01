@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!--
+  ~ SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
+  ~
+  ~ SPDX-License-Identifier: AGPL-3.0-only
+  -->
+
 <localconfig>
   <key name="zimbra_home">
     <value>/opt/zextras/</value>
@@ -11,13 +17,22 @@
     <value>true</value>
   </key>
   <key name="zimbra_server_hostname">
-    <value>ldap.mail.local</value>
+    <value>docker.demo.zextras.io</value>
+  </key>
+  <key name="ldap_url">
+    <value>ldap://openldap:1389</value>
+  </key>
+  <key name="zimbra_ldap_user">
+    <value>admin</value>
+  </key>
+  <key name="zimbra_ldap_userdn">
+    <value>cn=admin,cn=config</value>
   </key>
   <key name="zimbra_ldap_password">
-    <value>password</value>
+    <value>admin</value>
   </key>
-  <key name="zimbra_server_hostname">
-    <value>localhost</value>
+  <key name="ldap_root_password">
+    <value>admin</value>
   </key>
   <key name="mysql_bind_address">
     <value>localhost</value>

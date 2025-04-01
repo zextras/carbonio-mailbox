@@ -20,5 +20,5 @@ java -Dfile.encoding=UTF-8 -server \
 -Xss256k -Dlog4j.configurationFile=/opt/zextras/conf/log4j.properties \
 -Xms1996m -Xmx1996m -Djava.io.tmpdir=/opt/zextras/mailboxd/work \
 -Djava.library.path=/opt/zextras/lib \
--Dzimbra.config=/opt/zextras/conf/localconfig.xml \
+-Dzimbra.config=/localconfig/localconfig.xml \
 -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/* com.zextras.mailbox.Mailbox

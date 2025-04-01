@@ -40,3 +40,4 @@ target/
 /store/ldap/generated/
 /data/
 /pre-package/jars/
+/pre-package/ldap/

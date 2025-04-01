@@ -1,31 +1,40 @@
 version: "3.9"
 
 services:
-#  mailbox:
-#    build:
-#      context: ./../../
-#      dockerfile: docker/standalone/Dockerfile
-#    healthcheck:
-#      interval: 60s
-#      retries: 10
-#      start_period: 20s
-#      test: nc -z localhost 8080 || exit 1
-#      timeout: 10s
-#    ports:
-#      - "25:25"
-#      - "110:110"
-#      - "443:443"
-#      - "465:465"
-#      - "587:587"
-#      - "6071:6071"
-#      - "7071:7071"
-#      - "8080:8080"
-#    user: zextras
+  mailbox:
+    depends_on:
+      - openldap
+    build:
+      context: ./../../
+      dockerfile: docker/standalone/Dockerfile
+    hostname: docker.demo.zextras.io
+    restart: on-failure
+    networks:
+      - mailbox
+    healthcheck:
+      interval: 60s
+      retries: 10
+      start_period: 20s
+      test: nc -z localhost 8080 || exit 1
+      timeout: 10s
+    volumes:
+      - ./localconfig/:/localconfig/
+    ports:
+      - "25:25"
+      - "110:110"
+      - "443:443"
+      - "465:465"
+      - "587:587"
+      - "6071:6071"
+      - "7071:7071"
+      - "8080:8080"
   openldap:
     image: bitnami/openldap
     user: 1001:root
     restart: unless-stopped
     container_name: openldap
+    networks:
+      - mailbox
     environment:
       LDAP_ROOT: cn=zimbra
       LDAP_ADMIN_USERNAME: admin
@@ -42,3 +51,6 @@ services:
     volumes:
       - ./../../store/ldap/generated/schema:/carbonio-schemas
       - ./../../store/ldap/generated/ldif:/carbonio-ldifs
+
+networks:
+  mailbox:
