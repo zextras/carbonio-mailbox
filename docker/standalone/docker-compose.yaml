@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+#  mailbox:
+#    build:
+#      context: ./../../
+#      dockerfile: docker/standalone/Dockerfile
+#    healthcheck:
+#      interval: 60s
+#      retries: 10
+#      start_period: 20s
+#      test: nc -z localhost 8080 || exit 1
+#      timeout: 10s
+#    ports:
+#      - "25:25"
+#      - "110:110"
+#      - "443:443"
+#      - "465:465"
+#      - "587:587"
+#      - "6071:6071"
+#      - "7071:7071"
+#      - "8080:8080"
+#    user: zextras
+  openldap:
+    image: bitnami/openldap
+    user: 1001:root
+    restart: unless-stopped
+    container_name: openldap
+    environment:
+      LDAP_ROOT: cn=zimbra
+      LDAP_ADMIN_USERNAME: admin
+      LDAP_ADMIN_PASSWORD: admin
+      LDAP_CONFIG_ADMIN_ENABLED: true
+      LDAP_CONFIG_ADMIN_USERNAME: admin
+      LDAP_CONFIG_ADMIN_PASSWORD: admin
+      LDAP_EXTRA_SCHEMAS: cosine, inetorgperson, java, dyngroup
+      LDAP_CUSTOM_SCHEMA_DIR: /carbonio-schemas
+      LDAP_CUSTOM_LDIF_DIR: /carbonio-ldifs
+      BITNAMI_DEBUG: true
+    ports:
+      - 1389:1389
+    volumes:
+      - ./../../store/ldap/generated/schema:/carbonio-schemas
+      - ./../../store/ldap/generated/ldif:/carbonio-ldifs

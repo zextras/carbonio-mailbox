@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<localconfig>
+  <key name="zimbra_home">
+    <value>/opt/zextras/</value>
+  </key>
+  <key name="zimbra_mailbox_groups">
+    <value>1</value>
+  </key>
+  <key name="debug_disable_share_expiration_listener">
+    <value>true</value>
+  </key>
+  <key name="zimbra_server_hostname">
+    <value>ldap.mail.local</value>
+  </key>
+  <key name="zimbra_ldap_password">
+    <value>password</value>
+  </key>
+  <key name="zimbra_server_hostname">
+    <value>localhost</value>
+  </key>
+  <key name="mysql_bind_address">
+    <value>localhost</value>
+  </key>
+  <key name="timezone_file">
+    <value>/opt/zextras/conf/timezones.ics</value>
+  </key>
+  <key name="ldap_noop_search_supported">
+    <value>false</value>
+  </key>
+  <key name="localized_msgs_directory">
+    <value>/opt/zextras/conf/msgs</value>
+  </key>
+</localconfig>
