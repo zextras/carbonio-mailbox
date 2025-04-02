@@ -19,6 +19,7 @@
   <key name="zimbra_server_hostname">
     <value>docker.demo.zextras.io</value>
   </key>
+
   <key name="ldap_url">
     <value>ldap://openldap:1389</value>
   </key>
@@ -34,9 +35,23 @@
   <key name="ldap_root_password">
     <value>qh6hWZvc</value>
   </key>
+
   <key name="mysql_bind_address">
-    <value>localhost</value>
+    <value>mariadb</value>
   </key>
+  <key name="mysql_port">
+    <value>3306</value>
+  </key>
+  <key name="zimbra_mysql_user">
+    <value>zextras</value>
+  </key>
+  <key name="zimbra_mysql_password">
+    <value>zextras</value>
+  </key>
+  <key name="mysql_root_password">
+    <value>password</value>
+  </key>
+
   <key name="timezone_file">
     <value>/opt/zextras/conf/timezones.ics</value>
   </key>
