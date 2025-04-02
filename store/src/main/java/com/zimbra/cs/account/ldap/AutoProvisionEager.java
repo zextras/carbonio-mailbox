@@ -23,7 +23,6 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ldap.entry.LdapEntry;
 import com.zimbra.cs.ldap.IAttributes;
 import com.zimbra.cs.ldap.LdapClient;
-import com.zimbra.cs.ldap.LdapConstants;
 import com.zimbra.cs.ldap.LdapDateUtil;
 import com.zimbra.cs.ldap.LdapServerType;
 import com.zimbra.cs.ldap.LdapUsage;
@@ -37,7 +36,7 @@ import com.zimbra.cs.util.Zimbra;
 
 public class AutoProvisionEager extends AutoProvision {
     public static final long DELTA_FOR_LAST_TIME = 1000L;
-    private EagerAutoProvisionScheduler scheduler;
+    private final EagerAutoProvisionScheduler scheduler;
 
     private AutoProvisionEager(LdapProv prov, Domain domain, EagerAutoProvisionScheduler scheduler) {
         super(prov, domain);
@@ -137,7 +136,7 @@ public class AutoProvisionEager extends AutoProvision {
 
     private void createAccountBatch() throws ServiceException {
 
-        long serverTime = System.currentTimeMillis();
+        final long serverTime = System.currentTimeMillis();
         long lastTimestamp = 0L;
 
         List<ExternalEntry> entries = new ArrayList<>();
@@ -160,7 +159,7 @@ public class AutoProvisionEager extends AutoProvision {
                     stuckAcctNum++;
                 }
 
-                String timeCheckColumn = getCarbonioAutoProvTimeCheckColumn(domain);
+                String timeCheckColumn = getCarbonioAutoProvTimestampAttribute(domain);
                 lastTimestamp = getLastTimestamp(externalAttrs.getAttrString(
                         timeCheckColumn), lastTimestamp, serverTime);
 
@@ -172,7 +171,7 @@ public class AutoProvisionEager extends AutoProvision {
         }
 
         //if we hit size limit and all returning items are stuck items, increase batch size to keep processing batches,
-        //in the last batch we won't hit size limit, then the last polled timstamp will be set, we can forget about the stuck ones
+        //in the last batch we won't hit size limit, then the last polled timestamp will be set, we can forget about the stuck ones
         if (hitSizeLimitExceededException && entries.size() == stuckAcctNum) {
             ZimbraLog.autoprov.info("search result contains unsuccessful external entries, increasing batch size by %d", stuckAcctNum);
             int currentBatchSize = domain.getAutoProvBatchSize();
@@ -197,30 +196,34 @@ public class AutoProvisionEager extends AutoProvision {
             String lastPolledAt = LdapDateUtil.toGeneralizedTime(new Date(lastTimestamp), domain.getCarbonioAutoProvTimestampFormat());
             ZimbraLog.autoprov.info("Auto Provisioning has finished for now, setting last polled timestamp: " + lastPolledAt);
             domain.setAutoProvLastPolledTimestampAsString(lastPolledAt);
+            String carbonioLastPooledAt = LdapDateUtil.toGeneralizedTime(new Date(serverTime), domain.getCarbonioAutoProvTimestampFormat());
+            domain.setCarbonioAutoProvLastPolledTimestampAsString(carbonioLastPooledAt);
+            ZimbraLog.autoprov.info("Auto Provisioning has finished for now, setting last polled carbonio timestamp: " + carbonioLastPooledAt);
         }
+
     }
 
-    static long getLastTimestamp(final String createTimestampString, final long lastCreateTimestamp, final long serverTime) {
-        if (lastCreateTimestamp >= serverTime) {
-            return lastCreateTimestamp;
+    static long getLastTimestamp(final String timestampString, final long lastTimestamp, final long serverTime) {
+        if (lastTimestamp >= serverTime) {
+            return lastTimestamp;
         }
 
-        if (createTimestampString != null && !createTimestampString.trim().isEmpty()) {
+        if (timestampString != null && !timestampString.trim().isEmpty()) {
 
             try {
-                Date date = LdapDateUtil.parseGeneralizedTime(createTimestampString);
+                Date date = LdapDateUtil.parseGeneralizedTime(timestampString);
 
                 if (date != null) {
-                    long createTimestamp = date.getTime();
-                    return Math.min(createTimestamp, serverTime) + DELTA_FOR_LAST_TIME;
+                    long timestamp = date.getTime();
+                    return Math.min(timestamp, serverTime) + DELTA_FOR_LAST_TIME;
                 }
 
             } catch (NumberFormatException e) {
-                ZimbraLog.autoprov.warn("Can not convert createTimestamp to date: %s", createTimestampString);
+                ZimbraLog.autoprov.warn("Can not convert createTimestamp to date: %s", timestampString);
             }
 
         }
-        return lastCreateTimestamp;
+        return lastTimestamp;
     }
 
     private boolean lockDomain(ZLdapContext zlc) throws ServiceException {

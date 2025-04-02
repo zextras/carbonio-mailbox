@@ -642,7 +642,7 @@ public abstract class AutoProvision {
         String adminPassword = domain.getAutoProvLdapAdminBindPassword();
         String searchBase = domain.getAutoProvLdapSearchBase();
         String searchFilterTemplate = domain.getAutoProvLdapSearchFilter();
-        String timeCheckColumn = getCarbonioAutoProvTimeCheckColumn(domain);
+        String timestampAttribute = getCarbonioAutoProvTimestampAttribute(domain);
         FilterId filterId = FilterId.AUTO_PROVISION_SEARCH;
 
         if (url == null) {
@@ -684,7 +684,7 @@ public abstract class AutoProvision {
                     searchFilterWithoutLastPolling = searchFilter;
                     // searchFilter = "(&" + searchFilter + "(createTimestamp>=" + timestampLaterThan + "))";
                     searchFilter = "(&" + searchFilter +
-                            ZLdapFilterFactory.getInstance().timeLaterOrEqual(timeCheckColumn, timestampLaterThan).toFilterString() + ")";
+                            ZLdapFilterFactory.getInstance().timeLaterOrEqual(timestampAttribute, timestampLaterThan).toFilterString() + ")";
                     filterId = FilterId.AUTO_PROVISION_SEARCH_LATER_THAN_EQUAL;
                 }
             }
@@ -692,7 +692,7 @@ public abstract class AutoProvision {
             zFilter = ZLdapFilterFactory.getInstance().fromFilterString(filterId, searchFilter);
             SearchLdapOptions searchOptions;
             List<String> returnAttrsList = new ArrayList<>(Arrays.asList(returnAttrs));
-            returnAttrsList.add(timeCheckColumn);
+            returnAttrsList.add(timestampAttribute);
             String[] newReturnAttrs = returnAttrsList.toArray(new String[]{});
             try {
                 searchOptions = new SearchLdapOptions(searchBase, zFilter,
@@ -700,11 +700,11 @@ public abstract class AutoProvision {
                 zlc.searchPaged(searchOptions);
             } catch (LdapInvalidAttrValueException eav) {
                 ZimbraLog.autoprov.info("Retrying ldap search query with createTimestamp in seconds.");
-                if (searchFilterWithoutLastPolling != null && timestampLaterThan != null) {
+                if (searchFilterWithoutLastPolling != null) {
                     timestampLaterThan = timestampLaterThan.replaceAll("\\..*Z$", "Z");
                     // searchFilter = "(&" + searchFilter + "(createTimestamp>=" + timestampLaterThan + "))";
                     searchFilter = "(&" + searchFilterWithoutLastPolling +
-                            ZLdapFilterFactory.getInstance().timeLaterOrEqual(timeCheckColumn, timestampLaterThan).toFilterString() + ")";
+                            ZLdapFilterFactory.getInstance().timeLaterOrEqual(timestampAttribute, timestampLaterThan).toFilterString() + ")";
                     ZimbraLog.autoprov.info("new searchFilter = %s", searchFilter);
                     filterId = FilterId.AUTO_PROVISION_SEARCH_LATER_THAN_EQUAL;
                 }
@@ -730,9 +730,9 @@ public abstract class AutoProvision {
         return hitSizeLimitExceededException;
     }
 
-    protected static String getCarbonioAutoProvTimeCheckColumn(Domain domain) {
-        String timeCheckColumn = domain.getCarbonioAutoProvTimeCheckColumn();
-        return timeCheckColumn == null || timeCheckColumn.isEmpty() ? LdapConstants.ATTR_createTimestamp : timeCheckColumn;
+    protected static String getCarbonioAutoProvTimestampAttribute(Domain domain) {
+        String timeCheckColumn = domain.getCarbonioAutoProvTimestampAttribute();
+        return timeCheckColumn == null || timeCheckColumn.isBlank() ? LdapConstants.ATTR_createTimestamp : timeCheckColumn;
     }
 
 }
