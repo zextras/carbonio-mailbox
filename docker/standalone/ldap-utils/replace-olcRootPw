@@ -1,0 +1,14 @@
+#!/bin/bash
+
+#
+# SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+
+replaceOlcRootPw() {
+  echo "Replacing cn=config password with value 'qh6hWZvc'..."
+  sed -i "/olcRootPW::/c\olcRootPW:: e1NTSEE1MTJ9WmFWMFV0aVluazlGT2lwYWlOQmQyYnlTdWk3Q3p5OVV4S0U3T29Jc0RvaVdrSUs0eldGREpXQnlTNWNnaDVQQ3ZqMGxFazhBOEQyemMwLzZjVkxDbnpiL001QzVIRnhK" /opt/zextras/data/ldap/config/cn\=config/olcDatabase\=\{0\}config.ldif
+}
+
+replaceOlcRootPw

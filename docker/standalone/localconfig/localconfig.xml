@@ -23,16 +23,16 @@
     <value>ldap://openldap:1389</value>
   </key>
   <key name="zimbra_ldap_user">
-    <value>admin</value>
+    <value>zimbra</value>
   </key>
   <key name="zimbra_ldap_userdn">
-    <value>cn=admin,cn=config</value>
+    <value>uid=zimbra,cn=admins,cn=zimbra</value>
   </key>
   <key name="zimbra_ldap_password">
-    <value>admin</value>
+    <value>password</value>
   </key>
   <key name="ldap_root_password">
-    <value>admin</value>
+    <value>qh6hWZvc</value>
   </key>
   <key name="mysql_bind_address">
     <value>localhost</value>
