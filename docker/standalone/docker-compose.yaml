@@ -29,6 +29,7 @@ services:
       - "6071:6071"
       - "7071:7071"
       - "8080:8080"
+      - "5005:5005"
   openldap:
     build:
       context: ./../../
@@ -62,10 +63,9 @@ services:
       - mailbox
     build:
       dockerfile: webui/Dockerfile
-    networks:
-      - mailbox
+    network_mode: "host"
     ports:
-      - "9000:80"
+      - "9000:9000"
 
 networks:
   mailbox:
