@@ -33,6 +33,11 @@ done
 
 echo "OpenLDAP started."
 
+echo "Root LDAP password is: qh6hWZvc."
+echo "Zimbra LDAP password is: password."
+echo "Use test@demo.zextras.io - 'password' to login as standard user."
+echo "Use admin@demo.zextras.io - 'password' to login as admin user."
+
 sh /ldap-utils/add_initial_data
 
 tail -f /tmp/openldap.log
