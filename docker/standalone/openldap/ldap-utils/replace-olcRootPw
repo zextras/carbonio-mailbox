@@ -5,10 +5,6 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-only
 #
-
-replaceOlcRootPw() {
-  echo "Replacing cn=config password with value 'qh6hWZvc'..."
-  sed -i "/olcRootPW::/c\olcRootPW:: e1NTSEE1MTJ9WmFWMFV0aVluazlGT2lwYWlOQmQyYnlTdWk3Q3p5OVV4S0U3T29Jc0RvaVdrSUs0eldGREpXQnlTNWNnaDVQQ3ZqMGxFazhBOEQyemMwLzZjVkxDbnpiL001QzVIRnhK" /opt/zextras/data/ldap/config/cn\=config/olcDatabase\=\{0\}config.ldif
-}
-
-replaceOlcRootPw
+BASE64_ROOT_PASSWORD=$(/opt/zextras/common/sbin/slappasswd -s "${LDAP_ROOT_PASSWORD}" | base64)
+echo "base64 is ${BASE64_ROOT_PASSWORD}"
+sed -i "/olcRootPW::/c\olcRootPW:: ${BASE64_ROOT_PASSWORD}" /opt/zextras/data/ldap/config/cn\=config/olcDatabase\=\{0\}config.ldif

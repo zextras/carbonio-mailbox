@@ -20,8 +20,10 @@ openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 \
 
 sh /ldap-utils/zmldapschema
 cp -r /opt/zextras/common/etc/openldap/zimbra/config/* /opt/zextras/data/ldap/config/
-sh /ldap-utils/replace-olcRootPw
 mkdir -p /run/carbonio
+
+echo "Replacing cn=config password"
+sh /ldap-utils/replace-olcRootPw
 
 /opt/zextras/common/libexec/slapd -l LOCAL0 -h ldap://0.0.0.0:1389 \
 -F /opt/zextras/data/ldap/config -d 256 >> /tmp/openldap.log &
@@ -33,8 +35,8 @@ done
 
 echo "OpenLDAP started."
 
-echo "Root LDAP password is: qh6hWZvc."
-echo "Zimbra LDAP password is: password."
+echo "Root LDAP password is: ${LDAP_ROOT_PASSWORD}."
+echo "Zimbra/Admin LDAP password is: ${LDAP_ADMIN_PASSWORD}."
 echo "Use test@demo.zextras.io - 'password' to login as standard user."
 echo "Use admin@demo.zextras.io - 'password' to login as admin user."
 

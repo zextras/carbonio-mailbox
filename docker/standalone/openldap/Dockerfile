@@ -7,6 +7,9 @@ RUN echo deb https://repo.zextras.io/release/ubuntu jammy main > /etc/apt/source
 
 RUN apt update && apt install -y carbonio-openldap netcat && apt clean
 
+ENV LDAP_ROOT_PASSWORD=qh6hWZvc
+ENV LDAP_ADMIN_PASSWORD=password
+
 COPY docker/standalone/openldap/ldap-utils/ /ldap-utils/
 COPY store/ldap/generated/ /opt/zextras/common/etc/openldap/zimbra/
 
