@@ -7,7 +7,7 @@ services:
         condition: service_healthy
     build:
       context: ./../../
-      dockerfile: docker/standalone/Dockerfile
+      dockerfile: docker/standalone/mailbox/Dockerfile
     hostname: docker.demo.zextras.io
     restart: on-failure
     networks:
@@ -19,7 +19,7 @@ services:
       test: netcat -z localhost 8080 || exit 1
       timeout: 10s
     volumes:
-      - ./localconfig/:/localconfig/
+      - ./mailbox/localconfig/:/localconfig/
     ports:
       - "25:25"
       - "110:110"
@@ -32,7 +32,7 @@ services:
   openldap:
     build:
       context: ./../../
-      dockerfile: docker/standalone/Dockerfile-ldap
+      dockerfile: docker/standalone/openldap/Dockerfile
     restart: on-failure
     healthcheck:
       interval: 60s
@@ -46,7 +46,7 @@ services:
       - 1389:1389
     volumes:
       - ./../../store/ldap/generated/:/opt/zextras/common/etc/openldap/zimbra/
-      - ./ldap-utils/:/ldap-utils/
+      - ./openldap/ldap-utils/:/ldap-utils/
   mariadb:
     image: mariadb:10.4
     networks:
@@ -56,7 +56,7 @@ services:
     environment:
       MARIADB_ROOT_PASSWORD: password
     volumes:
-     - ./db/:/docker-entrypoint-initdb.d/
+     - ./mariadb/db/:/docker-entrypoint-initdb.d/
 
 networks:
   mailbox:
