@@ -10,6 +10,9 @@ COPY native/target/zm-native*.jar /opt/zextras/mailbox/jars/
 COPY soap/target/zm-soap*.jar /opt/zextras/mailbox/jars/
 COPY common/target/zm-common*.jar /opt/zextras/mailbox/jars/
 
+RUN mkdir -p /opt/zextras/db
+COPY store/db/create_database.sql /opt/zextras/db/
+
 RUN mkdir -p /opt/zextras/mailboxd/etc/ && keytool -genkey -keyalg RSA \
     -dname "cn=Unknown, ou=Unknown, o=Unknown, c=Unknown" \
     -keystore /opt/zextras/mailboxd/etc/keystore -keysize 2048 -validity 1461 \
