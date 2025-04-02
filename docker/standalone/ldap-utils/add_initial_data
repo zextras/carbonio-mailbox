@@ -6,4 +6,5 @@
 /opt/zextras/common/bin/ldapadd -D cn=config -w qh6hWZvc -H ldap://localhost:1389 -f /opt/zextras/common/etc/openldap/zimbra/zimbra_defaultexternalcos.ldif
 /opt/zextras/common/bin/ldapadd -D cn=config -w qh6hWZvc -H ldap://localhost:1389 -f /opt/zextras/common/etc/openldap/zimbra/mimehandlers.ldif
 
+/opt/zextras/common/bin/ldapadd -D cn=config -w qh6hWZvc -H ldap://localhost:1389 -f /ldap-utils/add_server.ldif
 /opt/zextras/common/bin/ldapmodify -D cn=config -w qh6hWZvc -H ldap://localhost:1389 -f /ldap-utils/replace_admin_password.ldif
