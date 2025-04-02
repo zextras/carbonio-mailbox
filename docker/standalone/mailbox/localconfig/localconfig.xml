@@ -2,7 +2,7 @@
 
 <localconfig>
   <key name="mysql_port">
-    <value>3306</value>
+    <value>MARIADB_PORT</value>
   </key>
   <key name="timezone_file">
     <value>/opt/zextras/conf/timezones.ics</value>
@@ -11,7 +11,7 @@
     <value>zimbra</value>
   </key>
   <key name="zimbra_ldap_password">
-    <value>password</value>
+    <value>LDAP_ADMIN_PASSWORD</value>
   </key>
   <key name="mailboxd_keystore_password">
     <value>teststore1</value>
@@ -26,7 +26,7 @@
     <value>docker.demo.zextras.io</value>
   </key>
   <key name="mysql_root_password">
-    <value>password</value>
+    <value>MARIADB_ROOT_PASSWORD</value>
   </key>
   <key name="zimbra_mail_service_port">
     <value>8080</value>
@@ -35,10 +35,10 @@
     <value>/opt/zextras/conf/msgs</value>
   </key>
   <key name="ldap_root_password">
-    <value>qh6hWZvc</value>
+    <value>LDAP_ROOT_PASSWORD</value>
   </key>
   <key name="mysql_bind_address">
-    <value>mariadb</value>
+    <value>MARIADB_URL</value>
   </key>
   <key name="debug_disable_share_expiration_listener">
     <value>true</value>
@@ -50,7 +50,7 @@
     <value>uid=zimbra,cn=admins,cn=zimbra</value>
   </key>
   <key name="ldap_url">
-    <value>ldap://openldap:1389</value>
+    <value>LDAP_URL</value>
   </key>
   <key name="ldap_noop_search_supported">
     <value>false</value>
