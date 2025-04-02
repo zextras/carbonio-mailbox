@@ -15,6 +15,6 @@ RUN mkdir -p /opt/zextras/mailboxd/etc/ && keytool -genkey -keyalg RSA \
     -keystore /opt/zextras/mailboxd/etc/keystore -keysize 2048 -validity 1461 \
     -keypass testkey1 -storepass teststore1
 
-COPY docker/standalone/entrypoint.sh .
+COPY docker/standalone/mailbox/entrypoint.sh .
 
 ENTRYPOINT ["./entrypoint.sh"]

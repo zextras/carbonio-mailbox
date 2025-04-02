@@ -43,7 +43,7 @@ services:
     networks:
       - mailbox
     ports:
-      - 1389:1389
+      - "1389:1389"
     volumes:
       - ./../../store/ldap/generated/:/opt/zextras/common/etc/openldap/zimbra/
       - ./openldap/ldap-utils/:/ldap-utils/
@@ -52,11 +52,20 @@ services:
     networks:
       - mailbox
     ports:
-      - 3306:3306
+      - "3306:3306"
     environment:
       MARIADB_ROOT_PASSWORD: password
     volumes:
      - ./mariadb/db/:/docker-entrypoint-initdb.d/
+  webui:
+    depends_on:
+      - mailbox
+    build:
+      dockerfile: webui/Dockerfile
+    networks:
+      - mailbox
+    ports:
+      - "9000:80"
 
 networks:
   mailbox:
