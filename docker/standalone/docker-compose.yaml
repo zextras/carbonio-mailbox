@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   mailbox:
+    image: carbonio-mailbox-slim
     depends_on:
       openldap:
         condition: service_healthy
@@ -18,8 +19,6 @@ services:
       start_period: 20s
       test: netcat -z localhost 8080 || exit 1
       timeout: 10s
-    volumes:
-      - ./mailbox/localconfig/:/localconfig/
     ports:
       - "25:25"
       - "110:110"
@@ -31,6 +30,7 @@ services:
       - "8080:8080"
       - "5005:5005"
   openldap:
+    image: carbonio-openldap-slim
     build:
       context: ./../../
       dockerfile: docker/standalone/openldap/Dockerfile
@@ -45,19 +45,15 @@ services:
       - mailbox
     ports:
       - "1389:1389"
-    volumes:
-      - ./../../store/ldap/generated/:/opt/zextras/common/etc/openldap/zimbra/
-      - ./openldap/ldap-utils/:/ldap-utils/
   mariadb:
-    image: mariadb:10.4
+    image: carbonio-mariadb-slim
+    build:
+      context: ./../../
+      dockerfile: docker/standalone/mariadb/Dockerfile
     networks:
       - mailbox
     ports:
       - "3306:3306"
-    environment:
-      MARIADB_ROOT_PASSWORD: password
-    volumes:
-     - ./mariadb/db/:/docker-entrypoint-initdb.d/
   webui:
     depends_on:
       - mailbox
