@@ -21,4 +21,5 @@ java -Dfile.encoding=UTF-8 -server \
 -Xms1996m -Xmx1996m -Djava.io.tmpdir=/opt/zextras/mailboxd/work \
 -Djava.library.path=/opt/zextras/lib \
 -Dzimbra.config=/localconfig/localconfig.xml \
+-Dzimbra.native.required=false \
 -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/* com.zextras.mailbox.Mailbox
