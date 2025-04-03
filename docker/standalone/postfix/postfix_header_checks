@@ -1,0 +1,4 @@
+#/filename=\"?(.*)\.()\"?$/
+#	REJECT For security reasons we reject attachments of this type
+#/^\s*Content-(Disposition|Type).*name\s*=\s*"?(.+\.())"?\s*$/
+#	REJECT Attachment type not allowed. File "$2" has the unacceptable extension "$3"
