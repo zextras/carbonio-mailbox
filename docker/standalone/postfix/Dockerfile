@@ -10,7 +10,6 @@ echo deb https://repo.zextras.io/release/ubuntu jammy main > /etc/apt/sources.li
 apt update && apt install -y carbonio-postfix telnet netcat && apt clean
 
 COPY docker/standalone/postfix/conf/ /opt/zextras/conf/
-#COPY docker/standalone/postfix/resolve.conf /var/spool/postfix/etc/resolv.conf
 COPY docker/standalone/postfix/postfix_header_checks /opt/zextras/conf/postfix_header_checks
 COPY docker/standalone/postfix/entrypoint.sh .
 

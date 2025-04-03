@@ -31,6 +31,7 @@ services:
       - "7071:7071"
       - "8080:8080"
       - "5005:5005"
+      - "7025:7025"
   openldap:
     image: carbonio-openldap-slim
     build:
@@ -81,6 +82,5 @@ services:
       - mailbox
     ports:
       - "20025:25"
-
 networks:
   mailbox:
