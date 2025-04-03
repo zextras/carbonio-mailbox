@@ -1,13 +1,13 @@
 package com.zimbra.cs.service.servlet.preview;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.zextras.carbonio.preview.queries.Query;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -117,6 +117,26 @@ class UtilsTest {
 
     assertEquals(expectedDisposition, result, "should return disposition type from query params with name 'disp', "
         + "falling back to 'inline' or 'i'");
+  }
+
+  @Test
+  void shouldParseLangTag() {
+    final String queryParameters = "?lang_tag=1";
+
+    final PreviewQueryParameters parameters = Utils.parseQueryParameters(
+        queryParameters);
+
+    Assertions.assertEquals("1", parameters.getLangTag().get());
+  }
+
+  @Test
+  void shouldAddLangTagToQuery() {
+    final String query = "?lang_tag=1";
+
+    final PreviewQueryParameters queryParameters = Utils.parseQueryParameters(query);
+    final Query parameters = Utils.generateQuery("", queryParameters);
+
+    Assertions.assertEquals("1", parameters.getLangTag().get());
   }
 
 }

@@ -3,6 +3,7 @@ package com.zimbra.cs.service.servlet.preview;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.zextras.carbonio.preview.queries.Query;
 import java.util.Optional;
+import javax.swing.text.html.Option;
 
 /**
  * {@link PreviewQueryParameters} class is used to map the url parameter as java object and form a
@@ -27,6 +28,9 @@ public class PreviewQueryParameters {
 
   @JsonProperty("last_page")
   private Integer lastPage;
+
+  @JsonProperty("lang_tag")
+  private String langTag;
 
   public PreviewQueryParameters(
       PreviewQueryParameters.Quality quality, PreviewQueryParameters.Format outputFormat, PreviewQueryParameters.Shape shape) {
@@ -60,6 +64,10 @@ public class PreviewQueryParameters {
 
   public Optional<Integer> getLastPage() {
     return Optional.ofNullable(lastPage);
+  }
+
+  public Optional<String> getLangTag() {
+    return Optional.ofNullable(langTag);
   }
 
   enum Quality {
