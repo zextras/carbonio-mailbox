@@ -1,0 +1,12 @@
+server_host = ldap://openldap:1389
+server_port = 1389
+search_base =
+query_filter = (&(zimbraDomainName=%s)(zimbraDomainType=local)(zimbraMailStatus=enabled))
+result_attribute = zimbraDomainName
+version = 3
+start_tls = no
+tls_ca_cert_dir = /opt/zextras/conf/ca
+bind = yes
+bind_dn = uid=zmpostfix,cn=appaccts,cn=zimbra
+bind_pw = qh6hWZvc
+timeout = 30

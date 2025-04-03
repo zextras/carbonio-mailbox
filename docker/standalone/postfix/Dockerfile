@@ -1,0 +1,19 @@
+FROM ubuntu:jammy
+
+USER root
+
+ARG EMAIL
+ARG EMAIL_PASSWORD
+ARG MAIL_NAME
+ARG SMTP_DOMAIN
+ARG SMTP_PORT
+
+RUN apt update && apt install -y gnupg2 ca-certificates && apt clean && \
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243E584A21 && \
+echo deb https://repo.zextras.io/release/ubuntu jammy main > /etc/apt/sources.list.d/zextras.list && \
+apt update && apt install -y carbonio-postfix telnet && apt clean
+
+COPY docker/standalone/postfix/conf/ /opt/zextras/conf/
+COPY docker/standalone/postfix/entrypoint.sh .
+
+ENTRYPOINT ["./entrypoint.sh"]

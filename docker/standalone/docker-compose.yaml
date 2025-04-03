@@ -1,34 +1,34 @@
 version: "3.9"
 
 services:
-  mailbox:
-    image: carbonio-mailbox-slim
-    depends_on:
-      openldap:
-        condition: service_healthy
-    build:
-      context: ./../../
-      dockerfile: docker/standalone/mailbox/Dockerfile
-    hostname: docker.demo.zextras.io
-    restart: on-failure
-    networks:
-      - mailbox
-    healthcheck:
-      interval: 60s
-      retries: 10
-      start_period: 20s
-      test: netcat -z localhost 8080 || exit 1
-      timeout: 10s
-    ports:
-      - "25:25"
-      - "110:110"
-      - "443:443"
-      - "465:465"
-      - "587:587"
-      - "6071:6071"
-      - "7071:7071"
-      - "8080:8080"
-      - "5005:5005"
+#  mailbox:
+#    image: carbonio-mailbox-slim
+#    depends_on:
+#      openldap:
+#        condition: service_healthy
+#    build:
+#      context: ./../../
+#      dockerfile: docker/standalone/mailbox/Dockerfile
+#    hostname: docker.demo.zextras.io
+#    restart: on-failure
+#    networks:
+#      - mailbox
+#    healthcheck:
+#      interval: 60s
+#      retries: 10
+#      start_period: 20s
+#      test: netcat -z localhost 8080 || exit 1
+#      timeout: 10s
+#    ports:
+#      - "25:25"
+#      - "110:110"
+#      - "443:443"
+#      - "465:465"
+#      - "587:587"
+#      - "6071:6071"
+#      - "7071:7071"
+#      - "8080:8080"
+#      - "5005:5005"
   openldap:
     image: carbonio-openldap-slim
     build:
@@ -54,14 +54,25 @@ services:
       - mailbox
     ports:
       - "3306:3306"
-  webui:
+#  webui:
+#    depends_on:
+#      - mailbox
+#    build:
+#      dockerfile: webui/Dockerfile
+#    network_mode: "host"
+#    ports:
+#      - "9000:9000"
+  postfix:
     depends_on:
-      - mailbox
+      openldap:
+        condition: service_healthy
     build:
-      dockerfile: webui/Dockerfile
-    network_mode: "host"
+      context: ./../../
+      dockerfile: docker/standalone/postfix/Dockerfile
+    networks:
+      - mailbox
     ports:
-      - "9000:9000"
+      - "20025:25"
 
 networks:
   mailbox:
