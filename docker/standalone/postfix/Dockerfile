@@ -2,11 +2,7 @@ FROM ubuntu:jammy
 
 USER root
 
-ARG EMAIL
-ARG EMAIL_PASSWORD
-ARG MAIL_NAME
-ARG SMTP_DOMAIN
-ARG SMTP_PORT
+ENV LDAP_ROOT_PASSWORD=qh6hWZvc
 
 RUN apt update && apt install -y gnupg2 ca-certificates && apt clean && \
 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243E584A21 && \
