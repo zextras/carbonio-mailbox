@@ -160,8 +160,7 @@ public class AutoProvisionEager extends AutoProvision {
                 }
 
                 String timeCheckColumn = getCarbonioAutoProvTimestampAttribute(domain);
-                lastTimestamp = getLastTimestamp(externalAttrs.getAttrString(
-                        timeCheckColumn), lastTimestamp, serverTime);
+                lastTimestamp = getLastTimestamp(externalAttrs.getAttrString(timeCheckColumn), lastTimestamp);
 
             } catch (ServiceException e) {
                 // log and continue with next entry
@@ -192,30 +191,31 @@ public class AutoProvisionEager extends AutoProvision {
         //
         //       See how TestLdapProvAutoProvision.eagerMode() does it.
         //
-        if (!hitSizeLimitExceededException && lastTimestamp > 0) {
-            String lastPolledAt = LdapDateUtil.toGeneralizedTime(new Date(lastTimestamp), domain.getCarbonioAutoProvTimestampFormat());
-            ZimbraLog.autoprov.info("Auto Provisioning has finished for now, setting last polled timestamp: " + lastPolledAt);
-            domain.setAutoProvLastPolledTimestampAsString(lastPolledAt);
+        if (!hitSizeLimitExceededException) {
+
+            if (lastTimestamp > 0L) {
+                lastTimestamp += DELTA_FOR_LAST_TIME;
+                String lastPolledAt = LdapDateUtil.toGeneralizedTime(new Date(lastTimestamp), domain.getCarbonioAutoProvTimestampFormat());
+                ZimbraLog.autoprov.info("Auto Provisioning has finished for now, setting last checked " + getCarbonioAutoProvTimestampAttribute(domain)+ ": " + lastPolledAt);
+                domain.setAutoProvLastPolledTimestampAsString(lastPolledAt);
+            }
+
             String carbonioLastPooledAt = LdapDateUtil.toGeneralizedTime(new Date(serverTime), domain.getCarbonioAutoProvTimestampFormat());
             domain.setCarbonioAutoProvLastPolledTimestampAsString(carbonioLastPooledAt);
-            ZimbraLog.autoprov.info("Auto Provisioning has finished for now, setting last polled carbonio timestamp: " + carbonioLastPooledAt);
+            ZimbraLog.autoprov.info("Auto Provisioning has finished for now, setting last polled timestamp: " + carbonioLastPooledAt);
         }
 
     }
 
-    static long getLastTimestamp(final String timestampString, final long lastTimestamp, final long serverTime) {
-        if (lastTimestamp >= serverTime) {
-            return lastTimestamp;
-        }
-
-        if (timestampString != null && !timestampString.trim().isEmpty()) {
+    static long getLastTimestamp(final String timestampString, final long lastTimestamp) {
+        if (timestampString != null && !timestampString.isBlank()) {
 
             try {
                 Date date = LdapDateUtil.parseGeneralizedTime(timestampString);
 
                 if (date != null) {
                     long timestamp = date.getTime();
-                    return Math.min(timestamp, serverTime) + DELTA_FOR_LAST_TIME;
+                    return Math.max(lastTimestamp, timestamp);
                 }
 
             } catch (NumberFormatException e) {
