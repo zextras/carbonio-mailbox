@@ -2,7 +2,6 @@ version: "3.9"
 
 services:
   mailbox:
-    image: carbonio-mailbox-slim
     depends_on:
       openldap:
         condition: service_healthy
@@ -27,7 +26,6 @@ services:
       - "5005:5005"
       - "7025:7025"
   openldap:
-    image: carbonio-openldap-slim
     build:
       context: ./../../
       dockerfile: docker/standalone/openldap/Dockerfile
@@ -43,7 +41,6 @@ services:
     ports:
       - "1389:1389"
   mariadb:
-    image: carbonio-mariadb-slim
     build:
       context: ./../../
       dockerfile: docker/standalone/mariadb/Dockerfile
