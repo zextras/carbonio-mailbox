@@ -6,3 +6,4 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243E
 RUN echo deb https://repo.zextras.io/release/ubuntu jammy main > /etc/apt/sources.list.d/zextras.list
 RUN apt update && apt install -y carbonio-webui && apt clean
 COPY ./webui/nginx-webui.conf /etc/nginx/conf.d/nginx-webui.conf
+COPY ./webui/nginx.carbonio.admin.conf /etc/nginx/conf.d/nginx.carbonio.admin.conf
