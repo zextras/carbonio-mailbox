@@ -7,6 +7,7 @@ Steps:
 
 This runs a dev environnment with:
 - Mailbox
+- MariaDB
 - LDAP
 - Postfix
 - Nginx with webui:
