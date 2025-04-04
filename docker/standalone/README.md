@@ -11,7 +11,7 @@ This runs a dev environnment with:
 - LDAP
 - Postfix
 - Nginx with webui:
-  - http://localhost:9000 (Standard User)
-  - http://localhost:6071 (Admin)
+  - http://localhost:9000 (Standard User) `test@demo.zextras.io` - `password`
+  - http://localhost:6071 (Admin) `admin@demo.zextras.io` - `password`
 
 You can attach the JVM debugger to localhost:5000 to debug the Mailbox.
