@@ -2875,6 +2875,24 @@ public class ZAttrProvisioning {
     public static final String A_carbonioAutoProvAllowedDomains = "carbonioAutoProvAllowedDomains";
 
     /**
+     * Server Timestamp when the external domain is last polled for EAGER
+     * auto provision.
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3164)
+    public static final String A_carbonioAutoProvLastPolledTimestamp = "carbonioAutoProvLastPolledTimestamp";
+
+    /**
+     * Column name for time check in filter createTimestamp (Default)
+     * modifyTimestamp
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3163)
+    public static final String A_carbonioAutoProvTimestampAttribute = "carbonioAutoProvTimestampAttribute";
+
+    /**
      * AD/LDAP timestamp format. For example:
      * yyyyMMddHHmmss.SSS&#039;Z&#039;, yyyyMMddHHmmss&#039;Z&#039;
      *
