@@ -42,18 +42,13 @@ you can generate rights and ZAttr* classes by running:
 ## Run Carbonio Mailbox locally (for Development)
 Following guide provides two different ways to run Carbonio Mailbox locally for Development:
 
-### 1. Mailbox with in-memory databases
-Run `com.zextras.mailbox.SampleLocalMailbox` main class in store module, 
+### 1. Dev Mailbox in Container
+See [docker/standalone/README.md](docker/standalone/README.md)
+
+### 2. Local Sample Mailbox
+Run the `com.zextras.mailbox.SampleLocalMailbox` main class in store module,
 test directory.
 This will start a Mailbox with in-memory LDAP and an HSQLDB database.
-
-### 2. Local sample Mailbox with UI
-Run step 1.
-Now go to [docker/proxy-webui](docker/proxy-webui) and build the docker file
-e.g. `docker build . -t carbonio-webui`. \
-Then run the image with host network `docker run --net=host carbonio-webui`. \
-At localhost/static/login you will be able to login and interact with 
-your local mailbox instance.
 
 ## Contribute to Carbonio Mailbox
 

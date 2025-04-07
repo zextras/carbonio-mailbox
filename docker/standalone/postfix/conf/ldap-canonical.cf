@@ -1,0 +1,12 @@
+server_host = ldap://openldap:1389
+server_port = 1389
+search_base =
+query_filter = (&(|(zimbraMailDeliveryAddress=%s)(zimbraMailAlias=%s)(zimbraMailCatchAllAddress=%s))(zimbraMailStatus=enabled))
+result_attribute = zimbraMailCanonicalAddress,zimbraMailCatchAllCanonicalAddress
+version = 3
+start_tls = no
+tls_ca_cert_dir = /opt/zextras/conf/ca
+bind = yes
+bind_dn = uid=zmpostfix,cn=appaccts,cn=zimbra
+bind_pw = LDAP_ROOT_PASSWORD
+timeout = 30

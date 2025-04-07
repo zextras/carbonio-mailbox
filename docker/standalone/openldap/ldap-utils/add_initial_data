@@ -1,0 +1,47 @@
+#!/usr/bin/bash
+
+/opt/zextras/common/bin/ldapadd -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f /opt/zextras/common/etc/openldap/zimbra/carbonio.ldif
+/opt/zextras/common/bin/ldapadd -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f /opt/zextras/common/etc/openldap/zimbra/zimbra_globalconfig.ldif
+/opt/zextras/common/bin/ldapadd -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f /opt/zextras/common/etc/openldap/zimbra/zimbra_defaultcos.ldif
+/opt/zextras/common/bin/ldapadd -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f /opt/zextras/common/etc/openldap/zimbra/zimbra_defaultexternalcos.ldif
+/opt/zextras/common/bin/ldapadd -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f /opt/zextras/common/etc/openldap/zimbra/mimehandlers.ldif
+
+# Replace SMTP config
+cat <<EOF > /tmp/replace_smtp_host.ldif
+dn: cn=config,cn=zimbra
+changetype: modify
+replace: zimbraSmtpHostname
+zimbraSmtpHostname: postfix
+EOF
+
+cat <<EOF > /tmp/replace_smtp_port.ldif
+dn: cn=config,cn=zimbra
+changetype: modify
+replace: zimbraSmtpPort
+zimbraSmtpPort: 25
+EOF
+
+/opt/zextras/common/bin/ldapmodify -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f /tmp/replace_smtp_host.ldif
+/opt/zextras/common/bin/ldapmodify -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f /tmp/replace_smtp_port.ldif
+
+SSHA_ROOT_PASSWORD=$(/opt/zextras/common/sbin/slappasswd -s "${LDAP_ROOT_PASSWORD}")
+cat <<EOF > /tmp/replace_postfix_password.ldif
+dn: uid=zmpostfix,cn=appaccts,cn=zimbra
+changetype: modify
+replace: userPassword
+userPassword: ${SSHA_ROOT_PASSWORD}
+EOF
+/opt/zextras/common/bin/ldapmodify -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f /tmp/replace_postfix_password.ldif
+
+SSHA_ADMIN_PASSWORD=$(/opt/zextras/common/sbin/slappasswd -s "${LDAP_ADMIN_PASSWORD}")
+
+cat <<EOF > /tmp/replace_admin_password.ldif
+dn: uid=zimbra,cn=admins,cn=zimbra
+changetype: modify
+replace: userPassword
+userPassword: ${SSHA_ADMIN_PASSWORD}
+EOF
+
+/opt/zextras/common/bin/ldapmodify -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f /tmp/replace_admin_password.ldif
+/opt/zextras/common/bin/ldapadd -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f /ldap-utils/add_server.ldif
+/opt/zextras/common/bin/ldapadd -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f /ldap-utils/add_domain.ldif

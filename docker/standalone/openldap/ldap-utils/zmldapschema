@@ -1,0 +1,93 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2022 Synacor, Inc.
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: GPL-2.0-only
+
+verifyLdapInstalled() {
+  echo -n "Looking for LDAP installation..."
+  if [ ! -d /opt/zextras/common/etc/openldap/schema ]; then
+    echo "FAILED"
+    echo "ERROR: openldap does not appear to be installed - exiting"
+    exit 1
+  fi
+  echo "succeeded"
+}
+
+createSchemaDir() {
+  mkdir -p "/opt/zextras/data/ldap/config/cn=config/cn=schema"
+  chmod 750 "/opt/zextras/data/ldap/config/cn=config/cn=schema"
+}
+
+installCoreSchema() {
+  echo "Installing core schema..."
+  cp -f /opt/zextras/common/etc/openldap/schema/core.ldif "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={0}core.ldif"
+  chmod 600 "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={0}core.ldif"
+  sed -i.orig -e '/^dn: cn=core,/ s/dn: cn=core,cn=schema,cn=config/dn: cn={0}core/' -e '/^cn: core/ s/cn: core/cn: {0}core/' \
+    "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={0}core.ldif"
+}
+
+installCosineSchema() {
+  echo "Installing cosine schema..."
+  cp -f /opt/zextras/common/etc/openldap/schema/cosine.ldif "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={1}cosine.ldif"
+  chown zextras:zextras "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={1}cosine.ldif"
+  chmod 600 "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={1}cosine.ldif"
+  sed -i.orig -e '/^dn: cn=cosine,/ s/dn: cn=cosine,cn=schema,cn=config/dn: cn={1}cosine/' -e '/^cn: cosine/ s/cn: cosine/cn: {1}cosine/' \
+    "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={1}cosine.ldif"
+}
+
+installInetOrgPersonSchema() {
+  echo "Installing inetOrgPerson schema..."
+  cp -f /opt/zextras/common/etc/openldap/schema/inetorgperson.ldif "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={2}inetorgperson.ldif"
+  chmod 600 "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={2}inetorgperson.ldif"
+  sed -i.orig -e '/^dn: cn=inetorgperson,/ s/dn: cn=inetorgperson,cn=schema,cn=config/dn: cn={2}inetorgperson/' -e '/^cn: inetorgperson/ s/cn: inetorgperson/cn: {2}inetorgperson/' \
+    "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={2}inetorgperson.ldif"
+}
+
+installDynlistSchema() {
+  echo "Installing dyngroup schema..."
+  cp -f /opt/zextras/common/etc/openldap/schema/dyngroup.ldif "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={3}dyngroup.ldif"
+  chmod 600 "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={3}dyngroup.ldif"
+  sed -i.orig -e '/^dn: cn=dyngroup,/ s/dn: cn=dyngroup,cn=schema,cn=config/dn: cn={3}dyngroup/' -e '/^cn: dyngroup/ s/cn: dyngroup/cn: {3}dyngroup/' \
+    "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={3}dyngroup.ldif"
+}
+
+installZimbraSchema() {
+  echo "Installing zimbra schema..."
+  cp -f /opt/zextras/common/etc/openldap/zimbra/schema/carbonio.ldif "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={4}carbonio.ldif"
+  chmod 600 "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={4}carbonio.ldif"
+  sed -i.orig -e '/^dn: cn=zimbra,/ s/dn: cn=zimbra,cn=schema,cn=config/dn: cn={4}zimbra/' -e '/^cn: zimbra/ s/cn: zimbra/cn: {4}zimbra/' \
+    "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={4}carbonio.ldif"
+}
+
+installAmavisSchema() {
+  echo "Installing amavis schema..."
+  cp -f /opt/zextras/common/etc/openldap/zimbra/schema/amavisd.ldif "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={5}amavisd.ldif"
+  chmod 600 "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={5}amavisd.ldif"
+  sed -i.orig -e '/^dn: cn=amavisd,/ s/dn: cn=amavisd,cn=schema,cn=config/dn: cn={5}amavisd/' -e '/^cn: amavisd/ s/cn: amavisd/cn: {5}amavisd/' \
+    "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={5}amavisd.ldif"
+}
+
+installOpenDKIMSchema() {
+  echo "Installing OpenDKIM schema..."
+  cp -f /opt/zextras/common/etc/openldap/zimbra/schema/opendkim.ldif "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={6}opendkim.ldif"
+  chmod 600 "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={6}opendkim.ldif"
+  sed -i.orig -e '/^dn: cn=opendkim,/ s/dn: cn=opendkim,cn=schema,cn=config/dn: cn={6}opendkim/' -e '/^cn: opendkim/ s/cn: opendkim/cn: {6}opendkim/' \
+    "/opt/zextras/data/ldap/config/cn=config/cn=schema/cn={6}opendkim.ldif"
+}
+
+cleanup() {
+  rm -f "/opt/zextras/data/ldap/config/cn=config/cn=schema/"*.orig
+}
+
+verifyLdapInstalled
+createSchemaDir
+installCoreSchema
+installCosineSchema
+installInetOrgPersonSchema
+installZimbraSchema
+installAmavisSchema
+installDynlistSchema
+installOpenDKIMSchema
+cleanup

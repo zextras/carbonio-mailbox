@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<localconfig>
+  <key name="mysql_port">
+    <value>MARIADB_PORT</value>
+  </key>
+  <key name="timezone_file">
+    <value>/opt/zextras/conf/timezones.ics</value>
+  </key>
+  <key name="zimbra_ldap_user">
+    <value>zimbra</value>
+  </key>
+  <key name="zimbra_ldap_password">
+    <value>LDAP_ADMIN_PASSWORD</value>
+  </key>
+  <key name="mailboxd_keystore_password">
+    <value>teststore1</value>
+  </key>
+  <key name="zimbra_mysql_password">
+    <value>zextras</value>
+  </key>
+  <key name="zimbra_mysql_user">
+    <value>zextras</value>
+  </key>
+  <key name="zimbra_server_hostname">
+    <value>docker.demo.zextras.io</value>
+  </key>
+  <key name="mysql_root_password">
+    <value>MARIADB_ROOT_PASSWORD</value>
+  </key>
+  <key name="zimbra_mail_service_port">
+    <value>8080</value>
+  </key>
+  <key name="localized_msgs_directory">
+    <value>/opt/zextras/conf/msgs</value>
+  </key>
+  <key name="ldap_root_password">
+    <value>LDAP_ROOT_PASSWORD</value>
+  </key>
+  <key name="mysql_bind_address">
+    <value>MARIADB_URL</value>
+  </key>
+  <key name="debug_disable_share_expiration_listener">
+    <value>true</value>
+  </key>
+  <key name="zimbra_mailbox_groups">
+    <value>1</value>
+  </key>
+  <key name="zimbra_ldap_userdn">
+    <value>uid=zimbra,cn=admins,cn=zimbra</value>
+  </key>
+  <key name="ldap_url">
+    <value>LDAP_URL</value>
+  </key>
+  <key name="ldap_noop_search_supported">
+    <value>false</value>
+  </key>
+</localconfig>
