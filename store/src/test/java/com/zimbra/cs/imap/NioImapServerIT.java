@@ -123,4 +123,18 @@ class NioImapServerIT {
     assertTrue(replyString.contains(FIRST_MESSAGE_BODY), replyString);
     assertTrue(replyString.contains(SECOND_MESSAGE_BODY), replyString);
   }
+
+  @Test
+  void shouldCreateFolder() throws IOException {
+    imapClient.login(account.getName(), account.getUserPassword());
+    imapClient.create("TestFolder");
+    var replyString = imapClient.getReplyString();
+
+    assertTrue(replyString.contains("OK CREATE completed"));
+
+    imapClient.list("", "*");
+    var listReplyString = imapClient.getReplyString();
+
+    assertTrue(listReplyString.contains("TestFolder"), "List folders failed: " + listReplyString);
+  }
 }
