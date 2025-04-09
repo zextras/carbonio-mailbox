@@ -44,6 +44,7 @@ final class NioImapHandler extends ImapHandler implements NioHandler {
   @Override
   public void connectionOpened() throws IOException {
     sendGreeting();
+    System.out.println("Connection opened");
   }
 
   @Override
