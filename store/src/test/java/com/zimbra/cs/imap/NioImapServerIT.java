@@ -30,7 +30,7 @@ class NioImapServerIT {
   private static IMAPClient imapClient;
   private static Account account;
   private static NioImapServer imapServer;
-   private static final int IMAP_PORT = 7143;
+  private static final int IMAP_PORT = 7143;
 
   @BeforeAll
   public static void setUp() throws Exception {
