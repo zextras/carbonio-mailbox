@@ -23,7 +23,6 @@ import com.zimbra.soap.type.Channel;
 import java.util.concurrent.TimeUnit;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -253,7 +252,7 @@ class RecoverAccountTest {
     }
   }
 
-  private static @NotNull GreenMail createMTAServer(int mailPort) {
+  private static GreenMail createMTAServer(int mailPort) {
     return new GreenMail(new ServerSetup[]{
         new ServerSetup(
             mailPort, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
