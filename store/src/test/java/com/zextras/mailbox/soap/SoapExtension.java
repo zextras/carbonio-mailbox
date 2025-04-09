@@ -8,6 +8,7 @@ import static com.zextras.mailbox.util.MailboxTestUtil.SERVER_NAME;
 
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zextras.mailbox.util.MailboxTestUtil;
+import com.zextras.mailbox.util.PortUtil;
 import com.zextras.mailbox.util.SoapClient;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Provisioning;
@@ -65,7 +66,7 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
       return this;
     }
 
-    private int port = 8080;
+    private int port = PortUtil.findFreePort();
     private String basePath = "/";
     private final List<String> engineHandlers = new ArrayList<>();
 

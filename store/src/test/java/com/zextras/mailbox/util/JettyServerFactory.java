@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.DispatcherType;
+import javax.sound.sampled.Port;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -24,7 +25,7 @@ public class JettyServerFactory {
   private final Map<String, ServletHolder> servlets = new HashMap<>();
   private final Map<String, FilterHolder> filters = new HashMap<>();
   private final List<EventListener> listeners = new ArrayList<>();
-  private int port = 7070;
+  private int port = PortUtil.findFreePort();
 
   public JettyServerFactory withPort(int port) {
     this.port = port;

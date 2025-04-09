@@ -940,9 +940,13 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.0.0-M7</version>
           <configuration>
-            <forkMode>always</forkMode>
+            <forkCount>4</forkCount>
+            <reuseForks>false</reuseForks>
+            <parallel>classes</parallel>
             <!-- argline preserves other plugin args, like JaCoCo -->
             <argLine>@{argLine} -Dserver.dir=${project.basedir}
+              -Djunit.jupiter.execution.parallel.enabled=true
+              -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
               -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
               -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
             </argLine>
@@ -964,8 +968,13 @@
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>3.0.0-M7</version>
           <configuration>
+            <parallel>classes</parallel>
+            <reuseForks>false</reuseForks>
+            <forkCount>4</forkCount>
             <!-- argline preserves other plugin args, like JaCoCo -->
             <argLine>@{argLine} -Dserver.dir=${project.basedir}
+              -Djunit.jupiter.execution.parallel.enabled=true
+              -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
               -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
               -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
             </argLine>

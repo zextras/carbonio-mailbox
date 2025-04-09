@@ -3,7 +3,6 @@ package com.zextras.mailbox.util;
 import static com.zimbra.cs.account.GuestAccount.GUID_PUBLIC;
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
-import com.unboundid.ldap.listener.InMemoryDirectoryServer;
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zextras.mailbox.util.InMemoryLdapServer.Builder;
@@ -23,7 +22,6 @@ import com.zimbra.cs.db.HSQLDB;
 import com.zimbra.cs.mailbox.*;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.redolog.RedoLogProvider;
-import com.zimbra.cs.service.admin.AdminService;
 import com.zimbra.cs.store.StoreManager;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -37,13 +35,8 @@ import java.util.Set;
 import java.util.UUID;
 import javax.mail.internet.MimeMessage;
 
-/**
- * This utility class allows easy setup for the Mailbox environment using {@link #setUp()} method.
- * To clean up th environment remember to call {@link #tearDown()}. It uses an {@link
- * InMemoryDirectoryServer} and an in memory database using {@link HSQLDB} as dependencies.
- */
+
 public class MailboxTestUtil {
-  public static final int LDAP_PORT = 1389;
   public static final String SERVER_NAME = "localhost";
   public static final String DEFAULT_DOMAIN = "test.com";
   public static final String DEFAULT_DOMAIN_ID = "f4806430-b434-4e93-9357-a02d9dd796b8";
@@ -74,16 +67,21 @@ public class MailboxTestUtil {
         "zimbra.config",
         Objects.requireNonNull(
                 com.zimbra.cs.mailbox.MailboxTestUtil.class.getResource(
-                    "/localconfig-api-test.xml"))
+                    "/localconfig-test.xml"))
             .getFile());
 
+    int mailPort = PortUtil.findFreePort();
+    int ldapPort = PortUtil.findFreePort();
+
+    LC.zimbra_mail_service_port.setDefault(mailPort);
+    LC.ldap_port.setDefault(ldapPort);
+
     inMemoryLdapServer = new Builder()
-        .withLdapPort(LDAP_PORT)
+        .withLdapPort(ldapPort)
         .build();
     inMemoryLdapServer.start();
     inMemoryLdapServer.initializeBasicData();
 
-    LC.ldap_port.setDefault(LDAP_PORT);
     LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
     initData();
 
