@@ -11,6 +11,7 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.ACLUtil;
 import com.zimbra.cs.account.accesscontrol.GranteeType;
 import com.zimbra.cs.account.accesscontrol.Right;
@@ -23,6 +24,9 @@ import com.zimbra.cs.mailbox.*;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.store.StoreManager;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -67,10 +71,13 @@ public class MailboxTestUtil {
         "zimbra.config",
         Objects.requireNonNull(
                 com.zimbra.cs.mailbox.MailboxTestUtil.class.getResource(
-                    "/localconfig-test.xml"))
+                    "/localconfig-api-test.xml"))
             .getFile());
 
-    int ldapPort = PortUtil.findFreePort();
+    final var mailboxHome = Files.createTempDirectory("mailbox_home_");
+    LC.zimbra_home.setDefault(mailboxHome.toAbsolutePath().toString());
+
+    var ldapPort = PortUtil.findFreePort();
 
     LC.ldap_port.setDefault(ldapPort);
 
@@ -109,10 +116,21 @@ public class MailboxTestUtil {
 
   public static void initData() throws Exception {
     inMemoryLdapServer.initializeBasicData();
-    final Provisioning provisioning = Provisioning.getInstance(Provisioning.CacheMode.OFF);
-    provisioning.createServer(
-        SERVER_NAME,
-        new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
+    var provisioning = Provisioning.getInstance(Provisioning.CacheMode.OFF);
+    var lmtpPort = PortUtil.findFreePort();
+    var pop3Port = PortUtil.findFreePort();
+    var imapPort = PortUtil.findFreePort();
+    final var server =
+        provisioning.createServer(
+            SERVER_NAME,
+            new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
+    server.setLmtpBindPort(lmtpPort);
+
+    server.setPop3BindPort(pop3Port);
+    server.setPop3SSLServerEnabled(false);
+
+    server.setImapBindPort(imapPort);
+    server.setImapSSLServerEnabled(false);
     var domain = provisioning.createDomain(DEFAULT_DOMAIN, new HashMap<>());
     domain.setId(DEFAULT_DOMAIN_ID);
     mockMessageBrokerClient();
@@ -120,8 +138,8 @@ public class MailboxTestUtil {
 
   private static void mockMessageBrokerClient() {
     if(mockedMessageBrokerClient == null) {
-      MessageBrokerClient messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
-      MockedStatic<MessageBrokerFactory> mockedMessageBrokerFactory = Mockito.mockStatic(MessageBrokerFactory.class, Mockito.CALLS_REAL_METHODS);
+      var messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
+      var mockedMessageBrokerFactory = Mockito.mockStatic(MessageBrokerFactory.class, Mockito.CALLS_REAL_METHODS);
       mockedMessageBrokerFactory.when(MessageBrokerFactory::getMessageBrokerClientInstance).thenReturn(messageBrokerClient);
       mockedMessageBrokerClient = messageBrokerClient;
     }
@@ -144,8 +162,8 @@ public class MailboxTestUtil {
      * @throws IOException
      */
     public Message saveMsgInInbox(javax.mail.Message message) throws ServiceException, IOException {
-      final ParsedMessage parsedMessage = new ParsedMessage((MimeMessage) message, false);
-      final DeliveryOptions deliveryOptions =
+      final var parsedMessage = new ParsedMessage((MimeMessage) message, false);
+      final var deliveryOptions =
           new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
       return mailboxManager
           .getMailboxByAccount(account)
