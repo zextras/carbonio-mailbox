@@ -40,6 +40,7 @@ import com.zimbra.soap.DocumentHandler;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -75,6 +76,7 @@ public final class MailboxTestUtil {
     System.setProperty(
         "zimbra.config", zimbraServerDir + "src/test/resources/localconfig-test.xml");
     LC.reload();
+    LC.zimbra_home.setDefault(Files.createTempDirectory("mailbox_home_").toAbsolutePath().toString());
     // substitute test TZ file
     String timezonefilePath = zimbraServerDir + "src/test/resources/timezones-test.ics";
     File d = new File(timezonefilePath);
