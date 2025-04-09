@@ -28,6 +28,7 @@ class NioImapServerIT {
   private static NioImapServer imapServer;
 	private static final String FIRST_MESSAGE_BODY = "This is the first message";
   private static final String SECOND_MESSAGE_BODY = "This is the second message";
+  private static final int IMAP_PORT = 7143;
 
   @BeforeAll
   public static void setUp() throws Exception {
@@ -39,7 +40,7 @@ class NioImapServerIT {
     imapClient = new AuthenticatingIMAPClient();
 
     Provisioning provisioning = Provisioning.getInstance();
-    provisioning.getConfig().setImapBindPort(7143);
+    provisioning.getConfig().setImapBindPort(IMAP_PORT);
     provisioning.getConfig().setImapCleartextLoginEnabled(true);
 
     AccountCreator.Factory accountFactory = new AccountCreator.Factory(provisioning);
@@ -58,7 +59,7 @@ class NioImapServerIT {
     accountActionFactory.forAccount(account).saveMsgInInbox(secondMessage);
 
     imapServer.start();
-    imapClient.connect("localhost", 7143);
+    imapClient.connect("localhost", IMAP_PORT);
   }
 
   @AfterAll
