@@ -70,10 +70,8 @@ public class MailboxTestUtil {
                     "/localconfig-test.xml"))
             .getFile());
 
-    int mailPort = PortUtil.findFreePort();
     int ldapPort = PortUtil.findFreePort();
 
-    LC.zimbra_mail_service_port.setDefault(mailPort);
     LC.ldap_port.setDefault(ldapPort);
 
     inMemoryLdapServer = new Builder()

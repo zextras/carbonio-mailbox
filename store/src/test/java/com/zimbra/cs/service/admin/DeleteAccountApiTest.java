@@ -1,7 +1,6 @@
 package com.zimbra.cs.service.admin;
 
 import com.zextras.mailbox.soap.SoapExtension;
-import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.cs.account.Account;
@@ -20,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 @Tag("api")
-class DeleteAccountApiTest extends SoapTestSuite {
+class DeleteAccountApiTest {
 
 	@RegisterExtension
 	static SoapExtension soapExtension = new SoapExtension.Builder()
@@ -49,12 +48,12 @@ class DeleteAccountApiTest extends SoapTestSuite {
 				.grantPublicFolderRight(Mailbox.ID_FOLDER_CALENDAR, "r");
 		final String accountWithPublicShareId = accountWithPublicSharedFolder.getId();
 
-		final SoapResponse deleteAccountResponse = getSoapClient().newRequest()
+		final SoapResponse deleteAccountResponse = soapExtension.getSoapClient().newRequest()
 				.setCaller(adminAccount).setSoapBody(new DeleteAccountRequest(accountWithPublicShareId))
 				.call();
 		Assertions.assertEquals(200, deleteAccountResponse.statusCode());
 
-		final SoapResponse getAccountResponse = getSoapClient().newRequest()
+		final SoapResponse getAccountResponse = soapExtension.getSoapClient().newRequest()
 				.setCaller(adminAccount)
 				.setSoapBody(new GetAccountRequest(AccountSelector.fromId(accountWithPublicShareId)))
 				.call();

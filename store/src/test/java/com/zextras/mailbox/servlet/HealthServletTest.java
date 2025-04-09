@@ -52,7 +52,7 @@ class HealthServletTest {
         new JettyServerFactory()
              .addFilter("/*", new FilterHolder(GuiceFilter.class))
             .addListener(new GuiceMailboxServletConfig())
-            .create();
+            .create().server();
     server.start();
   }
 

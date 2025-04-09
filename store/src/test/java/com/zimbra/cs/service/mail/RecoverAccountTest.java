@@ -5,6 +5,7 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
+import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.account.ZAttrProvisioning.FeatureResetPasswordStatus;
 import com.zimbra.common.account.ZAttrProvisioning.PrefPasswordRecoveryAddressStatus;
 import com.zimbra.common.service.ServiceException;
@@ -22,6 +23,7 @@ import com.zimbra.soap.type.Channel;
 import java.util.concurrent.TimeUnit;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,11 +36,13 @@ import org.testcontainers.shaded.org.awaitility.Awaitility;
 class RecoverAccountTest {
 
   private static AccountCreator.Factory accountCreatorFactory;
+  private static Provisioning provisioning;
 
   @BeforeAll
   static void setUp() throws Exception {
     MailboxTestUtil.setUp();
-    accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance());
+    provisioning = Provisioning.getInstance();
+    accountCreatorFactory = new AccountCreator.Factory(provisioning);
   }
 
   @AfterAll
@@ -185,14 +189,6 @@ class RecoverAccountTest {
   @Test
   @DisplayName("Should throw ForgotPasswordException when zimbraPrefPasswordRecoveryAddressStatus is not verified")
   void should_throw_exception_when_recovery_email_is_not_verified() throws Exception {
-    GreenMail greenMail = new GreenMail(new ServerSetup[]{
-        new ServerSetup(
-            SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
-    });
-
-    try {
-      greenMail.start();
-
       Account recoveryAccount = accountCreatorFactory.get().create();
       Account primaryAccount = accountCreatorFactory.get().create();
       primaryAccount.setPrefPasswordRecoveryAddress(recoveryAccount.getName());
@@ -214,25 +210,20 @@ class RecoverAccountTest {
           "service exception: Recovery Account is not verified. Please contact your administrator.",
           forgetPasswordException.getMessage());
       Assertions.assertEquals("service.CONTACT_ADMIN", forgetPasswordException.getCode());
-
-    } finally {
-      greenMail.stop();
-    }
   }
 
   @Test
   @DisplayName("Should reduce number of send recovery code attempts on each sendCode request")
   void should_reduce_number_of_attempts_on_each_sendCode_request() throws Exception {
-    GreenMail greenMail = new GreenMail(new ServerSetup[]{
-        new ServerSetup(
-            SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
-    });
+    final int mailPort = PortUtil.findFreePort();
+    GreenMail greenMail = createMTAServer(mailPort);
 
     try {
       greenMail.start();
 
       Account recoveryAccount = accountCreatorFactory.get().create();
       Account primaryAccount = accountCreatorFactory.get().create();
+      provisioning.getDomain(primaryAccount).setSmtpPort(mailPort);
       primaryAccount.setPrefPasswordRecoveryAddress(recoveryAccount.getName());
       primaryAccount.setPrefPasswordRecoveryAddressStatus(
           PrefPasswordRecoveryAddressStatus.verified);
@@ -262,19 +253,25 @@ class RecoverAccountTest {
     }
   }
 
+  private static @NotNull GreenMail createMTAServer(int mailPort) {
+    return new GreenMail(new ServerSetup[]{
+        new ServerSetup(
+            mailPort, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
+    });
+  }
+
   @Test
   @DisplayName("Should use the default channel i.e, email when not specified in request")
   void should_fallback_to_email_channel_when_not_specified_in_request() throws Exception {
-    GreenMail greenMail = new GreenMail(new ServerSetup[]{
-        new ServerSetup(
-            SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
-    });
+    final int smtpPort = PortUtil.findFreePort();
+    GreenMail greenMail = createMTAServer(smtpPort);
 
     try {
       greenMail.start();
 
       Account recoveryAccount = accountCreatorFactory.get().create();
       Account primaryAccount = accountCreatorFactory.get().create();
+      provisioning.getDomain(primaryAccount).setSmtpPort(smtpPort);
       primaryAccount.setPrefPasswordRecoveryAddress(recoveryAccount.getName());
       primaryAccount.setPrefPasswordRecoveryAddressStatus(
           PrefPasswordRecoveryAddressStatus.verified);
@@ -301,15 +298,14 @@ class RecoverAccountTest {
   @Test
   @DisplayName("Should send email with recovery code when FeatureResetPasswordStatus is set enabled")
   void should_send_recovery_code_when_requested() throws Exception {
-    GreenMail greenMail = new GreenMail(new ServerSetup[]{
-        new ServerSetup(
-            SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
-    });
+    final int smtpPort = PortUtil.findFreePort();
+    GreenMail greenMail = createMTAServer(smtpPort);
 
     try {
       greenMail.start();
 
       Account recoveryAccount = accountCreatorFactory.get().create();
+      provisioning.getDomain(recoveryAccount).setSmtpPort(smtpPort);
       recoveryAccount.setLocale("ta");
       Account primaryAccount = accountCreatorFactory.get().create();
       primaryAccount.setLocale("ta");
@@ -358,16 +354,15 @@ class RecoverAccountTest {
   @Test
   @DisplayName("Should throw ForgetPasswordException when exceeds passwordRecoveryMaxAttempts limit")
   void should_throw_exception_when_exceeds_passwordRecoveryMaxAttempts_limit() throws Exception {
-    GreenMail greenMail = new GreenMail(new ServerSetup[]{
-        new ServerSetup(
-            SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
-    });
+    final int smtpPort = PortUtil.findFreePort();
+    GreenMail greenMail = createMTAServer(smtpPort);
 
     try {
       greenMail.start();
 
       Account recoveryAccount = accountCreatorFactory.get().create();
       Account primaryAccount = accountCreatorFactory.get().create();
+      provisioning.getDomain(primaryAccount).setSmtpPort(smtpPort);
       primaryAccount.setPrefPasswordRecoveryAddress(recoveryAccount.getName());
       primaryAccount.setPrefPasswordRecoveryAddressStatus(
           PrefPasswordRecoveryAddressStatus.verified);
@@ -404,15 +399,14 @@ class RecoverAccountTest {
   @Test
   @DisplayName("Should re-enable the recover account feature (zimbraFeatureResetPasswordStatus) after suspension duration timeout")
   void should_re_enable_feature_when_suspension_timeouts() throws Exception {
-    GreenMail greenMail = new GreenMail(new ServerSetup[]{
-        new ServerSetup(
-            SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
-    });
+    final int smtpPort = PortUtil.findFreePort();
+    GreenMail greenMail = createMTAServer(smtpPort);
 
     try {
       greenMail.start();
 
       Account recoveryAccount = accountCreatorFactory.get().create();
+      provisioning.getDomain(recoveryAccount).setSmtpPort(smtpPort);
       Account primaryAccount = accountCreatorFactory.get().create();
       primaryAccount.setPrefPasswordRecoveryAddress(recoveryAccount.getName());
       primaryAccount.setPrefPasswordRecoveryAddressStatus(

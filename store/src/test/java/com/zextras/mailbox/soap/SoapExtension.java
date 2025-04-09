@@ -7,8 +7,8 @@ package com.zextras.mailbox.soap;
 import static com.zextras.mailbox.util.MailboxTestUtil.SERVER_NAME;
 
 import com.zextras.mailbox.util.JettyServerFactory;
+import com.zextras.mailbox.util.JettyServerFactory.ServerWithConfiguration;
 import com.zextras.mailbox.util.MailboxTestUtil;
-import com.zextras.mailbox.util.PortUtil;
 import com.zextras.mailbox.util.SoapClient;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Provisioning;
@@ -35,6 +35,10 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
     MailboxTestUtil.clearData();
   }
 
+  public int getPort() {
+    return this.port;
+  }
+
   public void initData() throws Exception {
     MailboxTestUtil.initData();
   }
@@ -51,11 +55,6 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
 
   public static class Builder {
 
-    public Builder withPort(int port) {
-      this.port = port;
-      return this;
-    }
-
     public Builder withBasePath(String basePath) {
       this.basePath = basePath;
       return this;
@@ -66,21 +65,21 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
       return this;
     }
 
-    private int port = PortUtil.findFreePort();
     private String basePath = "/";
     private final List<String> engineHandlers = new ArrayList<>();
 
     public SoapExtension create() {
       final var firstServlet = createFirstServlet();
       final var soapServlet = createSecondServlet();
+      final ServerWithConfiguration serverWithConfiguration = new JettyServerFactory()
+          .addServlet("/firstServlet", firstServlet)
+          .addServlet(basePath + "*", soapServlet)
+          .create();
       final var server =
-          new JettyServerFactory()
-              .withPort(port)
-              .addServlet("/firstServlet", firstServlet)
-              .addServlet(basePath + "*", soapServlet)
-              .create();
-      final var soapClient = new SoapClient("http://localhost:" + port + basePath);
-      return new SoapExtension(port, server, soapClient);
+          serverWithConfiguration.server();
+      final int serverPort = serverWithConfiguration.serverPort();
+      final var soapClient = new SoapClient("http://localhost:" + serverPort + basePath);
+      return new SoapExtension(serverPort, server, soapClient);
     }
 
     private static ServletHolder createFirstServlet() {

@@ -52,7 +52,7 @@ class ModifyAccountTest extends SoapTestSuite {
 
     final ModifyAccountRequest request =
         new ModifyAccountRequest(userAccount.getId());
-    request.addAttr(ZAttrProvisioning.A_zimbraMailTransport, "lmtp:localhost:7025");
+    request.addAttr(ZAttrProvisioning.A_zimbraMailTransport, "lmtp:localhost:1333");
     final HttpResponse response = getSoapClient().newRequest().setCaller(domainAdminAccount)
         .setSoapBody(request).execute();
     Assertions.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
