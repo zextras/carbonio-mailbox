@@ -30,8 +30,6 @@ class NioImapServerIT {
   private static IMAPClient imapClient;
   private static Account account;
   private static NioImapServer imapServer;
-	private static final String FIRST_MESSAGE_BODY = "This is the first message";
-  private static final String SECOND_MESSAGE_BODY = "This is the second message";
   private static final int IMAP_PORT = 7143;
 
   @BeforeAll
