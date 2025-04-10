@@ -10,16 +10,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.zimbra.common.localconfig.LC;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.shaded.com.google.common.io.Files;
 
 public class SpoolingCacheTest {
 
-    private static File testDirectory = Files.createTempDir();
+    private static File testDirectory;
     @BeforeAll
     public static void init() throws Exception {
+      testDirectory = Files.createTempDirectory("spoolingCacheTest").toFile();
         LC.zimbra_tmp_directory.setDefault(testDirectory.getAbsolutePath());
     }
 

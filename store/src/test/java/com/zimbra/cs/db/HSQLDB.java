@@ -68,9 +68,7 @@ public class HSQLDB extends Db {
     }
 
     private static void createZimbraDatabase(DbConnection conn) throws Exception {
-        // TODO: this magic value (build/test) is tied to other static configuration.
-        //  Should not be used it. In general prefer passing the value as dependency (no static methods)
-        final String volumeDirectory = TestConfig.getInstance().getVolumeDirectory();
+        final String volumeDirectory = TestConfig.getInstance().volumeDirectory();
         Map<String, String> vars = Map.of(
                 "DATABASE_NAME", DbMailbox.getDatabaseName(1),
                 "VOLUME_BASE_DIRECTORY", new File(volumeDirectory).getAbsolutePath());

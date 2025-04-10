@@ -17,7 +17,7 @@ import java.io.File;
 public class MockRedoLogProvider extends RedoLogProvider {
 
     public MockRedoLogProvider() {
-        final String volumeDirectory = TestConfig.getInstance().getVolumeDirectory();
+        final String volumeDirectory = TestConfig.getInstance().volumeDirectory();
         mRedoLogManager = new RedoLogManager(new File(volumeDirectory,  "/redo/redo.log"), new File(volumeDirectory,  "redo"), false);
     }
 

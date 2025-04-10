@@ -38,7 +38,7 @@ public class RedoLogManagerTest {
 
  @Test
  void internalState() throws Exception {
-   final String volumeDirectory = TestConfig.getInstance().getVolumeDirectory();
+   final String volumeDirectory = TestConfig.getInstance().volumeDirectory();
    assertEquals(volumeDirectory + "redo/redo.log",
     redoLogManager.getLogFile().getPath());
   assertEquals(volumeDirectory + "redo",

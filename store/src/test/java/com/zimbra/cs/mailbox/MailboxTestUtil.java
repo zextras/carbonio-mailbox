@@ -6,6 +6,7 @@
 package com.zimbra.cs.mailbox;
 
 import com.google.common.base.Strings;
+import com.zextras.mailbox.util.TestConfig;
 import com.zimbra.common.calendar.WellKnownTimeZones;
 import com.zimbra.common.calendar.ZCalendar.ZVCalendar;
 import com.zimbra.common.localconfig.LC;
@@ -159,7 +160,8 @@ public final class MailboxTestUtil {
     HSQLDB.clearDatabase();
     MailboxManager.getInstance().clearCache();
     MailboxIndex.shutdown();
-    File index = new File("build/test/index");
+    final String volumeDirectory = TestConfig.getInstance().volumeDirectory();
+    File index = new File(volumeDirectory, "index");
     if (index.isDirectory()) {
       deleteDirContents(index);
     }

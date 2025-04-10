@@ -8,24 +8,16 @@ package com.zextras.mailbox.util;
 
 import com.zimbra.common.localconfig.LC;
 
-public class TestConfig {
+public record TestConfig(String volumeDirectory) {
+
 	private static TestConfig singleton;
 
-	private final String volumeDirectory;
-
-	public TestConfig(String volumeDirectory) {
-		this.volumeDirectory = volumeDirectory;
-	}
-
-	public String getVolumeDirectory() {
-		return volumeDirectory;
-	}
 
 	public static TestConfig getInstance() {
 		if (singleton == null) {
 			singleton = new TestConfig(LC.zimbra_home.value() + "/build/test/");
 		}
-	return singleton;
+		return singleton;
 	}
 
 }

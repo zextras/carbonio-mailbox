@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.store;
 
+import com.zextras.mailbox.util.TestConfig;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -186,7 +187,7 @@ public final class MockStoreManager extends StoreManager {
         byte[] content;
 
         MockBlob() {
-            super(new File("build/test/store"));
+            super(new File(TestConfig.getInstance().volumeDirectory(),  "store"));
             content = new byte[0];
         }
 
@@ -205,7 +206,7 @@ public final class MockStoreManager extends StoreManager {
         }
 
         MockBlob(byte[] data) {
-            super(new File("build/test/store"));
+            super(new File(TestConfig.getInstance().volumeDirectory(),  "store"));
             content = data;
         }
 
@@ -230,7 +231,7 @@ public final class MockStoreManager extends StoreManager {
     }
 
     private static final class MockLocalBlob extends Blob {
-        static final File tmpdir = new File("build/test/store");
+        static final File tmpdir = new File(TestConfig.getInstance().volumeDirectory(),  "store");
         private final int length;
 
         public MockLocalBlob(byte[] content) throws IOException {
