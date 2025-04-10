@@ -7,31 +7,27 @@ package com.zimbra.common.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.google.common.collect.ImmutableMap;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.io.Files;
+import org.junit.jupiter.api.io.TempDir;
 
 public class FileCacheTest {
 
-    File tmpDir;
+  @TempDir File tmpDir;
 
-    @BeforeEach
-    public void setUp() {
-        tmpDir = Files.createTempDir();
-    }
+  private static byte[] getRandomBytes(int size) {
+    byte[] data = new byte[size];
+    Random r = new Random();
+    r.nextBytes(data);
+    return data;
+  }
 
-  /**
-   * Tests getting an item from the cache.
-   */
+  /** Tests getting an item from the cache. */
   @Test
   void get() throws IOException {
     FileCache<Integer> cache = FileCache.Builder.createWithIntegerKey(tmpDir, false).build();
@@ -44,18 +40,14 @@ public class FileCacheTest {
     assertEquals(dataDir, item.file.getParentFile());
   }
 
-  /**
-   * Tests getting an item that doesn't exist.
-   */
+  /** Tests getting an item that doesn't exist. */
   @Test
   void keyDoesNotExist() throws IOException {
     FileCache<Integer> cache = FileCache.Builder.createWithIntegerKey(tmpDir, false).build();
     assertNull(cache.get(1));
   }
 
-  /**
-   * Tests {@link FileCache#contains}.
-   */
+  /** Tests {@link FileCache#contains}. */
   @Test
   void contains() throws IOException {
     FileCache<Integer> cache = FileCache.Builder.createWithIntegerKey(tmpDir, false).build();
@@ -65,9 +57,7 @@ public class FileCacheTest {
     assertFalse(cache.contains(2));
   }
 
-  /**
-   * Verifies that files with the same digest are deduped.
-   */
+  /** Verifies that files with the same digest are deduped. */
   @Test
   void dedupe() throws IOException {
     FileCache<Integer> cache = FileCache.Builder.createWithIntegerKey(tmpDir, false).build();
@@ -79,9 +69,7 @@ public class FileCacheTest {
     assertEquals(100, cache.getNumBytes());
   }
 
-  /**
-   * Tests removing keys and files from the cache.
-   */
+  /** Tests removing keys and files from the cache. */
   @Test
   void remove() throws IOException {
     FileCache<Integer> cache = FileCache.Builder.createWithIntegerKey(tmpDir, false).build();
@@ -116,12 +104,11 @@ public class FileCacheTest {
     assertTrue(item3.file.exists());
   }
 
-  /**
-   * Tests pruning the cache when the maximum number of files has been exceeded.
-   */
+  /** Tests pruning the cache when the maximum number of files has been exceeded. */
   @Test
   void maxFiles() throws IOException {
-    FileCache<Integer> cache = FileCache.Builder.createWithIntegerKey(tmpDir, false).maxFiles(2).build();
+    FileCache<Integer> cache =
+        FileCache.Builder.createWithIntegerKey(tmpDir, false).maxFiles(2).build();
     byte[] data = getRandomBytes(100);
     cache.put(1, new ByteArrayInputStream(data));
     cache.put(2, new ByteArrayInputStream(data));
@@ -138,12 +125,11 @@ public class FileCacheTest {
     assertTrue(cache.contains(4));
   }
 
-  /**
-   * Verifies that the least recently accessed item is pruned.
-   */
+  /** Verifies that the least recently accessed item is pruned. */
   @Test
   void accessOrder() throws IOException {
-    FileCache<Integer> cache = FileCache.Builder.createWithIntegerKey(tmpDir, false).maxFiles(2).build();
+    FileCache<Integer> cache =
+        FileCache.Builder.createWithIntegerKey(tmpDir, false).maxFiles(2).build();
     byte[] data = getRandomBytes(100);
     cache.put(1, new ByteArrayInputStream(data));
     data = getRandomBytes(100);
@@ -160,7 +146,8 @@ public class FileCacheTest {
 
   @Test
   void maxBytes() throws IOException {
-    FileCache<Integer> cache = FileCache.Builder.createWithIntegerKey(tmpDir, false).maxBytes(299).build();
+    FileCache<Integer> cache =
+        FileCache.Builder.createWithIntegerKey(tmpDir, false).maxBytes(299).build();
     byte[] data = getRandomBytes(100);
     cache.put(1, new ByteArrayInputStream(data));
     data = getRandomBytes(100);
@@ -175,30 +162,14 @@ public class FileCacheTest {
     assertTrue(cache.contains(3));
   }
 
-    /**
-     * Never prunes files that are smaller or equal to the given size.
-     */
-    private class KeepSmallFiles implements FileCache.RemoveCallback {
-        private final long size;
-
-        KeepSmallFiles(long size) {
-            this.size = size;
-        }
-
-        @Override
-        public boolean okToRemove(FileCache.Item item) {
-            return item.file.length() > size;
-        }
-    }
-
-  /**
-   * Tests overriding the behavior of {@link FileCache#okToRemove}.
-   */
+  /** Tests overriding the behavior of {@link FileCache#okToRemove}. */
   @Test
   void okToRemove() throws IOException {
-    FileCache<Integer> cache = FileCache.Builder.createWithIntegerKey(tmpDir, false)
-        .maxFiles(2)
-        .removeCallback(new KeepSmallFiles(99)).build();
+    FileCache<Integer> cache =
+        FileCache.Builder.createWithIntegerKey(tmpDir, false)
+            .maxFiles(2)
+            .removeCallback(new KeepSmallFiles(99))
+            .build();
     byte[] data = getRandomBytes(99);
     cache.put(1, new ByteArrayInputStream(data));
     data = getRandomBytes(100);
@@ -212,12 +183,11 @@ public class FileCacheTest {
     assertTrue(cache.contains(3));
   }
 
-  /**
-   * Verifies that files are not purged if their lifetime is lower than the minimum.
-   */
+  /** Verifies that files are not purged if their lifetime is lower than the minimum. */
   @Test
   void minLifetime() throws IOException, InterruptedException {
-    FileCache<Integer> cache = FileCache.Builder.createWithIntegerKey(tmpDir, false).maxFiles(2).minLifetime(200).build();
+    FileCache<Integer> cache =
+        FileCache.Builder.createWithIntegerKey(tmpDir, false).maxFiles(2).minLifetime(200).build();
     byte[] data = getRandomBytes(100);
     cache.put(1, new ByteArrayInputStream(data));
     data = getRandomBytes(100);
@@ -241,54 +211,51 @@ public class FileCacheTest {
     assertTrue(cache.contains(4));
   }
 
-    /**
-     * Verifies that cached files are cleaned up after the item is aged out.
-     */
-    private void cleanUpFiles(boolean persistent) throws IOException {
-        FileCache<Integer> cache = FileCache.Builder.createWithIntegerKey(tmpDir, persistent).maxFiles(1).build();
-        File dataDir = new File(tmpDir, "data");
-        File propDir = new File(tmpDir, "properties");
+  /** Verifies that cached files are cleaned up after the item is aged out. */
+  private void cleanUpFiles(boolean persistent) throws IOException {
+    FileCache<Integer> cache =
+        FileCache.Builder.createWithIntegerKey(tmpDir, persistent).maxFiles(1).build();
+    File dataDir = new File(tmpDir, "data");
+    File propDir = new File(tmpDir, "properties");
 
-        byte[] data = getRandomBytes(100);
-        cache.put(1, new ByteArrayInputStream(data));
-        FileCache.Item item1 = cache.get(1);
-        File dataFile = new File(dataDir, item1.digest);
-        File propFile = new File(propDir, item1.digest + ".properties");
-        assertTrue(dataFile.isFile());
-        assertEquals(persistent, propFile.isFile());
+    byte[] data = getRandomBytes(100);
+    cache.put(1, new ByteArrayInputStream(data));
+    FileCache.Item item1 = cache.get(1);
+    File dataFile = new File(dataDir, item1.digest);
+    File propFile = new File(propDir, item1.digest + ".properties");
+    assertTrue(dataFile.isFile());
+    assertEquals(persistent, propFile.isFile());
 
-        data = getRandomBytes(100);
-        cache.put(2, new ByteArrayInputStream(data));
-        assertFalse(dataFile.exists());
-        assertFalse(propFile.exists());
-    }
+    data = getRandomBytes(100);
+    cache.put(2, new ByteArrayInputStream(data));
+    assertFalse(dataFile.exists());
+    assertFalse(propFile.exists());
+  }
 
   @Test
   void cleanUpFiles() throws IOException {
-    cleanUpFiles(true); //make sure expiration works in both cases
-    cleanUpFiles(false); //also confirm by proxy that non-persistent cache is not writing propFiles
+    cleanUpFiles(true); // make sure expiration works in both cases
+    cleanUpFiles(false); // also confirm by proxy that non-persistent cache is not writing propFiles
   }
 
-    private void storePersistentCache() throws IOException {
-        FileCache<Integer> cache = FileCache.Builder.createWithIntegerKey(tmpDir, true).build();
-        byte[] data = getRandomBytes(100);
+  private void storePersistentCache() throws IOException {
+    FileCache<Integer> cache = FileCache.Builder.createWithIntegerKey(tmpDir, true).build();
+    byte[] data = getRandomBytes(100);
 
-        // Store 2 entries for the same content.
-        Map<String, String> props = ImmutableMap.of("Bill", "Evans", "Wynton", "Kelly");
-        cache.put(1, new ByteArrayInputStream(data), props);
-        cache.put(2, new ByteArrayInputStream(data), props);
+    // Store 2 entries for the same content.
+    Map<String, String> props = ImmutableMap.of("Bill", "Evans", "Wynton", "Kelly");
+    cache.put(1, new ByteArrayInputStream(data), props);
+    cache.put(2, new ByteArrayInputStream(data), props);
 
-        FileCache.Item item = cache.get(1);
-        assertEquals(2, item.properties.size());
-        assertEquals("Evans", item.properties.get("Bill"));
-        assertEquals("Kelly", item.properties.get("Wynton"));
+    FileCache.Item item = cache.get(1);
+    assertEquals(2, item.properties.size());
+    assertEquals("Evans", item.properties.get("Bill"));
+    assertEquals("Kelly", item.properties.get("Wynton"));
 
-        assertEquals(item, cache.get(2));
-    }
+    assertEquals(item, cache.get(2));
+  }
 
-  /**
-   * Verifies reloading cache content.
-   */
+  /** Verifies reloading cache content. */
   @Test
   void reload() throws IOException {
     storePersistentCache();
@@ -338,16 +305,14 @@ public class FileCacheTest {
     assertArrayEquals(data, ByteUtil.getContent(item.file));
   }
 
-  /**
-   * Confirms that the cache properly replaces a value for an existing key (HS-7363).
-   */
+  /** Confirms that the cache properly replaces a value for an existing key (HS-7363). */
   @Test
   void replaceValueForKey() throws IOException {
     FileCache<Integer> cache = FileCache.Builder.createWithIntegerKey(tmpDir, false).build();
 
     // Put data into the cache 10 times and make sure that the number of files doesn't grow.
     byte[] data = null;
-    for (int i = 1;i <= 10;i++) {
+    for (int i = 1; i <= 10; i++) {
       data = getRandomBytes(100);
       cache.put(1, new ByteArrayInputStream(data));
       assertEquals(1, FileUtil.listFilesRecursively(tmpDir).size());
@@ -358,10 +323,7 @@ public class FileCacheTest {
     assertArrayEquals(data, ByteUtil.getContent(item.file));
   }
 
-  /**
-   * Confirms that both the data file and the property file are deleted when an item
-   * is removed.
-   */
+  /** Confirms that both the data file and the property file are deleted when an item is removed. */
   @Test
   void removeProperties() throws IOException {
     FileCache<Integer> cache = FileCache.Builder.createWithIntegerKey(tmpDir, true).build();
@@ -373,15 +335,17 @@ public class FileCacheTest {
     assertEquals(0, FileUtil.listFilesRecursively(tmpDir).size());
   }
 
-    private static byte[] getRandomBytes(int size) {
-        byte[] data = new byte[size];
-        Random r = new Random();
-        r.nextBytes(data);
-        return data;
+  /** Never prunes files that are smaller or equal to the given size. */
+  private static class KeepSmallFiles implements FileCache.RemoveCallback {
+    private final long size;
+
+    KeepSmallFiles(long size) {
+      this.size = size;
     }
 
-    @AfterEach
-    public void tearDown() throws IOException {
-        FileUtil.deleteDir(tmpDir);
+    @Override
+    public boolean okToRemove(FileCache.Item item) {
+      return item.file.length() > size;
     }
+  }
 }
