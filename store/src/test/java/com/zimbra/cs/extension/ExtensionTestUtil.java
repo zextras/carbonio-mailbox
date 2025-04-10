@@ -12,8 +12,6 @@ import java.net.URL;
 
 /**
  * Utility Class for Unit Test with Extension.
- * When unit test is executed, custom classes in java-test/com/zimbra/extensions is compiled
- * and copied to build/test/extensions/com/zimbra/extensions
  */
 public class ExtensionTestUtil {
     private static URL classpath;
