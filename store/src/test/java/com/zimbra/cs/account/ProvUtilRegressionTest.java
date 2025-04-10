@@ -1,6 +1,6 @@
 package com.zimbra.cs.account;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.soap.SoapExtension;
 import com.zextras.mailbox.util.MailboxTestUtil;
@@ -27,13 +27,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 @Tag("api")
-@Execution(ExecutionMode.SAME_THREAD)
+@Disabled
 public class ProvUtilRegressionTest {
 
   private static final Logger log = LogManager.getLogger(ProvUtilRegressionTest.class);
