@@ -124,7 +124,7 @@ pipeline {
                 }
             }
         }
-        stage('UT & IT') {
+        stage('UT, IT & API tests') {
             when {
                 expression {
                     params.SKIP_TEST_WITH_COVERAGE == false
@@ -133,19 +133,8 @@ pipeline {
             steps {
                 container('jdk-17') {
                     mvnCmd("$BUILD_PROPERTIES_PARAMS verify -DexcludedGroups=api")
-                    junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
-                }
-            }
-        }
-        stage('API Testing') {
-            when {
-                expression {
-                    params.SKIP_TEST_WITH_COVERAGE == false
-                }
-            }
-            steps {
-                container('jdk-17') {
                     mvnCmd("$BUILD_PROPERTIES_PARAMS test -Dgroups=api")
+                    junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml,**/target/surefire-reports/*.xml'
                 }
             }
         }
