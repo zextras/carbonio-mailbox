@@ -791,6 +791,12 @@
 
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
+    <test.argLine>
+      -Dserver.dir=${project.basedir}
+      -Djunit.jupiter.execution.parallel.enabled=true
+      -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
+      -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
+    </test.argLine>
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jetty.version>9.4.56.v20240826</jetty.version>
@@ -940,14 +946,11 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.0.0-M7</version>
           <configuration>
+            <forkCount>4</forkCount>
             <threadCount>4</threadCount>
             <reuseForks>false</reuseForks>
-            <parallel>classes</parallel>
-            <argLine>-Dserver.dir=${project.basedir}
-              -Djunit.jupiter.execution.parallel.enabled=true
-              -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
-              -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
-            </argLine>
+            <parallel>both</parallel>
+            <argLine>${test.argLine}</argLine>
           </configuration>
         </plugin>
         <plugin>
@@ -955,14 +958,12 @@
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>3.0.0-M7</version>
           <configuration>
-            <parallel>classes</parallel>
-            <reuseForks>false</reuseForks>
             <forkCount>4</forkCount>
+            <threadCount>4</threadCount>
+            <parallel>both</parallel>
+            <reuseForks>false</reuseForks>
             <!-- argline preserves other plugin args, like JaCoCo -->
-            <argLine>-Dserver.dir=${project.basedir}
-              -Djunit.jupiter.execution.parallel.enabled=true
-              -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
-              -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
+            <argLine>${test.argLine}
             </argLine>
           </configuration>
           <executions>
