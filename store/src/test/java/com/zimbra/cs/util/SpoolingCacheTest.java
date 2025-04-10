@@ -5,29 +5,27 @@
 
 package com.zimbra.cs.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.zimbra.common.localconfig.LC;
 import java.io.File;
 import java.io.IOException;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import com.zimbra.common.localconfig.LC;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import com.zimbra.cs.util.SpoolingCache;
+import org.testcontainers.shaded.com.google.common.io.Files;
 
 public class SpoolingCacheTest {
 
+    private static File testDirectory = Files.createTempDir();
     @BeforeAll
     public static void init() throws Exception {
-        new File("build/test").mkdirs();
-        LC.zimbra_tmp_directory.setDefault("build/test");
+        LC.zimbra_tmp_directory.setDefault(testDirectory.getAbsolutePath());
     }
 
     @AfterAll
     public static void destroy() throws Exception {
-        new File("build/test").delete();
+      testDirectory.delete();
     }
 
     private static final String[] STRINGS = new String[] { "foo", "bar", "baz" };
