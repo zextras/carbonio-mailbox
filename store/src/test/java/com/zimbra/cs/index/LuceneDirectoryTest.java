@@ -12,11 +12,11 @@ import com.zimbra.cs.stats.ZimbraPerf;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import org.apache.lucene.store.IndexInput;
 import org.apache.lucene.store.IndexOutput;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Unit test for {@link LuceneDirectory}.
@@ -24,6 +24,9 @@ import org.junit.jupiter.api.Test;
  * @author ysasaki
  */
 public final class LuceneDirectoryTest {
+
+	@TempDir
+	private File tmpDir;
 
 	@BeforeAll
 	public static void init() {
@@ -33,8 +36,6 @@ public final class LuceneDirectoryTest {
 
 	@Test
 	void read() throws IOException {
-		final File tmpDir = Files.createTempDirectory(LuceneDirectoryTest.class.getSimpleName())
-				.toFile().getAbsoluteFile();
 		FileOutputStream out = new FileOutputStream(new File(tmpDir, "read"));
 		out.write(new byte[]{0, 1, 2, 3, 4});
 		out.close();
@@ -53,8 +54,6 @@ public final class LuceneDirectoryTest {
 	void write() throws IOException {
 		long count = ZimbraPerf.COUNTER_IDX_BYTES_WRITTEN.getCount();
 		long total = ZimbraPerf.COUNTER_IDX_BYTES_WRITTEN.getTotal();
-   final File tmpDir = Files.createTempDirectory(LuceneDirectoryTest.class.getSimpleName())
-       .toFile().getAbsoluteFile();
 		LuceneDirectory dir = LuceneDirectory.open(tmpDir);
 		IndexOutput out = dir.createOutput("write");
 		out.writeBytes(new byte[]{0, 1, 2}, 3);
