@@ -134,7 +134,7 @@ pipeline {
                 container('jdk-17') {
                     mvnCmd("$BUILD_PROPERTIES_PARAMS verify -DexcludedGroups=api")
                     mvnCmd("$BUILD_PROPERTIES_PARAMS test -Dgroups=api")
-                    junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml,**/target/surefire-reports/*.xml'
+                    junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
                 }
             }
         }
