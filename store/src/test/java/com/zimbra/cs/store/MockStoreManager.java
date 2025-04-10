@@ -33,6 +33,7 @@ import com.zimbra.cs.mailbox.Mailbox;
  */
 public final class MockStoreManager extends StoreManager {
 
+    public static final String VOLUME_DIRECTORY = TestConfig.getInstance().volumeDirectory();
     private final Map<String, MockMailboxBlob> blobs = new HashMap<String, MockMailboxBlob>();
 
     public MockStoreManager() {
@@ -187,7 +188,7 @@ public final class MockStoreManager extends StoreManager {
         byte[] content;
 
         MockBlob() {
-            super(new File(TestConfig.getInstance().volumeDirectory(),  "store"));
+            super(new File(VOLUME_DIRECTORY,  "store"));
             content = new byte[0];
         }
 
@@ -206,7 +207,7 @@ public final class MockStoreManager extends StoreManager {
         }
 
         MockBlob(byte[] data) {
-            super(new File(TestConfig.getInstance().volumeDirectory(),  "store"));
+            super(new File(VOLUME_DIRECTORY,  "store"));
             content = data;
         }
 
@@ -231,7 +232,7 @@ public final class MockStoreManager extends StoreManager {
     }
 
     private static final class MockLocalBlob extends Blob {
-        static final File tmpdir = new File(TestConfig.getInstance().volumeDirectory(),  "store");
+        static final File tmpdir = new File(VOLUME_DIRECTORY,  "store");
         private final int length;
 
         public MockLocalBlob(byte[] content) throws IOException {
