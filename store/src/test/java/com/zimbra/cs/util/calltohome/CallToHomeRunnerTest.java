@@ -2,7 +2,9 @@ package com.zimbra.cs.util.calltohome;
 
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.service.ServiceException;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,18 +14,23 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CallToHomeRunnerTest {
 
-  private CallToHomeRunner callToHomeRunner;
+  private static CallToHomeRunner callToHomeRunner;
 
-  @BeforeEach
-  public void setUp() throws Exception {
+  @BeforeAll
+  public static void setUp() throws Exception {
     MailboxTestUtil.setUp();
     callToHomeRunner = CallToHomeRunner.getInstance();
   }
 
-  @AfterEach
-  public void tearDown() throws ServiceException {
+  @AfterAll
+  public static void tearDown() throws ServiceException {
     MailboxTestUtil.tearDown();
     callToHomeRunner.stop();
+  }
+
+  @AfterEach
+   void stop() throws ServiceException {
+     callToHomeRunner.stop();
   }
 
   @Test
