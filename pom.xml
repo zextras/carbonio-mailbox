@@ -447,7 +447,7 @@
       <dependency>
         <groupId>org.easymock</groupId>
         <artifactId>easymock</artifactId>
-        <version>3.0</version>
+        <version>5.2.0</version>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
@@ -940,10 +940,10 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.0.0-M7</version>
           <configuration>
-            <threadCount>16</threadCount>
+            <threadCount>4</threadCount>
             <reuseForks>false</reuseForks>
             <parallel>classes</parallel>
-            <argLine>@{argLine} -Dserver.dir=${project.basedir}
+            <argLine>-Dserver.dir=${project.basedir}
               -Djunit.jupiter.execution.parallel.enabled=true
               -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
               -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
@@ -959,7 +959,7 @@
             <reuseForks>false</reuseForks>
             <forkCount>4</forkCount>
             <!-- argline preserves other plugin args, like JaCoCo -->
-            <argLine>@{argLine} -Dserver.dir=${project.basedir}
+            <argLine>-Dserver.dir=${project.basedir}
               -Djunit.jupiter.execution.parallel.enabled=true
               -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
               -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
