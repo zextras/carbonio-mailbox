@@ -940,27 +940,14 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.0.0-M7</version>
           <configuration>
-            <forkCount>4</forkCount>
+            <threadCount>16</threadCount>
             <reuseForks>false</reuseForks>
             <parallel>classes</parallel>
-            <!-- argline preserves other plugin args, like JaCoCo -->
             <argLine>@{argLine} -Dserver.dir=${project.basedir}
               -Djunit.jupiter.execution.parallel.enabled=true
               -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
-              -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
               -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
             </argLine>
-            <excludes>
-              <!-- Exclude qa -->
-              <exclude>qa.**</exclude>
-              <!-- Exclude classes that starts with Test but were previously in src/main -->
-              <exclude>com.zimbra.cs.util.yauth.**</exclude>
-              <!-- Exclude classes that were already excluded before maven migration -->
-              <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
-              <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
-              <exclude>com.zimbra.cs.service.mail.GetMsgTest.java</exclude>
-              <exclude>com.zimbra.cs.service.mail.SearchActionTest.java</exclude>
-            </excludes>
           </configuration>
         </plugin>
         <plugin>
@@ -975,13 +962,8 @@
             <argLine>@{argLine} -Dserver.dir=${project.basedir}
               -Djunit.jupiter.execution.parallel.enabled=true
               -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
-              -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
               -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
             </argLine>
-            <excludes>
-              <!-- Exclude qa -->
-              <exclude>qa.**</exclude>
-            </excludes>
           </configuration>
           <executions>
             <execution>
