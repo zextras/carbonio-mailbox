@@ -5,9 +5,9 @@
 
 package com.zimbra.cs.redolog;
 
-import java.io.File;
-
+import com.zextras.mailbox.util.TestConfig;
 import com.zimbra.common.service.ServiceException;
+import java.io.File;
 
 /**
  * Mock {@link RedoLogProvider} for unit test.
@@ -17,7 +17,8 @@ import com.zimbra.common.service.ServiceException;
 public class MockRedoLogProvider extends RedoLogProvider {
 
     public MockRedoLogProvider() {
-        mRedoLogManager = new RedoLogManager(new File("build/test/redo/redo.log"), new File("build/test/redo"), false);
+        final String volumeDirectory = TestConfig.getInstance().getVolumeDirectory();
+        mRedoLogManager = new RedoLogManager(new File(volumeDirectory,  "/redo/redo.log"), new File(volumeDirectory,  "redo"), false);
     }
 
     @Override
