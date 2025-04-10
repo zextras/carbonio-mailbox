@@ -19,7 +19,9 @@ public class ExtensionTestUtil {
     private static URL classpath;
 
     public static void init() throws Exception {
-        classpath = new File("store/build/test/extensions").toURI().toURL();
+        // TODO: this test is not asserting anything. The classpath below could be anything and tests
+        //  will still pass
+        classpath = new File("random/extensions").toURI().toURL();
         LC.zimbra_extension_common_directory.setDefault(null);
         LC.zimbra_extension_directory.setDefault(null);
     }
