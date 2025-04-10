@@ -11,7 +11,6 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.admin.message.CreateAccountRequest;
 import com.zimbra.soap.admin.message.CreateAccountResponse;
 import com.zimbra.soap.admin.type.AccountInfo;
-import org.junit.After;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
