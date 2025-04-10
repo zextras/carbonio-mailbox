@@ -31,7 +31,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 @Tag("api")
-@Disabled
 public class ProvUtilRegressionTest {
 
   private static final Logger log = LogManager.getLogger(ProvUtilRegressionTest.class);
@@ -83,7 +82,7 @@ public class ProvUtilRegressionTest {
   }
 
   private void run(String commandLine) throws IOException {
-    String[] argsArray = commandLine.split("\s+");
+    String[] argsArray = commandLine.split(" +");
     log.info("Executing '{}'", commandLine);
     ProvUtilCommandRunner.CommandOutput out = null;
     try {
