@@ -16,7 +16,7 @@ import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-public class FileUtilTest {
+class FileUtilTest {
 
   @TempDir private File tempDir;
 
@@ -108,7 +108,7 @@ public class FileUtilTest {
   }
 
   @Test
-  void listDirsRecursivelyReturnsAllDirectories() throws IOException {
+  void listDirsRecursivelyReturnsAllDirectories() {
     File subDir1 = new File(tempDir, "subDir1");
     File subDir2 = new File(subDir1, "subDir2");
     assertTrue(subDir1.mkdir());
