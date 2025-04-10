@@ -79,9 +79,7 @@ class ModifyAppointmentTest extends SoapTestSuite {
             });
     greenMail.start();
     var provisioning = Provisioning.getInstance();
-    // TODO: avoid at all cost using static, prefer defining a Junit extension next time and access the server
-    //  through something like this.getServer()
-    provisioning.getServerByName("localhost").setSmtpPort(smtpPort);
+    provisioning.getLocalServer().setSmtpPort(smtpPort);
     mailboxManager = MailboxManager.getInstance();
     accountCreatorFactory = new AccountCreator.Factory(provisioning);
   }
