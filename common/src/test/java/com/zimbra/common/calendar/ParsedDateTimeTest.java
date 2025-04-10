@@ -5,23 +5,15 @@
 
 package com.zimbra.common.calendar;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
+import com.zimbra.common.localconfig.LC;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.zimbra.common.localconfig.LC;
-
-public class ParsedDateTimeTest {
-    
-    @BeforeAll
-    public static void init() throws Exception {
-    System.setProperty("zimbra.config", "../store/src/test/resources/localconfig-test.xml");
-  }
+class ParsedDateTimeTest {
 
   /*
      * Tests the date conversion during the day light cross over dates for allday events.
