@@ -65,14 +65,6 @@
       <groupId>org.bouncycastle</groupId>
     </dependency>
 
-    <!--    TODO: fix this, we will locally use the compiled jar to bypass this failure-->
-    <!--    <dependency>-->
-    <!--      &lt;!&ndash;TODO: we are using 0.9.16-patched in our production&ndash;&gt;-->
-    <!--      <artifactId>ical4j</artifactId>-->
-    <!--      <groupId>ical4j</groupId>-->
-    <!--      <version>0.9.16-patched</version>-->
-    <!--    </dependency>-->
-
     <dependency>
       <artifactId>ical4j</artifactId>
       <groupId>ical4j</groupId>
@@ -235,13 +227,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <forkMode>always</forkMode>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
