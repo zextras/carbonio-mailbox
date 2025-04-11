@@ -1,6 +1,6 @@
 package com.zimbra.cs.account;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.soap.SoapExtension;
 import com.zextras.mailbox.util.MailboxTestUtil;
@@ -27,18 +27,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 @Tag("api")
-@Execution(ExecutionMode.SAME_THREAD)
 public class ProvUtilRegressionTest {
 
   private static final Logger log = LogManager.getLogger(ProvUtilRegressionTest.class);
-  
-  private static final int SOAP_PORT = 8080;
+
   public static final String ACCOUNT_UUID = "186c1c23-d2ad-46b4-9efd-ddd890b1a4a2";
   public static final String ACCOUNT_NAME = "test@test.com";
 
@@ -46,7 +42,6 @@ public class ProvUtilRegressionTest {
   static SoapExtension soapExtension = new SoapExtension.Builder()
           .addEngineHandler(TrackCommandRequestService.class.getName())
           .withBasePath("/service/admin/")
-          .withPort(SOAP_PORT)
           .create();
 
   ProvUtilRequestsFile requestsFile = new ProvUtilRequestsFile(Paths.get("src/test/resources/provutil/requests"));
@@ -55,7 +50,7 @@ public class ProvUtilRegressionTest {
   static void setUp() {
     //noinspection HttpUrlsUsage
     LC.zimbra_admin_service_scheme.setDefault("http://");
-    LC.zimbra_admin_service_port.setDefault(SOAP_PORT);
+    LC.zimbra_admin_service_port.setDefault(soapExtension.getPort());
   }
 
   @AfterAll
@@ -87,7 +82,7 @@ public class ProvUtilRegressionTest {
   }
 
   private void run(String commandLine) throws IOException {
-    String[] argsArray = commandLine.split("\s+");
+    String[] argsArray = commandLine.split(" +");
     log.info("Executing '{}'", commandLine);
     ProvUtilCommandRunner.CommandOutput out = null;
     try {

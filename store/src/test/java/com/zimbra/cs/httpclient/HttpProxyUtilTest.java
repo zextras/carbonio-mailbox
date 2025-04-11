@@ -16,8 +16,10 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -25,13 +27,13 @@ import org.mockito.Mockito;
 
 class HttpProxyUtilTest {
 
-  @BeforeEach
-  public void setUp() throws Exception {
+  @BeforeAll
+  public static void setUp() throws Exception {
     MailboxTestUtil.setUp();
   }
 
-  @AfterEach
-  public void tearDown() throws Exception {
+  @AfterAll
+  public static void tearDown() throws Exception {
     MailboxTestUtil.tearDown();
   }
 

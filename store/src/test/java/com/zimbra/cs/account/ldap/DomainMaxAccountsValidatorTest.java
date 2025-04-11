@@ -12,8 +12,10 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Provisioning.ProvisioningValidator;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,13 +23,22 @@ import org.mockito.Mockito;
 
 class DomainMaxAccountsValidatorTest {
 
-  @BeforeEach
-  void setUp() throws Exception {
+  @BeforeAll
+  static void setUp() throws Exception {
     MailboxTestUtil.setUp();
   }
 
+  @BeforeEach
+  void initData() throws Exception {
+    MailboxTestUtil.initData();
+  }
   @AfterEach
-  void tearDown() throws ServiceException {
+  void clear() throws Exception {
+    MailboxTestUtil.clearData();
+  }
+
+  @AfterAll
+  static void tearDown() throws Exception {
     MailboxTestUtil.tearDown();
   }
 

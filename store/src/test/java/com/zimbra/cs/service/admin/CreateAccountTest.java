@@ -11,8 +11,10 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.admin.message.CreateAccountRequest;
 import com.zimbra.soap.admin.message.CreateAccountResponse;
 import com.zimbra.soap.admin.type.AccountInfo;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,15 +31,25 @@ class CreateAccountTest {
 
     private static Provisioning provisioning;
 
-    @BeforeEach
-    void setUp() throws Exception {
+    @BeforeAll
+    static void setUp() throws Exception {
         MailboxTestUtil.setUp();
         provisioning = Provisioning.getInstance();
     }
 
-    @AfterEach
-    void tearDown() throws ServiceException {
+    @AfterAll
+    static void tearDown() throws ServiceException {
         MailboxTestUtil.tearDown();
+    }
+
+    @AfterEach
+    void clearData() throws Exception {
+        MailboxTestUtil.clearData();
+    }
+
+    @BeforeEach
+    void initData() throws Exception {
+        MailboxTestUtil.initData();
     }
 
     @ParameterizedTest

@@ -39,3 +39,4 @@ target/
 /artifacts/
 /store/ldap/generated/
 /data/
+/node_modules/

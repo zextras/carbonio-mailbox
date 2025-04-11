@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class HttpStoreManagerTest extends AbstractExternalStoreManagerTest {
 
@@ -69,12 +70,12 @@ public class HttpStoreManagerTest extends AbstractExternalStoreManagerTest {
         return new MockHttpStoreManager();
     }
 
+    @TempDir
     File tmpDir;
 
     @BeforeEach
     public void setUpHttp() throws Exception {
         MockHttpStore.startup();
-        tmpDir = Files.createTempDir();
         LC.zimbra_tmp_directory.setDefault(tmpDir.getPath());
         MailboxTestUtil.clearData();
     }
@@ -82,9 +83,6 @@ public class HttpStoreManagerTest extends AbstractExternalStoreManagerTest {
     @AfterEach
     public void tearDownHttp() throws Exception {
         MockHttpStore.shutdown();
-        if (tmpDir != null) {
-            FileUtil.deleteDir(tmpDir);
-        }
     }
 
  @Test

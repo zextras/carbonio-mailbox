@@ -8,6 +8,7 @@ import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
 import com.zextras.mailbox.util.InMemoryLdapServer;
 import com.zextras.mailbox.util.InMemoryLdapServer.Builder;
+import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
@@ -45,7 +46,7 @@ import org.eclipse.jetty.server.Server;
  */
 public class SampleLocalMailbox {
 
-	private static final int LDAP_PORT = 1389;
+	private static final int LDAP_PORT = PortUtil.findFreePort();
 	private static final String APP_SERVER_NAME = "localhost";
 
 	public static class ServerSetup {

@@ -30,8 +30,7 @@ import org.testcontainers.utility.DockerImageName;
 @Testcontainers
 class HealthServletTest {
 
-  private static final int PORT = 8080;
-  private static final String DB_USER = "test";
+   private static final String DB_USER = "test";
   private static final String DB_PASSWORD = "test";
 
   @Container
@@ -51,10 +50,9 @@ class HealthServletTest {
     LC.mysql_port.setDefault(mariaDBContainer.getFirstMappedPort());
     server =
         new JettyServerFactory()
-            .withPort(PORT)
-            .addFilter("/*", new FilterHolder(GuiceFilter.class))
+             .addFilter("/*", new FilterHolder(GuiceFilter.class))
             .addListener(new GuiceMailboxServletConfig())
-            .create();
+            .create().server();
     server.start();
   }
 

@@ -5,15 +5,13 @@
 
 package com.zimbra.cs.extension;
 
-import java.io.File;
-import java.net.URL;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.common.localconfig.LC;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.io.File;
+import java.net.URL;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link ExtensionUtil}.
@@ -25,7 +23,7 @@ public class ExtensionUtilTest {
 
     @BeforeAll
     public static void init() throws Exception {
-        classpath = new File("build/test-classes").toURI().toURL();
+        classpath = new File("random/test-classes").toURI().toURL();
         LC.zimbra_extension_common_directory.setDefault(null);
         LC.zimbra_extension_directory.setDefault(null);
     }
