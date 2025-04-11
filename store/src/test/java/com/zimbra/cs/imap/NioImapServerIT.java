@@ -33,7 +33,7 @@ class NioImapServerIT {
   private static final int IMAP_PORT = 7143;
 
   @BeforeAll
-  public static void setUp() throws Exception {
+  static void setUp() throws Exception {
     MailboxTestUtil.setUp();
 
     ImapConfig config = new ImapConfig(false);
@@ -66,7 +66,7 @@ class NioImapServerIT {
   }
 
   @AfterAll
-  public static void tearDown() throws Exception {
+  static void tearDown() throws Exception {
     imapServer.stop();
     MailboxTestUtil.tearDown();
   }
@@ -151,7 +151,8 @@ class NioImapServerIT {
     imapClient.search("SUBJECT \"" + FIRST_MESSAGE_SUBJECT + "\"");
     var replyStrings = imapClient.getReplyStrings();
 
-    assertEquals(replyStrings[0], "* SEARCH 1");
+
+    assertEquals( "* SEARCH 1", replyStrings[0]);
     assertTrue(replyStrings[1].contains("OK SEARCH completed"));
   }
 
@@ -162,7 +163,7 @@ class NioImapServerIT {
     imapClient.search("SUBJECT \"Test Email\"");
     var replyStrings = imapClient.getReplyStrings();
 
-    assertEquals(replyStrings[0], "* SEARCH 1 2");
+    assertEquals( "* SEARCH 1 2", replyStrings[0]);
     assertTrue(replyStrings[1].contains("OK SEARCH completed"));
   }
 
