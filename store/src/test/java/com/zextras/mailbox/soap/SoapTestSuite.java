@@ -12,6 +12,9 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.service.AuthProvider;
+import com.zimbra.cs.service.account.AccountService;
+import com.zimbra.cs.service.admin.AdminService;
+import com.zimbra.cs.service.mail.MailServiceWithoutTracking;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.mail.message.CreateAppointmentRequest;
@@ -34,9 +37,9 @@ public class SoapTestSuite {
 
   @RegisterExtension
   static SoapExtension soapExtension = new SoapExtension.Builder()
-      .addEngineHandler("com.zimbra.cs.service.admin.AdminServiceWithFakeBrokerClient")
-      .addEngineHandler("com.zimbra.cs.service.account.AccountService")
-      .addEngineHandler("com.zimbra.cs.service.mail.MailServiceWithoutTracking")
+      .addEngineHandler(AdminService.class.getName())
+      .addEngineHandler(AccountService.class.getName())
+      .addEngineHandler(MailServiceWithoutTracking.class.getName())
       .create();
 
   /**

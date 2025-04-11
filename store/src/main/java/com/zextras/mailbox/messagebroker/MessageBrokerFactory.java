@@ -1,12 +1,13 @@
 // SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
 //
 // SPDX-License-Identifier: AGPL-3.0-only
-package com.zextras.mailbox.messageBroker;
+package com.zextras.mailbox.messagebroker;
 
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.carbonio.message_broker.config.enums.Service;
+import com.zextras.carbonio.message_broker.events.services.mailbox.UserStatusChanged;
 import com.zextras.mailbox.client.ServiceDiscoverHttpClient;
-
+import com.zimbra.common.util.ZimbraLog;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -17,6 +18,22 @@ public class MessageBrokerFactory {
   private static MessageBrokerClient instance;
 
   private MessageBrokerFactory() {
+  }
+
+  public static void publishUserEvent(UserStatusChanged event) {
+    final String userId = event.getUserId();
+    try {
+      MessageBrokerClient messageBrokerClient = MessageBrokerFactory.getMessageBrokerClientInstance();
+      boolean result = messageBrokerClient.publish(event);
+      if (result) {
+        ZimbraLog.messageBroker.info("Published status changed event for user: " + userId);
+      } else {
+        ZimbraLog.messageBroker.error("Failed to publish status changed event for user: " + userId);
+      }
+    } catch (Exception e){
+      ZimbraLog.messageBroker.error("Exception while publishing status changed event for user: " + userId, e);
+    }
+
   }
 
   public static MessageBrokerClient getMessageBrokerClientInstance() throws CreateMessageBrokerException {

@@ -1,6 +1,6 @@
 package com.zimbra.cs.service.admin;
 
-import com.zextras.mailbox.soap.SoapExtension;
+import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.cs.account.Account;
@@ -16,19 +16,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 @Tag("api")
-class DeleteAccountApiTest {
-
-	@RegisterExtension
-	static SoapExtension soapExtension = new SoapExtension.Builder()
-			.addEngineHandler(NoFilesInstalledAdminService.class.getName())
-			.create();
+class DeleteAccountApiTest  extends SoapTestSuite {
 
 	private static MailboxTestUtil.AccountCreator.Factory accountCreatorFactory;
 	private static MailboxTestUtil.AccountAction.Factory accountActionFactory;
-
 
 
 	@BeforeAll
@@ -48,12 +41,12 @@ class DeleteAccountApiTest {
 				.grantPublicFolderRight(Mailbox.ID_FOLDER_CALENDAR, "r");
 		final String accountWithPublicShareId = accountWithPublicSharedFolder.getId();
 
-		final SoapResponse deleteAccountResponse = soapExtension.getSoapClient().newRequest()
+		final SoapResponse deleteAccountResponse = this.getSoapClient().newRequest()
 				.setCaller(adminAccount).setSoapBody(new DeleteAccountRequest(accountWithPublicShareId))
 				.call();
 		Assertions.assertEquals(200, deleteAccountResponse.statusCode());
 
-		final SoapResponse getAccountResponse = soapExtension.getSoapClient().newRequest()
+		final SoapResponse getAccountResponse = this.getSoapClient().newRequest()
 				.setCaller(adminAccount)
 				.setSoapBody(new GetAccountRequest(AccountSelector.fromId(accountWithPublicShareId)))
 				.call();

@@ -5,9 +5,8 @@
 
 package com.zimbra.cs.account.callback;
 
-import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.carbonio.message_broker.events.services.mailbox.UserStatusChanged;
-import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
+import com.zextras.mailbox.messagebroker.MessageBrokerFactory;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
@@ -78,17 +77,8 @@ public class AccountStatus extends AttributeCallback {
         String status = account.getAccountStatus(prov);
         String userId = account.getId();
 
-        try {
-            MessageBrokerClient messageBrokerClient = MessageBrokerFactory.getMessageBrokerClientInstance();
-            boolean result = messageBrokerClient.publish(new UserStatusChanged(userId, status.toUpperCase()));
-            if (result) {
-                ZimbraLog.account.info("Published status changed event for user: " + userId);
-            } else {
-                ZimbraLog.account.error("Failed to publish status changed event for user: " + userId);
-            }
-        } catch (Exception e){
-            ZimbraLog.account.error("Exception while publishing status changed event for user: " + userId, e);
-        }
+        final UserStatusChanged event = new UserStatusChanged(userId, status.toUpperCase());
+        MessageBrokerFactory.publishUserEvent(event);
     }
 
     private void handleAccountStatusClosed(Account account)  throws ServiceException {

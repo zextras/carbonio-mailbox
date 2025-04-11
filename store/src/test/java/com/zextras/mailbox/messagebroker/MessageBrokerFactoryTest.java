@@ -1,4 +1,4 @@
-package com.zextras.mailbox.messageBroker;
+package com.zextras.mailbox.messagebroker;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
@@ -16,7 +16,7 @@ class MessageBrokerFactoryTest {
 	private static ClientAndServer consulServer;
 
 	@BeforeAll
-	public static void startUp() throws Exception {
+	public static void startUp() {
 		consulServer = startClientAndServer(8500);
 	}
 
@@ -27,7 +27,7 @@ class MessageBrokerFactoryTest {
 	}
 
 	@Test
-	void shouldCreateClient_WhenConsulTokenProvided() throws Exception {
+	void shouldCreateClient_WhenConsulTokenProvided() {
 		try (MockedStatic<Files> mockFileSystem = Mockito.mockStatic(Files.class, Mockito.CALLS_REAL_METHODS)) {
 			mockFileSystem.when(() -> Files.readString(any())).thenReturn("");
 			consulServer
