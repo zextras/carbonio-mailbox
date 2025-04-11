@@ -126,8 +126,7 @@ public class OwaspPolicy {
     }
 
     private String defaultPolicyFile() {
-        final String FS = File.separator;
-        return LC.zimbra_home.value() + FS + "conf" + FS + "owasp_policy.xml";
+        return LC.owasp_policy_file.value();
     }
 
     private void set(String key, String value, String urlProtocols) {

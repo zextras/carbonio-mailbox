@@ -1,14 +1,13 @@
 package com.zimbra.cs.service.mail;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.soap.SoapUtils;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
+import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.mailbox.FolderConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -29,7 +28,6 @@ import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
-import com.zimbra.soap.mail.message.CreateAppointmentRequest;
 import com.zimbra.soap.mail.message.CreateAppointmentResponse;
 import com.zimbra.soap.mail.message.CreateMountpointRequest;
 import com.zimbra.soap.mail.message.CreateMountpointResponse;
@@ -73,14 +71,15 @@ class ModifyAppointmentTest extends SoapTestSuite {
 
   @BeforeAll
   static void setUpClass() throws Exception {
+    final int smtpPort = PortUtil.findFreePort();
     greenMail =
         new GreenMail(
             new ServerSetup[]{
-                new ServerSetup(
-                    SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
+                new ServerSetup(smtpPort, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
             });
     greenMail.start();
     var provisioning = Provisioning.getInstance();
+    provisioning.getLocalServer().setSmtpPort(smtpPort);
     mailboxManager = MailboxManager.getInstance();
     accountCreatorFactory = new AccountCreator.Factory(provisioning);
   }

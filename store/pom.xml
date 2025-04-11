@@ -738,10 +738,44 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkCount>4</forkCount>
+          <reuseForks>false</reuseForks>
+          <parallel>classes</parallel>
+          <argLine>@{argLine} -Dserver.dir=${project.basedir}
+            -Djunit.jupiter.execution.parallel.enabled=true
+            -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
+            -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
+            -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
+          </argLine>
+          <excludes>
+            <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
+            <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
+            <exclude>com.zimbra.cs.service.mail.GetMsgTest.java</exclude>
+            <exclude>com.zimbra.cs.service.mail.SearchActionTest.java</exclude>
+          </excludes>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <forkCount>4</forkCount>
+          <reuseForks>false</reuseForks>
+          <parallel>classes</parallel>
+          <argLine>@{argLine} -Dserver.dir=${project.basedir}
+            -Djunit.jupiter.execution.parallel.enabled=true
+            -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
+            -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
+            -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
+          </argLine>
+          <excludes>
+            <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
+            <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
+            <exclude>com.zimbra.cs.service.mail.GetMsgTest.java</exclude>
+            <exclude>com.zimbra.cs.service.mail.SearchActionTest.java</exclude>
+          </excludes>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>

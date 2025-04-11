@@ -447,7 +447,7 @@
       <dependency>
         <groupId>org.easymock</groupId>
         <artifactId>easymock</artifactId>
-        <version>3.0</version>
+        <version>5.2.0</version>
       </dependency>
       <dependency>
         <groupId>org.xmlunit</groupId>
@@ -791,6 +791,12 @@
 
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
+    <test.argLine>
+      -Dserver.dir=${project.basedir}
+      -Djunit.jupiter.execution.parallel.enabled=true
+      -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
+      -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
+    </test.argLine>
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jetty.version>9.4.56.v20240826</jetty.version>
@@ -940,23 +946,11 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.0.0-M7</version>
           <configuration>
-            <forkMode>always</forkMode>
-            <!-- argline preserves other plugin args, like JaCoCo -->
-            <argLine>@{argLine} -Dserver.dir=${project.basedir}
-              -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
-              -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
-            </argLine>
-            <excludes>
-              <!-- Exclude qa -->
-              <exclude>qa.**</exclude>
-              <!-- Exclude classes that starts with Test but were previously in src/main -->
-              <exclude>com.zimbra.cs.util.yauth.**</exclude>
-              <!-- Exclude classes that were already excluded before maven migration -->
-              <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
-              <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
-              <exclude>com.zimbra.cs.service.mail.GetMsgTest.java</exclude>
-              <exclude>com.zimbra.cs.service.mail.SearchActionTest.java</exclude>
-            </excludes>
+            <forkCount>4</forkCount>
+            <threadCount>4</threadCount>
+            <reuseForks>false</reuseForks>
+            <parallel>both</parallel>
+            <argLine>@{argLine} ${test.argLine}</argLine>
           </configuration>
         </plugin>
         <plugin>
@@ -964,15 +958,12 @@
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>3.0.0-M7</version>
           <configuration>
+            <forkCount>4</forkCount>
+            <threadCount>4</threadCount>
+            <parallel>both</parallel>
+            <reuseForks>false</reuseForks>
             <!-- argline preserves other plugin args, like JaCoCo -->
-            <argLine>@{argLine} -Dserver.dir=${project.basedir}
-              -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
-              -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
-            </argLine>
-            <excludes>
-              <!-- Exclude qa -->
-              <exclude>qa.**</exclude>
-            </excludes>
+            <argLine>@{argLine} ${test.argLine}</argLine>
           </configuration>
           <executions>
             <execution>

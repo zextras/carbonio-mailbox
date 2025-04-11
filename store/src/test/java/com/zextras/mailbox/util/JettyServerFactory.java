@@ -18,18 +18,17 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+
 /** Test utility class to create a {@link Server} instance with custom port and servlets. */
 public class JettyServerFactory {
+
+  public record ServerWithConfiguration(Server server, int serverPort){}
 
   private final Map<String, ServletHolder> servlets = new HashMap<>();
   private final Map<String, FilterHolder> filters = new HashMap<>();
   private final List<EventListener> listeners = new ArrayList<>();
-  private int port = 7070;
+  private final int port = PortUtil.findFreePort();
 
-  public JettyServerFactory withPort(int port) {
-    this.port = port;
-    return this;
-  }
   public JettyServerFactory addServlet(String path, ServletHolder servletHolder) {
     this.servlets.put(path, servletHolder);
     return this;
@@ -51,7 +50,7 @@ public class JettyServerFactory {
    *
    * @return {@link Server}
    */
-  public Server create() {
+  public ServerWithConfiguration create() {
     final Server server = new Server();
     ServerConnector connector = new ServerConnector(server);
     connector.setPort(port);
@@ -62,6 +61,6 @@ public class JettyServerFactory {
     servlets.forEach((path, servlet) -> servletContextHandler.addServlet(servlet, path));
     server.setHandler(servletContextHandler);
     server.setConnectors(new Connector[] {connector});
-    return server;
+    return new ServerWithConfiguration(server, port);
   }
 }

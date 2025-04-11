@@ -1315,6 +1315,7 @@ public final class LC {
   @Reloadable public static final KnownKey imap_always_use_remote_store = KnownKey.newKey(false);
   // owasp handler
   public static final KnownKey zimbra_use_owasp_html_sanitizer = KnownKey.newKey(true);
+  public static final KnownKey owasp_policy_file = KnownKey.newKey("${zimbra_home}/conf/owasp_policy.xml");
   // file content type blacklist
   public static final KnownKey zimbra_file_content_type_blacklist =
       KnownKey.newKey("application/x-ms*");

@@ -3,7 +3,6 @@ package com.zextras.mailbox.util;
 import static com.zimbra.cs.account.GuestAccount.GUID_PUBLIC;
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
-import com.unboundid.ldap.listener.InMemoryDirectoryServer;
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
 import com.zextras.mailbox.util.InMemoryLdapServer.Builder;
@@ -23,9 +22,8 @@ import com.zimbra.cs.db.HSQLDB;
 import com.zimbra.cs.mailbox.*;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.redolog.RedoLogProvider;
-import com.zimbra.cs.service.admin.AdminService;
 import com.zimbra.cs.store.StoreManager;
-import org.mockito.MockedStatic;
+import java.nio.file.Files;
 import org.mockito.Mockito;
 
 import java.io.IOException;
@@ -37,13 +35,8 @@ import java.util.Set;
 import java.util.UUID;
 import javax.mail.internet.MimeMessage;
 
-/**
- * This utility class allows easy setup for the Mailbox environment using {@link #setUp()} method.
- * To clean up th environment remember to call {@link #tearDown()}. It uses an {@link
- * InMemoryDirectoryServer} and an in memory database using {@link HSQLDB} as dependencies.
- */
+
 public class MailboxTestUtil {
-  public static final int LDAP_PORT = 1389;
   public static final String SERVER_NAME = "localhost";
   public static final String DEFAULT_DOMAIN = "test.com";
   public static final String DEFAULT_DOMAIN_ID = "f4806430-b434-4e93-9357-a02d9dd796b8";
@@ -77,13 +70,19 @@ public class MailboxTestUtil {
                     "/localconfig-api-test.xml"))
             .getFile());
 
+    final var mailboxHome = Files.createTempDirectory("mailbox_home_");
+    LC.zimbra_home.setDefault(mailboxHome.toAbsolutePath().toString());
+
+    var ldapPort = PortUtil.findFreePort();
+
+    LC.ldap_port.setDefault(ldapPort);
+
     inMemoryLdapServer = new Builder()
-        .withLdapPort(LDAP_PORT)
+        .withLdapPort(ldapPort)
         .build();
     inMemoryLdapServer.start();
     inMemoryLdapServer.initializeBasicData();
 
-    LC.ldap_port.setDefault(LDAP_PORT);
     LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
     initData();
 
@@ -113,10 +112,20 @@ public class MailboxTestUtil {
 
   public static void initData() throws Exception {
     inMemoryLdapServer.initializeBasicData();
-    final Provisioning provisioning = Provisioning.getInstance(Provisioning.CacheMode.OFF);
-    provisioning.createServer(
-        SERVER_NAME,
-        new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
+    var provisioning = Provisioning.getInstance(Provisioning.CacheMode.OFF);
+    var lmtpPort = PortUtil.findFreePort();
+
+    final var server =
+        provisioning.createServer(
+            SERVER_NAME,
+            new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
+    server.setLmtpBindPort(lmtpPort);
+
+     server.setPop3SSLServerEnabled(false);
+    server.setPop3ServerEnabled(false);
+
+     server.setImapSSLServerEnabled(false);
+    server.setImapServerEnabled(false);
     var domain = provisioning.createDomain(DEFAULT_DOMAIN, new HashMap<>());
     domain.setId(DEFAULT_DOMAIN_ID);
     mockMessageBrokerClient();
@@ -124,8 +133,8 @@ public class MailboxTestUtil {
 
   private static void mockMessageBrokerClient() {
     if(mockedMessageBrokerClient == null) {
-      MessageBrokerClient messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
-      MockedStatic<MessageBrokerFactory> mockedMessageBrokerFactory = Mockito.mockStatic(MessageBrokerFactory.class, Mockito.CALLS_REAL_METHODS);
+      var messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
+      var mockedMessageBrokerFactory = Mockito.mockStatic(MessageBrokerFactory.class, Mockito.CALLS_REAL_METHODS);
       mockedMessageBrokerFactory.when(MessageBrokerFactory::getMessageBrokerClientInstance).thenReturn(messageBrokerClient);
       mockedMessageBrokerClient = messageBrokerClient;
     }
@@ -148,8 +157,8 @@ public class MailboxTestUtil {
      * @throws IOException
      */
     public Message saveMsgInInbox(javax.mail.Message message) throws ServiceException, IOException {
-      final ParsedMessage parsedMessage = new ParsedMessage((MimeMessage) message, false);
-      final DeliveryOptions deliveryOptions =
+      final var parsedMessage = new ParsedMessage((MimeMessage) message, false);
+      final var deliveryOptions =
           new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
       return mailboxManager
           .getMailboxByAccount(account)
