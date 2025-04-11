@@ -950,7 +950,7 @@
             <threadCount>4</threadCount>
             <reuseForks>false</reuseForks>
             <parallel>both</parallel>
-            <argLine>${test.argLine}</argLine>
+            <argLine>@{argLine} ${test.argLine}</argLine>
           </configuration>
         </plugin>
         <plugin>
@@ -963,8 +963,7 @@
             <parallel>both</parallel>
             <reuseForks>false</reuseForks>
             <!-- argline preserves other plugin args, like JaCoCo -->
-            <argLine>${test.argLine}
-            </argLine>
+            <argLine>@{argLine}${test.argLine}</argLine>
           </configuration>
           <executions>
             <execution>
