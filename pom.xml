@@ -963,7 +963,7 @@
             <parallel>both</parallel>
             <reuseForks>false</reuseForks>
             <!-- argline preserves other plugin args, like JaCoCo -->
-            <argLine>@{argLine}${test.argLine}</argLine>
+            <argLine>@{argLine} ${test.argLine}</argLine>
           </configuration>
           <executions>
             <execution>
