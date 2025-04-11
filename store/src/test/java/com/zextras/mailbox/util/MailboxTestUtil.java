@@ -114,19 +114,18 @@ public class MailboxTestUtil {
     inMemoryLdapServer.initializeBasicData();
     var provisioning = Provisioning.getInstance(Provisioning.CacheMode.OFF);
     var lmtpPort = PortUtil.findFreePort();
-    var pop3Port = PortUtil.findFreePort();
-    var imapPort = PortUtil.findFreePort();
+
     final var server =
         provisioning.createServer(
             SERVER_NAME,
             new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
     server.setLmtpBindPort(lmtpPort);
 
-    server.setPop3BindPort(pop3Port);
-    server.setPop3SSLServerEnabled(false);
+     server.setPop3SSLServerEnabled(false);
+    server.setPop3ServerEnabled(false);
 
-    server.setImapBindPort(imapPort);
-    server.setImapSSLServerEnabled(false);
+     server.setImapSSLServerEnabled(false);
+    server.setImapServerEnabled(false);
     var domain = provisioning.createDomain(DEFAULT_DOMAIN, new HashMap<>());
     domain.setId(DEFAULT_DOMAIN_ID);
     mockMessageBrokerClient();
