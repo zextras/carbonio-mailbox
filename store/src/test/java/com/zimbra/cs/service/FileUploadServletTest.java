@@ -102,7 +102,7 @@ public class FileUploadServletTest {
     MailboxTestUtil.initServer();
     var provisioning = Provisioning.getInstance();
 
-    accountCreatorFactory = new AccountCreator.Factory(provisioning);
+    accountCreatorFactory = AccountCreator.Factory.getDefault();
 
     Map<String, Object> attrs = Maps.newHashMap();
     provisioning.createAccount("test@zimbra.com", "secret", attrs);

@@ -268,17 +268,13 @@ public class MailboxTestUtil {
       private final Provisioning provisioning;
       private final String domain;
 
-      public Factory(Provisioning provisioning) {
-        this.provisioning = provisioning;
-        this.domain = DEFAULT_DOMAIN;
-      }
       public Factory(Provisioning provisioning, String domain) {
         this.provisioning = provisioning;
         this.domain = domain;
       }
 
       public static Factory getDefault() {
-        return new AccountCreator.Factory(Provisioning.getInstance());
+        return new AccountCreator.Factory(Provisioning.getInstance(), DEFAULT_DOMAIN);
       }
 
       public AccountCreator get() {
