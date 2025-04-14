@@ -33,7 +33,7 @@ class AclServiceTest extends MailboxTestSuite {
   static void setUp() throws Exception {
     mailboxManager = MailboxManager.getInstance();
     provisioning = Provisioning.getInstance();
-    accountCreatorFactory = new Factory(provisioning);
+    accountCreatorFactory = new Factory(provisioning, mailboxTestExtension.getDefaultDomain());
   }
 
   private static void setRights(Account target) throws ServiceException {

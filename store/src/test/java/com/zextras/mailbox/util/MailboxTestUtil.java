@@ -49,7 +49,6 @@ import org.mockito.Mockito;
 public class MailboxTestUtil {
   private static final String SERVER_NAME = "localhost";
   private static final String DEFAULT_DOMAIN = "test.com";
-  private static final String DEFAULT_DOMAIN_ID = "f4806430-b434-4e93-9357-a02d9dd796b8";
 
   public static InMemoryLdapServer getInMemoryLdapServer() {
     return inMemoryLdapServer;
@@ -266,9 +265,15 @@ public class MailboxTestUtil {
 
     public static class Factory {
       private final Provisioning provisioning;
+      private final String domain;
 
       public Factory(Provisioning provisioning) {
         this.provisioning = provisioning;
+        this.domain = DEFAULT_DOMAIN;
+      }
+      public Factory(Provisioning provisioning, String domain) {
+        this.provisioning = provisioning;
+        this.domain = domain;
       }
 
       public static Factory getDefault() {
