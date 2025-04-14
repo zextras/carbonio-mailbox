@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpResponse.response;
 
+import com.zextras.mailbox.util.PortUtil;
 import java.nio.file.Files;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,7 +18,7 @@ class MessageBrokerFactoryTest {
 
 	@BeforeAll
 	public static void startUp() {
-		consulServer = startClientAndServer(8500);
+		consulServer = startClientAndServer(PortUtil.findFreePort());
 	}
 
 	@Test

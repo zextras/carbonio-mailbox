@@ -15,6 +15,7 @@ import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
+import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
@@ -100,7 +101,7 @@ class DeleteAccountTest {
     filesClientMock = Mockito.mock(FilesClient.class);
 		provisioning.createDomain(OTHER_DOMAIN, new HashMap<>());
 
-		consulServer = startClientAndServer(8500);
+		consulServer = startClientAndServer(PortUtil.findFreePort());
 
 		consulServer
 				.when(request().withPath("/v1/kv/carbonio-message-broker/default/username"))
