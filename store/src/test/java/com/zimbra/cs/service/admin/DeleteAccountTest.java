@@ -11,6 +11,7 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 import com.zextras.carbonio.files.FilesClient;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
 import com.zextras.mailbox.util.MailboxTestUtil;
@@ -48,7 +49,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.mockserver.integration.ClientAndServer;
 
-class DeleteAccountTest {
+class DeleteAccountTest extends MailboxTestSuite {
 
 	private static final String OTHER_DOMAIN = "other.com";
 	private static Provisioning provisioning;
@@ -94,7 +95,6 @@ class DeleteAccountTest {
 	 */
 	@BeforeAll
 	static void setUp() throws Exception {
-		MailboxTestUtil.setUp();
 		mailboxManager = MailboxManager.getInstance();
 		provisioning = Provisioning.getInstance();
 		accountCreatorFactory = new AccountCreator.Factory(provisioning);
@@ -120,7 +120,6 @@ class DeleteAccountTest {
 
 	@AfterAll
 	static void tearDown() throws Exception {
-		MailboxTestUtil.tearDown();
 		consulServer.stop();
 	}
 

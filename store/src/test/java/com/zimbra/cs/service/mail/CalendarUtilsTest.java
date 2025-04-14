@@ -4,31 +4,24 @@
 
 package com.zimbra.cs.service.mail;
 
-import com.zextras.mailbox.util.MailboxTestUtil;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator.Factory;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-class CalendarUtilsTest {
+class CalendarUtilsTest extends MailboxTestSuite {
 
   private static Factory accountCreatorFactory;
 
   @BeforeAll
   public static void setUp() throws Exception {
-    MailboxTestUtil.setUp();
     accountCreatorFactory = Factory.getDefault();
-  }
-
-  @AfterAll
-  public static void tearDown() throws Exception {
-    MailboxTestUtil.tearDown();
   }
 
   @Test

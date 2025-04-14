@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.google.common.collect.Maps;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.soap.Element;
@@ -65,7 +66,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class SendMsgTest {
+public class SendMsgTest extends MailboxTestSuite {
 
   private static Account sender;
   private static Account shared;
@@ -75,7 +76,6 @@ public class SendMsgTest {
 
   @BeforeAll
   public static void setUp() throws Exception {
-    MailboxTestUtil.setUp();
     mailboxManager = MailboxManager.getInstance();
     mta =
         new GreenMail(
@@ -121,7 +121,6 @@ public class SendMsgTest {
 
   @AfterAll
   public static void tearDown() throws Exception {
-    MailboxTestUtil.tearDown();
     mta.stop();
   }
 

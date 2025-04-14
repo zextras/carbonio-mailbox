@@ -1,5 +1,8 @@
 package com.zimbra.cs.service.admin;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -11,7 +14,9 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.admin.message.CreateAccountRequest;
 import com.zimbra.soap.admin.message.CreateAccountResponse;
 import com.zimbra.soap.admin.type.AccountInfo;
-import org.junit.jupiter.api.AfterAll;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,25 +26,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-class CreateAccountTest {
+class CreateAccountTest extends MailboxTestSuite {
 
     private static Provisioning provisioning;
 
     @BeforeAll
     static void setUp() throws Exception {
-        MailboxTestUtil.setUp();
         provisioning = Provisioning.getInstance();
-    }
-
-    @AfterAll
-    static void tearDown() throws ServiceException {
-        MailboxTestUtil.tearDown();
     }
 
     @AfterEach

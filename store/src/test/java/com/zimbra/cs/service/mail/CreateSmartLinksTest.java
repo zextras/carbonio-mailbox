@@ -9,10 +9,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.smartlinks.SmartLinksGenerator;
 import com.zextras.mailbox.tracking.Event;
 import com.zextras.mailbox.tracking.Tracking;
-import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -23,14 +23,13 @@ import com.zimbra.soap.mail.message.CreateSmartLinksRequest;
 import com.zimbra.soap.mail.type.AttachmentToConvert;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-class CreateSmartLinksTest {
+class CreateSmartLinksTest extends MailboxTestSuite {
 
   private static Account account;
   private Tracking tracking;
@@ -39,13 +38,7 @@ class CreateSmartLinksTest {
 
   @BeforeAll
   static void setupAll() throws Exception {
-    MailboxTestUtil.setUp();
     account = AccountCreator.Factory.getDefault().get().create();
-  }
-
-  @AfterAll
-  static void tearDownAll() throws Exception {
-    MailboxTestUtil.tearDown();
   }
 
   @BeforeEach

@@ -3,7 +3,7 @@ package com.zimbra.cs.service.admin;
 import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.zextras.mailbox.util.MailboxTestUtil;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -21,28 +21,21 @@ import com.zimbra.soap.type.AccountBy;
 import com.zimbra.soap.type.AccountSelector;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-class AddAccountLoggerTest {
-  private Provisioning provisioning;
-  private Account account;
-  private String email;
+class AddAccountLoggerTest extends MailboxTestSuite {
+  private static Provisioning provisioning;
+  private static Account account;
+  private static String email;
 
-  @BeforeEach
-  void setUp() throws Exception {
-    MailboxTestUtil.setUp();
+  @BeforeAll
+  static void setUp() throws Exception {
     provisioning = Provisioning.getInstance();
     email = "admin_mail@" + DEFAULT_DOMAIN;
     final Map<String, Object> attributes = new HashMap<>();
     attributes.put(ZAttrProvisioning.A_zimbraIsAdminAccount, "TRUE");
     account = provisioning.createAccount(email, "password", attributes);
-  }
-
-  @AfterEach
-  void tearDown() throws ServiceException {
-    MailboxTestUtil.tearDown();
   }
 
   @Test
