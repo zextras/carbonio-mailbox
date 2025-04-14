@@ -1,6 +1,5 @@
 package com.zimbra.cs.service.admin;
 
-import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.MailboxTestSuite;
@@ -32,7 +31,7 @@ class AddAccountLoggerTest extends MailboxTestSuite {
   @BeforeAll
   static void setUp() throws Exception {
     provisioning = Provisioning.getInstance();
-    email = "admin_mail@" + DEFAULT_DOMAIN;
+    email = "admin_mail@" + mailboxTestExtension.getDefaultDomain();
     final Map<String, Object> attributes = new HashMap<>();
     attributes.put(ZAttrProvisioning.A_zimbraIsAdminAccount, "TRUE");
     account = provisioning.createAccount(email, "password", attributes);
