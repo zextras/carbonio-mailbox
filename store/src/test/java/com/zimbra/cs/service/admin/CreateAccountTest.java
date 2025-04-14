@@ -132,7 +132,7 @@ class CreateAccountTest extends MailboxTestSuite {
     private Map<String, Object> provisionAdminContext() throws Exception {
         final Map<String, Object> adminExtraAttr = new HashMap<>();
         adminExtraAttr.put(Provisioning.A_zimbraIsAdminAccount, "TRUE");
-        adminExtraAttr.put(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME);
+        adminExtraAttr.put(Provisioning.A_zimbraMailHost, mailboxTestExtension.getServerName());
         final Account adminAccount = provisioning.createAccount(
                 "admin@test.domain.com",
                 "superSecretAdminPassword",

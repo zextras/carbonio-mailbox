@@ -5,7 +5,6 @@
 package com.zimbra.cs.dav.service;
 
 import static com.icegreen.greenmail.util.ServerSetup.PROTOCOL_SMTP;
-import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
 import static com.zimbra.cs.mailclient.smtp.SmtpConfig.DEFAULT_HOST;
 import static com.zimbra.cs.mailclient.smtp.SmtpConfig.DEFAULT_PORT;
 import static org.junit.jupiter.api.Assertions.*;
@@ -84,10 +83,10 @@ class DavServletTest extends MailboxTestSuite {
   @Test
   void shouldNotSendNotificationWhenScheduleAgentClient() throws Exception {
     Account organizer = getRandomAccountForDefaultDomain();
-    organizer.addAlias("alias@" + DEFAULT_DOMAIN);
+    organizer.addAlias("alias@" + mailboxTestExtension.getDefaultDomain());
 
     final HttpPut request = new CalDavCreateAppointmentRequestBuilder(davBaseUrl)
-        .organizer("alias@" + DEFAULT_DOMAIN)
+        .organizer("alias@" + mailboxTestExtension.getDefaultDomain())
         .scheduleAgent(ScheduleAgent.CLIENT)
         .addAttendee(getRandomAccountForDefaultDomain())
         .addAttendee(getRandomAccountForDefaultDomain())
