@@ -745,7 +745,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <forkCount>4</forkCount>
+          <forkCount>2.0C</forkCount>
           <reuseForks>false</reuseForks>
           <parallel>classes</parallel>
           <argLine>@{argLine} -Dserver.dir=${project.basedir}
@@ -770,7 +770,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
-          <forkCount>4</forkCount>
+          <forkCount>2.0C</forkCount>
           <reuseForks>false</reuseForks>
           <parallel>classes</parallel>
           <argLine>@{argLine} -Dserver.dir=${project.basedir}
