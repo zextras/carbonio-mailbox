@@ -67,7 +67,7 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		Provisioning provisioning = Provisioning.getInstance();
 		provisioning.getLocalServer().setSmtpPort(smtpPort);
 		mailboxManager = MailboxManager.getInstance();
-		accountCreatorFactory = new AccountCreator.Factory(provisioning);
+		accountCreatorFactory = new AccountCreator.Factory(provisioning, soapExtension.getDefaultDomain());
 	}
 	@BeforeEach
 	void beforeEach() {

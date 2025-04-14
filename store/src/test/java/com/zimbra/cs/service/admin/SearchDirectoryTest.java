@@ -34,7 +34,8 @@ class SearchDirectoryTest extends SoapTestSuite {
   static void setUp() throws Exception {
 		Provisioning provisioning = Provisioning.getInstance();
     provisioning.createDomain("different.com", new HashMap<>());
-    accountCreatorFactory = new AccountCreator.Factory(provisioning);
+    accountCreatorFactory = new AccountCreator.Factory(provisioning,
+        soapExtension.getDefaultDomain());
     adminAccount = newAccountOn(soapExtension.getDefaultDomain()).withUsername("admin.account").asGlobalAdmin().create();
     secondAccount = newAccountOn(soapExtension.getDefaultDomain()).withUsername("second.account").create();
     firstAccount = newAccountOn(soapExtension.getDefaultDomain()).withUsername("first.account").create();

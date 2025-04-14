@@ -41,7 +41,8 @@ public class AutoCompleteTest extends SoapTestSuite {
   @BeforeAll
   static void beforeAll() throws Exception {
     Provisioning provisioning = Provisioning.getInstance();
-    accountCreatorFactory = new AccountCreator.Factory(provisioning);
+    accountCreatorFactory = new AccountCreator.Factory(provisioning,
+        soapExtension.getDefaultDomain());
     accountActionFactory = new AccountAction.Factory(
         MailboxManager.getInstance(), RightManager.getInstance());
   }

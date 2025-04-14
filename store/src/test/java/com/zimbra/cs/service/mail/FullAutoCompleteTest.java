@@ -67,7 +67,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
   static void beforeAll() throws Exception {
     accountActionFactory = new AccountAction.Factory(
         MailboxManager.getInstance(), RightManager.getInstance());
-    accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance());
+    accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance(), soapExtension.getDefaultDomain());
   }
 
   private static Collection<Arguments> parsePreferredAccountsTestData() {

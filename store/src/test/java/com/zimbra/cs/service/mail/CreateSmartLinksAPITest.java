@@ -17,7 +17,6 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mime.ParsedMessage;
-import java.io.IOException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterEach;
@@ -38,9 +37,9 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
   private Account account;
 
   @BeforeAll
-  static void beforeAll() throws Exception {
+  static void beforeAll() {
     Provisioning provisioning = Provisioning.getInstance();
-    accountCreatorFactory = new AccountCreator.Factory(provisioning);
+    accountCreatorFactory = new AccountCreator.Factory(provisioning, soapExtension.getDefaultDomain());
   }
 
 
@@ -52,7 +51,7 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
   }
 
   @AfterEach
-  public void tearDown() throws IOException {
+  public void tearDown() {
     filesServer.stop();
   }
 
