@@ -255,12 +255,13 @@ public class MailboxTestUtil {
     private final Provisioning provisioning;
     private String username = UUID.randomUUID().toString();
     private String password = "password";
-    private String domain = DEFAULT_DOMAIN;
+    private String domain;
     private final Map<String, Object> attributes =
         new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME));
 
-    private AccountCreator(Provisioning provisioning) {
+    private AccountCreator(Provisioning provisioning, String domain) {
       this.provisioning = provisioning;
+      this.domain = domain;
     }
 
     public static class Factory {
@@ -281,7 +282,7 @@ public class MailboxTestUtil {
       }
 
       public AccountCreator get() {
-        return new AccountCreator(provisioning);
+        return new AccountCreator(provisioning, domain);
       }
     }
 
