@@ -7,6 +7,7 @@
 package com.zextras.mailbox;
 
 import com.zextras.mailbox.util.MailboxTestExtension;
+import com.zextras.mailbox.util.MailboxTestUtil;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 public abstract class MailboxTestSuite {
@@ -16,5 +17,12 @@ public abstract class MailboxTestSuite {
 
 	@RegisterExtension
 	protected static MailboxTestExtension mailboxTestExtension = new MailboxTestExtension(DEFAULT_DOMAIN,SERVER_NAME);
+
+	protected void initDefaultData() throws Exception {
+		MailboxTestUtil.initData();
+	}
+	protected void clearAllData() throws Exception {
+		MailboxTestUtil.clearData();
+	}
 
 }

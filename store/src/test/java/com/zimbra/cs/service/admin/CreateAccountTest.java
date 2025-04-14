@@ -3,7 +3,6 @@ package com.zimbra.cs.service.admin;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
@@ -31,18 +30,18 @@ class CreateAccountTest extends MailboxTestSuite {
     private static Provisioning provisioning;
 
     @BeforeAll
-    static void setUp() throws Exception {
+    static void setUp() {
         provisioning = Provisioning.getInstance();
     }
 
     @AfterEach
     void clearData() throws Exception {
-        MailboxTestUtil.clearData();
+        this.clearAllData();
     }
 
     @BeforeEach
     void initData() throws Exception {
-        MailboxTestUtil.initData();
+        this.initDefaultData();
     }
 
     @ParameterizedTest
