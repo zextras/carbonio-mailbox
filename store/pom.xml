@@ -760,6 +760,10 @@
             <exclude>com.zimbra.cs.service.mail.GetMsgTest.java</exclude>
             <exclude>com.zimbra.cs.service.mail.SearchActionTest.java</exclude>
           </excludes>
+          <reportFormat>plain</reportFormat>
+          <consoleOutputReporter>
+            <disable>true</disable>
+          </consoleOutputReporter>
         </configuration>
       </plugin>
       <plugin>
@@ -775,6 +779,10 @@
             -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
           </argLine>
+          <reportFormat>plain</reportFormat>
+          <consoleOutputReporter>
+            <disable>true</disable>
+          </consoleOutputReporter>
           <excludes>
             <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
             <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
