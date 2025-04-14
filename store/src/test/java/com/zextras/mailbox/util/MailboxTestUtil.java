@@ -273,10 +273,6 @@ public class MailboxTestUtil {
         this.domain = domain;
       }
 
-      public static Factory getDefault() {
-        return new AccountCreator.Factory(Provisioning.getInstance(), DEFAULT_DOMAIN);
-      }
-
       public AccountCreator get() {
         return new AccountCreator(provisioning, domain);
       }

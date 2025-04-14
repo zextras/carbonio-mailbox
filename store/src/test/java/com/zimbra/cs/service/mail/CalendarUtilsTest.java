@@ -5,11 +5,13 @@
 package com.zimbra.cs.service.mail;
 
 import com.zextras.mailbox.MailboxTestSuite;
+import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator.Factory;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.service.mail.message.parser.InviteParserResult;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -20,8 +22,9 @@ class CalendarUtilsTest extends MailboxTestSuite {
   private static Factory accountCreatorFactory;
 
   @BeforeAll
-  public static void setUp() throws Exception {
-    accountCreatorFactory = Factory.getDefault();
+  public static void setUp() {
+    accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance(),
+        mailboxTestExtension.getDefaultDomain());
   }
 
   @Test

@@ -160,7 +160,6 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
     final Account account =
         accountCreatorFactory
             .get()
-            .withDomain( mailboxTestExtension.getDefaultDomain())
             .withUsername("user")
             .create();
     final Object[] conditionArguments =
@@ -181,7 +180,6 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
     final Account account =
         accountCreatorFactory
             .get()
-            .withDomain(mailboxTestExtension.getDefaultDomain())
             .withUsername("user")
             .create();
     final Object[] conditionArguments =
@@ -432,7 +430,6 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
     final Account account =
         accountCreatorFactory
             .get()
-            .withDomain(mailboxTestExtension.getDefaultDomain())
             .withUsername("user")
             .create();
 
@@ -472,7 +469,6 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
     final Account account =
         accountCreatorFactory
             .get()
-            .withDomain(domain.getDomainName())
             .withUsername("user")
             .create();
 
@@ -505,7 +501,6 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
     final Account account =
         accountCreatorFactory
             .get()
-            .withDomain(mailboxTestExtension.getDefaultDomain())
             .withUsername("user")
             .create();
 
@@ -537,7 +532,6 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
     final Account account =
         accountCreatorFactory
             .get()
-            .withDomain(mailboxTestExtension.getDefaultDomain())
             .withUsername("user")
             .create();
 
