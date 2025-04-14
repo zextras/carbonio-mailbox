@@ -3,7 +3,7 @@ package com.zimbra.cs.imap;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
-import com.zextras.mailbox.util.MailboxTestUtil;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.cs.account.Account;
@@ -22,7 +22,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-class NioImapServerIT {
+class NioImapServerIT extends MailboxTestSuite {
 
   private static final String FIRST_MESSAGE_BODY = "This is the first message";
   private static final String SECOND_MESSAGE_BODY = "This is the second message";
@@ -34,7 +34,6 @@ class NioImapServerIT {
 
   @BeforeAll
   static void setUp() throws Exception {
-    MailboxTestUtil.setUp();
 
     ImapConfig config = new ImapConfig(false);
     MeterRegistry mockMeterRegistry = mock(MeterRegistry.class);
@@ -68,7 +67,6 @@ class NioImapServerIT {
   @AfterAll
   static void tearDown() throws Exception {
     imapServer.stop();
-    MailboxTestUtil.tearDown();
   }
 
   @Test
