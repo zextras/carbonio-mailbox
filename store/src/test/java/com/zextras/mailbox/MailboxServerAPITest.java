@@ -10,6 +10,7 @@ import com.zextras.mailbox.SampleLocalMailbox.ServerSetup;
 import com.zextras.mailbox.util.PortUtil;
 import com.zextras.mailbox.util.SoapClient;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.soap.account.message.AuthRequest;
 import com.zimbra.soap.type.AccountSelector;
 import java.io.File;
@@ -45,11 +46,18 @@ class MailboxServerAPITest {
 		Files.copy(localConfigFile.toPath(), tmpLocalConfigFile.toPath());
 
 		System.setProperty("zimbra.config", tmpLocalConfigFile.getAbsolutePath());
+		System.setProperty("org.eclipse.jetty.util.log.announce","false");
+		// For some reason these localconfig values are used by SoapProvisioning/ZClient
+		LC.zimbra_admin_service_scheme.setDefault("https://");
+		LC.zimbra_zmprov_default_soap_server.setDefault("localhost");
+		LC.zimbra_admin_service_port.setDefault(ADMIN_PORT);
 		mailboxServer = new ServerSetup(mailboxHome, timezoneFile)
 				.withAdminPort(ADMIN_PORT)
 				.withUserPort(USER_HTTP_PORT)
 				.withUserHttpsPort(USER_HTTPS_PORT)
 				.create();
+		mailboxServer.setDumpAfterStart(false);
+		mailboxServer.setDumpBeforeStop(false);
 		mailboxServer.start();
 	}
 

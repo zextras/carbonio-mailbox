@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
-package com.zextras.mailbox.messageBroker;
+package com.zextras.mailbox.messagebroker;
 
 public class CreateMessageBrokerException extends Exception {
 

@@ -4,7 +4,7 @@ import static com.zimbra.cs.account.GuestAccount.GUID_PUBLIC;
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
 import com.zextras.carbonio.message_broker.MessageBrokerClient;
-import com.zextras.mailbox.messageBroker.MessageBrokerFactory;
+import com.zextras.mailbox.messagebroker.MessageBrokerFactory;
 import com.zextras.mailbox.util.InMemoryLdapServer.Builder;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;

@@ -1,9 +1,10 @@
-package com.zextras.mailbox.messageBroker;
+package com.zextras.mailbox.messagebroker;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpResponse.response;
 
+import com.zextras.mailbox.util.PortUtil;
 import java.nio.file.Files;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,8 +17,8 @@ class MessageBrokerFactoryTest {
 	private static ClientAndServer consulServer;
 
 	@BeforeAll
-	public static void startUp() throws Exception {
-		consulServer = startClientAndServer(8500);
+	public static void startUp() {
+		consulServer = startClientAndServer(PortUtil.findFreePort());
 	}
 
 	@Test
@@ -27,7 +28,7 @@ class MessageBrokerFactoryTest {
 	}
 
 	@Test
-	void shouldCreateClient_WhenConsulTokenProvided() throws Exception {
+	void shouldCreateClient_WhenConsulTokenProvided() {
 		try (MockedStatic<Files> mockFileSystem = Mockito.mockStatic(Files.class, Mockito.CALLS_REAL_METHODS)) {
 			mockFileSystem.when(() -> Files.readString(any())).thenReturn("");
 			consulServer

@@ -4,9 +4,6 @@
   <key name="zimbra_server_hostname">
     <value>localhost</value>
   </key>
-  <key name="zimbra_mail_service_port">
-    <value>39353</value>
-  </key>
   <key name="timezone_file">
     <value>./src/test/resources/timezones-test.ics</value>
   </key>
