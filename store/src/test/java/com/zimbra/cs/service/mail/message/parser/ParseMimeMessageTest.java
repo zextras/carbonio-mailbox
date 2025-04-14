@@ -7,7 +7,7 @@ package com.zimbra.cs.service.mail.message.parser;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.util.MailMessageBuilder;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
+import com.zextras.mailbox.util.AccountAction;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;

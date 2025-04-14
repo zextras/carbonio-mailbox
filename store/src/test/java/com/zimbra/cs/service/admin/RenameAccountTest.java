@@ -3,7 +3,7 @@ package com.zimbra.cs.service.admin;
 import static com.zimbra.common.util.Constants.ERROR_CODE_NO_SUCH_DOMAIN;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
+import com.zextras.mailbox.util.AccountCreator;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;

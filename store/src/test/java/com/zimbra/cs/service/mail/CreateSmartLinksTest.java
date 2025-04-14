@@ -13,7 +13,7 @@ import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.smartlinks.SmartLinksGenerator;
 import com.zextras.mailbox.tracking.Event;
 import com.zextras.mailbox.tracking.Tracking;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
+import com.zextras.mailbox.util.AccountCreator;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;

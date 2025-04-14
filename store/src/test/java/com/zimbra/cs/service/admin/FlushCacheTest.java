@@ -1,6 +1,6 @@
 package com.zimbra.cs.service.admin;
 
-import static com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
+import com.zextras.mailbox.util.AccountCreator;
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
 import com.zextras.mailbox.soap.SoapTestSuite;

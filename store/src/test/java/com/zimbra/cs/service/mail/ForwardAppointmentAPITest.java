@@ -24,8 +24,8 @@ import javax.mail.internet.MimeMultipart;
 import org.junit.jupiter.api.*;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator.Factory;
+import com.zextras.mailbox.util.AccountCreator;
+import com.zextras.mailbox.util.AccountCreator.Factory;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;

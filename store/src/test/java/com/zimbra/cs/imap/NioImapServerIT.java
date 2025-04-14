@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
+import com.zextras.mailbox.util.AccountAction;
+import com.zextras.mailbox.util.AccountCreator;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.RightManager;

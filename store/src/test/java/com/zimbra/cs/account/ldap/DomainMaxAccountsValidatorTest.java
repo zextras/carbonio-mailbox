@@ -1,7 +1,7 @@
 package com.zimbra.cs.account.ldap;
 
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator.Factory;
+import com.zextras.mailbox.util.AccountCreator.Factory;
 import com.zimbra.common.account.Key.DomainBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;

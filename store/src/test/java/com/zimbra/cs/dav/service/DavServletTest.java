@@ -14,7 +14,7 @@ import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zextras.mailbox.util.JettyServerFactory.ServerWithConfiguration;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
+import com.zextras.mailbox.util.AccountCreator;
 import com.zimbra.common.calendar.ZCalendar.ScheduleAgent;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraCookie;
