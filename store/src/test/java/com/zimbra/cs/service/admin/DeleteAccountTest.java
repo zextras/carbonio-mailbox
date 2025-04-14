@@ -90,7 +90,8 @@ class DeleteAccountTest extends MailboxTestSuite {
 	static void setUp() throws Exception {
 		mailboxManager = MailboxManager.getInstance();
 		provisioning = Provisioning.getInstance();
-		accountCreatorFactory = new AccountCreator.Factory(provisioning);
+		accountCreatorFactory = new AccountCreator.Factory(provisioning,
+				mailboxTestExtension.getDefaultDomain());
     filesClientMock = Mockito.mock(FilesClient.class);
 		provisioning.createDomain(OTHER_DOMAIN, new HashMap<>());
 

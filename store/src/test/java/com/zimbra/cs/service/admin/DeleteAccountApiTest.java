@@ -1,7 +1,9 @@
 package com.zimbra.cs.service.admin;
 
+import static com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
+import static com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
+
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
@@ -20,16 +22,16 @@ import org.junit.jupiter.api.Test;
 @Tag("api")
 class DeleteAccountApiTest  extends SoapTestSuite {
 
-	private static MailboxTestUtil.AccountCreator.Factory accountCreatorFactory;
-	private static MailboxTestUtil.AccountAction.Factory accountActionFactory;
+	private static AccountCreator.Factory accountCreatorFactory;
+	private static AccountAction.Factory accountActionFactory;
 
 
 	@BeforeAll
 	static void beforeAll() throws Exception {
 		Provisioning provisioning = Provisioning.getInstance();
 		final MailboxManager mailboxManager = MailboxManager.getInstance();
-		accountCreatorFactory = new MailboxTestUtil.AccountCreator.Factory(provisioning);
-		accountActionFactory = new MailboxTestUtil.AccountAction.Factory(mailboxManager,
+		accountCreatorFactory = new AccountCreator.Factory(provisioning, soapExtension.getDefaultDomain());
+		accountActionFactory = new AccountAction.Factory(mailboxManager,
 				RightManager.getInstance());
 	}
 

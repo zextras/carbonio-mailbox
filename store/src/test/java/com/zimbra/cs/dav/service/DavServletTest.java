@@ -60,7 +60,7 @@ class DavServletTest extends MailboxTestSuite {
   public static void setUp() throws Exception {
     greenMail = new GreenMail(new ServerSetup[]{ new ServerSetup(DEFAULT_PORT, DEFAULT_HOST, PROTOCOL_SMTP) });
     greenMail.start();
-    accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance());
+    accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance(), mailboxTestExtension.getDefaultDomain());
     final ServerWithConfiguration serverConfig = new JettyServerFactory()
         .addServlet(DAV_BASE_PATH + "/*", new ServletHolder(DavServlet.class))
         .create();

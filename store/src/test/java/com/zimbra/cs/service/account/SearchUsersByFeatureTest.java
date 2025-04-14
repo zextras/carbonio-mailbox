@@ -1,10 +1,10 @@
 package com.zimbra.cs.service.account;
 
+import static com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.SoapClient;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -37,14 +37,15 @@ import org.junit.jupiter.api.Test;
 public class SearchUsersByFeatureTest extends SoapTestSuite {
   public static final String ACCOUNT_UID = "first.account";
   public static final String ACCOUNT_NAME = "name";
-  private static MailboxTestUtil.AccountCreator.Factory accountCreatorFactory;
+  private static AccountCreator.Factory accountCreatorFactory;
   private static Provisioning provisioning;
   private static Account userAccount;
 
   @BeforeAll
   static void setUp() throws Exception {
     provisioning = Provisioning.getInstance();
-    accountCreatorFactory = new MailboxTestUtil.AccountCreator.Factory(provisioning);
+    accountCreatorFactory = new AccountCreator.Factory(provisioning,
+        soapExtension.getDefaultDomain());
     userAccount = buildAccount("user", "User").create();
   }
 
@@ -525,24 +526,24 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     return request;
   }
 
-  private static MailboxTestUtil.AccountCreator buildAccount(String uid, String fullName) {
+  private static AccountCreator buildAccount(String uid, String fullName) {
     return buildAccount(uid, fullName, soapExtension.getDefaultDomain());
   }
 
-  private static MailboxTestUtil.AccountCreator buildAccount(String uid, String fullName, String domain) {
+  private static AccountCreator buildAccount(String uid, String fullName, String domain) {
     return accountCreatorFactory.get()
         .withDomain(domain)
         .withUsername(uid)
         .withAttribute("displayName", fullName);
   }
 
-  private static MailboxTestUtil.AccountCreator withChatsFeature(boolean enabled,
-                                                                 MailboxTestUtil.AccountCreator account) {
+  private static AccountCreator withChatsFeature(boolean enabled,
+                                                                 AccountCreator account) {
     return account
         .withAttribute(SearchUsersByFeatureRequest.Features.CHATS.getFeature(), enabled ? "TRUE" : "FALSE");
   }
 
-  private static MailboxTestUtil.AccountCreator withCos(Cos cos, MailboxTestUtil.AccountCreator account) {
+  private static AccountCreator withCos(Cos cos, AccountCreator account) {
     if (cos != null) {
       account = account
           .withAttribute("zimbraCOSId", cos.getId());
