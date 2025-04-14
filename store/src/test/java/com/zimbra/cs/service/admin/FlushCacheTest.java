@@ -1,17 +1,28 @@
 package com.zimbra.cs.service.admin;
 
+import static com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
+import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
+
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
-import com.zimbra.cs.account.accesscontrol.*;
+import com.zimbra.cs.account.accesscontrol.ACLUtil;
+import com.zimbra.cs.account.accesscontrol.GranteeType;
+import com.zimbra.cs.account.accesscontrol.Right;
+import com.zimbra.cs.account.accesscontrol.RightManager;
+import com.zimbra.cs.account.accesscontrol.RightModifier;
+import com.zimbra.cs.account.accesscontrol.ZimbraACE;
 import com.zimbra.soap.admin.message.FlushCacheRequest;
 import com.zimbra.soap.admin.type.CacheEntrySelector;
 import com.zimbra.soap.admin.type.CacheEntryType;
 import com.zimbra.soap.admin.type.CacheSelector;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Assertions;
@@ -19,23 +30,17 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
-
 @Tag("api")
 public class FlushCacheTest extends SoapTestSuite {
 
-    private static MailboxTestUtil.AccountCreator.Factory accountCreatorFactory;
+    private static AccountCreator.Factory accountCreatorFactory;
     private static Provisioning provisioning;
 
     @BeforeAll
-    public static void setUp() throws Exception {
+    public static void setUp() {
         provisioning = Provisioning.getInstance();
-        accountCreatorFactory = new MailboxTestUtil.AccountCreator.Factory(provisioning);
+        accountCreatorFactory = new AccountCreator.Factory(provisioning,
+            soapExtension.getDefaultDomain());
     }
 
     @Test

@@ -3,7 +3,6 @@ package com.zimbra.cs.service.admin;
 import static com.zimbra.common.util.Constants.ERROR_CODE_NO_SUCH_DOMAIN;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
@@ -15,7 +14,6 @@ import java.util.UUID;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +29,7 @@ class RenameAccountTest extends SoapTestSuite {
   @BeforeAll
   static void init() {
     provisioning = Provisioning.getInstance();
-    accountCreatorFactory = new AccountCreator.Factory(provisioning);
+    accountCreatorFactory = new AccountCreator.Factory(provisioning, soapExtension.getDefaultDomain());
   }
 
   @BeforeEach
@@ -39,10 +37,6 @@ class RenameAccountTest extends SoapTestSuite {
     targetDomain = provisioning.createDomain(UUID.randomUUID() + ".com", new HashMap<>());
   }
 
-  @AfterAll
-  static void tearDown() throws ServiceException {
-    MailboxTestUtil.tearDown();
-  }
 
   @Test
   void shouldRenameAccountByChangingUsername() throws Exception {

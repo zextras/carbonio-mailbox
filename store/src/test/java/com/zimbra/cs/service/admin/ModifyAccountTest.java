@@ -29,9 +29,10 @@ class ModifyAccountTest extends SoapTestSuite {
   private static Provisioning provisioning;
 
   @BeforeAll
-  static void setUp() throws Exception {
+  static void setUp() {
     provisioning = Provisioning.getInstance();
-    accountCreatorFactory = new AccountCreator.Factory(provisioning);
+    accountCreatorFactory = new AccountCreator.Factory(provisioning,
+        soapExtension.getDefaultDomain());
   }
 
   @Test
