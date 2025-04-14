@@ -4,8 +4,6 @@
 
 package com.zextras.mailbox.soap;
 
-import static com.zextras.mailbox.util.MailboxTestUtil.SERVER_NAME;
-
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zextras.mailbox.util.JettyServerFactory.ServerWithConfiguration;
 import com.zextras.mailbox.util.MailboxTestUtil;
@@ -26,6 +24,15 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 /** A Junit 5 extension to start a SOAP server and corresponding SOAP client. */
 public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
+  private static final String SERVER_NAME = "localhost";
+  private static final String DEFAULT_DOMAIN = "test.com";
+
+  public String getServerName() {
+    return SERVER_NAME;
+  }
+  public String getDefaultDomain() {
+    return DEFAULT_DOMAIN;
+  }
 
   public SoapClient getSoapClient() {
     return soapClient;
@@ -40,6 +47,7 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
   }
 
   public void initData() throws Exception {
+    //TODO: pass server_name and default_domain in setup
     MailboxTestUtil.initData();
   }
 
