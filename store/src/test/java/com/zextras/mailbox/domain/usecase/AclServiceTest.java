@@ -6,8 +6,8 @@ package com.zextras.mailbox.domain.usecase;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.acl.AclService;
-import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator.Factory;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
@@ -18,30 +18,22 @@ import com.zimbra.cs.account.accesscontrol.RightModifier;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE;
 import com.zimbra.cs.account.accesscontrol.generated.UserRights;
 import com.zimbra.cs.mailbox.ACL;
-import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import java.util.Set;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-class AclServiceTest {
+class AclServiceTest extends MailboxTestSuite {
   private static MailboxManager mailboxManager;
   private static Provisioning provisioning;
   private static Factory accountCreatorFactory;
 
   @BeforeAll
   static void setUp() throws Exception {
-    MailboxTestUtil.setUp();
     mailboxManager = MailboxManager.getInstance();
     provisioning = Provisioning.getInstance();
     accountCreatorFactory = new Factory(provisioning);
-  }
-
-  @AfterAll
-  static void tearDown() throws Exception {
-    MailboxTestUtil.tearDown();
   }
 
   private static void setRights(Account target) throws ServiceException {

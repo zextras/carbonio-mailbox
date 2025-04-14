@@ -12,9 +12,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zextras.mailbox.util.JettyServerFactory.ServerWithConfiguration;
-import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
 import com.zimbra.common.calendar.ZCalendar.ScheduleAgent;
 import com.zimbra.common.service.ServiceException;
@@ -49,7 +49,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("api")
-class DavServletTest {
+class DavServletTest extends MailboxTestSuite {
 
   private static Server server;
   private static final String DAV_BASE_PATH = "/dav";
@@ -59,7 +59,6 @@ class DavServletTest {
 
   @BeforeAll
   public static void setUp() throws Exception {
-    MailboxTestUtil.setUp();
     greenMail = new GreenMail(new ServerSetup[]{ new ServerSetup(DEFAULT_PORT, DEFAULT_HOST, PROTOCOL_SMTP) });
     greenMail.start();
     accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance());
@@ -75,7 +74,6 @@ class DavServletTest {
   public static void tearDown() throws Exception {
     server.stop();
     greenMail.stop();
-    MailboxTestUtil.tearDown();
   }
 
   @BeforeEach
