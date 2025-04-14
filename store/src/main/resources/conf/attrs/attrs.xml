@@ -10301,4 +10301,13 @@ TODO: delete them permanently from here
     Server Timestamp when the external domain is last polled for EAGER auto provision.
   </desc>
 </attr>
+<attr id="3165" name="carbonioPrefDarkMode" type="enum" value="auto,enabled,disabled" cardinality="single" optionalIn="account,cos" flags="domainAdminModifiable,accountInherited,accountInfo" since="25.6.0">
+  <desc>
+    Carbonio Dark Mode preference for Account
+  </desc>
+  <defaultCOSValue>auto</defaultCOSValue>
+</attr>
 </attrs>
+
+
+
