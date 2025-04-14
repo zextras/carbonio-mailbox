@@ -47,8 +47,6 @@ import org.mockito.Mockito;
  */
 @Deprecated(since = "25.6.0")
 public class MailboxTestUtil {
-  private static final String SERVER_NAME = "localhost";
-  private static final String DEFAULT_DOMAIN = "test.com";
 
   public static InMemoryLdapServer getInMemoryLdapServer() {
     return inMemoryLdapServer;
@@ -65,8 +63,8 @@ public class MailboxTestUtil {
    * Sets up all possible environment variables to make the mailbox work:
    * - loads native library
    * - Uses localconfig-api-test.xml as source for {@link LC}
-   * - creates a server with name {@link #SERVER_NAME}
-   * - creates a domain with name {@link #DEFAULT_DOMAIN}
+   * - creates a server given server name
+   * - creates a domain with given domain name
    * - Starts LDAP and the database and all possible dependencies. If you find some are missing add them.
    *
    * @throws Exception
@@ -127,7 +125,7 @@ public class MailboxTestUtil {
 
     final var server =
         provisioning.createServer(
-            SERVER_NAME,
+            testData.serverName(),
             new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
     server.setLmtpBindPort(lmtpPort);
 
@@ -257,7 +255,7 @@ public class MailboxTestUtil {
     private String password = "password";
     private String domain;
     private final Map<String, Object> attributes =
-        new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME));
+        new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, "localhost"));
 
     private AccountCreator(Provisioning provisioning, String domain) {
       this.provisioning = provisioning;
