@@ -1,12 +1,50 @@
 package com.zextras.mailbox.encryption.smime;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.localconfig.LocalConfig;
 import com.zimbra.common.soap.Element;
-
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.mailbox.OperationContext;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.security.Security;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
+import java.util.stream.Stream;
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+import javax.mail.Address;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import javax.security.auth.x500.X500Principal;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.IssuerAndSerialNumber;
@@ -40,47 +78,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
-
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
-import javax.mail.Address;
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import javax.security.auth.x500.X500Principal;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.math.BigInteger;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.KeyStore;
-import java.security.SecureRandom;
-import java.security.Security;
-import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SmimeHandlerImplTest {
 
@@ -371,7 +368,6 @@ class SmimeHandlerImplTest {
         Assertions.assertFalse(smimeHandler.verifyMessageSignature(Mockito.mock(),
                 element,
                 message, Mockito.mock(OperationContext.class)));
-        System.out.println(element);
     }
 
     @Test
@@ -395,7 +391,6 @@ class SmimeHandlerImplTest {
                 element,
                 SmimeHandlerImplTest.message, Mockito.mock(OperationContext.class)));
         Assertions.assertEquals("UNTRUSTED", element.getElement("signature").getAttribute("messageCode"));
-        System.out.println(element);
     }
 
     @Test
@@ -420,15 +415,6 @@ class SmimeHandlerImplTest {
             keystore.load(fis, "changeit".toCharArray());
         }
         keystore.setCertificateEntry("my-ca", issuerCert);
-        var alias = "my-ca";
-        if (keystore.containsAlias(alias)) {
-            System.out.println("Alias '" + alias + "' found in cacerts.");
-            X509Certificate cert = (X509Certificate) keystore.getCertificate(alias);
-            System.out.println("Certificate for alias '" + alias + "':");
-            System.out.println(cert);
-        } else {
-            System.out.println("Alias '" + alias + "' not found in cacerts.");
-        }
         // Save the updated keystore
         try (FileOutputStream fos = new FileOutputStream("cacerts_trusted")) {
             keystore.store(fos, "changeit".toCharArray());
@@ -437,21 +423,11 @@ class SmimeHandlerImplTest {
         try (FileInputStream fis = new FileInputStream("cacerts_trusted")) {
             keystore.load(fis, "changeit".toCharArray());
         }
-        if (keystore.containsAlias(alias)) {
-            System.out.println("Alias '" + alias + "' found in cacerts.");
-            X509Certificate cert = (X509Certificate) keystore.getCertificate(alias);
-            System.out.println("Certificate for alias '" + alias + "':");
-            System.out.println(cert);
-        } else {
-            System.out.println("Alias '" + alias + "' not found in cacerts.");
-        }
         boolean condition = smimeHandler.verifyMessageSignature(msg,
                 element,
                 SmimeHandlerImplTest.message, Mockito.mock(OperationContext.class));
-        System.out.println(element);
         Assertions.assertTrue(condition);
         Assertions.assertEquals("VALID", element.getElement("signature").getAttribute("messageCode"));
-        System.out.println(element);
     }
 
     @Test
@@ -477,15 +453,6 @@ class SmimeHandlerImplTest {
             keystore.load(fis, "changeit".toCharArray());
         }
         keystore.setCertificateEntry("my-ca", issuerCert);
-        var alias = "my-ca";
-        if (keystore.containsAlias(alias)) {
-            System.out.println("Alias '" + alias + "' found in cacerts.");
-            X509Certificate cert = (X509Certificate) keystore.getCertificate(alias);
-            System.out.println("Certificate for alias '" + alias + "':");
-            System.out.println(cert);
-        } else {
-            System.out.println("Alias '" + alias + "' not found in cacerts.");
-        }
         // Save the updated keystore
         try (FileOutputStream fos = new FileOutputStream("cacerts_trusted")) {
             keystore.store(fos, "changeit".toCharArray());
@@ -494,21 +461,11 @@ class SmimeHandlerImplTest {
         try (FileInputStream fis = new FileInputStream("cacerts_trusted")) {
             keystore.load(fis, "changeit".toCharArray());
         }
-        if (keystore.containsAlias(alias)) {
-            System.out.println("Alias '" + alias + "' found in cacerts.");
-            X509Certificate cert = (X509Certificate) keystore.getCertificate(alias);
-            System.out.println("Certificate for alias '" + alias + "':");
-            System.out.println(cert);
-        } else {
-            System.out.println("Alias '" + alias + "' not found in cacerts.");
-        }
         boolean condition = smimeHandler.verifyMessageSignature(msg,
                 element,
                 SmimeHandlerImplTest.message, Mockito.mock(OperationContext.class));
-        System.out.println(element);
         Assertions.assertTrue(condition);
         Assertions.assertEquals("VALID", element.getElement("signature").getAttribute("messageCode"));
-        System.out.println(element);
     }
 
     @Test
@@ -538,15 +495,6 @@ class SmimeHandlerImplTest {
             keystore.load(fis, "changeit".toCharArray());
         }
         keystore.setCertificateEntry("my-ca", issuerCert);
-        var alias = "my-ca";
-        if (keystore.containsAlias(alias)) {
-            System.out.println("Alias '" + alias + "' found in cacerts.");
-            X509Certificate cert = (X509Certificate) keystore.getCertificate(alias);
-            System.out.println("Certificate for alias '" + alias + "':");
-            System.out.println(cert);
-        } else {
-            System.out.println("Alias '" + alias + "' not found in cacerts.");
-        }
         // Save the updated keystore
         try (FileOutputStream fos = new FileOutputStream("cacerts_trusted")) {
             keystore.store(fos, "changeit".toCharArray());
@@ -555,21 +503,11 @@ class SmimeHandlerImplTest {
         try (FileInputStream fis = new FileInputStream("cacerts_trusted")) {
             keystore.load(fis, "changeit".toCharArray());
         }
-        if (keystore.containsAlias(alias)) {
-            System.out.println("Alias '" + alias + "' found in cacerts.");
-            X509Certificate cert = (X509Certificate) keystore.getCertificate(alias);
-            System.out.println("Certificate for alias '" + alias + "':");
-            System.out.println(cert);
-        } else {
-            System.out.println("Alias '" + alias + "' not found in cacerts.");
-        }
         boolean condition = smimeHandler.verifyMessageSignature(msg,
                 element,
                 SmimeHandlerImplTest.message, Mockito.mock(OperationContext.class));
-        System.out.println(element);
         Assertions.assertFalse(condition);
         Assertions.assertEquals("SIGNER_CERT_EXPIRED", element.getElement("signature").getAttribute("messageCode"));
-        System.out.println(element);
     }
 
 }
