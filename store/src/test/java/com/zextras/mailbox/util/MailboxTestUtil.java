@@ -106,11 +106,6 @@ public class MailboxTestUtil {
     ScheduledTaskManager.startup();
   }
 
-  public static void setUp() throws Exception {
-    final MailboxTestData mailboxTestData = new MailboxTestData(SERVER_NAME, DEFAULT_DOMAIN, DEFAULT_DOMAIN_ID);
-    setUp(mailboxTestData);
-  }
-
   /**
    * Stops the {@link #inMemoryLdapServer} and {@link RedoLogProvider} The goal is to cleanup
    * the system before starting another one. If some clean task is missing consider adding it.
@@ -145,11 +140,6 @@ public class MailboxTestUtil {
     var domain = provisioning.createDomain(testData.defaultDomain(), new HashMap<>());
     domain.setId(testData.defaultDomainId());
     mockMessageBrokerClient();
-  }
-  public static void initData() throws Exception {
-    final MailboxTestData mailboxTestData = new MailboxTestData(SERVER_NAME, DEFAULT_DOMAIN,
-        DEFAULT_DOMAIN_ID);
-    initData(mailboxTestData);
   }
 
   private static void mockMessageBrokerClient() {

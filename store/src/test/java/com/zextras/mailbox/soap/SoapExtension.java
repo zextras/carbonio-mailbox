@@ -6,6 +6,7 @@ package com.zextras.mailbox.soap;
 
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zextras.mailbox.util.JettyServerFactory.ServerWithConfiguration;
+import com.zextras.mailbox.util.MailboxTestData;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.SoapClient;
 import com.zimbra.common.account.ZAttrProvisioning;
@@ -24,14 +25,13 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 /** A Junit 5 extension to start a SOAP server and corresponding SOAP client. */
 public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
-  private static final String SERVER_NAME = "localhost";
-  private static final String DEFAULT_DOMAIN = "test.com";
+  private static final MailboxTestData testData = new MailboxTestData( "localhost", "test.com", "f4806430-b434-4e93-9357-a02d9dd796b8");
 
   public String getServerName() {
-    return SERVER_NAME;
+    return testData.serverName();
   }
   public String getDefaultDomain() {
-    return DEFAULT_DOMAIN;
+    return testData.defaultDomain();
   }
 
   public SoapClient getSoapClient() {
@@ -47,8 +47,7 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
   }
 
   public void initData() throws Exception {
-    //TODO: pass server_name and default_domain in setup
-    MailboxTestUtil.initData();
+    MailboxTestUtil.initData(testData);
   }
 
   private final SoapClient soapClient;
@@ -111,9 +110,9 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
   @Override
   public void beforeAll(ExtensionContext context) throws Exception {
     if (!server.isRunning()) {
-      MailboxTestUtil.setUp();
+      MailboxTestUtil.setUp(testData);
       Provisioning.getInstance()
-          .getServerByName(SERVER_NAME)
+          .getServerByName(testData.serverName())
           .modify(
               new HashMap<>(
                   Map.of(
