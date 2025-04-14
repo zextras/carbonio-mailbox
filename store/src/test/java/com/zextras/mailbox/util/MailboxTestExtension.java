@@ -12,8 +12,26 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 public class MailboxTestExtension implements BeforeAllCallback, AfterAllCallback {
 
+	private final String defaultDomain;
+
+	public String getServerName() {
+		return serverName;
+	}
+
+	public String getDefaultDomain() {
+		return defaultDomain;
+	}
+
+	private final String serverName;
+
+	public MailboxTestExtension(String defaultDomain, String serverName) {
+		this.defaultDomain = defaultDomain;
+		this.serverName = serverName;
+	}
+
 	@Override
 	public void afterAll(ExtensionContext extensionContext) throws Exception {
+		// TODO: use a MailboxTestBuilder and pass domain and server
 		MailboxTestUtil.tearDown();
 	}
 

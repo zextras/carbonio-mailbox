@@ -15,14 +15,6 @@ public abstract class MailboxTestSuite {
 	private static final String DEFAULT_DOMAIN = "test.com";
 
 	@RegisterExtension
-	protected static MailboxTestExtension mailboxTestExtension = new MailboxTestExtension();
-
-	protected String getServerName() {
-		return SERVER_NAME;
-	}
-
-	protected String getDefaultDomain() {
-		return DEFAULT_DOMAIN;
-	}
+	protected static MailboxTestExtension mailboxTestExtension = new MailboxTestExtension(DEFAULT_DOMAIN,SERVER_NAME);
 
 }

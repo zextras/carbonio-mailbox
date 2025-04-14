@@ -11,7 +11,6 @@ import com.google.common.collect.Maps;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -87,14 +86,14 @@ public class SendMsgTest extends MailboxTestSuite {
     final Provisioning provisioning = Provisioning.getInstance();
     sender =
         provisioning.createAccount(
-            "test@" + MailboxTestUtil.DEFAULT_DOMAIN,
+            "test@" + mailboxTestExtension.getDefaultDomain(),
             "password",
-            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
+            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, mailboxTestExtension.getServerName())));
     shared =
         provisioning.createAccount(
-            "shared@" + MailboxTestUtil.DEFAULT_DOMAIN,
+            "shared@" + mailboxTestExtension.getDefaultDomain(),
             "password",
-            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
+            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, mailboxTestExtension.getServerName())));
     final Set<ZimbraACE> aces = new HashSet<>();
     aces.add(
         new ZimbraACE(
@@ -114,9 +113,9 @@ public class SendMsgTest extends MailboxTestSuite {
     ACLUtil.grantRight(Provisioning.getInstance(), shared, aces);
     receiver =
         provisioning.createAccount(
-            "rcpt@" + MailboxTestUtil.DEFAULT_DOMAIN,
+            "rcpt@" + mailboxTestExtension.getDefaultDomain(),
             "password",
-            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
+            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, mailboxTestExtension.getServerName())));
   }
 
   @AfterAll
