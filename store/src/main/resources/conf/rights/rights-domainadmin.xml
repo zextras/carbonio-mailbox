@@ -36,6 +36,7 @@
     <a n="carbonioFeatureOTPMgmtEnabled"/>
     <a n="carbonioFeatureTeamEnabled"/>
     <a n="carbonioFeatureWscEnabled"/>
+    <a n="carbonioPrefDarkMode"/>
     <a n="carbonioPrefSendAnalytics"/>
     <a n="carbonioPrefWebUiDarkMode"/>
     <a n="carbonioWscAttachmentUpload"/>

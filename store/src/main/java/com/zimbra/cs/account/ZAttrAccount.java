@@ -747,6 +747,137 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Carbonio Dark Mode preference for Account
+     *
+     * <p>Valid values: [auto, enabled, disabled]
+     *
+     * @return carbonioPrefDarkMode, or ZAttrProvisioning.CarbonioPrefDarkMode.auto if unset and/or has invalid value
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3165)
+    public ZAttrProvisioning.CarbonioPrefDarkMode getCarbonioPrefDarkMode() {
+        try { String v = getAttr(ZAttrProvisioning.A_carbonioPrefDarkMode, true, true); return v == null ? ZAttrProvisioning.CarbonioPrefDarkMode.auto : ZAttrProvisioning.CarbonioPrefDarkMode.fromString(v); } catch(com.zimbra.common.service.ServiceException e) { return ZAttrProvisioning.CarbonioPrefDarkMode.auto; }
+    }
+
+    /**
+     * Carbonio Dark Mode preference for Account
+     *
+     * <p>Valid values: [auto, enabled, disabled]
+     *
+     * @return carbonioPrefDarkMode, or "auto" if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3165)
+    public String getCarbonioPrefDarkModeAsString() {
+        return getAttr(ZAttrProvisioning.A_carbonioPrefDarkMode, "auto", true);
+    }
+
+    /**
+     * Carbonio Dark Mode preference for Account
+     *
+     * <p>Valid values: [auto, enabled, disabled]
+     *
+     * @param carbonioPrefDarkMode new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3165)
+    public void setCarbonioPrefDarkMode(ZAttrProvisioning.CarbonioPrefDarkMode carbonioPrefDarkMode) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioPrefDarkMode, carbonioPrefDarkMode.toString());
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Carbonio Dark Mode preference for Account
+     *
+     * <p>Valid values: [auto, enabled, disabled]
+     *
+     * @param carbonioPrefDarkMode new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3165)
+    public Map<String,Object> setCarbonioPrefDarkMode(ZAttrProvisioning.CarbonioPrefDarkMode carbonioPrefDarkMode, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioPrefDarkMode, carbonioPrefDarkMode.toString());
+        return attrs;
+    }
+
+    /**
+     * Carbonio Dark Mode preference for Account
+     *
+     * <p>Valid values: [auto, enabled, disabled]
+     *
+     * @param carbonioPrefDarkMode new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3165)
+    public void setCarbonioPrefDarkModeAsString(String carbonioPrefDarkMode) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioPrefDarkMode, carbonioPrefDarkMode);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Carbonio Dark Mode preference for Account
+     *
+     * <p>Valid values: [auto, enabled, disabled]
+     *
+     * @param carbonioPrefDarkMode new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3165)
+    public Map<String,Object> setCarbonioPrefDarkModeAsString(String carbonioPrefDarkMode, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioPrefDarkMode, carbonioPrefDarkMode);
+        return attrs;
+    }
+
+    /**
+     * Carbonio Dark Mode preference for Account
+     *
+     * <p>Valid values: [auto, enabled, disabled]
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3165)
+    public void unsetCarbonioPrefDarkMode() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioPrefDarkMode, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Carbonio Dark Mode preference for Account
+     *
+     * <p>Valid values: [auto, enabled, disabled]
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3165)
+    public Map<String,Object> unsetCarbonioPrefDarkMode(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioPrefDarkMode, "");
+        return attrs;
+    }
+
+    /**
      * Whether Carbonio can send analytics reports for Account
      *
      * @return carbonioPrefSendAnalytics, or false if unset

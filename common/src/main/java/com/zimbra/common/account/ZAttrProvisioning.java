@@ -17,6 +17,25 @@ public class ZAttrProvisioning {
 
     ///// BEGIN-AUTO-GEN-REPLACE
 
+    public enum CarbonioPrefDarkMode {
+        auto("auto"),
+        enabled("enabled"),
+        disabled("disabled");
+        private final String mValue;
+        CarbonioPrefDarkMode(String value) { mValue = value; }
+        @Override
+        public String toString() { return mValue; }
+        public static CarbonioPrefDarkMode fromString(String s) throws ServiceException {
+            for (CarbonioPrefDarkMode value : values()) {
+                if (value.mValue.equals(s)) return value;
+             }
+             throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
+        }
+        public boolean isAuto() { return this == auto;}
+        public boolean isEnabled() { return this == enabled;}
+        public boolean isDisabled() { return this == disabled;}
+    }
+
     public enum AccountCalendarUserType {
         USER("USER"),
         RESOURCE("RESOURCE");
@@ -3024,6 +3043,14 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=3128)
     public static final String A_carbonioNotificationRecipients = "carbonioNotificationRecipients";
+
+    /**
+     * Carbonio Dark Mode preference for Account
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3165)
+    public static final String A_carbonioPrefDarkMode = "carbonioPrefDarkMode";
 
     /**
      * Whether Carbonio can send analytics reports for Account
