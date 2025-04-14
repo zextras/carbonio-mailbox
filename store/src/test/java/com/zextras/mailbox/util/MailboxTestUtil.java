@@ -42,9 +42,9 @@ import javax.mail.internet.MimeMessage;
  */
 @Deprecated(since = "25.6.0")
 public class MailboxTestUtil {
-  public static final String SERVER_NAME = "localhost";
-  public static final String DEFAULT_DOMAIN = "test.com";
-  public static final String DEFAULT_DOMAIN_ID = "f4806430-b434-4e93-9357-a02d9dd796b8";
+  private static final String SERVER_NAME = "localhost";
+  private static final String DEFAULT_DOMAIN = "test.com";
+  private static final String DEFAULT_DOMAIN_ID = "f4806430-b434-4e93-9357-a02d9dd796b8";
 
   public static InMemoryLdapServer getInMemoryLdapServer() {
     return inMemoryLdapServer;

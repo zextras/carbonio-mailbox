@@ -1,9 +1,9 @@
 package com.zimbra.cs.account.provutil;
 
-import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
+import com.zimbra.cs.account.ProvUtilRegressionTest;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.JaxbUtil;
@@ -408,7 +408,8 @@ public class TrackCommandRequestHandler extends DocumentHandler {
   }
 
   private static DomainInfo createDomainInfo() {
-    return new DomainInfo(MailboxTestUtil.DEFAULT_DOMAIN_ID, MailboxTestUtil.DEFAULT_DOMAIN, List.of(
+    // TODO: avoid static usage as this class is tightly coupled to ProvUtilRegressionTest
+    return new DomainInfo(ProvUtilRegressionTest.DEFAULT_DOMAIN_ID, ProvUtilRegressionTest.DEFAULT_DOMAIN, List.of(
             new Attr(ZAttrProvisioning.A_zimbraDomainType, "local"),
             new Attr(Provisioning.A_zimbraPreAuthKey, "PreAuthkey")
     ));
