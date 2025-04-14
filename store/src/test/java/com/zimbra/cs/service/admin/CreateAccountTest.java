@@ -36,12 +36,12 @@ class CreateAccountTest extends MailboxTestSuite {
 
     @AfterEach
     void clearData() throws Exception {
-        this.clearAllData();
+        mailboxTestExtension.clearData();
     }
 
     @BeforeEach
     void initData() throws Exception {
-        this.initDefaultData();
+        mailboxTestExtension.initData();
     }
 
     @ParameterizedTest

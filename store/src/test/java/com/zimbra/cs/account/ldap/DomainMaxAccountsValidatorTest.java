@@ -23,11 +23,11 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
 
   @BeforeEach
   void initData() throws Exception {
-    this.initDefaultData();
+    mailboxTestExtension.initData();
   }
   @AfterEach
   void clear() throws Exception {
-    this.clearAllData();
+    mailboxTestExtension.clearData();
   }
 
   @Test

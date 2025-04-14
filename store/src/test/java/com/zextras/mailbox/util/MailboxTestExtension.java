@@ -12,21 +12,18 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 public class MailboxTestExtension implements BeforeAllCallback, AfterAllCallback {
 
-	private final String defaultDomain;
+	private final MailboxTestData mailboxTestData;
 
 	public String getServerName() {
-		return serverName;
+		return mailboxTestData.serverName();
 	}
 
 	public String getDefaultDomain() {
-		return defaultDomain;
+		return mailboxTestData.defaultDomain();
 	}
 
-	private final String serverName;
-
-	public MailboxTestExtension(String defaultDomain, String serverName) {
-		this.defaultDomain = defaultDomain;
-		this.serverName = serverName;
+	public MailboxTestExtension(MailboxTestData mailboxTestData) {
+		this.mailboxTestData = mailboxTestData;
 	}
 
 	@Override
@@ -37,6 +34,14 @@ public class MailboxTestExtension implements BeforeAllCallback, AfterAllCallback
 
 	@Override
 	public void beforeAll(ExtensionContext extensionContext) throws Exception {
-		MailboxTestUtil.setUp();
+		MailboxTestUtil.setUp(mailboxTestData);
+	}
+
+	public void initData() throws Exception {
+		MailboxTestUtil.initData(mailboxTestData);
+	}
+
+	public void clearData() throws Exception {
+		MailboxTestUtil.clearData();
 	}
 }

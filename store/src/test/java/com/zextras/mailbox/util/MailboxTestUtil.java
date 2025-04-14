@@ -61,9 +61,6 @@ public class MailboxTestUtil {
 
   private MailboxTestUtil() {}
 
-  private record MailboxTestData(String serverName, String defaultDomain, String defaultDomainId) {
-  }
-
 
   /**
    * Sets up all possible environment variables to make the mailbox work:
