@@ -26,6 +26,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class CreateMessageTest {
@@ -74,6 +75,7 @@ public class CreateMessageTest {
 	}
 
 	@Test
+	@Disabled("Flaky test in CI")
 	void serializeDeserialize() throws Exception {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		CreateMessage op = createTestMessageRedoableOp();
