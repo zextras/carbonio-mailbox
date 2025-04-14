@@ -9,9 +9,20 @@ package com.zextras.mailbox;
 import com.zextras.mailbox.util.MailboxTestExtension;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-public class MailboxTestSuite {
+public abstract class MailboxTestSuite {
+
+	private static final String SERVER_NAME = "localhost";
+	private static final String DEFAULT_DOMAIN = "test.com";
 
 	@RegisterExtension
 	protected static MailboxTestExtension mailboxTestExtension = new MailboxTestExtension();
+
+	protected String getServerName() {
+		return SERVER_NAME;
+	}
+
+	protected String getDefaultDomain() {
+		return DEFAULT_DOMAIN;
+	}
 
 }

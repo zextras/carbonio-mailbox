@@ -36,6 +36,11 @@ import java.util.UUID;
 import javax.mail.internet.MimeMessage;
 
 
+/**
+ *
+ * @deprecated  use {@link  com.zextras.mailbox.MailboxTestSuite}
+ */
+@Deprecated(since = "25.6.0")
 public class MailboxTestUtil {
   public static final String SERVER_NAME = "localhost";
   public static final String DEFAULT_DOMAIN = "test.com";
