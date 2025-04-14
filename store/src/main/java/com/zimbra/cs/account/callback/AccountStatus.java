@@ -78,16 +78,19 @@ public class AccountStatus extends AttributeCallback {
         String status = account.getAccountStatus(prov);
         String userId = account.getId();
 
-			try {
-          MessageBrokerClient messageBrokerClient = MessageBrokerFactory.getMessageBrokerClientInstance();
-          boolean result = messageBrokerClient.publish(new UserStatusChanged(userId, status.toUpperCase()));
-          if (result) {
-            ZimbraLog.messageBroker.info("Published status changed event for user: " + userId);
-          } else {
-            ZimbraLog.messageBroker.error("Failed to publish status changed event for user: " + userId);
-          }
-        } catch (Exception e){
-          ZimbraLog.messageBroker.error("Exception while publishing status changed event for user: " + userId, e);
+        try {
+            MessageBrokerClient messageBrokerClient = MessageBrokerFactory.getMessageBrokerClientInstance();
+            boolean result = messageBrokerClient.publish(
+                new UserStatusChanged(userId, status.toUpperCase()));
+            if (result) {
+                ZimbraLog.messageBroker.info("Published status changed event for user: " + userId);
+            } else {
+                ZimbraLog.messageBroker.error(
+                    "Failed to publish status changed event for user: " + userId);
+            }
+        } catch (Exception e) {
+            ZimbraLog.messageBroker.error(
+                "Exception while publishing status changed event for user: " + userId, e);
         }
 
     }
