@@ -19,14 +19,18 @@ import com.zimbra.cs.account.accesscontrol.RightModifier;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.HSQLDB;
-import com.zimbra.cs.mailbox.*;
+import com.zimbra.cs.mailbox.ACL;
+import com.zimbra.cs.mailbox.DeliveryOptions;
+import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.mailbox.Message;
+import com.zimbra.cs.mailbox.OperationContext;
+import com.zimbra.cs.mailbox.ScheduledTaskManager;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.store.StoreManager;
-import java.nio.file.Files;
-import org.mockito.Mockito;
-
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -34,6 +38,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import javax.mail.internet.MimeMessage;
+import org.mockito.Mockito;
 
 
 /**
@@ -56,6 +61,10 @@ public class MailboxTestUtil {
 
   private MailboxTestUtil() {}
 
+  private record MailboxTestData(String serverName, String defaultDomain, String defaultDomainId) {
+  }
+
+
   /**
    * Sets up all possible environment variables to make the mailbox work:
    * - loads native library
@@ -66,7 +75,7 @@ public class MailboxTestUtil {
    *
    * @throws Exception
    */
-  public static void setUp() throws Exception {
+  public static void setUp(MailboxTestData testData) throws Exception {
     System.setProperty("zimbra.native.required", "false");
     System.setProperty(
         "zimbra.config",
@@ -89,7 +98,7 @@ public class MailboxTestUtil {
     inMemoryLdapServer.initializeBasicData();
 
     LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
-    initData();
+    initData(testData);
 
     DbPool.startup();
     HSQLDB.createDatabase();
@@ -98,6 +107,11 @@ public class MailboxTestUtil {
     StoreManager.getInstance().startup();
     RightManager.getInstance();
     ScheduledTaskManager.startup();
+  }
+
+  public static void setUp() throws Exception {
+    final MailboxTestData mailboxTestData = new MailboxTestData(SERVER_NAME, DEFAULT_DOMAIN, DEFAULT_DOMAIN_ID);
+    setUp(mailboxTestData);
   }
 
   /**
@@ -115,7 +129,7 @@ public class MailboxTestUtil {
     HSQLDB.clearDatabase();
   }
 
-  public static void initData() throws Exception {
+  public static void initData(MailboxTestData testData) throws Exception {
     inMemoryLdapServer.initializeBasicData();
     var provisioning = Provisioning.getInstance(Provisioning.CacheMode.OFF);
     var lmtpPort = PortUtil.findFreePort();
@@ -126,14 +140,19 @@ public class MailboxTestUtil {
             new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
     server.setLmtpBindPort(lmtpPort);
 
-     server.setPop3SSLServerEnabled(false);
+    server.setPop3SSLServerEnabled(false);
     server.setPop3ServerEnabled(false);
 
-     server.setImapSSLServerEnabled(false);
+    server.setImapSSLServerEnabled(false);
     server.setImapServerEnabled(false);
-    var domain = provisioning.createDomain(DEFAULT_DOMAIN, new HashMap<>());
-    domain.setId(DEFAULT_DOMAIN_ID);
+    var domain = provisioning.createDomain(testData.defaultDomain(), new HashMap<>());
+    domain.setId(testData.defaultDomainId());
     mockMessageBrokerClient();
+  }
+  public static void initData() throws Exception {
+    final MailboxTestData mailboxTestData = new MailboxTestData(SERVER_NAME, DEFAULT_DOMAIN,
+        DEFAULT_DOMAIN_ID);
+    initData(mailboxTestData);
   }
 
   private static void mockMessageBrokerClient() {
