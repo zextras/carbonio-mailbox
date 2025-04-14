@@ -157,6 +157,8 @@ public final class ZimbraLog {
 
   /** the "zimbra.account" logger. For account-related events. */
   public static final Log account = LogFactory.getLog("zimbra.account");
+  /** the "zimbra.messageBroker" logger. For messageBroker related events. */
+  public static final Log messageBroker = LogFactory.getLog("zimbra.message_broker");
 
   /** the "zimbra.autoprov" logger. For account auto provision related events. */
   public static final Log autoprov = LogFactory.getLog("zimbra.autoprov");
@@ -360,6 +362,7 @@ public final class ZimbraLog {
     descriptions.put(account.getCategory(), "Account operations");
     descriptions.put(autoprov.getCategory(), "Auto provision operations");
     descriptions.put(gal.getCategory(), "GAL operations");
+    descriptions.put(messageBroker.getCategory(), "Message Broker operations");
     descriptions.put(ldap.getCategory(), "LDAP operations");
     descriptions.put(acl.getCategory(), "ACL operations");
     descriptions.put(security.getCategory(), "Security events");
