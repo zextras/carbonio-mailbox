@@ -21,12 +21,6 @@ import java.util.Map;
 import java.util.Objects;
 import org.mockito.Mockito;
 
-
-/**
- *
- * @deprecated  use {@link  com.zextras.mailbox.MailboxTestSuite}
- */
-@Deprecated(since = "25.6.0")
 public class MailboxTestUtil {
 
   public static InMemoryLdapServer getInMemoryLdapServer() {
