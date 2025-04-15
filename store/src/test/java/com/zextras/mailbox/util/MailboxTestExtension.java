@@ -28,7 +28,6 @@ public class MailboxTestExtension implements BeforeAllCallback, AfterAllCallback
 
 	@Override
 	public void afterAll(ExtensionContext extensionContext) throws Exception {
-		// TODO: use a MailboxTestBuilder and pass domain and server
 		MailboxTestUtil.tearDown();
 	}
 
