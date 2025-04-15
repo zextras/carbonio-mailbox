@@ -1,7 +1,7 @@
 package com.zimbra.cs.service.admin;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
+import com.zextras.mailbox.util.AccountCreator;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Cos;
 import com.zimbra.cs.account.Provisioning;
@@ -23,8 +23,9 @@ class CreateSystemRetentionPolicyTest extends SoapTestSuite {
   private static AccountCreator.Factory accountCreatorFactory;
 
   @BeforeAll
-  static void setUp() throws Exception {
-    accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance());
+  static void setUp() {
+    accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance(),
+        soapExtension.getDefaultDomain());
   }
 
   @Test

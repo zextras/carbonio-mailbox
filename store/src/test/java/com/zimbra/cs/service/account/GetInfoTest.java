@@ -1,9 +1,9 @@
 package com.zimbra.cs.service.account;
 
+import com.zextras.mailbox.util.AccountCreator;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -20,14 +20,15 @@ import org.junit.jupiter.params.provider.ValueSource;
 @Tag("api")
 class GetInfoTest extends SoapTestSuite {
 
-  private static MailboxTestUtil.AccountCreator.Factory accountCreatorFactory;
+  private static AccountCreator.Factory accountCreatorFactory;
   private static Provisioning provisioning;
   private Account account;
 
   @BeforeAll
-  static void init() throws Exception {
+  static void init() {
     provisioning = Provisioning.getInstance();
-    accountCreatorFactory = new MailboxTestUtil.AccountCreator.Factory(provisioning);
+    accountCreatorFactory = new AccountCreator.Factory(provisioning,
+        soapExtension.getDefaultDomain());
   }
 
   @BeforeEach

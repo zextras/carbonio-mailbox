@@ -3,7 +3,6 @@ package com.zimbra.cs.account;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.soap.SoapExtension;
-import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -35,6 +34,10 @@ public class ProvUtilRegressionTest {
 
   private static final Logger log = LogManager.getLogger(ProvUtilRegressionTest.class);
 
+  public static final String DEFAULT_DOMAIN = "test.com";
+  public static final String DEFAULT_DOMAIN_ID = "f4806430-b434-4e93-9357-a02d9dd796b8";
+  private static final String SERVER_NAME = "localhost";
+
   public static final String ACCOUNT_UUID = "186c1c23-d2ad-46b4-9efd-ddd890b1a4a2";
   public static final String ACCOUNT_NAME = "test@test.com";
 
@@ -63,7 +66,7 @@ public class ProvUtilRegressionTest {
     soapExtension.initData();
     Provisioning provisioning = Provisioning.getInstance();
     provisioning.createAccount("adminAccount@test.com", "password", new HashMap<>(Map.of(
-        Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME,
+        Provisioning.A_zimbraMailHost, SERVER_NAME,
         Provisioning.A_zimbraIsAdminAccount, "TRUE"
     )));
   }

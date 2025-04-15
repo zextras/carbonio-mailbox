@@ -1,7 +1,10 @@
 package com.zimbra.cs.service.mail;
 
+import com.zextras.mailbox.util.AccountCreator;
+import static com.zimbra.common.soap.Element.parseXML;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -14,6 +17,9 @@ import com.zimbra.soap.mail.message.GetCalendarGroupsRequest;
 import com.zimbra.soap.mail.message.GetCalendarGroupsResponse;
 import com.zimbra.soap.mail.type.Folder;
 import com.zimbra.soap.mail.type.NewFolderSpec;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
@@ -22,28 +28,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-
-import static com.zimbra.common.soap.Element.parseXML;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @Tag("api")
 class GetCalendarGroupsTest extends SoapTestSuite {
   private static final String ALL_CALENDARS_GROUP_NAME = "All calendars";
 
-  private static MailboxTestUtil.AccountCreator.Factory accountCreatorFactory;
-  private static Provisioning provisioning;
+  private static AccountCreator.Factory accountCreatorFactory;
 
-  private Account account;
+	private Account account;
 
   @BeforeAll
   static void init() {
-    provisioning = Provisioning.getInstance();
-    accountCreatorFactory = new MailboxTestUtil.AccountCreator.Factory(provisioning);
+		Provisioning provisioning = Provisioning.getInstance();
+    accountCreatorFactory = new AccountCreator.Factory(provisioning, soapExtension.getDefaultDomain());
   }
 
   @BeforeEach

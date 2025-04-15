@@ -6,6 +6,7 @@ package com.zextras.mailbox;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.util.MailboxTestData;
 import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.account.Provisioning;
@@ -24,9 +25,12 @@ class MailboxTest {
   @TempDir
   public static File folder;
 
+  private static final MailboxTestData testData = new MailboxTestData( "localhost", "test.com", "f4806430-b434-4e93-9357-a02d9dd796b8");
+
+
   @BeforeAll
   static void setUp() throws Exception {
-    MailboxTestUtil.setUp();
+    MailboxTestUtil.setUp(testData);
     Provisioning.getInstance().getLocalServer().modify(new HashMap<>(){{
       put(Provisioning.A_zimbraMailPort, "8080");
     }});
