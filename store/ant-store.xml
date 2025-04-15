@@ -39,7 +39,7 @@
     <echo file="${maven.build.dir}/generated-resources/com/zimbra/cs/util/buildInfo.properties">
       MAJORVERSION=${zimbra.buildinfo.majorversion}
       MINORVERSION=${zimbra.buildinfo.minorversion}
-      MICROVERSION= "${zimbra.buildinfo.microversion}
+      MICROVERSION=${zimbra.buildinfo.microversion}
       RELCLASS=${zimbra.buildinfo.relclass}
       RELNUM=${zimbra.buildinfo.relnum}
       BUILDNUM=${zimbra.buildinfo.buildnum}
