@@ -1,29 +1,25 @@
 package com.zimbra.cs.util.calltohome;
 
-import com.zextras.mailbox.util.MailboxTestUtil;
-import com.zimbra.common.service.ServiceException;
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.zextras.mailbox.MailboxTestSuite;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-class CallToHomeRunnerTest {
+class CallToHomeRunnerTest extends MailboxTestSuite {
 
   private static CallToHomeRunner callToHomeRunner;
 
   @BeforeAll
-  public static void setUp() throws Exception {
-    MailboxTestUtil.setUp();
+  public static void setUp() {
     callToHomeRunner = CallToHomeRunner.getInstance();
   }
 
   @AfterAll
-  public static void tearDown() throws ServiceException {
-    MailboxTestUtil.tearDown();
+  public static void tearDown(){
     callToHomeRunner.stop();
   }
 

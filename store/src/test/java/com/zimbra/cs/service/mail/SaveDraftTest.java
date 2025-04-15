@@ -6,7 +6,7 @@
 package com.zimbra.cs.service.mail;
 
 import com.zextras.mailbox.util.MailMessageBuilder;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
+import com.zextras.mailbox.util.AccountAction;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.SaveDraftRequest;
 import com.zimbra.soap.mail.message.SaveDraftResponse;

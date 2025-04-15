@@ -5,17 +5,16 @@
 package com.zimbra.cs.dav.service;
 
 import static com.icegreen.greenmail.util.ServerSetup.PROTOCOL_SMTP;
-import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
 import static com.zimbra.cs.mailclient.smtp.SmtpConfig.DEFAULT_HOST;
 import static com.zimbra.cs.mailclient.smtp.SmtpConfig.DEFAULT_PORT;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zextras.mailbox.util.JettyServerFactory.ServerWithConfiguration;
-import com.zextras.mailbox.util.MailboxTestUtil;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
+import com.zextras.mailbox.util.AccountCreator;
 import com.zimbra.common.calendar.ZCalendar.ScheduleAgent;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraCookie;
@@ -49,7 +48,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Tag("api")
-class DavServletTest {
+class DavServletTest extends MailboxTestSuite {
 
   private static Server server;
   private static final String DAV_BASE_PATH = "/dav";
@@ -59,10 +58,9 @@ class DavServletTest {
 
   @BeforeAll
   public static void setUp() throws Exception {
-    MailboxTestUtil.setUp();
     greenMail = new GreenMail(new ServerSetup[]{ new ServerSetup(DEFAULT_PORT, DEFAULT_HOST, PROTOCOL_SMTP) });
     greenMail.start();
-    accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance());
+    accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance(), mailboxTestExtension.getDefaultDomain());
     final ServerWithConfiguration serverConfig = new JettyServerFactory()
         .addServlet(DAV_BASE_PATH + "/*", new ServletHolder(DavServlet.class))
         .create();
@@ -75,7 +73,6 @@ class DavServletTest {
   public static void tearDown() throws Exception {
     server.stop();
     greenMail.stop();
-    MailboxTestUtil.tearDown();
   }
 
   @BeforeEach
@@ -86,10 +83,10 @@ class DavServletTest {
   @Test
   void shouldNotSendNotificationWhenScheduleAgentClient() throws Exception {
     Account organizer = getRandomAccountForDefaultDomain();
-    organizer.addAlias("alias@" + DEFAULT_DOMAIN);
+    organizer.addAlias("alias@" + mailboxTestExtension.getDefaultDomain());
 
     final HttpPut request = new CalDavCreateAppointmentRequestBuilder(davBaseUrl)
-        .organizer("alias@" + DEFAULT_DOMAIN)
+        .organizer("alias@" + mailboxTestExtension.getDefaultDomain())
         .scheduleAgent(ScheduleAgent.CLIENT)
         .addAttendee(getRandomAccountForDefaultDomain())
         .addAttendee(getRandomAccountForDefaultDomain())
