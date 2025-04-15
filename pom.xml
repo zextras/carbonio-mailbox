@@ -179,11 +179,6 @@
         <version>2.4.0</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-compress</artifactId>
-        <version>1.21</version>
-      </dependency>
-      <dependency>
         <groupId>ant-1.7.0-ziputil-patched</groupId>
         <artifactId>ant-1.7.0-ziputil-patched</artifactId>
         <version>1.0</version>
