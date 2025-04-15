@@ -215,11 +215,6 @@
     </dependency>
 
     <dependency>
-      <artifactId>commons-compress</artifactId>
-      <groupId>org.apache.commons</groupId>
-    </dependency>
-
-    <dependency>
       <artifactId>ant-1.7.0-ziputil-patched</artifactId>
       <groupId>ant-1.7.0-ziputil-patched</groupId>
     </dependency>
