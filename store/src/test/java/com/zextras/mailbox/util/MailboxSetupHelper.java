@@ -97,7 +97,7 @@ public class MailboxSetupHelper {
 
 	public void initData(MailboxTestData mailboxTestData) throws Exception {
 		inMemoryLdapServer.initializeBasicData();
-		var provisioning = Provisioning.getInstance(Provisioning.CacheMode.OFF);
+		var provisioning = Provisioning.getInstance(Provisioning.CacheMode.ON);
 		var lmtpPort = PortUtil.findFreePort();
 
 		final var server =
