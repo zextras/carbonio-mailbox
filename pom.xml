@@ -948,7 +948,8 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.5.3</version>
           <configuration>
-            <forkCount>2.0C</forkCount>
+            <forkCount>4</forkCount>
+            <threadCount>4</threadCount>
             <reuseForks>false</reuseForks>
             <parallel>both</parallel>
             <argLine>@{argLine} ${test.argLine}</argLine>
@@ -963,7 +964,8 @@
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>3.5.3</version>
           <configuration>
-            <forkCount>2.0C</forkCount>
+            <forkCount>4</forkCount>
+            <threadCount>4</threadCount>
             <parallel>both</parallel>
             <reuseForks>false</reuseForks>
             <!-- argline preserves other plugin args, like JaCoCo -->
