@@ -1,12 +1,9 @@
 package com.zimbra.cs.service.mail;
 
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.mailbox.FolderConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -35,7 +32,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import javax.annotation.Nullable;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -60,12 +56,6 @@ class FolderActionTest extends SoapTestSuite {
   public void setUp() throws ServiceException {
     defaultAccount = provisioning.createAccount(UUID.randomUUID() + "@" + defaultDomain.getName(), "password",
         new HashMap<>());
-  }
-
-  @AfterAll
-  public static void tearDown() throws Exception {
-    MailboxTestUtil.clearData();
-    MailboxTestUtil.tearDown();
   }
 
   @Test
