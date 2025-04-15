@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.Maps;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
+import com.zextras.mailbox.util.AccountCreator;
 import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.ZAttrProvisioning;
@@ -102,7 +102,7 @@ public class FileUploadServletTest {
     MailboxTestUtil.initServer();
     var provisioning = Provisioning.getInstance();
 
-    accountCreatorFactory = new AccountCreator.Factory(provisioning);
+    accountCreatorFactory = new AccountCreator.Factory(provisioning, "test.com");
 
     Map<String, Object> attrs = Maps.newHashMap();
     provisioning.createAccount("test@zimbra.com", "secret", attrs);

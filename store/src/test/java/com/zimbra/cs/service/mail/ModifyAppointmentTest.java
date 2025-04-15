@@ -6,7 +6,7 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.soap.SoapUtils;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
+import com.zextras.mailbox.util.AccountCreator;
 import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.mailbox.FolderConstants;
 import com.zimbra.common.service.ServiceException;
@@ -81,7 +81,8 @@ class ModifyAppointmentTest extends SoapTestSuite {
     var provisioning = Provisioning.getInstance();
     provisioning.getLocalServer().setSmtpPort(smtpPort);
     mailboxManager = MailboxManager.getInstance();
-    accountCreatorFactory = new AccountCreator.Factory(provisioning);
+    accountCreatorFactory = new AccountCreator.Factory(provisioning,
+        soapExtension.getDefaultDomain());
   }
 
   private static CalendarItem getCalendarItemById(Account account, String id) throws ServiceException {

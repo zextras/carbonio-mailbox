@@ -1,7 +1,7 @@
 package com.zimbra.cs.service.admin;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
+import com.zextras.mailbox.util.AccountCreator;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
@@ -29,9 +29,10 @@ class ModifyAccountTest extends SoapTestSuite {
   private static Provisioning provisioning;
 
   @BeforeAll
-  static void setUp() throws Exception {
+  static void setUp() {
     provisioning = Provisioning.getInstance();
-    accountCreatorFactory = new AccountCreator.Factory(provisioning);
+    accountCreatorFactory = new AccountCreator.Factory(provisioning,
+        soapExtension.getDefaultDomain());
   }
 
   @Test

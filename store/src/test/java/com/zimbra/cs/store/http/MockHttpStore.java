@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.store.http;
 
+import com.zextras.mailbox.util.PortUtil;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +24,7 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.ByteUtil;
 
 public class MockHttpStore {
-    static final int PORT = 7678;
+    static final int PORT = PortUtil.findFreePort();
     static final String URL_PREFIX = "http://localhost:" + PORT + "/store/";
 
     private static ServerSocket ssock;

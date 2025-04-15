@@ -1,32 +1,22 @@
 package com.zimbra.cs.service.admin;
 
-import com.zextras.mailbox.util.MailboxTestUtil;
-import com.zimbra.common.service.ServiceException;
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.Provisioning;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-class CreateDomainTest {
+class CreateDomainTest extends MailboxTestSuite {
 
     private static Provisioning provisioning;
 
-    @BeforeEach
-    void setUp() throws Exception {
-        MailboxTestUtil.setUp();
+    @BeforeAll
+    static void setUp() {
         provisioning = Provisioning.getInstance();
-    }
-
-    @AfterEach
-    void tearDown() throws ServiceException {
-        MailboxTestUtil.tearDown();
     }
 
     @Test

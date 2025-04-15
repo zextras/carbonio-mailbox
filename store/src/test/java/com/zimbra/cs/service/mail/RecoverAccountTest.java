@@ -3,8 +3,8 @@ package com.zimbra.cs.service.mail;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
-import com.zextras.mailbox.util.MailboxTestUtil;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
+import com.zextras.mailbox.MailboxTestSuite;
+import com.zextras.mailbox.util.AccountCreator;
 import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.account.ZAttrProvisioning.FeatureResetPasswordStatus;
 import com.zimbra.common.account.ZAttrProvisioning.PrefPasswordRecoveryAddressStatus;
@@ -23,7 +23,6 @@ import com.zimbra.soap.type.Channel;
 import java.util.concurrent.TimeUnit;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -32,21 +31,16 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.org.awaitility.Awaitility;
 
 @Tag("api")
-class RecoverAccountTest {
+class RecoverAccountTest extends MailboxTestSuite {
 
   private static AccountCreator.Factory accountCreatorFactory;
   private static Provisioning provisioning;
 
   @BeforeAll
-  static void setUp() throws Exception {
-    MailboxTestUtil.setUp();
+  static void setUp() {
     provisioning = Provisioning.getInstance();
-    accountCreatorFactory = new AccountCreator.Factory(provisioning);
-  }
-
-  @AfterAll
-  public static void tearDown() throws Exception {
-    MailboxTestUtil.tearDown();
+    accountCreatorFactory = new AccountCreator.Factory(provisioning,
+        mailboxTestExtension.getDefaultDomain());
   }
 
   @Test

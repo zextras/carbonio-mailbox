@@ -1,11 +1,9 @@
 package com.zimbra.cs.account.ldap;
 
 import static com.zimbra.cs.account.Provisioning.AUTH_MODE_KEY;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.zextras.mailbox.util.MailboxTestUtil;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.account.ZAttrProvisioning.FeatureResetPasswordStatus;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
@@ -22,20 +20,18 @@ import com.zimbra.cs.account.auth.ZimbraCustomAuthTest.TestCustomAuth;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link LdapProvisioning}.
  */
-public class LdapProvisioningTest {
+public class LdapProvisioningTest extends MailboxTestSuite {
 
   private static Provisioning provisioning;
 
   @BeforeAll
   public static void init() throws Exception {
-    MailboxTestUtil.setUp();
     provisioning = Provisioning.getInstance();
 
     provisioning.createDomain("example.com", new HashMap<>());
@@ -62,11 +58,6 @@ public class LdapProvisioningTest {
     exampleAccountAttrs3.put(Provisioning.A_cn, "Milano");
     exampleAccountAttrs3.put(Provisioning.A_initials, "Cars");
     provisioning.createAccount("milano@lamborghini-europe.com", "testpassword", exampleAccountAttrs3);
-  }
-
-  @AfterAll
-  public static void tearDown() throws Exception {
-    MailboxTestUtil.tearDown();
   }
 
   /**
