@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 public class MailboxTestExtension implements BeforeAllCallback, AfterAllCallback {
 
 	private final MailboxTestData mailboxTestData;
+	private final MailboxSetupHelper setup;
 
 	public String getServerName() {
 		return mailboxTestData.serverName();
@@ -22,25 +23,26 @@ public class MailboxTestExtension implements BeforeAllCallback, AfterAllCallback
 		return mailboxTestData.defaultDomain();
 	}
 
-	public MailboxTestExtension(MailboxTestData mailboxTestData) {
+	public MailboxTestExtension(MailboxTestData mailboxTestData, MailboxSetupHelper setup) {
 		this.mailboxTestData = mailboxTestData;
+		this.setup = setup;
 	}
 
 	@Override
 	public void afterAll(ExtensionContext extensionContext) throws Exception {
-		MailboxTestUtil.tearDown();
+		setup.tearDown();
 	}
 
 	@Override
 	public void beforeAll(ExtensionContext extensionContext) throws Exception {
-		MailboxTestUtil.setUp(mailboxTestData);
+		setup.setUp(mailboxTestData);
 	}
 
 	public void initData() throws Exception {
-		MailboxTestUtil.initData(mailboxTestData);
+		setup.initData(mailboxTestData);
 	}
 
 	public void clearData() throws Exception {
-		MailboxTestUtil.clearData();
+		setup.clearData();
 	}
 }

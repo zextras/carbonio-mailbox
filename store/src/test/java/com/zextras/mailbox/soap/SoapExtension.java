@@ -7,7 +7,7 @@ package com.zextras.mailbox.soap;
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zextras.mailbox.util.JettyServerFactory.ServerWithConfiguration;
 import com.zextras.mailbox.util.MailboxTestData;
-import com.zextras.mailbox.util.MailboxTestUtil;
+import com.zextras.mailbox.util.MailboxSetupHelper;
 import com.zextras.mailbox.util.SoapClient;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Provisioning;
@@ -26,6 +26,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 /** A Junit 5 extension to start a SOAP server and corresponding SOAP client. */
 public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
   private static final MailboxTestData testData = new MailboxTestData( "localhost", "test.com", "f4806430-b434-4e93-9357-a02d9dd796b8");
+  private static final MailboxSetupHelper mailboxSetupHelper =  MailboxSetupHelper.create();
 
   public String getServerName() {
     return testData.serverName();
@@ -39,7 +40,7 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
   }
 
   public void clearData() throws Exception {
-    MailboxTestUtil.clearData();
+    mailboxSetupHelper.clearData();
   }
 
   public int getPort() {
@@ -47,7 +48,7 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
   }
 
   public void initData() throws Exception {
-    MailboxTestUtil.initData(testData);
+    mailboxSetupHelper.initData(testData);
   }
 
   private final SoapClient soapClient;
@@ -110,7 +111,7 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
   @Override
   public void beforeAll(ExtensionContext context) throws Exception {
     if (!server.isRunning()) {
-      MailboxTestUtil.setUp(testData);
+      mailboxSetupHelper.setUp(testData);
       Provisioning.getInstance()
           .getServerByName(testData.serverName())
           .modify(
@@ -129,6 +130,6 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
   public void afterAll(ExtensionContext context) throws Exception {
     soapClient.close();
     server.stop();
-    MailboxTestUtil.tearDown();
+    mailboxSetupHelper.tearDown();
   }
 }
