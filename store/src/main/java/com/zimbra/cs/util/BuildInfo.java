@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Properties;
 
 public final class BuildInfo {
 
@@ -45,16 +46,17 @@ public final class BuildInfo {
     String platform = getPlatform();
     String buildnum = "buildnum";
     try {
-      Class<?> clz = Class.forName("com.zimbra.cs.util.BuildInfoGenerated");
-      version = (String) clz.getField("VERSION").get(null);
-      release = (String) clz.getField("RELEASE").get(null);
-      date = (String) clz.getField("DATE").get(null);
-      host = (String) clz.getField("HOST").get(null);
-      majorversion = (String) clz.getField("MAJORVERSION").get(null);
-      minorversion = (String) clz.getField("MINORVERSION").get(null);
-      microversion = (String) clz.getField("MICROVERSION").get(null);
-      buildnum = (String) clz.getField("BUILDNUM").get(null);
-    } catch (NoSuchFieldException | ClassNotFoundException | IllegalAccessException e) {
+      final Properties properties = new Properties();
+      properties.load(BuildInfo.class.getResourceAsStream("buildInfo.properties"));
+      version = properties.getProperty("VERSION");
+      release = properties.getProperty("RELEASE");
+      date = properties.getProperty("DATE");
+      host = properties.getProperty("HOST");
+      majorversion = properties.getProperty("MAJORVERSION");
+      minorversion = properties.getProperty("MINORVERSION");
+      microversion = properties.getProperty("MICROVERSION");
+      buildnum = properties.getProperty("BUILDNUM");
+    } catch (IOException e) {
       System.out.println("build information not available: " + e);
     }
 
@@ -106,13 +108,23 @@ public final class BuildInfo {
     return platform;
   }
 
+  public record BuildInfoData(String version,String release,String date,String host,
+                                     String fullVersion, int dbVersion, int indexVersion) {
+
+  }
+
+  public static BuildInfoData getVersion() {
+    return new BuildInfoData(VERSION, RELEASE, DATE, HOST, FULL_VERSION, Versions.DB_VERSION, Versions.INDEX_VERSION);
+  }
+
   public static void main(String[] args) {
-    System.out.println("Version: " + VERSION);
-    System.out.println("Release: " + RELEASE);
-    System.out.println("Build Date: " + DATE);
-    System.out.println("Build Host: " + HOST);
-    System.out.println("Full Version: " + FULL_VERSION);
-    System.out.println("DB Version: " + Versions.DB_VERSION);
-    System.out.println("Index Version: " + Versions.INDEX_VERSION);
+    final BuildInfoData version = getVersion();
+    System.out.println("Version: " + version.version());
+    System.out.println("Release: " + version.release());
+    System.out.println("Build Date: " + version.release());
+    System.out.println("Build Host: " + version.host());
+    System.out.println("Full Version: " + version.fullVersion());
+    System.out.println("DB Version: " + version.dbVersion());
+    System.out.println("Index Version: " + version.indexVersion());
   }
 }

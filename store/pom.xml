@@ -111,6 +111,11 @@
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
       <scope>test</scope>
     </dependency>
@@ -567,11 +572,13 @@
   <packaging>jar</packaging>
 
   <build>
-
     <finalName>${project.artifactId}</finalName>
     <resources>
       <resource>
         <directory>${project.basedir}/ldap/generated</directory>
+      </resource>
+      <resource>
+        <directory>${project.basedir}/target/generated-resources</directory>
       </resource>
       <resource>
         <directory>${project.basedir}/src/main/resources</directory>
