@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.SoapProtocol;
-import com.zimbra.cs.account.MockProvisioning;
+import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
@@ -41,12 +41,14 @@ import org.junit.jupiter.api.Test;
  * @author ysasaki
  */
 public final class ZimbraQueryTest {
+  
+  private static Account account;
 
   @BeforeAll
   public static void init() throws Exception {
     MailboxTestUtil.initServer();
     Provisioning prov = Provisioning.getInstance();
-    prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+    account = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
   }
 
   @BeforeEach
@@ -57,7 +59,7 @@ public final class ZimbraQueryTest {
   @Test
   void checkSortCompatibility() throws Exception {
     Mailbox mbox =
-        MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
     SearchParams params = new SearchParams();
     params.setQueryString("in:inbox content:test");
@@ -95,7 +97,7 @@ public final class ZimbraQueryTest {
   @Test
   void testSanitizedQuery() throws Exception {
     Mailbox mbox =
-        MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
     SearchParams params = new SearchParams();
     params.setSortBy(SortBy.NONE);
@@ -118,7 +120,7 @@ public final class ZimbraQueryTest {
   @Test
   void searchResultMode() throws Exception {
     Mailbox mbox =
-        MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
     Map<String, Object> fields = new HashMap<String, Object>();
     fields.put(ContactConstants.A_email, "test1@zimbra.com");
@@ -144,7 +146,7 @@ public final class ZimbraQueryTest {
   @Disabled("Fix me. Assertions fails. Standard error: missing .platform")
   void calItemExpandRange() throws Exception {
     Mailbox mbox =
-        MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
     SearchParams params = new SearchParams();
     params.setQueryString("test");
@@ -168,7 +170,7 @@ public final class ZimbraQueryTest {
   @Test
   void mdate() throws Exception {
     Mailbox mbox =
-        MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
     DbConnection conn = DbPool.getConnection();
     DbUtil.executeUpdate(
@@ -248,7 +250,7 @@ public final class ZimbraQueryTest {
   @Test
   void quick() throws Exception {
     Mailbox mbox =
-        MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
     Contact contact =
         mbox.createContact(
@@ -283,7 +285,7 @@ public final class ZimbraQueryTest {
   @Test
   void suggest() throws Exception {
     Mailbox mbox =
-        MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        MailboxManager.getInstance().getMailboxByAccountId(account.getId());
     DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
     Message msg =
         mbox.addMessage(
@@ -306,7 +308,7 @@ public final class ZimbraQueryTest {
   @Test
   void dumpster() throws Exception {
     Mailbox mbox =
-        MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
     SearchParams params = new SearchParams();
     params.setQueryString("test");
