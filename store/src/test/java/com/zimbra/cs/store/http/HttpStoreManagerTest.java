@@ -7,11 +7,10 @@ package com.zimbra.cs.store.http;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.google.common.io.Files;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.FileUtil;
-import com.zimbra.cs.account.MockProvisioning;
+import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbMailItem;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
@@ -25,6 +24,8 @@ import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.UUID;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.junit.jupiter.api.AfterEach;
@@ -35,6 +36,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 public class HttpStoreManagerTest extends AbstractExternalStoreManagerTest {
+  @TempDir
+  File tmpDir;
+
+  @BeforeEach
+  public void setUpHttp() throws Exception {
+    MockHttpStore.startup();
+    LC.zimbra_tmp_directory.setDefault(tmpDir.getPath());
+    MailboxTestUtil.clearData();
+  }
+
+  @AfterEach
+  public void tearDownHttp() throws Exception {
+    MockHttpStore.shutdown();
+  }
 
     public static class MockHttpStoreManager extends HttpStoreManager {
         @Override
@@ -70,24 +85,11 @@ public class HttpStoreManagerTest extends AbstractExternalStoreManagerTest {
         return new MockHttpStoreManager();
     }
 
-    @TempDir
-    File tmpDir;
-
-    @BeforeEach
-    public void setUpHttp() throws Exception {
-        MockHttpStore.startup();
-        LC.zimbra_tmp_directory.setDefault(tmpDir.getPath());
-        MailboxTestUtil.clearData();
-    }
-
-    @AfterEach
-    public void tearDownHttp() throws Exception {
-        MockHttpStore.shutdown();
-    }
 
  @Test
  void mailboxDelete() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    final Account account = Provisioning.getInstance().createAccount(UUID.randomUUID() + "@zextras.com", "secret", new HashMap<String, Object>());
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   assertEquals(0, MockHttpStore.size(), "start with no blobs in the store");
 
   mbox.addMessage(null, MailboxTestUtil.generateMessage("test"), MailboxTest.STANDARD_DELIVERY_OPTIONS, null).getId();
@@ -102,7 +104,8 @@ public class HttpStoreManagerTest extends AbstractExternalStoreManagerTest {
 
  @Test
  void fail() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   final Account account = Provisioning.getInstance().createAccount(UUID.randomUUID() + "@zextras.com", "secret", new HashMap<String, Object>());
+   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   int count = countMailItems(mbox);
   MockHttpStore.setFail();
   try {
@@ -117,7 +120,8 @@ public class HttpStoreManagerTest extends AbstractExternalStoreManagerTest {
  @Disabled("long running test")
  @Test
  void timeout() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   final Account account = Provisioning.getInstance().createAccount(UUID.randomUUID() + "@zextras.com", "secret", new HashMap<String, Object>());
+   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   int count = countMailItems(mbox);
   MockHttpStore.setDelay();
   try {
