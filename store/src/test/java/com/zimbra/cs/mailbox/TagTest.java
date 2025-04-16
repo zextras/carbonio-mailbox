@@ -5,24 +5,15 @@
 
 package com.zimbra.cs.mailbox;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import com.google.common.collect.Maps;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.mailbox.BaseItemInfo;
 import com.zimbra.common.mailbox.Color;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbTagTestUtil;
 import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
@@ -30,15 +21,23 @@ import com.zimbra.cs.mailbox.MailboxTest.MockListener;
 import com.zimbra.cs.mailbox.util.TagUtil;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.session.PendingModifications.Change;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TagTest {
+ private static Account account;
 
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
 
         Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", Maps.<String, Object>newHashMap());
+        account = prov.createAccount("test@zimbra.com", "secret", Maps.<String, Object>newHashMap());
 
         Map<String, Object> attrs = Maps.newHashMap();
         attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
@@ -68,7 +67,7 @@ public class TagTest {
     }
 
  @Test
- void name() throws Exception {
+ void name() {
   checkName("null tag name", null, null);
   checkName("empty tag name", "", null);
   checkName("whitespace tag name", "   \t  \r\n", null);
@@ -90,7 +89,7 @@ public class TagTest {
 
  @Test
  void rename() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   mbox.createTag(null, tag1, MailItem.DEFAULT_COLOR);
   try {
@@ -123,7 +122,7 @@ public class TagTest {
 
  @Test
  void color() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   // color specified as byte
   Tag tag = mbox.createTag(null, tag1, (byte) 2);
@@ -196,7 +195,7 @@ public class TagTest {
 
  @Test
  void markRead() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   checkInboxCounts("empty folder", mbox, 0, 0, 0, 0);
 
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
@@ -264,7 +263,7 @@ public class TagTest {
 
  @Test
  void implicitCreate() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   // implicitly create two tags by including them in an addMessage() call
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD).setTags(new String[]{tag1, tag2});
@@ -328,7 +327,7 @@ public class TagTest {
 
  @Test
  void itemDelete() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   // precreate some but not all of the tags
   mbox.createTag(null, tag2, (byte) 4);
@@ -389,7 +388,7 @@ public class TagTest {
 
  @Test
  void folder() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   mbox.alterTag(null, Mailbox.ID_FOLDER_INBOX, MailItem.Type.FOLDER, Flag.FlagInfo.SUBSCRIBED, true, null);
   mbox.alterTag(null, Mailbox.ID_FOLDER_INBOX, MailItem.Type.FOLDER, Flag.FlagInfo.SUBSCRIBED, false, null);
@@ -420,7 +419,7 @@ public class TagTest {
 
  @Test
  void alterTag() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD).setTags(new String[]{tag1});
   int msgId = mbox.addMessage(null, ThreaderTest.getRootMessage(), dopt, null).getId();
@@ -445,7 +444,7 @@ public class TagTest {
   Account acct2 = Provisioning.getInstance().get(Key.AccountBy.name, "test2@zimbra.com");
   OperationContext octxt2 = new OperationContext(acct2);
 
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   int tagId1 = mbox.createTag(null, tag1, (byte) 0).getId();
 
@@ -531,7 +530,7 @@ public class TagTest {
 
  @Test
  void listed() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   // create one tag explicitly
   mbox.createTag(null, tag1, (byte) 5);
@@ -573,7 +572,7 @@ public class TagTest {
 
  @Test
  void notifications() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   MockListener ml = new MockListener();
   MailboxListener.register(ml);
@@ -615,7 +614,7 @@ public class TagTest {
 
  @Test
  void lowercase() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   mbox.createTag(null, "foo", (byte) 5);
   try {
