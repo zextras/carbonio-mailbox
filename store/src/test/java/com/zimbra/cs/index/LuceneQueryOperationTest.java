@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Lists;
 import com.zimbra.common.soap.SoapProtocol;
-import com.zimbra.cs.account.MockProvisioning;
+import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.DeliveryOptions;
 import com.zimbra.cs.mailbox.MailItem;
@@ -33,12 +33,13 @@ import org.junit.jupiter.api.Test;
  * @author ysasaki
  */
 public final class LuceneQueryOperationTest {
+    private static Account account;
 
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+        account = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
     @AfterEach
@@ -48,7 +49,7 @@ public final class LuceneQueryOperationTest {
 
  @Test
  void notClause() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
   mbox.addMessage(null, new ParsedMessage("From: test1@zimbra.com".getBytes(), false), dopt, null);
   Message msg2 = mbox.addMessage(null, new ParsedMessage("From: test2@zimbra.com".getBytes(), false), dopt, null);
@@ -79,7 +80,7 @@ public final class LuceneQueryOperationTest {
 
  @Test
  void notClauses() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
   mbox.addMessage(null, new ParsedMessage("From: test1@zimbra.com".getBytes(), false), dopt, null);
   Message msg2 = mbox.addMessage(null, new ParsedMessage("From: test2@zimbra.com".getBytes(), false), dopt, null);
@@ -110,7 +111,7 @@ public final class LuceneQueryOperationTest {
 
  @Test
  void andClauses() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
   Message msg1 = mbox.addMessage(null, new ParsedMessage("From: test1@zimbra.com".getBytes(), false), dopt, null);
   mbox.addMessage(null, new ParsedMessage("From: test2@zimbra.com".getBytes(), false), dopt, null);
@@ -131,7 +132,7 @@ public final class LuceneQueryOperationTest {
 
  @Test
  void subjectQuery() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
   Message msg = mbox.addMessage(null, new ParsedMessage("Subject: one two three".getBytes(), false), dopt, null);
   MailboxTestUtil.index(mbox);
@@ -160,7 +161,7 @@ public final class LuceneQueryOperationTest {
 
  @Test
  void subjectQueryPhrase() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
   Message msg1 = mbox.addMessage(null, new ParsedMessage("Subject: one two three".getBytes(), false), dopt, null);
   Message msg2 = mbox.addMessage(null, new ParsedMessage("Subject: one three two".getBytes(), false), dopt, null);
@@ -182,7 +183,7 @@ public final class LuceneQueryOperationTest {
 
  @Test
  void subjectQueryPhraseMultiMatches() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
   Message msg1 = mbox.addMessage(null, new ParsedMessage("Subject: one two three".getBytes(), false), dopt, null);
   Message msg2 = mbox.addMessage(null, new ParsedMessage("Subject: one two three".getBytes(), false), dopt, null);
