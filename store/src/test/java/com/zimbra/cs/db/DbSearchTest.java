@@ -5,17 +5,9 @@
 
 package com.zimbra.cs.db;
 
-import java.util.HashMap;
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import com.zimbra.cs.account.MockProvisioning;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.index.DbSearchConstraints;
@@ -25,6 +17,12 @@ import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
+import java.util.HashMap;
+import java.util.List;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link DbSearch}.
@@ -33,27 +31,27 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
  */
 public final class DbSearchTest {
 
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
-    }
+ @BeforeAll
+ public static void init() throws Exception {
+  MailboxTestUtil.initServer();
+ }
 
-    private DbConnection conn = null;
-    private Mailbox mbox = null;
+ private DbConnection conn = null;
+ private Mailbox mbox = null;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        MailboxTestUtil.clearData();
-        mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        conn = DbPool.getConnection(mbox);
-    }
+ @BeforeEach
+ public void setUp() throws Exception {
+  MailboxTestUtil.clearData();
+  Account account = Provisioning.getInstance()
+      .createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+  mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
+  conn = DbPool.getConnection(mbox);
+ }
 
-    @AfterEach
-    public void tearDown() {
-        conn.closeQuietly();
-    }
+ @AfterEach
+ public void tearDown() {
+  conn.closeQuietly();
+ }
 
  @Test
  void sortByAttachment() throws Exception {
