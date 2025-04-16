@@ -30,7 +30,7 @@ import qa.unittest.TestUtil;
 public abstract class AbstractStoreManagerTest {
 
     static StoreManager originalStoreManager;
-    static Account account;
+    protected static Account account;
 
     @BeforeAll
     public static void init() throws Exception {

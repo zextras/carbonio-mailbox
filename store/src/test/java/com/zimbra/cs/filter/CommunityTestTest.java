@@ -5,19 +5,11 @@
 
 package com.zimbra.cs.filter;
 
-import java.util.HashMap;
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
+import com.zextras.mailbox.util.AccountUtil;
 import com.zimbra.common.util.ArrayUtil;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.DeliveryContext;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -26,6 +18,10 @@ import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.util.ItemId;
+import java.util.List;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CommunityTestTest {
     Account account;
@@ -34,14 +30,12 @@ public class CommunityTestTest {
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
     @BeforeEach
     public void setUp() throws Exception {
         MailboxTestUtil.clearData();
-        account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        account = AccountUtil.createAccount();
         RuleManager.clearCachedRules(account);
         mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
