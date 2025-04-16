@@ -5,27 +5,15 @@
 
 package com.zimbra.cs.mime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.mail.internet.MimeMessage;
-import javax.mail.util.SharedByteArrayInputStream;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.zmime.ZMimeMessage;
 import com.zimbra.common.zmime.ZMimeMultipart;
+import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.DeliveryOptions;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -33,8 +21,8 @@ import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.service.AuthProvider;
-import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
 import com.zimbra.cs.service.mail.message.parser.MimeMessageData;
+import com.zimbra.cs.service.mail.message.parser.ParseMimeMessage;
 import com.zimbra.cs.util.JMSession;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -43,24 +31,34 @@ import com.zimbra.soap.mail.type.AttachmentsInfo;
 import com.zimbra.soap.mail.type.MimePartAttachSpec;
 import com.zimbra.soap.mail.type.MimePartInfo;
 import com.zimbra.soap.mail.type.MsgToSend;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import javax.mail.internet.MimeMessage;
+import javax.mail.util.SharedByteArrayInputStream;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class TestContentTransferEncoding {
 
     Mailbox mbox;
+    private static Account account;
 
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+        account = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
     @BeforeEach
     public void setUp() throws Exception {
         MailboxTestUtil.clearData();
         MailboxTestUtil.cleanupIndexStore(
-                MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID));
-        mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+                MailboxManager.getInstance().getMailboxByAccountId(account.getId()));
+        mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
     }
 
     private MimeMessage sendForwardedMessage(SendMsgRequest req, Message origMsg) throws Exception {
@@ -105,7 +103,7 @@ public class TestContentTransferEncoding {
  @Disabled("disabled until bug 98015 is fixed")
  @Test
  void testSimpleMimeMessage() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   MimeMessage mimeMsg = new ZMimeMessage(JMSession.getSession(), new SharedByteArrayInputStream(getSimpleMimeString().getBytes()));
   ParsedMessage pm = new ParsedMessage(mimeMsg, true);
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
@@ -127,7 +125,7 @@ public class TestContentTransferEncoding {
  @Disabled("disabled until bug 98015 is fixed")
  @Test
  void testMultipartMimeMessage() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   MimeMessage mimeMsg = new ZMimeMessage(JMSession.getSession(), new SharedByteArrayInputStream(getMultipartMimeString().getBytes()));
   ParsedMessage pm = new ParsedMessage(mimeMsg, true);
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
@@ -159,7 +157,6 @@ public class TestContentTransferEncoding {
 
  @Test
  void testNestedMultipartMessage() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
   MimeMessage mimeMsg = new ZMimeMessage(JMSession.getSession(), new SharedByteArrayInputStream(getNestedMimeString().getBytes()));
   ParsedMessage pm = new ParsedMessage(mimeMsg, true);
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
