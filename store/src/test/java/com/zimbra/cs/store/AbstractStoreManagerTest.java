@@ -5,21 +5,10 @@
 
 package com.zimbra.cs.store;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Random;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import com.zimbra.common.util.ByteUtil;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.zimbra.cs.account.MockProvisioning;
+import com.zimbra.common.util.ByteUtil;
+import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -27,18 +16,28 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.ThreaderTest;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.store.external.ExternalStoreManager;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Random;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import qa.unittest.TestUtil;
 
 public abstract class AbstractStoreManagerTest {
 
     static StoreManager originalStoreManager;
+    static Account account;
 
     @BeforeAll
     public static void init() throws Exception {
     System.setProperty("zimbra.config", "../store/src/test/resources/localconfig-test.xml");
         MailboxTestUtil.initServer();
         MailboxTestUtil.initProvisioning();
-        Provisioning.getInstance().createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+        account = Provisioning.getInstance().createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
     /**
@@ -64,7 +63,7 @@ public abstract class AbstractStoreManagerTest {
   ParsedMessage pm = ThreaderTest.getRootMessage();
   byte[] mimeBytes = TestUtil.readInputStream(pm.getRawInputStream());
 
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   StoreManager sm = StoreManager.getInstance();
   Blob blob = sm.storeIncoming(pm.getRawInputStream());
@@ -97,7 +96,7 @@ public abstract class AbstractStoreManagerTest {
  void sameDigest() throws Exception {
   ParsedMessage pm = ThreaderTest.getRootMessage();
   StoreManager sm = StoreManager.getInstance();
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   Blob blob1 = sm.storeIncoming(pm.getRawInputStream());
   StagedBlob staged1 = sm.stage(blob1, mbox);
@@ -120,7 +119,7 @@ public abstract class AbstractStoreManagerTest {
   rand.nextBytes(bytes);
 
   StoreManager sm = StoreManager.getInstance();
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   IncomingBlob incoming = sm.newIncomingBlob("foo", null);
 
@@ -151,7 +150,7 @@ public abstract class AbstractStoreManagerTest {
  void incomingMultipost() throws Exception {
   byte[] bytes = "AAAAStrinGBBB".getBytes();
   StoreManager sm = StoreManager.getInstance();
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   IncomingBlob incoming = sm.newIncomingBlob("foo", null);
 
@@ -201,7 +200,7 @@ public abstract class AbstractStoreManagerTest {
 
   rand.nextBytes(bytes);
   StoreManager sm = StoreManager.getInstance();
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   IncomingBlob incoming = sm.newIncomingBlob("foo", null);
 
@@ -233,7 +232,7 @@ public abstract class AbstractStoreManagerTest {
  @Test
  void emptyBlob() throws Exception {
   StoreManager sm = StoreManager.getInstance();
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   IncomingBlob incoming = sm.newIncomingBlob("foo", null);
   Blob blob = incoming.getBlob();
@@ -269,7 +268,7 @@ public abstract class AbstractStoreManagerTest {
  @Test
  void nonExistingBlob() throws Exception {
   StoreManager sm = StoreManager.getInstance();
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   MailboxBlob blob = sm.getMailboxBlob(mbox, 999, 1, "1");
   assertNull(blob, "expect null blob");
  }
