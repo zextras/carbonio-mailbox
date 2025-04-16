@@ -5,30 +5,14 @@
 
 package com.zimbra.cs.mailbox;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import javax.mail.util.SharedByteArrayInputStream;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.common.account.ZAttrProvisioning.ShareNotificationMtaConnectionType;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;
 import com.zimbra.common.util.Log.Level;
 import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.ACLUtil;
@@ -40,6 +24,16 @@ import com.zimbra.cs.mime.Mime.FixedMimeMessage;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.util.JMSession;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.mail.util.SharedByteArrayInputStream;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import qa.unittest.MessageBuilder;
 
 /**
@@ -48,22 +42,22 @@ import qa.unittest.MessageBuilder;
  */
 public final class MailSenderTest {
 
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
-        prov.deleteAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        Map<String, Object> attrs = new HashMap<String, Object>();
-        attrs.put(Provisioning.A_zimbraAllowFromAddress, "test-alias@zimbra.com");
-        attrs.put(Provisioning.A_zimbraPrefAllowAddressForDelegatedSender, "test@zimbra.com");
-        attrs.put(Provisioning.A_zimbraPrefAllowAddressForDelegatedSender, "test-alias@zimbra.com");
-        prov.createAccount("test@zimbra.com", "secret", attrs);
-    }
+ private static Account account;
+
+ @BeforeAll
+ public static void init() throws Exception {
+     MailboxTestUtil.initServer();
+     Provisioning prov = Provisioning.getInstance();
+     Map<String, Object> attrs = new HashMap<String, Object>();
+     attrs.put(Provisioning.A_zimbraAllowFromAddress, "test-alias@zimbra.com");
+     attrs.put(Provisioning.A_zimbraPrefAllowAddressForDelegatedSender, "test@zimbra.com");
+     attrs.put(Provisioning.A_zimbraPrefAllowAddressForDelegatedSender, "test-alias@zimbra.com");
+     account = prov.createAccount("test@zimbra.com", "secret", attrs);
+ }
 
  @Test
  void getSenderHeadersSimpleAuth() throws Exception {
-  Provisioning prov = Provisioning.getInstance();
-  Account account = prov.getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  
   MailSender mailSender = new MailSender();
   Pair<InternetAddress, InternetAddress> pair;
   String mail = "test@zimbra.com";
@@ -139,7 +133,7 @@ public final class MailSenderTest {
  @Test
  void getSenderHeadersDelegatedAuth() throws Exception {
   Provisioning prov = Provisioning.getInstance();
-  Account account = prov.getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  
   Map<String, Object> attrs = new HashMap<String, Object>();
   attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
   Account account2 = prov.createAccount("test2@zimbra.com", "secret", attrs);
@@ -225,7 +219,7 @@ public final class MailSenderTest {
  @Test
  void getCalSenderHeaders() throws Exception {
   Provisioning prov = Provisioning.getInstance();
-  Account account = prov.getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  
   MailSender calSender = new MailSender().setCalendarMode(true);
   Pair<InternetAddress, InternetAddress> pair;
 
@@ -244,7 +238,7 @@ public final class MailSenderTest {
  void updateReferenceHeaders() throws Exception {
   MailSender sender = new MailSender();
   Provisioning prov = Provisioning.getInstance();
-  Account account = prov.getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   String from = "sender@example.com";
