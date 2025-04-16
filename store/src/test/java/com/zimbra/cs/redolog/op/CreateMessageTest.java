@@ -22,33 +22,31 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class CreateMessageTest {
-
-	private Mailbox mbox;
 
 	@BeforeAll
 	public static void init() throws Exception {
 		MailboxTestUtil.initServer();
 	}
 
-	@BeforeEach
-	public void setUp() throws Exception {
+
+	private Mailbox createTestMailbox() throws Exception {
 		Account account = Provisioning.getInstance().createAccount(UUID.randomUUID() +
-				"-test@zimbra.com", "secret", new HashMap<String, Object>());
-		mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+				"@zimbra.com", "secret", new HashMap<String, Object>(
+				Map.of(Provisioning.A_zimbraId, UUID.randomUUID().toString())
+		));
+		return MailboxManager.getInstance().getMailboxByAccount(account);
 	}
 
-	private CreateMessage createTestMessageRedoableOp() throws Exception {
+	private CreateMessage createTestMessageRedoableOp(Mailbox mailbox) throws Exception {
 		ParsedMessage pm = MailboxTestUtil.generateMessage("test");
 		final long msgSize = pm.getRawInputStream().available();
-		final CreateMessage op = new CreateMessage(mbox.getId() /* mailboxId */, "rcpt@example.com",
+		final CreateMessage op = new CreateMessage(mailbox.getId() /* mailboxId */, "rcpt@example.com",
 				false /* shared */, "message digest",
 				msgSize /* msgSize */, 6 /* folderId */,
 				true /* noICal */, 0 /* flags */,
@@ -59,15 +57,9 @@ public class CreateMessageTest {
 		return op;
 	}
 
-	@AfterEach
-	public void tearDown() throws Exception {
-		MailboxTestUtil.clearData();
-	}
-
 	@Test
 	void startSetsTimestamp() throws Exception {
-
-		final CreateMessage op = createTestMessageRedoableOp();
+		final CreateMessage op = createTestMessageRedoableOp(createTestMailbox());
 		assertEquals(-1, op.mReceivedDate, "receivedDate != -1 before start");
 		op.start(7);
 		assertEquals(7, op.mReceivedDate, "receivedDate != 7");
@@ -75,10 +67,9 @@ public class CreateMessageTest {
 	}
 
 	@Test
-	@Disabled("Flaky test in CI")
 	void serializeDeserialize() throws Exception {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		CreateMessage op = createTestMessageRedoableOp();
+		CreateMessage op = createTestMessageRedoableOp(createTestMailbox());
 		op.serializeData(new RedoLogOutput(out));
 
 		// reset op
@@ -98,12 +89,13 @@ public class CreateMessageTest {
 
 	@Test
 	void redo() throws Exception {
-		final CreateMessage op = createTestMessageRedoableOp();
+		final Mailbox testMailbox = createTestMailbox();
+		final CreateMessage op = createTestMessageRedoableOp(testMailbox);
 		op.redo();
 
 		// Look in the mailbox and see if the message is there.
 		Message msg =
-				mbox.getMessageById(op.getOperationContext(), mbox.getLastItemId());
+				testMailbox.getMessageById(op.getOperationContext(), testMailbox.getLastItemId());
 		assertEquals("test", msg.getSubject(), "subject != test");
 		assertEquals("Bob Evans <bob@example.com>", msg.getSender(), "sender != bob@example.com");
 		assertEquals(6, msg.getFolderId(), "folderId != 6");
