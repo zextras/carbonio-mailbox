@@ -5,25 +5,11 @@
 
 package com.zimbra.cs.store.external;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Random;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import com.zimbra.common.service.ServiceException;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.util.AccountUtil;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.MockProvisioning;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
@@ -33,31 +19,39 @@ import com.zimbra.cs.store.IncomingBlob;
 import com.zimbra.cs.store.MailboxBlob;
 import com.zimbra.cs.store.StagedBlob;
 import com.zimbra.cs.store.StoreManager;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Random;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import qa.unittest.TestUtil;
 
 public class StoreManagerNegativeTest {
 
-    static StoreManager originalStoreManager;
+  static StoreManager originalStoreManager;
 
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-        MailboxTestUtil.initProvisioning();
-        Provisioning.getInstance().createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
-    }
+  @BeforeAll
+  public static void init() throws Exception {
+    MailboxTestUtil.initServer();
+  }
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        originalStoreManager = StoreManager.getInstance();
-        StoreManager.setInstance(getStoreManager());
-        StoreManager.getInstance().startup();
-    }
+  @BeforeEach
+  public void setUp() throws Exception {
+    originalStoreManager = StoreManager.getInstance();
+    StoreManager.setInstance(getStoreManager());
+    StoreManager.getInstance().startup();
+  }
 
-    @AfterEach
-    public void tearDown() throws Exception {
-        StoreManager.getInstance().shutdown();
-        StoreManager.setInstance(originalStoreManager);
-    }
+  @AfterEach
+  public void tearDown() throws Exception {
+    StoreManager.getInstance().shutdown();
+    StoreManager.setInstance(originalStoreManager);
+  }
 
     protected StoreManager getStoreManager() {
         return new BrokenStreamingStoreManager();
@@ -65,12 +59,12 @@ public class StoreManagerNegativeTest {
 
  @Test
  void nullLocator() throws Exception {
-  Random rand = new Random();
+   Random rand = new Random();
   byte[] bytes = new byte[10000];
   rand.nextBytes(bytes);
 
   StoreManager sm = StoreManager.getInstance();
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(AccountUtil.createAccount());
 
   IncomingBlob incoming = sm.newIncomingBlob("foo", null);
 

@@ -33,7 +33,7 @@ public abstract class AbstractBlobConsistencyCheckTest {
 
     static StoreManager originalStoreManager;
     protected final Log log = ZimbraLog.store;
-    private static Account account;
+    protected static Account account;
 
     protected abstract StoreManager getStoreManager();
     protected abstract BlobConsistencyChecker getChecker();
