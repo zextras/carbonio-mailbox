@@ -5,10 +5,11 @@
 
 package com.zimbra.cs.index.query;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.index.SearchParams;
 import com.zimbra.cs.index.SortBy;
@@ -28,16 +29,14 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.SearchRequest;
 import com.zimbra.soap.mail.message.SearchResponse;
 import com.zimbra.soap.type.SearchHit;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import java.util.Map;
+import java.util.UUID;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link TextQuery}.
@@ -46,11 +45,17 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
  */
 public final class TextQueryTest {
 
+    private static Account account;
+    private static Mailbox mailbox;
+
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+        account = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>(
+            Map.of(Provisioning.A_zimbraId, UUID.randomUUID().toString())
+        ));
+        mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
     }
 
     @BeforeEach
@@ -60,7 +65,7 @@ public final class TextQueryTest {
 
     @Test
     void toQueryStringSingleTerm() throws Exception {
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        Mailbox mbox = mailbox;
         MailboxTestUtil.index(mbox);
 
         SearchParams params = new SearchParams();
@@ -75,7 +80,7 @@ public final class TextQueryTest {
 
     @Test
     void toQueryStringMultiTerms() throws Exception {
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        Mailbox mbox = mailbox;
         MailboxTestUtil.index(mbox);
 
         SearchParams params = new SearchParams();
@@ -90,7 +95,7 @@ public final class TextQueryTest {
 
     @Test
     void wildcardExpandedToNone() throws Exception {
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        Mailbox mbox = mailbox;
 
         ZimbraQueryResults results = mbox.index.search(new OperationContext(mbox), "none*",
                 EnumSet.of(MailItem.Type.MESSAGE), SortBy.NONE, 100);
@@ -107,8 +112,7 @@ public final class TextQueryTest {
 
     @Test
     void sortByHasAttach() throws Exception {
-        Account acct = Provisioning.getInstance().getAccountById(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
         // setup: add a message
         DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
@@ -124,7 +128,7 @@ public final class TextQueryTest {
         sr.setSearchTypes("message");
         sr.setQuery("test");
         sr.setSortBy(SortBy.ATTACHMENT_ASC.toString());
-        resp = doSearch(sr, acct);
+        resp = doSearch(sr, account);
         hits = resp.getSearchHits();
         assertEquals(2, hits.size(), "Number of hits");
         msgId = Integer.parseInt(hits.get(0).getId());
@@ -134,7 +138,7 @@ public final class TextQueryTest {
 
         /* Check that we get them in the opposite order if we change the search direction */
         sr.setSortBy(SortBy.ATTACHMENT_DESC.toString());
-        resp = doSearch(sr, acct);
+        resp = doSearch(sr, account);
         hits = resp.getSearchHits();
         assertEquals(2, hits.size(), "Number of hits");
         msgId = Integer.parseInt(hits.get(1).getId());
@@ -145,8 +149,7 @@ public final class TextQueryTest {
 
     @Test
     void sortByIsFlagged() throws Exception {
-        Account acct = Provisioning.getInstance().getAccountById(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
         // setup: add a message
         DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
@@ -163,7 +166,7 @@ public final class TextQueryTest {
         sr.setSearchTypes("message");
         sr.setQuery("test");
         sr.setSortBy(SortBy.FLAG_ASC.toString());
-        resp = doSearch(sr, acct);
+        resp = doSearch(sr, account);
         hits = resp.getSearchHits();
         assertEquals(2, hits.size(), "Number of hits");
         msgId = Integer.parseInt(hits.get(0).getId());
@@ -173,7 +176,7 @@ public final class TextQueryTest {
 
         /* Check that we get them in the opposite order if we change the search direction */
         sr.setSortBy(SortBy.FLAG_DESC.toString());
-        resp = doSearch(sr, acct);
+        resp = doSearch(sr, account);
         hits = resp.getSearchHits();
         assertEquals(2, hits.size(), "Number of hits");
         msgId = Integer.parseInt(hits.get(1).getId());
@@ -184,8 +187,7 @@ public final class TextQueryTest {
 
     @Test
     void sortByPriority() throws Exception {
-        Account acct = Provisioning.getInstance().getAccountById(MockProvisioning.DEFAULT_ACCOUNT_ID);
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
         // setup: add a message
         DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
@@ -204,7 +206,7 @@ public final class TextQueryTest {
         sr.setSearchTypes("message");
         sr.setQuery("test");
         sr.setSortBy(SortBy.PRIORITY_ASC.toString());
-        resp = doSearch(sr, acct);
+        resp = doSearch(sr, account);
         hits = resp.getSearchHits();
         assertEquals(3, hits.size(), "Number of hits");
         msgId = Integer.parseInt(hits.get(1).getId());
@@ -216,7 +218,7 @@ public final class TextQueryTest {
 
         /* Check that we get them in the opposite order if we change the search direction */
         sr.setSortBy(SortBy.PRIORITY_DESC.toString());
-        resp = doSearch(sr, acct);
+        resp = doSearch(sr, account);
         hits = resp.getSearchHits();
         assertEquals(3, hits.size(), "Number of hits");
         msgId = Integer.parseInt(hits.get(1).getId());

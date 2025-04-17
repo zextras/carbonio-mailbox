@@ -5,12 +5,6 @@
 
 package com.zimbra.cs.store.external;
 
-import java.io.File;
-import java.io.InputStream;
-
-import org.junit.jupiter.api.Test;
-import com.zimbra.cs.account.MockProvisioning;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.cs.mailbox.Mailbox;
@@ -23,6 +17,9 @@ import com.zimbra.cs.store.BlobInputStream;
 import com.zimbra.cs.store.MailboxBlob;
 import com.zimbra.cs.store.StagedBlob;
 import com.zimbra.cs.store.StoreManager;
+import java.io.File;
+import java.io.InputStream;
+import org.junit.jupiter.api.Test;
 import qa.unittest.TestUtil;
 
 public abstract class AbstractExternalStoreManagerTest extends AbstractStoreManagerTest {
@@ -31,7 +28,7 @@ public abstract class AbstractExternalStoreManagerTest extends AbstractStoreMana
  void testUncachedSubstream() throws Exception {
   ParsedMessage pm = ThreaderTest.getRootMessage();
   byte[] mimeBytes = TestUtil.readInputStream(pm.getRawInputStream());
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   StoreManager sm = StoreManager.getInstance();
   Blob blob = sm.storeIncoming(pm.getRawInputStream());
@@ -60,7 +57,7 @@ public abstract class AbstractExternalStoreManagerTest extends AbstractStoreMana
  void testUncachedFile() throws Exception {
   ParsedMessage pm = ThreaderTest.getRootMessage();
   byte[] mimeBytes = TestUtil.readInputStream(pm.getRawInputStream());
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   StoreManager sm = StoreManager.getInstance();
   Blob blob = sm.storeIncoming(pm.getRawInputStream());

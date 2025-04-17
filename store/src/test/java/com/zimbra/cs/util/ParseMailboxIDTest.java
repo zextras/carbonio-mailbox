@@ -5,18 +5,17 @@
 
 package com.zimbra.cs.util;
 
-import java.util.HashMap;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import com.zimbra.common.localconfig.LC;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.util.ParseMailboxID;
+import java.util.HashMap;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link ParseMailboxID}.
@@ -24,14 +23,16 @@ import com.zimbra.cs.service.util.ParseMailboxID;
  * @author ysasaki
  */
 public class ParseMailboxIDTest {
+ private static Account account;
 
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-        MockProvisioning prov = new MockProvisioning();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
-        Provisioning.setInstance(prov);
-    }
+ @BeforeAll
+ public static void init() throws Exception {
+  MailboxTestUtil.initServer();
+  MockProvisioning prov = new MockProvisioning();
+  account = prov
+      .createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+  Provisioning.setInstance(prov);
+ }
 
  @Test
  void parseLocalMailboxId() throws Exception {
@@ -46,7 +47,7 @@ public class ParseMailboxIDTest {
 
  @Test
  void parseEmail() throws Exception {
-  ParseMailboxID id = ParseMailboxID.parse("test@zimbra.com");
+  ParseMailboxID id = ParseMailboxID.parse(account.getName());
   assertTrue(id.isLocal());
   assertEquals("localhost", id.getServer());
   assertEquals(0, id.getMailboxId());
@@ -57,7 +58,7 @@ public class ParseMailboxIDTest {
 
  @Test
  void parseAccountId() throws Exception {
-  ParseMailboxID id = ParseMailboxID.parse(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  ParseMailboxID id = ParseMailboxID.parse(account.getId());
   assertTrue(id.isLocal());
   assertEquals("localhost", id.getServer());
   assertEquals(0, id.getMailboxId());

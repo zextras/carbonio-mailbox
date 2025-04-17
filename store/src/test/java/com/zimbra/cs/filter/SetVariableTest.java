@@ -7,23 +7,9 @@ package com.zimbra.cs.filter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import javax.mail.Header;
-
-import org.apache.jsieve.exception.SyntaxException;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 import com.google.common.collect.Maps;
 import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.filter.jsieve.SetVariable;
@@ -40,16 +26,28 @@ import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.util.ItemId;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import javax.mail.Header;
+import org.apache.jsieve.exception.SyntaxException;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class SetVariableTest {
     private String filterScript = "";
+    private static Account account;
 
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
-        Account acct = prov.createAccount("test1@zimbra.com", "secret", new HashMap<String, Object>());
-        Server server = Provisioning.getInstance().getServer(acct);
+        account = prov.createAccount("test1@zimbra.com", "secret", new HashMap<String, Object>());
+        Server server = Provisioning.getInstance().getServer(account);
     }
 
     @BeforeEach
@@ -60,7 +58,6 @@ public class SetVariableTest {
  @Test
  void testSetVar() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
 
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
@@ -92,7 +89,7 @@ public class SetVariableTest {
  @Test
  void testSetVarAndUseInHeader() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
    filterScript = "require [\"variables\"];\n"
@@ -121,7 +118,7 @@ public class SetVariableTest {
  @Test
  void testSetVarAndUseInAction() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
    filterScript = "require [\"variables\"];\n"
@@ -207,7 +204,7 @@ public class SetVariableTest {
  @Test
  void testSetVarWithModifiersValid() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
    filterScript = "require [\"variables\"];\n"
@@ -313,7 +310,7 @@ public class SetVariableTest {
  @Test
  void testSetVarWithModifiersInValid() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
@@ -400,7 +397,7 @@ public class SetVariableTest {
  @Test
  void testModifier() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
    filterScript = "require [\"variables\"];\n"
@@ -432,7 +429,7 @@ public class SetVariableTest {
  @Test
  void testModifierSamePrecendenceInSingleSet() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
    filterScript = "require [\"variables\"];\n"
@@ -462,7 +459,7 @@ public class SetVariableTest {
  @Test
  void testModifierSamePrecendenceInSingleSet2() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
    filterScript = "require [\"variables\"];\n"
@@ -491,7 +488,7 @@ public class SetVariableTest {
  @Test
  void testModifierDiffPrecendenceInSingleSet() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
    filterScript = "require [\"variables\"];\n"
@@ -519,7 +516,7 @@ public class SetVariableTest {
  @Test
  void testVariablesCombo() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
    // set "company" "ACME";
@@ -554,7 +551,7 @@ public class SetVariableTest {
  @Test
  void testStringInterpretation() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
    filterScript = "require [\"variables\"];\n"
@@ -620,7 +617,7 @@ public class SetVariableTest {
  @Test
  void testStringTest() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
    String raw = "From: sender@zimbra.com\n"
@@ -660,7 +657,7 @@ public class SetVariableTest {
  @Test
  void testSetMatchVarAndUseInHeader() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
@@ -690,7 +687,7 @@ public class SetVariableTest {
  @Test
  void testSetMatchVarAndUseInHeaderSingleOccurrence() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
@@ -720,7 +717,7 @@ public class SetVariableTest {
     @Disabled
     public void testSetMatchVarAndUseInHeaderSingleOccurrenceReplaceHeader() {
         try {
-            Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+            
             RuleManager.clearCachedRules(account);
             Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
@@ -766,7 +763,7 @@ public class SetVariableTest {
      + "if address :comparator \"i;ascii-casemap\" :is [\"${from_header_name}\",\"${to_header_name}\"] \"user2@ykomiyam.local\" {"
      + "  tag \"HeaderListTag\";\n" + "}";
 
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
    account.setMailSieveScript(filterScript);
@@ -802,8 +799,6 @@ public class SetVariableTest {
   env.setSender(sender);
   env.addLocalRecipient(recipient);
   try {
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(
      account);
@@ -848,8 +843,6 @@ public class SetVariableTest {
    env.setSender(sender);
    env.addLocalRecipient(recipient1);
    env.addLocalRecipient(recipient2);
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
    account.setMailSieveScript(filterScript);
@@ -880,7 +873,7 @@ public class SetVariableTest {
      + "if string :is :comparator \"i;ascii-casemap\" \"{name}\" [\"{name}\", \"Bob\"]{\n"
      + "  tag \"SourceTag\";\n" + "}";
 
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
    RuleManager.clearCachedRules(account);
    account.setMailSieveScript(filterScript);
@@ -915,13 +908,12 @@ public class SetVariableTest {
                 + "if header :contains \"Subject\" \"example\" {\n"
                 + " addheader \"${header_name}\" \"${header_value}\" \r\n" + "  ;\n" + "}";
 
-            Account acct = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-            Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct);
-            RuleManager.clearCachedRules(acct);
-            acct.setMailSieveScript(filterScript);
+            Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(account);
+            RuleManager.clearCachedRules(account);
+            account.setMailSieveScript(filterScript);
             RuleManager.applyRulesToIncomingMessage(
                     new OperationContext(mbox1), mbox1, new ParsedMessage(
-                            sampleBaseMsg.getBytes(), false), 0, acct.getName(),
+                            sampleBaseMsg.getBytes(), false), 0, account.getName(),
                             null, new DeliveryContext(),
                             Mailbox.ID_FOLDER_INBOX, true);
             Integer itemId = mbox1.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(MailItem.Type.MESSAGE).get(0);
@@ -961,13 +953,12 @@ public class SetVariableTest {
                 + "set \"header_value\" \"test2\";"
                 + "deleteheader :is \"${header_name}\" \"${header_value}\" \r\n" + "  ;\n";
 
-            Account acct1 = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-            Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
-            RuleManager.clearCachedRules(acct1);
-            acct1.setMailSieveScript(filterScript);
+            Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(account);
+            RuleManager.clearCachedRules(account);
+            account.setMailSieveScript(filterScript);
             RuleManager.applyRulesToIncomingMessage(
                     new OperationContext(mbox1), mbox1, new ParsedMessage(
-                            sampleBaseMsg.getBytes(), false), 0, acct1.getName(),
+                            sampleBaseMsg.getBytes(), false), 0, account.getName(),
                             null, new DeliveryContext(),
                             Mailbox.ID_FOLDER_INBOX, true);
             Integer itemId = mbox1.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(MailItem.Type.MESSAGE).get(0);
@@ -1008,13 +999,12 @@ public class SetVariableTest {
                 + "replaceheader :newvalue \"${new_value}\" :contains \"${header_name}\" \"${header_value}\" \r\n"
                 + "  ;\n";
 
-            Account acct1 = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-            Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
-            RuleManager.clearCachedRules(acct1);
-            acct1.setMailSieveScript(filterScript);
+            Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(account);
+            RuleManager.clearCachedRules(account);
+            account.setMailSieveScript(filterScript);
             RuleManager.applyRulesToIncomingMessage(
                     new OperationContext(mbox1), mbox1, new ParsedMessage(
-                            sampleBaseMsg.getBytes(), false), 0, acct1.getName(),
+                            sampleBaseMsg.getBytes(), false), 0, account.getName(),
                             null, new DeliveryContext(),
                             Mailbox.ID_FOLDER_INBOX, true);
             Integer itemId = mbox1.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(MailItem.Type.MESSAGE).get(0);
@@ -1036,7 +1026,7 @@ public class SetVariableTest {
  @Test
  void testSetMatchVarAndUseInHeader2() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
 
    Map<String, Object> attrs = Maps.newHashMap();
    attrs = Maps.newHashMap();
@@ -1071,7 +1061,7 @@ public class SetVariableTest {
  @Test
  void testSetMatchVarAndFileInto() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
@@ -1164,7 +1154,7 @@ public class SetVariableTest {
         env.setSender(sender);
         env.addLocalRecipient(recipient);
         try {
-            Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+            
             RuleManager.clearCachedRules(account);
             Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
@@ -1204,7 +1194,7 @@ public class SetVariableTest {
         env.setSender(sender);
         env.addLocalRecipient(recipient);
         try {
-            Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+            
             RuleManager.clearCachedRules(account);
             Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
@@ -1252,7 +1242,7 @@ public class SetVariableTest {
         env.setSender(sender);
         env.addLocalRecipient(recipient);
         try {
-            Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+            
             RuleManager.clearCachedRules(account);
             Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
                
@@ -1302,7 +1292,7 @@ public class SetVariableTest {
  @Test
  void testSetMatchVarAndUseInHeaderForAddress() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
@@ -1396,7 +1386,7 @@ public class SetVariableTest {
      "tes"
    };
 
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    Map<String, Object> attrs = Maps.newHashMap();
    attrs = Maps.newHashMap();
    Provisioning.getInstance().getServer(account).modify(attrs);
@@ -1496,7 +1486,7 @@ public class SetVariableTest {
                     + "\n"
                     + "Hello world.";
 
-            Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+            
             Map<String, Object> attrs = Maps.newHashMap();
             attrs = Maps.newHashMap();
             Provisioning.getInstance().getServer(account).modify(attrs);
@@ -1539,7 +1529,7 @@ public class SetVariableTest {
  @Test
  void testDollar() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
    filterScript = "require [\"variables\"];\n"
@@ -1578,7 +1568,7 @@ public class SetVariableTest {
  @Test
  void testDollar2() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
    filterScript = "require [\"variables\", \"envelope\"];\n"
@@ -1846,7 +1836,7 @@ public class SetVariableTest {
                   + "  addheader :last \"X-New-Header-47\" \"string test count numeric lt positive infinity\";\n"
                   + "}"
                   ;
-            Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+            
             Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
             RuleManager.clearCachedRules(account);
             account.setMailSieveScript(filterScript);
@@ -1923,7 +1913,7 @@ public class SetVariableTest {
  @Test
  void testSetVarNameWithDigits() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
 
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
@@ -1967,7 +1957,7 @@ public class SetVariableTest {
  @Test
  void testNumericVarNames() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
 
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
@@ -2005,7 +1995,7 @@ public class SetVariableTest {
  @Test
  void testVarNamesWithDot() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
 
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
@@ -2043,7 +2033,7 @@ public class SetVariableTest {
  @Test
  void testVarIndexWithLeadingZeroes() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
@@ -2072,7 +2062,7 @@ public class SetVariableTest {
  @Test
  void testNegativeVarIndex() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
@@ -2105,7 +2095,7 @@ public class SetVariableTest {
  @Test
  void testOutofRangeVarIndex() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
@@ -2138,7 +2128,7 @@ public class SetVariableTest {
  @Test
  void testOutofRangeVarIndexWithLeadingZeroes() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
@@ -2171,7 +2161,7 @@ public class SetVariableTest {
  @Test
  void testWildCardGreedyMatch() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
@@ -2200,7 +2190,7 @@ public class SetVariableTest {
  @Test
  void testMultipleWildCardMatch() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
@@ -2229,7 +2219,7 @@ public class SetVariableTest {
  @Test
  void testMultipleWildCardMatch2() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
@@ -2258,7 +2248,7 @@ public class SetVariableTest {
  @Test
  void testMultipleWildCardMatch3() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
@@ -2287,7 +2277,7 @@ public class SetVariableTest {
  @Test
  void testStringNumericNegativeTest() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
@@ -2320,7 +2310,7 @@ public class SetVariableTest {
     @Disabled
     public void testNonExistingVarIndexWithLeadingZeroes() {
         try {
-            Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+            
             RuleManager.clearCachedRules(account);
             Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
@@ -2349,7 +2339,7 @@ public class SetVariableTest {
     @Disabled
     public void testNonExistingVarIndexWithLeadingZeroesForQuestionMark() {
         try {
-            Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+            
             RuleManager.clearCachedRules(account);
             Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
@@ -2378,7 +2368,7 @@ public class SetVariableTest {
  @Test
  void testNoRequireDeclaration() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
    // No "variable" require
@@ -2438,7 +2428,7 @@ public class SetVariableTest {
  @Test
  void testMissingComparatorNumericDeclaration() {
   try {
-   Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 

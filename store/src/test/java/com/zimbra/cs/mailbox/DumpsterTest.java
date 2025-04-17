@@ -7,12 +7,11 @@ package com.zimbra.cs.mailbox;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.zimbra.cs.account.MockProvisioning;
-import com.zimbra.cs.account.Provisioning;
+import com.zextras.mailbox.util.AccountUtil;
+import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.mime.ParsedMessageOptions;
-import java.util.HashMap;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,21 +19,17 @@ import org.junit.jupiter.api.Test;
 public class DumpsterTest {
 
   private Mailbox mbox;
-  private Folder folder;
 
   @BeforeAll
   public static void init() throws Exception {
     MailboxTestUtil.initServer();
-    Provisioning prov = Provisioning.getInstance();
-    prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>())
-        .setDumpsterEnabled(true);
   }
 
   @BeforeEach
   public void setUp() throws Exception {
     MailboxTestUtil.clearData();
-    mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
-    folder =
+   final Account account = AccountUtil.createAccount();
+   mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
         mbox.createFolder(
             null,
             "/Briefcase/f",

@@ -5,17 +5,9 @@
 
 package com.zimbra.cs.filter;
 
-import java.util.HashMap;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.cs.account.Account;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.filter.jsieve.ListTest;
 import com.zimbra.cs.mailbox.DeliveryContext;
@@ -26,6 +18,11 @@ import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.util.ItemId;
+import java.util.HashMap;
+import java.util.List;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link ListTest}.
@@ -37,8 +34,6 @@ public final class ListTestTest {
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
     @BeforeEach
@@ -48,7 +43,7 @@ public final class ListTestTest {
 
  @Test
  void test() throws Exception {
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Account account = Provisioning.getInstance().createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
   RuleManager.clearCachedRules(account);
   account.setMailSieveScript("if list { tag \"list\"; }");
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);

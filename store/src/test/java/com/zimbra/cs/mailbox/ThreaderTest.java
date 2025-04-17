@@ -5,41 +5,38 @@
 
 package com.zimbra.cs.mailbox;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-
-import javax.mail.internet.MimeMessage;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import com.zimbra.common.account.ZAttrProvisioning.MailThreadingAlgorithm;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zimbra.common.account.ZAttrProvisioning.MailThreadingAlgorithm;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Threader.ThreadIndex;
 import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.util.JMSession;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+import javax.mail.internet.MimeMessage;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public final class ThreaderTest {
+  private Account account;
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
-        Provisioning.getInstance().createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
     @BeforeEach
     public void setup() throws Exception {
-        MailboxTestUtil.clearData();
+       MailboxTestUtil.clearData();
+       account = Provisioning.getInstance().createAccount(UUID.randomUUID() + "@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
     private static final String ROOT_SUBJECT = "sdkljfh sdjhfg kjdshkj iu 8 skfjd";
@@ -86,7 +83,7 @@ public final class ThreaderTest {
     private void threadMessage(String msg, MailThreadingAlgorithm mode, ParsedMessage pm, Mailbox mbox, List<Integer> expectedMatches) throws Exception {
         mbox.beginTransaction("ThreaderTest", null);
         try {
-            getAccount().setMailThreadingAlgorithm(mode);
+            account.setMailThreadingAlgorithm(mode);
             Threader threader = new Threader(mbox, pm);
             List<Integer> matches = MailItem.toId(threader.lookupConversation());
             assertEquals(expectedMatches, matches, msg + " (threading: " + mode + ")");
@@ -97,7 +94,7 @@ public final class ThreaderTest {
 
  @Test
  void unrelated() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   mbox.addMessage(null, getRootMessage(), MailboxTest.STANDARD_DELIVERY_OPTIONS, null);
 
   // unrelated, not a reply
@@ -127,7 +124,7 @@ public final class ThreaderTest {
 
  @Test
  void followup() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   Message msg = mbox.addMessage(null, getRootMessage(), MailboxTest.STANDARD_DELIVERY_OPTIONS, null);
   List<Integer> match = Arrays.asList(msg.getConversationId());
 
@@ -171,7 +168,7 @@ public final class ThreaderTest {
 
  @Test
  void missingHeaders() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   Message msg = mbox.addMessage(null, getRootMessage(), MailboxTest.STANDARD_DELIVERY_OPTIONS, null);
   List<Integer> match = Arrays.asList(msg.getConversationId());
 
@@ -189,7 +186,7 @@ public final class ThreaderTest {
 
  @Test
  void nonreply() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   Message msg = mbox.addMessage(null, getRootMessage(), MailboxTest.STANDARD_DELIVERY_OPTIONS, null);
   List<Integer> match = Arrays.asList(msg.getConversationId());
 
@@ -207,7 +204,7 @@ public final class ThreaderTest {
 
  @Test
  void changedSubject() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   Message msg = mbox.addMessage(null, getRootMessage(), MailboxTest.STANDARD_DELIVERY_OPTIONS, null);
   List<Integer> match = Arrays.asList(msg.getConversationId());
 
@@ -227,7 +224,7 @@ public final class ThreaderTest {
 
  @Test
  void crossedThread() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   Message msg = mbox.addMessage(null, getRootMessage(), MailboxTest.STANDARD_DELIVERY_OPTIONS, null);
   List<Integer> match = Arrays.asList(msg.getConversationId());
 
@@ -247,7 +244,7 @@ public final class ThreaderTest {
 
  @Test
  void outlook() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   Message msg = mbox.addMessage(null, getRootMessage(), MailboxTest.STANDARD_DELIVERY_OPTIONS, null);
   List<Integer> match = Arrays.asList(msg.getConversationId());
 
@@ -290,10 +287,9 @@ public final class ThreaderTest {
 
  @Test
  void redelivery() throws Exception {
-  Account acct = getAccount();
-  acct.setMailThreadingAlgorithm(MailThreadingAlgorithm.references);
+  account.setMailThreadingAlgorithm(MailThreadingAlgorithm.references);
 
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   // add thread starter
   int msgid1 = mbox.addMessage(null, getRootMessage(), MailboxTest.STANDARD_DELIVERY_OPTIONS, null).getId();
@@ -336,7 +332,7 @@ public final class ThreaderTest {
 
  @Test
  void bogusThreadIndexHeader() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   MimeMessage mm = getRootMimeMessage();
   mm.setHeader("Thread-Index", Threader.IGNORE_THREAD_INDEX);

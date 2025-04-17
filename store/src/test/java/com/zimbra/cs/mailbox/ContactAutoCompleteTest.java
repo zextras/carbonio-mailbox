@@ -5,12 +5,11 @@
 
 package com.zimbra.cs.mailbox;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.ImmutableMap;
 import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.ContactAutoComplete.AutoCompleteResult;
 import com.zimbra.cs.mailbox.ContactAutoComplete.ContactEntry;
@@ -173,7 +172,7 @@ class ContactAutoCompleteTest {
     final Account account = provisioning.createAccount(accountName, "secret", new HashMap<>());
     ContactAutoComplete comp = new ContactAutoComplete(account, null);
     ContactAutoComplete.AutoCompleteResult result = new ContactAutoComplete.AutoCompleteResult(10);
-    result.rankings = new ContactRankings(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    result.rankings = new ContactRankings(account.getId());
     Map<String, Object> attrs = ImmutableMap.of(
         ContactConstants.A_firstName, "First",
         ContactConstants.A_middleName, "Middle",
@@ -236,7 +235,7 @@ class ContactAutoCompleteTest {
     final Account account = provisioning.createAccount(accountName, "secret", new HashMap<>());
     ContactAutoComplete comp = new ContactAutoComplete(account, null);
     ContactAutoComplete.AutoCompleteResult result = new ContactAutoComplete.AutoCompleteResult(10);
-    result.rankings = new ContactRankings(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    result.rankings = new ContactRankings(account.getId());
     Map<String, Object> attrs = ImmutableMap.of(
         ContactConstants.A_firstName,
         "\u0421\u0440\u043f\u0441\u043a\u0438 \u0411\u043e\u0441\u043d\u0430 \u0438 \u0425\u0435\u0440\u0446\u0435\u0433\u043e\u0432\u0438\u043d\u0430",
@@ -254,8 +253,9 @@ class ContactAutoCompleteTest {
   @Test
   void rankingTestContactWithSameEmailDifferentDisplayName() throws Exception {
     // Autocomplete should show same ranking for a email address present in difference contacts.
+    final Account account = provisioning.createAccount(UUID.randomUUID() + "@zimbra.com", "secret", new HashMap<>());
     Mailbox mbox = MailboxManager.getInstance()
-        .getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        .getMailboxByAccountId(account.getId());
     Map<String, Object> fields = new HashMap<>();
     fields.put(ContactConstants.A_firstName, "Pal");
     fields.put(ContactConstants.A_lastName, "One");
@@ -289,9 +289,10 @@ class ContactAutoCompleteTest {
 
   @Test
   void autocompleteTestNonExistingContact() throws Exception {
+    final Account account = provisioning.createAccount(UUID.randomUUID() + "@zimbra.com", "secret", new HashMap<>());
     //AutoComplete should not return entry present in ranking table but contact does not exist.
     Mailbox mbox = MailboxManager.getInstance()
-        .getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        .getMailboxByAccountId(account.getId());
     ContactRankings.increment(mbox.getAccountId(),
         Collections.singleton(new InternetAddress("noex@zimbra.com")));
     ContactRankings.increment(mbox.getAccountId(),
