@@ -70,7 +70,6 @@ public abstract class AbstractIndexStoreTest {
 
     @BeforeAll
     public static void init() throws Exception {
-        System.setProperty("log4j.configuration", "log4j-test.properties");
         MailboxTestUtil.initServer();
         prov = Provisioning.getInstance();
         testAcct = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
