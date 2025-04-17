@@ -53,21 +53,23 @@ package() {
   rsync -a store/ldap/generated/ "${pkgdir}/opt/zextras/common/etc/openldap/zimbra/"
 
   # systemd units and target
-  mkdir -p "${pkgdir}/lib/systemd/system/${pkgname}.target.wants"
+  mkdir -p "${pkgdir}/usr/lib/systemd/system/carbonio.target.wants"
+  mkdir -p "${pkgdir}/usr/lib/systemd/system/${pkgname}.target.wants"
   install -Dm 644 "packages/directory-server/${pkgname}.target" \
-    "${pkgdir}/lib/systemd/system/${pkgname}.target"
-
-  ln -sf "/lib/systemd/system/carbonio-configd.service" \
-    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-configd.service"
-  ln -sf "/lib/systemd/system/carbonio-openldap.service" \
-    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-openldap.service"
-  ln -sf "/lib/systemd/system/carbonio-stats.service" \
-    "${pkgdir}/lib/systemd/system/${pkgname}.target.wants/carbonio-stats.service"
+    "${pkgdir}/usr/lib/systemd/system/${pkgname}.target"
+  ln -sf "/usr/lib/systemd/system/${pkgname}.target" \
+    "${pkgdir}/usr/lib/systemd/system/carbonio.target.wants/${pkgname}.target"
+  ln -sf "/usr/lib/systemd/system/carbonio-configd.service" \
+    "${pkgdir}/usr/lib/systemd/system/${pkgname}.target.wants/carbonio-configd.service"
+  ln -sf "/usr/lib/systemd/system/carbonio-openldap.service" \
+    "${pkgdir}/usr/lib/systemd/system/${pkgname}.target.wants/carbonio-openldap.service"
+  ln -sf "/usr/lib/systemd/system/carbonio-stats.service" \
+    "${pkgdir}/usr/lib/systemd/system/${pkgname}.target.wants/carbonio-stats.service"
 }
 
 preinst__apt() {
   if [ "$1" = "upgrade" ] && [ -n "$2" ]; then
-     su - zextras -c "/opt/zextras/bin/ldap start || true"
+    su - zextras -c "/opt/zextras/bin/ldap start || true"
   fi
 }
 
