@@ -73,7 +73,6 @@ public final class MailboxTestUtil {
    */
   public static void initProvisioning(String zimbraServerDir) throws Exception {
     zimbraServerDir = getZimbraServerDir(zimbraServerDir);
-    System.setProperty("log4j.configuration", "log4j-test.properties");
     System.setProperty(
         "zimbra.config", zimbraServerDir + "src/test/resources/localconfig-test.xml");
     LC.reload();
