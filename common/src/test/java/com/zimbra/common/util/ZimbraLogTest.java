@@ -4,19 +4,29 @@
 
 package com.zimbra.common.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.util.Objects;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class ZimbraLogTest {
+  @BeforeEach
+  public void setUp() {
+    final String file =
+        new File(
+            Objects.requireNonNull(this.getClass().getResource("log4j-test.properties"))
+                .getFile())
+            .getAbsolutePath();
+    ZimbraLog.toolSetupLog4j("ERROR", file);
+  }
 
   @ParameterizedTest
   @ValueSource(strings = {"INFO", "ERROR", "WARN", "ALL", "DEBUG"})
