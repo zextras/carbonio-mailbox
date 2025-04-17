@@ -3,19 +3,10 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.cs.index.query;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
 
-import org.junit.jupiter.api.*;
-
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.common.service.ServiceException;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.MockProvisioning;
@@ -29,11 +20,17 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.service.mail.Search;
 import com.zimbra.cs.service.mail.ServiceTestUtil;
-
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.SearchRequest;
 import com.zimbra.soap.mail.message.SearchResponse;
 import com.zimbra.soap.type.SearchHit;
+import java.util.HashMap;
+import java.util.List;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 
 /**
  * Unit test for {@link ItemQuery}
@@ -41,36 +38,32 @@ import com.zimbra.soap.type.SearchHit;
  *
  */
 public class ItemQueryTest {
-     public String testName;
-    
 
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-    }
+ private static Account account;
+ public String testName;
+
+
+ @BeforeAll
+ public static void init() throws Exception {
+  MailboxTestUtil.initServer();
+ }
 
  @BeforeEach
  public void setUp(TestInfo testInfo) throws Exception {
-  Optional<Method> testMethod = testInfo.getTestMethod();
-  if (testMethod.isPresent()) {
-   this.testName = testMethod.get().getName();
-  }
-  System.out.println( testName);
   MockProvisioning prov = new MockProvisioning();
-  prov.createAccount("zero@zimbra.com", "secret", new HashMap<String, Object>());
+  account = prov.createAccount("zero@zimbra.com", "secret", new HashMap<String, Object>());
   Provisioning.setInstance(prov);
  }
 
  @Test
  void testSyntax() throws ServiceException {
-  Account account = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
   Mailbox mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   ItemQuery q = (ItemQuery) ItemQuery.create(mailbox, "1,2");
-  assertEquals(String.format("Q(ITEMID,%s:1,%s:2)", MockProvisioning.DEFAULT_ACCOUNT_ID, MockProvisioning.DEFAULT_ACCOUNT_ID), q.toString());
+  assertEquals(String.format("Q(ITEMID,%s:1,%s:2)", account.getId(), account.getId()), q.toString());
 
   q = (ItemQuery) ItemQuery.create(mailbox, "1");
-  assertEquals(String.format("Q(ITEMID,%s:1)", MockProvisioning.DEFAULT_ACCOUNT_ID), q.toString());
+  assertEquals(String.format("Q(ITEMID,%s:1)", account.getId()), q.toString());
 
   q = (ItemQuery) ItemQuery.create(mailbox, "all");
   assertEquals("Q(ITEMID,all)", q.toString());
@@ -79,13 +72,12 @@ public class ItemQueryTest {
   assertEquals("Q(ITEMID,none)", q.toString());
 
   q = (ItemQuery) ItemQuery.create(mailbox, "1--10");
-  assertEquals(String.format("Q(ITEMID,%s:1--%s:10)", MockProvisioning.DEFAULT_ACCOUNT_ID, MockProvisioning.DEFAULT_ACCOUNT_ID), q.toString());
+  assertEquals(String.format("Q(ITEMID,%s:1--%s:10)", account.getId(), account.getId()), q.toString());
  }
 
  @Test
  void testAllItemsQuery() throws Exception {
-  Account acct = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
   mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), dopt, null);
@@ -97,15 +89,14 @@ public class ItemQueryTest {
   sr.setSearchTypes("message");
   sr.setQuery("item:{all}");
   sr.setSortBy(SortBy.ATTACHMENT_ASC.toString());
-  resp = doSearch(sr, acct);
+  resp = doSearch(sr, account);
   hits = resp.getSearchHits();
   assertEquals(2, hits.size(), "Number of hits");
  }
 
  @Test
  void testNoneItemsQuery() throws Exception {
-  Account acct = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
   mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), dopt, null);
@@ -116,15 +107,14 @@ public class ItemQueryTest {
   sr.setSearchTypes("message");
   sr.setQuery("item:{none}");
   sr.setSortBy(SortBy.ATTACHMENT_ASC.toString());
-  resp = doSearch(sr, acct);
+  resp = doSearch(sr, account);
   hits = resp.getSearchHits();
   assertEquals(0, hits.size(), "Number of hits");
  }
 
  @Test
  void testOneItemQuery() throws Exception {
-  Account acct = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
   mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), dopt, null);
@@ -137,7 +127,7 @@ public class ItemQueryTest {
   sr.setSearchTypes("message");
   sr.setQuery(String.format("item:{%d}", msg2.getId()));
   sr.setSortBy(SortBy.ATTACHMENT_ASC.toString());
-  resp = doSearch(sr, acct);
+  resp = doSearch(sr, account);
   hits = resp.getSearchHits();
   assertEquals(1, hits.size(), "Number of hits");
   int msgId = Integer.parseInt(hits.get(0).getId());
@@ -146,8 +136,7 @@ public class ItemQueryTest {
 
  @Test
  void testListOfItemsQuery() throws Exception {
-  Account acct = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
   Message msg1 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), dopt, null);
@@ -160,7 +149,7 @@ public class ItemQueryTest {
   sr.setSearchTypes("message");
   sr.setQuery(String.format("item:{%d,%d}", msg1.getId(), msg3.getId()));
   sr.setSortBy(SortBy.ATTACHMENT_ASC.toString());
-  resp = doSearch(sr, acct);
+  resp = doSearch(sr, account);
   hits = resp.getSearchHits();
   assertEquals(2, hits.size(), "Number of hits");
   int msgId = Integer.parseInt(hits.get(0).getId());
@@ -171,8 +160,8 @@ public class ItemQueryTest {
 
  @Test
  void testRangeOfItemsQuery() throws Exception {
-  Account acct = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
   Message msg1 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), dopt, null);
@@ -186,7 +175,7 @@ public class ItemQueryTest {
   sr.setSearchTypes("message");
   sr.setQuery(String.format("item:{%d--%d}", msg1.getId(), msg3.getId()));
   sr.setSortBy(SortBy.ATTACHMENT_ASC.toString());
-  resp = doSearch(sr, acct);
+  resp = doSearch(sr, account);
   hits = resp.getSearchHits();
   assertEquals(3, hits.size(), "Number of hits");
   int msgId = Integer.parseInt(hits.get(0).getId());
@@ -199,8 +188,8 @@ public class ItemQueryTest {
 
  @Test
  void testInvalidRangeQuery() throws Exception {
-  Account acct = Provisioning.getInstance().getAccountByName("zero@zimbra.com");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
   Message msg1 = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), dopt, null);
@@ -213,7 +202,7 @@ public class ItemQueryTest {
   String q = String.format("item:{%d--%d--%d}", msg1.getId(), msg2.getId(), msg3.getId());
   sr.setQuery(q);
   try {
-   doSearch(sr, acct);
+   doSearch(sr, account);
    fail("Should have thrown a PARSE_ERROR exception for " + q);
   } catch (ServiceException e) {
    assertEquals(e.getCode(), ServiceException.PARSE_ERROR);
@@ -223,7 +212,7 @@ public class ItemQueryTest {
   q = String.format("item:{%d--%d,%d}", msg1.getId(), msg2.getId(), msg3.getId());
   sr.setQuery(q);
   try {
-   doSearch(sr, acct);
+   doSearch(sr, account);
    fail("Should have thrown an INVALID_REQUEST exception for " + q);
   } catch (ServiceException e) {
    assertEquals(e.getCode(), ServiceException.INVALID_REQUEST);
@@ -233,7 +222,7 @@ public class ItemQueryTest {
   q = String.format("item:{%d,%d--%d}", msg1.getId(), msg2.getId(), msg3.getId());
   sr.setQuery(q);
   try {
-   doSearch(sr, acct);
+   doSearch(sr, account);
    fail("Should have thrown an INVALID_REQUEST exception for " + q);
   } catch (ServiceException e) {
    assertEquals(e.getCode(), ServiceException.INVALID_REQUEST);

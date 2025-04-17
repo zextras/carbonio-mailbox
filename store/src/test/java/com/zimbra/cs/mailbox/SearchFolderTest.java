@@ -5,18 +5,14 @@
 
 package com.zimbra.cs.mailbox;
 
-import java.util.HashMap;
+import static org.junit.jupiter.api.Assertions.*;
 
+import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
+import java.util.HashMap;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.zimbra.cs.account.Account;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import com.zimbra.cs.account.MockProvisioning;
-import com.zimbra.cs.account.Provisioning;
 
 /**
  * Unit test for {@link SearchFolder}.
@@ -24,12 +20,13 @@ import com.zimbra.cs.account.Provisioning;
  * @author ysasaki
  */
 public final class SearchFolderTest {
+  private static Account account;
 
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+        account = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
     @BeforeEach
@@ -39,10 +36,8 @@ public final class SearchFolderTest {
 
  @Test
  void defaultFolderFlags() throws Exception {
-  Provisioning prov = Provisioning.getInstance();
-  Account account = prov.getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
   account.setDefaultFolderFlags("*");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   SearchFolder folder = mbox.createSearchFolder(null, Mailbox.ID_FOLDER_USER_ROOT,
     "test", "test", "message", "none", 0, (byte) 0);
   assertTrue(folder.isFlagSet(Flag.BITMASK_SUBSCRIBED));
@@ -50,7 +45,7 @@ public final class SearchFolderTest {
 
  @Test
  void flagGuard() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   SearchFolder folder = mbox.createSearchFolder(null, Mailbox.ID_FOLDER_USER_ROOT,
     "test", "test", "message", "none", Flag.BITMASK_UNCACHED, (byte) 0);
   assertFalse(folder.isFlagSet(Flag.BITMASK_UNCACHED));

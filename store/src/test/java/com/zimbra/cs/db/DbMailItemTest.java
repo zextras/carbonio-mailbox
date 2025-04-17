@@ -5,14 +5,12 @@
 
 package com.zimbra.cs.db;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
-import com.zimbra.cs.account.MockProvisioning;
+import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbMailItem.QueryParams;
 import com.zimbra.cs.db.DbPool.DbConnection;
@@ -27,7 +25,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,9 +40,6 @@ public final class DbMailItemTest {
   @BeforeAll
   public static void init() throws Exception {
     MailboxTestUtil.initServer();
-    Provisioning prov = Provisioning.getInstance();
-    final String accountName = UUID.randomUUID() + "@"+ UUID.randomUUID() +".com";
-    prov.createAccount(accountName, "secret", new HashMap<>());
   }
 
   private DbConnection conn = null;
@@ -54,7 +48,8 @@ public final class DbMailItemTest {
   @BeforeEach
   public void setUp() throws Exception {
     MailboxTestUtil.clearData();
-    mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    Account account = Provisioning.getInstance().createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+    mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
     conn = DbPool.getConnection(mbox);
   }
 

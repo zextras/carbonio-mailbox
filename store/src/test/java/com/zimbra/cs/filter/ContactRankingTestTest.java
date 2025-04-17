@@ -5,22 +5,11 @@
 
 package com.zimbra.cs.filter;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
-import javax.mail.internet.InternetAddress;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
+import com.zextras.mailbox.util.AccountUtil;
 import com.zimbra.common.util.ArrayUtil;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.filter.jsieve.ContactRankingTest;
 import com.zimbra.cs.mailbox.ContactRankings;
 import com.zimbra.cs.mailbox.DeliveryContext;
@@ -31,6 +20,12 @@ import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.util.ItemId;
+import java.util.Collections;
+import java.util.List;
+import javax.mail.internet.InternetAddress;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link ContactRankingTest}.
@@ -42,8 +37,6 @@ public final class ContactRankingTestTest {
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
     @BeforeEach
@@ -53,7 +46,7 @@ public final class ContactRankingTestTest {
 
  @Test
  void filter() throws Exception {
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Account account = AccountUtil.createAccount();
   RuleManager.clearCachedRules(account);
   ContactRankings.increment(account.getId(), Collections.singleton(new InternetAddress("test1@zimbra.com")));
 

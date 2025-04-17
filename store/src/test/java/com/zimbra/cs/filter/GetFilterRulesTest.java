@@ -5,37 +5,35 @@
 
 package com.zimbra.cs.filter;
 
-import java.util.HashMap;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import com.zimbra.common.soap.Element;
-
-import static org.junit.jupiter.api.Assertions.fail;
 import com.zimbra.common.soap.MailConstants;
-
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.filter.RuleManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.mail.GetFilterRules;
 import com.zimbra.cs.service.mail.ServiceTestUtil;
 import com.zimbra.cs.util.XMLDiffChecker;
+import java.util.HashMap;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class GetFilterRulesTest {
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
-    }
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        MailboxTestUtil.clearData();
-    }
+ private static Account account;
+ @BeforeAll
+ public static void init() throws Exception {
+     MailboxTestUtil.initServer();
+     Provisioning prov = Provisioning.getInstance();
+     account = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+ }
+
+ @BeforeEach
+ public void setUp() throws Exception {
+     MailboxTestUtil.clearData();
+ }
 
  @Test
  void testIfWithoutAllof() {
@@ -46,8 +44,6 @@ public class GetFilterRulesTest {
      + "if header :comparator \"i;ascii-casemap\" :matches \"Subject\" \"*\" {"
      + "  fileinto \"if-block\";"
      + "}";
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
    RuleManager.clearCachedRules(account);
    account.setMailSieveScript(filterScript);
 
@@ -85,8 +81,6 @@ public class GetFilterRulesTest {
      + "if anyof (header :comparator \"i;ascii-casemap\" :matches \"X-Header\" \"*\") {"
      + "  fileinto \"if-block2\";"
      + "}";
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
    RuleManager.clearCachedRules(account);
    account.setMailSieveScript(filterScript);
 
@@ -132,8 +126,6 @@ public class GetFilterRulesTest {
      + "    fileinto \"nested-if-block\";"
      + "  }"
      + "}";
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
    RuleManager.clearCachedRules(account);
    account.setMailSieveScript(filterScript);
 
@@ -178,8 +170,7 @@ public class GetFilterRulesTest {
      + "    fileinto \"nested-if-block\";"
      + "  }"
      + "}";
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
+
    RuleManager.clearCachedRules(account);
    account.setMailSieveScript(filterScript);
 
@@ -218,8 +209,7 @@ public class GetFilterRulesTest {
    String filterScript
      = "require \"fileinto\";"
      + "fileinto \"no-if-block\";";
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
+
    RuleManager.clearCachedRules(account);
    account.setMailSieveScript(filterScript);
 
@@ -253,8 +243,7 @@ public class GetFilterRulesTest {
      + "fileinto \"no-if-block1\";"
      + "fileinto \"no-if-block2\";";
 
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
+
    RuleManager.clearCachedRules(account);
    account.setMailSieveScript(filterScript);
 
@@ -293,8 +282,7 @@ public class GetFilterRulesTest {
      + "  }"
      + "}";
 
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
+
    RuleManager.clearCachedRules(account);
    account.setMailSieveScript(filterScript);
 
@@ -345,8 +333,7 @@ public class GetFilterRulesTest {
      + "}"
      + "fileinto \"no-if-block\";";
 
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
+
    RuleManager.clearCachedRules(account);
    account.setMailSieveScript(filterScript);
 
@@ -398,8 +385,7 @@ public class GetFilterRulesTest {
      + "}"
      + "fileinto \"no-if-block2\";";
 
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
+
    RuleManager.clearCachedRules(account);
    account.setMailSieveScript(filterScript);
 

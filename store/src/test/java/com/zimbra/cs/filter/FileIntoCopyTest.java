@@ -5,13 +5,10 @@
 
 package com.zimbra.cs.filter;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.DeliveryContext;
 import com.zimbra.cs.mailbox.DeliveryOptions;
@@ -388,41 +385,45 @@ class FileIntoCopyTest {
     }
   }
 
+  private Account createRandomAccount() throws ServiceException {
+    final String accountName = UUID.randomUUID() + "@" + UUID.randomUUID() + ".com";
+    return provisioning.createAccount(accountName, "secret", new HashMap<>());
+  }
+
   /*
    * Only one copy of message should be delivered in INBOX
    */
   @Test
-  void testKeepAndFileInto() {
-    doKeepAndFileInto("require \"fileinto\"; keep; fileinto \"Inbox\";");
-    doKeepAndFileInto("require \"fileinto\"; keep; fileinto \"/Inbox\";");
-    doKeepAndFileInto("require \"fileinto\"; keep; fileinto \"Inbox/\";");
-    doKeepAndFileInto("require \"fileinto\"; keep; fileinto \"/Inbox/\";");
-    doKeepAndFileInto("require \"fileinto\"; keep; fileinto \"inbox\";");
-    doKeepAndFileInto("require \"fileinto\"; fileinto \"Inbox\"; keep;");
-    doKeepAndFileInto("require [\"fileinto\", \"copy\"]; fileinto :copy \"Inbox\"; keep;");
+  void testKeepAndFileInto() throws ServiceException {
+    final Account randomAccount = createRandomAccount();
+    doKeepAndFileInto(randomAccount,  "require \"fileinto\"; keep; fileinto \"Inbox\";");
+    doKeepAndFileInto(randomAccount, "require \"fileinto\"; keep; fileinto \"/Inbox\";");
+    doKeepAndFileInto(randomAccount, "require \"fileinto\"; keep; fileinto \"Inbox/\";");
+    doKeepAndFileInto(randomAccount, "require \"fileinto\"; keep; fileinto \"/Inbox/\";");
+    doKeepAndFileInto(randomAccount, "require \"fileinto\"; keep; fileinto \"inbox\";");
+    doKeepAndFileInto(randomAccount, "require \"fileinto\"; fileinto \"Inbox\"; keep;");
+    doKeepAndFileInto(randomAccount, "require [\"fileinto\", \"copy\"]; fileinto :copy \"Inbox\"; keep;");
 
-    doKeepAndFileIntoOutgoing("require \"fileinto\"; keep; fileinto \"Sent\";");
-    doKeepAndFileIntoOutgoing("require \"fileinto\"; keep; fileinto \"/Sent\";");
-    doKeepAndFileIntoOutgoing("require \"fileinto\"; keep; fileinto \"Sent/\";");
-    doKeepAndFileIntoOutgoing("require \"fileinto\"; keep; fileinto \"/Sent/\";");
-    doKeepAndFileIntoOutgoing("require \"fileinto\"; keep; fileinto \"sent\";");
-    doKeepAndFileIntoOutgoing("require \"fileinto\"; fileinto \"Sent\"; keep;");
-    doKeepAndFileIntoOutgoing("require [\"fileinto\", \"copy\"]; fileinto :copy \"Sent\"; keep;");
+    doKeepAndFileIntoOutgoing(randomAccount, "require \"fileinto\"; keep; fileinto \"Sent\";");
+    doKeepAndFileIntoOutgoing(randomAccount, "require \"fileinto\"; keep; fileinto \"/Sent\";");
+    doKeepAndFileIntoOutgoing(randomAccount, "require \"fileinto\"; keep; fileinto \"Sent/\";");
+    doKeepAndFileIntoOutgoing(randomAccount, "require \"fileinto\"; keep; fileinto \"/Sent/\";");
+    doKeepAndFileIntoOutgoing(randomAccount, "require \"fileinto\"; keep; fileinto \"sent\";");
+    doKeepAndFileIntoOutgoing(randomAccount, "require \"fileinto\"; fileinto \"Sent\"; keep;");
+    doKeepAndFileIntoOutgoing(randomAccount, "require [\"fileinto\", \"copy\"]; fileinto :copy \"Sent\"; keep;");
   }
 
-  private void doKeepAndFileInto(String filterScript) {
-    doKeepAndFileIntoIncoming(filterScript);
-    doKeepAndFileIntoExisting(filterScript);
+  private void doKeepAndFileInto(Account account, String filterScript) {
+    doKeepAndFileIntoIncoming(account, filterScript);
+    doKeepAndFileIntoExisting(account, filterScript);
   }
 
-  private void doKeepAndFileIntoIncoming(String filterScript) {
+  private void doKeepAndFileIntoIncoming(Account account, String filterScript) {
     String body = "doKeepAndFileIntoIncoming" + filterScript.hashCode();
     String sampleMsg = "From: sender@zimbra.com\n" + "To: test1@zimbra.com\n" + "Subject: Test\n"
         + "\n" + body;
     try {
       // Incoming
-      final String accountName = UUID.randomUUID() + "@" + UUID.randomUUID() + ".com";
-      final Account account = provisioning.createAccount(accountName, "secret", new HashMap<>());
       RuleManager.clearCachedRules(account);
       Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
       account.setMailSieveScript(filterScript);
@@ -440,13 +441,12 @@ class FileIntoCopyTest {
     }
   }
 
-  private void doKeepAndFileIntoExisting(String filterScript) {
+  private void doKeepAndFileIntoExisting(Account account, String filterScript) {
     String body = "doKeepAndFileIntoExisting" + filterScript.hashCode();
     String sampleMsg = "From: sender@zimbra.com\n" + "To: test1@zimbra.com\n" + "Subject: Test\n"
         + "\n" + body;
     try {
       // Existing
-      Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
       RuleManager.clearCachedRules(account);
       Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
       mbox.getItemIds(null, Mailbox.ID_FOLDER_INBOX)
@@ -469,13 +469,12 @@ class FileIntoCopyTest {
     }
   }
 
-  private void doKeepAndFileIntoOutgoing(String filterScript) {
+  private void doKeepAndFileIntoOutgoing(Account account, String filterScript) {
     String body = "doKeepAndFileIntoIncoming" + filterScript.hashCode();
     String sampleMsg = "From: sender@zimbra.com\n" + "To: test1@zimbra.com\n" + "Subject: Test\n"
         + "\n" + body;
     try {
       // Outgoing
-      Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
       RuleManager.clearCachedRules(account);
       Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
       account.setMailOutgoingSieveScript(filterScript);

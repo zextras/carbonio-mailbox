@@ -7,13 +7,6 @@ package com.zimbra.cs.service.mail;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import com.google.common.collect.Maps;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
@@ -29,6 +22,11 @@ import com.zimbra.soap.mail.type.FilterAction;
 import com.zimbra.soap.mail.type.FilterRule;
 import com.zimbra.soap.mail.type.FilterTest;
 import com.zimbra.soap.mail.type.FilterTests;
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
 /**
@@ -36,6 +34,7 @@ import com.zimbra.soap.mail.type.FilterTests;
  *
  */
 public class ModifyFilterRulesTest {
+    private static Account account;
 
     @BeforeAll
     public static void init() throws Exception {
@@ -43,11 +42,8 @@ public class ModifyFilterRulesTest {
         MockProvisioning prov = new MockProvisioning();
         Provisioning.setInstance(prov);
 
-        Map<String, Object> attrs = Maps.newHashMap();
-        prov.createDomain("zimbra.com", attrs);
-
-        attrs = Maps.newHashMap();
-        prov.createAccount("test@zimbra.com", "secret", attrs);
+			  prov.createDomain("zimbra.com", Maps.newHashMap());
+        account = prov.createAccount("test@zimbra.com", "secret", Maps.newHashMap());
     }
 
     @BeforeEach
@@ -304,8 +300,7 @@ public class ModifyFilterRulesTest {
  @Test
  void testBug92309_SetIncomingXMLRules_EmptyAddress() {
   try {
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
 
    // Construct a filter rule with 'address' test whose value is empty (null)
@@ -347,8 +342,7 @@ public class ModifyFilterRulesTest {
  @Test
  void SetIncomingXMLRulesForEnvelope() {
   try {
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
 
    // Construct a filter rule with 'address' test whose value is empty (null)
@@ -390,8 +384,7 @@ public class ModifyFilterRulesTest {
  @Test
  void SetIncomingXMLRulesForEnvelopeCountComparison() {
   try {
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
 
    // Construct a filter rule with 'address' test whose value is empty (null)
@@ -433,8 +426,7 @@ public class ModifyFilterRulesTest {
  @Test
  void testFilterVariables() {
   try {
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
 
    String xml = "<ModifyFilterRulesRequest xmlns=\"urn:zimbraMail\"><filterRules>"
@@ -521,8 +513,7 @@ public class ModifyFilterRulesTest {
  @Test
  void testFilterVariablesForMatchVariables() {
   try {
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
 
    String xml = "<ModifyFilterRulesRequest xmlns=\"urn:zimbraMail\">\n" +
@@ -572,8 +563,7 @@ public class ModifyFilterRulesTest {
  @Test
  void testFilterVariablesWithNoName() {
   try {
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
 
    String xml = "<ModifyFilterRulesRequest xmlns=\"urn:zimbraMail\">\n" +
@@ -612,8 +602,7 @@ public class ModifyFilterRulesTest {
  @Test
  void testFilterVariablesWithNoValue() {
   try {
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
 
    String xml = "<ModifyFilterRulesRequest xmlns=\"urn:zimbraMail\">\n" +
@@ -695,8 +684,7 @@ public class ModifyFilterRulesTest {
  @Test
  void testNegativeAddheaderAction() {
   try {
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
 
    String xml = "<ModifyFilterRulesRequest xmlns=\"urn:zimbraMail\">\n" +
@@ -726,8 +714,7 @@ public class ModifyFilterRulesTest {
  @Test
  void testNegativeDeleteheaderAction() {
   try {
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
 
    String xml = "<ModifyFilterRulesRequest xmlns=\"urn:zimbraMail\">\n" +
@@ -756,8 +743,7 @@ public class ModifyFilterRulesTest {
  @Test
  void testNegativeReplaceheaderAction() {
   try {
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
+   
    RuleManager.clearCachedRules(account);
 
    String xml = "<ModifyFilterRulesRequest xmlns=\"urn:zimbraMail\">\n" +

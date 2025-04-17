@@ -5,20 +5,12 @@
 
 package com.zimbra.cs.store;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import com.zimbra.common.service.ServiceException;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.MockProvisioning;
+import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.DeliveryOptions;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -29,11 +21,19 @@ import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.store.file.BlobConsistencyChecker;
 import com.zimbra.cs.store.file.BlobConsistencyChecker.BlobInfo;
 import com.zimbra.cs.store.file.BlobConsistencyChecker.Results;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public abstract class AbstractBlobConsistencyCheckTest {
 
     static StoreManager originalStoreManager;
     protected final Log log = ZimbraLog.store;
+    protected static Account account;
 
     protected abstract StoreManager getStoreManager();
     protected abstract BlobConsistencyChecker getChecker();
@@ -46,7 +46,7 @@ public abstract class AbstractBlobConsistencyCheckTest {
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         MailboxTestUtil.initProvisioning();
-        Provisioning.getInstance().createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+        account = Provisioning.getInstance().createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
         //don't fail test even if native libraries not installed
         //this makes it easier to run unit tests from command line
         System.setProperty("zimbra.native.required", "false");
@@ -64,7 +64,7 @@ public abstract class AbstractBlobConsistencyCheckTest {
 
  @Test
  void singleBlob() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
   mbox.addMessage(null, new ParsedMessage("From: test1-1@sub1.zimbra.com".getBytes(), false), dopt, null);
@@ -80,7 +80,7 @@ public abstract class AbstractBlobConsistencyCheckTest {
 
  @Test
  void missingBlobs() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
   int msgs = 10;
@@ -103,7 +103,7 @@ public abstract class AbstractBlobConsistencyCheckTest {
 
  @Test
  void unexpectedBlobs() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   String path = createUnexpectedBlob(0);
 
   BlobConsistencyChecker checker = getChecker();
@@ -143,7 +143,7 @@ public abstract class AbstractBlobConsistencyCheckTest {
 
  @Test
  void wrongSize() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
   Message msg = mbox.addMessage(null, new ParsedMessage("From: test1-1@sub1.zimbra.com".getBytes(), false), dopt, null);
@@ -168,7 +168,7 @@ public abstract class AbstractBlobConsistencyCheckTest {
 
  @Test
  void allBlobs() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
   int msgs = 10;

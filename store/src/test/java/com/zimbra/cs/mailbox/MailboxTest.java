@@ -15,7 +15,6 @@ import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.common.mime.InternetAddress;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.index.BrowseTerm;
 import com.zimbra.cs.mime.ParsedContact;
@@ -32,8 +31,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.junit.jupiter.api.*;
+import java.util.UUID;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link Mailbox}.
@@ -42,6 +45,7 @@ import org.junit.jupiter.api.*;
  */
 public final class MailboxTest {
 
+ private Account account;
   @BeforeAll
   public static void init() throws Exception {
     MailboxTestUtil.initServer();
@@ -50,7 +54,7 @@ public final class MailboxTest {
   @BeforeEach
   public void setUp() throws Exception {
     Provisioning prov = Provisioning.getInstance();
-    prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+    account = prov.createAccount(UUID.randomUUID() +  "@zimbra.com", "secret", new HashMap<String, Object>());
   }
 
   @AfterEach
@@ -58,15 +62,15 @@ public final class MailboxTest {
     Mailbox mbox = null;
     try {
       mbox =
-          MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+          MailboxManager.getInstance().getMailboxByAccountId(account.getId());
       if (mbox != null) {
         // Keeping these for exercising this code, even though deleting the account
         MailboxTestUtil.clearData();
         MailboxTestUtil.cleanupIndexStore(
             MailboxManager.getInstance()
-                .getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID));
+                .getMailboxByAccountId(account.getId()));
         Provisioning prov = Provisioning.getInstance();
-        prov.deleteAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        prov.deleteAccount(account.getId());
       }
     } catch (Exception ex) {
     }
@@ -78,7 +82,7 @@ public final class MailboxTest {
  @Test
  void browse() throws Exception {
   Mailbox mbox =
-    MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
   mbox.addMessage(
@@ -117,10 +121,10 @@ public final class MailboxTest {
 
  @Test
  void testRecentMessageCount() throws Exception {
-  Account acct1 =
-    Provisioning.getInstance().get(Key.AccountBy.id, MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Account account1 =
+    Provisioning.getInstance().get(Key.AccountBy.id, account.getId());
   Mailbox mbox =
-    MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   assertEquals(
     0,
     mbox.getRecentMessageCount(),
@@ -132,7 +136,7 @@ public final class MailboxTest {
     1,
     mbox.getRecentMessageCount(),
     "recent message count should be 1 after adding one message");
-  mbox.resetRecentMessageCount(new OperationContext(acct1));
+  mbox.resetRecentMessageCount(new OperationContext(account1));
   assertEquals(
     0, mbox.getRecentMessageCount(), "recent message count should be 0 after reset");
   mbox.addMessage(
@@ -143,17 +147,17 @@ public final class MailboxTest {
     2,
     mbox.getRecentMessageCount(),
     "recent message count should be 2 after adding two messages");
-  mbox.resetRecentMessageCount(new OperationContext(acct1));
+  mbox.resetRecentMessageCount(new OperationContext(account1));
   assertEquals(
     0, mbox.getRecentMessageCount(), "recent message count should be 0 after the second reset");
  }
 
  @Test
  void threadDraft() throws Exception {
-  Account acct = Provisioning.getInstance().getAccount("test@zimbra.com");
-  acct.setMailThreadingAlgorithm(MailThreadingAlgorithm.subject);
+  
+  account.setMailThreadingAlgorithm(MailThreadingAlgorithm.subject);
 
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   // setup: add the root message
   ParsedMessage pm = MailboxTestUtil.generateMessage("test subject");
@@ -226,8 +230,7 @@ public final class MailboxTest {
 
  @Test
  void trimTombstones() throws Exception {
-  Account acct = Provisioning.getInstance().getAccount("test@zimbra.com");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   // add a message
   int changeId1 = mbox.getLastChangeID();
@@ -276,27 +279,27 @@ public final class MailboxTest {
 
  @Test
  void test_markMailboxDeleted_deletes_account_when_account_exists() throws Exception {
-  Account acct = Provisioning.getInstance().getAccount("test@zimbra.com");
+  
   MailboxManager mailboxManager = MailboxManager.getInstance();
-  Mailbox mbox = mailboxManager.getMailboxByAccount(acct);
+  Mailbox mbox = mailboxManager.getMailboxByAccount(account);
   mbox.markMailboxDeleted();
   AccountServiceException thrown = assertThrows(
           AccountServiceException.class,
-          () -> mailboxManager.getMailboxByAccountId(acct.getId())
+          () -> mailboxManager.getMailboxByAccountId(account.getId())
   );
   assertEquals(AccountServiceException.NO_SUCH_ACCOUNT, thrown.getCode());
  }
 
  @Test
  void test_markMailboxDeleted_is_ok_when_account_does_not_exists() throws Exception {
-  Account acct = Provisioning.getInstance().getAccount("test@zimbra.com");
+  
   MailboxManager mailboxManager = MailboxManager.getInstance();
-  Mailbox mbox = mailboxManager.getMailboxByAccount(acct);
+  Mailbox mbox = mailboxManager.getMailboxByAccount(account);
   mbox.markMailboxDeleted();
   mbox.markMailboxDeleted();
   AccountServiceException thrown = assertThrows(
           AccountServiceException.class,
-          () -> mailboxManager.getMailboxByAccountId(acct.getId())
+          () -> mailboxManager.getMailboxByAccountId(account.getId())
   );
   assertEquals(AccountServiceException.NO_SUCH_ACCOUNT, thrown.getCode());
  }
@@ -348,8 +351,8 @@ public final class MailboxTest {
 
  @Test
  void notifications() throws Exception {
-  Account acct = Provisioning.getInstance().getAccount("test@zimbra.com");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+  
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   MockListener ml = new MockListener();
   MailboxListener.register(ml);
@@ -436,10 +439,9 @@ public final class MailboxTest {
 
  @Test
  void dumpster() throws Exception {
-  Account acct = Provisioning.getInstance().getAccount("test@zimbra.com");
-  acct.setDumpsterEnabled(true);
+  account.setDumpsterEnabled(true);
 
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   int msgId =
     mbox.addMessage(
@@ -458,7 +460,7 @@ public final class MailboxTest {
 
   // first test normal mailbox delete
   Mailbox mbox =
-    MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   assertEquals(0, sm.size(), "start with no blobs in the store");
 
   MailItem item =
@@ -476,7 +478,7 @@ public final class MailboxTest {
   assertFalse(MessageCache.contains(item.getDigest()));
 
   // then test mailbox delete without store delete
-  mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   assertEquals(0, sm.size(), "start with no blobs in the store");
 
   item =
@@ -496,7 +498,7 @@ public final class MailboxTest {
   sm.purge();
 
   // then do it contingent on whether the store is centralized or local
-  mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   assertEquals(0, sm.size(), "start with no blobs in the store");
 
   mbox.addMessage(null, MailboxTestUtil.generateMessage("test"), STANDARD_DELIVERY_OPTIONS, null)
@@ -513,7 +515,7 @@ public final class MailboxTest {
  @Test
  void muted() throws Exception {
   Mailbox mbox =
-    MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   // root message
   DeliveryOptions dopt =
@@ -585,23 +587,23 @@ public final class MailboxTest {
  void createAutoContactTestWhenMaxEntriesLimitIsReached() throws Exception {
 
   Mailbox mbox =
-    MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   Collection<InternetAddress> addrs = new ArrayList<InternetAddress>();
   addrs.add(new InternetAddress("user2@email.com"));
   addrs.add(new InternetAddress("user3@email.com"));
   addrs.add(new InternetAddress("user4@email.com"));
 
   Provisioning prov = Provisioning.getInstance();
-  Account acct1 =
-    Provisioning.getInstance().get(Key.AccountBy.id, MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Account account1 =
+    Provisioning.getInstance().get(Key.AccountBy.id, account.getId());
   Map<String, Object> attrs = new HashMap<String, Object>();
   attrs.put(Provisioning.A_zimbraContactMaxNumEntries, Integer.toString(2));
-  prov.modifyAttrs(acct1, attrs);
+  prov.modifyAttrs(account1, attrs);
   List<Contact> contactList = mbox.createAutoContact(null, addrs);
   assertEquals(2, contactList.size());
 
   attrs.put(Provisioning.A_zimbraContactMaxNumEntries, Integer.toString(10));
-  prov.modifyAttrs(acct1, attrs);
+  prov.modifyAttrs(account1, attrs);
   addrs = new ArrayList<InternetAddress>();
   addrs.add(new InternetAddress("user2@email.com"));
   addrs.add(new InternetAddress("user3@email.com"));
@@ -613,9 +615,9 @@ public final class MailboxTest {
  @Test
  void createAutoContactTestForDisplayNameFormat() throws Exception {
   Mailbox mbox =
-    MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
-  Account acct1 =
-    Provisioning.getInstance().get(Key.AccountBy.id, MockProvisioning.DEFAULT_ACCOUNT_ID);
+    MailboxManager.getInstance().getMailboxByAccountId(account.getId());
+  Account account1 =
+    Provisioning.getInstance().get(Key.AccountBy.id, account.getId());
 
   Collection<InternetAddress> addrs = new ArrayList<InternetAddress>();
   addrs.add(new InternetAddress("\"First Last\" <user@email.com>"));
@@ -626,9 +628,9 @@ public final class MailboxTest {
 
   addrs = new ArrayList<InternetAddress>();
   addrs.add(new InternetAddress("\"Last First\" <user@email.com>"));
-  acct1.setPrefLocale("ja");
+  account1.setPrefLocale("ja");
   ;
-  contactList = mbox.createAutoContact(new OperationContext(acct1), addrs);
+  contactList = mbox.createAutoContact(new OperationContext(account1), addrs);
   contact = contactList.get(0);
   assertEquals("First", contact.get("firstName"));
   assertEquals("Last", contact.get("lastName"));
@@ -637,7 +639,7 @@ public final class MailboxTest {
  @Test
  void getVisibleFolders() throws Exception {
   Mailbox mbox =
-    MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   mbox.getVisibleFolders(new OperationContext(mbox));
  }
 
@@ -648,8 +650,8 @@ public final class MailboxTest {
   attrs.put(Provisioning.A_zimbraFeatureMailForwardingEnabled, "TRUE");
   attrs.put(Provisioning.A_zimbraPrefMailForwardingAddress, "user@zimbra.com");
   attrs.put(Provisioning.A_zimbraFeatureMarkMailForwardedAsRead, "TRUE");
-  Account acct = prov.createAccount("user@zimbra.com", "secret", attrs);
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(acct.getId());
+  Account account = prov.createAccount("user@zimbra.com", "secret", attrs);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
   dopt.setFlags(Flag.BITMASK_UNREAD);
@@ -666,8 +668,8 @@ public final class MailboxTest {
   attrs.put(Provisioning.A_zimbraFeatureMailForwardingEnabled, "TRUE");
   attrs.put(Provisioning.A_zimbraPrefMailForwardingAddress, "user2@zimbra.com");
   attrs.put(Provisioning.A_zimbraFeatureMarkMailForwardedAsRead, "FALSE");
-  Account acct = prov.createAccount("user@zimbra.com", "secret", attrs);
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(acct.getId());
+  Account account = prov.createAccount("user@zimbra.com", "secret", attrs);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
   dopt.setFlags(Flag.BITMASK_UNREAD);
@@ -681,8 +683,8 @@ public final class MailboxTest {
  void testGetModifiedItemsCount() throws Exception {
   Provisioning prov = Provisioning.getInstance();
   Map<String, Object> attrs = new HashMap<String, Object>();
-  Account acct = prov.createAccount("testGetModifiedItemsCount@zimbra.com", "secret", attrs);
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(acct.getId());
+  Account account = prov.createAccount("testGetModifiedItemsCount@zimbra.com", "secret", attrs);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   Map<String, Object> fields = new HashMap<String, Object>();
   fields.put(ContactConstants.A_firstName, "First1");
@@ -694,7 +696,7 @@ public final class MailboxTest {
 
   Set<Integer> folderIds = new HashSet<Integer>();
   folderIds.add(Mailbox.ID_FOLDER_CONTACTS);
-  OperationContext octxt = new OperationContext(acct);
+  OperationContext octxt = new OperationContext(account);
   int count = mbox.getModifiedItemsCount(octxt, 0, 0, MailItem.Type.CONTACT, folderIds);
   assertEquals(2, count);
  }
@@ -713,8 +715,8 @@ public final class MailboxTest {
   Provisioning prov = Provisioning.getInstance();
   Map<String, Object> attrs = new HashMap<String, Object>();
   attrs.put("zimbraMailQuota", "5");
-  Account acct = prov.createAccount("testAdditionalQuotaProvider@zimbra.com", "secret", attrs);
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+  Account account = prov.createAccount("testAdditionalQuotaProvider@zimbra.com", "secret", attrs);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
   try {
    mbox.checkSizeChange(0);
    fail("Expected QUOTA_EXCEEDED exception");
@@ -745,8 +747,8 @@ public final class MailboxTest {
   Provisioning prov = Provisioning.getInstance();
   Map<String, Object> attrs = new HashMap<String, Object>();
   attrs.put("zimbraMailQuota", "30");
-  Account acct = prov.createAccount("testAdditionalQuotaProvider@zimbra.com", "secret", attrs);
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+  Account account = prov.createAccount("testAdditionalQuotaProvider@zimbra.com", "secret", attrs);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
   try {
    mbox.checkSizeChange(10);
   } catch (MailServiceException ignored) {

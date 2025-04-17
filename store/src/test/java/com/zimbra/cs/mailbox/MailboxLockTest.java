@@ -5,42 +5,40 @@
 
 package com.zimbra.cs.mailbox;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.zimbra.client.ZMailboxLock;
+import com.zimbra.common.localconfig.LC;
+import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.mailbox.Mailbox.FolderNode;
+import com.zimbra.cs.mailbox.MailboxLock.LockFailedException;
+import com.zimbra.cs.service.util.ItemId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.zimbra.client.ZMailboxLock;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.MockProvisioning;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.mailbox.Mailbox.FolderNode;
-import com.zimbra.cs.mailbox.MailboxLock.LockFailedException;
-import com.zimbra.cs.service.util.ItemId;
-
 public class MailboxLockTest {
+ private static Account account;
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+        account = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
     @BeforeEach
     public void setup() throws Exception {
         MailboxTestUtil.clearData();
-        MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        MailboxManager.getInstance().getMailboxByAccountId(account.getId());
     }
 
  @Test
@@ -48,7 +46,7 @@ public class MailboxLockTest {
   boolean check = false;
   assert (check = true);
   if (check) {
-   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
    mbox.lock.lock(false);
    assertFalse(mbox.lock.isUnlocked());
    assertFalse(mbox.lock.isWriteLockedByCurrentThread());
@@ -68,7 +66,7 @@ public class MailboxLockTest {
 
  @Test
  void nestedWrite() throws ServiceException {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   int holdCount = 0;
   assertEquals(holdCount, mbox.lock.getHoldCount());
   mbox.lock.lock(true);
@@ -121,7 +119,7 @@ public class MailboxLockTest {
 
  @Test
  void multiAccess() throws ServiceException {
-  final Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  final Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   //just do some read/write in different threads to see if we trigger any deadlocks or other badness
   int numThreads = 5;
@@ -199,7 +197,7 @@ public class MailboxLockTest {
     Mailbox mbox;
     try {
      int lockCount = 10;
-     mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+     mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
      //here's the interleaving we are explicitly exercising in this test
      //1. writer - mbox.lock(write)
      //2. reader - mbox.lock(read); call gets past the initial isWriteModeRequired() check and into tryLock(read)
@@ -235,7 +233,7 @@ public class MailboxLockTest {
    public void run() {
     Mailbox mbox;
     try {
-     mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+     mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
      mbox.lock.lock();
      //start read thread only after holding mailbox lock
      readThread.start();
@@ -295,7 +293,7 @@ public class MailboxLockTest {
  void tooManyWaiters() {
   Mailbox mbox = null;
   try {
-   mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   } catch (ServiceException e) {
    fail();
   }
@@ -309,7 +307,7 @@ public class MailboxLockTest {
     public void run() {
      Mailbox mbox;
      try {
-      mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+      mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
       mbox.lock.lock(false);
       while (!done.get()) {
        try {
@@ -331,7 +329,7 @@ public class MailboxLockTest {
    public void run() {
     Mailbox mbox;
     try {
-     mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+     mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
      mbox.lock.lock(true);
      for (Thread waiter : waitThreads) {
       waiter.start();
@@ -381,7 +379,7 @@ public class MailboxLockTest {
  void tooManyWaitersWithSingleReadOwner() {
   Mailbox mbox = null;
   try {
-   mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   } catch (ServiceException e) {
    fail();
   }
@@ -395,7 +393,7 @@ public class MailboxLockTest {
     public void run() {
      Mailbox mbox;
      try {
-      mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+      mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
       mbox.lock.lock(true);
       while (!done.get()) {
        try {
@@ -417,7 +415,7 @@ public class MailboxLockTest {
    public void run() {
     Mailbox mbox;
     try {
-     mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+     mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
      int holdCount = 20;
      for (int i = 0; i < holdCount; i++) {
       mbox.lock.lock(false);
@@ -473,7 +471,7 @@ public class MailboxLockTest {
  void tooManyWaitersWithMultipleReadOwners() {
   Mailbox mbox = null;
   try {
-   mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   } catch (ServiceException e) {
    fail();
   }
@@ -487,7 +485,7 @@ public class MailboxLockTest {
     public void run() {
      Mailbox mbox;
      try {
-      mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+      mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
       mbox.lock.lock(true);
       while (!done.get()) {
        try {
@@ -512,7 +510,7 @@ public class MailboxLockTest {
     public void run() {
      Mailbox mbox;
      try {
-      mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+      mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
       int holdCount = 20;
       for (int i = 0; i < holdCount; i++) {
        mbox.lock.lock(false);
@@ -539,7 +537,7 @@ public class MailboxLockTest {
    public void run() {
     Mailbox mbox;
     try {
-     mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+     mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
      int holdCount = 20;
      for (int i = 0; i < holdCount; i++) {
       mbox.lock.lock(false);

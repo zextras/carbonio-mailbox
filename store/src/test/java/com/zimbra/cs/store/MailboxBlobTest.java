@@ -5,23 +5,21 @@
 
 package com.zimbra.cs.store;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.store.MailboxBlob.MailboxBlobInfo;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
-
-import com.zimbra.cs.account.MockProvisioning;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.store.MailboxBlob.MailboxBlobInfo;
 
 public class MailboxBlobTest {
  @Test
  void serialization() throws Exception {
-  MailboxBlobInfo mbinfo = new MailboxBlobInfo(MockProvisioning.DEFAULT_ACCOUNT_ID, 1, Mailbox.FIRST_USER_ID, 1, "locator", "digest123");
+  MailboxBlobInfo mbinfo = new MailboxBlobInfo(UUID.randomUUID().toString(), 1, Mailbox.FIRST_USER_ID, 1, "locator", "digest123");
 
   ByteArrayOutputStream baos = new ByteArrayOutputStream();
   ObjectOutputStream oos = new ObjectOutputStream(baos);

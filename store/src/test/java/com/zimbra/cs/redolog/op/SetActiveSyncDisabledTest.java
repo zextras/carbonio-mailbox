@@ -5,29 +5,24 @@
 
 package com.zimbra.cs.redolog.op;
 
-import java.util.HashMap;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import com.zimbra.cs.account.MockProvisioning;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import com.zimbra.cs.account.Provisioning;
+import com.zextras.mailbox.util.AccountUtil;
+import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SetActiveSyncDisabledTest {
 
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
     @BeforeEach
@@ -40,7 +35,8 @@ public class SetActiveSyncDisabledTest {
   */
  @Test
  void setDisableActiveSyncUserFolder() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   final Account account = AccountUtil.createAccount();
+   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   // Create folder.
   Folder folder = mbox.createFolder(null, "/test", new Folder.FolderOptions().setDefaultView(MailItem.Type.MESSAGE));
@@ -61,7 +57,8 @@ public class SetActiveSyncDisabledTest {
 
  @Test
  void setDisableActiveSyncSystemFolder() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   final Account account = AccountUtil.createAccount();
+   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   Folder folder = mbox.getFolderById(null, Mailbox.ID_FOLDER_INBOX);
   assertFalse(folder.isActiveSyncDisabled());
 

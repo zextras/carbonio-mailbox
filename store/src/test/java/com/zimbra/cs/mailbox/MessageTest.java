@@ -5,24 +5,14 @@
 
 package com.zimbra.cs.mailbox;
 
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import com.google.common.io.ByteStreams;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.google.common.io.ByteStreams;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
@@ -36,6 +26,13 @@ import com.zimbra.cs.mailbox.Flag.FlagInfo;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.mail.ToXML;
 import com.zimbra.cs.service.util.ItemIdFormatter;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import qa.unittest.TestUtil;
 
 /**
@@ -44,13 +41,14 @@ import qa.unittest.TestUtil;
  * @author ysasaki
  */
 public final class MessageTest {
+ private static Account account;
 
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
 
         Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+        account = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
     @BeforeEach
@@ -60,7 +58,7 @@ public final class MessageTest {
 
  @Test
  void indexRawMimeMessage() throws Exception {
-  Account account = Provisioning.getInstance().getAccountById(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  
   account.setPrefMailDefaultCharset("ISO-2022-JP");
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
@@ -80,7 +78,7 @@ public final class MessageTest {
 
  @Test
  void getSortRecipients() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   DeliveryOptions opt = new DeliveryOptions();
   opt.setFolderId(Mailbox.ID_FOLDER_INBOX);
   Message msg1 = mbox.addMessage(null, new ParsedMessage(
@@ -111,7 +109,7 @@ public final class MessageTest {
  @Test
  @Disabled("Fix me. Assertions fails. Standard error: missing .platform")
  void moveOutOfSpam() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   mbox.getAccount().setJunkMessagesIndexingEnabled(false);
   DeliveryOptions opt = new DeliveryOptions();
   opt.setFolderId(Mailbox.ID_FOLDER_SPAM);
@@ -137,7 +135,7 @@ public final class MessageTest {
  @Test
  void post() throws Exception {
   // Create post.
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   DeliveryOptions opt = new DeliveryOptions();
   opt.setFolderId(Mailbox.ID_FOLDER_INBOX);
   opt.setFlags(FlagInfo.POST.toBitmask());
@@ -170,7 +168,7 @@ public final class MessageTest {
  @Test
  void msgToPost() throws Exception {
   // Create msg.
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   DeliveryOptions opt = new DeliveryOptions();
   opt.setFolderId(Mailbox.ID_FOLDER_INBOX);
   Message msg = mbox.addMessage(null, new ParsedMessage(

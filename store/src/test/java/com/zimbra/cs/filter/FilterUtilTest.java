@@ -5,18 +5,12 @@
 
 package com.zimbra.cs.filter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import static com.zimbra.cs.filter.JsieveConfigMapHandler.CAPABILITY_VARIABLES;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.mailbox.DeliveryContext;
@@ -25,22 +19,26 @@ import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
-
-import static com.zimbra.cs.filter.JsieveConfigMapHandler.CAPABILITY_VARIABLES;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link FilterUtil}.
  */
 public class FilterUtilTest {
+  private static Account account;
 
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
-        Account acct1 = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
-        Server server = Provisioning.getInstance().getServer(acct1);
+        account = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+        Server server = Provisioning.getInstance().getServer(account);
     }
 
     @BeforeEach
@@ -58,7 +56,7 @@ public class FilterUtilTest {
 
  @Test
  void noBody() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   String content =
     "From: user1@example.com\r\n"
       + "To: user2@example.com\r\n"
@@ -72,7 +70,7 @@ public class FilterUtilTest {
 
  @Test
  void noHeaders() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   String content = "just some content";
   ParsedMessage parsedMessage = new ParsedMessage(content.getBytes(), false);
   Map<String, String> vars = FilterUtil.getVarsMap(mbox, parsedMessage, parsedMessage.getMimeMessage());
@@ -83,7 +81,6 @@ public class FilterUtilTest {
      * Create and initialize the ZimbraMailAdapter object 
      */
     private ZimbraMailAdapter initZimbraMailAdapter() throws ServiceException {
-        Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
         RuleManager.clearCachedRules(account);
         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 

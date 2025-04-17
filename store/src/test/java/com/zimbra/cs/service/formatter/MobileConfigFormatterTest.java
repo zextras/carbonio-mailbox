@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.service.formatter;
 
-import static com.zimbra.cs.account.MockProvisioning.DEFAULT_ACCOUNT_ID;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Maps;
@@ -46,13 +45,14 @@ public class MobileConfigFormatterTest {
     private static Document document;
     private static TransformerFactory transformerFactory;
     private static Transformer transformer;
+    private static Account account;
 
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
         prov.createDomain(DOMAIN_NAME, Maps.<String, Object>newHashMap());
-        prov.createAccount(USER_NAME, "secret", Maps.<String, Object>newHashMap());
+        account = prov.createAccount(USER_NAME, "secret", Maps.<String, Object>newHashMap());
         formatter = new MobileConfigFormatter();
         user = prov.getAccount(USER_NAME);
         user.setMail(USER_NAME);
@@ -141,7 +141,7 @@ public class MobileConfigFormatterTest {
     + "        <key>PayloadType</key>\n"
     + "        <string>com.apple.caldav.account</string>\n"
     + "        <key>PayloadUUID</key>\n"
-    + "        <string>" + DEFAULT_ACCOUNT_ID + "_caldav</string>\n"
+    + "        <string>" + account.getId() + "_caldav</string>\n"
     + "        <key>PayloadVersion</key>\n"
     + "        <integer>1</integer>\n"
     + "    </dict>\n"
@@ -192,7 +192,7 @@ public class MobileConfigFormatterTest {
     + "        <key>PayloadType</key>\n"
     + "        <string>com.apple.carddav.account</string>\n"
     + "        <key>PayloadUUID</key>\n"
-    + "        <string>" + DEFAULT_ACCOUNT_ID + "_carddav</string>\n"
+    + "        <string>" + account.getId() + "_carddav</string>\n"
     + "        <key>PayloadVersion</key>\n"
     + "        <integer>1</integer>\n"
     + "    </dict>\n"
@@ -262,7 +262,7 @@ public class MobileConfigFormatterTest {
     + "        <key>PayloadType</key>\n"
     + "        <string>com.apple.mail.managed</string>\n"
     + "        <key>PayloadUUID</key>\n"
-    + "        <string>" + DEFAULT_ACCOUNT_ID + "_imap</string>\n"
+    + "        <string>" + account.getId() + "_imap</string>\n"
     + "        <key>PayloadVersion</key>\n"
     + "        <integer>1</integer>\n"
     + "        <key>PreventAppSheet</key>\n"

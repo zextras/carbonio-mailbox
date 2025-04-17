@@ -5,39 +5,33 @@
 
 package com.zimbra.cs.mailbox;
 
-import java.util.HashMap;
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.util.AccountUtil;
+import com.zimbra.common.util.Constants;
+import com.zimbra.cs.account.Account;
+import com.zimbra.cs.mailbox.util.TypedIdList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.zimbra.common.account.Key.AccountBy;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-import com.zimbra.common.util.Constants;
-import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.mailbox.util.TypedIdList;
-
 public class ConversationTest {
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
-    }
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        MailboxTestUtil.clearData();
-    }
+ @BeforeAll
+ public static void init() throws Exception {
+  MailboxTestUtil.initServer();
+ }
+
+ @BeforeEach
+ public void setUp() throws Exception {
+  MailboxTestUtil.clearData();
+ }
 
  @Test
  void delete() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  final Account account = AccountUtil.createAccount();
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   mbox.beginTrackingSync();
   // root message in Inbox
   int msgId = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), MailboxTest.STANDARD_DELIVERY_OPTIONS, null).getId();
@@ -76,7 +70,7 @@ public class ConversationTest {
 
  @Test
  void expiry() throws Exception {
-  Account account = Provisioning.getInstance().get(AccountBy.id, MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Account account = AccountUtil.createAccount();
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   // root message in Inbox

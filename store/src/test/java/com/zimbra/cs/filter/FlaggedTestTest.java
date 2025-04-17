@@ -5,19 +5,9 @@
 
 package com.zimbra.cs.filter;
 
-import java.util.HashMap;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.cs.account.Account;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.filter.jsieve.FlaggedTest;
 import com.zimbra.cs.mailbox.DeliveryContext;
@@ -30,6 +20,11 @@ import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.util.ItemId;
+import java.util.HashMap;
+import java.util.List;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link FlaggedTest}.
@@ -37,13 +32,14 @@ import com.zimbra.cs.service.util.ItemId;
  * @author ysasaki
  */
 public final class FlaggedTestTest {
+  private static Account account;
 
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
-    }
+  @BeforeAll
+  public static void init() throws Exception {
+    MailboxTestUtil.initServer();
+    Provisioning prov = Provisioning.getInstance();
+    account = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+  }
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -52,7 +48,6 @@ public final class FlaggedTestTest {
 
  @Test
  void incoming() throws Exception {
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
   RuleManager.clearCachedRules(account);
   account.setMailSieveScript("if me :in \"To\" { flag \"priority\"; }\n" +
     "if flagged \"priority\" { stop; }\n" +
@@ -70,7 +65,6 @@ public final class FlaggedTestTest {
 
  @Test
  void existing() throws Exception {
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
   RuleManager.clearCachedRules(account);
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
   OperationContext octx = new OperationContext(mbox);
