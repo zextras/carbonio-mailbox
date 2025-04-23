@@ -199,8 +199,11 @@ package() {
     "${pkgdir}/opt/zextras/conf/rights/user-rights.xml"
 
   # systemd unit
+  mkdir -p "${pkgdir}/usr/lib/systemd/system/carbonio.target.wants"
   install -Dm 644 packages/common-appserver-conf/carbonio-milter.service \
-    "${pkgdir}/lib/systemd/system/carbonio-milter.service"
+    "${pkgdir}/usr/lib/systemd/system/carbonio-milter.service"
+  ln -sf "/usr/lib/systemd/system/carbonio-milter.service" \
+    "${pkgdir}/usr/lib/systemd/system/carbonio.target.wants/carbonio-milter.service"
 }
 
 postinst__apt() {

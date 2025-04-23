@@ -37,5 +37,5 @@ package() {
 
   # systemd unit
   install -Dm 644 packages/appserver-db/${pkgname}.service \
-    "${pkgdir}/lib/systemd/system/${pkgname}.service"
+    "${pkgdir}/usr/lib/systemd/system/${pkgname}.service"
 }
