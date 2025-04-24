@@ -271,7 +271,6 @@ public class ProvUtilRegressionTest {
           "getMemcachedClientConfig f129be06-86bd-4123-8232-be39a96c2105 f129be06-86bd-4123-8232-be39a96c2105 f129be06-86bd-4123-8232-be39a96c2105",
           "getMemcachedClientConfig f129be06-86bd-4123-8232-be39a96c2105 f129be06-86bd-4123-8232-be39a96c2105 f129be06-86bd-4123-8232-be39a96c2105 f129be06-86bd-4123-8232-be39a96c2105",
           "getMemcachedClientConfig localhost",
-          "getSpnegoDomain",
           "help commands",
           "reloadMemcachedClientConfig all",
           "reloadMemcachedClientConfig f129be06-86bd-4123-8232-be39a96c2105",

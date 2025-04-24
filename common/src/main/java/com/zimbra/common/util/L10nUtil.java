@@ -232,12 +232,6 @@ public class L10nUtil {
         mobile_send_failure_report_subject,
         mobile_send_failure_report_message,
 
-        //Spnego 401 error page
-        spnego_401_error_message,
-        spnego_redirect_message,
-        spnego_browser_setup_message,
-        spnego_browser_setup_wiki,
-
         errorTitle,
         zipFile,
         

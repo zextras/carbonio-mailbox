@@ -5242,38 +5242,30 @@ deprecatedSince="23.9.0">
   </desc>
 </attr>
 
-<attr id="1118" name="zimbraSpnegoAuthEnabled" type="boolean" cardinality="single" optionalIn="globalConfig" requiresRestart="mailbox" since="7.0.0">
+<attr id="1118" name="zimbraSpnegoAuthEnabled" type="boolean" cardinality="single" optionalIn="globalConfig" requiresRestart="mailbox" since="7.0.0" deprecatedSince="25.6.0">
   <globalConfigValue>FALSE</globalConfigValue>
   <desc>whether spnego SSO is enabled</desc>
+  <deprecateDesc>SPNEGO support was dropped</deprecateDesc>
 </attr>
 
-<attr id="1119" name="zimbraSpnegoAuthRealm" type="string" cardinality="single" optionalIn="globalConfig" requiresRestart="mailbox" since="7.0.0">
+<attr id="1119" name="zimbraSpnegoAuthRealm" type="string" cardinality="single" optionalIn="globalConfig" requiresRestart="mailbox" since="7.0.0" deprecatedSince="25.6.0">
   <desc>spnego auth realm</desc>
+  <deprecateDesc>SPNEGO support was dropped</deprecateDesc>
 </attr>
 
-<!--
-No longer need KDC/admin server, jetty does not consult them during spnego auth
-TODO: delete them permanently from here
-
-<attr id="1120" name="zimbraSpnegoAuthKDC" type="string" cardinality="single" optionalIn="globalConfig" requiresRestart="mailbox" since="7.0.0">
-  <desc>ip or hostname for spnego auth KDC</desc>
-</attr>
-
-<attr id="1121" name="zimbraSpnegoAuthAdminServer" type="string" cardinality="single" optionalIn="globalConfig" requiresRestart="mailbox" since="7.0.0">
-  <desc>ip or hostname for spnego auth admin server</desc>
-</attr>
--->
-
-<attr id="1122" name="zimbraSpnegoAuthPrincipal" type="string" cardinality="single" optionalIn="server" requiresRestart="mailbox" since="7.0.0">
+<attr id="1122" name="zimbraSpnegoAuthPrincipal" type="string" cardinality="single" optionalIn="server" requiresRestart="mailbox" since="7.0.0" deprecatedSince="25.6.0">
   <desc>spnego auth principal</desc>
+  <deprecateDesc>SPNEGO support was dropped</deprecateDesc>
 </attr>
 
-<attr id="1123" name="zimbraSpnegoAuthTargetName" type="string" cardinality="single" optionalIn="server" requiresRestart="mailbox" since="7.0.0">
+<attr id="1123" name="zimbraSpnegoAuthTargetName" type="string" cardinality="single" optionalIn="server" requiresRestart="mailbox" since="7.0.0" deprecatedSince="25.6.0">
   <desc>spnego auth target name</desc>
+  <deprecateDesc>SPNEGO support was dropped</deprecateDesc>
 </attr>
 
-<attr id="1124" name="zimbraSpnegoAuthErrorURL" type="string" cardinality="single" optionalIn="globalConfig" requiresRestart="mailbox" since="7.0.0">
+<attr id="1124" name="zimbraSpnegoAuthErrorURL" type="string" cardinality="single" optionalIn="globalConfig" requiresRestart="mailbox" since="7.0.0" deprecatedSince="25.6.0">
   <desc>spnego auth error URL</desc>
+  <deprecateDesc>SPNEGO support was dropped</deprecateDesc>
 </attr>
 
 <attr id="1125" name="zimbraPrefForwardReplySignatureId" type="id" cardinality="single" optionalIn="account,identity,dataSource" flags="domainAdminModifiable" since="7.0.0">
@@ -5956,7 +5948,7 @@ TODO: delete them permanently from here
   </desc>
 </attr>
 
-<attr id="1222" name="zimbraAutoProvAuthMech" type="enum" value="LDAP,PREAUTH,KRB5,SPNEGO" cardinality="multi" optionalIn="domain" since="8.0.0">
+<attr id="1222" name="zimbraAutoProvAuthMech" type="enum" value="LDAP,PREAUTH,KRB5" cardinality="multi" optionalIn="domain" since="8.0.0">
   <desc>
      EAGER mode: N/A
       LAZY mode: required

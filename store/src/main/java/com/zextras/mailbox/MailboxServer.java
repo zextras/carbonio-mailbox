@@ -193,9 +193,6 @@ public class MailboxServer {
       rewriteHandler.addRule(new RewritePatternRule(mailURL + "/user/*", "/service/user"));
       rewriteHandler.addRule(new RewritePatternRule("/shf/*", "/service/shf/"));
       rewriteHandler.addRule(new RewritePatternRule("/certauth/*", "/service/certauth"));
-      rewriteHandler.addRule(new RewritePatternRule("/spnegoauth/*", "/service/spnego"));
-      rewriteHandler.addRule(new RewritePatternRule("/spnego/*", "/spnego"));
-      rewriteHandler.addRule(new RewritePatternRule(mailURL + "/service/spnego/*", "/service/spnego"));
       rewriteHandler.addRule(new RewritePatternRule("/autodiscover/*", "/service/extension/autodiscover"));
       rewriteHandler.addRule(new RewritePatternRule("/Autodiscover/*", "/service/extension/autodiscover"));
       rewriteHandler.addRule(new RewritePatternRule("/AutoDiscover/*", "/service/extension/autodiscover"));
@@ -203,10 +200,6 @@ public class MailboxServer {
       final RewritePatternRule serviceRule = new RewritePatternRule("/service/*", "/service");
       serviceRule.setTerminating(true);
       rewriteHandler.addRule(serviceRule);
-
-      final RewritePatternRule spnegoRule = new RewritePatternRule("/spnego/*", "/spnego");
-      spnegoRule.setTerminating(true);
-      rewriteHandler.addRule(spnegoRule);
 
       final RewritePatternRule carbonioAdminRule = new RewritePatternRule("/carbonioAdmin/*", "/carbonioAdmin");
       carbonioAdminRule.setTerminating(true);
