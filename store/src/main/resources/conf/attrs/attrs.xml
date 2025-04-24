@@ -5490,7 +5490,8 @@ TODO: delete them permanently from here
   </desc>
 </attr>
 
-<attr id="1161" name="zimbraMailKeepOutWebCrawlers" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="7.0.1">
+<attr id="1161" name="zimbraMailKeepOutWebCrawlers" deprecatedSince="25.6.0" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="7.0.1">
+  <deprecateDesc>RobotsServlet has been removed. robots.txt is managed on proxy side</deprecateDesc>
   <globalConfigValue>TRUE</globalConfigValue>
   <desc>When set to true, robots.txt on mailboxd will be set up to keep web crawlers out</desc>
 </attr>
