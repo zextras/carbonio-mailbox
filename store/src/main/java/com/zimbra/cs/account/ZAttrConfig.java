@@ -30086,8 +30086,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * When set to true, robots.txt on mailboxd will be set up to keep web
-     * crawlers out
+     * Deprecated since: 25.6.0. RobotsServlet has been removed. robots.txt
+     * is managed on proxy side. Orig desc: When set to true, robots.txt on
+     * mailboxd will be set up to keep web crawlers out
      *
      * @return zimbraMailKeepOutWebCrawlers, or true if unset
      *
@@ -30099,8 +30100,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * When set to true, robots.txt on mailboxd will be set up to keep web
-     * crawlers out
+     * Deprecated since: 25.6.0. RobotsServlet has been removed. robots.txt
+     * is managed on proxy side. Orig desc: When set to true, robots.txt on
+     * mailboxd will be set up to keep web crawlers out
      *
      * @param zimbraMailKeepOutWebCrawlers new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -30115,8 +30117,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * When set to true, robots.txt on mailboxd will be set up to keep web
-     * crawlers out
+     * Deprecated since: 25.6.0. RobotsServlet has been removed. robots.txt
+     * is managed on proxy side. Orig desc: When set to true, robots.txt on
+     * mailboxd will be set up to keep web crawlers out
      *
      * @param zimbraMailKeepOutWebCrawlers new value
      * @param attrs existing map to populate, or null to create a new map
@@ -30132,8 +30135,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * When set to true, robots.txt on mailboxd will be set up to keep web
-     * crawlers out
+     * Deprecated since: 25.6.0. RobotsServlet has been removed. robots.txt
+     * is managed on proxy side. Orig desc: When set to true, robots.txt on
+     * mailboxd will be set up to keep web crawlers out
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -30147,8 +30151,9 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
-     * When set to true, robots.txt on mailboxd will be set up to keep web
-     * crawlers out
+     * Deprecated since: 25.6.0. RobotsServlet has been removed. robots.txt
+     * is managed on proxy side. Orig desc: When set to true, robots.txt on
+     * mailboxd will be set up to keep web crawlers out
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
