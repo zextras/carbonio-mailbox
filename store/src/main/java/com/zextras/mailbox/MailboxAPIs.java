@@ -36,7 +36,6 @@ import com.zimbra.cs.servlet.DoSFilter;
 import com.zimbra.cs.servlet.ETagHeaderFilter;
 import com.zimbra.cs.servlet.FirstServlet;
 import com.zimbra.cs.servlet.RequestStringFilter;
-import com.zimbra.cs.servlet.RobotsServlet;
 import com.zimbra.cs.servlet.SetHeaderFilter;
 import com.zimbra.cs.servlet.ZimbraInvalidLoginFilter;
 import com.zimbra.cs.servlet.ZimbraQoSFilter;
@@ -297,12 +296,6 @@ public class MailboxAPIs {
 		collectConfigFilesServlet.setAsyncSupported(true);
 		collectConfigFilesServlet.setInitParameter(allowedPortsParameter, adminPortOnly);
 		servletContextHandler.addServlet(collectConfigFilesServlet, "/collectconfig/*");
-
-		final var robotsServlet = new ServletHolder(RobotsServlet.class);
-		robotsServlet.setName("RobotsServlet");
-		robotsServlet.setAsyncSupported(true);
-		robotsServlet.setInitOrder(11);
-		servletContextHandler.addServlet(robotsServlet, "/robots.txt");
 
 		final var autoDiscoverServlet = new ServletHolder(AutoDiscoverServlet.class);
 		autoDiscoverServlet.setName("AutoDiscoverServlet");

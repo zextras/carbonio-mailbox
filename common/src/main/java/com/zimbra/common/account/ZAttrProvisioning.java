@@ -9845,8 +9845,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraMailIdleSessionTimeout = "zimbraMailIdleSessionTimeout";
 
     /**
-     * When set to true, robots.txt on mailboxd will be set up to keep web
-     * crawlers out
+     * Deprecated since: 25.6.0. RobotsServlet has been removed. robots.txt
+     * is managed on proxy side. Orig desc: When set to true, robots.txt on
+     * mailboxd will be set up to keep web crawlers out
      *
      * @since ZCS 7.0.1
      */
