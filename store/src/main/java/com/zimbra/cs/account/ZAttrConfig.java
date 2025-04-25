@@ -74274,6 +74274,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * whether spnego SSO is enabled
      *
      * @return zimbraSpnegoAuthEnabled, or false if unset
@@ -74286,6 +74287,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * whether spnego SSO is enabled
      *
      * @param zimbraSpnegoAuthEnabled new value
@@ -74301,6 +74303,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * whether spnego SSO is enabled
      *
      * @param zimbraSpnegoAuthEnabled new value
@@ -74317,6 +74320,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * whether spnego SSO is enabled
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -74331,6 +74335,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * whether spnego SSO is enabled
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -74346,6 +74351,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth error URL
      *
      * @return zimbraSpnegoAuthErrorURL, or null if unset
@@ -74358,6 +74364,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth error URL
      *
      * @param zimbraSpnegoAuthErrorURL new value
@@ -74373,6 +74380,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth error URL
      *
      * @param zimbraSpnegoAuthErrorURL new value
@@ -74389,6 +74397,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth error URL
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -74403,6 +74412,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth error URL
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -74418,6 +74428,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth realm
      *
      * @return zimbraSpnegoAuthRealm, or null if unset
@@ -74430,6 +74441,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth realm
      *
      * @param zimbraSpnegoAuthRealm new value
@@ -74445,6 +74457,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth realm
      *
      * @param zimbraSpnegoAuthRealm new value
@@ -74461,6 +74474,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth realm
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -74475,6 +74489,7 @@ public abstract class ZAttrConfig extends Entry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth realm
      *
      * @param attrs existing map to populate, or null to create a new map

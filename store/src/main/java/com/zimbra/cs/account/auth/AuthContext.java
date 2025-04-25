@@ -70,9 +70,7 @@ public class AuthContext {
         imap,
         pop3,
         soap,
-        spnego,
         zsync,
-
         //for internal use only
         test
     }

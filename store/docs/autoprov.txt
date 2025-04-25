@@ -71,7 +71,7 @@ $ zmprov md test.com +zimbraAutoProvMode LAZY +zimbraAutoProvMode MANUAL
 
 ------------------------------
 zimbraAutoProvAuthMech
-  type="enum" value="LDAP,PREAUTH,KRB5,SPNEGO" cardinality="multi" optionalIn="domain"
+  type="enum" value="LDAP,PREAUTH,KRB5" cardinality="multi" optionalIn="domain"
   Exposed in admin console: NO
   Description:
      EAGER mode: N/A

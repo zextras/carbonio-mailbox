@@ -119,8 +119,7 @@ public class ZAttrProvisioning {
     public enum AutoProvAuthMech {
         LDAP("LDAP"),
         PREAUTH("PREAUTH"),
-        KRB5("KRB5"),
-        SPNEGO("SPNEGO");
+        KRB5("KRB5");
         private final String mValue;
         AutoProvAuthMech(String value) { mValue = value; }
         @Override
@@ -134,7 +133,6 @@ public class ZAttrProvisioning {
         public boolean isLDAP() { return this == LDAP;}
         public boolean isPREAUTH() { return this == PREAUTH;}
         public boolean isKRB5() { return this == KRB5;}
-        public boolean isSPNEGO() { return this == SPNEGO;}
     }
 
     public enum AutoProvMode {
@@ -17304,6 +17302,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSpellCheckURL = "zimbraSpellCheckURL";
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * whether spnego SSO is enabled
      *
      * @since ZCS 7.0.0
@@ -17312,6 +17311,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSpnegoAuthEnabled = "zimbraSpnegoAuthEnabled";
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth error URL
      *
      * @since ZCS 7.0.0
@@ -17320,6 +17320,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSpnegoAuthErrorURL = "zimbraSpnegoAuthErrorURL";
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth principal
      *
      * @since ZCS 7.0.0
@@ -17328,6 +17329,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSpnegoAuthPrincipal = "zimbraSpnegoAuthPrincipal";
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth realm
      *
      * @since ZCS 7.0.0
@@ -17336,6 +17338,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSpnegoAuthRealm = "zimbraSpnegoAuthRealm";
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth target name
      *
      * @since ZCS 7.0.0

@@ -20,7 +20,6 @@ import com.zimbra.cs.service.ContentServlet;
 import com.zimbra.cs.service.ExternalUserProvServlet;
 import com.zimbra.cs.service.FileUploadServlet;
 import com.zimbra.cs.service.PublicICalServlet;
-import com.zimbra.cs.service.SpnegoAuthServlet;
 import com.zimbra.cs.service.UserServlet;
 import com.zimbra.cs.service.account.AccountService;
 import com.zimbra.cs.service.admin.AdminService;
@@ -38,7 +37,6 @@ import com.zimbra.cs.servlet.ETagHeaderFilter;
 import com.zimbra.cs.servlet.FirstServlet;
 import com.zimbra.cs.servlet.RequestStringFilter;
 import com.zimbra.cs.servlet.SetHeaderFilter;
-import com.zimbra.cs.servlet.SpnegoFilter;
 import com.zimbra.cs.servlet.ZimbraInvalidLoginFilter;
 import com.zimbra.cs.servlet.ZimbraQoSFilter;
 import com.zimbra.soap.SoapServlet;
@@ -100,13 +98,6 @@ public class MailboxAPIs {
 		eTageFilter.setName("ETagHeaderFilter");
 		eTageFilter.setAsyncSupported(true);
 		servletContextHandler.addFilter(eTageFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
-
-		final FilterHolder spnegoFilter = new FilterHolder(SpnegoFilter.class);
-		spnegoFilter.setName("SpnegoFilter");
-		spnegoFilter.setAsyncSupported(true);
-		spnegoFilter.setInitParameter("passThruOnFailureUri", "/service/spnego");
-		spnegoFilter.setInitParameter("error401Page", "/spnego/error401.jsp");
-		servletContextHandler.addFilter(spnegoFilter,"/spnego/*", EnumSet.of(DispatcherType.REQUEST));
 
 		final FilterHolder setHeaderFilter = new FilterHolder(SetHeaderFilter.class);
 		setHeaderFilter.setName("SetHeaderFilter");
@@ -246,15 +237,6 @@ public class MailboxAPIs {
 			servletContextHandler.addServlet(certAuthServlet, "/certauth/*");
 			servletContextHandler.addServlet(certAuthServlet, "/certauth");
 		}
-
-		final var spnegoAuthServlet = new ServletHolder(SpnegoAuthServlet.class);
-		spnegoAuthServlet.setName("SpnegoAuthServlet");
-		spnegoAuthServlet.setAsyncSupported(true);
-		spnegoAuthServlet.setInitOrder(5);
-		spnegoAuthServlet.setInitParameter(
-				allowedPortsParameter, userAndAdminPorts);
-		servletContextHandler.addServlet(spnegoAuthServlet, "/spnego/");
-		servletContextHandler.addServlet(spnegoAuthServlet, "/spnego");
 
 		final var pubCalServlet = new ServletHolder(PublicICalServlet.class);
 		pubCalServlet.setName("PubCalServlet");

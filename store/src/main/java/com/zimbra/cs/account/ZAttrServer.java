@@ -49783,6 +49783,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth principal
      *
      * @return zimbraSpnegoAuthPrincipal, or null if unset
@@ -49795,6 +49796,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth principal
      *
      * @param zimbraSpnegoAuthPrincipal new value
@@ -49810,6 +49812,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth principal
      *
      * @param zimbraSpnegoAuthPrincipal new value
@@ -49826,6 +49829,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth principal
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -49840,6 +49844,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth principal
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -49855,6 +49860,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth target name
      *
      * @return zimbraSpnegoAuthTargetName, or null if unset
@@ -49867,6 +49873,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth target name
      *
      * @param zimbraSpnegoAuthTargetName new value
@@ -49882,6 +49889,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth target name
      *
      * @param zimbraSpnegoAuthTargetName new value
@@ -49898,6 +49906,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth target name
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -49912,6 +49921,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth target name
      *
      * @param attrs existing map to populate, or null to create a new map

@@ -577,12 +577,6 @@ public final class LC {
   public static final KnownKey calendar_item_get_max_retries = KnownKey.newKey(100);
   public static final KnownKey zimbraPrefCalenderScaling = KnownKey.newKey(false);
 
-  public static final KnownKey spnego_java_options =
-      KnownKey.newKey(
-          "-Djava.security.krb5.conf=${mailboxd_directory}/etc/krb5.ini "
-              + "-Djava.security.auth.login.config=${mailboxd_directory}/etc/spnego.conf "
-              + "-Djavax.security.auth.useSubjectCredsOnly=false");
-
   public static final KnownKey text_attachments_base64 = KnownKey.newKey(true);
 
   public static final KnownKey nio_imap_enabled = KnownKey.newKey(true);
