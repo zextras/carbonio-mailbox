@@ -795,7 +795,7 @@
     </test.argLine>
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jetty.version>9.4.56.v20240826</jetty.version>
+    <jetty.version>12.0.12</jetty.version>
     <lucene.version>3.5.0</lucene.version>
     <jackson.version>2.12.7</jackson.version>
     <bouncycastle.version>1.78.1</bouncycastle.version>
