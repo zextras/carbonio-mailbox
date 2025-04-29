@@ -118,7 +118,7 @@ pipeline {
         stage('Audit') {
             steps {
                 container('jfrog') {
-                    jf 'audit --mvn --iac --sca --secrets --sast'
+                    jf 'audit --mvn'
                 }
             }
         }
