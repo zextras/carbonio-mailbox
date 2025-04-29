@@ -115,13 +115,6 @@ pipeline {
                 }
             }
         }
-        stage('Audit') {
-            steps {
-                container('jfrog') {
-                    jf 'audit --mvn'
-                }
-            }
-        }
         stage('UT, IT & API tests') {
             when {
                 expression {
@@ -256,80 +249,86 @@ pipeline {
                 }
             }
         }
-        // stage('Upload To Devel') {
-        //     when {
-        //         anyOf {
-        //             branch 'devel'
-        //         }
-        //     }
-        //     steps {
-        //         unstash 'artifacts-ubuntu-focal'
-        //         unstash 'artifacts-ubuntu-jammy'
-        //         unstash 'artifacts-ubuntu-noble'
-        //         unstash 'artifacts-rocky-8'
-        //         unstash 'artifacts-rocky-9'
+        stage('Upload To Devel') {
+            when {
+                anyOf {
+                    branch 'devel'
+                }
+            }
+            steps {
+                unstash 'artifacts-ubuntu-focal'
+                unstash 'artifacts-ubuntu-jammy'
+                unstash 'artifacts-ubuntu-noble'
+                unstash 'artifacts-rocky-8'
+                unstash 'artifacts-rocky-9'
 
-        //         script {
-        //             def uploadSpec
-        //             uploadSpec ="""{
-        //                 "files": [{
-        //                     "pattern": "artifacts/*focal*.deb",
-        //                     "target": "ubuntu-devel/pool/",
-        //                     "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-        //                 },
-        //                 {
-        //                     "pattern": "artifacts/*jammy*.deb",
-        //                     "target": "ubuntu-devel/pool/",
-        //                     "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-        //                 },
-        //                 {
-        //                     "pattern": "artifacts/*noble*.deb",
-        //                     "target": "ubuntu-devel/pool/",
-        //                     "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-        //                 },""" + getRpmSpec("centos8-devel", "8") + """,""" + getRpmSpec("rhel9-devel", "9") + """
-        //                 ]
-        //             }"""
-        //         }
-        //     }
-        // }
-        // stage('Upload To Playground') {
-        //     when {
-        //         anyOf {
-        //             expression {
-        //                 params.PLAYGROUND == true
-        //             }
-        //         }
-        //     }
-        //     steps {
-        //         unstash 'artifacts-ubuntu-focal'
-        //         unstash 'artifacts-ubuntu-jammy'
-        //         unstash 'artifacts-ubuntu-noble'
-        //         unstash 'artifacts-rocky-8'
-        //         unstash 'artifacts-rocky-9'
+                script {
+                    def uploadSpec
+                    uploadSpec ="""{
+                        "files": [{
+                            "pattern": "artifacts/*focal*.deb",
+                            "target": "ubuntu-devel/pool/",
+                            "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
+                        },
+                        {
+                            "pattern": "artifacts/*jammy*.deb",
+                            "target": "ubuntu-devel/pool/",
+                            "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
+                        },
+                        {
+                            "pattern": "artifacts/*noble*.deb",
+                            "target": "ubuntu-devel/pool/",
+                            "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
+                        },""" + getRpmSpec("centos8-devel", "8") + """,""" + getRpmSpec("rhel9-devel", "9") + """
+                        ]
+                    }"""
+                    writeFile file: 'uploadSpec.json', text: uploadSpec
+                    jf 'rt u --spec uploadSpec.json'
+                    jf 'rt bp'
+                }
+            }
+        }
+        stage('Upload To Playground') {
+            when {
+                anyOf {
+                    expression {
+                        params.PLAYGROUND == true
+                    }
+                }
+            }
+            steps {
+                unstash 'artifacts-ubuntu-focal'
+                unstash 'artifacts-ubuntu-jammy'
+                unstash 'artifacts-ubuntu-noble'
+                unstash 'artifacts-rocky-8'
+                unstash 'artifacts-rocky-9'
 
-        //         script {
-        //             def uploadSpec
-        //             uploadSpec ="""{
-        //                 "files": [{
-        //                     "pattern": "artifacts/*focal*.deb",
-        //                     "target": "ubuntu-playground/pool/",
-        //                     "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-        //                 },
-        //                 {
-        //                     "pattern": "artifacts/*jammy*.deb",
-        //                     "target": "ubuntu-playground/pool/",
-        //                     "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-        //                 },
-        //                 {
-        //                     "pattern": "artifacts/*noble*.deb",
-        //                     "target": "ubuntu-playground/pool/",
-        //                     "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-        //                 },
-        //                 """ + getRpmSpec("centos8-playground", "8") + """,""" + getRpmSpec("rhel9-playground", "9") + """]
-        //             }"""
-        //         }
-        //     }
-        // }
+                script {
+                    def uploadSpec
+                    uploadSpec ="""{
+                        "files": [{
+                            "pattern": "artifacts/*focal*.deb",
+                            "target": "ubuntu-playground/pool/",
+                            "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
+                        },
+                        {
+                            "pattern": "artifacts/*jammy*.deb",
+                            "target": "ubuntu-playground/pool/",
+                            "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
+                        },
+                        {
+                            "pattern": "artifacts/*noble*.deb",
+                            "target": "ubuntu-playground/pool/",
+                            "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
+                        },
+                        """ + getRpmSpec("centos8-playground", "8") + """,""" + getRpmSpec("rhel9-playground", "9") + """]
+                    }"""
+                    writeFile file: 'uploadSpec.json', text: uploadSpec
+                    jf 'rt u --spec uploadSpec.json'
+                    jf 'rt bp'
+                }
+            }
+        }
         // stage('Upload & Promotion Config') {
         //     when {
         //         expression {
