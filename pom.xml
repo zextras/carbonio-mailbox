@@ -801,7 +801,7 @@
     <bouncycastle.version>1.78.1</bouncycastle.version>
     <asm.version>8.0.1</asm.version>
     <guava.version>33.3.1-jre</guava.version>
-    <jython.version>2.5.3</jython.version>
+    <jython.version>2.7.2b3</jython.version>
     <nekohtml.version>1.9.22</nekohtml.version>
     <log4j.version>2.20.0</log4j.version>
     <dom4j.version>2.1.4</dom4j.version>
