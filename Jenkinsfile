@@ -6,7 +6,7 @@ def mvnCmd(String cmd) {
     else if (env.BRANCH_NAME == 'devel' ) {
         profile = '-Pdev'
     }
-    jf 'mvn -B -s settings-jenkins.xml ' + profile + ' ' + cmd
+    sh 'mvn -B -s settings-jenkins.xml ' + profile + ' ' + cmd
 }
 def isBuildingTag() {
     if (env.TAG_NAME) {
@@ -109,10 +109,16 @@ pipeline {
                 container('jdk-17') {
                     sh 'apt update && apt install -y build-essential'
                     mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
-                    jf 'audit --iac --sca --secrets --sast --server-id jenkins-jfrog'
                     sh 'mkdir staging'
                     sh 'cp -r store* milter* native client common packages soap jython-libs staging'
                     stash includes: 'staging/**', name: 'staging'
+                }
+            }
+        }
+        stage('Audit') {
+            steps {
+                container('jfrog') {
+                    jf 'audit --mvn --iac --sca --secrets --sast'
                 }
             }
         }
