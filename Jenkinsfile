@@ -125,10 +125,12 @@ pipeline {
             steps {
                 container('jfrog') {
                     sh 'curl -fLg "https://releases.jfrog.io/artifactory/frogbot/v2/[RELEASE]/getFrogbot.sh" | sh'
-                    if (env.CHANGE_ID) {
-                        sh './frogbot scan-pull-request'
-                    } else {
-                        sh './frogbot scan-repository'
+                    script {
+                        if (env.CHANGE_ID) {
+                            sh './frogbot scan-pull-request'
+                        } else {
+                            sh './frogbot scan-repository'
+                        }
                     }
                 }
             }
