@@ -282,9 +282,9 @@ pipeline {
                         },""" + getRpmSpec("centos8-devel", "8") + """,""" + getRpmSpec("rhel9-devel", "9") + """
                         ]
                     }"""
-                    writeFile file: 'uploadSpec.json', text: uploadSpec
-                    jf 'rt u --spec uploadSpec.json'
-                    jf 'rt bp'
+                    writeFile file: '/tmp/uploadSpec.json', text: uploadSpec
+                    jf 'rt upload --spec /tmp/uploadSpec.json'
+                    jf 'rt build-publish'
                 }
             }
         }
@@ -323,94 +323,99 @@ pipeline {
                         },
                         """ + getRpmSpec("centos8-playground", "8") + """,""" + getRpmSpec("rhel9-playground", "9") + """]
                     }"""
-                    writeFile file: 'uploadSpec.json', text: uploadSpec
-                    jf 'rt u --spec uploadSpec.json'
-                    jf 'rt bp'
+                    writeFile file: '/tmp/uploadSpec.json', text: uploadSpec
+                    jf 'rt upload --spec /tmp/uploadSpec.json'
+                    jf 'rt build-publish'
                 }
             }
         }
-        // stage('Upload & Promotion Config') {
-        //     when {
-        //         expression {
-        //             return isBuildingTag()
-        //         }
-        //     }
-        //     steps {
-        //         unstash 'artifacts-ubuntu-focal'
-        //         unstash 'artifacts-ubuntu-jammy'
-        //         unstash 'artifacts-ubuntu-noble'
-        //         unstash 'artifacts-rocky-8'
-        //         unstash 'artifacts-rocky-9'
+        stage('Upload & Promotion Config') {
+            when {
+                expression {
+                    return isBuildingTag()
+                }
+            }
+            steps {
+                unstash 'artifacts-ubuntu-focal'
+                unstash 'artifacts-ubuntu-jammy'
+                unstash 'artifacts-ubuntu-noble'
+                unstash 'artifacts-rocky-8'
+                unstash 'artifacts-rocky-9'
 
-        //         script {
-        //             def config
-        //             def uploadSpec
-        //             //ubuntu
-        //             uploadSpec = """{
-        //                 "files": [{
-        //                     "pattern": "artifacts/*focal*.deb",
-        //                     "target": "ubuntu-rc/pool/",
-        //                     "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-        //                 },
-        //                 {
-        //                     "pattern": "artifacts/*jammy*.deb",
-        //                     "target": "ubuntu-rc/pool/",
-        //                     "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-        //                 },
-        //                 {
-        //                     "pattern": "artifacts/*noble*.deb",
-        //                     "target": "ubuntu-rc/pool/",
-        //                     "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-        //                 }]
-        //                 }"""
-        //             config = [
-        //                     'buildName': buildInfo.name,
-        //                     'buildNumber': buildInfo.number,
-        //                     'sourceRepo': 'ubuntu-rc',
-        //                     'targetRepo': 'ubuntu-release',
-        //                     'comment': 'Do not change anything! Just press the button',
-        //                     'status': 'Released',
-        //                     'includeDependencies': false,
-        //                     'copy': true,
-        //                     'failFast': true
-        //             ]
-        //             Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: "Ubuntu Promotion to Release"
-        //             //centos8
-        //             uploadSpec = """{
-        //                 "files": [""" + getRpmSpec("centos8-rc", "8") + """]
-        //             }"""
-        //             config = [
-        //                     'buildName': buildInfo.name,
-        //                     'buildNumber': buildInfo.number,
-        //                     'sourceRepo': 'centos8-rc',
-        //                     'targetRepo': 'centos8-release',
-        //                     'comment': 'Do not change anything! Just press the button',
-        //                     'status': 'Released',
-        //                     'includeDependencies': false,
-        //                     'copy': true,
-        //                     'failFast': true
-        //             ]
-        //             Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: 'Centos8 Promotion to Release'
+                script {
+                    def uploadSpec
+                    //ubuntu
+                    uploadSpec = """{
+                        "files": [{
+                            "pattern": "artifacts/*focal*.deb",
+                            "target": "ubuntu-rc/pool/",
+                            "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
+                        },
+                        {
+                            "pattern": "artifacts/*jammy*.deb",
+                            "target": "ubuntu-rc/pool/",
+                            "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
+                        },
+                        {
+                            "pattern": "artifacts/*noble*.deb",
+                            "target": "ubuntu-rc/pool/",
+                            "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
+                        }]
+                        }"""
+                    writeFile file: '/tmp/uploadSpec.json', text: uploadSpec
+                    jf 'rt upload --spec /tmp/uploadSpec.json'
+                    config = [
+                            'buildName': buildInfo.name,
+                            'buildNumber': buildInfo.number,
+                            'sourceRepo': 'ubuntu-rc',
+                            'targetRepo': 'ubuntu-release',
+                            'comment': 'Do not change anything! Just press the button',
+                            'status': 'Released',
+                            'includeDependencies': false,
+                            'copy': true,
+                            'failFast': true
+                    ]
+                    Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: "Ubuntu Promotion to Release"
+                    //centos8
+                    uploadSpec = """{
+                        "files": [""" + getRpmSpec("centos8-rc", "8") + """]
+                    }"""
+                    writeFile file: '/tmp/uploadSpec.json', text: uploadSpec
+                    jf 'rt upload --spec /tmp/uploadSpec.json'
+                    config = [
+                            'buildName': buildInfo.name,
+                            'buildNumber': buildInfo.number,
+                            'sourceRepo': 'centos8-rc',
+                            'targetRepo': 'centos8-release',
+                            'comment': 'Do not change anything! Just press the button',
+                            'status': 'Released',
+                            'includeDependencies': false,
+                            'copy': true,
+                            'failFast': true
+                    ]
+                    Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: 'Centos8 Promotion to Release'
 
-        //             //rhel9
-        //             uploadSpec = """{
-        //                 "files": [""" + getRpmSpec("rhel9-rc", "9") + """
-        //                 ]
-        //             }"""
-        //             config = [
-        //                     'buildName': buildInfo.name,
-        //                     'buildNumber': buildInfo.number,
-        //                     'sourceRepo': 'rhel9-rc',
-        //                     'targetRepo': 'rhel9-release',
-        //                     'comment': 'Do not change anything! Just press the button',
-        //                     'status': 'Released',
-        //                     'includeDependencies': false,
-        //                     'copy': true,
-        //                     'failFast': true
-        //             ]
-        //             Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: 'RHEL9 Promotion to Release'
-        //         }
-        //     }
-        // }
+                    //rhel9
+                    uploadSpec = """{
+                        "files": [""" + getRpmSpec("rhel9-rc", "9") + """
+                        ]
+                    }"""
+                    writeFile file: '/tmp/uploadSpec.json', text: uploadSpec
+                    jf 'rt upload --spec /tmp/uploadSpec.json'
+                    config = [
+                            'buildName': buildInfo.name,
+                            'buildNumber': buildInfo.number,
+                            'sourceRepo': 'rhel9-rc',
+                            'targetRepo': 'rhel9-release',
+                            'comment': 'Do not change anything! Just press the button',
+                            'status': 'Released',
+                            'includeDependencies': false,
+                            'copy': true,
+                            'failFast': true
+                    ]
+                    jf 'rt build-promote --spec uploadSpec.json'
+                }
+            }
+        }
     }
 }
