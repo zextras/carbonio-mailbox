@@ -1,4 +1,4 @@
-FROM maven:3.9.9-ibm-semeru-17-focal as build
+FROM maven:3.9.9-ibm-semeru-17-focal AS build
 
 RUN apt update && apt install -y make gcc
 COPY . /app
