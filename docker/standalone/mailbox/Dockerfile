@@ -1,14 +1,21 @@
-FROM ibm-semeru-runtimes:open-17-jdk
+FROM maven:3.9.9-ibm-semeru-17-focal as build
 
-COPY store/src/test/resources/timezones-test.ics /opt/zextras/conf/timezones.ics
-COPY store-conf/conf/msgs/* /opt/zextras/conf/msgs/
+RUN apt update && apt install -y make gcc
+COPY . /app
+WORKDIR /app
+
+RUN mvn clean install -DskipTests
+
+FROM ibm-semeru-runtimes:open-17-jdk
+COPY --from=build /app/store/src/test/resources/timezones-test.ics /opt/zextras/conf/timezones.ics
+COPY --from=build /app/store-conf/conf/msgs/* /opt/zextras/conf/msgs/
 
 RUN mkdir -p /opt/zextras/mailbox/jars/
-COPY store/target/zm-store.jar /opt/zextras/mailbox/jars/
-COPY store/target/dependencies/* /opt/zextras/mailbox/jars/
-COPY native/target/zm-native*.jar /opt/zextras/mailbox/jars/
-COPY soap/target/zm-soap*.jar /opt/zextras/mailbox/jars/
-COPY common/target/zm-common*.jar /opt/zextras/mailbox/jars/
+COPY --from=build /app/store/target/zm-store.jar /opt/zextras/mailbox/jars/
+COPY --from=build /app/store/target/dependencies/* /opt/zextras/mailbox/jars/
+COPY --from=build /app/native/target/zm-native*.jar /opt/zextras/mailbox/jars/
+COPY --from=build /app/soap/target/zm-soap*.jar /opt/zextras/mailbox/jars/
+COPY --from=build /app/common/target/zm-common*.jar /opt/zextras/mailbox/jars/
 
 ENV LDAP_URL="ldap://openldap:1389"
 ENV LDAP_ROOT_PASSWORD=qh6hWZvc
@@ -37,9 +44,9 @@ ENV JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
               -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/* com.zextras.mailbox.Mailbox"
 
 RUN mkdir -p /opt/zextras/db
-COPY store/db/create_database.sql /opt/zextras/db/
+COPY --from=build /app/store/db/create_database.sql /opt/zextras/db/
 
-COPY docker/standalone/mailbox/localconfig/localconfig.xml /localconfig/localconfig.xml
+COPY --from=build /app/docker/standalone/mailbox/localconfig/localconfig.xml /localconfig/localconfig.xml
 
 RUN mkdir -p /opt/zextras/mailboxd/etc/ && keytool -genkey -keyalg RSA \
     -dname "cn=Unknown, ou=Unknown, o=Unknown, c=Unknown" \
