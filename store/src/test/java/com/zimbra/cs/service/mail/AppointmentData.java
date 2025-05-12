@@ -7,6 +7,7 @@ public class AppointmentData {
   public final String eventTitle;
   public final Account organiser;
   public final Account attendee;
+  public final String folderId;
   public final String timezone;
   public final String startTime;
   public final String endTime;
@@ -24,6 +25,7 @@ public class AppointmentData {
     this.location = builder.location;
     this.desc = builder.desc;
     this.htmlDesc = builder.htmlDesc;
+    this.folderId = builder.folderId;
   }
 
   public AppointmentDataBuilder toBuilder() {
@@ -47,6 +49,7 @@ public class AppointmentData {
     private String eventTitle;
     private Account organiser;
     private Account attendee;
+    private String folderId;
     private String timezone;
     private String startTime;
     private String endTime;
@@ -68,6 +71,11 @@ public class AppointmentData {
 
     public AppointmentDataBuilder withAttendee(Account attendee) {
       this.attendee = attendee;
+      return this;
+    }
+
+    public AppointmentDataBuilder withFolderId(String folderId) {
+      this.folderId = folderId;
       return this;
     }
 
