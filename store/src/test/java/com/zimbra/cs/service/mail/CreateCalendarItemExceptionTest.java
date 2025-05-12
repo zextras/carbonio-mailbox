@@ -1,5 +1,9 @@
 package com.zimbra.cs.service.mail;
 
+import static com.zimbra.common.mailbox.FolderConstants.ID_FOLDER_CALENDAR;
+import static com.zimbra.common.mailbox.FolderConstants.ID_FOLDER_TRASH;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
@@ -15,7 +19,6 @@ import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.calendar.IcalXmlStrMap;
 import com.zimbra.cs.service.AuthProvider;
-import com.zimbra.cs.service.mail.ModifyAppointmentTest.AppointmentData;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -47,6 +50,11 @@ class CreateCalendarItemExceptionTest  extends SoapTestSuite {
     accountCreatorFactory = new AccountCreator.Factory(provisioning, soapExtension.getDefaultDomain());
   }
 
+  private static CalendarItem getCalendarItemById(Account account, String id) throws ServiceException {
+    return mailboxManager.getMailboxByAccount(account)
+        .getCalendarItemById(null, Integer.parseInt(id));
+  }
+
   @Test
   void should_reset_participationStatus_when_dateTime_is_modified() throws Exception {
     var organizer = accountCreatorFactory.get().withUsername(UUID.randomUUID().toString()).create();
@@ -57,8 +65,16 @@ class CreateCalendarItemExceptionTest  extends SoapTestSuite {
     var endTime = "20250907T180000";
     var location = "";
 
-    var appointmentData = new AppointmentData(eventTitle, organizer, attendee, timezone, startTime,
-        endTime, location);
+    var appointmentData =
+        AppointmentData.builder()
+            .withEventTitle(eventTitle)
+            .withOrganiser(organizer)
+            .withAttendee(attendee)
+            .withTimezone(timezone)
+            .withStartTime(startTime)
+            .withEndTime(endTime)
+            .withLocation(location)
+            .build();
 
     CreateAppointmentResponse createAppointmentResponse = JaxbUtil.elementToJaxb(
         createRecurringAppointment(appointmentData));
@@ -72,8 +88,10 @@ class CreateCalendarItemExceptionTest  extends SoapTestSuite {
     assertTrue(calendarItem.getInvite(0).getAttendees().get(0).getPartStat()
         .equalsIgnoreCase(IcalXmlStrMap.PARTSTAT_ACCEPTED));
 
-    appointmentData.startTime = "20250907T165000";
-    createCalendarItemException(appointmentData, createAppointmentResponse.getCalInvId());
+    AppointmentData updatedAppointmentData = appointmentData.toBuilder()
+        .withStartTime("20250907T165000").build();
+
+     createCalendarItemException(updatedAppointmentData, createAppointmentResponse.getCalInvId());
     var calendarItemModified = getCalendarItemById(organizer, createAppointmentResponse.getCalItemId());
 
     assertTrue(
@@ -81,9 +99,103 @@ class CreateCalendarItemExceptionTest  extends SoapTestSuite {
             .equalsIgnoreCase(IcalXmlStrMap.PARTSTAT_NEEDS_ACTION));
   }
 
-  private static CalendarItem getCalendarItemById(Account account, String id) throws ServiceException {
-    return mailboxManager.getMailboxByAccount(account)
-        .getCalendarItemById(null, Integer.parseInt(id));
+  @Test
+  void createSimpleAppointment() throws Exception {
+    var organizer = accountCreatorFactory.get().withUsername(UUID.randomUUID().toString()).create();
+    var attendee = accountCreatorFactory.get().withUsername(UUID.randomUUID().toString()).create();
+    var eventTitle = "Event Title";
+    var timezone = "Asia/Calcutta";
+    var startTime = "20250907T163000";
+    var endTime = "20250907T180000";
+    var location = "";
+
+    var appointmentData =
+        AppointmentData.builder()
+            .withEventTitle(eventTitle)
+            .withOrganiser(organizer)
+            .withAttendee(attendee)
+            .withTimezone(timezone)
+            .withStartTime(startTime)
+            .withEndTime(endTime)
+            .withLocation(location)
+            .build();
+
+    CreateAppointmentResponse createAppointmentResponse = JaxbUtil.elementToJaxb(
+        createRecurringAppointment(appointmentData));
+
+    assert createAppointmentResponse != null;
+    var calendarItem = getCalendarItemById(organizer, createAppointmentResponse.getCalItemId());
+    assert calendarItem != null;
+  }
+
+  @Test
+  void shouldThrowServiceExceptionWhenEventCreatedInTrashFolder() throws Exception {
+    var organizer = accountCreatorFactory.get().withUsername(UUID.randomUUID().toString()).create();
+    var attendee = accountCreatorFactory.get().withUsername(UUID.randomUUID().toString()).create();
+    var eventTitle = "Event Title";
+    var timezone = "Asia/Calcutta";
+    var startTime = "20250907T163000";
+    var endTime = "20250907T180000";
+    var location = "";
+
+    var appointmentData =
+        AppointmentData.builder()
+            .withFolderId(String.valueOf(ID_FOLDER_TRASH))
+            .withEventTitle(eventTitle)
+            .withOrganiser(organizer)
+            .withAttendee(attendee)
+            .withTimezone(timezone)
+            .withStartTime(startTime)
+            .withEndTime(endTime)
+            .withLocation(location)
+            .build();
+
+    var exception =
+        assertThrows(
+            ServiceException.class,
+            () -> createRecurringAppointment(appointmentData),
+            "Should throw ServiceException when event is created in trash folder");
+
+    assertEquals(
+        "invalid request: cannot create a calendar item under trash", exception.getMessage());
+  }
+
+  @Test
+  void createSimpleAppointmentLongMetaData() throws Exception {
+    var organizer = accountCreatorFactory.get().withUsername(UUID.randomUUID().toString()).create();
+    var attendee = accountCreatorFactory.get().withUsername(UUID.randomUUID().toString()).create();
+    var eventTitle = "Event Title";
+    var timezone = "Asia/Calcutta";
+    var startTime = "20250907T163000";
+    var endTime = "20250907T180000";
+    var location = "";
+
+    var longDescription = "Lorem ipsum dolor sit amet. ".repeat(1000);
+    var appointmentData =
+        AppointmentData.builder()
+            .withEventTitle(eventTitle)
+            .withOrganiser(organizer)
+            .withAttendee(attendee)
+            .withTimezone(timezone)
+            .withStartTime(startTime)
+            .withEndTime(endTime)
+            .withLocation(location)
+            .withDesc(longDescription)
+            .withHtmlDesc(longDescription)
+            .build();
+
+    CreateAppointmentResponse createAppointmentResponse = JaxbUtil.elementToJaxb(
+        createRecurringAppointment(appointmentData));
+
+    assert createAppointmentResponse != null;
+    var calendarItem = getCalendarItemById(organizer, createAppointmentResponse.getCalItemId());
+
+    assert calendarItem != null;
+
+    var responseJsonElement =
+        JaxbUtil.jaxbToElement(createAppointmentResponse, JSONElement.mFactory);
+    var responseJsonElementString = responseJsonElement.toString();
+    System.out.println("createAppointmentResponse = " + responseJsonElementString);
   }
 
   private Element createRecurringAppointment(AppointmentData appointmentData) throws Exception {
@@ -98,23 +210,22 @@ class CreateCalendarItemExceptionTest  extends SoapTestSuite {
         StandardCharsets.UTF_8
     );
 
-    // Dynamic values
-    var organizerEmail = appointmentData.organiser.getName();
-    var organizerName = appointmentData.organiser.getName();
-    var invitee1Email = appointmentData.attendee.getName();
-
-    var filledJson = jsonTemplate
-        .replace("${organizer_email}", organizerEmail)
-        .replace("${organizer_name}", organizerName)
-        .replace("${invitee1_email}", invitee1Email)
+    // fill template
+    var createAppointmentRequestPayload = jsonTemplate
+        .replace("${organizer_email}", appointmentData.organiser.getName())
+        .replace("${organizer_name}", appointmentData.organiser.getName())
+        .replace("${invitee1_email}", appointmentData.attendee.getName())
         .replace("${event_title}", appointmentData.eventTitle)
+        .replace("${folder_id}", appointmentData.folderId == null ? String.valueOf(ID_FOLDER_CALENDAR) : appointmentData.folderId)
         .replace("${location}", appointmentData.location)
         .replace("${start_time}", appointmentData.startTime)
         .replace("${end_time}", appointmentData.endTime)
-        .replace("${timezone}", appointmentData.timezone);
+        .replace("${timezone}", appointmentData.timezone)
+        .replace("${description}", appointmentData.desc == null ? "N/A" : appointmentData.desc)
+        .replace("${description_html}", appointmentData.htmlDesc == null ? "N/A" : appointmentData.htmlDesc);
 
     var createAppointmentElement =
-        Element.parseJSON(filledJson, MailConstants.CREATE_APPOINTMENT_REQUEST, JSONElement.mFactory);
+        Element.parseJSON(createAppointmentRequestPayload, MailConstants.CREATE_APPOINTMENT_REQUEST, JSONElement.mFactory);
 
     // add recurring information to the payload
     CreateAppointmentRequest createAppointmentRequest = JaxbUtil.elementToJaxb(createAppointmentElement);
