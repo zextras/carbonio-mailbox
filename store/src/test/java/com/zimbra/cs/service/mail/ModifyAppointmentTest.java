@@ -111,8 +111,16 @@ class ModifyAppointmentTest extends SoapTestSuite {
     var endTime = "20250907T180000";
     var location = "";
 
-    var appointmentData = new AppointmentData(eventTitle, organizer, attendee, timezone, startTime,
-        endTime, location);
+    var appointmentData =
+        AppointmentData.builder()
+            .withEventTitle(eventTitle)
+            .withOrganiser(organizer)
+            .withAttendee(attendee)
+            .withTimezone(timezone)
+            .withStartTime(startTime)
+            .withEndTime(endTime)
+            .withLocation(location)
+            .build();
 
     CreateAppointmentResponse createAppointmentResponse = JaxbUtil.elementToJaxb(
         createSimpleAppointment(appointmentData));
@@ -126,8 +134,10 @@ class ModifyAppointmentTest extends SoapTestSuite {
     assertTrue(calendarItem.getInvite(0).getAttendees().get(0).getPartStat()
         .equalsIgnoreCase(IcalXmlStrMap.PARTSTAT_ACCEPTED));
 
-    appointmentData.startTime = "20250907T165000";
-    modifyCalendarAppointment(appointmentData, createAppointmentResponse.getCalInvId());
+    AppointmentData updatedAppointmentData = appointmentData.toBuilder()
+        .withStartTime("20250907T165000").build();
+
+     modifyCalendarAppointment(updatedAppointmentData, createAppointmentResponse.getCalInvId());
     var calendarItemModified = getCalendarItemById(organizer, createAppointmentResponse.getCalItemId());
 
     assertTrue(
@@ -145,8 +155,16 @@ class ModifyAppointmentTest extends SoapTestSuite {
     var endTime = "20250907T180000";
     var location = "";
 
-    var appointmentData = new AppointmentData(eventTitle, organizer, attendee, timezone, startTime,
-        endTime, location);
+    var appointmentData =
+        AppointmentData.builder()
+            .withEventTitle(eventTitle)
+            .withOrganiser(organizer)
+            .withAttendee(attendee)
+            .withTimezone(timezone)
+            .withStartTime(startTime)
+            .withEndTime(endTime)
+            .withLocation(location)
+            .build();
 
     var mailServiceException = assertThrows(MailServiceException.class,
         () -> modifyCalendarAppointment(appointmentData, "456"));
@@ -165,8 +183,16 @@ class ModifyAppointmentTest extends SoapTestSuite {
     var endTime = "20250907T180000";
     var location = "";
 
-    var appointmentData = new AppointmentData(eventTitle, organizer, attendee, timezone, startTime,
-        endTime, location);
+    var appointmentData =
+        AppointmentData.builder()
+            .withEventTitle(eventTitle)
+            .withOrganiser(organizer)
+            .withAttendee(attendee)
+            .withTimezone(timezone)
+            .withStartTime(startTime)
+            .withEndTime(endTime)
+            .withLocation(location)
+            .build();
 
     CreateAppointmentResponse createAppointmentResponse = JaxbUtil.elementToJaxb(
         createSimpleAppointment(appointmentData));
@@ -391,28 +417,6 @@ class ModifyAppointmentTest extends SoapTestSuite {
     Assertions.assertEquals(200, response.getStatusLine().getStatusCode());
     return SoapUtils.getSoapResponse(response, MailConstants.E_FOLDER_ACTION_RESPONSE,
         FolderActionResponse.class);
-  }
-
-  static class AppointmentData {
-
-    public String eventTitle;
-    public Account organiser;
-    public Account attendee;
-    public String timezone;
-    public String startTime;
-    public String endTime;
-    public String location;
-
-    public AppointmentData(String eventTitle, Account organiser, Account attendee, String timezone,
-        String startTime, String endTime, String location) {
-      this.eventTitle = eventTitle;
-      this.organiser = organiser;
-      this.attendee = attendee;
-      this.timezone = timezone;
-      this.startTime = startTime;
-      this.endTime = endTime;
-      this.location = location;
-    }
   }
 
   @SuppressWarnings("SameParameterValue")
