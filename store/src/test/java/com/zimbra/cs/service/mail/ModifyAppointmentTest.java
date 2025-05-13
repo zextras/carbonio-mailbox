@@ -1,5 +1,6 @@
 package com.zimbra.cs.service.mail;
 
+import static com.zimbra.common.mailbox.FolderConstants.ID_FOLDER_CALENDAR;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.icegreen.greenmail.util.GreenMail;
@@ -278,6 +279,7 @@ class ModifyAppointmentTest extends SoapTestSuite {
         .replace("${organizer_email}", organizerEmail)
         .replace("${organizer_name}", organizerName)
         .replace("${invitee1_email}", invitee1Email)
+        .replace("${folder_id}", appointmentData.folderId == null ? String.valueOf(ID_FOLDER_CALENDAR) : appointmentData.folderId)
         .replace("${event_title}", appointmentData.eventTitle)
         .replace("${location}", appointmentData.location)
         .replace("${start_time}", appointmentData.startTime)
