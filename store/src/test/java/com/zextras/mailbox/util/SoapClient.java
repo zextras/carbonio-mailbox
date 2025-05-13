@@ -124,6 +124,11 @@ public class SoapClient implements Closeable {
 			return this;
 		}
 
+		public Request setAdminRequest(boolean adminRequest) {
+			this.adminRequest = adminRequest;
+			return this;
+		}
+
 		public Request setRequestedAccount(Account requestedAccount) {
 			this.requestedAccount = requestedAccount;
 			return this;
@@ -133,6 +138,7 @@ public class SoapClient implements Closeable {
 		private Account caller;
 		private Account requestedAccount;
 		private String url = "/";
+		private boolean adminRequest = false;
 
 		public HttpResponse execute() throws Exception {
 
@@ -170,7 +176,7 @@ public class SoapClient implements Closeable {
 
 		private BasicClientCookie createAuthCookie() throws AuthTokenException, ServiceException {
 			final var authToken = AuthProvider.getAuthToken(caller, isAdminAccount());
-			final var name = ZimbraCookie.authTokenCookieName(false);
+			final var name = ZimbraCookie.authTokenCookieName(adminRequest);
 			final var cookie = new BasicClientCookie(name, authToken.getEncoded());
 			cookie.setDomain(caller.getServerName());
 			cookie.setPath("/");
