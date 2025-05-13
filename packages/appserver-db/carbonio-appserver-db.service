@@ -2,7 +2,7 @@
 Description=Carbonio Appserver DB Daemon
 After=carbonio-configd.service
 Wants=carbonio-configd.service
-PartOf=carbonio-appserver.target carbonio.target
+PartOf=carbonio-appserver.target
 
 [Service]
 User=zextras
@@ -16,4 +16,4 @@ ExecStart=/opt/zextras/common/bin/mysqld_safe \
 LimitNOFILE=524288
 
 [Install]
-WantedBy=carbonio-appserver.target carbonio.target
+WantedBy=carbonio-appserver.target
