@@ -104,12 +104,9 @@ postinst() {
 
 prerm() {
   if [ -d /run/systemd/system ]; then
-    systemctl --no-reload disable carbonio-mailbox-sidecar.service &>/dev/null || :
-    systemctl --no-reload disable carbonio-mailbox-admin-sidecar.service &>/dev/null || :
-    systemctl --no-reload disable carbonio-mailbox-nslookup-sidecar.service &>/dev/null || :
-    systemctl stop carbonio-mailbox-sidecar.service &>/dev/null || :
-    systemctl stop carbonio-mailbox-admin-sidecar.service &>/dev/null || :
-    systemctl stop carbonio-mailbox-nslookup-sidecar.service &>/dev/null || :
+    systemctl --no-reload disable --now carbonio-mailbox-sidecar.service &>/dev/null || :
+    systemctl --no-reload disable --now carbonio-mailbox-admin-sidecar.service &>/dev/null || :
+    systemctl --no-reload disable --now carbonio-mailbox-nslookup-sidecar.service &>/dev/null || :
   fi
 }
 
