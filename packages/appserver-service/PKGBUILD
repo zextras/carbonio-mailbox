@@ -104,12 +104,19 @@ postinst() {
 
 prerm() {
   if [ -d /run/systemd/system ]; then
-    systemctl --no-reload disable carbonio-mailbox-sidecar.service &>/dev/null || :
-    systemctl --no-reload disable carbonio-mailbox-admin-sidecar.service &>/dev/null || :
-    systemctl --no-reload disable carbonio-mailbox-nslookup-sidecar.service &>/dev/null || :
-    systemctl stop carbonio-mailbox-sidecar.service &>/dev/null || :
-    systemctl stop carbonio-mailbox-admin-sidecar.service &>/dev/null || :
-    systemctl stop carbonio-mailbox-nslookup-sidecar.service &>/dev/null || :
+    systemctl --no-reload disable --now carbonio-mailbox-sidecar.service &>/dev/null || :
+    systemctl --no-reload disable --now carbonio-mailbox-admin-sidecar.service &>/dev/null || :
+    systemctl --no-reload disable --now carbonio-mailbox-nslookup-sidecar.service &>/dev/null || :
+  fi
+}
+
+prerm__yum() {
+  if [ "$1" -eq 0 ]; then
+    if [ -d /run/systemd/system ]; then
+      systemctl --no-reload disable --now carbonio-mailbox-sidecar.service &>/dev/null || :
+      systemctl --no-reload disable --now carbonio-mailbox-admin-sidecar.service &>/dev/null || :
+      systemctl --no-reload disable --now carbonio-mailbox-nslookup-sidecar.service &>/dev/null || :
+    fi
   fi
 }
 
@@ -120,5 +127,25 @@ postrm() {
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload &>/dev/null || :
+  fi
+}
+
+postrm__yum() {
+  if [ "$1" -eq 0 ]; then
+    rm -f /etc/carbonio/mailbox/service-discover/token
+    rm -f /etc/carbonio/mailbox-admin/service-discover/token
+    rm -f /etc/carbonio/mailbox-nslookup/service-discover/token
+
+    if [ -d /run/systemd/system ]; then
+      systemctl daemon-reload &>/dev/null || :
+    fi
+  fi
+}
+
+posttrans() {
+  if [ -d /run/systemd/system ]; then
+    systemctl enable carbonio-mailbox-sidecar.service &>/dev/null || :
+    systemctl enable carbonio-mailbox-admin-sidecar.service &>/dev/null || :
+    systemctl enable carbonio-mailbox-nslookup-sidecar.service &>/dev/null || :
   fi
 }

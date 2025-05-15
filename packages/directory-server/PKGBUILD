@@ -203,8 +203,10 @@ prerm__ubuntu_noble() {
 }
 
 prerm__rocky_9() {
-  if [ -d /run/systemd/system ]; then
-    systemctl --no-reload disable --now carbonio-directory-server.target &>/dev/null || :
+  if [ "$1" -eq 0 ]; then
+    if [ -d /run/systemd/system ]; then
+      systemctl --no-reload disable --now carbonio-directory-server.target &>/dev/null || :
+    fi
   fi
 }
 
@@ -217,5 +219,12 @@ postrm__ubuntu_noble() {
 postrm__rocky_9() {
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload &>/dev/null || :
+  fi
+}
+
+posttrans__rocky_9() {
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload &>/dev/null || :
+    systemctl enable carbonio-directory-server.target &>/dev/null || :
   fi
 }
