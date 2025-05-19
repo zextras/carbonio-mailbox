@@ -6,8 +6,8 @@ package com.zimbra.cs.service.mail.message.parser;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.util.AccountAction;
 import com.zextras.mailbox.util.MailMessageBuilder;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -15,7 +15,6 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.zmime.ZMimeMultipart;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ZimbraAuthToken;
 import com.zimbra.cs.mailbox.DeliveryContext;
@@ -44,6 +43,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
@@ -57,11 +57,15 @@ import org.junit.jupiter.api.Test;
 
 public final class ParseMimeMessageTest {
 
+  private static Account account;
+
   @BeforeAll
   public static void init() throws Exception {
     MailboxTestUtil.initServer();
     Provisioning prov = Provisioning.getInstance();
-    prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+    account = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>(
+        Map.of(Provisioning.A_zimbraId, UUID.randomUUID().toString())
+    ));
   }
 
   @BeforeEach
@@ -82,7 +86,7 @@ public final class ParseMimeMessageTest {
     .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
 
    rootEl.addUniqueElement(el);
-   Account acct = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   Account acct = account;
    OperationContext octxt = new OperationContext(acct);
   ZimbraSoapContext zsc = getMockSoapContext();
 
@@ -98,7 +102,7 @@ public final class ParseMimeMessageTest {
 
  @Test
   void parseMimeMsgSoap_withMsgAttachment() throws Exception {
-   Account acct = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   Account acct = account;
    OperationContext octxt = new OperationContext(acct);
    var mbox = MailboxManager.getInstance().createMailbox(octxt, acct);
    final ParsedMessage message = new MailMessageBuilder()
@@ -144,7 +148,6 @@ public final class ParseMimeMessageTest {
 
   @Test
   void parseMimeMsgSoapWithEmptyFile_DoesNotAffectMtaMaxMessageSizeQuotaCheck() throws Exception {
-    Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
     OperationContext octxt = new OperationContext(account);
     ZimbraSoapContext parent =
         new ZimbraSoapContext(
@@ -153,7 +156,7 @@ public final class ParseMimeMessageTest {
             (DocumentHandler) null,
             Collections.<String, Object>emptyMap(),
             SoapProtocol.SoapJS);
-    ZimbraSoapContext zsc = new ZimbraSoapContext(parent, new ZimbraAuthToken(account), MockProvisioning.DEFAULT_ACCOUNT_ID, null);
+    ZimbraSoapContext zsc = new ZimbraSoapContext(parent, new ZimbraAuthToken(account), account.getId(), null);
     final Message draftWithFileAttachment = this.createDraftWithFileAttachment(account);
 
     // upload empty file
@@ -188,7 +191,6 @@ public final class ParseMimeMessageTest {
 
   @Test
   void parseMimeMsgSoapWithSmartLink() throws Exception {
-    Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
     OperationContext octxt = new OperationContext(account);
     ZimbraSoapContext parent =
         new ZimbraSoapContext(
@@ -197,7 +199,7 @@ public final class ParseMimeMessageTest {
             (DocumentHandler) null,
             Collections.<String, Object>emptyMap(),
             SoapProtocol.SoapJS);
-    ZimbraSoapContext zsc = new ZimbraSoapContext(parent, new ZimbraAuthToken(account), MockProvisioning.DEFAULT_ACCOUNT_ID, null);
+    ZimbraSoapContext zsc = new ZimbraSoapContext(parent, new ZimbraAuthToken(account), account.getId(), null);
 
     // 1 save a draft message with attachments
     final Message draftWithFileAttachment = this.createDraftWithFileAttachment(account);
@@ -230,7 +232,6 @@ public final class ParseMimeMessageTest {
 
   @Test
   void parseMimeMsgSoapWithNewAttachmentShouldNotAddSmartLink() throws Exception {
-    Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
     OperationContext octxt = new OperationContext(account);
     ZimbraSoapContext parent =
         new ZimbraSoapContext(
@@ -239,7 +240,7 @@ public final class ParseMimeMessageTest {
             (DocumentHandler) null,
             Collections.<String, Object>emptyMap(),
             SoapProtocol.SoapJS);
-    ZimbraSoapContext zsc = new ZimbraSoapContext(parent, new ZimbraAuthToken(account), MockProvisioning.DEFAULT_ACCOUNT_ID, null);
+    ZimbraSoapContext zsc = new ZimbraSoapContext(parent, new ZimbraAuthToken(account), account.getId(), null);
 
     // 1 save a draft message with attachments
     final Message draft = this.createDraft(account);
@@ -282,7 +283,6 @@ public final class ParseMimeMessageTest {
           Provisioning.A_zimbraMtaMaxMessageSize, "1"
       )));
 
-      Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
       OperationContext octxt = new OperationContext(account);
       ZimbraSoapContext parent =
           new ZimbraSoapContext(
@@ -291,7 +291,7 @@ public final class ParseMimeMessageTest {
               (DocumentHandler) null,
               Collections.<String, Object>emptyMap(),
               SoapProtocol.SoapJS);
-      ZimbraSoapContext zsc = new ZimbraSoapContext(parent, new ZimbraAuthToken(account), MockProvisioning.DEFAULT_ACCOUNT_ID, null);
+      ZimbraSoapContext zsc = new ZimbraSoapContext(parent, new ZimbraAuthToken(account), account.getId(), null);
 
       // 1 save a draft message with attachments
       final Message draft = this.createDraft(account);
@@ -325,7 +325,6 @@ public final class ParseMimeMessageTest {
           Provisioning.A_zimbraMtaMaxMessageSize, "1"
       )));
 
-      Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
       OperationContext octxt = new OperationContext(account);
       ZimbraSoapContext parent =
           new ZimbraSoapContext(
@@ -334,7 +333,7 @@ public final class ParseMimeMessageTest {
               (DocumentHandler) null,
               Collections.<String, Object>emptyMap(),
               SoapProtocol.SoapJS);
-      ZimbraSoapContext zsc = new ZimbraSoapContext(parent, new ZimbraAuthToken(account), MockProvisioning.DEFAULT_ACCOUNT_ID, null);
+      ZimbraSoapContext zsc = new ZimbraSoapContext(parent, new ZimbraAuthToken(account), account.getId(), null);
 
       // 1 save a draft message with attachments
       final Message draft = this.createDraft(account);
@@ -383,8 +382,7 @@ public final class ParseMimeMessageTest {
         .addAttribute(MailConstants.A_ADDRESS, "rcpt@zimbra.com");
 
     rootEl.addUniqueElement(msgElement);
-    Account acct = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-    OperationContext octxt = new OperationContext(acct);
+    OperationContext octxt = new OperationContext(account);
     ZimbraSoapContext zsc = getMockSoapContext();
 
     MimeMessage mm =
@@ -399,8 +397,6 @@ public final class ParseMimeMessageTest {
 
   @Test
   void parseDraftMimeMsgSoap_addNewInlineAttachment() throws Exception {
-    Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-
     final InputStream uploadInputStream = this.getClass()
         .getResourceAsStream("/test-save-to-files.txt");
     final String filename = "myFiletest.txt";
@@ -448,7 +444,6 @@ public final class ParseMimeMessageTest {
           Provisioning.A_zimbraMtaMaxMessageSize, "1"
       )));
 
-      Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
       OperationContext octxt = new OperationContext(account);
       ZimbraSoapContext zsc = getZimbraSoapContext(account);
 
@@ -504,7 +499,7 @@ public final class ParseMimeMessageTest {
     .setText("\u30ab\u30b9\u30bf\u30e0");
   rootEl.addUniqueElement(el);
 
-  Account acct = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Account acct = account;
   OperationContext octxt = new OperationContext(acct);
   ZimbraSoapContext zsc = getMockSoapContext();
 
@@ -554,7 +549,7 @@ public final class ParseMimeMessageTest {
         + "This is the inner message.");
   rootEl.addUniqueElement(el);
 
-  Account acct = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Account acct = account;
   OperationContext octxt = new OperationContext(acct);
   ZimbraSoapContext zsc = getMockSoapContext();
 
@@ -667,7 +662,7 @@ public final class ParseMimeMessageTest {
             (DocumentHandler) null,
             Collections.<String, Object>emptyMap(),
             SoapProtocol.SoapJS);
-    return new ZimbraSoapContext(parent, MockProvisioning.DEFAULT_ACCOUNT_ID, null);
+    return new ZimbraSoapContext(parent, account.getId(), null);
   }
 
   private ZimbraSoapContext getZimbraSoapContext(Account account) throws ServiceException {

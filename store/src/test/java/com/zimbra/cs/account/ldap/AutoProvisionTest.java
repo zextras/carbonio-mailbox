@@ -19,7 +19,7 @@ class AutoProvisionTest {
 
     @Test
     void mapName_should_throw_service_exception_when_externalAttrs_localpart_is_null() {
-        Domain domain = mock(Domain.class);
+        Domain domain = mock();
         ZAttributes zAttributes = mock(ZAttributes.class);
         when(domain.getAutoProvAccountNameMap()).thenReturn("x");
         ServiceException serviceException = assertThrows(
@@ -39,7 +39,7 @@ class AutoProvisionTest {
 
     @Test
     void mapName_should_throw_service_exception_when_externalAttrs_loginName_is_null() {
-        Domain domain = mock(Domain.class);
+        Domain domain = mock();
         ZAttributes zAttributes = mock(ZAttributes.class);
         ServiceException serviceException = assertThrows(
                 ServiceException.class,
@@ -58,7 +58,7 @@ class AutoProvisionTest {
 
     @Test
     void mapName_should_return_email_when_externalAttrs_loginName_is_null_and_domain_has_no_autoProvAccountName() throws ServiceException {
-        Domain domain = mock(Domain.class);
+        Domain domain = mock();
         ZAttributes zAttributes = mock(ZAttributes.class);
         when(domain.getName()).thenReturn("abc.com");
         assertEquals("test@abc.com", new AutoProvision(null, domain) {
@@ -72,7 +72,7 @@ class AutoProvisionTest {
 
     @Test
     void mapName_should_throw_service_exception_when_searchByMail_and_domain_is_not_same() throws LdapException {
-        Domain domain = mock(Domain.class);
+        Domain domain = mock();
         ZAttributes zAttributes = mock(ZAttributes.class);
         when(domain.getAutoProvAccountNameMap()).thenReturn("mail");
         when(zAttributes.getAttrString("mail")).thenReturn("x@abc.com");
@@ -103,7 +103,7 @@ class AutoProvisionTest {
     void mapName_should_return_email_when_domain_is_same(String autoProvAccountNameMap,
                                                          String attrValue, String domainName)
             throws ServiceException {
-        Domain domain = mock(Domain.class);
+        Domain domain = mock();
         ZAttributes zAttributes = mock(ZAttributes.class);
         when(domain.getAutoProvAccountNameMap()).thenReturn(autoProvAccountNameMap);
         when(zAttributes.getAttrString(autoProvAccountNameMap)).thenReturn(attrValue);
@@ -116,5 +116,21 @@ class AutoProvisionTest {
             }
         }.mapName(zAttributes, null));
     }
+
+    @ParameterizedTest
+    @CsvSource({
+            ", createTimestamp",
+            "'', createTimestamp",
+            "' ', createTimestamp",
+            "'  ', createTimestamp",
+            "createTimestamp, createTimestamp",
+            "test , test"
+    })
+    void test_getCarbonioAutoProvTimestampAttribute(String input, String expected) {
+        Domain domain = mock();
+        when(domain.getCarbonioAutoProvTimestampAttribute()).thenReturn(input);
+        assertEquals(expected, AutoProvision.getCarbonioAutoProvTimestampAttribute(domain));
+    }
+
 
 }

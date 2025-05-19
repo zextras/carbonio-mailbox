@@ -5,41 +5,40 @@
 
 package com.zimbra.cs.filter;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.HashMap;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.mail.GetFilterRules;
 import com.zimbra.cs.service.mail.ModifyFilterRules;
 import com.zimbra.cs.service.mail.ServiceTestUtil;
 import com.zimbra.cs.util.XMLDiffChecker;
+import java.util.HashMap;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ValueComparisonTest {
 
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
-    }
+ private static Account account;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        MailboxTestUtil.clearData();
-    }
+ @BeforeAll
+ public static void init() throws Exception {
+  MailboxTestUtil.initServer();
+  Provisioning prov = Provisioning.getInstance();
+  account = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+ }
+
+ @BeforeEach
+ public void setUp() throws Exception {
+  MailboxTestUtil.clearData();
+ }
 
  /**
   * Tests rule creation through ModifyFilterRulesRequest for header test having caseSensitive attribute with
@@ -453,8 +452,6 @@ public class ValueComparisonTest {
 
    ZimbraLog.filter.info(filterScript);
 
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
    RuleManager.clearCachedRules(account);
    account.setMailSieveScript(filterScript);
 
@@ -498,8 +495,6 @@ public class ValueComparisonTest {
 
    ZimbraLog.filter.info(filterScript);
 
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
    RuleManager.clearCachedRules(account);
    account.setMailSieveScript(filterScript);
 
@@ -543,8 +538,6 @@ public class ValueComparisonTest {
 
    ZimbraLog.filter.info(filterScript);
 
-   Account account = Provisioning.getInstance().getAccount(
-     MockProvisioning.DEFAULT_ACCOUNT_ID);
    RuleManager.clearCachedRules(account);
    account.setMailSieveScript(filterScript);
 

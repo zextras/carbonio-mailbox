@@ -5242,38 +5242,30 @@ deprecatedSince="23.9.0">
   </desc>
 </attr>
 
-<attr id="1118" name="zimbraSpnegoAuthEnabled" type="boolean" cardinality="single" optionalIn="globalConfig" requiresRestart="mailbox" since="7.0.0">
+<attr id="1118" name="zimbraSpnegoAuthEnabled" type="boolean" cardinality="single" optionalIn="globalConfig" requiresRestart="mailbox" since="7.0.0" deprecatedSince="25.6.0">
   <globalConfigValue>FALSE</globalConfigValue>
   <desc>whether spnego SSO is enabled</desc>
+  <deprecateDesc>SPNEGO support was dropped</deprecateDesc>
 </attr>
 
-<attr id="1119" name="zimbraSpnegoAuthRealm" type="string" cardinality="single" optionalIn="globalConfig" requiresRestart="mailbox" since="7.0.0">
+<attr id="1119" name="zimbraSpnegoAuthRealm" type="string" cardinality="single" optionalIn="globalConfig" requiresRestart="mailbox" since="7.0.0" deprecatedSince="25.6.0">
   <desc>spnego auth realm</desc>
+  <deprecateDesc>SPNEGO support was dropped</deprecateDesc>
 </attr>
 
-<!--
-No longer need KDC/admin server, jetty does not consult them during spnego auth
-TODO: delete them permanently from here
-
-<attr id="1120" name="zimbraSpnegoAuthKDC" type="string" cardinality="single" optionalIn="globalConfig" requiresRestart="mailbox" since="7.0.0">
-  <desc>ip or hostname for spnego auth KDC</desc>
-</attr>
-
-<attr id="1121" name="zimbraSpnegoAuthAdminServer" type="string" cardinality="single" optionalIn="globalConfig" requiresRestart="mailbox" since="7.0.0">
-  <desc>ip or hostname for spnego auth admin server</desc>
-</attr>
--->
-
-<attr id="1122" name="zimbraSpnegoAuthPrincipal" type="string" cardinality="single" optionalIn="server" requiresRestart="mailbox" since="7.0.0">
+<attr id="1122" name="zimbraSpnegoAuthPrincipal" type="string" cardinality="single" optionalIn="server" requiresRestart="mailbox" since="7.0.0" deprecatedSince="25.6.0">
   <desc>spnego auth principal</desc>
+  <deprecateDesc>SPNEGO support was dropped</deprecateDesc>
 </attr>
 
-<attr id="1123" name="zimbraSpnegoAuthTargetName" type="string" cardinality="single" optionalIn="server" requiresRestart="mailbox" since="7.0.0">
+<attr id="1123" name="zimbraSpnegoAuthTargetName" type="string" cardinality="single" optionalIn="server" requiresRestart="mailbox" since="7.0.0" deprecatedSince="25.6.0">
   <desc>spnego auth target name</desc>
+  <deprecateDesc>SPNEGO support was dropped</deprecateDesc>
 </attr>
 
-<attr id="1124" name="zimbraSpnegoAuthErrorURL" type="string" cardinality="single" optionalIn="globalConfig" requiresRestart="mailbox" since="7.0.0">
+<attr id="1124" name="zimbraSpnegoAuthErrorURL" type="string" cardinality="single" optionalIn="globalConfig" requiresRestart="mailbox" since="7.0.0" deprecatedSince="25.6.0">
   <desc>spnego auth error URL</desc>
+  <deprecateDesc>SPNEGO support was dropped</deprecateDesc>
 </attr>
 
 <attr id="1125" name="zimbraPrefForwardReplySignatureId" type="id" cardinality="single" optionalIn="account,identity,dataSource" flags="domainAdminModifiable" since="7.0.0">
@@ -5490,7 +5482,8 @@ TODO: delete them permanently from here
   </desc>
 </attr>
 
-<attr id="1161" name="zimbraMailKeepOutWebCrawlers" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="7.0.1">
+<attr id="1161" name="zimbraMailKeepOutWebCrawlers" deprecatedSince="25.6.0" type="boolean" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="7.0.1">
+  <deprecateDesc>RobotsServlet has been removed. robots.txt is managed on proxy side</deprecateDesc>
   <globalConfigValue>TRUE</globalConfigValue>
   <desc>When set to true, robots.txt on mailboxd will be set up to keep web crawlers out</desc>
 </attr>
@@ -5956,7 +5949,7 @@ TODO: delete them permanently from here
   </desc>
 </attr>
 
-<attr id="1222" name="zimbraAutoProvAuthMech" type="enum" value="LDAP,PREAUTH,KRB5,SPNEGO" cardinality="multi" optionalIn="domain" since="8.0.0">
+<attr id="1222" name="zimbraAutoProvAuthMech" type="enum" value="LDAP,PREAUTH,KRB5" cardinality="multi" optionalIn="domain" since="8.0.0">
   <desc>
      EAGER mode: N/A
       LAZY mode: required
@@ -10205,4 +10198,109 @@ TODO: delete them permanently from here
 <attr id="3148" name="carbonioSearchSpecifiedDomainsByFeature" type="string" max="256" cardinality="multi" optionalIn="domain" since="24.12.0">
   <desc>List of domain names in which the SearchUserByFeature API should perform users searches</desc>
 </attr>
+
+<attr id="3149" name="carbonioWscShowMessageReads" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultExternalCOSValue>TRUE</defaultExternalCOSValue>
+  <desc>Whether users can see the list of people who have read the message sent in the chat</desc>
+</attr>
+
+<attr id="3150" name="carbonioWscShowUsersPresence" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultExternalCOSValue>TRUE</defaultExternalCOSValue>
+  <desc>Whether users can see the presence status of other people</desc>
+</attr>
+
+<attr id="3151" name="carbonioWscVirtualBackgroundEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
+  <desc>Whether users can use virtual backgrounds in video call meetings</desc>
+</attr>
+
+<attr id="3152" name="carbonioWscVideoCallEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultExternalCOSValue>TRUE</defaultExternalCOSValue>
+  <desc>Whether users can make video call meetings</desc>
+</attr>
+
+<attr id="3153" name="carbonioWscRecordingEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>FALSE</defaultCOSValue>
+  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
+  <desc>Whether users can record video call meetings</desc>
+</attr>
+
+<attr id="3154" name="carbonioWscGroupChatCreation" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultExternalCOSValue>TRUE</defaultExternalCOSValue>
+  <desc>Whether users can create group chats</desc>
+</attr>
+
+<attr id="3155" name="carbonioWscPrivateChatCreation" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultExternalCOSValue>TRUE</defaultExternalCOSValue>
+  <desc>Whether users can create private chats</desc>
+</attr>
+
+<attr id="3156" name="carbonioWscAttachmentUpload" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultExternalCOSValue>TRUE</defaultExternalCOSValue>
+  <desc>Whether users can upload attachments in the chat</desc>
+</attr>
+
+<attr id="3157" name="carbonioWscMessageDeleteTimeLimit" type="duration" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>10m</defaultCOSValue>
+  <defaultExternalCOSValue>10m</defaultExternalCOSValue>
+  <desc>How long after a message can be deleted after being sent</desc>
+</attr>
+
+<attr id="3158" name="carbonioWscMessageEditTimeLimit" type="duration" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>10m</defaultCOSValue>
+  <defaultExternalCOSValue>10m</defaultExternalCOSValue>
+  <desc>How long after a message can be edited after being sent</desc>
+</attr>
+
+<attr id="3159" name="carbonioWscMaxGroupMembers" type="integer" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>32</defaultCOSValue>
+  <defaultExternalCOSValue>32</defaultExternalCOSValue>
+  <desc>The maximum number of users that can be part of a group</desc>
+</attr>
+
+<attr id="3160" name="carbonioWscMaxRoomPictureSize" type="integer" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>2</defaultCOSValue>
+  <defaultExternalCOSValue>2</defaultExternalCOSValue>
+  <desc>The maximum allowed size for a room picture in Mb</desc>
+</attr>
+
+<attr id="3161" name="carbonioWscMaxAttachmentSize" type="integer" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>128</defaultCOSValue>
+  <defaultExternalCOSValue>128</defaultExternalCOSValue>
+  <desc>The maximum allowed size for an attachment in Mb</desc>
+</attr>
+
+<attr id="3162" name="carbonioWscVirtualBackgroundPath" type="string" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <desc>The path to the folder containing the virtual backgrounds</desc>
+</attr>
+
+<attr id="3163" name="carbonioAutoProvTimestampAttribute" type="string" max="256" cardinality="single" optionalIn="domain" since="25.6.0">
+  <desc>
+    Column name for time check in filter
+    createTimestamp (Default)
+    modifyTimestamp
+  </desc>
+</attr>
+
+<attr id="3164" name="carbonioAutoProvLastPolledTimestamp" type="gentime" cardinality="single" optionalIn="domain" since="25.6.0">
+  <desc>
+    Server Timestamp when the external domain is last polled for EAGER auto provision.
+  </desc>
+</attr>
+<attr id="3165" name="carbonioPrefDarkMode" type="enum" value="auto,enabled,disabled" cardinality="single" optionalIn="account,cos" flags="domainAdminModifiable,accountInherited,accountInfo" since="25.6.0">
+  <desc>
+    Carbonio Dark Mode preference for Account
+  </desc>
+  <defaultCOSValue>auto</defaultCOSValue>
+</attr>
 </attrs>
+
+
+

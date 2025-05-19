@@ -95,7 +95,6 @@ public class ProvUtilCommandHandlersFactory {
     map.put(Command.GET_SERVER, new GetServerCommandHandler(provUtil, dumper));
     map.put(Command.GET_SHARE_INFO, new GetShareInfoCommandHandler(provUtil));
     map.put(Command.GET_SIGNATURES, new GetSignaturesCommandHandler(provUtil, dumper));
-    map.put(Command.GET_SPNEGO_DOMAIN, new GetSpnegoDomainCommandHandler(provUtil));
     map.put(Command.GRANT_RIGHT, new GrantRightCommandHandler(provUtil));
     map.put(Command.HELP, new HelpCommandHandler(provUtil));
     map.put(Command.LDAP, new LdapCommandHandler(provUtil));

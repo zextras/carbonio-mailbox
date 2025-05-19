@@ -7,37 +7,18 @@ package com.zimbra.common.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.google.common.collect.Lists;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
-
-import org.junit.jupiter.api.AfterEach;
+import java.util.Objects;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import com.google.common.collect.Lists;
-import com.google.common.io.Files;
+class FileUtilTest {
 
-public class FileUtilTest {
-
-    private List<File> tempPaths = Lists.newArrayList();
-
-    /**
-     * Overrides {@code lastModified} to return system time.  {@code File.lastModified()} may
-     * return values in second-level granularity, which causes the unit test to fail.
-     */
-    @SuppressWarnings("serial")
-    class VirtualFile extends File {
-        final long lastModified = System.currentTimeMillis();
-
-        VirtualFile(String name) {
-            super(name);
-        }
-
-        @Override
-        public long lastModified() {
-            return lastModified;
-        }
-    }
+  @TempDir private File tempDir;
 
   @Test
   void sortByMtime() throws InterruptedException {
@@ -59,37 +40,118 @@ public class FileUtilTest {
 
   @Test
   void deleteDir() throws IOException {
-    File tempDir = createTempDir();
+    populateTempDir();
     FileUtil.deleteDir(tempDir);
     assertFalse(tempDir.exists());
   }
 
   @Test
   void deleteDirContents() throws IOException {
-    File tempDir = createTempDir();
+    populateTempDir();
     FileUtil.deleteDirContents(tempDir);
     assertTrue(tempDir.exists());
-    assertEquals(0, tempDir.listFiles().length);
+    assertEquals(0, Objects.requireNonNull(tempDir.listFiles()).length);
   }
 
-    private File createTempDir() throws IOException {
-        File tempDir = Files.createTempDir();
-        tempPaths.add(tempDir);
-        File.createTempFile("FileUtilTest", null, tempDir);
-        File childDir = new File(tempDir, "child");
-        assertTrue(childDir.mkdir());
-        File.createTempFile("FileUtilTest", null, childDir);
-        return tempDir;
+  private void populateTempDir() throws IOException {
+    Files.createFile(new File(tempDir, "FileUtilTest").toPath());
+    File childDir = new File(tempDir, "child");
+    assertTrue(childDir.mkdir());
+    Files.createFile(new File(childDir, "FileUtilTest").toPath());
+  }
+
+  @Test
+  void copyFileSuccessfully() throws IOException {
+    File srcFile = new File(tempDir, "source.txt");
+    File destFile = new File(tempDir, "destination.txt");
+    Files.writeString(srcFile.toPath(), "Sample content");
+
+    FileUtil.copy(srcFile, destFile);
+
+    assertTrue(destFile.exists());
+    assertEquals("Sample content", Files.readString(destFile.toPath()));
+  }
+
+  @Test
+  void copyFileFailsWhenSourceDoesNotExist() {
+    File srcFile = new File(tempDir, "nonexistent.txt");
+    File destFile = new File(tempDir, "destination.txt");
+
+    IOException exception = assertThrows(IOException.class, () -> FileUtil.copy(srcFile, destFile));
+    assertTrue(exception.getMessage().contains("nonexistent.txt"));
+  }
+
+  @Test
+  void deleteFileSuccessfully() throws IOException {
+    File file = new File(tempDir, "fileToDelete.txt");
+    Files.createFile(file.toPath());
+
+    FileUtil.delete(file);
+
+    assertFalse(file.exists());
+  }
+
+  @Test
+  void listFilesRecursivelyReturnsAllFiles() throws IOException {
+    File subDir = new File(tempDir, "subDir");
+    assertTrue(subDir.mkdir());
+    File file1 = new File(tempDir, "file1.txt");
+    File file2 = new File(subDir, "file2.txt");
+    Files.createFile(file1.toPath());
+    Files.createFile(file2.toPath());
+
+    List<File> files = FileUtil.listFilesRecursively(tempDir);
+
+    assertEquals(2, files.size());
+    assertTrue(files.contains(file1));
+    assertTrue(files.contains(file2));
+  }
+
+  @Test
+  void listDirsRecursivelyReturnsAllDirectories() {
+    File subDir1 = new File(tempDir, "subDir1");
+    File subDir2 = new File(subDir1, "subDir2");
+    assertTrue(subDir1.mkdir());
+    assertTrue(subDir2.mkdir());
+
+    List<File> dirs = FileUtil.listDirsRecursively(tempDir);
+
+    assertEquals(3, dirs.size());
+    assertTrue(dirs.contains(tempDir));
+    assertTrue(dirs.contains(subDir1));
+    assertTrue(dirs.contains(subDir2));
+  }
+
+  @Test
+  void getExtensionReturnsCorrectExtension() {
+    assertEquals("txt", FileUtil.getExtension("file.txt"));
+    assertEquals("", FileUtil.getExtension("file."));
+    assertEquals("file", FileUtil.getExtension("file"));
+    assertNull(FileUtil.getExtension(null));
+  }
+
+  @Test
+  void trimFilenameReturnsCorrectFilename() {
+    assertEquals("file.txt", FileUtil.trimFilename("/path/to/file.txt"));
+    assertEquals("file.txt", FileUtil.trimFilename("C:\\path\\to\\file.txt"));
+    assertNull(FileUtil.trimFilename("/path/to/"));
+    assertNull(FileUtil.trimFilename(null));
+  }
+
+  /**
+   * Overrides {@code lastModified} to return system time. {@code File.lastModified()} may return
+   * values in second-level granularity, which causes the unit test to fail.
+   */
+  static class VirtualFile extends File {
+    final long lastModified = System.currentTimeMillis();
+
+    VirtualFile(String name) {
+      super(name);
     }
 
-    @AfterEach
-    public void tearDown() throws IOException {
-        for (File file : tempPaths) {
-            if (file.isFile()) {
-                file.delete();
-            } else {
-                FileUtil.deleteDir(file);
-            }
-        }
+    @Override
+    public long lastModified() {
+      return lastModified;
     }
+  }
 }

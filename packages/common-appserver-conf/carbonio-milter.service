@@ -2,7 +2,7 @@
 Description=Carbonio Milter Daemon
 After=carbonio-configd.service
 Wants=carbonio-configd.service
-PartOf=carbonio-mta.target carbonio-ce.target carbonio.target
+PartOf=carbonio-mta.target
 
 [Service]
 User=zextras
@@ -22,4 +22,4 @@ Restart=on-failure
 SuccessExitStatus=143
 
 [Install]
-WantedBy=carbonio-mta.target carbonio-ce.target carbonio.target
+WantedBy=carbonio-mta.target

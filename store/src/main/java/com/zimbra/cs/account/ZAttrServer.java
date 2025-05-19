@@ -16493,8 +16493,9 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * When set to true, robots.txt on mailboxd will be set up to keep web
-     * crawlers out
+     * Deprecated since: 25.6.0. RobotsServlet has been removed. robots.txt
+     * is managed on proxy side. Orig desc: When set to true, robots.txt on
+     * mailboxd will be set up to keep web crawlers out
      *
      * @return zimbraMailKeepOutWebCrawlers, or true if unset
      *
@@ -16506,8 +16507,9 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * When set to true, robots.txt on mailboxd will be set up to keep web
-     * crawlers out
+     * Deprecated since: 25.6.0. RobotsServlet has been removed. robots.txt
+     * is managed on proxy side. Orig desc: When set to true, robots.txt on
+     * mailboxd will be set up to keep web crawlers out
      *
      * @param zimbraMailKeepOutWebCrawlers new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -16522,8 +16524,9 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * When set to true, robots.txt on mailboxd will be set up to keep web
-     * crawlers out
+     * Deprecated since: 25.6.0. RobotsServlet has been removed. robots.txt
+     * is managed on proxy side. Orig desc: When set to true, robots.txt on
+     * mailboxd will be set up to keep web crawlers out
      *
      * @param zimbraMailKeepOutWebCrawlers new value
      * @param attrs existing map to populate, or null to create a new map
@@ -16539,8 +16542,9 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * When set to true, robots.txt on mailboxd will be set up to keep web
-     * crawlers out
+     * Deprecated since: 25.6.0. RobotsServlet has been removed. robots.txt
+     * is managed on proxy side. Orig desc: When set to true, robots.txt on
+     * mailboxd will be set up to keep web crawlers out
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -16554,8 +16558,9 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
-     * When set to true, robots.txt on mailboxd will be set up to keep web
-     * crawlers out
+     * Deprecated since: 25.6.0. RobotsServlet has been removed. robots.txt
+     * is managed on proxy side. Orig desc: When set to true, robots.txt on
+     * mailboxd will be set up to keep web crawlers out
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs
@@ -49778,6 +49783,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth principal
      *
      * @return zimbraSpnegoAuthPrincipal, or null if unset
@@ -49790,6 +49796,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth principal
      *
      * @param zimbraSpnegoAuthPrincipal new value
@@ -49805,6 +49812,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth principal
      *
      * @param zimbraSpnegoAuthPrincipal new value
@@ -49821,6 +49829,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth principal
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -49835,6 +49844,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth principal
      *
      * @param attrs existing map to populate, or null to create a new map
@@ -49850,6 +49860,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth target name
      *
      * @return zimbraSpnegoAuthTargetName, or null if unset
@@ -49862,6 +49873,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth target name
      *
      * @param zimbraSpnegoAuthTargetName new value
@@ -49877,6 +49889,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth target name
      *
      * @param zimbraSpnegoAuthTargetName new value
@@ -49893,6 +49906,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth target name
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -49907,6 +49921,7 @@ public abstract class ZAttrServer extends NamedEntry {
     }
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth target name
      *
      * @param attrs existing map to populate, or null to create a new map

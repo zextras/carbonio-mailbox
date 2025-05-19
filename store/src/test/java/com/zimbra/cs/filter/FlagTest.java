@@ -7,10 +7,9 @@ package com.zimbra.cs.filter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.util.AccountUtil;
 import com.zimbra.common.filter.Sieve.Flag;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.DeliveryContext;
 import com.zimbra.cs.mailbox.Flag.FlagInfo;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -20,15 +19,10 @@ import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.util.ItemId;
-import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
 
 /**
@@ -38,28 +32,17 @@ import org.junit.jupiter.api.TestInfo;
  */
 public final class FlagTest {
 
-     public String testName;
-    
-    
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
-    }
+  public String testName;
 
- @BeforeEach
- public void setUp(TestInfo testInfo) throws Exception {
-  Optional<Method> testMethod = testInfo.getTestMethod();
-  if (testMethod.isPresent()) {
-   this.testName = testMethod.get().getName();
+
+  @BeforeAll
+  public static void init() throws Exception {
+    MailboxTestUtil.initServer();
   }
-  System.out.println( testName);
- }
 
  @Test
  void priority() throws Exception {
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Account account = AccountUtil.createAccount();
   RuleManager.clearCachedRules(account);
   account.setMailSieveScript("if header \"Subject\" \"important\" { flag \"priority\"; }");
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);

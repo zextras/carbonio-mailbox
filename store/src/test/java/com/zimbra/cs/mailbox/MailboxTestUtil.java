@@ -6,6 +6,7 @@
 package com.zimbra.cs.mailbox;
 
 import com.google.common.base.Strings;
+import com.zextras.mailbox.util.TestConfig;
 import com.zimbra.common.calendar.WellKnownTimeZones;
 import com.zimbra.common.calendar.ZCalendar.ZVCalendar;
 import com.zimbra.common.localconfig.LC;
@@ -40,6 +41,7 @@ import com.zimbra.soap.DocumentHandler;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -71,10 +73,10 @@ public final class MailboxTestUtil {
    */
   public static void initProvisioning(String zimbraServerDir) throws Exception {
     zimbraServerDir = getZimbraServerDir(zimbraServerDir);
-    System.setProperty("log4j.configuration", "log4j-test.properties");
     System.setProperty(
         "zimbra.config", zimbraServerDir + "src/test/resources/localconfig-test.xml");
     LC.reload();
+    LC.zimbra_home.setDefault(Files.createTempDirectory("mailbox_home_").toAbsolutePath().toString());
     // substitute test TZ file
     String timezonefilePath = zimbraServerDir + "src/test/resources/timezones-test.ics";
     File d = new File(timezonefilePath);
@@ -83,7 +85,7 @@ public final class MailboxTestUtil {
     }
     LC.timezone_file.setDefault(timezonefilePath);
     WellKnownTimeZones.loadFromFile(d);
-    LC.zimbra_tmp_directory.setDefault(zimbraServerDir + "tmp");
+    LC.zimbra_tmp_directory.setDefault(Files.createTempDirectory("server_tmp_dir_").toAbsolutePath().toString());
     // substitute test DS config file
     String dsfilePath = zimbraServerDir + "src/test/resources/datasource-test.xml";
     d = new File(dsfilePath);
@@ -157,7 +159,8 @@ public final class MailboxTestUtil {
     HSQLDB.clearDatabase();
     MailboxManager.getInstance().clearCache();
     MailboxIndex.shutdown();
-    File index = new File("build/test/index");
+    final String volumeDirectory = TestConfig.getInstance().volumeDirectory();
+    File index = new File(volumeDirectory, "index");
     if (index.isDirectory()) {
       deleteDirContents(index);
     }

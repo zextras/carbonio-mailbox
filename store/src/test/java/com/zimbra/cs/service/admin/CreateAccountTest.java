@@ -1,6 +1,8 @@
 package com.zimbra.cs.service.admin;
 
-import com.zextras.mailbox.util.MailboxTestUtil;
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
@@ -11,33 +13,35 @@ import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.admin.message.CreateAccountRequest;
 import com.zimbra.soap.admin.message.CreateAccountResponse;
 import com.zimbra.soap.admin.type.AccountInfo;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-class CreateAccountTest {
+class CreateAccountTest extends MailboxTestSuite {
 
     private static Provisioning provisioning;
 
-    @BeforeEach
-    void setUp() throws Exception {
-        MailboxTestUtil.setUp();
+    @BeforeAll
+    static void setUp() {
         provisioning = Provisioning.getInstance();
     }
 
     @AfterEach
-    void tearDown() throws ServiceException {
-        MailboxTestUtil.tearDown();
+    void clearData() throws Exception {
+        mailboxTestExtension.clearData();
+    }
+
+    @BeforeEach
+    void initData() throws Exception {
+        mailboxTestExtension.initData();
     }
 
     @ParameterizedTest
@@ -127,7 +131,7 @@ class CreateAccountTest {
     private Map<String, Object> provisionAdminContext() throws Exception {
         final Map<String, Object> adminExtraAttr = new HashMap<>();
         adminExtraAttr.put(Provisioning.A_zimbraIsAdminAccount, "TRUE");
-        adminExtraAttr.put(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME);
+        adminExtraAttr.put(Provisioning.A_zimbraMailHost, mailboxTestExtension.getServerName());
         final Account adminAccount = provisioning.createAccount(
                 "admin@test.domain.com",
                 "superSecretAdminPassword",

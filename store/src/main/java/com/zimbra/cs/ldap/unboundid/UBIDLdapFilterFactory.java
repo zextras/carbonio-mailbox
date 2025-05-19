@@ -254,6 +254,13 @@ public class UBIDLdapFilterFactory extends ZLdapFilterFactory {
         Filter.createGreaterOrEqualFilter(LdapConstants.ATTR_createTimestamp, generalizedTime));
   }
 
+  @Override
+  public ZLdapFilter timeLaterOrEqual(String column, String generalizedTime) {
+    return new UBIDLdapFilter(
+            FilterId.CREATED_LATEROREQUAL,
+            Filter.createGreaterOrEqualFilter(column, generalizedTime));
+  }
+
   /*
    * general
    */

@@ -8,7 +8,6 @@ package com.zimbra.cs.filter;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.extension.ExtensionTestUtil;
 import com.zimbra.cs.extension.ExtensionUtil;
@@ -45,6 +44,7 @@ public final class RuleManagerWithCustomActionFilterTest {
     
     
     private static SieveFactory original_sf;
+    private static Account account;
     
 
     @BeforeAll
@@ -57,10 +57,9 @@ public final class RuleManagerWithCustomActionFilterTest {
 
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+        account = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
 
         // make sure the behavior before registering custom actions
-        Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
         AbstractActionCommand ext =
@@ -138,7 +137,6 @@ public final class RuleManagerWithCustomActionFilterTest {
   assertNotNull(ext);
 
 
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   RuleManager.clearCachedRules(account);
@@ -183,7 +181,6 @@ public final class RuleManagerWithCustomActionFilterTest {
   assertNotNull(tag_ext);
 
 
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   RuleManager.clearCachedRules(account);

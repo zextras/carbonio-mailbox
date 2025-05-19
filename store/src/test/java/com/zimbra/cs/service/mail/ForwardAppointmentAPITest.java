@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
+import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.calendar.Invite;
@@ -23,8 +24,8 @@ import javax.mail.internet.MimeMultipart;
 import org.junit.jupiter.api.*;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator.Factory;
+import com.zextras.mailbox.util.AccountCreator;
+import com.zextras.mailbox.util.AccountCreator.Factory;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -56,16 +57,17 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 
 	@BeforeAll
 	static void beforeAll() throws Exception {
+		var smtpPort = PortUtil.findFreePort();
 		greenMail =
 				new GreenMail(
 						new ServerSetup[] {
-								new ServerSetup(
-										SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
+								new ServerSetup(smtpPort, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
 						});
 		greenMail.start();
 		Provisioning provisioning = Provisioning.getInstance();
+		provisioning.getLocalServer().setSmtpPort(smtpPort);
 		mailboxManager = MailboxManager.getInstance();
-		accountCreatorFactory = new AccountCreator.Factory(provisioning);
+		accountCreatorFactory = new AccountCreator.Factory(provisioning, soapExtension.getDefaultDomain());
 	}
 	@BeforeEach
 	void beforeEach() {

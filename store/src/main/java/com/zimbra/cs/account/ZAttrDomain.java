@@ -1074,6 +1074,210 @@ public abstract class ZAttrDomain extends NamedEntry {
     }
 
     /**
+     * Server Timestamp when the external domain is last polled for EAGER
+     * auto provision.
+     *
+     * <p>Use getCarbonioAutoProvLastPolledTimestampAsString to access value as a string.
+     *
+     * @see #getCarbonioAutoProvLastPolledTimestampAsString()
+     *
+     * @return carbonioAutoProvLastPolledTimestamp as Date, null if unset or unable to parse
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3164)
+    public Date getCarbonioAutoProvLastPolledTimestamp() {
+        return getGeneralizedTimeAttr(ZAttrProvisioning.A_carbonioAutoProvLastPolledTimestamp, null, true);
+    }
+
+    /**
+     * Server Timestamp when the external domain is last polled for EAGER
+     * auto provision.
+     *
+     * @return carbonioAutoProvLastPolledTimestamp, or null if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3164)
+    public String getCarbonioAutoProvLastPolledTimestampAsString() {
+        return getAttr(ZAttrProvisioning.A_carbonioAutoProvLastPolledTimestamp, null, true);
+    }
+
+    /**
+     * Server Timestamp when the external domain is last polled for EAGER
+     * auto provision.
+     *
+     * @param carbonioAutoProvLastPolledTimestamp new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3164)
+    public void setCarbonioAutoProvLastPolledTimestamp(Date carbonioAutoProvLastPolledTimestamp) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvLastPolledTimestamp, carbonioAutoProvLastPolledTimestamp==null ? "" : LdapDateUtil.toGeneralizedTime(carbonioAutoProvLastPolledTimestamp));
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Server Timestamp when the external domain is last polled for EAGER
+     * auto provision.
+     *
+     * @param carbonioAutoProvLastPolledTimestamp new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3164)
+    public Map<String,Object> setCarbonioAutoProvLastPolledTimestamp(Date carbonioAutoProvLastPolledTimestamp, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvLastPolledTimestamp, carbonioAutoProvLastPolledTimestamp==null ? "" : LdapDateUtil.toGeneralizedTime(carbonioAutoProvLastPolledTimestamp));
+        return attrs;
+    }
+
+    /**
+     * Server Timestamp when the external domain is last polled for EAGER
+     * auto provision.
+     *
+     * @param carbonioAutoProvLastPolledTimestamp new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3164)
+    public void setCarbonioAutoProvLastPolledTimestampAsString(String carbonioAutoProvLastPolledTimestamp) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvLastPolledTimestamp, carbonioAutoProvLastPolledTimestamp);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Server Timestamp when the external domain is last polled for EAGER
+     * auto provision.
+     *
+     * @param carbonioAutoProvLastPolledTimestamp new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3164)
+    public Map<String,Object> setCarbonioAutoProvLastPolledTimestampAsString(String carbonioAutoProvLastPolledTimestamp, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvLastPolledTimestamp, carbonioAutoProvLastPolledTimestamp);
+        return attrs;
+    }
+
+    /**
+     * Server Timestamp when the external domain is last polled for EAGER
+     * auto provision.
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3164)
+    public void unsetCarbonioAutoProvLastPolledTimestamp() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvLastPolledTimestamp, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Server Timestamp when the external domain is last polled for EAGER
+     * auto provision.
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3164)
+    public Map<String,Object> unsetCarbonioAutoProvLastPolledTimestamp(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvLastPolledTimestamp, "");
+        return attrs;
+    }
+
+    /**
+     * Column name for time check in filter createTimestamp (Default)
+     * modifyTimestamp
+     *
+     * @return carbonioAutoProvTimestampAttribute, or null if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3163)
+    public String getCarbonioAutoProvTimestampAttribute() {
+        return getAttr(ZAttrProvisioning.A_carbonioAutoProvTimestampAttribute, null, true);
+    }
+
+    /**
+     * Column name for time check in filter createTimestamp (Default)
+     * modifyTimestamp
+     *
+     * @param carbonioAutoProvTimestampAttribute new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3163)
+    public void setCarbonioAutoProvTimestampAttribute(String carbonioAutoProvTimestampAttribute) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvTimestampAttribute, carbonioAutoProvTimestampAttribute);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Column name for time check in filter createTimestamp (Default)
+     * modifyTimestamp
+     *
+     * @param carbonioAutoProvTimestampAttribute new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3163)
+    public Map<String,Object> setCarbonioAutoProvTimestampAttribute(String carbonioAutoProvTimestampAttribute, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvTimestampAttribute, carbonioAutoProvTimestampAttribute);
+        return attrs;
+    }
+
+    /**
+     * Column name for time check in filter createTimestamp (Default)
+     * modifyTimestamp
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3163)
+    public void unsetCarbonioAutoProvTimestampAttribute() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvTimestampAttribute, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Column name for time check in filter createTimestamp (Default)
+     * modifyTimestamp
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3163)
+    public Map<String,Object> unsetCarbonioAutoProvTimestampAttribute(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioAutoProvTimestampAttribute, "");
+        return attrs;
+    }
+
+    /**
      * AD/LDAP timestamp format. For example:
      * yyyyMMddHHmmss.SSS&#039;Z&#039;, yyyyMMddHHmmss&#039;Z&#039;
      *
@@ -5360,7 +5564,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * when the user account does not yet exist in Zimbra directory, an
      * account entry will be automatically created in Zimbra directory.
      *
-     * <p>Valid values: [LDAP, PREAUTH, KRB5, SPNEGO]
+     * <p>Valid values: [LDAP, PREAUTH, KRB5]
      *
      * @return zimbraAutoProvAuthMech, or empty array if unset
      *
@@ -5378,7 +5582,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * when the user account does not yet exist in Zimbra directory, an
      * account entry will be automatically created in Zimbra directory.
      *
-     * <p>Valid values: [LDAP, PREAUTH, KRB5, SPNEGO]
+     * <p>Valid values: [LDAP, PREAUTH, KRB5]
      *
      * @param zimbraAutoProvAuthMech new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -5399,7 +5603,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * when the user account does not yet exist in Zimbra directory, an
      * account entry will be automatically created in Zimbra directory.
      *
-     * <p>Valid values: [LDAP, PREAUTH, KRB5, SPNEGO]
+     * <p>Valid values: [LDAP, PREAUTH, KRB5]
      *
      * @param zimbraAutoProvAuthMech new value
      * @param attrs existing map to populate, or null to create a new map
@@ -5421,7 +5625,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * when the user account does not yet exist in Zimbra directory, an
      * account entry will be automatically created in Zimbra directory.
      *
-     * <p>Valid values: [LDAP, PREAUTH, KRB5, SPNEGO]
+     * <p>Valid values: [LDAP, PREAUTH, KRB5]
      *
      * @param zimbraAutoProvAuthMech new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -5442,7 +5646,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * when the user account does not yet exist in Zimbra directory, an
      * account entry will be automatically created in Zimbra directory.
      *
-     * <p>Valid values: [LDAP, PREAUTH, KRB5, SPNEGO]
+     * <p>Valid values: [LDAP, PREAUTH, KRB5]
      *
      * @param zimbraAutoProvAuthMech new value
      * @param attrs existing map to populate, or null to create a new map
@@ -5464,7 +5668,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * when the user account does not yet exist in Zimbra directory, an
      * account entry will be automatically created in Zimbra directory.
      *
-     * <p>Valid values: [LDAP, PREAUTH, KRB5, SPNEGO]
+     * <p>Valid values: [LDAP, PREAUTH, KRB5]
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -5484,7 +5688,7 @@ public abstract class ZAttrDomain extends NamedEntry {
      * when the user account does not yet exist in Zimbra directory, an
      * account entry will be automatically created in Zimbra directory.
      *
-     * <p>Valid values: [LDAP, PREAUTH, KRB5, SPNEGO]
+     * <p>Valid values: [LDAP, PREAUTH, KRB5]
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

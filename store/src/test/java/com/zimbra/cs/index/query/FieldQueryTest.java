@@ -5,19 +5,16 @@
 
 package com.zimbra.cs.index.query;
 
-import java.util.HashMap;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import com.zimbra.cs.account.MockProvisioning;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import com.zimbra.cs.account.Provisioning;
+import com.zextras.mailbox.util.AccountUtil;
+import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link FieldQuery}.
@@ -25,20 +22,20 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
  * @author ysasaki
  */
 public final class FieldQueryTest {
-    private static Mailbox mailbox;
 
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
-        mailbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
-    }
+  private static Mailbox mailbox;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        MailboxTestUtil.clearData();
-    }
+  @BeforeAll
+  public static void init() throws Exception {
+    MailboxTestUtil.initServer();
+    final Account account = AccountUtil.createAccount();
+    mailbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
+  }
+
+  @BeforeEach
+  public void setUp() throws Exception {
+    MailboxTestUtil.clearData();
+  }
 
  @Test
  void textFieldQuery() throws Exception {

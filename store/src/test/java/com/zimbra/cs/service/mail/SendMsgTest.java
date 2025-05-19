@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.google.common.collect.Maps;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
-import com.zextras.mailbox.util.MailboxTestUtil;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -65,7 +65,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class SendMsgTest {
+public class SendMsgTest extends MailboxTestSuite {
 
   private static Account sender;
   private static Account shared;
@@ -75,7 +75,6 @@ public class SendMsgTest {
 
   @BeforeAll
   public static void setUp() throws Exception {
-    MailboxTestUtil.setUp();
     mailboxManager = MailboxManager.getInstance();
     mta =
         new GreenMail(
@@ -87,14 +86,14 @@ public class SendMsgTest {
     final Provisioning provisioning = Provisioning.getInstance();
     sender =
         provisioning.createAccount(
-            "test@" + MailboxTestUtil.DEFAULT_DOMAIN,
+            "test@" + mailboxTestExtension.getDefaultDomain(),
             "password",
-            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
+            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, mailboxTestExtension.getServerName())));
     shared =
         provisioning.createAccount(
-            "shared@" + MailboxTestUtil.DEFAULT_DOMAIN,
+            "shared@" + mailboxTestExtension.getDefaultDomain(),
             "password",
-            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
+            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, mailboxTestExtension.getServerName())));
     final Set<ZimbraACE> aces = new HashSet<>();
     aces.add(
         new ZimbraACE(
@@ -114,14 +113,13 @@ public class SendMsgTest {
     ACLUtil.grantRight(Provisioning.getInstance(), shared, aces);
     receiver =
         provisioning.createAccount(
-            "rcpt@" + MailboxTestUtil.DEFAULT_DOMAIN,
+            "rcpt@" + mailboxTestExtension.getDefaultDomain(),
             "password",
-            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME)));
+            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, mailboxTestExtension.getServerName())));
   }
 
   @AfterAll
   public static void tearDown() throws Exception {
-    MailboxTestUtil.tearDown();
     mta.stop();
   }
 

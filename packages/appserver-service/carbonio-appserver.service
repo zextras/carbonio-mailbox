@@ -2,7 +2,7 @@
 Description=Carbonio Appserver Daemon
 After=carbonio-appserver-db.service
 Wants=carbonio-appserver-db.service
-PartOf=carbonio-appserver.target carbonio-ce.target carbonio.target
+PartOf=carbonio-appserver.target
 
 [Service]
 User=zextras
@@ -34,4 +34,4 @@ SuccessExitStatus=143
 StandardError=append:/opt/zextras/log/zmmailboxd.out
 
 [Install]
-WantedBy=carbonio-appserver.target carbonio-ce.target carbonio.target
+WantedBy=carbonio-appserver.target

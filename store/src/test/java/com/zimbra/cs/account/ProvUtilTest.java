@@ -27,7 +27,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 @Tag("api")
 class ProvUtilTest {
 
-  private static final int SOAP_PORT = 8080;
 
   @RegisterExtension
   static SoapExtension soapExtension = new SoapExtension.Builder()
@@ -35,14 +34,13 @@ class ProvUtilTest {
       .addEngineHandler("com.zimbra.cs.service.account.AccountService")
       .addEngineHandler("com.zimbra.cs.service.mail.MailService")
       .withBasePath("/service/admin/")
-      .withPort(SOAP_PORT)
       .create();
 
   @BeforeAll
   static void setUp() {
     //noinspection HttpUrlsUsage
     LC.zimbra_admin_service_scheme.setDefault("http://");
-    LC.zimbra_admin_service_port.setDefault(SOAP_PORT);
+    LC.zimbra_admin_service_port.setDefault(soapExtension.getPort());
   }
 
   @AfterAll

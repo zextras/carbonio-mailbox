@@ -11,7 +11,6 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.mailbox.DeliveryOptions;
@@ -44,18 +43,21 @@ public class DbVolumeBlobsTest {
   private DbConnection conn;
   private StoreManager originalStoreManager;
   private Volume originalVolume;
+	private Mailbox mailbox;
+	private static Account account;
 
   @BeforeAll
   public static void init() throws Exception {
     MailboxTestUtil.initServer();
     Provisioning prov = Provisioning.getInstance();
-    prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+		account = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>(
+				Map.of(Provisioning.A_zimbraId, UUID.randomUUID().toString())
+		));
     System.setProperty("zimbra.native.required", "false");
 
-    Map<String, Object> attrs = new HashMap<String, Object>();
-    attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-
-    prov.createAccount("test2@zimbra.com", "secret", attrs);
+		prov.createAccount("test2@zimbra.com", "secret", new HashMap<String, Object>(
+				Map.of(Provisioning.A_zimbraId, UUID.randomUUID().toString())
+		));
     // need MVCC since the VolumeManager code creates connections internally
     HSQLDB db = (HSQLDB) Db.getInstance();
     db.useMVCC(null);
@@ -70,6 +72,8 @@ public class DbVolumeBlobsTest {
     LC.zimbra_tmp_directory.setDefault(System.getProperty("user.dir") + "/build/tmp");
     StoreManager.setInstance(new FileBlobStore());
     StoreManager.getInstance().startup();
+    // need to create mailbox after each cleanup
+    mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
   }
 
   @AfterEach
@@ -91,7 +95,7 @@ public class DbVolumeBlobsTest {
  @Test
  void writeBlobInfo() throws Exception {
   Mailbox mbox =
-    MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    mailbox;
   DeliveryOptions opt = new DeliveryOptions();
   opt.setFolderId(Mailbox.ID_FOLDER_INBOX);
   Message msg =
@@ -117,7 +121,7 @@ public class DbVolumeBlobsTest {
  @Test
  void testDuplicateRow() throws Exception {
   Mailbox mbox =
-    MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    mailbox;
 
   DeliveryOptions opt = new DeliveryOptions();
   opt.setFolderId(Mailbox.ID_FOLDER_INBOX);
@@ -149,7 +153,7 @@ public class DbVolumeBlobsTest {
  @Test
  void testIncrementalBlobs() throws Exception {
   Mailbox mbox =
-    MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    mailbox;
   DeliveryOptions opt = new DeliveryOptions();
   opt.setFolderId(Mailbox.ID_FOLDER_INBOX);
   int ts1 = (int) (System.currentTimeMillis() / 1000);
@@ -180,7 +184,7 @@ public class DbVolumeBlobsTest {
  @Test
  void writeAllBlobRefs() throws Exception {
   Mailbox mbox =
-    MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    mailbox;
   DeliveryOptions opt = new DeliveryOptions();
   opt.setFolderId(Mailbox.ID_FOLDER_INBOX);
   Map<String, String> digestToPath = new HashMap<String, String>();
@@ -216,7 +220,7 @@ public class DbVolumeBlobsTest {
  @Test
  void testUniqueBlobDigests() throws Exception {
   Mailbox mbox =
-    MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    mailbox;
   DeliveryOptions opt = new DeliveryOptions();
   opt.setFolderId(Mailbox.ID_FOLDER_INBOX);
   Volume vol = VolumeManager.getInstance().getCurrentMessageVolume();
@@ -247,7 +251,7 @@ public class DbVolumeBlobsTest {
  @Test
  void dumpsterBlobs() throws Exception {
   Mailbox mbox =
-    MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    mailbox;
   DeliveryOptions opt = new DeliveryOptions();
   opt.setFolderId(Mailbox.ID_FOLDER_INBOX);
   Map<String, String> digestToPath = new HashMap<String, String>();
@@ -287,7 +291,7 @@ public class DbVolumeBlobsTest {
  @Test
  void deleteBlobRef() throws Exception {
   Mailbox mbox =
-    MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    mailbox;
   DeliveryOptions opt = new DeliveryOptions();
   opt.setFolderId(Mailbox.ID_FOLDER_INBOX);
   Message msg =
@@ -316,7 +320,7 @@ public class DbVolumeBlobsTest {
  @Test
  void deleteAllBlobRef() throws Exception {
   Mailbox mbox =
-    MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    mailbox;
   DeliveryOptions opt = new DeliveryOptions();
   opt.setFolderId(Mailbox.ID_FOLDER_INBOX);
   Message msg =
@@ -342,7 +346,7 @@ public class DbVolumeBlobsTest {
  @Test
  void blobsByMbox() throws Exception {
   Mailbox mbox =
-    MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    mailbox;
   DeliveryOptions opt = new DeliveryOptions();
   opt.setFolderId(Mailbox.ID_FOLDER_INBOX);
   ParsedMessage pm =
@@ -392,7 +396,7 @@ public class DbVolumeBlobsTest {
  @Test
  void blobsByVolume() throws Exception {
   Mailbox mbox =
-    MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+    mailbox;
   DeliveryOptions opt = new DeliveryOptions();
   opt.setFolderId(Mailbox.ID_FOLDER_INBOX);
   ParsedMessage pm =

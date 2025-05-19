@@ -6,6 +6,7 @@ package com.zimbra.cs.redolog;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.util.TestConfig;
 import com.zimbra.cs.mailbox.MailboxOperation;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.redolog.op.RedoableOp;
@@ -37,15 +38,13 @@ public class RedoLogManagerTest {
 
  @Test
  void internalState() throws Exception {
-  assertEquals("build/test/redo/redo.log",
-    redoLogManager.getLogFile().getPath(),
-    "path != build/test/redo/redo.log");
-  assertEquals("build/test/redo",
-    redoLogManager.getArchiveDir().getPath(),
-    "archiveDir != build/test/redo");
-  assertEquals("build/test/redo",
-    redoLogManager.getRolloverDestDir().getPath(),
-    "rolloverDestDir != build/test/redo");
+   final String volumeDirectory = TestConfig.getInstance().volumeDirectory();
+   assertEquals(volumeDirectory + "redo/redo.log",
+    redoLogManager.getLogFile().getPath());
+  assertEquals(volumeDirectory + "redo",
+    redoLogManager.getArchiveDir().getPath());
+  assertEquals(volumeDirectory + "redo",
+    redoLogManager.getRolloverDestDir().getPath());
   assertFalse(redoLogManager.getInCrashRecovery(),
     "crashRecovery == true");
  }

@@ -1,11 +1,10 @@
 package com.zimbra.cs.httpclient;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-import com.zextras.mailbox.util.MailboxTestUtil;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
 import java.lang.reflect.Constructor;
@@ -16,24 +15,12 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-class HttpProxyUtilTest {
-
-  @BeforeEach
-  public void setUp() throws Exception {
-    MailboxTestUtil.setUp();
-  }
-
-  @AfterEach
-  public void tearDown() throws Exception {
-    MailboxTestUtil.tearDown();
-  }
+class HttpProxyUtilTest extends MailboxTestSuite {
 
   @Test
   void testConstructor() throws NoSuchMethodException {

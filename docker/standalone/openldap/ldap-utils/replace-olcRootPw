@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#
+# SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+BASE64_ROOT_PASSWORD=$(/opt/zextras/common/sbin/slappasswd -s "${LDAP_ROOT_PASSWORD}" | base64)
+echo "base64 is ${BASE64_ROOT_PASSWORD}"
+sed -i "/olcRootPW::/c\olcRootPW:: ${BASE64_ROOT_PASSWORD}" /opt/zextras/data/ldap/config/cn\=config/olcDatabase\=\{0\}config.ldif

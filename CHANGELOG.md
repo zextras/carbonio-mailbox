@@ -1,5 +1,30 @@
 
 
+# [4.21.0](https://github.com/Zextras/carbonio-mailbox/compare/4.20.1...4.21.0) (2025-05-19)
+
+
+### Bug Fixes
+
+* [CO-1622] refresh milter service on sendToDistList DL permission changes ([#677](https://github.com/Zextras/carbonio-mailbox/issues/677)) ([199a130](https://github.com/Zextras/carbonio-mailbox/commit/199a13097d6827f6693fa53a60e4fa3751e483ca))
+* [CO-1848] skip imap UI id range search ([#681](https://github.com/Zextras/carbonio-mailbox/issues/681)) ([72b52da](https://github.com/Zextras/carbonio-mailbox/commit/72b52dac215de207586a54ac41a4268840654621))
+* add explicit async support on servet and like + other alignments ([#675](https://github.com/Zextras/carbonio-mailbox/issues/675)) ([9c8724c](https://github.com/Zextras/carbonio-mailbox/commit/9c8724cc13ef0da62eb60896a03c1bd667cd023e))
+* add required filters and servlet names ([#676](https://github.com/Zextras/carbonio-mailbox/issues/676)) ([15f22e3](https://github.com/Zextras/carbonio-mailbox/commit/15f22e3d61848fde9ee8acf1efc19c0f26bdd4f8))
+* CreateMessageTest inconsistency ([#717](https://github.com/Zextras/carbonio-mailbox/issues/717)) ([219b107](https://github.com/Zextras/carbonio-mailbox/commit/219b1076002b05015f92d1a11a229970dbc0e860))
+* remove qupte from buildInfo.properties ([#715](https://github.com/Zextras/carbonio-mailbox/issues/715)) ([d0b938d](https://github.com/Zextras/carbonio-mailbox/commit/d0b938d2c0f90d2a3bbed9fbd1a77d49ab82205e))
+* wrong methods resulting from merge ([1b398dc](https://github.com/Zextras/carbonio-mailbox/commit/1b398dca73fc0a264e25aa6d7ac2c541d1ceedee))
+
+
+### Features
+
+* [CO-1945] autoprovisioning filter time made dependent on attribute carbonioAutoProvTimestampAttribute ([#688](https://github.com/Zextras/carbonio-mailbox/issues/688)) ([527e802](https://github.com/Zextras/carbonio-mailbox/commit/527e8027f683c09d8e15b575cccfd28f34835f9c))
+* [CO-1954] support lang_tag when calling preview service ([#687](https://github.com/Zextras/carbonio-mailbox/issues/687)) ([c87b9cf](https://github.com/Zextras/carbonio-mailbox/commit/c87b9cfc43082a671e0d73dbc0544f42d03c6c46)), closes [zextras/carbonio-mails-ui#849](https://github.com/zextras/carbonio-mails-ui/issues/849)
+* [CO-2053] drop support for SPNEGO authentication ([#724](https://github.com/Zextras/carbonio-mailbox/issues/724)) ([9ca6464](https://github.com/Zextras/carbonio-mailbox/commit/9ca64648df2bcb57da524e442051efde6d599882))
+
+
+### Reverts
+
+* Revert "chore: close critical Apache MINA Deserialization RCE Vulnerability" (#694) ([01e63c4](https://github.com/Zextras/carbonio-mailbox/commit/01e63c47cf9725cc6a41075dd17977c81804a373)), closes [#694](https://github.com/Zextras/carbonio-mailbox/issues/694)
+
 ## [4.20.1](https://github.com/zextras/carbonio-mailbox/compare/4.20.0...4.20.1) (2025-02-17)
 
 

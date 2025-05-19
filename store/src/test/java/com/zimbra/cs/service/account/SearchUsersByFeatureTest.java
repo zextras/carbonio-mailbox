@@ -1,7 +1,10 @@
 package com.zimbra.cs.service.account;
 
+import com.zextras.mailbox.util.AccountCreator;
+import static com.zimbra.common.soap.Element.parseXML;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.SoapClient;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -12,10 +15,15 @@ import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.JaxbUtil;
-import com.zimbra.soap.account.message.UserInfo;
 import com.zimbra.soap.account.message.SearchUsersByFeatureRequest;
 import com.zimbra.soap.account.message.SearchUsersByFeatureResponse;
+import com.zimbra.soap.account.message.UserInfo;
 import com.zimbra.soap.type.ZmBoolean;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
@@ -25,30 +33,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-
-import static com.zextras.mailbox.util.MailboxTestUtil.DEFAULT_DOMAIN;
-import static com.zimbra.common.soap.Element.parseXML;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @Tag("api")
 public class SearchUsersByFeatureTest extends SoapTestSuite {
   public static final String ACCOUNT_UID = "first.account";
   public static final String ACCOUNT_NAME = "name";
-  private static MailboxTestUtil.AccountCreator.Factory accountCreatorFactory;
+  private static AccountCreator.Factory accountCreatorFactory;
   private static Provisioning provisioning;
   private static Account userAccount;
 
   @BeforeAll
   static void setUp() throws Exception {
     provisioning = Provisioning.getInstance();
-    accountCreatorFactory = new MailboxTestUtil.AccountCreator.Factory(provisioning);
+    accountCreatorFactory = new AccountCreator.Factory(provisioning,
+        soapExtension.getDefaultDomain());
     userAccount = buildAccount("user", "User").create();
   }
 
@@ -71,7 +68,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts(""))
           .execute();
 
-      // account + userAccount are in DEFAULT_DOMAIN
+      // account + userAccount are in soapExtension.getDefaultDomain()
       assertEquals(2, getResponse(httpResponse).getAccounts().size());
     } finally {
       cleanUp(account);
@@ -99,10 +96,10 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchUsersByFeatureTest.searchAccounts(DEFAULT_DOMAIN))
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts(soapExtension.getDefaultDomain()))
           .execute();
 
-      // account + userAccount are in DEFAULT_DOMAIN
+      // account + userAccount are in soapExtension.getDefaultDomain()
       assertEquals(2, getResponse(httpResponse).getAccounts().size());
     } finally {
       cleanUp(account);
@@ -174,7 +171,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchUsersByFeatureTest.searchAccounts(MessageFormat.format("{0}@{1}", ACCOUNT_UID, DEFAULT_DOMAIN)))
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts(MessageFormat.format("{0}@{1}", ACCOUNT_UID, soapExtension.getDefaultDomain())))
           .execute();
 
       assertSuccessWithSingleAccount(httpResponse, account);
@@ -368,8 +365,8 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
   @Test
   void distributionListsAndGroupsNotIncluded() throws Exception {
-    var dl = provisioning.createDistributionList("accounts-dl@" + DEFAULT_DOMAIN, new HashMap<>());
-    var group = provisioning.createGroup("accounts-group@" + DEFAULT_DOMAIN, new HashMap<>(), false);
+    var dl = provisioning.createDistributionList("accounts-dl@" + soapExtension.getDefaultDomain(), new HashMap<>());
+    var group = provisioning.createGroup("accounts-group@" + soapExtension.getDefaultDomain(), new HashMap<>(), false);
 
     try {
       HttpResponse httpResponse = buildRequest()
@@ -495,8 +492,8 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
       var returnedAccounts = getResponse(httpResponse).getAccounts();
       assertEquals(2, returnedAccounts.size());
-      assertEquals("zzz.account@" + DEFAULT_DOMAIN, returnedAccounts.get(0).getName());
-      assertEquals("aaa.account@" + DEFAULT_DOMAIN, returnedAccounts.get(1).getName());
+      assertEquals("zzz.account@" + soapExtension.getDefaultDomain(), returnedAccounts.get(0).getName());
+      assertEquals("aaa.account@" + soapExtension.getDefaultDomain(), returnedAccounts.get(1).getName());
     } finally {
       cleanUp(account1);
       cleanUp(account2);
@@ -529,24 +526,24 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     return request;
   }
 
-  private static MailboxTestUtil.AccountCreator buildAccount(String uid, String fullName) {
-    return buildAccount(uid, fullName, DEFAULT_DOMAIN);
+  private static AccountCreator buildAccount(String uid, String fullName) {
+    return buildAccount(uid, fullName, soapExtension.getDefaultDomain());
   }
 
-  private static MailboxTestUtil.AccountCreator buildAccount(String uid, String fullName, String domain) {
+  private static AccountCreator buildAccount(String uid, String fullName, String domain) {
     return accountCreatorFactory.get()
         .withDomain(domain)
         .withUsername(uid)
         .withAttribute("displayName", fullName);
   }
 
-  private static MailboxTestUtil.AccountCreator withChatsFeature(boolean enabled,
-                                                                 MailboxTestUtil.AccountCreator account) {
+  private static AccountCreator withChatsFeature(boolean enabled,
+                                                                 AccountCreator account) {
     return account
         .withAttribute(SearchUsersByFeatureRequest.Features.CHATS.getFeature(), enabled ? "TRUE" : "FALSE");
   }
 
-  private static MailboxTestUtil.AccountCreator withCos(Cos cos, MailboxTestUtil.AccountCreator account) {
+  private static AccountCreator withCos(Cos cos, AccountCreator account) {
     if (cos != null) {
       account = account
           .withAttribute("zimbraCOSId", cos.getId());

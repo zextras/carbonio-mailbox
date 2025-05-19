@@ -16,10 +16,12 @@ def isBuildingTag() {
 }
 
 def buildDebPackages(String flavor) {
-    unstash 'staging'
-    sh 'cp -r staging /tmp'
-    sh 'sudo yap build ' + flavor + ' /tmp/staging/packages'
-    stash includes: 'artifacts/*.deb', name: 'artifacts-' + flavor
+    container('yap') {
+        unstash 'staging'
+        sh 'cp -r staging /tmp'
+        sh 'sudo yap build ' + flavor + ' /tmp/staging/packages'
+        stash includes: 'artifacts/*.deb', name: 'artifacts-' + flavor
+    }
 }
 
 def getPackages() {
@@ -41,7 +43,7 @@ def getRpmSpec(String upstream, String version) {
 
 def generateRpmSpec(String packageName, String version, String upstream) {
     return """{
-        "pattern": "artifacts/x86_64/(${packageName})-(*).el${version}.x86_64.rpm",
+        "pattern": "artifacts/(${packageName})-(*).el${version}.x86_64.rpm",
         "target": "${upstream}/zextras/{1}/{1}-{2}.el${version}.x86_64.rpm",
         "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
     }
@@ -49,17 +51,19 @@ def generateRpmSpec(String packageName, String version, String upstream) {
 }
 
 def buildRpmPackages(String flavor) {
-    unstash 'staging'
-    sh 'cp -r staging /tmp'
-    sh 'sudo yap build ' + flavor + ' /tmp/staging/packages'
-    stash includes: 'artifacts/x86_64/*.rpm', name: 'artifacts-' + flavor
+    container('yap') {
+        unstash 'staging'
+        sh 'cp -r staging /tmp'
+        sh 'sudo yap build ' + flavor + ' /tmp/staging/packages'
+        stash includes: 'artifacts/*.rpm', name: 'artifacts-' + flavor
+    }
 }
 
 
 pipeline {
     agent {
         node {
-            label 'zextras-agent-v4'
+            label 'zextras-v1'
         }
     }
 
@@ -92,7 +96,7 @@ pipeline {
             steps {
                 checkout scm
                 withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
-                    sh "cp ${SETTINGS_PATH} settings-jenkins.xml"
+                    sh 'cp $SETTINGS_PATH settings-jenkins.xml'
                 }
                 script {
                     env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
@@ -101,42 +105,36 @@ pipeline {
         }
         stage('Build') {
             steps {
-                mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
-                sh 'mkdir staging'
-                sh 'cp -r store* milter* native client common packages soap jython-libs staging'
-                script {
-                    if (BRANCH_NAME == 'devel') {
-                        def packages = getPackages()
-                        def timestamp = new Date().format('yyyyMMddHHmmss')
-                        packages.each { packageName ->
-                            def cleanPackageName = packageName.replaceFirst(/^carbonio-/, '')
-                            sh "sed -i \"s!pkgrel=.*!pkgrel=${timestamp}!\" staging/packages/${cleanPackageName}/PKGBUILD"
+                container('jdk-17') {
+                    sh 'apt update && apt install -y build-essential'
+                    mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
+                    sh 'mkdir staging'
+                    sh 'cp -r store* milter* native client common packages soap jython-libs staging'
+                    script {
+                        if (BRANCH_NAME == 'devel') {
+                            def packages = getPackages()
+                            def timestamp = new Date().format('yyyyMMddHHmmss')
+                            packages.each { packageName ->
+                                def cleanPackageName = packageName.replaceFirst(/^carbonio-/, '')
+                                sh "sed -i \"s!pkgrel=.*!pkgrel=${timestamp}!\" staging/packages/${cleanPackageName}/PKGBUILD"
+                            }
                         }
                     }
+                    stash includes: 'staging/**', name: 'staging'
                 }
-                stash includes: 'staging/**', name: 'staging'
             }
         }
-        stage('UT & IT') {
+        stage('UT, IT & API tests') {
             when {
                 expression {
                     params.SKIP_TEST_WITH_COVERAGE == false
                 }
             }
             steps {
-
-                mvnCmd("$BUILD_PROPERTIES_PARAMS verify -Dexcludegroups=api")
-                junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
-            }
-        }
-        stage('API Testing') {
-            when {
-                expression {
-                    params.SKIP_TEST_WITH_COVERAGE == false
+                container('jdk-17') {
+                    mvnCmd("$BUILD_PROPERTIES_PARAMS verify")
+                    junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
                 }
-            }
-            steps {
-                mvnCmd("$BUILD_PROPERTIES_PARAMS test -Dgroups=api")
             }
         }
 
@@ -148,8 +146,10 @@ pipeline {
                 }
             }
             steps {
-                withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
-                    mvnCmd("$BUILD_PROPERTIES_PARAMS sonar:sonar -Dsonar.exclusions=**/com/zimbra/soap/mail/type/*.java,**/com/zimbra/soap/mail/message/*.java,**/com/zimbra/cs/account/ZAttr*.java,**/com/zimbra/common/account/ZAttr*.java")
+                container('jdk-17') {
+                    withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
+                        mvnCmd("$BUILD_PROPERTIES_PARAMS sonar:sonar -Dsonar.junit.reportPaths=target/surefire-reports,target/failsafe-reports -Dsonar.exclusions=**/com/zimbra/soap/mail/type/*.java,**/com/zimbra/soap/mail/message/*.java,**/com/zimbra/cs/account/ZAttr*.java,**/com/zimbra/common/account/ZAttr*.java")
+                    }
                 }
             }
         }
@@ -158,7 +158,9 @@ pipeline {
                 branch 'devel';
             }
             steps {
-                mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true')
+                container('jdk-17') {
+                    mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true')
+                }
             }
         }
         stage('Publish to maven') {
@@ -168,7 +170,9 @@ pipeline {
                 }
             }
             steps {
-                mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true')
+                container('jdk-17') {
+                    mvnCmd('$BUILD_PROPERTIES_PARAMS deploy -DskipTests=true')
+                }
             }
         }
         stage('Build deb/rpm') {
@@ -178,7 +182,7 @@ pipeline {
                         stage('Ubuntu 20.04') {
                             agent {
                                 node {
-                                    label 'yap-agent-ubuntu-20.04-v2'
+                                    label 'yap-ubuntu-20-v1'
                                 }
                             }
                             steps {
@@ -193,7 +197,7 @@ pipeline {
                         stage('Ubuntu 22.04') {
                             agent {
                                 node {
-                                    label 'yap-agent-ubuntu-22.04-v2'
+                                    label 'yap-ubuntu-22-v1'
                                 }
                             }
                             steps {
@@ -208,7 +212,7 @@ pipeline {
                         stage('Ubuntu 24.04') {
                             agent {
                                 node {
-                                    label 'yap-agent-ubuntu-24.04-v2'
+                                    label 'yap-ubuntu-24-v1'
                                 }
                             }
                             steps {
@@ -223,7 +227,7 @@ pipeline {
                         stage('Rocky 8') {
                             agent {
                                 node {
-                                    label 'yap-agent-rocky-8-v2'
+                                    label 'yap-rocky-8-v1'
                                 }
                             }
                             steps {
@@ -231,14 +235,14 @@ pipeline {
                             }
                             post {
                                 always {
-                                    archiveArtifacts artifacts: 'artifacts/x86_64/*.rpm', fingerprint: true
+                                    archiveArtifacts artifacts: 'artifacts/*.rpm', fingerprint: true
                                 }
                             }
                         }
                         stage('Rocky 9') {
                             agent {
                                 node {
-                                    label 'yap-agent-rocky-9-v2'
+                                    label 'yap-rocky-9-v1'
                                 }
                             }
                             steps {
@@ -246,7 +250,7 @@ pipeline {
                             }
                             post {
                                 always {
-                                    archiveArtifacts artifacts: 'artifacts/x86_64/*.rpm', fingerprint: true
+                                    archiveArtifacts artifacts: 'artifacts/*.rpm', fingerprint: true
                                 }
                             }
                         }

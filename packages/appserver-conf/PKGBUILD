@@ -1,5 +1,5 @@
 pkgname="carbonio-appserver-conf"
-pkgver="4.20.1"
+pkgver="4.21.0"
 pkgrel="1"
 pkgdesc="Carbonio Mailbox Service Configuration"
 arch=('x86_64')
@@ -26,12 +26,8 @@ package() {
     "${pkgdir}/opt/zextras/conf/magic.zimbra"
   install -D "store-conf/conf/globs2.zimbra" \
     "${pkgdir}/opt/zextras/conf/globs2.zimbra"
-  install -D "store-conf/conf/spnego_java_options.in" \
-    "${pkgdir}/opt/zextras/conf/spnego_java_options.in"
   install -D "store-conf/conf/contacts/contact-fields.xml" \
     "${pkgdir}/opt/zextras/conf/contact-fields.xml"
   install -D "store-conf/conf/common-passwords.txt" \
     "${pkgdir}/opt/zextras/conf/common-passwords.txt"
-  install -D "store/conf/web.xml.production" \
-    "${pkgdir}/opt/zextras/conf/web.xml.in"
 }

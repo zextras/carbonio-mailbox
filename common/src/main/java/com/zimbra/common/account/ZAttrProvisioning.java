@@ -17,6 +17,25 @@ public class ZAttrProvisioning {
 
     ///// BEGIN-AUTO-GEN-REPLACE
 
+    public enum CarbonioPrefDarkMode {
+        auto("auto"),
+        enabled("enabled"),
+        disabled("disabled");
+        private final String mValue;
+        CarbonioPrefDarkMode(String value) { mValue = value; }
+        @Override
+        public String toString() { return mValue; }
+        public static CarbonioPrefDarkMode fromString(String s) throws ServiceException {
+            for (CarbonioPrefDarkMode value : values()) {
+                if (value.mValue.equals(s)) return value;
+             }
+             throw ServiceException.INVALID_REQUEST("invalid value: "+s+", valid values: "+ Arrays.asList(values()), null);
+        }
+        public boolean isAuto() { return this == auto;}
+        public boolean isEnabled() { return this == enabled;}
+        public boolean isDisabled() { return this == disabled;}
+    }
+
     public enum AccountCalendarUserType {
         USER("USER"),
         RESOURCE("RESOURCE");
@@ -100,8 +119,7 @@ public class ZAttrProvisioning {
     public enum AutoProvAuthMech {
         LDAP("LDAP"),
         PREAUTH("PREAUTH"),
-        KRB5("KRB5"),
-        SPNEGO("SPNEGO");
+        KRB5("KRB5");
         private final String mValue;
         AutoProvAuthMech(String value) { mValue = value; }
         @Override
@@ -115,7 +133,6 @@ public class ZAttrProvisioning {
         public boolean isLDAP() { return this == LDAP;}
         public boolean isPREAUTH() { return this == PREAUTH;}
         public boolean isKRB5() { return this == KRB5;}
-        public boolean isSPNEGO() { return this == SPNEGO;}
     }
 
     public enum AutoProvMode {
@@ -2875,6 +2892,24 @@ public class ZAttrProvisioning {
     public static final String A_carbonioAutoProvAllowedDomains = "carbonioAutoProvAllowedDomains";
 
     /**
+     * Server Timestamp when the external domain is last polled for EAGER
+     * auto provision.
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3164)
+    public static final String A_carbonioAutoProvLastPolledTimestamp = "carbonioAutoProvLastPolledTimestamp";
+
+    /**
+     * Column name for time check in filter createTimestamp (Default)
+     * modifyTimestamp
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3163)
+    public static final String A_carbonioAutoProvTimestampAttribute = "carbonioAutoProvTimestampAttribute";
+
+    /**
      * AD/LDAP timestamp format. For example:
      * yyyyMMddHHmmss.SSS&#039;Z&#039;, yyyyMMddHHmmss&#039;Z&#039;
      *
@@ -3006,6 +3041,14 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=3128)
     public static final String A_carbonioNotificationRecipients = "carbonioNotificationRecipients";
+
+    /**
+     * Carbonio Dark Mode preference for Account
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3165)
+    public static final String A_carbonioPrefDarkMode = "carbonioPrefDarkMode";
 
     /**
      * Whether Carbonio can send analytics reports for Account
@@ -3215,6 +3258,127 @@ public class ZAttrProvisioning {
      */
     @ZAttr(id=3104)
     public static final String A_carbonioWebUiTitle = "carbonioWebUiTitle";
+
+    /**
+     * Whether users can upload attachments in the chat
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3156)
+    public static final String A_carbonioWscAttachmentUpload = "carbonioWscAttachmentUpload";
+
+    /**
+     * Whether users can create group chats
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3154)
+    public static final String A_carbonioWscGroupChatCreation = "carbonioWscGroupChatCreation";
+
+    /**
+     * The maximum allowed size for an attachment in Mb
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3161)
+    public static final String A_carbonioWscMaxAttachmentSize = "carbonioWscMaxAttachmentSize";
+
+    /**
+     * The maximum number of users that can be part of a group
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3159)
+    public static final String A_carbonioWscMaxGroupMembers = "carbonioWscMaxGroupMembers";
+
+    /**
+     * The maximum allowed size for a room picture in Mb
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3160)
+    public static final String A_carbonioWscMaxRoomPictureSize = "carbonioWscMaxRoomPictureSize";
+
+    /**
+     * How long after a message can be deleted after being sent. Must be in
+     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
+     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
+     * milliseconds. If time unit is not specified, the default is
+     * s(seconds).
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3157)
+    public static final String A_carbonioWscMessageDeleteTimeLimit = "carbonioWscMessageDeleteTimeLimit";
+
+    /**
+     * How long after a message can be edited after being sent. Must be in
+     * valid duration format: {digits}{time-unit}. digits: 0-9, time-unit:
+     * [hmsd]|ms. h - hours, m - minutes, s - seconds, d - days, ms -
+     * milliseconds. If time unit is not specified, the default is
+     * s(seconds).
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3158)
+    public static final String A_carbonioWscMessageEditTimeLimit = "carbonioWscMessageEditTimeLimit";
+
+    /**
+     * Whether users can create private chats
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3155)
+    public static final String A_carbonioWscPrivateChatCreation = "carbonioWscPrivateChatCreation";
+
+    /**
+     * Whether users can record video call meetings
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3153)
+    public static final String A_carbonioWscRecordingEnabled = "carbonioWscRecordingEnabled";
+
+    /**
+     * Whether users can see the list of people who have read the message
+     * sent in the chat
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3149)
+    public static final String A_carbonioWscShowMessageReads = "carbonioWscShowMessageReads";
+
+    /**
+     * Whether users can see the presence status of other people
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3150)
+    public static final String A_carbonioWscShowUsersPresence = "carbonioWscShowUsersPresence";
+
+    /**
+     * Whether users can make video call meetings
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3152)
+    public static final String A_carbonioWscVideoCallEnabled = "carbonioWscVideoCallEnabled";
+
+    /**
+     * Whether users can use virtual backgrounds in video call meetings
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3151)
+    public static final String A_carbonioWscVirtualBackgroundEnabled = "carbonioWscVirtualBackgroundEnabled";
+
+    /**
+     * The path to the folder containing the virtual backgrounds
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3162)
+    public static final String A_carbonioWscVirtualBackgroundPath = "carbonioWscVirtualBackgroundPath";
 
     /**
      * RFC2256: common name(s) for which the entity is known by
@@ -9681,8 +9845,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraMailIdleSessionTimeout = "zimbraMailIdleSessionTimeout";
 
     /**
-     * When set to true, robots.txt on mailboxd will be set up to keep web
-     * crawlers out
+     * Deprecated since: 25.6.0. RobotsServlet has been removed. robots.txt
+     * is managed on proxy side. Orig desc: When set to true, robots.txt on
+     * mailboxd will be set up to keep web crawlers out
      *
      * @since ZCS 7.0.1
      */
@@ -17137,6 +17302,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSpellCheckURL = "zimbraSpellCheckURL";
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * whether spnego SSO is enabled
      *
      * @since ZCS 7.0.0
@@ -17145,6 +17311,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSpnegoAuthEnabled = "zimbraSpnegoAuthEnabled";
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth error URL
      *
      * @since ZCS 7.0.0
@@ -17153,6 +17320,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSpnegoAuthErrorURL = "zimbraSpnegoAuthErrorURL";
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth principal
      *
      * @since ZCS 7.0.0
@@ -17161,6 +17329,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSpnegoAuthPrincipal = "zimbraSpnegoAuthPrincipal";
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth realm
      *
      * @since ZCS 7.0.0
@@ -17169,6 +17338,7 @@ public class ZAttrProvisioning {
     public static final String A_zimbraSpnegoAuthRealm = "zimbraSpnegoAuthRealm";
 
     /**
+     * Deprecated since: 25.6.0. SPNEGO support was dropped. Orig desc:
      * spnego auth target name
      *
      * @since ZCS 7.0.0

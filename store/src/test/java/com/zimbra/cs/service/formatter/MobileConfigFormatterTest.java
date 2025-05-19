@@ -5,29 +5,9 @@
 
 package com.zimbra.cs.service.formatter;
 
-import java.io.StringWriter;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentType;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Maps;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
@@ -36,6 +16,22 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.formatter.FormatterFactory.FormatType;
 import com.zimbra.cs.service.formatter.MobileConfigFormatter.ConfigType;
+import java.io.StringWriter;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 public class MobileConfigFormatterTest {
     private static Formatter formatter;
@@ -49,13 +45,14 @@ public class MobileConfigFormatterTest {
     private static Document document;
     private static TransformerFactory transformerFactory;
     private static Transformer transformer;
+    private static Account account;
 
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
         prov.createDomain(DOMAIN_NAME, Maps.<String, Object>newHashMap());
-        prov.createAccount(USER_NAME, "secret", Maps.<String, Object>newHashMap());
+        account = prov.createAccount(USER_NAME, "secret", Maps.<String, Object>newHashMap());
         formatter = new MobileConfigFormatter();
         user = prov.getAccount(USER_NAME);
         user.setMail(USER_NAME);
@@ -144,7 +141,7 @@ public class MobileConfigFormatterTest {
     + "        <key>PayloadType</key>\n"
     + "        <string>com.apple.caldav.account</string>\n"
     + "        <key>PayloadUUID</key>\n"
-    + "        <string>00000000-0000-0000-0000-000000000000_caldav</string>\n"
+    + "        <string>" + account.getId() + "_caldav</string>\n"
     + "        <key>PayloadVersion</key>\n"
     + "        <integer>1</integer>\n"
     + "    </dict>\n"
@@ -195,7 +192,7 @@ public class MobileConfigFormatterTest {
     + "        <key>PayloadType</key>\n"
     + "        <string>com.apple.carddav.account</string>\n"
     + "        <key>PayloadUUID</key>\n"
-    + "        <string>00000000-0000-0000-0000-000000000000_carddav</string>\n"
+    + "        <string>" + account.getId() + "_carddav</string>\n"
     + "        <key>PayloadVersion</key>\n"
     + "        <integer>1</integer>\n"
     + "    </dict>\n"
@@ -265,7 +262,7 @@ public class MobileConfigFormatterTest {
     + "        <key>PayloadType</key>\n"
     + "        <string>com.apple.mail.managed</string>\n"
     + "        <key>PayloadUUID</key>\n"
-    + "        <string>00000000-0000-0000-0000-000000000000_imap</string>\n"
+    + "        <string>" + account.getId() + "_imap</string>\n"
     + "        <key>PayloadVersion</key>\n"
     + "        <integer>1</integer>\n"
     + "        <key>PreventAppSheet</key>\n"

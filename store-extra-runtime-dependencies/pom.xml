@@ -22,8 +22,6 @@
 
   <properties>
     <config.dir>${project.basedir}/conf</config.dir>
-    <war.web.xml>${config.dir}/web.xml.production</war.web.xml>
-    <warfile.name>service</warfile.name>
   </properties>
   <!-- Dependencies provided by no one (but who requires them on installation?) -->
   <dependencies>

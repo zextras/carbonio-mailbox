@@ -1,9 +1,8 @@
 package com.zimbra.cs.account;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.soap.SoapExtension;
-import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -27,18 +26,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 @Tag("api")
-@Execution(ExecutionMode.SAME_THREAD)
 public class ProvUtilRegressionTest {
 
   private static final Logger log = LogManager.getLogger(ProvUtilRegressionTest.class);
-  
-  private static final int SOAP_PORT = 8080;
+
+  public static final String DEFAULT_DOMAIN = "test.com";
+  public static final String DEFAULT_DOMAIN_ID = "f4806430-b434-4e93-9357-a02d9dd796b8";
+  private static final String SERVER_NAME = "localhost";
+
   public static final String ACCOUNT_UUID = "186c1c23-d2ad-46b4-9efd-ddd890b1a4a2";
   public static final String ACCOUNT_NAME = "test@test.com";
 
@@ -46,7 +45,6 @@ public class ProvUtilRegressionTest {
   static SoapExtension soapExtension = new SoapExtension.Builder()
           .addEngineHandler(TrackCommandRequestService.class.getName())
           .withBasePath("/service/admin/")
-          .withPort(SOAP_PORT)
           .create();
 
   ProvUtilRequestsFile requestsFile = new ProvUtilRequestsFile(Paths.get("src/test/resources/provutil/requests"));
@@ -55,7 +53,7 @@ public class ProvUtilRegressionTest {
   static void setUp() {
     //noinspection HttpUrlsUsage
     LC.zimbra_admin_service_scheme.setDefault("http://");
-    LC.zimbra_admin_service_port.setDefault(SOAP_PORT);
+    LC.zimbra_admin_service_port.setDefault(soapExtension.getPort());
   }
 
   @AfterAll
@@ -68,7 +66,7 @@ public class ProvUtilRegressionTest {
     soapExtension.initData();
     Provisioning provisioning = Provisioning.getInstance();
     provisioning.createAccount("adminAccount@test.com", "password", new HashMap<>(Map.of(
-        Provisioning.A_zimbraMailHost, MailboxTestUtil.SERVER_NAME,
+        Provisioning.A_zimbraMailHost, SERVER_NAME,
         Provisioning.A_zimbraIsAdminAccount, "TRUE"
     )));
   }
@@ -87,7 +85,7 @@ public class ProvUtilRegressionTest {
   }
 
   private void run(String commandLine) throws IOException {
-    String[] argsArray = commandLine.split("\s+");
+    String[] argsArray = commandLine.split(" +");
     log.info("Executing '{}'", commandLine);
     ProvUtilCommandRunner.CommandOutput out = null;
     try {
@@ -273,7 +271,6 @@ public class ProvUtilRegressionTest {
           "getMemcachedClientConfig f129be06-86bd-4123-8232-be39a96c2105 f129be06-86bd-4123-8232-be39a96c2105 f129be06-86bd-4123-8232-be39a96c2105",
           "getMemcachedClientConfig f129be06-86bd-4123-8232-be39a96c2105 f129be06-86bd-4123-8232-be39a96c2105 f129be06-86bd-4123-8232-be39a96c2105 f129be06-86bd-4123-8232-be39a96c2105",
           "getMemcachedClientConfig localhost",
-          "getSpnegoDomain",
           "help commands",
           "reloadMemcachedClientConfig all",
           "reloadMemcachedClientConfig f129be06-86bd-4123-8232-be39a96c2105",

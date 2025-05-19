@@ -4,15 +4,14 @@
 
 package com.zimbra.cs.mailbox;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.zimbra.cs.account.MockProvisioning;
-import com.zimbra.cs.account.Provisioning;
+import com.zextras.mailbox.util.AccountUtil;
+import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.MailItem.UnderlyingData;
-import java.util.HashMap;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,8 +27,6 @@ public class CalendarItemTest {
   @BeforeAll
   public static void init() throws Exception {
     MailboxTestUtil.initServer();
-    Provisioning prov = Provisioning.getInstance();
-    prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
   }
 
   /**
@@ -38,8 +35,9 @@ public class CalendarItemTest {
   @BeforeEach
   public void setUp() throws Exception {
     octxt = mock(OperationContext.class);
+    final Account account = AccountUtil.createAccount();
     Mailbox mbox =
-        MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        MailboxManager.getInstance().getMailboxByAccount(account);
     // have to spy because later real method is called
     calItem = mock(CalendarItem.class, CALLS_REAL_METHODS);
     calItem.mData = new UnderlyingData();

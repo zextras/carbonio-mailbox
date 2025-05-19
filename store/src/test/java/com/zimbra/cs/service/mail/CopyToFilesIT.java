@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.carbonio.files.FilesClient;
 import com.zextras.carbonio.files.entities.NodeId;
 import com.zextras.mailbox.util.MailMessageBuilder;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountAction;
+import com.zextras.mailbox.util.AccountAction;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
@@ -240,7 +240,7 @@ class CopyToFilesIT {
     CopyToFiles copyToFiles = copyToFiles(mockAttachmentService, mockFilesClient);
     when(mockFilesClient.uploadFile(
             anyString(), anyString(), anyString(), anyString(), any(), anyLong()))
-        .thenReturn(Try.failure(new RuntimeException("Ooops, Files failed")));
+        .thenReturn(Try.failure(new RuntimeException("Files upload failed")));
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("1");
     up.setPart("2");

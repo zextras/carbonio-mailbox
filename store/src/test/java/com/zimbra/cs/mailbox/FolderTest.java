@@ -5,29 +5,26 @@
 
 package com.zimbra.cs.mailbox;
 
-import com.zimbra.cs.mailbox.MailItem.Type;
-import java.util.HashMap;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import com.zimbra.common.service.ServiceException;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Constants;
 import com.zimbra.common.util.UUIDUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbMailItem;
 import com.zimbra.cs.db.DbResults;
 import com.zimbra.cs.db.DbUtil;
 import com.zimbra.cs.mailbox.MailItem.CustomMetadata;
+import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
 import com.zimbra.cs.mime.ParsedMessage;
+import java.util.HashMap;
+import java.util.List;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import qa.unittest.TestUtil;
 
 /**
@@ -35,11 +32,12 @@ import qa.unittest.TestUtil;
  */
 public final class FolderTest {
 
+ private static Account account;
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+        account = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
     @BeforeEach
@@ -134,7 +132,7 @@ public final class FolderTest {
 
  @Test
  void checkpointRECENT() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   int changeId = mbox.getLastChangeID();
   Folder inbox = mbox.getFolderById(null, Mailbox.ID_FOLDER_INBOX);
   int modMetadata = inbox.getModifiedSequence();
@@ -152,11 +150,9 @@ public final class FolderTest {
 
  @Test
  void defaultFolderFlags() throws Exception {
-  Provisioning prov = Provisioning.getInstance();
-  Account account = prov.getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
   try {
    account.setDefaultFolderFlags("*");
-   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
    Folder inbox = mbox.getFolderById(Mailbox.ID_FOLDER_INBOX);
    assertTrue(inbox.isFlagSet(Flag.BITMASK_SUBSCRIBED));
   } finally {
@@ -166,7 +162,7 @@ public final class FolderTest {
 
  @Test
  void deleteFolder() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   Folder.FolderOptions fopt = new Folder.FolderOptions().setDefaultView(Type.FOLDER);
   Folder root = mbox.createFolder(null, "/Root", fopt);
@@ -204,7 +200,7 @@ public final class FolderTest {
   */
  @Test
  void deleteParent() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   Folder parent = mbox.createFolder(null, "/" + "deleteParent - parent", new Folder.FolderOptions());
   int parentId = parent.getId();
   Folder child = mbox.createFolder(null, "deleteParent - child", parent.getId(), new Folder.FolderOptions());
@@ -247,7 +243,7 @@ public final class FolderTest {
   */
  @Test
  void emptyFolderNonrecursive() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   Folder parent = mbox.createFolder(null, "/" + "parent", new Folder.FolderOptions());
   int parentId = parent.getId();
   Folder child = mbox.createFolder(null, "child", parent.getId(), new Folder.FolderOptions());
@@ -282,7 +278,7 @@ public final class FolderTest {
   */
  @Test
  void testEmptyFolderRecursive() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   Folder parent = mbox.createFolder(null, "/" + "parent", new Folder.FolderOptions());
   int parentId = parent.getId();
   Folder child = mbox.createFolder(null, "child", parent.getId(), new Folder.FolderOptions());
@@ -321,7 +317,7 @@ public final class FolderTest {
   */
  @Test
  void manySubfolders() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   final int NUM_LEVELS = 20;
   int parentId = Mailbox.ID_FOLDER_INBOX;
   Folder top = null;
@@ -343,7 +339,7 @@ public final class FolderTest {
   */
  @Test
  void markDeletionTargets() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   String name = "MDT";
 
   // Create three messages and move two of them into a new folder.
@@ -374,7 +370,7 @@ public final class FolderTest {
   */
  @Test
  void updateHierarchy() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   Folder f1 = mbox.createFolder(null, "/f1", new Folder.FolderOptions());
   Folder f2 = mbox.createFolder(null, "/f1/f2", new Folder.FolderOptions());
@@ -405,7 +401,7 @@ public final class FolderTest {
 
  @Test
  void names() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   // empty or all-whitespace
   checkName(mbox, "", false);
@@ -439,7 +435,7 @@ public final class FolderTest {
 
  @Test
  void create() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   final String uuid = UUIDUtil.generateUUID();
   final String url = "https://www.google.com/calendar/dav/YOUREMAIL@DOMAIN.COM/user";

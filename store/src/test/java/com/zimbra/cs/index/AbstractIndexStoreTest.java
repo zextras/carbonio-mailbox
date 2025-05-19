@@ -5,13 +5,28 @@
 
 package com.zimbra.cs.index;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.zimbra.common.mailbox.ContactConstants;
+import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.index.ZimbraIndexReader.TermFieldEnumeration;
+import com.zimbra.cs.mailbox.Contact;
+import com.zimbra.cs.mailbox.Folder;
+import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.mailbox.MailboxTestUtil;
+import com.zimbra.cs.mime.ParsedContact;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.QueryParser;
@@ -25,29 +40,16 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermRangeQuery;
-import org.junit.jupiter.api.*;
-
-import com.google.common.collect.ImmutableMap;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-import com.google.common.collect.Lists;
-import com.zimbra.common.mailbox.ContactConstants;
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.index.ZimbraIndexReader.TermFieldEnumeration;
-import com.zimbra.cs.mailbox.Contact;
-import com.zimbra.cs.mailbox.Folder;
-import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
-import com.zimbra.cs.mime.ParsedContact;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public abstract class AbstractIndexStoreTest {
     static String originalIndexStoreFactory;
+    static Provisioning prov;
+    static Account testAcct;
 
     protected abstract String getIndexStoreFactory();
 
@@ -65,12 +67,9 @@ public abstract class AbstractIndexStoreTest {
         return true;
     }
 
-    static Provisioning prov;
-    static Account testAcct;
 
     @BeforeAll
     public static void init() throws Exception {
-        System.setProperty("log4j.configuration", "log4j-test.properties");
         MailboxTestUtil.initServer();
         prov = Provisioning.getInstance();
         testAcct = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
@@ -106,7 +105,7 @@ public abstract class AbstractIndexStoreTest {
  @Test
  void termQuery() throws Exception {
   ZimbraLog.test.debug("--->TEST termQuery");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(testAcct.getId());
   Contact contact = createContact(mbox, "First", "Last", "test@zimbra.com");
   createContact(mbox, "a", "bc", "abc@zimbra.com");
   createContact(mbox, "j", "k", "j.k@zimbra.com");
@@ -135,7 +134,7 @@ public abstract class AbstractIndexStoreTest {
  @Test
  void filteredTermQuery() throws Exception {
   ZimbraLog.test.debug("--->TEST filteredTermQuery");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(testAcct.getId());
   Folder folder = mbox.getFolderById(null, Mailbox.ID_FOLDER_CONTACTS);
   Contact contact1 = createContact(mbox, "a", "bc", "abc@zimbra.com");
   Contact contact2 = createContact(mbox, "a", "bcd", "abcd@zimbra.com");
@@ -181,7 +180,7 @@ public abstract class AbstractIndexStoreTest {
  @Test
  void sortedFilteredTermQuery() throws Exception {
   ZimbraLog.test.debug("--->TEST sortedFilteredTermQuery");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(testAcct.getId());
   Folder folder = mbox.getFolderById(null, Mailbox.ID_FOLDER_CONTACTS);
   Contact con1 = createContact(mbox, "a", "bc", "abc@zimbra.com");
   Contact con2 = createContact(mbox, "abcd@zimbra.com");
@@ -229,7 +228,7 @@ public abstract class AbstractIndexStoreTest {
  @Test
  void leadingWildcardQuery() throws Exception {
   ZimbraLog.test.debug("--->TEST leadingWildcardQuery");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(testAcct.getId());
   Contact contact = createContact(mbox, "First", "Last", "f.last@zimbra.com", "Leading Wildcard");
   createContact(mbox, "Grand", "Piano", "grand@vmware.com");
   mbox.index.indexDeferredItems(); // Make sure all indexing has been done
@@ -253,7 +252,7 @@ public abstract class AbstractIndexStoreTest {
  @Test
  void booleanQuery() throws Exception {
   ZimbraLog.test.debug("--->TEST booleanQuery");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(testAcct.getId());
   Contact contact = createContact(mbox, "First", "Last", "f.last@zimbra.com", "Software Development Engineer");
   createContact(mbox, "Given", "Surname", "GiV.SurN@zimbra.com");
   mbox.index.indexDeferredItems(); // Make sure all indexing has been done
@@ -283,7 +282,7 @@ public abstract class AbstractIndexStoreTest {
  @Test
  void phraseQuery() throws Exception {
   ZimbraLog.test.debug("--->TEST phraseQuery");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(testAcct.getId());
   createContact(mbox, "Non", "Match", "nOn.MaTchiNg@zimbra.com");
   Contact contact2 = createContact(mbox, "First", "Last", "f.last@zimbra.com", "Software Development Engineer");
   createContact(mbox, "Given", "Surname", "GiV.SurN@zimbra.com");
@@ -317,7 +316,7 @@ public abstract class AbstractIndexStoreTest {
  @Test
  void phraseQueryWithStopWord() throws Exception {
   ZimbraLog.test.debug("--->TEST phraseQueryWithStopWord");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(testAcct.getId());
   createContact(mbox, "Non", "Match", "nOn.MaTchiNg@zimbra.com");
   Contact contact2 = createContact(mbox, "First", "Last", "f.last@zimbra.com",
     "1066 and all that with William the conqueror and others");
@@ -343,7 +342,7 @@ public abstract class AbstractIndexStoreTest {
  @Test
  void multiPhraseQuery() throws Exception {
   ZimbraLog.test.debug("--->TEST multiPhraseQuery");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(testAcct.getId());
   createContact(mbox, "Non", "Match", "nOn.MaTchiNg@zimbra.com");
   Contact contact1 = createContact(mbox, "Paul", "AA",  "aa@example.net", "Software Development Engineer");
   createContact(mbox, "Jane", "BB",  "bb@example.net", "Software Planning Engineer");
@@ -392,7 +391,7 @@ public abstract class AbstractIndexStoreTest {
  @Test
  void prefixQuery() throws Exception {
   ZimbraLog.test.debug("--->TEST prefixQuery");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(testAcct.getId());
   Contact contact1 = createContact(mbox, "a", "bc", "abc@zimbra.com");
   Contact contact2 = createContact(mbox, "a", "bcd", "abcd@zimbra.com");
   createContact(mbox, "x", "Y", "xy@zimbra.com");
@@ -423,7 +422,7 @@ public abstract class AbstractIndexStoreTest {
  @Test
  void termRangeQuery() throws Exception {
   ZimbraLog.test.debug("--->TEST termRangeQuery");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(testAcct.getId());
   Contact contact1 = createContact(mbox, "James", "Peters", "abc@zimbra.com");
   Contact contact2 = createContact(mbox, "a", "bcd", "abcd@zimbra.com");
   createContact(mbox, "aa", "bcd", "aaaa@zimbra.com");
@@ -455,7 +454,7 @@ public abstract class AbstractIndexStoreTest {
  @Test
  void deleteDocument() throws Exception {
   ZimbraLog.test.debug("--->TEST deleteDocument");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(testAcct.getId());
   IndexStore index = mbox.index.getIndexStore();
   index.deleteIndex();
   Indexer indexer = index.openIndexer();
@@ -489,7 +488,7 @@ public abstract class AbstractIndexStoreTest {
  @Test
  void getCount() throws Exception {
   ZimbraLog.test.debug("--->TEST getCount");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(testAcct.getId());
   IndexStore index = mbox.index.getIndexStore();
   index.deleteIndex();
   Indexer indexer = index.openIndexer();
@@ -547,7 +546,7 @@ public abstract class AbstractIndexStoreTest {
  @Test
  void termEnum() throws Exception {
   ZimbraLog.test.debug("--->TEST termEnum");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(testAcct.getId());
   createContact(mbox, "teSt1@ziMBRA.com");
   createContact(mbox, "test2@zimbra.com");
 

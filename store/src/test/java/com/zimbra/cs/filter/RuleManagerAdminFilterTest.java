@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.google.common.collect.Maps;
 import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.DeliveryContext;
 import com.zimbra.cs.mailbox.MailItem;
@@ -32,6 +31,7 @@ import org.junit.jupiter.api.Test;
  * Unit test for {@link RuleManager} with admin-defined rules.
  */
 public final class RuleManagerAdminFilterTest {
+ private static Account account;
     String scriptAdminBefore = "require [\"tag\", \"log\"];\n"
         + "if true {\n"
         + "  tag \"admin-defined-before\";\n"
@@ -68,7 +68,7 @@ public final class RuleManagerAdminFilterTest {
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
         Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+        account = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
     @BeforeEach
@@ -78,7 +78,6 @@ public final class RuleManagerAdminFilterTest {
 
  @Test
  void applyAdminRuleBeforeAndAfterUserRuleForIncoming() throws Exception {
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   RuleManager.clearCachedRules(account);
@@ -106,7 +105,7 @@ public final class RuleManagerAdminFilterTest {
   */
  @Test
  void applyOnlyUserRuleForIncoming() throws Exception {
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   RuleManager.clearCachedRules(account);
@@ -126,7 +125,7 @@ public final class RuleManagerAdminFilterTest {
 
  @Test
  void stopInTheAdminRule() throws Exception {
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   RuleManager.clearCachedRules(account);
@@ -148,7 +147,7 @@ public final class RuleManagerAdminFilterTest {
 
  @Test
  void invalidRequireComand() throws Exception {
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   RuleManager.clearCachedRules(account);
@@ -172,7 +171,7 @@ public final class RuleManagerAdminFilterTest {
 
  @Test
  void invalidRequireComand2() throws Exception {
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   RuleManager.clearCachedRules(account);
@@ -212,7 +211,7 @@ public final class RuleManagerAdminFilterTest {
 
  @Test
  void resetVariables() throws Exception {
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  
   RuleManager.clearCachedRules(account);
 
   Map<String, Object> attrs = Maps.newHashMap();
@@ -252,7 +251,7 @@ public final class RuleManagerAdminFilterTest {
   String enduser     = "tag \"enduser\";";
   String adminAfter  = "tag \"after\";";
 
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
   RuleManager.clearCachedRules(account);
 
@@ -280,7 +279,7 @@ public final class RuleManagerAdminFilterTest {
   String enduser     = "tag \"enduser\";";
   String adminAfter  = "tag \"after\";";
 
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
   RuleManager.clearCachedRules(account);
 
@@ -304,7 +303,7 @@ public final class RuleManagerAdminFilterTest {
   String enduser     = "tag \"enduser\";";
   String adminAfter  = "tag \"after\";";
 
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
   RuleManager.clearCachedRules(account);
 
@@ -345,7 +344,7 @@ public final class RuleManagerAdminFilterTest {
          String adminBefore = "require [\"editheader\",\"log\"];\n"
                             + "deleteheader :matches \"X-Test-Header\" \"Ran*\";\n";
  
-         Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+         
          Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
          RuleManager.clearCachedRules(account);
  
@@ -384,7 +383,7 @@ public final class RuleManagerAdminFilterTest {
          String endUser = "require [\"editheader\",\"log\"];\n"
                         + "deleteheader :matches \"X-Test-Header\" \"Ran*\";\n";
  
-         Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+         
          Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
          RuleManager.clearCachedRules(account);
  
@@ -423,7 +422,7 @@ public final class RuleManagerAdminFilterTest {
          String adminAfter = "require [\"editheader\",\"log\"];\n"
                            + "deleteheader :matches \"X-Test-Header\" \"Ran*\";\n";
  
-         Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+         
          Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
          RuleManager.clearCachedRules(account);
  
@@ -468,7 +467,7 @@ public final class RuleManagerAdminFilterTest {
     + "  tag \"123require789\";\n"
     + "}";
 
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
   RuleManager.clearCachedRules(account);
 
@@ -493,7 +492,7 @@ public final class RuleManagerAdminFilterTest {
 
  @Test
  void noFilters() throws Exception {
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
   RuleManager.clearCachedRules(account);
 
@@ -509,7 +508,7 @@ public final class RuleManagerAdminFilterTest {
 
  @Test
  void discardOnlyAtUser() throws Exception {
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
   RuleManager.clearCachedRules(account);
 
@@ -527,7 +526,7 @@ public final class RuleManagerAdminFilterTest {
 
  @Test
  void discardOnlyAtAdminBefore() throws Exception {
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
   RuleManager.clearCachedRules(account);
 
@@ -545,7 +544,7 @@ public final class RuleManagerAdminFilterTest {
 
  @Test
  void discardOnlyAtAdminAfter() throws Exception {
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
   RuleManager.clearCachedRules(account);
 

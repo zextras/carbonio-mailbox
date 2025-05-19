@@ -61,6 +61,7 @@ public class OwaspHtmlSanitizerTest {
   @BeforeAll
   public static void init() throws Exception {
     MailboxTestUtil.initServer();
+    LC.zimbra_use_owasp_html_sanitizer.value();
     EMAIL_BASE_DIR = MailboxTestUtil.getZimbraServerDir("") + EMAIL_BASE_DIR;
   }
 

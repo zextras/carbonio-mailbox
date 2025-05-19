@@ -339,7 +339,6 @@ public enum Command {
       1,
       Integer.MAX_VALUE),
   GET_SHARE_INFO("getShareInfo", "gsi", "{owner-name|owner-id}", Category.SHARE, 1, 1),
-  GET_SPNEGO_DOMAIN("getSpnegoDomain", "gsd", "", Category.MISC, 0, 0),
   GRANT_RIGHT(
       "grantRight",
       "grr",

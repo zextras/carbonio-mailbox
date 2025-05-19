@@ -577,12 +577,6 @@ public final class LC {
   public static final KnownKey calendar_item_get_max_retries = KnownKey.newKey(100);
   public static final KnownKey zimbraPrefCalenderScaling = KnownKey.newKey(false);
 
-  public static final KnownKey spnego_java_options =
-      KnownKey.newKey(
-          "-Djava.security.krb5.conf=${mailboxd_directory}/etc/krb5.ini "
-              + "-Djava.security.auth.login.config=${mailboxd_directory}/etc/spnego.conf "
-              + "-Djavax.security.auth.useSubjectCredsOnly=false");
-
   public static final KnownKey text_attachments_base64 = KnownKey.newKey(true);
 
   public static final KnownKey nio_imap_enabled = KnownKey.newKey(true);
@@ -1315,6 +1309,7 @@ public final class LC {
   @Reloadable public static final KnownKey imap_always_use_remote_store = KnownKey.newKey(false);
   // owasp handler
   public static final KnownKey zimbra_use_owasp_html_sanitizer = KnownKey.newKey(true);
+  public static final KnownKey owasp_policy_file = KnownKey.newKey("${zimbra_home}/conf/owasp_policy.xml");
   // file content type blacklist
   public static final KnownKey zimbra_file_content_type_blacklist =
       KnownKey.newKey("application/x-ms*");
@@ -1345,6 +1340,8 @@ public final class LC {
   public static final KnownKey zimbra_imap_folder_pagination_enabled = KnownKey.newKey(false);
   // imap different message size than postfix mta ( useful for import )
   public static final KnownKey imap_max_message_size = KnownKey.newKey(null);
+  // imap uid range search
+  public static final KnownKey ignore_imap_uid_range_search = KnownKey.newKey(true);
   // unsubscribe folder creation enabled
   public static final KnownKey zimbra_feature_safe_unsubscribe_folder_enabled =
       KnownKey.newKey(false);

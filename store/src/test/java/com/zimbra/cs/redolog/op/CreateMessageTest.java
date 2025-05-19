@@ -18,87 +18,86 @@ import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.mime.ParsedMessageDataSource;
 import com.zimbra.cs.redolog.RedoLogInput;
 import com.zimbra.cs.redolog.RedoLogOutput;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-
-import org.junit.jupiter.api.AfterEach;
+import java.util.Map;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class CreateMessageTest {
-    private CreateMessage op;
-    private Mailbox mbox;
 
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-    }
+	@BeforeAll
+	public static void init() throws Exception {
+		MailboxTestUtil.initServer();
+	}
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        Account account = Provisioning.getInstance().createAccount(
-            "test@zimbra.com", "secret", new HashMap<String, Object>());
-        mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-        ParsedMessage pm = MailboxTestUtil.generateMessage("test");
-        final long msgSize = pm.getRawInputStream().available();
+	private Mailbox createTestMailbox() throws Exception {
+		Account account = Provisioning.getInstance().createAccount(UUID.randomUUID() +
+				"@zimbra.com", "secret", new HashMap<String, Object>(
+				Map.of(Provisioning.A_zimbraId, UUID.randomUUID().toString())
+		));
+		return MailboxManager.getInstance().getMailboxByAccount(account);
+	}
 
-        op = new CreateMessage(mbox.getId() /* mailboxId */, "rcpt@example.com",
-                               false /* shared */, "message digest",
-                               msgSize /* msgSize */, 6 /* folderId */,
-                               true /* noICal */, 0 /* flags */,
-                               new String[] {"tag"});
-        op.setMessageBodyInfo(new ParsedMessageDataSource(pm), msgSize);
-        op.setMessageId(-1);
-        op.setConvId(-1);
-    }
+	private CreateMessage createTestMessageRedoableOp(Mailbox mailbox) throws Exception {
+		ParsedMessage pm = MailboxTestUtil.generateMessage("test");
+		final long msgSize = pm.getRawInputStream().available();
+		final CreateMessage op = new CreateMessage(mailbox.getId() /* mailboxId */, "rcpt@example.com",
+				false /* shared */, "message digest",
+				msgSize /* msgSize */, 6 /* folderId */,
+				true /* noICal */, 0 /* flags */,
+				new String[]{"tag"});
+		op.setMessageBodyInfo(new ParsedMessageDataSource(pm), msgSize);
+		op.setMessageId(-1);
+		op.setConvId(-1);
+		return op;
+	}
 
-    @AfterEach
-    public void tearDown() throws Exception {
-        MailboxTestUtil.clearData();
-    }
+	@Test
+	void startSetsTimestamp() throws Exception {
+		final CreateMessage op = createTestMessageRedoableOp(createTestMailbox());
+		assertEquals(-1, op.mReceivedDate, "receivedDate != -1 before start");
+		op.start(7);
+		assertEquals(7, op.mReceivedDate, "receivedDate != 7");
+		assertEquals(7, op.getTimestamp(), "timestamp != 7");
+	}
 
- @Test
- void startSetsTimestamp() {
-  assertEquals(-1, op.mReceivedDate, "receivedDate != -1 before start");
-  op.start(7);
-  assertEquals(7, op.mReceivedDate, "receivedDate != 7");
-  assertEquals(7, op.getTimestamp(), "timestamp != 7");
- }
+	@Test
+	void serializeDeserialize() throws Exception {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		CreateMessage op = createTestMessageRedoableOp(createTestMailbox());
+		op.serializeData(new RedoLogOutput(out));
 
- @Test
- void serializeDeserialize() throws Exception {
-  ByteArrayOutputStream out = new ByteArrayOutputStream();
-  op.serializeData(new RedoLogOutput(out));
+		// reset op
+		op = new CreateMessage();
+		op.deserializeData(
+				new RedoLogInput(new ByteArrayInputStream(out.toByteArray())));
+		assertEquals("rcpt@example.com", op.getRcptEmail());
+		assertEquals(6, op.getFolderId());
+		assertEquals(0, op.getFlags());
+		assertArrayEquals(new String[]{"tag"}, op.getTags());
+		assertEquals(":streamed:", op.getPath());
+		assertEquals("",
+				CharStreams.toString(new InputStreamReader(
+						op.getAdditionalDataStream(), Charsets.UTF_8)),
+				"Input stream is not empty");
+	}
 
-  // reset op
-  op = new CreateMessage();
-  op.deserializeData(
-    new RedoLogInput(new ByteArrayInputStream(out.toByteArray())));
-  assertEquals("rcpt@example.com", op.getRcptEmail());
-  assertEquals(6, op.getFolderId());
-  assertEquals(0, op.getFlags());
-  assertArrayEquals(new String[]{"tag"}, op.getTags());
-  assertEquals(":streamed:", op.getPath());
-  assertEquals("",
-    CharStreams.toString(new InputStreamReader(
-      op.getAdditionalDataStream(), Charsets.UTF_8)),
-    "Input stream is not empty");
- }
+	@Test
+	void redo() throws Exception {
+		final Mailbox testMailbox = createTestMailbox();
+		final CreateMessage op = createTestMessageRedoableOp(testMailbox);
+		op.redo();
 
- @Test
- void redo() throws Exception {
-  op.redo();
-
-  // Look in the mailbox and see if the message is there.
-  Message msg =
-    mbox.getMessageById(op.getOperationContext(), mbox.getLastItemId());
-  assertEquals("test", msg.getSubject(), "subject != test");
-  assertEquals("Bob Evans <bob@example.com>", msg.getSender(), "sender != bob@example.com");
-  assertEquals(6, msg.getFolderId(), "folderId != 6");
- }
+		// Look in the mailbox and see if the message is there.
+		Message msg =
+				testMailbox.getMessageById(op.getOperationContext(), testMailbox.getLastItemId());
+		assertEquals("test", msg.getSubject(), "subject != test");
+		assertEquals("Bob Evans <bob@example.com>", msg.getSender(), "sender != bob@example.com");
+		assertEquals(6, msg.getFolderId(), "folderId != 6");
+	}
 }

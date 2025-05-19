@@ -5,21 +5,15 @@
 
 package com.zimbra.cs.mailbox;
 
-import java.util.HashMap;
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.zextras.mailbox.util.AccountUtil;
+import com.zimbra.cs.account.Account;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import com.zimbra.client.ZItem;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
-import com.zimbra.cs.account.MockProvisioning;
-import com.zimbra.cs.account.Provisioning;
 
 /**
  * Unit test for {@link Flag}.
@@ -28,17 +22,15 @@ import com.zimbra.cs.account.Provisioning;
  */
 public final class FlagTest {
 
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
-    }
+ @BeforeAll
+ public static void init() throws Exception {
+  MailboxTestUtil.initServer();
+ }
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        MailboxTestUtil.clearData();
-    }
+ @BeforeEach
+ public void setUp() throws Exception {
+  MailboxTestUtil.clearData();
+ }
 
  @SuppressWarnings("deprecation")
  @Test
@@ -112,7 +104,8 @@ public final class FlagTest {
 
  @Test
  void equals() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  final Account account = AccountUtil.createAccount();
+  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
   assertEquals(Flag.FlagInfo.UNREAD.toFlag(mbox), Flag.FlagInfo.UNREAD.toFlag(mbox));
   assertEquals(Flag.FlagInfo.UNREAD.toFlag(mbox).hashCode(), Flag.FlagInfo.UNREAD.toFlag(mbox).hashCode());
  }

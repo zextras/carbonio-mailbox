@@ -5,18 +5,10 @@
 
 package com.zimbra.cs.filter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
+import com.zextras.mailbox.util.AccountUtil;
 import com.zimbra.cs.account.Account;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import com.zimbra.cs.account.MockProvisioning;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.filter.jsieve.ActionFlag;
 import com.zimbra.cs.mailbox.DeliveryContext;
 import com.zimbra.cs.mailbox.DeliveryOptions;
@@ -30,6 +22,10 @@ import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.util.ItemId;
+import java.util.ArrayList;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link ExistingMessageHandler}.
@@ -39,8 +35,6 @@ public final class ExistingMessageHandlerTest {
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
     }
 
     @BeforeEach
@@ -50,7 +44,7 @@ public final class ExistingMessageHandlerTest {
 
  @Test
  void existing() throws Exception {
-  Account account = Provisioning.getInstance().getAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
+  Account account = AccountUtil.createAccount();
   RuleManager.clearCachedRules(account);
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
   OperationContext octx = new OperationContext(mbox);

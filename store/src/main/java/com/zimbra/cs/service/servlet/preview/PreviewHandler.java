@@ -279,6 +279,7 @@ public class PreviewHandler {
 
     if (imagePreviewMatcher.find()) {
       var previewArea = imagePreviewMatcher.group(3);
+      //TODO: consider refactoring the tested code as it does not make sense to use parseQuery and generateQuery
       var queryParameters =
           Utils.parseQueryParameters(imagePreviewMatcher.group(5));
       return Try.of(

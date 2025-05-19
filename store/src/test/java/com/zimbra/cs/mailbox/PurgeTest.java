@@ -13,7 +13,6 @@ import com.zimbra.common.util.Constants;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Config;
 import com.zimbra.cs.account.Cos;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
@@ -29,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import qa.unittest.TestUtil;
 
 public class PurgeTest {
+  private Account account;
 
   @BeforeAll
   public static void init() throws Exception {
@@ -39,8 +39,7 @@ public class PurgeTest {
   public void setUp() throws Exception {
     MailboxTestUtil.clearData();
     Provisioning prov = Provisioning.getInstance();
-    prov.deleteAccount(MockProvisioning.DEFAULT_ACCOUNT_ID);
-    prov.createAccount("test@zimbra.com", "secret", new HashMap<>());
+    account = prov.createAccount("test@zimbra.com", "secret", new HashMap<>());
     Config config = Provisioning.getInstance().getConfig();
     RetentionPolicyManager mgr = RetentionPolicyManager.getInstance();
     RetentionPolicy rp = mgr.getSystemRetentionPolicy(config);
@@ -56,7 +55,7 @@ public class PurgeTest {
   @Test
   void folderPurgePolicy() throws Exception {
     Mailbox mbox =
-        MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
     // Create folder and test messages.
     Folder folder =
@@ -111,7 +110,7 @@ public class PurgeTest {
   @Test
   void tagPurgePolicy() throws Exception {
     Mailbox mbox =
-        MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
     // Create folder and test messages.
     Tag tag = mbox.createTag(null, "tag", (byte) 0);
@@ -609,7 +608,7 @@ public class PurgeTest {
   @Test
   void shouldDenyWhenInvalidFolderLifetimeFormat() throws Exception {
     Mailbox mbox =
-        MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        MailboxManager.getInstance().getMailboxByAccountId(account.getId());
     Folder folder =
         mbox.createFolder(
             null,
@@ -626,7 +625,7 @@ public class PurgeTest {
   @Test
   void shouldDenyWhenSettingMultiplePolicy() throws Exception {
     Mailbox mbox =
-        MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        MailboxManager.getInstance().getMailboxByAccountId(account.getId());
     Folder folder =
         mbox.createFolder(
             null,
@@ -780,7 +779,7 @@ public class PurgeTest {
   @Test
   void purgeWithSystemPolicy() throws Exception {
     Mailbox mbox =
-        MailboxManager.getInstance().getMailboxByAccountId(MockProvisioning.DEFAULT_ACCOUNT_ID);
+        MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
     // Create folder and test messages.
     Folder folder =
@@ -848,7 +847,7 @@ public class PurgeTest {
   }
 
   private Account getAccount() throws ServiceException {
-    return Provisioning.getInstance().get(AccountBy.id, MockProvisioning.DEFAULT_ACCOUNT_ID);
+    return Provisioning.getInstance().get(AccountBy.id, account.getId());
   }
 
   private Mailbox getMailbox() throws ServiceException {

@@ -6,16 +6,12 @@
 package com.zimbra.cs.service;
 
 import static com.zimbra.common.util.ZimbraCookie.COOKIE_ZM_AUTH_TOKEN;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.Maps;
-import com.zextras.mailbox.util.MailboxTestUtil.AccountCreator;
+import com.zextras.mailbox.util.AccountCreator;
+import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
@@ -35,6 +31,7 @@ import com.zimbra.cs.service.account.Auth;
 import com.zimbra.cs.service.mail.ServiceTestUtil;
 import com.zimbra.cs.servlet.CsrfFilter;
 import com.zimbra.soap.SoapServlet;
+import java.io.File;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URL;
@@ -93,18 +90,19 @@ public class FileUploadServletTest {
   private static Account testAccount;
   private static AccountCreator.Factory accountCreatorFactory;
   private Server server;
+  private static File testDirectory;
 
   @BeforeAll
   public static void init() throws Exception {
-
-    LC.zimbra_tmp_directory.setDefault("build/test");
+    testDirectory = Files.createTempDirectory("fileUploadServletTest").toFile();
+    LC.zimbra_tmp_directory.setDefault(testDirectory.getAbsolutePath());
 
     servlet = new FileUploadServlet();
 
     MailboxTestUtil.initServer();
     var provisioning = Provisioning.getInstance();
 
-    accountCreatorFactory = new AccountCreator.Factory(provisioning);
+    accountCreatorFactory = new AccountCreator.Factory(provisioning, "test.com");
 
     Map<String, Object> attrs = Maps.newHashMap();
     provisioning.createAccount("test@zimbra.com", "secret", attrs);
@@ -146,7 +144,7 @@ public class FileUploadServletTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    var address = new InetSocketAddress("localhost", 8080);
+    var address = new InetSocketAddress("localhost", PortUtil.findFreePort());
     server = new Server(address);
     var servletHolder = new ServletHolder(FileUploadServlet.class);
     var servletContextHandler = new ServletContextHandler();

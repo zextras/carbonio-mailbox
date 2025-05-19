@@ -1,8 +1,9 @@
 package com.zimbra.cs.service.admin;
 
-import com.zextras.mailbox.soap.SoapExtension;
+import com.zextras.mailbox.util.AccountAction;
+import com.zextras.mailbox.util.AccountCreator;
+
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.MailboxTestUtil;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
@@ -17,27 +18,20 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 @Tag("api")
-class DeleteAccountApiTest extends SoapTestSuite {
+class DeleteAccountApiTest  extends SoapTestSuite {
 
-	@RegisterExtension
-	static SoapExtension soapExtension = new SoapExtension.Builder()
-			.addEngineHandler(NoFilesInstalledAdminService.class.getName())
-			.create();
-
-	private static MailboxTestUtil.AccountCreator.Factory accountCreatorFactory;
-	private static MailboxTestUtil.AccountAction.Factory accountActionFactory;
-
+	private static AccountCreator.Factory accountCreatorFactory;
+	private static AccountAction.Factory accountActionFactory;
 
 
 	@BeforeAll
 	static void beforeAll() throws Exception {
 		Provisioning provisioning = Provisioning.getInstance();
 		final MailboxManager mailboxManager = MailboxManager.getInstance();
-		accountCreatorFactory = new MailboxTestUtil.AccountCreator.Factory(provisioning);
-		accountActionFactory = new MailboxTestUtil.AccountAction.Factory(mailboxManager,
+		accountCreatorFactory = new AccountCreator.Factory(provisioning, soapExtension.getDefaultDomain());
+		accountActionFactory = new AccountAction.Factory(mailboxManager,
 				RightManager.getInstance());
 	}
 
@@ -49,12 +43,12 @@ class DeleteAccountApiTest extends SoapTestSuite {
 				.grantPublicFolderRight(Mailbox.ID_FOLDER_CALENDAR, "r");
 		final String accountWithPublicShareId = accountWithPublicSharedFolder.getId();
 
-		final SoapResponse deleteAccountResponse = getSoapClient().newRequest()
+		final SoapResponse deleteAccountResponse = this.getSoapClient().newRequest()
 				.setCaller(adminAccount).setSoapBody(new DeleteAccountRequest(accountWithPublicShareId))
 				.call();
 		Assertions.assertEquals(200, deleteAccountResponse.statusCode());
 
-		final SoapResponse getAccountResponse = getSoapClient().newRequest()
+		final SoapResponse getAccountResponse = this.getSoapClient().newRequest()
 				.setCaller(adminAccount)
 				.setSoapBody(new GetAccountRequest(AccountSelector.fromId(accountWithPublicShareId)))
 				.call();
