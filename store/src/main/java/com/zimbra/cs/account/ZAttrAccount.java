@@ -603,6 +603,78 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
+     * Whether the Tasks feature enabled for account or COS
+     *
+     * @return carbonioFeatureTasksEnabled, or true if unset
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3166)
+    public boolean isCarbonioFeatureTasksEnabled() {
+        return getBooleanAttr(ZAttrProvisioning.A_carbonioFeatureTasksEnabled, true, true);
+    }
+
+    /**
+     * Whether the Tasks feature enabled for account or COS
+     *
+     * @param carbonioFeatureTasksEnabled new value
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3166)
+    public void setCarbonioFeatureTasksEnabled(boolean carbonioFeatureTasksEnabled) throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioFeatureTasksEnabled, carbonioFeatureTasksEnabled ? TRUE : FALSE);
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether the Tasks feature enabled for account or COS
+     *
+     * @param carbonioFeatureTasksEnabled new value
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3166)
+    public Map<String,Object> setCarbonioFeatureTasksEnabled(boolean carbonioFeatureTasksEnabled, Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioFeatureTasksEnabled, carbonioFeatureTasksEnabled ? TRUE : FALSE);
+        return attrs;
+    }
+
+    /**
+     * Whether the Tasks feature enabled for account or COS
+     *
+     * @throws com.zimbra.common.service.ServiceException if error during update
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3166)
+    public void unsetCarbonioFeatureTasksEnabled() throws com.zimbra.common.service.ServiceException {
+        HashMap<String,Object> attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioFeatureTasksEnabled, "");
+        getProvisioning().modifyAttrs(this, attrs);
+    }
+
+    /**
+     * Whether the Tasks feature enabled for account or COS
+     *
+     * @param attrs existing map to populate, or null to create a new map
+     * @return populated map to pass into Provisioning.modifyAttrs
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3166)
+    public Map<String,Object> unsetCarbonioFeatureTasksEnabled(Map<String,Object> attrs) {
+        if (attrs == null) attrs = new HashMap<>();
+        attrs.put(ZAttrProvisioning.A_carbonioFeatureTasksEnabled, "");
+        return attrs;
+    }
+
+    /**
      * Whether the Team feature enabled for account or COS
      *
      * @return carbonioFeatureTeamEnabled, or false if unset
