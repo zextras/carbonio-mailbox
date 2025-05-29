@@ -2993,6 +2993,14 @@ public class ZAttrProvisioning {
     public static final String A_carbonioFeatureOTPMgmtEnabled = "carbonioFeatureOTPMgmtEnabled";
 
     /**
+     * Whether the Tasks feature enabled for account or COS
+     *
+     * @since ZCS 25.6.0
+     */
+    @ZAttr(id=3166)
+    public static final String A_carbonioFeatureTasksEnabled = "carbonioFeatureTasksEnabled";
+
+    /**
      * Whether the Team feature enabled for account or COS
      *
      * @since ZCS 23.5.0
