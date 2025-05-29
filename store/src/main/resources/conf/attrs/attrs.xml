@@ -10300,6 +10300,12 @@ deprecatedSince="23.9.0">
   </desc>
   <defaultCOSValue>auto</defaultCOSValue>
 </attr>
+
+<attr id="3166" name="carbonioFeatureTasksEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="accountInfo,accountInherited,domainAdminModifiable" since="25.6.0">
+  <defaultCOSValue>TRUE</defaultCOSValue>
+  <defaultExternalCOSValue>FALSE</defaultExternalCOSValue>
+  <desc>Whether the Tasks feature enabled for account or COS</desc>
+</attr>
 </attrs>
 
 
