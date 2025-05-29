@@ -1,5 +1,12 @@
 
 
+# [4.22.0](https://github.com/zextras/carbonio-mailbox/compare/4.21.0...4.22.0) (2025-05-29)
+
+
+### Features
+
+* [TSK-105] add carbonioFeatureTasksEnabled ([#740](https://github.com/zextras/carbonio-mailbox/issues/740)) ([6d2de81](https://github.com/zextras/carbonio-mailbox/commit/6d2de81729ae17ce815759140e3cfebf0054de22))
+
 # [4.21.0](https://github.com/Zextras/carbonio-mailbox/compare/4.20.1...4.21.0) (2025-05-19)
 
 

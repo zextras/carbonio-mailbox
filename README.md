@@ -31,6 +31,13 @@ and their roles:
    $ mvn clean install -DskipTests
    ```
 
+## Adding an attribute to LDAP
+- add the attribute definition in [attrs.xml](store/src/main/resources/conf/attrs/attrs.xml)  
+- generate attributes and rights by running `mvn 
+  antrun:run@generate-zattr-rights`
+- add the migration files by following the instructions in [updates](store/ldap/src/updates/attrs/ReadMe.md)
+- update the tests in AttributeManagerTest.java that check on the attributes 
+  count number
 ## Generating Rights and ZAttr classes
 Whenever you make changes to [attrs.xml](store/src/main/resources/conf/attrs/attrs.xml)
 you can generate rights and ZAttr* classes by running:
