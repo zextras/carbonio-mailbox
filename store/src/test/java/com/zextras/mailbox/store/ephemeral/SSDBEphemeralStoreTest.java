@@ -15,6 +15,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
 
@@ -32,20 +34,27 @@ class SSDBEphemeralStoreTest {
 		redisContainer.stop();
 	}
 
-	@Test
-	void getString() throws ServiceException {
+	private static EphemeralInput[] generateInput() {
+		return new EphemeralInput[]{
+				new EphemeralInput(new EphemeralKey("test1"), "value1"),
+				new EphemeralInput(new EphemeralKey("test2"), "value2"),
+				new EphemeralInput(new EphemeralKey("test3"), "value3")
+		};
+	}
+
+	@ParameterizedTest
+	@MethodSource ("generateInput")
+	void getString(EphemeralInput input) throws ServiceException {
 		final SSDBEphemeralStore ssdbEphemeralStore = SSDBEphemeralStore.create(
 				redisContainer.getRedisURI());
 		final TestLocation testLocation = new TestLocation(new String[]{"ccc"});
-		final EphemeralKey key = new EphemeralKey("test");
-		final String value = "aaa";
-		final EphemeralInput input = new EphemeralInput(key, value);
 		ssdbEphemeralStore.set(input, testLocation);
 
-		final EphemeralResult ephemeralResult = ssdbEphemeralStore.get(key,
+		final EphemeralResult ephemeralResult = ssdbEphemeralStore.get(input.getEphemeralKey(),
 				testLocation);
-		Assertions.assertEquals(value, ephemeralResult.getValue());
+		Assertions.assertEquals(input.getValue(), ephemeralResult.getValue());
 	}
+
 	@Test
 	void getBoolean() throws ServiceException {
 		final SSDBEphemeralStore ssdbEphemeralStore = SSDBEphemeralStore.create(

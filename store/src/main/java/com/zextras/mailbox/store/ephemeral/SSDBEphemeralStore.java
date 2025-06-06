@@ -15,11 +15,9 @@ import com.zimbra.cs.ephemeral.EphemeralStore;
 import redis.clients.jedis.Jedis;
 
 public class SSDBEphemeralStore extends EphemeralStore {
-	private final String endpoint;
 	private final Jedis jedisClient;
 
 	private SSDBEphemeralStore(String endpoint) {
-		this.endpoint = endpoint;
 		this.jedisClient = new Jedis(endpoint);
 	}
 	public static SSDBEphemeralStore create(String endpoint) {
