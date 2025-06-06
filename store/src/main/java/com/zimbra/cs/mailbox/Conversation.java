@@ -608,6 +608,8 @@ public class Conversation extends MailItem {
         // update inherited flags
         int oldFlags = mData.getFlags();
         mData.setFlags(mData.getFlags() | msg.getInternalFlagBitmask());
+        mData.setSubject(msg.getSubject());
+        markItemModified(Change.SUBJECT);
         if (mData.getFlags() != oldFlags) {
             markItemModified(Change.FLAGS);
         }
