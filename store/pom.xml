@@ -38,6 +38,12 @@
     </dependency>
 
     <dependency>
+      <groupId>redis.clients</groupId>
+      <artifactId>jedis</artifactId>
+      <version>6.0.0</version>
+    </dependency>
+
+    <dependency>
       <artifactId>concurrentlinkedhashmap-lru</artifactId>
       <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
     </dependency>
@@ -141,6 +147,17 @@
       <artifactId>rabbitmq</artifactId>
       <version>1.19.8</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.redis</groupId>
+      <artifactId>testcontainers-redis</artifactId>
+      <version>2.2.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>redis.clients</groupId>
+      <artifactId>jedis</artifactId>
+      <version>5.0.0</version>
     </dependency>
 
     <dependency>
