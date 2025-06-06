@@ -12,6 +12,7 @@ import com.zimbra.cs.ephemeral.EphemeralKey;
 import com.zimbra.cs.ephemeral.EphemeralLocation;
 import com.zimbra.cs.ephemeral.EphemeralResult;
 import com.zimbra.cs.ephemeral.EphemeralStore;
+import java.util.Arrays;
 import redis.clients.jedis.Jedis;
 
 public class SSDBEphemeralStore extends EphemeralStore {
@@ -25,14 +26,20 @@ public class SSDBEphemeralStore extends EphemeralStore {
 	}
 
 	@Override
-	public EphemeralResult get(EphemeralKey key, EphemeralLocation location) throws ServiceException {
-		final String gotResult = jedisClient.get(key.getKey());
-		return new EphemeralResult(key, gotResult);
+	public EphemeralResult get(EphemeralKey ephemeralKey, EphemeralLocation location) throws ServiceException {
+		final String key = getAccessKey(location, ephemeralKey);
+		final String gotResult = jedisClient.get(key);
+		return new EphemeralResult(ephemeralKey, gotResult);
 	}
 
 	@Override
 	public void set(EphemeralInput attribute, EphemeralLocation location) throws ServiceException {
-		jedisClient.set(attribute.getEphemeralKey().getKey(), attribute.getValue().toString());
+		final String key = getAccessKey(location, attribute.getEphemeralKey());
+		jedisClient.set(key, attribute.getValue().toString());
+	}
+	private String getAccessKey(EphemeralLocation location, EphemeralKey ephemeralKey) {
+		final String[] path = location.getLocation();
+		return Arrays.toString(path) + ephemeralKey.getKey();
 	}
 
 	@Override

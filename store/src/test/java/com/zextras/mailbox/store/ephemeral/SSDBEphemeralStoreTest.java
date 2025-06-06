@@ -57,6 +57,23 @@ class SSDBEphemeralStoreTest {
 	}
 
 	@Test
+	void shouldNotOverrideSameKey_WhenLocationIsDifferent() throws ServiceException {
+		final SSDBEphemeralStore store = SSDBEphemeralStore.create(
+				redisContainer.getRedisURI());
+		final EphemeralKey key = new EphemeralKey("test");
+		final TestLocation location1 = new TestLocation(new String[]{"1"});
+		final TestLocation location2 = new TestLocation(new String[]{"2"});
+		final EphemeralInput input1 = new EphemeralInput(key, "value1");
+		final EphemeralInput input2 = new EphemeralInput(key, "value2");
+		store.set(input1, location1);
+		store.set(input2, location2);
+
+		final EphemeralResult result1 = store.get(key, location1);
+		final EphemeralResult result2 = store.get(key, location2);
+		Assertions.assertNotEquals(result1.getValue(), result2.getValue());
+	}
+
+	@Test
 	void set() {
 		final SSDBEphemeralStore ssdbEphemeralStore = SSDBEphemeralStore.create(
 				redisContainer.getRedisURI());
