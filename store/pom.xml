@@ -38,12 +38,6 @@
     </dependency>
 
     <dependency>
-      <groupId>redis.clients</groupId>
-      <artifactId>jedis</artifactId>
-      <version>6.0.0</version>
-    </dependency>
-
-    <dependency>
       <artifactId>concurrentlinkedhashmap-lru</artifactId>
       <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
     </dependency>
