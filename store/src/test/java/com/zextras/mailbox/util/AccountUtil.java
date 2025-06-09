@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class AccountUtil {
 
-	// Use it with parsimony. Introduced to migrate old legacy tests easily
+	// Use it sparingly. Introduced to migrate old legacy tests easily
 	public static Account createAccount() throws ServiceException {
 		return Provisioning.getInstance()
 				.createAccount(UUID.randomUUID() + "@" + UUID.randomUUID() + ".com", "secret",
