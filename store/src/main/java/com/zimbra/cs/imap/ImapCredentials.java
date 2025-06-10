@@ -18,10 +18,12 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mailbox.MailboxStore;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.SoapTransport.NotificationFormat;
+import com.zimbra.common.util.MapUtil;
 import com.zimbra.common.util.SystemUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.common.zclient.ZClientException;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -32,10 +34,13 @@ import com.zimbra.soap.type.AccountWithModifications;
 import java.io.ObjectInputStream;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 public class ImapCredentials implements java.io.Serializable {
   private static final long serialVersionUID = -3323076274740054770L;
+  private static final Map<String, AuthToken> ACCOUNT_TOKEN_CACHE =
+      MapUtil.newLruMap(LC.zimbra_authtoken_cache_size.intValue());
 
   /**
    * The various special modes the server can be thrown into in order to deal with client
@@ -142,9 +147,15 @@ public class ImapCredentials implements java.io.Serializable {
     }
     try {
       Account acct = getAccount();
+      final String cacheKey = acct.getId();
+      AuthToken authToken = ACCOUNT_TOKEN_CACHE.get(cacheKey);
+      if (authToken == null || authToken.isExpired()) {
+        authToken = AuthProvider.getAuthToken(acct);
+        ACCOUNT_TOKEN_CACHE.put(cacheKey, authToken);
+      }
       ZMailbox.Options options =
           new ZMailbox.Options(
-              AuthProvider.getAuthToken(acct).getEncoded(), AccountUtil.getSoapUri(acct));
+              authToken.getEncoded(), AccountUtil.getSoapUri(acct));
       /* getting by ID avoids failed GetInfo SOAP requests trying to determine ID before auth setup. */
       options.setTargetAccountBy(AccountBy.id);
       options.setTargetAccount(acct.getId());
