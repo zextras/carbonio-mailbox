@@ -63,13 +63,18 @@ class AuthTokenCacheHelperTest {
           .thenThrow(ServiceException.FAILURE("Invalid token", null));
       authProvider
           .when(() -> AuthProvider.validateAuthToken(mockProvisioning, newToken, true))
-          .thenReturn(null);
+          .thenReturn(mockAccount);
 
       when(invalidToken.getEncoded()).thenReturn("invalid-token");
       when(newToken.getEncoded()).thenReturn("new-valid-token");
 
+      // First call to add invalid token to cache
       AuthToken token = AuthTokenCacheHelper.getValidAuthToken(mockAccount);
-      assertEquals("new-valid-token", token.getEncoded());
+      assertEquals("invalid-token", token.getEncoded());
+
+      // Second call should regenerate and return new valid token
+      AuthToken newValidToken = AuthTokenCacheHelper.getValidAuthToken(mockAccount);
+      assertEquals("new-valid-token", newValidToken.getEncoded(), "Should return newly generated valid token");
     }
   }
 
