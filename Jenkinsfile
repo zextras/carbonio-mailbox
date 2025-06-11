@@ -159,6 +159,9 @@ pipeline {
 //            }
 //            steps {
 //                // TODO: docker build and deploy
+                  // docker build -f docker/standalone/mailbox/Dockerfile -t mailbox:latest .
+                  // docker mailbox:latest registry.dev.zextras.com/dev/mailbox:latest
+                  // docker push registry.dev.zextras.com/dev/mailbox:latest
 //            }
 //        }
         stage('Publish SNAPSHOT to maven') {
