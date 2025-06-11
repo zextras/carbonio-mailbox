@@ -59,4 +59,9 @@ public class AuthTokenCacheHelper {
     ZimbraLog.imap.debug("Generated new AuthToken for account %s", cacheKey);
     return token;
   }
+
+  public static void clearCache() {
+    CACHE.clear();
+    ZimbraLog.imap.debug("AuthToken cache cleared");
+  }
 }
