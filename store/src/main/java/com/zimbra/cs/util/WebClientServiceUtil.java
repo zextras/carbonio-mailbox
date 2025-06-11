@@ -34,6 +34,7 @@ import org.apache.http.util.EntityUtils;
 
 /**
  * Util class for sending service related requests from service node to ui nodes
+ * TODO: remove this class
  */
 public class WebClientServiceUtil {
 
@@ -90,14 +91,7 @@ public class WebClientServiceUtil {
         }
       }
     }
-    if (authToken != null && authToken.isRegistered()) {
-      try {
-        authToken.deRegister();
-        ZimbraLog.misc.debug("de-registered auth token, isRegistered?%s", authToken.isRegistered());
-      } catch (AuthTokenException e) {
-        ZimbraLog.misc.warn("failed to de-register auth token", e);
-      }
-    }
+
   }
 
   /**
@@ -163,14 +157,7 @@ public class WebClientServiceUtil {
         }
       }
     }
-    if (authToken != null && authToken.isRegistered()) {
-      try {
-        authToken.deRegister();
-        ZimbraLog.misc.debug("de-registered auth token, isRegistered?%s", authToken.isRegistered());
-      } catch (AuthTokenException e) {
-        ZimbraLog.misc.warn("failed to de-register authToken", e);
-      }
-    }
+
     return resp;
   }
 
@@ -200,15 +187,6 @@ public class WebClientServiceUtil {
       } finally {
         if (method != null) {
           method.releaseConnection();
-        }
-      }
-      if (authToken != null && authToken.isRegistered()) {
-        try {
-          authToken.deRegister();
-          ZimbraLog.misc.debug("de-registered auth token, isRegistered?%s",
-              authToken.isRegistered());
-        } catch (AuthTokenException e) {
-          ZimbraLog.misc.warn("failed to de-register authToken", e);
         }
       }
       return resp;

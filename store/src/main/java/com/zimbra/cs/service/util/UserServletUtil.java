@@ -347,10 +347,10 @@ public class UserServletUtil {
 
     private static void validateAuthToken(UserServletContext context, AuthToken at, boolean isJWT) throws UserServletException, ServiceException {
         if (at.isZimbraUser()) {
-            if(!at.isRegistered()) {
-                throw new UserServletException(HttpServletResponse.SC_UNAUTHORIZED,
-                        L10nUtil.getMessage(MsgKey.errMustAuthenticate, context.req));
-            }
+//            if(!at.isRegistered()) {
+//                throw new UserServletException(HttpServletResponse.SC_UNAUTHORIZED,
+//                        L10nUtil.getMessage(MsgKey.errMustAuthenticate, context.req));
+//            }
             try {
                 context.setAuthAccount(AuthProvider.validateAuthToken(Provisioning.getInstance(), at, false));
             } catch (ServiceException e) {

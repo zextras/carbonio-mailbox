@@ -5,13 +5,9 @@
 
 package com.zimbra.cs.service.admin;
 
-import java.util.List;
-import java.util.Map;
-
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.account.Provisioning;
@@ -21,6 +17,8 @@ import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.RefreshRegisteredAuthTokensRequest;
 import com.zimbra.soap.admin.message.RefreshRegisteredAuthTokensResponse;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This admin SOAP handler receives a list of authtokens that have been deregistered on another server and
@@ -48,12 +46,12 @@ public class RefreshRegisteredAuthTokens extends AdminDocumentHandler {
             for(String token : tokens) {
                 try {
                     AuthToken zt = ZimbraAuthToken.getAuthToken(token);
-                    if(zt.isRegistered()) {
-                        Account acc = zt.getAccount();
-                        Provisioning.getInstance().reload(acc);
-                        ZimbraLog.soap.debug("Refreshed token %s for account %s", token, acc.getName());
-                    }
-                } catch (AuthTokenException | ServiceException e) {
+//                    if(zt.isRegistered()) {
+//                        Account acc = zt.getAccount();
+//                        Provisioning.getInstance().reload(acc);
+//                        ZimbraLog.soap.debug("Refreshed token %s for account %s", token, acc.getName());
+//                    }
+                } catch (AuthTokenException e) {
                     ZimbraLog.soap.error("Failed to refresh deregistered authtoken %s", token, e);
                 }
             }

@@ -253,7 +253,7 @@ public class ZimbraServlet extends HttpServlet {
         return null;
       }
 
-      if (authToken.isExpired() || !authToken.isRegistered()) {
+      if (authToken.isExpired()) {
         if (!doNotSendHttpError)
           resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "authtoken expired");
         return null;
@@ -284,8 +284,6 @@ public class ZimbraServlet extends HttpServlet {
       if (authToken == null) return null;
 
       if (authToken.isExpired()) return null;
-
-      if (!authToken.isRegistered()) return null;
 
       return authToken;
     } catch (AuthTokenException e) {

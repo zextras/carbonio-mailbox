@@ -890,19 +890,10 @@ public abstract class AuthProvider {
     }
 
     if (at.isExpired()) {
-      if (at.isRegistered()) {
-        try {
-          at.deRegister();
-        } catch (AuthTokenException e) {
-          ZimbraLog.account.error(e);
-        }
-      }
-      throw ServiceException.AUTH_EXPIRED();
+      throw ServiceException.AUTH_EXPIRED("Token is expired");
     }
 
-    if (!at.isRegistered()) {
-      throw ServiceException.AUTH_EXPIRED();
-    }
+
 
     // make sure that the authenticated account is still active and has not been deleted since the
     // last request

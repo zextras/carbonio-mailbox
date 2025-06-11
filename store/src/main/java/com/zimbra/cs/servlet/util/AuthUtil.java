@@ -81,7 +81,7 @@ public class AuthUtil {
             if (authToken == null)
                 return null;
 
-            if (authToken.isExpired() || !authToken.isRegistered())
+            if (authToken.isExpired())
                 return null;
 
             return authToken;
@@ -103,7 +103,7 @@ public class AuthUtil {
                 return null;
             }
 
-            if (authToken.isExpired() || !authToken.isRegistered()) {
+            if (authToken.isExpired()) {
                 if (!doNotSendHttpError)
                     resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "authtoken expired");
                 return null;

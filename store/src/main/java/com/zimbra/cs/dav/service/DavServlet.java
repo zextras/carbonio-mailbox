@@ -329,7 +329,7 @@ public class DavServlet extends ZimbraServlet {
         DavContext ctxt;
         try {
             AuthToken at = AuthProvider.getAuthToken(req, false);
-            if (at != null && (at.isExpired() || !at.isRegistered())) {
+            if (at != null && (at.isExpired())) {
                 at = null;
             }
             if (at != null && (rtype == RequestType.both || rtype == RequestType.authtoken)) {

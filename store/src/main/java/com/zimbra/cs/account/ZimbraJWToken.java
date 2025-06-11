@@ -177,11 +177,6 @@ public class ZimbraJWToken extends AuthToken {
     }
 
     @Override
-    public boolean isRegistered() {
-        return true;
-    }
-
-    @Override
     public boolean isExpired() {
         return System.currentTimeMillis() > properties.getExpires();
     }

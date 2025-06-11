@@ -278,10 +278,6 @@ public class ProxyServlet extends ZimbraServlet {
       resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "no authtoken cookie");
       return null;
     }
-    if (!authToken.isRegistered()) {
-      resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "authtoken is invalid");
-      return null;
-    }
     if (isAdmin && !authToken.isAdmin()) {
       resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "permission denied");
       return null;

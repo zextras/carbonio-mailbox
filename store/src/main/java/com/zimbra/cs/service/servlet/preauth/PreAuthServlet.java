@@ -315,8 +315,6 @@ public class PreAuthServlet extends ZimbraServlet {
           "unable to get auth token from " + PreAuthParams.PARAM_AUTHTOKEN.getParamName());
     } else if (authToken.isExpired()) {
       throw new AuthTokenException("auth token expired");
-    } else if (!authToken.isRegistered()) {
-      throw new AuthTokenException("authtoken is invalid/or not registered");
     }
   }
 

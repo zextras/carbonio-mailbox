@@ -92,8 +92,6 @@ public abstract class AuthToken {
 
   public abstract void deRegister() throws AuthTokenException;
 
-  public abstract boolean isRegistered();
-
   public abstract boolean isExpired();
 
   public abstract boolean isAdmin();

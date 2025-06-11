@@ -225,7 +225,6 @@ public class ExternalUserProvServlet extends ZimbraServlet {
           }
           if (zAuthToken != null
               && !zAuthToken.isExpired()
-              && zAuthToken.isRegistered()
               && grantee.getId().equals(zAuthToken.getAccountId())) {
             // external virtual account already logged-in
             resp.sendRedirect("/");

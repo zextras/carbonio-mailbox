@@ -299,9 +299,9 @@ public final class ZimbraSoapContext {
         mAuthToken = AuthProvider.getJWToken(ctxt, context);
       }
       if (mAuthToken != null) {
-        boolean isRegistered = mAuthToken.isRegistered();
+//        boolean isRegistered = mAuthToken.isRegistered();
         boolean isExpired = mAuthToken.isExpired();
-        if (isExpired || !isRegistered) {
+        if (isExpired) {
           boolean voidOnExpired = false;
 
           if (ctxt != null) {
@@ -319,8 +319,8 @@ public final class ZimbraSoapContext {
           } else {
             if (sLog.isDebugEnabled()) {
               sLog.debug(
-                  "Throwing AUTH_EXPIRED for token:%s expired=%s registered=%s",
-                  mAuthToken, isExpired, isRegistered);
+                  "Throwing AUTH_EXPIRED for token:%s expired=%s",
+                  mAuthToken, isExpired);
             }
             throw ServiceException.AUTH_EXPIRED();
           }
