@@ -153,6 +153,14 @@ pipeline {
                 }
             }
         }
+//        stage('Publish mailbox container - devel') {
+//            when {
+//                branch 'devel';
+//            }
+//            steps {
+//                // TODO: docker build and deploy
+//            }
+//        }
         stage('Publish SNAPSHOT to maven') {
             when {
                 branch 'devel';
