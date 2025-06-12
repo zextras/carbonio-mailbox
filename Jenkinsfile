@@ -153,6 +153,28 @@ pipeline {
                 }
             }
         }
+        stage('Publish containers - devel') {
+            when {
+                branch 'devel';
+            }
+            steps {
+                container('dind') {
+                    withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+                        sh 'docker build -f docker/standalone/mailbox/Dockerfile -t registry.dev.zextras.com/dev/carbonio-mailbox:latest .'
+                        sh 'docker push registry.dev.zextras.com/dev/carbonio-mailbox:latest'
+
+                        sh 'docker build -f docker/standalone/mariadb/Dockerfile -t registry.dev.zextras.com/dev/carbonio-mariadb:latest .'
+                        sh 'docker push registry.dev.zextras.com/dev/carbonio-mariadb:latest'
+
+                        sh 'docker build -f docker/standalone/openldap/Dockerfile -t registry.dev.zextras.com/dev/carbonio-openldap:latest .'
+                        sh 'docker push registry.dev.zextras.com/dev/carbonio-openldap:latest'
+
+                        sh 'docker build -f docker/standalone/postfix/Dockerfile -t registry.dev.zextras.com/dev/carbonio-mta:latest .'
+                        sh 'docker push registry.dev.zextras.com/dev/carbonio-mta:latest'
+                    }
+                }
+            }
+        }
         stage('Publish SNAPSHOT to maven') {
             when {
                 branch 'devel';
