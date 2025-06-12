@@ -154,12 +154,12 @@ pipeline {
             }
         }
         stage('Publish containers - devel') {
-//            when {
-//                branch 'devel';
-//            }
+            when {
+                branch 'devel';
+            }
             steps {
-                withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                    container('dind') {
+                container('dind') {
+                    withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
                         sh 'docker build -f docker/standalone/mailbox/Dockerfile -t carbonio-mailbox:latest .'
                         sh 'docker tag carbonio-mailbox:latest registry.dev.zextras.com/dev/carbonio-mailbox:latest'
                         sh 'docker push registry.dev.zextras.com/dev/carbonio-mailbox:latest'
