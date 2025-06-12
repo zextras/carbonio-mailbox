@@ -49,11 +49,6 @@ public class AuthTokenCacheHelper {
 
     if (token != null) {
       try {
-//        account
-//            .getProvisioning()
-//            .flushCache(
-//                CacheEntryType.account,
-//                new CacheEntry[] {new CacheEntry(CacheEntryBy.id, account.getId())});
         AuthProvider.validateAuthToken(provisioning, token, true);
         ZimbraLog.imap.info("Using cached valid AuthToken for account %s", cacheKey);
         return token;
