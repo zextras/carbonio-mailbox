@@ -21,7 +21,7 @@ public class AuthTokenCacheHelper {
    * A synchronized map to cache AuthTokens for accounts.
    * The size of the cache is controlled by the local config parameter zimbra_authtoken_cache_size.
    */
-  private static final Map<String, AuthToken> CACHE =
+  protected static final Map<String, AuthToken> CACHE =
       Collections.synchronizedMap(MapUtil.newLruMap(LC.zimbra_authtoken_cache_size.intValue()));
   private final Provisioning provisioning;
 
