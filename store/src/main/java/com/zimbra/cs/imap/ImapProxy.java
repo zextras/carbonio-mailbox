@@ -80,7 +80,8 @@ public final class ImapProxy {
         try {
             connection.connect();
             connection.id(createIDInfo(handler));
-            connection.authenticate(AuthTokenCacheHelper.getValidAuthToken(acct).getEncoded());
+            connection.authenticate(new AuthTokenCacheHelper(Provisioning.getInstance())
+                .getValidAuthToken(acct).getEncoded());
         } catch (Exception e) {
             ZimbraLog.imap.warn("Problem opening proxy connection %s - %s", connection, e.getMessage());
             dropConnection();

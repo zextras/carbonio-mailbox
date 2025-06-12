@@ -321,7 +321,7 @@ public class ImapPath implements Comparable<ImapPath> {
     if (actingAccount.getId().equals(target.getId())) {
       return (ZMailbox) mCredentials.getMailbox();
     }
-    AuthToken authToken = AuthTokenCacheHelper.getValidAuthToken(actingAccount);
+    AuthToken authToken = new AuthTokenCacheHelper(Provisioning.getInstance()).getValidAuthToken(actingAccount);
 
     try {
       ZMailbox.Options options =

@@ -39,8 +39,10 @@ class AuthTokenCacheHelperTest {
           .thenReturn(null);
       when(mockToken.getEncoded()).thenReturn("token-encoded");
 
-      AuthToken token1 = AuthTokenCacheHelper.getValidAuthToken(mockAccount);
-      AuthToken token2 = AuthTokenCacheHelper.getValidAuthToken(mockAccount);
+      AuthTokenCacheHelper authTokenCacheHelper = new AuthTokenCacheHelper(mockProvisioning);
+
+      AuthToken token1 = authTokenCacheHelper.getValidAuthToken(mockAccount);
+      AuthToken token2 = authTokenCacheHelper.getValidAuthToken(mockAccount);
 
       assertSame(token1, token2, "Should return the same cached AuthToken instance");
     }
@@ -69,35 +71,37 @@ class AuthTokenCacheHelperTest {
       when(newToken.getEncoded()).thenReturn("new-valid-token");
 
       // First call to add invalid token to cache
-      AuthToken token = AuthTokenCacheHelper.getValidAuthToken(mockAccount);
+      AuthTokenCacheHelper authTokenCacheHelper = new AuthTokenCacheHelper(mockProvisioning);
+      AuthToken token = authTokenCacheHelper.getValidAuthToken(mockAccount);
       assertEquals("invalid-token", token.getEncoded());
 
       // Second call should regenerate and return new valid token
-      AuthToken newValidToken = AuthTokenCacheHelper.getValidAuthToken(mockAccount);
-      assertEquals("new-valid-token", newValidToken.getEncoded(), "Should return newly generated valid token");
+      AuthToken newValidToken = authTokenCacheHelper.getValidAuthToken(mockAccount);
+      assertEquals(
+          "new-valid-token",
+          newValidToken.getEncoded(),
+          "Should return newly generated valid token");
     }
   }
 
   @Test
-  void throwsServiceExceptionWhenAuthProviderFails() throws Exception {
+  void throwsServiceExceptionWhenAuthProviderFails() {
     Provisioning mockProvisioning = mock(Provisioning.class);
     AuthProviderException authError = AuthProviderException.FAILURE("Token generation failed");
 
-    try (
-        MockedStatic<AuthProvider> authProvider = mockStatic(AuthProvider.class);
-        MockedStatic<Provisioning> provisioning = mockStatic(Provisioning.class)
-    ) {
+    try (MockedStatic<AuthProvider> authProvider = mockStatic(AuthProvider.class);
+        MockedStatic<Provisioning> provisioning = mockStatic(Provisioning.class)) {
       provisioning.when(Provisioning::getInstance).thenReturn(mockProvisioning);
       authProvider.when(() -> AuthProvider.getAuthToken(mockAccount)).thenThrow(authError);
 
-      ServiceException thrown = assertThrows(
-          ServiceException.class,
-          () -> AuthTokenCacheHelper.getValidAuthToken(mockAccount)
-      );
+      AuthTokenCacheHelper authTokenCacheHelper = new AuthTokenCacheHelper(mockProvisioning);
+
+      ServiceException thrown =
+          assertThrows(
+              ServiceException.class, () -> authTokenCacheHelper.getValidAuthToken(mockAccount));
       assertEquals("failure:Token generation failed", thrown.getMessage());
     }
   }
-
 
   @Test
   void shouldDeleteCachedTokenOnValidationFailure() throws Exception {
@@ -128,14 +132,15 @@ class AuthTokenCacheHelperTest {
           .thenReturn(null);
 
       // First attempt → triggers invalidation of invalidToken
+      AuthTokenCacheHelper authTokenCacheHelper = new AuthTokenCacheHelper(mockProvisioning);
       try {
-        AuthTokenCacheHelper.getValidAuthToken(mockAccount);
+        authTokenCacheHelper.getValidAuthToken(mockAccount);
       } catch (ServiceException ignored) {
         // Ignored — expected failure on invalid token
       }
 
       // Second attempt → should regenerate and return valid token
-      AuthToken validToken = AuthTokenCacheHelper.getValidAuthToken(mockAccount);
+      AuthToken validToken = authTokenCacheHelper.getValidAuthToken(mockAccount);
       assertEquals("valid-token", validToken.getEncoded(), "Should return regenerated valid token");
     }
   }

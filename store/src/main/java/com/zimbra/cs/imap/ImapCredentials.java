@@ -145,7 +145,7 @@ public class ImapCredentials implements java.io.Serializable {
     }
 
     Account actingAccount = getAccount();
-    AuthToken authToken = AuthTokenCacheHelper.getValidAuthToken(actingAccount);
+    AuthToken authToken = new AuthTokenCacheHelper(Provisioning.getInstance()).getValidAuthToken(actingAccount);
 
     try {
       ZMailbox.Options options =

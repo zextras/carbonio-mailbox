@@ -23,10 +23,16 @@ public class AuthTokenCacheHelper {
    */
   private static final Map<String, AuthToken> CACHE =
       Collections.synchronizedMap(MapUtil.newLruMap(LC.zimbra_authtoken_cache_size.intValue()));
+  private final Provisioning provisioning;
 
 
-  private AuthTokenCacheHelper() {
-    // Utility class — prevent instantiation
+  public AuthTokenCacheHelper(Provisioning provisioning) {
+     this.provisioning = provisioning;
+  }
+
+  public static void clearCache() {
+    CACHE.clear();
+    ZimbraLog.imap.info("AuthToken cache cleared");
   }
 
   /**
@@ -37,18 +43,23 @@ public class AuthTokenCacheHelper {
    * @return a valid AuthToken for the account
    * @throws ServiceException if there is an error retrieving or validating the AuthToken
    */
-  public static AuthToken getValidAuthToken(Account account) throws ServiceException {
+  public AuthToken getValidAuthToken(Account account) throws ServiceException {
     String cacheKey = account.getId();
     AuthToken token = CACHE.get(cacheKey);
 
     if (token != null) {
       try {
-        AuthProvider.validateAuthToken(Provisioning.getInstance(), token, true);
-        ZimbraLog.imap.debug("Using cached valid AuthToken for account %s", cacheKey);
+//        account
+//            .getProvisioning()
+//            .flushCache(
+//                CacheEntryType.account,
+//                new CacheEntry[] {new CacheEntry(CacheEntryBy.id, account.getId())});
+        AuthProvider.validateAuthToken(provisioning, token, true);
+        ZimbraLog.imap.info("Using cached valid AuthToken for account %s", cacheKey);
         return token;
       } catch (ServiceException e) {
         CACHE.remove(cacheKey);
-        ZimbraLog.imap.debug(
+        ZimbraLog.imap.info(
             "Cached AuthToken for account %s is invalid: %s", cacheKey, e.getMessage());
       }
     }
@@ -56,12 +67,7 @@ public class AuthTokenCacheHelper {
     // no valid token is found in the cache, generate a new one
     token = AuthProvider.getAuthToken(account);
     CACHE.put(cacheKey, token);
-    ZimbraLog.imap.debug("Generated new AuthToken for account %s", cacheKey);
+    ZimbraLog.imap.info("Generated new AuthToken for account %s", cacheKey);
     return token;
-  }
-
-  public static void clearCache() {
-    CACHE.clear();
-    ZimbraLog.imap.debug("AuthToken cache cleared");
   }
 }
