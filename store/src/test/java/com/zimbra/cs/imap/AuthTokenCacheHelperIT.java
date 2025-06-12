@@ -12,7 +12,6 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ZimbraAuthToken;
-import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -57,7 +56,7 @@ class AuthTokenCacheHelperIT extends MailboxTestSuite {
 		final Account account = new Factory(provisioning, mailboxTestExtension.getDefaultDomain()).get()
 				.create();
 		final ZimbraAuthToken expiredToken = createExpiredToken(account);
-		cacheHelper.populateCache(Map.of(account.getId(), expiredToken));
+		cacheHelper.addTokenToCache(account, expiredToken);
 
 		final AuthToken newToken = cacheHelper.getValidAuthToken(account);
 
@@ -69,8 +68,7 @@ class AuthTokenCacheHelperIT extends MailboxTestSuite {
 		final TestCacheHelper cacheHelper = new TestCacheHelper(provisioning);
 		final Account account = new Factory(provisioning, mailboxTestExtension.getDefaultDomain()).get()
 				.create();
-		final ZimbraAuthToken expiredToken = createExpiredToken(account);
-		cacheHelper.populateCache(Map.of(account.getId(), expiredToken));
+		cacheHelper.addTokenToCache(account, createExpiredToken(account));
 		final AuthToken newToken = cacheHelper.getValidAuthToken(account);
 
 		final AuthToken tokenInCache = AuthTokenCacheHelper.CACHE.get(account.getId());
@@ -88,8 +86,8 @@ class AuthTokenCacheHelperIT extends MailboxTestSuite {
 		public TestCacheHelper(Provisioning provisioning) {
 			super(provisioning);
 		}
-		public void populateCache(Map<String, AuthToken> customCache) {
-			CACHE.putAll(customCache);
+		public void addTokenToCache(Account account, AuthToken token) {
+			CACHE.put(account.getId(), token);
 		}
 	}
 
