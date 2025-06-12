@@ -158,7 +158,7 @@ pipeline {
 //                branch 'devel';
 //            }
             steps {
-                withDockerRegistry(credentialsId: 'private-registry', url: 'registry.dev.zextras.com') {
+                withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
                     sh 'docker build -f docker/standalone/mailbox/Dockerfile -t carbonio-mailbox:latest .'
                     sh 'docker tag carbonio-mailbox:latest registry.dev.zextras.com/dev/carbonio-mailbox:latest'
                     sh 'docker push registry.dev.zextras.com/dev/carbonio-mailbox:latest'
