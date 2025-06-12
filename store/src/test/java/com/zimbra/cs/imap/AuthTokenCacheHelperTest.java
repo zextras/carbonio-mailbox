@@ -1,5 +1,10 @@
 package com.zimbra.cs.imap;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
+
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
@@ -9,9 +14,6 @@ import com.zimbra.cs.service.AuthProviderException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class AuthTokenCacheHelperTest {
 
@@ -27,17 +29,14 @@ class AuthTokenCacheHelperTest {
   }
 
   @Test
-  void returnsCachedValidAuthToken() throws Exception {
+  void returnsCached_ValidAuthToken() throws Exception {
     Provisioning mockProvisioning = mock(Provisioning.class);
 
-    try (MockedStatic<AuthProvider> authProvider = mockStatic(AuthProvider.class);
-        MockedStatic<Provisioning> provisioning = mockStatic(Provisioning.class)) {
-      provisioning.when(Provisioning::getInstance).thenReturn(mockProvisioning);
+    try (MockedStatic<AuthProvider> authProvider = mockStatic(AuthProvider.class)) {
       authProvider.when(() -> AuthProvider.getAuthToken(mockAccount)).thenReturn(mockToken);
       authProvider
           .when(() -> AuthProvider.validateAuthToken(mockProvisioning, mockToken, true))
           .thenReturn(null);
-      when(mockToken.getEncoded()).thenReturn("token-encoded");
 
       AuthTokenCacheHelper authTokenCacheHelper = new AuthTokenCacheHelper(mockProvisioning);
 
@@ -54,9 +53,7 @@ class AuthTokenCacheHelperTest {
     AuthToken newToken = mock(AuthToken.class);
     Provisioning mockProvisioning = mock(Provisioning.class);
 
-    try (MockedStatic<AuthProvider> authProvider = mockStatic(AuthProvider.class);
-        MockedStatic<Provisioning> provisioning = mockStatic(Provisioning.class)) {
-      provisioning.when(Provisioning::getInstance).thenReturn(mockProvisioning);
+    try (MockedStatic<AuthProvider> authProvider = mockStatic(AuthProvider.class)) {
       authProvider
           .when(() -> AuthProvider.getAuthToken(mockAccount))
           .thenReturn(invalidToken, newToken);
@@ -89,9 +86,7 @@ class AuthTokenCacheHelperTest {
     Provisioning mockProvisioning = mock(Provisioning.class);
     AuthProviderException authError = AuthProviderException.FAILURE("Token generation failed");
 
-    try (MockedStatic<AuthProvider> authProvider = mockStatic(AuthProvider.class);
-        MockedStatic<Provisioning> provisioning = mockStatic(Provisioning.class)) {
-      provisioning.when(Provisioning::getInstance).thenReturn(mockProvisioning);
+    try (MockedStatic<AuthProvider> authProvider = mockStatic(AuthProvider.class)) {
       authProvider.when(() -> AuthProvider.getAuthToken(mockAccount)).thenThrow(authError);
 
       AuthTokenCacheHelper authTokenCacheHelper = new AuthTokenCacheHelper(mockProvisioning);
@@ -110,10 +105,7 @@ class AuthTokenCacheHelperTest {
     when(invalidToken.getEncoded()).thenReturn("invalid-token");
     when(mockToken.getEncoded()).thenReturn("valid-token");
 
-    try (MockedStatic<AuthProvider> authProvider = mockStatic(AuthProvider.class);
-        MockedStatic<Provisioning> provisioning = mockStatic(Provisioning.class)) {
-      provisioning.when(Provisioning::getInstance).thenReturn(mockProvisioning);
-
+    try (MockedStatic<AuthProvider> authProvider = mockStatic(AuthProvider.class)) {
       // 1st call → returns invalid token
       // 2nd call → returns valid token
       authProvider
