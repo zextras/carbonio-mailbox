@@ -159,21 +159,23 @@ pipeline {
 //            }
             steps {
                 withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                    sh 'docker build -f docker/standalone/mailbox/Dockerfile -t carbonio-mailbox:latest .'
-                    sh 'docker tag carbonio-mailbox:latest registry.dev.zextras.com/dev/carbonio-mailbox:latest'
-                    sh 'docker push registry.dev.zextras.com/dev/carbonio-mailbox:latest'
+                    container('dind') {
+                        sh 'docker build -f docker/standalone/mailbox/Dockerfile -t carbonio-mailbox:latest .'
+                        sh 'docker tag carbonio-mailbox:latest registry.dev.zextras.com/dev/carbonio-mailbox:latest'
+                        sh 'docker push registry.dev.zextras.com/dev/carbonio-mailbox:latest'
 
-                    sh 'docker build -f docker/standalone/mariadb/Dockerfile -t carbonio-mariadb:latest .'
-                    sh 'docker tag carbonio-mariadb:latest registry.dev.zextras.com/dev/carbonio-mariadb:latest'
-                    sh 'docker push registry.dev.zextras.com/dev/carbonio-mariadb:latest'
+                        sh 'docker build -f docker/standalone/mariadb/Dockerfile -t carbonio-mariadb:latest .'
+                        sh 'docker tag carbonio-mariadb:latest registry.dev.zextras.com/dev/carbonio-mariadb:latest'
+                        sh 'docker push registry.dev.zextras.com/dev/carbonio-mariadb:latest'
 
-                    sh 'docker build -f docker/standalone/openldap/Dockerfile -t carbonio-openldap:latest .'
-                    sh 'docker tag carbonio-openldap:latest registry.dev.zextras.com/dev/carbonio-openldap:latest'
-                    sh 'docker push registry.dev.zextras.com/dev/carbonio-openldap:latest'
+                        sh 'docker build -f docker/standalone/openldap/Dockerfile -t carbonio-openldap:latest .'
+                        sh 'docker tag carbonio-openldap:latest registry.dev.zextras.com/dev/carbonio-openldap:latest'
+                        sh 'docker push registry.dev.zextras.com/dev/carbonio-openldap:latest'
 
-                    sh 'docker build -f docker/standalone/postfix/Dockerfile -t carbonio-mta:latest .'
-                    sh 'docker tag carbonio-mta:latest registry.dev.zextras.com/dev/carbonio-mta:latest'
-                    sh 'docker push registry.dev.zextras.com/dev/carbonio-mta:latest'
+                        sh 'docker build -f docker/standalone/postfix/Dockerfile -t carbonio-mta:latest .'
+                        sh 'docker tag carbonio-mta:latest registry.dev.zextras.com/dev/carbonio-mta:latest'
+                        sh 'docker push registry.dev.zextras.com/dev/carbonio-mta:latest'
+                    }
                 }
             }
         }
