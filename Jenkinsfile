@@ -159,7 +159,7 @@ pipeline {
 //            }
 //            steps {
 //                // TODO: docker build and deploy
-                  // docker build -f docker/standalone/mailbox/Dockerfile -t carbonio-mailbox:latest .
+                  // docker build --label org.opencontainers.image.description="$(cat docker/standalone/mailbox/README.md)" -f docker/standalone/mailbox/Dockerfile -t carbonio-mailbox:latest .
                   // docker tag carbonio-mailbox:latest registry.dev.zextras.com/dev/carbonio-mailbox:latest
                   // docker push registry.dev.zextras.com/dev/carbonio-mailbox:latest
 
