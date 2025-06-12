@@ -56,7 +56,7 @@ class AuthTokenCacheHelperIT extends MailboxTestSuite {
 		final TestCacheHelper cacheHelper = new TestCacheHelper(provisioning);
 		final Account account = new Factory(provisioning, mailboxTestExtension.getDefaultDomain()).get()
 				.create();
-		final ZimbraAuthToken expiredToken = new ZimbraAuthToken(account, System.currentTimeMillis());
+		final ZimbraAuthToken expiredToken = createExpiredToken(account);
 		cacheHelper.populateCache(Map.of(account.getId(), expiredToken));
 
 		final AuthToken newToken = cacheHelper.getValidAuthToken(account);
@@ -69,7 +69,7 @@ class AuthTokenCacheHelperIT extends MailboxTestSuite {
 		final TestCacheHelper cacheHelper = new TestCacheHelper(provisioning);
 		final Account account = new Factory(provisioning, mailboxTestExtension.getDefaultDomain()).get()
 				.create();
-		final ZimbraAuthToken expiredToken = new ZimbraAuthToken(account, System.currentTimeMillis());
+		final ZimbraAuthToken expiredToken = createExpiredToken(account);
 		cacheHelper.populateCache(Map.of(account.getId(), expiredToken));
 		final AuthToken newToken = cacheHelper.getValidAuthToken(account);
 
@@ -77,6 +77,10 @@ class AuthTokenCacheHelperIT extends MailboxTestSuite {
 
 		Assertions.assertEquals(tokenInCache.getEncoded(), newToken.getEncoded());
 		Assertions.assertEquals(1, AuthTokenCacheHelper.CACHE.size());
+	}
+
+	private static ZimbraAuthToken createExpiredToken(Account account) {
+		return new ZimbraAuthToken(account, System.currentTimeMillis() - 1);
 	}
 
 	private static class TestCacheHelper extends AuthTokenCacheHelper {
