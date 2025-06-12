@@ -59,9 +59,24 @@ class AuthTokenCacheHelperIT extends MailboxTestSuite {
 		final ZimbraAuthToken expiredToken = new ZimbraAuthToken(account, System.currentTimeMillis());
 		cacheHelper.populateCache(Map.of(account.getId(), expiredToken));
 
-		final AuthToken tokenValue2 = cacheHelper.getValidAuthToken(account);
+		final AuthToken newToken = cacheHelper.getValidAuthToken(account);
 
-		Assertions.assertNotEquals(expiredToken.getEncoded(), tokenValue2.getEncoded());
+		Assertions.assertNotEquals(expiredToken.getEncoded(), newToken.getEncoded());
+	}
+
+	@Test
+	void shouldRemoveExpiredTokensFromCache_WhenRequestingANewOne() throws Exception {
+		final TestCacheHelper cacheHelper = new TestCacheHelper(provisioning);
+		final Account account = new Factory(provisioning, mailboxTestExtension.getDefaultDomain()).get()
+				.create();
+		final ZimbraAuthToken expiredToken = new ZimbraAuthToken(account, System.currentTimeMillis());
+		cacheHelper.populateCache(Map.of(account.getId(), expiredToken));
+		final AuthToken newToken = cacheHelper.getValidAuthToken(account);
+
+		final AuthToken tokenInCache = AuthTokenCacheHelper.CACHE.get(account.getId());
+
+		Assertions.assertEquals(tokenInCache.getEncoded(), newToken.getEncoded());
+		Assertions.assertEquals(1, AuthTokenCacheHelper.CACHE.size());
 	}
 
 	private static class TestCacheHelper extends AuthTokenCacheHelper {
