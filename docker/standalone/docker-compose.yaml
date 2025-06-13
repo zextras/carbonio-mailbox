@@ -33,7 +33,7 @@ services:
     build:
       context: ./../../
       dockerfile: docker/standalone/mailbox/Dockerfile
-    hostname: docker.demo.zextras.io
+    hostname: mailbox2.demo.zextras.io
     restart: on-failure
     networks:
       - mailbox
