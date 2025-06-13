@@ -7,8 +7,10 @@ import java.util.UUID;
 import org.apache.commons.net.imap.IMAPSClient;
 import org.junit.jupiter.api.*;
 
+// test it with containers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class RemoteImapServerTest {
+@Disabled()
+class RemoteImapServerTest {
 
 	private final String HOST = "localhost";
 	private final int PORT = 7143; // 993

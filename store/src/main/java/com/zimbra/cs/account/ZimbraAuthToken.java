@@ -26,6 +26,7 @@ import com.zimbra.cs.ephemeral.EphemeralKey;
 import com.zimbra.cs.ephemeral.EphemeralLocation;
 import com.zimbra.cs.ephemeral.EphemeralStore;
 import com.zimbra.cs.ephemeral.LdapEntryLocation;
+import com.zimbra.cs.service.AuthProvider;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
@@ -157,16 +158,23 @@ public class ZimbraAuthToken extends AuthToken implements Cloneable {
    */
   public static synchronized AuthToken getAuthToken(String encoded) throws AuthTokenException {
     ZimbraAuthToken at = CACHE.get(encoded);
+    final Provisioning provisioning = Provisioning.getInstance();
     if (at == null) {
       at = new ZimbraAuthToken(encoded);
-      if (!at.isExpired()) {
+			try {
+        provisioning.reload(provisioning.getAccountById(at.getAccountId()));
+        AuthProvider.validateAuthToken(provisioning, at, true);
         CACHE.put(encoded, at);
-      }
+			} catch (ServiceException e) {
+        // ignore
+			}
     } else {
-      // remove it if expired
-      if (at.isExpired()) {
+      // remove it if not valid
+			try {
+				AuthProvider.validateAuthToken(provisioning, at, true);
+			} catch (ServiceException e) {
         CACHE.remove(encoded);
-      }
+			}
     }
     return at;
   }
