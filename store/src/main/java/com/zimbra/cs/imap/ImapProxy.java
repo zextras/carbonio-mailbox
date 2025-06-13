@@ -30,7 +30,6 @@ import com.zimbra.cs.mailclient.imap.IDInfo;
 import com.zimbra.cs.mailclient.imap.ImapConfig;
 import com.zimbra.cs.mailclient.imap.ImapConnection;
 import com.zimbra.cs.security.sasl.ZimbraAuthenticator;
-import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.util.BuildInfo;
 
 public final class ImapProxy {
@@ -45,7 +44,7 @@ public final class ImapProxy {
     private ImapConnection connection;
     private Thread idleThread;
 
-    protected ImapProxy(final ImapHandler handler, final ImapPath path) throws ServiceException {
+    ImapProxy(final ImapHandler handler, final ImapPath path) throws ServiceException {
         this.handler = handler;
         this.path = path;
 
@@ -81,7 +80,8 @@ public final class ImapProxy {
         try {
             connection.connect();
             connection.id(createIDInfo(handler));
-            connection.authenticate(AuthProvider.getAuthToken(acct).getEncoded());
+            connection.authenticate(new AuthTokenCacheHelper(Provisioning.getInstance())
+                .getValidAuthToken(acct).getEncoded());
         } catch (Exception e) {
             ZimbraLog.imap.warn("Problem opening proxy connection %s - %s", connection, e.getMessage());
             dropConnection();
@@ -92,7 +92,7 @@ public final class ImapProxy {
     /**
      * For testing.
      */
-    protected ImapProxy(InetSocketAddress remote, String username, String password, ImapHandler handler)
+    ImapProxy(InetSocketAddress remote, String username, String password, ImapHandler handler)
             throws IOException, LoginException {
         this.handler = handler;
         path = null;
@@ -119,11 +119,11 @@ public final class ImapProxy {
         return id;
     }
 
-    protected ImapPath getPath() {
+    ImapPath getPath() {
         return path;
     }
 
-    protected void dropConnection() {
+    void dropConnection() {
         ImapConnection conn = connection;
         connection = null;
         if (conn == null)
@@ -142,7 +142,7 @@ public final class ImapProxy {
      * @return whether the SELECT was successful (i.e. it returned a tagged {@code OK} response)
      * @throws ImapProxyException network error with the remote IMAP server
      */
-    protected boolean select(final String tag, final byte params, final QResyncInfo qri)
+    boolean select(final String tag, final byte params, final QResyncInfo qri)
             throws ImapProxyException, ServiceException {
         // FIXME: may need to send an ENABLE before the SELECT
 
@@ -172,7 +172,7 @@ public final class ImapProxy {
      * Proxy STATUS command.
      * @param params - e.g. "(EXISTS RECENT)"
      */
-    protected boolean status(final String tag, final String params)
+    boolean status(final String tag, final String params)
             throws ImapProxyException, ServiceException {
         String command = "STATUS";
         StringBuilder select = new StringBuilder(100);
@@ -192,7 +192,7 @@ public final class ImapProxy {
      * @throws ImapProxyException network error with the remote IMAP server
      * @throws IOException error on reading the request data
      */
-    protected boolean idle(final ImapRequest req, final boolean begin) throws ImapProxyException, IOException {
+    boolean idle(final ImapRequest req, final boolean begin) throws ImapProxyException, IOException {
         if (begin == ImapHandler.IDLE_STOP) {
             // check state -- don't want to send DONE if we're somehow not in IDLE
             if (handler == null) {
@@ -254,7 +254,7 @@ public final class ImapProxy {
      * @throws ImapProxyException network error with the remote IMAP server
      * @throws IOException error on reading the request data
      */
-    protected boolean proxy(final ImapRequest req) throws ImapProxyException, IOException {
+    boolean proxy(final ImapRequest req) throws ImapProxyException, IOException {
         proxyCommand(req.toByteArray(), true, false);
         return true;
     }
@@ -267,7 +267,7 @@ public final class ImapProxy {
      * @return always true
      * @throws ImapProxyException network error with the remote IMAP server
      */
-    protected boolean proxy(final String tag, final String command) throws ImapProxyException {
+    boolean proxy(final String tag, final String command) throws ImapProxyException {
         proxyCommand((tag + ' ' + command + "\r\n").getBytes(), true, false);
         return true;
     }
@@ -277,7 +277,7 @@ public final class ImapProxy {
      *
      * @throws ImapProxyException network error with the remote IMAP server
      */
-    protected void fetchNotifications() throws ImapProxyException {
+    void fetchNotifications() throws ImapProxyException {
         String tag = connection == null ? "1" : connection.newTag();
         proxyCommand((tag + " NOOP\r\n").getBytes(), false, false);
     }

@@ -22,6 +22,7 @@ import com.zimbra.common.util.SystemUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
+import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.ACL;
@@ -31,7 +32,6 @@ import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.OperationContext;
-import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.util.AccountUtil;
 import java.nio.ByteBuffer;
@@ -79,7 +79,6 @@ public class ImapPath implements Comparable<ImapPath> {
    *
    * @param imapPath The client-provided logical IMAP pathname.
    * @param creds The authenticated user's login credentials.
-   * @see #exportPath(String, ImapCredentials)
    */
   public ImapPath(String imapPath, ImapCredentials creds) {
     this(imapPath, creds, Scope.CONTENT);
@@ -312,20 +311,21 @@ public class ImapPath implements Comparable<ImapPath> {
   }
 
   private ZMailbox getZMailboxForAccount(Account target) throws ServiceException {
-    Account acct =
+    Account actingAccount =
         mCredentials == null
             ? null
             : Provisioning.getInstance().get(AccountBy.id, mCredentials.getAccountId());
-    if (acct == null) {
-      throw AccountServiceException.NO_SUCH_ACCOUNT(mCredentials.getUsername());
+    if (actingAccount == null) {
+       throw AccountServiceException.NO_SUCH_ACCOUNT(mCredentials != null ? mCredentials.getAccountId() : null);
     }
-    if (acct.getId().equals(target.getId())) {
+    if (actingAccount.getId().equals(target.getId())) {
       return (ZMailbox) mCredentials.getMailbox();
     }
+    AuthToken authToken = new AuthTokenCacheHelper(Provisioning.getInstance()).getValidAuthToken(actingAccount);
+
     try {
       ZMailbox.Options options =
-          new ZMailbox.Options(
-              AuthProvider.getAuthToken(acct).getEncoded(), AccountUtil.getSoapUri(target));
+          new ZMailbox.Options(authToken.getEncoded(), AccountUtil.getSoapUri(target));
       /* getting by ID avoids failed GetInfo SOAP requests trying to determine ID before auth setup. */
       options.setTargetAccountBy(AccountBy.id);
       options.setTargetAccount(target.getId());
@@ -335,7 +335,7 @@ public class ImapPath implements Comparable<ImapPath> {
       ZMailbox zmbx = ZMailbox.getMailbox(options);
       zmbx.setAccountId(target.getId()); /* need this when logging in using another user's auth */
       zmbx.setName(target.getName()); /* need this when logging in using another user's auth */
-      zmbx.setAuthName(acct.getName());
+      zmbx.setAuthName(actingAccount.getName());
       return zmbx;
     } catch (AuthTokenException ate) {
       throw ServiceException.FAILURE("error generating auth token", ate);

@@ -22,19 +22,21 @@ import com.zimbra.common.util.SystemUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.common.zclient.ZClientException;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.OperationContext;
-import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.type.AccountWithModifications;
 import java.io.ObjectInputStream;
+import java.io.Serial;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 public class ImapCredentials implements java.io.Serializable {
+  @Serial
   private static final long serialVersionUID = -3323076274740054770L;
 
   /**
@@ -135,34 +137,41 @@ public class ImapCredentials implements java.io.Serializable {
     if (mStore != null) {
       return mStore;
     }
+
     if (mIsLocal && !LC.imap_always_use_remote_store.booleanValue()) {
-      ZimbraLog.imap.debug("ImapCredentials returning local mailbox store for %s", mAccountId);
+      ZimbraLog.imap.debug("Returning local mailbox store for account %s", mAccountId);
       return new LocalImapMailboxStore(
           MailboxManager.getInstance().getMailboxByAccountId(mAccountId));
     }
+
+    Account actingAccount = getAccount();
+    AuthToken authToken = new AuthTokenCacheHelper(Provisioning.getInstance()).getValidAuthToken(actingAccount);
+
     try {
-      Account acct = getAccount();
       ZMailbox.Options options =
           new ZMailbox.Options(
-              AuthProvider.getAuthToken(acct).getEncoded(), AccountUtil.getSoapUri(acct));
-      /* getting by ID avoids failed GetInfo SOAP requests trying to determine ID before auth setup. */
-      options.setTargetAccountBy(AccountBy.id);
-      options.setTargetAccount(acct.getId());
+              authToken.getEncoded(), AccountUtil.getSoapUri(actingAccount));
+      options.setTargetAccountBy(AccountBy.id); // avoids failed GetInfo SOAP requests
+      options.setTargetAccount(actingAccount.getId());
       options.setNoSession(false);
       options.setUserAgent("zclient-imap", SystemUtil.getProductVersion());
       options.setNotificationFormat(NotificationFormat.IMAP);
       options.setAlwaysRefreshFolders(true);
-      ZMailbox store = ZMailbox.getMailbox(options);
-      store.setAccountId(acct.getId());
-      store.setName(acct.getName());
-      store.setAuthName(acct.getName());
-      mStore = ImapMailboxStore.get(store, mAccountId);
-      ZimbraLog.imap.debug(
-          "Registering listener with ZMailbox for '%s' [id=%s]", acct.getName(), mAccountId);
-      store.addEventHandler(zMailboxEventHandler);
+
+      ZMailbox zMailbox = ZMailbox.getMailbox(options);
+      zMailbox.setAccountId(actingAccount.getId());
+      zMailbox.setName(actingAccount.getName());
+      zMailbox.setAuthName(actingAccount.getName());
+
+      mStore = ImapMailboxStore.get(zMailbox, mAccountId);
+
+      ZimbraLog.imap.debug("Registering ZMailbox event handler for '%s' [id=%s]",
+          actingAccount.getName(), mAccountId);
+      zMailbox.addEventHandler(zMailboxEventHandler);
+
       return mStore;
     } catch (AuthTokenException ate) {
-      throw ServiceException.FAILURE("error generating auth token", ate);
+      throw ServiceException.FAILURE("Failed to initialize remote IMAP mailbox store, error generating auth token", ate);
     }
   }
 
