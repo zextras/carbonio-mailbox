@@ -56,7 +56,7 @@ services:
       dockerfile: webui/Dockerfile
     network_mode: "host"
     ports:
-      - "9000:9000"
+      - "443:443"
       - "6071:6071"
   postfix:
     depends_on:
