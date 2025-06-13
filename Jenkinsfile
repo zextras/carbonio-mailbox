@@ -21,7 +21,7 @@ def buildContainer(String title, String description, String dockerfile, String t
             '--label org.opencontainers.image.description="' + description + '" ' +
             '--label org.opencontainers.image.vendor="Zextras" ' +
             '-f ' + dockerfile + ' -t ' + tag + ' .'
-//    sh 'docker push ' + tag
+    sh 'docker push ' + tag
 }
 
 def buildDebPackages(String flavor) {
@@ -163,9 +163,9 @@ pipeline {
             }
         }
         stage('Publish containers - devel') {
-//            when {
-//                branch 'devel';
-//            }
+            when {
+                branch 'devel';
+            }
             steps {
                 container('dind') {
                     withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
