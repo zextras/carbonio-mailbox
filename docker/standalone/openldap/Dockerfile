@@ -11,6 +11,6 @@ ENV LDAP_ADMIN_PASSWORD=password
 
 COPY docker/standalone/openldap/ldap-utils/ /ldap-utils/
 COPY store/ldap/generated/ /opt/zextras/common/etc/openldap/zimbra/
-
+RUN mkdir -p /opt/zextras/ldap/custom-ldifs
 COPY docker/standalone/openldap/entrypoint.sh .
 ENTRYPOINT ["./entrypoint.sh"]

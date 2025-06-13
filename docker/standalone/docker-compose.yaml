@@ -21,6 +21,31 @@ services:
       test: netcat -z localhost 8080 || exit 1
       timeout: 10s
     ports:
+      - "7072:7071"
+      - "8081:8080"
+      - "7026:7025"
+  mailbox2:
+    depends_on:
+      openldap:
+        condition: service_healthy
+      postfix:
+        condition: service_healthy
+    build:
+      context: ./../../
+      dockerfile: docker/standalone/mailbox/Dockerfile
+    hostname: docker.demo.zextras.io
+    restart: on-failure
+    networks:
+      - mailbox
+    healthcheck:
+      interval: 60s
+      retries: 10
+      start_period: 20s
+      test: netcat -z localhost 8080 || exit 1
+      timeout: 10s
+    volumes:
+      - ./mailbox/mailbox_2_localconfig.xml:/localconfig/localconfig.xml
+    ports:
       - "7071:7071"
       - "8080:8080"
       - "5005:5005"
@@ -41,6 +66,8 @@ services:
       - mailbox
     ports:
       - "1389:1389"
+    volumes:
+      - ./openldap/ldap-utils/add_mailbox_2.ldif:/opt/zextras/ldap/custom-ldifs/add_mailbox_2.ldif
   mariadb:
     build:
       context: ./../../
