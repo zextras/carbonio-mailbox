@@ -1,0 +1,80 @@
+dn: cn=mailbox2.demo.zextras.io,cn=servers,cn=zimbra
+objectClass: zimbraServer
+cn: mailbox2.demo.zextras.io
+zimbraId: 51aacd2f-7d00-4755-ae5f-4a40e8ba60c1
+carbonioSMIMESignatureVerificationEnabled: FALSE
+zimbraCreateTimestamp: 20240718072320Z
+zimbraImapBindPort: 7143
+zimbraImapCleartextLoginEnabled: TRUE
+zimbraImapProxyBindPort: 143
+zimbraImapSSLBindPort: 7993
+zimbraImapSSLProxyBindPort: 993
+zimbraIPMode: ipv4
+zimbraMailLocalBind: FALSE
+zimbraMailMode: http
+zimbraMailPort: 8080
+zimbraMailProxyPort: 80
+zimbraMailReferMode: reverse-proxied
+zimbraMailSSLPort: 8443
+zimbraMailSSLProxyPort: 443
+zimbraMtaAuthTarget: TRUE
+zimbraMtaMyNetworks: 127.0.0.0/8 [::1]/128 172.24.0.0/21 172.19.0.0/16 172.1
+ 7.0.0/16
+zimbraPop3BindPort: 7110
+zimbraPop3CleartextLoginEnabled: TRUE
+zimbraPop3ProxyBindPort: 110
+zimbraPop3SSLBindPort: 7995
+zimbraPop3SSLProxyBindPort: 995
+zimbraReverseProxyHttpEnabled: TRUE
+zimbraReverseProxyLookupTarget: TRUE
+zimbraReverseProxyMailEnabled: TRUE
+zimbraReverseProxyMailMode: https
+zimbraReverseProxySSLToUpstreamEnabled: FALSE
+zimbraReverseProxyStrictServerNameEnabled: FALSE
+zimbraServiceEnabled: directory-server
+zimbraServiceEnabled: mailbox
+zimbraServiceEnabled: service
+zimbraServiceHostname: mailbox2.demo.zextras.io
+zimbraServiceInstalled: directory-server
+zimbraServiceInstalled: mailbox
+
+dn: dc=demo2,dc=zextras,dc=io
+objectclass: dcObject
+objectclass: organization
+objectclass: zimbraDomain
+zimbraId: 0bf35e36-0d91-11d9-866e-000d93afea2b
+zimbraDomainName: demo2.zextras.io
+zimbraDomainType: local
+o: demo2.zextras.io domain
+description: demo2.zextras.io domain for testing
+dc: demo2
+
+dn: ou=people,dc=demo2,dc=zextras,dc=io
+objectclass: organizationalRole
+ou: people
+cn: people
+
+dn: ou=groups,dc=demo2,dc=zextras,dc=io
+objectclass: organizationalRole
+ou: groups
+cn: groups
+
+dn: uid=test2,ou=people,dc=demo2,dc=zextras,dc=io
+uid: test2
+objectclass: zimbraAccount
+objectclass: organizationalPerson
+objectClass: inetOrgPerson
+zimbraId: 1d5710b0-0744-11d9-bcca-000d93afea2c
+zimbraAccountStatus: active
+zimbraMailStatus: enabled
+zimbraNotes: this space could be used for account notes
+userPassword: {SSHA}vadyYWVkSMfCXsXTsi4PNTHjZOzSl6SA
+zimbraMailAlias: test2@demo2.zextras.io
+zimbraMailHost: mailbox2.demo.zextras.io
+zimbraMailTransport: lmtp:mailbox2.demo.zextras.io:7025
+zimbraMailDeliveryAddress: test2@demo2.zextras.io
+zimbraPrefMailSignatureEnabled: FALSE
+mail: test2@demo2.zextras.io
+sn: Test2
+cn: Test2 Account
+gn: Account
