@@ -45,7 +45,7 @@ objectclass: zimbraDomain
 zimbraId: 0bf35e36-0d91-11d9-866e-000d93afea2b
 zimbraDomainName: demo2.zextras.io
 zimbraDomainType: local
-o: demo.zextras.io domain
+o: demo2.zextras.io domain
 description: demo2.zextras.io domain for testing
 dc: demo2
 
@@ -59,12 +59,12 @@ objectclass: organizationalRole
 ou: groups
 cn: groups
 
-dn: uid=test,ou=people,dc=demo2,dc=zextras,dc=io
-uid: test
+dn: uid=test2,ou=people,dc=demo2,dc=zextras,dc=io
+uid: test2
 objectclass: zimbraAccount
 objectclass: organizationalPerson
 objectClass: inetOrgPerson
-zimbraId: 1d5710b0-0744-11d9-bcca-000d93afea2b
+zimbraId: 1d5710b0-0744-11d9-bcca-000d93afea2c
 zimbraAccountStatus: active
 zimbraMailStatus: enabled
 zimbraNotes: this space could be used for account notes
