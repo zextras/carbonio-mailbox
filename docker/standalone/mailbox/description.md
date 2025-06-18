@@ -7,3 +7,5 @@ define containers with these names:
 - carbonio-ldap -> openldap 
 - carbonio-mariadb -> mariadb
 - carbonio-mariadb -> mariadb
+
+You can customize the local configuration of the mailbox by replacing /localconfig/localconfig.xml
