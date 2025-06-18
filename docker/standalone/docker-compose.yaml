@@ -83,10 +83,13 @@ services:
       - mailbox
     build:
       dockerfile: webui/Dockerfile
-    network_mode: "host"
     ports:
       - "9000:9000"
       - "6071:6071"
+    networks:
+      - mailbox
+    volumes:
+      - ./webui/mailbox_upstream.conf:/etc/nginx/conf.d/mailbox_upstream.conf
   postfix:
     depends_on:
       openldap:

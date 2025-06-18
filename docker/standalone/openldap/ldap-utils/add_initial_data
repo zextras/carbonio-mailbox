@@ -12,6 +12,9 @@ dn: cn=config,cn=zimbra
 changetype: modify
 replace: zimbraSmtpHostname
 zimbraSmtpHostname: postfix
+-
+replace: zimbraCsrfRefererCheckEnabled
+zimbraCsrfRefererCheckEnabled: FALSE
 EOF
 
 cat <<EOF > /tmp/replace_smtp_port.ldif
