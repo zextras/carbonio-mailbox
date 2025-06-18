@@ -563,34 +563,29 @@ public final class QueryParserTest {
   @ParameterizedTest
   @ValueSource(strings = {":", "-", "!", "(", ")", "{", "}", "+", "- ", "+ ", "\""})
   void specialCharacters(String ch) {
-    QueryParser parser = new QueryParser(null, ZimbraAnalyzer.getInstance());
     assertThrows(ServiceException.class, () -> parser.parse(ch));
   }
 
   @ParameterizedTest
   @ValueSource(strings = {"-", "!", "+", "-", "+", ")"})
   void specialCharactersAfterSomeText(String ch) {
-    QueryParser parser = new QueryParser(null, ZimbraAnalyzer.getInstance());
     assertDoesNotThrow(() -> parser.parse("test%s".formatted(ch)));
   }
 
   @ParameterizedTest
   @ValueSource(strings = {":", "(", "{", "}", "\""})
   void specialCharactersAfterSomeTextFailing(String ch) {
-    QueryParser parser = new QueryParser(null, ZimbraAnalyzer.getInstance());
     assertThrows(ServiceException.class, () -> parser.parse("test%s".formatted(ch)));
   }
 
   @ParameterizedTest
   @ValueSource(strings = {":", "-", "!", "(", ")", "{", "}", "+", "- ", "+ "})
   void specialCharactersWithQuotes(String ch) {
-    QueryParser parser = new QueryParser(null, ZimbraAnalyzer.getInstance());
     assertDoesNotThrow(() -> parser.parse("\"%s\"".formatted(ch)));
   }
 
   @Test
   void doubleQuoteNeedToBeEscaped() {
-    QueryParser parser = new QueryParser(null, ZimbraAnalyzer.getInstance());
     assertThrows(ServiceException.class, () -> parser.parse("\"\"\""));
     assertDoesNotThrow(() -> parser.parse("\"\\\"\""));
   }
