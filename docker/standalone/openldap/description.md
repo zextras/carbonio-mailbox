@@ -5,3 +5,6 @@ The initial data provides:
 - the domain demo.zextras.io
 - standard account test@demo.zextras.io - password
 - admin account admin@demo.zextras.io - password
+
+You can add custom ldifs files with the entries or modifications you want to 
+do by placing them under /opt/zextras/ldap/custom-ldifs/ with .ldif suffix.
