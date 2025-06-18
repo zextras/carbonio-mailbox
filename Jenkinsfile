@@ -15,6 +15,15 @@ def isBuildingTag() {
     return false
 }
 
+def buildContainer(String title, String description, String dockerfile, String tag) {
+    sh 'docker build ' +
+            '--label org.opencontainers.image.title="' + title + '" ' +
+            '--label org.opencontainers.image.description="' + description + '" ' +
+            '--label org.opencontainers.image.vendor="Zextras" ' +
+            '-f ' + dockerfile + ' -t ' + tag + ' .'
+    sh 'docker push ' + tag
+}
+
 def buildDebPackages(String flavor) {
     container('yap') {
         unstash 'staging'
@@ -160,17 +169,14 @@ pipeline {
             steps {
                 container('dind') {
                     withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                        sh 'docker build -f docker/standalone/mailbox/Dockerfile -t registry.dev.zextras.com/dev/carbonio-mailbox:latest .'
-                        sh 'docker push registry.dev.zextras.com/dev/carbonio-mailbox:latest'
-
-                        sh 'docker build -f docker/standalone/mariadb/Dockerfile -t registry.dev.zextras.com/dev/carbonio-mariadb:latest .'
-                        sh 'docker push registry.dev.zextras.com/dev/carbonio-mariadb:latest'
-
-                        sh 'docker build -f docker/standalone/openldap/Dockerfile -t registry.dev.zextras.com/dev/carbonio-openldap:latest .'
-                        sh 'docker push registry.dev.zextras.com/dev/carbonio-openldap:latest'
-
-                        sh 'docker build -f docker/standalone/postfix/Dockerfile -t registry.dev.zextras.com/dev/carbonio-mta:latest .'
-                        sh 'docker push registry.dev.zextras.com/dev/carbonio-mta:latest'
+                        buildContainer('Carbonio Mailbox', '$(cat docker/standalone/mailbox/description.md)',
+                                'docker/standalone/mailbox/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-mailbox:latest')
+                        buildContainer('Carbonio MariaDB', '$(cat docker/standalone/mariadb/description.md)',
+                                'docker/standalone/mariadb/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-mariadb:latest')
+                        buildContainer('Carbonio OpenLDAP', '$(cat docker/standalone/openldap/description.md)',
+                                'docker/standalone/openldap/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-openldap:latest')
+                        buildContainer('Carbonio MTA', '$(cat docker/standalone/postfix/description.md)',
+                                'docker/standalone/postfix/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-mta:latest')
                     }
                 }
             }
