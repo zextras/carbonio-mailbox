@@ -86,6 +86,7 @@ services:
     ports:
       - "443:443"
       - "6071:6071"
+      - "993:993"
     networks:
       - mailbox
     volumes:
