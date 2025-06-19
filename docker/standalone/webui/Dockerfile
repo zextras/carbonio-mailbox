@@ -9,6 +9,7 @@ RUN apt update && apt install -y gnupg2 ca-certificates && apt clean \
 RUN mkdir -p /opt/zextras/conf
 RUN mkdir -p /opt/zextras/data/tmp/nginx/client
 RUN mkdir -p /run/carbonio
+RUN mkdir -p /opt/zextras/common/conf
 
 RUN openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 \
 -nodes -keyout /opt/zextras/conf/nginx-carbonio.key \
@@ -17,7 +18,7 @@ RUN openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 \
 
 
 
-
+COPY ./webui/mime.types /opt/zextras/common/conf/mime.types
 COPY ./webui/nginx.conf /opt/zextras/conf/nginx.conf
 COPY ./webui/mailbox_upstream.conf /opt/zextras/conf/mailbox_upstream.conf
 COPY ./webui/nginx-webui.conf /opt/zextras/conf/nginx-webui.conf
