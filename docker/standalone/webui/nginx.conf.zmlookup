@@ -1,6 +1,6 @@
 zm_lookup {
 
-    zm_lookup_handlers  https://mailbox:7072/service/extension/nginx-lookup;
+    zm_lookup_handlers  https://mailbox1.demo.zextras.io:7072/service/extension/nginx-lookup;
 
     zm_lookup_timeout   15000ms;
 

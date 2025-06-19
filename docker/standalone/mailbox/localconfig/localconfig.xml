@@ -23,7 +23,7 @@
     <value>zextras</value>
   </key>
   <key name="zimbra_server_hostname">
-    <value>docker.demo.zextras.io</value>
+    <value>mailbox1.demo.zextras.io</value>
   </key>
   <key name="mysql_root_password">
     <value>MARIADB_ROOT_PASSWORD</value>

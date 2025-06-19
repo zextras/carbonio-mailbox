@@ -11,6 +11,8 @@ COPY store/target/dependencies/* /opt/zextras/mailbox/jars/
 COPY native/target/zm-native*.jar /opt/zextras/mailbox/jars/
 COPY soap/target/zm-soap*.jar /opt/zextras/mailbox/jars/
 COPY common/target/zm-common*.jar /opt/zextras/mailbox/jars/
+
+# TODO: this is here only for testing, find a way to include the extension automatically in mailbox since its not optional
 COPY docker/standalone/mailbox/zm-nginx-lookup-store-24.5.0.jar /opt/zextras/lib/ext/nginx-lookup/zm-nginx-lookup-store-24.5.0.jar
 
 ENV LDAP_URL="ldap://openldap:1389"
@@ -19,7 +21,7 @@ ENV LDAP_ADMIN_PASSWORD=password
 ENV MARIADB_ROOT_PASSWORD=password
 ENV MARIADB_URL=mariadb
 ENV MARIADB_PORT=3306
-ENV SERVER_HOSTNAME='docker.demo.zextras.io'
+ENV SERVER_HOSTNAME='mailbox1.demo.zextras.io'
 
 ENV JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
               -Dhttps.protocols=TLSv1.2,TLSv1.3 \

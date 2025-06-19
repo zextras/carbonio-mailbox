@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  mailbox:
+  mailbox1:
     depends_on:
       openldap:
         condition: service_healthy
@@ -10,10 +10,8 @@ services:
     build:
       context: ./../../
       dockerfile: docker/standalone/mailbox/Dockerfile
-    hostname: docker.demo.zextras.io
+    hostname: mailbox1.demo.zextras.io
     restart: on-failure
-    networks:
-      - mailbox
     healthcheck:
       interval: 60s
       retries: 10
@@ -37,8 +35,6 @@ services:
       dockerfile: docker/standalone/mailbox/Dockerfile
     hostname: mailbox2.demo.zextras.io
     restart: on-failure
-    networks:
-      - mailbox
     healthcheck:
       interval: 60s
       retries: 10
@@ -64,8 +60,6 @@ services:
       start_period: 20s
       test: nc -z localhost 1389 || exit 1
       timeout: 10s
-    networks:
-      - mailbox
     ports:
       - "1389:1389"
     volumes:
@@ -74,21 +68,18 @@ services:
     build:
       context: ./../../
       dockerfile: docker/standalone/mariadb/Dockerfile
-    networks:
-      - mailbox
     ports:
       - "3306:3306"
   webui:
     depends_on:
-      - mailbox
+      - mailbox1
+      - mailbox2
     build:
       dockerfile: webui/Dockerfile
     ports:
       - "443:443"
       - "6071:6071"
       - "993:993"
-    networks:
-      - mailbox
     volumes:
       - ./webui/mailbox_upstream.conf:/etc/nginx/conf.d/mailbox_upstream.conf
   postfix:
@@ -104,9 +95,5 @@ services:
     build:
       context: ./../../
       dockerfile: docker/standalone/postfix/Dockerfile
-    networks:
-      - mailbox
     ports:
       - "20025:25"
-networks:
-  mailbox:
