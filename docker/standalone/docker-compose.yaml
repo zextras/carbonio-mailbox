@@ -80,6 +80,7 @@ services:
       - "443:443"
       - "6071:6071"
       - "993:993"
+      - "143:143"
     volumes:
       - ./webui/mailbox_upstream.conf:/etc/nginx/conf.d/mailbox_upstream.conf
   postfix:

@@ -11,7 +11,7 @@ COPY store/target/dependencies/* /opt/zextras/mailbox/jars/
 COPY native/target/zm-native*.jar /opt/zextras/mailbox/jars/
 COPY soap/target/zm-soap*.jar /opt/zextras/mailbox/jars/
 COPY common/target/zm-common*.jar /opt/zextras/mailbox/jars/
-
+COPY docker/standalone/mailbox/log4j.properties /opt/zextras/conf/log4j.properties
 # TODO: this is here only for testing, find a way to include the extension automatically in mailbox since its not optional
 COPY docker/standalone/mailbox/zm-nginx-lookup-store-24.5.0.jar /opt/zextras/lib/ext/nginx-lookup/zm-nginx-lookup-store-24.5.0.jar
 
@@ -40,6 +40,7 @@ ENV JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
               -Djava.library.path=/opt/zextras/lib \
               -Dzimbra.config=/localconfig/localconfig.xml \
               -Dzimbra.native.required=false \
+              -Dlog4j.configurationFile=/opt/zextras/conf/log4j.properties \
               -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/* com.zextras.mailbox.Mailbox"
 
 RUN mkdir -p /opt/zextras/db
