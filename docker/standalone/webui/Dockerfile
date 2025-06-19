@@ -16,8 +16,7 @@ RUN openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 \
 -out /opt/zextras/conf/nginx-carbonio.crt -subj "/CN=example.com" \
 -addext "subjectAltName=DNS:example.com,DNS:*.example.com,IP:10.0.0.1"
 
-
-
+COPY ./webui/nginx.conf.zmlookup /opt/zextras/conf/nginx.conf.zmlookup
 COPY ./webui/mime.types /opt/zextras/common/conf/mime.types
 COPY ./webui/nginx.conf /opt/zextras/conf/nginx.conf
 COPY ./webui/mailbox_upstream.conf /opt/zextras/conf/mailbox_upstream.conf
