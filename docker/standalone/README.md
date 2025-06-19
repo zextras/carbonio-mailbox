@@ -12,8 +12,12 @@ This runs a dev environnment with:
 - MariaDB
 - LDAP
 - Postfix
-- Nginx with webui:
-  - https://localhost (Standard User) `test@demo.zextras.io` - `password`
-  - http://localhost:6071 (Admin) `admin@demo.zextras.io` - `password`
+- Nginx with:
+  - webui:
+    - https://localhost (Standard User) `test@demo.zextras.io` - `password`
+    - http://localhost:6071 (Admin) `admin@demo.zextras.io` - `password`
+  - IMAP/IMAPS:
+    - localhost:143 no TLS, plain text authentication
+    - localhost:993 TLS, plain text authentication
 
-You can attach the JVM debugger to localhost:5000 to debug the Mailbox.
+You can attach the JVM debugger to localhost:5005 to debug the Mailbox.
