@@ -19,11 +19,7 @@ services:
       test: netcat -z localhost 8080 || exit 1
       timeout: 10s
     ports:
-      - "7072:7071"
-      - "8081:8080"
       - "5005:5005"
-      - "7026:7025"
-      - "7143:7143"
   mailbox2:
     depends_on:
       openldap:
@@ -44,11 +40,7 @@ services:
     volumes:
       - ./mailbox/mailbox_2_localconfig.xml:/localconfig/localconfig.xml
     ports:
-      - "7071:7071"
-      - "8080:8080"
       - "5006:5005"
-      - "7025:7025"
-      - "7144:7143"
   openldap:
     build:
       context: ./../../
