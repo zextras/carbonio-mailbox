@@ -1,6 +1,6 @@
-dn: cn=docker.demo.zextras.io,cn=servers,cn=zimbra
+dn: cn=mailbox1.demo.zextras.io,cn=servers,cn=zimbra
 objectClass: zimbraServer
-cn: docker.demo.zextras.io
+cn: mailbox1.demo.zextras.io
 zimbraId: 51aacd2f-7d00-4755-ae5f-4a40e8ba60c0
 carbonioSMIMESignatureVerificationEnabled: FALSE
 zimbraCreateTimestamp: 20240718072320Z
@@ -34,6 +34,6 @@ zimbraReverseProxyStrictServerNameEnabled: FALSE
 zimbraServiceEnabled: directory-server
 zimbraServiceEnabled: mailbox
 zimbraServiceEnabled: service
-zimbraServiceHostname: docker.demo.zextras.io
+zimbraServiceHostname: mailbox1.demo.zextras.io
 zimbraServiceInstalled: directory-server
 zimbraServiceInstalled: mailbox
