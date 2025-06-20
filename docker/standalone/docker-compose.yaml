@@ -21,6 +21,8 @@ services:
     ports:
       - "5005:5005"
   mailbox2:
+    environment:
+      - SERVER_HOSTNAME=mailbox2.demo.zextras.io
     depends_on:
       openldap:
         condition: service_healthy
@@ -37,8 +39,6 @@ services:
       start_period: 20s
       test: netcat -z localhost 8080 || exit 1
       timeout: 10s
-    volumes:
-      - ./mailbox/mailbox_2_localconfig.xml:/localconfig/localconfig.xml
     ports:
       - "5006:5005"
   openldap:
