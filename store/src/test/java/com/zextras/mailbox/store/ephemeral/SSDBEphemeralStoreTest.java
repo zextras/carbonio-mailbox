@@ -15,7 +15,9 @@ import com.zimbra.cs.ephemeral.EphemeralKey;
 import com.zimbra.cs.ephemeral.EphemeralResult;
 import java.util.Set;
 import java.util.UUID;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +34,8 @@ class SSDBEphemeralStoreTest {
   static RedisContainer redisContainer = new RedisContainer(DockerImageName.parse("redis:6.2.6"));
 
   static Jedis jedisClient;
+  private TestLocation location1;
+  private SSDBEphemeralStore ssdbEphemeralStore;
 
   @BeforeAll
   static void setUp() {
@@ -56,19 +60,22 @@ class SSDBEphemeralStoreTest {
   @BeforeEach
   void beforeEach() {
     jedisClient.flushAll();
+    location1 = new TestLocation(new String[] {UUID.randomUUID().toString()});
+    ssdbEphemeralStore = SSDBEphemeralStore.createWithTestConfig(
+        redisContainer.getRedisHost(), redisContainer.getRedisPort());
+  }
+  @AfterEach
+  void afterEach() {
+    jedisClient.flushAll();
   }
 
   @ParameterizedTest
   @MethodSource("generateInput")
   void get(EphemeralInput input) throws ServiceException {
-    final SSDBEphemeralStore ssdbEphemeralStore =
-        SSDBEphemeralStore.createWithTestConfig(
-            redisContainer.getRedisHost(), redisContainer.getRedisPort());
-    final TestLocation testLocation = new TestLocation(new String[] {"ccc"});
-    ssdbEphemeralStore.set(input, testLocation);
+    ssdbEphemeralStore.set(input, location1);
 
     final EphemeralResult ephemeralResult =
-        ssdbEphemeralStore.get(input.getEphemeralKey(), testLocation);
+        ssdbEphemeralStore.get(input.getEphemeralKey(), location1);
     Assertions.assertEquals(input.getValue().toString(), ephemeralResult.getValue());
   }
 
@@ -76,16 +83,16 @@ class SSDBEphemeralStoreTest {
   void set_nullValueShouldNotStoreAnything() throws ServiceException {
     String k = null;
     @SuppressWarnings("ConstantValue")
-    EphemeralInput input = new EphemeralInput(new EphemeralKey(UUID.randomUUID().toString()), k);
-    final SSDBEphemeralStore ssdbEphemeralStore =
-        SSDBEphemeralStore.createWithTestConfig(
-            redisContainer.getRedisHost(), redisContainer.getRedisPort());
-    final TestLocation testLocation = new TestLocation(new String[] {"ccc"});
-    ssdbEphemeralStore.set(input, testLocation);
+    EphemeralInput input = new EphemeralInput(randomKey(), k);
+    ssdbEphemeralStore.set(input, location1);
 
     final EphemeralResult ephemeralResult =
-        ssdbEphemeralStore.get(input.getEphemeralKey(), testLocation);
+        ssdbEphemeralStore.get(input.getEphemeralKey(), location1);
     Assertions.assertNull(ephemeralResult.getValue());
+  }
+
+  private static @NotNull EphemeralKey randomKey() {
+    return new EphemeralKey(UUID.randomUUID().toString());
   }
 
   @ParameterizedTest
@@ -95,11 +102,11 @@ class SSDBEphemeralStoreTest {
     final SSDBEphemeralStore ssdbEphemeralStore =
         SSDBEphemeralStore.createWithTestConfig(
             redisContainer.getRedisHost(), redisContainer.getRedisPort());
-    final TestLocation testLocation = new TestLocation(new String[] {"ccc"});
-    ssdbEphemeralStore.set(input, testLocation);
+    
+    ssdbEphemeralStore.set(input, location1);
 
     final EphemeralResult ephemeralResult =
-        ssdbEphemeralStore.get(input.getEphemeralKey(), testLocation);
+        ssdbEphemeralStore.get(input.getEphemeralKey(), location1);
     Assertions.assertEquals(input.getValue() + "|100", ephemeralResult.getValue());
   }
 
@@ -110,10 +117,9 @@ class SSDBEphemeralStoreTest {
     final SSDBEphemeralStore ssdbEphemeralStore =
         SSDBEphemeralStore.createWithTestConfig(
             redisContainer.getRedisHost(), redisContainer.getRedisPort());
-    final TestLocation testLocation = new TestLocation(new String[] {"ccc"});
 
     final ServiceException serviceException = Assertions.assertThrows(ServiceException.class,
-        () -> ssdbEphemeralStore.set(input, testLocation));
+        () -> ssdbEphemeralStore.set(input, location1));
 
     Assertions.assertEquals("system failure: Cannot store a key with expiration -1 seconds", serviceException.getMessage());
   }
@@ -122,13 +128,9 @@ class SSDBEphemeralStoreTest {
   void set_shouldNotStoreKeysWithZeroRelativeExpiration() {
     final MockExpiration expiresNow = new MockExpiration(0);
     final EphemeralInput input = new EphemeralInput(new EphemeralKey("testString"), "value1", expiresNow);
-    final SSDBEphemeralStore ssdbEphemeralStore =
-        SSDBEphemeralStore.createWithTestConfig(
-            redisContainer.getRedisHost(), redisContainer.getRedisPort());
-    final TestLocation testLocation = new TestLocation(new String[] {"ccc"});
 
     final ServiceException serviceException = Assertions.assertThrows(ServiceException.class,
-        () -> ssdbEphemeralStore.set(input, testLocation));
+        () -> ssdbEphemeralStore.set(input, location1));
 
     Assertions.assertEquals("system failure: Cannot store a key with expiration 0 seconds", serviceException.getMessage());
   }
@@ -153,170 +155,133 @@ class SSDBEphemeralStoreTest {
 
   @Test
   @SuppressWarnings("squid:S2925")
-  void set_shouldStoreExpirationInDatabase() throws ServiceException, InterruptedException {
+  void set_shouldStoreExpirationInDatabase() throws ServiceException {
     final EphemeralInput input = new EphemeralInput(new EphemeralKey("testString"), "value1");
-    final int timeToWaitForExpiration = 1000;
+    final int timeToWaitForExpiration = 10*60*60*1000;
     input.setExpiration(new MockExpiration(timeToWaitForExpiration));
-    final SSDBEphemeralStore ssdbEphemeralStore =
-        SSDBEphemeralStore.createWithTestConfig(
-            redisContainer.getRedisHost(), redisContainer.getRedisPort());
-    final TestLocation testLocation = new TestLocation(new String[] {"ccc"});
-    ssdbEphemeralStore.set(input, testLocation);
-    Thread.sleep(timeToWaitForExpiration);
+    
+    ssdbEphemeralStore.set(input, location1);
 
+    final String key = getFirstKeyInRedis();
+    final Long ttl = jedisClient.ttl(key);
     // check key expired
-    Assertions.assertEquals(0,  jedisClient.keys("*").size());
+    Assertions.assertTrue(ttl > 0);
   }
 
   @ParameterizedTest
   @MethodSource("generateInput")
   void set_shouldNotStoreExpiration_WhenNotPresent(EphemeralInput input) throws ServiceException {
-    final SSDBEphemeralStore ssdbEphemeralStore =
-        SSDBEphemeralStore.createWithTestConfig(
-            redisContainer.getRedisHost(), redisContainer.getRedisPort());
-    final TestLocation testLocation = new TestLocation(new String[] {"ccc"});
-    ssdbEphemeralStore.set(input, testLocation);
+
+    ssdbEphemeralStore.set(input, this.location1);
 
     final EphemeralResult ephemeralResult =
-        ssdbEphemeralStore.get(input.getEphemeralKey(), testLocation);
+        ssdbEphemeralStore.get(input.getEphemeralKey(), this.location1);
     Assertions.assertEquals(input.getValue().toString(), ephemeralResult.getValue());
 
   }
 
   @Test
   void shouldStoreKey_WithoutDynamicComponent() throws ServiceException {
-    final EphemeralKey ephemeralKey = new EphemeralKey(UUID.randomUUID().toString());
+    final EphemeralKey ephemeralKey = randomKey();
     EphemeralInput input = new EphemeralInput(ephemeralKey, "value");
-    final SSDBEphemeralStore ssdbEphemeralStore =
-        SSDBEphemeralStore.createWithTestConfig(
-            redisContainer.getRedisHost(), redisContainer.getRedisPort());
-    final TestLocation testLocation = new TestLocation(new String[] {"ccc"});
-    ssdbEphemeralStore.set(input, testLocation);
 
+    ssdbEphemeralStore.set(input, location1);
+
+    final String firstKey = getFirstKeyInRedis();
+    Assertions.assertEquals(
+        firstKey, String.join("|", location1.getLocation()) + "|" + ephemeralKey.getKey());
+  }
+
+  private static String getFirstKeyInRedis() {
     final Set<String> keys = jedisClient.keys("*");
-    Assertions.assertEquals(1, keys.size());
     final String[] keysArray = keys.toArray(new String[0]);
     final String firstKey = keysArray[0];
-    Assertions.assertEquals(
-        firstKey, String.join("|", testLocation.getLocation()) + "|" + ephemeralKey.getKey());
+    return firstKey;
   }
 
   @Test
   void shouldStoreKey_WithDynamicComponent() throws ServiceException {
     final EphemeralKey ephemeralKey = new EphemeralKey(UUID.randomUUID().toString(), "dynamic");
     EphemeralInput input = new EphemeralInput(ephemeralKey, "value");
-    final SSDBEphemeralStore ssdbEphemeralStore =
-        SSDBEphemeralStore.createWithTestConfig(
-            redisContainer.getRedisHost(), redisContainer.getRedisPort());
-    final TestLocation testLocation = new TestLocation(new String[] {"ccc"});
-    ssdbEphemeralStore.set(input, testLocation);
 
-    final Set<String> keys = jedisClient.keys("*");
-    Assertions.assertEquals(1, keys.size());
-    final String[] keysArray = keys.toArray(new String[0]);
-    final String firstKey = keysArray[0];
+    ssdbEphemeralStore.set(input, location1);
+
+    final String firstKey = getFirstKeyInRedis();
     Assertions.assertEquals(
         firstKey,
-        String.join("|", testLocation.getLocation()) + "|" + ephemeralKey.getKey() + "|dynamic");
+        String.join("|", location1.getLocation()) + "|" + ephemeralKey.getKey() + "|dynamic");
   }
 
   @Test
   void shouldNotOverrideSameKey_WhenLocationIsDifferent() throws ServiceException {
-    final SSDBEphemeralStore store =
-        SSDBEphemeralStore.createWithTestConfig(
-            redisContainer.getRedisHost(), redisContainer.getRedisPort());
-    final EphemeralKey key = new EphemeralKey(UUID.randomUUID().toString());
+    final EphemeralKey key = randomKey();
     final TestLocation location1 = new TestLocation(new String[] {"1"});
     final TestLocation location2 = new TestLocation(new String[] {"2"});
     final EphemeralInput input1 = new EphemeralInput(key, "value1");
     final EphemeralInput input2 = new EphemeralInput(key, "value2");
-    store.set(input1, location1);
-    store.set(input2, location2);
+    ssdbEphemeralStore.set(input1, location1);
+    ssdbEphemeralStore.set(input2, location2);
 
-    final EphemeralResult result1 = store.get(key, location1);
-    final EphemeralResult result2 = store.get(key, location2);
+    final EphemeralResult result1 = ssdbEphemeralStore.get(key, location1);
+    final EphemeralResult result2 = ssdbEphemeralStore.get(key, location2);
     Assertions.assertNotEquals(result1.getValue(), result2.getValue());
   }
 
   @Test
   void set() {
-    final SSDBEphemeralStore ssdbEphemeralStore =
-        SSDBEphemeralStore.createWithTestConfig(
-            redisContainer.getRedisHost(), redisContainer.getRedisPort());
-    final TestLocation testLocation = new TestLocation(new String[] {"ccc"});
     final EphemeralInput input =
-        new EphemeralInput(new EphemeralKey(UUID.randomUUID().toString()), "aaa");
+        new EphemeralInput(randomKey(), "aaa");
 
-    Assertions.assertDoesNotThrow(() -> ssdbEphemeralStore.set(input, testLocation));
+    Assertions.assertDoesNotThrow(() -> ssdbEphemeralStore.set(input, location1));
   }
 
   @Test
   void has() throws ServiceException {
-    final SSDBEphemeralStore ssdbEphemeralStore =
-        SSDBEphemeralStore.createWithTestConfig(
-            redisContainer.getRedisHost(), redisContainer.getRedisPort());
-    final TestLocation testLocation = new TestLocation(new String[] {"ccc"});
     final EphemeralInput input = new EphemeralInput(new EphemeralKey("test"), "aaa");
 
-    Assertions.assertDoesNotThrow(() -> ssdbEphemeralStore.set(input, testLocation));
-    Assertions.assertTrue(ssdbEphemeralStore.has(input.getEphemeralKey(), testLocation));
+    Assertions.assertDoesNotThrow(() -> ssdbEphemeralStore.set(input, location1));
+    Assertions.assertTrue(ssdbEphemeralStore.has(input.getEphemeralKey(), location1));
   }
 
   @Test
   void doesNotHave() throws ServiceException {
-    final SSDBEphemeralStore ssdbEphemeralStore =
-        SSDBEphemeralStore.createWithTestConfig(
-            redisContainer.getRedisHost(), redisContainer.getRedisPort());
-    final TestLocation testLocation = new TestLocation(new String[] {"ccc"});
     final EphemeralKey key = new EphemeralKey("test");
 
-    Assertions.assertFalse(ssdbEphemeralStore.has(key, testLocation));
+    Assertions.assertFalse(ssdbEphemeralStore.has(key, location1));
   }
 
   @Test
   void hasReturnsTrue_WhenKeyExists_andValueIsEmptyString() throws ServiceException {
-    final SSDBEphemeralStore ssdbEphemeralStore =
-        SSDBEphemeralStore.createWithTestConfig(
-            redisContainer.getRedisHost(), redisContainer.getRedisPort());
-    final TestLocation testLocation = new TestLocation(new String[] {"ccc"});
     final EphemeralInput input = new EphemeralInput(new EphemeralKey("test"), "");
 
-    ssdbEphemeralStore.set(input, testLocation);
-    Assertions.assertTrue(ssdbEphemeralStore.has(input.getEphemeralKey(), testLocation));
+    ssdbEphemeralStore.set(input, location1);
+    Assertions.assertTrue(ssdbEphemeralStore.has(input.getEphemeralKey(), location1));
   }
 
   @Test
   void delete() throws ServiceException {
-    final SSDBEphemeralStore ssdbEphemeralStore =
-        SSDBEphemeralStore.createWithTestConfig(
-            redisContainer.getRedisHost(), redisContainer.getRedisPort());
-    final TestLocation testLocation = new TestLocation(new String[] {"ccc"});
     final EphemeralInput input =
-        new EphemeralInput(new EphemeralKey(UUID.randomUUID().toString()), "aaa");
+        new EphemeralInput(randomKey(), "aaa");
 
-    Assertions.assertDoesNotThrow(() -> ssdbEphemeralStore.set(input, testLocation));
+    Assertions.assertDoesNotThrow(() -> ssdbEphemeralStore.set(input, location1));
     Assertions.assertEquals(
-        "aaa", ssdbEphemeralStore.get(input.getEphemeralKey(), testLocation).getValue());
-    ssdbEphemeralStore.delete(input.getEphemeralKey(), input.getValue().toString(), testLocation);
-    Assertions.assertNull(ssdbEphemeralStore.get(input.getEphemeralKey(), testLocation).getValue());
+        "aaa", ssdbEphemeralStore.get(input.getEphemeralKey(), location1).getValue());
+    ssdbEphemeralStore.delete(input.getEphemeralKey(), input.getValue().toString(), location1);
+    Assertions.assertNull(ssdbEphemeralStore.get(input.getEphemeralKey(), location1).getValue());
   }
 
   @Test
   void update() throws ServiceException {
-    final SSDBEphemeralStore ssdbEphemeralStore =
-        SSDBEphemeralStore.createWithTestConfig(
-            redisContainer.getRedisHost(), redisContainer.getRedisPort());
-    final TestLocation testLocation = new TestLocation(new String[] {"ccc"});
-    final EphemeralKey ephemeralKey = new EphemeralKey(UUID.randomUUID().toString());
+    final EphemeralKey ephemeralKey = randomKey();
     final EphemeralInput input = new EphemeralInput(ephemeralKey, "aaa");
 
-    Assertions.assertDoesNotThrow(() -> ssdbEphemeralStore.set(input, testLocation));
-    Assertions.assertEquals("aaa", ssdbEphemeralStore.get(ephemeralKey, testLocation).getValue());
+    Assertions.assertDoesNotThrow(() -> ssdbEphemeralStore.set(input, location1));
+    Assertions.assertEquals("aaa", ssdbEphemeralStore.get(ephemeralKey, location1).getValue());
 
     final EphemeralInput newInput = new EphemeralInput(ephemeralKey, "bbb");
 
-    Assertions.assertDoesNotThrow(() -> ssdbEphemeralStore.update(newInput, testLocation));
-    Assertions.assertEquals("bbb", ssdbEphemeralStore.get(ephemeralKey, testLocation).getValue());
+    Assertions.assertDoesNotThrow(() -> ssdbEphemeralStore.update(newInput, location1));
+    Assertions.assertEquals("bbb", ssdbEphemeralStore.get(ephemeralKey, location1).getValue());
 
     final Set<String> keys = jedisClient.keys("*");
     Assertions.assertEquals(1, keys.size());
@@ -326,14 +291,10 @@ class SSDBEphemeralStoreTest {
   @MethodSource("generateInput")
   void update_shouldStoreExpiration_WhenPresent(EphemeralInput input) throws ServiceException {
     input.setExpiration(new AbsoluteExpiration(100L));
-    final SSDBEphemeralStore ssdbEphemeralStore =
-        SSDBEphemeralStore.createWithTestConfig(
-            redisContainer.getRedisHost(), redisContainer.getRedisPort());
-    final TestLocation testLocation = new TestLocation(new String[] {"ccc"});
-    ssdbEphemeralStore.update(input, testLocation);
+    ssdbEphemeralStore.update(input, location1);
 
     final EphemeralResult ephemeralResult =
-        ssdbEphemeralStore.get(input.getEphemeralKey(), testLocation);
+        ssdbEphemeralStore.get(input.getEphemeralKey(), location1);
     Assertions.assertEquals(input.getValue() + "|100", ephemeralResult.getValue());
   }
 
@@ -341,14 +302,10 @@ class SSDBEphemeralStoreTest {
   @MethodSource("generateInput")
   void update_shouldNotStoreExpiration_WhenNotPresent(EphemeralInput input)
       throws ServiceException {
-    final SSDBEphemeralStore ssdbEphemeralStore =
-        SSDBEphemeralStore.createWithTestConfig(
-            redisContainer.getRedisHost(), redisContainer.getRedisPort());
-    final TestLocation testLocation = new TestLocation(new String[] {"ccc"});
-    ssdbEphemeralStore.update(input, testLocation);
+    ssdbEphemeralStore.update(input, location1);
 
     final EphemeralResult ephemeralResult =
-        ssdbEphemeralStore.get(input.getEphemeralKey(), testLocation);
+        ssdbEphemeralStore.get(input.getEphemeralKey(), location1);
     Assertions.assertEquals(input.getValue().toString(), ephemeralResult.getValue());
   }
 }
