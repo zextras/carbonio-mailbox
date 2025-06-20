@@ -4,7 +4,10 @@ Steps:
 
 1. `mvn clean install -DskipTests=true`
 2. cd into [docker/standalone](./) and run `docker compose up 
---build`
+--build` \
+ If you are using a Mac you can build using 
+   `DOCKER_DEFAULT_PLATFORM=linux/amd64 docker compose up
+   --build`
 
 This runs a dev environnment with:
 
