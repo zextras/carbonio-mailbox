@@ -15,6 +15,7 @@ import com.zimbra.cs.ephemeral.EphemeralKey;
 import com.zimbra.cs.ephemeral.EphemeralResult;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -151,14 +152,14 @@ class SSDBEphemeralStoreTest {
   @SuppressWarnings("squid:S2925")
   void set_shouldStoreExpirationInDatabase() throws ServiceException {
     final EphemeralInput input = new EphemeralInput(new EphemeralKey("testString"), "value1");
-    final int timeToWaitForExpiration = 10*60*60*1000;
+    final int timeToWaitForExpiration = (int) TimeUnit.HOURS.toMillis(10L);
     input.setExpiration(new MockExpiration(timeToWaitForExpiration));
     
     ssdbEphemeralStore.set(input, location1);
 
     final String key = getFirstKeyInRedis();
     final Long ttl = jedisClient.ttl(key);
-    // check key expired
+
     Assertions.assertTrue(ttl > 0);
   }
 
@@ -171,6 +172,9 @@ class SSDBEphemeralStoreTest {
     final EphemeralResult ephemeralResult =
         ssdbEphemeralStore.get(input.getEphemeralKey(), this.location1);
     Assertions.assertEquals(input.getValue().toString(), ephemeralResult.getValue());
+    final String key = getFirstKeyInRedis();
+    final Long ttl = jedisClient.ttl(key);
+    Assertions.assertEquals(-1, ttl);
 
   }
 
