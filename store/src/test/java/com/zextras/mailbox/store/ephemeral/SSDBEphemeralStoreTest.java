@@ -208,8 +208,7 @@ class SSDBEphemeralStoreTest {
   private static String getFirstKeyInRedis() {
     final Set<String> keys = jedisClient.keys("*");
     final String[] keysArray = keys.toArray(new String[0]);
-    final String firstKey = keysArray[0];
-    return firstKey;
+    return keysArray[0];
   }
 
   @Test
