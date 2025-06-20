@@ -42,8 +42,8 @@ zimbraMailStatus: enabled
 zimbraNotes: this space could be used for account notes
 userPassword: {SSHA}vadyYWVkSMfCXsXTsi4PNTHjZOzSl6SA
 zimbraMailAlias: test@demo.zextras.io
-zimbraMailHost: docker.demo.zextras.io
-zimbraMailTransport: lmtp:docker.demo.zextras.io:7025
+zimbraMailHost: mailbox1.demo.zextras.io
+zimbraMailTransport: lmtp:mailbox1.demo.zextras.io:7025
 zimbraMailDeliveryAddress: test@demo.zextras.io
 zimbraPrefMailSignatureEnabled: FALSE
 mail: test@demo.zextras.io
@@ -63,8 +63,8 @@ zimbraMailStatus: enabled
 zimbraNotes: this space could be used for account notes
 userPassword: {SSHA}vadyYWVkSMfCXsXTsi4PNTHjZOzSl6SA
 zimbraMailAlias: admin@demo.zextras.io
-zimbraMailHost: docker.demo.zextras.io
-zimbraMailTransport: lmtp:docker.demo.zextras.io:7025
+zimbraMailHost: mailbox1.demo.zextras.io
+zimbraMailTransport: lmtp:mailbox1.demo.zextras.io:7025
 zimbraMailDeliveryAddress: admin@demo.zextras.io
 zimbraPrefMailSignatureEnabled: FALSE
 mail: admin@demo.zextras.io

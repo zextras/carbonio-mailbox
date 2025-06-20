@@ -3,12 +3,14 @@ FROM ibm-semeru-runtimes:open-17-jdk
 COPY store/src/test/resources/timezones-test.ics /opt/zextras/conf/timezones.ics
 COPY store-conf/conf/msgs/* /opt/zextras/conf/msgs/
 
-RUN mkdir -p /opt/zextras/mailbox/jars/
+RUN mkdir -p /opt/zextras/mailbox/jars/ && mkdir -p /opt/zextras/lib/ext/nginx-lookup/
+
 COPY store/target/zm-store.jar /opt/zextras/mailbox/jars/
 COPY store/target/dependencies/* /opt/zextras/mailbox/jars/
 COPY native/target/zm-native*.jar /opt/zextras/mailbox/jars/
 COPY soap/target/zm-soap*.jar /opt/zextras/mailbox/jars/
 COPY common/target/zm-common*.jar /opt/zextras/mailbox/jars/
+COPY docker/standalone/mailbox/log4j.properties /opt/zextras/conf/log4j.properties
 
 ENV LDAP_URL="ldap://openldap:1389"
 ENV LDAP_ROOT_PASSWORD=qh6hWZvc
@@ -16,7 +18,7 @@ ENV LDAP_ADMIN_PASSWORD=password
 ENV MARIADB_ROOT_PASSWORD=password
 ENV MARIADB_URL=mariadb
 ENV MARIADB_PORT=3306
-ENV SERVER_HOSTNAME='docker.demo.zextras.io'
+ENV SERVER_HOSTNAME='mailbox1.demo.zextras.io'
 
 ENV JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
               -Dhttps.protocols=TLSv1.2,TLSv1.3 \
@@ -35,6 +37,7 @@ ENV JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
               -Djava.library.path=/opt/zextras/lib \
               -Dzimbra.config=/localconfig/localconfig.xml \
               -Dzimbra.native.required=false \
+              -Dlog4j.configurationFile=/opt/zextras/conf/log4j.properties \
               -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/* com.zextras.mailbox.Mailbox"
 
 RUN mkdir -p /opt/zextras/db
