@@ -26,9 +26,9 @@ This runs a dev environnment with:
     - localhost:993 TLS, plain text authentication
 
 You can also interact with the cli by running:
- - `docker compose exec mailbox1 sh -c "/opt/zextras/mailbox/cli ga 
+ - `docker compose exec mailbox1 sh -c "zmprov ga 
    test@demo.zextras.io"`
- - `docker compose exec mailbox1 sh -c "/opt/zextras/mailbox/cli"` (interactive)
+ - `docker compose exec mailbox1 sh -c "zmprov"` (interactive)
 or from within the container.
 You can attach the JVM debugger to localhost:5005 to debug mailbox1, 5006 
 for mailbox2.

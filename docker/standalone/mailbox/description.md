@@ -14,4 +14,4 @@ ENVIRONMENT variables that you can find in the container build file.
 In particular the SERVER_HOSTNAME field is replaced by ${HOSTNAME} 
 automatically.
 
-Mailbox CLI is available at /opt/zextras/mailbox/cli.
+Mailbox provisioning CLI is available as "zmprov".
