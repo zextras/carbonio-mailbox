@@ -21,24 +21,24 @@ import java.util.Set;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.ScanParams;
-import redis.clients.jedis.ScanResult;
+import redis.clients.jedis.params.ScanParams;
+import redis.clients.jedis.resps.ScanResult;
 
 public class SSDBEphemeralStore extends EphemeralStore {
 
   private final JedisPool jedisPool;
 
-  private SSDBEphemeralStore(String host, int port, GenericObjectPoolConfig poolConfig) {
+  private SSDBEphemeralStore(String host, int port, GenericObjectPoolConfig<Jedis> poolConfig) {
     this.jedisPool = new JedisPool(poolConfig, host, port);
   }
 
   public static SSDBEphemeralStore createWithTestConfig(String host, int port) {
-    GenericObjectPoolConfig poolConfig = new GenericObjectPoolConfig();
+    GenericObjectPoolConfig<Jedis> poolConfig = new GenericObjectPoolConfig<>();
     return new SSDBEphemeralStore(host, port, poolConfig);
   }
 
   public static SSDBEphemeralStore create(
-      String host, int port, GenericObjectPoolConfig poolConfig) {
+      String host, int port, GenericObjectPoolConfig<Jedis> poolConfig) {
     return new SSDBEphemeralStore(host, port, poolConfig);
   }
 
@@ -123,8 +123,8 @@ public class SSDBEphemeralStore extends EphemeralStore {
     final ScanResult<String> scanResult = jedisResource.scan(cursor, scanParams);
     final HashSet<String> keysSet = new HashSet<>(scanResult.getResult());
 
-    if (!ScanParams.SCAN_POINTER_START.equals(scanResult.getStringCursor())) {
-      keysSet.addAll(getAllKeys(pattern, scanResult.getStringCursor(), jedisResource));
+    if (!ScanParams.SCAN_POINTER_START.equals(scanResult.getCursor())) {
+      keysSet.addAll(getAllKeys(pattern, scanResult.getCursor(), jedisResource));
     }
     return keysSet;
   }
@@ -140,8 +140,8 @@ public class SSDBEphemeralStore extends EphemeralStore {
 
   public static class Factory extends EphemeralStore.Factory {
 
-    private static GenericObjectPoolConfig getPoolConfig() throws ServiceException {
-      GenericObjectPoolConfig poolConfig = new GenericObjectPoolConfig();
+    private static GenericObjectPoolConfig<Jedis> getPoolConfig() throws ServiceException {
+      GenericObjectPoolConfig<Jedis> poolConfig = new GenericObjectPoolConfig<>();
       Config zimbraConf = Provisioning.getInstance().getConfig();
       int poolSize = zimbraConf.getSSDBResourcePoolSize();
       if (poolSize == 0) {
@@ -160,7 +160,7 @@ public class SSDBEphemeralStore extends EphemeralStore {
     public EphemeralStore getStore() {
       final String prefix = "ssdb:";
       final String customUrl;
-      final GenericObjectPoolConfig poolConfig;
+      final GenericObjectPoolConfig<Jedis> poolConfig;
       try {
         customUrl = getURL();
         poolConfig = getPoolConfig();
