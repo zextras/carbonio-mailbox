@@ -99,9 +99,6 @@ class SSDBEphemeralStoreTest {
   @MethodSource("generateInput")
   void set_shouldStoreExpiration_WhenPresent(EphemeralInput input) throws ServiceException {
     input.setExpiration(new AbsoluteExpiration(100L));
-    final SSDBEphemeralStore ssdbEphemeralStore =
-        SSDBEphemeralStore.createWithTestConfig(
-            redisContainer.getRedisHost(), redisContainer.getRedisPort());
     
     ssdbEphemeralStore.set(input, location1);
 
@@ -114,9 +111,6 @@ class SSDBEphemeralStoreTest {
   void set_shouldNotStoreKeysWithNegativeRelativeExpiration() {
     final MockExpiration expiresNow = new MockExpiration(-1000);
     final EphemeralInput input = new EphemeralInput(new EphemeralKey("testString"), "value1", expiresNow);
-    final SSDBEphemeralStore ssdbEphemeralStore =
-        SSDBEphemeralStore.createWithTestConfig(
-            redisContainer.getRedisHost(), redisContainer.getRedisPort());
 
     final ServiceException serviceException = Assertions.assertThrows(ServiceException.class,
         () -> ssdbEphemeralStore.set(input, location1));
