@@ -16,10 +16,13 @@ import com.zimbra.cs.ephemeral.EphemeralResult;
 import com.zimbra.cs.ephemeral.EphemeralStore;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.ScanParams;
+import redis.clients.jedis.ScanResult;
 
 public class SSDBEphemeralStore extends EphemeralStore {
 
@@ -114,15 +117,25 @@ public class SSDBEphemeralStore extends EphemeralStore {
     // nothing to do here. SSDB deletes expired keys automagically
   }
 
+  private Set<String> getAllKeys(String pattern, String cursor, Jedis jedisResource) {
+    final ScanParams scanParams = new ScanParams().count(100).match(pattern);
+
+    final ScanResult<String> scanResult = jedisResource.scan(cursor, scanParams);
+    final HashSet<String> keysSet = new HashSet<>(scanResult.getResult());
+
+    if (!ScanParams.SCAN_POINTER_START.equals(scanResult.getStringCursor())) {
+      keysSet.addAll(getAllKeys(pattern, scanResult.getStringCursor(), jedisResource));
+    }
+    return keysSet;
+  }
+
   @Override
   public void deleteData(EphemeralLocation location) throws ServiceException {
     try (var jedisClient = jedisPool.getResource()) {
-      final String rangeToDelete = getLocationPartKey(location) + "*";
-      final Set<String> keys = jedisClient.keys(rangeToDelete);
-      for (var key: keys) {
-        jedisClient.del(key);
-      }
-    }
+      final String accessKeyPattern = getLocationPartKey(location) + "|*";
+      final Set<String> keysToDelete = getAllKeys(accessKeyPattern, ScanParams.SCAN_POINTER_START, jedisClient);
+      keysToDelete.forEach(jedisClient::del);
+     }
   }
 
   public static class Factory extends EphemeralStore.Factory {
