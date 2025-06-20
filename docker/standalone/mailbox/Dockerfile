@@ -18,7 +18,6 @@ ENV LDAP_ADMIN_PASSWORD=password
 ENV MARIADB_ROOT_PASSWORD=password
 ENV MARIADB_URL=mariadb
 ENV MARIADB_PORT=3306
-ENV SERVER_HOSTNAME='mailbox1.demo.zextras.io'
 
 ENV JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
               -Dhttps.protocols=TLSv1.2,TLSv1.3 \
