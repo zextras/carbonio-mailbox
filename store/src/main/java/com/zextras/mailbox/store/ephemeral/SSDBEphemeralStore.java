@@ -16,6 +16,7 @@ import com.zimbra.cs.ephemeral.EphemeralResult;
 import com.zimbra.cs.ephemeral.EphemeralStore;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -73,10 +74,15 @@ public class SSDBEphemeralStore extends EphemeralStore {
   }
 
   private String getAccessKey(EphemeralLocation location, EphemeralKey ephemeralKey) {
+    String finalKey = getLocationPartKey(location);
+    finalKey += "|" + ephemeralKey.getKey();
+    if (ephemeralKey.isDynamic()) finalKey += "|" + ephemeralKey.getDynamicComponent();
+    return finalKey;
+  }
+
+  private String getLocationPartKey(EphemeralLocation location) {
     final String[] path = location.getLocation();
     final ArrayList<String> finalKey = new ArrayList<>(Arrays.stream(path).toList());
-    finalKey.add(ephemeralKey.getKey());
-    if (ephemeralKey.isDynamic()) finalKey.add(ephemeralKey.getDynamicComponent());
     return String.join("|", finalKey);
   }
 
@@ -109,7 +115,15 @@ public class SSDBEphemeralStore extends EphemeralStore {
   }
 
   @Override
-  public void deleteData(EphemeralLocation location) throws ServiceException {}
+  public void deleteData(EphemeralLocation location) throws ServiceException {
+    try (var jedisClient = jedisPool.getResource()) {
+      final String rangeToDelete = getLocationPartKey(location) + "*";
+      final Set<String> keys = jedisClient.keys(rangeToDelete);
+      for (var key: keys) {
+        jedisClient.del(key);
+      }
+    }
+  }
 
   public static class Factory extends EphemeralStore.Factory {
 

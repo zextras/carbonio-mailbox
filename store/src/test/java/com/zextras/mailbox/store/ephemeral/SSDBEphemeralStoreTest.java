@@ -12,6 +12,7 @@ import com.zimbra.cs.ephemeral.EphemeralInput;
 import com.zimbra.cs.ephemeral.EphemeralInput.AbsoluteExpiration;
 import com.zimbra.cs.ephemeral.EphemeralInput.Expiration;
 import com.zimbra.cs.ephemeral.EphemeralKey;
+import com.zimbra.cs.ephemeral.EphemeralLocation;
 import com.zimbra.cs.ephemeral.EphemeralResult;
 import java.util.Set;
 import java.util.UUID;
@@ -128,6 +129,21 @@ class SSDBEphemeralStoreTest {
         () -> ssdbEphemeralStore.set(input, location1));
 
     Assertions.assertEquals("system failure: Cannot store a key with expiration 0 seconds", serviceException.getMessage());
+  }
+
+  @Test
+  void shouldOnlyDeleteLocationData() throws ServiceException {
+    ssdbEphemeralStore.set(new EphemeralInput(randomKey(), "myValue"), location1);
+    ssdbEphemeralStore.set(new EphemeralInput(randomKey(), "myValue2"), location1);
+    final EphemeralLocation otherLocation = new TestLocation(new String[] {UUID.randomUUID().toString()});
+    ssdbEphemeralStore.set(new EphemeralInput(randomKey(), "otherLocation"), otherLocation);
+
+    ssdbEphemeralStore.deleteData(location1);
+
+    Assertions.assertEquals(1, jedisClient.keys("*").size());
+    final String keyinredis = getFirstKeyInRedis();
+    final String valueInRedis = jedisClient.get(keyinredis);
+    Assertions.assertEquals("otherLocation", valueInRedis);
   }
 
   private static class MockExpiration extends Expiration {
