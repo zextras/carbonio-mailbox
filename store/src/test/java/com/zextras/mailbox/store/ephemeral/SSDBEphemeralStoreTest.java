@@ -17,7 +17,6 @@ import com.zimbra.cs.ephemeral.EphemeralResult;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -93,7 +92,7 @@ class SSDBEphemeralStoreTest {
     Assertions.assertNull(ephemeralResult.getValue());
   }
 
-  private static @NotNull EphemeralKey randomKey() {
+  private static EphemeralKey randomKey() {
     return new EphemeralKey(UUID.randomUUID().toString());
   }
 
