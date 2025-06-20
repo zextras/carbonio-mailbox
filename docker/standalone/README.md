@@ -14,10 +14,13 @@ This runs a dev environnment with:
 - Postfix
 - Nginx with:
   - webui:
-    - https://localhost (Standard User) `test@demo.zextras.io` - `password`
+    - https://localhost (Standard User 1) `test@demo.zextras.io` - `password`
+    - https://localhost (Standard User 2) `test2@demo2.zextras.io` - `password`
     - http://localhost:6071 (Admin) `admin@demo.zextras.io` - `password`
-  - IMAP/IMAPS:
+  - IMAP/IMAPS (needs zm-nginx-lookup-store to be in mailbox container 
+    under /opt/zextras/lib/ext/nginx-lookup/):
     - localhost:143 no TLS, plain text authentication
     - localhost:993 TLS, plain text authentication
 
-You can attach the JVM debugger to localhost:5005 to debug the Mailbox.
+You can attach the JVM debugger to localhost:5005 to debug mailbox1, 5006 
+for mailbox2.
