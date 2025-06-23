@@ -7,8 +7,6 @@
 package com.zextras.mailbox.store.ephemeral;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.Config;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.ephemeral.EphemeralInput;
 import com.zimbra.cs.ephemeral.EphemeralKey;
 import com.zimbra.cs.ephemeral.EphemeralLocation;
@@ -138,55 +136,4 @@ public class SSDBEphemeralStore extends EphemeralStore {
      }
   }
 
-  public static class Factory extends EphemeralStore.Factory {
-
-    private static GenericObjectPoolConfig<Jedis> getPoolConfig() throws ServiceException {
-      GenericObjectPoolConfig<Jedis> poolConfig = new GenericObjectPoolConfig<>();
-      Config zimbraConf = Provisioning.getInstance().getConfig();
-      int poolSize = zimbraConf.getSSDBResourcePoolSize();
-      if (poolSize == 0) {
-        poolConfig.setMaxTotal(-1);
-      } else {
-        poolConfig.setMaxTotal(poolSize);
-      }
-      long timeout = zimbraConf.getSSDBResourcePoolTimeout();
-      if (timeout > 0) {
-        poolConfig.setMaxWaitMillis(timeout);
-      }
-      return poolConfig;
-    }
-
-    @Override
-    public EphemeralStore getStore() {
-      final String prefix = "ssdb:";
-      final String customUrl;
-      final GenericObjectPoolConfig<Jedis> poolConfig;
-      try {
-        customUrl = getURL();
-        poolConfig = getPoolConfig();
-      } catch (ServiceException e) {
-        throw new SSDBException("Failed to get pool config", e);
-      }
-      final String[] parts = customUrl.substring(prefix.length()).split(":");
-      final String host = parts.length > 0 && !parts[0].isEmpty() ? parts[0] : "localhost";
-      final int port =
-          (parts.length > 1 && !parts[1].isEmpty()) ? Integer.parseInt(parts[1]) : 8888;
-      return SSDBEphemeralStore.create(host, port, poolConfig);
-    }
-
-    @Override
-    public void startup() {
-      // nothing to do
-    }
-
-    @Override
-    public void shutdown() {
-      // nothing to do
-    }
-
-    @Override
-    public void test(String url) throws ServiceException {
-      // nothing to do
-    }
-  }
 }

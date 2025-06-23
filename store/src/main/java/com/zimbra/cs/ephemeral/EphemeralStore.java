@@ -4,7 +4,7 @@
 
 package com.zimbra.cs.ephemeral;
 
-import com.zextras.mailbox.store.ephemeral.SSDBEphemeralStore;
+import com.zextras.mailbox.store.ephemeral.SSDBEphemeralStoreFactory;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +49,7 @@ public abstract class EphemeralStore {
     protected AttributeEncoder encoder;
     static {
         factories.put("ldap", LdapEphemeralStore.Factory.class.getName());
-        factories.put("ssdb", SSDBEphemeralStore.Factory.class.getName());
+        factories.put("ssdb", SSDBEphemeralStoreFactory.class.getName());
     }
 
     /**
