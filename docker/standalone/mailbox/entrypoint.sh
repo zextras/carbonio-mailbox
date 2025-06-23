@@ -13,4 +13,11 @@ sed -i -e "s/MARIADB_URL/${MARIADB_URL}/g" /localconfig/localconfig.xml
 sed -i -e "s/MARIADB_PORT/${MARIADB_PORT}/g" /localconfig/localconfig.xml
 sed -i -e "s/SERVER_HOSTNAME/${HOSTNAME}/g" /localconfig/localconfig.xml
 
+SERVER_EXISTS=$(/usr/bin/zmprov -l gs "${HOSTNAME}" 2>&1)
+if [[ $SERVER_EXISTS == *"account.NO_SUCH_SERVER"* ]]; then
+  echo "Creating server ${HOSTNAME}"
+  /usr/bin/zmprov -l cs "${HOSTNAME}" zimbraServiceInstalled mailbox zimbraServiceEnabled mailbox zimbraServiceEnabled service
+  echo "Server ${HOSTNAME} created"
+fi
+
 java ${JAVA_ARGS}
