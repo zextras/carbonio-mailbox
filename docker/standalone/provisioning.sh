@@ -6,10 +6,19 @@
 #
 
 echo "Provisioning containers"
-docker compose exec mailbox1 bash -c "zmprov cd demo.zextras.io;
-zmprov ca test@demo.zextras.io password;
-zmprov ca admin@demo.zextras.io password zimbraIsAdminAccount TRUE"
 
-docker compose exec mailbox2 bash -c "zmprov cd demo2.zextras.io;
-zmprov ca test2@demo2.zextras.io password;
-zmprov ca admin2@demo2.zextras.io password zimbraIsAdminAccount TRUE"
+docker compose exec mailbox1 bash -c "> /tmp/prov.ls && cat > /tmp/prov.ls <<EOF
+cd demo.zextras.io
+ca test@demo.zextras.io password
+ca admin@demo.zextras.io password zimbraIsAdminAccount TRUE
+EOF
+zmprov < /tmp/prov.ls"
+
+docker compose exec mailbox2 bash -c "> /tmp/prov2.ls && cat > /tmp/prov2.ls <<EOF
+cd demo2.zextras.io
+ca test2@demo2.zextras.io password
+ca admin2@demo2.zextras.io password zimbraIsAdminAccount TRUE
+EOF
+zmprov < /tmp/prov2.ls"
+
+echo "Provisioning completed"
