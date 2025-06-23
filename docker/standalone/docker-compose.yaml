@@ -54,8 +54,6 @@ services:
       timeout: 10s
     ports:
       - "1389:1389"
-    volumes:
-      - ./openldap/ldap-utils/add_mailbox_2.ldif:/opt/zextras/ldap/custom-ldifs/add_mailbox_2.ldif
   mariadb:
     build:
       context: ./../../

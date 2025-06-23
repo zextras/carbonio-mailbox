@@ -10,20 +10,27 @@ Steps:
    --build`
 
 This runs a dev environnment with:
-
 - Mailbox
 - MariaDB
 - LDAP
 - Postfix
-- Nginx with:
-  - webui:
-    - https://localhost (Standard User 1) `test@demo.zextras.io` - `password`
-    - https://localhost (Standard User 2) `test2@demo2.zextras.io` - `password`
-    - http://localhost:6071 (Admin) `admin@demo.zextras.io` - `password`
-  - IMAP/IMAPS (needs zm-nginx-lookup-store to be in mailbox container 
+- Nginx with webui and IMAP:
+  - https://localhost (Standard User)
+  - http://localhost:6071 (Admin)
+  - IMAP (needs zm-nginx-lookup-store to be in mailbox container
     under /opt/zextras/lib/ext/nginx-lookup/):
     - localhost:143 no TLS, plain text authentication
     - localhost:993 TLS, plain text authentication
+
+In order to create domains and users run the [provisioning.sh](./provisioning.sh) 
+script, else you can add data of your choice.
+The default provisioning adds:
+  - on domain demo.zextras.io
+    - standard user `test@demo.zextras.io` - `password`
+    - admin user `admin@demo.zextras.io` - `password`
+  - on domain demo2.zextras.io:
+    - standard user `test2@demo2.zextras.io` - `password`
+    - admin user `admin2@demo2.zextras.io` - `password`
 
 You can also interact with the cli by running:
  - `docker compose exec mailbox1 sh -c "zmprov ga 
