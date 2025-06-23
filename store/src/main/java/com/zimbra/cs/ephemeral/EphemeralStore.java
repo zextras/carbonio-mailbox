@@ -4,12 +4,8 @@
 
 package com.zimbra.cs.ephemeral;
 
-import com.zextras.mailbox.store.ephemeral.GenericRedisException;
-import com.zextras.mailbox.store.ephemeral.RedisEphemeralStore;
 import com.zextras.mailbox.store.ephemeral.RedisEphemeralStore.RedisEphemeralStoreFactory;
 import java.io.PrintWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,8 +30,6 @@ import com.zimbra.cs.ephemeral.migrate.ZimbraMigrationInfo;
 import com.zimbra.cs.extension.ExtensionUtil;
 import com.zimbra.cs.extension.ZimbraExtension;
 import com.zimbra.cs.util.Zimbra;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import redis.clients.jedis.Jedis;
 
 /**
  * Abstract class representing ephemeral storage.
