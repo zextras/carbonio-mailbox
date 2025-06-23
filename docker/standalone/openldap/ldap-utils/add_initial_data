@@ -69,8 +69,6 @@ userPassword: ${SSHA_ADMIN_PASSWORD}
 EOF
 
 /opt/zextras/common/bin/ldapmodify -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f /tmp/replace_admin_password.ldif
-#/opt/zextras/common/bin/ldapadd -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f /ldap-utils/add_server.ldif
-#/opt/zextras/common/bin/ldapadd -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f /ldap-utils/add_domain.ldif
 
 for f in /opt/zextras/ldap/custom-ldifs/*.ldif; do
   /opt/zextras/common/bin/ldapadd -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f "$f"
