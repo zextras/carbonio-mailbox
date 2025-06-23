@@ -12,6 +12,9 @@ dn: cn=config,cn=zimbra
 changetype: modify
 replace: zimbraSmtpHostname
 zimbraSmtpHostname: postfix
+-
+replace: zimbraCsrfRefererCheckEnabled
+zimbraCsrfRefererCheckEnabled: FALSE
 EOF
 
 cat <<EOF > /tmp/replace_smtp_port.ldif
@@ -33,6 +36,14 @@ userPassword: ${SSHA_ROOT_PASSWORD}
 EOF
 /opt/zextras/common/bin/ldapmodify -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f /tmp/replace_postfix_password.ldif
 
+cat <<EOF > /tmp/replace_nginx_password.ldif
+dn: uid=zmnginx,cn=appaccts,cn=zimbra
+changetype: modify
+replace: userPassword
+userPassword: ${SSHA_ROOT_PASSWORD}
+EOF
+/opt/zextras/common/bin/ldapmodify -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f /tmp/replace_nginx_password.ldif
+
 SSHA_ADMIN_PASSWORD=$(/opt/zextras/common/sbin/slappasswd -s "${LDAP_ADMIN_PASSWORD}")
 
 cat <<EOF > /tmp/replace_admin_password.ldif
@@ -45,3 +56,7 @@ EOF
 /opt/zextras/common/bin/ldapmodify -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f /tmp/replace_admin_password.ldif
 /opt/zextras/common/bin/ldapadd -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f /ldap-utils/add_server.ldif
 /opt/zextras/common/bin/ldapadd -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f /ldap-utils/add_domain.ldif
+
+for f in /opt/zextras/ldap/custom-ldifs/*.ldif; do
+  /opt/zextras/common/bin/ldapadd -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -f "$f"
+done
