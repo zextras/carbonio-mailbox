@@ -130,7 +130,7 @@ public class SSDBEphemeralStore extends EphemeralStore {
   }
 
   @Override
-  public void deleteData(EphemeralLocation location) throws ServiceException {
+  public void deleteData(EphemeralLocation location) {
     try (var jedisClient = jedisPool.getResource()) {
       final String accessKeyPattern = getLocationPartKey(location) + "|*";
       final Set<String> keysToDelete = getAllKeys(accessKeyPattern, ScanParams.SCAN_POINTER_START, jedisClient);
@@ -165,7 +165,7 @@ public class SSDBEphemeralStore extends EphemeralStore {
         customUrl = getURL();
         poolConfig = getPoolConfig();
       } catch (ServiceException e) {
-        throw new RuntimeException("Failed to get pool config", e);
+        throw new SSDBException("Failed to get pool config", e);
       }
       final String[] parts = customUrl.substring(prefix.length()).split(":");
       final String host = parts.length > 0 && !parts[0].isEmpty() ? parts[0] : "localhost";
@@ -175,12 +175,18 @@ public class SSDBEphemeralStore extends EphemeralStore {
     }
 
     @Override
-    public void startup() {}
+    public void startup() {
+      // nothing to do
+    }
 
     @Override
-    public void shutdown() {}
+    public void shutdown() {
+      // nothing to do
+    }
 
     @Override
-    public void test(String url) throws ServiceException {}
+    public void test(String url) throws ServiceException {
+      // nothing to do
+    }
   }
 }
