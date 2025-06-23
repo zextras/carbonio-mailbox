@@ -7,11 +7,16 @@
 package com.zextras.mailbox.store.ephemeral;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.Config;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.ephemeral.EphemeralInput;
 import com.zimbra.cs.ephemeral.EphemeralKey;
 import com.zimbra.cs.ephemeral.EphemeralLocation;
 import com.zimbra.cs.ephemeral.EphemeralResult;
 import com.zimbra.cs.ephemeral.EphemeralStore;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -22,22 +27,22 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.params.ScanParams;
 import redis.clients.jedis.resps.ScanResult;
 
-public class SSDBEphemeralStore extends EphemeralStore {
+public class RedisEphemeralStore extends EphemeralStore {
 
   private final JedisPool jedisPool;
 
-  private SSDBEphemeralStore(String host, int port, GenericObjectPoolConfig<Jedis> poolConfig) {
+  private RedisEphemeralStore(String host, int port, GenericObjectPoolConfig<Jedis> poolConfig) {
     this.jedisPool = new JedisPool(poolConfig, host, port);
   }
 
-  public static SSDBEphemeralStore createWithTestConfig(String host, int port) {
+  public static RedisEphemeralStore createWithTestConfig(String host, int port) {
     GenericObjectPoolConfig<Jedis> poolConfig = new GenericObjectPoolConfig<>();
-    return new SSDBEphemeralStore(host, port, poolConfig);
+    return new RedisEphemeralStore(host, port, poolConfig);
   }
 
-  public static SSDBEphemeralStore create(
+  public static RedisEphemeralStore create(
       String host, int port, GenericObjectPoolConfig<Jedis> poolConfig) {
-    return new SSDBEphemeralStore(host, port, poolConfig);
+    return new RedisEphemeralStore(host, port, poolConfig);
   }
 
   @Override
@@ -54,23 +59,22 @@ public class SSDBEphemeralStore extends EphemeralStore {
   public void set(EphemeralInput input, EphemeralLocation location) throws ServiceException {
     final String key = getAccessKey(location, input.getEphemeralKey());
     final Object value = input.getValue();
-    if (value != null) {
-      final String valueToStore = value.toString();
-      final Long expiration = input.getExpiration();
+    if (value == null) {
+      return;
+    }
+    final String valueToStore = value.toString();
+    final Long expiration = input.getExpiration();
+    try (Jedis jedis = jedisPool.getResource()) {
       if (expiration == null) {
-        try (Jedis jedis = jedisPool.getResource()) {
-          jedis.set(key, valueToStore);
-        }
+        jedis.set(key, valueToStore);
       } else {
-        final int expirationSeconds = input.getRelativeExpiration().intValue()/1000;
-        if (expirationSeconds <= 0) {
-          throw ServiceException.FAILURE("Cannot store a key with expiration " + expirationSeconds + " seconds");
-        }
-        try (Jedis jedis = jedisPool.getResource()) {
-          jedis.setex(key, expirationSeconds, valueToStore + "|" + expiration);
-        }
+        var ttlMillis = input.getRelativeExpiration();
+         if (ttlMillis <= 0) {
+          ZimbraLog.ephemeral.warn("Cannot store value of key " + key + " with expiration " + ttlMillis + " milliseconds");
+          return;
+         }
+         jedis.psetex(key, ttlMillis, valueToStore + "|" + expiration);
       }
-
     }
   }
 
@@ -112,7 +116,7 @@ public class SSDBEphemeralStore extends EphemeralStore {
 
   @Override
   public void purgeExpired(EphemeralKey key, EphemeralLocation location) throws ServiceException {
-    // nothing to do here. SSDB deletes expired keys automagically
+    // nothing to do here. Redis deletes expired keys automagically
   }
 
   private Set<String> getAllKeys(String pattern, String cursor, Jedis jedisResource) {
@@ -134,6 +138,52 @@ public class SSDBEphemeralStore extends EphemeralStore {
       final Set<String> keysToDelete = getAllKeys(accessKeyPattern, ScanParams.SCAN_POINTER_START, jedisClient);
       keysToDelete.forEach(jedisClient::del);
      }
+  }
+
+  public static class RedisEphemeralStoreFactory extends Factory {
+
+    private static GenericObjectPoolConfig<Jedis> getPoolConfig() throws ServiceException {
+      GenericObjectPoolConfig<Jedis> poolConfig = new GenericObjectPoolConfig<>();
+      Config zimbraConf = Provisioning.getInstance().getConfig();
+      int poolSize = zimbraConf.getSSDBResourcePoolSize();
+      if (poolSize == 0) {
+        poolConfig.setMaxTotal(-1);
+      } else {
+        poolConfig.setMaxTotal(poolSize);
+      }
+      long timeout = zimbraConf.getSSDBResourcePoolTimeout();
+      if (timeout > 0) {
+        poolConfig.setMaxWaitMillis(timeout);
+      }
+      return poolConfig;
+    }
+
+    @Override
+    public EphemeralStore getStore() {
+      final GenericObjectPoolConfig<Jedis> poolConfig;
+      try {
+        var parsedURI = new URI(getURL());
+        poolConfig = getPoolConfig();
+        return RedisEphemeralStore.create(parsedURI.getHost(), parsedURI.getPort(), poolConfig);
+      } catch (ServiceException | URISyntaxException e) {
+        throw new GenericRedisException("Failed to create EphemeralStore", e);
+      }
+    }
+
+    @Override
+    public void startup() {
+      // nothing to do
+    }
+
+    @Override
+    public void shutdown() {
+      // nothing to do
+    }
+
+    @Override
+    public void test(String url) throws ServiceException {
+      // nothing to do
+    }
   }
 
 }

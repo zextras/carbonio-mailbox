@@ -6,9 +6,9 @@
 
 package com.zextras.mailbox.store.ephemeral;
 
-public class SSDBException extends RuntimeException {
+public class GenericRedisException extends RuntimeException {
 
-	public SSDBException(String message, Throwable cause) {
+	public GenericRedisException(String message, Throwable cause) {
 		super(message, cause);
 	}
 }
