@@ -53,8 +53,6 @@ COPY store/db/create_database.sql /opt/zextras/db/
 
 RUN echo "java ${JAVA_ZMGSA_ARGS}" > /usr/bin/zmgsautil && chmod +x /usr/bin/zmgsautil
 
-COPY docker/standalone/mailbox/localconfig/localconfig.xml /localconfig/localconfig.xml
-
 RUN mkdir -p /opt/zextras/mailboxd/etc/ && keytool -genkey -keyalg RSA \
     -dname "cn=Unknown, ou=Unknown, o=Unknown, c=Unknown" \
     -keystore /opt/zextras/mailboxd/etc/keystore -keysize 2048 -validity 1461 \
