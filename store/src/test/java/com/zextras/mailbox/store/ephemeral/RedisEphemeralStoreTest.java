@@ -17,6 +17,7 @@ import com.zimbra.cs.ephemeral.EphemeralResult;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -62,8 +63,8 @@ class RedisEphemeralStoreTest {
   void beforeEach() {
     jedisClient.flushAll();
     location = new TestLocation(new String[] {UUID.randomUUID().toString()});
-    redisEphemeralStore = RedisEphemeralStore.createWithTestConfig(
-        redisContainer.getRedisHost(), redisContainer.getRedisPort());
+    redisEphemeralStore = RedisEphemeralStore.create(
+        redisContainer.getRedisHost(), redisContainer.getRedisPort(), new GenericObjectPoolConfig<>());
   }
   @AfterEach
   void afterEach() {

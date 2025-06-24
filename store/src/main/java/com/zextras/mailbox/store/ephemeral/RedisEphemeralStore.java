@@ -35,11 +35,6 @@ public class RedisEphemeralStore extends EphemeralStore {
     this.jedisPool = new JedisPool(poolConfig, host, port);
   }
 
-  public static RedisEphemeralStore createWithTestConfig(String host, int port) {
-    GenericObjectPoolConfig<Jedis> poolConfig = new GenericObjectPoolConfig<>();
-    return new RedisEphemeralStore(host, port, poolConfig);
-  }
-
   public static RedisEphemeralStore create(
       String host, int port, GenericObjectPoolConfig<Jedis> poolConfig) {
     return new RedisEphemeralStore(host, port, poolConfig);
