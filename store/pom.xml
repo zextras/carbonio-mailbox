@@ -608,6 +608,7 @@
               <sources>
                 <source>${project.build.directory}/generated-sources/buildinfo</source><!-- adjust
                 folder name to your needs -->
+                <source>${project.build.directory}/generated-sources/javacc</source>
               </sources>
             </configuration>
           </execution>
@@ -886,6 +887,39 @@
               <goal>jar-no-fork</goal>
               <goal>test-jar-no-fork</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>javacc-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>generate-parser-jjtree</id>
+            <goals>
+              <goal>jjtree</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+              <outputDirectory>${project.build.directory}/generated-sources/javacc</outputDirectory>
+              <includes>
+                <include>**/Parser.jjt</include>
+              </includes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-parser-javacc</id>
+            <goals>
+              <goal>javacc</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${project.build.directory}/generated-sources/javacc</sourceDirectory>
+              <outputDirectory>${project.build.directory}/generated-sources/javacc</outputDirectory>
+              <includes>
+                <include>**/Parser.jj</include>
+              </includes>
+            </configuration>
           </execution>
         </executions>
       </plugin>
