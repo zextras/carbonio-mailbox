@@ -4,6 +4,7 @@
 
 package com.zimbra.cs.ephemeral;
 
+import com.zextras.mailbox.store.ephemeral.RedisEphemeralStore.RedisEphemeralStoreFactory;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +49,7 @@ public abstract class EphemeralStore {
     protected AttributeEncoder encoder;
     static {
         factories.put("ldap", LdapEphemeralStore.Factory.class.getName());
+        factories.put("redis", RedisEphemeralStoreFactory.class.getName());
     }
 
     /**
