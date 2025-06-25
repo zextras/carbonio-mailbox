@@ -108,9 +108,15 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.web.address=:80"
     # curl -H "Host: mailbox.local" localhost to load balance to mailbox
+    # From another container: curl mailbox.local will  send the request to traefik, which will load balance to mailbox1 and 2 containers
+    # Example: curl mailbox.local/service/health/ returns a json with the health status of the container
     ports:
       - "80:80"
       - "8080:8080"
       - "1389:1389"
+    networks:
+      default:
+        aliases:
+          - mailbox.local
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
