@@ -19,7 +19,6 @@ RUN openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 \
 COPY ./webui/nginx.conf.zmlookup /opt/zextras/conf/nginx.conf.zmlookup
 COPY ./webui/mime.types /opt/zextras/common/conf/mime.types
 COPY ./webui/nginx.conf /opt/zextras/conf/nginx.conf
-COPY ./webui/mailbox_upstream.conf /opt/zextras/conf/mailbox_upstream.conf
 COPY ./webui/nginx-webui.conf /opt/zextras/conf/nginx-webui.conf
 COPY ./webui/nginx-mail.conf /opt/zextras/conf/nginx-mail.conf
 COPY ./webui/nginx.carbonio.admin.conf /opt/zextras/conf/nginx.carbonio.admin.conf

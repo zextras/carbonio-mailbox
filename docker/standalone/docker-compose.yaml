@@ -13,8 +13,12 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mailbox.rule=Host(`mailbox.local`)"
+      - "traefik.http.routers.mailbox.service=mailbox"
       - "traefik.http.services.mailbox.loadbalancer.server.port=8080"
-      - "traefik.http.services.mailbox.loadbalancer.server.scheme=http"
+      - "traefik.http.routers.admin.rule=Host(`admin.local`)"
+      - "traefik.http.routers.admin.service=admin"
+      - "traefik.http.services.admin.loadbalancer.server.port=7071"
+      - "traefik.http.services.admin.loadbalancer.server.scheme=https"
     hostname: mailbox1.demo.zextras.io
     restart: on-failure
     healthcheck:
@@ -34,8 +38,12 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mailbox.rule=Host(`mailbox.local`)"
+      - "traefik.http.routers.mailbox.service=mailbox"
       - "traefik.http.services.mailbox.loadbalancer.server.port=8080"
-      - "traefik.http.services.mailbox.loadbalancer.server.scheme=http"
+      - "traefik.http.routers.admin.rule=Host(`admin.local`)"
+      - "traefik.http.routers.admin.service=admin"
+      - "traefik.http.services.admin.loadbalancer.server.port=7071"
+      - "traefik.http.services.admin.loadbalancer.server.scheme=https"
     build:
       context: ./../../
       dockerfile: docker/standalone/mailbox/Dockerfile
@@ -107,6 +115,7 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.web.address=:80"
+      - "--serverstransport.insecureskipverify=true"
     # curl -H "Host: mailbox.local" localhost to load balance to mailbox
     # From another container: curl mailbox.local will  send the request to traefik, which will load balance to mailbox1 and 2 containers
     # Example: curl mailbox.local/service/health/ returns a json with the health status of the container
@@ -118,5 +127,6 @@ services:
       default:
         aliases:
           - mailbox.local
+          - admin.local
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
