@@ -10,6 +10,11 @@ services:
     build:
       context: ./../../
       dockerfile: docker/standalone/mailbox/Dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mailbox.rule=Host(`mailbox.local`)"
+      - "traefik.http.services.mailbox.loadbalancer.server.port=8080"
+      - "traefik.http.services.mailbox.loadbalancer.server.scheme=http"
     hostname: mailbox1.demo.zextras.io
     restart: on-failure
     healthcheck:
@@ -21,13 +26,16 @@ services:
     ports:
       - "5005:5005"
   mailbox2:
-    environment:
-      - SERVER_HOSTNAME=mailbox2.demo.zextras.io
     depends_on:
       openldap:
         condition: service_healthy
       postfix:
         condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mailbox.rule=Host(`mailbox.local`)"
+      - "traefik.http.services.mailbox.loadbalancer.server.port=8080"
+      - "traefik.http.services.mailbox.loadbalancer.server.scheme=http"
     build:
       context: ./../../
       dockerfile: docker/standalone/mailbox/Dockerfile
@@ -52,8 +60,6 @@ services:
       start_period: 20s
       test: nc -z localhost 1389 || exit 1
       timeout: 10s
-    ports:
-      - "1389:1389"
     ulimits:
      nofile:
        soft: 65536
@@ -93,3 +99,18 @@ services:
       dockerfile: docker/standalone/postfix/Dockerfile
     ports:
       - "20025:25"
+  traefik:
+    image: "traefik:v3.4"
+    container_name: "traefik"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+    # curl -H "Host: mailbox.local" localhost to load balance to mailbox
+    ports:
+      - "80:80"
+      - "8080:8080"
+      - "1389:1389"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
