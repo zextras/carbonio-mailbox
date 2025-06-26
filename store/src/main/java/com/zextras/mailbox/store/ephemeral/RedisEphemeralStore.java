@@ -137,6 +137,8 @@ public class RedisEphemeralStore extends EphemeralStore {
 
   public static class RedisEphemeralStoreFactory extends Factory {
 
+    private EphemeralStore instance;
+
     private static GenericObjectPoolConfig<Jedis> getPoolConfig() throws ServiceException {
       GenericObjectPoolConfig<Jedis> poolConfig = new GenericObjectPoolConfig<>();
       Config zimbraConf = Provisioning.getInstance().getConfig();
@@ -155,6 +157,13 @@ public class RedisEphemeralStore extends EphemeralStore {
 
     @Override
     public EphemeralStore getStore() {
+      if (instance == null) {
+        instance = createStore();
+      }
+      return instance;
+    }
+
+    private EphemeralStore createStore() {
       final GenericObjectPoolConfig<Jedis> poolConfig;
       try {
         var parsedURI = new URI(getURL());
@@ -167,12 +176,11 @@ public class RedisEphemeralStore extends EphemeralStore {
 
     @Override
     public void startup() {
-      // nothing to do
     }
 
     @Override
     public void shutdown() {
-      // nothing to do
+      instance = null;
     }
 
     @Override
