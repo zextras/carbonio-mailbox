@@ -157,12 +157,13 @@ public class RedisEphemeralStore extends EphemeralStore {
 
     @Override
     public EphemeralStore getStore() {
-      if (instance == null) {
-        instance = createStore();
+      synchronized (RedisEphemeralStoreFactory.class) {
+        if (instance == null) {
+          instance = createStore();
+        }
+        return instance;
       }
-      return instance;
     }
-
     private EphemeralStore createStore() {
       final GenericObjectPoolConfig<Jedis> poolConfig;
       try {
