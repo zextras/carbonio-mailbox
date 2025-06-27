@@ -82,9 +82,7 @@ class RedisEphemeralStoreFactoryTest extends MailboxTestSuite {
     final EphemeralStore store3 = redisEphemeralStoreFactory.getStore();
     store3.get(new EphemeralKey("test"), new LdapEntryLocation(account));
 
-    // additional connection
     final String[] clientList = jedisClient.clientList().split("\n");
-
     Assertions.assertEquals(2, clientList.length);
   }
 }
