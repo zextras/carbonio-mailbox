@@ -23,6 +23,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
+import redis.clients.jedis.Jedis;
 
 class RedisEphemeralStoreFactoryTest extends MailboxTestSuite {
 
@@ -30,10 +31,12 @@ class RedisEphemeralStoreFactoryTest extends MailboxTestSuite {
   static RedisContainer redisContainer = new RedisContainer(DockerImageName.parse("redis:6.2.6"));
 
   private static Provisioning provisioning;
+  private static Jedis jedisClient;
 
   @BeforeAll
   static void setup() {
     redisContainer.start();
+    jedisClient = new Jedis("redis://localhost:" + redisContainer.getRedisPort());
     provisioning = Provisioning.getInstance();
   }
 
@@ -63,5 +66,23 @@ class RedisEphemeralStoreFactoryTest extends MailboxTestSuite {
 
     Assertions.assertThrows(
         Exception.class, () -> store.get(new EphemeralKey("test"), new LdapEntryLocation(account)));
+  }
+
+  @Test
+  void shouldNotCreateAdditionalConnections() throws ServiceException {
+    final Account account = new Factory(provisioning, mailboxTestExtension.getDefaultDomain()).get().create();
+    provisioning.getConfig().setEphemeralBackendURL("redis://localhost:" + redisContainer.getRedisPort());
+
+    final RedisEphemeralStoreFactory redisEphemeralStoreFactory = new RedisEphemeralStoreFactory();
+
+    final EphemeralStore store = redisEphemeralStoreFactory.getStore();
+    store.get(new EphemeralKey("test"), new LdapEntryLocation(account));
+    final EphemeralStore store2 = redisEphemeralStoreFactory.getStore();
+    store2.get(new EphemeralKey("test"), new LdapEntryLocation(account));
+    final EphemeralStore store3 = redisEphemeralStoreFactory.getStore();
+    store3.get(new EphemeralKey("test"), new LdapEntryLocation(account));
+
+    final String[] clientList = jedisClient.clientList().split("\n");
+    Assertions.assertEquals(2, clientList.length);
   }
 }
