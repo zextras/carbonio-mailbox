@@ -1,4 +1,4 @@
-FROM ibm-semeru-runtimes:open-17-jdk
+FROM eclipse-temurin:17-jre-jammy
 
 COPY store/src/test/resources/timezones-test.ics /opt/zextras/conf/timezones.ics
 COPY store-conf/conf/msgs/* /opt/zextras/conf/msgs/
