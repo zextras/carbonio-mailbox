@@ -34,7 +34,7 @@ class NginxLookupExtensionTest extends MailboxTestSuite {
 	private static String endpoint;
 	private static Server server;
 	private static Account account;
-	private final static String AUTH_STATUS_HEADER = "Auth-Status";
+	private static final String AUTH_STATUS_HEADER = "Auth-Status";
 
 	@BeforeAll
 	static void setup() throws Exception {
