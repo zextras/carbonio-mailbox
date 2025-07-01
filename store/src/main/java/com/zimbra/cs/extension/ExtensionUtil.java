@@ -60,7 +60,7 @@ public class ExtensionUtil {
         } else {
             sExtParentClassLoader = new URLClassLoader(extCommonURLs, ExtensionUtil.class.getClassLoader());
         }
-        ExtensionUtil.initExtension(new NginxLookupExtension());
+        ExtensionUtil.initInternalExtension(new NginxLookupExtension());
         loadExtensionsFromDefaultDirectory();
     }
 
@@ -102,16 +102,15 @@ public class ExtensionUtil {
         boolean matches(ZimbraExtension ext);
     }
 
-    public static synchronized void initExtension(ZimbraExtension ext) {
+    private static synchronized void initInternalExtension(ZimbraExtension ext) {
         String extName = ext.getName();
         final String className = ext.getClass().getName();
         try {
             ext.init();
-            RedoableOp.registerClassLoader(ext.getClass().getClassLoader());
             ZimbraLog.extensions.info("Initialized extension %s: %s", extName, className);
             sInitializedExtensions.put(extName, ext);
         } catch (ExtensionException | ServiceException e) {
-            ZimbraLog.extensions.info("Disabled '%s' %s", ext.getName(), e.getMessage());
+            ZimbraLog.extensions.info("Disabled '%s' %s", extName, e.getMessage());
             ext.destroy();
         } catch (Exception e) {
             ZimbraLog.extensions.warn("exception in %s.init()", className, e);

@@ -7,6 +7,7 @@ package com.zimbra.cs.extension;
 
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.localconfig.LC;
+import com.zimbra.cs.nginx.NginxLookupExtension;
 import java.io.File;
 import java.net.URL;
 import org.junit.jupiter.api.Assertions;
@@ -51,9 +52,9 @@ public class ExtensionUtilTest extends MailboxTestSuite {
 	}
 
 	@Test
-	void initAll_shouldInitNginxLookupExtensions() {
+	void initAll_shouldInitNginxLookupExtension() {
 		ExtensionUtil.initAll();
-		Assertions.assertNotNull(ExtensionUtil.getExtension("nginx-lookup"));
+		Assertions.assertNotNull(ExtensionUtil.getExtension(NginxLookupExtension.NAME));
 	}
 
 }
