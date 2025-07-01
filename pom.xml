@@ -766,7 +766,6 @@
          <groupId>commons-net</groupId>
          <artifactId>commons-net</artifactId>
          <version>3.10.0</version>
-         <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
