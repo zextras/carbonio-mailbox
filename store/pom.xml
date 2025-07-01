@@ -232,7 +232,6 @@
     <dependency>
       <groupId>commons-net</groupId>
       <artifactId>commons-net</artifactId>
-      <scope>test</scope>
     </dependency>
 
     <dependency>
