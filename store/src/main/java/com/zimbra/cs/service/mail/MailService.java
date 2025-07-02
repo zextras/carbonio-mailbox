@@ -9,6 +9,7 @@ import com.zextras.carbonio.files.FilesClient;
 import com.zextras.mailbox.smartlinks.FilesSmartLinksGenerator;
 import com.zextras.mailbox.tracking.PostHogTracking;
 import com.zextras.mailbox.tracking.Tracking;
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.httpclient.HttpClientFactory;
@@ -258,6 +259,6 @@ public class MailService implements DocumentService {
   }
 
   protected FilesClient getFilesClient() {
-    return FilesClient.atURL("http://127.78.0.7:20002");
+    return FilesClient.atURL(LC.preview_service_url.value());
   }
 }

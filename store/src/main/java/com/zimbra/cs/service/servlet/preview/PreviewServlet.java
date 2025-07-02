@@ -1,6 +1,7 @@
 package com.zimbra.cs.service.servlet.preview;
 
 import com.zextras.carbonio.preview.PreviewClient;
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
 import com.zimbra.common.util.ZimbraLog;
@@ -73,7 +74,7 @@ public class PreviewServlet extends ZimbraServlet {
 
   public PreviewServlet() {
     super();
-    this.previewClient = PreviewClient.atURL(Constants.PREVIEW_SERVICE_BASE_URL);
+    this.previewClient = PreviewClient.atURL(LC.preview_service_url.value());
     this.previewHandler = new PreviewHandler(previewClient, new MailboxAttachmentService(), new ItemIdFactory());
   }
 
