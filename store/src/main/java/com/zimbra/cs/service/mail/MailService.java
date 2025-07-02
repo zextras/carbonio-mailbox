@@ -259,6 +259,6 @@ public class MailService implements DocumentService {
   }
 
   protected FilesClient getFilesClient() {
-    return FilesClient.atURL(LC.preview_service_url.value());
+    return FilesClient.atURL(LC.files_service_url.value());
   }
 }
