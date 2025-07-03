@@ -3,7 +3,7 @@ FROM eclipse-temurin:17-jre-jammy
 COPY store/src/test/resources/timezones-test.ics /opt/zextras/conf/timezones.ics
 COPY store-conf/conf/msgs/* /opt/zextras/conf/msgs/
 
-RUN mkdir -p /opt/zextras/mailbox/jars/ && mkdir -p /opt/zextras/lib/ext/nginx-lookup/
+RUN mkdir -p /opt/zextras/mailbox/jars/ && mkdir -p /opt/zextras/lib/ext/nginx-lookup/ && mkdir -p /opt/zextras/store
 
 COPY store/target/zm-store.jar /opt/zextras/mailbox/jars/
 COPY store/target/dependencies/* /opt/zextras/mailbox/jars/
@@ -18,6 +18,8 @@ ENV LDAP_ADMIN_PASSWORD=password
 ENV MARIADB_ROOT_PASSWORD=password
 ENV MARIADB_URL=mariadb
 ENV MARIADB_PORT=3306
+ENV CARBONIO_FILES_SERVICE_URL="http://carbonio-files:10000"
+ENV CARBONIO_PREVIEW_SERVICE_URL="http://carbonio-preview:10000"
 
 ARG BASE_JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
               -Dhttps.protocols=TLSv1.2,TLSv1.3 \
