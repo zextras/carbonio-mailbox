@@ -3,7 +3,7 @@ FROM eclipse-temurin:17-jre-jammy
 COPY store/src/test/resources/timezones-test.ics /opt/zextras/conf/timezones.ics
 COPY store-conf/conf/msgs/* /opt/zextras/conf/msgs/
 
-RUN mkdir -p /opt/zextras/mailbox/jars/ && mkdir -p /opt/zextras/lib/ext/nginx-lookup/
+RUN mkdir -p /opt/zextras/mailbox/jars/ && mkdir -p /opt/zextras/lib/ext/nginx-lookup/ && mkdir -p /opt/zextras/store
 
 COPY store/target/zm-store.jar /opt/zextras/mailbox/jars/
 COPY store/target/dependencies/* /opt/zextras/mailbox/jars/
