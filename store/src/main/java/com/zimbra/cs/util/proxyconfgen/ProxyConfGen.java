@@ -2411,6 +2411,9 @@ public class ProxyConfGen {
           new File(mTemplateDir, getConfTemplateFileName("stream")),
           new File(mConfIncludesDir, getConfFileName("stream")));
       expandTemplate(
+          new File(mTemplateDir, getConfTemplateFileName("web.upstreams")),
+          new File(mConfIncludesDir, getConfFileName("web.upstreams")));
+      expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("stream.addressBook")),
           new File(mConfIncludesDir, getConfFileName("stream.addressBook")));
       expandTemplate(
