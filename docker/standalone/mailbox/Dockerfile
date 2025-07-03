@@ -18,8 +18,8 @@ ENV LDAP_ADMIN_PASSWORD=password
 ENV MARIADB_ROOT_PASSWORD=password
 ENV MARIADB_URL=mariadb
 ENV MARIADB_PORT=3306
-ENV CARBONIO_FILES_SERVICE_URL="http://carbonio-files"
-ENV CARBONIO_PREVIEW_SERVICE_URL="http://carbonio-preview"
+ENV CARBONIO_FILES_SERVICE_URL="http://carbonio-files:10000"
+ENV CARBONIO_PREVIEW_SERVICE_URL="http://carbonio-preview:10000"
 
 ARG BASE_JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
               -Dhttps.protocols=TLSv1.2,TLSv1.3 \
