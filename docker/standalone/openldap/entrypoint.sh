@@ -10,6 +10,10 @@ mkdir -p /opt/zextras/data/ldap/state/run
 mkdir -p /opt/zextras/data/ldap/config
 mkdir -p /opt/zextras/data/ldap/mdb/db
 
+if [ -f "/opt/zextras/data/ldap/config/cn\=config.ldif" ]; then
+  echo "Found existing installation"
+  echo "Cleaning up removed attributes"
+fi
 
 # Generate 10 years self-signed certificate and key
 mkdir -p /opt/zextras/conf/ca
