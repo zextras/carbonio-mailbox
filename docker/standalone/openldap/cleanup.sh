@@ -29,6 +29,7 @@ for item in "${deprecated[@]}"; do
            delete: $item
 EOF
 done > "/tmp/delete_zimbra_attribute_$item.ldif"
+    /opt/zextras/common/bin/ldapmodify -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H "${LDAP_URL}" -f "/tmp/delete_zimbra_attribute_$item.ldif"
 
     echo "Deprecated attribute in cn=config: $item"
     ldapsearch -x -LLL  -D cn=config -w "${LDAP_ROOT_PASSWORD}" \
@@ -41,5 +42,6 @@ done > "/tmp/delete_zimbra_attribute_$item.ldif"
                delete: $item
 EOF
     done > "/tmp/delete_config_attribute_$item.ldif"
+    /opt/zextras/common/bin/ldapmodify -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H "${LDAP_URL}" -f "/tmp/delete_config_attribute_$item.ldif"
 done
-echo "# LDIFs written to /tmp"
+echo "All deprecated attributes have been deleted"
