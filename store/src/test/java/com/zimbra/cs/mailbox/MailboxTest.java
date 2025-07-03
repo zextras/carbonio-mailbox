@@ -701,63 +701,6 @@ public final class MailboxTest {
   assertEquals(2, count);
  }
 
- @Test
- @Disabled("Fix me. Assertions fails. Standard error: missing .platform")
- void testAdditionalQuotaProviderExceedsQuota() throws Exception {
-  AdditionalQuotaProvider additionalQuotaProvider =
-    new AdditionalQuotaProvider() {
-     @Override
-     public long getAdditionalQuota(Mailbox mailbox) {
-      return 10;
-     }
-    };
-  MailboxManager.getInstance().addAdditionalQuotaProvider(additionalQuotaProvider);
-  Provisioning prov = Provisioning.getInstance();
-  Map<String, Object> attrs = new HashMap<String, Object>();
-  attrs.put("zimbraMailQuota", "5");
-  Account account = prov.createAccount("testAdditionalQuotaProvider@zimbra.com", "secret", attrs);
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
-  try {
-   mbox.checkSizeChange(0);
-   fail("Expected QUOTA_EXCEEDED exception");
-  } catch (MailServiceException ignored) {
-  }
-
-  assertEquals(10L, mbox.getSize());
-
-  MailboxManager.getInstance().removeAdditionalQuotaProvider(additionalQuotaProvider);
-  try {
-   mbox.checkSizeChange(5);
-  } catch (MailServiceException ignored) {
-   fail("Unexpected QUOTA_EXCEEDED exception");
-  }
-
-  assertEquals(0L, mbox.getSize());
- }
-
- @Test
- void testAdditionalQuotaProviderRespectsQuota() throws Exception {
-  MailboxManager.getInstance()
-    .addAdditionalQuotaProvider(
-      new AdditionalQuotaProvider() {
-       public long getAdditionalQuota(Mailbox mbox) {
-        return 10;
-       }
-      });
-  Provisioning prov = Provisioning.getInstance();
-  Map<String, Object> attrs = new HashMap<String, Object>();
-  attrs.put("zimbraMailQuota", "30");
-  Account account = prov.createAccount("testAdditionalQuotaProvider@zimbra.com", "secret", attrs);
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
-  try {
-   mbox.checkSizeChange(10);
-  } catch (MailServiceException ignored) {
-   fail("Unexpected QUOTA_EXCEEDED exception");
-  }
-
-  assertEquals(10L, mbox.getSize());
- }
-
   /**
    * @throws java.lang.Exception
    */

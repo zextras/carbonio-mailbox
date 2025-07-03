@@ -1297,25 +1297,12 @@ public class Mailbox implements MailboxStore {
   /** Returns the total (uncompressed) size of the mailbox's contents. */
   @Override
   public long getSize() {
-    return getMailItemsSize() + getAdditionalSize();
+    return getMailItemsSize();
   }
 
   /** Returns only the mailbox size without the addictional size */
   public long getMailItemsSize() {
     return (currentChange().size == MailboxChange.NO_CHANGE ? mData.size : currentChange().size);
-  }
-
-  private long getAdditionalSize() {
-    long additionalSize = 0L;
-    try {
-      for (AdditionalQuotaProvider listener :
-          MailboxManager.getInstance().getAdditionalQuotaProviders()) {
-        additionalSize += listener.getAdditionalQuota(this);
-      }
-    } catch (ServiceException e) {
-      ZimbraLog.mailbox.warn("could not get mailbox total size", e);
-    }
-    return additionalSize;
   }
 
   /** change the current size of the mailbox */

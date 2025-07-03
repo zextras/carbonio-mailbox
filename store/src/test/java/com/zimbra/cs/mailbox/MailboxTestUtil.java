@@ -172,7 +172,6 @@ public final class MailboxTestUtil {
     }
     DocumentHandler.resetLocalHost();
     EphemeralStore.getFactory().shutdown();
-    MailboxManager.getInstance().clearAdditionalQuotaProviders();
   }
 
   private static void deleteDirContents(File dir) throws IOException {
