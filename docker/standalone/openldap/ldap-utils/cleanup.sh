@@ -19,27 +19,27 @@ IFS=$'\n' read -r -d '' -a deprecated <<< "$file_content"
 # Iterate over each line
 for item in "${deprecated[@]}"; do
     echo "Deprecated attribute in cn=zimbra: $item"
-    ldapsearch -x -LLL  -D cn=config -w "${LDAP_ROOT_PASSWORD}" \
+    /opt/zextras/common/bin/ldapsearch -x -LLL  -D cn=config -w "${LDAP_ROOT_PASSWORD}" \
     -H "${LDAP_URL}" -b "cn=zimbra" "$item=*" dn |
       grep '^dn: ' | while read -r line; do
         DN="${line#dn: }"
         cat <<EOF
-           dn: $DN
-           changetype: modify
-           delete: $item
+dn: $DN
+changetype: modify
+delete: $item
 EOF
 done > "/tmp/delete_zimbra_attribute_$item.ldif"
     /opt/zextras/common/bin/ldapmodify -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H "${LDAP_URL}" -f "/tmp/delete_zimbra_attribute_$item.ldif"
 
     echo "Deprecated attribute in cn=config: $item"
-    ldapsearch -x -LLL  -D cn=config -w "${LDAP_ROOT_PASSWORD}" \
+    /opt/zextras/common/bin/ldapsearch -x -LLL  -D cn=config -w "${LDAP_ROOT_PASSWORD}" \
         -H "${LDAP_URL}" -b "cn=config" "$item=*" dn |
           grep '^dn: ' | while read -r line; do
             DN="${line#dn: }"
             cat <<EOF
-               dn: $DN
-               changetype: modify
-               delete: $item
+dn: $DN
+changetype: modify
+delete: $item
 EOF
     done > "/tmp/delete_config_attribute_$item.ldif"
     /opt/zextras/common/bin/ldapmodify -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H "${LDAP_URL}" -f "/tmp/delete_config_attribute_$item.ldif"

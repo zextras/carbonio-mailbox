@@ -12,6 +12,10 @@ mkdir -p /opt/zextras/data/ldap/mdb/db
 
 if [ -f "/opt/zextras/data/ldap/config/cn\=config.ldif" ]; then
   echo "Found existing installation"
+#  /opt/zextras/common/libexec/slapd -l LOCAL0 -h ldap://0.0.0.0:1389 \
+#  -F /opt/zextras/data/ldap/config -d 256 >> /tmp/openldap.log &
+#  /ldap-utils/cleanup.sh ldap://localhost:1389
+# TODO: stop LDAP
   echo "Cleaning up removed attributes"
 fi
 
