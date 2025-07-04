@@ -115,11 +115,5 @@ public class GetAccountInfo extends AccountDocumentHandler {
             AccountConstants.E_CHANGE_PASSWORD_URL, changePasswordUrl, Element.Disposition.CONTENT);
       }
     }
-
-    // add BOSH URL if Chat is enabled
-    if (account.getBooleanAttr(Provisioning.A_zimbraFeatureChatEnabled, false)) {
-      response.addAttribute(
-          AccountConstants.E_BOSH_URL, server.getReverseProxyXmppBoshLocalHttpBindURL());
-    }
   }
 }
