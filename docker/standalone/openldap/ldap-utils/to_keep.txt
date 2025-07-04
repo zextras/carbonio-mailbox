@@ -20,3 +20,4 @@ zimbraSMIMELdapSearchBase
 zimbraSMIMELdapFilter
 zimbraSMIMELdapAttribute
 zimbraReverseProxyDnsLookupInServerEnabled
+zimbraContactAutoCompleteEmailFields
