@@ -11,7 +11,7 @@
 
 LDAP_URL=$1
 LDAP_ROOT_PASSWORD=$2
-file_content=$(</tmp/deprecated_attrs.txt)
+file_content=$(</ldap-utils/deprecated_attrs.txt)
 
 # Convert to array, preserving newlines
 IFS=$'\n' read -r -d '' -a deprecated <<< "$file_content"

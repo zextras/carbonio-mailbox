@@ -1,46 +1,6 @@
 version: "3.9"
 
 services:
-  mailbox1:
-    depends_on:
-      openldap:
-        condition: service_healthy
-      postfix:
-        condition: service_healthy
-    build:
-      context: ./../../
-      dockerfile: docker/standalone/mailbox/Dockerfile
-    hostname: mailbox1.demo.zextras.io
-    restart: on-failure
-    healthcheck:
-      interval: 60s
-      retries: 10
-      start_period: 20s
-      test: curl --fail --silent localhost:8080/service/health/ready || exit 1
-      timeout: 10s
-    ports:
-      - "5005:5005"
-  mailbox2:
-    environment:
-      - SERVER_HOSTNAME=mailbox2.demo.zextras.io
-    depends_on:
-      openldap:
-        condition: service_healthy
-      postfix:
-        condition: service_healthy
-    build:
-      context: ./../../
-      dockerfile: docker/standalone/mailbox/Dockerfile
-    hostname: mailbox2.demo.zextras.io
-    restart: on-failure
-    healthcheck:
-      interval: 60s
-      retries: 10
-      start_period: 20s
-      test: curl --fail --silent localhost:8080/service/health/ready || exit 1
-      timeout: 10s
-    ports:
-      - "5006:5005"
   openldap:
     build:
       context: ./../../
@@ -61,35 +21,7 @@ services:
      nproc:
        soft: 65535
        hard: 65535
-  mariadb:
-    build:
-      context: ./../../
-      dockerfile: docker/standalone/mariadb/Dockerfile
-    ports:
-      - "3306:3306"
-  webui:
-    depends_on:
-      - mailbox1
-      - mailbox2
-    build:
-      dockerfile: webui/Dockerfile
-    ports:
-      - "443:443"
-      - "6071:6071"
-      - "993:993"
-      - "143:143"
-  postfix:
-    depends_on:
-      openldap:
-        condition: service_healthy
-    healthcheck:
-      interval: 60s
-      retries: 10
-      start_period: 20s
-      test: netcat -z localhost 25 || exit 1
-      timeout: 10s
-    build:
-      context: ./../../
-      dockerfile: docker/standalone/postfix/Dockerfile
-    ports:
-      - "20025:25"
+    volumes:
+      - ldap_data:/opt/zextras
+volumes:
+  ldap_data:
