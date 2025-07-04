@@ -19,3 +19,4 @@ zimbraSMIMELdapBindPassword
 zimbraSMIMELdapSearchBase
 zimbraSMIMELdapFilter
 zimbraSMIMELdapAttribute
+zimbraReverseProxyDnsLookupInServerEnabled
