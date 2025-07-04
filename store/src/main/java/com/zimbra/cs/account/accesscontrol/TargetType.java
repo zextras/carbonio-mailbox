@@ -24,7 +24,6 @@ import com.zimbra.cs.account.GlobalGrant;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
-import com.zimbra.cs.account.XMPPComponent;
 import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.account.ldap.LdapDIT;
 import com.zimbra.cs.account.ldap.LdapProv;
@@ -432,7 +431,6 @@ public enum TargetType {
     else if (target instanceof Config) return TargetType.config;
     else if (target instanceof GlobalGrant) return TargetType.global;
     else if (target instanceof Zimlet) return TargetType.zimlet;
-    else if (target instanceof XMPPComponent) return TargetType.xmppcomponent;
     else
       throw ServiceException.FAILURE(
           "internal error, target is : "
