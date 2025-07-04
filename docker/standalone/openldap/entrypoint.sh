@@ -9,12 +9,22 @@ echo "Check existing installation..."
 
 if [ -f /opt/zextras/data/ldap/config/cn\=config.ldif ]; then
   echo "Found existing installation"
+  echo "Starting LDAP"
+  /opt/zextras/common/libexec/slapd -l LOCAL0 -h ldap://0.0.0.0:1389 \
+  -F /opt/zextras/data/ldap/config -d 256 >> /tmp/openldap.log &
+  echo "Waiting for OpenLDAP to start..."
+  while ! netcat -z localhost 1389; do
+    sleep 0.5
+  done
+
+  echo "LDAP is up. Running cleanup of remove attributes."
+  /ldap-utils/cleanup.sh ldap://localhost:1389 qh6hWZvc
+  echo "Now please stop LDAP manually, and apply new schema by running " \
+  "sh /ldap-utils/zmldapschema" \
+  "AND" \
+   "cp -r /opt/zextras/common/etc/openldap/zimbra/config/* /opt/zextras/data/ldap/config/"
   tail -f /dev/null
-#  /opt/zextras/common/libexec/slapd -l LOCAL0 -h ldap://0.0.0.0:1389 \
-#  -F /opt/zextras/data/ldap/config -d 256 >> /tmp/openldap.log &
-#  /ldap-utils/cleanup.sh ldap://localhost:1389 qh6hWZvc
 # TODO: stop LDAP
-  echo "TODO: Cleaning up removed attributes"
 fi
 
 echo "No installation found, proceeding with bootstrap"

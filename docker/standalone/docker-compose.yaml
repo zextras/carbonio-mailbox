@@ -23,5 +23,8 @@ services:
        hard: 65535
     volumes:
       - ldap_data:/opt/zextras
+      - ./../../store/ldap/generated:/opt/zextras/common/etc/openldap/zimbra/
+      - ./openldap/entrypoint.sh:/entrypoint.sh
+      - ./openldap/ldap-utils/:/ldap-utils
 volumes:
   ldap_data:
