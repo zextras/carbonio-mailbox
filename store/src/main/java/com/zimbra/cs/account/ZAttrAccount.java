@@ -15775,7 +15775,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Whether to enable chat feature
+     * Deprecated since: 25.9.0. Zimbra Chats feature has been removed.
+     * Carbonio uses WSC. See: carbonioFeatureWscEnabled. Orig desc: Whether
+     * to enable chat feature
      *
      * @return zimbraFeatureChatEnabled, or false if unset
      *
@@ -15787,7 +15789,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Whether to enable chat feature
+     * Deprecated since: 25.9.0. Zimbra Chats feature has been removed.
+     * Carbonio uses WSC. See: carbonioFeatureWscEnabled. Orig desc: Whether
+     * to enable chat feature
      *
      * @param zimbraFeatureChatEnabled new value
      * @throws com.zimbra.common.service.ServiceException if error during update
@@ -15802,7 +15806,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Whether to enable chat feature
+     * Deprecated since: 25.9.0. Zimbra Chats feature has been removed.
+     * Carbonio uses WSC. See: carbonioFeatureWscEnabled. Orig desc: Whether
+     * to enable chat feature
      *
      * @param zimbraFeatureChatEnabled new value
      * @param attrs existing map to populate, or null to create a new map
@@ -15818,7 +15824,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Whether to enable chat feature
+     * Deprecated since: 25.9.0. Zimbra Chats feature has been removed.
+     * Carbonio uses WSC. See: carbonioFeatureWscEnabled. Orig desc: Whether
+     * to enable chat feature
      *
      * @throws com.zimbra.common.service.ServiceException if error during update
      *
@@ -15832,7 +15840,9 @@ public abstract class ZAttrAccount extends MailTarget {
     }
 
     /**
-     * Whether to enable chat feature
+     * Deprecated since: 25.9.0. Zimbra Chats feature has been removed.
+     * Carbonio uses WSC. See: carbonioFeatureWscEnabled. Orig desc: Whether
+     * to enable chat feature
      *
      * @param attrs existing map to populate, or null to create a new map
      * @return populated map to pass into Provisioning.modifyAttrs

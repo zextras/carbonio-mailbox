@@ -9083,9 +9083,10 @@ deprecatedSince="23.9.0">
   <defaultCOSValue>FALSE</defaultCOSValue>
 </attr>
 
-<attr id="2052" name="zimbraFeatureChatEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="domainAdminModifiable,accountInfo,accountInherited" since="8.7.0,9.0.0">
+<attr id="2052" name="zimbraFeatureChatEnabled" type="boolean" cardinality="single" optionalIn="account,cos" flags="domainAdminModifiable,accountInfo,accountInherited" since="8.7.0,9.0.0" deprecatedSince="25.9.0">
   <desc>Whether to enable chat feature</desc>
   <defaultCOSValue>FALSE</defaultCOSValue>
+  <deprecateDesc>Zimbra Chats feature has been removed. Carbonio uses WSC. See: carbonioFeatureWscEnabled</deprecateDesc>
 </attr>
 
 <attr id="2053" name="zimbraMailboxThrottleReapInterval" type="duration" min="1" cardinality="single" optionalIn="globalConfig,server" flags="serverInherited" since="8.7.0,9.0.0">

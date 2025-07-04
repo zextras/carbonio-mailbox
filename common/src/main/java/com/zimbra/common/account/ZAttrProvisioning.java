@@ -7092,7 +7092,9 @@ public class ZAttrProvisioning {
     public static final String A_zimbraFeatureChangePasswordEnabled = "zimbraFeatureChangePasswordEnabled";
 
     /**
-     * Whether to enable chat feature
+     * Deprecated since: 25.9.0. Zimbra Chats feature has been removed.
+     * Carbonio uses WSC. See: carbonioFeatureWscEnabled. Orig desc: Whether
+     * to enable chat feature
      *
      * @since ZCS 8.7.0,9.0.0
      */
