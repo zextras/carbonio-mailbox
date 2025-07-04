@@ -1351,7 +1351,10 @@ public final class LC {
   @Supported
   public static final KnownKey zimbra_remote_cmd_channel_timeout_min = KnownKey.newKey(10);
 
-  static {
+	public static final KnownKey preview_service_url = KnownKey.newKey("http://127.78.0.7:20001");
+	public static final KnownKey files_service_url = KnownKey.newKey("http://127.78.0.7:20002");
+
+	static {
     // Automatically set the key name with the variable name.
     for (Field field : LC.class.getFields()) {
       if (field.getType() == KnownKey.class) {

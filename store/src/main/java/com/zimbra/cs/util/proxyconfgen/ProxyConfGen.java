@@ -1902,75 +1902,6 @@ public class ProxyConfGen {
                 ProxyConfOverride.SERVER,
                 "SSL session timeout value for the proxy in secs")));
     mConfVars.put("ssl.session.cachesize", new WebSSLSessionCacheSizeVar());
-    mConfVars.put("web.xmpp.upstream.proto", new XmppBoshProxyUpstreamProtoVar());
-    mConfVars.put("web.xmpp.bosh.upstream.disable", new WebXmppBoshEnablerVar());
-    mConfVars.put(
-        "web.xmpp.bosh.enabled",
-        new ProxyConfVar(
-            "web.xmpp.bosh.enabled",
-            ZAttrProvisioning.A_zimbraReverseProxyXmppBoshEnabled,
-            true,
-            ProxyConfValueType.ENABLER,
-            ProxyConfOverride.SERVER,
-            "Indicates whether XMPP/Bosh Reverse Proxy is enabled"));
-    mConfVars.put(
-        "web.xmpp.local.bind.url",
-        new ProxyConfVar(
-            "web.xmpp.local.bind.url",
-            ZAttrProvisioning.A_zimbraReverseProxyXmppBoshLocalHttpBindURL,
-            "/http-bind",
-            ProxyConfValueType.STRING,
-            ProxyConfOverride.SERVER,
-            "Local HTTP-BIND URL prefix where ZWC sends XMPP over BOSH requests"));
-    mConfVars.put(
-        "web.xmpp.remote.bind.url",
-        new ProxyConfVar(
-            "web.xmpp.remote.bind.url",
-            ZAttrProvisioning.A_zimbraReverseProxyXmppBoshRemoteHttpBindURL,
-            "",
-            ProxyConfValueType.STRING,
-            ProxyConfOverride.SERVER,
-            "Remote HTTP-BIND URL prefix for an external XMPP server where XMPP over BOSH requests"
-                + " need to be proxied"));
-    mConfVars.put(
-        "web.xmpp.bosh.hostname",
-        new ProxyConfVar(
-            "web.xmpp.bosh.hostname",
-            ZAttrProvisioning.A_zimbraReverseProxyXmppBoshHostname,
-            "",
-            ProxyConfValueType.STRING,
-            ProxyConfOverride.SERVER,
-            "Hostname of the external XMPP server where XMPP over BOSH requests need to be"
-                + " proxied"));
-    mConfVars.put(
-        "web.xmpp.bosh.port",
-        new ProxyConfVar(
-            "web.xmpp.bosh.port",
-            ZAttrProvisioning.A_zimbraReverseProxyXmppBoshPort,
-            0,
-            ProxyConfValueType.INTEGER,
-            ProxyConfOverride.SERVER,
-            "Port number of the external XMPP server where XMPP over BOSH requests need to be"
-                + " proxied"));
-    mConfVars.put(
-        "web.xmpp.bosh.timeout",
-        new TimeInSecVarWrapper(
-            new ProxyConfVar(
-                "web.xmpp.bosh.timeout",
-                ZAttrProvisioning.A_zimbraReverseProxyXmppBoshTimeout,
-                60L,
-                ProxyConfValueType.TIME,
-                ProxyConfOverride.SERVER,
-                "the response timeout for an external XMPP/BOSH server")));
-    mConfVars.put(
-        "web.xmpp.bosh.use_ssl",
-        new ProxyConfVar(
-            "web.xmpp.bosh.use_ssl",
-            ZAttrProvisioning.A_zimbraReverseProxyXmppBoshSSL,
-            true,
-            ProxyConfValueType.ENABLER,
-            ProxyConfOverride.SERVER,
-            "Indicates whether XMPP/Bosh uses SSL"));
     ProxyConfVar webSslDhParamFile =
         new ProxyConfVar(
             "web.ssl.dhparam.file",
@@ -2410,6 +2341,9 @@ public class ProxyConfGen {
       expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("stream")),
           new File(mConfIncludesDir, getConfFileName("stream")));
+      expandTemplate(
+          new File(mTemplateDir, getConfTemplateFileName("web.upstreams")),
+          new File(mConfIncludesDir, getConfFileName("web.upstreams")));
       expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("stream.addressBook")),
           new File(mConfIncludesDir, getConfFileName("stream.addressBook")));

@@ -8,6 +8,7 @@ package com.zimbra.cs.service.admin;
 import com.zextras.carbonio.files.FilesClient;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
@@ -384,7 +385,7 @@ public class AdminService implements DocumentService {
   }
 
   protected FilesClient getFilesClient() {
-    return FilesClient.atURL("http://127.78.0.7:20002");
+    return FilesClient.atURL(LC.files_service_url.value());
   }
 
 }
