@@ -83,7 +83,6 @@ olcDbIndex: zimbraCalResCapacity eq
 olcDbIndex: zimbraCalResBuilding eq,sub
 olcDbIndex: zimbraCalResFloor eq,sub
 olcDbIndex: zimbraDomainAliasTargetID eq
-olcDbIndex: zimbraUCServiceId eq
 olcDbIndex: DKIMIdentity eq
 olcDbIndex: DKIMSelector eq
 olcDbMode: 0600

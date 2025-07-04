@@ -13,7 +13,6 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning.GroupMembership;
 import com.zimbra.cs.account.Provisioning.SetPasswordResult;
 import com.zimbra.cs.account.auth.AuthContext;
-import com.zimbra.cs.account.names.NameUtil;
 import com.zimbra.soap.admin.type.DataSourceType;
 import java.util.Collections;
 import java.util.List;
@@ -490,39 +489,6 @@ public class Account extends ZAttrAccount implements GroupedEntry, AliasedEntry 
     return Collections.unmodifiableSet(addrs);
   }
 
-  @Override
-  public String getUCUsername() {
-    String ucUsername = super.getUCUsername();
-    if (ucUsername == null) {
-      try {
-        NameUtil.EmailAddress emailAddr = new NameUtil.EmailAddress(getName());
-        ucUsername = emailAddr.getLocalPart();
-      } catch (ServiceException e) {
-        ZimbraLog.account.warn(
-            "ignoring exception while getting localpart of primary email address", e);
-      }
-    }
-    return ucUsername;
-  }
-
-  public String getDecryptedUCPassword() throws ServiceException {
-    String encryptedPassword = getUCPassword();
-    if (encryptedPassword == null) {
-      return null;
-    } else {
-      return DataSource.decryptData(getId(), encryptedPassword);
-    }
-  }
-
-  public void changeUCPassword(String newPlainPassword) throws ServiceException {
-    String encryptedPassword = null;
-
-    if (newPlainPassword != null) {
-      encryptedPassword = encrypytUCPassword(getId(), newPlainPassword);
-    }
-
-    setUCPassword(encryptedPassword);
-  }
 
   public static String encrypytUCPassword(String acctId, String plainPassword)
       throws ServiceException {
