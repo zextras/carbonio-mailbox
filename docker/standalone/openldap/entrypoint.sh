@@ -40,9 +40,10 @@ migrate() {
 
     echo "Stopping LDAP and applying new schema"
     stopLDAP
-    /opt/zextras/common/sbin/slapcat -F /opt/zextras/data/ldap/config -b "" -l /tmp/backup.ldif
+    # Why -n 2? Because we set mdb database to be olcDatabase={2}mdb.ldif
+    /opt/zextras/common/sbin/slapcat -F /opt/zextras/data/ldap/config -n 2 -l /tmp/backup.ldif
     rm /opt/zextras/data/ldap/mdb/db/data.mdb
-    /opt/zextras/common/sbin/slapadd -F /opt/zextras/data/ldap/config -b "" -l /tmp/backup.ldif
+    /opt/zextras/common/sbin/slapadd -F /opt/zextras/data/ldap/config -n 2 -l /tmp/backup.ldif
     applySchema
 
     startLDAP
