@@ -84,6 +84,13 @@ postinst__apt() {
   if [ "$1" = "configure" ] && [ -n "$2" ]; then
     echo "* Starting LDAP upgrade..."
     su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
+    # /opt/zextras/libexec/ldapdeleteattributes -> check timestamp, apply migration, if migration happen dump db
+    # 1) remove attributes
+    # 2) dump db:
+    #   a) stop ldap
+    #   b) dump db to ldif
+    #   c) remove .mdb database
+    #   d) restore ldif
     su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     /opt/zextras/libexec/zmldapupdateldif
