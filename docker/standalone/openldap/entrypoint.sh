@@ -31,19 +31,25 @@ stopLDAP() {
   fi
 }
 
-if [ -f /opt/zextras/data/ldap/config/cn\=config.ldif ]; then
+migrate() {
   echo "Found existing installation"
-  startLDAP
+    startLDAP
 
-  echo "Running cleanup of removed attributes."
-  /ldap-utils/cleanup.sh ldap://localhost:1389 qh6hWZvc
+    echo "Running cleanup of removed attributes."
+    /ldap-utils/cleanup.sh ldap://localhost:1389 qh6hWZvc
 
-  echo "Stopping LDAP and applying new schema"
-  stopLDAP
-  applySchema
-  stopLDAP
+    echo "Stopping LDAP and applying new schema"
+    stopLDAP
+    /opt/zextras/common/sbin/slapcat -F /opt/zextras/data/ldap/config -b "" -l /tmp/backup.ldif
+    rm /opt/zextras/data/ldap/mdb/db/data.mdb
+    /opt/zextras/common/sbin/slapadd -F /opt/zextras/data/ldap/config -b "" -l /tmp/backup.ldif
+    applySchema
 
-  startLDAP
+    startLDAP
+}
+
+if [ -f /opt/zextras/data/ldap/config/cn\=config.ldif ]; then
+  migrate
   tail -f /dev/null
 fi
 
