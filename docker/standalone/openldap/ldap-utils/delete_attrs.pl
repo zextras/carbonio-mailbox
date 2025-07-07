@@ -89,25 +89,6 @@ else {
     exit(0);
 }
 
-# read updates folder and prepare each file for update;
-if (-d "$ldap_attribute_delete_dir") {
-    opendir(DIR, "$ldap_attribute_delete_dir") or die "Cannot opendir $ldap_attribute_delete_dir: $!\n";
-    my @delete_attrs_files =  sort { $a <=> $b } readdir(DIR);
-    while ( my $file = shift @delete_attrs_files ) {
-        next unless (-f "$ldap_attribute_delete_dir/$file");
-        next unless ($file =~ m/json/);
-        my $infile = "$ldap_attribute_delete_dir/$file";
-        &apply_delete($infile);
-    }
-    closedir DIR;
-    &print_separater("-", "80");
-}
-else {
-    print "LDAP Schema/Attributes update directory($ldap_attribute_delete_dir) not found.\nUnable to process LDAP updates.\n";
-    $ldap->unbind;
-    exit(0);
-}
-
 =begin print_separater
     print_separater($char<string>, $length<int>);
 Prints $char $length times prepended by a new line;
@@ -167,24 +148,21 @@ sub apply_delete(){
     (my $timestamp_from_file = $infile_base_name) =~ s/\.[^.]+$//;
     chomp $timestamp_from_file;
     &print_separater("-", "80");
+    my $applied_migrations = 0;
     if ($timestamp_from_file > $zimbra_ldap_schema_version) {
         open(FH, '<', $infile) or die "Cannot open file $infile for reading: $!\n";
         my $raw_json = join '', <FH>;
         my $json = new JSON::PP;
-        eval {
-            my $json_decoded = $json->decode($raw_json);
-            print "Initializing updates from ", $timestamp_from_file, ".json\n";
-            my @attributes =  @{$json_decoded->{deleted_attributes}};
-            &delete_entries(@attributes);
-            $last_applied_update_version = $timestamp_from_file;
-            1;
-        } or do {
-            my $e = $@;
-            print "Skipping: $timestamp_from_file.json\n    Reason: $e\n";
-        };
+        my $json_decoded = $json->decode($raw_json);
+        print "Initializing updates from ", $timestamp_from_file, ".json\n";
+        my @attributes =  @{$json_decoded->{deleted_attributes}};
+        &delete_entries(@attributes);
+        &update_zimbra_ldap_schema_version($timestamp_from_file);
+        applied_migrations++;
+        1;
     }
-    else {
-        print "Skipping: $timestamp_from_file.json\n    Reason: not eligible for this update.\n";
+    if ($applied_migrations == 0){
+      print "No attributes to delete";
     }
     close(FH);
 }
@@ -203,8 +181,7 @@ sub delete_attribute_from_entries {
     );
 
     if ($search->code) {
-        warn "Search error: " . $search->error;
-        return;
+        die "Search error: " . $search->error;
     }
 
     foreach my $entry ($search->entries) {
@@ -214,7 +191,7 @@ sub delete_attribute_from_entries {
         my $modify = $ldap->modify($dn, delete => { $attribute => [] });
 
         if ($modify->code) {
-            warn "Failed to modify $dn: " . $modify->error;
+            die "Failed to modify $dn: " . $modify->error;
         } else {
             print "Successfully removed '$attribute' from $dn\n";
         }
@@ -235,6 +212,29 @@ sub delete_entries {
     }
 }
 
-&update_zimbra_ldap_schema_version($last_applied_update_version);
-$ldap->unbind;
-exit(0);
+# read updates folder and prepare each file for update;
+eval {
+  if (-d "$ldap_attribute_delete_dir") {
+      opendir(DIR, "$ldap_attribute_delete_dir") or die "Cannot opendir $ldap_attribute_delete_dir: $!\n";
+      my @delete_attrs_files =  sort { $a <=> $b } readdir(DIR);
+      while ( my $file = shift @delete_attrs_files ) {
+          next unless (-f "$ldap_attribute_delete_dir/$file");
+          next unless ($file =~ m/json/);
+          my $infile = "$ldap_attribute_delete_dir/$file";
+          &apply_delete($infile);
+      }
+      closedir DIR;
+      &print_separater("-", "80");
+      $ldap->unbind;
+      exit(0);
+  }
+  else {
+      print "LDAP Schema/Attributes update directory($ldap_attribute_delete_dir) not found.\nUnable to process LDAP updates.\n";
+      $ldap->unbind;
+      exit(1);
+  }
+} or do {
+    print "Failed to delete attributes";
+    $ldap->unbind;
+    exit(1);
+}
