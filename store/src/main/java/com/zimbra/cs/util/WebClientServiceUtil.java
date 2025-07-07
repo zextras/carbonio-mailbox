@@ -11,15 +11,12 @@ import com.zimbra.common.util.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.httpclient.HttpProxyUtil;
 import com.zimbra.cs.httpclient.URLUtil;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.zimlet.ZimletUtil;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -36,120 +33,6 @@ public class WebClientServiceUtil {
 
   public static final String PARAM_AUTHTOKEN = "authtoken";
   private static final String FLUSH_UISTRINGS_ON_UI_NODE = "/fromservice/flushuistrings";
-
-  /**
-   * send service request to every ui node
-   *
-   * @param serviceUrl the url that should be matched and handled by ServiceServlet in
-   *                   ZimbraWebClient
-   * @throws ServiceException
-   */
-  public static void sendServiceRequestToEveryUiNode(String serviceUrl) throws ServiceException {
-    List<Server> servers = Provisioning.getInstance().getAllServers(Provisioning.SERVICE_WEBCLIENT);
-    if (servers == null || servers.isEmpty()) {
-      servers.add(Provisioning.getInstance().getLocalServer());
-    }
-    AuthToken authToken = AuthProvider.getAdminAuthToken();
-    ZimbraLog.misc.debug("got admin auth token");
-    //sequentially flush each node
-    HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getExternalHttpConnMgr()
-        .newHttpClient();
-    HttpProxyUtil.configureProxy(clientBuilder);
-    for (Server server : servers) {
-      if (isServerAtLeast8dot5(server)) {
-        HttpRequestBase method = null;
-        try {
-          method = new HttpGet(URLUtil.getServiceURL(server, serviceUrl, false));
-          ZimbraLog.misc.debug("connecting to ui node %s", server.getName());
-          try {
-            method.addHeader(PARAM_AUTHTOKEN, authToken.getEncoded());
-          } catch (AuthTokenException e) {
-            ZimbraLog.misc.warn(e);
-          }
-          HttpResponse httpResp = HttpClientUtil.executeMethod(clientBuilder.build(), method);
-          int respCode = httpResp.getStatusLine().getStatusCode();
-          if (respCode != 200) {
-            ZimbraLog.misc.warn("service failed, return code: %d", respCode);
-          }
-        } catch (Exception e) {
-          ZimbraLog.misc.warn("service failed for node %s", server.getName(), e);
-        } finally {
-          if (method != null) {
-            method.releaseConnection();
-          }
-        }
-      }
-    }
-    if (authToken != null && authToken.isRegistered()) {
-      try {
-        authToken.deRegister();
-        ZimbraLog.misc.debug("de-registered auth token, isRegistered?%s", authToken.isRegistered());
-      } catch (AuthTokenException e) {
-        ZimbraLog.misc.warn("failed to de-register auth token", e);
-      }
-    }
-  }
-
-  /**
-   * send service request to one random ui node, keep trying until succeeds.
-   *
-   * @param serviceUrl the url that should be matched and handled by ServiceServlet in
-   *                   ZimbraWebClient reqHeaders the map of req/rsp attributes that need to be set
-   *                   by the UI node
-   * @return response from ui node in String
-   * @throws ServiceException
-   */
-  public static String sendServiceRequestToOneRandomUiNode(String serviceUrl,
-      Map<String, String> reqHeaders) throws ServiceException {
-    List<Server> servers = Provisioning.getInstance().getAllServers(Provisioning.SERVICE_WEBCLIENT);
-    if (servers == null || servers.isEmpty()) {
-      servers.add(Provisioning.getInstance().getLocalServer());
-    }
-    HttpClientBuilder clientBuilder = ZimbraHttpConnectionManager.getExternalHttpConnMgr()
-        .newHttpClient();
-    HttpProxyUtil.configureProxy(clientBuilder);
-    AuthToken authToken = AuthProvider.getAdminAuthToken();
-    ZimbraLog.misc.debug("got admin auth token");
-    String resp = "";
-    for (Server server : servers) {
-      if (isServerAtLeast8dot5(server)) {
-        HttpRequestBase method = null;
-        try {
-          method = new HttpGet(URLUtil.getServiceURL(server, serviceUrl, false));
-          ZimbraLog.misc.debug("connecting to ui node %s", server.getName());
-          method.addHeader(PARAM_AUTHTOKEN, authToken.getEncoded());
-          // Add all the req headers passed to this function as well
-          for (Map.Entry<String, String> entry : reqHeaders.entrySet()) {
-            method.addHeader(entry.getKey(), entry.getValue());
-            ZimbraLog.misc.debug("adding request header %s=%s", entry.getKey(), entry.getValue());
-          }
-          HttpResponse httpResp = HttpClientUtil.executeMethod(clientBuilder.build(), method);
-          int result = httpResp.getStatusLine().getStatusCode();
-          ZimbraLog.misc.debug("resp: %d", result);
-          resp = EntityUtils.toString(httpResp.getEntity());
-          ZimbraLog.misc.debug("got response from ui node: %s", resp);
-          break; //try ui nodes one by one until one succeeds.
-        } catch (IOException | HttpException e) {
-          ZimbraLog.misc.warn("failed to get response from ui node", e);
-        } catch (AuthTokenException e) {
-          ZimbraLog.misc.warn("failed to get authToken", e);
-        } finally {
-          if (method != null) {
-            method.releaseConnection();
-          }
-        }
-      }
-    }
-    if (authToken != null && authToken.isRegistered()) {
-      try {
-        authToken.deRegister();
-        ZimbraLog.misc.debug("de-registered auth token, isRegistered?%s", authToken.isRegistered());
-      } catch (AuthTokenException e) {
-        ZimbraLog.misc.warn("failed to de-register authToken", e);
-      }
-    }
-    return resp;
-  }
 
   public static String sendServiceRequestToUiNode(Server server, String serviceUrl)
       throws ServiceException {
