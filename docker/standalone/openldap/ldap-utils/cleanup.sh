@@ -16,32 +16,32 @@ file_content=$(</ldap-utils/deprecated_attrs.txt)
 # Convert to array, preserving newlines
 IFS=$'\n' read -r -d '' -a deprecated <<< "$file_content"
 
+write_ldif_modify_to_file() {
+  fileName=$1
+  input=$2
+  if [ -n "$input" ]; then
+  "$input" |
+        grep '^dn: ' | while read -r line; do
+          DN="${line#dn: }"
+          cat <<EOF
+dn: $DN
+changetype: modify
+delete: $item
+EOF
+done > "$fileName"
+  echo "Applying ldif $fileName"
+  /opt/zextras/common/bin/ldapmodify -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H "${LDAP_URL}" -f "$fileName"
+  fi
+}
+
 # Iterate over each line
 for item in "${deprecated[@]}"; do
-    echo "Deprecated attribute in cn=zimbra: $item"
-    /opt/zextras/common/bin/ldapsearch -x -LLL  -D cn=config -w "${LDAP_ROOT_PASSWORD}" \
-    -H "${LDAP_URL}" -b "cn=zimbra" "$item=*" dn |
-      grep '^dn: ' | while read -r line; do
-        DN="${line#dn: }"
-        cat <<EOF
-dn: $DN
-changetype: modify
-delete: $item
-EOF
-done > "/tmp/delete_zimbra_attribute_$item.ldif"
-    /opt/zextras/common/bin/ldapmodify -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H "${LDAP_URL}" -f "/tmp/delete_zimbra_attribute_$item.ldif"
+    echo "Searching for attribute: $item"
+    write_ldif_modify_to_file "/tmp/delete_zimbra_attribute_$item.ldif" \
+    /opt/zextras/common/bin/ldapsearch -x -LLL  -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -b "cn=zimbra" "$item=*" dn
 
-    echo "Deprecated attribute in cn=config: $item"
-    /opt/zextras/common/bin/ldapsearch -x -LLL  -D cn=config -w "${LDAP_ROOT_PASSWORD}" \
-        -H "${LDAP_URL}" -b "cn=config" "$item=*" dn |
-          grep '^dn: ' | while read -r line; do
-            DN="${line#dn: }"
-            cat <<EOF
-dn: $DN
-changetype: modify
-delete: $item
-EOF
-    done > "/tmp/delete_config_attribute_$item.ldif"
-    /opt/zextras/common/bin/ldapmodify -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H "${LDAP_URL}" -f "/tmp/delete_config_attribute_$item.ldif"
+    write_ldif_modify_to_file "/tmp/delete_config_attribute_$item.ldif" \
+    /opt/zextras/common/bin/ldapsearch -x -LLL  -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -b "cn=config" "$item=*" dn
 done
+
 echo "All deprecated attributes have been deleted"
