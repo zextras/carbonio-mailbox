@@ -5,8 +5,6 @@
 #
 # SPDX-License-Identifier: GPL-2.0-only
 
-export LD_PRELOAD=/opt/zextras/common/lib/libjemalloc.so
-
 if [ "$1" = "" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
   echo "USAGE: Exports LDAP databases"
   echo "Main database: zmslapcat <DIR>"
@@ -52,3 +50,5 @@ fi
 
 cp -f "${DEST}/${FILE}" "${DEST}/${NFILE}"
 exit $RC
+
+# /opt/zextras/common/sbin/slapcat -F /opt/zextras/data/ldap/config -b "" -n 1 -l ./backup.ldif
