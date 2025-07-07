@@ -101,31 +101,10 @@ public class WebClientL10nUtil {
         }
     }
 
-    private static void loadBundles() throws ServiceException {
+    private static void loadBundles() {
         ZimbraLog.webclient.debug("Loading locales...");
         locales = new HashSet<>();
-
-        if (WebClientServiceUtil.isServerInSplitMode()) {
-            String localesStr = WebClientServiceUtil.sendServiceRequestToOneRandomUiNode(LOAD_LOCALES_ON_UI_NODE);
-            for (String str : localesStr.split(",")) {
-                String[] parts = str.split("_");
-                switch (parts.length) {
-                    case 1:
-                        locales.add(new Locale(parts[0]));
-                        break;
-                    case 2:
-                        locales.add(new Locale(parts[0], parts[1]));
-                        break;
-                    case 3:
-                        locales.add(new Locale(parts[0], parts[1], parts[2]));
-                        break;
-                    default:
-                        ZimbraLog.misc.warn("unsupported locale %s", str);
-                }
-            }
-        } else {
-            loadBundlesByDiskScan();
-        }
+        loadBundlesByDiskScan();
 
         /*
          * UI displays locales with country in sub menus.

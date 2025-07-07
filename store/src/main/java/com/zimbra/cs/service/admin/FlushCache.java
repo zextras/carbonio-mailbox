@@ -20,7 +20,6 @@ import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.cs.gal.GalGroup;
 import com.zimbra.cs.httpclient.URLUtil;
 import com.zimbra.cs.util.WebClientL10nUtil;
-import com.zimbra.cs.util.WebClientServiceUtil;
 import com.zimbra.cs.zimlet.ZimletUtil;
 import com.zimbra.soap.SoapServlet;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -107,12 +106,8 @@ public class FlushCache extends AdminDocumentHandler {
         GalGroup.flushCache(getCacheEntries(cacheSelector));
         break;
       case uistrings:
-        if (WebClientServiceUtil.isServerInSplitMode()) {
-          WebClientServiceUtil.flushUistringsCache();
-        } else {
-          FlushCache.sendFlushRequest(context, mailURL, RES_AJXMSG_JS);
-          FlushCache.sendFlushRequest(context, "/zimbraAdmin", RES_AJXMSG_JS);
-        }
+        FlushCache.sendFlushRequest(context, mailURL, RES_AJXMSG_JS);
+        FlushCache.sendFlushRequest(context, "/zimbraAdmin", RES_AJXMSG_JS);
         break;
       case locale:
         WebClientL10nUtil.flushCache();
@@ -124,9 +119,7 @@ public class FlushCache extends AdminDocumentHandler {
         break;
       case zimlet:
         ZimletUtil.flushDiskCache(context);
-        if (!WebClientServiceUtil.isServerInSplitMode()) {
-          flushAllZimlets(context);
-        }
+        flushAllZimlets(context);
         // fall through to also flush ldap entries
       default:
         flushLdapCache(cacheType, cacheSelector);

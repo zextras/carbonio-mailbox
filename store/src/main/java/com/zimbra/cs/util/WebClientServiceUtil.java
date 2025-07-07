@@ -6,9 +6,7 @@
 package com.zimbra.cs.util;
 
 import com.zimbra.common.httpclient.HttpClientUtil;
-import com.zimbra.common.localconfig.DebugConfig;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.WebSplitUtil;
 import com.zimbra.common.util.ZimbraHttpConnectionManager;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AuthToken;
@@ -39,13 +37,6 @@ public class WebClientServiceUtil {
 
   public static final String PARAM_AUTHTOKEN = "authtoken";
   private static final String FLUSH_UISTRINGS_ON_UI_NODE = "/fromservice/flushuistrings";
-
-  /**
-   * @return true if server is in split mode or LC key debug_local_split is set to true
-   */
-  public static boolean isServerInSplitMode() {
-    return DebugConfig.debugLocalSplit || WebSplitUtil.isZimbraServiceSplitEnabled();
-  }
 
   /**
    * send service request to every ui node

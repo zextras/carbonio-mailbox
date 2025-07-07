@@ -47,15 +47,6 @@ public class WebSplitUtil {
         }
     }
 
-    public static boolean isZimbraWebClientSplitEnabled() {
-        if (!((servicesEnabled == null || servicesEnabled.isEmpty()) || allServicesEnabled()) && servicesEnabled.contains(webClientApp)) {
-        	ZimbraLog.misc.debug("webclient split enabled = true");
-            return true;
-        } else {
-        	ZimbraLog.misc.debug("webclient split enabled = false");
-            return false;
-        }
-    }
 
     private static boolean allServicesEnabled() {
         if (servicesEnabled.contains(webClientApp) && servicesEnabled.contains(webServiceApp) &&
