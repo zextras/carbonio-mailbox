@@ -48,13 +48,6 @@ public class WebClientL10nUtil {
         }
     }
 
-    public static synchronized Set<Locale> getAvailableLocales() throws ServiceException {
-        if (locales == null) {
-            loadBundles();
-        }
-        return locales;
-    }
-
     enum ClientResource {
         // I18nMsg,  // generated, all locales are there, so we don't count this resource
         AjxMsg,
