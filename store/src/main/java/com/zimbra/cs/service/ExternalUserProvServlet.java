@@ -46,7 +46,6 @@ import com.zimbra.cs.mailbox.acl.AclPushSerializer;
 import com.zimbra.cs.service.util.JWEUtil;
 import com.zimbra.cs.servlet.ZimbraServlet;
 import com.zimbra.cs.util.AccountUtil;
-import com.zimbra.cs.util.WebClientServiceUtil;
 import com.zimbra.soap.mail.message.FolderActionRequest;
 import com.zimbra.soap.mail.type.FolderActionSelector;
 import java.io.IOException;
@@ -425,19 +424,6 @@ public class ExternalUserProvServlet extends ZimbraServlet {
       logger.warn("Could not access servlet context url /zimbra");
       throw new ServletException("service temporarily unavailable");
     }
-  }
-
-  private void sendHtmlResponse(
-      HttpServletResponse resp, Map<String, String> reqHeaders, String htmlResponsePage)
-      throws ServletException, IOException {
-    String htmlresp = "";
-    try {
-      htmlresp =
-          WebClientServiceUtil.sendServiceRequestToOneRandomUiNode(htmlResponsePage, reqHeaders);
-    } catch (ServiceException e1) {
-      throw new ServletException("service temporarily unavailable");
-    }
-    resp.getWriter().print(htmlresp);
   }
 
   private static void provisionVirtualAccountAndRedirect(

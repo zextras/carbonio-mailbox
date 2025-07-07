@@ -23,8 +23,6 @@ import com.zimbra.common.util.ZimbraLog;
 
 public class WebClientL10nUtil {
 
-    private static final String LOAD_LOCALES_ON_UI_NODE = "/fromservice/loadlocales";
-
     /**
      * Return all known locales sorted by their US English display name.
      * @return

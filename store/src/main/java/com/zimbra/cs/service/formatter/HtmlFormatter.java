@@ -5,28 +5,9 @@
 
 package com.zimbra.cs.service.formatter;
 
-import java.io.IOException;
-import java.util.Enumeration;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-
-import org.apache.http.Header;
-import org.apache.http.HttpException;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-
-import com.zimbra.common.httpclient.HttpClientUtil;
 import com.zimbra.common.mailbox.Color;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ByteUtil;
-import com.zimbra.common.util.HttpUtil;
 import com.zimbra.common.util.Pair;
-import com.zimbra.common.util.WebSplitUtil;
-import com.zimbra.common.util.ZimbraHttpConnectionManager;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.AuthTokenException;
@@ -41,6 +22,13 @@ import com.zimbra.cs.service.UserServlet.HttpInputStream;
 import com.zimbra.cs.service.UserServletContext;
 import com.zimbra.cs.service.UserServletException;
 import com.zimbra.cs.service.formatter.FormatterFactory.FormatType;
+import java.io.IOException;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import org.apache.http.Header;
+import org.apache.http.HttpException;
 
 public class HtmlFormatter extends Formatter {
 
@@ -235,55 +223,12 @@ public class HtmlFormatter extends Formatter {
             context.req.setAttribute(ATTR_TARGET_ITEM_NAME, context.fakeTarget.getName());
         }
         String mailUrl = PATH_MAIN_CONTEXT;
-        if (WebSplitUtil.isZimbraServiceSplitEnabled()) {
-            mailUrl = Provisioning.getInstance().getLocalServer().getWebClientURL() + PATH_JSP_REST_PAGE;
-            HttpClient httpclient = ZimbraHttpConnectionManager.getInternalHttpConnMgr().getDefaultHttpClient().build();
-            /*
-             * Retest the code with POST to check whether it works
-            HttpPost postMethod = new HttpPost(mailUrl);
-            Enumeration<String> attributeNames = context.req.getAttributeNames();
-            List<Part> parts = new ArrayList<Part>();
-            while(attributeNames.hasMoreElements())
-            {
-                String attrName = (String) attributeNames.nextElement();
-                String attrValue = context.req.getAttribute(attrName).toString();
-                Part part = new StringPart(attrName, attrValue);
-                parts.add(part);
-            }
-            postMethod.setRequestEntity(new MultipartRequestEntity(parts.toArray(new Part[0]), new HttpMethodParams()));
-
-            HttpClientUtil.executeMethod(httpclient, postMethod);
-            ByteUtil.copy(postMethod.getResponseBodyAsStream(), true, context.resp.getOutputStream(), true);
-            */
-
-            Enumeration<String> attributeNames = context.req.getAttributeNames();
-            StringBuilder sb = new StringBuilder(mailUrl);
-            sb.append("?");
-            while(attributeNames.hasMoreElements())
-            {
-                String attrName = attributeNames.nextElement();
-                String attrValue = context.req.getAttribute(attrName).toString();
-                sb.append(attrName).append("=").append(HttpUtil.urlEscape(attrValue)).append("&");
-            }
-            HttpGet postMethod = new HttpGet(sb.toString());
-            postMethod.setHeader("Accept-Language", context.getLocale().getLanguage());
-
-            HttpResponse httpResp;
-            try {
-                httpResp = HttpClientUtil.executeMethod(httpclient, postMethod);
-                ByteUtil.copy(httpResp.getEntity().getContent(), true, context.resp.getOutputStream(), false);
-            } catch (HttpException e) {
-                throw new ServletException("error executing the request.", e);
-            }
-            
-        } else {
-            try {
-                mailUrl = Provisioning.getInstance().getLocalServer().getMailURL();
-            } catch (Exception e) {
-            }
-            ServletContext targetContext = servlet.getServletConfig().getServletContext().getContext(mailUrl);
-            RequestDispatcher dispatcher = targetContext.getRequestDispatcher(PATH_JSP_REST_PAGE);
-            dispatcher.forward(context.req, context.resp);
+        try {
+            mailUrl = Provisioning.getInstance().getLocalServer().getMailURL();
+        } catch (Exception e) {
         }
+        ServletContext targetContext = servlet.getServletConfig().getServletContext().getContext(mailUrl);
+        RequestDispatcher dispatcher = targetContext.getRequestDispatcher(PATH_JSP_REST_PAGE);
+        dispatcher.forward(context.req, context.resp);
     }
 }
