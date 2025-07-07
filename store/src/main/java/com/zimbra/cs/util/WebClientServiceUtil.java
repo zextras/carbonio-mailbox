@@ -193,10 +193,6 @@ public class WebClientServiceUtil {
     return "";
   }
 
-  public static void flushUistringsCache() throws ServiceException {
-    sendServiceRequestToEveryUiNode(FLUSH_UISTRINGS_ON_UI_NODE);
-  }
-
   public static void sendFlushZimletRequestToUiNode(Server server) throws ServiceException {
     sendServiceRequestToUiNode(server, "/fromservice/flushzimlets");
   }
