@@ -143,6 +143,7 @@ Prepare each update files for updating.
 =cut
 sub apply_delete(){
     my ($infile) = @_;
+    print "Checking if there are attributes to delete...\n";
     # start, process only eligible update files ;
     my $infile_base_name = basename($infile);
     (my $timestamp_from_file = $infile_base_name) =~ s/\.[^.]+$//;
@@ -158,11 +159,12 @@ sub apply_delete(){
         my @attributes =  @{$json_decoded->{deleted_attributes}};
         &delete_entries(@attributes);
         &update_zimbra_ldap_schema_version($timestamp_from_file);
-        applied_migrations++;
-        1;
+        $applied_migrations++;
     }
     if ($applied_migrations == 0){
-      print "No attributes to delete";
+      print "There are no attributes to delete.\n";
+    } else {
+    print "Attributes have been successfully removed.\n"
     }
     close(FH);
 }
