@@ -27,7 +27,7 @@ if [ -f /opt/zextras/data/ldap/config/cn\=config.ldif ]; then
   echo "Found existing installation"
   startLDAP
 
-  echo "Running cleanup of remove attributes."
+  echo "Running cleanup of removed attributes."
   /ldap-utils/cleanup.sh ldap://localhost:1389 qh6hWZvc
 
   echo "Stopping LDAP and applying new schema"

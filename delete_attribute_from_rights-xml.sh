@@ -32,5 +32,11 @@ IFS=$'\n' read -r -d '' -a deprecated <<< "$file_content"
 # Iterate over each line
 for item in "${deprecated[@]}"; do
     echo "Remove attribute $item from xml"
-    delete_by_attribute "./store/src/main/resources/conf/attrs/attrs.xml" "name" "$item"
+    delete_by_attribute "./store/src/main/resources/conf/rights/adminconsole-ui.xml" "n" "$item"
+    delete_by_attribute "./store/src/main/resources/conf/rights/rights.xml" "n" "$item"
+    delete_by_attribute "./store/src/main/resources/conf/rights/rights-adminconsole.xml" "n" "$item"
+    delete_by_attribute "./store/src/main/resources/conf/rights/rights-adminconsole-domainadmin.xml" "n" "$item"
+    delete_by_attribute "./store/src/main/resources/conf/rights/rights-domainadmin.xml" "n" "$item"
+    delete_by_attribute "./store/src/main/resources/conf/rights/rights-roles.xml" "n" "$item"
+    delete_by_attribute "./store/src/main/resources/conf/rights/user-rights.xml" "n" "$item"
 done

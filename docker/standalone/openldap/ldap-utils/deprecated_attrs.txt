@@ -1,3 +1,13 @@
+zimbraUCServiceId
+zimbraUCProvider
+zimbraUCUserURL
+zimbraUCVoicemailURL
+zimbraUCCallControlURL
+zimbraUCPresenceURL
+zimbraUCPresenceSessionId
+zimbraUCUsername
+zimbraUCPassword
+zimbraUCProviderEnabled
 zimbraHsmAge
 zimbraCOSInheritedAttr
 zimbraServerInheritedAttr
