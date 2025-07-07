@@ -19,8 +19,16 @@ startLDAP() {
 }
 
 applySchema() {
+  echo "Replacing cn=config password"
+  sh /ldap-utils/replace-olcRootPw
   sh /ldap-utils/zmldapschema
   cp -r /opt/zextras/common/etc/openldap/zimbra/config/* /opt/zextras/data/ldap/config/
+}
+
+stopLDAP() {
+  if [ -f /run/carbonio/slapd.pid ]; then
+    kill "$(cat /run/carbonio/slapd.pid)"
+  fi
 }
 
 if [ -f /opt/zextras/data/ldap/config/cn\=config.ldif ]; then
@@ -31,8 +39,9 @@ if [ -f /opt/zextras/data/ldap/config/cn\=config.ldif ]; then
   /ldap-utils/cleanup.sh ldap://localhost:1389 qh6hWZvc
 
   echo "Stopping LDAP and applying new schema"
-  kill "$(cat /run/carbonio/slapd.pid)"
+  stopLDAP
   applySchema
+  stopLDAP
 
   startLDAP
   tail -f /dev/null
