@@ -19,10 +19,7 @@ startLDAP() {
 }
 
 applySchema() {
-  echo "Replacing cn=config password"
-  sh /ldap-utils/replace-olcRootPw
   sh /ldap-utils/zmldapschema
-  cp -r /opt/zextras/common/etc/openldap/zimbra/config/* /opt/zextras/data/ldap/config/
 }
 
 stopLDAP() {
@@ -69,6 +66,7 @@ openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 \
 -addext "subjectAltName=DNS:example.com,DNS:*.example.com,IP:10.0.0.1"
 
 applySchema
+cp -r /opt/zextras/common/etc/openldap/zimbra/config/* /opt/zextras/data/ldap/config/
 mkdir -p /run/carbonio
 
 echo "Replacing cn=config password"
