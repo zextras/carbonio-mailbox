@@ -91,7 +91,6 @@ public class ZimletUtil {
     public static final String ZIMLET_DEFAULT_COS = "default";
     public static final String PARAM_ZIMLET = "Zimlet";
     public static final String ZIMLET_NAME_REGEX = "^[\\w.-]+$";
-    private static final String ZIMLET_CACHE_DIR = "/opt/zextras/jetty/work/resource-cache/zimletres/latest";
 
     private static int P_MAX = Integer.MAX_VALUE;
     private static boolean sZimletsLoaded = false;
@@ -201,18 +200,6 @@ public class ZimletUtil {
         }
 
         return availZimlets;
-    }
-
-    public static String[] listZimletNames() {
-        String[] zimlets = sZimlets.keySet().toArray(new String[0]);
-        Arrays.sort(zimlets);
-        return zimlets;
-    }
-
-    public static String[] listDevZimletNames() {
-        String[] zimlets = loadDevZimlets().keySet().toArray(new String[0]);
-        Arrays.sort(zimlets); // TODO: Should sort by zimlet priority.
-        return zimlets;
     }
 
     public static List<Zimlet> orderZimletsByPriority(List<Zimlet> zimlets) {
