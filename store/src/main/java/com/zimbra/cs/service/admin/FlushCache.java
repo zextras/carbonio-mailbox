@@ -118,7 +118,6 @@ public class FlushCache extends AdminDocumentHandler {
         Provisioning.getInstance().refreshValidators(); // refresh other bits of cached license data
         break;
       case zimlet:
-        ZimletUtil.flushDiskCache(context);
         flushAllZimlets(context);
         // fall through to also flush ldap entries
       default:

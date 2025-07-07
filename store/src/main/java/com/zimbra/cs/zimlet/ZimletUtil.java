@@ -520,18 +520,6 @@ public class ZimletUtil {
         }
     }
 
-    public static void flushDiskCache(Map<String, Object> context) {
-    }
-
-    public static void flushAllZimletsCache() {
-        try {
-            File file = new File(ZIMLET_CACHE_DIR);
-            FileUtil.deleteDirContents(file);
-        } catch (IOException e) {
-            ZimbraLog.zimlet.warn("failed to flush zimlet cache", e);
-        }
-    }
-
     public interface DeployListener {
         void markFinished(Server s);
         void markFailed(Server s, Exception e);
