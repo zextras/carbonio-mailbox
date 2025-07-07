@@ -18,7 +18,6 @@ import com.zimbra.cs.httpclient.URLUtil;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.zimlet.ZimletUtil;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.apache.http.HttpException;
@@ -89,19 +88,6 @@ public class WebClientServiceUtil {
         ZimbraLog.misc.warn("failed to de-register auth token", e);
       }
     }
-  }
-
-  /**
-   * send service request to one random ui node, keep trying until succeeds.
-   *
-   * @param serviceUrl the url that should be matched and handled by ServiceServlet in
-   *                   ZimbraWebClient
-   * @return response from ui node in String
-   * @throws ServiceException
-   */
-  public static String sendServiceRequestToOneRandomUiNode(String serviceUrl)
-      throws ServiceException {
-    return sendServiceRequestToOneRandomUiNode(serviceUrl, Collections.<String, String>emptyMap());
   }
 
   /**
