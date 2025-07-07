@@ -38,10 +38,10 @@ done > "$fileName"
 for item in "${deprecated[@]}"; do
     echo "Searching for attribute: $item"
     write_ldif_modify_to_file "/tmp/delete_zimbra_attribute_$item.ldif" \
-    /opt/zextras/common/bin/ldapsearch -x -LLL  -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -b "cn=zimbra" "$item=*" dn
+    /opt/zextras/common/bin/ldapsearch -x -LLL  -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H "${LDAP_URL}" -b "cn=zimbra" "$item=*" dn
 
     write_ldif_modify_to_file "/tmp/delete_config_attribute_$item.ldif" \
-    /opt/zextras/common/bin/ldapsearch -x -LLL  -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H ldap://localhost:1389 -b "cn=config" "$item=*" dn
+    /opt/zextras/common/bin/ldapsearch -x -LLL  -D cn=config -w "${LDAP_ROOT_PASSWORD}" -H "${LDAP_URL}" -b "cn=config" "$item=*" dn
 done
 
 echo "All deprecated attributes have been deleted"
