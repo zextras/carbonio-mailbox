@@ -174,8 +174,9 @@ sub apply_delete(){
         eval {
             my $json_decoded = $json->decode($raw_json);
             print "Initializing updates from ", $timestamp_from_file, ".json\n";
-            my @attributes =  $json_decoded->{"deleted_attributes"}
-            &delete_entries(\@attributes);
+            my @attributes =  @{$json_decoded->{deleted_attributes}};
+            &delete_entries(@attributes);
+            $last_applied_update_version = $timestamp_from_file;
             1;
         } or do {
             my $e = $@;
@@ -226,7 +227,7 @@ sub delete_attribute_from_entries {
 Deletes given attributes from all entries in LDAP
 =cut
 sub delete_entries {
-    my ($timestamp_from_file, $entry_name, @attributes) = @_;
+    my (@attributes) = @_;
 
     foreach my $attr (@attributes) {
         delete_attribute_from_entries("cn=zimbra", $attr);
