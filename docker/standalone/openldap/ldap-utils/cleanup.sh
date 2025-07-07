@@ -28,6 +28,7 @@ write_ldif_modify_to_file() {
 dn: $DN
 changetype: modify
 delete: $item
+
 EOF
 done > "$fileName"
   echo "Applying ldif $fileName changes:"

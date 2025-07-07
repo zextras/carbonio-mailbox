@@ -34,7 +34,6 @@ stopLDAP() {
 if [ -f /opt/zextras/data/ldap/config/cn\=config.ldif ]; then
   echo "Found existing installation"
   startLDAP
-  tail -f /dev/null
 
   echo "Running cleanup of removed attributes."
   /ldap-utils/cleanup.sh ldap://localhost:1389 qh6hWZvc
