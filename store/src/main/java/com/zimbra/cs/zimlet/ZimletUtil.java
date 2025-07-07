@@ -5,46 +5,6 @@
 
 package com.zimbra.cs.zimlet;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.jar.JarOutputStream;
-import java.util.jar.Manifest;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.CRC32;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpException;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.config.SocketConfig;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.cookie.BasicClientCookie;
-import org.apache.http.util.EntityUtils;
-
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.auth.ZAuthToken;
@@ -75,11 +35,48 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.Zimlet;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.httpclient.URLUtil;
-import com.zimbra.cs.service.admin.FlushCache;
 import com.zimbra.cs.util.BuildInfo;
 import com.zimbra.cs.util.WebClientServiceUtil;
 import com.zimbra.cs.zimlet.ZimletPresence.Presence;
 import com.zimbra.soap.admin.type.CacheEntryType;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.CRC32;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpException;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.config.SocketConfig;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.util.EntityUtils;
 
 /**
  *
@@ -94,7 +91,6 @@ public class ZimletUtil {
     public static final String ZIMLET_DEFAULT_COS = "default";
     public static final String PARAM_ZIMLET = "Zimlet";
     public static final String ZIMLET_NAME_REGEX = "^[\\w.-]+$";
-    private static final String ZIMLET_CACHE_DIR = "/opt/zextras/jetty/work/resource-cache/zimletres/latest";
 
     private static int P_MAX = Integer.MAX_VALUE;
     private static boolean sZimletsLoaded = false;
@@ -204,18 +200,6 @@ public class ZimletUtil {
         }
 
         return availZimlets;
-    }
-
-    public static String[] listZimletNames() {
-        String[] zimlets = sZimlets.keySet().toArray(new String[0]);
-        Arrays.sort(zimlets);
-        return zimlets;
-    }
-
-    public static String[] listDevZimletNames() {
-        String[] zimlets = loadDevZimlets().keySet().toArray(new String[0]);
-        Arrays.sort(zimlets); // TODO: Should sort by zimlet priority.
-        return zimlets;
     }
 
     public static List<Zimlet> orderZimletsByPriority(List<Zimlet> zimlets) {
@@ -520,28 +504,6 @@ public class ZimletUtil {
             Provisioning.getInstance().flushCache(CacheEntryType.zimlet, null);
         } catch (ServiceException e) {
             throw ZimletException.CANNOT_FLUSH_CACHE(e);
-        }
-    }
-
-    public static void flushDiskCache(Map<String, Object> context) throws ServiceException {
-        if (WebClientServiceUtil.isServerInSplitMode()) {
-            List<Server> allServers = Provisioning.getInstance().getAllServers();
-            for (Server server : allServers) {
-                if (server.hasMailClientService()) {
-                    FlushCache.flushAllZimlets(context);
-                } else {
-                    WebClientServiceUtil.sendFlushZimletRequestToUiNode(server);
-                }
-            }
-        }
-    }
-
-    public static void flushAllZimletsCache() {
-        try {
-            File file = new File(ZIMLET_CACHE_DIR);
-            FileUtil.deleteDirContents(file);
-        } catch (IOException e) {
-            ZimbraLog.zimlet.warn("failed to flush zimlet cache", e);
         }
     }
 

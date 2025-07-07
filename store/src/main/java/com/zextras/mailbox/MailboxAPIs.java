@@ -330,11 +330,7 @@ public class MailboxAPIs {
 		));
 		servletContextHandler.setSecurityHandler(security);
 	}
-	/**
-	NOTE: JSP is not available anymore, plus
-	 the old env-entry is used to setup zimbraServicesEnabled
-	 and this is used only in {@link com.zimbra.common.util.WebSplitUtil}
-	 */
+
 	public ServletContextHandler createServletContextHandler() {
 		ServletContextHandler servletContextHandler = new ServletContextHandler();
 		servletContextHandler.setContextPath("/service");
