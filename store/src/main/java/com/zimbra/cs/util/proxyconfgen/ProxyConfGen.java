@@ -2214,7 +2214,12 @@ public class ProxyConfGen {
       overrideDefaultVars(cl);
 
       String clientCA = loadAllClientCertCA();
-      writeClientCAtoFile(clientCA);
+      try {
+        writeClientCAtoFile(clientCA);
+      } catch (ProxyConfException e) {
+          LOG.error("ProxyConfException during format ssl.clientcertca.enabled", e);
+          System.exit(1);
+      }
 
       // cleanup DOMAIN_SSL_DIR
       deleteObsoleteCertificateKeyPairFromDomainCertDir(mDomainReverseProxyAttrs, mDryRun);
@@ -2675,7 +2680,8 @@ public class ProxyConfGen {
     }
   }
 
-  private static void writeClientCAtoFile(String clientCA) throws ServiceException {
+  private static void writeClientCAtoFile(String clientCA)
+			throws ServiceException, ProxyConfException {
     int exitCode;
     ProxyConfVar clientCAEnabledVar;
     final String keyword = "ssl.clientcertca.enabled";
@@ -2709,12 +2715,7 @@ public class ProxyConfGen {
       ProxyConfUtil.writeContentToFile(clientCA, getDefaultClientCertCaPath());
     }
     mConfVars.put(keyword, clientCAEnabledVar);
-    try {
-      mVars.put(keyword, clientCAEnabledVar.confValue());
-    } catch (ProxyConfException e) {
-      LOG.error("ProxyConfException during format ssl.clientcertca.enabled", e);
-      System.exit(1);
-    }
+    mVars.put(keyword, clientCAEnabledVar.confValue());
   }
 
   /** check whether client cert verify is enabled in server level */
