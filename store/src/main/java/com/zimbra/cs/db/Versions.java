@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.db;
 
+import com.zimbra.cs.UsageException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -116,7 +117,4 @@ public final class Versions {
         return cl;
     }
 
-    public static class UsageException extends Exception {
-        public UsageException() {}
-    }
 }

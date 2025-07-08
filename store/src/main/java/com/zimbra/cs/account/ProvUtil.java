@@ -32,7 +32,7 @@ import com.zimbra.cs.account.accesscontrol.TargetType;
 import com.zimbra.cs.account.commands.ProvUtilCommandHandlersFactory;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.account.soap.SoapProvisioning;
-import com.zimbra.cs.db.Versions.UsageException;
+import com.zimbra.cs.UsageException;
 import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.util.BuildInfo;
 import com.zimbra.cs.util.SoapCLI;
@@ -914,7 +914,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
 
         try {
           if (!pu.execute(args)) {
-            pu.usageWithExit1();
+            pu.usageWithException();
           }
         } catch (UsageException e) {
           System.exit(1);

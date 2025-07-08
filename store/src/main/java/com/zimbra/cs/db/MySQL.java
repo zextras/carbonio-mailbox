@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.db;
 
-import com.zimbra.cs.db.Versions.UsageException;
+import com.zimbra.cs.UsageException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;

@@ -6,7 +6,7 @@
 
 package com.zimbra.cs.account;
 
-import com.zimbra.cs.db.Versions.UsageException;
+import com.zimbra.cs.UsageException;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;
