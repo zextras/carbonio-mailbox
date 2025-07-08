@@ -21,6 +21,9 @@ import com.zimbra.common.soap.SoapFaultException;
 import com.zimbra.common.util.CliUtil;
 import com.zimbra.cs.util.SoapCLI;
 
+/**
+ * Used in CLI fixcalprio: https://github.com/zextras/carbonio-core-utils
+ */
 public class FixCalendarPriorityUtil extends SoapCLI {
 
     protected static final String O_ACCOUNT = "a";
