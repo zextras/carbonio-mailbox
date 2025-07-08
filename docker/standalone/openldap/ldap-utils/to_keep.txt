@@ -21,3 +21,4 @@ zimbraSMIMELdapFilter
 zimbraSMIMELdapAttribute
 zimbraReverseProxyDnsLookupInServerEnabled
 zimbraContactAutoCompleteEmailFields
+zimbraUCServiceId

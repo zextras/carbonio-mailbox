@@ -1,4 +1,3 @@
-zimbraUCServiceId
 zimbraUCProvider
 zimbraUCUserURL
 zimbraUCVoicemailURL

@@ -6592,6 +6592,11 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>Whether OpenWith feature is enabled on devices.</desc>
 </attr>
 
+<attr id="1401" name="zimbraUCServiceId" type="id" cardinality="single" optionalIn="account,cos,domain" flags="accountCosDomainInherited" since="8.0.0" deprecatedSince="23.8.0">
+  <desc>UC service zimbraId</desc>
+  <deprecateDesc>UCService is not in use anymore</deprecateDesc>
+</attr>
+
 <attr id="1411" name="zimbraMobilePolicyApprovedApplicationList" type="string" max="256" cardinality="multi" optionalIn="account,cos" flags="accountInherited" since="8.0.0">
   <desc>This is the internal attr for "zimbraMobilePolicyApprovedApplication" which can only store app hash (to keep consistent with ActiveSync specification. This attr's format is "app_name":"app_hash", and is used for showing both the app name and hash in admin console UI</desc>
 </attr>

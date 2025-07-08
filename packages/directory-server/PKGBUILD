@@ -88,15 +88,9 @@ postinst__apt() {
     su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
     su - zextras -c "/opt/zextras/bin/ldap start"
     su - zextras -c "/opt/zextras/libexec/scripts/LDAP/delete_attrs.pl"
-    # /opt/zextras/libexec/ldapdeleteattributes -> check timestamp, apply migration, if migration happen dump db
-    # 1) remove attributes
-    # 2) dump db:
-    #   a) stop ldap
-    #   b) dump db to ldif
-    #   c) remove .mdb database
-    #   d) restore ldif
     su - zextras -c "/opt/zextras/bin/ldap stop"
     su - zextras -c "/opt/zextras/common/sbin/slapcat -F /opt/zextras/data/ldap/config -n 2 -l /tmp/mdb-export.ldif"
+    su - zextras -c "rm /opt/zextras/data/ldap/mdb/db/data.mdb"
     su - zextras -c "/opt/zextras/common/sbin/slapadd -F /opt/zextras/data/ldap/config -n 2 -l /tmp/mdb-export.ldif"
     su - zextras -c "rm /tmp/mdb-export.ldif"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
