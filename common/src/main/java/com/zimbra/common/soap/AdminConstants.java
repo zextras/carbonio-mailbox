@@ -222,9 +222,6 @@ public final class AdminConstants {
   public static final String E_RECALCULATE_MAILBOX_COUNTS_RESPONSE =
       "RecalculateMailboxCountsResponse";
 
-  public static final String E_DEPLOY_ZIMLET_REQUEST = "DeployZimletRequest";
-  public static final String E_UNDEPLOY_ZIMLET_REQUEST = "UndeployZimletRequest";
-
   public static final String E_CREATE_CALENDAR_RESOURCE_REQUEST = "CreateCalendarResourceRequest";
   public static final String E_CREATE_CALENDAR_RESOURCE_RESPONSE = "CreateCalendarResourceResponse";
   public static final String E_DELETE_CALENDAR_RESOURCE_REQUEST = "DeleteCalendarResourceRequest";
@@ -765,11 +762,6 @@ public final class AdminConstants {
       QName.get(E_RECALCULATE_MAILBOX_COUNTS_REQUEST, NAMESPACE);
   public static final QName RECALCULATE_MAILBOX_COUNTS_RESPONSE =
       QName.get(E_RECALCULATE_MAILBOX_COUNTS_RESPONSE, NAMESPACE);
-
-
-  public static final QName DEPLOY_ZIMLET_REQUEST = QName.get(E_DEPLOY_ZIMLET_REQUEST, NAMESPACE);
-  public static final QName UNDEPLOY_ZIMLET_REQUEST =
-      QName.get(E_UNDEPLOY_ZIMLET_REQUEST, NAMESPACE);
 
   public static final QName CREATE_CALENDAR_RESOURCE_REQUEST =
       QName.get(E_CREATE_CALENDAR_RESOURCE_REQUEST, NAMESPACE);
