@@ -8,7 +8,6 @@ import static com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit
 
 import com.zextras.mailbox.soap.SoapExtension;
 import com.zimbra.common.localconfig.LC;
-
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -17,9 +16,16 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -140,7 +146,7 @@ class ProvUtilAPITest {
 
   private void runCommand(OutputStream outputStream, OutputStream errorStream, String... commandWithArgs)
       throws Exception {
-    ProvUtil.main(new Console(outputStream, errorStream), commandWithArgs);
+    ProvUtil.run(new Console(outputStream, errorStream), commandWithArgs);
   }
 
   void assertIsUUID(String value) {
@@ -152,21 +158,13 @@ class ProvUtilAPITest {
 
   @Test
   void testHelp() {
-    try {
-      runCommand(new String[]{"help"});
-    } catch (Exception e) {
-      Assertions.fail("Should not throw exception");
-    }
+      Assertions.assertDoesNotThrow(() -> runCommand(new String[]{"help"}));
   }
 
   @ParameterizedTest
   @EnumSource(Category.class)
   void testHelpSubCommands(Category command) {
-    try {
-      runCommand(new String[]{"help", command.name().toLowerCase()});
-    } catch (Exception e) {
-      Assertions.fail("should not throw exception");
-    }
+    Assertions.assertDoesNotThrow(() -> runCommand(new String[]{"help", command.name().toLowerCase()}));
   }
 
   //////////////////////////////// ACCOUNT
@@ -281,6 +279,10 @@ class ProvUtilAPITest {
     assertIsUUID(result.trim());
   }
 
+  private void assertCommandThrows(Executable command) {
+    Assertions.assertThrows(Exception.class, command);
+  }
+
   @Test
   void deleteDomain() throws Exception {
     final String domain = "ohhere.com";
@@ -291,7 +293,7 @@ class ProvUtilAPITest {
 
     OutputStream outputStream = new ByteArrayOutputStream();
     OutputStream errorStream = new ByteArrayOutputStream();
-    catchSystemExit(() -> runCommand(outputStream, errorStream, new String[]{"dd", domain}));
+    assertCommandThrows(() -> runCommand(outputStream, errorStream, new String[]{"dd", domain}));
     final String expectedError = "ERROR: account.DOMAIN_NOT_EMPTY (domain not empty: ohhere.com"
         + " (remaining entries: [uid=putcardealer,ou=people,dc=ohhere,dc=com] ...))\n";
     Assertions.assertEquals(expectedError, errorStream.toString());
@@ -320,11 +322,7 @@ class ProvUtilAPITest {
 
   @Test
   void testCheckRightUsage() {
-    try {
-      catchSystemExit(() -> runCommand(new String[]{"ckr", "blah"}));
-    } catch (Exception e) {
-      Assertions.fail("Should have thrown exception");
-    }
+    assertCommandThrows(() -> runCommand(new String[]{"ckr", "blah"}));
   }
 
   //////////////////////////////// MAILBOX
@@ -349,7 +347,7 @@ class ProvUtilAPITest {
     runCommand(new String[]{"ca", accountName, "password"});
 
     final OutputStream stdErrOutputStream = new ByteArrayOutputStream();
-    catchSystemExit(() -> runCommand(new ByteArrayOutputStream(), stdErrOutputStream,
+    assertCommandThrows(() -> runCommand(new ByteArrayOutputStream(), stdErrOutputStream,
         new String[]{"ulm", accountName, "localhost"}));
     final String expected = "ERROR: service.FAILURE "
         + "(system failure: target server version does not support UnregisterMailboxMoveOutRequest.)"
@@ -365,7 +363,7 @@ class ProvUtilAPITest {
     runCommand(new String[]{"ma", accountName, "zimbraAccountStatus", "locked"});
 
     final OutputStream stdErrOutputStream = new ByteArrayOutputStream();
-    catchSystemExit(() -> runCommand(new ByteArrayOutputStream(), stdErrOutputStream,
+    assertCommandThrows(() -> runCommand(new ByteArrayOutputStream(), stdErrOutputStream,
         new String[]{"ulm", accountName}));
     final String expected = "Cannot unlock mailbox for account " + accountName
         + ". Account status must be active. Current account status is locked."
@@ -405,7 +403,7 @@ class ProvUtilAPITest {
 
     final OutputStream stdError = new ByteArrayOutputStream();
     final OutputStream stdOut = new ByteArrayOutputStream();
-    catchSystemExit(() -> runCommand(stdOut, stdError, new String[]{"rmc", accountName}));
+    assertCommandThrows(() -> runCommand(stdOut, stdError, new String[]{"rmc", accountName}));
     final String expected = "ERROR: mail.NO_SUCH_MBOX (no mailbox for account: " + id + ")\n";
 
     Assertions.assertEquals(expected, stdError.toString());
@@ -457,11 +455,7 @@ class ProvUtilAPITest {
 
   @Test
   void searchGal_fail_when_domain_not_found() {
-    try {
-      catchSystemExit(() -> runCommand(new String[]{"sg", "unknown.domain", "search_term"}));
-    } catch (Exception e) {
-      Assertions.fail("Should not throw exception, the exit is already caught.");
-    }
+    assertCommandThrows(() -> runCommand(new String[]{"sg", "unknown.domain", "search_term"}));
   }
 
   @ParameterizedTest
@@ -484,7 +478,7 @@ class ProvUtilAPITest {
     runCommand(new String[]{"cd", domain});
 
     OutputStream stdErr = new ByteArrayOutputStream();
-    catchSystemExit(
+    assertCommandThrows(
         () -> runCommand(new ByteArrayOutputStream(), stdErr,
             new String[]{"--ldap", "sg", domain, "search_term", "offset", "10"}));
 
@@ -498,7 +492,7 @@ class ProvUtilAPITest {
     runCommand(new String[]{"cd", domain});
 
     OutputStream stdErr = new ByteArrayOutputStream();
-    catchSystemExit(
+    assertCommandThrows(
         () -> runCommand(new ByteArrayOutputStream(), stdErr,
             new String[]{"--ldap", "sg", domain, "search_term", "sortBy", "fullName"}));
 
@@ -521,7 +515,7 @@ class ProvUtilAPITest {
 
   @Test void whenNumberOfArgumentsAreExcessiveAnErrorIsDisplayed() throws Exception {
     OutputStream stdErr = new ByteArrayOutputStream();
-    catchSystemExit(
+    assertCommandThrows(
             () -> runCommand(new ByteArrayOutputStream(), stdErr,
                     "createBulkAccounts", "demo.zextras.io", "ntestuser", "4", "passwd", "other"));
     String expected = "createBulkAccounts is expecting 4 arguments but 5 arguments have been provided\n";
@@ -531,7 +525,7 @@ class ProvUtilAPITest {
   @Test
   void whenNumberOfArgumentsAreLackingAnErrorIsDisplayed() throws Exception {
     OutputStream stdErr = new ByteArrayOutputStream();
-    catchSystemExit(
+    assertCommandThrows(
             () -> runCommand(new ByteArrayOutputStream(), stdErr, "createBulkAccounts", "demo.zextras.io"));
     var expected = "createBulkAccounts is expecting 4 arguments but 1 argument has been provided\n";
     Assertions.assertEquals(expected, stdErr.toString());
@@ -540,7 +534,7 @@ class ProvUtilAPITest {
   @Test
   void variadicCommandArgumentsNumberMismatchMaxInt() throws Exception {
     var stdErr = new ByteArrayOutputStream();
-    catchSystemExit(
+    assertCommandThrows(
             () -> runCommand(new ByteArrayOutputStream(), stdErr, "createDynamicDistributionList"));
     var expected = "createDynamicDistributionList is expecting at least 1 arguments but 0 arguments have been provided\n";
     Assertions.assertEquals(expected, stdErr.toString());
@@ -549,7 +543,7 @@ class ProvUtilAPITest {
   @Test
   void variadicCommandArgumentsNumberMismatchZero() throws Exception {
     var stdErr = new ByteArrayOutputStream();
-    catchSystemExit(
+    assertCommandThrows(
             () -> runCommand(new ByteArrayOutputStream(), stdErr, "getAllCos", "p1", "p2", "p3"));
     var expected = "getAllCos is expecting at most 1 arguments but 3 arguments have been provided\n";
     Assertions.assertEquals(expected, stdErr.toString());
@@ -565,7 +559,7 @@ class ProvUtilAPITest {
     runCommand("ca", "test@test.com", "password");
 
     var stdErr = new ByteArrayOutputStream();
-    catchSystemExit( () -> {
+    assertCommandThrows( () -> {
       runCommand(new ByteArrayOutputStream(), stdErr, cmd.split(" +"));
     });
     var expected = "addAccountLogger is expecting 3 to 5 arguments but ";
@@ -622,7 +616,7 @@ class ProvUtilAPITest {
   @Test
   void renameInvalidDomain() throws Exception {
     var stdErr = new ByteArrayOutputStream();
-    catchSystemExit( () -> {
+    assertCommandThrows( () -> {
       runCommand(new ByteArrayOutputStream(), stdErr, "-l", "renameDomain", "test1.com",
           "test2.com");
     });
@@ -675,7 +669,7 @@ class ProvUtilAPITest {
     var out = parseZmprovKeyValue(runCommand( "getDistributionList", newDistributionList));
     Assertions.assertEquals(newDistributionList, out.get("mail"));
 
-    catchSystemExit( () -> {
+    assertCommandThrows( () -> {
       runCommand( "getDistributionList", oldDistributionList);
     });
 
@@ -747,7 +741,7 @@ class ProvUtilAPITest {
     runCommand( "deleteDistributionList", distributionList);
 
     var stdErr = new ByteArrayOutputStream();
-    catchSystemExit( () -> {
+    assertCommandThrows( () -> {
       runCommand(new ByteArrayOutputStream(), stdErr, "getDistributionList", distributionList);
     });
     Assertions.assertEquals("ERROR: account.NO_SUCH_DISTRIBUTION_LIST (no such distribution list: list@test.com)\n", stdErr.toString());
@@ -765,7 +759,7 @@ class ProvUtilAPITest {
     runCommand( "removeDistributionListAlias", originalDistributionList, aliasDistributionList);
 
     var stdErr = new ByteArrayOutputStream();
-    catchSystemExit( () -> {
+    assertCommandThrows( () -> {
       runCommand(new ByteArrayOutputStream(), stdErr, "getDistributionList", aliasDistributionList);
     });
     var expected = "ERROR: account.NO_SUCH_DISTRIBUTION_LIST (no such distribution list: alias@test.com)\n";
