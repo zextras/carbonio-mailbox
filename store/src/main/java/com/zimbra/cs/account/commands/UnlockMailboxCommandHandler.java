@@ -11,6 +11,7 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Console;
 import com.zimbra.cs.account.ProvUtil;
+import com.zimbra.cs.account.ProvUtil.Exit1Exception;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.httpclient.URLUtil;
 import com.zimbra.soap.JaxbUtil;
@@ -28,11 +29,13 @@ class UnlockMailboxCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, UsageException {
+  @Override public void handle(String[] args)
+			throws ServiceException, UsageException, Exit1Exception {
     doUnlockMailbox(args);
   }
 
-  private void doUnlockMailbox(String[] args) throws ServiceException, UsageException {
+  private void doUnlockMailbox(String[] args)
+			throws ServiceException, UsageException, Exit1Exception {
     String accountVal = null;
     if (args.length > 1) {
       accountVal = args[1];
@@ -51,7 +54,7 @@ class UnlockMailboxCommandHandler implements CommandHandler {
                         + " zimbraAccountStatus to '%s' first",
                 accountVal, ZAttrProvisioning.AccountStatus.active, acct.getAccountStatus(), ZAttrProvisioning.AccountStatus.active);
         console.printError(error);
-        System.exit(1);
+        throw new Exit1Exception();
       }
       String accName = acct.getName();
       String server = acct.getMailHost();
