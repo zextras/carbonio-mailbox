@@ -46,6 +46,8 @@ package() {
     "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/LdapMigrationUtils.pm"
   install -D store/ldap/src/LdapPreFlight.pl \
     "${pkgdir}/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
+  install -D store/ldap/src/delete_attrs.pl \
+      "${pkgdir}/opt/zextras/libexec/scripts/LDAP/delete_attrs.pl"
 
   # schema
   install -Ddm755 store/ldap/generated/ \
@@ -84,6 +86,8 @@ postinst__apt() {
   if [ "$1" = "configure" ] && [ -n "$2" ]; then
     echo "* Starting LDAP upgrade..."
     su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
+    su - zextras -c "/opt/zextras/bin/ldap start"
+    su - zextras -c "/opt/zextras/libexec/scripts/LDAP/delete_attrs.pl"
     # /opt/zextras/libexec/ldapdeleteattributes -> check timestamp, apply migration, if migration happen dump db
     # 1) remove attributes
     # 2) dump db:
@@ -92,6 +96,9 @@ postinst__apt() {
     #   c) remove .mdb database
     #   d) restore ldif
     su - zextras -c "/opt/zextras/bin/ldap stop"
+    su - zextras -c "/opt/zextras/common/sbin/slapcat -F /opt/zextras/data/ldap/config -n 2 -l /tmp/mdb-export.ldif"
+    su - zextras -c "/opt/zextras/common/sbin/slapadd -F /opt/zextras/data/ldap/config -n 2 -l /tmp/mdb-export.ldif"
+    su - zextras -c "rm /tmp/mdb-export.ldif"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     /opt/zextras/libexec/zmldapupdateldif
     /opt/zextras/libexec/ldapattributeupdate
