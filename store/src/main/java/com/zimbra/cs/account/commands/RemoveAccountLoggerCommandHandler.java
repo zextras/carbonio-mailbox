@@ -1,6 +1,7 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.UsageException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Command;
 import com.zimbra.cs.account.CommandHandler;
@@ -15,10 +16,10 @@ class RemoveAccountLoggerCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException {
+  @Override public void handle(String[] args) throws ServiceException, UsageException {
     var alo = AccountLoggerOptions.parseAccountLoggerOptions(args);
     if (!command.checkArgsLength(alo.args)) {
-      provUtil.usageWithExit1();
+      provUtil.usageWithUsageException();
       return;
     }
     doRemoveAccountLogger(alo);

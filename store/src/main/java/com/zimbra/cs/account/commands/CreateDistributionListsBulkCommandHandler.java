@@ -2,6 +2,7 @@ package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.StringUtil;
+import com.zimbra.cs.UsageException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.DistributionList;
 import com.zimbra.cs.account.ProvUtil;
@@ -16,13 +17,13 @@ class CreateDistributionListsBulkCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException {
+  @Override public void handle(String[] args) throws ServiceException, UsageException {
     doCreateDistributionListsBulk(args);
   }
 
-  private void doCreateDistributionListsBulk(String[] args) throws ServiceException {
+  private void doCreateDistributionListsBulk(String[] args) throws ServiceException, UsageException {
     if (args.length < 3) {
-      provUtil.usageWithExit1();
+      provUtil.usageWithUsageException();
     } else {
       String domain = args[1];
       String nameMask = args[2];

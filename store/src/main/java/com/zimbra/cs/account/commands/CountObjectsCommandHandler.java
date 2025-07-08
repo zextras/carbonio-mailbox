@@ -1,6 +1,7 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.UsageException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.ProvUtil;
@@ -13,11 +14,11 @@ class CountObjectsCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException {
+  @Override public void handle(String[] args) throws ServiceException, UsageException {
     doCountObjects(args);
   }
 
-  private void doCountObjects(String[] args) throws ServiceException {
+  private void doCountObjects(String[] args) throws ServiceException, UsageException {
 
     CountObjectsType type = CountObjectsType.fromString(args[1]);
 
@@ -33,12 +34,12 @@ class CountObjectsCommandHandler implements CommandHandler {
         }
         idx++;
         if (args.length <= idx) {
-          provUtil.usageWithExit1();
+          provUtil.usageWithUsageException();
           throw ServiceException.INVALID_REQUEST("expecting domain, not enough args", null);
         }
         domain = provUtil.lookupDomain(args[idx]);
       } else {
-        provUtil.usageWithExit1();
+        provUtil.usageWithUsageException();
         return;
       }
 

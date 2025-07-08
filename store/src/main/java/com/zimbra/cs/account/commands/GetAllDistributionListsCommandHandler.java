@@ -1,6 +1,7 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.UsageException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Group;
@@ -18,11 +19,11 @@ class GetAllDistributionListsCommandHandler implements CommandHandler {
     this.dumper = dumper;
   }
 
-  @Override public void handle(String[] args) throws ServiceException {
+  @Override public void handle(String[] args) throws ServiceException, UsageException {
     doGetAllDistributionLists(args);
   }
 
-  private void doGetAllDistributionLists(String[] args) throws ServiceException {
+  private void doGetAllDistributionLists(String[] args) throws ServiceException, UsageException {
     String d = null;
     boolean verbose = false;
     var console = provUtil.getConsole();
@@ -36,7 +37,7 @@ class GetAllDistributionListsCommandHandler implements CommandHandler {
           d = arg;
         } else {
           console.println("invalid arg: " + arg + ", already specified domain: " + d);
-          provUtil.usageWithExit1();
+          provUtil.usageWithUsageException();
           return;
         }
       }

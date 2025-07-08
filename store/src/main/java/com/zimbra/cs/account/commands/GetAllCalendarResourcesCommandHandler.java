@@ -1,6 +1,7 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.UsageException;
 import com.zimbra.cs.account.CalendarResource;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
@@ -20,11 +21,11 @@ class GetAllCalendarResourcesCommandHandler implements CommandHandler {
     this.dumper = dumper;
   }
 
-  @Override public void handle(String[] args) throws ServiceException {
+  @Override public void handle(String[] args) throws ServiceException, UsageException {
     doGetAllCalendarResources(args);
   }
 
-  private void doGetAllCalendarResources(String[] args) throws ServiceException {
+  private void doGetAllCalendarResources(String[] args) throws ServiceException, UsageException {
     boolean verbose = false;
     boolean applyDefault = true;
     String d = null;
@@ -45,11 +46,11 @@ class GetAllCalendarResourcesCommandHandler implements CommandHandler {
             s = args[i];
           } else {
             console.println("invalid arg: " + args[i] + ", already specified -s with " + s);
-            provUtil.usageWithExit1();
+            provUtil.usageWithUsageException();
             return;
           }
         } else {
-          provUtil.usageWithExit1();
+          provUtil.usageWithUsageException();
           return;
         }
       } else {
@@ -57,7 +58,7 @@ class GetAllCalendarResourcesCommandHandler implements CommandHandler {
           d = arg;
         } else {
           console.println("invalid arg: " + arg + ", already specified domain: " + d);
-          provUtil.usageWithExit1();
+          provUtil.usageWithUsageException();
           return;
         }
       }
@@ -66,7 +67,7 @@ class GetAllCalendarResourcesCommandHandler implements CommandHandler {
 
     if (!applyDefault && !verbose) {
       console.println(ProvUtil.ERR_INVALID_ARG_EV);
-      provUtil.usageWithExit1();
+      provUtil.usageWithUsageException();
       return;
     }
 

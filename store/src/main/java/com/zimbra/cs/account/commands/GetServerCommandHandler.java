@@ -1,6 +1,7 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.UsageException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 
@@ -13,11 +14,11 @@ class GetServerCommandHandler implements CommandHandler {
     this.dumper = dumper;
   }
 
-  @Override public void handle(String[] args) throws ServiceException {
+  @Override public void handle(String[] args) throws ServiceException, UsageException {
     doGetServer(args);
   }
 
-  private void doGetServer(String[] args) throws ServiceException {
+  private void doGetServer(String[] args) throws ServiceException, UsageException {
     boolean applyDefault = true;
 
     int i = 1;
@@ -31,7 +32,7 @@ class GetServerCommandHandler implements CommandHandler {
       i++;
     }
     if (i >= args.length) {
-      provUtil.usageWithExit1();
+      provUtil.usageWithUsageException();
       return;
     }
     dumper.dumpServer(provUtil.lookupServer(args[i], applyDefault), applyDefault, provUtil.getArgNameSet(args, i + 1));

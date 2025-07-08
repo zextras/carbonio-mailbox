@@ -170,16 +170,8 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
     usage(null);
   }
 
-  /**
-   * @deprecated: use {@link #usageWithException()}
-   */
-  @Deprecated
-  public void usageWithExit1() {
-		try {
+  public void usageWithUsageException() throws UsageException {
 			usageWithException();
-		} catch (UsageException e) {
-			System.exit(1);
-		}
 	}
 
   private void usage(Command.Via violatedVia) throws UsageException {
@@ -335,7 +327,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
               length == 1 ? "argument" : "arguments",
               length == 1 ? "has" : "have"
       ));
-      usageWithExit1();
+      usageWithUsageException();
       return true;
     }
     if (command.needsSchemaExtension()) {
@@ -720,8 +712,12 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
           console.printStacktrace(e);
         }
       } catch (ArgException | HttpException e) {
-        usageWithExit1();
-      }
+				try {
+					usageWithUsageException();
+				} catch (UsageException ex) {
+					System.exit(1);
+				}
+			}
     }
   }
 
@@ -783,8 +779,12 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
     }
 
     if (err || cl.hasOption('h')) {
-      pu.usageWithExit1();
-    }
+			try {
+				pu.usageWithUsageException();
+			} catch (UsageException e) {
+				System.exit(1);
+			}
+		}
 
     if (cl.hasOption('l') && cl.hasOption('s')) {
       console.printError("error: cannot specify both -l and -s at the same time");
@@ -898,8 +898,12 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
       } else {
         Command cmd = pu.lookupCommand(args[0]);
         if (cmd == null) {
-          pu.usageWithExit1();
-        }
+					try {
+						pu.usageWithUsageException();
+					} catch (UsageException e) {
+						System.exit(1);
+					}
+				}
         if (cmd.isDeprecated()) {
           pu.console.println("This command has been deprecated.");
           System.exit(1);
@@ -914,14 +918,18 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
 
         try {
           if (!pu.execute(args)) {
-            pu.usageWithException();
+            pu.usageWithUsageException();
           }
         } catch (UsageException e) {
           System.exit(1);
         }
         catch (ArgException | HttpException e) {
-          pu.usageWithExit1();
-        }
+					try {
+						pu.usageWithUsageException();
+					} catch (UsageException ex) {
+						System.exit(1);
+					}
+				}
       }
     } catch (ServiceException e) {
       Throwable cause = e.getCause();

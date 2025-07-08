@@ -2,6 +2,7 @@ package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.UsageException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.PreAuthKey;
@@ -16,18 +17,18 @@ class GenerateDomainPreAuthKeyCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException {
+  @Override public void handle(String[] args) throws ServiceException, UsageException {
     doGenerateDomainPreAuthKey(args);
   }
 
-  private void doGenerateDomainPreAuthKey(String[] args) throws ServiceException {
+  private void doGenerateDomainPreAuthKey(String[] args) throws ServiceException, UsageException {
     String key = null;
     boolean force = false;
     if (args.length == 3) {
       if (args[1].equals("-f")) {
         force = true;
       } else {
-        provUtil.usageWithExit1();
+        provUtil.usageWithUsageException();
         return;
       }
       key = args[2];

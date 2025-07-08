@@ -2,6 +2,7 @@ package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.UsageException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.account.Provisioning;
@@ -14,11 +15,11 @@ class FlushCacheCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException {
+  @Override public void handle(String[] args) throws ServiceException, UsageException {
     doFlushCache(args);
   }
 
-  private void doFlushCache(String[] args) throws ServiceException {
+  private void doFlushCache(String[] args) throws ServiceException, UsageException {
     if (!(provUtil.getProvisioning() instanceof SoapProvisioning)) {
       provUtil.throwSoapOnly();
     }
@@ -31,7 +32,7 @@ class FlushCacheCommandHandler implements CommandHandler {
       if (args.length > 2) {
         argIdx++;
       } else {
-        provUtil.usageWithExit1();
+        provUtil.usageWithUsageException();
         return;
       }
     }

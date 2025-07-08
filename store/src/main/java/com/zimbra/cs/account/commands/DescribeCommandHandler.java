@@ -2,6 +2,7 @@ package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.SetUtil;
+import com.zimbra.cs.UsageException;
 import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.AttributeInfo;
 import com.zimbra.cs.account.AttributeManager;
@@ -23,11 +24,11 @@ class DescribeCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException {
+  @Override public void handle(String[] args) throws ServiceException, UsageException {
     doDescribe(args);
   }
 
-  private void doDescribe(String[] args) throws ServiceException {
+  private void doDescribe(String[] args) throws ServiceException, UsageException {
     DescribeArgs descArgs = null;
     try {
       descArgs = DescribeArgs.parseDescribeArgs(args);
@@ -150,7 +151,7 @@ class DescribeCommandHandler implements CommandHandler {
     return sb.substring(0, sb.length() - 1); // trim the ending ,
   }
 
-  private void descAttrsUsage(Exception e) {
+  private void descAttrsUsage(Exception e) throws UsageException {
     var console = provUtil.getConsole();
     console.println(e.getMessage() + "\n");
 
@@ -194,6 +195,6 @@ class DescribeCommandHandler implements CommandHandler {
     console.println("zmprov desc account -a zimbraId");
     console.println("    error: can only specify either an entry type or a specific attribute\n");
 
-    provUtil.usageWithExit1();
+    provUtil.usageWithUsageException();
   }
 }

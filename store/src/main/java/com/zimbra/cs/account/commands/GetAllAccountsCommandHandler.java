@@ -1,6 +1,7 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.UsageException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
@@ -24,11 +25,11 @@ class GetAllAccountsCommandHandler implements CommandHandler {
   }
 
 
-  @Override public void handle(String[] args) throws ServiceException {
+  @Override public void handle(String[] args) throws ServiceException, UsageException {
     doGetAllAccounts(args);
   }
 
-  private void doGetAllAccounts(String[] args) throws ServiceException {
+  private void doGetAllAccounts(String[] args) throws ServiceException, UsageException {
 
     LdapProv ldapProv = (LdapProv) provUtil.getProvisioning();
     var console = provUtil.getConsole();
@@ -52,11 +53,11 @@ class GetAllAccountsCommandHandler implements CommandHandler {
             s = args[i];
           } else {
             console.println("invalid arg: " + args[i] + ", already specified -s with " + s);
-            provUtil.usageWithExit1();
+            provUtil.usageWithUsageException();
             return;
           }
         } else {
-          provUtil.usageWithExit1();
+          provUtil.usageWithUsageException();
           return;
         }
       } else {
@@ -64,7 +65,7 @@ class GetAllAccountsCommandHandler implements CommandHandler {
           d = arg;
         } else {
           console.println("invalid arg: " + arg + ", already specified domain: " + d);
-          provUtil.usageWithExit1();
+          provUtil.usageWithUsageException();
           return;
         }
       }
@@ -73,7 +74,7 @@ class GetAllAccountsCommandHandler implements CommandHandler {
 
     if (!applyDefault && !verbose) {
       console.println(ProvUtil.ERR_INVALID_ARG_EV);
-      provUtil.usageWithExit1();
+      provUtil.usageWithUsageException();
       return;
     }
 

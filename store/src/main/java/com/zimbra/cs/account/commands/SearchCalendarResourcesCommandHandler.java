@@ -1,6 +1,7 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.UsageException;
 import com.zimbra.cs.account.CalendarResource;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
@@ -22,17 +23,17 @@ class SearchCalendarResourcesCommandHandler implements CommandHandler {
     this.dumper = dumper;
   }
 
-  @Override public void handle(String[] args) throws ServiceException {
+  @Override public void handle(String[] args) throws ServiceException, UsageException {
     doSearchCalendarResources(args);
   }
 
-  private void doSearchCalendarResources(String[] args) throws ServiceException {
+  private void doSearchCalendarResources(String[] args) throws ServiceException, UsageException {
 
     boolean verbose = false;
     int i = 1;
 
     if (args.length < i + 1) {
-      provUtil.usageWithExit1();
+      provUtil.usageWithUsageException();
       return;
     }
     if (args[i].equals("-v")) {
@@ -40,13 +41,13 @@ class SearchCalendarResourcesCommandHandler implements CommandHandler {
       i++;
     }
     if (args.length < i + 1) {
-      provUtil.usageWithExit1();
+      provUtil.usageWithUsageException();
       return;
     }
     Domain d = provUtil.lookupDomain(args[i++]);
 
     if ((args.length - i) % 3 != 0) {
-      provUtil.usageWithExit1();
+      provUtil.usageWithUsageException();
       return;
     }
 
@@ -61,7 +62,7 @@ class SearchCalendarResourcesCommandHandler implements CommandHandler {
       } catch (IllegalArgumentException e) {
         provUtil.getConsole().printError("Bad search op in: " + attr + " " + op + " '" + value + "'");
         e.printStackTrace();
-        provUtil.usageWithExit1();
+        provUtil.usageWithUsageException();
         return;
       }
     }
