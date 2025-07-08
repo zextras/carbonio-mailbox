@@ -46,6 +46,9 @@ ARG JAVA_CLI_ARGS="${BASE_JAVA_ARGS} \
               com.zimbra.cs.account.ProvUtil \"\$@\""
 
 RUN echo "java ${JAVA_CLI_ARGS}" > /usr/bin/zmprov && chmod +x /usr/bin/zmprov && mkdir -p /opt/zextras/db
+ARG JAVA_ZMMAILBOX_ARG="${BASE_JAVA_ARGS} \
+              com.zimbra.cs.zclient.ZMailboxUtil \"\$@\""
+RUN echo "java ${JAVA_ZMMAILBOX_ARG}" > /usr/bin/zmmailbox && chmod +x /usr/bin/zmmailbox
 COPY store/db/create_database.sql /opt/zextras/db/
 
 COPY docker/standalone/mailbox/localconfig/localconfig.xml /localconfig/localconfig.xml
