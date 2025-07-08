@@ -23,7 +23,7 @@ class CreateDistributionListsBulkCommandHandler implements CommandHandler {
 
   private void doCreateDistributionListsBulk(String[] args) throws ServiceException, UsageException {
     if (args.length < 3) {
-      provUtil.usageWithUsageException();
+      provUtil.usage();
     } else {
       String domain = args[1];
       String nameMask = args[2];

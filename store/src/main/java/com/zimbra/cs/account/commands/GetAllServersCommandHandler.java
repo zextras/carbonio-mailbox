@@ -40,7 +40,7 @@ class GetAllServersCommandHandler implements CommandHandler {
           service = arg;
         } else {
           console.println("invalid arg: " + arg + ", already specified service: " + service);
-          provUtil.usageWithUsageException();
+          provUtil.usage();
           return;
         }
       }
@@ -49,7 +49,7 @@ class GetAllServersCommandHandler implements CommandHandler {
 
     if (!applyDefault && !verbose) {
       console.println(ProvUtil.ERR_INVALID_ARG_EV);
-      provUtil.usageWithUsageException();
+      provUtil.usage();
       return;
     }
 

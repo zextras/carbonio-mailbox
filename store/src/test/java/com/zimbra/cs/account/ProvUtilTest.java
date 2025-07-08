@@ -21,6 +21,6 @@ class ProvUtilTest {
 
 		final Console console = new Console(stdout, stderr);
 
-		Assertions.assertThrows(UsageException.class, () -> new ProvUtil(console, Map.of()).usageWithUsageException());
+		Assertions.assertThrows(UsageException.class, () -> new ProvUtil(console, Map.of()).usage());
 	}
 }

@@ -32,7 +32,7 @@ class FlushCacheCommandHandler implements CommandHandler {
       if (args.length > 2) {
         argIdx++;
       } else {
-        provUtil.usageWithUsageException();
+        provUtil.usage();
         return;
       }
     }

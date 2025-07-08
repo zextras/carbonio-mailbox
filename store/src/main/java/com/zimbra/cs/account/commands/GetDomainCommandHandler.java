@@ -32,7 +32,7 @@ class GetDomainCommandHandler implements CommandHandler {
       i++;
     }
     if (i >= args.length) {
-      provUtil.usageWithUsageException();
+      provUtil.usage();
       return;
     }
     dumper.dumpDomain(provUtil.lookupDomain(args[i], provUtil.getProvisioning(), applyDefault), applyDefault, provUtil.getArgNameSet(args, i + 1));

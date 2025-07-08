@@ -195,6 +195,6 @@ class DescribeCommandHandler implements CommandHandler {
     console.println("zmprov desc account -a zimbraId");
     console.println("    error: can only specify either an entry type or a specific attribute\n");
 
-    provUtil.usageWithUsageException();
+    provUtil.usage();
   }
 }

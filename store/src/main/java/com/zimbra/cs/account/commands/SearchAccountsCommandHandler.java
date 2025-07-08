@@ -39,13 +39,13 @@ class SearchAccountsCommandHandler implements CommandHandler {
       verbose = true;
       i++;
       if (args.length < i - 1) {
-        provUtil.usageWithUsageException();
+        provUtil.usage();
         return;
       }
     }
 
     if (args.length < i + 1) {
-      provUtil.usageWithUsageException();
+      provUtil.usage();
       return;
     }
 

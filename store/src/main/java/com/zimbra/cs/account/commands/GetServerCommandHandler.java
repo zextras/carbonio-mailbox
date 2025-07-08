@@ -32,7 +32,7 @@ class GetServerCommandHandler implements CommandHandler {
       i++;
     }
     if (i >= args.length) {
-      provUtil.usageWithUsageException();
+      provUtil.usage();
       return;
     }
     dumper.dumpServer(provUtil.lookupServer(args[i], applyDefault), applyDefault, provUtil.getArgNameSet(args, i + 1));

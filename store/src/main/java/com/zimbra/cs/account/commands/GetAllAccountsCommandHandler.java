@@ -53,11 +53,11 @@ class GetAllAccountsCommandHandler implements CommandHandler {
             s = args[i];
           } else {
             console.println("invalid arg: " + args[i] + ", already specified -s with " + s);
-            provUtil.usageWithUsageException();
+            provUtil.usage();
             return;
           }
         } else {
-          provUtil.usageWithUsageException();
+          provUtil.usage();
           return;
         }
       } else {
@@ -65,7 +65,7 @@ class GetAllAccountsCommandHandler implements CommandHandler {
           d = arg;
         } else {
           console.println("invalid arg: " + arg + ", already specified domain: " + d);
-          provUtil.usageWithUsageException();
+          provUtil.usage();
           return;
         }
       }
@@ -74,7 +74,7 @@ class GetAllAccountsCommandHandler implements CommandHandler {
 
     if (!applyDefault && !verbose) {
       console.println(ProvUtil.ERR_INVALID_ARG_EV);
-      provUtil.usageWithUsageException();
+      provUtil.usage();
       return;
     }
 

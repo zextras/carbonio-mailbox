@@ -29,7 +29,7 @@ class SearchGalCommandHandler implements CommandHandler {
 
   private void doSearchGal(String[] args) throws ServiceException, ArgException, UsageException {
     if (args.length < 3) {
-      provUtil.usageWithUsageException();
+      provUtil.usage();
       return;
     }
     String domain = args[1];

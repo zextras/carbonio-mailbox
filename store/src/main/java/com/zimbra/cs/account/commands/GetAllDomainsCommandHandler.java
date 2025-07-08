@@ -43,7 +43,7 @@ class GetAllDomainsCommandHandler implements CommandHandler {
     var console = provUtil.getConsole();
     if (!applyDefault && !verbose) {
       console.println(ProvUtil.ERR_INVALID_ARG_EV);
-      provUtil.usageWithUsageException();
+      provUtil.usage();
       return;
     }
 

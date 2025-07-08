@@ -33,7 +33,7 @@ class SearchCalendarResourcesCommandHandler implements CommandHandler {
     int i = 1;
 
     if (args.length < i + 1) {
-      provUtil.usageWithUsageException();
+      provUtil.usage();
       return;
     }
     if (args[i].equals("-v")) {
@@ -41,13 +41,13 @@ class SearchCalendarResourcesCommandHandler implements CommandHandler {
       i++;
     }
     if (args.length < i + 1) {
-      provUtil.usageWithUsageException();
+      provUtil.usage();
       return;
     }
     Domain d = provUtil.lookupDomain(args[i++]);
 
     if ((args.length - i) % 3 != 0) {
-      provUtil.usageWithUsageException();
+      provUtil.usage();
       return;
     }
 
@@ -62,7 +62,7 @@ class SearchCalendarResourcesCommandHandler implements CommandHandler {
       } catch (IllegalArgumentException e) {
         provUtil.getConsole().printError("Bad search op in: " + attr + " " + op + " '" + value + "'");
         e.printStackTrace();
-        provUtil.usageWithUsageException();
+        provUtil.usage();
         return;
       }
     }

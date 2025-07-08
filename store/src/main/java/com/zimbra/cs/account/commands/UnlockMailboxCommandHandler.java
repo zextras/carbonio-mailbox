@@ -37,7 +37,7 @@ class UnlockMailboxCommandHandler implements CommandHandler {
     if (args.length > 1) {
       accountVal = args[1];
     } else {
-      provUtil.usageWithUsageException();
+      provUtil.usage();
       return;
     }
 

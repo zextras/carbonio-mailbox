@@ -28,7 +28,7 @@ class GenerateDomainPreAuthKeyCommandHandler implements CommandHandler {
       if (args[1].equals("-f")) {
         force = true;
       } else {
-        provUtil.usageWithUsageException();
+        provUtil.usage();
         return;
       }
       key = args[2];

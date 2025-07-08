@@ -34,12 +34,12 @@ class CountObjectsCommandHandler implements CommandHandler {
         }
         idx++;
         if (args.length <= idx) {
-          provUtil.usageWithUsageException();
+          provUtil.usage();
           throw ServiceException.INVALID_REQUEST("expecting domain, not enough args", null);
         }
         domain = provUtil.lookupDomain(args[idx]);
       } else {
-        provUtil.usageWithUsageException();
+        provUtil.usage();
         return;
       }
 

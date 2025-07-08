@@ -37,7 +37,7 @@ class GetAllDistributionListsCommandHandler implements CommandHandler {
           d = arg;
         } else {
           console.println("invalid arg: " + arg + ", already specified domain: " + d);
-          provUtil.usageWithUsageException();
+          provUtil.usage();
           return;
         }
       }
