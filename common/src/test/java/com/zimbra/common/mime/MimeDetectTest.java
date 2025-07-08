@@ -8,7 +8,7 @@ package com.zimbra.common.mime;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.mime.MimeDetect.ExitCodeException;
+import com.zimbra.common.cli.ExitCodeException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;

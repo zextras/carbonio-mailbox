@@ -5,6 +5,7 @@
 
 package com.zimbra.common.mime;
 
+import com.zimbra.common.cli.ExitCodeException;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.ZimbraLog;
@@ -488,18 +489,6 @@ public class MimeDetect {
         new HelpFormatter().printHelp(MimeDetect.class.getSimpleName() +
             " [options] file", opts);
         throw new ExitCodeException(2);
-    }
-
-    public static class ExitCodeException extends Exception {
-        private final int exitCode;
-
-			private ExitCodeException(int exitCode) {
-				this.exitCode = exitCode;
-			}
-
-        public int getExitCode() {
-            return exitCode;
-        }
     }
 
     public static void main(String[] args) {
