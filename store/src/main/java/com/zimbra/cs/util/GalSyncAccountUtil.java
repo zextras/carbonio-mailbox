@@ -46,7 +46,7 @@ public class GalSyncAccountUtil {
 
   private static Map<String, Integer> mCommands;
 
-  private static void usage() {
+  private static void usageWithExit1() {
     System.out.println("zmgsautil: {command}");
     System.out.println(
         "\tcreateAccount -a {account-name} -n {datasource-name} --domain {domain-name} -t"
@@ -74,7 +74,7 @@ public class GalSyncAccountUtil {
   private static int lookupCmd(String cmd) {
     Integer i = mCommands.get(cmd.toLowerCase());
     if (i == null) {
-      usage();
+      usageWithExit1();
     }
     return i;
   }
@@ -108,7 +108,7 @@ public class GalSyncAccountUtil {
       if (acct == null) throw AccountServiceException.NO_SUCH_ACCOUNT(mAccountName);
       mAccountId = acct.getId();
     }
-    if (mAccountId == null || (mDataSourceId == null && mDataSourceName == null)) usage();
+    if (mAccountId == null || (mDataSourceId == null && mDataSourceName == null)) usageWithExit1();
   }
 
   private String mAccountId;
@@ -274,7 +274,7 @@ public class GalSyncAccountUtil {
   }
 
   public static void main(String[] args) throws Exception {
-    if (args.length < 1) usage();
+    if (args.length < 1) usageWithExit1();
     CliUtil.toolSetup();
     CommandLineParser parser = new GnuParser();
     Options options = new Options();
@@ -299,7 +299,7 @@ public class GalSyncAccountUtil {
 
     GalSyncAccountUtil cli = new GalSyncAccountUtil();
     if (err || cl.hasOption('h')) {
-      usage();
+      usageWithExit1();
     }
     if (cl.hasOption('i')) cli.setAccountId(cl.getOptionValue('i'));
     if (cl.hasOption('a')) cli.setAccountName(cl.getOptionValue('a'));
@@ -333,7 +333,7 @@ public class GalSyncAccountUtil {
               || domain == null
               || dsName == null
               || type == null
-              || type.compareTo("zimbra") != 0 && type.compareTo("ldap") != 0) usage();
+              || type.compareTo("zimbra") != 0 && type.compareTo("ldap") != 0) usageWithExit1();
           for (Element account :
               cli.createGalSyncAccount(
                       acctName, dsName, domain, type, folderName, pollingInterval, mailHost)
@@ -354,7 +354,7 @@ public class GalSyncAccountUtil {
               || domain == null
               || dsName == null
               || type == null
-              || type.compareTo("zimbra") != 0 && type.compareTo("ldap") != 0) usage();
+              || type.compareTo("zimbra") != 0 && type.compareTo("ldap") != 0) usageWithExit1();
           for (Element account :
               cli.addGalSyncDataSource(acctName, dsName, domain, type, folderName, pollingInterval)
                   .listElements(AdminConstants.A_ACCOUNT))
@@ -366,11 +366,11 @@ public class GalSyncAccountUtil {
         case DELETE_ACCOUNT:
           String name = cl.getOptionValue('a');
           String id = cl.getOptionValue('i');
-          if (name == null && id == null) usage();
+          if (name == null && id == null) usageWithExit1();
           cli.deleteGalSyncAccount(name, id);
           break;
         default:
-          usage();
+          usageWithExit1();
       }
     } catch (ServiceException se) {
       System.out.println("Error: " + se.getMessage());
