@@ -108,16 +108,6 @@ public class TrackCommandRequestService implements DocumentService {
           , AdminConstants.GET_INDEX_STATS_REQUEST
           , AdminConstants.VERIFY_INDEX_REQUEST
           , AdminConstants.RECALCULATE_MAILBOX_COUNTS_REQUEST
-          , AdminConstants.GET_ZIMLET_REQUEST
-          , AdminConstants.CREATE_ZIMLET_REQUEST
-          , AdminConstants.DELETE_ZIMLET_REQUEST
-          , AdminConstants.GET_ADMIN_EXTENSION_ZIMLETS_REQUEST
-          , AdminConstants.GET_ZIMLET_STATUS_REQUEST
-          , AdminConstants.GET_ALL_ZIMLETS_REQUEST
-          , AdminConstants.DEPLOY_ZIMLET_REQUEST
-          , AdminConstants.UNDEPLOY_ZIMLET_REQUEST
-          , AdminConstants.CONFIGURE_ZIMLET_REQUEST
-          , AdminConstants.MODIFY_ZIMLET_REQUEST
           , AdminConstants.DUMP_SESSIONS_REQUEST
           , AdminConstants.GET_SESSIONS_REQUEST
           , AdminConstants.CREATE_CALENDAR_RESOURCE_REQUEST
