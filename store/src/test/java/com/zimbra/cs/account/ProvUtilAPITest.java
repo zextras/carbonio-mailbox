@@ -106,41 +106,19 @@ class ProvUtilAPITest {
   }
 
   @SuppressWarnings("UnusedReturnValue")
-  String createAccountForDomain(String domain) throws Exception {
+  private String createAccountForDomain(String domain) throws Exception {
     return createAccount(UUID.randomUUID() + "@" + domain);
   }
 
-  String createAccount(String accountMail) throws Exception {
+  private String createAccount(String accountMail) throws Exception {
     return runCommand(new String[]{"ca", accountMail, "password"});
   }
 
-  String runCommand(String... commandWithArgs) throws Exception {
-    ByteArrayOutputStream stdout = new ByteArrayOutputStream();
-    ByteArrayOutputStream stderr = new ByteArrayOutputStream();
-    Thread printStdoutAndStderr = new Thread(() -> {
-      System.out.printf("""
-                      Error running 
-                      
-                      %s
-                      
-                      # STDOUT
-                      
-                      %s
-                      # STDERR
-                      
-                      %s
-                      
-                      """,
-              String.join(" ", commandWithArgs),
-              stdout.toString(StandardCharsets.UTF_8),
-              stderr.toString(StandardCharsets.UTF_8));
-    });
-    /** Add a shutdown hook that prints stdout and stderr that is invoked when command ends calling System.exit() */
-    Runtime.getRuntime().addShutdownHook(printStdoutAndStderr);
-    runCommand(stdout, stderr, commandWithArgs);
-    /** Remove the previously installed shutdown hook if command completes successfully */
-    Runtime.getRuntime().removeShutdownHook(printStdoutAndStderr);
-    return stdout.toString();
+  private String runCommand(String... commandWithArgs) throws Exception {
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
+    ProvUtil.run(new Console(outputStream, errorStream), commandWithArgs);
+    return outputStream.toString();
   }
 
   private void runCommand(OutputStream outputStream, OutputStream errorStream, String... commandWithArgs)
