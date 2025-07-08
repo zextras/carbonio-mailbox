@@ -2218,7 +2218,7 @@ public class ProxyConfGen {
         writeClientCAtoFile(clientCA);
       } catch (ProxyConfException e) {
           LOG.error("ProxyConfException during format ssl.clientcertca.enabled", e);
-          System.exit(1);
+          throw new ProxyConfException(e.getMessage());
       }
 
       // cleanup DOMAIN_SSL_DIR
@@ -2682,7 +2682,6 @@ public class ProxyConfGen {
 
   private static void writeClientCAtoFile(String clientCA)
 			throws ServiceException, ProxyConfException {
-    int exitCode;
     ProxyConfVar clientCAEnabledVar;
     final String keyword = "ssl.clientcertca.enabled";
 
@@ -2697,9 +2696,9 @@ public class ProxyConfGen {
               "is there valid client ca cert");
 
       if (isClientCertVerifyEnabled() || isDomainClientCertVerifyEnabled()) {
-        LOG.error("Client certificate verification is enabled but no client cert ca is provided");
-        exitCode = 1;
-        System.exit(exitCode);
+        final String msg = "Client certificate verification is enabled but no client cert ca is provided";
+        LOG.error(msg);
+        throw new ProxyConfException(msg);
       }
 
     } else {
