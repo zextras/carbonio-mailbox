@@ -2101,7 +2101,7 @@ public class ProxyConfGen {
     return validConf;
   }
 
-  public static int createConf(String[] args) throws ServiceException, ProxyConfException {
+  public static int run(String[] args) throws ServiceException, ProxyConfException {
     int exitCode = 0;
     CommandLine cl = parseArgs(args);
 
@@ -2740,7 +2740,7 @@ public class ProxyConfGen {
   }
 
   public static void main(String[] args) throws ServiceException, ProxyConfException {
-    int exitCode = createConf(args);
+    int exitCode = run(args);
     System.exit(exitCode);
   }
 }
