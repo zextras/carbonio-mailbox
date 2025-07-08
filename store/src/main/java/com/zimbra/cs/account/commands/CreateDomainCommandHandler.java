@@ -4,6 +4,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
+import com.zimbra.cs.account.ProvUtil.Exit2Exception;
 
 class CreateDomainCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
@@ -12,7 +13,7 @@ class CreateDomainCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException {
+  @Override public void handle(String[] args) throws ServiceException, ArgException, Exit2Exception {
     provUtil.getConsole().println(provUtil.getProvisioning().createDomain(args[1], provUtil.getMapAndCheck(args, 2, true)).getId());
   }
 }
