@@ -12,9 +12,7 @@ import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.account.SearchDirectoryOptions;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.ldap.ZLdapFilterFactory;
-import org.apache.http.HttpException;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -40,13 +38,13 @@ class SearchAccountsCommandHandler implements CommandHandler {
       verbose = true;
       i++;
       if (args.length < i - 1) {
-        provUtil.usage();
+        provUtil.usageWithExit1();
         return;
       }
     }
 
     if (args.length < i + 1) {
-      provUtil.usage();
+      provUtil.usageWithExit1();
       return;
     }
 

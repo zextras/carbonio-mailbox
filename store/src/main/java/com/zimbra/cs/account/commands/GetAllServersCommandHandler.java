@@ -1,14 +1,11 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.soap.SoapProvisioning;
-import org.apache.http.HttpException;
 
-import java.io.IOException;
 import java.util.List;
 
 class GetAllServersCommandHandler implements CommandHandler {
@@ -42,7 +39,7 @@ class GetAllServersCommandHandler implements CommandHandler {
           service = arg;
         } else {
           console.println("invalid arg: " + arg + ", already specified service: " + service);
-          provUtil.usage();
+          provUtil.usageWithExit1();
           return;
         }
       }
@@ -51,7 +48,7 @@ class GetAllServersCommandHandler implements CommandHandler {
 
     if (!applyDefault && !verbose) {
       console.println(ProvUtil.ERR_INVALID_ARG_EV);
-      provUtil.usage();
+      provUtil.usageWithExit1();
       return;
     }
 

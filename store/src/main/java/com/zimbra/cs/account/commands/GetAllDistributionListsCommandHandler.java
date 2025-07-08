@@ -1,14 +1,11 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Group;
 import com.zimbra.cs.account.ProvUtil;
-import org.apache.http.HttpException;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,7 +36,7 @@ class GetAllDistributionListsCommandHandler implements CommandHandler {
           d = arg;
         } else {
           console.println("invalid arg: " + arg + ", already specified domain: " + d);
-          provUtil.usage();
+          provUtil.usageWithExit1();
           return;
         }
       }

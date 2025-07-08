@@ -10,9 +10,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.soap.type.GalSearchType;
-import org.apache.http.HttpException;
 
-import java.io.IOException;
 import java.util.Map;
 
 class SearchGalCommandHandler implements CommandHandler {
@@ -30,7 +28,7 @@ class SearchGalCommandHandler implements CommandHandler {
 
   private void doSearchGal(String[] args) throws ServiceException, ArgException {
     if (args.length < 3) {
-      provUtil.usage();
+      provUtil.usageWithExit1();
       return;
     }
     String domain = args[1];

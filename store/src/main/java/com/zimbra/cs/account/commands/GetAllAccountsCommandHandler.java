@@ -2,7 +2,6 @@ package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.NamedEntry;
@@ -53,11 +52,11 @@ class GetAllAccountsCommandHandler implements CommandHandler {
             s = args[i];
           } else {
             console.println("invalid arg: " + args[i] + ", already specified -s with " + s);
-            provUtil.usage();
+            provUtil.usageWithExit1();
             return;
           }
         } else {
-          provUtil.usage();
+          provUtil.usageWithExit1();
           return;
         }
       } else {
@@ -65,7 +64,7 @@ class GetAllAccountsCommandHandler implements CommandHandler {
           d = arg;
         } else {
           console.println("invalid arg: " + arg + ", already specified domain: " + d);
-          provUtil.usage();
+          provUtil.usageWithExit1();
           return;
         }
       }
@@ -74,7 +73,7 @@ class GetAllAccountsCommandHandler implements CommandHandler {
 
     if (!applyDefault && !verbose) {
       console.println(ProvUtil.ERR_INVALID_ARG_EV);
-      provUtil.usage();
+      provUtil.usageWithExit1();
       return;
     }
 

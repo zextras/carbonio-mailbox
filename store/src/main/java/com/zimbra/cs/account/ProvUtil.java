@@ -165,16 +165,11 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
     return useLdap;
   }
 
-  private void deprecated() {
-    console.println("This command has been deprecated.");
-    System.exit(1);
+  public void usageWithExit1() {
+    usageWithExit1(null);
   }
 
-  public void usage() {
-    usage(null);
-  }
-
-  private void usage(Command.Via violatedVia) {
+  private void usageWithExit1(Command.Via violatedVia) {
     boolean givenHelp = false;
     if (command != null) {
       if (violatedVia == null) {
@@ -314,7 +309,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
     }
     Command.Via violatedVia = violateVia(command);
     if (violatedVia != null) {
-      usage(violatedVia);
+      usageWithExit1(violatedVia);
       return true;
     }
     if (!command.checkArgsLength(args)) {
@@ -327,7 +322,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
               length == 1 ? "argument" : "arguments",
               length == 1 ? "has" : "have"
       ));
-      usage();
+      usageWithExit1();
       return true;
     }
     if (command.needsSchemaExtension()) {
@@ -709,7 +704,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
           console.printStacktrace(e);
         }
       } catch (ArgException | HttpException e) {
-        usage();
+        usageWithExit1();
       }
     }
   }
@@ -772,7 +767,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
     }
 
     if (err || cl.hasOption('h')) {
-      pu.usage();
+      pu.usageWithExit1();
     }
 
     if (cl.hasOption('l') && cl.hasOption('s')) {
@@ -887,10 +882,11 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
       } else {
         Command cmd = pu.lookupCommand(args[0]);
         if (cmd == null) {
-          pu.usage();
+          pu.usageWithExit1();
         }
         if (cmd.isDeprecated()) {
-          pu.deprecated();
+          pu.console.println("This command has been deprecated.");
+          System.exit(1);
         }
         if (pu.forceLdapButDontRequireUseLdapOption(cmd)) {
           pu.setUseLdap(true, false);
@@ -902,10 +898,10 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
 
         try {
           if (!pu.execute(args)) {
-            pu.usage();
+            pu.usageWithExit1();
           }
         } catch (ArgException | HttpException e) {
-          pu.usage();
+          pu.usageWithExit1();
         }
       }
     } catch (ServiceException e) {

@@ -1,7 +1,6 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CalendarResource;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
@@ -9,9 +8,7 @@ import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
-import org.apache.http.HttpException;
 
-import java.io.IOException;
 import java.util.List;
 
 class GetAllCalendarResourcesCommandHandler implements CommandHandler {
@@ -48,11 +45,11 @@ class GetAllCalendarResourcesCommandHandler implements CommandHandler {
             s = args[i];
           } else {
             console.println("invalid arg: " + args[i] + ", already specified -s with " + s);
-            provUtil.usage();
+            provUtil.usageWithExit1();
             return;
           }
         } else {
-          provUtil.usage();
+          provUtil.usageWithExit1();
           return;
         }
       } else {
@@ -60,7 +57,7 @@ class GetAllCalendarResourcesCommandHandler implements CommandHandler {
           d = arg;
         } else {
           console.println("invalid arg: " + arg + ", already specified domain: " + d);
-          provUtil.usage();
+          provUtil.usageWithExit1();
           return;
         }
       }
@@ -69,7 +66,7 @@ class GetAllCalendarResourcesCommandHandler implements CommandHandler {
 
     if (!applyDefault && !verbose) {
       console.println(ProvUtil.ERR_INVALID_ARG_EV);
-      provUtil.usage();
+      provUtil.usageWithExit1();
       return;
     }
 

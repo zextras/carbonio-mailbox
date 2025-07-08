@@ -1,12 +1,8 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
-import org.apache.http.HttpException;
-
-import java.io.IOException;
 
 class GetDomainCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
@@ -35,7 +31,7 @@ class GetDomainCommandHandler implements CommandHandler {
       i++;
     }
     if (i >= args.length) {
-      provUtil.usage();
+      provUtil.usageWithExit1();
       return;
     }
     dumper.dumpDomain(provUtil.lookupDomain(args[i], provUtil.getProvisioning(), applyDefault), applyDefault, provUtil.getArgNameSet(args, i + 1));

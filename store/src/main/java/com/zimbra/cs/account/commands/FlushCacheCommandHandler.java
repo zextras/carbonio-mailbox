@@ -2,7 +2,6 @@ package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.account.Provisioning;
@@ -32,7 +31,7 @@ class FlushCacheCommandHandler implements CommandHandler {
       if (args.length > 2) {
         argIdx++;
       } else {
-        provUtil.usage();
+        provUtil.usageWithExit1();
         return;
       }
     }

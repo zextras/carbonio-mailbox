@@ -2,7 +2,6 @@ package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.SetUtil;
-import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.AttributeInfo;
 import com.zimbra.cs.account.AttributeManager;
@@ -195,6 +194,6 @@ class DescribeCommandHandler implements CommandHandler {
     console.println("zmprov desc account -a zimbraId");
     console.println("    error: can only specify either an entry type or a specific attribute\n");
 
-    provUtil.usage();
+    provUtil.usageWithExit1();
   }
 }

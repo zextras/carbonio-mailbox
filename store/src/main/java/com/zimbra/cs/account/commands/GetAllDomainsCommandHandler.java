@@ -1,7 +1,6 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.ProvUtil;
@@ -43,7 +42,7 @@ class GetAllDomainsCommandHandler implements CommandHandler {
     var console = provUtil.getConsole();
     if (!applyDefault && !verbose) {
       console.println(ProvUtil.ERR_INVALID_ARG_EV);
-      provUtil.usage();
+      provUtil.usageWithExit1();
       return;
     }
 

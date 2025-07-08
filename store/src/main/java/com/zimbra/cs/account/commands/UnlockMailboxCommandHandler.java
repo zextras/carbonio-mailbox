@@ -7,7 +7,6 @@ import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.BackupConstants;
 import com.zimbra.common.soap.SoapHttpTransport;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Console;
 import com.zimbra.cs.account.ProvUtil;
@@ -18,7 +17,6 @@ import com.zimbra.soap.admin.message.LockoutMailboxRequest;
 import com.zimbra.soap.admin.message.UnregisterMailboxMoveOutRequest;
 import com.zimbra.soap.admin.type.MailboxMoveSpec;
 import com.zimbra.soap.type.AccountNameSelector;
-import org.apache.http.HttpException;
 
 import java.io.IOException;
 
@@ -38,7 +36,7 @@ class UnlockMailboxCommandHandler implements CommandHandler {
     if (args.length > 1) {
       accountVal = args[1];
     } else {
-      provUtil.usage();
+      provUtil.usageWithExit1();
       return;
     }
 

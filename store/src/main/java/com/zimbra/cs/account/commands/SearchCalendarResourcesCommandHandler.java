@@ -1,7 +1,6 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CalendarResource;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
@@ -11,9 +10,7 @@ import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.account.SearchDirectoryOptions;
 import com.zimbra.cs.account.ldap.LdapEntrySearchFilter;
 import com.zimbra.cs.ldap.ZLdapFilterFactory;
-import org.apache.http.HttpException;
 
-import java.io.IOException;
 import java.util.List;
 
 class SearchCalendarResourcesCommandHandler implements CommandHandler {
@@ -35,7 +32,7 @@ class SearchCalendarResourcesCommandHandler implements CommandHandler {
     int i = 1;
 
     if (args.length < i + 1) {
-      provUtil.usage();
+      provUtil.usageWithExit1();
       return;
     }
     if (args[i].equals("-v")) {
@@ -43,13 +40,13 @@ class SearchCalendarResourcesCommandHandler implements CommandHandler {
       i++;
     }
     if (args.length < i + 1) {
-      provUtil.usage();
+      provUtil.usageWithExit1();
       return;
     }
     Domain d = provUtil.lookupDomain(args[i++]);
 
     if ((args.length - i) % 3 != 0) {
-      provUtil.usage();
+      provUtil.usageWithExit1();
       return;
     }
 
@@ -64,7 +61,7 @@ class SearchCalendarResourcesCommandHandler implements CommandHandler {
       } catch (IllegalArgumentException e) {
         provUtil.getConsole().printError("Bad search op in: " + attr + " " + op + " '" + value + "'");
         e.printStackTrace();
-        provUtil.usage();
+        provUtil.usageWithExit1();
         return;
       }
     }
