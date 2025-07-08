@@ -1,7 +1,6 @@
 package com.zimbra.cs.util;
 
-import static com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit;
-
+import com.zimbra.cs.account.ProvUtil.Exit1Exception;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -23,15 +22,15 @@ class ProxyPurgeUtilTest {
   }
 
   @Test
-  void shouldLogInfoByDefault() throws Exception {
-    catchSystemExit(() -> ProxyPurgeUtil.main(new String[] {""}));
+  void shouldLogInfoByDefault()  {
+    Assertions.assertThrows(Exit1Exception.class, () -> ProxyPurgeUtil.run(new String[] {""}));
     final Logger rootLogger = org.apache.logging.log4j.LogManager.getRootLogger();
     Assertions.assertEquals(Level.INFO, rootLogger.getLevel());
   }
 
   @Test
-  void shouldLogDebugWhenVerbose() throws Exception {
-    catchSystemExit(() -> ProxyPurgeUtil.main(new String[] {"-v"}));
+  void shouldLogDebugWhenVerbose() {
+    Assertions.assertThrows(Exit1Exception.class, () -> ProxyPurgeUtil.run(new String[] {"-v"}));
     final Logger rootLogger = org.apache.logging.log4j.LogManager.getRootLogger();
     Assertions.assertEquals(Level.DEBUG, rootLogger.getLevel());
   }

@@ -12,6 +12,7 @@ import com.zimbra.common.util.CliUtil;
 import com.zimbra.common.util.memcached.ZimbraMemcachedClient;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
+import com.zimbra.cs.account.ProvUtil.Exit1Exception;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
@@ -44,7 +45,7 @@ public class ProxyPurgeUtil {
   private static final Logger LOG = LoggerFactory.getLogger(ProxyPurgeUtil.class);
 
 
-  public static void main(String[] args) throws ServiceException {
+  public static void run(String[] args) throws ServiceException, Exit1Exception {
     CommandLine commandLine;
     ArrayList<String> servers;
     ArrayList<String> accounts;
@@ -67,7 +68,7 @@ public class ProxyPurgeUtil {
 
     if ((commandLine == null) || commandLine.hasOption("h") || commandLine.hasOption("u")) {
       usage();
-      System.exit(1);
+      throw new Exit1Exception();
     }
 
     /* Initialize the logging system and the zimbra environment */
@@ -91,12 +92,12 @@ public class ProxyPurgeUtil {
 
     if (servers.isEmpty()) {
       LOG.error("No memcached servers found, and none specified (--help for help)");
-      System.exit(1);
+      throw new Exit1Exception();
     }
 
     if (accounts.isEmpty()) {
       LOG.error("No accounts specified (--help for help)");
-      System.exit(1);
+      throw new Exit1Exception();
     }
 
     /* Assume purge unless `-i' is specified */
@@ -116,9 +117,16 @@ public class ProxyPurgeUtil {
       purgeAccounts(servers, accounts, purge, outputFormat);
     } catch (OutputFormatException e) {
       LOG.error(e.getMessage());
-      System.exit(1);
+      throw new Exit1Exception();
     }
   }
+  public static void main(String[] args) throws ServiceException {
+		try {
+			run(args);
+		} catch (Exit1Exception e) {
+      System.exit(1);
+		}
+	}
 
   /**
    * Purges or, prints all the routes for the accounts supplied.
@@ -131,14 +139,14 @@ public class ProxyPurgeUtil {
    * @throws ServiceException
    */
   private static void purgeAccounts(List<String> servers, List<String> accounts, boolean purge,
-      String outputformat) throws ServiceException, OutputFormatException {
+      String outputformat) throws ServiceException, OutputFormatException, Exit1Exception {
 
     Provisioning prov = Provisioning.getInstance();
 
     // Some sanity checks.
     if (accounts == null || accounts.isEmpty()) {
       LOG.error("No account supplied");
-      System.exit(1);
+      throw new Exit1Exception();
     }
 
     if (!purge) {
