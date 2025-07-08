@@ -4,7 +4,6 @@
 
 package com.zimbra.cs.account;
 
-import static com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit;
 
 import com.zextras.mailbox.soap.SoapExtension;
 import com.zimbra.common.localconfig.LC;
@@ -216,8 +215,7 @@ class ProvUtilAPITest {
 
     OutputStream outputStream = new ByteArrayOutputStream();
     OutputStream errorStream = new ByteArrayOutputStream();
-    catchSystemExit(
-        () -> runCommand(outputStream, errorStream, new String[]{"cps", accountName, "new"}));
+    assertCommandThrows(() -> runCommand(outputStream, errorStream, new String[]{"cps", accountName, "new"}));
 
     final String expectedError = "ERROR: account.INVALID_PASSWORD (invalid password: too short)\n";
     Assertions.assertEquals(expectedError, errorStream.toString());
@@ -265,7 +263,7 @@ class ProvUtilAPITest {
 
     OutputStream outputStream = new ByteArrayOutputStream();
     OutputStream errorStream = new ByteArrayOutputStream();
-    catchSystemExit(() -> runCommand(outputStream, errorStream, new String[]{"ga", accountName}));
+    assertCommandThrows(() -> runCommand(outputStream, errorStream, new String[]{"ga", accountName}));
     final String expectedError =
         "ERROR: account.NO_SUCH_ACCOUNT (no such account: " + accountName + ")\n";
     Assertions.assertEquals(expectedError, errorStream.toString());
