@@ -713,7 +713,14 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
   }
 
   public static void main(String[] args) throws IOException, ServiceException {
-    main(new Console(System.out, System.err), args);
+    try {
+      run(new Console(System.out, System.err), args);
+    } catch (UsageException | Exit1Exception e) {
+      System.exit(1);
+    } catch (Exit2Exception e) {
+System.exit(2);
+    }
+
   }
 
   public static class Exit1Exception extends Exception {
@@ -938,17 +945,6 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
       throw new Exit2Exception();
     }
   }
-
-  public static void main(Console console, String[] args) throws IOException, ServiceException {
-		try {
-			run(console, args);
-		} catch (UsageException | Exit1Exception e) {
-			System.exit(1);
-		} catch (Exit2Exception e) {
-      System.exit(2);
-		}
-
-	}
 
   private static String[] fixArgs(String[] args) {
     // if prov is the first argument remove it
