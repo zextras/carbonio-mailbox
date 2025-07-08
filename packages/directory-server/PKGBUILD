@@ -87,11 +87,14 @@ postinst__apt() {
     echo "* Starting LDAP upgrade..."
     su - zextras -c "/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
     su - zextras -c "/opt/zextras/bin/ldap start"
-    su - zextras -c "/opt/zextras/libexec/scripts/LDAP/delete_attrs.pl"
+    echo "Deleting old attributes"
+    /opt/zextras/libexec/scripts/LDAP/delete_attrs.pl
     su - zextras -c "/opt/zextras/bin/ldap stop"
+    echo "Exporting and reimporting mdb database"
     su - zextras -c "/opt/zextras/common/sbin/slapcat -F /opt/zextras/data/ldap/config -n 2 -l /tmp/mdb-export.ldif"
     su - zextras -c "rm /opt/zextras/data/ldap/mdb/db/data.mdb"
     su - zextras -c "/opt/zextras/common/sbin/slapadd -F /opt/zextras/data/ldap/config -n 2 -l /tmp/mdb-export.ldif"
+    echo "Exporting and reimporting mdb database"
     su - zextras -c "rm /tmp/mdb-export.ldif"
     su - zextras -c "/opt/zextras/libexec/zmldapschema 2>/dev/null"
     /opt/zextras/libexec/zmldapupdateldif
