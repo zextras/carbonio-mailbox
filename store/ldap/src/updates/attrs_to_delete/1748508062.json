@@ -1,6 +1,5 @@
 {
   "deleted_attributes": [
-    "zimbraUCServiceId",
     "zimbraUCProvider",
     "zimbraUCUserURL",
     "zimbraUCVoicemailURL",
