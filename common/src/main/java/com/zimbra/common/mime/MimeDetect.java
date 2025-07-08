@@ -484,13 +484,32 @@ public class MimeDetect {
         return sb.length() == 0 ? null : sb.toString();
     }
     
-    private static void usage(Options opts) {
+    private static void usage(Options opts) throws ExitCodeException {
         new HelpFormatter().printHelp(MimeDetect.class.getSimpleName() +
             " [options] file", opts);
-        System.exit(2);
+        throw new ExitCodeException(2);
     }
-    
+
+    public static class ExitCodeException extends Exception {
+        private final int exitCode;
+
+			private ExitCodeException(int exitCode) {
+				this.exitCode = exitCode;
+			}
+
+        public int getExitCode() {
+            return exitCode;
+        }
+    }
+
     public static void main(String[] args) {
+			try {
+				run(args);
+			} catch (ExitCodeException e) {
+				System.exit(e.getExitCode());
+			}
+		}
+    public static void run(String[] args) throws ExitCodeException {
         int limit = -1;
         MimeDetect md = new MimeDetect();
         Options opts = new Options();
@@ -542,6 +561,6 @@ public class MimeDetect {
             if (e instanceof UnrecognizedOptionException)
                 usage(opts);
         }
-        System.exit(ret);
+        throw new ExitCodeException(ret);
     }
 }
