@@ -4,7 +4,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
-import com.zimbra.cs.account.ProvUtil.Exit2Exception;
+import com.zimbra.common.cli.ExitCodeException;
 
 class CreateDynamicDistributionListCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
@@ -13,7 +13,7 @@ class CreateDynamicDistributionListCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, Exit2Exception {
+  @Override public void handle(String[] args) throws ServiceException, ArgException, ExitCodeException {
     provUtil.getConsole().println(provUtil.getProvisioning().createGroup(args[1], provUtil.getMapAndCheck(args, 2, true), true).getId());
   }
 }

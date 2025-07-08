@@ -7,12 +7,12 @@ package com.zimbra.cs.util;
 
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.ZAttrProvisioning;
+import com.zimbra.common.cli.ExitCodeException;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.CliUtil;
 import com.zimbra.common.util.memcached.ZimbraMemcachedClient;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
-import com.zimbra.cs.account.ProvUtil.Exit1Exception;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
@@ -45,7 +45,7 @@ public class ProxyPurgeUtil {
   private static final Logger LOG = LoggerFactory.getLogger(ProxyPurgeUtil.class);
 
 
-  public static void run(String[] args) throws ServiceException, Exit1Exception {
+  public static void run(String[] args) throws ServiceException, ExitCodeException {
     CommandLine commandLine;
     ArrayList<String> servers;
     ArrayList<String> accounts;
@@ -68,7 +68,7 @@ public class ProxyPurgeUtil {
 
     if ((commandLine == null) || commandLine.hasOption("h") || commandLine.hasOption("u")) {
       usage();
-      throw new Exit1Exception();
+      throw new ExitCodeException(1);
     }
 
     /* Initialize the logging system and the zimbra environment */
@@ -92,12 +92,12 @@ public class ProxyPurgeUtil {
 
     if (servers.isEmpty()) {
       LOG.error("No memcached servers found, and none specified (--help for help)");
-      throw new Exit1Exception();
+      throw new ExitCodeException(1);
     }
 
     if (accounts.isEmpty()) {
       LOG.error("No accounts specified (--help for help)");
-      throw new Exit1Exception();
+      throw new ExitCodeException(1);
     }
 
     /* Assume purge unless `-i' is specified */
@@ -117,14 +117,14 @@ public class ProxyPurgeUtil {
       purgeAccounts(servers, accounts, purge, outputFormat);
     } catch (OutputFormatException e) {
       LOG.error(e.getMessage());
-      throw new Exit1Exception();
+      throw new ExitCodeException(1);
     }
   }
   public static void main(String[] args) throws ServiceException {
 		try {
 			run(args);
-		} catch (Exit1Exception e) {
-      System.exit(1);
+		} catch (ExitCodeException e) {
+      System.exit(e.getExitCode());
 		}
 	}
 
@@ -139,14 +139,14 @@ public class ProxyPurgeUtil {
    * @throws ServiceException
    */
   private static void purgeAccounts(List<String> servers, List<String> accounts, boolean purge,
-      String outputformat) throws ServiceException, OutputFormatException, Exit1Exception {
+      String outputformat) throws ServiceException, OutputFormatException, ExitCodeException {
 
     Provisioning prov = Provisioning.getInstance();
 
     // Some sanity checks.
     if (accounts == null || accounts.isEmpty()) {
       LOG.error("No account supplied");
-      throw new Exit1Exception();
+      throw new ExitCodeException(1);
     }
 
     if (!purge) {

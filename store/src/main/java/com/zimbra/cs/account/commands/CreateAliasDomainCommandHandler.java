@@ -6,7 +6,7 @@ import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.ProvUtil;
-import com.zimbra.cs.account.ProvUtil.Exit2Exception;
+import com.zimbra.common.cli.ExitCodeException;
 import com.zimbra.cs.account.Provisioning;
 
 import java.util.Map;
@@ -18,7 +18,7 @@ class CreateAliasDomainCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, Exit2Exception {
+  @Override public void handle(String[] args) throws ServiceException, ArgException, ExitCodeException {
     provUtil.getConsole().println(
             doCreateAliasDomain(args[1], args[2], provUtil.getMapAndCheck(args, 3, true)).getId());
   }

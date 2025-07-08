@@ -10,6 +10,7 @@ import com.google.common.collect.Multiset;
 import com.google.common.collect.Sets;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.auth.ZAuthToken;
+import com.zimbra.common.cli.ExitCodeException;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.net.SocketFactories;
 import com.zimbra.common.service.ServiceException;
@@ -302,7 +303,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
   }
 
   private boolean execute(String[] args)
-			throws ServiceException, ArgException, IOException, HttpException, UsageException, Exit2Exception, Exit1Exception {
+			throws ServiceException, ArgException, IOException, HttpException, UsageException, ExitCodeException {
     command = lookupCommand(args[0]);
     if (command == null) {
       return false;
@@ -569,7 +570,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
 
   /** get map and check/warn deprecated attrs. */
   public Map<String, Object> getMapAndCheck(String[] args, int offset, boolean isCreateCmd)
-			throws ArgException, ServiceException, Exit2Exception {
+			throws ArgException, ServiceException, ExitCodeException {
     Map<String, Object> attrs = getAttrMap(args, offset, isCreateCmd);
     checkDeprecatedAttrs(attrs);
     return attrs;
@@ -589,7 +590,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
    */
   private Map<String, Object> keyValueArrayToMultiMap(
       String[] args, int offset, boolean isCreateCmd)
-			throws IOException, ServiceException, Exit2Exception {
+			throws IOException, ServiceException, ExitCodeException {
     AttributeManager attrMgr = AttributeManager.getInstance();
 
     Map<String, Object> attrs = new HashMap<>();
@@ -628,7 +629,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
           // If multiple values are being assigned to an attr as part of the same command
           // then we don't consider it an unsafe replacement
           console.printError("error: cannot replace multi-valued attr value unless -r is specified");
-          throw new Exit2Exception();
+          throw new ExitCodeException(2);
         }
       }
     }
@@ -637,7 +638,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
   }
 
   private Map<String, Object> getAttrMap(String[] args, int offset, boolean isCreateCmd)
-			throws ArgException, ServiceException, Exit2Exception {
+			throws ArgException, ServiceException, ExitCodeException {
     try {
       return keyValueArrayToMultiMap(args, offset, isCreateCmd);
     } catch (IllegalArgumentException iae) {
@@ -667,7 +668,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
   }
 
   private void interactive(BufferedReader in)
-			throws IOException, Exit2Exception, UsageException, Exit1Exception {
+			throws IOException, UsageException, ExitCodeException {
     cliReader = in;
     interactiveMode = true;
     while (true) {
@@ -715,22 +716,16 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
   public static void main(String[] args) throws IOException, ServiceException {
     try {
       run(new Console(System.out, System.err), args);
-    } catch (UsageException | Exit1Exception e) {
+    } catch (UsageException e) {
       System.exit(1);
-    } catch (Exit2Exception e) {
-System.exit(2);
+    } catch (ExitCodeException e) {
+      System.exit(e.getExitCode());
     }
 
   }
 
-  public static class Exit1Exception extends Exception {
-
-  }
-  public static class Exit2Exception extends Exception {
-
-  }
   public static void run(Console console, String[] args) throws IOException, ServiceException,
-      UsageException, Exit1Exception, Exit2Exception {
+			UsageException, ExitCodeException {
     CliUtil.setCliSoapHttpTransportTimeout();
     ZimbraLog.toolSetupLog4jConsole("INFO", true, false); // send all logs to stderr
     SocketFactories.registerProtocols();
@@ -786,13 +781,13 @@ System.exit(2);
       try {
         pu.usage();
       } catch (UsageException e) {
-        throw new Exit1Exception();
+        throw new ExitCodeException(1);
       }
     }
 
     if (cl.hasOption('l') && cl.hasOption('s')) {
       console.printError("error: cannot specify both -l and -s at the same time");
-      throw new Exit2Exception();
+      throw new ExitCodeException(2);
     }
 
     pu.setVerbose(cl.hasOption('v'));
@@ -805,7 +800,7 @@ System.exit(2);
         ZimbraLog.toolSetupLog4j("INFO", cl.getOptionValue('L'));
       } else {
         console.printError("error: cannot specify -L when -l is not specified");
-        throw new Exit2Exception();
+        throw new ExitCodeException(2);
       }
     }
 
@@ -821,7 +816,7 @@ System.exit(2);
               + " when "
               + SoapCLI.O_AUTHTOKENFILE
               + " is specified");
-      throw new Exit2Exception();
+      throw new ExitCodeException(2);
     }
     if (cl.hasOption(SoapCLI.O_AUTHTOKEN)) {
       ZAuthToken zat = ZAuthToken.fromJSONString(cl.getOptionValue(SoapCLI.O_AUTHTOKEN));
@@ -849,7 +844,7 @@ System.exit(2);
 
     if (cl.hasOption('d') && cl.hasOption('D')) {
       console.printError("error: cannot specify both -d and -D at the same time");
-      throw new Exit2Exception();
+      throw new ExitCodeException(2);
     }
     if (cl.hasOption('D')) {
       pu.setDebug(SoapDebugLevel.high);
@@ -859,7 +854,7 @@ System.exit(2);
 
     if (!pu.useLdap() && cl.hasOption('m')) {
       console.printError("error: cannot specify -m when -l is not specified");
-      throw new Exit2Exception();
+      throw new ExitCodeException(2);
     }
 
     if (cl.hasOption('t')) {
@@ -906,7 +901,7 @@ System.exit(2);
         }
         if (cmd.isDeprecated()) {
           pu.console.println("This command has been deprecated.");
-          throw new Exit1Exception();
+          throw new ExitCodeException(1);
         }
         if (pu.forceLdapButDontRequireUseLdapOption(cmd)) {
           pu.setUseLdap(true, false);
@@ -942,7 +937,7 @@ System.exit(2);
       if (pu.verboseMode) {
         console.printStacktrace(e);
       }
-      throw new Exit2Exception();
+      throw new ExitCodeException(2);
     }
   }
 

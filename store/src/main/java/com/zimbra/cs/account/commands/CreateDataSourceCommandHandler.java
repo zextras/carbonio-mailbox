@@ -4,7 +4,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
-import com.zimbra.cs.account.ProvUtil.Exit2Exception;
+import com.zimbra.common.cli.ExitCodeException;
 import com.zimbra.soap.admin.type.DataSourceType;
 
 class CreateDataSourceCommandHandler implements CommandHandler {
@@ -14,7 +14,7 @@ class CreateDataSourceCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, Exit2Exception {
+  @Override public void handle(String[] args) throws ServiceException, ArgException, ExitCodeException {
     provUtil.getConsole().println(
             provUtil.getProvisioning().createDataSource(
                             provUtil.lookupAccount(args[1]),
