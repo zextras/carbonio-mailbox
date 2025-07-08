@@ -32,6 +32,7 @@ import com.zimbra.cs.account.accesscontrol.TargetType;
 import com.zimbra.cs.account.commands.ProvUtilCommandHandlersFactory;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.account.soap.SoapProvisioning;
+import com.zimbra.cs.db.Versions.UsageException;
 import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.util.BuildInfo;
 import com.zimbra.cs.util.SoapCLI;
@@ -165,11 +166,23 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
     return useLdap;
   }
 
-  public void usageWithExit1() {
-    usageWithExit1(null);
+  public void usageWithException() throws UsageException {
+    usage(null);
   }
 
-  private void usageWithExit1(Command.Via violatedVia) {
+  /**
+   * @deprecated: use {@link #usageWithException()}
+   */
+  @Deprecated
+  public void usageWithExit1() {
+		try {
+			usageWithException();
+		} catch (UsageException e) {
+			System.exit(1);
+		}
+	}
+
+  private void usage(Command.Via violatedVia) throws UsageException {
     boolean givenHelp = false;
     if (command != null) {
       if (violatedVia == null) {
@@ -193,7 +206,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
     }
     if (givenHelp) {
       console.println("For general help, type : zmprov --help");
-      System.exit(1);
+      throw new UsageException();
     }
     console.println("");
     console.println("zmprov [args] [cmd] [cmd-args ...]");
@@ -225,7 +238,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
             + " \"zmprov_safeguarded_attrs\"");
     console.println("");
     doHelp(null);
-    System.exit(1);
+    throw new UsageException();
   }
 
   private Command lookupCommand(String command) {
@@ -301,15 +314,15 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
     return null;
   }
 
-  boolean execute(String[] args)
-      throws ServiceException, ArgException, IOException, HttpException {
+  private boolean execute(String[] args)
+			throws ServiceException, ArgException, IOException, HttpException, UsageException {
     command = lookupCommand(args[0]);
     if (command == null) {
       return false;
     }
     Command.Via violatedVia = violateVia(command);
     if (violatedVia != null) {
-      usageWithExit1(violatedVia);
+      usage(violatedVia);
       return true;
     }
     if (!command.checkArgsLength(args)) {
@@ -687,7 +700,10 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
         if (!execute(args)) {
           console.println("Unknown command. Type: 'help commands' for a list");
         }
-      } catch (ServiceException e) {
+      } catch (UsageException e) {
+        System.exit(1);
+      }
+      catch (ServiceException e) {
         Throwable cause = e.getCause();
         errorOccursDuringInteraction = true;
         String errText =
@@ -900,7 +916,10 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
           if (!pu.execute(args)) {
             pu.usageWithExit1();
           }
-        } catch (ArgException | HttpException e) {
+        } catch (UsageException e) {
+          System.exit(1);
+        }
+        catch (ArgException | HttpException e) {
           pu.usageWithExit1();
         }
       }
