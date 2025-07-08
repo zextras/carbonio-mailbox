@@ -82,13 +82,12 @@ public final class Versions {
     // main and command-line parsing
     /////////////////////////////////////////////////////////////
 
-    public static void usage(Options options) {
+    private static void usage(Options options) {
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp(Versions.class.getName(), options);
-        System.exit(1);
     }
 
-    static CommandLine parseCmdlineArgs(String[] args, Options options) {
+    static CommandLine parseCmdlineArgs(String[] args, Options options) throws UsageException {
         CommandLineParser parser = new GnuParser();
 
         // Loose convention for naming options:
@@ -109,9 +108,15 @@ public final class Versions {
             err = true;
         }
 
-        if (err || cl.hasOption("h"))
+        if (err || cl.hasOption("h")) {
             usage(options);
+            throw new UsageException();
+        }
 
         return cl;
+    }
+
+    public static class UsageException extends Exception {
+        public UsageException() {}
     }
 }
