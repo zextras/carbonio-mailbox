@@ -1,6 +1,6 @@
 package com.zimbra.cs.util;
 
-import com.zimbra.common.cli.ExitCodeException;
+import com.zimbra.common.cli.CommandExitException;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -23,14 +23,14 @@ class ProxyPurgeUtilTest {
 
   @Test
   void shouldLogInfoByDefault()  {
-    Assertions.assertThrows(ExitCodeException.class, () -> ProxyPurgeUtil.run(new String[] {""}));
+    Assertions.assertThrows(CommandExitException.class, () -> ProxyPurgeUtil.run(new String[] {""}));
     final Logger rootLogger = org.apache.logging.log4j.LogManager.getRootLogger();
     Assertions.assertEquals(Level.INFO, rootLogger.getLevel());
   }
 
   @Test
   void shouldLogDebugWhenVerbose() {
-    Assertions.assertThrows(ExitCodeException.class, () -> ProxyPurgeUtil.run(new String[] {"-v"}));
+    Assertions.assertThrows(CommandExitException.class, () -> ProxyPurgeUtil.run(new String[] {"-v"}));
     final Logger rootLogger = org.apache.logging.log4j.LogManager.getRootLogger();
     Assertions.assertEquals(Level.DEBUG, rootLogger.getLevel());
   }

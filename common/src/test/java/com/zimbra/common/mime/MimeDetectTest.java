@@ -8,7 +8,7 @@ package com.zimbra.common.mime;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.cli.ExitCodeException;
+import com.zimbra.common.cli.CommandExitException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -44,7 +44,7 @@ class MimeDetectTest {
   }
 
   private static void assertCommandExits0(Executable executable) {
-    final ExitCodeException exitCodeException = assertThrows(ExitCodeException.class, executable);
+    final CommandExitException exitCodeException = assertThrows(CommandExitException.class, executable);
     Assertions.assertEquals(0, exitCodeException.getExitCode());
   }
 

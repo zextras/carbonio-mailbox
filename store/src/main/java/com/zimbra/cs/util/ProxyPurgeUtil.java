@@ -7,7 +7,7 @@ package com.zimbra.cs.util;
 
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.ZAttrProvisioning;
-import com.zimbra.common.cli.ExitCodeException;
+import com.zimbra.common.cli.CommandExitException;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.CliUtil;
 import com.zimbra.common.util.memcached.ZimbraMemcachedClient;
@@ -45,7 +45,7 @@ public class ProxyPurgeUtil {
   private static final Logger LOG = LoggerFactory.getLogger(ProxyPurgeUtil.class);
 
 
-  public static void run(String[] args) throws ServiceException, ExitCodeException {
+  public static void run(String[] args) throws ServiceException, CommandExitException {
     CommandLine commandLine;
     ArrayList<String> servers;
     ArrayList<String> accounts;
@@ -68,7 +68,7 @@ public class ProxyPurgeUtil {
 
     if ((commandLine == null) || commandLine.hasOption("h") || commandLine.hasOption("u")) {
       usage();
-      throw new ExitCodeException(1);
+      throw new CommandExitException(1);
     }
 
     /* Initialize the logging system and the zimbra environment */
@@ -92,12 +92,12 @@ public class ProxyPurgeUtil {
 
     if (servers.isEmpty()) {
       LOG.error("No memcached servers found, and none specified (--help for help)");
-      throw new ExitCodeException(1);
+      throw new CommandExitException(1);
     }
 
     if (accounts.isEmpty()) {
       LOG.error("No accounts specified (--help for help)");
-      throw new ExitCodeException(1);
+      throw new CommandExitException(1);
     }
 
     /* Assume purge unless `-i' is specified */
@@ -118,7 +118,7 @@ public class ProxyPurgeUtil {
   public static void main(String[] args) throws ServiceException {
 		try {
 			run(args);
-		} catch (ExitCodeException e) {
+		} catch (CommandExitException e) {
       System.exit(e.getExitCode());
 		}
 	}
@@ -134,21 +134,21 @@ public class ProxyPurgeUtil {
    * @throws ServiceException
    */
   public static void purgeAccounts(List<String> servers, List<String> accounts, boolean purge,
-      String outputformat) throws ServiceException, ExitCodeException {
+      String outputformat) throws ServiceException, CommandExitException {
 
     Provisioning prov = Provisioning.getInstance();
 
     // Some sanity checks.
     if (accounts == null || accounts.isEmpty()) {
       LOG.error("No account supplied");
-      throw new ExitCodeException(1);
+      throw new CommandExitException(1);
     }
 
     if (!purge) {
       // the outputformat must be supplied.
       if (outputformat == null || outputformat.length() == 0) {
         LOG.error("outputformat must be supplied for info");
-        throw new ExitCodeException(1);
+        throw new CommandExitException(1);
       }
     }
 

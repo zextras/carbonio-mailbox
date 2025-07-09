@@ -5,7 +5,7 @@
 
 package com.zimbra.common.mime;
 
-import com.zimbra.common.cli.ExitCodeException;
+import com.zimbra.common.cli.CommandExitException;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.ZimbraLog;
@@ -485,20 +485,20 @@ public class MimeDetect {
         return sb.length() == 0 ? null : sb.toString();
     }
     
-    private static void usage(Options opts) throws ExitCodeException {
+    private static void usage(Options opts) throws CommandExitException {
         new HelpFormatter().printHelp(MimeDetect.class.getSimpleName() +
             " [options] file", opts);
-        throw new ExitCodeException(2);
+        throw new CommandExitException(2);
     }
 
     public static void main(String[] args) {
 			try {
 				run(args);
-			} catch (ExitCodeException e) {
+			} catch (CommandExitException e) {
 				System.exit(e.getExitCode());
 			}
 		}
-    public static void run(String[] args) throws ExitCodeException {
+    public static void run(String[] args) throws CommandExitException {
         int limit = -1;
         MimeDetect md = new MimeDetect();
         Options opts = new Options();
@@ -550,6 +550,6 @@ public class MimeDetect {
             if (e instanceof UnrecognizedOptionException)
                 usage(opts);
         }
-        throw new ExitCodeException(ret);
+        throw new CommandExitException(ret);
     }
 }

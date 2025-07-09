@@ -2,7 +2,7 @@ package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.auth.ZAuthToken;
-import com.zimbra.common.cli.ExitCodeException;
+import com.zimbra.common.cli.CommandExitException;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.BackupConstants;
@@ -30,12 +30,12 @@ class UnlockMailboxCommandHandler implements CommandHandler {
   }
 
   @Override public void handle(String[] args)
-			throws ServiceException, InvalidCommandException, ExitCodeException {
+			throws ServiceException, InvalidCommandException, CommandExitException {
     doUnlockMailbox(args);
   }
 
   private void doUnlockMailbox(String[] args)
-			throws ServiceException, InvalidCommandException, ExitCodeException {
+			throws ServiceException, InvalidCommandException, CommandExitException {
     String accountVal = null;
     if (args.length > 1) {
       accountVal = args[1];
@@ -54,7 +54,7 @@ class UnlockMailboxCommandHandler implements CommandHandler {
                         + " zimbraAccountStatus to '%s' first",
                 accountVal, ZAttrProvisioning.AccountStatus.active, acct.getAccountStatus(), ZAttrProvisioning.AccountStatus.active);
         console.printError(error);
-        throw new ExitCodeException(1);
+        throw new CommandExitException(1);
       }
       String accName = acct.getName();
       String server = acct.getMailHost();

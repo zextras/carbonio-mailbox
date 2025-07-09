@@ -6,11 +6,11 @@
 
 package com.zimbra.common.cli;
 
-public class ExitCodeException extends Exception {
+public class CommandExitException extends Exception {
 
 	private final int exitCode;
 
-	public ExitCodeException(int exitCode) {
+	public CommandExitException(int exitCode) {
 		this.exitCode = exitCode;
 	}
 

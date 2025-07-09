@@ -10,7 +10,7 @@ import com.google.common.collect.Multiset;
 import com.google.common.collect.Sets;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.auth.ZAuthToken;
-import com.zimbra.common.cli.ExitCodeException;
+import com.zimbra.common.cli.CommandExitException;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.net.SocketFactories;
 import com.zimbra.common.service.ServiceException;
@@ -303,7 +303,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
   }
 
   private boolean execute(String[] args)
-			throws ServiceException, ArgException, IOException, HttpException, InvalidCommandException, ExitCodeException {
+			throws ServiceException, ArgException, IOException, HttpException, InvalidCommandException, CommandExitException {
     command = lookupCommand(args[0]);
     if (command == null) {
       return false;
@@ -570,7 +570,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
 
   /** get map and check/warn deprecated attrs. */
   public Map<String, Object> getMapAndCheck(String[] args, int offset, boolean isCreateCmd)
-			throws ArgException, ServiceException, ExitCodeException {
+			throws ArgException, ServiceException, CommandExitException {
     Map<String, Object> attrs = getAttrMap(args, offset, isCreateCmd);
     checkDeprecatedAttrs(attrs);
     return attrs;
@@ -590,7 +590,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
    */
   private Map<String, Object> keyValueArrayToMultiMap(
       String[] args, int offset, boolean isCreateCmd)
-			throws IOException, ServiceException, ExitCodeException {
+			throws IOException, ServiceException, CommandExitException {
     AttributeManager attrMgr = AttributeManager.getInstance();
 
     Map<String, Object> attrs = new HashMap<>();
@@ -629,7 +629,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
           // If multiple values are being assigned to an attr as part of the same command
           // then we don't consider it an unsafe replacement
           console.printError("error: cannot replace multi-valued attr value unless -r is specified");
-          throw new ExitCodeException(2);
+          throw new CommandExitException(2);
         }
       }
     }
@@ -638,7 +638,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
   }
 
   private Map<String, Object> getAttrMap(String[] args, int offset, boolean isCreateCmd)
-			throws ArgException, ServiceException, ExitCodeException {
+			throws ArgException, ServiceException, CommandExitException {
     try {
       return keyValueArrayToMultiMap(args, offset, isCreateCmd);
     } catch (IllegalArgumentException iae) {
@@ -668,7 +668,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
   }
 
   private void interactive(BufferedReader in)
-			throws IOException, InvalidCommandException, ExitCodeException {
+			throws IOException, InvalidCommandException, CommandExitException {
     cliReader = in;
     interactiveMode = true;
     while (true) {
@@ -718,14 +718,14 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
       run(new Console(System.out, System.err), args);
     } catch (InvalidCommandException e) {
       System.exit(1);
-    } catch (ExitCodeException e) {
+    } catch (CommandExitException e) {
       System.exit(e.getExitCode());
     }
 
   }
 
   public static void run(Console console, String[] args) throws IOException, ServiceException,
-      InvalidCommandException, ExitCodeException {
+      InvalidCommandException, CommandExitException {
     CliUtil.setCliSoapHttpTransportTimeout();
     ZimbraLog.toolSetupLog4jConsole("INFO", true, false); // send all logs to stderr
     SocketFactories.registerProtocols();
@@ -781,13 +781,13 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
       try {
         pu.usage();
       } catch (InvalidCommandException e) {
-        throw new ExitCodeException(1);
+        throw new CommandExitException(1);
       }
     }
 
     if (cl.hasOption('l') && cl.hasOption('s')) {
       console.printError("error: cannot specify both -l and -s at the same time");
-      throw new ExitCodeException(2);
+      throw new CommandExitException(2);
     }
 
     pu.setVerbose(cl.hasOption('v'));
@@ -800,7 +800,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
         ZimbraLog.toolSetupLog4j("INFO", cl.getOptionValue('L'));
       } else {
         console.printError("error: cannot specify -L when -l is not specified");
-        throw new ExitCodeException(2);
+        throw new CommandExitException(2);
       }
     }
 
@@ -816,7 +816,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
               + " when "
               + SoapCLI.O_AUTHTOKENFILE
               + " is specified");
-      throw new ExitCodeException(2);
+      throw new CommandExitException(2);
     }
     if (cl.hasOption(SoapCLI.O_AUTHTOKEN)) {
       ZAuthToken zat = ZAuthToken.fromJSONString(cl.getOptionValue(SoapCLI.O_AUTHTOKEN));
@@ -844,7 +844,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
 
     if (cl.hasOption('d') && cl.hasOption('D')) {
       console.printError("error: cannot specify both -d and -D at the same time");
-      throw new ExitCodeException(2);
+      throw new CommandExitException(2);
     }
     if (cl.hasOption('D')) {
       pu.setDebug(SoapDebugLevel.high);
@@ -854,7 +854,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
 
     if (!pu.useLdap() && cl.hasOption('m')) {
       console.printError("error: cannot specify -m when -l is not specified");
-      throw new ExitCodeException(2);
+      throw new CommandExitException(2);
     }
 
     if (cl.hasOption('t')) {
@@ -901,7 +901,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
         }
         if (cmd.isDeprecated()) {
           pu.console.println("This command has been deprecated.");
-          throw new ExitCodeException(1);
+          throw new CommandExitException(1);
         }
         if (pu.forceLdapButDontRequireUseLdapOption(cmd)) {
           pu.setUseLdap(true, false);
@@ -937,7 +937,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
       if (pu.verboseMode) {
         console.printStacktrace(e);
       }
-      throw new ExitCodeException(2);
+      throw new CommandExitException(2);
     }
   }
 

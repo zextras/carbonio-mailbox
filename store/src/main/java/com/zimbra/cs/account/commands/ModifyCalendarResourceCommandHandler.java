@@ -4,7 +4,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
-import com.zimbra.common.cli.ExitCodeException;
+import com.zimbra.common.cli.CommandExitException;
 
 class ModifyCalendarResourceCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
@@ -13,7 +13,7 @@ class ModifyCalendarResourceCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, ExitCodeException {
+  @Override public void handle(String[] args) throws ServiceException, ArgException, CommandExitException {
     provUtil.getProvisioning().modifyAttrs(provUtil.lookupCalendarResource(args[1]), provUtil.getMapAndCheck(args, 2, false), true);
   }
 }
