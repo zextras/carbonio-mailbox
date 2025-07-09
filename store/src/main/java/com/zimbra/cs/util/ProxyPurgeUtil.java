@@ -138,7 +138,7 @@ public class ProxyPurgeUtil {
    * @param outputformat format of the output in case of printing
    * @throws ServiceException
    */
-  private static void purgeAccounts(List<String> servers, List<String> accounts, boolean purge,
+  public static void purgeAccounts(List<String> servers, List<String> accounts, boolean purge,
       String outputformat) throws ServiceException, OutputFormatException, ExitCodeException {
 
     Provisioning prov = Provisioning.getInstance();
