@@ -11,6 +11,7 @@ import static com.zimbra.cs.util.proxyconfgen.ProxyConfVar.serverSource;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.DomainBy;
 import com.zimbra.common.account.ZAttrProvisioning;
+import com.zimbra.common.cli.ExitCodeException;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.CliUtil;
 import com.zimbra.common.util.Log;
@@ -2101,7 +2102,7 @@ public class ProxyConfGen {
     return validConf;
   }
 
-  public static int run(String[] args) throws ServiceException, ProxyConfException {
+  public static int run(String[] args) throws ServiceException, ProxyConfException, ExitCodeException {
     int exitCode = 0;
     CommandLine cl = parseArgs(args);
 
@@ -2214,12 +2215,7 @@ public class ProxyConfGen {
       overrideDefaultVars(cl);
 
       String clientCA = loadAllClientCertCA();
-      try {
-        writeClientCAtoFile(clientCA);
-      } catch (ProxyConfException e) {
-          LOG.error("ProxyConfException during format ssl.clientcertca.enabled", e);
-          throw new ProxyConfException(e.getMessage());
-      }
+      writeClientCAtoFile(clientCA);
 
       // cleanup DOMAIN_SSL_DIR
       deleteObsoleteCertificateKeyPairFromDomainCertDir(mDomainReverseProxyAttrs, mDryRun);
@@ -2681,7 +2677,7 @@ public class ProxyConfGen {
   }
 
   private static void writeClientCAtoFile(String clientCA)
-			throws ServiceException, ProxyConfException {
+			throws ServiceException, ExitCodeException {
     ProxyConfVar clientCAEnabledVar;
     final String keyword = "ssl.clientcertca.enabled";
 
@@ -2696,9 +2692,8 @@ public class ProxyConfGen {
               "is there valid client ca cert");
 
       if (isClientCertVerifyEnabled() || isDomainClientCertVerifyEnabled()) {
-        final String msg = "Client certificate verification is enabled but no client cert ca is provided";
-        LOG.error(msg);
-        throw new ProxyConfException(msg);
+        LOG.error("Client certificate verification is enabled but no client cert ca is provided");
+        throw new ExitCodeException(1);
       }
 
     } else {
@@ -2714,7 +2709,12 @@ public class ProxyConfGen {
       ProxyConfUtil.writeContentToFile(clientCA, getDefaultClientCertCaPath());
     }
     mConfVars.put(keyword, clientCAEnabledVar);
-    mVars.put(keyword, clientCAEnabledVar.confValue());
+    try {
+      mVars.put(keyword, clientCAEnabledVar.confValue());
+    } catch (ProxyConfException e) {
+      LOG.error("ProxyConfException during format ssl.clientcertca.enabled", e);
+      throw new ExitCodeException(1);
+    }
   }
 
   /** check whether client cert verify is enabled in server level */
@@ -2740,7 +2740,11 @@ public class ProxyConfGen {
   }
 
   public static void main(String[] args) throws ServiceException, ProxyConfException {
-    int exitCode = run(args);
-    System.exit(exitCode);
+		try {
+      final int exitCode = run(args);
+      System.exit(exitCode);
+    } catch (ExitCodeException e) {
+      System.exit(e.getExitCode());
+    }
   }
 }
