@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * @author schemers
@@ -85,6 +87,13 @@ public class ModifyDomain extends AdminDocumentHandler {
                 + "(or its aliases).");
       }
     }
+    // Note: Admin users can set any virtual hostname without restrictions
+
+    // Check for duplicate virtual hostnames across all domains (for all users)
+    final String[] gotVirtualHostNames = getVirtualHostnamesFromAttributes(attrs);
+    if (!Objects.isNull(gotVirtualHostNames) && !Arrays.equals(gotVirtualHostNames, new String[] {""})) {
+      checkForDuplicateVirtualHostnames(domain, gotVirtualHostNames, prov);
+    }
 
     // pass in true to checkImmutable
     prov.modifyAttrs(domain, attrs, true);
@@ -95,6 +104,21 @@ public class ModifyDomain extends AdminDocumentHandler {
 
     Element response = zsc.createElement(AdminConstants.MODIFY_DOMAIN_RESPONSE);
     GetDomain.encodeDomain(response, domain);
+    
+    // Add warning about duplicate virtual hostnames if any (for all users)
+    if (!Objects.isNull(gotVirtualHostNames) && !Arrays.equals(gotVirtualHostNames, new String[] {""})) {
+      Set<String> conflictingDomains = getConflictingDomains(domain, gotVirtualHostNames, prov);
+      if (!conflictingDomains.isEmpty()) {
+        Element warning = response.addElement("warning");
+        warning.addAttribute("type", "duplicate_virtual_hostname");
+        warning.addAttribute("message", 
+            "Virtual hostname modification for domain '" + domain.getName() + 
+            "' conflicts with existing virtual hostnames in domains: " + 
+            String.join(", ", conflictingDomains) + ". This may cause routing issues.");
+        warning.addAttribute("conflicting_domains", String.join(",", conflictingDomains));
+      }
+    }
+    
     return response;
   }
 
@@ -194,6 +218,59 @@ public class ModifyDomain extends AdminDocumentHandler {
     // 1. no domain based access manager backward compatibility issue
     // 2. we only want to check right if we are using pure ACL based access manager.
     checkRight(zsc, cos, Admin.R_assignCos);
+  }
+
+  /**
+   * Checks for duplicate virtual hostnames across all domains and logs a warning if found.
+   *
+   * @param currentDomain the domain being modified
+   * @param newVirtualHostnames the new virtual hostnames to check
+   * @param prov the provisioning instance
+   * @throws ServiceException if something goes wrong during the check
+   */
+  private void checkForDuplicateVirtualHostnames(Domain currentDomain, String[] newVirtualHostnames, Provisioning prov) throws ServiceException {
+    Set<String> conflictingDomains = getConflictingDomains(currentDomain, newVirtualHostnames, prov);
+    
+    if (!conflictingDomains.isEmpty()) {
+      ZimbraLog.security.warn(
+          "Virtual hostname modification for domain '%s' conflicts with existing virtual hostnames in domains: %s. " +
+          "This may cause routing issues.", 
+          currentDomain.getName(), 
+          String.join(", ", conflictingDomains));
+    }
+  }
+
+  /**
+   * Gets the set of domains that have conflicting virtual hostnames with the new virtual hostnames.
+   *
+   * @param currentDomain the domain being modified
+   * @param newVirtualHostnames the new virtual hostnames to check
+   * @param prov the provisioning instance
+   * @return Set of domain names that have conflicting virtual hostnames
+   * @throws ServiceException if something goes wrong during the check
+   */
+  private Set<String> getConflictingDomains(Domain currentDomain, String[] newVirtualHostnames, Provisioning prov) throws ServiceException {
+    Set<String> newVHostnames = new HashSet<>(Arrays.asList(newVirtualHostnames));
+    Set<String> conflictingDomains = new HashSet<>();
+    
+    List<Domain> allDomains = prov.getAllDomains();
+    for (Domain otherDomain : allDomains) {
+      // Skip the current domain being modified
+      if (otherDomain.getId().equals(currentDomain.getId())) {
+        continue;
+      }
+      
+      String[] otherVHostnames = otherDomain.getVirtualHostname();
+      if (otherVHostnames != null) {
+        for (String otherVHostname : otherVHostnames) {
+          if (otherVHostname != null && !otherVHostname.isEmpty() && newVHostnames.contains(otherVHostname)) {
+            conflictingDomains.add(otherDomain.getName());
+          }
+        }
+      }
+    }
+    
+    return conflictingDomains;
   }
 
   @Override
