@@ -24,6 +24,7 @@
     <dependency>
       <artifactId>httpmime</artifactId>
       <groupId>org.apache.httpcomponents</groupId>
+      <scope>runtime</scope>
     </dependency>
 
     <dependency>
