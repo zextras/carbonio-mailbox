@@ -23,7 +23,7 @@ import com.zimbra.common.util.CliUtil;
 import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.UsageException;
+import com.zimbra.cs.InvalidCommandException;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.GranteeType;
 import com.zimbra.cs.account.accesscontrol.Right.RightType;
@@ -166,11 +166,11 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
     return useLdap;
   }
 
-  public void usage() throws UsageException {
+  public void usage() throws InvalidCommandException {
     internalUsage(null);
   }
 
-  private void internalUsage(Command.Via violatedVia) throws UsageException {
+  private void internalUsage(Command.Via violatedVia) throws InvalidCommandException {
     boolean givenHelp = false;
     if (command != null) {
       if (violatedVia == null) {
@@ -194,7 +194,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
     }
     if (givenHelp) {
       console.println("For general help, type : zmprov --help");
-      throw new UsageException();
+      throw new InvalidCommandException();
     }
     console.println("");
     console.println("zmprov [args] [cmd] [cmd-args ...]");
@@ -226,7 +226,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
             + " \"zmprov_safeguarded_attrs\"");
     console.println("");
     doHelp(null);
-    throw new UsageException();
+    throw new InvalidCommandException();
   }
 
   private Command lookupCommand(String command) {
@@ -303,7 +303,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
   }
 
   private boolean execute(String[] args)
-			throws ServiceException, ArgException, IOException, HttpException, UsageException, ExitCodeException {
+			throws ServiceException, ArgException, IOException, HttpException, InvalidCommandException, ExitCodeException {
     command = lookupCommand(args[0]);
     if (command == null) {
       return false;
@@ -668,7 +668,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
   }
 
   private void interactive(BufferedReader in)
-			throws IOException, UsageException, ExitCodeException {
+			throws IOException, InvalidCommandException, ExitCodeException {
     cliReader = in;
     interactiveMode = true;
     while (true) {
@@ -716,7 +716,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
   public static void main(String[] args) throws IOException, ServiceException {
     try {
       run(new Console(System.out, System.err), args);
-    } catch (UsageException e) {
+    } catch (InvalidCommandException e) {
       System.exit(1);
     } catch (ExitCodeException e) {
       System.exit(e.getExitCode());
@@ -725,7 +725,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
   }
 
   public static void run(Console console, String[] args) throws IOException, ServiceException,
-			UsageException, ExitCodeException {
+      InvalidCommandException, ExitCodeException {
     CliUtil.setCliSoapHttpTransportTimeout();
     ZimbraLog.toolSetupLog4jConsole("INFO", true, false); // send all logs to stderr
     SocketFactories.registerProtocols();
@@ -780,7 +780,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
     if (err || cl.hasOption('h')) {
       try {
         pu.usage();
-      } catch (UsageException e) {
+      } catch (InvalidCommandException e) {
         throw new ExitCodeException(1);
       }
     }

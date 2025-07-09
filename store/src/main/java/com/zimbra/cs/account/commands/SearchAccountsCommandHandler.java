@@ -1,7 +1,7 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.UsageException;
+import com.zimbra.cs.InvalidCommandException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Alias;
 import com.zimbra.cs.account.ArgException;
@@ -26,12 +26,12 @@ class SearchAccountsCommandHandler implements CommandHandler {
     this.dumper = dumper;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException, UsageException {
+  @Override public void handle(String[] args) throws ServiceException, ArgException, InvalidCommandException {
     doSearchAccounts(args);
   }
 
 
-  private void doSearchAccounts(String[] args) throws ServiceException, ArgException, UsageException {
+  private void doSearchAccounts(String[] args) throws ServiceException, ArgException, InvalidCommandException {
     boolean verbose = false;
     int i = 1;
 

@@ -1,7 +1,7 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.UsageException;
+import com.zimbra.cs.InvalidCommandException;
 import com.zimbra.cs.account.CalendarResource;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
@@ -23,11 +23,11 @@ class SearchCalendarResourcesCommandHandler implements CommandHandler {
     this.dumper = dumper;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, UsageException {
+  @Override public void handle(String[] args) throws ServiceException, InvalidCommandException {
     doSearchCalendarResources(args);
   }
 
-  private void doSearchCalendarResources(String[] args) throws ServiceException, UsageException {
+  private void doSearchCalendarResources(String[] args) throws ServiceException, InvalidCommandException {
 
     boolean verbose = false;
     int i = 1;

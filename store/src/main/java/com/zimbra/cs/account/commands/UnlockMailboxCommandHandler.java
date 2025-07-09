@@ -7,7 +7,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.BackupConstants;
 import com.zimbra.common.soap.SoapHttpTransport;
-import com.zimbra.cs.UsageException;
+import com.zimbra.cs.InvalidCommandException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Console;
@@ -30,12 +30,12 @@ class UnlockMailboxCommandHandler implements CommandHandler {
   }
 
   @Override public void handle(String[] args)
-			throws ServiceException, UsageException, ExitCodeException {
+			throws ServiceException, InvalidCommandException, ExitCodeException {
     doUnlockMailbox(args);
   }
 
   private void doUnlockMailbox(String[] args)
-			throws ServiceException, UsageException, ExitCodeException {
+			throws ServiceException, InvalidCommandException, ExitCodeException {
     String accountVal = null;
     if (args.length > 1) {
       accountVal = args[1];

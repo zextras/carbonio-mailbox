@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.db;
 
-import com.zimbra.cs.UsageException;
+import com.zimbra.cs.InvalidCommandException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -260,7 +260,7 @@ public class MySQL extends Db {
 			CommandLine cl = null;
 			try {
 				cl = Versions.parseCmdlineArgs(args, options);
-			} catch (UsageException e) {
+			} catch (InvalidCommandException e) {
           System.exit(1);
 			}
 

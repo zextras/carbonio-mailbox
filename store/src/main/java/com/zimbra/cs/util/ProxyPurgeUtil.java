@@ -113,12 +113,7 @@ public class ProxyPurgeUtil {
       outputFormat = "[%1$s] %2$s -- %3$s";
     }
 
-    try {
-      purgeAccounts(servers, accounts, purge, outputFormat);
-    } catch (OutputFormatException e) {
-      LOG.error(e.getMessage());
-      throw new ExitCodeException(1);
-    }
+    purgeAccounts(servers, accounts, purge, outputFormat);
   }
   public static void main(String[] args) throws ServiceException {
 		try {
@@ -139,7 +134,7 @@ public class ProxyPurgeUtil {
    * @throws ServiceException
    */
   public static void purgeAccounts(List<String> servers, List<String> accounts, boolean purge,
-      String outputformat) throws ServiceException, OutputFormatException, ExitCodeException {
+      String outputformat) throws ServiceException, ExitCodeException {
 
     Provisioning prov = Provisioning.getInstance();
 
@@ -152,7 +147,8 @@ public class ProxyPurgeUtil {
     if (!purge) {
       // the outputformat must be supplied.
       if (outputformat == null || outputformat.length() == 0) {
-        throw new OutputFormatException("outputformat must be supplied for info");
+        LOG.error("outputformat must be supplied for info");
+        throw new ExitCodeException(1);
       }
     }
 
@@ -480,11 +476,5 @@ public class ProxyPurgeUtil {
     System.out.println(" ");
   }
 
-  public static class OutputFormatException extends Exception {
-
-    public OutputFormatException(String s) {
-      super(s);
-    }
-  }
 }
 

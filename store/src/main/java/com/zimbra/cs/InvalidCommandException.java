@@ -6,8 +6,8 @@
 
 package com.zimbra.cs;
 
-public class UsageException extends Exception {
+public class InvalidCommandException extends Exception {
 
-	public UsageException() {
+	public InvalidCommandException() {
 	}
 }

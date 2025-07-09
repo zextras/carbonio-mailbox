@@ -1,7 +1,7 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.UsageException;
+import com.zimbra.cs.InvalidCommandException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 
@@ -14,11 +14,11 @@ class GetDomainCommandHandler implements CommandHandler {
     this.dumper = dumper;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, UsageException {
+  @Override public void handle(String[] args) throws ServiceException, InvalidCommandException {
     doGetDomain(args);
   }
 
-  private void doGetDomain(String[] args) throws ServiceException, UsageException {
+  private void doGetDomain(String[] args) throws ServiceException, InvalidCommandException {
     boolean applyDefault = true;
 
     int i = 1;

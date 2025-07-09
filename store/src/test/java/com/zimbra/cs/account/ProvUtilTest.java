@@ -6,7 +6,7 @@
 
 package com.zimbra.cs.account;
 
-import com.zimbra.cs.UsageException;
+import com.zimbra.cs.InvalidCommandException;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;
@@ -21,6 +21,6 @@ class ProvUtilTest {
 
 		final Console console = new Console(stdout, stderr);
 
-		Assertions.assertThrows(UsageException.class, () -> new ProvUtil(console, Map.of()).usage());
+		Assertions.assertThrows(InvalidCommandException.class, () -> new ProvUtil(console, Map.of()).usage());
 	}
 }

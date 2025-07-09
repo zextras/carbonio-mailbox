@@ -1,7 +1,7 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.UsageException;
+import com.zimbra.cs.InvalidCommandException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Group;
@@ -19,11 +19,11 @@ class GetAllDistributionListsCommandHandler implements CommandHandler {
     this.dumper = dumper;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, UsageException {
+  @Override public void handle(String[] args) throws ServiceException, InvalidCommandException {
     doGetAllDistributionLists(args);
   }
 
-  private void doGetAllDistributionLists(String[] args) throws ServiceException, UsageException {
+  private void doGetAllDistributionLists(String[] args) throws ServiceException, InvalidCommandException {
     String d = null;
     boolean verbose = false;
     var console = provUtil.getConsole();

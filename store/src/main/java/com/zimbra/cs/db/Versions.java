@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.db;
 
-import com.zimbra.cs.UsageException;
+import com.zimbra.cs.InvalidCommandException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -88,7 +88,7 @@ public final class Versions {
         formatter.printHelp(Versions.class.getName(), options);
     }
 
-    static CommandLine parseCmdlineArgs(String[] args, Options options) throws UsageException {
+    static CommandLine parseCmdlineArgs(String[] args, Options options) throws InvalidCommandException {
         CommandLineParser parser = new GnuParser();
 
         // Loose convention for naming options:
@@ -111,7 +111,7 @@ public final class Versions {
 
         if (err || cl.hasOption("h")) {
             usage(options);
-            throw new UsageException();
+            throw new InvalidCommandException();
         }
 
         return cl;
