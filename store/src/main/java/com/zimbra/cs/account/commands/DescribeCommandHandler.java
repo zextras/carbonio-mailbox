@@ -2,7 +2,7 @@ package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.SetUtil;
-import com.zimbra.cs.account.ArgException;
+import com.zimbra.cs.InvalidCommandException;
 import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.AttributeInfo;
 import com.zimbra.cs.account.AttributeManager;
@@ -24,11 +24,11 @@ class DescribeCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException {
+  @Override public void handle(String[] args) throws ServiceException, InvalidCommandException {
     doDescribe(args);
   }
 
-  private void doDescribe(String[] args) throws ServiceException {
+  private void doDescribe(String[] args) throws ServiceException, InvalidCommandException {
     DescribeArgs descArgs = null;
     try {
       descArgs = DescribeArgs.parseDescribeArgs(args);
@@ -151,7 +151,7 @@ class DescribeCommandHandler implements CommandHandler {
     return sb.substring(0, sb.length() - 1); // trim the ending ,
   }
 
-  private void descAttrsUsage(Exception e) {
+  private void descAttrsUsage(Exception e) throws InvalidCommandException {
     var console = provUtil.getConsole();
     console.println(e.getMessage() + "\n");
 

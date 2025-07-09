@@ -11,6 +11,7 @@ import static com.zimbra.cs.util.proxyconfgen.ProxyConfVar.serverSource;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.DomainBy;
 import com.zimbra.common.account.ZAttrProvisioning;
+import com.zimbra.common.cli.CommandExitException;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.CliUtil;
 import com.zimbra.common.util.Log;
@@ -2101,7 +2102,7 @@ public class ProxyConfGen {
     return validConf;
   }
 
-  public static int createConf(String[] args) throws ServiceException, ProxyConfException {
+  public static int run(String[] args) throws ServiceException, ProxyConfException, CommandExitException {
     int exitCode = 0;
     CommandLine cl = parseArgs(args);
 
@@ -2675,8 +2676,8 @@ public class ProxyConfGen {
     }
   }
 
-  private static void writeClientCAtoFile(String clientCA) throws ServiceException {
-    int exitCode;
+  private static void writeClientCAtoFile(String clientCA)
+			throws ServiceException, CommandExitException {
     ProxyConfVar clientCAEnabledVar;
     final String keyword = "ssl.clientcertca.enabled";
 
@@ -2692,8 +2693,7 @@ public class ProxyConfGen {
 
       if (isClientCertVerifyEnabled() || isDomainClientCertVerifyEnabled()) {
         LOG.error("Client certificate verification is enabled but no client cert ca is provided");
-        exitCode = 1;
-        System.exit(exitCode);
+        throw new CommandExitException(1);
       }
 
     } else {
@@ -2713,7 +2713,7 @@ public class ProxyConfGen {
       mVars.put(keyword, clientCAEnabledVar.confValue());
     } catch (ProxyConfException e) {
       LOG.error("ProxyConfException during format ssl.clientcertca.enabled", e);
-      System.exit(1);
+      throw new CommandExitException(1);
     }
   }
 
@@ -2740,7 +2740,11 @@ public class ProxyConfGen {
   }
 
   public static void main(String[] args) throws ServiceException, ProxyConfException {
-    int exitCode = createConf(args);
-    System.exit(exitCode);
+		try {
+      final int exitCode = run(args);
+      System.exit(exitCode);
+    } catch (CommandExitException e) {
+      System.exit(e.getExitCode());
+    }
   }
 }
