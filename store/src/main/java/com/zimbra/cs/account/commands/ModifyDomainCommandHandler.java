@@ -27,7 +27,7 @@ class ModifyDomainCommandHandler implements CommandHandler {
 
     if (!conflictingDomains.isEmpty()) {
       provUtil.getConsole().println(
-              "Virtual hostname modification for domain '" + domain.getName() +
+              "WARNING: Virtual hostname modification for domain '" + domain.getName() +
                       "' conflicts with existing virtual hostnames in domains: " +
                       String.join(", ", conflictingDomains) + ". This may cause routing issues.");
     }
