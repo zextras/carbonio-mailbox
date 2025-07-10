@@ -1,5 +1,6 @@
 package com.zimbra.cs.account.commands;
 
+import com.zimbra.common.cli.CommandExitException;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
@@ -15,7 +16,7 @@ class ModifyDomainCommandHandler implements CommandHandler {
   }
 
   @Override 
-  public void handle(String[] args) throws ServiceException, ArgException {
+  public void handle(String[] args) throws ServiceException, ArgException, CommandExitException {
     var provisioning = provUtil.getProvisioning();
     var domain = provUtil.lookupDomain(args[1]);
     var attributes = provUtil.getMapAndCheck(args, 2, false);
