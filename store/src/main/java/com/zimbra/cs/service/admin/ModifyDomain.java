@@ -70,6 +70,8 @@ public class ModifyDomain extends AdminDocumentHandler {
           Provisioning.A_zimbraDomainName + " cannot be changed.", null);
     }
 
+    final String[] gotVirtualHostNames = getVirtualHostnamesFromAttributes(attrs);
+
     if (!hasAdminRightAndCanModifyConfig(adminAccessControl, prov.getConfig())) {
       if (!Objects.isNull(gotPublicServiceHostname)
           && !(isPublicServiceHostnameCompliant(domain, gotPublicServiceHostname))) {
@@ -77,7 +79,6 @@ public class ModifyDomain extends AdminDocumentHandler {
             "Public service hostname must be a valid FQDN and compatible with current domain "
                 + "(or its aliases).");
       }
-      final String[] gotVirtualHostNames = getVirtualHostnamesFromAttributes(attrs);
       if (!(Objects.isNull(gotVirtualHostNames))
           && !(Arrays.equals(gotVirtualHostNames, new String[] {""}))
           && !(areVirtualHostnamesCompliant(
@@ -86,13 +87,6 @@ public class ModifyDomain extends AdminDocumentHandler {
             "Virtual hostnames must be valid FQDNs and compatible with current domain "
                 + "(or its aliases).");
       }
-    }
-    // Note: Admin users can set any virtual hostname without restrictions
-
-    // Check for duplicate virtual hostnames across all domains (for all users)
-    final String[] gotVirtualHostNames = getVirtualHostnamesFromAttributes(attrs);
-    if (!Objects.isNull(gotVirtualHostNames) && !Arrays.equals(gotVirtualHostNames, new String[] {""})) {
-      checkForDuplicateVirtualHostnames(domain, gotVirtualHostNames, prov);
     }
 
     // pass in true to checkImmutable
@@ -105,7 +99,7 @@ public class ModifyDomain extends AdminDocumentHandler {
     Element response = zsc.createElement(AdminConstants.MODIFY_DOMAIN_RESPONSE);
     GetDomain.encodeDomain(response, domain);
     
-    // Add warning about duplicate virtual hostnames if any (for all users)
+    // Add warning about duplicate virtual hostnames if any
     if (!Objects.isNull(gotVirtualHostNames) && !Arrays.equals(gotVirtualHostNames, new String[] {""})) {
       Set<String> conflictingDomains = getConflictingDomains(domain, gotVirtualHostNames, prov);
       if (!conflictingDomains.isEmpty()) {
@@ -184,7 +178,7 @@ public class ModifyDomain extends AdminDocumentHandler {
    * @param attrs attributes as from {@link com.zimbra.soap.admin.message.ModifyDomainRequest}
    * @return array of virtualHostnames provided in attrs
    */
-  private String[] getVirtualHostnamesFromAttributes(Map<String, Object> attrs) {
+  public static String[] getVirtualHostnamesFromAttributes(Map<String, Object> attrs) {
     final Object vHostNames = attrs.get(Provisioning.A_zimbraVirtualHostname);
     if (vHostNames instanceof String) {
       return new String[] {(String) vHostNames};
@@ -221,26 +215,6 @@ public class ModifyDomain extends AdminDocumentHandler {
   }
 
   /**
-   * Checks for duplicate virtual hostnames across all domains and logs a warning if found.
-   *
-   * @param currentDomain the domain being modified
-   * @param newVirtualHostnames the new virtual hostnames to check
-   * @param prov the provisioning instance
-   * @throws ServiceException if something goes wrong during the check
-   */
-  private void checkForDuplicateVirtualHostnames(Domain currentDomain, String[] newVirtualHostnames, Provisioning prov) throws ServiceException {
-    Set<String> conflictingDomains = getConflictingDomains(currentDomain, newVirtualHostnames, prov);
-    
-    if (!conflictingDomains.isEmpty()) {
-      ZimbraLog.security.warn(
-          "Virtual hostname modification for domain '%s' conflicts with existing virtual hostnames in domains: %s. " +
-          "This may cause routing issues.", 
-          currentDomain.getName(), 
-          String.join(", ", conflictingDomains));
-    }
-  }
-
-  /**
    * Gets the set of domains that have conflicting virtual hostnames with the new virtual hostnames.
    *
    * @param currentDomain the domain being modified
@@ -249,13 +223,12 @@ public class ModifyDomain extends AdminDocumentHandler {
    * @return Set of domain names that have conflicting virtual hostnames
    * @throws ServiceException if something goes wrong during the check
    */
-  private Set<String> getConflictingDomains(Domain currentDomain, String[] newVirtualHostnames, Provisioning prov) throws ServiceException {
+  public static Set<String> getConflictingDomains(Domain currentDomain, String[] newVirtualHostnames, Provisioning prov) throws ServiceException {
     Set<String> newVHostnames = new HashSet<>(Arrays.asList(newVirtualHostnames));
     Set<String> conflictingDomains = new HashSet<>();
     
     List<Domain> allDomains = prov.getAllDomains();
     for (Domain otherDomain : allDomains) {
-      // Skip the current domain being modified
       if (otherDomain.getId().equals(currentDomain.getId())) {
         continue;
       }
