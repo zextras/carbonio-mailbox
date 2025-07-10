@@ -8,8 +8,7 @@
  */
 package com.zimbra.cs.service.admin;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
@@ -76,6 +75,21 @@ public class CreateDomain extends AdminDocumentHandler {
 
 	    Element response = zsc.createElement(AdminConstants.CREATE_DOMAIN_RESPONSE);
 	    GetDomain.encodeDomain(response, domain);
+
+		final String[] gotVirtualHostNames = DomainUtils.getVirtualHostnamesFromAttributes(attrs);
+		// Add warning about duplicate virtual hostnames if any
+		if (!Objects.isNull(gotVirtualHostNames) && !Arrays.equals(gotVirtualHostNames, new String[] {""})) {
+			Set<String> conflictingDomains = DomainUtils.getDomainsWithConflictingVHosts(domain, gotVirtualHostNames, prov);
+			if (!conflictingDomains.isEmpty()) {
+				Element warning = response.addElement("warning");
+				warning.addAttribute("type", "duplicate_virtual_hostname");
+				warning.addAttribute("message",
+						"Virtual hostname modification for domain '" + domain.getName() +
+								"' conflicts with existing virtual hostnames in domains: " +
+								String.join(", ", conflictingDomains) + ". This may cause routing issues.");
+				warning.addAttribute("conflicting_domains", String.join(",", conflictingDomains));
+			}
+		}
 
 	    return response;
 	}

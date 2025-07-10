@@ -15,7 +15,7 @@ class ModifyDomainCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override 
+  @Override
   public void handle(String[] args) throws ServiceException, ArgException, CommandExitException {
     var provisioning = provUtil.getProvisioning();
     var attributes = provUtil.getMapAndCheck(args, 2, false);
