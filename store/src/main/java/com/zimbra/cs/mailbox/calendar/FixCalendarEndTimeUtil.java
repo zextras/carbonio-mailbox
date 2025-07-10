@@ -21,6 +21,9 @@ import com.zimbra.common.soap.SoapFaultException;
 import com.zimbra.common.util.CliUtil;
 import com.zimbra.cs.util.SoapCLI;
 
+/**
+ * Used in fixcalendtime.sh: https://github.com/zextras/carbonio-core-utils
+ */
 public class FixCalendarEndTimeUtil extends SoapCLI {
 
     protected static final String O_ACCOUNT = "a";

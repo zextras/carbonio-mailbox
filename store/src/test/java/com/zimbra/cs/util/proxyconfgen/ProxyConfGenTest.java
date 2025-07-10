@@ -1,7 +1,6 @@
 package com.zimbra.cs.util.proxyconfgen;
 
-import static com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import java.io.File;
@@ -47,14 +46,14 @@ class ProxyConfGenTest {
 
   @Test
   void shouldLogInfoByDefault() throws Exception {
-    catchSystemExit(() -> ProxyConfGen.main(new String[] {""}));
+    ProxyConfGen.run(new String[] {""});
     final Logger rootLogger = org.apache.logging.log4j.LogManager.getRootLogger();
     Assertions.assertEquals(Level.INFO, rootLogger.getLevel());
   }
 
   @Test
   void shouldLogDebugWhenVerbose() throws Exception {
-    catchSystemExit(() -> ProxyConfGen.main(new String[] {"-v"}));
+    ProxyConfGen.run(new String[] {"-v"});
     final Logger rootLogger = org.apache.logging.log4j.LogManager.getRootLogger();
     Assertions.assertEquals(Level.DEBUG, rootLogger.getLevel());
   }

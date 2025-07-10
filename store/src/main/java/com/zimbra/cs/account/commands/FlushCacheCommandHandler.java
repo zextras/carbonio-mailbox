@@ -2,7 +2,7 @@ package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.ArgException;
+import com.zimbra.cs.InvalidCommandException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.account.Provisioning;
@@ -15,11 +15,11 @@ class FlushCacheCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException {
+  @Override public void handle(String[] args) throws ServiceException, InvalidCommandException {
     doFlushCache(args);
   }
 
-  private void doFlushCache(String[] args) throws ServiceException {
+  private void doFlushCache(String[] args) throws ServiceException, InvalidCommandException {
     if (!(provUtil.getProvisioning() instanceof SoapProvisioning)) {
       provUtil.throwSoapOnly();
     }

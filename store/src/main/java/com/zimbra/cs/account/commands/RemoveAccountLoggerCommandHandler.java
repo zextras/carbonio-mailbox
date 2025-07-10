@@ -1,15 +1,12 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.InvalidCommandException;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.Command;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.account.soap.SoapProvisioning;
-import org.apache.http.HttpException;
-
-import java.io.IOException;
 
 class RemoveAccountLoggerCommandHandler implements CommandHandler {
   private static final Command command = Command.REMOVE_ACCOUNT_LOGGER;
@@ -19,7 +16,7 @@ class RemoveAccountLoggerCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException {
+  @Override public void handle(String[] args) throws ServiceException, InvalidCommandException {
     var alo = AccountLoggerOptions.parseAccountLoggerOptions(args);
     if (!command.checkArgsLength(alo.args)) {
       provUtil.usage();

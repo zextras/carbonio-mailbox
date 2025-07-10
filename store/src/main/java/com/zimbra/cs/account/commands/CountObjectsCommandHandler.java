@@ -1,6 +1,7 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.InvalidCommandException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.ProvUtil;
@@ -13,11 +14,11 @@ class CountObjectsCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException {
+  @Override public void handle(String[] args) throws ServiceException, InvalidCommandException {
     doCountObjects(args);
   }
 
-  private void doCountObjects(String[] args) throws ServiceException {
+  private void doCountObjects(String[] args) throws ServiceException, InvalidCommandException {
 
     CountObjectsType type = CountObjectsType.fromString(args[1]);
 

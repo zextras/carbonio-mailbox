@@ -38,7 +38,7 @@ public class ProvUtilCommandRunner {
     /** Install a shutdown hook that prints stdout and stderr if command calls System.exit()*/
     Runtime.getRuntime().addShutdownHook(hook);
     try {
-      ProvUtil.main(new Console(outputStream, errorStream), commandWithArgs);
+      ProvUtil.run(new Console(outputStream, errorStream), commandWithArgs);
       /** Remove the 'prints stdout and stderr' shutdown hook if command completes successfully */
       Runtime.getRuntime().removeShutdownHook(hook);
       return new CommandOutput(
