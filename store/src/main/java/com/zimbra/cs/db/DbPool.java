@@ -267,14 +267,6 @@ public class DbPool {
         boolean defAutoCommit = false, defReadOnly = false;
         new PoolableConnectionFactory(cfac, sConnectionPool, null, null, defReadOnly, defAutoCommit);
 
-        try {
-            Class.forName(pconfig.mDriverClassName).newInstance(); //derby requires the .newInstance() call
-            Class.forName("org.apache.commons.dbcp.PoolingDriver");
-        } catch (Exception e) {
-            ZimbraLog.system.fatal("can't instantiate DB driver/pool class", e);
-            System.exit(1);
-        }
-
         PoolingDataSource pds = new PoolingDataSource(sConnectionPool);
         pds.setAccessToUnderlyingConnectionAllowed(true);
 
