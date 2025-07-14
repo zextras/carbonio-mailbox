@@ -3,6 +3,7 @@ package com.zimbra.cs.service.admin;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.common.soap.Element;
 
 import java.util.*;
 
@@ -10,6 +11,13 @@ public class DomainUtils {
     private DomainUtils() {
         // Utility class
     }
+
+    private static final String DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TEMPLATE = 
+        "Virtual hostname modification for domain '%s' conflicts with existing virtual hostnames in domains: %s. This may cause routing issues.";
+
+    private static final String CONSOLE_WARNING_PREFIX = "WARNING: ";
+
+    private static final String DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TYPE = "duplicate_virtual_hostname";
 
     /**
      * Returns virtual hostnames from request attributes. Virtual hostnames can be one or many
@@ -59,5 +67,31 @@ public class DomainUtils {
       }
 
       return conflictingDomains;
+    }
+
+    /**
+     * Creates a warning element for duplicate virtual hostnames.
+     *
+     * @param response the response element to add the warning to
+     * @param domain the domain being modified
+     * @param conflictingDomains set of domains with conflicting virtual hostnames
+     */
+    public static void addDuplicateVirtualHostnameWarning(Element response, Domain domain, Set<String> conflictingDomains) {
+      Element warning = response.addElement("warning");
+      warning.addAttribute("type", DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TYPE);
+      warning.addAttribute("message",
+          String.format(DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TEMPLATE, domain.getName(), String.join(", ", conflictingDomains)));
+      warning.addAttribute("conflicting_domains", String.join(",", conflictingDomains));
+    }
+
+    /**
+     * Creates a console warning message for duplicate virtual hostnames.
+     *
+     * @param domain the domain being modified
+     * @param conflictingDomains set of domains with conflicting virtual hostnames
+     * @return the warning message string
+     */
+    public static String getDuplicateVirtualHostnameWarningMessage(Domain domain, Set<String> conflictingDomains) {
+      return CONSOLE_WARNING_PREFIX + String.format(DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TEMPLATE, domain.getName(), String.join(", ", conflictingDomains));
     }
 }

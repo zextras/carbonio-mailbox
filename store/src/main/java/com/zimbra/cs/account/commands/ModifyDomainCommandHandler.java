@@ -26,10 +26,7 @@ class ModifyDomainCommandHandler implements CommandHandler {
     var virtualHostnames = DomainUtils.getVirtualHostnamesFromAttributes(attributes);
     var conflictingDomains = DomainUtils.getDomainsWithConflictingVHosts(domain, virtualHostnames, provisioning);
     if (!conflictingDomains.isEmpty()) {
-      provUtil.getConsole().println(
-              "WARNING: Virtual hostname modification for domain '" + domain.getName() +
-                      "' conflicts with existing virtual hostnames in domains: " +
-                      String.join(", ", conflictingDomains) + ". This may cause routing issues.");
+      provUtil.getConsole().println(DomainUtils.getDuplicateVirtualHostnameWarningMessage(domain, conflictingDomains));
     }
   }
 }

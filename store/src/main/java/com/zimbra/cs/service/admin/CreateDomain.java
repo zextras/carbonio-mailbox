@@ -81,13 +81,7 @@ public class CreateDomain extends AdminDocumentHandler {
 		if (!Objects.isNull(gotVirtualHostNames) && !Arrays.equals(gotVirtualHostNames, new String[] {""})) {
 			Set<String> conflictingDomains = DomainUtils.getDomainsWithConflictingVHosts(domain, gotVirtualHostNames, prov);
 			if (!conflictingDomains.isEmpty()) {
-				Element warning = response.addElement("warning");
-				warning.addAttribute("type", "duplicate_virtual_hostname");
-				warning.addAttribute("message",
-						"Virtual hostname modification for domain '" + domain.getName() +
-								"' conflicts with existing virtual hostnames in domains: " +
-								String.join(", ", conflictingDomains) + ". This may cause routing issues.");
-				warning.addAttribute("conflicting_domains", String.join(",", conflictingDomains));
+				DomainUtils.addDuplicateVirtualHostnameWarning(response, domain, conflictingDomains);
 			}
 		}
 
