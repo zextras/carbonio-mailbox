@@ -47,6 +47,10 @@ public class DomainUtils {
      * @throws ServiceException if something goes wrong during the check
      */
     public static Set<String> getDomainsWithConflictingVHosts(Domain currentDomain, String[] newVirtualHostnames, Provisioning prov) throws ServiceException {
+      if (newVirtualHostnames == null || newVirtualHostnames.length == 0) {
+        return new HashSet<>();
+      }
+      
       Set<String> newVHostnames = new HashSet<>(Arrays.asList(newVirtualHostnames));
       Set<String> conflictingDomains = new HashSet<>();
 

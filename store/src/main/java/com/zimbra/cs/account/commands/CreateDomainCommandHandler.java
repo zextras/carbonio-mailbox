@@ -21,13 +21,15 @@ class CreateDomainCommandHandler implements CommandHandler {
     
     var domain = provisioning.createDomain(args[1], attributes);
 
-    var virtualHostnames = DomainUtils.getVirtualHostnamesFromAttributes(attributes);
-    var conflictingDomains = DomainUtils.getDomainsWithConflictingVHosts(domain, virtualHostnames, provisioning);
-
     var console = provUtil.getConsole();
     console.println(domain.getId());
-    if (!conflictingDomains.isEmpty()) {
-      console.println(DomainUtils.getDuplicateVirtualHostnameWarningMessage(domain, conflictingDomains));
-    }
+
+    var virtualHostnames = DomainUtils.getVirtualHostnamesFromAttributes(attributes);
+    if (virtualHostnames != null && virtualHostnames.length > 0) {
+      var conflictingDomains = DomainUtils.getDomainsWithConflictingVHosts(domain, virtualHostnames, provisioning);
+      if (!conflictingDomains.isEmpty()) {
+        console.println(DomainUtils.getDuplicateVirtualHostnameWarningMessage(domain, conflictingDomains));
+      }
+    } 
   }
 }

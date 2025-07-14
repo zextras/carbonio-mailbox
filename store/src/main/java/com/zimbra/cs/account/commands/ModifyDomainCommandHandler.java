@@ -24,9 +24,11 @@ class ModifyDomainCommandHandler implements CommandHandler {
     provisioning.modifyAttrs(domain, attributes, true);
 
     var virtualHostnames = DomainUtils.getVirtualHostnamesFromAttributes(attributes);
-    var conflictingDomains = DomainUtils.getDomainsWithConflictingVHosts(domain, virtualHostnames, provisioning);
-    if (!conflictingDomains.isEmpty()) {
-      provUtil.getConsole().println(DomainUtils.getDuplicateVirtualHostnameWarningMessage(domain, conflictingDomains));
+    if (virtualHostnames != null && virtualHostnames.length > 0) {
+      var conflictingDomains = DomainUtils.getDomainsWithConflictingVHosts(domain, virtualHostnames, provisioning);
+      if (!conflictingDomains.isEmpty()) {
+        provUtil.getConsole().println(DomainUtils.getDuplicateVirtualHostnameWarningMessage(domain, conflictingDomains));
+      }
     }
   }
 }
