@@ -28,9 +28,7 @@ class CreateDomainCommandHandler implements CommandHandler {
     if (virtualHostnames != null && virtualHostnames.length > 0) {
       var conflictingDomains = DomainUtils.getDomainsWithConflictingVHosts(domain, virtualHostnames, provisioning);
       if (!conflictingDomains.isEmpty()) {
-        // For simplicity, use the first virtual hostname in the warning
-        String virtualHostname = virtualHostnames[0];
-        console.println(DomainUtils.getDuplicateVirtualHostnameWarningMessage(domain, conflictingDomains, virtualHostname));
+        console.println(DomainUtils.getDuplicateVirtualHostnameWarningMessage(domain, conflictingDomains));
       }
     } 
   }

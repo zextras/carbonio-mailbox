@@ -100,9 +100,9 @@ public class ModifyDomain extends AdminDocumentHandler {
     
     // Add warning about duplicate virtual hostnames if any
     if (!Objects.isNull(gotVirtualHostNames) && !Arrays.equals(gotVirtualHostNames, new String[] {""})) {
-      Set<String> conflictingDomains = DomainUtils.getDomainsWithConflictingVHosts(domain, gotVirtualHostNames, prov);
+      Map<String, Set<String>> conflictingDomains = DomainUtils.getDomainsWithConflictingVHosts(domain, gotVirtualHostNames, prov);
       if (!conflictingDomains.isEmpty()) {
-        DomainUtils.addDuplicateVirtualHostnameWarning(response, domain, conflictingDomains);
+        DomainUtils.addDuplicateVirtualHostnameWarning(response, conflictingDomains);
       }
     }
     

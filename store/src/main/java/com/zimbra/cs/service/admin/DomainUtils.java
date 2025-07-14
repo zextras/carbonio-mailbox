@@ -13,7 +13,7 @@ public class DomainUtils {
     }
 
     private static final String DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TEMPLATE = 
-        "Virtual hostname '%s' conflicts with existing virtual hostnames in domains: %s. This may cause routing issues.";
+        "Virtual hostname conflicts detected. The following virtual hostnames are already in use by other domains: %s. This may cause routing issues.";
 
     private static final String CONSOLE_WARNING_PREFIX = "WARNING: ";
 
@@ -43,61 +43,78 @@ public class DomainUtils {
      * @param currentDomain the domain being modified
      * @param newVirtualHostnames the new virtual hostnames to check
      * @param prov the provisioning instance
-     * @return Set of domain names that have conflicting virtual hostnames
+     * @return Map of conflicting domain names to their conflicting virtual hostnames
      * @throws ServiceException if something goes wrong during the check
      */
-    public static Set<String> getDomainsWithConflictingVHosts(Domain currentDomain, String[] newVirtualHostnames, Provisioning prov) throws ServiceException {
-      if (newVirtualHostnames == null || newVirtualHostnames.length == 0) {
-        return new HashSet<>();
-      }
-      
-      Set<String> newVHostnames = new HashSet<>(Arrays.asList(newVirtualHostnames));
-      Set<String> conflictingDomains = new HashSet<>();
-
-      List<Domain> allDomains = prov.getAllDomains();
-      for (Domain otherDomain : allDomains) {
-        if (otherDomain.getId().equals(currentDomain.getId())) {
-          continue;
+    public static Map<String, Set<String>> getDomainsWithConflictingVHosts(Domain currentDomain, String[] newVirtualHostnames, Provisioning prov) throws ServiceException {
+        if (newVirtualHostnames == null || newVirtualHostnames.length == 0) {
+            return new HashMap<>();
         }
+        
+        Set<String> newVHostnames = new HashSet<>(Arrays.asList(newVirtualHostnames));
+        Map<String, Set<String>> conflictingDomains = new HashMap<>();
 
-        String[] otherVHostnames = otherDomain.getVirtualHostname();
-        if (otherVHostnames != null) {
-          for (String otherVHostname : otherVHostnames) {
-            if (otherVHostname != null && !otherVHostname.isEmpty() && newVHostnames.contains(otherVHostname)) {
-              conflictingDomains.add(otherDomain.getName());
+        List<Domain> allDomains = prov.getAllDomains();
+        for (Domain otherDomain : allDomains) {
+            if (otherDomain.getId().equals(currentDomain.getId())) {
+                continue;
             }
-          }
-        }
-      }
 
-      return conflictingDomains;
+            String[] otherVHostnames = otherDomain.getVirtualHostname();
+            if (otherVHostnames != null) {
+                Set<String> conflicts = new HashSet<>();
+                for (String otherVHostname : otherVHostnames) {
+                    if (otherVHostname != null && !otherVHostname.isEmpty() && newVHostnames.contains(otherVHostname)) {
+                        conflicts.add(otherVHostname);
+                    }
+                }
+                if (!conflicts.isEmpty()) {
+                    conflictingDomains.put(otherDomain.getName(), conflicts);
+                }
+            }
+        }
+
+        return conflictingDomains;
     }
 
     /**
      * Creates a warning element for duplicate virtual hostnames.
      *
      * @param response the response element to add the warning to
-     * @param domain the domain being modified
-     * @param conflictingDomains set of domains with conflicting virtual hostnames
-     * @param virtualHostname the virtual hostname that conflicts
+     * @param conflictingDomains map of domains to their conflicting virtual hostnames
      */
-    public static void addDuplicateVirtualHostnameWarning(Element response, Domain domain, Set<String> conflictingDomains, String virtualHostname) {
+    public static void addDuplicateVirtualHostnameWarning(Element response, Map<String, Set<String>> conflictingDomains) {
+        if (response == null || conflictingDomains == null || conflictingDomains.isEmpty()) {
+            return;
+        }
+        
+        Set<String> allConflictingVHosts = new HashSet<>();
+        for (Set<String> vHosts : conflictingDomains.values()) {
+            allConflictingVHosts.addAll(vHosts);
+        }
+        
         Element warning = response.addElement("warning");
         warning.addAttribute("type", DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TYPE);
-        warning.addAttribute("message",
-            String.format(DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TEMPLATE, virtualHostname, String.join(", ", conflictingDomains)));
-        warning.addAttribute("conflicting_domains", String.join(",", conflictingDomains));
+        warning.addAttribute("message", String.format(DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TEMPLATE, String.join(", ", allConflictingVHosts)));
     }
 
     /**
      * Creates a console warning message for duplicate virtual hostnames.
      *
      * @param domain the domain being modified
-     * @param conflictingDomains set of domains with conflicting virtual hostnames
-     * @param virtualHostname the virtual hostname that conflicts
+     * @param conflictingDomains map of domains to their conflicting virtual hostnames
      * @return the warning message string
      */
-    public static String getDuplicateVirtualHostnameWarningMessage(Domain domain, Set<String> conflictingDomains, String virtualHostname) {
-        return CONSOLE_WARNING_PREFIX + String.format(DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TEMPLATE, virtualHostname, String.join(", ", conflictingDomains));
+    public static String getDuplicateVirtualHostnameWarningMessage(Domain domain, Map<String, Set<String>> conflictingDomains) {
+        if (domain == null || conflictingDomains == null || conflictingDomains.isEmpty()) {
+            return "";
+        }
+        
+        Set<String> allConflictingVHosts = new HashSet<>();
+        for (Set<String> vHosts : conflictingDomains.values()) {
+            allConflictingVHosts.addAll(vHosts);
+        }
+
+        return CONSOLE_WARNING_PREFIX + String.format(DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TEMPLATE, String.join(", ", allConflictingVHosts));
     }
 }
