@@ -5,12 +5,16 @@ import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.common.soap.Element;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public class DomainUtils {
-    private DomainUtils() {
-        // Utility class
-    }
+
+public final class DomainUtils {
+    private DomainUtils() {}
 
     private static final String DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TEMPLATE = 
         "Virtual hostname conflicts detected. The following virtual hostnames are already in use by other domains: %s. This may cause routing issues.";

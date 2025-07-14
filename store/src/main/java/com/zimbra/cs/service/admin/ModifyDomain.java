@@ -172,7 +172,7 @@ public class ModifyDomain extends AdminDocumentHandler {
     }
 
     Provisioning prov = Provisioning.getInstance();
-    if (newDomainCosId.equals("")) {
+    if (newDomainCosId.isEmpty()) {
       // they are unsetting it, no problem
       return;
     }
