@@ -98,7 +98,6 @@ public class ModifyDomain extends AdminDocumentHandler {
     Element response = zsc.createElement(AdminConstants.MODIFY_DOMAIN_RESPONSE);
     GetDomain.encodeDomain(response, domain);
     
-    // Add warning about duplicate virtual hostnames if any
     if (!Objects.isNull(gotVirtualHostNames) && !Arrays.equals(gotVirtualHostNames, new String[] {""})) {
       Map<String, Set<String>> conflictingDomains = DomainUtils.getDomainsWithConflictingVHosts(domain, gotVirtualHostNames, prov);
       if (!conflictingDomains.isEmpty()) {

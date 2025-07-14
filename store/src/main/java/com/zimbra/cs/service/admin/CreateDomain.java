@@ -77,7 +77,7 @@ public class CreateDomain extends AdminDocumentHandler {
 	    GetDomain.encodeDomain(response, domain);
 
 		final String[] gotVirtualHostNames = DomainUtils.getVirtualHostnamesFromAttributes(attrs);
-		// Add warning about duplicate virtual hostnames if any
+
 		if (!Objects.isNull(gotVirtualHostNames) && !Arrays.equals(gotVirtualHostNames, new String[] {""})) {
 			Map<String, Set<String>> conflictingDomains = DomainUtils.getDomainsWithConflictingVHosts(domain, gotVirtualHostNames, prov);
 			if (!conflictingDomains.isEmpty()) {

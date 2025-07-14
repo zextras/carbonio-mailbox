@@ -95,7 +95,7 @@ public class DomainUtils {
         
         Element warning = response.addElement("warning");
         warning.addAttribute("type", DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TYPE);
-        warning.addAttribute("message", String.format(DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TEMPLATE, String.join(", ", allConflictingVHosts)));
+        warning.addAttribute("message", String.format(DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TEMPLATE, String.join(", ", conflictingDomains.keySet())));
     }
 
     /**
@@ -115,6 +115,6 @@ public class DomainUtils {
             allConflictingVHosts.addAll(vHosts);
         }
 
-        return CONSOLE_WARNING_PREFIX + String.format(DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TEMPLATE, String.join(", ", allConflictingVHosts));
+        return CONSOLE_WARNING_PREFIX + String.format(DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TEMPLATE, String.join(", ", conflictingDomains.keySet()));
     }
 }
