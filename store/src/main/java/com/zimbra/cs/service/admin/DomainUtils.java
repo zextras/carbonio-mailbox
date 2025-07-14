@@ -92,11 +92,6 @@ public final class DomainUtils {
             return;
         }
         
-        Set<String> allConflictingVHosts = new HashSet<>();
-        for (Set<String> vHosts : conflictingDomains.values()) {
-            allConflictingVHosts.addAll(vHosts);
-        }
-        
         Element warning = response.addElement("warning");
         warning.addAttribute("type", DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TYPE);
         warning.addAttribute("message", String.format(DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TEMPLATE, String.join(", ", conflictingDomains.keySet())));
@@ -112,11 +107,6 @@ public final class DomainUtils {
     public static String getDuplicateVirtualHostnameWarningMessage(Domain domain, Map<String, Set<String>> conflictingDomains) {
         if (domain == null || conflictingDomains == null || conflictingDomains.isEmpty()) {
             return "";
-        }
-        
-        Set<String> allConflictingVHosts = new HashSet<>();
-        for (Set<String> vHosts : conflictingDomains.values()) {
-            allConflictingVHosts.addAll(vHosts);
         }
 
         return CONSOLE_WARNING_PREFIX + String.format(DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TEMPLATE, String.join(", ", conflictingDomains.keySet()));
