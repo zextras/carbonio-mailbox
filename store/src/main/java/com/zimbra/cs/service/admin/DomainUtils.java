@@ -13,7 +13,7 @@ public class DomainUtils {
     }
 
     private static final String DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TEMPLATE = 
-        "Virtual hostname modification for domain '%s' conflicts with existing virtual hostnames in domains: %s. This may cause routing issues.";
+        "Virtual hostname '%s' conflicts with existing virtual hostnames in domains: %s. This may cause routing issues.";
 
     private static final String CONSOLE_WARNING_PREFIX = "WARNING: ";
 
@@ -79,13 +79,14 @@ public class DomainUtils {
      * @param response the response element to add the warning to
      * @param domain the domain being modified
      * @param conflictingDomains set of domains with conflicting virtual hostnames
+     * @param virtualHostname the virtual hostname that conflicts
      */
-    public static void addDuplicateVirtualHostnameWarning(Element response, Domain domain, Set<String> conflictingDomains) {
-      Element warning = response.addElement("warning");
-      warning.addAttribute("type", DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TYPE);
-      warning.addAttribute("message",
-          String.format(DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TEMPLATE, domain.getName(), String.join(", ", conflictingDomains)));
-      warning.addAttribute("conflicting_domains", String.join(",", conflictingDomains));
+    public static void addDuplicateVirtualHostnameWarning(Element response, Domain domain, Set<String> conflictingDomains, String virtualHostname) {
+        Element warning = response.addElement("warning");
+        warning.addAttribute("type", DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TYPE);
+        warning.addAttribute("message",
+            String.format(DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TEMPLATE, virtualHostname, String.join(", ", conflictingDomains)));
+        warning.addAttribute("conflicting_domains", String.join(",", conflictingDomains));
     }
 
     /**
@@ -93,9 +94,10 @@ public class DomainUtils {
      *
      * @param domain the domain being modified
      * @param conflictingDomains set of domains with conflicting virtual hostnames
+     * @param virtualHostname the virtual hostname that conflicts
      * @return the warning message string
      */
-    public static String getDuplicateVirtualHostnameWarningMessage(Domain domain, Set<String> conflictingDomains) {
-      return CONSOLE_WARNING_PREFIX + String.format(DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TEMPLATE, domain.getName(), String.join(", ", conflictingDomains));
+    public static String getDuplicateVirtualHostnameWarningMessage(Domain domain, Set<String> conflictingDomains, String virtualHostname) {
+        return CONSOLE_WARNING_PREFIX + String.format(DUPLICATE_VIRTUAL_HOSTNAME_WARNING_TEMPLATE, virtualHostname, String.join(", ", conflictingDomains));
     }
 }
