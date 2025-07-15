@@ -5,7 +5,7 @@ import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.common.cli.CommandExitException;
-import com.zimbra.cs.service.admin.DomainUtils;
+import com.zimbra.cs.service.util.DomainUtils;
 
 class CreateDomainCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;

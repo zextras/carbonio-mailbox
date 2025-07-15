@@ -1,4 +1,4 @@
-package com.zimbra.cs.service.admin;
+package com.zimbra.cs.service.util;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Domain;

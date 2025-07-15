@@ -25,6 +25,7 @@ import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.PseudoTarget;
 import com.zimbra.cs.account.accesscontrol.TargetType;
+import com.zimbra.cs.service.util.DomainUtils;
 import com.zimbra.soap.ZimbraSoapContext;
 
 /**

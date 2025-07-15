@@ -5,7 +5,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
-import com.zimbra.cs.service.admin.DomainUtils;
+import com.zimbra.cs.service.util.DomainUtils;
 
 
 class ModifyDomainCommandHandler implements CommandHandler {
