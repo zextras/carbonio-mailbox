@@ -50,13 +50,13 @@ public final class DomainUtils {
      * @return Map of conflicting domain names to their conflicting virtual hostnames
      * @throws ServiceException if something goes wrong during the check
      */
-    public static Map<String, Set<String>> getDomainsWithConflictingVHosts(Domain currentDomain, String[] newVirtualHostnames, Provisioning prov) throws ServiceException {
+    public static Map<String, Domain> getDomainsWithConflictingVHosts(Domain currentDomain, String[] newVirtualHostnames, Provisioning prov) throws ServiceException {
         if (newVirtualHostnames == null || newVirtualHostnames.length == 0) {
             return new HashMap<>();
         }
-        
+
         Set<String> newVHostnames = new HashSet<>(Arrays.asList(newVirtualHostnames));
-        Map<String, Set<String>> conflictingDomains = new HashMap<>();
+        Map<String, Domain> conflictingDomains = new HashMap<>();
 
         List<Domain> allDomains = prov.getAllDomains();
         for (Domain otherDomain : allDomains) {
@@ -66,14 +66,10 @@ public final class DomainUtils {
 
             String[] otherVHostnames = otherDomain.getVirtualHostname();
             if (otherVHostnames != null) {
-                Set<String> conflicts = new HashSet<>();
                 for (String otherVHostname : otherVHostnames) {
                     if (otherVHostname != null && !otherVHostname.isEmpty() && newVHostnames.contains(otherVHostname)) {
-                        conflicts.add(otherVHostname);
+                        conflictingDomains.put(otherDomain.getName(), otherDomain);
                     }
-                }
-                if (!conflicts.isEmpty()) {
-                    conflictingDomains.put(otherDomain.getName(), conflicts);
                 }
             }
         }
@@ -85,9 +81,9 @@ public final class DomainUtils {
      * Creates a warning element for duplicate virtual hostnames.
      *
      * @param response the response element to add the warning to
-     * @param conflictingDomains map of domains to their conflicting virtual hostnames
+     * @param conflictingDomains map of domains to their Domain objects
      */
-    public static void addDuplicateVirtualHostnameWarning(Element response, Map<String, Set<String>> conflictingDomains) {
+    public static void addDuplicateVirtualHostnameWarning(Element response, Map<String, Domain> conflictingDomains) {
         if (response == null || conflictingDomains == null || conflictingDomains.isEmpty()) {
             return;
         }
@@ -101,10 +97,10 @@ public final class DomainUtils {
      * Creates a console warning message for duplicate virtual hostnames.
      *
      * @param domain the domain being modified
-     * @param conflictingDomains map of domains to their conflicting virtual hostnames
+     * @param conflictingDomains map of domains to their Domain objects
      * @return the warning message string
      */
-    public static String getDuplicateVirtualHostnameWarningMessage(Domain domain, Map<String, Set<String>> conflictingDomains) {
+    public static String getDuplicateVirtualHostnameWarningMessage(Domain domain, Map<String, Domain> conflictingDomains) {
         if (domain == null || conflictingDomains == null || conflictingDomains.isEmpty()) {
             return "";
         }

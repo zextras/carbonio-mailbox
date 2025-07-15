@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.Set;
 
 /**
  * @author schemers
@@ -100,7 +99,7 @@ public class ModifyDomain extends AdminDocumentHandler {
     GetDomain.encodeDomain(response, domain);
     
     if (!Objects.isNull(gotVirtualHostNames) && !Arrays.equals(gotVirtualHostNames, new String[] {""})) {
-      Map<String, Set<String>> conflictingDomains = DomainUtils.getDomainsWithConflictingVHosts(domain, gotVirtualHostNames, prov);
+      Map<String, Domain> conflictingDomains = DomainUtils.getDomainsWithConflictingVHosts(domain, gotVirtualHostNames, prov);
       if (!conflictingDomains.isEmpty()) {
         DomainUtils.addDuplicateVirtualHostnameWarning(response, conflictingDomains);
       }

@@ -10,7 +10,6 @@ package com.zimbra.cs.service.admin;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.Map;
 import java.util.Objects;
 
@@ -84,7 +83,7 @@ public class CreateDomain extends AdminDocumentHandler {
 		final String[] gotVirtualHostNames = DomainUtils.getVirtualHostnamesFromAttributes(attrs);
 
 		if (!Objects.isNull(gotVirtualHostNames) && !Arrays.equals(gotVirtualHostNames, new String[] {""})) {
-			Map<String, Set<String>> conflictingDomains = DomainUtils.getDomainsWithConflictingVHosts(domain, gotVirtualHostNames, prov);
+			Map<String, Domain> conflictingDomains = DomainUtils.getDomainsWithConflictingVHosts(domain, gotVirtualHostNames, prov);
 			if (!conflictingDomains.isEmpty()) {
 				        DomainUtils.addDuplicateVirtualHostnameWarning(response, conflictingDomains);
 			}
