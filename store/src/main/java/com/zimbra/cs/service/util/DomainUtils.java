@@ -47,7 +47,7 @@ public final class DomainUtils {
      * @param currentDomain the domain being modified
      * @param newVirtualHostnames the new virtual hostnames to check
      * @param prov the provisioning instance
-     * @return Map of conflicting domain names to their conflicting virtual hostnames
+     * @return Map of conflicting domains
      * @throws ServiceException if something goes wrong during the check
      */
     public static Map<String, Domain> getDomainsWithConflictingVHosts(Domain currentDomain, String[] newVirtualHostnames, Provisioning prov) throws ServiceException {
