@@ -1697,12 +1697,20 @@ public class AttributeManagerUtil {
       if (ai == null || ai.getType() != AttributeType.TYPE_ENUM) {
         continue;
       }
+      if (ai.isDeprecated()) {
+        System.out.println("Attribute " + ai.getName() + " is deprecated, skipping it.");
+        continue;
+      }
       generateEnum(result, ai);
     }
 
     for (String a : list) {
       AttributeInfo attributeInfo = getAttrs().get(a.toLowerCase());
       if (attributeInfo == null) {
+        continue;
+      }
+      if (attributeInfo.isDeprecated()) {
+        System.out.println("Attribute " + attributeInfo.getName() + " is deprecated, skipping it.");
         continue;
       }
 
