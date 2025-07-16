@@ -1640,6 +1640,10 @@ public class AttributeManagerUtil {
       if (attributeInfo == null) {
         continue;
       }
+      if (attributeInfo.isDeprecated()) {
+        System.out.println("Attribute " + attributeInfo.getName() + " is deprecated, skipping it.");
+        continue;
+      }
 
       switch (attributeInfo.getType()) {
         case TYPE_BINARY:
