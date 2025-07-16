@@ -2370,7 +2370,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>portal name</desc>
 </attr>
 
-<attr id="449" name="zimbraChildAccount" type="id" cardinality="multi" optionalIn="account" flags="domainAdminModifiable" callback="ChildAccount" deprecatedSince="8.5.0">
+<attr id="449" name="zimbraChildAccount" type="id" cardinality="multi" optionalIn="account" flags="domainAdminModifiable" deprecatedSince="8.5.0">
   <desc>zimbraId of child accounts</desc>
   <deprecateDesc>family mailbox feature is deprecated</deprecateDesc>
 </attr>
@@ -2942,7 +2942,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
 </attr>
 
-<attr id="553" name="zimbraPrefChildVisibleAccount" type="id" cardinality="multi" optionalIn="account" flags="domainAdminModifiable" callback="ChildAccount" since="5.0.0" deprecatedSince="8.5.0">
+<attr id="553" name="zimbraPrefChildVisibleAccount" type="id" cardinality="multi" optionalIn="account" flags="domainAdminModifiable" since="5.0.0" deprecatedSince="8.5.0">
   <desc>zimbraId of visible child accounts</desc>
   <deprecateDesc>family mailbox feature is deprecated</deprecateDesc>
 </attr>
