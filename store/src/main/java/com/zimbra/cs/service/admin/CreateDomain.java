@@ -8,8 +8,10 @@
  */
 package com.zimbra.cs.service.admin;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
@@ -22,6 +24,7 @@ import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.PseudoTarget;
 import com.zimbra.cs.account.accesscontrol.TargetType;
+import com.zimbra.cs.service.util.DomainUtils;
 import com.zimbra.soap.ZimbraSoapContext;
 
 /**
@@ -76,6 +79,15 @@ public class CreateDomain extends AdminDocumentHandler {
 
 	    Element response = zsc.createElement(AdminConstants.CREATE_DOMAIN_RESPONSE);
 	    GetDomain.encodeDomain(response, domain);
+
+		final String[] gotVirtualHostNames = DomainUtils.getVirtualHostnamesFromAttributes(attrs);
+
+		if (!Objects.isNull(gotVirtualHostNames) && !Arrays.equals(gotVirtualHostNames, new String[] {""})) {
+			Map<String, Domain> conflictingDomains = DomainUtils.getDomainsWithConflictingVHosts(domain, gotVirtualHostNames, prov);
+			if (!conflictingDomains.isEmpty()) {
+				        DomainUtils.addDuplicateVirtualHostnameWarning(response, conflictingDomains);
+			}
+		}
 
 	    return response;
 	}
