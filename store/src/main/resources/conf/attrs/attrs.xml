@@ -9726,7 +9726,7 @@ deprecatedSince="23.9.0">
   <desc>The pool of servers that are available to the proxy for handling IMAP sessions. If empty, the NginxLookupExtension will select the mailbox server that hosts the account.</desc>
 </attr>
 
-<attr id="3009" name="zimbraImapLoadBalancingAlgorithm" type="string" max="512" cardinality="single" optionalIn="server,globalConfig" flags="serverInherited" callback="ImapLBMech" since="8.7.6">
+<attr id="3009" name="zimbraImapLoadBalancingAlgorithm" type="string" max="512" cardinality="single" optionalIn="server,globalConfig" flags="serverInherited" since="8.7.6">
   <globalConfigValue>AccountIdHash</globalConfigValue>
   <desc>Determines the load-balancing algorithm used to select an IMAP server from the pool of available zimbraReverseProxyUpstreamImapServers. Valid values are AccountIdHash, custom:{handler-algorithm} [arg1 arg2 ...]</desc>
 </attr>

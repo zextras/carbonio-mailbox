@@ -31,7 +31,6 @@ import com.zimbra.cs.extension.ExtensionException;
 import com.zimbra.cs.extension.ExtensionHttpHandler;
 import com.zimbra.cs.extension.ExtensionUtil;
 import com.zimbra.cs.extension.ZimbraExtension;
-import com.zimbra.cs.imap.ImapLoadBalancingMechanism;
 import com.zimbra.cs.ldap.ILdapContext;
 import com.zimbra.cs.ldap.ZLdapFilter;
 import com.zimbra.cs.ldap.ZLdapFilterFactory;
@@ -923,24 +922,6 @@ public class NginxLookupExtension implements ZimbraExtension {
             }
             if (imapServers.isEmpty()) {
                 ZimbraLog.nginxlookup.trace("No available IMAP servers found for acct '%s'", req.user);
-                return;
-            }
-            String accountID = acct.getId();
-            ImapLoadBalancingMechanism LBMech = ImapLoadBalancingMechanism.newInstance();
-            server = LBMech.getImapServerFromPool(req.httpReq, accountID, imapServers);
-            ZimbraLog.nginxlookup.trace("Use IMAP daemon server '%s' for acct '%s' (%s)",
-                    server, req.user, accountID);
-            if (server != null) {
-                conn.host = server.getServiceHostname();
-                conn.port = getUpstreamIMAPPort(server, req.proto, true);
-            }
-        }
-
-        private String getUpstreamIMAPPort(Server server, String proto, Boolean useRemoteImap) throws ServiceException {
-            if (useRemoteImap){
-                return proto.equals(IMAP) ? server.getRemoteImapBindPortAsString() : server.getRemoteImapSSLBindPortAsString();
-            } else {
-                return proto.equals(IMAP) ? server.getImapBindPortAsString() : server.getImapSSLBindPortAsString();
             }
         }
 
@@ -1089,19 +1070,21 @@ public class NginxLookupExtension implements ZimbraExtension {
          * @throws UnknownHostException
          */
         private String resolvedHostname(String hostname) throws ServiceException, UnknownHostException {
-            boolean doDnsLookup = true;
-            Server server = prov.getLocalServer();
-            if (server == null) {
-                doDnsLookup = prov.getConfig().getBooleanAttr(
-                        Provisioning.A_zimbraReverseProxyDnsLookupInServerEnabled, true);
-            } else {
-                doDnsLookup = server.getBooleanAttr(
-                        Provisioning.A_zimbraReverseProxyDnsLookupInServerEnabled, true);
-            }
-            if (doDnsLookup) {
-                return getIPByIPMode(hostname).getHostAddress();
-            }
-            return hostname;
+            return getIPByIPMode(hostname).getHostAddress();
+//            boolean doDnsLookup = true;
+//            // TODO: check if these attributes are really deprecated
+////            Server server = prov.getLocalServer();
+////            if (server == null) {
+////                doDnsLookup = prov.getConfig().getBooleanAttr(
+////                        Provisioning.A_zimbraReverseProxyDnsLookupInServerEnabled, true);
+////            } else {
+////                doDnsLookup = server.getBooleanAttr(
+////                        Provisioning.A_zimbraReverseProxyDnsLookupInServerEnabled, true);
+////            }
+//            if (doDnsLookup) {
+//                return getIPByIPMode(hostname).getHostAddress();
+//            }
+//            return hostname;
         }
 
         private SearchDirResult searchForReverseProxyMailHostInfo(
