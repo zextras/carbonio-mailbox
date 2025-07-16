@@ -1507,13 +1507,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       entry.setAttr(
           Provisioning.A_zimbraPasswordModifiedTime, LdapDateUtil.toGeneralizedTime(new Date()));
 
-      String ucPassword = entry.getAttrString(Provisioning.A_zimbraUCPassword);
-      if (ucPassword != null) {
-        String encryptedPassword =
-            Account.encrypytUCPassword(entry.getAttrString(Provisioning.A_zimbraId), ucPassword);
-        entry.setAttr(Provisioning.A_zimbraUCPassword, encryptedPassword);
-      }
-
       dn = mDIT.accountDNCreate(baseDn, entry.getAttributes(), localPart, domain);
       entry.setDN(dn);
 
