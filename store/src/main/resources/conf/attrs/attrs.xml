@@ -7126,7 +7126,7 @@ deprecatedSince="23.9.0">
   <deprecateDesc>UCService is not in use anymore</deprecateDesc>
 </attr>
 
-<attr id="1402" name="zimbraUCProvider" type="cstring" max="256" cardinality="single" callback="UCProvider" since="8.0.0" deprecatedSince="23.8.0">
+<attr id="1402" name="zimbraUCProvider" type="cstring" max="256" cardinality="single" since="8.0.0" deprecatedSince="23.8.0">
   <desc>provider for the UC service</desc>
   <deprecateDesc>UCService is not in use anymore</deprecateDesc>
 </attr>
