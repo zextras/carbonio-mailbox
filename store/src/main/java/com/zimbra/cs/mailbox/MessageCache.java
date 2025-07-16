@@ -184,12 +184,6 @@ public class MessageCache {
                             isEncrypted = Mime.isEncrypted(cnode.message.getContentType());
                         }
                         if (isEncrypted) {
-                            if (isSmimeFeatureToggled(item.getMailbox(), cnode)) {
-                                sLog.debug(
-                                    "Smime feature is toggled. So remove old entry from smimeAccessInfo for mailboxId=%d and itemDigest=%s",
-                                    mboxId, item.getDigest());
-                                cnode.smimeAccessInfo.remove(mboxId);
-                            }
                             if (cnode.expanded == null
                                     || cnode.message == cnode.expanded
                                     || !cnode.smimeAccessInfo.containsKey(mboxId)) {
@@ -238,24 +232,6 @@ public class MessageCache {
         } else {
             return cnode.message;
         }
-    }
-
-    private static boolean isSmimeFeatureToggled(Mailbox mailbox, CacheNode cnode) {
-        if (cnode.smimeAccessInfo.containsKey(mailbox.getId())) {
-            try {
-                String errorCode = cnode.smimeAccessInfo.get(mailbox.getId());
-                boolean isSmimeFeatureEnabled = mailbox.getAccount().isFeatureSMIMEEnabled();
-                if (isSmimeFeatureEnabled && MimeConstants.ERR_FEATURE_SMIME_DISABLED.equals(errorCode)) {
-                    return true;
-                } else if (!isSmimeFeatureEnabled && errorCode == null) {
-                    return true;
-                }
-            } catch (ServiceException e) {
-                sLog.warn("Unable to get account for mailbox with id=%d", mailbox.getId());
-                return false;
-            }
-        }
-        return false;
     }
 
     private static void expandMessage(MailItem item, CacheNode cnode, MimeMessage decryptedMimeMessage)
