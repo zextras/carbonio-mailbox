@@ -17,4 +17,4 @@ KillSignal=SIGINT
 LimitNOFILE=65536
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=carbonio-appserver.target
