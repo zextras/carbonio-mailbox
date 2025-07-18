@@ -1,15 +1,18 @@
 package com.zimbra.cs.service.account;
 
-import com.zextras.mailbox.util.AccountCreator;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.util.AccountCreator;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.AttributeInfo;
+import com.zimbra.cs.account.AttributeManager;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.account.message.GetInfoRequest;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -83,4 +86,27 @@ class GetInfoTest extends SoapTestSuite {
     assertTrue(body.contains("amavisWhitelistSender"));
     assertTrue(body.contains("amavisBlacklistSender"));
   }
+
+  @Test
+  void getInfo_shouldReturnAlsoDeprecatedAttributes() throws Exception {
+    final AttributeInfo featureMailEnabled = AttributeManager.getInst()
+        .getAttributeInfo("zimbraFeatureMailEnabled");
+    Assertions.assertTrue(featureMailEnabled.isDeprecated());
+
+    final var account =
+        accountCreatorFactory
+            .get()
+            .withAttribute(featureMailEnabled.getName(), "FALSE")
+            .create();
+    final var request = new GetInfoRequest().addSection("attrs");
+
+    final var response = getSoapClient().executeSoap(account, request);
+
+    assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    final var body = EntityUtils.toString(response.getEntity());
+    assertTrue(body.contains("<attr name=\"zimbraFeatureMailEnabled\">FALSE</attr>"));
+  }
 }
+
+
+
