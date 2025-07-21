@@ -176,7 +176,6 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
     RENAME_DOMAIN("Search entries during RenameDomain"),
     SEARCH_ALIAS_TARGET("Search alias target entry"),
     SEARCH_GRANTEE("Search grantee for revoking orphan grants"),
-    SMIME_LOOKUP("Filter in " + Provisioning.A_zimbraSMIMELdapFilter),
 
     UNITTEST("UNITTEST"),
     LDAP_UPGRADE("LDAP_UPGRADE"),

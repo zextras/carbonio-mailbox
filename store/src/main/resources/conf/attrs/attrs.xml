@@ -2370,7 +2370,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <desc>portal name</desc>
 </attr>
 
-<attr id="449" name="zimbraChildAccount" type="id" cardinality="multi" optionalIn="account" flags="domainAdminModifiable" callback="ChildAccount" deprecatedSince="8.5.0">
+<attr id="449" name="zimbraChildAccount" type="id" cardinality="multi" optionalIn="account" flags="domainAdminModifiable" deprecatedSince="8.5.0">
   <desc>zimbraId of child accounts</desc>
   <deprecateDesc>family mailbox feature is deprecated</deprecateDesc>
 </attr>
@@ -2942,7 +2942,7 @@ TODO - add support for multi-line values in globalConfigValue and defaultCOSValu
   <deprecateDesc>Zimbra IM has been discontinued. Zimbra Chat feature uses a new set of configuration attributes.</deprecateDesc>
 </attr>
 
-<attr id="553" name="zimbraPrefChildVisibleAccount" type="id" cardinality="multi" optionalIn="account" flags="domainAdminModifiable" callback="ChildAccount" since="5.0.0" deprecatedSince="8.5.0">
+<attr id="553" name="zimbraPrefChildVisibleAccount" type="id" cardinality="multi" optionalIn="account" flags="domainAdminModifiable" since="5.0.0" deprecatedSince="8.5.0">
   <desc>zimbraId of visible child accounts</desc>
   <deprecateDesc>family mailbox feature is deprecated</deprecateDesc>
 </attr>
@@ -7126,7 +7126,7 @@ deprecatedSince="23.9.0">
   <deprecateDesc>UCService is not in use anymore</deprecateDesc>
 </attr>
 
-<attr id="1402" name="zimbraUCProvider" type="cstring" max="256" cardinality="single" callback="UCProvider" since="8.0.0" deprecatedSince="23.8.0">
+<attr id="1402" name="zimbraUCProvider" type="cstring" max="256" cardinality="single" since="8.0.0" deprecatedSince="23.8.0">
   <desc>provider for the UC service</desc>
   <deprecateDesc>UCService is not in use anymore</deprecateDesc>
 </attr>
@@ -8281,40 +8281,35 @@ deprecatedSince="23.9.0">
 
 <attr id="1627" name="zimbraCsrfTokenKey" type="ostring" max="128"
   immutable="1" cardinality="multi" optionalIn="globalConfig"
-  requiresRestart="mailbox" since="8.5.0" deprecatedSince="23.11.0">
+  requiresRestart="mailbox" since="8.5.0">
   <desc>CSRF token secret key</desc>
-  <deprecateDesc>deprecated as not being used in Carbonio</deprecateDesc>
 </attr>
 
 <attr id="1628" name="zimbraCsrfTokenCheckEnabled" type="boolean"
-  cardinality="single" optionalIn="globalConfig" since="8.5.0" deprecatedSince="23.11.0">
+  cardinality="single" optionalIn="globalConfig" since="8.5.0">
   <globalConfigValue>FALSE</globalConfigValue>
   <desc>A flag to turn on or off CSRF token related check. When set to FALSE no CSRF check happens. When set to 
         true both CSRF referer and CSRF token change is effective.
   </desc>
-  <deprecateDesc>deprecated as not being used in Carbonio</deprecateDesc>
 </attr>
 
 <attr id="1629" name="zimbraCsrfTokenData" type="string"
-  cardinality="multi" optionalIn="account" since="8.5.0" flags="ephemeral,dynamic,expirable" deprecatedSince="23.11.0">
+  cardinality="multi" optionalIn="account" since="8.5.0" flags="ephemeral,dynamic,expirable">
   <desc>List of data associated with CSRF token for an account. The data format is
    CSRF token data:Auth token Key crumb:Auth Token Key expiration</desc>
-  <deprecateDesc>deprecated as not being used in Carbonio</deprecateDesc>
 </attr>
 
 <attr id="1630" name="zimbraCsrfAllowedRefererHosts" type="string"
-  cardinality="multi" optionalIn="globalConfig,domain" since="8.5.0" deprecatedSince="23.11.0">
+  cardinality="multi" optionalIn="globalConfig,domain" since="8.5.0">
   <desc>A list of hosts like www.abc.com, www.xyz.com. These are used while doing CSRF referer check.</desc>
-  <deprecateDesc>deprecated as not being used in Carbonio</deprecateDesc>
 </attr>
 
 <attr id="1631" name="zimbraCsrfRefererCheckEnabled" type="boolean"
-  cardinality="single" optionalIn="globalConfig" since="8.5.0" deprecatedSince="23.11.0">
+  cardinality="single" optionalIn="globalConfig" since="8.5.0">
   <globalConfigValue>TRUE</globalConfigValue>
   <desc>A flag to turn on or off CSRF referer related check. When set to FALSE no CSRF referer check happens.
         When set to true CSRF referer type check happens.
   </desc>
-  <deprecateDesc>deprecated as not being used in Carbonio</deprecateDesc>
 </attr>
 
 <attr id="1632" name="zimbraPrefCalendarAllowedTargetsForInviteDeniedAutoReply" type="enum" value="internal,sameDomain,all" cardinality="single" optionalIn="account,cos" flags="accountInherited,domainAdminModifiable" since="8.5.0">
@@ -9731,7 +9726,7 @@ deprecatedSince="23.9.0">
   <desc>The pool of servers that are available to the proxy for handling IMAP sessions. If empty, the NginxLookupExtension will select the mailbox server that hosts the account.</desc>
 </attr>
 
-<attr id="3009" name="zimbraImapLoadBalancingAlgorithm" type="string" max="512" cardinality="single" optionalIn="server,globalConfig" flags="serverInherited" callback="ImapLBMech" since="8.7.6">
+<attr id="3009" name="zimbraImapLoadBalancingAlgorithm" type="string" max="512" cardinality="single" optionalIn="server,globalConfig" flags="serverInherited" since="8.7.6">
   <globalConfigValue>AccountIdHash</globalConfigValue>
   <desc>Determines the load-balancing algorithm used to select an IMAP server from the pool of available zimbraReverseProxyUpstreamImapServers. Valid values are AccountIdHash, custom:{handler-algorithm} [arg1 arg2 ...]</desc>
 </attr>

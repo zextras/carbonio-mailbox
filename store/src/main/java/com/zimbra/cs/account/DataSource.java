@@ -177,11 +177,6 @@ public class DataSource extends AccountProperty {
     return data == null ? null : decryptData(getId(), data);
   }
 
-  public String getDecryptedOAuthToken() throws ServiceException {
-    String data = getAttr(Provisioning.A_zimbraDataSourceOAuthToken);
-    return data == null ? null : decryptData(getId(), data);
-  }
-
   public Integer getConnectTimeout(int defaultValue) {
     return getIntAttr(Provisioning.A_zimbraDataSourceConnectTimeout, defaultValue);
   }
