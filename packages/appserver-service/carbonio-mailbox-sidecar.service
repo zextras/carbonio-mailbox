@@ -3,6 +3,7 @@ Description=Mailbox carbonio proxy sidecar
 Documentation=https://docs.zextras.com/
 Requires=network-online.target
 After=network-online.target
+PartOf=carbonio-appserver.target
 
 [Service]
 User=carbonio-mailbox
