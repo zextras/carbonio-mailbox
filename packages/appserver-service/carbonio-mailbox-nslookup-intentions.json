@@ -9,6 +9,10 @@
     {
       "name": "carbonio-ws-collaboration",
       "action": "allow"
+    },
+    {
+      "name": "carbonio-preview",
+      "action": "allow"
     }
   ]
 }
