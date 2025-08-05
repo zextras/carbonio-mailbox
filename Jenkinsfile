@@ -175,8 +175,6 @@ pipeline {
                                 'docker/standalone/mariadb/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-mariadb:latest')
                         buildContainer('Carbonio OpenLDAP', '$(cat docker/standalone/openldap/description.md)',
                                 'docker/standalone/openldap/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-openldap:latest')
-                        buildContainer('Carbonio MTA', '$(cat docker/standalone/postfix/description.md)',
-                                'docker/standalone/postfix/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-mta:latest')
                     }
                 }
             }

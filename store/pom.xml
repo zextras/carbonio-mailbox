@@ -24,6 +24,7 @@
     <dependency>
       <artifactId>httpmime</artifactId>
       <groupId>org.apache.httpcomponents</groupId>
+      <scope>runtime</scope>
     </dependency>
 
     <dependency>
@@ -142,6 +143,17 @@
       <version>1.19.8</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.redis</groupId>
+      <artifactId>testcontainers-redis</artifactId>
+      <version>2.2.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>redis.clients</groupId>
+      <artifactId>jedis</artifactId>
+      <version>5.2.0</version>
+    </dependency>
 
     <dependency>
       <groupId>com.github.docker-java</groupId>
@@ -203,6 +215,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-pool2</artifactId>
+    </dependency>
+
+    <dependency>
       <artifactId>junixsocket-common</artifactId>
       <groupId>com.kohlschutter.junixsocket</groupId>
     </dependency>
@@ -216,7 +233,6 @@
     <dependency>
       <groupId>commons-net</groupId>
       <artifactId>commons-net</artifactId>
-      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -448,11 +464,6 @@
 
     </dependency>
     <dependency>
-      <groupId>com.github.stefanbirkner</groupId>
-      <artifactId>system-lambda</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
       <scope>runtime</scope>
@@ -608,6 +619,7 @@
               <sources>
                 <source>${project.build.directory}/generated-sources/buildinfo</source><!-- adjust
                 folder name to your needs -->
+                <source>${project.build.directory}/generated-sources/javacc</source>
               </sources>
             </configuration>
           </execution>
@@ -886,6 +898,39 @@
               <goal>jar-no-fork</goal>
               <goal>test-jar-no-fork</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>javacc-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>generate-parser-jjtree</id>
+            <goals>
+              <goal>jjtree</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+              <outputDirectory>${project.build.directory}/generated-sources/javacc</outputDirectory>
+              <includes>
+                <include>**/Parser.jjt</include>
+              </includes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-parser-javacc</id>
+            <goals>
+              <goal>javacc</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${project.build.directory}/generated-sources/javacc</sourceDirectory>
+              <outputDirectory>${project.build.directory}/generated-sources/javacc</outputDirectory>
+              <includes>
+                <include>**/Parser.jj</include>
+              </includes>
+            </configuration>
           </execution>
         </executions>
       </plugin>

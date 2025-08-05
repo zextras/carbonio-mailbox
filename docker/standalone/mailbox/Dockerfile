@@ -1,9 +1,10 @@
-FROM ibm-semeru-runtimes:open-17-jdk
+FROM eclipse-temurin:17-jre-jammy
 
 COPY store/src/test/resources/timezones-test.ics /opt/zextras/conf/timezones.ics
 COPY store-conf/conf/msgs/* /opt/zextras/conf/msgs/
+COPY store-conf/conf/owasp_policy.xml /opt/zextras/conf/owasp_policy.xml
 
-RUN mkdir -p /opt/zextras/mailbox/jars/ && mkdir -p /opt/zextras/lib/ext/nginx-lookup/
+RUN mkdir -p /opt/zextras/mailbox/jars/ && mkdir -p /opt/zextras/lib/ext/nginx-lookup/ && mkdir -p /opt/zextras/store
 
 COPY store/target/zm-store.jar /opt/zextras/mailbox/jars/
 COPY store/target/dependencies/* /opt/zextras/mailbox/jars/
@@ -20,6 +21,8 @@ ENV LDAP_ADMIN_PASSWORD=password
 ENV MARIADB_ROOT_PASSWORD=password
 ENV MARIADB_URL=mariadb
 ENV MARIADB_PORT=3306
+ENV CARBONIO_FILES_SERVICE_URL="http://carbonio-files:10000"
+ENV CARBONIO_PREVIEW_SERVICE_URL="http://carbonio-preview:10000"
 
 ARG BASE_JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
               -Dhttps.protocols=TLSv1.2,TLSv1.3 \
@@ -49,6 +52,9 @@ ARG JAVA_ZMGSA_ARGS="${BASE_JAVA_ARGS} \
 
 RUN echo "java ${JAVA_ARGS}" > /usr/bin/mailbox && chmod +x /usr/bin/mailbox
 RUN echo "java ${JAVA_CLI_ARGS}" > /usr/bin/zmprov && chmod +x /usr/bin/zmprov && mkdir -p /opt/zextras/db
+ARG JAVA_ZMMAILBOX_ARG="${BASE_JAVA_ARGS} \
+              com.zimbra.cs.zclient.ZMailboxUtil \"\$@\""
+RUN echo "java ${JAVA_ZMMAILBOX_ARG}" > /usr/bin/zmmailbox && chmod +x /usr/bin/zmmailbox
 COPY store/db/create_database.sql /opt/zextras/db/
 
 RUN echo "java ${JAVA_ZMGSA_ARGS}" > /usr/bin/zmgsautil && chmod +x /usr/bin/zmgsautil

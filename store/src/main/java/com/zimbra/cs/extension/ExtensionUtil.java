@@ -5,6 +5,14 @@
 
 package com.zimbra.cs.extension;
 
+import com.zimbra.common.localconfig.LC;
+import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.util.Log.Level;
+import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.ephemeral.EphemeralStore;
+import com.zimbra.cs.ephemeral.EphemeralStore.Factory;
+import com.zimbra.cs.nginx.NginxLookupExtension;
+import com.zimbra.cs.redolog.op.RedoableOp;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -14,14 +22,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.Log.Level;
-import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.ephemeral.EphemeralStore;
-import com.zimbra.cs.ephemeral.EphemeralStore.Factory;
-import com.zimbra.cs.redolog.op.RedoableOp;
 
 public class ExtensionUtil {
 
@@ -60,14 +60,15 @@ public class ExtensionUtil {
         } else {
             sExtParentClassLoader = new URLClassLoader(extCommonURLs, ExtensionUtil.class.getClassLoader());
         }
-        loadAll();
+        ExtensionUtil.initInternalExtension(new NginxLookupExtension());
+        loadExtensionsFromDefaultDirectory();
     }
 
     protected static synchronized void addClassLoader(ZimbraExtensionClassLoader zcl) {
         sClassLoaders.add(zcl);
     }
 
-    private static synchronized void loadAll() {
+    private static synchronized void loadExtensionsFromDefaultDirectory() {
         if (LC.zimbra_extension_directory.value() == null) {
             ZimbraLog.extensions.info(LC.zimbra_extension_directory.key() +
                     " is null, no extensions loaded");
@@ -101,6 +102,20 @@ public class ExtensionUtil {
         boolean matches(ZimbraExtension ext);
     }
 
+    private static synchronized void initInternalExtension(ZimbraExtension ext) {
+        String extName = ext.getName();
+        final String className = ext.getClass().getName();
+        try {
+            ext.init();
+            ZimbraLog.extensions.info("Initialized extension %s: %s", extName, className);
+            sInitializedExtensions.put(extName, ext);
+        } catch (ExtensionException | ServiceException e) {
+            ZimbraLog.extensions.info("Disabled '%s' %s", extName, e.getMessage());
+            ext.destroy();
+        } catch (Exception e) {
+            ZimbraLog.extensions.warn("exception in %s.init()", className, e);
+        }
+    }
     /** @param matcher - Used to filter which extensions to initialize.  Can be null */
     public static synchronized void initAllMatching(ExtensionMatcher matcher) {
         ZimbraLog.extensions.info("Initializing extensions");

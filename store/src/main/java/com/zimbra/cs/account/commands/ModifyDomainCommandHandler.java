@@ -1,12 +1,12 @@
 package com.zimbra.cs.account.commands;
 
+import com.zimbra.common.cli.CommandExitException;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
-import org.apache.http.HttpException;
+import com.zimbra.cs.service.util.DomainUtils;
 
-import java.io.IOException;
 
 class ModifyDomainCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
@@ -15,7 +15,20 @@ class ModifyDomainCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException {
-    provUtil.getProvisioning().modifyAttrs(provUtil.lookupDomain(args[1]), provUtil.getMapAndCheck(args, 2, false), true);
+  @Override
+  public void handle(String[] args) throws ServiceException, ArgException, CommandExitException {
+    var provisioning = provUtil.getProvisioning();
+    var attributes = provUtil.getMapAndCheck(args, 2, false);
+    var domain = provUtil.lookupDomain(args[1]);
+
+    provisioning.modifyAttrs(domain, attributes, true);
+
+    var virtualHostnames = DomainUtils.getVirtualHostnamesFromAttributes(attributes);
+    if (virtualHostnames != null && virtualHostnames.length > 0) {
+      var conflictingDomains = DomainUtils.getDomainsWithConflictingVHosts(domain, virtualHostnames, provisioning);
+      if (!conflictingDomains.isEmpty()) {
+        provUtil.getConsole().println(DomainUtils.getDuplicateVirtualHostnameWarningMessage(domain, conflictingDomains));
+      }
+    }
   }
 }

@@ -67,27 +67,6 @@ public class MailboxManager {
   private ConcurrentHashMap<String, MailboxMaintenance> maintenanceLocks =
       new ConcurrentHashMap<>();
 
-  private CopyOnWriteArrayList<AdditionalQuotaProvider> mAdditionalQuotaProviders =
-      new CopyOnWriteArrayList<>();
-
-  public void addAdditionalQuotaProvider(AdditionalQuotaProvider additionalQuotaProvider) {
-    assert (!mAdditionalQuotaProviders.contains(additionalQuotaProvider));
-    mAdditionalQuotaProviders.add(additionalQuotaProvider);
-  }
-
-  public void removeAdditionalQuotaProvider(AdditionalQuotaProvider additionalQuotaProvider) {
-    assert (mAdditionalQuotaProviders.contains(additionalQuotaProvider));
-    mAdditionalQuotaProviders.remove(additionalQuotaProvider);
-  }
-
-  public void clearAdditionalQuotaProviders() {
-    mAdditionalQuotaProviders.clear();
-  }
-
-  List<AdditionalQuotaProvider> getAdditionalQuotaProviders() {
-    return mAdditionalQuotaProviders;
-  }
-
   private CopyOnWriteArrayList<Listener> mListeners = new CopyOnWriteArrayList<>();
 
   public void addListener(Listener listener) {

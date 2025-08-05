@@ -188,12 +188,6 @@
       <artifactId>zm-native</artifactId>
       <groupId>zextras</groupId>
     </dependency>
-
-    <dependency>
-      <groupId>com.github.stefanbirkner</groupId>
-      <artifactId>system-lambda</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
   <modelVersion>4.0.0</modelVersion>
 

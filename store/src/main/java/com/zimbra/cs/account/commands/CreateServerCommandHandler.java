@@ -4,6 +4,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
+import com.zimbra.common.cli.CommandExitException;
 
 class CreateServerCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
@@ -12,7 +13,7 @@ class CreateServerCommandHandler implements CommandHandler {
     this.provUtil = provUtil;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException {
+  @Override public void handle(String[] args) throws ServiceException, ArgException, CommandExitException {
     provUtil.getConsole().println(provUtil.getProvisioning().createServer(args[1], provUtil.getMapAndCheck(args, 2, true)).getId());
   }
 }

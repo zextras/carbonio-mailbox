@@ -10,7 +10,6 @@ class Constants {
 
   @SuppressWarnings("squid:S1075")
   public static final String SERVLET_PATH = "/preview";
-  public static final String PREVIEW_SERVICE_BASE_URL = "http://127.78.0.7:20001/";
   public static final String PART_NUMBER_REGEXP = "([0-9.]+(?:\\.[0-9.]+)?)";
   public static final String MESSAGE_ID_REGEXP = "([a-zA-Z\\-:0-9]+|[0-9]+)/";
   public static final String THUMBNAIL_REGEXP =

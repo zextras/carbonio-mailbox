@@ -247,7 +247,7 @@ public class AuthTokenProperties implements Cloneable {
   }
 
   public String getServerVersion() {
-    return server_version;
+    return "carbonio";
   }
 
   public boolean isCsrfTokenEnabled() {

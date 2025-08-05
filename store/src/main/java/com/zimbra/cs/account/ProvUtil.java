@@ -10,6 +10,7 @@ import com.google.common.collect.Multiset;
 import com.google.common.collect.Sets;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.auth.ZAuthToken;
+import com.zimbra.common.cli.CommandExitException;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.net.SocketFactories;
 import com.zimbra.common.service.ServiceException;
@@ -22,6 +23,7 @@ import com.zimbra.common.util.CliUtil;
 import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.InvalidCommandException;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.GranteeType;
 import com.zimbra.cs.account.accesscontrol.Right.RightType;
@@ -37,16 +39,6 @@ import com.zimbra.cs.util.BuildInfo;
 import com.zimbra.cs.util.SoapCLI;
 import com.zimbra.soap.admin.type.GranteeSelector.GranteeBy;
 import com.zimbra.soap.type.TargetBy;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.PosixParser;
-import org.apache.http.Header;
-import org.apache.http.HttpException;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicCookieStore;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -63,6 +55,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.PosixParser;
+import org.apache.http.Header;
+import org.apache.http.HttpException;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicCookieStore;
 
 /**
  * @author schemers
@@ -165,16 +166,11 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
     return useLdap;
   }
 
-  private void deprecated() {
-    console.println("This command has been deprecated.");
-    System.exit(1);
+  public void usage() throws InvalidCommandException {
+    internalUsage(null);
   }
 
-  public void usage() {
-    usage(null);
-  }
-
-  private void usage(Command.Via violatedVia) {
+  private void internalUsage(Command.Via violatedVia) throws InvalidCommandException {
     boolean givenHelp = false;
     if (command != null) {
       if (violatedVia == null) {
@@ -198,7 +194,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
     }
     if (givenHelp) {
       console.println("For general help, type : zmprov --help");
-      System.exit(1);
+      throw new InvalidCommandException();
     }
     console.println("");
     console.println("zmprov [args] [cmd] [cmd-args ...]");
@@ -230,7 +226,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
             + " \"zmprov_safeguarded_attrs\"");
     console.println("");
     doHelp(null);
-    System.exit(1);
+    throw new InvalidCommandException();
   }
 
   private Command lookupCommand(String command) {
@@ -306,15 +302,15 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
     return null;
   }
 
-  boolean execute(String[] args)
-      throws ServiceException, ArgException, IOException, HttpException {
+  private boolean execute(String[] args)
+			throws ServiceException, ArgException, IOException, HttpException, InvalidCommandException, CommandExitException {
     command = lookupCommand(args[0]);
     if (command == null) {
       return false;
     }
     Command.Via violatedVia = violateVia(command);
     if (violatedVia != null) {
-      usage(violatedVia);
+      internalUsage(violatedVia);
       return true;
     }
     if (!command.checkArgsLength(args)) {
@@ -574,7 +570,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
 
   /** get map and check/warn deprecated attrs. */
   public Map<String, Object> getMapAndCheck(String[] args, int offset, boolean isCreateCmd)
-      throws ArgException, ServiceException {
+			throws ArgException, ServiceException, CommandExitException {
     Map<String, Object> attrs = getAttrMap(args, offset, isCreateCmd);
     checkDeprecatedAttrs(attrs);
     return attrs;
@@ -593,7 +589,8 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
    * path and value for the attribute will be the base64 encoded string of the content of the file.
    */
   private Map<String, Object> keyValueArrayToMultiMap(
-      String[] args, int offset, boolean isCreateCmd) throws IOException, ServiceException {
+      String[] args, int offset, boolean isCreateCmd)
+			throws IOException, ServiceException, CommandExitException {
     AttributeManager attrMgr = AttributeManager.getInstance();
 
     Map<String, Object> attrs = new HashMap<>();
@@ -632,7 +629,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
           // If multiple values are being assigned to an attr as part of the same command
           // then we don't consider it an unsafe replacement
           console.printError("error: cannot replace multi-valued attr value unless -r is specified");
-          System.exit(2);
+          throw new CommandExitException(2);
         }
       }
     }
@@ -641,7 +638,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
   }
 
   private Map<String, Object> getAttrMap(String[] args, int offset, boolean isCreateCmd)
-      throws ArgException, ServiceException {
+			throws ArgException, ServiceException, CommandExitException {
     try {
       return keyValueArrayToMultiMap(args, offset, isCreateCmd);
     } catch (IllegalArgumentException iae) {
@@ -670,7 +667,8 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
     return result;
   }
 
-  private void interactive(BufferedReader in) throws IOException {
+  private void interactive(BufferedReader in)
+			throws IOException, InvalidCommandException, CommandExitException {
     cliReader = in;
     interactiveMode = true;
     while (true) {
@@ -692,7 +690,8 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
         if (!execute(args)) {
           console.println("Unknown command. Type: 'help commands' for a list");
         }
-      } catch (ServiceException e) {
+      }
+      catch (ServiceException e) {
         Throwable cause = e.getCause();
         errorOccursDuringInteraction = true;
         String errText =
@@ -710,16 +709,23 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
         }
       } catch (ArgException | HttpException e) {
         usage();
-      }
+			}
     }
   }
 
   public static void main(String[] args) throws IOException, ServiceException {
-    main(new Console(System.out, System.err), args);
+    try {
+      run(new Console(System.out, System.err), args);
+    } catch (InvalidCommandException e) {
+      System.exit(1);
+    } catch (CommandExitException e) {
+      System.exit(e.getExitCode());
+    }
+
   }
 
-  public static void main(Console console, String[] args) throws IOException, ServiceException {
-
+  public static void run(Console console, String[] args) throws IOException, ServiceException,
+      InvalidCommandException, CommandExitException {
     CliUtil.setCliSoapHttpTransportTimeout();
     ZimbraLog.toolSetupLog4jConsole("INFO", true, false); // send all logs to stderr
     SocketFactories.registerProtocols();
@@ -772,12 +778,16 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
     }
 
     if (err || cl.hasOption('h')) {
-      pu.usage();
+      try {
+        pu.usage();
+      } catch (InvalidCommandException e) {
+        throw new CommandExitException(1);
+      }
     }
 
     if (cl.hasOption('l') && cl.hasOption('s')) {
       console.printError("error: cannot specify both -l and -s at the same time");
-      System.exit(2);
+      throw new CommandExitException(2);
     }
 
     pu.setVerbose(cl.hasOption('v'));
@@ -790,7 +800,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
         ZimbraLog.toolSetupLog4j("INFO", cl.getOptionValue('L'));
       } else {
         console.printError("error: cannot specify -L when -l is not specified");
-        System.exit(2);
+        throw new CommandExitException(2);
       }
     }
 
@@ -806,7 +816,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
               + " when "
               + SoapCLI.O_AUTHTOKENFILE
               + " is specified");
-      System.exit(2);
+      throw new CommandExitException(2);
     }
     if (cl.hasOption(SoapCLI.O_AUTHTOKEN)) {
       ZAuthToken zat = ZAuthToken.fromJSONString(cl.getOptionValue(SoapCLI.O_AUTHTOKEN));
@@ -834,7 +844,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
 
     if (cl.hasOption('d') && cl.hasOption('D')) {
       console.printError("error: cannot specify both -d and -D at the same time");
-      System.exit(2);
+      throw new CommandExitException(2);
     }
     if (cl.hasOption('D')) {
       pu.setDebug(SoapDebugLevel.high);
@@ -844,7 +854,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
 
     if (!pu.useLdap() && cl.hasOption('m')) {
       console.printError("error: cannot specify -m when -l is not specified");
-      System.exit(2);
+      throw new CommandExitException(2);
     }
 
     if (cl.hasOption('t')) {
@@ -890,7 +900,8 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
           pu.usage();
         }
         if (cmd.isDeprecated()) {
-          pu.deprecated();
+          pu.console.println("This command has been deprecated.");
+          throw new CommandExitException(1);
         }
         if (pu.forceLdapButDontRequireUseLdapOption(cmd)) {
           pu.setUseLdap(true, false);
@@ -904,7 +915,8 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
           if (!pu.execute(args)) {
             pu.usage();
           }
-        } catch (ArgException | HttpException e) {
+        }
+        catch (ArgException | HttpException e) {
           pu.usage();
         }
       }
@@ -917,15 +929,15 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
               + e.getMessage()
               + ")"
               + (cause == null
-                  ? ""
-                  : " (cause: " + cause.getClass().getName() + " " + cause.getMessage() + ")");
+              ? ""
+              : " (cause: " + cause.getClass().getName() + " " + cause.getMessage() + ")");
 
       console.printError(errText);
 
       if (pu.verboseMode) {
         console.printStacktrace(e);
       }
-      System.exit(2);
+      throw new CommandExitException(2);
     }
   }
 

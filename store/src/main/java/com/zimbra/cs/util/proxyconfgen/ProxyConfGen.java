@@ -11,6 +11,7 @@ import static com.zimbra.cs.util.proxyconfgen.ProxyConfVar.serverSource;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.DomainBy;
 import com.zimbra.common.account.ZAttrProvisioning;
+import com.zimbra.common.cli.CommandExitException;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.CliUtil;
 import com.zimbra.common.util.Log;
@@ -1902,75 +1903,6 @@ public class ProxyConfGen {
                 ProxyConfOverride.SERVER,
                 "SSL session timeout value for the proxy in secs")));
     mConfVars.put("ssl.session.cachesize", new WebSSLSessionCacheSizeVar());
-    mConfVars.put("web.xmpp.upstream.proto", new XmppBoshProxyUpstreamProtoVar());
-    mConfVars.put("web.xmpp.bosh.upstream.disable", new WebXmppBoshEnablerVar());
-    mConfVars.put(
-        "web.xmpp.bosh.enabled",
-        new ProxyConfVar(
-            "web.xmpp.bosh.enabled",
-            ZAttrProvisioning.A_zimbraReverseProxyXmppBoshEnabled,
-            true,
-            ProxyConfValueType.ENABLER,
-            ProxyConfOverride.SERVER,
-            "Indicates whether XMPP/Bosh Reverse Proxy is enabled"));
-    mConfVars.put(
-        "web.xmpp.local.bind.url",
-        new ProxyConfVar(
-            "web.xmpp.local.bind.url",
-            ZAttrProvisioning.A_zimbraReverseProxyXmppBoshLocalHttpBindURL,
-            "/http-bind",
-            ProxyConfValueType.STRING,
-            ProxyConfOverride.SERVER,
-            "Local HTTP-BIND URL prefix where ZWC sends XMPP over BOSH requests"));
-    mConfVars.put(
-        "web.xmpp.remote.bind.url",
-        new ProxyConfVar(
-            "web.xmpp.remote.bind.url",
-            ZAttrProvisioning.A_zimbraReverseProxyXmppBoshRemoteHttpBindURL,
-            "",
-            ProxyConfValueType.STRING,
-            ProxyConfOverride.SERVER,
-            "Remote HTTP-BIND URL prefix for an external XMPP server where XMPP over BOSH requests"
-                + " need to be proxied"));
-    mConfVars.put(
-        "web.xmpp.bosh.hostname",
-        new ProxyConfVar(
-            "web.xmpp.bosh.hostname",
-            ZAttrProvisioning.A_zimbraReverseProxyXmppBoshHostname,
-            "",
-            ProxyConfValueType.STRING,
-            ProxyConfOverride.SERVER,
-            "Hostname of the external XMPP server where XMPP over BOSH requests need to be"
-                + " proxied"));
-    mConfVars.put(
-        "web.xmpp.bosh.port",
-        new ProxyConfVar(
-            "web.xmpp.bosh.port",
-            ZAttrProvisioning.A_zimbraReverseProxyXmppBoshPort,
-            0,
-            ProxyConfValueType.INTEGER,
-            ProxyConfOverride.SERVER,
-            "Port number of the external XMPP server where XMPP over BOSH requests need to be"
-                + " proxied"));
-    mConfVars.put(
-        "web.xmpp.bosh.timeout",
-        new TimeInSecVarWrapper(
-            new ProxyConfVar(
-                "web.xmpp.bosh.timeout",
-                ZAttrProvisioning.A_zimbraReverseProxyXmppBoshTimeout,
-                60L,
-                ProxyConfValueType.TIME,
-                ProxyConfOverride.SERVER,
-                "the response timeout for an external XMPP/BOSH server")));
-    mConfVars.put(
-        "web.xmpp.bosh.use_ssl",
-        new ProxyConfVar(
-            "web.xmpp.bosh.use_ssl",
-            ZAttrProvisioning.A_zimbraReverseProxyXmppBoshSSL,
-            true,
-            ProxyConfValueType.ENABLER,
-            ProxyConfOverride.SERVER,
-            "Indicates whether XMPP/Bosh uses SSL"));
     ProxyConfVar webSslDhParamFile =
         new ProxyConfVar(
             "web.ssl.dhparam.file",
@@ -2170,7 +2102,7 @@ public class ProxyConfGen {
     return validConf;
   }
 
-  public static int createConf(String[] args) throws ServiceException, ProxyConfException {
+  public static int run(String[] args) throws ServiceException, ProxyConfException, CommandExitException {
     int exitCode = 0;
     CommandLine cl = parseArgs(args);
 
@@ -2410,6 +2342,9 @@ public class ProxyConfGen {
       expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("stream")),
           new File(mConfIncludesDir, getConfFileName("stream")));
+      expandTemplate(
+          new File(mTemplateDir, getConfTemplateFileName("web.upstreams")),
+          new File(mConfIncludesDir, getConfFileName("web.upstreams")));
       expandTemplate(
           new File(mTemplateDir, getConfTemplateFileName("stream.addressBook")),
           new File(mConfIncludesDir, getConfFileName("stream.addressBook")));
@@ -2741,8 +2676,8 @@ public class ProxyConfGen {
     }
   }
 
-  private static void writeClientCAtoFile(String clientCA) throws ServiceException {
-    int exitCode;
+  private static void writeClientCAtoFile(String clientCA)
+			throws ServiceException, CommandExitException {
     ProxyConfVar clientCAEnabledVar;
     final String keyword = "ssl.clientcertca.enabled";
 
@@ -2758,8 +2693,7 @@ public class ProxyConfGen {
 
       if (isClientCertVerifyEnabled() || isDomainClientCertVerifyEnabled()) {
         LOG.error("Client certificate verification is enabled but no client cert ca is provided");
-        exitCode = 1;
-        System.exit(exitCode);
+        throw new CommandExitException(1);
       }
 
     } else {
@@ -2779,7 +2713,7 @@ public class ProxyConfGen {
       mVars.put(keyword, clientCAEnabledVar.confValue());
     } catch (ProxyConfException e) {
       LOG.error("ProxyConfException during format ssl.clientcertca.enabled", e);
-      System.exit(1);
+      throw new CommandExitException(1);
     }
   }
 
@@ -2806,7 +2740,11 @@ public class ProxyConfGen {
   }
 
   public static void main(String[] args) throws ServiceException, ProxyConfException {
-    int exitCode = createConf(args);
-    System.exit(exitCode);
+		try {
+      final int exitCode = run(args);
+      System.exit(exitCode);
+    } catch (CommandExitException e) {
+      System.exit(e.getExitCode());
+    }
   }
 }

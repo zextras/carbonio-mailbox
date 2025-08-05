@@ -55,4 +55,10 @@
   <key name="ldap_noop_search_supported">
     <value>false</value>
   </key>
+  <key name="preview_service_url">
+    <value>CARBONIO_PREVIEW_SERVICE_URL</value>
+  </key>
+  <key name="files_service_url">
+    <value>CARBONIO_FILES_SERVICE_URL</value>
+  </key>
 </localconfig>
