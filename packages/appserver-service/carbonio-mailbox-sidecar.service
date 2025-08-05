@@ -5,19 +5,17 @@ Requires=network-online.target
 After=network-online.target
 
 [Service]
+User=carbonio-mailbox
 Type=simple
 ExecStart=/usr/bin/consul connect envoy \
     -token-file /etc/carbonio/mailbox/service-discover/token \
     -admin-bind localhost:0 \
     -sidecar-for carbonio-mailbox
+ExecReload=/usr/bin/kill -HUP $MAINPID
 Restart=on-failure
 RestartSec=15
-User=carbonio-mailbox
-KillMode=process
 KillSignal=SIGINT
 LimitNOFILE=65536
-TimeoutSec=120
-TimeoutStopSec=120
 
 [Install]
 WantedBy=multi-user.target
