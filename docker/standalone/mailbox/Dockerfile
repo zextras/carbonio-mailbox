@@ -12,6 +12,7 @@ COPY native/target/zm-native*.jar /opt/zextras/mailbox/jars/
 COPY soap/target/zm-soap*.jar /opt/zextras/mailbox/jars/
 COPY common/target/zm-common*.jar /opt/zextras/mailbox/jars/
 COPY docker/standalone/mailbox/log4j.properties /opt/zextras/conf/log4j.properties
+COPY store-conf/conf/datasource.xml /opt/zextras/conf/
 
 ENV LDAP_URL="ldap://openldap:1389"
 ENV LDAP_ROOT_PASSWORD=qh6hWZvc
@@ -44,6 +45,10 @@ ENV JAVA_ARGS="${BASE_JAVA_ARGS} \
               com.zextras.mailbox.Mailbox"
 ARG JAVA_CLI_ARGS="${BASE_JAVA_ARGS} \
               com.zimbra.cs.account.ProvUtil \"\$@\""
+
+ARG JAVA_ZMGSA_ARGS="${BASE_JAVA_ARGS} \
+              com.zimbra.cs.util.GalSyncAccountUtil \"\$@\""
+RUN echo "java ${JAVA_ZMGSA_ARGS}" > /usr/bin/zmgsautil && chmod +x /usr/bin/zmgsautil
 
 RUN echo "java ${JAVA_CLI_ARGS}" > /usr/bin/zmprov && chmod +x /usr/bin/zmprov && mkdir -p /opt/zextras/db
 ARG JAVA_ZMMAILBOX_ARG="${BASE_JAVA_ARGS} \
