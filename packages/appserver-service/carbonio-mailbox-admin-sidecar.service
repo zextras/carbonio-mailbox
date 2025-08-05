@@ -6,7 +6,6 @@ After=network-online.target
 
 [Service]
 User=carbonio-mailbox
-Type=simple
 ExecStart=/usr/bin/consul connect envoy \
     -token-file /etc/carbonio/mailbox-admin/service-discover/token \
     -admin-bind localhost:0 \
