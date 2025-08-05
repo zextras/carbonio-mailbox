@@ -7,4 +7,4 @@ PartOf=carbonio.target
 AllowIsolate=yes
 
 [Install]
-WantedBy=carbonio.target
+WantedBy=multi-user.target
