@@ -13,7 +13,6 @@ COPY soap/target/zm-soap*.jar /opt/zextras/mailbox/jars/
 COPY common/target/zm-common*.jar /opt/zextras/mailbox/jars/
 COPY docker/standalone/mailbox/log4j.properties /opt/zextras/conf/log4j.properties
 COPY store-conf/conf/datasource.xml /opt/zextras/conf/
-COPY docker/standalone/mailbox/localconfig/localconfig.xml /opt/zextras/conf/
 
 ENV LDAP_URL="ldap://openldap:1389"
 ENV LDAP_ROOT_PASSWORD=qh6hWZvc
@@ -36,12 +35,12 @@ ARG BASE_JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
               -Xss256k -Dlog4j.configurationFile=/opt/zextras/conf/log4j.properties \
               -Xms1996m -Xmx1996m -Djava.io.tmpdir=/opt/zextras/mailboxd/work \
               -Djava.library.path=/opt/zextras/lib \
-              -Dzimbra.config=/opt/zextras/conf/localconfig.xml \
+              -Dzimbra.config=/localconfig/localconfig.xml \
               -Dzimbra.native.required=false \
               -Dlog4j.configurationFile=/opt/zextras/conf/log4j.properties \
               -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/*"
 
-ARG JAVA_ARGS="${BASE_JAVA_ARGS} \
+ENV JAVA_ARGS="${BASE_JAVA_ARGS} \
               -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 \
               com.zextras.mailbox.Mailbox"
 ARG JAVA_CLI_ARGS="${BASE_JAVA_ARGS} \
@@ -49,15 +48,15 @@ ARG JAVA_CLI_ARGS="${BASE_JAVA_ARGS} \
 
 ARG JAVA_ZMGSA_ARGS="${BASE_JAVA_ARGS} \
               com.zimbra.cs.util.GalSyncAccountUtil \"\$@\""
+RUN echo "java ${JAVA_ZMGSA_ARGS}" > /usr/bin/zmgsautil && chmod +x /usr/bin/zmgsautil
 
-RUN echo "java ${JAVA_ARGS}" > /usr/bin/mailbox && chmod +x /usr/bin/mailbox
 RUN echo "java ${JAVA_CLI_ARGS}" > /usr/bin/zmprov && chmod +x /usr/bin/zmprov && mkdir -p /opt/zextras/db
 ARG JAVA_ZMMAILBOX_ARG="${BASE_JAVA_ARGS} \
               com.zimbra.cs.zclient.ZMailboxUtil \"\$@\""
 RUN echo "java ${JAVA_ZMMAILBOX_ARG}" > /usr/bin/zmmailbox && chmod +x /usr/bin/zmmailbox
 COPY store/db/create_database.sql /opt/zextras/db/
 
-RUN echo "java ${JAVA_ZMGSA_ARGS}" > /usr/bin/zmgsautil && chmod +x /usr/bin/zmgsautil
+COPY docker/standalone/mailbox/localconfig/localconfig.xml /localconfig/localconfig.xml
 
 RUN mkdir -p /opt/zextras/mailboxd/etc/ && keytool -genkey -keyalg RSA \
     -dname "cn=Unknown, ou=Unknown, o=Unknown, c=Unknown" \
