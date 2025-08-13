@@ -105,7 +105,7 @@ pipeline {
             steps {
                 checkout scm
                 withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
-                    sh 'cp $SETTINGS_PATH settings-jenkins.xml'
+                    sh 'cp ${SETTINGS_PATH} settings-jenkins.xml'
                 }
                 script {
                     env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
