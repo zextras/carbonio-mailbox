@@ -15,7 +15,7 @@ ExecReload=/usr/bin/kill -HUP $MAINPID
 Restart=on-failure
 RestartSec=15
 ExecReload=/usr/bin/kill -HUP $MAINPID
-KillSignal=SIGKINT
+KillSignal=SIGINT
 LimitNOFILE=65536
 
 [Install]
