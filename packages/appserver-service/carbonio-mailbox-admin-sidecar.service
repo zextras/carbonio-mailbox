@@ -14,7 +14,8 @@ ExecStart=/usr/bin/consul connect envoy \
 ExecReload=/usr/bin/kill -HUP $MAINPID
 Restart=on-failure
 RestartSec=15
-KillSignal=SIGINT
+ExecReload=/usr/bin/kill -HUP $MAINPID
+KillSignal=SIGKINT
 LimitNOFILE=65536
 
 [Install]
