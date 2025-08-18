@@ -37,7 +37,7 @@ class EmailChannelTest extends MailboxTestSuite {
 	private static String recoveryAddress = "recoveryAddress@test.com";
 
 	@BeforeAll
-	public static void setUp() throws Exception {
+	static void setUp() {
 		mta =
 				new GreenMail(
 						new ServerSetup[]{
@@ -47,7 +47,7 @@ class EmailChannelTest extends MailboxTestSuite {
 		mta.start();
 	}
 	@BeforeEach
-	public void cleanup() throws Exception {
+	void cleanup() {
 		mta.reset();
 	}
 
