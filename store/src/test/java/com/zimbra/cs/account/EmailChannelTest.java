@@ -33,6 +33,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 class EmailChannelTest extends MailboxTestSuite {
 
 	private static GreenMail mta;
+	private static String CODE = "123";
+	private static String recoveryAddress = "recoveryAddress@test.com";
 
 	@BeforeAll
 	public static void setUp() throws Exception {
@@ -56,7 +58,7 @@ class EmailChannelTest extends MailboxTestSuite {
 		final String recoveryAddress = "recoveryAddress@test.com";
 
 		EmailChannel.sendAndStoreResetPasswordURL(zsc, account,
-				getRecoveryAddressCodeMap(recoveryAddress));
+				getRecoveryAddressCodeMap());
 
 		MimeMessage[] receivedMessages = mta.getReceivedMessages();
 		Assertions.assertEquals(1, receivedMessages.length);
@@ -70,10 +72,9 @@ class EmailChannelTest extends MailboxTestSuite {
 	void shouldSendEmailWithResetPasswordURL() throws Exception {
 		final Account account = this.getAccountCreator().get().create();
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
-		final String recoveryAddress = "recoveryAddress@test.com";
 
 		EmailChannel.sendAndStoreResetPasswordURL(zsc, account,
-				getRecoveryAddressCodeMap(recoveryAddress));
+				getRecoveryAddressCodeMap());
 
 		final String eml = getReceivedMailBody();
 		Assertions.assertTrue(eml.contains("Kindly click on the link to set your password : https://localhost"));
@@ -86,22 +87,21 @@ class EmailChannelTest extends MailboxTestSuite {
 		final String recoveryAddress = "recoveryAddress@test.com";
 
 		new EmailChannel().sendAndStoreSetRecoveryAccountCode(account, MailboxManager.getInstance()
-				.getMailboxByAccount(account), getRecoveryCodeMap(recoveryAddress, "123"), zsc, null, new HashMap<>());
+				.getMailboxByAccount(account), getRecoveryCodeMap(), zsc, null, new HashMap<>());
 
 		final String receivedMailBody = getReceivedMailBody();
-		Assertions.assertTrue(receivedMailBody.contains("Recovery email verification code: 123"));
+		Assertions.assertTrue(receivedMailBody.contains("Recovery email verification code: " + CODE));
 	}
 
 	@Test
 	void shouldSendEmailWithResetPasswordRecoveryCode() throws Exception {
 		final Account account = this.getAccountCreator().get().create();
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
-		final String recoveryAddress = "recoveryAddress@test.com";
 
-		new EmailChannel().sendAndStoreResetPasswordRecoveryCode(zsc, account, getRecoveryCodeMap(recoveryAddress, "123"));
+		new EmailChannel().sendAndStoreResetPasswordRecoveryCode(zsc, account, getRecoveryCodeMap());
 
 		final String receivedMailBody = getReceivedMailBody();
-		Assertions.assertTrue(receivedMailBody.contains("Temporary Access Code: 123"));
+		Assertions.assertTrue(receivedMailBody.contains("Temporary Access Code: " + CODE));
 	}
 
 	private static Stream<Arguments> dateTestCases() {
@@ -122,10 +122,9 @@ class EmailChannelTest extends MailboxTestSuite {
 		final Account account = this.getAccountCreator().get().withAttribute(Provisioning.A_zimbraPrefTimeZoneId, timeZone)
 				.create();
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
-		final String recoveryAddress = "recoveryAddress@test.com";
 
 		EmailChannel.sendAndStoreResetPasswordURL(zsc, account,
-				getRecoveryAddressCodeMap(recoveryAddress));
+				getRecoveryAddressCodeMap());
 
 		MimeMessage[] receivedMessages = mta.getReceivedMessages();
 		Assertions.assertEquals(1, receivedMessages.length);
@@ -136,17 +135,17 @@ class EmailChannelTest extends MailboxTestSuite {
 		Assertions.assertTrue(matcher.find());
 	}
 
-	private static HashMap<String, String> getRecoveryAddressCodeMap(String recoveryAddress) {
+	private static HashMap<String, String> getRecoveryAddressCodeMap() {
 		return new HashMap<>(Map.of(
 				CodeConstants.EXPIRY_TIME.toString(), "1000",
-				CodeConstants.EMAIL.toString(), recoveryAddress
+				CodeConstants.EMAIL.toString(), "recoveryAddress@test.com"
 		));
 	}
-	private static HashMap<String, String> getRecoveryCodeMap(String recoveryAddress, String code) {
+	private static HashMap<String, String> getRecoveryCodeMap() {
 		return new HashMap<>(Map.of(
 				CodeConstants.EXPIRY_TIME.toString(), "1000",
 				CodeConstants.EMAIL.toString(), recoveryAddress,
-				CodeConstants.CODE.toString(), code
+				CodeConstants.CODE.toString(), CODE
 		));
 	}
 
