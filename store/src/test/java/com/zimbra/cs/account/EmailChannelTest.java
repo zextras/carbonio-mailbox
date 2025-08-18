@@ -10,14 +10,17 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.account.ForgetPasswordEnums.CodeConstants;
+import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailclient.smtp.SmtpConfig;
 import com.zimbra.cs.service.mail.ServiceTestUtil;
 import com.zimbra.soap.ZimbraSoapContext;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -46,6 +49,13 @@ class EmailChannelTest extends MailboxTestSuite {
 		mta.reset();
 	}
 
+	private String getReceivedMailBody() throws MessagingException, IOException {
+		MimeMessage[] receivedMessages = mta.getReceivedMessages();
+		Assertions.assertEquals(1, receivedMessages.length);
+		final MimeMessage receivedMessage = receivedMessages[0];
+		return new String(receivedMessage.getInputStream().readAllBytes());
+	}
+
 	@Test
 	void shouldSendResetPasswordURL_ToRecoveryAddress() throws Exception {
 		final Account account = this.getAccountCreator().get().create();
@@ -53,8 +63,7 @@ class EmailChannelTest extends MailboxTestSuite {
 		final String recoveryAddress = "recoveryAddress@test.com";
 
 		EmailChannel.sendAndStoreResetPasswordURL(zsc, account,
-				new HashMap<>(Map.of(CodeConstants.EXPIRY_TIME.toString(), "1000",
-						CodeConstants.EMAIL.toString(), recoveryAddress)));
+				getRecoveryAddressCodeMap(recoveryAddress));
 
 		MimeMessage[] receivedMessages = mta.getReceivedMessages();
 		Assertions.assertEquals(1, receivedMessages.length);
@@ -62,6 +71,47 @@ class EmailChannelTest extends MailboxTestSuite {
 
 		final String recipient = receivedMessage.getAllRecipients()[0].toString();
 		Assertions.assertEquals(recoveryAddress, recipient);
+	}
+
+	@Test
+	void shouldSendEmailWithResetPasswordURL() throws Exception {
+		final Account account = this.getAccountCreator().get().create();
+		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
+		final String recoveryAddress = "recoveryAddress@test.com";
+
+		EmailChannel.sendAndStoreResetPasswordURL(zsc, account,
+				getRecoveryAddressCodeMap(recoveryAddress));
+
+		final String eml = getReceivedMailBody();
+		Assertions.assertTrue(eml.contains("Kindly click on the link to set your password : https://localhost"));
+	}
+
+	private static HashMap<String, String> getRecoveryAddressCodeMap(String recoveryAddress) {
+		return new HashMap<>(Map.of(
+				CodeConstants.EXPIRY_TIME.toString(), "1000",
+				CodeConstants.EMAIL.toString(), recoveryAddress
+		));
+	}
+	private static HashMap<String, String> getRecoveryCodeMap(String recoveryAddress, String code) {
+		return new HashMap<>(Map.of(
+				CodeConstants.EXPIRY_TIME.toString(), "1000",
+				CodeConstants.EMAIL.toString(), recoveryAddress,
+				CodeConstants.CODE.toString(), code
+		));
+	}
+
+	@Test
+	void shouldSendEmailWithRecoveryCode() throws Exception {
+		final Account account = this.getAccountCreator().get().create();
+		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
+		final String recoveryAddress = "recoveryAddress@test.com";
+
+		new EmailChannel().sendAndStoreSetRecoveryAccountCode(account, MailboxManager.getInstance()
+				.getMailboxByAccount(account), getRecoveryCodeMap(recoveryAddress, "123"), zsc, null, new HashMap<>());
+
+		final String receivedMailBody = getReceivedMailBody();
+		System.out.println(receivedMailBody);
+		Assertions.assertTrue(receivedMailBody.contains("Recovery email verification code: 123"));
 	}
 
 	private static Stream<Arguments> dateTestCases() {
@@ -85,17 +135,14 @@ class EmailChannelTest extends MailboxTestSuite {
 		final String recoveryAddress = "recoveryAddress@test.com";
 
 		EmailChannel.sendAndStoreResetPasswordURL(zsc, account,
-				new HashMap<>(Map.of(CodeConstants.EXPIRY_TIME.toString(), "1000",
-						CodeConstants.EMAIL.toString(), recoveryAddress)));
+				getRecoveryAddressCodeMap(recoveryAddress));
 
 		MimeMessage[] receivedMessages = mta.getReceivedMessages();
 		Assertions.assertEquals(1, receivedMessages.length);
-		final MimeMessage receivedMessage = receivedMessages[0];
 
 		Pattern pattern = Pattern.compile("The link expires by: " + expected, Pattern.DOTALL);
-		final String eml = new String(receivedMessage.getInputStream().readAllBytes());
+		final String eml = getReceivedMailBody();
 		Matcher matcher = pattern.matcher(eml);
-		System.out.println(eml);
 		Assertions.assertTrue(matcher.find());
 	}
 }
