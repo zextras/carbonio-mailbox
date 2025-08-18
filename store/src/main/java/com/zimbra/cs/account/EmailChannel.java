@@ -5,24 +5,8 @@
 
 package com.zimbra.cs.account;
 
-import com.zimbra.common.account.ZAttrProvisioning;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TimeZone;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-
 import com.zimbra.common.account.ForgetPasswordEnums.CodeConstants;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.account.ZAttrProvisioning.PrefPasswordRecoveryAddressStatus;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
@@ -36,6 +20,20 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.service.util.JWEUtil;
 import com.zimbra.cs.util.AccountUtil;
 import com.zimbra.soap.ZimbraSoapContext;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TimeZone;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 public class EmailChannel extends ChannelProvider {
 
@@ -52,10 +50,7 @@ public class EmailChannel extends ChannelProvider {
     @Override
     public void sendAndStoreResetPasswordRecoveryCode(ZimbraSoapContext zsc, Account account,
             Map<String, String> recoveryCodeMap) throws ServiceException {
-        String accountTimeZone = account.getAttr(Provisioning.A_zimbraPrefTimeZoneId);
-        if (accountTimeZone == null || accountTimeZone.length() == 0) {
-            accountTimeZone = "GMT";
-        }
+        final String accountTimeZone = account.getPreferredTimezone();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT)
                 .withZone(ZoneId.of(accountTimeZone));
         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
@@ -102,10 +97,7 @@ public class EmailChannel extends ChannelProvider {
             throw ForgetPasswordException.CODE_NOT_FOUND("Verification code for recovery email address not found on server.");
         }
         String code = recoveryDataMap.get(CodeConstants.CODE.toString());
-        String accountTimeZone = account.getAttr(Provisioning.A_zimbraPrefTimeZoneId);
-        if (accountTimeZone == null || accountTimeZone.length() == 0) {
-            accountTimeZone = "GMT";
-        }
+        final String accountTimeZone = account.getPreferredTimezone();
         long expiryTime = Long.parseLong(recoveryDataMap.get(CodeConstants.EXPIRY_TIME.toString()));
         if (ZimbraLog.passwordreset.isDebugEnabled()) {
             DateFormat format = new SimpleDateFormat(DATE_TIME_FORMAT);
@@ -134,10 +126,7 @@ public class EmailChannel extends ChannelProvider {
     public void sendAndStoreSetRecoveryAccountCode(Account account, Mailbox mbox, Map<String, String> recoveryCodeMap,
             ZimbraSoapContext zsc, OperationContext octxt, HashMap<String, Object> prefs) throws ServiceException {
         Locale locale = account.getLocale();
-        String accountTimeZone = account.getAttr(Provisioning.A_zimbraPrefTimeZoneId);
-        if (accountTimeZone == null || accountTimeZone.length() == 0) {
-            accountTimeZone = "GMT";
-        }
+        final String accountTimeZone = account.getPreferredTimezone();
         String ownerAcctDisplayName = account.getDisplayName();
         if (ownerAcctDisplayName == null) {
             ownerAcctDisplayName = account.getName();
@@ -185,10 +174,7 @@ public class EmailChannel extends ChannelProvider {
             Map<String, String> recoveryCodeMap) throws ServiceException {
         Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
         Locale locale = account.getLocale();
-        String accountTimeZone = account.getAttr(Provisioning.A_zimbraPrefTimeZoneId);
-        if (accountTimeZone == null || accountTimeZone.length() == 0) {
-            accountTimeZone = "GMT";
-        }
+        final String accountTimeZone = account.getPreferredTimezone();
         String accountName = account.getName();
         String userDisplayName = account.getDisplayName() != null ? String.join("", " ", account.getDisplayName()) : "";
         String subject = L10nUtil.getMessage(MsgKey.sendPasswordResetEmailSubject, locale, userDisplayName);

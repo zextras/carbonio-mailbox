@@ -17,6 +17,7 @@ import com.zimbra.soap.admin.type.DataSourceType;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -45,6 +46,17 @@ public class Account extends ZAttrAccount implements GroupedEntry, AliasedEntry 
     return (other.getId().equals(getId()));
   }
 
+  /**
+   * Gives user timezone based on zimbraPrefTimeZoneId if defined, else GMT
+   * @return a string representing the timezone
+   */
+  public String getPreferredTimezone() {
+    String[] accountTimeZone = this.getPrefTimeZoneId();
+    if (accountTimeZone.length == 0 || Objects.equals("", accountTimeZone[0])) {
+      return "GMT";
+    }
+    return accountTimeZone[0];
+  }
   public void deleteAccount() throws ServiceException {
     getProvisioning().deleteAccount(this.getId());
   }
