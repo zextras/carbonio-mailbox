@@ -57,7 +57,7 @@ class EmailChannelTest extends MailboxTestSuite {
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
 
 		EmailChannel.sendAndStoreResetPasswordURL(zsc, account,
-				getRecoveryAddressCodeMap());
+				getRecoveryMap());
 
 		MimeMessage[] receivedMessages = mta.getReceivedMessages();
 		Assertions.assertEquals(1, receivedMessages.length);
@@ -73,7 +73,7 @@ class EmailChannelTest extends MailboxTestSuite {
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
 
 		EmailChannel.sendAndStoreResetPasswordURL(zsc, account,
-				getRecoveryAddressCodeMap());
+				getRecoveryMap());
 
 		final String eml = getReceivedMailBody();
 		Assertions.assertTrue(eml.contains("Kindly click on the link to set your password : https://localhost"));
@@ -85,7 +85,7 @@ class EmailChannelTest extends MailboxTestSuite {
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
 
 		new EmailChannel().sendAndStoreSetRecoveryAccountCode(account, MailboxManager.getInstance()
-				.getMailboxByAccount(account), getRecoveryCodeMap(), zsc, null, new HashMap<>());
+				.getMailboxByAccount(account), getRecoveryMap(), zsc, null, new HashMap<>());
 
 		final String receivedMailBody = getReceivedMailBody();
 		Assertions.assertTrue(receivedMailBody.contains("Recovery email verification code: " + RECOVERY_CODE));
@@ -96,7 +96,7 @@ class EmailChannelTest extends MailboxTestSuite {
 		final Account account = this.getAccountCreator().get().create();
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
 
-		new EmailChannel().sendAndStoreResetPasswordRecoveryCode(zsc, account, getRecoveryCodeMap());
+		new EmailChannel().sendAndStoreResetPasswordRecoveryCode(zsc, account, getRecoveryMap());
 
 		final String receivedMailBody = getReceivedMailBody();
 		Assertions.assertTrue(receivedMailBody.contains("Temporary Access Code: " + RECOVERY_CODE));
@@ -122,7 +122,7 @@ class EmailChannelTest extends MailboxTestSuite {
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
 
 		EmailChannel.sendAndStoreResetPasswordURL(zsc, account,
-				getRecoveryAddressCodeMap());
+				getRecoveryMap());
 
 		MimeMessage[] receivedMessages = mta.getReceivedMessages();
 		Assertions.assertEquals(1, receivedMessages.length);
@@ -133,13 +133,7 @@ class EmailChannelTest extends MailboxTestSuite {
 		Assertions.assertTrue(matcher.find());
 	}
 
-	private static HashMap<String, String> getRecoveryAddressCodeMap() {
-		return new HashMap<>(Map.of(
-				CodeConstants.EXPIRY_TIME.toString(), "1000",
-				CodeConstants.EMAIL.toString(), recoveryAddress
-		));
-	}
-	private static HashMap<String, String> getRecoveryCodeMap() {
+	private static HashMap<String, String> getRecoveryMap() {
 		return new HashMap<>(Map.of(
 				CodeConstants.EXPIRY_TIME.toString(), "1000",
 				CodeConstants.EMAIL.toString(), recoveryAddress,
