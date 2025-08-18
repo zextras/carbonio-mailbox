@@ -4,7 +4,10 @@ COPY store/src/test/resources/timezones-test.ics /opt/zextras/conf/timezones.ics
 COPY store-conf/conf/msgs/* /opt/zextras/conf/msgs/
 COPY store-conf/conf/owasp_policy.xml /opt/zextras/conf/owasp_policy.xml
 
-RUN mkdir -p /opt/zextras/mailbox/jars/ && mkdir -p /opt/zextras/lib/ext/nginx-lookup/ && mkdir -p /opt/zextras/store
+RUN mkdir -p /opt/zextras/mailbox/jars/ && \
+    mkdir -p /opt/zextras/lib/ext/nginx-lookup/ && \
+    mkdir -p /opt/zextras/store && \
+    mkdir -p /opt/zextras/mailboxd/work
 
 COPY store/target/zm-store.jar /opt/zextras/mailbox/jars/
 COPY store/target/dependencies/* /opt/zextras/mailbox/jars/
