@@ -34,7 +34,7 @@ class EmailChannelTest extends MailboxTestSuite {
 
 	private static GreenMail mta;
 	private static final String RECOVERY_CODE = "123";
-	private static final String recoveryAddress = "recoveryAddress@test.com";
+	private static final String RECOVERY_ADDRESS = "recoveryAddress@test.com";
 
 	@BeforeAll
 	static void setUp() {
@@ -64,7 +64,7 @@ class EmailChannelTest extends MailboxTestSuite {
 		final MimeMessage receivedMessage = receivedMessages[0];
 
 		final String recipient = receivedMessage.getAllRecipients()[0].toString();
-		Assertions.assertEquals(recoveryAddress, recipient);
+		Assertions.assertEquals(RECOVERY_ADDRESS, recipient);
 	}
 
 	@Test
@@ -136,7 +136,7 @@ class EmailChannelTest extends MailboxTestSuite {
 	private static HashMap<String, String> getRecoveryMap() {
 		return new HashMap<>(Map.of(
 				CodeConstants.EXPIRY_TIME.toString(), "1000",
-				CodeConstants.EMAIL.toString(), recoveryAddress,
+				CodeConstants.EMAIL.toString(), RECOVERY_ADDRESS,
 				CodeConstants.CODE.toString(), RECOVERY_CODE
 		));
 	}
