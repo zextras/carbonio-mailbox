@@ -33,8 +33,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 class EmailChannelTest extends MailboxTestSuite {
 
 	private static GreenMail mta;
-	private static String CODE = "123";
-	private static String recoveryAddress = "recoveryAddress@test.com";
+	private static final String RECOVERY_CODE = "123";
+	private static final String recoveryAddress = "recoveryAddress@test.com";
 
 	@BeforeAll
 	static void setUp() {
@@ -55,7 +55,6 @@ class EmailChannelTest extends MailboxTestSuite {
 	void shouldSendResetPasswordURL_ToRecoveryAddress() throws Exception {
 		final Account account = this.getAccountCreator().get().create();
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
-		final String recoveryAddress = "recoveryAddress@test.com";
 
 		EmailChannel.sendAndStoreResetPasswordURL(zsc, account,
 				getRecoveryAddressCodeMap());
@@ -84,13 +83,12 @@ class EmailChannelTest extends MailboxTestSuite {
 	void shouldSendEmailWithRecoveryCode() throws Exception {
 		final Account account = this.getAccountCreator().get().create();
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
-		final String recoveryAddress = "recoveryAddress@test.com";
 
 		new EmailChannel().sendAndStoreSetRecoveryAccountCode(account, MailboxManager.getInstance()
 				.getMailboxByAccount(account), getRecoveryCodeMap(), zsc, null, new HashMap<>());
 
 		final String receivedMailBody = getReceivedMailBody();
-		Assertions.assertTrue(receivedMailBody.contains("Recovery email verification code: " + CODE));
+		Assertions.assertTrue(receivedMailBody.contains("Recovery email verification code: " + RECOVERY_CODE));
 	}
 
 	@Test
@@ -101,7 +99,7 @@ class EmailChannelTest extends MailboxTestSuite {
 		new EmailChannel().sendAndStoreResetPasswordRecoveryCode(zsc, account, getRecoveryCodeMap());
 
 		final String receivedMailBody = getReceivedMailBody();
-		Assertions.assertTrue(receivedMailBody.contains("Temporary Access Code: " + CODE));
+		Assertions.assertTrue(receivedMailBody.contains("Temporary Access Code: " + RECOVERY_CODE));
 	}
 
 	private static Stream<Arguments> dateTestCases() {
@@ -138,14 +136,14 @@ class EmailChannelTest extends MailboxTestSuite {
 	private static HashMap<String, String> getRecoveryAddressCodeMap() {
 		return new HashMap<>(Map.of(
 				CodeConstants.EXPIRY_TIME.toString(), "1000",
-				CodeConstants.EMAIL.toString(), "recoveryAddress@test.com"
+				CodeConstants.EMAIL.toString(), recoveryAddress
 		));
 	}
 	private static HashMap<String, String> getRecoveryCodeMap() {
 		return new HashMap<>(Map.of(
 				CodeConstants.EXPIRY_TIME.toString(), "1000",
 				CodeConstants.EMAIL.toString(), recoveryAddress,
-				CodeConstants.CODE.toString(), CODE
+				CodeConstants.CODE.toString(), RECOVERY_CODE
 		));
 	}
 
