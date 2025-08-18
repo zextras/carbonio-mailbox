@@ -10,7 +10,6 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.account.ForgetPasswordEnums.CodeConstants;
-import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailclient.smtp.SmtpConfig;
 import com.zimbra.cs.service.mail.ServiceTestUtil;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -30,12 +29,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class EmailChannelTest extends MailboxTestSuite {
 
-	private static MailboxManager mailboxManager;
 	private static GreenMail mta;
 
 	@BeforeAll
 	public static void setUp() throws Exception {
-		mailboxManager = MailboxManager.getInstance();
 		mta =
 				new GreenMail(
 						new ServerSetup[]{
