@@ -49,13 +49,6 @@ class EmailChannelTest extends MailboxTestSuite {
 		mta.reset();
 	}
 
-	private String getReceivedMailBody() throws MessagingException, IOException {
-		MimeMessage[] receivedMessages = mta.getReceivedMessages();
-		Assertions.assertEquals(1, receivedMessages.length);
-		final MimeMessage receivedMessage = receivedMessages[0];
-		return new String(receivedMessage.getInputStream().readAllBytes());
-	}
-
 	@Test
 	void shouldSendResetPasswordURL_ToRecoveryAddress() throws Exception {
 		final Account account = this.getAccountCreator().get().create();
@@ -86,20 +79,6 @@ class EmailChannelTest extends MailboxTestSuite {
 		Assertions.assertTrue(eml.contains("Kindly click on the link to set your password : https://localhost"));
 	}
 
-	private static HashMap<String, String> getRecoveryAddressCodeMap(String recoveryAddress) {
-		return new HashMap<>(Map.of(
-				CodeConstants.EXPIRY_TIME.toString(), "1000",
-				CodeConstants.EMAIL.toString(), recoveryAddress
-		));
-	}
-	private static HashMap<String, String> getRecoveryCodeMap(String recoveryAddress, String code) {
-		return new HashMap<>(Map.of(
-				CodeConstants.EXPIRY_TIME.toString(), "1000",
-				CodeConstants.EMAIL.toString(), recoveryAddress,
-				CodeConstants.CODE.toString(), code
-		));
-	}
-
 	@Test
 	void shouldSendEmailWithRecoveryCode() throws Exception {
 		final Account account = this.getAccountCreator().get().create();
@@ -110,8 +89,19 @@ class EmailChannelTest extends MailboxTestSuite {
 				.getMailboxByAccount(account), getRecoveryCodeMap(recoveryAddress, "123"), zsc, null, new HashMap<>());
 
 		final String receivedMailBody = getReceivedMailBody();
-		System.out.println(receivedMailBody);
 		Assertions.assertTrue(receivedMailBody.contains("Recovery email verification code: 123"));
+	}
+
+	@Test
+	void shouldSendEmailWithResetPasswordRecoveryCode() throws Exception {
+		final Account account = this.getAccountCreator().get().create();
+		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
+		final String recoveryAddress = "recoveryAddress@test.com";
+
+		new EmailChannel().sendAndStoreResetPasswordRecoveryCode(zsc, account, getRecoveryCodeMap(recoveryAddress, "123"));
+
+		final String receivedMailBody = getReceivedMailBody();
+		Assertions.assertTrue(receivedMailBody.contains("Temporary Access Code: 123"));
 	}
 
 	private static Stream<Arguments> dateTestCases() {
@@ -144,5 +134,26 @@ class EmailChannelTest extends MailboxTestSuite {
 		final String eml = getReceivedMailBody();
 		Matcher matcher = pattern.matcher(eml);
 		Assertions.assertTrue(matcher.find());
+	}
+
+	private static HashMap<String, String> getRecoveryAddressCodeMap(String recoveryAddress) {
+		return new HashMap<>(Map.of(
+				CodeConstants.EXPIRY_TIME.toString(), "1000",
+				CodeConstants.EMAIL.toString(), recoveryAddress
+		));
+	}
+	private static HashMap<String, String> getRecoveryCodeMap(String recoveryAddress, String code) {
+		return new HashMap<>(Map.of(
+				CodeConstants.EXPIRY_TIME.toString(), "1000",
+				CodeConstants.EMAIL.toString(), recoveryAddress,
+				CodeConstants.CODE.toString(), code
+		));
+	}
+
+	private String getReceivedMailBody() throws MessagingException, IOException {
+		MimeMessage[] receivedMessages = mta.getReceivedMessages();
+		Assertions.assertEquals(1, receivedMessages.length);
+		final MimeMessage receivedMessage = receivedMessages[0];
+		return new String(receivedMessage.getInputStream().readAllBytes());
 	}
 }
