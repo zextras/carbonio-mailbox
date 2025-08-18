@@ -32,4 +32,13 @@ class AccountTest extends MailboxTestSuite {
 		Assertions.assertEquals("GMT", preferredTimezone);
 	}
 
+	@Test
+	void shouldReturnFirstTimezoneGMT_IfPrefTimezoneMultipleValues() throws ServiceException {
+		final Account account = accountCreatorFactory.get().
+				withAttribute(Provisioning.A_zimbraPrefTimeZoneId, new String[]{"Europe/London", "Europe/Berlin"}).
+				create();
+		final String preferredTimezone = account.getPreferredTimezone();
+		Assertions.assertEquals("Europe/London", preferredTimezone);
+	}
+
 }
