@@ -6,9 +6,12 @@
 
 package com.zextras.mailbox;
 
+import com.zextras.mailbox.util.AccountCreator;
+import com.zextras.mailbox.util.AccountCreator.Factory;
 import com.zextras.mailbox.util.MailboxTestData;
 import com.zextras.mailbox.util.MailboxTestExtension;
 import com.zextras.mailbox.util.MailboxSetupHelper;
+import com.zimbra.cs.account.Provisioning;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 public abstract class MailboxTestSuite {
@@ -20,5 +23,10 @@ public abstract class MailboxTestSuite {
 	@RegisterExtension
 	protected static MailboxTestExtension mailboxTestExtension = new MailboxTestExtension(mailboxTestData,
 			MailboxSetupHelper.create());
+
+	protected AccountCreator.Factory getAccountCreator() {
+		return new Factory(Provisioning.getInstance(),
+				MailboxTestSuite.mailboxTestExtension.getDefaultDomain());
+	}
 
 }

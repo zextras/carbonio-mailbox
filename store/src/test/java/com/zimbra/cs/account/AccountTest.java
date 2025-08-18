@@ -7,25 +7,16 @@
 package com.zimbra.cs.account;
 
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zextras.mailbox.util.AccountCreator.Factory;
 import com.zimbra.common.service.ServiceException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 class AccountTest extends MailboxTestSuite {
-	private static Factory accountCreatorFactory;
 
-	@BeforeAll
-	static void setup() {
-		// TODO: this creational pattern is quite ugly, consider embedding the AccountCreator instance in the extension
-		accountCreatorFactory = new Factory(Provisioning.getInstance(),
-				MailboxTestSuite.mailboxTestExtension.getDefaultDomain());
-	}
 
 	@Test
 	void shouldReturnGMT_IfPrefTimezoneEmpty() throws ServiceException {
-		final Account account = accountCreatorFactory.get().
+		final Account account = this.getAccountCreator().get().
 				withAttribute(Provisioning.A_zimbraPrefTimeZoneId, "").
 				create();
 		final String preferredTimezone = account.getPreferredTimezone();
@@ -34,7 +25,7 @@ class AccountTest extends MailboxTestSuite {
 
 	@Test
 	void shouldReturnFirstTimezoneGMT_IfPrefTimezoneMultipleValues() throws ServiceException {
-		final Account account = accountCreatorFactory.get().
+		final Account account = this.getAccountCreator().get().
 				withAttribute(Provisioning.A_zimbraPrefTimeZoneId, new String[]{"Europe/London", "Europe/Berlin"}).
 				create();
 		final String preferredTimezone = account.getPreferredTimezone();
