@@ -47,7 +47,7 @@ class EmailChannelTest extends MailboxTestSuite {
 	}
 
 	@Test
-	void shouldSendRestorePasswordCode_ToRecoveryAddress() throws Exception {
+	void shouldSendResetPasswordURL_ToRecoveryAddress() throws Exception {
 		final Account account = this.getAccountCreator().get().create();
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
 		final String recoveryAddress = "recoveryAddress@test.com";
@@ -78,7 +78,7 @@ class EmailChannelTest extends MailboxTestSuite {
 
 	@ParameterizedTest
 	@MethodSource("dateTestCases")
-	void shouldSendRestorePasswordMail_WithAccountPrefTimezone(String timeZone, String expected) throws Exception {
+	void shouldSendResetPasswordURLMail_WithAccountPrefTimezone(String timeZone, String expected) throws Exception {
 		final Account account = this.getAccountCreator().get().withAttribute(Provisioning.A_zimbraPrefTimeZoneId, timeZone)
 				.create();
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
