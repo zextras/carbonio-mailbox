@@ -34,14 +34,14 @@ class CreateAccountTest extends MailboxTestSuite {
         provisioning = Provisioning.getInstance();
     }
 
-    @AfterEach
-    void clearData() throws Exception {
-        mailboxTestExtension.clearData();
+    @BeforeEach
+    void init() throws Exception {
+        this.initData();
     }
 
-    @BeforeEach
-    void initData() throws Exception {
-        mailboxTestExtension.initData();
+    @AfterEach
+    void clear() throws Exception {
+        this.clearData();
     }
 
     @ParameterizedTest

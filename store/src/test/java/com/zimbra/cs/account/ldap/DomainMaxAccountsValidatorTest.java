@@ -29,12 +29,13 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
     accountCreatorFactory = new Factory(Provisioning.getInstance(), DEFAULT_DOMAIN_NAME);
   }
   @BeforeEach
-  void initData() throws Exception {
-    mailboxTestExtension.initData();
+  void init() throws Exception {
+    this.initData();
   }
+
   @AfterEach
   void clear() throws Exception {
-    mailboxTestExtension.clearData();
+    this.clearData();
   }
 
   @Test
