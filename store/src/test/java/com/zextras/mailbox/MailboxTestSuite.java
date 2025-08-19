@@ -14,8 +14,6 @@ import com.zextras.mailbox.util.MailboxTestData;
 import com.zextras.mailbox.util.MailboxTestExtension;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.accesscontrol.RightManager;
-import com.zimbra.cs.mailbox.MailboxManager;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 public abstract class MailboxTestSuite {
@@ -36,8 +34,7 @@ public abstract class MailboxTestSuite {
 				MailboxTestSuite.DEFAULT_DOMAIN_NAME);
 	}
 	protected static AccountAction.Factory getAccountActionFactory() throws ServiceException {
-		return new AccountAction.Factory(
-				MailboxManager.getInstance(), RightManager.getInstance());
+		return AccountAction.Factory.getDefault();
 	}
 
 	protected void clearData() throws Exception {

@@ -14,8 +14,6 @@ import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.accesscontrol.RightManager;
-import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.account.AccountService;
 import com.zimbra.cs.service.admin.AdminService;
@@ -52,8 +50,7 @@ public class SoapTestSuite {
         getDefaultDomainName());
   }
   protected static AccountAction.Factory getAccountActionFactory() throws ServiceException {
-    return new AccountAction.Factory(
-        MailboxManager.getInstance(), RightManager.getInstance());
+    return AccountAction.Factory.getDefault();
   }
 
 
