@@ -1,6 +1,6 @@
 package com.zimbra.cs.service.mail;
 
-import com.zextras.mailbox.util.AccountCreator;
+import com.zextras.mailbox.util.CreateAccount;
 import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,7 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class DeleteCalendarGroupTest extends SoapTestSuite {
-    private static AccountCreator.Factory accountCreatorFactory;
+    private static CreateAccount.Factory createAccountFactory;
     private static Provisioning provisioning;
 
     private Account account;
@@ -36,12 +36,12 @@ class DeleteCalendarGroupTest extends SoapTestSuite {
     @BeforeAll
     static void init() {
         provisioning = Provisioning.getInstance();
-        accountCreatorFactory = getCreateAccountFactory();
+        createAccountFactory = getCreateAccountFactory();
     }
 
     @BeforeEach
     void setUp() throws Exception {
-        account = accountCreatorFactory.get().create();
+        account = createAccountFactory.get().create();
     }
 
     @Test

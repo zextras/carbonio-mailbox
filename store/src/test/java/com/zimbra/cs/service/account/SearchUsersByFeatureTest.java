@@ -4,7 +4,7 @@ import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.AccountCreator;
+import com.zextras.mailbox.util.CreateAccount;
 import com.zextras.mailbox.util.SoapClient;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -37,14 +37,14 @@ import org.junit.jupiter.api.Test;
 public class SearchUsersByFeatureTest extends SoapTestSuite {
   public static final String ACCOUNT_UID = "first.account";
   public static final String ACCOUNT_NAME = "name";
-  private static AccountCreator.Factory accountCreatorFactory;
+  private static CreateAccount.Factory createAccountFactory;
   private static Provisioning provisioning;
   private static Account userAccount;
 
   @BeforeAll
   static void setUp() throws Exception {
     provisioning = Provisioning.getInstance();
-    accountCreatorFactory = getCreateAccountFactory();
+    createAccountFactory = getCreateAccountFactory();
     userAccount = buildAccount("user", "User").create();
   }
 
@@ -525,24 +525,24 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
     return request;
   }
 
-  private static AccountCreator buildAccount(String uid, String fullName) {
+  private static CreateAccount buildAccount(String uid, String fullName) {
     return buildAccount(uid, fullName, getDefaultDomainName());
   }
 
-  private static AccountCreator buildAccount(String uid, String fullName, String domain) {
-    return accountCreatorFactory.get()
+  private static CreateAccount buildAccount(String uid, String fullName, String domain) {
+    return createAccountFactory.get()
         .withDomain(domain)
         .withUsername(uid)
         .withAttribute("displayName", fullName);
   }
 
-  private static AccountCreator withChatsFeature(boolean enabled,
-                                                                 AccountCreator account) {
+  private static CreateAccount withChatsFeature(boolean enabled,
+                                                                 CreateAccount account) {
     return account
         .withAttribute(SearchUsersByFeatureRequest.Features.CHATS.getFeature(), enabled ? "TRUE" : "FALSE");
   }
 
-  private static AccountCreator withCos(Cos cos, AccountCreator account) {
+  private static CreateAccount withCos(Cos cos, CreateAccount account) {
     if (cos != null) {
       account = account
           .withAttribute("zimbraCOSId", cos.getId());

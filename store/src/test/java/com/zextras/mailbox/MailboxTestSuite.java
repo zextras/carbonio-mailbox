@@ -7,8 +7,8 @@
 package com.zextras.mailbox;
 
 import com.zextras.mailbox.util.AccountAction;
-import com.zextras.mailbox.util.AccountCreator;
-import com.zextras.mailbox.util.AccountCreator.Factory;
+import com.zextras.mailbox.util.CreateAccount;
+import com.zextras.mailbox.util.CreateAccount.Factory;
 import com.zextras.mailbox.util.MailboxSetupHelper;
 import com.zextras.mailbox.util.MailboxTestData;
 import com.zextras.mailbox.util.MailboxTestExtension;
@@ -31,7 +31,7 @@ public abstract class MailboxTestSuite {
 	private final static MailboxTestExtension mailboxTestExtension = new MailboxTestExtension(mailboxTestData,
 			MailboxSetupHelper.create());
 
-	protected static AccountCreator.Factory getCreateAccountFactory() {
+	protected static CreateAccount.Factory getCreateAccountFactory() {
 		return new Factory(Provisioning.getInstance(),
 				MailboxTestSuite.DEFAULT_DOMAIN_NAME);
 	}

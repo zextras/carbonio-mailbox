@@ -1,7 +1,7 @@
 package com.zimbra.cs.account.ldap;
 
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zextras.mailbox.util.AccountCreator.Factory;
+import com.zextras.mailbox.util.CreateAccount.Factory;
 import com.zimbra.common.account.Key.DomainBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
@@ -22,11 +22,11 @@ import org.mockito.Mockito;
 
 class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
 
-  private static Factory accountCreatorFactory;
+  private static Factory createAccountFactory;
 
   @BeforeAll
   static void setUp() {
-    accountCreatorFactory = getCreateAccountFactory();
+    createAccountFactory = getCreateAccountFactory();
   }
   @BeforeEach
   void init() throws Exception {
@@ -159,7 +159,7 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
         new Validators.DomainMaxAccountsValidator();
 
     final Account account =
-        accountCreatorFactory
+        createAccountFactory
             .get()
             .withUsername("user")
             .create();
@@ -179,7 +179,7 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
         new Validators.DomainMaxAccountsValidator();
 
     final Account account =
-        accountCreatorFactory
+        createAccountFactory
             .get()
             .withUsername("user")
             .create();
@@ -429,7 +429,7 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
     domain.setDomainFeatureMaxAccounts(new String[]{"zimbraFeatureChatEnabled:0"});
 
     final Account account =
-        accountCreatorFactory
+        createAccountFactory
             .get()
             .withUsername("user")
             .create();
@@ -468,7 +468,7 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
     domain.setDomainCOSMaxAccounts(new String[]{oldCosId + ":1"});
     domain.setDomainCOSMaxAccounts(new String[]{newCosId + ":0"});
     final Account account =
-        accountCreatorFactory
+        createAccountFactory
             .get()
             .withUsername("user")
             .create();
@@ -500,7 +500,7 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
     domain.setDomainFeatureMaxAccounts(new String[]{"zimbraFeatureChatEnabled:1"});
 
     final Account account =
-        accountCreatorFactory
+        createAccountFactory
             .get()
             .withUsername("user")
             .create();
@@ -531,7 +531,7 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
     domain.setDomainCOSMaxAccounts(new String[]{cosId + ":1"});
 
     final Account account =
-        accountCreatorFactory
+        createAccountFactory
             .get()
             .withUsername("user")
             .create();

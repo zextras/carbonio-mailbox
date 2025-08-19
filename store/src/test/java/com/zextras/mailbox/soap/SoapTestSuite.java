@@ -7,8 +7,7 @@ package com.zextras.mailbox.soap;
 import static com.zimbra.client.ZEmailAddress.EMAIL_TYPE_TO;
 
 import com.zextras.mailbox.util.AccountAction;
-import com.zextras.mailbox.util.AccountCreator;
-import com.zextras.mailbox.util.AccountCreator.Factory;
+import com.zextras.mailbox.util.CreateAccount;
 import com.zextras.mailbox.util.SoapClient;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.MailConstants;
@@ -48,8 +47,8 @@ public class SoapTestSuite {
       .addEngineHandler(MailServiceWithoutTracking.class.getName())
       .create();
 
-  protected static AccountCreator.Factory getCreateAccountFactory() {
-    return new AccountCreator.Factory(Provisioning.getInstance(),
+  protected static CreateAccount.Factory getCreateAccountFactory() {
+    return new CreateAccount.Factory(Provisioning.getInstance(),
         getDefaultDomainName());
   }
   protected static AccountAction.Factory getAccountActionFactory() throws ServiceException {

@@ -4,7 +4,7 @@ import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.AccountCreator;
+import com.zextras.mailbox.util.CreateAccount;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 
 @Tag("api")
 class SearchDirectoryTest extends SoapTestSuite {
-  private static AccountCreator.Factory accountCreatorFactory;
+  private static CreateAccount.Factory createAccountFactory;
 	private static Account adminAccount;
   private static Account secondAccount;
   private static Account firstAccount;
@@ -34,7 +34,7 @@ class SearchDirectoryTest extends SoapTestSuite {
   static void setUp() throws Exception {
 		Provisioning provisioning = Provisioning.getInstance();
     provisioning.createDomain("different.com", new HashMap<>());
-    accountCreatorFactory = getCreateAccountFactory();
+    createAccountFactory = getCreateAccountFactory();
     adminAccount = newAccountOn(getDefaultDomainName()).withUsername("admin.account").asGlobalAdmin().create();
     secondAccount = newAccountOn(getDefaultDomainName()).withUsername("second.account").create();
     firstAccount = newAccountOn(getDefaultDomainName()).withUsername("first.account").create();
@@ -128,8 +128,8 @@ class SearchDirectoryTest extends SoapTestSuite {
     return request;
   }
 
-  private static AccountCreator newAccountOn(String domain) {
-    return accountCreatorFactory.get().withDomain(domain);
+  private static CreateAccount newAccountOn(String domain) {
+    return createAccountFactory.get().withDomain(domain);
   }
 
 }

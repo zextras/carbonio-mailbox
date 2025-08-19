@@ -12,7 +12,7 @@ import com.zextras.carbonio.files.entities.NodeId;
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.MailMessageBuilder;
 import com.zextras.mailbox.util.AccountAction;
-import com.zextras.mailbox.util.AccountCreator;
+import com.zextras.mailbox.util.CreateAccount;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Message;
@@ -29,7 +29,7 @@ import org.mockserver.integration.ClientAndServer;
 @Tag("api")
 class CreateSmartLinksAPITest extends SoapTestSuite {
 
-  private static AccountCreator.Factory accountCreatorFactory;
+  private static CreateAccount.Factory createAccountFactory;
   private final int attachmentPartIndex = 2;
 
   private ClientAndServer filesServer;
@@ -39,14 +39,14 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
   @BeforeAll
   static void beforeAll() {
     Provisioning provisioning = Provisioning.getInstance();
-    accountCreatorFactory = getCreateAccountFactory();
+    createAccountFactory = getCreateAccountFactory();
   }
 
 
   @BeforeEach
   void setUp() throws Exception {
     filesServer = startClientAndServer(20002);
-    account = accountCreatorFactory.get().create();
+    account = createAccountFactory.get().create();
     draftWithAttachment = createDraftWithAttachment();
   }
 

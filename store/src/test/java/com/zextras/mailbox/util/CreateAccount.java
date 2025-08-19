@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class AccountCreator {
+public class CreateAccount {
 
 	private final Provisioning provisioning;
 	private String username = UUID.randomUUID().toString();
@@ -23,7 +23,7 @@ public class AccountCreator {
 	private final Map<String, Object> attributes =
 			new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, "localhost"));
 
-	private AccountCreator(Provisioning provisioning, String domain) {
+	private CreateAccount(Provisioning provisioning, String domain) {
 		this.provisioning = provisioning;
 		this.domain = domain;
 	}
@@ -38,32 +38,32 @@ public class AccountCreator {
 			this.domain = domain;
 		}
 
-		public AccountCreator get() {
-			return new AccountCreator(provisioning, domain);
+		public CreateAccount get() {
+			return new CreateAccount(provisioning, domain);
 		}
 	}
 
-	public AccountCreator withUsername(String username) {
+	public CreateAccount withUsername(String username) {
 		this.username = username;
 		return this;
 	}
 
-	public AccountCreator withPassword(String password) {
+	public CreateAccount withPassword(String password) {
 		this.password = password;
 		return this;
 	}
 
-	public AccountCreator withDomain(String domain) {
+	public CreateAccount withDomain(String domain) {
 		this.domain = domain;
 		return this;
 	}
 
-	public AccountCreator withAttribute(String name, Object value) {
+	public CreateAccount withAttribute(String name, Object value) {
 		this.attributes.put(name, value);
 		return this;
 	}
 
-	public AccountCreator asGlobalAdmin() {
+	public CreateAccount asGlobalAdmin() {
 		this.attributes.put(ZAttrProvisioning.A_zimbraIsAdminAccount, "TRUE");
 		return this;
 	}

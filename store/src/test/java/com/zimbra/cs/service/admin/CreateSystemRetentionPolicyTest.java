@@ -1,7 +1,7 @@
 package com.zimbra.cs.service.admin;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.AccountCreator;
+import com.zextras.mailbox.util.CreateAccount;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Cos;
 import com.zimbra.cs.account.Provisioning;
@@ -20,16 +20,16 @@ import org.junit.jupiter.api.Test;
 
 @Tag("api")
 class CreateSystemRetentionPolicyTest extends SoapTestSuite {
-  private static AccountCreator.Factory accountCreatorFactory;
+  private static CreateAccount.Factory createAccountFactory;
 
   @BeforeAll
   static void setUp() {
-    accountCreatorFactory = getCreateAccountFactory();
+    createAccountFactory = getCreateAccountFactory();
   }
 
   @Test
   void shouldSuccessfullyCreateSystemRetentionPolicy() throws Exception {
-    final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
+    final Account adminAccount = createAccountFactory.get().asGlobalAdmin().create();
     final CreateSystemRetentionPolicyRequest request = CreateSystemRetentionPolicyRequest.newPurgeRequest(
         Policy.newSystemPolicy("PurgePolicy", "10d"));
 
@@ -43,7 +43,7 @@ class CreateSystemRetentionPolicyTest extends SoapTestSuite {
 
   @Test
   void shouldSuccessfullyCreateSystemRetentionPolicyForCOS() throws Exception {
-    final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
+    final Account adminAccount = createAccountFactory.get().asGlobalAdmin().create();
     final Cos cos = Provisioning.getInstance().createCos("testCOS", new HashMap<>());
 
     final CreateSystemRetentionPolicyRequest request = CreateSystemRetentionPolicyRequest.newPurgeRequest(
@@ -60,7 +60,7 @@ class CreateSystemRetentionPolicyTest extends SoapTestSuite {
 
   @Test
   void shouldDenyWhenNoSuchCOS() throws Exception {
-    final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
+    final Account adminAccount = createAccountFactory.get().asGlobalAdmin().create();
 
     final CreateSystemRetentionPolicyRequest request = CreateSystemRetentionPolicyRequest.newPurgeRequest(
         Policy.newSystemPolicy("PurgePolicy", "10d"));
@@ -76,7 +76,7 @@ class CreateSystemRetentionPolicyTest extends SoapTestSuite {
 
   @Test
   void shouldDenyWhenPurgeSystemRetentionPolicyNotSpecified() throws Exception {
-    final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
+    final Account adminAccount = createAccountFactory.get().asGlobalAdmin().create();
     final CreateSystemRetentionPolicyRequest request = new CreateSystemRetentionPolicyRequest();
 
     final HttpResponse response =
@@ -89,7 +89,7 @@ class CreateSystemRetentionPolicyTest extends SoapTestSuite {
 
   @Test
   void shouldDenyWhenNotAdminAccount() throws Exception {
-    final Account userAccount = accountCreatorFactory.get().create();
+    final Account userAccount = createAccountFactory.get().create();
     final CreateSystemRetentionPolicyRequest request = new CreateSystemRetentionPolicyRequest();
 
     final HttpResponse response =

@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zextras.mailbox.util.AccountCreator;
+import com.zextras.mailbox.util.CreateAccount;
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zextras.mailbox.util.JettyServerFactory.ServerWithConfiguration;
 import com.zimbra.common.calendar.ZCalendar.ScheduleAgent;
@@ -53,7 +53,7 @@ class DavServletTest extends MailboxTestSuite {
   private static final String DAV_BASE_PATH = "/dav";
   private static String davBaseUrl;
   private static GreenMail greenMail;
-  private static AccountCreator.Factory createAccountFactory;
+  private static CreateAccount.Factory createAccountFactory;
 
   @BeforeAll
   public static void setUp() throws Exception {

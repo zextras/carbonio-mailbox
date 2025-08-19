@@ -1,7 +1,7 @@
 package com.zimbra.cs.service.admin;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.AccountCreator;
+import com.zextras.mailbox.util.CreateAccount;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
@@ -25,20 +25,20 @@ import org.junit.jupiter.api.Test;
 @Tag("api")
 class ModifyAccountTest extends SoapTestSuite {
 
-  private static AccountCreator.Factory accountCreatorFactory;
+  private static CreateAccount.Factory createAccountFactory;
   private static Provisioning provisioning;
 
   @BeforeAll
   static void setUp() {
     provisioning = Provisioning.getInstance();
-    accountCreatorFactory = getCreateAccountFactory();
+    createAccountFactory = getCreateAccountFactory();
   }
 
   @Test
   void shouldModifyAccountWhenDomainAdminChangingMailTransport() throws Exception {
-    final Account domainAdminAccount = accountCreatorFactory.get()
+    final Account domainAdminAccount = createAccountFactory.get()
         .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE").create();
-    final Account userAccount = accountCreatorFactory.get().create();
+    final Account userAccount = createAccountFactory.get().create();
     final Domain target = provisioning.getDomain(domainAdminAccount);
 
     final Set<ZimbraACE> aces = new HashSet<>();
