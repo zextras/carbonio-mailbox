@@ -30,7 +30,7 @@ class DeleteAccountApiTest  extends SoapTestSuite {
 	static void beforeAll() throws Exception {
 		Provisioning provisioning = Provisioning.getInstance();
 		final MailboxManager mailboxManager = MailboxManager.getInstance();
-		accountCreatorFactory = new AccountCreator.Factory(provisioning, soapExtension.getDefaultDomain());
+		accountCreatorFactory = getCreateAccountFactory();
 		accountActionFactory = new AccountAction.Factory(mailboxManager,
 				RightManager.getInstance());
 	}

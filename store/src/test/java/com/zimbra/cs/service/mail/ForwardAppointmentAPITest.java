@@ -4,35 +4,20 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
-import com.zextras.mailbox.util.PortUtil;
-import com.zimbra.cs.mailbox.CalendarItem;
-import com.zimbra.cs.mailbox.MailItem.Type;
-import com.zimbra.cs.mailbox.calendar.Invite;
-import com.zimbra.cs.mailclient.smtp.SmtpConfig;
-import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
-import javax.mail.Address;
-import javax.mail.Message.RecipientType;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-
-import org.junit.jupiter.api.*;
-
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.AccountCreator;
 import com.zextras.mailbox.util.AccountCreator.Factory;
+import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.index.SortBy;
+import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Folder;
+import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.mailbox.calendar.Invite;
+import com.zimbra.cs.mailclient.smtp.SmtpConfig;
 import com.zimbra.soap.mail.message.CreateAppointmentResponse;
 import com.zimbra.soap.mail.type.CalOrganizer;
 import com.zimbra.soap.mail.type.CalendarAttendee;
@@ -40,6 +25,20 @@ import com.zimbra.soap.mail.type.DtTimeInfo;
 import com.zimbra.soap.mail.type.EmailAddrInfo;
 import com.zimbra.soap.mail.type.InvitationInfo;
 import com.zimbra.soap.mail.type.Msg;
+import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import javax.mail.Address;
+import javax.mail.Message.RecipientType;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("api")
 class ForwardAppointmentAPITest extends SoapTestSuite {
@@ -67,7 +66,7 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		Provisioning provisioning = Provisioning.getInstance();
 		provisioning.getLocalServer().setSmtpPort(smtpPort);
 		mailboxManager = MailboxManager.getInstance();
-		accountCreatorFactory = new AccountCreator.Factory(provisioning, soapExtension.getDefaultDomain());
+		accountCreatorFactory = getCreateAccountFactory();
 	}
 	@BeforeEach
 	void beforeEach() {

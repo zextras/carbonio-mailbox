@@ -81,8 +81,7 @@ class ModifyAppointmentTest extends SoapTestSuite {
     var provisioning = Provisioning.getInstance();
     provisioning.getLocalServer().setSmtpPort(smtpPort);
     mailboxManager = MailboxManager.getInstance();
-    accountCreatorFactory = new AccountCreator.Factory(provisioning,
-        soapExtension.getDefaultDomain());
+    accountCreatorFactory = getCreateAccountFactory();
   }
 
   private static CalendarItem getCalendarItemById(Account account, String id) throws ServiceException {

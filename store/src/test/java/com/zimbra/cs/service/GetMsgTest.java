@@ -18,8 +18,6 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.zmime.ZSharedFileInputStream;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -56,15 +54,13 @@ public class GetMsgTest extends MailboxTestSuite {
   private static Account shared;
   private static GreenMail mta;
   private static AccountAction.Factory accountActionFactory;
-  private static AccountCreator.Factory accountCreatorFactory;
-  private static MailboxManager mailboxManager;
+	private static MailboxManager mailboxManager;
 
   @BeforeAll
   public static void setUp() throws Exception {
     mailboxManager = MailboxManager.getInstance();
-    accountActionFactory = new AccountAction.Factory(mailboxManager, RightManager.getInstance());
-    accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance(),
-        DEFAULT_DOMAIN_NAME);
+    accountActionFactory = getAccountActionFactory();
+		final AccountCreator.Factory accountCreatorFactory = getCreateAccountFactory();
     mta =
         new GreenMail(
             new ServerSetup[] {

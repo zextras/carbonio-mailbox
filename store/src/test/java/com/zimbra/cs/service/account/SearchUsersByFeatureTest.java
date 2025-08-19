@@ -1,10 +1,10 @@
 package com.zimbra.cs.service.account;
 
-import com.zextras.mailbox.util.AccountCreator;
 import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.util.AccountCreator;
 import com.zextras.mailbox.util.SoapClient;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -44,8 +44,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
   @BeforeAll
   static void setUp() throws Exception {
     provisioning = Provisioning.getInstance();
-    accountCreatorFactory = new AccountCreator.Factory(provisioning,
-        soapExtension.getDefaultDomain());
+    accountCreatorFactory = getCreateAccountFactory();
     userAccount = buildAccount("user", "User").create();
   }
 
@@ -68,7 +67,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
           .setSoapBody(SearchUsersByFeatureTest.searchAccounts(""))
           .execute();
 
-      // account + userAccount are in soapExtension.getDefaultDomain()
+      // account + userAccount are in getDefaultDomainName()
       assertEquals(2, getResponse(httpResponse).getAccounts().size());
     } finally {
       cleanUp(account);
@@ -96,10 +95,10 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchUsersByFeatureTest.searchAccounts(soapExtension.getDefaultDomain()))
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts(getDefaultDomainName()))
           .execute();
 
-      // account + userAccount are in soapExtension.getDefaultDomain()
+      // account + userAccount are in getDefaultDomainName()
       assertEquals(2, getResponse(httpResponse).getAccounts().size());
     } finally {
       cleanUp(account);
@@ -171,7 +170,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
     try {
       HttpResponse httpResponse = buildRequest()
-          .setSoapBody(SearchUsersByFeatureTest.searchAccounts(MessageFormat.format("{0}@{1}", ACCOUNT_UID, soapExtension.getDefaultDomain())))
+          .setSoapBody(SearchUsersByFeatureTest.searchAccounts(MessageFormat.format("{0}@{1}", ACCOUNT_UID, getDefaultDomainName())))
           .execute();
 
       assertSuccessWithSingleAccount(httpResponse, account);
@@ -365,8 +364,8 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
   @Test
   void distributionListsAndGroupsNotIncluded() throws Exception {
-    var dl = provisioning.createDistributionList("accounts-dl@" + soapExtension.getDefaultDomain(), new HashMap<>());
-    var group = provisioning.createGroup("accounts-group@" + soapExtension.getDefaultDomain(), new HashMap<>(), false);
+    var dl = provisioning.createDistributionList("accounts-dl@" + getDefaultDomainName(), new HashMap<>());
+    var group = provisioning.createGroup("accounts-group@" + getDefaultDomainName(), new HashMap<>(), false);
 
     try {
       HttpResponse httpResponse = buildRequest()
@@ -492,8 +491,8 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
 
       var returnedAccounts = getResponse(httpResponse).getAccounts();
       assertEquals(2, returnedAccounts.size());
-      assertEquals("zzz.account@" + soapExtension.getDefaultDomain(), returnedAccounts.get(0).getName());
-      assertEquals("aaa.account@" + soapExtension.getDefaultDomain(), returnedAccounts.get(1).getName());
+      assertEquals("zzz.account@" + getDefaultDomainName(), returnedAccounts.get(0).getName());
+      assertEquals("aaa.account@" + getDefaultDomainName(), returnedAccounts.get(1).getName());
     } finally {
       cleanUp(account1);
       cleanUp(account2);
@@ -527,7 +526,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
   }
 
   private static AccountCreator buildAccount(String uid, String fullName) {
-    return buildAccount(uid, fullName, soapExtension.getDefaultDomain());
+    return buildAccount(uid, fullName, getDefaultDomainName());
   }
 
   private static AccountCreator buildAccount(String uid, String fullName, String domain) {

@@ -44,7 +44,7 @@ class CreateCalendarItemExceptionTest  extends SoapTestSuite {
   static void setUpClass() throws Exception {
     var provisioning = Provisioning.getInstance();
     mailboxManager = MailboxManager.getInstance();
-    accountCreatorFactory = new AccountCreator.Factory(provisioning, soapExtension.getDefaultDomain());
+    accountCreatorFactory = getCreateAccountFactory();
   }
 
   @Test

@@ -36,7 +36,7 @@ public class ModifyDomainTest extends SoapTestSuite {
   @BeforeAll
   static void setUp() {
     provisioning = Provisioning.getInstance();
-    accountCreatorFactory = new AccountCreator.Factory(provisioning, soapExtension.getDefaultDomain());
+    accountCreatorFactory = getCreateAccountFactory();
   }
 
 

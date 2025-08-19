@@ -49,8 +49,8 @@ public class SoapTestSuite {
       .create();
 
   protected static AccountCreator.Factory getCreateAccountFactory() {
-    return new Factory(Provisioning.getInstance(),
-        soapExtension.getDefaultDomain());
+    return new AccountCreator.Factory(Provisioning.getInstance(),
+        getDefaultDomainName());
   }
   protected static AccountAction.Factory getAccountActionFactory() throws ServiceException {
     return new AccountAction.Factory(

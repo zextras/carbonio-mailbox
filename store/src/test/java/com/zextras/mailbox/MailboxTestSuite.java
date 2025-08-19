@@ -6,12 +6,16 @@
 
 package com.zextras.mailbox;
 
+import com.zextras.mailbox.util.AccountAction;
 import com.zextras.mailbox.util.AccountCreator;
 import com.zextras.mailbox.util.AccountCreator.Factory;
 import com.zextras.mailbox.util.MailboxSetupHelper;
 import com.zextras.mailbox.util.MailboxTestData;
 import com.zextras.mailbox.util.MailboxTestExtension;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.accesscontrol.RightManager;
+import com.zimbra.cs.mailbox.MailboxManager;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 public abstract class MailboxTestSuite {
@@ -27,9 +31,13 @@ public abstract class MailboxTestSuite {
 	private final static MailboxTestExtension mailboxTestExtension = new MailboxTestExtension(mailboxTestData,
 			MailboxSetupHelper.create());
 
-	protected static AccountCreator.Factory createAccountFactory() {
+	protected static AccountCreator.Factory getCreateAccountFactory() {
 		return new Factory(Provisioning.getInstance(),
 				MailboxTestSuite.DEFAULT_DOMAIN_NAME);
+	}
+	protected static AccountAction.Factory getAccountActionFactory() throws ServiceException {
+		return new AccountAction.Factory(
+				MailboxManager.getInstance(), RightManager.getInstance());
 	}
 
 	protected void clearData() throws Exception {

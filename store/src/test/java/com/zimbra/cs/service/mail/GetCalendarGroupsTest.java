@@ -39,7 +39,7 @@ class GetCalendarGroupsTest extends SoapTestSuite {
   @BeforeAll
   static void init() {
 		Provisioning provisioning = Provisioning.getInstance();
-    accountCreatorFactory = new AccountCreator.Factory(provisioning, soapExtension.getDefaultDomain());
+    accountCreatorFactory = getCreateAccountFactory();
   }
 
   @BeforeEach

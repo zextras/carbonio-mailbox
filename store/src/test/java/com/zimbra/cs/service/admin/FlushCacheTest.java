@@ -1,9 +1,9 @@
 package com.zimbra.cs.service.admin;
 
-import com.zextras.mailbox.util.AccountCreator;
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.util.AccountCreator;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
@@ -39,8 +39,7 @@ public class FlushCacheTest extends SoapTestSuite {
     @BeforeAll
     public static void setUp() {
         provisioning = Provisioning.getInstance();
-        accountCreatorFactory = new AccountCreator.Factory(provisioning,
-            soapExtension.getDefaultDomain());
+        accountCreatorFactory = getCreateAccountFactory();
     }
 
     @Test

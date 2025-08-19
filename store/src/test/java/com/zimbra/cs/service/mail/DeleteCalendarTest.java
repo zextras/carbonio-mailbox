@@ -47,7 +47,7 @@ class DeleteCalendarTest extends SoapTestSuite {
   @BeforeAll
   static void init() {
     provisioning = Provisioning.getInstance();
-    accountCreatorFactory = new AccountCreator.Factory(provisioning, soapExtension.getDefaultDomain());
+    accountCreatorFactory = getCreateAccountFactory();
   }
 
   @BeforeEach

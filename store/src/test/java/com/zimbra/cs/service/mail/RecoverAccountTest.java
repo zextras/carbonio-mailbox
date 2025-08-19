@@ -39,8 +39,7 @@ class RecoverAccountTest extends MailboxTestSuite {
   @BeforeAll
   static void setUp() {
     provisioning = Provisioning.getInstance();
-    accountCreatorFactory = new AccountCreator.Factory(provisioning,
-        DEFAULT_DOMAIN_NAME);
+    accountCreatorFactory = getCreateAccountFactory();
   }
 
   @Test

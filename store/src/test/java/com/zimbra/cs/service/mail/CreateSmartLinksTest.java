@@ -37,7 +37,7 @@ class CreateSmartLinksTest extends MailboxTestSuite {
 
   @BeforeAll
   static void setupAll() throws Exception {
-    account = createAccountFactory().get()
+    account = getCreateAccountFactory().get()
         .create();
   }
 
