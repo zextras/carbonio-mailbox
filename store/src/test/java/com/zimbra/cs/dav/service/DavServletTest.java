@@ -60,7 +60,7 @@ class DavServletTest extends MailboxTestSuite {
   public static void setUp() throws Exception {
     greenMail = new GreenMail(new ServerSetup[]{ new ServerSetup(DEFAULT_PORT, DEFAULT_HOST, PROTOCOL_SMTP) });
     greenMail.start();
-    accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance(), mailboxTestExtension.getDefaultDomain());
+    accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance(), DEFAULT_DOMAIN_NAME);
     final ServerWithConfiguration serverConfig = new JettyServerFactory()
         .addServlet(DAV_BASE_PATH + "/*", new ServletHolder(DavServlet.class))
         .create();
@@ -83,10 +83,10 @@ class DavServletTest extends MailboxTestSuite {
   @Test
   void shouldNotSendNotificationWhenScheduleAgentClient() throws Exception {
     Account organizer = getRandomAccountForDefaultDomain();
-    organizer.addAlias("alias@" + mailboxTestExtension.getDefaultDomain());
+    organizer.addAlias("alias@" + DEFAULT_DOMAIN_NAME);
 
     final HttpPut request = new CalDavCreateAppointmentRequestBuilder(davBaseUrl)
-        .organizer("alias@" + mailboxTestExtension.getDefaultDomain())
+        .organizer("alias@" + DEFAULT_DOMAIN_NAME)
         .scheduleAgent(ScheduleAgent.CLIENT)
         .addAttendee(getRandomAccountForDefaultDomain())
         .addAttendee(getRandomAccountForDefaultDomain())

@@ -24,7 +24,7 @@ class CalendarUtilsTest extends MailboxTestSuite {
   @BeforeAll
   public static void setUp() {
     accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance(),
-        mailboxTestExtension.getDefaultDomain());
+        DEFAULT_DOMAIN_NAME);
   }
 
   @Test

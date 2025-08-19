@@ -38,7 +38,7 @@ class CreateSmartLinksTest extends MailboxTestSuite {
 
   @BeforeAll
   static void setupAll() throws Exception {
-    account = new AccountCreator.Factory(Provisioning.getInstance(), mailboxTestExtension.getDefaultDomain()).get()
+    account = new AccountCreator.Factory(Provisioning.getInstance(), DEFAULT_DOMAIN_NAME).get()
         .create();
   }
 

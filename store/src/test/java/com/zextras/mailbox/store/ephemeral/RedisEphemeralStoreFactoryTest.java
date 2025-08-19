@@ -43,7 +43,7 @@ class RedisEphemeralStoreFactoryTest extends MailboxTestSuite {
   @Test
   void getStore_shouldNotThrow_WhenURLValid() throws ServiceException {
     final Account account =
-        new Factory(provisioning, mailboxTestExtension.getDefaultDomain()).get().create();
+        new Factory(provisioning, DEFAULT_DOMAIN_NAME).get().create();
     provisioning
         .getConfig()
         .setEphemeralBackendURL("redis://localhost:" + redisContainer.getRedisPort());
@@ -58,7 +58,7 @@ class RedisEphemeralStoreFactoryTest extends MailboxTestSuite {
   @ValueSource(strings = {"redis:localhost:", "redis:localhost", "redis:/localhost"})
   void shouldReturnANonWorkingStore_WhenURLInvalid(String prefix) throws ServiceException {
     final Account account =
-        new Factory(provisioning, mailboxTestExtension.getDefaultDomain()).get().create();
+        new Factory(provisioning, DEFAULT_DOMAIN_NAME).get().create();
     provisioning.getConfig().setEphemeralBackendURL(prefix + redisContainer.getRedisPort());
     final RedisEphemeralStoreFactory redisEphemeralStoreFactory = new RedisEphemeralStoreFactory();
 
@@ -70,7 +70,7 @@ class RedisEphemeralStoreFactoryTest extends MailboxTestSuite {
 
   @Test
   void shouldNotCreateAdditionalConnections() throws ServiceException {
-    final Account account = new Factory(provisioning, mailboxTestExtension.getDefaultDomain()).get().create();
+    final Account account = new Factory(provisioning, DEFAULT_DOMAIN_NAME).get().create();
     provisioning.getConfig().setEphemeralBackendURL("redis://localhost:" + redisContainer.getRedisPort());
 
     final RedisEphemeralStoreFactory redisEphemeralStoreFactory = new RedisEphemeralStoreFactory();

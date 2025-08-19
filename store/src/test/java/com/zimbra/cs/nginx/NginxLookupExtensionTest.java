@@ -44,7 +44,7 @@ class NginxLookupExtensionTest extends MailboxTestSuite {
 		var servlet = new JettyServerFactory().addServlet("/", extensionDispatcherServlet);
 		final ServerWithConfiguration serverConfig = servlet.create();
 		account = new Factory(Provisioning.getInstance(),
-				mailboxTestExtension.getDefaultDomain()).get().create();
+				DEFAULT_DOMAIN_NAME).get().create();
 		endpoint = "http://localhost:" + serverConfig.serverPort() + "/service/extension/nginx-lookup";
 		server = serverConfig.server();
 		server.start();

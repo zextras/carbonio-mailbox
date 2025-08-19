@@ -15,14 +15,6 @@ public class MailboxTestExtension implements BeforeAllCallback, AfterAllCallback
 	private final MailboxTestData mailboxTestData;
 	private final MailboxSetupHelper setup;
 
-	public String getServerName() {
-		return mailboxTestData.serverName();
-	}
-
-	public String getDefaultDomain() {
-		return mailboxTestData.defaultDomain();
-	}
-
 	public MailboxTestExtension(MailboxTestData mailboxTestData, MailboxSetupHelper setup) {
 		this.mailboxTestData = mailboxTestData;
 		this.setup = setup;

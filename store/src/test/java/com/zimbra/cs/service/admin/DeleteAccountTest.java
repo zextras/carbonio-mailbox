@@ -91,7 +91,7 @@ class DeleteAccountTest extends MailboxTestSuite {
 		mailboxManager = MailboxManager.getInstance();
 		provisioning = Provisioning.getInstance();
 		accountCreatorFactory = new AccountCreator.Factory(provisioning,
-				mailboxTestExtension.getDefaultDomain());
+				DEFAULT_DOMAIN_NAME);
     filesClientMock = Mockito.mock(FilesClient.class);
 		provisioning.createDomain(OTHER_DOMAIN, new HashMap<>());
 
@@ -134,7 +134,7 @@ class DeleteAccountTest extends MailboxTestSuite {
 													.withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
 													.create();
 									addGrantToUserForDomain(delegatedAdminWithDomainAdminRight,
-											mailboxTestExtension.getDefaultDomain(), AdminRights.R_domainAdminRights);
+											DEFAULT_DOMAIN_NAME, AdminRights.R_domainAdminRights);
 									return Arguments.of(
 											"when deleting an account as delegated admin with domain admin rights on domain",
 											delegatedAdminWithDomainAdminRight,
@@ -147,7 +147,7 @@ class DeleteAccountTest extends MailboxTestSuite {
 									final Account admin = accountCreatorFactory.get()
 											.withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
 											.create();
-									addGrantToUserForDomain(admin, mailboxTestExtension.getDefaultDomain(),
+									addGrantToUserForDomain(admin, DEFAULT_DOMAIN_NAME,
 											AdminRights.R_deleteAccount);
 									return Arguments.of(
 											"when deleting an account as delegated admin with only right to delete on account",
@@ -177,8 +177,8 @@ class DeleteAccountTest extends MailboxTestSuite {
 																	ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount,
 																	"TRUE",
 																	Provisioning.A_zimbraMailHost,
-																	mailboxTestExtension.getServerName())));
-									addGrantToUserForDomain(adminFromOtherDomain, mailboxTestExtension.getDefaultDomain(),
+																	SERVER_NAME)));
+									addGrantToUserForDomain(adminFromOtherDomain, DEFAULT_DOMAIN_NAME,
 											AdminRights.R_domainAdminRights);
 									return Arguments.of(
 											"when deleting an account as delegated admin from another domain with domain admin rights on the domain of the account to delete",
@@ -197,8 +197,8 @@ class DeleteAccountTest extends MailboxTestSuite {
 																	ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount,
 																	"TRUE",
 																	Provisioning.A_zimbraMailHost,
-																	mailboxTestExtension.getServerName())));
-									addGrantToUserForDomain(adminFromOtherDomain, mailboxTestExtension.getDefaultDomain(),
+																	SERVER_NAME)));
+									addGrantToUserForDomain(adminFromOtherDomain, DEFAULT_DOMAIN_NAME,
 											AdminRights.R_deleteAccount);
 									return Arguments.of(
 											"when deleting an account as delegated admin from another domain with delete right on the domain of the account to delete",
@@ -217,7 +217,7 @@ class DeleteAccountTest extends MailboxTestSuite {
 																	ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount,
 																	"TRUE",
 																	Provisioning.A_zimbraMailHost,
-																	mailboxTestExtension.getServerName())));
+																	SERVER_NAME)));
 									addGrantToUserOnAnotherUser(adminFromOtherDomain, toDelete,
 											AdminRights.R_deleteAccount);
 									return Arguments.of(
@@ -300,7 +300,7 @@ class DeleteAccountTest extends MailboxTestSuite {
 								() -> {
 									final Account standardUser = accountCreatorFactory.get().create();
 									final Account toDelete = accountCreatorFactory.get().create();
-									addGrantToUserForDomain(standardUser, mailboxTestExtension.getDefaultDomain(),
+									addGrantToUserForDomain(standardUser, DEFAULT_DOMAIN_NAME,
 											AdminRights.R_deleteAccount);
 									addGrantToUserOnAnotherUser(standardUser, toDelete, AdminRights.R_deleteAccount);
 									ACLUtil.grantRight(

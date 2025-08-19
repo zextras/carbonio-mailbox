@@ -64,7 +64,7 @@ public class GetMsgTest extends MailboxTestSuite {
     mailboxManager = MailboxManager.getInstance();
     accountActionFactory = new AccountAction.Factory(mailboxManager, RightManager.getInstance());
     accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance(),
-        mailboxTestExtension.getDefaultDomain());
+        DEFAULT_DOMAIN_NAME);
     mta =
         new GreenMail(
             new ServerSetup[] {
