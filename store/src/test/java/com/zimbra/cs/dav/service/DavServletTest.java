@@ -53,13 +53,13 @@ class DavServletTest extends MailboxTestSuite {
   private static final String DAV_BASE_PATH = "/dav";
   private static String davBaseUrl;
   private static GreenMail greenMail;
-  private static AccountCreator.Factory accountCreatorFactory;
+  private static AccountCreator.Factory createAccountFactory;
 
   @BeforeAll
   public static void setUp() throws Exception {
     greenMail = new GreenMail(new ServerSetup[]{ new ServerSetup(DEFAULT_PORT, DEFAULT_HOST, PROTOCOL_SMTP) });
     greenMail.start();
-    accountCreatorFactory = createAccountFactory();
+    createAccountFactory = createAccountFactory();
     final ServerWithConfiguration serverConfig = new JettyServerFactory()
         .addServlet(DAV_BASE_PATH + "/*", new ServletHolder(DavServlet.class))
         .create();
@@ -98,7 +98,7 @@ class DavServletTest extends MailboxTestSuite {
   }
 
   private Account getRandomAccountForDefaultDomain() throws ServiceException {
-    return accountCreatorFactory.get().create();
+    return createAccountFactory.get().create();
   }
 
   @Test

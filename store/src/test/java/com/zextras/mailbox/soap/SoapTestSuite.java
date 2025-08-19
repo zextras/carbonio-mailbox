@@ -6,11 +6,17 @@ package com.zextras.mailbox.soap;
 
 import static com.zimbra.client.ZEmailAddress.EMAIL_TYPE_TO;
 
+import com.zextras.mailbox.util.AccountAction;
+import com.zextras.mailbox.util.AccountCreator;
+import com.zextras.mailbox.util.AccountCreator.Factory;
 import com.zextras.mailbox.util.SoapClient;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.accesscontrol.RightManager;
+import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.account.AccountService;
 import com.zimbra.cs.service.admin.AdminService;
@@ -41,6 +47,20 @@ public class SoapTestSuite {
       .addEngineHandler(AccountService.class.getName())
       .addEngineHandler(MailServiceWithoutTracking.class.getName())
       .create();
+
+  protected static AccountCreator.Factory getCreateAccountFactory() {
+    return new Factory(Provisioning.getInstance(),
+        soapExtension.getDefaultDomain());
+  }
+  protected static AccountAction.Factory getAccountActionFactory() throws ServiceException {
+    return new AccountAction.Factory(
+        MailboxManager.getInstance(), RightManager.getInstance());
+  }
+
+
+  protected static String getDefaultDomainName() {
+    return soapExtension.getDefaultDomain();
+  }
 
   /**
    * @return {@link SoapClient} that can execute SOAP http requests

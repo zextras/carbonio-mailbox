@@ -24,8 +24,7 @@ class CreateSystemRetentionPolicyTest extends SoapTestSuite {
 
   @BeforeAll
   static void setUp() {
-    accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance(),
-        soapExtension.getDefaultDomain());
+    accountCreatorFactory = getCreateAccountFactory();
   }
 
   @Test

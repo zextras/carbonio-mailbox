@@ -12,9 +12,7 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.AutoCompleteRequest;
 import com.zimbra.soap.mail.message.AutoCompleteResponse;
@@ -43,8 +41,7 @@ public class AutoCompleteTest extends SoapTestSuite {
     Provisioning provisioning = Provisioning.getInstance();
     accountCreatorFactory = new AccountCreator.Factory(provisioning,
         soapExtension.getDefaultDomain());
-    accountActionFactory = new AccountAction.Factory(
-        MailboxManager.getInstance(), RightManager.getInstance());
+    accountActionFactory = getAccountActionFactory();
   }
   
   @Test

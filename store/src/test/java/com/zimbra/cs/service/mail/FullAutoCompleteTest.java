@@ -4,9 +4,7 @@
 
 package com.zimbra.cs.service.mail;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -23,7 +21,6 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Cos;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
-import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.mailbox.ContactRankings;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
@@ -65,9 +62,8 @@ class FullAutoCompleteTest extends SoapTestSuite {
 
   @BeforeAll
   static void beforeAll() throws Exception {
-    accountActionFactory = new AccountAction.Factory(
-        MailboxManager.getInstance(), RightManager.getInstance());
-    accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance(), soapExtension.getDefaultDomain());
+    accountActionFactory = getAccountActionFactory();
+    accountCreatorFactory = getCreateAccountFactory();
   }
 
   private static Collection<Arguments> parsePreferredAccountsTestData() {
