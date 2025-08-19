@@ -53,7 +53,7 @@ class EmailChannelTest extends MailboxTestSuite {
 
 	@Test
 	void shouldSendResetPasswordURL_ToRecoveryAddress() throws Exception {
-		final Account account = this.getAccountCreator().get().create();
+		final Account account = createAccountFactory().get().create();
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
 
 		EmailChannel.sendAndStoreResetPasswordURL(zsc, account,
@@ -69,7 +69,7 @@ class EmailChannelTest extends MailboxTestSuite {
 
 	@Test
 	void shouldSendEmailWithResetPasswordURL() throws Exception {
-		final Account account = this.getAccountCreator().get().create();
+		final Account account = createAccountFactory().get().create();
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
 
 		EmailChannel.sendAndStoreResetPasswordURL(zsc, account,
@@ -81,7 +81,7 @@ class EmailChannelTest extends MailboxTestSuite {
 
 	@Test
 	void shouldSendEmailWithRecoveryCode() throws Exception {
-		final Account account = this.getAccountCreator().get().create();
+		final Account account = this.createAccountFactory().get().create();
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
 
 		new EmailChannel().sendAndStoreSetRecoveryAccountCode(account, MailboxManager.getInstance()
@@ -93,7 +93,7 @@ class EmailChannelTest extends MailboxTestSuite {
 
 	@Test
 	void shouldSendEmailWithResetPasswordRecoveryCode() throws Exception {
-		final Account account = this.getAccountCreator().get().create();
+		final Account account = createAccountFactory().get().create();
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
 
 		new EmailChannel().sendAndStoreResetPasswordRecoveryCode(zsc, account, getRecoveryMap());
@@ -117,7 +117,7 @@ class EmailChannelTest extends MailboxTestSuite {
 	@ParameterizedTest
 	@MethodSource("dateTestCases")
 	void shouldSendResetPasswordURLMail_WithAccountPrefTimezone(String timeZone, String expected) throws Exception {
-		final Account account = this.getAccountCreator().get().withAttribute(Provisioning.A_zimbraPrefTimeZoneId, timeZone)
+		final Account account = createAccountFactory().get().withAttribute(Provisioning.A_zimbraPrefTimeZoneId, timeZone)
 				.create();
 		ZimbraSoapContext zsc = ServiceTestUtil.getSoapContext(account);
 

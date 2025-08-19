@@ -27,7 +27,7 @@ public abstract class MailboxTestSuite {
 	private final static MailboxTestExtension mailboxTestExtension = new MailboxTestExtension(mailboxTestData,
 			MailboxSetupHelper.create());
 
-	protected AccountCreator.Factory getAccountCreator() {
+	protected static AccountCreator.Factory createAccountFactory() {
 		return new Factory(Provisioning.getInstance(),
 				MailboxTestSuite.DEFAULT_DOMAIN_NAME);
 	}

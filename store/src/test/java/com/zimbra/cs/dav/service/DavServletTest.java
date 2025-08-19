@@ -12,15 +12,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.MailboxTestSuite;
+import com.zextras.mailbox.util.AccountCreator;
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zextras.mailbox.util.JettyServerFactory.ServerWithConfiguration;
-import com.zextras.mailbox.util.AccountCreator;
 import com.zimbra.common.calendar.ZCalendar.ScheduleAgent;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraCookie;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.dav.CalDavCreateAppointmentRequestBuilder;
 import com.zimbra.cs.dav.CalDavFreeBusyRequestBuilder;
 import com.zimbra.cs.service.AuthProvider;
@@ -60,7 +59,7 @@ class DavServletTest extends MailboxTestSuite {
   public static void setUp() throws Exception {
     greenMail = new GreenMail(new ServerSetup[]{ new ServerSetup(DEFAULT_PORT, DEFAULT_HOST, PROTOCOL_SMTP) });
     greenMail.start();
-    accountCreatorFactory = new AccountCreator.Factory(Provisioning.getInstance(), DEFAULT_DOMAIN_NAME);
+    accountCreatorFactory = createAccountFactory();
     final ServerWithConfiguration serverConfig = new JettyServerFactory()
         .addServlet(DAV_BASE_PATH + "/*", new ServletHolder(DavServlet.class))
         .create();
