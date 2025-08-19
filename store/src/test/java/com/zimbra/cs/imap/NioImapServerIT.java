@@ -48,7 +48,7 @@ class NioImapServerIT extends MailboxTestSuite {
     account = accountFactory.get().create();
 
     AccountAction.Factory accountActionFactory =
-        new AccountAction.Factory(MailboxManager.getInstance(), RightManager.getInstance());
+        getAccountActionFactory();
 
     MimeMessage firstMessage = new MimeMessage(Session.getInstance(new Properties()));
     firstMessage.setSubject(FIRST_MESSAGE_SUBJECT);

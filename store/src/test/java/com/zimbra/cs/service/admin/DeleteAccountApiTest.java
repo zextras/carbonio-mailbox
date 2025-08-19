@@ -1,16 +1,12 @@
 package com.zimbra.cs.service.admin;
 
+import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.AccountAction;
 import com.zextras.mailbox.util.AccountCreator;
-
-import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import com.zimbra.soap.admin.message.GetAccountRequest;
 import com.zimbra.soap.type.AccountSelector;
@@ -28,11 +24,8 @@ class DeleteAccountApiTest  extends SoapTestSuite {
 
 	@BeforeAll
 	static void beforeAll() throws Exception {
-		Provisioning provisioning = Provisioning.getInstance();
-		final MailboxManager mailboxManager = MailboxManager.getInstance();
 		accountCreatorFactory = getCreateAccountFactory();
-		accountActionFactory = new AccountAction.Factory(mailboxManager,
-				RightManager.getInstance());
+		accountActionFactory = getAccountActionFactory();
 	}
 
 	@Test

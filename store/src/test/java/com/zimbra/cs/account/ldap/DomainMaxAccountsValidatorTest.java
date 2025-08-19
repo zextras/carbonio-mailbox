@@ -26,7 +26,7 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
 
   @BeforeAll
   static void setUp() {
-    accountCreatorFactory = new Factory(Provisioning.getInstance(), DEFAULT_DOMAIN_NAME);
+    accountCreatorFactory = getCreateAccountFactory();
   }
   @BeforeEach
   void init() throws Exception {
