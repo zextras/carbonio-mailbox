@@ -41,7 +41,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 public class SoapTestSuite {
 
   @RegisterExtension
-  protected static SoapExtension soapExtension = new SoapExtension.Builder()
+  private static final SoapExtension soapExtension = new SoapExtension.Builder()
       .addEngineHandler(AdminService.class.getName())
       .addEngineHandler(AccountService.class.getName())
       .addEngineHandler(MailServiceWithoutTracking.class.getName())

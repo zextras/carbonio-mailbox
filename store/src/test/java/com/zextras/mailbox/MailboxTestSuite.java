@@ -28,7 +28,7 @@ public abstract class MailboxTestSuite {
 			DEFAULT_DOMAIN_ID);
 
 	@RegisterExtension
-	private final static MailboxTestExtension mailboxTestExtension = new MailboxTestExtension(mailboxTestData,
+	private static final MailboxTestExtension mailboxTestExtension = new MailboxTestExtension(mailboxTestData,
 			MailboxSetupHelper.create());
 
 	protected static CreateAccount.Factory getCreateAccountFactory() {
