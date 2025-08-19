@@ -34,14 +34,14 @@ class CreateAccountTest extends MailboxTestSuite {
         provisioning = Provisioning.getInstance();
     }
 
-    @AfterEach
-    void clearData() throws Exception {
-        mailboxTestExtension.clearData();
+    @BeforeEach
+    void init() throws Exception {
+        this.initData();
     }
 
-    @BeforeEach
-    void initData() throws Exception {
-        mailboxTestExtension.initData();
+    @AfterEach
+    void clear() throws Exception {
+        this.clearData();
     }
 
     @ParameterizedTest
@@ -131,7 +131,7 @@ class CreateAccountTest extends MailboxTestSuite {
     private Map<String, Object> provisionAdminContext() throws Exception {
         final Map<String, Object> adminExtraAttr = new HashMap<>();
         adminExtraAttr.put(Provisioning.A_zimbraIsAdminAccount, "TRUE");
-        adminExtraAttr.put(Provisioning.A_zimbraMailHost, mailboxTestExtension.getServerName());
+        adminExtraAttr.put(Provisioning.A_zimbraMailHost, SERVER_NAME);
         final Account adminAccount = provisioning.createAccount(
                 "admin@test.domain.com",
                 "superSecretAdminPassword",

@@ -16,7 +16,7 @@ class AccountTest extends MailboxTestSuite {
 
 	@Test
 	void shouldReturnGMT_IfPrefTimezoneEmpty() throws ServiceException {
-		final Account account = this.getAccountCreator().get().
+		final Account account = this.getCreateAccountFactory().get().
 				withAttribute(Provisioning.A_zimbraPrefTimeZoneId, "").
 				create();
 		final String preferredTimezone = account.getPreferredTimezone();
@@ -25,7 +25,7 @@ class AccountTest extends MailboxTestSuite {
 
 	@Test
 	void shouldReturnFirstTimezoneGMT_IfPrefTimezoneMultipleValues() throws ServiceException {
-		final Account account = this.getAccountCreator().get().
+		final Account account = this.getCreateAccountFactory().get().
 				withAttribute(Provisioning.A_zimbraPrefTimeZoneId, new String[]{"Europe/London", "Europe/Berlin"}).
 				create();
 		final String preferredTimezone = account.getPreferredTimezone();

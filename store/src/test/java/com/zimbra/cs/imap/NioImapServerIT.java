@@ -5,11 +5,9 @@ import static org.mockito.Mockito.mock;
 
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.AccountAction;
-import com.zextras.mailbox.util.AccountCreator;
+import com.zextras.mailbox.util.CreateAccount;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.accesscontrol.RightManager;
-import com.zimbra.cs.mailbox.MailboxManager;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.io.IOException;
 import java.util.Arrays;
@@ -44,12 +42,11 @@ class NioImapServerIT extends MailboxTestSuite {
     provisioning.getConfig().setImapBindPort(IMAP_PORT);
     provisioning.getConfig().setImapCleartextLoginEnabled(true);
 
-    AccountCreator.Factory accountFactory = new AccountCreator.Factory(provisioning,
-        mailboxTestExtension.getDefaultDomain());
+    CreateAccount.Factory accountFactory = getCreateAccountFactory();
     account = accountFactory.get().create();
 
     AccountAction.Factory accountActionFactory =
-        new AccountAction.Factory(MailboxManager.getInstance(), RightManager.getInstance());
+        getAccountActionFactory();
 
     MimeMessage firstMessage = new MimeMessage(Session.getInstance(new Properties()));
     firstMessage.setSubject(FIRST_MESSAGE_SUBJECT);

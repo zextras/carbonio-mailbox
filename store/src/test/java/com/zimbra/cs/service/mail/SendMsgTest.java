@@ -86,14 +86,14 @@ public class SendMsgTest extends MailboxTestSuite {
     final Provisioning provisioning = Provisioning.getInstance();
     sender =
         provisioning.createAccount(
-            "test@" + mailboxTestExtension.getDefaultDomain(),
+            "test@" + DEFAULT_DOMAIN_NAME,
             "password",
-            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, mailboxTestExtension.getServerName())));
+            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, SERVER_NAME)));
     shared =
         provisioning.createAccount(
-            "shared@" + mailboxTestExtension.getDefaultDomain(),
+            "shared@" + DEFAULT_DOMAIN_NAME,
             "password",
-            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, mailboxTestExtension.getServerName())));
+            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, SERVER_NAME)));
     final Set<ZimbraACE> aces = new HashSet<>();
     aces.add(
         new ZimbraACE(
@@ -113,9 +113,9 @@ public class SendMsgTest extends MailboxTestSuite {
     ACLUtil.grantRight(Provisioning.getInstance(), shared, aces);
     receiver =
         provisioning.createAccount(
-            "rcpt@" + mailboxTestExtension.getDefaultDomain(),
+            "rcpt@" + DEFAULT_DOMAIN_NAME,
             "password",
-            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, mailboxTestExtension.getServerName())));
+            Maps.newHashMap(Map.of(Provisioning.A_zimbraMailHost, SERVER_NAME)));
   }
 
   @AfterAll

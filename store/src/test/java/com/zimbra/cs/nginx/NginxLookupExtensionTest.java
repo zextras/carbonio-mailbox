@@ -7,11 +7,9 @@
 package com.zimbra.cs.nginx;
 
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zextras.mailbox.util.AccountCreator.Factory;
 import com.zextras.mailbox.util.JettyServerFactory;
 import com.zextras.mailbox.util.JettyServerFactory.ServerWithConfiguration;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.extension.ExtensionDispatcherServlet;
 import com.zimbra.cs.extension.ExtensionUtil;
 import java.net.URI;
@@ -43,8 +41,7 @@ class NginxLookupExtensionTest extends MailboxTestSuite {
 		extensionDispatcherServlet.setName("ExtensionDispatcherServlet");
 		var servlet = new JettyServerFactory().addServlet("/", extensionDispatcherServlet);
 		final ServerWithConfiguration serverConfig = servlet.create();
-		account = new Factory(Provisioning.getInstance(),
-				mailboxTestExtension.getDefaultDomain()).get().create();
+		account = getCreateAccountFactory().get().create();
 		endpoint = "http://localhost:" + serverConfig.serverPort() + "/service/extension/nginx-lookup";
 		server = serverConfig.server();
 		server.start();

@@ -1,16 +1,12 @@
 package com.zimbra.cs.service.admin;
 
-import com.zextras.mailbox.util.AccountAction;
-import com.zextras.mailbox.util.AccountCreator;
-
 import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.util.AccountAction;
+import com.zextras.mailbox.util.CreateAccount;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.mailbox.Mailbox;
-import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.soap.admin.message.DeleteAccountRequest;
 import com.zimbra.soap.admin.message.GetAccountRequest;
 import com.zimbra.soap.type.AccountSelector;
@@ -22,23 +18,20 @@ import org.junit.jupiter.api.Test;
 @Tag("api")
 class DeleteAccountApiTest  extends SoapTestSuite {
 
-	private static AccountCreator.Factory accountCreatorFactory;
+	private static CreateAccount.Factory createAccountFactory;
 	private static AccountAction.Factory accountActionFactory;
 
 
 	@BeforeAll
 	static void beforeAll() throws Exception {
-		Provisioning provisioning = Provisioning.getInstance();
-		final MailboxManager mailboxManager = MailboxManager.getInstance();
-		accountCreatorFactory = new AccountCreator.Factory(provisioning, soapExtension.getDefaultDomain());
-		accountActionFactory = new AccountAction.Factory(mailboxManager,
-				RightManager.getInstance());
+		createAccountFactory = getCreateAccountFactory();
+		accountActionFactory = getAccountActionFactory();
 	}
 
 	@Test
 	void shouldDeleteAccountWithPublicSharedFolder() throws Exception {
-		final Account adminAccount = accountCreatorFactory.get().asGlobalAdmin().create();
-		final Account accountWithPublicSharedFolder = accountCreatorFactory.get().create();
+		final Account adminAccount = createAccountFactory.get().asGlobalAdmin().create();
+		final Account accountWithPublicSharedFolder = createAccountFactory.get().create();
 		accountActionFactory.forAccount(accountWithPublicSharedFolder)
 				.grantPublicFolderRight(Mailbox.ID_FOLDER_CALENDAR, "r");
 		final String accountWithPublicShareId = accountWithPublicSharedFolder.getId();

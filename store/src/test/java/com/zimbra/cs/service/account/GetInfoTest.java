@@ -3,12 +3,11 @@ package com.zimbra.cs.service.account;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.AccountCreator;
+import com.zextras.mailbox.util.CreateAccount;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AttributeInfo;
 import com.zimbra.cs.account.AttributeManager;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.soap.account.message.GetInfoRequest;
 import org.apache.http.HttpStatus;
 import org.apache.http.util.EntityUtils;
@@ -23,20 +22,17 @@ import org.junit.jupiter.params.provider.ValueSource;
 @Tag("api")
 class GetInfoTest extends SoapTestSuite {
 
-  private static AccountCreator.Factory accountCreatorFactory;
-  private static Provisioning provisioning;
+  private static CreateAccount.Factory createAccountFactory;
   private Account account;
 
   @BeforeAll
   static void init() {
-    provisioning = Provisioning.getInstance();
-    accountCreatorFactory = new AccountCreator.Factory(provisioning,
-        soapExtension.getDefaultDomain());
+    createAccountFactory = getCreateAccountFactory();
   }
 
   @BeforeEach
   void setUp() throws Exception {
-    account = accountCreatorFactory.get().create();
+    account = createAccountFactory.get().create();
   }
 
   @Test
@@ -72,7 +68,7 @@ class GetInfoTest extends SoapTestSuite {
   @Test
   void attributesSectionProvidesAmavisLists() throws Exception {
     final var account =
-        accountCreatorFactory
+        createAccountFactory
             .get()
             .withAttribute(ZAttrProvisioning.A_amavisWhitelistSender, "foo1@bar.com")
             .withAttribute(ZAttrProvisioning.A_amavisBlacklistSender, "foo2@bar.com")
@@ -94,7 +90,7 @@ class GetInfoTest extends SoapTestSuite {
     Assertions.assertTrue(featureMailEnabled.isDeprecated());
 
     final var account =
-        accountCreatorFactory
+        createAccountFactory
             .get()
             .withAttribute(featureMailEnabled.getName(), "FALSE")
             .create();

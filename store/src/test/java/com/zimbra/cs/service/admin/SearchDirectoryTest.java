@@ -4,7 +4,7 @@ import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.AccountCreator;
+import com.zextras.mailbox.util.CreateAccount;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.cs.account.Account;
@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 
 @Tag("api")
 class SearchDirectoryTest extends SoapTestSuite {
-  private static AccountCreator.Factory accountCreatorFactory;
+  private static CreateAccount.Factory createAccountFactory;
 	private static Account adminAccount;
   private static Account secondAccount;
   private static Account firstAccount;
@@ -34,18 +34,17 @@ class SearchDirectoryTest extends SoapTestSuite {
   static void setUp() throws Exception {
 		Provisioning provisioning = Provisioning.getInstance();
     provisioning.createDomain("different.com", new HashMap<>());
-    accountCreatorFactory = new AccountCreator.Factory(provisioning,
-        soapExtension.getDefaultDomain());
-    adminAccount = newAccountOn(soapExtension.getDefaultDomain()).withUsername("admin.account").asGlobalAdmin().create();
-    secondAccount = newAccountOn(soapExtension.getDefaultDomain()).withUsername("second.account").create();
-    firstAccount = newAccountOn(soapExtension.getDefaultDomain()).withUsername("first.account").create();
+    createAccountFactory = getCreateAccountFactory();
+    adminAccount = newAccountOn(getDefaultDomainName()).withUsername("admin.account").asGlobalAdmin().create();
+    secondAccount = newAccountOn(getDefaultDomainName()).withUsername("second.account").create();
+    firstAccount = newAccountOn(getDefaultDomainName()).withUsername("first.account").create();
   }
 
   @Test
   void searchAccountsInADomain() throws Exception {
     HttpResponse httpResponse = getSoapClient().newRequest()
         .setCaller(adminAccount)
-        .setSoapBody(searchAccountsByDomain(soapExtension.getDefaultDomain()))
+        .setSoapBody(searchAccountsByDomain(getDefaultDomainName()))
         .execute();
 
     assertEquals(HttpStatus.SC_OK, httpResponse.getStatusLine().getStatusCode());
@@ -62,7 +61,7 @@ class SearchDirectoryTest extends SoapTestSuite {
   void searchAccountPaginationFirstPage() throws Exception {
     HttpResponse firstPageHttpResponse = getSoapClient().newRequest()
         .setCaller(adminAccount)
-        .setSoapBody(searchAccountsByDomain(soapExtension.getDefaultDomain(), 1, 0))
+        .setSoapBody(searchAccountsByDomain(getDefaultDomainName(), 1, 0))
         .execute();
 
     assertEquals(HttpStatus.SC_OK, firstPageHttpResponse.getStatusLine().getStatusCode());
@@ -77,7 +76,7 @@ class SearchDirectoryTest extends SoapTestSuite {
   void searchAccountPaginationSecondPage() throws Exception {
     HttpResponse secondPageHttpResponse = getSoapClient().newRequest()
         .setCaller(adminAccount)
-        .setSoapBody(searchAccountsByDomain(soapExtension.getDefaultDomain(), 1, 1))
+        .setSoapBody(searchAccountsByDomain(getDefaultDomainName(), 1, 1))
         .execute();
 
     assertEquals(HttpStatus.SC_OK, secondPageHttpResponse.getStatusLine().getStatusCode());
@@ -92,7 +91,7 @@ class SearchDirectoryTest extends SoapTestSuite {
   void searchAccountPaginationLastPage() throws Exception {
     final HttpResponse lastPageHttpResponse = getSoapClient().newRequest()
         .setCaller(adminAccount)
-        .setSoapBody(searchAccountsByDomain(soapExtension.getDefaultDomain(), 1, 2))
+        .setSoapBody(searchAccountsByDomain(getDefaultDomainName(), 1, 2))
         .execute();
 
     assertEquals(HttpStatus.SC_OK, lastPageHttpResponse.getStatusLine().getStatusCode());
@@ -129,8 +128,8 @@ class SearchDirectoryTest extends SoapTestSuite {
     return request;
   }
 
-  private static AccountCreator newAccountOn(String domain) {
-    return accountCreatorFactory.get().withDomain(domain);
+  private static CreateAccount newAccountOn(String domain) {
+    return createAccountFactory.get().withDomain(domain);
   }
 
 }

@@ -31,7 +31,7 @@ class AddAccountLoggerTest extends MailboxTestSuite {
   @BeforeAll
   static void setUp() throws Exception {
     provisioning = Provisioning.getInstance();
-    email = "admin_mail@" + mailboxTestExtension.getDefaultDomain();
+    email = "admin_mail@" + DEFAULT_DOMAIN_NAME;
     final Map<String, Object> attributes = new HashMap<>();
     attributes.put(ZAttrProvisioning.A_zimbraIsAdminAccount, "TRUE");
     account = provisioning.createAccount(email, "password", attributes);
