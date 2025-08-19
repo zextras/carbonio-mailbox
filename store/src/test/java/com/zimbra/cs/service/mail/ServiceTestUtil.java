@@ -27,6 +27,9 @@ public class ServiceTestUtil {
     public static Map<String, Object> getRequestContext(Account acct) throws Exception {
         return getRequestContext(acct, acct);
     }
+    public static ZimbraSoapContext getSoapContext(Account acct) throws Exception {
+        return (ZimbraSoapContext) getRequestContext(acct, acct).get(SoapEngine.ZIMBRA_CONTEXT);
+    }
 
     /**
      * Creates a SOAP context for delegated requests.
