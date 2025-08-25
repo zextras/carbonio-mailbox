@@ -71,6 +71,9 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 
+/**
+ * Cli used in zmtzdata2ical. See: https://github.com/zextras/carbonio-timezone-data
+ */
 public class ZoneInfo2iCalendar {
 
   private static final String CRLF = "\r\n";

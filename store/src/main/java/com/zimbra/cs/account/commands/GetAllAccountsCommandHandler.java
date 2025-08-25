@@ -1,8 +1,8 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.InvalidCommandException;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.NamedEntry;
@@ -25,11 +25,11 @@ class GetAllAccountsCommandHandler implements CommandHandler {
   }
 
 
-  @Override public void handle(String[] args) throws ServiceException {
+  @Override public void handle(String[] args) throws ServiceException, InvalidCommandException {
     doGetAllAccounts(args);
   }
 
-  private void doGetAllAccounts(String[] args) throws ServiceException {
+  private void doGetAllAccounts(String[] args) throws ServiceException, InvalidCommandException {
 
     LdapProv ldapProv = (LdapProv) provUtil.getProvisioning();
     var console = provUtil.getConsole();

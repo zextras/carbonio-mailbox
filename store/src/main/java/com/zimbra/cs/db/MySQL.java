@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.db;
 
+import com.zimbra.cs.InvalidCommandException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -256,9 +257,14 @@ public class MySQL extends Db {
     public static void main(String[] args) {
         // command line argument parsing
         Options options = new Options();
-        CommandLine cl = Versions.parseCmdlineArgs(args, options);
+			CommandLine cl = null;
+			try {
+				cl = Versions.parseCmdlineArgs(args, options);
+			} catch (InvalidCommandException e) {
+          System.exit(1);
+			}
 
-        String outputDir = cl.getOptionValue("o");
+			String outputDir = cl.getOptionValue("o");
         File outFile = new File(outputDir, "versions-init.sql");
         outFile.delete();
 

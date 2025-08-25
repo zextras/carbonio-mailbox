@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 import com.google.common.collect.Maps;
-import com.zextras.mailbox.util.AccountCreator;
+import com.zextras.mailbox.util.CreateAccount;
 import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.ZAttrProvisioning;
@@ -88,7 +88,7 @@ public class FileUploadServletTest {
           + " 0120-801-471";
   private static FileUploadServlet servlet;
   private static Account testAccount;
-  private static AccountCreator.Factory accountCreatorFactory;
+  private static CreateAccount.Factory createAccountFactory;
   private Server server;
   private static File testDirectory;
 
@@ -102,7 +102,7 @@ public class FileUploadServletTest {
     MailboxTestUtil.initServer();
     var provisioning = Provisioning.getInstance();
 
-    accountCreatorFactory = new AccountCreator.Factory(provisioning, "test.com");
+    createAccountFactory = new CreateAccount.Factory(provisioning, "test.com");
 
     Map<String, Object> attrs = Maps.newHashMap();
     provisioning.createAccount("test@zimbra.com", "secret", attrs);
@@ -459,7 +459,7 @@ public class FileUploadServletTest {
       "Extended filename should be preferred if the multipart upload request contains "
           + "Content-Disposition header with extended filename param as defined in RFC-6266")
   void handleMultipartUpload_should_parseExtendedFileNameFromContentDisposition() throws Exception {
-    var account = accountCreatorFactory.get().create();
+    var account = createAccountFactory.get().create();
     var authToken = AuthProvider.getAuthToken(account);
     var filePath = Paths.get(
         Objects.requireNonNull(getClass().getResource("\u0421\u043e\u0431\u044b\u0442\u0438\u044f.txt")).toURI());
@@ -502,7 +502,7 @@ public class FileUploadServletTest {
       "Filename should be parsed correctly when multipart upload is composed with "
           + "MultipartEntityBuilder and charset set to UTF-8")
   void handleMultipartUpload_should_parseFileNameFromContentDisposition() throws Exception {
-    var account = accountCreatorFactory.get().create();
+    var account = createAccountFactory.get().create();
     var authToken = AuthProvider.getAuthToken(account);
     var filePath = Paths.get(
         Objects.requireNonNull(getClass().getResource("\u0421\u043e\u0431\u044b\u0442\u0438\u044f.txt")).toURI());
@@ -524,7 +524,7 @@ public class FileUploadServletTest {
       "Extended filename should be preferred if the plain upload request contains "
           + "Content-Disposition header with extended filename param as defined in RFC-6266")
   void handlePlainUpload_should_parseExtendedFileNameFromContentDisposition() throws Exception {
-    var account = accountCreatorFactory.get().create();
+    var account = createAccountFactory.get().create();
     var authToken = AuthProvider.getAuthToken(account);
     var filePath =
         Paths.get(
@@ -555,7 +555,7 @@ public class FileUploadServletTest {
   @Test
   void handlePlainUpload_should_ignore_zimbraMtaMaxSIze_when_lbfums_param_in_request_url()
       throws Exception {
-    var account = accountCreatorFactory.get().create();
+    var account = createAccountFactory.get().create();
     var authToken = AuthProvider.getAuthToken(account);
     var fileSize = 30 * 1024 * 1024;
     var asciiFileName = "Events.txt";
@@ -578,7 +578,7 @@ public class FileUploadServletTest {
   @Test
   void should_be_able_upload_unlimited_when_zimbraMtaMaxMessageSize_is_set_to_zero()
       throws Exception {
-    var account = accountCreatorFactory.get().create();
+    var account = createAccountFactory.get().create();
     var authToken = AuthProvider.getAuthToken(account);
     var fileSize = 1024 * 1024;
     var asciiFileName = "Events.txt";
@@ -604,7 +604,7 @@ public class FileUploadServletTest {
   @Test
   void should_be_able_upload_unlimited_when_FileUploadMaxSizePerFile_is_set_to_zero()
       throws Exception {
-    var account = accountCreatorFactory.get().create();
+    var account = createAccountFactory.get().create();
     var authToken = AuthProvider.getAuthToken(account);
     var fileSize = 1024 * 1024;
     var asciiFileName = "Events.txt";
@@ -630,7 +630,7 @@ public class FileUploadServletTest {
   @Test
   void should_not_be_able_upload_file_greater_then_limit_set_by_zimbraMtaMaxMessageSize()
       throws Exception {
-    var account = accountCreatorFactory.get().create();
+    var account = createAccountFactory.get().create();
     var authToken = AuthProvider.getAuthToken(account);
     var fileSize = 1024 * 1024;
     var asciiFileName = "Events.txt";
@@ -650,7 +650,7 @@ public class FileUploadServletTest {
   @Test
   void should_not_be_able_upload_file_greater_then_limit_set_by_zimbraFileUploadMaxSizePerFile()
       throws Exception {
-    var account = accountCreatorFactory.get().create();
+    var account = createAccountFactory.get().create();
     var authToken = AuthProvider.getAuthToken(account);
     var fileSize = 1024 * 1024;
     var asciiFileName = "Events.txt";
@@ -670,7 +670,7 @@ public class FileUploadServletTest {
   @Test
   void handlePlainUpload_should_return_413_when_upload_file_size_is_greater_then_zimbraMtaMaxSIze()
       throws Exception {
-    var account = accountCreatorFactory.get().create();
+    var account = createAccountFactory.get().create();
     var authToken = AuthProvider.getAuthToken(account);
     var fileSize = 30 * 1024 * 1024;
     var asciiFileName = "Events.txt";

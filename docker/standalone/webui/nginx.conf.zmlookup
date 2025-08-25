@@ -1,0 +1,18 @@
+zm_lookup {
+
+    zm_lookup_handlers  https://mailbox1.demo.zextras.io:7072/service/extension/nginx-lookup;
+
+    zm_lookup_timeout   15000ms;
+
+    zm_lookup_handler_retry_interval 60000ms;
+
+    zm_lookup_caching   on;
+
+    zm_lookup_master_auth_username "zmnginx";
+
+    zm_lookup_master_auth_password "qh6hWZvc";
+
+    zm_lookup_allow_unqualified   off;
+
+    zm_prefix_url /;
+}

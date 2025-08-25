@@ -8,9 +8,16 @@ RUN apt update && apt install -y gnupg2 ca-certificates && apt clean \
 
 ENV LDAP_ROOT_PASSWORD=qh6hWZvc
 ENV LDAP_ADMIN_PASSWORD=password
+EXPOSE 1389
 
 COPY docker/standalone/openldap/ldap-utils/ /ldap-utils/
 COPY store/ldap/generated/ /opt/zextras/common/etc/openldap/zimbra/
+RUN mkdir -p /opt/zextras/ldap/custom-ldifs \
+            /opt/zextras/data/ldap/state/run \
+            /opt/zextras/data/ldap/config \
+            /opt/zextras/data/ldap/mdb/db \
+            /run/carbonio \
+            /opt/zextras/conf/ca
 
 COPY docker/standalone/openldap/entrypoint.sh .
 ENTRYPOINT ["./entrypoint.sh"]

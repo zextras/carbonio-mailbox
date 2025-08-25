@@ -6,11 +6,14 @@ package com.zextras.mailbox.soap;
 
 import static com.zimbra.client.ZEmailAddress.EMAIL_TYPE_TO;
 
+import com.zextras.mailbox.util.AccountAction;
+import com.zextras.mailbox.util.CreateAccount;
 import com.zextras.mailbox.util.SoapClient;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.cs.service.account.AccountService;
 import com.zimbra.cs.service.admin.AdminService;
@@ -36,11 +39,24 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 public class SoapTestSuite {
 
   @RegisterExtension
-  protected static SoapExtension soapExtension = new SoapExtension.Builder()
+  private static final SoapExtension soapExtension = new SoapExtension.Builder()
       .addEngineHandler(AdminService.class.getName())
       .addEngineHandler(AccountService.class.getName())
       .addEngineHandler(MailServiceWithoutTracking.class.getName())
       .create();
+
+  protected static CreateAccount.Factory getCreateAccountFactory() {
+    return new CreateAccount.Factory(Provisioning.getInstance(),
+        getDefaultDomainName());
+  }
+  protected static AccountAction.Factory getAccountActionFactory() throws ServiceException {
+    return AccountAction.Factory.getDefault();
+  }
+
+
+  protected static String getDefaultDomainName() {
+    return soapExtension.getDefaultDomain();
+  }
 
   /**
    * @return {@link SoapClient} that can execute SOAP http requests

@@ -15,6 +15,15 @@ def isBuildingTag() {
     return false
 }
 
+def buildContainer(String title, String description, String dockerfile, String tag) {
+    sh 'docker build ' +
+            '--label org.opencontainers.image.title="' + title + '" ' +
+            '--label org.opencontainers.image.description="' + description + '" ' +
+            '--label org.opencontainers.image.vendor="Zextras" ' +
+            '-f ' + dockerfile + ' -t ' + tag + ' .'
+    sh 'docker push ' + tag
+}
+
 def buildDebPackages(String flavor) {
     container('yap') {
         unstash 'staging'
@@ -96,7 +105,7 @@ pipeline {
             steps {
                 checkout scm
                 withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
-                    sh 'cp $SETTINGS_PATH settings-jenkins.xml'
+                    sh 'cp ${SETTINGS_PATH} settings-jenkins.xml'
                 }
                 script {
                     env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
@@ -149,6 +158,23 @@ pipeline {
                 container('jdk-17') {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                         mvnCmd("$BUILD_PROPERTIES_PARAMS sonar:sonar -Dsonar.junit.reportPaths=target/surefire-reports,target/failsafe-reports -Dsonar.exclusions=**/com/zimbra/soap/mail/type/*.java,**/com/zimbra/soap/mail/message/*.java,**/com/zimbra/cs/account/ZAttr*.java,**/com/zimbra/common/account/ZAttr*.java")
+                    }
+                }
+            }
+        }
+        stage('Publish containers - devel') {
+            when {
+                branch 'devel';
+            }
+            steps {
+                container('dind') {
+                    withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+                        buildContainer('Carbonio Mailbox', '$(cat docker/standalone/mailbox/description.md)',
+                                'docker/standalone/mailbox/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-mailbox:latest')
+                        buildContainer('Carbonio MariaDB', '$(cat docker/standalone/mariadb/description.md)',
+                                'docker/standalone/mariadb/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-mariadb:latest')
+                        buildContainer('Carbonio OpenLDAP', '$(cat docker/standalone/openldap/description.md)',
+                                'docker/standalone/openldap/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-openldap:latest')
                     }
                 }
             }

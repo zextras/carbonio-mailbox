@@ -23,7 +23,7 @@
     <value>zextras</value>
   </key>
   <key name="zimbra_server_hostname">
-    <value>docker.demo.zextras.io</value>
+    <value>SERVER_HOSTNAME</value>
   </key>
   <key name="mysql_root_password">
     <value>MARIADB_ROOT_PASSWORD</value>
@@ -54,5 +54,11 @@
   </key>
   <key name="ldap_noop_search_supported">
     <value>false</value>
+  </key>
+  <key name="preview_service_url">
+    <value>CARBONIO_PREVIEW_SERVICE_URL</value>
+  </key>
+  <key name="files_service_url">
+    <value>CARBONIO_FILES_SERVICE_URL</value>
   </key>
 </localconfig>

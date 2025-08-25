@@ -1,5 +1,19 @@
 
 
+# [4.23.0](https://github.com/zextras/carbonio-mailbox/compare/4.22.0...4.23.0) (2025-08-25)
+
+
+### Bug Fixes
+
+* [CO-2293] use user timezone when recovering password ([#786](https://github.com/zextras/carbonio-mailbox/issues/786)) ([e76fca8](https://github.com/zextras/carbonio-mailbox/commit/e76fca86891147bd66229d0088bfe19d2b215e7e))
+* incorrect French grammar in email subject when user responds ([d2c1f5e](https://github.com/zextras/carbonio-mailbox/commit/d2c1f5e4488c8f94fd9347933a7e81aede77ee65))
+* redis ephemeral store number of connections ([#755](https://github.com/zextras/carbonio-mailbox/issues/755)) ([9be15f8](https://github.com/zextras/carbonio-mailbox/commit/9be15f89a16ddf271ed4f07d7790cde1e06178d6))
+
+
+### Features
+
+* [CO-1066] add redis support for ephemeral data ([#750](https://github.com/zextras/carbonio-mailbox/issues/750)) ([6725a92](https://github.com/zextras/carbonio-mailbox/commit/6725a92dbff67e3e6365641d6b477e433d7c6c9e))
+
 # [4.22.0](https://github.com/zextras/carbonio-mailbox/compare/4.21.0...4.22.0) (2025-05-29)
 
 

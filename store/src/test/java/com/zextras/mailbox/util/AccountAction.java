@@ -30,9 +30,10 @@ import java.util.Set;
 import javax.mail.internet.MimeMessage;
 
 /**
- * Performs actions on an account. Start with {@link #shareWith(Account)}
+ * Extends {@link #shareWith(Account)}, so you can perform standard delete operations natively.
+ * On top of default operations you can do further operations on an account and its mailbox, such as saving a draft mail.
  */
-public class AccountAction {
+public class AccountAction extends Account {
 
 	private final Account account;
 	private final MailboxManager mailboxManager;
@@ -66,23 +67,28 @@ public class AccountAction {
 
 		private final MailboxManager mailboxManager;
 		private final RightManager rightManager;
+		private final Provisioning provisioning;
 
-		public Factory(MailboxManager mailboxManager, RightManager rightManager) {
+		private Factory(MailboxManager mailboxManager, RightManager rightManager,
+				Provisioning provisioning) {
 			this.mailboxManager = mailboxManager;
 			this.rightManager = rightManager;
+			this.provisioning = provisioning;
 		}
 
 		public AccountAction forAccount(Account account) {
-			return new AccountAction(account, mailboxManager, rightManager);
+			return new AccountAction(account, mailboxManager, rightManager, provisioning);
 		}
 
 		public static Factory getDefault() throws ServiceException {
-			return new Factory(MailboxManager.getInstance(), RightManager.getInstance());
+			return new Factory(MailboxManager.getInstance(), RightManager.getInstance(),
+					Provisioning.getInstance());
 		}
 	}
 
 	private AccountAction(
-			Account account, MailboxManager mailboxManager, RightManager rightManager) {
+			Account account, MailboxManager mailboxManager, RightManager rightManager, Provisioning provisioning) {
+		super(account.getName(), account.getId(), account.getAttrs(), null, provisioning);
 		this.account = account;
 		this.mailboxManager = mailboxManager;
 		this.rightManager = rightManager;

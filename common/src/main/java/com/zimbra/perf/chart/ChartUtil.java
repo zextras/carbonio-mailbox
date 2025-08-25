@@ -55,6 +55,9 @@ import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.perf.chart.ChartSettings.ImageType;
 
+/**
+ * Used in stat-chart: https://github.com/zextras/carbonio-core-utils
+ */
 public class ChartUtil {
 
     private static final String OPT_HELP = "help";

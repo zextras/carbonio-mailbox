@@ -5,11 +5,8 @@
 
 package com.zimbra.cs.util;
 
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.db.Versions;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -43,8 +40,7 @@ public final class BuildInfo {
     String majorversion = UNKNOWN;
     String minorversion = UNKNOWN;
     String microversion = UNKNOWN;
-    String platform = getPlatform();
-    String buildnum = "buildnum";
+		String buildnum = "buildnum";
     try {
       final Properties properties = new Properties();
       properties.load(BuildInfo.class.getResourceAsStream("buildInfo.properties"));
@@ -65,7 +61,7 @@ public final class BuildInfo {
     RELEASE = release;
     DATE = date;
     HOST = host;
-    PLATFORM = platform;
+    PLATFORM = UNKNOWN;
     MAJORVERSION = majorversion;
     MINORVERSION = minorversion;
     MICROVERSION = microversion;
@@ -83,30 +79,6 @@ public final class BuildInfo {
     return licenseBin.exists() ? TYPE_NETWORK : TYPE_FOSS;
   }
 
-  /**
-   * Returns the first line in {@code /opt/zextras/.platform}, or {@code unknown} if the platform cannot be determined.
-   */
-  private static String getPlatform() {
-    String platform = UNKNOWN;
-    File platformFile = new File(LC.zimbra_home.value(), ".platform");
-    if (platformFile.exists()) {
-      try (BufferedReader reader = new BufferedReader(new FileReader(platformFile))) {
-        String line;
-        while ((line = reader.readLine()) != null) {
-          if (line.length() > 0) {
-            platform = line;
-            break;
-          }
-        }
-      } catch (IOException e) {
-        System.err.println("Unable to determine platform.");
-        e.printStackTrace(System.err);
-      }
-    } else {
-      System.err.format("Unable to determine platform because %s does not exist.%n", platformFile);
-    }
-    return platform;
-  }
 
   public record BuildInfoData(String version,String release,String date,String host,
                                      String fullVersion, int dbVersion, int indexVersion) {

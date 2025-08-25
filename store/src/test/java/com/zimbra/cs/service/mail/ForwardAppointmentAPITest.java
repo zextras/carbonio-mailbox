@@ -4,35 +4,20 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
-import com.zextras.mailbox.util.PortUtil;
-import com.zimbra.cs.mailbox.CalendarItem;
-import com.zimbra.cs.mailbox.MailItem.Type;
-import com.zimbra.cs.mailbox.calendar.Invite;
-import com.zimbra.cs.mailclient.smtp.SmtpConfig;
-import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
-import javax.mail.Address;
-import javax.mail.Message.RecipientType;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-
-import org.junit.jupiter.api.*;
-
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.AccountCreator;
-import com.zextras.mailbox.util.AccountCreator.Factory;
+import com.zextras.mailbox.util.CreateAccount.Factory;
+import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.index.SortBy;
+import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Folder;
+import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
+import com.zimbra.cs.mailbox.calendar.Invite;
+import com.zimbra.cs.mailclient.smtp.SmtpConfig;
 import com.zimbra.soap.mail.message.CreateAppointmentResponse;
 import com.zimbra.soap.mail.type.CalOrganizer;
 import com.zimbra.soap.mail.type.CalendarAttendee;
@@ -40,6 +25,20 @@ import com.zimbra.soap.mail.type.DtTimeInfo;
 import com.zimbra.soap.mail.type.EmailAddrInfo;
 import com.zimbra.soap.mail.type.InvitationInfo;
 import com.zimbra.soap.mail.type.Msg;
+import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import javax.mail.Address;
+import javax.mail.Message.RecipientType;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("api")
 class ForwardAppointmentAPITest extends SoapTestSuite {
@@ -52,7 +51,7 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
     return calendarFolders.get(0);
   }
 
-	private static Factory accountCreatorFactory;
+	private static Factory createAccountFactory;
 	private static GreenMail greenMail;
 
 	@BeforeAll
@@ -67,7 +66,7 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		Provisioning provisioning = Provisioning.getInstance();
 		provisioning.getLocalServer().setSmtpPort(smtpPort);
 		mailboxManager = MailboxManager.getInstance();
-		accountCreatorFactory = new AccountCreator.Factory(provisioning, soapExtension.getDefaultDomain());
+		createAccountFactory = getCreateAccountFactory();
 	}
 	@BeforeEach
 	void beforeEach() {
@@ -76,10 +75,10 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 
 	@Test
 	void shouldAddForwardeeToCurrentAttendeesWhenForwardingAppointment() throws Exception {
-		final Account userA = accountCreatorFactory.get().withUsername("userA").create();
-		final Account userB = accountCreatorFactory.get().withUsername("userB").create();
-		final Account userC = accountCreatorFactory.get().withUsername("userC").create();
-		final Account userD = accountCreatorFactory.get().withUsername("userD").create();
+		final Account userA = createAccountFactory.get().withUsername("userA").create();
+		final Account userB = createAccountFactory.get().withUsername("userB").create();
+		final Account userC = createAccountFactory.get().withUsername("userC").create();
+		final Account userD = createAccountFactory.get().withUsername("userD").create();
 		createAppointment(userA, List.of(userB, userD));
 		final MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
 		MimeMessage receivedMessage1 = receivedMessages[0];
@@ -102,13 +101,13 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 
 	@Test
 	void shouldSendEmailOnlyToNewAttendeeWhenForwarding() throws Exception {
-		final Account userA = accountCreatorFactory.get().create();
-		final Account userB = accountCreatorFactory.get().create();
-		final Account userC = accountCreatorFactory.get().create();
+		final Account userA = createAccountFactory.get().create();
+		final Account userB = createAccountFactory.get().create();
+		final Account userC = createAccountFactory.get().create();
 		createAppointment(userA, List.of(userB, userC));
 		greenMail.reset();
 
-		final Account userD = accountCreatorFactory.get().create();
+		final Account userD = createAccountFactory.get().create();
 		final List<CalendarItem> calendarItems = getCalendarAppointments(userB);
 		final CalendarItem userBAppointment = calendarItems.get(0);
 
@@ -127,13 +126,13 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 	 */
 	@Test
 	void shouldNotNotifyOrganizerThatItsAppointmentHasBeenForwarded() throws Exception {
-		final Account userA = accountCreatorFactory.get().create();
-		final Account userB = accountCreatorFactory.get().create();
-		final Account userC = accountCreatorFactory.get().create();
+		final Account userA = createAccountFactory.get().create();
+		final Account userB = createAccountFactory.get().create();
+		final Account userC = createAccountFactory.get().create();
 		createAppointment(userA, List.of(userB, userC));
 		greenMail.reset();
 
-		final Account userD = accountCreatorFactory.get().create();
+		final Account userD = createAccountFactory.get().create();
 		final List<CalendarItem> calendarItems = getCalendarAppointments(userB);
 		final CalendarItem userBAppointment = calendarItems.get(0);
 

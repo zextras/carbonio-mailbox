@@ -1,6 +1,7 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.InvalidCommandException;
 import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
@@ -10,9 +11,7 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.soap.type.GalSearchType;
-import org.apache.http.HttpException;
 
-import java.io.IOException;
 import java.util.Map;
 
 class SearchGalCommandHandler implements CommandHandler {
@@ -24,11 +23,11 @@ class SearchGalCommandHandler implements CommandHandler {
     this.dumper = dumper;
   }
 
-  @Override public void handle(String[] args) throws ServiceException, ArgException {
+  @Override public void handle(String[] args) throws ServiceException, ArgException, InvalidCommandException {
     doSearchGal(args);
   }
 
-  private void doSearchGal(String[] args) throws ServiceException, ArgException {
+  private void doSearchGal(String[] args) throws ServiceException, ArgException, InvalidCommandException {
     if (args.length < 3) {
       provUtil.usage();
       return;

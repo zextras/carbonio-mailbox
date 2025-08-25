@@ -8,6 +8,7 @@ package com.zimbra.cs.service.admin;
 import com.zextras.carbonio.files.FilesClient;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
@@ -171,18 +172,6 @@ public class AdminService implements DocumentService {
     dispatcher.registerHandler(
         AdminConstants.RECALCULATE_MAILBOX_COUNTS_REQUEST, new RecalculateMailboxCounts());
 
-    // zimlet
-    dispatcher.registerHandler(AdminConstants.GET_ZIMLET_REQUEST, new GetZimlet());
-    dispatcher.registerHandler(AdminConstants.CREATE_ZIMLET_REQUEST, new CreateZimlet());
-    dispatcher.registerHandler(AdminConstants.DELETE_ZIMLET_REQUEST, new DeleteZimlet());
-    dispatcher.registerHandler(
-        AdminConstants.GET_ADMIN_EXTENSION_ZIMLETS_REQUEST, new GetAdminExtensionZimlets());
-    dispatcher.registerHandler(AdminConstants.GET_ZIMLET_STATUS_REQUEST, new GetZimletStatus());
-    dispatcher.registerHandler(AdminConstants.GET_ALL_ZIMLETS_REQUEST, new GetAllZimlets());
-    dispatcher.registerHandler(AdminConstants.DEPLOY_ZIMLET_REQUEST, new DeployZimlet());
-    dispatcher.registerHandler(AdminConstants.UNDEPLOY_ZIMLET_REQUEST, new UndeployZimlet());
-    dispatcher.registerHandler(AdminConstants.CONFIGURE_ZIMLET_REQUEST, new ConfigureZimlet());
-    dispatcher.registerHandler(AdminConstants.MODIFY_ZIMLET_REQUEST, new ModifyZimlet());
     dispatcher.registerHandler(AdminConstants.DUMP_SESSIONS_REQUEST, new DumpSessions());
     dispatcher.registerHandler(AdminConstants.GET_SESSIONS_REQUEST, new GetSessions());
 
@@ -384,7 +373,7 @@ public class AdminService implements DocumentService {
   }
 
   protected FilesClient getFilesClient() {
-    return FilesClient.atURL("http://127.78.0.7:20002");
+    return FilesClient.atURL(LC.files_service_url.value());
   }
 
 }

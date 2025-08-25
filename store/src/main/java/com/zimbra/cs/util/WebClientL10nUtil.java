@@ -23,8 +23,6 @@ import com.zimbra.common.util.ZimbraLog;
 
 public class WebClientL10nUtil {
 
-    private static final String LOAD_LOCALES_ON_UI_NODE = "/fromservice/loadlocales";
-
     /**
      * Return all known locales sorted by their US English display name.
      * @return
@@ -48,13 +46,6 @@ public class WebClientL10nUtil {
             String db = b.getDisplayName(mInLocale);
             return da.compareTo(db);
         }
-    }
-
-    public static synchronized Set<Locale> getAvailableLocales() throws ServiceException {
-        if (locales == null) {
-            loadBundles();
-        }
-        return locales;
     }
 
     enum ClientResource {
@@ -101,31 +92,10 @@ public class WebClientL10nUtil {
         }
     }
 
-    private static void loadBundles() throws ServiceException {
+    private static void loadBundles() {
         ZimbraLog.webclient.debug("Loading locales...");
         locales = new HashSet<>();
-
-        if (WebClientServiceUtil.isServerInSplitMode()) {
-            String localesStr = WebClientServiceUtil.sendServiceRequestToOneRandomUiNode(LOAD_LOCALES_ON_UI_NODE);
-            for (String str : localesStr.split(",")) {
-                String[] parts = str.split("_");
-                switch (parts.length) {
-                    case 1:
-                        locales.add(new Locale(parts[0]));
-                        break;
-                    case 2:
-                        locales.add(new Locale(parts[0], parts[1]));
-                        break;
-                    case 3:
-                        locales.add(new Locale(parts[0], parts[1], parts[2]));
-                        break;
-                    default:
-                        ZimbraLog.misc.warn("unsupported locale %s", str);
-                }
-            }
-        } else {
-            loadBundlesByDiskScan();
-        }
+        loadBundlesByDiskScan();
 
         /*
          * UI displays locales with country in sub menus.

@@ -1,12 +1,9 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.ArgException;
+import com.zimbra.cs.InvalidCommandException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
-import org.apache.http.HttpException;
-
-import java.io.IOException;
 
 class GetServerCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;
@@ -17,11 +14,11 @@ class GetServerCommandHandler implements CommandHandler {
     this.dumper = dumper;
   }
 
-  @Override public void handle(String[] args) throws ServiceException {
+  @Override public void handle(String[] args) throws ServiceException, InvalidCommandException {
     doGetServer(args);
   }
 
-  private void doGetServer(String[] args) throws ServiceException {
+  private void doGetServer(String[] args) throws ServiceException, InvalidCommandException {
     boolean applyDefault = true;
 
     int i = 1;

@@ -20,6 +20,7 @@ import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.AdminRight;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
+import com.zimbra.cs.service.util.DomainUtils;
 import com.zimbra.soap.ZimbraSoapContext;
 import java.util.Arrays;
 import java.util.List;
@@ -68,6 +69,8 @@ public class ModifyDomain extends AdminDocumentHandler {
           Provisioning.A_zimbraDomainName + " cannot be changed.", null);
     }
 
+    final String[] gotVirtualHostNames = DomainUtils.getVirtualHostnamesFromAttributes(attrs);
+
     if (!hasAdminRightAndCanModifyConfig(adminAccessControl, prov.getConfig())) {
       if (!Objects.isNull(gotPublicServiceHostname)
           && !(isPublicServiceHostnameCompliant(domain, gotPublicServiceHostname))) {
@@ -75,7 +78,6 @@ public class ModifyDomain extends AdminDocumentHandler {
             "Public service hostname must be a valid FQDN and compatible with current domain "
                 + "(or its aliases).");
       }
-      final String[] gotVirtualHostNames = getVirtualHostnamesFromAttributes(attrs);
       if (!(Objects.isNull(gotVirtualHostNames))
           && !(Arrays.equals(gotVirtualHostNames, new String[] {""}))
           && !(areVirtualHostnamesCompliant(
@@ -95,6 +97,14 @@ public class ModifyDomain extends AdminDocumentHandler {
 
     Element response = zsc.createElement(AdminConstants.MODIFY_DOMAIN_RESPONSE);
     GetDomain.encodeDomain(response, domain);
+    
+    if (!Objects.isNull(gotVirtualHostNames) && !Arrays.equals(gotVirtualHostNames, new String[] {""})) {
+      Map<String, Domain> conflictingDomains = DomainUtils.getDomainsWithConflictingVHosts(domain, gotVirtualHostNames, prov);
+      if (!conflictingDomains.isEmpty()) {
+        DomainUtils.addDuplicateVirtualHostnameWarning(response, conflictingDomains);
+      }
+    }
+    
     return response;
   }
 
@@ -153,24 +163,6 @@ public class ModifyDomain extends AdminDocumentHandler {
         .allMatch(virtualHostname -> isFQDNCompliant(domainName, virtualHostname));
   }
 
-  /**
-   * Returns virtual hostnames from request attributes. Virtual hostnames can be one or many
-   * depending on received request.
-   *
-   * @param attrs attributes as from {@link com.zimbra.soap.admin.message.ModifyDomainRequest}
-   * @return array of virtualHostnames provided in attrs
-   */
-  private String[] getVirtualHostnamesFromAttributes(Map<String, Object> attrs) {
-    final Object vHostNames = attrs.get(Provisioning.A_zimbraVirtualHostname);
-    if (vHostNames instanceof String) {
-      return new String[] {(String) vHostNames};
-    }
-    if (vHostNames instanceof String[]) {
-      return (String[]) vHostNames;
-    }
-    return null;
-  }
-
   private void checkCos(
       ZimbraSoapContext zsc, Map<String, Object> attrs, String defaultCOSIdAttrName)
       throws ServiceException {
@@ -180,7 +172,7 @@ public class ModifyDomain extends AdminDocumentHandler {
     }
 
     Provisioning prov = Provisioning.getInstance();
-    if (newDomainCosId.equals("")) {
+    if (newDomainCosId.isEmpty()) {
       // they are unsetting it, no problem
       return;
     }

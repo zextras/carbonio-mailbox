@@ -13,11 +13,11 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning.GroupMembership;
 import com.zimbra.cs.account.Provisioning.SetPasswordResult;
 import com.zimbra.cs.account.auth.AuthContext;
-import com.zimbra.cs.account.names.NameUtil;
 import com.zimbra.soap.admin.type.DataSourceType;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -46,6 +46,17 @@ public class Account extends ZAttrAccount implements GroupedEntry, AliasedEntry 
     return (other.getId().equals(getId()));
   }
 
+  /**
+   * Gives user timezone based on zimbraPrefTimeZoneId if defined, else GMT
+   * @return a string representing the timezone
+   */
+  public String getPreferredTimezone() {
+    String[] accountTimeZone = this.getPrefTimeZoneId();
+    if (accountTimeZone.length == 0 || Objects.equals("", accountTimeZone[0])) {
+      return "GMT";
+    }
+    return accountTimeZone[0];
+  }
   public void deleteAccount() throws ServiceException {
     getProvisioning().deleteAccount(this.getId());
   }
@@ -488,45 +499,6 @@ public class Account extends ZAttrAccount implements GroupedEntry, AliasedEntry 
     addrs.add(getName());
     addrs.addAll(getMultiAttrSet(Provisioning.A_zimbraMailAlias));
     return Collections.unmodifiableSet(addrs);
-  }
-
-  @Override
-  public String getUCUsername() {
-    String ucUsername = super.getUCUsername();
-    if (ucUsername == null) {
-      try {
-        NameUtil.EmailAddress emailAddr = new NameUtil.EmailAddress(getName());
-        ucUsername = emailAddr.getLocalPart();
-      } catch (ServiceException e) {
-        ZimbraLog.account.warn(
-            "ignoring exception while getting localpart of primary email address", e);
-      }
-    }
-    return ucUsername;
-  }
-
-  public String getDecryptedUCPassword() throws ServiceException {
-    String encryptedPassword = getUCPassword();
-    if (encryptedPassword == null) {
-      return null;
-    } else {
-      return DataSource.decryptData(getId(), encryptedPassword);
-    }
-  }
-
-  public void changeUCPassword(String newPlainPassword) throws ServiceException {
-    String encryptedPassword = null;
-
-    if (newPlainPassword != null) {
-      encryptedPassword = encrypytUCPassword(getId(), newPlainPassword);
-    }
-
-    setUCPassword(encryptedPassword);
-  }
-
-  public static String encrypytUCPassword(String acctId, String plainPassword)
-      throws ServiceException {
-    return DataSource.encryptData(acctId, plainPassword);
   }
 
   public void cleanExpiredTokens() throws ServiceException {
