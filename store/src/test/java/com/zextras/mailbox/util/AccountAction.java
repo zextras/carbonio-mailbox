@@ -17,8 +17,12 @@ import com.zimbra.cs.account.accesscontrol.Right;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.accesscontrol.RightModifier;
 import com.zimbra.cs.account.accesscontrol.ZimbraACE;
+import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.mailbox.ACL;
+import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.DeliveryOptions;
+import com.zimbra.cs.mailbox.Folder;
+import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Message;
@@ -26,6 +30,7 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.mail.internet.MimeMessage;
 
@@ -61,6 +66,17 @@ public class AccountAction extends Account {
 		return mailboxManager
 				.getMailboxByAccount(account)
 				.saveDraft(new OperationContext(account), message, Mailbox.ID_AUTO_INCREMENT);
+	}
+
+	private Folder getFirstCalendar(Account user) throws ServiceException {
+		final Mailbox mailbox = mailboxManager.getMailboxByAccount(user);
+		final List<Folder> calendarFolders = mailbox.getCalendarFolders(null, SortBy.DATE_DESC);
+		return calendarFolders.get(0);
+	}
+
+	public List<CalendarItem> getCalendarAppointments() throws ServiceException {
+		return mailboxManager.getMailboxByAccount(this)
+				.getCalendarItems(null, Type.APPOINTMENT, getFirstCalendar(this).getFolderId());
 	}
 
 	public static class Factory {

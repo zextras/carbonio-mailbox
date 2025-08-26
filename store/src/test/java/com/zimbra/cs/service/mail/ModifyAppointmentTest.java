@@ -197,7 +197,7 @@ class ModifyAppointmentTest extends SoapTestSuite {
     var invitationMsg = appointmentOnSharedCalendar(mountpointResponse, userA, userB,
         List.of(userC));
 
-    var appointment = createAppointment(userB, invitationMsg);
+    var appointment = createAppointmentSoap(userB, invitationMsg);
     Assertions.assertEquals(1, greenMail.getReceivedMessages().length);
     var receivedMessage = greenMail.getReceivedMessages()[0];
     var allRecipients = receivedMessage.getAllRecipients();

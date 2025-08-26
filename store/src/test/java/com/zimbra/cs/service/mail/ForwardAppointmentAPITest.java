@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.util.AccountAction;
 import com.zextras.mailbox.util.CreateAccount.Factory;
 import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.service.ServiceException;
@@ -13,23 +14,14 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.Folder;
-import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mailclient.smtp.SmtpConfig;
 import com.zimbra.soap.mail.message.CreateAppointmentResponse;
-import com.zimbra.soap.mail.type.CalOrganizer;
-import com.zimbra.soap.mail.type.CalendarAttendee;
-import com.zimbra.soap.mail.type.DtTimeInfo;
-import com.zimbra.soap.mail.type.EmailAddrInfo;
-import com.zimbra.soap.mail.type.InvitationInfo;
 import com.zimbra.soap.mail.type.Msg;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.mail.Address;
 import javax.mail.Message.RecipientType;
@@ -53,6 +45,7 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
   }
 
 	private static Factory createAccountFactory;
+	private static AccountAction.Factory accountActionFactory;
 	private static GreenMail greenMail;
 
 	@BeforeAll
@@ -68,6 +61,7 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		provisioning.getLocalServer().setSmtpPort(smtpPort);
 		mailboxManager = MailboxManager.getInstance();
 		createAccountFactory = getCreateAccountFactory();
+		accountActionFactory = getAccountActionFactory();
 	}
 	@BeforeEach
 	void beforeEach() {
@@ -87,9 +81,9 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		assertTrue(ics1.contains("ATTENDEE;CN=userb@test.com;ROLE=REQ-PARTICIPANT:mailto:userb@test.com"));
 		assertTrue(ics1.contains("ATTENDEE;CN=userd@test.com;ROLE=REQ-PARTICIPANT:mailto:userd@test.com"));
 		greenMail.reset();
-		final List<CalendarItem> calendarItems = getCalendarAppointments(userB);
+		final List<CalendarItem> calendarItems = accountActionFactory.forAccount(userB).getCalendarAppointments();
 		final CalendarItem userBAppointment = calendarItems.get(0);
-		forwardAppointment(userB, String.valueOf(userBAppointment.getId()), userC.getName());
+		forwardAppointmentSoap(userB, String.valueOf(userBAppointment.getId()), userC.getName());
 
 		MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
 		final String ics = extractIcsFromMessage(receivedMessage, 2);
@@ -109,10 +103,10 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		greenMail.reset();
 
 		final Account userD = createAccountFactory.get().create();
-		final List<CalendarItem> calendarItems = getCalendarAppointments(userB);
+		final List<CalendarItem> calendarItems = accountActionFactory.forAccount(userB).getCalendarAppointments();
 		final CalendarItem userBAppointment = calendarItems.get(0);
 
-		forwardAppointment(userB, String.valueOf(userBAppointment.getId()), userD.getName());
+		forwardAppointmentSoap(userB, String.valueOf(userBAppointment.getId()), userD.getName());
 
 		MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
 		final Address[] recipients = receivedMessage.getRecipients(RecipientType.TO);
@@ -134,10 +128,10 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		greenMail.reset();
 
 		final Account userD = createAccountFactory.get().create();
-		final List<CalendarItem> calendarItems = getCalendarAppointments(userB);
+		final List<CalendarItem> calendarItems = accountActionFactory.forAccount(userB).getCalendarAppointments();
 		final CalendarItem userBAppointment = calendarItems.get(0);
 
-		forwardAppointment(userB, String.valueOf(userBAppointment.getId()), userD.getName());
+		forwardAppointmentSoap(userB, String.valueOf(userBAppointment.getId()), userD.getName());
 		final MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
 		MimeMessage receivedMessage = receivedMessages[0];
 		assertEquals(1, receivedMessages.length);
@@ -155,10 +149,10 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		createAppointment(organizer, List.of(attendee));
 		greenMail.reset();
 		final Account otherUser = createAccountFactory.get().create();
-		final List<CalendarItem> calendarItems = getCalendarAppointments(attendee);
+		final List<CalendarItem> calendarItems = accountActionFactory.forAccount(attendee).getCalendarAppointments();
 		final CalendarItem attendeeAppointment = calendarItems.get(0);
 
-		forwardAppointment(attendee, String.valueOf(attendeeAppointment.getId()), otherUser.getName());
+		forwardAppointmentSoap(attendee, String.valueOf(attendeeAppointment.getId()), otherUser.getName());
 
 		final MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
 		MimeMessage receivedMessage = receivedMessages[0];
@@ -171,21 +165,15 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		assertFalse(eml.contains("Sender: "));
 	}
 
-	private static List<CalendarItem> getCalendarAppointments(Account userB) throws ServiceException {
-		return mailboxManager.getMailboxByAccount(userB)
-				.getCalendarItems(null, Type.APPOINTMENT, getFirstCalendar(userB).getFolderId());
-	}
-
 	private static CalendarItem getCalendarItemById(Account account,
 			CreateAppointmentResponse appointmentResponse) throws ServiceException {
 		return mailboxManager.getMailboxByAccount(account)
 				.getCalendarItemById(null, Integer.parseInt(appointmentResponse.getCalItemId()));
 	}
 
-	@SuppressWarnings("UnusedReturnValue")
   private CreateAppointmentResponse createAppointment(Account organizer, List<Account> attendees) throws Exception {
-		final Msg invitation = newAppointmentMessage(organizer, attendees.stream().map(Account::getName).toList());
-		final CreateAppointmentResponse appointmentResponse = createAppointment(organizer, invitation);
+		final Msg invitation = defaultAppointmentMessage(organizer, attendees.stream().map(Account::getName).toList());
+		final CreateAppointmentResponse appointmentResponse = createAppointmentSoap(organizer, invitation);
 		final Invite invite = getCalendarItemById(organizer, appointmentResponse).getInvite(0);
 		for(Account attendee: attendees) {
 			mailboxManager.getMailboxByAccount(attendee)
@@ -200,39 +188,5 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 						.readAllBytes());
 	}
 
-	private static String nextWeek() {
-		final LocalDateTime now = LocalDateTime.now();
-		return now.plusDays(7L).format(DateTimeFormatter.ofPattern("yMMdd"));
-	}
-
-
-	private Msg newAppointmentMessage(Account organizer, List<String> attendees) {
-		Msg msg = new Msg();
-		msg.setSubject("Test appointment");
-
-		InvitationInfo invitationInfo = new InvitationInfo();
-		final CalOrganizer calOrganizer = new CalOrganizer();
-		calOrganizer.setAddress(organizer.getName());
-		invitationInfo.setOrganizer(calOrganizer);
-		attendees.forEach(
-				address -> {
-					final CalendarAttendee calendarAttendee = new CalendarAttendee();
-					calendarAttendee.setAddress(address);
-					calendarAttendee.setDisplayName(address);
-					calendarAttendee.setRsvp(true);
-					calendarAttendee.setRole("REQ");
-					invitationInfo.addAttendee(calendarAttendee);
-				});
-		invitationInfo.setDateTime(Instant.now().toEpochMilli());
-		final String dateTime = nextWeek();
-		invitationInfo.setDtStart(new DtTimeInfo(dateTime));
-
-		attendees.forEach(
-				address -> msg.addEmailAddress(new EmailAddrInfo(address, "t")));
-		msg.addEmailAddress(new EmailAddrInfo(organizer.getName(), "f"));
-		msg.setInvite(invitationInfo);
-
-		return msg;
-	}
 
 }

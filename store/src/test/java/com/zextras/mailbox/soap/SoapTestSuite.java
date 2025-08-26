@@ -24,8 +24,15 @@ import com.zimbra.soap.mail.message.CreateAppointmentRequest;
 import com.zimbra.soap.mail.message.CreateAppointmentResponse;
 import com.zimbra.soap.mail.message.ForwardAppointmentRequest;
 import com.zimbra.soap.mail.message.ForwardAppointmentResponse;
+import com.zimbra.soap.mail.type.CalOrganizer;
+import com.zimbra.soap.mail.type.CalendarAttendee;
+import com.zimbra.soap.mail.type.DtTimeInfo;
 import com.zimbra.soap.mail.type.EmailAddrInfo;
+import com.zimbra.soap.mail.type.InvitationInfo;
 import com.zimbra.soap.mail.type.Msg;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import org.apache.http.HttpResponse;
@@ -86,7 +93,7 @@ public class SoapTestSuite {
     };
   }
 
-  protected CreateAppointmentResponse createAppointment(Account authenticatedAccount, Msg msg)
+  protected CreateAppointmentResponse createAppointmentSoap(Account authenticatedAccount, Msg msg)
       throws Exception {
     final CreateAppointmentRequest createAppointmentRequest = new CreateAppointmentRequest();
     createAppointmentRequest.setMsg(msg);
@@ -99,7 +106,7 @@ public class SoapTestSuite {
         CreateAppointmentResponse.class);
   }
 
-  protected ForwardAppointmentResponse forwardAppointment(Account authenticatedAccount, String appointmentId, String to)
+  protected ForwardAppointmentResponse forwardAppointmentSoap(Account authenticatedAccount, String appointmentId, String to)
       throws Exception {
 
     final ForwardAppointmentRequest forwardAppointmentRequest = new ForwardAppointmentRequest();
@@ -115,5 +122,39 @@ public class SoapTestSuite {
         "Forward appointment failed with:\n" + soapResponse);
     return SoapUtils.getSoapResponse(soapResponse, MailConstants.E_FORWARD_APPOINTMENT_RESPONSE,
         ForwardAppointmentResponse.class);
+  }
+
+  protected Msg defaultAppointmentMessage(Account organizer, List<String> attendees) {
+    Msg msg = new Msg();
+    msg.setSubject("Test appointment");
+
+    InvitationInfo invitationInfo = new InvitationInfo();
+    final CalOrganizer calOrganizer = new CalOrganizer();
+    calOrganizer.setAddress(organizer.getName());
+    invitationInfo.setOrganizer(calOrganizer);
+    attendees.forEach(
+        address -> {
+          final CalendarAttendee calendarAttendee = new CalendarAttendee();
+          calendarAttendee.setAddress(address);
+          calendarAttendee.setDisplayName(address);
+          calendarAttendee.setRsvp(true);
+          calendarAttendee.setRole("REQ");
+          invitationInfo.addAttendee(calendarAttendee);
+        });
+    invitationInfo.setDateTime(Instant.now().toEpochMilli());
+    final String dateTime = nextWeek();
+    invitationInfo.setDtStart(new DtTimeInfo(dateTime));
+
+    attendees.forEach(
+        address -> msg.addEmailAddress(new EmailAddrInfo(address, "t")));
+    msg.addEmailAddress(new EmailAddrInfo(organizer.getName(), "f"));
+    msg.setInvite(invitationInfo);
+
+    return msg;
+  }
+
+  private static String nextWeek() {
+    final LocalDateTime now = LocalDateTime.now();
+    return now.plusDays(7L).format(DateTimeFormatter.ofPattern("yMMdd"));
   }
 }

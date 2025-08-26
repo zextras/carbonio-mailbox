@@ -23,7 +23,7 @@ public class CreateAccount {
 	private final Map<String, Object> attributes =
 			new HashMap<>(Map.of(Provisioning.A_zimbraMailHost, "localhost"));
 
-	private CreateAccount(Provisioning provisioning, String domain) {
+	public CreateAccount(Provisioning provisioning, String domain) {
 		this.provisioning = provisioning;
 		this.domain = domain;
 	}
