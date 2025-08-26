@@ -5,12 +5,12 @@
 
 package com.zimbra.cs.clamscanner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.MalformedURLException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ClamScannerTest {
 
@@ -44,16 +44,15 @@ public class ClamScannerTest {
       scanner.setURL(url);
       fail("expected parse error from url [" + url + "]");
     } catch (MalformedURLException e) {
-      //expected - bad url
+      // expected - bad url
     } catch (IllegalStateException e) {
-      //expected - acceptable OK url, but no port or not clam
+      // expected - acceptable OK url, but no port or not clam
     }
   }
 
   public void createAndParseGoodUrl(String host, int port) {
     parseGoodUrl("clam://" + host + ":" + port, host, port);
   }
-
 
   @Test
   public void localhostPort() {
@@ -72,8 +71,10 @@ public class ClamScannerTest {
 
   @Test
   public void ipv6() {
-    parseGoodUrl("clam://[2001:db8:85a3:8d3:1319:8a2e:370:7348]:443",
-        "2001:db8:85a3:8d3:1319:8a2e:370:7348", 443);
+    parseGoodUrl(
+        "clam://[2001:db8:85a3:8d3:1319:8a2e:370:7348]:443",
+        "2001:db8:85a3:8d3:1319:8a2e:370:7348",
+        443);
   }
 
   @Test
@@ -81,8 +82,10 @@ public class ClamScannerTest {
     parseGoodUrl("clam://localhost:12345/", "localhost", 12345);
     parseGoodUrl("clam://192.151.121.1:999/", "192.151.121.1", 999);
     parseGoodUrl("clam://clam.example.com:4212/", "clam.example.com", 4212);
-    parseGoodUrl("clam://[2001:db8:85a3:8d3:1319:8a2e:370:7348]:876",
-        "2001:db8:85a3:8d3:1319:8a2e:370:7348", 876);
+    parseGoodUrl(
+        "clam://[2001:db8:85a3:8d3:1319:8a2e:370:7348]:876",
+        "2001:db8:85a3:8d3:1319:8a2e:370:7348",
+        876);
     parseGoodUrl("clam://10.137.245.108:3310/", "10.137.245.108", 3310);
     parseGoodUrl("clam://zqa-363.eng.zimbra.com:3310/", "zqa-363.eng.zimbra.com", 3310);
     parseGoodUrl("clam://[fe80::250:56ff:fea5:151e]:3310/", "fe80::250:56ff:fea5:151e", 3310);
@@ -93,10 +96,10 @@ public class ClamScannerTest {
   public void badUrls() {
     parseBadUrl("foo");
     parseBadUrl("foo://localhost:1231");
-    parseBadUrl("clam://localhost:99999"); //out of port range
-    parseBadUrl("clam:///"); //host/ip required
-    parseBadUrl("clam://localhost/"); //port required
-    parseBadUrl("clam://2001:db8:85a3:8d3:1319:8a2e:370:7348:1234"); //ipv6 brackets required
+    parseBadUrl("clam://localhost:99999"); // out of port range
+    parseBadUrl("clam:///"); // host/ip required
+    parseBadUrl("clam://localhost/"); // port required
+    parseBadUrl("clam://2001:db8:85a3:8d3:1319:8a2e:370:7348:1234"); // ipv6 brackets required
   }
 
   @Test
@@ -139,7 +142,9 @@ public class ClamScannerTest {
       ClamScanner.sanitizedUrl(invalidUrl);
       fail("Should throw MalformedURLException for an invalid port format");
     } catch (MalformedURLException e) {
-      assertEquals("Invalid port specified in URL: " + invalidUrl + ": For input string: \"abc\"", e.getMessage());
+      assertEquals(
+          "Invalid port specified in URL: " + invalidUrl + ": For input string: \"abc\"",
+          e.getMessage());
     }
   }
 }
