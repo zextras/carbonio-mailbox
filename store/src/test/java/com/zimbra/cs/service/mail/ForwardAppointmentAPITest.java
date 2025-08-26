@@ -25,6 +25,7 @@ import com.zimbra.soap.mail.type.DtTimeInfo;
 import com.zimbra.soap.mail.type.EmailAddrInfo;
 import com.zimbra.soap.mail.type.InvitationInfo;
 import com.zimbra.soap.mail.type.Msg;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -100,7 +101,7 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 	}
 
 	@Test
-	void shouldSendEmailOnlyToNewAttendeeWhenForwarding() throws Exception {
+	void shouldSendEmailOnlyToNewAttendee_WhenForwarding() throws Exception {
 		final Account userA = createAccountFactory.get().create();
 		final Account userB = createAccountFactory.get().create();
 		final Account userC = createAccountFactory.get().create();
@@ -125,7 +126,7 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 	 * @throws Exception if any
 	 */
 	@Test
-	void shouldNotNotifyOrganizerThatItsAppointmentHasBeenForwarded() throws Exception {
+	void should_NOT_NotifyOrganizer_ThatItsAppointmentHasBeenForwarded() throws Exception {
 		final Account userA = createAccountFactory.get().create();
 		final Account userB = createAccountFactory.get().create();
 		final Account userC = createAccountFactory.get().create();
@@ -145,6 +146,29 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
     assertFalse(messageContent.contains("Your meeting was forwarded"));
     assertFalse(messageContent.contains("<" + userB.getName() + ">  has forwarded your meeting request " +
         "to additional recipients."));
+	}
+
+	@Test
+	void originalOrganizerMustNotBeInFrom() throws Exception {
+		final Account organizer = createAccountFactory.get().create();
+		final Account attendee = createAccountFactory.get().create();
+		createAppointment(organizer, List.of(attendee));
+		greenMail.reset();
+		final Account otherUser = createAccountFactory.get().create();
+		final List<CalendarItem> calendarItems = getCalendarAppointments(attendee);
+		final CalendarItem attendeeAppointment = calendarItems.get(0);
+
+		forwardAppointment(attendee, String.valueOf(attendeeAppointment.getId()), otherUser.getName());
+
+		final MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
+		MimeMessage receivedMessage = receivedMessages[0];
+		assertEquals(1, receivedMessages.length);
+
+		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		receivedMessage.writeTo(byteArrayOutputStream);
+		final String eml = byteArrayOutputStream.toString();
+		assertTrue(eml.contains("From: " + attendee.getName()));
+		assertFalse(eml.contains("Sender: "));
 	}
 
 	private static List<CalendarItem> getCalendarAppointments(Account userB) throws ServiceException {

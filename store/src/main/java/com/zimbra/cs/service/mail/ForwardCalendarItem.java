@@ -14,7 +14,6 @@ import com.zimbra.common.calendar.ZCalendar.ZParameter;
 import com.zimbra.common.calendar.ZCalendar.ZProperty;
 import com.zimbra.common.calendar.ZCalendar.ZVCalendar;
 import com.zimbra.common.mime.MimeConstants;
-import com.zimbra.common.mime.shim.JavaMailInternetAddress;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -22,7 +21,6 @@ import com.zimbra.common.util.Pair;
 import com.zimbra.common.zmime.ZMimeBodyPart;
 import com.zimbra.common.zmime.ZMimeMessage;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.CalendarItem;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -31,7 +29,6 @@ import com.zimbra.cs.mailbox.calendar.CalendarDataSource;
 import com.zimbra.cs.mailbox.calendar.CalendarMailSender;
 import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mailbox.calendar.RecurId;
-import com.zimbra.cs.mailbox.calendar.ZOrganizer;
 import com.zimbra.cs.mime.MimeProcessor;
 import com.zimbra.cs.mime.MimeProcessorUtil;
 import com.zimbra.cs.mime.MimeVisitor;
@@ -373,19 +370,9 @@ public class ForwardCalendarItem extends CalendarRequest {
         mmFwdWrapper.getAllRecipients());
 
     // From: and Sender: headers
-    Address from = null;
     Address sender = null;
     sender = AccountUtil.getFriendlyEmailAddress(senderAcct);
-    ZOrganizer org = inv.getOrganizer();
-    if (org != null) {
-      if (org.hasCn())
-        from =
-            new JavaMailInternetAddress(
-                org.getAddress(), org.getCn(), MimeConstants.P_CHARSET_UTF8);
-      else from = new JavaMailInternetAddress(org.getAddress());
-    } else {
-      from = sender;
-    }
+    final Address from = sender;
 
     MimeMessage mm;
     if (useFwdText) {
