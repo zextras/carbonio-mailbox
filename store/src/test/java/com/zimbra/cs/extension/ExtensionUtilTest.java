@@ -7,6 +7,7 @@ package com.zimbra.cs.extension;
 
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.localconfig.LC;
+import com.zimbra.cs.clamscanner.ClamScannerExtension;
 import com.zimbra.cs.nginx.NginxLookupExtension;
 import java.io.File;
 import java.net.URL;
@@ -55,6 +56,12 @@ public class ExtensionUtilTest extends MailboxTestSuite {
 	void initAll_shouldInitNginxLookupExtension() {
 		ExtensionUtil.initAll();
 		Assertions.assertNotNull(ExtensionUtil.getExtension(NginxLookupExtension.NAME));
+	}
+
+	@Test
+	void initAll_shouldInitClamScannerExtension() {
+		ExtensionUtil.initAll();
+		Assertions.assertNotNull(ExtensionUtil.getExtension(ClamScannerExtension.NAME));
 	}
 
 }

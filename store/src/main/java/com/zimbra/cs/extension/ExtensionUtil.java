@@ -9,6 +9,7 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Log.Level;
 import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.clamscanner.ClamScannerExtension;
 import com.zimbra.cs.ephemeral.EphemeralStore;
 import com.zimbra.cs.ephemeral.EphemeralStore.Factory;
 import com.zimbra.cs.nginx.NginxLookupExtension;
@@ -61,6 +62,7 @@ public class ExtensionUtil {
             sExtParentClassLoader = new URLClassLoader(extCommonURLs, ExtensionUtil.class.getClassLoader());
         }
         ExtensionUtil.initInternalExtension(new NginxLookupExtension());
+    ExtensionUtil.initInternalExtension(new ClamScannerExtension());
         loadExtensionsFromDefaultDirectory();
     }
 
