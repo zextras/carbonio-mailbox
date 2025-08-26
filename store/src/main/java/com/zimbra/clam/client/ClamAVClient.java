@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-2.0-only
 
-package com.zimbra.cs.clamscanner.client;
+package com.zimbra.clam.client;
 
-import com.zimbra.cs.clamscanner.client.exceptions.ClamAVSizeLimitException;
+import com.zimbra.clam.client.exceptions.ClamAVSizeLimitException;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

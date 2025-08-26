@@ -7,7 +7,7 @@ package com.zimbra.cs.extension;
 
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.localconfig.LC;
-import com.zimbra.cs.clamscanner.ClamScannerExtension;
+import com.zimbra.clam.ClamScannerExtension;
 import com.zimbra.cs.nginx.NginxLookupExtension;
 import java.io.File;
 import java.net.URL;

@@ -1,9 +1,9 @@
-package com.zimbra.cs.clamscanner;
+package com.zimbra.clam;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.zimbra.cs.clamscanner.client.ClamAVClient;
+import com.zimbra.clam.client.ClamAVClient;
 import org.junit.jupiter.api.Test;
 
 public class ClamAVClientTest {

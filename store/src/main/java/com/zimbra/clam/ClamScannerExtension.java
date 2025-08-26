@@ -3,7 +3,7 @@
 //
 // SPDX-License-Identifier: GPL-2.0-only
 
-package com.zimbra.cs.clamscanner;
+package com.zimbra.clam;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Log;

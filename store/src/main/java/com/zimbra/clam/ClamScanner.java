@@ -2,12 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-2.0-only
 
-package com.zimbra.cs.clamscanner;
+package com.zimbra.clam;
 
 import com.google.common.net.HostAndPort;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.clamscanner.client.ClamAVClient;
+import com.zimbra.clam.client.ClamAVClient;
 import com.zimbra.cs.service.mail.UploadScanner;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

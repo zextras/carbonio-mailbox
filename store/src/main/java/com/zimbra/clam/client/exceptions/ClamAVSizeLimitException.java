@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-2.0-only
 
-package com.zimbra.cs.clamscanner.client.exceptions;
+package com.zimbra.clam.client.exceptions;
 
 /**
  * Thrown if clamd size limit is exceeded during scanning
