@@ -7,8 +7,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.zimbra.cert.VerifyCertKey;
-import com.zimbra.cert.ZimbraCertMgrExt;
 import com.zimbra.cert.util.ProcessStarter;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.CertMgrConstants;

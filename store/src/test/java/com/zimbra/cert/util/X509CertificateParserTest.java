@@ -2,20 +2,18 @@ package com.zimbra.cert.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.zimbra.cert.util.X509CertificateParser;
 import com.zimbra.common.service.ServiceException;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-
 public class X509CertificateParserTest {
 
   @Test
   public void shouldGenerateCertFromValidData() throws Exception {
     final String certSource =
-            "-----BEGIN CERTIFICATE-----\n"
+        "-----BEGIN CERTIFICATE-----\n"
             + "MIIFPjCCBCagAwIBAgISAyeF5ryS59TmpV5xTYquviaNMA0GCSqGSIb3DQEBCwUA\n"
             + "MDIxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQswCQYDVQQD\n"
             + "EwJSMzAeFw0yMjExMjIxNjI2MDFaFw0yMzAyMjAxNjI2MDBaMCcxJTAjBgNVBAMT\n"
@@ -57,9 +55,11 @@ public class X509CertificateParserTest {
     final String invalidCertSource =
         "-----BEGIN CERTIFICATE-----\n" + "invalid text\n" + "-----END CERTIFICATE-----\n";
 
-    assertThrows(ServiceException.class, () -> {
-      X509CertificateParser.generateCertificate(invalidCertSource.getBytes());
-    });
+    assertThrows(
+        ServiceException.class,
+        () -> {
+          X509CertificateParser.generateCertificate(invalidCertSource.getBytes());
+        });
   }
 
   @Test
