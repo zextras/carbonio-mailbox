@@ -11,7 +11,7 @@ import com.zimbra.cs.extension.ZimbraExtension;
 import com.zimbra.soap.SoapServlet;
 
 public class ZimbraCertMgrExt implements ZimbraExtension {
-  public static final String EXTENSION_NAME_CERTMGR = "com_zimbra_cert_manager";
+  public static final String NAME = "com_zimbra_cert_manager";
 
   // Remote commands
   public static final String GET_STAGED_CERT_CMD = "zmcertmgr viewstagedcrt";
@@ -34,7 +34,7 @@ public class ZimbraCertMgrExt implements ZimbraExtension {
   public void destroy() {}
 
   public String getName() {
-    return EXTENSION_NAME_CERTMGR;
+    return NAME;
   }
 
   public void init() throws ServiceException {

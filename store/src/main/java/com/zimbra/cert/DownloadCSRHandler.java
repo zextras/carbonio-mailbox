@@ -109,7 +109,7 @@ public class DownloadCSRHandler extends ExtensionHttpHandler {
         HttpClientBuilder httpClientBuilder = ZimbraHttpConnectionManager.getInternalHttpConnMgr().getDefaultHttpClient();
         BasicCookieStore cookieStore = HttpClientUtil.newHttpState(authToken.toZAuthToken(), server.getServiceHostname(), true);
         String destURL = String.format("https://%s:%s/service/extension/%s/%s",
-                server.getServiceHostname(), server.getAdminPortAsString(), ZimbraCertMgrExt.EXTENSION_NAME_CERTMGR,
+                server.getServiceHostname(), server.getAdminPortAsString(), ZimbraCertMgrExt.NAME,
  HANDLER_PATH_NAME);
         HttpGet method = new HttpGet(destURL);
         httpClientBuilder.setDefaultCookieStore(cookieStore);

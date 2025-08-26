@@ -6,6 +6,7 @@
 package com.zimbra.cs.extension;
 
 import com.zextras.mailbox.MailboxTestSuite;
+import com.zimbra.cert.ZimbraCertMgrExt;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.clam.ClamScannerExtension;
 import com.zimbra.cs.nginx.NginxLookupExtension;
@@ -32,7 +33,7 @@ public class ExtensionUtilTest extends MailboxTestSuite {
 	}
 
 	@Test
-	void simple() throws Exception {
+	void simple() {
 		ExtensionUtil.addClassLoader(new ZimbraExtensionClassLoader(classpath,
 				SimpleExtension.class.getName()));
 		ExtensionUtil.initAll();
@@ -44,7 +45,7 @@ public class ExtensionUtilTest extends MailboxTestSuite {
 	}
 
 	@Test
-	void resign() throws Exception {
+	void resign() {
 		ExtensionUtil.addClassLoader(new ZimbraExtensionClassLoader(classpath,
 				ResignExtension.class.getName()));
 		ExtensionUtil.initAll();
@@ -62,6 +63,12 @@ public class ExtensionUtilTest extends MailboxTestSuite {
 	void initAll_shouldInitClamScannerExtension() {
 		ExtensionUtil.initAll();
 		Assertions.assertNotNull(ExtensionUtil.getExtension(ClamScannerExtension.NAME));
+	}
+
+	@Test
+	void initAll_shouldInitZimbraCertMgrExt() {
+		ExtensionUtil.initAll();
+		Assertions.assertNotNull(ExtensionUtil.getExtension(ZimbraCertMgrExt.NAME));
 	}
 
 }
