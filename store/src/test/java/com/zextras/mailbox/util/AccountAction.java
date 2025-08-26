@@ -24,9 +24,11 @@ import com.zimbra.cs.mailbox.DeliveryOptions;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.Mailbox;
+import com.zimbra.cs.mailbox.Mailbox.AddInviteData;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
+import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mime.ParsedMessage;
 import java.io.IOException;
 import java.util.HashSet;
@@ -68,15 +70,32 @@ public class AccountAction extends Account {
 				.saveDraft(new OperationContext(account), message, Mailbox.ID_AUTO_INCREMENT);
 	}
 
-	private Folder getFirstCalendar(Account user) throws ServiceException {
-		final Mailbox mailbox = mailboxManager.getMailboxByAccount(user);
+	private Folder getFirstCalendar() throws ServiceException {
+		final Mailbox mailbox = mailboxManager.getMailboxByAccount(this);
 		final List<Folder> calendarFolders = mailbox.getCalendarFolders(null, SortBy.DATE_DESC);
 		return calendarFolders.get(0);
 	}
 
 	public List<CalendarItem> getCalendarAppointments() throws ServiceException {
 		return mailboxManager.getMailboxByAccount(this)
-				.getCalendarItems(null, Type.APPOINTMENT, getFirstCalendar(this).getFolderId());
+				.getCalendarItems(null, Type.APPOINTMENT, getFirstCalendar().getFolderId());
+	}
+
+	public AddInviteData storeInvite(Invite invite) throws ServiceException, IOException {
+		return mailboxManager.getMailboxByAccount(this)
+				.addInvite(null, invite, getFirstCalendar().getFolderId());
+	}
+
+	public CalendarItem getCalendarByItemId(int calendarInviteId) {
+		try {
+			return mailboxManager.getMailboxByAccount(this)
+					.getCalendarItemById(null, calendarInviteId);
+		} catch (ServiceException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	public CalendarItem getCalendarByItemId(String calendarInviteId) {
+		return this.getCalendarByItemId(Integer.parseInt(calendarInviteId));
 	}
 
 	public static class Factory {

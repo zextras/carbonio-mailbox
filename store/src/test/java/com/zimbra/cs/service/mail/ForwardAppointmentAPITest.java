@@ -165,19 +165,14 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		assertFalse(eml.contains("Sender: "));
 	}
 
-	private static CalendarItem getCalendarItemById(Account account,
-			CreateAppointmentResponse appointmentResponse) throws ServiceException {
-		return mailboxManager.getMailboxByAccount(account)
-				.getCalendarItemById(null, Integer.parseInt(appointmentResponse.getCalItemId()));
-	}
-
   private CreateAppointmentResponse createAppointment(Account organizer, List<Account> attendees) throws Exception {
 		final Msg invitation = defaultAppointmentMessage(organizer, attendees.stream().map(Account::getName).toList());
 		final CreateAppointmentResponse appointmentResponse = createAppointmentSoap(organizer, invitation);
-		final Invite invite = getCalendarItemById(organizer, appointmentResponse).getInvite(0);
+		final CalendarItem calendarByItemId = accountActionFactory.forAccount(organizer)
+				.getCalendarByItemId(appointmentResponse.getCalItemId());
+		final Invite invite = calendarByItemId.getInvite(0);
 		for(Account attendee: attendees) {
-			mailboxManager.getMailboxByAccount(attendee)
-					.addInvite(null, invite, getFirstCalendar(attendee).getFolderId());
+			accountActionFactory.forAccount(attendee).storeInvite(invite);
 		}
 		return appointmentResponse;
 	}

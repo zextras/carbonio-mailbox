@@ -128,7 +128,8 @@ public class SoapTestSuite {
     Msg msg = new Msg();
     msg.setSubject("Test appointment");
 
-    InvitationInfo invitationInfo = new InvitationInfo();
+    InvitationInfo invitationInfo = new InvitationInfo(null,0, true);
+
     final CalOrganizer calOrganizer = new CalOrganizer();
     calOrganizer.setAddress(organizer.getName());
     invitationInfo.setOrganizer(calOrganizer);

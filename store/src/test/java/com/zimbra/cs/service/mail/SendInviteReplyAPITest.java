@@ -9,19 +9,25 @@ package com.zimbra.cs.service.mail;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.soap.SoapTestSuite;
+import com.zextras.mailbox.util.AccountAction;
 import com.zextras.mailbox.util.PortUtil;
+import com.zimbra.common.account.ZAttrProvisioning;
+import com.zimbra.common.calendar.TimeZoneMap;
+import com.zimbra.common.calendar.WellKnownTimeZones;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.mailbox.CalendarItem;
+import com.zimbra.cs.mailbox.Mailbox.AddInviteData;
+import com.zimbra.cs.mailbox.calendar.Invite;
+import com.zimbra.cs.mailbox.calendar.ZAttendee;
+import com.zimbra.cs.mailbox.calendar.ZOrganizer;
 import com.zimbra.cs.mailclient.smtp.SmtpConfig;
-import com.zimbra.soap.mail.message.CreateAppointmentResponse;
 import com.zimbra.soap.mail.message.SendInviteReplyRequest;
-import com.zimbra.soap.mail.type.Msg;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
+import java.util.UUID;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -37,7 +43,7 @@ class SendInviteReplyAPITest extends SoapTestSuite {
 		var smtpPort = PortUtil.findFreePort();
 		greenMail =
 				new GreenMail(
-						new ServerSetup[] {
+						new ServerSetup[]{
 								new ServerSetup(smtpPort, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP)
 						});
 		greenMail.start();
@@ -53,26 +59,27 @@ class SendInviteReplyAPITest extends SoapTestSuite {
 
 	@Test
 	void shouldNotifyOrganizer() throws Exception {
-		final Account organizer = getCreateAccountFactory().get().create();
-		final Account attendee = getCreateAccountFactory().get().create();
-		final Msg invitation = defaultAppointmentMessage(organizer, List.of(attendee.getName()));
-
-		final CreateAppointmentResponse appointmentResponse = createAppointmentSoap(organizer, invitation);
-		// TODO: store invite in attendee's mailbox
-		final String calInvId = appointmentResponse.getCalInvId();
-
-
-		final List<CalendarItem> calendarItems = getAccountActionFactory().forAccount(attendee).getCalendarAppointments();
-		final CalendarItem attendeeAppointment = calendarItems.get(0);
+		final Account attendee = getCreateAccountFactory().get().
+				withAttribute(ZAttrProvisioning.A_zimbraPrefDeleteInviteOnReply, "FALSE")
+				.create();
+		final AccountAction onAttendee = getAccountActionFactory().forAccount(attendee);
+		TimeZoneMap tzMap = new TimeZoneMap(WellKnownTimeZones.getTimeZoneById("EST"));
+		Invite invite = new Invite("REQUEST", tzMap, false);
+		invite.setUid(UUID.randomUUID().toString());
+		invite.setOrganizer(new ZOrganizer("test@demo.zextras.io", ""));
+		invite.addAttendee(new ZAttendee(attendee.getName()));
+		final AddInviteData addInviteData = onAttendee.storeInvite(invite);
 		greenMail.reset();
 
-
-		final var request = new SendInviteReplyRequest("", 0, "ACCEPT");
+		// calendarId-inviteId
+		final var request = new SendInviteReplyRequest(addInviteData.calItemId
+				+ "-" + addInviteData.invId, addInviteData.compNum, "ACCEPT");
+		request.setUpdateOrganizer(true);
 		this.getSoapClient().executeSoap(attendee, request);
 
 		final MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
 		final String eml = getEml(receivedMessage);
-
+		Assertions.assertTrue(eml.contains("To: " + "test@demo.zextras.io"));
 	}
 
 	private static String getEml(MimeMessage receivedMessage)
