@@ -3,7 +3,7 @@
 //
 // SPDX-License-Identifier: GPL-2.0-only
 
-package com.zimbra.cs.certmanager;
+package com.zimbra.cert;
 
 import java.io.File;
 import java.io.FileInputStream;

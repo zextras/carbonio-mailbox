@@ -1,4 +1,4 @@
-package com.zimbra.cs.certmanager.util;
+package com.zimbra.cert.util;
 
 public interface ProcessStarter {
 

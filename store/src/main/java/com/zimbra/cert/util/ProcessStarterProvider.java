@@ -1,4 +1,4 @@
-package com.zimbra.cs.certmanager.util;
+package com.zimbra.cert.util;
 
 import java.io.IOException;
 

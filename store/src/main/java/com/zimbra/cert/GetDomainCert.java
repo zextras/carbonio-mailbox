@@ -1,6 +1,6 @@
-package com.zimbra.cs.certmanager;
+package com.zimbra.cert;
 
-import com.zimbra.cs.certmanager.util.X509CertificateParser;
+import com.zimbra.cert.util.X509CertificateParser;
 import com.zimbra.common.account.Key.DomainBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;

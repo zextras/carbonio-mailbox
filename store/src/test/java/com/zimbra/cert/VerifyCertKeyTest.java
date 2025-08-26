@@ -1,4 +1,4 @@
-package com.zimbra.cs.certmanager;
+package com.zimbra.cert;
 
 import static com.zimbra.common.soap.CertMgrConstants.A_verifyResult;
 import static com.zimbra.common.soap.CertMgrConstants.VERIFY_CERTKEY_REQUEST;
@@ -7,7 +7,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.zimbra.cs.certmanager.util.ProcessStarter;
+import com.zimbra.cert.VerifyCertKey;
+import com.zimbra.cert.ZimbraCertMgrExt;
+import com.zimbra.cert.util.ProcessStarter;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.CertMgrConstants;
 import com.zimbra.common.soap.Element;
@@ -23,7 +25,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;

@@ -1,7 +1,8 @@
-package com.zimbra.cs.certmanager.util;
+package com.zimbra.cert.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zimbra.cert.util.X509CertificateParser;
 import com.zimbra.common.service.ServiceException;
 import java.security.cert.X509Certificate;
 import java.util.Collection;

@@ -3,9 +3,9 @@
 //
 // SPDX-License-Identifier: GPL-2.0-only
 
-package com.zimbra.cs.certmanager;
+package com.zimbra.cert;
 
-import com.zimbra.cs.certmanager.util.ProcessStarterProvider;
+import com.zimbra.cert.util.ProcessStarterProvider;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.soap.CertMgrConstants;
 import com.zimbra.cs.ldap.LdapUtil;
