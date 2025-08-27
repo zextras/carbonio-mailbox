@@ -58,7 +58,7 @@ class SendInviteReplyAPITest extends SoapTestSuite {
 
 
 	@Test
-	void shouldNotifyOrganizer() throws Exception {
+	void shouldNotUse_SentBy_FieldOfOrganizer_toSendNotification() throws Exception {
 		final Account attendee = getCreateAccountFactory().get().
 				withAttribute(ZAttrProvisioning.A_zimbraPrefDeleteInviteOnReply, "FALSE")
 				.create();
@@ -66,7 +66,9 @@ class SendInviteReplyAPITest extends SoapTestSuite {
 		TimeZoneMap tzMap = new TimeZoneMap(WellKnownTimeZones.getTimeZoneById("EST"));
 		Invite invite = new Invite("REQUEST", tzMap, false);
 		invite.setUid(UUID.randomUUID().toString());
-		invite.setOrganizer(new ZOrganizer("test@demo.zextras.io", ""));
+		final ZOrganizer organizer = new ZOrganizer("test@domain.com", "");
+		organizer.setSentBy("otherAddress@otherDomain.com");
+		invite.setOrganizer(organizer);
 		invite.addAttendee(new ZAttendee(attendee.getName()));
 		final AddInviteData addInviteData = onAttendee.storeInvite(invite);
 		greenMail.reset();
