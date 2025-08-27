@@ -72,7 +72,6 @@ class SendInviteReplyAPITest extends SoapTestSuite {
 		final AddInviteData addInviteData = onAttendee.storeInvite(invite);
 		greenMail.reset();
 
-		// calendarId-inviteId
 		final var request = new SendInviteReplyRequest(addInviteData.calItemId
 				+ "-" + addInviteData.invId, addInviteData.compNum, "ACCEPT");
 		request.setUpdateOrganizer(true);
