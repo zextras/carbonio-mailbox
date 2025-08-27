@@ -216,17 +216,7 @@ public abstract class CalendarUser {
    * @throws MailServiceException
    */
   public InternetAddress getReplyAddress() throws MailServiceException {
-    InternetAddress addr;
-    try {
-      if (hasSentBy()) {
-        addr = new JavaMailInternetAddress(getSentBy());
-      } else {
-        addr = getFriendlyAddress();
-      }
-      return addr;
-    } catch (AddressException e) {
-      throw MailServiceException.ADDRESS_PARSE_ERROR(e);
-    }
+    return getFriendlyAddress();
   }
 
   public URI getURI() throws ServiceException {

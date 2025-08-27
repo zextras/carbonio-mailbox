@@ -63,10 +63,9 @@ class SendInviteReplyAPITest extends SoapTestSuite {
 				withAttribute(ZAttrProvisioning.A_zimbraPrefDeleteInviteOnReply, "FALSE")
 				.create();
 		final AccountAction onAttendee = getAccountActionFactory().forAccount(attendee);
-		TimeZoneMap tzMap = new TimeZoneMap(WellKnownTimeZones.getTimeZoneById("EST"));
-		Invite invite = new Invite("REQUEST", tzMap, false);
+		Invite invite = createAttendeeInvite();
 		invite.setUid(UUID.randomUUID().toString());
-		final ZOrganizer organizer = new ZOrganizer("test@domain.com", "");
+		final ZOrganizer organizer = new ZOrganizer("test@domain.com", "Test");
 		organizer.setSentBy("otherAddress@otherDomain.com");
 		invite.setOrganizer(organizer);
 		invite.addAttendee(new ZAttendee(attendee.getName()));
@@ -81,7 +80,12 @@ class SendInviteReplyAPITest extends SoapTestSuite {
 
 		final MimeMessage receivedMessage = greenMail.getReceivedMessages()[0];
 		final String eml = getEml(receivedMessage);
-		Assertions.assertTrue(eml.contains("To: " + "test@demo.zextras.io"));
+		Assertions.assertTrue(eml.contains("To: " + "Test <test@domain.com>"));
+	}
+
+	private Invite createAttendeeInvite() {
+		final TimeZoneMap timeZoneMap = new TimeZoneMap(WellKnownTimeZones.getTimeZoneById("EST"));
+		return new Invite("REQUEST", timeZoneMap, false);
 	}
 
 	private static String getEml(MimeMessage receivedMessage)
