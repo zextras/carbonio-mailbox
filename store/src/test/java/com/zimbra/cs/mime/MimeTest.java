@@ -46,11 +46,13 @@ public class MimeTest {
           + boundary
           + "\"\r\n";
   String baseMpMixedContent =
-      "From: user1@example.com\r\n"
-          + "To: user2@example.com\r\n"
-          + "Subject: test\r\n"
-          + "Content-Type: multipart/mixed;\r\n"
-          + "boundary=\"----------1111971890AC3BB91\"\r\n";
+      """
+          From: user1@example.com\r
+          To: user2@example.com\r
+          Subject: test\r
+          Content-Type: multipart/mixed;\r
+          boundary="----------1111971890AC3BB91"\r
+          """;
 
   @BeforeAll
   public static void init() throws Exception {
@@ -516,18 +518,18 @@ public class MimeTest {
     assertNotEquals(dataAfterFix, dataBeforeFix, "Line folding should take place.");
 
     assertEquals(
-        mpiText.getMimePart().getHeader("Content-Transfer-Encoding", ":"),
         "base64",
+        mpiText.getMimePart().getHeader("Content-Transfer-Encoding", ":"),
         "Text Part Content-Transfer-Encoding header should be preserved");
     assertEquals(
-        mpiHtml.getMimePart().getHeader("Content-Transfer-Encoding", ":"),
         "base64",
+        mpiHtml.getMimePart().getHeader("Content-Transfer-Encoding", ":"),
         "HTML Part Content-Transfer-Encoding header should be preserved");
 
     assertEquals(
-        mpiText.mDisposition, "inline", "Text Part Content-Disposition header should be preserved");
+        "inline", mpiText.mDisposition, "Text Part Content-Disposition header should be preserved");
     assertEquals(
-        mpiHtml.mDisposition, "inline", "HTML Part Content-Disposition header should be preserved");
+        "inline", mpiHtml.mDisposition, "HTML Part Content-Disposition header should be preserved");
 
     assertTrue(
         TestUtil.bytesEqual(textPlain.getBytes(), mpiText.getMimePart().getInputStream()),
