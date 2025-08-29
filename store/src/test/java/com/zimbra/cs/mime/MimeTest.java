@@ -612,4 +612,16 @@ public class MimeTest {
   assertEquals(
     "application/octet-stream; name=\"encrypted.asc\"", pgpMsg.getFullContentType());
  }
+
+ @Test
+ void should_not_include_part_with_filename_as_body_part() throws Exception {
+  MimeMessage mimeMessage = new Mime.FixedMimeMessage(
+    JMSession.getSession(), getClass().getResourceAsStream("bug-CO-2475.txt"));
+
+  List<MPartInfo> parts = Mime.getParts(mimeMessage);
+  final Set<MPartInfo> bodies = Mime.getBody(parts, true);
+
+  assertEquals(1, bodies.size());
+ }
+
 }
