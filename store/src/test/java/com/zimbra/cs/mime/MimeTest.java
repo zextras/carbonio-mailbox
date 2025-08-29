@@ -639,7 +639,7 @@ public class MimeTest {
   void should_not_include_part_with_disposition_attachment_as_body_part() throws Exception {
     MimeMessage mimeMessage =
         new Mime.FixedMimeMessage(
-            JMSession.getSession(), getClass().getResourceAsStream("bug-CO-2475-1.txt"));
+            JMSession.getSession(), getClass().getResourceAsStream("body-with-disposition-attachment.txt"));
 
     List<MPartInfo> parts = Mime.getParts(mimeMessage);
     final Set<MPartInfo> bodies = Mime.getBody(parts, false);
@@ -651,7 +651,7 @@ public class MimeTest {
   void should_not_include_parts_as_body_part_that_are_not_text() throws Exception {
     MimeMessage mimeMessage =
         new Mime.FixedMimeMessage(
-            JMSession.getSession(), getClass().getResourceAsStream("bug-CO-2475-2.txt"));
+            JMSession.getSession(), getClass().getResourceAsStream("body-with-type-not-text.txt"));
 
     List<MPartInfo> parts = Mime.getParts(mimeMessage);
     final Set<MPartInfo> bodies = Mime.getBody(parts, false);
