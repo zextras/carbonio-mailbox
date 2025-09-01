@@ -1,5 +1,12 @@
 
 
+## [4.23.1](https://github.com/zextras/carbonio-mailbox/compare/4.23.0...4.23.1) (2025-09-01)
+
+
+### Bug Fixes
+
+* [CO-2475] Avoid including parts with filename as body ([#792](https://github.com/zextras/carbonio-mailbox/issues/792)) ([24f1923](https://github.com/zextras/carbonio-mailbox/commit/24f1923c3488444c2109133fe47a6be50132e256))
+
 # [4.23.0](https://github.com/zextras/carbonio-mailbox/compare/4.22.0...4.23.0) (2025-08-25)
 
 
