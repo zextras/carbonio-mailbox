@@ -27,6 +27,6 @@ jobs:
         run: |
           NEW_BRANCH="rc"
           npm i
-          release-it --ci -d
+          npx release-it --ci -d
           git checkout -b "$NEW_BRANCH"
           git push origin "$NEW_BRANCH"
