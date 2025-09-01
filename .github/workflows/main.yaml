@@ -1,4 +1,4 @@
-name: Back merge RC
+name: Back merge main
 
 on:
   push:
