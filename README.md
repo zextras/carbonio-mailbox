@@ -13,7 +13,7 @@ and their roles:
 - **common**: package providing classes of common use, like utilities, clients and common parameters
 - **native**: package to load native libraries
 - **soap**: package describing SOAP APIs and tools to generate wsdl documentation
-- **store**: the real mailbox service (SOAP APIs, IMAP, POP3 and CLI)
+- **store**: the mailbox service and servlets (SOAP APIs, IMAP, POP3 and CLI)
 
 ## Building Carbonio Mailbox from source
 
@@ -63,14 +63,14 @@ All contributions are accepted! Please refer to the CONTRIBUTING file (if presen
 for more detail on how to contribute. If the repository has a Code of Conduct, 
 we kindly ask to follow that as well.
 
-# RC
+## RC
+Release is managed with [release-it](https://github.com/release-it/release-it).
 
-To publish packages in RC:
-- Make sure [release-it](https://github.com/release-it/release-it) is 
-  installed or install it by running `npm install`
-- Update [pom.xml](pom.xml) version according to needs
-- run `npm run release` accepting to commit, tag and push
-It will result in CI building the tag and releasing the packages to RC channel.
+1. Install the dependencies with `npm i`.
+2. Run `release-it --ci`. This will bump the versions, commit, tag and push the
+   code.
+3. The make sure the tag was built. This will deliver the RC.
+4. Finalize the work by merging the RC in the main branch.
 
 
 
