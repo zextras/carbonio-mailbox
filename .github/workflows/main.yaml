@@ -1,9 +1,9 @@
-name: Open PR for RC
+name: Back merge RC
 
 on:
   push:
     branches:
-      - "rc"
+      - "main"
 
 jobs:
   create_pr_repo_sync:
@@ -14,5 +14,5 @@ jobs:
         id: open-pr
         uses: repo-sync/pull-request@v2
         with:
-          destination_branch: "main"
-          pr_title: "chore: RC"
+          destination_branch: "devel"
+          pr_title: "chore: main -> devel"
