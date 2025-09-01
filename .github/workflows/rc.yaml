@@ -1,0 +1,19 @@
+name: Open PR fro RC
+
+on:
+  push:
+    branches:
+      - "ci/CO-2481"
+
+jobs:
+  create_pr_repo_sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create pull request
+        id: open-pr
+        uses: repo-sync/pull-request@v2
+        with:
+          destination_branch: "main"
+          pr_title: "chore: RC"
+          pr_draft: true
