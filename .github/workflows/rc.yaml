@@ -3,7 +3,7 @@ name: Open PR fro RC
 on:
   push:
     branches:
-      - "ci/CO-2481"
+      - "rc"
 
 jobs:
   create_pr_repo_sync:
@@ -16,4 +16,3 @@ jobs:
         with:
           destination_branch: "main"
           pr_title: "chore: RC"
-          pr_draft: true
