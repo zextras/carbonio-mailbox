@@ -1,0 +1,21 @@
+From: Test Sender <sender@example.com>
+To: Test Recipient <recipient@example.com>
+Date: Fri, 29 Aug 2025 20:15:00 +0530
+Subject: Repro: XML wrongly marked as body
+Message-ID: <repro-xml-body-1@example.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="b1"
+
+--b1
+Content-Type: multipart/alternative; boundary="alt1"
+
+--alt1
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+
+<html><body><p>HTML body</p></body></html>
+
+--alt1--
+
+--b1--
