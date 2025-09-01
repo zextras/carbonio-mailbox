@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -1335,14 +1336,16 @@ public class Mime {
 
         Set<MPartInfo> bodies = null;
         for (MPartInfo mpi : children) {
+            boolean containsFilename = mpi.getFilename() != null && !Objects.equals(mpi.getFilename(), "");
             if (mpi.isMultipart()) {
                 Set<MPartInfo> found = getBodySubparts(mpi, preferHtml);
                 if (found != null) {
-                    if (bodies == null)
+                    if (bodies == null) {
                         bodies = new LinkedHashSet<>(found.size());
+                    }
                     bodies.addAll(found);
                 }
-            } else if (!mpi.getDisposition().equals(Part.ATTACHMENT) && !mpi.isMessage() &&
+            } else if (!containsFilename && !mpi.getDisposition().equals(Part.ATTACHMENT) && !mpi.isMessage() &&
                     (mpi.getContentID() == null || mpi.getContentType().matches(MimeConstants.CT_TEXT_WILD))) {
                 if (bodies == null)
                     bodies = new LinkedHashSet<>(1);
