@@ -49,14 +49,7 @@ This will start a Mailbox with in-memory LDAP and an HSQLDB database.
 
 
 ## RC
-Release is managed with [release-it](https://github.com/release-it/release-it).
-
-1. Install the dependencies with `npm i`.
-2. Create a branch "rc"
-3. Run `release-it --ci`. This will bump the versions, commit, tag and push the
-   code.
-4. The make sure the tag was built. This will deliver the RC.
-5. Finalize the work by merging the RC in the main branch.
+Managed with **Github Actions**.
 
 ## Contribute to Carbonio Mailbox
 
