@@ -1,6 +1,9 @@
 name: Start RC
 
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - "ci/CO-2481"
 
 jobs:
   create-branch:
