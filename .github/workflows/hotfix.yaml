@@ -1,0 +1,29 @@
+name: Hotfix
+
+on: workflow_dispatch
+
+jobs:
+  create-rc-branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Create RC branch and bump version
+        run: |
+          NEW_BRANCH="rc"
+          git checkout -b "$NEW_BRANCH"
+          git push origin "$NEW_BRANCH"
+          npm i
+          npx release-it --ci
