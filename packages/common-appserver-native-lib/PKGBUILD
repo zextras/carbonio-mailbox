@@ -22,7 +22,7 @@ section="mail"
 priority="optional"
 
 package() {
-  cd "${srcdir}"/../../staging
+  cd "/tmp/mailbox_build"
   install -D "native/target/libnative.so" \
     "${pkgdir}/opt/zextras/lib/libnative.so"
 }

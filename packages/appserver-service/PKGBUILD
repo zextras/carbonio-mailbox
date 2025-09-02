@@ -21,7 +21,7 @@ section="mail"
 priority="optional"
 
 package() {
-  cd "${srcdir}"/../../staging
+  cd "/tmp/mailbox_build"
 
   # Mailbox
   install -Dm 755 packages/appserver-service/carbonio-mailbox \

@@ -18,7 +18,7 @@ section="mail"
 priority="optional"
 
 package() {
-  cd "${srcdir}"/../../staging
+  cd "/tmp/mailbox_build"
 
   install -D store/target/zm-store.jar \
     "${pkgdir}/opt/zextras/mailbox/jars/mailbox.jar"

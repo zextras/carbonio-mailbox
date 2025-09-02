@@ -22,7 +22,7 @@ makedepends=(
 )
 
 package() {
-  cd "${srcdir}"/../../staging
+  cd "/tmp/mailbox_build"
 
   install -D "store/target/versions-init.sql" \
     "${pkgdir}/opt/zextras/db/versions-init.sql"

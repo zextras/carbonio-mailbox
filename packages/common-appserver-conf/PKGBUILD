@@ -19,7 +19,7 @@ backup=(
 )
 
 package() {
-  cd "${srcdir}"/../../staging
+  cd "/tmp/mailbox_build"
 
   install -D "store/target/conf/attrs/attrs-schema" \
     "${pkgdir}/opt/zextras/conf/attrs-schema"

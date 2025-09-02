@@ -16,7 +16,7 @@ section="mail"
 priority="optional"
 
 package() {
-  cd "${srcdir}"/../../staging
+  cd "/tmp/mailbox_build"
 
   install -D "store-conf/conf/globs2" \
     "${pkgdir}/opt/zextras/conf/globs2"

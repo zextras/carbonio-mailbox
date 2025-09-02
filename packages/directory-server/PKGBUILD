@@ -23,7 +23,7 @@ makedepends=(
 )
 
 package() {
-  cd "${srcdir}"/../../staging
+  cd "/tmp/mailbox_build"
 
   install -D store/ldap/conf/externaldirsync/Exchange2000.xml \
     "${pkgdir}/opt/zextras/conf/externaldirsync/Exchange2000.xml"
