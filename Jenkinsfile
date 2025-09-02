@@ -116,10 +116,7 @@ pipeline {
 
         stage('Sonarqube Analysis') {
             when {
-                allOf {
-                    expression { params.SKIP_SONARQUBE == false }
-                    expression { params.SKIP_TEST_WITH_COVERAGE == false }
-                }
+                branch 'devel'
             }
             steps {
                 container('jdk-17') {
