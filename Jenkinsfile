@@ -167,7 +167,7 @@ pipeline {
                             [$class: 'GitSCMSource',
                              remote: 'git@github.com:zextras/jenkins-packages-build-library.git',
                              credentialsId: 'jenkins-integration-with-github-account']).com.zextras.jenkins.PackageBuilder.new(this, getPackages(), 'staging', 'packages')
-                    buildStage(packageBuilder).call()
+                    buildStage.call(packageBuilder)
                 }
             }
         }
