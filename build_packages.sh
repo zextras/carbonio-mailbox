@@ -11,11 +11,8 @@ then
   echo "Please provide an OS as argument: (ubuntu-jammy, rocky-8)"
   exit 1
 fi
-# NOTE: this folder is referenced also in PKGBUILDs
-# yap is not able to retrieve files outside from PKGBUILD directories,
-# so build files must be placed in a known directory
 
-YAP_BUILD_PATH="/tmp/mailbox_build"
+YAP_BUILD_PATH="/tmp/project_build"
 echo "Building for OS: $OS"
 if [[ $OS == "ubuntu-jammy" ]]
 then
@@ -23,8 +20,8 @@ then
     --entrypoint=yap \
     -v $(pwd)/artifacts/ubuntu-jammy:/artifacts \
     -v $(pwd):"${YAP_BUILD_PATH}" \
-    --entrypoint /bin/bash \
-    docker.io/m0rf30/yap-ubuntu-jammy:1.8
+    docker.io/m0rf30/yap-ubuntu-jammy:1.8 \
+    build ubuntu-focal "${YAP_BUILD_PATH}"/packages
 elif [[ $OS == "ubuntu-focal" ]]
 then
   docker run -it --rm \

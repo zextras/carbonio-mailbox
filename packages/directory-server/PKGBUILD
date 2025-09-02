@@ -23,7 +23,7 @@ makedepends=(
 )
 
 package() {
-  cd "/tmp/mailbox_build"
+  cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
 
   install -D store/ldap/conf/externaldirsync/Exchange2000.xml \
     "${pkgdir}/opt/zextras/conf/externaldirsync/Exchange2000.xml"

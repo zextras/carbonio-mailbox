@@ -18,7 +18,7 @@ section="mail"
 priority="optional"
 
 package() {
-  cd "/tmp/mailbox_build"
+  cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
 
   install -D store/target/zm-store.jar \
     "${pkgdir}/opt/zextras/mailbox/jars/mailbox.jar"

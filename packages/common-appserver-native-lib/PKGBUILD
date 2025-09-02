@@ -22,7 +22,7 @@ section="mail"
 priority="optional"
 
 package() {
-  cd "/tmp/mailbox_build"
+  cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
   install -D "native/target/libnative.so" \
     "${pkgdir}/opt/zextras/lib/libnative.so"
 }
