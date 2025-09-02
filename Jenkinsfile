@@ -170,7 +170,7 @@ pipeline {
         }
         stage ('Build Packages') {
             steps {
-                scripts {
+                script {
                     def packageBuilder = lib.com.zextras.jenkins.PackageBuilder.new(this, getPackages(), 'staging', 'packages')
                     buildStage(packageBuilder).call()
                 }
