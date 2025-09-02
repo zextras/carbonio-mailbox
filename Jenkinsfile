@@ -1,3 +1,7 @@
+def lib = library identifier: 'mailbox-packages-lib@chore/improvements-pt2', retriever: modernSCM(
+        [$class: 'GitSCMSource',
+         remote: 'git@github.com:zextras/jenkins-packages-build-library.git',
+         credentialsId: 'jenkins-integration-with-github-account'])
 def mvnCmd(String cmd) {
     def profile = ''
     if (isBuildingTag()) {
@@ -163,11 +167,8 @@ pipeline {
         stage ('Build Packages') {
             steps {
                 script {
-                    def packageBuilder = library identifier: 'mailbox-packages-lib@chore/improvements-pt2', retriever: modernSCM(
-                            [$class: 'GitSCMSource',
-                             remote: 'git@github.com:zextras/jenkins-packages-build-library.git',
-                             credentialsId: 'jenkins-integration-with-github-account']).com.zextras.jenkins.PackageBuilder.new(this, getPackages(), 'staging', 'packages')
-                    buildStage.call(packageBuilder)
+                    def packageBuilder = lib.com.zextras.jenkins.PackageBuilder.new(this, getPackages(), 'staging', 'packages')
+                    lib.buildStage(packageBuilder)
                 }
             }
         }
