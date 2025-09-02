@@ -1,4 +1,4 @@
-name: Start RC
+name: Hotfix
 
 on: workflow_dispatch
 
@@ -7,10 +7,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout devel branch
+      - name: Checkout main branch
         uses: actions/checkout@v4
         with:
-          ref: devel
+          ref: main
       - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
