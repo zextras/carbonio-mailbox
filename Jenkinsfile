@@ -167,7 +167,8 @@ pipeline {
         stage ('Build Packages') {
             steps {
                 script {
-                    buildStage(getPackages(), 'staging', 'packages')()
+                    def packageBuilder = lib.com.zextras.jenkins.PackageBuilder.new(this, getPackages(), 'staging', 'packages', env.GIT_COMMIT, env.BRANCH_NAME)
+                    buildStage(packageBuilder)()
                 }
             }
         }
