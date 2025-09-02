@@ -103,7 +103,9 @@ pipeline {
         }
         stage('UT, IT & API tests') {
             when {
-                branch 'devel'
+                expression {
+                    params.SKIP_TEST_WITH_COVERAGE == false
+                }
             }
             steps {
                 container('jdk-17') {
@@ -115,7 +117,10 @@ pipeline {
 
         stage('Sonarqube Analysis') {
             when {
-                branch 'devel'
+                allOf {
+                    expression { params.SKIP_SONARQUBE == false }
+                    expression { params.SKIP_TEST_WITH_COVERAGE == false }
+                }
             }
             steps {
                 container('jdk-17') {
