@@ -128,8 +128,9 @@ pipeline {
                             def tagVersions = []
                             if (isBuildingTag()) {
                                 tagVersions.add(env.TAG_NAME)
+                                tagVersions.add("stable")
                             } else {
-                                tagVersions.add(env.BRANCH_NAME)
+                                tagVersions.add("devel")
                                 tagVersions.add("latest")
                             }
                             buildContainer('Carbonio Mailbox',
