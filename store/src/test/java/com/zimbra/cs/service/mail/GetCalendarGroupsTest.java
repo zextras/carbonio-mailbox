@@ -32,19 +32,19 @@ import org.junit.jupiter.api.Test;
 class GetCalendarGroupsTest extends SoapTestSuite {
   private static final String ALL_CALENDARS_GROUP_NAME = "All calendars";
 
-  private static CreateAccount createAccount;
+  
 
 	private Account account;
 
   @BeforeAll
   static void init() {
 		Provisioning provisioning = Provisioning.getInstance();
-    createAccount = getCreateAccountFactory();
+    
   }
 
   @BeforeEach
   void setUp() throws Exception {
-    account = createAccount.create();
+    account = getCreateAccountFactory().create();
   }
 
   @Test

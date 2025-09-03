@@ -30,13 +30,13 @@ import org.junit.jupiter.api.Test;
 @Tag("api")
 public class ModifyDomainTest extends SoapTestSuite {
 
-  private static CreateAccount createAccount;
+  
   private static Provisioning provisioning;
 
   @BeforeAll
   static void setUp() {
     provisioning = Provisioning.getInstance();
-    createAccount = getCreateAccountFactory();
+    
   }
 
 
@@ -48,7 +48,7 @@ public class ModifyDomainTest extends SoapTestSuite {
    */
   @Test
   void domainAdminShouldBeAbleToModifyDomainAttributes() throws Exception {
-    final Account domainAdminAccount = createAccount
+    final Account domainAdminAccount = getCreateAccountFactory()
         .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE").create();
     final Domain targetDomain = provisioning.getDomain(domainAdminAccount);
     final Set<ZimbraACE> aces = new HashSet<>();

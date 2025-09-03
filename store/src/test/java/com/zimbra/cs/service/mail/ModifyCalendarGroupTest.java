@@ -30,19 +30,19 @@ import org.junit.jupiter.api.Test;
 @Tag("api")
 class ModifyCalendarGroupTest extends SoapTestSuite {
 
-  private static CreateAccount createAccount;
+  
 
 	private Account account;
 
   @BeforeAll
   static void init() {
 		Provisioning provisioning = Provisioning.getInstance();
-    createAccount = getCreateAccountFactory();
+    
   }
 
   @BeforeEach
   void setUp() throws Exception {
-    account = createAccount.create();
+    account = getCreateAccountFactory().create();
   }
 
   @Test

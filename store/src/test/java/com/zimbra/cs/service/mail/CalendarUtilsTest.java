@@ -17,16 +17,16 @@ import org.junit.jupiter.api.Test;
 
 class CalendarUtilsTest extends MailboxTestSuite {
 
-  private static CreateAccount createAccount;
+  
 
   @BeforeAll
   public static void setUp() {
-    createAccount = getCreateAccountFactory();
+    
   }
 
   @Test
   void parseInviteRaw_shouldParseInvite() throws Exception {
-    final Account account = createAccount.create();
+    final Account account = getCreateAccountFactory().create();
     final XMLElement inviteElement = new XMLElement(MailConstants.E_INVITE);
     final Element content = inviteElement.addUniqueElement(MailConstants.E_CONTENT);
     final String uid = "21B97459-D97B-4B23-AF2A-E2759745C299";

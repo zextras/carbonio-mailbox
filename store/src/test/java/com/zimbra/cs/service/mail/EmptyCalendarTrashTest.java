@@ -34,7 +34,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class EmptyCalendarTrashTest extends SoapTestSuite {
-    private static CreateAccount createAccount;
+    
     private static Provisioning provisioning;
 
     private Account account;
@@ -43,12 +43,12 @@ class EmptyCalendarTrashTest extends SoapTestSuite {
     @BeforeAll
     static void init() {
         provisioning = Provisioning.getInstance();
-        createAccount = getCreateAccountFactory();
+        
     }
 
     @BeforeEach
     void setUp() throws Exception {
-        account = createAccount.create();
+        account = getCreateAccountFactory().create();
         mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
     }
 

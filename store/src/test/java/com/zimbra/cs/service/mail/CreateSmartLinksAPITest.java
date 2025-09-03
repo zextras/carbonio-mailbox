@@ -29,7 +29,7 @@ import org.mockserver.integration.ClientAndServer;
 @Tag("api")
 class CreateSmartLinksAPITest extends SoapTestSuite {
 
-  private static CreateAccount createAccount;
+  
   private final int attachmentPartIndex = 2;
 
   private ClientAndServer filesServer;
@@ -39,14 +39,14 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
   @BeforeAll
   static void beforeAll() {
     Provisioning provisioning = Provisioning.getInstance();
-    createAccount = getCreateAccountFactory();
+    
   }
 
 
   @BeforeEach
   void setUp() throws Exception {
     filesServer = startClientAndServer(20002);
-    account = createAccount.create();
+    account = getCreateAccountFactory().create();
     draftWithAttachment = createDraftWithAttachment();
   }
 

@@ -25,20 +25,20 @@ import org.junit.jupiter.api.Test;
 @Tag("api")
 class ModifyAccountTest extends SoapTestSuite {
 
-  private static CreateAccount createAccount;
+  
   private static Provisioning provisioning;
 
   @BeforeAll
   static void setUp() {
     provisioning = Provisioning.getInstance();
-    createAccount = getCreateAccountFactory();
+    
   }
 
   @Test
   void shouldModifyAccountWhenDomainAdminChangingMailTransport() throws Exception {
-    final Account domainAdminAccount = createAccount
+    final Account domainAdminAccount = getCreateAccountFactory()
         .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE").create();
-    final Account userAccount = createAccount.create();
+    final Account userAccount = getCreateAccountFactory().create();
     final Domain target = provisioning.getDomain(domainAdminAccount);
 
     final Set<ZimbraACE> aces = new HashSet<>();

@@ -51,7 +51,7 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
     return calendarFolders.get(0);
   }
 
-	private static CreateAccount createAccount;
+	
 	private static GreenMail greenMail;
 
 	@BeforeAll
@@ -66,7 +66,7 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 		Provisioning provisioning = Provisioning.getInstance();
 		provisioning.getLocalServer().setSmtpPort(smtpPort);
 		mailboxManager = MailboxManager.getInstance();
-		createAccount = getCreateAccountFactory();
+		
 	}
 	@BeforeEach
 	void beforeEach() {
@@ -75,10 +75,10 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 
 	@Test
 	void shouldAddForwardeeToCurrentAttendeesWhenForwardingAppointment() throws Exception {
-		final Account userA = createAccount.withUsername("userA").create();
-		final Account userB = createAccount.withUsername("userB").create();
-		final Account userC = createAccount.withUsername("userC").create();
-		final Account userD = createAccount.withUsername("userD").create();
+		final Account userA = getCreateAccountFactory().withUsername("userA").create();
+		final Account userB = getCreateAccountFactory().withUsername("userB").create();
+		final Account userC = getCreateAccountFactory().withUsername("userC").create();
+		final Account userD = getCreateAccountFactory().withUsername("userD").create();
 		createAppointment(userA, List.of(userB, userD));
 		final MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
 		MimeMessage receivedMessage1 = receivedMessages[0];
@@ -101,13 +101,13 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 
 	@Test
 	void shouldSendEmailOnlyToNewAttendeeWhenForwarding() throws Exception {
-		final Account userA = createAccount.create();
-		final Account userB = createAccount.create();
-		final Account userC = createAccount.create();
+		final Account userA = getCreateAccountFactory().create();
+		final Account userB = getCreateAccountFactory().create();
+		final Account userC = getCreateAccountFactory().create();
 		createAppointment(userA, List.of(userB, userC));
 		greenMail.reset();
 
-		final Account userD = createAccount.create();
+		final Account userD = getCreateAccountFactory().create();
 		final List<CalendarItem> calendarItems = getCalendarAppointments(userB);
 		final CalendarItem userBAppointment = calendarItems.get(0);
 
@@ -126,13 +126,13 @@ class ForwardAppointmentAPITest extends SoapTestSuite {
 	 */
 	@Test
 	void shouldNotNotifyOrganizerThatItsAppointmentHasBeenForwarded() throws Exception {
-		final Account userA = createAccount.create();
-		final Account userB = createAccount.create();
-		final Account userC = createAccount.create();
+		final Account userA = getCreateAccountFactory().create();
+		final Account userB = getCreateAccountFactory().create();
+		final Account userC = getCreateAccountFactory().create();
 		createAppointment(userA, List.of(userB, userC));
 		greenMail.reset();
 
-		final Account userD = createAccount.create();
+		final Account userD = getCreateAccountFactory().create();
 		final List<CalendarItem> calendarItems = getCalendarAppointments(userB);
 		final CalendarItem userBAppointment = calendarItems.get(0);
 

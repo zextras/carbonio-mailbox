@@ -18,20 +18,20 @@ import org.junit.jupiter.api.Test;
 @Tag("api")
 class DeleteAccountApiTest  extends SoapTestSuite {
 
-	private static CreateAccount createAccount;
+	
 	private static AccountAction.Factory accountActionFactory;
 
 
 	@BeforeAll
 	static void beforeAll() throws Exception {
-		createAccount = getCreateAccountFactory();
+		
 		accountActionFactory = getAccountActionFactory();
 	}
 
 	@Test
 	void shouldDeleteAccountWithPublicSharedFolder() throws Exception {
-		final Account adminAccount = createAccount.asGlobalAdmin().create();
-		final Account accountWithPublicSharedFolder = createAccount.create();
+		final Account adminAccount = getCreateAccountFactory().asGlobalAdmin().create();
+		final Account accountWithPublicSharedFolder = getCreateAccountFactory().create();
 		accountActionFactory.forAccount(accountWithPublicSharedFolder)
 				.grantPublicFolderRight(Mailbox.ID_FOLDER_CALENDAR, "r");
 		final String accountWithPublicShareId = accountWithPublicSharedFolder.getId();

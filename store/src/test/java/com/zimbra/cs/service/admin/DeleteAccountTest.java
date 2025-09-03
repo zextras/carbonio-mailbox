@@ -14,7 +14,6 @@ import com.zextras.carbonio.files.FilesClient;
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.account.usecase.DeleteUserUseCase;
 import com.zextras.mailbox.acl.AclService;
-import com.zextras.mailbox.util.CreateAccount;
 import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
@@ -52,7 +51,7 @@ class DeleteAccountTest extends MailboxTestSuite {
 	private static final String OTHER_DOMAIN = "other.com";
 	private static Provisioning provisioning;
 	private static MailboxManager mailboxManager;
-	private static CreateAccount createAccount;
+	
 	private static ClientAndServer consulServer;
   private static FilesClient filesClientMock;
 
@@ -90,7 +89,7 @@ class DeleteAccountTest extends MailboxTestSuite {
 	static void setUp() throws Exception {
 		mailboxManager = MailboxManager.getInstance();
 		provisioning = Provisioning.getInstance();
-		createAccount = getCreateAccountFactory();
+		
     filesClientMock = Mockito.mock(FilesClient.class);
 		provisioning.createDomain(OTHER_DOMAIN, new HashMap<>());
 
@@ -124,12 +123,12 @@ class DeleteAccountTest extends MailboxTestSuite {
 	private static Stream<Arguments> getHappyPathCases() throws ServiceException {
 		return Stream.of(
 				Arguments.of("when deleting an account as global admin",
-						createAccount.asGlobalAdmin().create(),
-						createAccount.create()),
+						getCreateAccountFactory().asGlobalAdmin().create(),
+						getCreateAccountFactory().create()),
 				Try.of(
 								() -> {
 									final Account delegatedAdminWithDomainAdminRight =
-											createAccount
+											getCreateAccountFactory()
 													.withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
 													.create();
 									addGrantToUserForDomain(delegatedAdminWithDomainAdminRight,
@@ -137,13 +136,13 @@ class DeleteAccountTest extends MailboxTestSuite {
 									return Arguments.of(
 											"when deleting an account as delegated admin with domain admin rights on domain",
 											delegatedAdminWithDomainAdminRight,
-											createAccount.create());
+											getCreateAccountFactory().create());
 								})
 						.get(),
 				Try.of(
 								() -> {
-									final Account toDelete = createAccount.create();
-									final Account admin = createAccount
+									final Account toDelete = getCreateAccountFactory().create();
+									final Account admin = getCreateAccountFactory()
 											.withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
 											.create();
 									addGrantToUserForDomain(admin, DEFAULT_DOMAIN_NAME,
@@ -155,8 +154,8 @@ class DeleteAccountTest extends MailboxTestSuite {
 						.get(),
 				Try.of(
 								() -> {
-									final Account toDelete = createAccount.create();
-									final Account admin = createAccount
+									final Account toDelete = getCreateAccountFactory().create();
+									final Account admin = getCreateAccountFactory()
 											.withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
 											.create();
 									addGrantToUserOnAnotherUser(admin, toDelete, AdminRights.R_deleteAccount);
@@ -181,12 +180,12 @@ class DeleteAccountTest extends MailboxTestSuite {
 											AdminRights.R_domainAdminRights);
 									return Arguments.of(
 											"when deleting an account as delegated admin from another domain with domain admin rights on the domain of the account to delete",
-											adminFromOtherDomain, createAccount.create());
+											adminFromOtherDomain, getCreateAccountFactory().create());
 								})
 						.get(),
 				Try.of(
 								() -> {
-									final Account toDelete = createAccount.create();
+									final Account toDelete = getCreateAccountFactory().create();
 									final Account adminFromOtherDomain =
 											provisioning.createAccount(
 													UUID.randomUUID() + "@" + OTHER_DOMAIN,
@@ -206,7 +205,7 @@ class DeleteAccountTest extends MailboxTestSuite {
 						.get(),
 				Try.of(
 								() -> {
-									final Account toDelete = createAccount.create();
+									final Account toDelete = getCreateAccountFactory().create();
 									final Account adminFromOtherDomain =
 											provisioning.createAccount(
 													UUID.randomUUID() + "@" + OTHER_DOMAIN,
@@ -291,14 +290,14 @@ class DeleteAccountTest extends MailboxTestSuite {
 		return Stream.of(
 				Arguments.of(
 						"when deleting an account as user with delegated admin attribute but without any permissions",
-						createAccount
+						getCreateAccountFactory()
 								.withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE")
 								.create(),
-						createAccount.create()),
+						getCreateAccountFactory().create()),
 				Try.of(
 								() -> {
-									final Account standardUser = createAccount.create();
-									final Account toDelete = createAccount.create();
+									final Account standardUser = getCreateAccountFactory().create();
+									final Account toDelete = getCreateAccountFactory().create();
 									addGrantToUserForDomain(standardUser, DEFAULT_DOMAIN_NAME,
 											AdminRights.R_deleteAccount);
 									addGrantToUserOnAnotherUser(standardUser, toDelete, AdminRights.R_deleteAccount);
@@ -336,8 +335,8 @@ class DeleteAccountTest extends MailboxTestSuite {
 
 	@Test
 	void shouldThrowException_WhenUseCaseThrowsRuntimeException() throws Exception {
-		final Account admin = createAccount.asGlobalAdmin().create();
-		final Account user = createAccount.create();
+		final Account admin = getCreateAccountFactory().asGlobalAdmin().create();
+		final Account user = getCreateAccountFactory().create();
 		DeleteUserUseCase deleteUserUseCase = Mockito.mock(DeleteUserUseCase.class);
 		final String toDeleteId = user.getId();
 		Mockito.when(deleteUserUseCase.delete(toDeleteId))
