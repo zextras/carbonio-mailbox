@@ -12,30 +12,30 @@ then
   exit 1
 fi
 
+YAP_BUILD_PATH="/tmp/project_build"
 echo "Building for OS: $OS"
-
 if [[ $OS == "ubuntu-jammy" ]]
 then
   docker run -it --rm \
     --entrypoint=yap \
     -v $(pwd)/artifacts/ubuntu-jammy:/artifacts \
-    -v $(pwd):/tmp/staging \
+    -v $(pwd):"${YAP_BUILD_PATH}" \
     docker.io/m0rf30/yap-ubuntu-jammy:1.8 \
-    build ubuntu-jammy /tmp/staging/packages
+    build ubuntu-focal "${YAP_BUILD_PATH}"/packages
 elif [[ $OS == "ubuntu-focal" ]]
 then
   docker run -it --rm \
     --entrypoint=yap \
     -v $(pwd)/artifacts/ubuntu-focal:/artifacts \
-    -v $(pwd):/tmp/staging \
+    -v $(pwd):"${YAP_BUILD_PATH}" \
     docker.io/m0rf30/yap-ubuntu-focal:1.8 \
-    build ubuntu-focal /tmp/staging/packages
+    build ubuntu-focal "${YAP_BUILD_PATH}"/packages
 elif [[ $OS == "rocky-8" ]]
 then
   docker run -it --rm \
     --entrypoint=yap \
     -v $(pwd)/artifacts/rocky-8:/artifacts \
-    -v $(pwd):/tmp/staging \
+    -v $(pwd):"${YAP_BUILD_PATH}" \
     docker.io/m0rf30/yap-rocky-8:1.10 \
-    build rocky-8 /tmp/staging/packages
+    build rocky-8 "${YAP_BUILD_PATH}"/packages
 fi

@@ -85,19 +85,9 @@ pipeline {
                 container('jdk-17') {
                     sh 'apt update && apt install -y build-essential'
                     mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
-                    sh 'mkdir staging'
-                    sh 'cp -r store* milter* native client common packages soap jython-libs staging'
-                    script {
-                        if (BRANCH_NAME == 'devel') {
-                            def packages = getPackages()
-                            def timestamp = new Date().format('yyyyMMddHHmmss')
-                            packages.each { packageName ->
-                                def cleanPackageName = packageName.replaceFirst(/^carbonio-/, '')
-                                sh "sed -i \"s!pkgrel=.*!pkgrel=${timestamp}!\" staging/packages/${cleanPackageName}/PKGBUILD"
-                            }
-                        }
-                    }
-                    stash includes: 'staging/**', name: 'staging'
+                    sh 'mkdir build_pkg'
+                    sh 'cp -r store* milter* native client common packages soap jython-libs build_pkg'
+                    stash includes: 'build_pkg/**', name: 'staging'
                 }
             }
         }
@@ -172,7 +162,7 @@ pipeline {
         stage ('Build Packages') {
             steps {
                 script {
-                    buildStage(getPackages(), 'staging', 'packages')()
+                    buildStage(getPackages(), 'staging', 'build_pkg/packages')()
                 }
             }
         }
