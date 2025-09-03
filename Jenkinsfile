@@ -97,7 +97,9 @@ pipeline {
         }
         stage('UT, IT & API tests') {
             when {
-                branch 'devel'
+                expression {
+                    params.SKIP_TEST_WITH_COVERAGE == false
+                }
             }
             steps {
                 container('jdk-17') {
@@ -109,7 +111,10 @@ pipeline {
 
         stage('Sonarqube Analysis') {
             when {
-                branch 'devel'
+                allOf {
+                    expression { params.SKIP_SONARQUBE == false }
+                    expression { params.SKIP_TEST_WITH_COVERAGE == false }
+                }
             }
             steps {
                 container('jdk-17') {
@@ -120,6 +125,11 @@ pipeline {
             }
         }
         stage('Publish containers') {
+            when {
+                expression {
+                    return isBuildingTag() || env.BRANCH_NAME == 'devel'
+                }
+            }
             steps {
                 container('dind') {
                     withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
