@@ -19,7 +19,7 @@ def isBuildingTag() {
     return false
 }
 
-def buildContainer(String title, String description, String dockerfile, String imageName, List<String> versions) {
+def buildContainer(String title, String description, String dockerfile, String imageName, List<String> versions, String commitHash) {
     tagsToAdd = []
     versions.each {
         version -> tagsToAdd.add("-t " + imageName + ":" + version)
@@ -28,6 +28,7 @@ def buildContainer(String title, String description, String dockerfile, String i
             '--label org.opencontainers.image.title="' + title + '" ' +
             '--label org.opencontainers.image.description="' + description + '" ' +
             '--label org.opencontainers.image.vendor="Zextras" ' +
+            '--label org.opencontainers.image.revision="' + commitHash + '" ' +
             '-f ' + dockerfile + ' ' + tagsToAdd.join(" ")
     versions.each {
         version -> sh 'docker push ' + imageName + ":" + version
@@ -119,32 +120,33 @@ pipeline {
             }
         }
         stage('Publish containers') {
-            when {
-                expression {
-                    return isBuildingTag() || env.BRANCH_NAME == 'devel'
-                }
-            }
             steps {
                 container('dind') {
                     withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
                         script {
+                            def commitHash = env.GIT_COMMIT
                             def tagVersions = []
                             if (isBuildingTag()) {
                                 tagVersions.add(env.TAG_NAME)
                             } else {
-                                tagVersions.add("devel")
+                                tagVersions.add(env.BRANCH_NAME)
                                 tagVersions.add("latest")
                             }
-                            buildContainer('Carbonio Mailbox', '$(cat docker/standalone/mailbox/description.md)',
+                            buildContainer('Carbonio Mailbox',
+                                    '$(cat docker/standalone/mailbox/description.md)',
                                     'docker/standalone/mailbox/Dockerfile',
                                     'registry.dev.zextras.com/dev/carbonio-mailbox',
-                                    tagVersions)
-                            buildContainer('Carbonio MariaDB', '$(cat docker/standalone/mariadb/description.md)',
-                                    'docker/standalone/mariadb/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-mariadb',
-                                    tagVersions)
-                            buildContainer('Carbonio OpenLDAP', '$(cat docker/standalone/openldap/description.md)',
-                                    'docker/standalone/openldap/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-openldap',
-                                    tagVersions)
+                                    tagVersions, commitHash)
+                            buildContainer('Carbonio MariaDB',
+                                    '$(cat docker/standalone/mariadb/description.md)',
+                                    'docker/standalone/mariadb/Dockerfile',
+                                    'registry.dev.zextras.com/dev/carbonio-mariadb',
+                                    tagVersions, commitHash)
+                            buildContainer('Carbonio OpenLDAP',
+                                    '$(cat docker/standalone/openldap/description.md)',
+                                    'docker/standalone/openldap/Dockerfile',
+                                    'registry.dev.zextras.com/dev/carbonio-openldap',
+                                    tagVersions, commitHash)
                         }
                     }
                 }
