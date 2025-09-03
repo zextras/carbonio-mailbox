@@ -5,7 +5,6 @@ import static org.mockito.Mockito.mock;
 
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.AccountAction;
-import com.zextras.mailbox.util.CreateAccount;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import io.micrometer.core.instrument.MeterRegistry;
