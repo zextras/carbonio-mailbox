@@ -1,4 +1,4 @@
-library identifier: 'mailbox-packages-lib@fix/yap-build-directory', retriever: modernSCM(
+library identifier: 'mailbox-packages-lib@master', retriever: modernSCM(
         [$class: 'GitSCMSource',
          remote: 'git@github.com:zextras/jenkins-packages-build-library.git',
          credentialsId: 'jenkins-integration-with-github-account'])
@@ -93,7 +93,9 @@ pipeline {
         }
         stage('UT, IT & API tests') {
             when {
-                branch 'devel'
+                expression {
+                    params.SKIP_TEST_WITH_COVERAGE == false
+                }
             }
             steps {
                 container('jdk-17') {
@@ -105,7 +107,10 @@ pipeline {
 
         stage('Sonarqube Analysis') {
             when {
-                branch 'devel'
+                allOf {
+                    expression { params.SKIP_SONARQUBE == false }
+                    expression { params.SKIP_TEST_WITH_COVERAGE == false }
+                }
             }
             steps {
                 container('jdk-17') {
