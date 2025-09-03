@@ -60,7 +60,6 @@ public class GetMsgTest extends MailboxTestSuite {
   public static void setUp() throws Exception {
     mailboxManager = MailboxManager.getInstance();
     accountActionFactory = getAccountActionFactory();
-		final CreateAccount.Factory createAccountFactory = getCreateAccountFactory();
     mta =
         new GreenMail(
             new ServerSetup[] {
@@ -68,11 +67,11 @@ public class GetMsgTest extends MailboxTestSuite {
                   SmtpConfig.DEFAULT_PORT, SmtpConfig.DEFAULT_HOST, ServerSetup.PROTOCOL_SMTP),
               new ServerSetup(9000, "127.0.0.1", ServerSetup.PROTOCOL_IMAP)
             });
-    sender = createAccountFactory.get().withUsername("test").create();
-    shared = createAccountFactory.get().withUsername("shared").create();
+    sender = getCreateAccountFactory().withUsername("test").create();
+    shared = getCreateAccountFactory().withUsername("shared").create();
     accountActionFactory.forAccount(shared).shareWith(sender);
-    receiver = createAccountFactory.get().withUsername("rcpt").create();
-    testAccount = createAccountFactory.get().create();
+    receiver = getCreateAccountFactory().withUsername("rcpt").create();
+    testAccount = getCreateAccountFactory().create();
     mta.start();
   }
 

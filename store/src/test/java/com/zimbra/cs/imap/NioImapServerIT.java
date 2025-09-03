@@ -42,8 +42,8 @@ class NioImapServerIT extends MailboxTestSuite {
     provisioning.getConfig().setImapBindPort(IMAP_PORT);
     provisioning.getConfig().setImapCleartextLoginEnabled(true);
 
-    CreateAccount.Factory accountFactory = getCreateAccountFactory();
-    account = accountFactory.get().create();
+    CreateAccount accountFactory = getCreateAccountFactory();
+    account = accountFactory.create();
 
     AccountAction.Factory accountActionFactory =
         getAccountActionFactory();

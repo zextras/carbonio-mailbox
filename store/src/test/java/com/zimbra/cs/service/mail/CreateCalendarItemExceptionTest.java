@@ -38,19 +38,19 @@ import org.junit.jupiter.api.Test;
 class CreateCalendarItemExceptionTest  extends SoapTestSuite {
 
   private static MailboxManager mailboxManager;
-  private static CreateAccount.Factory createAccountFactory;
+  private static CreateAccount createAccount;
 
   @BeforeAll
   static void setUpClass() throws Exception {
     var provisioning = Provisioning.getInstance();
     mailboxManager = MailboxManager.getInstance();
-    createAccountFactory = getCreateAccountFactory();
+    createAccount = getCreateAccountFactory();
   }
 
   @Test
   void should_reset_participationStatus_when_dateTime_is_modified() throws Exception {
-    var organizer = createAccountFactory.get().withUsername(UUID.randomUUID().toString()).create();
-    var attendee = createAccountFactory.get().withUsername(UUID.randomUUID().toString()).create();
+    var organizer = createAccount.withUsername(UUID.randomUUID().toString()).create();
+    var attendee = createAccount.withUsername(UUID.randomUUID().toString()).create();
     var eventTitle = "Event Title";
     var timezone = "Asia/Calcutta";
     var startTime = "20250907T163000";

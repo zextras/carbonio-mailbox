@@ -22,14 +22,14 @@ import org.junit.jupiter.api.Test;
 
 @Tag("api")
 class RenameAccountTest extends SoapTestSuite {
-  private static CreateAccount.Factory createAccountFactory;
+  private static CreateAccount createAccount;
   private static Provisioning provisioning;
   private Domain targetDomain;
 
   @BeforeAll
   static void init() {
     provisioning = Provisioning.getInstance();
-    createAccountFactory = getCreateAccountFactory();
+    createAccount = getCreateAccountFactory();
   }
 
   @BeforeEach
@@ -40,8 +40,8 @@ class RenameAccountTest extends SoapTestSuite {
 
   @Test
   void shouldRenameAccountByChangingUsername() throws Exception {
-    final Account adminAccount = createAccountFactory.get().asGlobalAdmin().create();
-    final Account userAccount = createAccountFactory.get().create();
+    final Account adminAccount = createAccount.asGlobalAdmin().create();
+    final Account userAccount = createAccount.create();
 
     final RenameAccountRequest request =
         new RenameAccountRequest(userAccount.getId(), "newName@" + userAccount.getDomainName());
@@ -53,9 +53,9 @@ class RenameAccountTest extends SoapTestSuite {
 
   @Test
   void shouldRenameAccountByChangingOnlyDomain() throws Exception {
-    final Account adminAccount = createAccountFactory.get().asGlobalAdmin().create();
+    final Account adminAccount = createAccount.asGlobalAdmin().create();
     final String accountName = UUID.randomUUID().toString();
-    final Account userAccount = createAccountFactory.get().withUsername(accountName).create();
+    final Account userAccount = createAccount.withUsername(accountName).create();
 
     final RenameAccountRequest request =
         new RenameAccountRequest(userAccount.getId(), accountName + "@" + targetDomain.getName());
@@ -67,9 +67,9 @@ class RenameAccountTest extends SoapTestSuite {
 
   @Test
   void shouldThrowNoSuchDomainWhenRenamingToNotExistingDomain() throws Exception {
-    final Account adminAccount = createAccountFactory.get().asGlobalAdmin().create();
+    final Account adminAccount = createAccount.asGlobalAdmin().create();
     final String accountName = UUID.randomUUID().toString();
-    final Account userAccount = createAccountFactory.get().withUsername(accountName).create();
+    final Account userAccount = createAccount.withUsername(accountName).create();
 
     final RenameAccountRequest request =
         new RenameAccountRequest(
@@ -85,9 +85,9 @@ class RenameAccountTest extends SoapTestSuite {
 
   @Test
   void shouldRenameAccountWhenTargetDomainHasCOSMaxAccountsSettings() throws Exception {
-    final Account adminAccount = createAccountFactory.get().asGlobalAdmin().create();
+    final Account adminAccount = createAccount.asGlobalAdmin().create();
     final String accountName = UUID.randomUUID().toString();
-    final Account userAccount = createAccountFactory.get().withUsername(accountName).create();
+    final Account userAccount = createAccount.withUsername(accountName).create();
 
     targetDomain.setDomainCOSMaxAccounts(new String[] {"default:30"});
 
@@ -101,9 +101,9 @@ class RenameAccountTest extends SoapTestSuite {
 
   @Test
   void shouldRenameAccountWhenTargetDomainHasFeatureMaxAccountsSettings() throws Exception {
-    final Account adminAccount = createAccountFactory.get().asGlobalAdmin().create();
+    final Account adminAccount = createAccount.asGlobalAdmin().create();
     final String accountName = UUID.randomUUID().toString();
-    final Account userAccount = createAccountFactory.get().withUsername(accountName).create();
+    final Account userAccount = createAccount.withUsername(accountName).create();
 
     targetDomain.setDomainFeatureMaxAccounts(new String[] {"zimbraFeatureChatEnabled:30"});
 
@@ -117,9 +117,9 @@ class RenameAccountTest extends SoapTestSuite {
 
   @Test
   void shouldRenameAccountWhenTargetDomainHasCOSIdAndPreviousNot() throws Exception {
-    final Account adminAccount = createAccountFactory.get().asGlobalAdmin().create();
+    final Account adminAccount = createAccount.asGlobalAdmin().create();
     final String accountName = UUID.randomUUID().toString();
-    final Account userAccount = createAccountFactory.get().withUsername(accountName).create();
+    final Account userAccount = createAccount.withUsername(accountName).create();
 
     final String cosId =
         provisioning.createCos(UUID.randomUUID().toString(), new HashMap<>()).getId();
@@ -135,9 +135,9 @@ class RenameAccountTest extends SoapTestSuite {
 
   @Test
   void shouldRenameAccountWhenTargetDomainHasDifferentCOSThanPrevious() throws Exception {
-    final Account adminAccount = createAccountFactory.get().asGlobalAdmin().create();
+    final Account adminAccount = createAccount.asGlobalAdmin().create();
     final String accountName = UUID.randomUUID().toString();
-    final Account userAccount = createAccountFactory.get().withUsername(accountName).create();
+    final Account userAccount = createAccount.withUsername(accountName).create();
 
     final Domain previousDomain = provisioning.getDomain(userAccount);
     final String defaultCosId = provisioning.getCosByName(Provisioning.DEFAULT_COS_NAME).getId();

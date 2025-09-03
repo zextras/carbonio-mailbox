@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.acl.AclService;
-import com.zextras.mailbox.util.CreateAccount.Factory;
+import com.zextras.mailbox.util.CreateAccount;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -27,17 +27,17 @@ import org.junit.jupiter.api.Test;
 class AclServiceTest extends MailboxTestSuite {
   private static MailboxManager mailboxManager;
   private static Provisioning provisioning;
-  private static Factory createAccountFactory;
+  private static CreateAccount createAccount;
 
   @BeforeAll
   static void setUp() throws Exception {
     mailboxManager = MailboxManager.getInstance();
     provisioning = Provisioning.getInstance();
-    createAccountFactory = getCreateAccountFactory();
+    createAccount = getCreateAccountFactory();
   }
 
   private static void setRights(Account target) throws ServiceException {
-    final var grantee = createAccountFactory.get().create();
+    final var grantee = createAccount.create();
     final var granterMailbox = mailboxManager.getMailboxByAccount(target);
     final var inboxId = granterMailbox.getFolderById(null, Mailbox.ID_FOLDER_INBOX);
 
@@ -59,7 +59,7 @@ class AclServiceTest extends MailboxTestSuite {
 
   @Test
   void shouldRevokeAllMailboxFolderGrants() throws ServiceException {
-    var target = createAccountFactory.get().create();
+    var target = createAccount.create();
     setRights(target);
 
     final var grantsService = new AclService(mailboxManager, provisioning);
@@ -70,7 +70,7 @@ class AclServiceTest extends MailboxTestSuite {
 
   @Test
   void shouldRevokeAllGrantsTargetingAccount() throws ServiceException {
-    var target = createAccountFactory.get().create();
+    var target = createAccount.create();
     setRights(target);
     final var grantsService = new AclService(mailboxManager, provisioning);
     grantsService.revokeAllGrantsForAccountId(target.getId());
@@ -80,7 +80,7 @@ class AclServiceTest extends MailboxTestSuite {
 
   @Test
   void shouldReturnAllGrantsOnMailboxFolders() throws ServiceException {
-    var target = createAccountFactory.get().create();
+    var target = createAccount.create();
     setRights(target);
     final var grantsService = new AclService(mailboxManager, provisioning);
     assertEquals(1, grantsService.getMailboxFolderGrantsForAccountId(null, target.getId()).size());
@@ -88,7 +88,7 @@ class AclServiceTest extends MailboxTestSuite {
 
   @Test
   void shouldReturnGrantsTargetingAccount() throws ServiceException {
-    var target = createAccountFactory.get().create();
+    var target = createAccount.create();
     setRights(target);
     final var grantsService = new AclService(mailboxManager, provisioning);
     assertEquals(1, grantsService.getGrantsTargetingAccount(target.getId()).getACEs().size());
