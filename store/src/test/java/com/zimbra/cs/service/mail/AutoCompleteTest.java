@@ -44,7 +44,7 @@ public class AutoCompleteTest extends SoapTestSuite {
   
   @Test
   void test3951() throws Exception {
-    Account account = getCreateAccountFactory().create();
+    Account account = createAccount().create();
     Element request = new Element.XMLElement(MailConstants.AUTO_COMPLETE_REQUEST);
     request.addAttribute("name", " ");
     final HttpResponse response = getSoapClient().newRequest().setCaller(account).setSoapBody(request)
@@ -59,8 +59,8 @@ public class AutoCompleteTest extends SoapTestSuite {
   @DisplayName("Account 1, without READ permission on ROOT, requests account 2 contacts, get 500 permission denied.")
   void shouldThrowCannotAccessAccountFolderIfNoReadGrant() throws Exception {
     final String prefix = "test-";
-    final Account account1 = getCreateAccountFactory().create();
-    final Account account2 = getCreateAccountFactory().create();
+    final Account account1 = createAccount().create();
+    final Account account2 = createAccount().create();
     accountActionFactory.forAccount(account2).grantFolderRightTo(account1, "r",
         Mailbox.ID_FOLDER_CALENDAR);
     getSoapClient().executeSoap(account2, new CreateContactRequest(
@@ -82,8 +82,8 @@ public class AutoCompleteTest extends SoapTestSuite {
   @DisplayName("Account 1, without ANY Grants, executes Autocomplete requesting account 2, get 500 permission denied.")
   void shouldThrowCannotAccessAccountIfNoGrantsGiven() throws Exception {
     final String prefix = "test-";
-    final Account account1 = getCreateAccountFactory().create();
-    final Account account2 = getCreateAccountFactory().create();
+    final Account account1 = createAccount().create();
+    final Account account2 = createAccount().create();
     getSoapClient().newRequest()
         .setCaller(account2).setSoapBody(new CreateContactRequest(
             new ContactSpec().addEmail(prefix + UUID.randomUUID() + "something.com"))).execute();
@@ -104,8 +104,8 @@ public class AutoCompleteTest extends SoapTestSuite {
   @DisplayName("Account 1, with READ Grants on root, executes Autocomplete requesting account 2, gets contacts.")
   void shouldGetContactsOfSharedAccount() throws Exception {
     final String prefix = "test-";
-    final Account account1 = getCreateAccountFactory().create();
-    final Account account2 = getCreateAccountFactory().create();
+    final Account account1 = createAccount().create();
+    final Account account2 = createAccount().create();
     accountActionFactory.forAccount(account2)
         .grantFolderRightTo(account1, "r", Mailbox.ID_FOLDER_ROOT);
     getSoapClient().newRequest()
@@ -129,8 +129,8 @@ public class AutoCompleteTest extends SoapTestSuite {
   @DisplayName("Account 1, with READ Grants on Contacts and Emailed Contacts, requests autocomplete on account2 7 and 13 folder, gets contacts.")
   void shouldGetContactsOfSharedAccountWhenSettingFolders() throws Exception {
     final String prefix = "test-";
-    final Account account1 = getCreateAccountFactory().create();
-    final Account account2 = getCreateAccountFactory().create();
+    final Account account1 = createAccount().create();
+    final Account account2 = createAccount().create();
     accountActionFactory.forAccount(account2)
         .grantFolderRightTo(account1, "r", Mailbox.ID_FOLDER_ROOT);
     getSoapClient().newRequest()

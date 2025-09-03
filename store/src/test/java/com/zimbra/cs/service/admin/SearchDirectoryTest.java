@@ -129,7 +129,7 @@ class SearchDirectoryTest extends SoapTestSuite {
   }
 
   private static CreateAccount newAccountOn(String domain) {
-    return getCreateAccountFactory().withDomain(domain);
+    return createAccount().withDomain(domain);
   }
 
 }

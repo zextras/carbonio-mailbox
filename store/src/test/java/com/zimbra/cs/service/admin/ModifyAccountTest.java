@@ -35,9 +35,9 @@ class ModifyAccountTest extends SoapTestSuite {
 
   @Test
   void shouldModifyAccountWhenDomainAdminChangingMailTransport() throws Exception {
-    final Account domainAdminAccount = getCreateAccountFactory()
+    final Account domainAdminAccount = createAccount()
         .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE").create();
-    final Account userAccount = getCreateAccountFactory().create();
+    final Account userAccount = createAccount().create();
     final Domain target = provisioning.getDomain(domainAdminAccount);
 
     final Set<ZimbraACE> aces = new HashSet<>();

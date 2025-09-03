@@ -530,7 +530,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
   }
 
   private static CreateAccount buildAccount(String uid, String fullName, String domain) {
-    return getCreateAccountFactory()
+    return createAccount()
         .withDomain(domain)
         .withUsername(uid)
         .withAttribute("displayName", fullName);

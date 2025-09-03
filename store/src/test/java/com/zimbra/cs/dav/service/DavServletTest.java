@@ -96,7 +96,7 @@ class DavServletTest extends MailboxTestSuite {
   }
 
   private Account getRandomAccountForDefaultDomain() throws ServiceException {
-    return getCreateAccountFactory().create();
+    return createAccount().create();
   }
 
   @Test

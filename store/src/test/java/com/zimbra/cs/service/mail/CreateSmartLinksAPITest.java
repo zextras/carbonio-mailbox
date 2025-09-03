@@ -45,7 +45,7 @@ class CreateSmartLinksAPITest extends SoapTestSuite {
   @BeforeEach
   void setUp() throws Exception {
     filesServer = startClientAndServer(20002);
-    account = getCreateAccountFactory().create();
+    account = createAccount().create();
     draftWithAttachment = createDraftWithAttachment();
   }
 

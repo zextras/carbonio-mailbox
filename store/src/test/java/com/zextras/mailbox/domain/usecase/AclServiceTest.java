@@ -36,7 +36,7 @@ class AclServiceTest extends MailboxTestSuite {
   }
 
   private static void setRights(Account target) throws ServiceException {
-    final var grantee = getCreateAccountFactory().create();
+    final var grantee = createAccount().create();
     final var granterMailbox = mailboxManager.getMailboxByAccount(target);
     final var inboxId = granterMailbox.getFolderById(null, Mailbox.ID_FOLDER_INBOX);
 
@@ -58,7 +58,7 @@ class AclServiceTest extends MailboxTestSuite {
 
   @Test
   void shouldRevokeAllMailboxFolderGrants() throws ServiceException {
-    var target = getCreateAccountFactory().create();
+    var target = createAccount().create();
     setRights(target);
 
     final var grantsService = new AclService(mailboxManager, provisioning);
@@ -69,7 +69,7 @@ class AclServiceTest extends MailboxTestSuite {
 
   @Test
   void shouldRevokeAllGrantsTargetingAccount() throws ServiceException {
-    var target = getCreateAccountFactory().create();
+    var target = createAccount().create();
     setRights(target);
     final var grantsService = new AclService(mailboxManager, provisioning);
     grantsService.revokeAllGrantsForAccountId(target.getId());
@@ -79,7 +79,7 @@ class AclServiceTest extends MailboxTestSuite {
 
   @Test
   void shouldReturnAllGrantsOnMailboxFolders() throws ServiceException {
-    var target = getCreateAccountFactory().create();
+    var target = createAccount().create();
     setRights(target);
     final var grantsService = new AclService(mailboxManager, provisioning);
     assertEquals(1, grantsService.getMailboxFolderGrantsForAccountId(null, target.getId()).size());
@@ -87,7 +87,7 @@ class AclServiceTest extends MailboxTestSuite {
 
   @Test
   void shouldReturnGrantsTargetingAccount() throws ServiceException {
-    var target = getCreateAccountFactory().create();
+    var target = createAccount().create();
     setRights(target);
     final var grantsService = new AclService(mailboxManager, provisioning);
     assertEquals(1, grantsService.getGrantsTargetingAccount(target.getId()).getACEs().size());

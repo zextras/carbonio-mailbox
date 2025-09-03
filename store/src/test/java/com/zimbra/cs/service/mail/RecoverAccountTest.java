@@ -43,7 +43,7 @@ class RecoverAccountTest extends MailboxTestSuite {
   @Test
   @DisplayName("Should throw an exception when unknown account requested")
   void should_throw_exception_if_account_not_known() throws ServiceException {
-    Account primaryAccount = getCreateAccountFactory().create();
+    Account primaryAccount = createAccount().create();
     primaryAccount.setFeatureResetPasswordStatus(FeatureResetPasswordStatus.enabled);
 
     RecoverAccountRequest recoverAccountRequest = new RecoverAccountRequest();
@@ -65,7 +65,7 @@ class RecoverAccountTest extends MailboxTestSuite {
   @DisplayName("Should throw exception if no recovery account is set and op is GET_RECOVERY_ACCOUNT")
   void should_throw_exception_when_recovery_email_not_set_and_op_is_get_recovery_account()
       throws ServiceException {
-    Account primaryAccount = getCreateAccountFactory().create();
+    Account primaryAccount = createAccount().create();
     primaryAccount.setFeatureResetPasswordStatus(FeatureResetPasswordStatus.enabled);
 
     RecoverAccountRequest recoverAccountRequest = new RecoverAccountRequest();
@@ -87,8 +87,8 @@ class RecoverAccountTest extends MailboxTestSuite {
   @DisplayName("Should return masked recovery account name if recovery account is set and verified")
   void should_return_masked_recovery_account_when_recovery_account_set_and_verified()
       throws Exception {
-    Account recoveryAccount = getCreateAccountFactory().create();
-    Account primaryAccount = getCreateAccountFactory().create();
+    Account recoveryAccount = createAccount().create();
+    Account primaryAccount = createAccount().create();
     primaryAccount.setPrefPasswordRecoveryAddress(recoveryAccount.getName());
     primaryAccount.setPrefPasswordRecoveryAddressStatus(
         PrefPasswordRecoveryAddressStatus.verified);
@@ -111,8 +111,8 @@ class RecoverAccountTest extends MailboxTestSuite {
   @DisplayName("Should throw an exception if recovery account is not verified")
   void should_throw_exception_when_recovery_account_is_not_verified()
       throws Exception {
-    Account recoveryAccount = getCreateAccountFactory().create();
-    Account primaryAccount = getCreateAccountFactory().create();
+    Account recoveryAccount = createAccount().create();
+    Account primaryAccount = createAccount().create();
     primaryAccount.setPrefPasswordRecoveryAddress(recoveryAccount.getName());
     primaryAccount.setPrefPasswordRecoveryAddressStatus(
         PrefPasswordRecoveryAddressStatus.pending);
@@ -137,7 +137,7 @@ class RecoverAccountTest extends MailboxTestSuite {
   @Test
   @DisplayName("Should throw ForgotPasswordException when zimbraFeatureResetPasswordStatus is not enabled")
   void should_throw_exception_when_feature_is_not_enabled() throws Exception {
-    Account primaryAccount = getCreateAccountFactory().create();
+    Account primaryAccount = createAccount().create();
 
     RecoverAccountRequest recoverAccountRequest = new RecoverAccountRequest();
     recoverAccountRequest.setOp(RecoverAccountOperation.SEND_RECOVERY_CODE);
@@ -158,7 +158,7 @@ class RecoverAccountTest extends MailboxTestSuite {
   @Test
   @DisplayName("Should throw exception if recovery account is not set on primary account")
   void should_throw_exception_when_recovery_account_is_not_set() throws Exception {
-    Account primaryAccount = getCreateAccountFactory().create();
+    Account primaryAccount = createAccount().create();
     primaryAccount.setFeatureResetPasswordStatus(FeatureResetPasswordStatus.enabled);
     RecoverAccountRequest recoverAccountRequest = new RecoverAccountRequest();
     recoverAccountRequest.setOp(RecoverAccountOperation.SEND_RECOVERY_CODE);
@@ -179,8 +179,8 @@ class RecoverAccountTest extends MailboxTestSuite {
   @Test
   @DisplayName("Should throw ForgotPasswordException when zimbraPrefPasswordRecoveryAddressStatus is not verified")
   void should_throw_exception_when_recovery_email_is_not_verified() throws Exception {
-      Account recoveryAccount = getCreateAccountFactory().create();
-      Account primaryAccount = getCreateAccountFactory().create();
+      Account recoveryAccount = createAccount().create();
+      Account primaryAccount = createAccount().create();
       primaryAccount.setPrefPasswordRecoveryAddress(recoveryAccount.getName());
       primaryAccount.setFeatureResetPasswordStatus(FeatureResetPasswordStatus.enabled);
       primaryAccount.setPrefPasswordRecoveryAddressStatus(
@@ -211,8 +211,8 @@ class RecoverAccountTest extends MailboxTestSuite {
     try {
       greenMail.start();
 
-      Account recoveryAccount = getCreateAccountFactory().create();
-      Account primaryAccount = getCreateAccountFactory().create();
+      Account recoveryAccount = createAccount().create();
+      Account primaryAccount = createAccount().create();
       provisioning.getDomain(primaryAccount).setSmtpPort(mailPort);
       primaryAccount.setPrefPasswordRecoveryAddress(recoveryAccount.getName());
       primaryAccount.setPrefPasswordRecoveryAddressStatus(
@@ -259,8 +259,8 @@ class RecoverAccountTest extends MailboxTestSuite {
     try {
       greenMail.start();
 
-      Account recoveryAccount = getCreateAccountFactory().create();
-      Account primaryAccount = getCreateAccountFactory().create();
+      Account recoveryAccount = createAccount().create();
+      Account primaryAccount = createAccount().create();
       provisioning.getDomain(primaryAccount).setSmtpPort(smtpPort);
       primaryAccount.setPrefPasswordRecoveryAddress(recoveryAccount.getName());
       primaryAccount.setPrefPasswordRecoveryAddressStatus(
@@ -294,10 +294,10 @@ class RecoverAccountTest extends MailboxTestSuite {
     try {
       greenMail.start();
 
-      Account recoveryAccount = getCreateAccountFactory().create();
+      Account recoveryAccount = createAccount().create();
       provisioning.getDomain(recoveryAccount).setSmtpPort(smtpPort);
       recoveryAccount.setLocale("ta");
-      Account primaryAccount = getCreateAccountFactory().create();
+      Account primaryAccount = createAccount().create();
       primaryAccount.setLocale("ta");
       primaryAccount.setPrefPasswordRecoveryAddress(recoveryAccount.getName());
       primaryAccount.setPrefPasswordRecoveryAddressStatus(
@@ -350,8 +350,8 @@ class RecoverAccountTest extends MailboxTestSuite {
     try {
       greenMail.start();
 
-      Account recoveryAccount = getCreateAccountFactory().create();
-      Account primaryAccount = getCreateAccountFactory().create();
+      Account recoveryAccount = createAccount().create();
+      Account primaryAccount = createAccount().create();
       provisioning.getDomain(primaryAccount).setSmtpPort(smtpPort);
       primaryAccount.setPrefPasswordRecoveryAddress(recoveryAccount.getName());
       primaryAccount.setPrefPasswordRecoveryAddressStatus(
@@ -395,9 +395,9 @@ class RecoverAccountTest extends MailboxTestSuite {
     try {
       greenMail.start();
 
-      Account recoveryAccount = getCreateAccountFactory().create();
+      Account recoveryAccount = createAccount().create();
       provisioning.getDomain(recoveryAccount).setSmtpPort(smtpPort);
-      Account primaryAccount = getCreateAccountFactory().create();
+      Account primaryAccount = createAccount().create();
       primaryAccount.setPrefPasswordRecoveryAddress(recoveryAccount.getName());
       primaryAccount.setPrefPasswordRecoveryAddressStatus(
           PrefPasswordRecoveryAddressStatus.verified);

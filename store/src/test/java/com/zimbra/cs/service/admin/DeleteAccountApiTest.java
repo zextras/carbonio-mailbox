@@ -29,8 +29,8 @@ class DeleteAccountApiTest  extends SoapTestSuite {
 
 	@Test
 	void shouldDeleteAccountWithPublicSharedFolder() throws Exception {
-		final Account adminAccount = getCreateAccountFactory().asGlobalAdmin().create();
-		final Account accountWithPublicSharedFolder = getCreateAccountFactory().create();
+		final Account adminAccount = createAccount().asGlobalAdmin().create();
+		final Account accountWithPublicSharedFolder = createAccount().create();
 		accountActionFactory.forAccount(accountWithPublicSharedFolder)
 				.grantPublicFolderRight(Mailbox.ID_FOLDER_CALENDAR, "r");
 		final String accountWithPublicShareId = accountWithPublicSharedFolder.getId();

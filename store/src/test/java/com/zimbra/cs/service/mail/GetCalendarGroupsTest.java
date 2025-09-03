@@ -43,7 +43,7 @@ class GetCalendarGroupsTest extends SoapTestSuite {
 
   @BeforeEach
   void setUp() throws Exception {
-    account = getCreateAccountFactory().create();
+    account = createAccount().create();
   }
 
   @Test

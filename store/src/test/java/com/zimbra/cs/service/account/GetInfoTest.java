@@ -24,7 +24,7 @@ class GetInfoTest extends SoapTestSuite {
 
   @BeforeEach
   void setUp() throws Exception {
-    account = getCreateAccountFactory().create();
+    account = createAccount().create();
   }
 
   @Test
@@ -60,7 +60,7 @@ class GetInfoTest extends SoapTestSuite {
   @Test
   void attributesSectionProvidesAmavisLists() throws Exception {
     final var account =
-        getCreateAccountFactory()
+        createAccount()
             .withAttribute(ZAttrProvisioning.A_amavisWhitelistSender, "foo1@bar.com")
             .withAttribute(ZAttrProvisioning.A_amavisBlacklistSender, "foo2@bar.com")
             .create();
@@ -81,7 +81,7 @@ class GetInfoTest extends SoapTestSuite {
     Assertions.assertTrue(featureMailEnabled.isDeprecated());
 
     final var account =
-        getCreateAccountFactory()
+        createAccount()
             .withAttribute(featureMailEnabled.getName(), "FALSE")
             .create();
     final var request = new GetInfoRequest().addSection("attrs");

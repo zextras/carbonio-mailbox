@@ -151,7 +151,7 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
         new Validators.DomainMaxAccountsValidator();
 
     final Account account =
-        getCreateAccountFactory()
+        createAccount()
             .withUsername("user")
             .create();
     final Object[] conditionArguments =
@@ -170,7 +170,7 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
         new Validators.DomainMaxAccountsValidator();
 
     final Account account =
-        getCreateAccountFactory()
+        createAccount()
             .withUsername("user")
             .create();
     final Object[] conditionArguments =
@@ -419,7 +419,7 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
     domain.setDomainFeatureMaxAccounts(new String[]{"zimbraFeatureChatEnabled:0"});
 
     final Account account =
-        getCreateAccountFactory()
+        createAccount()
             .withUsername("user")
             .create();
 
@@ -457,7 +457,7 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
     domain.setDomainCOSMaxAccounts(new String[]{oldCosId + ":1"});
     domain.setDomainCOSMaxAccounts(new String[]{newCosId + ":0"});
     final Account account =
-        getCreateAccountFactory()
+        createAccount()
             .withUsername("user")
             .create();
 
@@ -488,7 +488,7 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
     domain.setDomainFeatureMaxAccounts(new String[]{"zimbraFeatureChatEnabled:1"});
 
     final Account account =
-        getCreateAccountFactory()
+        createAccount()
             .withUsername("user")
             .create();
 
@@ -518,7 +518,7 @@ class DomainMaxAccountsValidatorTest extends MailboxTestSuite {
     domain.setDomainCOSMaxAccounts(new String[]{cosId + ":1"});
 
     final Account account =
-        getCreateAccountFactory()
+        createAccount()
             .withUsername("user")
             .create();
 

@@ -48,8 +48,8 @@ class CreateCalendarItemExceptionTest  extends SoapTestSuite {
 
   @Test
   void should_reset_participationStatus_when_dateTime_is_modified() throws Exception {
-    var organizer = getCreateAccountFactory().withUsername(UUID.randomUUID().toString()).create();
-    var attendee = getCreateAccountFactory().withUsername(UUID.randomUUID().toString()).create();
+    var organizer = createAccount().withUsername(UUID.randomUUID().toString()).create();
+    var attendee = createAccount().withUsername(UUID.randomUUID().toString()).create();
     var eventTitle = "Event Title";
     var timezone = "Asia/Calcutta";
     var startTime = "20250907T163000";
