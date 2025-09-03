@@ -30,9 +30,7 @@ def buildContainer(String title, String description, String dockerfile, String i
             '--label org.opencontainers.image.vendor="Zextras" ' +
             '--label org.opencontainers.image.revision="' + commitHash + '" ' +
             '-f ' + dockerfile + ' ' + tagsToAdd.join(" ") + ' .'
-    versions.each {
-        version -> sh 'docker push ' + imageName + ":" + version
-    }
+    sh 'docker push --all-tags ' + imageName
 }
 
 def packages = ["carbonio-appserver-conf","carbonio-appserver-db",
