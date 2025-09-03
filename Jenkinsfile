@@ -19,17 +19,19 @@ def isBuildingTag() {
     return false
 }
 
-def buildContainer(String title, String description, String dockerfile, String imageName, String tag) {
-    def tagVersion = "devel"
-    if (isBuildingTag()) {
-        tagVersion = env.TAG_NAME
+def buildContainer(String title, String description, String dockerfile, String imageName, List<String> versions) {
+    tagsToAdd = []
+    versions.each {
+        version -> tagsToAdd.add("-t " + imageName + ":" + version)
     }
     sh 'docker build ' +
             '--label org.opencontainers.image.title="' + title + '" ' +
             '--label org.opencontainers.image.description="' + description + '" ' +
             '--label org.opencontainers.image.vendor="Zextras" ' +
-            '-f ' + dockerfile + ' -t ' + imageName + ':' + tag + ' .'
-    sh 'docker push ' + tag
+            '-f ' + dockerfile + ' ' + tagsToAdd.join(" ")
+    versions.each {
+        version -> sh 'docker push ' + imageName + ":" + version
+    }
 }
 
 def packages = ["carbonio-appserver-conf","carbonio-appserver-db",
@@ -94,9 +96,7 @@ pipeline {
         }
         stage('UT, IT & API tests') {
             when {
-                expression {
-                    params.SKIP_TEST_WITH_COVERAGE == false
-                }
+                branch 'devel'
             }
             steps {
                 container('jdk-17') {
@@ -108,10 +108,7 @@ pipeline {
 
         stage('Sonarqube Analysis') {
             when {
-                allOf {
-                    expression { params.SKIP_SONARQUBE == false }
-                    expression { params.SKIP_TEST_WITH_COVERAGE == false }
-                }
+                branch 'devel'
             }
             steps {
                 container('jdk-17') {
@@ -130,20 +127,25 @@ pipeline {
             steps {
                 container('dind') {
                     withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                        def tagVersion = "devel"
-                        if (isBuildingTag()) {
-                            tagVersion = env.TAG_NAME
+                        script {
+                            def tagVersions = []
+                            if (isBuildingTag()) {
+                                tagVersions.add(env.TAG_NAME)
+                            } else {
+                                tagVersions.add("devel")
+                                tagVersions.add("latest")
+                            }
+                            buildContainer('Carbonio Mailbox', '$(cat docker/standalone/mailbox/description.md)',
+                                    'docker/standalone/mailbox/Dockerfile',
+                                    'registry.dev.zextras.com/dev/carbonio-mailbox',
+                                    tagVersions)
+                            buildContainer('Carbonio MariaDB', '$(cat docker/standalone/mariadb/description.md)',
+                                    'docker/standalone/mariadb/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-mariadb',
+                                    tagVersions)
+                            buildContainer('Carbonio OpenLDAP', '$(cat docker/standalone/openldap/description.md)',
+                                    'docker/standalone/openldap/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-openldap',
+                                    tagVersions)
                         }
-                        buildContainer('Carbonio Mailbox', '$(cat docker/standalone/mailbox/description.md)',
-                                'docker/standalone/mailbox/Dockerfile',
-                                'registry.dev.zextras.com/dev/carbonio-mailbox',
-                                tagVersion)
-                        buildContainer('Carbonio MariaDB', '$(cat docker/standalone/mariadb/description.md)',
-                                'docker/standalone/mariadb/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-mariadb',
-                                tagVersion)
-                        buildContainer('Carbonio OpenLDAP', '$(cat docker/standalone/openldap/description.md)',
-                                'docker/standalone/openldap/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-openldap',
-                                tagVersion)
                     }
                 }
             }
