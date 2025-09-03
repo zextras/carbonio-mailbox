@@ -1,10 +1,8 @@
 package com.zimbra.cs.service.mail;
 
-
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zextras.mailbox.util.CreateAccount;
 import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.account.ZAttrProvisioning.FeatureResetPasswordStatus;
 import com.zimbra.common.account.ZAttrProvisioning.PrefPasswordRecoveryAddressStatus;

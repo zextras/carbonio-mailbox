@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.CreateAccount;
 import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;

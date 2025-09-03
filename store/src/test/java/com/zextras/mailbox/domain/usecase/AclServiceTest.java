@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.acl.AclService;
-import com.zextras.mailbox.util.CreateAccount;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;

@@ -2,7 +2,6 @@ package com.zimbra.cs.service.admin;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.AccountAction;
-import com.zextras.mailbox.util.CreateAccount;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;

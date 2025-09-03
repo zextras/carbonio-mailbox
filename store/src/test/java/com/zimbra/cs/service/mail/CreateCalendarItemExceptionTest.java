@@ -3,7 +3,6 @@ package com.zimbra.cs.service.mail;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.CreateAccount;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.JSONElement;

@@ -12,7 +12,6 @@ import com.zextras.carbonio.files.entities.NodeId;
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.MailMessageBuilder;
 import com.zextras.mailbox.util.AccountAction;
-import com.zextras.mailbox.util.CreateAccount;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Message;

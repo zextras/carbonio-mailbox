@@ -1,6 +1,5 @@
 package com.zimbra.cs.service.mail;
 
-import com.zextras.mailbox.util.CreateAccount;
 import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -1,7 +1,6 @@
 package com.zimbra.cs.service.admin;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.CreateAccount;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;

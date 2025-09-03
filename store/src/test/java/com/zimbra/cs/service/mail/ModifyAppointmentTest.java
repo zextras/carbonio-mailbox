@@ -6,7 +6,6 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.soap.SoapUtils;
-import com.zextras.mailbox.util.CreateAccount;
 import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.mailbox.FolderConstants;
 import com.zimbra.common.service.ServiceException;

@@ -5,7 +5,6 @@
 package com.zimbra.cs.service.mail;
 
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zextras.mailbox.util.CreateAccount;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.soap.MailConstants;

@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.AccountAction;
-import com.zextras.mailbox.util.CreateAccount;
 import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
