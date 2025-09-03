@@ -19,7 +19,8 @@ backup=(
 )
 
 package() {
-  cd "${srcdir}"/../../staging
+
+  cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
 
   install -D "store/target/conf/attrs/attrs-schema" \
     "${pkgdir}/opt/zextras/conf/attrs-schema"

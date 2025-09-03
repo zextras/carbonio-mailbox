@@ -21,7 +21,7 @@ section="mail"
 priority="optional"
 
 package() {
-  cd "${srcdir}"/../../staging
+  cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
 
   # Mailbox
   install -Dm 755 packages/appserver-service/carbonio-mailbox \

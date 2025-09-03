@@ -16,7 +16,7 @@ section="mail"
 priority="optional"
 
 package() {
-  cd "${srcdir}"/../../staging
+  cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
 
   install -D "store-conf/conf/globs2" \
     "${pkgdir}/opt/zextras/conf/globs2"
