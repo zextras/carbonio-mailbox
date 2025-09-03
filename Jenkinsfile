@@ -19,22 +19,23 @@ def isBuildingTag() {
     return false
 }
 
-def buildContainer(String title, String description, String dockerfile, String tag) {
+def buildContainer(String title, String description, String dockerfile, String imageName, String tag) {
+    def tagVersion = "devel"
+    if (isBuildingTag()) {
+        tagVersion = env.TAG_NAME
+    }
     sh 'docker build ' +
             '--label org.opencontainers.image.title="' + title + '" ' +
             '--label org.opencontainers.image.description="' + description + '" ' +
             '--label org.opencontainers.image.vendor="Zextras" ' +
-            '-f ' + dockerfile + ' -t ' + tag + ' .'
+            '-f ' + dockerfile + ' -t ' + imageName + ':' + tag + ' .'
     sh 'docker push ' + tag
 }
 
-def getPackages() {
-    return ["carbonio-appserver-conf","carbonio-appserver-db",
+def packages = ["carbonio-appserver-conf","carbonio-appserver-db",
             "carbonio-appserver-service", "carbonio-common-appserver-conf",
             "carbonio-common-appserver-native-lib", "carbonio-directory-server",
-            "carbonio-mailbox-jar"
-    ]
-}
+            "carbonio-mailbox-jar"]
 
 
 pipeline {
@@ -120,19 +121,29 @@ pipeline {
                 }
             }
         }
-        stage('Publish containers - devel') {
+        stage('Publish containers') {
             when {
-                branch 'devel';
+                expression {
+                    return isBuildingTag() || env.BRANCH_NAME == 'devel'
+                }
             }
             steps {
                 container('dind') {
                     withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+                        def tagVersion = "devel"
+                        if (isBuildingTag()) {
+                            tagVersion = env.TAG_NAME
+                        }
                         buildContainer('Carbonio Mailbox', '$(cat docker/standalone/mailbox/description.md)',
-                                'docker/standalone/mailbox/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-mailbox:latest')
+                                'docker/standalone/mailbox/Dockerfile',
+                                'registry.dev.zextras.com/dev/carbonio-mailbox',
+                                tagVersion)
                         buildContainer('Carbonio MariaDB', '$(cat docker/standalone/mariadb/description.md)',
-                                'docker/standalone/mariadb/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-mariadb:latest')
+                                'docker/standalone/mariadb/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-mariadb',
+                                tagVersion)
                         buildContainer('Carbonio OpenLDAP', '$(cat docker/standalone/openldap/description.md)',
-                                'docker/standalone/openldap/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-openldap:latest')
+                                'docker/standalone/openldap/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-openldap',
+                                tagVersion)
                     }
                 }
             }
@@ -162,7 +173,7 @@ pipeline {
         stage ('Build Packages') {
             steps {
                 script {
-                    buildStage(getPackages(), 'staging', 'build_pkg/packages')()
+                    buildStage(packages, 'staging', 'build_pkg/packages')()
                 }
             }
         }
