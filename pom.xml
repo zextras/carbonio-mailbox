@@ -384,6 +384,11 @@
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
+        <artifactId>attribute-manager</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>zextras</groupId>
         <artifactId>zm-store</artifactId>
         <version>${project.version}</version>
       </dependency>

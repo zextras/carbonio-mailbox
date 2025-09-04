@@ -334,11 +334,9 @@
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk18on</artifactId>
     </dependency>
-    <!-- Note this should be provided in container classpath -->
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
-
     </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
@@ -480,6 +478,10 @@
     </dependency>
     <dependency>
       <artifactId>zm-common</artifactId>
+      <groupId>zextras</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>attribute-manager</artifactId>
       <groupId>zextras</groupId>
     </dependency>
     <dependency>
