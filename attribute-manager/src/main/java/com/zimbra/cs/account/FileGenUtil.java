@@ -7,6 +7,7 @@ package com.zimbra.cs.account;
 
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.StringUtil;
+import com.zimbra.common.util.ZimbraLog;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -79,6 +80,7 @@ public class FileGenUtil {
        BufferedWriter out = null;
 
        File oldFile = new File(javaFile);
+       ZimbraLog.misc.debug("Checking previous file: " + oldFile.getAbsolutePath());
        if (!oldFile.canWrite()) {
            System.err.println("============================================");
            System.err.println("Unable to write to: "+javaFile);
