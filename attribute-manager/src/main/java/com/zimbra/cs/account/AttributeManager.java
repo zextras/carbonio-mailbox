@@ -1461,35 +1461,35 @@ public class AttributeManager {
     else return mAttrs.get(name.toLowerCase());
   }
 
-  private void getLdapSchemaExtensionAttrs(Provisioning prov) throws ServiceException {
+  private void getLdapSchemaExtensionAttrs(Provisioning provisioning) throws ServiceException {
     if (mLdapSchemaExtensionInited) return;
 
     mLdapSchemaExtensionInited = true;
 
     getExtraObjectClassAttrs(
-        prov, AttributeClass.account, ZAttrProvisioning.A_zimbraAccountExtraObjectClass);
+        provisioning, AttributeClass.account, ZAttrProvisioning.A_zimbraAccountExtraObjectClass);
     getExtraObjectClassAttrs(
-        prov,
+        provisioning,
         AttributeClass.calendarResource,
         ZAttrProvisioning.A_zimbraCalendarResourceExtraObjectClass);
     getExtraObjectClassAttrs(
-        prov, AttributeClass.cos, ZAttrProvisioning.A_zimbraCosExtraObjectClass);
+        provisioning, AttributeClass.cos, ZAttrProvisioning.A_zimbraCosExtraObjectClass);
     getExtraObjectClassAttrs(
-        prov, AttributeClass.domain, ZAttrProvisioning.A_zimbraDomainExtraObjectClass);
+        provisioning, AttributeClass.domain, ZAttrProvisioning.A_zimbraDomainExtraObjectClass);
     getExtraObjectClassAttrs(
-        prov, AttributeClass.server, ZAttrProvisioning.A_zimbraServerExtraObjectClass);
+        provisioning, AttributeClass.server, ZAttrProvisioning.A_zimbraServerExtraObjectClass);
   }
 
   private void getExtraObjectClassAttrs(
-      Provisioning prov, AttributeClass attrClass, String extraObjectClassAttr)
+      Provisioning provisioning, AttributeClass attrClass, String extraObjectClassAttr)
       throws ServiceException {
-    Config config = prov.getConfig();
+    Config config = provisioning.getConfig();
 
     String[] extraObjectClasses = config.getMultiAttr(extraObjectClassAttr);
 
     if (extraObjectClasses.length > 0) {
       Set<String> attrsInOCs = mClassToAttrsMap.get(AttributeClass.account);
-      prov.getAttrsInOCs(extraObjectClasses, attrsInOCs);
+      provisioning.getAttrsInOCs(extraObjectClasses, attrsInOCs);
     }
   }
 
