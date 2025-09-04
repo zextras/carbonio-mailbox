@@ -832,7 +832,7 @@ public class AttributeManagerUtil {
 
       try (PrintWriter printWriter =
           new PrintWriter(
-              new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)))) {
+              new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)), true)) {
         AttributeManagerUtil attributeManagerUtil = new AttributeManagerUtil(am);
         switch (action) {
 //          case DUMP:
@@ -884,12 +884,13 @@ public class AttributeManagerUtil {
                 commandLine.getOptionValues('f'));
             break;
         }
-        ZimbraLog.misc.info("Finished generating");
-        ZimbraLog.misc.info("Other line");
       } catch (IOException e) {
         ZimbraLog.misc.info("Exception ");
         ZimbraLog.misc.error(e.getMessage());
         System.exit(1);
+      }
+      finally {
+        ZimbraLog.misc.info("DONE");
       }
       ZimbraLog.misc.info("AAAA");
     }
