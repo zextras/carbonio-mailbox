@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
+  ~
+  ~ SPDX-License-Identifier: AGPL-3.0-only
+  -->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>ldap</artifactId>
+
+  <parent>
+    <artifactId>zm-mailbox</artifactId>
+    <groupId>zextras</groupId>
+    <version>${revision}${changelist}</version>
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <artifactId>guava</artifactId>
+      <groupId>com.google.guava</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>zm-common</artifactId>
+      <groupId>zextras</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>attribute-manager</artifactId>
+      <groupId>zextras</groupId>
+    </dependency>
+  </dependencies>
+  <modelVersion>4.0.0</modelVersion>
+
+  <packaging>jar</packaging>
+  <build>
+    <plugins>
+      <!-- Generate ZAttrProvisioning -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+
+          <execution>
+            <id>generate-ZAttrAccount</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+              <arguments>
+                <argument>-a</argument>
+                <argument>generateProvisioning</argument>
+                <argument>-i</argument>
+                <argument>${attrs.dir}</argument>
+                <argument>-r</argument>
+                <argument>${generated-zattr}/ZAttrProvisioning.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${generated-sources}/zattr/</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <properties>
+    <maven-exec-plugin.version>3.1.0</maven-exec-plugin.version>
+    <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
+    <generated-sources>${project.build.directory}/generated-sources</generated-sources>
+    <generated-zattr>${generated-sources}/zattr/com/zimbra/common/account</generated-zattr>
+    <attrs.dir>${project.basedir}/../store/src/main/resources/conf/attrs</attrs.dir>
+  </properties>
+
+</project>

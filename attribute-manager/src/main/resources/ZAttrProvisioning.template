@@ -1,0 +1,18 @@
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
+package com.zimbra.common.account;
+
+import com.zimbra.common.service.ServiceException;
+import java.util.Arrays;
+
+/**
+ * AUTO-GENERATED. DO NOT EDIT.
+ *
+ * @author schemers
+ */
+public class ZAttrProvisioning {
+  // REPLACE
+}
