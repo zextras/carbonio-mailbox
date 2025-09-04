@@ -650,7 +650,7 @@
                 <argument>-i</argument>
                 <argument>${attrs.dir}</argument>
                 <argument>-r</argument>
-                <argument>${generated-zattr}/ZAttrCos.java.java</argument>
+                <argument>${generated-zattr}/ZAttrCos.java</argument>
               </arguments>
             </configuration>
           </execution>

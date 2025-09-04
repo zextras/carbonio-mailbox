@@ -14,43 +14,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public class FileGenUtil {
 
-
-    private static final String FILE_HEADING = "// SPDX-FileCopyrightText: 2022 Synacor, Inc.\n"
-        + "// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>\n"
-        + "//\n"
-        + "// SPDX-License-Identifier: GPL-2.0-only\n"
-        + "\n"
-        + "package com.zimbra.cs.account;\n"
-        + "\n"
-        + "import static com.zimbra.common.account.ProvisioningConstants.FALSE;\n"
-        + "import static com.zimbra.common.account.ProvisioningConstants.TRUE;\n"
-        + "\n"
-        + "import com.zimbra.common.account.ZAttr;\n"
-        + "import com.zimbra.common.account.ZAttrProvisioning;\n"
-        + "import com.zimbra.common.util.ByteUtil;\n"
-        + "import com.zimbra.common.util.StringUtil;\n"
-        + "import com.zimbra.cs.ldap.LdapDateUtil;\n"
-        + "import java.util.Date;\n"
-        + "import java.util.HashMap;\n"
-        + "import java.util.Map;\n"
-        + "\n"
-        + "/** AUTO-GENERATED. DO NOT EDIT. */\n"
-        + "public abstract class %s extends MailTarget {"
-        + "protected ZAttrAccount(\n"
-        + "      String name,\n"
-        + "      String id,\n"
-        + "      Map<String, Object> attrs,\n"
-        + "      Map<String, Object> defaults,\n"
-        + "      Provisioning prov) {\n"
-        + "    super(name, id, attrs, defaults, prov);\n"
-        + "  }";
-
-    private static final String FILE_END = "}";
     private static final String BEGIN_MARKER = "BEGIN-AUTO-GEN-REPLACE";
 
     private static final String END_MARKER  = "END-AUTO-GEN-REPLACE";
@@ -219,13 +188,21 @@ public class FileGenUtil {
 
     public static void createJavaFile(String javaFile, String content) throws IOException {
         var outputFile = new File(javaFile);
-        final boolean mkdirs = outputFile.getParentFile().mkdirs();
-        if (!mkdirs) {
-            ZimbraLog.misc.error("Cannot create directories");
+        final File parentFile = outputFile.getParentFile();
+        if (!parentFile.exists()) {
+            final boolean mkdirs = parentFile.mkdirs();
+            if (!mkdirs) {
+                ZimbraLog.misc.error("Cannot create directories");
+            }
         }
+
         var className = javaFile.substring(javaFile.lastIndexOf(File.separator)+1).replace(".java", "");
-        var out = new BufferedWriter(new FileWriter(javaFile));
-        out.write(String.format(FILE_HEADING, className) + content + FILE_END);
+        final InputStream resourceAsStream = FileGenUtil.class.getResourceAsStream("/" + className + ".template");
+        final String template = new String(resourceAsStream.readAllBytes(), StandardCharsets.UTF_8);
+        final String contentToWrite = template.replace("// REPLACE", content);
+
+        var out = new BufferedWriter(new FileWriter( javaFile));
+        out.write(contentToWrite);
         out.close();
     }
 }
