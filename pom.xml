@@ -777,6 +777,7 @@
     <module>client</module>
     <module>common</module>
     <module>native</module>
+    <module>attribute-manager</module>
     <module>store-conf</module>
     <module>store-extra-runtime-dependencies</module>
     <module>jython-libs</module>
