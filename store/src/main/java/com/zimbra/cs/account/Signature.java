@@ -5,13 +5,13 @@
 
 package com.zimbra.cs.account;
 
+import com.zimbra.util.SignatureUtil;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.zimbra.common.account.SignatureUtil;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.util.ZimbraLog;

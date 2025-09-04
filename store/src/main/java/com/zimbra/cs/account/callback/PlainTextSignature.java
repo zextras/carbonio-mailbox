@@ -8,7 +8,7 @@ package com.zimbra.cs.account.callback;
 import java.util.Map;
 
 import com.zimbra.common.account.Key;
-import com.zimbra.common.account.SignatureUtil;
+import com.zimbra.util.SignatureUtil;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.StringUtil;

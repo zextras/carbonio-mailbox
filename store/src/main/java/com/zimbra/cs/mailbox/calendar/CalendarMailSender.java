@@ -8,7 +8,7 @@ package com.zimbra.cs.mailbox.calendar;
 import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
-import com.zimbra.common.account.SignatureUtil;
+import com.zimbra.util.SignatureUtil;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.calendar.Attach;
 import com.zimbra.common.calendar.ICalTimeZone;

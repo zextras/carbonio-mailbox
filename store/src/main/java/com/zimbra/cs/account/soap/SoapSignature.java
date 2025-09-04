@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.account.soap;
 
-import com.zimbra.common.account.SignatureUtil;
+import com.zimbra.util.SignatureUtil;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
