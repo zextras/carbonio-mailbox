@@ -794,7 +794,6 @@ public class AttributeManagerUtil {
 
   public static void main(String[] args) throws IOException, ServiceException {
     CliUtil.toolSetup();
-    ZimbraLog.misc.info("Starting");
     CommandLine commandLine = parseArgs(args);
 
     if (commandLine == null) {
@@ -825,11 +824,10 @@ public class AttributeManagerUtil {
         }
       }
 
-      OutputStream outputStream = System.out;
       PrintWriter printWriter;
       final boolean printLogsToFile = commandLine.hasOption('o');
       if (printLogsToFile) {
-        outputStream = new FileOutputStream(commandLine.getOptionValue('o'));
+        OutputStream outputStream = new FileOutputStream(commandLine.getOptionValue('o'));
         printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)));
       } else {
         printWriter = new PrintWriter(System.out);
@@ -842,7 +840,6 @@ public class AttributeManagerUtil {
 //            LdapProv.getInst().dumpLdapSchema(printWriter);
 //            break;
           case GENERATE_DEFAULT_COS_LDIF:
-            ZimbraLog.misc.info("TEST");
             attributeManagerUtil.generateDefaultCOSLdif(printWriter);
             break;
           case GENERATE_DEFAULT_EXTERNAL_COS_LDIF:
