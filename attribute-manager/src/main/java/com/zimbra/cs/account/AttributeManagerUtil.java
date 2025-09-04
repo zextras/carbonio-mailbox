@@ -1639,7 +1639,7 @@ public class AttributeManagerUtil {
         continue;
       }
       if (attributeInfo.isDeprecated()) {
-        System.out.println("Attribute " + attributeInfo.getName() + " is deprecated, skipping it.");
+//        System.out.println("Attribute " + attributeInfo.getName() + " is deprecated, skipping it.");
         continue;
       }
 
@@ -1696,7 +1696,7 @@ public class AttributeManagerUtil {
         continue;
       }
       if (ai.isDeprecated()) {
-        System.out.println("Attribute " + ai.getName() + " is deprecated, skipping it.");
+//        System.out.println("Attribute " + ai.getName() + " is deprecated, skipping it.");
         continue;
       }
       generateEnum(result, ai);
@@ -1708,7 +1708,7 @@ public class AttributeManagerUtil {
         continue;
       }
       if (attributeInfo.isDeprecated()) {
-        System.out.println("Attribute " + attributeInfo.getName() + " is deprecated, skipping it.");
+//        System.out.println("Attribute " + attributeInfo.getName() + " is deprecated, skipping it.");
         continue;
       }
 
