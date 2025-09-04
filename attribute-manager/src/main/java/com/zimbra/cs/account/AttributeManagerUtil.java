@@ -1680,7 +1680,14 @@ public class AttributeManagerUtil {
           break;
       }
     }
-    FileGenUtil.replaceJavaFile(javaFile, result.toString());
+    File oldFile = new File(javaFile);
+    if (oldFile.exists()) {
+      ZimbraLog.misc.info(String.format("File %s was found. Replacing it.", javaFile));
+      FileGenUtil.replaceJavaFile(javaFile, result.toString());
+    } else {
+      ZimbraLog.misc.info(String.format("No file %s was found. Creating new.", javaFile));
+      FileGenUtil.createJavaFile(javaFile, result.toString());
+    }
   }
 
   /** */
@@ -1739,7 +1746,13 @@ public class AttributeManagerUtil {
               attributeInfo.getName(), attributeInfo.getName()));
     }
 
-    FileGenUtil.replaceJavaFile(javaFile, result.toString());
+    if (new File(javaFile).exists()) {
+      ZimbraLog.misc.info(String.format("File %s was found. Replacing it.", javaFile));
+      FileGenUtil.replaceJavaFile(javaFile, result.toString());
+    } else {
+      ZimbraLog.misc.info(String.format("No file %s was found. Creating new.", javaFile));
+      FileGenUtil.createJavaFile(javaFile, result.toString());
+    }
   }
 
   private enum Action {

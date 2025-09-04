@@ -186,4 +186,9 @@ public class FileGenUtil {
         }
     }
 
+    public static void createJavaFile(String javaFile, String content) throws IOException {
+        var out = new BufferedWriter(new FileWriter(javaFile));
+        out.write(content);
+        out.close();
+    }
 }
