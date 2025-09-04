@@ -5,13 +5,13 @@
 
 package com.zimbra.cs.account.ldap.entry;
 
+import com.zimbra.cs.account.Entry;
+import com.zimbra.cs.account.EntryType;
+import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.mime.MimeTypeInfo;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
-import com.zimbra.cs.account.Entry;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.mime.MimeTypeInfo;
 
 /**
  * 

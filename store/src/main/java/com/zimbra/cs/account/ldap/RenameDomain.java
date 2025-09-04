@@ -5,11 +5,6 @@
 
 package com.zimbra.cs.account.ldap;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.collect.Maps;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
@@ -27,6 +22,7 @@ import com.zimbra.cs.account.DistributionList;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.DynamicGroup;
 import com.zimbra.cs.account.Entry;
+import com.zimbra.cs.account.EntryType;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.SearchDirectoryOptions;
@@ -38,6 +34,10 @@ import com.zimbra.cs.httpclient.URLUtil;
 import com.zimbra.cs.ldap.ILdapContext;
 import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 import com.zimbra.soap.admin.type.CacheEntryType;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 
 public class RenameDomain {
@@ -549,16 +549,16 @@ public class RenameDomain {
             LdapEntry ldapEntry = (LdapEntry)entry;
             String[] parts = EmailUtil.getLocalPartAndDomain(entry.getName());
 
-            Entry.EntryType entryType = entry.getEntryType();
+            EntryType entryType = entry.getEntryType();
 
             String newDn = null;
 
             try {
-                if (Entry.EntryType.ACCOUNT == entryType || Entry.EntryType.CALRESOURCE == entryType) {
+                if (EntryType.ACCOUNT == entryType || EntryType.CALRESOURCE == entryType) {
                     newDn = mProv.getDIT().accountDNRename(ldapEntry.getDN(), parts[0], mNewDomainName);
-                } else if (Entry.EntryType.DISTRIBUTIONLIST == entryType) {
+                } else if (EntryType.DISTRIBUTIONLIST == entryType) {
                     newDn = mProv.getDIT().distributionListDNRename(ldapEntry.getDN(), parts[0], mNewDomainName);
-                } else if (Entry.EntryType.DYNAMICGROUP == entryType) {
+                } else if (EntryType.DYNAMICGROUP == entryType) {
                     newDn = mProv.getDIT().dynamicGroupDNRename(ldapEntry.getDN(), parts[0], mNewDomainName);
                 } else {
                     warn((Throwable) null, "handleEntry", "encountered invalid entry type", "entry=[%s]", entry.getName());
@@ -572,13 +572,13 @@ public class RenameDomain {
             // Step 1. move the all aliases of the entry that are in the old domain to the new domain
             String[] aliases = null;
 
-            if (Entry.EntryType.ACCOUNT == entryType) {
+            if (EntryType.ACCOUNT == entryType) {
                 aliases = ((Account)entry).getAliases();
-            } else if (Entry.EntryType.CALRESOURCE == entryType) {
+            } else if (EntryType.CALRESOURCE == entryType) {
                 aliases = ((CalendarResource)entry).getAliases();
-            } else if (Entry.EntryType.DISTRIBUTIONLIST == entryType) {
+            } else if (EntryType.DISTRIBUTIONLIST == entryType) {
                 aliases = ((DistributionList)entry).getAliases();
-            } else if (Entry.EntryType.DYNAMICGROUP == entryType) {
+            } else if (EntryType.DYNAMICGROUP == entryType) {
                 aliases = ((DynamicGroup)entry).getAliases();
             } else {
                 warn((Throwable) null, "handleEntry",
@@ -642,7 +642,7 @@ public class RenameDomain {
         }
 
         private void moveEntry(NamedEntry entry, String oldDn, String newDn) {
-            Entry.EntryType entryType = entry.getEntryType();
+            EntryType entryType = entry.getEntryType();
             String entryId = entry.getId();
 
             NamedEntry refreshedEntry = null;
@@ -662,11 +662,11 @@ public class RenameDomain {
                 // do not catch here, if we can't refresh - we can't modify,
                 // just let it throw and proceed to the next entry
                 try {
-                    if (Entry.EntryType.ACCOUNT == entryType || Entry.EntryType.CALRESOURCE == entryType) {
+                    if (EntryType.ACCOUNT == entryType || EntryType.CALRESOURCE == entryType) {
                         refreshedEntry = mLdapHelper.getAccountById(entryId);
-                    } else if (Entry.EntryType.DISTRIBUTIONLIST == entryType) {
+                    } else if (EntryType.DISTRIBUTIONLIST == entryType) {
                         refreshedEntry = mLdapHelper.getDistributionListById(entryId);
-                    } else if (Entry.EntryType.DYNAMICGROUP == entryType) {
+                    } else if (EntryType.DYNAMICGROUP == entryType) {
                         refreshedEntry = mLdapHelper.getDynamicGroupById(entryId);
                     }
                 } catch (ServiceException e) {

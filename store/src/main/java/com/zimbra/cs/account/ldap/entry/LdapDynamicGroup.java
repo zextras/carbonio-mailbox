@@ -5,9 +5,6 @@
 
 package com.zimbra.cs.account.ldap.entry;
 
-import java.util.Collection;
-import java.util.Set;
-
 import com.google.common.collect.Sets;
 import com.zimbra.common.account.ProvisioningConstants;
 import com.zimbra.common.service.ServiceException;
@@ -15,6 +12,7 @@ import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.DynamicGroup;
+import com.zimbra.cs.account.EntryType;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Provisioning.GroupMembership;
@@ -31,6 +29,8 @@ import com.zimbra.cs.ldap.ZLdapContext;
 import com.zimbra.cs.ldap.ZLdapFilter;
 import com.zimbra.cs.ldap.ZLdapFilterFactory;
 import com.zimbra.cs.ldap.ZSearchResultEntry;
+import java.util.Collection;
+import java.util.Set;
 
 /**
  * @author pshao

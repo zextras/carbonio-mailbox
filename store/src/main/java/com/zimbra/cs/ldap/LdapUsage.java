@@ -6,7 +6,7 @@
 package com.zimbra.cs.ldap;
 
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.Entry;
+import com.zimbra.cs.account.EntryType;
 import com.zimbra.cs.account.gal.GalOp;
 
 /**
@@ -117,7 +117,7 @@ public enum LdapUsage {
   MODRDN,
   DELETE_ADDRESSLIST;
 
-  public static LdapUsage modifyEntryfromEntryType(Entry.EntryType entryType) {
+  public static LdapUsage modifyEntryfromEntryType(EntryType entryType) {
     switch (entryType) {
       case ACCOUNT:
         return MODIFY_ACCOUNT;

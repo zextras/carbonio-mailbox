@@ -5,18 +5,7 @@
 
 package com.zimbra.cs.account.accesscontrol;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.concurrent.TimeUnit;
+import static com.zimbra.cs.account.accesscontrol.generated.UserRights.R_sendToDistList;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -34,6 +23,7 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.AttributeManager;
 import com.zimbra.cs.account.Entry;
+import com.zimbra.cs.account.EntryType;
 import com.zimbra.cs.account.MailTarget;
 import com.zimbra.cs.account.NamedEntry;
 import com.zimbra.cs.account.Provisioning;
@@ -58,8 +48,18 @@ import com.zimbra.soap.admin.type.RightWithName;
 import com.zimbra.soap.admin.type.RightsEntriesInfo;
 import com.zimbra.soap.type.NamedElement;
 import com.zimbra.soap.type.TargetBy;
-
-import static com.zimbra.cs.account.accesscontrol.generated.UserRights.R_sendToDistList;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 
 public class RightCommand {
     /*
@@ -1368,7 +1368,7 @@ public class RightCommand {
     private static final String MILTER_REFRESH_ERROR_MESSAGE = "Error while refreshing distribution list milter";
 
     private static void refreshMilter(Entry targetEntry, Right right) {
-        if (targetEntry.getEntryType().equals(Entry.EntryType.DISTRIBUTIONLIST) && right.equals(R_sendToDistList) ) {
+        if (targetEntry.getEntryType().equals(EntryType.DISTRIBUTIONLIST) && right.equals(R_sendToDistList) ) {
             try {
                 RefreshMilter.instance.refresh();
             } catch (IOException e) {
