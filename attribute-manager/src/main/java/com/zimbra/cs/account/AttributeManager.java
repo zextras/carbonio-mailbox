@@ -16,6 +16,7 @@ import com.zimbra.common.util.SetUtil;
 import com.zimbra.common.util.Version;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.callback.CallbackContext;
+import com.zimbra.cs.account.callback.IDNCallback;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

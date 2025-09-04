@@ -4,10 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-package com.zimbra.cs.account;
+package com.zimbra.cs.account.callback;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.callback.CallbackContext;
+import com.zimbra.cs.account.AttributeCallback;
+import com.zimbra.cs.account.Entry;
 import java.util.Map;
 
 public class IDNCallback extends AttributeCallback {
