@@ -367,9 +367,10 @@ public class AttributeInfo {
                 // For bug 21776 we check format for id only if the Provisioning class mandates
                 // that all attributes of type id must be an UUID.
                 //
-                if (!Provisioning.getInstance().idIsUUID()) {
-                    return;
-                }
+                // Id is in UUID format, no need to check
+//                if (!Provisioning.getInstance().idIsUUID()) {
+//                    return;
+//                }
 
                 if (ID_PATTERN.matcher(value).matches()) {
                     return;

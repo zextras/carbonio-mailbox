@@ -17,8 +17,6 @@ import com.zimbra.common.util.SetUtil;
 import com.zimbra.common.util.Version;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.callback.CallbackContext;
-import com.zimbra.cs.account.callback.IDNCallback;
-import com.zimbra.cs.account.ldap.LdapProv;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -258,7 +256,7 @@ public class AttributeManager {
     return cb;
   }
 
-  public static void loadLdapSchemaExtensionAttrs(LdapProv prov) {
+  public static void loadLdapSchemaExtensionAttrs(Provisioning prov) {
     synchronized (AttributeManager.class) {
       try {
         AttributeManager theInstance = AttributeManager.getInstance();
@@ -1213,7 +1211,7 @@ public class AttributeManager {
       throws ServiceException {
     // bug 32507
     if (!mClassToAllAttrsMap.get(klass).contains(attr))
-      throw AccountServiceException.INVALID_ATTR_NAME(
+      throw AttributeException.INVALID_ATTR_NAME(
           "unknown attribute on " + klass.name() + ": " + attr, null);
 
     return mFlagToAttrsMap.get(AttributeFlag.domainAdminModifiable).contains(attr);
@@ -1297,7 +1295,7 @@ public class AttributeManager {
         return good;
       }
     } else {
-      throw AccountServiceException.INVALID_ATTR_NAME("unknown attribute: " + attr, null);
+      throw AttributeException.INVALID_ATTR_NAME("unknown attribute: " + attr, null);
     }
   }
 
@@ -1316,7 +1314,7 @@ public class AttributeManager {
   public AttributeType getAttributeType(String attr) throws ServiceException {
     AttributeInfo ai = mAttrs.get(attr.toLowerCase());
     if (ai != null) return ai.getType();
-    else throw AccountServiceException.INVALID_ATTR_NAME("unknown attribute: " + attr, null);
+    else throw AttributeException.INVALID_ATTR_NAME("unknown attribute: " + attr, null);
   }
 
   public boolean containsBinaryData(String attr) {
@@ -1405,7 +1403,7 @@ public class AttributeManager {
     for (String key : keys) {
       String name = key;
       if (name.length() == 0) {
-        throw AccountServiceException.INVALID_ATTR_NAME("empty attr name found", null);
+        throw AttributeException.INVALID_ATTR_NAME("empty attr name found", null);
       }
       Object value = attrs.get(name);
       if (name.charAt(0) == '-' || name.charAt(0) == '+') name = name.substring(1);
@@ -1463,7 +1461,7 @@ public class AttributeManager {
     else return mAttrs.get(name.toLowerCase());
   }
 
-  private void getLdapSchemaExtensionAttrs(LdapProv prov) throws ServiceException {
+  private void getLdapSchemaExtensionAttrs(Provisioning prov) throws ServiceException {
     if (mLdapSchemaExtensionInited) return;
 
     mLdapSchemaExtensionInited = true;
@@ -1483,7 +1481,7 @@ public class AttributeManager {
   }
 
   private void getExtraObjectClassAttrs(
-      LdapProv prov, AttributeClass attrClass, String extraObjectClassAttr)
+      Provisioning prov, AttributeClass attrClass, String extraObjectClassAttr)
       throws ServiceException {
     Config config = prov.getConfig();
 

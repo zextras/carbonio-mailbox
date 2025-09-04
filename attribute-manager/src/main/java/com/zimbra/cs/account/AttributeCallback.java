@@ -34,7 +34,6 @@ public abstract class AttributeCallback {
      * @param attrValue will be null, String, or String[]
      * @param attrsToModify a map of all the attributes being modified
      * @param entry entry object being modified. null if entry is being created.
-     * @param isCreate set to true if called during create
      * @throws ServiceException causes the whole transaction to abort.
      */
     public abstract void preModify(
@@ -50,7 +49,6 @@ public abstract class AttributeCallback {
      * @param context
      * @param attrName
      * @param entry Set on modify and create.
-     * @param isCreate set to true if called during create
      */
     public abstract void postModify(
             CallbackContext context,
