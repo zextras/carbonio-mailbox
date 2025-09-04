@@ -19,22 +19,24 @@ def isBuildingTag() {
     return false
 }
 
-def buildContainer(String title, String description, String dockerfile, String tag) {
+def buildContainer(String title, String description, String dockerfile, String imageName, List<String> versions, String commitHash) {
+    tagsToAdd = []
+    versions.each {
+        version -> tagsToAdd.add("-t " + imageName + ":" + version)
+    }
     sh 'docker build ' +
             '--label org.opencontainers.image.title="' + title + '" ' +
             '--label org.opencontainers.image.description="' + description + '" ' +
             '--label org.opencontainers.image.vendor="Zextras" ' +
-            '-f ' + dockerfile + ' -t ' + tag + ' .'
-    sh 'docker push ' + tag
+            '--label org.opencontainers.image.revision="' + commitHash + '" ' +
+            '-f ' + dockerfile + ' ' + tagsToAdd.join(" ") + ' .'
+    sh 'docker push --all-tags ' + imageName
 }
 
-def getPackages() {
-    return ["carbonio-appserver-conf","carbonio-appserver-db",
+def packages = ["carbonio-appserver-conf","carbonio-appserver-db",
             "carbonio-appserver-service", "carbonio-common-appserver-conf",
             "carbonio-common-appserver-native-lib", "carbonio-directory-server",
-            "carbonio-mailbox-jar"
-    ]
-}
+            "carbonio-mailbox-jar"]
 
 
 pipeline {
@@ -120,19 +122,41 @@ pipeline {
                 }
             }
         }
-        stage('Publish containers - devel') {
+        stage('Publish containers') {
             when {
-                branch 'devel';
+                expression {
+                    return isBuildingTag() || env.BRANCH_NAME == 'devel'
+                }
             }
             steps {
                 container('dind') {
                     withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                        buildContainer('Carbonio Mailbox', '$(cat docker/standalone/mailbox/description.md)',
-                                'docker/standalone/mailbox/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-mailbox:latest')
-                        buildContainer('Carbonio MariaDB', '$(cat docker/standalone/mariadb/description.md)',
-                                'docker/standalone/mariadb/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-mariadb:latest')
-                        buildContainer('Carbonio OpenLDAP', '$(cat docker/standalone/openldap/description.md)',
-                                'docker/standalone/openldap/Dockerfile', 'registry.dev.zextras.com/dev/carbonio-openldap:latest')
+                        script {
+                            def commitHash = env.GIT_COMMIT
+                            def tagVersions = []
+                            if (isBuildingTag()) {
+                                tagVersions.add(env.TAG_NAME)
+                                tagVersions.add("stable")
+                            } else {
+                                tagVersions.add("devel")
+                                tagVersions.add("latest")
+                            }
+                            buildContainer('Carbonio Mailbox',
+                                    '$(cat docker/standalone/mailbox/description.md)',
+                                    'docker/standalone/mailbox/Dockerfile',
+                                    'registry.dev.zextras.com/dev/carbonio-mailbox',
+                                    tagVersions, commitHash)
+                            buildContainer('Carbonio MariaDB',
+                                    '$(cat docker/standalone/mariadb/description.md)',
+                                    'docker/standalone/mariadb/Dockerfile',
+                                    'registry.dev.zextras.com/dev/carbonio-mariadb',
+                                    tagVersions, commitHash)
+                            buildContainer('Carbonio OpenLDAP',
+                                    '$(cat docker/standalone/openldap/description.md)',
+                                    'docker/standalone/openldap/Dockerfile',
+                                    'registry.dev.zextras.com/dev/carbonio-openldap',
+                                    tagVersions, commitHash)
+                        }
                     }
                 }
             }
@@ -162,7 +186,7 @@ pipeline {
         stage ('Build Packages') {
             steps {
                 script {
-                    buildStage(getPackages(), 'staging', 'build_pkg/packages')()
+                    buildStage(packages, 'staging', 'build_pkg/packages')()
                 }
             }
         }
