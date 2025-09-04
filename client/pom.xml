@@ -56,6 +56,10 @@
       <artifactId>zm-common</artifactId>
       <groupId>zextras</groupId>
     </dependency>
+    <dependency>
+      <artifactId>ldap</artifactId>
+      <groupId>zextras</groupId>
+    </dependency>
 
     <dependency>
       <artifactId>zm-soap</artifactId>

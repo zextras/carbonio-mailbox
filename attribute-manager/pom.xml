@@ -73,11 +73,6 @@
       <artifactId>zm-common</artifactId>
       <groupId>zextras</groupId>
     </dependency>
-
-    <dependency>
-      <artifactId>zm-soap</artifactId>
-      <groupId>zextras</groupId>
-    </dependency>
   </dependencies>
   <modelVersion>4.0.0</modelVersion>
 

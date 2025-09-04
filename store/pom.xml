@@ -485,6 +485,10 @@
       <groupId>zextras</groupId>
     </dependency>
     <dependency>
+      <artifactId>ldap</artifactId>
+      <groupId>zextras</groupId>
+    </dependency>
+    <dependency>
       <artifactId>zm-client</artifactId>
       <groupId>zextras</groupId>
     </dependency>
