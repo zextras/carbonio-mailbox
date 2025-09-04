@@ -206,6 +206,6 @@ public class FileGenUtil {
             }
             ZimbraLog.misc.info("Wrote file: " + javaFile);
         }
-        replaceFile(javaFile, content);
+        replaceJavaFile(javaFile, content);
     }
 }

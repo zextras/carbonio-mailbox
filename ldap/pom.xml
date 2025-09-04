@@ -46,7 +46,7 @@
 
           <execution>
             <id>generate-ZAttrAccount</id>
-            <phase>generate-sources</phase>
+            <phase>process-sources</phase>
             <goals>
               <goal>java</goal>
             </goals>

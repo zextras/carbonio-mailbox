@@ -839,46 +839,59 @@ public class AttributeManagerUtil {
 //            LdapProv.getInst().dumpLdapSchema(printWriter);
 //            break;
           case GENERATE_DEFAULT_COS_LDIF:
+            ZimbraLog.misc.info("TEST");
             attributeManagerUtil.generateDefaultCOSLdif(printWriter);
             break;
           case GENERATE_DEFAULT_EXTERNAL_COS_LDIF:
+            ZimbraLog.misc.info("TEST");
             attributeManagerUtil.generateDefaultExternalCOSLdif(printWriter);
             break;
           case GENERATE_GETTERS:
+            ZimbraLog.misc.info("TEST");
             attributeManagerUtil.generateGetters(
                 commandLine.getOptionValue('c'), commandLine.getOptionValue('r'));
             ZimbraLog.misc.info("Finished generating getters");
             break;
           case GENERATE_GLOBAL_CONFIG_LDIF:
+            ZimbraLog.misc.info("TEST");
             attributeManagerUtil.generateGlobalConfigLdif(printWriter);
             break;
           case GENERATE_LDAP_SCHEMA:
+            ZimbraLog.misc.info("TEST");
             if (!commandLine.hasOption('t')) {
               usage("no schema template specified");
             }
             attributeManagerUtil.generateLdapSchema(printWriter, commandLine.getOptionValue('t'));
             break;
           case GENERATE_MESSAGE_PROPERTIES:
+            ZimbraLog.misc.info("TEST");
             attributeManagerUtil.generateMessageProperties(commandLine.getOptionValue('r'));
             break;
           case GENERATE_PROVISIONING:
+            ZimbraLog.misc.info("TEST");
             attributeManagerUtil.generateProvisioningConstants(commandLine.getOptionValue('r'));
+            ZimbraLog.misc.info("Finished generating provisioning");
             break;
           case GENERATE_SCHEMA_LDIF:
+            ZimbraLog.misc.info("TEST");
             attributeManagerUtil.generateSchemaLdif(printWriter);
             break;
           case LIST_ATTRS:
+            ZimbraLog.misc.info("TEST");
             attributeManagerUtil.listAttrs(
                 commandLine.getOptionValues('c'),
                 commandLine.getOptionValues('n'),
                 commandLine.getOptionValues('f'));
             break;
         }
+        ZimbraLog.misc.info("Finished generating");
+        ZimbraLog.misc.info("Other line");
       } catch (IOException e) {
+        ZimbraLog.misc.info("Exception ");
         ZimbraLog.misc.error(e.getMessage());
         System.exit(1);
       }
-      ZimbraLog.misc.info("Finished generating attributes");
+      ZimbraLog.misc.info("AAAA");
     }
     ZimbraLog.misc.info("Finished generating attributes");
   }

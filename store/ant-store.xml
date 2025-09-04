@@ -71,23 +71,6 @@
   <target name="generate-zattr-rights" description="generate ZAttr and rights"
     depends="generate-rights,generate-ldap-config"/>
 
-  <target name="generate-getter">
-    <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true"
-      classpath="${maven_compile_classpath}" failonerror="true">
-      <sysproperty key="carbonio.version" value="${carbonio.buildinfo.all}"/>
-      <arg
-        line="-a generateGetters -c ${getter.class} -i ${attrs.dir} -r ${src.java.dir}/com/zimbra/cs/account/${getter.output}"/>
-    </java>
-  </target>
-  <target name="generate-provisioning">
-    <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true"
-      classpath="${maven_compile_classpath}" failonerror="true">
-      <sysproperty key="carbonio.version" value="${carbonio.buildinfo.all}"/>
-      <arg
-        line="-a generateProvisioning -i ${attrs.dir} -r ${common.src.java.dir}/com/zimbra/common/account/ZAttrProvisioning.java"/>
-    </java>
-  </target>
-
   <target name="create-version-sql" depends="build-init, set-dev-version"
     description="Creates version-init.sql">
     <java classname="com.zimbra.cs.db.MySQL" fork="true" classpath="${maven_compile_classpath}"
