@@ -607,6 +607,36 @@
     </testResources>
 
     <plugins>
+      <!-- Generate zattr classes -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+
+          <execution>
+            <id>generate-ZAttrAccount</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+              <arguments>
+                <argument>-a</argument>
+                <argument>generateGetters</argument>
+                <argument>-c</argument>
+                <argument>account</argument>
+                <argument>-i</argument>
+                <argument>${project.basedir}/src/main/resources/conf/attrs</argument>
+                <argument>-r</argument>
+                <argument>${project.basedir}/src/main/java/com/zimbra/cs/account/ZAttrAccount.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Add buildinfo sources -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
