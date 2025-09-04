@@ -1738,8 +1738,7 @@ public class AttributeManagerUtil {
               "    public static final String A_%s = \"%s\";%n",
               attributeInfo.getName(), attributeInfo.getName()));
     }
-      ZimbraLog.misc.info(String.format("No file %s was found. Creating new.", javaFile));
-      FileGenUtil.createJavaFile(javaFile, result.toString());
+    FileGenUtil.createJavaFile(javaFile, result.toString());
   }
 
   private enum Action {

@@ -1,0 +1,29 @@
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
+package com.zimbra.cs.account;
+
+import static com.zimbra.common.account.ProvisioningConstants.FALSE;
+import static com.zimbra.common.account.ProvisioningConstants.TRUE;
+
+import com.zimbra.common.account.ZAttr;
+import com.zimbra.common.account.ZAttrProvisioning;
+import com.zimbra.common.util.StringUtil;
+import com.zimbra.cs.ldap.LdapDateUtil;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+/** AUTO-GENERATED. DO NOT EDIT. */
+public abstract class ZAttrDistributionList extends Group {
+
+  protected ZAttrDistributionList(
+      String name, String id, Map<String, Object> attrs, Provisioning prov) {
+    super(name, id, attrs, prov);
+  }
+
+  // REPLACE
+
+}
