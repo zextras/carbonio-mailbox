@@ -79,4 +79,17 @@
 
   <packaging>jar</packaging>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version> <!-- or latest -->
+        <configuration>
+          <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
