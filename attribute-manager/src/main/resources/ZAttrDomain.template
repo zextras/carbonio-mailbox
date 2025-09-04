@@ -17,11 +17,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /** AUTO-GENERATED. DO NOT EDIT. */
-public abstract class ZAttrCos extends NamedEntry {
+public abstract class ZAttrDomain extends NamedEntry {
 
-  protected ZAttrCos(String name, String id, Map<String, Object> attrs, Provisioning prov) {
-    super(name, id, attrs, null, prov);
+  protected ZAttrDomain(
+      String name,
+      String id,
+      Map<String, Object> attrs,
+      Map<String, Object> defaults,
+      Provisioning prov) {
+    super(name, id, attrs, defaults, prov);
   }
-
   // REPLACE
- }
+}

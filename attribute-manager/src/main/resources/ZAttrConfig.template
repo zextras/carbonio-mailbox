@@ -10,6 +10,7 @@ import static com.zimbra.common.account.ProvisioningConstants.TRUE;
 
 import com.zimbra.common.account.ZAttr;
 import com.zimbra.common.account.ZAttrProvisioning;
+import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.ldap.LdapDateUtil;
 import java.util.Date;
@@ -17,11 +18,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /** AUTO-GENERATED. DO NOT EDIT. */
-public abstract class ZAttrCos extends NamedEntry {
+public abstract class ZAttrConfig extends Entry {
 
-  protected ZAttrCos(String name, String id, Map<String, Object> attrs, Provisioning prov) {
-    super(name, id, attrs, null, prov);
+  public ZAttrConfig(Map<String, Object> attrs, Provisioning provisioning) {
+    super(attrs, null, provisioning);
   }
-
   // REPLACE
- }
+}

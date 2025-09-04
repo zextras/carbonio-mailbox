@@ -639,6 +639,26 @@
             </configuration>
           </execution>
           <execution>
+            <id>generate-ZAttrConfig</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+              <arguments>
+                <argument>-a</argument>
+                <argument>generateGetters</argument>
+                <argument>-c</argument>
+                <argument>globalConfig</argument>
+                <argument>-i</argument>
+                <argument>${attrs.dir}</argument>
+                <argument>-r</argument>
+                <argument>${generated-zattr}/ZAttrConfig.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
             <id>generate-ZAttrCos</id>
             <phase>generate-sources</phase>
             <goals>
@@ -655,6 +675,46 @@
                 <argument>${attrs.dir}</argument>
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrCos.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-ZAttrDomain</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+              <arguments>
+                <argument>-a</argument>
+                <argument>generateGetters</argument>
+                <argument>-c</argument>
+                <argument>domain</argument>
+                <argument>-i</argument>
+                <argument>${attrs.dir}</argument>
+                <argument>-r</argument>
+                <argument>${generated-zattr}/ZAttrDomain.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-ZAttrServer</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+              <arguments>
+                <argument>-a</argument>
+                <argument>generateGetters</argument>
+                <argument>-c</argument>
+                <argument>server</argument>
+                <argument>-i</argument>
+                <argument>${attrs.dir}</argument>
+                <argument>-r</argument>
+                <argument>${generated-zattr}/ZAttrServer.java</argument>
               </arguments>
             </configuration>
           </execution>
