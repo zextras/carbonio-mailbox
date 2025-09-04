@@ -21,6 +21,9 @@ public abstract class ZAttrShareLocator extends NamedEntry {
         super(null, id, attrs, null, prov);
     }
 
-    // REPLACE
+
+  ///// BEGIN-AUTO-GEN-REPLACE
+
+  ///// END-AUTO-GEN-REPLACE
 
  }

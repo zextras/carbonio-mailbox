@@ -794,6 +794,7 @@ public class AttributeManagerUtil {
 
   public static void main(String[] args) throws IOException, ServiceException {
     CliUtil.toolSetup();
+    ZimbraLog.misc.info("Starting");
     CommandLine commandLine = parseArgs(args);
 
     if (commandLine == null) {
@@ -846,6 +847,7 @@ public class AttributeManagerUtil {
           case GENERATE_GETTERS:
             attributeManagerUtil.generateGetters(
                 commandLine.getOptionValue('c'), commandLine.getOptionValue('r'));
+            ZimbraLog.misc.info("Finished generating getters");
             break;
           case GENERATE_GLOBAL_CONFIG_LDIF:
             attributeManagerUtil.generateGlobalConfigLdif(printWriter);
@@ -876,7 +878,9 @@ public class AttributeManagerUtil {
         ZimbraLog.misc.error(e.getMessage());
         System.exit(1);
       }
+      ZimbraLog.misc.info("Finished generating attributes");
     }
+    ZimbraLog.misc.info("Finished generating attributes");
   }
 
   private Map<String, AttributeInfo> getAttrs() {
@@ -1681,6 +1685,7 @@ public class AttributeManagerUtil {
       }
     }
     FileGenUtil.createJavaFile(javaFile, result.toString());
+    ZimbraLog.misc.info("Done: " + javaFile);
   }
 
   /** */

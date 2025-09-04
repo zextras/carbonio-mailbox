@@ -27,5 +27,8 @@ public abstract class ZAttrServer extends NamedEntry {
       Provisioning prov) {
     super(name, id, attrs, defaults, prov);
   }
-  // REPLACE
+
+  ///// BEGIN-AUTO-GEN-REPLACE
+
+  ///// END-AUTO-GEN-REPLACE
 }

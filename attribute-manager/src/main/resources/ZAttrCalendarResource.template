@@ -25,5 +25,8 @@ public class ZAttrCalendarResource extends Account {
     protected ZAttrCalendarResource(String name, String id, Map<String, Object> attrs, Map<String, Object> defaults, Provisioning prov) {
         super(name, id, attrs, defaults, prov);
     }
-    // REPLACE
+
+  ///// BEGIN-AUTO-GEN-REPLACE
+
+  ///// END-AUTO-GEN-REPLACE
 }

@@ -250,9 +250,9 @@ public class AttributeManager {
     if (clazz.indexOf('.') == -1) clazz = "com.zimbra.cs.account.callback." + clazz;
 //    ZimbraLog.misc.info("Requesting class callback: " + clazz);
     try {
-      cb = (AttributeCallback) Class.forName(clazz).getDeclaredConstructor().newInstance();
+//      cb = (AttributeCallback) Class.forName(clazz).getDeclaredConstructor().newInstance();
     } catch (Exception e) {
-//      ZimbraLog.misc.warn("loadCallback caught exception", e);
+      ZimbraLog.misc.warn("loadCallback caught exception", e);
     }
     return cb;
   }

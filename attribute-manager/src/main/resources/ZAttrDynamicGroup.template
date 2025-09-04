@@ -27,6 +27,8 @@ public abstract class ZAttrDynamicGroup extends Group {
         super(name, id, attrs, prov);
     }
 
-    // REPLACE
+  ///// BEGIN-AUTO-GEN-REPLACE
+
+  ///// END-AUTO-GEN-REPLACE
 
  }

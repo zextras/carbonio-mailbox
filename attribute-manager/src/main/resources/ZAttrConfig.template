@@ -23,5 +23,8 @@ public abstract class ZAttrConfig extends Entry {
   public ZAttrConfig(Map<String, Object> attrs, Provisioning provisioning) {
     super(attrs, null, provisioning);
   }
-  // REPLACE
+
+  ///// BEGIN-AUTO-GEN-REPLACE
+
+  ///// END-AUTO-GEN-REPLACE
 }

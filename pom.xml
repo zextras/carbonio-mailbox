@@ -777,13 +777,13 @@
   <groupId>zextras</groupId>
   <modelVersion>4.0.0</modelVersion>
   <modules>
-    <module>soap</module>
-    <module>store</module>
-    <module>client</module>
-    <module>common</module>
     <module>native</module>
+    <module>common</module>
     <module>attribute-manager</module>
     <module>ldap</module>
+    <module>client</module>
+    <module>soap</module>
+    <module>store</module>
     <module>store-conf</module>
     <module>store-extra-runtime-dependencies</module>
     <module>jython-libs</module>

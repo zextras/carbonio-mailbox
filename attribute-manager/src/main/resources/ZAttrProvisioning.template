@@ -14,5 +14,9 @@ import java.util.Arrays;
  * @author schemers
  */
 public class ZAttrProvisioning {
-  // REPLACE
+
+  ///// BEGIN-AUTO-GEN-REPLACE
+
+  ///// END-AUTO-GEN-REPLACE
+
 }

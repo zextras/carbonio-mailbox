@@ -23,5 +23,8 @@ public abstract class ZAttrCos extends NamedEntry {
     super(name, id, attrs, null, prov);
   }
 
-  // REPLACE
+
+  ///// BEGIN-AUTO-GEN-REPLACE
+
+  ///// END-AUTO-GEN-REPLACE
  }

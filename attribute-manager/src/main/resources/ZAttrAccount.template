@@ -29,5 +29,8 @@ public abstract class ZAttrAccount extends MailTarget {
     super(name, id, attrs, defaults, prov);
   }
 
-  // REPLACE
+
+  ///// BEGIN-AUTO-GEN-REPLACE
+
+  ///// END-AUTO-GEN-REPLACE
 }

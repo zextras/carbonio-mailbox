@@ -195,14 +195,17 @@ public class FileGenUtil {
                 ZimbraLog.misc.error("Cannot create directories");
             }
         }
-
         var className = javaFile.substring(javaFile.lastIndexOf(File.separator)+1).replace(".java", "");
-        final InputStream resourceAsStream = FileGenUtil.class.getResourceAsStream("/" + className + ".template");
-        final String template = new String(resourceAsStream.readAllBytes(), StandardCharsets.UTF_8);
-        final String contentToWrite = template.replace("// REPLACE", content);
-
-        var out = new BufferedWriter(new FileWriter( javaFile));
-        out.write(contentToWrite);
-        out.close();
+        try(InputStream resourceAsStream = FileGenUtil.class.getResourceAsStream("/" + className + ".template")) {
+            final String template = new String(resourceAsStream.readAllBytes(),
+                StandardCharsets.UTF_8);
+            try (BufferedWriter out = new BufferedWriter(new FileWriter(javaFile))) {
+                out.write(template);
+            } catch (IOException e) {
+                ZimbraLog.misc.info("Failed writing template to file: " + javaFile);
+            }
+            ZimbraLog.misc.info("Wrote file: " + javaFile);
+        }
+        replaceFile(javaFile, content);
     }
 }
