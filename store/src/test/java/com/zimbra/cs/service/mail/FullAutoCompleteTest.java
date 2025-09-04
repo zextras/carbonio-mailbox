@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zextras.mailbox.util.AccountAction;
-import com.zextras.mailbox.util.CreateAccount;
 import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -58,12 +57,12 @@ import org.mockito.Mockito;
 class FullAutoCompleteTest extends SoapTestSuite {
 
   private static AccountAction.Factory accountActionFactory;
-  private static CreateAccount.Factory createAccountFactory;
+  
 
   @BeforeAll
   static void beforeAll() throws Exception {
     accountActionFactory = getAccountActionFactory();
-    createAccountFactory = getCreateAccountFactory();
+    
   }
 
   private static Collection<Arguments> parsePreferredAccountsTestData() {
@@ -247,10 +246,10 @@ class FullAutoCompleteTest extends SoapTestSuite {
       throws Exception {
     String searchTerm = "fac";
 
-    Account account = createAccountFactory.get().create();
+    Account account = createAccount().create();
     Server server = Provisioning.getInstance().createServer(UUID.randomUUID() + ".com", new HashMap<>());
     server.setServiceEnabled(new String[]{"service"});
-    Account account2 = createAccountFactory.get().withAttribute(Provisioning.A_zimbraMailHost, server.getHostname())
+    Account account2 = createAccount().withAttribute(Provisioning.A_zimbraMailHost, server.getHostname())
         .create();
 
     shareAccountWithPrimary(account2, account);
@@ -475,7 +474,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
 
   @Test
   void should_throw_exception_when_request_element_cannot_be_converted_to_fac_request_object() throws Exception {
-    var account = createAccountFactory.get().create();
+    var account = createAccount().create();
 
     var mockElement = mock(Element.class);
     when(JaxbUtil.elementToJaxb(mockElement)).thenReturn(null);
@@ -500,7 +499,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
   }
 
   private Account createRandomAccountWithContacts(String... emails) throws Exception {
-    var account = createAccountFactory.get().create();
+    var account = createAccount().create();
     for (String contactEmail : emails) {
       var response = getSoapClient().executeSoap(account,
           new CreateContactRequest(new ContactSpec().addEmail(contactEmail)));
@@ -517,7 +516,7 @@ class FullAutoCompleteTest extends SoapTestSuite {
 
   private Account createRandomAccountWithContactGroup(String contactGroupName,
       String... membersEmailsForContactGroup) throws Exception {
-    var account = createAccountFactory.get().create();
+    var account = createAccount().create();
     createContactGroupForAccount(account, contactGroupName, membersEmailsForContactGroup);
     return account;
   }

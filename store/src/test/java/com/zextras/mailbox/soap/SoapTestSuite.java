@@ -45,9 +45,9 @@ public class SoapTestSuite {
       .addEngineHandler(MailServiceWithoutTracking.class.getName())
       .create();
 
-  protected static CreateAccount.Factory getCreateAccountFactory() {
+  protected static CreateAccount createAccount() {
     return new CreateAccount.Factory(Provisioning.getInstance(),
-        getDefaultDomainName());
+        getDefaultDomainName()).get();
   }
   protected static AccountAction.Factory getAccountActionFactory() throws ServiceException {
     return AccountAction.Factory.getDefault();

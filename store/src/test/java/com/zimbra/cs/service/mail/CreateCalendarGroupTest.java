@@ -1,6 +1,5 @@
 package com.zimbra.cs.service.mail;
 
-import com.zextras.mailbox.util.CreateAccount;
 import static com.zimbra.common.service.ServiceException.GROUP_NAME_ALREADY_EXIST;
 import static com.zimbra.common.soap.Element.parseXML;
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,7 +29,7 @@ import org.junit.jupiter.api.Test;
 @Tag("api")
 class CreateCalendarGroupTest extends SoapTestSuite {
 
-  private static CreateAccount.Factory createAccountFactory;
+  
   private static Provisioning provisioning;
 
   private Account account;
@@ -38,12 +37,12 @@ class CreateCalendarGroupTest extends SoapTestSuite {
   @BeforeAll
   static void init() {
     provisioning = Provisioning.getInstance();
-    createAccountFactory = getCreateAccountFactory();
+    
   }
 
   @BeforeEach
   void setUp() throws Exception {
-    account = createAccountFactory.get().create();
+    account = createAccount().create();
   }
 
   @Test

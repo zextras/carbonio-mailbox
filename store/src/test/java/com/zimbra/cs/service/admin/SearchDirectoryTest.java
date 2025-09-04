@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 
 @Tag("api")
 class SearchDirectoryTest extends SoapTestSuite {
-  private static CreateAccount.Factory createAccountFactory;
+  
 	private static Account adminAccount;
   private static Account secondAccount;
   private static Account firstAccount;
@@ -34,7 +34,7 @@ class SearchDirectoryTest extends SoapTestSuite {
   static void setUp() throws Exception {
 		Provisioning provisioning = Provisioning.getInstance();
     provisioning.createDomain("different.com", new HashMap<>());
-    createAccountFactory = getCreateAccountFactory();
+    
     adminAccount = newAccountOn(getDefaultDomainName()).withUsername("admin.account").asGlobalAdmin().create();
     secondAccount = newAccountOn(getDefaultDomainName()).withUsername("second.account").create();
     firstAccount = newAccountOn(getDefaultDomainName()).withUsername("first.account").create();
@@ -129,7 +129,7 @@ class SearchDirectoryTest extends SoapTestSuite {
   }
 
   private static CreateAccount newAccountOn(String domain) {
-    return createAccountFactory.get().withDomain(domain);
+    return createAccount().withDomain(domain);
   }
 
 }
