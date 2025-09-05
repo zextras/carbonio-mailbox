@@ -8,7 +8,7 @@ package com.zimbra.cs.account;
 
 import java.util.Set;
 
-public interface Provisioning {
+public interface AttributeManagerRepository {
 
 	String DEFAULT_COS_NAME = "default";
 	String DEFAULT_EXTERNAL_COS_NAME = "defaultExternal";

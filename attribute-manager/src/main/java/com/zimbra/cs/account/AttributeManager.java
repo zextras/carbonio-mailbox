@@ -257,11 +257,11 @@ public class AttributeManager {
     return cb;
   }
 
-  public static void loadLdapSchemaExtensionAttrs(Provisioning prov) {
+  public static void loadLdapSchemaExtensionAttrs(AttributeManagerRepository repository) {
     synchronized (AttributeManager.class) {
       try {
         AttributeManager theInstance = AttributeManager.getInstance();
-        theInstance.getLdapSchemaExtensionAttrs(prov);
+        theInstance.getLdapSchemaExtensionAttrs(repository);
         theInstance.computeClassToAllAttrsMap(); // recompute the ClassToAllAttrsMap
       } catch (ServiceException e) {
         ZimbraLog.account.warn("unable to load LDAP schema extensions", e);
@@ -1462,35 +1462,35 @@ public class AttributeManager {
     else return mAttrs.get(name.toLowerCase());
   }
 
-  private void getLdapSchemaExtensionAttrs(Provisioning provisioning) throws ServiceException {
+  private void getLdapSchemaExtensionAttrs(AttributeManagerRepository repository) throws ServiceException {
     if (mLdapSchemaExtensionInited) return;
 
     mLdapSchemaExtensionInited = true;
 
     getExtraObjectClassAttrs(
-        provisioning, AttributeClass.account, "zimbraAccountExtraObjectClass");
+        repository, AttributeClass.account, "zimbraAccountExtraObjectClass");
     getExtraObjectClassAttrs(
-        provisioning,
+        repository,
         AttributeClass.calendarResource,
         "zimbraCalendarResourceExtraObjectClass");
     getExtraObjectClassAttrs(
-        provisioning, AttributeClass.cos, "zimbraCosExtraObjectClass");
+        repository, AttributeClass.cos, "zimbraCosExtraObjectClass");
     getExtraObjectClassAttrs(
-        provisioning, AttributeClass.domain, "zimbraDomainExtraObjectClass");
+        repository, AttributeClass.domain, "zimbraDomainExtraObjectClass");
     getExtraObjectClassAttrs(
-        provisioning, AttributeClass.server, "zimbraServerExtraObjectClass");
+        repository, AttributeClass.server, "zimbraServerExtraObjectClass");
   }
 
   private void getExtraObjectClassAttrs(
-      Provisioning provisioning, AttributeClass attrClass, String extraObjectClassAttr)
+      AttributeManagerRepository repository, AttributeClass attrClass, String extraObjectClassAttr)
       throws ServiceException {
-    Config config = provisioning.getConfig();
+    Config config = repository.getConfig();
 
     String[] extraObjectClasses = config.getMultiAttr(extraObjectClassAttr);
 
     if (extraObjectClasses.length > 0) {
       Set<String> attrsInOCs = mClassToAttrsMap.get(AttributeClass.account);
-      provisioning.getAttrsInOCs(extraObjectClasses, attrsInOCs);
+      repository.getAttrsInOCs(extraObjectClasses, attrsInOCs);
     }
   }
 

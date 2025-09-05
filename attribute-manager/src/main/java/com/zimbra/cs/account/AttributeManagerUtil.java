@@ -916,7 +916,7 @@ public class AttributeManagerUtil {
     pw.println("#");
 
     String baseDn = CLOptions.getBaseDn("cos");
-    String cosName = CLOptions.getEntryName("cos", Provisioning.DEFAULT_COS_NAME);
+    String cosName = CLOptions.getEntryName("cos", AttributeManagerRepository.DEFAULT_COS_NAME);
     String cosId = CLOptions.getEntryId("cos", "e00428a1-0c00-11d9-836a-000d93afea2a");
 
     pw.println("dn: cn=" + cosName + ",cn=cos," + baseDn);
@@ -948,7 +948,7 @@ public class AttributeManagerUtil {
     pw.println("#");
 
     String baseDn = CLOptions.getBaseDn("cos");
-    String cosName = CLOptions.getEntryName("cos", Provisioning.DEFAULT_EXTERNAL_COS_NAME);
+    String cosName = CLOptions.getEntryName("cos", AttributeManagerRepository.DEFAULT_EXTERNAL_COS_NAME);
     String cosId = CLOptions.getEntryId("cos", "f27456a8-0c00-11d9-280a-286d93afea2g");
 
     pw.println("dn: cn=" + cosName + ",cn=cos," + baseDn);
