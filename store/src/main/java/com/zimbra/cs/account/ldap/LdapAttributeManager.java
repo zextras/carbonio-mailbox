@@ -1,0 +1,106 @@
+/*
+ * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+package com.zimbra.cs.account.ldap;
+
+import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.AttributeException;
+import com.zimbra.cs.account.AttributeInfo;
+import com.zimbra.cs.account.AttributeManager;
+import com.zimbra.cs.account.Entry;
+import com.zimbra.cs.account.callback.CallbackContext;
+import java.util.Map;
+
+class LdapAttributeManager {
+
+	public static LdapAttributeManager get(AttributeManager attributeManager) {
+		return new LdapAttributeManager(attributeManager);
+	}
+
+	private final AttributeManager attributeManager;
+
+	public LdapAttributeManager(AttributeManager attributeManager) {
+		this.attributeManager = attributeManager;
+	}
+
+	public void preModify(
+			Map<String, ? extends Object> attrs,
+			Entry entry,
+			CallbackContext context,
+			boolean checkImmutable)
+			throws ServiceException {
+		preModify(attrs, entry, context, checkImmutable, true);
+	}
+
+	public void preModify(
+			Map<String, ? extends Object> attrs,
+			Entry entry,
+			CallbackContext context,
+			boolean checkImmutable,
+			boolean allowCallback)
+			throws ServiceException {
+		String[] keys = attrs.keySet().toArray(new String[0]);
+		for (String key : keys) {
+			String name = key;
+			if (name.length() == 0) {
+				throw AttributeException.INVALID_ATTR_NAME("empty attr name found", null);
+			}
+			Object value = attrs.get(name);
+			if (name.charAt(0) == '-' || name.charAt(0) == '+') {
+				name = name.substring(1);
+			}
+			AttributeInfo info = attributeManager.getmAttrs().get(name.toLowerCase());
+			if (info != null) {
+				if (info.isDeprecated()) {
+					ZimbraLog.misc.warn("Attempt to modify a deprecated attribute: " + name);
+				}
+
+				// IDN unicode to ACE conversion needs to happen before checkValue or else
+				// regex attrs will be rejected by checkValue
+				if (attributeManager.idnType(name).isEmailOrIDN()) {
+					attributeManager.getmIDNCallback().preModify(context, name, value, attrs, entry);
+					value = attrs.get(name);
+				}
+				info.checkValue(value, checkImmutable, attrs);
+				if (allowCallback && info.getCallback() != null) {
+					info.getCallback().preModify(context, name, value, attrs, entry);
+				}
+			} else {
+				ZimbraLog.misc.warn("checkValue: no attribute info for: " + name);
+			}
+		}
+	}
+
+	public void postModify(
+			Map<String, ? extends Object> attrs, Entry entry, CallbackContext context) {
+		postModify(attrs, entry, context, true);
+	}
+
+	public void postModify(
+			Map<String, ? extends Object> attrs,
+			Entry entry,
+			CallbackContext context,
+			boolean allowCallback) {
+		String[] keys = attrs.keySet().toArray(new String[0]);
+		for (String key : keys) {
+			String name = key;
+			if (name.charAt(0) == '-' || name.charAt(0) == '+') {
+				name = name.substring(1);
+			}
+			AttributeInfo info = attributeManager.getmAttrs().get(name.toLowerCase());
+
+			if (info != null && (allowCallback && info.getCallback() != null)) {
+				try {
+					info.getCallback().postModify(context, name, entry);
+				} catch (Exception e) {
+					// need to swallow all exceptions as postModify shouldn't throw any...
+					ZimbraLog.account.warn("postModify caught exception: " + e.getMessage(), e);
+				}
+			}
+		}
+	}
+}

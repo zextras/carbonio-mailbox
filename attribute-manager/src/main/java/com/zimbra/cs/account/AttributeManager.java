@@ -15,7 +15,6 @@ import com.zimbra.common.soap.W3cDomUtil;
 import com.zimbra.common.util.SetUtil;
 import com.zimbra.common.util.Version;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.callback.CallbackContext;
 import com.zimbra.cs.account.callback.IDNCallback;
 import java.io.File;
 import java.io.IOException;
@@ -88,6 +87,10 @@ public class AttributeManager {
   // do not keep comments and descriptions when running in a server
   private static boolean mMinimize = false;
 
+  public Map<String, AttributeInfo> getmAttrs() {
+    return mAttrs;
+  }
+
   // contains attrs defined in one of the zimbra .xml files (currently zimbra attrs and some of the
   // amavis attrs)
   // these attrs have AttributeInfo
@@ -105,6 +108,11 @@ public class AttributeManager {
   private final Map<AttributeClass, Set<String>> mClassToLowerCaseAttrsMap = new HashMap<>();
   // direct attrs and attrs from included objectClass's
   private final Map<AttributeClass, Set<String>> mClassToAllAttrsMap = new HashMap<>();
+
+  public AttributeCallback getmIDNCallback() {
+    return mIDNCallback;
+  }
+
   private final AttributeCallback mIDNCallback = new IDNCallback();
   private final Map<String, AttributeInfo> mEphemeralAttrs = new HashMap<>(); // lowercased
   private final Set<String> mEphemeralAttrsSet = new HashSet<>(); // not lowercased
@@ -1222,7 +1230,7 @@ public class AttributeManager {
     mFlagToAttrsMap.get(AttributeFlag.domainAdminModifiable).add(attr);
   }
 
-  private IDNType idnType(String attr) {
+  public IDNType idnType(String attr) {
     AttributeInfo ai = mAttrs.get(attr.toLowerCase());
     if (ai != null) {
       AttributeType at = ai.getType();
@@ -1382,79 +1390,6 @@ public class AttributeManager {
       }
     }
     return immutable;
-  }
-
-  public void preModify(
-      Map<String, ? extends Object> attrs,
-      AttributeEntry entry,
-      CallbackContext context,
-      boolean checkImmutable)
-      throws ServiceException {
-    preModify(attrs, entry, context, checkImmutable, true);
-  }
-
-  public void preModify(
-      Map<String, ? extends Object> attrs,
-      AttributeEntry entry,
-      CallbackContext context,
-      boolean checkImmutable,
-      boolean allowCallback)
-      throws ServiceException {
-    String[] keys = attrs.keySet().toArray(new String[0]);
-    for (String key : keys) {
-      String name = key;
-      if (name.length() == 0) {
-        throw AttributeException.INVALID_ATTR_NAME("empty attr name found", null);
-      }
-      Object value = attrs.get(name);
-      if (name.charAt(0) == '-' || name.charAt(0) == '+') name = name.substring(1);
-      AttributeInfo info = mAttrs.get(name.toLowerCase());
-      if (info != null) {
-        if (info.isDeprecated()) {
-          ZimbraLog.misc.warn("Attempt to modify a deprecated attribute: " + name);
-        }
-
-        // IDN unicode to ACE conversion needs to happen before checkValue or else
-        // regex attrs will be rejected by checkValue
-        if (idnType(name).isEmailOrIDN()) {
-          mIDNCallback.preModify(context, name, value, attrs, entry);
-          value = attrs.get(name);
-        }
-        info.checkValue(value, checkImmutable, attrs);
-        if (allowCallback && info.getCallback() != null) {
-          info.getCallback().preModify(context, name, value, attrs, entry);
-        }
-      } else {
-        ZimbraLog.misc.warn("checkValue: no attribute info for: " + name);
-      }
-    }
-  }
-
-  public void postModify(
-      Map<String, ? extends Object> attrs, AttributeEntry entry, CallbackContext context) {
-    postModify(attrs, entry, context, true);
-  }
-
-  public void postModify(
-      Map<String, ? extends Object> attrs,
-      AttributeEntry entry,
-      CallbackContext context,
-      boolean allowCallback) {
-    String[] keys = attrs.keySet().toArray(new String[0]);
-    for (String key : keys) {
-      String name = key;
-      if (name.charAt(0) == '-' || name.charAt(0) == '+') name = name.substring(1);
-      AttributeInfo info = mAttrs.get(name.toLowerCase());
-
-      if (info != null && (allowCallback && info.getCallback() != null)) {
-        try {
-          info.getCallback().postModify(context, name, entry);
-        } catch (Exception e) {
-          // need to swallow all exceptions as postModify shouldn't throw any...
-          ZimbraLog.account.warn("postModify caught exception: " + e.getMessage(), e);
-        }
-      }
-    }
   }
 
   public AttributeInfo getAttributeInfo(String name) {
