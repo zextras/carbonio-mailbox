@@ -6,6 +6,9 @@
 
 package com.zimbra.cs.account;
 
+/**
+ * Represents Config specific attributes
+ */
 public interface AttributeConfig extends AttributeEntry {
 
 }

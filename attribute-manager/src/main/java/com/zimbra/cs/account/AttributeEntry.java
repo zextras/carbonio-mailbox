@@ -8,8 +8,11 @@ package com.zimbra.cs.account;
 
 import java.util.Set;
 
+/**
+ * Generic Entry attribute
+ */
 public interface AttributeEntry {
-	public String[] getMultiAttr(String name);
+	String[] getMultiAttr(String name);
 
 	Set<String> getMultiAttrSet(String attrName);
 }
