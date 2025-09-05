@@ -55,8 +55,6 @@
               <arguments>
                 <argument>-a</argument>
                 <argument>generateProvisioning</argument>
-                <argument>-o</argument>
-                <argument>./log.out</argument>
                 <argument>-i</argument>
                 <argument>${attrs.dir}</argument>
                 <argument>-r</argument>
