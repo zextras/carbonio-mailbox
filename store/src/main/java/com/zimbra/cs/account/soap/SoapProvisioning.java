@@ -1484,12 +1484,6 @@ public class SoapProvisioning extends Provisioning {
   }
 
   @Override
-  public void getAttrsInOCs(String[] extraObjectClasses, Set<String> attrsInOCs)
-      throws ServiceException {
-      // do nothing. This method should belong to LDAP, but due to code-mess was temporarily placed here
-  }
-
-  @Override
   public Config getConfig(String needAttr) throws ServiceException {
     GetConfigRequest req = new GetConfigRequest();
     Attr attr = new Attr();

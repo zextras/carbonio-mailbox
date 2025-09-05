@@ -206,12 +206,6 @@ public final class MockProvisioning extends Provisioning implements Provisioning
     return config;
   }
 
-  @Override
-  public void getAttrsInOCs(String[] extraObjectClasses, Set<String> attrsInOCs)
-      throws ServiceException {
-
-  }
-
   private String[] listToStringArray(List<?> list) {
     String[] strArray = new String[list.size()];
     for (int i = 0; i < list.size(); i++) {

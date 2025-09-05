@@ -1131,7 +1131,7 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
   private void loadLdapSchemaExtensionAttrs() {
     if (prov instanceof LdapProv) {
       try {
-        LdapAttributeManager.get(AttributeManager.getInstance()).loadLdapSchemaExtensionAttrs(prov);
+        LdapAttributeManager.get(AttributeManager.getInstance()).loadLdapSchemaExtensionAttrs((LdapProv) prov);
       } catch (Exception e) {
         throw new RuntimeException(e);
       }

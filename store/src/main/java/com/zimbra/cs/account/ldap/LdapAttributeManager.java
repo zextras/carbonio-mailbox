@@ -13,7 +13,6 @@ import com.zimbra.cs.account.AttributeConfig;
 import com.zimbra.cs.account.AttributeException;
 import com.zimbra.cs.account.AttributeInfo;
 import com.zimbra.cs.account.AttributeManager;
-import com.zimbra.cs.account.AttributeManagerRepository;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.LdapAttributeInfo;
 import com.zimbra.cs.account.callback.CallbackContext;
@@ -112,19 +111,19 @@ public class LdapAttributeManager {
 	}
 
 	private void getExtraObjectClassAttrs(
-			AttributeManagerRepository repository, AttributeClass attrClass, String extraObjectClassAttr)
+			LdapProv ldapProv, AttributeClass attrClass, String extraObjectClassAttr)
 			throws ServiceException {
-		AttributeConfig config = repository.getConfig();
+		AttributeConfig config = ldapProv.getConfig();
 
 		String[] extraObjectClasses = config.getMultiAttr(extraObjectClassAttr);
 
 		if (extraObjectClasses.length > 0) {
 			Set<String> attrsInOCs = attributeManager.getmClassToAttrsMap().get(AttributeClass.account);
-			repository.getAttrsInOCs(extraObjectClasses, attrsInOCs);
+			ldapProv.getAttrsInOCs(extraObjectClasses, attrsInOCs);
 		}
 	}
 
-	private void getLdapSchemaExtensionAttrs(AttributeManagerRepository repository) throws ServiceException {
+	private void getLdapSchemaExtensionAttrs(LdapProv repository) throws ServiceException {
 		if (attributeManager.ismLdapSchemaExtensionInited()) return;
 
 		attributeManager.setmLdapSchemaExtensionInited(true);
@@ -142,10 +141,10 @@ public class LdapAttributeManager {
 		this.getExtraObjectClassAttrs(
 				repository, AttributeClass.server, "zimbraServerExtraObjectClass");
 	}
-	public void loadLdapSchemaExtensionAttrs(AttributeManagerRepository repository) {
+	public void loadLdapSchemaExtensionAttrs(LdapProv ldapProv) {
 		synchronized (AttributeManager.class) {
 			try {
-				this.getLdapSchemaExtensionAttrs(repository);
+				this.getLdapSchemaExtensionAttrs(ldapProv);
 				attributeManager.computeClassToAllAttrsMap(); // recompute the ClassToAllAttrsMap
 			} catch (ServiceException e) {
 				ZimbraLog.account.warn("unable to load LDAP schema extensions", e);

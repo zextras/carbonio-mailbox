@@ -234,7 +234,7 @@ public final class Zimbra {
     if (prov instanceof LdapProv) {
       ((LdapProv) prov).waitForLdapServer();
       if (forMailboxd) {
-        LdapAttributeManager.get(AttributeManager.getInstance()).loadLdapSchemaExtensionAttrs(prov);
+        LdapAttributeManager.get(AttributeManager.getInstance()).loadLdapSchemaExtensionAttrs((LdapProv) prov);
       }
     }
 
