@@ -20,6 +20,7 @@ import java.util.Map;
 
 public class FileGenUtil {
 
+
     private static final String BEGIN_MARKER = "BEGIN-AUTO-GEN-REPLACE";
 
     private static final String END_MARKER  = "END-AUTO-GEN-REPLACE";
@@ -80,7 +81,6 @@ public class FileGenUtil {
        BufferedWriter out = null;
 
        File oldFile = new File(javaFile);
-       ZimbraLog.misc.debug("Checking previous file: " + oldFile.getAbsolutePath());
        if (!oldFile.canWrite()) {
            System.err.println("============================================");
            System.err.println("Unable to write to: "+javaFile);

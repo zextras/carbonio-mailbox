@@ -17,6 +17,7 @@ import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.Version;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AttributeManager.ObjectClassInfo;
+import com.zimbra.cs.util.MemoryUnitUtil;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
