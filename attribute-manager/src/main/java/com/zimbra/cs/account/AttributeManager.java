@@ -15,7 +15,6 @@ import com.zimbra.common.soap.W3cDomUtil;
 import com.zimbra.common.util.SetUtil;
 import com.zimbra.common.util.Version;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.callback.IDNCallback;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -114,11 +113,6 @@ public class AttributeManager {
   // direct attrs and attrs from included objectClass's
   private final Map<AttributeClass, Set<String>> mClassToAllAttrsMap = new HashMap<>();
 
-  public AttributeCallback getmIDNCallback() {
-    return mIDNCallback;
-  }
-
-  private final AttributeCallback mIDNCallback = new IDNCallback();
   private final Map<String, AttributeInfo> mEphemeralAttrs = new HashMap<>(); // lowercased
   private final Set<String> mEphemeralAttrsSet = new HashSet<>(); // not lowercased
   private final Map<EntryType, Map<String, AttributeInfo>> mNonDynamicEphemeralAttrs =

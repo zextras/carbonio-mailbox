@@ -66,8 +66,8 @@ public class LdapAttributeManager {
 
 				// IDN unicode to ACE conversion needs to happen before checkValue or else
 				// regex attrs will be rejected by checkValue
+				// NOTE: idnCallback does nothing, it was an empty method
 				if (attributeManager.idnType(name).isEmailOrIDN()) {
-					attributeManager.getmIDNCallback().preModify(context, name, value, attrs, entry);
 					value = attrs.get(name);
 				}
 				info.checkValue(value, checkImmutable, attrs);
