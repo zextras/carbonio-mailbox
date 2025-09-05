@@ -1,7 +1,12 @@
-library identifier: 'mailbox-packages-lib@master', retriever: modernSCM(
-        [$class: 'GitSCMSource',
-         remote: 'git@github.com:zextras/jenkins-packages-build-library.git',
-         credentialsId: 'jenkins-integration-with-github-account'])
+library(
+    identifier: 'jenkins-packages-build-library@chore/IN-930',
+    retriever: modernSCM([
+        $class: 'GitSCMSource',
+        remote: 'git@github.com:zextras/jenkins-packages-build-library.git',
+        credentialsId: 'jenkins-integration-with-github-account'
+    ])
+)
+
 def mvnCmd(String cmd) {
     def profile = ''
     if (isBuildingTag()) {
@@ -19,58 +24,52 @@ def isBuildingTag() {
     return false
 }
 
-def buildContainer(String title, String description, String dockerfile, String imageName, List<String> versions, String commitHash) {
-    tagsToAdd = []
-    versions.each {
-        version -> tagsToAdd.add("-t " + imageName + ":" + version)
-    }
-    sh 'docker build ' +
-            '--label org.opencontainers.image.title="' + title + '" ' +
-            '--label org.opencontainers.image.description="' + description + '" ' +
-            '--label org.opencontainers.image.vendor="Zextras" ' +
-            '--label org.opencontainers.image.revision="' + commitHash + '" ' +
-            '-f ' + dockerfile + ' ' + tagsToAdd.join(" ") + ' .'
-    sh 'docker push --all-tags ' + imageName
-}
-
-def packages = ["carbonio-appserver-conf","carbonio-appserver-db",
-            "carbonio-appserver-service", "carbonio-common-appserver-conf",
-            "carbonio-common-appserver-native-lib", "carbonio-directory-server",
-            "carbonio-mailbox-jar"]
-
-
 pipeline {
+
     agent {
         node {
             label 'zextras-v1'
         }
     }
 
-    triggers {
-        cron(env.BRANCH_NAME == 'devel' ? 'H 5 * * *' : '')
-    }
-
-    parameters {
-        booleanParam defaultValue: false, description: 'Upload packages in playground repositories.', name: 'PLAYGROUND'
-        booleanParam defaultValue: false, description: 'Skip test and sonar analysis.', name: 'SKIP_TEST_WITH_COVERAGE'
-        booleanParam defaultValue: false, description: 'Skip sonar analysis.', name: 'SKIP_SONARQUBE'
-    }
-
     environment {
+        BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1'
+        GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
         JAVA_OPTS='-Dfile.encoding=UTF8'
         LC_ALL='C.UTF-8'
         MAVEN_OPTS = "-Xmx4g"
-        BUILD_PROPERTIES_PARAMS='-Ddebug=0 -Dis-production=1'
-        GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
     }
 
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
-        timeout(time: 2, unit: 'HOURS')
+        parallelsAlwaysFailFast()
         skipDefaultCheckout()
+        timeout(time: 2, unit: 'HOURS')
     }
 
+    parameters {
+        booleanParam defaultValue: false, 
+            description: 'Upload packages in playground repositories.', 
+            name: 'PLAYGROUND'
+        booleanParam defaultValue: false, 
+            description: 'Skip test and sonar analysis.', 
+            name: 'SKIP_TEST_WITH_COVERAGE'
+        booleanParam defaultValue: false, 
+            description: 'Skip sonar analysis.', 
+            name: 'SKIP_SONARQUBE'
+    }
+
+    tools {
+        jfrog 'jfrog-cli'
+    }
+
+    triggers {
+        cron(env.BRANCH_NAME == 'devel' ? 'H 5 * * *' : '')
+    }
+
+
     stages {
+        
         stage('Checkout') {
             steps {
                 checkout scm
@@ -78,21 +77,23 @@ pipeline {
                     sh 'cp ${SETTINGS_PATH} settings-jenkins.xml'
                 }
                 script {
-                    env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+                    gitMetadata()
                 }
             }
         }
+
         stage('Build') {
             steps {
                 container('jdk-17') {
                     sh 'apt update && apt install -y build-essential'
                     mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
-                    sh 'mkdir build_pkg'
-                    sh 'cp -r store* milter* native client common packages soap jython-libs build_pkg'
-                    stash includes: 'build_pkg/**', name: 'staging'
+                    sh 'mkdir staging'
+                    sh 'cp -r store* milter* native client common packages soap jython-libs staging'
+                    stash includes: 'staging/**', name: 'staging'
                 }
             }
         }
+
         stage('UT, IT & API tests') {
             when {
                 expression {
@@ -122,6 +123,7 @@ pipeline {
                 }
             }
         }
+
         stage('Publish containers') {
             when {
                 expression {
@@ -132,35 +134,70 @@ pipeline {
                 container('dind') {
                     withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
                         script {
-                            def commitHash = env.GIT_COMMIT
                             def tagVersions = []
                             if (isBuildingTag()) {
-                                tagVersions.add(env.TAG_NAME)
-                                tagVersions.add("stable")
+                                tagVersions = [env.TAG_NAME, "stable"]
                             } else {
-                                tagVersions.add("devel")
-                                tagVersions.add("latest")
+                                tagVersions = ["devel", "latest"]
                             }
-                            buildContainer('Carbonio Mailbox',
-                                    '$(cat docker/standalone/mailbox/description.md)',
-                                    'docker/standalone/mailbox/Dockerfile',
-                                    'registry.dev.zextras.com/dev/carbonio-mailbox',
-                                    tagVersions, commitHash)
-                            buildContainer('Carbonio MariaDB',
-                                    '$(cat docker/standalone/mariadb/description.md)',
-                                    'docker/standalone/mariadb/Dockerfile',
-                                    'registry.dev.zextras.com/dev/carbonio-mariadb',
-                                    tagVersions, commitHash)
-                            buildContainer('Carbonio OpenLDAP',
-                                    '$(cat docker/standalone/openldap/description.md)',
-                                    'docker/standalone/openldap/Dockerfile',
-                                    'registry.dev.zextras.com/dev/carbonio-openldap',
-                                    tagVersions, commitHash)
+                            dockerHelper.buildImage([
+                                title: 'Carbonio Mailbox',
+                                descriptionFile: 'docker/standalone/mailbox/description.md',
+                                dockerfile: 'docker/standalone/mailbox/Dockerfile',
+                                imageName: 'registry.dev.zextras.com/dev/carbonio-mailbox',
+                                imageTags: tagVersions,
+                                version: env.GIT_TAG ? env.GIT_TAG : "stable"
+                            ])
+                            dockerHelper.buildImage([
+                                title: 'Carbonio MariaDB',
+                                descriptionFile: 'docker/standalone/mariadb/description.md',
+                                dockerfile: 'docker/standalone/mariadb/Dockerfile',
+                                imageName: 'registry.dev.zextras.com/dev/carbonio-mariadb',
+                                imageTags: tagVersions,
+                                version: env.GIT_TAG ? env.GIT_TAG : "stable"
+                            ])
+                            dockerHelper.buildImage([
+                                title: 'Carbonio OpenLDAP',
+                                descriptionFile: 'docker/standalone/openldap/description.md',
+                                dockerfile: 'docker/standalone/openldap/Dockerfile',
+                                imageName: 'registry.dev.zextras.com/dev/carbonio-openldap',
+                                imageTags: tagVersions,
+                                version: env.GIT_TAG ? env.GIT_TAG : "stable"
+                            ])
+                        }
+                    }
+                    withDockerRegistry(
+                        credentialsId: 'private-registry', 
+                        url: 'https://registry.dev.zextras.com'
+                    ) {
+                        script {
+                            dockerHelper.buildImage([
+                                title: 'Carbonio Mailbox', 
+                                descriptionFile: 'docker/standalone/mailbox/description.md',
+                                dockerfile: 'docker/standalone/mailbox/Dockerfile', 
+                                imageName: 'registry.dev.zextras.com/dev/carbonio-mailbox',
+                                version: 'latest'
+                            ])
+                            dockerHelper.buildImage([
+                                title: 'Carbonio MariaDB', 
+                                descriptionFile: 'docker/standalone/mariadb/description.md',
+                                dockerfile: 'docker/standalone/mariadb/Dockerfile', 
+                                imageName: 'registry.dev.zextras.com/dev/carbonio-mariadb',
+                                version: 'latest'
+                            ])
+                            dockerHelper.buildImage([
+                                title: 'Carbonio OpenLDAP', 
+                                descriptionFile: 'docker/standalone/openldap/description.md',
+                                dockerfile: 'docker/standalone/openldap/Dockerfile', 
+                                imageName: 'registry.dev.zextras.com/dev/carbonio-openldap',
+                                version: 'latest'
+                            ])
                         }
                     }
                 }
             }
         }
+
         stage('Publish SNAPSHOT to maven') {
             when {
                 branch 'devel';
@@ -171,6 +208,7 @@ pipeline {
                 }
             }
         }
+
         stage('Publish to maven') {
             when {
                 expression {
@@ -183,11 +221,31 @@ pipeline {
                 }
             }
         }
-        stage ('Build Packages') {
+
+        stage('Build deb/rpm') {
             steps {
-                script {
-                    buildStage(packages, 'staging', 'build_pkg/packages')()
-                }
+                echo "Building deb/rpm packages"
+                buildStage([
+                    skipStash: true,
+                    buildDirs: ['staging/packages'],
+                    overrides: [
+                        'ubuntu': [
+                            preBuildScript: '''
+                                apt-get update 
+                                apt-get install -y --no-install-recommends rsync
+                            '''
+                        ]
+                    ]
+                ])
+            }
+        }
+
+        stage('Upload artifacts')
+        {
+            steps {
+                uploadStage(
+                    packages: yapHelper.getPackageNames('staging/packages/yap.json')
+                )
             }
         }
     }
