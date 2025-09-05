@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /** AUTO-GENERATED. DO NOT EDIT. */
-public abstract class ZAttrConfig extends Entry {
+public abstract class ZAttrConfig extends AttributeEntry {
 
   public ZAttrConfig(Map<String, Object> attrs, Provisioning provisioning) {
     super(attrs, null, provisioning);

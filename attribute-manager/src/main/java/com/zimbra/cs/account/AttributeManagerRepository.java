@@ -13,7 +13,7 @@ public interface AttributeManagerRepository {
 	String DEFAULT_COS_NAME = "default";
 	String DEFAULT_EXTERNAL_COS_NAME = "defaultExternal";
 
-	Config getConfig();
+	AttributeConfig getConfig();
 
 	void getAttrsInOCs(String[] extraObjectClasses, Set<String> attrsInOCs);
 }

@@ -110,7 +110,7 @@ public class AttributeManager {
   private final Set<String> mEphemeralAttrsSet = new HashSet<>(); // not lowercased
   private final Map<EntryType, Map<String, AttributeInfo>> mNonDynamicEphemeralAttrs =
       new HashMap<>(); // ephemeral attributes that can be retrieved as part of
-  // Entry.getAttrs()
+  // AttributeEntry.getAttrs()
 
   /*
   * Notes on certificate attributes
@@ -293,7 +293,7 @@ public class AttributeManager {
 
   /**
    * Retrieves a map of ephemeral attributes that don't have dynamic components, for the given
-   * EntryType. This is used to include ephemeral data in Entry.getAttrs() results. Dynamic
+   * EntryType. This is used to include ephemeral data in AttributeEntry.getAttrs() results. Dynamic
    * ephemeral attributes are excluded, as the API does not support fetching dynamic key components.
    *
    * @param entryType
@@ -1386,7 +1386,7 @@ public class AttributeManager {
 
   public void preModify(
       Map<String, ? extends Object> attrs,
-      Entry entry,
+      AttributeEntry entry,
       CallbackContext context,
       boolean checkImmutable)
       throws ServiceException {
@@ -1395,7 +1395,7 @@ public class AttributeManager {
 
   public void preModify(
       Map<String, ? extends Object> attrs,
-      Entry entry,
+      AttributeEntry entry,
       CallbackContext context,
       boolean checkImmutable,
       boolean allowCallback)
@@ -1431,13 +1431,13 @@ public class AttributeManager {
   }
 
   public void postModify(
-      Map<String, ? extends Object> attrs, Entry entry, CallbackContext context) {
+      Map<String, ? extends Object> attrs, AttributeEntry entry, CallbackContext context) {
     postModify(attrs, entry, context, true);
   }
 
   public void postModify(
       Map<String, ? extends Object> attrs,
-      Entry entry,
+      AttributeEntry entry,
       CallbackContext context,
       boolean allowCallback) {
     String[] keys = attrs.keySet().toArray(new String[0]);
@@ -1484,7 +1484,7 @@ public class AttributeManager {
   private void getExtraObjectClassAttrs(
       AttributeManagerRepository repository, AttributeClass attrClass, String extraObjectClassAttr)
       throws ServiceException {
-    Config config = repository.getConfig();
+    AttributeConfig config = repository.getConfig();
 
     String[] extraObjectClasses = config.getMultiAttr(extraObjectClassAttr);
 

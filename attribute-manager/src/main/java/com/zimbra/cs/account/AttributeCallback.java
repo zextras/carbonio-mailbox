@@ -41,7 +41,7 @@ public abstract class AttributeCallback {
             String attrName,
             Object attrValue,
             Map attrsToModify,
-            Entry entry) throws ServiceException;
+            AttributeEntry entry) throws ServiceException;
 
     /**
      * called after a successful modify of the attributes. should not throw any exceptions.
@@ -53,7 +53,7 @@ public abstract class AttributeCallback {
     public abstract void postModify(
             CallbackContext context,
             String attrName,
-            Entry entry);
+            AttributeEntry entry);
     
     
     protected static class SingleValueMod {
@@ -237,7 +237,7 @@ public abstract class AttributeCallback {
         return values;
     }
     
-    protected Set<String> newValuesToBe(MultiValueMod mod, Entry entry, String attrName) {
+    protected Set<String> newValuesToBe(MultiValueMod mod, AttributeEntry entry, String attrName) {
         Set<String> newValues = null; 
         if (entry != null) {
             Set<String> curValues = entry.getMultiAttrSet(attrName);

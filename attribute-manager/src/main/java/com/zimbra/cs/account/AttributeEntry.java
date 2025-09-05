@@ -6,6 +6,10 @@
 
 package com.zimbra.cs.account;
 
-public interface Config extends Entry {
+import java.util.Set;
 
+public interface AttributeEntry {
+	public String[] getMultiAttr(String name);
+
+	Set<String> getMultiAttrSet(String attrName);
 }
