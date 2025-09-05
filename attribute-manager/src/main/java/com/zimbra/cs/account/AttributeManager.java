@@ -409,7 +409,6 @@ public class AttributeManager {
         continue;
       }
 
-      AttributeCallback callback = null;
       String callbackClassName = null;
       AttributeType type = null;
       AttributeOrder order = null;
