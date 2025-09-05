@@ -8,14 +8,19 @@ package com.zimbra.cs.account.ldap;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.AttributeClass;
+import com.zimbra.cs.account.AttributeConfig;
 import com.zimbra.cs.account.AttributeException;
 import com.zimbra.cs.account.AttributeInfo;
 import com.zimbra.cs.account.AttributeManager;
+import com.zimbra.cs.account.AttributeManagerRepository;
 import com.zimbra.cs.account.Entry;
+import com.zimbra.cs.account.LdapAttributeInfo;
 import com.zimbra.cs.account.callback.CallbackContext;
 import java.util.Map;
+import java.util.Set;
 
-class LdapAttributeManager {
+public class LdapAttributeManager {
 
 	public static LdapAttributeManager get(AttributeManager attributeManager) {
 		return new LdapAttributeManager(attributeManager);
@@ -66,8 +71,9 @@ class LdapAttributeManager {
 					value = attrs.get(name);
 				}
 				info.checkValue(value, checkImmutable, attrs);
-				if (allowCallback && info.getCallback() != null) {
-					info.getCallback().preModify(context, name, value, attrs, entry);
+				final LdapAttributeInfo ldapAttributeInfo = LdapAttributeInfo.get(info);
+				if (allowCallback && ldapAttributeInfo.getCallback() != null) {
+					ldapAttributeInfo.getCallback().preModify(context, name, value, attrs, entry);
 				}
 			} else {
 				ZimbraLog.misc.warn("checkValue: no attribute info for: " + name);
@@ -93,13 +99,56 @@ class LdapAttributeManager {
 			}
 			AttributeInfo info = attributeManager.getmAttrs().get(name.toLowerCase());
 
-			if (info != null && (allowCallback && info.getCallback() != null)) {
+			final LdapAttributeInfo ldapAttributeInfo = LdapAttributeInfo.get(info);
+			if (info != null && (allowCallback && ldapAttributeInfo.getCallback() != null)) {
 				try {
-					info.getCallback().postModify(context, name, entry);
+					ldapAttributeInfo.getCallback().postModify(context, name, entry);
 				} catch (Exception e) {
 					// need to swallow all exceptions as postModify shouldn't throw any...
 					ZimbraLog.account.warn("postModify caught exception: " + e.getMessage(), e);
 				}
+			}
+		}
+	}
+
+	private void getExtraObjectClassAttrs(
+			AttributeManagerRepository repository, AttributeClass attrClass, String extraObjectClassAttr)
+			throws ServiceException {
+		AttributeConfig config = repository.getConfig();
+
+		String[] extraObjectClasses = config.getMultiAttr(extraObjectClassAttr);
+
+		if (extraObjectClasses.length > 0) {
+			Set<String> attrsInOCs = attributeManager.getmClassToAttrsMap().get(AttributeClass.account);
+			repository.getAttrsInOCs(extraObjectClasses, attrsInOCs);
+		}
+	}
+
+	private void getLdapSchemaExtensionAttrs(AttributeManagerRepository repository) throws ServiceException {
+		if (attributeManager.ismLdapSchemaExtensionInited()) return;
+
+		attributeManager.setmLdapSchemaExtensionInited(true);
+
+		this.getExtraObjectClassAttrs(
+				repository, AttributeClass.account, "zimbraAccountExtraObjectClass");
+		this.getExtraObjectClassAttrs(
+				repository,
+				AttributeClass.calendarResource,
+				"zimbraCalendarResourceExtraObjectClass");
+		this.getExtraObjectClassAttrs(
+				repository, AttributeClass.cos, "zimbraCosExtraObjectClass");
+		this.getExtraObjectClassAttrs(
+				repository, AttributeClass.domain, "zimbraDomainExtraObjectClass");
+		this.getExtraObjectClassAttrs(
+				repository, AttributeClass.server, "zimbraServerExtraObjectClass");
+	}
+	public void loadLdapSchemaExtensionAttrs(AttributeManagerRepository repository) {
+		synchronized (AttributeManager.class) {
+			try {
+				this.getLdapSchemaExtensionAttrs(repository);
+				attributeManager.computeClassToAllAttrsMap(); // recompute the ClassToAllAttrsMap
+			} catch (ServiceException e) {
+				ZimbraLog.account.warn("unable to load LDAP schema extensions", e);
 			}
 		}
 	}

@@ -32,6 +32,7 @@ import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.accesscontrol.RightModifier;
 import com.zimbra.cs.account.accesscontrol.TargetType;
 import com.zimbra.cs.account.commands.ProvUtilCommandHandlersFactory;
+import com.zimbra.cs.account.ldap.LdapAttributeManager;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.cs.ldap.LdapClient;
@@ -1129,7 +1130,11 @@ public class ProvUtil implements HttpDebugListener, ProvUtilDumperOptions {
 
   private void loadLdapSchemaExtensionAttrs() {
     if (prov instanceof LdapProv) {
-      AttributeManager.loadLdapSchemaExtensionAttrs((LdapProv) prov);
+      try {
+        LdapAttributeManager.get(AttributeManager.getInstance()).loadLdapSchemaExtensionAttrs(prov);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 

@@ -2,13 +2,11 @@ package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Version;
-import com.zimbra.cs.account.AttributeCallback;
 import com.zimbra.cs.account.AttributeCardinality;
 import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.AttributeFlag;
 import com.zimbra.cs.account.AttributeInfo;
 import com.zimbra.cs.account.AttributeServerType;
-
 import java.util.List;
 import java.util.Set;
 
@@ -165,10 +163,7 @@ class DescribeArgs {
           out = ai.getValue();
           break;
         case callback:
-          AttributeCallback acb = ai.getCallback();
-          if (acb != null) {
-            out = acb.getClass().getSimpleName();
-          }
+          out = ai.getCallbackClassName();
           break;
         case immutable:
           out = Boolean.toString(ai.isImmutable());

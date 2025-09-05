@@ -103,6 +103,11 @@ public class AttributeManager {
   //
   private final Map<String, AttributeInfo> mAttrs = new HashMap<>();
   private final Map<String, ObjectClassInfo> mOCs = new HashMap<>();
+
+  public Map<AttributeClass, Set<String>> getmClassToAttrsMap() {
+    return mClassToAttrsMap;
+  }
+
   // only direct attrs
   private final Map<AttributeClass, Set<String>> mClassToAttrsMap = new HashMap<>();
   private final Map<AttributeClass, Set<String>> mClassToLowerCaseAttrsMap = new HashMap<>();
@@ -151,6 +156,15 @@ public class AttributeManager {
    * Support for lookup by flag
    */
   private final Map<AttributeFlag, Set<String>> mFlagToAttrsMap = new HashMap<>();
+
+  public boolean ismLdapSchemaExtensionInited() {
+    return mLdapSchemaExtensionInited;
+  }
+
+  public void setmLdapSchemaExtensionInited(boolean mLdapSchemaExtensionInited) {
+    this.mLdapSchemaExtensionInited = mLdapSchemaExtensionInited;
+  }
+
   private boolean mLdapSchemaExtensionInited = false;
 
   @VisibleForTesting
@@ -252,30 +266,6 @@ public class AttributeManager {
     mMinimize = minimize;
   }
 
-  private static AttributeCallback loadCallback(String clazz) {
-    AttributeCallback cb = null;
-    if (clazz == null) return null;
-    if (clazz.indexOf('.') == -1) clazz = "com.zimbra.cs.account.callback." + clazz;
-//    ZimbraLog.misc.info("Requesting class callback: " + clazz);
-    try {
-//      cb = (AttributeCallback) Class.forName(clazz).getDeclaredConstructor().newInstance();
-    } catch (Exception e) {
-      ZimbraLog.misc.warn("loadCallback caught exception", e);
-    }
-    return cb;
-  }
-
-  public static void loadLdapSchemaExtensionAttrs(AttributeManagerRepository repository) {
-    synchronized (AttributeManager.class) {
-      try {
-        AttributeManager theInstance = AttributeManager.getInstance();
-        theInstance.getLdapSchemaExtensionAttrs(repository);
-        theInstance.computeClassToAllAttrsMap(); // recompute the ClassToAllAttrsMap
-      } catch (ServiceException e) {
-        ZimbraLog.account.warn("unable to load LDAP schema extensions", e);
-      }
-    }
-  }
 
   public static void destroy() {
     mInstance = null;
@@ -426,6 +416,7 @@ public class AttributeManager {
       }
 
       AttributeCallback callback = null;
+      String callbackClassName = null;
       AttributeType type = null;
       AttributeOrder order = null;
       String value = null;
@@ -459,7 +450,7 @@ public class AttributeManager {
             // nothing to do - already processed
             break;
           case A_CALLBACK:
-            callback = loadCallback(attr.getValue());
+            callbackClassName = loadCallbackClassName(attr.getValue());
             break;
           case A_IMMUTABLE:
             immutable = "1".equals(attr.getValue());
@@ -712,7 +703,7 @@ public class AttributeManager {
               id,
               parentOid,
               groupId,
-              callback,
+              callbackClassName,
               type,
               order,
               value,
@@ -777,6 +768,12 @@ public class AttributeManager {
     }
   }
 
+  private String loadCallbackClassName(String clazz) {
+    if (clazz == null) return null;
+    if (clazz.indexOf('.') == -1) clazz = "com.zimbra.cs.account.callback." + clazz;
+    return clazz;
+  }
+
   private void checkEphemeralFlags(
       String attrName,
       String fileName,
@@ -813,12 +810,12 @@ public class AttributeManager {
     }
   }
 
-  protected AttributeInfo createAttributeInfo(
+  private AttributeInfo createAttributeInfo(
       String name,
       int id,
       String parentOid,
       int groupId,
-      AttributeCallback callback,
+      String callbackClassName,
       AttributeType type,
       AttributeOrder order,
       String value,
@@ -843,7 +840,7 @@ public class AttributeManager {
         id,
         parentOid,
         groupId,
-        callback,
+        callbackClassName,
         type,
         order,
         value,
@@ -861,8 +858,7 @@ public class AttributeManager {
         defaultCOSValuesUpgrade,
         description,
         requiresRestart,
-        sinceVer,
-        deprecatedSinceVer);
+        sinceVer, deprecatedSinceVer);
   }
 
   /*
@@ -1100,7 +1096,7 @@ public class AttributeManager {
     }
   }
 
-  private void computeClassToAllAttrsMap() {
+  public void computeClassToAllAttrsMap() {
 
     Set<String> attrs;
 
@@ -1395,38 +1391,6 @@ public class AttributeManager {
   public AttributeInfo getAttributeInfo(String name) {
     if (name == null) return null;
     else return mAttrs.get(name.toLowerCase());
-  }
-
-  private void getLdapSchemaExtensionAttrs(AttributeManagerRepository repository) throws ServiceException {
-    if (mLdapSchemaExtensionInited) return;
-
-    mLdapSchemaExtensionInited = true;
-
-    getExtraObjectClassAttrs(
-        repository, AttributeClass.account, "zimbraAccountExtraObjectClass");
-    getExtraObjectClassAttrs(
-        repository,
-        AttributeClass.calendarResource,
-        "zimbraCalendarResourceExtraObjectClass");
-    getExtraObjectClassAttrs(
-        repository, AttributeClass.cos, "zimbraCosExtraObjectClass");
-    getExtraObjectClassAttrs(
-        repository, AttributeClass.domain, "zimbraDomainExtraObjectClass");
-    getExtraObjectClassAttrs(
-        repository, AttributeClass.server, "zimbraServerExtraObjectClass");
-  }
-
-  private void getExtraObjectClassAttrs(
-      AttributeManagerRepository repository, AttributeClass attrClass, String extraObjectClassAttr)
-      throws ServiceException {
-    AttributeConfig config = repository.getConfig();
-
-    String[] extraObjectClasses = config.getMultiAttr(extraObjectClassAttr);
-
-    if (extraObjectClasses.length > 0) {
-      Set<String> attrsInOCs = mClassToAttrsMap.get(AttributeClass.account);
-      repository.getAttrsInOCs(extraObjectClasses, attrsInOCs);
-    }
   }
 
   private enum ObjectClassType {

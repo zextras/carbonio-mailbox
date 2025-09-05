@@ -62,7 +62,7 @@ public class AttributeInfo {
     private final String mValue;
 
     /** attribute callback */
-    private final AttributeCallback mCallback;
+    private final String mCallbackClassName;
 
     /** whether this attribute can be modified directly */
     private final boolean mImmutable;
@@ -136,7 +136,7 @@ public class AttributeInfo {
     @VisibleForTesting
     public AttributeInfo(
             String attrName, int id, String parentId, int groupId,
-            AttributeCallback callback, AttributeType type, AttributeOrder order,
+            String callbackClassName, AttributeType type, AttributeOrder order,
             String value, boolean immutable, String min, String max,
             AttributeCardinality cardinality, Set<AttributeClass> requiredIn,
             Set<AttributeClass> optionalIn, Set<AttributeFlag> flags,
@@ -145,8 +145,8 @@ public class AttributeInfo {
             List<String> defaultCOSValuesUpgrade, String description, List<AttributeServerType> requiresRestart,
             List<Version> since, Version deprecatedSince) {
         mName = attrName;
-        mImmutable = immutable;
-        mCallback = callback;
+			mCallbackClassName = callbackClassName;
+			mImmutable = immutable;
         mType = type;
         mOrder = order;
         mValue = value;
@@ -455,8 +455,8 @@ public class AttributeInfo {
         }
     }
 
-    public AttributeCallback getCallback() {
-        return mCallback;
+    public String getCallbackClassName() {
+        return mCallbackClassName;
     }
 
     public String getName() {
