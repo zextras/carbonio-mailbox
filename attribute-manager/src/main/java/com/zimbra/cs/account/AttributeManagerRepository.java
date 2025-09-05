@@ -6,6 +6,7 @@
 
 package com.zimbra.cs.account;
 
+import com.zimbra.common.service.ServiceException;
 import java.util.Set;
 
 public interface AttributeManagerRepository {
@@ -13,7 +14,7 @@ public interface AttributeManagerRepository {
 	String DEFAULT_COS_NAME = "default";
 	String DEFAULT_EXTERNAL_COS_NAME = "defaultExternal";
 
-	AttributeConfig getConfig();
+	AttributeConfig getConfig() throws ServiceException;
 
 	void getAttrsInOCs(String[] extraObjectClasses, Set<String> attrsInOCs);
 }

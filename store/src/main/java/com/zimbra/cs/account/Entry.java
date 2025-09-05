@@ -45,7 +45,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.json.JSONException;
 
-public abstract class Entry implements ToZJSONObject {
+public abstract class Entry implements ToZJSONObject, AttributeEntry {
 
   private Map<String, Object> mAttrs;
   private Map<String, Object> mDefaults;
