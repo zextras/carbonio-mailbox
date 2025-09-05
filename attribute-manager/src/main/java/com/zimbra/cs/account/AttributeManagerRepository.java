@@ -16,5 +16,5 @@ public interface AttributeManagerRepository {
 
 	AttributeConfig getConfig() throws ServiceException;
 
-	void getAttrsInOCs(String[] extraObjectClasses, Set<String> attrsInOCs);
+	void getAttrsInOCs(String[] extraObjectClasses, Set<String> attrsInOCs) throws ServiceException;
 }
