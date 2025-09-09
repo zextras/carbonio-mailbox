@@ -87,7 +87,7 @@ public final class SocketFactories {
     }
 
     // Set the system-wide default ProxySelector
-    ProxySelector.setDefault(ProxySelectors.defaultProxySelector());
+//    ProxySelector.setDefault(ProxySelectors.defaultProxySelector());
 
     registered = true;
   }
