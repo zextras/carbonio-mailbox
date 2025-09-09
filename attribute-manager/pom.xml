@@ -8,15 +8,32 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <artifactId>attribute-manager</artifactId>
 
   <parent>
     <artifactId>zm-mailbox</artifactId>
     <groupId>zextras</groupId>
     <version>${revision}${changelist}</version>
   </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <packaging>jar</packaging>
+  <artifactId>attribute-manager</artifactId>
 
   <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <artifactId>guava</artifactId>
       <groupId>com.google.guava</groupId>
@@ -30,12 +47,6 @@
     <dependency>
       <artifactId>httpmime</artifactId>
       <groupId>org.apache.httpcomponents</groupId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -67,33 +78,38 @@
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
     </dependency>
-
-
     <dependency>
       <artifactId>zm-common</artifactId>
       <groupId>zextras</groupId>
     </dependency>
   </dependencies>
-  <modelVersion>4.0.0</modelVersion>
-
-  <packaging>jar</packaging>
-
   <build>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>3.1.0</version> <!-- or latest -->
-        <configuration>
-          <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-        </configuration>
+        <artifactId>flatten-maven-plugin</artifactId>
       </plugin>
-
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
+  <properties>
+    <maven-exec-plugin.version>3.1.0</maven-exec-plugin.version>
+    <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
+   </properties>
 
 </project>
