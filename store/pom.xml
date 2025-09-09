@@ -626,6 +626,7 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+              <classpathScope>compile</classpathScope>
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
@@ -646,6 +647,7 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+              <classpathScope>compile</classpathScope>
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
@@ -666,6 +668,7 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+              <classpathScope>compile</classpathScope>
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
@@ -686,6 +689,7 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+              <classpathScope>compile</classpathScope>
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
@@ -706,6 +710,7 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+              <classpathScope>compile</classpathScope>
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
@@ -727,6 +732,7 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+              <classpathScope>compile</classpathScope>
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
@@ -748,6 +754,7 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+              <classpathScope>compile</classpathScope>
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
@@ -769,6 +776,7 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+              <classpathScope>compile</classpathScope>
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
@@ -790,6 +798,7 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+              <classpathScope>compile</classpathScope>
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>

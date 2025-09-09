@@ -40,14 +40,6 @@
         <enabled>false</enabled>
       </releases>
     </repository>
-    <repository>
-      <id>maven-redhat</id>
-      <url>https://maven.repository.redhat.com/ga/</url>
-    </repository>
-    <repository>
-      <id>liferay</id>
-      <url>https://repository.liferay.com/nexus/content/repositories/public/</url>
-    </repository>
   </repositories>
 
   <dependencies>

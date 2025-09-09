@@ -7,13 +7,10 @@ package com.zimbra.common.net;
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.util.ZimbraLog;
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.ProxySelector;
-import java.net.SocketAddress;
 import java.net.URI;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,13 +21,11 @@ public final class ProxySelectors {
     private static ProxySelector defaultProxySelector;
 
     private static ProxySelector create() {
-        var proxySelector = new CustomProxySelector(ProxySelector.getDefault());
+        var proxySelector = ProxySelector.getDefault();
         String className = LC.zimbra_class_customproxyselector.value();
         if (!className.isEmpty()) {
             try {
-                CustomProxySelector selector = (CustomProxySelector) Class.forName(className).newInstance();
-                selector.setDefaultProxySelector(proxySelector);
-                proxySelector = selector;
+							proxySelector = (ProxySelector) Class.forName(className).newInstance();
             } catch (Exception e) {
                 ZimbraLog.net.error("could not instantiate ConditionalProxySelector interface of class '" + className + "'; defaulting to system proxy settings", e);
             }
@@ -58,34 +53,34 @@ public final class ProxySelectors {
      * invalid proxy results (i.e. invalid port) which works around issues
      * on Linux hosts with incorrect settings.
      */
-    public static class CustomProxySelector extends ProxySelector {
-        protected ProxySelector ps;
-
-        protected CustomProxySelector(ProxySelector ps) {
-            this.ps = ps;
-        }
-        
-        protected void setDefaultProxySelector(ProxySelector ps) {
-            this.ps = ps;
-        }
-
-        public List<Proxy> select(URI uri) {
-            List<Proxy> proxies = ps.select(uri);
-            for (Iterator<Proxy> it = proxies.iterator(); it.hasNext(); ) {
-                if (!isValidProxy(it.next())) {
-                    it.remove();
-                }
-            }
-            if (proxies.isEmpty()) {
-                proxies.add(Proxy.NO_PROXY);
-            }
-            return proxies;
-        }
-
-        public void connectFailed(URI uri, SocketAddress sa, IOException e) {
-            ps.connectFailed(uri, sa, e);
-        }
-    }
+//    public static class CustomProxySelector extends ProxySelector {
+//        protected ProxySelector ps;
+//
+//        protected CustomProxySelector(ProxySelector ps) {
+//            this.ps = ps;
+//        }
+//
+//        protected void setDefaultProxySelector(ProxySelector ps) {
+//            this.ps = ps;
+//        }
+//
+//        public List<Proxy> select(URI uri) {
+//            List<Proxy> proxies = ps.select(uri);
+//            for (Iterator<Proxy> it = proxies.iterator(); it.hasNext(); ) {
+//                if (!isValidProxy(it.next())) {
+//                    it.remove();
+//                }
+//            }
+//            if (proxies.isEmpty()) {
+//                proxies.add(Proxy.NO_PROXY);
+//            }
+//            return proxies;
+//        }
+//
+//        public void connectFailed(URI uri, SocketAddress sa, IOException e) {
+//            ps.connectFailed(uri, sa, e);
+//        }
+//    }
 
     private static boolean isValidProxy(Proxy proxy) {
         InetSocketAddress addr = (InetSocketAddress) proxy.address();
