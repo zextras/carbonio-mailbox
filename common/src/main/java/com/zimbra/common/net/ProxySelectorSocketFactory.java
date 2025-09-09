@@ -27,7 +27,7 @@ class ProxySelectorSocketFactory extends SocketFactory {
     @Override
     public Socket createSocket() throws IOException {
         return new ProxySelectorSocket(proxySelector != null ?
-            proxySelector : ProxySelector.getDefault());
+            proxySelector : ProxySelectors.defaultProxySelector());
     }
     
     @Override

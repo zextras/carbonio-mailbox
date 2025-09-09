@@ -856,6 +856,14 @@
       <url>https://repo1.maven.org/maven2/</url>
     </repository>
     <repository>
+      <id>nexus</id>
+      <url>https://repository.liferay.com/nexus/content/repositories/public/</url>
+    </repository>
+    <repository>
+      <id>fuse</id>
+      <url>https://repo.fusesource.com/maven2/</url>
+    </repository>
+    <repository>
       <id>zextras-java-sdk</id>
       <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
     </repository>
@@ -864,6 +872,18 @@
     <pluginRepository>
       <id>central</id>
       <url>https://repo1.maven.org/maven2/</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>maven-redhat</id>
+      <url>https://maven.repository.redhat.com/ga/</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>nexus</id>
+      <url>https://repository.liferay.com/nexus/content/repositories/public/</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>fuse</id>
+      <url>https://repo.fusesource.com/maven2/</url>
     </pluginRepository>
     <pluginRepository>
       <id>zextras-java-sdk</id>
