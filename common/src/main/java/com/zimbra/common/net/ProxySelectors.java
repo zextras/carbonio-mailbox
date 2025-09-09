@@ -5,39 +5,37 @@
 
 package com.zimbra.common.net;
 
+import com.zimbra.common.localconfig.LC;
+import com.zimbra.common.util.ZimbraLog;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.SocketAddress;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-
-import com.zimbra.common.localconfig.LC;
-import com.zimbra.common.util.ZimbraLog;
+import java.util.Objects;
 
 /**
  * Factory class for various ProxySelector types.
  */
 public final class ProxySelectors {
-    private static final ProxySelector systemProxySelector;
     private static ProxySelector defaultProxySelector;
 
-    static {
-        systemProxySelector = ProxySelector.getDefault();
-        defaultProxySelector = new CustomProxySelector(systemProxySelector);
+    private static ProxySelector create() {
+        var proxySelector = new CustomProxySelector(ProxySelector.getDefault());
         String className = LC.zimbra_class_customproxyselector.value();
-        if (className != null && !className.equals("")) {
+        if (!className.isEmpty()) {
             try {
                 CustomProxySelector selector = (CustomProxySelector) Class.forName(className).newInstance();
-                selector.setDefaultProxySelector(defaultProxySelector);
-                defaultProxySelector = selector;
+                selector.setDefaultProxySelector(proxySelector);
+                proxySelector = selector;
             } catch (Exception e) {
                 ZimbraLog.net.error("could not instantiate ConditionalProxySelector interface of class '" + className + "'; defaulting to system proxy settings", e);
             }
         }
+        return proxySelector;
     }
 
     /**
@@ -46,34 +44,11 @@ public final class ProxySelectors {
      *
      * @return the default ProxySelector
      */
-    public static ProxySelector defaultProxySelector() {
+    public static synchronized ProxySelector defaultProxySelector() {
+        if (Objects.isNull(defaultProxySelector)) {
+             defaultProxySelector =  create();
+        }
         return defaultProxySelector;
-    }
-
-    /**
-     * Returns the original system default ProxySelector.
-     * @return the system default ProxySelector
-     */
-    public static ProxySelector systemProxySelector() {
-        return systemProxySelector;
-    }
-
-    /**
-     * Returns a "dummy" ProxySelector whose select method always returns
-     * a DIRECT connection. Used for testing.
-     *
-     * @return the dummy ProxySelector
-     */
-    public static ProxySelector dummyProxySelector() {
-        return new ProxySelector() {
-            public List<Proxy> select(URI uri) {
-                return Arrays.asList(Proxy.NO_PROXY);
-            }
-
-            public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
-                // Do nothing...
-            }
-        };
     }
 
     /*
@@ -122,10 +97,6 @@ public final class ProxySelectors {
         default:
             return true;
         }
-    }
-
-    private static SocketAddress saddr(String host, int port) {
-        return new InetSocketAddress(host, port);
     }
 
     public static void main(String[] args) throws Exception {
