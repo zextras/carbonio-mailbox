@@ -89,7 +89,7 @@ public final class ProxySelectors {
         protected CustomProxySelector(ProxySelector ps) {
             this.ps = ps;
         }
-
+        
         protected void setDefaultProxySelector(ProxySelector ps) {
             this.ps = ps;
         }
