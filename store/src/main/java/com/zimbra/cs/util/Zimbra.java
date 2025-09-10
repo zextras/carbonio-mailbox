@@ -22,7 +22,7 @@ import com.zimbra.cs.account.ExternalAccountManagerTask;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
 import com.zimbra.cs.account.accesscontrol.RightManager;
-import com.zimbra.cs.account.ldap.LdapAttributeManager;
+import com.zimbra.cs.account.ldap.LdapAttributeCallbackHelper;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.Versions;
@@ -234,7 +234,7 @@ public final class Zimbra {
     if (prov instanceof LdapProv) {
       ((LdapProv) prov).waitForLdapServer();
       if (forMailboxd) {
-        LdapAttributeManager.get(AttributeManager.getInstance()).loadLdapSchemaExtensionAttrs((LdapProv) prov);
+        LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).loadLdapSchemaExtensionAttrs((LdapProv) prov);
       }
     }
 

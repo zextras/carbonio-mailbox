@@ -438,9 +438,9 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   public void modifyEphemeralAttrsInLdap(Entry e, Map<String, ? extends Object> attrs)
       throws ServiceException {
     CallbackContext callbackContext = new CallbackContext(CallbackContext.Op.MODIFY);
-    LdapAttributeManager.get(AttributeManager.getInstance()).preModify(attrs, e, callbackContext, false, true);
+    LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).preModify(attrs, e, callbackContext, false, true);
     modifyAttrsInternal(e, null, attrs, true);
-    LdapAttributeManager.get(AttributeManager.getInstance()).postModify(attrs, e, callbackContext, true);
+    LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).postModify(attrs, e, callbackContext, true);
   }
 
   @Override
@@ -466,10 +466,10 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       Entry e, Map<String, ? extends Object> attrs, boolean checkImmutable, boolean allowCallback)
       throws ServiceException {
     CallbackContext callbackContext = new CallbackContext(CallbackContext.Op.MODIFY);
-    LdapAttributeManager.get(AttributeManager.getInstance())
+    LdapAttributeCallbackHelper.get(AttributeManager.getInstance())
         .preModify(attrs, e, callbackContext, checkImmutable, allowCallback);
     modifyAttrsInternal(e, null, attrs);
-    LdapAttributeManager.get(AttributeManager.getInstance()).postModify(attrs, e, callbackContext, allowCallback);
+    LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).postModify(attrs, e, callbackContext, allowCallback);
   }
 
   @Override
@@ -1307,7 +1307,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     }
     CallbackContext callbackContext = new CallbackContext(CallbackContext.Op.CREATE);
     callbackContext.setCreatingEntryName(emailAddress);
-    LdapAttributeManager.get(AttributeManager.getInstance()).preModify(acctAttrs, null, callbackContext, true);
+    LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).preModify(acctAttrs, null, callbackContext, true);
 
     Account acct = null;
     String dn = null;
@@ -1521,7 +1521,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             null);
       }
 
-      LdapAttributeManager.get(AttributeManager.getInstance()).postModify(acctAttrs, acct, callbackContext);
+      LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).postModify(acctAttrs, acct, callbackContext);
       removeExternalAddrsFromAllDynamicGroups(acct.getAllAddrsSet(), zlc);
       validate(
           ProvisioningValidator.CREATE_ACCOUNT_SUCCEEDED,
@@ -2731,7 +2731,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       }
 
       CallbackContext callbackContext = new CallbackContext(CallbackContext.Op.CREATE);
-      LdapAttributeManager.get(AttributeManager.getInstance()).preModify(domainAttrs, null, callbackContext, true);
+      LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).preModify(domainAttrs, null, callbackContext, true);
 
       // Add back attrs we circumvented from attribute checking
       domainAttrs.put(A_zimbraDomainType, domainType);
@@ -2798,7 +2798,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
       Domain domain = getDomainById(zimbraIdStr, zlc);
 
-      LdapAttributeManager.get(AttributeManager.getInstance()).postModify(domainAttrs, domain, callbackContext);
+      LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).postModify(domainAttrs, domain, callbackContext);
       return domain;
 
     } catch (LdapEntryAlreadyExistException nabe) {
@@ -3149,7 +3149,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       }
     }
     allAttrs = allNewAttrs;
-    LdapAttributeManager.get(AttributeManager.getInstance()).preModify(allAttrs, null, callbackContext, true);
+    LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).preModify(allAttrs, null, callbackContext, true);
 
     ZLdapContext zlc = null;
     try {
@@ -3170,7 +3170,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       zlc.createEntry(entry);
 
       Cos cos = getCosById(zimbraIdStr, zlc);
-      LdapAttributeManager.get(AttributeManager.getInstance()).postModify(allAttrs, cos, callbackContext);
+      LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).postModify(allAttrs, cos, callbackContext);
       return cos;
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.COS_EXISTS(destCosName);
@@ -3910,7 +3910,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   public ShareLocator createShareLocator(String id, Map<String, Object> attrs)
       throws ServiceException {
     CallbackContext callbackContext = new CallbackContext(CallbackContext.Op.CREATE);
-    LdapAttributeManager.get(AttributeManager.getInstance()).preModify(attrs, null, callbackContext, true);
+    LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).preModify(attrs, null, callbackContext, true);
 
     ZLdapContext zlc = null;
     try {
@@ -3929,7 +3929,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       zlc.createEntry(entry);
 
       ShareLocator shloc = getShareLocatorById(id, zlc, true);
-      LdapAttributeManager.get(AttributeManager.getInstance()).postModify(attrs, shloc, callbackContext);
+      LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).postModify(attrs, shloc, callbackContext);
       return shloc;
 
     } catch (LdapEntryAlreadyExistException nabe) {
@@ -3965,7 +3965,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     name = name.toLowerCase().trim();
 
     CallbackContext callbackContext = new CallbackContext(CallbackContext.Op.CREATE);
-    LdapAttributeManager.get(AttributeManager.getInstance()).preModify(serverAttrs, null, callbackContext, true);
+    LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).preModify(serverAttrs, null, callbackContext, true);
 
     ZLdapContext zlc = null;
     try {
@@ -3991,7 +3991,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       zlc.createEntry(entry);
 
       Server server = getServerById(zimbraIdStr, zlc, true);
-      LdapAttributeManager.get(AttributeManager.getInstance()).postModify(serverAttrs, server, callbackContext);
+      LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).postModify(serverAttrs, server, callbackContext);
       return server;
 
     } catch (LdapEntryAlreadyExistException nabe) {
@@ -4320,7 +4320,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     CallbackContext callbackContext = new CallbackContext(CallbackContext.Op.CREATE);
     callbackContext.setCreatingEntryName(listAddress);
-    LdapAttributeManager.get(AttributeManager.getInstance()).preModify(listAttrs, null, callbackContext, true);
+    LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).preModify(listAttrs, null, callbackContext, true);
 
     ZLdapContext zlc = null;
     try {
@@ -4372,7 +4372,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       DistributionList dlist = getDLBasic(DistributionListBy.id, zimbraIdStr, zlc);
 
       if (dlist != null) {
-        LdapAttributeManager.get(AttributeManager.getInstance()).postModify(listAttrs, dlist, callbackContext);
+        LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).postModify(listAttrs, dlist, callbackContext);
         removeExternalAddrsFromAllDynamicGroups(dlist.getAllAddrsSet(), zlc);
         allDLs.addGroup(dlist);
       } else {
@@ -6404,7 +6404,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     name = name.toLowerCase().trim();
 
     CallbackContext callbackContext = new CallbackContext(CallbackContext.Op.CREATE);
-    LdapAttributeManager.get(AttributeManager.getInstance()).preModify(zimletAttrs, null, callbackContext, true);
+    LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).preModify(zimletAttrs, null, callbackContext, true);
 
     ZLdapContext zlc = null;
     try {
@@ -6428,7 +6428,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       zlc.createEntry(entry);
 
       Zimlet zimlet = lookupZimlet(name, zlc);
-      LdapAttributeManager.get(AttributeManager.getInstance()).postModify(zimletAttrs, zimlet, callbackContext);
+      LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).postModify(zimletAttrs, zimlet, callbackContext);
       return zimlet;
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.ZIMLET_EXISTS(name);
@@ -6484,7 +6484,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     LdapCalendarResource resource =
         (LdapCalendarResource) getCalendarResourceById(acct.getId(), true);
-    LdapAttributeManager.get(AttributeManager.getInstance()).postModify(calResAttrs, resource, callbackContext);
+    LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).postModify(calResAttrs, resource, callbackContext);
     return resource;
   }
 
@@ -7813,7 +7813,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     boolean checkImmutable = !restoring;
     CallbackContext callbackContext = new CallbackContext(CallbackContext.Op.CREATE);
-    LdapAttributeManager.get(AttributeManager.getInstance()).preModify(identityAttrs, null, callbackContext, checkImmutable);
+    LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).preModify(identityAttrs, null, callbackContext, checkImmutable);
 
     ZLdapContext zlc = null;
     try {
@@ -7837,7 +7837,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       zlc.createEntry(entry);
 
       Identity identity = getIdentityByName(ldapEntry, identityName, zlc);
-      LdapAttributeManager.get(AttributeManager.getInstance()).postModify(identityAttrs, identity, callbackContext);
+      LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).postModify(identityAttrs, identity, callbackContext);
 
       return identity;
     } catch (LdapEntryAlreadyExistException nabe) {
@@ -8118,7 +8118,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
     CallbackContext callbackContext = new CallbackContext(CallbackContext.Op.CREATE);
     callbackContext.setData(
         DataKey.MAX_SIGNATURE_LEN, String.valueOf(account.getMailSignatureMaxLength()));
-    LdapAttributeManager.get(AttributeManager.getInstance()).preModify(signatureAttrs, null, callbackContext, checkImmutable);
+    LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).preModify(signatureAttrs, null, callbackContext, checkImmutable);
 
     if (signatureId == null) {
       signatureId = LdapUtil.generateUUID();
@@ -8151,7 +8151,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       zlc.createEntry(entry);
 
       Signature signature = getSignatureById(account, ldapEntry, signatureId, zlc);
-      LdapAttributeManager.get(AttributeManager.getInstance()).postModify(signatureAttrs, signature, callbackContext);
+      LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).postModify(signatureAttrs, signature, callbackContext);
 
       if (setAsDefault) setDefaultSignature(account, signatureId);
 
@@ -8487,7 +8487,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     boolean checkImmutable = !restoring;
     CallbackContext callbackContext = new CallbackContext(CallbackContext.Op.CREATE);
-    LdapAttributeManager.get(AttributeManager.getInstance())
+    LdapAttributeCallbackHelper.get(AttributeManager.getInstance())
         .preModify(dataSourceAttrs, null, callbackContext, checkImmutable);
 
     ZLdapContext zlc = null;
@@ -8530,7 +8530,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       zlc.createEntry(entry);
 
       DataSource ds = getDataSourceById(ldapEntry, dsId, zlc);
-      LdapAttributeManager.get(AttributeManager.getInstance()).postModify(dataSourceAttrs, ds, callbackContext);
+      LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).postModify(dataSourceAttrs, ds, callbackContext);
       return ds;
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.DATA_SOURCE_EXISTS(dsName);
@@ -9761,7 +9761,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       groupAttrs.remove(A_zimbraIsACLGroup);
     }
 
-    LdapAttributeManager.get(AttributeManager.getInstance()).preModify(groupAttrs, null, callbackContext, true);
+    LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).preModify(groupAttrs, null, callbackContext, true);
 
     // put zimbraIsACLGroup back
     if (providedZimbraIsACLGroup != null) {
@@ -9920,7 +9920,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       DynamicGroup group = getDynamicGroupBasic(DistributionListBy.id, zimbraId, zlc);
 
       if (group != null) {
-        LdapAttributeManager.get(AttributeManager.getInstance()).postModify(groupAttrs, group, callbackContext);
+        LdapAttributeCallbackHelper.get(AttributeManager.getInstance()).postModify(groupAttrs, group, callbackContext);
         removeExternalAddrsFromAllDynamicGroups(group.getAllAddrsSet(), zlc);
         allDLs.addGroup(group);
       } else {

@@ -19,15 +19,15 @@ import com.zimbra.cs.account.callback.CallbackContext;
 import java.util.Map;
 import java.util.Set;
 
-public class LdapAttributeManager {
+public class LdapAttributeCallbackHelper {
 
-	public static LdapAttributeManager get(AttributeManager attributeManager) {
-		return new LdapAttributeManager(attributeManager);
+	public static LdapAttributeCallbackHelper get(AttributeManager attributeManager) {
+		return new LdapAttributeCallbackHelper(attributeManager);
 	}
 
 	private final AttributeManager attributeManager;
 
-	public LdapAttributeManager(AttributeManager attributeManager) {
+	public LdapAttributeCallbackHelper(AttributeManager attributeManager) {
 		this.attributeManager = attributeManager;
 	}
 
