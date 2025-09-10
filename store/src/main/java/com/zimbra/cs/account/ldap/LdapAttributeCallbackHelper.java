@@ -8,9 +8,9 @@ package com.zimbra.cs.account.ldap;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
+import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.AttributeConfig;
-import com.zimbra.cs.account.AttributeException;
 import com.zimbra.cs.account.AttributeInfo;
 import com.zimbra.cs.account.AttributeManager;
 import com.zimbra.cs.account.Entry;
@@ -51,7 +51,7 @@ public class LdapAttributeCallbackHelper {
 		for (String key : keys) {
 			String name = key;
 			if (name.length() == 0) {
-				throw AttributeException.INVALID_ATTR_NAME("empty attr name found", null);
+				throw AccountServiceException.INVALID_ATTR_NAME("empty attr name found", null);
 			}
 			Object value = attrs.get(name);
 			if (name.charAt(0) == '-' || name.charAt(0) == '+') {
