@@ -900,14 +900,14 @@
                 <taskdef classpathref="maven.plugin.classpath"
                   resource="net/sf/antcontrib/antlib.xml" />
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-zattr-rights" />
+                  <target name="generate-rights" />
                 </ant>
               </target>
             </configuration>
             <goals>
               <goal>run</goal>
             </goals>
-            <id>generate-zattr-rights</id>
+            <id>generate-rights</id>
           </execution>
           <!-- LDAP Config gen before packaging -->
           <execution>
