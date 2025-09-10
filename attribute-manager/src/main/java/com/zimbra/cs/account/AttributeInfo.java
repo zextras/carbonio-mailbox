@@ -6,10 +6,6 @@
 package com.zimbra.cs.account;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.zimbra.common.localconfig.DebugConfig;
-import com.zimbra.common.mime.shim.JavaMailInternetAddress;
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.DateUtil;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.Version;
@@ -18,23 +14,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 
 public class AttributeInfo {
-
-    //  8        4  4     4      12
-    //8cf3db5d-cfd7-11d9-884f-e7b38f15492d
-    private static Pattern ID_PATTERN =
-        Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
-
-    //yyyyMMddHHmmssZ or yyyyMMddHHmmss.SSSZ
-    private static Pattern GENTIME_PATTERN = Pattern.compile("^\\d{14}(\\.\\d{1,3})?[zZ]$");
-
-    private static Pattern DURATION_PATTERN = Pattern.compile("^\\d+([hmsd]|ms)?$");
 
     public static String DURATION_PATTERN_DOC =
         "Must be in valid duration format: {digits}{time-unit}.  " +
@@ -52,8 +35,17 @@ public class AttributeInfo {
     private final AttributeOrder mOrder;
 
     // LinkedHashSet used to increase predictability of generated source files
+
+    public LinkedHashSet<String> getmEnumSet() {
+        return mEnumSet;
+    }
+
     /** for enums */
     private LinkedHashSet<String> mEnumSet;
+
+    public Pattern getmRegex() {
+        return mRegex;
+    }
 
     /** for regex */
     private Pattern mRegex;
@@ -63,6 +55,10 @@ public class AttributeInfo {
 
     /** attribute callback */
     private final String mCallbackClassName;
+
+    public boolean ismImmutable() {
+        return mImmutable;
+    }
 
     /** whether this attribute can be modified directly */
     private final boolean mImmutable;
@@ -85,9 +81,33 @@ public class AttributeInfo {
 
     private final List<String> mDefaultCOSValuesUpgrade;
 
-    private long mMin = Long.MIN_VALUE, mMax = Long.MAX_VALUE;
+    public long getmMin() {
+        return mMin;
+    }
 
-    private String mMinDuration = null, mMaxDuration = null;
+    private long mMin = Long.MIN_VALUE;
+
+    public long getmMax() {
+        return mMax;
+    }
+
+    private long mMax = Long.MAX_VALUE;
+
+    public String getmMinDuration() {
+        return mMinDuration;
+    }
+
+    public static String getDurationPatternDoc() {
+        return DURATION_PATTERN_DOC;
+    }
+
+    private String mMinDuration = null;
+
+    public String getmMaxDuration() {
+        return mMaxDuration;
+    }
+
+    private String mMaxDuration = null;
 
     private final int mId;
 
@@ -269,190 +289,6 @@ public class AttributeInfo {
             }
         }
         return max;
-    }
-
-    public void checkValue(Object value, boolean checkImmutable, Map attrsToModify) throws ServiceException {
-        if ((value == null) || (value instanceof String)) {
-            checkValue((String) value, checkImmutable, attrsToModify);
-        } else if (value instanceof String[]) {
-            String[] values = (String[]) value;
-          for (String s : values)
-            checkValue(s, checkImmutable, attrsToModify);
-        }
-
-        if (isDeprecated() && !DebugConfig.allowModifyingDeprecatedAttributes) {
-            throw ServiceException.FAILURE("modifying deprecated attribute is not allowed: " + mName, null);
-        }
-    }
-
-    protected void checkValue(String value, boolean checkImmutable, Map attrsToModify) throws ServiceException {
-        if (checkImmutable && mImmutable)
-            throw ServiceException.INVALID_REQUEST(mName+" is immutable", null);
-        checkValue(value, attrsToModify);
-    }
-
-    protected void checkValue(String value, Map attrsToModify) throws ServiceException {
-
-        // means to delete/unset the attribute
-        if (value == null || value.equals(""))
-            return;
-
-        switch (mType) {
-            case TYPE_BOOLEAN:
-                if ("TRUE".equals(value) || "FALSE".equals(value)) {
-                    return;
-                } else {
-                    throw AttributeException.INVALID_ATTR_VALUE(mName + " must be TRUE or FALSE", null);
-                }
-            case TYPE_BINARY:
-            case TYPE_CERTIFICATE:
-                byte[] binary = ByteUtil.decodeLDAPBase64(value);
-                if (binary.length > mMax) {
-                    throw AttributeException.INVALID_ATTR_VALUE(
-                        mName + " value length(" + binary.length + ") larger than max allowed: " + mMax, null);
-                }
-                return;
-            case TYPE_DURATION:
-                if (!DURATION_PATTERN.matcher(value).matches()) {
-                    throw AttributeException.INVALID_ATTR_VALUE(mName + " " + DURATION_PATTERN_DOC, null);
-                }
-                long l = DateUtil.getTimeInterval(value, 0);
-                if (l < mMin) {
-                    throw AttributeException.INVALID_ATTR_VALUE(
-                        mName + " is shorter than minimum allowed: " + mMinDuration, null);
-                }
-                if (l > mMax) {
-                    throw AttributeException.INVALID_ATTR_VALUE(
-                        mName + " is longer than max allowed: " + mMaxDuration, null);
-                }
-                return;
-            case TYPE_EMAIL:
-                if (value.length() > mMax) {
-                    throw AttributeException.INVALID_ATTR_VALUE(
-                        mName + " value length(" + value.length() + ") larger than max allowed: " + mMax, null);
-                }
-                validEmailAddress(value, false);
-                return;
-            case TYPE_EMAILP:
-                if (value.length() > mMax) {
-                    throw AttributeException.INVALID_ATTR_VALUE(
-                        mName + " value length(" + value.length() + ") larger than max allowed: " + mMax, null);
-                }
-                validEmailAddress(value, true);
-                return;
-            case TYPE_CS_EMAILP:
-                if (value.length() > mMax) {
-                    throw AttributeException.INVALID_ATTR_VALUE(
-                        mName + " value length(" + value.length() + ") larger than max allowed: " + mMax, null);
-                }
-                String[] emails = value.split(",");
-                for (String email : emails) {
-                    validEmailAddress(email, true);
-                }
-                return;
-            case TYPE_ENUM:
-                if (mEnumSet.contains(value)) {
-                    return;
-                } else {
-                    throw AttributeException.INVALID_ATTR_VALUE(mName + " must be one of: " + mValue, null);
-                }
-            case TYPE_GENTIME:
-                if (GENTIME_PATTERN.matcher(value).matches()) {
-                    return;
-                } else {
-                    throw AttributeException.INVALID_ATTR_VALUE(
-                        mName + " must be a valid generalized time: yyyyMMddHHmmssZ or yyyyMMddHHmmss.SSSZ", null);
-                }
-            case TYPE_ID:
-                // For bug 21776 we check format for id only if the Provisioning class mandates
-                // that all attributes of type id must be an UUID.
-                //
-                // Id is in UUID format, no need to check
-//                if (!Provisioning.getInstance().idIsUUID()) {
-//                    return;
-//                }
-
-                if (ID_PATTERN.matcher(value).matches()) {
-                    return;
-                } else {
-                    throw AttributeException.INVALID_ATTR_VALUE(mName + " must be a valid id", null);
-                }
-            case TYPE_INTEGER:
-                try {
-                    int v = Integer.parseInt(value);
-                    if (v < mMin) {
-                        throw AttributeException.INVALID_ATTR_VALUE(
-                            mName + " value(" + v + ") smaller than minimum allowed: " + mMin, null);
-                    }
-                    if (v > mMax) {
-                        throw AttributeException.INVALID_ATTR_VALUE(
-                            mName + " value(" + v + ") larger than max allowed: " + mMax, null);
-                    }
-                    return;
-                } catch (NumberFormatException e) {
-                    throw AttributeException.INVALID_ATTR_VALUE(mName + " must be a valid integer: " + value, e);
-                }
-            case TYPE_LONG:
-                try {
-                    long v = Long.parseLong(value);
-                    if (v < mMin) {
-                        throw AttributeException.INVALID_ATTR_VALUE(
-                            mName + " value(" + v + ") smaller than minimum allowed: " + mMin, null);
-                    }
-                    if (v > mMax) {
-                        throw AttributeException.INVALID_ATTR_VALUE(
-                            mName + " value(" + v + ") larger than max allowed: " + mMax, null);
-                    }
-                    return;
-                } catch (NumberFormatException e) {
-                    throw AttributeException.INVALID_ATTR_VALUE(mName + " must be a valid long: " + value, e);
-                }
-            case TYPE_PORT:
-                try {
-                    int v = Integer.parseInt(value);
-                    if (v >= 0 && v <= 65535) {
-                        return;
-                    }
-                    throw AttributeException.INVALID_ATTR_VALUE(mName + " must be a valid port: " + value, null);
-                } catch (NumberFormatException e) {
-                    throw AttributeException.INVALID_ATTR_VALUE(mName + " must be a valid port: " + value, null);
-                }
-            case TYPE_STRING:
-            case TYPE_ASTRING:
-            case TYPE_OSTRING:
-            case TYPE_CSTRING:
-            case TYPE_PHONE:
-                if (value.length() > mMax) {
-                    throw AttributeException.INVALID_ATTR_VALUE(
-                        mName + " value length(" + value.length() + ") larger than max allowed: " + mMax, null);
-                }
-                // TODO
-                return;
-            case TYPE_REGEX:
-                if (mRegex.matcher(value).matches()) {
-                    return;
-                } else {
-                    throw AttributeException.INVALID_ATTR_VALUE(mName + " must match the regex: " + mValue, null);
-                }
-            default:
-                ZimbraLog.misc.warn("unknown type(" + mType + ") for attribute: " + value);
-                break;
-        }
-    }
-
-    public static void validEmailAddress(String addr, boolean personal) throws ServiceException {
-        if (addr.indexOf('@') == -1)
-            throw AttributeException.INVALID_ATTR_VALUE("address '" + addr + "' does not include domain", null);
-
-        try {
-            InternetAddress ia = new JavaMailInternetAddress(addr, true);
-            // is this even needed?
-            ia.validate();
-            if (!personal && ia.getPersonal() != null && !ia.getPersonal().equals(""))
-                throw AttributeException.INVALID_ATTR_VALUE("invalid email address: " + addr, null);
-        } catch (AddressException e) {
-            throw AttributeException.INVALID_ATTR_VALUE("invalid email address: " + addr, e);
-        }
     }
 
     public String getCallbackClassName() {

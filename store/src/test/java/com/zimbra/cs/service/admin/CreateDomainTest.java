@@ -3,7 +3,7 @@ package com.zimbra.cs.service.admin;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zimbra.common.service.ServiceException;
+import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.Provisioning;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +24,7 @@ class CreateDomainTest extends MailboxTestSuite {
         final Map<String, Object> extraAttr = new HashMap<>();
         extraAttr.put(Provisioning.A_zimbraDomainMaxAccounts, "-1");
 
-        final ServiceException actualException = assertThrows(
-            ServiceException.class, () -> provisioning.createDomain("test.domain.com", extraAttr));
+        final AccountServiceException actualException = assertThrows(AccountServiceException.class, () -> provisioning.createDomain("test.domain.com", extraAttr));
 
         assertEquals("zimbraDomainMaxAccounts value(-1) smaller than minimum allowed: 0", actualException.getMessage());
     }

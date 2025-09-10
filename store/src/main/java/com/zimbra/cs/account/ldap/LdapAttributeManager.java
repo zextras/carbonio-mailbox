@@ -69,7 +69,7 @@ public class LdapAttributeManager {
 				if (attributeManager.idnType(name).isEmailOrIDN()) {
 					value = attrs.get(name);
 				}
-				info.checkValue(value, checkImmutable, attrs);
+				LdapAttributeInfo.get(info).checkValue(value, checkImmutable, attrs);
 				final LdapAttributeInfo ldapAttributeInfo = LdapAttributeInfo.get(info);
 				if (allowCallback && ldapAttributeInfo.getCallback() != null) {
 					ldapAttributeInfo.getCallback().preModify(context, name, value, attrs, entry);

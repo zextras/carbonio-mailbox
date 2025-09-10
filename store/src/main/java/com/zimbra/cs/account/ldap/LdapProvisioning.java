@@ -35,6 +35,7 @@ import com.zimbra.cs.account.AddressList;
 import com.zimbra.cs.account.Alias;
 import com.zimbra.cs.account.AliasedEntry;
 import com.zimbra.cs.account.AttributeClass;
+import com.zimbra.cs.account.AttributeException;
 import com.zimbra.cs.account.AttributeInfo;
 import com.zimbra.cs.account.AttributeManager;
 import com.zimbra.cs.account.CacheAwareProvisioning;
@@ -2802,7 +2803,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
     } catch (LdapEntryAlreadyExistException nabe) {
       throw AccountServiceException.DOMAIN_EXISTS(name);
-    } catch (LdapException | AccountServiceException e) {
+    } catch (LdapException | AccountServiceException | AttributeException e) {
       throw e;
     } catch (ServiceException e) {
       throw ServiceException.FAILURE("unable to create domain: " + name, e);

@@ -15,15 +15,10 @@ public class AttributeException extends ServiceException {
 	}
 
 	public static final String INVALID_ATTR_NAME = "account.INVALID_ATTR_NAME";
-	public static final String INVALID_ATTR_VALUE = "account.INVALID_ATTR_VALUE";
 	public static final boolean SENDERS_FAULT = false; // client's fault
 
 	public static AttributeException INVALID_ATTR_NAME(String msg, Throwable t) {
 		return new AttributeException(msg, INVALID_ATTR_NAME, SENDERS_FAULT, t);
-	}
-
-	public static AttributeException INVALID_ATTR_VALUE(String msg, Throwable t) {
-		return new AttributeException(msg, INVALID_ATTR_VALUE, SENDERS_FAULT, t);
 	}
 
 }
