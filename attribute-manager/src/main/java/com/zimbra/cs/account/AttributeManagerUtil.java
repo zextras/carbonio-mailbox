@@ -813,7 +813,7 @@ public class AttributeManagerUtil {
       }
 
       AttributeManager am = null;
-      if (action != Action.DUMP && action != Action.LIST_ATTRS) {
+      if (action != Action.LIST_ATTRS) {
         if (!commandLine.hasOption('i')) {
           usage("no input attribute xml files specified");
         }
@@ -836,9 +836,6 @@ public class AttributeManagerUtil {
       try {
         AttributeManagerUtil attributeManagerUtil = new AttributeManagerUtil(am);
         switch (action) {
-//          case DUMP:
-//            LdapProv.getInst().dumpLdapSchema(printWriter);
-//            break;
           case GENERATE_DEFAULT_COS_LDIF:
             attributeManagerUtil.generateDefaultCOSLdif(printWriter);
             break;
@@ -1752,7 +1749,6 @@ public class AttributeManagerUtil {
   }
 
   private enum Action {
-    DUMP,
     GENERATE_DEFAULT_COS_LDIF,
     GENERATE_DEFAULT_EXTERNAL_COS_LDIF,
     GENERATE_GETTERS,
