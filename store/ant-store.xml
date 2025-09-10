@@ -68,9 +68,6 @@
     <copy todir="${basedir}/build/zimbra/conf/" file="${basedir}/../store-conf/conf/contacts/contact-fields.xml"/>
   </target>
 
-  <target name="generate-zattr-rights" description="generate ZAttr and rights"
-    depends="generate-rights,generate-ldap-config"/>
-
   <target name="create-version-sql" depends="build-init, set-dev-version"
     description="Creates version-init.sql">
     <java classname="com.zimbra.cs.db.MySQL" fork="true" classpath="${maven_compile_classpath}"
