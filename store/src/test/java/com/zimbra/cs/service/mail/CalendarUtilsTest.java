@@ -5,7 +5,6 @@
 package com.zimbra.cs.service.mail;
 
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zextras.mailbox.util.CreateAccount.Factory;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.XMLElement;
 import com.zimbra.common.soap.MailConstants;
@@ -17,16 +16,16 @@ import org.junit.jupiter.api.Test;
 
 class CalendarUtilsTest extends MailboxTestSuite {
 
-  private static Factory createAccountFactory;
+  
 
   @BeforeAll
   public static void setUp() {
-    createAccountFactory = getCreateAccountFactory();
+    
   }
 
   @Test
   void parseInviteRaw_shouldParseInvite() throws Exception {
-    final Account account = createAccountFactory.get().create();
+    final Account account = createAccount().create();
     final XMLElement inviteElement = new XMLElement(MailConstants.E_INVITE);
     final Element content = inviteElement.addUniqueElement(MailConstants.E_CONTENT);
     final String uid = "21B97459-D97B-4B23-AF2A-E2759745C299";

@@ -6,7 +6,6 @@ package com.zimbra.cs.service.admin;
 
 
 import com.zextras.mailbox.soap.SoapTestSuite;
-import com.zextras.mailbox.util.CreateAccount;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
@@ -30,13 +29,13 @@ import org.junit.jupiter.api.Test;
 @Tag("api")
 public class ModifyDomainTest extends SoapTestSuite {
 
-  private static CreateAccount.Factory createAccountFactory;
+  
   private static Provisioning provisioning;
 
   @BeforeAll
   static void setUp() {
     provisioning = Provisioning.getInstance();
-    createAccountFactory = getCreateAccountFactory();
+    
   }
 
 
@@ -48,7 +47,7 @@ public class ModifyDomainTest extends SoapTestSuite {
    */
   @Test
   void domainAdminShouldBeAbleToModifyDomainAttributes() throws Exception {
-    final Account domainAdminAccount = createAccountFactory.get()
+    final Account domainAdminAccount = createAccount()
         .withAttribute(ZAttrProvisioning.A_zimbraIsDelegatedAdminAccount, "TRUE").create();
     final Domain targetDomain = provisioning.getDomain(domainAdminAccount);
     final Set<ZimbraACE> aces = new HashSet<>();

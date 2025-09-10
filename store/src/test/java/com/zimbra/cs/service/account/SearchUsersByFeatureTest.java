@@ -37,14 +37,14 @@ import org.junit.jupiter.api.Test;
 public class SearchUsersByFeatureTest extends SoapTestSuite {
   public static final String ACCOUNT_UID = "first.account";
   public static final String ACCOUNT_NAME = "name";
-  private static CreateAccount.Factory createAccountFactory;
+  
   private static Provisioning provisioning;
   private static Account userAccount;
 
   @BeforeAll
   static void setUp() throws Exception {
     provisioning = Provisioning.getInstance();
-    createAccountFactory = getCreateAccountFactory();
+    
     userAccount = buildAccount("user", "User").create();
   }
 
@@ -530,7 +530,7 @@ public class SearchUsersByFeatureTest extends SoapTestSuite {
   }
 
   private static CreateAccount buildAccount(String uid, String fullName, String domain) {
-    return createAccountFactory.get()
+    return createAccount()
         .withDomain(domain)
         .withUsername(uid)
         .withAttribute("displayName", fullName);
