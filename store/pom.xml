@@ -498,7 +498,7 @@
       <groupId>zextras</groupId>
     </dependency>
     <dependency>
-      <artifactId>ldap</artifactId>
+      <artifactId>mailbox-ldap-lib</artifactId>
       <groupId>zextras</groupId>
     </dependency>
     <dependency>

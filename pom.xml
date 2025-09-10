@@ -389,7 +389,7 @@
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
-        <artifactId>ldap</artifactId>
+        <artifactId>mailbox-ldap-lib</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -780,7 +780,7 @@
     <module>native</module>
     <module>common</module>
     <module>attribute-manager</module>
-    <module>ldap</module>
+    <module>mailbox-ldap-lib</module>
     <module>client</module>
     <module>soap</module>
     <module>store</module>
