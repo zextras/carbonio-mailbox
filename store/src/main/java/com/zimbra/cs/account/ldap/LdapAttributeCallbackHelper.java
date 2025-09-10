@@ -6,6 +6,7 @@
 
 package com.zimbra.cs.account.ldap;
 
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AccountServiceException;
@@ -129,17 +130,17 @@ public class LdapAttributeCallbackHelper {
 		attributeManager.setmLdapSchemaExtensionInited(true);
 
 		this.getExtraObjectClassAttrs(
-				repository, AttributeClass.account, "zimbraAccountExtraObjectClass");
+				repository, AttributeClass.account, ZAttrProvisioning.A_zimbraAccountExtraObjectClass);
 		this.getExtraObjectClassAttrs(
 				repository,
 				AttributeClass.calendarResource,
-				"zimbraCalendarResourceExtraObjectClass");
+				ZAttrProvisioning.A_zimbraCalendarResourceExtraObjectClass);
 		this.getExtraObjectClassAttrs(
-				repository, AttributeClass.cos, "zimbraCosExtraObjectClass");
+				repository, AttributeClass.cos, ZAttrProvisioning.A_zimbraCosExtraObjectClass);
 		this.getExtraObjectClassAttrs(
-				repository, AttributeClass.domain, "zimbraDomainExtraObjectClass");
+				repository, AttributeClass.domain, ZAttrProvisioning.A_zimbraDomainExtraObjectClass);
 		this.getExtraObjectClassAttrs(
-				repository, AttributeClass.server, "zimbraServerExtraObjectClass");
+				repository, AttributeClass.server, ZAttrProvisioning.A_zimbraServerExtraObjectClass);
 	}
 	public void loadLdapSchemaExtensionAttrs(LdapProv ldapProv) {
 		synchronized (AttributeManager.class) {
