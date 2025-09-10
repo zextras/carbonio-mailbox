@@ -17,10 +17,6 @@
   </parent>
 
   <dependencies>
-    <dependency>
-      <artifactId>guava</artifactId>
-      <groupId>com.google.guava</groupId>
-    </dependency>
 
     <dependency>
       <artifactId>zm-common</artifactId>
@@ -29,6 +25,7 @@
     <dependency>
       <artifactId>attribute-manager</artifactId>
       <groupId>zextras</groupId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
