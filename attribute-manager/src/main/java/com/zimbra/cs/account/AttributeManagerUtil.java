@@ -8,7 +8,6 @@ package com.zimbra.cs.account;
 import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ByteUtil;
-import com.zimbra.common.util.CliUtil;
 import com.zimbra.common.util.DateUtil;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
@@ -794,7 +793,7 @@ public class AttributeManagerUtil {
   }
 
   public static void main(String[] args) throws IOException, ServiceException {
-    CliUtil.toolSetup();
+    ZimbraLog.toolSetupInfo();
     CommandLine commandLine = parseArgs(args);
 
     if (commandLine == null) {
