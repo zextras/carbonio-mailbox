@@ -36,7 +36,7 @@ ARG BASE_JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
               -XX:G1NewSizePercent=15 -XX:G1MaxNewSizePercent=45 -XX:-OmitStackTraceInFastThrow \
               -Djava.security.egd=file:/dev/./urandom \
               --add-opens java.base/java.lang=ALL-UNNAMED \
-              -Xss256k -Dlog4j.configurationFile=/opt/zextras/conf/log4j.properties \
+              -Xss256k \
               -Xms1996m -Xmx1996m -Djava.io.tmpdir=/opt/zextras/mailboxd/work \
               -Djava.library.path=/opt/zextras/lib \
               -Dzimbra.config=/localconfig/localconfig.xml \
