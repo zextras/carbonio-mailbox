@@ -7,7 +7,8 @@ COPY store-conf/conf/owasp_policy.xml /opt/zextras/conf/owasp_policy.xml
 RUN mkdir -p /opt/zextras/mailbox/jars/ && \
     mkdir -p /opt/zextras/lib/ext/nginx-lookup/ && \
     mkdir -p /opt/zextras/store && \
-    mkdir -p /opt/zextras/mailboxd/work
+    mkdir -p /opt/zextras/mailboxd/work && \
+    mkdir -p /opt/zextras/log
 
 COPY store/target/zm-store.jar /opt/zextras/mailbox/jars/
 COPY store/target/dependencies/* /opt/zextras/mailbox/jars/
