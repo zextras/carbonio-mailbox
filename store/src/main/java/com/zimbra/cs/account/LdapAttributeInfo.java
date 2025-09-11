@@ -15,9 +15,11 @@ import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.DateUtil;
 import com.zimbra.common.util.ZimbraLog;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 public class LdapAttributeInfo {
+	private static final Map<String, AttributeCallback> callbacks = new ConcurrentHashMap<>();
 	private final AttributeInfo attributeInfo;
 
 	//  8        4  4     4      12
@@ -37,13 +39,17 @@ public class LdapAttributeInfo {
 		this.attributeInfo = attributeInfo;
 	}
 
-	public AttributeCallback getCallback() {
-		try {
-			return (AttributeCallback) Class.forName(attributeInfo.getCallbackClassName())
-					.getDeclaredConstructor().newInstance();
-		} catch (Exception e) {
-			return null;
-		}
+	public synchronized AttributeCallback getCallback() {
+		return callbacks.computeIfAbsent(attributeInfo.getName(), key -> {
+			try {
+				return (AttributeCallback) Class.forName(attributeInfo.getCallbackClassName())
+						.getDeclaredConstructor().newInstance();
+			} catch (Exception e) {
+				// Consider logging here
+				System.err.println("Failed to instantiate callback for " + key + ": " + e.getMessage());
+				return null;
+			}
+		});
 	}
 
 
