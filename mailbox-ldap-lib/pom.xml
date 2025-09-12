@@ -48,32 +48,6 @@
   <packaging>jar</packaging>
   <build>
     <plugins>
-      <!-- Generate ZAttrProvisioning -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
-
-          <execution>
-            <id>generate-ZAttrAccount</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>java</goal>
-            </goals>
-            <configuration>
-              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-              <arguments>
-                <argument>-a</argument>
-                <argument>generateProvisioning</argument>
-
-                <argument>-r</argument>
-                <argument>${generated-zattr}/ZAttrProvisioning.java</argument>
-              </arguments>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
@@ -112,12 +86,28 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
       </plugin>
-      <!-- Generate LDAP schema -->
+      <!-- Generate ZAttr and LDAP schema -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.1.0</version>
         <executions>
+          <execution>
+            <id>generate-ZAttrAccount</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+              <arguments>
+                <argument>-a</argument>
+                <argument>generateProvisioning</argument>
+                <argument>-r</argument>
+                <argument>${generated-zattr}/ZAttrProvisioning.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
           <execution>
             <id>generate-ldap-schema</id>
             <phase>generate-sources</phase>
@@ -136,14 +126,6 @@
               </arguments>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-      <!-- Generate schema LDIF -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
           <execution>
             <id>generate-schema-ldif</id>
             <phase>generate-sources</phase>
@@ -159,6 +141,54 @@
                 <argument>${ldap.conf.dir}/carbonio.schema-template</argument>
                 <argument>-o</argument>
                 <argument>${ldap.build.dir}/schema/carbonio.ldif</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-globalconfig-ldif</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+              <arguments>
+                <argument>-a</argument>
+                <argument>generateGlobalConfigLdif</argument>
+                <argument>-o</argument>
+                <argument>${ldap.build.dir}/zimbra_globalconfig.ldif</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-defaultCOS-ldif</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+              <arguments>
+                <argument>-a</argument>
+                <argument>generateDefaultCOSLdif</argument>
+                <argument>-o</argument>
+                <argument>${ldap.build.dir}/zimbra_defaultcos.ldif</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-defaultExternalCOS-ldif</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+              <arguments>
+                <argument>-a</argument>
+                <argument>generateDefaultExternalCOSLdif</argument>
+                <argument>-o</argument>
+                <argument>${ldap.build.dir}/zimbra_defaultexternalcos.ldif</argument>
               </arguments>
             </configuration>
           </execution>
