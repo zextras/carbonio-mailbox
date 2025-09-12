@@ -1,14 +1,16 @@
 FROM eclipse-temurin:17-jre-jammy
 
-COPY store/src/test/resources/timezones-test.ics /opt/zextras/conf/timezones.ics
-COPY store-conf/conf/msgs/* /opt/zextras/conf/msgs/
-COPY store-conf/conf/owasp_policy.xml /opt/zextras/conf/owasp_policy.xml
-
 RUN mkdir -p /opt/zextras/mailbox/jars/ && \
     mkdir -p /opt/zextras/lib/ext/nginx-lookup/ && \
     mkdir -p /opt/zextras/store && \
     mkdir -p /opt/zextras/mailboxd/work && \
     mkdir -p /opt/zextras/log
+
+COPY store/src/test/resources/timezones-test.ics /opt/zextras/conf/timezones.ics
+COPY store-conf/conf/msgs/* /opt/zextras/conf/msgs/
+COPY store-conf/conf/owasp_policy.xml /opt/zextras/conf/owasp_policy.xml
+ADD https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar \
+    /opt/zextras/opentelemetry-javaagent.jar
 
 COPY store/target/zm-store.jar /opt/zextras/mailbox/jars/
 COPY store/target/dependencies/* /opt/zextras/mailbox/jars/
@@ -44,20 +46,25 @@ ARG BASE_JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
               -Dlog4j.configurationFile=/opt/zextras/conf/log4j.properties \
               -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/*"
 
-ENV JAVA_ARGS="${BASE_JAVA_ARGS} \
-              -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 \
-              com.zextras.mailbox.Mailbox"
 ARG JAVA_CLI_ARGS="${BASE_JAVA_ARGS} \
               com.zimbra.cs.account.ProvUtil \"\$@\""
+RUN echo "java ${JAVA_CLI_ARGS}" > /usr/bin/zmprov && chmod +x /usr/bin/zmprov && mkdir -p /opt/zextras/db
 
 ARG JAVA_ZMGSA_ARGS="${BASE_JAVA_ARGS} \
               com.zimbra.cs.util.GalSyncAccountUtil \"\$@\""
 RUN echo "java ${JAVA_ZMGSA_ARGS}" > /usr/bin/zmgsautil && chmod +x /usr/bin/zmgsautil
 
-RUN echo "java ${JAVA_CLI_ARGS}" > /usr/bin/zmprov && chmod +x /usr/bin/zmprov && mkdir -p /opt/zextras/db
 ARG JAVA_ZMMAILBOX_ARG="${BASE_JAVA_ARGS} \
               com.zimbra.cs.zclient.ZMailboxUtil \"\$@\""
 RUN echo "java ${JAVA_ZMMAILBOX_ARG}" > /usr/bin/zmmailbox && chmod +x /usr/bin/zmmailbox
+
+# example: -Dotel.service.name=your-service-name -Dotel.traces.exporter=zipkin
+ENV TRACING_OPTIONS=""
+ENV JAVA_ARGS="-javaagent:/opt/zextras/opentelemetry-javaagent.jar ${BASE_JAVA_ARGS} ${TRACING_OPTIONS} \
+              -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 \
+              com.zextras.mailbox.Mailbox"
+ENV MAILBOX_ENTRYPOINT="${JAVA} ${JAVA_ARGS}"
+
 COPY store/db/create_database.sql /opt/zextras/db/
 
 COPY docker/standalone/mailbox/localconfig/localconfig.xml /localconfig/localconfig.xml
