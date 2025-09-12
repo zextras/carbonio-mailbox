@@ -593,9 +593,6 @@
     <finalName>${project.artifactId}</finalName>
     <resources>
       <resource>
-        <directory>${project.basedir}/ldap/generated</directory>
-      </resource>
-      <resource>
         <directory>${project.basedir}/target/generated-resources</directory>
       </resource>
       <resource>
@@ -605,9 +602,6 @@
     <testResources>
       <testResource>
         <directory>${project.basedir}/src/test/resources</directory>
-      </testResource>
-      <testResource>
-        <directory>${project.basedir}/ldap/generated</directory>
       </testResource>
     </testResources>
 

@@ -54,6 +54,7 @@
         <version>3.0.0</version>
         <executions>
           <execution>
+            <id>add-zattr</id>
             <phase>generate-sources</phase>
             <goals>
               <goal>add-source</goal>
@@ -62,6 +63,24 @@
               <sources>
                 <source>${generated-sources}/zattr/</source>
               </sources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>add-ldap-files</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>add-resource</goal>
+            </goals>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>${ldap.generated.dir}</directory>
+                  <includes>
+                    <include>*.ldif</include>
+                    <include>config/**</include>
+                  </includes>
+                </resource>
+              </resources>
             </configuration>
           </execution>
         </executions>
@@ -127,7 +146,7 @@
           </execution>
           <execution>
             <id>generate-ldap-schema</id>
-            <phase>generate-sources</phase>
+            <phase>generate-resources</phase>
             <goals>
               <goal>java</goal>
             </goals>
@@ -145,7 +164,7 @@
           </execution>
           <execution>
             <id>generate-schema-ldif</id>
-            <phase>generate-sources</phase>
+            <phase>generate-resources</phase>
             <goals>
               <goal>java</goal>
             </goals>
@@ -163,7 +182,7 @@
           </execution>
           <execution>
             <id>generate-globalconfig-ldif</id>
-            <phase>generate-sources</phase>
+            <phase>generate-resources</phase>
             <goals>
               <goal>java</goal>
             </goals>
@@ -179,7 +198,7 @@
           </execution>
           <execution>
             <id>generate-defaultCOS-ldif</id>
-            <phase>generate-sources</phase>
+            <phase>generate-resources</phase>
             <goals>
               <goal>java</goal>
             </goals>
@@ -195,7 +214,7 @@
           </execution>
           <execution>
             <id>generate-defaultExternalCOS-ldif</id>
-            <phase>generate-sources</phase>
+            <phase>generate-resources</phase>
             <goals>
               <goal>java</goal>
             </goals>
@@ -216,8 +235,8 @@
         <version>3.1.0</version>
         <executions>
           <execution>
-            <id>copy-task</id>
-            <phase>process-resources</phase>
+            <id>copy-ldap-files</id>
+            <phase>generate-resources</phase>
             <configuration>
               <target>
                 <copy todir="${ldap.generated.dir}/" file="${ldap.dir}/carbonio.ldif" />
