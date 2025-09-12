@@ -29,7 +29,7 @@ ENV MARIADB_PORT=3306
 ENV CARBONIO_FILES_SERVICE_URL="http://carbonio-files:10000"
 ENV CARBONIO_PREVIEW_SERVICE_URL="http://carbonio-preview:10000"
 
-ARG BASE_JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
+ENV BASE_JAVA_ARGS="-Dfile.encoding=UTF-8 -server \
               -Dhttps.protocols=TLSv1.2,TLSv1.3 \
               -Djdk.tls.client.protocols=TLSv1.2,TLSv1.3 \
               -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true \
@@ -60,10 +60,6 @@ RUN echo "java ${JAVA_ZMMAILBOX_ARG}" > /usr/bin/zmmailbox && chmod +x /usr/bin/
 
 # example: -Dotel.service.name=your-service-name -Dotel.traces.exporter=zipkin
 ENV TRACING_OPTIONS=""
-ENV JAVA_ARGS="-javaagent:/opt/zextras/opentelemetry-javaagent.jar ${BASE_JAVA_ARGS} ${TRACING_OPTIONS} \
-              -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 \
-              com.zextras.mailbox.Mailbox"
-ENV MAILBOX_ENTRYPOINT="${JAVA} ${JAVA_ARGS}"
 
 COPY store/db/create_database.sql /opt/zextras/db/
 
