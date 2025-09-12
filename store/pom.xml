@@ -334,11 +334,9 @@
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk18on</artifactId>
     </dependency>
-    <!-- Note this should be provided in container classpath -->
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
-
     </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
@@ -494,6 +492,15 @@
       <groupId>zextras</groupId>
       <artifactId>zm-native</artifactId>
     </dependency>
+
+    <dependency>
+      <artifactId>attribute-manager</artifactId>
+      <groupId>zextras</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>mailbox-ldap-lib</artifactId>
+      <groupId>zextras</groupId>
+    </dependency>
     <dependency>
       <groupId>zextras</groupId>
       <artifactId>store-extra-runtime-dependencies</artifactId>
@@ -605,6 +612,208 @@
     </testResources>
 
     <plugins>
+      <!-- Generate zattr classes -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>generate-ZAttrAccount</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+
+              <arguments>
+                <argument>-a</argument>
+                <argument>generateGetters</argument>
+                <argument>-c</argument>
+                <argument>account</argument>
+                <argument>-i</argument>
+                <argument>${attrs.dir}</argument>
+                <argument>-r</argument>
+                <argument>${generated-zattr}/ZAttrAccount.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-ZAttrConfig</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+
+              <arguments>
+                <argument>-a</argument>
+                <argument>generateGetters</argument>
+                <argument>-c</argument>
+                <argument>globalConfig</argument>
+                <argument>-i</argument>
+                <argument>${attrs.dir}</argument>
+                <argument>-r</argument>
+                <argument>${generated-zattr}/ZAttrConfig.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-ZAttrCos</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+
+              <arguments>
+                <argument>-a</argument>
+                <argument>generateGetters</argument>
+                <argument>-c</argument>
+                <argument>cos</argument>
+                <argument>-i</argument>
+                <argument>${attrs.dir}</argument>
+                <argument>-r</argument>
+                <argument>${generated-zattr}/ZAttrCos.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-ZAttrDomain</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+
+              <arguments>
+                <argument>-a</argument>
+                <argument>generateGetters</argument>
+                <argument>-c</argument>
+                <argument>domain</argument>
+                <argument>-i</argument>
+                <argument>${attrs.dir}</argument>
+                <argument>-r</argument>
+                <argument>${generated-zattr}/ZAttrDomain.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-ZAttrServer</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+
+              <arguments>
+                <argument>-a</argument>
+                <argument>generateGetters</argument>
+                <argument>-c</argument>
+                <argument>server</argument>
+                <argument>-i</argument>
+                <argument>${attrs.dir}</argument>
+                <argument>-r</argument>
+                <argument>${generated-zattr}/ZAttrServer.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <!-- ZAttrCalendarResource -->
+          <execution>
+            <id>generate-ZAttrCalendarResource</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+
+              <arguments>
+                <argument>-a</argument>
+                <argument>generateGetters</argument>
+                <argument>-c</argument>
+                <argument>calendarResource</argument>
+                <argument>-i</argument>
+                <argument>${attrs.dir}</argument>
+                <argument>-r</argument>
+                <argument>${generated-zattr}/ZAttrCalendarResource.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <!-- ZAttrDistributionList -->
+          <execution>
+            <id>generate-ZAttrDistributionList</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+
+              <arguments>
+                <argument>-a</argument>
+                <argument>generateGetters</argument>
+                <argument>-c</argument>
+                <argument>distributionList</argument>
+                <argument>-i</argument>
+                <argument>${attrs.dir}</argument>
+                <argument>-r</argument>
+                <argument>${generated-zattr}/ZAttrDistributionList.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <!-- ZAttrDynamicGroup -->
+          <execution>
+            <id>generate-ZAttrDynamicGroup</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+
+              <arguments>
+                <argument>-a</argument>
+                <argument>generateGetters</argument>
+                <argument>-c</argument>
+                <argument>group</argument>
+                <argument>-i</argument>
+                <argument>${attrs.dir}</argument>
+                <argument>-r</argument>
+                <argument>${generated-zattr}/ZAttrDynamicGroup.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <!-- ZAttrShareLocator -->
+          <execution>
+            <id>generate-ZAttrShareLocator</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
+
+              <arguments>
+                <argument>-a</argument>
+                <argument>generateGetters</argument>
+                <argument>-c</argument>
+                <argument>shareLocator</argument>
+                <argument>-i</argument>
+                <argument>${attrs.dir}</argument>
+                <argument>-r</argument>
+                <argument>${generated-zattr}/ZAttrShareLocator.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Add buildinfo sources -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
@@ -620,6 +829,7 @@
                 <source>${project.build.directory}/generated-sources/buildinfo</source><!-- adjust
                 folder name to your needs -->
                 <source>${project.build.directory}/generated-sources/javacc</source>
+                <source>${project.build.directory}/generated-sources/zattr</source>
               </sources>
             </configuration>
           </execution>
@@ -690,14 +900,14 @@
                 <taskdef classpathref="maven.plugin.classpath"
                   resource="net/sf/antcontrib/antlib.xml" />
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-zattr-rights" />
+                  <target name="generate-rights" />
                 </ant>
               </target>
             </configuration>
             <goals>
               <goal>run</goal>
             </goals>
-            <id>generate-zattr-rights</id>
+            <id>generate-rights</id>
           </execution>
           <!-- LDAP Config gen before packaging -->
           <execution>
@@ -942,6 +1152,9 @@
     <maven-exec-plugin.version>3.1.0</maven-exec-plugin.version>
     <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
     <config.dir>${project.basedir}/conf</config.dir>
+    <generated-sources>${project.build.directory}/generated-sources</generated-sources>
+    <generated-zattr>${generated-sources}/zattr/com/zimbra/cs/account</generated-zattr>
+    <attrs.dir>${project.basedir}/src/main/resources/conf/attrs</attrs.dir>
   </properties>
 
 </project>

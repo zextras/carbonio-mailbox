@@ -1,11 +1,13 @@
-// SPDX-FileCopyrightText: 2022 Synacor, Inc.
-// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
-//
-// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
-package com.zimbra.common.account;
+package com.zimbra.util;
 
 import com.google.common.collect.ImmutableBiMap;
+import com.zimbra.common.account.ZAttrProvisioning;
 
 public class SignatureUtil {
 

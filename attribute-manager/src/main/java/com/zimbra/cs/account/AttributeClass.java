@@ -7,7 +7,6 @@
 package com.zimbra.cs.account;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.Entry.EntryType;
 import java.util.HashMap;
 import java.util.Map;
 

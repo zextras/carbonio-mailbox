@@ -85,7 +85,7 @@ class TestAttributeManager {
             710,
             null,
             0,
-            new AvailableZimlets(),
+            AvailableZimlets.class.getName(),
             AttributeType.TYPE_STRING,
             null,
             "",

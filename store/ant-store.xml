@@ -68,66 +68,6 @@
     <copy todir="${basedir}/build/zimbra/conf/" file="${basedir}/../store-conf/conf/contacts/contact-fields.xml"/>
   </target>
 
-  <target name="generate-zattr-rights" description="generate ZAttr and rights"
-    depends="generate-zattr,generate-rights,generate-ldap-config"/>
-
-  <target name="generate-zattr" description="generate methods for attributes in attrs.xml">
-    <antcall target="generate-getter">
-      <param name="getter.class" value="account"/>
-      <param name="getter.output" value="ZAttrAccount.java"/>
-    </antcall>
-    <antcall target="generate-getter">
-      <param name="getter.class" value="calendarResource"/>
-      <param name="getter.output" value="ZAttrCalendarResource.java"/>
-    </antcall>
-    <antcall target="generate-getter">
-      <param name="getter.class" value="cos"/>
-      <param name="getter.output" value="ZAttrCos.java"/>
-    </antcall>
-    <antcall target="generate-getter">
-      <param name="getter.class" value="domain"/>
-      <param name="getter.output" value="ZAttrDomain.java"/>
-    </antcall>
-    <antcall target="generate-getter">
-      <param name="getter.class" value="server"/>
-      <param name="getter.output" value="ZAttrServer.java"/>
-    </antcall>
-    <antcall target="generate-getter">
-      <param name="getter.class" value="globalConfig"/>
-      <param name="getter.output" value="ZAttrConfig.java"/>
-    </antcall>
-    <antcall target="generate-getter">
-      <param name="getter.class" value="distributionList"/>
-      <param name="getter.output" value="ZAttrDistributionList.java"/>
-    </antcall>
-    <antcall target="generate-getter">
-      <param name="getter.class" value="group"/>
-      <param name="getter.output" value="ZAttrDynamicGroup.java"/>
-    </antcall>
-    <antcall target="generate-getter">
-      <param name="getter.class" value="shareLocator"/>
-      <param name="getter.output" value="ZAttrShareLocator.java"/>
-    </antcall>
-    <antcall target="generate-provisioning"/>
-  </target>
-
-  <target name="generate-getter">
-    <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true"
-      classpath="${maven_compile_classpath}" failonerror="true">
-      <sysproperty key="carbonio.version" value="${carbonio.buildinfo.all}"/>
-      <arg
-        line="-a generateGetters -c ${getter.class} -i ${attrs.dir} -r ${src.java.dir}/com/zimbra/cs/account/${getter.output}"/>
-    </java>
-  </target>
-  <target name="generate-provisioning">
-    <java classname="com.zimbra.cs.account.AttributeManagerUtil" fork="true"
-      classpath="${maven_compile_classpath}" failonerror="true">
-      <sysproperty key="carbonio.version" value="${carbonio.buildinfo.all}"/>
-      <arg
-        line="-a generateProvisioning -i ${attrs.dir} -r ${common.src.java.dir}/com/zimbra/common/account/ZAttrProvisioning.java"/>
-    </java>
-  </target>
-
   <target name="create-version-sql" depends="build-init, set-dev-version"
     description="Creates version-init.sql">
     <java classname="com.zimbra.cs.db.MySQL" fork="true" classpath="${maven_compile_classpath}"

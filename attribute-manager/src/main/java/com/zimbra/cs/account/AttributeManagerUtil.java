@@ -8,7 +8,6 @@ package com.zimbra.cs.account;
 import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ByteUtil;
-import com.zimbra.common.util.CliUtil;
 import com.zimbra.common.util.DateUtil;
 import com.zimbra.common.util.Log;
 import com.zimbra.common.util.LogFactory;
@@ -17,7 +16,6 @@ import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.Version;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AttributeManager.ObjectClassInfo;
-import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.util.MemoryUnitUtil;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -795,7 +793,7 @@ public class AttributeManagerUtil {
   }
 
   public static void main(String[] args) throws IOException, ServiceException {
-    CliUtil.toolSetup();
+    ZimbraLog.toolSetupInfo();
     CommandLine commandLine = parseArgs(args);
 
     if (commandLine == null) {
@@ -815,7 +813,7 @@ public class AttributeManagerUtil {
       }
 
       AttributeManager am = null;
-      if (action != Action.DUMP && action != Action.LIST_ATTRS) {
+      if (action != Action.LIST_ATTRS) {
         if (!commandLine.hasOption('i')) {
           usage("no input attribute xml files specified");
         }
@@ -826,19 +824,18 @@ public class AttributeManagerUtil {
         }
       }
 
-      OutputStream outputStream = System.out;
-      if (commandLine.hasOption('o')) {
-        outputStream = new FileOutputStream(commandLine.getOptionValue('o'));
+      PrintWriter printWriter;
+      final boolean printLogsToFile = commandLine.hasOption('o');
+      if (printLogsToFile) {
+        OutputStream outputStream = new FileOutputStream(commandLine.getOptionValue('o'));
+        printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)));
+      } else {
+        printWriter = new PrintWriter(System.out);
       }
 
-      try (PrintWriter printWriter =
-          new PrintWriter(
-              new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)))) {
+      try {
         AttributeManagerUtil attributeManagerUtil = new AttributeManagerUtil(am);
         switch (action) {
-          case DUMP:
-            LdapProv.getInst().dumpLdapSchema(printWriter);
-            break;
           case GENERATE_DEFAULT_COS_LDIF:
             attributeManagerUtil.generateDefaultCOSLdif(printWriter);
             break;
@@ -848,6 +845,7 @@ public class AttributeManagerUtil {
           case GENERATE_GETTERS:
             attributeManagerUtil.generateGetters(
                 commandLine.getOptionValue('c'), commandLine.getOptionValue('r'));
+            ZimbraLog.misc.info("Finished generating getters");
             break;
           case GENERATE_GLOBAL_CONFIG_LDIF:
             attributeManagerUtil.generateGlobalConfigLdif(printWriter);
@@ -863,6 +861,7 @@ public class AttributeManagerUtil {
             break;
           case GENERATE_PROVISIONING:
             attributeManagerUtil.generateProvisioningConstants(commandLine.getOptionValue('r'));
+            ZimbraLog.misc.info("Finished generating provisioning");
             break;
           case GENERATE_SCHEMA_LDIF:
             attributeManagerUtil.generateSchemaLdif(printWriter);
@@ -877,6 +876,11 @@ public class AttributeManagerUtil {
       } catch (IOException e) {
         ZimbraLog.misc.error(e.getMessage());
         System.exit(1);
+      }
+      finally {
+        if (printLogsToFile) {
+          printWriter.close();
+        }
       }
     }
   }
@@ -909,7 +913,7 @@ public class AttributeManagerUtil {
     pw.println("#");
 
     String baseDn = CLOptions.getBaseDn("cos");
-    String cosName = CLOptions.getEntryName("cos", Provisioning.DEFAULT_COS_NAME);
+    String cosName = CLOptions.getEntryName("cos", AttributeManagerRepository.DEFAULT_COS_NAME);
     String cosId = CLOptions.getEntryId("cos", "e00428a1-0c00-11d9-836a-000d93afea2a");
 
     pw.println("dn: cn=" + cosName + ",cn=cos," + baseDn);
@@ -941,7 +945,7 @@ public class AttributeManagerUtil {
     pw.println("#");
 
     String baseDn = CLOptions.getBaseDn("cos");
-    String cosName = CLOptions.getEntryName("cos", Provisioning.DEFAULT_EXTERNAL_COS_NAME);
+    String cosName = CLOptions.getEntryName("cos", AttributeManagerRepository.DEFAULT_EXTERNAL_COS_NAME);
     String cosId = CLOptions.getEntryId("cos", "f27456a8-0c00-11d9-280a-286d93afea2g");
 
     pw.println("dn: cn=" + cosName + ",cn=cos," + baseDn);
@@ -1641,7 +1645,7 @@ public class AttributeManagerUtil {
         continue;
       }
       if (attributeInfo.isDeprecated()) {
-        System.out.println("Attribute " + attributeInfo.getName() + " is deprecated, skipping it.");
+//        System.out.println("Attribute " + attributeInfo.getName() + " is deprecated, skipping it.");
         continue;
       }
 
@@ -1682,7 +1686,8 @@ public class AttributeManagerUtil {
           break;
       }
     }
-    FileGenUtil.replaceJavaFile(javaFile, result.toString());
+    FileGenUtil.createJavaFile(javaFile, result.toString());
+    ZimbraLog.misc.info("Done: " + javaFile);
   }
 
   /** */
@@ -1698,7 +1703,7 @@ public class AttributeManagerUtil {
         continue;
       }
       if (ai.isDeprecated()) {
-        System.out.println("Attribute " + ai.getName() + " is deprecated, skipping it.");
+//        System.out.println("Attribute " + ai.getName() + " is deprecated, skipping it.");
         continue;
       }
       generateEnum(result, ai);
@@ -1710,7 +1715,7 @@ public class AttributeManagerUtil {
         continue;
       }
       if (attributeInfo.isDeprecated()) {
-        System.out.println("Attribute " + attributeInfo.getName() + " is deprecated, skipping it.");
+//        System.out.println("Attribute " + attributeInfo.getName() + " is deprecated, skipping it.");
         continue;
       }
 
@@ -1740,12 +1745,10 @@ public class AttributeManagerUtil {
               "    public static final String A_%s = \"%s\";%n",
               attributeInfo.getName(), attributeInfo.getName()));
     }
-
-    FileGenUtil.replaceJavaFile(javaFile, result.toString());
+    FileGenUtil.createJavaFile(javaFile, result.toString());
   }
 
   private enum Action {
-    DUMP,
     GENERATE_DEFAULT_COS_LDIF,
     GENERATE_DEFAULT_EXTERNAL_COS_LDIF,
     GENERATE_GETTERS,

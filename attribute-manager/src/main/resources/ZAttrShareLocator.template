@@ -1,0 +1,29 @@
+// SPDX-FileCopyrightText: 2022 Synacor, Inc.
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: GPL-2.0-only
+
+package com.zimbra.cs.account;
+
+import com.zimbra.common.account.ZAttrProvisioning;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.zimbra.common.account.ZAttr;
+
+/**
+ * AUTO-GENERATED. DO NOT EDIT.
+ *
+ */
+public abstract class ZAttrShareLocator extends NamedEntry {
+
+    protected ZAttrShareLocator(String id, Map<String,Object> attrs, Provisioning prov) {
+        super(null, id, attrs, null, prov);
+    }
+
+
+  ///// BEGIN-AUTO-GEN-REPLACE
+
+  ///// END-AUTO-GEN-REPLACE
+
+ }

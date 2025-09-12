@@ -5,17 +5,18 @@
 
 package com.zimbra.cs.account;
 
+import com.zimbra.common.util.ByteUtil;
+import com.zimbra.common.util.StringUtil;
+import com.zimbra.common.util.ZimbraLog;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-
-import com.zimbra.common.util.ByteUtil;
-import com.zimbra.common.util.StringUtil;
 
 public class FileGenUtil {
 
@@ -185,4 +186,26 @@ public class FileGenUtil {
         }
     }
 
+    public static void createJavaFile(String javaFile, String content) throws IOException {
+        var outputFile = new File(javaFile);
+        final File parentFile = outputFile.getParentFile();
+        if (!parentFile.exists()) {
+            final boolean mkdirs = parentFile.mkdirs();
+            if (!mkdirs) {
+                ZimbraLog.misc.error("Cannot create directories");
+            }
+        }
+        var className = javaFile.substring(javaFile.lastIndexOf(File.separator)+1).replace(".java", "");
+        try(InputStream resourceAsStream = FileGenUtil.class.getResourceAsStream("/" + className + ".template")) {
+            final String template = new String(resourceAsStream.readAllBytes(),
+                StandardCharsets.UTF_8);
+            try (BufferedWriter out = new BufferedWriter(new FileWriter(javaFile))) {
+                out.write(template);
+            } catch (IOException e) {
+                ZimbraLog.misc.info("Failed writing template to file: " + javaFile);
+            }
+            ZimbraLog.misc.info("Wrote file: " + javaFile);
+        }
+        replaceJavaFile(javaFile, content);
+    }
 }

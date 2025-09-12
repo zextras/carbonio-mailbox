@@ -615,6 +615,10 @@ public final class ZimbraLog {
     return sb.toString();
   }
 
+  public static void toolSetupInfo() {
+    toolSetupLog4j("INFO", null, false);
+  }
+
   /**
    * Setup log4j for our command line tools.
    *

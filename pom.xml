@@ -384,6 +384,16 @@
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
+        <artifactId>attribute-manager</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>zextras</groupId>
+        <artifactId>mailbox-ldap-lib</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>zextras</groupId>
         <artifactId>zm-store</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -767,11 +777,13 @@
   <groupId>zextras</groupId>
   <modelVersion>4.0.0</modelVersion>
   <modules>
+    <module>native</module>
+    <module>common</module>
+    <module>attribute-manager</module>
+    <module>mailbox-ldap-lib</module>
+    <module>client</module>
     <module>soap</module>
     <module>store</module>
-    <module>client</module>
-    <module>common</module>
-    <module>native</module>
     <module>store-conf</module>
     <module>store-extra-runtime-dependencies</module>
     <module>jython-libs</module>
@@ -844,14 +856,6 @@
       <url>https://repo1.maven.org/maven2/</url>
     </repository>
     <repository>
-      <id>maven-redhat</id>
-      <url>https://maven.repository.redhat.com/ga/</url>
-    </repository>
-    <repository>
-      <id>nexus</id>
-      <url>https://repository.liferay.com/nexus/content/repositories/public/</url>
-    </repository>
-    <repository>
       <id>fuse</id>
       <url>https://repo.fusesource.com/maven2/</url>
     </repository>
@@ -864,14 +868,6 @@
     <pluginRepository>
       <id>central</id>
       <url>https://repo1.maven.org/maven2/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>maven-redhat</id>
-      <url>https://maven.repository.redhat.com/ga/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>nexus</id>
-      <url>https://repository.liferay.com/nexus/content/repositories/public/</url>
     </pluginRepository>
     <pluginRepository>
       <id>fuse</id>
@@ -1024,16 +1020,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.1.0</version>
-          <dependencies>
-            <!--
-            https://github-wiki-see.page/m/GoogleCloudPlatform/cloud-opensource-java/wiki/Linkage-Checker-Enforcer-Rule -->
-            <dependency>
-              <groupId>com.google.cloud.tools</groupId>
-              <artifactId>linkage-checker-enforcer-rules</artifactId>
-              <version>1.5.7</version>
-            </dependency>
-          </dependencies>
+          <version>3.6.1</version>
           <executions>
             <execution>
               <id>list-conflicts</id>
@@ -1055,33 +1042,6 @@
                   <dependencyConvergence />
                 </rules>
               </configuration>
-            </execution>
-          </executions>
-        </plugin>
-        <!-- Analyze conflicts that can occur at runtime when forcing dependency -->
-        <plugin>
-          <groupId>com.spotify</groupId>
-          <artifactId>missinglink-maven-plugin</artifactId>
-          <version>0.2.5</version>
-          <configuration>
-            <failOnConflicts>true</failOnConflicts>
-            <excludeDependencies>
-              <excludeDependency>
-                <groupId>net.spy</groupId>
-                <artifactId>spymemcached</artifactId>
-              </excludeDependency>
-              <excludeDependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-              </excludeDependency>
-            </excludeDependencies>
-          </configuration>
-          <executions>
-            <execution>
-              <goals>
-                <goal>check</goal>
-              </goals>
-              <phase>process-classes</phase>
             </execution>
           </executions>
         </plugin>

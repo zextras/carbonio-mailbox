@@ -45,35 +45,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.json.JSONException;
 
-public abstract class Entry implements ToZJSONObject {
-
-  public enum EntryType {
-    ENTRY, // a generic entry, only used in extension
-    ACCOUNT,
-    ALIAS,
-    CALRESOURCE,
-    COS,
-    DATASOURCE,
-    DISTRIBUTIONLIST,
-    DOMAIN,
-    DYNAMICGROUP,
-    DYNAMICGROUP_DYNAMIC_UNIT,
-    DYNAMICGROUP_STATIC_UNIT,
-    GLOBALCONFIG,
-    GLOBALGRANT,
-    IDENTITY,
-    MIMETYPE,
-    SERVER,
-    SIGNATURE,
-    XMPPCOMPONENT,
-    HABGROUP,
-    ZIMLET,
-    ADDRESS_LIST;
-
-    public String getName() {
-      return name();
-    }
-  }
+public abstract class Entry implements ToZJSONObject, AttributeEntry {
 
   private Map<String, Object> mAttrs;
   private Map<String, Object> mDefaults;

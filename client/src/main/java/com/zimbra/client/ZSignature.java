@@ -5,17 +5,16 @@
 
 package com.zimbra.client;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.json.JSONException;
-
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.soap.AccountConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.util.SystemUtil;
 import com.zimbra.soap.account.type.Signature;
 import com.zimbra.soap.account.type.SignatureContent;
+import com.zimbra.util.SignatureUtil;
+import java.util.HashMap;
+import java.util.Map;
+import org.json.JSONException;
 
 public class ZSignature implements Comparable<ZSignature>, ToZJSONObject {
 
@@ -94,7 +93,7 @@ public class ZSignature implements Comparable<ZSignature>, ToZJSONObject {
         if (content != null) {
             type = content.getContentType();
             value = content.getContent();
-            attrs.put(com.zimbra.common.account.SignatureUtil.mimeTypeToAttrName(type), value);
+            attrs.put(SignatureUtil.mimeTypeToAttrName(type), value);
         }
         return attrs;
     }

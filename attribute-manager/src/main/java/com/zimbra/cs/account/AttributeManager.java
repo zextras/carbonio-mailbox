@@ -9,17 +9,12 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
-import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.W3cDomUtil;
 import com.zimbra.common.util.SetUtil;
 import com.zimbra.common.util.Version;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.Entry.EntryType;
-import com.zimbra.cs.account.callback.CallbackContext;
-import com.zimbra.cs.account.callback.IDNCallback;
-import com.zimbra.cs.account.ldap.LdapProv;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -91,6 +86,10 @@ public class AttributeManager {
   // do not keep comments and descriptions when running in a server
   private static boolean mMinimize = false;
 
+  public Map<String, AttributeInfo> getmAttrs() {
+    return mAttrs;
+  }
+
   // contains attrs defined in one of the zimbra .xml files (currently zimbra attrs and some of the
   // amavis attrs)
   // these attrs have AttributeInfo
@@ -103,17 +102,22 @@ public class AttributeManager {
   //
   private final Map<String, AttributeInfo> mAttrs = new HashMap<>();
   private final Map<String, ObjectClassInfo> mOCs = new HashMap<>();
+
+  public Map<AttributeClass, Set<String>> getmClassToAttrsMap() {
+    return mClassToAttrsMap;
+  }
+
   // only direct attrs
   private final Map<AttributeClass, Set<String>> mClassToAttrsMap = new HashMap<>();
   private final Map<AttributeClass, Set<String>> mClassToLowerCaseAttrsMap = new HashMap<>();
   // direct attrs and attrs from included objectClass's
   private final Map<AttributeClass, Set<String>> mClassToAllAttrsMap = new HashMap<>();
-  private final AttributeCallback mIDNCallback = new IDNCallback();
+
   private final Map<String, AttributeInfo> mEphemeralAttrs = new HashMap<>(); // lowercased
   private final Set<String> mEphemeralAttrsSet = new HashSet<>(); // not lowercased
   private final Map<EntryType, Map<String, AttributeInfo>> mNonDynamicEphemeralAttrs =
       new HashMap<>(); // ephemeral attributes that can be retrieved as part of
-  // Entry.getAttrs()
+  // AttributeEntry.getAttrs()
 
   /*
   * Notes on certificate attributes
@@ -146,6 +150,15 @@ public class AttributeManager {
    * Support for lookup by flag
    */
   private final Map<AttributeFlag, Set<String>> mFlagToAttrsMap = new HashMap<>();
+
+  public boolean ismLdapSchemaExtensionInited() {
+    return mLdapSchemaExtensionInited;
+  }
+
+  public void setmLdapSchemaExtensionInited(boolean mLdapSchemaExtensionInited) {
+    this.mLdapSchemaExtensionInited = mLdapSchemaExtensionInited;
+  }
+
   private boolean mLdapSchemaExtensionInited = false;
 
   @VisibleForTesting
@@ -247,29 +260,6 @@ public class AttributeManager {
     mMinimize = minimize;
   }
 
-  private static AttributeCallback loadCallback(String clazz) {
-    AttributeCallback cb = null;
-    if (clazz == null) return null;
-    if (clazz.indexOf('.') == -1) clazz = "com.zimbra.cs.account.callback." + clazz;
-    try {
-      cb = (AttributeCallback) Class.forName(clazz).getDeclaredConstructor().newInstance();
-    } catch (Exception e) {
-      ZimbraLog.misc.warn("loadCallback caught exception", e);
-    }
-    return cb;
-  }
-
-  public static void loadLdapSchemaExtensionAttrs(LdapProv prov) {
-    synchronized (AttributeManager.class) {
-      try {
-        AttributeManager theInstance = AttributeManager.getInstance();
-        theInstance.getLdapSchemaExtensionAttrs(prov);
-        theInstance.computeClassToAllAttrsMap(); // recompute the ClassToAllAttrsMap
-      } catch (ServiceException e) {
-        ZimbraLog.account.warn("unable to load LDAP schema extensions", e);
-      }
-    }
-  }
 
   public static void destroy() {
     mInstance = null;
@@ -295,7 +285,7 @@ public class AttributeManager {
 
   /**
    * Retrieves a map of ephemeral attributes that don't have dynamic components, for the given
-   * EntryType. This is used to include ephemeral data in Entry.getAttrs() results. Dynamic
+   * EntryType. This is used to include ephemeral data in AttributeEntry.getAttrs() results. Dynamic
    * ephemeral attributes are excluded, as the API does not support fetching dynamic key components.
    *
    * @param entryType
@@ -419,7 +409,7 @@ public class AttributeManager {
         continue;
       }
 
-      AttributeCallback callback = null;
+      String callbackClassName = null;
       AttributeType type = null;
       AttributeOrder order = null;
       String value = null;
@@ -453,7 +443,7 @@ public class AttributeManager {
             // nothing to do - already processed
             break;
           case A_CALLBACK:
-            callback = loadCallback(attr.getValue());
+            callbackClassName = loadCallbackClassName(attr.getValue());
             break;
           case A_IMMUTABLE:
             immutable = "1".equals(attr.getValue());
@@ -706,7 +696,7 @@ public class AttributeManager {
               id,
               parentOid,
               groupId,
-              callback,
+              callbackClassName,
               type,
               order,
               value,
@@ -771,6 +761,12 @@ public class AttributeManager {
     }
   }
 
+  private String loadCallbackClassName(String clazz) {
+    if (clazz == null) return null;
+    if (clazz.indexOf('.') == -1) clazz = "com.zimbra.cs.account.callback." + clazz;
+    return clazz;
+  }
+
   private void checkEphemeralFlags(
       String attrName,
       String fileName,
@@ -807,12 +803,12 @@ public class AttributeManager {
     }
   }
 
-  protected AttributeInfo createAttributeInfo(
+  private AttributeInfo createAttributeInfo(
       String name,
       int id,
       String parentOid,
       int groupId,
-      AttributeCallback callback,
+      String callbackClassName,
       AttributeType type,
       AttributeOrder order,
       String value,
@@ -837,7 +833,7 @@ public class AttributeManager {
         id,
         parentOid,
         groupId,
-        callback,
+        callbackClassName,
         type,
         order,
         value,
@@ -855,8 +851,7 @@ public class AttributeManager {
         defaultCOSValuesUpgrade,
         description,
         requiresRestart,
-        sinceVer,
-        deprecatedSinceVer);
+        sinceVer, deprecatedSinceVer);
   }
 
   /*
@@ -1094,7 +1089,7 @@ public class AttributeManager {
     }
   }
 
-  private void computeClassToAllAttrsMap() {
+  public void computeClassToAllAttrsMap() {
 
     Set<String> attrs;
 
@@ -1214,7 +1209,7 @@ public class AttributeManager {
       throws ServiceException {
     // bug 32507
     if (!mClassToAllAttrsMap.get(klass).contains(attr))
-      throw AccountServiceException.INVALID_ATTR_NAME(
+      throw AttributeException.INVALID_ATTR_NAME(
           "unknown attribute on " + klass.name() + ": " + attr, null);
 
     return mFlagToAttrsMap.get(AttributeFlag.domainAdminModifiable).contains(attr);
@@ -1224,7 +1219,7 @@ public class AttributeManager {
     mFlagToAttrsMap.get(AttributeFlag.domainAdminModifiable).add(attr);
   }
 
-  private IDNType idnType(String attr) {
+  public IDNType idnType(String attr) {
     AttributeInfo ai = mAttrs.get(attr.toLowerCase());
     if (ai != null) {
       AttributeType at = ai.getType();
@@ -1298,7 +1293,7 @@ public class AttributeManager {
         return good;
       }
     } else {
-      throw AccountServiceException.INVALID_ATTR_NAME("unknown attribute: " + attr, null);
+      throw AttributeException.INVALID_ATTR_NAME("unknown attribute: " + attr, null);
     }
   }
 
@@ -1317,7 +1312,7 @@ public class AttributeManager {
   public AttributeType getAttributeType(String attr) throws ServiceException {
     AttributeInfo ai = mAttrs.get(attr.toLowerCase());
     if (ai != null) return ai.getType();
-    else throw AccountServiceException.INVALID_ATTR_NAME("unknown attribute: " + attr, null);
+    else throw AttributeException.INVALID_ATTR_NAME("unknown attribute: " + attr, null);
   }
 
   public boolean containsBinaryData(String attr) {
@@ -1386,114 +1381,9 @@ public class AttributeManager {
     return immutable;
   }
 
-  public void preModify(
-      Map<String, ? extends Object> attrs,
-      Entry entry,
-      CallbackContext context,
-      boolean checkImmutable)
-      throws ServiceException {
-    preModify(attrs, entry, context, checkImmutable, true);
-  }
-
-  public void preModify(
-      Map<String, ? extends Object> attrs,
-      Entry entry,
-      CallbackContext context,
-      boolean checkImmutable,
-      boolean allowCallback)
-      throws ServiceException {
-    String[] keys = attrs.keySet().toArray(new String[0]);
-    for (String key : keys) {
-      String name = key;
-      if (name.length() == 0) {
-        throw AccountServiceException.INVALID_ATTR_NAME("empty attr name found", null);
-      }
-      Object value = attrs.get(name);
-      if (name.charAt(0) == '-' || name.charAt(0) == '+') name = name.substring(1);
-      AttributeInfo info = mAttrs.get(name.toLowerCase());
-      if (info != null) {
-        if (info.isDeprecated()) {
-          ZimbraLog.misc.warn("Attempt to modify a deprecated attribute: " + name);
-        }
-
-        // IDN unicode to ACE conversion needs to happen before checkValue or else
-        // regex attrs will be rejected by checkValue
-        if (idnType(name).isEmailOrIDN()) {
-          mIDNCallback.preModify(context, name, value, attrs, entry);
-          value = attrs.get(name);
-        }
-        info.checkValue(value, checkImmutable, attrs);
-        if (allowCallback && info.getCallback() != null) {
-          info.getCallback().preModify(context, name, value, attrs, entry);
-        }
-      } else {
-        ZimbraLog.misc.warn("checkValue: no attribute info for: " + name);
-      }
-    }
-  }
-
-  public void postModify(
-      Map<String, ? extends Object> attrs, Entry entry, CallbackContext context) {
-    postModify(attrs, entry, context, true);
-  }
-
-  public void postModify(
-      Map<String, ? extends Object> attrs,
-      Entry entry,
-      CallbackContext context,
-      boolean allowCallback) {
-    String[] keys = attrs.keySet().toArray(new String[0]);
-    for (String key : keys) {
-      String name = key;
-      if (name.charAt(0) == '-' || name.charAt(0) == '+') name = name.substring(1);
-      AttributeInfo info = mAttrs.get(name.toLowerCase());
-
-      if (info != null && (allowCallback && info.getCallback() != null)) {
-        try {
-          info.getCallback().postModify(context, name, entry);
-        } catch (Exception e) {
-          // need to swallow all exceptions as postModify shouldn't throw any...
-          ZimbraLog.account.warn("postModify caught exception: " + e.getMessage(), e);
-        }
-      }
-    }
-  }
-
   public AttributeInfo getAttributeInfo(String name) {
     if (name == null) return null;
     else return mAttrs.get(name.toLowerCase());
-  }
-
-  private void getLdapSchemaExtensionAttrs(LdapProv prov) throws ServiceException {
-    if (mLdapSchemaExtensionInited) return;
-
-    mLdapSchemaExtensionInited = true;
-
-    getExtraObjectClassAttrs(
-        prov, AttributeClass.account, ZAttrProvisioning.A_zimbraAccountExtraObjectClass);
-    getExtraObjectClassAttrs(
-        prov,
-        AttributeClass.calendarResource,
-        ZAttrProvisioning.A_zimbraCalendarResourceExtraObjectClass);
-    getExtraObjectClassAttrs(
-        prov, AttributeClass.cos, ZAttrProvisioning.A_zimbraCosExtraObjectClass);
-    getExtraObjectClassAttrs(
-        prov, AttributeClass.domain, ZAttrProvisioning.A_zimbraDomainExtraObjectClass);
-    getExtraObjectClassAttrs(
-        prov, AttributeClass.server, ZAttrProvisioning.A_zimbraServerExtraObjectClass);
-  }
-
-  private void getExtraObjectClassAttrs(
-      LdapProv prov, AttributeClass attrClass, String extraObjectClassAttr)
-      throws ServiceException {
-    Config config = prov.getConfig();
-
-    String[] extraObjectClasses = config.getMultiAttr(extraObjectClassAttr);
-
-    if (extraObjectClasses.length > 0) {
-      Set<String> attrsInOCs = mClassToAttrsMap.get(AttributeClass.account);
-      prov.getAttrsInOCs(extraObjectClasses, attrsInOCs);
-    }
   }
 
   private enum ObjectClassType {
