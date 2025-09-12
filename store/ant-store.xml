@@ -4,10 +4,6 @@
   <property name="store-conf.config.dir" location="${basedir}/../store-conf/conf"/>
   <property name="rights.dir" location="${basedir}/src/main/resources/conf/rights"/>
 
-  <target name="generate-sql-ldap-versions"
-    depends="create-version-sql">
-  </target>
-
   <!--  TODO: remove unnecessary folder-->
   <target name="build-init" description="Creates directories required for compiling">
     <mkdir dir="${build.classes.dir}"/>

@@ -871,7 +871,7 @@
                 <taskdef classpathref="maven.plugin.classpath"
                   resource="net/sf/antcontrib/antlib.xml" />
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-sql-ldap-versions" />
+                  <target name="create-version-sql" />
                 </ant>
               </target>
             </configuration>
