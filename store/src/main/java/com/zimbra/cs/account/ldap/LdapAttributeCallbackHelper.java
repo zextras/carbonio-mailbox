@@ -10,6 +10,7 @@ import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AccountServiceException;
+import com.zimbra.cs.account.AttributeCallback;
 import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.AttributeConfig;
 import com.zimbra.cs.account.AttributeInfo;
@@ -100,9 +101,10 @@ public class LdapAttributeCallbackHelper {
 			AttributeInfo info = attributeManager.getmAttrs().get(name.toLowerCase());
 
 			final LdapAttributeInfo ldapAttributeInfo = LdapAttributeInfo.get(info);
-			if (info != null && (allowCallback && ldapAttributeInfo.getCallback() != null)) {
+			final AttributeCallback callback = ldapAttributeInfo.getCallback();
+			if (info != null && (allowCallback && callback != null)) {
 				try {
-					ldapAttributeInfo.getCallback().postModify(context, name, entry);
+					callback.postModify(context, name, entry);
 				} catch (Exception e) {
 					// need to swallow all exceptions as postModify shouldn't throw any...
 					ZimbraLog.account.warn("postModify caught exception: " + e.getMessage(), e);

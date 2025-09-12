@@ -15,6 +15,7 @@ import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.DateUtil;
 import com.zimbra.common.util.ZimbraLog;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
@@ -39,14 +40,14 @@ public class LdapAttributeInfo {
 		this.attributeInfo = attributeInfo;
 	}
 
-	public synchronized AttributeCallback getCallback() {
+	public AttributeCallback getCallback() {
+		if (Objects.isNull(attributeInfo.getCallbackClassName())) return null;
 		return callbacks.computeIfAbsent(attributeInfo.getName(), key -> {
 			try {
 				return (AttributeCallback) Class.forName(attributeInfo.getCallbackClassName())
 						.getDeclaredConstructor().newInstance();
 			} catch (Exception e) {
-				// Consider logging here
-				System.err.println("Failed to instantiate callback for " + key + ": " + e.getMessage());
+				ZimbraLog.misc.error("Failed to instantiate callback for " + key + ": " + e.getMessage());
 				return null;
 			}
 		});
