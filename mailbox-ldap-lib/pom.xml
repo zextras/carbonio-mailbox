@@ -93,6 +93,20 @@
         <version>3.1.0</version>
         <executions>
           <execution>
+            <id>generate-ldap-version</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>sh</executable>
+              <arguments>
+                <argument>-c</argument>
+                <argument>mkdir -p ${ldap.build.dir}/conf/attrs &amp;&amp; git log -1 --pretty=format:%at ${project.basedir}/../attribute-manager/src/main/resources/conf/attrs/attrs.xml &gt; ${ldap.build.dir}/conf/attrs/attrs-schema</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
             <id>generate-ZAttrAccount</id>
             <phase>generate-sources</phase>
             <goals>
@@ -120,7 +134,7 @@
                 <argument>-a</argument>
                 <argument>generateLdapSchema</argument>
                 <argument>-t</argument>
-                <argument>${ldap.conf.dir}/carbonio.schema-template</argument>
+                <argument>${ldap.dir}/carbonio.schema-template</argument>
                 <argument>-o</argument>
                 <argument>${ldap.build.dir}/schema/carbonio.schema</argument>
               </arguments>
@@ -138,7 +152,7 @@
                 <argument>-a</argument>
                 <argument>generateSchemaLdif</argument>
                 <argument>-t</argument>
-                <argument>${ldap.conf.dir}/carbonio.schema-template</argument>
+                <argument>${ldap.dir}/carbonio.schema-template</argument>
                 <argument>-o</argument>
                 <argument>${ldap.build.dir}/schema/carbonio.ldif</argument>
               </arguments>
@@ -194,6 +208,43 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>copy-task</id>
+            <phase>process-resources</phase>
+            <configuration>
+              <target>
+                <copy todir="${ldap.build.dir}/" file="${ldap.dir}/carbonio.ldif" />
+                <copy todir="${ldap.build.dir}/" file="${ldap.dir}/mimehandlers.ldif" />
+                <copy todir="${ldap.build.dir}/schema" file="${ldap.dir}/amavisd.schema" />
+                <copy todir="${ldap.build.dir}/schema" file="${ldap.dir}/amavisd.ldif" />
+                <copy todir="${ldap.build.dir}/schema" file="${ldap.dir}/opendkim.ldif" />
+
+                <copy todir="${ldap.build.dir}/config" file="${ldap.config.dir}/cn=config.ldif" />
+                <copy todir="${ldap.build.dir}/config/cn=config" file="${ldap.config.dir}/cn=config/cn=module{0}.ldif" />
+                <copy todir="${ldap.build.dir}/config/cn=config" file="${ldap.config.dir}/cn=config/cn=schema.ldif" />
+                <copy todir="${ldap.build.dir}/config/cn=config" file="${ldap.config.dir}/cn=config/olcDatabase={0}config.ldif" />
+                <copy todir="${ldap.build.dir}/config/cn=config" file="${ldap.config.dir}/cn=config/olcDatabase={-1}frontend.ldif" />
+                <copy todir="${ldap.build.dir}/config/cn=config" file="${ldap.config.dir}/cn=config/olcDatabase={1}monitor.ldif" />
+                <copy todir="${ldap.build.dir}/config/cn=config/" file="${ldap.config.dir}/cn=config/olcDatabase={2}mdb.ldif" />
+                <copy todir="${ldap.build.dir}/config/cn=config/olcDatabase={2}mdb" file="${ldap.config.dir}/cn=config/olcDatabase={2}mdb/olcOverlay={0}dynlist.ldif" />
+                <copy todir="${ldap.build.dir}/config/cn=config/olcDatabase={2}mdb" file="${ldap.config.dir}/cn=config/olcDatabase={2}mdb/olcOverlay={1}unique.ldif" />
+                <copy todir="${ldap.build.dir}/config/cn=config/olcDatabase={2}mdb" file="${ldap.config.dir}/cn=config/olcDatabase={2}mdb/olcOverlay={2}noopsrch.ldif" />
+                <copy todir="${ldap.build.dir}/updates/">
+                  <fileset dir="${ldap.dir}/src/updates/" includes="**" />
+                </copy>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
 
@@ -203,7 +254,8 @@
     <generated-sources>${project.build.directory}/generated-sources</generated-sources>
     <generated-zattr>${generated-sources}/zattr/com/zimbra/common/account</generated-zattr>
     <ldap.build.dir>${project.build.directory}/ldap</ldap.build.dir>
-    <ldap.conf.dir>${project.basedir}/ldap</ldap.conf.dir>
+    <ldap.dir>${project.basedir}/ldap</ldap.dir>
+    <ldap.config.dir>${ldap.dir}/config</ldap.config.dir>
   </properties>
 
 </project>

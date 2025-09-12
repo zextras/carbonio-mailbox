@@ -4,18 +4,8 @@
   <property name="store-conf.config.dir" location="${basedir}/../store-conf/conf"/>
   <property name="rights.dir" location="${basedir}/src/main/resources/conf/rights"/>
 
-  <!-- LDAP -->
-  <property name="attrs.dir" location="${basedir}/src/main/resources/conf/attrs"/>
-  <property name="ldap.dir" location="${basedir}/ldap"/>
-  <property name="ldap.conf.dir" location="${ldap.dir}/conf"/>
-  <property name="slapd.config.dir" value="${ldap.conf.dir}/ldap/config" />
-  <property name="slapd.config.src" value="${slapd.config.dir}/cn=config.ldif"/>
-  <!-- See store pom.xml. This directory is also used as test resources to load ldap ldifs -->
-  <property name="ldap.build.dir" value="${basedir}/ldap/generated/"/>
-  <property name="buildInfo.build.dir" value="${basedir}/ldap/generated/"/>
-
   <target name="generate-sql-ldap-versions"
-    depends="create-version-sql, create-version-ldap ">
+    depends="create-version-sql">
   </target>
 
   <!--  TODO: remove unnecessary folder-->
@@ -77,16 +67,6 @@
       </classpath>
       <arg line="-o ${maven.build.dir}"/>
     </java>
-  </target>
-
-  <target name="create-version-ldap" depends="build-init"
-    description="Creates ldap schema version: attrs-schema">
-    <exec executable="git" failonerror="true" output="${maven.build.dir}/conf/attrs/attrs-schema">
-      <arg value="log"/>
-      <arg value="-1"/>
-      <arg value="--pretty=format:%at"/>
-      <arg value="src/main/resources/conf/attrs/attrs.xml"/>
-    </exec>
   </target>
 
   <!-- Rights generator -->
