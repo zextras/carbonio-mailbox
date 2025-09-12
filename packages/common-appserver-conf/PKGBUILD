@@ -22,7 +22,7 @@ package() {
 
   cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
 
-  install -D "mailbox-ldap-lib/target/ldap/conf/attrs/attrs-schema" \
+  install -D "mailbox-ldap-lib/ldap/generated/attrs-schema" \
     "${pkgdir}/opt/zextras/conf/attrs-schema"
 
   install -D "milter-conf/conf/milter.log4j.properties" \

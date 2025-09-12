@@ -48,9 +48,9 @@ package() {
     "${pkgdir}/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
 
   # schema
-  install -Ddm755 mailbox-ldap-lib/target/ldap/ \
+  install -Ddm755 mailbox-ldap-lib/ldap/generated/ \
     "${pkgdir}/opt/zextras/common/etc/openldap/zimbra/"
-  rsync -a mailbox-ldap-lib/target/ldap "${pkgdir}/opt/zextras/common/etc/openldap/zimbra/"
+  rsync -a mailbox-ldap-lib/ldap/generated/ "${pkgdir}/opt/zextras/common/etc/openldap/zimbra/"
 
   # systemd units and target
   mkdir -p "${pkgdir}/usr/lib/systemd/system/carbonio.target.wants"

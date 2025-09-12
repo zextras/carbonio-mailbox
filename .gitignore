@@ -40,3 +40,4 @@ target/
 /store/ldap/generated/
 /data/
 /node_modules/
+/mailbox-ldap-lib/ldap/generated/
