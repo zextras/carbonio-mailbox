@@ -626,14 +626,11 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>account</argument>
-                <argument>-i</argument>
-                <argument>${attrs.dir}</argument>
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrAccount.java</argument>
               </arguments>
@@ -653,8 +650,7 @@
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>globalConfig</argument>
-                <argument>-i</argument>
-                <argument>${attrs.dir}</argument>
+
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrConfig.java</argument>
               </arguments>
@@ -674,8 +670,7 @@
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>cos</argument>
-                <argument>-i</argument>
-                <argument>${attrs.dir}</argument>
+
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrCos.java</argument>
               </arguments>
@@ -695,8 +690,7 @@
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>domain</argument>
-                <argument>-i</argument>
-                <argument>${attrs.dir}</argument>
+
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrDomain.java</argument>
               </arguments>
@@ -716,8 +710,7 @@
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>server</argument>
-                <argument>-i</argument>
-                <argument>${attrs.dir}</argument>
+
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrServer.java</argument>
               </arguments>
@@ -738,8 +731,7 @@
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>calendarResource</argument>
-                <argument>-i</argument>
-                <argument>${attrs.dir}</argument>
+
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrCalendarResource.java</argument>
               </arguments>
@@ -760,8 +752,7 @@
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>distributionList</argument>
-                <argument>-i</argument>
-                <argument>${attrs.dir}</argument>
+
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrDistributionList.java</argument>
               </arguments>
@@ -782,8 +773,7 @@
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>group</argument>
-                <argument>-i</argument>
-                <argument>${attrs.dir}</argument>
+
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrDynamicGroup.java</argument>
               </arguments>
@@ -804,8 +794,7 @@
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>shareLocator</argument>
-                <argument>-i</argument>
-                <argument>${attrs.dir}</argument>
+
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrShareLocator.java</argument>
               </arguments>

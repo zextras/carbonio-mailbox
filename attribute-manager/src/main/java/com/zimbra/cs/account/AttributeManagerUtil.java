@@ -68,6 +68,7 @@ public class AttributeManagerUtil {
 
     Option iopt = new Option("i", "input", true, "attrs definition xml input file (can repeat)");
     iopt.setArgs(Option.UNLIMITED_VALUES);
+    iopt.setRequired(false);
     options.addOption(iopt);
 
     /*
@@ -815,9 +816,10 @@ public class AttributeManagerUtil {
       AttributeManager am = null;
       if (action != Action.LIST_ATTRS) {
         if (!commandLine.hasOption('i')) {
-          usage("no input attribute xml files specified");
+          am =  AttributeManager.fromResource();
+        } else {
+          am =  AttributeManager.fromFileSystem(commandLine.getOptionValue('i'));
         }
-        am =  AttributeManager.fromFileSystem(commandLine.getOptionValue('i'));
         if (am.hasErrors()) {
           ZimbraLog.misc.warn(am.getErrors());
           System.exit(1);
@@ -825,9 +827,18 @@ public class AttributeManagerUtil {
       }
 
       PrintWriter printWriter;
-      final boolean printLogsToFile = commandLine.hasOption('o');
-      if (printLogsToFile) {
-        OutputStream outputStream = new FileOutputStream(commandLine.getOptionValue('o'));
+      final boolean output = commandLine.hasOption('o');
+      if (output) {
+        final String fileOutput = commandLine.getOptionValue('o');
+        final File file = new File(fileOutput);
+        final File parentFile = file.getParentFile();
+        if (!parentFile.exists()) {
+          final boolean mkdirs = parentFile.mkdirs();
+          if (!mkdirs) {
+            ZimbraLog.misc.error("Cannot create directories");
+          }
+        }
+        OutputStream outputStream = new FileOutputStream(fileOutput);
         printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)));
       } else {
         printWriter = new PrintWriter(System.out);
@@ -878,7 +889,7 @@ public class AttributeManagerUtil {
         System.exit(1);
       }
       finally {
-        if (printLogsToFile) {
+        if (output) {
           printWriter.close();
         }
       }
