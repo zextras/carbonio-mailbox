@@ -99,15 +99,16 @@ public class LdapAttributeCallbackHelper {
 				name = name.substring(1);
 			}
 			AttributeInfo info = attributeManager.getmAttrs().get(name.toLowerCase());
-
-			final LdapAttributeInfo ldapAttributeInfo = LdapAttributeInfo.get(info);
-			final AttributeCallback callback = ldapAttributeInfo.getCallback();
-			if (info != null && (allowCallback && callback != null)) {
-				try {
-					callback.postModify(context, name, entry);
-				} catch (Exception e) {
-					// need to swallow all exceptions as postModify shouldn't throw any...
-					ZimbraLog.account.warn("postModify caught exception: " + e.getMessage(), e);
+			if (info != null) {
+				final LdapAttributeInfo ldapAttributeInfo = LdapAttributeInfo.get(info);
+				final AttributeCallback callback = ldapAttributeInfo.getCallback();
+				if (info != null && (allowCallback && callback != null)) {
+					try {
+						callback.postModify(context, name, entry);
+					} catch (Exception e) {
+						// need to swallow all exceptions as postModify shouldn't throw any...
+						ZimbraLog.account.warn("postModify caught exception: " + e.getMessage(), e);
+					}
 				}
 			}
 		}
