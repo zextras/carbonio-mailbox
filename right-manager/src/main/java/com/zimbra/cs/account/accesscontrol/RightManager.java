@@ -15,7 +15,6 @@ import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.AttributeManager;
 import com.zimbra.cs.account.FileGenUtil;
 import com.zimbra.cs.account.accesscontrol.Right.RightType;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -161,20 +160,6 @@ public class RightManager {
                 throw ServiceException.PARSE_ERROR("Problem parsing file for system rights", null);
             }
         }
-    }
-
-    public static RightManager fromFileSystem(String baseRightsDirectoryPath, AttributeManager attributeManager) throws ServiceException {
-        File baseRightsDirectory = new File(baseRightsDirectoryPath);
-        if (!baseRightsDirectory.exists()) {
-            throw ServiceException.FAILURE("rights directory does not exist: " + baseRightsDirectoryPath, null);
-        }
-        if (!baseRightsDirectory.isDirectory()) {
-            throw ServiceException.FAILURE("rights directory is not a directory: " + baseRightsDirectoryPath, null);
-        }
-        ZimbraLog.acl.debug("Loading rights from %s", baseRightsDirectory.getAbsolutePath());
-        RightStream rightStream = new FileRightStream(baseRightsDirectoryPath);
-        return new RightManager(rightStream, attributeManager);
-
     }
 
     private boolean getBoolean(String value) throws ServiceException {

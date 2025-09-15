@@ -27,6 +27,15 @@ public class RightsConstantsGenerator {
 	private static final String E_RIGHT = "right";
 	private static final String A_NAME = "name";
 	private static final String A_USER_RIGHT = "userRight";
+	public static List<String> RIGHTS_FILES = List.of(
+			"/conf/rights/adminconsole-ui.xml",
+			"/conf/rights/rights.xml",
+			"/conf/rights/rights-roles.xml",
+			"/conf/rights/user-rights.xml",
+			"/conf/rights/rights-adminconsole.xml",
+			"/conf/rights/rights-adminconsole-domainadmin.xml",
+			"/conf/rights/rights-domainadmin.xml"
+	);
 
 	private record UserAdminRights(List<RightName> adminRights, List<RightName> userRights) {
 
@@ -72,15 +81,6 @@ public class RightsConstantsGenerator {
 		try {
 			List<RightName> adminRights = new ArrayList<>();
 			List<RightName> userRights = new ArrayList<>();
-			final List<String> RIGHTS_FILES = List.of(
-					"/conf/rights/adminconsole-ui.xml",
-					"/conf/rights/rights.xml",
-					"/conf/rights/rights-roles.xml",
-					"/conf/rights/user-rights.xml",
-					"/conf/rights/rights-adminconsole.xml",
-					"/conf/rights/rights-adminconsole-domainadmin.xml",
-					"/conf/rights/rights-domainadmin.xml"
-			);
 			for (String rightsFile : RIGHTS_FILES) {
 				System.out.println(rightsFile);
 				final InputStream resourceAsStream = RightsConstantsGenerator.class.getResourceAsStream(rightsFile);
