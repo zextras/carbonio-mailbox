@@ -51,7 +51,7 @@ public class AttributeManagerUtil {
 
   private static final Options options = new Options();
 
-  // multi-line continuation prefix chars
+  // multi-line continuation prefix chars"
   private static final String ML_CONT_PREFIX = "  ";
 
   static {

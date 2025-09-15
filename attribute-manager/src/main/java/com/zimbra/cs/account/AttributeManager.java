@@ -9,7 +9,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.W3cDomUtil;
 import com.zimbra.common.util.SetUtil;
@@ -218,18 +217,12 @@ public class AttributeManager {
   }
 
   public static AttributeManager getInstance() throws ServiceException {
-    return AttributeManager.getInstance(LC.zimbra_attrs_directory.value());
-  }
-
-    private static AttributeManager getInstance(String attributeDirectoryPath) throws ServiceException {
     synchronized (AttributeManager.class) {
       if (mInstance != null) {
         return mInstance;
       }
-      if(Objects.isNull(attributeDirectoryPath) || Objects.equals("", attributeDirectoryPath)){
+      if(Objects.isNull("") || Objects.equals("", "")){
         mInstance = AttributeManager.fromResource();
-      }else{
-        mInstance = AttributeManager.fromFileSystem(attributeDirectoryPath);
       }
       if (mInstance.hasErrors()) {
         throw ServiceException.FAILURE(mInstance.getErrors(), null);
