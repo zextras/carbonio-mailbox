@@ -606,7 +606,7 @@
     </testResources>
 
     <plugins>
-      <!-- Generate zattr classes -->
+      <!-- Generate classes -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -791,6 +791,88 @@
 
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrShareLocator.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-domainadmin-rights-xml</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.accesscontrol.RightManager</mainClass>
+              <arguments>
+                <argument>-a</argument>
+                <argument>genDomainAdminSetAttrsRights</argument>
+                <argument>-t</argument>
+                <argument>${rights.dir}/rights-domainadmin.xml-template</argument>
+                <argument>-r</argument>
+                <argument>${rights.dir}/rights-domainadmin.xml</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-rights-java</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.accesscontrol.RightManager</mainClass>
+              <arguments>
+                <argument>-a</argument>
+                <argument>genRightConsts</argument>
+                <argument>-r</argument>
+                <argument>${generated-rights}/RightConsts.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-rights-java-admin</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.accesscontrol.RightManager</mainClass>
+              <arguments>
+                <argument>-a</argument>
+                <argument>genAdminRights</argument>
+                <argument>-r</argument>
+                <argument>${generated-rights}/AdminRights.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-rights-java-user</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.accesscontrol.RightManager</mainClass>
+              <arguments>
+                <argument>-a</argument>
+                <argument>genUserRights</argument>
+                <argument>-r</argument>
+                <argument>${generated-rights}/UserRights.java</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-rights-message-properties</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.accesscontrol.RightManager</mainClass>
+              <arguments>
+                <argument>-a</argument>
+                <argument>genMessageProperties</argument>
+                <argument>-r</argument>
+                <argument>${store-conf.config.dir}/msgs/ZsMsgRights.properties</argument>
               </arguments>
             </configuration>
           </execution>
@@ -1119,7 +1201,10 @@
     <config.dir>${project.basedir}/conf</config.dir>
     <generated-sources>${project.build.directory}/generated-sources</generated-sources>
     <generated-zattr>${generated-sources}/zattr/com/zimbra/cs/account</generated-zattr>
+    <generated-rights>${generated-sources}/rights/com/zimbra/cs/account/accesscontrol</generated-rights>
     <attrs.dir>${project.basedir}/src/main/resources/conf/attrs</attrs.dir>
+    <rights.dir>${project.basedir}/src/main/resources/conf/rights</rights.dir>
+    <store-conf.config.dir>${project.basedir}/../store-conf/conf</store-conf.config.dir>
   </properties>
 
 </project>
