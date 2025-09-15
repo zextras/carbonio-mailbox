@@ -333,8 +333,8 @@ public class RightManager {
             String fallback = eRight.attributeValue(A_FALLBACK, null);
             if (fallback != null) {
                 right.setFallbackClass(fallback);
-                CheckRightFallback fb = loadFallback(fallback, right);
-                right.setFallback(fb);
+//                CheckRightFallback fb = loadFallback(fallback, right);
+//                right.setFallback(fb);
             }
 
         } else {
@@ -391,21 +391,21 @@ public class RightManager {
     }
 
     // TODO: extract like we did on AttributeManager
-    private static CheckRightFallback loadFallback(String clazz, Right right) {
-        CheckRightFallback cb = null;
-        if (clazz == null)
-            return null;
-        if (clazz.indexOf('.') == -1)
-            clazz = "com.zimbra.cs.account.accesscontrol.fallback." + clazz;
-        try {
-            cb = (CheckRightFallback) Class.forName(clazz).newInstance();
-            if (cb != null)
-                cb.setRight(right);
-        } catch (Exception e) {
-            ZimbraLog.acl.warn("loadFallback " + clazz + " for right " + right.getName() +  " caught exception", e);
-        }
-        return cb;
-    }
+//    private static CheckRightFallback loadFallback(String clazz, Right right) {
+//        CheckRightFallback cb = null;
+//        if (clazz == null)
+//            return null;
+//        if (clazz.indexOf('.') == -1)
+//            clazz = "com.zimbra.cs.account.accesscontrol.fallback." + clazz;
+//        try {
+//            cb = (CheckRightFallback) Class.forName(clazz).newInstance();
+//            if (cb != null)
+//                cb.setRight(right);
+//        } catch (Exception e) {
+//            ZimbraLog.acl.warn("loadFallback " + clazz + " for right " + right.getName() +  " caught exception", e);
+//        }
+//        return cb;
+//    }
 
     private boolean loadSystemRights(String fileName, InputStream fileContent,
         List<String> processedFiles)
