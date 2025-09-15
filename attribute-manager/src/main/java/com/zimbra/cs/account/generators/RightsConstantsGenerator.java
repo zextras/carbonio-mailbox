@@ -4,6 +4,7 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.W3cDomUtil;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.account.FileGenUtil;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -17,7 +18,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
@@ -33,63 +33,62 @@ public class RightsConstantsGenerator {
 	}
 
 	private static UserAdminRights loadRightsFromFile(InputStream fileContent)
-	{
-		try {
-			Document doc = W3cDomUtil.parseXMLToDom4jDocUsingSecureProcessing(fileContent);
-			Element root = doc.getRootElement();
-			if (!root.getName().equals(E_RIGHTS)) {
-				throw ServiceException.PARSE_ERROR("root tag is not " + E_RIGHTS, null);
-			}
-			final ArrayList<RightName> adminRights = new ArrayList<>();
-			final ArrayList<RightName> userRights = new ArrayList<>();
-			for (Iterator<Element> iter = root.elementIterator(); iter.hasNext(); ) {
-				Element elem = iter.next();
-				if (elem.getName().equals(E_RIGHT)) {
-					String name = elem.attributeValue(A_NAME);
-					if (name == null) {
-						throw ServiceException.PARSE_ERROR("no name specified", null);
-					}
-					// TODO: add desc
-					var right = new RightName(name, "");
-					boolean userRight = getBooleanAttr(elem, A_USER_RIGHT);
-					if (userRight) {
-						userRights.add(right);
-					} else {
-						adminRights.add(right);
-					}
+			throws Exception {
+		Document doc = W3cDomUtil.parseXMLToDom4jDocUsingSecureProcessing(fileContent);
+		Element root = doc.getRootElement();
+		if (!root.getName().equals(E_RIGHTS)) {
+			throw ServiceException.PARSE_ERROR("root tag is not " + E_RIGHTS, null);
+		}
+		final ArrayList<RightName> adminRights = new ArrayList<>();
+		final ArrayList<RightName> userRights = new ArrayList<>();
+		for (Iterator<Element> iter = root.elementIterator(); iter.hasNext(); ) {
+			Element elem = iter.next();
+			if (elem.getName().equals(E_RIGHT)) {
+				String name = elem.attributeValue(A_NAME);
+				if (name == null) {
+					throw ServiceException.PARSE_ERROR("no name specified", null);
+				}
+				// TODO: add desc
+				var right = new RightName(name, "");
+				boolean userRight = getBooleanAttr(elem, A_USER_RIGHT);
+				if (userRight) {
+					userRights.add(right);
+				} else {
+					adminRights.add(right);
 				}
 			}
-			return new UserAdminRights(adminRights, userRights);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
 		}
+		return new UserAdminRights(adminRights, userRights);
 	}
 
-	public static void main(String[] args) throws ParseException {
+	public static void main(String[] args) throws Exception {
 		CommandLineParser parser = new GnuParser();
 		final Options sOptions = new Options();
 		sOptions.addOption("o", "output", true,
 				"Output directory of generated classes");
+		File f = new File("right-manager/target/generated-resources/conf/rights/rights-domainadmin.xml");
+		System.out.println("File exists: " + f.exists() + ", absolute path: " + f.getAbsolutePath());
 		CommandLine cl = parser.parse(sOptions, args);
 		try {
 			List<RightName> adminRights = new ArrayList<>();
 			List<RightName> userRights = new ArrayList<>();
 			final List<String> RIGHTS_FILES = List.of(
-					"adminconsole-ui.xml",
-					"rights.xml",
-					"rights-roles.xml",
-					"user-rights.xml",
-					"rights-adminconsole.xml",
-					"rights-adminconsole-domainadmin.xml",
-					"rights-domainadmin.xml"
+					"/conf/rights/adminconsole-ui.xml",
+					"/conf/rights/rights.xml",
+					"/conf/rights/rights-roles.xml",
+					"/conf/rights/user-rights.xml",
+					"/conf/rights/rights-adminconsole.xml",
+					"/conf/rights/rights-adminconsole-domainadmin.xml",
+					"/conf/rights/rights-domainadmin.xml"
 			);
-			RIGHTS_FILES.stream().map(
-					file -> loadRightsFromFile(
-							RightsConstantsGenerator.class.getResourceAsStream("/conf/rights/" + file))
-			).forEach(rights -> {
+			for (String rightsFile : RIGHTS_FILES) {
+				System.out.println(rightsFile);
+				final InputStream resourceAsStream = RightsConstantsGenerator.class.getResourceAsStream(rightsFile);
+
+				UserAdminRights rights = loadRightsFromFile(resourceAsStream);
 				adminRights.addAll(rights.adminRights);
 				userRights.addAll(rights.userRights);
-			});
+			}
 
 			final String output = cl.getOptionValue("o");
 			final String genRightConstsJava = genRightConstsJava(adminRights, userRights);
@@ -109,7 +108,8 @@ public class RightsConstantsGenerator {
 				Files.write(basePath.resolve("AdminRights.java"), genAdminRightsJava.getBytes());
 				Files.write(basePath.resolve("RightConsts.java"), genRightConstsJava.getBytes());
 			}
-		} catch (IOException e) {
+		} catch (
+				IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -133,7 +133,8 @@ public class RightsConstantsGenerator {
 		return getBoolean(value);
 	}
 
-	private static String genRightConstsJava(List<RightName> adminRights, List<RightName> userRights) {
+	private static String genRightConstsJava(List<RightName> adminRights,
+			List<RightName> userRights) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("package com.zimbra.cs.account.accesscontrol.generated;\n");
 		sb.append("public class RightConsts {");
@@ -222,4 +223,6 @@ public class RightsConstantsGenerator {
 		sb.append("    public static final String RT_").append(r.getName()).append(" = \"")
 				.append(r.getName()).append("\";").append("\n");
 	}
+
+
 }

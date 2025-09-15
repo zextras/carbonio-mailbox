@@ -101,5 +101,6 @@
     <maven-exec-plugin.version>3.1.0</maven-exec-plugin.version>
     <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
     <generated-sources>${project.build.directory}/generated-sources</generated-sources>
+    <generated-resources>${project.build.directory}/generated-resources</generated-resources>
   </properties>
 </project>
