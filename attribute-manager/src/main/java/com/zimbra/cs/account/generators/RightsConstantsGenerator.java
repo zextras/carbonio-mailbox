@@ -4,7 +4,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.W3cDomUtil;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.account.FileGenUtil;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -75,8 +74,8 @@ public class RightsConstantsGenerator {
 		final Options sOptions = new Options();
 		sOptions.addOption("o", "output", true,
 				"Output directory of generated classes");
-		File f = new File("right-manager/target/generated-resources/conf/rights/rights-domainadmin.xml");
-		System.out.println("File exists: " + f.exists() + ", absolute path: " + f.getAbsolutePath());
+		sOptions.addOption("a", "action", true,
+				"Action to perform. Supports: genMessageProperties. If not provided generates java files.");
 		CommandLine cl = parser.parse(sOptions, args);
 		try {
 			List<RightName> adminRights = new ArrayList<>();
@@ -91,9 +90,17 @@ public class RightsConstantsGenerator {
 			}
 
 			final String output = cl.getOptionValue("o");
+			final String action = cl.getOptionValue("a");
 			final String genRightConstsJava = genRightConstsJava(adminRights, userRights);
 			final String genUserRightsJava = genUserRights(userRights);
 			final String genAdminRightsJava = genAdminRightsJava(adminRights);
+			if (Objects.equals(action, "genMessageProperties")) {
+				final Path basePath = Paths.get(output, "conf/msgs");
+				Files.createDirectories(basePath);
+				final String messageProperties = genMessageProperties(new UserAdminRights(adminRights, userRights));
+				Files.write(basePath.resolve("ZsMsgRights.properties"), messageProperties.getBytes());
+				return;
+			}
 			if (Objects.isNull(output)) {
 				System.out.println("Rights constants");
 				System.out.println(genRightConstsJava);
@@ -224,5 +231,26 @@ public class RightsConstantsGenerator {
 				.append(r.getName()).append("\";").append("\n");
 	}
 
+	static  String genMessageProperties(UserAdminRights userAdminRights) throws ServiceException {
+		StringBuilder result = new StringBuilder();
 
+		result.append(FileGenUtil.genDoNotModifyDisclaimer("#", RightsConstantsGenerator.class.getSimpleName()));
+		result.append("# Rights");
+		result.append("\n\n");
+
+		genMessageProperties(result, userAdminRights.userRights());
+		result.append("\n\n");
+		genMessageProperties(result, userAdminRights.adminRights());
+
+		return result.toString();
+	}
+
+	static void genMessageProperties(StringBuilder result, List<RightName> rights) {
+		// TODO: sort by name
+		for (RightName r : rights) {
+			// strip off the 2 spaces on the first line
+			String text = FileGenUtil.wrapComments(r.getDesc(), 80, "  ", " \\").substring(2);
+			result.append(r.getName()).append(" = ").append(text).append("\n");
+		}
+	}
 }

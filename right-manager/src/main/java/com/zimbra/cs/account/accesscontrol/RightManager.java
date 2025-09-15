@@ -8,31 +8,17 @@ package com.zimbra.cs.account.accesscontrol;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.W3cDomUtil;
 import com.zimbra.common.soap.XmlParseException;
-import com.zimbra.common.util.CliUtil;
-import com.zimbra.common.util.SetUtil;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.AttributeManager;
-import com.zimbra.cs.account.FileGenUtil;
 import com.zimbra.cs.account.accesscontrol.Right.RightType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
@@ -578,206 +564,5 @@ public class RightManager {
 
     public Map<String, AdminRight> getAllAdminRights() {
         return sAdminRights;
-    }
-
-    private String genMessageProperties() throws ServiceException {
-        StringBuilder result = new StringBuilder();
-
-        result.append(FileGenUtil.genDoNotModifyDisclaimer("#", RightManager.class.getSimpleName()));
-        result.append("# Zimbra rights");
-        result.append("\n\n");
-
-        genMessageProperties(result, getAllUserRights());
-        result.append("\n\n");
-        genMessageProperties(result, getAllAdminRights());
-
-        return result.toString();
-    }
-
-    private void genMessageProperties(StringBuilder result, Map<String, ? extends  Right> rights)
-    throws ServiceException {
-        List<String> sortedRights = new ArrayList<>(rights.keySet());
-        Collections.sort(sortedRights);
-
-        for (String right : sortedRights) {
-            Right r = getRight(right);
-            // strip off the 2 spaces on the first line
-            String text = FileGenUtil.wrapComments(r.getDesc(), 80, "  ", " \\").substring(2);
-            result.append(r.getName()).append(" = ").append(text).append("\n");
-        }
-    }
-
-    private static class CL {
-        private static final Options sOptions = new Options();
-
-        static {
-            sOptions.addOption("h", "help", false,
-                    "display this usage info");
-            sOptions.addOption("a", "action", true,
-                    "action, one of genRightConsts, genAdminRights, genUserRights, genMessagePrperties");
-            sOptions.addOption("i", "input", true,
-                    "rights definition xml input directory");
-            sOptions.addOption("o", "output", true,
-                    "output directory");
-            sOptions.addOption("r", "regenerateFile", true,
-                    "file to regenerate");
-            sOptions.addOption("t", "templateFile", true,
-                    "template file");
-        }
-
-        private enum Action {
-            genRightConsts(true, true),
-            genAdminRights(true, true),
-            genUserRights(true, true),
-            genDomainAdminSetAttrsRights(true, false),
-            genMessageProperties(true, true),
-            validate(false, true);
-
-            final boolean regenFileRequired;
-            final boolean inputDirRequired;
-
-            Action(boolean regenFileRequired, boolean inputDirRequired) {
-                this.regenFileRequired = regenFileRequired;
-                this.inputDirRequired = inputDirRequired;
-            }
-
-            private boolean regenFileRequired() {
-                return regenFileRequired;
-            }
-
-            private boolean inputDirRequired() {
-                return inputDirRequired;
-            }
-
-            private static Action fromString(String str) throws ServiceException {
-                try {
-                    return Action.valueOf(str);
-                } catch (IllegalArgumentException e) {
-                    throw ServiceException.INVALID_REQUEST("unknown RightManager CLI action: " + str, e);
-                }
-            }
-        }
-
-        private static void genDomainAdminSetAttrsRights(String outFile, String templateFile)
-        throws Exception {
-            Set<String> acctAttrs = getDomainAdminModifiableAttrs(AttributeClass.account);
-            Set<String> crAttrs = getDomainAdminModifiableAttrs(AttributeClass.calendarResource);
-            Set<String> dlAttrs = getDomainAdminModifiableAttrs(AttributeClass.distributionList);
-            Set<String> domainAttrs = getDomainAdminModifiableAttrs(AttributeClass.domain);
-
-            Set<String> acctAndCrAttrs = SetUtil.intersect(acctAttrs, crAttrs);
-            Set<String> acctOnlyAttrs = SetUtil.subtract(acctAttrs, crAttrs);
-            Set<String> crOnlyAttrs = SetUtil.subtract(crAttrs, acctAttrs);
-
-            // sanity check, since we are not generating it, make sure it is indeed empty
-            if (!acctOnlyAttrs.isEmpty())
-                throw ServiceException.FAILURE("account only attrs is not empty???", null);
-
-            String acctAndCrAttrsFiller = genAttrs(acctAndCrAttrs);
-            String crOnlyAttrsFiller = genAttrs(crOnlyAttrs);
-            String dlAttrsFiller = genAttrs(dlAttrs);
-            String domainAttrsFiller = genAttrs(domainAttrs);
-
-            Map<String,String> templateFillers = new HashMap<>();
-            templateFillers.put("ACCOUNT_AND_CALENDAR_RESOURCE_ATTRS", acctAndCrAttrsFiller);
-            templateFillers.put("CALENDAR_RESOURCE_ATTRS", crOnlyAttrsFiller);
-            templateFillers.put("DISTRIBUTION_LIST_ATTRS", dlAttrsFiller);
-            templateFillers.put("DOMAIN_ATTRS", domainAttrsFiller);
-
-            FileGenUtil.replaceFile(outFile, templateFile, templateFillers);
-        }
-
-        private static Set<String> getDomainAdminModifiableAttrs(AttributeClass klass)
-        throws ServiceException {
-            AttributeManager am = AttributeManager.getInstance();
-            Set<String> allAttrs = am.getAllAttrsInClass(klass);
-
-            Set<String> domainAdminModifiableAttrs = new HashSet<>();
-            for (String attr : allAttrs) {
-                if (am.isDomainAdminModifiable(attr, klass)) {
-                    domainAdminModifiableAttrs.add(attr);
-                }
-            }
-            return domainAdminModifiableAttrs;
-        }
-
-        private static String genAttrs(Set<String> attrs) {
-            // sort it
-            Set<String> sortedAttrs = new TreeSet<>(attrs);
-
-            StringBuilder sb = new StringBuilder();
-            for (String attr : sortedAttrs) {
-                sb.append("    <a n=\"").append(attr).append("\"/>\n");
-            }
-            return sb.toString();
-        }
-
-        private static void usage(String errmsg) {
-            if (errmsg != null) {
-                System.out.println(errmsg);
-            }
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("AttributeManager [options] where [options] are one of:", sOptions);
-            System.exit((errmsg == null) ? 0 : 1);
-        }
-
-        private static CommandLine parseArgs(String[] args) {
-            StringBuffer gotCL = new StringBuffer("cmdline: ");
-          for (final String arg : args) {
-            gotCL.append("'").append(arg).append("' ");
-          }
-            System.out.println(gotCL);
-
-            CommandLineParser parser = new GnuParser();
-            CommandLine commandLine = null;
-            try {
-                commandLine = parser.parse(sOptions, args);
-                if (commandLine.hasOption('h')) {
-                    usage(null);
-                }
-            } catch (ParseException pe) {
-                usage(pe.getMessage());
-            }
-            return commandLine;
-        }
-
-        private static void generateRights(String[] args) throws Exception {
-            CliUtil.toolSetup();
-            CommandLine cl = parseArgs(args);
-
-            if (!cl.hasOption('a')) {
-                usage("no action specified");
-            }
-            Action action = Action.fromString(cl.getOptionValue('a'));
-
-            if (action.regenFileRequired()) {
-                if (!cl.hasOption('r')) {
-                    usage("no regenerate file specified");
-                }
-            }
-
-            String regenFile = cl.getOptionValue('r');
-            RightManager rightManager = RightManager.getInstance();
-
-            switch (action) {
-                case genDomainAdminSetAttrsRights:
-                    String templateFile = cl.getOptionValue('t');
-                    genDomainAdminSetAttrsRights(regenFile, templateFile);
-                    break;
-                case genMessageProperties:
-                    FileGenUtil.replaceFile(regenFile, rightManager.genMessageProperties());
-                    break;
-                case validate:
-                    // do nothing, all we need is that new RightManager(inputDir) works,
-                    // which is done above.
-                    break;
-                default:
-                    usage("invalid action");
-            }
-        }
-    }
-
-    public static void main(String[] args) throws Exception {
-        CL.generateRights(args);
     }
 }

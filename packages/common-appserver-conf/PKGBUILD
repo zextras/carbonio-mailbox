@@ -49,7 +49,7 @@ package() {
     "${pkgdir}/opt/zextras/conf/msgs/L10nMsg.properties"
   install -D "store-conf/conf/msgs/ZsMsg.properties" \
     "${pkgdir}/opt/zextras/conf/msgs/ZsMsg.properties"
-  install -D "store-conf/conf/msgs/ZsMsgRights.properties" \
+  install -D "store-conf/target/generated-resources/conf/msgs/ZsMsgRights.properties" \
     "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights.properties"
   install -D "store-conf/conf/msgs/ZsMsgRights_ar.properties" \
     "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_ar.properties"

@@ -798,22 +798,6 @@
               </arguments>
             </configuration>
           </execution>
-          <execution>
-            <id>generate-rights-message-properties</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>java</goal>
-            </goals>
-            <configuration>
-              <mainClass>com.zimbra.cs.account.accesscontrol.RightManager</mainClass>
-              <arguments>
-                <argument>-a</argument>
-                <argument>genMessageProperties</argument>
-                <argument>-r</argument>
-                <argument>${store-conf.config.dir}/msgs/ZsMsgRights.properties</argument>
-              </arguments>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
       <!-- Add buildinfo sources -->

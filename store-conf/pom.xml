@@ -3,6 +3,12 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <artifactId>zm-store-conf</artifactId>
+  <dependencies>
+    <dependency>
+      <groupId>zextras</groupId>
+      <artifactId>right-manager</artifactId>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
@@ -31,6 +37,29 @@
         <groupId>org.apache.maven.plugins</groupId>
         <version>3.1.0</version>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>generate-rights-message-properties</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.zimbra.cs.account.generators.RightsConstantsGenerator</mainClass>
+              <arguments>
+                <argument>-a</argument>
+                <argument>genMessageProperties</argument>
+                <argument>-o</argument>
+                <argument>${generated-resources.dir}</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -48,6 +77,7 @@
     <maven.deploy.skip>true</maven.deploy.skip>
     <jar.skipIfEmpty>true</jar.skipIfEmpty>
     <maven.install.skip>true</maven.install.skip>
+    <generated-resources.dir>${project.basedir}/target/generated-resources</generated-resources.dir>
 
   </properties>
 
