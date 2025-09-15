@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.account.accesscontrol;
 
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.W3cDomUtil;
 import com.zimbra.common.soap.XmlParseException;
@@ -28,7 +27,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -119,22 +117,16 @@ public class RightManager {
     }
 
     public static synchronized RightManager getInstance() throws ServiceException {
-        String rightsDirectoryPath = LC.zimbra_rights_directory.value();
         if (mInstance != null) {
             return mInstance;
         }
         final AttributeManager attributeManager1 = AttributeManager.getInstance();
-
-        if (Objects.isNull(rightsDirectoryPath) || Objects.equals("", rightsDirectoryPath)) {
-            mInstance = RightManager.fromResources(attributeManager1);
-        } else {
-            mInstance = RightManager.fromFileSystem(rightsDirectoryPath, attributeManager1);
-        }
+        mInstance = RightManager.fromResources(attributeManager1);
 
         try {
             Right.init(mInstance, attributeManager1);
         } catch (ServiceException e) {
-            ZimbraLog.acl.error("failed to initialize known right from: " + rightsDirectoryPath, e);
+            ZimbraLog.acl.error("failed to initialize known right: ", e);
             throw e;
         }
         return mInstance;
