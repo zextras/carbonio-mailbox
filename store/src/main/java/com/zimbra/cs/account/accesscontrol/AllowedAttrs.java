@@ -109,7 +109,7 @@ public class AllowedAttrs implements AccessManager.AttrRightChecker {
                  */
                 // return false;
                 throw ServiceException.PERM_DENIED("cannot access attribute " + attrName +
-                        " on " + TargetType.getTargetType(target) + " target " +
+                        " on " + TargetTypeLookup.getTargetType(target) + " target " +
                         target.getLabel());
             }
         }
@@ -167,7 +167,7 @@ public class AllowedAttrs implements AccessManager.AttrRightChecker {
                  */
                 // return false;
                 throw ServiceException.PERM_DENIED("cannot access attribute " + attrName +
-                        " on " + TargetType.getTargetType(target) + " target " +
+                        " on " + TargetTypeLookup.getTargetType(target) + " target " +
                         target.getLabel());
             }
             

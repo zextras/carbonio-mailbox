@@ -97,7 +97,7 @@ public class CheckPresetRight extends CheckRight {
 
         mGranteeMailTarget = grantee;
         mVia = via;
-        mTargetType = TargetType.getTargetType(mTarget);
+        mTargetType = TargetTypeLookup.getTargetType(mTarget);
         mSeenRight = new SeenRight();
     }
 
@@ -181,7 +181,7 @@ public class CheckPresetRight extends CheckRight {
         // if the target is a domain-ed entry, get the domain of the target.
         // It is needed for checking the cross domain right.
         //
-        Domain targetDomain = TargetType.getTargetDomain(mProv, mTarget);
+        Domain targetDomain = TargetTypeLookup.getTargetDomain(mProv, mTarget);
 
         // group target is only supported for admin rights
         boolean expandTargetGroups = CheckRight.allowGroupTarget(mRightNeeded);

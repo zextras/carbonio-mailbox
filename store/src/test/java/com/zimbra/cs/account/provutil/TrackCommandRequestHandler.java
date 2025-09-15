@@ -93,7 +93,7 @@ import com.zimbra.soap.admin.type.TargetWithType;
 import com.zimbra.soap.type.GranteeType;
 import com.zimbra.soap.type.LoggingLevel;
 import com.zimbra.soap.type.ShareInfo;
-import com.zimbra.soap.type.TargetType;
+import com.zimbra.cs.account.accesscontrol.TargetType.SoapTargetType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -286,7 +286,7 @@ public class TrackCommandRequestHandler extends DocumentHandler {
       var resp = new GetEffectiveRightsResponse(
               new GranteeInfo(GranteeType.usr, "granteeId", "granteeName"),
               new EffectiveRightsTargetInfo(
-                      TargetType.account,
+                      SoapTargetType.account,
                       "targetTypeId", "targetTypeName",
                       new EffectiveAttrsInfo(true),
                       new EffectiveAttrsInfo(true)

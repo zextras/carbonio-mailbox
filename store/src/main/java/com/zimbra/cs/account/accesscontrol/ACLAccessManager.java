@@ -709,7 +709,7 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
       boolean asAdmin)
       throws ServiceException {
 
-    TargetType targetType = TargetType.getTargetType(target);
+    TargetType targetType = TargetTypeLookup.getTargetType(target);
     if (!CheckRight.rightApplicableOnTargetType(targetType, rightNeeded, canDelegateNeeded)) {
       return false;
     }

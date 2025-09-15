@@ -5,12 +5,11 @@
 
 package com.zimbra.soap.admin.type;
 
+import com.zimbra.common.soap.AdminConstants;
+import com.zimbra.cs.account.accesscontrol.TargetType.SoapTargetType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-
-import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.soap.type.TargetType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class EffectiveRightsTargetInfo extends EffectiveRightsInfo {
@@ -20,7 +19,7 @@ public class EffectiveRightsTargetInfo extends EffectiveRightsInfo {
      * @zm-api-field-description Target type
      */
     @XmlAttribute(name=AdminConstants.A_TYPE /* type */, required=true)
-    private final TargetType type;
+    private final SoapTargetType type;
 
     /**
      * @zm-api-field-tag target-id
@@ -46,14 +45,14 @@ public class EffectiveRightsTargetInfo extends EffectiveRightsInfo {
             null, null);
     }
 
-    public EffectiveRightsTargetInfo(TargetType type,
+    public EffectiveRightsTargetInfo(SoapTargetType type,
             String id, String name,
             EffectiveAttrsInfo setAttrs, EffectiveAttrsInfo getAttrs) {
         this(type, id, name, null,
                 setAttrs, getAttrs);
     }
 
-    public EffectiveRightsTargetInfo(TargetType type,
+    public EffectiveRightsTargetInfo(SoapTargetType type,
             String id, String name,
             Iterable <RightWithName> rights,
             EffectiveAttrsInfo setAttrs, EffectiveAttrsInfo getAttrs) {
@@ -63,7 +62,7 @@ public class EffectiveRightsTargetInfo extends EffectiveRightsInfo {
         this.name = name;
     }
 
-    public TargetType getType() { return type; }
+    public SoapTargetType getType() { return type; }
     public String getId() { return id; }
     public String getName() { return name; }
 }

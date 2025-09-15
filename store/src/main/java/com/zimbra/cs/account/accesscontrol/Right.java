@@ -46,7 +46,7 @@ public abstract class Right extends RightConsts implements Comparable<Right> {
     private CheckRightFallback mFallback;
     int mCacheIndex = NOT_CACHEABLE;
 
-    static void init(RightManager rm, AttributeManager attributeManager) throws ServiceException {
+    public static void init(RightManager rm, AttributeManager attributeManager) throws ServiceException {
         UserRight.init(rm);
         AdminRight.initAdmin(rm, attributeManager);
     }

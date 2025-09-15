@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.account;
 
+import com.zimbra.cs.account.accesscontrol.TargetTypeLookup;
 import java.util.List;
 import java.util.Map;
 
@@ -133,7 +134,7 @@ public class CheckRights extends AccountDocumentHandler {
             case dl:
             case group:
             case domain:
-                entry = TargetType.lookupTarget(prov, targetType, targetBy, key, false);
+                entry = TargetTypeLookup.lookupTarget(prov, targetType, targetBy, key, false);
                 break;
             default:
                 throw ServiceException.INVALID_REQUEST(
