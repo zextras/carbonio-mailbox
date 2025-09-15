@@ -601,6 +601,22 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
     return canPerform(authedAcct, target, rightNeeded, canDelegate, attrs, asAdmin, viaGrant);
   }
 
+  private static CheckRightFallback loadFallback(String clazz, Right right) {
+    CheckRightFallback cb = null;
+    if (clazz == null)
+        return null;
+    if (clazz.indexOf('.') == -1)
+        clazz = "com.zimbra.cs.account.accesscontrol.fallback." + clazz;
+    try {
+        cb = (CheckRightFallback) Class.forName(clazz).newInstance();
+        if (cb != null)
+            cb.setRight(right);
+    } catch (Exception e) {
+        ZimbraLog.acl.warn("loadFallback " + clazz + " for right " + right.getName() +  " caught exception", e);
+    }
+    return cb;
+  }
+
   // all user and admin preset rights go through here
   private boolean checkPresetRight(
       MailTarget grantee,
@@ -665,7 +681,8 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
         }
 
         // call the fallback if there is one for the right
-        CheckRightFallback fallback = rightNeeded.getFallback();
+        // TODO: loads fallback, remember to cache instance like we did on attribute manager
+        CheckRightFallback fallback = loadFallback(rightNeeded.getFallbackClass(), rightNeeded);
         if ((fallback != null) && (grantee instanceof Account)) {
           Boolean fallbackResult = fallback.checkRight((Account) grantee, target, asAdmin);
           if (fallbackResult != null) {

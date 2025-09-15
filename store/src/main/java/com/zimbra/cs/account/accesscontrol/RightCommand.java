@@ -1599,7 +1599,7 @@ public class RightCommand {
                 if (expandAllAtrts) {
                     Set<String> attrs = attrRight.getAllAttrs();
                     for (String attr : attrs) {
-                        if (right.getRightType() != RightType.setAttrs || !HardRules.isForbiddenAttr(attr)) {
+                        if (right.getRightType() != RightType.setAttrs || !AttributeForbiddenRules.isForbiddenAttr(attr)) {
                             eAttrs.addNonUniqueElement(AdminConstants.E_A).addAttribute(AdminConstants.A_N, attr);
                         }
                     }

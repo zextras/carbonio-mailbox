@@ -12,7 +12,6 @@ import com.zimbra.common.util.CliUtil;
 import com.zimbra.common.util.SetUtil;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.AccountServiceException;
 import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.AttributeManager;
 import com.zimbra.cs.account.FileGenUtil;
@@ -333,8 +332,6 @@ public class RightManager {
             String fallback = eRight.attributeValue(A_FALLBACK, null);
             if (fallback != null) {
                 right.setFallbackClass(fallback);
-//                CheckRightFallback fb = loadFallback(fallback, right);
-//                right.setFallback(fb);
             }
 
         } else {
@@ -389,23 +386,6 @@ public class RightManager {
 
         return right;
     }
-
-    // TODO: extract like we did on AttributeManager
-//    private static CheckRightFallback loadFallback(String clazz, Right right) {
-//        CheckRightFallback cb = null;
-//        if (clazz == null)
-//            return null;
-//        if (clazz.indexOf('.') == -1)
-//            clazz = "com.zimbra.cs.account.accesscontrol.fallback." + clazz;
-//        try {
-//            cb = (CheckRightFallback) Class.forName(clazz).newInstance();
-//            if (cb != null)
-//                cb.setRight(right);
-//        } catch (Exception e) {
-//            ZimbraLog.acl.warn("loadFallback " + clazz + " for right " + right.getName() +  " caught exception", e);
-//        }
-//        return cb;
-//    }
 
     private boolean loadSystemRights(String fileName, InputStream fileContent,
         List<String> processedFiles)
@@ -602,7 +582,7 @@ public class RightManager {
         }
 
         if (r == null) {
-            throw AccountServiceException.NO_SUCH_RIGHT("invalid right " + right);
+            throw RightException.NO_SUCH_RIGHT("invalid right " + right);
         }
 
         return r;

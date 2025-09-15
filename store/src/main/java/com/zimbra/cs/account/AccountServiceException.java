@@ -40,7 +40,6 @@ public class AccountServiceException extends ServiceException {
   public static final String NO_SUCH_IDENTITY = "account.NO_SUCH_IDENTITY";
   public static final String NO_SUCH_SIGNATURE = "account.NO_SUCH_SIGNATURE";
   public static final String NO_SUCH_DATA_SOURCE = "account.NO_SUCH_DATA_SOURCE";
-  public static final String NO_SUCH_RIGHT = "account.NO_SUCH_RIGHT";
   public static final String NO_SUCH_SERVER = "account.NO_SUCH_SERVER";
   public static final String NO_SUCH_UC_SERVICE = "account.NO_SUCH_UC_SERVICE";
   public static final String NO_SUCH_SHARE_LOCATOR = "account.NO_SUCH_SHARE_LOCATOR";
@@ -277,11 +276,6 @@ public class AccountServiceException extends ServiceException {
   public static AccountServiceException NO_SUCH_GRANT(String grant) {
     return new AccountServiceException(
         "no such grant: " + grant, NO_SUCH_GRANT, SENDERS_FAULT, null);
-  }
-
-  public static AccountServiceException NO_SUCH_RIGHT(String name) {
-    return new AccountServiceException(
-        "no such right: " + name, NO_SUCH_RIGHT, SENDERS_FAULT, null);
   }
 
   public static AccountServiceException NO_SUCH_SERVER(String name) {

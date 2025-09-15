@@ -5,13 +5,12 @@
 
 package com.zimbra.cs.account.accesscontrol;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.SetUtil;
 import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.AttributeManager;
+import java.util.HashSet;
+import java.util.Set;
 
 public class AttrRight extends AdminRight {
 
@@ -159,7 +158,7 @@ public class AttrRight extends AdminRight {
 
     void addAttr(String attrName) throws ServiceException {
         if (getRightType() == RightType.setAttrs) {
-            HardRules.checkForbiddenAttr(attrName);
+            AttributeForbiddenRules.checkForbiddenAttr(attrName);
         }
 
         if (mAttrs == null) {

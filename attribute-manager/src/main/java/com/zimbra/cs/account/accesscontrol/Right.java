@@ -44,7 +44,6 @@ public abstract class Right extends RightConsts implements Comparable<Right> {
     protected TargetType mTargetType;
     protected TargetType mGrantTargetType;
     private String mFallbackClass;
-    private CheckRightFallback mFallback;
     int mCacheIndex = NOT_CACHEABLE;
 
     public static void init(RightManager rm, AttributeManager attributeManager) throws ServiceException {
@@ -155,12 +154,8 @@ public abstract class Right extends RightConsts implements Comparable<Right> {
         mDefault = defaultValue;
     }
 
-    public CheckRightFallback getFallback() {
-        return mFallback;
-    }
-
-    void setFallback(CheckRightFallback fallback) {
-        mFallback = fallback;
+    public String getFallbackClass() {
+        return mFallbackClass;
     }
 
     void setFallbackClass(String clazz) {

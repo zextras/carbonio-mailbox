@@ -391,7 +391,7 @@ public class CollectEffectiveRights {
 
         for (String attrName : attrs) {
             if (rightNeeded == AdminRight.PR_SET_ATTRS && !isGlobalAdmin() && 
-                HardRules.isForbiddenAttr(attrName)) {
+                AttributeForbiddenRules.isForbiddenAttr(attrName)) {
                 continue;
             }
             
