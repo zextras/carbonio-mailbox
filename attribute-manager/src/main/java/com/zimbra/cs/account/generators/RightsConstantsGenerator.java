@@ -33,32 +33,36 @@ public class RightsConstantsGenerator {
 	}
 
 	private static UserAdminRights loadRightsFromFile(InputStream fileContent)
-			throws ServiceException {
-		Document doc = W3cDomUtil.parseXMLToDom4jDocUsingSecureProcessing(fileContent);
-		Element root = doc.getRootElement();
-		if (!root.getName().equals(E_RIGHTS)) {
-			throw ServiceException.PARSE_ERROR("root tag is not " + E_RIGHTS, null);
-		}
-		final ArrayList<RightName> adminRights = new ArrayList<>();
-		final ArrayList<RightName> userRights = new ArrayList<>();
-		for (Iterator<Element> iter = root.elementIterator(); iter.hasNext(); ) {
-			Element elem = iter.next();
-			if (elem.getName().equals(E_RIGHT)) {
-				String name = elem.attributeValue(A_NAME);
-				if (name == null) {
-					throw ServiceException.PARSE_ERROR("no name specified", null);
-				}
-				// TODO: add desc
-				var right = new RightName(name, "");
-				boolean userRight = getBooleanAttr(elem, A_USER_RIGHT);
-				if (userRight) {
-					userRights.add(right);
-				} else {
-					adminRights.add(right);
+	{
+		try {
+			Document doc = W3cDomUtil.parseXMLToDom4jDocUsingSecureProcessing(fileContent);
+			Element root = doc.getRootElement();
+			if (!root.getName().equals(E_RIGHTS)) {
+				throw ServiceException.PARSE_ERROR("root tag is not " + E_RIGHTS, null);
+			}
+			final ArrayList<RightName> adminRights = new ArrayList<>();
+			final ArrayList<RightName> userRights = new ArrayList<>();
+			for (Iterator<Element> iter = root.elementIterator(); iter.hasNext(); ) {
+				Element elem = iter.next();
+				if (elem.getName().equals(E_RIGHT)) {
+					String name = elem.attributeValue(A_NAME);
+					if (name == null) {
+						throw ServiceException.PARSE_ERROR("no name specified", null);
+					}
+					// TODO: add desc
+					var right = new RightName(name, "");
+					boolean userRight = getBooleanAttr(elem, A_USER_RIGHT);
+					if (userRight) {
+						userRights.add(right);
+					} else {
+						adminRights.add(right);
+					}
 				}
 			}
+			return new UserAdminRights(adminRights, userRights);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-		return new UserAdminRights(adminRights, userRights);
 	}
 
 	public static void main(String[] args) throws ParseException {
@@ -68,18 +72,25 @@ public class RightsConstantsGenerator {
 				"Output directory of generated classes");
 		CommandLine cl = parser.parse(sOptions, args);
 		try {
-			final UserAdminRights rightsFromFile1 = loadRightsFromFile(
-					RightsConstantsGenerator.class.getResourceAsStream("/conf/rights/rights.xml"));
-			final UserAdminRights rightsFromFile2 = loadRightsFromFile(
-					RightsConstantsGenerator.class.getResourceAsStream("/conf/rights/user-rights.xml"));
-
 			List<RightName> adminRights = new ArrayList<>();
-			adminRights.addAll(rightsFromFile1.adminRights);
-			adminRights.addAll(rightsFromFile2.adminRights);
-
 			List<RightName> userRights = new ArrayList<>();
-			userRights.addAll(rightsFromFile1.userRights);
-			userRights.addAll(rightsFromFile2.userRights);
+			final List<String> RIGHTS_FILES = List.of(
+					"adminconsole-ui.xml",
+					"rights.xml",
+					"rights-roles.xml",
+					"user-rights.xml",
+					"rights-adminconsole.xml",
+					"rights-adminconsole-domainadmin.xml",
+					"rights-domainadmin.xml"
+			);
+			RIGHTS_FILES.stream().map(
+					file -> loadRightsFromFile(
+							RightsConstantsGenerator.class.getResourceAsStream("/conf/rights/" + file))
+			).forEach(rights -> {
+				adminRights.addAll(rights.adminRights);
+				userRights.addAll(rights.userRights);
+			});
+
 			final String output = cl.getOptionValue("o");
 			final String genRightConstsJava = genRightConstsJava(adminRights, userRights);
 			final String genUserRightsJava = genUserRights(userRights);
@@ -98,7 +109,7 @@ public class RightsConstantsGenerator {
 				Files.write(basePath.resolve("AdminRights.java"), genAdminRightsJava.getBytes());
 				Files.write(basePath.resolve("RightConsts.java"), genRightConstsJava.getBytes());
 			}
-		} catch (ServiceException | IOException e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -179,6 +190,7 @@ public class RightsConstantsGenerator {
 		StringBuilder sb = new StringBuilder();
 		sb.append("package com.zimbra.cs.account.accesscontrol.generated;\n");
 		sb.append("import com.zimbra.common.service.ServiceException;\n");
+		sb.append("import com.zimbra.cs.account.accesscontrol.Right;\n");
 		sb.append("import com.zimbra.cs.account.accesscontrol.RightManager;\n");
 		sb.append("import com.zimbra.cs.account.accesscontrol.UserRight;\n");
 		sb.append("public class UserRights {");

@@ -101,7 +101,7 @@
     </dependency>
     <dependency>
       <groupId>zextras</groupId>
-      <artifactId>attribute-manager</artifactId>
+      <artifactId>right-manager</artifactId>
     </dependency>
   </dependencies>
 
