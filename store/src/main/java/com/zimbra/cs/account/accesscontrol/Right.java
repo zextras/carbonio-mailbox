@@ -43,6 +43,7 @@ public abstract class Right extends RightConsts implements Comparable<Right> {
     private Boolean mDefault;
     protected TargetType mTargetType;
     protected TargetType mGrantTargetType;
+    private String mFallbackClass;
     private CheckRightFallback mFallback;
     int mCacheIndex = NOT_CACHEABLE;
 
@@ -160,6 +161,10 @@ public abstract class Right extends RightConsts implements Comparable<Right> {
 
     void setFallback(CheckRightFallback fallback) {
         mFallback = fallback;
+    }
+
+    void setFallbackClass(String clazz) {
+        mFallbackClass = clazz;
     }
 
     boolean executableOnTargetType(TargetType targetType) {

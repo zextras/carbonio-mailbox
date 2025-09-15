@@ -332,6 +332,7 @@ public class RightManager {
 
             String fallback = eRight.attributeValue(A_FALLBACK, null);
             if (fallback != null) {
+                right.setFallbackClass(fallback);
                 CheckRightFallback fb = loadFallback(fallback, right);
                 right.setFallback(fb);
             }
@@ -389,6 +390,7 @@ public class RightManager {
         return right;
     }
 
+    // TODO: extract like we did on AttributeManager
     private static CheckRightFallback loadFallback(String clazz, Right right) {
         CheckRightFallback cb = null;
         if (clazz == null)
