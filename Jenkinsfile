@@ -1,5 +1,5 @@
 library(
-    identifier: 'jenkins-packages-build-library@1.0.0',
+    identifier: 'jenkins-packages-build-library@1.0.1',
     retriever: modernSCM([
         $class: 'GitSCMSource',
         remote: 'git@github.com:zextras/jenkins-packages-build-library.git',
@@ -141,28 +141,34 @@ pipeline {
                                 tagVersions = ["devel", "latest"]
                             }
                             dockerHelper.buildImage([
-                                title: 'Carbonio Mailbox',
-                                descriptionFile: 'docker/standalone/mailbox/description.md',
                                 dockerfile: 'docker/standalone/mailbox/Dockerfile',
                                 imageName: 'registry.dev.zextras.com/dev/carbonio-mailbox',
                                 imageTags: tagVersions,
-                                version: env.GIT_TAG ? env.GIT_TAG : "stable"
+                                ocLabels: [
+                                    title: 'Carbonio Mailbox',
+                                    descriptionFile: 'docker/standalone/mailbox/description.md',
+                                    version: env.GIT_TAG ? env.GIT_TAG : "stable"
+                                ]
                             ])
                             dockerHelper.buildImage([
-                                title: 'Carbonio MariaDB',
-                                descriptionFile: 'docker/standalone/mariadb/description.md',
                                 dockerfile: 'docker/standalone/mariadb/Dockerfile',
                                 imageName: 'registry.dev.zextras.com/dev/carbonio-mariadb',
                                 imageTags: tagVersions,
-                                version: env.GIT_TAG ? env.GIT_TAG : "stable"
+                                ocLabels: [
+                                    title: 'Carbonio MariaDB',
+                                    descriptionFile: 'docker/standalone/mariadb/description.md',
+                                    version: env.GIT_TAG ? env.GIT_TAG : "stable"
+                                ]
                             ])
                             dockerHelper.buildImage([
-                                title: 'Carbonio OpenLDAP',
-                                descriptionFile: 'docker/standalone/openldap/description.md',
                                 dockerfile: 'docker/standalone/openldap/Dockerfile',
                                 imageName: 'registry.dev.zextras.com/dev/carbonio-openldap',
                                 imageTags: tagVersions,
-                                version: env.GIT_TAG ? env.GIT_TAG : "stable"
+                                ocLabels: [
+                                    title: 'Carbonio OpenLDAP',
+                                    descriptionFile: 'docker/standalone/openldap/description.md',
+                                    version: env.GIT_TAG ? env.GIT_TAG : "stable"
+                                ]
                             ])
                         }
                     }
@@ -172,25 +178,31 @@ pipeline {
                     ) {
                         script {
                             dockerHelper.buildImage([
-                                title: 'Carbonio Mailbox', 
-                                descriptionFile: 'docker/standalone/mailbox/description.md',
                                 dockerfile: 'docker/standalone/mailbox/Dockerfile', 
                                 imageName: 'registry.dev.zextras.com/dev/carbonio-mailbox',
-                                version: 'latest'
+                                ocLabels: [
+                                    title: 'Carbonio Mailbox', 
+                                    descriptionFile: 'docker/standalone/mailbox/description.md',
+                                    version: 'latest'
+                                ]
                             ])
                             dockerHelper.buildImage([
-                                title: 'Carbonio MariaDB', 
-                                descriptionFile: 'docker/standalone/mariadb/description.md',
                                 dockerfile: 'docker/standalone/mariadb/Dockerfile', 
                                 imageName: 'registry.dev.zextras.com/dev/carbonio-mariadb',
-                                version: 'latest'
+                                ocLabels: [
+                                    title: 'Carbonio MariaDB', 
+                                    descriptionFile: 'docker/standalone/mariadb/description.md',
+                                    version: 'latest'
+                                ]
                             ])
                             dockerHelper.buildImage([
-                                title: 'Carbonio OpenLDAP', 
-                                descriptionFile: 'docker/standalone/openldap/description.md',
                                 dockerfile: 'docker/standalone/openldap/Dockerfile', 
                                 imageName: 'registry.dev.zextras.com/dev/carbonio-openldap',
-                                version: 'latest'
+                                ocLabels: [
+                                    title: 'Carbonio OpenLDAP', 
+                                    descriptionFile: 'docker/standalone/openldap/description.md',
+                                    version: 'latest'
+                                ]
                             ])
                         }
                     }
