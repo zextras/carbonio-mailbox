@@ -1,0 +1,213 @@
+package com.zimbra.cs.account.generators;
+
+import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.soap.W3cDomUtil;
+import com.zimbra.common.util.StringUtil;
+import com.zimbra.cs.account.FileGenUtil;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.dom4j.Document;
+import org.dom4j.Element;
+
+public class RightsConstantsGenerator {
+
+	private static final String E_RIGHTS = "rights";
+	private static final String E_RIGHT = "right";
+	private static final String A_NAME = "name";
+	private static final String A_USER_RIGHT = "userRight";
+
+	private record UserAdminRights(List<RightName> adminRights, List<RightName> userRights) {
+
+	}
+
+	private static UserAdminRights loadRightsFromFile(InputStream fileContent)
+			throws ServiceException {
+		Document doc = W3cDomUtil.parseXMLToDom4jDocUsingSecureProcessing(fileContent);
+		Element root = doc.getRootElement();
+		if (!root.getName().equals(E_RIGHTS)) {
+			throw ServiceException.PARSE_ERROR("root tag is not " + E_RIGHTS, null);
+		}
+		final ArrayList<RightName> adminRights = new ArrayList<>();
+		final ArrayList<RightName> userRights = new ArrayList<>();
+		for (Iterator<Element> iter = root.elementIterator(); iter.hasNext(); ) {
+			Element elem = iter.next();
+			if (elem.getName().equals(E_RIGHT)) {
+				String name = elem.attributeValue(A_NAME);
+				if (name == null) {
+					throw ServiceException.PARSE_ERROR("no name specified", null);
+				}
+				// TODO: add desc
+				var right = new RightName(name, "");
+				boolean userRight = getBooleanAttr(elem, A_USER_RIGHT);
+				if (userRight) {
+					userRights.add(right);
+				} else {
+					adminRights.add(right);
+				}
+			}
+		}
+		return new UserAdminRights(adminRights, userRights);
+	}
+
+	public static void main(String[] args) throws ParseException {
+		CommandLineParser parser = new GnuParser();
+		final Options sOptions = new Options();
+		sOptions.addOption("o", "output", true,
+				"Output directory of generated classes");
+		CommandLine cl = parser.parse(sOptions, args);
+		try {
+			final UserAdminRights rightsFromFile1 = loadRightsFromFile(
+					RightsConstantsGenerator.class.getResourceAsStream("/conf/rights/rights.xml"));
+			final UserAdminRights rightsFromFile2 = loadRightsFromFile(
+					RightsConstantsGenerator.class.getResourceAsStream("/conf/rights/user-rights.xml"));
+
+			List<RightName> adminRights = new ArrayList<>();
+			adminRights.addAll(rightsFromFile1.adminRights);
+			adminRights.addAll(rightsFromFile2.adminRights);
+
+			List<RightName> userRights = new ArrayList<>();
+			userRights.addAll(rightsFromFile1.userRights);
+			userRights.addAll(rightsFromFile2.userRights);
+			final String output = cl.getOptionValue("o");
+			final String genRightConstsJava = genRightConstsJava(adminRights, userRights);
+			final String genUserRightsJava = genUserRights(userRights);
+			final String genAdminRightsJava = genAdminRightsJava(adminRights);
+			if (Objects.isNull(output)) {
+				System.out.println("Rights constants");
+				System.out.println(genRightConstsJava);
+				System.out.println("User rights");
+				System.out.println(genUserRightsJava);
+				System.out.println("Admin rights");
+				System.out.println(genAdminRightsJava);
+			} else {
+				Path basePath = Paths.get(output, "com/zimbra/cs/account/accesscontrol/generated/");
+				Files.createDirectories(basePath);
+				Files.write(basePath.resolve("UserRights.java"), genUserRightsJava.getBytes());
+				Files.write(basePath.resolve("AdminRights.java"), genAdminRightsJava.getBytes());
+				Files.write(basePath.resolve("RightConsts.java"), genRightConstsJava.getBytes());
+			}
+		} catch (ServiceException | IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static boolean getBoolean(String value) throws ServiceException {
+		if ("1".equals(value)) {
+			return true;
+		} else if ("0".equals(value)) {
+			return false;
+		} else {
+			throw ServiceException.PARSE_ERROR("invalid value:" + value, null);
+		}
+	}
+
+	private static boolean getBooleanAttr(Element elem, String attr)
+			throws ServiceException {
+		String value = elem.attributeValue(attr);
+		if (value == null) {
+			return false;
+		}
+		return getBoolean(value);
+	}
+
+	private static String genRightConstsJava(List<RightName> adminRights, List<RightName> userRights) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("package com.zimbra.cs.account.accesscontrol.generated;\n");
+		sb.append("public class RightConsts {");
+		sb.append("\n\n");
+		sb.append("    /*\n");
+		sb.append("    ============\n");
+		sb.append("    user rights:\n");
+		sb.append("    ============\n");
+		sb.append("    */\n\n");
+		for (RightName ur : userRights) {
+			genRightConst(ur, sb);
+		}
+
+		sb.append("\n\n");
+		sb.append("    /*\n");
+		sb.append("    =============\n");
+		sb.append("    admin rights:\n");
+		sb.append("    =============\n");
+		sb.append("    */\n\n");
+		for (RightName ar : adminRights) {
+			genRightConst(ar, sb);
+		}
+		sb.append("}\n");
+		return sb.toString();
+	}
+
+	private static String genAdminRightsJava(List<RightName> adminRights) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("package com.zimbra.cs.account.accesscontrol.generated;\n");
+		sb.append("import com.zimbra.common.service.ServiceException;\n");
+		sb.append("import com.zimbra.cs.account.accesscontrol.AdminRight;\n");
+		sb.append("import com.zimbra.cs.account.accesscontrol.Right;\n");
+		sb.append("import com.zimbra.cs.account.accesscontrol.RightManager;\n");
+		sb.append("public class AdminRights {");
+		sb.append("\n\n");
+		for (RightName r : adminRights) {
+			sb.append("    public static AdminRight R_").append(r.getName()).append(";")
+					.append("\n");
+		}
+
+		sb.append("\n\n");
+		sb.append("    public static void init(RightManager rm) throws ServiceException {\n");
+		for (RightName r : adminRights) {
+			String s = String.format("        R_%-36s = rm.getAdminRight(Right.RT_%s);\n",
+					r.getName(), r.getName());
+			sb.append(s);
+		}
+		sb.append("    }\n");
+		sb.append("}\n");
+		return sb.toString();
+	}
+
+	private static String genUserRights(List<RightName> userRights) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("package com.zimbra.cs.account.accesscontrol.generated;\n");
+		sb.append("import com.zimbra.common.service.ServiceException;\n");
+		sb.append("import com.zimbra.cs.account.accesscontrol.RightManager;\n");
+		sb.append("import com.zimbra.cs.account.accesscontrol.UserRight;\n");
+		sb.append("public class UserRights {");
+		sb.append("\n\n");
+		for (RightName r : userRights) {
+			sb.append("    public static UserRight R_").append(r.getName()).append(";")
+					.append("\n");
+		}
+
+		sb.append("\n\n");
+		sb.append("    public static void init(RightManager rm) throws ServiceException {\n");
+		for (RightName r : userRights) {
+			String s = String.format("        R_%-36s = rm.getUserRight(Right.RT_%s);\n",
+					r.getName(), r.getName());
+			sb.append(s);
+		}
+		sb.append("    }\n");
+		sb.append("}");
+		return sb.toString();
+	}
+
+	static void genRightConst(RightName r, StringBuilder sb) {
+		sb.append("\n    /**\n");
+		if (r.getDesc() != null) {
+			sb.append(FileGenUtil.wrapComments(StringUtil.escapeHtml(r.getDesc()), 70, "     * "));
+			sb.append("\n");
+		}
+		sb.append("     */\n");
+		sb.append("    public static final String RT_").append(r.getName()).append(" = \"")
+				.append(r.getName()).append("\";").append("\n");
+	}
+}

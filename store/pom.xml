@@ -498,6 +498,10 @@
       <groupId>zextras</groupId>
     </dependency>
     <dependency>
+      <artifactId>right-manager</artifactId>
+      <groupId>zextras</groupId>
+    </dependency>
+    <dependency>
       <artifactId>mailbox-ldap-lib</artifactId>
       <groupId>zextras</groupId>
     </dependency>

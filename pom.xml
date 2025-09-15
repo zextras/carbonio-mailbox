@@ -389,6 +389,11 @@
       </dependency>
       <dependency>
         <groupId>zextras</groupId>
+        <artifactId>right-manager</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>zextras</groupId>
         <artifactId>mailbox-ldap-lib</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -780,6 +785,7 @@
     <module>native</module>
     <module>common</module>
     <module>attribute-manager</module>
+    <module>right-manager</module>
     <module>mailbox-ldap-lib</module>
     <module>client</module>
     <module>soap</module>

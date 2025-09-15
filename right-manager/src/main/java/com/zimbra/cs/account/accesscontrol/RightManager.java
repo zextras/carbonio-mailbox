@@ -10,7 +10,6 @@ import com.zimbra.common.soap.W3cDomUtil;
 import com.zimbra.common.soap.XmlParseException;
 import com.zimbra.common.util.CliUtil;
 import com.zimbra.common.util.SetUtil;
-import com.zimbra.common.util.StringUtil;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.AttributeClass;
 import com.zimbra.cs.account.AttributeManager;
@@ -596,83 +595,6 @@ public class RightManager {
         return sAdminRights;
     }
 
-    void genRightConst(Right r, StringBuilder sb) {
-        sb.append("\n    /**\n");
-        if (r.getDesc() != null) {
-            sb.append(FileGenUtil.wrapComments(StringUtil.escapeHtml(r.getDesc()), 70, "     * "));
-            sb.append("\n");
-        }
-        sb.append("     */\n");
-        sb.append("    public static final String RT_").append(r.getName()).append(" = \"")
-            .append(r.getName()).append("\";").append("\n");
-    }
-
-    private String genRightConsts() {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("\n\n");
-        sb.append("    /*\n");
-        sb.append("    ============\n");
-        sb.append("    user rights:\n");
-        sb.append("    ============\n");
-        sb.append("    */\n\n");
-        for (Map.Entry<String, UserRight> ur : getAllUserRights().entrySet()) {
-            genRightConst(ur.getValue(), sb);
-        }
-
-        sb.append("\n\n");
-        sb.append("    /*\n");
-        sb.append("    =============\n");
-        sb.append("    admin rights:\n");
-        sb.append("    =============\n");
-        sb.append("    */\n\n");
-        for (Map.Entry<String, AdminRight> ar : getAllAdminRights().entrySet()) {
-            genRightConst(ar.getValue(), sb);
-        }
-
-        return sb.toString();
-    }
-
-    private String genAdminRights() {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("\n\n");
-        for (AdminRight r : getAllAdminRights().values()) {
-            sb.append("    public static AdminRight R_").append(r.getName()).append(";")
-                .append("\n");
-        }
-
-        sb.append("\n\n");
-        sb.append("    public static void init(RightManager rm) throws ServiceException {\n");
-        for (AdminRight r : getAllAdminRights().values()) {
-            String s = String.format("        R_%-36s = rm.getAdminRight(Right.RT_%s);\n",
-                    r.getName(), r.getName());
-            sb.append(s);
-        }
-        sb.append("    }\n");
-        return sb.toString();
-    }
-
-    private String genUserRights() {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("\n\n");
-        for (UserRight r : getAllUserRights().values()) {
-            sb.append("    public static UserRight R_").append(r.getName()).append(";")
-                .append("\n");
-        }
-
-        sb.append("\n\n");
-        sb.append("    public static void init(RightManager rm) throws ServiceException {\n");
-        for (UserRight r : getAllUserRights().values()) {
-            String s = String.format("        R_%-36s = rm.getUserRight(Right.RT_%s);\n",
-                    r.getName(), r.getName());
-            sb.append(s);
-        }
-        sb.append("    }\n");
-        return sb.toString();
-    }
-
     private String genMessageProperties() throws ServiceException {
         StringBuilder result = new StringBuilder();
 
@@ -850,26 +772,9 @@ public class RightManager {
             }
 
             String regenFile = cl.getOptionValue('r');
-
-            String inputDir = null;
-            if (action.inputDirRequired()) {
-                if (!cl.hasOption('i')) {
-                    usage("no input dir specified");
-                }
-                inputDir = cl.getOptionValue('i');
-            }
             RightManager rightManager = RightManager.getInstance();
 
             switch (action) {
-                case genRightConsts:
-                    FileGenUtil.replaceJavaFile(regenFile, rightManager.genRightConsts());
-                    break;
-                case genAdminRights:
-                    FileGenUtil.replaceJavaFile(regenFile, rightManager.genAdminRights());
-                    break;
-                case genUserRights:
-                    FileGenUtil.replaceJavaFile(regenFile, rightManager.genUserRights());
-                    break;
                 case genDomainAdminSetAttrsRights:
                     String templateFile = cl.getOptionValue('t');
                     genDomainAdminSetAttrsRights(regenFile, templateFile);

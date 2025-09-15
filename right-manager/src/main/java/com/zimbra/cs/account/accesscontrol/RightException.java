@@ -13,7 +13,7 @@ public class RightException extends ServiceException {
 
 	public static RightException NO_SUCH_RIGHT(String name) {
 		return new RightException(
-				"no such right: " + name, NO_SUCH_RIGHT, SENDERS_FAULT, null);
+				"no such right: " + name, NO_SUCH_RIGHT, ServiceException.SENDERS_FAULT, null);
 	}
 
 }
