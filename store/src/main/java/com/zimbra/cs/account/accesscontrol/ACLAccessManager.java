@@ -31,12 +31,16 @@ import com.zimbra.cs.account.names.NameUtil;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author pshao
  */
 public class ACLAccessManager extends AccessManager implements AdminConsoleCapable {
+
+  private static final Map<String, CheckRightFallback> callbacks = new ConcurrentHashMap<>();
 
   public ACLAccessManager() throws ServiceException {
     // initialize RightManager
@@ -601,20 +605,17 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
     return canPerform(authedAcct, target, rightNeeded, canDelegate, attrs, asAdmin, viaGrant);
   }
 
-  private static CheckRightFallback loadFallback(String clazz, Right right) {
-    CheckRightFallback cb = null;
-    if (clazz == null)
+  private static synchronized CheckRightFallback loadFallback(Right right) {
+    if (Objects.isNull(right.getFallbackClass())) return null;
+    return callbacks.computeIfAbsent(right.getName(), key -> {
+      try {
+        return (CheckRightFallback) Class.forName(right.getFallbackClass())
+            .getDeclaredConstructor().newInstance();
+      } catch (Exception e) {
+        ZimbraLog.misc.error("Failed to instantiate fallback for " + key + ": " + e.getMessage());
         return null;
-    if (clazz.indexOf('.') == -1)
-        clazz = "com.zimbra.cs.account.accesscontrol.fallback." + clazz;
-    try {
-        cb = (CheckRightFallback) Class.forName(clazz).newInstance();
-        if (cb != null)
-            cb.setRight(right);
-    } catch (Exception e) {
-        ZimbraLog.acl.warn("loadFallback " + clazz + " for right " + right.getName() +  " caught exception", e);
-    }
-    return cb;
+      }
+    });
   }
 
   // all user and admin preset rights go through here
@@ -682,7 +683,7 @@ public class ACLAccessManager extends AccessManager implements AdminConsoleCapab
 
         // call the fallback if there is one for the right
         // TODO: loads fallback, remember to cache instance like we did on attribute manager
-        CheckRightFallback fallback = loadFallback(rightNeeded.getFallbackClass(), rightNeeded);
+        CheckRightFallback fallback = loadFallback(rightNeeded);
         if ((fallback != null) && (grantee instanceof Account)) {
           Boolean fallbackResult = fallback.checkRight((Account) grantee, target, asAdmin);
           if (fallbackResult != null) {
