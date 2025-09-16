@@ -49,6 +49,10 @@ import com.zimbra.cs.util.Zimbra;
 import com.zimbra.soap.ZimbraSoapContext.SessionInfo;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
+import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.context.Scope;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,6 +68,7 @@ import org.eclipse.jetty.continuation.ContinuationSupport;
 /** The soap engine. */
 public class SoapEngine {
   private static final Log LOG = LogFactory.getLog(SoapEngine.class);
+  private static final Tracer tracer = GlobalOpenTelemetry.getTracer("soap");
 
   // attribute used to correlate requests and responses
   public static final String A_REQUEST_CORRELATOR = "requestId";
@@ -265,6 +270,21 @@ public class SoapEngine {
       } else {
         document = Element.parseJSON(in);
       }
+      Element resp = dispatch(path, document, context);
+
+        /*
+         * For requests(e.g. AuthRequest) that don't have account info in time when they
+         * are normally added to the logging context in dispatch after zsc is established
+         * from the SOAP request header.  Thus account logging for zimbra.soap won't be
+         * effective when the SOAP request is logged in TRACE level normally.
+         *
+         * For AuthRequest, we call Account.addAccountToLogContext from the handler as
+         * soon as the account, which is only available in the SOAP body, is discovered.
+         * Account info should be available after dispatch() so account logger can be
+         * triggered.
+         */
+        logRequest(context, document);
+        return resp;
     } catch (SoapParseException e) {
       SoapProtocol soapProto = SoapProtocol.SoapJS;
       logUnparsableRequest(context, soapMessage, e.getMessage());
@@ -275,22 +295,6 @@ public class SoapEngine {
       SoapProtocol soapProto = chooseFaultProtocolFromBadXml(new ByteArrayInputStream(soapMessage));
       return soapFaultEnv(soapProto, "SOAP exception", e);
     }
-    Element resp = dispatch(path, document, context);
-
-    /*
-     * For requests(e.g. AuthRequest) that don't have account info in time when they
-     * are normally added to the logging context in dispatch after zsc is established
-     * from the SOAP request header.  Thus account logging for zimbra.soap won't be
-     * effective when the SOAP request is logged in TRACE level normally.
-     *
-     * For AuthRequest, we call Account.addAccountToLogContext from the handler as
-     * soon as the account, which is only available in the SOAP body, is discovered.
-     * Account info should be available after dispatch() so account logger can be
-     * triggered.
-     */
-    logRequest(context, document);
-
-    return resp;
   }
 
   /**
@@ -320,236 +324,242 @@ public class SoapEngine {
           soapProto, "SOAP exception", ServiceException.INVALID_REQUEST("No SOAP body", null));
     }
 
-    ServletRequest servReq = (ServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
+    Span span = tracer.spanBuilder(doc.getName()).startSpan();
+    try(Scope scope  = span.makeCurrent()) {
+      ServletRequest servReq = (ServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
 
-    // Check if this handler requires authentication.
-    // Do not perform CSRF checks for handlers that do not require authentication
-    DocumentHandler handler = dispatcher.getHandler(doc);
-    ZimbraSoapContext zsc = null;
-    Element ectxt = soapProto.getHeader(envelope, HeaderConstants.CONTEXT);
-    try {
-      zsc = new ZimbraSoapContext(ectxt, doc.getQName(), handler, context, soapProto);
-    } catch (ServiceException e) {
-      return soapFaultEnv(soapProto, "unable to construct SOAP context", e);
-    }
-    boolean doCsrfCheck = false;
-    if (servReq.getAttribute(CsrfFilter.CSRF_TOKEN_CHECK) != null) {
-      doCsrfCheck = (Boolean) servReq.getAttribute(CsrfFilter.CSRF_TOKEN_CHECK);
-    } else if (zsc.getAuthToken() != null && zsc.getAuthToken().isCsrfTokenEnabled()) {
-      doCsrfCheck = true;
-    }
-
-    if (handler == null) {
-      // no CSRF check if handler is null and is not a Batch request. Only Batch Request will not
-      // have a
-      // handler, all other request should be mapped to a Handler
-      if (!doc.getName().equals("BatchRequest")) {
-        doCsrfCheck = false;
-      } else {
-        StringBuilder sb = new StringBuilder();
-        for (Element req : doc.listElements()) {
-          if (sb.length() > 0) {
-            sb.append(",");
-          }
-          sb.append(req.getName());
-        }
-        LOG.info(
-            "BatchRequest [%s] contains %d sub-request(s): %s",
-            path, doc.listElements().size(), sb.toString());
+      // Check if this handler requires authentication.
+      // Do not perform CSRF checks for handlers that do not require authentication
+      DocumentHandler handler = dispatcher.getHandler(doc);
+      ZimbraSoapContext zsc = null;
+      Element ectxt = soapProto.getHeader(envelope, HeaderConstants.CONTEXT);
+      try {
+        zsc = new ZimbraSoapContext(ectxt, doc.getQName(), handler, context, soapProto);
+      } catch (ServiceException e) {
+        return soapFaultEnv(soapProto, "unable to construct SOAP context", e);
       }
-    } else {
-      if (doc.getName().equals("AuthRequest")) {
-        // this is a Auth request, no CSRF validation happens
-        doCsrfCheck = false;
+      boolean doCsrfCheck = false;
+      if (servReq.getAttribute(CsrfFilter.CSRF_TOKEN_CHECK) != null) {
+        doCsrfCheck = (Boolean) servReq.getAttribute(CsrfFilter.CSRF_TOKEN_CHECK);
+      } else if (zsc.getAuthToken() != null && zsc.getAuthToken().isCsrfTokenEnabled()) {
+        doCsrfCheck = true;
+      }
+
+      if (handler == null) {
+        // no CSRF check if handler is null and is not a Batch request. Only Batch Request will not
+        // have a
+        // handler, all other request should be mapped to a Handler
+        if (!doc.getName().equals("BatchRequest")) {
+          doCsrfCheck = false;
+        } else {
+          StringBuilder sb = new StringBuilder();
+          for (Element req : doc.listElements()) {
+            if (sb.length() > 0) {
+              sb.append(",");
+            }
+            sb.append(req.getName());
+          }
+          LOG.info(
+              "BatchRequest [%s] contains %d sub-request(s): %s",
+              path, doc.listElements().size(), sb.toString());
+        }
+      } else {
+        if (doc.getName().equals("AuthRequest")) {
+          // this is a Auth request, no CSRF validation happens
+          doCsrfCheck = false;
+          try {
+            Element contextElmt = getSoapContextElement(soapProto, envelope);
+            if (contextElmt != null) {
+              String jwtSalt = contextElmt.getAttribute(HeaderConstants.E_JWT_SALT);
+              context.put(JWT_SALT, jwtSalt);
+            }
+          } catch (ServiceException e) {
+            // was trying to get the jwt salt from soap context, if any issue occurred ignore.
+          }
+        } else {
+          doCsrfCheck = doCsrfCheck && handler.needsAuth(context);
+        }
+      }
+
+      if (doCsrfCheck) {
         try {
-          Element contextElmt = getSoapContextElement(soapProto, envelope);
-          if (contextElmt != null) {
-            String jwtSalt = contextElmt.getAttribute(HeaderConstants.E_JWT_SALT);
-            context.put(JWT_SALT, jwtSalt);
+          HttpServletRequest httpReq = (HttpServletRequest) servReq;
+          // Bug: 96167 SoapEngine should be able to read CSRF token from HTTP headers
+          String csrfToken = httpReq.getHeader(Constants.CSRF_TOKEN);
+          if (StringUtil.isNullOrEmpty(csrfToken)) {
+            Element contextElmt = getSoapContextElement(soapProto, envelope);
+            if (contextElmt != null) {
+              csrfToken = contextElmt.getAttribute(HeaderConstants.E_CSRFTOKEN);
+            }
+          }
+          AuthToken authToken = zsc.getAuthToken();
+          if (!CsrfUtil.isValidCsrfToken(csrfToken, authToken)) {
+            LOG.info("CSRF token validation failed for account");
+            return soapFaultEnv(
+                soapProto, "cannot dispatch request", ServiceException.AUTH_REQUIRED());
           }
         } catch (ServiceException e) {
-          // was trying to get the jwt salt from soap context, if any issue occurred ignore.
+          // we came here which implies clients supports CSRF authorization
+          // and CSRF token is generated
+          LOG.info("Error during CSRF validation.", e);
+          return soapFaultEnv(soapProto, "cannot dispatch request",
+              ServiceException.AUTH_REQUIRED());
         }
-      } else {
-        doCsrfCheck = doCsrfCheck && handler.needsAuth(context);
       }
-    }
 
-    if (doCsrfCheck) {
-      try {
-        HttpServletRequest httpReq = (HttpServletRequest) servReq;
-        // Bug: 96167 SoapEngine should be able to read CSRF token from HTTP headers
-        String csrfToken = httpReq.getHeader(Constants.CSRF_TOKEN);
-        if (StringUtil.isNullOrEmpty(csrfToken)) {
-          Element contextElmt = getSoapContextElement(soapProto, envelope);
-          if (contextElmt != null) {
-            csrfToken = contextElmt.getAttribute(HeaderConstants.E_CSRFTOKEN);
+      SoapProtocol responseProto = zsc.getResponseProtocol();
+
+      String rid = zsc.getRequestedAccountId();
+      String proxyAuthToken = null;
+      if (rid != null) {
+        Provisioning prov = Provisioning.getInstance();
+        AccountUtil.addAccountToLogContext(
+            prov, rid, ZimbraLog.C_NAME, ZimbraLog.C_ID, zsc.getAuthToken());
+        String aid = zsc.getAuthtokenAccountId();
+        if (aid != null && !rid.equals(aid)) {
+          AccountUtil.addAccountToLogContext(
+              prov, aid, ZimbraLog.C_ANAME, ZimbraLog.C_AID, zsc.getAuthToken());
+        } else if (zsc.getAuthToken() != null && zsc.getAuthToken().getAdminAccountId() != null) {
+          AccountUtil.addAccountToLogContext(
+              prov,
+              zsc.getAuthToken().getAdminAccountId(),
+              ZimbraLog.C_ANAME,
+              ZimbraLog.C_AID,
+              zsc.getAuthToken());
+        }
+        try {
+          Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(rid, false);
+          if (mbox != null) {
+            ZimbraLog.addMboxToContext(mbox.getId());
           }
+        } catch (ServiceException ignore) {
         }
-        AuthToken authToken = zsc.getAuthToken();
-        if (!CsrfUtil.isValidCsrfToken(csrfToken, authToken)) {
-          LOG.info("CSRF token validation failed for account");
-          return soapFaultEnv(
-              soapProto, "cannot dispatch request", ServiceException.AUTH_REQUIRED());
-        }
-      } catch (ServiceException e) {
-        // we came here which implies clients supports CSRF authorization
-        // and CSRF token is generated
-        LOG.info("Error during CSRF validation.", e);
-        return soapFaultEnv(soapProto, "cannot dispatch request", ServiceException.AUTH_REQUIRED());
-      }
-    }
 
-    SoapProtocol responseProto = zsc.getResponseProtocol();
-
-    String rid = zsc.getRequestedAccountId();
-    String proxyAuthToken = null;
-    if (rid != null) {
-      Provisioning prov = Provisioning.getInstance();
-      AccountUtil.addAccountToLogContext(
-          prov, rid, ZimbraLog.C_NAME, ZimbraLog.C_ID, zsc.getAuthToken());
-      String aid = zsc.getAuthtokenAccountId();
-      if (aid != null && !rid.equals(aid)) {
-        AccountUtil.addAccountToLogContext(
-            prov, aid, ZimbraLog.C_ANAME, ZimbraLog.C_AID, zsc.getAuthToken());
-      } else if (zsc.getAuthToken() != null && zsc.getAuthToken().getAdminAccountId() != null) {
-        AccountUtil.addAccountToLogContext(
-            prov,
-            zsc.getAuthToken().getAdminAccountId(),
-            ZimbraLog.C_ANAME,
-            ZimbraLog.C_AID,
-            zsc.getAuthToken());
-      }
-      try {
-        Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(rid, false);
-        if (mbox != null) {
-          ZimbraLog.addMboxToContext(mbox.getId());
+        try {
+          AuthToken at = zsc.getAuthToken();
+          if (at != null) {
+            proxyAuthToken = prov.getProxyAuthToken(rid, context);
+            at.setProxyAuthToken(proxyAuthToken);
+          }
+        } catch (ServiceException e) {
+          LOG.warn("failed to set proxy auth token: %s", e.getMessage());
         }
-      } catch (ServiceException ignore) {
       }
 
-      try {
-        AuthToken at = zsc.getAuthToken();
-        if (at != null) {
-          proxyAuthToken = prov.getProxyAuthToken(rid, context);
-          at.setProxyAuthToken(proxyAuthToken);
-        }
-      } catch (ServiceException e) {
-        LOG.warn("failed to set proxy auth token: %s", e.getMessage());
+      if (zsc.getUserAgent() != null) {
+        ZimbraLog.addUserAgentToContext(zsc.getUserAgent());
       }
-    }
+      if (zsc.getVia() != null) {
+        ZimbraLog.addViaToContext(zsc.getVia());
+      }
 
-    if (zsc.getUserAgent() != null) {
-      ZimbraLog.addUserAgentToContext(zsc.getUserAgent());
-    }
-    if (zsc.getVia() != null) {
-      ZimbraLog.addViaToContext(zsc.getVia());
-    }
+      HttpServletRequest servletRequest =
+          (HttpServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
+      boolean isResumed = !ContinuationSupport.getContinuation(servletRequest).isInitial();
 
-    HttpServletRequest servletRequest =
-        (HttpServletRequest) context.get(SoapServlet.SERVLET_REQUEST);
-    boolean isResumed = !ContinuationSupport.getContinuation(servletRequest).isInitial();
-
-    if (zsc.getSoapRequestId() != null) {
-      ZimbraLog.addSoapIdToContext(zsc.getSoapRequestId());
-    } else {
-      String soapRequestId =
-          (String) servletRequest.getAttribute(ZimbraSoapContext.soapRequestIdAttr);
-      if (Strings.isNullOrEmpty(soapRequestId)) {
-        zsc.setNewSoapRequestId();
+      if (zsc.getSoapRequestId() != null) {
+        ZimbraLog.addSoapIdToContext(zsc.getSoapRequestId());
       } else {
-        zsc.setSoapRequestId(soapRequestId);
-      }
-    }
-
-    logRequest(context, envelope);
-
-    context.put(ZIMBRA_CONTEXT, zsc);
-    context.put(ZIMBRA_ENGINE, this);
-
-    Element responseBody = null;
-    if (!zsc.isProxyRequest()) {
-      // if the client's told us that they've seen through notification block 50, we can drop old
-      // notifications up to that point
-      acknowledgeNotifications(zsc);
-
-      if (doc.getQName().equals(ZimbraNamespace.E_BATCH_REQUEST)) {
-        boolean contOnError =
-            doc.getAttribute(ZimbraNamespace.A_ONERROR, ZimbraNamespace.DEF_ONERROR)
-                .equals("continue");
-        responseBody = zsc.createElement(ZimbraNamespace.E_BATCH_RESPONSE);
-        if (!isResumed) {
-          ZimbraLog.soap.info(doc.getName());
+        String soapRequestId =
+            (String) servletRequest.getAttribute(ZimbraSoapContext.soapRequestIdAttr);
+        if (Strings.isNullOrEmpty(soapRequestId)) {
+          zsc.setNewSoapRequestId();
+        } else {
+          zsc.setSoapRequestId(soapRequestId);
         }
-        for (Element req : doc.listElements()) {
-          String id = req.getAttribute(A_REQUEST_CORRELATOR, null);
-          long start = System.currentTimeMillis();
-          Element br = dispatchRequest(dispatcher.getHandler(req), req, context, zsc);
+      }
+
+      logRequest(context, envelope);
+
+      context.put(ZIMBRA_CONTEXT, zsc);
+      context.put(ZIMBRA_ENGINE, this);
+
+      Element responseBody = null;
+      if (!zsc.isProxyRequest()) {
+        // if the client's told us that they've seen through notification block 50, we can drop old
+        // notifications up to that point
+        acknowledgeNotifications(zsc);
+
+        if (doc.getQName().equals(ZimbraNamespace.E_BATCH_REQUEST)) {
+          boolean contOnError =
+              doc.getAttribute(ZimbraNamespace.A_ONERROR, ZimbraNamespace.DEF_ONERROR)
+                  .equals("continue");
+          responseBody = zsc.createElement(ZimbraNamespace.E_BATCH_RESPONSE);
           if (!isResumed) {
-            ZimbraLog.soap.info(
-                "(batch) %s elapsed=%d", req.getName(), System.currentTimeMillis() - start);
+            ZimbraLog.soap.info(doc.getName());
+          }
+          for (Element req : doc.listElements()) {
+            String id = req.getAttribute(A_REQUEST_CORRELATOR, null);
+            long start = System.currentTimeMillis();
+            Element br = dispatchRequest(dispatcher.getHandler(req), req, context, zsc);
+            if (!isResumed) {
+              ZimbraLog.soap.info(
+                  "(batch) %s elapsed=%d", req.getName(), System.currentTimeMillis() - start);
+            }
+            if (id != null) {
+              br.addAttribute(A_REQUEST_CORRELATOR, id);
+            }
+            responseBody.addNonUniqueElement(br);
+            if (!contOnError && responseProto.isFault(br)) {
+              break;
+            }
+            if (proxyAuthToken != null) {
+              // requests will invalidate it when proxying locally;
+              // make sure it's set for each sub-request in batch
+              zsc.getAuthToken().setProxyAuthToken(proxyAuthToken);
+            }
+          }
+        } else {
+          String id = doc.getAttribute(A_REQUEST_CORRELATOR, null);
+          long start = System.currentTimeMillis();
+          responseBody = dispatchRequest(handler, doc, context, zsc);
+          if (!isResumed) {
+            ZimbraLog.soap.info("%s elapsed=%d", doc.getName(), System.currentTimeMillis() - start);
           }
           if (id != null) {
-            br.addAttribute(A_REQUEST_CORRELATOR, id);
-          }
-          responseBody.addNonUniqueElement(br);
-          if (!contOnError && responseProto.isFault(br)) {
-            break;
-          }
-          if (proxyAuthToken != null) {
-            // requests will invalidate it when proxying locally;
-            // make sure it's set for each sub-request in batch
-            zsc.getAuthToken().setProxyAuthToken(proxyAuthToken);
+            responseBody.addAttribute(A_REQUEST_CORRELATOR, id);
           }
         }
       } else {
-        String id = doc.getAttribute(A_REQUEST_CORRELATOR, null);
-        long start = System.currentTimeMillis();
-        responseBody = dispatchRequest(handler, doc, context, zsc);
-        if (!isResumed) {
-          ZimbraLog.soap.info("%s elapsed=%d", doc.getName(), System.currentTimeMillis() - start);
-        }
-        if (id != null) {
-          responseBody.addAttribute(A_REQUEST_CORRELATOR, id);
+        // Proxy request to target server.  Proxy dispatcher discards any session information with
+        // remote server.
+        // We stick to local server's session when talking to the client.
+        try {
+          // Detach doc from its current parent, because it will be added as a child element of a new
+          // SOAP
+          // envelope in the proxy dispatcher.  IllegalAddException will be thrown if we don't detach
+          // it first.
+          doc.detach();
+          ZimbraSoapContext zscTarget =
+              new ZimbraSoapContext(zsc, zsc.getRequestedAccountId()).disableNotifications();
+          long start = System.currentTimeMillis();
+          responseBody = zsc.getProxyTarget().dispatch(doc, zscTarget);
+          ZimbraLog.soap.info(
+              "%s proxy=%s,elapsed=%d",
+              doc.getName(), zsc.getProxyTarget(), System.currentTimeMillis() - start);
+          responseBody.detach();
+        } catch (SoapFaultException e) {
+          responseBody = e.getFault() != null ? e.getFault().detach() : responseProto.soapFault(e);
+          LOG.debug("proxy handler exception", e);
+        } catch (ServiceException e) {
+          responseBody = responseProto.soapFault(e);
+          LOG.info("proxy handler exception", e);
+        } catch (Throwable e) {
+          responseBody = responseProto.soapFault(ServiceException.FAILURE(e.toString(), e));
+          if (e instanceof OutOfMemoryError) {
+            Zimbra.halt("proxy handler exception", e);
+          }
+          LOG.warn("proxy handler exception", e);
         }
       }
-    } else {
-      // Proxy request to target server.  Proxy dispatcher discards any session information with
-      // remote server.
-      // We stick to local server's session when talking to the client.
-      try {
-        // Detach doc from its current parent, because it will be added as a child element of a new
-        // SOAP
-        // envelope in the proxy dispatcher.  IllegalAddException will be thrown if we don't detach
-        // it first.
-        doc.detach();
-        ZimbraSoapContext zscTarget =
-            new ZimbraSoapContext(zsc, zsc.getRequestedAccountId()).disableNotifications();
-        long start = System.currentTimeMillis();
-        responseBody = zsc.getProxyTarget().dispatch(doc, zscTarget);
-        ZimbraLog.soap.info(
-            "%s proxy=%s,elapsed=%d",
-            doc.getName(), zsc.getProxyTarget(), System.currentTimeMillis() - start);
-        responseBody.detach();
-      } catch (SoapFaultException e) {
-        responseBody = e.getFault() != null ? e.getFault().detach() : responseProto.soapFault(e);
-        LOG.debug("proxy handler exception", e);
-      } catch (ServiceException e) {
-        responseBody = responseProto.soapFault(e);
-        LOG.info("proxy handler exception", e);
-      } catch (Throwable e) {
-        responseBody = responseProto.soapFault(ServiceException.FAILURE(e.toString(), e));
-        if (e instanceof OutOfMemoryError) {
-          Zimbra.halt("proxy handler exception", e);
-        }
-        LOG.warn("proxy handler exception", e);
-      }
-    }
 
-    // put notifications (new sessions and incremental change notifications) to header...
-    Element responseHeader = generateResponseHeader(zsc);
-    // ... and return the composed response
-    return responseProto.soapEnvelope(responseBody, responseHeader);
+      // put notifications (new sessions and incremental change notifications) to header...
+      Element responseHeader = generateResponseHeader(zsc);
+      // ... and return the composed response
+      return responseProto.soapEnvelope(responseBody, responseHeader);
+    } finally {
+      span.end();
+    }
   }
 
   private Element getSoapContextElement(SoapProtocol soapProto, Element envelope)
