@@ -29,6 +29,10 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.servlet.ZimbraServlet;
 import com.zimbra.cs.stats.ZimbraPerf;
 import com.zimbra.cs.util.Zimbra;
+import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.context.Scope;
 import java.io.EOFException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,6 +50,7 @@ import org.apache.http.message.BasicLineParser;
 /** The soap service servlet */
 public class SoapServlet extends ZimbraServlet {
   private static final long serialVersionUID = 38710345271877593L;
+  private static final Tracer tracer = GlobalOpenTelemetry.getTracer("soap");
 
   protected static final String PARAM_ENGINE_HANDLER = "engine.handler.";
 
@@ -219,10 +224,11 @@ public class SoapServlet extends ZimbraServlet {
       throws IOException, ServletException {
     ZimbraLog.clearContext();
     long startTime = ZimbraPerf.STOPWATCH_SOAP.start();
-
-    try {
+    Span span = tracer.spanBuilder(req.getRequestURI()).startSpan();
+    try (Scope scope = span.makeCurrent()) {
       doWork(req, resp);
     } finally {
+      span.end();
       ZimbraLog.clearContext();
       ZimbraPerf.STOPWATCH_SOAP.stop(startTime);
     }
