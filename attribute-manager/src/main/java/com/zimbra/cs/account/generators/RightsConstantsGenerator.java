@@ -4,7 +4,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.W3cDomUtil;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.cs.account.FileGenUtil;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,8 +34,13 @@ public class RightsConstantsGenerator {
 			"/conf/rights/rights-adminconsole-domainadmin.xml",
 			"/conf/rights/rights-domainadmin.xml"
 	);
+	private final UserAdminRights rights;
 
-	private record UserAdminRights(List<RightName> adminRights, List<RightName> userRights) {
+	private RightsConstantsGenerator(UserAdminRights userAdminRights) {
+		this.rights = userAdminRights;
+	}
+
+	public record UserAdminRights(List<RightName> adminRights, List<RightName> userRights) {
 
 	}
 
@@ -69,55 +73,55 @@ public class RightsConstantsGenerator {
 		return new UserAdminRights(adminRights, userRights);
 	}
 
+	public static RightsConstantsGenerator getInstance() throws Exception {
+		List<RightName> adminRights = new ArrayList<>();
+		List<RightName> userRights = new ArrayList<>();
+		for (String rightsFile : RIGHTS_FILES) {
+			final InputStream resourceAsStream = RightsConstantsGenerator.class.getResourceAsStream(
+					rightsFile);
+			final UserAdminRights fileRights = loadRightsFromFile(resourceAsStream);
+			adminRights.addAll(fileRights.adminRights);
+			userRights.addAll(fileRights.userRights);
+		}
+		return new RightsConstantsGenerator(new UserAdminRights(adminRights, userRights));
+	}
+
+
 	public static void main(String[] args) throws Exception {
 		CommandLineParser parser = new GnuParser();
+		final RightsConstantsGenerator generator = RightsConstantsGenerator.getInstance();
 		final Options sOptions = new Options();
 		sOptions.addOption("o", "output", true,
 				"Output directory of generated classes");
 		sOptions.addOption("a", "action", true,
 				"Action to perform. Supports: genMessageProperties. If not provided generates java files.");
 		CommandLine cl = parser.parse(sOptions, args);
-		try {
-			List<RightName> adminRights = new ArrayList<>();
-			List<RightName> userRights = new ArrayList<>();
-			for (String rightsFile : RIGHTS_FILES) {
-				System.out.println(rightsFile);
-				final InputStream resourceAsStream = RightsConstantsGenerator.class.getResourceAsStream(rightsFile);
+		final String output = cl.getOptionValue("o");
+		final String action = cl.getOptionValue("a");
 
-				UserAdminRights rights = loadRightsFromFile(resourceAsStream);
-				adminRights.addAll(rights.adminRights);
-				userRights.addAll(rights.userRights);
-			}
-
-			final String output = cl.getOptionValue("o");
-			final String action = cl.getOptionValue("a");
-			final String genRightConstsJava = genRightConstsJava(adminRights, userRights);
-			final String genUserRightsJava = genUserRights(userRights);
-			final String genAdminRightsJava = genAdminRightsJava(adminRights);
-			if (Objects.equals(action, "genMessageProperties")) {
-				final Path basePath = Paths.get(output, "conf/msgs");
-				Files.createDirectories(basePath);
-				final String messageProperties = genMessageProperties(new UserAdminRights(adminRights, userRights));
-				Files.write(basePath.resolve("ZsMsgRights.properties"), messageProperties.getBytes());
-				return;
-			}
-			if (Objects.isNull(output)) {
-				System.out.println("Rights constants");
-				System.out.println(genRightConstsJava);
-				System.out.println("User rights");
-				System.out.println(genUserRightsJava);
-				System.out.println("Admin rights");
-				System.out.println(genAdminRightsJava);
-			} else {
-				Path basePath = Paths.get(output, "com/zimbra/cs/account/accesscontrol/generated/");
-				Files.createDirectories(basePath);
-				Files.write(basePath.resolve("UserRights.java"), genUserRightsJava.getBytes());
-				Files.write(basePath.resolve("AdminRights.java"), genAdminRightsJava.getBytes());
-				Files.write(basePath.resolve("RightConsts.java"), genRightConstsJava.getBytes());
-			}
-		} catch (
-				IOException e) {
-			throw new RuntimeException(e);
+		final String genRightConstsJava = generator.genRightConstsJava();
+		final String genUserRightsJava = generator.genUserRights();
+		final String genAdminRightsJava = generator.genAdminRightsJava();
+		if (Objects.equals(action, "genMessageProperties")) {
+			final Path basePath = Paths.get(output, "conf/msgs");
+			Files.createDirectories(basePath);
+			final String messageProperties = generator.genMessageProperties();
+			Files.write(basePath.resolve("ZsMsgRights.properties"), messageProperties.getBytes());
+			return;
+		}
+		if (Objects.isNull(output)) {
+			System.out.println("Rights constants");
+			System.out.println(genRightConstsJava);
+			System.out.println("User rights");
+			System.out.println(genUserRightsJava);
+			System.out.println("Admin rights");
+			System.out.println(genAdminRightsJava);
+		} else {
+			Path basePath = Paths.get(output, "com/zimbra/cs/account/accesscontrol/generated/");
+			Files.createDirectories(basePath);
+			Files.write(basePath.resolve("UserRights.java"), genUserRightsJava.getBytes());
+			Files.write(basePath.resolve("AdminRights.java"), genAdminRightsJava.getBytes());
+			Files.write(basePath.resolve("RightConsts.java"), genRightConstsJava.getBytes());
 		}
 	}
 
@@ -140,8 +144,7 @@ public class RightsConstantsGenerator {
 		return getBoolean(value);
 	}
 
-	private static String genRightConstsJava(List<RightName> adminRights,
-			List<RightName> userRights) {
+	public String genRightConstsJava() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("package com.zimbra.cs.account.accesscontrol.generated;\n");
 		sb.append("public class RightConsts {");
@@ -151,7 +154,7 @@ public class RightsConstantsGenerator {
 		sb.append("    user rights:\n");
 		sb.append("    ============\n");
 		sb.append("    */\n\n");
-		for (RightName ur : userRights) {
+		for (RightName ur : rights.userRights()) {
 			genRightConst(ur, sb);
 		}
 
@@ -161,14 +164,14 @@ public class RightsConstantsGenerator {
 		sb.append("    admin rights:\n");
 		sb.append("    =============\n");
 		sb.append("    */\n\n");
-		for (RightName ar : adminRights) {
+		for (RightName ar : rights.adminRights()) {
 			genRightConst(ar, sb);
 		}
 		sb.append("}\n");
 		return sb.toString();
 	}
 
-	private static String genAdminRightsJava(List<RightName> adminRights) {
+	public String genAdminRightsJava() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("package com.zimbra.cs.account.accesscontrol.generated;\n");
 		sb.append("import com.zimbra.common.service.ServiceException;\n");
@@ -177,14 +180,14 @@ public class RightsConstantsGenerator {
 		sb.append("import com.zimbra.cs.account.accesscontrol.RightManager;\n");
 		sb.append("public class AdminRights {");
 		sb.append("\n\n");
-		for (RightName r : adminRights) {
+		for (RightName r : rights.adminRights()) {
 			sb.append("    public static AdminRight R_").append(r.getName()).append(";")
 					.append("\n");
 		}
 
 		sb.append("\n\n");
 		sb.append("    public static void init(RightManager rm) throws ServiceException {\n");
-		for (RightName r : adminRights) {
+		for (RightName r : rights.adminRights()) {
 			String s = String.format("        R_%-36s = rm.getAdminRight(Right.RT_%s);\n",
 					r.getName(), r.getName());
 			sb.append(s);
@@ -194,7 +197,7 @@ public class RightsConstantsGenerator {
 		return sb.toString();
 	}
 
-	private static String genUserRights(List<RightName> userRights) {
+	public String genUserRights() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("package com.zimbra.cs.account.accesscontrol.generated;\n");
 		sb.append("import com.zimbra.common.service.ServiceException;\n");
@@ -203,14 +206,14 @@ public class RightsConstantsGenerator {
 		sb.append("import com.zimbra.cs.account.accesscontrol.UserRight;\n");
 		sb.append("public class UserRights {");
 		sb.append("\n\n");
-		for (RightName r : userRights) {
+		for (RightName r : rights.userRights()) {
 			sb.append("    public static UserRight R_").append(r.getName()).append(";")
 					.append("\n");
 		}
 
 		sb.append("\n\n");
 		sb.append("    public static void init(RightManager rm) throws ServiceException {\n");
-		for (RightName r : userRights) {
+		for (RightName r : rights.userRights()) {
 			String s = String.format("        R_%-36s = rm.getUserRight(Right.RT_%s);\n",
 					r.getName(), r.getName());
 			sb.append(s);
@@ -220,7 +223,7 @@ public class RightsConstantsGenerator {
 		return sb.toString();
 	}
 
-	static void genRightConst(RightName r, StringBuilder sb) {
+	private void genRightConst(RightName r, StringBuilder sb) {
 		sb.append("\n    /**\n");
 		if (r.getDesc() != null) {
 			sb.append(FileGenUtil.wrapComments(StringUtil.escapeHtml(r.getDesc()), 70, "     * "));
@@ -231,21 +234,22 @@ public class RightsConstantsGenerator {
 				.append(r.getName()).append("\";").append("\n");
 	}
 
-	static  String genMessageProperties(UserAdminRights userAdminRights) throws ServiceException {
+	private String genMessageProperties() throws ServiceException {
 		StringBuilder result = new StringBuilder();
 
-		result.append(FileGenUtil.genDoNotModifyDisclaimer("#", RightsConstantsGenerator.class.getSimpleName()));
+		result.append(
+				FileGenUtil.genDoNotModifyDisclaimer("#", RightsConstantsGenerator.class.getSimpleName()));
 		result.append("# Rights");
 		result.append("\n\n");
 
-		genMessageProperties(result, userAdminRights.userRights());
+		genMessageProperties(result, rights.userRights());
 		result.append("\n\n");
-		genMessageProperties(result, userAdminRights.adminRights());
+		genMessageProperties(result, rights.adminRights());
 
 		return result.toString();
 	}
 
-	static void genMessageProperties(StringBuilder result, List<RightName> rights) {
+	public void genMessageProperties(StringBuilder result, List<RightName> rights) {
 		// TODO: sort by name
 		for (RightName r : rights) {
 			// strip off the 2 spaces on the first line
