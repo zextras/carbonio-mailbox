@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
@@ -221,9 +220,7 @@ public class AttributeManager {
       if (mInstance != null) {
         return mInstance;
       }
-      if(Objects.isNull("") || Objects.equals("", "")){
-        mInstance = AttributeManager.fromResource();
-      }
+      mInstance = AttributeManager.fromResource();
       if (mInstance.hasErrors()) {
         throw ServiceException.FAILURE(mInstance.getErrors(), null);
       }
