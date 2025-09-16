@@ -22,7 +22,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 public class RightDomainAdminResourceGenerator {
-	private static String genDomainAdminSetAttrsRights() throws Exception {
+	public String genDomainAdminSetAttrsRights() throws Exception {
 		Set<String> acctAttrs = getDomainAdminModifiableAttrs(AttributeClass.account);
 		Set<String> crAttrs = getDomainAdminModifiableAttrs(AttributeClass.calendarResource);
 		Set<String> dlAttrs = getDomainAdminModifiableAttrs(AttributeClass.distributionList);
@@ -87,7 +87,7 @@ public class RightDomainAdminResourceGenerator {
 		final String output = cl.getOptionValue("o");
 		final Path outputFile = Paths.get(output, "rights-domainadmin.xml");
 		try {
-			final String content = genDomainAdminSetAttrsRights();
+			final String content = new RightDomainAdminResourceGenerator().genDomainAdminSetAttrsRights();
 			Path basePath = Paths.get(output);
 			Files.createDirectories(basePath);
 			System.out.println("Writing rights-domainadmin.xml to " + outputFile);
