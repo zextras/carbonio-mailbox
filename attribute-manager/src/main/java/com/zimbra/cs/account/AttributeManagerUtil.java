@@ -25,6 +25,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,7 +53,7 @@ public class AttributeManagerUtil {
 
   private static final Options options = new Options();
 
-  // multi-line continuation prefix chars"
+  // multi-line continuation prefix chars
   private static final String ML_CONT_PREFIX = "  ";
 
   static {
@@ -68,7 +70,6 @@ public class AttributeManagerUtil {
 
     Option iopt = new Option("i", "input", true, "attrs definition xml input file (can repeat)");
     iopt.setArgs(Option.UNLIMITED_VALUES);
-    iopt.setRequired(false);
     options.addOption(iopt);
 
     /*
@@ -827,17 +828,10 @@ public class AttributeManagerUtil {
       }
 
       PrintWriter printWriter;
-      final boolean output = commandLine.hasOption('o');
-      if (output) {
+      final boolean outputToFile = commandLine.hasOption('o');
+      if (outputToFile) {
         final String fileOutput = commandLine.getOptionValue('o');
-        final File file = new File(fileOutput);
-        final File parentFile = file.getParentFile();
-        if (!parentFile.exists()) {
-          final boolean mkdirs = parentFile.mkdirs();
-          if (!mkdirs) {
-            ZimbraLog.misc.error("Cannot create directories");
-          }
-        }
+        Files.createDirectories(Paths.get(fileOutput).getParent());
         OutputStream outputStream = new FileOutputStream(fileOutput);
         printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)));
       } else {
@@ -889,7 +883,7 @@ public class AttributeManagerUtil {
         System.exit(1);
       }
       finally {
-        if (output) {
+        if (outputToFile) {
           printWriter.close();
         }
       }
@@ -1656,7 +1650,6 @@ public class AttributeManagerUtil {
         continue;
       }
       if (attributeInfo.isDeprecated()) {
-//        System.out.println("Attribute " + attributeInfo.getName() + " is deprecated, skipping it.");
         continue;
       }
 
@@ -1714,7 +1707,6 @@ public class AttributeManagerUtil {
         continue;
       }
       if (ai.isDeprecated()) {
-//        System.out.println("Attribute " + ai.getName() + " is deprecated, skipping it.");
         continue;
       }
       generateEnum(result, ai);
@@ -1726,7 +1718,6 @@ public class AttributeManagerUtil {
         continue;
       }
       if (attributeInfo.isDeprecated()) {
-//        System.out.println("Attribute " + attributeInfo.getName() + " is deprecated, skipping it.");
         continue;
       }
 
