@@ -24,4 +24,12 @@ class LdapAttributeInfoTest extends MailboxTestSuite {
 		final AttributeCallback callback = LdapAttributeInfo.get(accountStatusAttribute).getCallback();
 		Assertions.assertEquals("com.zimbra.cs.account.callback.AccountStatus", callback.getClass().getName());
 	}
+
+	@Test
+	void shouldNotLoadCallbackIfAttributeDoesNotHaveOne() throws ServiceException {
+		final AttributeManager attributeManager = AttributeManager.getInstance();
+		final AttributeInfo accountStatusAttribute = attributeManager.getAttributeInfo(ZAttrProvisioning.A_zimbraMailTransport);
+		final AttributeCallback callback = LdapAttributeInfo.get(accountStatusAttribute).getCallback();
+		Assertions.assertNull(callback);
+	}
 }

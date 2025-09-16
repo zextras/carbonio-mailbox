@@ -25,4 +25,14 @@ if [[ $SERVER_EXISTS == *"account.NO_SUCH_SERVER"* ]]; then
   echo "Server ${HOSTNAME} created"
 fi
 
-java ${JAVA_ARGS}
+if [ -z "${TRACING_OPTIONS}" ]; then
+  java ${BASE_JAVA_ARGS} \
+    -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 \
+    com.zextras.mailbox.Mailbox
+else
+  java -javaagent:/opt/zextras/opentelemetry-javaagent.jar \
+    ${BASE_JAVA_ARGS} \
+    ${TRACING_OPTIONS} \
+    -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 \
+    com.zextras.mailbox.Mailbox
+fi

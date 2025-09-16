@@ -5,13 +5,15 @@ names.
 For example, in order to have a working docker-compose setup, you need to 
 define containers with these names:
 - carbonio-ldap -> openldap 
-- carbonio-mariadb -> mariadb
+- carbonio-mta -> postfix
 - carbonio-mariadb -> mariadb
 
 You can customize the local configuration of the mailbox by replacing /localconfig/localconfig.xml
-By default the localconfig of the container will be replaced with some 
+At startup the localconfig will be replaced with some 
 ENVIRONMENT variables that you can find in the container build file.
-Specifically the SERVER_HOSTNAME field is replaced by ${HOSTNAME} 
-automatically.
+For example the SERVER_HOSTNAME field is replaced by ${HOSTNAME}.
 
 Mailbox provisioning CLI is available as "zmprov".
+
+Traces can be sent by setting TRACING_OPTIONS, e.g.:  
+`TRACING_OPTIONS=-Dotel.service.name=mailbox -Dotel.metrics.exporter=none -Dotel.traces.exporter=zipkin -Dotel.exporter.zipkin.endpoint=http://zipkin:9411/api/v2/spans`
