@@ -37,6 +37,7 @@ import com.zimbra.cs.servlet.ETagHeaderFilter;
 import com.zimbra.cs.servlet.FirstServlet;
 import com.zimbra.cs.servlet.RequestStringFilter;
 import com.zimbra.cs.servlet.SetHeaderFilter;
+import com.zimbra.cs.servlet.TracingSpanFilter;
 import com.zimbra.cs.servlet.ZimbraInvalidLoginFilter;
 import com.zimbra.cs.servlet.ZimbraQoSFilter;
 import com.zimbra.soap.SoapServlet;
@@ -63,10 +64,16 @@ public class MailboxAPIs {
 	}
 
 	private void addFilters(ServletContextHandler servletContextHandler) {
+		final FilterHolder tracingSpanFilter = new FilterHolder(TracingSpanFilter.class);
+		tracingSpanFilter.setName("TracingSpanFilter");
+		tracingSpanFilter.setAsyncSupported(true);
+		servletContextHandler.addFilter(tracingSpanFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
+
 		final FilterHolder guiceFilter = new FilterHolder(GuiceFilter.class);
 		guiceFilter.setName("guiceFilter");
 		guiceFilter.setAsyncSupported(true);
 		servletContextHandler.addFilter(guiceFilter,"/*", EnumSet.of(DispatcherType.REQUEST));
+
 
 		final FilterHolder dosFilter = new FilterHolder(DoSFilter.class);
 		dosFilter.setName("DosFilter");
