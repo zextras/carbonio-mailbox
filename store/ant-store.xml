@@ -1,5 +1,7 @@
 <project name="zm-store">
-  <import file="../ant-build-common.xml"/>
+
+  <property location="target" name="maven.build.dir"/>
+  <property location="${maven.build.dir}/classes" name="build.classes.dir"/>
 
   <!--  TODO: remove unnecessary folder-->
   <target name="build-init" description="Creates directories required for compiling">
@@ -35,7 +37,7 @@
     <copy todir="${basedir}/build/zimbra/conf/" file="${basedir}/../store-conf/conf/contacts/contact-fields.xml"/>
   </target>
 
-  <target name="create-version-sql" depends="build-init, set-dev-version"
+  <target name="create-version-sql" depends="build-init"
     description="Creates version-init.sql">
     <java classname="com.zimbra.cs.db.MySQL" fork="true" classpath="${maven_compile_classpath}"
       failonerror="true">
