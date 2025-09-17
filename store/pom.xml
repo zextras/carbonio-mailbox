@@ -879,23 +879,6 @@
             <phase>prepare-package</phase>
             <id>generate-sql-ldap-versions</id>
           </execution>
-          <!-- Generate ZAttr* and Rights -->
-          <execution>
-            <configuration>
-              <target>
-                <property name="maven_compile_classpath" refid="maven.compile.classpath" />
-                <taskdef classpathref="maven.plugin.classpath"
-                  resource="net/sf/antcontrib/antlib.xml" />
-                <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-rights" />
-                </ant>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <id>generate-rights</id>
-          </execution>
           <!-- Prepare required files for testing -->
           <execution>
             <id>test</id>
