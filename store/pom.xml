@@ -1035,8 +1035,8 @@ BUILDNUM=1
 VERSION=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}_ZEXTRAS_1
 RELEASE=carbonio
 DATE=${maven.build.timestamp}
-HOST=""
-                  EOF
+HOST=carbonio
+EOF
                 ]]></argument>
               </arguments>
             </configuration>
