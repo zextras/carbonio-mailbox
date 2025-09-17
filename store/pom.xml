@@ -729,7 +729,6 @@
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>calendarResource</argument>
-
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrCalendarResource.java</argument>
               </arguments>
@@ -807,6 +806,16 @@
         <version>3.0.0</version>
         <executions>
           <execution>
+            <id>parse-version</id>
+            <goals>
+              <goal>parse-version</goal>
+            </goals>
+            <phase>validate</phase>
+            <configuration>
+              <propertyPrefix>parsedVersion</propertyPrefix>
+            </configuration>
+          </execution>
+          <execution>
             <phase>generate-sources</phase>
             <goals>
               <goal>add-source</goal>
@@ -843,24 +852,6 @@
           </dependency>
         </dependencies>
         <executions>
-          <!-- Generate Build Info -->
-          <execution>
-            <configuration>
-              <target>
-                <property name="maven_compile_classpath" refid="maven.compile.classpath" />
-                <taskdef classpathref="maven.plugin.classpath"
-                  resource="net/sf/antcontrib/antlib.xml" />
-                <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-buildinfo" />
-                </ant>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <id>generate-buildinfo</id>
-          </execution>
           <!-- Generate versions-init.sql + LDAP version -->
           <execution>
             <configuration>
@@ -1024,29 +1015,33 @@
         <version>${maven-exec-plugin.version}</version>
         <executions>
           <execution>
-            <id>acceptance-tests</id>
-            <phase>integration-test</phase>
+            <id>generate-buildinfo</id>
+            <phase>generate-sources</phase>
             <goals>
               <goal>exec</goal>
             </goals>
             <configuration>
-              <skip>true</skip>
-              <executable>${basedir}/utils/shellspec/run.sh</executable>
+              <executable>/bin/bash</executable>
+              <arguments>
+                <argument>-c</argument>
+                <argument><![CDATA[
+                  mkdir -p ${generated-resources}/com/zimbra/cs/util/ && cat <<EOF > ${generated-resources}/com/zimbra/cs/util/buildInfo.properties
+MAJORVERSION=${parsedVersion.majorVersion}
+MINORVERSION=${parsedVersion.minorVersion}
+MICROVERSION=${parsedVersion.incrementalVersion}
+RELCLASS=ZEXTRAS
+RELNUM=0
+BUILDNUM=1
+VERSION=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}_ZEXTRAS_1
+RELEASE=carbonio
+DATE=${maven.build.timestamp}
+HOST=""
+                  EOF
+                ]]></argument>
+              </arguments>
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-clean-plugin</artifactId>
-        <version>${maven-clean-plugin.version}</version>
-        <configuration>
-          <filesets>
-            <fileset>
-              <directory>${basedir}/utils/shellspec/lib</directory>
-              <followSymlinks>false</followSymlinks>
-            </fileset>
-          </filesets>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -1103,13 +1098,9 @@
     <build.dir>target</build.dir>
     <maven-exec-plugin.version>3.1.0</maven-exec-plugin.version>
     <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
-    <config.dir>${project.basedir}/conf</config.dir>
     <generated-sources>${project.build.directory}/generated-sources</generated-sources>
     <generated-zattr>${generated-sources}/zattr/com/zimbra/cs/account</generated-zattr>
-    <generated-rights>${generated-sources}/rights/com/zimbra/cs/account/accesscontrol</generated-rights>
-    <attrs.dir>${project.basedir}/src/main/resources/conf/attrs</attrs.dir>
-    <rights.dir>${project.basedir}/src/main/resources/conf/rights</rights.dir>
-    <store-conf.config.dir>${project.basedir}/../store-conf/conf</store-conf.config.dir>
+    <generated-resources>${project.build.directory}/generated-resources</generated-resources>
   </properties>
 
 </project>

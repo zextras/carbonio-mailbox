@@ -1,9 +1,6 @@
 <project name="zm-store">
   <import file="../ant-build-common.xml"/>
 
-  <property name="store-conf.config.dir" location="${basedir}/../store-conf/conf"/>
-  <property name="rights.dir" location="${basedir}/src/main/resources/conf/rights"/>
-
   <!--  TODO: remove unnecessary folder-->
   <target name="build-init" description="Creates directories required for compiling">
     <mkdir dir="${build.classes.dir}"/>
@@ -18,22 +15,6 @@
     <mkdir dir="${maven.build.dir}/lib/jars"/>
     <mkdir dir="${maven.build.dir}/lib/jars-ant"/>
     <mkdir dir="${maven.build.dir}/libexec"/>
-  </target>
-
-  <target name="generate-buildinfo" depends="build-init, set-dev-version">
-    <mkdir dir="${maven.build.dir}/generated-resources/com/zimbra/cs/util"/>
-    <echo file="${maven.build.dir}/generated-resources/com/zimbra/cs/util/buildInfo.properties">
-      MAJORVERSION=${zimbra.buildinfo.majorversion}
-      MINORVERSION=${zimbra.buildinfo.minorversion}
-      MICROVERSION=${zimbra.buildinfo.microversion}
-      RELCLASS=${zimbra.buildinfo.relclass}
-      RELNUM=${zimbra.buildinfo.relnum}
-      BUILDNUM=${zimbra.buildinfo.buildnum}
-      VERSION=${zimbra.buildinfo.version}
-      RELEASE=${zimbra.buildinfo.release}
-      DATE=${DSTAMP}-${TSTAMP}
-      HOST=${zimbra.buildinfo.host}
-    </echo>
   </target>
 
   <!-- Cleans up store directory and maven build in maven clean phase -->
