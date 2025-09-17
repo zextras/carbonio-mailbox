@@ -35,6 +35,7 @@ import com.zimbra.cs.service.util.JWTUtil;
 import com.zimbra.cs.servlet.util.AuthUtil;
 import com.zimbra.cs.util.Zimbra;
 import com.zimbra.soap.SoapServlet;
+import io.opentelemetry.api.trace.Span;
 import io.vavr.control.Try;
 import java.io.IOException;
 import java.io.InputStream;
@@ -193,6 +194,12 @@ public class ZimbraServlet extends HttpServlet {
   @Override
   protected void service(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
+    Span currentSpan = Span.current();
+
+    if (currentSpan != null && currentSpan.getSpanContext().isValid()) {
+      String path = request.getRequestURI();
+      currentSpan.updateName(path);
+    }
     boolean allowed = isRequestOnAllowedPort(request);
     if (!allowed) {
       SoapProtocol soapProto = SoapProtocol.Soap12;
