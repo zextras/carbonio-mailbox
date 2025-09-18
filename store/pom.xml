@@ -642,13 +642,11 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>globalConfig</argument>
-
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrConfig.java</argument>
               </arguments>
@@ -662,13 +660,11 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>cos</argument>
-
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrCos.java</argument>
               </arguments>
@@ -682,13 +678,11 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>domain</argument>
-
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrDomain.java</argument>
               </arguments>
@@ -702,13 +696,11 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>server</argument>
-
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrServer.java</argument>
               </arguments>
@@ -723,7 +715,6 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
@@ -743,13 +734,11 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>distributionList</argument>
-
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrDistributionList.java</argument>
               </arguments>
@@ -770,7 +759,6 @@
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>group</argument>
-
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrDynamicGroup.java</argument>
               </arguments>
@@ -785,13 +773,11 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>shareLocator</argument>
-
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrShareLocator.java</argument>
               </arguments>
@@ -813,6 +799,17 @@
             <phase>validate</phase>
             <configuration>
               <propertyPrefix>parsedVersion</propertyPrefix>
+            </configuration>
+          </execution>
+          <execution>
+            <id>add-timestamp</id>
+            <goals>
+              <goal>timestamp-property</goal>
+            </goals>
+            <phase>initialize</phase>
+            <configuration>
+              <name>build.timestamp.yyyymm</name>
+              <pattern>yyyyMM</pattern>
             </configuration>
           </execution>
           <execution>
@@ -1031,10 +1028,10 @@ MINORVERSION=${parsedVersion.minorVersion}
 MICROVERSION=${parsedVersion.incrementalVersion}
 RELCLASS=ZEXTRAS
 RELNUM=0
-BUILDNUM=1
-VERSION=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}_ZEXTRAS_1
+BUILDNUM=${build.timestamp.yyyymm}
+VERSION=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}_ZEXTRAS_${build.timestamp.yyyymm}
 RELEASE=carbonio
-DATE=${maven.build.timestamp}
+DATE=${build.timestamp.yyyymm}
 HOST=carbonio
 EOF
                 ]]></argument>
