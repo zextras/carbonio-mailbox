@@ -946,7 +946,7 @@
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>3.5.3</version>
           <configuration>
-            <forkCount>1</forkCount>
+            <forkCount>4</forkCount>
             <threadCount>4</threadCount>
             <parallel>both</parallel>
             <reuseForks>false</reuseForks>
