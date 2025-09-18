@@ -37,7 +37,7 @@ pipeline {
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
         JAVA_OPTS='-Dfile.encoding=UTF8'
         LC_ALL='C.UTF-8'
-        MAVEN_OPTS = "-Xms2g -Xmx4g"
+        MAVEN_OPTS = "-Xms2g -Xmx4g -XX:+UseG1GC -XX:+AlwaysPreTouch -XX:+ParallelRefProcEnabled -XX:+UseStringDeduplication -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=512m"
     }
 
     options {
