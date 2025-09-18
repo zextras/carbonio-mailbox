@@ -15,7 +15,7 @@ def mvnCmd(String cmd) {
     else if (env.BRANCH_NAME == 'devel' ) {
         profile = '-Pdev'
     }
-    sh 'mvn -B -ntp -s settings-jenkins.xml ' + profile + ' ' + cmd
+    sh "mvn -B -Dmaven.repo.local=${env.WORKSPACE}/.m2/repository -ntp -s settings-jenkins.xml ${profile} ${cmd}"
 }
 def isBuildingTag() {
     if (env.TAG_NAME) {
@@ -69,6 +69,11 @@ pipeline {
 
 
     stages {
+        stage('Show Workspace') {
+            steps {
+                sh 'echo "Workspace is: $WORKSPACE"'
+            }
+        }
         
         stage('Checkout') {
             steps {
