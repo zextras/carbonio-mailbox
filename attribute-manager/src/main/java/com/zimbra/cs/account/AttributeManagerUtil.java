@@ -1699,7 +1699,7 @@ public class AttributeManagerUtil {
   }
 
   /** */
-  private void generateProvisioningConstants(String javaFile) throws IOException {
+  public void generateProvisioningConstants(String javaFile) throws IOException {
     List<String> list = new ArrayList<>(getAttrs().keySet());
     Collections.sort(list);
 
