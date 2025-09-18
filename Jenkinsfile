@@ -71,7 +71,7 @@ pipeline {
     stages {
         stage('Show Workspace') {
             steps {
-                sh 'echo "Workspace is: $WORKSPACE"'
+                echo "Workspace is: ${env.WORKSPACE}"
             }
         }
         
