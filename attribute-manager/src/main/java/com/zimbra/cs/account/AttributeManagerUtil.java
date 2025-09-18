@@ -56,6 +56,10 @@ public class AttributeManagerUtil {
   // multi-line continuation prefix chars
   private static final String ML_CONT_PREFIX = "  ";
 
+  public static AttributeManagerUtil get() throws ServiceException {
+    return new AttributeManagerUtil(AttributeManager.getInst());
+  }
+
   static {
     options.addOption("h", "help", false, "display this  usage info");
     options.addOption("o", "output", true, "output file (default it to generate output to stdout)");
@@ -1626,7 +1630,7 @@ public class AttributeManagerUtil {
   }
 
   /** */
-  private void generateGetters(String inClass, String javaFile) throws IOException {
+  public void generateGetters(String inClass, String javaFile) throws IOException {
     if (inClass == null) {
       usage("no class specified");
     }
