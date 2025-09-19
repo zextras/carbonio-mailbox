@@ -15,7 +15,7 @@ def mvnCmd(String cmd) {
     else if (env.BRANCH_NAME == 'devel' ) {
         profile = '-Pdev'
     }
-    sh "mvn -B -Dmaven.repo.local=${env.WORKSPACE}/.m2/repository -s settings-jenkins.xml ${profile} ${cmd}"
+    sh 'mvn -B -s settings-jenkins.xml ' + profile + ' ' + cmd
 }
 def isBuildingTag() {
     if (env.TAG_NAME) {
