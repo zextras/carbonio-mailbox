@@ -88,7 +88,7 @@ pipeline {
                     sh 'apt update && apt install -y build-essential'
                     mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
                     sh 'mkdir staging'
-                    sh 'cp -r store* milter* native client common packages soap jython-libs staging'
+                    sh 'cp -r store* milter* attribute-manager right-manager mailbox-ldap-lib native client common packages soap jython-libs staging'
                     stash includes: 'staging/**', name: 'staging'
                 }
             }

@@ -79,9 +79,10 @@ public final class LC {
   public static final String DEFAULT_ATTRS_DIRECTORY = "";
   public static final String DEFAULT_RIGHTS_DIRECTORY = "";
 
-  @Supported
+  @Deprecated
   public static final KnownKey zimbra_attrs_directory = KnownKey.newKey(DEFAULT_ATTRS_DIRECTORY);
 
+  @Deprecated
   public static final KnownKey zimbra_rights_directory = KnownKey.newKey(DEFAULT_RIGHTS_DIRECTORY);
 
   @Supported public static final KnownKey zimbra_user = KnownKey.newKey("zextras");

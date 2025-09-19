@@ -5,21 +5,10 @@
 
 package com.zimbra.cs.util;
 
-import java.util.HashMap;
-
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.sun.mail.smtp.SMTPMessage;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import com.zimbra.common.account.ZAttrProvisioning.ShareNotificationMtaConnectionType;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;
 import com.zimbra.common.util.Log.Level;
 import com.zimbra.common.util.ZimbraLog;
@@ -31,6 +20,12 @@ import com.zimbra.cs.account.Server;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailclient.smtp.SmtpTransport;
 import com.zimbra.cs.mailclient.smtp.SmtpsTransport;
+import java.util.HashMap;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link JMSession}.
@@ -42,7 +37,6 @@ public class JMSessionTest {
     @BeforeAll
     public static void init() throws Exception {
         MailboxTestUtil.initServer();
-        LC.zimbra_attrs_directory.setDefault(MailboxTestUtil.getZimbraServerDir("") + "conf/attrs");
         MockProvisioning prov = new MockProvisioning();
         prov.getLocalServer().setSmtpPort(25);
         Provisioning.setInstance(prov);

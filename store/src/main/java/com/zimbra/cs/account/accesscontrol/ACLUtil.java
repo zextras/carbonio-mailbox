@@ -210,7 +210,7 @@ public final class ACLUtil {
             if (aces.length == 0) {
                 return null;
             } else {
-                acl = new ZimbraACL(aces, TargetType.getTargetType(entry), entry.getLabel());
+                acl = new ZimbraACL(aces, TargetTypeLookup.getTargetType(entry), entry.getLabel());
                 entry.setCachedData(ACL_CACHE_KEY, acl);
             }
         }

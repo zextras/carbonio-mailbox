@@ -63,7 +63,7 @@ public class CollectEffectiveRights {
             boolean expandSetAttrs, boolean expandGetAttrs,
             RightCommand.EffectiveRights result) throws ServiceException {
         
-        TargetType targetType = TargetType.getTargetType(target);
+        TargetType targetType = TargetTypeLookup.getTargetType(target);
         getEffectiveRights(rightBearer, target, targetType, 
                 expandSetAttrs, expandGetAttrs, result);
     }
@@ -183,7 +183,7 @@ public class CollectEffectiveRights {
         Provisioning prov = Provisioning.getInstance();
         
         Grantee grantee = getGrantee();
-        TargetType targetType = TargetType.getTargetType(mTarget);
+        TargetType targetType = TargetTypeLookup.getTargetType(mTarget);
         
         Map<Right, Integer> allowed = new HashMap<>();
         Map<Right, Integer> denied = new HashMap<>();
@@ -205,7 +205,7 @@ public class CollectEffectiveRights {
         // if the target is a domain-ed entry, get the domain of the target.
         // It is need for checking the cross domain right.
         //
-        Domain targetDomain = TargetType.getTargetDomain(prov, mTarget);
+        Domain targetDomain = TargetTypeLookup.getTargetDomain(prov, mTarget);
         
         // check grants granted on entries from which the target entry can inherit from
         boolean expandTargetGroups = CheckRight.allowGroupTarget(AdminRight.PR_ADMIN_PRESET_RIGHT);
@@ -368,7 +368,7 @@ public class CollectEffectiveRights {
     
     private SortedMap<String, RightCommand.EffectiveAttr> expandAttrs(AttrRight rightNeeded) 
     throws ServiceException {
-        return fillDefaultAndConstratint(TargetType.getAttrsInClass(mTarget), rightNeeded);
+        return fillDefaultAndConstratint(TargetTypeLookup.getAttrsInClass(mTarget), rightNeeded);
     }
     
     /**
@@ -391,7 +391,7 @@ public class CollectEffectiveRights {
 
         for (String attrName : attrs) {
             if (rightNeeded == AdminRight.PR_SET_ATTRS && !isGlobalAdmin() && 
-                HardRules.isForbiddenAttr(attrName)) {
+                AttributeForbiddenRules.isForbiddenAttr(attrName)) {
                 continue;
             }
             

@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.soap.type.TargetType;
+import com.zimbra.cs.account.accesscontrol.TargetType.SoapTargetType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class AliasInfo extends AdminObjectInfo {
@@ -29,7 +29,7 @@ public class AliasInfo extends AdminObjectInfo {
      * @zm-api-field-description Target type
      */
     @XmlAttribute(name=AdminConstants.A_TYPE /* type */, required=false)
-    private final TargetType targetType;
+    private final SoapTargetType targetType;
 
     /**
      * no-argument constructor wanted by JAXB
@@ -51,12 +51,12 @@ public class AliasInfo extends AdminObjectInfo {
         this(id, name, targetName, null, attrs);
     }
 
-    public AliasInfo(String id, String name, String targetName, TargetType targetType, Collection <Attr> attrs) {
+    public AliasInfo(String id, String name, String targetName, SoapTargetType targetType, Collection <Attr> attrs) {
         super(id, name, attrs);
         this.targetName = targetName;
         this.targetType = targetType;
     }
 
     public String getTargetName() { return targetName; }
-    public TargetType getTargetType() { return targetType; }
+    public SoapTargetType getTargetType() { return targetType; }
 }

@@ -17,10 +17,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.soap.admin.type.EffectiveRightsInfo;
-import com.zimbra.soap.admin.type.RightsEntriesInfo;
-import com.zimbra.soap.admin.type.InDomainInfo;
-import com.zimbra.soap.type.TargetType;
+import com.zimbra.cs.account.accesscontrol.TargetType.SoapTargetType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class EffectiveRightsTarget {
@@ -29,7 +26,7 @@ public class EffectiveRightsTarget {
      * @zm-api-field-description Target type
      */
     @XmlAttribute(name=AdminConstants.A_TYPE, required=true)
-    private final TargetType type;
+    private final SoapTargetType type;
     /**
      * @zm-api-field-description Effective rights
      */
@@ -56,7 +53,7 @@ public class EffectiveRightsTarget {
         this(null, null);
     }
 
-    public EffectiveRightsTarget(TargetType type,
+    public EffectiveRightsTarget(SoapTargetType type,
             EffectiveRightsInfo all) {
         this.type = type;
         this.all = all;
@@ -102,5 +99,5 @@ public class EffectiveRightsTarget {
         return all;
     }
 
-    public TargetType getType() { return type; }
+    public SoapTargetType getType() { return type; }
 }

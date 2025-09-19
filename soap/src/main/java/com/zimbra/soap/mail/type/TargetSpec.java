@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlValue;
 
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.soap.type.AccountBy;
-import com.zimbra.soap.type.TargetType;
+import com.zimbra.cs.account.accesscontrol.TargetType.SoapTargetType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class TargetSpec {
@@ -23,7 +23,7 @@ public class TargetSpec {
      * @zm-api-field-description Target type
      */
     @XmlAttribute(name=MailConstants.A_TARGET_TYPE /* type */, required=true)
-    private final TargetType targetType;
+    private final SoapTargetType targetType;
 
     /**
      * @zm-api-field-tag target-selector-by
@@ -47,13 +47,13 @@ public class TargetSpec {
         this(null, null);
     }
 
-    public TargetSpec(TargetType targetType, AccountBy accountBy) {
+    public TargetSpec(SoapTargetType targetType, AccountBy accountBy) {
         this.targetType = targetType;
         this.accountBy = accountBy;
     }
 
     public void setValue(String value) { this.value = value; }
-    public TargetType getTargetType() { return targetType; }
+    public SoapTargetType getTargetType() { return targetType; }
     public AccountBy getAccountBy() { return accountBy; }
     public String getValue() { return value; }
 

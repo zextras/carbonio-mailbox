@@ -99,6 +99,10 @@
       <artifactId>jaxb-impl</artifactId>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>zextras</groupId>
+      <artifactId>right-manager</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

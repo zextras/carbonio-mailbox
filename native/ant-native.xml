@@ -1,6 +1,6 @@
 <project name="zm-native" default="generate-native-headers">
 
-  <import file="../ant-build-common.xml"/>
+  <property location="target" name="maven.build.dir"/>
 
   <path id="build.class.path">
     <pathelement location="${maven.build.dir}/classes"/>
