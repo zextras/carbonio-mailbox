@@ -5,9 +5,6 @@
 
 package com.zimbra.cs.extension;
 
-import com.zimbra.cs.extension.ExtensionException;
-import com.zimbra.cs.extension.ZimbraExtension;
-
 /**
  * Test extension that lets the framework disable this extension.
  *

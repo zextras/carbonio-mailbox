@@ -5,7 +5,6 @@ import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
 
 public class ProvUtilCommandHandlersFactory {

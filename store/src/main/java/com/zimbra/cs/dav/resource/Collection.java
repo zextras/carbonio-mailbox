@@ -152,9 +152,7 @@ public class Collection extends MailItemResource {
     }
 
     public DavResource createItem(DavContext ctxt, String name) throws DavException, IOException {
-        Mailbox mbox = null;
         try {
-            mbox = getMailbox(ctxt);
         } catch (ServiceException e) {
             throw new DavException("cannot get mailbox",
                 HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);

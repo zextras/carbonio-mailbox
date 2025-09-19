@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.filter;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.zextras.mailbox.util.AccountUtil;
 import com.zimbra.common.util.ArrayUtil;

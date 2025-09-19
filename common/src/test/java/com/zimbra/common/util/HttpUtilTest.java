@@ -347,8 +347,6 @@ public final class HttpUtilTest {
     String asciiQuote = "space\" space.txt";
     String iso8859Filename =  "Wikip\u00E9dia.txt";
     String unicodeFilename = "\uD55C\uAD6D\uC5B4%20\uC218\uC2E0\uC790.pdf";
-
-    String pathInfoWithFilename = "/path/info/ascii.txt";
     String pathInfoWithoutFilename = "/path/info/";
 
     // Use a servlet request mock
@@ -378,8 +376,6 @@ public final class HttpUtilTest {
     String asciiQuote = "space\" space.txt";
     String iso8859Filename =  "Wikip\u00E9dia.txt";
     String unicodeFilename = "\uD55C\uAD6D\uC5B4%20\uC218\uC2E0\uC790.pdf";
-
-    String pathInfoWithFilename = "/path/info/ascii.txt";
     String pathInfoWithoutFilename = "/path/info/";
 
     // Use a servlet request mock
@@ -407,8 +403,6 @@ public final class HttpUtilTest {
     String asciiQuote = "space\" space.txt"; // note, we can't upload a file with this name in chrome.
     String iso8859Filename =  "Wikip\u00E9dia.txt";
     String unicodeFilename = "\uD55C\uAD6D\uC5B4%20\uC218\uC2E0\uC790.pdf";
-
-    String pathInfoWithFilename = "/path/info/ascii.txt";
     String pathInfoWithoutFilename = "/path/info/";
 
     // Use a servlet request mock

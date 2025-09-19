@@ -14,7 +14,6 @@ import static org.mockito.Mockito.when;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.servlet.ZimbraServlet;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.UUID;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

@@ -9,7 +9,8 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mailbox.MailItem;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This Grouper buffers a "chunk" of hits, pre-loading their MailItem objects from the DB.

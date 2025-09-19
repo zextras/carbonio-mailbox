@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.datasource.imap;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -24,7 +23,6 @@ import com.google.common.base.Joiner;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.common.zmime.ZMimeMessage;
-import com.zimbra.common.zmime.ZSharedFileInputStream;
 import com.zimbra.cs.datasource.SyncUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailclient.imap.AppendResult;
@@ -75,20 +73,6 @@ public class ImapAppender {
       } catch (MessagingException e) {
         throw ServiceException.FAILURE("Parsing error", e);
       }
-    }
-
-    private static Data getData(final File file) {
-        return new Data() {
-            @Override
-            public InputStream getInputStream() throws IOException {
-                return new ZSharedFileInputStream(file);
-            }
-
-            @Override
-            public int getSize() {
-                return (int) file.length();
-            }
-        };
     }
 
     private long append(MessageInfo mi, Literal data) throws IOException {

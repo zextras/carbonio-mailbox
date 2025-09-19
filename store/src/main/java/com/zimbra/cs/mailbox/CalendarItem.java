@@ -4316,67 +4316,6 @@ public abstract class CalendarItem extends MailItem {
   }
 
   /**
-   * Find the next absolute trigger alarm. This is primarily for tasks. Tasks have a slightly
-   * different constraint on alarms than appointments do. In particular, the absolute trigger time
-   * of tasks need not be before DTSTART or DUE, whereas alarms for appointments are meaningful only
-   * if it triggers before DTSTART. A reminder for a meeting that has already started is useless,
-   * but a reminder for an over-due task can be quite useful.
-   *
-   * @param atOrAfter
-   * @param snoozeUntil
-   * @param forEmailAction
-   * @return
-   */
-  private AlarmData getNextAlarmHelperForTasks(
-      long atOrAfter, long snoozeUntil, boolean forEmailAction) {
-    // Find the two nearest alarms that surround atOrAfter such that t(alarm1) <= atOrAfter <
-    // t(alarm2).
-    Alarm alarm1 = null, alarm2 = null;
-    long trigger1 = Long.MIN_VALUE,
-        trigger2 = Long.MAX_VALUE; // trigger times for alarm1 and alarm2
-    long instStart1 = 0, instStart2 = 0; // instance start time for alarm1 and alarm2
-    int invId1 = 0, compNum1 = 0, invId2 = 0, compNum2 = 0; // invId and compNum for inst1 and inst2
-    for (Invite inv : mInvites) {
-      if (inv.isCancel()) continue;
-      // The invite can have multiple alarms.
-      for (Iterator<Alarm> alarms = inv.alarmsIterator(); alarms.hasNext(); ) {
-        Alarm alarm = alarms.next();
-        if (Action.EMAIL.equals(alarm.getAction()) == forEmailAction
-            && alarm.getTriggerAbsolute() != null) {
-          long trg = alarm.getTriggerAbsolute().getUtcTime();
-          if (trg <= atOrAfter) {
-            if (trg > trigger1) {
-              trigger1 = trg;
-              alarm1 = alarm;
-              instStart1 = inv.getStartTime() != null ? inv.getStartTime().getUtcTime() : 0;
-              invId1 = inv.getMailItemId();
-              compNum1 = inv.getComponentNum();
-            }
-          } else { // trg > atOrAfter
-            if (trg < trigger2) {
-              trigger2 = trg;
-              alarm2 = alarm;
-              instStart2 = inv.getStartTime() != null ? inv.getStartTime().getUtcTime() : 0;
-              invId2 = inv.getMailItemId();
-              compNum2 = inv.getComponentNum();
-            }
-          }
-        }
-      }
-    }
-
-    AlarmData ad1 =
-        alarm1 != null
-            ? new AlarmData(trigger1, snoozeUntil, instStart1, invId1, compNum1, alarm1)
-            : null;
-    AlarmData ad2 =
-        alarm2 != null
-            ? new AlarmData(trigger2, AlarmData.NO_SNOOZE, instStart2, invId2, compNum2, alarm2)
-            : null;
-    return chooseNextAlarm(atOrAfter, snoozeUntil, ad1, ad2);
-  }
-
-  /**
    * Choose the next alarm, based on atOrAfter and snoozeUntil, from the two nearest alarms that
    * surround atOrAfter. Client/caller supplies atOrAfter to indicate the next alarm to trigger
    * should go off no sooner that this time. The actual trigger time can be deferred with

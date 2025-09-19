@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.mailbox.calendar.cache;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;

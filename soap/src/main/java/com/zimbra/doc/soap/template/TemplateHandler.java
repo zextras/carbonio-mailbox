@@ -9,8 +9,10 @@ import java.io.*;
 import java.util.*;
 
 import com.google.common.collect.Maps;
-import com.zimbra.doc.soap.*;
-import freemarker.template.*;
+import com.zimbra.doc.soap.Root;
+import com.zimbra.doc.soap.SoapDocException;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 /**
  * This class represents the base class for all template handlers.

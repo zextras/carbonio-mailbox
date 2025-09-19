@@ -11,7 +11,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
 
 import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.soap.type.DistributionListBy;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class DistributionListSelector {

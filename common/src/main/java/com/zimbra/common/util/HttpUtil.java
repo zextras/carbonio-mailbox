@@ -5,7 +5,6 @@
 
 package com.zimbra.common.util;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;

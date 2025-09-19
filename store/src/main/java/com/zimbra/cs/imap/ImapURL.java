@@ -7,7 +7,6 @@ package com.zimbra.cs.imap;
 
 import com.zextras.mailbox.metric.Metrics;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 

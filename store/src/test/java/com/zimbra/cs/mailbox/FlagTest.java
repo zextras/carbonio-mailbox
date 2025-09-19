@@ -5,7 +5,8 @@
 
 package com.zimbra.cs.mailbox;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import com.zextras.mailbox.util.AccountUtil;
 import com.zimbra.cs.account.Account;

@@ -1,6 +1,7 @@
 package com.zimbra.common.util;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zimbra.common.util.Log.Level;
 import org.junit.jupiter.api.DisplayName;

@@ -380,21 +380,6 @@ public class InMemoryLdapServer {
                 LdapClient.closeContext(zlc);
             }
         }
-        
-        private Schema getSchema() throws ServiceException {
-            UBIDLdapContext zlc = null;
-            
-            try {
-                zlc = (UBIDLdapContext) LdapClient.getContext(LdapUsage.UNITTEST);
-                LDAPConnection conn = zlc.getNative();
-                Schema schema = conn.getSchema();
-                return schema;
-            } catch (LDAPException e) {
-                throw ServiceException.FAILURE("unable to extract schema", e);
-            } finally {
-                LdapClient.closeContext(zlc);
-            }
-        }
     }
     
     public static void main(String[] args) throws Exception {

@@ -224,7 +224,6 @@ public final class MailboxIndex {
     // ReSortingQueryResults.
     boolean isTaskSort = false;
     boolean isLocalizedSort = false;
-    boolean isReadSort = false;
     SortBy originalSort = params.getSortBy();
     switch (originalSort) {
       case READ_ASC:

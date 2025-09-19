@@ -31,8 +31,6 @@ import org.bouncycastle.mail.smime.validator.SignedMailValidator;
 import org.bouncycastle.mail.smime.validator.SignedMailValidatorException;
 
 import java.security.NoSuchProviderException;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateParsingException;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;

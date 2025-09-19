@@ -27,7 +27,7 @@ import com.zimbra.cs.account.accesscontrol.AttrRight;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.cs.account.accesscontrol.TargetType;
-import com.zimbra.cs.ldap.LdapTODO.*;
+import com.zimbra.cs.ldap.LdapTODO.ACLTODO;
 import com.zimbra.soap.DocumentDispatcher;
 
 public class GetRightsDoc extends AdminDocumentHandler {

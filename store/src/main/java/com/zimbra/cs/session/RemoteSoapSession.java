@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.session;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.Map;

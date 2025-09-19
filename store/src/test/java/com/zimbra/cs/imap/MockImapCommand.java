@@ -6,7 +6,6 @@
 package com.zimbra.cs.imap;
 
 import com.zimbra.common.util.StringUtil;
-import com.zimbra.cs.imap.ImapCommand;
 
 public class MockImapCommand extends ImapCommand {
 

@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.mailbox.acl;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.common.collect.Multimap;
 import com.zextras.mailbox.MailboxTestSuite;

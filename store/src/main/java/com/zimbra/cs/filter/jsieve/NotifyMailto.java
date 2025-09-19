@@ -24,7 +24,6 @@ import com.zimbra.cs.filter.ZimbraMailAdapter;
 
 import static com.zimbra.cs.filter.JsieveConfigMapHandler.CAPABILITY_ENOTIFY;
 
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;

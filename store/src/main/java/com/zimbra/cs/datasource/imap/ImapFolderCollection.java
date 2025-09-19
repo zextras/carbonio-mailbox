@@ -5,8 +5,6 @@
 
 package com.zimbra.cs.datasource.imap;
 
-import com.zimbra.cs.datasource.imap.ImapFolder;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;

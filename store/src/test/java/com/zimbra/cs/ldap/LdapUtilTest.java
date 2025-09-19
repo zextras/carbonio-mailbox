@@ -34,7 +34,6 @@ class LdapUtilTest {
             "08c690d5-a6e9-4692-9035"
     })
     void validateZimbraId_throws_IllegalArgumentException_when_invalid_zimbra_ids(String zimbraId) throws ServiceException {
-        String id = "123456789012345678901234567890123456";
         ServiceException serviceException = Assertions.assertThrows(ServiceException.class, () -> LdapUtil.validateZimbraId(zimbraId));
         Assertions.assertInstanceOf(IllegalArgumentException.class, serviceException.getCause());
         Assertions.assertEquals("Invalid UUID string: " + zimbraId, serviceException.getCause().getMessage());
@@ -45,7 +44,6 @@ class LdapUtilTest {
     @ParameterizedTest
     @ValueSource(strings = {"1-1-1-1-", "----1", "----", "-1--2-3", "1-1--2-3"})
     void validateZimbraId_throws_NumberFormatException_when_invalid_zimbra_ids_without_ends_number(String zimbraId) throws ServiceException {
-        String id = "123456789012345678901234567890123456";
         ServiceException serviceException = Assertions.assertThrows(ServiceException.class, () -> LdapUtil.validateZimbraId(zimbraId));
         Assertions.assertInstanceOf(NumberFormatException.class, serviceException.getCause());
         Assertions.assertEquals("invalid request: " + zimbraId + " is not a valid UUID",

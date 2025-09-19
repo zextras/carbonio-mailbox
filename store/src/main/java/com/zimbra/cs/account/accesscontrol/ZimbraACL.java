@@ -6,7 +6,6 @@
 package com.zimbra.cs.account.accesscontrol;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -277,19 +276,6 @@ public class ZimbraACL {
             aces.add(ace.serialize());
         }
         return aces;
-    }
-    
-    /*
-        debugging/logging methods
-    */
-    
-    // dump a colection of ZimrbaACE to [...] [...] ...
-    private static String dump(Collection<ZimbraACE> aces) {
-        StringBuffer sb = new StringBuffer();
-        for (ZimbraACE ace : aces)
-            sb.append(ace.dump(false)).append(" ");
-        
-        return sb.toString();
     }
 
 

@@ -5,8 +5,6 @@
 
 package com.zimbra.cs.extension;
 
-import com.zimbra.cs.extension.ZimbraExtension;
-
 /**
  * Simple extension for testing.
  *

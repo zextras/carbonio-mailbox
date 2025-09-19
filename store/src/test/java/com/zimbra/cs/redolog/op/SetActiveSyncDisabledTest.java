@@ -5,7 +5,8 @@
 
 package com.zimbra.cs.redolog.op;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zextras.mailbox.util.AccountUtil;
 import com.zimbra.cs.account.Account;

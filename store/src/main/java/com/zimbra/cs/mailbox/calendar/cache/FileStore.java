@@ -46,8 +46,6 @@ public class FileStore {
     private static File getCalFolderFile(int mboxId, int folderId) {
         int mdir = mboxId >> MBOX_BITS;
         mdir &= MBOX_GROUP_BITS;
-        int fdir = folderId >> FILE_BITS;
-        fdir &= FILE_GROUP_BITS;
 
         StringBuilder sb = new StringBuilder(LC.calendar_cache_directory.value());
         sb.append(File.separator).append(mdir).append(File.separator).append(mboxId);

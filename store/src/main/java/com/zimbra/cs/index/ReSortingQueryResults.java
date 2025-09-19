@@ -101,20 +101,6 @@ public final class ReSortingQueryResults implements ZimbraQueryResults {
     return mHitBuffer;
   }
 
-  private boolean isTaskSort() {
-    switch (sort) {
-      case TASK_DUE_ASC:
-      case TASK_DUE_DESC:
-      case TASK_STATUS_ASC:
-      case TASK_STATUS_DESC:
-      case TASK_PERCENT_COMPLETE_ASC:
-      case TASK_PERCENT_COMPLETE_DESC:
-        return true;
-      default:
-        return false;
-    }
-  }
-
   private boolean isReadSort() {
     switch (sort) {
       case READ_ASC:

@@ -3,12 +3,8 @@ package com.zimbra.cs.account.commands;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AccountServiceException;
-import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
-import org.apache.http.HttpException;
-
-import java.io.IOException;
 
 class RemoveAccountAliasCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;

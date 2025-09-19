@@ -5,7 +5,8 @@
 
 package com.zimbra.cs.service.formatter;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.common.collect.Maps;
 import com.zimbra.common.mime.MimeConstants;

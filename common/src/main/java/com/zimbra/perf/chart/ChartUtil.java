@@ -445,7 +445,6 @@ public class ChartUtil {
             throws IOException {
         File resultCsv = new File(mDestDir, SUMMARY_CSV);
       try (FileWriter writer = new FileWriter(resultCsv)) {
-        int count = 0;
         String key = "";
         Double val = null;
         for (ChartSettings cs : allSettings) {
@@ -455,7 +454,6 @@ public class ChartUtil {
             key = ps.getInfile() + ":" + ps.getDataColumn() + ":"
                 + ps.getAggregateFunction();
             val = mAggregates.get(dc);
-            count++;
             mStats.put(key, val);
           }
         }
@@ -567,8 +565,6 @@ public class ChartUtil {
           writer.write("</ul>\n");
         }
         List<String> noData = new ArrayList<>();
-
-        int count = 0;
         for (ChartSettings cs : allSettings) {
           JFreeChart chart = mChartMap.get(cs);
           if (chart == null)
@@ -588,7 +584,6 @@ public class ChartUtil {
               statString.append(" &nbsp;&nbsp; ");
             statString.append(ps.getAggregateFunction()).append("(").append(ps.getLegend())
                 .append(") = ").append(formatDouble(mAggregates.get(dc)));
-            count++;
           }
 
           if (hasData(chart)) {

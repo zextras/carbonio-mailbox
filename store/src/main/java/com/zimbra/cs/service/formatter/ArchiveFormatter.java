@@ -418,7 +418,6 @@ public abstract class ArchiveFormatter extends Formatter {
             throw new ExportPeriodTooLongException(requestDays, maxDays);
           }
         }
-        String taskQuery = query;
         if (query == null) {
           query = "";
         }
@@ -999,14 +998,12 @@ public abstract class ArchiveFormatter extends Formatter {
     try {
       ArchiveInputStream ais;
       int[] ids = null;
-      long interval = 45 * 1000;
       Resolve r =
           resolve == null
               ? Resolve.Skip
               : Resolve.valueOf(
                   resolve.substring(0, 1).toUpperCase() + resolve.substring(1).toLowerCase());
       if (timeout != null) {
-        interval = Long.parseLong(timeout);
       }
       Set<MailItem.Type> searchTypes = null;
 
@@ -1732,7 +1729,6 @@ public abstract class ArchiveFormatter extends Formatter {
       String dir, file;
       String name = aie.getName();
       int idx = name.lastIndexOf('/');
-      MailItem newItem = null, oldItem;
       OperationContext oc = context.opContext;
       BufferedReader reader;
       MailItem.Type type, view;

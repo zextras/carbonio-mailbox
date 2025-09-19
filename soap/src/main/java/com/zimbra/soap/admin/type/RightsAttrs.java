@@ -20,7 +20,6 @@ import org.w3c.dom.Element;
 import com.google.common.collect.Lists;
 
 import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.soap.admin.type.Attr;
 import com.zimbra.soap.type.ZmBoolean;
 
 @XmlAccessorType(XmlAccessType.NONE)

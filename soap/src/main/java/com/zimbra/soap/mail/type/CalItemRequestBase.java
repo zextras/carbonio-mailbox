@@ -12,7 +12,6 @@ import javax.xml.bind.annotation.XmlElement;
 
 import com.google.common.base.MoreObjects;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.common.soap.SmimeConstants;
 import com.zimbra.soap.json.jackson.annotate.ZimbraUniqueElement;
 import com.zimbra.soap.type.ZmBoolean;
 

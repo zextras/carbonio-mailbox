@@ -373,10 +373,6 @@ public final class EscapeSequencesTest {
     }
 
     public void doTestEnvelopeEscapePattern(String filterScript) {
-        String sampleMsg =
-                "from: tim@example.com\n"
-              + "to: test@zimbra.com\n"
-              + "Subject: Example\n";
 
         LmtpEnvelope env = new LmtpEnvelope();
         LmtpAddress sender = new LmtpAddress("<user123@example.com>", new String[] { "BODY", "SIZE" }, null);

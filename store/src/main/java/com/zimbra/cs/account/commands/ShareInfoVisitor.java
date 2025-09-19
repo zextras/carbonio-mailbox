@@ -1,6 +1,5 @@
 package com.zimbra.cs.account.commands;
 
-import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Console;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ShareInfoData;

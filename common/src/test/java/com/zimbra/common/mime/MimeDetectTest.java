@@ -5,7 +5,8 @@
 
 package com.zimbra.common.mime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.cli.CommandExitException;

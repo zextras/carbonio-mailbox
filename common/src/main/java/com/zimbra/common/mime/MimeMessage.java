@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
-import com.zimbra.common.mime.MimeAddressHeader;
 import com.zimbra.common.util.ByteUtil;
 import com.zimbra.common.util.DateUtil;
 

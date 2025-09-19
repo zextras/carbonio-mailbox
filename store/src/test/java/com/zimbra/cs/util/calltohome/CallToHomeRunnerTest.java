@@ -1,6 +1,7 @@
 package com.zimbra.cs.util.calltohome;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zextras.mailbox.MailboxTestSuite;
 import java.util.concurrent.TimeUnit;

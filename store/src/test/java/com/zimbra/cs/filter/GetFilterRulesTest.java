@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.filter;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;

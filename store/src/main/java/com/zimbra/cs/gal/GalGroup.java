@@ -62,7 +62,6 @@ public abstract class GalGroup {
     public static void flushCache(CacheEntry[] domains) throws ServiceException {
         if (domains != null) {
             for (CacheEntry entry : domains) {
-                Key.DomainBy domainBy = (entry.mEntryBy==Key.CacheEntryBy.id)? Key.DomainBy.id : Key.DomainBy.name;
                 Domain domain = prov.get(Key.DomainBy.name, entry.mEntryIdentity);
                 if (domain == null)
                     throw AccountServiceException.NO_SUCH_DOMAIN(entry.mEntryIdentity);

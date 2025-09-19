@@ -189,26 +189,6 @@ public enum TargetType {
     */
   }
 
-  private void dump() {
-    System.out.println();
-    System.out.println(mPrettyName);
-
-    System.out.println("mInheritedByTargetTypes");
-    for (TargetType tt : mInheritedByTargetTypes) {
-      System.out.println("    " + tt);
-    }
-
-    System.out.println("mInheritFromTargetTypes");
-    for (TargetType tt : mInheritFromTargetTypes) {
-      System.out.println("    " + tt);
-    }
-
-    System.out.println("mSubTargetTypes");
-    for (TargetType tt : mSubTargetTypes) {
-      System.out.println("    " + tt);
-    }
-  }
-
   /**
    * returns if targetType can inherit from this targetType
    *

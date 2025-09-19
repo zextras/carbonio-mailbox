@@ -1,13 +1,9 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.account.Provisioning;
-import org.apache.http.HttpException;
-
-import java.io.IOException;
 
 class SetPasswordCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;

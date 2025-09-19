@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.util;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.zimbra.common.localconfig.LC;
 import java.io.File;

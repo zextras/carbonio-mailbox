@@ -4,7 +4,7 @@
 
 package com.zextras.mailbox.domain.usecase;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.acl.AclService;

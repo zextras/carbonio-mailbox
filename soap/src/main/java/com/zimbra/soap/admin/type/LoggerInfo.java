@@ -11,7 +11,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.soap.admin.type.LoggerInfo;
 import com.zimbra.soap.type.LoggingLevel;
 
 @XmlAccessorType(XmlAccessType.NONE)

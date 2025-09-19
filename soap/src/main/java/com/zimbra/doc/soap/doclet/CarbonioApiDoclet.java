@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 package com.zimbra.doc.soap.doclet;
-import javax.tools.*;
+import javax.tools.Diagnostic;
 import javax.lang.model.SourceVersion;
 
 import com.sun.source.util.DocTrees;

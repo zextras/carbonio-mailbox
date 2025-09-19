@@ -5,7 +5,8 @@
 
 package com.zimbra.cs.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import com.google.common.collect.Maps;
 import com.zimbra.common.account.ZAttrProvisioning.FeatureResetPasswordStatus;

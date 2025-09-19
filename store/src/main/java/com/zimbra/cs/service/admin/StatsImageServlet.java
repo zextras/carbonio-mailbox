@@ -69,11 +69,6 @@ public class StatsImageServlet extends ZimbraServlet {
         
         String imgName = null;
         InputStream is = null;
-        boolean imgAvailable = true;
-        boolean localServer = false;
-        boolean systemWide = false;
-        
-        String serverAddr = "";
     	
         String noDefaultImg = req.getParameter("nodef");
         boolean noDefault = false;

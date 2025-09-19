@@ -14,7 +14,6 @@ import com.zimbra.common.localconfig.LC;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.zimbra.common.util.Constants;
-import com.zimbra.cs.account.AccessManager;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.accesscontrol.PermissionCache.CachedPermission;
 import com.zimbra.cs.account.accesscontrol.Rights.User;

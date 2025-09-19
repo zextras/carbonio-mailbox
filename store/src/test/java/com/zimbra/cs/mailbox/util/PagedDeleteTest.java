@@ -15,8 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zimbra.cs.mailbox.MailItem.Type;
-import com.zimbra.cs.mailbox.util.PagedDelete;
-import com.zimbra.cs.mailbox.util.TypedIdList;
 
 
 /**

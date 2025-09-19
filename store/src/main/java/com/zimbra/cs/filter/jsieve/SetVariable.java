@@ -8,7 +8,6 @@ package com.zimbra.cs.filter.jsieve;
 import static com.zimbra.cs.filter.JsieveConfigMapHandler.CAPABILITY_VARIABLES;
 import static com.zimbra.cs.filter.JsieveConfigMapHandler.CAPABILITY_ENOTIFY;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;

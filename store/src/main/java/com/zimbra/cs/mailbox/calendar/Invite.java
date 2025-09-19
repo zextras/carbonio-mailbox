@@ -2453,12 +2453,10 @@ public class Invite {
               newInv.validateDuration();
 
               ParsedDuration duration = newInv.getDuration();
-              boolean durationCalculated = false;
               if (duration == null) {
                 ParsedDateTime end = newInv.getEndTime();
                 if (end != null && newInv.getStartTime() != null) {
                   duration = end.difference(newInv.getStartTime());
-                  durationCalculated = true;
                 }
               }
 

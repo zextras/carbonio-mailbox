@@ -105,16 +105,10 @@ public class ZAlarm {
 
     public ZAlarm(Element alarmElem) throws ServiceException{
         ZAction action = ZAction.DISPLAY;
-        ZTriggerType triggerType = ZTriggerType.RELATIVE;
         ZRelated triggerRelated = null;
         ParsedDuration triggerRelative = null;
-        ParsedDateTime triggerAbsolute = null;
-        ParsedDuration repeatDuration = null;
-        int repeatCount = 0;
         String description = null;
         String summary = null;
-        Attach attach = null;
-        List<ZAttendee> attendees = null;
 
         String val;
         val = alarmElem.getAttribute(MailConstants.A_CAL_ALARM_ACTION);
@@ -126,7 +120,6 @@ public class ZAlarm {
         Element triggerElem = alarmElem.getElement(MailConstants.E_CAL_ALARM_TRIGGER);
         Element triggerRelativeElem = triggerElem.getOptionalElement(MailConstants.E_CAL_ALARM_RELATIVE);
         if (triggerRelativeElem != null) {
-            triggerType = ZTriggerType.RELATIVE;
             String related = triggerRelativeElem.getAttribute(MailConstants.A_CAL_ALARM_RELATED, null);
             if (related != null) {
                 triggerRelated = ZRelated.lookup(related);
@@ -136,7 +129,6 @@ public class ZAlarm {
             }
             triggerRelative = ParsedDuration.parse(triggerRelativeElem);
         } else {
-            triggerType = ZTriggerType.ABSOLUTE;
             Element triggerAbsoluteElem = triggerElem.getOptionalElement(MailConstants.E_CAL_ALARM_ABSOLUTE);
             if (triggerAbsoluteElem == null)
                 throw ServiceException.INVALID_REQUEST(
@@ -145,7 +137,6 @@ public class ZAlarm {
                         MailConstants.E_CAL_ALARM_ABSOLUTE + "> child element", null);
             String datetime = triggerAbsoluteElem.getAttribute(MailConstants.A_DATE);
             try {
-                triggerAbsolute = ParsedDateTime.parseUtcOnly(datetime);
             } catch (ParseException e) {
                 throw ServiceException.INVALID_REQUEST("Invalid absolute trigger value " + val, e);
             }
@@ -153,8 +144,6 @@ public class ZAlarm {
 
         Element repeatElem = alarmElem.getOptionalElement(MailConstants.E_CAL_ALARM_REPEAT);
         if (repeatElem != null) {
-            repeatDuration = ParsedDuration.parse(repeatElem);
-            repeatCount = (int) repeatElem.getAttributeLong(MailConstants.A_CAL_ALARM_COUNT, 0);
         }
 
         Element descElem = alarmElem.getOptionalElement(MailConstants.E_CAL_ALARM_DESCRIPTION);
@@ -168,8 +157,7 @@ public class ZAlarm {
         }
 
         Element attachElem = alarmElem.getOptionalElement(MailConstants.E_CAL_ATTACH);
-        if (attachElem != null)
-            attach = Attach.parse(attachElem);
+        if (attachElem != null){}
 
         Iterator<Element> attendeesIter = alarmElem.elementIterator(MailConstants.E_CAL_ATTENDEE);
         while (attendeesIter.hasNext()) {

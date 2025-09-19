@@ -1,6 +1,7 @@
 package com.zimbra.cs.service.admin;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.account.ZAttrProvisioning;

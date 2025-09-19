@@ -15,7 +15,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Constants;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.cache.IMimeTypeCache;
-import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.mime.MimeTypeInfo;
 
 public class LdapMimeTypeCache implements IMimeTypeCache {

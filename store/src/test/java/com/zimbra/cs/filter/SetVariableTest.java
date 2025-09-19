@@ -1505,8 +1505,6 @@ public class SetVariableTest {
                     new OperationContext(mbox), mbox, new ParsedMessage(raw.getBytes(), false),
                     0, account.getName(), env, new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
             Integer itemId = mbox.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(MailItem.Type.MESSAGE).get(0);
-            String value = "";
-            int totalNewHeader = 0;
             Message msg = mbox.getMessageById(null, itemId);
             assertEquals("[Replace Subject]", msg.getSubject());
             String[] tags = msg.getTags();

@@ -1054,8 +1054,4 @@ public class RenameDomain {
             sRenameDomainLog.debug(String.format(format, objects));
     }
 
-    private static void info(String format, Object ... objects) {
-        sRenameDomainLog.info(String.format(format, objects));
-    }
-
 }

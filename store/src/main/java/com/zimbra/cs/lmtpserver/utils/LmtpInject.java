@@ -396,7 +396,6 @@ public class LmtpInject {
         }
 
         int totalFailed = 0;
-        int totalSucceeded = 0;
         long startTime = System.currentTimeMillis();
         boolean verbose = cl.hasOption("v");
         boolean skipTLSCertValidation = cl.hasOption("skipTLSCertValidation");
@@ -447,7 +446,6 @@ public class LmtpInject {
         }
 
         totalFailed+=failedThisTime;
-        totalSucceeded+=succeeded;
 
         if (totalFailed!= 0)
             System.exit(1);

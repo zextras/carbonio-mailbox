@@ -6,7 +6,8 @@
 package com.zimbra.cs.filter;
 
 import static com.zimbra.cs.filter.jsieve.BulkTest.AUTO_REPLIED_ZIMBRA_READ_RECEIPT;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.cs.account.Account;

@@ -26,7 +26,6 @@ import com.zimbra.cs.account.Provisioning;
 
 import com.zimbra.cs.ldap.LdapConstants;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
-import com.zimbra.cs.service.mail.ModifyDataSource;
 import com.zimbra.soap.type.DataSource.ConnectionType;
 
 public class ModifyDataSourceTest {

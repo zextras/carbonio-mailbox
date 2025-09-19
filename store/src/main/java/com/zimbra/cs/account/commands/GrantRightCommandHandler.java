@@ -6,9 +6,6 @@ import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.soap.admin.type.GranteeSelector;
 import com.zimbra.soap.type.TargetBy;
-import org.apache.http.HttpException;
-
-import java.io.IOException;
 
 class GrantRightCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;

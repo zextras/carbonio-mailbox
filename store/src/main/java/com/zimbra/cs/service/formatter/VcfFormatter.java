@@ -59,15 +59,12 @@ public class VcfFormatter extends Formatter {
             context.resp.addHeader("Content-Disposition", cd);
             context.resp.setContentType(MimeConstants.CT_TEXT_VCARD_LEGACY);  // for backward compatibility
             context.resp.setCharacterEncoding(charset.name());
-
-            int count = 0;
             while (iterator.hasNext()) {
                 MailItem item = iterator.next();
                 if (!(item instanceof Contact))
                     continue;
                 VCard vcf = VCard.formatContact((Contact) item);
                 context.resp.getOutputStream().write(vcf.getFormatted().getBytes(charset));
-                count++;
             }
         } finally {
             if (iterator instanceof QueryResultIterator)

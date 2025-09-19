@@ -1,6 +1,7 @@
 package com.zimbra.cs.redolog.op;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;

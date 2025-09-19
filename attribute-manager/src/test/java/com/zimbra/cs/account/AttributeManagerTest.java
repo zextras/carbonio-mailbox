@@ -1,7 +1,7 @@
 package com.zimbra.cs.account;
 
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.zimbra.common.service.ServiceException;
 import java.util.Map;

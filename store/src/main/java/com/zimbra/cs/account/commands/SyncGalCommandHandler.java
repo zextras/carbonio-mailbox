@@ -1,7 +1,6 @@
 package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.GalContact;
@@ -10,9 +9,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.cs.account.soap.SoapProvisioning;
 import com.zimbra.soap.type.GalSearchType;
-import org.apache.http.HttpException;
-
-import java.io.IOException;
 
 class SyncGalCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;

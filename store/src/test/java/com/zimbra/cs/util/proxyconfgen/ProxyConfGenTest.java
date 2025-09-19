@@ -1,6 +1,6 @@
 package com.zimbra.cs.util.proxyconfgen;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import java.io.File;
