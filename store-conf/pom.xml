@@ -17,27 +17,6 @@
         <artifactId>flatten-maven-plugin</artifactId>
       </plugin>
       <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>conf-dist</id>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <phase>validate</phase>
-            <configuration>
-              <target>
-                <ant antfile="${basedir}/ant-conf-dist.xml">
-                  <target name="conf-dist"/>
-                </ant>
-              </target>
-            </configuration>
-          </execution>
-        </executions>
-        <groupId>org.apache.maven.plugins</groupId>
-        <version>3.1.0</version>
-      </plugin>
-      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.1.0</version>
