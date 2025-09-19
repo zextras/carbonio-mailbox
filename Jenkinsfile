@@ -125,11 +125,11 @@ pipeline {
         }
 
         stage('Publish containers') {
-//            when {
-//                expression {
-//                    return isBuildingTag() || env.BRANCH_NAME == 'devel'
-//                }
-//            }
+            when {
+                expression {
+                    return isBuildingTag() || env.BRANCH_NAME == 'devel'
+                }
+            }
             steps {
                 container('dind') {
                     withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
