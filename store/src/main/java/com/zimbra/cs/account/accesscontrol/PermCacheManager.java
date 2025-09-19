@@ -102,7 +102,7 @@ class PermCacheManager {
         boolean invalidateAll = true; 
         
         try {
-            invalidateAll = TargetType.canBeInheritedFrom(target);
+            invalidateAll = TargetTypeLookup.canBeInheritedFrom(target);
         } catch (ServiceException e) {
             ZimbraLog.acl.debug("unable to determine if all permission cache should be invalidated, " + 
                     "invalidating permission cache on all entries", e);

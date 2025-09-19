@@ -498,6 +498,10 @@
       <groupId>zextras</groupId>
     </dependency>
     <dependency>
+      <artifactId>right-manager</artifactId>
+      <groupId>zextras</groupId>
+    </dependency>
+    <dependency>
       <artifactId>mailbox-ldap-lib</artifactId>
       <groupId>zextras</groupId>
     </dependency>
@@ -592,9 +596,6 @@
     <finalName>${project.artifactId}</finalName>
     <resources>
       <resource>
-        <directory>${project.basedir}/ldap/generated</directory>
-      </resource>
-      <resource>
         <directory>${project.basedir}/target/generated-resources</directory>
       </resource>
       <resource>
@@ -605,13 +606,10 @@
       <testResource>
         <directory>${project.basedir}/src/test/resources</directory>
       </testResource>
-      <testResource>
-        <directory>${project.basedir}/ldap/generated</directory>
-      </testResource>
     </testResources>
 
     <plugins>
-      <!-- Generate zattr classes -->
+      <!-- Generate classes -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -625,14 +623,11 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>account</argument>
-                <argument>-i</argument>
-                <argument>${attrs.dir}</argument>
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrAccount.java</argument>
               </arguments>
@@ -646,14 +641,11 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>globalConfig</argument>
-                <argument>-i</argument>
-                <argument>${attrs.dir}</argument>
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrConfig.java</argument>
               </arguments>
@@ -667,14 +659,11 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>cos</argument>
-                <argument>-i</argument>
-                <argument>${attrs.dir}</argument>
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrCos.java</argument>
               </arguments>
@@ -688,14 +677,11 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>domain</argument>
-                <argument>-i</argument>
-                <argument>${attrs.dir}</argument>
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrDomain.java</argument>
               </arguments>
@@ -709,14 +695,11 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>server</argument>
-                <argument>-i</argument>
-                <argument>${attrs.dir}</argument>
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrServer.java</argument>
               </arguments>
@@ -731,14 +714,11 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>calendarResource</argument>
-                <argument>-i</argument>
-                <argument>${attrs.dir}</argument>
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrCalendarResource.java</argument>
               </arguments>
@@ -753,14 +733,11 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>distributionList</argument>
-                <argument>-i</argument>
-                <argument>${attrs.dir}</argument>
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrDistributionList.java</argument>
               </arguments>
@@ -781,8 +758,6 @@
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>group</argument>
-                <argument>-i</argument>
-                <argument>${attrs.dir}</argument>
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrDynamicGroup.java</argument>
               </arguments>
@@ -797,14 +772,11 @@
             </goals>
             <configuration>
               <mainClass>com.zimbra.cs.account.AttributeManagerUtil</mainClass>
-
               <arguments>
                 <argument>-a</argument>
                 <argument>generateGetters</argument>
                 <argument>-c</argument>
                 <argument>shareLocator</argument>
-                <argument>-i</argument>
-                <argument>${attrs.dir}</argument>
                 <argument>-r</argument>
                 <argument>${generated-zattr}/ZAttrShareLocator.java</argument>
               </arguments>
@@ -818,6 +790,27 @@
         <artifactId>build-helper-maven-plugin</artifactId>
         <version>3.0.0</version>
         <executions>
+          <execution>
+            <id>parse-version</id>
+            <goals>
+              <goal>parse-version</goal>
+            </goals>
+            <phase>validate</phase>
+            <configuration>
+              <propertyPrefix>parsedVersion</propertyPrefix>
+            </configuration>
+          </execution>
+          <execution>
+            <id>add-timestamp</id>
+            <goals>
+              <goal>timestamp-property</goal>
+            </goals>
+            <phase>initialize</phase>
+            <configuration>
+              <name>build.timestamp.yyyymm</name>
+              <pattern>yyyyMM</pattern>
+            </configuration>
+          </execution>
           <execution>
             <phase>generate-sources</phase>
             <goals>
@@ -855,24 +848,6 @@
           </dependency>
         </dependencies>
         <executions>
-          <!-- Generate Build Info -->
-          <execution>
-            <configuration>
-              <target>
-                <property name="maven_compile_classpath" refid="maven.compile.classpath" />
-                <taskdef classpathref="maven.plugin.classpath"
-                  resource="net/sf/antcontrib/antlib.xml" />
-                <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-buildinfo" />
-                </ant>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <id>generate-buildinfo</id>
-          </execution>
           <!-- Generate versions-init.sql + LDAP version -->
           <execution>
             <configuration>
@@ -881,7 +856,7 @@
                 <taskdef classpathref="maven.plugin.classpath"
                   resource="net/sf/antcontrib/antlib.xml" />
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-sql-ldap-versions" />
+                  <target name="create-version-sql" />
                 </ant>
               </target>
             </configuration>
@@ -890,41 +865,6 @@
             </goals>
             <phase>prepare-package</phase>
             <id>generate-sql-ldap-versions</id>
-          </execution>
-          <!-- Generate ZAttr* and Rights -->
-          <execution>
-            <configuration>
-              <target>
-                <property name="maven_compile_classpath" refid="maven.compile.classpath" />
-                <taskdef classpathref="maven.plugin.classpath"
-                  resource="net/sf/antcontrib/antlib.xml" />
-                <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-rights" />
-                </ant>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <id>generate-rights</id>
-          </execution>
-          <!-- LDAP Config gen before packaging -->
-          <execution>
-            <configuration>
-              <target>
-                <property name="maven_compile_classpath" refid="maven.compile.classpath" />
-                <taskdef classpathref="maven.plugin.classpath"
-                  resource="net/sf/antcontrib/antlib.xml" />
-                <ant antfile="${basedir}/ant-store.xml">
-                  <target name="generate-ldap-config" />
-                </ant>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <id>generate-ldap-config</id>
-            <phase>process-classes</phase>
           </execution>
           <!-- Prepare required files for testing -->
           <execution>
@@ -1071,29 +1011,33 @@
         <version>${maven-exec-plugin.version}</version>
         <executions>
           <execution>
-            <id>acceptance-tests</id>
-            <phase>integration-test</phase>
+            <id>generate-buildinfo</id>
+            <phase>generate-sources</phase>
             <goals>
               <goal>exec</goal>
             </goals>
             <configuration>
-              <skip>true</skip>
-              <executable>${basedir}/utils/shellspec/run.sh</executable>
+              <executable>/bin/bash</executable>
+              <arguments>
+                <argument>-c</argument>
+                <argument><![CDATA[
+                  mkdir -p ${generated-resources}/com/zimbra/cs/util/ && cat <<EOF > ${generated-resources}/com/zimbra/cs/util/buildInfo.properties
+MAJORVERSION=${parsedVersion.majorVersion}
+MINORVERSION=${parsedVersion.minorVersion}
+MICROVERSION=${parsedVersion.incrementalVersion}
+RELCLASS=ZEXTRAS
+RELNUM=0
+BUILDNUM=${build.timestamp.yyyymm}
+VERSION=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}_ZEXTRAS_${build.timestamp.yyyymm}
+RELEASE=carbonio
+DATE=${build.timestamp.yyyymm}
+HOST=carbonio
+EOF
+                ]]></argument>
+              </arguments>
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-clean-plugin</artifactId>
-        <version>${maven-clean-plugin.version}</version>
-        <configuration>
-          <filesets>
-            <fileset>
-              <directory>${basedir}/utils/shellspec/lib</directory>
-              <followSymlinks>false</followSymlinks>
-            </fileset>
-          </filesets>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -1150,10 +1094,9 @@
     <build.dir>target</build.dir>
     <maven-exec-plugin.version>3.1.0</maven-exec-plugin.version>
     <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
-    <config.dir>${project.basedir}/conf</config.dir>
     <generated-sources>${project.build.directory}/generated-sources</generated-sources>
     <generated-zattr>${generated-sources}/zattr/com/zimbra/cs/account</generated-zattr>
-    <attrs.dir>${project.basedir}/src/main/resources/conf/attrs</attrs.dir>
+    <generated-resources>${project.build.directory}/generated-resources</generated-resources>
   </properties>
 
 </project>

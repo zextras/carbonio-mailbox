@@ -233,6 +233,7 @@ import com.zimbra.soap.admin.type.ServerSelector;
 import com.zimbra.soap.type.AccountSelector;
 import com.zimbra.soap.type.GalSearchType;
 import com.zimbra.soap.type.GranteeType;
+import com.zimbra.cs.account.accesscontrol.TargetType.SoapTargetType;
 import com.zimbra.soap.type.TargetBy;
 import java.io.IOException;
 import java.net.URI;
@@ -2487,7 +2488,7 @@ public class SoapProvisioning extends Provisioning {
     }
     EffectiveRightsTargetSelector targetSel =
         new EffectiveRightsTargetSelector(
-            com.zimbra.soap.type.TargetType.fromString(targetType), targetBy, target);
+            SoapTargetType.fromString(targetType), targetBy, target);
     GetEffectiveRightsResponse resp =
         invokeJaxb(
             new GetEffectiveRightsRequest(targetSel, granteeSel, expandSetAttrs, expandGetAttrs));

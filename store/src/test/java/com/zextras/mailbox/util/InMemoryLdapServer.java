@@ -11,7 +11,9 @@ import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.Modification;
 import com.unboundid.ldap.sdk.ModificationType;
 import com.unboundid.ldif.LDIFReader;
+import com.zextras.ldap.LdifProvider;
 import com.zimbra.common.localconfig.LC;
+import java.io.InputStream;
 
 /** A simple in memory ldap for testing using carbonio schemas */
 public class InMemoryLdapServer {
@@ -67,16 +69,17 @@ public class InMemoryLdapServer {
     }
   }
 
-  private LDIFReader loadLdifResource(String resource) {
-    return new LDIFReader(this.getClass().getResourceAsStream(resource));
+  private LDIFReader loadLdifResource(InputStream inputStream) {
+    return new LDIFReader(inputStream);
   }
 
   public void initializeBasicData() throws LDAPException {
-    inMemoryDirectoryServer.importFromLDIF(true, this.loadLdifResource("/config/cn=config.ldif"));
-    inMemoryDirectoryServer.importFromLDIF(false, this.loadLdifResource("/zimbra_globalconfig.ldif"));
-    inMemoryDirectoryServer.importFromLDIF(false, this.loadLdifResource("/zimbra_defaultcos.ldif"));
-    inMemoryDirectoryServer.importFromLDIF(false, this.loadLdifResource("/zimbra_defaultexternalcos.ldif"));
-    inMemoryDirectoryServer.importFromLDIF(false, this.loadLdifResource("/carbonio.ldif"));
+    final LdifProvider ldifProvider = new LdifProvider();
+    inMemoryDirectoryServer.importFromLDIF(true, loadLdifResource(ldifProvider.getConfigLdif()));
+    inMemoryDirectoryServer.importFromLDIF(false, this.loadLdifResource(ldifProvider.getGlobalConfigLdif()));
+    inMemoryDirectoryServer.importFromLDIF(false, this.loadLdifResource(ldifProvider.getDefaultCOSLdif()));
+    inMemoryDirectoryServer.importFromLDIF(false, this.loadLdifResource(ldifProvider.getDefaultExternalCOSLdif()));
+    inMemoryDirectoryServer.importFromLDIF(false, this.loadLdifResource(ldifProvider.getCarbonioLdif()));
     inMemoryDirectoryServer
         .getConnection()
         .modify(

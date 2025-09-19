@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlElement;
 
 import com.google.common.collect.Lists;
 import com.zimbra.common.soap.AccountConstants;
-import com.zimbra.soap.type.TargetType;
+import com.zimbra.cs.account.accesscontrol.TargetType.SoapTargetType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class DiscoverRightsTarget {
@@ -24,7 +24,7 @@ public class DiscoverRightsTarget {
      * @zm-api-field-description Target type
      */
     @XmlAttribute(name=AccountConstants.A_TYPE /* type */, required=true)
-    private TargetType type;
+    private SoapTargetType type;
 
     /**
      * @zm-api-field-tag target-id
@@ -58,24 +58,24 @@ public class DiscoverRightsTarget {
         this(null, null, null, null);
     }
 
-    public DiscoverRightsTarget(TargetType type) {
+    public DiscoverRightsTarget(SoapTargetType type) {
         this(type, null, null, null);
     }
 
-    public DiscoverRightsTarget(TargetType type, String id, String name, String displayName) {
+    public DiscoverRightsTarget(SoapTargetType type, String id, String name, String displayName) {
         setType(type);
         setId(id);
         setName(name);
         setDisplayName(displayName);
     }
 
-    public TargetType getType() { return type; }
+    public SoapTargetType getType() { return type; }
     public String getName() { return name; }
     public String getDisplayName() { return displayName; }
     public String getId() { return id; }
     public List<DiscoverRightsEmail> getAddrs() { return emails; }
 
-    public void setType(TargetType type) {
+    public void setType(SoapTargetType type) {
         this.type = type;
     }
 

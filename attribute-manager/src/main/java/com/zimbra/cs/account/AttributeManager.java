@@ -9,7 +9,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
-import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.W3cDomUtil;
 import com.zimbra.common.util.SetUtil;
@@ -25,7 +24,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
@@ -218,19 +216,11 @@ public class AttributeManager {
   }
 
   public static AttributeManager getInstance() throws ServiceException {
-    return AttributeManager.getInstance(LC.zimbra_attrs_directory.value());
-  }
-
-    private static AttributeManager getInstance(String attributeDirectoryPath) throws ServiceException {
     synchronized (AttributeManager.class) {
       if (mInstance != null) {
         return mInstance;
       }
-      if(Objects.isNull(attributeDirectoryPath) || Objects.equals("", attributeDirectoryPath)){
-        mInstance = AttributeManager.fromResource();
-      }else{
-        mInstance = AttributeManager.fromFileSystem(attributeDirectoryPath);
-      }
+      mInstance = AttributeManager.fromResource();
       if (mInstance.hasErrors()) {
         throw ServiceException.FAILURE(mInstance.getErrors(), null);
       }

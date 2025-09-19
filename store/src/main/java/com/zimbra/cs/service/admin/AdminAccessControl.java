@@ -39,6 +39,7 @@ import com.zimbra.cs.account.accesscontrol.Right;
 import com.zimbra.cs.account.accesscontrol.RightCommand;
 import com.zimbra.cs.account.accesscontrol.Rights.Admin;
 import com.zimbra.cs.account.accesscontrol.TargetType;
+import com.zimbra.cs.account.accesscontrol.TargetTypeLookup;
 import com.zimbra.cs.account.names.NameUtil;
 import com.zimbra.soap.DocumentHandler;
 import com.zimbra.soap.ZimbraSoapContext;
@@ -281,7 +282,7 @@ public abstract class AdminAccessControl {
     if (target instanceof Domain) {
       domain = (Domain) target;
     } else {
-      domain = TargetType.getTargetDomain(Provisioning.getInstance(), target);
+      domain = TargetTypeLookup.getTargetDomain(Provisioning.getInstance(), target);
     }
 
     // will throw if domain is not in an accessible state
@@ -952,7 +953,7 @@ public abstract class AdminAccessControl {
           instanceof Alias) { // see comments in SearchDirectory.hasRightsToListDanglingAlias
         targetInfo = " for alias " + target.getLabel();
       } else {
-        targetInfo = " for " + TargetType.getTargetType(target).name() + " " + target.getLabel();
+        targetInfo = " for " + TargetTypeLookup.getTargetType(target).name() + " " + target.getLabel();
       }
 
       if (needed instanceof AdminRight) {
@@ -1113,7 +1114,7 @@ public abstract class AdminAccessControl {
       }
 
       // 2. see if the admin has the right on domain scope
-      String targetDomainName = targetType.getTargetDomainName(mProv, target);
+      String targetDomainName = TargetTypeLookup.getTargetDomainName(mProv, target);
       if (targetDomainName != null) {
         if (rbtt instanceof RightCommand.DomainedRightsByTargetType) {
           RightCommand.DomainedRightsByTargetType domainedRights =

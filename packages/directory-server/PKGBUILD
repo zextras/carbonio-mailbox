@@ -25,32 +25,32 @@ makedepends=(
 package() {
   cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
 
-  install -D store/ldap/conf/externaldirsync/Exchange2000.xml \
+  install -D mailbox-ldap-lib/ldap/externaldirsync/Exchange2000.xml \
     "${pkgdir}/opt/zextras/conf/externaldirsync/Exchange2000.xml"
-  install -D store/ldap/conf/externaldirsync/Exchange2003.xml \
+  install -D mailbox-ldap-lib/ldap/externaldirsync/Exchange2003.xml \
     "${pkgdir}/opt/zextras/conf/externaldirsync/Exchange2003.xml"
-  install -D store/ldap/conf/externaldirsync/Exchange5.5.xml \
+  install -D mailbox-ldap-lib/ldap/externaldirsync/Exchange5.5.xml \
     "${pkgdir}/opt/zextras/conf/externaldirsync/Exchange5.5.xml"
-  install -D store/ldap/conf/externaldirsync/domino.xml \
+  install -D mailbox-ldap-lib/ldap/externaldirsync/domino.xml \
     "${pkgdir}/opt/zextras/conf/externaldirsync/domino.xml"
-  install -D store/ldap/conf/externaldirsync/novellGroupWise.xml \
+  install -D mailbox-ldap-lib/ldap/externaldirsync/novellGroupWise.xml \
     "${pkgdir}/opt/zextras/conf/externaldirsync/novellGroupWise.xml"
-  install -D store/ldap/conf/externaldirsync/openldap.xml \
+  install -D mailbox-ldap-lib/ldap/externaldirsync/openldap.xml \
     "${pkgdir}/opt/zextras/conf/externaldirsync/openldap.xml"
 
   # migrations
   mkdir -p "${pkgdir}/opt/zextras/libexec/scripts/LDAP/migrations/"
-  rsync -a store/ldap/src/migrations/ "${pkgdir}/opt/zextras/libexec/scripts/LDAP/migrations/"
+  rsync -a mailbox-ldap-lib/ldap/src/migrations/ "${pkgdir}/opt/zextras/libexec/scripts/LDAP/migrations/"
   chmod -R +x "${pkgdir}/opt/zextras/libexec/scripts/LDAP/migrations/"
-  install -D store/ldap/src/LdapMigrationUtils.pm \
+  install -D mailbox-ldap-lib/ldap/src/LdapMigrationUtils.pm \
     "${pkgdir}/opt/zextras/common/lib/perl5/Zextras/LdapMigrationUtils.pm"
-  install -D store/ldap/src/LdapPreFlight.pl \
+  install -D mailbox-ldap-lib/ldap/src/LdapPreFlight.pl \
     "${pkgdir}/opt/zextras/libexec/scripts/LDAP/LdapPreFlight.pl"
 
   # schema
-  install -Ddm755 store/ldap/generated/ \
+  install -Ddm755 mailbox-ldap-lib/ldap/generated/ \
     "${pkgdir}/opt/zextras/common/etc/openldap/zimbra/"
-  rsync -a store/ldap/generated/ "${pkgdir}/opt/zextras/common/etc/openldap/zimbra/"
+  rsync -a mailbox-ldap-lib/ldap/generated/ "${pkgdir}/opt/zextras/common/etc/openldap/zimbra/"
 
   # systemd units and target
   mkdir -p "${pkgdir}/usr/lib/systemd/system/carbonio.target.wants"

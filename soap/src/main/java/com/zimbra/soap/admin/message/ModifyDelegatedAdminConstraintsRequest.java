@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.soap.admin.type.ConstraintAttr;
-import com.zimbra.soap.type.TargetType;
+import com.zimbra.cs.account.accesscontrol.TargetType.SoapTargetType;
 
 /**
  * @zm-api-command-auth-required true
@@ -37,7 +37,7 @@ public class ModifyDelegatedAdminConstraintsRequest {
      * @zm-api-field-description Target type
      */
     @XmlAttribute(name=AdminConstants.A_TYPE, required=true)
-    private final TargetType type;
+    private final SoapTargetType type;
 
     /**
      * @zm-api-field-description ID
@@ -66,7 +66,7 @@ public class ModifyDelegatedAdminConstraintsRequest {
     }
 
     public ModifyDelegatedAdminConstraintsRequest(
-                    TargetType type, String id, String name) {
+                    SoapTargetType type, String id, String name) {
         this.type = type;
         this.id = id;
         this.name = name;
@@ -85,7 +85,7 @@ public class ModifyDelegatedAdminConstraintsRequest {
     }
 
 
-    public TargetType getType() { return type; }
+    public SoapTargetType getType() { return type; }
     public String getId() { return id; }
     public String getName() { return name; }
     public List<ConstraintAttr> getAttrs() {

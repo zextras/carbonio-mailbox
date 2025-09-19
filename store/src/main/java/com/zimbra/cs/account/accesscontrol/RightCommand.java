@@ -233,7 +233,7 @@ public class RightCommand {
          */
         private ACE(TargetType targetType, Entry target, ZimbraACE ace) {
             mTargetType = targetType.getCode();
-            mTargetId = TargetType.getId(target);
+            mTargetId = TargetTypeLookup.getId(target);
             mTargetName = target.getLabel();
             mGranteeType = ace.getGranteeType().getCode();
             mGranteeId = ace.getGrantee();
@@ -952,7 +952,7 @@ public class RightCommand {
 
         // target
         TargetType tt = TargetType.fromCode(targetType);
-        Entry targetEntry = TargetType.lookupTarget(prov, tt, targetBy, target);
+        Entry targetEntry = TargetTypeLookup.lookupTarget(prov, tt, targetBy, target);
 
         // right
         Right r = RightManager.getInstance().getRight(right);
@@ -1065,7 +1065,7 @@ public class RightCommand {
 
         // target
         TargetType tt = TargetType.fromCode(targetType);
-        Entry targetEntry = TargetType.lookupTarget(prov, tt, targetBy, target);
+        Entry targetEntry = TargetTypeLookup.lookupTarget(prov, tt, targetBy, target);
 
         // grantee
         GranteeType gt = GranteeType.GT_USER;
@@ -1075,7 +1075,7 @@ public class RightCommand {
         RightBearer rightBearer = RightBearer.newRightBearer(granteeEntry);
 
         EffectiveRights er = new EffectiveRights(targetType,
-                TargetType.getId(targetEntry), targetEntry.getLabel(),
+                TargetTypeLookup.getId(targetEntry), targetEntry.getLabel(),
                 granteeAcct.getId(), granteeAcct.getName());
 
         acc.getEffectiveRights(rightBearer, targetEntry, expandSetAttrs, expandGetAttrs, er);
@@ -1112,7 +1112,7 @@ public class RightCommand {
         RightBearer rightBearer = RightBearer.newRightBearer(granteeEntry);
 
         EffectiveRights er = new EffectiveRights(targetType,
-                TargetType.getId(targetEntry), targetEntry.getLabel(),
+                TargetTypeLookup.getId(targetEntry), targetEntry.getLabel(),
                 granteeAcct.getId(), granteeAcct.getName());
 
         acc.getEffectiveRights(rightBearer, targetEntry, true, true, er);
@@ -1136,7 +1136,7 @@ public class RightCommand {
         Entry targetEntry = null;
         if (targetType != null) {
             tt = TargetType.fromCode(targetType);
-            targetEntry = TargetType.lookupTarget(prov, tt, targetBy, target);
+            targetEntry = TargetTypeLookup.lookupTarget(prov, tt, targetBy, target);
         }
 
         // grantee
@@ -1187,7 +1187,7 @@ public class RightCommand {
             for (GrantsOnTarget grantsOnTarget : grantsOnTargets) {
                 Entry grantedOnEntry = grantsOnTarget.getTargetEntry();
                 ZimbraACL acl = grantsOnTarget.getAcl();
-                TargetType grantedOnTargetType = TargetType.getTargetType(grantedOnEntry);
+                TargetType grantedOnTargetType = TargetTypeLookup.getTargetType(grantedOnEntry);
                 grants.addGrants(grantedOnTargetType, grantedOnEntry, acl, granteeFilter, isGranteeAnAdmin);
             }
         }
@@ -1390,7 +1390,7 @@ public class RightCommand {
         verifyAccessManager();
 
         // target
-        Entry targetEntry = TargetType.lookupTarget(prov, tt, targetBy, target);
+        Entry targetEntry = TargetTypeLookup.lookupTarget(prov, tt, targetBy, target);
 
         // right
         Right r = RightManager.getInstance().getRight(right);
@@ -1459,7 +1459,7 @@ public class RightCommand {
         verifyAccessManager();
 
         // target
-        Entry targetEntry = TargetType.lookupTarget(prov, tt, targetBy, target);
+        Entry targetEntry = TargetTypeLookup.lookupTarget(prov, tt, targetBy, target);
 
         // grantee
         NamedEntry granteeEntry = null;
@@ -1599,7 +1599,7 @@ public class RightCommand {
                 if (expandAllAtrts) {
                     Set<String> attrs = attrRight.getAllAttrs();
                     for (String attr : attrs) {
-                        if (right.getRightType() != RightType.setAttrs || !HardRules.isForbiddenAttr(attr)) {
+                        if (right.getRightType() != RightType.setAttrs || !AttributeForbiddenRules.isForbiddenAttr(attr)) {
                             eAttrs.addNonUniqueElement(AdminConstants.E_A).addAttribute(AdminConstants.A_N, attr);
                         }
                     }

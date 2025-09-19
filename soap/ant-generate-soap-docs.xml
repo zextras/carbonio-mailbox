@@ -1,6 +1,7 @@
 <project name="soap-docs">
-  <import file="../ant-build-common.xml"/>
+  <property location="src" name="src.dir"/>
   <property name="build.dir" location="target"/>
+  <property file="${build.dir}/mvn-ant-shared-build.properties"/>
   <property name="xml.schema.dir" location="${build.dir}/classes/com/zimbra/soap/"/>
   <property name="src.dir" location="src"/>
   <property name="templates.dir" location="templates"/>
@@ -21,7 +22,7 @@
     <pathelement path="${test_classpath}"/>
   </path>
 
-  <target name="check-schema-done" depends="set-dev-version">
+  <target name="check-schema-done">
     <uptodate property="schema.build.notrequired" targetFile="${xml.schema.dir}/zimbra.xsd">
       <srcfiles dir="${src.dir}" includes="**/*.java" />
     </uptodate>
