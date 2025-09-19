@@ -227,11 +227,9 @@ public final class MailboxIndex {
     SortBy originalSort = params.getSortBy();
     switch (originalSort) {
       case READ_ASC:
-        isReadSort = true;
         params.setSortBy(SortBy.READ_ASC);
         break;
       case READ_DESC:
-        isReadSort = true;
         params.setSortBy(SortBy.DATE_DESC);
         break;
       case NAME_LOCALIZED_ASC:

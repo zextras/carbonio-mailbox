@@ -5,18 +5,16 @@
 
 package com.zimbra.client;
 
+import com.zimbra.client.ZInvite.ZAttendee;
 import com.zimbra.common.calendar.Attach;
 import com.zimbra.common.calendar.ParsedDateTime;
 import com.zimbra.common.calendar.ParsedDuration;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.common.service.ServiceException;
-import com.zimbra.client.ZInvite.ZAttendee;
-
-import java.util.List;
-import java.util.Iterator;
 import java.util.ArrayList;
-import java.text.ParseException;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -135,11 +133,6 @@ public class ZAlarm {
                         "<" + MailConstants.E_CAL_ALARM_TRIGGER + "> must have either <" +
                         MailConstants.E_CAL_ALARM_RELATIVE + "> or <" +
                         MailConstants.E_CAL_ALARM_ABSOLUTE + "> child element", null);
-            String datetime = triggerAbsoluteElem.getAttribute(MailConstants.A_DATE);
-            try {
-            } catch (ParseException e) {
-                throw ServiceException.INVALID_REQUEST("Invalid absolute trigger value " + val, e);
-            }
         }
 
         Element repeatElem = alarmElem.getOptionalElement(MailConstants.E_CAL_ALARM_REPEAT);

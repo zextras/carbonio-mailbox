@@ -5,16 +5,6 @@
 
 package com.zimbra.cs.dav.resource;
 
-import com.zimbra.cs.service.FileUploadServlet;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
@@ -28,6 +18,13 @@ import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * RFC 2518bis section 5.
@@ -152,14 +149,6 @@ public class Collection extends MailItemResource {
     }
 
     public DavResource createItem(DavContext ctxt, String name) throws DavException, IOException {
-        try {
-        } catch (ServiceException e) {
-            throw new DavException("cannot get mailbox",
-                HttpServletResponse.SC_INTERNAL_SERVER_ERROR, null);
-        }
-
-        FileUploadServlet.Upload upload = ctxt.getUpload();
-        String ctype = upload.getContentType();
         return createVCard(ctxt, name);
     }
 

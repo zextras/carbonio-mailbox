@@ -5,10 +5,6 @@
 
 package com.zimbra.cs.service.admin;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.zimbra.common.service.ServiceException;
@@ -20,13 +16,16 @@ import com.zimbra.cs.db.DbMailItem;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.mailbox.MailItem;
-import com.zimbra.cs.mailbox.MailServiceException.NoSuchItemException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.soap.ZimbraSoapContext;
 import com.zimbra.soap.admin.message.ExportAndDeleteItemsRequest;
 import com.zimbra.soap.admin.type.ExportAndDeleteItemSpec;
 import com.zimbra.soap.admin.type.ExportAndDeleteMailboxSpec;
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public class ExportAndDeleteItems extends AdminDocumentHandler {
 
@@ -84,12 +83,6 @@ public class ExportAndDeleteItems extends AdminDocumentHandler {
                     Collection<Integer> revs = idRevs.get(itemId);
                     for (int rev : revs) {
                         if (rev == 0) {
-                            // delete all revisions to make sure we delete all blobs
-                            try {
-                            } catch (NoSuchItemException ex) {
-                                // exception happens when we try to delete a mail_item which is already in mail_item_dumpster
-                                continue;
-                            }
                             mbox.delete(null, itemId, MailItem.Type.UNKNOWN, null);
                             break;
                         }
