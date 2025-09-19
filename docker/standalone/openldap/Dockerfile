@@ -11,7 +11,7 @@ ENV LDAP_ADMIN_PASSWORD=password
 EXPOSE 1389
 
 COPY docker/standalone/openldap/ldap-utils/ /ldap-utils/
-COPY store/ldap/generated/ /opt/zextras/common/etc/openldap/zimbra/
+COPY mailbox-ldap-lib/ldap/generated/ /opt/zextras/common/etc/openldap/zimbra/
 RUN mkdir -p /opt/zextras/ldap/custom-ldifs \
             /opt/zextras/data/ldap/state/run \
             /opt/zextras/data/ldap/config \
