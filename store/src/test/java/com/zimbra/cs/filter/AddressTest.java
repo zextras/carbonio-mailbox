@@ -7,521 +7,456 @@ package com.zimbra.cs.filter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.common.zmime.ZMimeMessage;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.DeliveryContext;
 import com.zimbra.cs.mailbox.Flag.FlagInfo;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.util.ItemId;
 import com.zimbra.cs.util.JMSession;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
 import javax.mail.internet.MimeMessage;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
  * @author zimbra
- *
  */
-public class AddressTest {
- private Account account;
+public class AddressTest extends MailboxTestSuite {
 
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-    }
+	private Account account;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        MailboxTestUtil.clearData();
-     Provisioning prov = Provisioning.getInstance();
-     account = prov.createAccount("test@in.telligent.com", "secret",
-         new HashMap<String, Object>());
-    }
+	@BeforeEach
+	public void setUp() throws Exception {
+		account = createAccount().create();
+	}
 
- @Test
- void filterValidToField() {
-  try {
-   
-   RuleManager.clearCachedRules(account);
-   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(
-     account);
+	@Test
+	void filterValidToField() {
+		try {
 
-   String filterScript = "if anyof (address :domain :is :comparator \"i;ascii-casemap\" "
-     + "[\"to\"] \"in.telligent.com\",address :domain :is :comparator \"i;ascii-casemap\" [\"to\"] "
-     + "\"in.telligent.com\") {" + "tag \"Priority\";}";
+			RuleManager.clearCachedRules(account);
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-   account.setMailSieveScript(filterScript);
-   List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(
-     new OperationContext(mbox), mbox, new ParsedMessage(
-       "To: test1@in.telligent.com".getBytes(), false), 0,
-     account.getName(), new DeliveryContext(),
-     Mailbox.ID_FOLDER_INBOX, true);
-   assertEquals(1, ids.size());
-   Message msg = mbox.getMessageById(null, ids.get(0).getId());
-   assertEquals("Priority",
-     ArrayUtil.getFirstElement(msg.getTags()));
+			String filterScript = "if anyof (address :domain :is :comparator \"i;ascii-casemap\" "
+					+ "[\"to\"] \"in.telligent.com\",address :domain :is :comparator \"i;ascii-casemap\" [\"to\"] "
+					+ "\"in.telligent.com\") {" + "tag \"Priority\";}";
 
-  } catch (Exception e) {
-   fail("No exception should be thrown");
-  }
+			account.setMailSieveScript(filterScript);
+			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+					new ParsedMessage("To: test1@in.telligent.com".getBytes(), false), 0, account.getName(),
+					new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+			assertEquals(1, ids.size());
+			Message msg = mbox.getMessageById(null, ids.get(0).getId());
+			assertEquals("Priority", ArrayUtil.getFirstElement(msg.getTags()));
 
- }
+		} catch (Exception e) {
+			fail("No exception should be thrown");
+		}
 
- @Test
- void filterInValidToField() {
-  try {
-   
-   RuleManager.clearCachedRules(account);
-   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(
-     account);
+	}
 
-   String filterScript = "if anyof (address :domain :is :comparator \"i;ascii-casemap\" "
-     + "[\"to\"] \"in.telligent.com\",address :domain :is :comparator \"i;ascii-casemap\" [\"to\"] "
-     + "\"in.telligent.com\") {" + "tag \"Priority\";}";
+	@Test
+	void filterInValidToField() {
+		try {
 
-   account.setMailSieveScript(filterScript);
-   List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(
-     new OperationContext(mbox), mbox, new ParsedMessage(
-       "To: undisclosed-recipients:;".getBytes(), false),
-     0, account.getName(), new DeliveryContext(),
-     Mailbox.ID_FOLDER_INBOX, true);
-   assertEquals(1, ids.size());
-   Message msg = mbox.getMessageById(null, ids.get(0).getId());
-   assertNull(ArrayUtil.getFirstElement(msg.getTags()));
-  } catch (Exception e) {
-   fail("No exception should be thrown");
-  }
+			RuleManager.clearCachedRules(account);
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
- }
+			String filterScript = "if anyof (address :domain :is :comparator \"i;ascii-casemap\" "
+					+ "[\"to\"] \"in.telligent.com\",address :domain :is :comparator \"i;ascii-casemap\" [\"to\"] "
+					+ "\"in.telligent.com\") {" + "tag \"Priority\";}";
 
- @Test
- void noComparator() {
-  try {
-   
-   RuleManager.clearCachedRules(account);
-   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(
-     account);
+			account.setMailSieveScript(filterScript);
+			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+					new ParsedMessage("To: undisclosed-recipients:;".getBytes(), false), 0, account.getName(),
+					new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+			assertEquals(1, ids.size());
+			Message msg = mbox.getMessageById(null, ids.get(0).getId());
+			assertNull(ArrayUtil.getFirstElement(msg.getTags()));
+		} catch (Exception e) {
+			fail("No exception should be thrown");
+		}
 
-   String filterScript = "if address :matches [\"to\"] \"*\" {"
-     + "  tag \"noComparator\";"
-     + "}";
+	}
 
-   account.setMailSieveScript(filterScript);
-   List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(
-     new OperationContext(mbox), mbox,
-     new ParsedMessage("to: foo@example.com".getBytes(), false),
-     0, account.getName(), new DeliveryContext(),
-     Mailbox.ID_FOLDER_INBOX, true);
-   assertEquals(1, ids.size());
-   Message msg = mbox.getMessageById(null, ids.get(0).getId());
-   assertEquals("noComparator", ArrayUtil.getFirstElement(msg.getTags()));
-  } catch (Exception e) {
-   fail("No exception should be thrown" + e);
-  }
- }
+	@Test
+	void noComparator() {
+		try {
 
- @Test
- void testAddressContainingBackslash() {
-  try {
-   
-   RuleManager.clearCachedRules(account);
-   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(
-     account);
+			RuleManager.clearCachedRules(account);
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-   String filterScript = "if address :comparator \"i;ascii-casemap\" :matches \"from\" \"\\\"user\\\\1\\\"@cosmonaut.zimbra.com\" {"
-     + "  tag \"TestBackslash\";"
-     + "}";
+			String filterScript =
+					"if address :matches [\"to\"] \"*\" {" + "  tag \"noComparator\";" + "}";
 
-   account.setMailSieveScript(filterScript);
-   InputStream is = getClass().getResourceAsStream("TestFilter-testBackslashDotInAddress.msg");
-   MimeMessage mm = new ZMimeMessage(JMSession.getSession(), is);
+			account.setMailSieveScript(filterScript);
+			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+					new ParsedMessage("to: foo@example.com".getBytes(), false), 0, account.getName(),
+					new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+			assertEquals(1, ids.size());
+			Message msg = mbox.getMessageById(null, ids.get(0).getId());
+			assertEquals("noComparator", ArrayUtil.getFirstElement(msg.getTags()));
+		} catch (Exception e) {
+			fail("No exception should be thrown" + e);
+		}
+	}
 
-   List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(
-     new OperationContext(mbox), mbox,
-     new ParsedMessage(mm, false),
-     0, account.getName(), new DeliveryContext(),
-     Mailbox.ID_FOLDER_INBOX, true);
-   assertEquals(1, ids.size());
-   Message msg = mbox.getMessageById(null, ids.get(0).getId());
-   assertEquals("TestBackslash", ArrayUtil.getFirstElement(msg.getTags()));
-  } catch (Exception e) {
-   fail("No exception should be thrown" + e);
-  }
- }
+	@Test
+	void testAddressContainingBackslash() {
+		try {
 
- @Test
- void testAddressContainingDot() {
-  try {
-   
-   RuleManager.clearCachedRules(account);
-   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(
-     account);
+			RuleManager.clearCachedRules(account);
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-   String filterScript = "if address :comparator \"i;ascii-casemap\" :matches \"to\" \"user.1@cosmonaut.zimbra.com\" {"
-     + "  tag \"TestDot\";"
-     + "}";
+			String filterScript =
+					"if address :comparator \"i;ascii-casemap\" :matches \"from\" \"\\\"user\\\\1\\\"@cosmonaut.zimbra.com\" {"
+							+ "  tag \"TestBackslash\";" + "}";
 
-   account.setMailSieveScript(filterScript);
-   InputStream is = getClass().getResourceAsStream("TestFilter-testBackslashDotInAddress.msg");
-   MimeMessage mm = new ZMimeMessage(JMSession.getSession(), is);
+			account.setMailSieveScript(filterScript);
+			InputStream is = getClass().getResourceAsStream("TestFilter-testBackslashDotInAddress.msg");
+			MimeMessage mm = new ZMimeMessage(JMSession.getSession(), is);
 
-   List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(
-     new OperationContext(mbox), mbox,
-     new ParsedMessage(mm, false),
-     0, account.getName(), new DeliveryContext(),
-     Mailbox.ID_FOLDER_INBOX, true);
-   assertEquals(1, ids.size());
-   Message msg = mbox.getMessageById(null, ids.get(0).getId());
-   assertEquals("TestDot", ArrayUtil.getFirstElement(msg.getTags()));
-  } catch (Exception e) {
-   fail("No exception should be thrown" + e);
-  }
- }
+			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+					new ParsedMessage(mm, false), 0, account.getName(), new DeliveryContext(),
+					Mailbox.ID_FOLDER_INBOX, true);
+			assertEquals(1, ids.size());
+			Message msg = mbox.getMessageById(null, ids.get(0).getId());
+			assertEquals("TestBackslash", ArrayUtil.getFirstElement(msg.getTags()));
+		} catch (Exception e) {
+			fail("No exception should be thrown" + e);
+		}
+	}
 
- @Test
- void testAddressContainingDoubleQuote() {
-  try {
-   
-   RuleManager.clearCachedRules(account);
-   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(
-     account);
+	@Test
+	void testAddressContainingDot() {
+		try {
 
-   String filterScript = "if address :comparator \"i;ascii-casemap\" :matches \"to\" \"\\\"user\\\"1\\\"@cosmonaut.zimbra.com\" {"
-     + "  tag \"TestDoubleQuote\";"
-     + "}";
+			RuleManager.clearCachedRules(account);
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-   account.setMailSieveScript(filterScript);
-   InputStream is = getClass().getResourceAsStream("TestFilter-testQuotesInAddress.msg");
-   MimeMessage mm = new ZMimeMessage(JMSession.getSession(), is);
+			String filterScript =
+					"if address :comparator \"i;ascii-casemap\" :matches \"to\" \"user.1@cosmonaut.zimbra.com\" {"
+							+ "  tag \"TestDot\";" + "}";
 
-   List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(
-     new OperationContext(mbox), mbox,
-     new ParsedMessage(mm, false),
-     0, account.getName(), new DeliveryContext(),
-     Mailbox.ID_FOLDER_INBOX, true);
-   assertEquals(1, ids.size());
-   Message msg = mbox.getMessageById(null, ids.get(0).getId());
-   assertEquals("TestDoubleQuote", ArrayUtil.getFirstElement(msg.getTags()));
-  } catch (Exception e) {
-   fail("No exception should be thrown" + e);
-  }
- }
+			account.setMailSieveScript(filterScript);
+			InputStream is = getClass().getResourceAsStream("TestFilter-testBackslashDotInAddress.msg");
+			MimeMessage mm = new ZMimeMessage(JMSession.getSession(), is);
 
- @Test
- void testAddressContainingSingleQuote() {
-  try {
-   
-   RuleManager.clearCachedRules(account);
-   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(
-     account);
+			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+					new ParsedMessage(mm, false), 0, account.getName(), new DeliveryContext(),
+					Mailbox.ID_FOLDER_INBOX, true);
+			assertEquals(1, ids.size());
+			Message msg = mbox.getMessageById(null, ids.get(0).getId());
+			assertEquals("TestDot", ArrayUtil.getFirstElement(msg.getTags()));
+		} catch (Exception e) {
+			fail("No exception should be thrown" + e);
+		}
+	}
 
-   String filterScript = "if address :comparator \"i;ascii-casemap\" :matches \"from\" \"user'1@cosmonaut.zimbra.com\" {"
-     + "  tag \"TestSingleQuote\";"
-     + "}";
+	@Test
+	void testAddressContainingDoubleQuote() {
+		try {
 
-   account.setMailSieveScript(filterScript);
-   InputStream is = getClass().getResourceAsStream("TestFilter-testQuotesInAddress.msg");
-   MimeMessage mm = new ZMimeMessage(JMSession.getSession(), is);
+			RuleManager.clearCachedRules(account);
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-   List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(
-     new OperationContext(mbox), mbox,
-     new ParsedMessage(mm, false),
-     0, account.getName(), new DeliveryContext(),
-     Mailbox.ID_FOLDER_INBOX, true);
-   assertEquals(1, ids.size());
-   Message msg = mbox.getMessageById(null, ids.get(0).getId());
-   assertEquals("TestSingleQuote", ArrayUtil.getFirstElement(msg.getTags()));
-  } catch (Exception e) {
-   fail("No exception should be thrown" + e);
-  }
- }
+			String filterScript =
+					"if address :comparator \"i;ascii-casemap\" :matches \"to\" \"\\\"user\\\"1\\\"@cosmonaut.zimbra.com\" {"
+							+ "  tag \"TestDoubleQuote\";" + "}";
 
- @Test
- void testAddressContainingQuestionMark() {
-  try {
-   
-   RuleManager.clearCachedRules(account);
-   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(
-     account);
+			account.setMailSieveScript(filterScript);
+			InputStream is = getClass().getResourceAsStream("TestFilter-testQuotesInAddress.msg");
+			MimeMessage mm = new ZMimeMessage(JMSession.getSession(), is);
 
-   String filterScript = "if address :comparator \"i;ascii-casemap\" :matches \"from\" \"user?1@cosmonaut.zimbra.com\" {"
-     + "  tag \"TestQuestionMark\";"
-     + "}";
+			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+					new ParsedMessage(mm, false), 0, account.getName(), new DeliveryContext(),
+					Mailbox.ID_FOLDER_INBOX, true);
+			assertEquals(1, ids.size());
+			Message msg = mbox.getMessageById(null, ids.get(0).getId());
+			assertEquals("TestDoubleQuote", ArrayUtil.getFirstElement(msg.getTags()));
+		} catch (Exception e) {
+			fail("No exception should be thrown" + e);
+		}
+	}
 
-   account.setMailSieveScript(filterScript);
-   InputStream is = getClass().getResourceAsStream("TestFilter-testQuestionMarkCommaInAddress.msg");
-   MimeMessage mm = new ZMimeMessage(JMSession.getSession(), is);
+	@Test
+	void testAddressContainingSingleQuote() {
+		try {
 
-   List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(
-     new OperationContext(mbox), mbox,
-     new ParsedMessage(mm, false),
-     0, account.getName(), new DeliveryContext(),
-     Mailbox.ID_FOLDER_INBOX, true);
-   assertEquals(1, ids.size());
-   Message msg = mbox.getMessageById(null, ids.get(0).getId());
-   assertEquals("TestQuestionMark", ArrayUtil.getFirstElement(msg.getTags()));
-  } catch (Exception e) {
-   fail("No exception should be thrown" + e);
-  }
- }
+			RuleManager.clearCachedRules(account);
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
- @Test
- void testAddressContainingComma() {
-  try {
-   
-   RuleManager.clearCachedRules(account);
-   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(
-     account);
+			String filterScript =
+					"if address :comparator \"i;ascii-casemap\" :matches \"from\" \"user'1@cosmonaut.zimbra.com\" {"
+							+ "  tag \"TestSingleQuote\";" + "}";
 
-   String filterScript = "if address :comparator \"i;ascii-casemap\" :matches \"to\" \"\\\"user,1\\\"@cosmonaut.zimbra.com\" {"
-     + "  tag \"TestComma\";"
-     + "}";
+			account.setMailSieveScript(filterScript);
+			InputStream is = getClass().getResourceAsStream("TestFilter-testQuotesInAddress.msg");
+			MimeMessage mm = new ZMimeMessage(JMSession.getSession(), is);
 
-   account.setMailSieveScript(filterScript);
-   InputStream is = getClass().getResourceAsStream("TestFilter-testQuestionMarkCommaInAddress.msg");
-   MimeMessage mm = new ZMimeMessage(JMSession.getSession(), is);
+			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+					new ParsedMessage(mm, false), 0, account.getName(), new DeliveryContext(),
+					Mailbox.ID_FOLDER_INBOX, true);
+			assertEquals(1, ids.size());
+			Message msg = mbox.getMessageById(null, ids.get(0).getId());
+			assertEquals("TestSingleQuote", ArrayUtil.getFirstElement(msg.getTags()));
+		} catch (Exception e) {
+			fail("No exception should be thrown" + e);
+		}
+	}
 
-   List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(
-     new OperationContext(mbox), mbox,
-     new ParsedMessage(mm, false),
-     0, account.getName(), new DeliveryContext(),
-     Mailbox.ID_FOLDER_INBOX, true);
-   assertEquals(1, ids.size());
-   Message msg = mbox.getMessageById(null, ids.get(0).getId());
-   assertEquals("TestComma", ArrayUtil.getFirstElement(msg.getTags()));
-  } catch (Exception e) {
-   fail("No exception should be thrown" + e);
-  }
- }
+	@Test
+	void testAddressContainingQuestionMark() {
+		try {
 
- @Test
- void compareEmptyStringWithAsciiNumeric() {
-  try {
-   RuleManager.clearCachedRules(account);
-   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+			RuleManager.clearCachedRules(account);
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-   String filterScript = "require [\"comparator-i;ascii-numeric\"];"
-     + "if address :is :comparator \"i;ascii-numeric\" \"To\" \"\" {"
-     + "  tag \"compareEmptyStringWithAsciiNumeric\";"
-     + "}";
+			String filterScript =
+					"if address :comparator \"i;ascii-casemap\" :matches \"from\" \"user?1@cosmonaut.zimbra.com\" {"
+							+ "  tag \"TestQuestionMark\";" + "}";
 
-   account.setMailSieveScript(filterScript);
-   List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(
-     new OperationContext(mbox), mbox, new ParsedMessage("To: test1@zimbra.com".getBytes(), false), 0,
-     account.getName(), new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-   assertEquals(1, ids.size());
-   Message msg = mbox.getMessageById(null, ids.get(0).getId());
-   assertEquals("compareEmptyStringWithAsciiNumeric", ArrayUtil.getFirstElement(msg.getTags()));
-  } catch (Exception e) {
-   fail("No exception should be thrown");
-  }
- }
+			account.setMailSieveScript(filterScript);
+			InputStream is = getClass().getResourceAsStream(
+					"TestFilter-testQuestionMarkCommaInAddress.msg");
+			MimeMessage mm = new ZMimeMessage(JMSession.getSession(), is);
 
- @Test
- void testNumericNegativeValueIs() {
-  try {
-   RuleManager.clearCachedRules(account);
-   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+					new ParsedMessage(mm, false), 0, account.getName(), new DeliveryContext(),
+					Mailbox.ID_FOLDER_INBOX, true);
+			assertEquals(1, ids.size());
+			Message msg = mbox.getMessageById(null, ids.get(0).getId());
+			assertEquals("TestQuestionMark", ArrayUtil.getFirstElement(msg.getTags()));
+		} catch (Exception e) {
+			fail("No exception should be thrown" + e);
+		}
+	}
 
-   String filterScript = "require [\"tag\", \"relational\", \"comparator-i;ascii-numeric\"];\n"
-     + "if address :count \"lt\" :comparator \"i;ascii-numeric\" \"To\" \"-1\" {"
-     + "  tag \"compareAsciiNumericNegativeValue\";"
-     + "}";
+	@Test
+	void testAddressContainingComma() {
+		try {
 
-   account.setMailSieveScript(filterScript);
-   List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(
-     new OperationContext(mbox), mbox, new ParsedMessage("To: test1@zimbra.com".getBytes(), false), 0,
-     account.getName(), new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-   assertEquals(1, ids.size());
-   Message msg = mbox.getMessageById(null, ids.get(0).getId());
-   assertNull(ArrayUtil.getFirstElement(msg.getTags()));
-  } catch (Exception e) {
-   fail("No exception should be thrown");
-  }
- }
+			RuleManager.clearCachedRules(account);
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
- @Test
- void compareHeaderNameWithLeadingSpaces() {
-  try {
-   RuleManager.clearCachedRules(account);
-   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+			String filterScript =
+					"if address :comparator \"i;ascii-casemap\" :matches \"to\" \"\\\"user,1\\\"@cosmonaut.zimbra.com\" {"
+							+ "  tag \"TestComma\";" + "}";
 
-   String filterScript = "require [\"tag\", \"comparator-i;ascii-numeric\"];\n"
-     + "if address :is :comparator \"i;ascii-numeric\" \" To\" \"test1@zimbra.com\" {"
-     + "  tag \"t1\";"
-     + "}"
-   ;
+			account.setMailSieveScript(filterScript);
+			InputStream is = getClass().getResourceAsStream(
+					"TestFilter-testQuestionMarkCommaInAddress.msg");
+			MimeMessage mm = new ZMimeMessage(JMSession.getSession(), is);
 
-   account.setMailSieveScript(filterScript);
-   List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(
-     new OperationContext(mbox), mbox, new ParsedMessage("To: test1@zimbra.com".getBytes(), false), 0,
-     account.getName(), new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-   assertEquals(1, ids.size());
-   Message msg = mbox.getMessageById(null, ids.get(0).getId());
-   assertEquals(0, msg.getTags().length);
-  } catch (Exception e) {
-   fail("No exception should be thrown");
-  }
- }
+			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+					new ParsedMessage(mm, false), 0, account.getName(), new DeliveryContext(),
+					Mailbox.ID_FOLDER_INBOX, true);
+			assertEquals(1, ids.size());
+			Message msg = mbox.getMessageById(null, ids.get(0).getId());
+			assertEquals("TestComma", ArrayUtil.getFirstElement(msg.getTags()));
+		} catch (Exception e) {
+			fail("No exception should be thrown" + e);
+		}
+	}
 
- @Test
- void compareHeaderNameWithTrailingSpaces() {
-  try {
-   RuleManager.clearCachedRules(account);
-   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+	@Test
+	void compareEmptyStringWithAsciiNumeric() {
+		try {
+			RuleManager.clearCachedRules(account);
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-   String filterScript = "require [\"tag\", \"comparator-i;ascii-numeric\"];\n"
-     + "if address :is :comparator \"i;ascii-numeric\" \"To \" \"test1@zimbra.com\" {"
-     + "  tag \"t2\";"
-     + "}"
-   ;
+			String filterScript = "require [\"comparator-i;ascii-numeric\"];"
+					+ "if address :is :comparator \"i;ascii-numeric\" \"To\" \"\" {"
+					+ "  tag \"compareEmptyStringWithAsciiNumeric\";" + "}";
 
-   account.setMailSieveScript(filterScript);
-   List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(
-     new OperationContext(mbox), mbox, new ParsedMessage("To: test1@zimbra.com".getBytes(), false), 0,
-     account.getName(), new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-   assertEquals(1, ids.size());
-   Message msg = mbox.getMessageById(null, ids.get(0).getId());
-   assertEquals(0, msg.getTags().length);
-  } catch (Exception e) {
-   fail("No exception should be thrown");
-  }
- }
+			account.setMailSieveScript(filterScript);
+			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+					new ParsedMessage("To: test1@zimbra.com".getBytes(), false), 0, account.getName(),
+					new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+			assertEquals(1, ids.size());
+			Message msg = mbox.getMessageById(null, ids.get(0).getId());
+			assertEquals("compareEmptyStringWithAsciiNumeric", ArrayUtil.getFirstElement(msg.getTags()));
+		} catch (Exception e) {
+			fail("No exception should be thrown");
+		}
+	}
 
- @Test
- void compareHeaderNameWithLeadingAndTrailingSpaces() {
-  try {
-   RuleManager.clearCachedRules(account);
-   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+	@Test
+	void testNumericNegativeValueIs() {
+		try {
+			RuleManager.clearCachedRules(account);
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-   String filterScript = "require [\"tag\", \"comparator-i;ascii-numeric\"];\n"
-     + "if address :is :comparator \"i;ascii-numeric\" \" To \" \"test1@zimbra.com\" {"
-     + "  tag \"t3\";"
-     + "}"
-   ;
+			String filterScript = "require [\"tag\", \"relational\", \"comparator-i;ascii-numeric\"];\n"
+					+ "if address :count \"lt\" :comparator \"i;ascii-numeric\" \"To\" \"-1\" {"
+					+ "  tag \"compareAsciiNumericNegativeValue\";" + "}";
 
-   account.setMailSieveScript(filterScript);
-   List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(
-     new OperationContext(mbox), mbox, new ParsedMessage("To: test1@zimbra.com".getBytes(), false), 0,
-     account.getName(), new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
-   assertEquals(1, ids.size());
-   Message msg = mbox.getMessageById(null, ids.get(0).getId());
-   assertEquals(0, msg.getTags().length);
-  } catch (Exception e) {
-   fail("No exception should be thrown");
-  }
- }
+			account.setMailSieveScript(filterScript);
+			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+					new ParsedMessage("To: test1@zimbra.com".getBytes(), false), 0, account.getName(),
+					new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+			assertEquals(1, ids.size());
+			Message msg = mbox.getMessageById(null, ids.get(0).getId());
+			assertNull(ArrayUtil.getFirstElement(msg.getTags()));
+		} catch (Exception e) {
+			fail("No exception should be thrown");
+		}
+	}
 
- @Test
- void testDomainIs() {
-  String filterScript = "require  [\"envelope\", \"tag\"];\n"
-    + "if address :domain :is \"to\" \"zimbra.com\" {\n"
-    + "    tag \"is-domain\";\n"
-    + "}\n"
-    + "if address :localpart :is \"to\" \"xyz\" {\n"
-    + "    tag \"is-local\";\n"
-    + "}\n"
-    + "if address :all :is \"to\" \"xyz@zimbra.com\" {"
-    + "    tag \"is-all\";\n"
-    + "}";
+	@Test
+	void compareHeaderNameWithLeadingSpaces() {
+		try {
+			RuleManager.clearCachedRules(account);
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-  try {
-   Provisioning prov = Provisioning.getInstance();
-   Account account = prov.createAccount("xyz@zimbra.com", "secret", new HashMap<String, Object>());
-   account.setMail("xyz@zimbra.com");
-   RuleManager.clearCachedRules(account);
-   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(
-     account);
+			String filterScript = "require [\"tag\", \"comparator-i;ascii-numeric\"];\n"
+					+ "if address :is :comparator \"i;ascii-numeric\" \" To\" \"test1@zimbra.com\" {"
+					+ "  tag \"t1\";" + "}";
 
-   account.setMailSieveScript(filterScript);
-   List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(
-     new OperationContext(mbox), mbox,
-     new ParsedMessage("To: xyz@zimbra.com".getBytes(), false), 0,
-     account.getName(),
-     new DeliveryContext(),
-     Mailbox.ID_FOLDER_INBOX, true);
-   assertEquals(1, ids.size());
-   Message msg = mbox.getMessageById(null, ids.get(0).getId());
+			account.setMailSieveScript(filterScript);
+			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+					new ParsedMessage("To: test1@zimbra.com".getBytes(), false), 0, account.getName(),
+					new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+			assertEquals(1, ids.size());
+			Message msg = mbox.getMessageById(null, ids.get(0).getId());
+			assertEquals(0, msg.getTags().length);
+		} catch (Exception e) {
+			fail("No exception should be thrown");
+		}
+	}
 
-   String[] tags = msg.getTags();
-   assertTrue(tags != null);
-   assertEquals(3, tags.length);
-   assertEquals("is-domain", tags[0]);
-   assertEquals("is-local", tags[1]);
-   assertEquals("is-all", tags[2]);
-  } catch (Exception e) {
-   fail("No exception should be thrown: " + e);
-  }
- }
+	@Test
+	void compareHeaderNameWithTrailingSpaces() {
+		try {
+			RuleManager.clearCachedRules(account);
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
- @Test
- void testMalencodedHeader() throws Exception {
-  String filterScript = "if address :matches [\"To\"] \"*\" { flag \"priority\"; }";
-  try {
-   
-   RuleManager.clearCachedRules(account);
-   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(
-     account);
-   account.setMailSieveScript(filterScript);
+			String filterScript = "require [\"tag\", \"comparator-i;ascii-numeric\"];\n"
+					+ "if address :is :comparator \"i;ascii-numeric\" \"To \" \"test1@zimbra.com\" {"
+					+ "  tag \"t2\";" + "}";
 
-   List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(
-     new OperationContext(mbox), mbox,
-     new ParsedMessage("to: =?ABC?A?GyRCJFskMhsoQg==?=@zimbra.com".getBytes(), false),
-     0, account.getName(), new DeliveryContext(),
-     Mailbox.ID_FOLDER_INBOX, true);
+			account.setMailSieveScript(filterScript);
+			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+					new ParsedMessage("To: test1@zimbra.com".getBytes(), false), 0, account.getName(),
+					new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+			assertEquals(1, ids.size());
+			Message msg = mbox.getMessageById(null, ids.get(0).getId());
+			assertEquals(0, msg.getTags().length);
+		} catch (Exception e) {
+			fail("No exception should be thrown");
+		}
+	}
 
-   assertEquals(1, ids.size());
-   Message msg = mbox.getMessageById(null, ids.get(0).getId());
-   assertTrue(msg.isTagged(FlagInfo.PRIORITY));
-  } catch (Exception e) {
-   fail("No exception should be thrown" + e);
-  }
- }
+	@Test
+	void compareHeaderNameWithLeadingAndTrailingSpaces() {
+		try {
+			RuleManager.clearCachedRules(account);
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
- /*
-  * The ascii-numeric comparator should be looked up in the list of the "require".
-  */
- @Test
- void testMissingComparatorNumericDeclaration() throws Exception {
-  // Default match type :is is used.
-  // No "comparator-i;ascii-numeric" capability text in the require command
-  String filterScript = "require [\"tag\"];"
-    + "if address :comparator \"i;ascii-numeric\" \"To\" \"test1@zimbra.com\" {\n"
-    + "  tag \"is\";\n"
-    + "} else {\n"
-    + "  tag \"not is\";\n"
-    + "}";
-  try {
-   
-   RuleManager.clearCachedRules(account);
-   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+			String filterScript = "require [\"tag\", \"comparator-i;ascii-numeric\"];\n"
+					+ "if address :is :comparator \"i;ascii-numeric\" \" To \" \"test1@zimbra.com\" {"
+					+ "  tag \"t3\";" + "}";
 
-   account.unsetAdminSieveScriptBefore();
-   account.unsetMailSieveScript();
-   account.unsetAdminSieveScriptAfter();
-   account.setMailSieveScript(filterScript);
-   List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(
-     new OperationContext(mbox), mbox,
-     new ParsedMessage("To: test1@zimbra.com\nSubject: example\n".getBytes(), false), 0,
-     account.getName(),
-     new DeliveryContext(),
-     Mailbox.ID_FOLDER_INBOX, true);
-   assertEquals(1, ids.size());
-   Message msg = mbox.getMessageById(null, ids.get(0).getId());
-   assertNull(ArrayUtil.getFirstElement(msg.getTags()));
-  } catch (Exception e) {
-   fail("No exception should be thrown " + e);
-  }
- }
+			account.setMailSieveScript(filterScript);
+			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+					new ParsedMessage("To: test1@zimbra.com".getBytes(), false), 0, account.getName(),
+					new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+			assertEquals(1, ids.size());
+			Message msg = mbox.getMessageById(null, ids.get(0).getId());
+			assertEquals(0, msg.getTags().length);
+		} catch (Exception e) {
+			fail("No exception should be thrown");
+		}
+	}
+
+	@Test
+	void testDomainIs() {
+		String filterScript =
+				"require  [\"envelope\", \"tag\"];\n" + "if address :domain :is \"to\" \"zimbra.com\" {\n"
+						+ "    tag \"is-domain\";\n" + "}\n" + "if address :localpart :is \"to\" \"xyz\" {\n"
+						+ "    tag \"is-local\";\n" + "}\n" + "if address :all :is \"to\" \"xyz@zimbra.com\" {"
+						+ "    tag \"is-all\";\n" + "}";
+
+		try {
+			Account account = createAccount().create();
+			account.setMail("xyz@zimbra.com");
+			RuleManager.clearCachedRules(account);
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+
+			account.setMailSieveScript(filterScript);
+			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+					new ParsedMessage("To: xyz@zimbra.com".getBytes(), false), 0, account.getName(),
+					new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+			assertEquals(1, ids.size());
+			Message msg = mbox.getMessageById(null, ids.get(0).getId());
+
+			String[] tags = msg.getTags();
+			assertTrue(tags != null);
+			assertEquals(3, tags.length);
+			assertEquals("is-domain", tags[0]);
+			assertEquals("is-local", tags[1]);
+			assertEquals("is-all", tags[2]);
+		} catch (Exception e) {
+			fail("No exception should be thrown: " + e);
+		}
+	}
+
+	@Test
+	void testMalencodedHeader() throws Exception {
+		String filterScript = "if address :matches [\"To\"] \"*\" { flag \"priority\"; }";
+		try {
+
+			RuleManager.clearCachedRules(account);
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+			account.setMailSieveScript(filterScript);
+
+			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+					new ParsedMessage("to: =?ABC?A?GyRCJFskMhsoQg==?=@zimbra.com".getBytes(), false), 0,
+					account.getName(), new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+
+			assertEquals(1, ids.size());
+			Message msg = mbox.getMessageById(null, ids.get(0).getId());
+			assertTrue(msg.isTagged(FlagInfo.PRIORITY));
+		} catch (Exception e) {
+			fail("No exception should be thrown" + e);
+		}
+	}
+
+	/*
+	 * The ascii-numeric comparator should be looked up in the list of the "require".
+	 */
+	@Test
+	void testMissingComparatorNumericDeclaration() throws Exception {
+		// Default match type :is is used.
+		// No "comparator-i;ascii-numeric" capability text in the require command
+		String filterScript = "require [\"tag\"];"
+				+ "if address :comparator \"i;ascii-numeric\" \"To\" \"test1@zimbra.com\" {\n"
+				+ "  tag \"is\";\n" + "} else {\n" + "  tag \"not is\";\n" + "}";
+		try {
+
+			RuleManager.clearCachedRules(account);
+			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+
+			account.unsetAdminSieveScriptBefore();
+			account.unsetMailSieveScript();
+			account.unsetAdminSieveScriptAfter();
+			account.setMailSieveScript(filterScript);
+			List<ItemId> ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mbox), mbox,
+					new ParsedMessage("To: test1@zimbra.com\nSubject: example\n".getBytes(), false), 0,
+					account.getName(), new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
+			assertEquals(1, ids.size());
+			Message msg = mbox.getMessageById(null, ids.get(0).getId());
+			assertNull(ArrayUtil.getFirstElement(msg.getTags()));
+		} catch (Exception e) {
+			fail("No exception should be thrown " + e);
+		}
+	}
 }
