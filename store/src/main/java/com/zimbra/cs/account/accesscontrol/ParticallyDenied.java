@@ -31,7 +31,7 @@ public class ParticallyDenied {
 
         if (targetSup instanceof Domain) {
             Domain domain = (Domain)targetSup;
-            Domain targetSubInDomain = TargetType.getTargetDomain(prov, targetSub);
+            Domain targetSubInDomain = TargetTypeLookup.getTargetDomain(prov, targetSub);
             if (targetSubInDomain == null)
                 return false;  // not a domain-ed entry
             else {

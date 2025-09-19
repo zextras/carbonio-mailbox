@@ -313,7 +313,7 @@ public class CollectAllEffectiveRights {
         for (GrantsOnTarget grantsOnTarget : grantsOnTargets) {
             Entry grantedOnEntry = grantsOnTarget.getTargetEntry();
             ZimbraACL acl = grantsOnTarget.getAcl();
-            TargetType targetType = TargetType.getTargetType(grantedOnEntry);
+            TargetType targetType = TargetTypeLookup.getTargetType(grantedOnEntry);
 
             if (targetType == TargetType.global) {
                 computeRightsInheritedFromGlobalGrant();
@@ -459,7 +459,7 @@ public class CollectAllEffectiveRights {
         for (GrantsOnTarget grantsOnTarget : grantsOnTargets) {
             Entry grantedOnEntry = grantsOnTarget.getTargetEntry();
             ZimbraACL acl = grantsOnTarget.getAcl();
-            TargetType targetType = TargetType.getTargetType(grantedOnEntry);
+            TargetType targetType = TargetTypeLookup.getTargetType(grantedOnEntry);
 
             if (targetType != TargetType.global) {
                 computeRightsOnEntry(targetType, grantedOnEntry);
@@ -557,7 +557,7 @@ public class CollectAllEffectiveRights {
             }
 
             EffectiveRights er = new EffectiveRights(
-                    tt.getCode(), TargetType.getId(targetEntry), targetEntry.getLabel(),
+                    tt.getCode(), TargetTypeLookup.getId(targetEntry), targetEntry.getLabel(),
                     mGrantee.getId(), mGrantee.getName());
 
             CollectEffectiveRights.getEffectiveRights(mGrantee, targetEntry, mExpandSetAttrs, mExpandGetAttrs, er);
@@ -580,7 +580,7 @@ public class CollectAllEffectiveRights {
     private void computeRightsInheritedFromDomain(TargetType targetType, Domain grantedOnDomain)
     throws ServiceException {
 
-        String domainId = TargetType.getId(grantedOnDomain);
+        String domainId = TargetTypeLookup.getId(grantedOnDomain);
         String domainName = grantedOnDomain.getLabel();
 
         // create a pseudo object(account, cr, dl) in this domain
@@ -590,7 +590,7 @@ public class CollectAllEffectiveRights {
 
         // get effective rights on the pseudo target
         EffectiveRights er = new EffectiveRights(
-                targetType.getCode(), TargetType.getId(pseudoTarget), pseudoTarget.getLabel(),
+                targetType.getCode(), TargetTypeLookup.getId(pseudoTarget), pseudoTarget.getLabel(),
                 mGrantee.getId(), mGrantee.getName());
         CollectEffectiveRights.getEffectiveRights(mGrantee, pseudoTarget, mExpandSetAttrs, mExpandGetAttrs, er);
 
@@ -642,7 +642,7 @@ public class CollectAllEffectiveRights {
             }
 
             try {
-                Domain subDomain = (Domain)TargetType.lookupTarget(mProv,
+                Domain subDomain = (Domain) TargetTypeLookup.lookupTarget(mProv,
                         TargetType.domain, TargetBy.id, zimbraId);
                 subDomains.add(subDomain);
             } catch (ServiceException e) {
@@ -708,9 +708,9 @@ public class CollectAllEffectiveRights {
             Entry target = null;
             EffectiveRights er = null;
             for (String memberName : shape.getMembers()) {
-                target = TargetType.lookupTarget(mProv, targetType, TargetBy.name, memberName, false);
+                target = TargetTypeLookup.lookupTarget(mProv, targetType, TargetBy.name, memberName, false);
                 if (target != null) {
-                    String targetId = TargetType.getId(target);
+                    String targetId = TargetTypeLookup.getId(target);
                     if (!entryIdsHasGrants.contains(targetId)) {
                         er = new EffectiveRights(
                                 targetType.getCode(), targetId, target.getLabel(),
@@ -730,7 +730,7 @@ public class CollectAllEffectiveRights {
 
     private void computeRightsOnEntry(TargetType grantedOnTargetType, Entry grantedOnEntry)
     throws ServiceException {
-        String targetId = TargetType.getId(grantedOnEntry);
+        String targetId = TargetTypeLookup.getId(grantedOnEntry);
         String targetName = grantedOnEntry.getLabel();
 
         EffectiveRights er = new EffectiveRights(

@@ -25,6 +25,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -53,6 +55,10 @@ public class AttributeManagerUtil {
 
   // multi-line continuation prefix chars
   private static final String ML_CONT_PREFIX = "  ";
+
+  public static AttributeManagerUtil get() throws ServiceException {
+    return new AttributeManagerUtil(AttributeManager.getInst());
+  }
 
   static {
     options.addOption("h", "help", false, "display this  usage info");
@@ -815,9 +821,10 @@ public class AttributeManagerUtil {
       AttributeManager am = null;
       if (action != Action.LIST_ATTRS) {
         if (!commandLine.hasOption('i')) {
-          usage("no input attribute xml files specified");
+          am =  AttributeManager.fromResource();
+        } else {
+          am =  AttributeManager.fromFileSystem(commandLine.getOptionValue('i'));
         }
-        am =  AttributeManager.fromFileSystem(commandLine.getOptionValue('i'));
         if (am.hasErrors()) {
           ZimbraLog.misc.warn(am.getErrors());
           System.exit(1);
@@ -825,9 +832,11 @@ public class AttributeManagerUtil {
       }
 
       PrintWriter printWriter;
-      final boolean printLogsToFile = commandLine.hasOption('o');
-      if (printLogsToFile) {
-        OutputStream outputStream = new FileOutputStream(commandLine.getOptionValue('o'));
+      final boolean outputToFile = commandLine.hasOption('o');
+      if (outputToFile) {
+        final String fileOutput = commandLine.getOptionValue('o');
+        Files.createDirectories(Paths.get(fileOutput).getParent());
+        OutputStream outputStream = new FileOutputStream(fileOutput);
         printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outputStream, StandardCharsets.UTF_8)));
       } else {
         printWriter = new PrintWriter(System.out);
@@ -878,7 +887,7 @@ public class AttributeManagerUtil {
         System.exit(1);
       }
       finally {
-        if (printLogsToFile) {
+        if (outputToFile) {
           printWriter.close();
         }
       }
@@ -1621,7 +1630,7 @@ public class AttributeManagerUtil {
   }
 
   /** */
-  private void generateGetters(String inClass, String javaFile) throws IOException {
+  public void generateGetters(String inClass, String javaFile) throws IOException {
     if (inClass == null) {
       usage("no class specified");
     }
@@ -1645,7 +1654,6 @@ public class AttributeManagerUtil {
         continue;
       }
       if (attributeInfo.isDeprecated()) {
-//        System.out.println("Attribute " + attributeInfo.getName() + " is deprecated, skipping it.");
         continue;
       }
 
@@ -1691,7 +1699,7 @@ public class AttributeManagerUtil {
   }
 
   /** */
-  private void generateProvisioningConstants(String javaFile) throws IOException {
+  public void generateProvisioningConstants(String javaFile) throws IOException {
     List<String> list = new ArrayList<>(getAttrs().keySet());
     Collections.sort(list);
 
@@ -1703,7 +1711,6 @@ public class AttributeManagerUtil {
         continue;
       }
       if (ai.isDeprecated()) {
-//        System.out.println("Attribute " + ai.getName() + " is deprecated, skipping it.");
         continue;
       }
       generateEnum(result, ai);
@@ -1715,7 +1722,6 @@ public class AttributeManagerUtil {
         continue;
       }
       if (attributeInfo.isDeprecated()) {
-//        System.out.println("Attribute " + attributeInfo.getName() + " is deprecated, skipping it.");
         continue;
       }
 

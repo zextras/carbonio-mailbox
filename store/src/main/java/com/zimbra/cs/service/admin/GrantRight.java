@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.service.admin;
 
+import com.zimbra.cs.account.accesscontrol.TargetType.SoapTargetType;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public class GrantRight extends RightDocumentHandler {
         RightCommand.grantRight(Provisioning.getInstance(), getAuthenticatedAccount(zsc), erTargSel,
                                 grReq.getGrantee(), modifierInfo.getValue(), rightModifier);
         // Bug 100965 Avoid Cross server delegate admin being broken after initial creation due to stale caches
-        if (com.zimbra.soap.type.TargetType.domain == erTargSel.getType()) {
+        if (SoapTargetType.domain == erTargSel.getType()) {
             TargetBy by = erTargSel.getBy();
             if ((TargetBy.id == by) || (TargetBy.name == by)) {
                 CacheSelector cacheSel = new CacheSelector(true /* allServers */, CacheEntryType.domain.toString());

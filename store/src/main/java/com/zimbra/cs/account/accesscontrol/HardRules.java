@@ -5,29 +5,15 @@
 
 package com.zimbra.cs.account.accesscontrol;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.service.ServiceException.Argument;
 import com.zimbra.common.service.ServiceException.InternalArgument;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.MailTarget;
-import com.zimbra.cs.account.Provisioning;
+import java.util.List;
 
 public class HardRules {
-
-    private static Set<String> ALWAYS_FORBIDDEN_ATTRS;
-
-    static {
-        Set<String> forbiddenAttr = new HashSet<>();
-        forbiddenAttr.add(Provisioning.A_zimbraIsAdminAccount.toLowerCase());
-
-        ALWAYS_FORBIDDEN_ATTRS = Collections.unmodifiableSet(forbiddenAttr);
-    }
 
     public enum HardRule {
         NOT_EFFECTIVE_DELEGATED_ADMIN_ACCOUNT,
@@ -103,15 +89,6 @@ public class HardRules {
 
         // hard rules are not applicable
         return null;
-    }
-
-    public static void checkForbiddenAttr(String attrName) throws ServiceException {
-        if (isForbiddenAttr(attrName))
-            throw ServiceException.PERM_DENIED("delegated admin is not allowed to modify " + attrName);
-    }
-
-    public static boolean isForbiddenAttr(String attrName) {
-        return ALWAYS_FORBIDDEN_ATTRS.contains(attrName.toLowerCase());
     }
 
 }

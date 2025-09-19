@@ -22,7 +22,7 @@ package() {
 
   cd "$(dirname "$(find / -name "yap.json" -print -quit)")/.."
 
-  install -D "store/target/conf/attrs/attrs-schema" \
+  install -D "mailbox-ldap-lib/ldap/generated/attrs-schema" \
     "${pkgdir}/opt/zextras/conf/attrs-schema"
 
   install -D "milter-conf/conf/milter.log4j.properties" \
@@ -38,18 +38,18 @@ package() {
   install -D "store-conf/conf/stats.conf.in" \
     "${pkgdir}/opt/zextras/conf/stats.conf.in"
 
-  install -D "store/src/main/resources/conf/attrs/amavisd-new-attrs.xml" \
+  install -D "attribute-manager/src/main/resources/conf/attrs/amavisd-new-attrs.xml" \
     "${pkgdir}/opt/zextras/conf/attrs/amavisd-new-attrs.xml"
-  install -D "store/src/main/resources/conf/attrs/attrs.xml" \
+  install -D "attribute-manager/src/main/resources/conf/attrs/attrs.xml" \
     "${pkgdir}/opt/zextras/conf/attrs/attrs.xml"
-  install -D "store/src/main/resources/conf/attrs/ocs.xml" \
+  install -D "attribute-manager/src/main/resources/conf/attrs/ocs.xml" \
     "${pkgdir}/opt/zextras/conf/attrs/ocs.xml"
 
   install -D "store-conf/conf/msgs/L10nMsg.properties" \
     "${pkgdir}/opt/zextras/conf/msgs/L10nMsg.properties"
   install -D "store-conf/conf/msgs/ZsMsg.properties" \
     "${pkgdir}/opt/zextras/conf/msgs/ZsMsg.properties"
-  install -D "store-conf/conf/msgs/ZsMsgRights.properties" \
+  install -D "store-conf/target/generated-resources/conf/msgs/ZsMsgRights.properties" \
     "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights.properties"
   install -D "store-conf/conf/msgs/ZsMsgRights_ar.properties" \
     "${pkgdir}/opt/zextras/conf/msgs/ZsMsgRights_ar.properties"
@@ -184,19 +184,19 @@ package() {
   install -D "store-conf/conf/msgs/ZsMsg_zh_TW.properties" \
     "${pkgdir}/opt/zextras/conf/msgs/ZsMsg_zh_TW.properties"
 
-  install -D "store/src/main/resources/conf/rights/adminconsole-ui.xml" \
+  install -D "attribute-manager/src/main/resources/conf/rights/adminconsole-ui.xml" \
     "${pkgdir}/opt/zextras/conf/rights/adminconsole-ui.xml"
-  install -D "store/src/main/resources/conf/rights/rights-adminconsole-domainadmin.xml" \
+  install -D "attribute-manager/src/main/resources/conf/rights/rights-adminconsole-domainadmin.xml" \
     "${pkgdir}/opt/zextras/conf/rights/rights-adminconsole-domainadmin.xml"
-  install -D "store/src/main/resources/conf/rights/rights-adminconsole.xml" \
+  install -D "attribute-manager/src/main/resources/conf/rights/rights-adminconsole.xml" \
     "${pkgdir}/opt/zextras/conf/rights/rights-adminconsole.xml"
-  install -D "store/src/main/resources/conf/rights/rights-domainadmin.xml" \
+  install -D "attribute-manager/target/generated-resources/conf/rights/rights-domainadmin.xml" \
     "${pkgdir}/opt/zextras/conf/rights/rights-domainadmin.xml"
-  install -D "store/src/main/resources/conf/rights/rights-roles.xml" \
+  install -D "attribute-manager/src/main/resources/conf/rights/rights-roles.xml" \
     "${pkgdir}/opt/zextras/conf/rights/rights-roles.xml"
-  install -D "store/src/main/resources/conf/rights/rights.xml" \
+  install -D "attribute-manager/src/main/resources/conf/rights/rights.xml" \
     "${pkgdir}/opt/zextras/conf/rights/rights.xml"
-  install -D "store/src/main/resources/conf/rights/user-rights.xml" \
+  install -D "attribute-manager/src/main/resources/conf/rights/user-rights.xml" \
     "${pkgdir}/opt/zextras/conf/rights/user-rights.xml"
 
   # systemd unit
