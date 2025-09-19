@@ -8,19 +8,17 @@ package com.zimbra.cs.filter;
 import static com.zimbra.cs.filter.jsieve.BulkTest.AUTO_REPLIED_ZIMBRA_READ_RECEIPT;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.filter.jsieve.BulkTest;
 import com.zimbra.cs.mailbox.DeliveryContext;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.util.ItemId;
-import java.util.HashMap;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,16 +28,13 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
-public final class BulkTestTest {
+public final class BulkTestTest extends MailboxTestSuite {
     private static Account account;
     private static Mailbox mailbox;
 
     @BeforeAll
     public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
-        account = prov.createAccount("test@zimbra.com", "secret", new HashMap<>());
-        MailboxTestUtil.clearData();
+        account = createAccount().create();
         RuleManager.clearCachedRules(account);
         account.setMailSieveScript("if bulk { tag \"bulk\"; }");
         mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
@@ -106,7 +101,7 @@ public final class BulkTestTest {
   assertEquals(0, msg.getTags().length);
 
   ids = RuleManager.applyRulesToIncomingMessage(new OperationContext(mailbox), mailbox,
-    new ParsedMessage("To: test@zimbra.com\nList-Unsubscribe: test\nSubject: bulk".getBytes(), false),
+    new ParsedMessage(("To: " + account.getName() + "\nList-Unsubscribe: test\nSubject: bulk").getBytes(), false),
     0, account.getName(), new DeliveryContext(), Mailbox.ID_FOLDER_INBOX, true);
   assertEquals(1, ids.size());
   msg = mailbox.getMessageById(null, ids.get(0).getId());
