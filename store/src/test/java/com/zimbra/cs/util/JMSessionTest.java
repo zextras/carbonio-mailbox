@@ -5,7 +5,8 @@
 
 package com.zimbra.cs.util;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import com.sun.mail.smtp.SMTPMessage;
 import com.zimbra.common.account.ZAttrProvisioning.ShareNotificationMtaConnectionType;

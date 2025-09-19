@@ -74,7 +74,6 @@ public class DelegateAuth extends AdminDocumentHandler {
 
         // take the min of requested lifetime vs maxLifetime
         long expires = System.currentTimeMillis()+ Math.min(lifetime, maxLifetime);
-        String token;
         Account adminAcct = prov.get(AccountBy.id, zsc.getAuthtokenAccountId(), zsc.getAuthToken());
         if (adminAcct == null)
             throw AccountServiceException.NO_SUCH_ACCOUNT(zsc.getAuthtokenAccountId());

@@ -8,9 +8,6 @@ import com.zimbra.cs.account.accesscontrol.RightCommand;
 import com.zimbra.cs.account.ldap.LdapProv;
 import com.zimbra.soap.admin.type.GranteeSelector;
 import com.zimbra.soap.type.TargetBy;
-import org.apache.http.HttpException;
-
-import java.io.IOException;
 
 class GetEffectiveRightsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;

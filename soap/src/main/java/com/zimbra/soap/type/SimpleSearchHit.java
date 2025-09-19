@@ -11,7 +11,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.soap.type.SearchHit;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class SimpleSearchHit implements SearchHit {

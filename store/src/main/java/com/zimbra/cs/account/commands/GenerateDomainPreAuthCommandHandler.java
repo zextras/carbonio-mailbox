@@ -2,7 +2,6 @@ package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.PreAuthKey;

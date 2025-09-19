@@ -5,7 +5,8 @@
 
 package com.zimbra.cs.store.http;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;

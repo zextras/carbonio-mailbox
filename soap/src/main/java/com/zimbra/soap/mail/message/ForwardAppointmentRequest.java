@@ -13,11 +13,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.common.soap.SmimeConstants;
 import com.zimbra.soap.mail.type.Msg;
 import com.zimbra.soap.mail.type.CalTZInfo;
 import com.zimbra.soap.mail.type.DtTimeInfo;
-import com.zimbra.soap.type.ZmBoolean;
 
 /**
  * @zm-api-command-auth-required true

@@ -19,7 +19,6 @@ import com.zimbra.cs.memcached.MemcachedConnector;
 import com.zimbra.cs.session.PendingLocalModifications;
 import com.zimbra.cs.session.PendingModifications.Change;
 import com.zimbra.cs.session.PendingModifications.ModificationKey;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;

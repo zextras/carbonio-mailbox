@@ -1,6 +1,6 @@
 package com.zimbra.cs.account;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import com.zextras.mailbox.soap.SoapExtension;
 import com.zimbra.common.localconfig.LC;

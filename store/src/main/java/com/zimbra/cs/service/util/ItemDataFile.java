@@ -6,7 +6,10 @@
 package com.zimbra.cs.service.util;
 
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.common.util.tar.*;
+import com.zimbra.common.util.tar.TarBuffer;
+import com.zimbra.common.util.tar.TarEntry;
+import com.zimbra.common.util.tar.TarInputStream;
+import com.zimbra.common.util.tar.TarOutputStream;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.MailServiceException;

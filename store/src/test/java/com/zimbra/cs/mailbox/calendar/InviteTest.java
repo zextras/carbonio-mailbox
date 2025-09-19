@@ -1,6 +1,6 @@
 package com.zimbra.cs.mailbox.calendar;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.zimbra.common.calendar.ZCalendar.ScheduleAgent;
 import com.zimbra.common.calendar.ZCalendar.ZCalendarBuilder;

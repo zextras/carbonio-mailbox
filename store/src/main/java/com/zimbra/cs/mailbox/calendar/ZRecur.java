@@ -714,10 +714,8 @@ public class ZRecur implements Cloneable {
             toRet.add(dtStartDate);
 
         int numConsecutiveIterationsWithoutMatchingInstance = 0;
-        boolean pastHardEndTime = false;
-        long numIterations = 0;  // track how many times we looped
+        boolean pastHardEndTime = false;  // track how many times we looped
         while (!pastHardEndTime && (maxInstancesExpanded <= 0 || numInstancesExpanded < maxInstancesExpanded)) {
-            numIterations++;
             boolean curIsAtOrAfterEarliestDate = !cur.getTime().before(earliestDate);
             boolean curIsAfterEndDate = cur.getTime().after(rangeEndDate);
             List<Calendar> addList = new LinkedList<>();

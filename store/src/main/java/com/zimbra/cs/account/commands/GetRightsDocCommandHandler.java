@@ -2,15 +2,11 @@ package com.zimbra.cs.account.commands;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.StringUtil;
-import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.FileGenUtil;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.soap.SoapProvisioning;
-import org.apache.http.HttpException;
-
-import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;

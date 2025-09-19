@@ -30,7 +30,6 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mime.MPartInfo;
 import com.zimbra.cs.mime.Mime;
-import com.zimbra.cs.mime.ParsedDocument;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.UserServlet;
 import com.zimbra.cs.service.UserServletContext;
@@ -422,7 +421,6 @@ public final class NativeFormatter extends Formatter {
         MailItem item = null;
 
         String creator = context.getAuthAccount() == null ? null : context.getAuthAccount().getName();
-        ParsedDocument pd = null;
 
         try {
             if (contentType == null) {
@@ -430,9 +428,6 @@ public final class NativeFormatter extends Formatter {
                 if (contentType == null)
                     contentType = MimeConstants.CT_APPLICATION_OCTET_STREAM;
             }
-
-            pd = new ParsedDocument(blob, filename, contentType, System.currentTimeMillis(), creator,
-                    context.req.getHeader("X-Zimbra-Description"), true);
 
             item = mbox.getItemByPath(context.opContext, filename, folder.getId());
             // XXX: should we just overwrite here instead?

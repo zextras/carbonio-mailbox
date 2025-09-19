@@ -5,9 +5,6 @@ import com.zimbra.cs.account.ArgException;
 import com.zimbra.cs.account.CommandHandler;
 import com.zimbra.cs.account.ProvUtil;
 import com.zimbra.cs.account.accesscontrol.Right;
-import org.apache.http.HttpException;
-
-import java.io.IOException;
 import java.util.List;
 
 class GetAllRightsCommandHandler implements CommandHandler {

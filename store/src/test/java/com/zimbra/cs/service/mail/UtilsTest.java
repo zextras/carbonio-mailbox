@@ -1,6 +1,6 @@
 package com.zimbra.cs.service.mail;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.zimbra.common.calendar.ParsedDateTime;
 import java.text.ParseException;

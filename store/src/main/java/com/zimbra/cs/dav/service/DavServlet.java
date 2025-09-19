@@ -42,7 +42,6 @@ import com.zimbra.client.ZMailbox;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.httpclient.HttpClientUtil;
-import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.W3cDomUtil;
 import com.zimbra.common.soap.XmlParseException;

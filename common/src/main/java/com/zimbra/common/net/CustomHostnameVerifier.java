@@ -18,7 +18,6 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
 
-import javax.security.cert.CertificateEncodingException;
 import org.bouncycastle.est.jcajce.JsseDefaultHostnameAuthorizer;
 
 import com.google.common.collect.Sets;

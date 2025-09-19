@@ -5,7 +5,8 @@
 
 package com.zimbra.cs.mime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import com.google.common.io.ByteStreams;
 import com.zimbra.common.util.L10nUtil;

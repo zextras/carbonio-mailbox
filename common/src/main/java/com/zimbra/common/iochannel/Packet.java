@@ -6,7 +6,6 @@
 package com.zimbra.common.iochannel;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
 import com.zimbra.common.iochannel.Client.PeerServer;

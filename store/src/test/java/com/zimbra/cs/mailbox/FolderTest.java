@@ -438,7 +438,6 @@ public final class FolderTest {
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 
   final String uuid = UUIDUtil.generateUUID();
-  final String url = "https://www.google.com/calendar/dav/YOUREMAIL@DOMAIN.COM/user";
   final long date = ((System.currentTimeMillis() - Constants.MILLIS_PER_MONTH) / 1000) * 1000;
 
   Folder.FolderOptions fopt = new Folder.FolderOptions();

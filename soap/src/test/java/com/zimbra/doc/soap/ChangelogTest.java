@@ -5,7 +5,7 @@
 
 package com.zimbra.doc.soap;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

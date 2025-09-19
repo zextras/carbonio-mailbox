@@ -4,7 +4,7 @@
 
 package com.zimbra.cs.redolog.op;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;

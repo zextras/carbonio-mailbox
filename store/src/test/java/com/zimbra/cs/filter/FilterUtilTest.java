@@ -6,7 +6,8 @@
 package com.zimbra.cs.filter;
 
 import static com.zimbra.cs.filter.JsieveConfigMapHandler.CAPABILITY_VARIABLES;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.StringUtil;

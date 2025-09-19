@@ -60,8 +60,6 @@ public class ParticallyDenied {
 
         } else if (targetSup instanceof DistributionList) {
             DistributionList dl = (DistributionList)targetSup;
-
-            String subId = null;
             if (targetSub instanceof Account)  // covers cr too
                 return prov.inDistributionList((Account)targetSub, dl.getId());
             else if (targetSub instanceof DistributionList)

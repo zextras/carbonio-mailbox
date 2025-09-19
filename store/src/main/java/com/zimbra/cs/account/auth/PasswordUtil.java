@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.account.auth;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

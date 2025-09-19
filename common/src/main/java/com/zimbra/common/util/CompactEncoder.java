@@ -10,11 +10,14 @@ package com.zimbra.common.util;
 
 import java.io.CharConversionException;
 import static java.lang.Character.isDigit;
-import java.lang.reflect.*;
+import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author tfr

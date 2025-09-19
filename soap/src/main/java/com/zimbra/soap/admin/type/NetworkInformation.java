@@ -5,8 +5,6 @@
 
 package com.zimbra.soap.admin.type;
 
-import com.zimbra.soap.admin.type.AdminAttrsImpl;
-
 public class NetworkInformation extends AdminAttrsImpl {
 
     public NetworkInformation() {

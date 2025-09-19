@@ -124,10 +124,6 @@ public final class ProxySelectors {
         }
     }
 
-    private static SocketAddress saddr(String host, int port) {
-        return new InetSocketAddress(host, port);
-    }
-
     public static void main(String[] args) throws Exception {
         System.setProperty("java.net.useSystemProxies", "true");
         String url = args.length > 0 ? args[0] : "http://www.news.com";

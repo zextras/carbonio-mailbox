@@ -5,7 +5,8 @@
 
 package com.zimbra.cs.filter;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import com.google.common.collect.Maps;
 import com.zimbra.common.account.Key;
@@ -141,7 +142,6 @@ public class ErejectTest {
   Mailbox mbox1 = null;
 
   Account acct2 = null;
-  Mailbox mbox2 = null;
 
   try {
    acct1 = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
@@ -149,7 +149,6 @@ public class ErejectTest {
    RuleManager.clearCachedRules(acct1);
 
    acct2 = Provisioning.getInstance().get(Key.AccountBy.name, "test2@zimbra.com");
-   mbox2 = MailboxManager.getInstance().getMailboxByAccount(acct2);
 
    LmtpEnvelope env = new LmtpEnvelope();
    LmtpAddress sender = new LmtpAddress("<test2@zimbra.com>", new String[]{"BODY", "SIZE"}, null);

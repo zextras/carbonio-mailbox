@@ -16,7 +16,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
 import com.zimbra.common.soap.AdminConstants;
-import com.zimbra.soap.admin.type.RightWithName;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class EffectiveRightsInfo {

@@ -51,10 +51,6 @@ public final class ThreaderTest {
     private static final String FOURTH_MESSAGE_ID = "<783246tygirufhmnasdb@sdkf.example.com>";
     private static final String FIFTH_MESSAGE_ID = "<kjsdfg.45wy.setrhye.g@sdkf.example.com>";
 
-    private Account getAccount() throws Exception {
-        return Provisioning.getInstance().getAccount("test@zimbra.com");
-    }
-
     public static ParsedMessage getRootMessage() throws Exception {
         return new ParsedMessage(getRootMimeMessage(), false);
     }

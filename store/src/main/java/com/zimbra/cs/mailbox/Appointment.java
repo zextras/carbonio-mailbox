@@ -119,7 +119,6 @@ public class Appointment extends CalendarItem {
             boolean hasMoreConflicts)
     throws ServiceException {
         StringBuilder sb = new StringBuilder();
-        int conflictCount = 0;
         for (Conflict avail : list) {
             if (!avail.isBusy()) continue;
 
@@ -164,7 +163,6 @@ public class Appointment extends CalendarItem {
                     sb.append(L10nUtil.getMessage(MsgKey.calendarResourceConflictScheduledBy, lc, orgDispName));
                 }
                 sb.append("\r\n");
-                conflictCount++;
             }
         }
         if (hasMoreConflicts)
@@ -180,7 +178,6 @@ public class Appointment extends CalendarItem {
             TimeZone tz, Locale lc)
     throws ServiceException {
         StringBuilder sb = new StringBuilder();
-        int conflictCount = 0;
         for (Conflict conflict : conflicts) {
             // List declined instances' start times.
             Instance instance = conflict.getInstance();
@@ -214,7 +211,6 @@ public class Appointment extends CalendarItem {
                 }
             }
             sb.append("\r\n");
-            conflictCount++;
         }
         return sb.toString();
     }

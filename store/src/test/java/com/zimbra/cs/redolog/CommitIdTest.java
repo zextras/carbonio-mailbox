@@ -7,8 +7,6 @@ package com.zimbra.cs.redolog;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.common.service.ServiceException;
-import com.zimbra.cs.redolog.CommitId;
-import com.zimbra.cs.redolog.TransactionId;
 import com.zimbra.cs.redolog.op.CommitTxn;
 
 import org.easymock.EasyMock;

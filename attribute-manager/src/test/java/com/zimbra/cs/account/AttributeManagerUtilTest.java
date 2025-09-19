@@ -1,6 +1,6 @@
 package com.zimbra.cs.account;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zimbra.common.service.ServiceException;
 import java.io.File;

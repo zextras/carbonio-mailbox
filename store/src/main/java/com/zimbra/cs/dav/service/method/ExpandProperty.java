@@ -5,7 +5,6 @@
 
 package com.zimbra.cs.dav.service.method;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;

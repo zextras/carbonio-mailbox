@@ -7,7 +7,8 @@ package com.zimbra.cs.dav.service;
 import static com.icegreen.greenmail.util.ServerSetup.PROTOCOL_SMTP;
 import static com.zimbra.cs.mailclient.smtp.SmtpConfig.DEFAULT_HOST;
 import static com.zimbra.cs.mailclient.smtp.SmtpConfig.DEFAULT_PORT;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;

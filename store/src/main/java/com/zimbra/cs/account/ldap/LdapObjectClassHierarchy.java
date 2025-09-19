@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.zimbra.common.util.StringUtil;
-import com.zimbra.cs.account.ldap.LdapProv;
 
 public class LdapObjectClassHierarchy {
 

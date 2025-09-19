@@ -1186,23 +1186,6 @@ public abstract class AdminAccessControl {
       return mAC.hasRightsToList(alias, AdminRight.PR_SYSTEM_ADMIN_ONLY, null);
     }
 
-    // no longer used for perf reason, for bug 46205
-    private boolean hasRightsToListAlias_old(Alias alias) throws ServiceException {
-      boolean hasRight;
-
-      // if an admin can list the account/cr/dl, he can do the same on their aliases
-      // don't need any getAttrs rights on the account/cr/dl, because the returned alias
-      // entry contains only attrs on the alias, not the target entry.
-      NamedEntry aliasTarget = alias.getTarget(mProv);
-
-      if (aliasTarget
-          == null) // we have a dangling alias, can't check right, allows only system admin
-      hasRight = hasRightsToListDanglingAlias(alias);
-      else hasRight = allow(aliasTarget);
-
-      return hasRight;
-    }
-
     // bug 46205.
     //
     // list alias is now a domain right.

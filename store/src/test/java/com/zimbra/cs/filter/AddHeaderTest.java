@@ -200,12 +200,10 @@ public class AddHeaderTest {
      null, new DeliveryContext(),
      Mailbox.ID_FOLDER_INBOX, true);
    Integer itemId = mbox1.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(MailItem.Type.MESSAGE).get(0);
-   int index = 0;
    String value = "";
    Message mdnMsg = mbox1.getMessageById(null, itemId);
    for (Enumeration<Header> e = mdnMsg.getMimeMessage().getAllHeaders(); e.hasMoreElements(); ) {
     Header temp = e.nextElement();
-    index++;
     if ("X-Test-Header".equals(temp.getName())) {
      value = temp.getValue();
      break;

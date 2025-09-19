@@ -9,7 +9,6 @@ import java.util.List;
 
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.extension.ZimbraExtension;
-import com.zimbra.cs.filter.JsieveConfigMapHandler;
 import com.zimbra.cs.filter.jsieve.ActionTag;
 import org.apache.jsieve.Arguments;
 import org.apache.jsieve.Block;

@@ -24,7 +24,10 @@ import com.zimbra.cs.mailbox.calendar.ZOrganizer;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 /**
  * @author tim

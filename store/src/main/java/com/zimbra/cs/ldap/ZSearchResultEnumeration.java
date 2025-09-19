@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.ldap;
 
-import com.zimbra.cs.ldap.LdapTODO.*;
+import com.zimbra.cs.ldap.LdapTODO.TODO;
 
 /*
  * migration path for javax.naming.NamingEnumeration interface

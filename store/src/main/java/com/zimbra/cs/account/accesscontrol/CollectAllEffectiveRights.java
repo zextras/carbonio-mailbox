@@ -752,25 +752,6 @@ public class CollectAllEffectiveRights {
         return caer.getAllGroupMembers(dl);
     }
 
-    private static void groupTest() throws ServiceException {
-        Provisioning prov = Provisioning.getInstance();
-        DistributionList dl = prov.get(DistributionListBy.name, "group1@phoebe.mac");
-
-        AllGroupMembers allMembers = allGroupMembers(dl);
-
-        System.out.println("\naccounts");
-        for (String member : allMembers.getMembers(TargetType.account))
-            System.out.println("  " + member);
-
-        System.out.println("\ncalendar resources");
-        for (String member : allMembers.getMembers(TargetType.calresource))
-            System.out.println("  " + member);
-
-        System.out.println("\ngroups");
-        for (String member : allMembers.getMembers(TargetType.dl))
-            System.out.println("  " + member);
-    }
-
     private static void setupShapeTest1() throws ServiceException {
         Provisioning prov = Provisioning.getInstance();
 
@@ -819,43 +800,6 @@ public class CollectAllEffectiveRights {
                                        AD.getName(), BD.getName(), CD.getName(),
                                        ABD.getName(), ACD.getName(), BCD.getName(),
                                        ABCD.getName()});
-    }
-
-    private static void shapeTest1() throws ServiceException {
-        setupShapeTest1();
-
-        Provisioning prov = Provisioning.getInstance();
-
-        // create test
-        Set<DistributionList> groupsWithGrants = new HashSet<>();
-        String domainName = "test.com";
-        groupsWithGrants.add(prov.get(DistributionListBy.name, "groupA@"+domainName));
-        groupsWithGrants.add(prov.get(DistributionListBy.name, "groupB@"+domainName));
-        groupsWithGrants.add(prov.get(DistributionListBy.name, "groupC@"+domainName));
-        groupsWithGrants.add(prov.get(DistributionListBy.name, "groupD@"+domainName));
-
-        Set<GroupShape> accountShapes = new HashSet<>();
-        Set<GroupShape> calendarResourceShapes = new HashSet<>();
-        Set<GroupShape> distributionListShapes = new HashSet<>();
-
-        for (DistributionList group : groupsWithGrants) {
-            // group is an AclGroup, which contains only upward membership, not downward membership.
-            // re-get the DistributionList object, which has the downward membership.
-            DistributionList dl = prov.get(DistributionListBy.id, group.getId());
-            AllGroupMembers allMembers = allGroupMembers(dl);
-            GroupShape.shapeMembers(TargetType.account, accountShapes, allMembers);
-            GroupShape.shapeMembers(TargetType.calresource, calendarResourceShapes, allMembers);
-            GroupShape.shapeMembers(TargetType.dl, distributionListShapes, allMembers);
-        }
-
-        int count = 1;
-        for (GroupShape shape : accountShapes) {
-            System.out.println("\n" + count++);
-            for (String group : shape.getGroups())
-                System.out.println("group " + group);
-            for (String member : shape.getMembers())
-                System.out.println("    " + member);
-        }
     }
 
     private static void setupShapeTest2() throws ServiceException {

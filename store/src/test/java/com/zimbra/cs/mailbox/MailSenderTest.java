@@ -5,7 +5,8 @@
 
 package com.zimbra.cs.mailbox;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.zimbra.common.account.ZAttrProvisioning.ShareNotificationMtaConnectionType;
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;
@@ -139,7 +140,6 @@ public final class MailSenderTest {
   Account account2 = prov.createAccount("test2@zimbra.com", "secret", attrs);
   MailSender mailSender = new MailSender();
   Pair<InternetAddress, InternetAddress> pair;
-  String target = "test@zimbra.com";
   String mail = "test2@zimbra.com";
   String alias = "test-alias@zimbra.com";
   String invalid1 = "foo@zimbra.com";

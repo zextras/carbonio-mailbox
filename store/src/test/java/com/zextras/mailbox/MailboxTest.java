@@ -4,7 +4,7 @@
 
 package com.zextras.mailbox;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import com.zextras.mailbox.util.MailboxTestData;
 import com.zextras.mailbox.util.MailboxSetupHelper;

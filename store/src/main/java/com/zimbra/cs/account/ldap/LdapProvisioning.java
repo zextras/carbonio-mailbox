@@ -7226,10 +7226,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       this.visitor = visitor;
     }
 
-    private String getNewToken() {
-      return newToken;
-    }
-
     @Override
     public void reset(GalSearchParams params) {
       // do nothing

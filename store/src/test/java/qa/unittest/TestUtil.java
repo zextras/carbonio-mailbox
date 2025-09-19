@@ -5,7 +5,8 @@
 
 package qa.unittest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import com.google.common.collect.Lists;
 import com.zimbra.client.ZEmailAddress;
@@ -580,21 +581,6 @@ public class TestUtil {
             }
             name = acctName;
             acct = null;
-        }
-
-        private void ensureAcctExists() throws ServiceException {
-            if (null != acct) {
-                return;
-            }
-            try {
-                acct = getAccount(name);
-            } catch (Exception se) {
-                ZimbraLog.test.debug("ensureAcctExists getAccount exception '%s'", name, se);
-            }
-            if (null != acct) {
-                return;
-            }
-            acct = create();
         }
 
         public Account create() throws ServiceException {

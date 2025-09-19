@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 
 import com.zimbra.common.soap.MailConstants;
-import com.zimbra.soap.mail.type.SuggestedQueryString;
 import com.zimbra.soap.type.BaseQueryInfo;
 import com.zimbra.soap.type.WildcardExpansionQueryInfo;
 import com.zimbra.soap.json.jackson.annotate.ZimbraJsonArrayForWrapper;

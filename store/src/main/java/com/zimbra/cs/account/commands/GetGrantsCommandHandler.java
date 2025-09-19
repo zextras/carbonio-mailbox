@@ -8,9 +8,6 @@ import com.zimbra.cs.account.accesscontrol.RightCommand;
 import com.zimbra.cs.account.accesscontrol.RightModifier;
 import com.zimbra.soap.admin.type.GranteeSelector;
 import com.zimbra.soap.type.TargetBy;
-import org.apache.http.HttpException;
-
-import java.io.IOException;
 
 class GetGrantsCommandHandler implements CommandHandler {
   private final ProvUtil provUtil;

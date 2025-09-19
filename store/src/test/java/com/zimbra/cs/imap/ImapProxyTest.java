@@ -5,16 +5,13 @@
 
 package com.zimbra.cs.imap;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-import com.google.common.base.Charsets;
 
 import static org.junit.jupiter.api.Assertions.*;
 

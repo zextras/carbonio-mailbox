@@ -6483,10 +6483,6 @@ public class ZMailbox implements ToZJSONObject, MailboxStore {
     return result;
   }
 
-  private void setVoiceStorePrincipal(Element req) {
-    req.addNonUniqueElement(mVoiceStorePrincipal.clone());
-  }
-
   public ContactPhone getContactByPhone(String phone) throws ServiceException {
     lock();
     try {

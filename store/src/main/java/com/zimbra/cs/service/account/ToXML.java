@@ -16,7 +16,6 @@ import com.google.common.base.Strings;
 import com.zimbra.common.calendar.TZIDMapper;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AccountConstants;
-import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.KeyValuePair;
 import com.zimbra.common.util.L10nUtil;

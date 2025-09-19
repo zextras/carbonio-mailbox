@@ -454,12 +454,9 @@ public class RightCommand {
 
             for (Element eAttr : eAttrs.listElements(AdminConstants.E_A)) {
                 String attrName = eAttr.getAttribute(AdminConstants.A_N);
-
                 // constraints
-                AttributeConstraint constraint = null;
                 Element eConstraint = eAttr.getOptionalElement(AdminConstants.E_CONSTRAINT);
-                if (eConstraint != null)
-                    constraint = AttributeConstraint.fromXML(am, attrName, eConstraint);
+                if (eConstraint != null){}
 
                 // default
                 Element eDefault = eAttr.getOptionalElement(AdminConstants.E_DEFAULT);

@@ -1400,20 +1400,14 @@ public class ZimletUtil {
     }
 
     private static void dispatch(String[] args) {
-        boolean isLocalInstall = false;
         try {
             if (args[argPos].equals("-l")) {
-                isLocalInstall = true;
                 argPos++;
             }
-            String adminURL = null;
-            String uploadURL = null;
             if (args[argPos].equals("-a")) {
-                adminURL = args[++argPos];
                 argPos++;
             }
             if (args[argPos].equals("-u")) {
-                uploadURL = args[++argPos];
                 argPos++;
             }
             if (argPos >= args.length) {

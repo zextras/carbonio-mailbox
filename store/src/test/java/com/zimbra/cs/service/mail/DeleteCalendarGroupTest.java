@@ -1,7 +1,8 @@
 package com.zimbra.cs.service.mail;
 
 import static com.zimbra.common.soap.Element.parseXML;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zextras.mailbox.soap.SoapTestSuite;
 import com.zimbra.common.service.ServiceException;

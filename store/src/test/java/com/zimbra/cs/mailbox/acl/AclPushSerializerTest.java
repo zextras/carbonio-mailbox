@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.MailItem;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 
 /**
  * @author zimbra

@@ -5,7 +5,7 @@
 
 package com.zimbra.cs.store;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.store.MailboxBlob.MailboxBlobInfo;

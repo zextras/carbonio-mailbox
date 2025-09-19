@@ -5,7 +5,8 @@
 
 package com.zimbra.cs.index.query;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.cs.account.Account;

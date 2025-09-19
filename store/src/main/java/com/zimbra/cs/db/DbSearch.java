@@ -1000,10 +1000,6 @@ public final class DbSearch {
     }
   }
 
-  private boolean encode(String column, boolean bool, Object o) {
-    return encode(column, bool, o, true);
-  }
-
   private boolean encode(String column, boolean bool, Object o, boolean and) {
     if (and) {
       sql.append(" AND ");
@@ -1011,10 +1007,6 @@ public final class DbSearch {
     sql.append(column).append(bool ? " = ?" : " != ?");
     params.add(o);
     return true;
-  }
-
-  private boolean encodeFolder(Set<Folder> folders, boolean bool) {
-    return encodeFolder(folders, bool, true);
   }
 
   private boolean encodeFolder(Set<Folder> folders, boolean bool, boolean and) {
@@ -1029,10 +1021,6 @@ public final class DbSearch {
       params.add(folder.getId());
     }
     return true;
-  }
-
-  private boolean encodeType(Set<MailItem.Type> types, boolean bool) {
-    return encodeType(types, bool, true);
   }
 
   private boolean encodeType(Set<MailItem.Type> types, boolean bool, boolean and) {
@@ -1065,10 +1053,6 @@ public final class DbSearch {
     return true;
   }
 
-  private boolean encode(String column, boolean bool, byte[] array) {
-    return encode(column, bool, array, true);
-  }
-
   private boolean encode(String column, boolean bool, byte[] array, boolean and) {
     if (array == null || array.length == 0) {
       return false;
@@ -1083,10 +1067,6 @@ public final class DbSearch {
     return true;
   }
 
-  private boolean encodeNoRecipients(boolean excludeHasRecipients) {
-    return encodeNoRecipients(excludeHasRecipients, true);
-  }
-
   private boolean encodeNoRecipients(boolean excludeHasRecipients, boolean and) {
     if (excludeHasRecipients) {
       if (and) {
@@ -1097,10 +1077,6 @@ public final class DbSearch {
     } else {
       return false;
     }
-  }
-
-  private boolean encodeTag(Set<Tag> tags, boolean bool, boolean useJoin) {
-    return encodeTag(tags, bool, useJoin, true);
   }
 
   private boolean encodeTag(Set<Tag> tags, boolean bool, boolean useJoin, boolean and) {
@@ -1195,25 +1171,6 @@ public final class DbSearch {
     return true;
   }
 
-  private boolean encodeDateRange(String column, DbSearchConstraints.NumericRange range) {
-    return encodeDateRange(column, range, true);
-  }
-
-  private boolean encodeTimestampRange(
-      String column, DbSearchConstraints.NumericRange range, long cutoff) {
-    return encodeTimestampRange(column, range, cutoff, true);
-  }
-
-  private boolean encodeLongRange(
-      String column, DbSearchConstraints.NumericRange range, long cutoff) {
-    return encodeLongRange(column, range, cutoff, true);
-  }
-
-  private boolean encodeIntRange(
-      String column, DbSearchConstraints.NumericRange range, int cutoff) {
-    return encodeIntRange(column, range, cutoff, true);
-  }
-
   private boolean encodeDateRange(
       String column, DbSearchConstraints.NumericRange range, boolean and) {
     return encodeRange(
@@ -1239,11 +1196,6 @@ public final class DbSearch {
   private boolean encodeIntRange(
       String column, DbSearchConstraints.NumericRange range, int cutoff, boolean and) {
     return encodeRange(column, range, cutoff, (int) range.min, (int) range.max, and);
-  }
-
-  private boolean encodeRange(
-      String column, DbSearchConstraints.NumericRange range, long cutoff, Object min, Object max) {
-    return encodeRange(column, range, cutoff, min, max, true);
   }
 
   private boolean encodeRange(
@@ -1281,10 +1233,6 @@ public final class DbSearch {
     return true;
   }
 
-  private boolean encodeStringRange(String column, DbSearchConstraints.StringRange range) {
-    return encodeStringRange(column, range, true);
-  }
-
   private boolean encodeStringRange(
       String column, DbSearchConstraints.StringRange range, boolean and) {
     if (Db.supports(Db.Capability.CASE_SENSITIVE_COMPARISON) && isCaseSensitiveField(column)) {
@@ -1307,10 +1255,6 @@ public final class DbSearch {
     }
     sql.append(')');
     return true;
-  }
-
-  private boolean encodeCursorRange(DbSearchConstraints.CursorRange range) {
-    return encodeCursorRange(range, true);
   }
 
   private boolean encodeCursorRange(DbSearchConstraints.CursorRange range, boolean and) {

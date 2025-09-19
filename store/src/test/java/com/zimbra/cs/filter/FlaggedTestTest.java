@@ -5,7 +5,8 @@
 
 package com.zimbra.cs.filter;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;

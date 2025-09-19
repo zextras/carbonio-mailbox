@@ -1,6 +1,6 @@
 package com.zimbra.cs.account.generators;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
