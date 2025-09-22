@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
@@ -16,17 +16,10 @@ import com.zimbra.cs.redolog.RedoLogOutput;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class CreateMessageIT {
-	@BeforeAll
-	public static void init() throws Exception {
-		MailboxTestUtil.initServer();
-	}
+public class CreateMessageIT extends MailboxTestSuite {
+
 	private CreateMessage createTestMessageRedoableOp(Mailbox mailbox) throws Exception {
 		ParsedMessage pm = MailboxTestUtil.generateMessage("test");
 		final long msgSize = pm.getRawInputStream().available();
@@ -42,12 +35,10 @@ public class CreateMessageIT {
 	}
 
 	private Mailbox createTestMailbox() throws Exception {
-		Account account = Provisioning.getInstance().createAccount(UUID.randomUUID() +
-				"@zimbra.com", "secret", new HashMap<String, Object>(
-				Map.of(Provisioning.A_zimbraId, UUID.randomUUID().toString())
-		));
+		Account account = createAccount().create();
 		return MailboxManager.getInstance().getMailboxByAccount(account);
 	}
+
 	@Test
 	void serializeDeserialize() throws Exception {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
