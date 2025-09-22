@@ -7,12 +7,9 @@ package com.zimbra.cs.zimlet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.zextras.mailbox.util.AccountUtil;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import java.util.Arrays;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -20,28 +17,18 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
-public final class ZimletUserPropertiesTest {
+public final class ZimletUserPropertiesTest extends MailboxTestSuite {
 
-  @BeforeAll
-  public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-  }
+	@Test
+	void save() throws Exception {
+		Account account = createAccount().create();
+		ZimletUserProperties prop = ZimletUserProperties.getProperties(account);
+		prop.setProperty("phone", "123123", "aaaaaaaaaaaa");
+		prop.setProperty("phone", "number", "bar");
+		prop.saveProperties(account);
 
-  @BeforeEach
-  public void setUp() throws Exception {
-    MailboxTestUtil.clearData();
-  }
-
- @Test
- void save() throws Exception {
-  Account account = AccountUtil.createAccount();
-  ZimletUserProperties prop = ZimletUserProperties.getProperties(account);
-  prop.setProperty("phone", "123123", "aaaaaaaaaaaa");
-  prop.setProperty("phone", "number", "bar");
-  prop.saveProperties(account);
-
-  String[] values = account.getZimletUserProperties();
-  Arrays.sort(values);
-  assertArrayEquals(new String[]{"phone:123123:aaaaaaaaaaaa", "phone:number:bar"}, values);
- }
+		String[] values = account.getZimletUserProperties();
+		Arrays.sort(values);
+		assertArrayEquals(new String[]{"phone:123123:aaaaaaaaaaaa", "phone:number:bar"}, values);
+	}
 }
