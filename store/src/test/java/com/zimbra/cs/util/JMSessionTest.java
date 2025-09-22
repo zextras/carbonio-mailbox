@@ -7,24 +7,14 @@ package com.zimbra.cs.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.sun.mail.smtp.SMTPMessage;
-import com.zimbra.common.account.ZAttrProvisioning.ShareNotificationMtaConnectionType;
-import com.zimbra.common.mime.shim.JavaMailInternetAddress;
-import com.zimbra.common.util.Log.Level;
-import com.zimbra.common.util.ZimbraLog;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.Server;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailclient.smtp.SmtpTransport;
 import com.zimbra.cs.mailclient.smtp.SmtpsTransport;
 import java.util.HashMap;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -32,63 +22,31 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
-public class JMSessionTest {
+public class JMSessionTest extends MailboxTestSuite {
 
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-        MockProvisioning prov = new MockProvisioning();
-        prov.getLocalServer().setSmtpPort(25);
-        Provisioning.setInstance(prov);
-    }
+	@Test
+	void getTransport() throws Exception {
+		assertSame(SmtpTransport.class,
+				JMSession.getSession().getTransport("smtp").getClass());
+		assertSame(SmtpsTransport.class,
+				JMSession.getSession().getTransport("smtps").getClass());
 
- @Test
- void getTransport() throws Exception {
-  assertSame(SmtpTransport.class,
-    JMSession.getSession().getTransport("smtp").getClass());
-  assertSame(SmtpsTransport.class,
-    JMSession.getSession().getTransport("smtps").getClass());
+		assertSame(SmtpTransport.class,
+				JMSession.getSmtpSession().getTransport("smtp").getClass());
+		assertSame(SmtpsTransport.class,
+				JMSession.getSmtpSession().getTransport("smtps").getClass());
+	}
 
-  assertSame(SmtpTransport.class,
-    JMSession.getSmtpSession().getTransport("smtp").getClass());
-  assertSame(SmtpsTransport.class,
-    JMSession.getSmtpSession().getTransport("smtps").getClass());
- }
+	@Test
+	void messageID() throws Exception {
+		Provisioning prov = Provisioning.getInstance();
+		Domain domain = prov.createDomain("example.com", new HashMap<String, Object>());
+		Account account = prov.createAccount("user1@example.com", "test123",
+				new HashMap<String, Object>());
 
-    //@Test
-    public void testRelayMta() throws Exception {
-        Provisioning prov = Provisioning.getInstance();
-        Server server = prov.getLocalServer();
-        server.setShareNotificationMtaHostname("mta02.zimbra.com");
-        server.setShareNotificationMtaPort(25);
-        server.setShareNotificationMtaAuthRequired(true);
-        server.setShareNotificationMtaConnectionType(ShareNotificationMtaConnectionType.STARTTLS);
-        server.setShareNotificationMtaAuthAccount("test-jylee");
-        server.setShareNotificationMtaAuthPassword("test123");
-
-        SMTPMessage out = new SMTPMessage(JMSession.getRelaySession());
-        InternetAddress address = new JavaMailInternetAddress("test-jylee@zimbra.com");
-        out.setFrom(address);
-
-        address = new JavaMailInternetAddress("test-jylee@zimbra.com");
-        out.setRecipient(javax.mail.Message.RecipientType.TO, address);
-
-        out.setSubject("test mail");
-        out.setText("hello world");
-
-        out.saveChanges();
-        ZimbraLog.smtp.setLevel(Level.trace);
-        Transport.send(out);
-    }
-
- @Test
- void messageID() throws Exception {
-  Provisioning prov = Provisioning.getInstance();
-  Domain domain = prov.createDomain("example.com", new HashMap<String, Object>());
-  Account account = prov.createAccount("user1@example.com", "test123", new HashMap<String, Object>());
-
-  MimeMessage mm = new MimeMessage(JMSession.getSmtpSession(account));
-  mm.saveChanges();
-  assertEquals(domain.getName() + '>', mm.getMessageID().split("@")[1], "message ID contains account domain");
- }
+		MimeMessage mm = new MimeMessage(JMSession.getSmtpSession(account));
+		mm.saveChanges();
+		assertEquals(domain.getName() + '>', mm.getMessageID().split("@")[1],
+				"message ID contains account domain");
+	}
 }
