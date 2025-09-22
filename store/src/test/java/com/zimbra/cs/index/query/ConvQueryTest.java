@@ -7,33 +7,21 @@ package com.zimbra.cs.index.query;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.zextras.mailbox.util.AccountUtil;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public final class ConvQueryTest {
+public final class ConvQueryTest extends MailboxTestSuite {
 
-  @BeforeAll
-  public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-  }
-
-  @BeforeEach
-  public void setUp() throws Exception {
-    MailboxTestUtil.clearData();
-  }
-
- @Test
- void remoteConvId() throws Exception {
-   final Account account = AccountUtil.createAccount();
-   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
-  assertEquals("<DB[CONV:\"11111111-1111-1111-1111-111111111111:111\" ]>",
-    ConvQuery.create(mbox, "11111111-1111-1111-1111-111111111111:111").compile(mbox, true).toString());
- }
+	@Test
+	void remoteConvId() throws Exception {
+		final Account account = createAccount().create();
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
+		assertEquals("<DB[CONV:\"11111111-1111-1111-1111-111111111111:111\" ]>",
+				ConvQuery.create(mbox, "11111111-1111-1111-1111-111111111111:111").compile(mbox, true)
+						.toString());
+	}
 
 }

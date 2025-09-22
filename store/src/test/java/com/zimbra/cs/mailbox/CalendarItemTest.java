@@ -9,14 +9,13 @@ import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.zextras.mailbox.util.AccountUtil;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.MailItem.UnderlyingData;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class CalendarItemTest {
+public class CalendarItemTest extends MailboxTestSuite {
   private OperationContext octxt;
   private CalendarItem calItem;
   private final Integer SEQ = 123;
@@ -24,18 +23,10 @@ public class CalendarItemTest {
   /**
    * @throws java.lang.Exception
    */
-  @BeforeAll
-  public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-  }
-
-  /**
-   * @throws java.lang.Exception
-   */
   @BeforeEach
   public void setUp() throws Exception {
     octxt = mock(OperationContext.class);
-    final Account account = AccountUtil.createAccount();
+    final Account account = createAccount().create();
     Mailbox mbox =
         MailboxManager.getInstance().getMailboxByAccount(account);
     // have to spy because later real method is called
