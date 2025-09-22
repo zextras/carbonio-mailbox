@@ -6,33 +6,20 @@ package com.zimbra.cs.redolog.op;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.mime.ParsedMessageDataSource;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class CreateMessageTest {
-
-	@BeforeAll
-	public static void init() throws Exception {
-		MailboxTestUtil.initServer();
-	}
-
+public class CreateMessageTest extends MailboxTestSuite {
 
 	private Mailbox createTestMailbox() throws Exception {
-		Account account = Provisioning.getInstance().createAccount(UUID.randomUUID() +
-				"@zimbra.com", "secret", new HashMap<String, Object>(
-				Map.of(Provisioning.A_zimbraId, UUID.randomUUID().toString())
-		));
+		Account account = createAccount().create();
 		return MailboxManager.getInstance().getMailboxByAccount(account);
 	}
 
