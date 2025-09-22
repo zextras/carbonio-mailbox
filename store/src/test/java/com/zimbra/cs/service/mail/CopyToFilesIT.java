@@ -13,10 +13,10 @@ import static org.mockserver.model.HttpRequest.request;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.carbonio.files.FilesClient;
 import com.zextras.carbonio.files.entities.NodeId;
-import com.zextras.mailbox.util.MailMessageBuilder;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.AccountAction;
+import com.zextras.mailbox.util.MailMessageBuilder;
 import com.zimbra.common.account.Key;
-import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapProtocol;
@@ -32,7 +32,6 @@ import com.zimbra.cs.mailbox.ACL;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.AttachmentService;
@@ -65,13 +64,16 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockserver.integration.ClientAndServer;
 import org.mockserver.model.HttpResponse;
 
-class CopyToFilesIT {
+class CopyToFilesIT extends MailboxTestSuite {
 
   private FilesClient mockFilesClient;
   private final FilesClient realFilesClient = FilesClient.atURL("http://127.0.0.1:20002");
   private AttachmentService mockAttachmentService;
   private final AttachmentService realAttachmentService = new MailboxAttachmentService();
   private ClientAndServer filesServer;
+  private Account testAccount;
+  private Account sharedAccount;
+  private Account delegatedAccount;
 
   @AfterEach
   public void tearDown() throws IOException {
@@ -93,47 +95,36 @@ class CopyToFilesIT {
 
   @BeforeEach
   void setUp() throws Exception {
-    MailboxTestUtil.initServer();
     filesServer = startClientAndServer(20002);
-    Provisioning prov = Provisioning.getInstance();
-    final Account sharedAcct =
-        prov.createAccount(
-            "shared@zimbra.com",
-            "secret",
-            new HashMap<>() {
-              {
-                put(ZAttrProvisioning.A_zimbraId, UUID.randomUUID().toString());
-              }
-            });
-    final Account delegated =
-        prov.createAccount("delegated@zimbra.com", "secret", new HashMap<String, Object>());
+    sharedAccount = createAccount().create();
+    delegatedAccount = createAccount().create();
     // Grant sendAs to delegated@
     final Set<ZimbraACE> aces =
         new HashSet<>() {
           {
             add(
                 new ZimbraACE(
-                    delegated.getId(),
+                    delegatedAccount.getId(),
                     GranteeType.GT_USER,
                     RightManager.getInstance().getRight(Right.RT_sendAs),
                     RightModifier.RM_CAN_DELEGATE,
                     null));
           }
         };
-    ACLUtil.grantRight(Provisioning.getInstance(), sharedAcct, aces);
+    ACLUtil.grantRight(Provisioning.getInstance(), sharedAccount, aces);
     // Grant shared@ root folder access to delegated@
     final short rwidx = ACL.stringToRights("rwidx");
-    final Mailbox sharedAcctMailbox = MailboxManager.getInstance().getMailboxByAccount(sharedAcct);
+    final Mailbox sharedAcctMailbox = MailboxManager.getInstance().getMailboxByAccount(sharedAccount);
     final Folder rootSharedAcctFolder = sharedAcctMailbox.getFolderByPath(null, "/");
     sharedAcctMailbox.grantAccess(
         null,
         rootSharedAcctFolder.getFolderId(),
-        delegated.getId(),
+        delegatedAccount.getId(),
         ACL.GRANTEE_AUTHUSER,
         rwidx,
         null);
-    prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
-    prov.createAccount("test1@zimbra.com", "secret", new HashMap<String, Object>());
+    testAccount = createAccount().create();
+    createAccount().create();
     mockFilesClient = mock(FilesClient.class);
     mockAttachmentService = mock(AttachmentService.class);
   }
@@ -141,7 +132,7 @@ class CopyToFilesIT {
   @ParameterizedTest
   @MethodSource("getAttachmentToUpload")
   void shouldReturnNodeIdWhenUploadingAttachment(String attachment) throws Exception {
-    final String email = "test@zimbra.com";
+    final String email = testAccount.getName();
     Account acct = Provisioning.getInstance().get(Key.AccountBy.name, email);
     final Message message = this.createDraftWithFileAttachment(email, attachment);
     final NodeId nodeId = new NodeId();
@@ -185,9 +176,7 @@ class CopyToFilesIT {
         .respond(
             HttpResponse.response(new ObjectMapper().writeValueAsString(nodeId))
                 .withStatusCode(200));
-    final String sharedEmail = "shared@zimbra.com";
-    final Account delegatedAcct =
-        Provisioning.getInstance().get(Key.AccountBy.name, "delegated@zimbra.com");
+    final String sharedEmail = sharedAccount.getName();
     final Message draftWithFileAttachment =
         this.createDraftWithFileAttachment(sharedEmail, attachment);
     // prepare request
@@ -195,8 +184,8 @@ class CopyToFilesIT {
     Map<String, Object> context = new HashMap<String, Object>();
     ZimbraSoapContext zsc =
         new ZimbraSoapContext(
-            AuthProvider.getAuthToken(delegatedAcct),
-            delegatedAcct.getId(),
+            AuthProvider.getAuthToken(delegatedAccount),
+            delegatedAccount.getId(),
             SoapProtocol.Soap12,
             SoapProtocol.Soap12);
     context.put(SoapEngine.ZIMBRA_CONTEXT, zsc);
@@ -213,7 +202,7 @@ class CopyToFilesIT {
 
   @Test
   void shouldThrowFileNotFoundWhenFileNotFound() throws Exception {
-    final Map<String, Object> context = this.getRequestContext("test@zimbra.com");
+    final Map<String, Object> context = this.getRequestContext(testAccount.getName());
     // request unknown attachment -> SoapFault
     CopyToFiles copyToFiles = copyToFiles(realAttachmentService, mockFilesClient);
     CopyToFilesRequest up = new CopyToFilesRequest();
@@ -227,7 +216,7 @@ class CopyToFilesIT {
 
   @Test
   void shouldThrowServiceExceptionWhenFilesClientReturnsFailure() throws Exception {
-    final Map<String, Object> context = this.getRequestContext("test@zimbra.com");
+    final Map<String, Object> context = this.getRequestContext(testAccount.getName());
     // have to mock because even the Upload object has some logic in it
     MimePart mockAttachment = mock(MimePart.class);
     InputStream uploadContent =
@@ -252,7 +241,7 @@ class CopyToFilesIT {
 
   @Test
   void shouldThrowServiceExceptionWhenFilesReturnsNullNodeId() throws Exception {
-    final Map<String, Object> context = this.getRequestContext("test@zimbra.com");
+    final Map<String, Object> context = this.getRequestContext(testAccount.getName());
     MimePart mockUpload = mock(MimePart.class);
     InputStream uploadContent =
         new ByteArrayInputStream("Hi, how, are, ye, ?".getBytes(StandardCharsets.UTF_8));
@@ -278,7 +267,7 @@ class CopyToFilesIT {
   @ParameterizedTest
   @MethodSource("getWrongMidInput")
   void shouldThrowMidMustBeAnIntegerWhenMidNotInteger() throws Exception {
-    final Map<String, Object> context = this.getRequestContext("test@zimbra.com");
+    final Map<String, Object> context = this.getRequestContext(testAccount.getName());
     CopyToFiles copyToFiles = copyToFiles(mockAttachmentService, mockFilesClient);
     CopyToFilesRequest up = new CopyToFilesRequest();
     up.setMessageId("AAAA");
@@ -310,7 +299,7 @@ class CopyToFilesIT {
 
   @Test
   void shouldThrowMalformedRequestWhenMalformedRequest() throws Exception {
-    final Map<String, Object> context = this.getRequestContext("test@zimbra.com");
+    final Map<String, Object> context = this.getRequestContext(testAccount.getName());
     AuthRequest request = new AuthRequest();
     Element element = JaxbUtil.jaxbToElement(request);
     ServiceException receivedException =
