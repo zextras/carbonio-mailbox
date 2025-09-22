@@ -1,28 +1,13 @@
 package com.zimbra.cs.util.proxyconfgen;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.util.proxyconfgen.ProxyConfVar.KeyValue;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class ProxyConfUtilTest {
-
-  @BeforeAll
-  public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-  }
-
-  @AfterEach
-  public void tearDown() throws Exception {
-    MailboxTestUtil.clearData();
-  }
 
   @ParameterizedTest
   @ValueSource(

@@ -7,14 +7,11 @@ package com.zimbra.cs.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
-import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.util.ParseMailboxID;
-import java.util.HashMap;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -22,16 +19,12 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
-public class ParseMailboxIDTest {
- private static Account account;
+public class ParseMailboxIDTest extends MailboxTestSuite {
+ private Account account;
 
- @BeforeAll
- public static void init() throws Exception {
-  MailboxTestUtil.initServer();
-  MockProvisioning prov = new MockProvisioning();
-  account = prov
-      .createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
-  Provisioning.setInstance(prov);
+ @BeforeEach
+ public void init() throws Exception {
+  account = createAccount().create();
  }
 
  @Test
@@ -53,7 +46,7 @@ public class ParseMailboxIDTest {
   assertEquals(0, id.getMailboxId());
   assertFalse(id.isAllMailboxIds());
   assertFalse(id.isAllServers());
-  assertEquals(Provisioning.getInstance().getAccountByName("test@zimbra.com"), id.getAccount());
+  assertEquals(account.toString(), id.getAccount().toString());
  }
 
  @Test
@@ -64,7 +57,7 @@ public class ParseMailboxIDTest {
   assertEquals(0, id.getMailboxId());
   assertFalse(id.isAllMailboxIds());
   assertFalse(id.isAllServers());
-  assertEquals(Provisioning.getInstance().getAccountByName("test@zimbra.com"), id.getAccount());
+  assertEquals(account.toString(), id.getAccount().toString());
  }
 
  @Test
