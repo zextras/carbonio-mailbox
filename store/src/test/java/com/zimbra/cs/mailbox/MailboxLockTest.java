@@ -13,7 +13,6 @@ import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.mailbox.Mailbox.FolderNode;
 import com.zimbra.cs.mailbox.MailboxLock.LockFailedException;
 import com.zimbra.cs.service.util.ItemId;
 import java.util.ArrayList;
@@ -21,23 +20,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class MailboxLockTest extends MailboxTestSuite {
 
-	private static Account account;
-
-	@BeforeAll
-	public static void init() throws Exception {
-		account = createAccount().create();
-	}
+	private Account account;
 
 	@BeforeEach
 	public void setup() throws Exception {
-		MailboxTestUtil.clearData();
-		MailboxManager.getInstance().getMailboxByAccountId(account.getId());
+		account = createAccount().create();
 	}
 
 	@Test
@@ -136,10 +128,9 @@ public class MailboxLockTest extends MailboxTestSuite {
 						mbox.lock.lock(false);
 						try {
 							ItemId iid = new ItemId(mbox, Mailbox.ID_FOLDER_USER_ROOT);
-							FolderNode node = mbox.getFolderTree(null, iid, true);
+							mbox.getFolderTree(null, iid, true);
 						} catch (ServiceException e) {
-							e.printStackTrace();
-							fail("ServiceException");
+							fail("ServiceException", e);
 						}
 						try {
 							Thread.sleep(sleepTime);
