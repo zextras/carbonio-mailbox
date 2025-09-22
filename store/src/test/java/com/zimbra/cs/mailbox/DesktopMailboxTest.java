@@ -5,18 +5,11 @@
 
 package com.zimbra.cs.mailbox;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import com.zimbra.common.service.ServiceException;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import com.zextras.mailbox.MailboxTestSuite;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.Db;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.DbPool.DbConnection;
@@ -24,101 +17,92 @@ import com.zimbra.cs.db.HSQLDB;
 import com.zimbra.cs.mailbox.Mailbox.MailboxData;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.redolog.op.RedoableOp;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class DesktopMailboxTest {
+public class DesktopMailboxTest extends MailboxTestSuite {
 
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer(); //TODO: allow paths to be specified so we can run tests outside of ZimbraServer
-        MailboxManager.setInstance(new MailboxManager() {
-            @Override
-            protected Mailbox instantiateMailbox(MailboxData data) {
-                //mock the behaviors we need to test in DesktopMailbox
-                return new Mailbox(data) {
-                    @Override
-                    protected boolean needRedo(OperationContext octxt, RedoableOp recorder) {
-                        return false;
-                    }
-                };
-            }
-            //TODO: eventually move this into ZimbraOffline and implement all of the provisioning needed for real DesktopMailbox
-//                try {
-//                    return new DesktopMailbox(data) {
-//                    };
-//                } catch (ServiceException e) {
-//                    throw new RuntimeException(e);
-//                }
-        });
+	@BeforeAll
+	public static void init() throws Exception {
+		MailboxManager.setInstance(new MailboxManager() {
+			@Override
+			protected Mailbox instantiateMailbox(MailboxData data) {
+				//mock the behaviors we need to test in DesktopMailbox
+				return new Mailbox(data) {
+					@Override
+					protected boolean needRedo(OperationContext octxt, RedoableOp recorder) {
+						return false;
+					}
+				};
+			}
+		});
+	}
 
-        Provisioning prov = Provisioning.getInstance();
-        prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
-    }
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        MailboxTestUtil.clearData();
-    }
+	private int countInboxMessages(Mailbox mbox) throws ServiceException, SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		DbConnection conn = DbPool.getConnection(mbox);
+		try {
+			stmt = conn.prepareStatement(
+					"SELECT COUNT(*) FROM mboxgroup1.mail_item WHERE mailbox_id = ? and folder_id = ?");
+			stmt.setInt(1, mbox.getId());
+			stmt.setInt(2, Mailbox.ID_FOLDER_INBOX);
+			rs = stmt.executeQuery();
+			if (rs.next()) {
+				return rs.getInt(1);
+			}
+			return 0;
+		} finally {
+			DbPool.closeResults(rs);
+			DbPool.quietCloseStatement(stmt);
+			DbPool.quietClose(conn);
+		}
+	}
 
-    public static final DeliveryOptions STANDARD_DELIVERY_OPTIONS = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
+	@Test
+	void nestedTxn() throws Exception {
+		Account acct = createAccount().create();
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+		HSQLDB db = (HSQLDB) Db.getInstance();
+		db.useMVCC(mbox);
 
-    private int countInboxMessages(Mailbox mbox) throws ServiceException, SQLException {
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        DbConnection conn = DbPool.getConnection(mbox);
-        try {
-            stmt = conn.prepareStatement("SELECT COUNT(*) FROM mboxgroup1.mail_item WHERE mailbox_id = ? and folder_id = ?");
-            stmt.setInt(1, mbox.getId());
-            stmt.setInt(2, Mailbox.ID_FOLDER_INBOX);
-            rs = stmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-            return 0;
-        } finally {
-            DbPool.closeResults(rs);
-            DbPool.quietCloseStatement(stmt);
-            DbPool.quietClose(conn);
-        }
-    }
+		DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
+		mbox.lock.lock();
+		try {
+			OperationContext octx = new OperationContext(acct);
+			mbox.beginTransaction("outer", octx);
+			mbox.beginTransaction("inner1", octx);
+			mbox.addMessage(octx, new ParsedMessage("From: test1-1@sub1.zimbra.com".getBytes(), false),
+					dopt, null);
 
- @Test
- void nestedTxn() throws Exception {
-  Account acct = Provisioning.getInstance().getAccount("test@zimbra.com");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
-  HSQLDB db = (HSQLDB) Db.getInstance();
-  db.useMVCC(mbox);
+			//nothing committed yet
+			assertEquals(0, countInboxMessages(mbox));
+			mbox.endTransaction(true); //inner 1
 
-  DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
-  mbox.lock.lock();
-  try {
-   OperationContext octx = new OperationContext(acct);
-   mbox.beginTransaction("outer", octx);
-   mbox.beginTransaction("inner1", octx);
-   mbox.addMessage(octx, new ParsedMessage("From: test1-1@sub1.zimbra.com".getBytes(), false), dopt, null);
+			//nothing committed yet
+			assertEquals(0, countInboxMessages(mbox));
 
-   //nothing committed yet
-   assertEquals(0, countInboxMessages(mbox));
-   mbox.endTransaction(true); //inner 1
+			mbox.beginTransaction("inner2", null);
+			mbox.addMessage(null, new ParsedMessage("From: test1-2@sub1.zimbra.com".getBytes(), false),
+					dopt, null);
 
-   //nothing committed yet
-   assertEquals(0, countInboxMessages(mbox));
+			//nothing committed yet
+			assertEquals(0, countInboxMessages(mbox));
+			mbox.endTransaction(true); //inner 2
 
-   mbox.beginTransaction("inner2", null);
-   mbox.addMessage(null, new ParsedMessage("From: test1-2@sub1.zimbra.com".getBytes(), false), dopt, null);
+			//nothing committed yet
+			assertEquals(0, countInboxMessages(mbox));
 
-   //nothing committed yet
-   assertEquals(0, countInboxMessages(mbox));
-   mbox.endTransaction(true); //inner 2
+			mbox.endTransaction(true); //outer
 
-   //nothing committed yet
-   assertEquals(0, countInboxMessages(mbox));
-
-   mbox.endTransaction(true); //outer
-
-   //committed
-   assertEquals(2, countInboxMessages(mbox));
-  } finally {
-   mbox.lock.release();
-  }
- }
+			//committed
+			assertEquals(2, countInboxMessages(mbox));
+		} finally {
+			mbox.lock.release();
+		}
+	}
 }
