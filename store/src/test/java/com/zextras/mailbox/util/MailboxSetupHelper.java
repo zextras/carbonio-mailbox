@@ -90,6 +90,14 @@ public class MailboxSetupHelper {
 		WellKnownTimeZones.loadFromFile(d);
 		LC.zimbra_tmp_directory.setDefault(Files.createTempDirectory("server_tmp_dir_").toAbsolutePath().toString());
 
+		// substitute test DS config file
+		String datasourceFilePath =  "src/test/resources/datasource-test.xml";
+		d = new File(datasourceFilePath);
+		if (!d.exists()) {
+			throw new FileNotFoundException("datasource-test.xml not found in " + datasourceFilePath);
+		}
+		LC.data_source_config.setDefault(datasourceFilePath);
+
 		LC.ldap_port.setDefault(ldapPort);
 
 		inMemoryLdapServer.start();
