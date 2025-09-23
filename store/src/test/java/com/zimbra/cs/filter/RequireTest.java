@@ -8,7 +8,6 @@ package com.zimbra.cs.filter;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zextras.mailbox.util.AccountUtil;
 import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.filter.RuleManager.AdminFilterType;
@@ -26,7 +25,6 @@ import org.apache.jsieve.parser.generated.Node;
 import org.junit.jupiter.api.Test;
 
 public class RequireTest extends MailboxTestSuite {
-
 
 	@Test
 	void requiresList() throws Exception {
@@ -63,7 +61,7 @@ public class RequireTest extends MailboxTestSuite {
 	@Test
 	void testRequireDeclaration() {
 		try {
-			Account account = AccountUtil.createAccount();
+			Account account = createAccount().create();
 			RuleManager.clearCachedRules(account);
 			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 			// No "variable" require
