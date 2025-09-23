@@ -1,35 +1,30 @@
 package com.zimbra.cs.dav.caldav;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.calendar.TimeZoneMap;
 import com.zimbra.common.calendar.ZCalendar.ICalTok;
 import com.zimbra.common.calendar.ZCalendar.ScheduleAgent;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.dav.DavContext;
 import com.zimbra.cs.dav.caldav.AutoScheduler.OrganizerAutoScheduler;
 import com.zimbra.cs.mailbox.CalendarItem.ReplyInfo;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Mailbox.SetCalendarItemData;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mailbox.calendar.ZAttendee;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 import javax.mail.Address;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class OrganizerAutoSchedulerTest {
+public class OrganizerAutoSchedulerTest extends MailboxTestSuite {
 
-  private Provisioning prov;
   private Account organizer;
   private Account attendee1;
   private Account attendee2;
@@ -37,48 +32,14 @@ public class OrganizerAutoSchedulerTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    MailboxTestUtil.initServer();
-    prov = Provisioning.getInstance();
-    organizer =
-        prov.createAccount(
-            "organizer@test.io",
-            "secret",
-            new HashMap<>() {
-              {
-                put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-              }
-            });
-    attendee1 =
-        prov.createAccount(
-            "attendee1@test.io",
-            "secret",
-            new HashMap<>() {
-              {
-                put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-              }
-            });
-    attendee2 =
-        prov.createAccount(
-            "attendee2@test.io",
-            "secret",
-            new HashMap<>() {
-              {
-                put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-              }
-            });
-    attendee3 =
-        prov.createAccount(
-            "attendee3@test.io",
-            "secret",
-            new HashMap<>() {
-              {
-                put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-              }
-            });
+    organizer = createAccount().create();
+    attendee1 = createAccount().create();
+    attendee2 = createAccount().create();
+    attendee3 = createAccount().create();
   }
 
  /**
-  * Test for CO-491 meeting with SCHEDULE-AGENT=CLIENT. attendee3@test.io has SCHEDULE-AGENT=CLIENT
+  * Test for CO-491 meeting with SCHEDULE-AGENT=CLIENT. attendee3 has SCHEDULE-AGENT=CLIENT
   * so no message autoschedule from server for it. Per RFC this is not a realistic scenario as all
   * attendees and organizer should have the same SCHEDULE-AGENT.
   */

@@ -4,29 +4,22 @@
 
 package com.zimbra.cs.redolog.op;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.mailbox.MailboxOperation;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.redolog.RedoLogInput;
 import com.zimbra.cs.redolog.RedoLogOutput;
 import com.zimbra.cs.redolog.TransactionId;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import org.easymock.EasyMock;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class AbortTxnTest {
+public class AbortTxnTest extends MailboxTestSuite {
     private AbortTxn op;
     private RedoableOp changeEntry;
-
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-    }
 
     @BeforeEach
     public void setUp() {

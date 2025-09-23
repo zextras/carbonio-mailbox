@@ -4,21 +4,17 @@
 
 package com.zimbra.cs.dav;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.dav.resource.DavResource;
 import com.zimbra.cs.dav.resource.RemoteCalendarCollection;
 import com.zimbra.cs.dav.resource.UrlNamespace;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailItem.Type;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Mountpoint;
-import java.util.HashMap;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -27,16 +23,6 @@ public class UrlNamespaceTest {
   private DavContext ctxt;
   private Mountpoint item;
   private RemoteCalendarCollection rcc;
-
-  /**
-   * @throws java.lang.Exception
-   */
-  @BeforeAll
-  public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-    Provisioning prov = Provisioning.getInstance();
-    prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
-  }
 
   /**
    * @throws java.lang.Exception

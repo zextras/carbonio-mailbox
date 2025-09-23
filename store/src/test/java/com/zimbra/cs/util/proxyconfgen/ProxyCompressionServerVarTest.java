@@ -1,33 +1,16 @@
 package com.zimbra.cs.util.proxyconfgen;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.cs.account.Entry;
 import com.zimbra.cs.account.Server;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class ProxyCompressionServerVarTest {
-
-  @BeforeAll
-  public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-  }
-
-  @AfterEach
-  public void tearDown() {
-    try {
-      MailboxTestUtil.clearData();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
+public class ProxyCompressionServerVarTest extends MailboxTestSuite {
 
  /**
   * test default behavior when {@code ZAttrProvisioning.A_zimbraHttpCompressionEnabled} is set to

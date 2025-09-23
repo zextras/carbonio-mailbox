@@ -7,23 +7,20 @@ package com.zimbra.cs.filter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.zextras.mailbox.util.AccountUtil;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.DeliveryContext;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.util.ItemId;
 import java.util.List;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class MimeHeaderTest {
+public class MimeHeaderTest extends MailboxTestSuite {
     private static String sampleMsg = "from: xyz@example.com\n"
             + "Subject: test message\n"
             + "to: foo@example.com, baz@example.com\n"
@@ -64,16 +61,6 @@ public class MimeHeaderTest {
             + "\n"
             + "------=_Part_64_1822363563.1505482033554--\n";
 
-  @BeforeAll
-  public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-  }
-
-  @BeforeEach
-  public void setUp() throws Exception {
-    MailboxTestUtil.clearData();
-  }
-
  @Test
  void test() throws Exception {
   // Default match type :is is used.
@@ -104,7 +91,7 @@ public class MimeHeaderTest {
 
     private void doTest(String filterScript, String expected) throws Exception {
         try {
-            Account account = AccountUtil.createAccount();
+            Account account = createAccount().create();
             RuleManager.clearCachedRules(account);
             Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 

@@ -5,38 +5,30 @@
 
 package com.zimbra.cs.service.util;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import com.zextras.mailbox.MailboxTestSuite;
+import com.zimbra.common.service.ServiceException;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import com.zimbra.common.service.ServiceException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+public class JWEUtilTest extends MailboxTestSuite {
 
-import com.zimbra.cs.mailbox.MailboxTestUtil;
-
-public class JWEUtilTest {
-
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-    }
-
- @Test
- void testJWE() {
-  Map<String, String> map = new HashMap<>();
-  String val1 = "jwt";
-  String val2 = "encryption";
-  map.put("key1", val1);
-  map.put("key2", val2);
-  try {
-   String jwe = JWEUtil.getJWE(map);
-   Map<String, String> result = JWEUtil.getDecodedJWE(jwe);
-   assertEquals(val1, result.get("key1"));
-   assertEquals(val2, result.get("key2"));
-  } catch (ServiceException se) {
-   fail("testJWE failed");
-  }
- }
+	@Test
+	void testJWE() {
+		Map<String, String> map = new HashMap<>();
+		String val1 = "jwt";
+		String val2 = "encryption";
+		map.put("key1", val1);
+		map.put("key2", val2);
+		try {
+			String jwe = JWEUtil.getJWE(map);
+			Map<String, String> result = JWEUtil.getDecodedJWE(jwe);
+			assertEquals(val1, result.get("key1"));
+			assertEquals(val2, result.get("key2"));
+		} catch (ServiceException se) {
+			fail("testJWE failed");
+		}
+	}
 }
