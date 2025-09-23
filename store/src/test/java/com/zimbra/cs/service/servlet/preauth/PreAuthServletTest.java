@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Maps;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
@@ -34,7 +35,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.Answer;
 
-class PreAuthServletTest {
+class PreAuthServletTest extends MailboxTestSuite {
 
   @Mock private AuthToken authTokenMock;
 
@@ -49,19 +50,17 @@ class PreAuthServletTest {
   @BeforeAll
   static void init() throws Exception {
 
-    MailboxTestUtil.initServer();
-
     final Provisioning prov = Provisioning.getInstance();
 
     final Map<String, Object> domainAttrs = Maps.newHashMap();
     final String preAuthKey = PreAuthKey.generateRandomPreAuthKey();
 
     domainAttrs.put(Provisioning.A_zimbraPreAuthKey, preAuthKey);
-    prov.createDomain("test.com", domainAttrs);
+    prov.createDomain("test81.com", domainAttrs);
 
     final Map<String, Object> attrs = Maps.newHashMap();
     attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-    prov.createAccount("one@test.com", "secret", attrs);
+    prov.createAccount("one@test81.com", "secret", attrs);
   }
 
   @BeforeEach
@@ -117,26 +116,26 @@ class PreAuthServletTest {
   @Test
   void redirectToApp_should_redirectToAdminUrl_when_adminUser()
       throws ServiceException, IOException {
-    final String baseUrl = "https://test.com";
+    final String baseUrl = "https://test81.com";
     final StringBuilder sb = new StringBuilder("param1=value1&param2=value2");
 
-    final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test.com");
+    final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test81.com");
     when(authTokenMock.getAccount()).thenReturn(account);
 
     preAuthServlet.redirectToApp(baseUrl, responseMock, authTokenMock, true, sb);
     verify(responseMock)
         .sendRedirect(
-            String.format("https://test.com:6071%s?%s", PreAuthServlet.DEFAULT_ADMIN_URL, sb));
+            String.format("https://test81.com:6071%s?%s", PreAuthServlet.DEFAULT_ADMIN_URL, sb));
   }
 
   @Test
   void redirectToApp_should_redirectToMailUrl_when_nonAdminUser()
       throws ServiceException, IOException {
 
-    final String baseUrl = "https://test.com";
+    final String baseUrl = "https://test81.com";
     final StringBuilder sb = new StringBuilder("param1=value1&param2=value2");
 
-    final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test.com");
+    final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test81.com");
     when(authTokenMock.getAccount()).thenReturn(account);
 
     preAuthServlet.redirectToApp(baseUrl, responseMock, authTokenMock, false, sb);
@@ -148,13 +147,13 @@ class PreAuthServletTest {
   @Test
   void setCookieAndRedirect_should_redirectToCorrectPath_when_validAuthToken()
       throws IOException, ServiceException {
-    final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test.com");
+    final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test81.com");
     final long expires = 1690231807995L;
     final AuthToken authToken = AuthProvider.getAuthToken(account, expires, false, null);
 
     when(requestMock.getScheme()).thenReturn("https");
     when(requestMock.getParameter(PreAuthParams.PARAM_REDIRECT_URL.getParamName()))
-        .thenReturn("https://test.com/carbonio");
+        .thenReturn("https://test81.com/carbonio");
 
     preAuthServlet.setCookieAndRedirect(requestMock, responseMock, authToken);
     verify(responseMock).sendRedirect("/carbonio");
@@ -163,7 +162,7 @@ class PreAuthServletTest {
   @Test
   void setCookieAndRedirect_should_redirectToRootPath_when_nullRedirectUrl()
       throws IOException, ServiceException {
-    final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test.com");
+    final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test81.com");
     final long expires = 1690231807995L;
     final AuthToken authToken = AuthProvider.getAuthToken(account, expires, false, null);
 
