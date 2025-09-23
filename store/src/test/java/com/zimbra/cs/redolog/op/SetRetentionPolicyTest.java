@@ -7,37 +7,24 @@ package com.zimbra.cs.redolog.op;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.zextras.mailbox.util.AccountUtil;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Tag;
 import com.zimbra.soap.mail.type.Policy;
 import com.zimbra.soap.mail.type.RetentionPolicy;
 import java.util.List;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class SetRetentionPolicyTest {
-
-  @BeforeAll
-  public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-  }
-
-  @BeforeEach
-  public void setUp() throws Exception {
-    MailboxTestUtil.clearData();
-  }
+public class SetRetentionPolicyTest extends MailboxTestSuite {
 
   /** Verifies serializing, deserializing, and replaying for folder. */
   @Test
   void redoFolder() throws Exception {
 		Mailbox mbox =
-        MailboxManager.getInstance().getMailboxByAccount(AccountUtil.createAccount());
+        MailboxManager.getInstance().getMailboxByAccount(createAccount().create());
 
     // Create folder.
     Folder folder =
@@ -65,7 +52,7 @@ public class SetRetentionPolicyTest {
   @Test
   void redoTag() throws Exception {
 		Mailbox mbox =
-        MailboxManager.getInstance().getMailboxByAccount(AccountUtil.createAccount());
+        MailboxManager.getInstance().getMailboxByAccount(createAccount().create());
 
     // Create folder.
     Tag tag = mbox.createTag(null, "tag", (byte) 0);

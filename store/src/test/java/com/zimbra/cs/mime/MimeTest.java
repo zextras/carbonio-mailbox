@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Sets;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.util.JMSession;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +23,6 @@ import javax.mail.internet.MimePart;
 import javax.mail.util.SharedByteArrayInputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.RandomStringUtils;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import qa.unittest.TestUtil;
@@ -53,11 +51,6 @@ public class MimeTest {
           Content-Type: multipart/mixed;\r
           boundary="----------1111971890AC3BB91"\r
           """;
-
-  @BeforeAll
-  public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-  }
 
   private void testCP932(String contentType) throws IOException {
     Reader reader =
