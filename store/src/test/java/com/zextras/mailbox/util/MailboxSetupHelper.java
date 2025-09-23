@@ -22,7 +22,6 @@ import com.zimbra.cs.mailbox.ScheduledTaskManager;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.store.StoreManager;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -35,30 +34,40 @@ public class MailboxSetupHelper {
 
 	private final Path mailboxHome;
 	private final Path mailboxTmpDirectory;
+  private final String timezoneFilePath;
+  private final String datasourceFilePath;
 	private final int ldapPort;
 
 	private final InMemoryLdapServer inMemoryLdapServer;
 
-	private MailboxSetupHelper(Path mailboxHome, Path tmpDirectory, int ldapPort, InMemoryLdapServer inMemoryLdapServer) {
+	private MailboxSetupHelper(Path mailboxHome, Path tmpDirectory, String timezoneFilePath, String datasourceFilePath, int ldapPort, InMemoryLdapServer inMemoryLdapServer) {
 		this.mailboxHome = mailboxHome;
 		this.mailboxTmpDirectory = tmpDirectory;
-		this.ldapPort = ldapPort;
+    this.timezoneFilePath = timezoneFilePath;
+    this.datasourceFilePath = datasourceFilePath;
+    this.ldapPort = ldapPort;
 		this.inMemoryLdapServer = inMemoryLdapServer;
 	}
 
-	public static MailboxSetupHelper create() {
-		try {
-			var ldapPort = PortUtil.findFreePort();
-			var inMemoryLdapServer = new Builder()
-					.withLdapPort(ldapPort)
-					.build();
-			final Path mailboxHome1 = Files.createTempDirectory("mailbox_home");
-			final Path mailboxTmp = Files.createTempDirectory("mailbox_tmp");
-			return new MailboxSetupHelper(mailboxHome1, mailboxTmp, ldapPort, inMemoryLdapServer);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+  public static MailboxSetupHelper create() {
+    try {
+      var ldapPort = PortUtil.findFreePort();
+      var inMemoryLdapServer = new Builder().withLdapPort(ldapPort).build();
+      final Path mailboxHome1 = Files.createTempDirectory("mailbox_home");
+      final Path mailboxTmp = Files.createTempDirectory("mailbox_tmp");
+      final String timezoneFilePath = "src/test/resources/timezones-test.ics";
+      final String datasourceFilePath = "src/test/resources/datasource-test.xml";
+      return new MailboxSetupHelper(
+          mailboxHome1,
+          mailboxTmp,
+          timezoneFilePath,
+          datasourceFilePath,
+          ldapPort,
+          inMemoryLdapServer);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
 
 	private void mockMessageBrokerClient() {
 			var messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
@@ -81,20 +90,10 @@ public class MailboxSetupHelper {
 		LC.zimbra_tmp_directory.setDefault(mailboxTmpDirectory.toAbsolutePath().toString());
 
 		// substitute test TZ file
-		String timezonefilePath =  "src/test/resources/timezones-test.ics";
-		File d = new File(timezonefilePath);
-		if (!d.exists()) {
-			throw new FileNotFoundException("timezones-test.ics not found in " + timezonefilePath);
-		}
-		LC.timezone_file.setDefault(timezonefilePath);
-		WellKnownTimeZones.loadFromFile(d);
+		LC.timezone_file.setDefault(timezoneFilePath);
+		WellKnownTimeZones.loadFromFile(new File(timezoneFilePath));
 
 		// substitute test DS config file
-		String datasourceFilePath =  "src/test/resources/datasource-test.xml";
-		d = new File(datasourceFilePath);
-		if (!d.exists()) {
-			throw new FileNotFoundException("datasource-test.xml not found in " + datasourceFilePath);
-		}
 		LC.data_source_config.setDefault(datasourceFilePath);
 
 		LC.ldap_port.setDefault(ldapPort);
