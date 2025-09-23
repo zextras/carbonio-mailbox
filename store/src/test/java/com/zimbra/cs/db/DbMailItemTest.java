@@ -10,9 +10,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
+import com.zextras.mailbox.MailboxTestSuite;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbMailItem.QueryParams;
 import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.mailbox.Flag;
@@ -21,14 +22,11 @@ import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -37,20 +35,16 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
-public final class DbMailItemTest {
-
-  @BeforeAll
-  public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-  }
+public final class DbMailItemTest extends MailboxTestSuite {
 
   private DbConnection conn = null;
   private Mailbox mbox = null;
 
   @BeforeEach
   public void setUp() throws Exception {
-    MailboxTestUtil.clearData();
-    Account account = Provisioning.getInstance().createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+    Account account = createAccount()
+        .withAttribute(ZAttrProvisioning.A_zimbraDumpsterEnabled, "TRUE")
+        .create();
     mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
     conn = DbPool.getConnection(mbox);
   }
