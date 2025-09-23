@@ -19,7 +19,6 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.util.ItemId;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -55,7 +54,7 @@ public final class MeTestTest extends MailboxTestSuite {
 		assertEquals("Priority", ArrayUtil.getFirstElement(msg.getTags()));
 	}
 
-	private static byte @NotNull [] getTo() {
+	private static byte [] getTo() {
 		return ("To: " + mail).getBytes();
 	}
 
