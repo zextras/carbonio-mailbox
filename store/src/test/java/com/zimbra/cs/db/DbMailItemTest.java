@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.db.DbMailItem.QueryParams;
@@ -17,6 +18,7 @@ import com.zimbra.cs.db.DbPool.DbConnection;
 import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.Flag.FlagInfo;
 import com.zimbra.cs.mailbox.MailItem;
+import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
@@ -57,127 +59,60 @@ public final class DbMailItemTest {
   public void tearDown() {
     conn.closeQuietly();
   }
+  private int insertIntoMailItem(int id, Type type, int indexId) throws ServiceException {
+    return DbUtil.executeUpdate(
+        conn,
+        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
+            + " mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
+        mbox.getId(),
+        id,
+        type.toByte(),
+        indexId);
+  }
+
+
+  private int insertIntoDumpster(int id, Type type, int indexId) throws ServiceException {
+    return DbUtil.executeUpdate(
+        conn,
+        "INSERT INTO mboxgroup1.mail_item_dumpster (mailbox_id, id, type, index_id, date, size,"
+            + " flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
+        mbox.getId(),
+        id,
+        type.toByte(),
+        indexId);
+  }
+
 
   @Test
   void getIndexDeferredIds() throws Exception {
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
-            + " mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        100,
-        MailItem.Type.MESSAGE.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
-            + " mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        101,
-        MailItem.Type.MESSAGE.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
-            + " mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        102,
-        MailItem.Type.MESSAGE.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
-            + " mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        103,
-        MailItem.Type.MESSAGE.toByte(),
-        103);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
-            + " mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        200,
-        MailItem.Type.CONTACT.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
-            + " mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        201,
-        MailItem.Type.CONTACT.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
-            + " mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        202,
-        MailItem.Type.CONTACT.toByte(),
-        202);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item_dumpster (mailbox_id, id, type, index_id, date, size,"
-            + " flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        300,
-        MailItem.Type.MESSAGE.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item_dumpster (mailbox_id, id, type, index_id, date, size,"
-            + " flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        301,
-        MailItem.Type.MESSAGE.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item_dumpster (mailbox_id, id, type, index_id, date, size,"
-            + " flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        302,
-        MailItem.Type.MESSAGE.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item_dumpster (mailbox_id, id, type, index_id, date, size,"
-            + " flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        303,
-        MailItem.Type.MESSAGE.toByte(),
-        303);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item_dumpster (mailbox_id, id, type, index_id, date, size,"
-            + " flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        400,
-        MailItem.Type.CONTACT.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item_dumpster (mailbox_id, id, type, index_id, date, size,"
-            + " flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        401,
-        MailItem.Type.CONTACT.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item_dumpster (mailbox_id, id, type, index_id, date, size,"
-            + " flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        402,
-        MailItem.Type.CONTACT.toByte(),
-        402);
+    final Type message = Type.MESSAGE;
+    final Type contact = Type.CONTACT;
+
+    insertIntoMailItem(100, message, 0);
+    insertIntoMailItem(101, message, 0);
+    insertIntoMailItem(102, message, 0);
+    insertIntoMailItem(103, message, 103);
+
+    insertIntoMailItem(200, contact, 0);
+    insertIntoMailItem(201, contact, 0);
+    insertIntoMailItem(202, contact, 202);
+
+    insertIntoDumpster(300, message, 0);
+    insertIntoDumpster(301, message, 0);
+    insertIntoDumpster(302, message, 0);
+    insertIntoDumpster(303, message, 303);
+    insertIntoDumpster(400, contact, 0);
+    insertIntoDumpster(401, contact, 0);
+    insertIntoDumpster(402, contact, 402);
 
     Multimap<MailItem.Type, Integer> result = DbMailItem.getIndexDeferredIds(conn, mbox);
+    // checks that items with indexId == 0 are returned. 10 in total
     assertEquals(10, result.size());
-    assertEquals(ImmutableSet.of(100, 101, 102, 300, 301, 302), result.get(MailItem.Type.MESSAGE));
-    assertEquals(ImmutableSet.of(200, 201, 400, 401), result.get(MailItem.Type.CONTACT));
+    assertEquals(ImmutableSet.of(100, 101, 102, 300, 301, 302), result.get(message));
+    assertEquals(ImmutableSet.of(200, 201, 400, 401), result.get(contact));
   }
+
+
 
   @Test
   void setIndexIds() throws Exception {
