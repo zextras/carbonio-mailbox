@@ -16,7 +16,6 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.db.DbMailItem.QueryParams;
 import com.zimbra.cs.db.DbPool.DbConnection;
-import com.zimbra.cs.mailbox.Flag;
 import com.zimbra.cs.mailbox.Flag.FlagInfo;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.MailItem.Type;
@@ -53,7 +52,7 @@ public final class DbMailItemTest extends MailboxTestSuite {
   public void tearDown() {
     conn.closeQuietly();
   }
-  private int insertIntoMailItem(int id, Type type, int indexId) throws ServiceException {
+  private int insertIntoMailItem(int id, Type type, Integer indexId) throws ServiceException {
     return DbUtil.executeUpdate(
         conn,
         "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
@@ -65,7 +64,7 @@ public final class DbMailItemTest extends MailboxTestSuite {
   }
 
 
-  private int insertIntoDumpster(int id, Type type, int indexId) throws ServiceException {
+  private int insertIntoDumpster(int id, Type type, Integer indexId) throws ServiceException {
     return DbUtil.executeUpdate(
         conn,
         "INSERT INTO mboxgroup1.mail_item_dumpster (mailbox_id, id, type, index_id, date, size,"
@@ -115,22 +114,8 @@ public final class DbMailItemTest extends MailboxTestSuite {
 
   @Test
   void setIndexIds() throws Exception {
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
-            + " mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        100,
-        MailItem.Type.MESSAGE.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item_dumpster (mailbox_id, id, type, index_id, date, size,"
-            + " flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        200,
-        MailItem.Type.MESSAGE.toByte(),
-        0);
+    insertIntoMailItem(100, MailItem.Type.MESSAGE, 0);
+    insertIntoDumpster(200, MailItem.Type.MESSAGE, 0);
 
     DbMailItem.setIndexIds(conn, mbox, ImmutableList.of(100, 200));
     assertEquals(
@@ -146,118 +131,20 @@ public final class DbMailItemTest extends MailboxTestSuite {
 
   @Test
   void getReIndexIds() throws Exception {
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
-            + " mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        100,
-        MailItem.Type.MESSAGE.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
-            + " mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        101,
-        MailItem.Type.MESSAGE.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
-            + " mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        102,
-        MailItem.Type.MESSAGE.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
-            + " mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        103,
-        MailItem.Type.MESSAGE.toByte(),
-        null);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
-            + " mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        200,
-        MailItem.Type.CONTACT.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
-            + " mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        201,
-        MailItem.Type.CONTACT.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
-            + " mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        202,
-        MailItem.Type.CONTACT.toByte(),
-        null);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item_dumpster (mailbox_id, id, type, index_id, date, size,"
-            + " flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        300,
-        MailItem.Type.MESSAGE.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item_dumpster (mailbox_id, id, type, index_id, date, size,"
-            + " flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        301,
-        MailItem.Type.MESSAGE.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item_dumpster (mailbox_id, id, type, index_id, date, size,"
-            + " flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        302,
-        MailItem.Type.MESSAGE.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item_dumpster (mailbox_id, id, type, index_id, date, size,"
-            + " flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        303,
-        MailItem.Type.MESSAGE.toByte(),
-        null);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item_dumpster (mailbox_id, id, type, index_id, date, size,"
-            + " flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        400,
-        MailItem.Type.CONTACT.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item_dumpster (mailbox_id, id, type, index_id, date, size,"
-            + " flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        401,
-        MailItem.Type.CONTACT.toByte(),
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item_dumpster (mailbox_id, id, type, index_id, date, size,"
-            + " flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        402,
-        MailItem.Type.CONTACT.toByte(),
-        null);
+    insertIntoMailItem(100, MailItem.Type.MESSAGE, 0);
+    insertIntoMailItem(101, MailItem.Type.MESSAGE, 0);
+    insertIntoMailItem(102, MailItem.Type.MESSAGE, 0);
+    insertIntoMailItem(103, MailItem.Type.MESSAGE, null);
+    insertIntoMailItem(200, MailItem.Type.CONTACT, 0);
+    insertIntoMailItem(201, MailItem.Type.CONTACT, 0);
+    insertIntoMailItem(202, MailItem.Type.CONTACT, null);
+    insertIntoDumpster(300, MailItem.Type.MESSAGE, 0);
+    insertIntoDumpster(301, MailItem.Type.MESSAGE, 0);
+    insertIntoDumpster(302, MailItem.Type.MESSAGE, 0);
+    insertIntoDumpster(303, MailItem.Type.MESSAGE, null);
+    insertIntoDumpster(400, MailItem.Type.CONTACT, 0);
+    insertIntoDumpster(401, MailItem.Type.CONTACT, 0);
+    insertIntoDumpster(402, MailItem.Type.CONTACT, null);
 
     assertEquals(
         ImmutableList.of(100, 101, 102, 300, 301, 302),
@@ -272,22 +159,8 @@ public final class DbMailItemTest extends MailboxTestSuite {
 
   @Test
   void resetIndexId() throws Exception {
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
-            + " mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        100,
-        MailItem.Type.MESSAGE.toByte(),
-        100);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item_dumpster (mailbox_id, id, type, index_id, date, size,"
-            + " flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        200,
-        MailItem.Type.MESSAGE.toByte(),
-        200);
+    insertIntoMailItem(100, MailItem.Type.MESSAGE, 100);
+    insertIntoDumpster(200, MailItem.Type.MESSAGE, 200);
 
     DbMailItem.resetIndexId(conn, mbox);
     assertEquals(
@@ -301,102 +174,7 @@ public final class DbMailItemTest extends MailboxTestSuite {
             .getInt(1));
   }
 
-  @Test
-  void completeConversation() throws Exception {
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
-            + " mod_metadata, mod_content) VALUES(?, ?, ?, 0, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        200,
-        MailItem.Type.CONVERSATION.toByte());
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, index_id, date, size, flags, tags,"
-            + " mod_metadata, mod_content) VALUES(?, ?, ?, 0, 0, 0, 0, 0, 0, 0)",
-        mbox.getId(),
-        201,
-        MailItem.Type.CONVERSATION.toByte());
 
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, folder_id, parent_id, index_id,"
-            + " date, size, flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, ?, 0, 0, 0,"
-            + " ?, 0, 0, 0)",
-        mbox.getId(),
-        100,
-        MailItem.Type.MESSAGE.toByte(),
-        Mailbox.ID_FOLDER_INBOX,
-        200,
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, folder_id, parent_id, index_id,"
-            + " date, size, flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, ?, 0, 0, 0,"
-            + " ?, 0, 0, 0)",
-        mbox.getId(),
-        101,
-        MailItem.Type.MESSAGE.toByte(),
-        Mailbox.ID_FOLDER_INBOX,
-        200,
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, folder_id, parent_id, index_id,"
-            + " date, size, flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, ?, 0, 0, 0,"
-            + " ?, 0, 0, 0)",
-        mbox.getId(),
-        102,
-        MailItem.Type.MESSAGE.toByte(),
-        Mailbox.ID_FOLDER_INBOX,
-        200,
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, folder_id, parent_id, index_id,"
-            + " date, size, flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, ?, 0, 0, 0,"
-            + " ?, 0, 0, 0)",
-        mbox.getId(),
-        103,
-        MailItem.Type.MESSAGE.toByte(),
-        Mailbox.ID_FOLDER_INBOX,
-        201,
-        Flag.BITMASK_FROM_ME);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, folder_id, parent_id, index_id,"
-            + " date, size, flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, ?, 0, 0, 0,"
-            + " ?, 0, 0, 0)",
-        mbox.getId(),
-        104,
-        MailItem.Type.MESSAGE.toByte(),
-        Mailbox.ID_FOLDER_INBOX,
-        201,
-        0);
-    DbUtil.executeUpdate(
-        conn,
-        "INSERT INTO mboxgroup1.mail_item (mailbox_id, id, type, folder_id, parent_id, index_id,"
-            + " date, size, flags, tags, mod_metadata, mod_content) VALUES(?, ?, ?, ?, ?, 0, 0, 0,"
-            + " ?, 0, 0, 0)",
-        mbox.getId(),
-        105,
-        MailItem.Type.MESSAGE.toByte(),
-        Mailbox.ID_FOLDER_INBOX,
-        201,
-        0);
-
-    MailItem.UnderlyingData data = new MailItem.UnderlyingData();
-    data.id = 200;
-    data.type = MailItem.Type.CONVERSATION.toByte();
-    DbMailItem.completeConversation(mbox, conn, data);
-    assertFalse(data.isSet(Flag.FlagInfo.FROM_ME));
-
-    data = new MailItem.UnderlyingData();
-    data.id = 201;
-    data.type = MailItem.Type.CONVERSATION.toByte();
-    DbMailItem.completeConversation(mbox, conn, data);
-    assertTrue(data.isSet(Flag.FlagInfo.FROM_ME));
-  }
 
   @Test
   void getIds() throws Exception {
