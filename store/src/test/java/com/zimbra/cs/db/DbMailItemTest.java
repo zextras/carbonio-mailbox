@@ -83,30 +83,35 @@ public final class DbMailItemTest {
   }
 
 
+  /**
+   * Checks that items with indexId == 0 (dereferred) are returned. See {@link DbMailItem#getIndexDeferredIds}
+   * @throws Exception
+   */
   @Test
   void getIndexDeferredIds() throws Exception {
     final Type message = Type.MESSAGE;
     final Type contact = Type.CONTACT;
 
-    insertIntoMailItem(100, message, 0);
-    insertIntoMailItem(101, message, 0);
-    insertIntoMailItem(102, message, 0);
+    final int dereferredId = 0;
+    insertIntoMailItem(100, message, dereferredId);
+    insertIntoMailItem(101, message, dereferredId);
+    insertIntoMailItem(102, message, dereferredId);
     insertIntoMailItem(103, message, 103);
 
-    insertIntoMailItem(200, contact, 0);
-    insertIntoMailItem(201, contact, 0);
+    insertIntoMailItem(200, contact, dereferredId);
+    insertIntoMailItem(201, contact, dereferredId);
     insertIntoMailItem(202, contact, 202);
 
-    insertIntoDumpster(300, message, 0);
-    insertIntoDumpster(301, message, 0);
-    insertIntoDumpster(302, message, 0);
+    insertIntoDumpster(300, message, dereferredId);
+    insertIntoDumpster(301, message, dereferredId);
+    insertIntoDumpster(302, message, dereferredId);
     insertIntoDumpster(303, message, 303);
-    insertIntoDumpster(400, contact, 0);
-    insertIntoDumpster(401, contact, 0);
+    insertIntoDumpster(400, contact, dereferredId);
+    insertIntoDumpster(401, contact, dereferredId);
     insertIntoDumpster(402, contact, 402);
 
     Multimap<MailItem.Type, Integer> result = DbMailItem.getIndexDeferredIds(conn, mbox);
-    // checks that items with indexId == 0 are returned. 10 in total
+
     assertEquals(10, result.size());
     assertEquals(ImmutableSet.of(100, 101, 102, 300, 301, 302), result.get(message));
     assertEquals(ImmutableSet.of(200, 201, 400, 401), result.get(contact));
