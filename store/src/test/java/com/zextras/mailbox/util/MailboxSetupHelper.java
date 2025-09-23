@@ -88,7 +88,6 @@ public class MailboxSetupHelper {
 		}
 		LC.timezone_file.setDefault(timezonefilePath);
 		WellKnownTimeZones.loadFromFile(d);
-		LC.zimbra_tmp_directory.setDefault(Files.createTempDirectory("server_tmp_dir_").toAbsolutePath().toString());
 
 		// substitute test DS config file
 		String datasourceFilePath =  "src/test/resources/datasource-test.xml";
