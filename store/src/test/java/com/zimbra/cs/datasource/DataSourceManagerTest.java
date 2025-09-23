@@ -7,6 +7,8 @@ package com.zimbra.cs.datasource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.MailboxTestSuite;
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.DataSource;
@@ -14,16 +16,13 @@ import com.zimbra.cs.account.DataSource.DataImport;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.datasource.imap.ImapSync;
 import com.zimbra.cs.gal.GalImport;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.soap.admin.type.DataSourceType;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class DataSourceManagerTest {
+public class DataSourceManagerTest extends MailboxTestSuite {
   private Account testAccount = null;
   private String POP3_DS_ID = "testPop3DS";
   private String IMAP_DS_ID = "testImap3DS";
@@ -39,21 +38,11 @@ public class DataSourceManagerTest {
   private String CAL_DS_NAME = "TestCalDataSource";
   private String GAL_DS_NAME = "TestGALDataSource";
 
-  @BeforeAll
-  public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-  }
 
   @BeforeEach
   public void setUp() throws Exception {
-    MailboxTestUtil.clearData();
-    Provisioning prov = Provisioning.getInstance();
-    testAccount = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
-  }
-
-  @AfterEach
-  public void tearDown() throws Exception {
-    MailboxTestUtil.clearData();
+    testAccount = createAccount().create();
+    LC.data_source_config.setDefault("src/test/resources/datasource-test.xml");
   }
 
   @Test

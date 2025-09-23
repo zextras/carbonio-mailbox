@@ -2,57 +2,24 @@ package com.zimbra.cs.service.servlet.preauth;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.common.collect.Maps;
-import com.zimbra.common.account.Key;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.auth.AuthContext;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.AuthProvider;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class UtilsTest {
-
-  private static final String TEST_ACCOUNT_NAME = "test@account.com";
-  private static final String TEST_ADMIN_ACCOUNT_NAME = "admin@account.com";
-
-  @BeforeAll
-  public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-  }
-
-  @BeforeEach
-  public void setUp() throws Exception {
-    MailboxTestUtil.clearData();
-
-    final Provisioning prov = Provisioning.getInstance();
-
-    final Map<String, Object> attrs = Maps.newHashMap();
-    attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-    prov.createAccount(TEST_ACCOUNT_NAME, "secret", attrs);
-
-    final Map<String, Object> adminAttrs = Maps.newHashMap();
-    adminAttrs.put(Provisioning.A_zimbraIsAdminAccount, "TRUE");
-    prov.createAccount(TEST_ADMIN_ACCOUNT_NAME, "secret", adminAttrs);
-  }
+class UtilsTest extends MailboxTestSuite {
 
   @Test
   void getRequiredParam_should_returnValue_when_paramExists() throws ServiceException {
@@ -153,7 +120,7 @@ class UtilsTest {
 
   @Test
   void generateAuthToken_should_generateAuthTokenForRegularAccount() throws ServiceException {
-    final Account account = Provisioning.getInstance().get(Key.AccountBy.name, TEST_ACCOUNT_NAME);
+    final Account account = createAccount().create();
     final long expires = 1690231807995L;
     final AuthToken expectedToken = AuthProvider.getAuthToken(account, expires, false, null);
 
@@ -165,8 +132,7 @@ class UtilsTest {
 
   @Test
   void generateAuthToken_should_generateAuthTokenForAdminAccount() throws ServiceException {
-    final Account account =
-        Provisioning.getInstance().get(Key.AccountBy.name, TEST_ADMIN_ACCOUNT_NAME);
+    final Account account = createAccount().asGlobalAdmin().create();
     final long expires = 1690231807995L;
     final AuthToken expectedToken = AuthProvider.getAuthToken(account, expires, true, null);
 

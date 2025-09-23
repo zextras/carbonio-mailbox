@@ -8,6 +8,7 @@ package com.zimbra.cs.mailbox;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.ImmutableMap;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.mailbox.ContactConstants;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Provisioning;
@@ -17,10 +18,7 @@ import com.zimbra.cs.mime.ParsedContact;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import javax.mail.internet.InternetAddress;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -30,32 +28,12 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
-class ContactAutoCompleteTest {
-
-  private static Provisioning provisioning;
-
-  @BeforeAll
-  public static void init() throws Exception {
-    System.setProperty("zimbra.config", "../store/src/test/resources/localconfig-test.xml");
-    MailboxTestUtil.initServer();
-
-    provisioning = Provisioning.getInstance();
-  }
-
-  @AfterEach
-  public void tearDown() {
-    try {
-      MailboxTestUtil.clearData();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
+class ContactAutoCompleteTest extends MailboxTestSuite {
 
   @Test
   void hitContact() throws Exception {
     ContactAutoComplete.AutoCompleteResult result = new ContactAutoComplete.AutoCompleteResult(10);
-    final String accountName = UUID.randomUUID() + "@zimbra.com";
-    final Account account = provisioning.createAccount(accountName, "secret", new HashMap<>());
+    final Account account = createAccount().create();
     result.rankings = new ContactRankings(account.getId());
     ContactAutoComplete.ContactEntry contact = new ContactAutoComplete.ContactEntry();
     contact.mDisplayName = "C1";
@@ -74,8 +52,7 @@ class ContactAutoCompleteTest {
 
   @Test
   void lastNameFirstName() throws Exception {
-    final String accountName = UUID.randomUUID() + "@zimbra.com";
-    final Account account = provisioning.createAccount(accountName, "secret", new HashMap<>());
+    final Account account = createAccount().create();
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
     Map<String, Object> fields = new HashMap<>();
     fields.put(ContactConstants.A_firstName, "First");
@@ -106,8 +83,7 @@ class ContactAutoCompleteTest {
 
   @Test
   void reservedQueryTerm() throws Exception {
-    final String accountName = UUID.randomUUID() + "@zimbra.com";
-    final Account account = provisioning.createAccount(accountName, "secret", new HashMap<>());
+    final Account account = createAccount().create();
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
     Map<String, Object> fields = new HashMap<>();
     fields.put(ContactConstants.A_firstName, "not and or");
@@ -127,8 +103,7 @@ class ContactAutoCompleteTest {
 
   @Test
   void dash() throws Exception {
-    final String accountName = UUID.randomUUID() + "@zimbra.com";
-    final Account account = provisioning.createAccount(accountName, "secret", new HashMap<>());
+    final Account account = createAccount().create();
     Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
     Map<String, Object> fields = new HashMap<>();
     fields.put(ContactConstants.A_firstName, "Conf - Hillview");
@@ -148,8 +123,7 @@ class ContactAutoCompleteTest {
   @Test
   void hitGroup() throws Exception {
     ContactAutoComplete.AutoCompleteResult result = new ContactAutoComplete.AutoCompleteResult(10);
-    final String accountName = UUID.randomUUID() + "@zimbra.com";
-    final Account account = provisioning.createAccount(accountName, "secret", new HashMap<>());
+    final Account account = createAccount().create();
     result.rankings = new ContactRankings(account.getId());
     ContactAutoComplete.ContactEntry group = new ContactAutoComplete.ContactEntry();
     group.mDisplayName = "G1";
@@ -168,8 +142,7 @@ class ContactAutoCompleteTest {
 
   @Test
   void addMatchedContacts() throws Exception {
-    final String accountName = UUID.randomUUID() + "@zimbra.com";
-    final Account account = provisioning.createAccount(accountName, "secret", new HashMap<>());
+    final Account account = createAccount().create();
     ContactAutoComplete comp = new ContactAutoComplete(account, null);
     ContactAutoComplete.AutoCompleteResult result = new ContactAutoComplete.AutoCompleteResult(10);
     result.rankings = new ContactRankings(account.getId());
@@ -231,8 +204,7 @@ class ContactAutoCompleteTest {
 
   @Test
   void addMatchedContactsWithUnicodeCase() throws Exception {
-    final String accountName = UUID.randomUUID() + "@zimbra.com";
-    final Account account = provisioning.createAccount(accountName, "secret", new HashMap<>());
+    final Account account = createAccount().create();
     ContactAutoComplete comp = new ContactAutoComplete(account, null);
     ContactAutoComplete.AutoCompleteResult result = new ContactAutoComplete.AutoCompleteResult(10);
     result.rankings = new ContactRankings(account.getId());
@@ -253,7 +225,7 @@ class ContactAutoCompleteTest {
   @Test
   void rankingTestContactWithSameEmailDifferentDisplayName() throws Exception {
     // Autocomplete should show same ranking for a email address present in difference contacts.
-    final Account account = provisioning.createAccount(UUID.randomUUID() + "@zimbra.com", "secret", new HashMap<>());
+    final Account account = createAccount().create();
     Mailbox mbox = MailboxManager.getInstance()
         .getMailboxByAccountId(account.getId());
     Map<String, Object> fields = new HashMap<>();
@@ -289,7 +261,7 @@ class ContactAutoCompleteTest {
 
   @Test
   void autocompleteTestNonExistingContact() throws Exception {
-    final Account account = provisioning.createAccount(UUID.randomUUID() + "@zimbra.com", "secret", new HashMap<>());
+    final Account account = createAccount().create();
     //AutoComplete should not return entry present in ranking table but contact does not exist.
     Mailbox mbox = MailboxManager.getInstance()
         .getMailboxByAccountId(account.getId());

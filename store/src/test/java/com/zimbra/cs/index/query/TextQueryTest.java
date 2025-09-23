@@ -7,10 +7,10 @@ package com.zimbra.cs.index.query;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.index.SearchParams;
 import com.zimbra.cs.index.SortBy;
 import com.zimbra.cs.index.ZimbraQuery;
@@ -30,11 +30,7 @@ import com.zimbra.soap.mail.message.SearchRequest;
 import com.zimbra.soap.mail.message.SearchResponse;
 import com.zimbra.soap.type.SearchHit;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -43,24 +39,15 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
-public final class TextQueryTest {
+public final class TextQueryTest extends MailboxTestSuite {
 
-    private static Account account;
-    private static Mailbox mailbox;
-
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
-        account = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>(
-            Map.of(Provisioning.A_zimbraId, UUID.randomUUID().toString())
-        ));
-        mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
-    }
+    private Account account;
+    private Mailbox mailbox;
 
     @BeforeEach
-    public void setUp() throws Exception {
-        MailboxTestUtil.clearData();
+    public void init() throws Exception {
+        account = createAccount().create();
+        mailbox = MailboxManager.getInstance().getMailboxByAccount(account);
     }
 
     @Test

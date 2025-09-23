@@ -8,10 +8,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
-import com.zextras.mailbox.util.MailMessageBuilder;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.AccountAction;
+import com.zextras.mailbox.util.MailMessageBuilder;
 import com.zimbra.common.account.Key;
-import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
@@ -27,7 +27,6 @@ import com.zimbra.cs.mailbox.Folder;
 import com.zimbra.cs.mailbox.MailServiceException;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailclient.smtp.SmtpConfig;
 import com.zimbra.cs.mime.ParsedMessage;
@@ -38,18 +37,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-class SendMsgIT {
+class SendMsgIT extends MailboxTestSuite {
 
   private static GreenMail greenMail;
+  private static Account sharedAcct;
+  private static Account delegatedAcct;
 
   @BeforeAll
   public static void setUp() throws Exception {
-    MailboxTestUtil.initServer();
 
     // Setup SMTP
     greenMail =
@@ -60,25 +59,15 @@ class SendMsgIT {
             });
     greenMail.start();
 
-    Provisioning prov = Provisioning.getInstance();
-    final Account sharedAcct =
-        prov.createAccount(
-            "shared@test.com",
-            "secret",
-            new HashMap<>() {
-              {
-                put(ZAttrProvisioning.A_zimbraId, UUID.randomUUID().toString());
-              }
-            });
-    final Account delegated =
-        prov.createAccount("delegated@test.com", "secret", new HashMap<String, Object>());
+    sharedAcct = createAccount().create();
+    delegatedAcct = createAccount().create();
     // Grant sendAs to delegated@
     final Set<ZimbraACE> aces =
         new HashSet<>() {
           {
             add(
                 new ZimbraACE(
-                    delegated.getId(),
+                    delegatedAcct.getId(),
                     GranteeType.GT_USER,
                     RightManager.getInstance().getRight(Right.RT_sendAs),
                     RightModifier.RM_CAN_DELEGATE,
@@ -93,7 +82,7 @@ class SendMsgIT {
     sharedAcctMailbox.grantAccess(
         null,
         rootSharedAcctFolder.getFolderId(),
-        delegated.getId(),
+        delegatedAcct.getId(),
         ACL.GRANTEE_AUTHUSER,
         rwidx,
         null);
@@ -121,11 +110,6 @@ class SendMsgIT {
    */
   @Test
   void shouldDeleteDraftFromAuthAcctMailboxWhenSendingMailAsSharedAccount() throws Exception {
-    final Account delegatedAcct =
-        Provisioning.getInstance().get(Key.AccountBy.name, "delegated@test.com");
-
-    final Account sharedAcct =
-        Provisioning.getInstance().get(Key.AccountBy.name, "shared@test.com");
 
     final Message draft = createDraft(delegatedAcct.getName());
     // easiest way to create a message, sorry
@@ -168,11 +152,6 @@ class SendMsgIT {
    */
   @Test
   void shouldNotDeleteDraftFromSharedMailboxWhenSendingMailAsSharedAccount() throws Exception {
-    final Account delegatedAcct =
-        Provisioning.getInstance().get(Key.AccountBy.name, "delegated@test.com");
-
-    final Account sharedAcct =
-        Provisioning.getInstance().get(Key.AccountBy.name, "shared@test.com");
 
     final Message draft = createDraft(sharedAcct.getName());
     // easiest way to create a message, sorry
