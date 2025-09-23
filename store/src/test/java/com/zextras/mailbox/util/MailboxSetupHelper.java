@@ -12,6 +12,7 @@ import com.zextras.carbonio.message_broker.MessageBrokerClient;
 import com.zextras.mailbox.messagebroker.MessageBrokerFactory;
 import com.zextras.mailbox.util.InMemoryLdapServer.Builder;
 import com.zimbra.common.account.ZAttrProvisioning;
+import com.zimbra.common.calendar.WellKnownTimeZones;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.RightManager;
@@ -20,6 +21,8 @@ import com.zimbra.cs.db.HSQLDB;
 import com.zimbra.cs.mailbox.ScheduledTaskManager;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.store.StoreManager;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -76,6 +79,16 @@ public class MailboxSetupHelper {
 
 		LC.zimbra_home.setDefault(mailboxHome.toAbsolutePath().toString());
 		LC.zimbra_tmp_directory.setDefault(mailboxTmpDirectory.toAbsolutePath().toString());
+
+		// substitute test TZ file
+		String timezonefilePath =  "src/test/resources/timezones-test.ics";
+		File d = new File(timezonefilePath);
+		if (!d.exists()) {
+			throw new FileNotFoundException("timezones-test.ics not found in " + timezonefilePath);
+		}
+		LC.timezone_file.setDefault(timezonefilePath);
+		WellKnownTimeZones.loadFromFile(d);
+		LC.zimbra_tmp_directory.setDefault(Files.createTempDirectory("server_tmp_dir_").toAbsolutePath().toString());
 
 		LC.ldap_port.setDefault(ldapPort);
 
