@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
 // SPDX-License-Identifier: GPL-2.0-only
 
-package com.zimbra.cs.account;
+package com.zextras.mailbox.util;
 
 import com.google.common.collect.Maps;
 import com.zimbra.common.mime.MimeConstants;
+import com.zimbra.cs.account.Config;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.mime.MimeTypeInfo;
 import com.zimbra.cs.mime.MockMimeTypeInfo;
