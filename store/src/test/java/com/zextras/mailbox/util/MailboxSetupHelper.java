@@ -115,26 +115,26 @@ public class MailboxSetupHelper {
 		mockMessageBrokerClient();
 	}
 
-	public void initData(MailboxTestData mailboxTestData) throws Exception {
-		inMemoryLdapServer.initializeBasicData();
-		LC.zimbra_class_provisioning.setDefault(LdapProvisioningWithMockMime.class.getName());
-		 var provisioning = Provisioning.getInstance();
-		 var lmtpPort = PortUtil.findFreePort();
+  public void initData(MailboxTestData mailboxTestData) throws Exception {
+    inMemoryLdapServer.initializeBasicData();
+    LC.zimbra_class_provisioning.setDefault(LdapProvisioningWithMockMime.class.getName());
+    var provisioning = Provisioning.getInstance(CacheMode.OFF);
+    var lmtpPort = PortUtil.findFreePort();
 
-		final var server =
-				provisioning.createServer(
-						mailboxTestData.serverName(),
-						new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
-		server.setLmtpBindPort(lmtpPort);
+    final var server =
+        provisioning.createServer(
+            mailboxTestData.serverName(),
+            new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraServiceEnabled, SERVICE_MAILCLIENT)));
+    server.setLmtpBindPort(lmtpPort);
 
-		server.setPop3SSLServerEnabled(false);
-		server.setPop3ServerEnabled(false);
+    server.setPop3SSLServerEnabled(false);
+    server.setPop3ServerEnabled(false);
 
-		server.setImapSSLServerEnabled(false);
-		server.setImapServerEnabled(false);
-		var domain = provisioning.createDomain(mailboxTestData.defaultDomain(), new HashMap<>());
-		domain.setId(mailboxTestData.defaultDomainId());
-	}
+    server.setImapSSLServerEnabled(false);
+    server.setImapServerEnabled(false);
+    var domain = provisioning.createDomain(mailboxTestData.defaultDomain(), new HashMap<>());
+    domain.setId(mailboxTestData.defaultDomainId());
+  }
 
 	public void clearData() throws Exception {
 		inMemoryLdapServer.clear();
