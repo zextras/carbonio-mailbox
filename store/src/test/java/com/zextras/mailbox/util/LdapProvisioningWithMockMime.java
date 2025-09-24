@@ -6,6 +6,7 @@ package com.zextras.mailbox.util;
 import com.google.common.collect.Maps;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.cs.account.Config;
+import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.mime.MimeTypeInfo;
 import com.zimbra.cs.mime.MockMimeTypeInfo;
@@ -28,6 +29,15 @@ public final class LdapProvisioningWithMockMime extends LdapProvisioning {
 
     public LdapProvisioningWithMockMime() {
         super( CacheMode.OFF); // disable cache for testing, it makes the provisioning use mocked mime types
+        initializeMimeHandlers();
+    }
+
+    /**
+     * Constructor allowing to specify cache mode.
+     * Used in {@link MailboxSetupHelper} indirectly by {@link Provisioning#getInstance(CacheMode)}
+     */
+    public LdapProvisioningWithMockMime(CacheMode cacheMode) {
+        super(cacheMode == null ? CacheMode.OFF :  cacheMode);
         initializeMimeHandlers();
     }
 

@@ -10,7 +10,9 @@ import com.zextras.mailbox.util.MailboxTestData;
 import com.zextras.mailbox.util.MailboxSetupHelper;
 import com.zextras.mailbox.util.SoapClient;
 import com.zimbra.common.account.ZAttrProvisioning;
+import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.servlet.FirstServlet;
 import com.zimbra.soap.SoapServlet;
 import java.util.ArrayList;
@@ -110,6 +112,8 @@ public class SoapExtension implements BeforeAllCallback, AfterAllCallback {
 
   @Override
   public void beforeAll(ExtensionContext context) throws Exception {
+    LC.zimbra_class_provisioning.setDefault(LdapProvisioning.class.getName());
+
     if (!server.isRunning()) {
       mailboxSetupHelper.setUp(testData);
       Provisioning.getInstance()

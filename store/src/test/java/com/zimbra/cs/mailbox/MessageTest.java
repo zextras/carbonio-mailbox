@@ -39,6 +39,9 @@ import qa.unittest.TestUtil;
  */
 public final class MessageTest extends MailboxTestSuite {
 
+  /**
+   * This test needs {@link com.zextras.mailbox.util.LdapProvisioningWithMockMime}
+   */
   @Test
   void indexRawMimeMessage() throws Exception {
     var account = createAccount().create();

@@ -117,8 +117,8 @@ public class MailboxSetupHelper {
 
   public void initData(MailboxTestData mailboxTestData) throws Exception {
     inMemoryLdapServer.initializeBasicData();
-    LC.zimbra_class_provisioning.setDefault(LdapProvisioningWithMockMime.class.getName());
-    var provisioning = Provisioning.getInstance(CacheMode.OFF);
+    Provisioning.setInstance(LdapProvisioningWithMockMime.getInstance(CacheMode.OFF));
+    var provisioning = Provisioning.getInstance();
     var lmtpPort = PortUtil.findFreePort();
 
     final var server =
