@@ -133,6 +133,8 @@ public class MailboxSetupHelper {
     server.setImapSSLServerEnabled(false);
     server.setImapServerEnabled(false);
     var domain = provisioning.createDomain(mailboxTestData.defaultDomain(), new HashMap<>());
+		var config = provisioning.getConfig();
+		config.setDefaultDomainName(mailboxTestData.defaultDomain());
     domain.setId(mailboxTestData.defaultDomainId());
   }
 
