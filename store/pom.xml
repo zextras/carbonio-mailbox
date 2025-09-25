@@ -913,7 +913,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <forkCount>4</forkCount>
-          <reuseForks>false</reuseForks>
+          <reuseForks>true</reuseForks>
           <parallel>classes</parallel>
           <argLine>@{argLine} -Dserver.dir=${project.basedir}
             -Djunit.jupiter.execution.parallel.enabled=true
@@ -935,7 +935,7 @@
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
           <forkCount>4</forkCount>
-          <reuseForks>false</reuseForks>
+          <reuseForks>true</reuseForks>
           <parallel>classes</parallel>
           <argLine>@{argLine} -Dserver.dir=${project.basedir}
             -Djunit.jupiter.execution.parallel.enabled=true

@@ -937,7 +937,7 @@
           <configuration>
             <forkCount>4</forkCount>
             <threadCount>4</threadCount>
-            <reuseForks>false</reuseForks>
+            <reuseForks>true</reuseForks>
             <parallel>both</parallel>
             <argLine>@{argLine} ${test.argLine}</argLine>
             <reportFormat>plain</reportFormat>
@@ -954,7 +954,7 @@
             <forkCount>4</forkCount>
             <threadCount>4</threadCount>
             <parallel>both</parallel>
-            <reuseForks>false</reuseForks>
+            <reuseForks>true</reuseForks>
             <!-- argline preserves other plugin args, like JaCoCo -->
             <argLine>@{argLine} ${test.argLine}</argLine>
             <reportFormat>plain</reportFormat>
