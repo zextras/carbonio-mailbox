@@ -7,15 +7,11 @@ package com.zimbra.cs.index.query;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.util.ItemId;
-import java.util.HashMap;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -23,36 +19,24 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
-public final class InQueryTest {
-  private static Account account;
+public final class InQueryTest extends MailboxTestSuite {
 
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
-        account = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
-    }
+	@Test
+	void inAnyFolder() throws Exception {
+		final Account account = createAccount().create();
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        MailboxTestUtil.clearData();
-    }
+		Query query = InQuery.create(mbox, new ItemId(account.getId(), 1), null, true);
+		assertEquals("Q(UNDER:ANY_FOLDER)", query.toString());
 
- @Test
- void inAnyFolder() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
+		query = InQuery.create(mbox, new ItemId(account.getId(), 1), null, false);
+		assertEquals("Q(IN:USER_ROOT)", query.toString());
 
-  Query query = InQuery.create(mbox, new ItemId(account.getId(), 1), null, true);
-  assertEquals("Q(UNDER:ANY_FOLDER)", query.toString());
+		query = InQuery.create(mbox, new ItemId("1-1-1", 1), null, true);
+		assertEquals("Q(UNDER:1-1-1:1)", query.toString());
 
-  query = InQuery.create(mbox, new ItemId(account.getId(), 1), null, false);
-  assertEquals("Q(IN:USER_ROOT)", query.toString());
-
-  query = InQuery.create(mbox, new ItemId("1-1-1", 1), null, true);
-  assertEquals("Q(UNDER:1-1-1:1)", query.toString());
-
-  query = InQuery.create(mbox, new ItemId("1-1-1", 1), null, false);
-  assertEquals("Q(IN:1-1-1:1)", query.toString());
- }
+		query = InQuery.create(mbox, new ItemId("1-1-1", 1), null, false);
+		assertEquals("Q(IN:1-1-1:1)", query.toString());
+	}
 
 }

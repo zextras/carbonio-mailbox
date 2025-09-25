@@ -15,6 +15,8 @@ import com.zimbra.cs.store.file.BlobConsistencyChecker;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 
@@ -60,7 +62,9 @@ public class ExternalBlobConsistencyCheckTest extends AbstractBlobConsistencyChe
         SimpleStoreManager sm = (SimpleStoreManager) StoreManager.getInstance();
         String dir = sm.dirName(mbox);
         File file = new File(dir + "/foo" + index + ".txt");
+        Files.createDirectories(Path.of(file.getParent()));
         file.createNewFile();
+
         return file.getCanonicalPath();
     }
 }

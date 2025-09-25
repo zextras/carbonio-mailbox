@@ -2,110 +2,84 @@ package com.zimbra.cs.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.google.common.collect.Maps;
-import com.zimbra.common.account.Key;
+import com.zextras.mailbox.MailboxTestSuite;
+import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.Server;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class AccountUtilTest {
-  static final String GLOBAL_TEST_ACCOUNT_NAME = "gloabaltestaccount@zextras.com";
-  Provisioning prov;
+public class AccountUtilTest extends MailboxTestSuite {
 
-  @BeforeEach
-  public void setUp() throws Exception {
-    MailboxTestUtil.initServer();
-    MailboxTestUtil.clearData();
-    prov = Provisioning.getInstance();
-    Map<String, Object> attrs = Maps.newHashMap();
-    attrs.put(Provisioning.A_zimbraMailCanonicalAddress, "canonicaltest123@zextras.com");
-    attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-    prov.createDomain("zextras.com", attrs);
-    prov.createAccount(GLOBAL_TEST_ACCOUNT_NAME, "secret", attrs);
-  }
+	private static Provisioning provisioning;
 
- @Test
- void shouldGetCanonicalAddressWhenSet() throws ServiceException {
+	@BeforeAll
+	static void setUpClass() throws Exception {
+		provisioning = Provisioning.getInstance();
+	}
 
-  Map<String, Object> attrs = Maps.newHashMap();
-  attrs.put(Provisioning.A_zimbraMailCanonicalAddress, "canonicaltest321@zextras.com");
-  attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-  prov.createAccount("test321@zextras.com", "secret", attrs);
+	@Test
+	void shouldGetCanonicalAddressWhenSet() throws ServiceException {
+		final String canonicalAddress = "canonicaltest321@zextras.com";
+		final Account account = createAccount().withAttribute(Provisioning.A_zimbraMailCanonicalAddress,
+				canonicalAddress).create();
+		assertEquals(canonicalAddress, AccountUtil.getCanonicalAddress(account));
+	}
 
-  Account account = prov.get(Key.AccountBy.name, "test321@zextras.com");
-  assertEquals("canonicaltest321@zextras.com", AccountUtil.getCanonicalAddress(account));
- }
+	@Test
+	void shouldGetCanonicalAddressWhenNotSet() throws ServiceException {
+		final Account account = createAccount().create();
+		assertEquals(account.getName(), AccountUtil.getCanonicalAddress(account));
+	}
 
- @Test
- void shouldGetCanonicalAddressWhenNotSet() throws ServiceException {
+	@Test
+	void shouldGetSoapUriWhenCalled() throws ServiceException {
+		final String serverHostname = "demo.zextras.com";
+		// Note: server name must be equal to serviceHostname. If not everything falls apart. It's absurd.
+		final Server server = provisioning.createServer(serverHostname, new HashMap<>(
+				Map.of(
+						ZAttrProvisioning.A_zimbraServiceHostname, serverHostname,
+						ZAttrProvisioning.A_zimbraServiceEnabled, "service",
+						ZAttrProvisioning.A_zimbraMailPort, "80"
+				)));
+		final Domain domain = provisioning.createDomain(serverHostname, new HashMap<>());
+		final Account account = provisioning.createAccount("test@" + domain.getName(), "password",
+				new HashMap<>(Map.of(ZAttrProvisioning.A_zimbraMailHost, server.getName())));
 
-  Map<String, Object> attrs = Maps.newHashMap();
-  attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-  prov.createAccount("test321@zextras.com", "secret", attrs);
+		assertEquals("http://demo.zextras.com:80/service/soap/", AccountUtil.getSoapUri(account));
+	}
 
-  Account account = prov.get(Key.AccountBy.name, "test321@zextras.com");
-  assertEquals("test321@zextras.com", AccountUtil.getCanonicalAddress(account));
- }
+	@Test
+	void shouldReturnBooleanWhenIsGalAccountCalled() throws ServiceException {
 
- @Test
- void shouldGetSoapUriWhenCalled() throws ServiceException {
+		final Account account = createAccount().create();
+		Domain domain = Provisioning.getInstance().getDomainByName(account.getDomainName());
 
-  Account account = prov.get(Key.AccountBy.name, GLOBAL_TEST_ACCOUNT_NAME);
-  Server server = prov.getServer(account);
-  server.setServiceHostname("demo.zextras.com");
-  server.setMailPort(80);
-  assertEquals("http://demo.zextras.com:80/service/soap/", AccountUtil.getSoapUri(account));
- }
+		// galAccountId is unset in domain; isGalSyncAccount should return false
+		domain.unsetGalAccountId();
+		assertFalse(AccountUtil.isGalSyncAccount(account));
 
- @Test
- void shouldReturnBooleanWhenIsGalAccountCalled() throws ServiceException {
+		// galAccountId is set in domain; isGalSyncAccount should return true
+		domain.setGalAccountId(new String[]{account.getId()});
+		assertTrue(AccountUtil.isGalSyncAccount(account));
+	}
 
-  Account account = prov.get(Key.AccountBy.name, GLOBAL_TEST_ACCOUNT_NAME);
-  Domain domain = prov.getDomain(account);
+	@Test
+	void shouldReturnFalseWhenDomainIsExternalAndAddressHasInternalDomainCalled()
+			throws ServiceException {
+		assertFalse(AccountUtil.addressHasInternalDomain("kiraplsignh@gmail.com"));
+	}
 
-  // galAccountId is unset in domain; isGalSyncAccount should return false
-  domain.unsetGalAccountId();
-  assertFalse(AccountUtil.isGalSyncAccount(account));
+	@Test
+	void shouldReturnTrueWhenDomainIsExternalAndAddressHasInternalDomainCalled()
+			throws ServiceException {
+		Account account = createAccount().create();
+		assertTrue(AccountUtil.addressHasInternalDomain(account.getName()));
+	}
 
-  // galAccountId is set in domain; isGalSyncAccount should return true
-  domain.setGalAccountId(new String[]{account.getId()});
-  assertTrue(AccountUtil.isGalSyncAccount(account));
- }
-
- @Test
- void shouldReturnFalseWhenDomainIsExternalAndAddressHasInternalDomainCalled()
-   throws ServiceException {
-
-  Map<String, Object> attrs = Maps.newHashMap();
-  attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-  prov.createAccount("kiraplsignh@gmail.com", "secret", attrs);
-
-  Account account = prov.get(Key.AccountBy.name, "kiraplsignh@gmail.com");
-  assertFalse(AccountUtil.addressHasInternalDomain(account.getName()));
- }
-
- @Test
- void shouldReturnTrueWhenDomainIsExternalAndAddressHasInternalDomainCalled()
-   throws ServiceException {
-
-  Account account = prov.get(Key.AccountBy.name, GLOBAL_TEST_ACCOUNT_NAME);
-  assertTrue(AccountUtil.addressHasInternalDomain(account.getName()));
- }
-
-  @AfterEach
-  public void tearDown() {
-    try {
-      MailboxTestUtil.clearData();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
 }
