@@ -62,6 +62,10 @@ public class CreateAccount {
 		this.attributes.put(name, value);
 		return this;
 	}
+	public CreateAccount addAttributes(Map<String, Object> attributes) {
+		this.attributes.putAll(attributes);
+		return this;
+	}
 
 	public CreateAccount asGlobalAdmin() {
 		this.attributes.put(ZAttrProvisioning.A_zimbraIsAdminAccount, "TRUE");

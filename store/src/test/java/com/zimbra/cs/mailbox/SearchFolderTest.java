@@ -7,11 +7,9 @@ package com.zimbra.cs.mailbox;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
-import java.util.HashMap;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -19,36 +17,31 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
-public final class SearchFolderTest {
-  private static Account account;
+public final class SearchFolderTest extends MailboxTestSuite {
 
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
-        account = prov.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
-    }
+	private static Account account;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        MailboxTestUtil.clearData();
-    }
+	@BeforeAll
+	public static void init() throws Exception {
+		account = createAccount().create();
+	}
 
- @Test
- void defaultFolderFlags() throws Exception {
-  account.setDefaultFolderFlags("*");
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
-  SearchFolder folder = mbox.createSearchFolder(null, Mailbox.ID_FOLDER_USER_ROOT,
-    "test", "test", "message", "none", 0, (byte) 0);
-  assertTrue(folder.isFlagSet(Flag.BITMASK_SUBSCRIBED));
- }
 
- @Test
- void flagGuard() throws Exception {
-  Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
-  SearchFolder folder = mbox.createSearchFolder(null, Mailbox.ID_FOLDER_USER_ROOT,
-    "test", "test", "message", "none", Flag.BITMASK_UNCACHED, (byte) 0);
-  assertFalse(folder.isFlagSet(Flag.BITMASK_UNCACHED));
- }
+	@Test
+	void defaultFolderFlags() throws Exception {
+		account.setDefaultFolderFlags("*");
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
+		SearchFolder folder = mbox.createSearchFolder(null, Mailbox.ID_FOLDER_USER_ROOT,
+				"test1", "test", "message", "none", 0, (byte) 0);
+		assertTrue(folder.isFlagSet(Flag.BITMASK_SUBSCRIBED));
+	}
+
+	@Test
+	void flagGuard() throws Exception {
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
+		SearchFolder folder = mbox.createSearchFolder(null, Mailbox.ID_FOLDER_USER_ROOT,
+				"test2", "test", "message", "none", Flag.BITMASK_UNCACHED, (byte) 0);
+		assertFalse(folder.isFlagSet(Flag.BITMASK_UNCACHED));
+	}
 
 }

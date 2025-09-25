@@ -7,9 +7,9 @@ package com.zimbra.cs.index;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mailbox.DeliveryOptions;
 import com.zimbra.cs.mailbox.MailItem;
 import com.zimbra.cs.mailbox.Mailbox;
@@ -18,9 +18,6 @@ import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import java.util.EnumSet;
-import java.util.HashMap;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -28,22 +25,10 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
-public final class IntersectionQueryOperationTest {
-
-	@BeforeAll
-	public static void init() throws Exception {
-		MailboxTestUtil.initServer();
-	}
-
-	@BeforeEach
-	public void setUp() throws Exception {
-		MailboxTestUtil.clearData();
-	}
-
+public final class IntersectionQueryOperationTest extends MailboxTestSuite {
 	@Test
 	void optimize() throws Exception {
-		final Account account = Provisioning.getInstance()
-				.createAccount("test@zimbra.com", "secret", new HashMap<String, Object>());
+		final Account account = createAccount().create();
 		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 		DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX);
 		mbox.addMessage(null, new ParsedMessage("From: test1@zimbra.com".getBytes(), false), dopt,
