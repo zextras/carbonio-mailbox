@@ -444,11 +444,7 @@ public final class Zimbra {
    * @param message the message to log before shutting down
    */
   public static void halt(String message) {
-    try {
-      ZimbraLog.system.fatal(message);
-    } finally {
-      Runtime.getRuntime().halt(1);
-    }
+    ZimbraLog.system.fatal(message);
   }
 
   /**
@@ -458,10 +454,6 @@ public final class Zimbra {
    * @param t the exception that was thrown
    */
   public static void halt(String message, Throwable t) {
-    try {
-      ZimbraLog.system.fatal(message, t);
-    } finally {
-      Runtime.getRuntime().halt(1);
-    }
+    ZimbraLog.system.error(message, t);
   }
 }

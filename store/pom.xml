@@ -856,11 +856,11 @@
           <execution>
             <configuration>
               <target>
-                <property name="maven_compile_classpath" refid="maven.compile.classpath" />
+                <property name="maven_compile_classpath" refid="maven.compile.classpath"/>
                 <taskdef classpathref="maven.plugin.classpath"
-                  resource="net/sf/antcontrib/antlib.xml" />
+                  resource="net/sf/antcontrib/antlib.xml"/>
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="create-version-sql" />
+                  <target name="create-version-sql"/>
                 </ant>
               </target>
             </configuration>
@@ -877,7 +877,7 @@
             <configuration>
               <target>
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="copy-msgs-bundle" />
+                  <target name="copy-msgs-bundle"/>
                 </ant>
               </target>
             </configuration>
@@ -891,7 +891,7 @@
             <configuration>
               <target>
                 <ant antfile="${basedir}/ant-store.xml">
-                  <target name="clean" />
+                  <target name="clean"/>
                 </ant>
               </target>
             </configuration>
@@ -912,15 +912,17 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <properties>
+            <argLine>-Dserver.dir=${project.basedir}
+              -Djunit.jupiter.execution.parallel.enabled=true
+              -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
+              -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
+              -Dlog4j.configurationFile=${project.basedir}/src/test/resources/log4j-test.properties
+              -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
+            </argLine>
+          </properties>
           <reuseForks>true</reuseForks>
           <parallel>classes</parallel>
-          <argLine>@{argLine} -Dserver.dir=${project.basedir}
-            -Djunit.jupiter.execution.parallel.enabled=true
-            -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
-            -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
-            -Dlog4j.configurationFile=${project.basedir}/src/test/resources/log4j-test.properties
-            -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
-          </argLine>
           <excludes>
             <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
             <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
@@ -935,13 +937,14 @@
         <configuration>
           <reuseForks>true</reuseForks>
           <parallel>classes</parallel>
-          <argLine>@{argLine} -Dserver.dir=${project.basedir}
-            -Djunit.jupiter.execution.parallel.enabled=true
-            -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
-            -Dlog4j.configurationFile=${project.basedir}/src/test/resources/log4j-test.properties
-            -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
-            -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
-          </argLine>
+          <properties>
+            <argLine>-Dserver.dir=${project.basedir} -Djunit.jupiter.execution.parallel.enabled=true
+              -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
+              -Dlog4j.configurationFile=${project.basedir}/src/test/resources/log4j-test.properties
+              -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
+              -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
+            </argLine>
+          </properties>
           <excludes>
             <exclude>com.zimbra.cs.mailbox.CalendarItemTest.java</exclude>
             <exclude>com.zimbra.cs.service.mail.CalendarRequestTest.java</exclude>
