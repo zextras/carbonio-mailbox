@@ -160,7 +160,7 @@ class DavServletTest extends MailboxTestSuite {
     HttpPut createAppointmentRequest = new CalDavCreateAppointmentRequestBuilder(davBaseUrl)
         .organizer(busyPerson)
         .addAttendee(busyPerson)
-        .timeslot("20231207T124500", "20231207T144500")
+        .timeslot("20231207T124500Z", "20231207T144500Z")
         .build();
     createHttpClientWith(busyPerson).execute(createAppointmentRequest);
 
@@ -171,7 +171,7 @@ class DavServletTest extends MailboxTestSuite {
         .uuid(calendarId)
         .originatorEmail(calendarViewer.getName())
         .recipientEmail(busyPerson.getName())
-        .timeslot("20231206T114500", "20231208T154500")
+        .timeslot("20231206T114500Z", "20231208T154500Z")
         .build();
     HttpResponse freeBusyResponse = createHttpClientWith(calendarViewer).execute(freeBusyRequest);
 
@@ -187,7 +187,7 @@ class DavServletTest extends MailboxTestSuite {
     HttpPut createAppointmentRequest = new CalDavCreateAppointmentRequestBuilder(davBaseUrl)
         .organizer(busyPerson)
         .addAttendee(busyPerson)
-        .timeslot("20231207T124500", "20231207T144500")
+        .timeslot("20231207T124500Z", "20231207T144500Z")
         .build();
     createHttpClientWith(busyPerson).execute(createAppointmentRequest);
 
@@ -196,7 +196,7 @@ class DavServletTest extends MailboxTestSuite {
         .asICalendar()
         .originatorEmail(calendarViewer.getName())
         .recipientEmail(busyPerson.getName())
-        .timeslot("20231206T114500", "20231208T154500")
+        .timeslot("20231206T114500Z", "20231208T154500Z")
         .build();
     HttpResponse freeBusyResponse = createHttpClientWith(calendarViewer).execute(freeBusyRequest);
 
