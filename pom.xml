@@ -935,7 +935,6 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.5.3</version>
           <configuration>
-            <forkCount>4</forkCount>
             <threadCount>4</threadCount>
             <reuseForks>true</reuseForks>
             <parallel>both</parallel>
@@ -951,7 +950,6 @@
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>3.5.3</version>
           <configuration>
-            <forkCount>4</forkCount>
             <threadCount>4</threadCount>
             <parallel>both</parallel>
             <reuseForks>true</reuseForks>

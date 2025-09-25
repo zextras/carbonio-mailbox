@@ -6,6 +6,7 @@ import static org.mockserver.model.HttpResponse.response;
 
 import com.zextras.mailbox.util.PortUtil;
 import java.nio.file.Files;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,8 +18,12 @@ class MessageBrokerFactoryTest {
 	private static ClientAndServer consulServer;
 
 	@BeforeAll
-	public static void startUp() {
+	static void startUp() {
 		consulServer = startClientAndServer(PortUtil.findFreePort());
+	}
+	@AfterAll
+	static void shutDown() {
+		consulServer.stop();
 	}
 
 	@Test
