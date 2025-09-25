@@ -25,7 +25,6 @@ import java.util.Map;
  */
 public final class LdapProvisioningWithMockMime extends LdapProvisioning {
     private final Map<String, List<MimeTypeInfo>> mimeConfig = Maps.newHashMap();
-    private final Config config = new Config(new HashMap<>(), this);
 
     public LdapProvisioningWithMockMime() {
         super( CacheMode.OFF); // disable cache for testing, it makes the provisioning use mocked mime types
@@ -37,8 +36,7 @@ public final class LdapProvisioningWithMockMime extends LdapProvisioning {
      * Used in {@link MailboxSetupHelper} indirectly by {@link Provisioning#getInstance(CacheMode)}
      */
     public LdapProvisioningWithMockMime(CacheMode cacheMode) {
-        super(cacheMode == null ? CacheMode.OFF :  cacheMode);
-        initializeMimeHandlers();
+        this();
     }
 
     private void initializeMimeHandlers() {
@@ -77,11 +75,6 @@ public final class LdapProvisioningWithMockMime extends LdapProvisioning {
             info.setHandlerClass(UnknownTypeHandler.class.getName());
             return Collections.singletonList(info);
         }
-    }
-
-    @Override
-    public Config getConfig() {
-        return config;
     }
 }
 

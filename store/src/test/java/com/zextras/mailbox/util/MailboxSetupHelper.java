@@ -15,7 +15,6 @@ import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.calendar.WellKnownTimeZones;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.account.Provisioning.CacheMode;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.HSQLDB;
@@ -117,8 +116,8 @@ public class MailboxSetupHelper {
 
   public void initData(MailboxTestData mailboxTestData) throws Exception {
     inMemoryLdapServer.initializeBasicData();
-    Provisioning.setInstance(LdapProvisioningWithMockMime.getInstance(CacheMode.OFF));
-    var provisioning = Provisioning.getInstance();
+		LC.zimbra_class_provisioning.setDefault(LdapProvisioningWithMockMime.class.getName());
+		var provisioning = Provisioning.getInstance();
     var lmtpPort = PortUtil.findFreePort();
 
     final var server =
