@@ -937,8 +937,9 @@
           <configuration>
             <threadCount>4</threadCount>
             <reuseForks>true</reuseForks>
-            <parallel>both</parallel>
-            <argLine>@{argLine} ${test.argLine}</argLine>
+            <properties>
+              <argLine>${test.argLine}</argLine>
+            </properties>
             <reportFormat>plain</reportFormat>
             <consoleOutputReporter>
               <disable>true</disable>
@@ -951,10 +952,10 @@
           <version>3.5.3</version>
           <configuration>
             <threadCount>4</threadCount>
-            <parallel>both</parallel>
             <reuseForks>true</reuseForks>
-            <!-- argline preserves other plugin args, like JaCoCo -->
-            <argLine>@{argLine} ${test.argLine}</argLine>
+            <properties>
+              <argLine>${test.argLine}</argLine>
+            </properties>
             <reportFormat>plain</reportFormat>
             <consoleOutputReporter>
               <disable>true</disable>
