@@ -13,6 +13,7 @@ import com.zextras.mailbox.messagebroker.MessageBrokerFactory;
 import com.zextras.mailbox.util.InMemoryLdapServer.Builder;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
+import com.zimbra.cs.account.Config;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.db.DbPool;
@@ -99,6 +100,8 @@ public class MailboxSetupHelper {
 		inMemoryLdapServer.initializeBasicData();
 		var provisioning = Provisioning.getInstance(Provisioning.CacheMode.OFF);
 		var lmtpPort = PortUtil.findFreePort();
+		final Config config = provisioning.getConfig();
+		config.setDefaultDomainName(mailboxTestData.defaultDomain());
 
 		final var server =
 				provisioning.createServer(
