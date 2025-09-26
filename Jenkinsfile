@@ -90,7 +90,8 @@ pipeline {
             }
             steps {
                 container('jdk-17-graal') {
-                    mvnCmd("$BUILD_PROPERTIES_PARAMS -DargLine=\"--add-modules jdk.internal.vm.ci --enable-native-access=ALL-UNNAMED -XX:+UseJVMCICompiler\" install")
+                    mvnCmd("$BUILD_PROPERTIES_PARAMS clean install -DskipTests")
+                    mvnCmd("$BUILD_PROPERTIES_PARAMS -DargLine=\"--add-modules jdk.internal.vm.ci --enable-native-access=ALL-UNNAMED -XX:+UseJVMCICompiler\" verify")
                     junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
                 }
             }
