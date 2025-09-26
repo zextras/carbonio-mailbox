@@ -15,10 +15,12 @@ import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.calendar.WellKnownTimeZones;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.account.Provisioning.CacheMode;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.HSQLDB;
+import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.mailbox.ScheduledTaskManager;
 import com.zimbra.cs.redolog.MockRedoLogProvider;
 import com.zimbra.cs.redolog.RedoLogProvider;
@@ -73,10 +75,14 @@ public class MailboxSetupHelper {
 
 	private void mockMessageBrokerClient() {
 			var messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
-			var mockedMessageBrokerFactory = Mockito.mockStatic(MessageBrokerFactory.class,
-					Mockito.CALLS_REAL_METHODS);
-			mockedMessageBrokerFactory.when(MessageBrokerFactory::getMessageBrokerClientInstance)
-					.thenReturn(messageBrokerClient);
+			try {
+				var mockedMessageBrokerFactory = Mockito.mockStatic(MessageBrokerFactory.class,
+						Mockito.CALLS_REAL_METHODS);
+				mockedMessageBrokerFactory.when(MessageBrokerFactory::getMessageBrokerClientInstance)
+						.thenReturn(messageBrokerClient);
+			} catch (Exception e) {
+				// ignore
+			}
 	}
 
 	public void setUp(MailboxTestData mailboxTestData) throws Exception {
@@ -117,8 +123,10 @@ public class MailboxSetupHelper {
 	}
 
   public void initData(MailboxTestData mailboxTestData) throws Exception {
+		Provisioning.setInstance(null);
+		LdapClient.unSetInstance();
     inMemoryLdapServer.initializeBasicData();
-		LC.zimbra_class_provisioning.setDefault(LdapProvisioningWithMockMime.class.getName());
+		Provisioning.setInstance(new LdapProvisioningWithMockMime(CacheMode.OFF));
 		var provisioning = Provisioning.getInstance();
     var lmtpPort = PortUtil.findFreePort();
 
@@ -149,6 +157,8 @@ public class MailboxSetupHelper {
 
 	public void tearDown() throws Exception {
 		inMemoryLdapServer.clear();
+		// TODO: refactor ldap client (one day) to remove singleton
+		LdapClient.unSetInstance();
 		Provisioning.setInstance(null);
 		LdapProvisioning.setInstance(null);
 		RedoLogProvider.getInstance().shutdown();

@@ -13,6 +13,7 @@ import com.unboundid.ldap.sdk.ModificationType;
 import com.unboundid.ldif.LDIFReader;
 import com.zextras.ldap.LdifProvider;
 import com.zimbra.common.localconfig.LC;
+import com.zimbra.common.util.ZimbraLog;
 import java.io.InputStream;
 
 /** A simple in memory ldap for testing using carbonio schemas */
@@ -95,6 +96,7 @@ public class InMemoryLdapServer {
   }
 
   public void start() throws LDAPException {
+    ZimbraLog.misc.info("Starting in memory LDAP server");
     inMemoryDirectoryServer.startListening();
   }
 }

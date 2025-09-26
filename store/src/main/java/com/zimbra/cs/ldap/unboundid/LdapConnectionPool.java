@@ -196,6 +196,11 @@ public class LdapConnectionPool {
         LdapConnectionPool.DebugConnPool.dump();
     }
 
+    public static void reset() {
+        closeAll();
+        connPools.clear();
+    }
+
     private static class DebugConnPool {
 
         private static final Map<String /* connection pool name */, DebugConnPool>

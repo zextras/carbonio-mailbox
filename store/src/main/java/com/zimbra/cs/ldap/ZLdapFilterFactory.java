@@ -26,6 +26,10 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
     SINGLETON = factory;
   }
 
+  public static void unsetSingleton() {
+    SINGLETON = null;
+  }
+
   public static ZLdapFilterFactory getInstance() {
     assert (SINGLETON != null);
     return SINGLETON;

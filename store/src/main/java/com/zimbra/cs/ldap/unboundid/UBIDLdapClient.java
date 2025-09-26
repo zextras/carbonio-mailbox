@@ -22,6 +22,15 @@ import com.zimbra.cs.ldap.ZSearchScope;
 import com.zimbra.cs.ldap.ZSearchScope.ZSearchScopeFactory;
 
 public class UBIDLdapClient extends LdapClient {
+
+    @Override
+    protected void reset() {
+        UBIDLdapFilterFactory.reset();
+        ZLdapFilterFactory.unsetSingleton();
+        UBIDLdapContext.shutdown();
+        LdapConnectionPool.reset();
+    }
+
     @Override
     protected void init(boolean alwaysUseMaster) throws LdapException {
         super.init(alwaysUseMaster);
