@@ -243,14 +243,14 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
   private static LdapProvisioning singleton = null;
 
-  private static synchronized void ensureSingleton(LdapProvisioning prov) {
+  public LdapProvisioning getSingleton() {
     if (singleton != null) {
       // pass an exception to have the stack logged
       Zimbra.halt(
           "Only one instance of LdapProvisioning can be created",
           ServiceException.FAILURE("failed to instantiate LdapProvisioning", null));
     }
-    singleton = prov;
+    return new LdapProvisioning();
   }
 
   public LdapProvisioning() {
@@ -258,7 +258,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
   }
 
   public LdapProvisioning(CacheMode cacheMode) {
-    ensureSingleton(this);
+//    ensureSingleton(this);
     useCache = cacheMode != CacheMode.OFF;
 
     if (this.useCache) {

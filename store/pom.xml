@@ -916,8 +916,6 @@
           <reuseForks>false</reuseForks>
           <parallel>classes</parallel>
           <argLine>@{argLine} -Dserver.dir=${project.basedir}
-            -Djunit.jupiter.execution.parallel.enabled=true
-            -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
             -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
             -Dlog4j.configurationFile=${project.basedir}/src/test/resources/log4j-test.properties
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI
@@ -938,8 +936,6 @@
           <reuseForks>false</reuseForks>
           <parallel>classes</parallel>
           <argLine>@{argLine} -Dserver.dir=${project.basedir}
-            -Djunit.jupiter.execution.parallel.enabled=true
-            -Djunit.jupiter.execution.parallel.mode.classes.default=concurrent
             -Dlog4j.configurationFile=${project.basedir}/src/test/resources/log4j-test.properties
             -Dzimbra.config=${project.basedir}/src/test/resources/localconfig-test.xml
             -Dfile.encoding=UTF-8 -Djava.locale.providers=COMPAT,SPI

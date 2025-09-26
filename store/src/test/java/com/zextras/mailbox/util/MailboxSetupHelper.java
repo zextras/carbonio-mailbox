@@ -14,12 +14,13 @@ import com.zextras.mailbox.util.InMemoryLdapServer.Builder;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.calendar.WellKnownTimeZones;
 import com.zimbra.common.localconfig.LC;
-import com.zimbra.cs.account.Config;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.RightManager;
+import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.HSQLDB;
 import com.zimbra.cs.mailbox.ScheduledTaskManager;
+import com.zimbra.cs.redolog.MockRedoLogProvider;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.store.StoreManager;
 import java.io.File;
@@ -135,7 +136,10 @@ public class MailboxSetupHelper {
     var domain = provisioning.createDomain(mailboxTestData.defaultDomain(), new HashMap<>());
 		var config = provisioning.getConfig();
 		config.setDefaultDomainName(mailboxTestData.defaultDomain());
-    domain.setId(mailboxTestData.defaultDomainId());
+		config.modify(Map.of(
+				 ZAttrProvisioning.A_zimbraRedoLogProvider, MockRedoLogProvider.class.getName()
+		));
+//    domain.setId(mailboxTestData.defaultDomainId());
   }
 
 	public void clearData() throws Exception {
@@ -145,6 +149,8 @@ public class MailboxSetupHelper {
 
 	public void tearDown() throws Exception {
 		inMemoryLdapServer.clear();
+		Provisioning.setInstance(null);
+		LdapProvisioning.setInstance(null);
 		RedoLogProvider.getInstance().shutdown();
 		inMemoryLdapServer.shutDown(true);
 		FileUtils.deleteDirectory(mailboxHome.toFile());
