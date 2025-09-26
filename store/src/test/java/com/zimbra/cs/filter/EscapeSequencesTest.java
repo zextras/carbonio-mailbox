@@ -5,24 +5,12 @@
 
 package com.zimbra.cs.filter;
 
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import static org.junit.jupiter.api.Assertions.*;
 
-import javax.mail.Header;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 import com.google.common.collect.Maps;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.account.Key;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.lmtpserver.LmtpAddress;
 import com.zimbra.cs.lmtpserver.LmtpEnvelope;
@@ -36,20 +24,26 @@ import com.zimbra.cs.mailbox.OperationContext;
 import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.mail.DirectInsertionMailboxManager;
 import com.zimbra.cs.service.util.ItemId;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import javax.mail.Header;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link EscapeSequencesTest}.
  */
-public final class EscapeSequencesTest {
+final class EscapeSequencesTest extends MailboxTestSuite {
 
     @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-        MailboxTestUtil.clearData();
-        MockProvisioning prov = new MockProvisioning();
-        Provisioning.setInstance(prov);
+    static void init() throws Exception {
+      final Provisioning prov = Provisioning.getInstance();
 
-        Map<String, Object> attrs = Maps.newHashMap();
+      Map<String, Object> attrs = Maps.newHashMap();
         attrs = Maps.newHashMap();
 
         prov.createDomain("zimbra.com", attrs);
