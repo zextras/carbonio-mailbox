@@ -5,13 +5,9 @@
 
 package com.zimbra.cs.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-import com.google.common.collect.Maps;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.account.ZAttrProvisioning.FeatureAddressVerificationStatus;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -22,7 +18,6 @@ import com.zimbra.cs.mailbox.MailSender;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Mailbox.MailboxData;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.service.account.ModifyPrefs;
 import com.zimbra.cs.service.mail.ServiceTestUtil;
 import com.zimbra.soap.JaxbUtil;
@@ -31,25 +26,15 @@ import com.zimbra.soap.account.type.Pref;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
-import java.util.UUID;
 import javax.mail.Address;
 import javax.mail.internet.MimeMessage;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class ModifyPrefsTest {
-
-  public static final String TEST_DOMAIN = "test.com";
+class ModifyPrefsTest extends MailboxTestSuite {
 
   @BeforeAll
-  public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-    Provisioning prov = Provisioning.getInstance();
-
-    Map<String, Object> attrs = Maps.newHashMap();
-    prov.createDomain(TEST_DOMAIN, attrs);
+  static void init() throws Exception {
 
     MailboxManager.setInstance(new MailboxManager() {
       @Override
@@ -79,14 +64,8 @@ public class ModifyPrefsTest {
   }
 
 
-  @AfterEach
-  public void tearDown() throws Exception {
-    MailboxTestUtil.clearData();
-  }
-
   private Account createGetRandomAccount() throws ServiceException {
-    return Provisioning.getInstance()
-        .createAccount(UUID.randomUUID() + "@" + TEST_DOMAIN, "secret", Maps.newHashMap());
+    return createAccount().create();
   }
 
   @Test
@@ -110,8 +89,9 @@ public class ModifyPrefsTest {
      * gets verification
      */
     assertNull(account.getPrefMailForwardingAddress());
+    final Account updatedAccount = retrieveUpdatedAccount(account);
     assertEquals("test1@somedomain.com",
-        account.getFeatureAddressUnderVerification());
+        updatedAccount.getFeatureAddressUnderVerification());
     /*
      * disable the verification feature and check that the forwarding
      * address is directly stored into 'zimbraPrefMailForwardingAddress'
@@ -122,8 +102,13 @@ public class ModifyPrefsTest {
     new ModifyPrefs().handle(req, ServiceTestUtil.getRequestContext(mbox.getAccount()));
 
     assertNull(account.getFeatureAddressUnderVerification());
-    assertEquals("test1@somedomain.com", account.getPrefMailForwardingAddress());
-    assertEquals(FeatureAddressVerificationStatus.pending, account.getFeatureAddressVerificationStatus());
+    final Account updatedAccount2 = retrieveUpdatedAccount(account);
+    assertEquals("test1@somedomain.com", updatedAccount2.getPrefMailForwardingAddress());
+    assertEquals(FeatureAddressVerificationStatus.pending, updatedAccount2.getFeatureAddressVerificationStatus());
+  }
+
+  private Account retrieveUpdatedAccount(Account account) throws ServiceException {
+    return Provisioning.getInstance().getAccountByName(account.getName());
   }
 
   @Test
@@ -135,9 +120,10 @@ public class ModifyPrefsTest {
     request.addPref(new Pref(Provisioning.A_zimbraPrefCalendarInitialView, "year"));
     Element req = JaxbUtil.jaxbToElement(request);
     new ModifyPrefs().handle(req, ServiceTestUtil.getRequestContext(mbox.getAccount()));
-
-    assertFalse(account.getPrefCalendarInitialView().isDay());
-    assertTrue(account.getPrefCalendarInitialView().isYear());
+    // FIXME: these tests were asserting against an object in memory instead of verifying the API result
+    final Account updatedAccount = retrieveUpdatedAccount(account);
+    assertFalse(updatedAccount.getPrefCalendarInitialView().isDay());
+    assertTrue(updatedAccount.getPrefCalendarInitialView().isYear());
   }
 
   @Test
@@ -151,7 +137,7 @@ public class ModifyPrefsTest {
     Element req = JaxbUtil.jaxbToElement(request);
     new ModifyPrefs().handle(req, ServiceTestUtil.getRequestContext(account));
 
-    assertTrue(account.isCarbonioPrefWebUiDarkMode());
+    assertTrue(retrieveUpdatedAccount(account).isCarbonioPrefWebUiDarkMode());
   }
 
   @Test
