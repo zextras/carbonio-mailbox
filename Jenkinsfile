@@ -11,6 +11,9 @@ boolean isBuildingTag() {
     return env.TAG_NAME ? true : false
 }
 
+String profile = isBuildingTag() ? '-Pprod' :
+    (env.BRANCH_NAME == 'devel' ? '-Pdev' : '')
+
 pipeline {
     agent {
         node {
@@ -19,7 +22,7 @@ pipeline {
     }
 
     environment {
-        BUILD_PROPERTIES_PARAMS = '-Ddebug=0 -Dis-production=1'
+        MVN_OPTS = "-Ddebug=0 -Dis-production=1 ${profile}"
         GITHUB_BOT_PR_CREDS = credentials('jenkins-integration-with-github-account')
         JAVA_OPTS = '-Dfile.encoding=UTF8'
         LC_ALL = 'C.UTF-8'
@@ -67,7 +70,7 @@ pipeline {
                 container('jdk-17') {
                     sh """
                         apt update && apt install -y build-essential
-                        mvn ${BUILD_PROPERTIES_PARAMS} \
+                        mvn ${MVN_OPTS} \
                             -DskipTests=true \
                             clean install
                         mkdir staging
@@ -88,7 +91,7 @@ pipeline {
             }
             steps {
                 container('jdk-17') {
-                    sh "mvn ${BUILD_PROPERTIES_PARAMS} verify"
+                    sh "mvn ${MVN_OPTS} verify"
                 }
                 junit allowEmptyResults: true,
                     testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
@@ -106,7 +109,7 @@ pipeline {
                 container('jdk-17') {
                     withSonarQubeEnv(credentialsId: 'sonarqube-user-token', installationName: 'SonarQube instance') {
                         sh """
-                            mvn ${BUILD_PROPERTIES_PARAMS} \
+                            mvn ${MVN_OPTS} -DskipTests \
                                 sonar:sonar \
                                 -Dsonar.junit.reportPaths=target/surefire-reports,target/failsafe-reports \
                                 -Dsonar.exclusions=**/com/zimbra/soap/mail/type/*.java,**/com/zimbra/soap/mail/message/*.java,**/com/zimbra/cs/account/ZAttr*.java,**/com/zimbra/common/account/ZAttr*.java
@@ -126,9 +129,7 @@ pipeline {
                 container('jdk-17') {
                     withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
                         script {
-                            String profile = isBuildingTag() ? '-Pprod' :
-                                    (env.BRANCH_NAME == 'devel' ? '-Pdev' : '')
-                            sh "mvn ${profile} ${BUILD_PROPERTIES_PARAMS} deploy -DskipTests=true"
+                            sh "mvn ${MVN_OPTS} deploy -DskipTests=true"
                         }
                     }
                 }
