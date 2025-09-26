@@ -8,6 +8,7 @@ package com.zimbra.cs.filter;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.MailboxTestSuite;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.mailbox.DeliveryContext;
 import com.zimbra.cs.mailbox.MailItem;
@@ -31,8 +32,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class DeleteHeaderTest extends MailboxTestSuite {
-
-	private static Account acct1;
 
 	private static String sampleBaseMsg = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
 			+ "\tby localhost (edge01e.zimbra.com [127.0.0.1]) (amavisd-new, port 10032)\n"
@@ -63,16 +62,10 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 
 	@BeforeAll
 	public static void init() throws Exception {
-		acct1 = createAccount().create();
 
 		// this MailboxManager does everything except actually send mail
 		MailboxManager.setInstance(new DirectInsertionMailboxManager());
 
-	}
-
-	@BeforeEach
-	public void setUp() throws Exception {
-		MailboxTestUtil.clearData();
 	}
 
 	/*
@@ -80,7 +73,8 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	void testDeleteHeaderXTestHeaderAll() {
+	void testDeleteHeaderXTestHeaderAll() throws ServiceException {
+		var acct1 = createAccount().create();
 		String[] expected = {"Received: from edge01e.zimbra.com ([127.0.0.1])\r\n"
 				+ "\tby localhost (edge01e.zimbra.com [127.0.0.1]) (amavisd-new, port 10032)\r\n"
 				+ "\twith ESMTP id DN6rfD1RkHD7; Fri, 24 Jun 2016 01:45:31 -0400 (EDT)",
@@ -165,6 +159,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testDeleteHeaderAtIndex() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ " deleteheader :index 2 \"X-Test-Header\" \r\n"
 					+ "  ;\n";
@@ -202,17 +197,18 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testDeleteLastHeader() {
 		try {
+			var account = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ " deleteheader :last :index 1 \"X-Test-Header\" \r\n"
 					+ "  ;\n";
-			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
+			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(account);
 
-			RuleManager.clearCachedRules(acct1);
-			acct1.setSieveEditHeaderEnabled(true);
-			acct1.setAdminSieveScriptBefore(filterScript);
+			RuleManager.clearCachedRules(account);
+			account.setSieveEditHeaderEnabled(true);
+			account.setAdminSieveScriptBefore(filterScript);
 			RuleManager.applyRulesToIncomingMessage(
 					new OperationContext(mbox1), mbox1, new ParsedMessage(
-							sampleBaseMsg.getBytes(), false), 0, acct1.getName(),
+							sampleBaseMsg.getBytes(), false), 0, account.getName(),
 					null, new DeliveryContext(),
 					Mailbox.ID_FOLDER_INBOX, true);
 			Integer itemId = mbox1.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(MailItem.Type.MESSAGE)
@@ -242,6 +238,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testDeleteSecondFromBottomHeader() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ " deleteheader :index 2 :last \"X-Test-Header\" \r\n"
 					+ "  ;\n";
@@ -285,6 +282,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testDeleteHeaderUsingIs() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ " deleteheader :is \"X-Test-Header\" \"test2\" \r\n"
 					+ "  ;\n";
@@ -324,6 +322,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testDeleteHeaderUsingMatches() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ " deleteheader :matches \"X-Test-Header\" \"test*\" \r\n"
 					+ "  ;\n";
@@ -363,18 +362,19 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testDeleteHeaderUsingContains() {
 		try {
+			var account = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ " deleteheader :contains \"X-Test-Header\" \"test2\" \r\n"
 					+ "  ;\n";
 
-			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
+			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(account);
 
-			RuleManager.clearCachedRules(acct1);
-			acct1.setSieveEditHeaderEnabled(true);
-			acct1.setAdminSieveScriptBefore(filterScript);
+			RuleManager.clearCachedRules(account);
+			account.setSieveEditHeaderEnabled(true);
+			account.setAdminSieveScriptBefore(filterScript);
 			RuleManager.applyRulesToIncomingMessage(
 					new OperationContext(mbox1), mbox1, new ParsedMessage(
-							sampleBaseMsg.getBytes(), false), 0, acct1.getName(),
+							sampleBaseMsg.getBytes(), false), 0, account.getName(),
 					null, new DeliveryContext(),
 					Mailbox.ID_FOLDER_INBOX, true);
 			Integer itemId = mbox1.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(MailItem.Type.MESSAGE)
@@ -402,6 +402,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testDeleteHeaderWithNumericComparisionUsingValue() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript =
 					"require [\"editheader\", \"relational\", \"comparator-i;ascii-numeric\"];\n"
 							+ " deleteheader :value \"lt\" :comparator \"i;ascii-numeric\" \"X-Numeric-Header\" \"3\" \r\n"
@@ -442,19 +443,20 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testDeleteHeaderWithNumericComparisionUsingCount() {
 		try {
+			var account = createAccount().create();
 			String filterScript =
 					"require [\"editheader\", \"relational\", \"comparator-i;ascii-numeric\"];\n"
 							+ " deleteheader :count \"ge\" :comparator \"i;ascii-numeric\" \"X-Numeric-Header\" \"3\" \r\n"
 							+ "  ;\n";
 
-			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
+			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(account);
 
-			RuleManager.clearCachedRules(acct1);
-			acct1.setSieveEditHeaderEnabled(true);
-			acct1.setAdminSieveScriptBefore(filterScript);
+			RuleManager.clearCachedRules(account);
+			account.setSieveEditHeaderEnabled(true);
+			account.setAdminSieveScriptBefore(filterScript);
 			RuleManager.applyRulesToIncomingMessage(
 					new OperationContext(mbox1), mbox1, new ParsedMessage(
-							sampleBaseMsg.getBytes(), false), 0, acct1.getName(),
+							sampleBaseMsg.getBytes(), false), 0, account.getName(),
 					null, new DeliveryContext(),
 					Mailbox.ID_FOLDER_INBOX, true);
 			Integer itemId = mbox1.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(MailItem.Type.MESSAGE)
@@ -482,6 +484,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testDeleteHeaderWithIndexLastAndMatchType() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ " deleteheader :index 2 :last :contains \"X-Test-Header\" \"2\" \r\n"
 					+ "  ;\n";
@@ -521,20 +524,21 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testDeleteHeaderThanAddHeader() {
 		try {
+			var account = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ " deleteheader :is \"X-Test-Header\" \"test2\" \r\n"
 					+ "  ;\n"
 					+ " addheader \"X-Test-Header\" \"test5\" \r\n"
 					+ "  ;\n";
 
-			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
+			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(account);
 
-			RuleManager.clearCachedRules(acct1);
-			acct1.setSieveEditHeaderEnabled(true);
-			acct1.setAdminSieveScriptBefore(filterScript);
+			RuleManager.clearCachedRules(account);
+			account.setSieveEditHeaderEnabled(true);
+			account.setAdminSieveScriptBefore(filterScript);
 			RuleManager.applyRulesToIncomingMessage(
 					new OperationContext(mbox1), mbox1, new ParsedMessage(
-							sampleBaseMsg.getBytes(), false), 0, acct1.getName(),
+							sampleBaseMsg.getBytes(), false), 0, account.getName(),
 					null, new DeliveryContext(),
 					Mailbox.ID_FOLDER_INBOX, true);
 			Integer itemId = mbox1.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(MailItem.Type.MESSAGE)
@@ -570,6 +574,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testAddHeaderThanDeleteHeader() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ " addheader :last \"X-Test-Header\" \"test5\" \r\n"
 					+ "  ;\n"
@@ -620,6 +625,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testAddHeaderThanDeleteHeaderThanAddHeader() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ " addheader :last \"X-Test-Header\" \"test5\" ;\n"
 					+ " deleteheader :contains \"X-Test-Header\" \"2\" ;\n"
@@ -674,6 +680,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testDeleteHeaderUsingMatchesNonASCII() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ "deleteheader :comparator \"i;ascii-casemap\" :is  \"X-Test-Header-non-ascii\" \"日本語の件名\";\n";
 
@@ -715,6 +722,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 			String filterScript = "require [\"editheader\"];\n"
 					+ "deleteheader :matches \"X-Test-Header-non-ascii\" \"*\";\n";
 
+			var acct1 = createAccount().create();
 			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
 
 			RuleManager.clearCachedRules(acct1);
@@ -750,6 +758,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testMatchVariables() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ "deleteheader :matches \"X-Dummy-Header\" \"*\";";
 
@@ -800,6 +809,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testDeleteHeaderNinthFromBottom() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ " deleteheader :index 9 :last \"X-Dummy-Header\" \r\n"
 					+ "  ;\n";
@@ -837,6 +847,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testDeleteHeaderWithValueComparisionForCasemapComparator() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\", \"relational\"];\n"
 					+ " deleteheader :value \"lt\" :comparator \"i;ascii-casemap\" \"X-Numeric-Header\" \"3\" \r\n"
 					+ "  ;\n";
@@ -876,6 +887,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testDeleteHeaderWithOutMatchType() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ " deleteheader \"X-Numeric-Header\" \"3\";";
 
@@ -915,6 +927,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testDeleteNoValuePattern() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript =
 					"require [\"editheader\", \"relational\", \"comparator-i;ascii-numeric\"];\n"
 							+ " deleteheader :count \"gt\" :comparator \"i;ascii-numeric\" \"Subject\" \"\" \r\n"
@@ -954,6 +967,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testDeleteHeaderWithHeaderNameStartingWithSpace() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ " deleteheader \" X-Test-Header\" \r\n"
 					+ "  ;\n";
@@ -996,6 +1010,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testDeleteHeaderCountNegative() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript =
 					"require [\"editheader\", \"relational\", \"comparator-i;ascii-numeric\"];\n"
 							+ "deleteheader :count \"le\" :comparator \"i;ascii-numeric\" \"X-Numeric-Header\" \"-1\";\n";
@@ -1044,6 +1059,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 
 		try {
 
+			var acct1 = createAccount().create();
 			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
 
 			RuleManager.clearCachedRules(acct1);
@@ -1083,6 +1099,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testDeleteHeaderAsciiNumbericIsComparator() {
 		try {
+			var acct1 = createAccount().create();
 			String sampleBaseMsg = "Received: from edge01e.zimbra.com ([127.0.0.1])\n"
 					+ "\tby localhost (edge01e.zimbra.com [127.0.0.1]) (amavisd-new, port 10032)\n"
 					+ "\twith ESMTP id DN6rfD1RkHD7; Fri, 24 Jun 2016 01:45:31 -0400 (EDT)\n"
@@ -1122,7 +1139,8 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	 * Try deleting an immutable header from a sieve script
 	 */
 	@Test
-	void testDeleteHeaderImmutableHeaders() {
+	void testDeleteHeaderImmutableHeaders() throws ServiceException {
+		var account = createAccount().create();
 		String sampleBaseMsg = "Subject: example\n"
 				+ "to: test@zimbra.com\n"
 				+ "Content-Type: text/plain; charset=\"ISO-2022-JP\"\n"
@@ -1142,16 +1160,16 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 				+ "tag \"tag-example2\";\n";
 		try {
 
-			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
-			RuleManager.clearCachedRules(acct1);
-			acct1.unsetAdminSieveScriptBefore();
-			acct1.unsetMailSieveScript();
-			acct1.unsetAdminSieveScriptAfter();
-			acct1.setSieveEditHeaderEnabled(true);
-			acct1.setAdminSieveScriptBefore(filterScript);
+			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(account);
+			RuleManager.clearCachedRules(account);
+			account.unsetAdminSieveScriptBefore();
+			account.unsetMailSieveScript();
+			account.unsetAdminSieveScriptAfter();
+			account.setSieveEditHeaderEnabled(true);
+			account.setAdminSieveScriptBefore(filterScript);
 			RuleManager.applyRulesToIncomingMessage(
 					new OperationContext(mbox1), mbox1, new ParsedMessage(
-							sampleBaseMsg.getBytes(), false), 0, acct1.getName(),
+							sampleBaseMsg.getBytes(), false), 0, account.getName(),
 					null, new DeliveryContext(),
 					Mailbox.ID_FOLDER_INBOX, true);
 			Integer itemId = mbox1.getItemIds(null, Mailbox.ID_FOLDER_INBOX).getIds(MailItem.Type.MESSAGE)
@@ -1177,6 +1195,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void deleteHeaderSieveEditHeaderEnabledTrue() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ "deleteheader \"Subject\";";
 
@@ -1210,6 +1229,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void deleteHeaderSieveEditHeaderEnabledFalse() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ "deleteheader \"Subject\";";
 
@@ -1243,6 +1263,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void deleteHeaderUserSieveScript() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ "deleteheader \"Subject\";";
 			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
@@ -1276,6 +1297,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 	@Test
 	void testDeleteHeaderUsingWildcardMatchesToControlChars() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ "deleteheader :matches \"X-Header-With-Control-Chars\" \"*\";";
 
@@ -1312,7 +1334,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 		String script = "require [\"editheader\"];\n"
 				+ "deleteheader :matches \"X-Mal-Encoded-Header\" \"*\";";
 		try {
-
+			var acct1 = createAccount().create();
 			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct1);
 			RuleManager.clearCachedRules(acct1);
 			acct1.setSieveEditHeaderEnabled(true);
@@ -1340,7 +1362,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 		String script = "require [\"editheader\"];\n"
 				+ "deleteheader :comparator \"i;ascii-numeric\" \"X-Header\" \"example\";";
 		try {
-
+			var acct1 = createAccount().create();
 			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct1);
 			RuleManager.clearCachedRules(acct1);
 			acct1.setSieveEditHeaderEnabled(true);
@@ -1408,7 +1430,7 @@ public class DeleteHeaderTest extends MailboxTestSuite {
 
 	private boolean testBackslash(String script, String pattern, String msg) {
 		try {
-
+			var acct1 = createAccount().create();
 			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct1);
 			RuleManager.clearCachedRules(acct1);
 			acct1.unsetAdminSieveScriptBefore();

@@ -24,19 +24,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class TagActionTest extends MailboxTestSuite {
-	private static Account acct;
-	private static Account acct2;
-
-	@BeforeAll
-	public static void init() throws Exception {
-		acct = createAccount().create();
-		acct2 = createAccount().create();
-	}
-
-	@BeforeEach
-	public void setUp() throws Exception {
-		MailboxTestUtil.clearData();
-	}
 
 	private static final String name1 = "tag1", name2 = "tag2";
 
@@ -50,7 +37,8 @@ public class TagActionTest extends MailboxTestSuite {
 
 	@Test
 	void byId() throws Exception {
-		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
+		final Account account = createAccount().create();
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
 		Tag tag1 = mbox.createTag(null, name1, (byte) 0);
 		Tag tag2 = mbox.createTag(null, name2, (byte) 1);
@@ -61,7 +49,7 @@ public class TagActionTest extends MailboxTestSuite {
 		action.addAttribute(MailConstants.A_OPERATION, ItemAction.OP_COLOR)
 				.addAttribute(MailConstants.A_COLOR, 4);
 		action.addAttribute(MailConstants.A_ID, tagids);
-		Element ack = new TagAction().handle(request, ServiceTestUtil.getRequestContext(acct))
+		Element ack = new TagAction().handle(request, ServiceTestUtil.getRequestContext(account))
 				.getElement(MailConstants.E_ACTION);
 
 		assertEquals(4, mbox.getTagByName(null, name1).getColor(), name1 + " color set");
@@ -72,6 +60,7 @@ public class TagActionTest extends MailboxTestSuite {
 
 	@Test
 	void byName() throws Exception {
+		var acct = createAccount().create();
 		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
 
 		Tag tag1 = mbox.createTag(null, name1, (byte) 0);
@@ -95,6 +84,7 @@ public class TagActionTest extends MailboxTestSuite {
 
 	@Test
 	void invalid() throws Exception {
+		var acct = createAccount().create();
 		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
 
 		mbox.createTag(null, name1, (byte) 0);
@@ -126,6 +116,8 @@ public class TagActionTest extends MailboxTestSuite {
 
 	@Test
 	void permissions() throws Exception {
+		var acct = createAccount().create();
+		var acct2 = createAccount().create();
 		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
 
 		Tag tag1 = mbox.createTag(null, name1, (byte) 0);
@@ -165,6 +157,7 @@ public class TagActionTest extends MailboxTestSuite {
 
 	@Test
 	void delete() throws Exception {
+		var acct = createAccount().create();
 		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
 
 		// create the tag
