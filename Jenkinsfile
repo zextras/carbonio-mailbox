@@ -82,18 +82,6 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            steps {
-                container('jdk-17') {
-                    sh 'apt update && apt install -y build-essential'
-                    mvnCmd("$BUILD_PROPERTIES_PARAMS -DskipTests=true clean install")
-                    sh 'mkdir staging'
-                    sh 'cp -r store* milter* attribute-manager right-manager mailbox-ldap-lib native client common packages soap jython-libs staging'
-                    stash includes: 'staging/**', name: 'staging'
-                }
-            }
-        }
-
         stage('UT, IT & API tests') {
             when {
                 expression {
@@ -101,8 +89,8 @@ pipeline {
                 }
             }
             steps {
-                container('jdk-17') {
-                    mvnCmd("$BUILD_PROPERTIES_PARAMS verify")
+                container('jdk-17-graal') {
+                    mvnCmd("$BUILD_PROPERTIES_PARAMS -DargLine=\"--add-modules jdk.internal.vm.ci --enable-native-access=ALL-UNNAMED -XX:+UseJVMCICompiler\" install")
                     junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
                 }
             }
