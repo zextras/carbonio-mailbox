@@ -367,13 +367,7 @@ public class UBIDLdapContext extends ZLdapContext {
     @Override
     public ZLdapSchema getSchema() throws LdapException {
         try {
-            Schema schema;
-
-            if (InMemoryLdapServer.isOn()) {
-                schema = InMemoryLdapServer.getSchema(InMemoryLdapServer.ZIMBRA_LDAP_SERVER);
-            } else {
-                schema = UBIDLdapOperation.GET_SCHEMA.execute(this);
-            }
+            Schema schema = UBIDLdapOperation.GET_SCHEMA.execute(this);
             return new UBIDLdapSchema(schema);
         } catch (LDAPException e) {
             throw mapToLdapException("unable to get schema", e);
@@ -824,12 +818,7 @@ public class UBIDLdapContext extends ZLdapContext {
 
         long startTime = UBIDLdapOperation.GENERIC_OP.begin();
         try {
-            if (InMemoryLdapServer.isOn()) {
-                connection = InMemoryLdapServer.getConnection();
-                password = InMemoryLdapServer.Password.treatPassword(password);
-            } else {
-                connection = serverPool.getServerSet().getConnection();
-            }
+            connection = serverPool.getServerSet().getConnection();
 
             if (serverPool.getConnectionType() == LdapConnType.STARTTLS) {
                 SSLContext startTLSContext =

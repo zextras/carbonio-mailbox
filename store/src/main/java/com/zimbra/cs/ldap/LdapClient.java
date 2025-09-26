@@ -184,9 +184,7 @@ public abstract class LdapClient {
      * LDAP authenticate to the Zimbra LDAP server.
      * Used when stored password is not SSHA.
      *
-     * @param principal
      * @param password
-     * @param note
      * @throws ServiceException
      */
     public static void zimbraLdapAuthenticate(String bindDN, String password)
