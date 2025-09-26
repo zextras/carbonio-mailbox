@@ -7,6 +7,7 @@ package com.zimbra.cs.mailbox;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.account.Key.AccountBy;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.Constants;
@@ -22,24 +23,16 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import qa.unittest.TestUtil;
 
-public class PurgeTest {
+class PurgeTest extends MailboxTestSuite {
   private Account account;
 
-  @BeforeAll
-  public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-  }
-
   @BeforeEach
-  public void setUp() throws Exception {
-    MailboxTestUtil.clearData();
-    Provisioning prov = Provisioning.getInstance();
-    account = prov.createAccount("test@zimbra.com", "secret", new HashMap<>());
+  void setUp() throws Exception {
+    account = createAccount().create();
     Config config = Provisioning.getInstance().getConfig();
     RetentionPolicyManager mgr = RetentionPolicyManager.getInstance();
     RetentionPolicy rp = mgr.getSystemRetentionPolicy(config);
