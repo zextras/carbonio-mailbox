@@ -736,12 +736,4 @@ public final class MailboxTest extends MailboxTestSuite {
 		int count = mbox.getModifiedItemsCount(octxt, 0, 0, MailItem.Type.CONTACT, folderIds);
 		assertEquals(2, count);
 	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterEach
-	public void tearDown() throws Exception {
-		MailboxTestUtil.clearData();
-	}
 }
