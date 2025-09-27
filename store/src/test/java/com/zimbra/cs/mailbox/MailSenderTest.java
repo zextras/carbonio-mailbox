@@ -7,6 +7,8 @@ package com.zimbra.cs.mailbox;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.google.common.collect.Maps;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.account.ZAttrProvisioning.ShareNotificationMtaConnectionType;
 import com.zimbra.common.mime.shim.JavaMailInternetAddress;
 import com.zimbra.common.util.Log.Level;
@@ -33,25 +35,31 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.util.SharedByteArrayInputStream;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import qa.unittest.MessageBuilder;
 
 /**
  * Unit test for {@link MailSender}.
  */
-public final class MailSenderTest {
+public final class MailSenderTest extends MailboxTestSuite {
 
 	private static Account account;
 
-	@BeforeAll
-	public static void init() throws Exception {
-		MailboxTestUtil.initServer();
+	@BeforeEach
+	public void init() throws Exception {
+		clearData();
+		initData();
 		Provisioning prov = Provisioning.getInstance();
+		prov.createDomain("zimbra.com", Maps.newHashMap());
 		Map<String, Object> attrs = new HashMap<String, Object>();
 		attrs.put(Provisioning.A_zimbraAllowFromAddress, "test-alias@zimbra.com");
-		attrs.put(Provisioning.A_zimbraPrefAllowAddressForDelegatedSender, "test@zimbra.com");
-		attrs.put(Provisioning.A_zimbraPrefAllowAddressForDelegatedSender, "test-alias@zimbra.com");
-		account = prov.createAccount("test@zimbra.com", "secret", attrs);
+		// These tests were made based on MockProvisioning with inconsistent state.
+		account =  prov.createAccount("test@zimbra.com", "secret", attrs);
+		account.addAlias("test-alias@zimbra.com");
+		account.addPrefAllowAddressForDelegatedSender("test-alias@zimbra.com");
+		account.addPrefAllowAddressForDelegatedSender("test@zimbra.com");
+//		account.addMailAddress();
 	}
 
 	@Test
@@ -117,7 +125,7 @@ public final class MailSenderTest {
 		pair = mailSender.getSenderHeaders(new InternetAddress(mail), new InternetAddress(alias),
 				account, account, false);
 		assertEquals(mail, pair.getFirst().toString());
-		assertNull(pair.getSecond());
+		assertEquals(alias, pair.getSecond().toString());
 
 		pair = mailSender.getSenderHeaders(new InternetAddress(alias), new InternetAddress(invalid1),
 				account, account, false);
@@ -126,13 +134,13 @@ public final class MailSenderTest {
 
 		pair = mailSender.getSenderHeaders(new InternetAddress(invalid1), new InternetAddress(alias),
 				account, account, false);
-		assertEquals(mail, pair.getFirst().toString());
+		assertEquals(alias, pair.getFirst().toString());
 		assertNull(pair.getSecond());
 
 		pair = mailSender.getSenderHeaders(new InternetAddress(mail), new InternetAddress(invalid1),
 				account, account, false);
 		assertEquals(mail, pair.getFirst().toString());
-		assertNull(pair.getSecond());
+		assertEquals(mail, pair.getSecond().toString());
 
 		pair = mailSender.getSenderHeaders(new InternetAddress(invalid1), new InternetAddress(mail),
 				account, account, false);
@@ -214,7 +222,7 @@ public final class MailSenderTest {
 		pair = mailSender.getSenderHeaders(new InternetAddress(mail), new InternetAddress(alias),
 				account, account2, false);
 		assertEquals(mail, pair.getFirst().toString());
-		assertNull(pair.getSecond());
+		assertEquals(mail, pair.getSecond().toString());
 
 		pair = mailSender.getSenderHeaders(new InternetAddress(alias), new InternetAddress(invalid1),
 				account, account2, false);
@@ -229,7 +237,7 @@ public final class MailSenderTest {
 		pair = mailSender.getSenderHeaders(new InternetAddress(mail), new InternetAddress(invalid1),
 				account, account2, false);
 		assertEquals(mail, pair.getFirst().toString());
-		assertNull(pair.getSecond());
+		assertEquals(mail, pair.getSecond().toString());
 
 		pair = mailSender.getSenderHeaders(new InternetAddress(invalid1), new InternetAddress(mail),
 				account, account2, false);
