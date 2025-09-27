@@ -32,8 +32,8 @@ import com.zimbra.znative.IO;
 /**
  * @since 2004.10.13
  */
-public final class FileBlobStore extends StoreManager {
-    private static final VolumeManager MANAGER = VolumeManager.getInstance();
+public class FileBlobStore extends StoreManager {
+    protected static final VolumeManager MANAGER = VolumeManager.getInstance();
 
     @Override
     public void startup() throws IOException, ServiceException {

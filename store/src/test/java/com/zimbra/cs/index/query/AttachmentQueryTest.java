@@ -12,9 +12,7 @@ import com.zimbra.cs.account.Account;
 import com.zimbra.cs.index.LuceneQueryOperation;
 import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -29,11 +27,6 @@ public final class AttachmentQueryTest extends MailboxTestSuite {
 	@BeforeAll
 	public static void init() throws Exception {
 		account = createAccount().create();
-	}
-
-	@BeforeEach
-	public void setUp() throws Exception {
-		MailboxTestUtil.clearData();
 	}
 
 	@Test
