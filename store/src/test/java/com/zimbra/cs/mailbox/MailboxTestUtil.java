@@ -60,43 +60,6 @@ public final class MailboxTestUtil {
 
   private MailboxTestUtil() {}
 
-  /** Initializes the provisioning. */
-  public static void initProvisioning() throws Exception {
-    initProvisioning("");
-  }
-
-  /**
-   * Initializes the provisioning.
-   *
-   * @param zimbraServerDir the directory that contains the ZimbraServer project
-   * @throws Exception
-   */
-  public static void initProvisioning(String zimbraServerDir) throws Exception {
-    zimbraServerDir = getZimbraServerDir(zimbraServerDir);
-    System.setProperty(
-        "zimbra.config", zimbraServerDir + "src/test/resources/localconfig-test.xml");
-    LC.reload();
-    LC.zimbra_home.setDefault(Files.createTempDirectory("mailbox_home_").toAbsolutePath().toString());
-    // substitute test TZ file
-    String timezonefilePath = zimbraServerDir + "src/test/resources/timezones-test.ics";
-    File d = new File(timezonefilePath);
-    if (!d.exists()) {
-      throw new FileNotFoundException("timezones-test.ics not found in " + timezonefilePath);
-    }
-    LC.timezone_file.setDefault(timezonefilePath);
-    WellKnownTimeZones.loadFromFile(d);
-    LC.zimbra_tmp_directory.setDefault(Files.createTempDirectory("server_tmp_dir_").toAbsolutePath().toString());
-    // substitute test DS config file
-    String dsfilePath = zimbraServerDir + "src/test/resources/datasource-test.xml";
-    d = new File(dsfilePath);
-    if (!d.exists()) {
-      throw new FileNotFoundException("datasource-test.xml not found in " + dsfilePath);
-    }
-    LC.data_source_config.setDefault(dsfilePath);
-    // default MIME handlers are now set up in MockProvisioning constructor
-    Provisioning.setInstance(new MockProvisioning());
-  }
-
   public static void index(Mailbox mbox) throws ServiceException {
     mbox.index.indexDeferredItems();
   }
