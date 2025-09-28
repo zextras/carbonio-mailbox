@@ -6,18 +6,19 @@ package com.zimbra.cs.ephemeral;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.callback.EphemeralBackendCheck.EphemeralBackendMigrationRules;
 import com.zimbra.cs.account.callback.EphemeralBackendCheck.MigrationStateHelper;
 import com.zimbra.cs.account.callback.EphemeralBackendCheck.MigrationStateHelper.Reason;
 import com.zimbra.cs.ephemeral.migrate.AttributeMigration;
+import com.zimbra.cs.ephemeral.migrate.InMemoryMigrationInfo;
 import com.zimbra.cs.ephemeral.migrate.MigrationInfo;
 import com.zimbra.cs.ephemeral.migrate.MigrationInfo.Status;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class ChangeEphemeralBackendTest {
+public class ChangeEphemeralBackendTest extends MailboxTestSuite {
 
 	public static String MIGRATION_URL = "ldap://1";
 	public static String DIFFERENT_URL = "ldap://2";
@@ -26,7 +27,7 @@ public class ChangeEphemeralBackendTest {
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		MailboxTestUtil.initServer();
+		MigrationInfo.setFactory(InMemoryMigrationInfo.Factory.class);
 		AttributeMigration.getMigrationInfo().clearData();
 		helper = new DummyMigrationStateHelper();
 		rules = new EphemeralBackendMigrationRules(helper);
