@@ -64,20 +64,6 @@ public final class MailboxTestUtil {
     mbox.index.indexDeferredItems();
   }
 
-  public static String getZimbraServerDir(String zimbraServerDir) {
-    String serverDir = zimbraServerDir;
-    if (StringUtil.isNullOrEmpty(serverDir)) {
-      serverDir = Strings.nullToEmpty(System.getProperty("server.dir"));
-      if (serverDir.isEmpty()) {
-        serverDir = Strings.nullToEmpty(System.getProperty("user.dir"));
-      }
-    }
-    if (!serverDir.endsWith("/")) {
-      serverDir = serverDir + "/";
-    }
-    return serverDir;
-  }
-
   public static void setFlag(Mailbox mbox, int itemId, Flag.FlagInfo flag) throws ServiceException {
     MailItem item = mbox.getItemById(null, itemId, MailItem.Type.UNKNOWN);
     int flags = item.getFlagBitmask() | flag.toBitmask();
