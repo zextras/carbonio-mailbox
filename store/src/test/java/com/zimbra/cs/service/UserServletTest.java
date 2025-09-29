@@ -13,12 +13,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zimbra.common.account.ZAttrProvisioning;
+import com.zimbra.common.mime.ContentDisposition;
+import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.JSONElement;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.util.L10nUtil;
+import com.zimbra.common.zmime.ZMimeBodyPart;
+import com.zimbra.common.zmime.ZMimeMultipart;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.AuthToken;
 import com.zimbra.cs.account.Provisioning;
@@ -26,8 +29,11 @@ import com.zimbra.cs.mailbox.MailItem.Type;
 import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTest;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
+import com.zimbra.cs.mime.Mime;
+import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.mail.CreateAppointment;
 import com.zimbra.cs.servlet.ZimbraServlet;
+import com.zimbra.cs.util.JMSession;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
 import java.io.File;
@@ -41,7 +47,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.MessagingException;
+import javax.mail.Part;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -317,7 +329,7 @@ class UserServletTest extends MailboxTestSuite {
 		var testAccountMailbox = MailboxManager.getInstance().getMailboxByAccount(testAccount);
 
 		var xmlAttachmentMsgId = testAccountMailbox.addMessage(null,
-				MailboxTestUtil.generateMessageWithXmlAttachment("find xml attachment"),
+				generateMimeMessageWithXmlAttachment(),
 				MailboxTest.STANDARD_DELIVERY_OPTIONS, null).getId();
 
 		// ask disp=i i.e, inline
@@ -330,6 +342,38 @@ class UserServletTest extends MailboxTestSuite {
 		assertEquals("attachment; filename=\"data.xml\"",
 				part1XmlAttachmentHttpResponse.getFirstHeader("Content-Disposition").getValue(),
 				"content-disposition should be 'attachment' for scriptable mime-types even if disp=i or disp=inline is passed");
+	}
+
+	private static ParsedMessage generateMimeMessageWithXmlAttachment() throws Exception {
+		MimeMessage mm = new Mime.FixedMimeMessage(JMSession.getSession());
+		mm.setHeader("From", "Vera Oliphant <oli@example.com>");
+		mm.setHeader("To", "Jimmy Dean <jdean@example.com>");
+		mm.setHeader("Subject", "find xml attachment");
+		mm.setText("Good as gold");
+
+		MimeMultipart multi = new ZMimeMultipart("mixed");
+		ContentDisposition cdisp = new ContentDisposition(Part.ATTACHMENT);
+		cdisp.setParameter("filename", "data.xml");
+
+		ZMimeBodyPart bp = new ZMimeBodyPart();
+		// MimeBodyPart.setDataHandler() invalidates Content-Type and CTE if there is any, so make sure
+		// it gets called before setting Content-Type and CTE headers.
+		try {
+			String xmlContent = "<root><message>Feeling attached.</message></root>";
+			DataSource ds = new ByteArrayDataSource(xmlContent, "text/xml");
+			bp.setDataHandler(new DataHandler(ds));
+		} catch (IOException e) {
+			throw new MessagingException("could not generate mime part content", e);
+		}
+		bp.addHeader("Content-Disposition", cdisp.toString());
+		bp.addHeader("Content-Type", "text/xml");
+		bp.addHeader("Content-Transfer-Encoding", MimeConstants.ET_8BIT);
+		multi.addBodyPart(bp);
+
+		mm.setContent(multi);
+		mm.saveChanges();
+
+		return new ParsedMessage(mm, false);
 	}
 
 	/**

@@ -9,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Maps;
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zimbra.common.account.Key;
 import com.zimbra.common.account.ZAttrProvisioning.MailThreadingAlgorithm;
+import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.common.soap.SoapProtocol;
@@ -397,7 +397,7 @@ public class ItemActionTest extends MailboxTestSuite {
     pm = MailboxTestUtil.generateMessage("Re: test subject");
     int msgId = mbox.addMessage(null, pm, dopt, null).getId();
     // set flag to unread for  this message
-    MailboxTestUtil.setFlag(mbox, msgId, Flag.FlagInfo.UNREAD);
+    setFlag(mbox, msgId);
 
     MailItem item = mbox.getItemById(null, msgId, MailItem.Type.UNKNOWN);
     // verify message unread flag is set
@@ -424,5 +424,11 @@ public class ItemActionTest extends MailboxTestSuite {
 
     tag = mbox.getTagByName(null, tag2);
     assertEquals(0, tag.getSize(), tag1 + " (tag messages)");
+  }
+
+  private static void setFlag(Mailbox mbox, int msgId) throws ServiceException {
+    MailItem item = mbox.getItemById(null, msgId, MailItem.Type.UNKNOWN);
+    int flags = item.getFlagBitmask() | Flag.FlagInfo.UNREAD.toBitmask();
+    mbox.setTags(null, msgId, item.getType(), flags, null, null);
   }
 }
