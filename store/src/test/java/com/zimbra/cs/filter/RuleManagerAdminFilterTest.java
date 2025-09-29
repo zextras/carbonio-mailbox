@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
  */
 public final class RuleManagerAdminFilterTest extends MailboxTestSuite {
 
-	private static Account account;
+	private Account account;
 	String scriptAdminBefore = "require [\"tag\", \"log\"];\n"
 			+ "if true {\n"
 			+ "  tag \"admin-defined-before\";\n"
@@ -65,8 +65,8 @@ public final class RuleManagerAdminFilterTest extends MailboxTestSuite {
 			+ "Reply-To: share@socialcast.com\n"
 			+ "Subject: test";
 
-	@BeforeAll
-	public static void init() throws Exception {
+	@BeforeEach
+	public void setUp() throws Exception {
 		account = createAccount().create();
 	}
 
