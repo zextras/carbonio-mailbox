@@ -8,6 +8,7 @@ package com.zimbra.cs.service.mail;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Maps;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.Element.JSONElement;
 import com.zimbra.common.soap.MailConstants;
@@ -23,49 +24,24 @@ import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.service.AuthProvider;
 import com.zimbra.soap.SoapEngine;
 import com.zimbra.soap.ZimbraSoapContext;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import org.junit.jupiter.api.AfterEach;
+import java.util.Objects;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 
-public class SearchTest {
+public class SearchTest extends MailboxTestSuite {
 
-  private static Provisioning provisioning;
   private static Account testAccount;
-  public String testName;
 
   @BeforeAll
   public static void init() throws Exception {
-    MailboxTestUtil.initServer();
-    provisioning = Provisioning.getInstance();
-  }
-
-  @AfterEach
-  public void tearDown() {
-    try {
-      MailboxTestUtil.clearData();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
-  @BeforeEach
-  public void setUp(TestInfo testInfo) throws Exception {
-    Optional<Method> testMethod = testInfo.getTestMethod();
-    if (testMethod.isPresent()) {
-      this.testName = testMethod.get().getName();
-    }
-    System.out.println(testName);
-    provisioning = Provisioning.getInstance();
+    Provisioning provisioning = Provisioning.getInstance();
+    provisioning.createDomain("zimbra.com", new HashMap<>());
     provisioning.createAccount("test@zimbra.com", "secret", Maps.<String, Object>newHashMap());
     provisioning.createAccount(
         "testZCS3705@zimbra.com", "secret", Maps.<String, Object>newHashMap());
@@ -169,7 +145,7 @@ public class SearchTest {
   @Test
   @DisplayName("Check Calendar Search returns RidZ field. Added for BUG CO-831.")
   void shouldEncodeCalItemWithRidZField() throws Exception {
-    Map<String, Object> context = new HashMap<String, Object>();
+    Map<String, Object> context = new HashMap<>();
     ZimbraSoapContext zsc =
         new ZimbraSoapContext(
             AuthProvider.getAuthToken(testAccount),
@@ -181,8 +157,8 @@ public class SearchTest {
     final Element createAppointmentElement =
         Element.parseJSON(
             new String(
-                this.getClass()
-                    .getResourceAsStream("CO-831-CalendarAppointmentRequest.json")
+                Objects.requireNonNull(this.getClass()
+                        .getResourceAsStream("CO-831-CalendarAppointmentRequest.json"))
                     .readAllBytes()),
             MailConstants.CREATE_APPOINTMENT_REQUEST,
             JSONElement.mFactory);

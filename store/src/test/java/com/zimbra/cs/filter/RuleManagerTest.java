@@ -7,6 +7,7 @@ package com.zimbra.cs.filter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.AccountUtil;
 import com.zimbra.common.util.ArrayUtil;
 import com.zimbra.cs.account.Account;
@@ -28,21 +29,11 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
-public final class RuleManagerTest {
-
- @BeforeAll
- public static void init() throws Exception {
-  MailboxTestUtil.initServer();
- }
-
- @BeforeEach
- public void setUp() throws Exception {
-  MailboxTestUtil.clearData();
- }
+public final class RuleManagerTest extends MailboxTestSuite {
 
  @Test
  void tagAndFileinto() throws Exception {
-  Account account = AccountUtil.createAccount();
+  Account account =createAccount().create();
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   RuleManager.clearCachedRules(account);
@@ -69,7 +60,7 @@ public final class RuleManagerTest {
 
  @Test
  void tagAndTag() throws Exception {
-  Account account = AccountUtil.createAccount();
+  Account account = createAccount().create();
   Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
   RuleManager.clearCachedRules(account);
