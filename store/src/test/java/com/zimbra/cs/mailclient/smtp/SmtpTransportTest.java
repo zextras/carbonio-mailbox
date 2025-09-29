@@ -35,7 +35,6 @@ import org.junit.jupiter.api.Timeout;
  */
 final class SmtpTransportTest {
 
-	private static final int PORT = PortUtil.findFreePort();
 	private MockTcpServer server;
 
 
@@ -53,6 +52,7 @@ final class SmtpTransportTest {
 	@Test
 	@Timeout(3000)
 	void send() throws Exception {
+		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
 				.sendLine("220 test ready")
 				.recvLine() // EHLO
@@ -67,11 +67,11 @@ final class SmtpTransportTest {
 				.sendLine("250 OK")
 				.recvLine() // QUIT
 				.sendLine("221 bye")
-				.build().start(PORT);
+				.build().start(port);
 
 		Session session = JMSession.getSession();
 		Transport transport = session.getTransport("smtp");
-		transport.connect("localhost", PORT, null, null);
+		transport.connect("localhost", port, null, null);
 		String raw = "From: sender@zimbra.com\nTo: rcpt@zimbra.com\nSubject: test\n\ntest";
 		MimeMessage msg = new ZMimeMessage(session,
 				new SharedByteArrayInputStream(raw.getBytes(Charsets.ISO_8859_1)));
@@ -90,6 +90,7 @@ final class SmtpTransportTest {
 	@Test
 	@Timeout(3000)
 	void sendPartially() throws Exception {
+		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
 				.sendLine("220 test ready")
 				.recvLine() // EHLO
@@ -108,12 +109,12 @@ final class SmtpTransportTest {
 				.sendLine("250 OK")
 				.recvLine() // QUIT
 				.sendLine("221 bye")
-				.build().start(PORT);
+				.build().start(port);
 
 		Session session = JMSession.getSession();
 		session.getProperties().setProperty("mail.smtp.sendpartial", "true");
 		Transport transport = session.getTransport("smtp");
-		transport.connect("localhost", PORT, null, null);
+		transport.connect("localhost", port, null, null);
 		String raw = "From: sender@zimbra.com\n" +
 				"To: rcpt1@zimbra.com, rcpt2@zimbra.com, rcpt3@zimbra.com\nSubject: test\n\ntest";
 		MimeMessage msg = new ZMimeMessage(session,
@@ -142,6 +143,7 @@ final class SmtpTransportTest {
 	@Test
 	@Timeout(3000)
 	void mailFromError() throws Exception {
+		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
 				.sendLine("220 test ready")
 				.recvLine() // EHLO
@@ -149,11 +151,11 @@ final class SmtpTransportTest {
 				.recvLine() // MAIL FROM
 				.sendLine("451 error")
 				.recvLine() // QUIT
-				.build().start(PORT);
+				.build().start(port);
 
 		Session session = JMSession.getSession();
 		Transport transport = session.getTransport("smtp");
-		transport.connect("localhost", PORT, null, null);
+		transport.connect("localhost", port, null, null);
 		String raw = "From: sender@zimbra.com\nTo: rcpt@zimbra.com\n" +
 				"Subject: test\n\ntest";
 		MimeMessage msg = new ZMimeMessage(session,
@@ -179,6 +181,7 @@ final class SmtpTransportTest {
 	@Test
 	@Timeout(3000)
 	void mailSmtpFrom() throws Exception {
+		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
 				.sendLine("220 test ready")
 				.recvLine() // EHLO
@@ -193,12 +196,12 @@ final class SmtpTransportTest {
 				.sendLine("250 OK")
 				.recvLine() // QUIT
 				.sendLine("221 bye")
-				.build().start(PORT);
+				.build().start(port);
 
 		Session session = JMSession.getSession();
 		session.getProperties().setProperty("mail.smtp.from", "from@zimbra.com");
 		Transport transport = session.getTransport("smtp");
-		transport.connect("localhost", PORT, null, null);
+		transport.connect("localhost", port, null, null);
 		String raw = "From: sender@zimbra.com\nTo: rcpt@zimbra.com\nSubject: test\n\ntest";
 		MimeMessage msg = new ZMimeMessage(session,
 				new SharedByteArrayInputStream(raw.getBytes(Charsets.ISO_8859_1)));
@@ -217,6 +220,7 @@ final class SmtpTransportTest {
 	@Test
 	@Timeout(3000)
 	void nullMailFrom() throws Exception {
+		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
 				.sendLine("220 test ready")
 				.recvLine() // EHLO
@@ -231,12 +235,12 @@ final class SmtpTransportTest {
 				.sendLine("250 OK")
 				.recvLine() // QUIT
 				.sendLine("221 bye")
-				.build().start(PORT);
+				.build().start(port);
 
 		Session session = JMSession.getSession();
 		session.getProperties().setProperty("mail.smtp.from", "from@zimbra.com");
 		Transport transport = session.getTransport("smtp");
-		transport.connect("localhost", PORT, null, null);
+		transport.connect("localhost", port, null, null);
 		String raw = "From: sender@zimbra.com\nTo: rcpt@zimbra.com\nSubject: test\n\ntest";
 		SMTPMessage msg = new SMTPMessage(session,
 				new SharedByteArrayInputStream(raw.getBytes(Charsets.ISO_8859_1)));
@@ -256,6 +260,7 @@ final class SmtpTransportTest {
 	@Test
 	@Timeout(3000)
 	void bracketsInMailAndRcpt() throws Exception {
+		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
 				.sendLine("220 test ready")
 				.recvLine() // EHLO
@@ -270,12 +275,12 @@ final class SmtpTransportTest {
 				.sendLine("250 OK")
 				.recvLine() // QUIT
 				.sendLine("221 bye")
-				.build().start(PORT);
+				.build().start(port);
 
 		Session session = JMSession.getSession();
 		session.getProperties().setProperty("mail.smtp.from", "<>");
 		Transport transport = session.getTransport("smtp");
-		transport.connect("localhost", PORT, null, null);
+		transport.connect("localhost", port, null, null);
 		String raw = "From: sender@zimbra.com\nTo: rcpt@zimbra.com\nSubject: test\n\ntest";
 		MimeMessage msg = new ZMimeMessage(session,
 				new SharedByteArrayInputStream(raw.getBytes(Charsets.ISO_8859_1)));
@@ -294,6 +299,7 @@ final class SmtpTransportTest {
 	@Test
 	@Timeout(3000)
 	void authLogin() throws Exception {
+		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
 				.sendLine("220 test ready")
 				.recvLine() // EHLO
@@ -315,11 +321,11 @@ final class SmtpTransportTest {
 				.sendLine("250 OK")
 				.recvLine() // QUIT
 				.sendLine("221 bye")
-				.build().start(PORT);
+				.build().start(port);
 
 		Session session = JMSession.getSession();
 		Transport transport = session.getTransport("smtp");
-		transport.connect("localhost", PORT, "zimbra", "secret");
+		transport.connect("localhost", port, "zimbra", "secret");
 		String raw = "From: sender@zimbra.com\nTo: rcpt@zimbra.com\nSubject: test\n\ntest";
 		MimeMessage msg = new ZMimeMessage(session,
 				new SharedByteArrayInputStream(raw.getBytes(Charsets.ISO_8859_1)));
@@ -341,6 +347,7 @@ final class SmtpTransportTest {
 	@Test
 	@Timeout(3000)
 	void authPlain() throws Exception {
+		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
 				.sendLine("220 test ready")
 				.recvLine() // EHLO
@@ -358,11 +365,11 @@ final class SmtpTransportTest {
 				.sendLine("250 OK")
 				.recvLine() // QUIT
 				.sendLine("221 bye")
-				.build().start(PORT);
+				.build().start(port);
 
 		Session session = JMSession.getSession();
 		Transport transport = session.getTransport("smtp");
-		transport.connect("localhost", PORT, "zimbra", "secret");
+		transport.connect("localhost", port, "zimbra", "secret");
 		String raw = "From: sender@zimbra.com\nTo: rcpt@zimbra.com\nSubject: test\n\ntest";
 		MimeMessage msg = new ZMimeMessage(session,
 				new SharedByteArrayInputStream(raw.getBytes(Charsets.ISO_8859_1)));
@@ -382,16 +389,17 @@ final class SmtpTransportTest {
 	@Test
 	@Timeout(3000)
 	void noAuth() throws Exception {
+		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
 				.sendLine("220 test ready")
 				.recvLine() // EHLO
 				.sendLine("250 OK")
-				.build().start(PORT);
+				.build().start(port);
 
 		Session session = JMSession.getSession();
 		Transport transport = session.getTransport("smtp");
 		try {
-			transport.connect("localhost", PORT, "zimbra", "secret");
+			transport.connect("localhost", port, "zimbra", "secret");
 			fail();
 		} catch (MessagingException e) {
 			assertEquals("The server doesn't support SMTP-AUTH.", e.getMessage());
@@ -402,17 +410,18 @@ final class SmtpTransportTest {
 	@Test
 	@Timeout(3000)
 	void noAuthMechansims() throws Exception {
+		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
 				.sendLine("220 test ready")
 				.recvLine() // EHLO
 				.sendLine("250-OK")
 				.sendLine("250 AUTH NTLM")
-				.build().start(PORT);
+				.build().start(port);
 
 		Session session = JMSession.getSession();
 		Transport transport = session.getTransport("smtp");
 		try {
-			transport.connect("localhost", PORT, "zimbra", "secret");
+			transport.connect("localhost", port, "zimbra", "secret");
 			fail();
 		} catch (MessagingException e) {
 			assertEquals("No auth mechanism supported: [NTLM]", e.getMessage());
@@ -427,6 +436,7 @@ final class SmtpTransportTest {
 	@Test
 	@Timeout(3000)
 	void rcptToError() throws Exception {
+		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
 				.sendLine("220 test ready")
 				.recvLine() // EHLO
@@ -436,12 +446,12 @@ final class SmtpTransportTest {
 				.recvLine() // RCPT TO
 				.sendLine("550 error")
 				.recvLine() // QUIT
-				.build().start(PORT);
+				.build().start(port);
 
 		Session session = JMSession.getSession();
 		session.getProperties().setProperty("mail.smtp.sendpartial", "true");
 		Transport transport = session.getTransport("smtp");
-		transport.connect("localhost", PORT, null, null);
+		transport.connect("localhost", port, null, null);
 		String raw = "From: sender@zimbra.com\nTo: rcpt@zimbra.com\nSubject: test\n\ntest";
 		MimeMessage msg = new ZMimeMessage(session,
 				new SharedByteArrayInputStream(raw.getBytes(Charsets.ISO_8859_1)));
@@ -467,6 +477,7 @@ final class SmtpTransportTest {
 	@Test
 	@Timeout(3000)
 	void endOfData() throws Exception {
+		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
 				.sendLine("220 test ready")
 				.recvLine() // EHLO
@@ -481,11 +492,11 @@ final class SmtpTransportTest {
 				.sendLine("250 OK")
 				.recvLine() // QUIT
 				.sendLine("221 bye")
-				.build().start(PORT);
+				.build().start(port);
 
 		Session session = JMSession.getSession();
 		Transport transport = session.getTransport("smtp");
-		transport.connect("localhost", PORT, null, null);
+		transport.connect("localhost", port, null, null);
 		String raw = "From: sender@zimbra.com\nTo: rcpt@zimbra.com\nSubject: test\n\n" +
 				".\n" +
 				"..\n" +
@@ -513,6 +524,7 @@ final class SmtpTransportTest {
 	@Test
 	@Timeout(3000)
 	void dataError() throws Exception {
+		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
 				.sendLine("220 test ready")
 				.recvLine() // EHLO
@@ -524,11 +536,11 @@ final class SmtpTransportTest {
 				.recvLine() // DATA
 				.sendLine("451 error")
 				.recvLine() // QUIT
-				.build().start(PORT);
+				.build().start(port);
 
 		Session session = JMSession.getSession();
 		Transport transport = session.getTransport("smtp");
-		transport.connect("localhost", PORT, null, null);
+		transport.connect("localhost", port, null, null);
 		String raw = "From: sender@zimbra.com\nTo: rcpt@zimbra.com\nSubject: test\n\ntest";
 		MimeMessage msg = new ZMimeMessage(session,
 				new SharedByteArrayInputStream(raw.getBytes(Charsets.ISO_8859_1)));
@@ -555,6 +567,7 @@ final class SmtpTransportTest {
 	@Test
 	@Timeout(3000)
 	void dataException() throws Exception {
+		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
 				.sendLine("220 test ready")
 				.recvLine() // EHLO
@@ -566,11 +579,11 @@ final class SmtpTransportTest {
 				.recvLine() // DATA
 				.sendLine("354 OK")
 				.swallowUntil("\r\n.\r\n")
-				.build().start(PORT);
+				.build().start(port);
 
 		Session session = JMSession.getSession();
 		Transport transport = session.getTransport("smtp");
-		transport.connect("localhost", PORT, null, null);
+		transport.connect("localhost", port, null, null);
 		String raw = "From: sender@zimbra.com\nTo: rcpt@zimbra.com\nSubject: test\n\ntest";
 		MimeMessage msg = new ZMimeMessage(session,
 				new SharedByteArrayInputStream(raw.getBytes(Charsets.ISO_8859_1))) {
@@ -598,6 +611,7 @@ final class SmtpTransportTest {
 	@Test
 	@Timeout(3000)
 	void rset() throws Exception {
+		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
 				.sendLine("220 test ready")
 				.recvLine() // EHLO
@@ -606,12 +620,12 @@ final class SmtpTransportTest {
 				.sendLine("250 OK")
 				.recvLine() // RSET
 				.sendLine("250 OK")
-				.build().start(PORT);
+				.build().start(port);
 
 		Session session = JMSession.getSession();
 		SmtpTransport transport = (SmtpTransport) session.getTransport("smtp");
 		try {
-			transport.connect("localhost", PORT, null, null);
+			transport.connect("localhost", port, null, null);
 			transport.mail("sender@zimbra.com");
 			transport.rset();
 		} finally {
@@ -628,6 +642,7 @@ final class SmtpTransportTest {
 	@Test
 	@Timeout(3000)
 	void quitNoResponse() throws Exception {
+		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
 				.sendLine("220 test ready")
 				.recvLine() // EHLO
@@ -641,11 +656,11 @@ final class SmtpTransportTest {
 				.swallowUntil("\r\n.\r\n")
 				.sendLine("250 OK")
 				.recvLine() // QUIT
-				.build().start(PORT);
+				.build().start(port);
 
 		Session session = JMSession.getSession();
 		Transport transport = session.getTransport("smtp");
-		transport.connect("localhost", PORT, null, null);
+		transport.connect("localhost", port, null, null);
 		String raw = "From: sender@zimbra.com\nTo: rcpt@zimbra.com\nSubject: test\n\ntest";
 		MimeMessage msg = new ZMimeMessage(session,
 				new SharedByteArrayInputStream(raw.getBytes(Charsets.ISO_8859_1)));
@@ -664,6 +679,7 @@ final class SmtpTransportTest {
 	@Test
 	@Timeout(3000)
 	void multilineGreeting() throws Exception {
+		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
 				.sendLine("220-first line")
 				.sendLine("220 second line")
@@ -679,11 +695,11 @@ final class SmtpTransportTest {
 				.sendLine("250 OK")
 				.recvLine() // QUIT
 				.sendLine("221 bye")
-				.build().start(PORT);
+				.build().start(port);
 
 		Session session = JMSession.getSession();
 		Transport transport = session.getTransport("smtp");
-		transport.connect("localhost", PORT, null, null);
+		transport.connect("localhost", port, null, null);
 		String raw = "From: sender@zimbra.com\nTo: rcpt@zimbra.com\nSubject: test\n\ntest";
 		MimeMessage msg = new ZMimeMessage(session,
 				new SharedByteArrayInputStream(raw.getBytes(Charsets.ISO_8859_1)));
