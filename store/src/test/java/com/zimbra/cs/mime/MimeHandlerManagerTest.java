@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zextras.mailbox.util.LdapProvisioningWithMockMime;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mime.handler.TextEnrichedHandler;
 import com.zimbra.cs.mime.handler.TextHtmlHandler;
