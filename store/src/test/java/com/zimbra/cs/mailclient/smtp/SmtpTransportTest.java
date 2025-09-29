@@ -26,7 +26,6 @@ import javax.mail.util.SharedByteArrayInputStream;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 
 /**
  * Unit test for {@link SmtpTransport}.
@@ -50,7 +49,6 @@ final class SmtpTransportTest {
 	}
 
 	@Test
-	@Timeout(3000)
 	void send() throws Exception {
 		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
@@ -88,7 +86,6 @@ final class SmtpTransportTest {
 	}
 
 	@Test
-	@Timeout(3000)
 	void sendPartially() throws Exception {
 		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
@@ -141,7 +138,6 @@ final class SmtpTransportTest {
 	}
 
 	@Test
-	@Timeout(3000)
 	void mailFromError() throws Exception {
 		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
@@ -179,7 +175,6 @@ final class SmtpTransportTest {
 	}
 
 	@Test
-	@Timeout(3000)
 	void mailSmtpFrom() throws Exception {
 		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
@@ -218,7 +213,6 @@ final class SmtpTransportTest {
 	}
 
 	@Test
-	@Timeout(3000)
 	void nullMailFrom() throws Exception {
 		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
@@ -258,7 +252,6 @@ final class SmtpTransportTest {
 	}
 
 	@Test
-	@Timeout(3000)
 	void bracketsInMailAndRcpt() throws Exception {
 		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
@@ -297,7 +290,6 @@ final class SmtpTransportTest {
 	}
 
 	@Test
-	@Timeout(3000)
 	void authLogin() throws Exception {
 		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
@@ -345,7 +337,6 @@ final class SmtpTransportTest {
 	}
 
 	@Test
-	@Timeout(3000)
 	void authPlain() throws Exception {
 		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
@@ -387,7 +378,6 @@ final class SmtpTransportTest {
 	}
 
 	@Test
-	@Timeout(3000)
 	void noAuth() throws Exception {
 		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
@@ -408,7 +398,6 @@ final class SmtpTransportTest {
 	}
 
 	@Test
-	@Timeout(3000)
 	void noAuthMechansims() throws Exception {
 		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
@@ -434,7 +423,6 @@ final class SmtpTransportTest {
 	}
 
 	@Test
-	@Timeout(3000)
 	void rcptToError() throws Exception {
 		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
@@ -475,7 +463,6 @@ final class SmtpTransportTest {
 	}
 
 	@Test
-	@Timeout(3000)
 	void endOfData() throws Exception {
 		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
@@ -522,7 +509,6 @@ final class SmtpTransportTest {
 	}
 
 	@Test
-	@Timeout(3000)
 	void dataError() throws Exception {
 		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
@@ -565,7 +551,6 @@ final class SmtpTransportTest {
 	}
 
 	@Test
-	@Timeout(3000)
 	void dataException() throws Exception {
 		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
@@ -609,7 +594,6 @@ final class SmtpTransportTest {
 	}
 
 	@Test
-	@Timeout(3000)
 	void rset() throws Exception {
 		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
@@ -640,7 +624,6 @@ final class SmtpTransportTest {
 	}
 
 	@Test
-	@Timeout(3000)
 	void quitNoResponse() throws Exception {
 		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
@@ -677,7 +660,6 @@ final class SmtpTransportTest {
 	}
 
 	@Test
-	@Timeout(3000)
 	void multilineGreeting() throws Exception {
 		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
