@@ -108,7 +108,6 @@ public class IssueCertTest extends MailboxTestSuite {
   }
 
   @Test
-  @Disabled
   void shouldProxyRequestIfAccountIsOnAnotherServer() throws Exception {
     // FIXME: these tests are crooked because they rely too much on mocks and were made with unreal mocked scenarios.
     //  the reality is much more complex. The httprequest checks the context when proxying.
