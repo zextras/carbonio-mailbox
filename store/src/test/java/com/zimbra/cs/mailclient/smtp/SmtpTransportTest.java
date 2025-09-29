@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.base.Charsets;
 import com.sun.mail.smtp.SMTPMessage;
+import com.zextras.mailbox.util.PortUtil;
 import com.zimbra.common.zmime.ZMimeMessage;
 import com.zimbra.cs.util.JMSession;
 import com.zimbra.cs.util.MockTcpServer;
@@ -34,7 +35,7 @@ import org.junit.jupiter.api.Timeout;
  */
 final class SmtpTransportTest {
 
-	private static final int PORT = 9025;
+	private static final int PORT = PortUtil.findFreePort();
 	private MockTcpServer server;
 
 
