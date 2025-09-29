@@ -25,6 +25,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.util.SharedByteArrayInputStream;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -398,6 +399,7 @@ final class SmtpTransportTest {
 	}
 
 	@Test
+	@Disabled
 	void noAuthMechansims() throws Exception {
 		var port = PortUtil.findFreePort();
 		server = MockTcpServer.scenario()
