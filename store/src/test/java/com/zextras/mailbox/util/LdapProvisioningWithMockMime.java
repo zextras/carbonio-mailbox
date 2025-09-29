@@ -15,6 +15,7 @@ import com.zimbra.cs.mime.handler.TextCalendarHandler;
 import com.zimbra.cs.mime.handler.TextHtmlHandler;
 import com.zimbra.cs.mime.handler.TextPlainHandler;
 import com.zimbra.cs.mime.handler.UnknownTypeHandler;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +28,7 @@ public final class LdapProvisioningWithMockMime extends LdapProvisioning {
     private final Map<String, List<MimeTypeInfo>> mimeConfig = Maps.newHashMap();
 
     public LdapProvisioningWithMockMime() {
-        super( CacheMode.OFF); // disable cache for testing, it makes the provisioning use mocked mime types
+        super(CacheMode.OFF); // disable cache for testing, it makes the provisioning use mocked mime types
         initializeMimeHandlers();
     }
 
@@ -75,6 +76,14 @@ public final class LdapProvisioningWithMockMime extends LdapProvisioning {
             info.setHandlerClass(UnknownTypeHandler.class.getName());
             return Collections.singletonList(info);
         }
+    }
+    @Override
+    public List<MimeTypeInfo> getAllMimeTypes() {
+        List<MimeTypeInfo> result = new ArrayList<MimeTypeInfo>();
+        for (List<MimeTypeInfo> entry : mimeConfig.values()) {
+            result.addAll(entry);
+        }
+        return result;
     }
 }
 
