@@ -3,41 +3,7 @@
   <property location="target" name="maven.build.dir"/>
   <property location="${maven.build.dir}/classes" name="build.classes.dir"/>
 
-  <!--  TODO: remove unnecessary folder-->
-  <target name="build-init" description="Creates directories required for compiling">
-    <mkdir dir="${build.classes.dir}"/>
-    <mkdir dir="${maven.build.dir}/data"/>
-    <mkdir dir="${maven.build.dir}/zimbra"/>
-    <mkdir dir="${maven.build.dir}/zimbra/conf"/>
-    <mkdir dir="${maven.build.dir}/bin"/>
-    <mkdir dir="${maven.build.dir}/conf/attrs"/>
-    <mkdir dir="${maven.build.dir}/conf/msgs"/>
-    <mkdir dir="${maven.build.dir}/db"/>
-    <mkdir dir="${maven.build.dir}/lib/ext"/>
-    <mkdir dir="${maven.build.dir}/lib/jars"/>
-    <mkdir dir="${maven.build.dir}/lib/jars-ant"/>
-    <mkdir dir="${maven.build.dir}/libexec"/>
-  </target>
-
-  <!-- Cleans up store directory and maven build in maven clean phase -->
-  <target name="clean">
-    <delete dir="${basedir}/build"/>
-    <delete dir="${basedir}/tmp"/>
-    <delete dir="${maven.build.dir}"/>
-  </target>
-
-  <!-- Copies bundle msgs required for test to directory base folder -->
-  <target name="copy-msgs-bundle">
-    <copy todir="${basedir}/build/zimbra/conf/msgs">
-      <fileset dir="${basedir}/../store-conf/conf/msgs"/>
-    </copy>
-    <copy todir="${basedir}/build/zimbra/conf/" file="${basedir}/../store-conf/conf/log4j.properties"/>
-    <copy todir="${basedir}/build/zimbra/conf/" file="${basedir}/../store-conf/conf/antisamy.xml"/>
-    <copy todir="${basedir}/build/zimbra/conf/" file="${basedir}/../store-conf/conf/owasp_policy.xml"/>
-    <copy todir="${basedir}/build/zimbra/conf/" file="${basedir}/../store-conf/conf/contacts/contact-fields.xml"/>
-  </target>
-
-  <target name="create-version-sql" depends="build-init"
+  <target name="create-version-sql"
     description="Creates version-init.sql">
     <java classname="com.zimbra.cs.db.MySQL" fork="true" classpath="${maven_compile_classpath}"
       failonerror="true">
