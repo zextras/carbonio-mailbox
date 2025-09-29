@@ -8,7 +8,6 @@ package com.zimbra.cs.filter;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
@@ -24,11 +23,13 @@ import org.junit.jupiter.api.Test;
 
 public class ValueComparisonTest extends MailboxTestSuite {
 
-	private static Account account;
+	private static Account acct;
+	private static Provisioning provisioning;
 
 	@BeforeAll
 	public static void init() throws Exception {
-		account = createAccount().create();
+		provisioning = Provisioning.getInstance();
+		acct = createAccount().create();
 	}
 
 	/**
@@ -39,7 +40,6 @@ public class ValueComparisonTest extends MailboxTestSuite {
 	 */
 	@Test
 	void testHeaderTestStringComparisonCaseSensitivity() throws Exception {
-		Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
 		Element request = new Element.XMLElement(MailConstants.MODIFY_FILTER_RULES_REQUEST);
 
 		Element rules = request.addNonUniqueElement(MailConstants.E_FILTER_RULES);
@@ -71,9 +71,7 @@ public class ValueComparisonTest extends MailboxTestSuite {
 		expectedScript += "    stop;\n";
 		expectedScript += "}\n";
 
-		ZimbraLog.filter.info(acct.getMailSieveScript());
-		ZimbraLog.filter.info(expectedScript);
-		assertEquals(expectedScript, acct.getMailSieveScript());
+		assertEquals(expectedScript, provisioning.getAccountById(acct.getId()).getMailSieveScript());
 	}
 
 	/**
@@ -84,7 +82,7 @@ public class ValueComparisonTest extends MailboxTestSuite {
 	 */
 	@Test
 	void testAddressTestStringComparisonCaseSensitivity() throws Exception {
-		Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
+
 		Element request = new Element.XMLElement(MailConstants.MODIFY_FILTER_RULES_REQUEST);
 
 		Element rules = request.addNonUniqueElement(MailConstants.E_FILTER_RULES);
@@ -116,9 +114,7 @@ public class ValueComparisonTest extends MailboxTestSuite {
 		expectedScript += "    stop;\n";
 		expectedScript += "}\n";
 
-		ZimbraLog.filter.info(acct.getMailSieveScript());
-		ZimbraLog.filter.info(expectedScript);
-		assertEquals(expectedScript, acct.getMailSieveScript());
+		assertEquals(expectedScript, provisioning.getAccountById(acct.getId()).getMailSieveScript());
 	}
 
 	/**
@@ -129,7 +125,7 @@ public class ValueComparisonTest extends MailboxTestSuite {
 	 */
 	@Test
 	void testEnvelopeTestStringComparisonCaseSensitivity() throws Exception {
-		Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
+
 		Element request = new Element.XMLElement(MailConstants.MODIFY_FILTER_RULES_REQUEST);
 
 		Element rules = request.addNonUniqueElement(MailConstants.E_FILTER_RULES);
@@ -161,9 +157,7 @@ public class ValueComparisonTest extends MailboxTestSuite {
 		expectedScript += "    stop;\n";
 		expectedScript += "}\n";
 
-		ZimbraLog.filter.info(acct.getMailSieveScript());
-		ZimbraLog.filter.info(expectedScript);
-		assertEquals(expectedScript, acct.getMailSieveScript());
+		assertEquals(expectedScript, provisioning.getAccountById(acct.getId()).getMailSieveScript());
 	}
 
 	/**
@@ -174,7 +168,7 @@ public class ValueComparisonTest extends MailboxTestSuite {
 	 */
 	@Test
 	void testHeaderTestValueComparisonCaseSensitivity() throws Exception {
-		Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
+
 		Element request = new Element.XMLElement(MailConstants.MODIFY_FILTER_RULES_REQUEST);
 
 		Element rules = request.addNonUniqueElement(MailConstants.E_FILTER_RULES);
@@ -206,9 +200,7 @@ public class ValueComparisonTest extends MailboxTestSuite {
 		expectedScript += "    stop;\n";
 		expectedScript += "}\n";
 
-		ZimbraLog.filter.info(acct.getMailSieveScript());
-		ZimbraLog.filter.info(expectedScript);
-		assertEquals(expectedScript, acct.getMailSieveScript());
+		assertEquals(expectedScript, provisioning.getAccountById(acct.getId()).getMailSieveScript());
 	}
 
 	/**
@@ -219,7 +211,7 @@ public class ValueComparisonTest extends MailboxTestSuite {
 	 */
 	@Test
 	void testAddressTestValueComparisonCaseSensitivity() throws Exception {
-		Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
+
 		Element request = new Element.XMLElement(MailConstants.MODIFY_FILTER_RULES_REQUEST);
 
 		Element rules = request.addNonUniqueElement(MailConstants.E_FILTER_RULES);
@@ -251,9 +243,7 @@ public class ValueComparisonTest extends MailboxTestSuite {
 		expectedScript += "    stop;\n";
 		expectedScript += "}\n";
 
-		ZimbraLog.filter.info(acct.getMailSieveScript());
-		ZimbraLog.filter.info(expectedScript);
-		assertEquals(expectedScript, acct.getMailSieveScript());
+		assertEquals(expectedScript, provisioning.getAccountById(acct.getId()).getMailSieveScript());
 	}
 
 	/**
@@ -264,7 +254,7 @@ public class ValueComparisonTest extends MailboxTestSuite {
 	 */
 	@Test
 	void testEnvelopeTestValueComparisonCaseSensitivity() throws Exception {
-		Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
+
 		Element request = new Element.XMLElement(MailConstants.MODIFY_FILTER_RULES_REQUEST);
 
 		Element rules = request.addNonUniqueElement(MailConstants.E_FILTER_RULES);
@@ -296,9 +286,7 @@ public class ValueComparisonTest extends MailboxTestSuite {
 		expectedScript += "    stop;\n";
 		expectedScript += "}\n";
 
-		ZimbraLog.filter.info(acct.getMailSieveScript());
-		ZimbraLog.filter.info(expectedScript);
-		assertEquals(expectedScript, acct.getMailSieveScript());
+		assertEquals(expectedScript, provisioning.getAccountById(acct.getId()).getMailSieveScript());
 	}
 
 	/**
@@ -309,7 +297,7 @@ public class ValueComparisonTest extends MailboxTestSuite {
 	 */
 	@Test
 	void testHeaderTestValueComparisonComparator() throws Exception {
-		Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
+
 		Element request = new Element.XMLElement(MailConstants.MODIFY_FILTER_RULES_REQUEST);
 
 		Element rules = request.addNonUniqueElement(MailConstants.E_FILTER_RULES);
@@ -341,9 +329,7 @@ public class ValueComparisonTest extends MailboxTestSuite {
 		expectedScript += "    stop;\n";
 		expectedScript += "}\n";
 
-		ZimbraLog.filter.info(acct.getMailSieveScript());
-		ZimbraLog.filter.info(expectedScript);
-		assertEquals(expectedScript, acct.getMailSieveScript());
+		assertEquals(expectedScript, provisioning.getAccountById(acct.getId()).getMailSieveScript());
 	}
 
 	/**
@@ -354,7 +340,7 @@ public class ValueComparisonTest extends MailboxTestSuite {
 	 */
 	@Test
 	void testAddressTestValueComparisonComparator() throws Exception {
-		Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
+
 		Element request = new Element.XMLElement(MailConstants.MODIFY_FILTER_RULES_REQUEST);
 
 		Element rules = request.addNonUniqueElement(MailConstants.E_FILTER_RULES);
@@ -386,9 +372,7 @@ public class ValueComparisonTest extends MailboxTestSuite {
 		expectedScript += "    stop;\n";
 		expectedScript += "}\n";
 
-		ZimbraLog.filter.info(acct.getMailSieveScript());
-		ZimbraLog.filter.info(expectedScript);
-		assertEquals(expectedScript, acct.getMailSieveScript());
+		assertEquals(expectedScript, provisioning.getAccountById(acct.getId()).getMailSieveScript());
 	}
 
 	/**
@@ -399,7 +383,7 @@ public class ValueComparisonTest extends MailboxTestSuite {
 	 */
 	@Test
 	void testEnvelopeTestValueComparisonComparator() throws Exception {
-		Account acct = Provisioning.getInstance().get(Key.AccountBy.name, "test@zimbra.com");
+
 		Element request = new Element.XMLElement(MailConstants.MODIFY_FILTER_RULES_REQUEST);
 
 		Element rules = request.addNonUniqueElement(MailConstants.E_FILTER_RULES);
@@ -431,9 +415,7 @@ public class ValueComparisonTest extends MailboxTestSuite {
 		expectedScript += "    stop;\n";
 		expectedScript += "}\n";
 
-		ZimbraLog.filter.info(acct.getMailSieveScript());
-		ZimbraLog.filter.info(expectedScript);
-		assertEquals(expectedScript, acct.getMailSieveScript());
+		assertEquals(expectedScript, provisioning.getAccountById(acct.getId()).getMailSieveScript());
 	}
 
 	/**
@@ -453,12 +435,12 @@ public class ValueComparisonTest extends MailboxTestSuite {
 
 			ZimbraLog.filter.info(filterScript);
 
-			RuleManager.clearCachedRules(account);
-			account.setMailSieveScript(filterScript);
+			RuleManager.clearCachedRules(acct);
+			acct.setMailSieveScript(filterScript);
 
 			Element request = new Element.XMLElement(MailConstants.GET_FILTER_RULES_REQUEST);
 			Element response = new GetFilterRules().handle(request,
-					ServiceTestUtil.getRequestContext(account));
+					ServiceTestUtil.getRequestContext(acct));
 
 			String expectedSoapResponse =
 					"<GetFilterRulesResponse xmlns=\"urn:zimbraMail\"> \n"
@@ -498,12 +480,12 @@ public class ValueComparisonTest extends MailboxTestSuite {
 
 			ZimbraLog.filter.info(filterScript);
 
-			RuleManager.clearCachedRules(account);
-			account.setMailSieveScript(filterScript);
+			RuleManager.clearCachedRules(acct);
+			acct.setMailSieveScript(filterScript);
 
 			Element request = new Element.XMLElement(MailConstants.GET_FILTER_RULES_REQUEST);
 			Element response = new GetFilterRules().handle(request,
-					ServiceTestUtil.getRequestContext(account));
+					ServiceTestUtil.getRequestContext(acct));
 
 			String expectedSoapResponse =
 					"<GetFilterRulesResponse xmlns=\"urn:zimbraMail\"> \n"
@@ -543,12 +525,12 @@ public class ValueComparisonTest extends MailboxTestSuite {
 
 			ZimbraLog.filter.info(filterScript);
 
-			RuleManager.clearCachedRules(account);
-			account.setMailSieveScript(filterScript);
+			RuleManager.clearCachedRules(acct);
+			acct.setMailSieveScript(filterScript);
 
 			Element request = new Element.XMLElement(MailConstants.GET_FILTER_RULES_REQUEST);
 			Element response = new GetFilterRules().handle(request,
-					ServiceTestUtil.getRequestContext(account));
+					ServiceTestUtil.getRequestContext(acct));
 
 			String expectedSoapResponse =
 					"<GetFilterRulesResponse xmlns=\"urn:zimbraMail\"> \n"
