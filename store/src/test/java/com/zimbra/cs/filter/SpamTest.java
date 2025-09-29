@@ -5,17 +5,14 @@
 
 package com.zimbra.cs.filter;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.account.Config;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.service.util.SpamHandler;
 import com.zimbra.cs.util.JMSession;
-import com.zimbra.soap.mail.type.FilterTest;
 import javax.mail.internet.MimeMessage;
 import javax.mail.util.SharedByteArrayInputStream;
 import org.junit.jupiter.api.BeforeAll;

@@ -8,18 +8,16 @@ package com.zimbra.cs.mime;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.io.ByteStreams;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.util.L10nUtil;
 import com.zimbra.common.util.Pair;
 import com.zimbra.common.util.ZimbraLog;
-import com.zimbra.cs.account.MockProvisioning;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.index.IndexDocument;
 import com.zimbra.cs.index.LuceneFields;
 import com.zimbra.cs.index.analysis.RFC822AddressTokenStream;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.lucene.document.Document;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -27,12 +25,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
-public final class ParsedMessageTest {
-
-    @BeforeAll
-    public static void init() {
-        Provisioning.setInstance(new MockProvisioning());
-    }
+public final class ParsedMessageTest extends MailboxTestSuite {
 
  /**
   * @see http://tools.ietf.org/html/rfc2822#appendix-A.5
