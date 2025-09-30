@@ -21,7 +21,7 @@ public abstract class ZLdapFilterFactory extends ZLdapElement {
 
   private static ZLdapFilterFactory SINGLETON;
 
-  static synchronized void setInstance(ZLdapFilterFactory factory) {
+  public static synchronized void setInstance(ZLdapFilterFactory factory) {
     assert (SINGLETON == null);
     SINGLETON = factory;
   }

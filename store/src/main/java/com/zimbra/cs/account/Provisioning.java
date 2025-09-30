@@ -26,6 +26,8 @@ import com.zimbra.cs.account.gal.GalOp;
 import com.zimbra.cs.account.names.NameUtil;
 import com.zimbra.cs.extension.ExtensionUtil;
 import com.zimbra.cs.gal.GalSearchParams;
+import com.zimbra.cs.ldap.LdapClient;
+import com.zimbra.cs.ldap.LdapException;
 import com.zimbra.cs.ldap.ZLdapFilterFactory.FilterId;
 import com.zimbra.cs.mime.MimeTypeInfo;
 import com.zimbra.cs.util.AccountUtil;
@@ -346,8 +348,14 @@ public abstract class Provisioning extends ZAttrProvisioning implements Attribut
           }
 
           if (singleton == null) {
-            singleton = new com.zimbra.cs.account.ldap.LdapProvisioning(cacheMode);
-            ZimbraLog.account.error("defaulting to " + singleton.getClass().getCanonicalName());
+            try {
+              singleton = new com.zimbra.cs.account.ldap.LdapProvisioning(cacheMode,
+                  LdapClient.getInstanceIfLDAPavailable());
+              ZimbraLog.account.error("defaulting to " + singleton.getClass().getCanonicalName());
+            } catch (LdapException e) {
+              ZimbraLog.account.error("Cannot start ldap client. Reason: " + e.getMessage());
+              throw new RuntimeException(e.getMessage(), e);
+            }
           }
         }
       }
