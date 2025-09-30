@@ -259,7 +259,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
 
   public LdapProvisioning(CacheMode cacheMode, LdapClient ldapClient) {
 		this.ldapClient = ldapClient;
-		ensureSingleton(this);
+//		ensureSingleton(this);
     useCache = cacheMode != CacheMode.OFF;
 
     if (this.useCache) {

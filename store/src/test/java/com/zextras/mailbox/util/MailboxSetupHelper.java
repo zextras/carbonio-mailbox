@@ -154,5 +154,6 @@ public class MailboxSetupHelper {
 		inMemoryLdapServer.shutDown(true);
 		FileUtils.deleteDirectory(mailboxHome.toFile());
 		FileUtils.deleteDirectory(mailboxTmpDirectory.toFile());
+		LdapClient.shutdown();
 	}
 }
