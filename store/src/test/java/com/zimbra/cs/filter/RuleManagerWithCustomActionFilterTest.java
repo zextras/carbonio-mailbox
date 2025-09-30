@@ -31,185 +31,178 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-/** Unit test for {@link com.zimbra.cs.filter.RuleManager} used with CustomActionFilter extension */
+/**
+ * Unit test for {@link com.zimbra.cs.filter.RuleManager} used with CustomActionFilter extension
+ */
 public final class RuleManagerWithCustomActionFilterTest extends MailboxTestSuite {
 
-  private static SieveFactory original_sf;
-  private static Account account;
-  public String testName;
+	private static SieveFactory original_sf;
+	private static Account account;
+	public String testName;
 
-  @BeforeAll
-  public static void init() throws Exception {
+	@BeforeAll
+	public static void init() throws Exception {
 
-    // keep original sieve factory
-    original_sf = RuleManager.getSieveFactory();
+		// keep original sieve factory
+		original_sf = RuleManager.getSieveFactory();
 
-    ExtensionTestUtil.init();
+		ExtensionTestUtil.init();
 
-    Provisioning prov = Provisioning.getInstance();
-    prov.createDomain("zimbra.com", new HashMap<>());
-    account = prov.createAccount("test@zimbra.com", "secret", new HashMap<>());
+		Provisioning prov = Provisioning.getInstance();
+		prov.createDomain("zimbra.com", new HashMap<>());
+		account = prov.createAccount("test@zimbra.com", "secret", new HashMap<>());
 
-    // make sure the behavior before registering custom actions
-    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+		// make sure the behavior before registering custom actions
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-    AbstractActionCommand ext = (AbstractActionCommand) ExtensionUtil.getExtension("discard");
-    assertNull(ext);
+		AbstractActionCommand ext = (AbstractActionCommand) ExtensionUtil.getExtension("discard");
+		assertNull(ext);
 
-    RuleManager.clearCachedRules(account);
-    account.setMailSieveScript("if socialcast { discard; }");
-    List<ItemId> ids =
-        RuleManager.applyRulesToIncomingMessage(
-            new OperationContext(mbox),
-            mbox,
-            new ParsedMessage(
-                "From: do-not-reply@socialcast.com\nReply-To: share@socialcast.com\nSubject: test"
-                    .getBytes(),
-                false),
-            0,
-            account.getName(),
-            new DeliveryContext(),
-            Mailbox.ID_FOLDER_INBOX,
-            true);
-    assertEquals(0, ids.size());
+		RuleManager.clearCachedRules(account);
+		account.setMailSieveScript("if socialcast { discard; }");
+		List<ItemId> ids =
+				RuleManager.applyRulesToIncomingMessage(
+						new OperationContext(mbox),
+						mbox,
+						new ParsedMessage(
+								"From: do-not-reply@socialcast.com\nReply-To: share@socialcast.com\nSubject: test"
+										.getBytes(),
+								false),
+						0,
+						account.getName(),
+						new DeliveryContext(),
+						Mailbox.ID_FOLDER_INBOX,
+						true);
+		assertEquals(0, ids.size());
 
-    // register custom action extensions
-    ExtensionTestUtil.registerExtension("com.zimbra.extensions.DummyCustomDiscard");
-    ExtensionTestUtil.registerExtension("com.zimbra.extensions.DummyCustomTag");
-    ExtensionUtil.initAll();
-  }
+		// register custom action extensions
+		ExtensionTestUtil.registerExtension("com.zimbra.extensions.DummyCustomDiscard");
+		ExtensionTestUtil.registerExtension("com.zimbra.extensions.DummyCustomTag");
+		ExtensionUtil.initAll();
+	}
 
-  @AfterAll
-  public static void cleanUp() throws Exception {
+	@AfterAll
+	public static void cleanUp() throws Exception {
 
-    // set original ones
-    JsieveConfigMapHandler.registerCommand("discard", "com.zimbra.cs.filter.jsieve.Discard");
-    JsieveConfigMapHandler.registerCommand("tag", "com.zimbra.cs.filter.jsieve.Tag");
+		// set original ones
+		JsieveConfigMapHandler.registerCommand("discard", "com.zimbra.cs.filter.jsieve.Discard");
+		JsieveConfigMapHandler.registerCommand("tag", "com.zimbra.cs.filter.jsieve.Tag");
 
-    // set original sieve factory back
-    Method method = RuleManager.class.getDeclaredMethod("createSieveFactory");
-    method.setAccessible(true);
+		// set original sieve factory back
+		Method method = RuleManager.class.getDeclaredMethod("createSieveFactory");
+		method.setAccessible(true);
 
-    Field field = RuleManager.class.getDeclaredField("SIEVE_FACTORY");
-    field.setAccessible(true);
+		Field field = RuleManager.class.getDeclaredField("SIEVE_FACTORY");
+		field.setAccessible(true);
 
-    field.set(RuleManager.class, original_sf);
+		field.set(RuleManager.class, original_sf);
 
-    // inactivate custom action extension for just in case
-    // ZimbraExtension discard_ext = ExtensionUtil.getExtension("discard");
-    // discard_ext.destroy();
+		// inactivate custom action extension for just in case
+		// ZimbraExtension discard_ext = ExtensionUtil.getExtension("discard");
+		// discard_ext.destroy();
 
-  }
+	}
 
-  @Test
-  void tagAndCustomDiscard() throws Exception {
+	@Test
+	void tagAndCustomDiscard() throws Exception {
 
-    // register custom action extension
-    // ExtensionTestUtil.registerExtension("com.zimbra.extensions.DummyCustomDiscard");
-    // ExtensionUtil.initAll();
+		// register custom action extension
+		// ExtensionTestUtil.registerExtension("com.zimbra.extensions.DummyCustomDiscard");
+		// ExtensionUtil.initAll();
 
-    JsieveConfigMapHandler.registerCommand("discard", "com.zimbra.extensions.DummyCustomDiscard");
-    JsieveConfigMapHandler.registerCommand("tag", "com.zimbra.cs.filter.jsieve.Tag");
+		JsieveConfigMapHandler.registerCommand("discard", "com.zimbra.extensions.DummyCustomDiscard");
+		JsieveConfigMapHandler.registerCommand("tag", "com.zimbra.cs.filter.jsieve.Tag");
 
-    // recreate sieve factory
-    Method method = RuleManager.class.getDeclaredMethod("createSieveFactory");
-    method.setAccessible(true);
+		// recreate sieve factory
+		Method method = RuleManager.class.getDeclaredMethod("createSieveFactory");
+		method.setAccessible(true);
 
-    Field field = RuleManager.class.getDeclaredField("SIEVE_FACTORY");
-    field.setAccessible(true);
+		Field field = RuleManager.class.getDeclaredField("SIEVE_FACTORY");
+		field.setAccessible(true);
 
-    field.set(RuleManager.class, method.invoke(RuleManager.class));
+		field.set(RuleManager.class, method.invoke(RuleManager.class));
 
-    // make sure the registrations
-    AbstractActionCommand ext = (AbstractActionCommand) ExtensionUtil.getExtension("discard");
-    assertNotNull(ext);
+		// make sure the registrations
+		AbstractActionCommand ext = (AbstractActionCommand) ExtensionUtil.getExtension("discard");
+		assertNotNull(ext);
 
-    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-    RuleManager.clearCachedRules(account);
-    account.setMailSieveScript("if socialcast { tag \"socialcast\"; discard; }");
-    List<ItemId> ids =
-        RuleManager.applyRulesToIncomingMessage(
-            new OperationContext(mbox),
-            mbox,
-            new ParsedMessage(
-                "From: do-not-reply@socialcast.com\nReply-To: share@socialcast.com\nSubject: test"
-                    .getBytes(),
-                false),
-            0,
-            account.getName(),
-            new DeliveryContext(),
-            Mailbox.ID_FOLDER_INBOX,
-            true);
-    assertEquals(1, ids.size());
-    Message msg = mbox.getMessageById(null, ids.get(0).getId());
-    assertEquals("Inbox", mbox.getFolderById(null, msg.getFolderId()).getName());
-    assertArrayEquals(new String[] {"socialcast", "priority"}, msg.getTags());
-  }
+		RuleManager.clearCachedRules(account);
+		account.setMailSieveScript("if socialcast { tag \"socialcast\"; discard; }");
+		List<ItemId> ids =
+				RuleManager.applyRulesToIncomingMessage(
+						new OperationContext(mbox),
+						mbox,
+						new ParsedMessage(
+								"From: do-not-reply@socialcast.com\nReply-To: share@socialcast.com\nSubject: test"
+										.getBytes(),
+								false),
+						0,
+						account.getName(),
+						new DeliveryContext(),
+						Mailbox.ID_FOLDER_INBOX,
+						true);
+		assertEquals(1, ids.size());
+		Message msg = mbox.getMessageById(null, ids.get(0).getId());
+		assertEquals("Inbox", mbox.getFolderById(null, msg.getFolderId()).getName());
+		assertArrayEquals(new String[]{"socialcast", "priority"}, msg.getTags());
+	}
 
-  @Test
-  void customDicardAndCustomTag() throws Exception {
+	@Test
+	void customDicardAndCustomTag() throws Exception {
 
-    // register custom action extensions
-    // ExtensionTestUtil.registerExtension("com.zimbra.extensions.DummyCustomDiscard");
-    // ExtensionTestUtil.registerExtension("com.zimbra.extensions.DummyCustomTag");
-    // ExtensionUtil.initAll();
+		// register custom action extensions
+		// ExtensionTestUtil.registerExtension("com.zimbra.extensions.DummyCustomDiscard");
+		// ExtensionTestUtil.registerExtension("com.zimbra.extensions.DummyCustomTag");
+		// ExtensionUtil.initAll();
 
-    JsieveConfigMapHandler.registerCommand("discard", "com.zimbra.extensions.DummyCustomDiscard");
-    JsieveConfigMapHandler.registerCommand("tag", "com.zimbra.extensions.DummyCustomTag");
+		JsieveConfigMapHandler.registerCommand("discard", "com.zimbra.extensions.DummyCustomDiscard");
+		JsieveConfigMapHandler.registerCommand("tag", "com.zimbra.extensions.DummyCustomTag");
 
-    // recreate sieve factory
-    Method method = RuleManager.class.getDeclaredMethod("createSieveFactory");
-    method.setAccessible(true);
+		// recreate sieve factory
+		Method method = RuleManager.class.getDeclaredMethod("createSieveFactory");
+		method.setAccessible(true);
 
-    Field field = RuleManager.class.getDeclaredField("SIEVE_FACTORY");
-    field.setAccessible(true);
+		Field field = RuleManager.class.getDeclaredField("SIEVE_FACTORY");
+		field.setAccessible(true);
 
-    field.set(RuleManager.class, method.invoke(RuleManager.class));
+		field.set(RuleManager.class, method.invoke(RuleManager.class));
 
-    // make sure the registrations
-    AbstractActionCommand discard_ext =
-        (AbstractActionCommand) ExtensionUtil.getExtension("discard");
-    assertNotNull(discard_ext);
+		// make sure the registrations
+		AbstractActionCommand discard_ext =
+				(AbstractActionCommand) ExtensionUtil.getExtension("discard");
+		assertNotNull(discard_ext);
 
-    AbstractActionCommand tag_ext = (AbstractActionCommand) ExtensionUtil.getExtension("tag");
-    assertNotNull(tag_ext);
+		AbstractActionCommand tag_ext = (AbstractActionCommand) ExtensionUtil.getExtension("tag");
+		assertNotNull(tag_ext);
 
-    Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
+		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(account);
 
-    RuleManager.clearCachedRules(account);
-    account.setMailSieveScript(
-        "if header :contains [\"Subject\"] [\"Zimbra\"] { tag \"socialcast\"; discard; }");
-    List<ItemId> ids =
-        RuleManager.applyRulesToIncomingMessage(
-            new OperationContext(mbox),
-            mbox,
-            new ParsedMessage(
-                "From: do-not-reply@socialcast.com\nReply-To: share@socialcast.com\nSubject: Zimbra"
-                    .getBytes(),
-                false),
-            0,
-            account.getName(),
-            new DeliveryContext(),
-            Mailbox.ID_FOLDER_INBOX,
-            true);
-    assertEquals(1, ids.size());
-    Message msg = mbox.getMessageById(null, ids.get(0).getId());
-    assertArrayEquals(new String[] {"zimbra", "priority"}, msg.getTags());
+		RuleManager.clearCachedRules(account);
+		account.setMailSieveScript(
+				"if header :contains [\"Subject\"] [\"Zimbra\"] { tag \"socialcast\"; discard; }");
+		List<ItemId> ids =
+				RuleManager.applyRulesToIncomingMessage(
+						new OperationContext(mbox),
+						mbox,
+						new ParsedMessage(
+								"From: do-not-reply@socialcast.com\nReply-To: share@socialcast.com\nSubject: Zimbra"
+										.getBytes(),
+								false),
+						0,
+						account.getName(),
+						new DeliveryContext(),
+						Mailbox.ID_FOLDER_INBOX,
+						true);
+		assertEquals(1, ids.size());
+		Message msg = mbox.getMessageById(null, ids.get(0).getId());
+		assertArrayEquals(new String[]{"zimbra", "priority"}, msg.getTags());
 
-    // inactivate custom tag action extension for just in case this test would be executed
-    // before tagAndCustomDiscard test above
-    // ZimbraExtension tag_ext2 = ExtensionUtil.getExtension("tag");
-    // tag_ext2.destroy();
+		// inactivate custom tag action extension for just in case this test would be executed
+		// before tagAndCustomDiscard test above
+		// ZimbraExtension tag_ext2 = ExtensionUtil.getExtension("tag");
+		// tag_ext2.destroy();
 
-  }
-
-  @AfterEach
-  public void tearDown() {
-    try {
-      MailboxTestUtil.clearData();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
+	}
 }

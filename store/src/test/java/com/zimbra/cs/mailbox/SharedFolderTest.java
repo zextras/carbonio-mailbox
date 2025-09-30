@@ -29,11 +29,6 @@ public class SharedFolderTest extends MailboxTestSuite {
 				Provisioning.A_zimbraIsExternalVirtualAccount, "TRUE").create();
 	}
 
-	@BeforeEach
-	public void setUp() throws Exception {
-		MailboxTestUtil.clearData();
-	}
-
 	@Test
 	void adminGrant() throws Exception {
 

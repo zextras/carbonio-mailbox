@@ -39,157 +39,152 @@ import org.junit.jupiter.api.Test;
 
 public class SaveDraftTest extends MailboxTestSuite {
 
-  // string lengths should be greater than both MessageCache.MESSAGE_CACHE_DISK_STREAMING_THRESHOLD
-  //   and LC.zimbra_blob_input_stream_buffer_size_kb * 1024
-  static final String ORIGINAL_CONTENT = nCopiesOf('a', 8192);
-  static final String MODIFIED_CONTENT = nCopiesOf('b', 8192);
+	// string lengths should be greater than both MessageCache.MESSAGE_CACHE_DISK_STREAMING_THRESHOLD
+	//   and LC.zimbra_blob_input_stream_buffer_size_kb * 1024
+	static final String ORIGINAL_CONTENT = nCopiesOf('a', 8192);
+	static final String MODIFIED_CONTENT = nCopiesOf('b', 8192);
 
-  @BeforeAll
-  public static void init() throws Exception {
-    Provisioning prov = Provisioning.getInstance();
-    prov.createDomain("zimbra.com", Maps.newHashMap());
-    prov.createAccount("test@zimbra.com", "secret", Maps.newHashMap());
-  }
+	@BeforeAll
+	public static void init() throws Exception {
+		Provisioning prov = Provisioning.getInstance();
+		prov.createDomain("zimbra.com", Maps.newHashMap());
+		prov.createAccount("test@zimbra.com", "secret", Maps.newHashMap());
+	}
 
-  private static String nCopiesOf(char c, int copies) {
-    StringBuilder sb = new StringBuilder(copies);
-    for (int i = 0; i < copies; i++) {
-      sb.append(c);
-    }
-    return sb.toString();
-  }
+	private static String nCopiesOf(char c, int copies) {
+		StringBuilder sb = new StringBuilder(copies);
+		for (int i = 0; i < copies; i++) {
+			sb.append(c);
+		}
+		return sb.toString();
+	}
 
-  @BeforeEach
-  public void setUp() throws Exception {
-    MailboxTestUtil.clearData();
-  }
+	@Test
+	void deleteRace() throws Exception {
+		Account acct = Provisioning.getInstance().getAccountByName("test@zimbra.com");
 
-  @Test
-  void deleteRace() throws Exception {
-    Account acct = Provisioning.getInstance().getAccountByName("test@zimbra.com");
+		// create a draft via SOAP
+		Element request = new Element.JSONElement(MailConstants.SAVE_DRAFT_REQUEST);
+		Element m =
+				request
+						.addNonUniqueElement(MailConstants.E_MSG)
+						.addAttribute(MailConstants.E_SUBJECT, "dinner appt");
+		m.addUniqueElement(MailConstants.E_MIMEPART)
+				.addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
+				.addAttribute(MailConstants.E_CONTENT, ORIGINAL_CONTENT);
 
-    // create a draft via SOAP
-    Element request = new Element.JSONElement(MailConstants.SAVE_DRAFT_REQUEST);
-    Element m =
-        request
-            .addNonUniqueElement(MailConstants.E_MSG)
-            .addAttribute(MailConstants.E_SUBJECT, "dinner appt");
-    m.addUniqueElement(MailConstants.E_MIMEPART)
-        .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
-        .addAttribute(MailConstants.E_CONTENT, ORIGINAL_CONTENT);
+		Element response =
+				new SaveDraft() {
+					@Override
+					protected Element generateResponse(
+							ZimbraSoapContext zsc,
+							ItemIdFormatter ifmt,
+							OperationContext octxt,
+							Mailbox mbox,
+							Message msg,
+							boolean wantImapUid,
+							boolean wantModSeq) {
+						// trigger the failure case by deleting the draft before it's serialized out
+						try {
+							mbox.delete(null, msg.getId(), MailItem.Type.MESSAGE);
+						} catch (Exception e) {
+							return null;
+						}
+						return super.generateResponse(zsc, ifmt, octxt, mbox, msg, wantImapUid, wantModSeq);
+					}
+				}.handle(request, ServiceTestUtil.getRequestContext(acct));
 
-    Element response =
-        new SaveDraft() {
-          @Override
-          protected Element generateResponse(
-              ZimbraSoapContext zsc,
-              ItemIdFormatter ifmt,
-              OperationContext octxt,
-              Mailbox mbox,
-              Message msg,
-              boolean wantImapUid,
-              boolean wantModSeq) {
-            // trigger the failure case by deleting the draft before it's serialized out
-            try {
-              mbox.delete(null, msg.getId(), MailItem.Type.MESSAGE);
-            } catch (Exception e) {
-              return null;
-            }
-            return super.generateResponse(zsc, ifmt, octxt, mbox, msg, wantImapUid, wantModSeq);
-          }
-        }.handle(request, ServiceTestUtil.getRequestContext(acct));
+		// make sure the response has no <m> element
+		assertNull(response.getOptionalElement(MailConstants.E_MSG), "picked up delete");
+	}
 
-    // make sure the response has no <m> element
-    assertNull(response.getOptionalElement(MailConstants.E_MSG), "picked up delete");
-  }
+	@Test
+	void updateRace() throws Exception {
+		Account acct = Provisioning.getInstance().getAccountByName("test@zimbra.com");
 
-  @Test
-  void updateRace() throws Exception {
-    Account acct = Provisioning.getInstance().getAccountByName("test@zimbra.com");
+		// create a draft via SOAP
+		Element request = new Element.JSONElement(MailConstants.SAVE_DRAFT_REQUEST);
+		Element m =
+				request
+						.addNonUniqueElement(MailConstants.E_MSG)
+						.addAttribute(MailConstants.E_SUBJECT, "dinner appt");
+		m.addUniqueElement(MailConstants.E_MIMEPART)
+				.addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
+				.addAttribute(MailConstants.E_CONTENT, ORIGINAL_CONTENT);
 
-    // create a draft via SOAP
-    Element request = new Element.JSONElement(MailConstants.SAVE_DRAFT_REQUEST);
-    Element m =
-        request
-            .addNonUniqueElement(MailConstants.E_MSG)
-            .addAttribute(MailConstants.E_SUBJECT, "dinner appt");
-    m.addUniqueElement(MailConstants.E_MIMEPART)
-        .addAttribute(MailConstants.A_CONTENT_TYPE, "text/plain")
-        .addAttribute(MailConstants.E_CONTENT, ORIGINAL_CONTENT);
+		Element response =
+				new SaveDraft() {
+					@Override
+					protected Element generateResponse(
+							ZimbraSoapContext zsc,
+							ItemIdFormatter ifmt,
+							OperationContext octxt,
+							Mailbox mbox,
+							Message msg,
+							boolean wantImapUid,
+							boolean wantModSeq) {
+						// trigger the failure case by re-saving the draft before it's serialized out
+						Message snapshotMsg = msg;
+						try {
+							snapshotMsg = (Message) msg.snapshotItem();
 
-    Element response =
-        new SaveDraft() {
-          @Override
-          protected Element generateResponse(
-              ZimbraSoapContext zsc,
-              ItemIdFormatter ifmt,
-              OperationContext octxt,
-              Mailbox mbox,
-              Message msg,
-              boolean wantImapUid,
-              boolean wantModSeq) {
-            // trigger the failure case by re-saving the draft before it's serialized out
-            Message snapshotMsg = msg;
-            try {
-              snapshotMsg = (Message) msg.snapshotItem();
+							MimeMessage mm = new MimeMessage(JMSession.getSession());
+							mm.setText(MODIFIED_CONTENT);
+							mm.saveChanges();
+							mbox.saveDraft(null, new ParsedMessage(mm, false), snapshotMsg.getId());
+						} catch (Exception e) {
+							return null;
+						}
+						return super.generateResponse(
+								zsc, ifmt, octxt, mbox, snapshotMsg, wantImapUid, wantModSeq);
+					}
+				}.handle(request, ServiceTestUtil.getRequestContext(acct));
 
-              MimeMessage mm = new MimeMessage(JMSession.getSession());
-              mm.setText(MODIFIED_CONTENT);
-              mm.saveChanges();
-              mbox.saveDraft(null, new ParsedMessage(mm, false), snapshotMsg.getId());
-            } catch (Exception e) {
-              return null;
-            }
-            return super.generateResponse(
-                zsc, ifmt, octxt, mbox, snapshotMsg, wantImapUid, wantModSeq);
-          }
-        }.handle(request, ServiceTestUtil.getRequestContext(acct));
+		// make sure the response has the correct message content
+		assertEquals(
+				MODIFIED_CONTENT,
+				response
+						.getElement(MailConstants.E_MSG)
+						.getElement(MailConstants.E_MIMEPART)
+						.getAttribute(MailConstants.E_CONTENT),
+				"picked up modified content");
+	}
 
-    // make sure the response has the correct message content
-    assertEquals(
-        MODIFIED_CONTENT,
-        response
-            .getElement(MailConstants.E_MSG)
-            .getElement(MailConstants.E_MIMEPART)
-            .getAttribute(MailConstants.E_CONTENT),
-        "picked up modified content");
-  }
+	@Test
+	void smartLinkIsIncludedInSaveDraftResponse() throws Exception {
+		final var acct = Provisioning.getInstance().getAccountByName("test@zimbra.com");
 
-  @Test
-  void smartLinkIsIncludedInSaveDraftResponse() throws Exception {
-    final var acct = Provisioning.getInstance().getAccountByName("test@zimbra.com");
+		var draftMessage = createDraftWithFileAttachment(acct);
 
-    var draftMessage = createDraftWithFileAttachment(acct);
+		final var context = ServiceTestUtil.getRequestContext(acct);
+		final var request = new SaveDraftRequest();
+		final var message = new SaveDraftMsg();
+		AttachmentsInfo attachments = new AttachmentsInfo();
+		boolean requiresSmartLinkConversion = true;
+		attachments.addAttachment(
+				new MimePartAttachSpec(
+						String.valueOf(draftMessage.getId()), "1", requiresSmartLinkConversion));
+		message.setAttachments(attachments);
+		message.setSubject("dinner appt");
+		message.setContent("bee");
 
-    final var context = ServiceTestUtil.getRequestContext(acct);
-    final var request = new SaveDraftRequest();
-    final var message = new SaveDraftMsg();
-    AttachmentsInfo attachments = new AttachmentsInfo();
-    boolean requiresSmartLinkConversion = true;
-    attachments.addAttachment(
-        new MimePartAttachSpec(
-            String.valueOf(draftMessage.getId()), "1", requiresSmartLinkConversion));
-    message.setAttachments(attachments);
-    message.setSubject("dinner appt");
-    message.setContent("bee");
+		request.setMsg(message);
 
-    request.setMsg(message);
+		Element response = new SaveDraft().handle(JaxbUtil.jaxbToElement(request), context);
+		SaveDraftResponse saveDraftResponse = JaxbUtil.elementToJaxb(response, SaveDraftResponse.class);
+		PartInfo topLevelPartInfo = saveDraftResponse.getMessage().getContentElems().get(0);
+		var attachmentPartInfo = topLevelPartInfo.getMimeParts().get(0);
+		assertEquals(requiresSmartLinkConversion, attachmentPartInfo.getRequiresSmartLinkConversion());
+	}
 
-    Element response = new SaveDraft().handle(JaxbUtil.jaxbToElement(request), context);
-    SaveDraftResponse saveDraftResponse = JaxbUtil.elementToJaxb(response, SaveDraftResponse.class);
-    PartInfo topLevelPartInfo = saveDraftResponse.getMessage().getContentElems().get(0);
-    var attachmentPartInfo = topLevelPartInfo.getMimeParts().get(0);
-    assertEquals(requiresSmartLinkConversion, attachmentPartInfo.getRequiresSmartLinkConversion());
-  }
+	private Message createDraftWithFileAttachment(Account account) throws Exception {
+		ParsedMessage draft =
+				new MailMessageBuilder()
+						.from(account.getName())
+						.addRecipient(account.getName())
+						.addAttachmentFromResources("/test-save-to-files.txt")
+						.build();
 
-  private Message createDraftWithFileAttachment(Account account) throws Exception {
-    ParsedMessage draft =
-        new MailMessageBuilder()
-            .from(account.getName())
-            .addRecipient(account.getName())
-            .addAttachmentFromResources("/test-save-to-files.txt")
-            .build();
-
-    return AccountAction.Factory.getDefault().forAccount(account).saveDraft(draft);
-  }
+		return AccountAction.Factory.getDefault().forAccount(account).saveDraft(draft);
+	}
 }

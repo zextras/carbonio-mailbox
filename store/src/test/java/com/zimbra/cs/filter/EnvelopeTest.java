@@ -1028,13 +1028,4 @@ public class EnvelopeTest extends MailboxTestSuite {
 			fail("No exception should be thrown" + e);
 		}
 	}
-
-	@AfterEach
-	public void tearDown() {
-		try {
-			MailboxTestUtil.clearData();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }

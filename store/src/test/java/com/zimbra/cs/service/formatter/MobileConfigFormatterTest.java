@@ -8,6 +8,7 @@ package com.zimbra.cs.service.formatter;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Maps;
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.common.mime.MimeConstants;
 import com.zimbra.cs.account.Account;
 import com.zimbra.cs.account.Domain;
@@ -33,260 +34,260 @@ import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public class MobileConfigFormatterTest {
-    private static Formatter formatter;
-    private static final String USER_NAME = "test1@test.domain.com";
-    private static final String DOMAIN_NAME = "test.domain.com";
-    private static Account user;
-    private static final String EMAIL_PART = "test1";
-    private static Server server;
-    private static Domain domain;
-    private static DocumentBuilder docBuilder;
-    private static Document document;
-    private static TransformerFactory transformerFactory;
-    private static Transformer transformer;
-    private static Account account;
+public class MobileConfigFormatterTest extends MailboxTestSuite {
 
-    @BeforeAll
-    public static void init() throws Exception {
-        MailboxTestUtil.initServer();
-        Provisioning prov = Provisioning.getInstance();
-        prov.createDomain(DOMAIN_NAME, Maps.<String, Object>newHashMap());
-        account = prov.createAccount(USER_NAME, "secret", Maps.<String, Object>newHashMap());
-        formatter = new MobileConfigFormatter();
-        user = prov.getAccount(USER_NAME);
-        user.setMail(USER_NAME);
-        server = prov.getServer(user);
-        server.setMailSSLProxyPort(443);
-        String[] smtpHostnames = {DOMAIN_NAME};
-        server.setSmtpHostname(smtpHostnames);
-        domain = prov.getDomain(user);
-        domain.setDomainName(DOMAIN_NAME);
-        domain.setPublicServiceHostname(DOMAIN_NAME);
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-        docBuilder = docFactory.newDocumentBuilder();
-        transformerFactory = TransformerFactory.newInstance();
-    }
+	private static Formatter formatter;
+	private static final String USER_NAME = "test1@test.domain.com";
+	private static final String DOMAIN_NAME = "test.domain.com";
+	private static Account user;
+	private static final String EMAIL_PART = "test1";
+	private static Server server;
+	private static Domain domain;
+	private static DocumentBuilder docBuilder;
+	private static Document document;
+	private static TransformerFactory transformerFactory;
+	private static Transformer transformer;
+	private static Account account;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        MailboxTestUtil.clearData();
-        document = docBuilder.newDocument();
-        transformer = transformerFactory.newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-        DOMImplementation domImpl = document.getImplementation();
-        DocumentType doctype = domImpl.createDocumentType("doctype",
-                "-//Apple//DTD PLIST 1.0//EN",
-                "http://www.apple.com/DTDs/PropertyList-1.0.dtd");
-        transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, doctype.getPublicId());
-        transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doctype.getSystemId());
-    }
+	@BeforeAll
+	public static void init() throws Exception {
+		Provisioning prov = Provisioning.getInstance();
+		prov.createDomain(DOMAIN_NAME, Maps.<String, Object>newHashMap());
+		account = prov.createAccount(USER_NAME, "secret", Maps.<String, Object>newHashMap());
+		formatter = new MobileConfigFormatter();
+		user = prov.getAccount(USER_NAME);
+		user.setMail(USER_NAME);
+		server = prov.getServer(user);
+		server.setMailSSLProxyPort(443);
+		String[] smtpHostnames = {DOMAIN_NAME};
+		server.setSmtpHostname(smtpHostnames);
+		domain = prov.getDomain(user);
+		domain.setDomainName(DOMAIN_NAME);
+		domain.setPublicServiceHostname(DOMAIN_NAME);
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		docBuilder = docFactory.newDocumentBuilder();
+		transformerFactory = TransformerFactory.newInstance();
+	}
 
- @Test
- void testGetType() throws Exception {
-  assertEquals(FormatType.MOBILE_CONFIG, formatter.getType());
- }
+	@BeforeEach
+	public void setUp() throws Exception {
+		document = docBuilder.newDocument();
+		transformer = transformerFactory.newTransformer();
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+		transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+		DOMImplementation domImpl = document.getImplementation();
+		DocumentType doctype = domImpl.createDocumentType("doctype",
+				"-//Apple//DTD PLIST 1.0//EN",
+				"http://www.apple.com/DTDs/PropertyList-1.0.dtd");
+		transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, doctype.getPublicId());
+		transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doctype.getSystemId());
+	}
 
- @Test
- void testGetDefaultMimeTypes() throws Exception {
-  String[] expectedArray = new String[]{MimeConstants.CT_TEXT_XML, "text/xml"};
-  String[] actualArray = formatter.getDefaultMimeTypes();
-  assertEquals(2, actualArray.length);
-  assertArrayEquals(expectedArray, actualArray);
- }
+	@Test
+	void testGetType() throws Exception {
+		assertEquals(FormatType.MOBILE_CONFIG, formatter.getType());
+	}
 
- @Test
- void testGetDictForCaldav() throws Exception {
-  Element fakeParent = document.createElement("parent");
+	@Test
+	void testGetDefaultMimeTypes() throws Exception {
+		String[] expectedArray = new String[]{MimeConstants.CT_TEXT_XML, "text/xml"};
+		String[] actualArray = formatter.getDefaultMimeTypes();
+		assertEquals(2, actualArray.length);
+		assertArrayEquals(expectedArray, actualArray);
+	}
 
-  Node dict = MobileConfigFormatter.getDictForCaldavAndCarddav(document, EMAIL_PART, user, server,
-    ConfigType.CALDAV, domain);
-  fakeParent.appendChild(dict);
-  document.appendChild(fakeParent);
+	@Test
+	void testGetDictForCaldav() throws Exception {
+		Element fakeParent = document.createElement("parent");
 
-  DOMSource domSource = new DOMSource(document);
-  StreamResult responseStream = new StreamResult(new StringWriter());
-  transformer.transform(domSource, responseStream);
+		Node dict = MobileConfigFormatter.getDictForCaldavAndCarddav(document, EMAIL_PART, user, server,
+				ConfigType.CALDAV, domain);
+		fakeParent.appendChild(dict);
+		document.appendChild(fakeParent);
 
-  String actual = responseStream.getWriter().toString();
-  String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-    + "<!DOCTYPE parent PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"
-    + "<parent>\n"
-    + "    <dict>\n"
-    + "        <key>CalDAVAccountDescription</key>\n"
-    + "        <string>test1's CALDAV</string>\n"
-    + "        <key>CalDAVHostName</key>\n"
-    + "        <string>test.domain.com</string>\n"
-    + "        <key>CalDAVPassword</key>\n"
-    + "        <string/>\n"
-    + "        <key>CalDAVPort</key>\n"
-    + "        <integer>443</integer>\n"
-    + "        <key>CalDAVPrincipalURL</key>\n"
-    + "        <string>/dav/test1@test.domain.com/Calendar/</string>\n"
-    + "        <key>CalDAVUseSSL</key>\n"
-    + "        <true/>\n"
-    + "        <key>CalDAVUsername</key>\n"
-    + "        <string>test1@test.domain.com</string>\n"
-    + "        <key>PayloadDescription</key>\n"
-    + "        <string>Configures caldav profile for test1</string>\n"
-    + "        <key>PayloadDisplayName</key>\n"
-    + "        <string>caldav test1</string>\n"
-    + "        <key>PayloadIdentifier</key>\n"
-    + "        <string>test.domain.com.caldav.account.test1</string>\n"
-    + "        <key>PayloadOrganization</key>\n"
-    + "        <string>test.domain.com</string>\n"
-    + "        <key>PayloadType</key>\n"
-    + "        <string>com.apple.caldav.account</string>\n"
-    + "        <key>PayloadUUID</key>\n"
-    + "        <string>" + account.getId() + "_caldav</string>\n"
-    + "        <key>PayloadVersion</key>\n"
-    + "        <integer>1</integer>\n"
-    + "    </dict>\n"
-    + "</parent>\n";
-  assertEquals(expected, actual);
- }
+		DOMSource domSource = new DOMSource(document);
+		StreamResult responseStream = new StreamResult(new StringWriter());
+		transformer.transform(domSource, responseStream);
 
- @Test
- void testGetDictForCarddav() throws Exception {
-  Element fakeParent = document.createElement("parent");
+		String actual = responseStream.getWriter().toString();
+		String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+				+ "<!DOCTYPE parent PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"
+				+ "<parent>\n"
+				+ "    <dict>\n"
+				+ "        <key>CalDAVAccountDescription</key>\n"
+				+ "        <string>test1's CALDAV</string>\n"
+				+ "        <key>CalDAVHostName</key>\n"
+				+ "        <string>test.domain.com</string>\n"
+				+ "        <key>CalDAVPassword</key>\n"
+				+ "        <string/>\n"
+				+ "        <key>CalDAVPort</key>\n"
+				+ "        <integer>443</integer>\n"
+				+ "        <key>CalDAVPrincipalURL</key>\n"
+				+ "        <string>/dav/test1@test.domain.com/Calendar/</string>\n"
+				+ "        <key>CalDAVUseSSL</key>\n"
+				+ "        <true/>\n"
+				+ "        <key>CalDAVUsername</key>\n"
+				+ "        <string>test1@test.domain.com</string>\n"
+				+ "        <key>PayloadDescription</key>\n"
+				+ "        <string>Configures caldav profile for test1</string>\n"
+				+ "        <key>PayloadDisplayName</key>\n"
+				+ "        <string>caldav test1</string>\n"
+				+ "        <key>PayloadIdentifier</key>\n"
+				+ "        <string>test.domain.com.caldav.account.test1</string>\n"
+				+ "        <key>PayloadOrganization</key>\n"
+				+ "        <string>test.domain.com</string>\n"
+				+ "        <key>PayloadType</key>\n"
+				+ "        <string>com.apple.caldav.account</string>\n"
+				+ "        <key>PayloadUUID</key>\n"
+				+ "        <string>" + account.getId() + "_caldav</string>\n"
+				+ "        <key>PayloadVersion</key>\n"
+				+ "        <integer>1</integer>\n"
+				+ "    </dict>\n"
+				+ "</parent>\n";
+		assertEquals(expected, actual);
+	}
 
-  Node dict = MobileConfigFormatter.getDictForCaldavAndCarddav(document, EMAIL_PART, user, server,
-    ConfigType.CARDDAV, domain);
-  fakeParent.appendChild(dict);
-  document.appendChild(fakeParent);
+	@Test
+	void testGetDictForCarddav() throws Exception {
+		Element fakeParent = document.createElement("parent");
 
-  DOMSource domSource = new DOMSource(document);
-  StreamResult responseStream = new StreamResult(new StringWriter());
-  transformer.transform(domSource, responseStream);
+		Node dict = MobileConfigFormatter.getDictForCaldavAndCarddav(document, EMAIL_PART, user, server,
+				ConfigType.CARDDAV, domain);
+		fakeParent.appendChild(dict);
+		document.appendChild(fakeParent);
 
-  String actual = responseStream.getWriter().toString();
-  String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-    + "<!DOCTYPE parent PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"
-    + "<parent>\n"
-    + "    <dict>\n"
-    + "        <key>CardDAVAccountDescription</key>\n"
-    + "        <string>test1's CARDDAV</string>\n"
-    + "        <key>CardDAVHostName</key>\n"
-    + "        <string>test.domain.com</string>\n"
-    + "        <key>CardDAVPassword</key>\n"
-    + "        <string/>\n"
-    + "        <key>CardDAVPort</key>\n"
-    + "        <integer>443</integer>\n"
-    + "        <key>CardDAVPrincipalURL</key>\n"
-    + "        <string>/dav/test1@test.domain.com/Contacts/</string>\n"
-    + "        <key>CardDAVUseSSL</key>\n"
-    + "        <true/>\n"
-    + "        <key>CardDAVUsername</key>\n"
-    + "        <string>test1@test.domain.com</string>\n"
-    + "        <key>PayloadDescription</key>\n"
-    + "        <string>Configures carddav profile for test1</string>\n"
-    + "        <key>PayloadDisplayName</key>\n"
-    + "        <string>carddav test1</string>\n"
-    + "        <key>PayloadIdentifier</key>\n"
-    + "        <string>test.domain.com.carddav.account.test1</string>\n"
-    + "        <key>PayloadOrganization</key>\n"
-    + "        <string>test.domain.com</string>\n"
-    + "        <key>PayloadType</key>\n"
-    + "        <string>com.apple.carddav.account</string>\n"
-    + "        <key>PayloadUUID</key>\n"
-    + "        <string>" + account.getId() + "_carddav</string>\n"
-    + "        <key>PayloadVersion</key>\n"
-    + "        <integer>1</integer>\n"
-    + "    </dict>\n"
-    + "</parent>\n";
-  assertEquals(expected, actual);
- }
+		DOMSource domSource = new DOMSource(document);
+		StreamResult responseStream = new StreamResult(new StringWriter());
+		transformer.transform(domSource, responseStream);
 
- @Test
- void testGetDictForImap() throws Exception {
-  Element fakeParent = document.createElement("parent");
+		String actual = responseStream.getWriter().toString();
+		String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+				+ "<!DOCTYPE parent PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"
+				+ "<parent>\n"
+				+ "    <dict>\n"
+				+ "        <key>CardDAVAccountDescription</key>\n"
+				+ "        <string>test1's CARDDAV</string>\n"
+				+ "        <key>CardDAVHostName</key>\n"
+				+ "        <string>test.domain.com</string>\n"
+				+ "        <key>CardDAVPassword</key>\n"
+				+ "        <string/>\n"
+				+ "        <key>CardDAVPort</key>\n"
+				+ "        <integer>443</integer>\n"
+				+ "        <key>CardDAVPrincipalURL</key>\n"
+				+ "        <string>/dav/test1@test.domain.com/Contacts/</string>\n"
+				+ "        <key>CardDAVUseSSL</key>\n"
+				+ "        <true/>\n"
+				+ "        <key>CardDAVUsername</key>\n"
+				+ "        <string>test1@test.domain.com</string>\n"
+				+ "        <key>PayloadDescription</key>\n"
+				+ "        <string>Configures carddav profile for test1</string>\n"
+				+ "        <key>PayloadDisplayName</key>\n"
+				+ "        <string>carddav test1</string>\n"
+				+ "        <key>PayloadIdentifier</key>\n"
+				+ "        <string>test.domain.com.carddav.account.test1</string>\n"
+				+ "        <key>PayloadOrganization</key>\n"
+				+ "        <string>test.domain.com</string>\n"
+				+ "        <key>PayloadType</key>\n"
+				+ "        <string>com.apple.carddav.account</string>\n"
+				+ "        <key>PayloadUUID</key>\n"
+				+ "        <string>" + account.getId() + "_carddav</string>\n"
+				+ "        <key>PayloadVersion</key>\n"
+				+ "        <integer>1</integer>\n"
+				+ "    </dict>\n"
+				+ "</parent>\n";
+		assertEquals(expected, actual);
+	}
 
-  Node dict = MobileConfigFormatter.getDictForImap(document, EMAIL_PART, user, server, ConfigType.IMAP, domain);
-  fakeParent.appendChild(dict);
-  document.appendChild(fakeParent);
+	@Test
+	void testGetDictForImap() throws Exception {
+		Element fakeParent = document.createElement("parent");
 
-  DOMSource domSource = new DOMSource(document);
-  StreamResult responseStream = new StreamResult(new StringWriter());
-  transformer.transform(domSource, responseStream);
+		Node dict = MobileConfigFormatter.getDictForImap(document, EMAIL_PART, user, server,
+				ConfigType.IMAP, domain);
+		fakeParent.appendChild(dict);
+		document.appendChild(fakeParent);
 
-  String actual = responseStream.getWriter().toString();
-  String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-    + "<!DOCTYPE parent PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"
-    + "<parent>\n"
-    + "    <dict>\n"
-    + "        <key>EmailAccountDescription</key>\n"
-    + "        <string>test1's IMAP email account settings</string>\n"
-    + "        <key>EmailAccountName</key>\n"
-    + "        <string>test1 email account</string>\n"
-    + "        <key>EmailAccountType</key>\n"
-    + "        <string>EmailTypeIMAP</string>\n"
-    + "        <key>EmailAddress</key>\n"
-    + "        <string>test1@test.domain.com</string>\n"
-    + "        <key>IncomingMailServerAuthentication</key>\n"
-    + "        <string>EmailAuthPassword</string>\n"
-    + "        <key>IncomingMailServerHostName</key>\n"
-    + "        <string>test.domain.com</string>\n"
-    + "        <key>IncomingMailServerPortNumber</key>\n"
-    + "        <integer>993</integer>\n"
-    + "        <key>IncomingMailServerUseSSL</key>\n"
-    + "        <true/>\n"
-    + "        <key>IncomingMailServerUsername</key>\n"
-    + "        <string>test1@test.domain.com</string>\n"
-    + "        <key>IncomingPassword</key>\n"
-    + "        <string/>\n"
-    + "        <key>OutgoingMailServerAuthentication</key>\n"
-    + "        <string>EmailAuthPassword</string>\n"
-    + "        <key>OutgoingMailServerHostName</key>\n"
-    + "        <string>test.domain.com</string>\n"
-    + "        <key>OutgoingMailServerPortNumber</key>\n"
-    + "        <integer>587</integer>\n"
-    + "        <key>OutgoingMailServerUseSSL</key>\n"
-    + "        <true/>\n"
-    + "        <key>OutgoingMailServerUsername</key>\n"
-    + "        <string>test1@test.domain.com</string>\n"
-    + "        <key>OutgoingPassword</key>\n"
-    + "        <string/>\n"
-    + "        <key>OutgoingPasswordSameAsIncomingPassword</key>\n"
-    + "        <true/>\n"
-    + "        <key>PayloadDescription</key>\n"
-    + "        <string>Configures imap profile for test1</string>\n"
-    + "        <key>PayloadDisplayName</key>\n"
-    + "        <string>imap test1</string>\n"
-    + "        <key>PayloadIdentifier</key>\n"
-    + "        <string>test.domain.com.imap.account.test1</string>\n"
-    + "        <key>PayloadOrganization</key>\n"
-    + "        <string>test.domain.com</string>\n"
-    + "        <key>PayloadType</key>\n"
-    + "        <string>com.apple.mail.managed</string>\n"
-    + "        <key>PayloadUUID</key>\n"
-    + "        <string>" + account.getId() + "_imap</string>\n"
-    + "        <key>PayloadVersion</key>\n"
-    + "        <integer>1</integer>\n"
-    + "        <key>PreventAppSheet</key>\n"
-    + "        <false/>\n"
-    + "        <key>PreventMove</key>\n"
-    + "        <false/>\n"
-    + "        <key>SMIMEEnablePerMessageSwitch</key>\n"
-    + "        <false/>\n"
-    + "        <key>SMIMEEnabled</key>\n"
-    + "        <false/>\n"
-    + "        <key>SMIMEEncryptionCertificateUUID</key>\n"
-    + "        <string/>\n"
-    + "        <key>SMIMEEncryptionEnabled</key>\n"
-    + "        <false/>\n"
-    + "        <key>SMIMESigningCertificateUUID</key>\n"
-    + "        <string/>\n"
-    + "        <key>SMIMESigningEnabled</key>\n"
-    + "        <false/>\n"
-    + "        <key>allowMailDrop</key>\n"
-    + "        <false/>\n"
-    + "        <key>disableMailRecentsSyncing</key>\n"
-    + "        <false/>\n"
-    + "    </dict>\n"
-    + "</parent>\n";
-  assertEquals(expected, actual);
- }
+		DOMSource domSource = new DOMSource(document);
+		StreamResult responseStream = new StreamResult(new StringWriter());
+		transformer.transform(domSource, responseStream);
+
+		String actual = responseStream.getWriter().toString();
+		String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+				+ "<!DOCTYPE parent PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"
+				+ "<parent>\n"
+				+ "    <dict>\n"
+				+ "        <key>EmailAccountDescription</key>\n"
+				+ "        <string>test1's IMAP email account settings</string>\n"
+				+ "        <key>EmailAccountName</key>\n"
+				+ "        <string>test1 email account</string>\n"
+				+ "        <key>EmailAccountType</key>\n"
+				+ "        <string>EmailTypeIMAP</string>\n"
+				+ "        <key>EmailAddress</key>\n"
+				+ "        <string>test1@test.domain.com</string>\n"
+				+ "        <key>IncomingMailServerAuthentication</key>\n"
+				+ "        <string>EmailAuthPassword</string>\n"
+				+ "        <key>IncomingMailServerHostName</key>\n"
+				+ "        <string>test.domain.com</string>\n"
+				+ "        <key>IncomingMailServerPortNumber</key>\n"
+				+ "        <integer>143</integer>\n"
+				+ "        <key>IncomingMailServerUseSSL</key>\n"
+				+ "        <false/>\n"
+				+ "        <key>IncomingMailServerUsername</key>\n"
+				+ "        <string>test1@test.domain.com</string>\n"
+				+ "        <key>IncomingPassword</key>\n"
+				+ "        <string/>\n"
+				+ "        <key>OutgoingMailServerAuthentication</key>\n"
+				+ "        <string>EmailAuthPassword</string>\n"
+				+ "        <key>OutgoingMailServerHostName</key>\n"
+				+ "        <string>test.domain.com</string>\n"
+				+ "        <key>OutgoingMailServerPortNumber</key>\n"
+				+ "        <integer>587</integer>\n"
+				+ "        <key>OutgoingMailServerUseSSL</key>\n"
+				+ "        <true/>\n"
+				+ "        <key>OutgoingMailServerUsername</key>\n"
+				+ "        <string>test1@test.domain.com</string>\n"
+				+ "        <key>OutgoingPassword</key>\n"
+				+ "        <string/>\n"
+				+ "        <key>OutgoingPasswordSameAsIncomingPassword</key>\n"
+				+ "        <true/>\n"
+				+ "        <key>PayloadDescription</key>\n"
+				+ "        <string>Configures imap profile for test1</string>\n"
+				+ "        <key>PayloadDisplayName</key>\n"
+				+ "        <string>imap test1</string>\n"
+				+ "        <key>PayloadIdentifier</key>\n"
+				+ "        <string>test.domain.com.imap.account.test1</string>\n"
+				+ "        <key>PayloadOrganization</key>\n"
+				+ "        <string>test.domain.com</string>\n"
+				+ "        <key>PayloadType</key>\n"
+				+ "        <string>com.apple.mail.managed</string>\n"
+				+ "        <key>PayloadUUID</key>\n"
+				+ "        <string>" + account.getId() + "_imap</string>\n"
+				+ "        <key>PayloadVersion</key>\n"
+				+ "        <integer>1</integer>\n"
+				+ "        <key>PreventAppSheet</key>\n"
+				+ "        <false/>\n"
+				+ "        <key>PreventMove</key>\n"
+				+ "        <false/>\n"
+				+ "        <key>SMIMEEnablePerMessageSwitch</key>\n"
+				+ "        <false/>\n"
+				+ "        <key>SMIMEEnabled</key>\n"
+				+ "        <false/>\n"
+				+ "        <key>SMIMEEncryptionCertificateUUID</key>\n"
+				+ "        <string/>\n"
+				+ "        <key>SMIMEEncryptionEnabled</key>\n"
+				+ "        <false/>\n"
+				+ "        <key>SMIMESigningCertificateUUID</key>\n"
+				+ "        <string/>\n"
+				+ "        <key>SMIMESigningEnabled</key>\n"
+				+ "        <false/>\n"
+				+ "        <key>allowMailDrop</key>\n"
+				+ "        <false/>\n"
+				+ "        <key>disableMailRecentsSyncing</key>\n"
+				+ "        <false/>\n"
+				+ "    </dict>\n"
+				+ "</parent>\n";
+		assertEquals(expected, actual);
+	}
 }

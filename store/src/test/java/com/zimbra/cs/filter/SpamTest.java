@@ -5,11 +5,10 @@
 
 package com.zimbra.cs.filter;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+import com.zextras.mailbox.MailboxTestSuite;
 import com.zimbra.cs.account.Config;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mime.Mime;
 import com.zimbra.cs.service.util.SpamHandler;
@@ -20,13 +19,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /** Unit tests for spam/whitelist filtering */
-public class SpamTest {
+public class SpamTest extends MailboxTestSuite {
 
   @BeforeAll
   public static void init() throws Exception {
-    MockProvisioning prov = new MockProvisioning();
-    Provisioning.setInstance(prov);
-    Config config = prov.getConfig();
+    Config config = Provisioning.getInstance().getConfig();
     config.setSpamWhitelistHeader("X-Whitelist-Flag");
     config.setSpamWhitelistHeaderValue("YES");
   }

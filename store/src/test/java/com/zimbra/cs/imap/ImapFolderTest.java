@@ -22,11 +22,6 @@ public class ImapFolderTest extends MailboxTestSuite {
 	private Account acct = null;
 	private Mailbox mbox = null;
 
-	@BeforeAll
-	public static void init() throws Exception {
-		MailboxTestUtil.initServer();
-	}
-
 	@BeforeEach
 	public void setUp() throws Exception {
 		acct = createAccount().create();

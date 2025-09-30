@@ -27,7 +27,6 @@ import com.zimbra.cs.mailbox.Mailbox;
 import com.zimbra.cs.mailbox.Mailbox.AddInviteData;
 import com.zimbra.cs.mailbox.Mailbox.MailboxData;
 import com.zimbra.cs.mailbox.MailboxManager;
-import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.calendar.Invite;
 import com.zimbra.cs.mailbox.calendar.ZOrganizer;
 import com.zimbra.soap.JaxbUtil;
@@ -40,6 +39,7 @@ import com.zimbra.soap.mail.type.NewMountpointSpec;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.mail.Address;
@@ -105,7 +105,7 @@ public class GetMsgTest extends MailboxTestSuite {
     ZComponent comp = new ZComponent("VEVENT");
     calendar.addComponent(comp);
 
-    Invite invite = MailboxTestUtil.generateInvite(acct1, fragment, calendar);
+    Invite invite = getGenerateInvite(acct1, fragment, calendar);
     ICalTimeZone ical = invite.getTimeZoneMap().getLocalTimeZone();
     long utc = 5 * 60 * 60 * 1000;
     ParsedDateTime s = ParsedDateTime.fromUTCTime(System.currentTimeMillis() + utc, ical);
@@ -176,5 +176,12 @@ public class GetMsgTest extends MailboxTestSuite {
             .handle(
                 JaxbUtil.jaxbToElement(folderActionReq), ServiceTestUtil.getRequestContext(acct2));
     mbox1.revokeAccess(null, 10, acct2.getId());
+  }
+
+  private static Invite getGenerateInvite(Account acct1, String fragment, ZVCalendar calendar)
+      throws Exception {
+
+    List<Invite> invites = Invite.createFromCalendar(acct1, fragment, calendar, true);
+    return invites.get(0);
   }
 }

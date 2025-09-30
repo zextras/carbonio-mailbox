@@ -28,22 +28,9 @@ import org.junit.jupiter.api.Test;
 
 public class GetFolderTest extends MailboxTestSuite {
 
-	private static Account acct;
-	private static Account acct2;
-
-	@BeforeAll
-	public static void init() throws Exception {
-		acct = createAccount().create();
-		acct2 = createAccount().create();
-	}
-
-	@BeforeEach
-	public void setUp() throws Exception {
-		MailboxTestUtil.clearData();
-	}
-
 	@Test
 	void depth() throws Exception {
+		var acct = createAccount().create();
 		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
 
 		mbox.createFolder(
@@ -88,6 +75,7 @@ public class GetFolderTest extends MailboxTestSuite {
 
 	@Test
 	void view() throws Exception {
+		var acct = createAccount().create();
 		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
 
 		Folder.FolderOptions fopt = new Folder.FolderOptions().setDefaultView(Type.FOLDER);
@@ -124,6 +112,8 @@ public class GetFolderTest extends MailboxTestSuite {
 
 	@Test
 	void mount() throws Exception {
+		var acct = createAccount().create();
+		var acct2 = createAccount().create();
 		Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct);
 		Mailbox mbox2 = MailboxManager.getInstance().getMailboxByAccount(acct2);
 

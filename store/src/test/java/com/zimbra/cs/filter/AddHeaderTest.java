@@ -65,20 +65,12 @@ public class AddHeaderTest extends MailboxTestSuite {
 			"Message-ID: <46941357.16.1482318459470.JavaMail.zimbra@dev07>",
 			"MIME-Version: 1.0",
 			"Content-Transfer-Encoding: 7bit"};
-	private static Account acct1;
 
 	@BeforeAll
 	public static void init() throws Exception {
-
-		acct1 = createAccount().create();
 		// this MailboxManager does everything except actually send mail
 		MailboxManager.setInstance(new DirectInsertionMailboxManager());
 
-	}
-
-	@BeforeEach
-	public void setUp() throws Exception {
-		MailboxTestUtil.clearData();
 	}
 
 	/*
@@ -87,6 +79,7 @@ public class AddHeaderTest extends MailboxTestSuite {
 	@Test
 	void testAddHeader() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ "if header :contains \"Subject\" \"example\" {\n"
 					+ " addheader \"my-new-header\" \"my-new-header-value\" \r\n"
@@ -127,6 +120,7 @@ public class AddHeaderTest extends MailboxTestSuite {
 	@Test
 	void testAddHeaderLast() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ "if header :contains \"Subject\" \"example\" {\n"
 					+ " addheader :last \"my-new-header\" \"my-new-header-value\" \r\n"
@@ -165,6 +159,7 @@ public class AddHeaderTest extends MailboxTestSuite {
 	@Test
 	void testAddHeaderWithMultilineValue() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ " addheader :last \"X-Test-Header\" \"line1\r\n\tline2\r\n\tline3\" \r\n"
 					+ "  ;\n";
@@ -212,6 +207,7 @@ public class AddHeaderTest extends MailboxTestSuite {
 				+ "}";
 
 		try {
+			var acct1 = createAccount().create();
 
 			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
 
@@ -241,6 +237,7 @@ public class AddHeaderTest extends MailboxTestSuite {
 	@Test
 	void testAddHeaderWithVariables() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\", \"variables\"];\n"
 					+ " set \"nm\" \"X-New-Header\"; \r\n"
 					+ " set \"vl\" \"test\"; \r\n"
@@ -285,6 +282,7 @@ public class AddHeaderTest extends MailboxTestSuite {
 	@Test
 	void testAddHeaderNonAscii() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ "if header :contains \"Subject\" \"example\" {\n"
 					+ " addheader \"my-new-header\" \"追加ヘッダ値\";\n"
@@ -338,6 +336,7 @@ public class AddHeaderTest extends MailboxTestSuite {
 				+ "}";
 
 		try {
+			var acct1 = createAccount().create();
 
 			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
 
@@ -384,6 +383,7 @@ public class AddHeaderTest extends MailboxTestSuite {
 			triggeringMsg.append(line).append("\r\n");
 		}
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ "addheader \"X-Dummy-Header\" \"new value\"; ";
 			Mailbox mbox = MailboxManager.getInstance().getMailboxByAccount(acct1);
@@ -420,6 +420,7 @@ public class AddHeaderTest extends MailboxTestSuite {
 	@Test
 	void testEmptyHeaderName() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ " addheader \"\" \"my-new-header-value\" \r\n"
 					+ "  ;\n";
@@ -452,6 +453,7 @@ public class AddHeaderTest extends MailboxTestSuite {
 	@Test
 	void testAddHeaderNameAsSingleSpace() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ " addheader \" \" \"my-new-header-value\" \r\n"
 					+ "  ;\n";
@@ -482,6 +484,7 @@ public class AddHeaderTest extends MailboxTestSuite {
 	@Test
 	void testAddHeaderNameAsMultipleSpace() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ " addheader \"    \" \"my-new-header-value\" \r\n"
 					+ "  ;\n";
@@ -512,6 +515,7 @@ public class AddHeaderTest extends MailboxTestSuite {
 	@Test
 	void testAddHeaderNameStartingWithSpace() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ " addheader \" X-My-Test\" \"my-new-header-value\" \r\n"
 					+ "  ;\n";
@@ -543,6 +547,7 @@ public class AddHeaderTest extends MailboxTestSuite {
 	@Test
 	void testAddHeaderNameWithSpaceFromVariable() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\",\"variables\"];\n"
 					+ "set \"var1\" \" X-My-Test \";\n"
 					+ "addheader \"${var1}\" \"my-new-header-value\" \r\n"
@@ -587,6 +592,7 @@ public class AddHeaderTest extends MailboxTestSuite {
 		String filterAdminAfter = "tag \"tag-admin-after\";";
 
 		try {
+			var acct1 = createAccount().create();
 			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
 
 			RuleManager.clearCachedRules(acct1);
@@ -641,6 +647,7 @@ public class AddHeaderTest extends MailboxTestSuite {
 				+ "tag \"tag-example2\";\n";
 
 		try {
+			var acct1 = createAccount().create();
 			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
 
 			RuleManager.clearCachedRules(acct1);
@@ -689,6 +696,7 @@ public class AddHeaderTest extends MailboxTestSuite {
 				+ "}\n"
 				+ "tag \"tag-example2\";\n";
 		try {
+			var acct1 = createAccount().create();
 			// LDAP attribute comma separated list value contains white spaces
 			acct1.setSieveImmutableHeaders(
 					" Content-Type , Content-Disposition , Content-Transfer-Encoding , MIME-Version");
@@ -728,6 +736,7 @@ public class AddHeaderTest extends MailboxTestSuite {
 	@Test
 	void addHeaderSieveEditHeaderEnabledTrue() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ "addheader \"X-New-Header\" \"my-new-header-value\";";
 			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
@@ -761,6 +770,7 @@ public class AddHeaderTest extends MailboxTestSuite {
 	@Test
 	void addHeaderSieveEditHeaderEnabledFalse() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ "addheader \"X-New-Header\" \"my-new-header-value\";";
 			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);
@@ -793,6 +803,7 @@ public class AddHeaderTest extends MailboxTestSuite {
 	@Test
 	void addHeaderUserSieveScript() {
 		try {
+			var acct1 = createAccount().create();
 			String filterScript = "require [\"editheader\"];\n"
 					+ "addheader \"X-New-Header\" \"my-new-header-value\";";
 			Mailbox mbox1 = MailboxManager.getInstance().getMailboxByAccount(acct1);

@@ -15,8 +15,10 @@ import com.zimbra.cs.rmgmt.RemoteCertbot;
 import com.zimbra.cs.rmgmt.RemoteCommands;
 import com.zimbra.cs.rmgmt.RemoteManager;
 import com.zimbra.soap.ZimbraSoapContext;
+import io.vavr.Function2;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Admin Handler class to issue a LetsEncrypt certificate for a domain using {@link com.zimbra.cs.rmgmt.RemoteManager},
@@ -27,11 +29,19 @@ import java.util.Optional;
  */
 public class IssueCert extends AdminDocumentHandler {
 
+  private final Function<RemoteManager,RemoteCertbot> certBotProvider;
+  private final Function2<Mailbox, Domain, CertificateNotificationManager> notificationManagerProvider;
   public static final String RESPONSE =
       "The System is processing your certificate generation request.\n"
           + "It will send the result to the Global and Domain notification recipients.";
 
-  /**
+	public IssueCert(Function<RemoteManager, RemoteCertbot> certBotProvider,
+			Function2<Mailbox, Domain, CertificateNotificationManager> notificationManagerProvider) {
+		this.certBotProvider = certBotProvider;
+		this.notificationManagerProvider = notificationManagerProvider;
+	}
+
+	/**
    * Handles the request. Searches a domain by id, checks admin rights (accessible to global and delegated admin of
    * requested domain), searches a server with proxy node, creates certbot command, asynchronously executes it, creates
    * response element, notifies global and domain recipients about the result of remote execution.
@@ -106,7 +116,7 @@ public class IssueCert extends AdminDocumentHandler {
     ZimbraLog.rmgmt.info("Issuing LetsEncrypt cert for domain " + domainName);
 
     final RemoteManager remoteManager = RemoteManager.getRemoteManager(proxyServer);
-    final RemoteCertbot certbot = RemoteCertbot.getRemoteCertbot(remoteManager);
+    final RemoteCertbot certbot = certBotProvider.apply(remoteManager);
     final String command =
         certbot.createCommand(
             RemoteCommands.CERTBOT_CERTONLY,
@@ -118,7 +128,7 @@ public class IssueCert extends AdminDocumentHandler {
 
     final Mailbox mbox = getRequestedMailbox(zsc);
     final CertificateNotificationManager certificateNotificationManager =
-        CertificateNotificationManager.getCertificateNotificationManager(mbox, domain);
+        notificationManagerProvider.apply(mbox, domain);
 
     certbot.supplyAsync(certificateNotificationManager, command);
 

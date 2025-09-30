@@ -37,164 +37,167 @@ import org.mockito.stubbing.Answer;
 
 class PreAuthServletTest extends MailboxTestSuite {
 
-  @Mock private AuthToken authTokenMock;
+	@Mock
+	private AuthToken authTokenMock;
 
-  @Mock private HttpServletResponse responseMock;
+	@Mock
+	private HttpServletResponse responseMock;
 
-  @Mock private HttpServletRequest requestMock;
+	@Mock
+	private HttpServletRequest requestMock;
 
-  @InjectMocks private PreAuthServlet preAuthServlet;
+	@InjectMocks
+	private PreAuthServlet preAuthServlet;
 
-  private AutoCloseable closeable;
+	private AutoCloseable closeable;
 
-  @BeforeAll
-  static void init() throws Exception {
+	@BeforeAll
+	static void init() throws Exception {
 
-    final Provisioning prov = Provisioning.getInstance();
+		final Provisioning prov = Provisioning.getInstance();
 
-    final Map<String, Object> domainAttrs = Maps.newHashMap();
-    final String preAuthKey = PreAuthKey.generateRandomPreAuthKey();
+		final Map<String, Object> domainAttrs = Maps.newHashMap();
+		final String preAuthKey = PreAuthKey.generateRandomPreAuthKey();
 
-    domainAttrs.put(Provisioning.A_zimbraPreAuthKey, preAuthKey);
-    prov.createDomain("test81.com", domainAttrs);
+		domainAttrs.put(Provisioning.A_zimbraPreAuthKey, preAuthKey);
+		prov.createDomain("test81.com", domainAttrs);
 
-    final Map<String, Object> attrs = Maps.newHashMap();
-    attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
-    prov.createAccount("one@test81.com", "secret", attrs);
-  }
+		final Map<String, Object> attrs = Maps.newHashMap();
+		attrs.put(Provisioning.A_zimbraId, UUID.randomUUID().toString());
+		prov.createAccount("one@test81.com", "secret", attrs);
+	}
 
-  @BeforeEach
-  public void setUp() {
-    closeable = MockitoAnnotations.openMocks(this);
-  }
+	@BeforeEach
+	public void setUp() {
+		closeable = MockitoAnnotations.openMocks(this);
+	}
 
-  @AfterEach
-  public void tearDown() throws Exception {
-    closeable.close();
-    MailboxTestUtil.clearData();
-  }
+	@AfterEach
+	public void tearDown() throws Exception {
+		closeable.close();
+	}
 
-  @Test
-  void doGet_should_handleRawAuthTokenRequest_when_validRawAuthToken()
-      throws ServletException, IOException, ServiceException, AuthTokenException {
-    when(requestMock.getParameter(PreAuthParams.PARAM_IS_REDIRECT.getParamName())).thenReturn("1");
-    when(requestMock.getParameter(PreAuthParams.PARAM_AUTHTOKEN.getParamName()))
-        .thenReturn("0_3eda3cae8900bb9c5fbbc4151e28d759c67e7119");
+	@Test
+	void doGet_should_handleRawAuthTokenRequest_when_validRawAuthToken()
+			throws ServletException, IOException, ServiceException, AuthTokenException {
+		when(requestMock.getParameter(PreAuthParams.PARAM_IS_REDIRECT.getParamName())).thenReturn("1");
+		when(requestMock.getParameter(PreAuthParams.PARAM_AUTHTOKEN.getParamName()))
+				.thenReturn("0_3eda3cae8900bb9c5fbbc4151e28d759c67e7119");
 
-    PreAuthServlet preAuthServletSpy = spy(PreAuthServlet.class);
-    preAuthServletSpy.doGet(requestMock, responseMock);
+		PreAuthServlet preAuthServletSpy = spy(PreAuthServlet.class);
+		preAuthServletSpy.doGet(requestMock, responseMock);
 
-    verify(preAuthServletSpy)
-        .handleRawAuthTokenRequest(
-            eq(requestMock),
-            eq(responseMock),
-            eq(Provisioning.getInstance()),
-            eq("0_3eda3cae8900bb9c5fbbc4151e28d759c67e7119"),
-            anyString(),
-            eq(true));
-  }
+		verify(preAuthServletSpy)
+				.handleRawAuthTokenRequest(
+						eq(requestMock),
+						eq(responseMock),
+						eq(Provisioning.getInstance()),
+						eq("0_3eda3cae8900bb9c5fbbc4151e28d759c67e7119"),
+						anyString(),
+						eq(true));
+	}
 
-  @Test
-  void doGet_should_handlePreAuthRequest_when_validPreAuth()
-      throws ServletException, IOException, ServiceException {
-    when(requestMock.getParameter(PreAuthParams.PARAM_IS_REDIRECT.getParamName())).thenReturn("1");
-    when(requestMock.getParameter(PreAuthParams.PARAM_PRE_AUTH.getParamName()))
-        .thenReturn("454ff228621d67771377de58b18035e03f2be0c9");
+	@Test
+	void doGet_should_handlePreAuthRequest_when_validPreAuth()
+			throws ServletException, IOException, ServiceException {
+		when(requestMock.getParameter(PreAuthParams.PARAM_IS_REDIRECT.getParamName())).thenReturn("1");
+		when(requestMock.getParameter(PreAuthParams.PARAM_PRE_AUTH.getParamName()))
+				.thenReturn("454ff228621d67771377de58b18035e03f2be0c9");
 
-    PreAuthServlet preAuthServletSpy = spy(PreAuthServlet.class);
-    preAuthServletSpy.doGet(requestMock, responseMock);
+		PreAuthServlet preAuthServletSpy = spy(PreAuthServlet.class);
+		preAuthServletSpy.doGet(requestMock, responseMock);
 
-    verify(preAuthServletSpy)
-        .handlePreAuthRequest(
-            eq(requestMock),
-            eq(responseMock),
-            eq(Provisioning.getInstance()),
-            anyString(),
-            eq(true));
-  }
+		verify(preAuthServletSpy)
+				.handlePreAuthRequest(
+						eq(requestMock),
+						eq(responseMock),
+						eq(Provisioning.getInstance()),
+						anyString(),
+						eq(true));
+	}
 
-  @Test
-  void redirectToApp_should_redirectToAdminUrl_when_adminUser()
-      throws ServiceException, IOException {
-    final String baseUrl = "https://test81.com";
-    final StringBuilder sb = new StringBuilder("param1=value1&param2=value2");
+	@Test
+	void redirectToApp_should_redirectToAdminUrl_when_adminUser()
+			throws ServiceException, IOException {
+		final String baseUrl = "https://test81.com";
+		final StringBuilder sb = new StringBuilder("param1=value1&param2=value2");
 
-    final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test81.com");
-    when(authTokenMock.getAccount()).thenReturn(account);
+		final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test81.com");
+		when(authTokenMock.getAccount()).thenReturn(account);
 
-    preAuthServlet.redirectToApp(baseUrl, responseMock, authTokenMock, true, sb);
-    verify(responseMock)
-        .sendRedirect(
-            String.format("https://test81.com:6071%s?%s", PreAuthServlet.DEFAULT_ADMIN_URL, sb));
-  }
+		preAuthServlet.redirectToApp(baseUrl, responseMock, authTokenMock, true, sb);
+		verify(responseMock)
+				.sendRedirect(
+						String.format("https://test81.com:6071%s?%s", PreAuthServlet.DEFAULT_ADMIN_URL, sb));
+	}
 
-  @Test
-  void redirectToApp_should_redirectToMailUrl_when_nonAdminUser()
-      throws ServiceException, IOException {
+	@Test
+	void redirectToApp_should_redirectToMailUrl_when_nonAdminUser()
+			throws ServiceException, IOException {
 
-    final String baseUrl = "https://test81.com";
-    final StringBuilder sb = new StringBuilder("param1=value1&param2=value2");
+		final String baseUrl = "https://test81.com";
+		final StringBuilder sb = new StringBuilder("param1=value1&param2=value2");
 
-    final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test81.com");
-    when(authTokenMock.getAccount()).thenReturn(account);
+		final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test81.com");
+		when(authTokenMock.getAccount()).thenReturn(account);
 
-    preAuthServlet.redirectToApp(baseUrl, responseMock, authTokenMock, false, sb);
-    verify(responseMock)
-        .sendRedirect(
-            String.format("%s?param1=value1&param2=value2", PreAuthServlet.DEFAULT_MAIL_URL));
-  }
+		preAuthServlet.redirectToApp(baseUrl, responseMock, authTokenMock, false, sb);
+		verify(responseMock)
+				.sendRedirect(
+						String.format("%s?param1=value1&param2=value2", PreAuthServlet.DEFAULT_MAIL_URL));
+	}
 
-  @Test
-  void setCookieAndRedirect_should_redirectToCorrectPath_when_validAuthToken()
-      throws IOException, ServiceException {
-    final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test81.com");
-    final long expires = 1690231807995L;
-    final AuthToken authToken = AuthProvider.getAuthToken(account, expires, false, null);
+	@Test
+	void setCookieAndRedirect_should_redirectToCorrectPath_when_validAuthToken()
+			throws IOException, ServiceException {
+		final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test81.com");
+		final long expires = 1690231807995L;
+		final AuthToken authToken = AuthProvider.getAuthToken(account, expires, false, null);
 
-    when(requestMock.getScheme()).thenReturn("https");
-    when(requestMock.getParameter(PreAuthParams.PARAM_REDIRECT_URL.getParamName()))
-        .thenReturn("https://test81.com/carbonio");
+		when(requestMock.getScheme()).thenReturn("https");
+		when(requestMock.getParameter(PreAuthParams.PARAM_REDIRECT_URL.getParamName()))
+				.thenReturn("https://test81.com/carbonio");
 
-    preAuthServlet.setCookieAndRedirect(requestMock, responseMock, authToken);
-    verify(responseMock).sendRedirect("/carbonio");
-  }
+		preAuthServlet.setCookieAndRedirect(requestMock, responseMock, authToken);
+		verify(responseMock).sendRedirect("/carbonio");
+	}
 
-  @Test
-  void setCookieAndRedirect_should_redirectToRootPath_when_nullRedirectUrl()
-      throws IOException, ServiceException {
-    final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test81.com");
-    final long expires = 1690231807995L;
-    final AuthToken authToken = AuthProvider.getAuthToken(account, expires, false, null);
+	@Test
+	void setCookieAndRedirect_should_redirectToRootPath_when_nullRedirectUrl()
+			throws IOException, ServiceException {
+		final Account account = Provisioning.getInstance().get(Key.AccountBy.name, "one@test81.com");
+		final long expires = 1690231807995L;
+		final AuthToken authToken = AuthProvider.getAuthToken(account, expires, false, null);
 
-    when(requestMock.getScheme()).thenReturn("https");
+		when(requestMock.getScheme()).thenReturn("https");
 
-    final Map<String, String[]> parameterMap = new HashMap<>();
-    parameterMap.put("preauth", new String[] {"454ff228621d67771377de58b18035e03f2be0c9"});
-    parameterMap.put("isredirect", new String[] {"1"});
-    when(requestMock.getParameterMap()).thenReturn(parameterMap);
-    when(requestMock.getParameterNames())
-        .thenAnswer(
-            (Answer<Enumeration<String>>)
-                invocation -> {
-                  Map<String, String[]> map = requestMock.getParameterMap();
-                  final Iterator<String> it = map.keySet().iterator();
-                  return new Enumeration<>() {
-                    @Override
-                    public boolean hasMoreElements() {
-                      return it.hasNext();
-                    }
+		final Map<String, String[]> parameterMap = new HashMap<>();
+		parameterMap.put("preauth", new String[]{"454ff228621d67771377de58b18035e03f2be0c9"});
+		parameterMap.put("isredirect", new String[]{"1"});
+		when(requestMock.getParameterMap()).thenReturn(parameterMap);
+		when(requestMock.getParameterNames())
+				.thenAnswer(
+						(Answer<Enumeration<String>>)
+								invocation -> {
+									Map<String, String[]> map = requestMock.getParameterMap();
+									final Iterator<String> it = map.keySet().iterator();
+									return new Enumeration<>() {
+										@Override
+										public boolean hasMoreElements() {
+											return it.hasNext();
+										}
 
-                    @Override
-                    public String nextElement() {
-                      return it.next();
-                    }
-                  };
-                });
+										@Override
+										public String nextElement() {
+											return it.next();
+										}
+									};
+								});
 
-    when(Utils.getOptionalParam(requestMock, PreAuthParams.PARAM_REDIRECT_URL.getParamName(), null))
-        .thenReturn(null);
+		when(Utils.getOptionalParam(requestMock, PreAuthParams.PARAM_REDIRECT_URL.getParamName(), null))
+				.thenReturn(null);
 
-    preAuthServlet.setCookieAndRedirect(requestMock, responseMock, authToken);
-    verify(responseMock).sendRedirect("/");
-  }
+		preAuthServlet.setCookieAndRedirect(requestMock, responseMock, authToken);
+		verify(responseMock).sendRedirect("/");
+	}
 }

@@ -38,7 +38,7 @@ public class OwaspHtmlSanitizerTest {
 					+ "WAP457/97wejL8Ovcj5LuH/FEVEf7d+/etuVtN/OIknPPDGFlCoJlWx/lkf/78/mGP2zUhTzC0AAAAASUVORK5CYII=');\n"
 					+ "    background-repeat: no-repeat; background-position: center;";
 	private static final String defangedUrlWithInlinePNG = "background-repeat:no-repeat;background-position:center";
-	private static String EMAIL_BASE_DIR = "data/unittest/email/";
+	private static final String EMAIL_BASE_DIR = "data/unittest/email/";
 	private static String htmlTemplateForUrlWithInlinePNG = "<table><tbody><tr><td style=\"%s\"></td></tr></tbody></table>";
 	/*
 	 * Verified in Firefox that multi-line url with this html displays the
@@ -52,12 +52,9 @@ public class OwaspHtmlSanitizerTest {
 	private static String nonInlinedBackgroundImageURL = "url(\n" + "            \"paper.gif\"\n"
 			+ "            )";
 
-	public String testName;
-
 	@BeforeAll
 	public static void init() throws Exception {
 		LC.zimbra_use_owasp_html_sanitizer.value();
-		EMAIL_BASE_DIR = MailboxTestUtil.getZimbraServerDir("") + EMAIL_BASE_DIR;
 	}
 
 	@BeforeEach

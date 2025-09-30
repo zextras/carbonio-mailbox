@@ -30,8 +30,7 @@ public class DataSignerTest {
  @Test
  void testSignData() {
   try {
-   String serverdir = MailboxTestUtil.getZimbraServerDir("");
-   FileInputStream p12Stream = new FileInputStream(serverdir + "data/unittest/certificate/sign1_digitalid.p12");
+   FileInputStream p12Stream = new FileInputStream("data/unittest/certificate/sign1_digitalid.p12");
    char[] expPass = "test123export".toCharArray();
    byte[] certBytes = ByteStreams.toByteArray(p12Stream);
    byte[] signedData = DataSigner.signData("hello world".getBytes(), certBytes, expPass);
