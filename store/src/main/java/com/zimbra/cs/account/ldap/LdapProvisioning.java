@@ -1861,9 +1861,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             null);
       }
 
-      /*
-       * InMemoryDirectoryServer does not support EXTENSIBLE-MATCH filter.
-       */
         /*
          * production path
          *
@@ -3390,9 +3387,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       Map<String, Object> newAttrs = acct.getAttrs(false);
 
       if (dnChanged) {
-        // uid will be changed during renameEntry, so no need to modify it
-        // OpenLDAP is OK modifying it, as long as it matches the new DN, but
-        // InMemoryDirectoryServer does not like it.
         newAttrs.remove(Provisioning.A_uid);
       } else {
         newAttrs.put(Provisioning.A_uid, newLocal);
@@ -4476,9 +4470,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       boolean dnChanged = (!oldDn.equals(newDn));
 
       if (dnChanged) {
-        // uid will be changed during renameEntry, so no need to modify it
-        // OpenLDAP is OK modifying it, as long as it matches the new DN, but
-        // InMemoryDirectoryServer does not like it.
         attrs.remove(A_uid);
       } else {
         /*
@@ -10106,9 +10097,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       boolean dnChanged = (!oldDn.equals(newDn));
 
       if (dnChanged) {
-        // cn will be changed during renameEntry, so no need to modify it
-        // OpenLDAP is OK modifying it, as long as it matches the new DN, but
-        // InMemoryDirectoryServer does not like it.
         attrs.remove(A_cn);
 
         zlc.renameEntry(oldDn, newDn);
