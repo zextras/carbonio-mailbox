@@ -8,8 +8,6 @@ package com.zextras.mailbox.util;
 
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
-import com.zextras.carbonio.message_broker.MessageBrokerClient;
-import com.zextras.mailbox.messagebroker.MessageBrokerFactory;
 import com.zextras.mailbox.util.InMemoryLdapServer.Builder;
 import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.calendar.WellKnownTimeZones;
@@ -22,6 +20,8 @@ import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapClient;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapPoolConfig;
 import com.zimbra.cs.mailbox.ScheduledTaskManager;
+import com.zimbra.cs.redolog.DefaultRedoLogProvider;
+import com.zimbra.cs.redolog.MockRedoLogProvider;
 import com.zimbra.cs.redolog.RedoLogProvider;
 import com.zimbra.cs.store.StoreManager;
 import java.io.File;
@@ -31,7 +31,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import org.apache.commons.io.FileUtils;
-import org.mockito.Mockito;
 
 public class MailboxSetupHelper {
 
@@ -97,6 +96,8 @@ public class MailboxSetupHelper {
 		inMemoryLdapServer.initializeBasicData();
 
 		LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
+
+
 		final UBIDLdapPoolConfig poolConfig = UBIDLdapPoolConfig.createNewPool(true);
 		final UBIDLdapClient client = UBIDLdapClient.createNew(poolConfig);
 		LdapClient.setInstance(client);
@@ -106,6 +107,7 @@ public class MailboxSetupHelper {
 		DbPool.startup();
 		HSQLDB.createDatabase();
 
+		RedoLogProvider.setInstance(new DefaultRedoLogProvider());
 		RedoLogProvider.getInstance().startup();
 		StoreManager.getInstance().startup();
 		RightManager.getInstance();
@@ -143,6 +145,9 @@ public class MailboxSetupHelper {
 	public void tearDown() throws Exception {
 		inMemoryLdapServer.clear();
 		RedoLogProvider.getInstance().shutdown();
+		RedoLogProvider.setInstance(null);
+		DbPool.shutdown();
+		DbPool.clear();
 		inMemoryLdapServer.shutDown(true);
 		FileUtils.deleteDirectory(mailboxHome.toFile());
 		FileUtils.deleteDirectory(mailboxTmpDirectory.toFile());

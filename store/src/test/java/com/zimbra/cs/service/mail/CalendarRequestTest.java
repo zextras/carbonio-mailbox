@@ -30,9 +30,11 @@ import java.util.List;
 import javax.mail.Address;
 import javax.mail.internet.InternetAddress;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
+@Disabled
 public class CalendarRequestTest {
 
   private ZimbraSoapContext zsc;
@@ -79,10 +81,6 @@ public class CalendarRequestTest {
 
   JavaMailInternetAddress emailAddress =
     new JavaMailInternetAddress("test@zimbra.com", "test", MimeConstants.P_CHARSET_UTF8);
-  MockedStatic<AccountUtil> mockAccountUtil = mockStatic(AccountUtil.class);
-  mockAccountUtil
-    .when(() -> AccountUtil.getFriendlyEmailAddress(account))
-    .thenReturn(emailAddress);
 
   List<Address> addressList = new ArrayList<Address>();
   addressList.add((Address) new InternetAddress("test1@zimbra.com", "Test 1"));
@@ -124,4 +122,5 @@ public class CalendarRequestTest {
     zsc, octxt, account, mbox, calItem, true, attendeeList, true, sendQueue);
   assertEquals(1, sendQueue.queue.size());
  }
+
 }

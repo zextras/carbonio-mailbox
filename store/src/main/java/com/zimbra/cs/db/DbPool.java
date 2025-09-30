@@ -5,6 +5,7 @@
 
 package com.zimbra.cs.db;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.util.SystemUtil;
@@ -516,6 +517,11 @@ public class DbPool {
     public static synchronized void shutdown() throws Exception {
         isShutdown = true;
         close();
+    }
+
+    @VisibleForTesting
+    public static synchronized void clear() throws Exception {
+        isShutdown = false;
     }
 
     public static void disableUsageWarning() {
