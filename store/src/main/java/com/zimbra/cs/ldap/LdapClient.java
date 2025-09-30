@@ -28,7 +28,7 @@ public abstract class LdapClient {
 
     public static synchronized LdapClient getInstanceIfLDAPavailable() throws LdapException {
         if (ldapClient == null) {
-            ldapClient = UBIDLdapClient.init(ALWAYS_USE_MASTER);
+            ldapClient = UBIDLdapClient.createNew(ALWAYS_USE_MASTER);
         }
         return ldapClient;
     }

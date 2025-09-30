@@ -5,13 +5,11 @@
 
 package com.zimbra.cs.ldap.unboundid;
 
-import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.ldap.LdapClient;
 import com.zimbra.cs.ldap.LdapConstants;
 import com.zimbra.cs.ldap.LdapException;
 import com.zimbra.cs.ldap.LdapServerConfig.ExternalLdapConfig;
-import com.zimbra.cs.ldap.LdapServerConfig.ZimbraLdapConfig;
 import com.zimbra.cs.ldap.LdapServerType;
 import com.zimbra.cs.ldap.LdapUsage;
 import com.zimbra.cs.ldap.ZLdapContext;
@@ -31,7 +29,7 @@ public class UBIDLdapClient extends LdapClient {
 		this.poolConfig = poolConfig;
 	}
 
-	public static UBIDLdapClient init(UBIDLdapPoolConfig poolConfig) throws LdapException {
+	public static UBIDLdapClient createNew(UBIDLdapPoolConfig poolConfig) throws LdapException {
 		UBIDLdapFilterFactory.initialize();
 		final UBIDLdapFilterFactory ubidLdapFilterFactory = new UBIDLdapFilterFactory();
 		ZSearchScope.init(new UBIDSearchScopeFactory());
@@ -39,9 +37,9 @@ public class UBIDLdapClient extends LdapClient {
 		return new UBIDLdapClient(poolConfig);
 	}
 
-	public static UBIDLdapClient init(boolean alwaysUseMaster) throws LdapException {
-		final UBIDLdapPoolConfig ldapPoolConfig = UBIDLdapPoolConfig.init(alwaysUseMaster);
-		return init(ldapPoolConfig);
+	public static UBIDLdapClient createNew(boolean alwaysUseMaster) throws LdapException {
+		final UBIDLdapPoolConfig ldapPoolConfig = UBIDLdapPoolConfig.createNewPool(alwaysUseMaster);
+		return createNew(ldapPoolConfig);
 	}
 
 	@Override

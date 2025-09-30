@@ -39,7 +39,7 @@ public class UBIDLdapPoolConfig {
 		this.masterConnPool = masterConnPool;
 	}
 
-	public static synchronized UBIDLdapPoolConfig init(boolean alwaysUseMaster)
+	public static synchronized UBIDLdapPoolConfig createNewPool(boolean alwaysUseMaster)
 			throws LdapException {
 		ZimbraLdapConfig masterConfig = null;
 		LDAPConnectionPool masterConnPool = null;

@@ -5,8 +5,6 @@ package com.zextras.mailbox.util;
 
 import com.google.common.collect.Maps;
 import com.zimbra.common.mime.MimeConstants;
-import com.zimbra.cs.account.Config;
-import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.ldap.LdapProvisioning;
 import com.zimbra.cs.ldap.LdapException;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapClient;
@@ -20,7 +18,6 @@ import com.zimbra.cs.mime.handler.TextPlainHandler;
 import com.zimbra.cs.mime.handler.UnknownTypeHandler;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +28,7 @@ public final class LdapProvisioningWithMockMime extends LdapProvisioning {
     private final Map<String, List<MimeTypeInfo>> mimeConfig = Maps.newHashMap();
 
     public static LdapProvisioningWithMockMime get(UBIDLdapPoolConfig poolConfig) throws LdapException {
-        final UBIDLdapClient client = UBIDLdapClient.init(poolConfig);
+        final UBIDLdapClient client = UBIDLdapClient.createNew(poolConfig);
         return new LdapProvisioningWithMockMime(client);
     }
     public LdapProvisioningWithMockMime(UBIDLdapClient client) {
