@@ -19,6 +19,8 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.account.accesscontrol.RightManager;
 import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.HSQLDB;
+import com.zimbra.cs.ldap.LdapClient;
+import com.zimbra.cs.ldap.unboundid.UBIDLdapClient;
 import com.zimbra.cs.ldap.unboundid.UBIDLdapPoolConfig;
 import com.zimbra.cs.mailbox.ScheduledTaskManager;
 import com.zimbra.cs.redolog.RedoLogProvider;
@@ -118,7 +120,10 @@ public class MailboxSetupHelper {
 
   public void initData(MailboxTestData mailboxTestData) throws Exception {
     inMemoryLdapServer.initializeBasicData();
-//		Provisioning.setInstance(LdapProvisioningWithMockMime.get(UBIDLdapPoolConfig.init(true)));
+		final UBIDLdapPoolConfig poolConfig = UBIDLdapPoolConfig.init(true);
+		final UBIDLdapClient client = UBIDLdapClient.init(poolConfig);
+		LdapClient.setInstance(client);
+		Provisioning.setInstance(new LdapProvisioningWithMockMime(client));
 //		LC.zimbra_class_provisioning.setDefault(LdapProvisioningWithMockMime.class.getName());
 		var provisioning = Provisioning.getInstance();
     var lmtpPort = PortUtil.findFreePort();

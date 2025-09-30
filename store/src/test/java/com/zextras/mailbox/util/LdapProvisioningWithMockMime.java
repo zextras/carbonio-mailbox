@@ -33,7 +33,7 @@ public final class LdapProvisioningWithMockMime extends LdapProvisioning {
         final UBIDLdapClient client = UBIDLdapClient.init(poolConfig);
         return new LdapProvisioningWithMockMime(client);
     }
-    private LdapProvisioningWithMockMime(UBIDLdapClient client) {
+    public LdapProvisioningWithMockMime(UBIDLdapClient client) {
         super(CacheMode.OFF, client); // disable cache for testing, it makes the provisioning use mocked mime types
         initializeMimeHandlers();
     }
