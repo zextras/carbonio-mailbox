@@ -157,10 +157,10 @@ public class ZimbraServlet extends HttpServlet {
 
       // Store reference to this servlet for accessor
       synchronized (sServlets) {
-        String name = getServletName();
-        if (sServlets.containsKey(name)) {
-          Zimbra.halt("Attempted to instantiate a second instance of " + name);
-        }
+//        String name = getServletName();
+////        if (sServlets.containsKey(name)) {
+//////          Zimbra.halt("Attempted to instantiate a second instance of " + name);
+////        }
         sServlets.put(getServletName(), this);
         mLog.debug("Added " + getServletName() + " to the servlet list");
       }

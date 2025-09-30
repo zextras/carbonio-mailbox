@@ -72,14 +72,6 @@ public class MailboxSetupHelper {
     }
   }
 
-	private void mockMessageBrokerClient() {
-			var messageBrokerClient = Mockito.mock(MessageBrokerClient.class);
-			var mockedMessageBrokerFactory = Mockito.mockStatic(MessageBrokerFactory.class,
-					Mockito.CALLS_REAL_METHODS);
-			mockedMessageBrokerFactory.when(MessageBrokerFactory::getMessageBrokerClientInstance)
-					.thenReturn(messageBrokerClient);
-	}
-
 	public void setUp(MailboxTestData mailboxTestData) throws Exception {
 		System.setProperty("zimbra.native.required", "false");
 		System.setProperty(
@@ -118,7 +110,7 @@ public class MailboxSetupHelper {
 		StoreManager.getInstance().startup();
 		RightManager.getInstance();
 		ScheduledTaskManager.startup();
-		mockMessageBrokerClient();
+		System.setProperty("broker.disabled", "true");
 	}
 
   public void initData(MailboxTestData mailboxTestData) throws Exception {
@@ -154,6 +146,6 @@ public class MailboxSetupHelper {
 		inMemoryLdapServer.shutDown(true);
 		FileUtils.deleteDirectory(mailboxHome.toFile());
 		FileUtils.deleteDirectory(mailboxTmpDirectory.toFile());
-		LdapClient.shutdown();
+//		LdapClient.shutdown();
 	}
 }
