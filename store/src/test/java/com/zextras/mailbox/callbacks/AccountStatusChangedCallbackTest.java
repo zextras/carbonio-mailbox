@@ -25,7 +25,6 @@ class AccountStatusChangedCallbackTest extends MailboxTestSuite {
    */
   @Test
   void shouldNotFail_When_ExecutingUserStatusChangedCallback_And_EventIsPublishedCorrectly() throws Exception {
-    final AccountStatus accountStatus = new AccountStatus();
     CallbackContext context = Mockito.mock(CallbackContext.class);
     String attrName = "fake";
     Account entry = Mockito.mock(Account.class);
@@ -35,7 +34,8 @@ class AccountStatusChangedCallbackTest extends MailboxTestSuite {
     Mockito.when(entry.getAccountStatus(any(Provisioning.class))).thenReturn("active");
     Mockito.when(entry.getId()).thenReturn("fake-account-id");
 
-    MessageBrokerClient mockedMessageBrokerClient = MessageBrokerFactory.getMessageBrokerClientInstance();
+    MessageBrokerClient mockedMessageBrokerClient = Mockito.mock(MessageBrokerClient.class);
+    final AccountStatus accountStatus = new AccountStatus(mockedMessageBrokerClient);
     Mockito.when(mockedMessageBrokerClient.publish(any(UserStatusChanged.class))).thenReturn(true);
 
     assertDoesNotThrow(() -> accountStatus.postModify(context, attrName, entry));
