@@ -71,7 +71,7 @@ public class UBIDLdapClient extends LdapClient {
 		while (true) {
 			UBIDLdapContext zlc = null;
 			try {
-				zlc = new UBIDLdapContext(LdapServerType.REPLICA, LdapUsage.PING);
+				zlc = new UBIDLdapContext(poolConfig, LdapServerType.REPLICA, LdapUsage.PING);
 				break;
 			} catch (ServiceException e) {
 				// may called at server startup when logging is not up yet.
@@ -92,7 +92,7 @@ public class UBIDLdapClient extends LdapClient {
 	@Override
 	protected ZLdapContext getContextImpl(LdapServerType serverType, LdapUsage usage)
 			throws ServiceException {
-		return new UBIDLdapContext(serverType, usage);
+		return new UBIDLdapContext(poolConfig, serverType, usage);
 	}
 
 	/**

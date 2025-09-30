@@ -38,6 +38,7 @@ public final class LdapProvisioningWithMockMime extends LdapProvisioning {
         initializeMimeHandlers();
     }
 
+
     private void initializeMimeHandlers() {
         addMimeType(MimeConstants.CT_TEXT_PLAIN, createMimeTypeInfo(MimeConstants.CT_TEXT_PLAIN, TextPlainHandler.class.getName()));
         addMimeType(MimeConstants.CT_TEXT_HTML, createMimeTypeInfo(MimeConstants.CT_TEXT_HTML, TextHtmlHandler.class.getName(), "html", "htm"));

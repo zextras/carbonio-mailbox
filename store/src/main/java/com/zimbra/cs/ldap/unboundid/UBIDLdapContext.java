@@ -82,10 +82,8 @@ public class UBIDLdapContext extends ZLdapContext {
 	 * Zimbra LDAP
 	 * deprecated because we want to avoid static initialization
 	 */
-	@Deprecated
-	public UBIDLdapContext(LdapServerType serverType, LdapUsage usage) throws LdapException {
+	public UBIDLdapContext(UBIDLdapPoolConfig ldapPoolConfig, LdapServerType serverType, LdapUsage usage) throws LdapException {
 		super(usage);
-		final UBIDLdapPoolConfig ldapPoolConfig = UBIDLdapPoolConfig.init(serverType.isMaster());
 		isZimbraLdap = true;
 		derefAliasPolicy = DereferencePolicy.NEVER;
 
