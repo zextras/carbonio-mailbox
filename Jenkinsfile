@@ -129,7 +129,7 @@ pipeline {
                 container('jdk-17') {
                     withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
                         script {
-                            sh "mvn ${MVN_OPTS} deploy -DskipTests=true"
+                            sh "mvn ${MVN_OPTS} -s " + SETTINGS_PATH + " deploy -DskipTests=true"
                         }
                     }
                 }
