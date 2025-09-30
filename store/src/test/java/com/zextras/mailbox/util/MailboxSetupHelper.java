@@ -105,6 +105,10 @@ public class MailboxSetupHelper {
 		inMemoryLdapServer.initializeBasicData();
 
 		LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
+		final UBIDLdapPoolConfig poolConfig = UBIDLdapPoolConfig.createNewPool(true);
+		final UBIDLdapClient client = UBIDLdapClient.createNew(poolConfig);
+		LdapClient.setInstance(client);
+		Provisioning.setInstance(new LdapProvisioningWithMockMime(client));
 		this.initData(mailboxTestData);
 
 		DbPool.startup();
@@ -119,10 +123,6 @@ public class MailboxSetupHelper {
 
   public void initData(MailboxTestData mailboxTestData) throws Exception {
     inMemoryLdapServer.initializeBasicData();
-		final UBIDLdapPoolConfig poolConfig = UBIDLdapPoolConfig.createNewPool(true);
-		final UBIDLdapClient client = UBIDLdapClient.createNew(poolConfig);
-		LdapClient.setInstance(client);
-		Provisioning.setInstance(new LdapProvisioningWithMockMime(client));
 		var provisioning = Provisioning.getInstance();
     var lmtpPort = PortUtil.findFreePort();
 
