@@ -35,7 +35,6 @@ public final class DbSearchTest extends MailboxTestSuite {
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		MailboxTestUtil.clearData();
 		Account account = createAccount().create();
 		mbox = MailboxManager.getInstance().getMailboxByAccountId(account.getId());
 		conn = DbPool.getConnection(mbox);

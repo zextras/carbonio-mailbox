@@ -39,12 +39,7 @@ import org.junit.jupiter.api.Test;
  */
 public class DefangFilterTest {
 
-	private static String EMAIL_BASE_DIR = "data/unittest/email/";
-
-	@BeforeAll
-	public static void init() throws Exception {
-		EMAIL_BASE_DIR = MailboxTestUtil.getZimbraServerDir("") + EMAIL_BASE_DIR;
-	}
+	private static final String EMAIL_BASE_DIR = "data/unittest/email/";
 
 	@BeforeEach
 	public void setUp() throws Exception {

@@ -26,6 +26,7 @@ import com.zimbra.soap.type.SearchHit;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -35,10 +36,10 @@ import org.junit.jupiter.api.Test;
  */
 public class ItemQueryTest extends MailboxTestSuite {
 
-	private static Account account;
+	private Account account;
 
-	@BeforeAll
-	public static void setUp() throws Exception {
+	@BeforeEach
+	public void setUp() throws Exception {
 		account = createAccount().create();
 	}
 
@@ -239,14 +240,5 @@ public class ItemQueryTest extends MailboxTestSuite {
 				ServiceTestUtil.getRequestContext(acct));
 		SearchResponse resp = JaxbUtil.elementToJaxb(response, SearchResponse.class);
 		return resp;
-	}
-
-	@AfterEach
-	public void tearDown() {
-		try {
-			MailboxTestUtil.clearData();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 }

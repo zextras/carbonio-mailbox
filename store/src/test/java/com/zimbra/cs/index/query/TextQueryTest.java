@@ -23,14 +23,19 @@ import com.zimbra.cs.mailbox.MailboxManager;
 import com.zimbra.cs.mailbox.MailboxTestUtil;
 import com.zimbra.cs.mailbox.Message;
 import com.zimbra.cs.mailbox.OperationContext;
+import com.zimbra.cs.mime.Mime;
+import com.zimbra.cs.mime.ParsedMessage;
 import com.zimbra.cs.service.mail.Search;
 import com.zimbra.cs.service.mail.ServiceTestUtil;
+import com.zimbra.cs.util.JMSession;
 import com.zimbra.soap.JaxbUtil;
 import com.zimbra.soap.mail.message.SearchRequest;
 import com.zimbra.soap.mail.message.SearchResponse;
 import com.zimbra.soap.type.SearchHit;
 import java.util.EnumSet;
 import java.util.List;
+import javax.mail.internet.MimeMessage;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -180,9 +185,9 @@ public final class TextQueryTest extends MailboxTestSuite {
         DeliveryOptions dopt = new DeliveryOptions().setFolderId(Mailbox.ID_FOLDER_INBOX).setFlags(Flag.BITMASK_UNREAD);
         Message msg = mbox.addMessage(null, MailboxTestUtil.generateMessage("test subject"), dopt, null);
         Message msgWithHighPri = mbox.addMessage(null,
-                MailboxTestUtil.generateHighPriorityMessage("test subject is HI-PRI"), dopt, null);
+            generateHighProrityMessage(), dopt, null);
         Message msgWithLowPri = mbox.addMessage(null,
-                MailboxTestUtil.generateLowPriorityMessage("test subject is LOW-PRI"), dopt, null);
+            getGenerateLowPriorityMessage(), dopt, null);
 
         SearchResponse resp;
         List<SearchHit> hits;
@@ -214,6 +219,26 @@ public final class TextQueryTest extends MailboxTestSuite {
         assertEquals(msgWithHighPri.getId(), msgWithHiPriId, "correct hit descending high");
         assertEquals(msg.getId(), msgId, "correct hit descending med");
         assertEquals(msgWithLowPri.getId(), msgWithLowPriId, "correct hit descending low");
+    }
+
+    private static ParsedMessage generateHighProrityMessage() throws Exception {
+        MimeMessage mm = new Mime.FixedMimeMessage(JMSession.getSession());
+        mm.setHeader("From", "Hi Bob <bob@example.com>");
+        mm.setHeader("To", "Jimmy Dean <jdean@example.com>");
+        mm.setHeader("Subject", "test subject is HI-PRI");
+        mm.addHeader("Importance", "high");
+        mm.setText("nothing to see here");
+        return new ParsedMessage(mm, false);
+    }
+
+    private static ParsedMessage getGenerateLowPriorityMessage() throws Exception {
+        MimeMessage mm = new Mime.FixedMimeMessage(JMSession.getSession());
+        mm.setHeader("From", "Lo Bob <bob@example.com>");
+        mm.setHeader("To", "Jimmy Dean <jdean@example.com>");
+        mm.setHeader("Subject", "test subject is LOW-PRI");
+        mm.addHeader("Importance", "low");
+        mm.setText("nothing to see here");
+        return new ParsedMessage(mm, false);
     }
 
     static SearchResponse doSearch(SearchRequest request, Account acct) throws Exception {

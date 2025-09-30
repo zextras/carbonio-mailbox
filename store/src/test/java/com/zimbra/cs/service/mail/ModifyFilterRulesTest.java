@@ -9,12 +9,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.google.common.collect.Maps;
 import com.zextras.mailbox.MailboxTestSuite;
-import com.zimbra.common.account.Key;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.MailConstants;
 import com.zimbra.cs.account.Account;
-import com.zimbra.cs.account.MockProvisioning;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.filter.RuleManager;
 import com.zimbra.cs.filter.SoapToSieve;
@@ -32,11 +30,11 @@ import org.junit.jupiter.api.Test;
  */
 public class ModifyFilterRulesTest extends MailboxTestSuite {
 
+  private static Provisioning provisioning;
   @BeforeAll
   public static void init() throws Exception {
-    MockProvisioning prov = new MockProvisioning();
-    Provisioning.setInstance(prov);
-    prov.createDomain("zimbra.com", Maps.newHashMap());
+    provisioning = Provisioning.getInstance();
+    provisioning.createDomain("zimbra.com", Maps.newHashMap());
   }
 
   @Test
@@ -103,7 +101,7 @@ public class ModifyFilterRulesTest extends MailboxTestSuite {
 
     // ZimbraLog.filter.info(acct.getMailSieveScript());
     // ZimbraLog.filter.info(expectedScript);
-    assertEquals(expectedScript, acct.getMailSieveScript());
+    assertEquals(expectedScript, provisioning.getAccountById(acct.getId()).getMailSieveScript());
   }
 
   @Test
@@ -165,7 +163,7 @@ public class ModifyFilterRulesTest extends MailboxTestSuite {
 
     // ZimbraLog.filter.info(acct.getMailSieveScript());
     // ZimbraLog.filter.info(expectedScript);
-    assertEquals(expectedScript, acct.getMailSieveScript());
+    assertEquals(expectedScript, provisioning.getAccountById(acct.getId()).getMailSieveScript());
   }
 
   @Test
@@ -267,7 +265,7 @@ public class ModifyFilterRulesTest extends MailboxTestSuite {
 
     // ZimbraLog.filter.info(acct.getMailSieveScript());
     // ZimbraLog.filter.info(expectedScript);
-    assertEquals(expectedScript, acct.getMailSieveScript());
+    assertEquals(expectedScript, provisioning.getAccountById(acct.getId()).getMailSieveScript());
   }
 
   /**
@@ -496,7 +494,7 @@ public class ModifyFilterRulesTest extends MailboxTestSuite {
               + "}\n"
               + "";
 
-      assertEquals(expectedScript, account.getMailSieveScript());
+      assertEquals(expectedScript, provisioning.getAccountById(account.getId()).getMailSieveScript());
     } catch (Exception e) {
       fail("No exception should be thrown" + e);
     }
@@ -551,7 +549,7 @@ public class ModifyFilterRulesTest extends MailboxTestSuite {
               + "}\n"
               + "";
 
-      assertEquals(expectedScript, account.getMailSieveScript());
+      assertEquals(expectedScript, provisioning.getAccountById(account.getId()).getMailSieveScript());
     } catch (Exception e) {
       fail("No exception should be thrown" + e);
     }
@@ -679,7 +677,7 @@ public class ModifyFilterRulesTest extends MailboxTestSuite {
     expectedScript += "    stop;\n";
     expectedScript += "}\n";
 
-    assertEquals(expectedScript, acct.getMailSieveScript());
+    assertEquals(expectedScript, provisioning.getAccountById(acct.getId()).getMailSieveScript());
   }
 
   @Test

@@ -7,7 +7,8 @@ package com.zimbra.cs.mime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.zimbra.cs.account.MockProvisioning;
+import com.zextras.mailbox.MailboxTestSuite;
+import com.zextras.mailbox.util.LdapProvisioningWithMockMime;
 import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.mime.handler.TextEnrichedHandler;
 import com.zimbra.cs.mime.handler.TextHtmlHandler;
@@ -20,11 +21,11 @@ import org.junit.jupiter.api.Test;
  *
  * @author ysasaki
  */
-public class MimeHandlerManagerTest {
+public class MimeHandlerManagerTest extends MailboxTestSuite {
 
 	@BeforeAll
 	public static void init() throws Exception {
-		MockProvisioning prov = new MockProvisioning();
+		LdapProvisioningWithMockMime prov = (LdapProvisioningWithMockMime) Provisioning.getInstance();
 		prov.clearMimeHandlers();
 
 		MockMimeTypeInfo mime = new MockMimeTypeInfo();

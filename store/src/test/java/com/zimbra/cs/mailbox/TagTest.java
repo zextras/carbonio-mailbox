@@ -27,18 +27,13 @@ import org.junit.jupiter.api.Test;
 
 public class TagTest extends MailboxTestSuite {
 
-	private static Account account;
-	private static Account account2;
-
-	@BeforeAll
-	public static void init() throws Exception {
-		account = createAccount().create();
-		account2 = createAccount().create();
-	}
+	private Account account;
+	private Account account2;
 
 	@BeforeEach
-	public void setUp() throws Exception {
-		MailboxTestUtil.clearData();
+	public void init() throws Exception {
+		account = createAccount().create();
+		account2 = createAccount().create();
 	}
 
 	private static void checkName(String description, String input, String expectedOutput) {
