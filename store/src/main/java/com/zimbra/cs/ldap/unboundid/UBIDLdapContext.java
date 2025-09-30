@@ -303,21 +303,15 @@ public class UBIDLdapContext extends ZLdapContext {
 		}
 	}
 
-	@Override
-	public ZLdapSchema getSchema() throws LdapException {
-		try {
-			Schema schema;
-
-			if (InMemoryLdapServer.isOn()) {
-				schema = InMemoryLdapServer.getSchema(InMemoryLdapServer.ZIMBRA_LDAP_SERVER);
-			} else {
-				schema = UBIDLdapOperation.GET_SCHEMA.execute(this);
-			}
-			return new UBIDLdapSchema(schema);
-		} catch (LDAPException e) {
-			throw mapToLdapException("unable to get schema", e);
-		}
-	}
+    @Override
+    public ZLdapSchema getSchema() throws LdapException {
+        try {
+            Schema schema = UBIDLdapOperation.GET_SCHEMA.execute(this);
+            return new UBIDLdapSchema(schema);
+        } catch (LDAPException e) {
+            throw mapToLdapException("unable to get schema", e);
+        }
+    }
 
 	@Override
 	public void modifyAttributes(String dn, ZModificationList modList)
@@ -769,12 +763,9 @@ public class UBIDLdapContext extends ZLdapContext {
 
 		long startTime = UBIDLdapOperation.GENERIC_OP.begin();
 		try {
-			if (InMemoryLdapServer.isOn()) {
-				connection = InMemoryLdapServer.getConnection();
-				password = InMemoryLdapServer.Password.treatPassword(password);
-			} else {
+
 				connection = serverPool.getServerSet().getConnection();
-			}
+
 
 			if (serverPool.getConnectionType() == LdapConnType.STARTTLS) {
 				SSLContext startTLSContext =

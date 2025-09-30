@@ -161,7 +161,6 @@ import com.zimbra.cs.ldap.ZSearchControls;
 import com.zimbra.cs.ldap.ZSearchResultEntry;
 import com.zimbra.cs.ldap.ZSearchResultEnumeration;
 import com.zimbra.cs.ldap.ZSearchScope;
-import com.zimbra.cs.ldap.unboundid.InMemoryLdapServer;
 import com.zimbra.cs.listeners.AuthListener;
 import com.zimbra.cs.mime.MimeTypeInfo;
 import com.zimbra.cs.service.util.JWEUtil;
@@ -1864,37 +1863,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
             null);
       }
 
-      /*
-       * InMemoryDirectoryServer does not support EXTENSIBLE-MATCH filter.
-       */
-      if (InMemoryLdapServer.isOn()) {
-        /*
-         * unit test path: DN Subtree Match Filter is not supported by InMemoryLdapServer
-         *
-         * If search for domains, case is the domains DN.
-         *
-         * If search for accounts/resources/groups:
-         * Search twice: once under the people tree, once under the groups tree,
-         * so entries under sub-domains are not returned.
-         *
-         */
-        if (domainsTree) {
-          bases = new String[] {domainDN};
-        } else {
-          List<String> baseList = Lists.newArrayList();
-
-          if (groupsTree) {
-            baseList.add(mDIT.domainDNToDynamicGroupsBaseDN(domainDN));
-          }
-
-          if (peopleTree) {
-            baseList.add(mDIT.domainDNToAccountSearchDN(domainDN));
-          }
-
-          bases = baseList.toArray(new String[0]);
-        }
-
-      } else {
         /*
          * production path
          *
@@ -1914,8 +1882,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
           }
         }
         bases = new String[] {searchBase};
-      }
-
     } else {
       int flags = SearchDirectoryOptions.getTypesAsFlags(types);
       bases = mDIT.getSearchBases(flags);
@@ -1983,7 +1949,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       filter = filterFactory.fromFilterString(options.getFilterId(), filterStr);
     }
 
-    if (domain != null && !InMemoryLdapServer.isOn()) {
+    if (domain != null) {
       boolean groupsTree = false;
       boolean peopleTree = false;
 
@@ -3423,9 +3389,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       Map<String, Object> newAttrs = acct.getAttrs(false);
 
       if (dnChanged) {
-        // uid will be changed during renameEntry, so no need to modify it
-        // OpenLDAP is OK modifying it, as long as it matches the new DN, but
-        // InMemoryDirectoryServer does not like it.
         newAttrs.remove(Provisioning.A_uid);
       } else {
         newAttrs.put(Provisioning.A_uid, newLocal);
@@ -4509,9 +4472,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       boolean dnChanged = (!oldDn.equals(newDn));
 
       if (dnChanged) {
-        // uid will be changed during renameEntry, so no need to modify it
-        // OpenLDAP is OK modifying it, as long as it matches the new DN, but
-        // InMemoryDirectoryServer does not like it.
         attrs.remove(A_uid);
       } else {
         /*
@@ -9079,7 +9039,7 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
         types.add(ObjectType.distributionlists);
         types.add(ObjectType.dynamicgroups);
         filter = mDIT.filterGroupsByDomain(domain);
-        if (domain != null && !InMemoryLdapServer.isOn()) {
+        if (domain != null) {
           ZLdapFilter dnSubtreeMatchFilter = ((LdapDomain) domain).getDnSubtreeMatchFilter();
           filter = filterFactory.andWith(filter, dnSubtreeMatchFilter);
         }
@@ -10139,9 +10099,6 @@ public class LdapProvisioning extends LdapProv implements CacheAwareProvisioning
       boolean dnChanged = (!oldDn.equals(newDn));
 
       if (dnChanged) {
-        // cn will be changed during renameEntry, so no need to modify it
-        // OpenLDAP is OK modifying it, as long as it matches the new DN, but
-        // InMemoryDirectoryServer does not like it.
         attrs.remove(A_cn);
 
         zlc.renameEntry(oldDn, newDn);

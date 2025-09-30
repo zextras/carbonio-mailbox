@@ -5,15 +5,11 @@
 
 package com.zimbra.cs.account.auth;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-
 import org.apache.commons.codec.binary.Base64;
-
-import com.zimbra.cs.ldap.unboundid.InMemoryLdapServer;
 
 public class PasswordUtil {
 
@@ -48,14 +44,9 @@ public class PasswordUtil {
                 MessageDigest md = MessageDigest.getInstance("SHA1");
                 if (salt == null) {
 
-                    if (InMemoryLdapServer.isOn()) {
-                        // use a fixed salt
-                        salt = new byte[]{127,127,127,127};
-                    } else {
-                        salt = new byte[SALT_LEN];
-                        SecureRandom sr = new SecureRandom();
-                        sr.nextBytes(salt);
-                    }
+                    salt = new byte[SALT_LEN];
+                    SecureRandom sr = new SecureRandom();
+                    sr.nextBytes(salt);
                 }
                 md.update(password.getBytes(StandardCharsets.UTF_8));
                 md.update(salt);
@@ -103,14 +94,9 @@ public class PasswordUtil {
                 MessageDigest md = MessageDigest.getInstance("SHA-512");
                 if (salt == null) {
 
-                    if (InMemoryLdapServer.isOn()) {
-                        // use a fixed salt
-                        salt = new byte[]{127,127,127,127};
-                    } else {
-                        salt = new byte[SALT_LEN];
-                        SecureRandom sr = new SecureRandom();
-                        sr.nextBytes(salt);
-                    }
+                    salt = new byte[SALT_LEN];
+                    SecureRandom sr = new SecureRandom();
+                    sr.nextBytes(salt);
                 }
                 md.update(password.getBytes(StandardCharsets.UTF_8));
                 md.update(salt);

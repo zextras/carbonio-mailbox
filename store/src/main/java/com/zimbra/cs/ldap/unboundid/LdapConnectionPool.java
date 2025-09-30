@@ -43,13 +43,7 @@ public class LdapConnectionPool {
     static LDAPConnectionPool createConnectionPool(String connPoolName,
             LdapServerConfig config) throws LdapException {
 
-        LDAPConnectionPool connPool = null;
-
-        if (InMemoryLdapServer.isOn()) {
-            connPool = createConnPoolToInMemoryLdapServer(config);
-        } else {
-            connPool = createConnPool(config);
-        }
+        LDAPConnectionPool connPool = createConnPool(config);
 
         connPool.setConnectionPoolName(connPoolName);
         connPool.setMaxWaitTimeMillis(config.getConnPoolTimeoutMillis());
@@ -106,11 +100,6 @@ public class LdapConnectionPool {
         }
 
         return connPool;
-    }
-
-    private static LDAPConnectionPool createConnPoolToInMemoryLdapServer(LdapServerConfig config)
-    throws LdapException {
-        return InMemoryLdapServer.createConnPool(InMemoryLdapServer.ZIMBRA_LDAP_SERVER, config);
     }
 
     static void closeAll() {
