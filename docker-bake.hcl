@@ -6,6 +6,7 @@ target "ldap" {
   context = "."
   dockerfile = "docker/standalone/openldap/Dockerfile"
   tags = []
+  depends_on = "builder"
 }
 
 target "mailbox" {
