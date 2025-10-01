@@ -50,9 +50,6 @@ public class Mailbox {
           ZimbraLog.misc.error("Failed to shutdown connections", e);
 				}
 			}
-
-      @Override public void lifeCycleStarting(LifeCycle event) {
-      }
       @Override public void lifeCycleStarted(LifeCycle event) {
         try {
           Zimbra.startup();
@@ -61,8 +58,6 @@ public class Mailbox {
           Zimbra.halt("out of memory", e);
         }
       }
-      @Override public void lifeCycleFailure(LifeCycle event, Throwable cause) {}
-      @Override public void lifeCycleStopped(LifeCycle event) {}
     });
     server.start();
     server.join();
