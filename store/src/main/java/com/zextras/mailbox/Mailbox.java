@@ -51,11 +51,12 @@ public class Mailbox {
 				}
 			}
 
-      // Other lifecycle methods can be no-ops
-      @Override public void lifeCycleStarting(LifeCycle event) {}
+      @Override public void lifeCycleStarting(LifeCycle event) {
+      }
       @Override public void lifeCycleStarted(LifeCycle event) {
         try {
           Zimbra.startup();
+          ZimbraLog.misc.info("Mailbox dependencies started.");
         } catch (OutOfMemoryError e) {
           Zimbra.halt("out of memory", e);
         }
