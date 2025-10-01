@@ -13,7 +13,6 @@ import com.zimbra.cs.account.Provisioning;
 import com.zimbra.cs.util.Zimbra;
 import com.zimbra.znative.IO;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -33,27 +32,25 @@ public class Mailbox {
 
 	private static final String LOCALCONFIG = "localconfig";
 	private static final String DRYRUN = "dryRun";
+	private final Provisioning provisioning;
+	private Server server;
 
-	public static void main(String[] args) throws Exception {
-		Options options = getOptions();
-		CommandLineParser parser = new GnuParser();
-		CommandLine commandLine = parser.parse(options, args);
+	public Mailbox(Provisioning provisioning) {
+		this.provisioning = provisioning;
+	}
 
-		if (commandLine.hasOption(LOCALCONFIG)) {
-			System.setProperty("zimbra.config", commandLine.getOptionValue(LOCALCONFIG));
-		}
-
-		Builder mailboxServerBuilder = new Builder(Provisioning.getInstance().getConfig(),
-				Provisioning.getInstance().getLocalServer());
+	public void start(boolean dryRun) throws Exception {
+		Builder mailboxServerBuilder = new Builder(provisioning.getConfig(),
+				provisioning.getLocalServer());
 
 		final Server server = mailboxServerBuilder.build();
 
-		if (commandLine.hasOption(DRYRUN)) {
+		if (dryRun) {
 			return;
 		}
 
-    initDependencies(); // old FirstServlet#init
-    Zimbra.startup();
+		initDependencies(); // old FirstServlet#init
+		Zimbra.startup();
 
 		server.addLifeCycleListener(new LifeCycle.Listener() {
 			@Override
@@ -67,6 +64,18 @@ public class Mailbox {
 		});
 		server.start();
 		server.join();
+	}
+
+	public static void main(String[] args) throws Exception {
+		Options options = getOptions();
+		CommandLineParser parser = new GnuParser();
+		CommandLine commandLine = parser.parse(options, args);
+
+		if (commandLine.hasOption(LOCALCONFIG)) {
+			System.setProperty("zimbra.config", commandLine.getOptionValue(LOCALCONFIG));
+		}
+		new Mailbox(Provisioning.getInstance()).start(commandLine.hasOption(DRYRUN));
+
 	}
 
 	private static Options getOptions() {
@@ -117,9 +126,9 @@ public class Mailbox {
 			throws SecurityException {
 		long configMillis = LC.mailboxd_output_rotate_interval.intValue() * 1000;
 
-    if (configMillis <= 0) {
-      return;
-    }
+		if (configMillis <= 0) {
+			return;
+		}
 		sOutputRotationTimer = new Timer("Timer-OutputRotation");
 		GregorianCalendar now = new GregorianCalendar();
 		long millisSinceEpoch = now.getTimeInMillis();
@@ -132,9 +141,9 @@ public class Mailbox {
 				try {
 					doOutputRotation();
 				} catch (Throwable e) {
-          if (e instanceof OutOfMemoryError) {
-            Zimbra.halt("Caught out of memory error", e);
-          }
+					if (e instanceof OutOfMemoryError) {
+						Zimbra.halt("Caught out of memory error", e);
+					}
 					System.err.println("WARN: Caught exception in FirstServlet timer " + e);
 					e.printStackTrace();
 				}
@@ -143,4 +152,11 @@ public class Mailbox {
 		sOutputRotationTimer.scheduleAtFixedRate(tt, firstRotateInMillis, configMillis);
 	}
 
+	public void stop() {
+		try {
+			if (server != null) server.stop();
+		} catch (Exception e) {
+			ZimbraLog.misc.error("Failed to stop mailbox server", e);
+		}
+	}
 }

@@ -6,7 +6,6 @@
 
 package com.zextras.mailbox;
 
-import com.zextras.mailbox.SampleLocalMailbox.ServerSetup;
 import com.zextras.mailbox.util.PortUtil;
 import com.zextras.mailbox.util.SoapClient;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
@@ -26,7 +25,7 @@ import org.junit.jupiter.api.io.TempDir;
 @Tag("api")
 class MailboxServerAPITest {
 
-	private static Server mailboxServer;
+	private static Mailbox mailboxServer;
 	private static final int USER_HTTP_PORT = PortUtil.findFreePort();
 	private static final int USER_HTTPS_PORT = PortUtil.findFreePort();
 	private static final int ADMIN_PORT = PortUtil.findFreePort();
@@ -51,14 +50,12 @@ class MailboxServerAPITest {
 		LC.zimbra_admin_service_scheme.setDefault("https://");
 		LC.zimbra_zmprov_default_soap_server.setDefault("localhost");
 		LC.zimbra_admin_service_port.setDefault(ADMIN_PORT);
-		mailboxServer = new ServerSetup(mailboxHome, timezoneFile)
+		mailboxServer = new MailboxSetupHelper(mailboxHome, timezoneFile)
 				.withAdminPort(ADMIN_PORT)
 				.withUserPort(USER_HTTP_PORT)
 				.withUserHttpsPort(USER_HTTPS_PORT)
 				.create();
-		mailboxServer.setDumpAfterStart(false);
-		mailboxServer.setDumpBeforeStop(false);
-		mailboxServer.start();
+		mailboxServer.start(false);
 	}
 
 	@AfterAll
