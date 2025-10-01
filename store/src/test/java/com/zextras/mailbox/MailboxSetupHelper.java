@@ -79,7 +79,6 @@ public class MailboxSetupHelper {
 
 		LC.zimbra_server_hostname.setDefault(APP_SERVER_NAME);
 		LC.timezone_file.setDefault(timeZoneFile);
-		DbPool.startup();
 		HSQLDB.createDatabase();
 
 		final InMemoryLdapServer inMemoryLdapServer = new Builder().
