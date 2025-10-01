@@ -123,30 +123,12 @@ public class SoapServlet extends ZimbraServlet {
 
     if (i == 0)
       throw new ServletException("Must specify at least one handler " + PARAM_ENGINE_HANDLER + i);
-
-    try {
-      Zimbra.startup();
-    } catch (OutOfMemoryError e) {
-      Zimbra.halt("out of memory", e);
-    } catch (Throwable t) {
-      ZimbraLog.soap.fatal("Unable to start servlet", t);
-      throw new UnavailableException(t.getMessage());
-    }
   }
 
   @Override
   public void destroy() {
     String name = getServletName();
     ZimbraLog.soap.info("Servlet " + name + " shutting down");
-    try {
-      Zimbra.shutdown();
-    } catch (ServiceException e) {
-      // Log as error and ignore.
-      ZimbraLog.soap.error("ServiceException while shutting down servlet " + name, e);
-    } catch (RuntimeException e) {
-      ZimbraLog.soap.error("Unchecked Exception while shutting down servlet " + name, e);
-      throw e;
-    }
     // FIXME: we might want to add mEngine.destroy()
     // to allow the mEngine to cleanup?
     mEngine = null;

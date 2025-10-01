@@ -5,13 +5,18 @@
 package com.zextras.mailbox;
 
 import com.zextras.mailbox.MailboxServer.Builder;
+import com.zimbra.common.service.ServiceException;
+import com.zimbra.common.util.ZimbraLog;
 import com.zimbra.cs.account.Provisioning;
+import com.zimbra.cs.util.Zimbra;
+import javax.servlet.UnavailableException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.util.component.LifeCycle;
 
 public class Mailbox {
 
@@ -35,6 +40,29 @@ public class Mailbox {
       return;
     }
 
+    server.start();
+    server.addLifeCycleListener(new LifeCycle.Listener() {
+      @Override
+      public void lifeCycleStopping(LifeCycle event) {
+				try {
+					Zimbra.shutdown(); // clean shutdown of pools, timers, etc.
+				} catch (ServiceException e) {
+          ZimbraLog.misc.error("Failed to shutdown connections", e);
+				}
+			}
+
+      // Other lifecycle methods can be no-ops
+      @Override public void lifeCycleStarting(LifeCycle event) {}
+      @Override public void lifeCycleStarted(LifeCycle event) {
+        try {
+          Zimbra.startup();
+        } catch (OutOfMemoryError e) {
+          Zimbra.halt("out of memory", e);
+        }
+      }
+      @Override public void lifeCycleFailure(LifeCycle event, Throwable cause) {}
+      @Override public void lifeCycleStopped(LifeCycle event) {}
+    });
     server.start();
     server.join();
   }
