@@ -105,7 +105,6 @@ public class MailboxSetupHelper {
 		LC.zimbra_class_database.setDefault(HSQLDB.class.getName());
 		this.initData(mailboxTestData);
 
-		DbPool.startup();
 		HSQLDB.createDatabase();
 
 		RedoLogProvider.getInstance().startup();

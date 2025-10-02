@@ -55,7 +55,7 @@ class MailboxServerAPITest {
 				.withUserPort(USER_HTTP_PORT)
 				.withUserHttpsPort(USER_HTTPS_PORT)
 				.create();
-		mailboxServer.start(false);
+		mailboxServer.start();
 	}
 
 	@AfterAll

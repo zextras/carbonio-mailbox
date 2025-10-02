@@ -20,7 +20,14 @@ public class SampleLocalMailbox {
 	public static void main(String[] args) throws Exception {
 		final Mailbox server = new MailboxSetupHelper("./store",
 				"store/src/test/resources/timezones-test.ics").create();
-		server.start(false);
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			try {
+				server.stop();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}));
+		server.start();
 	}
 
 }

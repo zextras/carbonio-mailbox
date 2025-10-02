@@ -40,21 +40,20 @@ public class HSQLDB extends Db {
     public static void createDatabase() throws Exception {
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        var conn = getHSQLDBConnection();
-        try {
-            stmt = conn.prepareStatement("SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = ?");
-            stmt.setString(1, "ZIMBRA");
-            rs = stmt.executeQuery();
-            if (rs.next() && rs.getInt(1) > 0) {
-                return; // already exists
-            }
-            createZimbraDatabase(conn);
-            createMailboxDatabase(conn);
-        } finally {
-            DbPool.closeResults(rs);
-            DbPool.quietCloseStatement(stmt);
-            conn.close();
-        }
+			try (var conn = getHSQLDBConnection()) {
+				stmt = conn.prepareStatement(
+						"SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = ?");
+				stmt.setString(1, "ZIMBRA");
+				rs = stmt.executeQuery();
+				if (rs.next() && rs.getInt(1) > 0) {
+					return; // already exists
+				}
+				createZimbraDatabase(conn);
+				createMailboxDatabase(conn);
+			} finally {
+				DbPool.closeResults(rs);
+				DbPool.quietCloseStatement(stmt);
+			}
     }
 
     /**

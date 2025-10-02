@@ -39,31 +39,25 @@ public class Mailbox {
 		this.provisioning = provisioning;
 	}
 
-	public void start(boolean dryRun) throws Exception {
+	public void start() throws Exception {
 		Builder mailboxServerBuilder = new Builder(provisioning.getConfig(),
 				provisioning.getLocalServer());
 
 		final Server server = mailboxServerBuilder.build();
 
-		if (dryRun) {
-			return;
-		}
-
 		initDependencies(); // old FirstServlet#init
 		Zimbra.startup();
-
-		server.addLifeCycleListener(new LifeCycle.Listener() {
-			@Override
-			public void lifeCycleStopped(LifeCycle event) {
-				try {
-					Zimbra.shutdown(); // clean shutdown of pools, timers, etc.
-				} catch (ServiceException e) {
-					ZimbraLog.misc.error("Failed to shutdown connections", e);
-				}
-			}
-		});
 		server.start();
 		server.join();
+	}
+
+	public void stop() {
+		try {
+			if (server != null) server.stop();
+			Zimbra.shutdown();
+		} catch (Exception e) {
+			ZimbraLog.misc.error("Failed to stop mailbox server", e);
+		}
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -74,7 +68,7 @@ public class Mailbox {
 		if (commandLine.hasOption(LOCALCONFIG)) {
 			System.setProperty("zimbra.config", commandLine.getOptionValue(LOCALCONFIG));
 		}
-		new Mailbox(Provisioning.getInstance()).start(commandLine.hasOption(DRYRUN));
+		new Mailbox(Provisioning.getInstance()).start();
 
 	}
 
@@ -89,6 +83,7 @@ public class Mailbox {
 	}
 
 
+	// From here on: Code moved from FirstServlet
 	private static void initDependencies() {
 		try {
 			System.setProperty("javax.net.ssl.keyStore", LC.mailboxd_keystore.value());
@@ -152,11 +147,5 @@ public class Mailbox {
 		sOutputRotationTimer.scheduleAtFixedRate(tt, firstRotateInMillis, configMillis);
 	}
 
-	public void stop() {
-		try {
-			if (server != null) server.stop();
-		} catch (Exception e) {
-			ZimbraLog.misc.error("Failed to stop mailbox server", e);
-		}
-	}
+
 }
