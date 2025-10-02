@@ -4,17 +4,16 @@ RUN apk add --no-cache make gcc g++ musl-dev
 
 WORKDIR /app
 ARG MAVEN_OPTS=""
+ARG BUILD_OPTS=""
 
 # Copy all project files
 COPY . .
 
 RUN --mount=type=cache,target=/root/.m2 \
-     sh -c 'export MAVEN_OPTS="${MAVEN_OPTS}" && mvn clean install -DskipTests && mkdir -p /mailbox'
+     sh -c 'export MAVEN_OPTS="${MAVEN_OPTS}" export BUILD_OPTS="${BUILD_OPTS}" && mvn $BUILD_OPTS clean install -DskipTests && mkdir -p /mailbox'
 RUN cp -a store* milter* attribute-manager right-manager \
     mailbox-ldap-lib native client common packages soap jython-libs \
     /mailbox/
 
-RUN tar -czf /mailbox.tar.gz -C /mailbox .
-
 FROM scratch AS export
-COPY --from=builder /mailbox.tar.gz /mailbox.tar.gz
+COPY --from=builder /mailbox /

@@ -1,9 +1,14 @@
 group "default" {
   targets = ["mailbox", "ldap", "mariadb", "postfix"]
 }
+
 variable "MAVEN_OPTS" {
   default = ""
 }
+variable "BUILD_OPTS" {
+  default = ""
+}
+
 
 target "builder" {
   context = "."
@@ -11,17 +16,16 @@ target "builder" {
   tags = []
   args = {
       MAVEN_OPTS = MAVEN_OPTS
+      BUILD_OPTS = BUILD_OPTS
     }
   output = ["type=local,dest=./build"]
 }
+
 
 target "ldap" {
   context = "."
   dockerfile = "docker/standalone/openldap/Dockerfile"
   tags = []
-  args = {
-        MAVEN_OPTS = "${MAVEN_OPTS}"
-      }
   depends_on = "builder"
 }
 
@@ -29,9 +33,6 @@ target "mailbox" {
   context = "."
   dockerfile = "docker/standalone/mailbox/Dockerfile"
   tags = []
-  args = {
-        MAVEN_OPTS = "${MAVEN_OPTS}"
-      }
   depends_on = "builder"
 }
 

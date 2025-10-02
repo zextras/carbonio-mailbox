@@ -1,14 +1,3 @@
-FROM maven:3-eclipse-temurin-17-alpine AS build
-
-RUN apk add --no-cache make gcc g++ musl-dev
-
-WORKDIR /build
-
-# Copy all project files
-COPY . .
-
-RUN --mount=type=cache,target=/root/.m2 mvn clean install -pl mailbox-ldap-lib -DskipTests
-
 FROM ubuntu:jammy
 
 USER root
@@ -22,7 +11,7 @@ ENV LDAP_ADMIN_PASSWORD=password
 EXPOSE 1389
 
 COPY docker/standalone/openldap/ldap-utils/ /ldap-utils/
-COPY --from=build /build/mailbox-ldap-lib/ldap/generated/ /opt/zextras/common/etc/openldap/zimbra/
+COPY build/mailbox-ldap-lib/ldap/generated/ /opt/zextras/common/etc/openldap/zimbra/
 RUN mkdir -p /opt/zextras/ldap/custom-ldifs \
             /opt/zextras/data/ldap/state/run \
             /opt/zextras/data/ldap/config \
