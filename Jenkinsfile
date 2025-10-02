@@ -70,6 +70,7 @@ pipeline {
                 container('dind') {
                     sh "docker buildx bake builder"
                 }
+                sh 'docker run -it -v ./build/:/output --entrypoint=/bin/sh --rm mailbox-build:local -c "cp /build/mailbox.tar.gz /output/"'
                 sh 'tar -xzf build/mailbox.tar.gz -C staging/'
 
                 stash includes: 'staging/**', name: 'staging'
@@ -83,8 +84,8 @@ pipeline {
                 }
             }
             steps {
-                container('jdk-17') {
-                    sh "mvn ${MVN_OPTS} verify"
+                container('dind') {
+                    sh "docker run -it --rm mailbox-build:local mvn ${MVN_OPTS} verify"
                 }
                 junit allowEmptyResults: true,
                     testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'

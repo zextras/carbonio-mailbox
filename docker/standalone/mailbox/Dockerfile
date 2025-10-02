@@ -1,13 +1,4 @@
-FROM maven:3-eclipse-temurin-17-alpine AS build
-
-RUN apk add --no-cache make gcc g++ musl-dev
-
-WORKDIR /build
-
-# Copy all project files
-COPY . .
-
-RUN --mount=type=cache,target=/root/.m2 mvn clean install -DskipTests
+FROM mailbox-build:local AS build
 
 FROM eclipse-temurin:17-jre-jammy
 
