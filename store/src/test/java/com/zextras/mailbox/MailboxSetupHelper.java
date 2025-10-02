@@ -2,6 +2,8 @@ package com.zextras.mailbox;
 
 import static com.zimbra.cs.account.Provisioning.SERVICE_MAILCLIENT;
 
+import com.zextras.mailbox.server.MailboxServer;
+import com.zextras.mailbox.server.MailboxServerBuilder;
 import com.zextras.mailbox.util.InMemoryLdapServer;
 import com.zextras.mailbox.util.InMemoryLdapServer.Builder;
 import com.zextras.mailbox.util.PortUtil;
@@ -9,7 +11,6 @@ import com.zimbra.common.account.ZAttrProvisioning;
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Provisioning;
-import com.zimbra.cs.db.DbPool;
 import com.zimbra.cs.db.HSQLDB;
 import java.io.FileOutputStream;
 import java.math.BigInteger;
@@ -66,7 +67,7 @@ public class MailboxSetupHelper {
 		return this;
 	}
 
-	public Mailbox create() throws Exception {
+	public MailboxServer create() throws Exception {
 		System.setProperty("zimbra.native.required", "false");
 
 		setupTestKeyStore();
@@ -102,7 +103,7 @@ public class MailboxSetupHelper {
 										ZAttrProvisioning.A_zimbraPop3SSLServerEnabled, "FALSE",
 										ZAttrProvisioning.A_zimbraImapSSLServerEnabled, "FALSE")));
 
-		return new Mailbox(provisioning);
+		return new MailboxServerBuilder(provisioning.getConfig(), provisioning.getLocalServer()).withDump(true).create();
 	}
 
 	private static void setupTestKeyStore() throws Exception {

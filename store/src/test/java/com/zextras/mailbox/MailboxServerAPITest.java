@@ -6,6 +6,7 @@
 
 package com.zextras.mailbox;
 
+import com.zextras.mailbox.server.MailboxServer;
 import com.zextras.mailbox.util.PortUtil;
 import com.zextras.mailbox.util.SoapClient;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
@@ -14,7 +15,6 @@ import com.zimbra.soap.account.message.AuthRequest;
 import com.zimbra.soap.type.AccountSelector;
 import java.io.File;
 import java.nio.file.Files;
-import org.eclipse.jetty.server.Server;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -25,7 +25,7 @@ import org.junit.jupiter.api.io.TempDir;
 @Tag("api")
 class MailboxServerAPITest {
 
-	private static Mailbox mailboxServer;
+	private static MailboxServer mailboxServer;
 	private static final int USER_HTTP_PORT = PortUtil.findFreePort();
 	private static final int USER_HTTPS_PORT = PortUtil.findFreePort();
 	private static final int ADMIN_PORT = PortUtil.findFreePort();

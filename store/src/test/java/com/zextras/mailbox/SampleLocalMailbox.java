@@ -4,9 +4,9 @@
 
 package com.zextras.mailbox;
 
+import com.zextras.mailbox.server.MailboxServer;
 import com.zextras.mailbox.util.InMemoryLdapServer;
 import com.zimbra.cs.db.HSQLDB;
-import org.eclipse.jetty.server.Server;
 
 /**
  * A Mailbox that can be used for testing. You can spin it up and interact with APIs, except it uses
@@ -18,7 +18,7 @@ import org.eclipse.jetty.server.Server;
 public class SampleLocalMailbox {
 
 	public static void main(String[] args) throws Exception {
-		final Mailbox server = new MailboxSetupHelper("./store",
+		final MailboxServer server = new MailboxSetupHelper("./store",
 				"store/src/test/resources/timezones-test.ics").create();
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			try {
