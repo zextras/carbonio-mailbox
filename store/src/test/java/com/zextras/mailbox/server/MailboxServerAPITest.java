@@ -6,7 +6,7 @@
 
 package com.zextras.mailbox.server;
 
-import com.zextras.mailbox.MailboxSetupHelper;
+import com.zextras.mailbox.MailboxEnvironmentSetupHelper;
 import com.zextras.mailbox.util.PortUtil;
 import com.zextras.mailbox.util.SoapClient;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
@@ -50,7 +50,7 @@ class MailboxServerAPITest {
 		LC.zimbra_admin_service_scheme.setDefault("https://");
 		LC.zimbra_zmprov_default_soap_server.setDefault("localhost");
 		LC.zimbra_admin_service_port.setDefault(ADMIN_PORT);
-		mailboxServer = new MailboxSetupHelper(mailboxHome, timezoneFile)
+		mailboxServer = new MailboxEnvironmentSetupHelper(mailboxHome, timezoneFile)
 				.withAdminPort(ADMIN_PORT)
 				.withUserPort(USER_HTTP_PORT)
 				.withUserHttpsPort(USER_HTTPS_PORT)

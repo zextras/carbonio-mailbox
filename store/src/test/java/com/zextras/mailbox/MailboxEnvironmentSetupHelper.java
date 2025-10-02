@@ -37,7 +37,7 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
  * Wraps LC and system properties to configure the mailbox in a java class.
  * Starts an in memory LDAP and an HSQL DB.
  */
-public class MailboxSetupHelper {
+public class MailboxEnvironmentSetupHelper {
 
 	private static final int LDAP_PORT = PortUtil.findFreePort();
 	private static final String APP_SERVER_NAME = "localhost";
@@ -47,22 +47,22 @@ public class MailboxSetupHelper {
 	private final String mailboxHome;
 	private final String timeZoneFile;
 
-	public MailboxSetupHelper(String mailboxHome, String timeZoneFile) {
+	public MailboxEnvironmentSetupHelper(String mailboxHome, String timeZoneFile) {
 		this.mailboxHome = mailboxHome;
 		this.timeZoneFile = timeZoneFile;
 	}
 
-	public MailboxSetupHelper withUserPort(int userPort) {
+	public MailboxEnvironmentSetupHelper withUserPort(int userPort) {
 		this.userHttpPort = userPort;
 		return this;
 	}
 
-	public MailboxSetupHelper withUserHttpsPort(int userHttpsPort) {
+	public MailboxEnvironmentSetupHelper withUserHttpsPort(int userHttpsPort) {
 		this.userHttpsPort = userHttpsPort;
 		return this;
 	}
 
-	public MailboxSetupHelper withAdminPort(int adminPort) {
+	public MailboxEnvironmentSetupHelper withAdminPort(int adminPort) {
 		this.adminPort = adminPort;
 		return this;
 	}

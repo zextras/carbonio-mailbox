@@ -18,7 +18,7 @@ import com.zimbra.cs.db.HSQLDB;
 public class SampleLocalMailbox {
 
 	public static void main(String[] args) throws Exception {
-		final MailboxServer server = new MailboxSetupHelper("./store",
+		final MailboxServer server = new MailboxEnvironmentSetupHelper("./store",
 				"store/src/test/resources/timezones-test.ics").create();
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			try {

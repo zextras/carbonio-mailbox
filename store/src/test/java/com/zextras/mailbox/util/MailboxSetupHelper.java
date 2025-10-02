@@ -107,6 +107,7 @@ public class MailboxSetupHelper {
 
 		HSQLDB.createDatabase();
 
+		DbPool.startup();
 		RedoLogProvider.getInstance().startup();
 		StoreManager.getInstance().startup();
 		RightManager.getInstance();
