@@ -1,3 +1,14 @@
+FROM maven:3-eclipse-temurin-17-alpine AS build
+
+RUN apk add --no-cache make gcc g++ musl-dev
+
+WORKDIR /build
+
+# Copy all project files
+COPY . .
+
+RUN --mount=type=cache,target=/root/.m2 mvn clean install -DskipTests
+
 FROM eclipse-temurin:17-jre-jammy
 
 RUN mkdir -p /opt/zextras/mailbox/jars/ && \
@@ -6,19 +17,19 @@ RUN mkdir -p /opt/zextras/mailbox/jars/ && \
     mkdir -p /opt/zextras/mailboxd/work && \
     mkdir -p /opt/zextras/log
 
-COPY build/store/src/test/resources/timezones-test.ics /opt/zextras/conf/timezones.ics
-COPY build/store-conf/conf/msgs/* /opt/zextras/conf/msgs/
-COPY build/store-conf/conf/owasp_policy.xml /opt/zextras/conf/owasp_policy.xml
+COPY --from=build /build/store/src/test/resources/timezones-test.ics /opt/zextras/conf/timezones.ics
+COPY --from=build /build/store-conf/conf/msgs/* /opt/zextras/conf/msgs/
+COPY --from=build /build/store-conf/conf/owasp_policy.xml /opt/zextras/conf/owasp_policy.xml
 ADD https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar \
     /opt/zextras/opentelemetry-javaagent.jar
 
-COPY build/store/target/zm-store.jar /opt/zextras/mailbox/jars/
-COPY build/store/target/dependencies/* /opt/zextras/mailbox/jars/
-COPY build/native/target/zm-native*.jar /opt/zextras/mailbox/jars/
-COPY build/soap/target/zm-soap*.jar /opt/zextras/mailbox/jars/
-COPY build/common/target/zm-common*.jar /opt/zextras/mailbox/jars/
-COPY docker/standalone/mailbox/log4j.properties /opt/zextras/conf/log4j.properties
-COPY build/store-conf/conf/datasource.xml /opt/zextras/conf/
+COPY --from=build /build/store/target/zm-store.jar /opt/zextras/mailbox/jars/
+COPY --from=build /build/store/target/dependencies/* /opt/zextras/mailbox/jars/
+COPY --from=build /build/native/target/zm-native*.jar /opt/zextras/mailbox/jars/
+COPY --from=build /build/soap/target/zm-soap*.jar /opt/zextras/mailbox/jars/
+COPY --from=build /build/common/target/zm-common*.jar /opt/zextras/mailbox/jars/
+COPY --from=build /build/docker/standalone/mailbox/log4j.properties /opt/zextras/conf/log4j.properties
+COPY --from=build /build/store-conf/conf/datasource.xml /opt/zextras/conf/
 
 ENV LDAP_URL="ldap://openldap:1389"
 ENV LDAP_ROOT_PASSWORD=qh6hWZvc

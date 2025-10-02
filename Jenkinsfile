@@ -68,9 +68,9 @@ pipeline {
         stage('Build') {
             steps {
                 container('dind') {
-                    sh 'BUILD_OPTS=$MVN_OPTS docker buildx bake builder'
+                    sh "docker buildx bake builder"
                 }
-                sh 'cp -a build/* staging/'
+                sh 'tar -xzf build/mailbox.tar.gz -C staging/'
 
                 stash includes: 'staging/**', name: 'staging'
             }
