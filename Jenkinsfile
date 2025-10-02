@@ -69,7 +69,7 @@ pipeline {
             steps {
                 container('dind') {
                     sh "docker buildx bake builder"
-                    sh 'docker run -it -v ./build/:/output --entrypoint=/bin/sh --rm mailbox-build:local -c "cp /build/mailbox.tar.gz /output/"'
+                    sh 'docker run -v ./build/:/output --entrypoint=/bin/sh --rm mailbox-build:local -c "cp /build/mailbox.tar.gz /output/"'
                 }
                 sh 'tar -xzf build/mailbox.tar.gz -C staging/'
 
