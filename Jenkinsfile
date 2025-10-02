@@ -67,18 +67,10 @@ pipeline {
 
         stage('Build') {
             steps {
-                container('jdk-17') {
-                    sh """
-                        apt update && apt install -y build-essential
-                        mvn ${MVN_OPTS} \
-                            -DskipTests=true \
-                            clean install
-                        mkdir staging
-                        cp -a store* milter* attribute-manager right-manager \
-                                mailbox-ldap-lib native client common packages soap jython-libs \
-                                staging/
-                    """
-                    stash includes: 'staging/**', name: 'staging'
+                container('dind') {
+                    sh "docker buildx bake"
+                    // TODO: pass correct flags during build
+                    stash includes: 'staging/out/mailbox/**', name: 'staging'
                 }
             }
         }
