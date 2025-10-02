@@ -21,8 +21,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import org.eclipse.jetty.server.Server;
 
-// See: https://github.com/jetty/jetty.project/blob/jetty-9.4.x/examples/embedded/src/main/java/org/eclipse/jetty/embedded/LikeJettyXml.java
-// See previous jetty.xml config for reference: https://github.com/zextras/carbonio-appserver/blob/81bce01f4b97efd89ccf89e79c963b40f16ffc81/appserver/conf/jetty/jetty.xml.production
 public class MailboxServer {
 
   private final Server server;

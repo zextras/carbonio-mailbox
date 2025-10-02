@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-package com.zextras.mailbox;
+package com.zextras.mailbox.server;
 
-import com.zextras.mailbox.server.MailboxServer;
+import com.zextras.mailbox.MailboxSetupHelper;
 import com.zextras.mailbox.util.PortUtil;
 import com.zextras.mailbox.util.SoapClient;
 import com.zextras.mailbox.util.SoapClient.SoapResponse;
