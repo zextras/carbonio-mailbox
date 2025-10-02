@@ -86,7 +86,7 @@ pipeline {
             }
             steps {
                 container('dind') {
-                    sh "docker run -it --rm mailbox-build:local mvn ${MVN_OPTS} verify"
+                    sh "docker run --rm mailbox-build:local mvn ${MVN_OPTS} verify"
                 }
                 junit allowEmptyResults: true,
                     testResults: '**/target/surefire-reports/*.xml,**/target/failsafe-reports/*.xml'
