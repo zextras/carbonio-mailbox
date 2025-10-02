@@ -69,9 +69,8 @@ pipeline {
             steps {
                 container('dind') {
                     sh "docker buildx bake builder"
-                    ls staging/mailbox
-                    stash includes: 'staging/mailbox/**', name: 'staging'
                 }
+                stash includes: 'staging/mailbox/**', name: 'staging'
             }
         }
 
