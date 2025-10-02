@@ -54,6 +54,7 @@ public class Mailbox {
 	public void stop() {
 		try {
 			if (server != null) server.stop();
+			ZimbraLog.misc.info("Shutting down mailbox server");
 			Zimbra.shutdown();
 		} catch (Exception e) {
 			ZimbraLog.misc.error("Failed to stop mailbox server", e);
