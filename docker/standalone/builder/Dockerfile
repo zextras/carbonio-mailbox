@@ -8,8 +8,7 @@ ARG MAVEN_OPTS=""
 # Copy all project files
 COPY . .
 
-RUN --mount=type=cache,target=/root/.m2 \
-     sh -c 'export MAVEN_OPTS="${MAVEN_OPTS}" && mvn clean install -DskipTests && mkdir -p out'
+RUN sh -c 'export MAVEN_OPTS="${MAVEN_OPTS}" && mvn clean install -DskipTests && mkdir -p out'
 RUN cp -a store* milter* attribute-manager right-manager \
     mailbox-ldap-lib native client common packages soap jython-libs \
     out/

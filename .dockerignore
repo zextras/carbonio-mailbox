@@ -1,1 +1,6 @@
 build
+Jenkinsfile
+README.md
+install_packages.sh
+docker-bake.hcl
+build_packages.sh
