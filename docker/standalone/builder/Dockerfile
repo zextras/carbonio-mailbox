@@ -14,5 +14,7 @@ RUN cp -a store* milter* attribute-manager right-manager \
     mailbox-ldap-lib native client common packages soap jython-libs \
     /mailbox/
 
+RUN tar -czf /mailbox.tar.gz -C /mailbox .
+
 FROM scratch AS export
-COPY --from=builder /mailbox /mailbox
+COPY --from=builder /mailbox.tar.gz /mailbox.tar.gz
