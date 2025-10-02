@@ -9,13 +9,10 @@ ARG MAVEN_OPTS=""
 COPY . .
 
 RUN --mount=type=cache,target=/root/.m2 \
-    MAVEN_OPTS="${MAVEN_OPTS}" sh -c 'echo "MAVEN_OPTS is: $MAVEN_OPTS"'
-
-RUN --mount=type=cache,target=/root/.m2 \
      sh -c 'export MAVEN_OPTS="${MAVEN_OPTS}" && mvn clean install -DskipTests && mkdir -p /mailbox'
 RUN cp -a store* milter* attribute-manager right-manager \
     mailbox-ldap-lib native client common packages soap jython-libs \
     /mailbox/
 
 FROM scratch AS export
-COPY --from=builder /mailbox /out/mailbox
+COPY --from=builder /mailbox /mailbox

@@ -68,9 +68,9 @@ pipeline {
         stage('Build') {
             steps {
                 container('dind') {
-                    sh "docker buildx bake"
-                    // TODO: pass correct flags during build
-                    stash includes: 'staging/out/mailbox/**', name: 'staging'
+                    sh "docker buildx bake builder"
+                    ls staging/mailbox
+                    stash includes: 'staging/mailbox/**', name: 'staging'
                 }
             }
         }
