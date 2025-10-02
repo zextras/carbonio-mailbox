@@ -70,7 +70,8 @@ pipeline {
                 container('dind') {
                     sh "docker buildx bake builder"
                 }
-                stash includes: 'staging/mailbox/**', name: 'staging'
+                sh 'cp -a build/mailbox/* staging/'
+                stash includes: 'staging/**', name: 'staging'
             }
         }
 

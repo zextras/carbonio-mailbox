@@ -12,7 +12,7 @@ target "builder" {
   args = {
       MAVEN_OPTS = MAVEN_OPTS
     }
-  output = ["type=local,dest=./staging"]
+  output = ["type=local,dest=./build"]
 }
 
 target "ldap" {
