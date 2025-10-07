@@ -1,7 +1,3 @@
-group "build" {
-  targets = ["builder"]
-}
-
 group "images" {
   targets = ["mailbox", "ldap", "mariadb", "postfix"]
   output = [{ type = "cacheonly" }]
@@ -11,13 +7,13 @@ variable "MAVEN_OPTS" {
   default = ""
 }
 
-target "builder" {
-  context = "."
-  dockerfile = "docker/standalone/builder/Dockerfile"
+target "build" {
+  target = "builder"
   tags = ["mailbox-build:local"]
   args = {
       MAVEN_OPTS = MAVEN_OPTS
     }
+  output = [{ type = "local", dest="./build" }, { type="docker" }]
 }
 
 target "ldap" {
