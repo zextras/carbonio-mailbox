@@ -53,9 +53,11 @@ public class MailboxServer {
    * @throws Exception
    */
   public void start() throws Exception {
+    ZimbraLog.misc.info("Starting mailbox server");
     initDependencies(); // old FirstServlet#init
     Zimbra.startup();
     server.start();
+    ZimbraLog.misc.info("Mailbox server started");
   }
 
   public void stop() {
@@ -63,6 +65,7 @@ public class MailboxServer {
       if (server != null) server.stop();
       ZimbraLog.misc.info("Shutting down mailbox server");
       Zimbra.shutdown();
+      ZimbraLog.misc.info("Mailbox server shut down");
     } catch (Exception e) {
       ZimbraLog.misc.error("Failed to stop mailbox server", e);
     }
