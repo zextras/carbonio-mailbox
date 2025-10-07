@@ -5,7 +5,18 @@ RUN apk add --no-cache make gcc g++ musl-dev
 WORKDIR /build
 
 # Copy all project files
-COPY . .
+COPY pom.xml                          pom.xml
+COPY store                            store
+COPY native                           native
+COPY attribute-manager                attribute-manager
+COPY mailbox-ldap-lib                 mailbox-ldap-lib
+COPY soap                             soap
+COPY store-extra-runtime-dependencies store-extra-runtime-dependencies
+COPY jython-libs                      jython-libs
+COPY common                           common
+COPY right-manager                    right-manager
+COPY client                           client
+COPY store-conf                       store-conf
 
 RUN --mount=type=cache,target=/root/.m2 mvn clean install -DskipTests
 
@@ -28,7 +39,7 @@ COPY --from=build /build/store/target/dependencies/* /opt/zextras/mailbox/jars/
 COPY --from=build /build/native/target/zm-native*.jar /opt/zextras/mailbox/jars/
 COPY --from=build /build/soap/target/zm-soap*.jar /opt/zextras/mailbox/jars/
 COPY --from=build /build/common/target/zm-common*.jar /opt/zextras/mailbox/jars/
-COPY --from=build /build/docker/standalone/mailbox/log4j.properties /opt/zextras/conf/log4j.properties
+COPY docker/standalone/mailbox/log4j.properties /opt/zextras/conf/log4j.properties
 COPY --from=build /build/store-conf/conf/datasource.xml /opt/zextras/conf/
 
 ENV LDAP_URL="ldap://openldap:1389"
