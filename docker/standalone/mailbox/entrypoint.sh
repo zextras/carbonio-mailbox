@@ -40,11 +40,11 @@ JAVA_OPTS="-Dfile.encoding=UTF-8 -server \
                          -Dlog4j.configurationFile=/opt/zextras/conf/log4j.properties \
                          -cp /opt/zextras/mailbox/jars/mailbox.jar:/opt/zextras/mailbox/jars/*"
 if [ -z "${TRACING_OPTIONS}" ]; then
-  java ${JAVA_OPTS} \
+  exec java ${JAVA_OPTS} \
     -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 \
     com.zextras.mailbox.Mailbox
 else
-  java -javaagent:/opt/zextras/opentelemetry-javaagent.jar \
+  exec java -javaagent:/opt/zextras/opentelemetry-javaagent.jar \
     ${JAVA_OPTS} \
     ${TRACING_OPTIONS} \
     -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 \

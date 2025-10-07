@@ -11,4 +11,4 @@ sed -i -e "s/LDAP_ROOT_PASSWORD/${LDAP_ROOT_PASSWORD}/g" /opt/zextras/conf/*.cf
 
 /opt/zextras/common/sbin/postfix start
 
-tail -f /var/log/postfix.log
+exec tail -f /var/log/postfix.log
