@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 @Tag("api")
-@Disabled
 class MailboxServerAPITest {
 
 	private static MailboxServer mailboxServer;

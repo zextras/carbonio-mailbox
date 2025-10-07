@@ -103,7 +103,9 @@ public class MailboxEnvironmentSetupHelper {
 										ZAttrProvisioning.A_zimbraPop3SSLServerEnabled, "FALSE",
 										ZAttrProvisioning.A_zimbraImapSSLServerEnabled, "FALSE")));
 
-		return new MailboxServerBuilder(provisioning.getConfig(), provisioning.getLocalServer()).withDump(true).create();
+		return new MailboxServerBuilder(provisioning.getConfig(), provisioning.getLocalServer())
+				.withDump(false)
+				.create();
 	}
 
 	private static void setupTestKeyStore() throws Exception {

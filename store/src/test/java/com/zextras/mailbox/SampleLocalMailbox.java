@@ -18,6 +18,7 @@ import com.zimbra.cs.db.HSQLDB;
 public class SampleLocalMailbox {
 
 	public static void main(String[] args) throws Exception {
+		System.setProperty("log4j.configurationFile", "docker/standalone/mailbox/log4j.properties");
 		final MailboxServer server = new MailboxEnvironmentSetupHelper("./store",
 				"store/src/test/resources/timezones-test.ics").create();
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
